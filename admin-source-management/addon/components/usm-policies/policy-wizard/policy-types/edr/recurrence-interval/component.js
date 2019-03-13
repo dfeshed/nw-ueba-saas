@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { updatePolicyProperty, removeFromSelectedSettings } from 'admin-source-management/actions/creators/policy-wizard-creators';
+import { updatePolicyProperty } from 'admin-source-management/actions/creators/policy-wizard-creators';
 import {
   interval,
   intervalType,
@@ -20,8 +20,7 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  updatePolicyProperty,
-  removeFromSelectedSettings
+  updatePolicyProperty
 };
 
 const RecInterval = Component.extend({

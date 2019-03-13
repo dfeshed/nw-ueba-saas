@@ -113,34 +113,34 @@ const _getScanSetting = (prop, focusedPolicy) => {
     scanTypeValue = _i18n.t('adminUsm.policyWizard.edrPolicy.scanTypeScheduled');
   }
 
-  let unit = _i18n.t('adminUsm.policyWizard.edrPolicy.recurrenceInterval.intervalText.DAYS');
+  let unit = _i18n.t('adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.intervalText.DAYS');
   if (focusedPolicy.recurrenceUnit === 'WEEKS') {
-    unit = _i18n.t('adminUsm.policyWizard.edrPolicy.recurrenceInterval.intervalText.WEEKS');
+    unit = _i18n.t('adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.intervalText.WEEKS');
   }
 
   let days = '';
   if (focusedPolicy.runOnDaysOfWeek) {
-    days = `${_i18n.t('adminUsm.policyWizard.edrPolicy.recurrenceInterval.on')} ${focusedPolicy.runOnDaysOfWeek.join(',')}`;
+    days = `${_i18n.t('adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.on')} ${focusedPolicy.runOnDaysOfWeek.join(',')}`;
   }
 
   const recurValue = `${_i18n.t('adminUsm.policies.detail.recurrenceEvery')} ${focusedPolicy.recurrenceInterval} ${unit} ${days}`;
 
   const scanSettings = {
     scanType: {
-      name: 'adminUsm.policyWizard.edrPolicy.schedOrManScan',
+      name: 'adminUsm.policyWizard.edrPolicy.scanType',
       value: scanTypeValue
 
     },
     scanStartDate: {
-      name: 'adminUsm.policyWizard.edrPolicy.effectiveDate',
+      name: 'adminUsm.policyWizard.edrPolicy.scanStartDate',
       value: focusedPolicy[prop]
     },
     scanStartTime: {
-      name: 'adminUsm.policyWizard.edrPolicy.startTime',
+      name: 'adminUsm.policyWizard.edrPolicy.scanStartTime',
       value: focusedPolicy[prop]
     },
     recurrenceInterval: {
-      name: 'adminUsm.policyWizard.edrPolicy.scanFrequency',
+      name: 'adminUsm.policyWizard.edrPolicy.recurrenceInterval',
       value: recurValue,
       isTranslation: true
     },
@@ -149,7 +149,7 @@ const _getScanSetting = (prop, focusedPolicy) => {
       value: `${focusedPolicy[prop]} ${'%'}`
     },
     cpuMaxVm: {
-      name: 'adminUsm.policyWizard.edrPolicy.vmMax',
+      name: 'adminUsm.policyWizard.edrPolicy.cpuMaxVm',
       value: `${focusedPolicy[prop]} ${'%'}`
     }
   };
@@ -260,7 +260,7 @@ const _getAgentSetting = (prop, focusedPolicy) => {
 const _getAdvancedConfigSetting = (prop, focusedPolicy) => {
   const advancedConfigSettings = {
     customConfig: {
-      name: 'adminUsm.policyWizard.edrPolicy.customConfigSetting',
+      name: 'adminUsm.policyWizard.edrPolicy.customConfig',
       value: _truncateCustomSetting(focusedPolicy[prop])
     }
   };

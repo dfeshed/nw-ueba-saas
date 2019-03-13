@@ -46,13 +46,15 @@
         {{#if sortedSelectedSetting.isHeader}}
           <div class="heading">{{t sortedSelectedSetting.label}}</div>
         {{else}}
-          <div class="selected-setting">
-            {{component sortedSelectedSetting.component
-              selectedSettingId=sortedSelectedSetting.id
-              isDefaultPolicy=defaultPolicy
-              tooltip=(t (concat sortedSelectedSetting.label 'Tooltip' ))
-            }}
-          </div>
+          {{usm-policies/policy-wizard/policy-types/policy-setting
+            removeFromSelectedSettings=(action 'removeFromSelectedSettings')
+            settingComponent=sortedSelectedSetting.component
+            selectedSettingId=sortedSelectedSetting.id
+            policyType=policyType
+            isDefaultPolicy=defaultPolicy
+            label=(t sortedSelectedSetting.label)
+            tooltip=(t (concat sortedSelectedSetting.label 'Tooltip' ))
+          }}
         {{/if}}
       {{/each}}
     </div>

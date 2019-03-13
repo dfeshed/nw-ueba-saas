@@ -46,15 +46,15 @@ export default {
   },
 
   // define-policy-step - available settings to render the left col
-  // * make sure the id is always the same as the policy property name
+  // * make sure the id, the end of label i18n key, and the field (policy property) are all the same
   availableSettings: [
     { index: 0, id: 'scanScheduleHeader', label: 'adminUsm.policyWizard.edrPolicy.scanSchedule', isHeader: true, isEnabled: true, isGreyedOut: true },
-    { index: 1, id: 'scanType', label: 'adminUsm.policyWizard.edrPolicy.schedOrManScan', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'scanType', value: 'DISABLED' }] },
-    { index: 2, id: 'scanStartDate', label: 'adminUsm.policyWizard.edrPolicy.effectiveDate', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] },
-    { index: 3, id: 'recurrenceInterval', label: 'adminUsm.policyWizard.edrPolicy.scanFrequency', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceUnit', value: 'DAYS' }] },
-    { index: 4, id: 'scanStartTime', label: 'adminUsm.policyWizard.edrPolicy.startTime', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/start-time', defaults: [{ field: 'scanStartTime', value: '09:00' }] },
+    { index: 1, id: 'scanType', label: 'adminUsm.policyWizard.edrPolicy.scanType', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'scanType', value: 'DISABLED' }] },
+    { index: 2, id: 'scanStartDate', label: 'adminUsm.policyWizard.edrPolicy.scanStartDate', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/effective-date', defaults: [{ field: 'scanStartDate', value: moment().format('YYYY-MM-DD') }] },
+    { index: 3, id: 'recurrenceInterval', label: 'adminUsm.policyWizard.edrPolicy.recurrenceInterval', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/recurrence-interval', defaults: [{ field: 'recurrenceInterval', value: 1 }, { field: 'recurrenceUnit', value: 'DAYS' }] },
+    { index: 4, id: 'scanStartTime', label: 'adminUsm.policyWizard.edrPolicy.scanStartTime', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/start-time', defaults: [{ field: 'scanStartTime', value: '09:00' }] },
     { index: 5, id: 'cpuMax', label: 'adminUsm.policyWizard.edrPolicy.cpuMax', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/cpu-max', defaults: [{ field: 'cpuMax', value: 25 }] },
-    { index: 6, id: 'cpuMaxVm', label: 'adminUsm.policyWizard.edrPolicy.vmMax', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/vm-max', defaults: [{ field: 'cpuMaxVm', value: 10 }] },
+    { index: 6, id: 'cpuMaxVm', label: 'adminUsm.policyWizard.edrPolicy.cpuMaxVm', isEnabled: true, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/vm-max', defaults: [{ field: 'cpuMaxVm', value: 10 }] },
     { index: 7, id: 'agentSettingsHeader', label: 'adminUsm.policyWizard.edrPolicy.agentSettings', isHeader: true, isEnabled: true },
     { index: 8, id: 'agentMode', label: 'adminUsm.policyWizard.edrPolicy.agentMode', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'agentMode', value: 'ADVANCED' }] },
     { index: 9, id: 'advScanSettingsHeader', label: 'adminUsm.policyWizard.edrPolicy.advScanSettings', isHeader: true, isEnabled: true },
@@ -75,7 +75,7 @@ export default {
     { index: 18, id: 'primaryUdpPort', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] },
     { index: 19, id: 'primaryUdpBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-beacons', defaults: [{ field: 'primaryUdpBeaconInterval', value: 30 }, { field: 'primaryUdpBeaconIntervalUnit', value: 'SECONDS' }] },
     { index: 22, id: 'advancedConfigHeader', label: 'adminUsm.policyWizard.edrPolicy.advancedConfig', isHeader: true, isEnabled: true },
-    { index: 23, id: 'customConfig', label: 'adminUsm.policyWizard.edrPolicy.customConfigSetting', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/custom-config', defaults: [{ field: 'customConfig', value: '' }] }
+    { index: 23, id: 'customConfig', label: 'adminUsm.policyWizard.edrPolicy.customConfig', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/custom-config', defaults: [{ field: 'customConfig', value: '' }] }
   ]
 
 };

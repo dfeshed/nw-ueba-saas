@@ -98,7 +98,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     assert.equal(policyDetails[0].header, 'adminUsm.policyWizard.edrPolicy.scanSchedule', 'first section is as expected');
     assert.equal(policyDetails[0].props.length, 4, 'first section has 4 properties');
     assert.equal(policyDetails[0].props.includes({
-      name: 'adminUsm.policyWizard.edrPolicy.effectiveDate',
+      name: 'adminUsm.policyWizard.edrPolicy.scanStartDate',
       value: ''
     }), false, 'scanStart date is ignored since it does not have a value');
     assert.equal(policyDetails[0].props.includes({

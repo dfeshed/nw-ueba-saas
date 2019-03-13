@@ -1,8 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
-  updatePolicyProperty,
-  removeFromSelectedSettings
+  updatePolicyProperty
 } from 'admin-source-management/actions/creators/policy-wizard-creators';
 import {
   protocolsList,
@@ -15,8 +14,7 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  updatePolicyProperty,
-  removeFromSelectedSettings
+  updatePolicyProperty
 };
 
 const WindowsLogProtocol = Component.extend({

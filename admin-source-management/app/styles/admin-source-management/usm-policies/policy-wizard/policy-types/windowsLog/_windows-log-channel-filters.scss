@@ -1,5 +1,5 @@
 .windows-log-channel-filters {
-  padding: rsa-whitespace(more) 0 0 0;
+
   .channel-container {
     padding-right: 0;
     /* override the component-lib table body so there is never any vertical scrollbar */
@@ -8,16 +8,7 @@
       overflow-y: hidden;
     }
   }
-  .title {
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: text-color(primary, light);
-    @include rsa-font(default,small);
-    .remove-setting {
-      float: right;
-      margin-right: 3rem;
-    }
-  }
+
   .windows-log-channel-list {
     padding-top: rsa-whitespace(less);
     max-width: 80%;
@@ -29,21 +20,23 @@
       box-sizing: content-box;
     }
   }
+
   .add-row {
     padding-top: rsa-whitespace(less);
     padding-left: rsa-whitespace();
   }
-}
 
-.input-error {
-  @include rsa-font(paragraph, small);
-  color: text-color(primary, lightest);
-  padding-left: rsa-whitespace(less);
-}
+  .input-error {
+    @include rsa-font(paragraph, small);
+    color: text-color(primary, lightest);
+    padding-left: rsa-whitespace(less);
+  }
+  
+  .selector-error {
+    @include rsa-input-placeholder($formInputErrorPlaceholderColor);
+    color: $formInputErrorTypeColor;
+    background-color: $formInputErrorBackgroundColor;
+    border-color: $formInputErrorBorderColor;
+  }
 
-.selector-error {
-  @include rsa-input-placeholder($formInputErrorPlaceholderColor);
-  color: $formInputErrorTypeColor;
-  background-color: $formInputErrorBackgroundColor;
-  border-color: $formInputErrorBorderColor;
 }

@@ -1,14 +1,3 @@
-<h4 class='title'>
-  {{#rsa-text-with-tooltip value=tooltip
-  style="standard"
-  alwaysShow=true}}
-    {{t 'adminUsm.policyWizard.edrPolicy.effectiveDate'}}
-  {{/rsa-text-with-tooltip}}
-  <span class="remove-setting {{if isDefaultPolicy 'is-greyed-out' 'not-greyed-out'}}"
-  {{action 'removeFromSelectedSettings' 'scanStartDate'}}>
-    {{rsa-icon name="remove-circle-1" style="lined"}}
-  </span>
-</h4>
 <hbox class="date-time">
   {{rsa-form-datetime
     enableTime=false

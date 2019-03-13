@@ -23,7 +23,7 @@ export default {
   },
 
   // define-policy-step - available settings to render the left col
-  // * make sure the id is always the same as the policy property name
+  // * make sure the id, the end of label i18n key, and the field (policy property) are all the same
   availableSettings: [
     { index: 0, id: 'windowsLogSettingsHeader', label: 'adminUsm.policyWizard.windowsLogPolicy.windowsLogSettingsHeader', isHeader: true, isEnabled: true },
     { index: 1, id: 'enabled', label: 'adminUsm.policyWizard.windowsLogPolicy.enabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'enabled', value: false }] },

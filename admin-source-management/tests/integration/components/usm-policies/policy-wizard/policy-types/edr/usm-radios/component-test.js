@@ -6,7 +6,7 @@ import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
-let removeFromSelectedSettingsSpy, updatePolicyPropertySpy;
+let updatePolicyPropertySpy;
 const spys = [];
 
 module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/edr-radios', function(hooks) {
@@ -15,7 +15,6 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/ed
   });
 
   hooks.before(function() {
-    spys.push(removeFromSelectedSettingsSpy = sinon.spy(policyWizardCreators, 'removeFromSelectedSettings'));
     spys.push(updatePolicyPropertySpy = sinon.spy(policyWizardCreators, 'updatePolicyProperty'));
   });
 
@@ -39,13 +38,6 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/ed
     assert.equal(findAll('.radio-option').length, 2, 'expected to have two radio buttons in dom');
   });
 
-  test('for a default policy, appropriate class is set for the remove-circle icon', async function(assert) {
-    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/edr-radios classNames='agentMode' selectedSettingId='agentMode' isDefaultPolicy=true}}`);
-    assert.equal(findAll('.rsa-form-radio-group-label .is-greyed-out').length, 1, 'expected to have remove-circle icon greyed out for a default policy');
-    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/edr-radios classNames='agentMode' selectedSettingId='agentMode' isDefaultPolicy=false}}`);
-    assert.equal(findAll('.rsa-form-radio-group-label .not-greyed-out').length, 1, 'expected to have remove-circle icon enabled for a non-default policy');
-  });
-
   // works locally but is flaky on Jenkins
   skip('It triggers the update policy action creator when the radio button is clicked', async function(assert) {
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/edr-radios classNames='agentMode' selectedSettingId='agentMode'}}`);
@@ -54,11 +46,4 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/ed
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
   });
 
-  // works locally but is flaky on Jenkins
-  skip('It triggers the removeFromSelectedSettings policy action creator when the minus icon is clicked', async function(assert) {
-    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/edr-radios classNames='agentMode' selectedSettingId='agentMode'}}`);
-    const minusIcon = document.querySelector('.agentMode span .rsa-icon');
-    await click(minusIcon);
-    assert.equal(removeFromSelectedSettingsSpy.callCount, 1, 'Remove from selectedSettings action creator was called once');
-  });
 });

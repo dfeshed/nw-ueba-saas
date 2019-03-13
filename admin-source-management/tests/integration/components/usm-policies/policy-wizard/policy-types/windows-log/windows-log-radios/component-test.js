@@ -6,7 +6,7 @@ import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
-let removeFromSelectedSettingsSpy, updatePolicyPropertySpy;
+let updatePolicyPropertySpy;
 const spys = [];
 
 module('Integration | Component | usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', function(hooks) {
@@ -15,7 +15,6 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
   });
 
   hooks.before(function() {
-    spys.push(removeFromSelectedSettingsSpy = sinon.spy(policyWizardCreators, 'removeFromSelectedSettings'));
     spys.push(updatePolicyPropertySpy = sinon.spy(policyWizardCreators, 'updatePolicyProperty'));
   });
 
@@ -47,11 +46,4 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
   });
 
-  // works locally but is flaky on Jenkins
-  skip('It triggers the removeFromSelectedSettings policy action creator when the minus icon is clicked', async function(assert) {
-    await render(hbs`{{usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios classNames='sendTestLog' selectedSettingId='sendTestLog'}}`);
-    const minusIcon = document.querySelector('.sendTestLog span .rsa-icon');
-    await click(minusIcon);
-    assert.equal(removeFromSelectedSettingsSpy.callCount, 1, 'Remove from selectedSettings action creator was called once');
-  });
 });

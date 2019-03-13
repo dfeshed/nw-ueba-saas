@@ -515,7 +515,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
     initialStateCopy.selectedSettings = [
       { index: 0, id: 'scanType', label: 'Run Scheduled Scan', isEnabled: false, isGreyedOut: false, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios' },
-      { index: 1, id: 'scanStartDate', label: 'adminUsm.policy.effectiveDate', isEnabled: false, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/effective-date' },
+      { index: 1, id: 'scanStartDate', label: 'adminUsm.policyWizard.edrPolicy.scanStartDate', isEnabled: false, isGreyedOut: true, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/effective-date' },
       { index: 9, id: 'scanMbr', label: 'adminUsm.policyWizard.edrPolicy.scanMbr', isEnabled: false, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios' }
     ];
 

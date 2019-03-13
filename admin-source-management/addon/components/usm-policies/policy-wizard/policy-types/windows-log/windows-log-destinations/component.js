@@ -1,8 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
-  updatePolicyProperty,
-  removeFromSelectedSettings
+  updatePolicyProperty
 } from 'admin-source-management/actions/creators/policy-wizard-creators';
 import {
   primaryLogServersList,
@@ -30,8 +29,7 @@ const stateToComputed = function stateToComputed(state) {
 };
 
 const dispatchToActions = {
-  updatePolicyProperty,
-  removeFromSelectedSettings
+  updatePolicyProperty
 };
 
 const WindowsLogDestinations = Component.extend({

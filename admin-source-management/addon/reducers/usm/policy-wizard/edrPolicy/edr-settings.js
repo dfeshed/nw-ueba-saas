@@ -3,23 +3,23 @@ const PORT_MAX_VALUE = 65535;
 
 export const RADIO_BUTTONS_CONFIG = {
   name: 'recurrence',
-  label: 'adminUsm.policyWizard.edrPolicy.scanFrequency',
+  label: 'adminUsm.policyWizard.edrPolicy.recurrenceInterval',
   type: 'radioGroup',
   items: [
     {
       name: 'DAYS',
-      label: 'adminUsm.policyWizard.edrPolicy.recurrenceInterval.options.daily'
+      label: 'adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.options.daily'
     },
     {
       name: 'WEEKS',
-      label: 'adminUsm.policyWizard.edrPolicy.recurrenceInterval.options.weekly'
+      label: 'adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.options.weekly'
     }
   ]
 };
 
 export const SCAN_SCHEDULE_CONFIG = {
   name: 'scan-type',
-  label: 'adminUsm.policyWizard.edrPolicy.schedOrManScan',
+  label: 'adminUsm.policyWizard.edrPolicy.scanType',
   type: 'radioGroup',
   items: [
     {

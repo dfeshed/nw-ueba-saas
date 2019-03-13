@@ -8,18 +8,21 @@ import {
 } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 
 import {
-  addToSelectedSettings
+  addToSelectedSettings,
+  removeFromSelectedSettings
 } from 'admin-source-management/actions/creators/policy-wizard-creators';
 
 
 const stateToComputed = (state) => ({
   enabledAvailableSettings: enabledAvailableSettings(state),
   sortedSelectedSettings: sortedSelectedSettings(state),
+  policyType: policy(state).policyType,
   defaultPolicy: policy(state).defaultPolicy
 });
 
 const dispatchToActions = {
-  addToSelectedSettings
+  addToSelectedSettings,
+  removeFromSelectedSettings
 };
 
 const DefinePolicyStep = Component.extend({

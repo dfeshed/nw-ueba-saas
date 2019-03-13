@@ -4,8 +4,7 @@ import {
   startTime
 } from 'admin-source-management/reducers/usm/policy-wizard/edrPolicy/edr-selectors';
 import {
-  updatePolicyProperty,
-  removeFromSelectedSettings
+  updatePolicyProperty
 } from 'admin-source-management/actions/creators/policy-wizard-creators';
 
 import { isEmpty } from '@ember/utils';
@@ -15,8 +14,7 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  updatePolicyProperty,
-  removeFromSelectedSettings
+  updatePolicyProperty
 };
 
 const StartTime = Component.extend({

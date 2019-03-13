@@ -1,12 +1,12 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render, findAll, fillIn, triggerEvent, click } from '@ember/test-helpers';
+import { render, findAll, fillIn, triggerEvent } from '@ember/test-helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import sinon from 'sinon';
 import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
-let removeFromSelectedSettingsSpy, updatePolicyPropertySpy;
+let updatePolicyPropertySpy;
 const spys = [];
 
 module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/edr-ports', function(hooks) {
@@ -15,7 +15,6 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/ed
   });
 
   hooks.before(function() {
-    spys.push(removeFromSelectedSettingsSpy = sinon.spy(policyWizardCreators, 'removeFromSelectedSettings'));
     spys.push(updatePolicyPropertySpy = sinon.spy(policyWizardCreators, 'updatePolicyProperty'));
   });
 
@@ -43,13 +42,6 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/ed
     await fillIn(inputEl, '2020');
     await triggerEvent(inputEl, 'blur');
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
-  });
-
-  test('It triggers the removeFromSelectedSettings policy action creator when the minus icon is clicked', async function(assert) {
-    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/edr-ports selectedSettingId='primaryHttpsPort'}}`);
-    const minusIcon = document.querySelector('.primaryHttpsPort span .rsa-icon');
-    await click(minusIcon);
-    assert.equal(removeFromSelectedSettingsSpy.callCount, 1, 'Remove from selectedSettings action creator was called once');
   });
 
   test('It triggers the error message when the port is invalid', async function(assert) {

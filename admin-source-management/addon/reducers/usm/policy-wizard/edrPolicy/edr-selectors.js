@@ -99,7 +99,7 @@ export const weekOptions = createSelector(
   (intervalType, runOnDaysOfWeek) => {
     if (intervalType === 'WEEKS') {
       const config = weeks.map((week) => {
-        const label = `adminUsm.policyWizard.edrPolicy.recurrenceInterval.week.${week}`;
+        const label = `adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.week.${week}`;
         return {
           label,
           week,
@@ -115,7 +115,7 @@ export const weekOptions = createSelector(
 export const runIntervalConfig = createSelector(
   intervalType,
   (intervalType) => {
-    const runLabel = `adminUsm.policyWizard.edrPolicy.recurrenceInterval.intervalText.${intervalType}`;
+    const runLabel = `adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.intervalText.${intervalType}`;
     const options = COUNTER[intervalType];
     return { runLabel, options };
   }

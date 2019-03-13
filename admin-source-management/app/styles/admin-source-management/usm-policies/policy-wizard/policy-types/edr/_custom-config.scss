@@ -1,24 +1,5 @@
 .custom-config {
 
-  padding: rsa-whitespace() 0 rsa-whitespace() 0;
-
-  .rsa-form-label {
-    @include rsa-font(default,small);
-  }
-
-  .title {
-    padding: rsa-whitespace() rsa-whitespace() 0 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: text-color(primary, light);
-    @include rsa-font(default,small);
-    .remove-setting {
-      float: right;
-      margin-right: rsa-whitespace(more);
-      margin-left: rsa-whitespace(more);
-    }
-  }
-
   .custom-config__textarea {
     max-width: 85%;
   }
@@ -34,4 +15,5 @@
     color: text-color(primary, lightest);
     padding-left: rsa-whitespace(less);
   }
+  
 }

@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render, findAll, click } from '@ember/test-helpers';
+import { render, findAll } from '@ember/test-helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { setFlatpickrDate } from 'ember-flatpickr/test-support/helpers';
 import sinon from 'sinon';
@@ -10,7 +10,7 @@ import { patchReducer } from '../../../../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
-let setState, removeFromSelectedSettingsSpy, updatePolicyPropertySpy;
+let setState, updatePolicyPropertySpy;
 const spys = [];
 
 module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/start-time', function(hooks) {
@@ -19,7 +19,6 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/st
   });
 
   hooks.before(function() {
-    spys.push(removeFromSelectedSettingsSpy = sinon.spy(policyWizardCreators, 'removeFromSelectedSettings'));
     spys.push(updatePolicyPropertySpy = sinon.spy(policyWizardCreators, 'updatePolicyProperty'));
   });
 
@@ -45,14 +44,6 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/st
     assert.equal(findAll('.start-time').length, 1, 'expected to have root element in DOM');
   });
 
-  test('for a default policy, appropriate class is set for the remove-circle icon', async function(assert) {
-    new ReduxDataHelper(setState).policyWiz().build();
-    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/start-time isDefaultPolicy=true}}`);
-    assert.equal(findAll('.title .is-greyed-out').length, 1, 'expected to have remove-circle icon greyed out for a default policy');
-    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/start-time isDefaultPolicy=false}}`);
-    assert.equal(findAll('.title .not-greyed-out').length, 1, 'expected to have remove-circle icon enabled for a non-default policy');
-  });
-
   test('should trigger the updatePolicyProperty action creator on time change', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/start-time}}`);
@@ -62,11 +53,4 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/st
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called on the time change');
   });
 
-  test('It triggers the removeFromSelectedSettings policy action creator when the minus icon is clicked', async function(assert) {
-    new ReduxDataHelper(setState).policyWiz().build();
-    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/start-time}}`);
-    const minusIcon = document.querySelector('.start-time span .rsa-icon');
-    await click(minusIcon);
-    assert.equal(removeFromSelectedSettingsSpy.callCount, 1, 'Remove from selectedSettings action creator was called once');
-  });
 });

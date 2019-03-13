@@ -4284,16 +4284,16 @@ export default {
       // edr policy settings
       edrPolicy: {
         scanSchedule: 'Scan Schedule',
-        schedOrManScan: 'Run Scheduled Scan',
-        schedOrManScanTooltip: 'Run a scheduled scan if you want to receive regular snapshots from a host. Scan snapshots can provide detailed information regarding processes, files, and memory on a host but must be repeated periodically to stay current. Regardless of whether or not a host runs a scheduled scan, a manual scan can always be run from the Hosts tab of Investigate.',
+        scanType: 'Run Scheduled Scan',
+        scanTypeTooltip: 'Run a scheduled scan if you want to receive regular snapshots from a host. Scan snapshots can provide detailed information regarding processes, files, and memory on a host but must be repeated periodically to stay current. Regardless of whether or not a host runs a scheduled scan, a manual scan can always be run from the Hosts tab of Investigate.',
         scanTypeManual: 'Disabled',
         scanTypeScheduled: 'Enabled',
-        effectiveDate: 'Effective Date',
-        effectiveDateTooltip: 'The effective date is the earliest date that the policy will take effect. If you do not want this policy to take effect as soon as it is applied to a group and published, set an effective date that is in the future.',
+        scanStartDate: 'Effective Date',
+        scanStartDateTooltip: 'The effective date is the earliest date that the policy will take effect. If you do not want this policy to take effect as soon as it is applied to a group and published, set an effective date that is in the future.',
         scanStartDateInvalidMsg: 'The scan start date should not be empty',
-        scanFrequency: 'Scan Frequency',
-        scanFrequencyTooltip: 'Scan frequency determines how often the scheduled scan runs on a host. Every network is different and the frequency should balance the needs of your analysts for current data, analyst availability to review that data, and how your systems will deal with the load of the generated data.',
-        recurrenceInterval: {
+        recurrenceInterval: 'Scan Frequency',
+        recurrenceIntervalTooltip: 'Scan frequency determines how often the scheduled scan runs on a host. Every network is different and the frequency should balance the needs of your analysts for current data, analyst availability to review that data, and how your systems will deal with the load of the generated data.',
+        recurrenceIntervalOptions: {
           options: {
             daily: 'Days',
             weekly: 'Weeks',
@@ -4316,12 +4316,12 @@ export default {
             SUNDAY: 'S'
           }
         },
-        startTime: 'Start Time',
-        startTimeTooltip: 'Start time is the time that the scheduled scan will start to run on a host. This is the local machine time meaning that scans across a global network will not run all at once.',
+        scanStartTime: 'Start Time',
+        scanStartTimeTooltip: 'Start time is the time that the scheduled scan will start to run on a host. This is the local machine time meaning that scans across a global network will not run all at once.',
         cpuMax: 'CPU Maximum',
         cpuMaxTooltip: 'CPU maximum will limit the amount of CPU the agent can use to run scheduled scans on physical machines. By default this is set at 25% to balance speed against possible performance impact. Increasing the CPU maximum will increase the speed of scan snapshot retrieval but could lead to excessive CPU usage.',
-        vmMax: 'Virtual Machine Maximum',
-        vmMaxTooltip: 'Virtual machine maximum will limit the amount of CPU the agent can use to run scheduled scans on virtual machines. By default this is set at 10%, which is lower than the physical CPU maximum in case a host is over-provisioned. Increasing the virtual machine maximum will increase the speed of scan snapshot retrieval but could lead to excessive CPU usage.',
+        cpuMaxVm: 'Virtual Machine Maximum',
+        cpuMaxVmTooltip: 'Virtual machine maximum will limit the amount of CPU the agent can use to run scheduled scans on virtual machines. By default this is set at 10%, which is lower than the physical CPU maximum in case a host is over-provisioned. Increasing the virtual machine maximum will increase the speed of scan snapshot retrieval but could lead to excessive CPU usage.',
         advScanSettings: 'Scan Settings',
         captureFloatingCode: 'Capture Floating Code',
         scanMbr: 'Scan Master Boot Record',
@@ -4362,8 +4362,8 @@ export default {
         insights: 'Insights',
         advanced: 'Advanced',
         advancedConfig: 'Advanced Configuration',
-        customConfigSetting: 'Advanced Setting',
-        customConfigSettingTooltip: 'It is strongly recommended not to use this setting unless advised to by RSA support staff.',
+        customConfig: 'Advanced Setting',
+        customConfigTooltip: 'It is strongly recommended not to use this setting unless advised to by RSA support staff.',
         customConfigInvalidMsg: 'The custom setting cannot be empty or greater than 4000 characters'
 
       },

@@ -1,18 +1,4 @@
 .usm-beacons {
-  padding: rsa-whitespace() 0 rsa-whitespace() 0;
-
-  .title {
-    padding: rsa-whitespace() rsa-whitespace() 0 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: text-color(primary, light);
-    @include rsa-font(default, small);
-    .remove-setting {
-      float: right;
-      margin-right: rsa-whitespace(more);
-      margin-left: rsa-whitespace(more);
-    }
-  }
 
   .beacon-interval-value {
     max-width: 75px;
@@ -22,4 +8,5 @@
     margin-top: .67rem; /* it works - why asky why? don't question CSS black magic! */
     margin-left: rsa-whitespace();
   }
+  
 }

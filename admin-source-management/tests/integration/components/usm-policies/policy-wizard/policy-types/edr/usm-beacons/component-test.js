@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import { render, find, findAll, fillIn, triggerEvent, click } from '@ember/test-helpers';
+import { render, find, findAll, fillIn, triggerEvent } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import sinon from 'sinon';
@@ -10,7 +10,7 @@ import ReduxDataHelper from '../../../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../../../helpers/vnext-patch';
 import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
-let setState, removeFromSelectedSettingsSpy, updatePolicyPropertySpy;
+let setState, updatePolicyPropertySpy;
 const spys = [];
 
 module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/edr-beacons', function(hooks) {
@@ -19,7 +19,6 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/ed
   });
 
   hooks.before(function() {
-    spys.push(removeFromSelectedSettingsSpy = sinon.spy(policyWizardCreators, 'removeFromSelectedSettings'));
     spys.push(updatePolicyPropertySpy = sinon.spy(policyWizardCreators, 'updatePolicyProperty'));
   });
 
@@ -161,13 +160,6 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/ed
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/edr-beacons selectedSettingId='primaryUdpBeaconInterval'}}`);
     assert.ok(find('.primaryUdpBeaconInterval .beacon-interval-value .input-error'), 'Error is showing');
     assert.equal(find('.primaryUdpBeaconInterval .beacon-interval-value .input-error').innerText.trim(), expectedMessage, `Correct error message is showing: ${expectedMessage}`);
-  });
-
-  test('It triggers the removeFromSelectedSettings policy action creator when the minus icon is clicked', async function(assert) {
-    await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/edr-beacons selectedSettingId='primaryHttpsBeaconInterval'}}`);
-    const minusIcon = document.querySelector('.primaryHttpsBeaconInterval span .rsa-icon');
-    await click(minusIcon);
-    assert.equal(removeFromSelectedSettingsSpy.callCount, 1, 'Remove from selectedSettings action creator was called once');
   });
 
 });

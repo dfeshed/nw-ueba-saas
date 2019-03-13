@@ -1,15 +1,4 @@
 <vbox class='rsa-form-radio-group'>
-  <h4 class='rsa-form-radio-group-label'>
-    {{#rsa-text-with-tooltip value=tooltip
-    style="standard"
-    alwaysShow=true}}
-      {{t radioButtonOption.label}}
-    {{/rsa-text-with-tooltip}}
-    <span class="{{if isDefaultPolicy 'is-greyed-out' 'not-greyed-out'}}"
-    {{action 'removeFromSelectedSettings' selectedSettingId}}>
-      {{rsa-icon name="remove-circle-1" style="lined"}}
-    </span>
-  </h4>
   <vbox class="radio-buttons">
     {{#each radioButtonOption.items as |item|}}
       {{!--if (eq item.name radioButtonValue) 'checked'--}}

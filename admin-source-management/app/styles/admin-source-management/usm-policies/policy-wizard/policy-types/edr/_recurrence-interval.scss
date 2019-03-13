@@ -1,35 +1,24 @@
 .recurrence-interval {
 
-  padding: rsa-whitespace() rsa-whitespace() 0 0;
-
   .ember-power-select-trigger {
     width: 3.5rem;
   }
+  
   .recurrence-run-interval, .recurrence-run-interval__week-options {
     padding-left: rsa-whitespace();
   }
+
   .text {
     padding: rsa-whitespace() rsa-whitespace() 0 0;
     text-align: right;
   }
-  .rsa-form-radio-label {
-    line-height: 1.75rem;
-  }
-  .rsa-form-radio-group-label {
-    @include rsa-font(default,small);
-    padding: rsa-whitespace() rsa-whitespace() 0 0;
-    .rsa-icon {
-      float: right;
-      margin-right: rsa-whitespace();
-      margin-left: rsa-whitespace(more);
-    }
-  }
-}
 
-.recurrence-run-interval__list {
-  padding-right: 1rem;
-}
+  .recurrence-run-interval__list {
+    padding-right: 1rem;
+  }
+  
+  .recurrence-run-interval__week-options {
+    padding-top: rsa-whitespace();
+  }
 
-.recurrence-run-interval__week-options {
-  padding-top: rsa-whitespace();
 }

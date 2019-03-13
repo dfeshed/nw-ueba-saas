@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { updatePolicyProperty, removeFromSelectedSettings } from 'admin-source-management/actions/creators/policy-wizard-creators';
+import { updatePolicyProperty } from 'admin-source-management/actions/creators/policy-wizard-creators';
 import {
   beaconIntervalValue,
   beaconIntervalUnits,
@@ -19,8 +19,7 @@ const stateToComputed = function stateToComputed(state) {
 };
 
 const dispatchToActions = {
-  updatePolicyProperty,
-  removeFromSelectedSettings
+  updatePolicyProperty
 };
 
 const UsmBeacons = Component.extend({

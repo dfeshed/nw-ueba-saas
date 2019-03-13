@@ -154,7 +154,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     assert.equal(findAll('.selected-settings .selected-setting').length, 2, 'All selected settings rendered on the UI');
     // simulate a click on the minus icon next to scan schedule.
     // this triggers RESET_SCAN_SCHEDULE_TO_DEFAULTS reducer and clears out all selected settings
-    const minusIcon = document.querySelector('.scanType span .rsa-icon-remove-circle-1-lined');
+    const minusIcon = document.querySelector('.scanType-setting span .rsa-icon-remove-circle-1-lined');
     await click(minusIcon);
     assert.equal(findAll('.selected-settings .selected-setting').length, 0, 'No other selected settings are rendered when scanSchedule is not rendered');
   });

@@ -4,8 +4,7 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import _ from 'lodash';
 import {
-  updatePolicyProperty,
-  removeFromSelectedSettings
+  updatePolicyProperty
 } from 'admin-source-management/actions/creators/policy-wizard-creators';
 import {
   channels,
@@ -20,11 +19,11 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  updatePolicyProperty,
-  removeFromSelectedSettings
+  updatePolicyProperty
 };
 
 const WindowsLogChannelFilters = Component.extend({
+  tagName: 'box',
   classNames: 'windows-log-channel-filters',
 
   @computed()

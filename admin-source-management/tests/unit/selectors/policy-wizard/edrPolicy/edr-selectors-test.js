@@ -171,7 +171,7 @@ module('Unit | Selectors | policy-wizard/edrPolicy/edr-selectors', function(hook
       .policyWizRunOnDaysOfWeek(expectedRunOnDaysOfWeek)
       .build();
     const expectedWeekOptions = {
-      label: 'adminUsm.policyWizard.edrPolicy.recurrenceInterval.week.SUNDAY',
+      label: 'adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.week.SUNDAY',
       week: 'SUNDAY',
       isActive: true
     };
@@ -187,7 +187,7 @@ module('Unit | Selectors | policy-wizard/edrPolicy/edr-selectors', function(hook
       .build();
     const expectedConfig = {
       'options': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
-      'runLabel': 'adminUsm.policyWizard.edrPolicy.recurrenceInterval.intervalText.WEEKS'
+      'runLabel': 'adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.intervalText.WEEKS'
     };
     const resultConfig = runIntervalConfig(fullState);
     assert.deepEqual(resultConfig, expectedConfig, 'should return the processed run interval configuration');
