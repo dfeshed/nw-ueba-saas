@@ -5,6 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Service from '@ember/service';
 import { computed } from '@ember/object';
+import { patchFlash } from '../../../../helpers/patch-flash';
 
 module('Integration | Component | endpoint/edit-file-status', function(hooks) {
   setupRenderingTest(hooks);
@@ -41,6 +42,8 @@ module('Integration | Component | endpoint/edit-file-status', function(hooks) {
   });
 
   test('it should call the external function when single selection', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
     assert.expect(2);
     this.set('itemList', new Array(1));
     this.set('getSavedFileStatus', function(selections) {
@@ -48,6 +51,38 @@ module('Integration | Component | endpoint/edit-file-status', function(hooks) {
     });
     this.set('retrieveRemediationStatus', function() {
       assert.ok(true);
+    });
+    await render(hbs`{{endpoint/edit-file-status isDisabled=false itemList=itemList retrieveRemediationStatus=(action retrieveRemediationStatus) getSavedFileStatus=(action getSavedFileStatus)}}`);
+    await click('.file-status-button button');
+  });
+
+  test('External function getSavedFileStatus is not called for no/multiple selection', async function(assert) {
+    assert.expect(1);
+    this.set('itemList', new Array(2));
+    this.set('getSavedFileStatus', function(selections) {
+      assert.equal(selections.length, 1);
+    });
+    this.set('retrieveRemediationStatus', function() {
+      assert.ok(true);
+    });
+    await render(hbs`{{endpoint/edit-file-status isDisabled=false itemList=itemList retrieveRemediationStatus=(action retrieveRemediationStatus) getSavedFileStatus=(action getSavedFileStatus)}}`);
+    await click('.file-status-button button');
+  });
+
+  test('when there is no endpoint manage permission, error occurs', async function(assert) {
+    // assert.expect(0);
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', false);
+    this.set('itemList', new Array(1));
+    this.set('getSavedFileStatus', function(selections) {
+      assert.equal(selections.length, 1);
+    });
+    this.set('retrieveRemediationStatus', function() {
+      assert.ok(true);
+    });
+    patchFlash((flash) => {
+      assert.equal(flash.type, 'error');
+      assert.equal(flash.message, 'You do not have permissions to make edits to file(s) status');
     });
     await render(hbs`{{endpoint/edit-file-status isDisabled=false itemList=itemList retrieveRemediationStatus=(action retrieveRemediationStatus) getSavedFileStatus=(action getSavedFileStatus)}}`);
     await click('.file-status-button button');
