@@ -111,11 +111,9 @@ public class ModelStore implements ModelReader, StoreManagerAware {
         aggregationOperations.add(project(ModelDAO.CONTEXT_ID_FIELD).and("_id").as(ModelDAO.CONTEXT_ID_FIELD)
                 .andExclude("_id"));
 
-        if (skip >= 0 && limit > 0) {
-            aggregationOperations.add(sort(Sort.Direction.ASC, ModelDAO.CONTEXT_ID_FIELD));
-            aggregationOperations.add(skip(skip));
-            aggregationOperations.add(limit(limit));
-        }
+        aggregationOperations.add(sort(Sort.Direction.ASC, ModelDAO.CONTEXT_ID_FIELD));
+        aggregationOperations.add(skip(skip));
+        aggregationOperations.add(limit(limit));
 
         Aggregation aggregation = newAggregation(aggregationOperations).withOptions(Aggregation.newAggregationOptions().
                 allowDiskUse(allowDiskUse).build());
@@ -128,7 +126,7 @@ public class ModelStore implements ModelReader, StoreManagerAware {
                 .collect(Collectors.toSet());
     }
 
-    public List<String> getDistinctNumOfContextIds(ModelConf modelConf, Instant endInstant) {
+    public List<String> getContextIdsWithModels(ModelConf modelConf, Instant endInstant) {
        return getContextIdsWithModels(modelConf, null, endInstant);
     }
 

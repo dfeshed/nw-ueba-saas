@@ -31,7 +31,7 @@ public interface ModelReader {
      * @param endInstant endInstant
      * @return contextIds list
      */
-    List<String> getDistinctNumOfContextIds(ModelConf modelConf, Instant endInstant);
+    List<String> getContextIdsWithModels(ModelConf modelConf, Instant endInstant);
 
     /**
      * Read records

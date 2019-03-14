@@ -13,7 +13,6 @@ import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
@@ -110,7 +109,7 @@ public class JoinPartitionsHistogramModelsRetrieverTest {
         int totalAmountOfPages = numOfContext1 * numOfContext2 / pageSize;
         List<ModelDAO> models = createMainModels(startInstant, endInstant, multiContextIds,
                 instantStep, resolutionInSeconds * 2, mainModelConf, modelStore, numOfPartitions, pageSize, totalAmountOfPages);
-        when(modelStore.getDistinctNumOfContextIds(mainModelConf, endInstant)).thenReturn(new ArrayList<>(multiContextIds));
+        when(modelStore.getContextIdsWithModels(mainModelConf, endInstant)).thenReturn(new ArrayList<>(multiContextIds));
         when(modelStore.readRecords(mainModelConf, endInstant, multiContextIds, 0, JoinPartitionsHistogramModelsRetrieverConf.PRIOR_MODEL_PAGINATION_PAGE_SIZE)).thenReturn(models);
 
         //mocks for secondaryContextName
