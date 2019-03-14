@@ -45,7 +45,7 @@
       }
       li:not(:last-child):after {
         content: ", ";
-      }      
+      }
     }
     .table-cell-text {
       @include rsa-font(body, small);
@@ -60,6 +60,11 @@
       .rsa-form-checkbox-label {
         padding: 20px;
       }
-    } 
+      .rsa-data-table-header-cell {
+        &:first-child {
+          text-overflow: clip;
+        }
+      }      
+    }
   }
 }
