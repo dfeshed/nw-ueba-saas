@@ -61,32 +61,33 @@ public class ModelStore implements ModelReader, StoreManagerAware {
     }
 
     @SuppressWarnings("unchecked")
-    public Set<String> getContextIdsWithModels(ModelConf modelConf, String sessionId, Instant endInstant) {
+    public Collection<String> getContextIdsWithModels(ModelConf modelConf, String sessionId, Instant endInstant) {
         String collectionName = getCollectionName(modelConf);
-        Set<String> distinctContexts;
         try {
+            List<String> distinctContexts;
             Query query = new Query();
             query.addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).is(Date.from(endInstant)));
             if(sessionId != null) {
                 query.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId));
             }
-            distinctContexts = (Set<String>) mongoTemplate
+            distinctContexts =  mongoTemplate
                     .getCollection(collectionName)
-                    .distinct(ModelDAO.CONTEXT_ID_FIELD, query.getQueryObject()).stream().collect(Collectors.toSet());
+                    .distinct(ModelDAO.CONTEXT_ID_FIELD, query.getQueryObject());
+            logger.debug("found {} distinct contexts", distinctContexts.size());
+            return distinctContexts;
         } catch (Exception e) {
             long nextPageIndex = 0;
             Set<String> subList;
-            distinctContexts = new HashSet<>();
+            Set<String> distinctContexts = new HashSet<>();
             do {
                 subList = aggregateContextIds(sessionId, endInstant,
                         nextPageIndex * contextIdPageSize, contextIdPageSize, collectionName, true);
                 distinctContexts.addAll(subList);
                 nextPageIndex++;
             } while (subList.size() == contextIdPageSize);
+            logger.debug("found {} distinct contexts", distinctContexts.size());
+            return distinctContexts;
         }
-
-        logger.debug("found {} distinct contexts", distinctContexts.size());
-        return distinctContexts;
     }
 
     /**
@@ -126,7 +127,7 @@ public class ModelStore implements ModelReader, StoreManagerAware {
                 .collect(Collectors.toSet());
     }
 
-    public Set<String> getContextIdsWithModels(ModelConf modelConf, Instant endInstant) {
+    public Collection<String> getContextIdsWithModels(ModelConf modelConf, Instant endInstant) {
        return getContextIdsWithModels(modelConf, null, endInstant);
     }
 
