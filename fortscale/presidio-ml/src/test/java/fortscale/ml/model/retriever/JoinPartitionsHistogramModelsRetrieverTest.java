@@ -109,7 +109,7 @@ public class JoinPartitionsHistogramModelsRetrieverTest {
         int totalAmountOfPages = numOfContext1 * numOfContext2 / pageSize;
         List<ModelDAO> models = createMainModels(startInstant, endInstant, multiContextIds,
                 instantStep, resolutionInSeconds * 2, mainModelConf, modelStore, numOfPartitions, pageSize, totalAmountOfPages);
-        when(modelStore.getContextIdsWithModels(mainModelConf, endInstant)).thenReturn(new ArrayList<>(multiContextIds));
+        when(modelStore.getContextIdsWithModels(mainModelConf, endInstant)).thenReturn(new HashSet<>(multiContextIds));
         when(modelStore.readRecords(mainModelConf, endInstant, multiContextIds, 0, JoinPartitionsHistogramModelsRetrieverConf.PRIOR_MODEL_PAGINATION_PAGE_SIZE)).thenReturn(models);
 
         //mocks for secondaryContextName

@@ -12,7 +12,7 @@ public interface ModelReader {
 
     Instant getLatestEndInstantLt(ModelConf modelConf, String sessionId, Instant instant);
 
-    List<String> getContextIdsWithModels(ModelConf modelConf, String sessionId, Instant endInstant);
+    Set<String> getContextIdsWithModels(ModelConf modelConf, String sessionId, Instant endInstant);
 
     Set<String> getAllSubContextsWithLatestEndTimeLte(ModelConf modelConf, String contextFieldName,
                                                       Instant eventEpochtime);
@@ -31,7 +31,7 @@ public interface ModelReader {
      * @param endInstant endInstant
      * @return contextIds list
      */
-    List<String> getContextIdsWithModels(ModelConf modelConf, Instant endInstant);
+    Set<String> getContextIdsWithModels(ModelConf modelConf, Instant endInstant);
 
     /**
      * Read records

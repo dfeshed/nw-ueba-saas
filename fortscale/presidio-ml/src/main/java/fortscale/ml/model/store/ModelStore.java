@@ -61,22 +61,22 @@ public class ModelStore implements ModelReader, StoreManagerAware {
     }
 
     @SuppressWarnings("unchecked")
-    public List<String> getContextIdsWithModels(ModelConf modelConf, String sessionId, Instant endInstant) {
+    public Set<String> getContextIdsWithModels(ModelConf modelConf, String sessionId, Instant endInstant) {
         String collectionName = getCollectionName(modelConf);
-        List<String> distinctContexts;
+        Set<String> distinctContexts;
         try {
             Query query = new Query();
             query.addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).is(Date.from(endInstant)));
             if(sessionId != null) {
                 query.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId));
             }
-            distinctContexts = mongoTemplate
+            distinctContexts = (Set<String>) mongoTemplate
                     .getCollection(collectionName)
-                    .distinct(ModelDAO.CONTEXT_ID_FIELD, query.getQueryObject());
+                    .distinct(ModelDAO.CONTEXT_ID_FIELD, query.getQueryObject()).stream().collect(Collectors.toSet());
         } catch (Exception e) {
             long nextPageIndex = 0;
             Set<String> subList;
-            distinctContexts = new ArrayList<>();
+            distinctContexts = new HashSet<>();
             do {
                 subList = aggregateContextIds(sessionId, endInstant,
                         nextPageIndex * contextIdPageSize, contextIdPageSize, collectionName, true);
@@ -126,7 +126,7 @@ public class ModelStore implements ModelReader, StoreManagerAware {
                 .collect(Collectors.toSet());
     }
 
-    public List<String> getContextIdsWithModels(ModelConf modelConf, Instant endInstant) {
+    public Set<String> getContextIdsWithModels(ModelConf modelConf, Instant endInstant) {
        return getContextIdsWithModels(modelConf, null, endInstant);
     }
 
