@@ -288,7 +288,6 @@ export default Component.extend({
             data: selection
           }, 50));
         } else {
-          _dropFocus();
           next(this, () => {
             // We need to run this check in the next runloop so EPS has time to
             // react to the ENTER press in the first place. For example, to
@@ -296,6 +295,8 @@ export default Component.extend({
             const selection = this.get('selection');
             const { value } = event.target;
             if (selection === null && !value) {
+              powerSelectAPI.actions.close();
+              _dropFocus();
               this._broadcast(MESSAGE_TYPES.META_ENTER_KEY);
             }
           });

@@ -138,9 +138,11 @@ export default Route.extend({
         queryNode: { endTime, pillsData, queryView, serviceId, startTime }
       } = state.investigate;
 
-      // Start the querying process by notifying the UI so that it can show the
-      // cancel option.
-      redux.dispatch(queryIsRunning(true));
+      // If we're not opening this query in a new window, start the query
+      // process by notifying the UI so that it can show the cancel option.
+      if (!externalLink) {
+        redux.dispatch(queryIsRunning(true));
+      }
 
       // If we're in the middle of validating the pill, let's defer processing
       // the request to execute the query. If validation has completed, check to

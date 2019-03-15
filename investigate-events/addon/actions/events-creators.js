@@ -786,7 +786,6 @@ export const eventsStartOldest = () => {
         dispatch(_done());
       },
       onStopped() {
-        dispatch(queryIsRunning(false));
         dispatch(_handleEventsStatus('stopped', Date.now()));
       }
     };
