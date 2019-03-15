@@ -473,7 +473,24 @@ module('Unit | Selectors | event-results', function(hooks) {
       }
     };
     actualCount = actualEventCount(state);
-    assert.equal(actualCount, 3, 'This is the eventResults.data.length value');
+    assert.equal(actualCount, 3, 'This is the eventResults.data.length value when canceled');
+
+    state = {
+      investigate: {
+        eventResults: {
+          status: 'error',
+          data: [
+            { sessionId: 1, medium: 32 },
+            { sessionId: 2, 'nwe.callback_id': true },
+            { sessionId: 3 }
+          ]
+        },
+        eventCount: {
+          data: 5
+        }
+      }
+    };
+    actualCount = actualEventCount(state);
+    assert.equal(actualCount, 3, 'This is the eventResults.data.length value when errored');
   });
 });
-

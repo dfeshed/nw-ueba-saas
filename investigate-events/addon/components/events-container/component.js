@@ -6,7 +6,6 @@ import { queryBodyClass } from 'investigate-events/reducers/investigate/data-sel
 import {
   eventType,
   selectedIndex,
-  isEventResultsError,
   eventResultsErrorMessage,
   actualEventCount } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
@@ -21,7 +20,6 @@ const stateToComputed = (state) => ({
   eventType: eventType(state),
   hasFatalSummaryError: hasFatalSummaryError(state),
   hasIncommingQueryParams: state.investigate.queryNode.hasIncommingQueryParams,
-  isEventResultsError: isEventResultsError(state),
   isServicesRetrieveError: state.investigate.services.isServicesRetrieveError,
   language: state.investigate.dictionaries.language,
   queryBodyClass: queryBodyClass(state),

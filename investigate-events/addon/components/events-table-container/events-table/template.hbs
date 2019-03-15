@@ -49,7 +49,9 @@
     {{!-- still streaming, show loader --}}
     {{#if areEventsStreaming}}
       <div class='events-table-footer-status'>
-        {{#if isQueryExecutedByColumnGroup}}
+        {{#if hasPartialResults}}
+          {{t 'investigate.partialResults' totalCount=totalCount actualEventCount=actualEventCount}}
+        {{else if isQueryExecutedByColumnGroup}}
           {{rsa-loader size='large' label=(t 'investigate.reExecutingQuery')}}
         {{else}}
           {{rsa-loader size="large" label=(t 'investigate.loading')}}

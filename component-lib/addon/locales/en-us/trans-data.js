@@ -510,7 +510,9 @@ export default {
       title: 'No events found.',
       description: 'Your filter criteria did not match any records.',
       canceled: 'Query canceled before any results were returned.',
-      error: 'Query errored before any results were returned.'
+      error: 'Query errored before any results were returned.',
+      canceledWithPartial: 'Query errored before all results were returned.',
+      errorWithPartial: 'Query errored before all results were returned.'
     },
     error: {
       title: 'Unable to load data.',

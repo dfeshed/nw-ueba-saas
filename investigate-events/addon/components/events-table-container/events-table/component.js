@@ -1,5 +1,5 @@
 import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
-import computed, { and } from 'ember-computed-decorators';
+import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 
@@ -9,7 +9,8 @@ import {
   allExpectedDataLoaded,
   areEventsStreaming,
   isCanceled,
-  actualEventCount
+  actualEventCount,
+  isEventResultsError
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
 import { eventsLogsGet } from 'investigate-events/actions/events-creators';
@@ -40,7 +41,8 @@ const stateToComputed = (state) => ({
   isQueryExecutedByColumnGroup: state.investigate.data.isQueryExecutedByColumnGroup,
   totalCount: thousandFormat(state.investigate.eventCount.data),
   actualEventCount: thousandFormat(actualEventCount(state)),
-  threshold: state.investigate.eventCount.threshold
+  threshold: state.investigate.eventCount.threshold,
+  isEventResultsError: isEventResultsError(state)
 });
 
 const dispatchToActions = {
@@ -110,8 +112,15 @@ const EventsTableContextMenu = RsaContextMenu.extend({
       i18n.t('investigate.empty.description');
   },
 
-  @and('isCanceled', 'hasResults')
-  hasPartialResults: false,
+  @computed('isCanceled', 'isEventResultsError', 'actualEventCount')
+  hasPartialResults(isCanceled, isEventResultsError, actualEventCount) {
+    const i18n = this.get('i18n');
+    if (isEventResultsError && actualEventCount) {
+      return i18n.t('investigate.empty.errorWithPartial');
+    } else if (isCanceled && actualEventCount) {
+      return i18n.t('investigate.empty.canceledWithPartial');
+    }
+  },
 
   contextMenu({ target: { attributes } }) {
     const metaName = attributes.getNamedItem('metaname');

@@ -16,13 +16,7 @@
       {{/if}}
     {{/if}}
   </header>
-  {{#if isEventResultsError}}
-    <vbox>
-      {{#rsa-panel-message}}
-        <div class="capitalize query-error">{{or eventResultsErrorMessage (t 'investigate.events.error')}}</div>
-      {{/rsa-panel-message}}
-    </vbox>
-  {{else if hasFatalSummaryError}}
+  {{#if hasFatalSummaryError}}
     <vbox>
       {{#rsa-panel-message}}
         <div class="summary-error">{{t 'investigate.events.fatalSummaryError'}}</div>

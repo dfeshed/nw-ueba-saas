@@ -24,13 +24,15 @@ module('Integration | Component | events-container', function(hooks) {
     initialize(this.owner);
   });
 
-  test('it renders an error when event results has errored', async function(assert) {
+  test('it renders the content when event results has errored', async function(assert) {
     new ReduxDataHelper(setState)
-      .isServicesRetrieveError(false)
-      .isEventResultsError(true)
+      .hasRequiredValuesToQuery(true)
+      .atLeastOneQueryIssued(true)
+      .isEventResultsError(true, 'error')
       .build();
     await render(hbs`{{events-container}}`);
-    assert.equal(find('.query-error').textContent, 'This is an error message', 'Expected query error message on page');
+
+    assert.ok(find('.rsa-investigate-query__body-master'), 'Expected event results content.');
   });
 
   test('it does not render error block if no error', async function(assert) {

@@ -217,8 +217,8 @@ export const getDownloadOptions = createSelector(
  * @public
  */
 export const actualEventCount = createSelector(
-  [isCanceled, _eventResultCount, _resultsData],
-  (isCanceled, eventCount, eventsArray) => (isCanceled) ? eventsArray.length : eventCount
+  [isCanceled, isEventResultsError, _eventResultCount, _resultsData],
+  (isCanceled, hasError, eventCount, eventsArray) => (eventsArray && (isCanceled || hasError)) ? eventsArray.length : eventCount
 );
 
 /**
