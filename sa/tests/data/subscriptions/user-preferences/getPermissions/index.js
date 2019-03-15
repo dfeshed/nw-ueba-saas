@@ -5,6 +5,7 @@ export default {
     return {
       code: 0,
       data: [
+        'accessAdminModule',
         'viewAppliances',
         'viewServices',
         'viewEventSources',

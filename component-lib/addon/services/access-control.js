@@ -57,7 +57,6 @@ export default Service.extend({
 
   // computed intersections between roles and role groups
 
-  @intersect('adminRoles', 'roles') adminAccessIntersections: null,
   @intersect('configRoles', 'roles') configAccessIntersections: null,
   @intersect('investigationClassicRoles', 'roles') investigateClassicAccessIntersections: null,
   @intersect('investigationEmberRoles', 'roles') investigateEmberAccessIntersections: null,
@@ -66,9 +65,18 @@ export default Service.extend({
 
   @gt('investigateClassicAccessIntersections.length', 0) hasInvestigateClassicAccess: null,
   @gt('investigateEmberAccessIntersections.length', 0) hasInvestigateEmberAccess: null,
-  @gt('adminAccessIntersections.length', 0) hasAdminAccess: null,
   @gt('configAccessIntersections.length', 0) hasConfigAccess: null,
   @or('hasInvestigateClassicAccess', 'hasInvestigateEmberAccess') hasInvestigateAccess: null,
+
+  @computed('roles.[]')
+  hasAdminAccess(roles) {
+    const hasTopLevelAdminRole = this._hasPermission(roles, 'accessAdminModule');
+    const prunedRoles = roles.without('accessAdminModule');
+    const hasSubMenuAdminRole = prunedRoles.any((role) => {
+      return this._hasPermission(prunedRoles, role);
+    });
+    return hasTopLevelAdminRole && hasSubMenuAdminRole;
+  },
 
   @computed('roles.[]')
   hasInvestigateEventsAccess(roles) {
@@ -310,23 +318,23 @@ export default Service.extend({
     return url;
   },
 
-  @computed('adminAccessIntersections.[]')
-  adminUrl: (intersections) => {
+  @computed('roles.[]')
+  adminUrl: (roles) => {
     let url = null;
 
-    if (intersections.includes('viewServices') || intersections.includes('*')) {
+    if (roles.includes('viewServices') || roles.includes('*')) {
       url = '/admin/services';
-    } else if (intersections.includes('viewAppliances')) {
+    } else if (roles.includes('viewAppliances')) {
       url = '/admin/appliances';
-    } else if (intersections.includes('viewEventSources')) {
+    } else if (roles.includes('viewEventSources')) {
       url = '/admin/eventsources';
-    } else if (intersections.includes('viewUnifiedSources')) {
+    } else if (roles.includes('viewUnifiedSources')) {
       url = '/admin/usm';
-    } else if (intersections.includes('accessHealthWellness')) {
+    } else if (roles.includes('accessHealthWellness')) {
       url = '/admin/monitoring';
-    } else if (intersections.includes('manageSystemSettings')) {
+    } else if (roles.includes('manageSystemSettings')) {
       url = '/admin/system';
-    } else if (intersections.includes('manageSASecurity') || intersections.includes('security-server')) {
+    } else if (roles.includes('manageSASecurity') || roles.includes('security-server')) {
       url = '/admin/security';
     }
 

@@ -104,6 +104,7 @@ module.exports = function(environment) {
     ENV.contentSecurityPolicy['connect-src'] = ["'self' ws: wss:", mockServerUrl];
 
     ENV.roles = [
+      'accessAdminModule',
       'viewAppliances',
       'viewServices',
       'viewEventSources',
@@ -134,6 +135,7 @@ module.exports = function(environment) {
     ENV.contentSecurityPolicy['connect-src'] = ["'self' ws: wss:", mockServerUrl];
 
     ENV.roles = [
+      'accessAdminModule',
       'viewAppliances',
       'viewServices',
       'viewEventSources',

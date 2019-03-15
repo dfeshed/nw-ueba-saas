@@ -10,6 +10,38 @@ module('Unit | Service | access control', function(hooks) {
     assert.equal(service.get('hasMonitorAccess'), true);
   });
 
+  test('hasAdminAccess is set when required roles are included', function(assert) {
+    const service = this.owner.lookup('service:access-control');
+    assert.equal(service.get('hasAdminAccess'), false);
+
+    service.get('roles').clear().addObject('*');
+    assert.equal(service.get('hasAdminAccess'), true);
+
+    service.get('roles').clear().addObject('accessAdminModule');
+    assert.equal(service.get('hasAdminAccess'), false);
+
+    service.get('roles').clear().addObject('accessAdminModule').addObject('viewAppliances');
+    assert.equal(service.get('hasAdminAccess'), true);
+
+    service.get('roles').clear().addObject('accessAdminModule').addObject('viewServices');
+    assert.equal(service.get('hasAdminAccess'), true);
+
+    service.get('roles').clear().addObject('accessAdminModule').addObject('viewEventSources');
+    assert.equal(service.get('hasAdminAccess'), true);
+
+    service.get('roles').clear().addObject('accessAdminModule').addObject('viewUnifiedSources');
+    assert.equal(service.get('hasAdminAccess'), true);
+
+    service.get('roles').clear().addObject('accessAdminModule').addObject('accessHealthWellness');
+    assert.equal(service.get('hasAdminAccess'), true);
+
+    service.get('roles').clear().addObject('accessAdminModule').addObject('manageSystemSettings');
+    assert.equal(service.get('hasAdminAccess'), true);
+
+    service.get('roles').clear().addObject('accessAdminModule').addObject('manageSASecurity');
+    assert.equal(service.get('hasAdminAccess'), true);
+  });
+
   test('hasInvestigateAccess is set when required roles are included', function(assert) {
     const service = this.owner.lookup('service:access-control');
     assert.equal(service.get('hasInvestigateAccess'), false);
@@ -292,23 +324,6 @@ module('Unit | Service | access control', function(hooks) {
     assert.equal(service.get('canManageSourceServerPolicies'), true);
   });
 
-  test('hasAdminAccess is set when required roles are included', function(assert) {
-    const service = this.owner.lookup('service:access-control');
-    assert.equal(service.get('hasAdminAccess'), false);
-    service.get('roles').clear().addObject('viewAppliances');
-    assert.equal(service.get('hasAdminAccess'), true);
-    service.get('roles').clear().addObject('viewServices');
-    assert.equal(service.get('hasAdminAccess'), true);
-    service.get('roles').clear().addObject('viewEventSources');
-    assert.equal(service.get('hasAdminAccess'), true);
-    service.get('roles').clear().addObject('accessHealthWellness');
-    assert.equal(service.get('hasAdminAccess'), true);
-    service.get('roles').clear().addObject('manageSystemSettings');
-    assert.equal(service.get('hasAdminAccess'), true);
-    service.get('roles').clear().addObject('manageSASecurity');
-    assert.equal(service.get('hasAdminAccess'), true);
-  });
-
   test('hasConfigAccess is set when required roles are included', function(assert) {
     const service = this.owner.lookup('service:access-control');
     assert.equal(service.get('hasConfigAccess'), false);
@@ -347,4 +362,3 @@ module('Unit | Service | access control', function(hooks) {
     assert.equal(service.get('endpointCanManageFilter'), true);
   });
 });
-
