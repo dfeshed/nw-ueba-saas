@@ -4358,6 +4358,8 @@ export default {
         primaryUdpBeaconIntervalInvalidMsg: 'The interval should be between 5 seconds and 10 minutes',
         primaryUdpBeaconInterval_SECONDS: 'Seconds',
         primaryUdpBeaconInterval_MINUTES: 'Minutes',
+        rarEnabled: 'Remote Agent Relay',
+        rarEnabledTooltip: 'Allows agents that are off the corporate network to communicate with Endpoint Server.',
         agentSettings: 'Agent Mode',
         agentMode: 'Monitoring Mode',
         agentModeTooltip: 'Monitoring mode allows you to specify whether an agent should operate in Insights or Advanced mode. Insight agents have reduced functionality but do not count against your license. Advanced agents have full functionality but will count against your license. ',

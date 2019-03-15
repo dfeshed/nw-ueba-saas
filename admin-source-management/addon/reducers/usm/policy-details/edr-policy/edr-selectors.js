@@ -109,7 +109,7 @@ const _getScanSetting = (prop, focusedPolicy) => {
   const _i18n = lookup('service:i18n');
 
   let scanTypeValue = _i18n.t('adminUsm.policyWizard.edrPolicy.scanTypeManual');
-  if (focusedPolicy[prop] == 'ENABLED') {
+  if (focusedPolicy[prop] === 'ENABLED') {
     scanTypeValue = _i18n.t('adminUsm.policyWizard.edrPolicy.scanTypeScheduled');
   }
 
@@ -157,12 +157,6 @@ const _getScanSetting = (prop, focusedPolicy) => {
 };
 
 const _getAdvancedScanSetting = (prop, focusedPolicy) => {
-  const _i18n = lookup('service:i18n');
-  let settingValue = _i18n.t('adminUsm.policies.detail.disabled');
-  if (focusedPolicy[prop]) {
-    settingValue = _i18n.t('adminUsm.policies.detail.enabled');
-  }
-
   const advancedScanSettings = {
     /* captureFloatingCode: {
       name: 'adminUsm.policyWizard.edrPolicy.captureFloatingCode',
@@ -170,7 +164,7 @@ const _getAdvancedScanSetting = (prop, focusedPolicy) => {
     },*/
     scanMbr: {
       name: 'adminUsm.policyWizard.edrPolicy.scanMbr',
-      value: settingValue
+      value: _setSelectedValue(focusedPolicy[prop])
     },
     /*
     filterSignedHooks: {
@@ -179,36 +173,39 @@ const _getAdvancedScanSetting = (prop, focusedPolicy) => {
     },*/
     requestScanOnRegistration: {
       name: 'adminUsm.policyWizard.edrPolicy.requestScanOnRegistration',
-      value: settingValue
+      value: _setSelectedValue(focusedPolicy[prop])
     }
   };
   return advancedScanSettings[prop];
 };
 
 const _getInvasiveActionsSetting = (prop, focusedPolicy) => {
-  const _i18n = lookup('service:i18n');
-  let settingValue = _i18n.t('adminUsm.policies.detail.disabled');
-  if (focusedPolicy[prop]) {
-    settingValue = _i18n.t('adminUsm.policies.detail.enabled');
-  }
-
   const invasiveActionSettings = {
     blockingEnabled: {
       name: 'adminUsm.policyWizard.edrPolicy.blockingEnabled',
-      value: settingValue
+      value: _setSelectedValue(focusedPolicy[prop])
     }
   };
   return invasiveActionSettings[prop];
+};
+
+const _setSelectedValue = (enabled) => {
+  const _i18n = lookup('service:i18n');
+  let settingValue = _i18n.t('adminUsm.policies.detail.disabled');
+  if (enabled) {
+    settingValue = _i18n.t('adminUsm.policies.detail.enabled');
+  }
+  return settingValue;
 };
 
 const _getEndpointServerSetting = (prop, focusedPolicy, listOfEndpoints) => {
   const _i18n = lookup('service:i18n');
   let htppsBeaconIntervalUnitValue = _i18n.t('adminUsm.policyWizard.edrPolicy.primaryHttpsBeaconInterval_HOURS');
   let udpBeaconIntervalUnitValue = _i18n.t('adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval_SECONDS');
-  if (focusedPolicy.primaryHttpsBeaconIntervalUnit == 'MINUTES') {
+  if (focusedPolicy.primaryHttpsBeaconIntervalUnit === 'MINUTES') {
     htppsBeaconIntervalUnitValue = _i18n.t('adminUsm.policyWizard.edrPolicy.primaryHttpsBeaconInterval_MINUTES');
   }
-  if (focusedPolicy.primaryUdpBeaconIntervalUnit == 'MINUTES') {
+  if (focusedPolicy.primaryUdpBeaconIntervalUnit === 'MINUTES') {
     udpBeaconIntervalUnitValue = _i18n.t('adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval_MINUTES');
   }
 
@@ -236,6 +233,10 @@ const _getEndpointServerSetting = (prop, focusedPolicy, listOfEndpoints) => {
     primaryUdpBeaconInterval: {
       name: 'adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval',
       value: `${focusedPolicy[prop]} ${udpBeaconIntervalUnitValue}`
+    },
+    rarEnabled: {
+      name: 'adminUsm.policyWizard.edrPolicy.rarEnabled',
+      value: _setSelectedValue(focusedPolicy[prop])
     }
   };
   return endpointSettings[prop];

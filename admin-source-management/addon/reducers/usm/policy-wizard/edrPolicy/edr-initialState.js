@@ -41,6 +41,7 @@ export default {
     primaryUdpPort: null, // 1 to 65535
     primaryUdpBeaconInterval: null, // 30 (seconds)
     primaryUdpBeaconIntervalUnit: null, // 'SECONDS' | 'MINUTES'
+    rarEnabled: null, // true or false
     agentMode: null, // 'INSIGHTS' | 'ADVANCED'
     customConfig: null // free text
   },
@@ -74,6 +75,7 @@ export default {
     { index: 17, id: 'primaryHttpsBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryHttpsBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-beacons', defaults: [{ field: 'primaryHttpsBeaconInterval', value: 15 }, { field: 'primaryHttpsBeaconIntervalUnit', value: 'MINUTES' }] },
     { index: 18, id: 'primaryUdpPort', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-ports', defaults: [{ field: 'primaryUdpPort', value: 444 }] },
     { index: 19, id: 'primaryUdpBeaconInterval', label: 'adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-beacons', defaults: [{ field: 'primaryUdpBeaconInterval', value: 30 }, { field: 'primaryUdpBeaconIntervalUnit', value: 'SECONDS' }] },
+    { index: 20, id: 'rarEnabled', label: 'adminUsm.policyWizard.edrPolicy.rarEnabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'rarEnabled', value: true }] },
     { index: 22, id: 'advancedConfigHeader', label: 'adminUsm.policyWizard.edrPolicy.advancedConfig', isHeader: true, isEnabled: true },
     { index: 23, id: 'customConfig', label: 'adminUsm.policyWizard.edrPolicy.customConfig', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/custom-config', defaults: [{ field: 'customConfig', value: '' }] }
   ]

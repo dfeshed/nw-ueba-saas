@@ -4,6 +4,7 @@ import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
+import { revertPatch } from '../../../../helpers/patch-reducer';
 
 import {
   focusedPolicy,
@@ -51,6 +52,10 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
       patchReducer(this, state);
     };
     initialize(this.owner);
+  });
+
+  hooks.afterEach(function() {
+    revertPatch();
   });
 
   test('selectedEdrPolicy selector', function(assert) {
@@ -266,6 +271,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
       .setPolicyScanMbr(false)
       .setPolicyRequestScan(true)
       .setPolicyBlockingEnabled(false)
+      .setRarEnabled('ENABLED')
       .setPolicyPrimaryAddress('')
       .setPolicyPrimaryHttpsBeaconInterval(5)
       .setPolicyPrimaryHttpsBeaconIntervalUnit('MINUTES')
@@ -278,7 +284,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     const policyForDetails = focusedPolicy(Immutable.from(state));
     const policyDetails = selectedEdrPolicy(Immutable.from(state), policyForDetails);
     assert.equal(policyDetails.length, 5, '5 sections returned as expected');
-    assert.equal(policyDetails[4].props.length, 3, '3 properties returned as expected in endpoint server settings');
+    assert.equal(policyDetails[4].props.length, 4, '4 properties returned as expected in endpoint server settings');
     assert.equal(policyDetails[4].props[0].value, 'As Per Packager', 'default value returned as expected');
     assert.equal(policyDetails[4].props[0].defaultEndpointServer, true, 'flag set as expected');
     assert.equal(policyDetails[4].props[0].tooltip,
