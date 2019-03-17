@@ -5,11 +5,11 @@
 
     <name>presidio-connector-manager-api</name>
     <description>Presidio Connector Manager API</description>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>11.4.0-0-SNAPSHOT</version>
     <parent>
         <artifactId>presidio-connector-manager</artifactId>
         <groupId>fortscale</groupId>
-        <version>3.0.1-SNAPSHOT</version>
+        <version>11.4.0-0-SNAPSHOT</version>
     </parent>
     <artifactId>presidio-connector-manager-api</artifactId>
     <packaging>jar</packaging>
