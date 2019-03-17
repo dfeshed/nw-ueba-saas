@@ -92,7 +92,7 @@ def getAsocBranchReference(String repositoryName, String branchName, String user
 def createAsocBranchReference(String repositoryName, String branchName, String sha, String userName, String userPassword) {
     sh """\
         curl -d '{"ref": "refs/heads/${branchName}", "sha": "${sha}"}'\
-        -X POST ${rsaAsocGitHubApiUrl}${repositoryName}/git/refs/\
+        -X POST ${rsaAsocGitHubApiUrl}${repositoryName}/git/refs\
         -u ${userName}:${userPassword}\
     """
 }
