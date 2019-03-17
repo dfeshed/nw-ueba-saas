@@ -174,6 +174,7 @@ def promoteProjectVersion(
         String userPassword = env.RSA_BUILD_CREDENTIALS_PSW,
         String baseBranch = env.BASE_BRANCH,
         String version = env.VERSION,
+        String addAnnotatedTag = env.ADD_ANNOTATED_TAG,
         String reviewers = env.REVIEWERS) {
 
     cloneAsocRepository(userName, userPassword, repositoryName)
@@ -202,7 +203,7 @@ def promoteProjectVersion(
 
         String message = "Promote project to version ${version} in branch ${baseBranch}"
         commitAll(message)
-        createAnnotatedTag(sideBranch, message)
+        if (addAnnotatedTag == 'true') createAnnotatedTag(sideBranch, message)
         pushToOriginWithTags(sideBranch, sideBranch)
         // Since the project was already built and tested, there is no need for the automated
         // PR-triggered Jenkins job to run, therefore "[skip ci]" is added to the PR body.
