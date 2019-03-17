@@ -24,7 +24,7 @@
     <parent>
         <artifactId>presidio-flume</artifactId>
         <groupId>presidio.flume.core</groupId>
-        <version>3.0.1-SNAPSHOT</version>
+        <version>11.4.0-0-SNAPSHOT</version>
     </parent>
 
     <artifactId>flume-ng-dist</artifactId>

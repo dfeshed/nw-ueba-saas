@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>presidio.flume.core</groupId>
     <artifactId>presidio-flume</artifactId>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>11.4.0-0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Presidio Flume</name>
@@ -41,7 +41,7 @@
         <xalan.verion>2.7.1</xalan.verion>
         <xerces.version>2.9.1</xerces.version>
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
-        <presidio.core.version>3.0.1-SNAPSHOT</presidio.core.version>
+        <presidio.core.version>11.4.0-0-SNAPSHOT</presidio.core.version>
         <jackson.version>2.9.8</jackson.version>
         <spring-data-mongodb.version>1.10.18.RELEASE</spring-data-mongodb.version>
     </properties>
