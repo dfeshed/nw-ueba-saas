@@ -1,0 +1,50 @@
+// Wrapper
+.rar-container {
+  margin: rsa-whitespace(more);
+  sup {
+    color: $red;
+  }
+  .endpoint-rar-header {
+    @include border-bottom(1px, solid, primary, lightest, nearly-transparent);
+    padding-bottom: rsa-whitespace(more);
+
+    h1, .rar-container_description {
+      @include rsa-font(body, large);
+      line-height: 3rem;
+      color: text-color(primary, light);
+    }
+    h1 {
+      font-size: 2rem;
+    }
+    .back-to-services {
+      margin-bottom: rsa-whitespace(more);
+    }
+  }
+  .rar-configuration {
+    margin-left: rsa-whitespace(less);
+    h3 {
+      color: text-color(secondary);
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .rar-container_rar-installer_note {
+      margin: rsa-whitespace(less) 0;
+      line-height: 1.2rem;
+      color: text-color(primary, light);
+      @include rsa-font(body, small);
+    }
+  }
+  .download-rar-installer {
+    height: 0px;
+  }
+  .rar-container_rar-installer_downloadInstaller button{
+    width: 153px;
+    margin: rsa-whitespace(more) 0; 
+  }
+  .rar-installer {
+    margin-top: rsa-whitespace(more);
+    .rar-installer_password-field {
+      width: 350px;
+    }
+  }
+}

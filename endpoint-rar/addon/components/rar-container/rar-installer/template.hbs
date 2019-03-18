@@ -1,0 +1,22 @@
+<h3>{{t 'endpointRAR.rarInstaller.title'}}</h3>
+<span class='rar-container_rar-installer_note'>{{t 'endpointRAR.rarInstaller.instruction'}}</span>
+
+
+<div class="rar-installer_password-field">
+  {{rsa-form-input
+    type="password"
+    class='password-input-js'
+    isError=isPasswordError
+    errorMessage=(t passwordInvalidMessage)
+    onKeyUp=(action 'validate')
+    label=(t 'endpointRAR.rarInstaller.password')
+    value=rarInsallerPassword}}
+</div>
+
+{{#rsa-form-button class='rar-container_rar-installer_downloadInstaller' defaultAction=(action 'generateRARInstaller')}}
+  {{#if isLoading}}
+    {{rsa-loader size='small'}}
+  {{else}}
+    <span class='backButton'>{{t 'endpointRAR.rarInstaller.downloadButton'}}</span>
+  {{/if}}
+{{/rsa-form-button}}

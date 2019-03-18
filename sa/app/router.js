@@ -22,6 +22,7 @@ Router.map(function() {
   this.route('protected', { path: '/' }, function() {
     this.route('monitor');
     this.route('packager');
+    this.route('endpoint-rar');
     this.mount('respond');
     this.mount('configure');
     this.mount('investigate');

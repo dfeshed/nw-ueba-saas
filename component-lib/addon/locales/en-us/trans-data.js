@@ -2171,6 +2171,24 @@ export default {
     driver: 'DRIVER',
     agentConfigNote: 'For a subsequent installation/upgrade, use the same service names.'
   },
+  endpointRAR: {
+    backButton: 'Services',
+    title: 'RAR Configuration',
+    rarInstaller: {
+      title: 'Install',
+      instruction: 'Create a password and enterit when prompted while running installer',
+      password: 'Password<sup>*</sup>',
+      downloadButton: 'Download installer'
+    },
+    errorMessages: {
+      passwordEmptyMessage: 'Please enter certificate password',
+      invalidPasswordString: 'Can contain alphanumeric or special characters, and a minimum of 3 characters.'
+    },
+    errorPage: {
+      errorTitle: 'Endpoint Server is offline',
+      errorDescription: 'Endpoint Server may not be configured properly. See the Host Installation Guide for instructions on Endpoint Log Hybrid installation.'
+    }
+  },
   investigateFiles: {
     title: 'Files',
     deleteTitle: 'Confirm Delete',

@@ -10,7 +10,11 @@ module.exports = function(environment) {
       socketUrl
     },
     'endpoint-rar': {
-      socketUrl
+      socketUrl,
+      rarInstaller: {
+        subscriptionDestination: '/user/queue/endpoint/rar/installer/create',
+        requestDestination: '/ws/endpoint/rar/installer/create'
+      }
     }
   };
 };

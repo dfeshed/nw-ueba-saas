@@ -1,0 +1,18 @@
+<iframe src="{{iframeSrc}}" class="download-rar-installer"></iframe>
+
+<div class='endpoint-rar-header'>
+  {{#rsa-form-button class='back-to-services' defaultAction=(action 'backToServiceList')}}
+    {{rsa-icon size="small" name="arrow-left-12"}}
+    <span class='backButton'>{{t 'endpointRAR.backButton'}}</span>
+  {{/rsa-form-button}}
+  <h1>{{t 'endpointRAR.title'}}</h1>
+  <span class='rar-container_description'>{{t 'endpointRAR.title'}}</span>
+</div>
+
+{{#rsa-page-layout showRightZone=false as |layout|}}
+  {{#layout.center}}
+
+    {{rar-container/rar-installer serverId=serverId}}
+
+  {{/layout.center}}
+{{/rsa-page-layout}}

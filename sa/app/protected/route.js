@@ -251,6 +251,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
       (transitionName && transitionName.includes('configure')) ||
       (transitionName && transitionName.includes('respond') && this.get('accessControl.hasRespondAccess')) ||
       (transitionName && transitionName.includes('packager')) ||
+      (transitionName && transitionName.includes('endpoint-rar')) ||
       (transitionName && transitionName.includes('investigate') && this.get('accessControl.hasInvestigateAccess')) ||
       (transitionName && transitionName.includes('admin') && this.get('accessControl.hasAdminAccess'))
     ) {
