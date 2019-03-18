@@ -1,7 +1,14 @@
 import MonitorMixin from '../monitor-mixin/component';
 import Component from '@ember/component';
+import { connect } from 'ember-redux';
+import computed from 'ember-computed-decorators';
+import { hasNoAggPermission } from '../../reducers/selectors/permissions';
 
-export default Component.extend(MonitorMixin, {
+const stateToComputed = (state) => ({
+  hasNoAggPermission: hasNoAggPermission(state)
+});
+
+const cardAggregation = Component.extend(MonitorMixin, {
   label: null,
   animate: true,
 
@@ -9,6 +16,21 @@ export default Component.extend(MonitorMixin, {
   classNames: ['dashboard-card', 'border-panel'],
 
   moduleName: null,
+
+  @computed('hasNoAggPermission', 'valuesAdapter')
+  cannotStart: (hasNoAggPermission, valuesAdapter) => {
+    return valuesAdapter.status ? valuesAdapter.status !== 'stopped' || hasNoAggPermission : true;
+  },
+
+  @computed('hasNoAggPermission', 'valuesAdapter')
+  cannotStop: (hasNoAggPermission, valuesAdapter) => {
+    return valuesAdapter.status ? valuesAdapter.status !== 'started' || hasNoAggPermission : true;
+  },
+
+  @computed('hasNoAggPermission', 'moduleName')
+  noPermissionReason: (hasNoAggPermission, moduleName) => {
+    return hasNoAggPermission ? `Aggregation control requires ${moduleName}.manage` : '';
+  },
 
   monitor: [
     {
@@ -47,3 +69,5 @@ export default Component.extend(MonitorMixin, {
     this._super(...arguments);
   }
 });
+
+export default connect(stateToComputed)(cardAggregation);

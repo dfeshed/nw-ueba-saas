@@ -20,10 +20,11 @@
   {{dashboard-property-item propertyName='Status' propertyValue=valuesAdapter.service_status}}
   {{dashboard-property-item propertyName='Started' propertyValue=valuesAdapter.running_since}}
   {{dashboard-property-item propertyName='Uptime' propertyValue=valuesAdapter.uptime}}
-  <div class="property-item rsa-button-with-confirmation">
+  <div class="property-item rsa-button-with-confirmation" title={{noPermissionReason}}>
     {{#rsa-button-with-confirmation
       style="danger"
       title='Confirm Service Shutdown'
+      isDisabled=hasNoShutdownPermission
       confirmationMessage='Are you sure that you want to shutdown this service?'
       confirmButtonLabel='Yes'
       cancelButtonLabel='No'

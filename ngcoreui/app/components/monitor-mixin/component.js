@@ -23,6 +23,7 @@ export default Mixin.create({
   data: null,
   valuesAdapter: null,
   transport: service(),
+  permissions: service(),
 
   dataFunction: null,
 
@@ -140,30 +141,49 @@ export default Mixin.create({
   fetchHistory(monitorSeries) {
     const transport = this.get('transport');
     const seriesPaths = monitorSeries.map((mon) => mon.path);
-    return transport.send('/sys', {
-      message: 'statHist',
-      params: {
-        // 10 minutes ago in POSIX time, as a string
-        // Necessary to fetch the past 10 minutes and then cut down to 60 seconds
-        time1: (Math.floor((new Date()).getTime() / 1000) - 600).toString(),
-        include: seriesPaths.join(','),
-        showAll: 'true'
-      }
-    }).then((history) => {
-      // initialize result set
-      const data = (new Array(monitorSeries.length)).map(() => []);
+    const permissions = this.get('permissions');
+    // Sending statHist requires the sys.manage permission
+    return new Promise((resolve) => {
+      permissions.require('sys.manage', () => {
+        const result = transport.send('/sys', {
+          message: 'statHist',
+          params: {
+            // 10 minutes ago in POSIX time, as a string
+            // Necessary to fetch the past 10 minutes and then cut down to 60 seconds
+            time1: (Math.floor((new Date()).getTime() / 1000) - 600).toString(),
+            include: seriesPaths.join(','),
+            showAll: 'true'
+          }
+        }).then((history) => {
+          // initialize result set
+          const data = (new Array(monitorSeries.length));
+          for (let i = 0; i < monitorSeries.length; i++) {
+            data[i] = new Array();
+          }
 
-      // Cut off everything but the last 60 entries
-      const params = history.params.slice(-60);
-      params.forEach((statInstance) => {
-        monitorSeries.forEach((mon, index) => {
-          const value = statInstance[mon.path];
-          const df = mon.dataFunction || this.dataFunction;
-          data[index].push(value ? df(value) : 0);
+          // Cut off everything but the last 60 entries
+          const params = history.params.slice(-60);
+          params.forEach((statInstance) => {
+            monitorSeries.forEach((mon, index) => {
+              const value = statInstance[mon.path];
+              const df = mon.dataFunction || this.dataFunction;
+              data[index].push(value ? df(value) : 0);
+            });
+          });
+          this.set('data', Immutable.from(data));
+          return;
         });
+        resolve(result);
+      }, () => {
+        // If we do not have permission to fetch the stat history, just return
+        // an array of 60 zeroes.
+        const data = new Array(monitorSeries.length);
+        for (let i = 0; i < monitorSeries.length; i++) {
+          data[i] = (new Array(60)).fill(0);
+        }
+        this.set('data', data);
+        resolve(Promise.resolve());
       });
-      this.set('data', Immutable.from(data));
-      return;
     });
   },
 

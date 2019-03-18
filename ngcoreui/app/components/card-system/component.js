@@ -1,7 +1,14 @@
 import MonitorMixin from '../monitor-mixin/component';
 import Component from '@ember/component';
+import { connect } from 'ember-redux';
+import computed from 'ember-computed-decorators';
+import { hasNoShutdownPermission } from '../../reducers/selectors/permissions';
 
-export default Component.extend(MonitorMixin, {
+const stateToComputed = (state) => ({
+  hasNoShutdownPermission: hasNoShutdownPermission(state)
+});
+
+const cardSystem = Component.extend(MonitorMixin, {
   label: null,
   animate: true,
 
@@ -10,6 +17,11 @@ export default Component.extend(MonitorMixin, {
 
   domainExtents: {
     y: { fixed: [ 0, 100 ] }
+  },
+
+  @computed('hasNoShutdownPermission')
+  noPermissionReason: (hasNoShutdownPermission) => {
+    return hasNoShutdownPermission ? 'Shutdown requires sys.manage role' : '';
   },
 
   monitor: [
@@ -71,3 +83,5 @@ export default Component.extend(MonitorMixin, {
     }
   }
 });
+
+export default connect(stateToComputed)(cardSystem);

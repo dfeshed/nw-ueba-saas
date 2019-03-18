@@ -238,4 +238,16 @@ export default class DataHelper {
   isDecoder() {
     return this._connectAndFillTree();
   }
+
+  hasNoAggPermission() {
+    return this._connectAndFillTree();
+  }
+
+  hasNoCapturePermission() {
+    return this._connectAndFillTree();
+  }
+
+  hasNoShutdownPermission() {
+    return this._connectAndFillTree();
+  }
 }

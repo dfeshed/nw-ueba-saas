@@ -1,8 +1,15 @@
 import MonitorMixin from '../monitor-mixin/component';
 import Component from '@ember/component';
 import parseTimeCapture from 'ngcoreui/reducers/selectors/parse-time-capture';
+import { connect } from 'ember-redux';
+import computed from 'ember-computed-decorators';
+import { hasNoCapturePermission } from '../../reducers/selectors/permissions';
 
-export default Component.extend(MonitorMixin, {
+const stateToComputed = (state) => ({
+  hasNoCapturePermission: hasNoCapturePermission(state)
+});
+
+const cardCapture = Component.extend(MonitorMixin, {
   label: null,
   animate: true,
 
@@ -10,6 +17,21 @@ export default Component.extend(MonitorMixin, {
   classNames: ['dashboard-card', 'border-panel'],
 
   isLogDecoder: false,
+
+  @computed('hasNoCapturePermission', 'valuesAdapter')
+  cannotStart: (hasNoCapturePermission, valuesAdapter) => {
+    return valuesAdapter.capture_status ? valuesAdapter.capture_status !== 'stopped' || hasNoCapturePermission : true;
+  },
+
+  @computed('hasNoCapturePermission', 'valuesAdapter')
+  cannotStop: (hasNoCapturePermission, valuesAdapter) => {
+    return valuesAdapter.capture_status ? valuesAdapter.capture_status !== 'started' || hasNoCapturePermission : true;
+  },
+
+  @computed('hasNoCapturePermission')
+  noPermissionReason: (hasNoCapturePermission) => {
+    return hasNoCapturePermission ? 'Capture control requires decoder.manage' : '';
+  },
 
   monitor: [
     {
@@ -62,3 +84,5 @@ export default Component.extend(MonitorMixin, {
   }
 
 });
+
+export default connect(stateToComputed)(cardCapture);
