@@ -68,14 +68,35 @@ export default Service.extend({
   @gt('configAccessIntersections.length', 0) hasConfigAccess: null,
   @or('hasInvestigateClassicAccess', 'hasInvestigateEmberAccess') hasInvestigateAccess: null,
 
-  @computed('roles.[]')
-  hasAdminAccess(roles) {
-    const hasTopLevelAdminRole = this._hasPermission(roles, 'accessAdminModule');
-    const prunedRoles = roles.without('accessAdminModule');
-    const hasSubMenuAdminRole = prunedRoles.any((role) => {
-      return this._hasPermission(prunedRoles, role);
-    });
-    return hasTopLevelAdminRole && hasSubMenuAdminRole;
+  @computed(
+    'hasAdminTopLevelAccess',
+    'hasAdminViewAppliancesAccess',
+    'hasAdminViewServicesAccess',
+    'hasAdminViewEventSourcesAccess',
+    'hasAdminViewUnifiedSourcesAccess',
+    'hasAdminHealthWellnessAccess',
+    'hasAdminSystemSettingsAccess',
+    'hasAdminSASecurityAccess'
+  )
+  hasAdminAccess(
+    hasAdminTopLevelAccess,
+    hasAdminViewAppliancesAccess,
+    hasAdminViewServicesAccess,
+    hasAdminViewEventSourcesAccess,
+    hasAdminViewUnifiedSourcesAccess,
+    hasAdminHealthWellnessAccess,
+    hasAdminSystemSettingsAccess,
+    hasAdminSASecurityAccess
+  ) {
+    return hasAdminTopLevelAccess && (
+      hasAdminViewAppliancesAccess ||
+      hasAdminViewServicesAccess ||
+      hasAdminViewEventSourcesAccess ||
+      hasAdminViewUnifiedSourcesAccess ||
+      hasAdminHealthWellnessAccess ||
+      hasAdminSystemSettingsAccess ||
+      hasAdminSASecurityAccess
+    );
   },
 
   @computed('roles.[]')
@@ -260,6 +281,11 @@ export default Service.extend({
   // End Configure Permissions
 
   // Begin Admin Permissions
+
+  @computed('roles.[]')
+  hasAdminTopLevelAccess(roles) {
+    return this._hasPermission(roles, 'accessAdminModule');
+  },
 
   @computed('roles.[]')
   hasAdminViewAppliancesAccess(roles) {

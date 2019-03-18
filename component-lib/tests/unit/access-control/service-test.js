@@ -20,6 +20,9 @@ module('Unit | Service | access control', function(hooks) {
     service.get('roles').clear().addObject('accessAdminModule');
     assert.equal(service.get('hasAdminAccess'), false);
 
+    service.get('roles').clear().addObject('accessAdminModule').addObject('anyOtherRole');
+    assert.equal(service.get('hasAdminAccess'), false);
+
     service.get('roles').clear().addObject('accessAdminModule').addObject('viewAppliances');
     assert.equal(service.get('hasAdminAccess'), true);
 
