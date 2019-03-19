@@ -2,6 +2,7 @@
   {{rsa-form-input
     class='port-value'
     value=(readonly portValue)
+    maxLength=5
     isError=isPortValid.showError
     errorMessage=(t isPortValid.errorMessage)
     focusOut=(action 'handlePortValueChange')
