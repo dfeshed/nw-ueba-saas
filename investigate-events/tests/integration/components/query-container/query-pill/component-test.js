@@ -525,10 +525,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     await fillIn(PILL_SELECTORS.valueSelectInput, 'x');
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', X_KEY); // x
     await blur(PILL_SELECTORS.valueTrigger);
-    // The textContent of the pill will "x=", and the value of the value input
-    // will be x.
-    assert.equal(trim(find(PILL_SELECTORS.queryPill).textContent), 'a=');
-    assert.equal(find(PILL_SELECTORS.valueSelectInput).value, 'x');
+    assert.equal(trim(find(PILL_SELECTORS.queryPill).textContent), 'a=x');
   });
 
   test('If pill is active and single clicked, it will not message up', async function(assert) {

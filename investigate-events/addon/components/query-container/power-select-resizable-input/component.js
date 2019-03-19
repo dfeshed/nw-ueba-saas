@@ -7,7 +7,6 @@
  * @public
  */
 import Component from '@ember/component';
-import { computed } from '@ember/object';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -16,25 +15,6 @@ export default Component.extend({
   tagName: '',
   value: '',
   text: '',
-
-  /**
-   * Value for input's "size" attribute
-   * @private
-   */
-  size: computed('text', function() {
-    let _size = 0;
-    return {
-      get() {
-        const selectedTextLength = this.text.length || 1;
-        return _size > 0 ? _size : selectedTextLength;
-      },
-      set(key, value) {
-        const val = value > 0 ? value : 1;
-        _size = val;
-        return val;
-      }
-    };
-  }()),
 
   /**
    * Lifecycle Hook
@@ -91,13 +71,13 @@ export default Component.extend({
     },
 
     /**
-     * Called from power-select internals. Sets `size` to length of the typed
-     * text, or `1`.
+     * Called from power-select internals. Set `text` so that the shadow SPAN
+     * resizes.
      * @param {Object} event
      * @private
      */
     handleInput(e) {
-      this.set('size', e.target.value.length || 1);
+      this.set('text', e.target.value);
       const oninput = this.get('onInput');
       if (oninput) {
         oninput(e);
@@ -105,13 +85,11 @@ export default Component.extend({
     },
 
     /**
-     * Called from power-select internals. Sets `size` back to default value of
-     * `0`.
+     * Called from power-select internals.
      * @param {Object} event
      * @private
      */
     handleFocus(e) {
-      this.set('size', 0);
       const onfocus = this.get('onFocus');
       if (onfocus && onfocus(e) === false) {
         return false;
@@ -126,7 +104,6 @@ export default Component.extend({
      * @private
      */
     handleBlur(e) {
-      this.set('size', this.get('text').length);
       const onblur = this.get('onBlur');
       if (onblur && onblur(e) === false) {
         return false;

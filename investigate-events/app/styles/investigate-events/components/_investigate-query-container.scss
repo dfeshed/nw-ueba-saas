@@ -769,7 +769,7 @@
     position: relative;
     .shadow-text {
       visibility: hidden;
-      padding-left: 1px;// helps prevent subpixel difference between span and input
+      padding: 0 1px;// helps prevent subpixel difference between span and input
     }
     input {
       position: absolute;

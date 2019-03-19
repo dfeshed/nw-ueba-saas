@@ -73,18 +73,12 @@ export default Component.extend({
    */
   valueString: null,
 
-  /**
-   * Should we automatically focus on the power-select input
-   * @private
-   */
-  _isAutoFocus: true,
-
-  /**
-   * If an already existing pill is being edited, do not display
-   * Advanced Options in the dropdown.
-   * @private
-   */
-  @computed('isEditing')
+  /*
+  * If an already existing pill is being edited, do not display
+  * Advanced Options in the dropdown.
+  * @private
+  */
+ @computed('isEditing')
   _options: (isEditing) => {
     return isEditing ? _dropDownOptions.filter((op) => op.groupName !== 'Advanced Options') : _dropDownOptions;
   },
@@ -132,14 +126,29 @@ export default Component.extend({
     return (!!valueString && valueString.length > 0) || isActive;
   },
 
-  didUpdateAttrs() {
-    this._super(...arguments);
-    if (this.get('isActive') && this.get('_isAutoFocus')) {
-      // We schedule this after render to give time for the input to
-      // be rendered before trying to focus on it.
-      scheduleOnce('afterRender', this, '_focusOnPowerSelectTrigger');
-    }
-  },
+  /**
+   * The main point of this function is to check to see if we need to
+   * automatically focus on the power-select trigger. We only need to do this
+   * when this component is set to active. Since dUA() runs on every property
+   * change, we could be needlessly running the trigger focusing function.
+   * To prevent this we track the previous state of `isActive` and only do
+   * something if we're active when we previously were not.
+   */
+  didUpdateAttrs: (function() {
+    let _wasActive = false; // tracking prop for isActive
+    return function() {
+      this._super(...arguments);
+      const isActive = this.get('isActive');
+      // This check basically ensures that we only run the auto focus function
+      // if this component is active after being inactive
+      if (isActive && isActive !== _wasActive) {
+        // We schedule this after render to give time for the input to
+        // be rendered before trying to focus on it.
+        scheduleOnce('afterRender', this, '_focusOnPowerSelectTrigger');
+      }
+      _wasActive = isActive;
+    };
+  })(),
 
   click() {
     // If this component is not active and the user clicks on it, dispatch an
@@ -151,16 +160,15 @@ export default Component.extend({
 
   actions: {
     onBlur(powerSelectAPI) {
-      const { lastSearchedText, searchText } = powerSelectAPI;
+      const { searchText } = powerSelectAPI;
       // If this component looses focus while there is a value, we need to save
       // it off so that the inactive state renders properly.
       if (searchText !== null && searchText !== '') {
-        this.set('_isAutoFocus', false);
         this._broadcast(MESSAGE_TYPES.VALUE_SET, searchText);
         // force text back into view
         const el = this.element.querySelector('input');
         if (el) {
-          el.value = lastSearchedText;
+          el.value = searchText;
         }
       }
     },
@@ -240,7 +248,6 @@ export default Component.extend({
         }
         // cleanup
         this.set('_searchString', undefined);
-        this.set('_isAutoFocus', true);
         actions.search('');
         // send event
         if (selection === QUERY_PILL && !this._isInputEmpty(value)) {
