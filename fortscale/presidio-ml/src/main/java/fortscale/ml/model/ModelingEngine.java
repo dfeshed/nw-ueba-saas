@@ -113,7 +113,7 @@ public class ModelingEngine {
 			logger.info("Global model: Selected 1 context ID (null).");
 		}
 
-		List<String> contextIdsWithModels = modelStore.getContextIdsWithModels(modelConf, sessionId, endInstant);
+        Collection<String> contextIdsWithModels = modelStore.getContextIdsWithModels(modelConf, sessionId, endInstant);
 		contextIds.removeAll(contextIdsWithModels);
 		logger.info("Filtered out {} context IDs that already have a model with session ID {} and end instant {}.",
 				contextIdsWithModels.size(), sessionId, endInstant);

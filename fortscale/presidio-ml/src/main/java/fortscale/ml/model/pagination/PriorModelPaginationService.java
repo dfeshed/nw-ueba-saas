@@ -64,7 +64,7 @@ public class PriorModelPaginationService extends BasePaginationService<ModelDAO>
      * @return List<ContextIdToNumOfItems>
      */
     private List<ContextIdToNumOfItems> getContextIdToNumOfItemsList(ModelConf modelConf, Instant eventEpochTime) {
-        List<String> contextIds = this.reader.getDistinctNumOfContextIds(modelConf, eventEpochTime);
+        Collection<String> contextIds = this.reader.getContextIdsWithModels(modelConf, eventEpochTime);
         List<ContextIdToNumOfItems> contextIdToNumOfItems = new ArrayList<>();
         contextIds.forEach(contextId -> contextIdToNumOfItems.add(new ContextIdToNumOfItems(contextId, 1)));
         return contextIdToNumOfItems;

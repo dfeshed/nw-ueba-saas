@@ -18,11 +18,11 @@ public class ModelStoreConfig {
 	private int modelAggregationPaginationSize;
 	@Value("${presidio.model.store.query.pagination.size:200000}")
 	private int modelQueryPaginationSize;
-	@Value("${presidio.model.store.retriever.pagination.size:50000}")
-	private long retrieverPageSize;
+	@Value("${presidio.model.store.contextId.pagination.size:50000}")
+	private long contextIdPageSize;
 
 	@Bean
 	public ModelStore modelStore() {
-		return new ModelStore(mongoTemplate, ttlOldestAllowedModel, modelAggregationPaginationSize, modelQueryPaginationSize, retrieverPageSize);
+		return new ModelStore(mongoTemplate, ttlOldestAllowedModel, modelAggregationPaginationSize, modelQueryPaginationSize, contextIdPageSize);
 	}
 }
