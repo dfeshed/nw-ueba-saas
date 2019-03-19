@@ -91,3 +91,18 @@ test('renders nothing when data present, but hidden by request/response', functi
     assert.equal(str, '');
   });
 });
+
+test('renders message when data present, but hidden by payload only', function(assert) {
+  new DataHelper(this.get('redux'))
+    .setViewToPacket()
+    .initializeDataWithoutPayloads()
+    .togglePayloadOnly()
+    .renderPackets();
+
+  this.render(hbs`{{recon-event-detail/packets}}`);
+
+  return wait().then(() => {
+    const str = this.$('.message').text().trim().replace(/\s/g, '');
+    assert.equal(str, 'TheeventhasnopayloadandtheDisplayPayloadsOnlyoptionisselected.ToviewthePacketAnalysisfortheevent,disabletheDisplayPayloadsOnlyoption.');
+  });
+});

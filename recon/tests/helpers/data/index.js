@@ -18,6 +18,7 @@ const _generateHeaderItems = (items) => (
 const augmentedTextData = augmentResult(decodedTextData);
 
 const packetDataWithSide = augmentResult(packetData.slice(0, 10));
+const packetDataWithoutPayload = packetDataWithSide.filter((d) => d.payloadSize === 0);
 
 const summaryData = {
   headerItems: _generateHeaderItems(summaryDataInput.summaryAttributes),
@@ -47,6 +48,7 @@ export {
   encodedTextData,
   files,
   packetDataWithSide,
+  packetDataWithoutPayload,
   summaryData,
   preferences
 };

@@ -16,6 +16,9 @@
         tooltipData=tooltipData
       }}
     {{/each}}
+    {{#if hasNoRenderedPayload}}
+      {{rsa-panel-message message=(t 'recon.packetView.noPayload')}}
+    {{/if}}
 
     {{#if isPacketRenderingUnderWay}}
       <centered class='rendering-more'>

@@ -10,6 +10,7 @@ import {
   decodedTextData,
   encodedTextData,
   packetDataWithSide,
+  packetDataWithoutPayload,
   summaryData,
   preferences
 } from './data';
@@ -31,12 +32,12 @@ const summaryPromise = new RSVP.Promise(function(resolve) {
   resolve(summaryData);
 });
 
-const _dispatchInitializeData = (redux, inputs) => {
-
+const _dispatchInitializeData = (redux, inputs, hasPayload = true) => {
+  const payload = hasPayload ? packetDataWithSide : packetDataWithoutPayload;
   run(() => {
     redux.dispatch({ type: ACTION_TYPES.INITIALIZE, payload: inputs });
     redux.dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE, promise: summaryPromise });
-    redux.dispatch({ type: ACTION_TYPES.PACKETS_RECEIVE_PAGE, payload: packetDataWithSide });
+    redux.dispatch({ type: ACTION_TYPES.PACKETS_RECEIVE_PAGE, payload });
     redux.dispatch({ type: ACTION_TYPES.SET_PREFERENCES, payload: preferences });
   });
 };
@@ -52,6 +53,11 @@ class DataHelper {
 
   initializeData(inputs = DEFAULT_INITIALIZE) {
     _dispatchInitializeData(this.redux, inputs);
+    return this;
+  }
+
+  initializeDataWithoutPayloads(inputs = DEFAULT_INITIALIZE) {
+    _dispatchInitializeData(this.redux, inputs, false);
     return this;
   }
 
