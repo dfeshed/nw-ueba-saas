@@ -33,6 +33,11 @@
     left: 0;
     right: 0;
     bottom: 2rem;
+    &-body-row {
+      width: -webkit-fit-content;
+      width: -moz-fit-content;
+      width: fit-content;
+    }
   }
 
   .rsa-data-table .rsa-data-table-header {
