@@ -1,3 +1,13 @@
+# [10.9.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v10.9.0)
+## Features
+* [ASOC-64115](https://bedfordjira.na.rsa.net/browse/ASOC-64115):&emsp;Update Meta Drop Down Navigation UX
+* [ASOC-72572](https://bedfordjira.na.rsa.net/browse/ASOC-72572):&emsp;End to End tests for Event Analysis
+* [ASOC-72891](https://bedfordjira.na.rsa.net/browse/ASOC-72891):&emsp;SME Feedback - Update Query Console Messaging
+* [ASOC-73019](https://bedfordjira.na.rsa.net/browse/ASOC-73019):&emsp;End to End tests for Event Analysis v2
+* [ASOC-73020](https://bedfordjira.na.rsa.net/browse/ASOC-73020):&emsp;End to End tests for Event Analysis v2
+* Various bug fixes
+
+
 # [10.7.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v10.7.0)
 ## Features
 * Various bug fixes

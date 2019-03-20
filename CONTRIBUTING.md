@@ -163,12 +163,12 @@ The following is a list of steps to perform to close out a sprint.
 2. Update the version in the root `package.json` file.
 3. After the PR with the above changes has been merge, tag master with the new version.
 ```
-  $ git tag -a v10.0.0 -m'End of Sprint 10.0'
-  $ git push asoc v10.0.0
+  $ git tag -a v12.0.0 -m'End of Sprint 12.0'
+  $ git push asoc v12.0.0
 ```
 4. Go to https://asoc-jenkins2.rsa.lab.emc.com/job/sa-ui-swiss-army-knife and start a build using the following properties:
  - REPO: asoc/sa-ui
- - BRANCH: tags/v10.0.0
+ - BRANCH: tags/v12.0.0
  - STABILITY: 3
 4. Update the sa-ui entry in the _Sprint Component List_ on the [WIKI](https://wiki.na.rsa.net/display/ENVNG/11.3+Sprint+RPMs).
 
