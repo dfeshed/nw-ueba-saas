@@ -1,7 +1,6 @@
 package presidio.ade.domain.store.accumulator;
 
 import com.mongodb.DBObject;
-import com.mongodb.MongoCommandException;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.store.record.StoreMetadataProperties;
@@ -77,7 +76,7 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
             Criteria startTimeCriteria = Criteria.where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate);
             Query query = new Query(startTimeCriteria);
             distinctContexts = (Set<String>) mongoTemplate.getCollection(collectionName).distinct(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD, query.getQueryObject()).stream().collect(Collectors.toSet());
-        } catch (MongoCommandException e) {
+        } catch (Exception e) {
             long nextPageIndex = 0;
             Set<String> subList;
             distinctContexts = new HashSet<>();

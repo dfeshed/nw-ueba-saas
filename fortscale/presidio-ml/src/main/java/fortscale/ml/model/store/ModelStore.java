@@ -4,12 +4,10 @@ import com.mongodb.*;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.store.StoreManagerAware;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,8 +21,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 public class ModelStore implements ModelReader, StoreManagerAware {
@@ -37,12 +34,14 @@ public class ModelStore implements ModelReader, StoreManagerAware {
     private Duration ttlOldestAllowedModel;
     private int modelAggregationPaginationSize;
     private int modelQueryPaginationSize;
+    private long contextIdPageSize;
 
-    public ModelStore(MongoTemplate mongoTemplate, Duration ttlOldestAllowedModel, int modelAggregationPaginationSize, int modelQueryPaginationSize) {
+    public ModelStore(MongoTemplate mongoTemplate, Duration ttlOldestAllowedModel, int modelAggregationPaginationSize, int modelQueryPaginationSize, long contextIdPageSize) {
         this.mongoTemplate = mongoTemplate;
         this.ttlOldestAllowedModel = ttlOldestAllowedModel;
         this.modelAggregationPaginationSize = modelAggregationPaginationSize;
         this.modelQueryPaginationSize = modelQueryPaginationSize;
+        this.contextIdPageSize = contextIdPageSize;
     }
 
     /**
@@ -62,20 +61,74 @@ public class ModelStore implements ModelReader, StoreManagerAware {
     }
 
     @SuppressWarnings("unchecked")
-    public List<String> getContextIdsWithModels(ModelConf modelConf, String sessionId, Instant endInstant) {
-        Query query = new Query()
-                .addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId))
-                .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).is(Date.from(endInstant)));
-        return mongoTemplate
-                .getCollection(getCollectionName(modelConf))
-                .distinct(ModelDAO.CONTEXT_ID_FIELD, query.getQueryObject());
+    public Collection<String> getContextIdsWithModels(ModelConf modelConf, String sessionId, Instant endInstant) {
+        String collectionName = getCollectionName(modelConf);
+        try {
+            List<String> distinctContexts;
+            Query query = new Query();
+            query.addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).is(Date.from(endInstant)));
+            if(sessionId != null) {
+                query.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId));
+            }
+            distinctContexts =  mongoTemplate
+                    .getCollection(collectionName)
+                    .distinct(ModelDAO.CONTEXT_ID_FIELD, query.getQueryObject());
+            logger.debug("found {} distinct contexts", distinctContexts.size());
+            return distinctContexts;
+        } catch (Exception e) {
+            long nextPageIndex = 0;
+            Set<String> subList;
+            Set<String> distinctContexts = new HashSet<>();
+            do {
+                subList = aggregateContextIds(sessionId, endInstant,
+                        nextPageIndex * contextIdPageSize, contextIdPageSize, collectionName, true);
+                distinctContexts.addAll(subList);
+                nextPageIndex++;
+            } while (subList.size() == contextIdPageSize);
+            logger.debug("found {} distinct contexts", distinctContexts.size());
+            return distinctContexts;
+        }
     }
 
-    public List<String> getDistinctNumOfContextIds(ModelConf modelConf, Instant endInstant) {
-        Query query = new Query()
-                .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).is(Date.from(endInstant)));
-        return mongoTemplate.getCollection(getCollectionName(modelConf))
-                .distinct(ModelDAO.CONTEXT_ID_FIELD, query.getQueryObject());
+    /**
+     * Aggregate distinct contextIds
+     * @param sessionId sessionId | null
+     * @param endInstant endInstant
+     * @param skip skip
+     * @param limit limit
+     * @param collectionName collectionName
+     * @param allowDiskUse allowDiskUse
+     * @return set of distinct contextIds
+     */
+    private Set<String> aggregateContextIds(
+            String sessionId, Instant endInstant, long skip, long limit, String collectionName, boolean allowDiskUse) {
+
+        List<AggregationOperation> aggregationOperations = new LinkedList<>();
+        aggregationOperations.add(match(where(ModelDAO.END_TIME_FIELD).is(Date.from(endInstant))));
+        if(sessionId != null) {
+            aggregationOperations.add(match(where(ModelDAO.SESSION_ID_FIELD).is(sessionId)));
+        }
+        aggregationOperations.add(group(ModelDAO.CONTEXT_ID_FIELD));
+        aggregationOperations.add(project(ModelDAO.CONTEXT_ID_FIELD).and("_id").as(ModelDAO.CONTEXT_ID_FIELD)
+                .andExclude("_id"));
+
+        aggregationOperations.add(sort(Sort.Direction.ASC, ModelDAO.CONTEXT_ID_FIELD));
+        aggregationOperations.add(skip(skip));
+        aggregationOperations.add(limit(limit));
+
+        Aggregation aggregation = newAggregation(aggregationOperations).withOptions(Aggregation.newAggregationOptions().
+                allowDiskUse(allowDiskUse).build());
+        List<DBObject> aggrResult = mongoTemplate
+                .aggregate(aggregation, collectionName, DBObject.class)
+                .getMappedResults();
+
+        return aggrResult.stream()
+                .map(result -> (String) result.get(ModelDAO.CONTEXT_ID_FIELD))
+                .collect(Collectors.toSet());
+    }
+
+    public Collection<String> getContextIdsWithModels(ModelConf modelConf, Instant endInstant) {
+       return getContextIdsWithModels(modelConf, null, endInstant);
     }
 
     public void save(ModelConf modelConf, String sessionId, String contextId, Model model, TimeRange timeRange,
@@ -197,7 +250,7 @@ public class ModelStore implements ModelReader, StoreManagerAware {
             AggregationResults<DBObject> aggrResult = mongoTemplate.aggregate(agg, collectionName, DBObject.class);
             removeContextIdsModels(collectionName, until, aggrResult);
 
-        } catch (InvalidDataAccessApiUsageException ex) {
+        } catch (Exception ex) {
             AggregationResults<DBObject> aggrResult;
 
             long limit = modelAggregationPaginationSize;
@@ -210,7 +263,7 @@ public class ModelStore implements ModelReader, StoreManagerAware {
                         Aggregation.sort(Direction.ASC, ModelDAO.CONTEXT_ID_FIELD),
                         Aggregation.skip(skip),
                         Aggregation.limit(limit)
-                );
+                ).withOptions(Aggregation.newAggregationOptions().allowDiskUse(true).build());
                 skip = skip + modelAggregationPaginationSize;
                 aggrResult = mongoTemplate.aggregate(agg, collectionName, DBObject.class);
                 removeContextIdsModels(collectionName, until, aggrResult);

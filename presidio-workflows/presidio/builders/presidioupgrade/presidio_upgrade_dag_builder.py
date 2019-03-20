@@ -27,7 +27,6 @@ def build(dag, from_version, to_version):
                                dag=dag,
                                retries=99999,
                                retry_delay=timedelta(minutes=5),
-                               retry_exponential_backoff=True,
                                task_id=version)
 
         if previous is not None:

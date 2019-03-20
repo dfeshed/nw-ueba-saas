@@ -1,5 +1,4 @@
 
-
 from presidio.builders.ade.aggregation.aggregations_dag_builder import AggregationsDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.smart.smart_events_operator import SmartEventsOperator
@@ -54,49 +53,44 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
 
         task_sensor_service = TaskSensorService()
 
+        def hourly_condition(context): return is_execution_date_valid(context['execution_date'],
+                                                             FIX_DURATION_STRATEGY_HOURLY,
+                                                             anomaly_detection_engine_scoring_dag.schedule_interval) \
+                                              & PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
+                                                anomaly_detection_engine_scoring_dag,
+                                                self._min_gap_from_dag_start_date_to_start_scoring,
+                                                context['execution_date'],
+                                                anomaly_detection_engine_scoring_dag.schedule_interval)
 
-        # defining hourly and daily short circuit operators which should be wired to the sub dags and operators that
-        # defined directly under the ADE SCORING dag
-        hourly_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
-            task_id='ade_scoring_hourly_short_circuit',
-            dag=anomaly_detection_engine_scoring_dag,
-            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                     FIX_DURATION_STRATEGY_HOURLY,
-                                                                     anomaly_detection_engine_scoring_dag.schedule_interval) &
-                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(anomaly_detection_engine_scoring_dag,
-                                                                                                                                   self._min_gap_from_dag_start_date_to_start_scoring,
-                                                                                                                                   kwargs['execution_date'],
-                                                                                                                                   anomaly_detection_engine_scoring_dag.schedule_interval)
-        )
 
         # Iterate all configured data sources and
         # define the hourly and daily aggregation sub dags, their sensors, short circuit and their flow dependencies.
         self._build_data_source_scoring_flow(anomaly_detection_engine_scoring_dag,
-                                             hourly_short_circuit_operator, hourly_aggregations_last_tasks_list)
+                                             hourly_condition, hourly_aggregations_last_tasks_list)
 
         # Iterate all hourly smart configurations and
         # define the smart operator with its sensor, short circuit and flow dependecies.
         self._build_smart_flow(anomaly_detection_engine_scoring_dag, self.hourly_smart_events_confs,
                                FIX_DURATION_STRATEGY_HOURLY, task_sensor_service,
-                               hourly_short_circuit_operator,
+                               hourly_condition,
                                hourly_aggregations_last_tasks_list)
 
         return anomaly_detection_engine_scoring_dag
 
     def _build_data_source_scoring_flow(self, anomaly_detection_engine_scoring_dag,
-                                        hourly_short_circuit_operator, hourly_aggregations_last_tasks_list):
+                                        hourly_condition, hourly_aggregations_last_tasks_list):
         # Iterate all configured data sources and
         # define the hourly and daily aggregation sub dags, their sensors, short circuit and their flow dependencies.
         for data_source in self.data_sources:
             # Create the hourly aggregations for the data source
             group_connector = self._get_aggregations_group_connector(FIX_DURATION_STRATEGY_HOURLY, data_source,
                                                                    anomaly_detection_engine_scoring_dag,
-                                                                   hourly_short_circuit_operator)
+                                                                     hourly_condition)
 
             hourly_aggregations_last_tasks_list.append(group_connector)
 
     def _build_smart_flow(self, anomaly_detection_engine_scoring_dag, smart_events_confs, fixed_duration_strategy,
-                          task_sensor_service, smart_short_circuit_operator, hourly_aggregations_last_tasks_list):
+                          task_sensor_service, hourly_condition, hourly_aggregations_last_tasks_list):
         # Iterate all smart configurations and
         # define the smart operator with its sensor, short circuit and flow dependecies.
         for smart_events_conf in smart_events_confs:
@@ -106,10 +100,10 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
                     command=SmartEventsOperator.liors_special_run_command,
                     fixed_duration_strategy=fixed_duration_strategy,
                     smart_events_conf=smart_events_conf,
-                    dag=anomaly_detection_engine_scoring_dag
+                    dag=anomaly_detection_engine_scoring_dag,
+                    condition=hourly_condition
                 )
                 task_sensor_service.add_task_sequential_sensor(smart_events_operator)
-                task_sensor_service.add_task_short_circuit(smart_events_operator, smart_short_circuit_operator)
 
                 # The hourly smart events operator should start after all hourly aggregations subDAG operators are finished
                 for hourly_aggregations_last_task in hourly_aggregations_last_tasks_list:
@@ -119,12 +113,12 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
                 raise Exception("smart configuration is None or empty")
 
     def _get_aggregations_group_connector(self, fixed_duration_strategy, data_source, anomaly_detection_engine_dag,
-                                          hourly_short_circuit_operator):
+                                          hourly_condition):
         aggregations_dag_id = '{}_{}_aggregations'.format(
             fixed_duration_strategy_to_string(fixed_duration_strategy),
             data_source
         )
-        return self._create_multi_point_group_connector(AggregationsDagBuilder(FIX_DURATION_STRATEGY_HOURLY, data_source),
+        return self._create_multi_point_group_connector(AggregationsDagBuilder(FIX_DURATION_STRATEGY_HOURLY, data_source, hourly_condition),
                                                         anomaly_detection_engine_dag, aggregations_dag_id,
-                                                        hourly_short_circuit_operator,
+                                                        None,
                                                         False)

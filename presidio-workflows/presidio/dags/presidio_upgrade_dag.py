@@ -92,7 +92,7 @@ def handle_airflow_execution():
 
         from_version, to_version = read_presidio_versions()
         dag_id = "presidio_upgrade_dag_from_%s_to_%s" % (from_version, to_version)
-        dag = DAG(dag_id=dag_id, schedule_interval="@once", start_date=datetime(2019, 1, 1))
+        dag = DAG(dag_id=dag_id, schedule_interval=None, start_date=datetime(2019, 1, 1))
         presidio_upgrade_dag_builder.build(dag, from_version, to_version)
         return dag
 

@@ -60,11 +60,12 @@ class RerunFullFlowDagBuilder(object):
         kill_dags_task_instances_operator >> clean_mongo_operator
         kill_dags_task_instances_operator >> clean_elasticsearch_data_operator
         kill_dags_task_instances_operator >> clean_adapter_operator
+        kill_dags_task_instances_operator >> clean_logs_operator
         clean_mongo_operator >> reset_presidio_configuration_operator
         clean_elasticsearch_data_operator >> reset_presidio_configuration_operator
         clean_adapter_operator >> reset_presidio_configuration_operator
+        clean_logs_operator >> reset_presidio_configuration_operator
         reset_presidio_configuration_operator >> clean_dags_from_db_operator
-        clean_dags_from_db_operator >> clean_logs_operator
 
         logging.debug("Finished creating dag - %s", dag.dag_id)
 
@@ -149,16 +150,20 @@ def kill_dags_task_instances(dag_ids):
             stop_kill_dag_run_task_instances(dag_run=dag_run)
 
 
-
 @provide_session
 def cleanup_dags_from_postgres(dag_ids, session=None):
     """
-    :param dag_ids: dag id's to be cleaned from airflow db
+    :param dag_ids: dag id's to be cleaned from airflow db if paused
     :type dag_ids: list[str]
     """
+
+    query = session.query(DagModel).filter(DagModel.dag_id.in_(dag_ids), DagModel.is_paused == True)
+    logging.info("query: %s", query)
+    paused_dags = query.all()
+
     for t in ["xcom", "task_instance", "sla_miss", "log", "job", "dag_run", "dag"]:
-        for dag_id in dag_ids:
-            sql = "DELETE FROM {} WHERE dag_id LIKE \'%{}%\'".format(t, dag_id)
+        for paused_dag in paused_dags:
+            sql = "DELETE FROM {} WHERE dag_id LIKE \'{}%\'".format(t, paused_dag.dag_id)
             logging.info("executing: %s", sql)
             session.execute(sql)
 

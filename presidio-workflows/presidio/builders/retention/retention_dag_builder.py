@@ -14,15 +14,6 @@ ADAPTER_JVM_ARGS_CONFIG_PATH = 'components.adapter.jvm_args'
 
 
 class RetentionDagBuilder(PresidioDagBuilder):
-    input_min_time_to_start_retention_in_days_conf_key = "retention.input.min_time_to_start_retention_in_days"
-    input_min_time_to_start_retention_in_days_default_value = 2
-    input_retention_interval_in_hours_conf_key = "retention.input.retention_interval_in_hours"
-    input_retention_interval_in_hours_default_value = 24
-
-    output_min_time_to_start_retention_in_days_conf_key = "retention.output.min_time_to_start_retention_in_days"
-    output_min_time_to_start_retention_in_days_default_value = 2
-    output_retention_interval_in_hours_conf_key = "retention.output.retention_interval_in_hours"
-    output_retention_interval_in_hours_default_value = 24
 
     def __init__(self, data_sources):
         """
@@ -32,23 +23,6 @@ class RetentionDagBuilder(PresidioDagBuilder):
         """
 
         self.data_sources = data_sources
-        conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
-
-        self._input_min_time_to_start_retention_in_days = conf_reader.read(
-            RetentionDagBuilder.input_min_time_to_start_retention_in_days_conf_key,
-            RetentionDagBuilder.input_min_time_to_start_retention_in_days_default_value)
-
-        self._input_retention_interval_in_hours = timedelta(
-            hours=conf_reader.read(RetentionDagBuilder.input_retention_interval_in_hours_conf_key,
-                                   RetentionDagBuilder.input_retention_interval_in_hours_default_value))
-
-        self._output_min_time_to_start_retention_in_days = conf_reader.read(
-            RetentionDagBuilder.output_min_time_to_start_retention_in_days_conf_key,
-            RetentionDagBuilder.output_min_time_to_start_retention_in_days_default_value)
-
-        self._output_retention_interval_in_hours = timedelta(
-            hours=conf_reader.read(RetentionDagBuilder.output_retention_interval_in_hours_conf_key,
-                                   RetentionDagBuilder.output_retention_interval_in_hours_default_value))
 
     def build(self, retention_dag):
         """
@@ -61,38 +35,8 @@ class RetentionDagBuilder(PresidioDagBuilder):
 
         self.log.debug("populating the retention dag, dag_id=%s ", retention_dag.dag_id)
 
-        input_retention_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
-            task_id='input_retention_short_circuit',
-            dag=retention_dag,
-            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                     self._input_retention_interval_in_hours,
-                                                                     retention_dag.schedule_interval) &
-                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
-                                                 retention_dag,
-                                                 timedelta(days=self._input_min_time_to_start_retention_in_days),
-                                                 kwargs['execution_date'],
-                                                 retention_dag.schedule_interval)
-        )
-
-        output_retention_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
-            task_id='output_retention_short_circuit',
-            dag=retention_dag,
-            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                     self._output_retention_interval_in_hours,
-                                                                     retention_dag.schedule_interval) &
-                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
-                                                 retention_dag,
-                                                 timedelta(days=self._output_min_time_to_start_retention_in_days),
-                                                 kwargs['execution_date'],
-                                                 retention_dag.schedule_interval)
-        )
-
-        input_retention_sub_dag = self._get_presidio_input_retention_group_connector_operator(self.data_sources, retention_dag)
-        output_retention_sub_dag = self._get_presidio_output_retention_group_connector_operator(self.data_sources,
-                                                                                                retention_dag)
-
-        input_retention_short_circuit_operator >> input_retention_sub_dag
-        output_retention_short_circuit_operator >> output_retention_sub_dag
+        self._get_presidio_input_retention_group_connector_operator(self.data_sources, retention_dag)
+        self._get_presidio_output_retention_group_connector_operator(self.data_sources, retention_dag)
 
         retention_dag_extended = RetentionDagExtensionBuilder(self.data_sources)
         retention_dag_extended.build(retention_dag)

@@ -1,7 +1,6 @@
 package fortscale.aggregation.feature.bucket;
 
 import com.mongodb.DBObject;
-import com.mongodb.MongoCommandException;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.store.record.StoreMetadataProperties;
@@ -66,7 +65,7 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 					.getCollection(collectionName)
 					.distinct(FeatureBucket.CONTEXT_ID_FIELD, query.getQueryObject());
 			distinctContexts = distinctContextIds.stream().map(Object::toString).collect(Collectors.toSet());
-		} catch (MongoCommandException e) {
+		} catch (Exception e) {
 			long nextPageIndex = 0;
 			Set<String> subList;
 			distinctContexts = new HashSet<>();

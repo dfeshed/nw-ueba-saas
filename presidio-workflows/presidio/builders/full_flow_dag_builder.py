@@ -30,7 +30,7 @@ class FullFlowDagBuilder(PresidioDagBuilder):
 
         root_dag_gap_sensor_operator = RootDagGapSensorOperator(dag=full_flow_dag, task_id='full_flow_gap_sensor',
                                                                 external_dag_id=full_flow_dag.dag_id,
-                                                                execution_delta=timedelta(days=1),
+                                                                execution_delta=timedelta(hours=23),
                                                                 poke_interval=5)
 
         adapter_sub_dag = self._get_adapter_group_connector_operator(data_sources, full_flow_dag)

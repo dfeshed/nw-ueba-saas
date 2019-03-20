@@ -56,66 +56,55 @@ class OutputDagBuilder(PresidioDagBuilder):
 
         task_sensor_service = TaskSensorService()
 
-        # This operator validates that output run in intervals that are no less than hourly intervals and that the dag
+        # This condition validates that output run in intervals that are no less than hourly intervals and that the dag
         # start only after the defined gap.
-        output_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
-            task_id='output_short_circuit',
-            dag=output_dag,
-            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
+        def output_condition(context): return is_execution_date_valid(context['execution_date'],
                                                                      FIX_DURATION_STRATEGY_HOURLY,
-                                                                     output_dag.schedule_interval) &
-                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
+                                                                     output_dag.schedule_interval)\
+                                              & PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
                                                  output_dag,
                                                  self._min_gap_from_dag_start_date_to_start_running,
-                                                 kwargs['execution_date'],
+                                                 context['execution_date'],
                                                  output_dag.schedule_interval)
-        )
-
         # Create jar operators
         hourly_output_operator = FixedDurationJarOperator(
             task_id='hourly_output_processor',
             fixed_duration_strategy=timedelta(hours=1),
             command=PresidioDagBuilder.presidio_command,
             jvm_args=self.jvm_args,
-            dag=output_dag)
+            dag=output_dag,
+            condition=output_condition)
 
         task_sensor_service.add_task_sequential_sensor(hourly_output_operator)
-        task_sensor_service.add_task_short_circuit(hourly_output_operator, output_short_circuit_operator)
+
+        def output_daily_condition(context): return is_execution_date_valid(context['execution_date'],
+                                                                            FIX_DURATION_STRATEGY_DAILY,
+                                                                            output_dag.schedule_interval)\
+                                                    & PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
+                                                        output_dag,
+                                                        self._min_gap_from_dag_start_date_to_start_modeling,
+                                                        context['execution_date'],
+                                                        output_dag.schedule_interval)
 
         user_score_operator = FixedDurationJarOperator(
             task_id='user_score_processor',
             fixed_duration_strategy=timedelta(days=1),
             command=OUTPUT_RUN_DAILY_COMMAND,
             jvm_args=self.jvm_args,
-            dag=output_dag)
-
-        task_sensor_service = TaskSensorService()
-
-        # Create daily short circuit operator to wire the output processing and the user score recalculation
-        daily_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
-            task_id='output_daily_short_circuit',
             dag=output_dag,
-            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                     FIX_DURATION_STRATEGY_DAILY,
-                                                                     output_dag.schedule_interval) &
-                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
-                                                 output_dag,
-                                                 self._min_gap_from_dag_start_date_to_start_modeling,
-                                                 kwargs['execution_date'],
-                                                 output_dag.schedule_interval)
-        )
+            condition=output_daily_condition)
 
-        task_sensor_service.add_task_sequential_sensor(user_score_operator)
-        task_sensor_service.add_task_short_circuit(user_score_operator, daily_short_circuit_operator)
-
-        self._push_forwarding(hourly_output_operator,daily_short_circuit_operator, output_dag)
+        self._push_forwarding(hourly_output_operator, output_condition, user_score_operator, output_dag)
 
         return output_dag
 
-    def _push_forwarding(self, hourly_output_operator, daily_short_circuit_operator, output_dag):
+    def _push_forwarding(self, hourly_output_operator, output_condition, user_score_operator, output_dag):
         default_args = output_dag.default_args
         enable_output_forwarder = default_args.get("enable_output_forwarder")
         self.log.debug("enable_output_forwarder=%s ", enable_output_forwarder)
         if enable_output_forwarder == 'true':
-            push_forwarding_task = PushForwarderTaskBuilder().build(output_dag)
-            hourly_output_operator >> push_forwarding_task >> daily_short_circuit_operator
+            push_forwarding_task = PushForwarderTaskBuilder(output_condition).build(output_dag)
+            hourly_output_operator >> push_forwarding_task >> user_score_operator
+        else:
+            hourly_output_operator >> user_score_operator
+

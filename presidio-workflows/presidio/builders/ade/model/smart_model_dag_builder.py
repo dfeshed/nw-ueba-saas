@@ -77,52 +77,44 @@ class SmartModelDagBuilder(PresidioDagBuilder):
         :return: The input DAG, after the operator flow was added
         :rtype: airflow.models.DAG
         """
-        task_sensor_service = TaskSensorService()
 
-        #defining the smart model accumulator
+        def smart_accumulate_condition(context): return is_execution_date_valid(context['execution_date'],
+                                                                     self._accumulate_interval,
+                                                                     smart_model_dag.schedule_interval) \
+                                                        & PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
+                                                         smart_model_dag,
+                                                         self._min_gap_from_dag_start_date_to_start_accumulating,
+                                                         context['execution_date'],
+                                                         smart_model_dag.schedule_interval)
+
+        # defining the smart model accumulator
         smart_model_accumulate_operator = SmartModelAccumulateOperator(
             fixed_duration_strategy=FIX_DURATION_STRATEGY_DAILY,
             command=PresidioDagBuilder.presidio_command,
             smart_events_conf=self._smart_events_conf,
-            dag=smart_model_dag)
-        smart_accumulate_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
-            task_id='smart_accumulate_short_circuit',
             dag=smart_model_dag,
-            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                     self._accumulate_interval,
-                                                                     smart_model_dag.schedule_interval) &
-                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(smart_model_dag,
-                                                                                                                                   self._min_gap_from_dag_start_date_to_start_accumulating,
-                                                                                                                                   kwargs['execution_date'],
-                                                                                                                                   smart_model_dag.schedule_interval)
-        )
-        task_sensor_service.add_task_short_circuit(smart_model_accumulate_operator, smart_accumulate_short_circuit_operator)
+            condition=smart_accumulate_condition)
 
-        #defining the smart model
+        def smart_model_condition(context): return is_execution_date_valid(context['execution_date'],
+                                                                           self._build_model_interval,
+                                                                           smart_model_dag.schedule_interval) \
+                                                   & PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
+                                                    smart_model_dag,
+                                                    self._min_gap_from_dag_start_date_to_start_modeling,
+                                                    context['execution_date'],
+                                                    smart_model_dag.schedule_interval)
+
+        # defining the smart model
         smart_model_operator = SmartModelOperator(smart_events_conf=self._smart_events_conf,
                                                 command="process",
                                                 session_id=smart_model_dag.dag_id.split('.', 1)[0],
-                                                dag=smart_model_dag)
+                                                dag=smart_model_dag,
+                                                condition=smart_model_condition)
 
-        smart_model_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
-            task_id='smart_model_short_circuit',
-            dag=smart_model_dag,
-            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                     self._build_model_interval,
-                                                                     smart_model_dag.schedule_interval) &
-                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(smart_model_dag,
-                                                                                                                                   self._min_gap_from_dag_start_date_to_start_modeling,
-                                                                                                                                   kwargs['execution_date'],
-                                                                                                                                   smart_model_dag.schedule_interval)
-        )
-        task_sensor_service.add_task_sequential_sensor(smart_model_operator)
-        task_sensor_service.add_task_short_circuit(smart_model_operator, smart_model_short_circuit_operator)
+        # defining the dependencies between the operators
+        smart_model_accumulate_operator.set_downstream(smart_model_operator)
 
-        #defining the dependencies between the operators
-        smart_model_accumulate_operator.set_downstream(smart_model_short_circuit_operator)
-
-
-        #the following line is a workaround for bug in Airflow AIRFLOW-585 : Fix race condition in backfill execution loop
+        # the following line is a workaround for bug in Airflow AIRFLOW-585 : Fix race condition in backfill execution loop
         t2 = BashOperator(
             task_id='sleep',
             bash_command='sleep 5',

@@ -1,6 +1,9 @@
 {
   ".kibana_template": {
     "template": ".kibana",
+    "settings": {
+      "number_of_shards": 1
+    },
     "mappings": {
       "timelion-sheet": {
         "properties": {

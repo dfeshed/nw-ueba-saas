@@ -60,44 +60,36 @@ class AggrModelDagBuilder(PresidioDagBuilder):
         :return: The input DAG, after the operator flow was added
         :rtype: airflow.models.DAG
         """
-        task_sensor_service = TaskSensorService()
 
-        #defining the Accumulate operator
+        def aggr_accumulate_condition(context): return is_execution_date_valid(context['execution_date'],
+                                                                     self._accumulate_interval,
+                                                                     aggr_model_dag.schedule_interval)
+
+        # defining the Accumulate operator
         aggr_model_accumulate_aggregations_operator = AggrModelAccumulateAggregationsOperator(
             fixed_duration_strategy=FIX_DURATION_STRATEGY_DAILY,
             feature_bucket_strategy=self._fixed_duration_strategy,
             command=PresidioDagBuilder.presidio_command,
             data_source=self._data_source,
-            dag=aggr_model_dag)
-        aggr_accumulate_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
-            task_id='aggr_accumulate_short_circuit{0}'.format(self._data_source),
             dag=aggr_model_dag,
-            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                     self._accumulate_interval,
-                                                                     aggr_model_dag.schedule_interval)
-        )
-        task_sensor_service.add_task_short_circuit(aggr_model_accumulate_aggregations_operator, aggr_accumulate_short_circuit_operator)
+            condition=aggr_accumulate_condition)
 
-        #defining the model operator
+        def aggr_accumulate_condition(context): return is_execution_date_valid(context['execution_date'],
+                                                                     self._build_model_interval,
+                                                                     aggr_model_dag.schedule_interval) \
+                                                       & PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(aggr_model_dag,
+                                                                                                                                   self._min_gap_from_dag_start_date_to_start_modeling,
+                                                                                                                                   context['execution_date'],
+                                                                                                                                   aggr_model_dag.schedule_interval)
+
+        # defining the model operator
         aggr_model_operator = AggrModelOperator(data_source=self._data_source,
                                               command="process",
                                               session_id=aggr_model_dag.dag_id.split('.', 1)[0],
-                                              dag=aggr_model_dag)
-        aggr_model_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
-            task_id='aggr_model_short_circuit{0}'.format(self._data_source),
-            dag=aggr_model_dag,
-            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                     self._build_model_interval,
-                                                                     aggr_model_dag.schedule_interval) &
-                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(aggr_model_dag,
-                                                                                                                                   self._min_gap_from_dag_start_date_to_start_modeling,
-                                                                                                                                   kwargs['execution_date'],
-                                                                                                                                   aggr_model_dag.schedule_interval)
-        )
-        task_sensor_service.add_task_sequential_sensor(aggr_model_operator)
-        task_sensor_service.add_task_short_circuit(aggr_model_operator, aggr_model_short_circuit_operator)
+                                              dag=aggr_model_dag,
+                                              condition=aggr_accumulate_condition)
 
         # defining the dependencies between the operators
-        aggr_model_accumulate_aggregations_operator.set_downstream(aggr_model_short_circuit_operator)
+        aggr_model_accumulate_aggregations_operator.set_downstream(aggr_model_operator)
 
         return aggr_model_dag
