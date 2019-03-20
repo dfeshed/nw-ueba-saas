@@ -6,15 +6,15 @@
     <parent>
         <groupId>presidio.netwitness</groupId>
         <artifactId>presidio-netwitness</artifactId>
-        <version>3.0.1-SNAPSHOT</version>
+        <version>11.4.0-0-SNAPSHOT</version>
     </parent>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>11.4.0-0-SNAPSHOT</version>
 
     <artifactId>presidio-netwitness-flume</artifactId>
     <name>presidio-netwitness-flume</name>
 
     <properties>
-        <flume.version>3.0.1-SNAPSHOT</flume.version>
+        <flume.version>11.4.0-0-SNAPSHOT</flume.version>
         <jersey.version>2.25</jersey.version>
         <tomcat.version>8.5.16</tomcat.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
@@ -165,7 +165,7 @@
         <dependency>
             <groupId>com.rsa.asoc.libraries</groupId>
             <artifactId>record-streams-source-netwitness</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.5</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.kohsuke</groupId>

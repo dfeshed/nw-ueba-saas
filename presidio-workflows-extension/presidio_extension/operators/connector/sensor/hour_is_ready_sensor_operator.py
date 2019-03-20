@@ -1,7 +1,7 @@
 import datetime
 import logging
 import time
-
+from datetime import timedelta
 from airflow.operators.sensors import BaseSensorOperator
 from presidio.utils.connector.properties_loader import load_and_get_property
 
@@ -23,7 +23,14 @@ class HourIsReadySensorOperator(BaseSensorOperator):
             self,
             schema_name,
             *args, **kwargs):
-        super(HourIsReadySensorOperator, self).__init__(*args, **kwargs)
+        super(HourIsReadySensorOperator, self).__init__(
+            retries=99999,
+            retry_exponential_backoff=True,
+            max_retry_delay=timedelta(seconds=300),
+            retry_delay=timedelta(seconds=5),
+            *args,
+            **kwargs
+        )
 
         self._hour_start_time = None
         self._schema_name = schema_name.lower()

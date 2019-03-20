@@ -231,15 +231,6 @@
     },
     {
       "type": "copy_value",
-      "name": "rename-process-category",
-      "sourceKey": "process_category_dst",
-      "isRemoveSourceKey": true,
-      "destinationKeys": [
-        "dstProcessCategories"
-      ]
-    },
-    {
-      "type": "copy_value",
       "name": "rename-src-process-dir-group",
       "sourceKey": "dir_path_src",
       "isRemoveSourceKey": true,
@@ -275,7 +266,7 @@
     {
       "type": "copy_value",
       "name": "rename-src-process-categories",
-      "sourceKey": "filetype_src",
+      "sourceKey": "file_cat_src",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "srcProcessCategories"
@@ -292,7 +283,7 @@
     {
       "type": "copy_value",
       "name": "rename-dst-process-categories",
-      "sourceKey": "filetype_dst",
+      "sourceKey": "file_cat_dst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "dstProcessCategories"
@@ -312,7 +303,16 @@
       "sourceKey": "checksum_src",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "additionalInfo.checksumId"
+        "additionalInfo.srcChecksumId"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "checksum-dst",
+      "sourceKey": "checksum_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.dstChecksumId"
       ]
     },
     {
@@ -326,8 +326,17 @@
     },
     {
       "type": "copy_value",
+      "name": "callback_id",
+      "sourceKey": "nwe_callback_id",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.callbackId"
+      ]
+    },
+    {
+      "type": "copy_value",
       "name": "os-type",
-      "sourceKey": "os",
+      "sourceKey": "OS[0]",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "additionalInfo.osType"
@@ -339,7 +348,16 @@
       "sourceKey": "process_vid_src",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "additionalInfo.processVidSrc"
+        "additionalInfo.srcProcessVid"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "process-vid-dst",
+      "sourceKey": "process_vid_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.dstProcessVid"
       ]
     }
   ]
