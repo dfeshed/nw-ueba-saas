@@ -2,10 +2,12 @@ import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import { waitUntil, settled, find, click, render, triggerKeyEvent } from '@ember/test-helpers';
-import { uebaEventId, reEventId, networkEventId, endpointEventId, getAllEvents, getAllAlerts } from '../events-list/data';
+import { processEventId, normalizedUebaEventId, reEventId, networkEventId, endpointEventId, getAllEvents, getAllAlerts } from '../events-list/data';
 import { emptyNetworkEvent, emptyEndpointEvent } from './empty-data';
 import * as generic from './helpers/generic';
 import * as endpoint from './helpers/endpoint';
+import * as ueba from './helpers/ueba';
+import * as process from './helpers/process';
 
 const ENTER_KEY = 13;
 
@@ -203,52 +205,72 @@ module('Integration | Component | events-list-row', function(hooks) {
     });
   });
 
-  test('renders generic row for ueba event', async function(assert) {
+  test('renders ueba row for ueba event', async function(assert) {
     const events = getAllEvents();
-    const [ item ] = events.filter((e) => e.id === uebaEventId);
+    const [ item ] = events.filter((e) => e.id === normalizedUebaEventId);
 
     this.set('item', item);
     this.set('alerts', getAllAlerts());
 
     await render(hbs`{{events-list-row alerts=alerts item=item expandedId=expandedId expand=(action expand)}}`);
 
-    generic.assertRowPresent(assert);
+    ueba.assertRowPresent(assert);
 
-    generic.assertRowAlertDetails(assert, {
+    ueba.assertRowAlertDetails(assert, {
       name: 'abnormal_object_change_operation',
-      summary: '(Event 2 of 2)',
+      summary: '(Event 2 of 4)',
       score: '4'
     });
 
-    generic.assertRowHeader(assert, {
-      eventType: 'N/A',
-      detectorIp: 'N/A',
-      fileName: 'N/A',
-      fileHash: 'N/A'
+    ueba.assertRowHeader(assert, {
+      eventType: 'UEBA',
+      category: 'ACTIVE_DIRECTORY',
+      username: 'ad_qa_1_3',
+      operationType: 'COMPUTER_ACCOUNT_CREATED',
+      eventCode: '4741',
+      result: 'FAILURE'
     });
 
-    generic.assertTableColumns(assert);
+    ueba.assertRowHeaderContext(assert, {
+      username: 'ad_qa_1_3'
+    });
+  });
 
-    generic.assertTableSource(assert, {
-      ip: 'N/A',
-      port: 'N/A',
-      host: 'N/A',
-      mac: 'N/A',
-      user: 'N/A'
+  test('renders process row for ueba process event', async function(assert) {
+    const events = getAllEvents();
+    const [ item ] = events.filter((e) => e.id === processEventId);
+
+    this.set('item', item);
+    this.set('alerts', getAllAlerts());
+
+    await render(hbs`{{events-list-row alerts=alerts item=item expandedId=expandedId expand=(action expand)}}`);
+
+    process.assertRowPresent(assert);
+
+    process.assertRowAlertDetails(assert, {
+      name: 'abnormal_object_change_operation',
+      summary: '(Event 3 of 4)',
+      score: '4'
     });
 
-    generic.assertTableTarget(assert, {
-      ip: 'N/A',
-      port: 'N/A',
-      host: 'N/A',
-      mac: 'N/A',
-      user: 'N/A'
+    process.assertRowHeader(assert, {
+      eventType: 'UEBA',
+      category: 'PROCESS',
+      username: 'proc_qa_1_3',
+      operationType: 'CREATE_PROCESS',
+      dataSource: 'Netwitness Endpoint',
+      result: ''
     });
+
+    process.assertRowHeaderContext(assert, {
+      username: 'proc_qa_1_3'
+    });
+
   });
 
   test('event summary renders correctly with invalid eventIndex value', async function(assert) {
     const events = getAllEvents();
-    const [ original ] = events.filter((e) => e.id === uebaEventId);
+    const [ original ] = events.filter((e) => e.id === normalizedUebaEventId);
 
     const item = {
       ...original,
@@ -261,7 +283,7 @@ module('Integration | Component | events-list-row', function(hooks) {
     await render(hbs`{{events-list-row alerts=alerts item=item expandedId=expandedId expand=(action expand)}}`);
 
     const score = '4';
-    const summary = '(Event 1 of 2)';
+    const summary = '(Event 1 of 4)';
     const name = 'abnormal_object_change_operation';
     generic.assertRowAlertDetails(assert, { name, summary, score });
 
@@ -286,7 +308,7 @@ module('Integration | Component | events-list-row', function(hooks) {
     this.set('item', { ...original, eventIndex: '08' });
     generic.assertRowAlertDetails(assert, {
       name,
-      summary: '(Event 9 of 2)',
+      summary: '(Event 9 of 4)',
       score
     });
   });

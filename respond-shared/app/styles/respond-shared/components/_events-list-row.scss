@@ -15,7 +15,7 @@
     }
   }
 
-  & dl.events-list-endpoint-header.row.column, dl.events-list-generic-header.row.column {
+  & dl.events-list-ueba-header.row.column, dl.events-list-process-header.row.column, dl.events-list-endpoint-header.row.column, dl.events-list-generic-header.row.column {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
@@ -88,15 +88,26 @@
     flex: 1 1 26%;
   }
   .events-list-endpoint-header .row .column.verbose {
-    flex: 1 0 5%;
+    flex: 1 0 auto;
     min-width: 8%;
   }
   .events-list-endpoint-header .row .column.hash {
     flex: 1 1 auto;
-    max-width: 34%;
+    max-width: 25%;
   }
-
-  .events-list-endpoint-header, .events-list-generic-header {
+  .events-list-ueba-header .row .column.verbose {
+    flex: 1 2 20%;
+  }
+  .events-list-ueba-header .row .column.thin {
+    flex: 1 1 10%;
+  }
+  .events-list-process-header .row .column.verbose {
+    flex: 1 2 20%;
+  }
+  .events-list-process-header .row .column.thin {
+    flex: 1 1 10%;
+  }
+  .events-list-endpoint-header, .events-list-generic-header, .events-list-ueba-header, .events-list-process-header {
     padding: 10px;
     padding-left: 1.8em;
     padding-right: 1.8em;
@@ -126,5 +137,4 @@
   .events-list-generic-header .row .column {
     flex-basis: 1%;
   }
-
 }

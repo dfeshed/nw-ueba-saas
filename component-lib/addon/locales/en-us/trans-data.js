@@ -1532,6 +1532,24 @@ export default {
         tableHASH: 'HASH',
         sourceLabel: 'Source',
         targetLabel: 'Target'
+      },
+      ueba: {
+        time: 'EVENT TIME',
+        type: 'EVENT TYPE',
+        category: 'CATEGORY',
+        username: 'USERNAME',
+        operationType: 'OPERATION TYPE',
+        eventCode: 'EVENT CODE',
+        result: 'RESULT',
+        dataSource: 'DATA SOURCE',
+        process: {
+          sourceLabel: 'SOURCE',
+          destinationLabel: 'DESTINATION',
+          tableFileName: 'FILE NAME',
+          tableDirectory: 'DIRECTORY',
+          tableUsername: 'USERNAME',
+          tableCategories: 'CATEGORIES'
+        }
       }
     },
     eventsTable: {

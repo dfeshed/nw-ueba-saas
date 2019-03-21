@@ -1,0 +1,33 @@
+.events-list-ueba-detail {
+  @include border-top(1px, solid, primary, base, somewhat-opaque);
+  padding: rsa-whitespace(less);
+  padding-top: 10px;
+
+  hbox {
+    display: block;
+    overflow: hidden;
+
+    & > dl {
+      &:first-of-type {
+        -webkit-columns: 250px 4;
+        -moz-columns: 250px 4;
+        columns: 250px 4;
+
+        -webkit-column-gap: 30px;
+        -moz-column-gap: 30px;
+        column-gap: 30px;
+
+        -webkit-column-rule: 1px solid border-color(primary, base, somewhat-opaque);
+        -moz-column-rule: 1px solid border-color(primary, base, somewhat-opaque);
+        column-rule: 1px solid border-color(primary, base, somewhat-opaque);
+
+        margin: 0 auto;
+        display: block;
+        margin-top: -14px;
+
+        -moz-column-fill: balance;
+        column-fill: balance;
+      }
+    }
+  }
+}

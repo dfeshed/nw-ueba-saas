@@ -11,6 +11,12 @@ const selectors = {
   endpointHeader: '[test-id=endpointEventHeader]',
   endpointFooter: '[test-id=endpointEventFooter]',
   endpointDetail: '[test-id=endpointEventDetail]',
+  uebaHeader: '[test-id=uebaEventHeader]',
+  uebaFooter: '[test-id=uebaEventFooter]',
+  uebaDetail: '[test-id=uebaEventDetail]',
+  processHeader: '[test-id=uebaProcessEventHeader]',
+  processFooter: '[test-id=uebaProcessEventFooter]',
+  processDetail: '[test-id=uebaProcessEventDetail]',
   clearButton: '[test-id=clearSelectionBtn]'
 };
 

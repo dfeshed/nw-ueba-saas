@@ -8,6 +8,8 @@ import { createProcessAnalysisLink } from 'respond-shared/utils/event-analysis';
 
 const GENERIC = 'events-list-row/generic';
 const ENDPOINT = 'events-list-row/endpoint';
+const UEBA = 'events-list-row/ueba';
+const PROCESS = 'events-list-row/ueba/process';
 
 export default Component.extend(HighlightsEntities, {
   layout,
@@ -58,17 +60,31 @@ export default Component.extend(HighlightsEntities, {
     return alerts && alerts.find((alert) => alert.indicatorId === indicatorId);
   },
 
-  @computed('item.device_type')
-  componentClasses(deviceType) {
-    const componentClass = deviceType === 'nwendpoint' ? ENDPOINT : GENERIC;
-    const header = `${componentClass}/header`;
-    const footer = `${componentClass}/footer`;
-    const detail = `${componentClass}/detail`;
+  @computed('item.device_type', 'item.schema')
+  componentClasses(deviceType, schema) {
+    let componentClass;
+    switch (schema || deviceType) {
+      case 'FILE':
+      case 'AUTHENTICATION':
+      case 'ACTIVE_DIRECTORY':
+      case 'REGISTRY':
+        componentClass = UEBA;
+        break;
+      case 'PROCESS':
+        componentClass = PROCESS;
+        break;
+      case 'nwendpoint':
+        componentClass = ENDPOINT;
+        break;
+      default:
+        componentClass = GENERIC;
+    }
     return {
-      header,
-      footer,
-      detail
+      header: `${componentClass}/header`,
+      footer: `${componentClass}/footer`,
+      detail: `${componentClass}/detail`
     };
+
   },
 
   @computed()

@@ -9,7 +9,8 @@ export const networkEventId = '5b757f480a32bd36c7609e96:0';
 export const endpointEventId = '5b8554be0a32bd353ad3a167:0';
 export const linuxEndpointEventId = '5b8554be0a32bd353ad3a167:2';
 export const ecatEventId = '5b7f06c10a32bd5a68baea84:0';
-export const uebaEventId = '44732bcc-b9e8-4b2d-badb-e8747c98db46';
+export const normalizedUebaEventId = '11112222-3333-4444-5555-666677778888';
+export const processEventId = 'aaaabbbb-3333-4444-5555-666677778888';
 export const endpointRelatedLinkOne = '/investigation/host/10.63.0.117:56005/navigate/event/AUTO/857775';
 export const endpointRelatedLinkTwo = '/investigation/10.63.0.117:56005/navigate/query/alias.host%3D"INENMENONS4L2C"%2Fdate%2F2018-06-08T03%3A30%3A12.000Z%2F2018-06-08T03%3A40%3A12.000Z';
 export const networkRelatedLinkOne = '/investigation/host/10.4.61.36:56005/navigate/event/AUTO/217948';
@@ -285,7 +286,7 @@ const storyLineEvents = {
             groupby_user_src: '',
             groupby_username: '',
             name: 'abnormal_object_change_operation',
-            numEvents: 2,
+            numEvents: 4,
             risk_score: 4,
             severity: 4,
             signature_id: 'UEBAIOC',
@@ -959,73 +960,289 @@ const storyLineEvents = {
           indicatorId: '586ecfc0ecd25950034e1318',
           events: [
             {
-              createdDate: '2018-07-27T02:23:28.229+0000',
-              eventTime: '2018-07-22T22:09:00.000+0000',
-              features: {
-                additionalInfo: {},
-                dataSource: '4741',
-                eventDate: {
-                  epochSecond: 1532297340,
-                  nano: 0
-                },
-                eventId: 'EV-828-ad_qa_1_9',
-                id: '5b5a81388402c7548eacfacd',
-                isUserAdmin: false,
-                objectId: 'Test5',
-                operationType: 'COMPUTER_ACCOUNT_CREATED',
-                operationTypeCategories: [
-                  'COMPUTER_MANAGEMENT',
-                  'OBJECT_MANAGEMENT'
-                ],
-                result: 'SUCCESS',
-                userDisplayName: 'ad_qa_1_9',
-                userId: 'ad_qa_1_9',
-                userName: 'ad_qa_1_9'
-              },
-              id: 'c05972b1-db65-4786-bf86-d4f1541aa161',
-              indicatorId: '586ecfc0ecd25950034e1318',
+              schema: 'AUTHENTICATION',
+              id: 'authEvnt-1111-2222-3333-444455556666',
               eventIndex: 0,
-              schema: 'ACTIVE_DIRECTORY',
+              updatedBy: 'hourlyOutputProcessorRun2018-10-29T10:00:00Z',
+              updatedDate: '2018-11-02T07:29:52.556.000Z',
+              createdDate: '2018-11-02T07:29:52.556.000Z',
+              dataSource: '4625',
+              timestamp: '2018-10-29T10:03:00.000+0000',
+              eventTime: '2018-10-29T10:03:00.000.000Z',
+              result: 'SUCCESS',
+              operationType: 'INTERACTIVE',
               scores: {
-                operationType: 4
+                operationType: '',
+                processFilePath: '',
+                eventDate: ''
               },
-              updatedBy: 'hourlyOutputProcessorRun2018-07-22T22:00:00Z',
-              updatedDate: '2018-07-27T02:23:28.229+0000'
+              data: [{
+                filename: ''
+              }],
+              destination: {
+                folderPath: '',
+                processDirectory: '',
+                processDirectoryGroups: '',
+                filePath: '',
+                processCategories: '',
+                processCertificateIssuer: '',
+                machineNameRegexCluster: '',
+                processFilePath: '',
+                device: {
+                  ip_address: ''
+                },
+                processFileName: ''
+              },
+              source: {
+                folderPath: '',
+                processDirectory: '',
+                processDirectoryGroups: '',
+                filePath: '',
+                processCategories: '',
+                processCertificateIssuer: '',
+                machineNameRegexCluster: 'siXCGzMIyh_SRC',
+                processFilePath: '',
+                user: {
+                  username: 'auth_qa_1_16'
+                },
+                device: {
+                  ip_address: 'sixcgzmiyh_src'
+                },
+                processFileName: ''
+              },
+              processFileName: '',
+              machineName: '',
+              processDirectoryGroups: '',
+              additionalInfo: {},
+              registryKeyGroup: '',
+              machineOwner: '',
+              processCategories: '',
+              processCertificateIssuer: '',
+              processFilePath: '',
+              registryKey: '',
+              site: '',
+              processDirectory: '',
+              country: '',
+              resultsCode: '',
+              city: '',
+              fileSize: '',
+              registryValueName: ''
             },
             {
-              createdDate: '2018-07-27T02:23:28.229+0000',
-              eventTime: '2018-07-22T22:42:00.000+0000',
-              features: {
-                additionalInfo: {},
-                dataSource: '4741',
-                eventDate: {
-                  epochSecond: 1532299320,
-                  nano: 0
-                },
-                eventId: 'EV-861-ad_qa_1_9',
-                id: '5b5a81388402c7548eacfaf0',
-                isUserAdmin: false,
-                objectId: 'Test3',
-                operationType: 'COMPUTER_ACCOUNT_CREATED',
-                operationTypeCategories: [
-                  'COMPUTER_MANAGEMENT',
-                  'OBJECT_MANAGEMENT'
-                ],
-                result: 'SUCCESS',
-                userDisplayName: 'ad_qa_1_9',
-                userId: 'ad_qa_1_9',
-                userName: 'ad_qa_1_9'
-              },
-              id: uebaEventId,
-              indicatorId: '586ecfc0ecd25950034e1318',
               eventIndex: 1,
+              createdDate: '2018-11-02T07:30:10.635.000Z',
+              eventTime: '2018-10-29T10:59:00.000.000Z',
+              id: normalizedUebaEventId,
+              indicatorId: '586ecfc0ecd25950034e1318',
               schema: 'ACTIVE_DIRECTORY',
+              operationType: 'COMPUTER_ACCOUNT_CREATED',
+              dataSource: '4741',
+              result: 'FAILURE',
+              updatedBy: 'hourlyOutputProcessorRun2018-10-29T10:00:00Z',
+              updatedDate: '2018-11-02T07:30:10.635.000Z',
+              operationTypeCategories: [
+                'COMPUTER_MANAGEMENT',
+                'OBJECT_MANAGEMENT'
+              ],
+              data: [{
+                filename: ''
+              }],
               scores: {
-                operationType: 4
+                operationType: '3',
+                processFilePath: '',
+                eventDate: ''
               },
-              updatedBy: 'hourlyOutputProcessorRun2018-07-22T22:00:00Z',
-              updatedDate: '2018-07-27T02:23:28.229+0000'
+              destination: {
+                folderPath: '',
+                processDirectory: '',
+                processDirectoryGroups: '',
+                filePath: '',
+                processCategories: '',
+                processCertificateIssuer: '',
+                machineNameRegexCluster: '',
+                processFilePath: '',
+                device: {
+                  ip_address: ''
+                },
+                processFileName: ''
+              },
+              source: {
+                folderPath: '',
+                processDirectory: '',
+                processDirectoryGroups: '',
+                filePath: '',
+                processCategories: '',
+                processCertificateIssuer: '',
+                machineNameRegexCluster: '',
+                processFilePath: '',
+                user: {
+                  username: 'ad_qa_1_3'
+                },
+                device: {
+                  ip_address: ''
+                },
+                processFileName: ''
+              },
+              timestamp: '2018-10-29T10:59:00.000+0000',
+              processFileName: '',
+              machineName: '',
+              processDirectory: '',
+              country: '',
+              resultsCode: '',
+              city: '',
+              processDirectoryGroups: '',
+              additionalInfo: {},
+              registryKeyGroup: '',
+              machineOwner: '',
+              processCategories: '',
+              processCertificateIssuer: '',
+              processFilePath: '',
+              registryKey: '',
+              site: '',
+              fileSize: '',
+              registryValueName: ''
+            },
+            {
+              id: processEventId,
+              eventIndex: 2,
+              indicatorId: '586ecfc0ecd25950034e1318',
+              schema: 'PROCESS',
+              processDirectory: '',
+              country: '',
+              resultsCode: '',
+              data: [{
+                filename: 'macmnsvc.exe'
+              }],
+              city: '',
+              scores: {
+                operationType: '',
+                processFilePath: '',
+                eventDate: ''
+              },
+              destination: {
+                folderPath: '',
+                processDirectory: 'C:\\Windows\\System32',
+                processDirectoryGroups: '',
+                filePath: '',
+                processCategories: 'RECONNAISSANCE_TOOL',
+                processCertificateIssuer: '',
+                machineNameRegexCluster: '',
+                processFilePath: '',
+                device: {
+                  ip_address: ''
+                },
+                processFileName: 'TOOL_17.exe'
+              },
+              updatedDate: '2018-11-02T07:30:12.100.000Z',
+              source: {
+                folderPath: '',
+                processDirectory: 'C:\\Program Files\\McAfee\\Agent',
+                processDirectoryGroups: '',
+                filePath: '',
+                processCategories: '',
+                processCertificateIssuer: 'Entrust',
+                machineNameRegexCluster: '',
+                processFilePath: '',
+                user: {
+                  username: 'proc_qa_1_3'
+                },
+                device: {
+                  ip_address: ''
+                },
+                processFileName: 'macmnsvc.exe'
+              },
+              processFileName: '',
+              machineName: 'host_3',
+              result: '',
+              processDirectoryGroups: '',
+              eventTime: '2018-10-29T10:17:00.000.000Z',
+              additionalInfo: {},
+              registryKeyGroup: '',
+              machineOwner: '',
+              timestamp: '2018-10-29T10:17:00.000+0000',
+              updatedBy: 'hourlyOutputProcessorRun2018-10-29T10:00:00Z',
+              processCategories: '',
+              processCertificateIssuer: '',
+              processFilePath: '',
+              registryKey: '',
+              site: '',
+              createdDate: '2018-11-02T07:30:12.100.000Z',
+              fileSize: '',
+              operationType: 'CREATE_PROCESS',
+              registryValueName: '',
+              dataSource: 'Netwitness Endpoint'
+            },
+            {
+              schema: 'FILE',
+              id: 'filEvent-1111-1111-1111-111111111111',
+              eventIndex: 3,
+              processDirectory: '',
+              country: '',
+              resultsCode: '',
+              data: [{
+                filename: ''
+              }],
+              city: '',
+              scores: {
+                operationType: '72',
+                processFilePath: '',
+                eventDate: ''
+              },
+              destination: {
+                folderPath: '',
+                processDirectory: '',
+                processDirectoryGroups: '',
+                filePath: '',
+                processCategories: '',
+                processCertificateIssuer: '',
+                machineNameRegexCluster: '',
+                processFilePath: '',
+                device: {
+                  ip_address: ''
+                },
+                processFileName: ''
+              },
+              updatedDate: '2018-11-02T07:35:13.200.000Z',
+              source: {
+                folderPath: '',
+                processDirectory: '',
+                processDirectoryGroups: '',
+                filePath: '',
+                processCategories: '',
+                processCertificateIssuer: '',
+                machineNameRegexCluster: '',
+                processFilePath: '',
+                user: {
+                  username: 'file_qa_1_19'
+                },
+                device: {
+                  ip_address: ''
+                },
+                processFileName: ''
+              },
+              processFileName: '',
+              machineName: '',
+              result: 'SUCCESS',
+              processDirectoryGroups: '',
+              eventTime: '2018-10-29T11:02:00.000.000Z',
+              additionalInfo: {},
+              registryKeyGroup: '',
+              machineOwner: '',
+              timestamp: '2018-10-29T11:02:00.000+0000',
+              updatedBy: 'hourlyOutputProcessorRun2018-10-29T11:00:00Z',
+              processCategories: '',
+              processCertificateIssuer: '',
+              processFilePath: '',
+              registryKey: '',
+              site: '',
+              createdDate: '2018-11-02T07:35:13.200.000Z',
+              fileSize: '',
+              operationTypeCategories: ['FILE_ACTION'],
+              operationType: 'FILE_DELETED',
+              registryValueName: '',
+              dataSource: '4660'
             }
+
           ]
         },
         {

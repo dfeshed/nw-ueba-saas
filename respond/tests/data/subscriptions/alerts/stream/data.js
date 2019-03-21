@@ -254,7 +254,7 @@ export default [
       'groupby_user_src': '',
       'groupby_username': '',
       'name': 'abnormal_object_change_operation',
-      'numEvents': 2,
+      'numEvents': 4,
       'risk_score': 4.0,
       'severity': 4,
       'signature_id': 'UEBAIOC',

@@ -1,0 +1,28 @@
+<table>
+  <caption class="sr-only" test-id="eventTableCaption">{{t 'respond.eventDetails.caption'}}</caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th scope="col" test-id="eventTableFileNameLabel">{{t 'respond.eventsList.ueba.process.tableFileName'}}</th>
+      <th scope="col" test-id="eventTableDirectoryLabel">{{t 'respond.eventsList.ueba.process.tableDirectory'}}</th>
+      <th scope="col" test-id="eventTableUsernameLabel">{{t 'respond.eventsList.ueba.process.tableUsername'}}</th>
+      <th scope="col" test-id="eventTableCategoriesLabel">{{t 'respond.eventsList.ueba.process.tableCategories'}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row" test-id="eventSourceLabel">{{t 'respond.eventsList.ueba.process.sourceLabel'}}</th>
+      <td test-id="eventSourceFileNameValue">{{properties-for/determine-value value=item.source.processFileName}}</td>
+      <td test-id="eventSourceDirectoryValue">{{properties-for/determine-value value=item.source.processDirectory}}</td>
+      <td test-id="eventSourceUsernameValue">{{properties-for/determine-value value=item.source.user.username}}</td>
+      <td test-id="eventSourceCategoriesValue">{{properties-for/determine-value value=item.source.processCategories}}</td>
+    </tr>
+    <tr>
+      <th scope="row" test-id="eventTargetLabel">{{t 'respond.eventsList.ueba.process.destinationLabel'}}</th>
+      <td test-id="eventDestinationFileNameValue">{{properties-for/determine-value value=item.destination.processFileName}}</td>
+      <td test-id="eventDestintionDirectoryValue">{{properties-for/determine-value value=item.destination.processDirectory}}</td>
+      <td test-id="eventDestinationUsernameValue">{{properties-for/determine-value value=item.destination.user.username}}</td>
+      <td test-id="eventDestinationCategoriesValue">{{properties-for/determine-value value=item.destination.processCategories}}</td>
+    </tr>
+  </tbody>
+</table>

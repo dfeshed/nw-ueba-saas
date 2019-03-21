@@ -1,0 +1,26 @@
+<div class="row">
+  <div class="column verbose">
+    <dt test-id="eventTimeLabel">{{t 'respond.eventsList.ueba.time'}}</dt>
+    <dd class="datetime" test-id="eventTimeValue">{{rsa-content-datetime timestamp=item.timestamp}}</dd>
+  </div>
+  <div class="column thin">
+    <dt test-id="eventTypeLabel">{{t 'respond.eventsList.ueba.type'}}</dt>
+    <dd test-id="eventTypeValue">{{properties-for/determine-value value="UEBA"}}</dd>
+  </div>
+  <div class="column thin">
+    <dt test-id="eventCategoryLabel">{{t 'respond.eventsList.ueba.category'}}</dt>
+    <dd test-id="eventCategoryValue">{{properties-for/determine-value value=item.schema}}</dd>
+  </div>
+  <div class="column thin">
+    <dt test-id="eventUsernameLabel">{{t 'respond.eventsList.ueba.username'}}</dt>
+    {{properties-for/determine-value key="username" value=item.source.user.username testId="eventUsernameValue"}}
+  </div>
+  <div class="column">
+    <dt test-id="eventOperationTypeLabel">{{t 'respond.eventsList.ueba.operationType'}}</dt>
+    <dd test-id="eventOperationTypeValue">{{properties-for/determine-value value=item.operationType}}</dd>
+  </div>
+  <div class="column thin">
+    <dt test-id="eventDataSourceLabel">{{t 'respond.eventsList.ueba.dataSource'}}</dt>
+    <dd test-id="eventDataSourceValue">{{properties-for/determine-value value=item.dataSource}}</dd>
+  </div> 
+</div>

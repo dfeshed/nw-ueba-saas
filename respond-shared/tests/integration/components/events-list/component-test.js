@@ -32,14 +32,18 @@ module('Integration | Component | events-list', function(hooks) {
       expandStorylineEvent=expandStorylineEvent}}`);
 
     assert.equal(findAll(selectors.list).length, 1);
-    assert.equal(findAll(selectors.row).length, 15);
-    assert.equal(findAll(selectors.genericHeader).length, 11);
+    assert.equal(findAll(selectors.row).length, 17);
+    assert.equal(findAll(selectors.genericHeader).length, 9);
+    assert.equal(findAll(selectors.uebaHeader).length, 3);
     assert.equal(findAll(selectors.endpointHeader).length, 4);
+    assert.equal(findAll(selectors.processHeader).length, 1);
     assert.equal(findAll(selectors.genericDetail).length, 0);
     assert.equal(findAll(selectors.endpointDetail).length, 0);
+    assert.equal(findAll(selectors.uebaDetail).length, 0);
+    assert.equal(findAll(selectors.processDetail).length, 0);
     assert.equal(findAll(selectors.loader).length, 0);
     assert.equal(findAll(selectors.clear).length, 0);
-    assert.equal(find(selectors.count).textContent.trim(), '15');
+    assert.equal(find(selectors.count).textContent.trim(), '17');
     assert.equal(find(selectors.label).textContent.trim(), 'events');
   });
 
@@ -57,37 +61,94 @@ module('Integration | Component | events-list', function(hooks) {
       clearSelection=clearSelection
       expandStorylineEvent=expandStorylineEvent}}`);
 
-    assert.equal(findAll(selectors.row).length, 15);
-    assert.equal(findAll(selectors.genericHeader).length, 11);
-    assert.equal(findAll(selectors.genericFooter).length, 11);
+    assert.equal(findAll(selectors.row).length, 17);
+    assert.equal(findAll(selectors.genericHeader).length, 9);
+    assert.equal(findAll(selectors.genericFooter).length, 9);
     assert.equal(findAll(selectors.genericDetail).length, 0);
+    assert.equal(findAll(selectors.uebaHeader).length, 3);
+    assert.equal(findAll(selectors.uebaFooter).length, 3);
+    assert.equal(findAll(selectors.uebaDetail).length, 0);
     assert.equal(findAll(selectors.endpointHeader).length, 4);
     assert.equal(findAll(selectors.endpointFooter).length, 4);
     assert.equal(findAll(selectors.endpointDetail).length, 0);
+    assert.equal(findAll(selectors.processHeader).length, 1);
+    assert.equal(findAll(selectors.processFooter).length, 1);
+    assert.equal(findAll(selectors.processDetail).length, 0);
+
 
     await click(`${selectors.row}:nth-of-type(1) ${selectors.genericHeader}`);
-    await waitUntil(() => findAll(selectors.genericFooter).length === 10);
+    await waitUntil(() => findAll(selectors.genericFooter).length === 8);
     await settled();
 
+    assert.equal(findAll(selectors.genericHeader).length, 9);
+    assert.equal(findAll(selectors.genericFooter).length, 8);
     assert.equal(findAll(selectors.genericDetail).length, 1);
-    assert.equal(findAll(selectors.endpointDetail).length, 0);
-
-    assert.equal(findAll(selectors.genericHeader).length, 11);
-    assert.equal(findAll(selectors.genericFooter).length, 10);
+    assert.equal(findAll(selectors.uebaHeader).length, 3);
+    assert.equal(findAll(selectors.uebaFooter).length, 3);
+    assert.equal(findAll(selectors.uebaDetail).length, 0);
     assert.equal(findAll(selectors.endpointHeader).length, 4);
     assert.equal(findAll(selectors.endpointFooter).length, 4);
+    assert.equal(findAll(selectors.endpointDetail).length, 0);
+    assert.equal(findAll(selectors.processHeader).length, 1);
+    assert.equal(findAll(selectors.processFooter).length, 1);
+    assert.equal(findAll(selectors.processDetail).length, 0);
 
-    await click(`${selectors.row}:nth-of-type(6) ${selectors.endpointHeader}`);
+
+    await click(`${selectors.row}:nth-of-type(8) ${selectors.endpointHeader}`);
     await waitUntil(() => findAll(selectors.endpointFooter).length === 3);
     await settled();
 
+    assert.equal(findAll(selectors.genericHeader).length, 9);
+    assert.equal(findAll(selectors.genericFooter).length, 9);
     assert.equal(findAll(selectors.genericDetail).length, 0);
-    assert.equal(findAll(selectors.endpointDetail).length, 1);
-
-    assert.equal(findAll(selectors.genericHeader).length, 11);
-    assert.equal(findAll(selectors.genericFooter).length, 11);
+    assert.equal(findAll(selectors.uebaHeader).length, 3);
+    assert.equal(findAll(selectors.uebaFooter).length, 3);
+    assert.equal(findAll(selectors.uebaDetail).length, 0);
     assert.equal(findAll(selectors.endpointHeader).length, 4);
     assert.equal(findAll(selectors.endpointFooter).length, 3);
+    assert.equal(findAll(selectors.endpointDetail).length, 1);
+    assert.equal(findAll(selectors.processHeader).length, 1);
+    assert.equal(findAll(selectors.processFooter).length, 1);
+    assert.equal(findAll(selectors.processDetail).length, 0);
+
+
+    await click(`${selectors.row}:nth-of-type(4) ${selectors.uebaHeader}`);
+    await waitUntil(() => findAll(selectors.uebaFooter).length === 2);
+    await settled();
+
+
+    assert.equal(findAll(selectors.genericHeader).length, 9);
+    assert.equal(findAll(selectors.genericFooter).length, 9);
+    assert.equal(findAll(selectors.genericDetail).length, 0);
+    assert.equal(findAll(selectors.uebaHeader).length, 3);
+    assert.equal(findAll(selectors.uebaFooter).length, 2);
+    assert.equal(findAll(selectors.uebaDetail).length, 1);
+    assert.equal(findAll(selectors.endpointHeader).length, 4);
+    assert.equal(findAll(selectors.endpointFooter).length, 4);
+    assert.equal(findAll(selectors.endpointDetail).length, 0);
+    assert.equal(findAll(selectors.processHeader).length, 1);
+    assert.equal(findAll(selectors.processFooter).length, 1);
+    assert.equal(findAll(selectors.processDetail).length, 0);
+
+    await click(`${selectors.row}:nth-of-type(6) ${selectors.processHeader}`);
+    await waitUntil(() => findAll(selectors.processFooter).length === 0);
+    await settled();
+
+
+    assert.equal(findAll(selectors.genericHeader).length, 9);
+    assert.equal(findAll(selectors.genericFooter).length, 9);
+    assert.equal(findAll(selectors.genericDetail).length, 0);
+    assert.equal(findAll(selectors.uebaHeader).length, 3);
+    assert.equal(findAll(selectors.uebaFooter).length, 3);
+    assert.equal(findAll(selectors.uebaDetail).length, 0);
+    assert.equal(findAll(selectors.endpointHeader).length, 4);
+    assert.equal(findAll(selectors.endpointFooter).length, 4);
+    assert.equal(findAll(selectors.endpointDetail).length, 0);
+    assert.equal(findAll(selectors.processHeader).length, 1);
+    assert.equal(findAll(selectors.processFooter).length, 0);
+    assert.equal(findAll(selectors.processDetail).length, 1);
+
+
   });
 
   test('loading spinner present when storyline event status not completed', async function(assert) {
@@ -105,7 +166,7 @@ module('Integration | Component | events-list', function(hooks) {
       clearSelection=clearSelection
       expandStorylineEvent=expandStorylineEvent}}`);
 
-    assert.equal(findAll(selectors.row).length, 15);
+    assert.equal(findAll(selectors.row).length, 17);
     assert.equal(findAll(selectors.loader).length, 1);
   });
 
