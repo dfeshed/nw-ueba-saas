@@ -1,5 +1,6 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import timedelta
+from airflow.utils import timezone
 
 import os
 import pytest
@@ -17,7 +18,7 @@ PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../../../')
 JAR_PATH = PATH + '/tests/resources/jars/test-mock-project-0.0.1-SNAPSHOT.jar'
 MAIN_CLASS = 'com.fortscale.test.TestMockProjectApplication'
 LAUNCHER = 'org.springframework.boot.loader.PropertiesLauncher'
-DEFAULT_DATE = datetime(2014, 1, 1)
+DEFAULT_DATE = timezone.datetime(2014, 1, 1)
 COMMAND = 'run'
 
 
