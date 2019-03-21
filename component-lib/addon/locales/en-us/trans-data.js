@@ -4165,6 +4165,8 @@ export default {
           label3: 'Skip this step if this group will not apply a policy or if the policy you wish to apply has not been created yet.',
           label4: 'New policies can be created in the the Policies Tab.'
         },
+        preview: 'Preview of Setting for A Source',
+        governingPolicy: 'GOVERNING POLICY - GROUP',
         sourceType: 'Source Type',
         sourceTypeTooltip: 'Choose a source type to apply policies for.',
         selectedPolicy: 'Selected Policy',

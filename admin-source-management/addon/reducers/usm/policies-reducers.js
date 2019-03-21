@@ -11,7 +11,6 @@ const localStorageKey = 'rsa::nw::usm::policies';
 
 // Load local storage values and incorporate into initial state
 const initialState = load(explorerInitialState, localStorageKey);
-
 initialState.altRowSelection = true;
 initialState.sortField = 'name';
 initialState.isSortDescending = false;
@@ -102,6 +101,26 @@ export default reduxActions.handleActions({
             isSelectAll: false
           }
         );
+      }
+    })
+  ),
+
+  [ACTION_TYPES.UPDATE_GROUP_RANKING_VIEW]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.merge({
+          focusedItem: null,
+          groupRankingPrevListStatus: 'wait'
+        });
+      },
+      failure: (state) => {
+        return state.set('groupRankingPrevListStatus', 'error');
+      },
+      success: (state) => {
+        return state.merge({
+          focusedItem: action.payload.data,
+          groupRankingPrevListStatus: 'complete'
+        });
       }
     })
   )

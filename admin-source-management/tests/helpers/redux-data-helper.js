@@ -7,7 +7,8 @@ import {
   groups,
   policies,
   endpointServers,
-  logServers
+  logServers,
+  focusedItem
 } from '../data/data';
 
 const _set = (obj, key, val) => {
@@ -317,6 +318,7 @@ export default class DataHelper {
   groupRankingWithData(data) {
     const groupRanking = data ? data : groups;
     _set(this.state, 'usm.groupWizard.groupRanking', groupRanking);
+    _set(this.state, 'usm.groupWizard.focusedItem', focusedItem);
     return this;
   }
 
@@ -521,6 +523,11 @@ export default class DataHelper {
     return this;
   }
 
+  groupRankingPrevListStatus(config) {
+    _set(this.state, 'usm.policies.groupRankingPrevListStatus', config);
+    return this;
+  }
+
   // ====================================================================
   // policy details single attribute setters
   // ====================================================================
@@ -717,5 +724,4 @@ export default class DataHelper {
     _set(this.state, 'usm.policiesFilter.expressionList', expressionList);
     return this;
   }
-
 }

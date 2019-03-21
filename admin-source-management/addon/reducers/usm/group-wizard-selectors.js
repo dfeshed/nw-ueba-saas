@@ -7,6 +7,7 @@ import { getValidatorForExpression } from 'admin-source-management/reducers/usm/
 const { createSelector } = reselect;
 
 const _groupWizardState = (state) => state.usm.groupWizard;
+const _policiesState = (state) => state.usm.policies;
 export const selectedSourceType = (state) => _groupWizardState(state).selectedSourceType;
 export const groupRanking = (state) => _groupWizardState(state).groupRanking;
 const _groupRankingOrig = (state) => _groupWizardState(state).groupRankingOrig;
@@ -24,6 +25,8 @@ export const groupCriteriaCache = (state) => _groupWizardState(state).criteriaCa
 export const groupAttributesMap = (state) => _groupWizardState(state).groupAttributesMap;
 export const andOrOperator = (state) => _groupWizardState(state).group.groupCriteria.conjunction;
 export const selectedGroupRanking = (state) => _groupWizardState(state).selectedGroupRanking;
+export const groupRankingPrevListStatus = (state) => _policiesState(state).groupRankingPrevListStatus;
+export const focusedItem = (state) => _policiesState(state).focusedItem;
 
 export const hasGroupRankingChanged = createSelector(
   _groupRankingOrig, groupRanking,
@@ -36,6 +39,14 @@ export const groupRankingQuery = createSelector(
   selectedSourceType, groupRanking,
   (selectedSourceType, groupRanking) => {
     const groupRankingIDs = groupRanking.map((rank) => rank.id);
+    return { policyType: selectedSourceType, groupIds: groupRankingIDs };
+  }
+);
+
+export const groupRankingViewQuery = createSelector(
+  selectedSourceType, groupRanking,
+  (selectedSourceType, groupRanking) => {
+    const groupRankingIDs = groupRanking.filter((group) => group.isChecked ? group.id : '');
     return { policyType: selectedSourceType, groupIds: groupRankingIDs };
   }
 );

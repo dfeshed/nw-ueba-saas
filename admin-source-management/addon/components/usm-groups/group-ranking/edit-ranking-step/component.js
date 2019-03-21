@@ -4,24 +4,33 @@ import {
   groupRanking,
   isLoadingGroupRanking,
   selectedGroupRanking,
-  selectedSourceType
+  selectedSourceType,
+  groupRankingPrevListStatus
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 import {
   reorderRanking,
-  selectGroupRanking
+  selectGroupRanking,
+  previewRanking
 } from 'admin-source-management/actions/creators/group-wizard-creators';
+
+import {
+  fetchRankingView
+} from 'admin-source-management/actions/creators/policies-creators';
 
 const stateToComputed = (state) => ({
   groupRanking: groupRanking(state),
   isLoadingGroupRanking: isLoadingGroupRanking(state),
   selectedGroupRanking: selectedGroupRanking(state),
-  selectedSourceType: selectedSourceType(state)
+  selectedSourceType: selectedSourceType(state),
+  groupRankingPrevListStatus: groupRankingPrevListStatus(state)
 });
 
 const dispatchToActions = {
   reorderRanking,
-  selectGroupRanking
+  selectGroupRanking,
+  previewRanking,
+  fetchRankingView
 };
 
 const EditRankingStep = Component.extend({
@@ -34,6 +43,20 @@ const EditRankingStep = Component.extend({
         evt.currentTarget.focus();
       }
     }
+  },
+  didRender() {
+    this._super(...arguments);
+    const groupRankingTable = document.getElementsByClassName('group-ranking-table');
+    if (groupRankingTable.length > 0) {
+      const selectedGroup = groupRankingTable[0].getElementsByClassName('is-selected');
+      if (selectedGroup.length > 0) {
+        selectedGroup[0].focus();
+      }
+    }
+  },
+  init() {
+    this._super(...arguments);
+    this.send('fetchRankingView');
   }
 });
 

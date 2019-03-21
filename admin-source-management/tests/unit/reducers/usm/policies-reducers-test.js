@@ -18,7 +18,8 @@ const initialState = {
   focusedItem: null,
   isTransactionUnderway: false,
   sortField: 'name',
-  isSortDescending: false
+  isSortDescending: false,
+  groupRankingPrevListStatus: null
 };
 
 const fetchPoliciesPayload = {
@@ -85,4 +86,28 @@ test('on FETCH_POLICIES success, policy & itemsStatus are properly set', functio
   });
   const endState = reducers(Immutable.from(initialState), action);
   assert.deepEqual(endState, expectedEndState, 'policy list populated & itemsStatus is complete');
+});
+
+test('on UPDATE_GROUP_RANKING_VIEW start', function(assert) {
+  const expectedEndState = {
+    ...initialState,
+    groupRankingPrevListStatus: 'wait'
+  };
+  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.UPDATE_GROUP_RANKING_VIEW });
+  const endState = reducers(Immutable.from(initialState), action);
+  assert.deepEqual(endState, expectedEndState, 'UPDATE_GROUP_RANKING_VIEW is set and itemsStatus is wait');
+});
+
+test('on UPDATE_GROUP_RANKING_VIEW complete', function(assert) {
+  const expectedEndState = {
+    ...initialState,
+    groupRankingPrevListStatus: 'complete',
+    focusedItem: undefined
+  };
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.UPDATE_GROUP_RANKING_VIEW,
+    payload: { policyType: 'edrPolicy', groupIds: [] }
+  });
+  const endState = reducers(Immutable.from(initialState), action);
+  assert.deepEqual(endState, expectedEndState, 'UPDATE_GROUP_RANKING_VIEW is set and itemsStatus is complete');
 });

@@ -6,6 +6,10 @@ import {
   selectedPublishItems
 } from 'admin-source-management/reducers/usm/policies-selectors';
 
+import {
+  groupRankingViewQuery
+} from 'admin-source-management/reducers/usm/group-wizard-selectors';
+
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 const initializePolicies = () => {
@@ -162,6 +166,16 @@ const toggleFocusItem = (item) => ({ type: ACTION_TYPES.POLICIES_TOGGLE_FOCUS, p
 const clearFocusItem = () => ({ type: ACTION_TYPES.POLICIES_CLEAR_FOCUS });
 const toggleSelectAll = () => ({ type: ACTION_TYPES.POLICIES_TOGGLE_SELECT_ALL });
 
+const fetchRankingView = () => {
+  return (dispatch, getState) => {
+    const query = groupRankingViewQuery(getState());
+    dispatch({
+      type: ACTION_TYPES.UPDATE_GROUP_RANKING_VIEW,
+      promise: policyAPI.fetchRankingView(query)
+    });
+  };
+};
+
 export {
   initializePolicies,
   fetchPolicies,
@@ -178,5 +192,6 @@ export {
   // edrPolicy specific action creators
   fetchEndpointServers,
   // windowsLogPolicy specific action creators
-  fetchLogServers
+  fetchLogServers,
+  fetchRankingView
 };

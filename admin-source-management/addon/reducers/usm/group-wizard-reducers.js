@@ -171,7 +171,8 @@ export const initialState = {
   groupRankingOrig: [],
   selectedSourceType: null,
   groupRankingStatus: null,
-  selectedGroupRanking: null
+  selectedGroupRanking: null,
+  groupRankingPrevListStatus: null
 };
 
 export default reduxActions.handleActions({

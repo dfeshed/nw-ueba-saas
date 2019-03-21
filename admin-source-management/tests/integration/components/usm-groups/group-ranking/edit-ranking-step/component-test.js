@@ -52,4 +52,13 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
     assert.equal(findAll('.edit-ranking-step .loading').length, 1, 'The spinner is showing');
   });
+
+  test('Show the wait spinner for group ranking preview', async function(assert) {
+    new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupRankingPrevListStatus('wait')
+      .build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    assert.equal(findAll('.edit-ranking-step .loading-spinner').length, 1, 'The spinner is showing');
+  });
 });

@@ -1,0 +1,33 @@
+<vbox class="rsa-application-layout-panel-content" xs="12" fit>
+  {{#each selectedEdrPolicy as |section|}}
+    <div class="heading">
+      <hbox fit class="col-xs-12">
+        <hbox class="value col-xs-6 col-md-7">{{t section.header}}</hbox>
+        <hbox class="value col-xs-6 col-md-5">{{t 'adminUsm.groupWizard.applyPolicy.governingPolicy'}}</hbox>
+      </hbox>
+    </div>
+    {{#each section.props as |prop|}}
+      <hbox fit class="col-xs-12">
+        <hbox class="title col-xs-6 col-md-4">{{t prop.name}}</hbox>
+        {{#if (eq prop.name 'adminUsm.policyWizard.edrPolicy.customConfigSetting') }}
+          <hbox class="value col-xs-6 col-md-3">
+            {{#rsa-text-with-tooltip value=prop.value.truncatedWithEllipsis
+              style="standard"}}
+              <div class="table-cell-text">{{prop.value.nonTruncated}}</div>
+            {{/rsa-text-with-tooltip}}
+          </hbox>
+        {{else if prop.defaultEndpointServer }}
+          <hbox class="value default-host-name col-xs-6 col-md-3">
+            {{#rsa-text-with-tooltip value=prop.tooltip alwaysShow=true
+                style="standard"}}
+              {{prop.value}}
+            {{/rsa-text-with-tooltip}}
+          </hbox>
+        {{else}}
+          <hbox class="value col-xs-6 col-md-3">{{prop.value}}</hbox>
+        {{/if}}
+        <hbox class="value col-xs-6 col-md-5">{{prop.origin.policyName}} - {{prop.origin.groupName}}</hbox>
+      </hbox>
+    {{/each}}
+  {{/each}}
+</vbox>

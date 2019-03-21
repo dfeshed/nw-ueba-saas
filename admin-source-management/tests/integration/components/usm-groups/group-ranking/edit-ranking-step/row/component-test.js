@@ -172,7 +172,7 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step/row
     ];
     new ReduxDataHelper(setState).groupRankingWithData(rankingData).build();
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
-    assert.equal(findAll('.edit-ranking-step tr').length, 6, '5 groups are showing');
+    assert.equal(findAll('.group-ranking-table-body tr').length, 5, '5 groups are showing');
 
     let expectedSrcCountTip = translation.t('adminUsm.groups.list.sourceCountPublishedNewGroupTooltip');
     assert.equal(document.querySelector('.edit-ranking-step table').rows[1].cells[4].innerText.trim(), 'Updating', '-1 source count as expected');
@@ -195,7 +195,7 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step/row
     assert.equal(document.querySelectorAll('.tool-tip-value')[3].innerText.trim(), expectedSrcCountTip.string, '-3 source count tooltip as expected');
 
     assert.equal(document.querySelector('.edit-ranking-step table').rows[5].cells[4].innerText.trim(), 10, 'published and synced source count as expected');
-    assert.equal(document.querySelectorAll('.tooltip-text').length, 5, 'no tooltip rendered for normal count');
+    assert.equal(document.querySelectorAll('.tooltip-text').length, 7, 'no tooltip rendered for normal count');
   });
   test('Show edrPolicy policy applied', async function(assert) {
     const rankingData =

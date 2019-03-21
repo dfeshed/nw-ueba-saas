@@ -1,4 +1,44 @@
 .group-ranking {
+  position: relative;
+  .group-ranking-table {
+    background-color: background-color(primary, darkest);
+    z-index: 999;
+  }
+  .preview-settings {
+    border-left: 1px solid border-color(primary, dark);
+    z-index: 888;
+    position: absolute;
+    -webkit-animation-name: preview; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
+    animation-name: preview;
+    animation-duration: 1s;
+    left: 900px;
+    padding-left: 30px;
+    width: 500px;
+    .heading hbox {
+      color: text-color(primary, light);
+    }
+    .source-type-top-text {
+      margin-left: 0px;
+      margin-bottom: 0px;
+      span {
+        margin-right: 0px;
+      }
+    }
+  }
+  
+  /* Safari 4.0 - 8.0 */
+  @-webkit-keyframes preview {
+    0%   {left:0px; top:0px;}
+    100%  {left:900px; top:0px;}
+  }
+  
+  /* Standard syntax */
+  @keyframes preview {
+    0%   {left:0px; top:0px;}
+    100%  {left:900px; top:0px;}
+  }
+
   .n-sources-cell {
     display: flex;
     .table-cell-text {
@@ -39,7 +79,7 @@
     max-height: calc(100vh - #{$wizardStepMaxHeight});
     min-height: calc(100vh - #{$wizardStepMaxHeight});
     table {
-      width: 900px;
+      width: 850px;
       margin: rsa-whitespace();
       tbody {
         tr {

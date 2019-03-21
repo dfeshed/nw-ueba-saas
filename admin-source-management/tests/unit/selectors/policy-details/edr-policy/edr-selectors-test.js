@@ -291,4 +291,260 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
       'The agent will communicate to the endpoint server defined in the agent packager.',
       'default endpoint server tooltip is as expected');
   });
+
+  const testPolicyAndOrigins = {
+    policy: {
+      id: 'policy_014',
+      policyType: 'edrPolicy',
+      name: 'EMC Reston! 014',
+      description: 'EMC Reston 014 of policy policy_014',
+      dirty: false,
+      scanMbr: false,
+      defaultPolicy: true,
+      lastPublishedOn: 1527489158739,
+      createdBy: 'admin',
+      createdOn: 1540318426092,
+      lastModifiedBy: 'admin',
+      lastModifiedOn: 1540318426092,
+      lastPublishedCopy: null,
+      associatedGroups: [],
+      scanType: 'ENABLED',
+      scanStartDate: null,
+      scanStartTime: null,
+      recurrenceInterval: 1,
+      recurrenceUnit: 'WEEKS',
+      runOnDaysOfWeek: ['WEDNESDAY', 'THURSDAY'],
+      cpuMax: 75,
+      cpuMaxVm: 85,
+      primaryAddress: '',
+      primaryNwServiceId: 'id1',
+      primaryHttpsPort: 443,
+      primaryHttpsBeaconInterval: 5,
+      primaryHttpsBeaconIntervalUnit: 'MINUTES',
+      primaryUdpPort: 444,
+      primaryUdpBeaconInterval: 5,
+      primaryUdpBeaconIntervalUnit: 'SECONDS',
+      requestScanOnRegistration: true,
+      blockingEnabled: false,
+      agentMode: 'ADVANCE',
+      customConfig: ''
+    },
+    origins: {
+      'createdOn': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'lastModifiedOn': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'id': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'policyType': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'name': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'description': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'dirty': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'defaultPolicy': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'lastPublishedOn': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'scanType': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'scanStartTime': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'recurrenceInterval': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'recurrenceUnit': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'runOnDaysOfWeek': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'cpuMax': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'cpuMaxVm': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'scanMbr': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'blockingEnabled': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'requestScanOnRegistration': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'primaryHttpsPort': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'primaryHttpsBeaconInterval': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'primaryHttpsBeaconIntervalUnit': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'primaryUdpPort': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'primaryUdpBeaconInterval': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'primaryUdpBeaconIntervalUnit': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'agentMode': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      },
+      'offlineDiskStorageSizeInMb': {
+        'groupName': 'test',
+        'policyName': 'test',
+        'conflict': false
+      }
+    }
+  };
+
+  test('Group ranking default EDR policy view', function(assert) {
+    const state = new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizEndpointServers()
+      .focusedPolicy(testPolicyAndOrigins)
+      .build();
+    assert.expect(7);
+    const policyForDetails = focusedPolicy(Immutable.from(state));
+    const policyDetails = selectedEdrPolicy(Immutable.from(state), policyForDetails.policy);
+    assert.equal(policyDetails.length, 5, '5 sections returned as expected');
+    assert.equal(policyDetails[4].props.length, 5, '5 properties returned as expected in endpoint server settings');
+    assert.equal(policyDetails[4].props[1].origin.groupName, 'test', 'groupName returned as expected');
+    assert.equal(policyDetails[4].props[1].origin.policyName, 'test', 'policyName returned as expected');
+    assert.equal(policyDetails[4].props[0].value, 'As Per Packager', 'default value returned as expected');
+    assert.equal(policyDetails[4].props[0].defaultEndpointServer, true, 'flag set as expected');
+    assert.equal(policyDetails[4].props[0].tooltip,
+      'The agent will communicate to the endpoint server defined in the agent packager.',
+      'default endpoint server tooltip is as expected');
+  });
+
+  const testPolicyAndNoOrigins = {
+    policy: {
+      id: 'policy_014',
+      policyType: 'edrPolicy',
+      name: 'EMC Reston! 014',
+      description: 'EMC Reston 014 of policy policy_014',
+      dirty: false,
+      scanMbr: false,
+      defaultPolicy: true,
+      lastPublishedOn: 1527489158739,
+      createdBy: 'admin',
+      createdOn: 1540318426092,
+      lastModifiedBy: 'admin',
+      lastModifiedOn: 1540318426092,
+      lastPublishedCopy: null,
+      associatedGroups: [],
+      scanType: 'ENABLED',
+      scanStartDate: null,
+      scanStartTime: null,
+      recurrenceInterval: 1,
+      recurrenceUnit: 'WEEKS',
+      runOnDaysOfWeek: ['WEDNESDAY', 'THURSDAY'],
+      cpuMax: 75,
+      cpuMaxVm: 85,
+      primaryAddress: '',
+      primaryNwServiceId: 'id1',
+      primaryHttpsPort: 443,
+      primaryHttpsBeaconInterval: 5,
+      primaryHttpsBeaconIntervalUnit: 'MINUTES',
+      primaryUdpPort: 444,
+      primaryUdpBeaconInterval: 5,
+      primaryUdpBeaconIntervalUnit: 'SECONDS',
+      requestScanOnRegistration: true,
+      blockingEnabled: false,
+      agentMode: 'ADVANCE',
+      customConfig: ''
+    },
+    origins: { }
+  };
+
+  test('Group ranking default EDR policy view with no origins', function(assert) {
+    const state = new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizEndpointServers()
+      .focusedPolicy(testPolicyAndNoOrigins)
+      .build();
+    assert.expect(7);
+    const policyForDetails = focusedPolicy(Immutable.from(state));
+    const policyDetails = selectedEdrPolicy(Immutable.from(state), policyForDetails.policy);
+    assert.equal(policyDetails.length, 5, '5 sections returned as expected');
+    assert.equal(policyDetails[4].props.length, 5, '5 properties returned as expected in endpoint server settings');
+    assert.equal(policyDetails[4].props[1].origin.groupName, '', 'groupName returned as expected');
+    assert.equal(policyDetails[4].props[1].origin.policyName, '', 'policyName returned as expected');
+    assert.equal(policyDetails[4].props[0].value, 'As Per Packager', 'default value returned as expected');
+    assert.equal(policyDetails[4].props[0].defaultEndpointServer, true, 'flag set as expected');
+    assert.equal(policyDetails[4].props[0].tooltip,
+      'The agent will communicate to the endpoint server defined in the agent packager.',
+      'default endpoint server tooltip is as expected');
+  });
 });

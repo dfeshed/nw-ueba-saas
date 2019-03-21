@@ -143,6 +143,15 @@ function fetchLogServers() {
   });
 }
 
+function fetchRankingView(groupRankingViewQuery) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    modelName: 'groups',
+    method: 'fetchRankingView',
+    query: { data: groupRankingViewQuery }
+  });
+}
+
 export default {
   deletePolicies,
   fetchPolicies,
@@ -152,5 +161,6 @@ export default {
   savePolicy,
   savePublishPolicy,
   fetchEndpointServers,
-  fetchLogServers
+  fetchLogServers,
+  fetchRankingView
 };

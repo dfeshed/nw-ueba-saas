@@ -3,50 +3,77 @@
     {{rsa-loader size='large'}}
   </div>
 {{else}}
-  {{#sortable-group onChange="reorderRanking" as |group|}}
-    <div class="source-type-top-text">
-      <span>{{t 'adminUsm.groupWizard.applyPolicy.sourceType'}}: </span>{{t (concat 'adminUsm.policyTypes.' selectedSourceType)}}
-      <div class="tooltip">
-        {{#rsa-text-with-tooltip value=(t 'adminUsm.groupRankingWizard.sourceTooltip')
-          style="standard"
-          alwaysShow=true}}
-          {{rsa-icon size='medium' name="information-circle" style='lined'}}
-        {{/rsa-text-with-tooltip}}
+  <div class='group-ranking-table'>
+    {{#sortable-group onChange="reorderRanking" as |group|}}
+      <div class="source-type-top-text">
+        <span>{{t 'adminUsm.groupWizard.applyPolicy.sourceType'}}: </span>{{t (concat 'adminUsm.policyTypes.' selectedSourceType)}}
+        <div class="tooltip">
+          {{#rsa-text-with-tooltip value=(t 'adminUsm.groupRankingWizard.sourceTooltip')
+            style="standard"
+            alwaysShow=true}}
+            {{rsa-icon size='medium' name="information-circle" style='lined'}}
+          {{/rsa-text-with-tooltip}}
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>
+            </th>
+            <th>
+              {{t 'adminUsm.groupRankingWizard.column.rank'}}
+            </th>
+            <th>
+              {{t 'adminUsm.groupRankingWizard.column.groupName'}}
+            </th>
+            <th>
+              {{t 'adminUsm.groupRankingWizard.column.policyApplied'}}
+            </th>
+            <th>
+              {{t 'adminUsm.groupRankingWizard.column.nSources'}}
+            </th>
+          </tr>
+        </thead>
+        <tbody class='group-ranking-table-body'>
+          {{#each groupRanking as |item index|}}
+            {{#usm-groups/group-ranking/edit-ranking-step/row
+              item=item
+              group=group
+              index=index
+              selectedItemId=selectedGroupRanking
+              tabindex=0
+              selectedSourceType=selectedSourceType
+              focusIn=(action 'selectGroupRanking' item.name)
+              click=(action 'handleSelectGroupRanking' index)}}
+            {{/usm-groups/group-ranking/edit-ranking-step/row}}
+          {{/each}}
+        </tbody>
+      </table>
+    {{/sortable-group}}
+  </div>
+  {{#if (eq groupRankingPrevListStatus 'wait')}}
+    <span class='loading-spinner'>
+      {{rsa-loader size='large'}}
+    </span>
+  {{else if (eq groupRankingPrevListStatus 'error')}}
+    <span class='loading-error'>
+      {{t 'adminUsm.groupRankingWizard.error.generic'}}
+    </span>
+  {{else if (eq groupRankingPrevListStatus 'complete')}}
+    <div class='preview-settings'>
+      <div class="source-type-top-text">
+        <span>{{t 'adminUsm.groupWizard.applyPolicy.preview'}}</span>
+        <div class="tooltip">
+          {{#rsa-text-with-tooltip value=(t 'adminUsm.groupRankingWizard.sourceTooltip')
+            style="standard"
+            alwaysShow=true}}
+            {{rsa-icon size='medium' name="information-circle" style='lined'}}
+          {{/rsa-text-with-tooltip}}
+        </div>
+      </div>
+      <div class='usm-policies-inspector'>
+        {{usm-groups/group-ranking/inspector}}
       </div>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th>
-          </th>
-          <th>
-            {{t 'adminUsm.groupRankingWizard.column.rank'}}
-          </th>
-          <th>
-            {{t 'adminUsm.groupRankingWizard.column.groupName'}}
-          </th>
-          <th>
-            {{t 'adminUsm.groupRankingWizard.column.policyApplied'}}
-          </th>
-          <th>
-            {{t 'adminUsm.groupRankingWizard.column.nSources'}}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each groupRanking as |item index|}}
-          {{#usm-groups/group-ranking/edit-ranking-step/row
-            item=item
-            group=group
-            index=index
-            selectedItemId=selectedGroupRanking
-            tabindex=0
-            selectedSourceType=selectedSourceType
-            focusIn=(action 'selectGroupRanking' item.name)
-            click=(action 'handleSelectGroupRanking' index)}}
-          {{/usm-groups/group-ranking/edit-ranking-step/row}}
-        {{/each}}
-      </tbody>
-    </table>
-  {{/sortable-group}}
+  {{/if}}
 {{/if}}

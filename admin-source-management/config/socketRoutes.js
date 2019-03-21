@@ -44,7 +44,11 @@ const adminUsmConfigGen = function(environment) {
       savePublishRecord: {
         subscriptionDestination: '/user/queue/usm/group/saveandpublish',
         requestDestination: '/ws/usm/group/saveandpublish'
-      }
+      },
+      fetchRankingView: {
+        subscriptionDestination: '/user/queue/usm/group/rank/effective-policy',
+        requestDestination: '/ws/usm/group/rank/effective-policy'
+      },
     },
     policy: {
       socketUrl: usmSocketUrl,
