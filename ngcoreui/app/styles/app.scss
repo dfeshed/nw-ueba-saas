@@ -94,6 +94,12 @@ a {
   }
 }
 
+.dim-separator {
+  border: none;
+  border-top: 1px dotted text-color(primary);
+  width: 100%;
+}
+
 .directory-item {
   padding-top: rsa-whitespace(less);
   padding-bottom: rsa-whitespace(less);

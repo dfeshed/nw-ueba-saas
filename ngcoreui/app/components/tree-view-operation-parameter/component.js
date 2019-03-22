@@ -1,10 +1,10 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-import { updateCustomParameter } from 'ngcoreui/actions/actions';
+import { updateParameter } from 'ngcoreui/actions/actions';
 
 const dispatchToActions = {
-  updateCustomParameter
+  updateParameter
 };
 
 const defaultValue = (type) => {
@@ -23,7 +23,6 @@ const treeViewOperationParameter = Component.extend({
   // Action function to call when the value of this param changes
   paramUpdateAction: null,
 
-  optionalEnabled: false,
   value: null,
   selections: null,
   dateTime: null,
@@ -35,9 +34,6 @@ const treeViewOperationParameter = Component.extend({
       key: 'MM/dd/yyyy'
     }
   },
-
-  @computed('param', 'optionalEnabled')
-  disabled: (param, optionalEnabled) => param.optional && !optionalEnabled,
 
   @computed('param')
   type: (param) => ({
@@ -78,24 +74,16 @@ const treeViewOperationParameter = Component.extend({
     },
 
     updateValue() {
-      const optionalEnabled = this.get('optionalEnabled');
       const param = this.get('param');
-      if (optionalEnabled || !param.optional) {
-        let value = this.get('value');
-        if (!value) {
-          const type = this.get('type');
-          value = defaultValue(type);
-        }
-        this.get('paramUpdateAction')({
-          name: param.name,
-          value
-        });
-      } else {
-        this.get('paramUpdateAction')({
-          name: param.name,
-          value: undefined
-        });
+      let value = this.get('value');
+      if (!value) {
+        const type = this.get('type');
+        value = defaultValue(type);
       }
+      this.get('paramUpdateAction')({
+        name: param.name,
+        value
+      });
     },
 
     toggleValue() {
@@ -104,16 +92,20 @@ const treeViewOperationParameter = Component.extend({
       this.send('updateValue');
     },
 
-    toggleOptionalEnabled() {
-      this.toggleProperty('optionalEnabled');
-      this.send('updateValue');
-    },
+    deleteOrHideSelf() {
+      const { optional } = this.get('param');
+      if (optional) {
+        this.send('updateParameter', {
+          name: this.get('param').name,
+          method: 'hide'
+        });
 
-    deleteSelf() {
-      this.send('updateCustomParameter', {
-        name: this.get('param').name,
-        method: 'delete'
-      });
+      } else {
+        this.send('updateParameter', {
+          name: this.get('param').name,
+          method: 'delete'
+        });
+      }
     }
   }
 });

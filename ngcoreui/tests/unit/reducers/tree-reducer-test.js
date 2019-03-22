@@ -337,9 +337,9 @@ module('Unit | Reducers | Tree', (hooks) => {
     });
   });
 
-  test('TREE_UPDATE_CUSTOM_PARAM adds and removes a custom parameter', (assert) => {
+  test('TREE_UPDATE_PARAM adds and removes a parameter', (assert) => {
     const addAction = {
-      type: ACTION_TYPES.TREE_UPDATE_CUSTOM_PARAM,
+      type: ACTION_TYPES.TREE_UPDATE_PARAM,
       payload: {
         name: 'custom1',
         displayName: 'custom1',
@@ -370,7 +370,7 @@ module('Unit | Reducers | Tree', (hooks) => {
     });
 
     const deleteAction = {
-      type: ACTION_TYPES.TREE_UPDATE_CUSTOM_PARAM,
+      type: ACTION_TYPES.TREE_UPDATE_PARAM,
       payload: {
         name: 'custom1',
         method: 'delete'

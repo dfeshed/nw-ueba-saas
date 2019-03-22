@@ -220,12 +220,28 @@ const reducer = handleActions({
     });
   },
 
-  [ACTION_TYPES.TREE_UPDATE_CUSTOM_PARAM]: (state, action) => {
+  [ACTION_TYPES.TREE_UPDATE_PARAM]: (state, action) => {
     const payload = Immutable.from(action.payload);
     const operation = selectedOperation(state);
     let newOperation;
     if (payload.method === 'add') {
       newOperation = operation.set('params', operation.params.concat(payload.without('method')));
+    } else if (payload.method === 'hide') {
+      newOperation = operation.set('params', operation.params.map((param) => {
+        if (param.name === payload.name) {
+          return { ...param, hidden: true };
+        } else {
+          return param;
+        }
+      }));
+    } else if (payload.method === 'show') {
+      newOperation = operation.set('params', operation.params.map((param) => {
+        if (param.name === payload.name) {
+          return { ...param, hidden: false };
+        } else {
+          return param;
+        }
+      }));
     } else if (payload.method === 'delete') {
       newOperation = operation.set('params', operation.params.filter((param) => {
         return param.name !== payload.name;

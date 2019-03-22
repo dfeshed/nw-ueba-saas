@@ -99,9 +99,9 @@ const updateOperationParams = (newParams) => {
   };
 };
 
-const updateCustomParameter = (newParam) => {
+const updateParameter = (newParam) => {
   return {
-    type: ACTION_TYPES.TREE_UPDATE_CUSTOM_PARAM,
+    type: ACTION_TYPES.TREE_UPDATE_PARAM,
     payload: newParam
   };
 };
@@ -472,7 +472,7 @@ export {
   selectOperation,
   deselectOperation,
   updateOperationParams,
-  updateCustomParameter,
+  updateParameter,
   sendOperation,
   cancelOperation,
   changeActiveTab,

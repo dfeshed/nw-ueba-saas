@@ -20,7 +20,8 @@ export default (paramString) => {
       name: split[0],
       displayName: split[0],
       type: _parseType(split[1]),
-      optional
+      optional,
+      hidden: optional
     };
   });
   return params;

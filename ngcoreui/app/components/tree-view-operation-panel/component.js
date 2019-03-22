@@ -3,7 +3,7 @@ import EmberObject from '@ember/object';
 import computed from 'ember-computed-decorators';
 import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
-import { sendOperation, cancelOperation, updateOperationParams, updateCustomParameter } from 'ngcoreui/actions/actions';
+import { sendOperation, cancelOperation, updateOperationParams, updateParameter } from 'ngcoreui/actions/actions';
 import { selectedOperation, selectedOperationHelp, selectedOperationRoles, selectedOperationHasPermission } from 'ngcoreui/reducers/selectors';
 
 const stateToComputed = (state) => ({
@@ -19,7 +19,7 @@ const dispatchToActions = {
   sendOperation,
   cancelOperation,
   updateOperationParams,
-  updateCustomParameter
+  updateParameter
 };
 
 const treeViewOperationPanel = Component.extend({
@@ -27,6 +27,30 @@ const treeViewOperationPanel = Component.extend({
   operationTypes: [
     'text', 'boolean', 'date-time'
   ],
+
+  @computed('selectedOperation')
+  visibleParams(selectedOperation) {
+    if (selectedOperation) {
+      return selectedOperation.params.filter((param) => {
+        return !param.hidden;
+      });
+    } else {
+      return [];
+    }
+  },
+
+  @computed('selectedOperation')
+  hiddenParamNames(selectedOperation) {
+    if (selectedOperation) {
+      return selectedOperation.params.filter((param) => {
+        return param.hidden;
+      }).map((param) => {
+        return param.name;
+      }).concat('Custom parameter');
+    } else {
+      return ['Custom parameter'];
+    }
+  },
 
   @computed('operationHasPermission')
   doesNotHavePermission(operationHasPermission) {
@@ -43,10 +67,10 @@ const treeViewOperationPanel = Component.extend({
     return htmlSafe(helpText);
   },
 
-  @computed('params', 'selectedOperation')
-  operationMessageObject: (params, selectedOperation) => ({
+  @computed('params', 'hiddenParamNames', 'selectedOperation')
+  operationMessageObject: (params, hiddenParamNames, selectedOperation) => ({
     message: selectedOperation.name,
-    params
+    params: params.without(hiddenParamNames)
   }),
 
   @computed('operationResponse')
@@ -65,20 +89,29 @@ const treeViewOperationPanel = Component.extend({
       }
     },
 
-    newCustomParam() {
-      this.set('pendingCustomParameter', EmberObject.create({
-        name: '',
-        displayName: '',
-        description: 'Custom Parameter',
-        type: 'text',
-        optional: false,
-        custom: true,
-        method: 'add'
-      }));
+    newParam(paramName) {
+      if (paramName === 'Custom parameter') {
+        this.set('pendingCustomParameter', EmberObject.create({
+          name: '',
+          displayName: '',
+          description: 'Custom Parameter',
+          type: 'text',
+          optional: false,
+          custom: true,
+          method: 'add'
+        }));
+      } else {
+        const op = this.get('selectedOperation');
+        let param = op.params.find((param) => {
+          return param.name === paramName;
+        });
+        param = param.set('method', 'show');
+        this.send('updateParameter', param);
+      }
     },
 
     pushAndClearParam(param) {
-      this.send('updateCustomParameter', param);
+      this.send('updateParameter', param);
       this.set('pendingCustomParameter', null);
     },
 

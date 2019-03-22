@@ -1,10 +1,18 @@
 <div class="border-panel top-margin">
   <vbox>
-    {{#each selectedOperation.params as |param|}}
+    {{#each visibleParams as |param|}}
       <div class="bottom-margin">
         {{tree-view-operation-parameter param=param paramUpdateAction=(action 'updateParams')}}
       </div>
     {{/each}}
+    <hr class="dim-separator">
+    {{#power-select
+      placeholder="Add a parameter..."
+      options=hiddenParamNames
+      searchPlaceholder="Type to filter parameters"
+      onchange=(action 'newParam') as |option|}}
+      {{option}}
+    {{/power-select}}
     <div class="bottom-margin">
       {{#if pendingCustomParameter}}
         <div class="border-panel">
@@ -35,7 +43,6 @@
           </hbox>
         </div>
       {{else}}
-        <a {{action 'newCustomParam'}}><span class="small-header">{{rsa-icon name='add-1'}} Custom Parameter</span></a>
       {{/if}}
     </div>
     <hbox class="bottom-margin flex-space-between">

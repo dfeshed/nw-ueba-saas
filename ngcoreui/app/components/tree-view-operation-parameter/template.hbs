@@ -2,65 +2,56 @@
   <hbox class="flex-space-between">
     {{#if type.isText}}
       <box fill>
-        {{rsa-form-input label=param.displayName placeholder="Text" isDisabled=disabled value=value focusOut=(action 'updateValue')}}
+        {{rsa-form-input label=param.displayName placeholder="Text" value=value focusOut=(action 'updateValue')}}
       </box>
     {{else if type.isNumber}}
       <box fill>
-        {{rsa-form-input label=param.displayName placeholder="Number" isDisabled=disabled value=value focusOut=(action 'updateValue')}}
+        {{rsa-form-input label=param.displayName placeholder="Number" value=value focusOut=(action 'updateValue')}}
       </box>
     {{else if type.isBoolean}}
       {{#x-toggle
         showLabels=true
         onLabel=param.displayName
         value=(readonly bool)
-        disabled=disabled
         onToggle=(action 'toggleValue') as |toggle|}}
         {{toggle.switch}}
         {{toggle.onLabel value=(readonly (not bool))}}
       {{/x-toggle}}
     {{else if type.isEnumOne}}
-      {{#if disabled}}
-        <h1 class="small-header">{{param.displayName}}</h1>
-      {{else}}
-        <box fill>
-          <label class="rsa-form-label power-select">
-            <div class="label-text">
-              {{param.displayName}}
-            </div>
+      <box fill>
+        <label class="rsa-form-label power-select">
+          <div class="label-text">
+            {{param.displayName}}
+          </div>
 
-            {{#power-select
-              placeholder="Parameter options..."
-              options=param.acceptableValues
-              selected=value
-              searchPlaceholder="Type to filter options"
-              onchange=(action 'setSelect') as |option|}}
-              {{option}}
-            {{/power-select}}
-          </label>
-        </box>
-      {{/if}}
-    {{else if type.isEnumAny}}
-      {{#if disabled}}
-        <h1 class="small-header">{{param.displayName}}</h1>
-      {{else}}
-        <box fill>
-          <label class="rsa-form-label power-select">
-            <div class="label-text">
-              {{param.displayName}}
-            </div>
-
-            {{#power-select-multiple
-            placeholder="Parameter options (select multiple)..."
+          {{#power-select
+            placeholder="Parameter options..."
             options=param.acceptableValues
-            selected=selections
-            searchField='name'
+            selected=value
             searchPlaceholder="Type to filter options"
-            onchange=(action 'setSelections') as |option|}}
-              {{option.name}}
-            {{/power-select-multiple}}
-          </label>
-        </box>
-      {{/if}}
+            onchange=(action 'setSelect') as |option|}}
+            {{option}}
+          {{/power-select}}
+        </label>
+      </box>
+    {{else if type.isEnumAny}}
+      <box fill>
+        <label class="rsa-form-label power-select">
+          <div class="label-text">
+            {{param.displayName}}
+          </div>
+
+          {{#power-select-multiple
+          placeholder="Parameter options (select multiple)..."
+          options=param.acceptableValues
+          selected=selections
+          searchField='name'
+          searchPlaceholder="Type to filter options"
+          onchange=(action 'setSelections') as |option|}}
+            {{option.name}}
+          {{/power-select-multiple}}
+        </label>
+      </box>
     {{else if type.isDateTime}}
       <box fill>
         {{rsa-form-datetime
@@ -69,41 +60,16 @@
           dateFormat=dateFormat
           locale="en"
           value=dateTime
-          isDisabled=disabled
           onChange=(action 'setDateTime')
         }}
       </box>
     {{else}}
       <box fill>
-        {{rsa-form-input label=param.displayName placeholder=param.type isDisabled=disabled value=value focusOut=(action 'updateValue')}}
+        {{rsa-form-input label=param.displayName placeholder=param.type value=value focusOut=(action 'updateValue')}}
       </box>
     {{/if}}
-    {{#if param.optional}}
-      <vbox fit justify="center">
-        <box fit>
-          <label class="rsa-form-checkbox-label param-optional-switch {{if optionalEnabled 'checked'}}">
-            {{rsa-form-checkbox
-            checked=optionalEnabled
-            change=(action 'toggleOptionalEnabled')}}
-            Enable
-          </label>
-        </box>
-      </vbox>
-      {{!-- <box fit>
-        <div class="param-optional-switch">
-          {{#x-toggle
-            showLabels=true
-            onLabel="Enabled"
-            value=(readonly optionalEnabled)
-            onToggle=(action 'toggleOptionalEnabled') as |toggle|}}
-            {{toggle.switch}}
-            {{toggle.onLabel value=(readonly (not optionalEnabled))}}
-          {{/x-toggle}}
-        </div>
-      </box> --}}
-    {{/if}}
-    {{#if param.custom}}
-      <hbox fit align="center" class="close-button"><a {{action 'deleteSelf'}}>{{rsa-icon name="close"}}</a></hbox>
+    {{#if (or param.custom param.optional)}}
+      <hbox fit align="center" class="close-button"><a {{action 'deleteOrHideSelf'}}>{{rsa-icon name="close"}}</a></hbox>
     {{/if}}
   </hbox>
 {{/rsa-content-tethered-panel-trigger}}
