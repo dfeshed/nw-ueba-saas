@@ -672,6 +672,36 @@ module('Integration | Component | file list', function(hooks) {
       assert.equal(items.length, 6, 'Context menu not rendered');
     });
   });
+  test('Select view certificate from context menu ', async function(assert) {
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .setSelectedFileList([])
+      .setSelectedFile({})
+      .schema(config)
+      .preferences({ filePreference })
+      .build();
+    this.set('closeRiskPanel', () => {});
+    this.set('navigateToCertificateView', () => {
+      assert.ok(true);
+    });
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{file-list navigateToCertificateView=navigateToCertificateView closeRiskPanel=closeRiskPanel}}{{context-menu}}`);
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      await click(findAll(`${selector} > .context-menu__item`)[4]);
+      const redux = this.owner.lookup('service:redux');
+      return waitUntil(() => redux.getState().files.fileList.selectedFileList !== null, { timeout: 6000 })
+        .then(() => {
+          assert.equal(redux.getState().files.fileList.selectedFileList.length, 1, 'View certificate selected');
+        });
+    });
+  });
 
   test('Reset risk score confirmation dialog is opened without info message', async function(assert) {
     new ReduxDataHelper(initState)

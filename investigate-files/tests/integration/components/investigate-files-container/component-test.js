@@ -430,18 +430,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
     await render(hbs`{{investigate-files-container}}`);
     assert.equal(findAll('.rsa-loader').length, 2, 'certificate loader should not show');
   });
-  test('Certificate view hide and show', async function(assert) {
-    new ReduxDataHelper(initState)
-      .isSchemaLoading(true)
-      .endpointServer(endpointServer)
-      .endpointQuery(endpointQuery)
-      .build();
-    await render(hbs`{{investigate-files-container}}`);
-    await click('.view-certificate-button');
-    const state = this.owner.lookup('service:redux').getState();
-    assert.equal(state.certificate.list.isCertificateView, true, 'Certificate view is closed');
-  });
-  test('Certificate view button disabled on selection more than 10 files', async function(assert) {
+  test('Certificate view button disabled on selection more than 1 file', async function(assert) {
     const selectedFileList = new Array(11)
       .join().split(',')
       .map(function(item, index) {
@@ -455,7 +444,7 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
       .build();
     await render(hbs`{{investigate-files-container}}`);
     assert.equal(find('.view-certificate-button').classList.contains('is-disabled'), true, 'View certificate button disabled');
-    assert.equal(find('.view-certificate-button').title, 'Select a maximum of 10 files to view.', 'tooltip added to disabled button');
+    assert.equal(find('.view-certificate-button').title, 'Select a maximum of 1 files to view.', 'tooltip added to disabled button');
   });
   test('it closes the right panel on changing the service', async function(assert) {
     const { files: { schema: { schema } } } = dummyFiles;

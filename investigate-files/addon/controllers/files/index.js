@@ -4,6 +4,11 @@ export default Controller.extend({
   // Query Params
   queryParams: ['query'],
 
-  query: null
+  query: null,
+  actions: {
+    controllerNavigateToCertificateView(thumbprint) {
+      this.send('navigateToCertificateView', thumbprint);
+    }
+  }
 
 });

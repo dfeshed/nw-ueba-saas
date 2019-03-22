@@ -194,7 +194,7 @@ export const downloadLink = createSelector(
 export const isCertificateViewDisabled = createSelector(
   _selectedFileList, _areSelectedFilesHavingThumbprint,
   (fileContextSelections, areSelectedFilesHavingThumbprint) => {
-    const MAX_FILE_SELECTION_ALLOWED_FOR_CERTIFICATE_VIEW = 10;
+    const MAX_FILE_SELECTION_ALLOWED_FOR_CERTIFICATE_VIEW = 1;
     if (fileContextSelections.length <= MAX_FILE_SELECTION_ALLOWED_FOR_CERTIFICATE_VIEW && areSelectedFilesHavingThumbprint) {
       return false;
     }

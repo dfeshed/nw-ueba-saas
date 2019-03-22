@@ -20,7 +20,6 @@ import {
 import { setEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
-import { toggleCertificateView } from 'investigate-files/actions/certificate-data-creators';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 
 const stateToComputed = (state) => ({
@@ -53,7 +52,6 @@ const dispatchToActions = {
   getSavedFileStatus,
   retrieveRemediationStatus,
   resetRiskScore,
-  toggleCertificateView,
   changeEndpointServerSelection
 };
 /**
@@ -78,12 +76,21 @@ const ToolBar = Component.extend({
     return { ...fileStatusData };
   },
   @computed('itemList', 'isCertificateViewDisabled')
+  selectedThumbPrint(selectedList, isCertificateViewDisabled) {
+    let selectedThumb = 'all';
+    if (selectedList.length > 0 && !isCertificateViewDisabled) {
+      const [{ signature: { thumbprint } }] = selectedList;
+      selectedThumb = thumbprint;
+    }
+    return selectedThumb;
+  },
+  @computed('itemList', 'isCertificateViewDisabled')
   isCertificateViewDisabledTitle(selectedList, isCertificateViewDisabled) {
     const i18n = this.get('i18n');
     if (isCertificateViewDisabled) {
-      const MORE_THAN_TEN_FILES_SELECTED_TOOLTIP = i18n.t('investigateFiles.certificate.toolTipCertificateViewDisabled', { count: 10 }).toString();
+      const MORE_THAN_TEN_FILES_SELECTED_TOOLTIP = i18n.t('investigateFiles.certificate.toolTipCertificateViewDisabled', { count: 1 }).toString();
       const FILES_ARE_NOT_SIGNED_TOOLTIP = i18n.t('investigateFiles.certificate.unsigned.toolTipCertificateViewDisabled').toString();
-      return selectedList.length > 10 ? MORE_THAN_TEN_FILES_SELECTED_TOOLTIP : FILES_ARE_NOT_SIGNED_TOOLTIP;
+      return selectedList.length > 1 ? MORE_THAN_TEN_FILES_SELECTED_TOOLTIP : FILES_ARE_NOT_SIGNED_TOOLTIP;
     }
   },
   actions: {
@@ -107,12 +114,6 @@ const ToolBar = Component.extend({
       if (this.closeRiskPanel) {
         this.closeRiskPanel();
       }
-    },
-
-    toggleCertificateViewAction(isCertificateView) {
-      const contextualTopic = isCertificateView ? this.get('contextualHelp.invFiles') : this.get('contextualHelp.invEndpointCertificates');
-      this.set('contextualHelp.topic', contextualTopic);
-      this.send('toggleCertificateView');
     }
   }
 });

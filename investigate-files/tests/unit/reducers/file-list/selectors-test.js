@@ -454,8 +454,8 @@ test('isCertificateViewDisabled ', function(assert) {
     }
   }));
   assert.equal(result1, true);
-  assert.equal(result2, false);
-  assert.equal(result3, false);
+  assert.equal(result2, true);
+  assert.equal(result3, true);
   assert.equal(result4, true);
 });
 

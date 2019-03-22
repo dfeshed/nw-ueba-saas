@@ -12,7 +12,7 @@ import {
   getFilter
 } from 'investigate-shared/actions/data-creators/filter-creators';
 
-import { getFirstPageOfCertificates, getPageOfCertificates, toggleCertificateView } from 'investigate-files/actions/certificate-data-creators';
+import { getFirstPageOfCertificates, getPageOfCertificates } from 'investigate-files/actions/certificate-data-creators';
 import { FILTER_TYPES } from './filter-types';
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 import { selectedServiceWithStatus } from 'investigate-shared/selectors/endpoint-server/selectors';
@@ -42,7 +42,6 @@ const dispatchToActions = {
   getFirstPageOfCertificates,
   getPageOfCertificates,
   getFilter,
-  toggleCertificateView,
   getAllServices
 };
 
@@ -75,7 +74,6 @@ const Certificate = Component.extend({
     gotoFilesView(isCertificateView) {
       const contextualTopic = isCertificateView ? this.get('contextualHelp.invFiles') : this.get('contextualHelp.invEndpointCertificates');
       this.set('contextualHelp.topic', contextualTopic);
-      this.send('toggleCertificateView');
     }
   }
 

@@ -10,7 +10,7 @@ import sinon from 'sinon';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 
-let redux;
+let redux, transition;
 
 
 module('Unit | Route | files.index', function(hooks) {
@@ -30,7 +30,10 @@ module('Unit | Route | files.index', function(hooks) {
     const PatchedRoute = IndexRoute.extend({
       redux: computed(function() {
         return redux;
-      })
+      }),
+      transitionTo(routeName) {
+        transition = routeName;
+      }
     });
     return PatchedRoute.create();
   };
@@ -48,6 +51,19 @@ module('Unit | Route | files.index', function(hooks) {
     await settled();
 
     assert.ok(mock.callCount === 1, 'bootstrapInvestigateFiles method is called');
+  });
+
+  test('navigateToCertificateView action executed correctly', async function(assert) {
+    assert.expect(1);
+
+    patchReducer(this, Immutable.from({}));
+    const route = setupRoute.call(this);
+
+    await settled();
+
+    await route.send('navigateToCertificateView', 'abc');
+
+    assert.ok(transition, 'abc');
   });
 
 

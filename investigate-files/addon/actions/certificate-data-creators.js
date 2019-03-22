@@ -4,9 +4,10 @@ import { debug } from '@ember/debug';
 import { resetFilters } from 'investigate-shared/actions/data-creators/filter-creators';
 import { run } from '@ember/runloop';
 import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
+import { setupEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import _ from 'lodash';
 
-const _expressionListForThumbprint = (selectedFileList) => {
+const _expressionListForThumbprint = (thumbprint, selectedFileList) => {
   const certificateValues = selectedFileList.map((item) => {
     const { signature } = item;
     if (signature) {
@@ -23,12 +24,39 @@ const _expressionListForThumbprint = (selectedFileList) => {
       propertyValues: _.uniqBy(certificateValues, 'value'),
       restrictionType: 'IN'
     }];
+  } else if (thumbprint && thumbprint !== 'all') {
+    return [{
+      propertyName: 'thumbprint',
+      propertyValues: [{ value: thumbprint }],
+      restrictionType: 'IN'
+    }];
   }
   return [];
 
 };
-const toggleCertificateView = () => {
+/**
+ * Bootstraping investigate Certificate page, loads all the endpoint server and checks for availability
+ * @returns {Function}
+ */
+const bootstrapInvestigateCertificates = () => {
+  return async(dispatch, getState) => {
+    try {
+      const { endpointServer: { serviceData } } = getState();
+      // checking endpoint server availability
+      if (!serviceData) {
+        // Wait for endpoint server to load and availability
+        await dispatch(setupEndpointServer());
+      }
+    } catch (e) {
+      // Endpoint server offline
+    }
+
+  };
+};
+const initializeCertificateView = (thumbprint) => {
+
   return (dispatch, getState) => {
+
     const { files: { filter } } = getState();
     const { files: { fileList: { selectedFileList } } } = getState();
     //  To fix the filter reload issue we need to set the applied filter as a saved filter
@@ -38,22 +66,19 @@ const toggleCertificateView = () => {
     }
     dispatch({ type: SHARED_ACTION_TYPES.SET_DOWNLOAD_FILE_LINK, payload: null });
     dispatch({ type: ACTION_TYPES.TOGGLE_CERTIFICATE_VIEW });
-    const { isCertificateView } = getState().certificate.list;
-    if (isCertificateView) {
-      run.next(() => {
-        // Allowing max 10 files selection to apply certificates filter.
-        if (selectedFileList.length <= 10) {
-          const expressionList = _expressionListForThumbprint(selectedFileList);
-          const savedCertificateFilter = { id: 1, criteria: { expressionList } };
-          dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedCertificateFilter, meta: { belongsTo: 'CERTIFICATE' } });
-          dispatch({ type: SHARED_ACTION_TYPES.APPLY_FILTER, payload: expressionList, meta: { belongsTo: 'CERTIFICATE' } });
-          dispatch(getFirstPageOfCertificates());
-        } else {
-          dispatch(resetFilters('CERTIFICATE'));
-          dispatch(getFirstPageOfCertificates());
-        }
-      });
-    }
+    run.next(() => {
+      // Allowing max 10 files selection to apply certificates filter.
+      if (thumbprint || selectedFileList.length <= 10) {
+        const expressionList = _expressionListForThumbprint(thumbprint, selectedFileList);
+        const savedCertificateFilter = { id: 1, criteria: { expressionList } };
+        dispatch({ type: SHARED_ACTION_TYPES.SET_SAVED_FILTER, payload: savedCertificateFilter, meta: { belongsTo: 'CERTIFICATE' } });
+        dispatch({ type: SHARED_ACTION_TYPES.APPLY_FILTER, payload: expressionList, meta: { belongsTo: 'CERTIFICATE' } });
+        dispatch(getFirstPageOfCertificates());
+      } else {
+        dispatch(resetFilters('CERTIFICATE'));
+        dispatch(getFirstPageOfCertificates());
+      }
+    });
   };
 };
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
@@ -128,7 +153,7 @@ const updateCertificateColumnVisibility = (column) => ({ type: ACTION_TYPES.UPDA
 const closeCertificateVIew = () => ({ type: ACTION_TYPES.CLOSE_CERTIFICATE_VIEW });
 
 export {
-  toggleCertificateView,
+  initializeCertificateView,
   getCertificates,
   getPageOfCertificates,
   getFirstPageOfCertificates,
@@ -136,5 +161,6 @@ export {
   saveCertificateStatus,
   toggleCertificateSelection,
   updateCertificateColumnVisibility,
-  closeCertificateVIew
+  closeCertificateVIew,
+  bootstrapInvestigateCertificates
 };

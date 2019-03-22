@@ -94,6 +94,7 @@ export default function() {
   this.transition(
     this.fromRoute('files.index'),
     this.toRoute('files.details'),
+    this.toRoute('files.certificates'),
     this.use('toLeft'),
     this.reverse('toRight')
   );

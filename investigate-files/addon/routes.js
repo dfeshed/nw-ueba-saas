@@ -4,5 +4,6 @@ export default buildRoutes(function() {
   this.route('permission-denied');
   this.route('files', { path: '/' }, function() {
     this.route('details', { path: '/:id' });
+    this.route('certificates', { path: '/certificates/:id' });
   });
 });

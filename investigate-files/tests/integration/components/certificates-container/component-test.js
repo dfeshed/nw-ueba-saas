@@ -8,9 +8,11 @@ import { patchReducer } from '../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
+import Service from '@ember/service';
 import sinon from 'sinon';
 
 let initState;
+const transitions = [];
 
 const selectors = {
   consoleEvents: '[test-id=consoleEvents]',
@@ -90,6 +92,15 @@ module('Integration | Component | certificates-container', function(hooks) {
     this.set('timeFormat.selected', 'HR24', 'HR24');
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
+    this.owner.register('service:-routing', Service.extend({
+      currentRouteName: 'files.index',
+      generateURL: () => {
+        return;
+      },
+      transitionTo: (name, args, queryParams) => {
+        transitions.push({ name, queryParams });
+      }
+    }));
   });
 
   hooks.afterEach(function() {
@@ -105,6 +116,18 @@ module('Integration | Component | certificates-container', function(hooks) {
     await render(hbs`{{certificates-container}}`);
     assert.equal(findAll('.certificates-action-bar').length, 1, 'certificates action bar has rendered.');
   });
+  test('back to files action test', async function(assert) {
+    await render(hbs`{{certificates-container}}`);
+    await click(find('.back-to-file '));
+    assert.deepEqual(transitions, [{
+      name: 'files.index',
+      queryParams: {
+        checksum: null,
+        sid: null,
+        tabName: null
+      }
+    }]);
+  });
 
   test('certificates body is rendered', async function(assert) {
     await render(hbs`{{certificates-container}}`);
@@ -119,19 +142,6 @@ module('Integration | Component | certificates-container', function(hooks) {
     await render(hbs`{{certificates-container}}`);
     assert.equal(findAll('.filter-wrapper').length, 1, 'certificates filter panel has rendered.');
   });
-  test('certificates close icon should rendered', async function(assert) {
-    new ReduxDataHelper(initState)
-      .isCertificateView(true)
-      .build();
-    await render(hbs`{{certificates-container}}`);
-    assert.equal(findAll('.close-certificate-view-button').length, 1, 'certificates close icon should rendered.');
-    await click('.close-certificate-view-button button');
-    return settled().then(() => {
-      const state = this.owner.lookup('service:redux').getState();
-      assert.equal(state.certificate.list.isCertificateView, false, 'Certificate view is closed');
-    });
-  });
-
   test('event analysis button rendered and disabled', async function(assert) {
     new ReduxDataHelper(initState)
       .isCertificateView(true)
@@ -159,35 +169,6 @@ module('Integration | Component | certificates-container', function(hooks) {
 
     assert.ok(actionSpy.callCount, 1, 'Window.open is called');
     actionSpy.restore();
-  });
-
-  test('go back to files view', async function(assert) {
-    new ReduxDataHelper(initState)
-      .isCertificateView(true)
-      .certificatesItems(items)
-      .loadMoreCertificateStatus('stopped')
-      .selectedCertificatesList([])
-      .coreServerId('serverId')
-      .build();
-    await render(hbs`{{certificates-container}}`);
-    await click(find('.back-to-file'));
-    return settled().then(() => {
-      const state = this.owner.lookup('service:redux').getState();
-      assert.equal(state.certificate.list.isCertificateView, false, 'Certificate view is closed');
-    });
-  });
-
-  test('certificates close button, when clicked will change the contextual topic back to investigate files', async function(assert) {
-    new ReduxDataHelper(initState)
-      .isCertificateView(true)
-      .build();
-    await render(hbs`{{certificates-container}}`);
-    const contextualHelp = this.owner.lookup('service:contextualHelp');
-    assert.equal(findAll('.close-certificate-view-button').length, 1, 'certificates close icon should rendered.');
-    await click('.close-certificate-view-button button');
-    return settled().then(() => {
-      assert.equal(contextualHelp.topic, 'files', 'When navigating back to files view, contextual help topic is changed.');
-    });
   });
 
   test('testing analyze network events', async function(assert) {

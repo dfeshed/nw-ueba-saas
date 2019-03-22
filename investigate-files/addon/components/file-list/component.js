@@ -29,7 +29,6 @@ import {
   onFileSelection,
   setSelectedIndex
 } from 'investigate-files/actions/data-creators';
-import { toggleCertificateView } from 'investigate-files/actions/certificate-data-creators';
 
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { timeRange } from 'investigate-shared/selectors/investigate/selectors';
@@ -77,8 +76,7 @@ const dispatchToActions = {
   retrieveRemediationStatus,
   resetRiskScore,
   onFileSelection,
-  setSelectedIndex,
-  toggleCertificateView
+  setSelectedIndex
 };
 
 /**
@@ -232,7 +230,14 @@ const FileList = Component.extend({
     pivotToInvestigate(item, category) {
       this.get('pivot').pivotToInvestigate('checksumSha256', item, category);
     },
-
+    certificateView(selections) {
+      let selectedThumbprint = '';
+      if (selections.length > 0) {
+        const [{ signature: { thumbprint } }] = selections;
+        selectedThumbprint = thumbprint;
+      }
+      this.get('navigateToCertificateView')(selectedThumbprint);
+    },
     onCloseServiceModal() {
       this.set('showServiceModal', false);
     },

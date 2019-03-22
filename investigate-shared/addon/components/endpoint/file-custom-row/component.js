@@ -110,11 +110,11 @@ export default DataTableBodyRow.extend({
           label: 'viewCertificate',
           order: 5,
           tooltip(selection, context) {
-            return context.get('selections').length > 10 ? '1' : '2';
+            return context.get('selections').length > 1 ? '1' : '2';
           },
           prefix: 'investigateShared.endpoint.fileActions.',
           disabled(selection, context) {
-            return context.get('isCertificateViewDisabled') || context.get('selections').length > 10;
+            return context.get('isCertificateViewDisabled') || context.get('selections').length > 1;
           },
           action(selection, context) {
             context.navigateToCertificateView();

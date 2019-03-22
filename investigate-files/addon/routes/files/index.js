@@ -26,6 +26,16 @@ export default Route.extend({
   deactivate() {
     const redux = this.get('redux');
     redux.dispatch({ type: ACTION_TYPES.RESET_FILES });
+  },
+  actions: {
+    navigateToCertificateView(thumbprint) {
+      this.transitionTo('files.certificates', thumbprint, {
+        queryParams: {
+          thumbprint
+        }
+      });
+    }
+
   }
 
 });
