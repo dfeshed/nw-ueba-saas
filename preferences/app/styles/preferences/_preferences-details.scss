@@ -1,12 +1,9 @@
 .rsa-preferences {
   &-field-content {
     margin: rsa-whitespace();
-    .rsa-form-label .label-text {
-      text-transform: capitalize !important;
-    }
+
     .rsa-form-radio-group-label {
       margin-bottom: rsa-whitespace();
-      text-transform: capitalize;
     }
     .sort-order-default-text {
       @include rsa-font(light, small);
@@ -18,7 +15,7 @@
       color: text-color(primary, light);
       margin-bottom: rsa-whitespace(less);
       @include rsa-font(header, small);
-      text-transform: capitalize;
+      text-transform: uppercase;
       margin-top: rsa-whitespace(more);
     }
     .flex-container {
