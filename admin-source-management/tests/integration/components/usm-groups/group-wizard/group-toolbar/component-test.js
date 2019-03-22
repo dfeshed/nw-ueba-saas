@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, findAll, render, settled } from '@ember/test-helpers';
@@ -297,7 +297,7 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
   });
 
-  test('Apply Policy Step - Toolbar closure actions with valid data', async function(assert) {
+  skip('Apply Policy Step - Toolbar closure actions with valid data', async function(assert) {
     const done = assert.async(3);
     assert.expect(8);
     const state = new ReduxDataHelper(setState)
