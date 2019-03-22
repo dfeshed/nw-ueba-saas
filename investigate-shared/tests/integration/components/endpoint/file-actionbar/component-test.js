@@ -24,7 +24,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     this.set('itemList', []);
     await render(hbs`{{endpoint/file-actionbar itemList=itemList}}`);
     assert.equal(findAll('.file-actionbar .file-status-button')[0].textContent.trim(), 'Change File Status', 'Edit file status button is present.');
-    assert.equal(findAll('.file-actionbar .event-analysis')[0].textContent.trim(), 'Analyze Events', 'Analyze Events button is present.');
+    assert.equal(findAll('.file-actionbar .event-analysis ')[0].textContent.trim(), 'Analyze Events', 'Analyze Events button is present.');
   });
 
   test('when noFiles selected', async function(assert) {
@@ -64,6 +64,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'All the list options should render.');
     await triggerEvent('.panel2', 'mouseover');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 9, 'All the list options should render.');
+    await click(document.querySelectorAll('.file-action-selector-panel ul li')[7]);
     await click(findAll('.rsa-dropdown-action-list li')[5]);
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 0, 'on click of Reset, the file action button is closed ');
   });
@@ -74,6 +75,31 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     await render(hbs`{{endpoint/file-actionbar itemList=itemList showIcons=false}}`);
 
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), true, 'More action button is disabled.');
+  });
+
+  test('More action external lookup for sha1, will call fileAction method', async function(assert) {
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.endpointCanManageFiles', true);
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
+    await render(hbs`{{endpoint/file-actionbar
+      itemList=itemList
+      showIcons=false
+      selectedFileCount=2
+      accessControl=accessControl
+      showResetRiskScore=true
+      fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
+    assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
+    await click('.more-action-button');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'All the list options should render.');
+    await triggerEvent('.panel2', 'mouseover');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 9, 'All the list options should render.');
+    await click(document.querySelectorAll('.file-action-selector-panel ul li')[7]);
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'on click of lookup sha1, the dropdown is closed ');
   });
 
   test('More action, is enabled when rows are selected', async function(assert) {
@@ -427,4 +453,12 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     await click('.more-action-button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 5, 'All the list options should render except reset risk score.');
   });
+
+  test('List being null', async function(assert) {
+    this.set('itemList', undefined);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList selectedFileCount=0}}`);
+    assert.equal(findAll('.file-actionbar .file-status-button')[0].classList.contains('is-disabled'), true, 'Edit file status Button is disabled when no files are selected');
+    assert.equal(findAll('.file-actionbar .event-analysis')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when no files are selected');
+  });
+
 });

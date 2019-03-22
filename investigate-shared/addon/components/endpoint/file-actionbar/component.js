@@ -61,22 +61,6 @@ export default Component.extend({
     return !(itemList.length > 0);
   },
 
-  @computed('itemList')
-  pivotInvestigateDisabled(itemList) {
-    if (!itemList) {
-      return true;
-    }
-    return !(itemList.length === 1);
-  },
-
-  @computed('itemList')
-  statusData(selectedFileList) {
-    if (selectedFileList && selectedFileList.length === 1) {
-      return selectedFileList[0].fileStatusData || {};
-    }
-    return {};
-  },
-
   @computed('fileDownloadButtonStatus', 'showResetRiskScore', 'itemList')
   fileActionOptions(fileDownloadButtonStatus, showResetRiskScore, itemList) {
 

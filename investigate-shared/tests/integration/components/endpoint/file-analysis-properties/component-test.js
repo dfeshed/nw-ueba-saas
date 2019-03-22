@@ -56,7 +56,10 @@ module('Integration | Component | endpoint/file-analysis-properties', function(h
       checksumSha256: '43e3f5fbfb5d33981ac503dee476868ec029815d459e7c36c4abc2d2f75b5735',
       entropy: 6.548615161814601,
       downloadedPath: '/endpoint/downloads/files/43e3f',
-      downloadedFileName: '43e3f5fbfb5d33981ac503dee476868ec029815d459e7c36c4abc2d2f75b5735'
+      downloadedFileName: '43e3f5fbfb5d33981ac503dee476868ec029815d459e7c36c4abc2d2f75b5735',
+      fileProperties: {
+        format: 'elf'
+      }
     };
     this.set('filePropertiesData', filePropertiesData);
     await render(hbs`{{endpoint/file-analysis-properties filePropertiesData=filePropertiesData}}`);
