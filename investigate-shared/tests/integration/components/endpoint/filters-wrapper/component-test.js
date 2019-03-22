@@ -24,6 +24,30 @@ const FILTER_TYPE = [
     }
   }
 ];
+const sizeFilter = [
+  {
+    'name': 'size',
+    'label': 'investigateFiles.fields.size',
+    'type': 'number',
+    'operator': [
+      { label: 'Greater Than', type: 'GREATER_THAN' }
+    ],
+    'units': [
+      { label: 'Bytes', type: 'bytes' }
+    ],
+    filterValue: {
+      operator: 'GREATER_THAN',
+      value: [5],
+      unit: 'bytes'
+    }
+  },
+  {
+    'name': 'groupPolicy.managed',
+    'hideLabel': true,
+    'listOptions': [ { name: false, label: 'investigateHosts.hosts.filters.showOnlyManageAgents' }],
+    type: 'list'
+  }
+];
 const agentModeFilter = [
   {
     'name': 'machineIdentity.agentMode',
@@ -74,10 +98,31 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
   });
 
+  test('apply filter getting called for size and group policy managed filters', async function(assert) {
+    this.set('showSaveFilterButton', true);
+    this.set('filterState', { filter: {}, expressionList: [] });
+    this.set('expressionList', [{}]);
+    this.set('filterTypes', sizeFilter);
+    this.set('getFirstPageOfFiles', function() {
+      assert.ok(true);
+    });
+    this.set('applyFilter', function(action, filters) {
+      assert.equal(filters.length, 1);
+    });
+    await render(hbs`{{endpoint/filters-wrapper
+    filterState=filterState
+    expressionList=expressionList
+    filterTypes=filterTypes
+    applyFilters=(action applyFilter (action getFirstPageOfFiles))
+    showSaveFilterButton=showSaveFilterButton}}`);
+    await triggerKeyEvent('.number-input  input', 'keyup', 13);
+  });
+
   test('save filter is getting called with save as option', async function(assert) {
     const done = assert.async();
     assert.expect(4);
     this.set('showSaveFilterButton', true);
+    this.set('isNameInvalid', false);
     this.set('createCustomSearch', function(action, filters) {
       assert.equal(filters.length, 2);
       done();
@@ -94,6 +139,7 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
         filterState=filterState
         applyFilters=(action applyFilter)
         filterTypes=filterTypes
+        isNameInvalid=isNameInvalid
         createCustomSearch=(action createCustomSearch)
         showSaveFilterButton=showSaveFilterButton
       }}
@@ -243,6 +289,31 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     await fillIn('.custom-filter-name  input', ' ');
     await triggerKeyEvent('.custom-filter-name input', 'keyup', 13);
     assert.equal(document.querySelectorAll('#modalDestination .is-disabled').length, 1, 'Save button disabled');
+  });
+
+  test('save button is enabled, if filter name is not empty', async function(assert) {
+    assert.expect(4);
+    this.set('showSaveFilterButton', true);
+    this.set('applyFilter', function(filters) {
+      const [filter] = filters.filterBy('propertyName', 'machine.scanStartTime');
+      assert.equal(filter.propertyValues[0].relativeValueType, 'Minutes', 'Added relativeValueType for date filter');
+      assert.equal(filters.length, 2);
+    });
+    this.set('filterState', { filter: {}, expressionList: [] });
+    this.set('filterTypes', FILTER_TYPE);
+    await render(hbs`{{endpoint/filters-wrapper
+    filterState=filterState
+    applyFilters=(action applyFilter)
+    filterTypes=filterTypes
+    showSaveFilterButton=showSaveFilterButton}}`);
+    await fillIn('.file-name-input  input', 'malware.exe');
+    await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
+    await click(document.querySelector('.save-filter-button button'));
+    assert.equal(document.querySelectorAll('#modalDestination .save-search').length, 1, 'Save Filter modal rendered');
+    await fillIn('.custom-filter-name  input', ' ');
+    await fillIn('.custom-filter-name  input', 'test');
+    await triggerKeyEvent('.custom-filter-name input', 'keyup', 13);
+    assert.equal(document.querySelectorAll('#modalDestination .is-disabled').length, 0, 'Save button enabled');
   });
 
   test('it shows the permission error message', async function(assert) {
