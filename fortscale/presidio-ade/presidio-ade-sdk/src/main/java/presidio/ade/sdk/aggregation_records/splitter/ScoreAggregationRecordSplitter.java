@@ -12,6 +12,7 @@ import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.sdk.aggregation_records.splitter.ScoreAggregationRecordContributors.Contributor;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,7 +51,7 @@ public class ScoreAggregationRecordSplitter {
                 scoreAggregationRecordDetails.getFeatureBucketStrategyData());
 
         // Get the function that built the score aggregation record.
-        Stream<Entry<MultiKeyFeature, Double>> stream = scoreAggregationRecordDetails.getAggrFeatureEventFunction()
+        Map<MultiKeyFeature, Double> map = scoreAggregationRecordDetails.getAggrFeatureEventFunction()
                 // Calculate the contribution ratio of each tuple in the relevant aggregated feature (histogram).
                 .calculateContributionRatios(scoreAggregationRecordDetails.getAggregatedFeatureEventConf(), featureBucket)
                 // Iterate the tuples and their contribution ratios (<tuple, contribution ratio> entries).
@@ -62,17 +63,15 @@ public class ScoreAggregationRecordSplitter {
                         // Value mapper: Leave the contribution ratio as is.
                         Entry::getValue,
                         // Merge function: Sum all the contribution ratios that fall under the same reduced key.
-                        Double::sum))
-                // Iterate the entries of reduced tuples and contribution ratios.
-                .entrySet().stream();
+                        Double::sum));
 
-        if (scoreAggregationRecordContributorsLimit >= 0) {
-            stream = stream
-                    // Sort the entries according to their contribution ratios, in descending order.
-                    .sorted((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()))
-                    // Limit the number of entries.
-                    .limit(scoreAggregationRecordContributorsLimit);
-        }
+        // Iterate the entries of reduced tuples and contribution ratios.
+        Stream<Entry<MultiKeyFeature, Double>> stream = map.entrySet().stream();
+        if (scoreAggregationRecordContributorsLimit >= 0) stream = stream
+                // Sort the entries according to their contribution ratios, in descending order.
+                .sorted((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()))
+                // Limit the number of entries.
+                .limit(scoreAggregationRecordContributorsLimit);
 
         List<Contributor> contributors = stream
                 // Map each reduced tuple and contribution ratio to a Contributor instance.
