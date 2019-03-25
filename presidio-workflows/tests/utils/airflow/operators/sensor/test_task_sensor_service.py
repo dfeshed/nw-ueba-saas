@@ -89,28 +89,26 @@ def test_dag_after_add_task_gap_sensor_with_2_tasks_to_keep_gap_from(default_arg
     task_upstream_list = test_dummy_task.get_direct_relatives(upstream=True)
     assert len(task_upstream_list) == 2
 
-    sensor = task_upstream_list[0]
-    assert isinstance(sensor, TaskGapSensorOperator)
-    assert sensor.get_external_dag_id() == gapped_task_dag1.dag_id
-    assert sensor.get_external_task_id() == gapped_task1.task_id
-    assert sensor.get_execution_delta() == execution_delta1
+    for sensor in task_upstream_list:
+        assert isinstance(sensor, TaskGapSensorOperator)
+        assert sensor.get_external_dag_id() == gapped_task_dag1.dag_id or sensor.get_external_dag_id() == gapped_task_dag2.dag_id
 
-    gapped_task_downstream_list = gapped_task1.get_direct_relatives(upstream=False)
-    assert len(gapped_task_downstream_list) == 0
-    gapped_task_upstream_list = gapped_task1.get_direct_relatives(upstream=True)
-    assert len(gapped_task_upstream_list) == 0
+        if sensor.get_external_dag_id() == gapped_task_dag1.dag_id:
+            assert sensor.get_external_task_id() == gapped_task1.task_id
+            assert sensor.get_execution_delta() == execution_delta1
+            gapped_task_downstream_list = gapped_task1.get_direct_relatives(upstream=False)
+            assert len(gapped_task_downstream_list) == 0
+            gapped_task_upstream_list = gapped_task1.get_direct_relatives(upstream=True)
+            assert len(gapped_task_upstream_list) == 0
 
+        if sensor.get_external_dag_id() == gapped_task_dag2.dag_id:
+            assert sensor.get_external_task_id() == gapped_task2.task_id
+            assert sensor.get_execution_delta() == execution_delta2
+            gapped_task_downstream_list = gapped_task2.get_direct_relatives(upstream=False)
+            assert len(gapped_task_downstream_list) == 0
+            gapped_task_upstream_list = gapped_task2.get_direct_relatives(upstream=True)
+            assert len(gapped_task_upstream_list) == 0
 
-    sensor = task_upstream_list[1]
-    assert isinstance(sensor, TaskGapSensorOperator)
-    assert sensor.get_external_dag_id() == gapped_task_dag2.dag_id
-    assert sensor.get_external_task_id() == gapped_task2.task_id
-    assert sensor.get_execution_delta() == execution_delta2
-
-    gapped_task_downstream_list = gapped_task2.get_direct_relatives(upstream=False)
-    assert len(gapped_task_downstream_list) == 0
-    gapped_task_upstream_list = gapped_task2.get_direct_relatives(upstream=True)
-    assert len(gapped_task_upstream_list) == 0
     
 
 def test_dag_after_add_task_short_circuit(test_task_sensor_service, test_dummy_task):
