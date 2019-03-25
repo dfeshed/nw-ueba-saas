@@ -91,22 +91,26 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     assert.ok(find(`${downloadSelector}.is-disabled`), 'Download is disabled');
   });
 
-  test('download dropdown should show options without count if selectAll is checked', async function(assert) {
+  test('download dropdown should show valid options and no counts for selectAllEvents', async function(assert) {
     new ReduxDataHelper(setState)
       .allEventsSelected(true)
       .isEventResultsError(false)
       .eventsPreferencesConfig()
-      .defaultEventAnalysisPreferences()
+      .setEventAnalysisPreferencesForDownload('CSV', 'PAYLOAD1', 'TSV')
       .eventResults(eventResultsData)
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     await clickTrigger();
     const options = findAll(`${downloadOptions} li`);
-    assert.equal(options.length, 12, '12 options found');
 
-    await assertForDownloadOptions(assert, options, 0, 'Logs as Text', '');
+    assert.equal(options.length, 9, '9 options found, only 1 of 4 Network download options available');
+
+    // Log download option in prefered section of download displays user preference
+    await assertForDownloadOptions(assert, options, 0, 'Logs as CSV', '');
+    // Network download option in prefered section of download does not update to user preference, remains equal to PCAP always
     await assertForDownloadOptions(assert, options, 1, 'Network as PCAP', '');
-    await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '');
+    // Meta  download option in prefered section of download displays user preference
+    await assertForDownloadOptions(assert, options, 2, 'Visible Meta as TSV', '');
   });
 
   test('download dropdown should show appropriate options if log and Network events are selected ', async function(assert) {

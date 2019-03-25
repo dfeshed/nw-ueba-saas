@@ -1,6 +1,7 @@
 import reselect from 'reselect';
 import { lookup } from 'ember-dependency-lookup';
 import { EVENT_TYPES } from 'component-lib/constants/event-types';
+import { EVENT_DOWNLOAD_TYPES, FILE_TYPES } from 'component-lib/constants/event-download-types';
 
 const { createSelector } = reselect;
 
@@ -164,7 +165,7 @@ export const getDownloadOptions = createSelector(
 
       const i18n = lookup('service:i18n');
       const downloadOptions = [];
-      const dropDownItems = items.filter((item) => !item.additionalFieldPrefix && item.type == 'dropdown');
+      let dropDownItems = items.filter((item) => !item.additionalFieldPrefix && item.type == 'dropdown');
       const total = selectedEventIds.length;
 
       // preferredOptions
@@ -172,7 +173,8 @@ export const getDownloadOptions = createSelector(
 
         const [,, defaultEventType ] = item.name.split('.');
         const { eventType } = item;
-        const option = i18n.t(`investigate.events.download.options.${eventAnalysisPreferences[defaultEventType]}`);
+        const fileType = item.eventType === EVENT_DOWNLOAD_TYPES.NETWORK ? FILE_TYPES.PCAP : eventAnalysisPreferences[defaultEventType];
+        const option = i18n.t(`investigate.events.download.options.${fileType}`);
         const getIdsForEventType = _getIdsForEventType(eventType, selectedEventIds, resultsData);
         const num = getIdsForEventType.length;
         downloadOptions.push({
@@ -184,6 +186,8 @@ export const getDownloadOptions = createSelector(
           disabled: !isAllEventsSelected && num < 1
         });
       });
+
+      dropDownItems = dropDownItems.filter((item) => item.eventType !== EVENT_DOWNLOAD_TYPES.NETWORK);
 
       // remaining options
       dropDownItems.forEach((item) => {
@@ -252,11 +256,13 @@ const _indexOfBy = (arr, key, value) => {
  * Returns sessionIds for each download type based on number of events of the type selected
  * @private
  */
+// TODO rename all eventType variables referring to event download type (META, LOG, NETWORK) as eventDownloadType,
+// thus marking them from actual event types (ENDPOINT, LOG, NETWORK)
 const _getIdsForEventType = (eventType, selectedEventIds, resultsData) => {
-  if (eventType === 'META') {
+  if (eventType === EVENT_DOWNLOAD_TYPES.META) {
     return selectedEventIds;
   }
   const selectedEvents = resultsData.filter((event) => selectedEventIds.indexOf(event.sessionId) >= 0);
-  const selectedEventsOfType = selectedEvents.filter((event) => eventType === (event.medium === 32 ? 'LOG' : 'NETWORK'));
+  const selectedEventsOfType = selectedEvents.filter((event) => eventType === (event.medium === 32 ? EVENT_TYPES.LOG : EVENT_TYPES.NETWORK));
   return selectedEventsOfType.map((event) => event.sessionId);
 };

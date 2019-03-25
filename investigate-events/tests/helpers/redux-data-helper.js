@@ -191,6 +191,13 @@ export default class DataHelper {
     return this;
   }
 
+  setEventAnalysisPreferencesForDownload(log, network, meta) {
+    _set(this.state, 'data.eventAnalysisPreferences.defaultLogFormat', log);
+    _set(this.state, 'data.eventAnalysisPreferences.defaultPacketFormat', network);
+    _set(this.state, 'data.eventAnalysisPreferences.defaultMetaFormat', meta);
+    return this;
+  }
+
   isCanceled() {
     _set(this.state, 'eventResults.status', 'canceled');
     return this;
