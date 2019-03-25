@@ -1,6 +1,5 @@
 import { isArray } from '@ember/array';
 import { isEmpty } from '@ember/utils';
-import { merge } from '@ember/polyfills';
 import moment from 'moment';
 
 const aKB = 1024;
@@ -120,7 +119,7 @@ function tooltip(field, value, opts = {}) {
   if (field === 'size') {
     return _size(value, opts, true);
   } else {
-    return text(field, value, merge({ appendRawValue: true }, opts));
+    return text(field, value, { ...opts, appendRawValue: true });
   }
 }
 

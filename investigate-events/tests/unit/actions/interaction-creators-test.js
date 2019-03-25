@@ -206,6 +206,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
         .startTime()
         .endTime()
         .columnGroups()
+        .metaPanel({ init: false })
         .eventTimeSortOrder()
         .build();
     };

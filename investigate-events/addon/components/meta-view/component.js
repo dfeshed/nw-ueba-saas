@@ -6,13 +6,19 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { defaultMetaGroup } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { META_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
+import { createPillOnMetaDrill, toggleMetaGroupOpen } from 'investigate-events/actions/meta-creators';
 
 const stateToComputed = (state) => ({
   group: defaultMetaGroup(state),
   size: state.investigate.data.metaPanelSize,
   query: state.investigate.queryNode,
-  metaKeyStates: state.investigate.eventResults.metaKeyStates
+  metaKeyStates: state.investigate.meta.meta
 });
+
+const dispatchToActions = {
+  createPillOnMetaDrill,
+  toggleMetaGroupOpen
+};
 
 const MetaViewComponent = Component.extend({
   tagName: 'article',
@@ -20,9 +26,8 @@ const MetaViewComponent = Component.extend({
   classNameBindings: ['_sizeClass'],
 
   metaPanelSizes: META_PANEL_SIZES,
-  metaGroupKeyToggle: () => {},
   metaPanelSize: () => {},
-  navDrill: () => {},
+  executeQuery: () => {},
 
   /**
    * Duration (in millisec) of delay between opening of component & revealing
@@ -42,7 +47,9 @@ const MetaViewComponent = Component.extend({
    * @private
    */
   @computed('size')
-  _sizeClass: (size) => `meta-size-${size}`,
+  _sizeClass: (size) => {
+    return `meta-size-${size}`;
+  },
 
   /**
    * Reacts to the size specified for this component. Sizes are either
@@ -105,18 +112,19 @@ const MetaViewComponent = Component.extend({
   },
 
   actions: {
-    drillInOnValue() {
-      const query = this.get('query');
-      this.get('navDrill')(query);
+    drillInOnValue(meta, value) {
+      this.send('createPillOnMetaDrill', { meta, value });
+      this.get('executeQuery')();
     },
     resizePanel(size) {
       this.get('metaPanelSize')(size);
     },
-    toggleMetaGroup() {
-      const query = this.get('query');
-      this.get('metaGroupKeyToggle')(query);
+    toggleMetaGroup(groupKey) {
+      // const query = this.get('query');
+      // this.get('metaGroupKeyToggle')(query);
+      this.send('toggleMetaGroupOpen', groupKey);
     }
   }
 });
 
-export default connect(stateToComputed)(MetaViewComponent);
+export default connect(stateToComputed, dispatchToActions)(MetaViewComponent);

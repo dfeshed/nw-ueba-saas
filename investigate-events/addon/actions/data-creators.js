@@ -7,6 +7,7 @@ import { eventsStartNewest, eventsStartOldest } from './events-creators';
 import { setQueryTimeRange } from 'investigate-events/actions/interaction-creators';
 import { selectedTimeRange, canFetchEvents } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { shouldStartAtOldest } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { metaGet } from './meta-creators';
 
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 
@@ -115,8 +116,7 @@ export const fetchInvestigateData = () => {
       dispatch(getEventCount());
       if (_showFutureFeatures) {
         dispatch(getEventTimeline());
-        // TODO - Later on, we'll get meta values, but skip for now
-        // dispatch(metaGet());
+        dispatch(metaGet(true));
       }
 
       // Get first batch of results either at top or bottom of

@@ -81,6 +81,71 @@ const INVALID_PILL_DATA = [{
   complexFilterText: undefined
 }];
 
+const _optionsInitialState = {
+  size: 20,
+  threshold: 25000,
+  metric: 'sessions',
+  sortField: 'total',
+  sortOrder: 'descending'
+};
+
+const values = {
+  data: [
+    {
+      value: 'foo',
+      count: 9821
+    },
+    {
+      value: 'bar',
+      count: 9638
+    }
+  ],
+  status: 'complete',
+  complete: true
+};
+
+const metaKeyStates = [{
+  info: {
+    count: 0,
+    format: 'Text',
+    metaName: 'action',
+    flags: -2147482621,
+    displayName: 'Action Event',
+    formattedName: 'action (Action Event)',
+    isOpen: true
+  },
+  values
+}, {
+  info: {
+    count: 0,
+    format: 'Text',
+    metaName: 'ad.computer.src',
+    flags: -2147482621,
+    displayName: 'Active Directory Workstation Source',
+    formattedName: 'ad.computer.src (Active Directory Workstation Source)',
+    isOpen: true
+  }
+}, {
+  info: {
+    format: 'Float32',
+    metaName: 'file.entropy',
+    flags: -2147482877,
+    displayName: 'File Entropy',
+    formattedName: 'file.entrophy (File Entrophy)',
+    isOpen: false
+  }
+}];
+
+const emptyMetaKeyState = {
+  meta: [],
+  options: _optionsInitialState
+};
+
+const metaState = {
+  meta: metaKeyStates,
+  options: _optionsInitialState
+};
+
 const _set = (obj, key, val) => {
   if (obj[key]) {
     obj[key] = val;
@@ -353,6 +418,17 @@ export default class DataHelper {
 
   metaFilter(metaFilter = DEFAULT_PILLS_DATA) {
     _set(this.state, 'queryNode.metaFilter', metaFilter);
+    return this;
+  }
+
+  metaPanel({ init = false, customMeta }) {
+    if (init) {
+      _set(this.state, 'meta', metaState);
+    } else if (customMeta) {
+      _set(this.state, 'meta', customMeta);
+    } else {
+      _set(this.state, 'meta', emptyMetaKeyState);
+    }
     return this;
   }
 

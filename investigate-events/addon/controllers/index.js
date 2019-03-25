@@ -16,16 +16,8 @@ export default Controller.extend({
     controllerExecuteQuery(externalLink) {
       this.send('executeQuery', externalLink);
     },
-    controllerMetaGroupKeyToggle(/* query */) {
-      // TODO - Not implemented yet
-      // this.send('metaGroupKeyToggle', query);
-    },
     controllerMetaPanelSize(size) {
       this.send('metaPanelSize', size);
-    },
-    controllerNavDrill(/* query */) {
-      // TODO - Not implemented yet
-      // this.send('navDrill', query);
     },
     controllerReconClose() {
       this.send('reconClose');
