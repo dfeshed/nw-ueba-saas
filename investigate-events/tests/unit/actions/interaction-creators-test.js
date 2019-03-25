@@ -221,16 +221,8 @@ module('Unit | Actions | interaction creators', function(hooks) {
       }
     };
 
-    const fetchDispatch = (action) => {
-      if ((fetchInvestigateDispatchCount === 4) && typeof action === 'function') {
-        action(downstreamOldestDispatchCreator(assert, asserts, getState), getState);
-      } else {
-        fetchInvestigateDispatchCount++;
-      }
-    };
-
     const asserts = () => {
-      assert.equal(allActionsDispatched.length, 5, 'total actions dispatched');
+      assert.equal(allActionsDispatched.length, 6, 'total actions dispatched');
       assert.equal(queryResults.length, 500, 'total results accumulated');
       assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE].length, 2, '2 pages of data dispatched');
       assert.equal(actionsByType[ACTION_TYPES.QUERY_IS_RUNNING].length, 1, 'query not running just one time');
@@ -238,6 +230,14 @@ module('Unit | Actions | interaction creators', function(hooks) {
       assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE_STATUS].length, 1, 'set status once');
       assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE_STATUS][0].payload, 'complete', 'first status call is to indicate between streams');
       done();
+    };
+
+    const fetchDispatch = (action) => {
+      if ((fetchInvestigateDispatchCount === 3) && typeof action === 'function') {
+        action(downstreamOldestDispatchCreator(assert, asserts, getState), getState);
+      } else {
+        fetchInvestigateDispatchCount++;
+      }
     };
 
     const thunk = interactionCreators.setColumnGroup({ id: 2 });

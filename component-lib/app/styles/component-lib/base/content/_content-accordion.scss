@@ -1,7 +1,7 @@
 .rsa-content-accordion {
 
   h3 {
-    @include rsa-font(header)
+    @include rsa-font(header);
     padding: rsa-whitespace(less);
     color: $contentAccordionHeaderTypeColor;
 

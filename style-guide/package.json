@@ -17,10 +17,10 @@
   "devDependencies": {
     "@ember/jquery": "0.6.0",
     "@ember/optional-features": "0.7.0",
-    "@html-next/flexi-config": "2.0.0",
-    "@html-next/flexi-default-styles": "2.0.1",
-    "@html-next/flexi-dsl": "2.0.1",
-    "@html-next/flexi-layouts": "2.0.1",
+    "@html-next/flexi-config": "2.2.0",
+    "@html-next/flexi-default-styles": "2.2.0",
+    "@html-next/flexi-dsl": "2.2.0",
+    "@html-next/flexi-layouts": "2.2.2",
     "babel-eslint": "10.0.1",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
@@ -38,7 +38,7 @@
     "ember-cli-htmlbars-inline-precompile": "^1.0.0",
     "ember-cli-inject-live-reload": "2.0.1",
     "ember-cli-node-assets": "0.2.0",
-    "ember-cli-sass": "^6.1.1",
+    "ember-cli-sass": "10.0.0",
     "ember-cli-shims": "^1.1.0",
     "ember-cli-sri": "^2.1.0",
     "ember-cli-swiper": "^0.6.1",
@@ -59,7 +59,8 @@
     "flexi": "2.0.1",
     "highlightjs": "9.8.0",
     "loader.js": "^4.2.3",
-    "qunit-dom": "^0.8.0"
+    "qunit-dom": "^0.8.0",
+    "sass": "1.17.2"
   },
   "ember-addon": {
     "paths": [
@@ -69,7 +70,7 @@
     ]
   },
   "engines": {
-    "node": "10.13.0"
+    "node": "10.15.3"
   },
   "private": true
 }

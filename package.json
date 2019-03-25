@@ -8,10 +8,10 @@
   "dependencies": {
     "@ember/jquery": "0.6.0",
     "@ember/optional-features": "0.7.0",
-    "@html-next/flexi-config": "2.0.0",
-    "@html-next/flexi-default-styles": "2.0.1",
-    "@html-next/flexi-dsl": "2.0.1",
-    "@html-next/flexi-layouts": "2.0.1",
+    "@html-next/flexi-config": "2.2.0",
+    "@html-next/flexi-default-styles": "2.2.0",
+    "@html-next/flexi-dsl": "2.2.0",
+    "@html-next/flexi-layouts": "2.2.2",
     "@html-next/vertical-collection": "1.0.0-beta.12",
     "@mind-trace/stompjs": "2.3.5",
     "babel-eslint": "10.0.1",
@@ -45,7 +45,7 @@
     "ember-cli-moment-shim": "3.4.0",
     "ember-cli-node-assets": "0.2.0",
     "ember-cli-nouislider": "1.1.0",
-    "ember-cli-sass": "6.2.0",
+    "ember-cli-sass": "10.0.0",
     "ember-cli-seamless-immutable-shim": "1.0.0",
     "ember-cli-shims": "1.1.0",
     "ember-cli-sri": "2.1.1",
@@ -114,6 +114,7 @@
     "redux-thunk": "2.3.0",
     "reselect": "3.0.1",
     "sanitize-html": "1.18.2",
+    "sass": "1.17.2",
     "seamless-immutable": "7.1.2",
     "sockjs-client-web": "1.1.1-alpha.2",
     "tether": "1.4.0"
@@ -124,6 +125,6 @@
     "moment": "2.18.1"
   },
   "engines": {
-    "node": "10.13.0"
+    "node": "10.15.3"
   }
 }

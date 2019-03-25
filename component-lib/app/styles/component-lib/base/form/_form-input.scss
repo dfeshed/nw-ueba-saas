@@ -47,7 +47,7 @@ input:-webkit-autofill:active {
     box-sizing: border-box;
     padding: rsa-whitespace(less);
     @include rsa-font();
-    @include rsa-input-placeholder($formInputPlaceholderColor)
+    @include rsa-input-placeholder($formInputPlaceholderColor);
     color: $formInputTypeColor;
 
     &:focus {

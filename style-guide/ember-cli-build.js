@@ -19,6 +19,13 @@ module.exports = function(defaults) {
         'transform-object-rest-spread',
         'transform-decorators-legacy'
       ]
+    },
+    sassOptions: {
+      includePaths: [
+        'node_modules/ember-power-select/app/styles/',
+        'node_modules/ember-basic-dropdown/app/styles/'
+      ]
+      // onlyIncluded: false
     }
   });
 

@@ -25,7 +25,12 @@ module.exports = function(defaults) {
     enabled: false
   };
 
-  const app = new EmberApp(defaults, buildOptions);
+  const options = {
+    ...defaults,
+    ...buildOptions
+  };
+
+  const app = new EmberApp(options);
 
   const tree = app.toTree();
   const ieTree = postcssCompiler([tree], 'assets', 'ngcoreui.css');

@@ -16,6 +16,5 @@
     "postcss": "^6.0.14",
     "broccoli-caching-writer": "^3.0.3",
     "postcss-custom-properties": "^6.2.0"
-
   }
 }

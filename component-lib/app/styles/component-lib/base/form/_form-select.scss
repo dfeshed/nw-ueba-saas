@@ -6,7 +6,8 @@ $ember-power-select-selected-background: background-color(secondary, dark);
 $ember-power-select-option-padding: rsa-whitespace();
 $ember-power-select-line-height: 2rem;
 
-@import "../../../ember-power-select";
+@import "ember-power-select";
+
 
 .power-select {
   .label-text {
