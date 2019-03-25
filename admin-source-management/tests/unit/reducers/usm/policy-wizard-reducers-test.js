@@ -32,6 +32,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
   test('on NEW_POLICY, state should be reset to the initial state', function(assert) {
     const expectedEndState = new ReduxDataHelper()
       .policyWiz()
+      .policyWizPolicyFetchStatus('complete')
       .policyWizPolicyStatus('complete')
       .policyWizScanStartDate(null)
       .policyWizPolicyOrig()
@@ -115,7 +116,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
   test('on FETCH_POLICY start, policy is reset and itemsStatus is properly set', function(assert) {
     const expectedEndState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizPolicyStatus('wait')
+      .policyWizPolicyFetchStatus('wait')
       .policyWizPolicyOrig()
       .build().usm.policyWizard;
     const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_POLICY });
@@ -136,7 +137,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const expectedEndState = new ReduxDataHelper()
       .policyWiz()
       .policyWizPolicy(fetchPolicyPayload.data)
-      .policyWizPolicyStatus('complete')
+      .policyWizPolicyFetchStatus('complete')
       .build().usm.policyWizard;
     const action = makePackAction(LIFECYCLE.SUCCESS, {
       type: ACTION_TYPES.FETCH_POLICY,

@@ -18,7 +18,7 @@ import {
   // TODO when implemented isReviewGroupStepValid,
   // TODO when implemented isWizardValid
   isGroupLoading,
-  isGroupLoadError,
+  isGroupFetchError,
   hasGroupChanged,
   policyList,
   availablePolicySourceTypes,
@@ -303,6 +303,16 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
     let isGroupLoadingSelected = isGroupLoading(Immutable.from(fullState));
     assert.deepEqual(isGroupLoadingSelected, isGroupLoadingExpected, 'isGroupLoading is true when groupStatus is wait');
 
+    // should also be true when groupFetchStatus is true
+    groupStatusExpected = 'wait';
+    fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroupFetchStatus(groupStatusExpected)
+      .build();
+    isGroupLoadingExpected = true;
+    isGroupLoadingSelected = isGroupLoading(Immutable.from(fullState));
+    assert.deepEqual(isGroupLoadingSelected, isGroupLoadingExpected, 'isGroupLoading is true when groupFetchStatus is wait');
+
     groupStatusExpected = 'complete';
     fullState = new ReduxDataHelper()
       .groupWiz()
@@ -313,24 +323,24 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
     assert.deepEqual(isGroupLoadingSelected, isGroupLoadingExpected, 'isGroupLoading is false when groupStatus is complete');
   });
 
-  test('isGroupLoadError selector', function(assert) {
+  test('isGroupFetchError selector', function(assert) {
     let groupStatusExpected = 'complete';
     let fullState = new ReduxDataHelper()
       .groupWiz()
-      .groupWizGroupStatus(groupStatusExpected)
+      .groupWizGroupFetchStatus(groupStatusExpected)
       .build();
-    let isGroupLoadErrorExpected = false;
-    let isGroupLoadErrorSelected = isGroupLoadError(Immutable.from(fullState));
-    assert.deepEqual(isGroupLoadErrorSelected, isGroupLoadErrorExpected, 'isGroupLoadError is false when groupStatus is complete');
+    let isGroupFetchErrorExpected = false;
+    let isGroupFetchErrorSelected = isGroupFetchError(Immutable.from(fullState));
+    assert.deepEqual(isGroupFetchErrorSelected, isGroupFetchErrorExpected, 'isGroupFetchError is false when groupFetchStatus is complete');
 
     groupStatusExpected = 'error';
     fullState = new ReduxDataHelper()
       .groupWiz()
-      .groupWizGroupStatus(groupStatusExpected)
+      .groupWizGroupFetchStatus(groupStatusExpected)
       .build();
-    isGroupLoadErrorExpected = true;
-    isGroupLoadErrorSelected = isGroupLoadError(Immutable.from(fullState));
-    assert.deepEqual(isGroupLoadErrorSelected, isGroupLoadErrorExpected, 'isGroupLoadError is true when groupStatus is error');
+    isGroupFetchErrorExpected = true;
+    isGroupFetchErrorSelected = isGroupFetchError(Immutable.from(fullState));
+    assert.deepEqual(isGroupFetchErrorSelected, isGroupFetchErrorExpected, 'isGroupFetchError is true when groupFetchStatus is error');
   });
 
   test('hasGroupChanged selector', function(assert) {

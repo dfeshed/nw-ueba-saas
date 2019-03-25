@@ -620,7 +620,7 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
   test('on FETCH_GROUP start, group is reset and itemsStatus is properly set', function(assert) {
     const expectedEndState = new ReduxDataHelper()
       .groupWiz()
-      .groupWizGroupStatus('wait')
+      .groupWizGroupFetchStatus('wait')
       .groupWizGroupOrig()
       .build().usm.groupWizard;
     const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_GROUP });
@@ -647,7 +647,7 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
     const expectedEndState = new ReduxDataHelper()
       .groupWiz()
       .groupWizGroup(fetchGroupPayload.data, true)
-      .groupWizGroupStatus('complete')
+      .groupWizGroupFetchStatus('complete')
       .build().usm.groupWizard;
     const action = makePackAction(LIFECYCLE.SUCCESS, {
       type: ACTION_TYPES.FETCH_GROUP,

@@ -87,7 +87,8 @@ export const initialState = {
     assignedPolicies: {}
   },
   groupOrig: {},
-  groupStatus: null, // wait, complete, error
+  groupFetchStatus: null, // wait, complete, error (separate one for FETCH)
+  groupStatus: null, // wait, complete, error (for SAVE & SAVE_PUBLISH)
 
   // the summary list of policies objects to fill the group select/dropdown
   groupList: [],
@@ -181,6 +182,7 @@ export default reduxActions.handleActions({
     const newState = state.merge({
       ...initialState,
       groupOrig: initialState.group,
+      groupFetchStatus: 'complete',
       groupStatus: 'complete'
     });
     return newState;
@@ -193,17 +195,17 @@ export default reduxActions.handleActions({
         return state.merge({
           ...initialState,
           groupOrig: initialState.group,
-          groupStatus: 'wait'
+          groupFetchStatus: 'wait'
         });
       },
       failure: (state) => {
-        return state.set('groupStatus', 'error');
+        return state.set('groupFetchStatus', 'error');
       },
       success: (state) => {
         return state.merge({
           group: action.payload.data,
           groupOrig: action.payload.data,
-          groupStatus: 'complete',
+          groupFetchStatus: 'complete',
           criteriaCache: action.payload.data.groupCriteria.criteria.slice()
         });
       }

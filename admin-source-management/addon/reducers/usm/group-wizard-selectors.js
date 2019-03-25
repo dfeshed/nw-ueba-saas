@@ -61,15 +61,16 @@ export const hasGroupChanged = createSelector(
 export const isGroupLoading = createSelector(
   _groupWizardState,
   (groupWizardState) => {
-    return groupWizardState.groupStatus === 'wait' ||
+    return groupWizardState.groupFetchStatus === 'wait' ||
+      groupWizardState.groupStatus === 'wait' ||
       groupWizardState.initGroupFetchPoliciesStatus === 'wait';
   }
 );
 
-export const isGroupLoadError = createSelector(
+export const isGroupFetchError = createSelector(
   _groupWizardState,
   (groupWizardState) => {
-    return groupWizardState.groupStatus === 'error';
+    return groupWizardState.groupFetchStatus === 'error';
   }
 );
 

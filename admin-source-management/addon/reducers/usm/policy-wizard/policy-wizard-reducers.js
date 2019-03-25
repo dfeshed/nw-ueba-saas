@@ -29,7 +29,8 @@ const INITIAL_STATES = {
       // - NEW_POLICY, FETCH_POLICY (edit), and UPDATE_POLICY_TYPE
     },
     policyOrig: {},
-    policyStatus: null, // wait, complete, error
+    policyFetchStatus: null, // wait, complete, error (separate one for FETCH)
+    policyStatus: null, // wait, complete, error (for SAVE & SAVE_PUBLISH)
 
     // TODO if the reducer doesn't need to modify these, and the selectors aren't doing anything special,
     //   then we may want to extract these to a steps.js and add them directly to the policy-wizard component,
@@ -192,6 +193,7 @@ export default reduxActions.handleActions({
     const newState = state.merge({
       ...mergedInitialState,
       policyOrig: mergedInitialState.policy,
+      policyFetchStatus: 'complete',
       policyStatus: 'complete'
     });
     return newState;
@@ -205,12 +207,12 @@ export default reduxActions.handleActions({
         const newState = state.merge({
           ...mergedInitialState,
           policyOrig: mergedInitialState.policy,
-          policyStatus: 'wait'
+          policyFetchStatus: 'wait'
         });
         return newState;
       },
       failure: (state) => {
-        return state.set('policyStatus', 'error');
+        return state.set('policyFetchStatus', 'error');
       },
       success: (state) => {
         const fetchedPolicy = action.payload.data;
@@ -237,7 +239,7 @@ export default reduxActions.handleActions({
           policyOrig: fetchedPolicy,
           availableSettings: newAvailableSettings,
           selectedSettings: newSelectedSettings,
-          policyStatus: 'complete'
+          policyFetchStatus: 'complete'
         });
       }
     })

@@ -29,12 +29,14 @@ export const hasPolicyChanged = createSelector(
  */
 export const isPolicyLoading = createSelector(
   _policyWizardState,
-  (_policyWizardState) => _policyWizardState.policyStatus === 'wait'
+  (_policyWizardState) => {
+    return _policyWizardState.policyFetchStatus === 'wait' || _policyWizardState.policyStatus === 'wait';
+  }
 );
 
-export const isPolicyLoadError = createSelector(
+export const isPolicyFetchError = createSelector(
   _policyWizardState,
-  (_policyWizardState) => _policyWizardState.policyStatus === 'error'
+  (_policyWizardState) => _policyWizardState.policyFetchStatus === 'error'
 );
 
 /**

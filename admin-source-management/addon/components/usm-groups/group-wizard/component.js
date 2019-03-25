@@ -5,7 +5,7 @@ import {
   group,
   steps,
   isGroupLoading,
-  isGroupLoadError
+  isGroupFetchError
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 // import {
@@ -16,7 +16,7 @@ const stateToComputed = (state) => ({
   group: group(state),
   steps: steps(state),
   isGroupLoading: isGroupLoading(state),
-  isGroupLoadError: isGroupLoadError(state)
+  isGroupFetchError: isGroupFetchError(state)
 });
 
 const dispatchToActions = (/* dispatch */) => ({

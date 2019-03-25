@@ -40,7 +40,7 @@ module('Integration | Component | usm-policies/policy-wizard', function(hooks) {
   test('The component renders the rsa-wizard once the fetching of the policy succeeds', async function(assert) {
     assert.expect(3);
     setStateToo('policy_014'); // this policy id exists in mock data
-    const fetchPolicy = waitForReduxStateChange(redux, 'usm.policyWizard.policyStatus');
+    const fetchPolicy = waitForReduxStateChange(redux, 'usm.policyWizard.policyFetchStatus');
     this.set('transitionToPolicies', () => {});
     await render(hbs`{{usm-policies/policy-wizard transitionToPolicies=(action transitionToPolicies)}}`);
     await fetchPolicy;
@@ -52,7 +52,7 @@ module('Integration | Component | usm-policies/policy-wizard', function(hooks) {
   test('The component renders the error-page once the fetching of the policy fails', async function(assert) {
     assert.expect(3);
     setStateToo('policy_blah'); // no such policy id exists
-    const fetchPolicy = waitForReduxStateChange(redux, 'usm.policyWizard.policyStatus');
+    const fetchPolicy = waitForReduxStateChange(redux, 'usm.policyWizard.policyFetchStatus');
     this.set('transitionToPolicies', () => {});
     await render(hbs`{{usm-policies/policy-wizard transitionToPolicies=(action transitionToPolicies)}}`);
     await fetchPolicy;

@@ -20,7 +20,7 @@ import {
   isDefinePolicyStepValid,
   isWizardValid,
   isPolicyLoading,
-  isPolicyLoadError,
+  isPolicyFetchError,
   hasPolicyChanged,
   isPolicySettingsEmpty
 } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
@@ -494,6 +494,16 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
     let isPolicyLoadingSelected = isPolicyLoading(Immutable.from(fullState));
     assert.deepEqual(isPolicyLoadingSelected, isPolicyLoadingExpected, 'isPolicyLoading is true when policyStatus is wait');
 
+    // should also be true when policyFetchStatus is true
+    policyStatusExpected = 'wait';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicyFetchStatus(policyStatusExpected)
+      .build();
+    isPolicyLoadingExpected = true;
+    isPolicyLoadingSelected = isPolicyLoading(Immutable.from(fullState));
+    assert.deepEqual(isPolicyLoadingSelected, isPolicyLoadingExpected, 'isPolicyLoading is true when policyFetchStatus is wait');
+
     policyStatusExpected = 'complete';
     fullState = new ReduxDataHelper()
       .policyWiz()
@@ -504,24 +514,24 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
     assert.deepEqual(isPolicyLoadingSelected, isPolicyLoadingExpected, 'isPolicyLoading is false when policyStatus is complete');
   });
 
-  test('isPolicyLoadError selector', function(assert) {
+  test('isPolicyFetchError selector', function(assert) {
     let policyStatusExpected = 'complete';
     let fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizPolicyStatus(policyStatusExpected)
+      .policyWizPolicyFetchStatus(policyStatusExpected)
       .build();
-    let isPolicyLoadErrorExpected = false;
-    let isPolicyLoadErrorSelected = isPolicyLoadError(Immutable.from(fullState));
-    assert.deepEqual(isPolicyLoadErrorSelected, isPolicyLoadErrorExpected, 'isPolicyLoadError is false when policyStatus is complete');
+    let isPolicyFetchErrorExpected = false;
+    let isPolicyFetchErrorSelected = isPolicyFetchError(Immutable.from(fullState));
+    assert.deepEqual(isPolicyFetchErrorSelected, isPolicyFetchErrorExpected, 'isPolicyFetchError is false when policyFetchStatus is complete');
 
     policyStatusExpected = 'error';
     fullState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizPolicyStatus(policyStatusExpected)
+      .policyWizPolicyFetchStatus(policyStatusExpected)
       .build();
-    isPolicyLoadErrorExpected = true;
-    isPolicyLoadErrorSelected = isPolicyLoadError(Immutable.from(fullState));
-    assert.deepEqual(isPolicyLoadErrorSelected, isPolicyLoadErrorExpected, 'isPolicyLoadError is true when policyStatus is error');
+    isPolicyFetchErrorExpected = true;
+    isPolicyFetchErrorSelected = isPolicyFetchError(Immutable.from(fullState));
+    assert.deepEqual(isPolicyFetchErrorSelected, isPolicyFetchErrorExpected, 'isPolicyFetchError is true when policyFetchStatus is error');
   });
 
   test('hasPolicyChanged selector', function(assert) {

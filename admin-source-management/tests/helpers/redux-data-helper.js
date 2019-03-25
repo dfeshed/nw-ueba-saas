@@ -236,6 +236,11 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizPolicyFetchStatus(status) {
+    _set(this.state, 'usm.policyWizard.policyFetchStatus', status);
+    return this;
+  }
+
   policyWizPolicyStatus(status) {
     _set(this.state, 'usm.policyWizard.policyStatus', status);
     return this;
@@ -391,6 +396,11 @@ export default class DataHelper {
 
   groupWizGroupOrig() {
     _set(this.state, 'usm.groupWizard.groupOrig', this.state.usm.groupWizard.group);
+    return this;
+  }
+
+  groupWizGroupFetchStatus(status) {
+    _set(this.state, 'usm.groupWizard.groupFetchStatus', status);
     return this;
   }
 

@@ -40,7 +40,7 @@ module('Integration | Component | usm-groups/group-wizard', function(hooks) {
   test('The component renders the rsa-wizard once the fetching of the group succeeds', async function(assert) {
     assert.expect(3);
     setStateToo('group_001'); // this group id exists in mock data
-    const fetchGroup = waitForReduxStateChange(redux, 'usm.groupWizard.groupStatus');
+    const fetchGroup = waitForReduxStateChange(redux, 'usm.groupWizard.groupFetchStatus');
     this.set('transitionToGroups', () => {});
     await render(hbs`{{usm-groups/group-wizard transitionToGroups=(action transitionToGroups)}}`);
     await fetchGroup;
@@ -52,7 +52,7 @@ module('Integration | Component | usm-groups/group-wizard', function(hooks) {
   test('The component renders the error-page once the fetching of the group fails', async function(assert) {
     assert.expect(3);
     setStateToo('group_blah'); // no such group id exists
-    const fetchGroup = waitForReduxStateChange(redux, 'usm.groupWizard.groupStatus');
+    const fetchGroup = waitForReduxStateChange(redux, 'usm.groupWizard.groupFetchStatus');
     this.set('transitionToGroups', () => {});
     await render(hbs`{{usm-groups/group-wizard transitionToGroups=(action transitionToGroups)}}`);
     await fetchGroup;
