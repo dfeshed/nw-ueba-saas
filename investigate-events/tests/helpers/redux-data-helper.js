@@ -509,12 +509,12 @@ export default class DataHelper {
     _set(this.state, 'eventResults.data', ['foo']);
     _set(this.state, 'eventResults.streamLimit', 100);
     _set(this.state, 'eventCount.data', 100);
-    _set(this.state.queryStats, 'percent', 100);
-    _set(this.state.queryStats, 'devices', [{ serviceId: '1', on: true, elapsedTime: 2 }]);
-    _set(this.state.queryStats, 'queryStartedTime', 1505672580000);
-    _set(this.state.queryStats, 'queryEndedTime', 1505672581000);
-    _set(this.state.queryStats, 'streamingStartedTime', 1505672582000);
-    _set(this.state.queryStats, 'streamingEndedTime', 1505672583000);
+    _set(this.state, 'queryStats.percent', 100);
+    _set(this.state, 'queryStats.devices', [{ serviceId: '1', on: true, elapsedTime: 2 }]);
+    _set(this.state, 'queryStats.queryStartedTime', 1505672580000);
+    _set(this.state, 'queryStats.queryEndedTime', 1505672581000);
+    _set(this.state, 'queryStats.streamingStartedTime', 1505672582000);
+    _set(this.state, 'queryStats.streamingEndedTime', 1505672583000);
     return this;
   }
 

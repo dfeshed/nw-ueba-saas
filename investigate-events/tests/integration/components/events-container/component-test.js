@@ -24,7 +24,7 @@ module('Integration | Component | events-container', function(hooks) {
     initialize(this.owner);
   });
 
-  test('it renders the content when event results has errored', async function(assert) {
+  test('it renders the content when event results has errored and with results', async function(assert) {
     new ReduxDataHelper(setState)
       .hasRequiredValuesToQuery(true)
       .atLeastOneQueryIssued(true)
@@ -33,6 +33,19 @@ module('Integration | Component | events-container', function(hooks) {
     await render(hbs`{{events-container}}`);
 
     assert.ok(find('.rsa-investigate-query__body-master'), 'Expected event results content.');
+  });
+
+  test('it renders the error block when event results has errored with no results', async function(assert) {
+    new ReduxDataHelper(setState)
+      .hasRequiredValuesToQuery(true)
+      .atLeastOneQueryIssued(true)
+      .queryStatsIsComplete()
+      .isEventResultsError(true, 'error')
+      .eventResults([])
+      .build();
+    await render(hbs`{{events-container}}`);
+
+    assert.equal(findAll('.query-error').length, 1, 'Expected query error message on page');
   });
 
   test('it does not render error block if no error', async function(assert) {

@@ -7,13 +7,16 @@ import {
   eventType,
   selectedIndex,
   eventResultsErrorMessage,
-  actualEventCount } from 'investigate-events/reducers/investigate/event-results/selectors';
+  actualEventCount,
+  noEvents } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { getServices } from 'investigate-events/actions/initialization-creators';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { hasFatalSummaryError } from 'investigate-events/reducers/investigate/services/selectors';
 
 const stateToComputed = (state) => ({
+  noEvents: noEvents(state),
+  items: state.investigate.eventResults.data,
   aliases: state.investigate.dictionaries.aliases,
   atLeastOneQueryIssued: state.investigate.queryNode.atLeastOneQueryIssued,
   eventResultsErrorMessage: eventResultsErrorMessage(state),

@@ -8,7 +8,8 @@ import {
   isCanceled,
   isEventResultsError,
   percentageOfEventsDataReturned,
-  actualEventCount
+  actualEventCount,
+  noEvents
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -131,6 +132,32 @@ module('Unit | Selectors | event-results', function(hooks) {
 
     const isError = isEventResultsError(state);
     assert.ok(isError === false, 'is not in error');
+  });
+
+  test('noEvents is false when there are events', function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [{}]
+        }
+      }
+    };
+
+    const result = noEvents(state);
+    assert.ok(result === false);
+  });
+
+  test('noEvents is true when there are no events', function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: []
+        }
+      }
+    };
+
+    const result = noEvents(state);
+    assert.ok(result === true);
   });
 
   test('isEventResultsError is true when status is error', function(assert) {

@@ -24,6 +24,14 @@ export const SORT_ORDER = {
   ASC: 'Ascending'
 };
 
+export const noEvents = createSelector(
+  [_resultsData],
+  (_resultsData) => {
+    return _resultsData && _resultsData.length === 0;
+  }
+);
+
+
 export const shouldStartAtOldest = createSelector(
   [_eventTimeSortOrder],
   (_eventTimeSortOrder) => {
