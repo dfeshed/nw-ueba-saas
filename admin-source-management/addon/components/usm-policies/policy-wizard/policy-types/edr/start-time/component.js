@@ -22,6 +22,8 @@ const StartTime = Component.extend({
 
   classNames: 'start-time',
 
+  classNameBindings: ['selectedSettingId'],
+
   isDefaultPolicy: null,
 
   actions: {

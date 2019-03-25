@@ -25,6 +25,7 @@ const dispatchToActions = {
 const WindowsLogChannelFilters = Component.extend({
   tagName: 'box',
   classNames: 'windows-log-channel-filters',
+  classNameBindings: ['selectedSettingId'],
 
   @computed()
   panelId() {

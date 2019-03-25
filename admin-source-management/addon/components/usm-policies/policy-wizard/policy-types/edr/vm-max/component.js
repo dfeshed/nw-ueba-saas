@@ -17,6 +17,7 @@ const dispatchToActions = {
 const VmMax = Component.extend({
   tagName: 'box',
   classNames: 'vm-max',
+  classNameBindings: ['selectedSettingId'],
   isDefaultPolicy: null,
   format: {
     to(value) {

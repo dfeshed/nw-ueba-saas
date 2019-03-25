@@ -3,7 +3,7 @@ import { computed } from '@ember/object';
 
 const PolicySetting = Component.extend({
   tagName: 'div',
-  classNames: ['selected-setting'],
+  classNames: ['selected-setting', 'selected-setting-added'],
   classNameBindings: ['selectedSettingClass'],
 
   selectedSettingClass: computed('selectedSettingId', function() {
@@ -24,7 +24,6 @@ const PolicySetting = Component.extend({
   label: '',
   // setting label tooltip text expected to be passed in
   tooltip: ''
-
 });
 
 export default PolicySetting;

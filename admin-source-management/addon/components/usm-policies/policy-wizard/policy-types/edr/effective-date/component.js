@@ -25,6 +25,8 @@ const EffectiveDate = Component.extend({
 
   classNames: 'scan-start-date',
 
+  classNameBindings: ['selectedSettingId'],
+
   selectedSettingId: null,
 
   isDefaultPolicy: null,

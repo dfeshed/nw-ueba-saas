@@ -17,6 +17,7 @@ const dispatchToActions = {
 const CpuMax = Component.extend({
   tagName: 'box',
   classNames: 'cpu-max',
+  classNameBindings: ['selectedSettingId'],
   isDefaultPolicy: null,
   format: {
     to(value) {

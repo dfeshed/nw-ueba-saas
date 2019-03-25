@@ -1,21 +1,56 @@
 .selected-setting {
   padding: rsa-whitespace(more) rsa-whitespace() 0 0;
-
+  
   .header {
     text-transform: uppercase;
     letter-spacing: 1px;
     color: text-color(primary, light);
     @include rsa-font(default,small);
-
+    
     .remove-setting {
       float: right;
       margin-right: rsa-whitespace(more);
       margin-left: rsa-whitespace(more);
     }
-
+    
     .is-greyed-out {
       pointer-events: none;
     }
   }
   
+  .header-added {
+    position: relative;
+    animation-name: addedSettingHeader;
+    animation-duration: 3s;
+    animation-direction: normal;
+    animation-timing-function: ease-in;
+  }
 }
+
+.selected-setting-added {
+  position: relative;
+  animation-name: addedSelectedSetting;
+  animation-duration: 3s;
+  animation-direction: normal;
+}
+
+@keyframes addedSelectedSetting {
+  0% {
+    background-color: background-color(primary, base, transparent);
+    left: -100%;
+  }
+  
+  25% {
+    background-color: background-color(secondary, base, translucent);
+    left: 0px;
+  }
+  
+  100% {
+    background-color: background-color(primary, base, transparent);
+  }
+}
+
+@keyframes addedSettingHeader {
+  from { color: text-color(secondary);  }
+  to { color: text-color(primary, light);  }
+}  

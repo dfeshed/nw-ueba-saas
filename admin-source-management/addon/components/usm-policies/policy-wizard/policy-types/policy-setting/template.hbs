@@ -4,20 +4,17 @@
     style="standard"
     alwaysShow=true
   }}
-    {{label}}
-    {{!--t (concat 'adminUsm.policyWizard.' policyType '.' selectedSettingId)--}}
-    {{!--t radioButtonOption.label--}}
+    <span class="header-added">{{label}}</span>
   {{/rsa-text-with-tooltip}}
 
   <span class="remove-setting {{if isDefaultPolicy 'is-greyed-out' 'not-greyed-out'}}"
-    {{action removeFromSelectedSettings selectedSettingId}}
-  >
+    {{action removeFromSelectedSettings selectedSettingId}}>
     {{rsa-icon name="remove-circle-1" style="lined"}}
   </span>
 </h4>
 
-{{component settingComponent
-  selectedSettingId=selectedSettingId
-  isDefaultPolicy=isDefaultPolicy
-  tooltip=tooltip
-}}
+  {{component settingComponent
+    selectedSettingId=selectedSettingId
+    isDefaultPolicy=isDefaultPolicy
+    tooltip=tooltip
+  }}

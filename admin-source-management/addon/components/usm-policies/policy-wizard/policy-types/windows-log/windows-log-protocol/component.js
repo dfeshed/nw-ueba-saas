@@ -19,7 +19,8 @@ const dispatchToActions = {
 
 const WindowsLogProtocol = Component.extend({
   tagName: 'box',
-  classNames: 'windows-log-protocol'
+  classNames: 'windows-log-protocol',
+  classNameBindings: ['selectedSettingId']
 });
 
 export default connect(stateToComputed, dispatchToActions)(WindowsLogProtocol);

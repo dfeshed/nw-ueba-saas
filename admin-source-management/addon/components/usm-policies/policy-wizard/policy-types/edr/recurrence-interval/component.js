@@ -28,6 +28,8 @@ const RecInterval = Component.extend({
 
   classNames: 'recurrence-interval',
 
+  classNameBindings: ['selectedSettingId'],
+
   isDefaultPolicy: null,
 
   actions: {

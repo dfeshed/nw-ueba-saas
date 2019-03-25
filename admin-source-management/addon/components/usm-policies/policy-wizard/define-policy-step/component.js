@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import { scheduleOnce } from '@ember/runloop';
 
 import {
   enabledAvailableSettings,
@@ -28,11 +29,21 @@ const dispatchToActions = {
 const DefinePolicyStep = Component.extend({
   tagName: 'vbox',
   classNames: ['define-policy-step', 'rsa-wizard-step'],
+  selectedSettingId: null,
 
+  _scrollToSelectedSetting() {
+    const id = this.get('scrollToSelectedSetting');
+    this.get('element').querySelector(`.${id}`).scrollIntoView(false);
+  },
   // step object required to be passed in
   // step: null, // the wizard passes this in but we're not using it (yet anyway) - uncomment if/when needed
 
   actions: {
+    handleAddToSelectedSettings(id) {
+      this.set('scrollToSelectedSetting', id);
+      this.send('addToSelectedSettings', id);
+      scheduleOnce('afterRender', this, '_scrollToSelectedSetting');
+    }
   }
 });
 
