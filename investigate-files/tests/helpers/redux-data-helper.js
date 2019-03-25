@@ -100,6 +100,11 @@ export default class DataHelper {
     return this;
   }
 
+  agentCountMapping(data) {
+    _set(this.state, 'files.fileList.agentCountMapping', data);
+    return this;
+  }
+
   loadMoreStatus(status) {
     _set(this.state, 'files.fileList.loadMoreStatus', status);
     return this;

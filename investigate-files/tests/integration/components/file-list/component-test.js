@@ -44,7 +44,7 @@ const dataItems = {
       'features': ['signed', 'valid']
     },
     'id': '1',
-    'checksumsha256': 'abc',
+    'checksumSha256': 'abc',
     'downloadInfo': {
       'status': 'Downloaded'
     }
@@ -60,7 +60,7 @@ const dataItems = {
       'signer': 'XYZ'
     },
     'id': '2',
-    'checksumsha256': 'def'
+    'checksumSha256': 'def'
   }
 };
 
@@ -646,6 +646,30 @@ module('Integration | Component | file list', function(hooks) {
       {{file-list}}`);
     return settled().then(() => {
       assert.equal(findAll('.download-status').length, 1, 'Download status is rendered');
+    });
+  });
+
+  test('it renders the active on field', async function(assert) {
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .agentCountMapping({})
+      .coreServerId('serverId')
+      .preferences({ filePreference: {
+        visibleColumns: ['machineCount'],
+        sortField: '{ "sortField": "firstFileName", "isSortDescending": false }'
+      } })
+      .setSelectedFileList([])
+      .build();
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{file-list}}`);
+    return settled().then(() => {
+      assert.ok(findAll('.machine-count')[0], 3, 'Active on count is properly set for first file');
+      assert.ok(findAll('.machine-count')[1], 2, 'Active on count is properly set for second file');
     });
   });
 
