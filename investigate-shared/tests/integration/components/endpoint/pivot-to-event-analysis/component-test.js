@@ -63,19 +63,30 @@ module('Integration | Component | endpoint/pivot-to-event-analysis', function(ho
   });
 
   test('on clicking the menu item will call external function', async function(assert) {
-    assert.expect(2);
-    this.set('selections', new Array(1));
+    assert.expect(3);
+    this.set('selections', [{ filename: 'abc' }]);
     this.set('pivotToInvestigate', (item, category) => {
       assert.equal(category, 'Network Event');
     });
-    await render(hbs`{{endpoint/pivot-to-event-analysis selections=selections}}`);
+    await render(hbs`{{endpoint/pivot-to-event-analysis selections=selections pivotToInvestigate=pivotToInvestigate}}`);
     await click('.rsa-split-dropdown .rsa-form-button');
     const selector = '.button-menu';
     const buttonMenu = find(selector);
     return settled().then(async() => {
       assert.ok(buttonMenu.classList.contains('expanded'));
       assert.equal(findAll(`${selector} li`).length, 5, 'expected to render 5 menu options');
-      await click(findAll(`${selector} li`)[0]);
+      await click(findAll(`${selector} li a`)[1]);
     });
+  });
+
+  test('Test for external function being called , on clicking the button with menu initially expanded', async function(assert) {
+    assert.expect(1);
+    this.set('selections', new Array(1));
+    this.set('pivotToInvestigate', () => {
+      assert.ok(true);
+    });
+    await render(hbs`{{endpoint/pivot-to-event-analysis pivotToInvestigate=pivotToInvestigate selections=selections isExpanded=true}}`);
+    const selector = '.event-analysis button';
+    await click(selector);
   });
 });
