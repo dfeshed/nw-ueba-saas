@@ -38,5 +38,5 @@ The recon addon can be used by defining just one component in your template:
 ## Actions
 * `closeAction`, *Action*, An action to execute when recon wants to close itself.
 * `expandAction`, *Action*, An action to execute when recon wants to expand itself.
-* `linkToFileAction`, *Action*, An action to execute when recon wants to invoke a link to another event query.
+* `linkToFileAction`, *Action*, An action to execute when recon wants to invoke a link to another event query, thus overriding recons default behavior.
 * `shrinkAction`, *Action*, An action to execute when recon wants to shrink itself.

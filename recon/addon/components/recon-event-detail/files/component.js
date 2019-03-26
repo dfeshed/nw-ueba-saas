@@ -18,10 +18,12 @@ import {
   fileSelected,
   selectAllFiles
 } from 'recon/actions/interaction-creators';
+import { buildInvestigateEventsFileLinkUrl } from 'component-lib/utils/build-url';
 
 const stateToComputed = ({ recon, recon: { data, files } }) => ({
   dataIndex: data.index,
   eventTotal: data.total,
+  endpointId: data.endpointId,
   files: filesWithSelection(recon),
   filesRetrieved: filesRetrieved(recon),
   hasNoFiles: hasNoFiles(recon),
@@ -112,7 +114,13 @@ const FileReconComponent = Component.extend(ReconPager, ReconPanelHelp, {
     },
 
     openLinkedFile(file) {
-      this.get('linkToFileAction')(file);
+      // use action if passed down to the component, else use build-url util
+      if (this.get('linkToFileAction')) {
+        this.get('linkToFileAction')(file);
+      } else {
+        const path = buildInvestigateEventsFileLinkUrl(file, this.get('endpointId'));
+        window.open(path, '_blank');
+      }
     }
   }
 

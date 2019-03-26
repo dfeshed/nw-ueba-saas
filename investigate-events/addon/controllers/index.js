@@ -25,9 +25,6 @@ export default Controller.extend({
     controllerReconExpand() {
       this.send('reconSize', RECON_PANEL_SIZES.MAX);
     },
-    controllerReconLinkToFile(file) {
-      this.send('reconLinkToFile', file);
-    },
     controllerReconShrink() {
       this.send('reconSize', RECON_PANEL_SIZES.MIN);
     },

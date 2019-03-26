@@ -3,6 +3,8 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
 import DataHelper from '../../../../helpers/data-helper';
+import sinon from 'sinon';
+import * as buildInvestigateEventsUrlUtils from 'component-lib/utils/build-url';
 
 moduleForComponent('recon-event-detail-files', 'Integration | Component | recon event detail files', {
   integration: true,
@@ -96,5 +98,28 @@ test('with 1 linked file only, 0 checkboxes total, none in header', function(ass
   return wait().then(() => {
     const numInputs = this.$('input').length;
     assert.equal(numInputs, 0);
+  });
+});
+
+test('file on click calls linkToFile util when linkToFileAction is not passed', function(assert) {
+  const linkToFileMock = sinon.stub(buildInvestigateEventsUrlUtils, 'buildInvestigateEventsFileLinkUrl');
+  const files = [{
+    type: 'link',
+    extension: 'zip',
+    fileName: 'a_file_name.zip',
+    mimeType: 'application/zip',
+    id: null,
+    fileSize: 0,
+    hashes: [],
+    query: 'a_query',
+    start: 'a_start',
+    end: 'an_end'
+  }];
+
+  new DataHelper(this.get('redux')).initializeData().populateFiles(files);
+  this.render(hbs`{{recon-event-detail/files}}`);
+  return wait().then(() => {
+    this.$('.recon-file-ellipsis.recon-file-link').click();
+    assert.ok(linkToFileMock.calledOnce, 'linkToFile called when linkToFileAction not provided');
   });
 });

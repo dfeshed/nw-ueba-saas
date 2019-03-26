@@ -91,3 +91,48 @@ export const buildEventAnalysisUrl = (selected, queryOperator, contextDetails, r
 
   return `/investigate/events?${queryParamToPass}`;
 };
+
+/**
+ * Proxy for linkToFileAction
+ */
+export const buildInvestigateEventsFileLinkUrl = (file, endpointId) => {
+  const investigateEventsPath = '/investigate/events';
+  if (!file) {
+    return;
+  }
+  const { start, end } = file;
+  let { query = '' } = file;
+
+  // Remove surrounding quotes from query, if any
+  const hasSurroundingQuotes = query.match(/^"(.*)"$/);
+  if (hasSurroundingQuotes) {
+    query = hasSurroundingQuotes[1];
+  }
+  if (query && start && end) {
+    // query is a string that looks like 'ip.dst=192.168.90.92&&tcp.dstport=49419&&ip.src=160.176.226.63'
+    const qp = {
+      et: end,
+      mf: encodeURIComponent(query),
+      sid: endpointId,
+      st: start,
+      mps: 'min'
+    };
+    query = serializeQueryParams(qp);
+    const { location } = window;
+    const path = `${location.origin}${investigateEventsPath}?${query}`;
+    return path;
+  }
+};
+
+/**
+ * Creates a serialized representation of an array suitable for use in a URL query string.
+ * @public
+ */
+const serializeQueryParams = (qp = []) => {
+  const keys = Object.keys(qp);
+  const values = Object.values(qp);
+  return keys.map((d, i) => `${d}=${values[i]}`).join('&');
+  // Once we drop IE11 we should be able to use Object.entries
+  // return Object.entries(qp).map((d) => `${d[0]}=${d[1]}`).join('&');
+};
+

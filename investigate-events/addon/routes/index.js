@@ -192,36 +192,6 @@ export default Route.extend({
       }
     },
 
-    reconLinkToFile(file) {
-      if (!file) {
-        return;
-      }
-      const { start, end } = file;
-      let { query = '' } = file;
-
-      // Remove surrounding quotes from query, if any
-      const hasSurroundingQuotes = query.match(/^"(.*)"$/);
-      if (hasSurroundingQuotes) {
-        query = hasSurroundingQuotes[1];
-      }
-
-      if (query && start && end) {
-        const { serviceId } = this.get('redux').getState().investigate.queryNode;
-        // query is a string that looks like 'ip.dst=192.168.90.92&&tcp.dstport=49419&&ip.src=160.176.226.63'
-        const qp = {
-          et: end,
-          mf: encodeURIComponent(query),
-          sid: serviceId,
-          st: start,
-          mps: META_PANEL_SIZES.MIN
-        };
-        query = serializeQueryParams(qp);
-        const { location } = window;
-        const path = `${location.origin}${location.pathname}?${query}`;
-        window.open(path, '_blank');
-      }
-    },
-
     selectEvent(event) {
       const redux = this.get('redux');
       const { reconSize } = redux.getState().investigate.data;
