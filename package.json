@@ -58,7 +58,7 @@
     "ember-context-menu": "0.4.2",
     "ember-d3": "0.4.2",
     "ember-dependency-lookup": "2.0.0",
-    "ember-engines": "0.5.26",
+    "ember-engines": "0.6.1",
     "ember-exam": "1.0.0",
     "ember-export-application-global": "2.0.0",
     "ember-fetch": "5.1.3",

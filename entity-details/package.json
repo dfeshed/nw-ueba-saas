@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "description": "Entity Details Engine",
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "ember-engine"
   ],
   "license": "RSA Proprietary",
   "author": "",
@@ -51,7 +52,7 @@
     "ember-cli-template-lint": "0.7.6",
     "ember-cli-uglify": "2.1.0",
     "ember-dependency-lookup": "2.0.0",
-    "ember-engines": "0.5.26",
+    "ember-engines": "0.6.1",
     "ember-exam": "1.0.0",
     "ember-sinon": "2.2.0",
     "ember-export-application-global": "^2.0.0",

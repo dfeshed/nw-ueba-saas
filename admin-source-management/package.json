@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "description": "An engine for admin source management",
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "ember-engine"
   ],
   "license": "MIT",
   "author": "",
@@ -52,7 +53,7 @@
     "ember-cli-uglify": "2.1.0",
     "ember-d3": "0.4.2",
     "ember-dependency-lookup": "2.0.0",
-    "ember-engines": "0.5.26",
+    "ember-engines": "0.6.1",
     "ember-exam": "1.0.0",
     "ember-export-application-global": "^2.0.0",
     "ember-fetch": "^5.1.3",
