@@ -47,7 +47,7 @@ class MultiPointGroupConnector(BaseOperator):
             for task in self._last_tasks:
                 task.set_downstream(task_or_task_list)
 
-    def append_only_new(self, upstream_or_downstream_list, task_id):
+    def add_only_new(self, upstream_or_downstream_list, task_id):
         """
          This method invoke if operator call ">> | << | set_downstream | set_upstream" to MultiPointGroupConnector.
 
@@ -61,20 +61,20 @@ class MultiPointGroupConnector(BaseOperator):
             task = self.dag.get_task(task_id)
 
             # if upstream:
-            # append task_id to first_task.upstream_task_ids
-            # append first_task.task_id to task.downstream_task_ids
+            # add task_id to first_task.upstream_task_ids
+            # add first_task.task_id to task.downstream_task_ids
             if upstream_or_downstream_list is self.upstream_task_ids:
                 for first_task in self._first_tasks:
-                    super(MultiPointGroupConnector, self).append_only_new(first_task.upstream_task_ids, task_id)
-                    task.append_only_new(task.downstream_task_ids, first_task.task_id)
+                    super(MultiPointGroupConnector, self).add_only_new(first_task.upstream_task_ids, task_id)
+                    task.add_only_new(task.downstream_task_ids, first_task.task_id)
 
             # if downstream:
-            # append task_id to last_task.downstream_task_ids
-            # append last_task.task_id to task.upstream_task_ids
+            # add task_id to last_task.downstream_task_ids
+            # add last_task.task_id to task.upstream_task_ids
             elif upstream_or_downstream_list is self.downstream_task_ids:
                 for last_task in self._last_tasks:
-                    super(MultiPointGroupConnector, self).append_only_new(last_task.downstream_task_ids, task_id)
-                    task.append_only_new(task.upstream_task_ids, last_task.task_id)
+                    super(MultiPointGroupConnector, self).add_only_new(last_task.downstream_task_ids, task_id)
+                    task.add_only_new(task.upstream_task_ids, last_task.task_id)
         else:
             raise AirflowException(
                 'The {} dag should contain {} task_id'
