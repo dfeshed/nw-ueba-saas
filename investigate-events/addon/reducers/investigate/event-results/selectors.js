@@ -166,10 +166,9 @@ export const allExpectedDataLoaded = createSelector(
 );
 
 export const getDownloadOptions = createSelector(
-  [_eventAnalysisPreferences, _items, _isAllEventsSelected, _selectedEventIds, _resultsData, _status],
-  (eventAnalysisPreferences, items, isAllEventsSelected, selectedEventIds, resultsData, status) => {
-    // TODO change to status stopped (mock vs actual)
-    if ((status === 'complete' || status === 'stopped') && eventAnalysisPreferences && (isAllEventsSelected || selectedEventIds.length)) {
+  [_eventAnalysisPreferences, _items, _isAllEventsSelected, _selectedEventIds, _resultsData],
+  (eventAnalysisPreferences, items, isAllEventsSelected, selectedEventIds, resultsData) => {
+    if (eventAnalysisPreferences && (isAllEventsSelected || selectedEventIds.length)) {
 
       const i18n = lookup('service:i18n');
       const downloadOptions = [];

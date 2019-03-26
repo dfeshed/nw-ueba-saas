@@ -94,7 +94,6 @@ module('Integration | Component | Download Dropdown', function(hooks) {
   test('download dropdown should show valid options and no counts for selectAllEvents', async function(assert) {
     new ReduxDataHelper(setState)
       .allEventsSelected(true)
-      .isEventResultsError(false)
       .eventsPreferencesConfig()
       .setEventAnalysisPreferencesForDownload('CSV', 'PAYLOAD1', 'TSV')
       .eventResults(eventResultsData)
