@@ -47,7 +47,7 @@ class MultiPointGroupConnector(BaseOperator):
             for task in self._last_tasks:
                 task.set_downstream(task_or_task_list)
 
-    def append_only_new(self, upstream_or_downstream_list, task_id):
+    def add_only_new(self, upstream_or_downstream_list, task_id):
         """
          This method invoke if operator call ">> | << | set_downstream | set_upstream" to MultiPointGroupConnector.
 
