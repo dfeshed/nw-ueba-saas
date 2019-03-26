@@ -1,5 +1,5 @@
 #!/bin/bash
-function runEmberTestDirectAccessMockServer {
+function runEmberTestNgcoreuiMockServer {
   local testemPort=${TESTEM_PORTS_ARRAY[$RANDOM % ${#TESTEM_PORTS_ARRAY[@]} ]}
 
   info "Starting ngcoreui mock test server"
@@ -36,12 +36,12 @@ function runEmberTestDirectAccessMockServer {
   fi
 }
 
-function buildDirectAccess {
+function buildNgcoreui {
   cd ngcoreui
 
   ln -s ../node_modules node_modules
 
-  buildDirectAccessMockServer
+  buildNgcoreuiMockServer
 
   local shouldTestApp=$(doTestApp ngcoreui)
   if [[ "$shouldTestApp" == "false" ]]
@@ -58,7 +58,7 @@ function buildDirectAccess {
 
     info "Running tests for app: ngcoreui"
 
-    runEmberTestDirectAccessMockServer ngcoreui $4
+    runEmberTestNgcoreuiMockServer ngcoreui $4
 
     # 'ember build' when running full build
     if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
@@ -77,9 +77,9 @@ function buildDirectAccess {
     then
       rm -rf /mnt/libhq-SA/SAStyle/ngcoreui/*
       version="$(grep -Po '(?<="version": ")[^"]*' package.json)"
-      buildno="0"
+      revision="$(git rev-parse --verify HEAD)"
       # tarball lives here: https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/ngcoreui/ngcoreui-$version.tar.gz
-      mkdir -p /mnt/libhq-SA/SAStyle/ngcoreui && tar -cyvf /mnt/libhq-SA/SAStyle/ngcoreui/ngcoreui-${version}.nw.${buildno}.any.tar.bz2 dist/*
+      mkdir -p /mnt/libhq-SA/SAStyle/ngcoreui && tar -cjvf /mnt/libhq-SA/SAStyle/ngcoreui/ngcoreui-${version}.nw.${revision}.any.tar.bz2 dist/*
       success "Hosted ngcoreui app has been updated"
     fi
   fi
@@ -87,7 +87,7 @@ function buildDirectAccess {
   cd $CWD
 }
 
-function buildDirectAccessMockServer {
+function buildNgcoreuiMockServer {
   cd ngcoreui-mock-server
 
   yarn
@@ -95,4 +95,4 @@ function buildDirectAccessMockServer {
   cd ..
 }
 
-buildDirectAccess ngcoreui true true true
+buildNgcoreui ngcoreui true true true
