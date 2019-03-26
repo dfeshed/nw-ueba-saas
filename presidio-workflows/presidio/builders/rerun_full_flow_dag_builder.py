@@ -103,7 +103,7 @@ def pause_dag(dag_id):
     :param dag_id: single dag id
     :type dag_id: str
     """
-    cli.pause(dag=dag_id, args=None)
+    cli.set_is_paused(is_paused=True, dag=dag_id, args=None)
 
 
 def pause_dags(dags):
