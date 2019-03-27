@@ -259,7 +259,7 @@ export const getPoliciesPropertyData = createSelector(
     const policyStatus = hostOverview.groupPolicy ? hostOverview.groupPolicy.policyStatus : null;
     const { policy, evaluatedTime, message } = policyDetails;
     const edrPolicy = policy && policy.edrPolicy ? policy.edrPolicy : null;
-    let policiesPropertyData = null;
+    let policiesPropertyData = {};
     if (windowsLogPolicy) {
       policiesPropertyData = {
         ...policy,

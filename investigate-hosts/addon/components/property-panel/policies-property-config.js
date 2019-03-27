@@ -30,19 +30,19 @@ const policiesPropertyConfig = [
     fields: [
       {
         field: 'edrPolicy.scheduledScanConfig.enabled',
-        labelKey: 'policyWizard.edrPolicy.schedOrManScan'
+        labelKey: 'policyWizard.edrPolicy.scanType'
       },
       {
         field: 'edrPolicy.scheduledScanConfig.recurrentSchedule.scheduleStartDate',
-        labelKey: 'policyWizard.edrPolicy.effectiveDate'
+        labelKey: 'policyWizard.edrPolicy.scanStartDate'
       },
       {
         field: 'edrPolicy.scheduledScanConfig.scanInterval',
-        labelKey: 'policyWizard.edrPolicy.scanFrequency'
+        labelKey: 'policyWizard.edrPolicy.recurrenceInterval'
       },
       {
         field: 'edrPolicy.scheduledScanConfig.recurrentSchedule.runAtTime',
-        labelKey: 'policyWizard.edrPolicy.startTime'
+        labelKey: 'policyWizard.edrPolicy.scanStartTime'
       },
       {
         field: 'edrPolicy.scheduledScanConfig.scanOptions.cpuMax',
@@ -50,7 +50,7 @@ const policiesPropertyConfig = [
       },
       {
         field: 'edrPolicy.scheduledScanConfig.scanOptions.cpuMaxVm',
-        labelKey: 'policyWizard.edrPolicy.vmMax'
+        labelKey: 'policyWizard.edrPolicy.cpuMaxVm'
       }
     ]
   },

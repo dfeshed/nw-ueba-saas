@@ -477,7 +477,7 @@ test('getPoliciesPropertyData', function(assert) {
     }
   };
   const result6 = getPoliciesPropertyData(Immutable.from(state6));
-  assert.deepEqual(result6, null);
+  assert.deepEqual(result6, {});
 });
 
 test('selectedSnapshot', function(assert) {

@@ -6,6 +6,7 @@ import Immutable from 'seamless-immutable';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { revertPatch } from '../../../../helpers/patch-reducer';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState;
 
@@ -85,6 +86,7 @@ module('Integration | Component | host-detail/overview', function(hooks) {
   });
 
   hooks.beforeEach(function() {
+    initialize(this.owner);
     setState = (visuals) => {
       const overview = {
         hostDetails: {
@@ -121,15 +123,24 @@ module('Integration | Component | host-detail/overview', function(hooks) {
     assert.equal(findAll('.host-detail-box').length, 1, 'Host detail box is present');
   });
 
-  test('renders host details properties when tab is host_details', async function(assert) {
+  test('renders host details properties when tab is host_details and then click policy tab', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('hasPolicyReadPermission', true);
     setState({ activePropertyPanelTab: 'HOST_DETAILS' });
+
     await render(hbs`{{host-detail/overview domIsReady=true}}`);
     assert.equal(find('.right-zone .rsa-nav-tab.is-active .label').textContent.trim(), 'Host Details', 'host details tab selected');
     assert.equal(findAll('.host-properties-box .rsa-loader').length, 0, 'Loader is not present');
     assert.equal(findAll('.host-properties-box .host-property-panel').length, 1, 'Properties panel is rendered');
+    await click(find('.host-property-panel .rsa-form-checkbox'));
+    assert.equal(findAll('.content-section__section-name')[0].textContent, 'Groups', 'First section in Host Details is groups');
+    await click(findAll('.host-overview .host-title-bar .rsa-nav-tab')[1]);
+    assert.equal(findAll('.content-section__section-name')[0].textContent, 'General', 'First section in Policy Details is General');
   });
 
   test('renders policies properties when tab is policies', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('hasPolicyReadPermission', true);
     setState({ activePropertyPanelTab: 'POLICIES' });
 
     await render(hbs`{{host-detail/overview domIsReady=true }}`);
@@ -137,6 +148,8 @@ module('Integration | Component | host-detail/overview', function(hooks) {
     assert.equal(find('.right-zone .rsa-nav-tab.is-active .label').textContent.trim(), 'Policy Details', 'policyDetails tab selected');
     assert.equal(findAll('.host-properties-box .rsa-loader').length, 0, 'Loader is not present');
     assert.equal(findAll('.host-properties-box .host-property-panel').length, 1, 'Properties panel is rendered');
+    await click(find('.host-property-panel .rsa-form-checkbox'));
+    assert.equal(findAll('.content-section__section-name')[0].textContent, 'General', 'First section in policy is General');
   });
 
   test('Detail Right panel is visible', async function(assert) {
@@ -157,13 +170,11 @@ module('Integration | Component | host-detail/overview', function(hooks) {
 
   test('renders policy unavailable message', async function(assert) {
     setState({ activePropertyPanelTab: 'POLICIES' });
-
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('hasPolicyReadPermission', true);
 
     await render(hbs`{{host-detail/overview domIsReady=true }}`);
-
-    assert.equal(find('.host-properties-box .host-property-panel .message').textContent.trim(), 'Policy unavailable');
+    assert.equal(find('.host-properties-box .host-property-panel .message').textContent.trim(), 'No matching results');
   });
 
   test('renders policy read permission message', async function(assert) {
