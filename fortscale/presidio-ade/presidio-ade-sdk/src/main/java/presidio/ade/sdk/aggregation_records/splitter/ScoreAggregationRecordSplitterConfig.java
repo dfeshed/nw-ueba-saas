@@ -25,6 +25,7 @@ public class ScoreAggregationRecordSplitterConfig {
     private final RecordReaderFactoryService recordReaderFactoryService;
     private final InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
     private final ScoredDataReaderViewerSwitch scoredDataReaderViewerSwitch;
+    private final int scoreAggregationRecordContributorsLimit;
 
     @Autowired
     public ScoreAggregationRecordSplitterConfig(
@@ -35,11 +36,13 @@ public class ScoreAggregationRecordSplitterConfig {
             ScoredDataReader<ScoredFeatureAggregationRecord> scoredFeatureAggregationDataReader,
             @Value("${presidio.ade.sdk.scored.record.score.threshold:0}") int scoredRecordScoreThreshold,
             @Value("${presidio.ade.sdk.scored.enriched.record.page.size:10000}") int scoredEnrichedRecordPageSize,
-            @Value("${presidio.ade.sdk.scored.feature.aggregation.record.page.size:10000}") int scoredFeatureAggregationRecordPageSize) {
+            @Value("${presidio.ade.sdk.scored.feature.aggregation.record.page.size:10000}") int scoredFeatureAggregationRecordPageSize,
+            @Value("${presidio.ade.sdk.score.aggregation.record.contributors.limit:25}") int scoreAggregationRecordContributorsLimit) {
 
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
         this.recordReaderFactoryService = recordReaderFactoryService;
         this.inMemoryFeatureBucketAggregator = inMemoryFeatureBucketAggregator;
+        this.scoreAggregationRecordContributorsLimit = scoreAggregationRecordContributorsLimit;
 
         scoredDataReaderViewerSwitch = new ScoredDataReaderViewerSwitch();
         scoredDataReaderViewerSwitch.add(AdeScoredEnrichedRecord.class, new ScoredDataReaderViewer<>(
@@ -54,6 +57,7 @@ public class ScoreAggregationRecordSplitterConfig {
                 aggregatedFeatureEventsConfService,
                 recordReaderFactoryService,
                 inMemoryFeatureBucketAggregator,
-                scoredDataReaderViewerSwitch);
+                scoredDataReaderViewerSwitch,
+                scoreAggregationRecordContributorsLimit);
     }
 }
