@@ -37,7 +37,7 @@ public class ScoreAggregationRecordSplitterConfig {
             @Value("${presidio.ade.sdk.scored.record.score.threshold:0}") int scoredRecordScoreThreshold,
             @Value("${presidio.ade.sdk.scored.enriched.record.page.size:10000}") int scoredEnrichedRecordPageSize,
             @Value("${presidio.ade.sdk.scored.feature.aggregation.record.page.size:10000}") int scoredFeatureAggregationRecordPageSize,
-            @Value("${presidio.ade.sdk.score.aggregation.record.contributors.limit:-1}") int scoreAggregationRecordContributorsLimit) {
+            @Value("${presidio.ade.sdk.score.aggregation.record.contributors.limit:25}") int scoreAggregationRecordContributorsLimit) {
 
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
         this.recordReaderFactoryService = recordReaderFactoryService;
