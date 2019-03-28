@@ -63,8 +63,6 @@ const ToolBar = Component.extend({
 
   classNames: 'files-toolbar',
 
-  flashMessage: service(),
-
   i18n: service(),
 
   contextualHelp: service(),

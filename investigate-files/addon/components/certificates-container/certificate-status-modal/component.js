@@ -4,7 +4,7 @@ import { saveCertificateStatus, getSavedCertificateStatus } from 'investigate-fi
 import computed from 'ember-computed-decorators';
 import { isEmpty } from '@ember/utils';
 import { inject as service } from '@ember/service';
-import { success, failure } from 'investigate-files/utils/flash-messages';
+import { success, failure } from 'investigate-shared/utils/flash-messages';
 
 const stateToComputed = (state) => ({
   selections: state.certificate.list.selectedCertificateList,

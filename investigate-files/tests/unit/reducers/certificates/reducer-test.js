@@ -226,6 +226,14 @@ module('Unit | Reducers | investigate-files | certificates', function(hooks) {
     assert.equal(result.certificateVisibleColumns.length, 2, '1 column unselected');
   });
 
+  test('TOGGLE_CERTIFICATE_VIEW', function(assert) {
+    const previous = Immutable.from({
+      isCertificateView: true
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_CERTIFICATE_VIEW });
+    assert.equal(result.isCertificateView, false, 'isCertificateView should false');
+  });
+
   test('CLOSE_CERTIFICATE_VIEW', function(assert) {
     const previous = Immutable.from({
       isCertificateView: true
