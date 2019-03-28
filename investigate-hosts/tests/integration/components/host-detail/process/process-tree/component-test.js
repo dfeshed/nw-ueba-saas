@@ -1422,4 +1422,59 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     assert.equal(findAll('.machine-count').length, 0, 'machine count doesnt exist as a column by default.');
   });
 
+  test('local risk score is shown as N/A for insight agent mode', async function(assert) {
+    const focusedHost = {
+      machineIdentity: {
+        agentMode: 'insights'
+      }
+    };
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    this.set('closePropertyPanel', function() { });
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree([
+        {
+          pid: 29332,
+          name: 'rsyslogd',
+          checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+          parentPid: 1,
+          fileProperties: {
+            downloadInfo: {
+              status: 'Downloaded'
+            }
+          },
+          childProcesses: [
+            {
+              pid: 2,
+              name: 'rsa_audit_onramp',
+              checksumSha256: '4a63263a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a77e525',
+              parentPid: 1,
+              fileProperties: {
+                downloadInfo: {
+                  status: 'Downloaded'
+                }
+              }
+            }
+          ]
+        }
+      ])
+      .setFocusedHost(focusedHost)
+      .machineOSType('windows')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .isTreeView(true)
+      .build();
+
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
+    assert.equal(findAll('.content-context-menu .insights-host')[0].textContent.trim(), 'N/A', 'N/A is shown in column for insight agent');
+  });
+
 });

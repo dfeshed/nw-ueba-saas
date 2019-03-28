@@ -98,4 +98,15 @@ module('Integration | Component | endpoint/risk-properties/events-list-container
     await render(hbs`{{endpoint/risk-properties/events-list-container riskState=state}}`);
     assert.equal(findAll('.events-info-message').length, 1, 'info message is present');
   });
+
+  test('displaying message for insight agent mode', async function(assert) {
+    this.set('state', {
+      eventsData: respondData,
+      expandedEventId: null,
+      riskScoreContextError: null,
+      isInsightsAgent: true
+    });
+    await render(hbs`{{endpoint/risk-properties/events-list-container riskState=state isInsightsAgent=isInsightsAgent}}`);
+    assert.equal(findAll('.rsa-panel-message').length, 1, 'info message for insight agent is present');
+  });
 });

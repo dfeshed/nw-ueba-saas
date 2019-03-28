@@ -87,6 +87,11 @@ const config = [
     field: 'machineCount',
     title: 'Machine Count',
     format: 'MACHINECOUNT'
+  },
+  {
+    field: 'machineFileScore',
+    title: 'Local Risk Score',
+    width: '8vw'
   }
 ];
 
@@ -458,6 +463,34 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
     {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
     return waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 }).then(() => {
       assert.equal(findAll('.machine-count').length, 3, 'Machine count is displayed, the three items in the table');
+    });
+  });
+
+  test('insight agent N/A is displayed', async function(assert) {
+    initState({
+      endpoint: {
+        drivers: {
+          fileContext,
+          contextLoadingStatus: 'completed'
+        },
+        machines: {
+          focusedHost: {
+            machineIdentity: {
+              agentMode: 'insights'
+            }
+          }
+        }
+      }
+    });
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{host-detail/utils/file-context-table storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+    return waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 }).then(() => {
+      assert.equal(findAll('.insights-host').length, 3, 'Local risk score is displayed three items in the table');
     });
   });
 

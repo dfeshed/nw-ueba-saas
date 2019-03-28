@@ -17,7 +17,7 @@ import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
 
 import summaryItems from './summary-item-config';
 import { machineOsType, hostName, isMachineWindows } from 'investigate-hosts/reducers/details/overview/selectors';
-import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
+import { serviceList, isInsightsAgent } from 'investigate-hosts/reducers/hosts/selectors';
 import {
   fileStatus,
   isRemediationAllowed,
@@ -65,7 +65,8 @@ const stateToComputed = (state) => ({
   isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView,
   risk: riskState(state),
   fileDownloadButtonStatus: fileDownloadButtonStatus(state, 'process'),
-  isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, 'process')
+  isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, 'process'),
+  isInsightsAgent: isInsightsAgent(state)
 });
 
 const dispatchToActions = {

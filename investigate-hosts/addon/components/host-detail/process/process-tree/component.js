@@ -10,7 +10,7 @@ import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-cr
 import { inject as service } from '@ember/service';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
-import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
+import { serviceList, isInsightsAgent } from 'investigate-hosts/reducers/hosts/selectors';
 import { machineOsType, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { fileStatus, isRemediationAllowed } from 'investigate-hosts/reducers/details/file-context/selectors';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
@@ -72,7 +72,8 @@ const stateToComputed = (state) => ({
   selectedFileChecksums: selectedFileChecksums(state),
   agentCountMapping: state.endpoint.process.agentCountMapping,
   sortField: state.endpoint.process.sortField,
-  serverId: state.endpointQuery.serverId
+  serverId: state.endpointQuery.serverId,
+  isInsightsAgent: isInsightsAgent(state)
 });
 
 

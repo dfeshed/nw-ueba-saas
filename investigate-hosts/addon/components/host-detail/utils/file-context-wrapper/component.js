@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
+import { serviceList, isInsightsAgent } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
 
@@ -59,7 +59,8 @@ const stateToComputed = (state, { storeName }) => ({
   activeHostDetailPropertyTab: state.endpoint.detailsInput.activeHostDetailPropertyTab,
   risk: riskState(state),
   isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, storeName),
-  hostName: hostName(state)
+  hostName: hostName(state),
+  isInsightsAgent: isInsightsAgent(state)
 });
 
 const dispatchToActions = {

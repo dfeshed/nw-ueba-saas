@@ -463,4 +463,40 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       assert.equal(getFileAnalysisDataSpy.callCount, 1, 'The getFileAnalysisData action creator was called once');
     });
   });
+
+  test('in insight agent mode, info message is shown in risk panel', async function(assert) {
+    const focusedHost = {
+      machineIdentity: {
+        agentMode: 'insights'
+      }
+    };
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    new ReduxDataHelper(setState)
+      .serviceId('123456')
+      .setFocusedHost(focusedHost)
+      .setActiveHostDetailPropertyTab('RISK')
+      .processList(modifiedList)
+      .processTree(modifiedTree)
+      .selectedProcessList([{
+        ...selectedProcessItemInfo,
+        downloadInfo: {
+          status: 'Downloaded'
+        }
+      }])
+      .processDetails(processDetails)
+      .sortField('name')
+      .selectedHostList([{
+        id: 1,
+        version: '4.3.0.0',
+        managed: true
+      }])
+      .build();
+
+    await render(hbs`{{host-detail/process}}`);
+    await click(findAll('.rsa-data-table-body-row')[0]);
+    return settled().then(() => {
+      assert.equal(findAll('.alert-error-message').length, 1, 'info message is present for insight agent');
+    });
+  });
 });

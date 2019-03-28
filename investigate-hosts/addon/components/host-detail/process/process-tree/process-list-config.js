@@ -17,13 +17,13 @@ export default [
   },
   {
     field: 'machineFileScore',
-    width: '7vw',
+    width: '8vw',
     title: 'investigateHosts.process.localRiskScore',
     isDescending: false
   },
   {
     field: 'fileProperties.score',
-    width: '7vw',
+    width: '8vw',
     title: 'investigateHosts.process.globalRiskScore',
     isDescending: false
   },

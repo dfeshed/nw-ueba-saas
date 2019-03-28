@@ -63,6 +63,8 @@
             {{#rsa-data-table/body-cell item=item column=column}}
               {{endpoint/machine-count item=item machineCountMapping=agentCountMapping}}
             {{/rsa-data-table/body-cell}}
+          {{else if (and isInsightsAgent (or (eq column.field 'machineFileScore')(eq column.field 'fileProperties.score')))}}
+            <div title="{{t 'investigateHosts.hosts.insightAgentTooltip'}}" class="insights-host">N/A</div>
           {{else}}
             {{host-detail/utils/table-cell item=item column=column sid=sid}}
           {{/if}}

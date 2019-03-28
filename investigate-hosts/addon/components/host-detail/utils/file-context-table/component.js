@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
-import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
+import { serviceList, isInsightsAgent } from 'investigate-hosts/reducers/hosts/selectors';
 import { inject as service } from '@ember/service';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { observer } from '@ember/object';
@@ -55,7 +55,8 @@ const stateToComputed = (state, { storeName }) => ({
   agentCountMapping: state.endpoint[storeName].agentCountMapping,
   sortConfig: state.endpoint[storeName].sortConfig,
   selectedRowIndex: state.endpoint[storeName].selectedRowIndex,
-  isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, storeName)
+  isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, storeName),
+  isInsightsAgent: isInsightsAgent(state)
 });
 
 const dispatchToActions = {

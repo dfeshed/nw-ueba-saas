@@ -359,4 +359,12 @@ export default class DataHelper {
     _set(this.state, 'explore.isDataTruncated', flag);
     return this;
   }
+  setActiveHostDetailPropertyTab(value) {
+    _set(this.state, 'detailsInput.activeHostDetailPropertyTab', value);
+    return this;
+  }
+  setFocusedHost(value) {
+    _set(this.state, 'machines.focusedHost', value);
+    return this;
+  }
 }

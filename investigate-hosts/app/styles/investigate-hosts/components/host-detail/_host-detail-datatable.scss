@@ -22,5 +22,10 @@
 
   .content-context-menu {
     display: inherit;
+    .insights-host {
+      width: 8vw;
+      padding-top: 6px;
+      padding-left: 15px;
+    }
   }
 }
