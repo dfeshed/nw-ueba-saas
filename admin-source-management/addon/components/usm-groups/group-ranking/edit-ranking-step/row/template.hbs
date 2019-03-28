@@ -6,6 +6,12 @@
 <td class="group-rank-cell">
   {{add index 1}}
 </td>
+<td class="group-preview-cell">
+  {{x-toggle
+    value=item.isChecked
+    onToggle=(action 'previewRankingWithFetch' index item.isChecked)
+  }}
+</td>
 <td class="group-name-cell">
   {{item.name}}
 </td>

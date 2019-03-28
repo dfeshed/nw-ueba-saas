@@ -143,6 +143,10 @@ function fetchLogServers() {
   });
 }
 
+/**
+* Get policy resolution from group ranking.
+* Contains policy and origins object that has group, policy and conflict elements for each policy setting
+*/
 function fetchRankingView(groupRankingViewQuery) {
   const request = lookup('service:request');
   return request.promiseRequest({

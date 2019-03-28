@@ -332,6 +332,11 @@ export default class DataHelper {
     return this;
   }
 
+  selectedSourceType(data) {
+    _set(this.state, 'usm.groupWizard.selectedSourceType', data);
+    return this;
+  }
+
   /* TODO is this deprecated? Should this be deleted when group wizard is done ??? */
   fetchGroupStatus(status) {
     _set(this.state, 'usm.group.itemsStatus', status);

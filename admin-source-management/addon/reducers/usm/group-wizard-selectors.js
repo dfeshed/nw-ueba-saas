@@ -46,7 +46,7 @@ export const groupRankingQuery = createSelector(
 export const groupRankingViewQuery = createSelector(
   selectedSourceType, groupRanking,
   (selectedSourceType, groupRanking) => {
-    const groupRankingIDs = groupRanking.filter((group) => group.isChecked ? group.id : '');
+    const groupRankingIDs = groupRanking.filter((group) => group.isChecked ? group : '').map((rank) => rank.id);
     return { policyType: selectedSourceType, groupIds: groupRankingIDs };
   }
 );

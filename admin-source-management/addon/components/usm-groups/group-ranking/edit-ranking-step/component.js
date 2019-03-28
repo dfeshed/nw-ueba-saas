@@ -11,12 +11,10 @@ import {
 import {
   reorderRanking,
   selectGroupRanking,
-  previewRanking
-} from 'admin-source-management/actions/creators/group-wizard-creators';
-
-import {
+  previewRanking,
+  previewRankingWithFetch,
   fetchRankingView
-} from 'admin-source-management/actions/creators/policies-creators';
+} from 'admin-source-management/actions/creators/group-wizard-creators';
 
 const stateToComputed = (state) => ({
   groupRanking: groupRanking(state),
@@ -30,7 +28,8 @@ const dispatchToActions = {
   reorderRanking,
   selectGroupRanking,
   previewRanking,
-  fetchRankingView
+  fetchRankingView,
+  previewRankingWithFetch
 };
 
 const EditRankingStep = Component.extend({

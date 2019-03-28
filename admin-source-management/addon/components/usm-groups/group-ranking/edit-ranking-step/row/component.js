@@ -2,13 +2,21 @@ import computed, { alias } from 'ember-computed-decorators';
 import SortableItemMixin from 'ember-sortable/mixins/sortable-item';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
+import { connect } from 'ember-redux';
 import { sourceCountTooltip, getSourceCount } from 'admin-source-management/utils/groups-util';
+import {
+  previewRankingWithFetch
+} from 'admin-source-management/actions/creators/group-wizard-creators';
+
+const dispatchToActions = {
+  previewRankingWithFetch
+};
 
 /**
  * Extension of the Data Table default row class for supporting selecting and dragging of rows
  * @public
  */
-export default Component.extend(SortableItemMixin, {
+const Row = Component.extend(SortableItemMixin, {
   tagName: 'tr',
   classNameBindings: ['isSelected'],
   @alias('item') model: null, // used by ember-sortable
@@ -36,3 +44,5 @@ export default Component.extend(SortableItemMixin, {
     return getSourceCount(sourceCount);
   }
 });
+
+export default connect(undefined, dispatchToActions)(Row);

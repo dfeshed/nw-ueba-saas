@@ -105,6 +105,10 @@ export default reduxActions.handleActions({
     })
   ),
 
+  /**
+  * Get policy resolution from group ranking.
+  * Contains policy and origins object that has group, policy and conflict elements for each policy setting
+  */
   [ACTION_TYPES.UPDATE_GROUP_RANKING_VIEW]: (state, action) => (
     handle(state, action, {
       start: (state) => {

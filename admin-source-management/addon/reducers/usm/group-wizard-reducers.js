@@ -172,8 +172,7 @@ export const initialState = {
   groupRankingOrig: [],
   selectedSourceType: null,
   groupRankingStatus: null,
-  selectedGroupRanking: null,
-  groupRankingPrevListStatus: null
+  selectedGroupRanking: null
 };
 
 export default reduxActions.handleActions({
@@ -467,6 +466,14 @@ export default reduxActions.handleActions({
       }
     })
   ),
+
+  [ACTION_TYPES.PREVIEW_GROUP_RANKING]: (state, action) => {
+    const { selectedIndex, value } = action.payload;
+    return state.merge({
+      groupRanking: state.groupRanking.map((group, index) => index === selectedIndex ? { ...group, isChecked: value !== true } : group)
+      // more settings will go here
+    });
+  },
 
   [ACTION_TYPES.SOURCE_TYPE]: (state, action) => {
     const { sourceType } = action.payload;

@@ -52,7 +52,12 @@ export const selectedEdrPolicy = createSelector(
         name: 'adminUsm.policyWizard.edrPolicy.primaryAddress',
         value: _i18n.t('adminUsm.policies.detail.defaultPrimaryAddress'),
         tooltip: _i18n.t('adminUsm.policies.detail.defaultPrimaryAddressTooltip'),
-        defaultEndpointServer: true
+        defaultEndpointServer: true,
+        origin: {
+          groupName: _i18n.t('adminUsm.policies.detail.none'),
+          policyName: _i18n.t('adminUsm.policies.detail.defaultEdrPolicy'),
+          conflict: false
+        }
       });
     }
 
@@ -261,7 +266,8 @@ const _getEndpointServerSetting = (prop, focusedPolicy, listOfEndpoints, _focuse
     },
     primaryUdpBeaconInterval: {
       name: 'adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval',
-      value: `${focusedPolicy[prop]} ${udpBeaconIntervalUnitValue}`
+      value: `${focusedPolicy[prop]} ${udpBeaconIntervalUnitValue}`,
+      origin: _focusedPolicyOrigin && _focusedPolicyOrigin[prop] ? _focusedPolicyOrigin[prop] : emptyOrigin
     },
     rarEnabled: {
       name: 'adminUsm.policyWizard.edrPolicy.rarEnabled',

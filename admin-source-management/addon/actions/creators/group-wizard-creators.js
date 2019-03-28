@@ -5,7 +5,8 @@ import { lookup } from 'ember-dependency-lookup';
 import {
   groupRankingQuery,
   assignedPolicies,
-  limitedPolicySourceTypes
+  limitedPolicySourceTypes,
+  groupRankingViewQuery
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
@@ -284,6 +285,36 @@ const updateCriteriaFromCache = () => {
   };
 };
 
+/**
+* Get policy resolution from group ranking.
+* Contains policy and origins object that has group, policy and conflict elements for each policy setting
+*/
+const fetchRankingView = () => {
+  return (dispatch, getState) => {
+    const query = groupRankingViewQuery(getState());
+    dispatch({
+      type: ACTION_TYPES.UPDATE_GROUP_RANKING_VIEW,
+      promise: policyAPI.fetchRankingView(query)
+    });
+  };
+};
+const previewRankingWithFetch = (selectedIndex, value) => {
+  return (dispatch) => {
+    dispatch(previewRanking(selectedIndex, value));
+    dispatch(fetchRankingView());
+  };
+};
+const previewRanking = (selectedIndex, value) => {
+  const payload = {
+    selectedIndex,
+    value
+  };
+  return {
+    type: ACTION_TYPES.PREVIEW_GROUP_RANKING,
+    payload
+  };
+};
+
 export {
   initializeGroup,
   fetchGroupList,
@@ -308,5 +339,8 @@ export {
   saveGroupRanking,
   selectGroupRanking,
   setTopRanking,
-  placeholderPrep
+  placeholderPrep,
+  fetchRankingView,
+  previewRankingWithFetch,
+  previewRanking
 };

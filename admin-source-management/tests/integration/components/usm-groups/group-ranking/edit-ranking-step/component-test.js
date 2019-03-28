@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { findAll, render } from '@ember/test-helpers';
+import { findAll, render, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
@@ -31,7 +31,7 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
   test('Show group list', async function(assert) {
     new ReduxDataHelper(setState).groupRankingWithData().build();
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
-    assert.equal(findAll('.edit-ranking-step tr').length, 15, 'All 15 groups are showing');
+    assert.equal(findAll('.edit-ranking-step .group-rank-cell').length, 14, 'All 14 groups are showing');
   });
 
   test('Show a selected group in the group ranking list', async function(assert) {
@@ -61,4 +61,13 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
     assert.equal(findAll('.edit-ranking-step .loading-spinner').length, 1, 'The spinner is showing');
   });
+
+  test('Show group list preview toggle and click', async function(assert) {
+    new ReduxDataHelper(setState).groupRankingWithData().build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    assert.equal(findAll('.edit-ranking-step .group-preview-cell .x-toggle-container').length, 14, 'All 14 preview toggles are showing');
+    await triggerEvent(document.querySelectorAll('.group-preview-cell .x-toggle-container div')[4], 'click');
+    assert.equal(findAll('.edit-ranking-step .group-preview-cell .x-toggle-container-checked').length, 1, 'A Toggle is checked');
+  });
+
 });

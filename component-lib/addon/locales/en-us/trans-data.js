@@ -4129,6 +4129,8 @@ export default {
         primaryDestination: 'Primary Destination',
         secondaryDestination: 'Secondary Destination',
         defaultPrimaryAddress: 'As Per Packager',
+        defaultEdrPolicy: 'Default EDR Policy',
+        none: 'None',
         defaultPrimaryAddressTooltip: 'The agent will communicate to the endpoint server defined in the agent packager.',
         protocol: 'Protocol',
         sendTestLog: 'Send Test Log',
@@ -4260,7 +4262,8 @@ export default {
         rank: 'Rank',
         groupName: 'Group Name',
         policyApplied: 'Policy Applied',
-        nSources: 'Source Count'
+        nSources: 'Source Count',
+        preview: 'Preview'
       },
       chooseSource: 'Choose Source Type',
       sourceTooltip: 'A source takes its settings from the policies applied by the groups it belongs to, starting with rank one and working its way down, until it has a complete policy. If a source is a member of multiple groups with policies that set the same settings, it will follow the highest ranked. If the group policies do not create a full policy, the source will take the remaining settings from the default policy. Drag and drop the rows to change the order.',

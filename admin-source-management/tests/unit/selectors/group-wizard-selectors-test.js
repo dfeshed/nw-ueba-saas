@@ -25,8 +25,11 @@ import {
   assignedPolicyList,
   groupCriteriaValidator,
   policyAssignmentValidator,
-  isLoadingGroupRanking,
-  limitedPolicySourceTypes
+  limitedPolicySourceTypes,
+  groupRankingQuery,
+  groupRankingViewQuery,
+  isLoadingGroupRanking
+
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 module('Unit | Selectors | Group Wizard Selectors', function() {
@@ -810,6 +813,28 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
     const isLoadingGroupRankingExpected = true;
     const isLoadingGroupRankingSelected = isLoadingGroupRanking(Immutable.from(fullState));
     assert.deepEqual(isLoadingGroupRankingSelected, isLoadingGroupRankingExpected, 'isLoadingGroupRanking is true when groupRankingStatus is wait');
+  });
+
+  test('groupRankingQuery selector', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .selectedSourceType('foo')
+      .groupRankingWithData([{ id: 'fooID', otherParam: 'fooOtherParam' }, { id: 'fooID2', otherParam: 'fooOtherParam2' }])
+      .build();
+    const groupRankingQueryExpected = { policyType: 'foo', groupIds: ['fooID', 'fooID2'] };
+    const groupRankingQueryResult = groupRankingQuery(Immutable.from(fullState));
+    assert.deepEqual(groupRankingQueryExpected, groupRankingQueryResult, 'groupRankingQuery is as expected');
+  });
+
+  test('groupRankingViewQuery selector', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .selectedSourceType('foo')
+      .groupRankingWithData([{ id: 'fooID', otherParam: 'fooOtherParam' }, { id: 'fooID2', otherParam: 'fooOtherParam2', isChecked: true }])
+      .build();
+    const groupRankingViewQueryExpected = { policyType: 'foo', groupIds: ['fooID2'] };
+    const groupRankingQueryViewResult = groupRankingViewQuery(Immutable.from(fullState));
+    assert.deepEqual(groupRankingViewQueryExpected, groupRankingQueryViewResult, 'groupRankingViewQuery is as expected');
   });
 
 });

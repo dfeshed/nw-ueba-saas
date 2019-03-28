@@ -137,6 +137,19 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
     assert.deepEqual(result, expectedResult);
   });
 
+  test('on PREVIEW_GROUP_RANKING, isChecked', function(assert) {
+    const expectedResult = {
+      ...initialState,
+      groupRanking: [{ name: 'abc' }, { name: 'dfg', isChecked: true }]
+    };
+    const action = {
+      type: ACTION_TYPES.PREVIEW_GROUP_RANKING,
+      payload: { selectedIndex: 1, value: false }
+    };
+    const result = reducers(initialState, action);
+    assert.deepEqual(result, expectedResult);
+  });
+
   test('on RESET_GROUP_RANKING, from orig', function(assert) {
     const expectedResult = {
       ...initialState,
