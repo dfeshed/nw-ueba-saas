@@ -17,12 +17,10 @@ public class UserProcessEventsGenerator extends ProcessEventsGenerator {
     private static final String SYSTEM_USER_NAME_PREFIX = "system";
     private static final int NUM_OF_DISTINCT_SYSTEM_USERS = 10;
 
-    private boolean isNextSystemUser;
     private Random random;
 
     public UserProcessEventsGenerator(){
         super();
-        isNextSystemUser = true;
         random = new Random();
     }
 
@@ -42,11 +40,9 @@ public class UserProcessEventsGenerator extends ProcessEventsGenerator {
         MachineEntity machine = getMachineEntityGenerator().getNext();
 
         IUser eventUser = user;
-        if(isNextSystemUser){
+        if(random.nextInt(2) == 0){
             eventUser = new SystemUser(user, SYSTEM_USER_NAME_PREFIX + random.nextInt(NUM_OF_DISTINCT_SYSTEM_USERS));
         }
-        isNextSystemUser = !isNextSystemUser;
-
 
         ProcessEvent processEvent = new ProcessEvent(
                 eventId,
