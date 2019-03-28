@@ -2222,6 +2222,16 @@ export default {
     errorPage: {
       errorTitle: 'Endpoint Server is offline',
       errorDescription: 'Endpoint Server may not be configured properly. See the Host Installation Guide for instructions on Endpoint Log Hybrid installation.'
+    },
+    helpText: {
+      title: 'Setup help',
+      downloadInstaller: 'Download Installer',
+      downloadInstallerContent: 'Add a password to enable download of installer packager. Installer can be downloaded once and re-used on multiple servers for installation. Passwod does not have any criteria and can be anything random.',
+      onceInstalled: 'once installed',
+      addESH: 'Add ESH',
+      addESHContent: 'Add domain name and that when not available can then talk to the other endpoint servers for RAR.',
+      configureServers: 'Configure Servers',
+      configureServersContent: 'Add IP address , port and beacon time to communicate.'
     }
   },
   investigateFiles: {

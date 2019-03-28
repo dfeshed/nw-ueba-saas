@@ -9,11 +9,16 @@
   <span class='rar-container_description'>{{t 'endpointRAR.title'}}</span>
 </div>
 
-{{#rsa-page-layout showRightZone=false as |layout|}}
+{{#rsa-page-layout showRightZone=true as |layout|}}
   {{#layout.center}}
 
     {{rar-container/rar-installer serverId=serverId}}
     {{rar-container/rar-config}}
 
   {{/layout.center}}
+  {{#layout.right}}
+
+    {{endpoint/help-text-wrapper content=helpText}}
+
+  {{/layout.right}}
 {{/rsa-page-layout}}

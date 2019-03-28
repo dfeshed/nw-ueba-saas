@@ -5,6 +5,7 @@ import { rarInstallerURL } from '../../reducers/selectors';
 import { setServerId, getRARConfig } from '../../actions/data-creators';
 import { failure } from 'investigate-shared/utils/flash-messages';
 import { next } from '@ember/runloop';
+import helpText from './helpText';
 
 const callback = {
   onFailure(message) {
@@ -26,6 +27,7 @@ const RARContainer = Component.extend({
   tagName: 'box',
   classNames: ['rar-container'],
   serverId: null,
+  helpText,
 
   didReceiveAttrs() {
     this._super(...arguments);

@@ -3,6 +3,9 @@
   padding: rsa-whitespace(more);
   height: 90vh;
   overflow-x: auto;
+  .rsa-page-layout .right-zone {
+    border: none;
+  }
   sup {
     color: $red;
   }
