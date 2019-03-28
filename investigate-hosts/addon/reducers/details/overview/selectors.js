@@ -1,6 +1,7 @@
 import reselect from 'reselect';
 import securityConfig from './config';
 import { secondsToMinutesConverter } from 'investigate-hosts/reducers/details/selector-utils';
+import _ from 'lodash';
 
 const { createSelector } = reselect;
 
@@ -342,5 +343,5 @@ export const hostOverviewServerId = createSelector(
 
 export const policiesUnavailableMessage = createSelector(
   [_activePropertyPanelTab, getPoliciesPropertyData],
-  (tab, policiesPropertyData) => tab === 'POLICIES' && !policiesPropertyData ? 'Policy unavailable' : null
+  (tab, policiesPropertyData) => tab === 'POLICIES' && _.isEmpty(policiesPropertyData) ? 'Policy unavailable' : null
 );

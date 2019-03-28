@@ -133,9 +133,10 @@ module('Integration | Component | host-detail/overview', function(hooks) {
     assert.equal(findAll('.host-properties-box .rsa-loader').length, 0, 'Loader is not present');
     assert.equal(findAll('.host-properties-box .host-property-panel').length, 1, 'Properties panel is rendered');
     await click(find('.host-property-panel .rsa-form-checkbox'));
+    assert.equal(findAll('.content-section__section-name').length, 5, 'All host detail sections are rendered');
     assert.equal(findAll('.content-section__section-name')[0].textContent, 'Groups', 'First section in Host Details is groups');
     await click(findAll('.host-overview .host-title-bar .rsa-nav-tab')[1]);
-    assert.equal(findAll('.content-section__section-name')[0].textContent, 'General', 'First section in Policy Details is General');
+    assert.equal(findAll('.content-section__section-name').length, 6, 'All policy detail sections are rendered');
   });
 
   test('renders policies properties when tab is policies', async function(assert) {
@@ -149,6 +150,7 @@ module('Integration | Component | host-detail/overview', function(hooks) {
     assert.equal(findAll('.host-properties-box .rsa-loader').length, 0, 'Loader is not present');
     assert.equal(findAll('.host-properties-box .host-property-panel').length, 1, 'Properties panel is rendered');
     await click(find('.host-property-panel .rsa-form-checkbox'));
+    assert.equal(findAll('.content-section__section-name').length, 6, 'All policy detail sections are rendered');
     assert.equal(findAll('.content-section__section-name')[0].textContent, 'General', 'First section in policy is General');
   });
 
@@ -174,7 +176,7 @@ module('Integration | Component | host-detail/overview', function(hooks) {
     accessControl.set('hasPolicyReadPermission', true);
 
     await render(hbs`{{host-detail/overview domIsReady=true }}`);
-    assert.equal(find('.host-properties-box .host-property-panel .message').textContent.trim(), 'No matching results');
+    assert.equal(find('.host-properties-box .host-property-panel .message').textContent.trim(), 'Policy unavailable');
   });
 
   test('renders policy read permission message', async function(assert) {
