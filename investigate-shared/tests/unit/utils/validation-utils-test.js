@@ -30,4 +30,40 @@ module('Unit | Utils | Validate Config util', function() {
     };
     assert.deepEqual(result, expectedResult);
   });
+
+  test('validateConfig when invalid server name is passed', function(assert) {
+    const result = validateConfig({ address: 't e23423' });
+    const expectedResult = {
+      isServerError: true,
+      invalidServerMessage: 'endpointRAR.errorMessages.invalidServer'
+    };
+    assert.deepEqual(result, expectedResult);
+  });
+
+  test('validateConfig when invalid port is passed', function(assert) {
+    const result = validateConfig({ httpsPort: 'e23423' });
+    const expectedResult = {
+      isPortError: true,
+      invalidPortMessage: 'endpointRAR.errorMessages.invalidPort'
+    };
+    assert.deepEqual(result, expectedResult);
+  });
+
+  test('validateConfig when invalid becon interval is passed', function(assert) {
+    const result = validateConfig({ httpsBeaconIntervalInSeconds: '1.2' });
+    const expectedResult = {
+      isBeaconError: true,
+      invalidBeaconIntervalMessage: 'endpointRAR.errorMessages.invalidBeaconInterval'
+    };
+    assert.deepEqual(result, expectedResult);
+  });
+
+  test('validateConfig when invalid hostname is passed', function(assert) {
+    const result = validateConfig({ esh: 'e23423 fre' });
+    const expectedResult = {
+      isHostError: true,
+      invalidHostNameMessage: 'endpointRAR.errorMessages.invalidHostName'
+    };
+    assert.deepEqual(result, expectedResult);
+  });
 });

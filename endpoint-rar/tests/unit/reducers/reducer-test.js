@@ -11,8 +11,7 @@ module('Unit | Reducers | investigate', function(hooks) {
 
   test('The GET_RAR_INSTALLER_ID sets the loading status to true', function(assert) {
     const previous = Immutable.from({
-      loading: false,
-      error: true
+      loading: false
     });
 
     const newAction = makePackAction(LIFECYCLE.START, {
@@ -20,7 +19,6 @@ module('Unit | Reducers | investigate', function(hooks) {
     });
     const newEndState = reducer(previous, newAction);
     assert.equal(newEndState.loading, true);
-    assert.equal(newEndState.error, false);
   });
 
   test('The GET_RAR_INSTALLER_ID sets the loading status to false', function(assert) {
@@ -38,17 +36,16 @@ module('Unit | Reducers | investigate', function(hooks) {
     assert.equal(newEndState.downloadId, 'test_id');
   });
 
-  test('The GET_RAR_INSTALLER_ID sets the error status to true', function(assert) {
+  test('The GET_RAR_INSTALLER_ID sets the downloadId value to null', function(assert) {
     const previous = Immutable.from({
-      error: false
+      downloadId: '4f34rf4fds'
     });
 
     const newAction = makePackAction(LIFECYCLE.FAILURE, {
       type: ACTION_TYPES.GET_RAR_INSTALLER_ID
     });
     const newEndState = reducer(previous, newAction);
-    assert.equal(newEndState.error, true);
-    assert.equal(newEndState.downloadLink, null);
+    assert.equal(newEndState.downloadId, null);
   });
 
   test('The SET_SERVER_ID sets the endpoint serverId', function(assert) {
@@ -65,4 +62,101 @@ module('Unit | Reducers | investigate', function(hooks) {
     assert.equal(newEndState.serverId, 'test_serverId');
   });
 
+  test('The GET_AND_SAVE_RAR_CONFIG gets the endpoint server config', function(assert) {
+    const configData = {
+      enabled: true,
+      esh: 'esh-domain',
+      servers: [
+        {
+          address: 'localhost',
+          httpsPort: 443,
+          httpsBeaconIntervalInSeconds: 900
+        }
+      ]
+    };
+    const expected = {
+      defaultRARConfig: { rarConfig: { ...configData, ...configData.servers[0], httpsBeaconIntervalInSeconds: 15 } },
+      initialRARConfig: { rarConfig: { ...configData, ...configData.servers[0], httpsBeaconIntervalInSeconds: 15 } }
+    };
+
+    const previous = Immutable.from({
+      defaultRARConfig: { rarConfig: {} },
+      initialRARConfig: { rarConfig: {} }
+    });
+
+    const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.GET_AND_SAVE_RAR_CONFIG,
+      payload: { data: { ...configData } }
+    });
+
+    const newEndState = reducer(previous, newAction);
+    assert.deepEqual(newEndState, expected);
+  });
+
+  test('The RESET_RAR_CONFIG resets the endpoint server config', function(assert) {
+    const configData = {
+      enabled: true,
+      esh: 'esh-domain',
+      servers: [
+        {
+          address: 'localhost',
+          httpsPort: 443,
+          httpsBeaconIntervalInSeconds: 900
+        }
+      ],
+      address: 'localhost',
+      httpsPort: 443,
+      httpsBeaconIntervalInSeconds: 900
+    };
+    const expected = {
+      defaultRARConfig: { rarConfig: { ...configData } },
+      initialRARConfig: { rarConfig: { ...configData } }
+    };
+
+    const previous = Immutable.from({
+      defaultRARConfig: { rarConfig: { ...configData, httpsPort: 4200 } },
+      initialRARConfig: { rarConfig: { ...configData } }
+    });
+
+    const newAction = makePackAction(LIFECYCLE.START, {
+      type: ACTION_TYPES.RESET_RAR_CONFIG
+    });
+
+    const newEndState = reducer(previous, newAction);
+    assert.deepEqual(newEndState, expected);
+  });
+
+  test('The UPDATE_UI_STATE resets the endpoint server config', function(assert) {
+    const configData = {
+      enabled: true,
+      esh: 'esh-domain',
+      servers: [
+        {
+          address: 'localhost',
+          httpsPort: 443,
+          httpsBeaconIntervalInSeconds: 900
+        }
+      ],
+      address: 'localhost',
+      httpsPort: 443,
+      httpsBeaconIntervalInSeconds: 900
+    };
+    const expected = {
+      defaultRARConfig: { rarConfig: { ...configData, httpsPort: 4200 } },
+      initialRARConfig: { rarConfig: { ...configData } }
+    };
+
+    const previous = Immutable.from({
+      defaultRARConfig: { rarConfig: { ...configData } },
+      initialRARConfig: { rarConfig: { ...configData } }
+    });
+
+    const newAction = makePackAction(LIFECYCLE.START, {
+      type: ACTION_TYPES.UPDATE_UI_STATE,
+      payload: { rarConfig: { ...configData, httpsPort: 4200 } }
+    });
+
+    const newEndState = reducer(previous, newAction);
+    assert.deepEqual(newEndState, expected);
+  });
 });

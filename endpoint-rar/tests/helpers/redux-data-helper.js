@@ -37,6 +37,16 @@ export default class DataHelper {
     return this;
   }
 
+  defaultRARConfig(data) {
+    _set(this.state, 'defaultRARConfig.rarConfig', data);
+    return this;
+  }
+
+  initialRARConfig(data) {
+    _set(this.state, 'initialRARConfig.rarConfig', data);
+    return this;
+  }
+
   // Trigger setState, also return the resulting state
   // in case it needs to be used/checked
   build() {

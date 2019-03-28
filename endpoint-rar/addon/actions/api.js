@@ -14,4 +14,26 @@ const getRARDownloadID = (data) => {
   });
 };
 
-export default { getRARDownloadID };
+const getRARConfig = () => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'get',
+    modelName: 'endpoint-rar',
+    query: {}
+  });
+};
+
+const saveRARConfig = (data) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'set',
+    modelName: 'endpoint-rar',
+    query: { data: { ...data } }
+  });
+};
+
+export default {
+  getRARDownloadID,
+  getRARConfig,
+  saveRARConfig
+};

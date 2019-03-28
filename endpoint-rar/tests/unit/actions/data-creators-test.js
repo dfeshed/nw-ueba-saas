@@ -1,6 +1,5 @@
 import { test, module, setupTest } from 'ember-qunit';
 import * as dataCreators from 'endpoint-rar/actions/data-creators';
-import ACTION_TYPES from 'endpoint-rar/actions/types';
 import { patchSocket } from '../../helpers/patch-socket';
 
 module('Unit | Actions | Data Creators', function(hooks) {
@@ -8,19 +7,52 @@ module('Unit | Actions | Data Creators', function(hooks) {
   setupTest(hooks);
 
   test('Test data creator for making server call for fetching RAR id.', function(assert) {
-    const done = assert.async();
-    assert.expect(4);
-    const callback = dataCreators.getRARDownloadID({ password: 'test' }, function() {}, 'serverId32324');
-    assert.equal(typeof callback, 'function');
+
+    assert.expect(2);
+
     patchSocket((method, modelName) => {
       assert.equal(method, 'rarInstaller');
       assert.equal(modelName, 'endpoint-rar');
     });
-    const dispatchFn = function(action) {
-      assert.equal(action.type, ACTION_TYPES.GET_RAR_INSTALLER_ID);
-      done();
+
+    dataCreators.getRARDownloadID({ password: 'test' }, function() {}, 'serverId32324');
+  });
+
+  test('Test data creator for making server call for fetching RAR config data.', function(assert) {
+
+    assert.expect(2);
+
+    patchSocket((method, modelName) => {
+      assert.equal(method, 'get');
+      assert.equal(modelName, 'endpoint-rar');
+    });
+
+    dataCreators.getRARConfig(function() {});
+  });
+
+  test('Test data creator for making server call for saving RAR config data.', function(assert) {
+    const data = {
+      esh: 'esh-domain',
+      servers: [
+        {
+          address: 'localhost',
+          httpsPort: 443,
+          httpsBeaconIntervalInSeconds: 900
+        }
+      ],
+      address: 'localhost',
+      httpsPort: 443,
+      httpsBeaconIntervalInSeconds: 900
     };
-    callback(dispatchFn);
+
+    assert.expect(2);
+
+    patchSocket((method, modelName) => {
+      assert.equal(method, 'set');
+      assert.equal(modelName, 'endpoint-rar');
+    });
+
+    dataCreators.saveRARConfig(data, function() {});
   });
 
 });

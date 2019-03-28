@@ -2199,9 +2199,25 @@ export default {
       password: 'Password<sup>*</sup>',
       downloadButton: 'Download installer'
     },
+    rarConfig: {
+      title: 'Configure',
+      hostName: 'Enterprise Specific hostname (ESH)',
+      endpointServer: 'ENDPOINT SERVER',
+      server: 'Server',
+      port: 'Port',
+      beaconInterval: 'HTTP BEACON INTERVAL',
+      mins: 'mins',
+      saveConfig: 'Save configuration',
+      resetConfig: 'Cancel'
+    },
     errorMessages: {
-      passwordEmptyMessage: 'Please enter certificate password',
-      invalidPasswordString: 'Can contain alphanumeric or special characters, and a minimum of 3 characters.'
+      passwordEmptyMessage: 'Please enter RAR password',
+      invalidPasswordString: 'Can contain alphanumeric or special characters, and a minimum of 3 characters.',
+      invalidPort: 'Please enter valid port number',
+      serverEmptyMessage: 'Please enter an IP address or a hostname',
+      invalidServer: 'Please enter valid IP address or hostname',
+      invalidBeaconInterval: 'The interval should be between 1 minute and 24 hours in minutes',
+      invalidHostName: 'Please enter a valid hostname'
     },
     errorPage: {
       errorTitle: 'Endpoint Server is offline',

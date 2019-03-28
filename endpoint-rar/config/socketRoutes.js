@@ -14,6 +14,14 @@ module.exports = function(environment) {
       rarInstaller: {
         subscriptionDestination: '/user/queue/endpoint/rar/installer/create',
         requestDestination: '/ws/endpoint/rar/installer/create'
+      },
+      get: {
+        subscriptionDestination: '/user/queue/endpoint/rar/get',
+        requestDestination: '/ws/endpoint/rar/get'
+      },
+      set: {
+        subscriptionDestination: '/user/queue/endpoint/rar/set',
+        requestDestination: '/ws/endpoint/rar/set'
       }
     }
   };

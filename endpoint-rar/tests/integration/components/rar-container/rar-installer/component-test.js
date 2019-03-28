@@ -51,6 +51,17 @@ module('Integration | Component | rar-container', function(hooks) {
     assert.equal(find('.input-error').textContent.trim(), 'Can contain alphanumeric or special characters, and a minimum of 3 characters.');
   });
 
+  test('password validation content on clicking download installer', async function(assert) {
+
+    await render(hbs`{{rar-container/rar-installer}}`);
+
+    await click('.password-input-js input');
+    await fillIn('.password-input-js input', 'te 1');
+    await triggerKeyEvent('.password-input-js input', 'keyup', 65);
+    await click('.rar-container_rar-installer_downloadInstaller button');
+    assert.equal(find('.input-error').textContent.trim(), 'Can contain alphanumeric or special characters, and a minimum of 3 characters.');
+  });
+
   test('password validation empty', async function(assert) {
 
     await render(hbs`{{rar-container/rar-installer}}`);
@@ -58,7 +69,7 @@ module('Integration | Component | rar-container', function(hooks) {
     await click('.password-input-js input');
     await fillIn('.password-input-js input', ' ');
     await triggerKeyEvent('.password-input-js input', 'keyup', 65);
-    assert.equal(find('.input-error').textContent.trim(), 'Please enter certificate password');
+    assert.equal(find('.input-error').textContent.trim(), 'Please enter RAR password');
   });
 
 });

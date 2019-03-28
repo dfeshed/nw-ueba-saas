@@ -16,7 +16,6 @@ const dispatchToActions = {
 
 const RARInstall = Component.extend({
   layout,
-  tagName: 'box',
   classNames: ['rar-installer', 'rar-configuration'],
   rarInsallerPassword: '',
   isPasswordError: false,

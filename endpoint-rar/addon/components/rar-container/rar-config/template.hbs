@@ -1,0 +1,55 @@
+<h3>{{t 'endpointRAR.rarConfig.title'}}</h3>
+
+<div class="server-input-group">
+  <div class="esh-name">
+    {{rsa-form-input
+      isError=isHostError
+      class='server-input-js'
+      errorMessage=(t invalidHostNameMessage)
+      label=(t 'endpointRAR.rarConfig.hostName')
+      value=configData.rarConfig.esh}}
+  </div>
+  <div class='endpoint-server'>{{t 'endpointRAR.rarConfig.endpointServer'}}</div>
+  <div class="field">
+    <div class="host-ip">
+      {{rsa-form-input
+        isError=isServerError
+        class='server-input'
+        errorMessage=(t invalidServerMessage)
+        label=(t 'endpointRAR.rarConfig.server')
+        value=configData.rarConfig.address}}
+    </div>
+    <div class="host-port">
+      {{rsa-form-input
+        maxLength=10
+        class='port-input'
+        isError=isPortError
+        errorMessage=(t invalidPortMessage)
+        label=(t 'endpointRAR.rarConfig.port')
+        value=configData.rarConfig.httpsPort}}
+    </div>
+    <div class="beacon-interval-value">
+      {{rsa-form-input
+        class='beacon-interval'
+        isError=isBeaconError
+        errorMessage=(t invalidBeaconIntervalMessage)
+        value=configData.rarConfig.httpsBeaconIntervalInSeconds
+      }}
+    </div>
+    <div class="beacon-interval-unit">
+      {{t 'endpointRAR.rarConfig.mins'}}
+    </div>
+  </div>
+  <div class='button-wrapper'>
+    {{#rsa-form-button 
+      style='primary'
+      class='rar-container_rar-config_save-configuration'
+      isDisabled=isDisabled
+      defaultAction=(action 'generateAgent')}}
+      <span class='backButton'>{{t 'endpointRAR.rarConfig.saveConfig'}}</span>
+    {{/rsa-form-button}}
+    {{#rsa-form-button class='rar-container_rar-config_cancel-configuration' defaultAction=(action 'reset')}}
+      <span class='backButton'>{{t 'endpointRAR.rarConfig.resetConfig'}}</span>
+    {{/rsa-form-button}}
+  </div>
+</div>

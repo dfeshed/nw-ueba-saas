@@ -1,6 +1,8 @@
 // Wrapper
 .rar-container {
-  margin: rsa-whitespace(more);
+  padding: rsa-whitespace(more);
+  height: 90vh;
+  overflow-x: auto;
   sup {
     color: $red;
   }
@@ -28,6 +30,7 @@
       text-transform: uppercase;
     }
     .rar-container_rar-installer_note {
+      display: inline-block;
       margin: rsa-whitespace(less) 0;
       line-height: 1.2rem;
       color: text-color(primary, light);
@@ -45,6 +48,52 @@
     margin-top: rsa-whitespace(more);
     .rar-installer_password-field {
       width: 350px;
+    }
+  }
+  .rar-config {
+    margin-top: 42px;
+    .server-input-group {
+      margin: rsa-whitespace(more) 0;
+      .esh-name {
+        width: 270px;
+        margin-bottom: rsa-whitespace(more);
+      }
+      .endpoint-server {
+        vertical-align: text-top;
+        margin-bottom: rsa-whitespace(least);
+        color: $formInputLabelColor;
+        @include rsa-font(header, small);
+        text-transform: uppercase;
+      }
+      .field {
+        @include border(1px, solid, primary, lightest, nearly-transparent);
+        padding: rsa-whitespace();
+        margin-top: rsa-whitespace();
+        width: 650px;
+        > div {
+          display: inline-block;
+          margin-left: rsa-whitespace(less);
+        }
+        .host-ip {
+          width: 270px;
+        }
+        .host-port {
+          width: 170px;
+        }
+        .beacon-interval-value {
+          width: 70px;
+        }
+        .beacon-interval-unit {
+          @include rsa-font(body, large);
+          color: text-color(primary, light);
+        }
+      }
+      .button-wrapper {
+        margin: rsa-whitespace(more) 0;
+        .is-primary {
+          margin-right: rsa-whitespace(less);
+        }
+      }
     }
   }
 }
