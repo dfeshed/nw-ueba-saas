@@ -15,7 +15,6 @@
       {{rsa-form-input
         isError=isServerError
         class='server-input'
-        errorMessage=(t invalidServerMessage)
         label=(t 'endpointRAR.rarConfig.server')
         value=configData.rarConfig.address}}
     </div>
@@ -24,7 +23,6 @@
         maxLength=10
         class='port-input'
         isError=isPortError
-        errorMessage=(t invalidPortMessage)
         label=(t 'endpointRAR.rarConfig.port')
         value=configData.rarConfig.httpsPort}}
     </div>
@@ -32,13 +30,15 @@
       {{rsa-form-input
         class='beacon-interval'
         isError=isBeaconError
-        errorMessage=(t invalidBeaconIntervalMessage)
         value=configData.rarConfig.httpsBeaconIntervalInSeconds
       }}
     </div>
     <div class="beacon-interval-unit">
       {{t 'endpointRAR.rarConfig.mins'}}
     </div>
+    {{#if errorMessage}}
+      <div class='input-error'>{{t errorMessage}}</div>
+    {{/if}}
   </div>
   <div class='button-wrapper'>
     {{#rsa-form-button 

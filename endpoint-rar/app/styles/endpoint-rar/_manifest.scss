@@ -70,9 +70,10 @@
       }
       .field {
         @include border(1px, solid, primary, lightest, nearly-transparent);
-        padding: rsa-whitespace();
+        padding: rsa-whitespace(more);
         margin-top: rsa-whitespace();
-        width: 650px;
+        width: 600px;
+        position: relative;
         > div {
           display: inline-block;
           margin-left: rsa-whitespace(less);
@@ -88,6 +89,13 @@
         }
         .beacon-interval-unit {
           @include rsa-font(body, large);
+          color: text-color(primary, light);
+        }
+        .input-error {
+          position: absolute;
+          width: 600px;
+          left: 26px;
+          bottom: 6px;
           color: text-color(primary, light);
         }
       }

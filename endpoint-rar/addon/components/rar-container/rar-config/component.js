@@ -39,6 +39,11 @@ const RARConfig = Component.extend({
     return isEmpty(esh) || isEmpty(httpsPort) || isEmpty(httpsBeaconIntervalInSeconds) || isEmpty(address);
   },
 
+  @computed('invalidPortMessage', 'invalidServerMessage', 'invalidHostNameMessage', 'invalidBeaconIntervalMessage')
+  errorMessage(invalidPortMessage, invalidServerMessage, invalidHostNameMessage, invalidBeaconIntervalMessage) {
+    return invalidPortMessage || invalidServerMessage || invalidHostNameMessage || invalidBeaconIntervalMessage;
+  },
+
   resetErrorProperties() {
     this.setProperties({
       isHostError: false,

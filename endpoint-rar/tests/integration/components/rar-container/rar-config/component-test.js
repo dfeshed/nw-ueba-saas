@@ -80,7 +80,7 @@ module('Integration | Component | rar-container', function(hooks) {
 
     await render(hbs`{{rar-container/rar-config}}`);
     await click('.button-wrapper .is-primary button');
-    assert.equal(find('.esh-name .input-error').textContent.trim(), 'Please enter a valid hostname', 'ESH error message rendered');
+    assert.equal(find('.field .input-error').textContent.trim(), 'Please enter a valid hostname', 'ESH error message rendered');
     assert.equal(find('.host-ip input').value, 'localhost', 'ESH value rendered');
     assert.equal(find('.host-port input').value, '443', 'ESH value rendered');
     assert.equal(find('.beacon-interval-value input').value, '15', 'ESH value rendered');
@@ -101,7 +101,7 @@ module('Integration | Component | rar-container', function(hooks) {
 
     await render(hbs`{{rar-container/rar-config}}`);
     await click('.button-wrapper .is-primary button');
-    assert.equal(find('.host-ip .input-error').textContent.trim(), 'Please enter valid IP address or hostname', 'Host address error message rendered');
+    assert.equal(find('.field .input-error').textContent.trim(), 'Please enter valid IP address or hostname', 'Host address error message rendered');
   });
 
   test('rar-config Error message for host port', async function(assert) {
@@ -116,7 +116,7 @@ module('Integration | Component | rar-container', function(hooks) {
 
     await render(hbs`{{rar-container/rar-config}}`);
     await click('.button-wrapper .is-primary button');
-    assert.equal(find('.host-port .input-error').textContent.trim(), 'Please enter valid port number', 'Host port error message rendered');
+    assert.equal(find('.field .input-error').textContent.trim(), 'Please enter valid port number', 'Host port error message rendered');
   });
 
   test('rar-config Error message for beacon interval', async function(assert) {
@@ -131,7 +131,7 @@ module('Integration | Component | rar-container', function(hooks) {
 
     await render(hbs`{{rar-container/rar-config}}`);
     await click('.button-wrapper .is-primary button');
-    assert.equal(find('.beacon-interval-value .input-error').textContent.trim(), 'The interval should be between 1 minute and 24 hours in minutes', 'Invalid beacon interval error message rendered');
+    assert.equal(find('.field .input-error').textContent.trim(), 'The interval should be between 1 minute and 24 hours in minutes', 'Invalid beacon interval error message rendered');
   });
 
   test('rar-config Error message for beacon interval', async function(assert) {
