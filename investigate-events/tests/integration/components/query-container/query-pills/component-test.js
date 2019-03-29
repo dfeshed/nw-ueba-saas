@@ -98,17 +98,10 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
     await createBasicPill();
-
-    return settled().then(async() => {
-      // action to store in state called
-      assert.equal(newActionSpy.callCount, 1, 'The add pill action creator was called once');
-      assert.deepEqual(
-        newActionSpy.args[0][0],
-        { pillData: { meta: 'a', operator: '=', value: '\'x\'' }, position: 0, shouldAddFocusToNewPill: false },
-        'The action creator was called with the right arguments'
-      );
-      assert.equal(this.$(PILL_SELECTORS.queryPill).prop('title'), 'a = \'x\'', 'Expected stringified pill');
-    });
+    assert.ok(newActionSpy.calledOnce, 'The addGuidedPill creator was not called once');
+    assert.deepEqual(newActionSpy.args[0][0],
+      { pillData: { meta: 'a', operator: '=', value: '\'x\'' }, position: 0, shouldAddFocusToNewPill: false },
+      'The addGuidedPill creator was returned the wrong arguments');
   });
 
   test('newPillPosition is set correctly', async function(assert) {
@@ -1997,15 +1990,38 @@ module('Integration | Component | Query Pills', function(hooks) {
     await clickTrigger(PILL_SELECTORS.meta);
     await typeInSearch('foobar');
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
-    return settled().then(async() => {
-      // assert.equal(addFreeFormFilterSpy.callCount, 1, 'The add free form filter creator was called once');
-      // assert.deepEqual(
-      //   addFreeFormFilterSpy.args[0][0],
-      //   { freeFormText: 'foobar', position: 0, shouldAddFocusToNewPill: false },
-      //   'The action creator was called with the right arguments'
-      // );
-      assert.equal(this.$(PILL_SELECTORS.complexPill).prop('title'), 'foobar', 'Expected stringified pill');
-    });
+    await settled();
+    // assert.equal(addFreeFormFilterSpy.callCount, 1, 'The add free form filter creator was called once');
+    // assert.deepEqual(
+    //   addFreeFormFilterSpy.args[0][0],
+    //   { freeFormText: 'foobar', position: 0, shouldAddFocusToNewPill: false, fromFreeFormMode: false, shouldForceComplex: true },
+    //   'The action creator was called with the right arguments'
+    // );
+    assert.equal(this.$(PILL_SELECTORS.complexPill).prop('title'), '(foobar)', 'Expected stringified pill');
+  });
+
+  skip('Meta pill can create a text pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true}}`);
+
+    // enter non-meta value for pill and press ENTER
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeInSearch('foo-bar-baz');
+    const advancedOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    await click(advancedOptions[1]);
+    await settled();
+    // assert.equal(addTextFilterSpy.callCount, 1, 'The add text filter creator was called once');
+    // assert.deepEqual(
+    //   addTextFilterSpy.args[0][0],
+    //   { searchTerm: 'foo-bar-baz', position: 0, shouldAddFocusToNewPill: false, fromFreeFormMode: false, shouldForceComplex: false },
+    //   'The action creator was called with the right arguments'
+    // );
+    assert.equal(this.$(PILL_SELECTORS.textPill).prop('title'), 'foo-bar-baz', 'Expected stringified pill');
   });
 
   test('it should not have Advanced Options in the afterOptionsComponent if a pill is open for edit', async function(assert) {
@@ -2033,7 +2049,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     // Select an operator and move to value comp
     await selectChoose(PILL_SELECTORS.operatorTrigger, '=');
     // Should be able to see the Advanced Options
-    assert.equal(find('ul.ember-power-select-options li:nth-of-type(2)').textContent.trim().replace(/\s/g, ''), 'AdvancedOptionsFree-FormFilter', 'Should be able to see Advanced Options in value component');
+    assert.equal(find('ul.ember-power-select-options li:nth-of-type(2)').textContent.trim().replace(/\s/g, ''), 'AdvancedOptionsFree-FormFilterTextFilter', 'Should be able to see Advanced Options in value component');
 
     // Remove all focus
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ESCAPE_KEY);

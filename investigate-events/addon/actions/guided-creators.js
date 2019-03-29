@@ -6,6 +6,8 @@ import validateQueryFragment from './fetch/query-validation';
 import { transformTextToPillData, selectPillsFromPosition } from 'investigate-events/actions/utils';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
+const { log } = console; // eslint-disable-line no-unused-vars
+
 /**
  * Client side validation.
  * - if that fails, no server side validation
@@ -213,6 +215,26 @@ export const addFreeFormFilter = ({ freeFormText, position = 0, shouldAddFocusTo
       }
     });
     dispatch(_clientSideValidation(pillData, position));
+  };
+};
+
+export const addTextFilter = ({ searchTerm, position = 0, shouldAddFocusToNewPill, fromFreeFormMode }) => {
+  return (dispatch) => {
+    const pillData = {
+      meta: undefined,
+      operator: undefined,
+      value: undefined,
+      searchTerm
+    };
+    dispatch({
+      type: ACTION_TYPES.ADD_PILL,
+      payload: {
+        pillData,
+        position,
+        shouldAddFocusToNewPill,
+        fromFreeFormMode
+      }
+    });
   };
 };
 

@@ -1,0 +1,20 @@
+{{#if isActive}}
+  {{rsa-form-input
+    value=(readonly pillData.searchTerm)
+    spellcheck=false
+    onKeyDown=(action 'onKeyDown')
+  }}
+{{else}}
+  <span class='text-wrapper'>
+    {{pillData.searchTerm}}
+  </span>
+
+  {{query-container/delete-pill
+    sendMessage=(action 'handleMessage')
+  }}
+  {{#if isFocused}}
+    {{query-container/focus-holder
+      sendMessage=(action 'handleMessage')
+    }}
+  {{/if}}
+{{/if}}

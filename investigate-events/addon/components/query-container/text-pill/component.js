@@ -6,9 +6,11 @@ import { inject as service } from '@ember/service';
 import * as MESSAGE_TYPES from '../message-types';
 import { isEscape, isEnter } from 'investigate-events/util/keys';
 
+const { log } = console; // eslint-disable-line no-unused-vars
+
 export default Component.extend({
-  classNames: ['pill', 'complex-pill'],
-  classNameBindings: ['isActive', 'isEditing', 'isFocused', 'isInvalid', 'isSelected'],
+  classNames: ['pill', 'text-pill'],
+  classNameBindings: ['isActive', 'isEditing', 'isFocused', 'isSelected'],
   tagName: 'div',
   attributeBindings: ['title'],
   i18n: service(),
@@ -46,15 +48,6 @@ export default Component.extend({
   isFocused: false,
 
   /**
-   * Update the component once validation completes. A pill is valid if the
-   * server side validation passes.
-   * @type {boolean}
-   * @public
-   */
-  @alias('pillData.isInvalid')
-  isInvalid: false,
-
-  /**
    * Whether or not this pill is selected
    * @type {boolean}
    * @public
@@ -63,18 +56,13 @@ export default Component.extend({
   isSelected: (pillData) => !!pillData && pillData.isSelected,
 
   /**
-   * Update the component title with error message once validation returns
-   * If a valid pill, return the filter string
+   * The component title
    * @public
    */
-  @computed('pillData', 'stringifiedPill', 'isActive')
-  title: (pillData, stringifiedPill, isActive) => {
+  @computed('pillData', 'isActive')
+  title: (pillData, isActive) => {
     if (!isActive && pillData) {
-      if (pillData.isInvalid) {
-        return pillData.validationError ? pillData.validationError.string || pillData.validationError.message : 'Invalid';
-      } else {
-        return pillData.complexFilterText;
-      }
+      return pillData.searchTerm;
     }
   },
 
@@ -154,8 +142,7 @@ export default Component.extend({
 
   actions: {
     /**
-     * Handler for all messages coming from pill components
-     * (meta/operator/value).
+     * Handler for all messages coming from pill components (delete/focus).
      * @param {string} type The event type from `event-types`
      * @param {Object} data The event data
      * @public
@@ -184,7 +171,7 @@ export default Component.extend({
     const pillData = this.get('pillData');
     const newPillData = {
       ...pillData,
-      complexFilterText: data
+      searchTerm: data
     };
     this._broadcast(MESSAGE_TYPES.PILL_EDITED, newPillData);
   },

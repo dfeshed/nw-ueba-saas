@@ -8,6 +8,8 @@ import { createQueryHash } from 'investigate-events/util/query-hash';
 import { pillBeingEdited, focusedPill } from './selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 
+const { log } = console; // eslint-disable-line no-unused-vars
+
 const ID_PREFIX = 'guidedPill_';
 
 const _initialState = Immutable.from({
@@ -55,18 +57,18 @@ const _initialState = Immutable.from({
 });
 
 const _initialPillState = {
-  id: undefined,
-  meta: undefined,
-  operator: undefined,
-  value: undefined,
   complexFilterText: undefined,
-
+  id: undefined,
   isEditing: false,
   isFocused: false,
   isInvalid: false,
   isSelected: false,
   isValidationInProgress: false,
-  validationError: undefined
+  meta: undefined,
+  operator: undefined,
+  searchTerm: undefined,
+  validationError: undefined,
+  value: undefined
 };
 
 const _cloneQueryParams = (state) => {

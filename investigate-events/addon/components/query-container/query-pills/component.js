@@ -19,6 +19,7 @@ import {
   addFreeFormFilter,
   addGuidedPill,
   addGuidedPillFocus,
+  addTextFilter,
   deleteGuidedPill,
   deleteSelectedGuidedPills,
   deselectAllGuidedPills,
@@ -49,6 +50,7 @@ const dispatchToActions = {
   addFreeFormFilter,
   addGuidedPill,
   addGuidedPillFocus,
+  addTextFilter,
   deleteGuidedPill,
   deleteSelectedGuidedPills,
   deselectAllGuidedPills,
@@ -191,7 +193,8 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT]: (position) => this._addFocusToRightPill(position),
       [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT]: (position) => this._pillsSelectAllToRight(position),
       [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT]: (position) => this._pillsSelectAllToLeft(position),
-      [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: (data, position) => this._createFreeFormPill(data, position)
+      [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: (data, position) => this._createFreeFormPill(data, position),
+      [MESSAGE_TYPES.CREATE_TEXT_PILL]: (data, position) => this._createTextPill(data, position)
     });
   },
 
@@ -522,6 +525,19 @@ const QueryPills = RsaContextMenu.extend({
       shouldAddFocusToNewPill,
       fromFreeFormMode: false,
       shouldForceComplex: true
+    });
+  },
+
+  _createTextPill(searchTerm, position) {
+    // if true, it means a pill is being created in the middle of pills
+    const shouldAddFocusToNewPill = this.get('isPillTriggerOpenForAdd');
+    this._pillsExited();
+    this.send('addTextFilter', {
+      searchTerm,
+      position,
+      shouldAddFocusToNewPill,
+      fromFreeFormMode: false,
+      shouldForceComplex: false
     });
   }
 });

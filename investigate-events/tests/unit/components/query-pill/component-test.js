@@ -33,9 +33,9 @@ module('Unit | Component | Query Pill', function(hooks) {
       selectedMeta: { metaName: 'a' },
       selectedOperator: { displayName: 'b' }
     });
-    assert.equal(comp._getFreeFormString('a', 'pill-meta'), 'a', 'Meta generates proper string');
-    assert.equal(comp._getFreeFormString('b', 'pill-operator'), 'a b', 'Operator generates proper string');
-    assert.equal(comp._getFreeFormString('c', 'pill-value', 'a', 'b'), 'a b c', 'Value generates proper string');
-    assert.equal(comp._getFreeFormString('d', 'foo', 'a', 'b'), null, 'Value is null because "foo" is an invalid key');
+    assert.equal(comp._getStringifiedPill('a', 'pill-meta'), 'a', 'Meta generates proper string');
+    assert.equal(comp._getStringifiedPill('b', 'pill-operator'), 'a b', 'Operator generates proper string');
+    assert.equal(comp._getStringifiedPill('c', 'pill-value', 'a', 'b'), 'a b c', 'Value generates proper string');
+    assert.equal(comp._getStringifiedPill('d', 'foo', 'a', 'b'), null, 'Value is null because "foo" is an invalid key');
   });
 });

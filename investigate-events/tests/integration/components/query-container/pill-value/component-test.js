@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
-import { click, find, focus, render, triggerKeyEvent } from '@ember/test-helpers';
+import { click, find, findAll, focus, render, triggerKeyEvent } from '@ember/test-helpers';
 import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import KEY_MAP from 'investigate-events/util/keys';
@@ -274,7 +274,22 @@ module('Integration | Component | Pill Value', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
   });
 
-  test('it broadcasts a message to create a free-form pill when the FREE-FORM option is selected', async function(assert) {
+  test('it shows Advanced Options to create different types of pill', async function(assert) {
+    const _hasOption = (arr, str) => arr.some((d) => d.innerText.includes(str));
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+    const options = findAll(PILL_SELECTORS.powerSelectOption);
+    assert.equal(options.length, 3, 'incorrect number of options');
+    assert.ok(_hasOption(options, 'Query Filter'), 'incorrect option to create a query filter');
+    assert.ok(_hasOption(options, 'Free-Form Filter'), 'incorrect option to create a free-form filter');
+    assert.ok(_hasOption(options, 'Text Filter'), 'incorrect option to create a text filter');
+  });
+
+  test('it broadcasts a message to create a free-form pill when the Free-Form Filter option is selected', async function(assert) {
     const done = assert.async();
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
@@ -292,6 +307,26 @@ module('Integration | Component | Pill Value', function(hooks) {
     await clickTrigger(PILL_SELECTORS.value);
     await typeInSearch('foobar');
     await selectChoose(PILL_SELECTORS.valueTrigger, PILL_SELECTORS.powerSelectOption, 1); // Free-Form
+  });
+
+  test('it broadcasts a message to create a text pill when the Text Filter option is selected', async function(assert) {
+    const done = assert.async();
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.CREATE_TEXT_PILL) {
+        assert.ok(Array.isArray(data), 'correct data type');
+        assert.propEqual(data, ['foobar', 'pill-value'], 'correct data');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+    await typeInSearch('foobar');
+    await selectChoose(PILL_SELECTORS.valueTrigger, PILL_SELECTORS.powerSelectOption, 2); // Text
   });
 
   test('if there are quoted strings within a complex pill, do not remove the outer quotes', async function(assert) {

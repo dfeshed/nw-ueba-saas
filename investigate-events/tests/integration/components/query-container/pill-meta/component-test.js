@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
-import { blur, fillIn, find, findAll, focus, render, settled, triggerKeyEvent } from '@ember/test-helpers';
+import { blur, click, fillIn, find, findAll, focus, render, settled, triggerKeyEvent } from '@ember/test-helpers';
 
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -378,6 +378,22 @@ module('Integration | Component | Pill Meta', function(hooks) {
     assert.equal(find(PILL_SELECTORS.metaSelectInput).value, 'b');
   });
 
+  test('it shows Advanced Options to create different types of pill', async function(assert) {
+    const _hasOption = (arr, str) => arr.some((d) => d.innerText.includes(str));
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        metaOptions=metaOptions
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    const options = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    assert.equal(options.length, 2, 'incorrect number of Advanced Options');
+    assert.ok(_hasOption(options, 'Free-Form Filter'), 'incorrect option to create a free-form filter');
+    assert.ok(_hasOption(options, 'Text Filter'), 'incorrect option to create a text filter');
+  });
+
   test('it broadcasts a message to create a free-form pill when the ENTER key is pressed', async function(assert) {
     const done = assert.async();
     this.set('metaOptions', META_OPTIONS);
@@ -456,8 +472,8 @@ module('Integration | Component | Pill Meta', function(hooks) {
       }}
     `);
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOptionHighlight).length, 1, 'only one option should be highlighted');
-    assert.equal(find(PILL_SELECTORS.powerSelectOptionHighlight).textContent.trim(), 'Free-Form Filter', 'first Advanced Option was not highlighted');
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
+    assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), 'Free-Form Filter', 'first Advanced Option was not highlighted');
   });
 
   test('Highlight will move from operator list to Advanced Options list and back', async function(assert) {
@@ -475,12 +491,39 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_DOWN);
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_DOWN);
     // Should be in Advanced Options now
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOptionHighlight).length, 1, 'only one option should be highlighted');
-    assert.equal(trim(find(PILL_SELECTORS.powerSelectOptionHighlight).textContent), 'alias.i Free-Form Filter', 'first Advanced Option was not highlighted');
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
+    assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), 'alias.i Free-Form Filter', 'first Advanced Option was not highlighted');
     // Arrow up
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
     // Should be back in meta options list
-    assert.notOk(find(PILL_SELECTORS.powerSelectOptionHighlight), 'no Advanced Options should be highlighted');
+    assert.notOk(find(PILL_SELECTORS.powerSelectAfterOptionHighlight), 'no Advanced Options should be highlighted');
     assert.ok(find(PILL_SELECTORS.powerSelectOption), 'meta option should be highlighted');
+  });
+
+  test('it broadcasts a message to create a text pill', async function(assert) {
+    const done = assert.async();
+    this.set('metaOptions', META_OPTIONS);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.CREATE_TEXT_PILL) {
+        assert.ok(Array.isArray(data), 'correct data type');
+        assert.propEqual(data, ['foobar', 'pill-meta'], 'correct data');
+        assert.equal(find(PILL_SELECTORS.metaInput).value, '', 'meta input was reset');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        metaOptions=metaOptions
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeInSearch('foobar');
+    // trigger Text Filter option
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const textFilter = afterOptions.find((d) => d.textContent.includes('Text Filter'));
+    assert.ok(textFilter, 'unable to find Text Filter option');
+    await click(textFilter);
   });
 });

@@ -25,19 +25,6 @@
   }
 }
 
-@mixin pillAppearance() {
-  @include border(1px, solid, primary, lighter);
-  border-radius: rsa-whitespace(least);
-  display: flex;
-  flex: 0 1 auto;
-  margin: 0 4px 4px 0;
-  padding: 0 rsa-whitespace(least);
-  min-height: rsa-whitespace(more);
-  line-height: rsa-whitespace(more);
-  transition: border-color 0.5s;
-  min-width: 0;
-}
-
 .rsa-icon.expensive-indicator {
   display: inline-flex;
   align-self: center;
@@ -85,7 +72,6 @@
       }
     }
   }
-
   &__time-selector {
     display: flex;
     .rsa-date-time-range {
@@ -129,22 +115,6 @@
   .rsa-form-button {
     height: 40px;
     white-space: nowrap;
-  }
-
-  // TODO What is this?
-  .delete {
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin: 1px;
-    padding: rsa-whitespace(less) rsa-whitespace();
-    z-index: 2;
-    background-color: background-color(neutral, dark, transparent);
-    color: $formButtonTypeColor;
-
-    &:hover {
-      color: text-color(secondary);
-    }
   }
 
   // TODO, this belongs with service selector which
@@ -672,7 +642,7 @@
     }
   }
 
-  /* styles for pills */
+  // ***************************** pill styles ****************************** //
   .query-pills {
     display: flex;
     position: relative;
@@ -684,6 +654,10 @@
 
   .new-pill-trigger-container {
     flex: 0 0 auto;
+    .pill {
+      border: none;
+      background-color: transparent;
+    }
   }
 
   .new-pill-trigger {
@@ -698,92 +672,8 @@
 
     &:hover {
       cursor: text;
-      background-color: background-color(accentTwo, base, translucent)
-    }
-  }
-
-  .query-pill {
-    @include pillAppearance();
-    &.is-active {
-      border-color: transparent;
-      flex: 1 1 auto;
-      min-width: 80px;
-      .pill-value {
-        text-overflow: clip;
-      }
-    }
-    &.is-invalid {
-      border-color: border-color(accentOne);
-    }
-    &.is-selected {
-      background-color: background-color(secondary);
-      border-color: border-color(secondary);
-    }
-    &.is-focused {
-      border-color: border-color(accentTwo);
-    }
-    > div.is-expanded {
-      flex-grow: 100;
-      input {
-        width: 100%;
-        @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-          /* IE10+ CSS styles go here */
-          height: 100%;
-        }
-      }
-    }
-    > div.is-populated {
-      margin-left: 4px;
-    }
-    .quote-highlight {
-      color: text-color(primary);
-    }
-  }
-
-  .pill-meta,
-  .pill-operator {
-    height: rsa-whitespace(more);
-    min-width: 0.5rem;
-    flex: 0 0 auto;
-  }
-  .pill-value {
-    height: rsa-whitespace(more);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 1 1 auto;
-    position: relative;
-    .shadow {
-      visibility: hidden;
-    }
-    input {
-      width: 100%;
-      position: absolute;
-      top: 4px;
-      left: 0;
-    }
-  }
-
-  // Styles to support resizable input for power-selects
-  .ember-power-select-trigger {
-    position: relative;
-    .shadow-text {
-      visibility: hidden;
-      padding: 0 1px;// helps prevent subpixel difference between span and input
-    }
-    input {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-  }
-
-  .ember-power-select-typeahead-input,
-  .ember-power-select-trigger {
-    border: none;
-    padding: 0;
-    input {
-      padding: 0;
+      background-color: background-color(accentTwo, base, translucent);
+      position: fixed; // force a flow break so it renders above query-bar
     }
   }
 
@@ -815,75 +705,155 @@
     }
   }
 
+  // base pill style
+  .pill {
+    @include border(1px, solid, primary, dark, nearly-opaque);
+    border-radius: rsa-whitespace(least);
+    background-color: background-color(primary, dark, translucent);
+    display: flex;
+    flex: 0 1 auto;
+    margin: 0 4px 4px 0;
+    padding: 0 rsa-whitespace(least);
+    min-height: rsa-whitespace(more);
+    line-height: rsa-whitespace(more);
+    transition: border-color 0.5s;
+    min-width: 0;
+    &.is-active {
+      flex: 1 1 auto;
+      min-width: 80px;
+    }
+    &.is-editing {
+      flex: 1 1 100%;
+    }
+    &.is-focused {
+      border-color: border-color(accentTwo);
+    }
+    &.is-invalid {
+      border-color: border-color(accentOne);
+    }
+    &.is-selected {
+      background-color: background-color(secondary);
+      border-color: border-color(secondary);
+    }
+  }
+
+  .query-pill {
+    &.is-active {
+      .pill-value {
+        text-overflow: clip;
+      }
+    }
+    > div.is-expanded {
+      flex-grow: 100;
+      input {
+        width: 100%;
+      }
+    }
+    > div.is-populated {
+      margin-left: 4px;
+    }
+    .quote-highlight {
+      color: text-color(primary, light);
+    }
+    .pill-meta,
+    .pill-operator {
+      height: rsa-whitespace(more);
+      min-width: 0.5rem;
+      flex: 0 0 auto;
+    }
+    .pill-value {
+      height: rsa-whitespace(more);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1 1 auto;
+      position: relative;
+      .shadow {
+        visibility: hidden;
+      }
+      input {
+        width: 100%;
+      }
+    }
+  }
+
+  .complex-pill {
+    font-family: 'Courier New', Courier, monospace;
+    .text-wrapper {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    &.is-active {
+      label {
+        width: 100%;
+        .rsa-form-label {
+          display: none;
+        }
+      }
+      input {
+        font-family: 'Courier New', Courier, monospace;
+        border-bottom: none;
+        padding: 0;
+      }
+    }
+  }
+
+  .text-pill {
+    background-color: transparent;
+    &.is-active {
+      label {
+        width: 100%;
+        .rsa-form-label {
+          display: none;
+        }
+      }
+      input {
+        border-bottom: none;
+        padding: 0;
+      }
+    }
+  }
+
+  .new-pill-template {
+    border: none;
+    background-color: transparent;
+  }
 }
 
-.complex-pill {
-  @include pillAppearance();
-  background-color: background-color(primary, dark);
-
-  .text-wrapper {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  &.is-selected {
-    background-color: background-color(secondary);
-    border-color: border-color(secondary);
-  }
-
-  &.is-focused {
-    border-color: border-color(accentTwo);
-  }
-
-  &.is-invalid {
-    border-color: border-color(accentOne);
-  }
-
-  &.is-active {
-    border-color: transparent;
-    padding: 0;
-    font-size: inherit;
-    line-height: inherit;
-    flex: 100% 0 0;
-    min-width: 80px;
-
-    label {
-      width: 100%;
+// *********************** ember-power-select styles ************************ //
+// Trigger styles
+.rsa-investigate-query-container {
+  // Styles to support resizable input for power-selects
+  .ember-power-select-trigger {
+    position: relative;
+    text-overflow: unset;
+    .shadow-text {
+      visibility: hidden;
+      padding: 0 1px;// helps prevent subpixel difference between span and input
     }
-
     input {
-      border-bottom: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
+  .ember-power-select-typeahead-input,
+  .ember-power-select-trigger {
+    border: none;
+    padding: 0;
+    input {
       padding: 0;
-      padding-left: 5px;
     }
   }
 }
-
-// Leftmost trigger shouldn't go over as far
-.new-pill-trigger-container:first-of-type {
-  .new-pill-trigger {
-    margin-left: -.73rem;
-  }
-}
-
-// This hides the x icon that can appear in <input> fields in IE 11
-input::-ms-clear {
-  display: none;
-}
-
-.investigate-query-dropdown.ember-power-select-dropdown {
-  @include border(1px, solid, primary, lighter);
-}
-
+// dropdown styles
 .investigate-query-dropdown {
-
-
+  @include border(1px, solid, primary, lighter);
   .ember-power-select-option--no-matches-message {
     color: rsa-color(grey, light);
     font-weight: 100;
   }
-
   .ember-power-select-group {
     .ember-power-select-option {
       min-width: 300px;
@@ -944,5 +914,4 @@ input::-ms-clear {
   .ember-power-select-after-options {
     border-top: 1px solid text-color(primary);
   }
-
 }

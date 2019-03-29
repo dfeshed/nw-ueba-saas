@@ -1,0 +1,1 @@
+export { default } from 'investigate-events/components/query-container/text-pill/component';

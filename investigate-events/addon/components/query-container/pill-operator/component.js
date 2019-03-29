@@ -18,8 +18,10 @@ import BoundedList from 'investigate-events/util/bounded-list';
 const { log } = console;// eslint-disable-line no-unused-vars
 
 const FREE_FORM_FILTER = 'Free-Form Filter';
+const TEXT_FILTER = 'Text Filter';
 const AFTER_OPTIONS_MENU = [
-  { label: FREE_FORM_FILTER, disabled: false, highlighted: false }
+  { label: FREE_FORM_FILTER, disabled: false, highlighted: false },
+  { label: TEXT_FILTER, disabled: false, highlighted: false }
 ];
 
 const LEADING_SPACES = /^[\s\uFEFF\xA0]+/;
@@ -107,7 +109,7 @@ export default Component.extend({
   init() {
     this._super(...arguments);
     this.set('_messageHandlerMap', {
-      [MESSAGE_TYPES.AFTER_OPTIONS_SELECTED]: (d) => this._createPillFromSelection(d),
+      [MESSAGE_TYPES.AFTER_OPTIONS_SELECTED]: (d) => this._createPillFromAdvancedOption(d),
       [MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT]: (index) => this._afterOptionsMenu.highlightIndex = index,
       [MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT]: () => this._afterOptionsMenu.clearHighlight()
     });
@@ -226,12 +228,12 @@ export default Component.extend({
         const { selected } = powerSelectAPI;
         const selection = this.get('selection');
         const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
-        if (afterOptionsMenuItem && afterOptionsMenuItem.label === 'Free-Form Filter') {
+        if (afterOptionsMenuItem) {
           // If the user presses ENTER while all the operators are filtered out,
           // the assumption is that they want to create a free-form filter.
           // Since we have access to the power-select API, we'll perform an
           // empty search to restore all the options in the dropdown.
-          this._createFreeFormPill();
+          this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
           powerSelectAPI.actions.search('');
         } else if (selection && selected && selection === selected) {
           // This is called before the change event. We need to delay
@@ -335,7 +337,7 @@ export default Component.extend({
     };
   },
 
-  _createFreeFormPill() {
+  _createPillFromAdvancedOption(selection) {
     // get input text
     const el = this.element.querySelector('.ember-power-select-typeahead-input');
     const { value } = el;
@@ -344,15 +346,13 @@ export default Component.extend({
     this._focusOnPowerSelectTrigger();
     this._afterOptionsMenu.clearHighlight();
     // _debugContainerKey is a private Ember property that returns the full
-    // component name (component:query-container/pill-operator).
+    // component name (component:query-container/pill-meta).
     const [ , source ] = this._debugContainerKey.split('/');
     // send value up to create a complex pill
-    this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, source]);
-  },
-
-  _createPillFromSelection(selection) {
     if (selection === FREE_FORM_FILTER) {
-      this._createFreeFormPill();
+      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, source]);
+    } else if (selection === TEXT_FILTER) {
+      this._broadcast(MESSAGE_TYPES.CREATE_TEXT_PILL, [value, source]);
     }
   },
 

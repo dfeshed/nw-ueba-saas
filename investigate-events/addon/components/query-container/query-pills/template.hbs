@@ -13,6 +13,13 @@
       position=index
       isActive=pillData.isEditing
     }}
+  {{else if pillData.searchTerm}}
+    {{query-container/text-pill
+      isActive=pillData.isEditing
+      pillData=(readonly pillData)
+      position=index
+      sendMessage=(action 'handleMessage')
+    }}
   {{else}}
     {{query-container/query-pill
       metaOptions=metaOptions

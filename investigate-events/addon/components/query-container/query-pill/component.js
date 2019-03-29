@@ -21,7 +21,8 @@ const RESET_PROPS = {
 };
 
 export default Component.extend({
-  classNameBindings: [':query-pill', 'isActive', 'isInvalid', 'isSelected', 'isExpensive', 'isFocused'],
+  classNames: ['pill', 'query-pill'],
+  classNameBindings: ['isActive', 'isEditing', 'isInvalid', 'isSelected', 'isExpensive', 'isFocused'],
   attributeBindings: ['title'],
   i18n: service(),
 
@@ -226,7 +227,8 @@ export default Component.extend({
       },
       [MESSAGE_TYPES.VALUE_ESCAPE_KEY]: () => this._cancelPill(),
       [MESSAGE_TYPES.VALUE_SET]: (data) => this._valueSet(data),
-      [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: ([data, dataSource]) => this._createFreeFormPill(data, dataSource)
+      [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: ([data, dataSource]) => this._createFreeFormPill(data, dataSource),
+      [MESSAGE_TYPES.CREATE_TEXT_PILL]: ([data, dataSource]) => this._createTextPill(data, dataSource)
     });
 
     if (this.get('isExistingPill')) {
@@ -870,20 +872,26 @@ export default Component.extend({
   },
 
   _createFreeFormPill(data, dataSource) {
-    const textString = this._getFreeFormString(data, dataSource);
+    const textString = this._getStringifiedPill(data, dataSource);
     this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, textString);
     this._reset();
   },
 
+  _createTextPill(data, dataSource) {
+    const searchTerm = this._getStringifiedPill(data, dataSource);
+    this._broadcast(MESSAGE_TYPES.CREATE_TEXT_PILL, searchTerm);
+    this._reset();
+  },
+
   /**
-   * Constructs a string to be used for a Free-Form filter
+   * Constructs a string to be used for Free-Form and Text filters
    * @param {string} data The data.
    * @param {string} dataSource Where the `data` came from. Acceptable values
    * are "meta", "operator", or "value".
    * @return A String value.
    * @private
    */
-  _getFreeFormString(data, dataSource) {
+  _getStringifiedPill(data, dataSource) {
     const metaStr = this.get('selectedMeta.metaName');
     const operatorStr = this.get('selectedOperator.displayName');
     return this._getStringFromSource({

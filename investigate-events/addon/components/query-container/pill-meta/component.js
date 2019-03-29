@@ -16,8 +16,10 @@ import { inject as service } from '@ember/service';
 const { log } = console;// eslint-disable-line no-unused-vars
 
 const FREE_FORM_FILTER = 'Free-Form Filter';
+const TEXT_FILTER = 'Text Filter';
 const AFTER_OPTIONS_MENU = [
-  { label: FREE_FORM_FILTER, disabled: false, highlighted: false }
+  { label: FREE_FORM_FILTER, disabled: false, highlighted: false },
+  { label: TEXT_FILTER, disabled: false, highlighted: false }
 ];
 
 const LEADING_SPACES = /^[\s\uFEFF\xA0]+/;
@@ -126,7 +128,7 @@ export default Component.extend({
   init() {
     this._super(...arguments);
     this.set('_messageHandlerMap', {
-      [MESSAGE_TYPES.AFTER_OPTIONS_SELECTED]: (d) => this._createPillFromSelection(d),
+      [MESSAGE_TYPES.AFTER_OPTIONS_SELECTED]: (d) => this._createPillFromAdvancedOption(d),
       [MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT]: (index) => this._afterOptionsMenu.highlightIndex = index,
       [MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT]: () => this._afterOptionsMenu.clearHighlight()
     });
@@ -269,14 +271,13 @@ export default Component.extend({
         const { selected } = powerSelectAPI;
         const selection = this.get('selection');
         const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
-        if (afterOptionsMenuItem && afterOptionsMenuItem.label === 'Free-Form Filter') {
+        if (afterOptionsMenuItem) {
           // If the user presses ENTER while the "after option" is set, the
-          // assumption is that they want to create a free-form filter. We check
-          // this first because it's possible to have a `selection` and a
-          // `selected` that matches the `if` case below because this code runs
-          // before power-select reacts to the key press.
-          // We'll also perform some cleanup.
-          this._createFreeFormPill();
+          // assumption is that they want to create a free-form or text filter.
+          // We check this first because it's possible to have a `selection` and
+          // a `selected` that matches the `if` case below because this code
+          // runs before power-select reacts to the key press.
+          this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
           powerSelectAPI.actions.search('');
         } else if (selection && selected && selection === selected) {
           // If the user presses ENTER, selecting a meta that was already
@@ -384,7 +385,7 @@ export default Component.extend({
     this.get('sendMessage')(type, data);
   },
 
-  _createFreeFormPill() {
+  _createPillFromAdvancedOption(selection) {
     // get input text
     const el = this.element.querySelector('.ember-power-select-typeahead-input');
     const { value } = el;
@@ -397,13 +398,11 @@ export default Component.extend({
       // _debugContainerKey is a private Ember property that returns the full
       // component name (component:query-container/pill-meta).
       const [ , source ] = this._debugContainerKey.split('/');
-      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, source]);
-    }
-  },
-
-  _createPillFromSelection(selection) {
-    if (selection === FREE_FORM_FILTER) {
-      this._createFreeFormPill();
+      if (selection === FREE_FORM_FILTER) {
+        this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, source]);
+      } else if (selection === TEXT_FILTER) {
+        this._broadcast(MESSAGE_TYPES.CREATE_TEXT_PILL, [value, source]);
+      }
     }
   },
 

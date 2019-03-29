@@ -10,8 +10,9 @@ import Ember from 'ember';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
-const QUERY_PILL = 'Query Filter';
-const FREE_FORM_PILL = 'Free-Form Filter';
+const QUERY_FILTER = 'Query Filter';
+const FREE_FORM_FILTER = 'Free-Form Filter';
+const TEXT_FILTER = 'Text Filter';
 // This is used for an internal Ember API function: escapeExpression
 const { Handlebars: { Utils } } = Ember;
 
@@ -23,8 +24,8 @@ const { Handlebars: { Utils } } = Ember;
 * renders. That's why it's a space character.
 */
 const _dropDownOptions = [
-  { groupName: ' ', options: [QUERY_PILL] },
-  { groupName: 'Advanced Options', options: [ FREE_FORM_PILL ] }
+  { groupName: ' ', options: [QUERY_FILTER] },
+  { groupName: 'Advanced Options', options: [ FREE_FORM_FILTER, TEXT_FILTER ] }
 ];
 
 export default Component.extend({
@@ -202,7 +203,7 @@ export default Component.extend({
       if (!this.get('isEditing')) {
         const match = complexOperators.find((d) => input.includes(d));
         this.set('_isComplex', !!match);
-        const option = (match) ? FREE_FORM_PILL : QUERY_PILL;
+        const option = (match) ? FREE_FORM_FILTER : QUERY_FILTER;
         next(this, () => powerSelectAPI.actions.highlight(option));
       }
     },
@@ -249,15 +250,23 @@ export default Component.extend({
         // cleanup
         this.set('_searchString', undefined);
         actions.search('');
+        // get data for event to dispatch
+        // _debugContainerKey is a private Ember property that returns the full
+        // component name (component:query-container/pill-value).
+        const [ , source ] = this._debugContainerKey.split('/');
+        const message = selection === FREE_FORM_FILTER ?
+          MESSAGE_TYPES.CREATE_FREE_FORM_PILL : MESSAGE_TYPES.CREATE_TEXT_PILL;
         // send event
-        if (selection === QUERY_PILL && !this._isInputEmpty(value)) {
-          this._broadcast(MESSAGE_TYPES.VALUE_ENTER_KEY, value);
-        } else if (selection === FREE_FORM_PILL) {
-          // _debugContainerKey is a private Ember property that returns the full
-          // component name (component:query-container/pill-value).
-          const [ , source ] = this._debugContainerKey.split('/');
-          // send value up to create a complex pill
-          this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, source]);
+        switch (selection) {
+          case QUERY_FILTER:
+            if (!this._isInputEmpty(value)) {
+              this._broadcast(MESSAGE_TYPES.VALUE_ENTER_KEY, value);
+            }
+            break;
+          case FREE_FORM_FILTER:
+          case TEXT_FILTER:
+            // send value up to create a complex pill
+            this._broadcast(message, [value, source]);
         }
       }
     },
