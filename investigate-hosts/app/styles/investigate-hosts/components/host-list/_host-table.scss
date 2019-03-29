@@ -96,9 +96,6 @@
     margin-right: 0px;
   }
 
-  .scan-modal {
-    display: none;
-  }
   .rsa-investigate-query-container {
     &__service-selector {
       margin-right: rsa-whitespace(less);
@@ -131,39 +128,6 @@
   margin-right: rsa-whitespace(less);
 }
 
-.rsa-initiate-scan-modal {
-  padding: rsa-whitespace(more);
-  max-width: 500px;
-  line-height: 1.5rem;
-  color: text-color(primary, light);
-  &__description {
-    display: block;
-    &.error {
-      color: text-color(accentOne, dark);
-    }
-  }
-  &__scan-option {
-    padding: rsa-whitespace(less) 0;
-    .rsa-form-radio-label {
-      font-size: larger;
-    }
-    .rsa-form-radio-label:before,
-    .rsa-form-radio-label:after {
-      top: rsa-whitespace(least);
-    }
-    p {
-      padding-left: rsa-whitespace();
-    }
-  }
-}
-
-.cancel-scan, .initScan {
-  float: right;
-}
-
-.filters {
-  background-color: background-color(primary, darkest, somewhat-opaque);
-}
 .rsa-data-table-column-selector-panel section {
   position: relative;
 }

@@ -34,40 +34,11 @@ $filter-panel-width: 250px;
       padding-top: 1.4rem;
     }
   }
-  .filters {
-    @include border-bottom(1px, solid, primary, dark);
-    padding: rsa-whitespace(less);
-  }
 
   .rsa-data-filters {
     .content-body {
       height: calc(100vh - 260px);
     }
-  }
-
-  .favourite-filters {
-    padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
-  }
-
-  .filter-list__item {
-    cursor: pointer;
-    font-weight: 700;
-    color: text-color(primary, light);
-    line-height: 27px;
-    &.is-active {
-      color: text-color(primary, lightest);
-      transition: color 0.5s ease;
-    }
-  }
-
-  .filter-list__item:hover {
-    color: text-color(primary, lightest);
-    transition: color 0.5s ease;
-  }
-
-  .filter-list__item-label {
-    display: inline-block;
-    width: 160px;
   }
 
   .host-table {
@@ -101,8 +72,5 @@ $filter-panel-width: 250px;
     .close-zone {
       padding-right: 0.8rem;
     }
-  }
-  .insights-host {
-    padding-top: 4px;
   }
 }

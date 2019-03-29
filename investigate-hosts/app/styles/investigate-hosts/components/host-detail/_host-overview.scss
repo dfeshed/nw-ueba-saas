@@ -20,19 +20,6 @@
   .host-detail-box {
     height: 100%;
   }
-  .rsa-icon.is-small{
-    padding-right: rsa-whitespace(least);
-  }
-  .trends-chart {
-    @include border-top(1px, solid, primary, lightest, nearly-transparent);
-    @include border-bottom(1px, solid, primary, lightest, nearly-transparent);
-    height: 250px;
-
-    .open-right {
-      float: right;
-    }
-  }
-
   .alerts {
     height: 100%;
     min-width: 400px;
@@ -44,21 +31,9 @@
   .alert-context__container {
     cursor: pointer;
   }
-
-  .open-properties {
-    button {
-      float: right;
-    }
-  }
   .events-list__table-view-body {
     height: calc(100% - 45px);
   }
-}
-.user-info-content {
-  padding-left: rsa-whitespace();
-}
-.ip-divider {
-  padding: 0 rsa-whitespace(less) 0 rsa-whitespace(less);
 }
 
 .host-overview {

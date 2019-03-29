@@ -6,23 +6,10 @@
   padding-right: rsa-whitespace();
   padding-left: 0;
   padding-top: rsa-whitespace(less);
-  .title {
-    padding-left: rsa-whitespace();
-  }
   .toggle-icon {
     padding-top: 1rem;
     float: right;
     padding-right: 23px;
-    .toggle-tree-view-label {
-      font-family: 'Open Sans';
-      font-style: normal;
-      font-size: .7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      padding-right: 10px;
-      margin-bottom: 24px;
-    }
   }
   .process-list-actions {
     padding-left: rsa-whitespace();
@@ -142,25 +129,11 @@
     .value hbox {
       max-width: 80%
     }
-    .value a hbox {
-      .tooltip-text {
-        color: text-color(secondary, light);
-      }
-    }
   }
 
   &.panel-shadow {
     width: 51px;
     box-shadow: -2px 6px 5px 4px $shadow-color;
-  }
-  .overview-item {
-    padding-left: 5rem;
-  }
-  .table-data {
-    padding: rsa-whitespace(more);
-  }
-  .process-info {
-    padding: 0 rsa-whitespace(more);
   }
   .process-dll-note {
     padding: 0 0 rsa-whitespace() 0;
@@ -170,11 +143,6 @@
     font-size: 0.85rem;
     margin-bottom: 1rem;
     margin-top: -0.5rem;
-  }
-  .rsa-content-definition {
-    span {
-      display: block;
-    }
   }
   &__accordion-content {
     margin-bottom: rsa-whitespace(more);
@@ -234,11 +202,6 @@
   }
   .header-item {
     padding: rsa-whitespace() rsa-whitespace() rsa-whitespace() 0;
-    .name {
-      @include rsa-font(header, small);
-      color: text-color(primary, light);
-      padding-bottom: rsa-whitespace(least);
-    }
   }
 }
 
