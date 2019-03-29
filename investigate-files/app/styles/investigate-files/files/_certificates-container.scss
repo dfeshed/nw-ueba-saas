@@ -9,10 +9,6 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
   left: 0;
   right: 0;
   overflow: hidden;
-  .main-zone {
-    overflow: hidden;
-    flex-wrap: nowrap;
-  }
   .certificates-action-bar {
     padding: 19px 7px 19px 18px;
     .padding-right {
@@ -57,9 +53,6 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
         font-size: 1rem;
       }
     }
-    .actionbar-pivot-to-investigate {
-      padding-left: rsa-whitespace(less);
-    }
     .certificate-status-button {
       margin-right: 7px;
       button i {
@@ -100,9 +93,6 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
   .certificates-body {
     .rsa-data-table {
       height: 100vh;
-      .rsa-form-radio-label .rsa-form-checkbox {
-        position: inherit;
-      }
       .certificate-radio {
         font-size: 17px;
         position: inherit;

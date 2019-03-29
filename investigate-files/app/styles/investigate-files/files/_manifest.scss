@@ -4,11 +4,6 @@ $risk-panel-width: 500px;
 @import "service-modal";
 @import "certificates-container";
 
-page.investigate-files-engine {
-  min-height: 100vh;
-  color: text-color(primary, lightest);
-}
-
 .rsa-investigate-files {
   height: 100%;
   .save-files-iframe {
@@ -29,9 +24,6 @@ page.investigate-files-engine {
   .content-context-menu {
     display: inherit;
   }
-  .reset-risk-score {
-    display: none;
-  }
 
   .rsa-data-table-body-cell.score {
     padding: 3px 7px 0 7px;
@@ -43,140 +35,15 @@ page.investigate-files-engine {
     flex-wrap: nowrap;
   }
 
-  .rsa-application-layout-panel-header .filters {
-    padding: 0 0 0 calc((1rem + .25rem + .5rem) - 1px);
-  }
-
-  .favourite-filters {
-    padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
-    overflow-y: scroll;
-  }
-
-  .filter_title {
-    padding: 0 0 rsa-whitespace() 0;
-  }
-
-  .filter-list__item {
-    cursor: pointer;
-    font-weight: 700;
-    color: text-color(primary, light);
-    line-height: 27px;
-    &.is-active {
-      color: text-color(primary, lightest);
-      transition: color 0.5s ease;
-    }
-  }
-
-  .toolbar-zone {
-    border-bottom: 1px solid $zoneBorderColor;
-    padding: rsa-whitespace();
-  }
-  .add-filter {
-    padding: rsa-whitespace() 0;
-  }
   .file-name {
     text-decoration: underline;
     color: text-color(secondary, light);
     cursor: pointer;
   }
-  .filter-zone {
-    hr {
-      width: 100%;
-    }
-    h2 {
-      @include rsa-font(header, larger);
-      line-height: 2rem;
-      color: text-color(primary, lightest);
-    }
-
-    border-right: 1px solid $zoneBorderColor;
-    padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
-    overflow: auto;
-    overflow-x: hidden;
-    opacity: opacity-value(opaque);
-    min-width: $filterPanelMinWidth;
-    max-width: $filterPanelMinWidth;
-    color: text-color(primary, lightest);
-    @include rsa-vendor-prefix(transition-property, max-width, min-width, padding, opacity);
-    @include rsa-vendor-prefix(transition-duration, 0.3s, 0.3s, 0.3s, 0.1s);
-    @include border-right(1px, solid, primary, dark);
-  }
-
   .rsa-data-filters {
     .content-body {
       height: calc(100vh - 280px);
     }
-  }
-  .risk-property-zone {
-    min-width: 0;
-    max-width: 0;
-    padding: 0;
-    overflow: hidden;
-    opacity: opacity-value(transparent);
-    @include rsa-vendor-prefix(transition-property, max-width, min-width, padding, opacity);
-    @include rsa-vendor-prefix(transition-duration, 0.3s, 0.3s, 0.3s, 0.1s);
-
-    .rsa-nav-tab .label {
-      @include rsa-font(header, small);
-      text-transform: capitalize;
-      color: text-color(primary, lighter);
-      font-size: 0.85rem;
-    }
-    .rsa-nav-tab.is-active .label {
-      color: text-color(secondary, light);
-    }
-    .rsa-nav-tab.is-left-aligned-primary {
-      cursor: pointer;
-      margin: 0 rsa-whitespace() 0;
-      padding: rsa-whitespace(less) 0;
-      border-bottom-width: 3px;
-    }
-    .risk-zone-close-button {
-      width: 16px;
-      max-width: 16px;
-      margin-right: 20px;
-      .close-icon {
-        font-size: 9px;
-      }
-    }
-  }
-
-  .show-risk-panel {
-    .risk-property-zone {
-      @include border-left(1px, solid, primary, dark);
-      min-width: $risk-panel-width;
-      max-width: $risk-panel-width;
-      padding: 0;
-      overflow: auto;
-      overflow-x: hidden;
-      opacity: opacity-value(opaque);
-    }
-    .files-zone {
-      width: calc(100vw - #{$risk-panel-width + $filterPanelMinWidth});
-      max-width: calc(100vw - #{$risk-panel-width + $filterPanelMinWidth});
-    }
-  }
-  .files-zone {
-    @include rsa-vendor-prefix(transition-property, width);
-    @include rsa-vendor-prefix(transition-duration, 0.3s);
-    width: calc(100vw - #{$filterPanelMinWidth});
-    max-width: calc(100vw - #{$filterPanelMinWidth});
-    min-height: calc(100vh - 135px);
-  }
-  .files-footer {
-    max-height: 2rem;
-    background-color: background-color(primary, darker, somewhat-opaque);
-    color: text-color(primary, lightest);
-    border-top: 1px solid $zoneBorderColor;
-  }
-
-  .toolbar-button {
-    padding: rsa-whitespace(less);
-    font-size: 20px;
-    width: 23px;
-    color: text-color(primary, lighter);
-    margin-right: rsa-whitespace(least);
-    cursor: pointer;
   }
 
   .file-list, .rsa-data-table {
@@ -207,17 +74,6 @@ page.investigate-files-engine {
     }
   }
 
-  .pivot-to-investigate {
-    margin-left: auto;
-    display: none;
-  }
-
-  .rsa-data-table-body-cell:hover {
-    .pivot-to-investigate {
-      cursor: pointer;
-      display: block;
-    }
-  }
   .investigate-file-tab {
     .rsa-nav-tab {
       .label {
@@ -245,9 +101,6 @@ page.investigate-files-engine {
     .close-zone {
       padding-top: 1.4rem;
     }
-  }
-  .machine-count, .machine-count * {
-    overflow: initial;
   }
   .count-info {
     padding-bottom: rsa-whitespace()
@@ -302,6 +155,12 @@ page.investigate-files-engine {
   }
   .filter-wrapper .filter-controls .noUi-connects .noUi-connect{
     background-color: background-color(secondary, dark);
+  }
+  .files-footer {
+    max-height: 2rem;
+    background-color: background-color(primary, darker, somewhat-opaque);
+    color: text-color(primary, lightest);
+    border-top: 1px solid $zoneBorderColor;
   }
 }
 
