@@ -1,9 +1,9 @@
-import datetime
 import logging
 import time
-from datetime import timedelta
 from airflow.operators.sensors import BaseSensorOperator
 from presidio.utils.connector.properties_loader import load_and_get_property
+from datetime import datetime, timedelta
+from presidio_extension.utils.time_service import datetime_to_epoch
 
 DELAY_TIME_IN_SECONDS = 60 * 15
 
@@ -41,13 +41,14 @@ class HourIsReadySensorOperator(BaseSensorOperator):
             self._hour_start_time = str(context['ts']).replace(" ", "T") + "Z"  # adjust no-timezone->UTC
 
             # Convert the date times to epoch representation. example: 2017-06-27T19\:00\:00Z -> 1498579200.0
-            hour_start_time_epoch_seconds = time.mktime(
-                datetime.datetime.strptime(self._hour_start_time.replace("\\", ""),
-                                           "%Y-%m-%dT%H:%M:%SZ").timetuple())
+            hour_start_time_epoch_seconds = datetime_to_epoch(context['execution_date'])
+
             now_epoch_seconds = int(time.time())
 
             hour_end_time_epoch_seconds = hour_start_time_epoch_seconds + 3600  # add an hour
+
             time_to_sleep_seconds = (hour_end_time_epoch_seconds + DELAY_TIME_IN_SECONDS) - now_epoch_seconds
+
             if time_to_sleep_seconds > 0:
                 logging.info(
                     "Hour {0} is not ready!. hour_end_time_epoch_seconds: {1}, now_epoch_seconds: {2}, "
@@ -65,3 +66,4 @@ class HourIsReadySensorOperator(BaseSensorOperator):
     @staticmethod
     def get_counter_property(property_to_get, properties_file):
         return load_and_get_property(property_to_get, properties_file)
+
