@@ -1,5 +1,6 @@
 import pytz
 from datetime import datetime, timedelta
+from pendulum import pendulum
 
 
 def floor_time(dt, time_delta):
@@ -43,7 +44,7 @@ def convert_to_utc(dt):
     :type dt: datetime
     :return: float
     """
-    if (dt.tzname() is None) | (dt.tzinfo == pytz.utc):
+    if (dt.tzname() is None) | (dt.tzinfo == pytz.utc) | (dt.tzinfo == pendulum.UTC) | (dt.tzname() == ""):
         return dt.strftime('%Y-%m-%dT%H:%M:%SZ')
     else:
         raise Exception('We support only UTC time zone')
