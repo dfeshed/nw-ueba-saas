@@ -9,6 +9,7 @@ const _treeSelectedOperationIndex = (state) => state.treeSelectedOperationIndex;
 const _selectedNode = (state) => state.selectedNode;
 const _deviceInfo = (state) => state.deviceInfo;
 const _availablePermissions = (state) => state.availablePermissions;
+const _operationResponse = (state) => state.operationResponse;
 
 const filterOut = ['ls', 'mon', 'stopMon', 'count', 'help', 'info'];
 
@@ -138,6 +139,25 @@ const selectedOperationHasPermission = createSelector(
   }
 );
 
+const operationResponseDataType = createSelector(
+  [ _operationResponse ],
+  (operationResponse) => {
+    if (operationResponse && operationResponse.dataType) {
+      const { dataType } = operationResponse;
+      return {
+        string: dataType === FLAGS.STRING,
+        params: dataType === FLAGS.PARAMS,
+        paramList: dataType === FLAGS.PARAM_LIST,
+        queryResults: dataType === FLAGS.QUERY_RESULTS,
+        nodeInfo: dataType === FLAGS.NODE_INFO,
+        nodeList: dataType === FLAGS.NODE_LIST
+      };
+    } else {
+      return null;
+    }
+  }
+);
+
 const description = createSelector(
   [ _treePathContents ],
   (treePathContents) => {
@@ -245,6 +265,7 @@ export {
   selectedOperationHelp,
   selectedOperationRoles,
   selectedOperationHasPermission,
+  operationResponseDataType,
   description,
   liveSelectedNode,
   configSetResult,

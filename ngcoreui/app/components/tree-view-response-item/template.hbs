@@ -1,1 +1,31 @@
-<pre>{{raw}}</pre>
+{{#if isNotStatusUpdate}}
+  {{#if isKeyValuePairs}}
+    {{#rsa-data-table
+      items=keyValuePairsItems
+      columnsConfig=keyValuePairsConfig}}
+      {{#rsa-data-table/header as |column|}}
+        {{column.title}}
+      {{/rsa-data-table/header}}
+      {{#rsa-data-table/body as |item index column|}}
+        {{rsa-data-table/body-cell item=item column=column}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  {{else if isCustomTable}}
+    {{#if (not-eq customTableItems.length 0)}}
+      {{#rsa-data-table
+        items=customTableItems
+        columnsConfig=customTableColumnConfig}}
+        {{#rsa-data-table/header as |column|}}
+          {{column.title}}
+        {{/rsa-data-table/header}}
+        {{#rsa-data-table/body as |item index column|}}
+          {{rsa-data-table/body-cell item=item column=column}}
+        {{/rsa-data-table/body}}
+      {{/rsa-data-table}}
+    {{/if}}
+  {{else if isString}}
+    {{item.string}}
+  {{else}}
+    <pre>{{raw}}</pre>
+  {{/if}}
+{{/if}}

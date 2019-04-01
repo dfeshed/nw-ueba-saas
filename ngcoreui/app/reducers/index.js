@@ -143,6 +143,9 @@ const reducer = handleActions({
         .replace(/\t/g, '  ');
       state = state.setIn(['operationResponse', 'error'], error);
     }
+    if (flags.dataType) {
+      state = state.setIn(['operationResponse', 'dataType'], flags.dataType);
+    }
     const raw = state.operationResponse.raw || [];
     state = state.setIn(['operationResponse', 'raw'], raw.concat(action.payload));
 

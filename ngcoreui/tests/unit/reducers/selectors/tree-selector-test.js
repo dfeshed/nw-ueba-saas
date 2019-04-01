@@ -12,6 +12,7 @@ import {
   selectedOperationHelp,
   selectedOperationRoles,
   selectedOperationHasPermission,
+  operationResponseDataType,
   description,
   liveSelectedNode,
   configSetResult,
@@ -156,6 +157,97 @@ module('Unit | Selectors | Tree', (hooks) => {
       .availablePermissions(['sdk.meta', 'sdk.content', 'sys.manage', 'sdk.packets'])
       .build();
     assert.strictEqual(selectedOperationHasPermission(state), true);
+  });
+
+  test('operationResponseDataType detects a string response', (assert) => {
+    const state = new ReduxDataHelper()
+      .operationResponseDataType()
+      .operationResponse({
+        // Most of the object is not needed to test this selector
+        dataType: 0x00020000
+      })
+      .build();
+    assert.strictEqual(operationResponseDataType(state).string, true, 'Data type is string');
+    assert.strictEqual(operationResponseDataType(state).params, false, 'Data type is not params');
+    assert.strictEqual(operationResponseDataType(state).paramList, false, 'Data type is not paramList');
+    assert.strictEqual(operationResponseDataType(state).queryResults, false, 'Data type is not queryResults');
+    assert.strictEqual(operationResponseDataType(state).nodeInfo, false, 'Data type is not nodeInfo');
+    assert.strictEqual(operationResponseDataType(state).nodeList, false, 'Data type is not nodeList');
+  });
+
+  test('operationResponseDataType detects a params response', (assert) => {
+    const state = new ReduxDataHelper()
+      .operationResponseDataType()
+      .operationResponse({
+        dataType: 0x00030000
+      })
+      .build();
+    assert.strictEqual(operationResponseDataType(state).string, false, 'Data type is not string');
+    assert.strictEqual(operationResponseDataType(state).params, true, 'Data type is params');
+    assert.strictEqual(operationResponseDataType(state).paramList, false, 'Data type is not paramList');
+    assert.strictEqual(operationResponseDataType(state).queryResults, false, 'Data type is not queryResults');
+    assert.strictEqual(operationResponseDataType(state).nodeInfo, false, 'Data type is not nodeInfo');
+    assert.strictEqual(operationResponseDataType(state).nodeList, false, 'Data type is not nodeList');
+  });
+
+  test('operationResponseDataType detects a paramList response', (assert) => {
+    const state = new ReduxDataHelper()
+      .operationResponseDataType()
+      .operationResponse({
+        dataType: 0x00040000
+      })
+      .build();
+    assert.strictEqual(operationResponseDataType(state).string, false, 'Data type is not string');
+    assert.strictEqual(operationResponseDataType(state).params, false, 'Data type is not params');
+    assert.strictEqual(operationResponseDataType(state).paramList, true, 'Data type is paramList');
+    assert.strictEqual(operationResponseDataType(state).queryResults, false, 'Data type is not queryResults');
+    assert.strictEqual(operationResponseDataType(state).nodeInfo, false, 'Data type is not nodeInfo');
+    assert.strictEqual(operationResponseDataType(state).nodeList, false, 'Data type is not nodeList');
+  });
+
+  test('operationResponseDataType detects a queryResults response', (assert) => {
+    const state = new ReduxDataHelper()
+      .operationResponseDataType()
+      .operationResponse({
+        dataType: 0x00070000
+      })
+      .build();
+    assert.strictEqual(operationResponseDataType(state).string, false, 'Data type is not string');
+    assert.strictEqual(operationResponseDataType(state).params, false, 'Data type is not params');
+    assert.strictEqual(operationResponseDataType(state).paramList, false, 'Data type is not paramList');
+    assert.strictEqual(operationResponseDataType(state).queryResults, true, 'Data type is queryResults');
+    assert.strictEqual(operationResponseDataType(state).nodeInfo, false, 'Data type is not nodeInfo');
+    assert.strictEqual(operationResponseDataType(state).nodeList, false, 'Data type is not nodeList');
+  });
+
+  test('operationResponseDataType detects a nodeInfo response', (assert) => {
+    const state = new ReduxDataHelper()
+      .operationResponseDataType()
+      .operationResponse({
+        dataType: 0x00050000
+      })
+      .build();
+    assert.strictEqual(operationResponseDataType(state).string, false, 'Data type is not string');
+    assert.strictEqual(operationResponseDataType(state).params, false, 'Data type is not params');
+    assert.strictEqual(operationResponseDataType(state).paramList, false, 'Data type is not paramList');
+    assert.strictEqual(operationResponseDataType(state).queryResults, false, 'Data type is not queryResults');
+    assert.strictEqual(operationResponseDataType(state).nodeInfo, true, 'Data type is nodeInfo');
+    assert.strictEqual(operationResponseDataType(state).nodeList, false, 'Data type is not nodeList');
+  });
+
+  test('operationResponseDataType detects a nodeList response', (assert) => {
+    const state = new ReduxDataHelper()
+      .operationResponseDataType()
+      .operationResponse({
+        dataType: 0x00060000
+      })
+      .build();
+    assert.strictEqual(operationResponseDataType(state).string, false, 'Data type is not string');
+    assert.strictEqual(operationResponseDataType(state).params, false, 'Data type is not params');
+    assert.strictEqual(operationResponseDataType(state).paramList, false, 'Data type is not paramList');
+    assert.strictEqual(operationResponseDataType(state).queryResults, false, 'Data type is not queryResults');
+    assert.strictEqual(operationResponseDataType(state).nodeInfo, false, 'Data type is not nodeInfo');
+    assert.strictEqual(operationResponseDataType(state).nodeList, true, 'Data type is nodeList');
   });
 
   test('description should return the description of the current path', (assert) => {

@@ -207,6 +207,10 @@ export default class DataHelper {
     return this._connectAndFillTree();
   }
 
+  operationResponseDataType() {
+    return this._connectAndFillTree();
+  }
+
   description() {
     return this._connectAndFillTree();
   }
