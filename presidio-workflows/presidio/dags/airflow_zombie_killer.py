@@ -7,8 +7,7 @@ from airflow.operators.subdag_operator import SubDagOperator
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
 from datetime import datetime, timedelta
-
-from pendulum import pendulum
+import pendulum
 
 unfinished_states = State.unfinished()
 delta_from_max_date = timedelta(minutes=10)
