@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime, timedelta
+import pendulum
 
 from airflow.jobs import BaseJob
 from airflow.models import DagRun, TaskInstance, Log, XCom, SlaMiss
@@ -61,7 +62,7 @@ class AirflowDbCleanupDagBuilder(MaintenanceDagBuilder):
             logging.info("maxDBEntryAgeInDays conf variable isn't included. Using Default '" + str(
                 max_db_entry_age_in_days) + "'")
 
-        max_date = datetime.now() + timedelta(-max_db_entry_age_in_days)
+        max_date = datetime.now(tz=pendulum.timezone("UTC")) + timedelta(-max_db_entry_age_in_days)
         logging.info("Finished Loading Configurations")
         logging.info("")
 
