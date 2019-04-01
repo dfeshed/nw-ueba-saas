@@ -114,9 +114,9 @@ export const fetchInvestigateData = () => {
       });
       // Get event count
       dispatch(getEventCount());
+      dispatch(metaGet(true));
       if (_showFutureFeatures) {
         dispatch(getEventTimeline());
-        dispatch(metaGet(true));
       }
 
       // Get first batch of results either at top or bottom of
