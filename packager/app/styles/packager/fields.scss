@@ -101,6 +101,22 @@
 .device {
   padding-right: rsa-whitespace(more);
 }
+.endpoint-server-list-title {
+  vertical-align: text-top;
+  margin-bottom: rsa-whitespace(least);
+  color: $formInputLabelColor;
+  @include rsa-font(header, small);
+  text-transform: uppercase;
+}
+.server-list-dropdown {
+  margin: 0.6rem 0.5rem 0.5rem 0;
+}
+.packager-form .divider {
+  @include border-left(1px, solid, primary, lightest, nearly-transparent);
+  height: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
 
 .agentConfiguration {
   margin-left: rsa-whitespace(less);

@@ -9,6 +9,7 @@ import sinon from 'sinon';
 import { find, findAll, render, click, triggerKeyEvent } from '@ember/test-helpers';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
+import { clickTrigger } from 'ember-power-select/test-support/helpers';
 
 let setState;
 
@@ -34,6 +35,13 @@ const devices = [{
   'family': null,
   'meta': { }
 }];
+const selectedServerIP = {
+  id: '2f3a0c01-a366-49a7-afb5-f04036fc7a97',
+  name: 'endpoint-server',
+  displayName: 'EPS1-Arya - Endpoint Server',
+  host: '10.40.15.204',
+  hostName: 'EPS1-Arya'
+};
 
 module('Integration | Component | packager-form', function(hooks) {
   setupRenderingTest(hooks);
@@ -52,6 +60,7 @@ module('Integration | Component | packager-form', function(hooks) {
 
   test('it renders packager form', async function(assert) {
     assert.expect(1);
+    new ReduxDataHelper(setState).defaultConfig().setData('selectedServerIP', selectedServerIP).build();
     await render(hbs`{{packager-form}}`);
     const packagerFormLength = findAll('.packager-form').length;
     assert.equal(packagerFormLength, 1, 'Expected to find packager form root element in DOM.');
@@ -59,11 +68,11 @@ module('Integration | Component | packager-form', function(hooks) {
 
   test('it renders form with saved data', async function(assert) {
     assert.expect(2);
-    new ReduxDataHelper(setState).defaultConfig().build();
+    new ReduxDataHelper(setState).defaultConfig().setData('selectedServerIP', selectedServerIP).build();
     await render(hbs`{{packager-form}}`);
     // server
     const hostIPInput = find('.host-ip-js input');
-    assert.equal(hostIPInput.value, '10.101.34.245', 'Expected to match the value "10.101.34.245" in DOM.');
+    assert.equal(hostIPInput.value, 'EPS1-Arya', 'Expected to match the value "EPS1-Arya" in DOM.');
 
     // service name
     const serviceName = find('.service-name-js input');
@@ -82,6 +91,7 @@ module('Integration | Component | packager-form', function(hooks) {
     };
     new ReduxDataHelper(setState)
       .setData('defaultPackagerConfig', channelFiltersWithNullData)
+      .setData('selectedServerIP', selectedServerIP)
       .setData('devices', devices)
       .build();
 
@@ -108,6 +118,7 @@ module('Integration | Component | packager-form', function(hooks) {
     };
     new ReduxDataHelper(setState)
       .setData('defaultPackagerConfig', channelFiltersWithNullData)
+      .setData('selectedServerIP', selectedServerIP)
       .setData('devices', devices)
       .build();
 
@@ -133,6 +144,7 @@ module('Integration | Component | packager-form', function(hooks) {
     new ReduxDataHelper(setState)
       .setData('defaultPackagerConfig', channelFiltersWithInvalidData)
       .setData('devices', devices)
+      .setData('selectedServerIP', selectedServerIP)
       .build();
     this.set('selectedProtocol', 'UDP');
     await render(hbs`{{packager-form selectedProtocol=selectedProtocol}}`);
@@ -171,7 +183,10 @@ module('Integration | Component | packager-form', function(hooks) {
 
   test('validates the packager config and sets the error field', async function(assert) {
     assert.expect(5);
-    new ReduxDataHelper(setState).setData('defaultPackagerConfig', newConfig).build();
+    new ReduxDataHelper(setState)
+      .setData('defaultPackagerConfig', newConfig)
+      .setData('selectedServerIP', selectedServerIP)
+      .build();
 
     await render(hbs`{{packager-form}}`);
 
@@ -224,14 +239,31 @@ module('Integration | Component | packager-form', function(hooks) {
   });
 
   test('Password field is not erroneous, on key up', async function(assert) {
-    new ReduxDataHelper(setState).setData('defaultPackagerConfig', newConfig).build();
+    new ReduxDataHelper(setState)
+      .setData('defaultPackagerConfig', newConfig)
+      .setData('selectedServerIP', selectedServerIP)
+      .build();
     await render(hbs`{{packager-form}}`);
     await triggerKeyEvent('.password-input-js  input', 'keyup', 13);
     assert.equal(find('.password-input-js').classList.contains('is-error'), false, 'Error class is not present, on password field.');
   });
 
   test('required fields are rendered in the AGENT CONFIGURATION section', async function(assert) {
+    const testConfig = {
+      'packageConfig': {
+        'id': '59894c9984518a5cfb8fbec2',
+        'server': '10.101.34.245',
+        'port': 443,
+        'certificatePassword': null,
+        'serviceName': 'test',
+        'displayName': 'Display Name Test'
+      }
+    };
 
+    new ReduxDataHelper(setState)
+      .setData('defaultPackagerConfig', testConfig)
+      .setData('selectedServerIP', selectedServerIP)
+      .build();
     await render(hbs`{{packager-form}}`);
 
     assert.equal(find('.agentConfigNote').textContent.trim(), 'For a subsequent installation/upgrade, use the same service names.', 'Note is present');
@@ -271,7 +303,10 @@ module('Integration | Component | packager-form', function(hooks) {
       }
     };
 
-    new ReduxDataHelper(setState).setData('defaultPackagerConfig', testConfig).build();
+    new ReduxDataHelper(setState)
+      .setData('defaultPackagerConfig', testConfig)
+      .setData('selectedServerIP', selectedServerIP)
+      .build();
     await render(hbs`{{packager-form isPasswordError=isPasswordError}}`);
     await triggerKeyEvent('.password-input-js  input', 'keyup', 13);
     assert.equal(this.get('isPasswordError'), true);
@@ -291,10 +326,108 @@ module('Integration | Component | packager-form', function(hooks) {
       }
     };
 
-    new ReduxDataHelper(setState).setData('defaultPackagerConfig', testConfig).build();
+    new ReduxDataHelper(setState)
+      .setData('defaultPackagerConfig', testConfig)
+      .setData('selectedServerIP', selectedServerIP)
+      .build();
     await render(hbs`{{packager-form}}`);
     assert.equal(findAll('.field.force-overwrite .rsa-form-checkbox.checked').length, 0, 'Force overwrite is checked');
     await click(findAll('.field.force-overwrite .rsa-form-checkbox')[0]);
     assert.equal(findAll('.field.force-overwrite .rsa-form-checkbox.checked').length, 1, 'Force overwrite is not checked');
+  });
+
+  test('Endpoint list', async function(assert) {
+    const testConfig = {
+      'packageConfig': {
+        'id': '59894c9984518a5cfb8fbec2',
+        'server': '10.101.34.245',
+        'port': 443,
+        'certificatePassword': null,
+        'serviceName': 'test',
+        'displayName': 'Display Name Test',
+        'forceOverwrite': false,
+        'serviceId': '2f3a0c01-a366-49a7-afb5-f04036fc7a97'
+      }
+    };
+    const endpointServerList = [
+      {
+        id: '2f3a0c01-a366-49a7-afb5-f04036fc7a97',
+        name: 'endpoint-server',
+        displayName: 'EPS1-Arya - Endpoint Server',
+        host: '10.40.15.204',
+        port: 7050,
+        useTls: true,
+        version: '11.3.1.0',
+        family: 'launch',
+        meta: {},
+        hostName: 'EPS1-Arya'
+      },
+      {
+        id: 'ec8e6e1e-efa6-45d6-b577-6b39de544e00',
+        name: 'endpoint-server',
+        displayName: 'EPS2-Arya - Endpoint Server',
+        host: '10.40.12.5',
+        port: 7050,
+        useTls: true,
+        version: '11.3.0.0',
+        family: 'launch',
+        meta: {},
+        hostName: 'EPS2-Arya'
+      }
+    ];
+    new ReduxDataHelper(setState)
+      .setData('defaultPackagerConfig', testConfig)
+      .setData('selectedServerIP', selectedServerIP)
+      .setData('endpointServerList', endpointServerList)
+      .build();
+    await render(hbs`{{packager-form}}`);
+    await clickTrigger('.server-list-dropdown');
+    assert.equal(findAll('.ember-power-select-option').length, 2, '2 endpoint servers rendered');
+  });
+
+  test('Editable server and port value rendering', async function(assert) {
+    const testConfig = {
+      'packageConfig': {
+        'id': '59894c9984518a5cfb8fbec2',
+        'server': '10.101.34.245',
+        'port': 443,
+        'certificatePassword': null,
+        'serviceName': 'test',
+        'displayName': 'Display Name Test',
+        'forceOverwrite': false,
+        'serviceId': '2f3a0c01-a366-49a7-afb5-f04036fc7a97'
+      }
+    };
+
+    new ReduxDataHelper(setState)
+      .setData('defaultPackagerConfig', testConfig)
+      .setData('selectedServerIP', selectedServerIP)
+      .build();
+    await render(hbs`{{packager-form}}`);
+    assert.equal(find('.host-ip-js input').value, '10.101.34.245', 'Editable endpoint servers rendered');
+    assert.equal(find('.host-port-js input').value, '443', 'Editable endpoint servers port rendered');
+  });
+
+  test('Editable server and port value rendering', async function(assert) {
+    const testConfig = {
+      'packageConfig': {
+        'id': '59894c9984518a5cfb8fbec2',
+        'server': '10.101.34.245',
+        'port': 4434,
+        'certificatePassword': null,
+        'serviceName': 'test',
+        'displayName': 'Display Name Test',
+        'forceOverwrite': false,
+        'serviceId': 'a366-49a7-afb5-f04036fc7a97-2f3a0c01'
+      }
+    };
+
+    new ReduxDataHelper(setState)
+      .setData('defaultPackagerConfig', testConfig)
+      .setData('selectedServerIP', selectedServerIP)
+      .build();
+    await render(hbs`{{packager-form}}`);
+    assert.equal(find('.host-ip-js input').value, 'EPS1-Arya', 'Editable endpoint servers rendered');
+    assert.equal(find('.host-port-js input').value, '443', 'Editable endpoint servers port rendered');
   });
 });

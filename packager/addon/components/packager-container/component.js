@@ -5,9 +5,7 @@ import { isEmpty } from '@ember/utils';
 import Component from '@ember/component';
 import { next } from '@ember/runloop';
 
-import {
-  getEndpointServerList
-} from '../../actions/data-creators';
+import { getEndpointServerList } from '../../actions/data-creators';
 
 
 const stateToComputed = ({ packager }) => ({

@@ -14,11 +14,13 @@ import { listOfServices,
 import { validatePackageConfig } from './validation-utils';
 import columns from './columns';
 import $ from 'jquery';
+import { failure } from 'investigate-shared/utils/flash-messages';
 
 import {
   setConfig,
   resetForm,
-  saveUIState
+  saveUIState,
+  setSelectedServer
 } from '../../actions/data-creators';
 
 const stateToComputed = (state) => ({
@@ -34,13 +36,16 @@ const stateToComputed = (state) => ({
   // Flag to indicate config is currently updating or not
   isUpdating: state.packager.updating,
   // fetching decoder and concentrator
-  listOfService: listOfServices(state)
+  listOfService: listOfServices(state),
+  endpointServerList: state.packager.endpointServerList,
+  selectedServerIP: state.packager.selectedServerIP
 });
 
 const dispatchToActions = {
   setConfig,
   resetForm,
-  saveUIState
+  saveUIState,
+  setSelectedServer
 };
 
 const formComponent = Component.extend({
@@ -49,8 +54,6 @@ const formComponent = Component.extend({
   columns,
 
   classNames: ['packager-form'],
-
-  flashMessages: service(),
 
   features: service(),
 
@@ -86,6 +89,13 @@ const formComponent = Component.extend({
   @computed('configData.packageConfig.driverDescription')
   driverDescription(driverDescription) {
     return driverDescription || this.get('defaultDriverDescription') || '';
+  },
+
+  @computed('selectedServerIP', 'configData.packageConfig')
+  selectedServerForEdit(selectedServerIP, packageConfig) {
+    const { hostName } = selectedServerIP;
+    const { serviceId, server: host, port } = packageConfig;
+    return (selectedServerIP.id === serviceId) ? { ...selectedServerIP, host, port } : { ...selectedServerIP, host: hostName, port: 443 };
   },
 
   resetErrorProperties() {
@@ -126,6 +136,9 @@ const formComponent = Component.extend({
     return {
       onSuccess: () => {
         this.resetErrorProperties();
+      },
+      onFailure: () => {
+        failure('packager.errorMessages.packagerNotCreated');
       }
     };
   },
@@ -151,6 +164,8 @@ const formComponent = Component.extend({
     generateAgent() {
       this.resetErrorProperties();
       const autoUninstall = this.get('autoUninstall');
+      const { port, host, id } = this.get('selectedServerForEdit');
+
       if (autoUninstall && autoUninstall.length) {
         const date = this._getTimezoneTime(autoUninstall[0]);
         this.set('configData.packageConfig.autoUninstall', date);
@@ -162,12 +177,14 @@ const formComponent = Component.extend({
       this.set('configData.packageConfig.driverDisplayName', this.get('driverDisplayName'));
       this.set('configData.packageConfig.driverDescription', this.get('driverDescription'));
       this.set('configData.packageConfig.monitoringModeEnabled', true);
+      this.set('configData.packageConfig.server', host);
+      this.set('configData.packageConfig.serviceId', id);
+      this.set('configData.packageConfig.port', port);
 
       const error = validatePackageConfig(this.get('configData.packageConfig'));
       this.setProperties(error);
       if (!error) {
-        this.send('saveUIState', this.get('configData'));
-        this.send('setConfig', { ...this.get('configData.packageConfig') }, this._getCallbackFunction(), this.get('serverId'));
+        this.send('setConfig', { ...this.get('configData') }, this._getCallbackFunction(), this.get('serverId'));
       } else {
         if (error.isAccordion) {
           this._agentConfigExpand();
@@ -188,7 +205,6 @@ const formComponent = Component.extend({
     onForceOverwiteChange() {
       this.toggleProperty('configData.packageConfig.forceOverwrite');
     }
-
   }
 
 });

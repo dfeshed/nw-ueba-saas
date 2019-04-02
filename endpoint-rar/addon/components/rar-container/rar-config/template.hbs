@@ -26,15 +26,20 @@
         label=(t 'endpointRAR.rarConfig.port')
         value=configData.rarConfig.httpsPort}}
     </div>
-    <div class="beacon-interval-value">
-      {{rsa-form-input
-        class='beacon-interval'
-        isError=isBeaconError
-        value=configData.rarConfig.httpsBeaconIntervalInSeconds
-      }}
-    </div>
-    <div class="beacon-interval-unit">
-      {{t 'endpointRAR.rarConfig.mins'}}
+    <div class='beacon-interval-wrapper'>
+      <label class='rsa-form-input beacon-label'>
+        <span class='rsa-form-label'>{{t 'endpointRAR.rarConfig.beaconInterval'}}</span>
+      </label>
+      <div class="beacon-interval-value">
+        {{rsa-form-input
+          class='beacon-interval'
+          isError=isBeaconError
+          value=configData.rarConfig.httpsBeaconIntervalInSeconds
+        }}
+      </div>
+      <div class="beacon-interval-unit">
+        {{t 'endpointRAR.rarConfig.mins'}}
+      </div>
     </div>
     {{#if errorMessage}}
       <div class='input-error'>{{t errorMessage}}</div>

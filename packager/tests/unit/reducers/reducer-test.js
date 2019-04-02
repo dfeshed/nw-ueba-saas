@@ -18,7 +18,8 @@ const initialState = Immutable.from({
     packageConfig: {}
   },
   devices: {},
-  selectedServerIP: null
+  selectedServerIP: null,
+  endpointServerList: []
 });
 
 test('should return the initial state', function(assert) {
@@ -56,8 +57,8 @@ test('Get defaultPackagerConfig ', function(assert) {
   });
 
   const endState = reducer(previous, action);
-  assert.deepEqual(endState.defaultPackagerConfig, { ...data, packageConfig: { ...data, server: previous.selectedServerIP } });
-  assert.deepEqual(endState.initialState, { ...data, packageConfig: { ...data, server: previous.selectedServerIP } });
+  assert.deepEqual(endState.defaultPackagerConfig, { ...data, packageConfig: { ...data } });
+  assert.deepEqual(endState.initialState, { ...data, packageConfig: { ...data } });
 });
 
 test('GET_INFO state for start', function(assert) {
@@ -162,4 +163,40 @@ test('set downloadLink state for failure', function(assert) {
   const endState = reducer(previous, action);
   assert.deepEqual(endState.updating, false, 'on failure updating state is not changed');
   assert.deepEqual(endState.error, true, 'on failure error state is not changed');
+});
+
+test('get endpoint servers', function(assert) {
+  const previous = Immutable.from({
+    endpointServerList: []
+  });
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_ENDPOINT_SERVERS,
+    payload: { data: [
+      {
+        id: '2f3a0c01-a366-49a7-afb5-f04036fc7a97',
+        name: 'endpoint-server',
+        displayName: 'EPS1-Arya - Endpoint Server',
+        host: '10.40.15.204',
+        port: 7050,
+        useTls: true,
+        version: '11.3.1.0',
+        family: 'launch',
+        meta: {}
+      },
+      {
+        id: 'ec8e6e1e-efa6-45d6-b577-6b39de544e00',
+        name: 'endpoint-server',
+        displayName: 'EPS2-Arya - Endpoint Server',
+        host: '10.40.12.5',
+        port: 7050,
+        useTls: true,
+        version: '11.3.0.0',
+        family: 'launch',
+        meta: {}
+      }
+    ] }
+  });
+  const endState = reducer(previous, action);
+  assert.equal(endState.endpointServerList.length, 2, 'Endpoint server list updated');
+  assert.equal(endState.endpointServerList[0].hostName, 'EPS1-Arya', 'Endpoint server host name created');
 });

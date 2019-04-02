@@ -49,6 +49,18 @@ module('Unit | Utils | Validate Config util', function() {
     assert.deepEqual(result, expectedResult);
   });
 
+  test('validateConfig when port is passed which is not within range', function(assert) {
+    const result1 = validateConfig({ httpsPort: 0 });
+    const expectedResult = {
+      isPortError: true,
+      invalidPortMessage: 'endpointRAR.errorMessages.invalidPort'
+    };
+    assert.deepEqual(result1, expectedResult);
+
+    const result2 = validateConfig({ httpsPort: 65536 });
+    assert.deepEqual(result2, expectedResult);
+  });
+
   test('validateConfig when invalid becon interval is passed', function(assert) {
     const result = validateConfig({ httpsBeaconIntervalInSeconds: '1.2' });
     const expectedResult = {

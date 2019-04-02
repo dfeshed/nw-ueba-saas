@@ -2120,7 +2120,8 @@ export default {
       CHANNEL_NAME_INVALID: 'Warning: The channel name is invalid.',
       EMPTY_CHANNELS: 'Warning: The channel name is empty.',
       CHANNEL_FILTER_INVALID: 'Warning: The channel filter is invalid.',
-      DESTINATIONS_NOT_UNIQUE: 'Warning: Primary Destination and Secondary Destination are same.'
+      DESTINATIONS_NOT_UNIQUE: 'Warning: Primary Destination and Secondary Destination are same.',
+      packagerNotCreated: 'Agent Packager could not be created, please check whether the selected server is online'
     },
     errorPage: {
       errorTitle: 'Endpoint Server is offline',
@@ -2128,7 +2129,8 @@ export default {
     },
     packagerTitle: 'Packager',
     serviceName: 'Service Name*',
-    server: 'Endpoint Server*',
+    server: 'Endpoint Server',
+    serverEdit: 'Edit Endpoint Server Name*',
     port: 'HTTPS Port*',
     certificateValidation: 'Server Validation',
     certificatePassword: 'Certificate Password*',
@@ -2192,20 +2194,20 @@ export default {
   },
   endpointRAR: {
     backButton: 'Services',
-    title: 'RAR Configuration',
+    title: 'Remote Agent Relay Settings',
     rarInstaller: {
       title: 'Install',
-      instruction: 'Create a password and enterit when prompted while running installer',
+      instruction: 'Create a password and enter it when prompted while running installer',
       password: 'Password<sup>*</sup>',
       downloadButton: 'Download installer'
     },
     rarConfig: {
       title: 'Configure',
-      hostName: 'Enterprise Specific hostname (ESH)',
-      endpointServer: 'ENDPOINT SERVER',
-      server: 'Server',
-      port: 'Port',
-      beaconInterval: 'HTTP BEACON INTERVAL',
+      hostName: 'Enterprise Specific hostname (ESH)<sup>*</sup>',
+      endpointServer: 'ENDPOINT RAR SERVER',
+      server: 'Server<sup>*</sup>',
+      port: 'Port<sup>*</sup>',
+      beaconInterval: 'HTTP BEACON INTERVAL<sup>*</sup>',
       mins: 'mins',
       saveConfig: 'Save configuration',
       resetConfig: 'Cancel'

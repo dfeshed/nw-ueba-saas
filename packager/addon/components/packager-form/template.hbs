@@ -1,22 +1,38 @@
 <div class="server-input-group">
   <div class="field">
     <hbox xs="12">
-      <div class="col-xs-5 host-ip-js">
-        {{rsa-form-input
-          isError=isServerError
-          class='server-input-js'
-          errorMessage=(t invalidServerMessage)
-          label=(t 'packager.server')
-          value=configData.packageConfig.server}}
+      <div class="col-xs-4 endpoint-server-list">
+        <div class='endpoint-server-list-title'>{{t 'packager.server'}}</div>
+        <div class='server-list-dropdown'>
+          {{#power-select
+            class='endpoint-servers'
+            options=endpointServerList
+            selected=selectedServerIP
+            searchField='displayName'
+            onchange=(action 'setSelectedServer') as |option|
+          }}
+            {{option.displayName}}
+          {{/power-select}}
+        </div>
       </div>
-      <div class="col-xs-4 host-port-js">
+      
+      <div class="col-xs-2 host-port-js">
         {{rsa-form-input
           maxLength=10
           class='port-input-js'
           isError=isPortError
           errorMessage=(t invalidPortMessage)
           label=(t 'packager.port')
-          value=configData.packageConfig.port}}
+          value=selectedServerForEdit.port}}
+      </div>
+      <div class="divider"></div>
+      <div class="col-xs-4 host-ip-js">
+        {{rsa-form-input
+          isError=isServerError
+          class='server-input-js'
+          errorMessage=(t invalidServerMessage)
+          label=(t 'packager.serverEdit')
+          value=selectedServerForEdit.host}}
       </div>
     </hbox>
   </div>

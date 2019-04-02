@@ -28,6 +28,18 @@ test('validatePackageConfig - invalid port', function(assert) {
   });
 });
 
+test('validatePackageConfig when port is passed which is not within range', function(assert) {
+  const result1 = validatePackageConfig({ port: 0 });
+  const expectedResult = {
+    isPortError: true,
+    invalidPortMessage: 'packager.errorMessages.invalidPort'
+  };
+  assert.deepEqual(result1, expectedResult);
+
+  const result2 = validatePackageConfig({ port: 65536 });
+  assert.deepEqual(result2, expectedResult);
+});
+
 test('validatePackageConfig - invalid IP/hostname', function(assert) {
   const formData = {
     server: '-1.1.1.X',

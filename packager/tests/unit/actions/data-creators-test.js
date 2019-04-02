@@ -50,7 +50,7 @@ test('Test action creator for getEndpointServerList', function(assert) {
   const callback = dataCreators.getEndpointServerList('LOG_CONFIG');
   assert.equal(typeof callback, 'function');
   patchSocket((method, modelName) => {
-    assert.equal(method, 'findAll');
+    assert.equal(method, 'getEndpointServers');
     assert.equal(modelName, 'endpoint-server');
   });
   const dispatchFn = function(action) {

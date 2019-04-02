@@ -72,7 +72,7 @@
         @include border(1px, solid, primary, lightest, nearly-transparent);
         padding: rsa-whitespace(more);
         margin-top: rsa-whitespace();
-        width: 600px;
+        width: 620px;
         position: relative;
         > div {
           display: inline-block;
@@ -84,12 +84,25 @@
         .host-port {
           width: 170px;
         }
+        .beacon-interval-wrapper {
+          position: relative;
+          .beacon-label {
+            position: absolute;
+            width: 150px;
+            left: 3px;
+            top: -9px;
+          }
+        }
         .beacon-interval-value {
           width: 70px;
+          display: inline-block;
         }
         .beacon-interval-unit {
           @include rsa-font(body, large);
           color: text-color(primary, light);
+          width: 30px;
+          display: inline-block;
+          margin-left: rsa-whitespace(less);
         }
         .input-error {
           position: absolute;
@@ -102,7 +115,7 @@
       .button-wrapper {
         margin: rsa-whitespace(more) 0;
         .is-primary {
-          margin-right: rsa-whitespace(less);
+          margin-right: rsa-whitespace();
         }
       }
     }

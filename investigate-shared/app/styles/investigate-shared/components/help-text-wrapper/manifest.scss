@@ -35,11 +35,12 @@
         position: absolute;
         left: 0px;
         top: -13px;
-        padding: 5px;
+        padding: 5px 7px;
         border-radius: 8px;
         @include border(1px, solid, primary, lightest, nearly-transparent);
         background-color: #000;
-        text-transform: capitalize;
+        text-transform: uppercase;
+        @include rsa-font(default, small);
       }
     }
   }

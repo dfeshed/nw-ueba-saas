@@ -43,7 +43,7 @@ export const validateConfig = (formData) => {
     };
   }
 
-  if ((httpsPort !== undefined && isEmpty(httpsPort)) || (httpsPort && !VALID_PORT_PATTERN.test(httpsPort))) {
+  if ((httpsPort !== undefined && isEmpty(httpsPort)) || (httpsPort && !VALID_PORT_PATTERN.test(httpsPort)) || ((httpsPort < 1) || (httpsPort > 65535))) {
     return {
       isPortError: true,
       invalidPortMessage: 'endpointRAR.errorMessages.invalidPort'
