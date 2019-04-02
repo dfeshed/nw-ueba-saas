@@ -599,7 +599,8 @@ const initializeNotifications = () => {
         // from every browser, just the browser where the download originated.
         const extractStatus = getState().recon.files.fileExtractStatus;
         const { fileExtractJobId } = getState().recon.files;
-        const [,,,, responseJobId] = data.link.split('/');
+        // fetch the second-to-last item as jobId in data.link
+        const [, responseJobId] = data.link.split('/').reverse();
         if (['init', 'wait'].includes(extractStatus) && fileExtractJobId === responseJobId) {
           dispatch({
             type: ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS,

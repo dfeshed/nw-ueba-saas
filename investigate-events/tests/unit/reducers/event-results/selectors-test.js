@@ -53,9 +53,9 @@ module('Unit | Selectors | event-results', function(hooks) {
     data: eventResultsData
   };
 
-  const assertForDownloadOptions = async function(assert, result, optionNumber, eventType, fileType, nameString) {
+  const assertForDownloadOptions = async function(assert, result, optionNumber, eventDownloadType, fileType, nameString) {
     assert.equal(result[optionNumber].name.string, nameString, 'Option');
-    assert.equal(result[optionNumber].eventType, eventType, 'Event Type');
+    assert.equal(result[optionNumber].eventDownloadType, eventDownloadType, 'Event Type');
     assert.equal(result[optionNumber].fileType, fileType, 'File Type');
   };
 

@@ -27,13 +27,13 @@ import {
  * download URL, which can be used to fetch the actual files (zipped).
  * @public
  */
-export default function fetchExtractJobId(queryNode, endpointId, eventIds, fileType, filename, eventType, isSelectAll) {
+export default function fetchExtractJobId(queryNode, endpointId, eventIds, fileType, filename, eventDownloadType, isSelectAll) {
   const request = lookup('service:request');
 
   let query = endpointFilter(endpointId);
   query = addFilenameFilter(query, filename);
   query = addFileTypeFilter(query, fileType);
-  query = addEventTypeFilter(query, eventType);
+  query = addEventTypeFilter(query, eventDownloadType);
 
   if (isSelectAll) {
     const filters = queryNode.metaFilter.conditions || queryNode.metaFilter;

@@ -104,7 +104,7 @@ const investigateConfigGen = function(env) {
         requestDestination: '/ws/investigate/predicate/get-by-query'
       }
     },
-    'extract-job-id': {
+    'reconstruction-extract-job-id': {
       socketUrl,
       query: {
         subscriptionDestination: '/user/queue/investigate/extract/file',

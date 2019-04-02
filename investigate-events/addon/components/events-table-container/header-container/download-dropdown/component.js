@@ -36,17 +36,17 @@ const DownloadDropdown = Component.extend({
 
   @computed('isAllEventsSelected')
   downloadTitle(isAllEventsSelected) {
-    return { name: this.get('i18n').t(`investigate.events.download.${isAllEventsSelected ? 'all' : 'selected'}`) }; // TODO disable false
+    return { name: this.get('i18n').t(`investigate.events.download.${isAllEventsSelected ? 'all' : 'selected'}`) };
   },
 
   actions: {
     downloadFiles(option) {
       const isAllEventsSelected = this.get('isAllEventsSelected');
-      const { eventType, fileType, sessionIds } = option;
-      if (eventType === 'META') {
+      const { eventDownloadType, fileType, sessionIds } = option;
+      if (eventDownloadType === 'META') {
         return;
       }
-      this.send('extractFiles', eventType, fileType, sessionIds, isAllEventsSelected);
+      this.send('extractFiles', eventDownloadType, fileType, sessionIds, isAllEventsSelected);
     }
   }
 });

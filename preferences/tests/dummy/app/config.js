@@ -32,7 +32,7 @@ export default {
   {
     name: 'preferences.investigate-events.defaultLogFormat',
     type: 'dropdown',
-    eventType: 'LOG',
+    eventDownloadType: 'LOG',
     options: [
       'LOG',
       'CSV',
@@ -44,7 +44,7 @@ export default {
   {
     name: 'preferences.investigate-events.defaultPacketFormat',
     type: 'dropdown',
-    eventType: 'NETWORK',
+    eventDownloadType: 'NETWORK',
     options: [
       'PCAP',
       'PAYLOAD',
@@ -56,7 +56,7 @@ export default {
   {
     name: 'preferences.investigate-events.defaultMetaFormat',
     type: 'dropdown',
-    eventType: 'META',
+    eventDownloadType: 'META',
     options: [
       'TEXT',
       'CSV',

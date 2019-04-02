@@ -158,10 +158,7 @@ test('keydown enter will trigger download', function(assert) {
   const buttonMenuSelector = '.recon-button-menu li:nth-child(1)';
   this.$(buttonMenuSelector).trigger(e);
 
-  const that = this;
-  return wait().then(function() {
-    assert.equal(that.$(downloadButtonSelector)[0].outerText.trim(), 'Downloading...', 'Download menu button label for Logs when downloading');
-  });
+  assert.equal(this.$(downloadButtonSelector)[0].outerText.trim(), 'Downloading...', 'Download menu button label for Logs when downloading');
 });
 
 /*

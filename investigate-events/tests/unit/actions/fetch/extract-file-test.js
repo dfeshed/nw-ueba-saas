@@ -46,7 +46,7 @@ module('Unit | API | extract-file', function(hooks) {
     const eventIds = [3, 7];
     const fileType = 'PCAP';
     const fileName = '2_NETWORK_AS_PCAP';
-    const eventType = 'NETWORK';
+    const eventDownloadType = 'NETWORK';
     const isSelectAll = false;
     assert.expect(3);
     patchSocket((method, modelName, query) => {
@@ -55,7 +55,7 @@ module('Unit | API | extract-file', function(hooks) {
       assert.deepEqual(query, queryWithSessionIds);
       done();
     });
-    fetchExtractJobId(queryNode, endpointId, eventIds, fileType, fileName, eventType, isSelectAll);
+    fetchExtractJobId(queryNode, endpointId, eventIds, fileType, fileName, eventDownloadType, isSelectAll);
   });
 
   test('Should create a query with params when all events are selected', function(assert) {
@@ -70,7 +70,7 @@ module('Unit | API | extract-file', function(hooks) {
     const eventIds = [3, 7];
     const fileType = 'PCAP';
     const fileName = '2_NETWORK_AS_PCAP';
-    const eventType = 'NETWORK';
+    const eventDownloadType = 'NETWORK';
     const isSelectAll = true;
     assert.expect(3);
     patchSocket((method, modelName, query) => {
@@ -79,7 +79,7 @@ module('Unit | API | extract-file', function(hooks) {
       assert.deepEqual(query, queryWithoutSessionIds);
       done();
     });
-    fetchExtractJobId(queryNode, endpointId, eventIds, fileType, fileName, eventType, isSelectAll);
+    fetchExtractJobId(queryNode, endpointId, eventIds, fileType, fileName, eventDownloadType, isSelectAll);
   });
 
 

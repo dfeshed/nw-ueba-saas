@@ -37,7 +37,8 @@ export const initializeNotifications = () => {
         // from every browser, just the browser where the download originated.
         const extractStatus = getState().investigate.files.fileExtractStatus;
         const extractedJobId = getState().investigate.files.fileExtractJobId;
-        const [,,,, jobId] = data.link.split('/');
+        // fetch the second-to-last item as jobId in data.link
+        const [, jobId] = data.link.split('/').reverse();
         if (extractStatus === 'wait' && extractedJobId === jobId) {
 
           dispatch({
@@ -54,21 +55,21 @@ export const initializeNotifications = () => {
   };
 };
 
-export const extractFiles = (eventType, fileType, sessionIds = [], isSelectAll) => {
+export const extractFiles = (eventDownloadType, fileType, sessionIds = [], isSelectAll) => {
   return (dispatch, getState) => {
 
     const queryNode = getActiveQueryNode(getState());
     const { serviceId } = queryNode;
     const { investigate: { services: { serviceData } } } = getState();
     const selectedServiceData = serviceData.find((s) => s.id === serviceId);
-    const filename = createFilename(eventType, selectedServiceData.displayName, sessionIds, isSelectAll);
+    const filename = createFilename(eventDownloadType, selectedServiceData.displayName, sessionIds, isSelectAll);
 
     dispatch({
       type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE,
-      promise: fetchExtractJobId(queryNode, serviceId, sessionIds, fileType, filename, eventType, isSelectAll),
-      meta: {
+      promise: fetchExtractJobId(queryNode, serviceId, sessionIds, fileType, filename, eventDownloadType, isSelectAll),
+      meta: { // TODO download on success spinner
         onFailure(response) {
-          handleInvestigateErrorCode(response, `FETCH_EXTRACT_JOB_ID; ${serviceId} ${eventType}`);
+          handleInvestigateErrorCode(response, `FETCH_EXTRACT_JOB_ID; ${serviceId} ${eventDownloadType}`);
         }
       }
     });

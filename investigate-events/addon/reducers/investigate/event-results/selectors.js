@@ -179,14 +179,14 @@ export const getDownloadOptions = createSelector(
       dropDownItems.forEach((item) => {
 
         const [,, defaultEventType ] = item.name.split('.');
-        const { eventType } = item;
-        const fileType = item.eventType === EVENT_DOWNLOAD_TYPES.NETWORK ? FILE_TYPES.PCAP : eventAnalysisPreferences[defaultEventType];
+        const { eventDownloadType } = item;
+        const fileType = eventDownloadType === EVENT_DOWNLOAD_TYPES.NETWORK ? FILE_TYPES.PCAP : eventAnalysisPreferences[defaultEventType];
         const option = i18n.t(`investigate.events.download.options.${fileType}`);
-        const getIdsForEventType = _getIdsForEventType(eventType, selectedEventIds, resultsData);
+        const getIdsForEventType = _getIdsForEventType(eventDownloadType, selectedEventIds, resultsData);
         const num = getIdsForEventType.length;
         downloadOptions.push({
-          name: i18n.t(`investigate.events.download.${eventType}`, { option }),
-          eventType,
+          name: i18n.t(`investigate.events.download.${eventDownloadType}`, { option }),
+          eventDownloadType,
           fileType: eventAnalysisPreferences[defaultEventType],
           sessionIds: getIdsForEventType,
           count: !isAllEventsSelected ? `${num}/${total}` : '',
@@ -194,21 +194,21 @@ export const getDownloadOptions = createSelector(
         });
       });
 
-      dropDownItems = dropDownItems.filter((item) => item.eventType !== EVENT_DOWNLOAD_TYPES.NETWORK);
+      dropDownItems = dropDownItems.filter((item) => item.eventDownloadType !== EVENT_DOWNLOAD_TYPES.NETWORK);
 
       // remaining options
       dropDownItems.forEach((item) => {
         // array of downloadFormat options minus the preferred option
         const [,, defaultEventType ] = item.name.split('.');
-        const { eventType } = item;
+        const { eventDownloadType } = item;
         const remainingOptions = item.options.without(eventAnalysisPreferences[defaultEventType]);
-        const getIdsForEventType = _getIdsForEventType(eventType, selectedEventIds, resultsData);
+        const getIdsForEventType = _getIdsForEventType(eventDownloadType, selectedEventIds, resultsData);
         const num = getIdsForEventType.length;
         remainingOptions.forEach((option) => {
           const optionLabel = i18n.t(`investigate.events.download.options.${option}`);
           downloadOptions.push({
-            name: i18n.t(`investigate.events.download.${eventType}`, { option: optionLabel }),
-            eventType,
+            name: i18n.t(`investigate.events.download.${eventDownloadType}`, { option: optionLabel }),
+            eventDownloadType,
             fileType: option,
             sessionIds: getIdsForEventType,
             count: !isAllEventsSelected ? `${num}/${total}` : '',
@@ -263,13 +263,11 @@ const _indexOfBy = (arr, key, value) => {
  * Returns sessionIds for each download type based on number of events of the type selected
  * @private
  */
-// TODO rename all eventType variables referring to event download type (META, LOG, NETWORK) as eventDownloadType,
-// thus marking them from actual event types (ENDPOINT, LOG, NETWORK)
-const _getIdsForEventType = (eventType, selectedEventIds, resultsData) => {
-  if (eventType === EVENT_DOWNLOAD_TYPES.META) {
+const _getIdsForEventType = (eventDownloadType, selectedEventIds, resultsData) => {
+  if (eventDownloadType === EVENT_DOWNLOAD_TYPES.META) {
     return selectedEventIds;
   }
   const selectedEvents = resultsData.filter((event) => selectedEventIds.indexOf(event.sessionId) >= 0);
-  const selectedEventsOfType = selectedEvents.filter((event) => eventType === (event.medium === 32 ? EVENT_TYPES.LOG : EVENT_TYPES.NETWORK));
+  const selectedEventsOfType = selectedEvents.filter((event) => eventDownloadType === (event.medium === 32 ? EVENT_TYPES.LOG : EVENT_TYPES.NETWORK));
   return selectedEventsOfType.map((event) => event.sessionId);
 };
