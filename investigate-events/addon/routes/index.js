@@ -134,7 +134,8 @@ export default Route.extend({
       const redux = this.get('redux');
       const state = redux.getState();
       const {
-        data: { metaPanelSize, reconSize },
+        data: { reconSize },
+        meta: { metaPanelSize },
         queryNode: { endTime, pillsData, queryView, serviceId, startTime }
       } = state.investigate;
 

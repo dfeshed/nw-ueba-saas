@@ -5,7 +5,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../helpers/vnext-patch';
-import Immutable from 'seamless-immutable';
+import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
 let setState;
 
@@ -16,8 +16,7 @@ module('Integration | Component | Meta View', function(hooks) {
 
   hooks.beforeEach(function() {
     setState = (state) => {
-      const fullState = { investigate: { ...state } };
-      patchReducer(this, Immutable.from(fullState));
+      patchReducer(this, state);
     };
     initialize(this.owner);
   });
@@ -46,20 +45,19 @@ module('Integration | Component | Meta View', function(hooks) {
   });
 
   test('it renders the meta values panel by default', async function(assert) {
-    setState({
-      dictionaries: {
-        language: []
-      },
-      data: {
-        metaPanelSize: 'default'
-      }
-    });
+    new ReduxDataHelper(setState)
+      .language()
+      .metaPanel({ init: true })
+      .build();
+
     await render(hbs`{{meta-view}}`);
     assert.ok(find('.rsa-investigate-meta-values-panel'), 'Expected to find meta values panel embedded in DOM');
   });
 
   test('it renders the total count of meta keys in the group, but only if not zero', async function(assert) {
-    setState(null);
+    new ReduxDataHelper(setState)
+      .build();
+
     await render(hbs`{{meta-view}}`);
     assert.notOk(find('.js-group-keys-count'), 'Expected keys count to be omitted from DOM for a null group');
 

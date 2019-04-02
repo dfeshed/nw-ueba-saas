@@ -42,3 +42,10 @@ export const isMetaStreaming = createSelector(
     return meta.some((key) => key.values && key.values.status === 'streaming');
   }
 );
+
+export const emptyMetaKeys = createSelector(
+  [_meta],
+  (meta) => {
+    return meta.filter((key) => key.info.isOpen && key.values && key.values.complete && key.values.data.length === 0);
+  }
+);

@@ -71,7 +71,12 @@ export default {
     }
     const metaFilter = (bodyParsed.filter || []).find((ele) => ele.field === 'metaName') || {};
     const metaName = metaFilter.value;
-    const data = mockResultForKey(metaName, SIZE);
+    let data;
+    if (metaName === 'browser') {
+      data = [];
+    } else {
+      data = mockResultForKey(metaName, SIZE);
+    }
 
     // immediately send back "progress"
     sendMessage({

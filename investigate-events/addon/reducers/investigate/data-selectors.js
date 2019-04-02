@@ -42,7 +42,7 @@ export const SUMMARY_COLUMN_KEYS = {
 // ACCESSOR FUNCTIONS
 const _reconSize = (state) => state.investigate.data.reconSize;
 const _isReconOpen = (state) => state.investigate.data.isReconOpen;
-const _metaPanelSize = (state) => state.investigate.data.metaPanelSize;
+const _metaPanelSize = (state) => state.investigate.meta.metaPanelSize;
 const _data = (state) => state.investigate.eventTimeline.data;
 const _status = (state) => state.investigate.eventTimeline.status;
 const _columnGroups = (state) => state.investigate.data.columnGroups;

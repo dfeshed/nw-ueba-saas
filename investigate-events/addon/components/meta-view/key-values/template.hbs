@@ -7,9 +7,7 @@
     <span class="toggle-icon">
       {{rsa-icon name="arrow-right-12" size="smaller"}}
     </span>
-    {{#with (meta-key-alias groupKey.name language) as |names|}}
-      <span class="meta-name" title="{{names.bothNames}}">{{names.displayName}}</span>
-    {{/with}}
+    <span class="meta-name" title="{{displayNames.bothNames}}">{{displayNames.displayName}}</span>
     <span class="meta-size">
       ({{values.data.length}}{{#if (is-equal values.data.length options.size)}}+{{/if}})
     </span>

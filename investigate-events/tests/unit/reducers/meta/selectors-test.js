@@ -2,7 +2,8 @@ import { module, test } from 'qunit';
 import {
   remainingMetaKeyBatches,
   initMetaKeyStates,
-  isMetaStreaming
+  isMetaStreaming,
+  emptyMetaKeys
 } from 'investigate-events/reducers/investigate/meta/selectors';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
@@ -42,7 +43,7 @@ test('isMetaStreaming returns true if we are waiting for response on any meta', 
     values: { status: 'streaming' }
   }, {
     info: { metaName: 'ad.computer.src' },
-    valuse: { status: 'complete' }
+    values: { status: 'complete' }
   }];
   const customMeta = {
     meta: metaKeyStatesArray,
@@ -59,7 +60,7 @@ test('isMetaStreaming returns false if we are not waiting for response on any me
     info: { metaName: 'action' }
   }, {
     info: { metaName: 'ad.computer.src' },
-    valuse: { status: 'complete' }
+    values: { status: 'complete' }
   }];
   const customMeta = {
     meta: metaKeyStatesArray,
@@ -68,5 +69,32 @@ test('isMetaStreaming returns false if we are not waiting for response on any me
 
   const state = new ReduxDataHelper().metaPanel({ customMeta }).build();
   assert.notOk(isMetaStreaming(state), 'Meta is all populated');
+
+});
+
+test('emptyMetaKeys returns list of metaKeyStates that are open and returned no values in response', function(assert) {
+  const metaKeyStatesArray = [{
+    info: { metaName: 'action', isOpen: true },
+    values: {
+      data: [
+        {
+          value: 'foo',
+          count: 9821
+        }
+      ],
+      complete: true
+    }
+  }, {
+    info: { metaName: 'ad.computer.src', isOpen: true },
+    values: { complete: true, data: [] }
+  }];
+  const customMeta = {
+    meta: metaKeyStatesArray,
+    options: {}
+  };
+
+  const state = new ReduxDataHelper().metaPanel({ customMeta }).build();
+  assert.equal(emptyMetaKeys(state).length, 1, 'Should have one metaKeyState that has no values');
+  assert.equal(emptyMetaKeys(state)[0].info.metaName, 'ad.computer.src', 'Expected meta with no values');
 
 });

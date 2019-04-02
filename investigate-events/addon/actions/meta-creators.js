@@ -4,6 +4,7 @@ import * as ACTION_TYPES from './types';
 import executeMetaValuesRequest from './fetch/fetch-meta';
 import { addGuidedPill } from 'investigate-events/actions/guided-creators';
 import { buildMetaValueStreamInputs } from './utils';
+import quote from 'investigate-events/util/quote';
 
 const STREAM_LIMIT = 1000;
 const STREAM_BATCH = 19;
@@ -73,7 +74,6 @@ function _metaKeyValuesGet(metaKeyState, queryHash) {
       STREAM_BATCH
     );
 
-    // add onError
     // why is onComplete never called?
     const handlers = {
       onInit() {
@@ -83,25 +83,33 @@ function _metaKeyValuesGet(metaKeyState, queryHash) {
             keyName: metaName,
             value: {
               data: [],
-              status: 'streaming'
+              status: 'streaming',
+              percent: 50
             }
           }
         });
       },
       onResponse(response) {
         const valueProps = {};
-
         if (response.data && response.data.length) {
           // Meta Values call *sometimes* returns "partial" results while still computing results.
           // So when we get values back, replace whatever the previous set of values were; don't append to them.
           valueProps.data = response.data;
         }
-        valueProps.description = response.meta && response.meta.description;
-        valueProps.complete = response.meta && response.meta.complete;
-        const percent = response.meta && response.meta.percent;
-        if (percent !== undefined) {
-          valueProps.percent = percent;
+
+        if (response.meta) {
+          valueProps.description = response.meta.description;
+          valueProps.complete = response.meta.complete;
         }
+
+        // Because this is a stream request, results are fetched partially.
+        // In order to optimize reducer calls, I've tried to send response
+        // action once its complete.
+        // This reduces the actions from 3 to 1 action per response.
+        // Side effect, we loose the real time description messages
+        // and the percent fetched.
+        // Right now, percent has been mocked to create an illusion.
+        // Need some perspective here.
 
         if (valueProps.complete) {
 
@@ -112,7 +120,8 @@ function _metaKeyValuesGet(metaKeyState, queryHash) {
           if (queryHash !== currentQueryHash) {
             return;
           }
-          valueProps.status = 'complete'; // revisit status
+          valueProps.status = 'complete';
+          valueProps.percent = 100;
           dispatch({
             type: ACTION_TYPES.SET_META_RESPONSE,
             payload: {
@@ -141,10 +150,21 @@ const _initMeta = () => {
 
 const createPillOnMetaDrill = ({ meta, value }) => {
   return (dispatch, getState) => {
+    const { dictionaries: { language } } = getState().investigate;
+
+    const metaKeyState = language.find((m) => m.metaName === meta);
+    if (metaKeyState.format === 'Text' && value) {
+      value = quote(String(value));
+    } else if (value) {
+      value = String(value);
+    }
+
     const pillData = { meta, operator: '=', value };
     // adding new pill to end of current list of pills
     const position = getState().investigate.queryNode.pillsData.length;
 
+    // Need a check here to see if that filter is already applied.
+    // Rip out logic from the component.
     dispatch(addGuidedPill({ pillData, position, shouldAddFocusToNewPill: false }));
   };
 };
@@ -156,16 +176,23 @@ const createPillOnMetaDrill = ({ meta, value }) => {
  * fetch that one meta.
  * @public
  */
-const toggleMetaGroupOpen = (metaKey) => {
+const toggleMetaGroupOpen = (metaKeyInfo) => {
   return (dispatch, getState) => {
-    if (!metaKey.isOpen) {
 
-      dispatch({
-        type: ACTION_TYPES.TOGGLE_META_FLAG,
-        payload: { metaKey }
-      });
+    const isMetaKeyOpen = !metaKeyInfo.isOpen;
 
-      if (!isMetaStreaming(getState())) {
+    dispatch({
+      type: ACTION_TYPES.TOGGLE_META_FLAG,
+      payload: { metaKey: metaKeyInfo.metaName, isMetaKeyOpen }
+    });
+
+    // If meta key is newly opened, may need to fetch data
+    if (isMetaKeyOpen) {
+      const { meta } = getState().investigate.meta;
+      const metaKeyState = meta.find((m) => m.info.metaName === metaKeyInfo.metaName);
+      // if metaKeyState does not already have values object (which means a req was initialized
+      // for that metaKey) and there is no streaming currently active, fetch!
+      if (!metaKeyState.values && !isMetaStreaming(getState())) {
         dispatch(metaGet());
       }
     }

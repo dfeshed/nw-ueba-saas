@@ -10,13 +10,12 @@ import { select, event } from 'd3-selection';
 import entityTypeByMeta from './entity-type-by-meta';
 
 const stateToComputed = ({ investigate }) => ({
-  aliases: investigate.dictionaries.aliases,
-  language: investigate.dictionaries.language
+  aliases: investigate.dictionaries.aliases
 });
 
 const KeyValueComponent = Component.extend({
   classNames: 'rsa-investigate-meta-key-values',
-  classNameBindings: ['groupKey.isOpen:is-open', 'values.status', 'values.isEmpty:is-empty'],
+  classNameBindings: ['_isOpenToggle:is-open', 'values.status', '_isEmpty:is-empty'],
 
   /**
    * The member of `group` to which this component corresponds.
@@ -27,26 +26,25 @@ const KeyValueComponent = Component.extend({
   groupKey: undefined,
 
   /**
-   * @see state/meta-key-values
+   * @see state/meta-key-state-values
    * @type {object}
    * @public
    */
   values: undefined,
 
   /**
-   * @see state/meta-key-options
+   * @see state/meta-options
    * @type {object}
    * @public
    */
   options: undefined,
 
   /**
-   * The current query. Used to create links for drill-downs on the meta values.
-   * @see investigate-events/state/query
+   * @see state/meta-key-state-info
    * @type {object}
    * @public
    */
-  query: undefined,
+  info: undefined,
 
   // Options for meta value formatter utility, based on `aliases`.
   @computed('aliases')
@@ -56,12 +54,36 @@ const KeyValueComponent = Component.extend({
   @computed('textOptions')
   tooltipOptions: ((textOptions) => assign({ appendRawValue: true }, textOptions)),
 
+  // Toggle meta groups
+  @computed('info')
+  _isOpenToggle: ((info) => info && info.isOpen),
+
   /**
    * Configurable callback to be invoked when user clicks the UI to toggle the key open/closed.
    * @type {function}
    * @public
    */
   toggleAction: undefined,
+
+
+  @computed('info')
+  displayNames: (info) => {
+    if (info) {
+      const { metaName, displayName } = info;
+      return {
+        metaName,
+        displayName: displayName || metaName,
+        bothNames: displayName ? `${displayName} [${metaName}]` : metaName
+      };
+    }
+  },
+
+  // Hide group if no values
+  // Trickles down to the group that collects empty groups
+  @computed('values.{status}')
+  _isEmpty(status) {
+    return status && status === 'complete' && this.get('values').data.length === 0;
+  },
 
   // Computes an appropriate string to display for the current status of the data fetch.
   @computed('values.{status,description}')
@@ -92,6 +114,7 @@ const KeyValueComponent = Component.extend({
   // This type of test can be done with simple looping, but we need it to be performant because it will be done
   // on every single meta value we render.  So, as an optimization, we call this method to request a performant test
   // function. That dynamically generated function will avoid looping; instead it will use a closure to do a hash lookup.
+  // RIP THIS COOL CODE OUT, SHOULD BE DONE IN META-CREATORS
   _getMetaValueTester() {
     const groupKeyName = this.get('groupKey.name');
     const metaFilters = this.get('query.metaFilter');

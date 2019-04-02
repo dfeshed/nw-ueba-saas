@@ -1,18 +1,19 @@
 import Component from '@ember/component';
 import { run } from '@ember/runloop';
-import { observer } from '@ember/object';
 
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { defaultMetaGroup } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { emptyMetaKeys } from 'investigate-events/reducers/investigate/meta/selectors';
 import { META_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { createPillOnMetaDrill, toggleMetaGroupOpen } from 'investigate-events/actions/meta-creators';
 
 const stateToComputed = (state) => ({
   group: defaultMetaGroup(state),
-  size: state.investigate.data.metaPanelSize,
-  query: state.investigate.queryNode,
-  metaKeyStates: state.investigate.meta.meta
+  emptyMetaKeys: emptyMetaKeys(state),
+  size: state.investigate.meta.metaPanelSize,
+  metaKeyStates: state.investigate.meta.meta,
+  options: state.investigate.meta.options
 });
 
 const dispatchToActions = {
@@ -47,7 +48,8 @@ const MetaViewComponent = Component.extend({
    * @private
    */
   @computed('size')
-  _sizeClass: (size) => {
+  _sizeClass(size) {
+    this._toggleTransition();
     return `meta-size-${size}`;
   },
 
@@ -56,19 +58,19 @@ const MetaViewComponent = Component.extend({
    * minimized ('min'), maximized ('max') or default ('default').
    * @private
    */
-  _sizeWatcher: observer('size', (sender) => {
-    const prevSize = sender.get('_size');
-    const currentSize = sender.get('size');
+  _toggleTransition() {
+    const prevSize = this.get('_size');
+    const currentSize = this.get('size');
     const changed = prevSize !== currentSize;
     if (changed) {
       if (currentSize === 'min') {
-        sender._didClose();
+        this._didClose();
       } else if (prevSize === 'min') {
-        sender._didOpen();
+        this._didOpen();
       }
-      sender.set('_size', currentSize);
+      this.set('_size', currentSize);
     }
-  }),
+  },
 
   willDestroy() {
     this._cancelUnhideTimer();
@@ -120,8 +122,6 @@ const MetaViewComponent = Component.extend({
       this.get('metaPanelSize')(size);
     },
     toggleMetaGroup(groupKey) {
-      // const query = this.get('query');
-      // this.get('metaGroupKeyToggle')(query);
       this.send('toggleMetaGroupOpen', groupKey);
     }
   }

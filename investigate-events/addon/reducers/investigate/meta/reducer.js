@@ -2,6 +2,10 @@ import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
+import { META_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
+
+const _valueNotInArray = (arr, val) => arr.indexOf(val) < 0;
+const _unknownMetaSize = (val) => _valueNotInArray(Object.values(META_PANEL_SIZES), val);
 
 const _optionsInitialState = Immutable.from({
   size: 20,
@@ -13,7 +17,8 @@ const _optionsInitialState = Immutable.from({
 
 const _initialState = Immutable.from({
   meta: [],
-  options: _optionsInitialState
+  options: _optionsInitialState,
+  metaPanelSize: META_PANEL_SIZES.DEFAULT
 });
 
 const _replaceMetaArray = (state, metaKey, position) => {
@@ -50,7 +55,15 @@ export default handleActions({
   [ACTION_TYPES.RESET_META_VALUES]: (state, { payload: { metaKeyStates } }) => {
     return state.set('meta', metaKeyStates);
   },
-  [ACTION_TYPES.TOGGLE_META_FLAG]: (state, { payload: { metaKey } }) => {
-    return _replaceMeta(state, metaKey.name, { info: { isOpen: true } });
+  [ACTION_TYPES.TOGGLE_META_FLAG]: (state, { payload: { metaKey, isMetaKeyOpen } }) => {
+    return _replaceMeta(state, metaKey, { info: { isOpen: isMetaKeyOpen } });
+  },
+  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload }) => {
+    const { queryParams } = payload;
+    return state.set('metaPanelSize', queryParams.metaPanelSize || META_PANEL_SIZES.DEFAULT);
+  },
+  [ACTION_TYPES.SET_META_PANEL_SIZE]: (state, { payload }) => {
+    const metaPanelSize = _unknownMetaSize(payload) ? META_PANEL_SIZES.DEFAULT : payload;
+    return state.set('metaPanelSize', metaPanelSize);
   }
 }, _initialState);

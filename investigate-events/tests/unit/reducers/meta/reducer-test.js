@@ -93,7 +93,7 @@ test('ACTION_TYPES.RESET_META_VALUES refreshes metaKeyState objects with default
   assert.notOk(metaKey.values, 'Did not find values object');
 });
 
-test('ACTION_TYPES.TOGGLE_META_FLAG toggles isOpen flag', function(assert) {
+test('ACTION_TYPES.TOGGLE_META_FLAG toggles isOpen flag to true', function(assert) {
   const prevState = Immutable.from({
     meta: [
       {
@@ -102,13 +102,33 @@ test('ACTION_TYPES.TOGGLE_META_FLAG toggles isOpen flag', function(assert) {
       }
     ]
   });
-  const metaKey = { name: 'action', isOpen: true };
+  const metaKeyInfo = { metaKey: 'action', isMetaKeyOpen: true };
   const action = {
     type: ACTION_TYPES.TOGGLE_META_FLAG,
-    payload: { metaKey }
+    payload: metaKeyInfo
   };
 
   const result = reducer(prevState, action);
   const meta = result.meta.find((e) => e.info.metaName === 'action');
   assert.ok(meta.info.isOpen, 'Toggles the flag to isOpen: true');
+});
+
+test('ACTION_TYPES.TOGGLE_META_FLAG toggles isOpen flag to false', function(assert) {
+  const prevState = Immutable.from({
+    meta: [
+      {
+        info: { metaName: 'action', isOpen: true },
+        values
+      }
+    ]
+  });
+  const metaKeyInfo = { metaKey: 'action', isMetaKeyOpen: false };
+  const action = {
+    type: ACTION_TYPES.TOGGLE_META_FLAG,
+    payload: metaKeyInfo
+  };
+
+  const result = reducer(prevState, action);
+  const meta = result.meta.find((e) => e.info.metaName === 'action');
+  assert.notOk(meta.info.isOpen, 'Toggles the flag to isOpen: false');
 });

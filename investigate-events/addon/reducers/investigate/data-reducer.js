@@ -4,20 +4,15 @@ import { handle } from 'redux-pack';
 import EventColumnGroups from 'investigate-events/constants/OOTBColumnGroups';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
-import {
-  META_PANEL_SIZES,
-  RECON_PANEL_SIZES
-} from 'investigate-events/constants/panelSizes';
+import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import CONFIG from './config';
 import _ from 'lodash';
 
 const valueNotInArray = (arr, val) => arr.indexOf(val) < 0;
-const unknownMetaSize = (val) => valueNotInArray(Object.values(META_PANEL_SIZES), val);
 const unknownReconSize = (val) => valueNotInArray(Object.values(RECON_PANEL_SIZES), val);
 
 const _initialState = Immutable.from({
   isReconOpen: false,
-  metaPanelSize: META_PANEL_SIZES.DEFAULT,
   reconSize: RECON_PANEL_SIZES.MAX,
   eventsPreferencesConfig: CONFIG,
   eventAnalysisPreferences: null,
@@ -48,7 +43,6 @@ export default handleActions({
     }
     return state.merge({
       isReconOpen,
-      metaPanelSize: queryParams.metaPanelSize || META_PANEL_SIZES.DEFAULT,
       // TODO: reconSize should have a default value from prefs being set above.
       // need to refactor this.
       reconSize: queryParams.reconSize || RECON_PANEL_SIZES.MAX
@@ -77,17 +71,6 @@ export default handleActions({
         return s.merge({ columnGroups: EventColumnGroups });
       }
     });
-  },
-
-  /**
-   * Updates the state with a given value for the meta panel size.
-   * Typically invoked by route when its URL query params have changed.
-   * Either 'min', 'max' or 'default'.
-   * @public
-   */
-  [ACTION_TYPES.SET_META_PANEL_SIZE]: (state, { payload }) => {
-    const metaPanelSize = unknownMetaSize(payload) ? META_PANEL_SIZES.DEFAULT : payload;
-    return state.merge({ metaPanelSize });
   },
 
   /**
