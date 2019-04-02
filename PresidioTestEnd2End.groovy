@@ -58,6 +58,8 @@ def setBaseUrl (
     } else if (rpmVeriosn == '11.3.0.0'){
         baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.3/11.3.0/11.3.0.0-" + stability + "/"
         println (baseUrl)
+    }else if (rpmVeriosn == '11.4.0.0'){
+        baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.4/11.4.0/11.4.0.0-" + stability + "/"
     }
     baseUrlValidation = baseUrl.drop(8)
     baseUrlresponsecode = sh(returnStdout: true, script: "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}").trim()
