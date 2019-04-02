@@ -2,6 +2,7 @@ const ALL_SUBMODULES = [
   'component-lib',
   'mock-server',
   'packager',
+  'ember-simple-auth',
   'endpoint-rar',
   'rsa-dashboard',
   'recon',
@@ -61,7 +62,6 @@ const saModuleDependants = {
     'rsa-data-filters',
     'ngcoreui'
   ],
-  docs: [], // lol
   'mock-server': [
     'streaming-data',
     'recon',
@@ -173,16 +173,18 @@ const saModuleDependants = {
     'recon',
     'style-guide'
   ],
-  'test-helpers': [],
   'rsa-data-filters': [
     'sa',
     'investigate-hosts',
     'investigate-files'
   ],
-  'ember-cli-document-title': [],
   'hosts-scan-configure': ['sa', 'configure'],
   'ngcoreui': [],
-  'ember-computed-decorators': []
+  'test-helpers': [],
+  'ember-cli-document-title': [],
+  'ember-computed-decorators': [],
+  'ember-simple-auth': [],
+  docs: [] // lol
 };
 
 module.exports = {

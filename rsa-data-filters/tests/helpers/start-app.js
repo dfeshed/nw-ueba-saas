@@ -1,4 +1,3 @@
-import { merge } from '@ember/polyfills';
 import { run } from '@ember/runloop';
 import Application from '../../app';
 import config from '../../config/environment';
@@ -8,9 +7,11 @@ import registerFlatpickrHelpers from 'ember-flatpickr/test-support/helpers';
 registerFlatpickrHelpers();
 
 export default function startApp(attrs) {
-  let attributes = merge({}, config.APP);
-  attributes.autoboot = true;
-  attributes = merge(attributes, attrs); // use defaults, but you can override;
+  const attributes = {
+    ...config.APP,
+    autoboot: true,
+    ...attrs
+  };
 
   return run(() => {
     const application = Application.create(attributes);
