@@ -3,9 +3,9 @@ import Service from '@ember/service';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { settled } from '@ember/test-helpers';
-import DetailsRoute from 'investigate-files/routes/files/details';
+import FileRoute from 'investigate-files/routes/file';
 import { computed } from '@ember/object';
-import { patchReducer } from '../../../helpers/vnext-patch';
+import { patchReducer } from '../../helpers/vnext-patch';
 import sinon from 'sinon';
 import Immutable from 'seamless-immutable';
 import FileCreators from 'investigate-files/actions/data-creators';
@@ -13,7 +13,7 @@ import FileCreators from 'investigate-files/actions/data-creators';
 let transition, redux;
 
 
-module('Unit | Route | files.details', function(hooks) {
+module('Unit | Route | file', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
@@ -25,24 +25,22 @@ module('Unit | Route | files.details', function(hooks) {
     this.owner.register('service:-routing', Service.extend({
       currentRouteName: 'investigate-files'
     }));
-    const contextualHelp = this.owner.lookup('service:contextualHelp');
     redux = this.owner.lookup('service:redux');
-
-    const PatchedRoute = DetailsRoute.extend({
+    const PatchedRoute = FileRoute.extend({
       redux: computed(function() {
         return redux;
       }),
-      contextualHelp: computed(function() {
-        return contextualHelp;
-      }),
       transitionTo(routeName) {
+        transition = routeName;
+      },
+      replaceWith(routeName) {
         transition = routeName;
       }
     });
     return PatchedRoute.create();
   };
 
-  test('model hook should call initializerForFileDetailsAndAnalysis if param has sid', async function(assert) {
+  test('model hook should call initializerForFileDetailsAndAnalysis', async function(assert) {
     assert.expect(1);
 
     const mock = sinon.stub(FileCreators, 'initializerForFileDetailsAndAnalysis');
@@ -54,11 +52,11 @@ module('Unit | Route | files.details', function(hooks) {
 
     await settled();
 
-    assert.ok(mock.callCount === 1, 'bootstrapInvestigateFiles method is called');
+    assert.ok(mock.callCount === 1, 'initializerForFileDetailsAndAnalysis method is called');
     mock.restore();
   });
 
-  test('model hook does not call initializerForFileDetailsAndAnalysis if sid is not present', async function(assert) {
+  test('model hook should not call initializerForFileDetailsAndAnalysis when sid is not present', async function(assert) {
     assert.expect(1);
 
     const mock = sinon.stub(FileCreators, 'initializerForFileDetailsAndAnalysis');
@@ -81,28 +79,9 @@ module('Unit | Route | files.details', function(hooks) {
     const route = setupRoute.call(this);
 
     await settled();
-    await route.send('switchToSelectedFileDetailsTab', 'details', 'text');
-    assert.ok(transition, 'details');
+
+    await route.send('switchToSelectedFileDetailsTab', 'abc', 'text');
+
+    assert.ok(transition, 'abc');
   });
-
-  test('the contextual-help "topic" is set to invFiles on deactivation of the route', async function(assert) {
-    assert.expect(1);
-    patchReducer(this, Immutable.from({}));
-    const route = setupRoute.call(this);
-    route.activate();
-    route.deactivate();
-    assert.equal(route.get('contextualHelp.topic'), route.get('contextualHelp.invFiles'), 'The contextual-help topic is set to invFiles');
-  });
-
-  test('switchToSelectedFileDetailsTab action executed correctly for ANALYSIS tab', async function(assert) {
-    assert.expect(1);
-
-    patchReducer(this, Immutable.from({}));
-    const route = setupRoute.call(this);
-
-    await settled();
-    await route.send('switchToSelectedFileDetailsTab', 'ANALYSIS', 'text');
-    assert.ok(transition, 'ANALYSIS');
-  });
-
 });

@@ -10,7 +10,7 @@ import sinon from 'sinon';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 
-let redux;
+let redux, transition;
 
 
 module('Unit | Route | certificates.index', function(hooks) {
@@ -24,13 +24,20 @@ module('Unit | Route | certificates.index', function(hooks) {
     this.owner.register('service:-routing', Service.extend({
       currentRouteName: 'investigate-files/certificates'
     }));
+    const contextualHelp = this.owner.lookup('service:contextualHelp');
 
     redux = this.owner.lookup('service:redux');
 
     const PatchedRoute = CertificatesRoute.extend({
       redux: computed(function() {
         return redux;
-      })
+      }),
+      contextualHelp: computed(function() {
+        return contextualHelp;
+      }),
+      transitionTo(routeName) {
+        transition = routeName;
+      }
     });
     return PatchedRoute.create();
   };
@@ -46,5 +53,27 @@ module('Unit | Route | certificates.index', function(hooks) {
 
     assert.ok(mock1.callCount === 1, 'bootstrapInvestigateCertificates method is called');
     assert.ok(mock2.callCount === 1, 'initializeCertificateView method is called');
+    mock1.restore();
+    mock2.restore();
+  });
+
+  test('the contextual-help "topic" is set to invFiles on deactivation of the route', async function(assert) {
+    assert.expect(1);
+    patchReducer(this, Immutable.from({}));
+    const route = setupRoute.call(this);
+    route.activate();
+    route.deactivate();
+    assert.equal(route.get('contextualHelp.topic'), route.get('contextualHelp.invFiles'), 'The contextual-help topic is set to invFiles');
+  });
+
+  test('navigateToCertificateView action executed correctly', async function(assert) {
+    assert.expect(1);
+
+    patchReducer(this, Immutable.from({}));
+    const route = setupRoute.call(this);
+
+    await settled();
+    await route.send('navigateToCertificateView', 'thumbprint');
+    assert.ok(transition, 'certificates');
   });
 });

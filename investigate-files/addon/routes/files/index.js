@@ -14,15 +14,6 @@ export default Route.extend({
     });
   },
 
-  resetController(controller, isExiting) {
-    if (isExiting) {
-      const queryParams = controller.get('queryParams');
-      for (let i = 0; i < queryParams.length; i++) {
-        controller.set(queryParams[i], null);
-      }
-    }
-  },
-
   deactivate() {
     const redux = this.get('redux');
     redux.dispatch({ type: ACTION_TYPES.RESET_FILES });

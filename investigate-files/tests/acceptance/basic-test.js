@@ -31,6 +31,18 @@ test('visiting /investigate-files', function(assert) {
   });
 });
 
+test('visiting /investigate-files/certificates', function(assert) {
+  assert.expect(1);
+  const done = waitForSockets();
+  visit('/investigate-files/certificates');
+  andThen(function() {
+    assert.equal(currentURL(), '/investigate-files/certificates', 'The route loads and we are not redirected');
+  });
+  andThen(function() {
+    return wait().then(() => done());
+  });
+});
+
 skip('visiting /investigate-files/1234', function(assert) {
   assert.expect(1);
 
