@@ -12,7 +12,8 @@ const steps = [
     prevStepId: '',
     title: 'rsaWizard.tests.testStep1Label',
     stepComponent: 'rsa-lib/rsa-wizard/test-step',
-    toolbarComponent: 'rsa-lib/rsa-wizard/test-toolbar'
+    toolbarComponent: 'rsa-lib/rsa-wizard/test-toolbar',
+    titlebarComponent: 'rsa-lib/rsa-wizard/test-titlebar'
   },
   {
     id: 'testStep2',
@@ -20,7 +21,8 @@ const steps = [
     prevStepId: 'testStep1',
     title: 'rsaWizard.tests.testStep2Label',
     stepComponent: 'rsa-lib/rsa-wizard/test-step',
-    toolbarComponent: 'rsa-lib/rsa-wizard/test-toolbar'
+    toolbarComponent: 'rsa-lib/rsa-wizard/test-toolbar',
+    titlebarComponent: 'rsa-lib/rsa-wizard/test-titlebar'
   },
   {
     id: 'testStep3',
@@ -28,7 +30,8 @@ const steps = [
     prevStepId: 'testStep2',
     title: 'rsaWizard.tests.testStep3Label',
     stepComponent: 'rsa-lib/rsa-wizard/test-step',
-    toolbarComponent: 'rsa-lib/rsa-wizard/test-toolbar'
+    toolbarComponent: 'rsa-lib/rsa-wizard/test-toolbar',
+    titlebarComponent: 'rsa-lib/rsa-wizard/test-titlebar'
   }
 ];
 
@@ -130,6 +133,18 @@ module('Integration | Component | rsa-lib/rsa-wizard', function(hooks) {
     // transitioned to step
     this.set('currentStepId', 'testStep3');
     assert.equal(findAll('.rsa-wizard-container .testStep3').length, 1, 'Test Step 3 is rendered');
+  });
+
+  test('The title bar should be rendered', async function(assert) {
+    this.set('steps', steps);
+    this.set('initialStepId', 'testStep1');
+    this.set('transitionToClose', () => {});
+    await render(hbs`{{rsa-lib/rsa-wizard
+      steps=steps
+      initialStepId=initialStepId
+      transitionToClose=(action transitionToClose)}}`
+    );
+    assert.equal(findAll('.rsa-wizard-container .test-titlebar').length, 1, 'Test Titlebar is rendered');
   });
 
   test('The bottom button toolbar should be rendered', async function(assert) {
