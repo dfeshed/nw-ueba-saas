@@ -80,7 +80,7 @@
     "ember-simple-auth": "file:ember-simple-auth",
     "ember-sinon": "2.2.0",
     "ember-sortable": "1.12.5",
-    "ember-source": "3.8.0",
+    "ember-source": "3.9.0",
     "ember-spaniel": "0.5.1",
     "ember-symbol-observable": "1.0.2",
     "ember-tether": "1.0.0",

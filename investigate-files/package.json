@@ -60,7 +60,7 @@
     "ember-lodash-shim": "4.0.0",
     "ember-qunit": "^3.4.1",
     "ember-resolver": "4.3.0",
-    "ember-source": "3.8.0",
+    "ember-source": "3.9.0",
     "ember-symbol-observable": "1.0.2",
     "eslint-plugin-ember-suave": "^1.0.0",
     "loader.js": "^4.2.3",
