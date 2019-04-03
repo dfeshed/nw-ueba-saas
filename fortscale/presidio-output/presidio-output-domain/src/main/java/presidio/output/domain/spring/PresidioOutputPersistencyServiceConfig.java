@@ -12,6 +12,8 @@ import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;
+import presidio.output.domain.services.entities.EntityPersistencyService;
+import presidio.output.domain.services.entities.EntityPersistencyServiceImp;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyServiceImpl;
 
@@ -31,6 +33,11 @@ public class PresidioOutputPersistencyServiceConfig {
     @Bean
     public UserPersistencyService userPersistencyService() {
         return new UserPersistencyServiceImpl();
+    }
+
+    @Bean
+    public EntityPersistencyService entityPersistencyService() {
+        return new EntityPersistencyServiceImp();
     }
 
     @Autowired
