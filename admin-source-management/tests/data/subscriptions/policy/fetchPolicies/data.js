@@ -44,8 +44,7 @@ export default [
       primaryUdpPort: 444,
       primaryUdpBeaconInterval: null,
       primaryUdpBeaconIntervalUnit: null,
-      agentMode: 'INSIGHTS',
-      rarEnabled: true
+      agentMode: 'INSIGHTS'
     },
     lastPublishedOn: 1540318459759,
     createdOn: 0,
@@ -78,8 +77,7 @@ export default [
     primaryUdpPort: 444,
     primaryUdpBeaconInterval: null,
     primaryUdpBeaconIntervalUnit: null,
-    agentMode: 'INSIGHTS',
-    rarEnabled: true
+    agentMode: 'INSIGHTS'
   },
   {
     id: 'policy_001',
@@ -171,8 +169,7 @@ export default [
     primaryUdpPort: 444,
     primaryUdpBeaconInterval: null,
     primaryUdpBeaconIntervalUnit: null,
-    agentMode: 'ADVANCED',
-    rarEnabled: true
+    agentMode: 'ADVANCED'
   },
   {
     id: 'policy_002',
@@ -210,8 +207,7 @@ export default [
     primaryUdpPort: 444,
     primaryUdpBeaconInterval: null,
     primaryUdpBeaconIntervalUnit: null,
-    agentMode: 'INSIGHTS',
-    rarEnabled: false
+    agentMode: 'INSIGHTS'
   },
   {
     id: 'policy_003',
@@ -362,7 +358,6 @@ export default [
     primaryUdpBeaconInterval: 3,
     primaryUdpBeaconIntervalUnit: 'MINUTES',
     agentMode: 'ADVANCED',
-    rarEnabled: false,
     customConfig: '"trackingConfig": {"uniqueFilterSeconds": 28800,"beaconStdDev": 2.0}'
   },
   {

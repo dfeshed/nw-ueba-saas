@@ -268,11 +268,6 @@ const _getEndpointServerSetting = (prop, focusedPolicy, listOfEndpoints, _focuse
       name: 'adminUsm.policyWizard.edrPolicy.primaryUdpBeaconInterval',
       value: `${focusedPolicy[prop]} ${udpBeaconIntervalUnitValue}`,
       origin: _focusedPolicyOrigin && _focusedPolicyOrigin[prop] ? _focusedPolicyOrigin[prop] : emptyOrigin
-    },
-    rarEnabled: {
-      name: 'adminUsm.policyWizard.edrPolicy.rarEnabled',
-      value: _setSelectedValue(focusedPolicy[prop]),
-      origin: _focusedPolicyOrigin && _focusedPolicyOrigin[prop] ? _focusedPolicyOrigin[prop] : emptyOrigin
     }
   };
   return endpointSettings[prop];

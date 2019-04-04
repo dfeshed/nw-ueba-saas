@@ -21,7 +21,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
   test('should return the correct initial state when type is edr', function(assert) {
     assert.equal(initialStateEdr.policy.policyType, 'edrPolicy', 'correct policyType is loaded in initialState when type is edr');
-    assert.equal(initialStateEdr.availableSettings.length, 23, 'correct availableSettings are loaded in initialState when type is edr');
+    assert.equal(initialStateEdr.availableSettings.length, 22, 'correct availableSettings are loaded in initialState when type is edr');
   });
 
   test('should return the correct initial state when type is windowsLogPolicy', function(assert) {
@@ -182,10 +182,9 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       payload: fetchPolicyPayload
     });
     const endState = reducers(Immutable.from(initialStateCopy), action);
-    assert.deepEqual(endState.availableSettings.length, 23, 'availableSettings are properly set');
-    assert.equal(endState.availableSettings[8].isEnabled, false, 'isEnabled flag is correctly set for the component agentMode');
-    assert.equal(endState.availableSettings[20].isEnabled, false, 'isEnabled is correctly set for rar');
-    assert.deepEqual(endState.selectedSettings.length, 11, 'selectedSettings are properly set');
+    assert.deepEqual(endState.availableSettings.length, 22, 'availableSettings are properly set');
+    assert.equal(endState.availableSettings[21].isEnabled, false, 'isEnabled flag is correctly set for the component agentMode');
+    assert.deepEqual(endState.selectedSettings.length, 10, 'selectedSettings are properly set');
   });
 
   test('on FETCH_POLICY_LIST start, policyList is reset and policyListStatus is properly set', function(assert) {

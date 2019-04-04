@@ -42,7 +42,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
   test('All the components in the available settings is rendered on the UI', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
-    assert.equal(findAll('.available-settings .available-setting').length, 17, 'All available settings rendered on the UI');
+    assert.equal(findAll('.available-settings .available-setting').length, 16, 'All available settings rendered on the UI');
   });
 
   test('All the components in the selected settings is rendered on the UI ', async function(assert) {
@@ -77,8 +77,8 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
     assert.equal(findAll('.available-settings .heading').length, 6, 'All heading labels rendered correctly');
-    assert.equal(findAll('.available-settings .title').length, 17, 'All components in available-settings rendered correctly');
-    assert.equal(findAll('.available-settings .rsa-icon-add-circle-1-lined').length, 17, 'The plus icon next to the components is rendered correctly');
+    assert.equal(findAll('.available-settings .title').length, 16, 'All components in available-settings rendered correctly');
+    assert.equal(findAll('.available-settings .rsa-icon-add-circle-1-lined').length, 16, 'The plus icon next to the components is rendered correctly');
   });
 
   test('Effective date component should be greyed out by default', async function(assert) {

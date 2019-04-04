@@ -677,11 +677,6 @@ export default class DataHelper {
     return this;
   }
 
-  setRarEnabled(config) {
-    _set(this.state, 'usm.policies.focusedItem.rarEnabled', config);
-    return this;
-  }
-
   setPolicyAgentMode(config) {
     _set(this.state, 'usm.policies.focusedItem.agentMode', config);
     return this;

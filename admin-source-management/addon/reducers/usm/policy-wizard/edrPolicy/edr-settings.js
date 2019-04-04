@@ -113,22 +113,6 @@ export const BLOCKING_ENABLED_CONFIG = {
   ]
 };
 
-export const RAR_CONFIG = {
-  name: 'rar-enabled',
-  label: 'adminUsm.policyWizard.edrPolicy.rarEnabled',
-  type: 'radioGroup',
-  items: [
-    {
-      name: false,
-      label: 'adminUsm.policyWizard.edrPolicy.radioOptionDisabled'
-    },
-    {
-      name: true,
-      label: 'adminUsm.policyWizard.edrPolicy.radioOptionEnabled'
-    }
-  ]
-};
-
 export const AGENT_MODE_CONFIG = {
   name: 'agent-mode',
   label: 'adminUsm.policyWizard.edrPolicy.agentMode',
@@ -152,8 +136,7 @@ export const ALL_RADIO_OPTIONS = [
   // { id: 'filterSignedHooks', options: FILTER_SIGNED_CONFIG },
   { id: 'requestScanOnRegistration', options: REQUEST_SCAN_CONFIG },
   { id: 'blockingEnabled', options: BLOCKING_ENABLED_CONFIG },
-  { id: 'agentMode', options: AGENT_MODE_CONFIG },
-  { id: 'rarEnabled', options: RAR_CONFIG }
+  { id: 'agentMode', options: AGENT_MODE_CONFIG }
 ];
 
 // Utility function to check if the port number is valid
