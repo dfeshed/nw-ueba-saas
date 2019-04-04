@@ -151,16 +151,12 @@
     .rsa-data-table {
       min-height: 130px;
       height: auto;
-      overflow-x: auto;
-      .rsa-data-table-body {
-        overflow: hidden;
-      }
       .rsa-data-table-body-row {
         cursor: default !important;
         width: fit-content;
         left: 0;
         padding-left: 0.5rem;
-        min-width: 100%;
+        min-width: 98%;
         &:hover {
           left: 0;
           padding-left: 1rem;
