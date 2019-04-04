@@ -1,3 +1,11 @@
+# [12.0.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v12.0.0)
+## Features
+* [ASOC-66183](https://bedfordjira.na.rsa.net/browse/ASOC-66183):&emsp;Change naming from Packet to Network & Default Log to Text
+* [ASOC-67565](https://bedfordjira.na.rsa.net/browse/ASOC-67565):&emsp;Remove unsupported network download options
+* Upgrade to ember-source 3.9
+* Upgrade to Ember 3.8
+
+
 # [10.9.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v10.9.0)
 ## Features
 * [ASOC-64115](https://bedfordjira.na.rsa.net/browse/ASOC-64115):&emsp;Update Meta Drop Down Navigation UX
