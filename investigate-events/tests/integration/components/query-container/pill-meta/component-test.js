@@ -467,10 +467,13 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
-        isFirstPill=false
         metaOptions=metaOptions
       }}
     `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    // Test flake; The after-option gets highlighted, then immediately unhighlighted
+    // causing the test to fail.  double-trigger fixes this for whatever reason.
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
     assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), 'Free-Form Filter', 'first Advanced Option was not highlighted');
@@ -485,6 +488,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
         metaOptions=metaOptions
       }}
     `);
+    await clickTrigger(PILL_SELECTORS.meta);
     // Reduce options to those that have an "a"
     await typeInSearch('alias.i');
     // Arrow down two places

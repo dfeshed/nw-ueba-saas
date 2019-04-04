@@ -429,6 +429,10 @@ module('Integration | Component | Pill Operator', function(hooks) {
         meta=meta
       }}
     `);
+    await clickTrigger(PILL_SELECTORS.operator);
+    // Test flake; The after-option gets highlighted, then immediately unhighlighted
+    // causing the test to fail.  double-trigger fixes this for whatever reason.
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
     await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
     assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), 'Free-Form Filter', 'first Advanced Option was not highlighted');
@@ -442,6 +446,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
         meta=meta
       }}
     `);
+    await clickTrigger(PILL_SELECTORS.operator);
     // Reduce options to those that start with "e"
     await typeInSearch('e');
     // Arrow down two places

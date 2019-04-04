@@ -4746,12 +4746,12 @@ ember-native-dom-helpers@^0.5.10:
     broccoli-funnel "^1.1.0"
     ember-cli-babel "^6.6.0"
 
-ember-power-select-typeahead@0.7.3:
-  version "0.7.3"
-  resolved "https://registry.npmjs.org/ember-power-select-typeahead/-/ember-power-select-typeahead-0.7.3.tgz#30f7922b520a7e8ab1a0094b413235f7c09feae6"
+ember-power-select-typeahead@0.7.4:
+  version "0.7.4"
+  resolved "https://registry.npmjs.org/ember-power-select-typeahead/-/ember-power-select-typeahead-0.7.4.tgz#5236a55e0d32593f39064f94acf4e301ac723db1"
   dependencies:
-    ember-cli-babel "^6.12.0"
-    ember-cli-htmlbars "^2.0.1"
+    ember-cli-babel "^7.2.0"
+    ember-cli-htmlbars "^3.0.1"
     ember-power-select "^2.0.0-beta.5"
 
 ember-power-select@2.2.2, ember-power-select@^2.0.0-beta.5:
