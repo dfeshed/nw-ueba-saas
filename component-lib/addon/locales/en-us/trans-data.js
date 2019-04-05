@@ -3684,7 +3684,7 @@ export default {
           'mongo.connection.failed': 'Database is not reachable. Retry after sometime.',
           emptyContext: 'Risk Score is 0. Reasons could be whitelisting/reset of the file or no alerts.',
           noEvents: 'No Events are available for this file.',
-          insightAgentRiskError: 'For insights agent mode, Risk Score feature is not supported. Please upgrade to advanced agent mode.',
+          insightAgentRiskError: 'Risk score details are not available for agents in insight mode. Please upgrade to advanced mode.<br> For more information about this host, see other tabs.</br>',
           accessDeniedError: 'Require permissions to view risk score details. Contact the Administrator.'
         },
         errorPage: {
