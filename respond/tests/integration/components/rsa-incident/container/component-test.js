@@ -11,6 +11,7 @@ import { bindActionCreators } from 'redux';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { click, render, findAll, find } from '@ember/test-helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { t } from './helper';
 
 let setState, hasPermission;
 
@@ -491,7 +492,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
   });
 
   test('storyline will mark alerts for event analysis when core devices become available after initial render', async function(assert) {
-    assert.expect(10);
+    assert.expect(11);
 
     const serviceState = Immutable.from({
       serviceData: undefined,
@@ -525,6 +526,47 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);
+    assert.equal(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).getAttribute('title'), null);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
+  });
+
+  test('storyline will add title to alerts with event analysis support when core devices do not match minVersion', async function(assert) {
+    assert.expect(6);
+
+    const serviceState = Immutable.from({
+      serviceData: {
+        '555d9a6fe4b0d37c827d402d': {
+          id: '555d9a6fe4b0d37c827d402d',
+          displayName: 'loki-concentrator',
+          name: 'CONCENTRATOR',
+          version: '11.1.0.0',
+          host: '10.4.61.33',
+          port: 56005
+        }
+      },
+      isServicesLoading: false,
+      isServicesRetrieveError: false
+    });
+
+    setState({
+      respond: {
+        recon: serviceState,
+        incident: Immutable.from(DATA.generateIncident({ withSelection: true })),
+        storyline: DATA.generateStoryline({ withEnrichment: true })
+      }
+    });
+
+    await render(hbs`{{rsa-incident/container}}`);
+
+    assert.equal(findAll(alertsSelector).length, 8);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);
+
+    const title = t(this, 'investigate.services.coreServiceNotUpdated', { version: '11.1.0.0', minVersion: '11.2' });
+    assert.equal(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).getAttribute('title'), title);
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);

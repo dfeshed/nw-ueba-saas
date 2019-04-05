@@ -40,6 +40,7 @@ export default EmberObject.extend({
   events: null,
 
   supportsRecon: false,
+  mixedModeWarning: undefined,
 
   // Indicates whether or not the group's items should be shown or collapsed in the UI.
   // @see rsa-group-table

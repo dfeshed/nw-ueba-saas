@@ -1,4 +1,5 @@
 import reselect from 'reselect';
+import { coreServiceNotUpdated } from 'component-lib/utils/core-services';
 
 const { createSelector } = reselect;
 
@@ -6,10 +7,6 @@ const { createSelector } = reselect;
 const _services = (state) => state.services.serviceData;
 const _summaryData = (state) => state.services.summaryData;
 const _isSummaryRetrieveError = (state) => state.services.isSummaryRetrieveError;
-
-// This pattern filters out numbers after the first decimal place
-// A serviceId like 11.1.0.0 will be changed to 11.1
-const serviceIdRegex = new RegExp(/\d*\.\d/);
 
 // SELECTOR FUNCTIONS
 export const getServiceId = (state) => state.serviceId;
@@ -89,10 +86,5 @@ export const isSummaryDataInvalid = createSelector(
 
 export const isCoreServiceNotUpdated = (state, minServiceVersion) => {
   const coreDeviceVersion = getCoreDeviceVersion(state);
-
-  if (coreDeviceVersion && minServiceVersion) {
-    const coreVersion = Number(coreDeviceVersion.match(serviceIdRegex)[0]);
-    return coreVersion < Number(minServiceVersion);
-  }
-  return false;
+  return coreServiceNotUpdated(coreDeviceVersion, minServiceVersion);
 };

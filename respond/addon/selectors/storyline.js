@@ -2,6 +2,7 @@ import reselect from 'reselect';
 import arrayFlattenBy from 'respond-shared/utils/array/flatten-by';
 import arrayFilterByList from 'respond-shared/utils/array/filter-by-list';
 import StoryPoint from 'respond/utils/storypoint/storypoint';
+import { inMixedMode } from 'respond/utils/storypoint/mixed-mode';
 import { get, set, setProperties } from '@ember/object';
 import { lookup } from 'ember-dependency-lookup';
 import { lookupCoreDevice } from 'respond-shared/utils/event-analysis';
@@ -102,6 +103,9 @@ const hasReconAccess = () => {
 export const storyPointsWithEvents = createSelector(
   [ storyPoints, storylineEvents, storyPointEventSelections, reconState ],
   (storyPoints, storylineEvents, selections, reconState) => {
+    const appVersion = lookup('service:appVersion');
+    const minVersion = appVersion && appVersion.get('minServiceVersion');
+
     (storyPoints || []).forEach((storyPoint) => {
 
       // If the storyPoint doesn't have events yet, fetch them from storylineEvents state.
@@ -129,6 +133,11 @@ export const storyPointsWithEvents = createSelector(
         });
         if (eventsWithEventAnalysis.toArray().length > 0) {
           set(storyPoint, 'supportsRecon', true);
+
+          const mixedModeWarning = inMixedMode(reconState.serviceData, eventsWithEventAnalysis, minVersion);
+          if (mixedModeWarning) {
+            set(storyPoint, 'mixedModeWarning', mixedModeWarning);
+          }
         }
 
         const selectedIncident = selections && selections.ids && storyPointEvents && storyPointEvents.filter((e) => {
