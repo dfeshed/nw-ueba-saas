@@ -77,7 +77,7 @@ function buildNgcoreui {
     then
       rm -rf /mnt/libhq-SA/SAStyle/ngcoreui/*
       version="$(grep -Po '(?<="version": ")[^"]*' package.json)"
-      revision="$(git rev-list --count HEAD)"
+      revision="$(git rev-parse --short=9 HEAD)"
       # tarball lives here: https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/ngcoreui/
       mkdir -p /mnt/libhq-SA/SAStyle/ngcoreui && tar -cjvf /mnt/libhq-SA/SAStyle/ngcoreui/ngcoreui-${version}.nw.${revision}.any.tar.bz2 dist/*
       success "Hosted ngcoreui app has been updated"
