@@ -13,21 +13,40 @@ export default Component.extend({
    */
   group: undefined,
 
-  // Candidates for retrieval
+  aliases: undefined,
+
+  /**
+   * Candidates for retrieval
+   */
   metaKeyStates: undefined,
 
-  // Default options for each metaKeyState
+  /**
+   * Default options for each metaKeyState
+   */
   options: undefined,
 
-  // Action to toggle isOpen
+  /**
+   * Configurable callback to be invoked when user clicks the UI
+   * to toggle the key open/closed.
+   * @type {function}
+   * @public
+   */
   toggleAction: undefined,
 
-  // Action to drill on a value
+  /**
+   * Action to drill on a value
+   */
   clickValueAction: undefined,
 
-  // isOpen property for group with no values
+  /**
+   * isOpen property for group with no values
+   */
   isEmptyMetaGroupVisible: true,
 
+  /**
+   * Group that stores meta which does not have any values
+   * @type {object}
+   */
   emptyMetaGroup: {
     name: 'Meta keys with no values'
   },

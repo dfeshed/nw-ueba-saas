@@ -1,21 +1,22 @@
-import Component from '@ember/component';
-import { observer } from '@ember/object';
+// import Component from '@ember/component';
 import { assign } from 'ember-platform';
-
-import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import safeCallback from 'component-lib/utils/safe-callback';
 import { metaValueAlias } from 'investigate-events/helpers/meta-value-alias';
-import { select, event } from 'd3-selection';
+import { select } from 'd3-selection';
 import entityTypeByMeta from './entity-type-by-meta';
+import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
 
-const stateToComputed = ({ investigate }) => ({
-  aliases: investigate.dictionaries.aliases
-});
-
-const KeyValueComponent = Component.extend({
+export default RsaContextMenu.extend({
   classNames: 'rsa-investigate-meta-key-values',
   classNameBindings: ['_isOpenToggle:is-open', 'values.status', '_isEmpty:is-empty'],
+
+  /**
+   * Configurable callback to be invoked when user clicks the UI to toggle the key open/closed.
+   * @type {function}
+   * @public
+   */
+  toggleAction: undefined,
 
   /**
    * The member of `group` to which this component corresponds.
@@ -24,6 +25,11 @@ const KeyValueComponent = Component.extend({
    * @public
    */
   groupKey: undefined,
+
+  /**
+   * @see state/dictionaries-aliases
+   */
+  aliases: undefined,
 
   /**
    * @see state/meta-key-state-values
@@ -46,26 +52,28 @@ const KeyValueComponent = Component.extend({
    */
   info: undefined,
 
-  // Options for meta value formatter utility, based on `aliases`.
+  /**
+   * Options for meta value formatter utility, based on `aliases`.
+   */
   @computed('aliases')
   textOptions: ((aliases) => aliases ? { aliases } : {}),
 
-  // Options for meta value tooltip formatter utility. Copy of `textOptions` but shows raw + alias values together.
+  /**
+   * Options for meta value tooltip formatter utility.
+   * Copy of `textOptions` but shows raw + alias values together.
+   */
   @computed('textOptions')
   tooltipOptions: ((textOptions) => assign({ appendRawValue: true }, textOptions)),
 
-  // Toggle meta groups
+  /**
+   * Toggle meta groups
+   */
   @computed('info')
   _isOpenToggle: ((info) => info && info.isOpen),
 
   /**
-   * Configurable callback to be invoked when user clicks the UI to toggle the key open/closed.
-   * @type {function}
-   * @public
+   * keyName and displayName object used by tool-tip
    */
-  toggleAction: undefined,
-
-
   @computed('info')
   displayNames: (info) => {
     if (info) {
@@ -78,14 +86,33 @@ const KeyValueComponent = Component.extend({
     }
   },
 
-  // Hide group if no values
-  // Trickles down to the group that collects empty groups
+  /**
+   * Does the values array contain any data?
+   * Helps optimize drawing D3
+   */
   @computed('values.{status}')
-  _isEmpty(status) {
+  _canRender(status) {
+    const values = this.get('values');
+    return values && values.data && values.data.length > 0 && status === 'complete';
+  },
+
+  /**
+   * Here we make a decision either to hide the meta or to render D3
+   * if there is data, we render, otherwise they trickle down to the
+   * empty meta group that collects them
+   */
+  @computed('values.{status}', '_canRender')
+  _isEmpty(status, canRender) {
+    if (canRender) {
+      this._renderMetaValues();
+    }
     return status && status === 'complete' && this.get('values').data.length === 0;
   },
 
-  // Computes an appropriate string to display for the current status of the data fetch.
+  /**
+   * Computes an appropriate string to display for
+   * the current status of the data fetch
+   */
   @computed('values.{status,description}')
   resolvedDescription(status, description) {
     if (description) {
@@ -105,10 +132,50 @@ const KeyValueComponent = Component.extend({
     }
   },
 
-  // Responsible for triggering an update of DOM whenever the set of meta values changes.
-  valuesDataDidChange: observer('values.data', function() {
-    this._renderMetaValues();
-  }),
+  /**
+   * Maps the meta values data array to an array of info used to
+   * render those values (e.g., tooltips, URLs, etc).
+   */
+  @computed('values.data', 'groupKey.name', 'textOptions', 'tooltipOptions')
+  _resolvedData(data = [], groupKeyName, textOptions, tooltipOptions) {
+    return data.map(({ count, value }) => {
+      return {
+        value,
+        text: metaValueAlias([ groupKeyName, value, textOptions ]),
+        tooltip: metaValueAlias([ groupKeyName, value, tooltipOptions ]),
+        count
+      };
+    });
+  },
+
+  /**
+   * Object required by contextMenu service
+   */
+  @computed('groupKey.name', 'info.format')
+  contextSelection: (metaName, format) => {
+    return {
+      moduleName: 'EventAnalysisPanel',
+      metaName,
+      format
+    };
+  },
+
+  /**
+   * Trigger right click options by invoking the service
+   * @public
+   */
+  contextMenu({ target }) {
+    const targetClass = target.classList.value;
+    const parentClass = target.parentElement.classList.value;
+    const needsContextMenu = targetClass.includes('is-context-lookup-enabled') || parentClass.includes('is-context-lookup-enabled');
+    if (needsContextMenu) {
+      this._super(...arguments);
+    } else {
+      if (this.get('contextMenuService').deactivate) {
+        this.get('contextMenuService').deactivate();
+      }
+    } // do not call super so that the browser right-click event is preserved
+  },
 
   // Creates a function that will test whether a given (raw) meta value is already selected in the current query.
   // This type of test can be done with simple looping, but we need it to be performant because it will be done
@@ -128,7 +195,11 @@ const KeyValueComponent = Component.extend({
     };
   },
 
-  // Responsible for rendering the meta values DOM. For performance, we do this here with D3 instead of in the template.
+  /**
+   * Responsible for rendering the meta values DOM.
+   * For performance, we do this here with D3 instead of in the template.
+   * @private
+   */
   _renderMetaValues() {
     const $el = this.element && this.$('.js-content');
     if (!$el || !$el[0]) {
@@ -139,8 +210,8 @@ const KeyValueComponent = Component.extend({
     const {
       'groupKey.name': groupKeyName,
       clickValueAction,
-      resolvedData: data
-    } = this.getProperties('groupKey.name', 'clickValueAction', 'resolvedData');
+      _resolvedData: data
+    } = this.getProperties('groupKey.name', 'clickValueAction', '_resolvedData');
 
     // Request a function that will test whether a given (raw) meta value is already selected in the current query.
     // We'll use this function to mark some values as selected & disable their clicks.
@@ -181,17 +252,7 @@ const KeyValueComponent = Component.extend({
 
     if (entityTypeName) {
       $enter
-        .classed('is-context-lookup-enabled', true)
-        .on('contextmenu', () => {
-          // prevent browser from showing native RMC menu
-          event.preventDefault();
-          // prevent browser from doing native text "highlighting"
-          try {
-            window.getSelection().removeAllRanges();
-          } catch (e) {
-            // browser doesn't support selection API; no harm done; swallow err
-          }
-        });
+        .classed('is-context-lookup-enabled', true);
     }
 
     $enter.append('span')
@@ -207,22 +268,7 @@ const KeyValueComponent = Component.extend({
       });
   },
 
-  // Maps the meta values data array to an array of info used to render those values (e.g., tooltips, URLs, etc).
-  @computed('values.data', 'groupKey.name', 'textOptions', 'tooltipOptions')
-  resolvedData(data = [], groupKeyName, textOptions, tooltipOptions) {
-    return data.map(({ count, value }) => {
-      return {
-        value,
-        text: metaValueAlias([ groupKeyName, value, textOptions ]),
-        tooltip: metaValueAlias([ groupKeyName, value, tooltipOptions ]),
-        count
-      };
-    });
-  },
-
   actions: {
     safeCallback
   }
 });
-
-export default connect(stateToComputed)(KeyValueComponent);

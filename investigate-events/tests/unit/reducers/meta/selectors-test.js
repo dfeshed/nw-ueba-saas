@@ -87,6 +87,9 @@ test('emptyMetaKeys returns list of metaKeyStates that are open and returned no 
   }, {
     info: { metaName: 'ad.computer.src', isOpen: true },
     values: { complete: true, data: [] }
+  }, {
+    info: { metaName: 'ad.computer.src', isOpen: true },
+    values: {}
   }];
   const customMeta = {
     meta: metaKeyStatesArray,

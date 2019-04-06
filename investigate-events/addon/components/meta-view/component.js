@@ -13,7 +13,8 @@ const stateToComputed = (state) => ({
   emptyMetaKeys: emptyMetaKeys(state),
   size: state.investigate.meta.metaPanelSize,
   metaKeyStates: state.investigate.meta.meta,
-  options: state.investigate.meta.options
+  options: state.investigate.meta.options,
+  aliases: state.investigate.dictionaries.aliases
 });
 
 const dispatchToActions = {
