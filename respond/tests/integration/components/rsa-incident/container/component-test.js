@@ -492,7 +492,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
   });
 
   test('storyline will mark alerts for event analysis when core devices become available after initial render', async function(assert) {
-    assert.expect(11);
+    assert.expect(12);
 
     const serviceState = Immutable.from({
       serviceData: undefined,
@@ -527,13 +527,14 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);
     assert.equal(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).getAttribute('title'), null);
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).getAttribute('class').includes('on'));
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
   });
 
   test('storyline will add title to alerts with event analysis support when core devices do not match minVersion', async function(assert) {
-    assert.expect(6);
+    assert.expect(7);
 
     const serviceState = Immutable.from({
       serviceData: {
@@ -567,6 +568,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     const title = t(this, 'investigate.services.coreServiceNotUpdated', { version: '11.1.0.0', minVersion: '11.2' });
     assert.equal(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).getAttribute('title'), title);
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).getAttribute('class').includes('off'));
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);

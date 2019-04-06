@@ -287,8 +287,16 @@ $alertsTableDotSize: 5px;
       vertical-align: top;
       display:inline-block;
       @include rsa-font(regular, smaller);
-      color: text-color(secondary, lighter);
-      background-color: background-color(secondary, darkest);
+
+      &.off {
+        color: text-color(primary);
+        background-color: background-color(primary, dark);
+      }
+
+      &.on {
+        color: text-color(secondary, lighter);
+        background-color: background-color(secondary, darkest, translucent);
+      }
     }
   }
 
