@@ -147,7 +147,7 @@ public class EntityPersistencyServiceTest{
                 new EntityQuery.EntityQueryBuilder().filterByFreeText("free")
                         .build();
         Page<Entity> foundEntities = entityPersistencyService.find(entityQuery);
-        assertThat(foundEntities.getTotalElements(), is(2L));
+        assertThat(foundEntities.getTotalElements(), is(1L));
 
         entityQuery =
                 new EntityQuery.EntityQueryBuilder().filterByFreeText("fre")
@@ -159,7 +159,7 @@ public class EntityPersistencyServiceTest{
                 new EntityQuery.EntityQueryBuilder().filterByFreeText("text")
                         .build();
         foundEntities = entityPersistencyService.find(entityQuery);
-        assertThat(foundEntities.getTotalElements(), is(2L));
+        assertThat(foundEntities.getTotalElements(), is(1L));
     }
 
     @Test
@@ -168,32 +168,33 @@ public class EntityPersistencyServiceTest{
         entityList.add(entity6);
         entityList.add(entity7);
         entityList.add(entity8);
+        entityList.add(entity9);
         entityPersistencyService.save(entityList);
 
         EntityQuery entityQuery =
                 new EntityQuery.EntityQueryBuilder().filterByFreeText("free")
-                        .filterByUserNameWithPrefix(true)
+                        .filterByEntityNameWithPrefix(true)
                         .build();
         Page<Entity> foundEntities = entityPersistencyService.find(entityQuery);
-        assertThat(foundEntities.getTotalElements(), is(3L));
+        assertThat(foundEntities.getTotalElements(), is(2L));
 
         entityQuery =
                 new EntityQuery.EntityQueryBuilder().filterByFreeText("fre")
-                        .filterByUserNameWithPrefix(true)
+                        .filterByEntityNameWithPrefix(true)
                         .build();
         foundEntities = entityPersistencyService.find(entityQuery);
         assertThat(foundEntities.getTotalElements(), is(3L));
 
         entityQuery =
                 new EntityQuery.EntityQueryBuilder().filterByFreeText("text")
-                        .filterByUserNameWithPrefix(true)
+                        .filterByEntityNameWithPrefix(true)
                         .build();
         foundEntities = entityPersistencyService.find(entityQuery);
-        assertThat(foundEntities.getTotalElements(), is(2L));
+        assertThat(foundEntities.getTotalElements(), is(1L));
     }
 
     @Test
-    public void testFreeTextWhitUserName() {
+    public void testFreeTextWhitentityName() {
         List<Entity> entityList = new ArrayList<>();
         entityList.add(entity6);
         entityList.add(entity7);
@@ -203,30 +204,30 @@ public class EntityPersistencyServiceTest{
 
         EntityQuery entityQuery =
                 new EntityQuery.EntityQueryBuilder().filterByFreeText("free")
-                        .filterByUserNameWithPrefix(true)
-                        .filterByUserName("free")
+                        .filterByEntityNameWithPrefix(true)
+                        .filterByEntityName("free")
                         .build();
         foundEntities = entityPersistencyService.find(entityQuery);
         assertThat(foundEntities.getTotalElements(), is(1L));
 
         entityQuery =
                 new EntityQuery.EntityQueryBuilder().filterByFreeText("free")
-                        .filterByUserName("free")
+                        .filterByEntityName("free")
                         .build();
         foundEntities = entityPersistencyService.find(entityQuery);
         assertThat(foundEntities.getTotalElements(), is(1L));
 
         entityQuery =
                 new EntityQuery.EntityQueryBuilder().filterByFreeText("fre")
-                        .filterByUserNameWithPrefix(true)
-                        .filterByUserName("fre")
+                        .filterByEntityNameWithPrefix(true)
+                        .filterByEntityName("fre")
                         .build();
         foundEntities = entityPersistencyService.find(entityQuery);
         assertThat(foundEntities.getTotalElements(), is(2L));
 
         entityQuery =
                 new EntityQuery.EntityQueryBuilder().filterByFreeText("fre")
-                        .filterByUserName("fre")
+                        .filterByEntityName("fre")
                         .build();
         foundEntities = entityPersistencyService.find(entityQuery);
         assertThat(foundEntities.getTotalElements(), is(0L));
@@ -317,17 +318,17 @@ public class EntityPersistencyServiceTest{
         entityList.add(entity4);
         Iterable<Entity> createdEntities = entityPersistencyService.save(entityList);
         List<String> EntitiesIds = new ArrayList<>();
-        EntitiesIds.add(entity1.getUserId());
-        EntitiesIds.add(entity2.getUserId());
-        EntitiesIds.add("userId5");
+        EntitiesIds.add(entity1.getEntityId());
+        EntitiesIds.add(entity2.getEntityId());
+        EntitiesIds.add("entityId5");
 
-        EntityQuery.EntityQueryBuilder queryBuilder = new EntityQuery.EntityQueryBuilder().pageNumber(0).pageSize(10).filterByUsersIds(EntitiesIds);
+        EntityQuery.EntityQueryBuilder queryBuilder = new EntityQuery.EntityQueryBuilder().pageNumber(0).pageSize(10).filterByEntitiesIds(EntitiesIds);
         Page<Entity> entitysPageResult = entityPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(2, entitysPageResult.getContent().size());
     }
 
     @Test
-    public void testFindByUserScore() {
+    public void testFindByEntityScore() {
 
         List<String> tags = new ArrayList<>();
         tags.add("ADMIN");
@@ -354,50 +355,47 @@ public class EntityPersistencyServiceTest{
     }
 
     @Test
-    public void testFindByUserId() {
-        List<String> tags = new ArrayList<>();
-
-
-        Entity entity1 = new Entity("userId1-1234-5678", "userName", "displayName", 5d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("userId1@somecompany.com", "userName", "displayName", 20d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity3 = new Entity("userId1", "userName", "displayName", 21d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+    public void testFindByEntityId() {
+        Entity entity1 = new Entity("entityId1-1234-5678", "entityName", 5d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity2 = new Entity("entityId1@somecompany.com", "entityName", 20d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity3 = new Entity("entityId1", "entityName", 21d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
 
 
         List<Entity> entityList = new ArrayList<>();
         entityList.add(entity1);
         entityList.add(entity2);
         entityList.add(entity3);
-        Iterable<Entity> createdUsers = entityPersistencyService.save(entityList);
+        Iterable<Entity> createdEntities = entityPersistencyService.save(entityList);
 
 
-        EntityQuery.EntityQueryBuilder queryBuilder = new EntityQuery.EntityQueryBuilder().filterByUsersIds(Arrays.asList(new String[]{"userId1"}));
+        EntityQuery.EntityQueryBuilder queryBuilder = new EntityQuery.EntityQueryBuilder().filterByEntitiesIds(Arrays.asList(new String[]{"entityId1"}));
         Page<Entity> entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, entitiesPageResult.getContent().size());
 
 
-        queryBuilder = new EntityQuery.EntityQueryBuilder().filterByUsersIds(Arrays.asList(new String[]{"userId1-1234-5678"}));
+        queryBuilder = new EntityQuery.EntityQueryBuilder().filterByEntitiesIds(Arrays.asList(new String[]{"entityId1-1234-5678"}));
         entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, entitiesPageResult.getContent().size());
 
-        queryBuilder = new EntityQuery.EntityQueryBuilder().filterByUsersIds(Arrays.asList(new String[]{"1234-5678-userId1"}));
+        queryBuilder = new EntityQuery.EntityQueryBuilder().filterByEntitiesIds(Arrays.asList(new String[]{"1234-5678-entityId1"}));
         entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(0, entitiesPageResult.getContent().size());
 
-        queryBuilder = new EntityQuery.EntityQueryBuilder().filterByUsersIds(Arrays.asList(new String[]{"1234"}));
+        queryBuilder = new EntityQuery.EntityQueryBuilder().filterByEntitiesIds(Arrays.asList(new String[]{"1234"}));
         entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(0, entitiesPageResult.getContent().size());
 
-        queryBuilder = new EntityQuery.EntityQueryBuilder().filterByUsersIds(Arrays.asList(new String[]{"userId1@somecompany.com"}));
+        queryBuilder = new EntityQuery.EntityQueryBuilder().filterByEntitiesIds(Arrays.asList(new String[]{"entityId1@somecompany.com"}));
         entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, entitiesPageResult.getContent().size());
 
-        queryBuilder = new EntityQuery.EntityQueryBuilder().filterByUsersIds(Arrays.asList(new String[]{"somecompany.com@userId1"}));
+        queryBuilder = new EntityQuery.EntityQueryBuilder().filterByEntitiesIds(Arrays.asList(new String[]{"somecompany.com@entityId1"}));
         entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(0, entitiesPageResult.getContent().size());
     }
 
     @Test
-    public void testFindByIsUserAdmin_True() {
+    public void testFindByIsEntityAdmin_True() {
         List<String> tags = new ArrayList<>();
         tags.add("ADMIN");
         entity1.setTags(tags);
@@ -411,7 +409,7 @@ public class EntityPersistencyServiceTest{
         sort.add(Entity.USER_ID_FIELD_NAME);
         EntityQuery entityQuery =
                 new EntityQuery.EntityQueryBuilder()
-                        .filterByUserTags(tags)
+                        .filterByEntityTags(tags)
                         .build();
 
         Page<Entity> foundEntities = entityPersistencyService.find(entityQuery);
@@ -599,7 +597,7 @@ public class EntityPersistencyServiceTest{
     }
 
     @Test
-    public void testSortByUserName() {
+    public void testSortByEntityName() {
 
         List<String> tags = Arrays.asList("admin");
         List<String> indicators = Arrays.asList("a");
@@ -620,9 +618,9 @@ public class EntityPersistencyServiceTest{
         Page<Entity> result = entityPersistencyService.find(entityQuery);
         assertEquals(3L, result.getContent().size());
         Iterator<Entity> iterator = result.iterator();
-        Assert.assertEquals("b_userName", iterator.next().getUserName());
-        Assert.assertEquals("C_userName", iterator.next().getUserName());
-        Assert.assertEquals("w_userName", iterator.next().getUserName());
+        Assert.assertEquals("b_entityName", iterator.next().getEntityName());
+        Assert.assertEquals("C_entityName", iterator.next().getEntityName());
+        Assert.assertEquals("w_entityName", iterator.next().getEntityName());
     }
 
     @Test
@@ -674,9 +672,9 @@ public class EntityPersistencyServiceTest{
         Page<Entity> result = entityPersistencyService.find(entityQuery);
         assertEquals(3L, result.getContent().size());
         Iterator<Entity> iterator = result.iterator();
-        Assert.assertEquals("B_userName", iterator.next().getUserName());
-        Assert.assertEquals("C_userName", iterator.next().getUserName());
-        Assert.assertEquals("W_userName", iterator.next().getUserName());
+        Assert.assertEquals("B_entityName", iterator.next().getEntityName());
+        Assert.assertEquals("C_entityName", iterator.next().getEntityName());
+        Assert.assertEquals("W_entityName", iterator.next().getEntityName());
 
         entityQuery =
                 new EntityQuery.EntityQueryBuilder()
@@ -686,13 +684,13 @@ public class EntityPersistencyServiceTest{
         result = entityPersistencyService.find(entityQuery);
         assertEquals(3L, result.getContent().size());
         iterator = result.iterator();
-        Assert.assertEquals("W_userName", iterator.next().getUserName());
-        Assert.assertEquals("C_userName", iterator.next().getUserName());
-        Assert.assertEquals("B_userName", iterator.next().getUserName());
+        Assert.assertEquals("W_entityName", iterator.next().getEntityName());
+        Assert.assertEquals("C_entityName", iterator.next().getEntityName());
+        Assert.assertEquals("B_entityName", iterator.next().getEntityName());
     }
 
     @Test
-    public void testFindByUserNameCaseInsensitive() {
+    public void testFindByEntityNameCaseInsensitive() {
 
         List<String> tags = Arrays.asList("admin");
         List<String> indicators = Arrays.asList("a");
@@ -706,18 +704,18 @@ public class EntityPersistencyServiceTest{
 
 
         EntityQuery entityQuery =
-                new EntityQuery.EntityQueryBuilder().filterByUserName("w_userName")
+                new EntityQuery.EntityQueryBuilder().filterByEntityName("w_entityName")
                         .build();
 
         Page<Entity> result = entityPersistencyService.find(entityQuery);
         assertEquals(1L, result.getContent().size());
         Iterator<Entity> iterator = result.iterator();
-        Assert.assertEquals("W_userName", iterator.next().getUserName());
+        Assert.assertEquals("W_entityName", iterator.next().getEntityName());
     }
 
 
     @Test
-    public void testFindByUserNameContains() {
+    public void testFindByEntityNameContains() {
 
         List<String> tags = Arrays.asList("admin");
         List<String> indicators = Arrays.asList("a");
@@ -731,12 +729,12 @@ public class EntityPersistencyServiceTest{
 
 
         EntityQuery entityQuery =
-                new EntityQuery.EntityQueryBuilder().filterByUserName("duck")
+                new EntityQuery.EntityQueryBuilder().filterByEntityName("duck")
                         .build();
 
         Page<Entity> result = entityPersistencyService.find(entityQuery);
         assertEquals(1L, result.getContent().size());
         Iterator<Entity> iterator = result.iterator();
-        Assert.assertEquals("Donald Duck", iterator.next().getUserName());
+        Assert.assertEquals("Donald Duck", iterator.next().getEntityName());
     }
 }

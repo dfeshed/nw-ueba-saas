@@ -27,8 +27,8 @@ public class EntityElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<E
         final BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
         final BoolQueryBuilder boolQueryBuilder2 = new BoolQueryBuilder();
 
-        // filter by username
-        if (StringUtils.isNotEmpty(entityQuery.getFilterByUserName())) {
+        // filter by entityName
+        if (StringUtils.isNotEmpty(entityQuery.getFilterByEntityName())) {
             if (entityQuery.isPrefix()) {
                 boolQueryBuilder.must(prefixQuery(Entity.USER_NAME_FIELD_NAME, entityQuery.getFilterByUserName()));
             } else {
@@ -68,16 +68,16 @@ public class EntityElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<E
             boolQueryBuilder.must(indicatorsQuery);
         }
 
-        // filter by userIds
-        if (CollectionUtils.isNotEmpty(entityQuery.getFilterByUsersIds())) {
-            BoolQueryBuilder userIdQuery = new BoolQueryBuilder();
-            for (String id : entityQuery.getFilterByUsersIds()) {
-                userIdQuery.should(matchQuery(Entity.USER_ID_FIELD_NAME, id).operator(Operator.OR));
+        // filter by entitiesIds
+        if (CollectionUtils.isNotEmpty(entityQuery.getFilterByEntitiesIds())) {
+            BoolQueryBuilder entityIdQuery = new BoolQueryBuilder();
+            for (String id : entityQuery.getFilterByEntitiesIds()) {
+                entityIdQuery.should(matchQuery(Entity.ENTITY_ID_FIELD_NAME, id).operator(Operator.OR));
             }
-            boolQueryBuilder.must(userIdQuery);
+            boolQueryBuilder.must(entityIdQuery);
         }
 
-        // filter by user severity
+        // filter by entity severity
         if (CollectionUtils.isNotEmpty(entityQuery.getFilterBySeverities())) {
             BoolQueryBuilder severityQuery = new BoolQueryBuilder();
             for (EntitySeverity severity : entityQuery.getFilterBySeverities()) {
@@ -87,9 +87,9 @@ public class EntityElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<E
         }
 
         // filter by tags
-        if (CollectionUtils.isNotEmpty(entityQuery.getFilterByUserTags())) {
+        if (CollectionUtils.isNotEmpty(entityQuery.getFilterByEntityTags())) {
             BoolQueryBuilder tagsQuery = new BoolQueryBuilder();
-            for (String tag : entityQuery.getFilterByUserTags()) {
+            for (String tag : entityQuery.getFilterByEntityTags()) {
                 tagsQuery.should(matchQuery(Entity.TAGS_FIELD_NAME, tag).operator(Operator.OR));
             }
             boolQueryBuilder.must(tagsQuery);

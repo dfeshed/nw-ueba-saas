@@ -27,32 +27,20 @@ public class Entity extends AbstractElasticDocument {
     public static final String INDICATORS_FIELD_NAME = "indicators";
     public static final String SEVERITY_FIELD_NAME = "severity";
     public static final String SCORE_FIELD_NAME = "score";
-    public static final String USER_ID_FIELD_NAME = "userId";
-    public static final String USER_NAME_FIELD_NAME = "userName";
-    public static final String INDEXED_USER_NAME_FIELD_NAME = "indexedUserName";
-    public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
+    public static final String ENTITY_ID_FIELD_NAME = "entityId";
+    public static final String ENTITY_NAME_FIELD_NAME = "entityName";
     public static final String TAGS_FIELD_NAME = "tags";
     public static final String ALERTS_COUNT_FIELD_NAME = "alertsCount";
     public static final String UPDATED_BY_LOGICAL_START_DATE_FIELD_NAME = "updatedByLogicalStartDate";
     public static final String UPDATED_BY_LOGICAL_END_DATE_FIELD_NAME = "updatedByLogicalEndDate";
-    public static final String USER_DISPLAY_NAME_SORT_LOWERCASE_FIELD_NAME = "userDisplayNameSortLowercase";
-    public static final String ENTITY_TYPE_FIELD_NAME = "type";
+    public static final String ENTITY_TYPE_FIELD_NAME = "entityType";
 
 
-    @JsonProperty(USER_ID_FIELD_NAME)
-    private String userId;
+    @JsonProperty(ENTITY_ID_FIELD_NAME)
+    private String entityId;
 
-    @JsonProperty(USER_NAME_FIELD_NAME)
-    private String userName;
-
-    @JsonProperty(INDEXED_USER_NAME_FIELD_NAME)
-    private String indexedUserName;
-
-    @JsonProperty(USER_DISPLAY_NAME_FIELD_NAME)
-    private String userDisplayName;
-
-    @JsonProperty(USER_DISPLAY_NAME_SORT_LOWERCASE_FIELD_NAME)
-    private String userDisplayNameSortLowercase;
+    @JsonProperty(ENTITY_NAME_FIELD_NAME)
+    private String entityName;
 
     @JsonProperty(SCORE_FIELD_NAME)
     private double score;
@@ -87,14 +75,11 @@ public class Entity extends AbstractElasticDocument {
         // empty const for JSON deserialization
     }
 
-    public Entity(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, EntitySeverity severity,
-                int alertsCount, String entityType) {
+    public Entity(String entityId, String entityName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, EntitySeverity severity,
+                  int alertsCount, String entityType) {
         super();
-        this.userId = userId;
-        this.userName = userName;
-        this.indexedUserName = userName;
-        this.userDisplayName = userDisplayName;
-        this.userDisplayNameSortLowercase = userDisplayName;
+        this.entityId = entityId;
+        this.entityName = entityName;
         this.score = score;
         this.alertClassifications = alertClassifications;
         this.indicators = indicators;
@@ -104,13 +89,10 @@ public class Entity extends AbstractElasticDocument {
         this.entityType = entityType;
     }
 
-    public Entity(String userId, String userName, String userDisplayName, List<String> tags, String entityType) {
+    public Entity(String entityId, String entityName, List<String> tags, String entityType) {
         super();
-        this.userId = userId;
-        this.userName = userName;
-        this.indexedUserName = userName;
-        this.userDisplayName = userDisplayName;
-        this.userDisplayNameSortLowercase = userDisplayName;
+        this.entityId = entityId;
+        this.entityName = entityName;
         this.severity = EntitySeverity.LOW;
         this.tags = tags;
         this.entityType = entityType;
@@ -124,40 +106,24 @@ public class Entity extends AbstractElasticDocument {
         this.severity = severity;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setEntityId(String entityId) {
+        this.entityId = entityId;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getIndexedUserName() {
-        return indexedUserName;
-    }
-
-    public void setIndexedUserName(String indexedUserName) {
-        this.indexedUserName = indexedUserName;
-    }
-
-    public void setUserDisplayName(String userDisplayName) {
-        this.userDisplayName = userDisplayName;
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
     }
 
     public void setScore(double score) {
         this.score = score;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getEntityId() {
+        return entityId;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getUserDisplayName() {
-        return userDisplayName;
+    public String getEntityName() {
+        return entityName;
     }
 
     public double getScore() {
@@ -192,7 +158,7 @@ public class Entity extends AbstractElasticDocument {
         this.alertsCount = alertsCount + number;
     }
 
-    public void incrementUserScoreByNumber(double number) {
+    public void incrementEntityScoreByNumber(double number) {
         this.score += number;
     }
 
@@ -233,14 +199,6 @@ public class Entity extends AbstractElasticDocument {
 
     public void setTags(List<String> tags) {
         this.tags = tags;
-    }
-
-    public String getUserDisplayNameSortLowercase() {
-        return userDisplayNameSortLowercase;
-    }
-
-    public void setUserDisplayNameSortLowercase(String userDisplayNameSortLowercase) {
-        this.userDisplayNameSortLowercase = userDisplayNameSortLowercase;
     }
 
     @Override

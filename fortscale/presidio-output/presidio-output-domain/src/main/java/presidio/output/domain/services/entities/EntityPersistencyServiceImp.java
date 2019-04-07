@@ -43,16 +43,16 @@ public class EntityPersistencyServiceImp implements EntityPersistencyService {
         return entityRepository.findAll();
     }
 
-    public Page<Entity> findByUserName(String userName, PageRequest pageRequest) {
-        return entityRepository.findByUserName(userName, pageRequest);
+    public Page<Entity> findByEntityName(String entityName, PageRequest pageRequest) {
+        return entityRepository.findByEntityName(entityName, pageRequest);
     }
 
     public Page<Entity> findByIds(Collection<String> ids, PageRequest pageRequest) {
         return entityRepository.findByIdIn(ids, pageRequest);
     }
 
-    public Page<Entity> findByUserId(String userId, PageRequest pageRequest) {
-        return entityRepository.findByUserId(userId, pageRequest);
+    public Page<Entity> findByEntityId(String entityId, PageRequest pageRequest) {
+        return entityRepository.findByEntityId(entityId, pageRequest);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class EntityPersistencyServiceImp implements EntityPersistencyService {
     }
 
     @Override
-    public Stream<Entity> findUsersByUpdatedDate(Instant startDate, Instant endDate) {
+    public Stream<Entity> findEntitiesByUpdatedDate(Instant startDate, Instant endDate) {
         return entityRepository.findByUpdatedByLogicalStartDateGreaterThanEqualAndUpdatedByLogicalEndDateLessThanEqual(startDate.toEpochMilli(), endDate.toEpochMilli());
     }
 }

@@ -9,12 +9,12 @@ public class EntityQuery {
     private final List<String> filterByAlertClassifications;
     private final List<String> filterByIndicators;
     private final List<EntitySeverity> filterBySeverities;
-    private final List<String> filterByUserTags;
-    private final List<String> filterByUsersIds;
+    private final List<String> filterByEntityTags;
+    private final List<String> filterByEntitiesIds;
     private int minScore=-1;
     private int maxScore=-1;
     private boolean isPrefix;
-    private String filterByUserName;
+    private String filterByEntityName;
     private String filterByFreeText;
 
     // sort
@@ -32,9 +32,9 @@ public class EntityQuery {
         this.filterByAlertClassifications = builder.filterByAlertClassifications;
         this.filterByIndicators = builder.filterByIndicators;
         this.filterBySeverities = builder.filterBySeverities;
-        this.filterByUsersIds = builder.filterByUsersIds;
-        this.filterByUserTags = builder.filterByUserTags;
-        this.filterByUserName = builder.filterByUserName;
+        this.filterByEntitiesIds = builder.filterByEntitiesIds;
+        this.filterByEntityTags = builder.filterByEntityTags;
+        this.filterByEntityName = builder.filterByEntityName;
         this.filterByFreeText = builder.filterByFreeText;
         this.isPrefix = builder.isPrefix;
         this.minScore = builder.minScore;
@@ -51,8 +51,8 @@ public class EntityQuery {
         this.aggregateByFields = builder.aggregateByFields;
     }
 
-    public List<String> getFilterByUsersIds() {
-        return filterByUsersIds;
+    public List<String> getFilterByEntitiesIds() {
+        return filterByEntitiesIds;
     }
 
     public List<String> getFilterByAlertClassifications() {
@@ -67,8 +67,8 @@ public class EntityQuery {
         return filterBySeverities;
     }
 
-    public String getFilterByUserName() {
-        return filterByUserName;
+    public String getFilterByEntityName() {
+        return filterByEntityName;
     }
 
     public String getFilterByFreeText() {
@@ -99,8 +99,8 @@ public class EntityQuery {
         return maxScore;
     }
 
-    public List<String> getFilterByUserTags() {
-        return filterByUserTags;
+    public List<String> getFilterByEntityTags() {
+        return filterByEntityTags;
     }
 
     public List<String> getAggregateByFields() {
@@ -113,12 +113,12 @@ public class EntityQuery {
         private List<String> filterByAlertClassifications;
         private List<String> filterByIndicators;
         private List<EntitySeverity> filterBySeverities;
-        private List<String> filterByUsersIds;
-        private List<String> filterByUserTags;
+        private List<String> filterByEntitiesIds;
+        private List<String> filterByEntityTags;
 
         private int minScore = -1;
         private int maxScore = -1;
-        private String filterByUserName;
+        private String filterByEntityName;
         private String filterByFreeText;
         private boolean isPrefix = false;
 
@@ -132,8 +132,8 @@ public class EntityQuery {
         private int pageNumber = -1;
         private int pageSize = -1;
 
-        public EntityQueryBuilder filterByUsersIds(List<String> filterByUsersIds) {
-            this.filterByUsersIds = filterByUsersIds;
+        public EntityQueryBuilder filterByEntitiesIds(List<String> filterByEntitiesIds) {
+            this.filterByEntitiesIds = filterByEntitiesIds;
             return this;
         }
 
@@ -152,8 +152,8 @@ public class EntityQuery {
             return this;
         }
 
-        public EntityQueryBuilder filterByUserTags(List<String> filterByUserTags) {
-            this.filterByUserTags = filterByUserTags;
+        public EntityQueryBuilder filterByEntityTags(List<String> filterByEntityTags) {
+            this.filterByEntityTags = filterByEntityTags;
             return this;
         }
 
@@ -167,8 +167,8 @@ public class EntityQuery {
             return this;
         }
 
-        public EntityQueryBuilder filterByUserName(String filterByUserName) {
-            this.filterByUserName = filterByUserName;
+        public EntityQueryBuilder filterByEntityName(String filterByEntityName) {
+            this.filterByEntityName = filterByEntityName;
             return this;
         }
 
@@ -182,7 +182,7 @@ public class EntityQuery {
             return this;
         }
 
-        public EntityQueryBuilder filterByUserNameWithPrefix(boolean prefixEnabled) {
+        public EntityQueryBuilder filterByEntityNameWithPrefix(boolean prefixEnabled) {
             this.isPrefix = prefixEnabled;
             return this;
         }
@@ -225,11 +225,11 @@ public class EntityQuery {
             return false;
         if (filterBySeverities != null ? !filterBySeverities.equals(entityQuery.filterBySeverities) : entityQuery.filterBySeverities != null)
             return false;
-        if (filterByUserTags != null ? !filterByUserTags.equals(entityQuery.filterByUserTags) : entityQuery.filterByUserTags != null)
+        if (filterByEntityTags != null ? !filterByEntityTags.equals(entityQuery.filterByEntityTags) : entityQuery.filterByEntityTags != null)
             return false;
-        if (filterByUsersIds != null ? !filterByUsersIds.equals(entityQuery.filterByUsersIds) : entityQuery.filterByUsersIds != null)
+        if (filterByEntitiesIds != null ? !filterByEntitiesIds.equals(entityQuery.filterByEntitiesIds) : entityQuery.filterByEntitiesIds != null)
             return false;
-        if (filterByUserName != null ? !filterByUserName.equals(entityQuery.filterByUserName) : entityQuery.filterByUserName != null)
+        if (filterByEntityName != null ? !filterByEntityName.equals(entityQuery.filterByEntityName) : entityQuery.filterByEntityName != null)
             return false;
         if (sort != null ? !sort.equals(entityQuery.sort) : entityQuery.sort != null) return false;
         return aggregateByFields != null ? aggregateByFields.equals(entityQuery.aggregateByFields) : entityQuery.aggregateByFields == null;
@@ -240,12 +240,12 @@ public class EntityQuery {
         int result = filterByAlertClassifications != null ? filterByAlertClassifications.hashCode() : 0;
         result = 31 * result + (filterByIndicators != null ? filterByIndicators.hashCode() : 0);
         result = 31 * result + (filterBySeverities != null ? filterBySeverities.hashCode() : 0);
-        result = 31 * result + (filterByUserTags != null ? filterByUserTags.hashCode() : 0);
-        result = 31 * result + (filterByUsersIds != null ? filterByUsersIds.hashCode() : 0);
+        result = 31 * result + (filterByEntityTags != null ? filterByEntityTags.hashCode() : 0);
+        result = 31 * result + (filterByEntitiesIds != null ? filterByEntitiesIds.hashCode() : 0);
         result = 31 * result + minScore;
         result = 31 * result + maxScore;
         result = 31 * result + (isPrefix ? 1 : 0);
-        result = 31 * result + (filterByUserName != null ? filterByUserName.hashCode() : 0);
+        result = 31 * result + (filterByEntityName != null ? filterByEntityName.hashCode() : 0);
         result = 31 * result + (sort != null ? sort.hashCode() : 0);
         result = 31 * result + (aggregateByFields != null ? aggregateByFields.hashCode() : 0);
         result = 31 * result + pageNumber;

@@ -9,9 +9,9 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 public interface EntityRepository extends ElasticsearchRepository<Entity, String> {
-    Page<Entity> findByUserName(String userName, Pageable pageable);
+    Page<Entity> findByEntityName(String entityName, Pageable pageable);
 
-    Page<Entity> findByUserId(String userId, Pageable pageable);
+    Page<Entity> findByEntityId(String entityId, Pageable pageable);
 
     Page<Entity> findByIdIn(Collection<String> ids, Pageable pageable);
 
