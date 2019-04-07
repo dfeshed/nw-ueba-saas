@@ -41,14 +41,16 @@ public class EntityPersistencyServiceTest{
     private List<String> classifications2 = new ArrayList<>(Arrays.asList("b"));
     private List<String> classifications3 = new ArrayList<>(Arrays.asList("a"));
     private List<String> classifications4 = new ArrayList<>(Arrays.asList("d"));
-    private Entity entity1 = generateEntity(classifications1, "user1", "userId1", "user1", 50d);
-    private  Entity entity2 = generateEntity(classifications2, "user2", "userId2", "user2", 60d);
-    private Entity entity3 = generateEntity(classifications3, "user3", "userId3", "user3", 70d);
-    private Entity entity4 = generateEntity(classifications4, "user4", "userId4", "user4", 80d);
-    private  Entity entity5 = generateEntity(classifications3, "user5", "userId5", "user4", 70d);
-    private Entity entity6 = generateEntity(classifications3, "fretext", "userId6", "free", 70d);
-    private  Entity entity7 = generateEntity(classifications3, "free", "userId7", "text", 70d);
-    private Entity entity8 = generateEntity(classifications3, "text", "userId8", "freetex", 70d);
+    private Entity entity1 = generateEntity(classifications1, "entity1", "entityId1", 50d);
+    private  Entity entity2 = generateEntity(classifications2, "entity2", "entityId2", 60d);
+    private Entity entity3 = generateEntity(classifications3, "entity3", "entityId3", 70d);
+    private Entity entity4 = generateEntity(classifications4, "entity4", "entityId4", 80d);
+    private  Entity entity5 = generateEntity(classifications3, "entity5", "entityId5", 70d);
+    private Entity entity6 = generateEntity(classifications3, "fretext", "entityId6", 70d);
+    private  Entity entity7 = generateEntity(classifications3, "free", "entityId7", 70d);
+    private Entity entity8 = generateEntity(classifications3, "text", "entityId8", 70d);
+    private Entity entity9 = generateEntity(classifications3, "freetex", "entityId8", 70d);
+
 
     @Autowired
     public Client client;
@@ -60,9 +62,9 @@ public class EntityPersistencyServiceTest{
                 .get();
     }
 
-    private Entity generateEntity(List<String> classifications, String userName, String userId, String displayName, double score) {
+    private Entity generateEntity(List<String> classifications, String entityName, String entityId, double score) {
         List<String> indicators = Arrays.asList(new String("indicator"));
-        return new Entity(userId, userName, displayName, score, classifications, indicators, null, EntitySeverity.CRITICAL, 0, "user");
+        return new Entity(entityId, entityName, score, classifications, indicators, null, EntitySeverity.CRITICAL, 0, "entity");
     }
 
     @Test
@@ -72,8 +74,7 @@ public class EntityPersistencyServiceTest{
 
         assertNotNull(createdEntity.getId());
         assertEquals(createdEntity.getId(), entity.getId());
-        assertEquals(createdEntity.getUserName(), entity.getUserName());
-        assertEquals(createdEntity.getUserDisplayName(), entity.getUserDisplayName());
+        assertEquals(createdEntity.getEntityName(), entity.getEntityName());
         assertTrue(createdEntity.getScore() == entity.getScore());
         assertEquals(createdEntity.getAlertClassifications().size(), entity.getAlertClassifications().size());
         assertEquals(createdEntity.getIndicators().size(), entity.getIndicators().size());
@@ -92,7 +93,7 @@ public class EntityPersistencyServiceTest{
 
     @Test
     public void testFindOne() {
-        Entity entity = generateEntity(classifications1, "user1", "userId1", "user1", 50d);
+        Entity entity = generateEntity(classifications1, "entity1", "entityId1", 50d);
         entityPersistencyService.save(entity);
 
         Date createdByBeforeFind = entity.getCreatedDate();
@@ -102,8 +103,7 @@ public class EntityPersistencyServiceTest{
         assertNotNull(foundEntity.getId());
         assertEquals(createdByBeforeFind, createdByAfterFind);
         assertEquals(foundEntity.getId(), entity.getId());
-        assertEquals(foundEntity.getUserName(), entity.getUserName());
-        assertEquals(foundEntity.getUserDisplayName(), entity.getUserDisplayName());
+        assertEquals(foundEntity.getEntityName(), entity.getEntityName());
         assertTrue(foundEntity.getScore() == entity.getScore());
         assertEquals(foundEntity.getAlertClassifications().size(), entity.getAlertClassifications().size());
         assertEquals(foundEntity.getIndicators().size(), entity.getIndicators().size());
@@ -113,7 +113,7 @@ public class EntityPersistencyServiceTest{
     @Test
     public void testUpdatedBY() throws InterruptedException {
         Thread.currentThread().setName("TEST");
-        Entity entity = generateEntity(classifications1, "user1", "userId1", "user1", 50d);
+        Entity entity = generateEntity(classifications1, "entity1", "entityId1", 50d);
         String created = entity.getUpdatedBy();
         entityPersistencyService.save(entity);
         Entity foundEntity = entityPersistencyService.findEntityById(entity.getId());
@@ -261,7 +261,7 @@ public class EntityPersistencyServiceTest{
 
         List<String> sort = new ArrayList<>();
         sort.add(Entity.SCORE_FIELD_NAME);
-        sort.add(Entity.USER_ID_FIELD_NAME);
+        sort.add(Entity.ENTITY_ID_FIELD_NAME);
         EntityQuery entityQuery =
                 new EntityQuery.EntityQueryBuilder()
                         .filterByAlertClassifications(classificationFilter)
@@ -306,10 +306,10 @@ public class EntityPersistencyServiceTest{
     @Test
     public void testFindByListOfIds() {
 
-        Entity entity1 = new Entity("userId1", "userName", "displayName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("userId2", "userName", "displayName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity3 = new Entity("userId3", "userName", "displayName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity4 = new Entity("userId4", "userName", "displayName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity1 = new Entity("entityId1", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity2 = new Entity("entityId2", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity3 = new Entity("entityId3", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity4 = new Entity("entityId4", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
 
         List<Entity> entityList = new ArrayList<>();
         entityList.add(entity1);
@@ -335,10 +335,10 @@ public class EntityPersistencyServiceTest{
 
         List<String> classification = new ArrayList<>();
         classification.add("a");
-        Entity entity1 = new Entity("userId1", "userName", "displayName", 5d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("userId2", "userName", "displayName", 10d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity3 = new Entity("userId3", "userName", "displayName", 20d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity4 = new Entity("userId4", "userName", "displayName", 21d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity1 = new Entity("entityId1", "entityName", 5d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity2 = new Entity("entityId2", "entityName", 10d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity3 = new Entity("entityId3", "entityName", 20d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity4 = new Entity("entityId4", "entityName", 21d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
 
 
         List<Entity> entityList = new ArrayList<>();
@@ -406,7 +406,7 @@ public class EntityPersistencyServiceTest{
 
         List<String> sort = new ArrayList<>();
         sort.add(Entity.SCORE_FIELD_NAME);
-        sort.add(Entity.USER_ID_FIELD_NAME);
+        sort.add(Entity.ENTITY_ID_FIELD_NAME);
         EntityQuery entityQuery =
                 new EntityQuery.EntityQueryBuilder()
                         .filterByEntityTags(tags)
@@ -425,10 +425,10 @@ public class EntityPersistencyServiceTest{
 
         List<String> classification = new ArrayList<>();
         classification.add("a");
-        Entity entity1 = new Entity("userId1", "userName", "displayName", 5d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("userId2", "userName", "displayName", 10d, null, null, null, EntitySeverity.MEDIUM, 0, "user");
-        Entity entity3 = new Entity("userId3", "userName", "displayName", 20d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity4 = new Entity("userId4", "userName", "displayName", 21d, null, null, null, EntitySeverity.MEDIUM, 0, "user");
+        Entity entity1 = new Entity("entityId1", "entityName", 5d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity2 = new Entity("entityId2", "entityName", 10d, null, null, null, EntitySeverity.MEDIUM, 0, "user");
+        Entity entity3 = new Entity("entityId3", "entityName", 20d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity4 = new Entity("entityId4", "entityName", 21d, null, null, null, EntitySeverity.MEDIUM, 0, "user");
 
 
         List<Entity> entityList = new ArrayList<>();
@@ -462,10 +462,10 @@ public class EntityPersistencyServiceTest{
         List<String> tags1 = new ArrayList<>(Arrays.asList("admin", "watch"));
         List<String> tags2 = new ArrayList<>(Arrays.asList("admin"));
 
-        Entity entity1 = new Entity("userId1", "userName", "displayName", 5d, null, null, tags1, EntitySeverity.CRITICAL, 0 , "user");
-        Entity entity2 = new Entity("userId2", "userName", "displayName", 10d, null, null, tags2, EntitySeverity.MEDIUM, 0, "user");
-        Entity entity3 = new Entity("userId3", "userName", "displayName", 20d, null, null, tags1, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity4 = new Entity("userId4", "userName", "displayName", 21d, null, null, null, EntitySeverity.MEDIUM, 0, "user");
+        Entity entity1 = new Entity("entityId1", "entityName", 5d, null, null, tags1, EntitySeverity.CRITICAL, 0 , "user");
+        Entity entity2 = new Entity("entityId2", "entityName", 10d, null, null, tags2, EntitySeverity.MEDIUM, 0, "user");
+        Entity entity3 = new Entity("entityId3", "entityName", 20d, null, null, tags1, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity4 = new Entity("entityId4", "entityName", 21d, null, null, null, EntitySeverity.MEDIUM, 0, "user");
 
 
         List<Entity> entityList = new ArrayList<>();
@@ -503,9 +503,9 @@ public class EntityPersistencyServiceTest{
         List<String> classificationA = Arrays.asList("a");
         List<String> classificationB = Arrays.asList("a", "b");
         List<String> classificationC = Arrays.asList("a", "b", "c");
-        Entity entity1 = new Entity("userId1", "userName", "displayName", 5d, classificationA, null, tags1, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("userId2", "userName", "displayName", 10d, classificationB, null, tags2, EntitySeverity.MEDIUM, 0, "user");
-        Entity entity3 = new Entity("userId3", "userName", "displayName", 20d, classificationC, null, tags1, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity1 = new Entity("entityId1", "entityName", 5d, classificationA, null, tags1, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity2 = new Entity("entityId2", "entityName", 10d, classificationB, null, tags2, EntitySeverity.MEDIUM, 0, "user");
+        Entity entity3 = new Entity("entityId3", "entityName", 20d, classificationC, null, tags1, EntitySeverity.CRITICAL, 0, "user");
 
 
         List<Entity> entityList = Arrays.asList(entity1, entity2, entity3);
@@ -570,9 +570,9 @@ public class EntityPersistencyServiceTest{
         List<String> indicatorsA = Arrays.asList("a");
         List<String> indicatorsB = Arrays.asList("a", "b");
         List<String> indicatorsC = Arrays.asList("a", "b", "c");
-        Entity entity1 = new Entity("userId1", "userName", "displayName", 5d, null, indicatorsA, tags1, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("userId2", "userName", "displayName", 10d, null, indicatorsB, tags2, EntitySeverity.MEDIUM, 0, "user");
-        Entity entity3 = new Entity("userId3", "userName", "displayName", 20d, null, indicatorsC, tags1, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity1 = new Entity("entityId1", "entityName", 5d, null, indicatorsA, tags1, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity2 = new Entity("entityId2", "entityName", 10d, null, indicatorsB, tags2, EntitySeverity.MEDIUM, 0, "user");
+        Entity entity3 = new Entity("entityId3", "entityName", 20d, null, indicatorsC, tags1, EntitySeverity.CRITICAL, 0, "user");
 
 
         List<Entity> entityList = Arrays.asList(entity1, entity2, entity3);
@@ -601,9 +601,9 @@ public class EntityPersistencyServiceTest{
 
         List<String> tags = Arrays.asList("admin");
         List<String> indicators = Arrays.asList("a");
-        Entity entity1 = new Entity("userId1", "w_userName", "displayName", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("userId2", "C_userName", "displayName", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 0, "user");
-        Entity entity3 = new Entity("userId3", "b_userName", "displayName", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity1 = new Entity("entityId1", "w_entityName", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity2 = new Entity("entityId2", "C_entityName", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 0, "user");
+        Entity entity3 = new Entity("entityId3", "b_entityName", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
 
 
         List<Entity> entityList = Arrays.asList(entity1, entity2, entity3);
@@ -612,7 +612,7 @@ public class EntityPersistencyServiceTest{
 
         EntityQuery entityQuery =
                 new EntityQuery.EntityQueryBuilder()
-                        .sort(new Sort(Sort.Direction.ASC, Entity.INDEXED_USER_NAME_FIELD_NAME))
+                        .sort(new Sort(Sort.Direction.ASC, Entity.ENTITY_NAME_FIELD_NAME + ".keyword"))
                         .build();
 
         Page<Entity> result = entityPersistencyService.find(entityQuery);
@@ -623,41 +623,15 @@ public class EntityPersistencyServiceTest{
         Assert.assertEquals("w_entityName", iterator.next().getEntityName());
     }
 
-    @Test
-    public void testSortByDisplayUserName() {
-
-        List<String> tags = Arrays.asList("admin");
-        List<String> indicators = Arrays.asList("a");
-        Entity entity1 = new Entity("userId1", "W_userName", "Tttttt", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("userId2", "C_userName", "eeeee", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 0, "user");
-        Entity entity3 = new Entity("userId3", "B_userName", "Qqqqqq", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
-
-
-        List<Entity> entityList = Arrays.asList(entity1, entity2, entity3);
-        entityPersistencyService.save(entityList);
-
-        EntityQuery entityQuery =
-                new EntityQuery.EntityQueryBuilder()
-                        .sort(new Sort(Sort.Direction.ASC, Entity.USER_DISPLAY_NAME_SORT_LOWERCASE_FIELD_NAME))
-                        .build();
-
-        Page<Entity> result = entityPersistencyService.find(entityQuery);
-        assertEquals(3L, result.getContent().size());
-        Iterator<Entity> iterator = result.iterator();
-        Assert.assertEquals("eeeee", iterator.next().getUserDisplayName());
-        Assert.assertEquals("Qqqqqq", iterator.next().getUserDisplayName());
-        Assert.assertEquals("Tttttt", iterator.next().getUserDisplayName());
-    }
-
 
     @Test
     public void testSortByAlertsNumber() {
 
         List<String> tags = Arrays.asList("admin");
         List<String> indicators = Arrays.asList("a");
-        Entity entity1 = new Entity("userId1", "W_userName", "displayName", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 1, "user");
-        Entity entity2 = new Entity("userId2", "C_userName", "displayName", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 2, "user");
-        Entity entity3 = new Entity("userId3", "B_userName", "displayName", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 3, "user");
+        Entity entity1 = new Entity("entityId1", "W_entityName", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 1, "user");
+        Entity entity2 = new Entity("entityId2", "C_entityName", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 2, "user");
+        Entity entity3 = new Entity("entityId3", "B_entityName", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 3, "user");
 
 
         List<Entity> entityList = Arrays.asList(entity1, entity2, entity3);
@@ -694,9 +668,9 @@ public class EntityPersistencyServiceTest{
 
         List<String> tags = Arrays.asList("admin");
         List<String> indicators = Arrays.asList("a");
-        Entity entity1 = new Entity("userId1", "W_userName", "displayName", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("userId2", "C_userName", "displayName", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 0, "user");
-        Entity entity3 = new Entity("userId3", "B_userName", "displayName", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity1 = new Entity("entityId1", "W_entityName", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity2 = new Entity("entityId2", "C_entityName", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 0, "user");
+        Entity entity3 = new Entity("entityId3", "B_entityName", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
 
 
         List<Entity> entityList = Arrays.asList(entity1, entity2, entity3);
@@ -719,9 +693,9 @@ public class EntityPersistencyServiceTest{
 
         List<String> tags = Arrays.asList("admin");
         List<String> indicators = Arrays.asList("a");
-        Entity entity1 = new Entity("userId1", "Donald Duck", "displayName", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("userId2", "Mini Mous", "displayName", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 0, "user");
-        Entity entity3 = new Entity("userId3", "Donkey", "displayName", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity1 = new Entity("entityId1", "Donald Duck", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity2 = new Entity("entityId2", "Mini Mous", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 0, "user");
+        Entity entity3 = new Entity("entityId3", "Donkey", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
 
 
         List<Entity> entityList = Arrays.asList(entity1, entity2, entity3);

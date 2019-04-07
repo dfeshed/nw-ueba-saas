@@ -30,9 +30,9 @@ public class EntityElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<E
         // filter by entityName
         if (StringUtils.isNotEmpty(entityQuery.getFilterByEntityName())) {
             if (entityQuery.isPrefix()) {
-                boolQueryBuilder.must(prefixQuery(Entity.USER_NAME_FIELD_NAME, entityQuery.getFilterByUserName()));
+                boolQueryBuilder.must(prefixQuery(Entity.ENTITY_NAME_FIELD_NAME, entityQuery.getFilterByEntityName()));
             } else {
-                boolQueryBuilder.must(matchQuery(Entity.USER_NAME_FIELD_NAME, entityQuery.getFilterByUserName()).operator(Operator.AND));
+                boolQueryBuilder.must(matchQuery(Entity.ENTITY_NAME_FIELD_NAME, entityQuery.getFilterByEntityName()).operator(Operator.AND));
             }
         }
 
@@ -40,11 +40,9 @@ public class EntityElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<E
         if (StringUtils.isNotEmpty(entityQuery.getFilterByFreeText())) {
             BoolQueryBuilder freeTextQuery = new BoolQueryBuilder();
             if (entityQuery.isPrefix()) {
-                freeTextQuery.should(prefixQuery(Entity.USER_NAME_FIELD_NAME, entityQuery.getFilterByFreeText()));
-                freeTextQuery.should(prefixQuery(Entity.USER_DISPLAY_NAME_FIELD_NAME, entityQuery.getFilterByFreeText()));
+                freeTextQuery.should(prefixQuery(Entity.ENTITY_NAME_FIELD_NAME, entityQuery.getFilterByFreeText()));
             } else {
-                freeTextQuery.should(matchQuery(Entity.USER_NAME_FIELD_NAME, entityQuery.getFilterByFreeText()));
-                freeTextQuery.should(matchQuery(Entity.USER_DISPLAY_NAME_FIELD_NAME, entityQuery.getFilterByFreeText()).operator(Operator.AND));
+                freeTextQuery.should(matchQuery(Entity.ENTITY_NAME_FIELD_NAME, entityQuery.getFilterByFreeText()));
             }
 
             boolQueryBuilder.must(freeTextQuery);
