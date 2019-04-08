@@ -28,6 +28,10 @@ $footerHeight: 40px;
   }
 }
 
+.rsa-explorer .explorer-filters .filter-option.alert-name-filter .rsa-data-table-body {
+  overflow: hidden;
+}
+
 .alert-names-filter-table .rsa-data-table-body-row:hover {
   .rsa-data-table-body-cell {
     background-color: inherit;
