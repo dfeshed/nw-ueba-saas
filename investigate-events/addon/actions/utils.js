@@ -9,6 +9,8 @@ import { encodeMetaFilterConditions, addSessionIdFilter } from 'investigate-shar
 import { getTimeRangeIdFromRange } from 'investigate-shared/utils/time-range-utils';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
 
+const SEARCH_TERM_MARKER = '~';
+
 const operators = ['!exists', 'exists', 'contains', 'begins', 'ends', '<=', '>=', '!=', '='];
 const _isFloat = (value) => {
   return value.includes('.') && (value - value === 0);
@@ -296,7 +298,16 @@ function transformTextToPillData(queryText, availableMeta, shouldForceComplex = 
     return _createComplexFilterText(queryText);
   }
 
-  // 2. Then check to see if there IS an operator,
+  // 2. Check if the text contains characters that
+  // immediately marks it a Text filter
+  const hasSearchTerm = isSearchTerm(queryText);
+  if (hasSearchTerm) {
+    return {
+      searchTerm: queryText
+    };
+  }
+
+  // 3. Then check to see if there IS an operator,
   // no operator = complex
   const operator = operators.find((option) => {
     // This regex looks for the patterns <space><operator><space> or
@@ -317,14 +328,14 @@ function transformTextToPillData(queryText, availableMeta, shouldForceComplex = 
   meta = meta.trim();
 
   if (availableMeta && availableMeta.length > 0) {
-    // 3. Check that the meta is a real meta,
+    // 4. Check that the meta is a real meta,
     // if we do not recognize the meta, complex
     const metaConfig = availableMeta.find((m) => m.metaName === meta);
     if (!metaConfig) {
       return _createComplexFilterText(queryText);
     }
 
-    // 4. Check that the operator applies to the meta,
+    // 5. Check that the operator applies to the meta,
     // if the operator isn't valid for the meta, complex
     const possibleOperators = relevantOperators(metaConfig);
     const operatorConfig = possibleOperators.find((o) => o.displayName === operator);
@@ -332,7 +343,7 @@ function transformTextToPillData(queryText, availableMeta, shouldForceComplex = 
       return _createComplexFilterText(queryText);
     }
 
-    // 5. If the operator requires value and doesn't have one,
+    // 6. If the operator requires value and doesn't have one,
     // then complex
     // chunks are split by operator, so "medium = 1" would be
     // two chunks
@@ -340,7 +351,7 @@ function transformTextToPillData(queryText, availableMeta, shouldForceComplex = 
       return _createComplexFilterText(queryText);
     }
 
-    // 6. if the operator does not have a value but a value is
+    // 7. if the operator does not have a value but a value is
     // include, then complex
     if (chunks.length >= 2 && !operatorConfig.hasValue) {
       return _createComplexFilterText(queryText);
@@ -388,6 +399,8 @@ function uriEncodeMetaFilters(filters = []) {
 
       if (d.complexFilterText) {
         ret = d.complexFilterText;
+      } else if (d.searchTerm) {
+        ret = `${SEARCH_TERM_MARKER}${d.searchTerm}`;
       } else {
         ret = `${(d.meta) ? d.meta.trim() : ''} ${(d.operator) ? d.operator.trim() : ''} ${(d.value) ? d.value.trim() : ''}`;
       }
@@ -429,6 +442,12 @@ const selectPillsFromPosition = (pills, position, direction) => {
   return newPills;
 };
 
+/**
+ * Determines if the provided string is marked as a searchTerm.
+ * @param {string} str A string
+ */
+const isSearchTerm = (str) => str.charAt(0) === SEARCH_TERM_MARKER;
+
 export {
   buildMetaValueStreamInputs,
   clientSideParseAndValidate,
@@ -436,6 +455,7 @@ export {
   executeMetaValuesRequest,
   filterIsPresent,
   getMetaFormat,
+  isSearchTerm,
   parseBasicQueryParams,
   parsePillDataFromUri,
   selectPillsFromPosition,

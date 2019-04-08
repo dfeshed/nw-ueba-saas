@@ -9,7 +9,7 @@ import {
   setReconOpen,
   setReconPanelSize
 } from 'investigate-events/actions/interaction-creators';
-import { uriEncodeMetaFilters } from 'investigate-events/actions/utils';
+import { isSearchTerm, uriEncodeMetaFilters } from 'investigate-events/actions/utils';
 import { serializeQueryParams } from 'investigate-shared/utils/pivot-util';
 import {
   META_PANEL_SIZES,
@@ -25,7 +25,6 @@ export default Route.extend({
   contextualHelp: service(),
   redux: service(),
   request: service(),
-
 
   /**
    * The `queryParams` property controls how changes to query params in the URL
@@ -49,9 +48,10 @@ export default Route.extend({
     rs: { refreshModel: false } // reconSize
   },
 
-  // Params used to update URL when hash comes in.
-  // Presence of nextQueryParams means we need to
-  // update the URL, but not re-run the query
+  /**
+   * Params used to update URL when hash comes in. Presence of nextQueryParams
+   * means we need to update the URL, but not re-run the query
+   */
   nextQueryParams: null,
 
   activate() {
@@ -92,9 +92,11 @@ export default Route.extend({
     }
   },
 
-  // Massages params and then kicks off the intialization of the
-  // investigate query. isInternalQuery is an indication that this
-  // query was kicked off via internal action, not via URL update
+  /**
+   * Massages params and then kicks off the intialization of the
+   * investigate query. isInternalQuery is an indication that this
+   * query was kicked off via internal action, not via URL update.
+   */
   runInvestigateQuery(params, isInternalQuery) {
     // If all the key values of 'params' are 'undefined',
     // then hardReset is set to true and initial state is set.
@@ -104,16 +106,37 @@ export default Route.extend({
     this.get('redux').dispatch(initializeInvestigate(params, this.transitionToPillHash.bind(this), hardReset, isInternalQuery));
   },
 
-  // Pulls stored query params and merges with
-  // query hash, then transitions to new URL.
-  // Ensures meta filter params are not in the URL
+  /**
+   * Pulls stored query params and merges with query hash, then transitions to
+   * new URL. Ensures meta filter params are not in the URL.
+   */
   transitionToPillHash(newHashes, nukeNextQP = true) {
     const params = this.get('nextQueryParams') || {};
 
     // Let hash be undefined if not passed in
-    let pdhash;
-    if (newHashes) {
-      pdhash = newHashes.join(',');
+    let textFilter, textFilterIdx, pdhash;
+
+    // If we have a Text filter, get it's location so we can insert it in the
+    // correct location below.
+    if (params.mf) {
+      textFilter = params.mf.split('/').find((d, i) => {
+        // save off index incase we find a Text filter
+        textFilterIdx = i;
+        return isSearchTerm(d);
+      });
+    }
+
+    if (newHashes && textFilter) {
+      // insert Text filter into correct location of hashes
+      pdhash = [
+        ...newHashes.slice(0, textFilterIdx),
+        textFilter,
+        ...newHashes.slice(textFilterIdx)
+      ].join(',');
+    } else if (textFilter) {
+      pdhash = [textFilter];
+    } else {
+      pdhash = newHashes;
     }
 
     if (nukeNextQP && newHashes === undefined) {

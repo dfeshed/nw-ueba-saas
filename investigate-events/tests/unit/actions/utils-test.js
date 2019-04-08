@@ -183,6 +183,16 @@ module('Unit | Helper | Actions Utils', function(hooks) {
       value: undefined
     });
   });
+
+  test('13. transformTextToPillData returns text filter object because of Text filter marker', function(assert) {
+    assert.expect(1);
+    const text = '~some random text';
+    const result = queryUtils.transformTextToPillData(text, DEFAULT_LANGUAGES);
+
+    assert.deepEqual(result, {
+      searchTerm: '~some random text'
+    });
+  });
   //
   // END transformTextToPillData
   //
@@ -672,5 +682,31 @@ module('Unit | Helper | Actions Utils', function(hooks) {
         a: 'bang'
       }
     ]);
+  });
+
+  test('uriEncodeMetaFilters can convert a pill array to a string suitable for the metaFilter query param', function(assert) {
+    const queryPill = { meta: 'action', operator: '=', value: 'foo' };
+    const encQP = encodeURIComponent('action = foo');
+    const complexPill = { complexFilterText: '(bar)' };
+    const encCP = encodeURIComponent('(bar)');
+    const textPill = { searchTerm: 'baz' };
+    const encTP = encodeURIComponent('~baz');
+    const empty = { meta: undefined, operator: undefined, value: undefined };
+    assert.equal(queryUtils.uriEncodeMetaFilters([queryPill]), encQP, 'query pill only');
+    assert.equal(queryUtils.uriEncodeMetaFilters([complexPill]), encCP, 'complex pill only');
+    assert.equal(queryUtils.uriEncodeMetaFilters([textPill]), encTP, 'text pill only');
+    assert.equal(queryUtils.uriEncodeMetaFilters([queryPill, complexPill]), `${encQP}/${encCP}`, 'query and complex pills');
+    assert.equal(queryUtils.uriEncodeMetaFilters([queryPill, textPill]), `${encQP}/${encTP}`, 'query and text pills');
+    assert.equal(queryUtils.uriEncodeMetaFilters([complexPill, textPill]), `${encCP}/${encTP}`, 'complex and text pills');
+    assert.equal(queryUtils.uriEncodeMetaFilters([queryPill, complexPill, textPill]), `${encQP}/${encCP}/${encTP}`, 'query, complex, and text pills');
+    assert.deepEqual(queryUtils.uriEncodeMetaFilters([empty]), undefined, 'empty pill');
+    assert.equal(queryUtils.uriEncodeMetaFilters([queryPill, empty]), `${encQP}`, 'query and empty pills');
+    assert.equal(queryUtils.uriEncodeMetaFilters([queryPill, empty, textPill]), `${encQP}/${encTP}`, 'query, empty, and text pills');
+  });
+
+  test('isSearchTerm is capable of determining if a string is marked as a Text pill', function(assert) {
+    assert.ok(queryUtils.isSearchTerm('~foobar'));
+    assert.notOk(queryUtils.isSearchTerm('foobar'));
+    assert.notOk(queryUtils.isSearchTerm('foo~bar'));
   });
 });

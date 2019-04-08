@@ -159,7 +159,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       sid: '555d9a6fe4b0d37c827d402e',
       et: '10000',
       st: '1',
-      pdhash: 'foo'
+      pdhash: 'td5a,76ty,0o9i'
     };
 
     // execute model hook
@@ -176,7 +176,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
 
       const hashes = queryNode.pillDataHashes || [];
 
-      const pillDataHashesPresent = hashes.length === 1 && hashes[0] === 'foo';
+      const pillDataHashesPresent = hashes.length === 3 && hashes[0] === 'td5a';
       const pillsDataPopulated = queryNode.pillsData.length === 3;
 
       if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated) {
@@ -206,16 +206,12 @@ module('Unit | Route | investigate-events.index', function(hooks) {
     await route.model(params);
     await settled();
     return waitUntil(() => {
-
       const baseComplete = isBaseInvestigateIntializationComplete();
       const calledFetchData = fetchInvestigateDataSpy.callCount === 1;
-
       const { queryNode } = redux.getState().investigate;
-
       const hashes = queryNode.pillDataHashes || [];
-
-      // 1f4 is returned for API for persisting params
-      const pillDataHashesPresent = hashes.length === 1 && hashes[0] === '1f4';
+      // The mocks for persisting params returns a 4-character string for each filter
+      const pillDataHashesPresent = hashes.length === 1 && hashes[0].length === 4;
       const pillsDataPopulated = queryNode.pillsData.length === 1;
 
       if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated) {
@@ -240,7 +236,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       et: '10000',
       st: '1',
       mf: "action = 'foo'",
-      pdhash: 'foo'
+      pdhash: 'r03j'
     };
 
     await route.model(params);
@@ -250,11 +246,9 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       const calledFetchData = fetchInvestigateDataSpy.callCount === 1;
       const { queryNode } = redux.getState().investigate;
       const hashes = queryNode.pillDataHashes || [];
-
-      // 1f4 is statically returned by mock-server for persisting params
-      const pillDataHashesPresent = hashes.length === 2 && hashes.includes('1f4') && hashes.includes('foo');
-      const arePillsInOrder = (hashes.indexOf('foo') === 0 && hashes.indexOf('1f4') === 1);
-      const pillsDataPopulated = queryNode.pillsData.length === 4;
+      const pillDataHashesPresent = hashes.length === 2 && hashes.includes('r03j');
+      const arePillsInOrder = (hashes.indexOf('r03j') === 0);
+      const pillsDataPopulated = queryNode.pillsData.length === 2;
 
       if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated && arePillsInOrder) {
         assert.ok(true, 'all the expected initial data was populated and query executed');

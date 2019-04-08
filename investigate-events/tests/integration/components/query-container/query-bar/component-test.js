@@ -333,11 +333,12 @@ module('Integration | Component | Query Bar', function(hooks) {
     await click(SELECTORS.queryFormatFreeFormToggle);
     assert.equal(find(SELECTORS.freeFormQueryBarInput).value, 'a = \'x\'', 'expected filter');
 
-    // reset the filter to no value
+    // Reset the filter to no value
     await fillIn(SELECTORS.freeFormQueryBarInput, '');
+    assert.equal(find(SELECTORS.freeFormQueryBarInput).value, '', 'expected no value');
 
+    // Click back to guided
     await click(SELECTORS.queryFormatGuidedToggle);
-
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 1, 'Should be just one template and no pills');
 
   });

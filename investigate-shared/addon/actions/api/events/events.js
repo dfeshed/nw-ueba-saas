@@ -1,6 +1,8 @@
 import {
   conditionsFilter,
   encodeMetaFilterConditions,
+  extractSearchTermFromFilters,
+  searchTermFilter,
   serviceIdFilter,
   streamingRequest,
   timeRangeFilter
@@ -21,11 +23,13 @@ import {
 export default function(queryNode, language, limit, batch, handlers, desiredMetas, dedicatedSocketName) {
   // conditions is legacy
   const filters = queryNode.metaFilter.conditions || queryNode.metaFilter;
+  const { metaFilters, searchTerm } = extractSearchTermFromFilters(filters);
   const query = {
     filter: [
       serviceIdFilter(queryNode.serviceId),
       timeRangeFilter(queryNode.startTime, queryNode.endTime),
-      conditionsFilter(encodeMetaFilterConditions(filters, language))
+      conditionsFilter(encodeMetaFilterConditions(metaFilters, language)),
+      searchTermFilter(searchTerm)
     ],
     stream: { limit, batch }
   };

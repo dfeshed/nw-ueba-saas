@@ -6,6 +6,8 @@
  */
 import { lookup } from 'ember-dependency-lookup';
 
+const SEARCH_TERM_MARKER = '~';
+
 /**
  * Creates a metaFilter conditions filter
  * @param {string} value - A query string
@@ -21,6 +23,7 @@ export const conditionsFilter = (value) => ({ field: 'query', value });
  * @public
  */
 export const selectFilter = (value) => ({ field: 'select', value });
+
 /**
  * Creates a serviceId filter
  * @param {string|number} value - The Id of the service
@@ -67,6 +70,33 @@ export const timeRangeFilter = (startTime, endTime) => ({
     to: endTime
   }
 });
+
+/**
+ * Creates a search term filter
+ * @param {string} value - The string to search for
+ * @return {object} A field/value object
+ * @public
+ */
+export const searchTermFilter = (value) => ({ field: 'searchTerm', value });
+
+/**
+ * Extracts a searchTerm filter from an array of other filters (guided/complex).
+ * Returns an object that has `metaFilter`s and `searchTerm` if found.
+ * @param {object[]} filters aka metaFilters
+ */
+export const extractSearchTermFromFilters = (filters) => {
+  let searchTerm;
+  const metaFilters = filters.reduce((acc, cur) => {
+    if (cur.searchTerm) {
+      searchTerm = cur.searchTerm;
+      return acc;
+    } else {
+      acc.push(cur);
+      return acc;
+    }
+  }, []);
+  return { metaFilters, searchTerm };
+};
 
 /**
  * Creates a Promise request with its "method" set to `findAll`,
@@ -152,7 +182,8 @@ export const _isValidQueryFilter = (condition) => {
   return !!condition.meta ||
     !!condition.operator ||
     !!condition.value ||
-    !!condition.complexFilterText;
+    !!condition.complexFilterText ||
+    !!condition.searchTerm;
 };
 
 /**
@@ -169,17 +200,17 @@ export const encodeMetaFilterConditions = (conditions = []) => {
   return conditions
     .filter((condition) => _isValidQueryFilter(condition))
     .map((condition) => {
-      const { meta, value, operator, complexFilterText } = condition;
-
+      const { meta, operator, value, complexFilterText, searchTerm } = condition;
       if (complexFilterText) {
         return complexFilterText;
+      } else if (searchTerm) {
+        return `${SEARCH_TERM_MARKER}${searchTerm}`;
       } else {
         return `${(meta) ? meta.trim() : ''} ${(operator) ? operator.trim() : ''} ${(value) ? value.trim() : ''}`;
       }
     })
     .join(' && ');
 };
-
 
 /**
  * Prepends a query string that will filter results based on a starting
@@ -198,6 +229,7 @@ export const addSessionIdFilter = (filter, startSessionId) => {
   }
   return out.join(' && ');
 };
+
 // *******
 // BEGIN - Should be moved with Download Manager's extract api call
 // *******

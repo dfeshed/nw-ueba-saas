@@ -1,6 +1,11 @@
 import { module, test } from 'qunit';
 
-import { encodeMetaFilterConditions, _isValidQueryFilter, createFilename } from 'investigate-shared/actions/api/events/utils';
+import {
+  _isValidQueryFilter,
+  createFilename,
+  encodeMetaFilterConditions,
+  extractSearchTermFromFilters
+} from 'investigate-shared/actions/api/events/utils';
 
 module('Unit | Helper | utils');
 
@@ -135,4 +140,24 @@ test('createFilename returns proper fileName when there is one sessionid', funct
 
   const result = createFilename(eventType, serviceName, sessionIds, isSelectAll);
   assert.equal(result, 'Conc_3412_NETWORK', 'return correct file name');
+});
+
+test('extractSearchTermFromFilters returns an array of pills without any text filters', function(assert) {
+  assert.expect(3);
+  const pills = [
+    { meta: 'foo' },
+    { searchTerm: 'bar' },
+    { meta: 'baz' },
+    { meta: 'bang' },
+    { meta: 'boom' }
+  ];
+  const { metaFilters, searchTerm } = extractSearchTermFromFilters(pills);
+  assert.equal(metaFilters.length, 4, 'Text pill was not removed from array of pills');
+  assert.deepEqual(metaFilters, [
+    { meta: 'foo' },
+    { meta: 'baz' },
+    { meta: 'bang' },
+    { meta: 'boom' }
+  ]);
+  assert.equal(searchTerm, 'bar', 'Search term should be extracted from array of pills');
 });

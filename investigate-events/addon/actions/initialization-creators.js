@@ -4,7 +4,8 @@ import { run } from '@ember/runloop';
 
 import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
 import { getParamsForHashes, getHashForParams } from './fetch/query-hashes';
-import { parseBasicQueryParams, parsePillDataFromUri, transformTextToPillData } from 'investigate-events/actions/utils';
+import { isSearchTerm, parseBasicQueryParams, parsePillDataFromUri, transformTextToPillData } from 'investigate-events/actions/utils';
+import { extractSearchTermFromFilters } from 'investigate-shared/actions/api/events/utils';
 import { fetchColumnGroups } from './fetch/column-groups';
 import { fetchInvestigateData, getServiceSummary } from './data-creators';
 import { isQueryExecutedByColumnGroup } from './interaction-creators';
@@ -160,16 +161,19 @@ const _handleInitializationError = (dispatch) => {
 };
 
 const _handleSearchParamsAndHashInQueryParams = (parsedQueryParams, hashNavigateCallback, dispatch, getState) => {
-  const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
-  const parsedPillData = parsePillDataFromUri(parsedQueryParams.pillData, metaKeys);
-
   return new Promise(function(resolve, reject) {
+    const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
+    const parsedPillData = parsePillDataFromUri(parsedQueryParams.pillData, metaKeys);
+
+    // If there is a Text filter, remove it because it's not a valid hash. We
+    // only store Text filter strings in the URL so they can be bookmarked and
+    // to save their pill position within the query.
+    const { metaFilters } = extractSearchTermFromFilters(parsedPillData);
+
     // fetch a hash for meta filters passed through the url
     dispatch({
       type: ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS,
-      promise: getHashForParams(
-        parsedPillData
-      ),
+      promise: getHashForParams(metaFilters),
       meta: {
         onSuccess({ data }) {
           const hashIds = data.map((d) => d.id);
@@ -228,15 +232,18 @@ const _handleSearchParamsInQueryParams = ({ pillData }, hashNavigateCallback, is
       });
     }
 
+    // If there is a Text filter, remove it because it's not a valid hash. We
+    // only store Text filter strings in the URL so they can be bookmarked and
+    // to save their pill position within the query.
+    const { metaFilters } = extractSearchTermFromFilters(parsedPillData);
+
     // If we have pill data, we need to create/fetch a hash
     // for that pill data and execute a navigation callback
     // so the route can be updated. This is async as it is
     // not critical to immediate downstream activity
     dispatch({
       type: ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS,
-      promise: getHashForParams(
-        parsedPillData
-      ),
+      promise: getHashForParams(metaFilters),
       meta: {
         onSuccess({ data }) {
           const hashIds = data.map((d) => d.id);
@@ -254,33 +261,57 @@ const _handleSearchParamsInQueryParams = ({ pillData }, hashNavigateCallback, is
 };
 
 const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, hashNavigateCallback, getState) => {
-  // TODO, check for hashes being equal?
+  // Pull possible text search string out of pillDataHashes, saving off data
+  // and index so we can insert it later.
+  let searchTextString;
+  const pdHashesWithoutTextFilter = pillDataHashes.reduce((acc, hash, index) => {
+    if (isSearchTerm(hash)) {
+      // The hash is a string like "~r8w3", where the tilde is the marker that
+      // this hash is actually a text search string. We need to remove the tilde.
+      const searchTerm = hash.slice(1);
+      searchTextString = { index, searchTerm };
+      return acc;
+    } else {
+      acc.push(hash);
+      return acc;
+    }
+  }, []);
+  return getParamsForHashes(pdHashesWithoutTextFilter)
+    .then(({ data: paramsObjectArray }) => {
+      // pull the actual param values out of
+      // the returned params objects
+      const paramsArray = paramsObjectArray.map((pO) => pO.query);
+      const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
 
-  return getParamsForHashes(pillDataHashes).then(({ data: paramsObjectArray }) => {
+      // Transform server param strings into pill data objects
+      // and dispatch those to state
+      const newPillData = paramsArray.map((singleParams) => {
+        return transformTextToPillData(singleParams, metaKeys);
+      });
 
-    // pull the actual param values out of
-    // the returned params objects
-    const paramsArray = paramsObjectArray.map((pO) => pO.query);
-    const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
-
-    // Transform server param strings into pill data objects
-    // and dispatch those to state
-    const newPillData = paramsArray.map((singleParams) => {
-      return transformTextToPillData(singleParams, metaKeys);
-    });
-
-    dispatch({
-      type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
-      payload: {
-        pillData: newPillData
+      // Was there a text search string?
+      if (searchTextString) {
+        // Create a textSearch pill and insert it into the correct index
+        const { index, searchTerm } = searchTextString;
+        const textFilter = {
+          meta: undefined,
+          operator: undefined,
+          value: undefined,
+          searchTerm
+        };
+        newPillData.insertAt(index, textFilter);
       }
-    });
-    hashNavigateCallback();
-  }).catch((err) => {
-    handleInvestigateErrorCode(err, 'getParamsForHashes');
-  });
-};
 
+      dispatch({
+        type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
+        payload: {
+          pillData: newPillData
+        }
+      });
+      hashNavigateCallback();
+    })
+    .catch((err) => handleInvestigateErrorCode(err, 'getParamsForHashes'));
+};
 
 /**
  * Kick off a series of events to initialize Investigate Events.
@@ -447,7 +478,6 @@ export const getServices = (resolve = noop, reject = noop) => {
     }
   };
 };
-
 
 /**
  * Initializes the dictionaries (language and aliases). If we've already
