@@ -11,7 +11,7 @@ pipeline {
         stages {
                 stage('Connect to Concentrator Machine') {
                         steps {
-                        build job: 'Test-Target', parameters: [[$class: 'StringParameterValue', name: 'systemname', value: systemname]]
+                        build job: 'Test-Target', parameters: [[$class: 'StringParameterValue', name: 'STABILITY', value: env.STABILITY]]
                         }
                 }
                 
