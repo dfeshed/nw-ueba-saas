@@ -10,11 +10,15 @@ pipeline {
 
         stages {
                 stage('Connect to Concentrator Machine') {
+                        steps {
                         build job: 'Test-Target', parameters: [[$class: 'StringParameterValue', name: 'systemname', value: systemname]]
+                        }
                 }
                 
                 stage('Connect to Concentrator Machine2') {
+                        steps {
                         sh "ifconfig"
+                        }
                 }
                                 
  /**           stage('presidio-integration-test Project Clone') {
