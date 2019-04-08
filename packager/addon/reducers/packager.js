@@ -62,8 +62,7 @@ const packagerReducer = handleActions({
       success: (s) => {
         const listOfServers = action.payload.data;
         listOfServers.forEach((item) => {
-          const { displayName = '' } = item;
-          item.hostName = displayName.replace(' - Endpoint Server', '');
+          item.hostIpClone = item.host;
         });
         return s.set('endpointServerList', listOfServers);
       }

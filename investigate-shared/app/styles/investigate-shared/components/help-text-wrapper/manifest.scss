@@ -1,19 +1,18 @@
 .helper-text-wrapper {
-  margin: 10px;
+  margin: rsa-whitespace(more) 0;
   padding: 21px;
   background-color: background-color(primary, darker);
   @include border(1px, solid, primary, lightest, nearly-transparent);
   .help-text-wrapper_title, .help-text-wrapper_help-text {
     width: 100%;
-    color: text-color(primary, lighter);
+    color: text-color(primary, light);
   }
 
   .help-text-wrapper_sub-title {
-    color: text-color(secondary, lighter);
+    color: text-color(secondary);
     font-weight: bold;
     text-transform: uppercase;
-    @include rsa-font(default, large);
-    margin-bottom: 21px;
+    margin-bottom: rsa-whitespace();
   }
   .help-text-wrapper_title {
     @include rsa-font(default, larger);
@@ -21,6 +20,7 @@
   }
   .help-text-wrapper_help-text {
     margin-bottom: 21px;
+    line-height: 1.5rem;
   }
   .help-text-wrapper_content-separator-wrapper {
     height: 30px;
@@ -28,19 +28,20 @@
     .help-text-wrapper_content-separator {
       width: 100%;
       color: text-color(primary, lighter);
-      @include border-bottom(1px, solid, primary, lightest, nearly-transparent);
+      border-bottom: 1px solid border-color(primary, dark);
       position: relative;
       height: 0px;
       .help-text-wrapper_content{
         position: absolute;
         left: 0px;
-        top: -13px;
+        top: -12px;
         padding: 5px 7px;
         border-radius: 8px;
-        @include border(1px, solid, primary, lightest, nearly-transparent);
+        border: 1px solid border-color(primary, dark);
         background-color: #000;
         text-transform: uppercase;
-        @include rsa-font(default, small);
+        @include rsa-font(bold, small);
+        color: text-color(primary, light);
       }
     }
   }

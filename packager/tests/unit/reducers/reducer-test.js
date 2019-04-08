@@ -198,5 +198,4 @@ test('get endpoint servers', function(assert) {
   });
   const endState = reducer(previous, action);
   assert.equal(endState.endpointServerList.length, 2, 'Endpoint server list updated');
-  assert.equal(endState.endpointServerList[0].hostName, 'EPS1-Arya', 'Endpoint server host name created');
 });

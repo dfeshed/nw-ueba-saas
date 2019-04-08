@@ -55,6 +55,9 @@ const saveRARConfig = (data, callback) => ({
   type: ACTION_TYPES.GET_AND_SAVE_RAR_CONFIG,
   promise: api.saveRARConfig(_formatRARConfigData({ ...data })),
   meta: {
+    onSuccess: () => {
+      callback.onSuccess();
+    },
     onFailure: (response) => {
       callback.onFailure(response.meta.message);
     }

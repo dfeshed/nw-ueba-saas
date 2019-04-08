@@ -2128,25 +2128,27 @@ export default {
       errorDescription: 'Endpoint Server may not be configured properly. See the Host Installation Guide for instructions on Endpoint Log Hybrid installation.'
     },
     packagerTitle: 'Packager',
-    serviceName: 'Service Name*',
+    serverListSearch: 'Type to filter options',
+    serviceName: 'Service Name<sup>*</sup>',
+    serverSettings: 'Endpoint Server Settings',
     server: 'Endpoint Server',
-    serverEdit: 'Edit Endpoint Server Name*',
-    port: 'HTTPS Port*',
+    serverEdit: 'Server Alias (Optional)',
+    port: 'HTTPS Port<sup>*</sup>',
     certificateValidation: 'Server Validation',
-    certificatePassword: 'Certificate Password*',
+    certificatePassword: 'Certificate Password<sup>*</sup>',
     none: 'None',
     fullChain: 'Full Chain',
     thumbprint: 'Certificate Thumbprint',
-    reset: 'Reset',
+    reset: 'Cancel',
     generateAgent: 'Generate Agent',
     generateLogConfig: 'Generate Log Configuration Only',
     loadExistingLogConfig: 'Load Existing Configuration...',
     description: 'Description',
     title: 'Packager',
     becon: 'Beacon',
-    displayName: 'Display Name*',
-    driverServiceName: 'Driver Service Name*',
-    driverDisplayName: 'Driver Display Name*',
+    displayName: 'Display Name<sup>*</sup>',
+    driverServiceName: 'Driver Service Name<sup>*</sup>',
+    driverDisplayName: 'Driver Display Name<sup>*</sup>',
     driverDescription: 'Driver Description',
     monitoringMode: 'Enable Monitoring',
     forceOverwriteWarningMessage: 'Force overwrite option is applicable only for windows agent',
@@ -2161,7 +2163,7 @@ export default {
     forceOverwrite: 'Force Overwrite',
     windowsLogCollectionCongfig: 'Windows Log Collection Configuration',
     enableWindowsLogCollection: 'Configure Windows Log Collection',
-    configurationName: 'Configuration Name*',
+    configurationName: 'Configuration Name<sup>*</sup>',
     statusLabel: 'Status',
     enabled: 'Enabled',
     disabled: 'Disabled',
@@ -2193,15 +2195,16 @@ export default {
     agentConfigNote: 'For a subsequent installation/upgrade, use the same service names.'
   },
   endpointRAR: {
-    backButton: 'Services',
-    title: 'Remote Agent Relay Settings',
+    title: 'Roaming Agents',
+    description: 'Roaming Agents provides visibility of endpoints off the corporate network.',
     rarInstaller: {
-      title: 'Install',
-      instruction: 'Create a password and enter it when prompted while running installer',
+      title: 'Download Installer',
+      instruction: 'Create a password and enter the same password when prompted during the Roaming Agent installation.',
       password: 'Password<sup>*</sup>',
-      downloadButton: 'Download installer'
+      downloadButton: 'Download'
     },
     rarConfig: {
+      infoMessage: 'ESH is a hostname which can be resolved only within the specified network.',
       title: 'Configure',
       hostName: 'Enterprise Specific hostname (ESH)<sup>*</sup>',
       endpointServer: 'ENDPOINT RAR SERVER',
@@ -2210,16 +2213,17 @@ export default {
       beaconInterval: 'HTTP BEACON INTERVAL<sup>*</sup>',
       mins: 'mins',
       saveConfig: 'Save configuration',
-      resetConfig: 'Cancel'
+      resetConfig: 'Cancel',
+      successMessage: 'Roaming Agent configuration changes saved successfully.'
     },
     errorMessages: {
-      passwordEmptyMessage: 'Please enter RAR password',
+      passwordEmptyMessage: 'Enter Roaming Agent password.',
       invalidPasswordString: 'Can contain alphanumeric or special characters, and a minimum of 3 characters.',
-      invalidPort: 'Please enter valid port number',
-      serverEmptyMessage: 'Please enter an IP address or a hostname',
-      invalidServer: 'Please enter valid IP address or hostname',
-      invalidBeaconInterval: 'The interval should be between 1 minute and 24 hours in minutes',
-      invalidHostName: 'Please enter a valid hostname'
+      invalidPort: 'Enter valid port number.',
+      serverEmptyMessage: 'Enter an IP address or a hostname.',
+      invalidServer: 'Enter valid IP address or hostname.',
+      invalidBeaconInterval: 'Interval value ranges from 60-1440 minutes.',
+      invalidHostName: 'Enter a valid hostname.'
     },
     errorPage: {
       errorTitle: 'Endpoint Server is offline',
@@ -2232,8 +2236,8 @@ export default {
       onceInstalled: 'once installed',
       addESH: 'Add ESH',
       addESHContent: 'Add domain name and that when not available can then talk to the other endpoint servers for RAR.',
-      configureServers: 'Configure Servers',
-      configureServersContent: 'Add IP address , port and beacon time to communicate.'
+      configureServers: 'Configure Roaming Agent Servers',
+      configureServersContent: 'Add IP address, port and beacon time to communicate.'
     }
   },
   investigateFiles: {

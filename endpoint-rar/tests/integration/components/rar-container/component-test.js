@@ -30,6 +30,5 @@ module('Integration | Component | rar-container', function(hooks) {
 
     assert.equal(findAll('iframe').length, 1, 'iframe has rendered.');
     assert.equal(find('iframe').src.includes('endpoint/test_serverId/rar/installer/download'), true, 'iframe source.');
-    assert.equal(find('.back-to-services .backButton').textContent.trim(), 'Services', 'Back to services button present');
   });
 });

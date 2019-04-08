@@ -6,7 +6,7 @@ import { connect } from 'ember-redux';
 import _ from 'lodash';
 
 import { validateConfig } from 'investigate-shared/utils/validation-utils';
-import { failure } from 'investigate-shared/utils/flash-messages';
+import { success, failure } from 'investigate-shared/utils/flash-messages';
 
 
 import {
@@ -39,11 +39,6 @@ const RARConfig = Component.extend({
     return isEmpty(esh) || isEmpty(httpsPort) || isEmpty(httpsBeaconIntervalInSeconds) || isEmpty(address);
   },
 
-  @computed('invalidPortMessage', 'invalidServerMessage', 'invalidHostNameMessage', 'invalidBeaconIntervalMessage')
-  errorMessage(invalidPortMessage, invalidServerMessage, invalidHostNameMessage, invalidBeaconIntervalMessage) {
-    return invalidPortMessage || invalidServerMessage || invalidHostNameMessage || invalidBeaconIntervalMessage;
-  },
-
   resetErrorProperties() {
     this.setProperties({
       isHostError: false,
@@ -60,6 +55,7 @@ const RARConfig = Component.extend({
   _getCallbackFunction() {
     return {
       onSuccess: () => {
+        success('endpointRAR.rarConfig.successMessage');
         this.resetErrorProperties();
       },
       onFailure(message) {

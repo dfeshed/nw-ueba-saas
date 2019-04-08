@@ -42,12 +42,6 @@ const RARContainer = Component.extend({
         this.send('getRARConfig', callback);
       }
     });
-  },
-
-  actions: {
-    backToServiceList() {
-      window.location.href = `${window.location.origin}/admin/services/`;
-    }
   }
 });
 

@@ -71,9 +71,16 @@ const formComponent = Component.extend({
 
   autoUninstall: null,
 
-  @computed('configData.packageConfig.server', 'configData.packageConfig.port', 'isUpdating')
-  isDisabled(server, port, isUpdating) {
-    return isEmpty(server) || isEmpty(port) || isUpdating;
+  status: 'enabled',
+
+  editedHost: '',
+
+  @computed('status')
+  enabled: (status) => status !== 'disabled',
+
+  @computed('selectedServerForEdit.port', 'isUpdating')
+  isDisabled(port, isUpdating) {
+    return isEmpty(port) || isUpdating;
   },
 
   @computed('configData.packageConfig.driverDisplayName')
@@ -93,9 +100,9 @@ const formComponent = Component.extend({
 
   @computed('selectedServerIP', 'configData.packageConfig')
   selectedServerForEdit(selectedServerIP, packageConfig) {
-    const { hostName } = selectedServerIP;
+    const { host: selectedHost } = selectedServerIP;
     const { serviceId, server: host, port } = packageConfig;
-    return (selectedServerIP.id === serviceId) ? { ...selectedServerIP, host, port } : { ...selectedServerIP, host: hostName, port: 443 };
+    return (selectedServerIP.id === serviceId) ? { ...selectedServerIP, host, port } : { ...selectedServerIP, host: selectedHost, port: 443 };
   },
 
   resetErrorProperties() {
@@ -121,6 +128,15 @@ const formComponent = Component.extend({
     });
   },
 
+  resetDefaultProperties() {
+    this.setProperties({
+      testLog: true,
+      selectedProtocol: 'TCP',
+      status: 'enabled',
+      editedHost: ''
+    });
+  },
+
   _getTimezoneTime(selectedTime) {
     // Removing browser timezone information
     const timeWithoutZone = moment(selectedTime).parseZone(selectedTime).format('YYYY-MM-DDTHH:mm:ss');
@@ -132,12 +148,13 @@ const formComponent = Component.extend({
     $(target)[0].scrollIntoView();
   },
 
-  _getCallbackFunction() {
+  _getCallbackFunction(configDataOld) {
     return {
       onSuccess: () => {
         this.resetErrorProperties();
       },
       onFailure: () => {
+        this.send('saveUIState', configDataOld);
         failure('packager.errorMessages.packagerNotCreated');
       }
     };
@@ -163,28 +180,39 @@ const formComponent = Component.extend({
 
     generateAgent() {
       this.resetErrorProperties();
-      const autoUninstall = this.get('autoUninstall');
-      const { port, host, id } = this.get('selectedServerForEdit');
+      const packagerAutoUninstall = this.get('autoUninstall');
+      let autoUninstall = null;
+      const { port, hostIpClone, id: serviceId } = this.get('selectedServerForEdit');
 
-      if (autoUninstall && autoUninstall.length) {
-        const date = this._getTimezoneTime(autoUninstall[0]);
-        this.set('configData.packageConfig.autoUninstall', date);
-      } else {
-        this.set('configData.packageConfig.autoUninstall', null);
+      if (packagerAutoUninstall && packagerAutoUninstall.length) {
+        autoUninstall = this._getTimezoneTime(packagerAutoUninstall[0]);
       }
 
-      this.set('configData.packageConfig.driverServiceName', this.get('driverServiceName'));
-      this.set('configData.packageConfig.driverDisplayName', this.get('driverDisplayName'));
-      this.set('configData.packageConfig.driverDescription', this.get('driverDescription'));
-      this.set('configData.packageConfig.monitoringModeEnabled', true);
-      this.set('configData.packageConfig.server', host);
-      this.set('configData.packageConfig.serviceId', id);
-      this.set('configData.packageConfig.port', port);
+      const driverServiceName = this.get('driverServiceName');
+      const driverDisplayName = this.get('driverDisplayName');
+      const driverDescription = this.get('driverDescription');
+      const monitoringModeEnabled = true;
+      const server = this.get('editedHost') || hostIpClone;
 
-      const error = validatePackageConfig(this.get('configData.packageConfig'));
+      const configDataBkp = this.get('configData');
+      const configDataClone = { ...configDataBkp };
+      configDataClone.packageConfig = {
+        ...configDataClone.packageConfig,
+        autoUninstall,
+        driverServiceName,
+        driverDisplayName,
+        driverDescription,
+        monitoringModeEnabled,
+        server,
+        serviceId,
+        port
+      };
+
+      const error = validatePackageConfig(configDataClone.packageConfig);
       this.setProperties(error);
       if (!error) {
-        this.send('setConfig', { ...this.get('configData') }, this._getCallbackFunction(), this.get('serverId'));
+        this.send('saveUIState', configDataClone);
+        this.send('setConfig', { ...configDataClone }, this._getCallbackFunction(configDataBkp), this.get('serverId'));
       } else {
         if (error.isAccordion) {
           this._agentConfigExpand();
@@ -193,9 +221,13 @@ const formComponent = Component.extend({
       }
     },
 
-    setSelect(property, selected, option) {
-      this.set(selected, option);
-      this.set(`configData.logCollectionConfig.${property}`, option);
+    toggleProperty(property) {
+      this.toggleProperty(property);
+    },
+
+    setSelect(option) {
+      this.send('setSelectedServer', option);
+      this.set('editedHost', '');
     },
 
     reset() {

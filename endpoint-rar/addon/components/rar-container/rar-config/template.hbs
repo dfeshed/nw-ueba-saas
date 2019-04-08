@@ -8,42 +8,47 @@
       errorMessage=(t invalidHostNameMessage)
       label=(t 'endpointRAR.rarConfig.hostName')
       value=configData.rarConfig.esh}}
+    <div class='tooltip'>
+      {{#rsa-text-with-tooltip  copyText=false value=(t 'endpointRAR.rarConfig.infoMessage')
+      style='standard'
+      alwaysShow=true}}
+        {{rsa-icon size='medium' name='information-circle' style='filled'}}
+      {{/rsa-text-with-tooltip}}
+    </div>
   </div>
   <div class='endpoint-server'>{{t 'endpointRAR.rarConfig.endpointServer'}}</div>
   <div class="field">
-    <div class="host-ip">
-      {{rsa-form-input
-        isError=isServerError
-        class='server-input'
-        label=(t 'endpointRAR.rarConfig.server')
-        value=configData.rarConfig.address}}
-    </div>
-    <div class="host-port">
-      {{rsa-form-input
-        maxLength=10
-        class='port-input'
-        isError=isPortError
-        label=(t 'endpointRAR.rarConfig.port')
-        value=configData.rarConfig.httpsPort}}
-    </div>
-    <div class='beacon-interval-wrapper'>
-      <label class='rsa-form-input beacon-label'>
-        <span class='rsa-form-label'>{{t 'endpointRAR.rarConfig.beaconInterval'}}</span>
-      </label>
-      <div class="beacon-interval-value">
+    <hbox xs="12">
+      <div class="col-xs-4 host-ip">
+        {{rsa-form-input
+          isError=isServerError
+          class='server-input'
+          errorMessage=(t invalidServerMessage)
+          label=(t 'endpointRAR.rarConfig.server')
+          value=configData.rarConfig.address}}
+      </div>
+      <div class="col-xs-3 host-port">
+        {{rsa-form-input
+          maxLength=10
+          class='port-input'
+          isError=isPortError
+          errorMessage=(t invalidPortMessage)
+          label=(t 'endpointRAR.rarConfig.port')
+          value=configData.rarConfig.httpsPort}}
+      </div>
+      <div class="col-xs-3 beacon-interval-value">
         {{rsa-form-input
           class='beacon-interval'
           isError=isBeaconError
+          errorMessage=(t invalidBeaconIntervalMessage)
+          label=(t 'endpointRAR.rarConfig.beaconInterval')
           value=configData.rarConfig.httpsBeaconIntervalInSeconds
         }}
       </div>
-      <div class="beacon-interval-unit">
+      <div class="col-xs-1 beacon-interval-unit">
         {{t 'endpointRAR.rarConfig.mins'}}
       </div>
-    </div>
-    {{#if errorMessage}}
-      <div class='input-error'>{{t errorMessage}}</div>
-    {{/if}}
+    </hbox>
   </div>
   <div class='button-wrapper'>
     {{#rsa-form-button 

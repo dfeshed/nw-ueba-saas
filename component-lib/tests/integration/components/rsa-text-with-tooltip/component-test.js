@@ -93,4 +93,18 @@ module('Integration | Component | rsa-text-with-tooltip', function(hooks) {
     await triggerEvent('.tooltip-text', 'mouseout');
     assert.equal(findAll('.ember-tether .tool-tip-value').length, 0, 'Tool tip is hidden');
   });
+  test('it renders copy text icon by default', async function(assert) {
+    assert.expect(1);
+    this.set('value', 'Test text');
+    await render(hbs`{{rsa-text-with-tooltip alwaysShow=true style='standard' value=value}}`);
+    await triggerEvent('.tooltip-text', 'mouseover');
+    assert.equal(findAll('i.rsa-icon-copy-1-filled').length, 1, 'Copy text icon rendered by default');
+  });
+  test('it does not render copy text icon when copyText is false', async function(assert) {
+    assert.expect(1);
+    this.set('value', 'Test text');
+    await render(hbs`{{rsa-text-with-tooltip alwaysShow=true style='standard' value=value copyText=false}}`);
+    await triggerEvent('.tooltip-text', 'mouseover');
+    assert.equal(findAll('i.rsa-icon-copy-1-filled').length, 0, 'Copy text icon not rendered when copyText is set to false');
+  });
 });

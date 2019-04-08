@@ -1,8 +1,9 @@
 // Wrapper
 .rar-container {
-  padding: rsa-whitespace(more);
-  height: 90vh;
-  overflow-x: auto;
+  padding: rsa-whitespace(more) rsa-whitespace(more) 0 rsa-whitespace(more);
+  height: 100vh;
+  width: 100vw;
+  overflow-y: auto;
   .rsa-page-layout .right-zone {
     border: none;
   }
@@ -11,18 +12,21 @@
   }
   .endpoint-rar-header {
     @include border-bottom(1px, solid, primary, lightest, nearly-transparent);
-    padding-bottom: rsa-whitespace(more);
+    padding-bottom: rsa-whitespace();
 
     h1, .rar-container_description {
       @include rsa-font(body, large);
-      line-height: 3rem;
+      line-height: 2rem;
       color: text-color(primary, light);
     }
     h1 {
       font-size: 2rem;
     }
     .back-to-services {
-      margin-bottom: rsa-whitespace(more);
+      margin-bottom: 1.5rem;
+    }
+    .rar-container_description {
+      line-height: 3rem;
     }
   }
   .rar-configuration {
@@ -34,10 +38,10 @@
     }
     .rar-container_rar-installer_note {
       display: inline-block;
-      margin: rsa-whitespace(less) 0;
+      margin: rsa-whitespace(less) 0 1.5rem 0;
       line-height: 1.2rem;
       color: text-color(primary, light);
-      @include rsa-font(body, small);
+      @include rsa-font(body, medium);
     }
   }
   .download-rar-installer {
@@ -50,7 +54,7 @@
   .rar-installer {
     margin-top: rsa-whitespace(more);
     .rar-installer_password-field {
-      width: 350px;
+      width: 270px;
     }
   }
   .rar-config {
@@ -60,6 +64,16 @@
       .esh-name {
         width: 270px;
         margin-bottom: rsa-whitespace(more);
+        position: relative;
+        .tooltip {
+          width: 17px;
+          position: absolute;
+          right: 20px;
+          top: -5px;
+          i {
+            color: text-color(primary, light);
+          }
+        }
       }
       .endpoint-server {
         vertical-align: text-top;
@@ -70,46 +84,28 @@
       }
       .field {
         @include border(1px, solid, primary, lightest, nearly-transparent);
-        padding: rsa-whitespace(more);
+        padding: rsa-whitespace(more) rsa-whitespace(more) rsa-whitespace() rsa-whitespace(more);
         margin-top: rsa-whitespace();
-        width: 620px;
-        position: relative;
+        width: 700px;
+        min-height: 90px;
         > div {
           display: inline-block;
           margin-left: rsa-whitespace(less);
         }
         .host-ip {
           width: 270px;
+          margin-right: 10px;
         }
         .host-port {
           width: 170px;
+          margin-right: 10px;
         }
-        .beacon-interval-wrapper {
-          position: relative;
-          .beacon-label {
-            position: absolute;
-            width: 150px;
-            left: 3px;
-            top: -9px;
-          }
-        }
-        .beacon-interval-value {
-          width: 70px;
-          display: inline-block;
-        }
+
         .beacon-interval-unit {
           @include rsa-font(body, large);
           color: text-color(primary, light);
-          width: 30px;
-          display: inline-block;
           margin-left: rsa-whitespace(less);
-        }
-        .input-error {
-          position: absolute;
-          width: 600px;
-          left: 26px;
-          bottom: 6px;
-          color: text-color(primary, light);
+          line-height: 4rem;
         }
       }
       .button-wrapper {

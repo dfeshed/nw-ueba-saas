@@ -38,7 +38,7 @@ module('Integration | Component | rar-container', function(hooks) {
 
     await render(hbs`{{rar-container/rar-installer}}`);
 
-    assert.equal(find('.rar-container_rar-installer_downloadInstaller .backButton').textContent.trim(), 'Download installer', 'Download intaller text has rendered.');
+    assert.equal(find('.rar-container_rar-installer_downloadInstaller .backButton').textContent.trim(), 'Download', 'Download intaller text has rendered.');
   });
 
   test('password validation content', async function(assert) {
@@ -69,7 +69,7 @@ module('Integration | Component | rar-container', function(hooks) {
     await click('.password-input-js input');
     await fillIn('.password-input-js input', ' ');
     await triggerKeyEvent('.password-input-js input', 'keyup', 65);
-    assert.equal(find('.input-error').textContent.trim(), 'Please enter RAR password');
+    assert.equal(find('.input-error').textContent.trim(), 'Enter Roaming Agent password.');
   });
 
 });

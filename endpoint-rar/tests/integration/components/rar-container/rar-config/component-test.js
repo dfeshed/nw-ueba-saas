@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll, fillIn, click } from '@ember/test-helpers';
+import { render, find, findAll, fillIn, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import Immutable from 'seamless-immutable';
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -10,7 +10,7 @@ import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 
 let setState;
 
-module('Integration | Component | rar-container', function(hooks) {
+module('Integration | Component | rar-container/rar-config', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
@@ -80,7 +80,7 @@ module('Integration | Component | rar-container', function(hooks) {
 
     await render(hbs`{{rar-container/rar-config}}`);
     await click('.button-wrapper .is-primary button');
-    assert.equal(find('.field .input-error').textContent.trim(), 'Please enter a valid hostname', 'ESH error message rendered');
+    assert.equal(find('.esh-name .input-error').textContent.trim(), 'Enter a valid hostname.', 'ESH error message rendered');
     assert.equal(find('.host-ip input').value, 'localhost', 'ESH value rendered');
     assert.equal(find('.host-port input').value, '443', 'ESH value rendered');
     assert.equal(find('.beacon-interval-value input').value, '15', 'ESH value rendered');
@@ -101,7 +101,7 @@ module('Integration | Component | rar-container', function(hooks) {
 
     await render(hbs`{{rar-container/rar-config}}`);
     await click('.button-wrapper .is-primary button');
-    assert.equal(find('.field .input-error').textContent.trim(), 'Please enter valid IP address or hostname', 'Host address error message rendered');
+    assert.equal(find('.host-ip .input-error').textContent.trim(), 'Enter valid IP address or hostname.', 'Host address error message rendered');
   });
 
   test('rar-config Error message for host port', async function(assert) {
@@ -116,7 +116,7 @@ module('Integration | Component | rar-container', function(hooks) {
 
     await render(hbs`{{rar-container/rar-config}}`);
     await click('.button-wrapper .is-primary button');
-    assert.equal(find('.field .input-error').textContent.trim(), 'Please enter valid port number', 'Host port error message rendered');
+    assert.equal(find('.host-port .input-error').textContent.trim(), 'Enter valid port number.', 'Host port error message rendered');
   });
 
   test('rar-config Error message for beacon interval', async function(assert) {
@@ -131,7 +131,7 @@ module('Integration | Component | rar-container', function(hooks) {
 
     await render(hbs`{{rar-container/rar-config}}`);
     await click('.button-wrapper .is-primary button');
-    assert.equal(find('.field .input-error').textContent.trim(), 'The interval should be between 1 minute and 24 hours in minutes', 'Invalid beacon interval error message rendered');
+    assert.equal(find('.beacon-interval-value .input-error').textContent.trim(), 'Interval value ranges from 60-1440 minutes.', 'Invalid beacon interval error message rendered');
   });
 
   test('rar-config Error message for beacon interval', async function(assert) {
@@ -155,5 +155,12 @@ module('Integration | Component | rar-container', function(hooks) {
     assert.equal(find('.host-ip input').value, 'localhostOne', 'Edited value present');
     await click('.button-wrapper .is-standard button');
     assert.equal(find('.host-ip input').value, 'localhost', 'Cancel brings back the initial value');
+  });
+
+  test('info icon present', async function(assert) {
+    await render(hbs`{{rar-container/rar-config}}`);
+    assert.equal(findAll('i.rsa-icon-information-circle-filled').length, 1, 'information icon present');
+    await triggerEvent('i.rsa-icon-information-circle-filled', 'mouseover');
+    assert.equal(find('.tool-tip-value').textContent.trim(), 'ESH is a hostname which can be resolved only within the specified network.', 'information icon present');
   });
 });

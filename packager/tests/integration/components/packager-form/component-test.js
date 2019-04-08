@@ -69,7 +69,8 @@ module('Integration | Component | packager-form', function(hooks) {
   test('it renders form with saved data', async function(assert) {
     assert.expect(2);
     new ReduxDataHelper(setState).defaultConfig().setData('selectedServerIP', selectedServerIP).build();
-    await render(hbs`{{packager-form}}`);
+    this.set('editedHost', 'EPS1-Arya');
+    await render(hbs`{{packager-form editedHost=editedHost}}`);
     // server
     const hostIPInput = find('.host-ip-js input');
     assert.equal(hostIPInput.value, 'EPS1-Arya', 'Expected to match the value "EPS1-Arya" in DOM.');
@@ -403,7 +404,8 @@ module('Integration | Component | packager-form', function(hooks) {
       .setData('defaultPackagerConfig', testConfig)
       .setData('selectedServerIP', selectedServerIP)
       .build();
-    await render(hbs`{{packager-form}}`);
+    this.set('editedHost', '10.101.34.245');
+    await render(hbs`{{packager-form editedHost=editedHost}}`);
     assert.equal(find('.host-ip-js input').value, '10.101.34.245', 'Editable endpoint servers rendered');
     assert.equal(find('.host-port-js input').value, '443', 'Editable endpoint servers port rendered');
   });
@@ -426,8 +428,10 @@ module('Integration | Component | packager-form', function(hooks) {
       .setData('defaultPackagerConfig', testConfig)
       .setData('selectedServerIP', selectedServerIP)
       .build();
-    await render(hbs`{{packager-form}}`);
-    assert.equal(find('.host-ip-js input').value, 'EPS1-Arya', 'Editable endpoint servers rendered');
+    this.set('editedHost', 'EPS1-Arya');
+    await render(hbs`{{packager-form editedHost=editedHost}}`);
+    assert.equal(find('.host-ip-js input').value, 'EPS1-Arya', 'Editable endpoint server rendered');
+    assert.equal(find('.host-ip-js input').placeholder, '10.40.15.204', 'Endpoint server rendered as placeholder');
     assert.equal(find('.host-port-js input').value, '443', 'Editable endpoint servers port rendered');
   });
 });
