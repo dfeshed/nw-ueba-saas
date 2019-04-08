@@ -104,11 +104,29 @@ const investigateConfigGen = function(env) {
         requestDestination: '/ws/investigate/predicate/get-by-query'
       }
     },
-    'reconstruction-extract-job-id': {
+
+    // endpoint for NETWORK event download
+    'extract-NETWORK-job-id': {
       socketUrl,
       query: {
-        subscriptionDestination: '/user/queue/investigate/extract/file',
-        requestDestination: '/ws/investigate/extract/file'
+        subscriptionDestination: '/user/queue/investigate/extract/pcap',
+        requestDestination: '/ws/investigate/extract/pcap'
+      }
+    },
+
+    // endpoint for LOG event download
+    'extract-LOG-job-id': {
+      socketUrl,
+      query: {
+        subscriptionDestination: '/user/queue/investigate/extract/log',
+        requestDestination: '/ws/investigate/extract/log'
+      }
+    },
+    'extract-META-job-id': {
+      socketUrl,
+      query: {
+        subscriptionDestination: '/user/queue/investigate/extract/meta',
+        requestDestination: '/ws/investigate/extract/meta'
       }
     },
     'investigate-notification': {

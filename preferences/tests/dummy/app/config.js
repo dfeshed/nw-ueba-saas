@@ -22,9 +22,9 @@ export default {
     name: 'preferences.investigate-events.defaultEventView',
     type: 'dropdown',
     options: [
-      'TEXT',
+      'FILE',
       'PACKET',
-      'FILE'
+      'TEXT'
     ],
     additionalFieldPrefix: 'reconView',
     field: 'eventAnalysisPreferences.currentReconView'
@@ -34,10 +34,10 @@ export default {
     type: 'dropdown',
     eventDownloadType: 'LOG',
     options: [
-      'LOG',
       'CSV',
-      'XML',
-      'JSON'
+      'JSON',
+      'TEXT', // LOG
+      'XML'
     ],
     field: 'eventAnalysisPreferences.defaultLogFormat'
   },
@@ -46,10 +46,10 @@ export default {
     type: 'dropdown',
     eventDownloadType: 'NETWORK',
     options: [
-      'PCAP',
       'PAYLOAD',
-      'PAYLOAD1',
-      'PAYLOAD2'
+      'PCAP',
+      'PAYLOAD2',
+      'PAYLOAD1'
     ],
     field: 'eventAnalysisPreferences.defaultPacketFormat'
   },
@@ -58,10 +58,10 @@ export default {
     type: 'dropdown',
     eventDownloadType: 'META',
     options: [
-      'TEXT',
       'CSV',
-      'TSV',
-      'JSON'
+      'JSON',
+      'TEXT',
+      'TSV'
     ],
     field: 'eventAnalysisPreferences.defaultMetaFormat'
   },
@@ -80,8 +80,8 @@ export default {
     info: true, // for preferences that need additional information
     type: 'radio',
     options: [
-      'Descending',
-      'Ascending'
+      'Ascending',
+      'Descending'
     ],
     field: 'eventAnalysisPreferences.eventTimeSortOrder'
   }, */
@@ -99,7 +99,7 @@ export default {
     queryTimeFormat: 'DB',
     eventAnalysisPreferences: {
       currentReconView: 'TEXT',
-      defaultLogFormat: 'LOG',
+      defaultLogFormat: 'TEXT',
       defaultPacketFormat: 'PCAP',
       defaultMetaFormat: 'TEXT',
       autoDownloadExtractedFiles: true,

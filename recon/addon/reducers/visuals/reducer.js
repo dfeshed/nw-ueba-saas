@@ -17,7 +17,7 @@ const visualsInitialState = Immutable.from({
   isReconOpen: false,
   isRequestShown: true,
   isResponseShown: true,
-  defaultLogFormat: 'LOG',
+  defaultLogFormat: 'TEXT',
   defaultPacketFormat: 'PCAP'
 });
 

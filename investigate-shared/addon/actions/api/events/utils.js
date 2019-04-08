@@ -250,15 +250,7 @@ export const addTimerangeFilter = (query, start, end) => {
 export const addFileTypeFilter = (query, type) => {
   return _addFilter(
     query,
-    'filetype',
-    type
-  );
-};
-
-export const addEventTypeFilter = (query, type) => {
-  return _addFilter(
-    query,
-    'eventtype',
+    'outputContentType',
     type
   );
 };
@@ -278,6 +270,18 @@ export const addFilenameFilter = (query, filename) => {
       query,
       'filename',
       filename
+    );
+  }
+  return query;
+};
+
+export const addMetaToDownloadFilter = (query, metaKeys) => {
+  if (metaKeys) {
+    query = _addFilter(
+      query,
+      'exportSelections',
+      metaKeys,
+      'values'
     );
   }
   return query;

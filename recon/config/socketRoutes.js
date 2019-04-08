@@ -62,11 +62,31 @@ const reconValueConfigGen = function(environment) {
         requestDestination: '/ws/investigate/reconstruct/session-files'
       }
     },
-    'reconstruction-extract-job-id': {
+
+    // endpoint for downloading FILES contained in NETWORK events
+    'reconstruction-extract-FILES-job-id': {
       socketUrl,
       query: {
         subscriptionDestination: '/user/queue/investigate/extract/file',
         requestDestination: '/ws/investigate/extract/file'
+      }
+    },
+
+    // endpoint for NETWORK event download
+    'reconstruction-extract-NETWORK-job-id': {
+      socketUrl,
+      query: {
+        subscriptionDestination: '/user/queue/investigate/extract/pcap',
+        requestDestination: '/ws/investigate/extract/pcap'
+      }
+    },
+
+    // endpoint for LOG event download
+    'reconstruction-extract-LOG-job-id': {
+      socketUrl,
+      query: {
+        subscriptionDestination: '/user/queue/investigate/extract/log',
+        requestDestination: '/ws/investigate/extract/log'
       }
     },
     'investigate-notification': {

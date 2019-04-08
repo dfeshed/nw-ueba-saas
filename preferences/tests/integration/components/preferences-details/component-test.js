@@ -116,7 +116,7 @@ module('Integration | Component | Preferences Details', function(hooks) {
     await clickTrigger('.rsa-preferences-field-content:nth-child(3)');
     const options = findAll('.ember-power-select-option');
     assert.equal(options.length, 4);
-    assert.equal(getTextFromDOMArray(options), 'DownloadAllPayloadsDownloadPCAPDownloadResponsePayloadDownloadRequestPayload');
+    assert.equal(getTextFromDOMArray(options), 'DownloadPayloadsDownloadPCAPDownloadResponsePayloadDownloadRequestPayload');
   });
 
   test('Preferences panel comes with valid options for meta format', async function(assert) {

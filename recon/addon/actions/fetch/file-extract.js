@@ -4,9 +4,10 @@ import {
   addFileTypeFilter,
   addSessionIdsFilter,
   addFileSelectionsFilter,
-  addFilenameFilter,
-  addEventTypeFilter
+  addFilenameFilter
 } from '../util/query-util';
+import { EVENT_TYPES } from 'component-lib/constants/event-types';
+import { EVENT_DOWNLOAD_TYPES } from 'component-lib/constants/event-download-types';
 
 /**
  * Retrieves an ID from server for a job to extract the files of a given event id.
@@ -26,18 +27,26 @@ import {
 export default function fetchExtractJobId(endpointId, eventId, fileType, filename, filenames, eventType) {
   const request = lookup('service:request');
   let query = endpointFilter(endpointId);
-  query = addSessionIdsFilter(query, [ eventId ]);
   query = addFilenameFilter(query, filename);
-  query = addFileTypeFilter(query, fileType);
-  query = addEventTypeFilter(query, eventType);
+  query = addSessionIdsFilter(query, [ eventId ]);
 
-  if (fileType !== 'LOG') {
+  // When extracting files from network event, extractType is the fileType (i.e. 'FILES')
+  // else extractType is eventType (eg. 'NETWORK', 'LOG')
+  let extractType = eventType;
+
+  if (eventType === EVENT_TYPES.NETWORK && fileType === EVENT_DOWNLOAD_TYPES.FILES) {
+    extractType = fileType;
+    // downloading files requires list of filenames to be downloaded
     query = addFileSelectionsFilter(query, filenames);
+  } else {
+    // downloading 'PCAPS', 'PAYLOADS', etc from NETWORK events and 'TEXT', 'CSV', etc from LOG events requires fileType
+    query = addFileTypeFilter(query, fileType);
   }
 
+  // separate socket enpoint call based on extractType (eg. FILES, NETWORK, LOG)
   return request.promiseRequest({
     method: 'query',
-    modelName: 'reconstruction-extract-job-id',
+    modelName: `reconstruction-extract-${extractType}-job-id`,
     query
   });
 }

@@ -43,9 +43,6 @@ const DownloadDropdown = Component.extend({
     downloadFiles(option) {
       const isAllEventsSelected = this.get('isAllEventsSelected');
       const { eventDownloadType, fileType, sessionIds } = option;
-      if (eventDownloadType === 'META') {
-        return;
-      }
       this.send('extractFiles', eventDownloadType, fileType, sessionIds, isAllEventsSelected);
     }
   }

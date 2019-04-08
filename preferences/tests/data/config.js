@@ -36,7 +36,7 @@ export default {
     options: [
       'CSV',
       'JSON',
-      'LOG',
+      'TEXT', // LOG
       'XML'
     ],
     field: 'eventAnalysisPreferences.defaultLogFormat'
@@ -99,7 +99,7 @@ export default {
     queryTimeFormat: 'DB',
     eventAnalysisPreferences: {
       currentReconView: 'TEXT',
-      defaultLogFormat: 'LOG',
+      defaultLogFormat: 'TEXT',
       defaultPacketFormat: 'PCAP',
       defaultMetaFormat: 'TEXT',
       autoDownloadExtractedFiles: true,

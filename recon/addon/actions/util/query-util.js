@@ -94,15 +94,7 @@ const basicPromiseRequest = (endpointId, eventId, modelName, streamOptions = {})
 const addFileTypeFilter = (query, type) => {
   return _addFilter(
     query,
-    'filetype',
-    type
-  );
-};
-
-const addEventTypeFilter = (query, type) => {
-  return _addFilter(
-    query,
-    'eventtype',
+    'outputContentType',
     type
   );
 };
@@ -111,7 +103,7 @@ const addFileSelectionsFilter = (query, filenames = []) => {
   if (filenames.length) {
     query = _addFilter(
       query,
-      'fileSelections',
+      'exportSelections',
       filenames,
       'values'
     );
@@ -148,7 +140,6 @@ export {
   addFileTypeFilter,
   addFileSelectionsFilter,
   addFilenameFilter,
-  addEventTypeFilter,
   addSessionIdsFilter,
   endpointFilter,
   buildBaseQuery,

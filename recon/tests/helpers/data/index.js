@@ -35,7 +35,7 @@ const preferences = {
     isReconOpen: true,
     isRequestShown: true,
     isResponseShown: true,
-    defaultLogFormat: 'LOG',
+    defaultLogFormat: 'TEXT',
     defaultPacketFormat: 'PCAP',
     autoDownloadExtractedFiles: true,
     packetsPageSize: 100

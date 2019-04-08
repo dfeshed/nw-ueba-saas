@@ -96,7 +96,7 @@ module('Integration | Component | recon event actionbar/export packet', function
     assert.ok(buttonMenu.classList.contains('expanded'));
 
     assert.equal(trim(find(`${selector} li:nth-of-type(1)`).textContent), 'Download PCAP');
-    assert.equal(trim(find(`${selector} li:nth-of-type(2)`).textContent), 'Download All Payloads');
+    assert.equal(trim(find(`${selector} li:nth-of-type(2)`).textContent), 'Download Payloads');
     assert.equal(trim(find(`${selector} li:nth-of-type(3)`).textContent), 'Download Request Payload');
     assert.equal(trim(find(`${selector} li:nth-of-type(4)`).textContent), 'Download Response Payload');
 
@@ -218,7 +218,7 @@ module('Integration | Component | recon event actionbar/export packet', function
     run(i18n, 'addTranslations', 'ja-jp', { 'recon.packetView.downloadPayload': downloadPayload });
 
     const selector = 'button';
-    assert.equal(trim(find(selector).textContent), 'Download All Payloads');
+    assert.equal(trim(find(selector).textContent), 'Download Payloads');
 
     set(i18n, 'locale', 'ja-jp');
 

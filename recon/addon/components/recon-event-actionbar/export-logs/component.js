@@ -23,7 +23,7 @@ const dispatchToActions = {
   extractFiles
 };
 
-const downloadFormat = [{ key: 'LOG', value: 'downloadLog' },
+const downloadFormat = [{ key: 'TEXT', value: 'downloadText' },
   { key: 'CSV', value: 'downloadCsv' },
   { key: 'XML', value: 'downloadXml' },
   { key: 'JSON', value: 'downloadJson' } ];

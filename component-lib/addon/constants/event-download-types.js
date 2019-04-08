@@ -1,6 +1,7 @@
 const LOG = 'LOG';
 const NETWORK = 'NETWORK';
 const META = 'META';
+const FILES = 'FILES';
 
 const CSV = 'CSV';
 const JSON = 'JSON';
@@ -16,13 +17,13 @@ const PAYLOAD2 = 'PAYLOAD2';
 export const EVENT_DOWNLOAD_TYPES = {
   LOG,
   NETWORK,
-  META
+  META,
+  FILES
 };
 
 export const FILE_TYPES = {
   CSV,
   JSON,
-  LOG,
   XML,
   TEXT,
   TSV,

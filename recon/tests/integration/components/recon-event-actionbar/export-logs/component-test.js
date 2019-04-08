@@ -36,7 +36,7 @@ test('it renders', function(assert) {
 
   return wait().then(() => {
     const str = this.$().text().trim().replace(/\s+/g, '');
-    assert.equal(str, 'DownloadLogDownloadLogDownloadCSVDownloadXMLDownloadJSON');
+    assert.equal(str, 'DownloadTextDownloadTextDownloadCSVDownloadXMLDownloadJSON');
   });
 });
 
@@ -51,7 +51,7 @@ test('it renders proper label for log data', function(assert) {
 
   return wait().then(() => {
     const str = this.$()[0].innerText.trim();
-    assert.equal(str, 'Download Log');
+    assert.equal(str, 'Download Text');
   });
 });
 
@@ -71,7 +71,7 @@ test('the menu renders properly and has the correct labels for down logs menu', 
     const ulElChildren = ulEl.children();
 
     assert.equal(ulEl.hasClass('expanded'), true);
-    assert.equal(ulElChildren[0].innerText.trim(), 'Download Log');
+    assert.equal(ulElChildren[0].innerText.trim(), 'Download Text');
     assert.equal(ulElChildren[1].innerText.trim(), 'Download CSV');
     assert.equal(ulElChildren[2].innerText.trim(), 'Download XML');
     assert.equal(ulElChildren[3].innerText.trim(), 'Download JSON');
@@ -122,7 +122,7 @@ test('option click will trigger download', function(assert) {
 
   this.render(hbs `{{recon-event-actionbar/export-logs accessControl=accessControl}}`);
 
-  assert.equal(this.$(downloadButtonSelector)[0].outerText.trim(), 'Download Log', 'Download menu button label for Logs when not downloading');
+  assert.equal(this.$(downloadButtonSelector)[0].outerText.trim(), 'Download Text', 'Download menu button label for Logs when not downloading');
 
   this.$(dropdownArrowSelector).click();
 
@@ -146,7 +146,7 @@ test('keydown enter will trigger download', function(assert) {
 
   this.render(hbs `{{recon-event-actionbar/export-logs accessControl=accessControl}}`);
 
-  assert.equal(this.$(downloadButtonSelector)[0].outerText.trim(), 'Download Log', 'Download menu button label for Logs when not downloading');
+  assert.equal(this.$(downloadButtonSelector)[0].outerText.trim(), 'Download Text', 'Download menu button label for Logs when not downloading');
 
   this.$(dropdownArrowSelector).click();
 

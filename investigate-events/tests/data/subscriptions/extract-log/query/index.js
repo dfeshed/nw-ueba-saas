@@ -1,11 +1,11 @@
 // *******
-// BEGIN - Copy/pasted download code from Recon
+// BEGIN - Copy/pasted & modified download code from Recon
 // *******
 let freeJobId = 0;
 
 export default {
-  subscriptionDestination: '/user/queue/investigate/extract/file',
-  requestDestination: '/ws/investigate/extract/file',
+  subscriptionDestination: '/user/queue/investigate/extract/log',
+  requestDestination: '/ws/investigate/extract/log',
   message(frame, helpers) {
     const jobId = freeJobId++;
 
@@ -15,7 +15,7 @@ export default {
         // use the sample file in vendor, but create a unique URL for each job so we can test multiple times
         const now = Number(new Date());
         helpers.sendNotificationMessage({
-          link: `/data/file-extract-job.zip?datetime=${now}`
+          link: `/data/log-extract-job.log?datetime=${now}`
         });
       }
     }, 1000);
@@ -31,5 +31,5 @@ export default {
   }
 };
 // *******
-// END - Copy/pasted download code from Recon
+// END - Copy/pasted & modified download code from Recon
 // *******
