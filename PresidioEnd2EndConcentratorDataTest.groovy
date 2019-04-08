@@ -9,7 +9,11 @@ pipeline {
         }
 
         stages {
-            stage('presidio-integration-test Project Clone') {
+                stage ('Connect to Concentrator Machine') {
+                        build job: 'Test-Target', parameters: [[$class: 'StringParameterValue', name: 'systemname', value: systemname]]
+                }
+                                
+ /**           stage('presidio-integration-test Project Clone') {
                 steps {
                     cleanWs()
                     buildIntegrationTestProject()
@@ -36,7 +40,7 @@ pipeline {
                         runEnd2EndTestAutomation()
                     }
                 }
-            }
+            } **/
         }
 }
 
