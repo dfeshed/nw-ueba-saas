@@ -9,11 +9,11 @@ pipeline {
         }
 
         stages {
-                stage ('Connect to Concentrator Machine') {
+                stage('Connect to Concentrator Machine') {
                         build job: 'Test-Target', parameters: [[$class: 'StringParameterValue', name: 'systemname', value: systemname]]
                 }
                 
-                stage ('Connect to Concentrator Machine2') {
+                stage('Connect to Concentrator Machine2') {
                         sh "ifconfig"
                 }
                                 
