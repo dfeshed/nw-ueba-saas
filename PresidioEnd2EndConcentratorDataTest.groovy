@@ -9,17 +9,12 @@ pipeline {
         }
 
         stages {
-                stage('Connect to Concentrator Machine') {
+                stage('Uploading Data to The Log-Decoder') {
                         steps {
-                        build job: 'Test-Target', parameters: [[$class: 'StringParameterValue', name: 'STABILITY', value: env.STABILITY]]
+                              build job: 'Test-Target', parameters: [[$class: 'StringParameterValue', name: 'VERSION', value: env.VERSION],[$class: 'StringParameterValue', name: 'NODE', value: env.NODE]]
                         }
                 }
-                
-                stage('Connect to Concentrator Machine2') {
-                        steps {
-                        sh "ifconfig"
-                        }
-                }
+
                                 
  /**           stage('presidio-integration-test Project Clone') {
                 steps {
