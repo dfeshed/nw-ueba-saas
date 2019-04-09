@@ -2,12 +2,12 @@ import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { selectOperation } from 'ngcoreui/actions/actions';
-import { filteredOperationNames, selectedOperation } from 'ngcoreui/reducers/selectors';
+import { filteredOperationNames, selectedOperation, responses } from 'ngcoreui/reducers/selectors';
 
 const stateToComputed = (state) => ({
   filteredOperationNames: filteredOperationNames(state),
   selectedOperation: selectedOperation(state),
-  operationResponse: state.operationResponse || {}
+  responses: responses(state)
 });
 
 const dispatchToActions = {
@@ -15,17 +15,6 @@ const dispatchToActions = {
 };
 
 const treeViewOperations = Component.extend({
-
-  @computed('operationResponse')
-  responses: (operationResponse) => {
-    return {
-      ...operationResponse,
-      progress: operationResponse.progress ? `${operationResponse.progress}% ` : null,
-      status: operationResponse.status ? `${operationResponse.status}...` : null,
-      hasError: !!operationResponse.error,
-      hasPendingOperation: operationResponse.complete === false
-    };
-  },
 
   @computed('filteredOperationNames')
   hasOperations: (filteredOperationNames) => filteredOperationNames.length > 0,

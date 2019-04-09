@@ -137,6 +137,18 @@ const sendOperation = (operationMessageObject) => {
   };
 };
 
+const toggleOperationResponse = () => {
+  return {
+    type: ACTION_TYPES.TREE_TOGGLE_OPERATION_RESPONSE
+  };
+};
+
+const toggleResponseAsJson = () => {
+  return {
+    type: ACTION_TYPES.TREE_TOGGLE_RESPONSE_AS_JSON
+  };
+};
+
 const cancelOperation = () => {
   const transport = lookup('service:transport');
   return (dispatch, getState) => {
@@ -474,6 +486,8 @@ export {
   updateOperationParams,
   updateParameter,
   sendOperation,
+  toggleOperationResponse,
+  toggleResponseAsJson,
   cancelOperation,
   changeActiveTab,
   selectNode,

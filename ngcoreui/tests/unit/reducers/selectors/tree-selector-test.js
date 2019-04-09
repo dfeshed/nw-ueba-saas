@@ -12,6 +12,7 @@ import {
   selectedOperationHelp,
   selectedOperationRoles,
   selectedOperationHasPermission,
+  responses,
   operationResponseDataType,
   description,
   liveSelectedNode,
@@ -157,6 +158,39 @@ module('Unit | Selectors | Tree', (hooks) => {
       .availablePermissions(['sdk.meta', 'sdk.content', 'sys.manage', 'sdk.packets'])
       .build();
     assert.strictEqual(selectedOperationHasPermission(state), true);
+  });
+
+  test('responses behaves appropriately with no operation response', (assert) => {
+    const state = new ReduxDataHelper()
+      .responses()
+      .operationResponse(null)
+      .build();
+    assert.deepEqual(responses(state), {
+      progress: null,
+      status: null,
+      hasError: false,
+      hasPendingOperation: false
+    });
+  });
+
+  test('responses behaves appropriately with an operation response', (assert) => {
+    const state = new ReduxDataHelper()
+      .responses()
+      .operationResponse({
+        complete: true,
+        error: null,
+        progress: '100',
+        status: 'Executing'
+      })
+      .build();
+    assert.deepEqual(responses(state), {
+      progress: '100% ',
+      status: 'Executing...',
+      hasError: false,
+      hasPendingOperation: false,
+      complete: true,
+      error: null
+    });
   });
 
   test('operationResponseDataType detects a string response', (assert) => {

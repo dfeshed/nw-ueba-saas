@@ -20,6 +20,8 @@ const initialState = Immutable.from({
   treeSelectedOperationIndex: -1,
   treeOperationParams: {},
   operationResponse: null,
+  responseExpanded: false,
+  responseAsJson: false,
   treeMonitorStreamTid: null,
   selectedNode: null,
   appStatNodes: {},
@@ -150,6 +152,14 @@ const reducer = handleActions({
     state = state.setIn(['operationResponse', 'raw'], raw.concat(action.payload));
 
     return state;
+  },
+
+  [ACTION_TYPES.TREE_TOGGLE_OPERATION_RESPONSE]: (state) => {
+    return state.set('responseExpanded', !state.responseExpanded);
+  },
+
+  [ACTION_TYPES.TREE_TOGGLE_RESPONSE_AS_JSON]: (state) => {
+    return state.set('responseAsJson', !state.responseAsJson);
   },
 
   [ACTION_TYPES.TREE_SET_REQUEST]: (state, action) => {
@@ -317,7 +327,10 @@ const reducer = handleActions({
   },
 
   [ACTION_TYPES.APP_CHANGE_ACTIVE_TAB]: (state, action) => {
-    return state.set('activeTab', action.payload);
+    return state.merge({
+      'activeTab': action.payload,
+      'responseExpanded': false
+    });
   },
 
   [ACTION_TYPES.APP_GET_USER]: (state, action) => {

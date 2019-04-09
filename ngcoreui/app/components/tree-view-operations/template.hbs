@@ -22,16 +22,11 @@
     <br>
     {{rsa-form-textarea value=responses.error label='Error' isError=true isReadOnly=true}}
   {{/if}}
-
-  <div class="small-header top-margin">Response (Click text to select)</div>
   {{#if responses.hasPendingOperation}}
     {{rsa-loader size='medium' label=(concat responses.progress responses.status)}}
   {{/if}}
 
-  <br>
-  <div class="scroll-box response-panel padding" {{action "selectResponseText"}}>
-    {{#each responses.raw key="@index" as |response|}}
-      {{tree-view-response-item item=response}}
-    {{/each}}
+  <div class="scroll-box response-panel padding">
+    {{tree-view-responses}}
   </div>
 {{/if}}

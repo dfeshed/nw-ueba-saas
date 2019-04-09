@@ -4,22 +4,28 @@
     <p class="description">{{description}}</p>
   </box>
   <vbox fit align-self="end">
-    {{#rsa-form-button defaultAction=(action 'changeDirectory' '/')}}Go to root{{/rsa-form-button}}
+    {{#link-to "tree" "tree"}}{{#rsa-form-button}}Go to root{{/rsa-form-button}}{{/link-to}}
   </vbox>
 </hbox>
-<hbox class="border-line-top">
-  <vbox xs="6">
-    <fill block class="scroll-box padding-more">
-      {{tree-view-directory-contents}}
-    </fill>
-  </vbox>
-  <vbox xs="6" class="border-line-left">
-    <fill block class="scroll-box padding-more">
-      {{#if selectedNode}}
-        {{tree-stat-config-view}}
-      {{else}}
-        {{tree-view-operations}}
-      {{/if}}
-    </fill>
-  </vbox>
+<hbox class="border-line-top max-height scroll-box">
+  {{#if responseExpanded}}
+    <vbox xs="12" class="expanded-response">
+      {{tree-view-responses}}
+    </vbox>
+  {{else}}
+    <vbox xs="6">
+      <fill block class="scroll-box padding-more">
+        {{tree-view-directory-contents}}
+      </fill>
+    </vbox>
+    <vbox xs="6" class="border-line-left">
+      <fill block class="scroll-box padding-more">
+        {{#if selectedNode}}
+          {{tree-stat-config-view}}
+        {{else}}
+          {{tree-view-operations}}
+        {{/if}}
+      </fill>
+    </vbox>
+  {{/if}}
 </hbox>

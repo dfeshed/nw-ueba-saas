@@ -172,6 +172,78 @@ module('Unit | Reducers | Tree', (hooks) => {
     assert.deepEqual(result.operationResponse.raw[0], dummyResponse, 'the response was added to state');
   });
 
+  test('TREE_TOGGLE_OPERATION_RESPONSE sets responseExpanded to true when it is false', (assert) => {
+    const action = {
+      type: ACTION_TYPES.TREE_TOGGLE_OPERATION_RESPONSE
+    };
+
+    const state = new ReduxDataHelper()
+      .connected()
+      .treePathContentsStandard()
+      .responseExpanded(false)
+      .build();
+
+    assert.strictEqual(state.responseExpanded, false);
+
+    const result = reducer(state, action);
+
+    assert.strictEqual(result.responseExpanded, true);
+  });
+
+  test('TREE_TOGGLE_OPERATION_RESPONSE sets responseExpanded to false when it is true', (assert) => {
+    const action = {
+      type: ACTION_TYPES.TREE_TOGGLE_OPERATION_RESPONSE
+    };
+
+    const state = new ReduxDataHelper()
+      .connected()
+      .treePathContentsStandard()
+      .responseExpanded(true)
+      .build();
+
+    assert.strictEqual(state.responseExpanded, true);
+
+    const result = reducer(state, action);
+
+    assert.strictEqual(result.responseExpanded, false);
+  });
+
+  test('TREE_TOGGLE_RESPONSE_AS_JSON sets responseAsJson to true when it is false', (assert) => {
+    const action = {
+      type: ACTION_TYPES.TREE_TOGGLE_RESPONSE_AS_JSON
+    };
+
+    const state = new ReduxDataHelper()
+      .connected()
+      .treePathContentsStandard()
+      .responseAsJson(false)
+      .build();
+
+    assert.strictEqual(state.responseAsJson, false);
+
+    const result = reducer(state, action);
+
+    assert.strictEqual(result.responseAsJson, true);
+  });
+
+  test('TREE_TOGGLE_RESPONSE_AS_JSON sets responseAsJson to false when it is true', (assert) => {
+    const action = {
+      type: ACTION_TYPES.TREE_TOGGLE_RESPONSE_AS_JSON
+    };
+
+    const state = new ReduxDataHelper()
+      .connected()
+      .treePathContentsStandard()
+      .responseAsJson(true)
+      .build();
+
+    assert.strictEqual(state.responseAsJson, true);
+
+    const result = reducer(state, action);
+
+    assert.strictEqual(result.responseAsJson, false);
+  });
+
   test('TREE_SET_REQUEST sets the transport stream id', (assert) => {
     const action1 = {
       type: ACTION_TYPES.TREE_SET_REQUEST,

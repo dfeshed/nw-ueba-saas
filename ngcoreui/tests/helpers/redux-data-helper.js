@@ -77,6 +77,7 @@ export default class DataHelper {
     _set(this.state, 'username', null);
     _set(this.state, 'availablePermissions', null);
     _set(this.state, 'operationResponse', null);
+    _set(this.state, 'responseExpanded', false);
     _set(this.state, 'activeTab', null);
     _set(this.state, 'selectedNode', null);
     _set(this.state, 'logs', null);
@@ -119,6 +120,16 @@ export default class DataHelper {
 
   operationResponse(response) {
     _set(this.state, 'operationResponse', response);
+    return this;
+  }
+
+  responseExpanded(bool) {
+    _set(this.state, 'responseExpanded', bool);
+    return this;
+  }
+
+  responseAsJson(bool) {
+    _set(this.state, 'responseAsJson', bool);
     return this;
   }
 
@@ -204,6 +215,10 @@ export default class DataHelper {
   }
 
   selectedOperationHasPermission() {
+    return this._connectAndFillTree();
+  }
+
+  responses() {
     return this._connectAndFillTree();
   }
 

@@ -124,6 +124,11 @@ a {
   color: text-color(accentOne);
 }
 
+.expanded-response {
+  font-family: monospace;
+  padding: rsa-whitespace();
+}
+
 .flex-space-between {
   justify-content: space-between;
 }
@@ -200,6 +205,10 @@ hr {
   height: 100%;
 }
 
+.max-width {
+  max-width: 100%;
+}
+
 .nav-button {
   margin-right: rsa-whitespace();
 }
@@ -241,6 +250,7 @@ hr {
 
 .outside-of-navigation {
   margin-left: 40px;
+  max-width: calc(100% - 40px);
 }
 
 .order-1 {
@@ -263,7 +273,11 @@ hr {
   margin-left: rsa-whitespace();
 }
 
-div.response-panel {
+.response-buttons {
+  margin-bottom: rsa-whitespace();
+}
+
+.response-panel {
   @include rsa-font(default, small);
   margin-top: rsa-whitespace();
   font-family: monospace;

@@ -1,0 +1,14 @@
+{{#if responses.raw}}
+  <hbox justify="between" class="response-buttons">
+    {{#if responseExpanded}}
+      <a {{action 'toggleOperationResponse'}}>{{rsa-icon name="close" size="large"}}</a>
+    {{else}}
+      <a {{action 'toggleOperationResponse'}}>{{rsa-icon name="expand-all-1" size="large"}}</a>
+    {{/if}}
+    <a {{action 'toggleResponseAsJson'}}>{{rsa-icon name="notepad-2" size="large"}}</a>
+  </hbox>
+{{/if}}
+
+{{#each responses.raw key="@index" as |response|}}
+  {{tree-view-response-item item=response}}
+{{/each}}

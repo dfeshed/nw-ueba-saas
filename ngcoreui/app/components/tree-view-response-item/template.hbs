@@ -1,5 +1,7 @@
 {{#if isNotStatusUpdate}}
-  {{#if isKeyValuePairs}}
+  {{#if responseAsJson}}
+    <pre>{{raw}}</pre>
+  {{else if isKeyValuePairs}}
     {{#rsa-data-table
       items=keyValuePairsItems
       columnsConfig=keyValuePairsConfig}}

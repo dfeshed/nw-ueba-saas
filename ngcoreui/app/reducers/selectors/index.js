@@ -139,6 +139,20 @@ const selectedOperationHasPermission = createSelector(
   }
 );
 
+const responses = createSelector(
+  [ _operationResponse ],
+  (operationResponse) => {
+    operationResponse = operationResponse || {};
+    return {
+      ...operationResponse,
+      progress: operationResponse.progress ? `${operationResponse.progress}% ` : null,
+      status: operationResponse.status ? `${operationResponse.status}...` : null,
+      hasError: !!operationResponse.error,
+      hasPendingOperation: operationResponse.complete === false
+    };
+  }
+);
+
 const operationResponseDataType = createSelector(
   [ _operationResponse ],
   (operationResponse) => {
@@ -265,6 +279,7 @@ export {
   selectedOperationHelp,
   selectedOperationRoles,
   selectedOperationHasPermission,
+  responses,
   operationResponseDataType,
   description,
   liveSelectedNode,

@@ -6,7 +6,8 @@ import { operationResponseDataType } from '../../reducers/selectors';
 import { isFlag, FLAGS } from 'ngcoreui/services/transport/flag-helper';
 
 const stateToComputed = (state) => ({
-  dataType: operationResponseDataType(state)
+  dataType: operationResponseDataType(state),
+  responseAsJson: state.responseAsJson
 });
 
 const treeViewResponseItem = Component.extend({
@@ -38,34 +39,61 @@ const treeViewResponseItem = Component.extend({
     return dataType ? (dataType.params || dataType.nodeInfo) : false;
   },
 
-  @computed('item')
-  keyValuePairsItems: (item) => {
+  @computed('item', 'isKeyValuePairs')
+  keyValuePairsItems: (item, isKeyValuePairs) => {
+    if (!isKeyValuePairs) {
+      return null;
+    }
     return Object.entries(item.params).map((item) => {
       return { key: item[0], value: item[1] };
     });
   },
 
-  @computed('dataType')
-  isCustomTable: (dataType) => {
-    return dataType ? (dataType.paramsList || dataType.queryResults || dataType.nodeList) : false;
+  @computed('dataType', 'item')
+  isCustomTable: (dataType, item) => {
+    const result = dataType ? (item.results || item.params) && (
+      dataType.paramList ||
+      dataType.queryResults ||
+      dataType.nodeList
+    ) : false;
+    if (result) {
+      const array = (item.results && item.results.fields) || item.params;
+      const keys = Object.keys(array[0]);
+      return array.every((el) => {
+        return Object.keys(el).every((key, index) => {
+          return key === keys[index];
+        });
+      });
+    }
+    return result;
   },
 
-  @computed('item')
-  customTableColumnConfig: (item) => {
-    if (item.results.fields.length === 0) {
+  @computed('item', 'isCustomTable')
+  customTableColumnConfig: (item, isCustomTable) => {
+    if (!isCustomTable) {
       return [];
-    } else {
-      return Object.keys(item.results.fields[0]).map((key) => ({
-        field: key,
-        title: key
-      }));
+    }
+    if (item.results || item.params) {
+      const array = (item.results && item.results.fields) || item.params;
+      if (array.length === 0) {
+        return [];
+      } else {
+        return Object.keys(array[0]).map((key) => ({
+          field: key,
+          title: key
+        }));
+      }
     }
   },
 
-  @computed('item')
-  customTableItems: (item) => {
+  @computed('item', 'isCustomTable')
+  customTableItems: (item, isCustomTable) => {
+    if (!isCustomTable) {
+      return [];
+    }
     // Replace time values with datetime strings
-    return item.results.fields.map((row) => {
+    const array = (item.results && item.results.fields) || item.params;
+    return array.map((row) => {
       if (row.format && row.value && row.format === 32) {
         row = row.set('value', (new Date(row.value * 1000)).toLocaleString());
         return row;

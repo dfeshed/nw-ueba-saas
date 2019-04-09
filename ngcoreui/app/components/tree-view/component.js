@@ -6,7 +6,8 @@ import { description } from 'ngcoreui/reducers/selectors';
 const stateToComputed = (state) => ({
   treePath: state.treePath,
   description: description(state),
-  selectedNode: state.selectedNode
+  selectedNode: state.selectedNode,
+  responseExpanded: state.responseExpanded
 });
 
 const dispatchToActions = {
@@ -14,7 +15,8 @@ const dispatchToActions = {
 };
 
 const treeViewComponent = Component.extend({
-  tagName: 'vbox'
+  tagName: 'vbox',
+  classNames: ['max-width', 'max-height']
 });
 
 export default connect(stateToComputed, dispatchToActions)(treeViewComponent);
