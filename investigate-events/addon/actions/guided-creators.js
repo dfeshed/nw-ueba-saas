@@ -2,8 +2,8 @@ import * as ACTION_TYPES from './types';
 import { clientSideParseAndValidate, getMetaFormat } from './utils';
 import { selectedPills, focusedPill } from 'investigate-events/reducers/investigate/query-node/selectors';
 import validateQueryFragment from './fetch/query-validation';
-
-import { transformTextToPillData, selectPillsFromPosition } from 'investigate-events/actions/utils';
+import { selectPillsFromPosition } from 'investigate-events/actions/utils';
+import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
 const { log } = console; // eslint-disable-line no-unused-vars

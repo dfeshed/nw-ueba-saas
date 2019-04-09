@@ -1,10 +1,10 @@
 import RSVP from 'rsvp';
 import { lookup } from 'ember-dependency-lookup';
 import { run } from '@ember/runloop';
-
 import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
 import { getParamsForHashes, getHashForParams } from './fetch/query-hashes';
-import { isSearchTerm, parseBasicQueryParams, parsePillDataFromUri, transformTextToPillData } from 'investigate-events/actions/utils';
+import { parseBasicQueryParams } from 'investigate-events/actions/utils';
+import { isSearchTerm, parsePillDataFromUri, transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { extractSearchTermFromFilters } from 'investigate-shared/actions/api/events/utils';
 import { fetchColumnGroups } from './fetch/column-groups';
 import { fetchInvestigateData, getServiceSummary } from './data-creators';

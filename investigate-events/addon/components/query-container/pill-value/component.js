@@ -4,7 +4,7 @@ import { htmlSafe } from '@ember/string';
 import computed from 'ember-computed-decorators';
 import { isArrowLeft, isBackspace, isEscape } from 'investigate-events/util/keys';
 import { escapeBackslash, escapeSingleQuotes, properlyQuoted, stripOuterSingleQuotes } from 'investigate-events/util/quote';
-import { complexOperators } from 'investigate-events/actions/utils';
+import { COMPLEX_OPERATORS } from 'investigate-events/constants/pill';
 import * as MESSAGE_TYPES from '../message-types';
 import Ember from 'ember';
 
@@ -201,7 +201,7 @@ export default Component.extend({
       // Need to make a decision about highlight and marking it as complex
       // only for the first time while creating a pill.
       if (!this.get('isEditing')) {
-        const match = complexOperators.find((d) => input.includes(d));
+        const match = COMPLEX_OPERATORS.find((d) => input.includes(d));
         this.set('_isComplex', !!match);
         const option = (match) ? FREE_FORM_FILTER : QUERY_FILTER;
         next(this, () => powerSelectAPI.actions.highlight(option));

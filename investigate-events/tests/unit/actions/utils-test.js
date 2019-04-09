@@ -1,7 +1,6 @@
 import { module, test } from 'qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { setupTest } from 'ember-qunit';
-
 import queryUtils from 'investigate-events/actions/utils';
 import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
 
@@ -24,178 +23,6 @@ module('Unit | Helper | Actions Utils', function(hooks) {
   hooks.beforeEach(function() {
     initialize(this.owner);
   });
-
-  //
-  // BEGIN transformTextToPillData
-  //
-  test('1. transformTextToPillData returns complex filter object because of ||', function(assert) {
-    assert.expect(1);
-    const freeFormText = 'medium = 1 || medium = 32';
-    const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-
-    assert.deepEqual(result, {
-      // note is wrapped in quotes
-      complexFilterText: '(medium = 1 || medium = 32)',
-      meta: undefined,
-      operator: undefined,
-      value: undefined
-    });
-  });
-
-  test('2. transformTextToPillData treats lack of operator as a complex query', function(assert) {
-    assert.expect(1);
-    const freeFormText = 'medium';
-    const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-
-    assert.deepEqual(result, {
-      complexFilterText: 'medium',
-      meta: undefined,
-      operator: undefined,
-      value: undefined
-    });
-  });
-
-  test('3. transformTextToPillData treats bad meta as complex query', function(assert) {
-    assert.expect(1);
-    const freeFormText = 'lakjsdlakjsd = yeah';
-    const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-
-    assert.deepEqual(result, {
-      complexFilterText: 'lakjsdlakjsd = yeah',
-      meta: undefined,
-      operator: undefined,
-      value: undefined
-    });
-  });
-
-  test('4. transformTextToPillData treats operator that does not belong to meta as complex query', function(assert) {
-    assert.expect(1);
-    const freeFormText = 'sessionid contains 123';
-    const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-
-    assert.deepEqual(result, {
-      complexFilterText: 'sessionid contains 123',
-      meta: undefined,
-      operator: undefined,
-      value: undefined
-    });
-  });
-
-  test('5. transformTextToPillData treats operator that requires value but does not have one as complex query', function(assert) {
-    assert.expect(1);
-    const freeFormText = 'medium =';
-    const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-
-    assert.deepEqual(result, {
-      complexFilterText: 'medium =',
-      meta: undefined,
-      operator: undefined,
-      value: undefined
-    });
-  });
-
-  test('6. transformTextToPillData treats operator that require no value but has one as complex query', function(assert) {
-    assert.expect(1);
-    const freeFormText = 'medium exists 10';
-    const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-
-    assert.deepEqual(result, {
-      complexFilterText: 'medium exists 10',
-      meta: undefined,
-      operator: undefined,
-      value: undefined
-    });
-  });
-
-  test('7. transformTextToPillData handles when just meta and operator', function(assert) {
-    assert.expect(1);
-    const freeFormText = 'medium exists';
-    const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-
-    assert.deepEqual(result, {
-      complexFilterText: undefined,
-      meta: 'medium',
-      operator: 'exists',
-      value: undefined
-    });
-  });
-
-  test('8. transformTextToPillData returns pill data object', function(assert) {
-    assert.expect(1);
-    const freeFormText = 'medium = 1';
-    const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-
-    assert.deepEqual(
-      result,
-      { meta: 'medium', operator: '=', value: '1', complexFilterText: undefined }
-    );
-  });
-
-  test('9. transformTextToPillData returns populated pill object even if operator embedded in value', function(assert) {
-    assert.expect(1);
-    const freeFormText = 'user.dst = \'1=2\'';
-    const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-
-    assert.deepEqual(result, {
-      complexFilterText: undefined,
-      meta: 'user.dst',
-      operator: '=',
-      value: '\'1=2\''
-    });
-  });
-
-  test('10. transformTextToPillData handles surrounding white space', function(assert) {
-    assert.expect(1);
-    const freeFormText = 'medium exists ';
-    const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-
-    assert.deepEqual(result, {
-      complexFilterText: undefined,
-      meta: 'medium',
-      operator: 'exists',
-      value: undefined
-    });
-  });
-
-  test('11. transformTextToPillData treats operator that has extra text as complex query', function(assert) {
-    assert.expect(1);
-    const freeFormText = 'medium =foo';
-    const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-
-    assert.deepEqual(result, {
-      complexFilterText: 'medium =foo',
-      meta: undefined,
-      operator: undefined,
-      value: undefined
-    });
-  });
-
-  test('12. transformTextToPillData returns complex pill when forced to do so', function(assert) {
-    assert.expect(1);
-    const freeFormText = 'medium = foo';
-    const shouldForceComplex = true;
-    const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES, shouldForceComplex);
-
-    assert.deepEqual(result, {
-      complexFilterText: '(medium = foo)',
-      meta: undefined,
-      operator: undefined,
-      value: undefined
-    });
-  });
-
-  test('13. transformTextToPillData returns text filter object because of Text filter marker', function(assert) {
-    assert.expect(1);
-    const text = '~some random text';
-    const result = queryUtils.transformTextToPillData(text, DEFAULT_LANGUAGES);
-
-    assert.deepEqual(result, {
-      searchTerm: '~some random text'
-    });
-  });
-  //
-  // END transformTextToPillData
-  //
 
   test('parseBasicQueryParams correctly parses URI', function(assert) {
     assert.expect(7);
@@ -224,27 +51,6 @@ module('Unit | Helper | Actions Utils', function(hooks) {
   test('parseBasicQueryParams leaves hashes undefined if there are none', function(assert) {
     const result = queryUtils.parseBasicQueryParams({ rs: 'max' }, DEFAULT_LANGUAGES);
     assert.equal(result.pillDataHashes, undefined, '"pdhash" was not parsed to proper hashes');
-  });
-
-
-  test('parsePillDataFromUri correctly parses forward slashes and operators into pills', function(assert) {
-    assert.expect(3);
-    const result = queryUtils.parsePillDataFromUri(params.mf, DEFAULT_LANGUAGES);
-    assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');
-    assert.equal(result[0].operator, '=', 'forward slash was not parsed correctly');
-    assert.equal(result[0].value, '<reston=\'virginia.sys>', 'forward slash was not parsed correctly');
-  });
-
-  test('parsePillDataFromUri correctly parses multiple params', function(assert) {
-    assert.expect(7);
-    const result = queryUtils.parsePillDataFromUri('filename%20%3D%20<reston%3D\'virginia.sys>/medium%20%3D%20foo', DEFAULT_LANGUAGES);
-    assert.equal(result.length, 2, 'two pills came out');
-    assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');
-    assert.equal(result[0].operator, '=', 'forward slash was not parsed correctly');
-    assert.equal(result[0].value, '<reston=\'virginia.sys>', 'forward slash was not parsed correctly');
-    assert.equal(result[1].meta, 'medium', 'forward slash was not parsed correctly');
-    assert.equal(result[1].operator, '=', 'forward slash was not parsed correctly');
-    assert.equal(result[1].value, 'foo', 'forward slash was not parsed correctly');
   });
 
   test('filterIsPresent return false when filters array and freeFormText are different', function(assert) {
@@ -684,29 +490,4 @@ module('Unit | Helper | Actions Utils', function(hooks) {
     ]);
   });
 
-  test('uriEncodeMetaFilters can convert a pill array to a string suitable for the metaFilter query param', function(assert) {
-    const queryPill = { meta: 'action', operator: '=', value: 'foo' };
-    const encQP = encodeURIComponent('action = foo');
-    const complexPill = { complexFilterText: '(bar)' };
-    const encCP = encodeURIComponent('(bar)');
-    const textPill = { searchTerm: 'baz' };
-    const encTP = encodeURIComponent('~baz');
-    const empty = { meta: undefined, operator: undefined, value: undefined };
-    assert.equal(queryUtils.uriEncodeMetaFilters([queryPill]), encQP, 'query pill only');
-    assert.equal(queryUtils.uriEncodeMetaFilters([complexPill]), encCP, 'complex pill only');
-    assert.equal(queryUtils.uriEncodeMetaFilters([textPill]), encTP, 'text pill only');
-    assert.equal(queryUtils.uriEncodeMetaFilters([queryPill, complexPill]), `${encQP}/${encCP}`, 'query and complex pills');
-    assert.equal(queryUtils.uriEncodeMetaFilters([queryPill, textPill]), `${encQP}/${encTP}`, 'query and text pills');
-    assert.equal(queryUtils.uriEncodeMetaFilters([complexPill, textPill]), `${encCP}/${encTP}`, 'complex and text pills');
-    assert.equal(queryUtils.uriEncodeMetaFilters([queryPill, complexPill, textPill]), `${encQP}/${encCP}/${encTP}`, 'query, complex, and text pills');
-    assert.deepEqual(queryUtils.uriEncodeMetaFilters([empty]), undefined, 'empty pill');
-    assert.equal(queryUtils.uriEncodeMetaFilters([queryPill, empty]), `${encQP}`, 'query and empty pills');
-    assert.equal(queryUtils.uriEncodeMetaFilters([queryPill, empty, textPill]), `${encQP}/${encTP}`, 'query, empty, and text pills');
-  });
-
-  test('isSearchTerm is capable of determining if a string is marked as a Text pill', function(assert) {
-    assert.ok(queryUtils.isSearchTerm('~foobar'));
-    assert.notOk(queryUtils.isSearchTerm('foobar'));
-    assert.notOk(queryUtils.isSearchTerm('foo~bar'));
-  });
 });

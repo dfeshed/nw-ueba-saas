@@ -9,7 +9,7 @@ import {
   setReconOpen,
   setReconPanelSize
 } from 'investigate-events/actions/interaction-creators';
-import { isSearchTerm, uriEncodeMetaFilters } from 'investigate-events/actions/utils';
+import { isSearchTerm, uriEncodeMetaFilters } from 'investigate-events/util/query-parsing';
 import { serializeQueryParams } from 'investigate-shared/utils/pivot-util';
 import {
   META_PANEL_SIZES,
