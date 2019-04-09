@@ -33,6 +33,10 @@ export default Component.extend({
   target: null,
   panelClass: null,
 
+  // attach a function to be executed when this tethered panel is open
+  // example: focusing an input
+  panelDidOpen: null,
+
   // _position is a copy of the originally configured position and potentially modified to avoid window collision (cf forceWithinWindow)
   _position: computed.oneWay('position'),
 
@@ -287,6 +291,9 @@ export default Component.extend({
 
         run.schedule('afterRender', () => {
           this.forceWithinWindow();
+          if (this.panelDidOpen) {
+            this.panelDidOpen();
+          }
 
           $(`.${this.get('elementId')}`).on('mouseenter', () => {
             this.set('isHovering', true);
@@ -335,6 +342,9 @@ export default Component.extend({
 
         run.schedule('afterRender', this, function() {
           this.forceWithinWindow();
+          if (this.panelDidOpen && this.get('isDisplayed')) {
+            this.panelDidOpen();
+          }
         });
       }
     });

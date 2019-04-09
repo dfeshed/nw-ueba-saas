@@ -32,6 +32,29 @@
     {{events-table-container/header-container/download-dropdown}}
   </div>
   <div class="events-table-control">
+    {{#rsa-content-tethered-panel-trigger
+      panel='tableSearchPanel'
+      triggerEvent='click'
+      class='rsa-data-table-header__search-selector'}}
+      {{rsa-icon
+        name='search'
+        title=(t 'investigate.events.search')}}
+    {{/rsa-content-tethered-panel-trigger}}
+
+    {{#rsa-content-tethered-panel
+      displayCloseButton=false
+      position='left'
+      panelClass="rsa-data-table-search-panel"
+      panelId='tableSearchPanel'
+      panelDidOpen=searchPanelDidOpen}}
+      <section>
+        {{rsa-form-input value=readOnlySearchTerm onKeyUp=(action 'debouncedSearchForTerm') label=(t 'investigate.events.search') placeholder=(t 'investigate.events.searchPlaceholder')}}
+        {{#if searchMatchesCount}}
+          <p>{{searchMatchesCount}} match(es) found.</p>
+        {{/if}}
+      </section>
+    {{/rsa-content-tethered-panel}}
+
     {{rsa-icon
       disabled=(not isReconOpen)
       click=toggleReconSize

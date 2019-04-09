@@ -14,6 +14,7 @@ const App = Application.extend({
           '-document',
           'access-control',
           'contextual-help',
+          'global-preferences',
           'dateFormat',
           'timeFormat',
           'timezone',

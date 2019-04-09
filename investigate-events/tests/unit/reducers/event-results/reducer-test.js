@@ -21,6 +21,19 @@ const stateWithAllSelected = Immutable.from({
   selectedEventIds: ['foo', 'bar']
 });
 
+test('Should update seach term', function(assert) {
+  const previous = Immutable.from({
+    searchTerm: null
+  });
+
+  const action = {
+    type: ACTION_TYPES.SET_SEARCH_TERM,
+    payload: 'foo'
+  };
+  const newEndState = reducer(previous, action);
+  assert.deepEqual(newEndState.searchTerm, 'foo');
+});
+
 test('ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS reducer', function(assert) {
   const toggle = {
     type: ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS

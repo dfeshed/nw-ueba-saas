@@ -98,6 +98,10 @@ module('Unit | Actions | interaction creators', function(hooks) {
     assert.equal(thunk(() => {}, getState), undefined);
   });
 
+  test('searchForTerm action creator returns proper type', function(assert) {
+    const { type } = interactionCreators.searchForTerm();
+    assert.equal(type, ACTION_TYPES.SET_SEARCH_TERM, 'action has the correct type');
+  });
 
   test('toggleSelectAllEvents action creator returns proper type', function(assert) {
     const { type } = interactionCreators.toggleSelectAllEvents();

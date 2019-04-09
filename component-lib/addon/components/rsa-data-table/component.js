@@ -19,7 +19,6 @@ export default Component.extend(DomWatcher, {
   whitespace: 14,
   groupLabelHeight: 28,
 
-
   /**
    * Enables the rendering of a group-label based on groupingSize
    * @type {boolean}
@@ -448,6 +447,19 @@ export default Component.extend(DomWatcher, {
     });
   }),
 
+  _searchMatchesDidChange: observer('items.[]', 'items.length', 'searchMatches.firstObject', function() {
+    if (this.get('searchMatches.firstObject') && this.get('items.length')) {
+      let matchIndex;
+      this.get('items').find((item, index) => {
+        if (item.sessionId === this.get('searchMatches.firstObject')) {
+          matchIndex = index;
+          return true;
+        }
+      });
+      this._scrollToInitial(matchIndex);
+    }
+  }),
+
   /**
    * @description Respond to the user pressing down on the keyboard
    * if a dropdown is not in view, proceed with the following
@@ -568,12 +580,14 @@ export default Component.extend(DomWatcher, {
    */
   _scrollToInitial: function() {
     let _callCount = 0;
-    return function() {
+    return function(selectedIndex) {
       // Don't want to try forever, if this recurses too much, just stop
       if (_callCount < this.get('items.length')) {
         // selectedIndex can change (essentially from not found to found)
         // as data flows in, so pull each time through scrollToInitial
-        const selectedIndex = this.get('selectedIndex');
+        if (typeof selectedIndex === 'undefined') {
+          selectedIndex = this.get('selectedIndex');
+        }
 
         // First row needed to measure height of items so can calculate how far
         // to scroll

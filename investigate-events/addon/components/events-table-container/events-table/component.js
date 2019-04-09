@@ -10,7 +10,9 @@ import {
   areEventsStreaming,
   isCanceled,
   actualEventCount,
-  isEventResultsError
+  isEventResultsError,
+  eventTableFormattingOpts,
+  searchMatches
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
 import { eventsLogsGet } from 'investigate-events/actions/events-creators';
@@ -21,9 +23,11 @@ import {
 import { thousandFormat } from 'component-lib/utils/numberFormats';
 
 const stateToComputed = (state) => ({
+  eventTableFormattingOpts: eventTableFormattingOpts(state),
   areEventsStreaming: areEventsStreaming(state),
   status: state.investigate.eventResults.status,
   maxEvents: thousandFormat(state.investigate.eventResults.streamLimit),
+  searchTerm: state.investigate.eventResults.searchTerm,
   allEventsSelected: state.investigate.eventResults.allEventsSelected,
   selectedEventIds: state.investigate.eventResults.selectedEventIds,
   selectedIndex: selectedIndex(state),
@@ -42,7 +46,8 @@ const stateToComputed = (state) => ({
   totalCount: thousandFormat(state.investigate.eventCount.data),
   actualEventCount: thousandFormat(actualEventCount(state)),
   threshold: state.investigate.eventCount.threshold,
-  isEventResultsError: isEventResultsError(state)
+  isEventResultsError: isEventResultsError(state),
+  searchMatches: searchMatches(state)
 });
 
 const dispatchToActions = {
@@ -76,7 +81,6 @@ const EventsTableContextMenu = RsaContextMenu.extend({
   selectEvent: () => {},
   accessControl: service(),
   i18n: service(),
-
   groupingSize: 100,
 
   @computed('items')

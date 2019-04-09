@@ -155,9 +155,13 @@ test('it updates isDisplayed when relevant events are fired', function(assert) {
 });
 
 test('it updates model when display event is fired', function(assert) {
+  assert.expect(3);
   const modelValue = 'bar';
   this.set('model', null);
-  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tethered-panel model=model panelId="foo" as |hide model|}}<span class="model-value">{{model}}</span>{{/rsa-content-tethered-panel}}`);
+  this.set('panelDidOpen', () => {
+    assert.ok(true);
+  });
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tethered-panel panelDidOpen=panelDidOpen model=model panelId="foo" as |hide model|}}<span class="model-value">{{model}}</span>{{/rsa-content-tethered-panel}}`);
 
   this.get('eventBus').trigger('rsa-content-tethered-panel-display-foo', null, null, null, modelValue);
 
@@ -168,9 +172,13 @@ test('it updates model when display event is fired', function(assert) {
 });
 
 test('it updates model when toggle event is fired', function(assert) {
+  assert.expect(3);
   const modelValue = 'bar';
   this.set('model', null);
-  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tethered-panel model=model panelId="foo" as |hide model|}}<span class="model-value">{{model}}</span>{{/rsa-content-tethered-panel}}`);
+  this.set('panelDidOpen', () => {
+    assert.ok(true);
+  });
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tethered-panel panelDidOpen=panelDidOpen model=model panelId="foo" as |hide model|}}<span class="model-value">{{model}}</span>{{/rsa-content-tethered-panel}}`);
 
   this.get('eventBus').trigger('rsa-content-tethered-panel-toggle-foo', null, null, null, modelValue);
 

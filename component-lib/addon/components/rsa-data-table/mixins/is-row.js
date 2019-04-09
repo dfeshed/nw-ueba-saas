@@ -15,7 +15,7 @@ import { thousandFormat } from 'component-lib/utils/numberFormats';
 
 export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
   classNames: 'rsa-data-table-body-row',
-  classNameBindings: ['isSelected', 'isAtGroupingSize', 'isLast'],
+  classNameBindings: ['isSelected', 'isAtGroupingSize', 'isLast', 'isSearchMatch'],
   attributeBindings: ['style'],
 
   // determines if this row is at the limit of the group size

@@ -36,6 +36,7 @@ const mockItems = [];
   let i;
   for (i = 0; i < mockCount; i++) {
     mockItems.push({
+      sessionId: `sessionId${i}`,
       id: i,
       foo: `foo${i}`,
       bar: `bar${i}`
@@ -549,6 +550,40 @@ test('it scrolls table to top when scrollToInitialSelectedIndex is provided.', f
       {{/rsa-data-table/body}}
     {{/rsa-data-table}}
   `);
+
+  assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
+
+  const rowHeight = this.$('.rsa-data-table-body-row').outerHeight();
+  const [ { scrollTop } ] = this.$('.rsa-data-table-body');
+  assert.equal(scrollTop, rowHeight * index, 'seventh item is scrollTop\'d the correct number of pixels such that it is at the top of the table');
+});
+
+test('it scrolls table to top when there is a search match', function(assert) {
+  const index = 1;
+  this.setProperties({
+    items: mockItems,
+    columnsConfig: mockColumnsConfig,
+    searchMatches: []
+  });
+  this.render(hbs`
+    <style type="text/css">
+      .rsa-data-table-body {
+        height: 200px;
+        overflow: auto;
+      }
+    </style>
+    {{#rsa-data-table searchMatches=searchMatches lazy=false items=items columnsConfig=columnsConfig}}
+      {{#rsa-data-table/body as |item index column|}}
+        {{#rsa-data-table/body-cell item=item index=index column=column~}}
+          {{get item column.field}}
+        {{~/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  `);
+
+  this.setProperties({
+    searchMatches: ['sessionId1']
+  });
 
   assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
 

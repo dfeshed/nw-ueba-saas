@@ -226,6 +226,18 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     &:first-child {
       border-top: 1px solid transparent;
     }
+
+    &.is-search-match {
+      .rsa-data-table-body-cell {
+        background: background-color(accentTwo, darker);
+      }
+
+      &:hover {
+        .rsa-data-table-body-cell {
+          background: background-color(accentTwo, dark);
+        }
+      }
+    }
   }
 
 
@@ -418,5 +430,11 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
   input {
     margin-bottom: rsa-whitespace();
+  }
+}
+
+.rsa-data-table-search-panel > section {
+  .rsa-form-label {
+    line-height: .8rem;
   }
 }

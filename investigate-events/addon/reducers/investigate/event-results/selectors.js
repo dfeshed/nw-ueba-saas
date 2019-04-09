@@ -2,10 +2,15 @@ import reselect from 'reselect';
 import { lookup } from 'ember-dependency-lookup';
 import { EVENT_TYPES } from 'component-lib/constants/event-types';
 import { EVENT_DOWNLOAD_TYPES, FILE_TYPES } from 'component-lib/constants/event-download-types';
+import formatUtil from 'investigate-events/components/events-table-container/row-container/format-util';
 
 const { createSelector } = reselect;
 
+const DEFAULT_WIDTH = 100;
+
 // ACCESSOR FUNCTIONS
+const _columnGroups = (state) => state.investigate.data.columnGroups;
+const _columnGroup = (state) => state.investigate.data.columnGroup;
 const _resultsData = (state) => state.investigate.eventResults.data;
 const _eventResultCount = (state) => state.investigate.eventCount.data;
 const _status = (state) => state.investigate.eventResults.status;
@@ -16,7 +21,12 @@ const _eventAnalysisPreferences = (state) => state.investigate.data.eventAnalysi
 const _items = (state) => state.investigate.data.eventsPreferencesConfig.items;
 const _isAllEventsSelected = (state) => state.investigate.eventResults.allEventsSelected;
 const _selectedEventIds = (state) => state.investigate.eventResults.selectedEventIds;
-
+const _aliases = (state) => state.investigate.dictionaries.aliases;
+const _dateFormat = (state) => state.investigate.data.globalPreferences.dateFormat;
+const _timeFormat = (state) => state.investigate.data.globalPreferences.timeFormat;
+const _timeZone = (state) => state.investigate.data.globalPreferences.timeZone;
+const _locale = (state) => state.investigate.data.globalPreferences.locale;
+const _searchTerm = (state) => state.investigate.eventResults.searchTerm;
 export const streamLimit = (state) => state.investigate.eventResults.streamLimit;
 
 export const SORT_ORDER = {
@@ -30,7 +40,6 @@ export const noEvents = createSelector(
     return _resultsData && _resultsData.length === 0;
   }
 );
-
 
 export const shouldStartAtOldest = createSelector(
   [_eventTimeSortOrder],
@@ -222,6 +231,98 @@ export const getDownloadOptions = createSelector(
   }
 );
 
+export const eventTableFormattingOpts = createSelector(
+  [_aliases, _dateFormat, _timeFormat, _locale, _timeZone],
+  (aliases, dateFormat, timeFormat, locale, timeZone) => {
+    const i18n = lookup('service:i18n');
+
+    if (!dateFormat || !timeFormat || !locale || !timeZone) {
+      return;
+    }
+
+    return {
+      aliases,
+      defaultWidth: DEFAULT_WIDTH,
+      dateTimeFormat: `${dateFormat} ${timeFormat}`,
+      i18n: {
+        size: {
+          bytes: i18n.t('investigate.size.bytes'),
+          KB: i18n.t('investigate.size.KB'),
+          MB: i18n.t('investigate.size.MB'),
+          GB: i18n.t('investigate.size.GB'),
+          TB: i18n.t('investigate.size.TB')
+        },
+        medium: {
+          '1': i18n.t('investigate.medium.network'),
+          '32': i18n.t('investigate.medium.log'),
+          '33': i18n.t('investigate.medium.correlation'),
+          'endpoint': i18n.t('investigate.medium.endpoint'),
+          'undefined': i18n.t('investigate.medium.undefined')
+        }
+      },
+      locale,
+      timeZone
+    };
+  }
+);
+
+export const searchMatches = createSelector(
+  [_searchTerm, _resultsData, eventTableFormattingOpts, _columnGroup, _columnGroups],
+  (searchTerm, data, opts, columnGroup, columnGroups) => {
+    // return empty set unless searchTerm meets length requirement
+    const searchTermLengthRequirement = 2;
+    if (!searchTerm || searchTerm.length < searchTermLengthRequirement) {
+      return [];
+    } else {
+      searchTerm = searchTerm.toLowerCase();
+    }
+
+    const allMatches = [];
+
+    // get list of visible column keys
+    const { columns } = columnGroups.find(({ id }) => id === columnGroup);
+    const columnKeys = columns.map(({ field }) => field);
+
+    for (let dataLoopIndex = 0; dataLoopIndex < data.length; dataLoopIndex++) {
+      // prune list of data fields by visible columns
+      const prunedFields = Object.entries(data[dataLoopIndex]).filter(([field]) => {
+        if (columnKeys.includes(field)) {
+          return true;
+        }
+      });
+
+      // loop through data fields and compare searchTerm to values
+      for (let fieldLoopIndex = 0; fieldLoopIndex < prunedFields.length; fieldLoopIndex++) {
+        const [field, value] = prunedFields[fieldLoopIndex];
+        let toSearch = formatUtil.text(field, value, opts);
+        toSearch = (typeof toSearch === 'object' ? toSearch.string : toSearch).toLowerCase();
+        if (field === 'medium' && data[dataLoopIndex]['nwe.callback_id']) {
+          // handle endpoint comparison
+          const hash = opts.i18n && opts.i18n[field];
+          if (hash.endpoint.string.toLowerCase().includes(searchTerm)) {
+            allMatches.push(data[dataLoopIndex].sessionId);
+            break;
+          }
+        } else {
+          // handle all other comparisons
+          if (toSearch.includes(searchTerm)) {
+            allMatches.push(data[dataLoopIndex].sessionId);
+            break;
+          }
+        }
+      }
+    }
+
+    return allMatches;
+  }
+);
+
+export const searchMatchesCount = createSelector(
+  [searchMatches],
+  (matches) => {
+    return matches.length;
+  }
+);
 /**
  * Finds the actual count of events.
  * Comes in handy when search is cancelled.

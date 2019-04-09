@@ -20,6 +20,11 @@ export default Component.extend(RowMixin, HighlightsEntities, {
   entityEndpointId: 'CORE',
   autoHighlightEntities: true,
 
+  @computed('item.sessionId', 'table.searchMatches', 'table.searchMatches.[]')
+  isSearchMatch(id, matches) {
+    return matches && matches.includes(id);
+  },
+
   // Formatting configuration options. Passed to utils that generate cell DOM.
   @computed('parentView.parentView.selectedItems', 'parentView.parentView.allItemsSelected', 'item.sessionId', 'parentView.parentView.selectedItems.length')
   isChecked(selectedItems, allItemsSelected, sessionId) {

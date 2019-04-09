@@ -525,6 +525,8 @@ export default {
       clickToOpen: 'Click to open'
     },
     events: {
+      search: 'Find text in table',
+      searchPlaceholder: 'Enter text to be found.',
       titleThreshold: '{{age}} {{count}} Events ({{sort}})',
       title: '{{count}} Events ({{sort}})',
       oldest: 'oldest',

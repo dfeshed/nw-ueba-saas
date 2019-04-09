@@ -129,3 +129,10 @@ export const fetchInvestigateData = () => {
     }
   };
 };
+
+export const updateGlobalPreferences = (payload) => {
+  return {
+    type: ACTION_TYPES.UPDATE_GLOBAL_PREFERENCES,
+    payload
+  };
+};

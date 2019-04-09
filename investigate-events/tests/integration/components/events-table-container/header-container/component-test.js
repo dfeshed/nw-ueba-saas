@@ -62,6 +62,7 @@ module('Integration | Component | header-container', function(hooks) {
     assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), '55Events(Asc)', 'rendered event header title');
     assert.equal(find('.rsa-investigate-events-table__header__columnGroup span').textContent.trim(), 'Summary List', 'rendered event header title');
     assert.equal(find('.rsa-investigate-events-table__header__downloadEvents span').textContent.trim(), 'Download', 'rendered event header title');
+    assert.ok(find('.rsa-data-table-header__search-selector'), 'rendered event header text search');
   });
 
   test('it provides option to select column groups', async function(assert) {

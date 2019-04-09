@@ -44,6 +44,19 @@ test('Should update the column widths if the right columns are present', functio
   assert.equal(newEndState.columnGroups[0].columns[4].width, 1000, 'summary set to right value');
 });
 
+test('Should update global preferences', function(assert) {
+  const previous = Immutable.from({
+    globalPreferences: null
+  });
+
+  const action = {
+    type: ACTION_TYPES.UPDATE_GLOBAL_PREFERENCES,
+    payload: 'foo'
+  };
+  const newEndState = reducer(previous, action);
+  assert.deepEqual(newEndState.globalPreferences, 'foo');
+});
+
 test('Should show default column list in case of failure', function(assert) {
   const previous = Immutable.from({
     columnGroups: null

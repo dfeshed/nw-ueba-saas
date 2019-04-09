@@ -39,6 +39,13 @@ export const cancelQuery = (dispatchStatus = true) => {
   };
 };
 
+export const searchForTerm = (term) => {
+  return {
+    type: ACTION_TYPES.SET_SEARCH_TERM,
+    payload: term
+  };
+};
+
 export const setMetaPanelSize = (size) => {
   if (size) {
     return {

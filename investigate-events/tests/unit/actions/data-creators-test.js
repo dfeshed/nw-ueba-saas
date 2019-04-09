@@ -12,6 +12,11 @@ module('Unit | Actions | Data-Creators', function(hooks) {
     initialize(this.owner);
   });
 
+  test('updateGlobalPreferences action creator returns proper type', function(assert) {
+    const { type } = dataCreators.updateGlobalPreferences();
+    assert.equal(type, ACTION_TYPES.UPDATE_GLOBAL_PREFERENCES, 'action has the correct type');
+  });
+
   test('updateSummary call will update timerange if autoSummaryCall is enabled', function(assert) {
     const done = assert.async();
     const getState = () => {

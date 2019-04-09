@@ -1,4 +1,5 @@
 import { module, test } from 'qunit';
+import { lookup } from 'ember-dependency-lookup';
 import {
   allExpectedDataLoaded,
   areEventsStreaming,
@@ -9,11 +10,15 @@ import {
   isEventResultsError,
   percentageOfEventsDataReturned,
   actualEventCount,
-  noEvents
+  noEvents,
+  eventTableFormattingOpts,
+  searchMatches,
+  searchMatchesCount
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import CONFIG from 'investigate-events/reducers/investigate/config';
+import EventColumnGroups from '../../../data/subscriptions/investigate-columns/data';
 
 module('Unit | Selectors | event-results', function(hooks) {
   setupTest(hooks);
@@ -64,6 +69,234 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.deepEqual(result[optionNumber].sessionIds, sessionIds);
     assert.equal(result[optionNumber].disabled, isDisabled);
   };
+
+  test('searchMatches returns empty array with no searchTerm', async function(assert) {
+    const state = {
+      investigate: {
+        dictionaries: {
+          aliases: 'aliases'
+        },
+        data: {
+          columnGroup: 'SUMMARY',
+          columnGroups: EventColumnGroups,
+          globalPreferences: {
+            dateFormat: 'dateFormat',
+            timeFormat: 'timeFormat',
+            timeZone: 'timeZone',
+            locale: 'locale'
+          }
+        },
+        eventResults: {
+          searchTerm: '',
+          data: [
+            { sessionId: 1, medium: 32 },
+            { sessionId: 2, medium: 32, 'nwe.callback_id': true },
+            { sessionId: 3 }
+          ]
+        }
+      }
+    };
+
+    const result = searchMatches(state);
+    assert.equal(result.length, 0);
+  });
+
+  test('searchMatches returns empty array with a short searchTerm', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          searchTerm: 'a',
+          data: [
+            { sessionId: 1, medium: 32 },
+            { sessionId: 2, medium: 32, 'nwe.callback_id': true },
+            { sessionId: 3 }
+          ]
+        },
+        dictionaries: {
+          aliases: 'aliases'
+        },
+        data: {
+          globalPreferences: {
+            dateFormat: 'dateFormat',
+            timeFormat: 'timeFormat',
+            timeZone: 'timeZone',
+            locale: 'locale'
+          }
+        }
+      }
+    };
+
+    const result = searchMatches(state);
+    assert.equal(result.length, 0);
+  });
+
+  test('searchMatches returns matches when not endpoint', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          searchTerm: 'log',
+          data: [
+            { sessionId: 1, medium: 32 }, // will resolve to "log"
+            { sessionId: 2, medium: 32, 'nwe.callback_id': true }, // will resolve to "Endpoint"
+            { sessionId: 3 }
+          ]
+        },
+        dictionaries: {
+          aliases: 'aliases'
+        },
+        data: {
+          columnGroup: 'SUMMARY',
+          columnGroups: EventColumnGroups,
+          globalPreferences: {
+            dateFormat: 'dateFormat',
+            timeFormat: 'timeFormat',
+            timeZone: 'timeZone',
+            locale: 'locale'
+          }
+        }
+      }
+    };
+
+    const result = searchMatches(state);
+    assert.equal(result.length, 1);
+  });
+
+  test('searchMatchesCount returns count of matches', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          searchTerm: 'log',
+          data: [
+            { sessionId: 1, medium: 32 }, // will resolve to "log"
+            { sessionId: 3 }
+          ]
+        },
+        dictionaries: {
+          aliases: 'aliases'
+        },
+        data: {
+          columnGroup: 'SUMMARY',
+          columnGroups: EventColumnGroups,
+          globalPreferences: {
+            dateFormat: 'dateFormat',
+            timeFormat: 'timeFormat',
+            timeZone: 'timeZone',
+            locale: 'locale'
+          }
+        }
+      }
+    };
+
+    const result = searchMatchesCount(state);
+    assert.equal(result, 1);
+  });
+
+  test('searchMatches returns no matches when value not in column config', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          searchTerm: 'log',
+          data: [
+            { sessionId: 1, random: 32 }, // will resolve to "log"
+            { sessionId: 2, medium: 32, 'nwe.callback_id': true }, // will resolve to "Endpoint"
+            { sessionId: 3 }
+          ]
+        },
+        dictionaries: {
+          aliases: 'aliases'
+        },
+        data: {
+          columnGroup: 'SUMMARY',
+          columnGroups: EventColumnGroups,
+          globalPreferences: {
+            dateFormat: 'dateFormat',
+            timeFormat: 'timeFormat',
+            timeZone: 'timeZone',
+            locale: 'locale'
+          }
+        }
+      }
+    };
+
+    const result = searchMatches(state);
+    assert.equal(result.length, 0);
+  });
+
+  test('searchMatches returns matches when endpoint', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          searchTerm: 'end',
+          data: [
+            { sessionId: 1, medium: 32 }, // will resolve to "log"
+            { sessionId: 2, medium: 32, 'nwe.callback_id': true }, // will resolve to "Endpoint"
+            { sessionId: 3 }
+          ]
+        },
+        dictionaries: {
+          aliases: 'aliases'
+        },
+        data: {
+          columnGroup: 'SUMMARY',
+          columnGroups: EventColumnGroups,
+          globalPreferences: {
+            dateFormat: 'dateFormat',
+            timeFormat: 'timeFormat',
+            timeZone: 'timeZone',
+            locale: 'locale'
+          }
+        }
+      }
+    };
+
+    const result = searchMatches(state);
+    assert.equal(result.length, 1);
+  });
+
+  test('eventTableFormattingOpts returns expected format', async function(assert) {
+    const state = {
+      investigate: {
+        dictionaries: {
+          aliases: 'aliases'
+        },
+        data: {
+          globalPreferences: {
+            dateFormat: 'dateFormat',
+            timeFormat: 'timeFormat',
+            timeZone: 'timeZone',
+            locale: 'locale'
+          }
+        }
+      }
+    };
+
+    const i18n = lookup('service:i18n');
+    const result = eventTableFormattingOpts(state);
+
+    assert.deepEqual(result, {
+      aliases: 'aliases',
+      defaultWidth: 100,
+      dateTimeFormat: 'dateFormat timeFormat',
+      i18n: {
+        size: {
+          bytes: i18n.t('investigate.size.bytes'),
+          KB: i18n.t('investigate.size.KB'),
+          MB: i18n.t('investigate.size.MB'),
+          GB: i18n.t('investigate.size.GB'),
+          TB: i18n.t('investigate.size.TB')
+        },
+        medium: {
+          '1': i18n.t('investigate.medium.network'),
+          '32': i18n.t('investigate.medium.log'),
+          '33': i18n.t('investigate.medium.correlation'),
+          'endpoint': i18n.t('investigate.medium.endpoint'),
+          'undefined': i18n.t('investigate.medium.undefined')
+        }
+      },
+      locale: 'locale',
+      timeZone: 'timeZone'
+    });
+  });
 
   test('getDownloadOptions returns options with no counts when selectAll is checked', async function(assert) {
     const state = {
@@ -332,7 +565,6 @@ module('Unit | Selectors | event-results', function(hooks) {
     };
     percentage = percentageOfEventsDataReturned(state);
     assert.equal(percentage, 5, 'correct percentage returned');
-
 
     state = {
       investigate: {

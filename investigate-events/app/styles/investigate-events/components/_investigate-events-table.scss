@@ -85,8 +85,8 @@
     }
     .events-table-control {
       display: inline-block;
-      min-width: 60px;
       margin-top: 17px;
+      min-width: 100px;
       margin-right: rsa-whitespace();
       color: text-color(primary, light);
       .rsa-icon {

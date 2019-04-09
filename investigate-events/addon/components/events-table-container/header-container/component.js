@@ -3,12 +3,12 @@ import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
-import { later } from '@ember/runloop';
+import { later, debounce, schedule } from '@ember/runloop';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
-import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
+import { setColumnGroup, searchForTerm } from 'investigate-events/actions/interaction-creators';
 import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
-import { shouldStartAtOldest, actualEventCount } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { shouldStartAtOldest, actualEventCount, searchMatchesCount } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
 
 const stateToComputed = (state) => ({
@@ -16,15 +16,18 @@ const stateToComputed = (state) => ({
   isReconOpen: state.investigate.data.isReconOpen,
   eventTimeSortOrder: state.investigate.eventResults.eventTimeSortOrder,
   columnGroups: state.investigate.data.columnGroups,
+  searchTerm: state.investigate.eventResults.searchTerm,
   selectedColumnGroup: getSelectedColumnGroup(state),
   count: thousandFormat(state.investigate.eventCount.data),
   isAtThreshold: resultCountAtThreshold(state),
   shouldStartAtOldest: shouldStartAtOldest(state),
-  actualEventCount: thousandFormat(actualEventCount(state))
+  actualEventCount: thousandFormat(actualEventCount(state)),
+  searchMatchesCount: searchMatchesCount(state)
 });
 
 const dispatchToActions = {
-  setColumnGroup
+  setColumnGroup,
+  searchForTerm
 };
 
 const HeaderContainer = Component.extend({
@@ -33,6 +36,7 @@ const HeaderContainer = Component.extend({
   i18n: service(),
   toggleReconSize: () => {},
   toggleSlaveFullScreen: () => {},
+  _searchTerm: null,
 
   @computed('shouldStartAtOldest', 'i18n')
   eventResultSetStart(shouldStartAtOldest, i18n) {
@@ -63,7 +67,28 @@ const HeaderContainer = Component.extend({
     };
   },
 
+  // This is the debounced execution of the searchForTerm action creator
+  // sent onKeyUp of the tethered panel input for text search
+  searchForTerm() {
+    this.send('searchForTerm', this.readOnlySearchTerm);
+  },
+
+  didInsertElement() {
+    this.set('_searchTerm', this.get('searchTerm'));
+  },
+
+  searchPanelDidOpen() {
+    schedule('afterRender', () => {
+      $('.rsa-data-table-search-panel input').focus();
+    });
+
+  },
+
   actions: {
+    debouncedSearchForTerm() {
+      debounce(this, 'searchForTerm', 250);
+    },
+
     attachTooltip() {
       later(() => {
         const customGroup = $('.ember-power-select-group-name').first();

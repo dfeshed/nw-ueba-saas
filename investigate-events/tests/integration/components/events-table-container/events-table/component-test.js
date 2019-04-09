@@ -24,6 +24,10 @@ module('Integration | Component | events-table', function(hooks) {
   });
 
   test('it renders with Context menu trigger', async function(assert) {
+    new ReduxDataHelper(setState)
+      .eventsPreferencesConfig()
+      .build();
+
     await render(hbs`
       {{events-table-container/events-table
         contextItems=contextItems
@@ -33,6 +37,10 @@ module('Integration | Component | events-table', function(hooks) {
   });
 
   test('it shows context menu on right click', async function(assert) {
+    new ReduxDataHelper(setState)
+      .eventsPreferencesConfig()
+      .build();
+
     await render(hbs`
       {{events-table-container/events-table
         metaName=metaName
@@ -62,6 +70,9 @@ module('Integration | Component | events-table', function(hooks) {
       }
     };
     this.set('contextMenuService', contextMenuService);
+    new ReduxDataHelper(setState)
+      .eventsPreferencesConfig()
+      .build();
 
     await render(hbs`
       {{events-table-container/events-table
@@ -86,6 +97,7 @@ module('Integration | Component | events-table', function(hooks) {
   test('if events are streaming, a spinner is displayed with appropriate message', async function(assert) {
     new ReduxDataHelper(setState)
       .eventResultsStatus('between-streams')
+      .eventsPreferencesConfig()
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
@@ -97,6 +109,7 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .isQueryExecutedByColumnGroup()
       .eventResultsStatus('between-streams')
+      .eventsPreferencesConfig()
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
@@ -109,6 +122,7 @@ module('Integration | Component | events-table', function(hooks) {
       .eventCount(1)
       .streamLimit(1)
       .eventResults([{ sessionId: 'foo', time: 123 }])
+      .eventsPreferencesConfig()
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
@@ -127,6 +141,7 @@ module('Integration | Component | events-table', function(hooks) {
       .eventCount(1)
       .streamLimit(100)
       .eventResults([{ sessionId: 'foo', time: 123 }])
+      .eventsPreferencesConfig()
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
@@ -145,6 +160,7 @@ module('Integration | Component | events-table', function(hooks) {
       .eventCount(1)
       .streamLimit(100)
       .eventResults([])
+      .eventsPreferencesConfig()
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
@@ -162,6 +178,7 @@ module('Integration | Component | events-table', function(hooks) {
       .eventCount(0)
       .streamLimit(100)
       .eventResults([])
+      .eventsPreferencesConfig()
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
@@ -177,6 +194,7 @@ module('Integration | Component | events-table', function(hooks) {
       .eventResultsStatus('canceled')
       .eventCount(2)
       .streamLimit(100)
+      .eventsPreferencesConfig()
       .eventResults([{ sessionId: 'foo', time: 123 }])
       .build();
 
@@ -197,6 +215,7 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
       .eventResults([])
+      .eventsPreferencesConfig()
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
@@ -209,6 +228,7 @@ module('Integration | Component | events-table', function(hooks) {
     accessControl.set('hasInvestigateContentExportAccess', false);
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
+      .eventsPreferencesConfig()
       .eventResults([])
       .build();
 
@@ -221,6 +241,7 @@ module('Integration | Component | events-table', function(hooks) {
     assert.expect(2);
     new ReduxDataHelper(setState)
       .eventCount(1)
+      .eventsPreferencesConfig()
       .eventResults([{ sessionId: 'foo', time: 123 }])
       .build();
 
@@ -237,6 +258,7 @@ module('Integration | Component | events-table', function(hooks) {
     assert.expect(1);
     new ReduxDataHelper(setState)
       .eventCount(2)
+      .eventsPreferencesConfig()
       .eventResults([{ sessionId: 'foo', time: 123 }, { sessionId: 'bar', time: 123 }])
       .build();
 

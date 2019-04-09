@@ -7,7 +7,7 @@ import { parseBasicQueryParams } from 'investigate-events/actions/utils';
 import { isSearchTerm, parsePillDataFromUri, transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { extractSearchTermFromFilters } from 'investigate-shared/actions/api/events/utils';
 import { fetchColumnGroups } from './fetch/column-groups';
-import { fetchInvestigateData, getServiceSummary } from './data-creators';
+import { fetchInvestigateData, getServiceSummary, updateGlobalPreferences } from './data-creators';
 import { isQueryExecutedByColumnGroup } from './interaction-creators';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 import CONFIG from 'investigate-events/reducers/investigate/config';
@@ -42,6 +42,37 @@ const _initializeDictionaries = (dispatch, getState) => {
 };
 
 /**
+ * Encapsulates all setting and updating of global preferences into state
+ *
+ * @private
+ */
+const _initializeGlobalPreferences = (dispatch) => {
+  const globalPreferencesService = lookup('service:globalPreferences');
+  const dateFormatService = lookup('service:dateFormat');
+  const timeFormatService = lookup('service:timeFormat');
+  const i18nService = lookup('service:i18n');
+  const timezoneService = lookup('service:timezone');
+  if (
+    dateFormatService && dateFormatService.selected && dateFormatService.selected.format &&
+    timeFormatService && timeFormatService.selected && timeFormatService.selected.format &&
+    i18nService && i18nService.locale &&
+    timezoneService && timezoneService.selected && timezoneService.selected.zoneId
+  ) {
+    globalPreferencesService.on('rsa-application-user-preferences-did-change', () => {
+      dispatch(updateGlobalPreferences(globalPreferencesService.preferences));
+    });
+
+    dispatch(updateGlobalPreferences({
+      dateFormat: dateFormatService.selected.format,
+      timeFormat: timeFormatService.selected.format,
+      locale: i18nService.locale,
+      timeZone: timezoneService.selected.zoneId
+    }));
+  }
+};
+
+
+/**
  * Wraps the fetching of services in a promise
  *
  * @see getServices
@@ -66,6 +97,7 @@ const _initializePreferences = (dispatch, getState) => {
     const investigateState = getState().investigate;
     const { modelName } = investigateState.data.eventsPreferencesConfig;
     const { queryTimeFormat } = investigateState.queryNode;
+
     if (queryTimeFormat) {
       // We already have preferences, just resolve
       resolve();
@@ -346,14 +378,17 @@ export const initializeInvestigate = function(
       }
     });
 
-    // 2) Retrieve the column groups, it isn't important that
+    // 2) Initialize global preferences state
+    _initializeGlobalPreferences(dispatch);
+
+    // 3) Retrieve the column groups, it isn't important that
     //    this be syncronized with anything else, so can just
     //    kick it off
     dispatch(_getColumnGroups());
     dispatch(isQueryExecutedByColumnGroup(false));
 
-    // 3) Get all the user's preferences
-    // 4) Get all the services available to the user. We have
+    // 4) Get all the user's preferences
+    // 5) Get all the services available to the user. We have
     //    to get services before we can do anything else. So
     //    all other requests have to wait until it comes back.
     const initializationPromises = [
@@ -364,13 +399,13 @@ export const initializeInvestigate = function(
     const hasService = !!parsedQueryParams.serviceId;
     if (hasService) {
       // If we have a service then...
-      // 5) Include getting the dictionaries with other requests,
+      // 6) Include getting the dictionaries with other requests,
       //    and kick them all off
       initializationPromises.push(_initializeDictionaries(dispatch, getState));
       await RSVP.all(initializationPromises).catch(errorHandler);
     } else {
       // If we do not have a service then...
-      // 5) Get all the dictionaries after we have fetched services and
+      // 6) Get all the dictionaries after we have fetched services and
       //    automatically chosen the first service as the active service
       await RSVP.all(initializationPromises);
       await _initializeDictionaries(dispatch, getState).catch(errorHandler);

@@ -73,6 +73,8 @@ function _alias(field, value, opts = {}) {
 
   if (field === 'medium') {
     hash = opts.i18n && opts.i18n[field];
+    // Log and Endpoint are both medium === 32
+    // ensure endpoints get aliased as Endpoint instead of Log
     if (opts.isEndpoint) {
       valueLookup = hash.endpoint;
     } else {

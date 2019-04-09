@@ -248,6 +248,12 @@ export default class DataHelper {
 
   eventsPreferencesConfig() {
     _set(this.state, 'data.eventsPreferencesConfig', CONFIG);
+    _set(this.state, 'data.globalPreferences', {
+      dateFormat: 'DD/MM/YYYY',
+      timeFormat: 'hh:mm:ss.SSS a',
+      timeZone: 'UTC',
+      locale: 'en'
+    });
     return this;
   }
 
