@@ -943,7 +943,8 @@ export default {
       actionMessages: {
         fetchFailure: 'There was a problem loading the Respond notification settings. The Respond Server may be offline or inaccessible.',
         updateSuccess: 'You successfully updated the Respond notification settings',
-        updateFailure: 'There was a problem updating the Respond notification settings'
+        updateFailure: 'There was a problem updating the Respond notification settings',
+        updateEmailServerFailure: 'These settings cannot be edited because the corresponding e-mail server cannot be found. Access the Servers tab from the "E-mail Servers Settings" link and add the necessary e-mail server.'
       }
     },
     endpoint: {

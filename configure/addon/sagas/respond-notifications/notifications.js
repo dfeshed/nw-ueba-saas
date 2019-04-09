@@ -22,9 +22,11 @@ function* updateNotificationSettingsAsync(action) {
     const payload = yield call(notifications.updateNotificationSettings, notificationSettings);
     yield put({ type: ACTION_TYPES.UPDATE_NOTIFICATION_SETTINGS, payload });
     success('configure.notifications.actionMessages.updateSuccess');
-  } catch (e) {
+  } catch ({ code }) {
+    const prefix = 'configure.notifications.actionMessages.';
+    const message = code === 41 ? `${prefix}updateEmailServerFailure` : `${prefix}updateFailure`;
     yield put({ type: ACTION_TYPES.UPDATE_NOTIFICATION_SETTINGS_FAILED });
-    failure('configure.notifications.actionMessages.updateFailure');
+    failure(message);
   }
 }
 

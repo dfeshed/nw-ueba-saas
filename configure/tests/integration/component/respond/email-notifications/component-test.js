@@ -4,8 +4,11 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import hbs from 'htmlbars-inline-precompile';
-import { click, fillIn, find, findAll, render } from '@ember/test-helpers';
+import { waitUntil, click, fillIn, find, findAll, render } from '@ember/test-helpers';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
+import { throwSocket } from '../../../../helpers/patch-socket';
+import { patchFlash } from '../../../../helpers/patch-flash';
+import { settings, labels, selectors, alterSettings } from './helpers';
 import notifications from '../../../../data/subscriptions/notification-settings/findAll/data';
 
 const initialState = {
@@ -15,19 +18,6 @@ const initialState = {
   socManagers: [],
   notificationSettings: [],
   isTransactionUnderway: false
-};
-
-const selectors = {
-  emailServerSettings: '.email-server-settings',
-  emailServerDropdownTrigger: '.ember-power-select-trigger',
-  emailServerOptions: '.ember-power-select-option',
-  socManagerEmails: '.soc-manager-emails .soc-manager-email',
-  deleteSocManagerEmailButton: '.soc-manager-emails li .remove-email button',
-  addEmailInput: '.soc-manager-emails .soc-email-controls input',
-  addEmailButton: '.soc-manager-emails .soc-email-controls button',
-  notificationSettingRow: '.notification-details table tbody tr',
-  formWarning: 'footer .form-warning',
-  applyButton: '.form-save-controls button'
 };
 
 let setState;
@@ -248,22 +238,6 @@ module('Integration | Component | Respond Email Notifications', function(hooks) 
   });
 
   test('The apply button is disabled if there are no changes to the form and becomes enabled with a warning after a change', async function(assert) {
-    const settings = {
-      selectedEmailServer: 'my-favorite-server',
-      socManagers: ['admin@rsa.com'],
-      notificationSettings: [
-        {
-          reason: 'incident-created',
-          sendToAssignee: true,
-          sendToSocManagers: true
-        },
-        {
-          reason: 'incident-state-changed',
-          sendToAssignee: true,
-          sendToSocManagers: true
-        }
-      ]
-    };
     setState({
       ...initialState,
       emailServers: notifications.emailServers,
@@ -273,12 +247,12 @@ module('Integration | Component | Respond Email Notifications', function(hooks) 
       }
     });
     await render(hbs`{{respond/email-notifications}}`);
-    const notificationSettingRow = findAll(selectors.notificationSettingRow);
-    const [ row0 ] = notificationSettingRow;
-    const row0Cells = row0.getElementsByTagName('td');
-    const [ , row0Cell1 ] = row0Cells;
+
+    const row0Cell1 = alterSettings();
+
     assert.ok(find(selectors.applyButton).disabled, 'The Apply button is disabled when there are no changes');
     assert.equal(find(selectors.formWarning).textContent.trim(), '', 'There is no warning displayed to the user about unsaved changes');
+
     await click(row0Cell1.getElementsByTagName('input')[0]);
     const i18n = this.owner.lookup('service:i18n');
     const warningMessage = i18n.t('configure.notifications.hasUnsavedChanges');
@@ -294,6 +268,90 @@ module('Integration | Component | Respond Email Notifications', function(hooks) 
     await render(hbs`{{respond/email-notifications}}`);
     assert.ok(find(selectors.applyButton).disabled, 'The Apply button is disabled');
     assert.equal(find(selectors.formWarning).textContent.trim(), warningMessage, 'A warning is displayed to users that they have no permissions to edit');
+  });
+
+  test('error code 1 will result in flash with generic message', async function(assert) {
+    assert.expect(2);
+
+    setState({
+      ...initialState,
+      emailServers: notifications.emailServers,
+      ...settings,
+      originalSettings: {
+        ...settings
+      }
+    });
+
+    await render(hbs`{{respond/email-notifications}}`);
+
+    const row0Cell1 = alterSettings();
+    await click(row0Cell1.getElementsByTagName('input')[0]);
+    waitUntil(() => find(selectors.applyButton).disabled === false);
+
+    const done = throwSocket({ methodToThrow: 'updateRecord', modelNameToThrow: 'notification-settings', message: { code: 1 } });
+    patchFlash((flash) => {
+      assert.equal(flash.type, 'error');
+      assert.equal(flash.message.string, labels(this, 'updateFailure'));
+      done();
+    });
+
+    await click(selectors.applyButton);
+  });
+
+  test('error code 41 will result in flash with specific email server message', async function(assert) {
+    assert.expect(2);
+
+    setState({
+      ...initialState,
+      emailServers: notifications.emailServers,
+      ...settings,
+      originalSettings: {
+        ...settings
+      }
+    });
+
+    await render(hbs`{{respond/email-notifications}}`);
+
+    const row0Cell1 = alterSettings();
+    await click(row0Cell1.getElementsByTagName('input')[0]);
+    waitUntil(() => find(selectors.applyButton).disabled === false);
+
+    const done = throwSocket({ methodToThrow: 'updateRecord', modelNameToThrow: 'notification-settings', message: { code: 41 } });
+    patchFlash((flash) => {
+      assert.equal(flash.type, 'error');
+      assert.equal(flash.message.string, labels(this, 'updateEmailServerFailure'));
+      done();
+    });
+
+    await click(selectors.applyButton);
+  });
+
+  test('error without explicit return code will result in flash with generic message', async function(assert) {
+    assert.expect(2);
+
+    setState({
+      ...initialState,
+      emailServers: notifications.emailServers,
+      ...settings,
+      originalSettings: {
+        ...settings
+      }
+    });
+
+    await render(hbs`{{respond/email-notifications}}`);
+
+    const row0Cell1 = alterSettings();
+    await click(row0Cell1.getElementsByTagName('input')[0]);
+    waitUntil(() => find(selectors.applyButton).disabled === false);
+
+    const done = throwSocket({ methodToThrow: 'updateRecord', modelNameToThrow: 'notification-settings', message: { foo: undefined } });
+    patchFlash((flash) => {
+      assert.equal(flash.type, 'error');
+      assert.equal(flash.message.string, labels(this, 'updateFailure'));
+      done();
+    });
+
+    await click(selectors.applyButton);
   });
 
 });
