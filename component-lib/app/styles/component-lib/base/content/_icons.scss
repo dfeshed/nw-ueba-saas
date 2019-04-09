@@ -992,6 +992,31 @@
     content: $rsa-icon-check-shield-filled;
   }
 }
+.rsa-icon-add-circle-alternate {
+  &:before {
+    content: $rsa-icon-add-circle-alternate;
+  }
+}
+.rsa-icon-cursor-select-circle-1 {
+  &:before {
+    content: $rsa-icon-cursor-select-circle-1;
+  }
+}
+.rsa-icon-cell-border-bottom {
+  &:before {
+    content: $rsa-icon-cell-border-bottom;
+  }
+}
+.rsa-icon-common-file-empty {
+  &:before {
+    content: $rsa-icon-common-file-empty;
+  }
+}
+.rsa-icon-network {
+  &:before {
+    content: $rsa-icon-network;
+  }
+}
 .rsa-icon-account-circle-1-lined {
   &:before {
     content: $rsa-icon-account-circle-1-lined;
