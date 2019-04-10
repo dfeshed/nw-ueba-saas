@@ -5178,13 +5178,13 @@ export default {
             chartTitle: 'Processes Executing Scripting',
             axisYtitle: ''
           },
-          abnormal_process_injects_into_windows_process:  {
+          abnormal_process_injects_into_windows_process: {
             name: 'Abnormal process injects into windows process',
             timeline: '{{value}} has created a remote thread in {{contexts.dstProcessFileName}} process',
             chartTitle: 'Processes injected to Windows Processes',
             axisYtitle: ''
           },
-          uncommon_process_injects_into_windows_process:  {
+          uncommon_process_injects_into_windows_process: {
             name: 'Abnormal Process Injects into Windows Process',
             timeline: '{{value}} was injected into a known windows process',
             chartTitle: 'Processes injected to Windows Processes',
