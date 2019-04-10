@@ -93,6 +93,10 @@ const start = function({ subscriptionLocations, routes }, cb, { urlPattern, cust
       console.log(req.originalUrl);
       res.json(datafun.default(req.originalUrl));
     });
+    customRoute.patch('/', function(req, res) {
+      console.log(req.originalUrl);
+      res.json(datafun.default(req.originalUrl));
+    });
     app.use(urlPattern, customRoute);
   }
 

@@ -24,7 +24,6 @@ const App = Application.extend({
         externalRoutes: {
           'investigate.investigate-events': 'events',
           'investigate.investigate-hosts': 'hosts',
-          'investigate.investigate-users': 'users',
           'investigate.investigate-files': 'files'
         }
       }

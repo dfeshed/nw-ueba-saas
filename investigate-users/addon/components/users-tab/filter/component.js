@@ -22,7 +22,7 @@ const UsersTabFliterComponent = Component.extend({
     },
     createFilter() {
       this.set('isDisabled', true);
-      this.send('saveAsFavorite', this.get('filter'), this.get('name'));
+      this.send('saveAsFavorite', this.get('name'));
       // This need to replace with actual error handling in coming PR.
       later(() => {
         this.closeFilter();

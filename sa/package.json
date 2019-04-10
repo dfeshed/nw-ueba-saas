@@ -93,6 +93,8 @@
       "../respond",
       "../respond-shared",
       "../rsa-context-menu",
+      "../investigate-users",
+      "../entity-details",
       "../rsa-data-filters",
       "../streaming-data",
       "../test-helpers"

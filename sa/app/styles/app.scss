@@ -42,8 +42,14 @@
 /* Import license styles */
 @import 'license/manifest';
 
+/* putting the engines styles */
+@import "entity-details/manifest";
+
 /* Imports styles from investigate-shared. */
 @import 'investigate-shared/manifest';
+
+/* Imports styles from investigate-users. */
+@import 'investigate-users/manifest';
 
 /** Import process analysis-shared */
 @import "investigate-process-analysis/manifest";

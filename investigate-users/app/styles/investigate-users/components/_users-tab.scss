@@ -276,6 +276,10 @@
         color: text-color(primary);
       }
 
+      .rsa-data-table-body {
+        overflow: hidden;
+      }
+      
       .rsa-data-table-body-row:hover .rsa-data-table-body-cell {
         background-color: background-color(primary, darkest);
       }

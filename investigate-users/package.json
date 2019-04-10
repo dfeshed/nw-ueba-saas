@@ -78,6 +78,7 @@
       "../test-helpers",
       "../component-lib",
       "../streaming-data",
+      "../investigate-shared",
       "../rsa-data-filters",
       "../entity-details"
     ]

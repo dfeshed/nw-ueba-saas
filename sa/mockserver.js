@@ -7,6 +7,7 @@ const investigateMocks = require('../investigate').mockDestinations;
 const preferencesMocks = require('../preferences').mockDestinations;
 const adminEngineMocks = require('../admin').mockDestinations;
 const licenseMocks = require('../license').mockDestinations;
+const customData = require('../investigate-users').dataPath;
 
 const path = require('path');
 const administrationMocks = path.join(__dirname, 'tests', 'data', 'subscriptions');
@@ -22,4 +23,4 @@ require('mock-server').startServer({
     administrationMocks,
     licenseMocks
   ]
-});
+}, null, { urlPattern: '/presidio/*', customData });

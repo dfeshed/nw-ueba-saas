@@ -70,7 +70,7 @@ module('Integration | Component | users-tab/filter/filter', function(hooks) {
     const select = waitForReduxStateChange(redux, ('users.filter.severity'));
     return select.then(() => {
       const state = redux.getState();
-      assert.equal(state.users.filter.severity[0], 'high');
+      assert.equal(state.users.filter.severity[0], 'High');
     });
   });
 });

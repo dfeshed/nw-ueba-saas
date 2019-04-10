@@ -20,8 +20,15 @@
       max-height: 40px;
       position: absolute;
       top: 25px;
-      left: 0px;
+      left: 0;
       z-index: 100;
+
+      &_header {
+        display: flex;
+        justify-content: space-between;
+        padding: rsa-whitespace();
+        max-height: 40px;
+      }
     }
   }
 

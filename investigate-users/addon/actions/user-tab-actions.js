@@ -14,7 +14,7 @@ const _followUnfollowUsers = (endpointLocation) => {
   return (dispatch, getState) => {
     let filter = getUserFilter(getState());
     const filterForPost = _removeUnwantedPropertyFromObject(filter);
-    fetchData(endpointLocation, filterForPost, true).then(() => {
+    fetchData(endpointLocation, filterForPost, 'POST').then(() => {
       dispatch(resetUsers());
       if (filter) {
         filter = filter.setIn(['fromPage'], 1);

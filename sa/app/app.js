@@ -115,7 +115,8 @@ const App = Application.extend({
         externalRoutes: {
           'investigate.investigate-files': 'protected.investigate.investigate-files',
           'investigate.investigate-events': 'protected.investigate.investigate-events',
-          'investigate.investigate-hosts': 'protected.investigate.investigate-hosts'
+          'investigate.investigate-hosts': 'protected.investigate.investigate-hosts',
+          'investigate.investigate-users': 'protected.investigate.investigate-users'
         }
       }
     },
@@ -138,6 +139,51 @@ const App = Application.extend({
         externalRoutes: {
           'investigate.investigate-files': 'protected.investigate.investigate-files',
           'investigate.investigate-hosts': 'protected.investigate.investigate-hosts',
+          'investigate.investigate-users': 'protected.investigate.investigate-users'
+        }
+      }
+    },
+    investigateUsers: {
+      dependencies: {
+        services: [
+          '-document',
+          'access-control',
+          'contextual-help',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n',
+          'flashMessages',
+          'eventBus',
+          'router',
+          'app-version'
+        ],
+        externalRoutes: {
+          'investigate.investigate-files': 'protected.investigate.investigate-files',
+          'investigate.investigate-hosts': 'protected.investigate.investigate-hosts',
+          'investigate.investigate-events': 'protected.investigate.investigate-events'
+        }
+      }
+    },
+    entityDetails: {
+      dependencies: {
+        services: [
+          '-document',
+          'access-control',
+          'contextual-help',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n',
+          'flashMessages',
+          'eventBus',
+          'router',
+          'app-version'
+        ],
+        externalRoutes: {
+          'investigate.investigate-files': 'protected.investigate.investigate-files',
+          'investigate.investigate-hosts': 'protected.investigate.investigate-hosts',
+          'investigate.investigate-events': 'protected.investigate.investigate-events',
           'investigate.investigate-users': 'protected.investigate.investigate-users'
         }
       }

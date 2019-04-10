@@ -1,6 +1,10 @@
 {{#rsa-content-tethered-panel-trigger panel=(concat 'user-' userId) }}
   <div class='users-tab_body_list_alerts'>
-    {{alerts.length}} {{t 'investigateUsers.alerts.title'}}
+    {{#if alerts.length}}
+      {{alerts.length}} {{t 'investigateUsers.alerts.title'}}
+    {{else}}
+      {{t 'investigateUsers.alerts.noAlerts'}}
+    {{/if}}  
   </div>
 {{/rsa-content-tethered-panel-trigger}} 
 {{#rsa-content-tethered-panel panelId=(concat 'user-' userId) style="primary" position='bottom' displayCloseButton=false panelClass='users-tab_body_list_alerts_panel'}}

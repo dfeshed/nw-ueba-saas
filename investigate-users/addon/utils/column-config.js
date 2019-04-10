@@ -86,7 +86,7 @@ export const sortOptions = [{
 }, {
   id: 'name'
 }, {
-  id: 'alerts'
+  id: 'alertsCount'
 }];
 
 export const dateTimeFilterOptionsForAlerts = {

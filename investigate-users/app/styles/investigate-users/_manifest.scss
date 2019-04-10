@@ -3,7 +3,7 @@
 .users-container {
   background-color: background-color(primary, darker);
   @include rsa-col(justify,fill);
-  height: 100%;
+  height: calc(100vh - 90px);
 }
 
 .center {

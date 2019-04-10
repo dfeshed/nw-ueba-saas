@@ -25,7 +25,7 @@ export const allWatched = (state) => state.users.allWatched;
 
 export const getUsers = (state) => state.users.users;
 
-export const severityFilter = ['low', 'medium', 'high', 'critical'];
+export const severityFilter = ['Low', 'Medium', 'High', 'Critical'];
 
 export const getUserFilter = (state) => state.users.filter;
 
