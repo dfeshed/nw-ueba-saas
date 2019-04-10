@@ -448,12 +448,9 @@ export default reduxActions.handleActions({
     return state.set('selectedGroupRanking', groupRankingName);
   },
 
-  [ACTION_TYPES.SET_TOP_RANKING]: (state) => {
-    const selectedGroup = state.groupRanking.filter((group) => state.selectedGroupRanking === group.name);
-    return state.merge({
-      groupRanking: selectedGroup.concat(state.groupRanking.filter((group) => state.selectedGroupRanking !== group.name)),
-      selectedGroupRanking: null
-    });
+  [ACTION_TYPES.SET_TOP_RANKING]: (state, action) => {
+    const { groupRankingNew } = action.payload;
+    return state.set('groupRanking', groupRankingNew);
   },
 
   [ACTION_TYPES.RESET_GROUP_RANKING]: (state) => {

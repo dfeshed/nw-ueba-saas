@@ -67,7 +67,7 @@ module('Unit | Actions | group wizard creators', function(hooks) {
     thunk(dispatch, getState);
   });
 
-  const newSetState = () => {
+  const setState2 = () => {
     return {
       usm: {
         groupWizard: {
@@ -87,7 +87,30 @@ module('Unit | Actions | group wizard creators', function(hooks) {
       assert.deepEqual(action.payload, payloadResult, 'payload has the correct vals');
     };
     const thunk = groupWizardCreators.reorderRanking([{ id: 1, isChecked: true }, { id: 2 }, { id: 3 }]);
-    thunk(dispatch, newSetState);
+    thunk(dispatch, setState2);
+  });
+
+  const setState3 = () => {
+    return {
+      usm: {
+        groupWizard: {
+          groupRanking: [{ name: 1 }, { name: 2 }, { name: 3 }],
+          selectedGroupRanking: 3
+        }
+      }
+    };
+  };
+
+  test('on SET_TOP_RANKING, group', function(assert) {
+    const payloadResult = {
+      'groupRankingNew': [{ name: 3 }, { name: 1 }, { name: 2 }]
+    };
+    const dispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.SET_TOP_RANKING, 'action has the correct type');
+      assert.deepEqual(action.payload, payloadResult, 'payload has the correct vals');
+    };
+    const thunk = groupWizardCreators.setTopRanking();
+    thunk(dispatch, setState3);
   });
 
 });

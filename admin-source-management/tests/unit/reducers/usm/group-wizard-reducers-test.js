@@ -111,19 +111,6 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
     assert.deepEqual(result, expectedResult);
   });
 
-  test('on SET_TOP_RANKING, group', function(assert) {
-    const expectedResult = {
-      ...initialState,
-      groupRanking: [{ name: 'dfg' }, { name: 'abc' } ],
-      selectedGroupRanking: null
-    };
-    const action = {
-      type: ACTION_TYPES.SET_TOP_RANKING
-    };
-    const result = reducers(initialState, action);
-    assert.deepEqual(result, expectedResult);
-  });
-
   test('on PREVIEW_GROUP_RANKING, isChecked using mouse', function(assert) {
     const expectedResult = {
       ...initialState,

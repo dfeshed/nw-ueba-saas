@@ -8,7 +8,8 @@ import {
   assignedPolicies,
   limitedPolicySourceTypes,
   groupRankingViewQuery,
-  groupRanking
+  groupRanking,
+  selectedGroupRanking
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
@@ -210,8 +211,14 @@ const reorderRanking = (ranking, selectedIndex) => {
 };
 
 const resetRanking = () => {
-  return {
-    type: ACTION_TYPES.RESET_GROUP_RANKING
+  return (dispatch, getState) => {
+    const groupRankingVal = groupRanking(getState());
+    dispatch({
+      type: ACTION_TYPES.RESET_GROUP_RANKING
+    });
+    if (groupRankingVal.filter((group) => group.isChecked ? group : '').length) {
+      dispatch(fetchRankingView());
+    }
   };
 };
 
@@ -226,8 +233,23 @@ const selectGroupRanking = (groupRankingName) => {
 };
 
 const setTopRanking = () => {
-  return {
-    type: ACTION_TYPES.SET_TOP_RANKING
+  return (dispatch, getState) => {
+    const groupRankingVal = groupRanking(getState());
+    const selectedGroupRankingVal = selectedGroupRanking(getState());
+    const selectedGroup = groupRankingVal.filter((group) => selectedGroupRankingVal === group.name);
+    const groupRankingNew = selectedGroup.concat(groupRankingVal.filter((group) => selectedGroupRankingVal !== group.name));
+    const payload = {
+      groupRankingNew
+    };
+    dispatch({
+      type: ACTION_TYPES.SET_TOP_RANKING,
+      payload
+    });
+    const previousGroupRankingPreviewList = groupRankingVal.filter((group) => group.isChecked ? group : '');
+    const newGroupRankingPreviewList = groupRankingNew.filter((group) => group.isChecked ? group : '');
+    if (!_.isEqual(previousGroupRankingPreviewList, newGroupRankingPreviewList)) {
+      dispatch(fetchRankingView());
+    }
   };
 };
 
