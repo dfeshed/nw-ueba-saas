@@ -31,7 +31,8 @@ export const focusedItem = (state) => _policiesState(state).focusedItem;
 export const hasGroupRankingChanged = createSelector(
   _groupRankingOrig, groupRanking,
   (_groupRankingOrig, groupRanking) => {
-    return !_.isEqual(_groupRankingOrig, groupRanking);
+    const groupRankingCleaned = groupRanking.map((rank) => _.omit(rank, 'isChecked'));
+    return !_.isEqual(_groupRankingOrig, groupRankingCleaned);
   }
 );
 

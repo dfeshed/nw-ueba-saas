@@ -36,10 +36,25 @@ const EditRankingStep = Component.extend({
   tagName: 'hbox',
   classNames: 'edit-ranking-step',
   actions: {
-    handleSelectGroupRanking(index, evt) {
-      // top rank is index 0, no need to select
-      if (index !== 0) {
-        evt.currentTarget.focus();
+    handleSelectGroupRanking(evt) {
+      evt.currentTarget.focus();
+    },
+    handleKeyBoard(index, evt) {
+      switch (evt.keyCode) {
+        case 40:
+          evt.shiftKey ? this.send('reorderRanking', 'arrowDown', index) : evt.target.nextSibling.focus();
+          break;
+        case 38:
+          evt.shiftKey ? this.send('reorderRanking', 'arrowUp', index) : evt.target.previousSibling.focus();
+          break;
+        case 37:
+          this.send('previewRankingWithFetch', index, 'arrowLeft');
+          break;
+        case 39:
+          this.send('previewRankingWithFetch', index, 'arrowRight');
+          break;
+        default:
+          return;
       }
     }
   },

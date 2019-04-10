@@ -46,8 +46,9 @@
               selectedItemId=selectedGroupRanking
               tabindex=0
               selectedSourceType=selectedSourceType
+              keyDown=(action 'handleKeyBoard' index)
               focusIn=(action 'selectGroupRanking' item.name)
-              click=(action 'handleSelectGroupRanking' index)}}
+              click=(action 'handleSelectGroupRanking')}}
             {{/usm-groups/group-ranking/edit-ranking-step/row}}
           {{/each}}
         </tbody>
@@ -67,7 +68,7 @@
       <div class="source-type-top-text">
         <span>{{t 'adminUsm.groupWizard.applyPolicy.preview'}}</span>
         <div class="tooltip">
-          {{#rsa-text-with-tooltip value=(t 'adminUsm.groupRankingWizard.sourceTooltip')
+          {{#rsa-text-with-tooltip value=(t 'adminUsm.groupRankingWizard.previewTooltip')
             style="standard"
             alwaysShow=true}}
             {{rsa-icon size='medium' name="information-circle" style='lined'}}

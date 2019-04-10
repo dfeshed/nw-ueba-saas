@@ -70,4 +70,22 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
     assert.equal(findAll('.edit-ranking-step .group-preview-cell .x-toggle-container-checked').length, 1, 'A Toggle is checked');
   });
 
+  test('Show simulation by selected index first', async function(assert) {
+    new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupRankingWithViewData(0)
+      .build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    assert.equal(findAll('tr:nth-child(1) .x-toggle-container-checked').length, 1, 'first Toggle is checked');
+  });
+
+  test('Show simulation by selected index second', async function(assert) {
+    new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupRankingWithViewData(1)
+      .build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    assert.equal(findAll('tr:nth-child(2) .x-toggle-container-checked').length, 1, 'second Toggle is checked');
+  });
+
 });

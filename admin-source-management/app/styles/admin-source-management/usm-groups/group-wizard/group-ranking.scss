@@ -25,6 +25,12 @@
         margin-right: 0px;
       }
     }
+    .disabled .propValue {
+      color: text-color(primary); /* gray-out propValues */
+    }
+    .disabled .disabled .propValue {
+      color: text-color(neutral) /* set first propValue back to white */
+    }
   }
   
   /* Safari 4.0 - 8.0 */
@@ -70,6 +76,9 @@
     display: inline;
   }
   .edit-ranking-step {
+    .col-md-5 {
+      padding-left: rsa-whitespace();
+    }
     .loading {
       width: 100%;
       text-align: center;
@@ -137,4 +146,8 @@
       }
     }
   }
+}
+.admin-engine .license-banner.shown+page.admin-usm-engine .edit-ranking-step{
+  min-height: calc(100vh - #{$wizardStepMaxHeight} - 20);
+  max-height: calc(100vh - #{$wizardStepMaxHeight} - 20);
 }

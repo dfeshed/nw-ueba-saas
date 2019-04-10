@@ -149,7 +149,8 @@ const _getScanSetting = (prop, focusedPolicy, _focusedPolicyOrigin, emptyOrigin)
     scanType: {
       name: 'adminUsm.policyWizard.edrPolicy.scanType',
       value: scanTypeValue,
-      origin: _focusedPolicyOrigin && _focusedPolicyOrigin[prop] ? _focusedPolicyOrigin[prop] : emptyOrigin
+      origin: _focusedPolicyOrigin && _focusedPolicyOrigin[prop] ? _focusedPolicyOrigin[prop] : emptyOrigin,
+      disabled: focusedPolicy[prop] !== 'ENABLED' ? 'disabled' : 'enabled'
     },
     scanStartDate: {
       name: 'adminUsm.policyWizard.edrPolicy.scanStartDate',

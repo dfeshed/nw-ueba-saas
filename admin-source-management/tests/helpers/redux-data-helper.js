@@ -327,6 +327,13 @@ export default class DataHelper {
     return this;
   }
 
+  groupRankingWithViewData(selectedIndex) {
+    const groupRanking = groups.map((group, index) => index === selectedIndex ? { ...group, isChecked: true } : group);
+    _set(this.state, 'usm.groupWizard.groupRanking', groupRanking);
+    _set(this.state, 'usm.groupWizard.focusedItem', focusedItem);
+    return this;
+  }
+
   selectGroupRanking(data) {
     _set(this.state, 'usm.groupWizard.selectedGroupRanking', data);
     return this;

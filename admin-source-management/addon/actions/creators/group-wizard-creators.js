@@ -2,11 +2,13 @@ import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import groupsAPI from 'admin-source-management/actions/api/groups-api';
 import policyAPI from 'admin-source-management/actions/api/policy-api';
 import { lookup } from 'ember-dependency-lookup';
+import _ from 'lodash';
 import {
   groupRankingQuery,
   assignedPolicies,
   limitedPolicySourceTypes,
-  groupRankingViewQuery
+  groupRankingViewQuery,
+  groupRanking
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
@@ -177,13 +179,33 @@ const fetchGroupRanking = (sourceType) => {
   };
 };
 
-const reorderRanking = (groupRanking) => {
-  const payload = {
-    groupRanking
-  };
-  return {
-    type: ACTION_TYPES.REORDER_GROUP_RANKING,
-    payload
+const reorderRanking = (ranking, selectedIndex) => {
+  return (dispatch, getState) => {
+    let groupRankingNew = [];
+    const groupRankingPrevious = groupRanking(getState());
+    if (isNaN(selectedIndex)) {
+      // reorder group ranking by dragging
+      groupRankingNew = ranking.slice();
+    } else {
+      // reorder group ranking using upOrDownMove shift + arrow keys
+      const selectedGroup = groupRankingPrevious.filter((group, index) => index === selectedIndex ? group : '');
+      const groupRankingFiltered = groupRankingPrevious.filter((group, index) => index !== selectedIndex ? group : '');
+      const upOrDownMove = ranking === 'arrowDown' ? 1 : -1;
+      groupRankingNew = [...groupRankingFiltered.slice(0, selectedIndex + upOrDownMove), ...selectedGroup, ...groupRankingFiltered.slice(selectedIndex + upOrDownMove)];
+    }
+
+    const payload = {
+      groupRankingNew
+    };
+    dispatch({
+      type: ACTION_TYPES.REORDER_GROUP_RANKING,
+      payload
+    });
+    const previousGroupRankingPreviewList = groupRankingPrevious.filter((group) => group.isChecked ? group : '');
+    const newGroupRankingPreviewList = groupRankingNew.filter((group) => group.isChecked ? group : '');
+    if (!_.isEqual(previousGroupRankingPreviewList, newGroupRankingPreviewList)) {
+      dispatch(fetchRankingView());
+    }
   };
 };
 

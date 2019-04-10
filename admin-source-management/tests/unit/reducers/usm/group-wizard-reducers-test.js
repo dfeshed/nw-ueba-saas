@@ -98,19 +98,6 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
     assert.deepEqual(result.groupRanking, expectedEndState.groupRanking);
   });
 
-  test('on REORDER_GROUP_RANKING, reorder', function(assert) {
-    const expectedResult = {
-      ...initialState,
-      groupRanking: [1, 2, 3]
-    };
-    const action = {
-      type: ACTION_TYPES.REORDER_GROUP_RANKING,
-      payload: { groupRanking: [1, 2, 3] }
-    };
-    const result = reducers(initialState, action);
-    assert.deepEqual(result, expectedResult);
-  });
-
   test('on SELECT_GROUP_RANKING, name', function(assert) {
     const expectedResult = {
       ...initialState,
@@ -137,7 +124,7 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
     assert.deepEqual(result, expectedResult);
   });
 
-  test('on PREVIEW_GROUP_RANKING, isChecked', function(assert) {
+  test('on PREVIEW_GROUP_RANKING, isChecked using mouse', function(assert) {
     const expectedResult = {
       ...initialState,
       groupRanking: [{ name: 'abc' }, { name: 'dfg', isChecked: true }]
@@ -145,6 +132,32 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
     const action = {
       type: ACTION_TYPES.PREVIEW_GROUP_RANKING,
       payload: { selectedIndex: 1, value: false }
+    };
+    const result = reducers(initialState, action);
+    assert.deepEqual(result, expectedResult);
+  });
+
+  test('on PREVIEW_GROUP_RANKING, check using arrowRight', function(assert) {
+    const expectedResult = {
+      ...initialState,
+      groupRanking: [{ name: 'abc' }, { name: 'dfg', isChecked: true }]
+    };
+    const action = {
+      type: ACTION_TYPES.PREVIEW_GROUP_RANKING,
+      payload: { selectedIndex: 1, value: 'arrowRight' }
+    };
+    const result = reducers(initialState, action);
+    assert.deepEqual(result, expectedResult);
+  });
+
+  test('on PREVIEW_GROUP_RANKING, unCheck first item using arrowLeft', function(assert) {
+    const expectedResult = {
+      ...initialState,
+      groupRanking: [{ name: 'abc', isChecked: false }, { name: 'dfg' }]
+    };
+    const action = {
+      type: ACTION_TYPES.PREVIEW_GROUP_RANKING,
+      payload: { selectedIndex: 0, value: 'arrowLeft' }
     };
     const result = reducers(initialState, action);
     assert.deepEqual(result, expectedResult);

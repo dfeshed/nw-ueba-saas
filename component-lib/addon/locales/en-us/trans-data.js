@@ -4203,7 +4203,7 @@ export default {
           label3: 'Skip this step if this group will not apply a policy or if the policy you wish to apply has not been created yet.',
           label4: 'New policies can be created in the the Policies Tab.'
         },
-        preview: 'Preview of Setting for A Source',
+        preview: 'Simulated Source Settings',
         governingPolicy: 'GOVERNING POLICY - GROUP',
         sourceType: 'Source Type',
         sourceTypeTooltip: 'Choose a source type to apply policies for.',
@@ -4273,10 +4273,11 @@ export default {
         groupName: 'Group Name',
         policyApplied: 'Policy Applied',
         nSources: 'Source Count',
-        preview: 'Preview'
+        preview: 'Simulate'
       },
       chooseSource: 'Choose Source Type',
       sourceTooltip: 'A source takes its settings from the policies applied by the groups it belongs to, starting with rank one and working its way down, until it has a complete policy. If a source is a member of multiple groups with policies that set the same settings, it will follow the highest ranked. If the group policies do not create a full policy, the source will take the remaining settings from the default policy. Drag and drop the rows to change the order.',
+      previewTooltip: 'The preview shows how the policy settings will be applied to a hypothetical source. Use the preview toggles in the table to choose what groups the previewed source belongs to. Selecting a row will highlight the settings that belong to that policy and any potential conflicts. Change the order of the row to see how this effects the previewed source.',
       editRanking: 'Edit Ranking',
       chooseSourceTopText: 'Ranking is established per source type.  Select a source type to continue.',
       error: {

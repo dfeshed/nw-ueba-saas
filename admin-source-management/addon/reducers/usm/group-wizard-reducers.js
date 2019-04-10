@@ -425,8 +425,22 @@ export default reduxActions.handleActions({
   ),
 
   [ACTION_TYPES.REORDER_GROUP_RANKING]: (state, action) => {
-    const { groupRanking } = action.payload;
-    return state.set('groupRanking', groupRanking);
+    const { groupRankingNew } = action.payload;
+    return state.set('groupRanking', groupRankingNew);
+  },
+
+  [ACTION_TYPES.PREVIEW_GROUP_RANKING]: (state, action) => {
+    const { selectedIndex, value } = action.payload;
+    let groupRankingNew = [];
+    if (value === 'arrowRight') {
+      groupRankingNew = state.groupRanking.map((group, index) => index === selectedIndex ? { ...group, isChecked: true } : group);
+    } else if (value === 'arrowLeft') {
+      groupRankingNew = state.groupRanking.map((group, index) => index === selectedIndex ? { ...group, isChecked: false } : group);
+    } else {
+      // toggle switch with mouse click
+      groupRankingNew = state.groupRanking.map((group, index) => index === selectedIndex ? { ...group, isChecked: value !== true } : group);
+    }
+    return state.set('groupRanking', groupRankingNew);
   },
 
   [ACTION_TYPES.SELECT_GROUP_RANKING]: (state, action) => {
@@ -466,14 +480,6 @@ export default reduxActions.handleActions({
       }
     })
   ),
-
-  [ACTION_TYPES.PREVIEW_GROUP_RANKING]: (state, action) => {
-    const { selectedIndex, value } = action.payload;
-    return state.merge({
-      groupRanking: state.groupRanking.map((group, index) => index === selectedIndex ? { ...group, isChecked: value !== true } : group)
-      // more settings will go here
-    });
-  },
 
   [ACTION_TYPES.SOURCE_TYPE]: (state, action) => {
     const { sourceType } = action.payload;
