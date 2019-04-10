@@ -12,30 +12,13 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
 
     const result = reducer(Immutable.from({}), {
       type: ACTION_TYPES.INITIATE_ALERT,
-      payload: { entityId: 123, entityType: 'user', alertId: 'alert-1' }
+      payload: 'alert-1'
     });
 
     assert.equal(result.selectedAlertId, 'alert-1');
   });
 
-  test('test reset alerts', (assert) => {
-
-    let result = reducer(Immutable.from({}), {
-      type: ACTION_TYPES.INITIATE_ALERT,
-      payload: { entityId: 123, entityType: 'user', alertId: 'alert-1' }
-    });
-
-    assert.equal(result.selectedAlertId, 'alert-1');
-
-    result = reducer(Immutable.from({}), {
-      type: ACTION_TYPES.RESET_ALERT
-    });
-
-
-    assert.equal(result.alertId, null);
-  });
-
-  test('test get alerts for entity', (assert) => {
+  test('test get alerts for given entity', (assert) => {
 
     const result = reducer(Immutable.from({}), {
       type: ACTION_TYPES.GET_ALERTS,
@@ -45,4 +28,37 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
     assert.deepEqual(result.alerts, userAlerts);
   });
 
+  test('test uodate sort for alerts', (assert) => {
+
+    const result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.UPDATE_SORT,
+      payload: 'name'
+    });
+
+    assert.deepEqual(result.sortBy, 'name');
+  });
+
+  test('test reset alerts', (assert) => {
+
+    let result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.INITIATE_ALERT,
+      payload: 'alert-1'
+    });
+
+    assert.deepEqual(result, {
+      selectedAlertId: 'alert-1',
+      sortBy: 'severity',
+      alerts: []
+    });
+
+    result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.RESET_ALERT
+    });
+
+    assert.deepEqual(result, {
+      selectedAlertId: null,
+      sortBy: 'severity',
+      alerts: []
+    });
+  });
 });

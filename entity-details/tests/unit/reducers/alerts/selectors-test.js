@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { selectedAlertId, alertsData, getSelectedAlertData } from 'entity-details/reducers/alerts/selectors';
+import { selectedAlertId, sortBy, sortedAlertsData, getSelectedAlertData, alertSources, userScoreContribution } from 'entity-details/reducers/alerts/selectors';
 import userAlerts from '../../../data/presidio/user_alerts';
 
 module('Unit | Selector | Alerts Selector');
@@ -7,6 +7,7 @@ module('Unit | Selector | Alerts Selector');
 const state = {
   alerts: {
     selectedAlertId: '0bd963d0-a0ae-4601-8497-b0c363becd1f',
+    sortBy: { id: 'severity' },
     alerts: userAlerts.data
   }
 };
@@ -16,9 +17,21 @@ test('test alert state for selected alert id', function(assert) {
 });
 
 test('test alert state for alert data for given entity', function(assert) {
-  assert.deepEqual(alertsData(state), userAlerts.data);
+  assert.deepEqual(sortedAlertsData(state), userAlerts.data);
+});
+
+test('test alert state for alert sort direction for given entity', function(assert) {
+  assert.deepEqual(sortBy(state), { id: 'severity' });
+});
+
+test('test alert state for alertSources ', function(assert) {
+  assert.equal(alertSources(state), 'FILE, ACTIVE_DIRECTORY');
 });
 
 test('test alert state for selected alert', function(assert) {
   assert.deepEqual(getSelectedAlertData(state), userAlerts.data[0]);
+});
+
+test('test alert state for userScoreContribution', function(assert) {
+  assert.equal(userScoreContribution(state), 20);
 });

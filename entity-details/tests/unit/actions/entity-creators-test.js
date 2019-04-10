@@ -71,8 +71,10 @@ module('Unit | Actions | Entity-creators Actions', (hooks) => {
       }
       if (typeof obj === 'function') {
         obj(({ type, payload }) => {
-          assert.equal('ENTITY_DETAILS::INITIATE_ALERT', type);
-          assert.equal(payload, entityDetails.data[0].alerts[0].id);
+          if (payload) {
+            assert.equal('ENTITY_DETAILS::INITIATE_ALERT', type);
+            assert.equal(payload, entityDetails.data[0].alerts[0].id);
+          }
         });
       }
     };
@@ -92,8 +94,10 @@ module('Unit | Actions | Entity-creators Actions', (hooks) => {
       }
       if (typeof obj === 'function') {
         obj(({ type, payload }) => {
-          assert.equal('ENTITY_DETAILS::INITIATE_ALERT', type);
-          assert.equal(payload, '234');
+          if (payload) {
+            assert.equal('ENTITY_DETAILS::INITIATE_ALERT', type);
+            assert.equal(payload, '234');
+          }
         });
       }
     };

@@ -1,30 +1,24 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { entityDetails, isFollowed, entityType } from 'entity-details/reducers/entity/selectors';
-import computed from 'ember-computed-decorators';
-
-export const severityMap = {
-  Critical: 'danger',
-  High: 'high',
-  Medium: 'medium',
-  Low: 'low'
-};
+import { entityDisplayName, isFollowed, entityType, entityScore, entitySeverity, enityIcon } from 'entity-details/reducers/entity/selectors';
+import { followUser, unfollowUser } from 'entity-details/actions/entity-creators';
 
 const stateToComputed = (state) => ({
-  entityDetails: entityDetails(state),
+  entityDisplayName: entityDisplayName(state),
+  entityScore: entityScore(state),
+  entitySeverity: entitySeverity(state),
   isFollowed: isFollowed(state),
-  entityType: entityType(state)
+  entityType: entityType(state),
+  enityIcon: enityIcon(state)
 });
+
+const dispatchToActions = {
+  followUser,
+  unfollowUser
+};
 
 const EntityDetailContainerHeaderComponent = Component.extend({
-  classNames: ['entity-details-container-header'],
-
-  @computed('entityDetails')
-  entitySeverity(entityDetails) {
-    if (entityDetails && entityDetails.scoreSeverity) {
-      return severityMap[entityDetails.scoreSeverity];
-    }
-  }
+  classNames: ['entity-details-container-header']
 });
 
-export default connect(stateToComputed)(EntityDetailContainerHeaderComponent);
+export default connect(stateToComputed, dispatchToActions)(EntityDetailContainerHeaderComponent);

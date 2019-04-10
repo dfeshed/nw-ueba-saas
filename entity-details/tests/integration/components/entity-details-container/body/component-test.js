@@ -1,12 +1,11 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { findAll, find, render } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
-import details from '../../../../data/presidio/user_details';
 
 let setState;
 
@@ -26,33 +25,9 @@ module('Integration | Component | entity-details-container/body', function(hooks
 
   test('it renders', async function(assert) {
 
-    new ReduxDataHelper(setState).entityId({ entityId: 123, entityType: 'user' }).entityDetails(details.data[0]).build();
+    new ReduxDataHelper(setState).build();
 
     await render(hbs`{{entity-details-container/body}}`);
-    assert.equal(findAll('#ueba-iframe').length, 1, 'Should render ueba iframe');
-  });
-
-  test('it renders Alert container', async function(assert) {
-
-    new ReduxDataHelper(setState).entityId({ entityId: 123, entityType: 'user' }).entityDetails(details.data[0]).build();
-    this.set('isClassic', false);
-    await render(hbs`{{entity-details-container/body isClassic=isClassic}}`);
-    assert.equal(findAll('#ueba-iframe').length, 0, 'Should not render ueba iframe');
-    assert.equal(findAll('.entity-details-container-body_alerts_list').length, 1);
-    assert.equal(findAll('.entity-details-container-body_details').length, 1);
-    // Will remove this after putting actusl content
-    assert.equal(find('.entity-details-container-body_details').textContent.trim(), 'Alert Details', 'Should render Alert container');
-  });
-
-  test('it renders Indicator container if indicator id passed', async function(assert) {
-
-    new ReduxDataHelper(setState).entityId({ entityId: 123, entityType: 'user' }).entityDetails(details.data[0]).alertId('alertId').indicatorId('Inc-1').build();
-    this.set('isClassic', false);
-    await render(hbs`{{entity-details-container/body isClassic=isClassic}}`);
-    assert.equal(findAll('#ueba-iframe').length, 0, 'Should not render ueba iframe');
-    assert.equal(findAll('.entity-details-container-body_alerts_list').length, 1);
-    assert.equal(findAll('.entity-details-container-body_details').length, 1);
-    // Will remove this after putting actusl content
-    assert.equal(find('.entity-details-container-body_details').textContent.trim(), 'Indicator Details', 'Should render Indicator container');
+    assert.equal(this.element.textContent.trim(), '');
   });
 });

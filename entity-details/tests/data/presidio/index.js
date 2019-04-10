@@ -3,28 +3,44 @@ import alertMarkRisk from './alert-mark-risk';
 import indicatorCount from './indicator-count';
 import indicatorDistinctEventsByTime from './indicator-distinctEventsByTime';
 import indicatorHourlyCountGroupByDayOfWeek from './indicator-hourlyCountGroupByDayOfWeek';
+import indicatorGraphActivityTimeAnomaly from './indicator-graph-activityTimeAnomaly';
+import indicatorGraphPie from './indicator-graph-pie';
 import indicatorEvents from './indicator-events';
 import userAlerts from './user_alerts';
 
 const urlMap = [{
   url: 'details',
   data: userDetails
-}, {
+},
+{
   url: 'presidio/api/alerts/',
   data: alertMarkRisk
-}, {
+},
+{
   url: 'function=Count',
   data: indicatorCount
-}, {
+},
+{
   url: 'function=distinctEventsByTime',
   data: indicatorDistinctEventsByTime
-}, {
+},
+{
   url: 'function=hourlyCountGroupByDayOfWeek',
   data: indicatorHourlyCountGroupByDayOfWeek
-}, {
+},
+{
+  url: 'function=indicatorGraphActivityTimeAnomaly',
+  data: indicatorGraphActivityTimeAnomaly
+},
+{
+  url: 'function=Count',
+  data: indicatorGraphPie
+},
+{
   url: 'events?',
   data: indicatorEvents
-}, {
+},
+{
   url: 'presidio/api/alerts?',
   data: userAlerts
 }];

@@ -5,7 +5,7 @@ export default {
     ],
     'additionalInformation': null,
     'value': 50,
-    'anomaly': false
+    'anomaly': true
   }, {
     'keys': [
       'C:\\Windows\\System32\\wininit.exe'

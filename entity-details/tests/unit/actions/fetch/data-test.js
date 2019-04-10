@@ -23,7 +23,13 @@ module('Unit | API | data', (hooks) => {
   });
 
   test('it can test fetch data', async(assert) => {
-    const response = fetchData('userDetails', null, null, '1212');
+    const fetchObj = {
+      restEndpointLocation: 'userDetails',
+      data: null,
+      method: 'GET',
+      urlParameters: '1212'
+    };
+    const response = fetchData(fetchObj);
     later(() => {
       assert.deepEqual(response._result.data[0].displayName, 'file_qa_1_101');
     }, 400);

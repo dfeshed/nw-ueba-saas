@@ -4696,7 +4696,7 @@ export default {
     sortOptions: {
       name: 'Name',
       score: 'Risk Score',
-      alerts: 'Alerts'
+      alertsCount: 'Alerts'
     },
     resetFilters: 'Reset Filters',
     addToFavorites: 'Add To Favorites',
@@ -4724,7 +4724,7 @@ export default {
     },
     users: {
       title: 'Users',
-      addAllToWatchedList: 'Add All To WatchedList',
+      addAllToWatchedList: 'Add All To WatchList',
       removeAllFromWatchedList: 'Remove All From WatchedList',
       highRisk: 'High Risk Users',
       all: 'All Users',
@@ -4743,16 +4743,48 @@ export default {
     },
     alerts: {
       title: 'Alerts',
+      noAlerts: 'No Alerts',
       all: 'All Alerts',
       alertName: 'Alert Name',
+      alertOverview: 'Alert Overview',
       entityName: 'Entity Name',
       score: 'Score',
       startTime: 'Start Time',
+      alertFlow: 'Alert Flow',
       indicatorCount: 'Indicator Count',
       startFrom: 'Alerts starts from ',
+      contributionInScore: 'Contribution in Score',
+      sources: 'Sources',
+      severity: 'Severity',
+      date: 'Date',
       feedback: 'Feedback',
       indicators: 'Indicators',
       alertNames: {
+        credential_dumping: {
+          name: 'Credential Dumping',
+          desc: 'Credential dumping is the process of obtaining account login and password information, normally in the form of a hash or a clear text password, from the operating system and software. Credentials can then be used to perform Lateral Movement and access restricted information.',
+          related: 'Related Threats: Common credential dumpers such as Mimikatz access the LSA Subsystem Service (LSASS) process by opening the process, locating the LSA secrets key, and decrypting the sections in memory where credential details are stored. Credential dumpers may also use methods for reflective Process Injection to reduce potential indicators of malicious activity.'
+        },
+        discovery_reconnaissance: {
+          name: 'Discovery & Reconnaissance',
+          desc: 'Discovery consists of techniques that allow the adversary to gain knowledge about the system and internal network. When Attackers gain access to a new system, they must orient themselves to what they now have control of and what benefits operating from that system give to their current objective or overall goals during the intrusion. The operating system provides many native tools that aid in this post-compromise information-gathering phase.',
+          related: 'Related Threats: Example commands that can acquire this information are net user, net group , and net localgroup using the Net utility or through use of dsquery. If Attackers attempt to identify the primary user, currently logged in user, or set of users that commonly uses a system, System Owner/User Discovery may apply.'
+        },
+        powershell_scripting: {
+          name: 'PowerShell & Scripting',
+          desc: 'PowerShell is a powerful interactive command-line interface and scripting environment included in the Windows operating system. Attackers can use PowerShell to perform a number of actions, including discovery of information and execution of code. Examples include the Start-Process cmdlet which can be used to run an executable and the Invoke-Command cmdlet which runs a command locally or on a remote computer.',
+          related: 'Related Threats: PowerShell is a powerful interactive command-line interface and scripting environment included in the Windows operating system. Attackers can use PowerShell to perform a number of actions, including discovery of information and execution of code. Examples include the Start-Process cmdlet which can be used to run an executable and the Invoke-Command cmdlet which runs a command locally or on a remote computer. PowerShell may also be used to download and run executables from the Internet, which can be executed from disk or in memory without touching disk. Administrator permissions are required to use PowerShell to connect to remote systems.'
+        },
+        registry_run_keys: {
+          name: 'Registry Run Keys & Start Folder',
+          desc: 'Adding an entry to the "run keys" in the Registry or startup folder will cause the program referenced to be executed when a user logs in. The program will be executed under the context of the user and will have the account\'s associated permissions level. Attackers can use these configuration locations to execute malware, such as remote access tools, to maintain persistence through system reboots. Attackers may also use Masquerading to make the Registry entries look as if they are associated with legitimate programs.',
+          related: 'Related Threats: Adding an entry to the "run keys" in the Registry or startup folder will cause the program referenced to be executed when a user logs in. These programs will be executed under the context of the user and will have the account\'s associated permissions level.'
+        },
+        process_injection: {
+          name: 'Process Injection',
+          desc: 'Process injection is a method of executing arbitrary code in the address space of a separate live process. Running code in the context of another process may allow access to the process\'s memory, system/network resources, and possibly elevated privileges. Execution via process injection may also evade detection from security products since the execution is masked under a legitimate process.',
+          related: 'Related Threats: Dynamic-link library (DLL) injection involves writing the path to a malicious DLL inside a process then invoking execution by creating a remote thread. Portable executable injection involves writing malicious code directly into the process (without a file on disk) then invoking execution with either additional code or by creating a remote thread. Thread execution hijacking involves injecting malicious code or the path to a DLL into a thread of a process. Similar to Process Hollowing, the thread must first be suspended. Asynchronous Procedure Call (APC) injection involves attaching malicious code to the APC Queue of a process\'s thread. Thread Local Storage (TLS) callback injection involves manipulating pointers inside a portable executable (PE) to redirect a process to malicious code before reaching the code\'s legitimate entry point.'
+        },
         mass_changes_to_critical_enterprise_groups: {
           name: 'Mass Changes to Critical Enterprise Groups',
           desc: 'An abnormal number of changes have been made to critical enterprise groups. These groups often manage and control high-value IT assets. If these assets were compromised, attackers could escalate privileges and exploit them to establish persistent control over the domain. Investigate which elements have been changed, and decide if the changes were legitimate or possibly the result of risky or malicious behavior. This activity is usually associated with the <b>Multiple Member Additions to Enterprise Critical Groups</b> indicator.',
@@ -4850,247 +4882,276 @@ export default {
         }
       },
       indicator: {
+        title: 'Indicator',
         name: 'Indicator Name',
         anomalyValue: 'Anomaly Value',
         numOfEvents: 'Event Count',
+        dataSource: 'Data Source',
+        contributionToAlert: 'Contribution to Alert',
         startDate: 'Start Date',
         indicatorNames: {
           // Presidio File Anoamlies
           abnormal_file_action_operation_type: {
             name: 'Abnormal File Access Event',
-            timeline: '{{username}} has accessed a file abnormally.',
+            timeline: '{{entityName}} has accessed a file abnormally.',
             chartTitle: 'File Access Events Baselines'
           },
           abnormal_file_permision_change_operation_type: {
             name: 'Abnormal File Access Permission Change',
-            timeline: 'Multiple Share Permissions have changed by {{username}}',
+            timeline: 'Multiple Share Permissions have changed by {{entityName}}',
             chartTitle: 'File Access Permission Changes Baseline'
+          },
+          abnormal_file_day_time: {
+            name: 'Abnormal File Access Time',
+            timeline: '{{entityName}} has accessed a file at an abnormal time}',
+            chartTitle: 'File Access Time Baseline'
           },
           abnormal_event_day_time: {
             name: 'Abnormal File Access Time',
-            timeline: '{{username}} has accessed a file at an abnormal time',
+            desc: '{{entityName}} has accessed a file at an abnormal time',
+            timeline: '{{entityName}} has accessed a file at an abnormal time',
             chartTitle: 'File Access Time Baseline'
           },
           high_number_of_distinct_folders_opened_attempts: {
             name: 'Multiple Folder Open Events',
-            timeline: '{{username}} has opened multiple folders',
+            timeline: '{{entityName}} has opened multiple folders',
             chartTitle: 'Folder Open Events (Last 30 Days)',
-            desc: '{{username}} has opened multiple folders',
+            desc: '{{entityName}} has opened multiple folders',
             axisYtitle: 'Sum of Folder Open Events (Hourly)'
           },
           high_number_of_successful_file_permission_change: {
             name: 'Multiple File Access Permission Changes',
-            timeline: 'Multiple file share permissions have changed by {{username}}',
+            timeline: 'Multiple file share permissions have changed by {{entityName}}',
             chartTitle: 'Permission Changes (Last 30 Days)',
-            desc: 'Multiple file share permissions have changed by {{username}}',
+            desc: 'Multiple file share permissions have changed by {{entityName}}',
             axisYtitle: 'Sum of Permission Changes (Hourly)'
           },
           high_number_of_successful_file_action_operations: {
             name: 'Multiple File Access Events',
-            timeline: '{{username}} has successfully accessed files',
+            timeline: '{{entityName}} has successfully accessed files',
             chartTitle: 'File Access Events (Last 30 Days)',
             axisYtitle: 'Sum of File Access Events (Hourly)'
           },
           high_number_of_failed_file_permission_change_attempts: {
             name: 'Multiple Failed File Access Permission Changes',
-            timeline: '{{username}} has failed multiple attempts to change file access permissions',
+            timeline: '{{entityName}} has failed multiple attempts to change file access permissions',
             chartTitle: 'Failed Permission Changes (Last 30 Days)',
-            desc: '{{username}} has failed multiple attempts to change file access permissions',
+            desc: '{{entityName}} has failed multiple attempts to change file access permissions',
             axisYtitle: 'Sum of Failed Permission Changes (Hourly)'
           },
           high_number_of_failed_file_action_attempts: {
             name: 'Multiple Failed File Access Events',
-            timeline: '{{username}} has failed multiple attempts to access a file',
+            timeline: '{{entityName}} has failed multiple attempts to access a file',
             chartTitle: 'Failed File Access Events (Last 30 Days)',
-            desc: '{{username}} has failed multiple attempts to access a file',
+            desc: '{{entityName}} has failed multiple attempts to access a file',
             axisYtitle: 'Sum of Failed File Access Events (Hourly)'
           },
           high_number_of_distinct_files_opened_attempts: {
             name: 'Multiple File Open Events',
-            timeline: '{{username}} has opened multiple files',
+            timeline: '{{entityName}} has opened multiple files',
             chartTitle: 'File Open Events (Last 30 Days)',
-            desc: '{{username}} has opened multiple files',
+            desc: '{{entityName}} has opened multiple files',
             axisYtitle: 'Sum of File Open Events (Hourly)'
           },
           high_number_of_deletions: {
             name: 'Multiple File Delete Events',
-            timeline: '{{username}} has deleted multiple files',
+            timeline: '{{entityName}} has deleted multiple files',
             chartTitle: 'File Delete Events (Last 30 Days)',
-            desc: '{{username}} has deleted multiple files',
+            desc: '{{entityName}} has deleted multiple files',
             axisYtitle: 'Sum of File Delete Events (Hourly)'
           },
           high_number_of_successful_file_rename_operations: {
             name: 'Multiple File Rename Events',
-            timeline: '{{username}} has renamed multiple files',
+            timeline: '{{entityName}} has renamed multiple files',
             chartTitle: 'File Rename Events (Last 30 Days)',
-            desc: '{{username}} has renamed multiple files',
+            desc: '{{entityName}} has renamed multiple files',
             axisYtitle: 'Sum of File Rename Events (Hourly)'
           },
           high_number_of_file_move_operations: {
             name: 'Excessive Amount of Files Moved',
-            timeline: '{{username}} has moved files',
+            timeline: '{{entityName}} has moved files',
             chartTitle: 'File Move Events (Last 30 Days)',
-            desc: '{{username}} has moved files',
+            desc: '{{entityName}} has moved files',
             axisYtitle: 'Sum of File Move Events (Hourly)'
           },
           high_number_of_file_move_operations_to_shared_drive: {
             name: 'Excessive Amount of Files Moved to Shared Drive',
-            timeline: '{{username}} has moved files to a shared drive',
+            timeline: '{{entityName}} has moved files to a shared drive',
             chartTitle: 'File Move Events (Last 30 Days)',
-            desc: '{{username}} has moved files to a shared drive',
+            desc: '{{entityName}} has moved files to a shared drive',
             axisYtitle: 'Sum of File Move Events (Hourly)'
           },
           // Presidio Active Directory Anomalies
           abnormal_site: {
             name: 'Abnormal Site',
-            timeline: '{{username}} has attempted to access an abnormal site',
+            timeline: '{{entityName}} has attempted to access an abnormal site',
             chartTitle: 'Active Directory Sites (Last 30 days)'
           },
           abnormal_group_membership_sensitive_operation: {
             name: 'Abnormal Group Changes',
-            timeline: '{{username}} made an abnormal change to group memberships',
+            timeline: '{{entityName}} made an abnormal change to group memberships',
             chartTitle: 'Group Changes Baselines'
           },
           abnormal_active_directory_day_time_operation: {
             name: 'Abnormal Active Directory Change Time',
-            timeline: '{{username}} executed Active Directory activity at an abnormal time',
+            timeline: '{{entityName}} executed Active Directory activity at an abnormal time',
             chartTitle: 'Active Directory Change Time Baseline'
           },
           admin_changed_his_own_password: {
             name: 'Admin changed his own password',
-            timeline: 'Admin {{username}}\'s has changed a password',
+            timeline: 'Admin {{entityName}}\'s has changed a password',
             chartTitle: 'Sensitive User Status Changes'
           },
           user_account_enabled: {
             name: 'User account enabled',
-            timeline: '{{username}}\'s has enabled an account',
+            timeline: '{{entityName}}\'s has enabled an account',
             chartTitle: 'Sensitive User Status Changes'
           },
           user_account_disabled: {
             name: 'User account disabled',
-            timeline: '{{username}}\'s  has disabled an account',
+            timeline: '{{entityName}}\'s  has disabled an account',
             chartTitle: 'Sensitive User Status Changes'
           },
           user_account_unlocked: {
             name: 'User account unlocked',
-            timeline: '{{username}}\'s has unlocked an account',
+            timeline: '{{entityName}}\'s has unlocked an account',
             chartTitle: 'Sensitive User Status Changes'
           },
           user_account_type_changed: {
             name: 'User Account type changed',
-            timeline: '{{username}}\'s has changed an account\'s type',
+            timeline: '{{entityName}}\'s has changed an account\'s type',
             chartTitle: 'Sensitive User Status Changes'
           },
           user_account_locked: {
             name: 'User Account locked',
-            timeline: '{{username}}\'s account has been locked out',
+            timeline: '{{entityName}}\'s account has been locked out',
             chartTitle: 'Sensitive User Status Changes'
           },
           user_password_never_expires_option_changed: {
             name: 'User Password Never Expires option changed',
-            timeline: '{{username}}\'s has changed a password policy',
+            timeline: '{{entityName}}\'s has changed a password policy',
             chartTitle: 'Sensitive User Status Changes'
           },
           user_password_changed: {
-            name: 'User password changed',
-            timeline: '{{username}}\'s has changed a password',
+            name: 'User Password Changed',
+            timeline: '{{entityName}}\'s has changed a password',
+            chartTitle: 'Sensitive User Status Changes'
+          },
+          user_password_reset: {
+            name: 'User Password Reset',
+            timeline: '{{entityName}}\'s has reset a password',
             chartTitle: 'Sensitive User Status Changes'
           },
           high_number_of_distinct_sites: {
             name: 'Logon Attempts from Multiple Sites',
-            timeline: '{{username}} has attempted to access from multiple sites',
+            timeline: '{{entityName}} has attempted to access from multiple sites',
             chartTitle: 'Active Directory Sites (Last 30 Days)',
             axisYtitle: 'Sum of AD Sites (Hourly)'
           },
           high_number_of_senesitive_group_membership_events: {
             name: 'Multiple Member Additions to Enterprise Critical Groups',
-            timeline: '{{username}} has successfully executed multiple changes to sensitive groups',
+            timeline: '{{entityName}} has successfully executed multiple changes to sensitive groups',
             chartTitle: 'Sensitive Group Changes (Last 30 Days)',
             axisYtitle: 'Sum of Sensitive Group Changes (Hourly)'
           },
           high_number_of_group_membership_events: {
             name: 'Multiple Group Membership Changes',
-            timeline: '{{username}} has successfully executed multiple changes to groups',
+            timeline: '{{entityName}} has successfully executed multiple changes to groups',
             chartTitle: 'Group Changes (Last 30 Days)',
             axisYtitle: 'Sum of Group Changes (Hourly)'
           },
           high_number_of_successful_object_change_operations: {
             name: 'Multiple Active Directory Object Changes',
-            timeline: '{{username}} has successfully executed multiple Active Directory changes',
+            timeline: '{{entityName}} has successfully executed multiple Active Directory changes',
             chartTitle: 'Active Directory Changes (Last 30 Days)',
             axisYtitle: 'Sum of AD Changes (Hourly)'
           },
           high_number_of_successful_user_change_security_sensitive_operations: {
             name: 'Multiple User Account Changes',
-            timeline: '{{username}} has successfully executed multiple sensitive Active Directory changes',
+            timeline: '{{entityName}} has successfully executed multiple sensitive Active Directory changes',
             chartTitle: 'Sensitive Active Directory Changes (Last\' 30 Days)',
             axisYtitle: 'Sum of Sensitive AD Changes (Hourly)'
           },
           high_number_of_failed_active_directory_events: {
             name: 'Multiple Failed Account Changes',
-            timeline: '{{username}}  has failed to execute multiple Active Directory changes',
+            timeline: '{{entityName}}  has failed to execute multiple Active Directory changes',
             chartTitle: 'Failed Active Directory Changes (Last 30 Days)',
             axisYtitle: 'Sum of Failed AD Changes (Hourly)'
           },
           // Presidio Authentication(logon) Anomalies
           abnormal_logon_day_time: {
             name: 'Abnormal Logon Time',
-            timeline: '{{username}} has logged on in an abnormal time',
+            timeline: '{{entityName}} has logged on in an abnormal time',
             chartTitle: 'Logon Time Baseline'
           },
           abnormal_destination_machine: {
             name: 'Abnormal Remote Host',
-            timeline: '{{username}} has attempted to access remotely an abnormal host',
+            timeline: '{{entityName}} has attempted to access remotely an abnormal host',
             chartTitle: 'Remote Hosts Baseline'
+          },
+          abnormal_object_change_operation: {
+            name: 'Abnormal Active Directory Object Change',
+            timeline: '{{entityName}} made an abnormal change to an AD attribute',
+            chartTitle: 'Active Directory Changes Baselines'
           },
           abnormal_source_machine: {
             name: 'Abnormal Host',
-            timeline: '{{username}} has attempted to access an abnormal host',
+            timeline: '{{entityName}} has attempted to access an abnormal host',
             chartTitle: 'Hosts Baseline'
           },
           high_number_of_failed_authentications: {
             name: 'Multiple Failed Authentications',
-            timeline: '{{username}} has failed multiple authentication attempts',
+            timeline: '{{entityName}} has failed multiple authentication attempts',
             chartTitle: 'Failed Logons (Last 30 Days)',
             axisYtitle: 'Sum of Failed Logons (Hourly)'
           },
           high_number_of_successful_authentications: {
             name: 'Multiple Successful Authentications',
-            timeline: '{{username}} has logged on multiple times',
+            timeline: '{{entityName}} has logged on multiple times',
             chartTitle: 'Logons (Last 30 Days)',
             axisYtitle: 'Sum of Logons (Hourly)'
           },
           high_number_of_distinct_destination_domains: {
             name: 'Logged into Multiple Domains',
-            timeline: '{{username}} has attempted to log on to multiple Domains',
+            timeline: '{{entityName}} has attempted to log on to multiple Domains',
             chartTitle: 'Domains (Last 30 Days)',
             axisYtitle: 'Sum of Domains (Hourly)'
           },
           high_number_of_distinct_src_computer_clusters: {
             name: 'Logon Attempts to Multiple Source Hosts',
-            timeline: '{{username}} has attempted to log on from multiple hosts',
+            timeline: '{{entityName}} has attempted to log on from multiple hosts',
             chartTitle: 'Hosts (Last 30 Days)',
             axisYtitle: 'Sum of Hosts (Hourly)'
           },
           high_number_of_distinct_src_computers: {
             name: 'Logged onto Multiple Hosts',
-            timeline: '{{username}} has attempted to log on from multiple hosts',
+            timeline: '{{entityName}} has attempted to log on from multiple hosts',
             chartTitle: 'Hosts (Last 30 Days)',
             axisYtitle: 'Sum of Hosts (Hourly)'
           },
           high_number_of_distinct_dst_computer_clusters: {
             name: 'Logged Into Multiple Hosts - Cluster',
-            timeline: '{{username}} has attempted to log on to multiple hosts',
+            timeline: '{{entityName}} has attempted to log on to multiple hosts',
             chartTitle: 'Remote Hosts (Last 30 Days)',
             axisYtitle: 'Sum of Hosts (Hourly)'
           },
           high_number_of_distinct_dst_computers: {
             name: 'Logged Into Multiple Hosts',
-            timeline: '{{username}} has attempted to log on to multiple hosts',
+            timeline: '{{entityName}} has attempted to log on to multiple hosts',
             chartTitle: 'Remote Hosts (Last 30 Days)',
             axisYtitle: 'Sum of Hosts (Hourly)'
           },
           // Registry anomalies
+          abnormal_process_modified_registry_key_group: {
+            name: 'Abnormal Process Modified a Registry Group',
+            timeline: '{{value}} has modified {{context.registryKeyGroup}}',
+            chartTitle: 'Anomaly for Registry Group'
+          },
+          abnormal_registry_day_time: {
+            name: 'Abnormal Registry Access Time',
+            timeline: '{{value}} has accessed a registry at an abnormal time',
+            chartTitle: 'Registry Access Time Baseline'
+          },
           abnormal_process_modified_a_service_key_registry: {
             name: 'Abnormal Process Modified a Service Key registry',
             timeline: '',
@@ -5100,14 +5161,32 @@ export default {
           // Process anomalies
           abnormal_process_injects_into_lsass: {
             name: 'Abnormal process injected into LSASS',
-            timeline: '',
-            chartTitle: '',
+            timeline: '{{value}} has created a remote thread in the LSASS process',
+            chartTitle: 'LSASS Process Injection',
             axisYtitle: ''
           },
           abnormal_reconnaissance_tool_executed: {
             name: 'Abnormal reconnaissance tool executed',
-            timeline: '',
-            chartTitle: '',
+            timeline: '{{value}} has been created',
+            chartTitle: 'Reconnaissance Tools',
+            axisYtitle: ''
+          },
+          abnormal_process_executed_a_scripting_tool: {
+            name: 'Abnormal Process Executed a Scripting Tool',
+            timeline: '{{value}} has created {{contexts.dstProcessFileName}}',
+            chartTitle: 'Processes Executing Scripting',
+            axisYtitle: ''
+          },
+          abnormal_process_injects_into_windows_process:  {
+            name: 'Abnormal process injects into windows process',
+            timeline: '{{value}} has created a remote thread in {{contexts.dstProcessFileName}} process',
+            chartTitle: 'Processes injected to Windows Processes',
+            axisYtitle: ''
+          },
+          uncommon_process_injects_into_windows_process:  {
+            name: 'Abnormal Process Injects into Windows Process',
+            timeline: '{{value}} was injected into a known windows process',
+            chartTitle: 'Processes injected to Windows Processes',
             axisYtitle: ''
           },
           abnormal_process_executeed_a_scripting_tool: {
@@ -5118,33 +5197,53 @@ export default {
           },
           abnormal_application_triggered_by_scripting_tool: {
             name: 'Abnormal Application Triggered by Scripting Tool',
-            timeline: '',
-            chartTitle: '',
+            timeline: '{{value}} was created by {{contexts.srcProcessFileName}}',
+            chartTitle: 'Applications triggered by Scripting',
             axisYtitle: ''
           },
           abnormal_process_opened_by_scripting_tool: {
             name: 'Abnormal Process Opened by Scripting Tool',
-            timeline: '',
-            chartTitle: '',
+            timeline: '{{value}} was opened by {{contexts.srcProcessFileName}}',
+            chartTitle: 'Processes Opened by Scripting',
             axisYtitle: ''
           },
           high_number_of_distinct_reconnaissance_tools_executed: {
             name: 'Multiple Distinct Reconnaissance Tools Executed',
-            timeline: '',
-            chartTitle: '',
-            axisYtitle: ''
+            timeline: '{{value}} reconnaissance tools were executed in this hour',
+            chartTitle: 'Distinct Reconnaissance Tools (Last 30 Days)',
+            axisYtitle: 'Count of Tools'
           },
           high_number_of_reconnaissance_tool_activities_executed: {
             name: 'Multiple Reconnaissance Tool Activities Executed',
-            timeline: '',
-            chartTitle: '',
-            axisYtitle: ''
+            timeline: '{{value}} reconnaissance tool activities were executed in this hour',
+            chartTitle: 'Reconnaissance Tool Executions (Last 30 Days)',
+            axisYtitle: 'Count of Executions'
           },
           high_number_of_reconnaissance_tools_executed_process: {
             name: 'Process Executed Multiple Times by a Reconnaissance Tool',
-            timeline: '',
-            chartTitle: '',
-            axisYtitle: ''
+            timeline: '{{value}} was executed abnormally multiple times by a reconnaissance tool',
+            chartTitle: 'Process Executions by Reconnaissance Tool (Last 30 Days)',
+            axisYtitle: 'Count of Process Executions'
+          },
+          abnormal_process_day_time: {
+            name: 'Abnormal Process Execution Time',
+            timeline: '{{value}} has accessed a process at an abnormal time',
+            chartTitle: 'Process Access Time Baseline'
+          },
+          user_abnormal_application_triggered_by_scripting_tool: {
+            name: 'Abnormal User Application Triggered by Scripting Tool',
+            timeline: '{{value}} triggered by scripting tool',
+            chartTitle: 'Processes Triggered by Scripting'
+          },
+          user_abnormal_process_opened_by_scripting_tool: {
+            name: 'Abnormal User Application Opened by Scripting Tool',
+            timeline: '{{value}} opened by scripting tool',
+            chartTitle: 'Processes Opened by Scripting'
+          },
+          user_abnormal_process_executed_a_scripting_tool: {
+            name: 'Abnormal User Application Executed by Scripting Tool',
+            timeline: '{{value}} executed by scripting tool.',
+            chartTitle: 'Processes Executed by Scripting'
           },
           // logon anomalies
           multiple_failed_authentications: {
@@ -5201,7 +5300,7 @@ export default {
           multiple_file_delete_events: {
             name: 'Multiple File Delete Events',
             desc: 'A user has accessed a high number of files',
-            timeline: '{{username}} has deleted multiple files',
+            timeline: '{{entityName}} has deleted multiple files',
             chartTitle: 'Number Of File Delete or Move Events (Last 30 Days)',
             axisYtitle: 'Delete / Move Events'
           },
@@ -5211,6 +5310,11 @@ export default {
             timeline: 'Opened {{value}} folders',
             chartTitle: 'Number Of Folder Open Events (Last 30 Days)',
             axisYtitle: 'Folder Open Events'
+          },
+          normalized_src_machine: {
+            name: 'normalized_src_machine.name',
+            desc: 'normalized_src_machine.desc',
+            timeline: 'normalized_src_machine.timeline'
           }
         }
       },

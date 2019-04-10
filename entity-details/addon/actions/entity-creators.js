@@ -16,7 +16,13 @@ export const initializeEntityDetails = ({ entityId, entityType, alertId, indicat
     if (indicatorId) {
       dispatch(initializeIndicator(indicatorId));
     }
-    fetchData('userDetails', null, null, entityId).then(({ data }) => {
+    const fetchObj = {
+      restEndpointLocation: 'userDetails',
+      data: null,
+      method: 'GET',
+      urlParameters: entityId
+    };
+    fetchData(fetchObj).then(({ data }) => {
       const [userDetails] = data;
       dispatch({
         type: GET_ENTITY_DETAILS,
@@ -35,7 +41,13 @@ export const followUser = () => {
   return (dispatch, getState) => {
     const entity = entityId(getState());
     const postData = { userIds: [entity] };
-    fetchData('followUser', postData, 'POST').then(() => {
+    const fetchObj = {
+      restEndpointLocation: 'followUser',
+      data: postData,
+      method: 'POST',
+      urlParameters: null
+    };
+    fetchData(fetchObj).then(() => {
       dispatch({
         type: UPDATE_FOLLOW,
         payload: true
@@ -48,7 +60,13 @@ export const unfollowUser = () => {
   return (dispatch, getState) => {
     const entity = entityId(getState());
     const postData = { userIds: [entity] };
-    fetchData('unfollowUser', postData, 'POST').then(() => {
+    const fetchObj = {
+      restEndpointLocation: 'unfollowUser',
+      data: postData,
+      method: 'POST',
+      urlParameters: null
+    };
+    fetchData(fetchObj).then(() => {
       dispatch({
         type: UPDATE_FOLLOW,
         payload: false

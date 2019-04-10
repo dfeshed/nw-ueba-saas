@@ -10,7 +10,7 @@ const initialEntityState = Immutable.from({
 
 export default handleActions({
   [ACTION_TYPES.RESET_ENTITY]: () => Immutable.from(initialEntityState),
-  [ACTION_TYPES.GET_ENTITY_DETAILS]: (state, { payload }) => state.merge({ entityDetails: payload }),
-  [ACTION_TYPES.UPDATE_FOLLOW]: (state, { payload }) => state.merge({ entityDetails: { followed: payload } }),
+  [ACTION_TYPES.GET_ENTITY_DETAILS]: (state, { payload }) => state.set('entityDetails', payload),
+  [ACTION_TYPES.UPDATE_FOLLOW]: (state, { payload }) => state.setIn(['entityDetails', 'followed'], payload),
   [ACTION_TYPES.INITIATE_ENTITY]: (state, { payload: { entityId, entityType } }) => state.merge({ entityId, entityType })
 }, initialEntityState);

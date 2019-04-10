@@ -2,11 +2,24 @@ import endpoints from './endpoint-location';
 import fetch from 'component-lib/services/fetch';
 import _ from 'lodash';
 
-export const fetchData = (endpointLocation, data = {}, method, args) => {
-  let fetchUrl = endpoints[endpointLocation];
-  fetchUrl = args ? fetchUrl.replace(/{(.*)}/, args) : fetchUrl;
+/**
+ * This fetch data consumes config object and return data based on REST endpoint response.
+ * Ex.
+ * {
+ *   restEndpointLocation: '/presidio/users'
+ *   method: 'GET/POST',
+ *   urlParameters: { key: value },
+ *   data: {} // data to POST or query param
+ * }
+ *
+ * @private
+*/
+
+export const fetchData = ({ restEndpointLocation, data = {}, method, urlParameters }) => {
+  let fetchUrl = endpoints[restEndpointLocation];
+  fetchUrl = urlParameters ? fetchUrl.replace(/{(.*)}/, urlParameters) : fetchUrl;
   let options = null;
-  if (method) {
+  if (method && method !== 'GET') {
     options = {
       method,
       headers: {

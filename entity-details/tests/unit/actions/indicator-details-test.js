@@ -1,11 +1,12 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { patchFetch } from '../../helpers/patch-fetch';
-import { initializeIndicator, getEvents, getHistoricalData } from 'entity-details/actions/indicator-details';
+import { initializeIndicator, getEvents, getHistoricalData, resetIndicators } from 'entity-details/actions/indicator-details';
 import dataIndex from '../../data/presidio';
 import userAlerts from '../../data/presidio/user_alerts';
 import indicatorEvents from '../../data/presidio/indicator-events';
 import indicatorCount from '../../data/presidio/indicator-count';
+
 
 const state = {
   entity: {
@@ -17,7 +18,7 @@ const state = {
     alerts: userAlerts.data
   },
   indicators: {
-    indicatorId: '8614aa7f-c8ee-4824-9eaf-e0bb199cd006',
+    selectedIndicatorId: '8614aa7f-c8ee-4824-9eaf-e0bb199cd006',
     events: indicatorEvents.data,
     historicalData: indicatorCount.data,
     eventFilter: {
@@ -45,13 +46,14 @@ module('Unit | Actions | indicator-details Actions', (hooks) => {
   });
 
   test('it can getEvents', (assert) => {
-    assert.expect(2);
+    assert.expect(3);
     const types = ['ENTITY_DETAILS::INITIATE_INDICATOR', 'ENTITY_DETAILS::GET_INDICATOR_EVENTS', 'ENTITY_DETAILS::GET_INDICATOR_HISTORICAL_DATA'];
     const dispatch = ({ type, payload }) => {
       if (type) {
         assert.ok(types.includes(type));
         if (payload && payload != '123') {
-          assert.deepEqual(payload.length, indicatorEvents.data.length);
+          assert.equal(payload.data.length, indicatorEvents.data.length);
+          assert.equal(payload.total, 100);
         }
       }
     };
@@ -60,8 +62,8 @@ module('Unit | Actions | indicator-details Actions', (hooks) => {
   });
 
   test('it can initializeIndicator', (assert) => {
-    assert.expect(2);
-    const types = ['ENTITY_DETAILS::INITIATE_INDICATOR', 'ENTITY_DETAILS::GET_INDICATOR_EVENTS', 'ENTITY_DETAILS::GET_INDICATOR_HISTORICAL_DATA'];
+    assert.expect(3);
+    const types = ['ENTITY_DETAILS::RESET_INDICATOR', 'ENTITY_DETAILS::INITIATE_INDICATOR', 'ENTITY_DETAILS::GET_INDICATOR_EVENTS', 'ENTITY_DETAILS::GET_INDICATOR_HISTORICAL_DATA'];
     const dispatch = ({ type, payload }) => {
       if (type) {
         assert.ok(types.includes(type));
@@ -81,12 +83,20 @@ module('Unit | Actions | indicator-details Actions', (hooks) => {
       if (type) {
         assert.ok(types.includes(type));
         if (payload) {
-          assert.equal(payload.length, 78);
+          assert.equal(payload.length, 1);
         }
       }
     };
     const getState = () => state;
     getHistoricalData({ entityId: '123' })(dispatch, getState);
+  });
+
+  test('it can reset indicator', (assert) => {
+    assert.expect(1);
+    const dispatch = ({ type }) => {
+      assert.equal(type, 'ENTITY_DETAILS::RESET_INDICATOR');
+    };
+    dispatch(resetIndicators());
   });
 
 });

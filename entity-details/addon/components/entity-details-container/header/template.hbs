@@ -1,16 +1,16 @@
 <div class='entity-details-container-header_leftArrow'>
 </div>
 <div class='entity-details-container-header_avtar'>
-  {{rsa-icon size='larger' style='filled' name='account-group-5'}}
+  {{rsa-icon size='larger' style='filled' name=enityIcon}}
 </div>
 <div class='entity-details-container-header_name'>
-  {{entityDetails.displayName}}
+  {{entityDisplayName}}
 </div>
 <div class='entity-details-container-header_score'>
-  {{rsa-content-badge-score score=entityDetails.score size='small' style=entitySeverity invertColor=true}}
+  {{rsa-content-badge-score score=entityScore size='small' style=entitySeverity invertColor=true}}
 </div>
 <div class='entity-details-container-header_watch'>
-  {{#rsa-form-button}}
+  {{#rsa-form-button click=(action (if (eq isFollowed true) 'unfollowUser' 'followUser'))}}
     {{#if (eq isFollowed true)}}
       {{rsa-icon size='medium' style='lined' name='binoculars'}} {{t 'entityDetails.entity.removeWatch'}}
     {{else}}

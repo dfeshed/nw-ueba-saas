@@ -13,39 +13,53 @@ module('Unit | Reducers | Indicators Reducer', (hooks) => {
 
     const result = reducer(Immutable.from({}), {
       type: ACTION_TYPES.INITIATE_INDICATOR,
-      payload: { entityId: 123, entityType: 'user', alertId: 'alert-1', indicatorId: 'inc-1' }
+      payload: 'inc-1'
     });
 
-    assert.equal(result.indicatorId, 'inc-1');
+    assert.equal(result.selectedIndicatorId, 'inc-1');
   });
 
   test('test reset indicator', (assert) => {
 
     let result = reducer(Immutable.from({}), {
       type: ACTION_TYPES.INITIATE_INDICATOR,
-      payload: { entityId: 123, entityType: 'user', alertId: 'alert-1', indicatorId: 'inc-1' }
+      payload: 'inc-1'
     });
 
-    assert.equal(result.indicatorId, 'inc-1');
+    assert.equal(result.selectedIndicatorId, 'inc-1');
 
     result = reducer(Immutable.from({}), {
       type: ACTION_TYPES.RESET_INDICATOR
     });
 
-    assert.equal(result.indicatorId, null);
+    assert.equal(result.selectedIndicatorId, null);
   });
 
   test('test indicator events', (assert) => {
-
-    const result = reducer(Immutable.from({}), {
+    const { data, total } = indicatorEvents;
+    const result = reducer(Immutable.from({
+      selectedIndicatorId: null,
+      events: [],
+      historicalData: null,
+      totalEvents: null,
+      eventFilter: {
+        page: 1,
+        size: 100,
+        sort_direction: 'DESC'
+      }
+    }), {
       type: ACTION_TYPES.GET_INDICATOR_EVENTS,
-      payload: indicatorEvents.data
+      payload: { data, total }
     });
-
     assert.deepEqual(result.events, indicatorEvents.data);
+    assert.deepEqual(result.eventFilter, {
+      page: 2,
+      size: 100,
+      sort_direction: 'DESC'
+    });
   });
 
-  test('test indicator historical', (assert) => {
+  test('test indicator historical data', (assert) => {
 
     const result = reducer(Immutable.from({}), {
       type: ACTION_TYPES.GET_INDICATOR_HISTORICAL_DATA,

@@ -1,11 +1,13 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, render } from '@ember/test-helpers';
+import { find, render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
+import { patchFetch } from '../../../../helpers/patch-fetch';
+import dataIndex from '../../../../data/presidio';
 import details from '../../../../data/presidio/user_details';
 
 let setState;
@@ -22,6 +24,16 @@ module('Integration | Component | entity-details-container/header', function(hoo
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
     this.owner.register('helper:mount', function() {});
+    patchFetch((url) => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          json() {
+            return dataIndex(url);
+          }
+        });
+      });
+    });
   });
 
   test('it renders', async function(assert) {
@@ -39,10 +51,29 @@ module('Integration | Component | entity-details-container/header', function(hoo
     assert.equal(find('.entity-details-container-header_watch').textContent.trim(), 'Watch Profile');
   });
 
+
+  test('it should allow user to be watched on click', async function(assert) {
+
+    new ReduxDataHelper(setState).entityId({ entityId: 123, entityType: 'user' }).entityDetails(details.data[0]).build();
+    await render(hbs`{{entity-details-container/header}}`);
+    assert.equal(find('.entity-details-container-header_watch').textContent.trim(), 'Watch Profile');
+    await click('.rsa-form-button');
+    assert.equal(find('.entity-details-container-header_watch').textContent.trim(), 'Stop Watching');
+  });
+
   test('it should allow user to be unwatched', async function(assert) {
     const newData = { ...details.data[0], followed: true };
     new ReduxDataHelper(setState).entityId({ entityId: 123, entityType: 'user' }).entityDetails(newData).build();
     await render(hbs`{{entity-details-container/header}}`);
     assert.equal(find('.entity-details-container-header_watch').textContent.trim(), 'Stop Watching');
+  });
+
+  test('it should allow user to be unwatched on click', async function(assert) {
+    const newData = { ...details.data[0], followed: true };
+    new ReduxDataHelper(setState).entityId({ entityId: 123, entityType: 'user' }).entityDetails(newData).build();
+    await render(hbs`{{entity-details-container/header}}`);
+    assert.equal(find('.entity-details-container-header_watch').textContent.trim(), 'Stop Watching');
+    await click('.rsa-form-button');
+    assert.equal(find('.entity-details-container-header_watch').textContent.trim(), 'Watch Profile');
   });
 });

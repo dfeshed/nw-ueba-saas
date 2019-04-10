@@ -1,4 +1,8 @@
 import Immutable from 'seamless-immutable';
+import userAlerts from '../data/presidio/user_alerts';
+import indicatorEvents from '../data/presidio/indicator-events';
+import indicatorCount from '../data/presidio/indicator-count';
+
 
 const _set = (obj, key, val) => {
   if (obj[key]) {
@@ -25,15 +29,25 @@ export default class DataHelper {
   constructor(setState) {
     this.state = {
       entity: {
-        entityId: null,
-        entityType: null,
+        entityId: 'user-1',
+        entityType: 'user',
         entityDetails: null
       },
       alerts: {
-        alertId: null
+        selectedAlertId: '0bd963d0-a0ae-4601-8497-b0c363becd1f',
+        alerts: userAlerts.data,
+        sortBy: { id: 'severity' }
       },
       indicators: {
-        indicatorId: null
+        selectedIndicatorId: '8614aa7f-c8ee-4824-9eaf-e0bb199cd006',
+        events: indicatorEvents.data,
+        historicalData: indicatorCount.data,
+        totalEvents: 100,
+        eventFilter: {
+          page: 1,
+          size: 100,
+          sort_direction: 'DESC'
+        }
       }
     };
     this.setState = setState;
@@ -51,20 +65,57 @@ export default class DataHelper {
     return state.asMutable();
   }
 
-  entityId(entityDetails) {
-    _set(this.state, 'entity', entityDetails);
+  entityId(entityId) {
+    _set(this.state, 'entity.entityId', entityId);
     return this;
   }
+
+  entityType(entityType) {
+    _set(this.state, 'entity.entityType', entityType);
+    return this;
+  }
+
   entityDetails(entityDetails) {
     _set(this.state, 'entity.entityDetails', entityDetails);
     return this;
   }
-  alertId(alertId) {
-    _set(this.state, 'alerts.alertId', alertId);
+
+  selectedAlertId(alertId) {
+    _set(this.state, 'alerts.selectedAlertId', alertId);
     return this;
   }
-  indicatorId(indicatorId) {
-    _set(this.state, 'indicators.indicatorId', indicatorId);
+
+  alerts(alerts) {
+    _set(this.state, 'alerts.alerts', alerts);
     return this;
   }
+
+  alertsSortBy(sortBy) {
+    _set(this.state, 'alerts.sortBy', { id: sortBy });
+    return this;
+  }
+
+  selectedIndicatorId(indicatorId) {
+    _set(this.state, 'indicators.selectedIndicatorId', indicatorId);
+    return this;
+  }
+
+  events(events) {
+    _set(this.state, 'indicators.events', events);
+    return this;
+  }
+
+  historicalData(historicalData) {
+    _set(this.state, 'indicators.historicalData', historicalData);
+    return this;
+  }
+  totalEvents(totalEvents) {
+    _set(this.state, 'indicators.totalEvents', totalEvents);
+    return this;
+  }
+  eventFilter(eventFilter) {
+    _set(this.state, 'indicators.eventFilter', eventFilter);
+    return this;
+  }
+
 }
