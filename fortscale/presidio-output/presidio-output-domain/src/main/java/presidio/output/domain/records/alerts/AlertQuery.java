@@ -8,8 +8,8 @@ import java.util.List;
 public class AlertQuery {
 
     // filters
-    private final List<String> filterByUserName;
-    private final List<String> filterByUserId;
+    private final List<String> filterByEntityName;
+    private final List<String> filterByEntityId;
     private final List<String> filterByClassification;
     private final List<String> filterBySeverity;
     private final long filterByStartDate;
@@ -33,7 +33,7 @@ public class AlertQuery {
 
     public AlertQuery(AlertQueryBuilder builder) {
         this.filterByClassification = builder.filterByClassification;
-        this.filterByUserName = builder.filterByUserName;
+        this.filterByEntityName = builder.filterByEntityName;
         this.filterBySeverity = builder.filterBySeverity;
         this.filterByStartDate = builder.filterByStartDate;
         this.sort = builder.sort;
@@ -46,12 +46,12 @@ public class AlertQuery {
         this.filterByTags = builder.filterByTags;
         this.filterByAlertsIds = builder.filterByAlertsIds;
         this.filterByIndicatorNames = builder.filterByIndicatorNames;
-        this.filterByUserId = builder.filterByUserId;
+        this.filterByEntityId = builder.filterByEntityId;
         this.aggregateByFields = builder.aggregateByFields;
     }
 
-    public List<String> getFilterByUserName() {
-        return filterByUserName;
+    public List<String> getFilterByEntityName() {
+        return filterByEntityName;
     }
 
     public List<String> getFilterByClassification() {
@@ -106,8 +106,8 @@ public class AlertQuery {
         return filterByMaxScore;
     }
 
-    public List<String> getFilterByUserId() {
-        return filterByUserId;
+    public List<String> getFilterByEntityId() {
+        return filterByEntityId;
     }
 
     public List<String> getAggregateByFields() {
@@ -117,7 +117,7 @@ public class AlertQuery {
     public static class AlertQueryBuilder {
 
         // filters
-        private List<String> filterByUserName;
+        private List<String> filterByEntityName;
         private List<String> filterByClassification;
         private List<String> filterBySeverity;
         private long filterByStartDate;
@@ -128,7 +128,7 @@ public class AlertQuery {
         private List<String> filterByTags;
         private List<String> filterByAlertsIds;
         private List<String> filterByIndicatorNames;
-        private List<String> filterByUserId;
+        private List<String> filterByEntityId;
 
         // sort
         private Sort sort;
@@ -173,13 +173,13 @@ public class AlertQuery {
             return this;
         }
 
-        public AlertQueryBuilder filterByUserName(List<String> filterBuUserName) {
-            this.filterByUserName = filterBuUserName;
+        public AlertQueryBuilder filterByEntityName(List<String> filterBuEntityName) {
+            this.filterByEntityName = filterBuEntityName;
             return this;
         }
 
-        public AlertQueryBuilder filterByUserId(List<String> filterByUserId) {
-            this.filterByUserId = filterByUserId;
+        public AlertQueryBuilder filterByEntityId(List<String> filterByEntityId) {
+            this.filterByEntityId = filterByEntityId;
             return this;
         }
 

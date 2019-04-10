@@ -9,11 +9,9 @@ import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletCon
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
-import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
 import presidio.output.commons.services.spring.AlertSeverityServiceConfig;
-import presidio.output.commons.services.spring.UserSeverityServiceConfig;
+import presidio.output.commons.services.spring.EntitySeverityServiceConfig;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
@@ -26,7 +24,7 @@ import presidio.webapp.controllers.users.UsersApiController;
 import presidio.webapp.convertors.MetricConverter;
 import presidio.webapp.service.*;
 
-@Import({PresidioOutputPersistencyServiceConfig.class, AlertSeverityServiceConfig.class, UserSeverityServiceConfig.class, MongoConfig.class})
+@Import({PresidioOutputPersistencyServiceConfig.class, AlertSeverityServiceConfig.class, EntitySeverityServiceConfig.class, MongoConfig.class})
 @Configuration
 public class OutputWebappConfiguration {
 

@@ -9,7 +9,7 @@ import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.Indicator;
-import presidio.output.domain.records.users.User;
+import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGenerator;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
@@ -65,7 +65,7 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
-    public Alert generateAlert(SmartRecord smart, User user, int smartThresholdScoreForCreatingAlert) {
+    public Alert generateAlert(SmartRecord smart, Entity entity, int smartThresholdScoreForCreatingAlert) {
         double score = smart.getScore();
         if (score < smartThresholdScoreForCreatingAlert) {
             return null;
@@ -73,8 +73,8 @@ public class AlertServiceImpl implements AlertService {
         java.util.Date startDate = Date.from(smart.getStartInstant());
         java.util.Date endDate = Date.from(smart.getEndInstant());
         AlertEnums.AlertSeverity severity = alertSeverityService.getSeverity(score);
-        Double alertContributionToUserScore = alertSeverityService.getUserScoreContributionFromSeverity(severity);
-        Alert alert = new Alert(user.getId(), smart.getId(), null, user.getUserId(), user.getUserName(), startDate, endDate, score, 0, getStrategyFromSmart(smart), severity, user.getTags(), alertContributionToUserScore);
+        Double alertContributionToEntityScore = alertSeverityService.getEntityScoreContributionFromSeverity(severity);
+        Alert alert = new Alert(entity.getId(), smart.getId(), null, entity.getEntityId(), entity.getEntityName(), startDate, endDate, score, 0, getStrategyFromSmart(smart), severity, entity.getTags(), alertContributionToEntityScore, entity.getEntityType());
         // supporting information
         List<Indicator> supportingInfo = new ArrayList<>();
 

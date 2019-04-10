@@ -1,4 +1,4 @@
-package presidio.output.processor.services.user;
+package presidio.output.processor.services.entity;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -9,20 +9,20 @@ import java.util.Set;
 /**
  * Created by efratn on 11/09/2017.
  */
-public class UsersAlertData {
-    private double userScore;
+public class EntitiesAlertData {
+    private double entityScore;
     private int alertsCount;
     private Set<String> classifications;
     private Set<String> indicators;
 
 
-    public UsersAlertData() {
+    public EntitiesAlertData() {
         classifications = new HashSet<String>();
         indicators = new HashSet<String>();
     }
 
-    public UsersAlertData(double userScore, int alertsCount, String classification, List<String> indicators) {
-        this.userScore = userScore;
+    public EntitiesAlertData(double entityScore, int alertsCount, String classification, List<String> indicators) {
+        this.entityScore = entityScore;
         this.alertsCount = alertsCount;
         this.classifications = new HashSet<String>();
         this.indicators = new HashSet<String>();
@@ -30,16 +30,16 @@ public class UsersAlertData {
         addIndicators(indicators);
     }
 
-    public double getUserScore() {
-        return userScore;
+    public double getEntityScore() {
+        return entityScore;
     }
 
     public int getAlertsCount() {
         return alertsCount;
     }
 
-    public void setUserScore(double userScore) {
-        this.userScore = userScore;
+    public void setEntityScore(double entityScore) {
+        this.entityScore = entityScore;
     }
 
     public void setAlertsCount(int alertsCount) {
@@ -70,8 +70,8 @@ public class UsersAlertData {
         }
     }
 
-    public void incrementUserScore(double userScore) {
-        this.userScore += userScore;
+    public void incrementEntityScore(double entityScore) {
+        this.entityScore += entityScore;
     }
 
     public void incrementAlertsCount() {

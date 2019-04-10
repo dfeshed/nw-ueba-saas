@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class EntityPersistencyServiceImp implements EntityPersistencyService {
+public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     @Autowired
     private EntityRepository entityRepository;
 

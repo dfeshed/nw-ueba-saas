@@ -7,7 +7,7 @@ import presidio.output.domain.records.alerts.AlertEnums;
  */
 public interface AlertSeverityService {
 
-    Double getUserScoreContributionFromSeverity(AlertEnums.AlertSeverity severity);
+    Double getEntityScoreContributionFromSeverity(AlertEnums.AlertSeverity severity);
 
     AlertEnums.AlertSeverity getSeverity(double score);
 }

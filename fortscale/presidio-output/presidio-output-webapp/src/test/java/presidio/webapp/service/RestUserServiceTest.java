@@ -71,7 +71,7 @@ public class RestUserServiceTest {
     public void testReturnUserWithExpand() {
         Alert alert = createAlert(1);
         Page<Alert> page = new PageImpl<Alert>(new ArrayList<>(Arrays.asList(alert)));
-        when(alertPersistencyService.findByUserId(eq(alert.getUserId()), notNull(PageRequest.class))).thenReturn(page);
+        when(alertPersistencyService.findByEntityId(eq(alert.getEntityId()), notNull(PageRequest.class))).thenReturn(page);
 
         User user = createUser(1);
         when(userPersistencyService.findUserById(eq(user.getId()))).thenReturn(user);
@@ -132,8 +132,8 @@ public class RestUserServiceTest {
         Alert alert2 = createAlert(2);
         Alert alert3 = createAlert(3);
         Alert alert4 = createAlert(4);
-        alert4.setUserId(user2.getId());
-        alert4.setUserName(user2.getUserName());
+        alert4.setEntityId(user2.getId());
+        alert4.setEntityName(user2.getUserName());
         user2.setAlertsCount(2);
 
         Page<User> userPage = new PageImpl<>(new ArrayList<>(Arrays.asList(user1, user2, user3)));
@@ -143,7 +143,7 @@ public class RestUserServiceTest {
         Page<Alert> firstPage = new PageImpl<>(new ArrayList<>(Arrays.asList(alert1)));
         Page<Alert> secondPage = new PageImpl<>(new ArrayList<>(Arrays.asList(alert4, alert2)));
         Page<Alert> thirdPage = new PageImpl<>(new ArrayList<>(Arrays.asList(alert3)));
-        when(alertPersistencyService.findByUserId(notNull(String.class), notNull(PageRequest.class))).thenReturn(firstPage, secondPage, thirdPage);
+        when(alertPersistencyService.findByEntityId(notNull(String.class), notNull(PageRequest.class))).thenReturn(firstPage, secondPage, thirdPage);
         List<presidio.webapp.model.User> resultUser = restUserService.getUsers(userQuery).getUsers();
         resultUser.forEach(user -> {
             if (user.getId().equals(user1.getId()) || user.getId().equals(user3.getId()))
@@ -255,6 +255,6 @@ public class RestUserServiceTest {
         List<String> classifications = new ArrayList<>(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
         return new Alert("useruser" + number, "smartId", classifications, "user" + number, "user" + number,
                 Date.from(Instant.parse("2017-01-01T00:00:00Z")), Date.from(Instant.parse("2017-01-01T11:00:00Z")),
-                10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, null, 0D);
+                10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, null, 0D, "entityType");
     }
 }

@@ -24,19 +24,19 @@ public interface EventPersistencyService {
 
     /**
      * @param schema
-     * @param userId
+     * @param entityId
      * @param timeRange
      * @param features
      * @param eventsLimit
      * @return
      */
-    List<? extends EnrichedEvent> findEvents(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit);
+    List<? extends EnrichedEvent> findEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit);
 
-    List<? extends EnrichedEvent> readRecords(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize);
+    List<? extends EnrichedEvent> readRecords(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize);
 
-    public Long countEvents(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features);
+    public Long countEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features);
 
-    EnrichedEvent findLatestEventForUser(String userId, List<String> collectionNames);
+    EnrichedEvent findLatestEventForEntity(String entityId, List<String> collectionNames);
 
     /**
      * Determine the feature property type

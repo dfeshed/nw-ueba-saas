@@ -29,13 +29,13 @@ public interface AlertPersistencyService {
 
     Iterable<Alert> findAll(List<String> ids);
 
-    Page<Alert> findByUserName(String userName, PageRequest pageRequest);
+    Page<Alert> findByEntityName(String entityName, PageRequest pageRequest);
 
-    Page<Alert> findByUserId(String userId, PageRequest pageRequest);
+    Page<Alert> findByEntityId(String entityId, PageRequest pageRequest);
 
-    List<Alert> findByUserId(String userId);
+    List<Alert> findByEntityId(String entityId);
 
-    Page<Alert> findByUserIdIn(Collection<String> userId, PageRequest pageRequest);
+    Page<Alert> findByEntityIdIn(Collection<String> entityId, PageRequest pageRequest);
 
     Page<Alert> findById(String id, PageRequest pageRequest);
 

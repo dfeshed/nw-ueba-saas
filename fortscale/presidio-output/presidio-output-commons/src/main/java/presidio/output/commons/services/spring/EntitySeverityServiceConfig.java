@@ -5,18 +5,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.output.commons.services.user.UserPropertiesUpdateService;
-import presidio.output.commons.services.user.UserSeverityComputeData;
-import presidio.output.commons.services.user.UserSeverityService;
-import presidio.output.commons.services.user.UserSeverityServiceImpl;
-import presidio.output.domain.records.users.UserSeverity;
+import presidio.output.commons.services.entity.EntityPropertiesUpdateService;
+import presidio.output.commons.services.entity.EntitySeverityComputeData;
+import presidio.output.commons.services.entity.EntitySeverityService;
+import presidio.output.commons.services.entity.EntitySeverityServiceImpl;
+import presidio.output.domain.records.entity.EntitySeverity;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Configuration
-@Import(UserUpdatePropertiesServiceConfig.class)
-public class UserSeverityServiceConfig {
+@Import(EntityUpdatePropertiesServiceConfig.class)
+public class EntitySeverityServiceConfig {
 
     @Value("${user.severity.compute.data.critical.percentage.of.users:1}")
     private String userSeverityComputeDataCriticalPercentageOfUsers;
@@ -46,22 +46,22 @@ public class UserSeverityServiceConfig {
     private String userSeverityComputeDataLowPercentageOfUsers;
 
     @Autowired
-    private UserPropertiesUpdateService userPropertiesUpdateService;
+    private EntityPropertiesUpdateService entityPropertiesUpdateService;
 
     @Bean
-    public UserSeverityService userSeverityService() {
+    public EntitySeverityService entitySeverityService() {
 
-        Map<UserSeverity, UserSeverityComputeData> severityToComputeDataMap = new LinkedHashMap<>();
-        severityToComputeDataMap.put(UserSeverity.CRITICAL, new UserSeverityComputeData(new Double(userSeverityComputeDataCriticalPercentageOfUsers),
+        Map<EntitySeverity, EntitySeverityComputeData> severityToComputeDataMap = new LinkedHashMap<>();
+        severityToComputeDataMap.put(EntitySeverity.CRITICAL, new EntitySeverityComputeData(new Double(userSeverityComputeDataCriticalPercentageOfUsers),
                 new Double(userSeverityComputeDataCriticalMinimumDeltaFactor), new Double(userSeverityComputeDataCriticalMaximumUsers)));
-        severityToComputeDataMap.put(UserSeverity.HIGH, new UserSeverityComputeData(new Double(userSeverityComputeDataHighPercentageOfUsers),
+        severityToComputeDataMap.put(EntitySeverity.HIGH, new EntitySeverityComputeData(new Double(userSeverityComputeDataHighPercentageOfUsers),
                 new Double(userSeverityComputeDataHighMinimumDeltaFactor), new Double(userSeverityComputeDataHighMaximumUsers)));
-        severityToComputeDataMap.put(UserSeverity.MEDIUM, new UserSeverityComputeData(new Double(userSeverityComputeDataMediumPercentageOfUsers),
+        severityToComputeDataMap.put(EntitySeverity.MEDIUM, new EntitySeverityComputeData(new Double(userSeverityComputeDataMediumPercentageOfUsers),
                 new Double(userSeverityComputeDataMediumDeltaFactor)));
 
-        severityToComputeDataMap.put(UserSeverity.LOW, new UserSeverityComputeData(new Double(userSeverityComputeDataLowPercentageOfUsers)));
+        severityToComputeDataMap.put(EntitySeverity.LOW, new EntitySeverityComputeData(new Double(userSeverityComputeDataLowPercentageOfUsers)));
 
-        return new UserSeverityServiceImpl(severityToComputeDataMap, userPropertiesUpdateService);
+        return new EntitySeverityServiceImpl(severityToComputeDataMap, entityPropertiesUpdateService);
     }
 
 }

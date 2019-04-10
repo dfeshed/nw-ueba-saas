@@ -12,7 +12,6 @@ import fortscale.utils.data.Pair;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -27,23 +26,20 @@ import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTranslator;
 import presidio.ade.domain.store.smart.SmartDataToCollectionNameTranslator;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
-import presidio.monitoring.records.MetricDocument;
-import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.export.MetricsExporter;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
+import presidio.output.domain.records.entity.Entity;
+import presidio.output.domain.records.entity.EntitySeverity;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.FileEnrichedEvent;
-import presidio.output.domain.records.users.User;
-import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.output.domain.services.users.UserPersistencyService;
+import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
-import presidio.output.processor.services.OutputMonitoringService;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -55,7 +51,7 @@ import static java.time.Instant.now;
 @ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, MongodbTestConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class OutputExecutionServiceModuleTest {
-    public static final String USER_ID_TEST_USER = "userId#testUser";
+    public static final String ENTITY_ID_TEST_ENTITY = "entityId#testEntity";
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -64,7 +60,7 @@ public class OutputExecutionServiceModuleTest {
     private OutputExecutionServiceImpl outputExecutionService;
 
     @Autowired
-    UserPersistencyService userPersistencyService;
+    EntityPersistencyService entityPersistencyService;
 
     @Autowired
     AlertPersistencyService alertPersistencyService;
@@ -105,13 +101,13 @@ public class OutputExecutionServiceModuleTest {
         usersToScoreList.add(new Pair<>("userTest8", 85.0));
 
         AdeAggregationRecord aggregationRecord = new AdeAggregationRecord(Instant.now(), Instant.now(), "highestStartInstantScoreUserIdFileHourly",
-                10d, "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", Collections.singletonMap("userId", USER_ID_TEST_USER), AggregatedFeatureType.SCORE_AGGREGATION);
+                10d, "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", Collections.singletonMap("userId", ENTITY_ID_TEST_ENTITY), AggregatedFeatureType.SCORE_AGGREGATION);
         FileEnrichedEvent event = new FileEnrichedEvent(Instant.now(), Instant.now(), "eventId", Schema.FILE.toString(),
-                USER_ID_TEST_USER, "username", "userDisplayName", "dataSource", "oppType", new ArrayList<String>(),
+                ENTITY_ID_TEST_ENTITY, "username", "userDisplayName", "dataSource", "oppType", new ArrayList<String>(),
                 EventResult.FAILURE, "resultCode", new HashMap<>(), "absoluteSrcFilePath", "absoluteDstFilePath",
                 "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
         FileEnrichedEvent event2 = new FileEnrichedEvent(Instant.now().minus(Duration.ofDays(5)), Instant.now().minus(Duration.ofDays(3)), "eventId", Schema.FILE.toString(),
-                USER_ID_TEST_USER, "username", "userDisplayName", "dataSource", "oppType", new ArrayList<String>(),
+                ENTITY_ID_TEST_ENTITY, "username", "userDisplayName", "dataSource", "oppType", new ArrayList<String>(),
                 EventResult.FAILURE, "resultCode", new HashMap<>(), "absoluteSrcFilePath", "absoluteDstFilePath",
                 "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
 
@@ -125,7 +121,7 @@ public class OutputExecutionServiceModuleTest {
 
 
         Map<String, String> context = new HashMap<>();
-        context.put("userId", USER_ID_TEST_USER);
+        context.put("userId", ENTITY_ID_TEST_ENTITY);
         SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
         smartAggregationRecord.setContribution(0.3);
         for (Pair<String, Double> usersToScore : usersToScoreList) {
@@ -162,26 +158,26 @@ public class OutputExecutionServiceModuleTest {
         esTemplate.putMapping(IndicatorEvent.class);
         esTemplate.refresh(IndicatorEvent.class);
 
-        esTemplate.deleteIndex(User.class);
-        esTemplate.createIndex(User.class);
-        esTemplate.putMapping(User.class);
-        esTemplate.refresh(User.class);
+        esTemplate.deleteIndex(Entity.class);
+        esTemplate.createIndex(Entity.class);
+        esTemplate.putMapping(Entity.class);
+        esTemplate.refresh(Entity.class);
     }
 
     @Test
-    public void createAlertForNewUser() {
+    public void createAlertForNewEntity() {
         try {
             outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)));
 
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
-            Assert.assertEquals(1, Lists.newArrayList(userPersistencyService.findAll()).size());
-            Page<User> users = userPersistencyService.findByUserId(USER_ID_TEST_USER, new PageRequest(0, 9999));
-            Assert.assertEquals(1, users.getNumberOfElements());
-            User user = users.iterator().next();
-            Assert.assertEquals(8, user.getAlertsCount());
+            Assert.assertEquals(1, Lists.newArrayList(entityPersistencyService.findAll()).size());
+            Page<Entity> entities = entityPersistencyService.findByEntityId(ENTITY_ID_TEST_ENTITY, new PageRequest(0, 9999));
+            Assert.assertEquals(1, entities.getNumberOfElements());
+            Entity entity = entities.iterator().next();
+            Assert.assertEquals(8, entity.getAlertsCount());
 //            Assert.assertEquals(1, user.getAlertClassifications().size());
 //            Assert.assertEquals(1, user.getIndicators().size());
-            Assert.assertEquals(55, new Double(user.getScore()).intValue());
+            Assert.assertEquals(55, new Double(entity.getScore()).intValue());
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -189,21 +185,21 @@ public class OutputExecutionServiceModuleTest {
     }
 
     @Test
-    public void createAlertForExistingUser() {
-        User userEntity = new User(USER_ID_TEST_USER, "userName", "displayName", 95d, Arrays.asList("existingClassification"), Arrays.asList("existingIndicator"), null, UserSeverity.CRITICAL, 8);
-        userPersistencyService.save(userEntity);
+    public void createAlertForExistingEntity() {
+        Entity entity = new Entity(ENTITY_ID_TEST_ENTITY, "userName", 95d, Arrays.asList("existingClassification"), Arrays.asList("existingIndicator"), null, EntitySeverity.CRITICAL, 8, "entity");
+        entityPersistencyService.save(entity);
         try {
             outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)));
 
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
-            Assert.assertEquals(1, Lists.newArrayList(userPersistencyService.findAll()).size());
-            Page<User> users = userPersistencyService.findByUserId(USER_ID_TEST_USER, new PageRequest(0, 9999));
-            Assert.assertEquals(1, users.getNumberOfElements());
-            User user = users.iterator().next();
-            Assert.assertEquals(16, user.getAlertsCount());
-            Assert.assertEquals(1, user.getAlertClassifications().size());
-            Assert.assertEquals(1, user.getIndicators().size());
-            Assert.assertEquals(150, new Double(user.getScore()).intValue());
+            Assert.assertEquals(1, Lists.newArrayList(entityPersistencyService.findAll()).size());
+            Page<Entity> entities = entityPersistencyService.findByEntityId(ENTITY_ID_TEST_ENTITY, new PageRequest(0, 9999));
+            Assert.assertEquals(1, entities.getNumberOfElements());
+            Entity entity1 = entities.iterator().next();
+            Assert.assertEquals(16, entity1.getAlertsCount());
+            Assert.assertEquals(1, entity1.getAlertClassifications().size());
+            Assert.assertEquals(1, entity1.getIndicators().size());
+            Assert.assertEquals(150, new Double(entity1.getScore()).intValue());
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -216,19 +212,19 @@ public class OutputExecutionServiceModuleTest {
         try {
             outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)));
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
-            Assert.assertEquals(1, Lists.newArrayList(userPersistencyService.findAll()).size());
-            Page<User> users = userPersistencyService.findByUserId(USER_ID_TEST_USER, new PageRequest(0, 9999));
-            Assert.assertEquals(1, users.getNumberOfElements());
-            User user = users.iterator().next();
-            Assert.assertEquals(8, user.getAlertsCount());
-            Assert.assertEquals(55, new Double(user.getScore()).intValue());
+            Assert.assertEquals(1, Lists.newArrayList(entityPersistencyService.findAll()).size());
+            Page<Entity> entities = entityPersistencyService.findByEntityId(ENTITY_ID_TEST_ENTITY, new PageRequest(0, 9999));
+            Assert.assertEquals(1, entities.getNumberOfElements());
+            Entity entity = entities.iterator().next();
+            Assert.assertEquals(8, entity.getAlertsCount());
+            Assert.assertEquals(55, new Double(entity.getScore()).intValue());
             outputExecutionService.clean(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)));
             // test alerts cleanup
             Assert.assertEquals(0, Lists.newArrayList(alertPersistencyService.findAll()).size());
-            users = userPersistencyService.findByUserId(USER_ID_TEST_USER, new PageRequest(0, 9999));
-            user = users.iterator().next();
-            // test user score re-calculation
-            Assert.assertEquals(0, new Double(user.getScore()).intValue());
+            entities = entityPersistencyService.findByEntityId(ENTITY_ID_TEST_ENTITY, new PageRequest(0, 9999));
+            entity = entities.iterator().next();
+            // test entity score re-calculation
+            Assert.assertEquals(0, new Double(entity.getScore()).intValue());
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();

@@ -49,13 +49,13 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
     }
 
     @Override
-    public List<? extends EnrichedEvent> findEvents(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit) {
+    public List<? extends EnrichedEvent> findEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit) {
         String collectionName = toCollectionNameTranslator.toCollectionName(schema);
         List<? extends EnrichedEvent> events;
         try {
-            events = eventRepository.findEvents(collectionName, userId, timeRange, features, eventsLimit);
+            events = eventRepository.findEvents(collectionName, entityId, timeRange, features, eventsLimit);
         } catch (Exception e) {
-            String errorMsg = String.format("Failed to findEvents events by schema %s, user %s, time range %s, features %s", schema, userId, timeRange, features);
+            String errorMsg = String.format("Failed to findEvents events by schema %s, entity %s, time range %s, features %s", schema, entityId, timeRange, features);
             logger.error(errorMsg, e);
             throw new RuntimeException(e);
         }
@@ -63,13 +63,13 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
     }
 
     @Override
-    public List<? extends EnrichedEvent> readRecords(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize) {
+    public List<? extends EnrichedEvent> readRecords(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize) {
         String collectionName = toCollectionNameTranslator.toCollectionName(schema);
         List<? extends EnrichedEvent> events;
         try {
-            events = eventRepository.findEvents(collectionName, userId, timeRange, features, numOfItemsToSkip, pageSize);
+            events = eventRepository.findEvents(collectionName, entityId, timeRange, features, numOfItemsToSkip, pageSize);
         } catch (Exception e) {
-            String errorMsg = String.format("Failed to readRecords by schema %s, user %s, time range %s, features %s", schema, userId, timeRange, features);
+            String errorMsg = String.format("Failed to readRecords by schema %s, entity %s, time range %s, features %s", schema, entityId, timeRange, features);
             logger.error(errorMsg, e);
             throw new RuntimeException(e);
         }
@@ -77,13 +77,13 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
     }
 
     @Override
-    public Long countEvents(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features) {
+    public Long countEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features) {
         String collectionName = toCollectionNameTranslator.toCollectionName(schema);
         long count = 0;
         try {
-            count = eventRepository.countEvents(collectionName, userId, timeRange, features);
+            count = eventRepository.countEvents(collectionName, entityId, timeRange, features);
         } catch (Exception e) {
-            String errorMsg = String.format("Failed to countEvents by schema %s, user %s, time range %s, features %s", schema, userId, timeRange, features);
+            String errorMsg = String.format("Failed to countEvents by schema %s, entity %s, time range %s, features %s", schema, entityId, timeRange, features);
             logger.error(errorMsg, e);
             throw new RuntimeException(e);
         }
@@ -91,8 +91,8 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
     }
 
     @Override
-    public EnrichedEvent findLatestEventForUser(String userId, List<String> collectionNames) {
-        return eventRepository.findLatestEventForUser(userId, collectionNames);
+    public EnrichedEvent findLatestEventForEntity(String entityId, List<String> collectionNames) {
+        return eventRepository.findLatestEventForEntity(entityId, collectionNames);
     }
 
     @Override

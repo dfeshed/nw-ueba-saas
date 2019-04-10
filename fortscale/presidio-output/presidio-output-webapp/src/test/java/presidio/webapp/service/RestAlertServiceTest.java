@@ -44,7 +44,7 @@ public class RestAlertServiceTest {
         when(alertPersistencyService.findOne(eq(alert.getId()))).thenReturn(alert);
 
         presidio.webapp.model.Alert alertById = restAlertService.getAlertById("id", false);
-        Assert.assertEquals(alert.getUserName(), alertById.getUsername());
+        Assert.assertEquals(alert.getEntityName(), alertById.getUsername());
     }
 
     @Test
@@ -79,7 +79,7 @@ public class RestAlertServiceTest {
 
         AlertQuery alertQuery = new AlertQuery();
 
-        alertQuery.setUsersId(new ArrayList<>(Arrays.asList(firstAlert.getUserName())));
+        alertQuery.setUsersId(new ArrayList<>(Arrays.asList(firstAlert.getEntityName())));
         AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
         List<presidio.webapp.model.Alert> alerts = alertsWrapper.getAlerts();
         Assert.assertEquals(1, alerts.size());
@@ -154,7 +154,7 @@ public class RestAlertServiceTest {
         List<String> classifications = new ArrayList<>(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
         return new Alert("userId", "smartId", classifications, "username","username",
                 Date.from(Instant.parse("2017-01-01T00:00:00Z")), Date.from(Instant.parse("2017-01-01T11:00:00Z")),
-                10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, null,0D);
+                10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, null,0D, "entityType");
     }
 
     private IndicatorEvent createEvent() {

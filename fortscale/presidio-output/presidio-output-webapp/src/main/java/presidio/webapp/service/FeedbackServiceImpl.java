@@ -2,13 +2,13 @@ package presidio.webapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import presidio.output.commons.services.alert.AlertSeverityService;
-import presidio.output.commons.services.user.UserSeverityService;
+import presidio.output.commons.services.entity.EntitySeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
-import presidio.output.domain.records.users.User;
-import presidio.output.domain.records.users.UserSeverity;
+import presidio.output.domain.records.entity.Entity;
+import presidio.output.domain.records.entity.EntitySeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.output.domain.services.users.UserPersistencyService;
+import presidio.output.domain.services.entities.EntityPersistencyService;
 
 import java.util.*;
 
@@ -18,13 +18,13 @@ import java.util.*;
 public class FeedbackServiceImpl implements FeedbackService {
 
     @Autowired
-    private UserPersistencyService userPersistencyService;
+    private EntityPersistencyService entityPersistencyService;
 
     @Autowired
     private AlertPersistencyService alertPersistencyService;
 
     @Autowired
-    private UserSeverityService userSeverityService;
+    private EntitySeverityService entitySeverityService;
 
     @Autowired
     private AlertSeverityService alertSeverityService;
@@ -57,7 +57,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     /**
      * Update alert feedback to given alert and update all coresponding alert data-
-     * alert contribution to user score and user score (according to new contribution)
+     * alert contribution to entity score and entity score (according to new contribution)
      * @param alertIds
      * @param feedback
      */
@@ -66,60 +66,60 @@ public class FeedbackServiceImpl implements FeedbackService {
         Iterable<presidio.output.domain.records.alerts.Alert> alerts = alertPersistencyService.findAll(alertIds);
 
 
-        Map<String, User> usersToBeUpdated = new HashMap<>();
+        Map<String, Entity> entitiesToBeUpdated = new HashMap<>();
         alerts.forEach(alert->{
             AlertEnums.AlertFeedback origianlFeedback = alert.getFeedback();
             //1. update alert feedback with the new given feedback
             alert.setFeedback(feedback);
 
-            Double origContribution = alert.getContributionToUserScore();
-            Double contributionDelta = calcContributionToUserScoreDelta(alert, origianlFeedback, feedback);
+            Double origContribution = alert.getContributionToEntityScore();
+            Double contributionDelta = calcContributionToEntityScoreDelta(alert, origianlFeedback, feedback);
 
             if(!contributionDelta.equals(0D)) {
 
-                //2. update alert contribution to user score according to new feedback
-                alert.setContributionToUserScore(origContribution + contributionDelta);
+                //2. update alert contribution to entity score according to new feedback
+                alert.setContributionToEntityScore(origContribution + contributionDelta);
 
-                //3. increase\decrease user score with the updated alert contribution
-                User updatedUser = updateUserScore(alert.getUserId(), usersToBeUpdated, contributionDelta);
-                usersToBeUpdated.put(updatedUser.getId(), updatedUser);
+                //3. increase\decrease entity score with the updated alert contribution
+                Entity updatedEntity = updateEntityScore(alert.getEntityId(), entitiesToBeUpdated, contributionDelta);
+                entitiesToBeUpdated.put(updatedEntity.getId(), updatedEntity);
 
             }
         });
 
-        //4. update user severity according to new score (based on already calculated severities percentiles)
-        for (User user: usersToBeUpdated.values()) {
-            UserSeverity newSeverity = userSeverityService.getSeveritiesMap(false).getUserSeverity(user.getScore());
-            user.setSeverity(newSeverity);
+        //4. update entity severity according to new score (based on already calculated severities percentiles)
+        for (Entity entity: entitiesToBeUpdated.values()) {
+            EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false).getEntitySeverity(entity.getScore());
+            entity.setSeverity(newSeverity);
         }
 
         List<Alert> alertsList = (List<Alert>) alerts;
         if(! alertsList.isEmpty()) {
             alertPersistencyService.save(alertsList);
         }
-        if(! usersToBeUpdated.isEmpty()) {
-            userPersistencyService.save(new ArrayList<>(usersToBeUpdated.values()));
+        if(! entitiesToBeUpdated.isEmpty()) {
+            entityPersistencyService.save(new ArrayList<>(entitiesToBeUpdated.values()));
         }
     }
 
-    private User updateUserScore(String userId, Map<String, User> usersCache, Double scoreDelta) {
-        User user;
-        if(usersCache.containsKey(userId)) {
-            user = usersCache.get(userId);
+    private Entity updateEntityScore(String entityId, Map<String, Entity> entitiesCache, Double scoreDelta) {
+        Entity entity;
+        if(entitiesCache.containsKey(entityId)) {
+            entity = entitiesCache.get(entityId);
         }
         else {
-            user = userPersistencyService.findUserById(userId);
+            entity = entityPersistencyService.findEntityById(entityId);
         }
-        user.setScore(user.getScore() + scoreDelta);
-        return user;
+        entity.setScore(entity.getScore() + scoreDelta);
+        return entity;
     }
 
-    private Double calcContributionToUserScoreDelta(Alert alert,
-                                                    AlertEnums.AlertFeedback originalFeedback,
-                                                    AlertEnums.AlertFeedback newFeedback) {
+    private Double calcContributionToEntityScoreDelta(Alert alert,
+                                                      AlertEnums.AlertFeedback originalFeedback,
+                                                      AlertEnums.AlertFeedback newFeedback) {
         Double scoreMultiplier = feedbackToAlertContributionMap.get(originalFeedback).get(newFeedback);
         AlertEnums.AlertSeverity severity = alert.getSeverity();
-        Double alertContributionToUserScore = alertSeverityService.getUserScoreContributionFromSeverity(severity);
-        return scoreMultiplier * alertContributionToUserScore;
+        Double alertContributionToEntityScore = alertSeverityService.getEntityScoreContributionFromSeverity(severity);
+        return scoreMultiplier * alertContributionToEntityScore;
     }
 }

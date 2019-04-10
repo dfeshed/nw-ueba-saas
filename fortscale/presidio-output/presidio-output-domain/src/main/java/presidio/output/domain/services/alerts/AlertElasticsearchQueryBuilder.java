@@ -28,22 +28,22 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
         final BoolQueryBuilder boolQueryBuilder2 = new BoolQueryBuilder();
         final BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
-        // filter by username
-        if (CollectionUtils.isNotEmpty(alertQuery.getFilterByUserName())) {
-            BoolQueryBuilder userNameQuery = new BoolQueryBuilder();
-            for (String userName : alertQuery.getFilterByUserName()) {
-                userNameQuery.should(matchQuery(Alert.USER_NAME, userName).operator(Operator.AND));
+        // filter by entityname
+        if (CollectionUtils.isNotEmpty(alertQuery.getFilterByEntityName())) {
+            BoolQueryBuilder entityNameQuery = new BoolQueryBuilder();
+            for (String entityName : alertQuery.getFilterByEntityName()) {
+                entityNameQuery.should(matchQuery(Alert.ENTITY_NAME, entityName).operator(Operator.AND));
             }
-            boolQueryBuilder.must(userNameQuery);
+            boolQueryBuilder.must(entityNameQuery);
         }
 
-        // filter by user id
-        if (CollectionUtils.isNotEmpty(alertQuery.getFilterByUserId())) {
-            BoolQueryBuilder userIdQuery = new BoolQueryBuilder();
-            for (String userId : alertQuery.getFilterByUserId()) {
-                userIdQuery.should(matchQuery(Alert.USER_ID, userId));
+        // filter by entity id
+        if (CollectionUtils.isNotEmpty(alertQuery.getFilterByEntityId())) {
+            BoolQueryBuilder entityIdQuery = new BoolQueryBuilder();
+            for (String entityId : alertQuery.getFilterByEntityId()) {
+                entityIdQuery.should(matchQuery(Alert.ENTITY_ID, entityId));
             }
-            boolQueryBuilder.must(userIdQuery);
+            boolQueryBuilder.must(entityIdQuery);
         }
 
         // filter by severity
@@ -89,7 +89,7 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
         if (CollectionUtils.isNotEmpty(alertQuery.getFilterByTags())) {
             BoolQueryBuilder tagsQuery = new BoolQueryBuilder();
             for (String tag : alertQuery.getFilterByTags()) {
-                tagsQuery.should(matchQuery(Alert.USER_TAGS_FIELD_NAME, tag).operator(Operator.OR));
+                tagsQuery.should(matchQuery(Alert.ENTITY_TAGS_FIELD_NAME, tag).operator(Operator.OR));
             }
             boolQueryBuilder.must(tagsQuery);
         }

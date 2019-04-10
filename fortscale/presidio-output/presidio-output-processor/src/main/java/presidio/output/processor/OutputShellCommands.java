@@ -48,7 +48,7 @@ public class OutputShellCommands implements CommandMarker {
             @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration
     ) throws Exception {
         Thread.currentThread().setName(DAILY_OUTPUT_PROCESSOR_RUN + Instant.now().toString());
-        return executionService.doUpdateAllUsersData(startTime, endTime);
+        return executionService.doUpdateAllEntitiesData(startTime, endTime);
     }
 
     @CliCommand(value = "cleanup", help = "clean application data for specified time range ")

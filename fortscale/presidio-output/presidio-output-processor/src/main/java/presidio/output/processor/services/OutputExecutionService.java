@@ -12,7 +12,7 @@ public interface OutputExecutionService {
     Logger logger = Logger.getLogger(OutputExecutionService.class);
 
     void run(Instant startDate, Instant endDate) throws Exception;
-    void updateAllUsersData(Instant startDate, Instant endDate) throws Exception;
+    void updateAllEntitiesData(Instant startDate, Instant endDate) throws Exception;
     void clean(Instant startDate, Instant endDate) throws Exception;
     void applyRetentionPolicy(Instant endDate) throws Exception;
     void cleanAll() throws Exception;
@@ -27,11 +27,11 @@ public interface OutputExecutionService {
         return 0;
     }
 
-    default int doUpdateAllUsersData(Instant startDate, Instant endDate) throws Exception {
+    default int doUpdateAllEntitiesData(Instant startDate, Instant endDate) throws Exception {
         try {
-            updateAllUsersData(startDate, endDate);
+            updateAllEntitiesData(startDate, endDate);
         } catch (Exception e) {
-            logger.error("Failed to update users data as part of output daily job", e);
+            logger.error("Failed to update entities data as part of output daily job", e);
             return 1;
         }
         return 0;

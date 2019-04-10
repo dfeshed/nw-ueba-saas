@@ -39,17 +39,17 @@ public class EventMongoRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public List<? extends EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int limitEvents) throws Exception {
-        Query query = buildQuery(userId, timeRange, features);
+    public List<? extends EnrichedEvent> findEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int limitEvents) throws Exception {
+        Query query = buildQuery(entityId, timeRange, features);
         query.limit(limitEvents);
 
         return mongoTemplate.find(query, EnrichedEvent.class, collectionName);
     }
 
-    private Query buildQuery(String userId, TimeRange timeRange, List<Pair<String, Object>> features) {
+    private Query buildQuery(String entityId, TimeRange timeRange, List<Pair<String, Object>> features) {
         Query query = new Query()
                 .addCriteria(Criteria.where(EnrichedEvent.USER_ID_FIELD_NAME)
-                        .is(userId))
+                        .is(entityId))
                 .addCriteria(Criteria.where(EnrichedEvent.EVENT_DATE_FIELD_NAME)
                         .gte(timeRange.getStart())
                         .lt(timeRange.getEnd()));
@@ -70,24 +70,24 @@ public class EventMongoRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public List<? extends EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize) {
-        Query query = buildQuery(userId, timeRange, features);
+    public List<? extends EnrichedEvent> findEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize) {
+        Query query = buildQuery(entityId, timeRange, features);
         query.skip(numOfItemsToSkip).limit(pageSize);
 
         return mongoTemplate.find(query, EnrichedEvent.class, collectionName);
     }
 
     @Override
-    public long countEvents(String collectionName, String userId, TimeRange timeRange, List<Pair<String, Object>> features) {
-        Query query = buildQuery(userId, timeRange, features);
+    public long countEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features) {
+        Query query = buildQuery(entityId, timeRange, features);
 
         return mongoTemplate.count(query, EnrichedEvent.class, collectionName);
     }
 
     @Override
-    public EnrichedEvent findLatestEventForUser(String userId, List<String> collectionNamesPrioritized) {
+    public EnrichedEvent findLatestEventForEntity(String entityId, List<String> collectionNamesPrioritized) {
         Query query = new Query()
-                .addCriteria(Criteria.where(EnrichedEvent.USER_ID_FIELD_NAME).is(userId))
+                .addCriteria(Criteria.where(EnrichedEvent.USER_ID_FIELD_NAME).is(entityId))
                 .limit(1).with(new Sort(Sort.Direction.DESC, EnrichedEvent.EVENT_DATE_FIELD_NAME));
         List<EnrichedEvent> enrichedEvents = null;
         for (String collection : collectionNamesPrioritized) {

@@ -53,14 +53,14 @@ public class AlertsForwarder extends Forwarder<Alert> {
 
 
     @JsonFilter(JsonPayloadBuilder.INCLUDE_PROPERTIES_FILTER)
-    @JsonPayloadBuilder.JsonIncludeProperties({"id","startDate","endDate","UebaEntityId","entitiyId","score","severity","indicatorsNum","indicatorsNames","classifications","scoreContribution"})
-    @JsonPropertyOrder({ "id","startDate","endDate","UebaEntityId","entitiyId","score","severity","indicatorsNum","indicatorsNames","classifications","scoreContribution" })
+    @JsonPayloadBuilder.JsonIncludeProperties({"id","startDate","endDate","UebaEntityId","entityId","score","severity","indicatorsNum","indicatorsNames","classifications","scoreContribution"})
+    @JsonPropertyOrder({ "id","startDate","endDate","UebaEntityId","entityId","score","severity","indicatorsNum","indicatorsNames","classifications","scoreContribution" })
     class AlertJsonMixin extends Alert {
 
         @JsonProperty("UebaEtityId")
         String userId;
 
-        @JsonProperty("entitiyId")
+        @JsonProperty("entityId")
         String vendorUserId;
 
     }

@@ -28,12 +28,12 @@ import presidio.ade.domain.store.scored.AdeScoredEnrichedRecordToCollectionNameT
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.Bucket;
 import presidio.output.domain.records.alerts.Indicator;
+import presidio.output.domain.records.entity.Entity;
+import presidio.output.domain.records.entity.EntitySeverity;
 import presidio.output.domain.records.events.ActiveDirectoryEnrichedEvent;
 import presidio.output.domain.records.events.AuthenticationEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.FileEnrichedEvent;
-import presidio.output.domain.records.users.User;
-import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.alert.AlertServiceImpl;
@@ -57,7 +57,7 @@ import static org.junit.Assert.*;
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class AlertServiceTest {
-    private static final String CONTEXT_ID = "testUser";
+    private static final String CONTEXT_ID = "testEntity";
 
     @Autowired
     private AlertServiceImpl alertService;
@@ -66,18 +66,18 @@ public class AlertServiceTest {
 
     @Test
     public void generateAlertWithLowSmartScore() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
-        Alert alert = alertService.generateAlert(generateSingleSmart(30), userEntity, 50);
+        Entity entity = new Entity("entityId", "entityName", 0d, new ArrayList<>(), new ArrayList<>(), null, EntitySeverity.CRITICAL, 0, "entity");
+        Alert alert = alertService.generateAlert(generateSingleSmart(30), entity, 50);
         assertNull(alert);
     }
 
     @Test
     public void generateAlertTest() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
+        Entity entityEntity = new Entity("entityId", "entityName", 0d, new ArrayList<>(), new ArrayList<>(), null, EntitySeverity.CRITICAL, 0, "entity");
         SmartRecord smart = generateSingleSmart(60);
-        Alert alert = alertService.generateAlert(smart, userEntity, 50);
-        assertEquals(alert.getUserId(), userEntity.getId());
-        assertEquals(alert.getUserName(), userEntity.getUserName());
+        Alert alert = alertService.generateAlert(smart, entityEntity, 50);
+        assertEquals(alert.getEntityId(), entityEntity.getId());
+        assertEquals(alert.getEntityName(), entityEntity.getEntityName());
         assertEquals(alert.getScore(), smart.getScore(), 0.0);
     }
 
@@ -86,7 +86,7 @@ public class AlertServiceTest {
         Instant eventTime = Instant.now();
         Instant startDate = eventTime.minus(10, ChronoUnit.MINUTES);
         Instant endDate = eventTime.plus(10, ChronoUnit.MINUTES);
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
+        Entity entity = new Entity("entityId", "entityName", 0d, new ArrayList<>(), new ArrayList<>(), null, EntitySeverity.CRITICAL, 0, "user");
         SmartRecord smart = generateSingleSmart(60);
         AdeAggregationRecord aggregationRecord = new AdeAggregationRecord(startDate, endDate,
                 "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", +10d,
@@ -106,13 +106,13 @@ public class AlertServiceTest {
         SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
         smartAggregationRecord.setContribution(0.3);
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
-        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+        Alert alert = alertService.generateAlert(smart, entity, 50);
         assertNull(alert);
     }
 
     @Test
     public void generateAlertWithNotOnlyStaticIndicatorsTest() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
+        Entity entity = new Entity("entityId", "entityName", 0d, new ArrayList<>(), new ArrayList<>(), null, EntitySeverity.CRITICAL, 0, "user");
         SmartRecord smart = generateSingleSmart(60);
         Instant eventTime = Instant.now();
         Instant startDate = eventTime.minus(10, ChronoUnit.MINUTES);
@@ -150,14 +150,14 @@ public class AlertServiceTest {
         smartAggregationRecord.setContribution(0.3);
         smartAggregationRecord2.setContribution(0.3);
         smart.setSmartAggregationRecords(Arrays.asList(smartAggregationRecord, smartAggregationRecord2));
-        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+        Alert alert = alertService.generateAlert(smart, entity, 50);
         assertNotNull(alert);
         assertEquals(2, alert.getIndicatorsNum());
     }
 
     @Test
     public void testSingleIndicatorsWithMultipleEventsTest() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
+        Entity entity = new Entity("entityId", "entityName", 0d, new ArrayList<>(), new ArrayList<>(), null, EntitySeverity.CRITICAL, 0, "user");
         SmartRecord smart = generateSingleSmart(60);
         Instant eventTime = Instant.now();
         Instant startDate = eventTime.minus(10, ChronoUnit.MINUTES);
@@ -171,7 +171,7 @@ public class AlertServiceTest {
         smartAggregationRecord.setContribution(0.3);
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
         generateAuthenticationEvents(2, eventTime, "scored_enriched.authentication.srcMachine.userId.authentication.score");
-        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+        Alert alert = alertService.generateAlert(smart, entity, 50);
         assertNotNull(alert);
         assertEquals(1, alert.getIndicatorsNum());
         assertTrue(alert.getIndicators().get(0).getStartDate().toInstant().isAfter(startDate));
@@ -180,7 +180,7 @@ public class AlertServiceTest {
 
     @Test
     public void testIndicatorWithMultipleAnomalyFilters() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
+        Entity entity = new Entity("entityId", "entityName", 0d, new ArrayList<>(), new ArrayList<>(), null, EntitySeverity.CRITICAL, 0, "user");
         SmartRecord smart = generateSingleSmart(60);
         Instant eventTime = Instant.now();
         Instant startDate = eventTime.minus(10, ChronoUnit.MINUTES);
@@ -195,7 +195,7 @@ public class AlertServiceTest {
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
         List<String> categories = Arrays.asList("GROUP_MEMBERSHIP_OPERATION", "SECURITY_SENSITIVE_OPERATION");
         generateActiveDirectoryEvents(2, eventTime, "scored_enriched.active_directory.operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score", "PASSWORD_CHANGED", categories);
-        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+        Alert alert = alertService.generateAlert(smart, entity, 50);
         assertNotNull(alert);
         assertEquals(1, alert.getIndicatorsNum());
         assertEquals(2, alert.getIndicators().get(0).getEventsNum());
@@ -203,7 +203,7 @@ public class AlertServiceTest {
 
     @Test
     public void testAlertWithFailureStatusEvent() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
+        Entity entity = new Entity("entityId", "entityName", 0d, new ArrayList<>(), new ArrayList<>(), null, EntitySeverity.CRITICAL, 0, "user");
         SmartRecord smart = generateSingleSmart(60);
         Instant startDate = Instant.parse("2017-10-20T15:00:00.000Z");
         Instant endDate = Instant.parse("2017-10-20T16:00:00.000Z");
@@ -228,7 +228,7 @@ public class AlertServiceTest {
         SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
         smartAggregationRecord.setContribution(0.3);
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
-        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+        Alert alert = alertService.generateAlert(smart, entity, 50);
         assertNotNull(alert);
         assertEquals(1, alert.getIndicators().size());
         assertEquals(1, alert.getIndicators().get(0).getEventsNum());
@@ -236,7 +236,7 @@ public class AlertServiceTest {
 
     @Test
     public void testIndicatorWithTwoCategories() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
+        Entity entity = new Entity("entityId", "entityName", 0d, new ArrayList<>(), new ArrayList<>(), null, EntitySeverity.CRITICAL, 0, "user");
         SmartRecord smart = generateSingleSmart(60);
         Instant startDate = Instant.parse("2017-11-20T15:00:00.000Z");
         Instant endDate = Instant.parse("2017-11-20T16:00:00.000Z");
@@ -269,14 +269,14 @@ public class AlertServiceTest {
         SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
         smartAggregationRecord.setContribution(0.3);
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
-        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+        Alert alert = alertService.generateAlert(smart, entity, 50);
         assertNotNull(alert);
         assertEquals(1, alert.getIndicators().get(0).getEventsNum());
     }
 
     @Test
     public void testAlertWithLargeNumberOfEvents() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
+        Entity entity = new Entity("entityId", "entityName", 0d, new ArrayList<>(), new ArrayList<>(), null, EntitySeverity.CRITICAL, 0, "user");
         SmartRecord smart = generateSingleSmart(60);
         Instant startDate = Instant.parse("2017-10-23T15:00:00.000Z");
         Instant endDate = Instant.parse("2017-10-23T16:00:00.000Z");
@@ -290,7 +290,7 @@ public class AlertServiceTest {
         SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
         smartAggregationRecord.setContribution(0.3);
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
-        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+        Alert alert = alertService.generateAlert(smart, entity, 50);
         assertNotNull(alert);
         assertEquals(1, alert.getIndicators().size());
         assertEquals(2000d, ((Bucket)alert.getIndicators().get(0).getHistoricalData().getAggregation().getBuckets().get(0)).getValue());
@@ -299,7 +299,7 @@ public class AlertServiceTest {
 
     @Test
     public void testAlertWithSourceMachineTransformer() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
+        Entity entity = new Entity("entityId", "entityName", 0d, new ArrayList<>(), new ArrayList<>(), null, EntitySeverity.CRITICAL, 0, "user");
         SmartRecord smart = generateSingleSmart(60);
         Instant startDate = Instant.parse("2017-05-23T15:00:00.000Z");
         Instant endDate = Instant.parse("2017-05-23T16:00:00.000Z");
@@ -313,7 +313,7 @@ public class AlertServiceTest {
         SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
         smartAggregationRecord.setContribution(0.3);
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
-        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+        Alert alert = alertService.generateAlert(smart, entity, 50);
         assertNotNull(alert);
         Bucket bucket = (Bucket)alert.getIndicators().get(0).getHistoricalData().getAggregation().getBuckets().get(0);
         assertEquals("Unresolved", bucket.getKey());
@@ -321,7 +321,7 @@ public class AlertServiceTest {
 
     @Test
     public void testScoreIndicatorsContribution() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
+        Entity entity = new Entity("entityId", "entityName", 0d, new ArrayList<>(), new ArrayList<>(), null, EntitySeverity.CRITICAL, 0, "user");
         SmartRecord smart = generateSingleSmart(60);
         Instant startDate = Instant.parse("2016-10-24T15:00:00.000Z");
         Instant endDate = Instant.parse("2016-10-24T16:00:00.000Z");
@@ -344,7 +344,7 @@ public class AlertServiceTest {
         smartFeatureAggregationRecord.setContribution(0.5);
         smart.setSmartAggregationRecords(Arrays.asList(smartFeatureAggregationRecord, smartScoreAggregationRecord));
         // generate alerts
-        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+        Alert alert = alertService.generateAlert(smart, entity, 50);
         assertEquals(0.5d, alert.getIndicators().get(0).getScoreContribution(), 0);
         assertEquals(0.25d, alert.getIndicators().get(1).getScoreContribution(), 0);
         assertEquals(0.25d, alert.getIndicators().get(2).getScoreContribution(), 0);
@@ -352,7 +352,7 @@ public class AlertServiceTest {
 
     @Test
     public void testExceedEventsLimit() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
+        Entity entity = new Entity("entityId", "entityName", 0d, new ArrayList<>(), new ArrayList<>(), null, EntitySeverity.CRITICAL, 0, "user");
         SmartRecord smart = generateSingleSmart(60);
         Instant startDate = Instant.parse("2017-10-24T15:00:00.000Z");
         Instant endDate = Instant.parse("2017-10-24T16:00:00.000Z");
@@ -369,7 +369,7 @@ public class AlertServiceTest {
         smartAggregationRecord.setContribution(0.3);
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
         // generate alerts
-        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+        Alert alert = alertService.generateAlert(smart, entity, 50);
         // check that only indicators events is not exceeding the limit
         Indicator indicator = alert.getIndicators().get(0);
         assertEquals(100, indicator.getEvents().size());

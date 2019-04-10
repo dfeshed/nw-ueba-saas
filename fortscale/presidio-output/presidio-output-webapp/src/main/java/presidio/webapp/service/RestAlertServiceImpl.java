@@ -162,10 +162,10 @@ public class RestAlertServiceImpl implements RestAlertService {
     private AlertQuery createQuery(presidio.webapp.model.AlertQuery alertQuery) {
         AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder();
         if (CollectionUtils.isNotEmpty(alertQuery.getUsersId())) {
-            alertQueryBuilder.filterByUserId(alertQuery.getUsersId());
+            alertQueryBuilder.filterByEntityId(alertQuery.getUsersId());
         }
         if (CollectionUtils.isNotEmpty(alertQuery.getUserName())) {
-            alertQueryBuilder.filterByUserName(alertQuery.getUserName());
+            alertQueryBuilder.filterByEntityName(alertQuery.getUserName());
         }
         if (alertQuery.getPageSize() != null) {
             alertQueryBuilder.setPageSize(alertQuery.getPageSize());
@@ -229,7 +229,7 @@ public class RestAlertServiceImpl implements RestAlertService {
     @Override
     public AlertsWrapper getAlertsByUserId(String userId, boolean expand) {
         Page<presidio.output.domain.records.alerts.Alert> alerts;
-        alerts = alertPersistencyService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
+        alerts = alertPersistencyService.findByEntityId(userId, new PageRequest(pageNumber, pageSize));
         List restAlerts = new ArrayList();
         int totalElements = 0;
         if (alerts.getTotalElements() > 0) {
@@ -259,7 +259,7 @@ public class RestAlertServiceImpl implements RestAlertService {
 
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
         userIds.forEach(id -> {
-            Page<presidio.output.domain.records.alerts.Alert> alertsByUserId = alertPersistencyService.findByUserId(id, pageRequest);
+            Page<presidio.output.domain.records.alerts.Alert> alertsByUserId = alertPersistencyService.findByEntityId(id, pageRequest);
             alertsByUserIds.put(id, convertToRestAlerts(alertsByUserId));
         });
 
@@ -348,13 +348,13 @@ public class RestAlertServiceImpl implements RestAlertService {
         restAlert.setStartDate(BigDecimal.valueOf(alert.getStartDate().getTime()));
         restAlert.setId(alert.getId());
         restAlert.setClassifiation(alert.getClassifications());
-        restAlert.setUsername(alert.getUserName());
-        restAlert.setUserId(alert.getUserId());
+        restAlert.setUsername(alert.getEntityName());
+        restAlert.setUserId(alert.getEntityId());
         restAlert.setSeverity(AlertSeverity.fromValue(alert.getSeverity().toString()));
         restAlert.setIndicatorsNum(alert.getIndicatorsNum());
         restAlert.setIndicatorsName(alert.getIndicatorsNames());
         restAlert.setTimeframe(Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
-        restAlert.setUserScoreContribution(new BigDecimal(alert.getContributionToUserScore()));
+        restAlert.setUserScoreContribution(new BigDecimal(alert.getContributionToEntityScore()));
         restAlert.setFeedback(AlertQueryEnums.AlertFeedback.fromValue(alert.getFeedback().toString()));
         return restAlert;
     }

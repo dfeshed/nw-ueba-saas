@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import presidio.output.commons.services.user.UserPropertiesUpdateService;
-import presidio.output.commons.services.user.UserPropertiesUpdateServiceImpl;
+import presidio.output.commons.services.entity.EntityPropertiesUpdateService;
+import presidio.output.commons.services.entity.EntityPropertiesUpdateServiceImpl;
 import presidio.output.domain.repositories.EventMongoRepositoryImpl;
 import presidio.output.domain.repositories.EventRepository;
 import presidio.output.domain.services.event.EventPersistencyService;
@@ -17,7 +17,7 @@ import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 
 @Configuration
 @Import(MongoDbBulkOpUtilConfig.class)
-public class UserUpdatePropertiesServiceConfig {
+public class EntityUpdatePropertiesServiceConfig {
 
     @Autowired
     public MongoTemplate mongoTemplate;
@@ -33,7 +33,7 @@ public class UserUpdatePropertiesServiceConfig {
     }
 
     @Bean
-    public UserPropertiesUpdateService userPropertiesUpdateService() {
-        return new UserPropertiesUpdateServiceImpl(eventPersistencyService(), new OutputToCollectionNameTranslator());
+    public EntityPropertiesUpdateService entityPropertiesUpdateService() {
+        return new EntityPropertiesUpdateServiceImpl(eventPersistencyService(), new OutputToCollectionNameTranslator());
     }
 }

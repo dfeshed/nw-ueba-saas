@@ -118,13 +118,13 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public Page<Alert> findByUserName(String userName, PageRequest pageRequest) {
-        return alertRepository.findByUserName(userName, pageRequest);
+    public Page<Alert> findByEntityName(String entityName, PageRequest pageRequest) {
+        return alertRepository.findByEntityName(entityName, pageRequest);
     }
 
     @Override
-    public Page<Alert> findByUserId(String userId, PageRequest pageRequest) {
-        return alertRepository.findByUserId(userId, pageRequest);
+    public Page<Alert> findByEntityId(String entityId, PageRequest pageRequest) {
+        return alertRepository.findByEntityId(entityId, pageRequest);
     }
 
     @Override
@@ -138,8 +138,8 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public Page<Alert> findByUserIdIn(Collection<String> userId, PageRequest pageRequest) {
-        return alertRepository.findByUserIdIn(userId, pageRequest);
+    public Page<Alert> findByEntityIdIn(Collection<String> entityId, PageRequest pageRequest) {
+        return alertRepository.findByEntityIdIn(entityId, pageRequest);
     }
 
     @Override
@@ -205,9 +205,9 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public List<Alert> findByUserId(String userId) {
+    public List<Alert> findByEntityId(String entityId) {
         List<Alert> alerts = new ArrayList<Alert>();
-        try (Stream<Alert> stream = alertRepository.findByUserId(userId)) {
+        try (Stream<Alert> stream = alertRepository.findByEntityId(entityId)) {
             alerts = stream.collect(Collectors.toList());
         }
         return alerts;

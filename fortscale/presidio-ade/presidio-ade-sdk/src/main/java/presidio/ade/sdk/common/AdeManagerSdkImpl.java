@@ -287,7 +287,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     }
 
     @Override
-    public int getDistinctSmartUsers(TimeRange timeRange) {
+    public int getDistinctSmartEntities(TimeRange timeRange) {
         //reading smarts from the hourly smarts collections only!
         SmartRecordsMetadata smartRecordsMetadata = new SmartRecordsMetadata(HOURLY_SMART_CONF_NAME, timeRange.getStart(), timeRange.getEnd());
         List<ContextIdToNumOfItems> contextIdToNumOfSmarts = smartDataReader.aggregateContextIdToNumOfEvents(smartRecordsMetadata, 0);
