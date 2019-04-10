@@ -80,6 +80,7 @@ const selectOperation = (operationName) => {
     });
     dispatch(_getOperationParamHelp(getState().treePath, operationName));
     dispatch(_getOperationHelp(getState().treePath, operationName));
+    dispatch(_getOperationManual(getState().treePath, operationName));
   };
 };
 
@@ -146,6 +147,18 @@ const toggleOperationResponse = () => {
 const toggleResponseAsJson = () => {
   return {
     type: ACTION_TYPES.TREE_TOGGLE_RESPONSE_AS_JSON
+  };
+};
+
+const toggleOperationManualVisibility = () => {
+  return {
+    type: ACTION_TYPES.TREE_TOGGLE_MANUAL_VISIBILITY
+  };
+};
+
+const toggleOperationManualWrap = () => {
+  return {
+    type: ACTION_TYPES.TREE_TOGGLE_MANUAL_WRAP
   };
 };
 
@@ -457,6 +470,20 @@ const _getOperationHelp = (path, operation) => {
   };
 };
 
+const _getOperationManual = (path, operation) => {
+  const transport = lookup('service:transport');
+  return {
+    type: ACTION_TYPES.TREE_GET_OPERATION_MAN,
+    promise: transport.send(path, {
+      message: 'help',
+      params: {
+        msg: operation,
+        op: 'manual'
+      }
+    })
+  };
+};
+
 const _getOperationParamHelp = (path, operation) => {
   const transport = lookup('service:transport');
   return {
@@ -488,6 +515,8 @@ export {
   sendOperation,
   toggleOperationResponse,
   toggleResponseAsJson,
+  toggleOperationManualVisibility,
+  toggleOperationManualWrap,
   cancelOperation,
   changeActiveTab,
   selectNode,

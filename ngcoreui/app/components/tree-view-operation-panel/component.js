@@ -3,21 +3,26 @@ import EmberObject from '@ember/object';
 import computed from 'ember-computed-decorators';
 import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
-import { sendOperation, cancelOperation, updateOperationParams, updateParameter } from 'ngcoreui/actions/actions';
-import { selectedOperation, selectedOperationHelp, selectedOperationRoles, selectedOperationHasPermission } from 'ngcoreui/reducers/selectors';
+import { sendOperation, cancelOperation, toggleOperationManualVisibility, toggleOperationManualWrap, updateOperationParams, updateParameter } from 'ngcoreui/actions/actions';
+import { selectedOperation, selectedOperationHelp, selectedOperationManual, selectedOperationRoles, selectedOperationHasPermission } from 'ngcoreui/reducers/selectors';
 
 const stateToComputed = (state) => ({
   selectedOperation: selectedOperation(state),
   operationHelp: selectedOperationHelp(state),
+  operationManual: selectedOperationManual(state),
   operationRoles: selectedOperationRoles(state),
   operationHasPermission: selectedOperationHasPermission(state),
   params: state.treeOperationParams,
-  operationResponse: state.operationResponse
+  operationResponse: state.operationResponse,
+  operationManualVisible: state.operationManualVisible,
+  operationManualWrap: state.operationManualWrap
 });
 
 const dispatchToActions = {
   sendOperation,
   cancelOperation,
+  toggleOperationManualVisibility,
+  toggleOperationManualWrap,
   updateOperationParams,
   updateParameter
 };

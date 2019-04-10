@@ -59,6 +59,20 @@
       <h1 class="small-header">Help for "{{selectedOperation.name}}"</h1>
       <div class="scroll-box border-panel help-box bottom-margin padding">
         <p>{{operationHelpText}}</p>
+        {{#if operationManual}}
+          <hr>
+          {{#if operationManualVisible}}
+            <hbox justify="between">
+              <a {{action 'toggleOperationManualVisibility'}} class="manual-toggle">Hide manual</a>
+              <a {{action 'toggleOperationManualWrap'}} class="manual-toggle">Toggle word wrap</a>
+            </hbox>
+            <pre class="operation-manual{{if operationManualWrap ' operation-manual-wrap'}}">
+              {{operationManual}}
+            </pre>
+          {{else}}
+            <a {{action 'toggleOperationManualVisibility'}} class="manual-toggle">Show extended manual</a>
+          {{/if}}
+        {{/if}}
       </div>
     {{/if}}
   </vbox>

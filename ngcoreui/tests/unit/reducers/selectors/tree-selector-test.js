@@ -10,6 +10,7 @@ import {
   filteredOperationNames,
   selectedOperation,
   selectedOperationHelp,
+  selectedOperationManual,
   selectedOperationRoles,
   selectedOperationHasPermission,
   responses,
@@ -115,6 +116,14 @@ module('Unit | Selectors | Tree', (hooks) => {
       .treeSelectedOperationIndex(0)
       .build();
     assert.strictEqual(selectedOperationHelp(state), 'Test operation help text');
+  });
+
+  test('selectedOperationManual should return the help text of the selected operation', (assert) => {
+    const state = new ReduxDataHelper()
+      .selectedOperationManual()
+      .treeSelectedOperationIndex(0)
+      .build();
+    assert.strictEqual(selectedOperationManual(state), 'Test manual text for the ls message');
   });
 
   test('selectedOperationRoles should return the roles required to execute the selected operation', (assert) => {

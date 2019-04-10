@@ -21,6 +21,8 @@ const initialState = Immutable.from({
   treeOperationParams: {},
   operationResponse: null,
   responseExpanded: false,
+  operationManualVisible: false,
+  operationManualWrap: true,
   responseAsJson: false,
   treeMonitorStreamTid: null,
   selectedNode: null,
@@ -202,6 +204,33 @@ const reducer = handleActions({
         return prevState.setIn(['treePathContents', 'operations'], operations);
       }
     });
+  },
+
+  [ACTION_TYPES.TREE_GET_OPERATION_MAN]: (state, action) => {
+    return handle(state, action, {
+      finish: (prevState) => {
+        let man = action.payload.string;
+        if (man.length === 0) {
+          man = null;
+        }
+        const operations = prevState.treePathContents.operations.map((op, index) => {
+          if (index === prevState.treeSelectedOperationIndex) {
+            return op.set('manual', man);
+          } else {
+            return op;
+          }
+        });
+        return prevState.setIn(['treePathContents', 'operations'], operations);
+      }
+    });
+  },
+
+  [ACTION_TYPES.TREE_TOGGLE_MANUAL_VISIBILITY]: (state) => {
+    return state.set('operationManualVisible', !state.operationManualVisible);
+  },
+
+  [ACTION_TYPES.TREE_TOGGLE_MANUAL_WRAP]: (state) => {
+    return state.set('operationManualWrap', !state.operationManualWrap);
   },
 
   [ACTION_TYPES.TREE_GET_OPERATION_PARAM_HELP]: (state, action) => {

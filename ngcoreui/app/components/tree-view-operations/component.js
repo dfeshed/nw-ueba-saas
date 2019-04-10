@@ -21,7 +21,7 @@ const treeViewOperations = Component.extend({
 
   actions: {
     selectResponseText() {
-      const [ text ] = this.$('.response-panel');
+      const [ text ] = this.element.querySelector('.response-panel');
       let range, selection;
 
       if (document.body.createTextRange) {

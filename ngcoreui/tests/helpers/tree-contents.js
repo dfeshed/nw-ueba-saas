@@ -23,7 +23,8 @@ const STANDARD = {
           optional: true
         }
       ],
-      description: 'Test operation help text\nsecurity.roles: sys.manage\n'
+      description: 'Test operation help text\nsecurity.roles: sys.manage\n',
+      manual: 'Test manual text for the ls message'
     },
     {
       name: 'mon',

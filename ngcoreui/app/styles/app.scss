@@ -201,6 +201,10 @@ hr {
   color: text-color(accentTwo, lighter);
 }
 
+.manual-toggle {
+  color: text-color(secondary);
+}
+
 .max-height {
   height: 100%;
 }
@@ -246,6 +250,13 @@ hr {
 .navigation-sidebar-outer:hover,
 .navigation-sidebar-outer.hover {
   width: 175px;
+}
+
+.operation-manual {
+  font-family: monospace;
+  &-wrap {
+    white-space: pre-wrap;
+  }
 }
 
 .outside-of-navigation {

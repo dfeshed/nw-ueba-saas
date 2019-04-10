@@ -109,6 +109,13 @@ const selectedOperationHelp = createSelector(
   }
 );
 
+const selectedOperationManual = createSelector(
+  [ selectedOperation ],
+  (selectedOperation) => {
+    return selectedOperation ? selectedOperation.manual : null;
+  }
+);
+
 const selectedOperationRoles = createSelector(
   [ _selectedOperationDescription ],
   (_selectedOperationDescription) => {
@@ -277,6 +284,7 @@ export {
   filteredOperationNames,
   selectedOperation,
   selectedOperationHelp,
+  selectedOperationManual,
   selectedOperationRoles,
   selectedOperationHasPermission,
   responses,
