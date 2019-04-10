@@ -926,6 +926,12 @@ align-text@^0.1.1, align-text@^0.1.3:
     longest "^1.0.1"
     repeat-string "^1.5.2"
 
+amcharts4-ember-hardcoded@4.0.21-alpha.1:
+  version "4.0.21-alpha.1"
+  resolved "https://registry.npmjs.org/amcharts4-ember-hardcoded/-/amcharts4-ember-hardcoded-4.0.21-alpha.1.tgz#363d1d812fc74cc0ced18c37a8e2baecbd51e6ff"
+  dependencies:
+    ember-cli-babel "^6.6.0"
+
 amd-name-resolver@1.2.0, amd-name-resolver@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/amd-name-resolver/-/amd-name-resolver-1.2.0.tgz#fc41b3848824b557313897d71f8d5a0184fbe679"
