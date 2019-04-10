@@ -78,8 +78,7 @@ export default class DataHelper {
     _set(this.state, 'availablePermissions', null);
     _set(this.state, 'operationResponse', null);
     _set(this.state, 'responseExpanded', false);
-    _set(this.state, 'operationManualVisible', false);
-    _set(this.state, 'operationManualWrap', true);
+    _set(this.state, 'operationManualVisible', true);
     _set(this.state, 'activeTab', null);
     _set(this.state, 'selectedNode', null);
     _set(this.state, 'logs', null);
@@ -132,11 +131,6 @@ export default class DataHelper {
 
   operationManualVisible(bool) {
     _set(this.state, 'operationManualVisible', bool);
-    return this;
-  }
-
-  operationManualWrap(bool) {
-    _set(this.state, 'operationManualWrap', bool);
     return this;
   }
 

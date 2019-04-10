@@ -205,6 +205,62 @@ hr {
   color: text-color(secondary);
 }
 
+// Styles for HTML returned from `op=manual format=html` messages
+#markdown {
+  h1 {
+    @include rsa-font(default, larger);
+  }
+
+  h2, h3, h4 {
+    @include rsa-font(default, large);
+  }
+
+  code {
+    display: inline;
+    font-size: inherit;
+  }
+
+  li {
+    display: list-item;
+    list-style-position: inside;
+    padding-left: rsa-whitespace(more);
+    text-indent: (-(rsa-whitespace(more)));
+  }
+
+  ul li {
+    list-style-type: disc;
+  }
+
+  ol li {
+    list-style-type: decimal;
+  }
+
+  h1, h2, h3, h4, h5, h6, ul, ol, table, p, blockquote, pre {
+    margin-bottom: rsa-whitespace();
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  th, td {
+    border-bottom: 1px solid text-color(primary, darker);
+    padding: rsa-whitespace(less);
+  }
+
+  th {
+    background-color: text-color(primary, darker);
+    border-left: 1px solid text-color(primary, dark);
+    &:first-child {
+      border-left: none;
+    }
+  }
+
+  tr:hover {
+    background-color: text-color(primary, dark);
+  }
+}
+
 .max-height {
   height: 100%;
 }
@@ -250,13 +306,6 @@ hr {
 .navigation-sidebar-outer:hover,
 .navigation-sidebar-outer.hover {
   width: 175px;
-}
-
-.operation-manual {
-  font-family: monospace;
-  &-wrap {
-    white-space: pre-wrap;
-  }
 }
 
 .outside-of-navigation {

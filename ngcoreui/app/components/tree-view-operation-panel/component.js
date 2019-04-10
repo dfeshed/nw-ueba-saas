@@ -3,7 +3,7 @@ import EmberObject from '@ember/object';
 import computed from 'ember-computed-decorators';
 import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
-import { sendOperation, cancelOperation, toggleOperationManualVisibility, toggleOperationManualWrap, updateOperationParams, updateParameter } from 'ngcoreui/actions/actions';
+import { sendOperation, cancelOperation, toggleOperationManualVisibility, updateOperationParams, updateParameter } from 'ngcoreui/actions/actions';
 import { selectedOperation, selectedOperationHelp, selectedOperationManual, selectedOperationRoles, selectedOperationHasPermission } from 'ngcoreui/reducers/selectors';
 
 const stateToComputed = (state) => ({
@@ -14,15 +14,13 @@ const stateToComputed = (state) => ({
   operationHasPermission: selectedOperationHasPermission(state),
   params: state.treeOperationParams,
   operationResponse: state.operationResponse,
-  operationManualVisible: state.operationManualVisible,
-  operationManualWrap: state.operationManualWrap
+  operationManualVisible: state.operationManualVisible
 });
 
 const dispatchToActions = {
   sendOperation,
   cancelOperation,
   toggleOperationManualVisibility,
-  toggleOperationManualWrap,
   updateOperationParams,
   updateParameter
 };

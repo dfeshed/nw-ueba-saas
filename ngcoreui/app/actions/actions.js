@@ -111,6 +111,9 @@ const sendOperation = (operationMessageObject) => {
   const transport = lookup('service:transport');
   return (dispatch, getState) => {
     dispatch(cancelOperation());
+    if (getState().operationManualVisible) {
+      dispatch(toggleOperationManualVisibility());
+    }
     const path = getState().treePath;
     const tid = transport.stream({
       path,
@@ -153,12 +156,6 @@ const toggleResponseAsJson = () => {
 const toggleOperationManualVisibility = () => {
   return {
     type: ACTION_TYPES.TREE_TOGGLE_MANUAL_VISIBILITY
-  };
-};
-
-const toggleOperationManualWrap = () => {
-  return {
-    type: ACTION_TYPES.TREE_TOGGLE_MANUAL_WRAP
   };
 };
 
@@ -478,7 +475,8 @@ const _getOperationManual = (path, operation) => {
       message: 'help',
       params: {
         msg: operation,
-        op: 'manual'
+        op: 'manual',
+        format: 'html'
       }
     })
   };
@@ -516,7 +514,6 @@ export {
   toggleOperationResponse,
   toggleResponseAsJson,
   toggleOperationManualVisibility,
-  toggleOperationManualWrap,
   cancelOperation,
   changeActiveTab,
   selectNode,

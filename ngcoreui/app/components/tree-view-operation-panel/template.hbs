@@ -62,13 +62,11 @@
         {{#if operationManual}}
           <hr>
           {{#if operationManualVisible}}
-            <hbox justify="between">
-              <a {{action 'toggleOperationManualVisibility'}} class="manual-toggle">Hide manual</a>
-              <a {{action 'toggleOperationManualWrap'}} class="manual-toggle">Toggle word wrap</a>
-            </hbox>
-            <pre class="operation-manual{{if operationManualWrap ' operation-manual-wrap'}}">
-              {{operationManual}}
-            </pre>
+            <a {{action 'toggleOperationManualVisibility'}} class="manual-toggle">Hide manual</a>
+            {{!-- It's safe to disable this here because of how the HTML is returned directy from the core service --}}
+            <div {{! template-lint-disable-tree "no-triple-curlies" }}>
+              {{{operationManual}}}
+            </div>
           {{else}}
             <a {{action 'toggleOperationManualVisibility'}} class="manual-toggle">Show extended manual</a>
           {{/if}}

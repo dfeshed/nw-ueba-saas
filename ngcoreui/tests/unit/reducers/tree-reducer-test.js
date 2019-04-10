@@ -280,42 +280,6 @@ module('Unit | Reducers | Tree', (hooks) => {
     assert.strictEqual(result.operationManualVisible, false);
   });
 
-  test('TREE_TOGGLE_MANUAL_WRAP sets operationManualWrap to true when it is false', (assert) => {
-    const action = {
-      type: ACTION_TYPES.TREE_TOGGLE_MANUAL_WRAP
-    };
-
-    const state = new ReduxDataHelper()
-      .connected()
-      .treePathContentsStandard()
-      .operationManualWrap(false)
-      .build();
-
-    assert.strictEqual(state.operationManualWrap, false);
-
-    const result = reducer(state, action);
-
-    assert.strictEqual(result.operationManualWrap, true);
-  });
-
-  test('TREE_TOGGLE_MANUAL_WRAP sets operationManualWrap to false when it is true', (assert) => {
-    const action = {
-      type: ACTION_TYPES.TREE_TOGGLE_MANUAL_WRAP
-    };
-
-    const state = new ReduxDataHelper()
-      .connected()
-      .treePathContentsStandard()
-      .operationManualWrap(true)
-      .build();
-
-    assert.strictEqual(state.operationManualWrap, true);
-
-    const result = reducer(state, action);
-
-    assert.strictEqual(result.operationManualWrap, false);
-  });
-
   test('TREE_SET_REQUEST sets the transport stream id', (assert) => {
     const action1 = {
       type: ACTION_TYPES.TREE_SET_REQUEST,
