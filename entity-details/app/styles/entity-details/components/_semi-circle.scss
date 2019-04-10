@@ -1,0 +1,18 @@
+.rsa-semi-circle {
+  transform: rotate(-90deg);
+
+  &_meter {
+    fill: none;
+    stroke: text-color(primary, dark);
+  }
+
+  &_value {
+    fill: none;
+    stroke: text-color(secondary);
+    stroke-linecap: round;
+  }
+
+  &_score {
+    fill: text-color(primary, lighter);
+  }
+}
