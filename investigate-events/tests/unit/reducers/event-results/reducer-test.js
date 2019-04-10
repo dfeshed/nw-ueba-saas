@@ -1,5 +1,7 @@
 import { test, module, skip } from 'qunit';
 import Immutable from 'seamless-immutable';
+import makePackAction from '../../../helpers/make-pack-action';
+import { LIFECYCLE } from 'redux-pack';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import reducer from 'investigate-events/reducers/investigate/event-results/reducer';
@@ -284,4 +286,22 @@ test('ACTION_TYPES.INIT_EVENTS_STREAMING will set eventTimeSortOrderPreferenceWh
   result = reducer(initialState, action);
   assert.equal(result.eventTimeSortOrderPreferenceWhenQueried, 'Ascending', 'State set properly with the correct value');
 
+});
+
+test('ACTION_TYPES.SET_MAX_EVENT_LIMIT reducer updates the max event count when it succeeds', function(assert) {
+
+  const initialState = Immutable.from({
+    streamLimit: undefined
+  });
+
+  const data = {
+    calculatedEventLimit: 200
+  };
+  const startAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.SET_MAX_EVENT_LIMIT,
+    payload: { data }
+  });
+  const result = reducer(initialState, startAction);
+
+  assert.equal(result.streamLimit, 200, 'Correct value in state based upon streamEvent limit');
 });

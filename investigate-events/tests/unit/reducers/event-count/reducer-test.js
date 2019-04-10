@@ -3,6 +3,8 @@ import Immutable from 'seamless-immutable';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import reducer from 'investigate-events/reducers/investigate/event-count/reducer';
+import makePackAction from '../../../helpers/make-pack-action';
+import { LIFECYCLE } from 'redux-pack';
 
 module('Unit | Reducers | event-count | Investigate');
 
@@ -52,4 +54,22 @@ test('EVENT_COUNT_RESULTS reducer toggles state', function(assert) {
   assert.equal(result.data, 'foo');
   assert.equal(result.status, 'resolved');
   assert.equal(result.reason, 0);
+});
+
+test('ACTION_TYPES.SET_MAX_EVENT_LIMIT reducer updates the max event count when it succeeds', function(assert) {
+
+  const initialState = Immutable.from({
+    threshold: undefined
+  });
+
+  const data = {
+    calculatedEventLimit: 200
+  };
+  const startAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.SET_MAX_EVENT_LIMIT,
+    payload: { data }
+  });
+  const result = reducer(initialState, startAction);
+
+  assert.equal(result.threshold, 200, 'Correct value in state based upon streamEvent limit');
 });

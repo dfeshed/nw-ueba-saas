@@ -1,14 +1,15 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
-import { MAX_EVENTS_ALLOWED } from 'investigate-events/reducers/investigate/event-results/reducer';
+import { handle } from 'redux-pack';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
+import { MAX_EVENTS_ALLOWED } from 'investigate-events/reducers/investigate/event-results/reducer';
 
 const _initialState = Immutable.from({
   data: undefined,
   reason: undefined,
   status: undefined,
-  threshold: MAX_EVENTS_ALLOWED
+  threshold: MAX_EVENTS_ALLOWED // default default. In case our event-settings api returns an error
 });
 
 export default handleActions({
@@ -32,6 +33,15 @@ export default handleActions({
       data: action.payload.data,
       status: 'resolved',
       reason: 0
+    });
+  },
+  [ACTION_TYPES.SET_MAX_EVENT_LIMIT]: (state, action) => {
+    return handle(state, action, {
+      failure: (s) => s, // in creators by generic handlers
+      success: (s) => {
+        const { calculatedEventLimit } = action.payload.data;
+        return s.set('threshold', calculatedEventLimit);
+      }
     });
   }
 }, _initialState);

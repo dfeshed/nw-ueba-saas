@@ -12,6 +12,7 @@ import { isQueryExecutedByColumnGroup } from './interaction-creators';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 import CONFIG from 'investigate-events/reducers/investigate/config';
 import { fetchServices } from 'investigate-shared/actions/api/services';
+import { fetchAdminEventSettings } from 'investigate-shared/actions/api/events/event-settings';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
@@ -391,55 +392,59 @@ export const initializeInvestigate = function(
     // 5) Get all the services available to the user. We have
     //    to get services before we can do anything else. So
     //    all other requests have to wait until it comes back.
+    // 6) Retrieve event analysis settings. Returns us with
+    //    a number of events to be displayed threshold based
+    //    upon roles/default settings in admin.
     const initializationPromises = [
       _initializePreferences(dispatch, getState),
       _initializeServices(dispatch, getState)
+      // _fetchEventSettings(dispatch)
     ];
 
     const hasService = !!parsedQueryParams.serviceId;
     if (hasService) {
       // If we have a service then...
-      // 6) Include getting the dictionaries with other requests,
+      // 7) Include getting the dictionaries with other requests,
       //    and kick them all off
       initializationPromises.push(_initializeDictionaries(dispatch, getState));
       await RSVP.all(initializationPromises).catch(errorHandler);
     } else {
       // If we do not have a service then...
-      // 6) Get all the dictionaries after we have fetched services and
+      // 7) Get all the dictionaries after we have fetched services and
       //    automatically chosen the first service as the active service
       await RSVP.all(initializationPromises);
       await _initializeDictionaries(dispatch, getState).catch(errorHandler);
     }
 
     if (parsedQueryParams.pillData && parsedQueryParams.pillDataHashes) {
-      // 7) If there is a pdhash and mf in the query, fetch a hash for the mf
+      // 8) If there is a pdhash and mf in the query, fetch a hash for the mf
       //    and combine the returned hash into pdhash and redirect.
       await _handleSearchParamsAndHashInQueryParams(parsedQueryParams, hashNavigateCallback, dispatch, getState);
     } else if (parsedQueryParams.pillData) {
-      // 7) If there was no hash in the incoming params, do checking to
+      // 8) If there was no hash in the incoming params, do checking to
       //    see if we need to create one and update the URL with a new hash.
       //    No need to await since we already have everything required
       dispatch(_handleSearchParamsInQueryParams(parsedQueryParams, hashNavigateCallback, isInternalQuery));
     } else if (parsedQueryParams.pillDataHashes) {
-      // 7) Perform all the checks to see if we need to retrieve hash
+      // 8) Perform all the checks to see if we need to retrieve hash
       //    params, and if we do, wait for that retrieval to finish.
       //    This must be done after the previous promises because
       //    fetching/creating pills relies on languages being in place
       await _handleHashInQueryParams(parsedQueryParams, dispatch, hashNavigateCallback, getState);
     } else {
-      // This callback is required to maintain browser history. There are
-      // 2 conditions where we have to callback this without params fn.
-      // a) When we have hash in parsedQueryParams. Calling it in _handleHashInQueryParams
-      // b) When parsedQueryParams neither has hash or pill data(mf)
+      // 8) This callback is required to maintain browser history. There are
+      //    two conditions where we have to callback this without params fn.
+      //      a) When we have hash in parsedQueryParams. Calling it in _handleHashInQueryParams
+      //      b) When parsedQueryParams neither has hash or pill data(mf)
       run.next(() => {
         hashNavigateCallback();
       });
     }
 
-    // 8) Initialize the querying state so we can get going
+    // 9) Initialize the querying state so we can get going
     dispatch(_intializeQuerying(hardReset));
 
-    // 9) If we have the minimum required values for querying (service id,
+    // 10) If we have the minimum required values for querying (service id,
     // start time and end time) specified in the URL, then kick off the query.
     const { serviceId, startTime, endTime } = parsedQueryParams;
     if (serviceId && startTime && endTime) {
@@ -580,5 +585,38 @@ export const getDictionaries = (resolve = noop, reject = noop) => {
         resolve();
       }, reject);
     }
+  };
+};
+
+/**
+ *
+ * Function that wraps thunk with a promise
+ */
+const _fetchEventSettings = (dispatch) => { // eslint-disable-line no-unused-vars
+  return new RSVP.Promise((resolve, reject) => {
+    getEventSettings(resolve, reject)(dispatch);
+  });
+};
+
+/**
+ * Generic function that retrieves event settings.
+ * For now, server sends in just one value.
+ * More config to be added in future.
+ */
+export const getEventSettings = (resolve = noop, reject = noop) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.SET_MAX_EVENT_LIMIT,
+      promise: fetchAdminEventSettings(),
+      meta: {
+        onSuccess() {
+          resolve();
+        },
+        onFailure(error) {
+          handleInvestigateErrorCode(error, 'EVENT_SETTINGS_RETRIEVAL_ERROR');
+          reject(error);
+        }
+      }
+    });
   };
 };

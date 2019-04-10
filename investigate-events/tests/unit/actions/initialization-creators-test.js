@@ -116,5 +116,21 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
     callback(dispatch, getState);
   });
 
+  test('getEventSettings - Should dispatch action with calculatedEventLimit', async function(assert) {
+    assert.expect(2);
+    const done = assert.async();
 
+    const dispatchAdminEventSetting = (action) => {
+      assert.equal(action.type, ACTION_TYPES.SET_MAX_EVENT_LIMIT, 'action has the correct type');
+      action.promise.then((resolve) => {
+
+        assert.ok(resolve.data.calculatedEventLimit, 'Expected calculatedEventLimit object from websocket call with a random value');
+        action.meta.onSuccess(resolve);
+        done();
+      });
+    };
+
+    const thunk = initializationCreators.getEventSettings();
+    thunk(dispatchAdminEventSetting);
+  });
 });

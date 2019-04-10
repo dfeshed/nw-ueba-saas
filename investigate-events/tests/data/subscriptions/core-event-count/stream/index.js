@@ -5,6 +5,12 @@ export default {
   requestDestination: '/ws/investigate/events/count',
   page(frame, sendMessage) {
     let meta;
+    const { body } = frame;
+    const bodyParsed = JSON.parse(body);
+    const { filter } = bodyParsed;
+    const threshold = (filter || []).find((ob) => ob.field === 'threshold');
+    const thresholdValue = threshold && threshold.value;
+    const dataCount = Math.min(thresholdValue, data().length);
 
     for (let i = 0; i <= 5; i++) {
       setTimeout((index) => {
@@ -64,7 +70,7 @@ export default {
         }
 
         sendMessage({
-          data: data().length,
+          data: dataCount,
           meta
         });
       }, i * 100, i);

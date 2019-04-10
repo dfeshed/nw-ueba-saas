@@ -86,6 +86,13 @@ const investigateConfigGen = function(env) {
         requestDestination: '/ws/investigate/validate/query'
       }
     },
+    'event-settings': {
+      socketUrl,
+      query: {
+        subscriptionDestination: '/user/queue/investigate/eventanalysis/settings',
+        requestDestination: '/ws/investigate/eventanalysis/settings'
+      }
+    },
     'investigate-columns': {
       socketUrl,
       findAll: {

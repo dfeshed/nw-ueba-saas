@@ -1,12 +1,13 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
+import { handle } from 'redux-pack';
 import _ from 'lodash';
 import sort from 'fast-sort';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { SORT_ORDER } from './selectors';
 
-export const MAX_EVENTS_ALLOWED = window.MAX_EVENTS_ALLOWED || 50000;
+export const MAX_EVENTS_ALLOWED = 10000;
 
 const _initialState = Immutable.from({
   // streaming, complete, stopped, between-streams
@@ -14,7 +15,7 @@ const _initialState = Immutable.from({
 
   data: null,
   reason: undefined,
-  streamLimit: MAX_EVENTS_ALLOWED,
+  streamLimit: MAX_EVENTS_ALLOWED, // default default. In case our event-settings api returns an error
   streamBatch: 1000,
   message: undefined,
   allEventsSelected: false,
@@ -155,6 +156,16 @@ export default handleActions({
     // replace event in array
     const newData = _update(state.data, sessionId, updatedItem);
     return state.set('data', newData);
+  },
+
+  [ACTION_TYPES.SET_MAX_EVENT_LIMIT]: (state, action) => {
+    return handle(state, action, {
+      failure: (s) => s, // in creators by generic handlers
+      success: (s) => {
+        const { calculatedEventLimit } = action.payload.data;
+        return s.set('streamLimit', calculatedEventLimit);
+      }
+    });
   }
   // NewestFirst code commented out
   /* [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
