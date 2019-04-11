@@ -280,26 +280,35 @@ export const searchMatches = createSelector(
     const allMatches = [];
 
     // get list of visible column keys
-    const { columns } = columnGroups.find(({ id }) => id === columnGroup);
+    const columnGroupObj = columnGroups.find(({ id }) => id === columnGroup);
+    const { columns } = columnGroupObj;
     const columnKeys = columns.map(({ field }) => field);
 
     for (let dataLoopIndex = 0; dataLoopIndex < data.length; dataLoopIndex++) {
-      // prune list of data fields by visible columns
-      const prunedFields = Object.entries(data[dataLoopIndex]).filter(([field]) => {
-        if (columnKeys.includes(field)) {
-          return true;
-        }
-      });
+      let prunedFields;
+      if (columnGroup.includes('SUMMARY') && columnGroupObj.ootb) {
+        // SUMMARY groups include composite fields
+        // search all content
+        prunedFields = Object.entries(data[dataLoopIndex]);
+      } else {
+        // prune list of data fields by visible columns
+        prunedFields = Object.entries(data[dataLoopIndex]).filter(([field]) => {
+          if (columnKeys.includes(field)) {
+            return true;
+          }
+        });
+      }
 
       // loop through data fields and compare searchTerm to values
       for (let fieldLoopIndex = 0; fieldLoopIndex < prunedFields.length; fieldLoopIndex++) {
         const [field, value] = prunedFields[fieldLoopIndex];
         let toSearch = formatUtil.text(field, value, opts);
         toSearch = (typeof toSearch === 'object' ? toSearch.string : toSearch).toLowerCase();
+
         if (field === 'medium' && data[dataLoopIndex]['nwe.callback_id']) {
           // handle endpoint comparison
           const hash = opts.i18n && opts.i18n[field];
-          if (hash.endpoint.string.toLowerCase().includes(searchTerm)) {
+          if (hash.endpoint.string && hash.endpoint.string.toLowerCase().includes(searchTerm)) {
             allMatches.push(data[dataLoopIndex].sessionId);
             break;
           }

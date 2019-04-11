@@ -106,7 +106,7 @@ export default RsaContextMenu.extend({
     if (canRender) {
       this._renderMetaValues();
     }
-    return status && status === 'complete' && this.get('values').data.length === 0;
+    return status && status === 'complete' && this.get('values').data && this.get('values').data.length === 0;
   },
 
   /**

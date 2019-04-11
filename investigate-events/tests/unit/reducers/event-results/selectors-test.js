@@ -77,7 +77,7 @@ module('Unit | Selectors | event-results', function(hooks) {
           aliases: 'aliases'
         },
         data: {
-          columnGroup: 'SUMMARY',
+          columnGroup: 'EMAIL',
           columnGroups: EventColumnGroups,
           globalPreferences: {
             dateFormat: 'dateFormat',
@@ -145,7 +145,7 @@ module('Unit | Selectors | event-results', function(hooks) {
           aliases: 'aliases'
         },
         data: {
-          columnGroup: 'SUMMARY',
+          columnGroup: 'EMAIL',
           columnGroups: EventColumnGroups,
           globalPreferences: {
             dateFormat: 'dateFormat',
@@ -175,7 +175,7 @@ module('Unit | Selectors | event-results', function(hooks) {
           aliases: 'aliases'
         },
         data: {
-          columnGroup: 'SUMMARY',
+          columnGroup: 'EMAIL',
           columnGroups: EventColumnGroups,
           globalPreferences: {
             dateFormat: 'dateFormat',
@@ -206,7 +206,7 @@ module('Unit | Selectors | event-results', function(hooks) {
           aliases: 'aliases'
         },
         data: {
-          columnGroup: 'SUMMARY',
+          columnGroup: 'EMAIL',
           columnGroups: EventColumnGroups,
           globalPreferences: {
             dateFormat: 'dateFormat',
@@ -230,6 +230,36 @@ module('Unit | Selectors | event-results', function(hooks) {
           data: [
             { sessionId: 1, medium: 32 }, // will resolve to "log"
             { sessionId: 2, medium: 32, 'nwe.callback_id': true }, // will resolve to "Endpoint"
+            { sessionId: 3 }
+          ]
+        },
+        dictionaries: {
+          aliases: 'aliases'
+        },
+        data: {
+          columnGroup: 'EMAIL',
+          columnGroups: EventColumnGroups,
+          globalPreferences: {
+            dateFormat: 'dateFormat',
+            timeFormat: 'timeFormat',
+            timeZone: 'timeZone',
+            locale: 'locale'
+          }
+        }
+      }
+    };
+
+    const result = searchMatches(state);
+    assert.equal(result.length, 1);
+  });
+
+  test('searchMatches returns matches when columnGroup is SUMMARY', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          searchTerm: 'foo',
+          data: [
+            { sessionId: 1, foo: 'foo' },
             { sessionId: 3 }
           ]
         },
