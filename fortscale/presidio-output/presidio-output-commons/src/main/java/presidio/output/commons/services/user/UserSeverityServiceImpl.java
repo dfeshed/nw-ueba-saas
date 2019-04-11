@@ -15,13 +15,7 @@ import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.repositories.UserSeveritiesRangeRepository;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -161,7 +155,7 @@ public class UserSeverityServiceImpl implements UserSeverityService {
     }
 
     private UserScoreToSeverity getExistingUserScoreToSeverity() {
-        UserSeveritiesRangeDocument userSeveritiesRangeDocument = userSeveritiesRangeRepository.findOne(UserSeveritiesRangeDocument.USER_SEVERITIES_RANGE_DOC_ID);
+        UserSeveritiesRangeDocument userSeveritiesRangeDocument = userSeveritiesRangeRepository.findById(UserSeveritiesRangeDocument.USER_SEVERITIES_RANGE_DOC_ID).get();
 
         if (userSeveritiesRangeDocument == null) { //no existing percentiles were found
             logger.debug("No user score percentile calculation results were found, setting scores thresholds to zero (all users will get LOW severity (till next daily calculation)");

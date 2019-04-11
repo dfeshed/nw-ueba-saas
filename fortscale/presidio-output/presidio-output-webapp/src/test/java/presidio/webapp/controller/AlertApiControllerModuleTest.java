@@ -98,13 +98,13 @@ public class AlertApiControllerModuleTest {
     public void cleanTestData() {
         //delete the created alerts
         Iterable<presidio.output.domain.records.alerts.Alert> allAlerts = alertRepository.findAll();
-        alertRepository.delete(allAlerts);
+        alertRepository.deleteAll(allAlerts);
 
         //delete the created users
-        userRepository.delete(userRepository.findAll());
+        userRepository.deleteAll(userRepository.findAll());
 
         //delete the created user score percentile documents
-        userSeveritiesRangeRepository.delete(userSeveritiesRangeRepository.findAll());
+        userSeveritiesRangeRepository.deleteAll(userSeveritiesRangeRepository.findAll());
     }
 
     @Test
@@ -113,7 +113,7 @@ public class AlertApiControllerModuleTest {
         Date date = new Date();
         presidio.output.domain.records.alerts.Alert alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
         presidio.output.domain.records.alerts.Alert alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
-        alertRepository.save(Arrays.asList(alert1, alert2));
+        alertRepository.saveAll(Arrays.asList(alert1, alert2));
 
         // init expected response
         Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
@@ -142,7 +142,7 @@ public class AlertApiControllerModuleTest {
         Date date = new Date();
         presidio.output.domain.records.alerts.Alert alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
         presidio.output.domain.records.alerts.Alert alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 91d, AlertEnums.AlertSeverity.MEDIUM, date);
-        alertRepository.save(Arrays.asList(alert1, alert2));
+        alertRepository.saveAll(Arrays.asList(alert1, alert2));
 
         // init expected response
         Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
@@ -193,7 +193,7 @@ public class AlertApiControllerModuleTest {
         alertPersistencyService.save(indicator2);
         alertPersistencyService.save(indicator3);
         alertPersistencyService.save(indicator4);
-        alertRepository.save(Arrays.asList(alert1));
+        alertRepository.saveAll(Arrays.asList(alert1));
 
         // init expected response
         IndicatorsWrapper expectedResponse = new IndicatorsWrapper();
@@ -233,7 +233,7 @@ public class AlertApiControllerModuleTest {
         presidio.output.domain.records.alerts.Alert alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
         alert1.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
         presidio.output.domain.records.alerts.Alert alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
-        alertRepository.save(Arrays.asList(alert1, alert2));
+        alertRepository.saveAll(Arrays.asList(alert1, alert2));
 
         // init expected response
         Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
@@ -261,7 +261,7 @@ public class AlertApiControllerModuleTest {
         presidio.output.domain.records.alerts.Alert alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
         alert1.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
         presidio.output.domain.records.alerts.Alert alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
-        alertRepository.save(Arrays.asList(alert1, alert2));
+        alertRepository.saveAll(Arrays.asList(alert1, alert2));
 
         // init expected response
         Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
@@ -301,7 +301,7 @@ public class AlertApiControllerModuleTest {
         presidio.output.domain.records.alerts.Alert alert4 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
         alert4.setFeedback(AlertEnums.AlertFeedback.RISK);
 
-        alertRepository.save(Arrays.asList(alert1, alert2, alert3, alert4));
+        alertRepository.saveAll(Arrays.asList(alert1, alert2, alert3, alert4));
 
         // init expected response
         Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
@@ -353,7 +353,7 @@ public class AlertApiControllerModuleTest {
         alert5.setFeedback(AlertEnums.AlertFeedback.RISK);
         presidio.output.domain.records.alerts.Alert alert6 = generateAlert("userId2", "smartId6", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
         alert6.setFeedback(AlertEnums.AlertFeedback.NONE);
-        alertRepository.save(Arrays.asList(alert1, alert2, alert3, alert4, alert5, alert6));
+        alertRepository.saveAll(Arrays.asList(alert1, alert2, alert3, alert4, alert5, alert6));
 
         // get actual response
         MvcResult mvcResult = alertsApiMVC.perform(get(ALERTS_URI)
@@ -375,7 +375,7 @@ public class AlertApiControllerModuleTest {
         Date date = new Date();
         presidio.output.domain.records.alerts.Alert alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
         presidio.output.domain.records.alerts.Alert alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
-        alertRepository.save(Arrays.asList(alert1, alert2));
+        alertRepository.saveAll(Arrays.asList(alert1, alert2));
 
         // init expected response
         Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
@@ -402,7 +402,7 @@ public class AlertApiControllerModuleTest {
         Date date = new Date();
         presidio.output.domain.records.alerts.Alert alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
         alert1.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
-        alertRepository.save(Arrays.asList(alert1));
+        alertRepository.saveAll(Arrays.asList(alert1));
 
         // init expected response
         Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
@@ -516,13 +516,13 @@ public class AlertApiControllerModuleTest {
                 .andReturn();
 
         //feedback NONE -> RISK : alert score and contribution shouldn't be changed and same for user score
-        presidio.output.domain.records.alerts.Alert updatedAlert = alertRepository.findOne(alert.getId());
+        presidio.output.domain.records.alerts.Alert updatedAlert = alertRepository.findById(alert.getId()).get();
         Assert.assertEquals(alert.getScore(), updatedAlert.getScore(), 0.01);
         Assert.assertEquals(alert.getContributionToUserScore(), updatedAlert.getContributionToUserScore(), 0.01);
         Assert.assertEquals(alert.getSeverity(), updatedAlert.getSeverity());
         Assert.assertEquals(AlertEnums.AlertFeedback.RISK, updatedAlert.getFeedback());
 
-        User updatedUser = userRepository.findOne(savedUser.getId());
+        User updatedUser = userRepository.findById(savedUser.getId()).get();
         Assert.assertEquals(savedUser.getScore(), updatedUser.getScore(), 0.01);
         Assert.assertEquals(user.getSeverity(), updatedUser.getSeverity());
     }
@@ -547,7 +547,7 @@ public class AlertApiControllerModuleTest {
         presidio.output.domain.records.alerts.Alert alert2 = generateAlert(savedUser.getId(), "smartId1", Arrays.asList("a"), "userName1", 5d, AlertEnums.AlertSeverity.LOW, date);
         alert2.setFeedback(AlertEnums.AlertFeedback.RISK);
         alert2.setContributionToUserScore(5D);
-        alertRepository.save(Arrays.asList(alert1, alert2));
+        alertRepository.saveAll(Arrays.asList(alert1, alert2));
 
 
         //building the request-  update feedback from NONE to RISK
@@ -564,19 +564,19 @@ public class AlertApiControllerModuleTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        presidio.output.domain.records.alerts.Alert updatedAlert1 = alertRepository.findOne(alert1.getId());
+        presidio.output.domain.records.alerts.Alert updatedAlert1 = alertRepository.findById(alert1.getId()).get();
         Assert.assertEquals(alert1.getScore(), updatedAlert1.getScore(), 0.01);
         Assert.assertEquals(0, updatedAlert1.getContributionToUserScore(), 0.01);
         Assert.assertEquals(alert1.getSeverity(), updatedAlert1.getSeverity());
         Assert.assertEquals(AlertEnums.AlertFeedback.NOT_RISK, updatedAlert1.getFeedback());
 
-        presidio.output.domain.records.alerts.Alert updatedAlert2 = alertRepository.findOne(alert2.getId());
+        presidio.output.domain.records.alerts.Alert updatedAlert2 = alertRepository.findById(alert2.getId()).get();
         Assert.assertEquals(alert2.getScore(), updatedAlert2.getScore(), 0.01);
         Assert.assertEquals(0, updatedAlert2.getContributionToUserScore(), 0.01);
         Assert.assertEquals(alert2.getSeverity(), updatedAlert2.getSeverity());
         Assert.assertEquals(AlertEnums.AlertFeedback.NOT_RISK, updatedAlert2.getFeedback());
 
-        User updatedUser = userRepository.findOne(savedUser.getId());
+        User updatedUser = userRepository.findById(savedUser.getId()).get();
         Assert.assertEquals(130, updatedUser.getScore(), 0.01);
         Assert.assertEquals(UserSeverity.HIGH, updatedUser.getSeverity());
     }
@@ -601,7 +601,7 @@ public class AlertApiControllerModuleTest {
         presidio.output.domain.records.alerts.Alert alert2 = generateAlert(savedUser.getId(), "smartId1", Arrays.asList("a"), "userName1", 5d, AlertEnums.AlertSeverity.LOW, date);
         alert2.setFeedback(AlertEnums.AlertFeedback.RISK);
         alert2.setContributionToUserScore(5D);
-        alertRepository.save(Arrays.asList(alert1, alert2));
+        alertRepository.saveAll(Arrays.asList(alert1, alert2));
 
 
         //building the request-  update feedback from NONE to RISK
@@ -618,19 +618,19 @@ public class AlertApiControllerModuleTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        presidio.output.domain.records.alerts.Alert updatedAlert1 = alertRepository.findOne(alert1.getId());
+        presidio.output.domain.records.alerts.Alert updatedAlert1 = alertRepository.findById(alert1.getId()).get();
         Assert.assertEquals(alert1.getScore(), updatedAlert1.getScore(), 0.01);
         Assert.assertEquals(0, updatedAlert1.getContributionToUserScore(), 0.01);
         Assert.assertEquals(alert1.getSeverity(), updatedAlert1.getSeverity());
         Assert.assertEquals(AlertEnums.AlertFeedback.NOT_RISK, updatedAlert1.getFeedback());
 
-        presidio.output.domain.records.alerts.Alert updatedAlert2 = alertRepository.findOne(alert2.getId());
+        presidio.output.domain.records.alerts.Alert updatedAlert2 = alertRepository.findById(alert2.getId()).get();
         Assert.assertEquals(alert2.getScore(), updatedAlert2.getScore(), 0.01);
         Assert.assertEquals(0, updatedAlert2.getContributionToUserScore(), 0.01);
         Assert.assertEquals(alert2.getSeverity(), updatedAlert2.getSeverity());
         Assert.assertEquals(AlertEnums.AlertFeedback.NOT_RISK, updatedAlert2.getFeedback());
 
-        User updatedUser = userRepository.findOne(savedUser.getId());
+        User updatedUser = userRepository.findById(savedUser.getId()).get();
         Assert.assertEquals(130, updatedUser.getScore(), 0.01);
         Assert.assertEquals(UserSeverity.LOW, updatedUser.getSeverity());
     }
@@ -670,13 +670,13 @@ public class AlertApiControllerModuleTest {
                 .andReturn();
 
         //feedback RISK -> NOT_RISK: alert score and contribution should be updated and also the user score
-        presidio.output.domain.records.alerts.Alert updatedAlert = alertRepository.findOne(alert.getId());
+        presidio.output.domain.records.alerts.Alert updatedAlert = alertRepository.findById(alert.getId()).get();
         Assert.assertEquals(alert.getScore(), updatedAlert.getScore(), 0.01);
         Assert.assertEquals(0, updatedAlert.getContributionToUserScore(), 0.01);
         Assert.assertEquals(alert.getSeverity(), updatedAlert.getSeverity());
         Assert.assertEquals(AlertEnums.AlertFeedback.NOT_RISK, updatedAlert.getFeedback());
 
-        User updatedUser = userRepository.findOne(savedUser.getId());
+        User updatedUser = userRepository.findById(savedUser.getId()).get();
         Assert.assertEquals(savedUser.getScore() - alert.getContributionToUserScore(), updatedUser.getScore(), 0.01);
         Assert.assertEquals(UserSeverity.CRITICAL, updatedUser.getSeverity());
     }
@@ -717,13 +717,13 @@ public class AlertApiControllerModuleTest {
                 .andReturn();
 
         //feedback NOT_RISK -> RISK: alert score and contribution should be updated and also the user score
-        presidio.output.domain.records.alerts.Alert updatedAlert = alertRepository.findOne(alert.getId());
+        presidio.output.domain.records.alerts.Alert updatedAlert = alertRepository.findById(alert.getId()).get();
         Assert.assertEquals(alert.getScore(), updatedAlert.getScore(), 0.01);
         Assert.assertEquals(10D, updatedAlert.getContributionToUserScore(), 0.01);
         Assert.assertEquals(alert.getSeverity(), updatedAlert.getSeverity());
         Assert.assertEquals(AlertEnums.AlertFeedback.RISK, updatedAlert.getFeedback());
 
-        User updatedUser = userRepository.findOne(savedUser.getId());
+        User updatedUser = userRepository.findById(savedUser.getId()).get();
         Assert.assertEquals(savedUser.getScore() + updatedAlert.getContributionToUserScore(), updatedUser.getScore(), 0.01);
         Assert.assertEquals(UserSeverity.CRITICAL, updatedUser.getSeverity());
     }
@@ -769,13 +769,13 @@ public class AlertApiControllerModuleTest {
                 .andReturn();
 
         //feedback RISK -> NOT_RISK: alert score and contribution should be updated and also the user score
-        presidio.output.domain.records.alerts.Alert updatedAlert = alertRepository.findOne(alert.getId());
+        presidio.output.domain.records.alerts.Alert updatedAlert = alertRepository.findById(alert.getId()).get();
         Assert.assertEquals(alert.getScore(), updatedAlert.getScore(), 0.01);
         Assert.assertEquals(0, updatedAlert.getContributionToUserScore(), 0.01);
         Assert.assertEquals(alert.getSeverity(), updatedAlert.getSeverity());
         Assert.assertEquals(AlertEnums.AlertFeedback.NOT_RISK, updatedAlert.getFeedback());
 
-        User updatedUser = userRepository.findOne(savedUser.getId());
+        User updatedUser = userRepository.findById(savedUser.getId()).get();
         Assert.assertEquals(savedUser.getScore() - alert.getContributionToUserScore(), updatedUser.getScore(), 0.01);
         Assert.assertEquals(UserSeverity.LOW, updatedUser.getSeverity());
     }

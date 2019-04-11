@@ -31,7 +31,7 @@ public class UserPersistencyServiceImpl implements UserPersistencyService {
     public Iterable<User> save(List<User> users) {
         if (users != null && users.size() > 0) {
             users.forEach(user -> user.updateFieldsBeforeSave());
-            return userRepository.save(users);
+            return userRepository.saveAll(users);
         } else {
             return Collections.EMPTY_LIST;
         }
@@ -39,7 +39,7 @@ public class UserPersistencyServiceImpl implements UserPersistencyService {
 
     @Override
     public User findUserById(String id) {
-        return userRepository.findOne(id);
+        return userRepository.findById(id).get();
     }
 
     @Override

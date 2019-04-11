@@ -34,7 +34,10 @@ import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.user.UserService;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 
 @RunWith(SpringRunner.class)
@@ -137,7 +140,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(20, updatedUser.getScore(), 0.00001);
         Assert.assertEquals(UserSeverity.LOW, updatedUser.getSeverity());
 
-        UserSeveritiesRangeDocument userSeveritiesRangeDocument = userSeveritiesRangeRepository.findOne(UserSeveritiesRangeDocument.USER_SEVERITIES_RANGE_DOC_ID);
+        UserSeveritiesRangeDocument userSeveritiesRangeDocument = userSeveritiesRangeRepository.findById(UserSeveritiesRangeDocument.USER_SEVERITIES_RANGE_DOC_ID).get();
         Assert.assertEquals(new Double(0), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.LOW).getLowerBound());
         Assert.assertEquals(new Double(20), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.LOW).getUpperBound());
         Assert.assertEquals(new Double(22), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.MEDIUM).getLowerBound());

@@ -32,10 +32,7 @@ import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.spring.UserServiceConfig;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by shays on 27/08/2017.
@@ -100,7 +97,7 @@ public class UserScoreServiceImplTest {
             }
         });
 
-        Mockito.verify(Mockito.spy(UserSeveritiesRangeRepository.class), Mockito.times(0)).findOne(UserSeveritiesRangeDocument.USER_SEVERITIES_RANGE_DOC_ID);
+        Mockito.verify(Mockito.spy(UserSeveritiesRangeRepository.class), Mockito.times(0)).findById(UserSeveritiesRangeDocument.USER_SEVERITIES_RANGE_DOC_ID);
         UserSeverityServiceImpl.UserScoreToSeverity severityTreeMap = userSeverityService.getSeveritiesMap(true);
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(55D));
         Assert.assertEquals(UserSeverity.MEDIUM, severityTreeMap.getUserSeverity(270D));
@@ -138,7 +135,7 @@ public class UserScoreServiceImplTest {
         map.put(UserSeverity.HIGH, new PresidioRange<>(343.2d, 343.2d));
         map.put(UserSeverity.CRITICAL, new PresidioRange<>(518.8d, 514.8d));
         userSeveritiesRangeDocument.setSeverityToScoreRangeMap(map);
-        Mockito.when(userSeveritiesRangeRepository.findOne(UserSeveritiesRangeDocument.USER_SEVERITIES_RANGE_DOC_ID)).thenReturn(userSeveritiesRangeDocument);
+        Mockito.when(userSeveritiesRangeRepository.findById(UserSeveritiesRangeDocument.USER_SEVERITIES_RANGE_DOC_ID)).thenReturn(Optional.of(userSeveritiesRangeDocument));
         UserSeverityServiceImpl.UserScoreToSeverity severityTreeMap = userSeverityService.getSeveritiesMap(false);
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(50D));
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(250D));

@@ -57,7 +57,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         // atomic save for the entire alert entities
 
         // save alerts
-        Iterable<Alert> savedAlerts = alertRepository.save(alerts);
+        Iterable<Alert> savedAlerts = alertRepository.saveAll(alerts);
         logger.info("{} alerts were saved", alerts.size());
 
         // save indicators
@@ -68,7 +68,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         if (CollectionUtils.isNotEmpty(indicators)) {
             //dividing indicators list to chunks-
             Iterable<List<Indicator>> indicatorsSubSets = Iterables.partition(indicators, indicatorsStorePageSize);
-            indicatorsSubSets.forEach(indicatorsPartition -> indicatorRepository.save(indicatorsPartition));
+            indicatorsSubSets.forEach(indicatorsPartition -> indicatorRepository.saveAll(indicatorsPartition));
         }
         logger.info("{} indicators were saved", indicators.size());
 
@@ -80,7 +80,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         if (CollectionUtils.isNotEmpty(events)) {
             //dividing events list to chunks-
             Iterable<List<IndicatorEvent>> eventsSubSets = Iterables.partition(events, eventsStorePageSize);
-            eventsSubSets.forEach(eventsPartition -> indicatorEventRepository.save(eventsPartition));
+            eventsSubSets.forEach(eventsPartition -> indicatorEventRepository.saveAll(eventsPartition));
         }
         logger.info("{} events were saved", events.size());
 
@@ -104,7 +104,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
     @Override
     public Alert findOne(String id) {
-        return alertRepository.findOne(id);
+        return alertRepository.findById(id).get();
     }
 
     @Override
@@ -114,7 +114,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
     @Override
     public Iterable<Alert> findAll(List<String> ids) {
-        return alertRepository.findAll(ids);
+        return alertRepository.findAllById(ids);
     }
 
     @Override

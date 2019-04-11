@@ -96,7 +96,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
                 .credentialList(credentials)
                 .clusterSettings(clusterSettings)
                 .streamFactoryFactory(new NettyStreamFactoryFactory())
-                .writeConcern(WriteConcern.UNACKNOWLEDGED)
+                .writeConcern(WriteConcern.ACKNOWLEDGED)
                 .build();
         com.mongodb.async.client.MongoClient mongoClient = MongoClients.create(settings);
         return mongoClient;
