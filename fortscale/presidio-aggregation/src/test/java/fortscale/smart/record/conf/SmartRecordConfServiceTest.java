@@ -195,7 +195,7 @@ public class SmartRecordConfServiceTest {
         when(scoreAggregationRecordConf2.getName()).thenReturn("scoreAggregationRecord2");
         when(aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfs(any(SmartRecordConf.class)))
                 .thenAnswer(invocationOnMock -> {
-                    String name = invocationOnMock.getArgumentAt(0, SmartRecordConf.class).getName();
+                    String name = ((SmartRecordConf)invocationOnMock.getArgument(0)).getName();
                     return name.equals("test_smart_record_conf_1") || name.equals("test_smart_record_conf_3") ?
                             asList(featureAggregationRecordConf1, featureAggregationRecordConf2, scoreAggregationRecordConf1, scoreAggregationRecordConf2) :
                             null;

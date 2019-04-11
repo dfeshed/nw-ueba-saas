@@ -2,12 +2,14 @@ package presidio.ade.domain.store.scored;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import com.mongodb.client.MongoCollection;
 import fortscale.common.feature.MultiKeyFeature;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
+import org.bson.Document;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -131,9 +133,11 @@ public class ScoredEnrichedDataStoreMongoImpl implements
                 .lt(timeRange.getEndAsDate());
         Criteria scoreFilter = Criteria.where(SCORE_FIELD_NAME).gt(scoreThreshold);
         Query query = Query.query(contextFilter).addCriteria(timeRangeFilter).addCriteria(scoreFilter);
-        DBCollection collection = mongoTemplate.getCollection(collectionName);
-        DBObject queryObject = query.getQueryObject();
-        return collection.distinct(contextualDistinctField, queryObject);
+        MongoCollection collection = mongoTemplate.getCollection(collectionName);
+        Document queryObject = query.getQueryObject();
+        List<String> distinctContext = new ArrayList<>();
+        collection.distinct(contextualDistinctField, queryObject, String.class).into(distinctContext);
+        return distinctContext;
     }
 
     @Override

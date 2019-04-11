@@ -1,7 +1,7 @@
 package fortscale.utils.mongodb.converter;
 
+import org.springframework.data.mapping.MappingException;
 import org.springframework.data.mapping.context.MappingContext;
-import org.springframework.data.mapping.model.MappingException;
 import org.springframework.data.mongodb.core.convert.DbRefResolver;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentEntity;

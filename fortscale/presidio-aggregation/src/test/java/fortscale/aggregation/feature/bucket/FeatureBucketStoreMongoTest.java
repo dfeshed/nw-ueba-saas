@@ -1,10 +1,16 @@
 package fortscale.aggregation.feature.bucket;
 
-import com.mongodb.*;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+import com.mongodb.MongoCommandException;
+import com.mongodb.ServerAddress;
+import com.mongodb.client.DistinctIterable;
+import com.mongodb.client.MongoCollection;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import org.bson.BsonDocument;
+import org.bson.Document;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,16 +48,18 @@ public class FeatureBucketStoreMongoTest {
 	public void test_get_distinct_context_ids() {
 		FeatureBucketConf featureBucketConf = mock(FeatureBucketConf.class);
 		when(featureBucketConf.getName()).thenReturn("testFeatureBucketConf");
-		DBCollection dbCollection = mock(DBCollection.class);
+		MongoCollection dbCollection = mock(MongoCollection.class);
 		when(mongoTemplate.getCollection(anyString())).thenReturn(dbCollection);
 		List<String> expected = getListOfContextIds();
-		when(dbCollection.distinct(eq(FeatureBucket.CONTEXT_ID_FIELD), any(DBObject.class))).thenReturn(expected);
+		DistinctIterable distinctIterable = mock(DistinctIterable.class);
+		when(dbCollection.distinct(eq(FeatureBucket.CONTEXT_ID_FIELD),any(Document.class), String.class)).thenReturn(distinctIterable);
+		when(distinctIterable.into(any())).thenReturn(expected);
 		Set<String> actual = store.getDistinctContextIds(featureBucketConf, new TimeRange(0, 0));
 
 		Assert.assertEquals(expected.stream().collect(Collectors.toSet()), actual);
 		verify(featureBucketConf, times(1)).getName();
 		verify(mongoTemplate, times(1)).getCollection(anyString());
-		verify(dbCollection, times(1)).distinct(eq(FeatureBucket.CONTEXT_ID_FIELD), any(DBObject.class));
+		verify(dbCollection, times(1)).distinct(eq(FeatureBucket.CONTEXT_ID_FIELD), any(Document.class), String.class);
 		verifyNoMoreInteractions(mongoTemplate, mongoDbBulkOpUtil, featureBucketConf, dbCollection);
 	}
 
@@ -60,10 +68,10 @@ public class FeatureBucketStoreMongoTest {
 		FeatureBucketConf featureBucketConf = mock(FeatureBucketConf.class);
 		AggregationResults aggregationResults = mock(AggregationResults.class);
 		when(featureBucketConf.getName()).thenReturn("testFeatureBucketConf");
-		DBCollection dbCollection = mock(DBCollection.class);
+		MongoCollection dbCollection = mock(MongoCollection.class);
 		when(mongoTemplate.getCollection(anyString())).thenReturn(dbCollection);
 
-		when(dbCollection.distinct(eq(FeatureBucket.CONTEXT_ID_FIELD), any(DBObject.class))).thenThrow(new MongoCommandException(new BsonDocument(), new ServerAddress()));
+		when(dbCollection.distinct(eq(FeatureBucket.CONTEXT_ID_FIELD), any(Document.class), String.class)).thenThrow(new MongoCommandException(new BsonDocument(), new ServerAddress()));
 
 		List<DBObject> expected = getListOfContextIdsAsDBObject();
 		when(mongoTemplate.aggregate(any(Aggregation.class), any(String.class), eq(DBObject.class))).thenReturn(aggregationResults);

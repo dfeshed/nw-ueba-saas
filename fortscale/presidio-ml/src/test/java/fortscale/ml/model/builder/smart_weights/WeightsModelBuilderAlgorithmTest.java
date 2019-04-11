@@ -205,7 +205,7 @@ public class WeightsModelBuilderAlgorithmTest {
             aggregatedFeatureEventNamesToContribution.forEach((aggregatedFeatureEventNames, contribution) ->
                     Mockito.when(clusterToContribution.get(Mockito.argThat(new ArgumentMatcher<ClusterConf>() {
                         @Override
-                        public boolean matches(Object argument) {
+                        public boolean matches(ClusterConf argument) {
                             return argument instanceof ClusterConf &&
                                     ((ClusterConf)argument).getAggregationRecordNames()
                                             .equals(aggregatedFeatureEventNames);

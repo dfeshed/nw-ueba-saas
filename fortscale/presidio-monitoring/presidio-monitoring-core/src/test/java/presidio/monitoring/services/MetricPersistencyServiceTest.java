@@ -49,8 +49,8 @@ public class MetricPersistencyServiceTest {
     @After
     @Before
     public void deleteTestData() {
-        metricRepository.delete(metricRepository.findAll());
-        metricRepositoryStaticIndexForTests.delete(metricRepositoryStaticIndexForTests.findAll());
+        metricRepository.deleteAll(metricRepository.findAll());
+        metricRepositoryStaticIndexForTests.deleteAll(metricRepositoryStaticIndexForTests.findAll());
     }
 
     @Test

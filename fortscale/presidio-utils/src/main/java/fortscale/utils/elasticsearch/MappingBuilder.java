@@ -29,14 +29,10 @@ import org.springframework.data.util.ClassTypeInformation;
 import org.springframework.data.util.TypeInformation;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.apache.commons.lang.StringUtils.EMPTY;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
-import static org.elasticsearch.common.xcontent.XContentFactory.*;
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.springframework.util.StringUtils.hasText;
 
@@ -72,7 +68,7 @@ class MappingBuilder {
     public static final String TYPE_VALUE_GEO_HASH_PREFIX = "geohash_prefix";
     public static final String TYPE_VALUE_GEO_HASH_PRECISION = "geohash_precision";
 
-    private static SimpleTypeHolder SIMPLE_TYPE_HOLDER = new SimpleTypeHolder();
+    private static SimpleTypeHolder SIMPLE_TYPE_HOLDER = new SimpleTypeHolder(Collections.emptySet(), true);
 
     static XContentBuilder buildMapping(Class clazz, String indexType, String idFieldName, String parentType) throws IOException {
 
@@ -242,7 +238,7 @@ class MappingBuilder {
     private static void addSingleFieldMapping(XContentBuilder xContentBuilder, java.lang.reflect.Field field,
                                               Field fieldAnnotation, boolean nestedOrObjectField) throws IOException {
         xContentBuilder.startObject(field.getName());
-        if(!nestedOrObjectField) {
+        if (!nestedOrObjectField) {
             xContentBuilder.field(FIELD_STORE, fieldAnnotation.store());
         }
 
@@ -300,7 +296,7 @@ class MappingBuilder {
         builder.field(FIELD_TYPE, "multi_field");
         builder.startObject("fields");
         //add standard field
-        addSingleFieldMapping(builder, field, annotation.mainField(),nestedOrObjectField);
+        addSingleFieldMapping(builder, field, annotation.mainField(), nestedOrObjectField);
         for (InnerField innerField : annotation.otherFields()) {
             addNestedFieldMapping(builder, field, innerField);
         }

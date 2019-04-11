@@ -7,7 +7,7 @@ import fortscale.ml.model.metrics.TimeModelBuilderMetricsContainer;
 import fortscale.ml.model.metrics.TimeModelBuilderPartitionsMetricsContainer;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.internal.util.reflection.Whitebox;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.mockito.Mockito.mock;
 
@@ -28,8 +28,8 @@ public class TimeModelBuilderTest {
 		Integer categoryRarityModelNumOfBuckets = 30;
 		TimeModelBuilder builder = new TimeModelBuilder(getConfig(timeResolution, bucketSize, categoryRarityModelNumOfBuckets), timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer, categoryRarityModelBuilderMetricsContainer);
 		TimeModel model = (TimeModel) builder.build(new GenericHistogram());
-		Assert.assertEquals(timeResolution, Whitebox.getInternalState(model, "timeResolution"));
-		Assert.assertEquals(bucketSize, Whitebox.getInternalState(model, "bucketSize"));
+		Assert.assertEquals(timeResolution, ReflectionTestUtils.getField(model, "timeResolution"));
+		Assert.assertEquals(bucketSize, ReflectionTestUtils.getField(model, "bucketSize"));
 		Assert.assertEquals((int)categoryRarityModelNumOfBuckets, model.getCategoryRarityModel().getOccurrencesToNumOfPartitionsList().size());
 	}
 

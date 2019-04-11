@@ -1,17 +1,21 @@
 package fortscale.ml.model.store;
 
-import com.mongodb.*;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.store.StoreManager;
+import org.bson.Document;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -64,15 +68,16 @@ public class ModelStore implements ModelReader, StoreManagerAware {
     public Collection<String> getContextIdsWithModels(ModelConf modelConf, String sessionId, Instant endInstant) {
         String collectionName = getCollectionName(modelConf);
         try {
-            List<String> distinctContexts;
+            List<String> distinctContexts = new ArrayList<>();
             Query query = new Query();
             query.addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).is(Date.from(endInstant)));
             if(sessionId != null) {
                 query.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId));
             }
-            distinctContexts =  mongoTemplate
+            mongoTemplate
                     .getCollection(collectionName)
-                    .distinct(ModelDAO.CONTEXT_ID_FIELD, query.getQueryObject());
+                    .distinct(ModelDAO.CONTEXT_ID_FIELD, query.getQueryObject(), String.class)
+                    .into(distinctContexts);
             logger.debug("found {} distinct contexts", distinctContexts.size());
             return distinctContexts;
         } catch (Exception e) {
@@ -340,7 +345,7 @@ public class ModelStore implements ModelReader, StoreManagerAware {
         String collectionName = getCollectionName(modelConf);
 
         // Used by the readRecords method (no sorting)
-        DBObject indexOptions = new BasicDBObject(); // Keeps entries ordered
+        Document indexOptions = new Document(); // Keeps entries ordered
         for(String context: contexts) {
             indexOptions.put(ModelDAO.getContextFieldNamePath(context), 1);
         }

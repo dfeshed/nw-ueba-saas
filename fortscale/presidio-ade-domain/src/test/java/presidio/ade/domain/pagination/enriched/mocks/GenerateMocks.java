@@ -2,14 +2,14 @@ package presidio.ade.domain.pagination.enriched.mocks;
 
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import org.springframework.data.mongodb.core.DefaultIndexOperations;
-import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.index.IndexOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
 
 import java.time.Instant;
 import java.util.ArrayList;

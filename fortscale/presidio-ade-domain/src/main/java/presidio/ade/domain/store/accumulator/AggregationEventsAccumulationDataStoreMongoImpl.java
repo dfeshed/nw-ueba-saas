@@ -71,11 +71,13 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
 
         Date startDate = Date.from(timeRange.getStart());
         Date endDate = Date.from(timeRange.getEnd());
-        Set<String> distinctContexts;
+        Set<String> distinctContexts = new HashSet<>();
         try {
             Criteria startTimeCriteria = Criteria.where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate);
             Query query = new Query(startTimeCriteria);
-            distinctContexts = (Set<String>) mongoTemplate.getCollection(collectionName).distinct(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD, query.getQueryObject()).stream().collect(Collectors.toSet());
+            mongoTemplate.getCollection(collectionName)
+                         .distinct(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD,query.getQueryObject(),String.class)
+                         .into(distinctContexts);
         } catch (Exception e) {
             long nextPageIndex = 0;
             Set<String> subList;

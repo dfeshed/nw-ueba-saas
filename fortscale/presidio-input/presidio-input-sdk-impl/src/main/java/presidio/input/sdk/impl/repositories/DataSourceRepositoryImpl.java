@@ -1,6 +1,6 @@
 package presidio.input.sdk.impl.repositories;
 
-import com.mongodb.WriteResult;
+import com.mongodb.client.result.DeleteResult;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import org.springframework.data.domain.Sort;
@@ -31,15 +31,15 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
     @Override
     public int cleanDataSourceDataBetweenDates(String collectionName, Instant startTime, Instant endTime) {
         final Query query = new Query(createDateCriteria(startTime, endTime));
-        WriteResult removeResult = mongoTemplate.remove(query, AbstractAuditableDocument.class, collectionName);
-        return removeResult.getN();
+        DeleteResult removeResult = mongoTemplate.remove(query, AbstractAuditableDocument.class, collectionName);
+        return (int)removeResult.getDeletedCount();
     }
 
     @Override
     public int cleanDataSourceDataUntilDate(String collectionName, Instant endTime) {
         final Query query = new Query(Criteria.where(AbstractAuditableDocument.DATE_TIME_FIELD_NAME).lt(endTime));
-        WriteResult removeResult = mongoTemplate.remove(query, AbstractAuditableDocument.class, collectionName);
-        return removeResult.getN();
+        DeleteResult removeResult = mongoTemplate.remove(query, AbstractAuditableDocument.class, collectionName);
+        return (int)removeResult.getDeletedCount();
     }
 
     @Override

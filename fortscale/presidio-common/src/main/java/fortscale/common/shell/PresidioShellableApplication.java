@@ -66,7 +66,7 @@ public class PresidioShellableApplication implements Closeable {
         configurationClass.add(BootShimConfig.class);
         ExitShellRequest exitShellRequest = null;
         try {
-            context = SpringApplication.run(configurationClass.toArray(), args);
+            context = SpringApplication.run((Class<?>[]) configurationClass.toArray(), args);
             context.registerShutdownHook();
             exitShellRequest = run();
             exitCode.set(exitShellRequest.getExitCode());

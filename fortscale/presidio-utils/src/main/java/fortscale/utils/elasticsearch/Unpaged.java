@@ -74,7 +74,7 @@ public enum Unpaged  implements Pageable {
      * @see org.springframework.data.domain.Pageable#getOffset()
      */
     @Override
-    public int getOffset() {
+    public long getOffset() {
         return 0;
         //throw new UnsupportedOperationException();
     }

@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.mongodb.*;
 import com.mongodb.async.client.MongoClientSettings;
 import com.mongodb.async.client.MongoClients;
-import com.mongodb.async.client.MongoDatabase;
 import com.mongodb.connection.ClusterSettings;
 import com.mongodb.connection.netty.NettyStreamFactoryFactory;
 import fortscale.utils.EncryptionUtils;
@@ -17,12 +16,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.convert.CustomConversions;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
-import org.springframework.data.mongodb.core.convert.CustomConversions;
 import org.springframework.data.mongodb.core.convert.DbRefResolver;
 import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +49,17 @@ public class MongoConfig extends AbstractMongoConfiguration {
     @Value("${mongo.map.dollar.replacement}")
     private String mapKeyDollarReplacement;
 
+    @Override
+    public MongoClient mongoClient() {
+        MongoClient mongoClient = null;
+        try {
+            mongoClient = (MongoClient) mongo();
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+        }
+        return mongoClient;
+    }
+
     @Bean
     @Override
     public MappingMongoConverter mappingMongoConverter() throws Exception {
@@ -68,7 +79,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
     @Bean
     public com.mongodb.async.client.MongoClient asyncClient() throws Exception {
 
-        String connectionString = String.format("mongodb://%s:%s",mongoHostName, mongoHostPort);
+        String connectionString = String.format("mongodb://%s:%s", mongoHostName, mongoHostPort);
         ClusterSettings clusterSettings = ClusterSettings.builder()
                 .applyConnectionString(new ConnectionString(connectionString)).build();
         List<MongoCredential> credentials = new ArrayList<>();
@@ -85,18 +96,17 @@ public class MongoConfig extends AbstractMongoConfiguration {
                 .credentialList(credentials)
                 .clusterSettings(clusterSettings)
                 .streamFactoryFactory(new NettyStreamFactoryFactory())
-                .writeConcern(WriteConcern.ACKNOWLEDGED)
+                .writeConcern(WriteConcern.UNACKNOWLEDGED)
                 .build();
         com.mongodb.async.client.MongoClient mongoClient = MongoClients.create(settings);
         return mongoClient;
     }
 
     @Bean
-    public MongoDatabase asyncClientDb() throws Exception {
-        return  asyncClient().getDatabase(getDatabaseName());
+    public com.mongodb.async.client.MongoDatabase asyncClientDb() throws Exception {
+        return asyncClient().getDatabase(getDatabaseName());
     }
-    
-    @Override
+
     @Bean
     public Mongo mongo() throws Exception {
         MongoClient client;
@@ -123,12 +133,13 @@ public class MongoConfig extends AbstractMongoConfiguration {
         return Lists.newArrayList("fortscale", "presidio");
     }
 
+
     @Bean
     @Override
     public CustomConversions customConversions() {
         if (converters == null) {
             return super.customConversions();
         }
-        return new CustomConversions(converters);
+        return new MongoCustomConversions(converters);
     }
 }

@@ -29,7 +29,7 @@ public class AlertClassificationPriorityConfig extends ApplicationConfiguration 
 
     @Bean
     public DataConfig dataConfig() {
-        return bindPropertiesToTarget(DataConfig.class, null, "classpath:supporting_information_config.yml");
+        return bindPropertiesToTarget(DataConfig.class, "", "classpath:supporting_information_config.yml");
     }
 
     @Value("${number.of.classifications}")

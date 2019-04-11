@@ -1,6 +1,6 @@
 package presidio.ade.processes.shell.scoring.aggregation.config.application;
 
-import com.mongodb.DBCollection;
+import com.mongodb.client.MongoCollection;
 import fortscale.aggregation.configuration.AslConfigurationPaths;
 import fortscale.aggregation.configuration.AslResourceFactory;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
@@ -12,8 +12,8 @@ import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ModelConfServiceBuilder;
 import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.model.builder.TimeModelBuilderConf;
-import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
 import fortscale.ml.model.metrics.CategoryRarityModeBuilderMetricsContainerConfig;
+import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.ml.scorer.Scorer;
@@ -130,7 +130,7 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
             AggrRecordsMetadata metadata = new AggrRecordsMetadata(conf.getName(), AggregatedFeatureType.SCORE_AGGREGATION);
 
             String collectionName = aggrDataToCollectionNameTranslator.toCollectionName(metadata);
-            DBCollection collection = mongoTemplate.getCollection(collectionName);
+            MongoCollection collection = mongoTemplate.getCollection(collectionName);
             Query query = new Query();
             query.addCriteria(Criteria.where(AdeAggregationRecord.FEATURE_VALUE_FIELD_NAME).gt(featureValueGt));
             Assert.assertTrue(String.format("scored aggr collection=%s must have at least one record with feature value greater than=%s", collectionName,featureValueGt.toString()), collection.count(query.getQueryObject()) > 0);
@@ -153,7 +153,7 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
                                 String scorerName = fileScorer.getName();
                                 String adeEventType = String.format("%s_%s_%s", EVENT_TYPE_PREFIX.toLowerCase(), ADE_EVENT_TYPE.getName(), scorerName);
                                 String collectionName = adeScoredEnrichedRecordToCollectionNameTranslator.toCollectionName(adeEventType);
-                                DBCollection collection = mongoTemplate.getCollection(collectionName);
+                                MongoCollection collection = mongoTemplate.getCollection(collectionName);
                                 Query query = new Query(Criteria.where(AdeScoredEnrichedRecord.SCORE_FIELD_NAME).gt(scoreGt));
                                 long amountOfDocumentsWithScoreGt = collection.count(query.getQueryObject());
                                 Assert.assertTrue(String.format("scored collection=%s must have at least one scored record with score greater than=%s", collectionName,scoreGt.toString()), amountOfDocumentsWithScoreGt > 0);
