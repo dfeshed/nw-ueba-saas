@@ -5,6 +5,10 @@ import Service from '@ember/service';
 export default Service.extend({
   roles: config.roles || [],
   authorities: config.authorities || [], // jwt decoded netwitness user "roles" (as opposed to permissions)
+
+  // RIAC related settings
+  isRiacEnabled: false,
+
   // static permissions
   hasMonitorAccess: true,
 
@@ -54,6 +58,7 @@ export default Service.extend({
     'navigateCreateIncidents',
     'navigateEvents'
   ],
+  respondAlertsRoles: ['Administrators', 'Respond_Administrator', 'SOC_Managers'],
 
   // computed intersections between roles and role groups
 
@@ -128,9 +133,16 @@ export default Service.extend({
     return this._hasPermission(roles, 'respond-server');
   },
 
-  @computed('roles.[]')
-  hasRespondAlertsAccess(roles) {
+  @computed('roles.[]', 'authorities.[]', 'isRiacEnabled')
+  hasRespondAlertsAccess(roles, authorities, isRiacEnabled) {
+    if (isRiacEnabled) {
+      return this.checkRiac(this.respondAlertsRoles, authorities);
+    }
     return this._hasPermission(roles, 'respond-server.alert');
+  },
+
+  checkRiac(riacRoles, authorities) {
+    return authorities.some((authority) => riacRoles.includes(authority));
   },
 
   @computed('roles.[]')

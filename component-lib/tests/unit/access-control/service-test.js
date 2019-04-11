@@ -215,6 +215,21 @@ module('Unit | Service | access control', function(hooks) {
     assert.equal(service.get('hasRespondAlertsAccess'), true);
   });
 
+  test('hasRespondAlertsAccess is set according to role when RIAC is enabled', async function(assert) {
+    const service = this.owner.lookup('service:access-control');
+
+    // enable RIAC
+    service.set('isRiacEnabled', true);
+
+    // admin should have access
+    service.set('authorities', ['Administrators']);
+    assert.equal(service.get('hasRespondAlertsAccess'), true);
+
+    // some groups don't have access
+    service.set('authorities', ['Analysts']);
+    assert.equal(service.get('hasRespondAlertsAccess'), false);
+  });
+
   test('hasRespondIncidentsAccess is set when required roles are included', function(assert) {
     const service = this.owner.lookup('service:access-control');
     assert.equal(service.get('hasRespondIncidentsAccess'), false);
