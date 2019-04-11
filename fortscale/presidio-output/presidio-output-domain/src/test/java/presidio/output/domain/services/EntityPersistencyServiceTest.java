@@ -328,6 +328,28 @@ public class EntityPersistencyServiceTest{
     }
 
     @Test
+    public void testFindByListOfTypes() {
+
+        Entity entity1 = new Entity("entityId1", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity2 = new Entity("entityId2", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity3 = new Entity("entityId3", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity4 = new Entity("entityId4", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "ja3");
+
+        List<Entity> entityList = new ArrayList<>();
+        entityList.add(entity1);
+        entityList.add(entity2);
+        entityList.add(entity3);
+        entityList.add(entity4);
+        Iterable<Entity> createdEntities = entityPersistencyService.save(entityList);
+        List<String> entitiesTypes = new ArrayList<>();
+        entitiesTypes.add(entity1.getEntityType());
+
+        EntityQuery.EntityQueryBuilder queryBuilder = new EntityQuery.EntityQueryBuilder().pageNumber(0).pageSize(10).filterByEntitiesTypes(entitiesTypes);
+        Page<Entity> entitysPageResult = entityPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(3, entitysPageResult.getContent().size());
+    }
+
+    @Test
     public void testFindByEntityScore() {
 
         List<String> tags = new ArrayList<>();

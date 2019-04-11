@@ -75,6 +75,15 @@ public class EntityElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<E
             boolQueryBuilder.must(entityIdQuery);
         }
 
+        // filter by entityTypes
+        if (CollectionUtils.isNotEmpty(entityQuery.getFilterByEntitiesTypes())) {
+            BoolQueryBuilder entityTypeQuery = new BoolQueryBuilder();
+            for (String id : entityQuery.getFilterByEntitiesTypes()) {
+                entityTypeQuery.should(matchQuery(Entity.ENTITY_TYPE_FIELD_NAME, id).operator(Operator.OR));
+            }
+            boolQueryBuilder.must(entityTypeQuery);
+        }
+
         // filter by entity severity
         if (CollectionUtils.isNotEmpty(entityQuery.getFilterBySeverities())) {
             BoolQueryBuilder severityQuery = new BoolQueryBuilder();

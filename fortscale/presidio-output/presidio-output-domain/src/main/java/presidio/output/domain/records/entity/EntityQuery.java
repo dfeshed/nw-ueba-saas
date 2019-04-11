@@ -11,6 +11,7 @@ public class EntityQuery {
     private final List<EntitySeverity> filterBySeverities;
     private final List<String> filterByEntityTags;
     private final List<String> filterByEntitiesIds;
+    private final List<String> filterByEntitiesTypes;
     private int minScore=-1;
     private int maxScore=-1;
     private boolean isPrefix;
@@ -33,6 +34,7 @@ public class EntityQuery {
         this.filterByIndicators = builder.filterByIndicators;
         this.filterBySeverities = builder.filterBySeverities;
         this.filterByEntitiesIds = builder.filterByEntitiesIds;
+        this.filterByEntitiesTypes = builder.filterByEntitiesTypes;
         this.filterByEntityTags = builder.filterByEntityTags;
         this.filterByEntityName = builder.filterByEntityName;
         this.filterByFreeText = builder.filterByFreeText;
@@ -53,6 +55,9 @@ public class EntityQuery {
 
     public List<String> getFilterByEntitiesIds() {
         return filterByEntitiesIds;
+    }
+    public List<String> getFilterByEntitiesTypes() {
+        return filterByEntitiesTypes;
     }
 
     public List<String> getFilterByAlertClassifications() {
@@ -114,6 +119,7 @@ public class EntityQuery {
         private List<String> filterByIndicators;
         private List<EntitySeverity> filterBySeverities;
         private List<String> filterByEntitiesIds;
+        private List<String> filterByEntitiesTypes;
         private List<String> filterByEntityTags;
 
         private int minScore = -1;
@@ -134,6 +140,11 @@ public class EntityQuery {
 
         public EntityQueryBuilder filterByEntitiesIds(List<String> filterByEntitiesIds) {
             this.filterByEntitiesIds = filterByEntitiesIds;
+            return this;
+        }
+
+        public EntityQueryBuilder filterByEntitiesTypes(List<String> filterByEntitiesTypes) {
+            this.filterByEntitiesTypes = filterByEntitiesTypes;
             return this;
         }
 
@@ -229,6 +240,8 @@ public class EntityQuery {
             return false;
         if (filterByEntitiesIds != null ? !filterByEntitiesIds.equals(entityQuery.filterByEntitiesIds) : entityQuery.filterByEntitiesIds != null)
             return false;
+        if (filterByEntitiesTypes != null ? !filterByEntitiesTypes.equals(entityQuery.filterByEntitiesTypes) : entityQuery.filterByEntitiesTypes != null)
+            return false;
         if (filterByEntityName != null ? !filterByEntityName.equals(entityQuery.filterByEntityName) : entityQuery.filterByEntityName != null)
             return false;
         if (sort != null ? !sort.equals(entityQuery.sort) : entityQuery.sort != null) return false;
@@ -242,6 +255,7 @@ public class EntityQuery {
         result = 31 * result + (filterBySeverities != null ? filterBySeverities.hashCode() : 0);
         result = 31 * result + (filterByEntityTags != null ? filterByEntityTags.hashCode() : 0);
         result = 31 * result + (filterByEntitiesIds != null ? filterByEntitiesIds.hashCode() : 0);
+        result = 31 * result + (filterByEntitiesTypes != null ? filterByEntitiesTypes.hashCode() : 0);
         result = 31 * result + minScore;
         result = 31 * result + maxScore;
         result = 31 * result + (isPrefix ? 1 : 0);
