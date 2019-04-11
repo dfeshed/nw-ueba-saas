@@ -63,8 +63,15 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
   // Nuke any surrounding white space
   queryText = queryText.trim();
 
-  // 1. Check if the text contains characters
-  // that immediately make the query complex
+  // 1. Check if the text contains characters that mark it as a Text filter
+  const hasSearchTerm = isSearchTerm(queryText);
+  if (hasSearchTerm) {
+    return {
+      searchTerm: queryText
+    };
+  }
+
+  // 2. Check if the text contains characters make the query complex
   const hasComplexItem = COMPLEX_OPERATORS.some((operator) => queryText.includes(operator));
   if (hasComplexItem || shouldForceComplex) {
     if (!(queryText.startsWith('(') && queryText.endsWith(')'))) {
@@ -74,17 +81,7 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
     return _createComplexFilterText(queryText);
   }
 
-  // 2. Check if the text contains characters that
-  // immediately marks it a Text filter
-  const hasSearchTerm = isSearchTerm(queryText);
-  if (hasSearchTerm) {
-    return {
-      searchTerm: queryText
-    };
-  }
-
-  // 3. Then check to see if there IS an operator,
-  // no operator = complex
+  // 3. Then check to see if there IS an operator. No operator = complex
   const operator = OPERATORS.find((option) => {
     // This regex looks for the patterns <space><operator><space> or
     // <space><operator><end of string>. If it finds that, it assumes that's
@@ -104,31 +101,29 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
   meta = meta.trim();
 
   if (availableMeta && availableMeta.length > 0) {
-    // 4. Check that the meta is a real meta,
-    // if we do not recognize the meta, complex
+    // 4. Check that the meta is a real meta.
+    // If we do not recognize the meta, complex.
     const metaConfig = availableMeta.find((m) => m.metaName === meta);
     if (!metaConfig) {
       return _createComplexFilterText(queryText);
     }
 
-    // 5. Check that the operator applies to the meta,
-    // if the operator isn't valid for the meta, complex
+    // 5. Check that the operator applies to the meta.
+    // If the operator isn't valid for the meta, complex.
     const possibleOperators = relevantOperators(metaConfig);
     const operatorConfig = possibleOperators.find((o) => o.displayName === operator);
     if (!operatorConfig) {
       return _createComplexFilterText(queryText);
     }
 
-    // 6. If the operator requires value and doesn't have one,
-    // then complex
-    // chunks are split by operator, so "medium = 1" would be
-    // two chunks
+    // 6. If the operator requires value and doesn't have one, then complex
+    // chunks are split by operator. So, "medium = 1" would be two chunks.
     if (chunks.length < 2 && operatorConfig.hasValue) {
       return _createComplexFilterText(queryText);
     }
 
-    // 7. if the operator does not have a value but a value is
-    // include, then complex
+    // 7. if the operator does not have a value, but a value is include,
+    // then complex.
     if (chunks.length >= 2 && !operatorConfig.hasValue) {
       return _createComplexFilterText(queryText);
     }
@@ -167,13 +162,17 @@ export const uriEncodeMetaFilters = (filters = []) => {
       let ret;
 
       if (d.complexFilterText) {
-        ret = d.complexFilterText;
+        ret = encodeURIComponent(d.complexFilterText);
       } else if (d.searchTerm) {
+        // Dont URL encode searchTerm as it's URL encoded elsewhere.
         ret = `${SEARCH_TERM_MARKER}${d.searchTerm}`;
       } else {
-        ret = `${(d.meta) ? d.meta.trim() : ''} ${(d.operator) ? d.operator.trim() : ''} ${(d.value) ? d.value.trim() : ''}`;
+        const m = d.meta ? d.meta.trim() : '';
+        const o = d.operator ? d.operator.trim() : '';
+        const v = d.value ? d.value.trim() : '';
+        ret = encodeURIComponent(`${m} ${o} ${v}`.trim());
       }
-      return isBlank(ret) ? undefined : encodeURIComponent(ret);
+      return isBlank(ret) ? undefined : ret;
     })
     .filter((d) => !!d)
     .join('/');

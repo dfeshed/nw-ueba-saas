@@ -73,6 +73,10 @@ export default Component.extend({
           this._broadcast(type, data);
           this.set('isAddNewPill', false);
           break;
+        case MESSAGE_TYPES.CREATE_TEXT_PILL:
+          this._broadcast(type, data);
+          this.set('isAddNewPill', false);
+          break;
       }
     }
   },

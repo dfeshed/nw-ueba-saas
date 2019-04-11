@@ -116,14 +116,19 @@ export default Route.extend({
     // Let hash be undefined if not passed in
     let textFilter, textFilterIdx, pdhash;
 
-    // If we have a Text filter, get it's location so we can insert it in the
-    // correct location below.
     if (params.mf) {
+      // Look to the metaFilters for a Text filter and save off index so we can
+      // insert it into the correct location in the pdhash below.
       textFilter = params.mf.split('/').find((d, i) => {
-        // save off index incase we find a Text filter
         textFilterIdx = i;
         return isSearchTerm(d);
       });
+    }
+
+    // If there are no new hashes, look to the old pdhash. This could happen if
+    // the user simply refreshes the browser.
+    if (!newHashes && params.pdhash) {
+      newHashes = params.pdhash;
     }
 
     if (newHashes && textFilter) {
@@ -139,7 +144,7 @@ export default Route.extend({
       pdhash = newHashes;
     }
 
-    if (nukeNextQP && newHashes === undefined) {
+    if (nukeNextQP && !newHashes && !textFilter) {
       this.set('nextQueryParams', null);
     } else {
       this.transitionTo({

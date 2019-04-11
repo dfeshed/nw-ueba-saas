@@ -194,7 +194,7 @@ const _handleInitializationError = (dispatch) => {
 };
 
 const _handleSearchParamsAndHashInQueryParams = (parsedQueryParams, hashNavigateCallback, dispatch, getState) => {
-  return new Promise(function(resolve, reject) {
+  return new RSVP.Promise(function(resolve, reject) {
     const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
     const parsedPillData = parsePillDataFromUri(parsedQueryParams.pillData, metaKeys);
 
@@ -270,26 +270,31 @@ const _handleSearchParamsInQueryParams = ({ pillData }, hashNavigateCallback, is
     // to save their pill position within the query.
     const { metaFilters } = extractSearchTermFromFilters(parsedPillData);
 
-    // If we have pill data, we need to create/fetch a hash
-    // for that pill data and execute a navigation callback
-    // so the route can be updated. This is async as it is
-    // not critical to immediate downstream activity
-    dispatch({
-      type: ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS,
-      promise: getHashForParams(metaFilters),
-      meta: {
-        onSuccess({ data }) {
-          const hashIds = data.map((d) => d.id);
+    if (metaFilters.length === 0) {
+      // There are no metaFilters, so no need to get any hashes
+      hashNavigateCallback();
+    } else {
+      // If we have pill data, we need to create/fetch a hash
+      // for that pill data and execute a navigation callback
+      // so the route can be updated. This is async as it is
+      // not critical to immediate downstream activity
+      dispatch({
+        type: ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS,
+        promise: getHashForParams(metaFilters),
+        meta: {
+          onSuccess({ data }) {
+            const hashIds = data.map((d) => d.id);
 
-          // pass the hash ids to the navigation callback
-          // so that it can be included in the URL
-          hashNavigateCallback(hashIds);
-        },
-        onFailure(response) {
-          handleInvestigateErrorCode(response, 'RETRIEVE_HASH_FOR_QUERY_PARAMS');
+            // pass the hash ids to the navigation callback
+            // so that it can be included in the URL
+            hashNavigateCallback(hashIds);
+          },
+          onFailure(response) {
+            handleInvestigateErrorCode(response, 'RETRIEVE_HASH_FOR_QUERY_PARAMS');
+          }
         }
-      }
-    });
+      });
+    }
   };
 };
 
@@ -299,8 +304,9 @@ const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, hashNavigateCall
   let searchTextString;
   const pdHashesWithoutTextFilter = pillDataHashes.reduce((acc, hash, index) => {
     if (isSearchTerm(hash)) {
-      // The hash is a string like "~r8w3", where the tilde is the marker that
-      // this hash is actually a text search string. We need to remove the tilde.
+      // The hash is a 4 character alphanumeric string like "r8w3". If there is
+      // a tilde as the first character, this hash is actually a text search
+      // string. We need to remove the tilde.
       const searchTerm = hash.slice(1);
       searchTextString = { index, searchTerm };
       return acc;
@@ -309,41 +315,56 @@ const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, hashNavigateCall
       return acc;
     }
   }, []);
-  return getParamsForHashes(pdHashesWithoutTextFilter)
-    .then(({ data: paramsObjectArray }) => {
-      // pull the actual param values out of
-      // the returned params objects
-      const paramsArray = paramsObjectArray.map((pO) => pO.query);
-      const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
-
-      // Transform server param strings into pill data objects
-      // and dispatch those to state
-      const newPillData = paramsArray.map((singleParams) => {
-        return transformTextToPillData(singleParams, metaKeys);
-      });
-
-      // Was there a text search string?
-      if (searchTextString) {
-        // Create a textSearch pill and insert it into the correct index
-        const { index, searchTerm } = searchTextString;
-        const textFilter = {
-          meta: undefined,
-          operator: undefined,
-          value: undefined,
-          searchTerm
-        };
-        newPillData.insertAt(index, textFilter);
-      }
-
+  if (searchTextString && pdHashesWithoutTextFilter.length === 0) {
+    // We have a searchText string, but no hashes. Create a Text filter and
+    // send it along
+    const { searchTerm } = searchTextString;
+    return new RSVP.Promise((resolve) => {
       dispatch({
         type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
         payload: {
-          pillData: newPillData
+          pillData: [
+            { meta: undefined, operator: undefined, value: undefined, searchTerm }
+          ]
         }
       });
       hashNavigateCallback();
-    })
-    .catch((err) => handleInvestigateErrorCode(err, 'getParamsForHashes'));
+      resolve();
+    });
+  } else {
+    return getParamsForHashes(pdHashesWithoutTextFilter)
+      .then(({ data: paramsObjectArray }) => {
+        // pull the actual param values out of
+        // the returned params objects
+        const paramsArray = paramsObjectArray.map((pO) => pO.query);
+        const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
+        // Transform server param strings into pill data objects
+        // and dispatch those to state
+        const newPillData = paramsArray.map((singleParams) => {
+          return transformTextToPillData(singleParams, metaKeys);
+        });
+        // Was there a text search string?
+        if (searchTextString) {
+          // Create a textSearch pill and insert it into the correct index
+          const { index, searchTerm } = searchTextString;
+          const textFilter = {
+            meta: undefined,
+            operator: undefined,
+            value: undefined,
+            searchTerm
+          };
+          newPillData.insertAt(index, textFilter);
+        }
+        dispatch({
+          type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
+          payload: {
+            pillData: newPillData
+          }
+        });
+        hashNavigateCallback();
+      })
+      .catch((err) => handleInvestigateErrorCode(err, 'getParamsForHashes'));
+  }
 };
 
 /**

@@ -7,7 +7,7 @@ import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/tes
 
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
-import { createBasicPill, isIgnoredInitialEvent } from '../pill-util';
+import { clickTextFilterOption, createBasicPill, isIgnoredInitialEvent } from '../pill-util';
 import PILL_SELECTORS from '../pill-selectors';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import KEY_MAP from 'investigate-events/util/keys';
@@ -243,5 +243,28 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     await clickTrigger(PILL_SELECTORS.operator);
     await typeInSearch('foobar');
     await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ENTER_KEY);
+  });
+
+  test('it broadcasts a message when creating a text pill from meta', async function(assert) {
+    const done = assert.async(4);
+    this.set('metaOptions', META_OPTIONS);
+    this.set('handleMessage', (type, data, position) => {
+      if (type === MESSAGE_TYPES.CREATE_TEXT_PILL) {
+        assert.equal(data, 'foobar', 'Correct data');
+        assert.equal(position, 0, 'Correct position of the pill');
+      }
+      done();
+    });
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        metaOptions=metaOptions
+        newPillPosition=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await click(PILL_SELECTORS.newPillTrigger);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeInSearch('foobar');
+    await clickTextFilterOption();
   });
 });

@@ -167,6 +167,12 @@ module('Unit | Util | Pill Parsing', function(hooks) {
     });
   });
 
+  test('transformTextToPillData returns text filter even if it contains complex characters', function(assert) {
+    const searchTerm = '~(some random text)';
+    const result = transformTextToPillData(searchTerm, DEFAULT_LANGUAGES);
+    assert.deepEqual(result, { searchTerm });
+  });
+
   test('parsePillDataFromUri correctly parses forward slashes and operators into pills', function(assert) {
     const result = parsePillDataFromUri(params.mf, DEFAULT_LANGUAGES);
     assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');
