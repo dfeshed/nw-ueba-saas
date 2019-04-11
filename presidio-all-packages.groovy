@@ -1,4 +1,7 @@
 pipeline {
+	agent {
+		label 'el7 && java8'
+	}
         stages {
                 stage('Building Project: presidio-core-packages') {
                         steps {
