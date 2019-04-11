@@ -5,16 +5,19 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { defaultMetaGroup } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { emptyMetaKeys } from 'investigate-events/reducers/investigate/meta/selectors';
+import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { META_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { createPillOnMetaDrill, toggleMetaGroupOpen } from 'investigate-events/actions/meta-creators';
 
 const stateToComputed = (state) => ({
   group: defaultMetaGroup(state),
   emptyMetaKeys: emptyMetaKeys(state),
+  queryNode: getActiveQueryNode(state),
   size: state.investigate.meta.metaPanelSize,
   metaKeyStates: state.investigate.meta.meta,
   options: state.investigate.meta.options,
-  aliases: state.investigate.dictionaries.aliases
+  aliases: state.investigate.dictionaries.aliases,
+  language: state.investigate.dictionaries.language
 });
 
 const dispatchToActions = {
@@ -52,6 +55,20 @@ const MetaViewComponent = Component.extend({
   _sizeClass(size) {
     this._toggleTransition();
     return `meta-size-${size}`;
+  },
+
+  /**
+   * Object required by contextMenu service.
+   * Used in key-values
+   */
+  @computed('queryNode', 'language')
+  contextDetails(queryNode, language) {
+    return {
+      ...queryNode,
+      endpointId: queryNode.serviceId,
+      queryConditions: queryNode.metaFilter,
+      language
+    };
   },
 
   /**

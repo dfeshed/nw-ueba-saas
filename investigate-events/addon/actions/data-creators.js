@@ -8,6 +8,7 @@ import { setQueryTimeRange } from 'investigate-events/actions/interaction-creato
 import { selectedTimeRange, canFetchEvents } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { shouldStartAtOldest } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaGet } from './meta-creators';
+import { canFetchMeta } from 'investigate-events/reducers/investigate/meta/selectors';
 
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 
@@ -114,7 +115,10 @@ export const fetchInvestigateData = () => {
       });
       // Get event count
       dispatch(getEventCount());
-      dispatch(metaGet(true));
+
+      if (canFetchMeta(getState())) {
+        dispatch(metaGet(true));
+      }
       if (_showFutureFeatures) {
         dispatch(getEventTimeline());
       }

@@ -26,6 +26,11 @@ export default Component.extend({
   options: undefined,
 
   /**
+   * Object used by contextmenu service in key-values
+   */
+  contextDetails: undefined,
+
+  /**
    * Configurable callback to be invoked when user clicks the UI
    * to toggle the key open/closed.
    * @type {function}

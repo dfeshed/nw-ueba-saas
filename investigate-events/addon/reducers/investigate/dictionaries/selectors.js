@@ -25,6 +25,9 @@ const _createMetaGroup = (obj) => ({
 });
 
 // SELECTOR FUNCTIONS
+
+// Need something like activeLanguageGroup, like we activeQueryGroup
+// Something that doesn't change unless you hit queryEvents button.
 export const defaultMetaGroup = createSelector(
   [_language],
   (language = []) => ({

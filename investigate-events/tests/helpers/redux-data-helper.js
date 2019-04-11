@@ -138,12 +138,14 @@ const metaKeyStates = [{
 
 const emptyMetaKeyState = {
   meta: [],
-  options: _optionsInitialState
+  options: _optionsInitialState,
+  metaPanelSize: 'default'
 };
 
 const metaState = {
   meta: metaKeyStates,
-  options: _optionsInitialState
+  options: _optionsInitialState,
+  metaPanelSize: 'default'
 };
 
 const _set = (obj, key, val) => {
@@ -435,6 +437,11 @@ export default class DataHelper {
     } else {
       _set(this.state, 'meta', emptyMetaKeyState);
     }
+    return this;
+  }
+
+  setMetaPanelSize(size) {
+    _set(this.state, 'meta.metaPanelSize', size);
     return this;
   }
 

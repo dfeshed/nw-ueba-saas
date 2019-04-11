@@ -53,6 +53,11 @@ export default RsaContextMenu.extend({
   info: undefined,
 
   /**
+   * Object passed in by parent
+   */
+  contextDetails: undefined,
+
+  /**
    * Options for meta value formatter utility, based on `aliases`.
    */
   @computed('aliases')

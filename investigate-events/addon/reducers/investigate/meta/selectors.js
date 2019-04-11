@@ -8,6 +8,8 @@ const { createSelector } = reselect;
 // ACCESSOR FUNCTIONS
 const _meta = (state) => state.investigate.meta.meta;
 const _language = (state) => state.investigate.dictionaries.language;
+const _metaPanelSize = (state) => state.investigate.meta.metaPanelSize;
+const _isQueryExecutedByColumnGroup = (state) => state.investigate.data.isQueryExecutedByColumnGroup;
 
 
 // SELECTOR FUNCTIONS
@@ -19,6 +21,13 @@ export const remainingMetaKeyBatches = createSelector(
   [_meta],
   (meta) => {
     return meta.filter((metaKey) => metaKey.info.isOpen && !metaKey.values);
+  }
+);
+
+export const canFetchMeta = createSelector(
+  [_metaPanelSize, _isQueryExecutedByColumnGroup],
+  (size, isQueryExecutedByColumnGroup) => {
+    return size !== 'min' && !isQueryExecutedByColumnGroup;
   }
 );
 

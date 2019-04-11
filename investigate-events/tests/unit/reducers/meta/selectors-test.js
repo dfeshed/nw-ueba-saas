@@ -3,7 +3,8 @@ import {
   remainingMetaKeyBatches,
   initMetaKeyStates,
   isMetaStreaming,
-  emptyMetaKeys
+  emptyMetaKeys,
+  canFetchMeta
 } from 'investigate-events/reducers/investigate/meta/selectors';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
@@ -100,4 +101,46 @@ test('emptyMetaKeys returns list of metaKeyStates that are open and returned no 
   assert.equal(emptyMetaKeys(state).length, 1, 'Should have one metaKeyState that has no values');
   assert.equal(emptyMetaKeys(state)[0].info.metaName, 'ad.computer.src', 'Expected meta with no values');
 
+});
+
+test('canFetchMeta returns false if query was executed by columnGroup change', function(assert) {
+  const state = {
+    investigate: {
+      meta: {
+        metaPanelSize: 'default'
+      },
+      data: {
+        isQueryExecutedByColumnGroup: true
+      }
+    }
+  };
+  assert.notOk(canFetchMeta(state), 'Meta should not be retrieved');
+});
+
+test('canFetchMeta returns false if metaPanelSize is min', function(assert) {
+  const state = {
+    investigate: {
+      meta: {
+        metaPanelSize: 'min'
+      },
+      data: {
+        isQueryExecutedByColumnGroup: false
+      }
+    }
+  };
+  assert.notOk(canFetchMeta(state), 'Meta should not be retrieved');
+});
+
+test('canFetchMeta returns true if metaPanelSize is visible and query is executed through search button', function(assert) {
+  const state = {
+    investigate: {
+      meta: {
+        metaPanelSize: 'default'
+      },
+      data: {
+        isQueryExecutedByColumnGroup: false
+      }
+    }
+  };
+  assert.ok(canFetchMeta(state), 'Meta should be retrieved');
 });
