@@ -4745,6 +4745,8 @@ export default {
     alerts: {
       title: 'Alerts',
       noAlerts: 'No Alerts',
+      notARisk: 'Not a Risk',
+      risk: 'Risk',
       all: 'All Alerts',
       alertName: 'Alert Name',
       alertOverview: 'Alert Overview',

@@ -23,7 +23,7 @@ module('Integration | Component | entity-details-container/body', function(hooks
     this.owner.register('helper:mount', function() {});
   });
 
-  test('it renders', async function(assert) {
+  test('it hould render body for entity-details', async function(assert) {
 
     new ReduxDataHelper(setState).build();
 
@@ -32,14 +32,6 @@ module('Integration | Component | entity-details-container/body', function(hooks
   });
 
   test('it renders Alert container', async function(assert) {
-
-    new ReduxDataHelper(setState).build();
-    await render(hbs`{{entity-details-container/body}}`);
-    assert.equal(findAll('.entity-details-container-body_alerts_list').length, 1);
-    assert.equal(findAll('.entity-details-container-body_details').length, 1);
-  });
-
-  test('it renders Indicator container if indicator id passed', async function(assert) {
 
     new ReduxDataHelper(setState).build();
     await render(hbs`{{entity-details-container/body}}`);

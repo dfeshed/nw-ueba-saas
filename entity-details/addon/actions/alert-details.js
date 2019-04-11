@@ -35,7 +35,7 @@ export const initializeAlert = (alertId) => {
   };
 };
 
-export const notARisk = (dataForPost) => {
+export const alertIsNotARisk = (dataForPost) => {
   return (dispatch, getState) => {
     const alert = selectedAlertId(getState());
     const fetchObj = {

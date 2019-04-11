@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { patchFetch } from '../../helpers/patch-fetch';
-import { initializeAlert, notARisk, resetAlerts, updateSort } from 'entity-details/actions/alert-details';
+import { initializeAlert, alertIsNotARisk, resetAlerts, updateSort } from 'entity-details/actions/alert-details';
 import dataIndex from '../../data/presidio';
 import userAlerts from '../../data/presidio/user_alerts';
 import indicatorEvents from '../../data/presidio/indicator-events';
@@ -80,7 +80,7 @@ module('Unit | Actions | alert-details Actions', (hooks) => {
       }
     };
     const getState = () => state;
-    notARisk({ entityId: '123' })(dispatch, getState);
+    alertIsNotARisk({ entityId: '123' })(dispatch, getState);
   });
 
   test('it can updateSort for alert', (assert) => {

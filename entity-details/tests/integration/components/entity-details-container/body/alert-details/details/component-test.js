@@ -8,8 +8,7 @@ import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 
 let setState;
-
-module('Integration | Component | entity-details-container/body/alerts-container/alert-pill', function(hooks) {
+module('Integration | Component | entity-details-container/body/alert-details/details', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('entity-details')
   });
@@ -23,15 +22,13 @@ module('Integration | Component | entity-details-container/body/alerts-container
     this.owner.register('helper:mount', function() {});
   });
 
-  test('it should render entity details container body', async function(assert) {
+  test('it should render details like ContributioninScore and Sources', async function(assert) {
     new ReduxDataHelper(setState).build();
 
-    await render(hbs`{{entity-details-container/body/alerts-container/alert-pill}}`);
+    await render(hbs`{{entity-details-container/body/alert-details/details}}`);
+    assert.equal(findAll('.entity-details-container-body-alert-details_details').length, 1);
+    assert.equal(findAll('.entity-details-container-body-alert-details_details_params').length, 1);
+    assert.equal(findAll('.entity-details-container-body-alert-details_details_desc').length, 1);
 
-    assert.equal(findAll('.entity-details-container-body_alerts_list_content_alert_details_pill').length, 1);
-    assert.equal(findAll('.entity-details-container-body_alerts_list_content_alert_details_pill_details').length, 1);
-    assert.equal(findAll('.entity-details-container-body_alerts_list_content_alert_details_pill_details_name').length, 1);
-    assert.equal(findAll('.entity-details-container-body_alerts_list_content_alert_details_pill_details_time').length, 1);
-    assert.equal(findAll('.entity-details-container-body_alerts_list_content_alert_details_pill_rating_score').length, 1);
   });
 });

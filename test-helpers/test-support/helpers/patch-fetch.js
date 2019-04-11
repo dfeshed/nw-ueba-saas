@@ -6,7 +6,6 @@ export function patchFetch(callback) {
   const origFunc = _private._fetch;
 
   _private._fetch = function() {
-
     const func = callback.apply(this, arguments);
     const reset = new Promise((resolve) => {
       resolve();

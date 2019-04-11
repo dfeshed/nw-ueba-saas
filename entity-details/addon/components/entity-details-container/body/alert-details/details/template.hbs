@@ -1,0 +1,21 @@
+<div class='entity-details-container-body-alert-details_details_params'>
+  <div class='entity-details-container-body-alert-details_details_params_names'>
+    <div>
+      {{t 'investigateUsers.alerts.contributionInScore'}}:
+    </div>
+    <div>
+      {{t 'investigateUsers.alerts.sources'}}:
+    </div>
+  </div>
+  <div class='entity-details-container-body-alert-details_details_params_values'>
+    <div>
+      {{userScoreContribution}}
+    </div>
+    <div>
+      {{alertSources}}
+    </div>
+  </div>
+</div>
+<div class='entity-details-container-body-alert-details_details_desc'>
+  {{t (concat 'investigateUsers.alerts.alertNames.' alertDetails.name '.desc')}}
+</div>

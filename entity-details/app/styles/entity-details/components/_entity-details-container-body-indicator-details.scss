@@ -1,0 +1,109 @@
+.entity-details-container-body-indicator-details {
+  &_header {
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 2px solid background-color(primary, darkest);
+    padding-bottom: rsa-whitespace(less);
+    display: flex;
+    height: 40px;
+
+    &_details {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .Critical {
+        background-color: text-color(accentOne, dark);
+      }
+
+      .High {
+        background-color: text-color(accentThree, dark);
+      }
+
+      .Medium {
+        background-color: text-color(accentFour, dark);
+      }
+
+      .Low {
+        background-color: text-color(accentTwo, dark);
+      }
+
+      &_name {
+        padding: 0;
+      }
+
+      &_timeframe {
+        padding: 0 rsa-whitespace();
+      }
+
+      &_severity {
+        height: 25px;
+        border-radius: 6px;
+        width: rsa-whitespace(less);
+      }
+
+      &_severity-name {
+        padding: 0 rsa-whitespace(less);
+      }
+    }
+
+    &_control {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+
+  &_details {
+    display: flex;
+    flex-direction: row;
+    padding: rsa-whitespace(less) 0;
+    border-bottom: 2px solid background-color(primary);
+    height: 100px;
+
+    &_params {
+      width: 40%;
+      display: flex;
+
+      &_names {
+        padding-right: rsa-whitespace(less);
+
+        > div {
+          @include rsa-font(header, small);
+          padding: rsa-whitespace(least) 0;
+          text-align: end;
+        }
+      }
+
+      &_values {
+        padding-right: rsa-whitespace(less);
+
+        > div {
+          @include rsa-font(default, smaller);
+          padding: rsa-whitespace(least) 0;
+        }
+      }
+    }
+
+    &_desc {
+      width: 60%;
+    }
+  }
+
+  &_graph {
+    padding: rsa-whitespace(less) 0;
+    border-bottom: 2px solid background-color(primary);
+    min-height: 450px;
+    g[shape-rendering="auto"] {
+      display: none;
+    }
+  }
+
+  &_events-table {
+    height: calc(100% - 615px);
+
+    .rsa-data-table {
+      height: 100%;
+    }
+  }
+}

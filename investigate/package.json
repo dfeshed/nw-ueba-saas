@@ -77,6 +77,8 @@
       "../investigate-files",
       "../investigate-hosts",
       "../investigate-shared",
+      "../investigate-users",
+      "../entity-details",
       "../investigate-process-analysis",
       "../recon",
       "../context",
