@@ -3,13 +3,13 @@ import _ from 'lodash';
 
 const alertsData = (state) => state.alerts.alerts;
 
-export const selectedAlertId = (state) => state.alerts.selectedAlertId;
-
 export const sortBy = (state) => state.alerts.sortBy;
+
+export const selectedAlertId = (state) => state.alerts.selectedAlertId;
 
 export const sortedAlertsData = createSelector(
   [sortBy, alertsData],
-  ({ id }, alerts) => {
+  (id, alerts) => {
     if (id && alerts) {
       id = id === 'date' ? 'startDate' : id;
       return _.sortBy(alerts, [id]);
@@ -33,12 +33,18 @@ export const getSelectedAlertData = createSelector(
 export const alertSources = createSelector(
   [getSelectedAlertData],
   (alertDetails) => {
-    const sourceArray = _.map(alertDetails.evidences, (evidence) => evidence.dataEntitiesIds.join(','));
-    return _.uniq(sourceArray).join(', ').toUpperCase();
+    if (alertDetails && alertDetails.evidences) {
+      const sourceArray = _.map(alertDetails.evidences, (evidence) => evidence.dataEntitiesIds.join(','));
+      return _.uniq(sourceArray).join(', ').toUpperCase();
+    }
+    return '';
   });
 
 export const userScoreContribution = createSelector(
   [getSelectedAlertData],
   (alertDetails) => {
-    return alertDetails.userScoreContribution;
+    if (alertDetails) {
+      return alertDetails.userScoreContribution;
+    }
+    return 0;
   });

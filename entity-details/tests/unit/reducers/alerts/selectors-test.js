@@ -7,7 +7,7 @@ module('Unit | Selector | Alerts Selector');
 const state = {
   alerts: {
     selectedAlertId: '0bd963d0-a0ae-4601-8497-b0c363becd1f',
-    sortBy: { id: 'severity' },
+    sortBy: 'severity',
     alerts: userAlerts.data
   }
 };
@@ -21,7 +21,7 @@ test('test alert state for alert data for given entity', function(assert) {
 });
 
 test('test alert state for alert sort direction for given entity', function(assert) {
-  assert.deepEqual(sortBy(state), { id: 'severity' });
+  assert.deepEqual(sortBy(state), 'severity');
 });
 
 test('test alert state for alertSources ', function(assert) {
@@ -34,4 +34,25 @@ test('test alert state for selected alert', function(assert) {
 
 test('test alert state for userScoreContribution', function(assert) {
   assert.equal(userScoreContribution(state), 20);
+});
+test('test alert state for userScoreContribution if alert details are not there', function(assert) {
+  const newstate = {
+    alerts: {
+      selectedAlertId: '0bd963d0-a0ae-4601-8497-b0c363becd1f',
+      sortBy: 'severity',
+      alerts: null
+    }
+  };
+  assert.equal(userScoreContribution(newstate), 0);
+});
+
+test('test alert state for alertSources if alert details are not there', function(assert) {
+  const newstate = {
+    alerts: {
+      selectedAlertId: '0bd963d0-a0ae-4601-8497-b0c363becd1f',
+      sortBy: 'severity',
+      alerts: null
+    }
+  };
+  assert.equal(alertSources(newstate), '');
 });

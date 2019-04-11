@@ -50,4 +50,4 @@ export const notARisk = (dataForPost) => {
   };
 };
 
-export const updateSort = (sort) => ({ type: UPDATE_SORT, payload: sort });
+export const updateSort = (id) => ({ type: UPDATE_SORT, payload: id });

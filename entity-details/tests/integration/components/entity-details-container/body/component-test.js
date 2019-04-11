@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { findAll, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -28,6 +28,22 @@ module('Integration | Component | entity-details-container/body', function(hooks
     new ReduxDataHelper(setState).build();
 
     await render(hbs`{{entity-details-container/body}}`);
-    assert.equal(this.element.textContent.trim(), '');
+    assert.equal(findAll('.entity-details-container-body').length, 1, 'Should render entity container body');
+  });
+
+  test('it renders Alert container', async function(assert) {
+
+    new ReduxDataHelper(setState).build();
+    await render(hbs`{{entity-details-container/body}}`);
+    assert.equal(findAll('.entity-details-container-body_alerts_list').length, 1);
+    assert.equal(findAll('.entity-details-container-body_details').length, 1);
+  });
+
+  test('it renders Indicator container if indicator id passed', async function(assert) {
+
+    new ReduxDataHelper(setState).build();
+    await render(hbs`{{entity-details-container/body}}`);
+    assert.equal(findAll('.entity-details-container-body_alerts_list').length, 1);
+    assert.equal(findAll('.entity-details-container-body_details').length, 1);
   });
 });

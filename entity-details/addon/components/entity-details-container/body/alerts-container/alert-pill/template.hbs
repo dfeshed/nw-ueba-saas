@@ -1,0 +1,23 @@
+<div class='entity-details-container-body_alerts_list_content_alert_details_pill' {{action 'initiateAlert' alert.id}}>
+  <div class='entity-details-container-body_alerts_list_content_alert_details_pill_user-score'>
+    +{{alert.userScoreContribution}}
+  </div>
+  <div class='entity-details-container-body_alerts_list_content_alert_details_pill_details'>
+    <div class='entity-details-container-body_alerts_list_content_alert_details_pill_details_name'>
+      <div class='entity-details-container-body_alerts_list_content_alert_details_pill_details_name_text'>
+        {{t (concat 'investigateUsers.alerts.alertNames.' alert.name '.name')}}
+      </div>
+      <div class='entity-details-container-body_alerts_list_content_alert_details_pill_details_name_time'>
+        | {{alert.timeframe}}
+      </div>
+    </div>
+    <div class='entity-details-container-body_alerts_list_content_alert_details_pill_details_time'>
+      {{rsa-content-datetime timestamp=(get alert 'startTime') displayMilliseconds=false}}
+    </div>
+  </div>
+  <div class='entity-details-container-body_alerts_list_content_alert_details_pill_rating_score {{alert.severity}}'>
+  </div>
+  <div class='entity-details-container-body_alerts_list_content_alert_details_pill_rating_text'>
+    {{alert.severity}}
+  </div>
+</div>

@@ -36,7 +36,7 @@ export default class DataHelper {
       alerts: {
         selectedAlertId: '0bd963d0-a0ae-4601-8497-b0c363becd1f',
         alerts: userAlerts.data,
-        sortBy: { id: 'severity' }
+        sortBy: 'severity'
       },
       indicators: {
         selectedIndicatorId: '8614aa7f-c8ee-4824-9eaf-e0bb199cd006',
@@ -91,7 +91,7 @@ export default class DataHelper {
   }
 
   alertsSortBy(sortBy) {
-    _set(this.state, 'alerts.sortBy', { id: sortBy });
+    _set(this.state, 'alerts.sortBy', sortBy);
     return this;
   }
 
