@@ -66,6 +66,7 @@ const changeDirectory = (path) => {
       }
     });
     dispatch(_listContents(path));
+    dispatch(_getFolderManual(path));
     dispatch(_getOperations(path));
     dispatch(_getDescription(path));
   };
@@ -358,6 +359,20 @@ const _listContents = (path) => {
   };
 };
 
+const _getFolderManual = (path) => {
+  const transport = lookup('service:transport');
+  return {
+    type: ACTION_TYPES.TREE_GET_FOLDER_MANUAL,
+    promise: transport.send(path, {
+      message: 'help',
+      params: {
+        op: 'manual',
+        format: 'html'
+      }
+    })
+  };
+};
+
 const _getDeviceInfo = () => {
   const transport = lookup('service:transport');
   return {
@@ -470,7 +485,7 @@ const _getOperationHelp = (path, operation) => {
 const _getOperationManual = (path, operation) => {
   const transport = lookup('service:transport');
   return {
-    type: ACTION_TYPES.TREE_GET_OPERATION_MAN,
+    type: ACTION_TYPES.TREE_GET_OPERATION_MANUAL,
     promise: transport.send(path, {
       message: 'help',
       params: {

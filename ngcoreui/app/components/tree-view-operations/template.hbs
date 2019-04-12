@@ -16,6 +16,12 @@
 
   {{#if selectedOperation}}
     {{tree-view-operation-panel}}
+  {{else}}
+    {{#if folderManual}}
+      <div {{! template-lint-disable-tree "no-triple-curlies" }} class="top-margin">
+        {{{folderManual}}}
+      </div>
+    {{/if}}
   {{/if}}
 
   {{#if responses.error}}

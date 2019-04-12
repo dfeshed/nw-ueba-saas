@@ -7,7 +7,8 @@ import { filteredOperationNames, selectedOperation, responses } from 'ngcoreui/r
 const stateToComputed = (state) => ({
   filteredOperationNames: filteredOperationNames(state),
   selectedOperation: selectedOperation(state),
-  responses: responses(state)
+  responses: responses(state),
+  folderManual: state.folderManual
 });
 
 const dispatchToActions = {

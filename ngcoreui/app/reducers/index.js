@@ -14,6 +14,7 @@ const initialState = Immutable.from({
   wsErr: null,
   treePath: '/',
   treePathContents: null,
+  folderManual: null,
   deviceInfo: {},
   username: null,
   availablePermissions: null,
@@ -130,6 +131,19 @@ const reducer = handleActions({
     });
   },
 
+  [ACTION_TYPES.TREE_GET_FOLDER_MANUAL]: (state, action) => {
+    return handle(state, action, {
+      finish: (prevState) => {
+        let man = action.payload.string;
+        // Set empty manual to null
+        if (man === '<html><head /><body><div id="markdown" /></body></html>') {
+          man = null;
+        }
+        return prevState.set('folderManual', man);
+      }
+    });
+  },
+
   [ACTION_TYPES.TREE_UPDATE_RESPONSE]: (state, action) => {
 
     const flags = parseFlags(action.payload.flags);
@@ -206,7 +220,7 @@ const reducer = handleActions({
     });
   },
 
-  [ACTION_TYPES.TREE_GET_OPERATION_MAN]: (state, action) => {
+  [ACTION_TYPES.TREE_GET_OPERATION_MANUAL]: (state, action) => {
     return handle(state, action, {
       finish: (prevState) => {
         let man = action.payload.string;
