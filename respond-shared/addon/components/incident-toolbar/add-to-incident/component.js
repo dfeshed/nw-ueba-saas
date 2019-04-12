@@ -1,58 +1,8 @@
+import layout from './template';
 import Component from '@ember/component';
-import { connect } from 'ember-redux';
 import { debounce } from '@ember/runloop';
 import Notifications from 'component-lib/mixins/notifications';
 import columns from './columns';
-import {
-  addAlertsToIncident,
-  clearSearchIncidentsResults,
-  updateSearchIncidentsText,
-  updateSearchIncidentsSortBy,
-  selectIncident
-} from 'respond/actions/creators/add-alerts-to-incident-creators';
-import { getSelectedAlerts } from 'respond/selectors/alerts';
-import {
-  getIncidentSearchStatus,
-  getIncidentSearchResults,
-  getSelectedIncident,
-  getIncidentSearchSortBy,
-  getIncidentSearchSortIsDescending,
-  getIsAddToAlertsUnavailable,
-  hasSearchQuery
-} from 'respond/selectors/alert-to-incident';
-
-const stateToComputed = (state) => {
-  return {
-    alertIds: getSelectedAlerts(state),
-    sortBy: getIncidentSearchSortBy(state),
-    isSortDescending: getIncidentSearchSortIsDescending(state),
-    incidentSearchStatus: getIncidentSearchStatus(state),
-    incidentSearchResults: getIncidentSearchResults(state),
-    selectedIncident: getSelectedIncident(state),
-    hasSearchQuery: hasSearchQuery(state),
-    isAddToAlertsUnavailable: getIsAddToAlertsUnavailable(state)
-  };
-};
-
-const dispatchToActions = (dispatch) => {
-  return {
-    search(value) {
-      return dispatch(updateSearchIncidentsText(value));
-    },
-    clearResults() {
-      dispatch(clearSearchIncidentsResults());
-    },
-    addtoIncident(alertIds, incidentId, callbacks) {
-      dispatch(addAlertsToIncident(alertIds, incidentId, callbacks));
-    },
-    sortBy(sortField, isSortDescending) {
-      dispatch(updateSearchIncidentsSortBy(sortField, isSortDescending));
-    },
-    selectIncident(incident) {
-      dispatch(selectIncident(incident));
-    }
-  };
-};
 
 /**
  * @class AddToIncident
@@ -60,7 +10,9 @@ const dispatchToActions = (dispatch) => {
  *
  * @public
  */
-const AddToIncident = Component.extend(Notifications, {
+export default Component.extend(Notifications, {
+  layout,
+
   classNames: ['rsa-add-to-incident'],
 
   /**
@@ -85,7 +37,7 @@ const AddToIncident = Component.extend(Notifications, {
    * @private
    */
   _search(value) {
-    this.send('search', value);
+    this.searchIncident(value);
   },
 
   actions: {
@@ -113,10 +65,10 @@ const AddToIncident = Component.extend(Notifications, {
      * @private
      */
     handleSubmit() {
-      const { alertIds, selectedIncident } = this.getProperties('alertIds', 'selectedIncident');
+      const { selectedIncident } = this.getProperties('selectedIncident');
 
       this.set('isAddAlertsInProgress', true);
-      this.send('addtoIncident', alertIds, selectedIncident.id, {
+      this.addtoIncident(selectedIncident.id, {
         // Close the modal and show success notification to the user, if the add-to-incident call has succeeded
         onSuccess: () => {
           this.finish();
@@ -141,9 +93,11 @@ const AddToIncident = Component.extend(Notifications, {
       // If we're resorting the current column again, flip the sort order, otherwise default to descending in
       // order to make the sort order for a new column predictable.
       const isNewSortDescending = currentSortBy === column.field ? !isCurrentSortDescending : true;
-      this.send('sortBy', column.field, isNewSortDescending);
+      this.sortIncident(column.field, isNewSortDescending);
+    },
+
+    handleIncidentSelection(incident) {
+      this.selectIncident(incident);
     }
   }
 });
-
-export default connect(stateToComputed, dispatchToActions)(AddToIncident);

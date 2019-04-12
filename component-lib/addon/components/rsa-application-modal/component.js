@@ -106,6 +106,7 @@ export default Component.extend({
     });
     if (this.get('onClose')) {
       this.get('onClose')();
+      this.set('onClose', null);
     }
   },
 

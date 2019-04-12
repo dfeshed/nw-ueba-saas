@@ -1,18 +1,23 @@
 {{#if accessControl.respondCanManageAlerts}}
-  <div class="action-control create-incident-button">
-    {{#rsa-form-button
-      isDisabled=(or hasNoSelections hasSelectedAlertsBelongingToIncidents)
-      defaultAction=(action 'createIncident')}}
-      {{t 'respond.alerts.createIncident'}}
-    {{/rsa-form-button}}
-  </div>
-  <div class="action-control add-to-incident-button">
-    {{#rsa-form-button
-      isDisabled=(or hasNoSelections hasSelectedAlertsBelongingToIncidents)
-      defaultAction=(action 'addToIncident')}}
-      {{t 'respond.alerts.addToIncident'}}
-    {{/rsa-form-button}}
-  </div>
+  {{incident-toolbar
+    isDisabled=(or hasNoSelections hasSelectedAlertsBelongingToIncidents)
+    priorityTypes=priorityTypes
+    enabledUsers=enabledUsers
+    groupedCategories=groupedCategories
+    alertCount=alertIds.length
+    sortBy=sortBy
+    isSortDescending=isSortDescending
+    incidentSearchStatus=incidentSearchStatus
+    incidentSearchResults=incidentSearchResults
+    selectedIncident=selectedIncident
+    hasSearchQuery=hasSearchQuery
+    isAddToAlertsUnavailable=isAddToAlertsUnavailable
+    createIncident=(action 'create')
+    searchIncident=(action 'search')
+    selectIncident=(action 'selectIncident')
+    addtoIncident=(action 'addtoIncident')
+    sortIncident=(action 'sortBy')
+    clearResults=(action 'clearSearchIncidentsResults')}}
 {{/if}}
 {{#if accessControl.respondCanDeleteAlerts}}
   <div class="action-control delete-button">
@@ -23,18 +28,4 @@
       {{t 'forms.delete'}}
     {{/rsa-form-button}}
   </div>
-{{/if}}
-{{#if (eq activeModalId 'create-incident')}}
-  {{#rsa-application-modal eventId='create-incident' label=(t "respond.alerts.createIncident") style="standard create-incident-modal"}}
-    <div class='modal-content'>
-      {{rsa-alerts/create-incident close=(action 'closeModal' 'create-incident')}}
-    </div>
-  {{/rsa-application-modal}}
-{{/if}}
-{{#if (eq activeModalId 'add-to-incident')}}
-  {{#rsa-application-modal eventId='add-to-incident' label=(t "respond.alerts.addToIncident") style="standard add-to-incident-modal" onClose=(action 'clearIncidentSearchResults')}}
-    <div class='modal-content'>
-      {{rsa-alerts/add-to-incident finish=(action 'closeModal' 'add-to-incident')}}
-    </div>
-  {{/rsa-application-modal}}
 {{/if}}

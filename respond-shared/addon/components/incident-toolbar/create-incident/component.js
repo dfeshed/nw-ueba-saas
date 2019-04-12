@@ -1,33 +1,8 @@
+import layout from './template';
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import { connect } from 'ember-redux';
 import Notifications from 'component-lib/mixins/notifications';
 import { isEmpty, typeOf } from '@ember/utils';
-import * as ACTION_TYPES from '../../../actions/types';
-import {
-  getGroupedCategories,
-  getPriorityTypes
-} from 'respond/selectors/dictionaries';
-import { getEnabledUsers } from 'respond/selectors/users';
-
-const stateToComputed = (state) => {
-  const { respond: { alerts: { itemsSelected } } } = state;
-  return {
-    priorityTypes: getPriorityTypes(state),
-    groupedCategories: getGroupedCategories(state),
-    enabledUsers: getEnabledUsers(state),
-    alertIds: itemsSelected
-  };
-};
-
-const dispatchToActions = function(dispatch) {
-  return {
-    create: () => {
-      const { name, priority, assignee, categories, alertIds } = this.getProperties('name', 'priority', 'assignee', 'categories', 'alertIds');
-      dispatch({ type: ACTION_TYPES.CREATE_INCIDENT_SAGA, incidentDetails: { name, priority, assignee, categories }, alertIds });
-    }
-  };
-};
 
 /**
  * @class CreateIncident
@@ -35,7 +10,9 @@ const dispatchToActions = function(dispatch) {
  *
  * @public
  */
-const CreateIncident = Component.extend(Notifications, {
+export default Component.extend(Notifications, {
+  layout,
+
   classNames: ['rsa-create-incident'],
   /**
    * Represents the (required) name that will be used to create the incident
@@ -84,8 +61,16 @@ const CreateIncident = Component.extend(Notifications, {
   actions: {
     handleCancel() {
       this.close();
+    },
+    handleCreate() {
+      const { name, priority, assignee, categories } = this.getProperties('name', 'priority', 'assignee', 'categories');
+      const incidentDetails = {
+        name,
+        priority,
+        assignee,
+        categories
+      };
+      this.createIncident(incidentDetails);
     }
   }
 });
-
-export default connect(stateToComputed, dispatchToActions)(CreateIncident);

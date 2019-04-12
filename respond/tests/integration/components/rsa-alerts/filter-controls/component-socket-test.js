@@ -9,6 +9,8 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { findElement } from '../../../../helpers/find-element';
 import { getItems } from 'respond/actions/creators/alert-creators';
+import { getAllCategories } from 'respond/actions/creators/dictionary-creators';
+import waitForReduxStateChange from '../../../../helpers/redux-async-helpers';
 
 module('Integration | Component | Respond Alerts Filters Socket', function(hooks) {
   setupRenderingTest(hooks, {
@@ -23,6 +25,9 @@ module('Integration | Component | Respond Alerts Filters Socket', function(hooks
   test('getItems should fetch alert names again after batch completed', async function(assert) {
     patchReducer(this, Immutable.from(alertFilterData));
     const redux = this.owner.lookup('service:redux');
+
+    redux.dispatch(getAllCategories());
+    await waitForReduxStateChange(redux, 'respond.dictionaries.categoryTags');
 
     await render(hbs`{{rsa-alerts}}`);
 

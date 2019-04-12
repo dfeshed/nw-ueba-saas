@@ -8,12 +8,14 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import {
   getAllAlertTypes,
   getAllAlertSources,
-  getAllAlertNames } from 'respond/actions/creators/dictionary-creators';
+  getAllAlertNames,
+  getAllCategories } from 'respond/actions/creators/dictionary-creators';
 import RSVP from 'rsvp';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { findElement } from '../../../../helpers/find-element';
 import { alertFilterData } from './data';
+import waitForReduxStateChange from '../../../../helpers/redux-async-helpers';
 
 let setState;
 
@@ -121,6 +123,9 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
   test('Delete and uncheck the filter after all alerts are removed', async function(assert) {
     patchReducer(this, Immutable.from(alertFilterData));
     const redux = this.owner.lookup('service:redux');
+
+    redux.dispatch(getAllCategories());
+    await waitForReduxStateChange(redux, 'respond.dictionaries.categoryTags');
 
     await render(hbs`{{rsa-alerts}}`);
 
