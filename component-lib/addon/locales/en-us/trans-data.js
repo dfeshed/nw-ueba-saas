@@ -772,7 +772,7 @@ export default {
     title: 'Configure',
     liveContent: 'Live Content',
     esaRules: 'ESA Rules',
-    respondNotifications: 'Respond Notifications',
+    respondNotifications: 'Incident Notifications',
     incidentRulesTitle: 'Incident Rules',
     subscriptions: 'Subscriptions',
     customFeeds: 'Custom Feeds',
@@ -922,7 +922,7 @@ export default {
       missingRequiredInfo: 'There is required information missing from the incident rule'
     },
     notifications: {
-      settings: 'Respond Notification Settings',
+      settings: 'Respond Incident Settings',
       emailServer: 'Email Server',
       socEmailAddresses: 'SOC Manager Email Addresses',
       noSocEmails: 'There are no SOC Manager emails configured',
