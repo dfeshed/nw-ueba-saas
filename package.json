@@ -22,7 +22,6 @@
     "broccoli-caching-writer": "3.0.3",
     "broccoli-merge-trees": "2.0.0",
     "broccoli-replace": "0.12.0",
-    "broccoli-theme": "file:broccoli-theme",
     "broccoli-webpack": "1.0.0",
     "clipboard": "1.5.10",
     "ember-ajax": "3.0.0",

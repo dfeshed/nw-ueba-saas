@@ -52,9 +52,6 @@ $alertsSearchLineHeight: 2rem;
           line-height: $alertsSearchLineHeight;
           @include border-bottom(1px, solid, primary, lighter);
           height: 30px;
-          &:-ms-input-placeholder {
-            color: text-color(primary);
-          }
         }
 
         .ember-power-select-trigger[aria-disabled="true"] {

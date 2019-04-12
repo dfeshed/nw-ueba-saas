@@ -7,7 +7,6 @@ import { select, event, selectAll } from 'd3-selection';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { tree, hierarchy } from 'd3-hierarchy';
 import { transitionElbow, elbow, appendText, updateText, appendIcon } from './helpers/d3-helpers';
-import { ieEdgeDetection } from 'component-lib/utils/browser-detection';
 import { toggleProcessDetailsVisibility } from 'investigate-process-analysis/actions/creators/process-visuals';
 import $ from 'jquery';
 import { inject as service } from '@ember/service';
@@ -399,11 +398,6 @@ const TreeComponent = Component.extend({
     nodeUpdate.select('circle.process')
       .attr('cursor', 'pointer')
       .attr('r', '1.643em');
-
-    if (ieEdgeDetection()) { // icon is positioned according to the browser
-      nodeUpdate.select('text.process-icon')
-        .attr('dy', '.4em');
-    }
 
     updateText({ className: 'process-name', node: nodeUpdate, dx: 0, dy: '3em', opacity: 1 });
   },

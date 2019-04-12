@@ -13,6 +13,8 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import KEY_MAP from 'investigate-events/util/keys';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
+let setState;
+
 const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
   new ReduxDataHelper(setState).language().pillsDataEmpty().build()
 );
@@ -21,8 +23,6 @@ const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
 const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
-
-let setState;
 
 module('Integration | Component | New Pill Trigger', function(hooks) {
   setupRenderingTest(hooks, {

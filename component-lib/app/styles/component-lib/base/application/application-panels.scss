@@ -5,12 +5,7 @@
 
   &::-moz-placeholder {
     color: $color;
-  }
-
-  &:-ms-input-placeholder {
-    color: $color;
-    line-height: 1.45rem;
-  }
+  } 
 }
 
 .rsa-application-layout-panel-header {

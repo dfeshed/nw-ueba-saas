@@ -41,24 +41,6 @@
     stroke-dashoffset: 909;
   }
 }
-@-ms-keyframes rsa-logo-fillredbrick {
-  0% {
-    fill: rgba(129, 49, 47,0);
-    stroke: rgba(255,0,0,1);
-    stroke-width: 1px;
-    stroke-dashoffset: 303;
-  }
-  50% {
-    fill: rgba(129, 49, 47,0);
-    stroke: rgba(255,0,0,1);
-    stroke-dashoffset: 606;
-  }
-  100% {
-    fill: rgba(129, 49, 47,1);
-    stroke: rgba(255,0,0,0);
-    stroke-dashoffset: 909;
-  }
-}
 
 /* Animation for the "RSA" letters' entrance. Outlines then fills them. */
 @keyframes rsa-logo-fillredletter {
@@ -79,23 +61,6 @@
   }
 }
 @-webkit-keyframes rsa-logo-fillredletter {
-  0% {
-    fill: rgba(190, 58, 52,0);
-    stroke: rgba(190, 58, 52,1);
-    stroke-dashoffset: 150;
-  }
-  50% {
-    fill: rgba(190, 58, 52,0);
-    stroke: rgba(190, 58, 52,1);
-    stroke-dashoffset: 300;
-  }
-  100% {
-    fill: rgba(190, 58, 52,1);
-    stroke: rgba(190, 58, 52,0);
-    stroke-dashoffset: 300;
-  }
-}
-@-ms-keyframes rsa-logo-fillredletter {
   0% {
     fill: rgba(190, 58, 52,0);
     stroke: rgba(190, 58, 52,1);
@@ -140,19 +105,7 @@
     opacity: 1;
   }
 }
-@-ms-keyframes rsa-logo-spreadletters {
-  0% {
-    letter-spacing: 1px;
-    opacity: 0;
-  }
-  50% {
-    letter-spacing: 2px;
-  }
-  100% {
-    letter-spacing: 2.5px;
-    opacity: 1;
-  }
-}
+
 /* Animation for the Registered Trademark. Appears to fade in by animating color from transparent to opaque. */
 @keyframes rsa-logo-fillres {
   0% {
@@ -163,14 +116,6 @@
   }
 }
 @-webkit-keyframes rsa-logo-fillres {
-  0% {
-    fill: rgba(190, 58, 52,0);
-  }
-  100% {
-    fill: rgba(190, 58, 52,1);
-  }
-}
-@-ms-keyframes rsa-logo-fillres {
   0% {
     fill: rgba(190, 58, 52,0);
   }

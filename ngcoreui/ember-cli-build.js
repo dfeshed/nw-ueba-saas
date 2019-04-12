@@ -1,7 +1,5 @@
 /* eslint-env node */
 
-const mergeTrees = require('broccoli-merge-trees');
-const postcssCompiler = require('broccoli-theme');
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const shim = require('@html-next/flexi-layouts/lib/pod-templates-shim');
 const { commonBuildOptions } = require('../common');
@@ -15,7 +13,7 @@ shim(EmberApp);
 module.exports = function(defaults) {
 
   buildOptions.autoprefixer = {
-    browsers: ['last 2 versions', 'IE > 10'],
+    browsers: ['last 2 versions'],
     enabled: appEnv !== 'test'
   };
 
@@ -31,8 +29,5 @@ module.exports = function(defaults) {
   };
 
   const app = new EmberApp(options);
-
-  const tree = app.toTree();
-  const ieTree = postcssCompiler([tree], 'assets', 'ngcoreui.css');
-  return mergeTrees([tree, ieTree]);
+  return app.toTree();
 };

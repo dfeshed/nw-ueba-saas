@@ -10,13 +10,7 @@ import copyToClipboard from 'component-lib/utils/copy-to-clipboard';
 const HIDE_CONTENT_CHARACTER_COUNT = 3000;
 const SHOW_TRUNCATED_AMOUNT = 2000;
 const CHUNK_SIZE = 6000;
-let TIME_BETWEEN_CHUNKS = 1250;
-
-// gimp IE along since it renders text slowly
-const IS_IE = !!window.document.documentMode;
-if (IS_IE) {
-  TIME_BETWEEN_CHUNKS = 2500;
-}
+const TIME_BETWEEN_CHUNKS = 1250;
 
 const SUPPORTS_COPY_PASTE = document.queryCommandSupported && document.queryCommandSupported('copy');
 

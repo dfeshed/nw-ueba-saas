@@ -1,7 +1,5 @@
 /* eslint-env node */
 
-const mergeTrees = require('broccoli-merge-trees');
-const postcssCompiler = require('broccoli-theme');
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const shim = require('@html-next/flexi-layouts/lib/pod-templates-shim');
 
@@ -15,7 +13,7 @@ shim(EmberApp);
 
 module.exports = function(defaults) {
   buildOptions.autoprefixer = {
-    browsers: ['last 2 versions', 'IE > 10'],
+    browsers: ['last 2 versions'],
     enabled: appEnv !== 'test'
   };
 
@@ -26,8 +24,5 @@ module.exports = function(defaults) {
   app.import('node_modules/fast-sort/sort.es5.js', {
     using: [{ transformation: 'amd', as: 'fast-sort' }]
   });
-  const tree = app.toTree();
-  const ieTree = postcssCompiler([tree], 'assets', 'sa.css');
-
-  return mergeTrees([tree, ieTree]);
+  return app.toTree();
 };

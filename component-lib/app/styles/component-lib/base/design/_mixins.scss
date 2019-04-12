@@ -7,7 +7,6 @@
 /* Applies a name-value CSS pair. Handles browser prefixes. */
 @mixin rsa-vendor-prefix($name, $argument...) { /* The "..." enables support for arguments that include commas. */
   -webkit-#{$name}: #{$argument};
-  -ms-#{$name}: #{$argument};
   -moz-#{$name}: #{$argument};
   -o-#{$name}: #{$argument};
   #{$name}: #{$argument};
@@ -18,8 +17,6 @@ Applies a flexbox layout and direction to a container element.
 Determines which axis is the main axis, horizontal ("row") or vertical ("column").
 */
 @mixin rsa-flex-direction($direction) {
-  display: -ms-flexbox;
-  -ms-flex-direction: $direction;
   display: -moz-flex;
   -moz-flex-direction: $direction;
   display: -webkit-flex;
@@ -33,8 +30,6 @@ Applies a flexbox justify-content to a container element.
 Determines how children are aligned along the main axis.
 */
 @mixin rsa-flex-justify-content($justify) {
-  -ms-justify-content: $justify;
-  -ms-flex-pack: if($justify == space-between,justify,$justify);
   -moz-justify-content: $justify;
   -webkit-justify-content: $justify;
   justify-content: $justify;
@@ -44,8 +39,7 @@ Determines how children are aligned along the main axis.
 Applies a flexbox align-items to a container element.
 Determines how children are aligned along the cross axis.
 */
-@mixin rsa-flex-align-items($align){
-  -ms-flex-align: $align;
+@mixin rsa-flex-align-items($align) {
   @include rsa-vendor-prefix(align-items,$align);
 }
 
@@ -123,7 +117,6 @@ more intuitive.
 @mixin rsa-word-wrap() {
   overflow-wrap: break-word;
   word-wrap: break-word;
-  -ms-word-break: break-all;
   word-break: break-word;
 }
 

@@ -23,7 +23,6 @@ import { set } from '@ember/object';
 import RSVP from 'rsvp';
 import { warn } from '@ember/debug';
 import { sanitizeHtml } from 'component-lib/utils/sanitize';
-import { ieEdgeDetection } from 'component-lib/utils/browser-detection';
 
 const { Promise } = RSVP;
 
@@ -116,8 +115,6 @@ export default Component.extend({
 
   displaySecurityBanner: null,
 
-  isBrowserIeEdge: ieEdgeDetection(),
-
   userPkiEnabled: null,
 
   @computed('eulaKey')
@@ -139,11 +136,6 @@ export default Component.extend({
       }
       return eulaContent === null;
     }
-  },
-
-  @computed('isBrowserIeEdge', 'displayEula')
-  browserWarning: (isBrowserIeEdge, displayEula) => {
-    return (!displayEula && isBrowserIeEdge);
   },
 
   @notEmpty('errorMessage')

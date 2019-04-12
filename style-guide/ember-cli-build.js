@@ -8,7 +8,7 @@ shim(EmberApp);
 module.exports = function(defaults) {
   const app = new EmberApp(defaults, {
     autoprefixer: {
-      browsers: ['last 2 versions', 'IE > 10'],
+      browsers: ['last 2 versions'],
       enabled: appEnv !== 'test'
     },
     'ember-cli-babel': {

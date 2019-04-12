@@ -3,15 +3,6 @@ import fetch from 'component-lib/services/fetch';
 import _ from 'lodash';
 
 const _downloadFile = (bodyBlob, fileName) => {
-  if (typeof window.navigator.msSaveBlob !== 'undefined') {
-    // IE doesn't allow using a blob object directly as link href.
-    // Workaround for "HTML7007: One or more blob URLs were
-    // revoked by closing the blob for which they were created.
-    // These URLs will no longer resolve as the data backing
-    // the URL has been freed."
-    window.navigator.msSaveBlob(bodyBlob, fileName);
-    return;
-  }
   const blobURL = window.URL.createObjectURL(bodyBlob);
   const tempLink = document.createElement('a');
   tempLink.style.display = 'none';

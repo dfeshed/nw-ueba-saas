@@ -97,7 +97,6 @@ export default {
     changePasswordLink: 'Change my password',
     changePasswordSoon: 'Please note that your password to the RSA NetWitness Server will expire in {{daysRemaining}} day(s). We encourage you to change the password before it expires. To change your password, click the preferences button on the top right of the application window.',
     changePasswordToday: 'Please note that your password to the RSA NetWitness Server will expire today. We encourage you to change the password before it expires. To change your password, click the preferences button on the top right of the application window.',
-    unsupportedBrowser: 'You are using an unsupported web browser to access Netwitness Platform, which means some features of the user interface may not work as expected. For a better experience, consider using one of the supported web browsers: Google Chrome, Mozilla Firefox, or Apple Safari.',
     lostPassword: {
       title: 'Lost Password Recovery',
       description: 'Please submit your username.'

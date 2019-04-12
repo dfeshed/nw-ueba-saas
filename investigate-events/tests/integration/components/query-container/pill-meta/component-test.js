@@ -12,6 +12,8 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
 
+let setState;
+
 const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
   new ReduxDataHelper(setState).language().pillsDataEmpty().build()
 );
@@ -28,8 +30,6 @@ const TAB_KEY = KEY_MAP.tab.code;
 
 // This trim also removes extra spaces inbetween words
 const trim = (text) => text.replace(/\s+/g, ' ').trim();
-
-let setState;
 
 module('Integration | Component | Pill Meta', function(hooks) {
   setupRenderingTest(hooks, {

@@ -64,6 +64,6 @@ export default handleActions({
     if (payload.hardReset) {
       return state.merge({ ...state, serviceData: undefined });
     }
-    return state.merge(...state);
+    return state.merge({ ...state });
   }
 }, _initialState);

@@ -13,6 +13,8 @@ import KEY_MAP from 'investigate-events/util/keys';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
+let setState;
+
 const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
   new ReduxDataHelper(setState).language().pillsDataEmpty().build()
 );
@@ -31,7 +33,6 @@ const BACKSPACE_KEY = KEY_MAP.backspace.code;
 const modifiers = { shiftKey: true };
 
 const trim = (text) => text.replace(/\s+/g, '').trim();
-let setState;
 
 const _getEnrichedPill = (component) => {
   component.set('metaOptions', META_OPTIONS);
