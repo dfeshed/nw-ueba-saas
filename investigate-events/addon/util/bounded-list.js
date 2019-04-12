@@ -1,4 +1,4 @@
-import Object from '@ember/object';
+import EmberObject from '@ember/object';
 
 const { log } = console; // eslint-disable-line no-unused-vars
 
@@ -14,7 +14,7 @@ const { log } = console; // eslint-disable-line no-unused-vars
  * });
  * ```
  */
-export default class BoundedList extends Object {
+export default class BoundedList extends EmberObject {
 
   constructor(...args) {
     super(...args);
@@ -63,7 +63,6 @@ export default class BoundedList extends Object {
   }
   set highlightIndex(index) {
     this._highlightIndex(index);
-    return index;
   }
 
   /**

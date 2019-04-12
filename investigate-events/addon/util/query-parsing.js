@@ -1,17 +1,63 @@
 import { isBlank } from '@ember/utils';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
 import {
+  COMPLEX_FILTER,
   COMPLEX_OPERATORS,
   OPERATORS,
-  SEARCH_TERM_MARKER
+  QUERY_FILTER,
+  SEARCH_TERM_MARKER,
+  TEXT_FILTER
 } from 'investigate-events/constants/pill';
+import {
+  ComplexFilter,
+  QueryFilter,
+  TextFilter
+} from './filter-types';
 
-const _createComplexFilterText = (complexFilterText) => ({
-  meta: undefined,
-  operator: undefined,
-  value: undefined,
-  complexFilterText
-});
+const { log } = console; // eslint-disable-line
+
+/**
+ * Creates a Complex filter.
+ * @param {string} complexFilterText A complex string
+ */
+const _createComplexQueryFilter = (complexFilterText) => ComplexFilter.create({ complexFilterText });
+
+/**
+ * Creates a normal Query filter.
+ * @param {string} meta A meta key
+ * @param {string} operator An operator
+ * @param {string} [value] The value
+ */
+const _createQueryFilter = (meta, operator, value) => QueryFilter.create({ meta, operator, value });
+
+/**
+ * Creates a Text filter.
+ * @param {string} searchTerm The text to search within indexed meta values.
+ */
+const _createTextQueryFilter = (searchTerm) => TextFilter.create({ searchTerm });
+
+/**
+ * Creates a filter for a given type.
+ * @param {string} type The type of filter to create
+ * @param  {...any} args Arguments for filter creation
+ * @see _createComplexQueryFilter()
+ * @see _createQueryFilter()
+ * @see _createTextQueryFilter()
+ * @return A filter.
+ */
+export const createFilter = (type, ...args) => {
+  let filter;
+  if (type === COMPLEX_FILTER) {
+    filter = _createComplexQueryFilter(...args);
+  } else if (type === TEXT_FILTER) {
+    filter = _createTextQueryFilter(...args);
+  } else if (type === QUERY_FILTER) {
+    filter = _createQueryFilter(...args);
+  } else {
+    throw new Error(`Unknown filter type: "${type}"`);
+  }
+  return filter;
+};
 
 /**
  * Determines if the provided string is marked as a searchTerm.
@@ -66,19 +112,16 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
   // 1. Check if the text contains characters that mark it as a Text filter
   const hasSearchTerm = isSearchTerm(queryText);
   if (hasSearchTerm) {
-    return {
-      searchTerm: queryText
-    };
+    return _createTextQueryFilter(queryText);
   }
 
   // 2. Check if the text contains characters make the query complex
   const hasComplexItem = COMPLEX_OPERATORS.some((operator) => queryText.includes(operator));
   if (hasComplexItem || shouldForceComplex) {
-    if (!(queryText.startsWith('(') && queryText.endsWith(')'))) {
+    if (!queryText.startsWith('(') && !queryText.endsWith(')')) {
       queryText = `(${queryText})`;
     }
-
-    return _createComplexFilterText(queryText);
+    return _createComplexQueryFilter(queryText);
   }
 
   // 3. Then check to see if there IS an operator. No operator = complex
@@ -91,7 +134,7 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
   });
 
   if (!operator) {
-    return _createComplexFilterText(queryText);
+    return _createComplexQueryFilter(queryText);
   }
 
   // eliminate empty chunks
@@ -105,7 +148,7 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
     // If we do not recognize the meta, complex.
     const metaConfig = availableMeta.find((m) => m.metaName === meta);
     if (!metaConfig) {
-      return _createComplexFilterText(queryText);
+      return _createComplexQueryFilter(queryText);
     }
 
     // 5. Check that the operator applies to the meta.
@@ -113,24 +156,23 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
     const possibleOperators = relevantOperators(metaConfig);
     const operatorConfig = possibleOperators.find((o) => o.displayName === operator);
     if (!operatorConfig) {
-      return _createComplexFilterText(queryText);
+      return _createComplexQueryFilter(queryText);
     }
 
     // 6. If the operator requires value and doesn't have one, then complex
     // chunks are split by operator. So, "medium = 1" would be two chunks.
     if (chunks.length < 2 && operatorConfig.hasValue) {
-      return _createComplexFilterText(queryText);
+      return _createComplexQueryFilter(queryText);
     }
 
     // 7. if the operator does not have a value, but a value is include,
     // then complex.
     if (chunks.length >= 2 && !operatorConfig.hasValue) {
-      return _createComplexFilterText(queryText);
+      return _createComplexQueryFilter(queryText);
     }
   }
 
   // NOT COMPLEX!
-
   let value;
   if (chunks.length > 2) {
     [ , ...value ] = chunks;
@@ -141,12 +183,7 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
     value = (!value || value.trim() === '') ? undefined : value.trim();
   }
 
-  return {
-    meta,
-    operator: operator.trim(),
-    value,
-    complexFilterText: undefined
-  };
+  return _createQueryFilter(meta, operator, value);
 };
 
 /**
@@ -159,20 +196,9 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
 export const uriEncodeMetaFilters = (filters = []) => {
   const encodedFilters = filters
     .map((d) => {
-      let ret;
-
-      if (d.complexFilterText) {
-        ret = encodeURIComponent(d.complexFilterText);
-      } else if (d.searchTerm) {
-        // Dont URL encode searchTerm as it's URL encoded elsewhere.
-        ret = `${SEARCH_TERM_MARKER}${d.searchTerm}`;
-      } else {
-        const m = d.meta ? d.meta.trim() : '';
-        const o = d.operator ? d.operator.trim() : '';
-        const v = d.value ? d.value.trim() : '';
-        ret = encodeURIComponent(`${m} ${o} ${v}`.trim());
-      }
-      return isBlank(ret) ? undefined : ret;
+      const str = d.toString();
+      // URL encode all filters except for Text filter
+      return (d.type !== TEXT_FILTER) ? encodeURIComponent(str) : str;
     })
     .filter((d) => !!d)
     .join('/');

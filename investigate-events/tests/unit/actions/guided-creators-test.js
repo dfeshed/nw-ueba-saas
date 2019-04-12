@@ -319,8 +319,8 @@ module('Unit | Actions | Guided Creators', function(hooks) {
         thunk3(secondDispatch, getState);
       } else {
         assert.equal(action.type, ACTION_TYPES.ADD_PILL, 'action has the correct type');
-        assert.deepEqual(action.payload.pillData, {
-          complexFilterText: undefined,
+        assert.propEqual(action.payload.pillData, {
+          type: 'query',
           meta: 'medium',
           operator: '=',
           value: '50'
@@ -349,11 +349,9 @@ module('Unit | Actions | Guided Creators', function(hooks) {
         action(clientSideValidationDispatch, getState);
       } else {
         assert.equal(action.type, ACTION_TYPES.ADD_PILL, 'action has the correct type');
-        assert.deepEqual(action.payload.pillData, {
-          complexFilterText: '(medium = 50 && service = 443)',
-          meta: undefined,
-          operator: undefined,
-          value: undefined
+        assert.propEqual(action.payload.pillData, {
+          type: 'complex',
+          complexFilterText: '(medium = 50 && service = 443)'
         }, 'action pillData has the right value and is a complex pill');
       }
     };
@@ -379,8 +377,8 @@ module('Unit | Actions | Guided Creators', function(hooks) {
 
     const dispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.UPDATE_FREE_FORM_TEXT, 'action has the correct type');
-      assert.deepEqual(action.payload.pillData, {
-        complexFilterText: undefined,
+      assert.propEqual(action.payload.pillData, {
+        type: 'query',
         meta: 'medium',
         operator: '=',
         value: '50'
