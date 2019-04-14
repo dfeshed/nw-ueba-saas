@@ -41,8 +41,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     private final int SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES = 0;
 
-    private static final String ADE_SMART_ENTITY_ID = "userId";
-
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
                                       AlertService alertService,
                                       EntityService entityService,
@@ -85,7 +83,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         while (smartPageIterator.hasNext()) {
             smarts = smartPageIterator.next();
             for (SmartRecord smart : smarts) {
-                String entityId = smart.getContext().get(ADE_SMART_ENTITY_ID);
+                String entityId = smart.getContext().values().iterator().next();
+                String entityType = entityService.getEntityType(smart.getContext().keySet().iterator().next());
+
                 if (entityId == null || entityId.isEmpty()) {
                     logger.error("Failed to get entity id from smart context, entity id is null or empty for smart {}. skipping to next smart", smart.getId());
                     continue;
@@ -93,7 +93,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 Entity entity;
                 if ((entity = getCreatedEntity(entities, entityId)) == null && (entity = getSingleEntityById(entityId)) == null) {
                     //Need to create entity and add it to about to be created list
-                    entity = entityService.createEntity(entityId, "user");
+                    entity = entityService.createEntity(entityId, entityType);
                     entities.add(entity);
                     if (entity == null) {
                         logger.error("Failed to process entity details for smart {}, skipping to next smart in the batch", smart.getId());
