@@ -45,7 +45,7 @@ public class RestEntityServiceImpl implements RestEntityService {
         List<Alert> alerts = null;
         presidio.output.domain.records.entity.Entity entity = entityPersistencyService.findEntityById(entityId);
         if (expand)
-            alerts = restAlertService.getAlertsByUserId(entityId, false).getAlerts();
+            alerts = restAlertService.getAlertsByEntityId(entityId, false).getAlerts();
         return createCompatibleResult(entity, alerts);
     }
 
@@ -65,7 +65,7 @@ public class RestEntityServiceImpl implements RestEntityService {
                     entityIds.add(entity.getId());
                 }
 
-                entityIdsToAlertsMap = restAlertService.getAlertsByUsersIds(entityIds);
+                entityIdsToAlertsMap = restAlertService.getAlertsByEntityIds(entityIds);
             }
 
             // Create the rest response
@@ -89,7 +89,7 @@ public class RestEntityServiceImpl implements RestEntityService {
 
     @Override
     public AlertsWrapper getAlertsByEntityId(String entityId) {
-        return restAlertService.getAlertsByUserId(entityId, false);
+        return restAlertService.getAlertsByEntityId(entityId, false);
     }
 
     @Override

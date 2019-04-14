@@ -227,9 +227,9 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public AlertsWrapper getAlertsByUserId(String userId, boolean expand) {
+    public AlertsWrapper getAlertsByEntityId(String entityId, boolean expand) {
         Page<presidio.output.domain.records.alerts.Alert> alerts;
-        alerts = alertPersistencyService.findByEntityId(userId, new PageRequest(pageNumber, pageSize));
+        alerts = alertPersistencyService.findByEntityId(entityId, new PageRequest(pageNumber, pageSize));
         List restAlerts = new ArrayList();
         int totalElements = 0;
         if (alerts.getTotalElements() > 0) {
@@ -253,17 +253,17 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public Map<String, List<Alert>> getAlertsByUsersIds(Collection<String> userIds) {
+    public Map<String, List<Alert>> getAlertsByEntityIds(Collection<String> entityIds) {
 
-        Map<String, List<Alert>> alertsByUserIds = new HashMap<>();
+        Map<String, List<Alert>> alertsByEntityIds = new HashMap<>();
 
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
-        userIds.forEach(id -> {
-            Page<presidio.output.domain.records.alerts.Alert> alertsByUserId = alertPersistencyService.findByEntityId(id, pageRequest);
-            alertsByUserIds.put(id, convertToRestAlerts(alertsByUserId));
+        entityIds.forEach(id -> {
+            Page<presidio.output.domain.records.alerts.Alert> alertsByEntityId = alertPersistencyService.findByEntityId(id, pageRequest);
+            alertsByEntityIds.put(id, convertToRestAlerts(alertsByEntityId));
         });
 
-        return alertsByUserIds;
+        return alertsByEntityIds;
     }
 
     private List<Alert> convertToRestAlerts(Page<presidio.output.domain.records.alerts.Alert> alertsByUserId) {
@@ -316,10 +316,6 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     }
 
-    private presidio.output.domain.records.alerts.IndicatorQuery convertInIndicatorQuery(IndicatorQuery indicatorQuery) {
-        return new presidio.output.domain.records.alerts.IndicatorQuery.IndicatorQueryBuilder().build();
-    }
-
     @Override
     public EventsWrapper getIndicatorEventsByIndicatorId(String indicatorId, EventQuery eventQuery) {
         List<presidio.webapp.model.Event> restEvents = new ArrayList<presidio.webapp.model.Event>();
@@ -359,24 +355,6 @@ public class RestAlertServiceImpl implements RestAlertService {
         return restAlert;
     }
 
-
-    private Map<String, List<presidio.webapp.model.Alert>> userIdsToAlerts(List<presidio.webapp.model.Alert> alerts, List<String> usersIds) {
-        Map<String, List<presidio.webapp.model.Alert>> usersIdsToAlertsMap = new HashMap<>();
-        List<presidio.webapp.model.Alert> tempAlerts;
-        for (String id : usersIds) {
-            tempAlerts = null;
-            for (presidio.webapp.model.Alert alert : alerts) {
-                if (alert.getUserId().equals(id)) {
-                    if (tempAlerts == null)
-                        tempAlerts = new ArrayList<>();
-                    tempAlerts.add(alert);
-                }
-            }
-            usersIdsToAlertsMap.put(id, tempAlerts);
-        }
-        return usersIdsToAlertsMap;
-    }
-
     private presidio.webapp.model.Indicator createRestIndicator(presidio.output.domain.records.alerts.Indicator indicator) {
         presidio.webapp.model.Indicator restIndicator = new presidio.webapp.model.Indicator();
         restIndicator.setId(indicator.getId());
@@ -393,17 +371,6 @@ public class RestAlertServiceImpl implements RestAlertService {
         if (indicator.getHistoricalData() != null) {
             restIndicator.setHistoricalData(createRestHistorical(indicator.getHistoricalData()));
         }
-        return restIndicator;
-    }
-
-    private presidio.webapp.model.Indicator createRestIndicator(presidio.output.domain.records.alerts.IndicatorSummary indicatorSummary) {
-        presidio.webapp.model.Indicator restIndicator = new presidio.webapp.model.Indicator();
-        restIndicator.setId(indicatorSummary.getId());
-        restIndicator.setName(indicatorSummary.getName());
-        restIndicator.setStartDate(BigDecimal.valueOf(indicatorSummary.getStartDate()));
-        restIndicator.setEndDate(BigDecimal.valueOf(indicatorSummary.getEndDate()));
-        restIndicator.setAnomalyValue(indicatorSummary.getSchema());
-        restIndicator.setSchema(indicatorSummary.getSchema().name());
         return restIndicator;
     }
 

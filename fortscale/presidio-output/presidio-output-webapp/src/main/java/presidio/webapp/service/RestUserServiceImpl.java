@@ -47,7 +47,7 @@ public class RestUserServiceImpl implements RestUserService {
         List<Alert> alerts = null;
         presidio.output.domain.records.users.User user = userPersistencyService.findUserById(userId);
         if (expand)
-            alerts = restAlertService.getAlertsByUserId(userId, false).getAlerts();
+            alerts = restAlertService.getAlertsByEntityId(userId, false).getAlerts();
         return createResult(user, alerts);
     }
 
@@ -66,7 +66,7 @@ public class RestUserServiceImpl implements RestUserService {
                     usersIds.add(user.getId());
                 }
 
-                usersIdsToAlertsMap = restAlertService.getAlertsByUsersIds(usersIds);
+                usersIdsToAlertsMap = restAlertService.getAlertsByEntityIds(usersIds);
             }
 
             // Create the rest response
@@ -136,7 +136,7 @@ public class RestUserServiceImpl implements RestUserService {
 
     @Override
     public AlertsWrapper getAlertsByUserId(String userId) {
-        return restAlertService.getAlertsByUserId(userId, false);
+        return restAlertService.getAlertsByEntityId(userId, false);
     }
 
     @Override
