@@ -146,6 +146,10 @@ public class Entity extends AbstractElasticDocument {
         return entityType;
     }
 
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
+    }
+
     public void setAlertsCount(int alertsCount) {
         this.alertsCount = alertsCount;
     }
