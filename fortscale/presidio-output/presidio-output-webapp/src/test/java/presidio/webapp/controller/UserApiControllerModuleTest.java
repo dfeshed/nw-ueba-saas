@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -18,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.ObjectUtils;
-import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.repositories.UserRepository;
 import presidio.webapp.controllers.users.UsersApi;
@@ -26,11 +24,7 @@ import presidio.webapp.model.User;
 import presidio.webapp.model.UsersWrapper;
 import presidio.webapp.spring.ApiControllerModuleTestConfig;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

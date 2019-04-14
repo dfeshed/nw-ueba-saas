@@ -39,6 +39,11 @@ public class RestServiceTestConfig {
     }
 
     @Bean
+    RestEntityService restEntityService() {
+        return new RestEntityServiceImpl(restAlertService(), entityService, 0, 100);
+    }
+
+    @Bean
     RestMetricsService restMetricsService(){
         MetricConverter metricConvertor = new MetricConverter();
         return new RestMetricServiceImpl(presidioMetricPersistencyService, metricConvertor);
