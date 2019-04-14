@@ -20,7 +20,7 @@ public interface UsersApi {
             produces = "application/json",
             method = RequestMethod.GET)
     default ResponseEntity<AlertsWrapper> getAlertsByUser(@ApiParam(value = "The UUID of the user to return", required = true) @PathVariable("userId") String userId,
-                                                          @ApiParam(value = "object that hold all the parameters for getting alerts") UserAlertsQuery body) {
+                                                          @ApiParam(value = "object that hold all the parameters for getting alerts") EntityAlertsQuery body) {
         // do some magic!
         return new ResponseEntity<AlertsWrapper>(HttpStatus.OK);
     }
