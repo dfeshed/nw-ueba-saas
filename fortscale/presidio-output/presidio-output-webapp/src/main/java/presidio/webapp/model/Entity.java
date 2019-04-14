@@ -24,6 +24,9 @@ public class Entity {
     @JsonProperty("entityName")
     private String entityName = null;
 
+    @JsonProperty("entityType")
+    private String entityType = null;
+
     @JsonProperty("tags")
     private List<String> tags = new ArrayList<String>();
 
@@ -98,6 +101,20 @@ public class Entity {
 
     public void setEntityName(String entityName) {
         this.entityName = entityName;
+    }
+
+    /**
+     * Get entityType
+     *
+     * @return entityType
+     **/
+    @ApiModelProperty(example = "ja3", value = "")
+    public String getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
     }
 
     public Entity tags(List<String> tags) {

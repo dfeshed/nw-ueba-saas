@@ -2,7 +2,6 @@ package presidio.webapp.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
-import presidio.output.domain.records.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.List;

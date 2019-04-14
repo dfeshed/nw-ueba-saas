@@ -140,6 +140,9 @@ public class RestEntityServiceImpl implements RestEntityService {
             convertedEntity.setSeverity(
                     presidio.webapp.model.EntityQueryEnums.EntitySeverity.valueOf(entity.getSeverity().name()));
         }
+        if (entity.getEntityType() != null) {
+            convertedEntity.setEntityType(entity.getEntityType());
+        }
         convertedEntity.setScore((int) entity.getScore());
         convertedEntity.setTags(entity.getTags());
         convertedEntity.setEntityName(entity.getEntityName());
