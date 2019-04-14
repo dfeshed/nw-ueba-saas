@@ -16,7 +16,7 @@
     }
 
     &__content {
-      min-width: 70%;
+      min-width: 100%;
 
       &::after {
         content: "";
@@ -44,8 +44,14 @@
       }
     }
 
-    &__columnGroup, &__downloadEvents {
+    &__manageIncident {
       display: inline-flex;
+      float: left;
+      max-height: 43px;
+    }
+
+    &__columnGroup, &__downloadEvents {
+      display: inline-block;
       float: left;
       max-height: 43px;
       iframe {
@@ -79,8 +85,7 @@
         }
       }
       div {
-        margin: rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace();
-        min-width: 150px;
+        margin: rsa-whitespace(least);
       }
     }
     .events-table-control {
@@ -292,4 +297,10 @@
       float: right;
     }
   }
+}
+
+.action-control {
+  padding-top: rsa-whitespace(least);
+  padding-left: rsa-whitespace(less);
+  display: inline-block;
 }

@@ -21,6 +21,8 @@
 /* Import license styles */
 @import 'license/manifest';
 
+@import 'respond-shared/manifest';
+
 // BEGIN Remove these to see the license stuff in the dummy app
 .license-banner {
   display: none;

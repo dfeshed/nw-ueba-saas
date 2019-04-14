@@ -30,6 +30,9 @@
     </div>
 
     {{events-table-container/header-container/download-dropdown}}
+    {{#if permissionAllowsIncidentManagement}}
+      {{incident-toolbar isDisabled=isIncidentButtonsDisabled}}
+    {{/if}}
   </div>
   <div class="events-table-control">
     {{#rsa-content-tethered-panel-trigger

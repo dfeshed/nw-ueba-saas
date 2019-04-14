@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
+import computed, { alias } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import { later, debounce, schedule } from '@ember/runloop';
@@ -22,7 +22,9 @@ const stateToComputed = (state) => ({
   isAtThreshold: resultCountAtThreshold(state),
   shouldStartAtOldest: shouldStartAtOldest(state),
   actualEventCount: thousandFormat(actualEventCount(state)),
-  searchMatchesCount: searchMatchesCount(state)
+  searchMatchesCount: searchMatchesCount(state),
+  isAllEventsSelected: state.investigate.eventResults.allEventsSelected,
+  selectedEventIds: state.investigate.eventResults.selectedEventIds
 });
 
 const dispatchToActions = {
@@ -34,9 +36,17 @@ const HeaderContainer = Component.extend({
   classNames: 'rsa-investigate-events-table__header',
   tagName: 'hbox',
   i18n: service(),
+  accessControl: service(),
   toggleReconSize: () => {},
   toggleSlaveFullScreen: () => {},
   _searchTerm: null,
+
+  @alias('accessControl.respondCanManageIncidents') permissionAllowsIncidentManagement: true,
+
+  @computed('selectedEventIds', 'isAllEventsSelected')
+  isIncidentButtonsDisabled(selectedEventIds, isAllEventsSelected) {
+    return !((selectedEventIds && selectedEventIds.length) || isAllEventsSelected);
+  },
 
   @computed('shouldStartAtOldest', 'i18n')
   eventResultSetStart(shouldStartAtOldest, i18n) {
