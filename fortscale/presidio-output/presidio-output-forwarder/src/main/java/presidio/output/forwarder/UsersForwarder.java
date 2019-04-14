@@ -54,12 +54,12 @@ public class UsersForwarder extends Forwarder<User> {
 
 
     @JsonFilter(JsonPayloadBuilder.INCLUDE_PROPERTIES_FILTER)
-    @JsonPayloadBuilder.JsonIncludeProperties({"id","entityId","entityType","severity","alertsCount"})
-    @JsonPropertyOrder({"id","entityId","entityType","severity","alertsCount"})
+    @JsonPayloadBuilder.JsonIncludeProperties({"id","entitiyId","entitytType","severity","alertsCount"})
+    @JsonPropertyOrder({"id","entitiyId","entitytType","severity","alertsCount"})
     class UserJsonMixin extends User {
 
-        @JsonProperty("entityId")
-        String entityId;
+        @JsonProperty("entitiyId")
+        String userId;
 
     }
 }
