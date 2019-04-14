@@ -1,6 +1,7 @@
 package presidio.adapter.util;
 
 import com.mongodb.WriteResult;
+import com.mongodb.client.result.DeleteResult;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -14,8 +15,8 @@ public class MongoUtil {
         Query query = new Query(); // Build query
         query.addCriteria(Criteria.where(timestampField).lt(startDate));
 
-        final WriteResult writeResult = template.remove(query, collectionName);
+        final DeleteResult result = template.remove(query, collectionName);
 
-        return writeResult.getN();
+        return (int)result.getDeletedCount();
     }
 }

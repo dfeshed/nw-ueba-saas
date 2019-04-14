@@ -1,5 +1,6 @@
 package fortscale.configuration.sourceloader;
 
+import org.springframework.boot.env.OriginTrackedMapPropertySource;
 import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
@@ -12,7 +13,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,12 +30,9 @@ public class JsonPropertySourceLoader implements PropertySourceLoader {
         return new String[] {JSON};
     }
 
-    public PropertySource<?> load(String name, Resource resource, String profile) throws IOException {
-        if (profile == null) {
-            Map<String, Object> result = mapPropertySource(resource);
-            return new MapPropertySource(name, result);
-        }
-        return null;
+    public List<PropertySource<?>> load(String name, Resource resource) throws IOException {
+        Map<String, Object> result = mapPropertySource(resource);
+        return Collections.singletonList(new MapPropertySource(name, result));
     }
 
     /**

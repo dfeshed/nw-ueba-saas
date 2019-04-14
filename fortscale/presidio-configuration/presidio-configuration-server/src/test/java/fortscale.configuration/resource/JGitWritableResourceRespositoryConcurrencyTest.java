@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.config.server.environment.NativeEnvironmentRepository;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -18,7 +19,7 @@ public class JGitWritableResourceRespositoryConcurrencyTest {
 
     @Before
     public void init() {
-        this.context = new SpringApplicationBuilder(JGitWritableResourceRespositoryConcurrencyTest.class).web(false).run();
+        this.context = new SpringApplicationBuilder(JGitWritableResourceRespositoryConcurrencyTest.class).web(WebApplicationType.NONE).run();
         this.nativeRepository = new NativeEnvironmentRepository(this.context.getEnvironment());
         //this.repository = new GenericResourceWritableRespository(this.nativeRepository);
         //this.repository.setResourceLoader(this.context);
