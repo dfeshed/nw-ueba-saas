@@ -13,10 +13,13 @@ import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.output.commons.services.spring.AlertSeverityServiceConfig;
 import presidio.output.commons.services.spring.EntitySeverityServiceConfig;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
+import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.webapp.controllers.alerts.AlertsApi;
 import presidio.webapp.controllers.alerts.AlertsController;
+import presidio.webapp.controllers.entities.EntitiesApi;
+import presidio.webapp.controllers.entities.EntitiesApiController;
 import presidio.webapp.controllers.licensing.DailyMetricsApi;
 import presidio.webapp.controllers.licensing.DailyMetricsController;
 import presidio.webapp.controllers.users.UsersApi;
@@ -33,6 +36,9 @@ public class OutputWebappConfiguration {
 
     @Autowired
     private UserPersistencyService userService;
+
+    @Autowired
+    private EntityPersistencyService entityService;
 
     @Autowired
     private  PresidioMetricPersistencyService presidioMetricPersistencyService;
@@ -79,6 +85,11 @@ public class OutputWebappConfiguration {
     }
 
     @Bean
+    RestEntityService restEntityService() {
+        return new RestEntityServiceImpl(restAlertService(), entityService, pageSizeUser, pageNumberUser);
+    }
+
+    @Bean
     AlertsApi getAlertsController() {
         return new AlertsController(restAlertService());
     }
@@ -91,6 +102,11 @@ public class OutputWebappConfiguration {
     @Bean
     UsersApi getUsersController() {
         return new UsersApiController(restUserService());
+    }
+
+    @Bean
+    EntitiesApi getEntitiesController() {
+        return new EntitiesApiController(restEntityService());
     }
 
     @Bean
