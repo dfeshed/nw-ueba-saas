@@ -164,7 +164,7 @@ test('SET_PREFERENCES when an eventAnalysis preference is updated', function(ass
   };
   const newEndState = reducer(previous, action);
   assert.equal(newEndState.eventAnalysisPreferences.defaultPacketFormat, 'PAYLOAD1');
-  assert.equal(Object.keys(newEndState.eventAnalysisPreferences).length, 7, 'Total number of eventAnalysisPreferences in state');
+  assert.equal(Object.keys(newEndState.eventAnalysisPreferences).length, 8, 'Total number of eventAnalysisPreferences in state');
 });
 
 test('SET_QUERY_EXECUTED_BY_COLUMN_GROUP_FLAG should set isQueryExecutedByColumnGroup flag', function(assert) {

@@ -76,8 +76,7 @@ export default {
     ],
     field: 'queryTimeFormat'
   },
-  // NewestFirst code commented out
-  /* {
+  {
     name: 'preferences.investigate-events.eventTimeSortOrder',
     info: true, // for preferences that need additional information
     type: 'radio',
@@ -86,7 +85,7 @@ export default {
       'Descending'
     ],
     field: 'eventAnalysisPreferences.eventTimeSortOrder'
-  }, */
+  },
   {
     name: 'preferences.investigate-events.autoDownloadExtractedFiles',
     type: 'checkbox',
@@ -106,8 +105,8 @@ export default {
       defaultMetaFormat: 'TEXT',
       autoDownloadExtractedFiles: true,
       packetsPageSize: 100,
-      autoUpdateSummary: false
-      // eventTimeSortOrder: 'Ascending' // NewestFirst Code commented out
+      autoUpdateSummary: false,
+      eventTimeSortOrder: 'Ascending'
     },
     eventPreferences: {
       columnGroup: 'SUMMARY'
