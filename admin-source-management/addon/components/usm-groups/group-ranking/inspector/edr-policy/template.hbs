@@ -1,6 +1,4 @@
 <vbox class="rsa-application-layout-panel-content" xs="12" fit>
-  
-  
   {{#each selectedEdrPolicy as |section|}}
     <div class="section {{section.props.[0].disabled}}">
       <div class="heading">
@@ -12,7 +10,7 @@
       {{#each section.props as |prop|}}
         <hbox fit class="col-xs-12 {{prop.disabled}}">
           <hbox class="title col-xs-6 col-md-4">{{t prop.name}}</hbox>
-          {{#if (eq prop.name 'adminUsm.policyWizard.edrPolicy.customConfigSetting') }}
+          {{#if (eq prop.name 'adminUsm.policyWizard.edrPolicy.customConfig') }}
             <hbox class="value col-xs-6 col-md-3">
               {{#rsa-text-with-tooltip value=prop.value.truncatedWithEllipsis
                 style="standard"}}
