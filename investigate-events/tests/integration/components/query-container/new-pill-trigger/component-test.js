@@ -142,7 +142,12 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
       }
 
       assert.equal(messageType, MESSAGE_TYPES.PILL_CREATED, 'Wrong message type');
-      assert.deepEqual(data, { meta: 'a', operator: '=', value: '\'x\'' }, 'Message sent for pill create contains correct pill data');
+      assert.propEqual(data, {
+        meta: 'a',
+        operator: '=',
+        value: '\'x\'',
+        type: 'query'
+      }, 'Message sent for pill create contains correct pill data');
       assert.equal(position, 5, 'Wrong position number');
     });
     await render(hbs`
@@ -203,7 +208,10 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data, position) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
-        assert.equal(data, 'foobar', 'Correct data');
+        assert.propEqual(data, {
+          type: 'complex',
+          complexFilterText: 'foobar'
+        }, 'Correct data');
         assert.equal(position, 0, 'Correct position of the pill');
       }
       done();
@@ -226,7 +234,10 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data, position) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
-        assert.equal(data, 'a foobar', 'Correct data');
+        assert.propEqual(data, {
+          type: 'complex',
+          complexFilterText: 'a foobar'
+        }, 'Correct data');
         assert.equal(position, 0, 'Correct position of the pill');
         done();
       }
@@ -250,7 +261,10 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data, position) => {
       if (type === MESSAGE_TYPES.CREATE_TEXT_PILL) {
-        assert.equal(data, 'foobar', 'Correct data');
+        assert.propEqual(data, {
+          type: 'text',
+          searchTerm: 'foobar'
+        }, 'Correct data');
         assert.equal(position, 0, 'Correct position of the pill');
       }
       done();

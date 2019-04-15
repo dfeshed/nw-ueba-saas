@@ -198,13 +198,8 @@ export const openGuidedPillForEdit = ({ pillData }) => ({
   }
 });
 
-export const addFreeFormFilter = ({ freeFormText, position = 0, shouldAddFocusToNewPill, fromFreeFormMode, shouldForceComplex }) => {
-  return (dispatch, getState) => {
-    const pillData = transformTextToPillData(
-      freeFormText.trim(),
-      metaKeySuggestionsForQueryBuilder(getState()),
-      shouldForceComplex
-    );
+export const addFreeFormFilter = ({ pillData, position = 0, shouldAddFocusToNewPill, fromFreeFormMode = false }) => {
+  return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.ADD_PILL,
       payload: {
@@ -218,21 +213,14 @@ export const addFreeFormFilter = ({ freeFormText, position = 0, shouldAddFocusTo
   };
 };
 
-export const addTextFilter = ({ searchTerm, position = 0, shouldAddFocusToNewPill, fromFreeFormMode }) => {
+export const addTextFilter = ({ pillData, position = 0, shouldAddFocusToNewPill }) => {
   return (dispatch) => {
-    const pillData = {
-      meta: undefined,
-      operator: undefined,
-      value: undefined,
-      searchTerm
-    };
     dispatch({
       type: ACTION_TYPES.ADD_PILL,
       payload: {
         pillData,
         position,
-        shouldAddFocusToNewPill,
-        fromFreeFormMode
+        shouldAddFocusToNewPill
       }
     });
   };

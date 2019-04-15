@@ -96,7 +96,6 @@ const _cloneQueryParams = (state) => {
 // state and replaces it with a new version
 const _replacePill = (state, pillData) => {
   const position = state.pillsData.map((pD) => pD.id).indexOf(pillData.id);
-
   const newPillData = {
     ...pillData,
     id: _.uniqueId(ID_PREFIX)

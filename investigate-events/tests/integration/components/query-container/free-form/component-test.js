@@ -54,13 +54,17 @@ module('Integration | Component | Free Form', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.freeFormInput, 'keydown', ENTER_KEY);
 
     assert.equal(addFreeFormFilterSpy.callCount, 1, 'The add pill action creator was called once');
-    assert.deepEqual(addFreeFormFilterSpy.args[0][0], {
-      freeFormText: 'medium = 1',
+    assert.propEqual(addFreeFormFilterSpy.args[0][0], {
+      pillData: {
+        meta: 'medium',
+        operator: '=',
+        value: '1',
+        type: 'query'
+      },
       position: 0,
       shouldAddFocusToNewPill: false,
       fromFreeFormMode: true
     }, 'The action creator was called with the right arguments');
-
   });
 
   test('it does not trigger an action to add a filter if the text hasnt changed', async function(assert) {

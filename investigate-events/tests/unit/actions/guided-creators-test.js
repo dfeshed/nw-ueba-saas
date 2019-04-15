@@ -306,7 +306,12 @@ module('Unit | Actions | Guided Creators', function(hooks) {
   test('addFreeFormFilter action creator returns proper type and payload, and validates if pill is not complex', function(assert) {
     assert.expect(3);
     const thunk = guidedCreators.addFreeFormFilter({
-      freeFormText: 'medium = 50'
+      pillData: {
+        type: 'query',
+        meta: 'medium',
+        operator: '=',
+        value: '50'
+      }
     });
 
     const getState = () => {
@@ -337,7 +342,10 @@ module('Unit | Actions | Guided Creators', function(hooks) {
   test('addFreeFormFilter action creator returns proper type and payload, and validates if the pill is complex', function(assert) {
     assert.expect(3);
     const action = guidedCreators.addFreeFormFilter({
-      freeFormText: 'medium = 50 && service = 443'
+      pillData: {
+        type: 'complex',
+        complexFilterText: '(medium = 50 && service = 443)'
+      }
     });
 
     const getState = () => {

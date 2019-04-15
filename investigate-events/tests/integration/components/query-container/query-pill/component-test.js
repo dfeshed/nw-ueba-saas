@@ -219,7 +219,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       }
 
       assert.equal(messageType, MESSAGE_TYPES.PILL_CREATED, 'Message sent for pill create is not correct');
-      assert.deepEqual(data, { meta: 'a', operator: '=', value: '\'x\'' }, 'Message sent for pill create contains correct pill data');
+      assert.propEqual(data, { meta: 'a', operator: '=', value: '\'x\'', type: 'query' }, 'Message sent for pill create contains correct pill data');
       assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
 
       done();
@@ -247,7 +247,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       }
 
       assert.equal(messageType, MESSAGE_TYPES.PILL_CREATED, 'Message sent for pill create is not correct');
-      assert.deepEqual(data, { meta: 'a', operator: 'exists', value: null }, 'Message sent for pill create contains correct pill data');
+      assert.propEqual(data, { meta: 'a', operator: 'exists', value: null, type: 'query' }, 'Message sent for pill create contains correct pill data');
       assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
 
       done();
@@ -309,8 +309,8 @@ module('Integration | Component | Query Pill', function(hooks) {
       }
 
       assert.equal(messageType, MESSAGE_TYPES.PILL_DELETED, 'Message sent for pill delete is not correct');
-      assert.deepEqual(data,
-        { id: '1', meta: 'a', operator: '=', value: '\'x\'', isSelected: false, isFocused: false },
+      assert.propEqual(data,
+        { id: '1', meta: 'a', operator: '=', value: '\'x\'', type: 'query', isSelected: false, isFocused: false },
         'Message sent for pill create contains correct pill data'
       );
       assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
@@ -830,7 +830,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       }
 
       assert.equal(messageType, MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, 'Message sent for pill delete');
-      assert.deepEqual(data, { meta: 'a', operator: '=', value: '\'x\'', id: '1', isSelected: false, isFocused: true }, 'Message sent contains correct pill data');
+      assert.propEqual(data, { meta: 'a', operator: '=', value: '\'x\'', type: 'query', id: '1', isSelected: false, isFocused: true }, 'Message sent contains correct pill data');
     });
 
     await render(hbs`
@@ -863,7 +863,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       }
 
       assert.equal(messageType, MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, 'Message sent for pill delete');
-      assert.deepEqual(data, { meta: 'a', operator: '=', value: '\'x\'', id: '1', isSelected: false, isFocused: true }, 'Message sent contains correct pill data');
+      assert.propEqual(data, { meta: 'a', operator: '=', value: '\'x\'', type: 'query', id: '1', isSelected: false, isFocused: true }, 'Message sent contains correct pill data');
     });
 
     await render(hbs`
@@ -896,7 +896,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       }
 
       assert.equal(messageType, MESSAGE_TYPES.ENTER_PRESSED_ON_FOCUSED_PILL, 'Message sent to open pill for edit');
-      assert.deepEqual(data, { meta: 'a', operator: '=', value: '\'x\'', id: '1', isSelected: false, isFocused: true }, 'Message sent contains correct pill data');
+      assert.propEqual(data, { meta: 'a', operator: '=', value: '\'x\'', type: 'query', id: '1', isSelected: false, isFocused: true }, 'Message sent contains correct pill data');
     });
 
     await render(hbs`
@@ -1210,7 +1210,10 @@ module('Integration | Component | Query Pill', function(hooks) {
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
-        assert.equal(data, 'foobar', 'correct data');
+        assert.propEqual(data, {
+          complexFilterText: 'foobar',
+          type: 'complex'
+        }, 'correct data');
         done();
       }
     });
@@ -1236,7 +1239,10 @@ module('Integration | Component | Query Pill', function(hooks) {
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
-        assert.equal(data, 'a foobar', 'correct data');
+        assert.propEqual(data, {
+          complexFilterText: 'a foobar',
+          type: 'complex'
+        }, 'correct data');
         done();
       }
     });
@@ -1264,7 +1270,10 @@ module('Integration | Component | Query Pill', function(hooks) {
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
-        assert.equal(data, 'a = foobar', 'correct data');
+        assert.propEqual(data, {
+          complexFilterText: 'a = foobar',
+          type: 'complex'
+        }, 'correct data');
         done();
       }
     });

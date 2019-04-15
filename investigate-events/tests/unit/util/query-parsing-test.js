@@ -38,149 +38,108 @@ module('Unit | Util | Query Parsing', function(hooks) {
   test('transformTextToPillData returns complex filter object because of ||', function(assert) {
     const freeFormText = 'medium = 1 || medium = 32';
     const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-    assert.propEqual(result, {
-      type: COMPLEX_FILTER,
-      complexFilterText: `(${freeFormText})`
-    }, 'properties should match');
-    assert.equal(result.toString(), `(${freeFormText})`, 'should have correct string representation');
+    assert.equal(result.type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result.complexFilterText, `(${freeFormText})`, 'complexFilterText should match');
   });
 
   test('transformTextToPillData treats lack of operator as a complex query', function(assert) {
     const freeFormText = 'medium';
     const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-    assert.propEqual(result, {
-      type: COMPLEX_FILTER,
-      complexFilterText: freeFormText
-    }, 'properties should match');
-    assert.equal(result.toString(), freeFormText, 'should have correct string representation');
+    assert.equal(result.type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result.complexFilterText, freeFormText, 'complexFilterText should match');
   });
 
   test('transformTextToPillData treats bad meta as complex query', function(assert) {
     const freeFormText = 'lakjsdlakjsd = yeah';
     const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-    assert.propEqual(result, {
-      type: COMPLEX_FILTER,
-      complexFilterText: freeFormText
-    }, 'properties should match');
-    assert.equal(result.toString(), freeFormText, 'should have correct string representation');
+    assert.equal(result.type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result.complexFilterText, freeFormText, 'complexFilterText should match');
   });
 
   test('transformTextToPillData treats operator that does not belong to meta as complex query', function(assert) {
     const freeFormText = 'sessionid contains 123';
     const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-    assert.propEqual(result, {
-      type: COMPLEX_FILTER,
-      complexFilterText: freeFormText
-    }, 'properties should match');
-    assert.equal(result.toString(), freeFormText, 'should have correct string representation');
+    assert.equal(result.type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result.complexFilterText, freeFormText, 'complexFilterText should match');
   });
 
   test('transformTextToPillData treats operator that requires value but does not have one as complex query', function(assert) {
     const freeFormText = 'medium =';
     const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-    assert.propEqual(result, {
-      type: COMPLEX_FILTER,
-      complexFilterText: freeFormText
-    }, 'properties should match');
-    assert.equal(result.toString(), freeFormText, 'should have correct string representation');
+    assert.equal(result.type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result.complexFilterText, freeFormText, 'complexFilterText should match');
   });
 
   test('transformTextToPillData treats operator that require no value but has one as complex query', function(assert) {
     const freeFormText = 'medium exists 10';
     const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-    assert.propEqual(result, {
-      type: COMPLEX_FILTER,
-      complexFilterText: freeFormText
-    }, 'properties should match');
-    assert.equal(result.toString(), freeFormText, 'should have correct string representation');
+    assert.equal(result.type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result.complexFilterText, freeFormText, 'complexFilterText should match');
   });
 
   test('transformTextToPillData handles when just meta and operator', function(assert) {
     const freeFormText = 'medium exists';
     const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-    assert.propEqual(result, {
-      type: QUERY_FILTER,
-      meta: 'medium',
-      operator: 'exists',
-      value: undefined
-    }, 'properties should match');
-    assert.equal(result.toString(), freeFormText, 'should have correct string representation');
+    assert.equal(result.type, QUERY_FILTER, 'type should match');
+    assert.equal(result.meta, 'medium', 'meta should match');
+    assert.equal(result.operator, 'exists', 'operator should match');
+    assert.equal(result.value, undefined, 'value should match');
   });
 
   test('transformTextToPillData returns pill data object', function(assert) {
     const freeFormText = 'medium = 1';
     const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-    assert.propEqual(result, {
-      type: QUERY_FILTER,
-      meta: 'medium',
-      operator: '=',
-      value: '1'
-    }, 'properties should match');
-    assert.equal(result.toString(), freeFormText, 'should have correct string representation');
+    assert.equal(result.type, QUERY_FILTER, 'type should match');
+    assert.equal(result.meta, 'medium', 'meta should match');
+    assert.equal(result.operator, '=', 'operator should match');
+    assert.equal(result.value, '1', 'value should match');
   });
 
   test('transformTextToPillData returns populated pill object even if operator embedded in value', function(assert) {
     const freeFormText = 'user.dst = \'1=2\'';
     const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-    assert.propEqual(result, {
-      type: QUERY_FILTER,
-      meta: 'user.dst',
-      operator: '=',
-      value: '\'1=2\''
-    }, 'properties should match');
-    assert.equal(result.toString(), freeFormText, 'should have correct string representation');
+    assert.equal(result.type, QUERY_FILTER, 'type should match');
+    assert.equal(result.meta, 'user.dst', 'meta should match');
+    assert.equal(result.operator, '=', 'operator should match');
+    assert.equal(result.value, '\'1=2\'', 'value should match');
   });
 
   test('transformTextToPillData handles surrounding white space', function(assert) {
     const freeFormText = ' medium exists ';
     const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-    assert.propEqual(result, {
-      type: QUERY_FILTER,
-      meta: 'medium',
-      operator: 'exists',
-      value: undefined
-    }, 'properties should match');
-    assert.equal(result.toString(), freeFormText.trim(), 'should have correct string representation');
+    assert.equal(result.type, QUERY_FILTER, 'type should match');
+    assert.equal(result.meta, 'medium', 'meta should match');
+    assert.equal(result.operator, 'exists', 'operator should match');
+    assert.equal(result.value, undefined, 'value should match');
   });
 
   test('transformTextToPillData treats operator that has extra text as complex query', function(assert) {
     const freeFormText = 'medium =foo';
     const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-    assert.propEqual(result, {
-      type: COMPLEX_FILTER,
-      complexFilterText: freeFormText
-    }, 'properties should match');
-    assert.equal(result.toString(), freeFormText, 'should have correct string representation');
+    assert.equal(result.type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result.complexFilterText, freeFormText, 'complexFilterText should match');
   });
 
   test('transformTextToPillData returns complex pill when forced to do so', function(assert) {
     const freeFormText = 'medium = foo';
     const shouldForceComplex = true;
     const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES, shouldForceComplex);
-    assert.propEqual(result, {
-      type: COMPLEX_FILTER,
-      complexFilterText: '(medium = foo)'
-    }, 'properties should match');
-    assert.equal(result.toString(), '(medium = foo)', 'should have correct string representation');
+    assert.equal(result.type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result.complexFilterText, `(${freeFormText})`, 'complexFilterText should match');
   });
 
   test('transformTextToPillData returns text filter object because of Text filter marker', function(assert) {
     const text = '~some random text';
     const result = transformTextToPillData(text, DEFAULT_LANGUAGES);
-    assert.propEqual(result, {
-      type: TEXT_FILTER,
-      searchTerm: text
-    }, 'properties should match');
-    assert.equal(result.toString(), text, 'should have correct string representation');
+    assert.equal(result.type, TEXT_FILTER, 'type should match');
+    assert.equal(result.searchTerm, 'some random text', 'complexFilterText should match');
   });
 
   test('transformTextToPillData returns text filter even if it contains complex characters', function(assert) {
     const text = '~(some random text)';
     const result = transformTextToPillData(text, DEFAULT_LANGUAGES);
-    assert.propEqual(result, {
-      type: TEXT_FILTER,
-      searchTerm: text
-    }, 'properties should match');
+    assert.equal(result.type, TEXT_FILTER, 'type should match');
+    assert.equal(result.searchTerm, '(some random text)', 'complexFilterText should match');
   });
 
   test('parsePillDataFromUri correctly parses forward slashes and operators into pills', function(assert) {
@@ -231,30 +190,24 @@ module('Unit | Util | Query Parsing', function(hooks) {
     const meta = 'foo';
     const operator = '=';
     const value = 'bar';
-    const queryFilter = createFilter(QUERY_FILTER, meta, operator, value);
-    assert.propEqual(queryFilter, {
-      type: QUERY_FILTER,
-      meta,
-      operator,
-      value
-    }, 'properties should match');
+    const result = createFilter(QUERY_FILTER, meta, operator, value);
+    assert.equal(result.type, QUERY_FILTER, 'type should match');
+    assert.equal(result.meta, meta, 'meta should match');
+    assert.equal(result.operator, operator, 'operator should match');
+    assert.equal(result.value, value, 'value should match');
   });
 
   test('createFilter can create a Complex filter', function(assert) {
     const complexFilterText = '(foo bar)';
-    const complexFilter = createFilter(COMPLEX_FILTER, complexFilterText);
-    assert.propEqual(complexFilter, {
-      type: COMPLEX_FILTER,
-      complexFilterText
-    }, 'properties should match');
+    const result = createFilter(COMPLEX_FILTER, complexFilterText);
+    assert.equal(result.type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result.complexFilterText, complexFilterText, 'complexFilterText should match');
   });
 
   test('createFilter can create a Text filter', function(assert) {
     const searchTerm = 'foo bar';
-    const textFilter = createFilter(TEXT_FILTER, searchTerm);
-    assert.propEqual(textFilter, {
-      type: TEXT_FILTER,
-      searchTerm
-    }, 'properties should match');
+    const result = createFilter(TEXT_FILTER, searchTerm);
+    assert.equal(result.type, TEXT_FILTER, 'type should match');
+    assert.equal(result.searchTerm, searchTerm, 'complexFilterText should match');
   });
 });

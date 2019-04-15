@@ -7,6 +7,12 @@ import _ from 'lodash';
 
 import * as MESSAGE_TYPES from '../message-types';
 import quote from 'investigate-events/util/quote';
+import { createFilter } from 'investigate-events/util/query-parsing';
+import {
+  COMPLEX_FILTER,
+  QUERY_FILTER,
+  TEXT_FILTER
+} from 'investigate-events/constants/pill';
 
 const { log } = console; // eslint-disable-line no-unused-vars
 
@@ -770,13 +776,11 @@ export default Component.extend({
    * @private
    */
   _createPillData(value = null) {
-    const meta = this.get('selectedMeta');
+    const selectedMeta = this.get('selectedMeta');
+    const meta = selectedMeta ? selectedMeta.metaName : null;
     const operator = this.get('selectedOperator.displayName');
 
-    const pillData = {
-      meta: meta ? meta.metaName : null,
-      operator
-    };
+    const pillData = createFilter(QUERY_FILTER, meta, operator, value);
 
     // If is an existing pill, add id to object
     if (this.get('isExistingPill')) {
@@ -785,7 +789,7 @@ export default Component.extend({
       pillData.isFocused = this.get('pillData.isFocused');
     }
     // Check what type of meta this is. If it's a string value, add quotes
-    if (meta && meta.format === 'Text' && value) {
+    if (selectedMeta && selectedMeta.format === 'Text' && value) {
       pillData.value = quote(value);
     } else {
       pillData.value = value;
@@ -873,13 +877,15 @@ export default Component.extend({
 
   _createFreeFormPill(data, dataSource) {
     const textString = this._getStringifiedPill(data, dataSource);
-    this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, textString);
+    const pillData = createFilter(COMPLEX_FILTER, textString);
+    this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, pillData);
     this._reset();
   },
 
   _createTextPill(data, dataSource) {
     const searchTerm = this._getStringifiedPill(data, dataSource);
-    this._broadcast(MESSAGE_TYPES.CREATE_TEXT_PILL, searchTerm);
+    const pillData = createFilter(TEXT_FILTER, searchTerm);
+    this._broadcast(MESSAGE_TYPES.CREATE_TEXT_PILL, pillData);
     this._reset();
   },
 

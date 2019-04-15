@@ -10,94 +10,62 @@ const { log } = console; // eslint-disable-line
 /**
  * Base filter class.
  */
-class Filter extends EmberObject {
-  constructor() {
-    super(...arguments);
-  }
+const Filter = EmberObject.extend({
+  id: undefined,
+  isFocused: false,
+  isSelected: false,
+  type: undefined
+});
 
-  init() {
-    this.type = this.type || undefined;
-  }
-}
+/**
+ * Filters that can be modified and validated
+ */
+const InteractiveFilter = Filter.extend({
+  isEditing: false,
+  isInvalid: false,
+  isValidationInProgress: false,
+  validationError: undefined
+});
 
 /**
  * Query filter class.
  * @extends Filter
  */
-class QueryFilter extends Filter {
-  constructor() {
-    super({ type: QUERY_FILTER });
-  }
+const QueryFilter = InteractiveFilter.extend({
+  componentName: 'query-container/query-pill',
+  meta: undefined,
+  operator: undefined,
+  value: undefined,
 
   init() {
-    this.meta = this.meta || undefined;
-    this.operator = this.operator || undefined;
-    this.value = this.value || undefined;
+    this.set('type', QUERY_FILTER);
   }
-
-  get componentName() {
-    return 'query-container/query-pill';
-  }
-
-  /**
-   * String representation of this filter with spaces trimmed.
-   */
-  toString() {
-    const m = this.meta ? this.meta.trim() : '';
-    const o = this.operator ? this.operator.trim() : '';
-    const v = this.value ? this.value.trim() : '';
-    return `${m} ${o} ${v}`.trim();
-  }
-}
+});
 
 /**
  * Query filter class.
  * @extends Filter
  */
-class ComplexFilter extends Filter {
-  constructor() {
-    super({ type: COMPLEX_FILTER });
-  }
+const ComplexFilter = InteractiveFilter.extend({
+  complexFilterText: undefined,
+  componentName: 'query-container/complex-pill',
 
   init() {
-    this.complexFilterText = this.complexFilterText || undefined;
+    this.set('type', COMPLEX_FILTER);
   }
-
-  get componentName() {
-    return 'query-container/complex-pill';
-  }
-
-  /**
-   * String representation of this filter with spaces trimmed.
-   */
-  toString() {
-    return this.complexFilterText ? this.complexFilterText.trim() : '';
-  }
-}
+});
 
 /**
  * Text filter class.
  */
-class TextFilter extends Filter {
-  constructor() {
-    super({ type: TEXT_FILTER });
-  }
+const TextFilter = InteractiveFilter.extend({
+  componentName: 'query-container/text-pill',
+  searchTerm: undefined,
 
   init() {
-    this.searchTerm = this.searchTerm || undefined;
+    this.set('type', TEXT_FILTER);
   }
-
-  get componentName() {
-    return 'query-container/text-pill';
-  }
-
-  /**
-   * String representation of this filter with spaces trimmed.
-   */
-  toString() {
-    return this.searchTerm ? this.searchTerm.trim() : '';
-  }
-}
+});
 
 export {
   ComplexFilter,

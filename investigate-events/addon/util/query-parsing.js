@@ -17,6 +17,27 @@ import {
 const { log } = console; // eslint-disable-line
 
 /**
+ * String representation of filter with spaces trimmed.
+ * @param {object} filter The filter to convert to a string.
+ * @return {string}
+ */
+const _asString = (filter) => {
+  let ret = '';
+  if (filter.type === QUERY_FILTER) {
+    const m = filter.meta ? filter.meta.trim() : '';
+    const o = filter.operator ? filter.operator.trim() : '';
+    const v = filter.value ? filter.value.trim() : '';
+    ret = `${m} ${o} ${v}`.trim();
+  } else if (filter.type === COMPLEX_FILTER) {
+    ret = filter.complexFilterText ? filter.complexFilterText.trim() : '';
+  } else if (filter.type === TEXT_FILTER) {
+    const text = filter.searchTerm ? filter.searchTerm.trim() : null;
+    ret = text ? `${SEARCH_TERM_MARKER}${text}` : '';
+  }
+  return ret;
+};
+
+/**
  * Creates a Complex filter.
  * @param {string} complexFilterText A complex string
  */
@@ -112,7 +133,8 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
   // 1. Check if the text contains characters that mark it as a Text filter
   const hasSearchTerm = isSearchTerm(queryText);
   if (hasSearchTerm) {
-    return _createTextQueryFilter(queryText);
+    const term = queryText.slice(1);
+    return _createTextQueryFilter(term);
   }
 
   // 2. Check if the text contains characters make the query complex
@@ -196,9 +218,13 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
 export const uriEncodeMetaFilters = (filters = []) => {
   const encodedFilters = filters
     .map((d) => {
-      const str = d.toString();
-      // URL encode all filters except for Text filter
-      return (d.type !== TEXT_FILTER) ? encodeURIComponent(str) : str;
+      const str = _asString(d);
+      if (str.length > 0) {
+        // URL encode all filters except for Text filter
+        return (d.type !== TEXT_FILTER) ? encodeURIComponent(str) : str;
+      } else {
+        return undefined;
+      }
     })
     .filter((d) => !!d)
     .join('/');

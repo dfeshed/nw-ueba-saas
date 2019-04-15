@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { debounce, scheduleOnce, throttle } from '@ember/runloop';
-
+import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { freeFormText, hasRequiredValuesToQuery } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { addFreeFormFilter, deleteAllGuidedPills, updatedFreeFormText } from 'investigate-events/actions/guided-creators';
 
@@ -49,8 +49,9 @@ const freeForm = Component.extend({
       // Don't do anything if the text is the same as it was
       // when the component was initially rendered
       if (this.get('initialFreeFormText') !== freeFormText) {
+        const pillData = transformTextToPillData(freeFormText);
         this.send('addFreeFormFilter', {
-          freeFormText,
+          pillData,
           position: 0,
           shouldAddFocusToNewPill: false,
           fromFreeFormMode: true

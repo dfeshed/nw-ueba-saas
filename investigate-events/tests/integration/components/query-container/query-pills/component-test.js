@@ -99,8 +99,8 @@ module('Integration | Component | Query Pills', function(hooks) {
     await render(hbs`{{query-container/query-pills isActive=true}}`);
     await createBasicPill();
     assert.ok(newActionSpy.calledOnce, 'The addGuidedPill creator was not called once');
-    assert.deepEqual(newActionSpy.args[0][0],
-      { pillData: { meta: 'a', operator: '=', value: '\'x\'' }, position: 0, shouldAddFocusToNewPill: false },
+    assert.propEqual(newActionSpy.args[0][0],
+      { pillData: { meta: 'a', operator: '=', value: '\'x\'', type: 'query' }, position: 0, shouldAddFocusToNewPill: false },
       'The addGuidedPill creator was returned the wrong arguments');
   });
 
@@ -151,9 +151,9 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     // action to store in state called
     assert.equal(newActionSpy.callCount, 1, 'The add pill action creator was called once');
-    assert.deepEqual(
+    assert.propEqual(
       newActionSpy.args[0][0],
-      { pillData: { meta: 'a', operator: '=', value: '\'x\'' }, position: 0, shouldAddFocusToNewPill: true },
+      { pillData: { meta: 'a', operator: '=', value: '\'x\'', type: 'query' }, position: 0, shouldAddFocusToNewPill: true },
       'The action creator was called with the right arguments including the proper position'
     );
     assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
@@ -226,9 +226,9 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     // action to store in state called
     assert.equal(newActionSpy.callCount, 1, 'The add pill action creator was called once');
-    assert.deepEqual(
+    assert.propEqual(
       newActionSpy.args[0][0],
-      { pillData: { meta: 'a', operator: '=', value: '\'x\'' }, position: 0, shouldAddFocusToNewPill: true },
+      { pillData: { meta: 'a', operator: '=', value: '\'x\'', type: 'query' }, position: 0, shouldAddFocusToNewPill: true },
       'The action creator was called with the right arguments including the proper position'
     );
     assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
@@ -248,9 +248,9 @@ module('Integration | Component | Query Pills', function(hooks) {
     return settled().then(async() => {
       // action to store in state called
       assert.equal(deleteActionSpy.callCount, 1, 'The delete pill action creator was called once');
-      assert.deepEqual(
+      assert.propEqual(
         deleteActionSpy.args[0][0],
-        { pillData: [{ id: '1', meta: 'a', operator: '=', value: '\'x\'', isSelected: false, isFocused: false }] },
+        { pillData: [{ id: '1', meta: 'a', operator: '=', value: '\'x\'', type: 'query', isSelected: false, isFocused: false }] },
         'The action creator was called with the right arguments'
       );
     });
@@ -398,9 +398,9 @@ module('Integration | Component | Query Pills', function(hooks) {
     return settled().then(async() => {
       // action to store in state called
       assert.equal(selectActionSpy.callCount, 1, 'The select pill action creator was called once');
-      assert.deepEqual(
+      assert.propEqual(
         selectActionSpy.args[0][0],
-        { pillData: [ { id: '1', meta: 'a', operator: '=', value: '\'x\'', isSelected: false, isFocused: false } ] },
+        { pillData: [ { id: '1', meta: 'a', operator: '=', value: '\'x\'', type: 'query', isSelected: false, isFocused: false } ] },
         'The action creator was called with the right arguments'
       );
     });

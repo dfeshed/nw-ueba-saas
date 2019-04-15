@@ -515,29 +515,26 @@ const QueryPills = RsaContextMenu.extend({
     }
   },
 
-  _createFreeFormPill(freeFormText, position) {
+  _createFreeFormPill(pillData, position) {
     // if true, it means a pill is being created in the middle of pills
     const shouldAddFocusToNewPill = this.get('isPillTriggerOpenForAdd');
     this._pillsExited();
     this.send('addFreeFormFilter', {
-      freeFormText,
+      pillData,
       position,
       shouldAddFocusToNewPill,
-      fromFreeFormMode: false,
-      shouldForceComplex: true
+      fromFreeFormMode: false
     });
   },
 
-  _createTextPill(searchTerm, position) {
+  _createTextPill(pillData, position) {
     // if true, it means a pill is being created in the middle of pills
     const shouldAddFocusToNewPill = this.get('isPillTriggerOpenForAdd');
     this._pillsExited();
     this.send('addTextFilter', {
-      searchTerm,
+      pillData,
       position,
-      shouldAddFocusToNewPill,
-      fromFreeFormMode: false,
-      shouldForceComplex: false
+      shouldAddFocusToNewPill
     });
   }
 });
