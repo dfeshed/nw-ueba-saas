@@ -16,10 +16,7 @@ import presidio.output.domain.records.entity.EntitySeverity;
 import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.webapp.model.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RestEntityServiceImpl implements RestEntityService {
 
@@ -158,6 +155,9 @@ public class RestEntityServiceImpl implements RestEntityService {
         }
         if (entityQuery.getEntityName() != null) {
             builder.filterByEntityName(entityQuery.getEntityName());
+        }
+        if (entityQuery.getEntityType() != null) {
+            builder.filterByEntitiesTypes(Collections.singletonList(entityQuery.getEntityType()));
         }
         if (entityQuery.getIndicatorsName() != null) {
             builder.filterByIndicators(entityQuery.getIndicatorsName());

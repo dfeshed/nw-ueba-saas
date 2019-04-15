@@ -63,8 +63,8 @@ public class EntityApiControllerModuleTest {
         this.objectMapper = ObjectMapperProvider.customJsonObjectMapper();
 
         //save entities in elastic
-        entity1 = generateEntity(Arrays.asList("a"), "entity1", "entityId1", 50d, Arrays.asList("indicator1"), "ja3");
-        entity2 = generateEntity(Arrays.asList("b"), "entity2", "entityId2", 60d, Arrays.asList("indicator1", "indicator2"), "ja3");
+        entity1 = generateEntity(Collections.singletonList("a"), "entity1", "entityId1", 50d, Arrays.asList("indicator1"), "user");
+        entity2 = generateEntity(Collections.singletonList("b"), "entity2", "entityId2", 60d, Arrays.asList("indicator1", "indicator2"), "ja3");
         List<presidio.output.domain.records.entity.Entity> entityList = Arrays.asList(entity1, entity2);
         entityRepository.save(entityList);
     }
@@ -107,7 +107,7 @@ public class EntityApiControllerModuleTest {
         Entity expectedEntity2 = convertDomainEntityToRestEntity(entity2);
         EntitiesWrapper expectedResponse = new EntitiesWrapper();
         expectedResponse.setTotal(1);
-        List<Entity> entities = Arrays.asList(expectedEntity2);
+        List<Entity> entities = Collections.singletonList(expectedEntity2);
         expectedResponse.setEntities(entities);
         expectedResponse.setPage(0);
 
@@ -130,12 +130,33 @@ public class EntityApiControllerModuleTest {
         Entity expectedEntity2 = convertDomainEntityToRestEntity(entity2); //score 60
         EntitiesWrapper expectedResponse = new EntitiesWrapper();
         expectedResponse.setTotal(1);
-        List<Entity> entities = Arrays.asList(expectedEntity2);
+        List<Entity> entities = Collections.singletonList(expectedEntity2);
         expectedResponse.setEntities(entities);
         expectedResponse.setPage(0);
 
         // get actual response
         MvcResult mvcResult = entitiesApiMVC.perform(get(ENTITIES_URI).param("minScore", "55"))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        EntitiesWrapper actualResponse = objectMapper.readValue(actualResponseStr, EntitiesWrapper.class);
+
+        Assert.assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    public void getEntitiesFilteredByType() throws Exception {
+
+        // init expected response
+        Entity expectedEntity2 = convertDomainEntityToRestEntity(entity2);
+        EntitiesWrapper expectedResponse = new EntitiesWrapper();
+        expectedResponse.setTotal(1);
+        List<Entity> entities = Collections.singletonList(expectedEntity2);
+        expectedResponse.setEntities(entities);
+        expectedResponse.setPage(0);
+
+        // get actual response
+        MvcResult mvcResult = entitiesApiMVC.perform(get(ENTITIES_URI).param("entityType", "ja3"))
                 .andExpect(status().isOk())
                 .andReturn();
         String actualResponseStr = mvcResult.getResponse().getContentAsString();

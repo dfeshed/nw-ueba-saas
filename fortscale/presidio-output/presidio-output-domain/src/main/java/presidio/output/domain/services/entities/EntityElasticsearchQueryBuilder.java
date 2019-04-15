@@ -78,8 +78,8 @@ public class EntityElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<E
         // filter by entityTypes
         if (CollectionUtils.isNotEmpty(entityQuery.getFilterByEntitiesTypes())) {
             BoolQueryBuilder entityTypeQuery = new BoolQueryBuilder();
-            for (String id : entityQuery.getFilterByEntitiesTypes()) {
-                entityTypeQuery.should(matchQuery(Entity.ENTITY_TYPE_FIELD_NAME, id).operator(Operator.OR));
+            for (String entityType : entityQuery.getFilterByEntitiesTypes()) {
+                entityTypeQuery.should(matchQuery(Entity.ENTITY_TYPE_FIELD_NAME, entityType).operator(Operator.OR));
             }
             boolQueryBuilder.must(entityTypeQuery);
         }

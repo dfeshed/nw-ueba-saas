@@ -20,6 +20,9 @@ public class EntityQuery {
     @JsonProperty("entityName")
     private String entityName = null;
 
+    @JsonProperty("entityType")
+    private String entityType = null;
+
     @JsonProperty("freeText")
     private String freeText = null;
 
@@ -83,6 +86,25 @@ public class EntityQuery {
 
     public EntityQuery freeText(String freeText) {
         this.freeText = freeText;
+        return this;
+    }
+
+    /**
+     * Get entityType
+     *
+     * @return entityType
+     **/
+    @ApiModelProperty(value = "")
+    public String getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
+    }
+
+    public EntityQuery entityType(String entityType) {
+        this.entityType = entityType;
         return this;
     }
 
@@ -382,6 +404,7 @@ public class EntityQuery {
         }
         EntityQuery entityQuery = (EntityQuery) o;
         return Objects.equals(this.entityName, entityQuery.entityName) &&
+                Objects.equals(this.entityType, entityQuery.entityType) &&
                 Objects.equals(this.freeText, entityQuery.freeText) &&
                 Objects.equals(this.pageSize, entityQuery.pageSize) &&
                 Objects.equals(this.pageNumber, entityQuery.pageNumber) &&
@@ -409,6 +432,7 @@ public class EntityQuery {
         sb.append("class EntityQuery {\n");
 
         sb.append("    entityName: ").append(toIndentedString(entityName)).append("\n");
+        sb.append("    entityType: ").append(toIndentedString(entityType)).append("\n");
         sb.append("    freeText: ").append(toIndentedString(freeText)).append("\n");
         sb.append("    pageSize: ").append(toIndentedString(pageSize)).append("\n");
         sb.append("    pageNumber: ").append(toIndentedString(pageNumber)).append("\n");
