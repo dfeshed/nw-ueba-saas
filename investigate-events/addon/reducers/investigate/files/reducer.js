@@ -21,7 +21,24 @@ const filesInitialState = Immutable.from({
   isAutoDownloadFile: true
 });
 
+
+/**
+ * Compute the status of file extraction (download). If we're in the middle of a
+ * download and the user navigates away from Event Search (for example, goes to Hosts tab),
+ * we want to change the extraction status to 'queued'. This will notify the UI that the
+ * download will continue in the job queue.
+ * @param {Object} state The current state of Investigate
+ * @private
+ */
+const _fileExtractState = (state) => ({
+  fileExtractStatus: (state.fileExtractStatus === 'wait' ||
+                      state.fileExtractStatus === 'queued') ? 'queued' : null
+});
 export default handleActions({
+
+  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state) => {
+    return state.merge(_fileExtractState(state));
+  },
 
   [ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE]: (state, action) => {
     return handle(state, action, {
@@ -50,7 +67,7 @@ export default handleActions({
 
   // Files-based notifcation handling
   [ACTION_TYPES.NOTIFICATION_TEARDOWN_SUCCESS]: (state) => {
-    return state.merge(fileExtractInitialState);
+    return state.merge(_fileExtractState(state));
   }
 }, filesInitialState);
 // *******

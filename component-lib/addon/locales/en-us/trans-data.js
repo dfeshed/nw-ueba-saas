@@ -546,6 +546,7 @@ export default {
       download: {
         selected: 'Download',
         all: 'Download All',
+        isDownloading: 'Downloading...',
         LOG: 'Logs as {{option}}',
         NETWORK: 'Network as {{option}}',
         META: 'Visible Meta as {{option}}',

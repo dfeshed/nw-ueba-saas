@@ -87,6 +87,19 @@
       div {
         margin: rsa-whitespace(least);
       }
+
+    .rsa-loader {
+      display: inline-block;
+      vertical-align: middle;
+      min-width: 1px;
+      &__text {
+        display: none;
+      }
+    }
+      .rsa-loader__wheel {
+        margin: 0;
+        min-width: 1px;
+      }
     }
     .events-table-control {
       display: inline-block;

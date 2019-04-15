@@ -36,7 +36,7 @@ const ReconContainer = Component.extend({
   layout,
   tagName: 'vbox',
   classNames: ['recon-container'],
-  classNameBindings: ['isReady::loading'],
+  classNameBindings: ['isReady::loading', 'extractWarningClass'],
 
   accessControl: service(),
   flashMessages: service(),
@@ -176,17 +176,20 @@ const ReconContainer = Component.extend({
     }
   }),
 
-  fileExtractStatusWatcher: observer('status', function() {
-    const stat = this.get('status');
-    if (stat === 'queued') {
+  // binds class extract-warned to component when file extraction is queued
+  // due to navigating away in the middle of download
+  @computed('status')
+  extractWarningClass(status) {
+
+    if (status === 'queued') {
       const { flashMessages, i18n } = this.getProperties('flashMessages', 'i18n');
       if (flashMessages && flashMessages.info) {
         const url = `${window.location.origin}/profile#jobs`;
         flashMessages.info(i18n.t('recon.extractWarning', { url }), { sticky: true });
+        return 'extract-warned';
       }
     }
-  }),
-
+  },
   closeRecon: observer('isReconOpen', function() {
     if (!this.get('isReconOpen')) {
       this.get('closeAction')();

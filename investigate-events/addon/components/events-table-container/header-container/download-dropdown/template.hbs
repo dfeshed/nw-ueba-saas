@@ -7,7 +7,9 @@
       triggerClass='is-small'
       dropdownClass="download-dropdown"
       disabled=isDisabled
+      loading=true
       onchange=(action 'downloadFiles') as |option|}}
+      {{#if isDownloading}}{{rsa-loader size='small'}}{{/if}}
       <span title="{{option.name}}">{{option.name}}</span>
       <span class='right'>{{option.count}}</span>
     {{/power-select}}

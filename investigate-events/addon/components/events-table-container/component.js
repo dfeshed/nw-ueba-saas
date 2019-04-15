@@ -11,7 +11,8 @@ import { hasColumnGroups } from 'investigate-events/reducers/investigate/data-se
 const stateToComputed = (state) => ({
   areEventsStreaming: areEventsStreaming(state),
   hasColumnGroups: hasColumnGroups(state),
-  percent: percentageOfEventsDataReturned(state)
+  percent: percentageOfEventsDataReturned(state),
+  status: state.investigate.files.fileExtractStatus
 });
 
 const EventsTableContainer = Component.extend({

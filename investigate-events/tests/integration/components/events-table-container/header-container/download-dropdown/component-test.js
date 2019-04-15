@@ -10,6 +10,7 @@ import { clickTrigger } from 'ember-power-select/test-support/helpers';
 
 const downloadSelector = '.rsa-investigate-events-table__header__downloadEvents';
 const downloadTitle = `${downloadSelector} span span`;
+const downloadLoader = `${downloadSelector} .rsa-loader`;
 const downloadOptions = '.ember-power-select-options';
 
 let setState;
@@ -30,8 +31,12 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     resolver: engineResolverFor('investigate-events')
   });
 
+
   hooks.beforeEach(function() {
-    this.owner.inject('component', 'i18n', 'service:i18n');
+
+    this.owner.inject('component', 'flashMessages', 'service:flashMessages', 'i18n', 'service:i18n');
+    const flashMessages = this.owner.lookup('service:flashMessages');
+    flashMessages.set('info', () => {});
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('hasInvestigateContentExportAccess', true);
     setState = (state) => {
@@ -146,4 +151,21 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '2/2');
   });
 
+  test('dropdown should show correct label when downloading', async function(assert) {
+    new ReduxDataHelper(setState)
+      .setFileExtractStatus('wait')
+      .build();
+    await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
+    assert.ok(findAll(downloadLoader).length == 1, 'Loading icon present');
+    assert.equal(findAll(downloadTitle)[0].textContent.trim(), 'Downloading...', 'Download dropdown should indicate Downloading when download in progress');
+    assert.ok(find(`${downloadSelector}.is-disabled`), 'Download is disabled');
+  });
+
+  test('dropdown executes flash message info indicating download queued in job queue', async function(assert) {
+    new ReduxDataHelper(setState)
+      .setFileExtractStatus('queued')
+      .build();
+    await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
+    assert.ok(find(`${downloadSelector}.extract-warned`), 'Warning issued stating download is queued');
+  });
 });

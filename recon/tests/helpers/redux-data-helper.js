@@ -145,6 +145,11 @@ export default class DataHelper {
     return this;
   }
 
+  setFileExtractStatus(status) {
+    _set(this.state, 'files.fileExtractStatus', status);
+    return this;
+  }
+
   endpointText(setTo) {
     _set(this.state, 'text.textContent', setTo);
     _set(this.state, 'text.renderIds', '1');

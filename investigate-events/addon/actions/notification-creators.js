@@ -79,7 +79,7 @@ export const extractFiles = (eventDownloadType, fileType, sessionIds = [], isSel
     dispatch({
       type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE,
       promise: fetchExtractJobId(queryNode, serviceId, sessionIds, fileType, filename, eventDownloadType, isSelectAll, columnList),
-      meta: { // download TODO download on success spinner
+      meta: {
         onFailure(response) {
           handleInvestigateErrorCode(response, `FETCH_EXTRACT_JOB_ID; ${serviceId} ${eventDownloadType}`);
         }

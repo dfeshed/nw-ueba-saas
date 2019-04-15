@@ -271,6 +271,11 @@ export default class DataHelper {
     return this;
   }
 
+  setFileExtractStatus(status) {
+    _set(this.state, 'files.fileExtractStatus', status);
+    return this;
+  }
+
   isCanceled() {
     _set(this.state, 'eventResults.status', 'canceled');
     return this;

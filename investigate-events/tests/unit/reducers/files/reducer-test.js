@@ -18,6 +18,20 @@ const initialState = Immutable.from({
   isAutoDownloadFile: true
 });
 
+test('test INITIALIZE changes fileExtractStatus to queue when wait', function(assert) {
+  const action = {
+    type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
+    payload: {
+      fileExtractStatus: 'wait'
+    }
+  };
+  const currentState = initialState.merge({
+    fileExtractStatus: 'wait'
+  });
+  const result = reducer(currentState, action);
+  assert.equal(result.fileExtractStatus, 'queued');
+});
+
 test('test SET_PREFERENCES', function(assert) {
   const action = {
     type: ACTION_TYPES.SET_PREFERENCES,
@@ -93,6 +107,21 @@ test('FILE_EXTRACT_JOB_ID_RETRIEVE updates state with error object on failure', 
 
   assert.equal(result.fileExtractStatus, 'error', 'extraction status changed to error on failure');
 });
+
+test('test NOTIFICATION_TEARDOWN_SUCCESS changes fileExtractStatus to queue when wait', function(assert) {
+  const action = {
+    type: ACTION_TYPES.NOTIFICATION_TEARDOWN_SUCCESS,
+    payload: {
+      fileExtractStatus: 'wait'
+    }
+  };
+  const currentState = initialState.merge({
+    fileExtractStatus: 'wait'
+  });
+  const result = reducer(currentState, action);
+  assert.equal(result.fileExtractStatus, 'queued');
+});
+
 // *******
 // END - Should be moved with Download Manager
 // *******
