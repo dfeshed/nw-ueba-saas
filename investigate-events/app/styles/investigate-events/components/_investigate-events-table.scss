@@ -45,9 +45,12 @@
     }
 
     &__manageIncident {
-      display: inline-flex;
-      float: left;
-      max-height: 43px;
+      margin-top: rsa-whitespace(less);
+      margin-left: rsa-whitespace();
+
+      .add-to-incident-button {
+        margin-left: rsa-whitespace();
+      }
     }
 
     &__columnGroup, &__downloadEvents {
@@ -85,7 +88,8 @@
         }
       }
       div {
-        margin: rsa-whitespace(least);
+        margin: rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace();
+        min-width: 150px;
       }
 
     .rsa-loader {
@@ -100,6 +104,9 @@
         margin: 0;
         min-width: 1px;
       }
+    }
+    &__downloadEvents > div {
+      display: none;
     }
     .events-table-control {
       display: inline-block;
@@ -312,8 +319,32 @@
   }
 }
 
-.action-control {
-  padding-top: rsa-whitespace(least);
-  padding-left: rsa-whitespace(less);
-  display: inline-block;
+@media (min-width: 1300px) {
+  .recon-is-open, .recon-is-expanded {
+    .incident-buttons {
+      display: none;
+    }
+    .incident-dropdown {
+      display: inherit;
+    }
+  }
+  .recon-is-closed {
+    .incident-buttons {
+      display: inline-flex;
+    }
+    .incident-dropdown {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 1300px) {
+  .recon-is-open, .recon-is-expanded, .recon-is-closed {
+    .incident-buttons {
+      display: none;
+    }
+    .incident-dropdown {
+      display: inherit;
+    }
+  }
 }

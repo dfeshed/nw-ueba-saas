@@ -61,7 +61,7 @@ module('Integration | Component | header-container', function(hooks) {
     await renderDefaultHeaderContainer(assert);
     assert.ok(find('.rsa-investigate-events-table__header__container'), 'render event header container');
     assert.equal(find('.rsa-investigate-events-table__header__container').childElementCount, 2, 'rendered with two elements - header__content, events-table-control');
-    assert.equal(find('.rsa-investigate-events-table__header__content').childElementCount, 5, 'rendered with three elements - eventLabel, columnGroup, downloadEvents');
+    assert.equal(find('.rsa-investigate-events-table__header__content').childElementCount, 4, 'rendered with 4 elements - eventLabel, columnGroup, downloadEvents, manageIncident');
     assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), '55Events(Asc)', 'rendered event header title');
     assert.equal(find('.rsa-investigate-events-table__header__columnGroup span').textContent.trim(), 'Summary List', 'rendered event header title');
     assert.equal(find('.rsa-investigate-events-table__header__downloadEvents span').textContent.trim(), 'Download', 'rendered event header title');

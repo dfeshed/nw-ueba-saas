@@ -27,3 +27,14 @@ $footerHeight: 40px;
     height: calc(100% - #{$modalHeaderHeight} - #{$footerHeight} - 1rem);
   }
 }
+
+.incident-toolbar {
+  float: left;
+  display: inline-flex;
+
+  .incident-buttons,
+  .create-incident-button,
+  .add-to-incident-button {
+    float: left;
+  }
+}

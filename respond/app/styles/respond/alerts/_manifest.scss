@@ -3,3 +3,30 @@
     background-color: inherit;
   }
 }
+
+.incident-toolbar {
+  .add-to-incident-button {
+    margin-left: rsa-whitespace(least);
+  }
+}
+
+.delete-button {
+  margin-left: rsa-whitespace(least);
+}
+
+@media (min-width: 901px) {
+  .rsa-alerts-toolbar-controls .incident-dropdown {
+    display: none;
+  }
+  .rsa-alerts-toolbar-controls .incident-buttons {
+    display: inline-block;
+  }
+}
+@media (max-width: 900px) {
+  .rsa-alerts-toolbar-controls .incident-dropdown {
+    display: inherit;
+  }
+  .rsa-alerts-toolbar-controls .incident-buttons {
+    display: none;
+  }
+}

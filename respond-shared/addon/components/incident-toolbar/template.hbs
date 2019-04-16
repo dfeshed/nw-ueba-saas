@@ -1,17 +1,35 @@
-<div class="action-control create-incident-button">
-  {{#rsa-form-button
-    isDisabled=isDisabled
-    defaultAction=(action 'createIncident')}}
-    {{t 'respond.alerts.createIncident'}}
-  {{/rsa-form-button}}
+<div class="incident-buttons">
+  <div class="create-incident-button">
+    {{#rsa-form-button
+        isDisabled=isDisabled
+        defaultAction=(action 'createIncident')}}
+      {{t 'respond.alerts.createIncident'}}
+    {{/rsa-form-button}}
+  </div>
+  <div class="add-to-incident-button">
+    {{#rsa-form-button
+        isDisabled=isDisabled
+        defaultAction=(action 'addToIncident')}}
+      {{t 'respond.alerts.addToIncident'}}
+    {{/rsa-form-button}}
+  </div>
 </div>
-<div class="action-control add-to-incident-button">
-  {{#rsa-form-button
-    isDisabled=isDisabled
-    defaultAction=(action 'addToIncident')}}
-    {{t 'respond.alerts.addToIncident'}}
-  {{/rsa-form-button}}
+
+<div class="incident-dropdown">
+  {{#rsa-content-tethered-panel-trigger panel="incidentSelect" triggerEvent='click' isDisabled=isDisabled}}
+    {{#rsa-form-button isDisabled=isDisabled withDropdown=true}}
+      {{t 'respond.alerts.createIncident'}}
+    {{/rsa-form-button}}
+  {{/rsa-content-tethered-panel-trigger}}
+
+  {{#rsa-content-tethered-panel displayCloseButton=false isPopover=true position='bottom-right' panelId="incidentSelect"}}
+    <ul class="rsa-dropdown-action-list">
+      <li {{action 'createIncident'}} class="create-incident-list-item">{{t 'respond.alerts.createIncident'}}</li>
+      <li {{action 'addToIncident'}} class="add-to-incident-list-item">{{t 'respond.alerts.addToIncident'}}</li>
+    </ul>
+  {{/rsa-content-tethered-panel}}
 </div>
+
 {{#if (eq activeModalId 'create-incident')}}
   {{#rsa-application-modal eventId='create-incident' label=(t "respond.alerts.createIncident") style="standard create-incident-modal"}}
     <div class='modal-content'>

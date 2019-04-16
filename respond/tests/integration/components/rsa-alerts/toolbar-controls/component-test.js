@@ -84,25 +84,25 @@ module('Integration | Component | Respond Alerts Toolbar Controls', function(hoo
 
   test('The Create Incident and Add to Incident buttons are rendered to the DOM', async function(assert) {
     await render(hbs`{{rsa-alerts/toolbar-controls}}`);
-    assert.equal(findAll('.rsa-alerts-toolbar-controls .action-control.create-incident-button .rsa-form-button').length, 1,
+    assert.equal(findAll('.rsa-alerts-toolbar-controls .create-incident-button .rsa-form-button').length, 1,
       'The Create Incident button should be found in the DOM');
-    assert.equal(findAll('.rsa-alerts-toolbar-controls .action-control.add-to-incident-button .rsa-form-button').length, 1,
+    assert.equal(findAll('.rsa-alerts-toolbar-controls .add-to-incident-button .rsa-form-button').length, 1,
       'The Add to Incident button should be found in the DOM');
   });
 
   test('The Create Incident/Add to Incident buttons are disabled if no alerts are selected', async function(assert) {
     await render(hbs`{{rsa-alerts/toolbar-controls hasNoSelections=true}}`);
-    assert.equal(findAll('.rsa-alerts-toolbar-controls .action-control.create-incident-button .rsa-form-button-wrapper.is-disabled').length, 1,
+    assert.equal(findAll('.rsa-alerts-toolbar-controls .create-incident-button .rsa-form-button-wrapper.is-disabled').length, 1,
       'The Create Incident button is disabled by default since no alerts are selected');
-    assert.equal(findAll('.rsa-alerts-toolbar-controls .action-control.add-to-incident-button .rsa-form-button-wrapper.is-disabled').length, 1,
+    assert.equal(findAll('.rsa-alerts-toolbar-controls .add-to-incident-button .rsa-form-button-wrapper.is-disabled').length, 1,
       'The Add to Incident button is disabled by default since no alerts are selected');
   });
 
   test('The Create/Add to Incident buttons are enabled if any alert is selected', async function(assert) {
     await render(hbs`{{rsa-alerts/toolbar-controls hasNoSelections=false}}`);
-    assert.equal(findAll('.rsa-alerts-toolbar-controls .action-control.create-incident-button .rsa-form-button-wrapper:not(.is-disabled)').length, 1,
+    assert.equal(findAll('.rsa-alerts-toolbar-controls .create-incident-button .rsa-form-button-wrapper:not(.is-disabled)').length, 1,
       'The Create Incident button is enabled if it has selections');
-    assert.equal(findAll('.rsa-alerts-toolbar-controls .action-control.add-to-incident-button .rsa-form-button-wrapper:not(.is-disabled)').length, 1,
+    assert.equal(findAll('.rsa-alerts-toolbar-controls .add-to-incident-button .rsa-form-button-wrapper:not(.is-disabled)').length, 1,
       'The Add to Incident button is enabled if it has selections');
   });
 

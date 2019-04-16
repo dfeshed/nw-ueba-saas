@@ -13,12 +13,14 @@ module('Integration | Component | incident-toolbar', function(hooks) {
     this.set('clearResults', () => {});
   });
 
-  test('The Create Incident and Add to Incident buttons are rendered to the DOM', async function(assert) {
+  test('The Create Incident and Add to Incident buttons and dropdown are rendered to the DOM', async function(assert) {
     await render(hbs`{{incident-toolbar}}`);
-    assert.equal(findAll('.action-control.create-incident-button .rsa-form-button').length, 1,
+    assert.equal(findAll('.create-incident-button .rsa-form-button').length, 1,
       'The Create Incident button should be found in the DOM');
-    assert.equal(findAll('.action-control.add-to-incident-button .rsa-form-button').length, 1,
+    assert.equal(findAll('.add-to-incident-button .rsa-form-button').length, 1,
       'The Add to Incident button should be found in the DOM');
+    assert.equal(findAll('.incident-dropdown').length, 1, 'The Incidents dropdown should be found in the DOM');
+
   });
 
   test('Clicking the Create Incident button opens the create-incident modal', async function(assert) {
@@ -51,5 +53,23 @@ module('Integration | Component | incident-toolbar', function(hooks) {
     assert.equal(findAll(addToIncidentModalSelector).length, 1, 'The add-to-incident modal is displayed');
     await click('.cancel .rsa-form-button');
     assert.equal(findAll(addToIncidentModalSelector).length, 0, 'The add-to-incident modal is gone');
+  });
+
+  test('Clicking the Create Incident drop down list item opens the create-incident modal', async function(assert) {
+    await render(hbs`{{incident-toolbar isDisabled=false clearResults=clearResults}}`);
+    assert.equal(findAll('.create-incident-modal').length, 0, 'There is no modal displayed');
+    await click('.incident-dropdown .rsa-form-button');
+    await click('.create-incident-list-item');
+    assert.equal(findAll(createIncidentModalSelector).length, 1, 'The create-incident modal is displayed');
+    await click('.cancel .rsa-form-button');
+  });
+
+  test('Clicking the Add to Incident drop down list item opens the add-to-incident modal', async function(assert) {
+    await render(hbs`{{incident-toolbar isDisabled=false clearResults=clearResults}}`);
+    assert.equal(findAll('.create-incident-modal').length, 0, 'There is no modal displayed');
+    await click('.incident-dropdown .rsa-form-button');
+    await click('.add-to-incident-list-item');
+    assert.equal(findAll(addToIncidentModalSelector).length, 1, 'The add-to-incident modal is displayed');
+    await click('.cancel .rsa-form-button');
   });
 });

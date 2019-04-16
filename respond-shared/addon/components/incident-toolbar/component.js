@@ -6,9 +6,13 @@ import { inject as service } from '@ember/service';
 export default Component.extend({
   layout,
 
-  tagName: '',
+  tagName: 'div',
 
   eventBus: service(),
+
+  classNames: ['incident-toolbar'],
+
+  classNameBindings: ['class'],
 
   activeModalId: null,
 

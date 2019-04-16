@@ -31,7 +31,9 @@
 
     {{events-table-container/header-container/download-dropdown}}
     {{#if permissionAllowsIncidentManagement}}
-      {{incident-toolbar isDisabled=isIncidentButtonsDisabled}}
+      {{incident-toolbar
+        isDisabled=isIncidentButtonsDisabled
+        class="rsa-investigate-events-table__header__manageIncident"}}
     {{/if}}
   </div>
   <div class="events-table-control">
