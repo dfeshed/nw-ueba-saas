@@ -33,6 +33,10 @@
     background-color: background-color(primary, darkest);
   }
 
+  .recon-packet-stuck-header {
+    width: calc(100% - 15px);
+  }
+
   .is-sticky {
     border-top: none;
     @include rsa-layer(panels);
