@@ -22,8 +22,6 @@ import presidio.webapp.controllers.entities.EntitiesApi;
 import presidio.webapp.controllers.entities.EntitiesApiController;
 import presidio.webapp.controllers.licensing.DailyMetricsApi;
 import presidio.webapp.controllers.licensing.DailyMetricsController;
-import presidio.webapp.controllers.users.UsersApi;
-import presidio.webapp.controllers.users.UsersApiController;
 import presidio.webapp.convertors.MetricConverter;
 import presidio.webapp.service.*;
 
@@ -97,11 +95,6 @@ public class OutputWebappConfiguration {
     @Bean
     DailyMetricsApi getPresidioMetricsController() {
         return new DailyMetricsController(restMetricsService());
-    }
-
-    @Bean
-    UsersApi getUsersController() {
-        return new UsersApiController(restUserService());
     }
 
     @Bean

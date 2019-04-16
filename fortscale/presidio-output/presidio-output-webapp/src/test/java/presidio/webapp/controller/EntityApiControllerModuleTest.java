@@ -18,10 +18,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.entity.EntitySeverity;
+import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.repositories.EntityRepository;
 import presidio.webapp.controllers.entities.EntitiesApi;
 import presidio.webapp.model.EntitiesWrapper;
 import presidio.webapp.model.Entity;
+import presidio.webapp.model.User;
+import presidio.webapp.model.UsersWrapper;
 import presidio.webapp.spring.ApiControllerModuleTestConfig;
 
 import java.util.*;
@@ -36,6 +39,8 @@ public class EntityApiControllerModuleTest {
 
     private static final String ENTITIES_URI = "/entities";
     private static final String ENTITIES_BY_ID_URI = "/entities/{entityId}";
+    private static final String USERS_URI = "/users";
+    private static final String USERS_BY_ID_URI = "/users/{userId}";
 
     private MockMvc entitiesApiMVC;
 
@@ -52,8 +57,13 @@ public class EntityApiControllerModuleTest {
 
     private presidio.output.domain.records.entity.Entity entity1;
     private presidio.output.domain.records.entity.Entity entity2;
+    private presidio.output.domain.records.users.User user1;
+    private presidio.output.domain.records.users.User user2;
 
     private Comparator<Entity> defaultEntityComparator = Comparator.comparing(Entity::getId);
+
+    private Comparator<User> defaultUserComparator = Comparator.comparing(User::getId);
+
 
     @Before
     public void setup() {
@@ -63,10 +73,14 @@ public class EntityApiControllerModuleTest {
         this.objectMapper = ObjectMapperProvider.customJsonObjectMapper();
 
         //save entities in elastic
-        entity1 = generateEntity(Collections.singletonList("a"), "entity1", "entityId1", 50d, Arrays.asList("indicator1"), "user");
+        entity1 = generateEntity(Collections.singletonList("a"), "entity1", "entityId1", 50d, Collections.singletonList("indicator1"), "user");
         entity2 = generateEntity(Collections.singletonList("b"), "entity2", "entityId2", 60d, Arrays.asList("indicator1", "indicator2"), "ja3");
         List<presidio.output.domain.records.entity.Entity> entityList = Arrays.asList(entity1, entity2);
         entityRepository.save(entityList);
+        user1 = generateUser(Collections.singletonList("a"), "entity1", "entityId1", "entity1", 50d, Collections.singletonList("indicator1"));
+        user2 = generateUser(Collections.singletonList("b"), "entity2", "entityId2", "entity2", 60d, Arrays.asList("indicator1", "indicator2"));
+        user1.setId(entity1.getId());
+        user2.setId(entity2.getId());
     }
 
     @After
@@ -74,6 +88,90 @@ public class EntityApiControllerModuleTest {
         //delete the created entities
         entityRepository.delete(entity1);
         entityRepository.delete(entity2);
+    }
+
+    @Test
+    public void getAllUsers() throws Exception {
+
+        // init expected response
+        User expectedUser1 = convertDomainUserToRestUser(user1);
+        User expectedUser2 = convertDomainUserToRestUser(user2);
+        UsersWrapper expectedResponse = new UsersWrapper();
+        expectedResponse.setTotal(2);
+        List<User> users = Arrays.asList(expectedUser1, expectedUser2);
+        expectedResponse.setUsers(users);
+        expectedResponse.setPage(0);
+
+        // get actual response
+        MvcResult mvcResult = entitiesApiMVC.perform(get(USERS_URI))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        UsersWrapper actualResponse = objectMapper.readValue(actualResponseStr, UsersWrapper.class);
+
+        expectedResponse.getUsers().sort(defaultUserComparator);
+        actualResponse.getUsers().sort(defaultUserComparator);
+        Assert.assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    public void getUsersFilteredByIndicators() throws Exception {
+
+        // init expected response
+        User expectedUser2 = convertDomainUserToRestUser(user2);
+        UsersWrapper expectedResponse = new UsersWrapper();
+        expectedResponse.setTotal(1);
+        List<User> users = Collections.singletonList(expectedUser2);
+        expectedResponse.setUsers(users);
+        expectedResponse.setPage(0);
+
+        // get actual response
+        MvcResult mvcResult = entitiesApiMVC.perform(get(USERS_URI).param("indicatorsName", "indicator2"))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        UsersWrapper actualResponse = objectMapper.readValue(actualResponseStr, UsersWrapper.class);
+
+        expectedResponse.getUsers().sort(defaultUserComparator);
+        actualResponse.getUsers().sort(defaultUserComparator);
+        Assert.assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    public void getUsersFilteredByMinScore() throws Exception {
+
+        // init expected response
+        User expectedUser2 = convertDomainUserToRestUser(user2); //score 60
+        UsersWrapper expectedResponse = new UsersWrapper();
+        expectedResponse.setTotal(1);
+        List<User> users = Collections.singletonList(expectedUser2);
+        expectedResponse.setUsers(users);
+        expectedResponse.setPage(0);
+
+        // get actual response
+        MvcResult mvcResult = entitiesApiMVC.perform(get(USERS_URI).param("minScore", "55"))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        UsersWrapper actualResponse = objectMapper.readValue(actualResponseStr, UsersWrapper.class);
+
+        Assert.assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    public void getUserById() throws Exception {
+
+        // init expected response
+        User expectedUser1 = convertDomainUserToRestUser(user1);
+
+        // get actual response
+        MvcResult mvcResult = entitiesApiMVC.perform(get(USERS_BY_ID_URI, user1.getId()))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        User actualResponse = objectMapper.readValue(actualResponseStr, User.class);
+
+        Assert.assertEquals(expectedUser1, actualResponse);
     }
 
     @Test
@@ -206,6 +304,32 @@ public class EntityApiControllerModuleTest {
 
     private presidio.webapp.model.EntityQueryEnums.EntitySeverity convertEntitySeverity(presidio.output.domain.records.entity.EntitySeverity entitySeverity) {
         return presidio.webapp.model.EntityQueryEnums.EntitySeverity.valueOf(entitySeverity.name());
+    }
+
+    private presidio.output.domain.records.users.User generateUser(List<String> classifications, String userName, String userId, String displayName, double score, List<String> indicators) {
+        return new presidio.output.domain.records.users.User(userId, userName, displayName, score, classifications, indicators, new ArrayList<>(), UserSeverity.CRITICAL, 0);
+    }
+
+    private User convertDomainUserToRestUser(presidio.output.domain.records.users.User user) {
+        User convertedUser = new User();
+        if (ObjectUtils.isEmpty(user))
+            return null;
+        convertedUser.setId(user.getId());
+        convertedUser.setUserDisplayName(user.getUserDisplayName());
+        if (user.getSeverity() != null) {
+            convertedUser.setSeverity(convertUserSeverity(user.getSeverity()));
+        }
+        convertedUser.setScore((int) user.getScore());
+        convertedUser.setTags(user.getTags());
+        convertedUser.setUsername(user.getUserName());
+        convertedUser.setAlertClassifications(user.getAlertClassifications());
+        convertedUser.setAlertsCount(user.getAlertsCount());
+        convertedUser.setUserId(user.getUserId());
+        return convertedUser;
+    }
+
+    private presidio.webapp.model.UserQueryEnums.UserSeverity convertUserSeverity(UserSeverity userSeverity) {
+        return presidio.webapp.model.UserQueryEnums.UserSeverity.valueOf(userSeverity.name());
     }
 }
 
