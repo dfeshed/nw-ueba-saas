@@ -1,3 +1,10 @@
+# [12.1.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v12.1.0)
+## Features
+* [ASOC-65130](https://bedfordjira.na.rsa.net/browse/ASOC-65130):&emsp;Update Meta Drop Down so it can Create a text search pill
+* [ASOC-66810](https://bedfordjira.na.rsa.net/browse/ASOC-66810):&emsp;Spike - Get Navigate in Ember functional enough to demo
+* [ASOC-72649](https://bedfordjira.na.rsa.net/browse/ASOC-72649):&emsp;Automate Navigate Tests in E2E
+
+
 # [12.0.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v12.0.0)
 ## Features
 * [ASOC-66183](https://bedfordjira.na.rsa.net/browse/ASOC-66183):&emsp;Change naming from Packet to Network & Default Log to Text
