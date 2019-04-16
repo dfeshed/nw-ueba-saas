@@ -14,7 +14,6 @@ import presidio.output.commons.services.spring.AlertSeverityServiceConfig;
 import presidio.output.commons.services.spring.EntitySeverityServiceConfig;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.entities.EntityPersistencyService;
-import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.webapp.controllers.alerts.AlertsApi;
 import presidio.webapp.controllers.alerts.AlertsController;
@@ -31,9 +30,6 @@ public class OutputWebappConfiguration {
 
     @Autowired
     private AlertPersistencyService alertService;
-
-    @Autowired
-    private UserPersistencyService userService;
 
     @Autowired
     private EntityPersistencyService entityService;
@@ -76,11 +72,6 @@ public class OutputWebappConfiguration {
 
     @Value("${default.page.number.for.rest.alert}")
     private int pageNumberAlert;
-
-    @Bean
-    RestUserService restUserService() {
-        return new RestUserServiceImpl(restAlertService(), userService, pageSizeUser, pageNumberUser);
-    }
 
     @Bean
     RestEntityService restEntityService() {
