@@ -589,6 +589,11 @@ export default Component.extend(DomWatcher, {
           selectedIndex = this.get('selectedIndex');
         }
 
+        // no need to attempt scrolling to non-existent index
+        if (selectedIndex < 0) {
+          return;
+        }
+
         // First row needed to measure height of items so can calculate how far
         // to scroll
         const $firstRow = this.$('.rsa-data-table-body-row:first-child');
