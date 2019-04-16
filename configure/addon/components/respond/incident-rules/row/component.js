@@ -15,9 +15,9 @@ export default Component.extend(SortableItemMixin, {
    * @property isSelected
    * @public
    */
-  @computed('selectedItemId', 'rule.id')
-  isSelected(selectedItemId, itemId) {
-    return selectedItemId === itemId;
+  @computed('selectedRules', 'rule.id')
+  isSelected(selectedRules, itemId) {
+    return selectedRules.includes(itemId);
   },
 
   onRowClick() {},

@@ -16,7 +16,7 @@ const initialState = {
   rules,
   rulesStatus: 'complete',
   isTransactionUnderway: false,
-  selectedRule: null
+  selectedRules: []
 };
 
 let setState;
@@ -71,14 +71,14 @@ module('Integration | Component | Respond Incident Rules', function(hooks) {
     await render(hbs`{{respond/incident-rules}}`);
     const $firstRowCells = this.$('tbody tr').first().find('td');
     assert.equal($($firstRowCells[0]).find('.handle').length, 1, 'The first cell in the row has a drag handle for reordering results');
-    assert.equal($($firstRowCells[1]).find('input[type=radio]').length, 1, 'The second cell in the row has a selection radio button');
+    assert.equal($($firstRowCells[1]).find('input[type=checkbox]').length, 1, 'The second cell in the row has a selection radio button');
     assert.equal($($firstRowCells[3]).find('.enabled-rule').length, 1, 'The fourth cell in the row has an enabled-rule class');
     assert.equal($($firstRowCells[4]).find('a').length, 1, 'The fifth cell in the row has a link');
     assert.equal($($firstRowCells[6]).find('.rsa-content-datetime').length, 1, 'The seventh cell in the row has a converted date');
   });
 
   test('it shows the selected row with the proper class name', async function(assert) {
-    await setState({ ...initialState, selectedRule: '59b92bbf4cb0f0092b6b6a8b' });
+    await setState({ ...initialState, selectedRules: ['59b92bbf4cb0f0092b6b6a8b'] });
     await render(hbs`{{respond/incident-rules}}`);
     assert.equal(findAll('tbody tr.is-selected').length, 1, 'There is one row selected');
   });
@@ -108,7 +108,7 @@ module('Integration | Component | Respond Incident Rules', function(hooks) {
       layout: hbs`
         {{#respond/incident-rules/row
           rule=rule
-          selectedItemId=selectedRuleId onRowClick=(action 'handleRowClick' rule)}}
+          selectedRules=selectedRules onRowClick=(action 'handleRowClick' rule)}}
           <div test-id="linkWrapper">
             {{#link-to 'respond.incident-rule' rule.id test-id="ruleLink"}}{{rule.name}}{{/link-to}}
           </div>
@@ -126,9 +126,9 @@ module('Integration | Component | Respond Incident Rules', function(hooks) {
 
     this.owner.register('component:test-clazz', FakeComponent);
 
-    this.set('selectedRuleId', 1);
+    this.set('selectedRules', [1]);
     this.set('rule', { id: 1, name: 'x' });
-    await render(hbs`{{test-clazz rule=rule selectedRuleId=selectedRuleId}}`);
+    await render(hbs`{{test-clazz rule=rule selectedRules=selectedRules}}`);
 
     const divSelector = '[test-id=linkWrapper]';
     await click(divSelector);

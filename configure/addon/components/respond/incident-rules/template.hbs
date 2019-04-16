@@ -55,7 +55,7 @@
             {{#respond/incident-rules/row
               rule=rule
               group=(if accessControl.respondCanManageAlertRules group null)
-              selectedItemId=selectedRuleId onRowClick=(action 'handleRowClick' rule)}}
+              selectedRules=selectedRules onRowClick=(action 'handleRowClick' rule)}}
               <td class="reorder-rule-cell">
                 <centered>
                   <span class="handle"></span>
@@ -63,11 +63,10 @@
               </td>
               <td>
                 <centered>
-                  <label class="rsa-form-radio-label {{if (eq rule.id selectedRuleId) 'checked'}}">
-                    {{radio-button
-                      value=rule.id
-                      groupValue=(readonly selectedRuleId)
-                      changed=(action 'selectRule' rule)
+                  <label class="rsa-form-checkbox-label {{if (contains rule.id selectedRules) 'checked'}}">
+                    {{rsa-form-checkbox
+                      checked=(contains rule.id selectedRules)
+                      change=(action 'selectRule' rule)
                     }}
                   </label>
                 </centered>

@@ -9,7 +9,7 @@
     </div>
     <div class="action-control clone-rule-button">
       {{#rsa-form-button
-        isDisabled=(not hasSelectedRule)
+        isDisabled=(not hasOneSelectedRule)
         defaultAction=(action 'clone')
       }}
         {{t 'configure.incidentRules.cloneRule'}}
@@ -18,7 +18,7 @@
     <div class="action-control delete-rule-button">
       {{#rsa-form-button
         style='danger'
-        isDisabled=(not hasSelectedRule)
+        isDisabled=(not hasOneSelectedRule)
         defaultAction=(action 'delete')
       }}
         {{t 'configure.incidentRules.deleteRule'}}

@@ -14,9 +14,9 @@ export const getIncidentRulesStatus = createSelector(
   (ruleState) => ruleState.rulesStatus
 );
 
-export const getSelectedIncidentRuleId = createSelector(
+export const getSelectedIncidentRules = createSelector(
   incidentRuleState,
-  (ruleState) => ruleState.selectedRule
+  (ruleState) => ruleState.selectedRules
 );
 
 export const getIsIncidentRulesTransactionUnderway = createSelector(
@@ -24,7 +24,7 @@ export const getIsIncidentRulesTransactionUnderway = createSelector(
   (ruleState) => ruleState.isTransactionUnderway
 );
 
-export const hasSelectedRule = createSelector(
-  getSelectedIncidentRuleId,
-  (selectedRuleId) => !!selectedRuleId
+export const hasOneSelectedRule = createSelector(
+  getSelectedIncidentRules,
+  (selectedRules) => selectedRules && selectedRules.length === 1
 );

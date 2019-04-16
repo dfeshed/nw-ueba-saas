@@ -2,21 +2,21 @@ import Component from '@ember/component';
 import Confirmable from 'component-lib/mixins/confirmable';
 import { deleteRule, cloneRule } from 'configure/actions/creators/respond/incident-rule-creators';
 import {
-  hasSelectedRule,
-  getSelectedIncidentRuleId
+  hasOneSelectedRule,
+  getSelectedIncidentRules
 } from 'configure/reducers/respond/incident-rules/selectors';
 import { connect } from 'ember-redux';
 import { inject } from '@ember/service';
 
 const stateToComputed = (state) => ({
-  hasSelectedRule: hasSelectedRule(state),
-  selectedRuleId: getSelectedIncidentRuleId(state)
+  hasOneSelectedRule: hasOneSelectedRule(state),
+  selectedRules: getSelectedIncidentRules(state)
 });
 
 const dispatchToActions = function(dispatch) {
   return {
     clone: () => {
-      const templateRuleId = this.get('selectedRuleId');
+      const [ templateRuleId ] = this.get('selectedRules');
       const onSuccess = (clonedRuleId) => {
         const transitionToRule = this.get('transitionToRule');
         transitionToRule(clonedRuleId);
@@ -25,7 +25,7 @@ const dispatchToActions = function(dispatch) {
     },
 
     delete: () => {
-      const ruleId = this.get('selectedRuleId');
+      const [ ruleId ] = this.get('selectedRules');
       this.send('showConfirmationDialog', 'delete-rule', {}, () => {
         dispatch(deleteRule(ruleId));
       });

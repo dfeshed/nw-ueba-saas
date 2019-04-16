@@ -3,7 +3,7 @@ import {
   getIncidentRules,
   getIncidentRulesStatus,
   getIsIncidentRulesTransactionUnderway,
-  getSelectedIncidentRuleId
+  getSelectedIncidentRules
 } from 'configure/reducers/respond/incident-rules/selectors';
 import { selectRule, reorderRules } from 'configure/actions/creators/respond/incident-rule-creators';
 import { connect } from 'ember-redux';
@@ -13,7 +13,7 @@ import _ from 'lodash';
 const stateToComputed = (state) => ({
   rules: getIncidentRules(state),
   rulesStatus: getIncidentRulesStatus(state),
-  selectedRuleId: getSelectedIncidentRuleId(state),
+  selectedRules: getSelectedIncidentRules(state),
   isTransactionUnderway: getIsIncidentRulesTransactionUnderway(state)
 });
 

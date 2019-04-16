@@ -3,8 +3,8 @@ import {
   getIncidentRules,
   getIncidentRulesStatus,
   getIsIncidentRulesTransactionUnderway,
-  getSelectedIncidentRuleId,
-  hasSelectedRule
+  getSelectedIncidentRules,
+  hasOneSelectedRule
 } from 'configure/reducers/respond/incident-rules/selectors';
 
 module('Unit | Utility | Incident Rules Selectors');
@@ -14,7 +14,7 @@ const rules = [{ id: '123', name: 'Test rule 1' }, { id: '124', name: 'Test rule
 const incidentRules = {
   rules,
   rulesStatus: 'complete',
-  selectedRule: '124',
+  selectedRules: ['124'],
   isTransactionUnderway: true
 };
 
@@ -29,7 +29,33 @@ const state = {
 test('Basic Incident Rules selectors', function(assert) {
   assert.equal(getIncidentRules(state), rules, 'The returned value from the getIncidentRules selector is as expected');
   assert.equal(getIncidentRulesStatus(state), 'complete', 'The returned value from the getIncidentRulesStatus selector is as expected');
-  assert.equal(getSelectedIncidentRuleId(state), '124', 'The returned value from the getSelectedIncidentRuleId selector is as expected');
-  assert.equal(hasSelectedRule(state), true, 'The returned value from the hasSelectedRule selector is as expected');
+  assert.equal(getSelectedIncidentRules(state), '124', 'The returned value from the getSelectedIncidentRules selector is as expected');
+  assert.equal(hasOneSelectedRule(state), true, 'The returned value from the hasOneSelectedRule selector is as expected');
   assert.equal(getIsIncidentRulesTransactionUnderway(state), true, 'The returned value from the getIsIncidentRulesTransactionUnderway selector is as expected');
+});
+
+test('hasOneSelectedRule returns false when 2 rules are selected', function(assert) {
+  const state = {
+    configure: {
+      respond: {
+        incidentRules: {
+          selectedRules: ['124', '999']
+        }
+      }
+    }
+  };
+  assert.equal(hasOneSelectedRule(state), false, 'The returned value from the hasOneSelectedRule selector is as expected');
+});
+
+test('hasOneSelectedRule returns false when 0 rules are selected', function(assert) {
+  const state = {
+    configure: {
+      respond: {
+        incidentRules: {
+          selectedRules: []
+        }
+      }
+    }
+  };
+  assert.equal(hasOneSelectedRule(state), false, 'The returned value from the hasOneSelectedRule selector is as expected');
 });

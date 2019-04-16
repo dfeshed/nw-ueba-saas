@@ -9,7 +9,7 @@ module('Unit | Utility | Incident Rules Reducers');
 const initialState = {
   rules: [],
   rulesStatus: null,
-  selectedRule: null
+  selectedRules: []
 };
 
 test('With FETCH_INCIDENT_RULES_STARTED, the rulesState is properly set', function(assert) {
@@ -57,7 +57,7 @@ test('With FETCH_INCIDENT_RULES_FAILED, the ruleState is properly set', function
 test('With INCIDENT_RULES_SELECT_RULE, the selectedRule is properly set', function(assert) {
   const expectedEndState = {
     ...initialState,
-    selectedRule: '1234'
+    selectedRules: ['1234']
   };
 
   const endState = reducer(Immutable.from(initialState), {
@@ -70,16 +70,33 @@ test('With INCIDENT_RULES_SELECT_RULE, the selectedRule is properly set', functi
 test('With INCIDENT_RULES_SELECT_RULE, the selectedRule is removed if the rule ID is already set', function(assert) {
   const initState = {
     ...initialState,
-    selectedRule: '1234'
+    selectedRules: ['1234']
   };
   const expectedEndState = {
     ...initialState,
-    selectedRule: null
+    selectedRules: []
   };
 
   const endState = reducer(Immutable.from(initState), {
     type: ACTION_TYPES.INCIDENT_RULES_SELECT_RULE,
     payload: '1234'
+  });
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('With INCIDENT_RULES_SELECT_RULE, the selectedRule is appended if the rule ID is not already selected', function(assert) {
+  const initState = {
+    ...initialState,
+    selectedRules: ['1234']
+  };
+  const expectedEndState = {
+    ...initialState,
+    selectedRules: ['1234', '5678']
+  };
+
+  const endState = reducer(Immutable.from(initState), {
+    type: ACTION_TYPES.INCIDENT_RULES_SELECT_RULE,
+    payload: '5678'
   });
   assert.deepEqual(endState, expectedEndState);
 });
@@ -101,7 +118,7 @@ test('With INCIDENT_RULES_DELETE, the rules are properly updated', function(asse
     ...initialState,
     rules: [{ id: '54321', order: 1 }, { id: '12345', order: 2 }, { id: '787933', order: 3 }],
     isTransactionUnderway: true,
-    selectedRule: '54321'
+    selectedRules: ['1234', '54321']
   };
   const payload = { data: { id: '54321' } };
   const action = {
@@ -113,7 +130,7 @@ test('With INCIDENT_RULES_DELETE, the rules are properly updated', function(asse
     ...initialState,
     rules: [{ id: '12345', order: 1 }, { id: '787933', order: 2 }], // the order must be properly updated on all non-deleted items
     isTransactionUnderway: false,
-    selectedRule: null
+    selectedRules: ['1234']
   };
 
   const endState = reducer(Immutable.from(initState), action);

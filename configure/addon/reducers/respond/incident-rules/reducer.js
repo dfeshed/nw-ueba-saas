@@ -5,7 +5,7 @@ import reduxActions from 'redux-actions';
 const initialState = {
   rules: [],
   rulesStatus: null,
-  selectedRule: null,
+  selectedRules: [],
   isTransactionUnderway: false
 };
 
@@ -30,26 +30,31 @@ const reducer = reduxActions.handleActions({
     return state.set('rulesStatus', 'error');
   },
 
-  [ACTION_TYPES.INCIDENT_RULES_SELECT_RULE]: (state, { payload }) =>
-    state.set('selectedRule', payload === state.selectedRule ? null : payload),
+  [ACTION_TYPES.INCIDENT_RULES_SELECT_RULE]: (state, { payload }) => {
+    const rules = state.selectedRules;
+    const found = rules.includes(payload);
+    const selectedRules = found ? rules.filter((id) => id !== payload) : rules.concat(payload);
+    return state.set('selectedRules', selectedRules);
+  },
 
   [ACTION_TYPES.INCIDENT_RULES_DELETE_STARTED]: (state) => state.set('isTransactionUnderway', true),
 
   [ACTION_TYPES.INCIDENT_RULES_DELETE_FAILED]: (state) => state.set('isTransactionUnderway', false),
 
   [ACTION_TYPES.INCIDENT_RULES_DELETE]: (state, { payload: { data } }) => {
-    const { rules } = state;
+    const { rules, selectedRules } = state;
     // Filter out newly deleted items from the main items array
     const filteredRules = rules.filter((item) => (item.id !== data.id));
     // Update the order on the remaining rules
     const updatedRules = filteredRules.map((rule, index) => {
       return { ...rule, order: index + 1 };
     });
+    const newSelectedRules = selectedRules.filter((id) => id !== data.id);
 
     return state.merge({
       rules: updatedRules,
       isTransactionUnderway: false,
-      selectedRule: null
+      selectedRules: newSelectedRules
     });
   },
   [ACTION_TYPES.INCIDENT_RULES_REORDER_STARTED]: (state) => state.set('isTransactionUnderway', true),
