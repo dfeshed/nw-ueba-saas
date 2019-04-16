@@ -13,11 +13,14 @@ from airflow.utils.state import State
 from presidio.builders.elasticsearch.elasticsearch_operator_builder import build_clean_elasticsearch_data_operator
 from presidio.builders.presidioconfiguration.presidio_configuration_operator_builder import \
     build_reset_presidio_configuration_operator
+from presidio.dags import maintenance_flow_dag
 from presidio.utils.airflow.operators import spring_boot_jar_operator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 
+
 TASK_KILL_TIMEOUT = 60
+ADAPTER_PROPERTIES_PATH = maintenance_flow_dag.ADAPTER_PROPERTIES_PATH
 
 
 class RerunFullFlowDagBuilder(object):
@@ -190,9 +193,7 @@ def build_clean_logs_operator(cleanup_dag):
 
 
 def build_clean_adapter_operator(cleanup_dag, is_remove_ca_tables):
-    adapter_clean_bash_command = "rm -f /var/lib/netwitness/presidio/flume/conf/adapter/file_*" \
-                                 " && rm -f /var/lib/netwitness/presidio/flume/conf/adapter/authentication_*" \
-                                 " && rm -f /var/lib/netwitness/presidio/flume/conf/adapter/active_directory_*"
+    adapter_clean_bash_command = "rm -f " + ADAPTER_PROPERTIES_PATH + "*-*"
 
     clean_adapter_operator = BashOperator(task_id='clean_adapter',
                                           bash_command=adapter_clean_bash_command,
