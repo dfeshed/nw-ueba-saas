@@ -30,7 +30,14 @@ const PrimaryAddress = Component.extend({
   tagName: 'box',
   classNames: 'primary-address',
   classNameBindings: ['selectedSettingId'],
-  selectedSettingId: null
+  selectedSettingId: null,
+
+  actions: {
+    handlePrimaryAliasChange(value) {
+      const field = 'primaryAlias';
+      this.send('updatePolicyProperty', field, value);
+    }
+  }
 });
 
 export default connect(stateToComputed, dispatchToActions)(PrimaryAddress);

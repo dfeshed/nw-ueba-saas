@@ -1,10 +1,10 @@
 <hbox>
-  {{rsa-form-input
+  {{rsa-form-input-oneway
     class='beacon-interval-value'
-    value=(readonly beaconIntervalValue)
+    value=beaconIntervalValue
     isError=beaconIntervalValueValidator.showError
     errorMessage=(t beaconIntervalValueValidator.errorMessage)
-    focusOut=(action 'handleBeaconIntervalValueChange')
+    onFocusOut=(action 'handleBeaconIntervalValueChange' value='target.value')
   }}
   <div class="beacon-interval-unit">
     {{#power-select

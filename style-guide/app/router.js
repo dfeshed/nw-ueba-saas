@@ -71,6 +71,7 @@ Router.map(function() {
       this.route('checkboxes');
       this.route('textareas');
       this.route('inputs');
+      this.route('inputs-oneway');
       this.route('sliders');
       this.route('datetime');
       this.route('date-time-range');

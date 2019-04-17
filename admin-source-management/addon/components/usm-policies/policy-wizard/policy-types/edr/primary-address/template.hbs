@@ -28,12 +28,12 @@
     {{/rsa-text-with-tooltip}}
   </span>
   <span class="rsa-form-input">
-    {{rsa-form-input
+    {{rsa-form-input-oneway
       class='primary-alias'
-      value=(readonly primaryAlias)
+      value=primaryAlias
       isError=isPrimaryAliasValid.showError
       errorMessage=(t isPrimaryAliasValid.errorMessage)
-      focusOut=(action 'updatePolicyProperty' 'primaryAlias')
+      onFocusOut=(action 'handlePrimaryAliasChange' value='target.value')
     }}
   </span>
 </vbox>

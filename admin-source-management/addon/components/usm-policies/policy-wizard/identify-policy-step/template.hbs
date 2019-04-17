@@ -25,7 +25,7 @@
     </label>
   </hbox>
   <hbox class="control">
-    {{rsa-form-input
+    {{rsa-form-input-oneway
       class='policy-name'
       tooltip=(t 'adminUsm.policyWizard.nameTooltip')
       tabIndex='2'
@@ -36,8 +36,8 @@
       isError=nameValidator.showError
       errorMessage=(t nameValidator.errorMessage)
       isDisabled=cannotEditPolicyIdentity
-      focusOut=(action 'handleNameChange')
-      }}
+      onFocusOut=(action 'handleNameChange' value='target.value')
+    }}
   </hbox>
   <vbox>
     <hbox class="control-with-error">

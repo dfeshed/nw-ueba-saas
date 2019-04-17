@@ -1,0 +1,83 @@
+<style>
+  ul.usage-notes {
+    list-style-type: circle;
+    list-style-position: inside;
+  }
+
+  ul.usage-notes li {
+    padding: 5px;
+    line-height: 1.5rem;
+  }
+
+  textarea.events-log {
+    margin-bottom: 1rem;
+    width: 80%;
+    height: 75px;
+  }
+</style>
+
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <fill block class="scroll-box">
+
+    {{#spec-category title="Usage"}}
+      {{#spec-member title="Block & Inline usage notes"}}
+        <p>
+          Usage is generally the same as the {{#link-to "demos.form.inputs"}}rsa-form-input{{/link-to}} component,
+          please refer to the {{#link-to "demos.form.inputs"}}rsa-form-input{{/link-to}} samples except for the listed differences:
+        </p>
+        <ul class="usage-notes">
+          <li>
+            The first difference, with rsa-form-input-oneway, is that the component uses one-way binding by default.
+            The component uses an &lt;input&gt; directly, so there is no need to use the readOnly helper with the value property.
+            <span style="white-space:nowrap">There is <strong>NO</strong> need for value=(readOnly someValue)</span>
+          </li>
+          <li>
+            The second difference is how events are handled (samples below).
+            Rather than setting closure actions with dasherized attributes <span style="white-space:nowrap">(focus-out=(action handleFocusOut)),</span>
+            or camelCased attributes <span style="white-space:nowrap">(focusOut=(action handleFocusOut)),</span>
+            we use the onCamelCasedEventName to pass actions through to the &lt;input&gt; tag.
+            The component currently supports onEnter, onFocusOut, onKeyDown, and onKeyUp... and
+            the handler functions will receive the original browser Event (FocusEvent, KeyboardEvent, etc.)
+            For example: <span style="white-space:nowrap">(onFocusOut=(action handleFocusOut))</span>
+          </li>
+        </ul>
+      {{/spec-member}}
+
+      {{#spec-member title="Events"}}
+        <textarea
+          class="events-log"
+          placeholder="&lt;input&gt; Events will be logged here..."
+          disabled="true"
+          value={{eventsLog}}>
+        </textarea>
+        {{rsa-form-input-oneway
+          label='Input Label'
+          placeholder='Input Placeholder'
+          value=inputValue
+          onEnter=(action 'handleOnEnter')
+          onFocusOut=(action 'handleOnFocusOut')
+          onKeyDown=(action 'handleOnKeyDown')
+          onKeyUp=(action 'handleOnKeyUp')
+        }}
+        {{!-- BEGIN-SNIPPET inputoneway2
+        {{rsa-form-input-oneway
+          label='Input Label'
+          placeholder='Input Placeholder'
+          value=inputValue
+          onEnter=(action 'handleOnEnter')
+          onFocusOut=(action 'handleOnFocusOut')
+          onKeyDown=(action 'handleOnKeyDown')
+          onKeyUp=(action 'handleOnKeyUp')
+        }}
+        END-SNIPPET --}}
+        {{code-snippet name="inputoneway2.hbs"}}
+
+      {{/spec-member}}
+    {{/spec-category}}
+
+  </fill>
+</hbox>

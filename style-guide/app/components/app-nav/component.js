@@ -78,7 +78,8 @@ export default Component.extend({
         { name: 'Sliders', link: 'sliders' },
         { name: 'Switches', link: 'switch' },
         { name: 'Textareas', link: 'textareas' },
-        { name: 'Text Inputs', link: 'inputs' }
+        { name: 'Text Inputs', link: 'inputs' },
+        { name: 'Text Inputs (one-way binding)', link: 'inputs-oneway' }
       ]
     },
     {
