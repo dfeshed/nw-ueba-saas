@@ -25,8 +25,8 @@ const suspiciousThreads = Component.extend({
   actions: {
     toggleSelectedRow(item, index, e) {
       this.send('toggleSelectedProcessDllRow', item);
-      this.send('setDllRowSelectedId', index);
       this.openPropertyPanel();
+      this.send('setDllRowSelectedId', index);
       e.stopPropagation();
     }
   }
