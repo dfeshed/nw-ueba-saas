@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import Component from '@ember/component';
 import hbs from 'htmlbars-inline-precompile';
 import { patchFlash } from 'sa/tests/helpers/patch-flash';
@@ -56,7 +56,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
     assert.equal(trim(find(`${optionsSelector}:nth-of-type(2)`).textContent), japaneseLocale);
   });
 
-  test('onchange of the select should alter the active locale', async function(assert) {
+  skip('onchange of the select should alter the active locale', async function(assert) {
     assert.expect(4);
 
     await render(hbs `{{rsa-locale-preferences}}`);

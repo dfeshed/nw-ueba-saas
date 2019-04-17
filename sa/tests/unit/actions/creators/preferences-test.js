@@ -1,4 +1,4 @@
-import { test, module } from 'qunit';
+import { test, module, skip } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { bindActionCreators } from 'redux';
 import { settled } from '@ember/test-helpers';
@@ -351,7 +351,7 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
     assert.equal(locale.id, 'fr_FR');
   });
 
-  test('updateLocale will send id when locale en_US', async function(assert) {
+  skip('updateLocale will send id when locale en_US', async function(assert) {
     assert.expect(3);
 
     setState({

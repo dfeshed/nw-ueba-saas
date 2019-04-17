@@ -197,7 +197,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     await settled().then(() => done());
   });
 
-  test('Clicking on a table header cell toggles the sort', async function(assert) {
+  skip('Clicking on a table header cell toggles the sort', async function(assert) {
     assert.expect(4);
     let socketSuccessOne = false;
     let socketSuccessTwo = false;
