@@ -36,6 +36,19 @@ test('Should update seach term', function(assert) {
   assert.deepEqual(newEndState.searchTerm, 'foo');
 });
 
+test('Should update visible columns', function(assert) {
+  const previous = Immutable.from({
+    visibleColumns: null
+  });
+
+  const action = {
+    type: ACTION_TYPES.SET_VISIBLE_COLUMNS,
+    payload: 'foo'
+  };
+  const newEndState = reducer(previous, action);
+  assert.deepEqual(newEndState.visibleColumns, 'foo');
+});
+
 test('ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS reducer', function(assert) {
   const toggle = {
     type: ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS

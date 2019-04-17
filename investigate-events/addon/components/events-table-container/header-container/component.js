@@ -10,6 +10,7 @@ import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 import { shouldStartAtOldest, actualEventCount, searchMatchesCount } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
+import { observer } from '@ember/object';
 
 const stateToComputed = (state) => ({
   reconSize: state.investigate.data.reconSize,
@@ -80,12 +81,17 @@ const HeaderContainer = Component.extend({
   // This is the debounced execution of the searchForTerm action creator
   // sent onKeyUp of the tethered panel input for text search
   searchForTerm() {
-    this.send('searchForTerm', this.readOnlySearchTerm);
+    this.send('searchForTerm', this._searchTerm);
   },
 
   didInsertElement() {
     this.set('_searchTerm', this.get('searchTerm'));
   },
+
+  // update searchTerm when cleared via query execution
+  searchTermWasChanged: observer('searchTerm', function() {
+    this.set('_searchTerm', this.get('searchTerm'));
+  }),
 
   searchPanelDidOpen() {
     schedule('afterRender', () => {

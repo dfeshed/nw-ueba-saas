@@ -23,7 +23,8 @@ const _initialState = Immutable.from({
   eventTimeSortOrder: 'Ascending',
   // Pref might change in the middle of a query. Keeping a copy of preference with which the last query was performed.
   eventTimeSortOrderPreferenceWhenQueried: undefined,
-  searchTerm: null
+  searchTerm: null,
+  visibleColumns: []
 });
 
 // * `data` is an array of objects with the following properties
@@ -39,6 +40,10 @@ const _initialState = Immutable.from({
 export default handleActions({
   [ACTION_TYPES.SET_SEARCH_TERM]: (state, { payload }) => {
     return state.set('searchTerm', payload);
+  },
+
+  [ACTION_TYPES.SET_VISIBLE_COLUMNS]: (state, { payload }) => {
+    return state.set('visibleColumns', payload);
   },
 
   [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state) => {

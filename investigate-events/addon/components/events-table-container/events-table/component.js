@@ -20,6 +20,7 @@ import {
   toggleSelectAllEvents,
   toggleEventSelection
 } from 'investigate-events/actions/interaction-creators';
+import { setVisibleColumns } from 'investigate-events/actions/data-creators';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
 
 const stateToComputed = (state) => ({
@@ -53,7 +54,8 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   eventsLogsGet,
   toggleSelectAllEvents,
-  toggleEventSelection
+  toggleEventSelection,
+  setVisibleColumns
 };
 
 // checkboxes for multiple event selection

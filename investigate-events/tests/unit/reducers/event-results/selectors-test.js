@@ -135,6 +135,9 @@ module('Unit | Selectors | event-results', function(hooks) {
       investigate: {
         eventResults: {
           searchTerm: 'log',
+          visibleColumns: [{
+            field: 'medium'
+          }],
           data: [
             { sessionId: 1, medium: 32 }, // will resolve to "log"
             { sessionId: 2, medium: 32, 'nwe.callback_id': true }, // will resolve to "Endpoint"
@@ -161,11 +164,48 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result.length, 1);
   });
 
+  test('searchMatches returns no matches when not visibleColumns', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          searchTerm: 'log',
+          visibleColumns: [{
+            field: 'foo'
+          }],
+          data: [
+            { sessionId: 1, medium: 32 }, // will resolve to "log"
+            { sessionId: 2, medium: 32, 'nwe.callback_id': true }, // will resolve to "Endpoint"
+            { sessionId: 3 }
+          ]
+        },
+        dictionaries: {
+          aliases: 'aliases'
+        },
+        data: {
+          columnGroup: 'EMAIL',
+          columnGroups: EventColumnGroups,
+          globalPreferences: {
+            dateFormat: 'dateFormat',
+            timeFormat: 'timeFormat',
+            timeZone: 'timeZone',
+            locale: 'locale'
+          }
+        }
+      }
+    };
+
+    const result = searchMatches(state);
+    assert.equal(result.length, 0);
+  });
+
   test('searchMatchesCount returns count of matches', async function(assert) {
     const state = {
       investigate: {
         eventResults: {
           searchTerm: 'log',
+          visibleColumns: [{
+            field: 'medium'
+          }],
           data: [
             { sessionId: 1, medium: 32 }, // will resolve to "log"
             { sessionId: 3 }
@@ -196,6 +236,9 @@ module('Unit | Selectors | event-results', function(hooks) {
       investigate: {
         eventResults: {
           searchTerm: 'log',
+          visibleColumns: [{
+            field: 'medium'
+          }],
           data: [
             { sessionId: 1, random: 32 }, // will resolve to "log"
             { sessionId: 2, medium: 32, 'nwe.callback_id': true }, // will resolve to "Endpoint"
@@ -227,6 +270,9 @@ module('Unit | Selectors | event-results', function(hooks) {
       investigate: {
         eventResults: {
           searchTerm: 'end',
+          visibleColumns: [{
+            field: 'medium'
+          }],
           data: [
             { sessionId: 1, medium: 32 }, // will resolve to "log"
             { sessionId: 2, medium: 32, 'nwe.callback_id': true }, // will resolve to "Endpoint"
@@ -258,6 +304,9 @@ module('Unit | Selectors | event-results', function(hooks) {
       investigate: {
         eventResults: {
           searchTerm: 'foo',
+          visibleColumns: [{
+            field: 'medium'
+          }],
           data: [
             { sessionId: 1, foo: 'foo' },
             { sessionId: 3 }

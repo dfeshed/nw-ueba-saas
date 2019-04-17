@@ -53,7 +53,7 @@
       panelId='tableSearchPanel'
       panelDidOpen=searchPanelDidOpen}}
       <section>
-        {{rsa-form-input value=readOnlySearchTerm onKeyUp=(action 'debouncedSearchForTerm') label=(t 'investigate.events.search') placeholder=(t 'investigate.events.searchPlaceholder')}}
+        {{rsa-form-input value=_searchTerm onKeyUp=(action 'debouncedSearchForTerm') label=(t 'investigate.events.search') placeholder=(t 'investigate.events.searchPlaceholder')}}
         {{#if searchMatchesCount}}
           <p>{{searchMatchesCount}} match(es) found.</p>
         {{/if}}

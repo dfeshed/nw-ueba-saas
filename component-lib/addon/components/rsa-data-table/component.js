@@ -6,7 +6,7 @@ import computed from 'ember-computed';
 import Component from '@ember/component';
 import EmberObject, { get, set, observer } from '@ember/object';
 import { isEmpty } from '@ember/utils';
-import { run, once } from '@ember/runloop';
+import { run, once, schedule } from '@ember/runloop';
 import DomWatcher from 'component-lib/mixins/dom/watcher';
 
 const DEFAULT_COLUMN_WIDTH = 100;
@@ -314,6 +314,12 @@ export default Component.extend(DomWatcher, {
 
     this.set('columnWidths', columnWidths);
     this._applyColumnWidth(newCols);
+
+    if (this.visibleColumnsDidChange) {
+      schedule('afterRender', () => {
+        this.visibleColumnsDidChange(newCols);
+      });
+    }
 
     return newCols;
   }),

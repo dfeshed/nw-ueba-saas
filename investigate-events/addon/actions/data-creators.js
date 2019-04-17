@@ -4,7 +4,7 @@ import { fetchSummary } from 'investigate-shared/actions/api/services';
 import getEventCount from './event-count-creators';
 import getEventTimeline from './event-timeline-creators';
 import { eventsStartNewest, eventsStartOldest } from './events-creators';
-import { setQueryTimeRange } from 'investigate-events/actions/interaction-creators';
+import { setQueryTimeRange, searchForTerm } from 'investigate-events/actions/interaction-creators';
 import { selectedTimeRange, canFetchEvents } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { shouldStartAtOldest } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaGet } from './meta-creators';
@@ -108,6 +108,9 @@ export const updateSummaryData = () => {
 export const fetchInvestigateData = () => {
   return (dispatch, getState) => {
     if (canFetchEvents(getState())) {
+      // clear search term
+      dispatch(searchForTerm(null));
+
       // Alert UI querying has begun
       dispatch({
         type: ACTION_TYPES.QUERY_IS_RUNNING,
@@ -137,6 +140,13 @@ export const fetchInvestigateData = () => {
 export const updateGlobalPreferences = (payload) => {
   return {
     type: ACTION_TYPES.UPDATE_GLOBAL_PREFERENCES,
+    payload
+  };
+};
+
+export const setVisibleColumns = (payload) => {
+  return {
+    type: ACTION_TYPES.SET_VISIBLE_COLUMNS,
     payload
   };
 };

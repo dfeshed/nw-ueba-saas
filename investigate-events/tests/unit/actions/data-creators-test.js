@@ -12,6 +12,11 @@ module('Unit | Actions | Data-Creators', function(hooks) {
     initialize(this.owner);
   });
 
+  test('setVisibleColumns action creator returns proper type', function(assert) {
+    const { type } = dataCreators.setVisibleColumns();
+    assert.equal(type, ACTION_TYPES.SET_VISIBLE_COLUMNS, 'action has the correct type');
+  });
+
   test('updateGlobalPreferences action creator returns proper type', function(assert) {
     const { type } = dataCreators.updateGlobalPreferences();
     assert.equal(type, ACTION_TYPES.UPDATE_GLOBAL_PREFERENCES, 'action has the correct type');

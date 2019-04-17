@@ -14,6 +14,7 @@ const _columnGroup = (state) => state.investigate.data.columnGroup;
 const _resultsData = (state) => state.investigate.eventResults.data;
 const _eventResultCount = (state) => state.investigate.eventCount.data;
 const _status = (state) => state.investigate.eventResults.status;
+const _visibleColumns = (state) => state.investigate.eventResults.visibleColumns;
 const _eventTimeSortOrder = (state) => state.investigate.eventResults.eventTimeSortOrder;
 const _sessionId = (state) => state.investigate.queryNode.sessionId;
 const _errorMessage = (state) => state.investigate.eventResults.message;
@@ -267,8 +268,8 @@ export const eventTableFormattingOpts = createSelector(
 );
 
 export const searchMatches = createSelector(
-  [_searchTerm, _resultsData, eventTableFormattingOpts, _columnGroup, _columnGroups],
-  (searchTerm, data, opts, columnGroup, columnGroups) => {
+  [_searchTerm, _resultsData, eventTableFormattingOpts, _columnGroup, _columnGroups, _visibleColumns],
+  (searchTerm, data, opts, columnGroup, columnGroups, visibleColumns) => {
     // return empty set unless searchTerm meets length requirement
     const searchTermLengthRequirement = 2;
     if (!searchTerm || searchTerm.length < searchTermLengthRequirement) {
@@ -283,6 +284,7 @@ export const searchMatches = createSelector(
     const columnGroupObj = columnGroups.find(({ id }) => id === columnGroup);
     const { columns } = columnGroupObj;
     const columnKeys = columns.map(({ field }) => field);
+    const visibleKeys = visibleColumns.map(({ field }) => field);
 
     for (let dataLoopIndex = 0; dataLoopIndex < data.length; dataLoopIndex++) {
       let prunedFields;
@@ -293,7 +295,7 @@ export const searchMatches = createSelector(
       } else {
         // prune list of data fields by visible columns
         prunedFields = Object.entries(data[dataLoopIndex]).filter(([field]) => {
-          if (columnKeys.includes(field)) {
+          if (columnKeys.includes(field) && visibleKeys.includes(field)) {
             return true;
           }
         });
