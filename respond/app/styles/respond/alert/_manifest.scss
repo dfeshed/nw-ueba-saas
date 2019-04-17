@@ -29,6 +29,10 @@ $maxHeightAlertNamesTable: $alertNamesRowHeight * $minimumRowsBeforeScrollbar;
       @include rsa-font(body);
       color: text-color(primary, lighter);
     }
+    // 1px bottom border causes a redundant scrollbar to appear
+    &.is-last {
+      border-bottom: 0;
+    }
   }
 
   .rsa-data-table-body-cell {
