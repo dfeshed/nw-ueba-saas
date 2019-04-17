@@ -51,7 +51,7 @@ class RerunFullFlowDagBuilder(object):
 
         clean_elasticsearch_data_operator = build_clean_elasticsearch_data_operator(dag)
 
-        clean_adapter_operator = build_clean_adapter_operator(dag, is_remove_ca_tables)
+        clean_adapter_operator = build_clean_adapter_operator(dag, 0, 'clean_adapter')
 
         reset_presidio_configuration_operator = build_reset_presidio_configuration_operator(dag)
 
@@ -192,10 +192,10 @@ def build_clean_logs_operator(cleanup_dag):
     return clean_logs_operator
 
 
-def build_clean_adapter_operator(cleanup_dag, is_remove_ca_tables):
-    adapter_clean_bash_command = "rm -f " + ADAPTER_PROPERTIES_PATH + "*-*"
-
-    clean_adapter_operator = BashOperator(task_id='clean_adapter',
+def build_clean_adapter_operator(cleanup_dag, num_hours_not_delete, task_id):
+    adapter_clean_bash_command = "find " + ADAPTER_PROPERTIES_PATH + " -type f -name '*-*' -mmin +" + \
+                                 str(num_hours_not_delete * 60) + " -exec rm -f {} \;"
+    clean_adapter_operator = BashOperator(task_id=task_id,
                                           bash_command=adapter_clean_bash_command,
                                           dag=cleanup_dag)
     return clean_adapter_operator
