@@ -11,9 +11,9 @@ export default [ {
   'resultMeta': {
     'timeQuerySubmitted': 1486487508727,
     'timeFilter.timeUnit': 'DAY',
-    'timeFilter.propertyName': 'alert.timestamp',
+    'timeFilter.propertyName': 'created',
     'timeFilter.timeUnitCount': 7,
-    'timeFilter.absoluteStartTime': true
+    'timeFilter.absoluteStartTime': false
   },
   'pagingEnabled': false,
   'currentPageId': 0,
@@ -33,9 +33,9 @@ export default [ {
   'resultMeta': {
     'timeQuerySubmitted': 1486487548931,
     'timeFilter.timeUnit': 'DAY',
-    'timeFilter.propertyName': 'incidentCreated',
+    'timeFilter.propertyName': 'created',
     'timeFilter.timeUnitCount': 7,
-    'timeFilter.absoluteStartTime': true
+    'timeFilter.absoluteStartTime': false
   },
   'pagingEnabled': false,
   'currentPageId': 0,

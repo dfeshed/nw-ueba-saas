@@ -6,7 +6,7 @@ import dataSourceDetails from 'context/config/im-incidents';
 
 const contextData = { resultList: [
   {
-    '_id': 'INC-230',
+    'id': 'INC-230',
     'alertCount': 5,
     'averageAlertRiskScore': 90,
     'created': {
@@ -17,7 +17,7 @@ const contextData = { resultList: [
     'status': 'NEW'
   },
   {
-    '_id': 'INC-134',
+    'id': 'INC-134',
     'alertCount': 240,
     'averageAlertRiskScore': 90,
     'created': {
@@ -28,7 +28,7 @@ const contextData = { resultList: [
     'status': 'NEW'
   },
   {
-    '_id': 'INC-132',
+    'id': 'INC-132',
     'alertCount': 600,
     'averageAlertRiskScore': 90,
     'created': {

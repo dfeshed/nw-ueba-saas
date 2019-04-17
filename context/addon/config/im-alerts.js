@@ -5,11 +5,11 @@ export default {
   headerRequired: false,
   footerRequired: true,
   title: 'context.alerts.title',
-  sortColumn: 'alert.timestamp.$date',
+  sortColumn: 'created',
   sortOrder: 'desc',
   columns: [
     {
-      field: 'alert.timestamp.$date',
+      field: 'created',
       title: 'context.alerts.created',
       width: '15vw',
       dataType: 'datetime',
@@ -17,7 +17,7 @@ export default {
       className: 'sort'
     },
     {
-      field: 'alert.risk_score',
+      field: 'riskScore',
       title: 'context.alerts.risk_score',
       width: '5vw',
       class: 'rsa-module-riskscore',
@@ -26,24 +26,24 @@ export default {
       className: 'sort'
     },
     {
-      field: 'alert.name',
+      field: 'title',
       title: 'context.alerts.name',
       width: '15vw',
       dataType: 'link',
       path: '/respond/alert/{0}',
-      linkField: '_id.$oid',
+      linkField: 'id',
       icon: 'arrow-down-8',
       className: 'sort'
     },
     {
-      field: 'alert.source',
+      field: 'source',
       title: 'context.alerts.source',
       width: '15vw',
       icon: 'arrow-down-8',
       className: 'sort'
     },
     {
-      field: 'alert.numEvents',
+      field: 'eventCount',
       title: 'context.alerts.numEvents',
       width: '5vw',
       icon: 'arrow-down-8',

@@ -5,11 +5,11 @@ export default {
   headerRequired: false,
   footerRequired: true,
   title: 'context.incident.title',
-  sortColumn: 'created.$date',
+  sortColumn: 'created',
   sortOrder: 'desc',
   columns: [
     {
-      field: 'created.$date',
+      field: 'created',
       title: 'context.incident.created',
       width: '15vw',
       dataType: 'datetime',
@@ -33,7 +33,7 @@ export default {
       className: 'sort'
     },
     {
-      field: '_id',
+      field: 'id',
       title: 'context.incident._id',
       width: '5vw',
       dataType: 'link',
@@ -42,7 +42,7 @@ export default {
       className: 'sort'
     },
     {
-      field: 'name',
+      field: 'title',
       title: 'context.incident.name',
       width: '15vw',
       icon: 'arrow-down-8',
@@ -56,7 +56,7 @@ export default {
       className: 'sort'
     },
     {
-      field: 'assignee.name',
+      field: 'assignee',
       title: 'context.incident.assignee',
       width: '8vw',
       icon: 'arrow-down-8',

@@ -50,199 +50,142 @@ export default [
     'dataSourceGroup': 'Incidents',
     'resultList': [
       {
-        '_id': 'INC-230',
+        'id': 'INC-230',
         'alertCount': 5,
         'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
-        },
-        'assignee': {
-          'name': 'Administrator'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'created': '2016-02-09T04:17:06.156Z',
+        'assignee': 'Administrator',
+        'title': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
         'status': 'NEW'
       },
       {
-        '_id': 'INC-134',
+        'id': 'INC-134',
         'alertCount': 240,
         'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-05T04:45:06.206Z'
-        },
-        'assignee': {
-          'name': 'Administrator'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'created': '2016-02-05T04:45:06.206Z',
+        'assignee': 'Administrator',
+        'title': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
         'status': 'NEW'
       },
       {
-        '_id': 'INC-132',
+        'id': 'INC-132',
         'alertCount': 600,
         'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-04T06:01:39.644Z'
-        },
-        'assignee': {
-          'name': 'Administrator'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'created': '2016-02-04T06:01:39.644Z',
+        'assignee': 'Administrator',
+        'title': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
         'status': 'NEW'
       },
       {
-        '_id': 'INC-230',
+        'id': 'INC-230',
         'alertCount': 5,
         'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
-        },
-        'assignee': {
-          'name': 'Administrator'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'created': '2016-02-09T04:17:06.156Z',
+        'assignee': 'Administrator',
+        'title': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
         'status': 'NEW'
       },
       {
-        '_id': 'INC-230',
+        'id': 'INC-230',
         'alertCount': 5,
         'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
-        },
-        'assignee': {
-          'name': 'Administrator'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'created': '2016-02-09T04:17:06.156Z',
+        'assignee': 'Administrator',
+        'title': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
         'status': 'NEW'
       },
       {
-        '_id': 'INC-230',
+        'id': 'INC-230',
         'alertCount': 5,
         'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
-        },
-        'assignee': {
-          'name': 'Administrator'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'created': '2016-02-09T04:17:06.156Z',
+        'assignee': 'Administrator',
+        'title': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
         'status': 'NEW'
       },
       {
-        '_id': 'INC-230',
+        'id': 'INC-230',
         'alertCount': 5,
         'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
-        },
-        'assignee': {
-          'name': 'Administrator'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'created': '2016-02-09T04:17:06.156Z',
+        'assignee': 'Administrator',
+        'title': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
         'status': 'NEW'
       },
       {
-        '_id': 'INC-230',
+        'id': 'INC-230',
         'alertCount': 5,
         'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
-        },
-        'assignee': {
-          'name': 'Administrator'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'created': '2016-02-09T04:17:06.156Z',
+        'assignee': 'Administrator',
+        'title': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
         'status': 'NEW'
       },
       {
-        '_id': 'INC-134',
+        'id': 'INC-134',
         'alertCount': 240,
         'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-05T04:45:06.206Z'
-        },
-        'assignee': {
-          'name': 'Administrator'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'created': '2016-02-05T04:45:06.206Z',
+        'assignee': 'Administrator',
+        'title': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
         'status': 'NEW'
       },
       {
-        '_id': 'INC-132',
+        'id': 'INC-132',
         'alertCount': 600,
         'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-04T06:01:39.644Z'
-        },
-        'assignee': {
-          'name': 'Administrator'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'created': '2016-02-04T06:01:39.644Z',
+        'assignee': 'Administrator',
+        'title': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
         'status': 'NEW'
       },
       {
-        '_id': 'INC-230',
+        'id': 'INC-230',
         'alertCount': 5,
         'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
-        },
-        'assignee': {
-          'name': 'Administrator'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'created': '2016-02-09T04:17:06.156Z',
+        'assignee': 'Administrator',
+        'title': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
         'status': 'NEW'
       },
       {
-        '_id': 'INC-230',
+        'id': 'INC-230',
         'alertCount': 5,
         'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
-        },
-        'assignee': {
-          'name': 'Administrator'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'created': '2016-02-09T04:17:06.156Z',
+        'assignee': 'Administrator',
+        'title': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
         'status': 'NEW'
       },
       {
-        '_id': 'INC-230',
+        'id': 'INC-230',
         'alertCount': 5,
         'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
-        },
-        'assignee': {
-          'name': 'Administrator'
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'created': '2016-02-09T04:17:06.156Z',
+        'assignee': 'Administrator',
+        'title': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
         'status': 'NEW'
       },
       {
-        '_id': 'INC-230',
+        'id': 'INC-230',
         'alertCount': 5,
         'averageAlertRiskScore': 90,
-        'created': {
-          '$date': '2016-02-09T04:17:06.156Z'
-        },
-        'assignee': {
-          'id': 'admin',
-          'name': null
-        },
-        'name': 'High Risk Alerts: Reporting Engine for 90.0',
+        'created': '2016-02-09T04:17:06.156Z',
+        'assignee': 'Administrator',
+        'title': 'High Risk Alerts: Reporting Engine for 90.0',
         'priority': 'CRITICAL',
         'status': 'NEW'
       }
@@ -267,231 +210,140 @@ export default [
     'dataSourceGroup': 'Alerts',
     'resultList': [
       {
-        '_id': {
-          '$oid': '56b2f16de4b07ebea57c4a3c'
-        },
-        'alert': {
-          'risk_score': 90.0,
-          'source': 'ECAT',
-          'name': 'RERULE',
-          'numEvents': 41,
-          'timestamp': {
-            '$date': '2016-02-04T06:36:28.000Z'
-          }
-        },
+        'id': '56b2f16de4b07ebea57c4a3c',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 41,
+        'created': 1495193819287,
         'incidentId': 'INC-132'
       },
       {
-        '_id': {
-          '$oid': '56b429f5e4b0a1500b38521f'
-        },
-        'alert': {
-          'source': 'ECAT',
-          'timestamp': {
-            '$date': '2016-02-05T04:49:57.000Z'
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 100
-        },
+        'id': '56b429f5e4b0a1500b38521f',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 100,
+        'created': 1495193819287,
         'incidentId': 'INC-134'
       },
       {
-        '_id': {
-          '$oid': '56b43263e4b0a1500b385321'
-        },
-        'alert': {
-          'source': 'ECAT',
-          'timestamp': {
-            '$date': '2016-02-05T05:25:55.000Z'
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 93
-        },
+        'id': '56b43263e4b0a1500b385321',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 93,
+        'created': 1495193819287,
         'incidentId': 'INC-134'
       },
       {
-        '_id': {
-          '$oid': '56b96a8fe4b0a1500b385452'
-        },
-        'alert': {
-          'source': 'Reporting Engine',
-          'timestamp': {
-            '$date': '2016-02-09T04:26:55.000Z'
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 65
-        },
+        'id': '56b96a8fe4b0a1500b385452',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 65,
+        'created': 1495193819287,
         'incidentId': 'INC-230'
       },
       {
-        '_id': {
-          '$oid': '56b96e8be4b0a1500b38545c'
-        },
-        'alert': {
-          'source': 'Reporting Engine',
-          'timestamp': {
-            '$date': '2016-02-09T04:43:55.000Z'
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 65
-        },
+        'id': '56b96e8be4b0a1500b38545c',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 65,
+        'created': 1495193819287,
         'incidentId': 'INC-230'
       },
       {
-        '_id': {
-          '$oid': '56b2f16de4b07ebea57c4a3c'
-        },
-        'alert': {
-          'risk_score': 90.0,
-          'source': 'Reporting Engine',
-          'name': 'RERULE',
-          'numEvents': 41,
-          'timestamp': {
-            '$date': '2016-02-04T06:36:28.000Z'
-          }
-        },
+        'id': '56b2f16de4b07ebea57c4a3c',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 41,
+        'created': 1495193819287,
         'incidentId': 'INC-132'
       },
       {
-        '_id': {
-          '$oid': '56b429f5e4b0a1500b38521f'
-        },
-        'alert': {
-          'source': 'Reporting Engine',
-          'timestamp': {
-            '$date': '2016-02-05T04:49:57.000Z'
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 100
-        },
+        'id': '56b429f5e4b0a1500b38521f',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 100,
+        'created': 1495193819287,
         'incidentId': 'INC-134'
       },
       {
-        '_id': {
-          '$oid': '56b43263e4b0a1500b385321'
-        },
-        'alert': {
-          'source': 'Reporting Engine',
-          'timestamp': {
-            '$date': '2016-02-05T05:25:55.000Z'
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 93
-        },
+        'id': '56b43263e4b0a1500b385321',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 93,
+        'created': 1495193819287,
         'incidentId': 'INC-134'
       },
       {
-        '_id': {
-          '$oid': '56b96a8fe4b0a1500b385452'
-        },
-        'alert': {
-          'source': 'Reporting Engine',
-          'timestamp': {
-            '$date': '2016-02-09T04:26:55.000Z'
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 65
-        },
+        'id': '56b96a8fe4b0a1500b385452',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 65,
+        'created': 1495193819287,
         'incidentId': 'INC-230'
       },
       {
-        '_id': {
-          '$oid': '56b96e8be4b0a1500b38545c'
-        },
-        'alert': {
-          'source': 'Reporting Engine',
-          'timestamp': {
-            '$date': '2016-02-09T04:43:55.000Z'
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 65
-        },
+        'id': '56b96e8be4b0a1500b38545c',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 65,
+        'created': 1495193819287,
         'incidentId': 'INC-230'
       },
       {
-        '_id': {
-          '$oid': '56b2f16de4b07ebea57c4a3c'
-        },
-        'alert': {
-          'risk_score': 90.0,
-          'source': 'Reporting Engine',
-          'name': 'RERULE',
-          'numEvents': 41,
-          'timestamp': {
-            '$date': '2016-02-04T06:36:28.000Z'
-          }
-        },
+        'id': '56b2f16de4b07ebea57c4a3c',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 41,
+        'created': 1495193819287,
         'incidentId': 'INC-132'
       },
       {
-        '_id': {
-          '$oid': '56b429f5e4b0a1500b38521f'
-        },
-        'alert': {
-          'source': 'Reporting Engine',
-          'timestamp': {
-            '$date': '2016-02-05T04:49:57.000Z'
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 100
-        },
+        'id': '56b429f5e4b0a1500b38521f',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 100,
+        'created': 1495193819287,
         'incidentId': 'INC-134'
       },
       {
-        '_id': {
-          '$oid': '56b43263e4b0a1500b385321'
-        },
-        'alert': {
-          'source': 'Reporting Engine',
-          'timestamp': {
-            '$date': '2016-02-05T05:25:55.000Z'
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 93
-        },
+        'id': '56b43263e4b0a1500b385321',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 93,
+        'created': 1495193819287,
         'incidentId': 'INC-134'
       },
       {
-        '_id': {
-          '$oid': '56b96a8fe4b0a1500b385452'
-        },
-        'alert': {
-          'source': 'Reporting Engine',
-          'timestamp': {
-            '$date': '2016-02-09T04:26:55.000Z'
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 65
-        },
+        'id': '56b96a8fe4b0a1500b385452',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 65,
+        'created': 1495193819287,
         'incidentId': 'INC-230'
       },
       {
-        '_id': {
-          '$oid': '56b96e8be4b0a1500b38545c'
-        },
-        'alert': {
-          'source': 'Reporting Engine',
-          'timestamp': {
-            '$date': '2016-02-09T04:43:55.000Z'
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 65
-        },
+        'id': '56b96e8be4b0a1500b38545c',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 65,
+        'created': 1495193819287,
         'incidentId': 'INC-230'
       }
-
     ],
     'resultMeta': {
       'timeQuerySubmitted': 1458242092315,

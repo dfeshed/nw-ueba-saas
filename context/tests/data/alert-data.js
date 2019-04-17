@@ -8,139 +8,75 @@ export default [{
     'dataSourceGroup': 'Alerts',
     'resultList': [
       {
-        '_id': {
-          '$oid': '56b2f16de4b07ebea57c4a3c'
-        },
-        'alert': {
-          'risk_score': 90.0,
-          'source': 'Reporting Engine',
-          'name': 'RERULE',
-          'numEvents': 41,
-          'timestamp': {
-            '$date': {
-              created: 1495193819287
-            }
-          }
-        },
+        'id': '56b2f16de4b07ebea57c4a3c',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 41,
+        'created': 1495193819287,
         'incidentId': 'INC-132'
       },
       {
-        '_id': {
-          '$oid': '56b429f5e4b0a1500b38521f'
-        },
-        'alert': {
-          'source': 'Reporting Engine',
-          'timestamp': {
-            '$date': {
-              created: 1495193819287
-            }
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 100
-        },
+        'id': '56b429f5e4b0a1500b38521f',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 100,
+        'created': 1495193819287,
         'incidentId': 'INC-134'
       },
       {
-        '_id': {
-          '$oid': '56b43263e4b0a1500b385321'
-        },
-        'alert': {
-          'source': 'Reporting Engine',
-          'timestamp': {
-            '$date': {
-              created: 1495193819287
-            }
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 93
-        },
+        'id': '56b43263e4b0a1500b385321',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 93,
+        'created': 1495193819287,
         'incidentId': 'INC-134'
       },
       {
-        '_id': {
-          '$oid': '56b96a8fe4b0a1500b385452'
-        },
-        'alert': {
-          'source': 'Reporting Engine',
-          'timestamp': {
-            '$date': {
-              created: 1495193819287
-            }
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 65
-        },
+        'id': '56b96a8fe4b0a1500b385452',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 65,
+        'created': 1495193819287,
         'incidentId': 'INC-230'
       },
       {
-        '_id': {
-          '$oid': '56b96e8be4b0a1500b38545c'
-        },
-        'alert': {
-          'source': 'Reporting Engine',
-          'timestamp': {
-            '$date': {
-              created: 1495193819287
-            }
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 65
-        },
+        'id': '56b96e8be4b0a1500b38545c',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 65,
+        'created': 1495193819287,
         'incidentId': 'INC-230'
       },
       {
-        '_id': {
-          '$oid': '56b2f16de4b07ebea57c4a3c'
-        },
-        'alert': {
-          'risk_score': 90.0,
-          'source': 'Reporting Engine',
-          'name': 'RERULE',
-          'numEvents': 41,
-          'timestamp': {
-            '$date': {
-              created: 1495193819287
-            }
-          }
-        },
+        'id': '56b2f16de4b07ebea57c4a3c',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 41,
+        'created': 1495193819287,
         'incidentId': 'INC-132'
       },
       {
-        '_id': {
-          '$oid': '56b429f5e4b0a1500b38521f'
-        },
-        'alert': {
-          'source': 'Reporting Engine',
-          'timestamp': {
-            '$date': {
-              created: 1495193819287
-            }
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 100
-        },
+        'id': '56b429f5e4b0a1500b38521f',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 100,
+        'created': 1495193819287,
         'incidentId': 'INC-134'
       },
       {
-        '_id': {
-          '$oid': '56b43263e4b0a1500b385321'
-        },
-        'alert': {
-          'source': 'Reporting Engine',
-          'timestamp': {
-            '$date': {
-              created: 1495193819287
-            }
-          },
-          'risk_score': 90.0,
-          'name': 'RERULE',
-          'numEvents': 93
-        },
+        'id': '56b43263e4b0a1500b385321',
+        'source': 'Reporting Engine',
+        'riskScore': 90.0,
+        'title': 'RERULE',
+        'eventCount': 93,
+        'created': 1495193819287,
         'incidentId': 'INC-134'
       }
     ],
