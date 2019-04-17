@@ -1,8 +1,6 @@
 @import 'container';
 
 $alertNamesRowHeight: 25px;
-$minimumRowsBeforeScrollbar: 50;
-$maxHeightAlertNamesTable: $alertNamesRowHeight * $minimumRowsBeforeScrollbar;
 
 .original-alert-details {
   pre {
@@ -17,7 +15,6 @@ $maxHeightAlertNamesTable: $alertNamesRowHeight * $minimumRowsBeforeScrollbar;
     width: 100%;
   }
   .rsa-data-table-body {
-    max-height: $maxHeightAlertNamesTable;
     overflow: auto;
     @include border(1px, solid, primary);
     overflow-x: hidden;
