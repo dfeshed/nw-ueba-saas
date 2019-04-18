@@ -418,8 +418,8 @@ export const initializeInvestigate = function(
     //    upon roles/default settings in admin.
     const initializationPromises = [
       _initializePreferences(dispatch, getState),
-      _initializeServices(dispatch, getState),
-      _fetchEventSettings(dispatch)
+      _initializeServices(dispatch, getState)
+      // _fetchEventSettings(dispatch)
     ];
 
     const hasService = !!parsedQueryParams.serviceId;
@@ -613,7 +613,7 @@ export const getDictionaries = (resolve = noop, reject = noop) => {
  *
  * Function that wraps thunk with a promise
  */
-const _fetchEventSettings = (dispatch) => {
+const _fetchEventSettings = (dispatch) => { // eslint-disable-line no-unused-vars
   return new RSVP.Promise((resolve, reject) => {
     getEventSettings(resolve, reject)(dispatch);
   });
