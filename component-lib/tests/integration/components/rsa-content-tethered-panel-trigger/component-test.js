@@ -1,46 +1,63 @@
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { findAll, render, triggerEvent, waitUntil } from '@ember/test-helpers';
 import Service from '@ember/service';
-import Evented from '@ember/object/evented';
-import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import sinon from 'sinon';
-import wait from 'ember-test-helpers/wait';
 
-const eventBusStub = Service.extend(Evented, {});
-
-moduleForComponent('/rsa-content-tethered-panel-trigger', 'Integration | Component | rsa-content-tethered-panel-trigger', {
-  integration: true,
-
-  beforeEach() {
-    this.register('service:event-bus', eventBusStub);
-    this.inject.service('event-bus', { as: 'eventBus' });
+let called = false;
+let calledArgs;
+const eventBusStub = Service.extend({
+  trigger() {
+    called = true;
+    calledArgs = arguments;
   }
 });
 
-test('it includes the proper classes', function(assert) {
-  this.render(hbs `{{#rsa-content-tethered-panel-trigger panel="foo"}}Trigger{{/rsa-content-tethered-panel-trigger}}`);
-  assert.equal(this.$('span.rsa-content-tethered-panel-trigger.foo').length, 1);
-});
+module('Integration | Component | rsa-content-tethered-panel-trigger', function(hooks) {
+  setupRenderingTest(hooks, {});
 
-test('it emits the rsa-content-tethered-panel-display event on mouseenter', function(assert) {
-  this.render(hbs `{{#rsa-content-tethered-panel-trigger panel="foo"}}Trigger{{/rsa-content-tethered-panel-trigger}}`);
-
-  const spy = sinon.spy(this.get('eventBus'), 'trigger');
-
-  this.$().find('.rsa-content-tethered-panel-trigger').mouseenter();
-
-  return wait().then(function() {
-    assert.ok(spy.withArgs('rsa-content-tethered-panel-display-foo').calledOnce);
+  hooks.beforeEach(function() {
+    this.owner.register('service:event-bus', eventBusStub);
+    called = false;
+    calledArgs = undefined;
   });
-});
 
-test('it emits the rsa-content-tethered-panel-hide event on mouseleave', function(assert) {
-  this.render(hbs `{{#rsa-content-tethered-panel-trigger panel="foo"}}Trigger{{/rsa-content-tethered-panel-trigger}}`);
+  test('it includes the proper classes', async function(assert) {
+    await render(hbs`
+      {{#rsa-content-tethered-panel-trigger
+        panel="foo-class"
+      }}
+        Trigger
+      {{/rsa-content-tethered-panel-trigger}}
+    `);
+    assert.equal(findAll('.foo-class').length, 1, 'the panel param turns into class');
+  });
 
-  const spy = sinon.spy(this.get('eventBus'), 'trigger');
+  test('it emits the rsa-content-tethered-panel-display event on mouseenter', async function(assert) {
+    await render(hbs`
+      {{#rsa-content-tethered-panel-trigger
+        panel="foo"
+      }}
+        Trigger
+      {{/rsa-content-tethered-panel-trigger}}
+    `);
 
-  this.$().find('.rsa-content-tethered-panel-trigger').mouseleave();
+    await triggerEvent('.rsa-content-tethered-panel-trigger', 'mouseover');
+    await waitUntil(() => called === true);
+    assert.ok(calledArgs[0] === 'rsa-content-tethered-panel-display-foo', 'correct message is sent to event trigger');
+  });
 
-  return wait().then(function() {
-    assert.ok(spy.withArgs('rsa-content-tethered-panel-hide-foo').calledOnce);
+  test('it emits the rsa-content-tethered-panel-hide event on mouseleave', async function(assert) {
+    await render(hbs`
+      {{#rsa-content-tethered-panel-trigger
+        panel="foo"
+      }}
+        Trigger
+      {{/rsa-content-tethered-panel-trigger}}
+    `);
+
+    await triggerEvent('.rsa-content-tethered-panel-trigger', 'mouseout');
+    await waitUntil(() => called === true);
+    assert.ok(calledArgs[0] === 'rsa-content-tethered-panel-hide-foo', 'correct message is sent to event trigger');
   });
 });
