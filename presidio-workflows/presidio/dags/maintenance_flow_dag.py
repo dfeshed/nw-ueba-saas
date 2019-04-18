@@ -3,13 +3,11 @@ from datetime import datetime, timedelta
 import os
 from airflow import DAG
 
+from presidio.builders.adapter.adapter_properties_cleanup_operator_builder import build_adapter_properties_cleanup_operator
 from presidio.builders.maintenance.airflow_db_cleanup_dag_builder import AirflowDbCleanupDagBuilder
 from presidio.builders.maintenance.airflow_log_cleanup_dag_builder import AirflowLogCleanupDagBuilder
 from presidio.builders.maintenance.presidio_metrics_cleanup_builder import PresidioMetircsCleanupDagBuilder
-from presidio.builders.rerun_full_flow_dag_builder import build_clean_adapter_operator
 
-ADAPTER_PROPERTIES_PATH = "/var/lib/netwitness/presidio/flume/conf/adapter/"
-DEFAULT_NUM_HOURS_NOT_DELETE = 12
 
 DAG_ID = os.path.basename(__file__).replace(".pyc", "").replace(".py", "")  # maintenance_flow_dag
 
@@ -34,6 +32,6 @@ dag = DAG(DAG_ID, default_args=default_args, schedule_interval=SCHEDULE_INTERVAL
 airflow_log_cleanup_operator = AirflowLogCleanupDagBuilder().create_sub_dag_operator("airflow-log-cleanup", dag)
 airflow_db_cleanup_operator = AirflowDbCleanupDagBuilder().create_sub_dag_operator("airflow-db-cleanup", dag)
 presidio_monitoring_maintenance_operator = PresidioMetircsCleanupDagBuilder().create_sub_dag_operator("presidio-metrics-cleanup", dag)
-clean_adapter_operator = build_clean_adapter_operator(dag, DEFAULT_NUM_HOURS_NOT_DELETE, 'adapter-properties-cleanup')
+clean_adapter_operator = build_adapter_properties_cleanup_operator(dag, 12, 'adapter-properties-cleanup')
 
 

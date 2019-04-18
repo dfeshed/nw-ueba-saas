@@ -10,6 +10,7 @@ from airflow.utils import helpers
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
 
+from presidio.builders.adapter.adapter_properties_cleanup_operator_builder import build_adapter_properties_cleanup_operator
 from presidio.builders.elasticsearch.elasticsearch_operator_builder import build_clean_elasticsearch_data_operator
 from presidio.builders.presidioconfiguration.presidio_configuration_operator_builder import \
     build_reset_presidio_configuration_operator
@@ -20,7 +21,6 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
 
 
 TASK_KILL_TIMEOUT = 60
-ADAPTER_PROPERTIES_PATH = maintenance_flow_dag.ADAPTER_PROPERTIES_PATH
 
 
 class RerunFullFlowDagBuilder(object):
@@ -51,7 +51,7 @@ class RerunFullFlowDagBuilder(object):
 
         clean_elasticsearch_data_operator = build_clean_elasticsearch_data_operator(dag)
 
-        clean_adapter_operator = build_clean_adapter_operator(dag, 0, 'clean_adapter')
+        clean_adapter_operator = build_adapter_properties_cleanup_operator(dag, 0, 'clean_adapter')
 
         reset_presidio_configuration_operator = build_reset_presidio_configuration_operator(dag)
 
@@ -190,15 +190,6 @@ def build_clean_logs_operator(cleanup_dag):
                                            airflow_base_log_folder, airflow_base_log_folder),
                                        dag=cleanup_dag, retries=5)
     return clean_logs_operator
-
-
-def build_clean_adapter_operator(cleanup_dag, num_hours_not_delete, task_id):
-    adapter_clean_bash_command = "find " + ADAPTER_PROPERTIES_PATH + " -type f -name '*-*' -mmin +" + \
-                                 str(num_hours_not_delete * 60) + " -exec rm -f {} \;"
-    clean_adapter_operator = BashOperator(task_id=task_id,
-                                          bash_command=adapter_clean_bash_command,
-                                          dag=cleanup_dag)
-    return clean_adapter_operator
 
 
 def build_clean_dags_from_db_operator(cleanup_dag, dag_ids_to_clean):
