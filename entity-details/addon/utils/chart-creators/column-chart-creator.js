@@ -7,7 +7,7 @@ import * as Am4core from '@amcharts/amcharts4/core';
 import * as Am4charts from '@amcharts/amcharts4/charts';
 
 export default (settings) => {
-  const chart = Am4core.create('chartdiv', Am4charts.XYChart);
+  const chart = Am4core.create('chartComponentPlaceholder', Am4charts.XYChart);
   chart.data = settings.chartSettings.dataProvider;
   /* Create axes */
   const categoryAxis = chart.xAxes.push(new Am4charts.CategoryAxis());

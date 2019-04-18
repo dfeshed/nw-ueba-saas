@@ -1,0 +1,17 @@
+{{#rsa-data-table lazy=true items=events columnsConfig=columnConfig}}
+  {{#rsa-data-table/header enableColumnSelector=true as |column|}}
+    <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title={{column.field}}>
+      {{column.field}}
+    </span>
+  {{/rsa-data-table/header}}
+  {{#rsa-data-table/body as |item index column|}}
+    {{#rsa-data-table/body-cell column=column}}
+      {{get item column.field}}
+    {{/rsa-data-table/body-cell}}
+  {{/rsa-data-table/body}}
+{{/rsa-data-table}}
+{{#unless areAllEventsReceived}}
+  <div class='users-tab_body_list_loader'>
+    {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+  </div>
+{{/unless}}

@@ -8,7 +8,7 @@ import * as Am4charts from '@amcharts/amcharts4/charts';
 import _ from 'lodash';
 
 export default (settings) => {
-  const chart = Am4core.create('chartdiv', Am4charts.XYChart);
+  const chart = Am4core.create('chartComponentPlaceholder', Am4charts.XYChart);
   chart.maskBullets = false;
   chart.allLabels = { color: 'red' };
   chart.color = 'white';

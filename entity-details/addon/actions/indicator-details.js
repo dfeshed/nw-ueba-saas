@@ -1,6 +1,6 @@
 import { INITIATE_INDICATOR, GET_INDICATOR_EVENTS, GET_INDICATOR_HISTORICAL_DATA, RESET_INDICATOR } from './types';
 import { fetchData } from './fetch/data';
-import { eventFilter } from 'entity-details/reducers/indicators/selectors';
+import { eventFilter, indicatorMapSettings } from 'entity-details/reducers/indicators/selectors';
 
 export const resetIndicators = () => ({ type: RESET_INDICATOR });
 
@@ -23,10 +23,10 @@ export const getEvents = (indicatorId) => {
 };
 
 export const getHistoricalData = (indicatorId) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     const fetchObj = {
       restEndpointLocation: 'historicalData',
-      data: null,
+      data: indicatorMapSettings(getState()).params,
       method: 'GET',
       urlParameters: indicatorId
     };

@@ -1,0 +1,20 @@
+<div class='entity-details-container-body-alert-details_header_details'>
+  <div class='entity-details-container-body-alert-details_header_details_name'>
+    {{t (concat 'investigateUsers.alerts.alertNames.' alertDetails.name '.name')}}
+  </div>
+  <div class='entity-details-container-body-alert-details_header_details_timeframe'>
+    | {{alertDetails.timeframe}}
+  </div>
+  <div class='entity-details-container-body-alert-details_header_details_severity {{alertDetails.severity}}'>
+    
+  </div>
+  <div class='entity-details-container-body-alert-details_header_details_severity-name'>
+    {{alertDetails.severity}}
+  </div>
+</div>
+<div class='entity-details-container-body-alert-details_header_control'>
+  {{entity-details-container/body/indicator-navigator}}
+  {{#rsa-form-button isIconOnly=true defaultAction=(action 'resetIndicators')}}
+    {{rsa-icon name='close'}}
+  {{/rsa-form-button}}
+</div>

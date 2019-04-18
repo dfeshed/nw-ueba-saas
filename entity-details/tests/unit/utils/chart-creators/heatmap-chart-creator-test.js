@@ -12,7 +12,7 @@ module('Unit | Utils | heatmap-chart-creator', (hooks) => {
   setupTest(hooks);
 
   test('it returns chart for heatmap-chart-creator', (assert) => {
-    $('body').append('<div id="chartdiv"></div>');
+    $('body').append('<div id="chartComponentPlaceholder"></div>');
     assert.expect(1);
     const settings = heatmapSettings('account_management_change_anomaly');
     const updatedSettings = chartDataAdapter(settings, chartData.data);

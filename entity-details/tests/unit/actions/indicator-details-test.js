@@ -83,7 +83,7 @@ module('Unit | Actions | indicator-details Actions', (hooks) => {
       if (type) {
         assert.ok(types.includes(type));
         if (payload) {
-          assert.equal(payload.length, 1);
+          assert.equal(payload.length, 4);
         }
       }
     };

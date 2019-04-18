@@ -11,7 +11,7 @@ module('Unit | Utils | pie-chart-creator', (hooks) => {
   setupTest(hooks);
 
   test('it returns chart for pie-chart-creator', (assert) => {
-    $('body').append('<div id="chartdiv"></div>');
+    $('body').append('<div id="chartComponentPlaceholder"></div>');
     assert.expect(1);
     const settings = singlePieSettings('account_management_change_anomaly');
     const updatedSettings = chartDataAdapter(settings, chartData.data);

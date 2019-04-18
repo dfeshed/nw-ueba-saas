@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import { getSelectedAlertData } from 'entity-details/reducers/alerts/selectors';
+import indicatorChartMap from 'entity-details/utils/indicator-chart-map';
 import _ from 'lodash';
 
 const _totalEvents = (state) => state.indicators.totalEvents;
@@ -33,6 +34,19 @@ export const getIncidentKey = createSelector(
   (incidentData) => {
     if (incidentData) {
       return incidentData.anomalyTypeFieldName;
+    }
+  });
+
+/**
+ * This selector returns chart settings based on anomalyt type.
+ * @private
+ */
+export const indicatorMapSettings = createSelector(
+  [getIncidentKey],
+  (anomalyTypeFieldName) => {
+    if (anomalyTypeFieldName) {
+      const chartSettings = _.find(indicatorChartMap, (chartType) => chartType.anomalyTypeFieldName.includes(anomalyTypeFieldName));
+      return (chartSettings || indicatorChartMap.activityTimeAnomalySettings).settings(anomalyTypeFieldName);
     }
   });
 

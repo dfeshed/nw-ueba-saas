@@ -1,0 +1,33 @@
+<div class='entity-details-container-body-indicator-details_details_params'>
+  <div class='entity-details-container-body-indicator-details_details_params_names'>
+    <div>
+      {{t 'investigateUsers.alerts.indicator.title'}}
+    </div>
+    <div>
+      {{t 'investigateUsers.alerts.indicator.contributionToAlert'}}
+    </div>
+    <div>
+      {{t 'investigateUsers.alerts.indicator.anomalyValue'}}
+    </div>
+    <div>
+      {{t 'investigateUsers.alerts.indicator.dataSource'}}
+    </div>
+  </div>
+  <div class='entity-details-container-body-indicator-details_details_params_values'> 
+    <div>
+      {{t (concat 'investigateUsers.alerts.indicator.indicatorNames.' incidentDetails.anomalyTypeFieldName '.name')}}
+    </div>
+    <div>
+      {{incidentDetails.scoreContribution}}%
+    </div>
+    <div>
+      {{incidentDetails.anomalyValue}}
+    </div>
+    <div>
+      {{incidentDetails.dataEntitiesIds}}
+    </div>
+  </div>
+</div>
+<div class='entity-details-container-body-indicator-details_details_desc'>
+  {{t (concat 'investigateUsers.alerts.indicator.indicatorNames.' incidentDetails.anomalyTypeFieldName '.timeline') entityName=entityDisplayName}}
+</div>

@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { selectedIndicatorId, eventFilter, indicatorEvents, historicalData, areAllEventsReceived, getIncidentData, getIncidentKey, getIndicatorEntity, getIncidentPositionAndNextIncidentId } from 'entity-details/reducers/indicators/selectors';
+import { selectedIndicatorId, eventFilter, indicatorMapSettings, indicatorEvents, historicalData, areAllEventsReceived, getIncidentData, getIncidentKey, getIndicatorEntity, getIncidentPositionAndNextIncidentId } from 'entity-details/reducers/indicators/selectors';
 import userAlerts from '../../../data/presidio/user_alerts';
 import indicatorEventsData from '../../../data/presidio/indicator-events';
 import indicatorCount from '../../../data/presidio/indicator-count';
@@ -51,6 +51,29 @@ test('test allEventsReceived for selected incident to stop scrollbar', function(
 });
 test('test getIndicatorEntity for selected incident', function(assert) {
   assert.equal(getIndicatorEntity(state), 'file');
+});
+test('test indicatorMapSettings for selected incident', function(assert) {
+  assert.equal(indicatorMapSettings(state).chartSettings.type, 'pie');
+});
+test('test indicatorMapSettings if incident data is not there', function(assert) {
+  const newState = {
+    alerts: {
+      selectedAlertId: '0bd963d0-a0ae-4601-8497-b0c363becd1f',
+      alerts: null
+    },
+    indicators: {
+      selectedIndicatorId: '8614aa7f-c8ee-4824-9eaf-e0bb199cd006',
+      events: null,
+      historicalData: indicatorCount.data,
+      totalEvents: 100,
+      eventFilter: {
+        page: 1,
+        size: 100,
+        sort_direction: 'DESC'
+      }
+    }
+  };
+  assert.equal(indicatorMapSettings(newState), undefined);
 });
 test('test getIncidentPositionAndNextIncidentId for selected incident', function(assert) {
   assert.deepEqual(getIncidentPositionAndNextIncidentId(state), {

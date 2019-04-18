@@ -9,7 +9,7 @@ import * as Am4charts from '@amcharts/amcharts4/charts';
 import _ from 'lodash';
 
 export default (settings) => {
-  let chart = Am4core.create('chartdiv', Am4charts.PieChart3D);
+  let chart = Am4core.create('chartComponentPlaceholder', Am4charts.PieChart3D);
 
   chart.legend = new Am4charts.Legend();
   chart.legend.fill = Am4core.color('#FFF');

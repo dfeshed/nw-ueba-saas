@@ -33,9 +33,21 @@ module('Integration | Component | entity-details-container/body', function(hooks
 
   test('it renders Alert container', async function(assert) {
 
+    new ReduxDataHelper(setState).selectedIndicatorId(null).build();
+    await render(hbs`{{entity-details-container/body}}`);
+    assert.equal(findAll('.entity-details-container-body_alerts_list').length, 1);
+    assert.equal(findAll('.entity-details-container-body_details').length, 1);
+    assert.equal(findAll('.entity-details-container-body-indicator-details_header').length, 0);
+    assert.equal(findAll('.entity-details-container-body-alert-details_header').length, 1);
+  });
+
+  test('it renders Indicator container', async function(assert) {
+
     new ReduxDataHelper(setState).build();
     await render(hbs`{{entity-details-container/body}}`);
     assert.equal(findAll('.entity-details-container-body_alerts_list').length, 1);
     assert.equal(findAll('.entity-details-container-body_details').length, 1);
+    assert.equal(findAll('.entity-details-container-body-indicator-details_header').length, 1);
+    assert.equal(findAll('.entity-details-container-body-alert-details_header').length, 0);
   });
 });

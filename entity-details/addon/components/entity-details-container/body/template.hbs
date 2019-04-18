@@ -2,5 +2,9 @@
   {{entity-details-container/body/alerts-container}}
 </div>
 <div class='entity-details-container-body_details'>
-  {{entity-details-container/body/alert-details}}
+  {{#if selectedIndicatorId}}
+    {{entity-details-container/body/indicator-details}}
+  {{else}}
+    {{entity-details-container/body/alert-details}}
+  {{/if}}
 </div>
