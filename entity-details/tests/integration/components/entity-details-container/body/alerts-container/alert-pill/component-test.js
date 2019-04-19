@@ -23,7 +23,7 @@ module('Integration | Component | entity-details-container/body/alerts-container
     this.owner.register('helper:mount', function() {});
   });
 
-  test('it should render entity details container body', async function(assert) {
+  test('it should render alert pill', async function(assert) {
     new ReduxDataHelper(setState).build();
 
     await render(hbs`{{entity-details-container/body/alerts-container/alert-pill}}`);
@@ -33,5 +33,13 @@ module('Integration | Component | entity-details-container/body/alerts-container
     assert.equal(findAll('.entity-details-container-body_alerts_list_content_alert_details_pill_details_name').length, 1);
     assert.equal(findAll('.entity-details-container-body_alerts_list_content_alert_details_pill_details_time').length, 1);
     assert.equal(findAll('.entity-details-container-body_alerts_list_content_alert_details_pill_rating_score').length, 1);
+  });
+
+  test('it should render selected alert pill', async function(assert) {
+    new ReduxDataHelper(setState).build();
+
+    await render(hbs`{{entity-details-container/body/alerts-container/alert-pill selectedAlert=true}}`);
+
+    assert.equal(findAll('.entity-details-container-body_alerts_list_content_alert_details_pill.selectedAlert').length, 1);
   });
 });

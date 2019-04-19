@@ -73,7 +73,11 @@
       }
 
       &_alert {
+        .selectedAlert{
+          background-color: background-color(secondary, darker);
+        }
         &_details {
+          
           &_pill {
             width: calc(100% - 2rem);
             height: 50px;
@@ -155,6 +159,10 @@
         }
 
         &_indicators {
+          .selectedIndicator{
+            background-color: background-color(primary, darkest);
+            @include rsa-font(bolder, large);
+          }
           &_pill {
             display: flex;
             padding: rsa-whitespace(least) rsa-whitespace(least) rsa-whitespace(least) 3*rsa-whitespace();
@@ -173,7 +181,6 @@
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                @include rsa-font(default);
               }
 
               &_time {

@@ -16,6 +16,12 @@ export const sortedAlertsData = createSelector(
     }
   });
 
+export const hasAlerts = createSelector(
+  [alertsData],
+  (alerts) => {
+    return alerts !== null && alerts.length > 0;
+  });
+
 export const getSelectedAlertData = createSelector(
   [selectedAlertId, alertsData],
   (id, alerts) => {

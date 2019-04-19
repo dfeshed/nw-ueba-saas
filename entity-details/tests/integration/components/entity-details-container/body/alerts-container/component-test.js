@@ -35,6 +35,15 @@ module('Integration | Component | entity-details-container/body/alerts-container
 
   });
 
+  test('it should show loader till alerts is not there', async function(assert) {
+    new ReduxDataHelper(setState).alerts([]).build();
+
+    await render(hbs`{{entity-details-container/body/alerts-container}}`);
+
+    assert.equal(findAll('.entity-details_loader').length, 1);
+
+  });
+
   test('it should be able to sort alets by name', async function(assert) {
     new ReduxDataHelper(setState).build();
 

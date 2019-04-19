@@ -57,13 +57,13 @@ module('Integration | Component | entity-details-container/body/indicator-detail
     new ReduxDataHelper(setState).historicalData(null).build();
 
     await render(hbs`{{entity-details-container/body/indicator-details/graph}}`);
-    assert.equal(findAll('.users-tab_body_list_loader').length, 1);
+    assert.equal(findAll('.entity-details_loader').length, 1);
   });
 
   test('it should show loader till incident data is not there', async function(assert) {
     new ReduxDataHelper(setState).alerts(null).build();
 
     await render(hbs`{{entity-details-container/body/indicator-details/graph}}`);
-    assert.equal(findAll('.users-tab_body_list_loader').length, 1);
+    assert.equal(findAll('.entity-details_loader').length, 1);
   });
 });

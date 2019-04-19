@@ -1,33 +1,39 @@
-<div class='entity-details-container-body_alerts_list_header'>
-  <div>
-    {{t 'investigateUsers.alerts.title'}}
-  </div>
-  <div>
-    <label class="rsa-form-label power-select entity-details-container-body_alerts_list_header_sort">
-      <div class="label-text">
-        {{t 'investigateUsers.sortBy'}}:
-      </div>
-      {{#power-select
-        options=sortOptions
-        selected=sortBy
-        searchEnabled=false
-        onchange=(action 'updateSort') as |option|}}
-        {{t (concat 'investigateUsers.alerts.' option)}}
-      {{/power-select}}
-    </label>
-  </div>
-</div>
-<div class='entity-details-container-body_alerts_list_content'>
-  {{#each alerts as |alert|}}
-    <div class='entity-details-container-body_alerts_list_content_alert'>
-      {{entity-details-container/body/alerts-container/alert-pill alert=alert initAlert=(action 'initializeAlert')}}
-      {{#if (eq selectedAlertId alert.id)}}
-        <div class='entity-details-container-body_alerts_list_content_alert_indicators {{if (eq selectedAlertId  alert.id) 'visible'}}'>
-          {{#each alertData.evidences as |indicator|}}
-            {{entity-details-container/body/alerts-container/indicator-pill indicator=indicator initIndicator=(action 'initializeIndicator')}}
-          {{/each}}
-        </div>
-      {{/if}}  
+{{#if (eq hasAlerts true)}}
+  <div class='entity-details-container-body_alerts_list_header'>
+    <div>
+      {{t 'investigateUsers.alerts.title'}}
     </div>
-  {{/each}}
-</div>
+    <div>
+      <label class="rsa-form-label power-select entity-details-container-body_alerts_list_header_sort">
+        <div class="label-text">
+          {{t 'investigateUsers.sortBy'}}:
+        </div>
+        {{#power-select
+          options=sortOptions
+          selected=sortBy
+          searchEnabled=false
+          onchange=(action 'updateSort') as |option|}}
+          {{t (concat 'investigateUsers.alerts.' option)}}
+        {{/power-select}}
+      </label>
+    </div>
+  </div>
+  <div class='entity-details-container-body_alerts_list_content'>
+    {{#each alerts as |alert|}}
+      <div class='entity-details-container-body_alerts_list_content_alert'>
+        {{entity-details-container/body/alerts-container/alert-pill alert=alert  selectedAlert=(if (eq selectedAlert alert.id) true) initAlert=(action 'selectAlert')}}
+        {{#if (eq selectedAlertId alert.id)}}
+          <div class='entity-details-container-body_alerts_list_content_alert_indicators'>
+            {{#each alertData.evidences as |indicator|}}
+              {{entity-details-container/body/alerts-container/indicator-pill indicator=indicator selectedIndicator=(if (eq selectedIndicatorId  indicator.id) true) initIndicator=(action 'initializeIndicator')}}
+            {{/each}}
+          </div>
+        {{/if}}  
+      </div>
+    {{/each}}
+  </div>
+{{else}}
+  <div class='entity-details_loader'>
+    {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+  </div>
+{{/if}}  

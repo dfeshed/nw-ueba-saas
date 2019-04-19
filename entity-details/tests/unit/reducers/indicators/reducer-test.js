@@ -69,4 +69,18 @@ module('Unit | Reducers | Indicators Reducer', (hooks) => {
     assert.deepEqual(result.historicalData, indicatorCount);
   });
 
+  test('test indicator for select alert', (assert) => {
+    const { data, total } = indicatorEvents;
+    const result = reducer(Immutable.from({
+      selectedIndicatorId: 'INC-1',
+      events: data,
+      totalEvents: total
+    }), {
+      type: ACTION_TYPES.SELECT_ALERT
+    });
+    assert.equal(result.selectedIndicatorId, null);
+    assert.equal(result.totalEvents, null);
+    assert.deepEqual(result.events, []);
+  });
+
 });

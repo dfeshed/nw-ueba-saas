@@ -1,3 +1,9 @@
-{{entity-details-container/body/alert-details/header}}
-{{entity-details-container/body/alert-details/details}}
-{{entity-details-container/body/alert-details/indicators}}
+{{#if (eq hasAlerts true)}}
+  {{entity-details-container/body/alert-details/header}}
+  {{entity-details-container/body/alert-details/details}}
+  {{entity-details-container/body/alert-details/indicators}}
+{{else}}
+  <div class='entity-details_loader'>
+    {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+  </div>
+{{/if}} 

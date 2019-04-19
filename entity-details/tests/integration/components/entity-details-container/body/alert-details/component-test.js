@@ -31,4 +31,10 @@ module('Integration | Component | entity-details-container/body/alert-details', 
     assert.equal(findAll('.entity-details-container-body-alert-details_header').length, 1);
     assert.equal(findAll('.entity-details-container-body-alert-details_details').length, 1);
   });
+  test('it should show loader till alerts are not there', async function(assert) {
+    new ReduxDataHelper(setState).alerts([]).build();
+
+    await render(hbs`{{entity-details-container/body/alert-details}}`);
+    assert.equal(findAll('.entity-details_loader').length, 1);
+  });
 });

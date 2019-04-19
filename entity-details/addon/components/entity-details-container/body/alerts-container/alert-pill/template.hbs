@@ -1,4 +1,4 @@
-<div class='entity-details-container-body_alerts_list_content_alert_details_pill' {{action 'initiateAlert' alert.id}}>
+<div class='entity-details-container-body_alerts_list_content_alert_details_pill {{if (eq selectedAlert true) 'selectedAlert'}}' {{action 'initiateAlert' alert.id}}>
   <div class='entity-details-container-body_alerts_list_content_alert_details_pill_user-score'>
     +{{alert.userScoreContribution}}
   </div>

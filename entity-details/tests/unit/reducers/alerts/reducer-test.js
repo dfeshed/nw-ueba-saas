@@ -28,7 +28,7 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
     assert.deepEqual(result.alerts, userAlerts);
   });
 
-  test('test uodate sort for alerts', (assert) => {
+  test('test update sort for alerts', (assert) => {
 
     const result = reducer(Immutable.from({}), {
       type: ACTION_TYPES.UPDATE_SORT,
@@ -36,6 +36,16 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
     });
 
     assert.deepEqual(result.sortBy, 'name');
+  });
+
+  test('test select alert for alerts', (assert) => {
+
+    const result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.SELECT_ALERT,
+      payload: 'Alert-1'
+    });
+
+    assert.deepEqual(result.selectedAlertId, 'Alert-1');
   });
 
   test('test reset alerts', (assert) => {

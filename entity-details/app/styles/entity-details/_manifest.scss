@@ -1,9 +1,17 @@
 @import 'components/manifest';
 
-.users-container {
+.entity-details {
   background-color: background-color(primary, darker);
   @include rsa-col(justify,fill);
   height: 100%;
+  &_loader {
+    justify-content: center;
+    display: flex;
+    padding: rsa-whitespace();
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
 }
 
 .entity-details {

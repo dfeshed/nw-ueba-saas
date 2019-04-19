@@ -28,9 +28,16 @@ module('Integration | Component | entity-details-container/body/alerts-container
 
     await render(hbs`{{entity-details-container/body/alerts-container/indicator-pill}}`);
 
-    assert.equal(this.element.textContent.replace(/\s/g, ''), '%Missingtranslation:investigateUsers.alerts.indicator.indicatorNames..name');
     assert.equal(findAll('.entity-details-container-body_alerts_list_content_alert_indicators_pill').length, 1);
     assert.equal(findAll('.entity-details-container-body_alerts_list_content_alert_indicators_pill_score-contibution').length, 1);
     assert.equal(findAll('.entity-details-container-body_alerts_list_content_alert_indicators_pill_name_text').length, 1);
+  });
+
+  test('it should render indicator details for selected indicator', async function(assert) {
+    new ReduxDataHelper(setState).build();
+
+    await render(hbs`{{entity-details-container/body/alerts-container/indicator-pill selectedIndicator=true}}`);
+
+    assert.equal(findAll('.entity-details-container-body_alerts_list_content_alert_indicators_pill.selectedIndicator').length, 1);
   });
 });

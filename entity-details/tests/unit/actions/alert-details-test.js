@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { patchFetch } from '../../helpers/patch-fetch';
-import { initializeAlert, alertIsNotARisk, resetAlerts, updateSort } from 'entity-details/actions/alert-details';
+import { initializeAlert, alertIsNotARisk, resetAlerts, selectAlert, updateSort } from 'entity-details/actions/alert-details';
 import dataIndex from '../../data/presidio';
 import userAlerts from '../../data/presidio/user_alerts';
 import indicatorEvents from '../../data/presidio/indicator-events';
@@ -98,6 +98,15 @@ module('Unit | Actions | alert-details Actions', (hooks) => {
       assert.equal(type, 'ENTITY_DETAILS::RESET_ALERT');
     };
     dispatch(resetAlerts());
+  });
+
+  test('it can set selected alert', (assert) => {
+    assert.expect(2);
+    const dispatch = ({ type, payload }) => {
+      assert.equal(type, 'ENTITY_DETAILS::SELECT_ALERT');
+      assert.equal(payload, 'Alert-1');
+    };
+    dispatch(selectAlert('Alert-1'));
   });
 
 });

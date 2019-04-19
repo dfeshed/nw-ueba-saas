@@ -1,4 +1,4 @@
-<div class='entity-details-container-body_alerts_list_content_alert_indicators_pill' {{action 'initIndicator' indicator.id}}>
+<div class='entity-details-container-body_alerts_list_content_alert_indicators_pill  {{if (eq selectedIndicator true) 'selectedIndicator'}}' {{action 'initIndicator' indicator.id}}>
   <div class='entity-details-container-body_alerts_list_content_alert_indicators_pill_score-contibution'>
     {{semi-circle percentage=indicator.scoreContribution}}
   </div>

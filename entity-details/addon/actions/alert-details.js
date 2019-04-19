@@ -1,4 +1,4 @@
-import { INITIATE_ALERT, GET_ALERTS, RESET_ALERT, UPDATE_SORT } from './types';
+import { INITIATE_ALERT, GET_ALERTS, RESET_ALERT, UPDATE_SORT, SELECT_ALERT } from './types';
 import { fetchData } from './fetch/data';
 import { entityId, entityType } from 'entity-details/reducers/entity/selectors';
 import { initializeEntityDetails } from './entity-creators';
@@ -34,6 +34,8 @@ export const initializeAlert = (alertId) => {
     });
   };
 };
+
+export const selectAlert = (alertId) => ({ type: SELECT_ALERT, payload: alertId });
 
 export const alertIsNotARisk = (dataForPost) => {
   return (dispatch, getState) => {
