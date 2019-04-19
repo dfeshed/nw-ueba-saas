@@ -4,7 +4,6 @@ import fetchExtractJobId from './fetch/file-extract';
 import { createFilename } from 'investigate-shared/actions/api/events/utils';
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
-import { getColumns } from 'investigate-events/reducers/investigate/data-selectors';
 import { EVENT_DOWNLOAD_TYPES } from 'component-lib/constants/event-download-types';
 
 // *******
@@ -65,10 +64,10 @@ export const extractFiles = (eventDownloadType, fileType, sessionIds = [], isSel
 
     let columnList = [];
     // All meta available will be downloaded for 'SUMMARY' columnGroup.
-    // For others, meta pertaining to the columGroup will be downloaded.
+    // For others, visible meta (selected columns) pertaining to the columGroup will be downloaded.
     if (columnGroup !== 'SUMMARY' && eventDownloadType === EVENT_DOWNLOAD_TYPES.META) {
-      // download TODO filter by visible ?
-      columnList = getColumns(getState()).map(({ field }) => field);
+      const { visibleColumns } = getState().investigate.eventResults;
+      columnList = visibleColumns.filter((col) => col.field !== 'checkbox').map(({ field }) => field);
     }
 
     const { serviceId } = queryNode;
