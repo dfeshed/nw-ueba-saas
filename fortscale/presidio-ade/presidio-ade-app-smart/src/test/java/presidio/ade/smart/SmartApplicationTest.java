@@ -18,6 +18,7 @@ import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimeService;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,6 +145,7 @@ public class SmartApplicationTest extends BaseAppTest {
      * Expected get same smart score.
      */
     @Test
+    @Ignore
     public void setOfFeaturesWithDiffWeightTest() throws GeneratorException {
         int daysBackFrom = 30;
         // Duration that covers all 42 features 3 times: 2 days 01:00 - 22:00.
@@ -269,6 +271,7 @@ public class SmartApplicationTest extends BaseAppTest {
      * Run smart app on 3-4 days period.
      */
     @Test
+    @Ignore
     public void smartExpectedTimeTest() throws GeneratorException {
         int daysBackFrom = 30;
         int durationOfProcess = 6;
