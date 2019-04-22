@@ -31,17 +31,21 @@ export default class DataHelper {
       entity: {
         entityId: 'user-1',
         entityType: 'user',
+        entityFetchError: false,
         entityDetails: null
       },
       alerts: {
         selectedAlertId: '0bd963d0-a0ae-4601-8497-b0c363becd1f',
         alerts: userAlerts.data,
+        alertError: false,
         sortBy: 'severity'
       },
       indicators: {
         selectedIndicatorId: '8614aa7f-c8ee-4824-9eaf-e0bb199cd006',
         events: indicatorEvents.data,
         historicalData: indicatorCount.data,
+        indicatorGraphError: false,
+        indicatorEventError: false,
         totalEvents: 100,
         eventFilter: {
           page: 1,
@@ -80,6 +84,11 @@ export default class DataHelper {
     return this;
   }
 
+  entityFetchError(entityFetchError) {
+    _set(this.state, 'entity.entityFetchError', entityFetchError);
+    return this;
+  }
+
   selectedAlertId(alertId) {
     _set(this.state, 'alerts.selectedAlertId', alertId);
     return this;
@@ -87,6 +96,11 @@ export default class DataHelper {
 
   alerts(alerts) {
     _set(this.state, 'alerts.alerts', alerts);
+    return this;
+  }
+
+  alertError(alertError) {
+    _set(this.state, 'alerts.alertError', alertError);
     return this;
   }
 
@@ -102,6 +116,16 @@ export default class DataHelper {
 
   events(events) {
     _set(this.state, 'indicators.events', events);
+    return this;
+  }
+
+  indicatorGraphError(indicatorGraphError) {
+    _set(this.state, 'indicators.indicatorGraphError', indicatorGraphError);
+    return this;
+  }
+
+  indicatorEventError(indicatorEventError) {
+    _set(this.state, 'indicators.indicatorEventError', indicatorEventError);
     return this;
   }
 

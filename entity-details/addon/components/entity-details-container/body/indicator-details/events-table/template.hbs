@@ -12,6 +12,10 @@
 {{/rsa-data-table}}
 {{#unless areAllEventsReceived}}
   <div class='entity-details_loader'>
-    {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+    {{#if (eq indicatorEventError true)}}
+      {{t 'investigateUsers.alerts.indicator.eventsError'}}
+    {{else}}
+      {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+    {{/if}}  
   </div>
 {{/unless}}

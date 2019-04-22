@@ -58,7 +58,8 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
     assert.deepEqual(result, {
       selectedAlertId: 'alert-1',
       sortBy: 'severity',
-      alerts: []
+      alerts: [],
+      alertError: false
     });
 
     result = reducer(Immutable.from({}), {
@@ -68,7 +69,29 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
     assert.deepEqual(result, {
       selectedAlertId: null,
       sortBy: 'severity',
-      alerts: []
+      alerts: [],
+      alertError: false
     });
+  });
+
+  test('test alerts state for error', (assert) => {
+
+    let result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.INITIATE_ALERT,
+      payload: 'alert-1'
+    });
+
+    assert.deepEqual(result, {
+      selectedAlertId: 'alert-1',
+      sortBy: 'severity',
+      alerts: [],
+      alertError: false
+    });
+
+    result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.ALERT_ERROR
+    });
+
+    assert.equal(result.alertError, true);
   });
 });

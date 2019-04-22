@@ -34,4 +34,46 @@ module('Unit | API | data', (hooks) => {
       assert.deepEqual(response._result.data[0].displayName, 'file_qa_1_101');
     }, 400);
   });
+
+  test('it can test fetch data if fetched data is not proper', async(assert) => {
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
+    const fetchObj = {
+      restEndpointLocation: 'userDetails',
+      data: null,
+      method: 'GET',
+      urlParameters: '1212'
+    };
+    const response = fetchData(fetchObj);
+    later(() => {
+      assert.equal(response._result, 'error');
+    }, 400);
+  });
+
+  test('it can test fetch data for error cases', async(assert) => {
+    patchFetch(() => {
+      return new Promise(function(resolve, reject) {
+        reject({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
+    const fetchObj = {
+      restEndpointLocation: 'userDetails',
+      data: null,
+      method: 'GET',
+      urlParameters: '1212'
+    };
+    const response = fetchData(fetchObj);
+    later(() => {
+      assert.equal(response._result, 'error');
+    }, 400);
+  });
 });

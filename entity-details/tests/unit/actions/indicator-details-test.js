@@ -61,6 +61,25 @@ module('Unit | Actions | indicator-details Actions', (hooks) => {
     getEvents('123')(dispatch, getState);
   });
 
+  test('it should throw error if getEvents fails', (assert) => {
+    patchFetch(() => {
+      return new Promise(function(resolve, reject) {
+        reject({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
+    assert.expect(1);
+    const dispatch = ({ type }) => {
+      if (type) {
+        assert.equal(type, 'ENTITY_DETAILS::INDICATOR_EVENTS_ERROR');
+      }
+    };
+    const getState = () => state;
+    getEvents('123')(dispatch, getState);
+  });
+
   test('it can initializeIndicator', (assert) => {
     assert.expect(3);
     const types = ['ENTITY_DETAILS::RESET_INDICATOR', 'ENTITY_DETAILS::INITIATE_INDICATOR', 'ENTITY_DETAILS::GET_INDICATOR_EVENTS', 'ENTITY_DETAILS::GET_INDICATOR_HISTORICAL_DATA'];
@@ -85,6 +104,25 @@ module('Unit | Actions | indicator-details Actions', (hooks) => {
         if (payload) {
           assert.equal(payload.length, 4);
         }
+      }
+    };
+    const getState = () => state;
+    getHistoricalData({ entityId: '123' })(dispatch, getState);
+  });
+
+  test('it should throw error if getHistoricalData fails', (assert) => {
+    assert.expect(1);
+    patchFetch(() => {
+      return new Promise(function(resolve, reject) {
+        reject({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
+    const dispatch = ({ type }) => {
+      if (type) {
+        assert.equal(type, 'ENTITY_DETAILS::INDICATOR_GRAPH_ERROR');
       }
     };
     const getState = () => state;

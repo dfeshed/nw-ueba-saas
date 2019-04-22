@@ -37,4 +37,14 @@ module('Integration | Component | entity-details-container/body/alert-details', 
     await render(hbs`{{entity-details-container/body/alert-details}}`);
     assert.equal(findAll('.entity-details_loader').length, 1);
   });
+
+  test('it should show error for some server problem', async function(assert) {
+    new ReduxDataHelper(setState).alerts([]).alertError(true).build();
+
+    await render(hbs`{{entity-details-container/body/alert-details}}`);
+    // SHould have loader div but should display error text not rsa loader in case of error.
+    assert.equal(findAll('.entity-details_loader').length, 1);
+    assert.equal(findAll('.rsa-loader').length, 0);
+
+  });
 });

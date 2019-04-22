@@ -5,7 +5,8 @@ import computed from 'ember-computed-decorators';
 import * as am4core from '@amcharts/amcharts4/core';
 import {
   indicatorMapSettings,
-  historicalData
+  historicalData,
+  indicatorGraphError
 } from 'entity-details/reducers/indicators/selectors';
 import pieChartCreator from 'entity-details/utils/chart-creators/pie-chart-creator';
 import columnChartCreator from 'entity-details/utils/chart-creators/column-chart-creator';
@@ -16,7 +17,8 @@ am4core.useTheme(am4themesAnimated);
 
 const stateToComputed = (state) => ({
   indicatorMapSettings: indicatorMapSettings(state),
-  historicalData: historicalData(state)
+  historicalData: historicalData(state),
+  indicatorGraphError: indicatorGraphError(state)
 });
 
 const EventsGraphComponent = Component.extend({

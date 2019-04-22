@@ -41,6 +41,11 @@ export const fetchData = ({ restEndpointLocation, data = {}, method, urlParamete
     });
   }
   return fetch(fetchUrl, options).then((fetched) => {
+    if (!fetched.json) {
+      return 'error';
+    }
     return fetched.json();
+  }).catch(() => {
+    return 'error';
   });
 };

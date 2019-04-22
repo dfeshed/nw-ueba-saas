@@ -1,8 +1,9 @@
-import { INITIATE_ALERT, GET_ALERTS, RESET_ALERT, UPDATE_SORT, SELECT_ALERT } from './types';
+import { INITIATE_ALERT, GET_ALERTS, RESET_ALERT, UPDATE_SORT, SELECT_ALERT, ALERT_ERROR } from './types';
 import { fetchData } from './fetch/data';
 import { entityId, entityType } from 'entity-details/reducers/entity/selectors';
 import { initializeEntityDetails } from './entity-creators';
 import { selectedAlertId } from 'entity-details/reducers/alerts/selectors';
+import { lookup } from 'ember-dependency-lookup';
 
 export const resetAlerts = () => ({ type: RESET_ALERT });
 
@@ -26,11 +27,17 @@ export const initializeAlert = (alertId) => {
       method: 'GET',
       urlParameters: alertId
     };
-    fetchData(fetchObj).then(({ data }) => {
-      dispatch({
-        type: GET_ALERTS,
-        payload: data
-      });
+    fetchData(fetchObj).then((result) => {
+      if (result === 'error') {
+        dispatch({
+          type: ALERT_ERROR
+        });
+      } else {
+        dispatch({
+          type: GET_ALERTS,
+          payload: result.data
+        });
+      }
     });
   };
 };
@@ -46,8 +53,14 @@ export const alertIsNotARisk = (dataForPost) => {
       method: 'PATCH',
       urlParameters: alert
     };
-    fetchData(fetchObj).then(() => {
-      dispatch(initializeEntityDetails({ entityId: entityId(getState()), entityType: entityType(getState()), alertId: alert }));
+    fetchData(fetchObj).then((result) => {
+      if (result === 'error') {
+        const flashMessages = lookup('service:flashMessages');
+        const i18n = lookup('service:i18n');
+        flashMessages.danger(i18n.t('error in marking alert as risk'));
+      } else {
+        dispatch(initializeEntityDetails({ entityId: entityId(getState()), entityType: entityType(getState()), alertId: alert }));
+      }
     });
   };
 };

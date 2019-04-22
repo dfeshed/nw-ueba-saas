@@ -7,6 +7,7 @@ import dataIndex from '../../data/presidio';
 import userAlerts from '../../data/presidio/user_alerts';
 import indicatorEvents from '../../data/presidio/indicator-events';
 import indicatorCount from '../../data/presidio/indicator-count';
+import { patchFlash } from '../../helpers/patch-flash';
 
 const state = {
   entity: {
@@ -54,6 +55,25 @@ module('Unit | Actions | Entity-creators Actions', (hooks) => {
         if (payload && payload.displayName) {
           assert.deepEqual(payload, entityDetails.data[0]);
         }
+      }
+    };
+    initializeEntityDetails({ entityId: '123' })(dispatch);
+  });
+
+  test('it should fail if some error from server', (assert) => {
+    assert.expect(2);
+    patchFetch(() => {
+      return new Promise(function(resolve, reject) {
+        reject({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
+    const types = ['ENTITY_DETAILS::ENTITY_ERROR', 'ENTITY_DETAILS::INITIATE_ENTITY'];
+    const dispatch = ({ type }) => {
+      if (type) {
+        assert.ok(types.includes(type));
       }
     };
     initializeEntityDetails({ entityId: '123' })(dispatch);
@@ -139,6 +159,24 @@ module('Unit | Actions | Entity-creators Actions', (hooks) => {
     followUser()(dispatch, getState);
   });
 
+  test('it should flash message if follow user fails', (assert) => {
+    const done = assert.async();
+    patchFetch(() => {
+      return new Promise(function(resolve, reject) {
+        reject({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
+    const getState = () => state;
+    followUser()(null, getState);
+    patchFlash((flash) => {
+      assert.equal(flash.type, 'danger');
+      done();
+    });
+  });
+
   test('it can unfollow user', (assert) => {
     assert.expect(2);
     const dispatch = ({ type, payload }) => {
@@ -149,5 +187,23 @@ module('Unit | Actions | Entity-creators Actions', (hooks) => {
     };
     const getState = () => state;
     unfollowUser()(dispatch, getState);
+  });
+
+  test('it should flash message if unfollow user fails', (assert) => {
+    const done = assert.async();
+    patchFetch(() => {
+      return new Promise(function(resolve, reject) {
+        reject({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
+    const getState = () => state;
+    unfollowUser()(null, getState);
+    patchFlash((flash) => {
+      assert.equal(flash.type, 'danger');
+      done();
+    });
   });
 });

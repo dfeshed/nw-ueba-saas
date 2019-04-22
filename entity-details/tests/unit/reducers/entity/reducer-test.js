@@ -47,6 +47,24 @@ module('Unit | Reducers | Entity Reducer', (hooks) => {
     assert.deepEqual(result.entityDetails, entityDetails.data[0]);
   });
 
+  test('test enity error ', (assert) => {
+
+    let result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.INITIATE_ENTITY,
+      payload: { entityId: 123, entityType: 'user' }
+    });
+
+    assert.equal(result.entityId, 123);
+    assert.equal(result.entityType, 'user');
+    assert.equal(result.entityFetchError, false);
+
+    result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.ENTITY_ERROR
+    });
+
+    assert.equal(result.entityFetchError, true);
+  });
+
   test('test update follow', (assert) => {
 
     let result = reducer(Immutable.from({}), {

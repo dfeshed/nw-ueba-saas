@@ -7,6 +7,8 @@ export const sortBy = (state) => state.alerts.sortBy;
 
 export const selectedAlertId = (state) => state.alerts.selectedAlertId;
 
+export const alertError = (state) => state.alerts.alertError;
+
 export const sortedAlertsData = createSelector(
   [sortBy, alertsData],
   (id, alerts) => {

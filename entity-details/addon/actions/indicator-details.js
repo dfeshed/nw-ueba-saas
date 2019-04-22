@@ -1,4 +1,4 @@
-import { INITIATE_INDICATOR, GET_INDICATOR_EVENTS, GET_INDICATOR_HISTORICAL_DATA, RESET_INDICATOR } from './types';
+import { INITIATE_INDICATOR, GET_INDICATOR_EVENTS, GET_INDICATOR_HISTORICAL_DATA, RESET_INDICATOR, INDICATOR_EVENTS_ERROR, INDICATOR_GRAPH_ERROR } from './types';
 import { fetchData } from './fetch/data';
 import { eventFilter, indicatorMapSettings } from 'entity-details/reducers/indicators/selectors';
 
@@ -12,12 +12,19 @@ export const getEvents = (indicatorId) => {
       method: 'GET',
       urlParameters: indicatorId
     };
-    fetchData(fetchObj).then(({ data, total }) => {
-      dispatch({
-        type: GET_INDICATOR_EVENTS,
-        payload: { data, total }
-      });
-      dispatch(getHistoricalData(indicatorId));
+    fetchData(fetchObj).then((result) => {
+      if (result === 'error') {
+        dispatch({
+          type: INDICATOR_EVENTS_ERROR
+        });
+      } else {
+        const { data, total } = result;
+        dispatch({
+          type: GET_INDICATOR_EVENTS,
+          payload: { data, total }
+        });
+        dispatch(getHistoricalData(indicatorId));
+      }
     });
   };
 };
@@ -30,11 +37,17 @@ export const getHistoricalData = (indicatorId) => {
       method: 'GET',
       urlParameters: indicatorId
     };
-    fetchData(fetchObj).then(({ data }) => {
-      dispatch({
-        type: GET_INDICATOR_HISTORICAL_DATA,
-        payload: data
-      });
+    fetchData(fetchObj).then((result) => {
+      if (result === 'error') {
+        dispatch({
+          type: INDICATOR_GRAPH_ERROR
+        });
+      } else {
+        dispatch({
+          type: GET_INDICATOR_HISTORICAL_DATA,
+          payload: result.data
+        });
+      }
     });
   };
 };

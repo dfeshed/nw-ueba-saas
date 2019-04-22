@@ -83,4 +83,30 @@ module('Unit | Reducers | Indicators Reducer', (hooks) => {
     assert.deepEqual(result.events, []);
   });
 
+  test('test indicator state for errors', (assert) => {
+
+    let result = reducer(Immutable.from({
+      indicatorEventError: false,
+      indicatorGraphError: false
+    }), {
+      type: ACTION_TYPES.INITIATE_INDICATOR,
+      payload: 'inc-1'
+    });
+    assert.equal(result.indicatorEventError, false);
+    assert.equal(result.indicatorGraphError, false);
+
+    result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.INDICATOR_EVENTS_ERROR
+    });
+
+    assert.equal(result.indicatorEventError, true);
+
+    result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.INDICATOR_GRAPH_ERROR
+    });
+
+    assert.equal(result.indicatorGraphError, true);
+
+  });
+
 });

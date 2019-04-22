@@ -13,6 +13,10 @@ export const indicatorEvents = (state) => state.indicators.events;
 
 export const historicalData = (state) => state.indicators.historicalData;
 
+export const indicatorGraphError = (state) => state.indicators.indicatorGraphError;
+
+export const indicatorEventError = (state) => state.indicators.indicatorEventError;
+
 export const areAllEventsReceived = createSelector(
   [_totalEvents, indicatorEvents],
   (total, events) => {

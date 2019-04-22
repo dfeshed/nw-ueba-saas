@@ -4,6 +4,10 @@
   {{entity-details-container/body/alert-details/indicators}}
 {{else}}
   <div class='entity-details_loader'>
-    {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+    {{#if (eq alertError true)}}
+      {{t 'investigateUsers.alerts.errorDetails'}}
+    {{else}}
+      {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+    {{/if}}
   </div>
 {{/if}} 

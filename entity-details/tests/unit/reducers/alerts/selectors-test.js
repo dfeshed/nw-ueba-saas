@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { selectedAlertId, sortBy, sortedAlertsData, getSelectedAlertData, alertSources, userScoreContribution, hasAlerts } from 'entity-details/reducers/alerts/selectors';
+import { selectedAlertId, sortBy, sortedAlertsData, getSelectedAlertData, alertSources, userScoreContribution, hasAlerts, alertError } from 'entity-details/reducers/alerts/selectors';
 import userAlerts from '../../../data/presidio/user_alerts';
 
 module('Unit | Selector | Alerts Selector');
@@ -8,12 +8,23 @@ const state = {
   alerts: {
     selectedAlertId: '0bd963d0-a0ae-4601-8497-b0c363becd1f',
     sortBy: 'severity',
-    alerts: userAlerts.data
+    alerts: userAlerts.data,
+    alertError: false
   }
 };
 
 test('test alert state for selected alert id', function(assert) {
   assert.equal(selectedAlertId(state), '0bd963d0-a0ae-4601-8497-b0c363becd1f');
+});
+
+test('test alert state for error', function(assert) {
+  assert.equal(alertError(state), false);
+  const newState = {
+    alerts: {
+      alertError: true
+    }
+  };
+  assert.equal(alertError(newState), true);
 });
 
 test('test alert state for alert data for given entity', function(assert) {

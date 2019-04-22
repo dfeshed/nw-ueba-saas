@@ -17,6 +17,8 @@ export const entityType = (state) => state.entity.entityType;
 
 export const entityDetails = (state) => state.entity.entityDetails;
 
+export const entityFetchError = (state) => state.entity.entityFetchError;
+
 export const entityDisplayName = createSelector(
   [entityDetails],
   (details) => {

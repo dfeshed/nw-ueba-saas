@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { selectedIndicatorId, eventFilter, indicatorMapSettings, indicatorEvents, historicalData, areAllEventsReceived, getIncidentData, getIncidentKey, getIndicatorEntity, getIncidentPositionAndNextIncidentId } from 'entity-details/reducers/indicators/selectors';
+import { selectedIndicatorId, eventFilter, indicatorMapSettings, indicatorEvents, historicalData, areAllEventsReceived, getIncidentData, getIncidentKey, getIndicatorEntity, getIncidentPositionAndNextIncidentId, indicatorGraphError, indicatorEventError } from 'entity-details/reducers/indicators/selectors';
 import userAlerts from '../../../data/presidio/user_alerts';
 import indicatorEventsData from '../../../data/presidio/indicator-events';
 import indicatorCount from '../../../data/presidio/indicator-count';
@@ -15,6 +15,8 @@ const state = {
     selectedIndicatorId: '8614aa7f-c8ee-4824-9eaf-e0bb199cd006',
     events: indicatorEventsData.data,
     historicalData: indicatorCount.data,
+    indicatorGraphError: false,
+    indicatorEventError: false,
     totalEvents: 100,
     eventFilter: {
       page: 1,
@@ -36,6 +38,27 @@ test('test event filter state for getting events data', function(assert) {
 });
 test('test indicator state for selected indicator data', function(assert) {
   assert.equal(getIncidentData(state), userAlerts.data[0].evidences[0]);
+});
+test('test indicator state for indicatorGraphError', function(assert) {
+  assert.equal(indicatorGraphError(state), false);
+
+  const newState = {
+    indicators: {
+      indicatorGraphError: true,
+      indicatorEventError: false
+    }
+  };
+  assert.equal(indicatorGraphError(newState), true);
+});
+test('test indicator state for indicatorEventError', function(assert) {
+  assert.equal(indicatorEventError(state), false);
+  const newState = {
+    indicators: {
+      indicatorGraphError: true,
+      indicatorEventError: true
+    }
+  };
+  assert.equal(indicatorEventError(newState), true);
 });
 test('test indicator state for selected incident key', function(assert) {
   assert.equal(getIncidentKey(state), 'abnormal_event_day_time');

@@ -7,6 +7,8 @@ const initialState = Immutable.from({
   events: [],
   historicalData: null,
   totalEvents: null,
+  indicatorGraphError: false,
+  indicatorEventError: false,
   eventFilter: {
     page: 1,
     size: 100,
@@ -17,6 +19,8 @@ const initialState = Immutable.from({
 const indicators = handleActions({
   [ACTION_TYPES.RESET_INDICATOR]: () => Immutable.from(initialState),
   [ACTION_TYPES.SELECT_ALERT]: () => Immutable.from(initialState),
+  [ACTION_TYPES.INDICATOR_EVENTS_ERROR]: (state) => state.set('indicatorEventError', true),
+  [ACTION_TYPES.INDICATOR_GRAPH_ERROR]: (state) => state.set('indicatorGraphError', true),
   [ACTION_TYPES.INITIATE_INDICATOR]: (state, { payload }) => state.set('selectedIndicatorId', payload),
   [ACTION_TYPES.GET_INDICATOR_EVENTS]: (state, { payload: { data, total } }) => {
     // Concat events list data to current events list.

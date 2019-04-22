@@ -4832,6 +4832,8 @@ export default {
       date: 'Date',
       feedback: 'Feedback',
       indicators: 'Indicators',
+      error: 'Some problem while fetching entity alerts. Please retry after some time.',
+      errorDetails: 'Some problem while fetching alert details. Please retry after some time.',
       alertNames: {
         credential_dumping: {
           name: 'Credential Dumping',
@@ -4962,6 +4964,8 @@ export default {
         dataSource: 'Data Source',
         contributionToAlert: 'Contribution to Alert',
         startDate: 'Start Date',
+        eventsError: 'Some problem while fetching events for this indicator. Please retry after some time.',
+        graphError: 'Some problem while fetching historical data for this indicator. Please retry after some time.',
         indicatorNames: {
           // Presidio File Anoamlies
           abnormal_file_action_operation_type: {

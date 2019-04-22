@@ -60,6 +60,15 @@ module('Integration | Component | entity-details-container/body/indicator-detail
     assert.equal(findAll('.entity-details_loader').length, 1);
   });
 
+  test('it should error if server has error while fetching historical data', async function(assert) {
+    new ReduxDataHelper(setState).historicalData(null).indicatorGraphError(true).build();
+
+    await render(hbs`{{entity-details-container/body/indicator-details/graph}}`);
+    // SHould have loader div but should display error text not rsa loader in case of error.
+    assert.equal(findAll('.entity-details_loader').length, 1);
+    assert.equal(findAll('.rsa-loader').length, 0);
+  });
+
   test('it should show loader till incident data is not there', async function(assert) {
     new ReduxDataHelper(setState).alerts(null).build();
 

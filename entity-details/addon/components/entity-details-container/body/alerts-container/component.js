@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { getSelectedAlertData, selectedAlertId, sortedAlertsData, sortBy, hasAlerts } from 'entity-details/reducers/alerts/selectors';
+import { getSelectedAlertData, selectedAlertId, sortedAlertsData, sortBy, hasAlerts, alertError } from 'entity-details/reducers/alerts/selectors';
 import { selectedIndicatorId } from 'entity-details/reducers/indicators/selectors';
 import { selectAlert, updateSort } from 'entity-details/actions/alert-details';
 import { initializeIndicator } from 'entity-details/actions/indicator-details';
@@ -12,6 +12,7 @@ const stateToComputed = (state) => ({
   selectedIndicatorId: selectedIndicatorId(state),
   alerts: sortedAlertsData(state),
   sortBy: sortBy(state),
+  alertError: alertError(state),
   hasAlerts: hasAlerts(state),
   alertData: getSelectedAlertData(state)
 });

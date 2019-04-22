@@ -2,14 +2,15 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { later } from '@ember/runloop';
 import getEventsTableColumnForGivenIndicator from 'entity-details/utils/column-config';
-import { getIndicatorEntity, indicatorEvents, areAllEventsReceived } from 'entity-details/reducers/indicators/selectors';
+import { getIndicatorEntity, indicatorEvents, areAllEventsReceived, indicatorEventError } from 'entity-details/reducers/indicators/selectors';
 import computed from 'ember-computed-decorators';
 import { getEvents } from 'entity-details/actions/indicator-details';
 
 const stateToComputed = (state) => ({
   indicatorKey: getIndicatorEntity(state),
   events: indicatorEvents(state),
-  areAllEventsReceived: areAllEventsReceived(state)
+  areAllEventsReceived: areAllEventsReceived(state),
+  indicatorEventError: indicatorEventError(state)
 });
 
 const dispatchToActions = {

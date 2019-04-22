@@ -6,6 +6,7 @@ import dataIndex from '../../data/presidio';
 import userAlerts from '../../data/presidio/user_alerts';
 import indicatorEvents from '../../data/presidio/indicator-events';
 import indicatorCount from '../../data/presidio/indicator-count';
+import { patchFlash } from '../../helpers/patch-flash';
 
 const state = {
   entity: {
@@ -59,6 +60,26 @@ module('Unit | Actions | alert-details Actions', (hooks) => {
     initializeAlert('123')(dispatch, getState);
   });
 
+  test('it intialize Alert for error cases', (assert) => {
+    patchFetch(() => {
+      return new Promise(function(resolve, reject) {
+        reject({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
+    assert.expect(2);
+    const types = ['ENTITY_DETAILS::INITIATE_ALERT', 'ENTITY_DETAILS::ALERT_ERROR'];
+    const dispatch = ({ type }) => {
+      if (type) {
+        assert.ok(types.includes(type));
+      }
+    };
+    const getState = () => state;
+    initializeAlert('123')(dispatch, getState);
+  });
+
   test('it can not a risk', (assert) => {
     assert.expect(3);
     const dispatch = (obj) => {
@@ -81,6 +102,26 @@ module('Unit | Actions | alert-details Actions', (hooks) => {
     };
     const getState = () => state;
     alertIsNotARisk({ entityId: '123' })(dispatch, getState);
+  });
+
+
+  test('it should show flash message if not a risk fails', (assert) => {
+    const done = assert.async();
+    patchFetch(() => {
+      return new Promise(function(resolve, reject) {
+        reject({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
+    const getState = () => state;
+    alertIsNotARisk({ entityId: '123' })(null, getState);
+
+    patchFlash((flash) => {
+      assert.equal(flash.type, 'danger');
+      done();
+    });
   });
 
   test('it can updateSort for alert', (assert) => {
