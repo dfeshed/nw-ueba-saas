@@ -45,10 +45,10 @@ export const isPolicyFetchError = createSelector(
  */
 export const sourceTypes = (state) => {
   const features = lookup('service:features');
-  const isWindowsLogPolicyEnabled = features.isEnabled('rsa.usm.allowWindowsLogPolicyCreation');
+  const isFilePolicyEnabled = features.isEnabled('rsa.usm.allowFilePolicyCreation');
   let enabledSourceTypes = _policyWizardState(state).sourceTypes;
-  if (!isWindowsLogPolicyEnabled) {
-    enabledSourceTypes = enabledSourceTypes.filter((sourceType) => sourceType.policyType !== 'windowsLogPolicy');
+  if (!isFilePolicyEnabled) {
+    enabledSourceTypes = enabledSourceTypes.filter((sourceType) => sourceType.policyType !== 'filePolicy');
   }
   return enabledSourceTypes;
 };

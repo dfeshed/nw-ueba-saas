@@ -7,11 +7,14 @@ import edrPolicyInitialState from './edrPolicy/edr-initialState';
 import edrPolicyReducers from './edrPolicy/edr-reducerFns';
 import windowsLogPolicyReducers from './windowsLogPolicy/windowsLog-reducerFns';
 import windowsLogPolicyInitialState from './windowsLogPolicy/windowsLog-initialState';
+import filePolicyInitialState from './filePolicy/file-initialState';
+// import filePolicyReducers from './filePolicy/file-reducerFns';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 
 const INITIAL_STATES = {
   edrPolicy: edrPolicyInitialState,
   windowsLogPolicy: windowsLogPolicyInitialState,
+  filePolicy: filePolicyInitialState,
   common: {
     //  the policy object to be created/updated/saved
     policy: {
@@ -69,8 +72,8 @@ const INITIAL_STATES = {
     // identify-policy-step - the policy sourceType objects to fill the select/dropdown
     sourceTypes: [
       { id: 'edrPolicy', policyType: 'edrPolicy', name: 'EndpointScan', label: 'adminUsm.policyWizard.edrSourceType' },
-      // { id: 'fileLogPolicy', policyType: 'fileLogPolicy', name: 'EndpointFile', label: 'adminUsm.policyWizard.fileLogSourceType' },
-      { id: 'windowsLogPolicy', policyType: 'windowsLogPolicy', name: 'EndpointWL', label: 'adminUsm.policyWizard.windowsLogSourceType' }
+      { id: 'windowsLogPolicy', policyType: 'windowsLogPolicy', name: 'EndpointWL', label: 'adminUsm.policyWizard.windowsLogSourceType' },
+      { id: 'filePolicy', policyType: 'filePolicy', name: 'EndpointFile', label: 'adminUsm.policyWizard.fileLogSourceType' }
     ],
 
     // define-policy-step - available settings to render the left col

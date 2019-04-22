@@ -5,7 +5,7 @@ export default {
     return {
       code: 0,
       data: {
-        'rsa.usm.allowWindowsLogPolicyCreation': true,
+        'rsa.usm.allowFilePolicyCreation': true,
         'rsa.usm.viewSources': false
       }
     };

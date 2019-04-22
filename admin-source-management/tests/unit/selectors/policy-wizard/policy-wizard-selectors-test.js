@@ -56,27 +56,31 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
   test('sourceTypes selector', function(assert) {
     const features = lookup('service:features');
 
-    // windowsLogPolicy enabled so all types should be returned
-    features.setFeatureFlags({ 'rsa.usm.allowWindowsLogPolicyCreation': true });
+    // filePolicy enabled so all types should be returned
+    features.setFeatureFlags({ 'rsa.usm.allowFilePolicyCreation': true });
     let type0Expected = 'edrPolicy';
-    const type1Expected = 'windowsLogPolicy';
+    let type1Expected = 'windowsLogPolicy';
+    const type2Expected = 'filePolicy';
     let fullState = new ReduxDataHelper().policyWiz().build();
     let sourceTypesExpected = _.cloneDeep(fullState.usm.policyWizard.sourceTypes);
     let sourceTypesSelected = sourceTypes(Immutable.from(fullState));
-    assert.deepEqual(sourceTypesSelected.length, 2, 'All sourceTypes returned as expected');
+    assert.deepEqual(sourceTypesSelected.length, 3, 'All sourceTypes returned as expected');
     assert.deepEqual(sourceTypesSelected, sourceTypesExpected, 'The returned value from the sourceTypes selector is as expected');
     assert.deepEqual(sourceTypesSelected[0].policyType, type0Expected, `sourceTypes[0].policyType is ${type0Expected}`);
     assert.deepEqual(sourceTypesSelected[1].policyType, type1Expected, `sourceTypes[1].policyType is ${type1Expected}`);
+    assert.deepEqual(sourceTypesSelected[2].policyType, type2Expected, `sourceTypes[2].policyType is ${type2Expected}`);
 
-    // windowsLogPolicy disabled so it should not be returned
-    features.setFeatureFlags({ 'rsa.usm.allowWindowsLogPolicyCreation': false });
+    // filePolicy disabled so it should not be returned
+    features.setFeatureFlags({ 'rsa.usm.allowFilePolicyCreation': false });
     type0Expected = 'edrPolicy';
+    type1Expected = 'windowsLogPolicy';
     fullState = new ReduxDataHelper().policyWiz().build();
-    sourceTypesExpected = _.cloneDeep(fullState.usm.policyWizard.sourceTypes.filter((sourceType) => sourceType.policyType !== 'windowsLogPolicy'));
+    sourceTypesExpected = _.cloneDeep(fullState.usm.policyWizard.sourceTypes.filter((sourceType) => sourceType.policyType !== 'filePolicy'));
     sourceTypesSelected = sourceTypes(Immutable.from(fullState));
-    assert.deepEqual(sourceTypesSelected.length, 1, 'windowsLogPolicy sourceType filtered so only one type returned as expected');
+    assert.deepEqual(sourceTypesSelected.length, 2, 'filePolicy sourceType filtered so only two types are returned as expected');
     assert.deepEqual(sourceTypesSelected, sourceTypesExpected, 'The returned value from the sourceTypes selector is as expected');
     assert.deepEqual(sourceTypesSelected[0].policyType, type0Expected, `sourceTypes[0].policyType is ${type0Expected}`);
+    assert.deepEqual(sourceTypesSelected[1].policyType, type1Expected, `sourceTypes[1].policyType is ${type1Expected}`);
   });
 
   test('selectedSourceType selector', function(assert) {

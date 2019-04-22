@@ -11,7 +11,7 @@ import { waitUntil } from '@ember/test-helpers';
 //   code: 0,
 //   data: {
 //     'rsa.usm': true,
-//     'rsa.usm.allowWindowsLogPolicyCreation,
+//     'rsa.usm.allowFilePolicyCreation,
 //     'rsa.usm.viewSources,
 //     'rsa.usm.featureTwo
 //   }
@@ -48,15 +48,15 @@ module('Unit | Route | protected', function(hooks) {
     const route = this.owner.lookup('route:protected');
 
     // disabled by default
-    let isRsaUsmAllowWindowsLogPolicyCreationEnabled = features.isEnabled('rsa.usm.allowWindowsLogPolicyCreation');
-    assert.equal(isRsaUsmAllowWindowsLogPolicyCreationEnabled, false, 'feature rsa.usm.allowWindowsLogPolicyCreation is disabled by default');
+    let isRsaUsmAllowFilePolicyCreationEnabled = features.isEnabled('rsa.usm.allowFilePolicyCreation');
+    assert.equal(isRsaUsmAllowFilePolicyCreationEnabled, false, 'feature rsa.usm.allowFilePolicyCreation is disabled by default');
 
     const promise = route.getSourceManagementFeatures();
     await promise;
 
     // enabled by the service call
-    isRsaUsmAllowWindowsLogPolicyCreationEnabled = features.isEnabled('rsa.usm.allowWindowsLogPolicyCreation');
-    assert.equal(isRsaUsmAllowWindowsLogPolicyCreationEnabled, true, 'feature rsa.usm.allowWindowsLogPolicyCreation is enabled by the service call');
+    isRsaUsmAllowFilePolicyCreationEnabled = features.isEnabled('rsa.usm.allowFilePolicyCreation');
+    assert.equal(isRsaUsmAllowFilePolicyCreationEnabled, true, 'feature rsa.usm.allowFilePolicyCreation is enabled by the service call');
 
     // disabled for 11.4 for now
     const isRsaUsmViewSourcesEnabled = features.isEnabled('rsa.usm.viewSources');

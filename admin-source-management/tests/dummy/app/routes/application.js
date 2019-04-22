@@ -34,7 +34,7 @@ export default Route.extend({
 
     // also set as part of protected route in sa
     this.get('features').setFeatureFlags({
-      'rsa.usm.allowWindowsLogPolicyCreation': true,
+      'rsa.usm.allowFilePolicyCreation': true,
       'rsa.usm.viewSources': false
     });
 
