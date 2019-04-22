@@ -22,6 +22,9 @@ public interface SmartRecordsManagerSdk {
 	 */
 	PageIterator<SmartRecord> getSmartRecords(int pageSize, int maxGroupSize, TimeRange timeRange, int scoreThreshold);
 
+
+	PageIterator<SmartRecord> getSmartRecords(int pageSize, int maxGroupSize, TimeRange timeRange, int scoreThreshold, String configurationName);
+
 	/**
 	 * Get number of entities with smart over the specified time range.
 	 *

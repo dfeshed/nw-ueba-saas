@@ -72,9 +72,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
      */
     @RunTime
     @Override
-    public void run(Instant startDate, Instant endDate) throws Exception {
+    public void run(Instant startDate, Instant endDate, String configurationName) throws Exception {
         logger.debug("Started output process with params: start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(smartPageSize, smartPageSize, new TimeRange(startDate, endDate), SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES);
+        PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(smartPageSize, smartPageSize, new TimeRange(startDate, endDate), SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES, configurationName);
 
         List<Entity> entities = new ArrayList<>();
         List<SmartRecord> smarts = null;
@@ -161,7 +161,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         return null;
     }
 
-    public void updateAllEntitiesData(Instant startDate, Instant endDate) throws Exception {
+    public void updateAllEntitiesData(Instant startDate, Instant endDate, String configurationName) throws Exception {
         this.entityService.updateEntityData(endDate);
         logger.info("updating entities data completed successfully");
 

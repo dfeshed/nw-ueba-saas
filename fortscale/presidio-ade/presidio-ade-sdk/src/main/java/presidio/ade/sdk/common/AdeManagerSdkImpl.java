@@ -33,11 +33,8 @@ import presidio.ade.sdk.online_run.OnlineRunParams;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
@@ -284,6 +281,11 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     public PageIterator<SmartRecord> getSmartRecords(int pageSize, int maxGroupSize, TimeRange timeRange, int scoreThreshold) {
         Collection<String> configurationNames = smartRecordConfService.getSmartRecordConfs().stream().map(SmartRecordConf::getName).collect(Collectors.toSet());
         return new MultipleSmartCollectionsPaginationService(configurationNames, smartDataReader, pageSize, maxGroupSize).getPageIterator(timeRange, scoreThreshold);
+    }
+
+    @Override
+    public PageIterator<SmartRecord> getSmartRecords(int pageSize, int maxGroupSize, TimeRange timeRange, int scoreThreshold, String configurationName) {
+        return new MultipleSmartCollectionsPaginationService(Arrays.asList(configurationName), smartDataReader, pageSize, maxGroupSize).getPageIterator(timeRange, scoreThreshold);
     }
 
     @Override
