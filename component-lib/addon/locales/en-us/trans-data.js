@@ -4174,6 +4174,76 @@ export default {
         publish: 'Select one or more unpublished policies to publish. Sources will receive changes when they next connect.'
       }
     },
+    sources: {
+      title: 'Sources',
+      list: {
+        select: 'Select',
+        name: 'Source Name',
+        publishStatus: 'Publication Status',
+        sourceType: 'Source Type',
+        associatedGroups: 'Group(s)',
+        description: 'Source Description',
+        noResultsMessage: 'No Sources found.',
+        defaultPolicyAssociatedGroup: 'Base Policy',
+        noAssociatedGroups: 'None'
+      },
+      filter: {
+        sourceType: 'Source Type',
+        appliedGroups: 'Applied To Group(s)',
+        policyParameters: 'Policy Parameters'
+      },
+      detail: {
+        history: 'History',
+        createdOn: 'Created On',
+        createdBy: 'Created By',
+        lastUpdatedOn: 'Last Updated On',
+        lastUpdatedBy: 'Last Updated By',
+        lastPublishedOn: 'Last Published On',
+        windowsLogSettings: 'Windows Log Settings',
+        channelFilterSettings: 'Channel Filter Settings',
+        windowsLogPolicyEnabled: 'Status',
+        primaryDestination: 'Primary Destination',
+        secondaryDestination: 'Secondary Destination',
+        defaultPrimaryAddress: 'As Per Packager',
+        defaultEdrPolicy: 'Default EDR Policy',
+        none: 'None',
+        defaultPrimaryAddressTooltip: 'The agent will communicate to the endpoint server defined in the agent packager.',
+        protocol: 'Protocol',
+        sendTestLog: 'Send Test Log',
+        eventId: 'Event Id',
+        channel: 'Channel',
+        filterType: 'Filter Type',
+        systemCreated: 'System Created',
+        recurrenceEvery: 'Every',
+        enabled: 'Enabled',
+        disabled: 'Disabled'
+      },
+      modals: {
+        deletePolicies: {
+          title: 'Delete Policy(ies)',
+          confirm: 'You are about to permanently delete {{numItems}} policy(ies). Deletion will take immediate effect. Any groups currently applying these policies will no longer do so. Default policies are automatically excluded from deletion.',
+          ok: 'Delete Policy(ies)',
+          success: 'Successfully deleted selected Policy(ies)',
+          failure: 'There was an unexpected problem deleting selected Policy(ies)'
+        },
+        publishPolicies: {
+          title: 'Publish Policy(ies)',
+          confirm: 'You are about to publish the {{numItems}} selected Unpublished Policy(ies)?',
+          ok: 'Publish Policy(ies)',
+          success: 'Successfully published selected Policy(ies)',
+          failure: 'There was an unexpected problem publishing the Policy(ies)'
+        }
+      },
+      tooltips: {
+        edit: 'Select a policy to edit it. Only one policy can be edited at a time.',
+        delete: 'Select one or more policies to delete.',
+        publish: 'Select one or more unpublished policies to publish. Sources will receive changes when they next connect.'
+      }
+    },
+    sourceTypes: {
+      edrSource: 'Endpoint',
+      windowsLogSource: 'Log Collection'
+    },
     groupWizard: {
       // identify-group-step
       identifyGroup: 'Identify Group',

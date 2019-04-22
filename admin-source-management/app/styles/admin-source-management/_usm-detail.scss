@@ -1,6 +1,6 @@
 .admin-usm-engine {
 
-  .usm-groups-inspector, .usm-policies-inspector, .usm-policies-inspector-edr, .usm-policies-inspector-windows-log {
+  .usm-groups-inspector, .usm-policies-inspector, .usm-sources-inspector, .usm-policies-inspector-edr, .usm-policies-inspector-windows-log {
     height: 100%;
 
     .heading {
@@ -34,19 +34,19 @@
       padding-top: .4rem;
       color: text-color(primary, lightest);
 
-      .tooltip-text {        
+      .tooltip-text {
         margin-top: 0rem;
       }
-      
+
       .table-cell-text {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         font-size: 1rem;
-      }      
+      }
     }
 
-    .default-host-name {      
+    .default-host-name {
       color: text-color(primary);
       padding-top: 0rem;
     }

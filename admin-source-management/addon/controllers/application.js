@@ -5,6 +5,7 @@ import computed from 'ember-computed-decorators';
 export default Controller.extend({
   accessControl: service(),
   routing: service('-routing'),
+  features: service(),
 
   /**
    * Returns the leaf route name for the current fully qualified route
@@ -18,6 +19,21 @@ export default Controller.extend({
     const paths = currentRouteName.split('.');
     const path = paths.pop();
     return path === 'index' ? paths.pop() || '' : path;
+  },
+
+  @computed()
+  isViewSourcesEnabled() {
+    return this.get('features').isEnabled('rsa.usm.viewSources');
+  },
+
+  @computed('routing.currentRouteName')
+  isSourcesActive(currentRouteName) {
+    let isActive = false;
+    if (currentRouteName.indexOf('admin-source-management.sources') !== -1 ||
+        currentRouteName.indexOf('admin-source-management.source-wizard') !== -1) {
+      isActive = true;
+    }
+    return isActive;
   },
 
   @computed('routing.currentRouteName')

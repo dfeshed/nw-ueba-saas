@@ -6,6 +6,7 @@ import { initialState as filtersInitialState } from 'admin-source-management/red
 import {
   groups,
   policies,
+  sources,
   endpointServers,
   logServers,
   focusedItem
@@ -739,6 +740,19 @@ export default class DataHelper {
 
   policiesFilterExpressionList(expressionList) {
     _set(this.state, 'usm.policiesFilter.expressionList', expressionList);
+    return this;
+  }
+
+  // ====================================================================
+  // View Sources
+  // ====================================================================
+  fetchSources() {
+    _set(this.state, 'usm.sources.items', sources);
+    return this;
+  }
+
+  sources(config) {
+    _set(this.state, 'usm.sources.items', config);
     return this;
   }
 }

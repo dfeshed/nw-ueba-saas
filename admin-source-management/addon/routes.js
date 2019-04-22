@@ -6,4 +6,6 @@ export default buildRoutes(function() {
   this.route('group-ranking', { path: 'group/ranking' });
   this.route('policies');
   this.route('policy-wizard', { path: 'policy/wizard/:policyId' });
+  this.route('sources');
+  this.route('source-wizard', { path: 'source/wizard/:sourceId' });
 });

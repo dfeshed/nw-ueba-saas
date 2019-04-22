@@ -1,0 +1,78 @@
+{{#rsa-explorer class="usm-sources"
+  noResultsMessage=(or noResultsMessage (t 'adminUsm.sources.list.noResultsMessage'))
+  columns=columns
+  reduxSpace='usm.sources'
+  creators=creators as |explorer|}}
+
+  {{#explorer.toolbar toolbarControlsComponent='usm-sources/sources/toolbar' as |toolbar|}}
+    {{toolbar.toolbarControls}}
+  {{/explorer.toolbar}}
+
+  {{#explorer.filters filterControlsComponent='usm-sources/sources/filters' hasTimeFilter=false showFooter=false as |filters|}}
+    {{filters.filterControls}}
+  {{/explorer.filters}}
+
+  {{#explorer.table as |row|}}
+    {{#row.cell as |item index column|}}
+      <span class="{{concat 'usm-source-column-' column.field}} {{if item.defaultSource 'usm-default-source-row'}}">
+        {{#if (eq column.dataType 'checkbox') }}
+          {{#if (not-eq item.id '__default_windows_log_source') }}
+            <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
+              {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
+            </label>
+          {{/if}}
+        {{else if (eq column.field "sourceType")}}
+          {{t (concat 'adminUsm.sourceTypes.' item.sourceType)}}
+        {{else if (eq column.field "name")}}
+          {{#rsa-text-with-tooltip value=(get item column.field) style="standard"}}
+            <div class="table-cell-text">{{get item column.field}}</div>
+          {{/rsa-text-with-tooltip}}
+        {{else if (eq column.field "description")}}
+          {{#rsa-text-with-tooltip value=(get item column.field) style="standard"}}
+            <div class="table-cell-text">{{get item column.field}}</div>
+          {{/rsa-text-with-tooltip}}
+        {{else if (eq column.field "publishStatus")}}
+          {{#if (eq item.lastPublishedOn 0)}}
+            <p class="status-unpublished">{{t 'adminUsm.publishStatus.unpublished'}}</p>
+          {{else}}
+            {{#if item.dirty}}
+              <p class="status-unpublished-edits">{{t 'adminUsm.publishStatus.unpublishedEdits'}}</p>
+            {{else}}
+              {{t 'adminUsm.publishStatus.published'}}
+            {{/if}}
+          {{/if}}
+        {{else if (eq column.field "associatedGroups")}}
+          {{#each item.associatedGroups as |group index|}}
+            {{#if (not-eq index 0)}}
+              <span>,  </span>
+            {{else}}
+              {{#if item.defaultSource}}
+                <span class="status-default-source-associated-group">{{t 'adminUsm.sources.list.defaultPolicyAssociatedGroup'}},  </span>
+              {{/if}}
+            {{/if}}
+            {{group.name}}
+          {{else}}
+            {{#if item.defaultSource}}
+              <p class="status-default-source-associated-group">{{t 'adminUsm.sources.list.defaultPolicyAssociatedGroup'}}</p>
+            {{else}}
+              <p class="status-noassociated-groups">{{t 'adminUsm.sources.list.noAssociatedGroups'}}</p>
+            {{/if}}
+          {{/each}}
+        {{else if (eq column.field "numSources")}}
+          <span>----</span>
+        {{else}}
+          {{get item column.field}}
+        {{/if}}
+      </span>
+    {{/row.cell}}
+  {{/explorer.table}}
+
+  {{#explorer.inspector
+    inspectorHeaderComponent='usm-sources/sources/inspector/header'
+    inspectorContentComponent='usm-sources/sources/inspector'
+    hasInspectorToolbar=false as |inspector|}}
+    {{inspector.inspectorHeader}}
+    {{inspector.inspectorContent}}
+  {{/explorer.inspector}}
+
+{{/rsa-explorer}}

@@ -1,0 +1,43 @@
+<hbox>
+  <div class="action-control sources-create-new-button">
+    {{#link-to 'source-wizard' 'create-new'}}
+      {{#rsa-form-button
+      isDisabled=(not accessControl.canManageSourceServerSources)}}
+        {{rsa-icon size='small' name='add-1' style='lined'}}{{t 'adminUsm.button.createNew'}}
+      {{/rsa-form-button}}
+    {{/link-to}}
+  </div>
+  <span class="divider"></span>
+  <div class="tooltip">
+    {{#rsa-text-with-tooltip value=(t 'adminUsm.sources.tooltips.edit')
+      style="standard"
+      alwaysShow=true}}
+      <div class="action-control sources-edit-button">
+        {{#link-to 'source-wizard' selectedEditItem}}
+          {{#rsa-form-button
+            isDisabled=cannotEditSources}}
+            {{t 'adminUsm.button.edit'}}
+          {{/rsa-form-button}}
+        {{/link-to}}
+      </div>
+    {{/rsa-text-with-tooltip}}
+  </div>
+  <div class="tooltip">
+    {{#rsa-text-with-tooltip value=(t 'adminUsm.sources.tooltips.delete')
+      style="standard"
+      alwaysShow=true}}
+      <div class="action-control sources-delete-button">
+        {{#rsa-button-with-confirmation
+          title=(t 'adminUsm.sources.modals.deleteSources.title')
+          confirmationMessage=(t 'adminUsm.sources.modals.deleteSources.confirm' numItems=selectedDeleteItems.length)
+          confirmButtonLabel=(t 'adminUsm.sources.modals.deleteSources.ok')
+          confirmButtonStyle='danger'
+          isDisabled=cannotDeleteSources
+          cancelButtonLabel=(t 'adminUsm.button.cancel')
+          onConfirm=(action 'handleDeleteSources')}}
+          {{t 'adminUsm.button.delete'}}
+        {{/rsa-button-with-confirmation}}
+      </div>
+    {{/rsa-text-with-tooltip}}
+  </div>
+</hbox>

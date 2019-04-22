@@ -1,0 +1,53 @@
+<vbox class="rsa-application-layout-panel-content" xs="12" fit>
+  {{#if focusedSource.associatedGroups}}
+    <hbox class="heading">{{t 'adminUsm.policies.list.associatedGroups'}}</hbox>
+    {{#each focusedSource.associatedGroups as |group|}}
+      <hbox class="value">{{group.name}}</hbox>
+    {{/each}}
+  {{/if}}
+  {{#if (eq focusedSource.sourceType 'edrSource')}}
+    {{usm-policies/policies/inspector/edr-source}}
+  {{else if (eq focusedSource.sourceType 'windowsLogSource')}}
+    {{usm-policies/policies/inspector/windows-log-source}}
+  {{/if}}
+  <div class="heading">{{t 'adminUsm.policies.detail.history'}}</div>
+  <hbox fit class="col-xs-12">
+    <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.policies.detail.createdOn'}}</hbox>
+    <hbox class="value col-xs-6 col-md-7">
+      {{#if (eq focusedSource.createdOn 0)}}
+        {{t 'adminUsm.policies.detail.systemCreated'}}
+      {{else}}
+        {{moment-format focusedSource.createdOn "YYYY-MM-DD hh:mm"}}
+      {{/if}}
+    </hbox>
+  </hbox>
+  {{#if focusedSource.createdBy}}
+    <hbox fit class="createdBy col-xs-12">
+      <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.policies.detail.createdBy'}}</hbox>
+      <hbox class="value col-xs-6 col-md-7">{{focusedSource.createdBy}}</hbox>
+    </hbox>
+  {{/if}}
+  {{#if (not-eq focusedSource.lastModifiedOn 0)}}
+    <hbox fit class="lastModifiedOn col-xs-12">
+      <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.policies.detail.lastUpdatedOn'}}</hbox>
+      <hbox class="value col-xs-6 col-md-7">
+        {{moment-format focusedSource.lastModifiedOn "YYYY-MM-DD hh:mm"}}
+      </hbox>
+    </hbox>
+  {{/if}}
+  {{#if focusedSource.lastModifiedBy}}
+    <hbox fit class="lastModifiedBy col-xs-12">
+      <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.policies.detail.lastUpdatedBy'}}</hbox>
+      <hbox class="value col-xs-6 col-md-7">{{focusedSource.lastModifiedBy}}</hbox>
+    </hbox>
+  {{/if}}
+  {{#if (not-eq focusedSource.lastPublishedOn 0)}}
+    <hbox fit class="lastPublishedOn col-xs-12">
+      <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.policies.detail.lastPublishedOn'}}</hbox>
+      <hbox class="value col-xs-6 col-md-7">
+        {{moment-format focusedSource.lastPublishedOn "YYYY-MM-DD hh:mm"}}
+      </hbox>
+    </hbox>
+  {{/if}}
+</vbox>
+<br>

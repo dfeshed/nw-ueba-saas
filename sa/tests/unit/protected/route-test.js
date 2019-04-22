@@ -12,6 +12,7 @@ import { waitUntil } from '@ember/test-helpers';
 //   data: {
 //     'rsa.usm': true,
 //     'rsa.usm.allowWindowsLogPolicyCreation,
+//     'rsa.usm.viewSources,
 //     'rsa.usm.featureTwo
 //   }
 // }
@@ -38,7 +39,7 @@ module('Unit | Route | protected', function(hooks) {
   });
 
   test('should fetch Source Management (USM) feature flags and store in features service', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
     const features = this.owner.lookup('service:features');
 
     this.owner.register('service:-routing', Service.extend({
@@ -56,6 +57,10 @@ module('Unit | Route | protected', function(hooks) {
     // enabled by the service call
     isRsaUsmAllowWindowsLogPolicyCreationEnabled = features.isEnabled('rsa.usm.allowWindowsLogPolicyCreation');
     assert.equal(isRsaUsmAllowWindowsLogPolicyCreationEnabled, true, 'feature rsa.usm.allowWindowsLogPolicyCreation is enabled by the service call');
+
+    // disabled for 11.4 for now
+    const isRsaUsmViewSourcesEnabled = features.isEnabled('rsa.usm.viewSources');
+    assert.equal(isRsaUsmViewSourcesEnabled, false, 'feature rsa.usm.viewSources is disabled by default');
   });
 
 });

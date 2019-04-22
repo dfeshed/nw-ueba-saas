@@ -88,6 +88,45 @@ const adminUsmConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/usm/log/servers',
         requestDestination: '/ws/usm/log/servers'
       }
+    },
+    source: {
+      socketUrl: usmSocketUrl,
+      fetchSources: {
+        subscriptionDestination: '/user/queue/usm/sources/search',
+        requestDestination: '/ws/usm/sources/search'
+      },
+      fetchSourceList: {
+        subscriptionDestination: '/user/queue/usm/sources/list',
+        requestDestination: '/ws/usm/sources/list'
+      },
+      fetchSource: {
+        subscriptionDestination: '/user/queue/usm/source/get',
+        requestDestination: '/ws/usm/source/get'
+      },
+      remove: {
+        subscriptionDestination: '/user/queue/usm/sources/remove',
+        requestDestination: '/ws/usm/sources/remove'
+      },
+      publish: {
+        subscriptionDestination: '/user/queue/usm/sources/publish',
+        requestDestination: '/ws/usm/sources/publish'
+      },
+      saveSource: {
+        subscriptionDestination: '/user/queue/usm/source/set',
+        requestDestination: '/ws/usm/source/set'
+      },
+      savePublishRecord: {
+        subscriptionDestination: '/user/queue/usm/source/saveandpublish',
+        requestDestination: '/ws/usm/source/saveandpublish'
+      },
+      fetchEndpointServers: {
+        subscriptionDestination: '/user/queue/usm/endpoint/servers',
+        requestDestination: '/ws/usm/endpoint/servers'
+      },
+      fetchLogServers: {
+        subscriptionDestination: '/user/queue/usm/log/servers',
+        requestDestination: '/ws/usm/log/servers'
+      }
     }
   };
 };

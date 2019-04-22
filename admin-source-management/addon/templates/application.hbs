@@ -1,5 +1,10 @@
 <page class="admin-usm-engine {{routePath}}">
   <div class="rsa-nav-tab-group">
+    {{#if isViewSourcesEnabled}}
+      {{#rsa-nav-tab align='left' isActive=isSourcesActive}}
+        {{#link-to "sources" class='label'}}{{t 'adminUsm.sources.title'}}{{/link-to}}
+      {{/rsa-nav-tab}}
+    {{/if}}
     {{#rsa-nav-tab align='left' isActive=isGroupsActive}}
       {{#link-to "groups" class='label'}}{{t 'adminUsm.groups.title'}}{{/link-to}}
     {{/rsa-nav-tab}}
