@@ -71,7 +71,7 @@
     "babel-eslint": "10.0.1",
     "broccoli-asset-rev": "^2.4.5",
     "clipboard": "1.5.10",
-    "ember-ajax": "3.0.0",
+    "ember-ajax": "5.0.0",
     "ember-cli": "3.8.0",
     "ember-cli-app-version": "^3.0.0",
     "ember-cli-dependency-checker": "^2.0.0",

@@ -3822,11 +3822,12 @@ electron-to-chromium@^1.3.113, electron-to-chromium@^1.3.47:
   version "1.3.113"
   resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.3.113.tgz#b1ccf619df7295aea17bc6951dc689632629e4a9"
 
-ember-ajax@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.npmjs.org/ember-ajax/-/ember-ajax-3.0.0.tgz#8f21e9da0c1d433cf879aa855fce464d517e9ab5"
+ember-ajax@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npmjs.org/ember-ajax/-/ember-ajax-5.0.0.tgz#404b17c93194ab37aff86b7b8607d8edab93c9ec"
   dependencies:
-    ember-cli-babel "^6.0.0"
+    ember-cli-babel "^7.5.0"
+    najax "^1.0.3"
 
 ember-asset-loader@^0.5.1:
   version "0.5.1"
@@ -6829,6 +6830,10 @@ isurl@^1.0.0-alpha5:
 "javascript-detect-element-resize@file:javascript-detect-element-resize":
   version "0.5.3"
 
+jquery-deferred@^0.3.0:
+  version "0.3.1"
+  resolved "https://registry.npmjs.org/jquery-deferred/-/jquery-deferred-0.3.1.tgz#596eca1caaff54f61b110962b23cafea74c35355"
+
 jquery@3.1.1:
   version "3.1.1"
   resolved "https://registry.npmjs.org/jquery/-/jquery-3.1.1.tgz#347c1c21c7e004115e0a4da32cece041fad3c8a3"
@@ -7871,6 +7876,14 @@ mute-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.npmjs.org/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
+najax@^1.0.3:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/najax/-/najax-1.0.4.tgz#63fd8dbf15d18f24dc895b3a16fec66c136b8084"
+  dependencies:
+    jquery-deferred "^0.3.0"
+    lodash.defaultsdeep "^4.6.0"
+    qs "^6.2.0"
+
 nan@^2.10.0, nan@^2.11.0, nan@^2.9.2:
   version "2.11.1"
   resolved "https://registry.npmjs.org/nan/-/nan-2.11.1.tgz#90e22bccb8ca57ea4cd37cc83d3819b52eea6766"
@@ -8629,6 +8642,10 @@ punycode@^2.1.0:
 qs@6.5.2, qs@^6.4.0, qs@~6.5.2:
   version "6.5.2"
   resolved "https://registry.npmjs.org/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
+
+qs@^6.2.0:
+  version "6.7.0"
+  resolved "https://registry.npmjs.org/qs/-/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
 
 query-string@^5.0.1:
   version "5.1.1"
