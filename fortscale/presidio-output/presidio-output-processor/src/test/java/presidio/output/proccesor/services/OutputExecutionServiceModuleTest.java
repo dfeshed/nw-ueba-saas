@@ -167,7 +167,7 @@ public class OutputExecutionServiceModuleTest {
     @Test
     public void createAlertForNewEntity() {
         try {
-            outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)));
+            outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)), "userId");
 
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(1, Lists.newArrayList(entityPersistencyService.findAll()).size());
@@ -189,7 +189,7 @@ public class OutputExecutionServiceModuleTest {
         Entity entity = new Entity(ENTITY_ID_TEST_ENTITY, "userName", 95d, Arrays.asList("existingClassification"), Arrays.asList("existingIndicator"), null, EntitySeverity.CRITICAL, 8, "entity");
         entityPersistencyService.save(entity);
         try {
-            outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)));
+            outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)), "userId");
 
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(1, Lists.newArrayList(entityPersistencyService.findAll()).size());
@@ -210,7 +210,7 @@ public class OutputExecutionServiceModuleTest {
     public void testCleanup() {
 
         try {
-            outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)));
+            outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)), "userId");
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(1, Lists.newArrayList(entityPersistencyService.findAll()).size());
             Page<Entity> entities = entityPersistencyService.findByEntityId(ENTITY_ID_TEST_ENTITY, new PageRequest(0, 9999));
@@ -235,7 +235,7 @@ public class OutputExecutionServiceModuleTest {
     public void testApplyRetentionPolicy() {
         try {
             String outputFileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
-            outputExecutionService.run(now().minus(Duration.ofDays(101)), now().plus(Duration.ofDays(2)));
+            outputExecutionService.run(now().minus(Duration.ofDays(101)), now().plus(Duration.ofDays(2)), "userId");
             Assert.assertEquals(10, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(2, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
             outputExecutionService.applyRetentionPolicy(now().plus(Duration.ofDays(1)));
@@ -252,7 +252,7 @@ public class OutputExecutionServiceModuleTest {
     public void testApplyRetentionPolicyForNonExistingSchema() {
         try {
             String outputFileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.PRINT);
-            outputExecutionService.run(now().minus(Duration.ofDays(101)), now().plus(Duration.ofDays(2)));
+            outputExecutionService.run(now().minus(Duration.ofDays(101)), now().plus(Duration.ofDays(2)), "userId");
             Assert.assertEquals(10, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(0, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
             outputExecutionService.applyRetentionPolicy(now().plus(Duration.ofDays(1)));
