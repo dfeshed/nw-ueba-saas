@@ -2124,35 +2124,31 @@ export default {
       CHANNEL_NAME_INVALID: 'Warning: The channel name is invalid.',
       EMPTY_CHANNELS: 'Warning: The channel name is empty.',
       CHANNEL_FILTER_INVALID: 'Warning: The channel filter is invalid.',
-      DESTINATIONS_NOT_UNIQUE: 'Warning: Primary Destination and Secondary Destination are same.',
-      packagerNotCreated: 'Agent Packager could not be created, please check whether the selected server is online'
+      DESTINATIONS_NOT_UNIQUE: 'Warning: Primary Destination and Secondary Destination are same.'
     },
     errorPage: {
       errorTitle: 'Endpoint Server is offline',
       errorDescription: 'Endpoint Server may not be configured properly. See the Host Installation Guide for instructions on Endpoint Log Hybrid installation.'
     },
     packagerTitle: 'Packager',
-    serverListSearch: 'Type to filter options',
-    serviceName: 'Service Name<sup>*</sup>',
-    serverSettings: 'Endpoint Server Settings',
-    server: 'Endpoint Server',
-    serverEdit: 'Server Alias (Optional)',
-    port: 'HTTPS Port<sup>*</sup>',
+    serviceName: 'Service Name*',
+    server: 'Endpoint Server*',
+    port: 'HTTPS Port*',
     certificateValidation: 'Server Validation',
-    certificatePassword: 'Certificate Password<sup>*</sup>',
+    certificatePassword: 'Certificate Password*',
     none: 'None',
     fullChain: 'Full Chain',
     thumbprint: 'Certificate Thumbprint',
-    reset: 'Cancel',
+    reset: 'Reset',
     generateAgent: 'Generate Agent',
     generateLogConfig: 'Generate Log Configuration Only',
     loadExistingLogConfig: 'Load Existing Configuration...',
     description: 'Description',
     title: 'Packager',
     becon: 'Beacon',
-    displayName: 'Display Name<sup>*</sup>',
-    driverServiceName: 'Driver Service Name<sup>*</sup>',
-    driverDisplayName: 'Driver Display Name<sup>*</sup>',
+    displayName: 'Display Name*',
+    driverServiceName: 'Driver Service Name*',
+    driverDisplayName: 'Driver Display Name*',
     driverDescription: 'Driver Description',
     monitoringMode: 'Enable Monitoring',
     forceOverwriteWarningMessage: 'Force overwrite option is applicable only for windows agent',
@@ -2167,7 +2163,7 @@ export default {
     forceOverwrite: 'Force Overwrite',
     windowsLogCollectionCongfig: 'Windows Log Collection Configuration',
     enableWindowsLogCollection: 'Configure Windows Log Collection',
-    configurationName: 'Configuration Name<sup>*</sup>',
+    configurationName: 'Configuration Name*',
     statusLabel: 'Status',
     enabled: 'Enabled',
     disabled: 'Disabled',
@@ -2197,52 +2193,6 @@ export default {
     service: 'SERVICE',
     driver: 'DRIVER',
     agentConfigNote: 'For a subsequent installation/upgrade, use the same service names.'
-  },
-  endpointRAR: {
-    title: 'Roaming Agents',
-    description: 'Roaming Agents provides visibility of endpoints off the corporate network.',
-    rarInstaller: {
-      title: 'Download Installer',
-      instruction: 'Create a password and enter the same password when prompted during the Roaming Agent installation.',
-      password: 'Password<sup>*</sup>',
-      downloadButton: 'Download'
-    },
-    rarConfig: {
-      infoMessage: 'ESH is a hostname which can be resolved only within the specified network.',
-      title: 'Configure',
-      hostName: 'Enterprise Specific hostname (ESH)<sup>*</sup>',
-      endpointServer: 'ENDPOINT RAR SERVER',
-      server: 'Server<sup>*</sup>',
-      port: 'Port<sup>*</sup>',
-      beaconInterval: 'HTTP BEACON INTERVAL<sup>*</sup>',
-      mins: 'mins',
-      saveConfig: 'Save configuration',
-      resetConfig: 'Cancel',
-      successMessage: 'Roaming Agent configuration changes saved successfully.'
-    },
-    errorMessages: {
-      passwordEmptyMessage: 'Enter Roaming Agent password.',
-      invalidPasswordString: 'Can contain alphanumeric or special characters, and a minimum of 3 characters.',
-      invalidPort: 'Enter valid port number.',
-      serverEmptyMessage: 'Enter an IP address or a hostname.',
-      invalidServer: 'Enter valid IP address or hostname.',
-      invalidBeaconInterval: 'Interval value ranges from 60-1440 minutes.',
-      invalidHostName: 'Enter a valid hostname.'
-    },
-    errorPage: {
-      errorTitle: 'Endpoint Server is offline',
-      errorDescription: 'Endpoint Server may not be configured properly. See the Host Installation Guide for instructions on Endpoint Log Hybrid installation.'
-    },
-    helpText: {
-      title: 'Setup help',
-      downloadInstaller: 'Download Installer',
-      downloadInstallerContent: 'Add a password to enable download of installer packager. Installer can be downloaded once and re-used on multiple servers for installation. Passwod does not have any criteria and can be anything random.',
-      onceInstalled: 'once installed',
-      addESH: 'Add ESH',
-      addESHContent: 'Add domain name and that when not available can then talk to the other endpoint servers for RAR.',
-      configureServers: 'Configure Roaming Agent Servers',
-      configureServersContent: 'Add IP address, port and beacon time to communicate.'
-    }
   },
   investigateFiles: {
     title: 'Files',

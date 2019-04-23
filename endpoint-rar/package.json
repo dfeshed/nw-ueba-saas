@@ -73,8 +73,7 @@
     "paths": [
       "../test-helpers",
       "../component-lib",
-      "../streaming-data",
-      "../investigate-shared"
+      "../streaming-data"
     ]
   }
 }

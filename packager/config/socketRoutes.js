@@ -30,9 +30,9 @@ module.exports = function(environment) {
     },
     'endpoint-server': {
       socketUrl,
-      getEndpointServers: {
-        subscriptionDestination: '/user/queue/endpoint/servers',
-        requestDestination: '/ws/endpoint/servers'
+      findAll: {
+        subscriptionDestination: '/user/queue/endpoint/server/get-all',
+        requestDestination: '/ws/endpoint/server/get-all'
       }
     }
   };

@@ -86,7 +86,6 @@
       "../investigate-shared",
       "../license",
       "../packager",
-      "../endpoint-rar",
       "../preferences",
       "../recon",
       "../respond",

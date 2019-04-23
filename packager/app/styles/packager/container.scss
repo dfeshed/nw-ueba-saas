@@ -16,9 +16,7 @@ $content-card-color: #bdbdbd;
   .input-content__header {
     @include rsa-font(header, larger);
     color: text-color(primary, lightest);
-    padding: rsa-whitespace(more) rsa-whitespace() rsa-whitespace() 0;
-    margin-left: rsa-whitespace();
-    @include border-bottom(1px, solid, primary, lightest, nearly-transparent);
+    padding: rsa-whitespace();
   }
   .reset-button {
     padding: 0px;

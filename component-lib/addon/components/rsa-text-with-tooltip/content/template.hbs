@@ -7,9 +7,7 @@
 {{else}}
   {{text}}
 {{/if}}
-{{#if copyText}}
-  {{rsa-text-with-tooltip/copy-content text=text}}
-{{/if}}
+{{rsa-text-with-tooltip/copy-content text=text}}
 
 {{#if showNote}}
   {{rsa-text-with-tooltip/content-note}}

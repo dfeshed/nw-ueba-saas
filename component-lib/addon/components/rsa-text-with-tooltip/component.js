@@ -21,8 +21,6 @@ export default Component.extend(ToolTip, {
 
   alwaysShow: false,
 
-  copyText: true,
-
   /**
    * Unique panelId for the toolTip
    * @returns {string},
