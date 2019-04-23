@@ -15,9 +15,16 @@ module('Integration | Component | endpoint/pivot-to-investigate/modal', function
     this.set('item', [{ 'id': '12345', 'firstFilename': 'test', 'checksumSha256': '8789689685' }]);
     this.set('onClose', function() {});
     await render(hbs`
-    {{endpoint/pivot-to-investigate/modal serviceList=serviceList item=item metaName='checksumSha256' onClose=(action onClose)}}`);
+      <div id='modalDestination'></div>
+      {{endpoint/pivot-to-investigate/modal
+        serviceList=serviceList
+        item=item
+        metaName='checksumSha256'
+        onClose=(action onClose)
+      }}
+    `);
     return settled().then(async() => {
-      assert.equal(findAll('.service-modal').length, 1, 'Expected to render service modal');
+      assert.equal(findAll('#modalDestination .service-modal').length, 1, 'Expected to render service modal');
     });
   });
 
@@ -29,10 +36,16 @@ module('Integration | Component | endpoint/pivot-to-investigate/modal', function
     this.set('item', [{ 'id': '12345', 'firstFilename': 'test', 'checksumSha256': '8789689685' }]);
     this.set('onClose', function() {});
     await render(hbs`
-    {{endpoint/pivot-to-investigate/modal serviceList=serviceList item=item metaName='checksumSha256'}}`);
+      <div id='modalDestination'></div>
+      {{endpoint/pivot-to-investigate/modal
+        serviceList=serviceList
+        item=item
+        metaName='checksumSha256'
+      }}
+    `);
     return settled().then(async() => {
-      assert.equal(findAll('.service-modal .rsa-data-table').length, 1, 'Expected to render rsa data table');
-      assert.equal(findAll('.service-modal .rsa-data-table-body-row').length, 2, 'Expected to render 2 services');
+      assert.equal(findAll('#modalDestination .service-modal .rsa-data-table').length, 1, 'Expected to render rsa data table');
+      assert.equal(findAll('#modalDestination .service-modal .rsa-data-table-body-row').length, 2, 'Expected to render 2 services');
     });
   });
 
@@ -50,12 +63,20 @@ module('Integration | Component | endpoint/pivot-to-investigate/modal', function
     this.set('item', [{ 'id': '12345', 'firstFilename': 'test', 'checksumSha256': '8789689685' }]);
     this.set('onClose', function() {});
     await render(hbs`
-    {{endpoint/pivot-to-investigate/modal serviceList=serviceList item=item itemList=itemList  metaName='checksumSha256' onClose=(action onClose) timezone=tz}}`);
+      <div id='modalDestination'></div>
+      {{endpoint/pivot-to-investigate/modal
+        serviceList=serviceList
+        item=item
+        itemList=itemList
+        metaName='checksumSha256'
+        onClose=(action onClose) timezone=tz
+      }}
+    `);
     return settled().then(async() => {
-      assert.equal(findAll('.service-modal').length, 1, 'Expected to render service modal');
-      assert.equal(findAll('.service-modal .rsa-data-table').length, 1, 'Expected to render rsa data table');
-      assert.equal(findAll('.service-modal .rsa-data-table-body-row').length, 2, 'Expected to render 2 services');
-      assert.equal(findAll('.service-modal .is-disabled').length, 2, 'Expected to disable the navigate button');
+      assert.equal(findAll('#modalDestination .service-modal').length, 1, 'Expected to render service modal');
+      assert.equal(findAll('#modalDestination .service-modal .rsa-data-table').length, 1, 'Expected to render rsa data table');
+      assert.equal(findAll('#modalDestination .service-modal .rsa-data-table-body-row').length, 2, 'Expected to render 2 services');
+      assert.equal(findAll('#modalDestination .service-modal .is-disabled').length, 2, 'Expected to disable the navigate button');
       await click(findAll('.rsa-data-table .rsa-data-table-body-row .rsa-data-table-body-cell')[0]);
       assert.equal(findAll('.service-modal .is-disabled').length, 0, 'Expected to enable the navigate button');
       await click(findAll('.modal-footer-buttons .rsa-form-button')[1]);
@@ -78,12 +99,21 @@ module('Integration | Component | endpoint/pivot-to-investigate/modal', function
     this.set('item', [{ 'id': '12345', 'firstFilename': 'test', 'checksumSha256': '8789689685' }]);
     this.set('onClose', function() {});
     await render(hbs`
-    {{endpoint/pivot-to-investigate/modal serviceList=serviceList item=item itemList=itemList  metaName='checksumSha256' onClose=(action onClose) timezone=tz}}`);
+      <div id='modalDestination'></div>
+      {{endpoint/pivot-to-investigate/modal
+        serviceList=serviceList
+        item=item
+        itemList=itemList
+        metaName='checksumSha256'
+        onClose=(action onClose)
+        timezone=tz
+      }}
+    `);
     return settled().then(async() => {
-      assert.equal(findAll('.service-modal').length, 1, 'Expected to render service modal');
-      assert.equal(findAll('.service-modal .rsa-data-table').length, 1, 'Expected to render rsa data table');
-      assert.equal(findAll('.service-modal .rsa-data-table-body-row').length, 2, 'Expected to render 2 services');
-      assert.equal(findAll('.service-modal .is-disabled').length, 2, 'Expected to disable the navigate button');
+      assert.equal(findAll('#modalDestination .service-modal').length, 1, 'Expected to render service modal');
+      assert.equal(findAll('#modalDestination .service-modal .rsa-data-table').length, 1, 'Expected to render rsa data table');
+      assert.equal(findAll('#modalDestination .service-modal .rsa-data-table-body-row').length, 2, 'Expected to render 2 services');
+      assert.equal(findAll('#modalDestination .service-modal .is-disabled').length, 2, 'Expected to disable the navigate button');
       await click(findAll('.rsa-data-table .rsa-data-table-body-row .rsa-data-table-body-cell')[0]);
       assert.equal(findAll('.service-modal .is-disabled').length, 0, 'Expected to enable the Event analysis button');
       await click(findAll('.modal-footer-buttons .rsa-form-button')[2]);
@@ -102,7 +132,14 @@ module('Integration | Component | endpoint/pivot-to-investigate/modal', function
       assert.ok(true);
     });
     await render(hbs`
-    {{endpoint/pivot-to-investigate/modal serviceList=serviceList item=item metaName='checksumSha256' closeModal=(action closeModal)}}`);
+      <div id='modalDestination'></div>
+      {{endpoint/pivot-to-investigate/modal
+        serviceList=serviceList
+        item=item
+        metaName='checksumSha256'
+        closeModal=(action closeModal)
+      }}
+    `);
     await click(findAll('.modal-footer-buttons .rsa-form-button')[0]);
   });
 

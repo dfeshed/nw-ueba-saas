@@ -20,10 +20,12 @@ module('Acceptance | document title', function(hooks) {
     assert.equal(currentURL(), '/login');
 
     const translation = this.owner.lookup('service:i18n');
-    const expected = translation.t('appTitle');
+    const expected = translation.t('appTitle').string;
 
-    await waitUntil(() => document.title === `${expected}`, { timeout });
-    assert.equal(document.title, `${expected}`);
+    await waitUntil(() => {
+      return document.title === expected;
+    }, { timeout });
+    assert.equal(document.title, expected);
 
     await settled().then(() => done());
   });

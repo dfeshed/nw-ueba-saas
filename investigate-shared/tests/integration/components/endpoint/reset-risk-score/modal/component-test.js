@@ -7,14 +7,22 @@ module('Integration | Component | endpoint/reset-risk-score/modal', function(hoo
   setupRenderingTest(hooks);
 
   test('it renders reset risk score modal', async function(assert) {
-    await render(hbs`{{endpoint/reset-risk-score/modal}}`);
-    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'reset risk score component has rendered.');
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/reset-risk-score/modal}}
+    `);
+    assert.equal(findAll('#modalDestination .modal-content.reset-risk-score').length, 1, 'reset risk score component has rendered.');
   });
 
   test('renders limit message when isMaxResetRiskScoreLimit is set to true', async function(assert) {
-    await render(hbs`{{endpoint/reset-risk-score/modal isMaxResetRiskScoreLimit=true}}`);
-    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'reset risk score component has rendered.');
-    assert.equal(findAll('.max-limit-info').length, 1, 'limit info message is present');
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/reset-risk-score/modal
+        isMaxResetRiskScoreLimit=true
+      }}
+    `);
+    assert.equal(findAll('#modalDestination .modal-content.reset-risk-score').length, 1, 'reset risk score component has rendered.');
+    assert.equal(findAll('#modalDestination .max-limit-info').length, 1, 'limit info message is present');
   });
 
 });

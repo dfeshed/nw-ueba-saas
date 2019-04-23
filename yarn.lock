@@ -692,13 +692,15 @@
     silent-error "^1.1.0"
     util.promisify "^1.0.0"
 
-"@ember/test-helpers@0.7.18", "@ember/test-helpers@^0.7.26":
-  version "0.7.18"
-  resolved "http://registry.npmjs.org/@ember/test-helpers/-/test-helpers-0.7.18.tgz#a0c474c3029588ec46d2e406252fc072b7f9aa3c"
+"@ember/test-helpers@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.npmjs.org/@ember/test-helpers/-/test-helpers-1.5.0.tgz#a480181c412778294e317c256d04ca52e63c813a"
   dependencies:
-    broccoli-funnel "^2.0.1"
-    ember-cli-babel "^6.10.0"
-    ember-cli-htmlbars-inline-precompile "^1.0.0"
+    broccoli-debug "^0.6.5"
+    broccoli-funnel "^2.0.2"
+    ember-assign-polyfill "^2.6.0"
+    ember-cli-babel "^7.4.3"
+    ember-cli-htmlbars-inline-precompile "^2.1.0"
 
 "@glimmer/compiler@^0.35.5":
   version "0.35.10"
@@ -3841,6 +3843,13 @@ ember-asset-loader@^0.5.1:
     object-assign "^4.1.0"
     walk-sync "^1.1.3"
 
+ember-assign-polyfill@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.npmjs.org/ember-assign-polyfill/-/ember-assign-polyfill-2.6.0.tgz#07847e3357ee35b33f886a0b5fbec6873f6860eb"
+  dependencies:
+    ember-cli-babel "^6.16.0"
+    ember-cli-version-checker "^2.0.0"
+
 ember-basic-dropdown@^1.1.0:
   version "1.1.2"
   resolved "https://registry.npmjs.org/ember-basic-dropdown/-/ember-basic-dropdown-1.1.2.tgz#6558eb2aa34d2feeb66e9de1feea560d46edc697"
@@ -4092,7 +4101,7 @@ ember-cli-head@0.4.0:
     ember-cli-babel "^6.1.0"
     ember-cli-htmlbars "^2.0.1"
 
-ember-cli-htmlbars-inline-precompile@1.0.2, ember-cli-htmlbars-inline-precompile@^1.0.0:
+ember-cli-htmlbars-inline-precompile@1.0.2, ember-cli-htmlbars-inline-precompile@^2.1.0:
   version "1.0.2"
   resolved "https://registry.npmjs.org/ember-cli-htmlbars-inline-precompile/-/ember-cli-htmlbars-inline-precompile-1.0.2.tgz#5b544f664d5d9911f08cd979c5f70d8cb0ca2add"
   dependencies:
@@ -4769,17 +4778,17 @@ ember-power-select@2.2.2, ember-power-select@^2.0.0-beta.5:
     ember-text-measurer "^0.5.0"
     ember-truth-helpers "^2.1.0"
 
-ember-qunit@^3.4.1:
-  version "3.5.3"
-  resolved "https://registry.npmjs.org/ember-qunit/-/ember-qunit-3.5.3.tgz#bfd0bff8298c78c77e870cca43fe0826e78a0d09"
+ember-qunit@4.4.1:
+  version "4.4.1"
+  resolved "https://registry.npmjs.org/ember-qunit/-/ember-qunit-4.4.1.tgz#3654cadf9fa7e2287fe7b61fc7f19c3eb06222b5"
   dependencies:
-    "@ember/test-helpers" "^0.7.26"
-    broccoli-funnel "^2.0.1"
-    broccoli-merge-trees "^2.0.0"
+    "@ember/test-helpers" "^1.5.0"
+    broccoli-funnel "^2.0.2"
+    broccoli-merge-trees "^3.0.2"
     common-tags "^1.4.0"
-    ember-cli-babel "^6.8.2"
+    ember-cli-babel "^7.5.0"
     ember-cli-test-loader "^2.2.0"
-    qunit "~2.6.0"
+    qunit "^2.9.2"
 
 ember-radio-button@1.2.4:
   version "1.2.4"
@@ -5319,10 +5328,6 @@ execa@^1.0.0:
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
-exists-stat@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/exists-stat/-/exists-stat-1.0.0.tgz#0660e3525a2e89d9e446129440c272edfa24b529"
-
 exists-sync@0.0.4, exists-sync@^0.0.4:
   version "0.0.4"
   resolved "https://registry.npmjs.org/exists-sync/-/exists-sync-0.0.4.tgz#9744c2c428cc03b01060db454d4b12f0ef3c8879"
@@ -5634,15 +5639,6 @@ find-yarn-workspace-root@^1.1.0:
     fs-extra "^4.0.3"
     micromatch "^3.1.4"
 
-findup-sync@2.0.0, findup-sync@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/findup-sync/-/findup-sync-2.0.0.tgz#9326b1488c22d1a6088650a86901b2d9a90a2cbc"
-  dependencies:
-    detect-file "^1.0.0"
-    is-glob "^3.1.0"
-    micromatch "^3.0.4"
-    resolve-dir "^1.0.1"
-
 findup-sync@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/findup-sync/-/findup-sync-1.0.0.tgz#6f7e4b57b6ee3a4037b4414eaedea3f58f71e0ec"
@@ -5651,6 +5647,15 @@ findup-sync@^1.0.0:
     is-glob "^2.0.1"
     micromatch "^2.3.7"
     resolve-dir "^0.1.0"
+
+findup-sync@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/findup-sync/-/findup-sync-2.0.0.tgz#9326b1488c22d1a6088650a86901b2d9a90a2cbc"
+  dependencies:
+    detect-file "^1.0.0"
+    is-glob "^3.1.0"
+    micromatch "^3.0.4"
+    resolve-dir "^1.0.1"
 
 fireworm@^0.7.0:
   version "0.7.1"
@@ -5858,7 +5863,7 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
 
-fsevents@^1.0.0, fsevents@^1.2.3:
+fsevents@^1.0.0:
   version "1.2.4"
   resolved "https://registry.npmjs.org/fsevents/-/fsevents-1.2.4.tgz#f41dcb1af2582af3692da36fc55cbd8e1041c426"
   dependencies:
@@ -8051,6 +8056,10 @@ node-sass@^4.7.2:
     stdout-stream "^1.4.0"
     "true-case-path" "^1.0.2"
 
+node-watch@0.6.0:
+  version "0.6.0"
+  resolved "https://registry.npmjs.org/node-watch/-/node-watch-0.6.0.tgz#ab0703b60cd270783698e57a428faa0010ed8fd0"
+
 "nopt@2 || 3", nopt@^3.0.6:
   version "3.0.6"
   resolved "https://registry.npmjs.org/nopt/-/nopt-3.0.6.tgz#c6465dbf08abcd4db359317f79ac68a646b28ff9"
@@ -8682,17 +8691,15 @@ qunit-dom@^0.8.0:
     broccoli-funnel "^2.0.0"
     broccoli-merge-trees "^3.0.1"
 
-qunit@~2.6.0:
-  version "2.6.2"
-  resolved "https://registry.npmjs.org/qunit/-/qunit-2.6.2.tgz#551210c5cf857258a4fe39a7fe15d9e14dfef22c"
+qunit@^2.9.2:
+  version "2.9.2"
+  resolved "https://registry.npmjs.org/qunit/-/qunit-2.9.2.tgz#97919440c9c0ae838bcd3c33a2ee42f35c5ef4a0"
   dependencies:
     commander "2.12.2"
-    exists-stat "1.0.0"
-    findup-sync "2.0.0"
     js-reporters "1.2.1"
-    resolve "1.5.0"
-    sane "^2.5.2"
-    walk-sync "0.3.2"
+    minimatch "3.0.4"
+    node-watch "0.6.0"
+    resolve "1.9.0"
 
 randomatic@^3.0.0:
   version "3.1.1"
@@ -9078,11 +9085,11 @@ resolve-url@^0.2.1:
   version "0.2.1"
   resolved "https://registry.npmjs.org/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
 
-resolve@1.5.0:
-  version "1.5.0"
-  resolved "https://registry.npmjs.org/resolve/-/resolve-1.5.0.tgz#1f09acce796c9a762579f31b2c1cc4c3cddf9f36"
+resolve@1.9.0:
+  version "1.9.0"
+  resolved "https://registry.npmjs.org/resolve/-/resolve-1.9.0.tgz#a14c6fdfa8f92a7df1d996cb7105fa744658ea06"
   dependencies:
-    path-parse "^1.0.5"
+    path-parse "^1.0.6"
 
 resolve@^1.1.3, resolve@^1.1.7, resolve@^1.8.1:
   version "1.8.1"
@@ -9258,21 +9265,6 @@ sane@^1.4.1:
     minimist "^1.1.1"
     walker "~1.0.5"
     watch "~0.10.0"
-
-sane@^2.5.2:
-  version "2.5.2"
-  resolved "https://registry.npmjs.org/sane/-/sane-2.5.2.tgz#b4dc1861c21b427e929507a3e751e2a2cb8ab3fa"
-  dependencies:
-    anymatch "^2.0.0"
-    capture-exit "^1.2.0"
-    exec-sh "^0.2.0"
-    fb-watchman "^2.0.0"
-    micromatch "^3.1.4"
-    minimist "^1.1.1"
-    walker "~1.0.5"
-    watch "~0.18.0"
-  optionalDependencies:
-    fsevents "^1.2.3"
 
 sane@^4.0.0:
   version "4.0.2"
@@ -10369,13 +10361,6 @@ vm-browserify@0.0.4:
   resolved "https://registry.npmjs.org/vm-browserify/-/vm-browserify-0.0.4.tgz#5d7ea45bbef9e4a6ff65f95438e0a87c357d5a73"
   dependencies:
     indexof "0.0.1"
-
-walk-sync@0.3.2:
-  version "0.3.2"
-  resolved "https://registry.npmjs.org/walk-sync/-/walk-sync-0.3.2.tgz#4827280afc42d0e035367c4a4e31eeac0d136f75"
-  dependencies:
-    ensure-posix-path "^1.0.0"
-    matcher-collection "^1.0.0"
 
 walk-sync@^0.2.5:
   version "0.2.7"

@@ -347,12 +347,14 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
       }
     });
     await render(hbs`
+      <div id='modalDestination'></div>
       <style>
         box, section {
           min-height: 1000px
         }
       </style>
-    {{host-detail/utils/file-context-table showServiceModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+      {{host-detail/utils/file-context-table showServiceModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}
+    `);
     await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.equal(document.querySelectorAll('#modalDestination .service-modal').length, 1);
   });
@@ -369,12 +371,14 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
       }
     });
     await render(hbs`
+      <div id='modalDestination'></div>
       <style>
         box, section {
           min-height: 1000px
         }
       </style>
-    {{host-detail/utils/file-context-table showFileStatusModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+      {{host-detail/utils/file-context-table showFileStatusModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}
+    `);
     await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.equal(document.querySelectorAll('#modalDestination .file-status-modal').length, 1);
   });
@@ -390,12 +394,14 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
       }
     });
     await render(hbs`
+      <div id='modalDestination'></div>
       <style>
         box, section {
           min-height: 1000px
         }
       </style>
-    {{host-detail/utils/file-context-table showFileStatusModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+      {{host-detail/utils/file-context-table showFileStatusModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}
+    `);
     await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
     assert.equal(findAll('a.file-name-link').length, 3);
     assert.equal(find('a.file-name-link').href.search('/investigate/files/file'), 21);
@@ -412,14 +418,16 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
       }
     });
     await render(hbs`
+      <div id='modalDestination'></div>
       <style>
         box, section {
           min-height: 1000px
         }
       </style>
-    {{host-detail/utils/file-context-table showResetScoreModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+      {{host-detail/utils/file-context-table showResetScoreModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}
+    `);
     await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
-    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
+    assert.equal(findAll('#modalDestination .modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
   });
 
   test('Reset risk score confirmation dialog is closed on click of cancel', async function(assert) {
@@ -438,9 +446,11 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
           min-height: 1000px
         }
       </style>
-    {{host-detail/utils/file-context-table showResetScoreModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
+      <div id='modalDestination'></div>
+      {{host-detail/utils/file-context-table showResetScoreModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}
+    `);
     await waitUntil(() => findAll('.rsa-data-table-body-row').length > 0, { timeout: 6000 });
-    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
+    assert.equal(findAll('#modalDestination .modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
     await click('.closeReset');
     assert.equal(findAll('.modal-content.reset-risk-score').length, 0, 'Reset confirmation dialog is closed');
   });

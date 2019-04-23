@@ -20,7 +20,15 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
       size: 100
     }]);
     this.set('restrictedFileList', ['test']);
-    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal isRemediationAllowed=false itemList=itemList}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        restrictedFileList=restrictedFileList
+        showFileStatusModal=showFileStatusModal
+        isRemediationAllowed=false
+        itemList=itemList
+      }}
+    `);
     await click(document.querySelectorAll('.rsa-form-radio-label.file-status-radio')[0]);
     assert.equal(document.querySelectorAll('#modalDestination .rsa-form-radio-label.file-status-radio.checked').length, 1, 'Blacklist option is selected');
     assert.equal(document.querySelectorAll('.black-list-options .remediation-action-checkbox')[0].classList.contains('disabled'), true, 'Blocking disabled for signed files');
@@ -35,7 +43,15 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
       size: 104857610
     }]);
     this.set('restrictedFileList', ['test']);
-    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal isRemediationAllowed=true itemList=itemList}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        restrictedFileList=restrictedFileList
+        showFileStatusModal=showFileStatusModal
+        isRemediationAllowed=true
+        itemList=itemList
+      }}
+    `);
     await click(document.querySelectorAll('.rsa-form-radio-label.file-status-radio')[0]);
     assert.equal(document.querySelectorAll('#modalDestination .rsa-form-radio-label.file-status-radio.checked').length, 1, 'Blacklist option is selected');
     assert.equal(document.querySelectorAll('.black-list-options .remediation-action-checkbox')[0].classList.contains('disabled'), true, 'Blocking disabled for files with size greater than 100 MB.');
@@ -50,7 +66,15 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
       size: 100
     }]);
     this.set('restrictedFileList', ['test']);
-    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal isRemediationAllowed=true itemList=itemList}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        restrictedFileList=restrictedFileList
+        showFileStatusModal=showFileStatusModal
+        isRemediationAllowed=true
+        itemList=itemList
+      }}
+    `);
     await click(document.querySelectorAll('.rsa-form-radio-label.file-status-radio')[0]);
     assert.equal(document.querySelectorAll('#modalDestination .rsa-form-radio-label.file-status-radio.checked').length, 1, 'Blacklist option is selected');
     assert.equal(document.querySelectorAll('.black-list-options .remediation-action-checkbox')[0].classList.contains('disabled'), false, 'Blocking files enabled.');
@@ -65,7 +89,15 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
       size: 100
     }]);
     this.set('restrictedFileList', ['test']);
-    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal isRemediationAllowed=true itemList=itemList}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        restrictedFileList=restrictedFileList
+        showFileStatusModal=showFileStatusModal
+        isRemediationAllowed=true
+        itemList=itemList
+      }}
+    `);
     await click(document.querySelectorAll('.rsa-form-radio-label.file-status-radio')[0]);
     assert.equal(document.querySelectorAll('#modalDestination .rsa-form-radio-label.file-status-radio.checked').length, 1, 'Blacklist option is selected');
     assert.equal(document.querySelectorAll('.black-list-options .remediation-action-checkbox')[0].classList.contains('disabled'), true, 'Blocking disabled for files on non-windows machines.');
@@ -80,7 +112,16 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
       size: 104857610
     }]);
     this.set('restrictedFileList', ['test']);
-    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList isFloatingOrMemoryDll=true showFileStatusModal=showFileStatusModal isRemediationAllowed=true itemList=itemList}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        restrictedFileList=restrictedFileList
+        isFloatingOrMemoryDll=true
+        showFileStatusModal=showFileStatusModal
+        isRemediationAllowed=true
+        itemList=itemList
+      }}
+    `);
     await click(document.querySelectorAll('.rsa-form-radio-label.file-status-radio')[0]);
     assert.equal(document.querySelectorAll('#modalDestination .rsa-form-radio-label.file-status-radio.checked').length, 1, 'Blacklist option is selected');
     assert.equal(document.querySelectorAll('.black-list-options .remediation-action-checkbox')[0].classList.contains('disabled'), true, 'Blocking disabled for files with floating code or memory dll');

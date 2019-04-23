@@ -117,34 +117,6 @@ module('Integration | Component | file-details/file-analysis-wrapper', function(
     assert.equal(findAll('.string-filter-wrapper').length, 1, 'String filter rendered');
   });
 
-  test('It should render String search when format is string', async function(assert) {
-    const fileAnalysis = {
-      'fileData': [{
-        text: 'OHE3',
-        offset: '0x00017d66',
-        unicode: false
-      },
-      {
-        text: 'E;uht',
-        offset: '0x00017a66',
-        unicode: false
-      }],
-      'filePropertiesData': { format: 'pe' },
-      'isFileAnalysisView': true
-    };
-
-    new ReduxDataHelper(setState)
-      .activeDataSourceTab('FILE_DETAILS')
-      .selectedDetailFile(sampleData)
-      .isFilePropertyPanelVisible(true)
-      .fileAnalysis(fileAnalysis)
-      .build();
-
-    await render(hbs`{{file-details/file-analysis-wrapper}}`);
-
-    assert.equal(findAll('.string-filter-wrapper').length, 1, 'String filter rendered');
-  });
-
   test('Loader should load when the fileDataLoadingStatus status is loading', async function(assert) {
     const fileAnalysis = {
       'fileData': null,

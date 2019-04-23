@@ -201,7 +201,10 @@ module('Integration | Component | Respond Incidents', function(hooks) {
       assert.equal(flash.message.string, expectedMessage);
       flashSuccess = true;
     });
-    await render(hbs`{{rsa-incidents}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-incidents}}
+    `);
     setState();
     const getItems = waitForReduxStateChange(redux, 'respond.incidents.items');
     await getItems;

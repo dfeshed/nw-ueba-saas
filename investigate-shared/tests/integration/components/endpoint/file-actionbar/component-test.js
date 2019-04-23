@@ -52,13 +52,17 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     this.set('accessControl', EmberObject.create({}));
     this.set('accessControl.endpointCanManageFiles', true);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
-    await render(hbs`{{endpoint/file-actionbar
-      itemList=itemList
-      showIcons=false
-      selectedFileCount=2
-      accessControl=accessControl
-      showResetRiskScore=true
-      fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/file-actionbar
+        itemList=itemList
+        showIcons=false
+        selectedFileCount=2
+        accessControl=accessControl
+        showResetRiskScore=true
+        fileDownloadButtonStatus=fileDownloadButtonStatus
+      }}
+    `);
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
     await click('.more-action-button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'All the list options should render.');
@@ -321,18 +325,22 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     this.set('accessControl', EmberObject.create({}));
     this.set('accessControl.endpointCanManageFiles', true);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
-    await render(hbs`{{endpoint/file-actionbar
-      itemList=itemList
-      showIcons=false
-      selectedFileCount=2
-      showResetRiskScore=true
-      accessControl=accessControl
-      fileDownloadButtonStatus=fileDownloadButtonStatus}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/file-actionbar
+        itemList=itemList
+        showIcons=false
+        selectedFileCount=2
+        showResetRiskScore=true
+        accessControl=accessControl
+        fileDownloadButtonStatus=fileDownloadButtonStatus
+      }}
+    `);
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
     await click('.more-action-button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'All the list options should render.');
     await click(findAll('.rsa-dropdown-action-list li')[5]);
-    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'Reset confirmation dialog is opened');
+    assert.equal(findAll('#modalDestination .modal-content.reset-risk-score').length, 1, 'Reset confirmation dialog is opened');
   });
 
   test('Reset Risk score confirmation dialog is closed on cancel', async function(assert) {
@@ -341,10 +349,19 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
     ]);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
-    await render(hbs`{{endpoint/file-actionbar itemList=itemList showIcons=false selectedFileCount=2 fileDownloadButtonStatus=fileDownloadButtonStatus showResetRiskScore=true}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/file-actionbar
+        itemList=itemList
+        showIcons=false
+        selectedFileCount=2
+        fileDownloadButtonStatus=fileDownloadButtonStatus
+        showResetRiskScore=true
+      }}
+    `);
     await click('.more-action-button');
     await click(findAll('.rsa-dropdown-action-list li')[2]);
-    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'Reset confirmation dialog is opened');
+    assert.equal(findAll('#modalDestination .modal-content.reset-risk-score').length, 1, 'Reset confirmation dialog is opened');
     await click('.closeReset');
     assert.equal(findAll('.modal-content.reset-risk-score').length, 0, 'Reset confirmation dialog is closed');
   });
@@ -358,6 +375,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
   });
 
   test('Info message is present in reset confirmation dialog box', async function(assert) {
+    // const done = assert.async();
     this.set('itemList', [
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
       { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
@@ -367,19 +385,23 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     this.set('accessControl.endpointCanManageFiles', true);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
     this.set('isMaxResetRiskScoreLimit', true);
-    await render(hbs`{{endpoint/file-actionbar
-      itemList=itemList
-      showIcons=false
-      selectedFileCount=2
-      showResetRiskScore=true
-      accessControl=accessControl
-      fileDownloadButtonStatus=fileDownloadButtonStatus
-      isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/file-actionbar
+        itemList=itemList
+        showIcons=false
+        selectedFileCount=2
+        showResetRiskScore=true
+        accessControl=accessControl
+        fileDownloadButtonStatus=fileDownloadButtonStatus
+        isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
+      }}
+    `);
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
     await click('.more-action-button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 6, 'All the list options should render.');
     await click(findAll('.rsa-dropdown-action-list li')[5]);
-    assert.equal(findAll('.modal-content.reset-risk-score .max-limit-info').length, 1, 'Info message is present in reset confirmation dialog box');
+    assert.equal(findAll('#modalDestination .modal-content.reset-risk-score .max-limit-info').length, 1, 'Info message is present in reset confirmation dialog box');
   });
 
   test('No info message is present in reset confirmation dialog box', async function(assert) {
@@ -392,14 +414,18 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     this.set('accessControl.endpointCanManageFiles', true);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
     this.set('isMaxResetRiskScoreLimit', false);
-    await render(hbs`{{endpoint/file-actionbar
-      itemList=itemList
-      showIcons=false
-      showResetRiskScore=true
-      selectedFileCount=2
-      accessControl=accessControl
-      fileDownloadButtonStatus=fileDownloadButtonStatus
-      isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/file-actionbar
+        itemList=itemList
+        showIcons=false
+        showResetRiskScore=true
+        selectedFileCount=2
+        accessControl=accessControl
+        fileDownloadButtonStatus=fileDownloadButtonStatus
+        isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
+      }}
+    `);
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
     await click('.more-action-button');
     await click(findAll('.rsa-dropdown-action-list li')[5]);

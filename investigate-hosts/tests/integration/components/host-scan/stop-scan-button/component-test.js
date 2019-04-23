@@ -47,7 +47,10 @@ test('it should disable the button', function(assert) {
 
 test('it should show scan stop modal on clicking the button', function(assert) {
   this.set('modalTitle', 'Stop Scan for 2 host(s)');
-  this.render(hbs`{{host-scan/stop-scan-button modalTitle=modalTitle}}`);
+  this.render(hbs`
+    <div id='modalDestination'></div>
+    {{host-scan/stop-scan-button modalTitle=modalTitle}}
+  `);
   assert.equal($('#modalDestination .stop-scan-modal:visible').length, 0); // Modal content not be added to dom
   this.$('.stop-scan-button .rsa-form-button').trigger('click');
   return wait().then(() => {
@@ -64,7 +67,10 @@ test('it should show success message', function(assert) {
     assert.equal(flash.type, 'success');
   });
   this.set('agentIds', [1]);
-  this.render(hbs`{{host-scan/stop-scan-button agentIds=agentIds}}`);
+  this.render(hbs`
+    <div id='modalDestination'></div>
+    {{host-scan/stop-scan-button agentIds=agentIds}}
+  `);
 
   this.$('.stop-scan-button .rsa-form-button').trigger('click');
   return wait().then(() => {
@@ -79,7 +85,10 @@ test('it should show error message when failed to stop scan', function(assert) {
   throwSocket({ message: { meta: { message: 'test' } } });
 
   this.set('agentIds', [1]);
-  this.render(hbs`{{host-scan/stop-scan-button agentIds=agentIds}}`);
+  this.render(hbs`
+    <div id='modalDestination'></div>
+    {{host-scan/stop-scan-button agentIds=agentIds}}
+  `);
 
   patchFlash((flash) => {
     assert.equal(flash.type, 'error');

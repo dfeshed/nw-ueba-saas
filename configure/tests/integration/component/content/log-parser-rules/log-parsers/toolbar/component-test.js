@@ -36,7 +36,10 @@ module('Integration | Component | Parser Toolbar', function(hooks) {
     const done = assert.async();
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState).parserRulesWait(false).parserRulesFormatData(0, true).build();
-    await render(hbs`{{content/log-parser-rules/log-parsers/toolbar}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{content/log-parser-rules/log-parsers/toolbar}}
+    `);
     await click('.delete-log-parser button');
     const expectedMessage = translation.t('configure.logsParser.modals.deleteParser.confirm', { parserName: 'builtin' });
     assert.ok(find('.delete-log-parser .confirmation-modal'), 'Modal Confirmation is not showing');
@@ -63,7 +66,10 @@ module('Integration | Component | Parser Toolbar', function(hooks) {
   test('Delete shows an error flash message if the operation fails', async function(assert) {
     assert.expect(2);
     new ReduxDataHelper(setState).parserRulesWait(false).parserRulesFormatData(0, true).build();
-    await render(hbs`{{content/log-parser-rules/log-parsers/toolbar}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{content/log-parser-rules/log-parsers/toolbar}}
+    `);
     await click('.delete-log-parser button');
     throwSocket();
     patchFlash((flash) => {

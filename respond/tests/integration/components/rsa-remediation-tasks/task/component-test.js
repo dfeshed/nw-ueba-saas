@@ -103,7 +103,12 @@ module('Integration | Component | Remediation Task', function(hooks) {
     const actionSpy = sinon.spy(RemediationTaskCreators, 'deleteItem');
     await setup();
     this.set('task', task);
-    await render(hbs`{{rsa-remediation-tasks/task info=task}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-remediation-tasks/task
+        info=task
+      }}
+    `);
     await click('header .delete button');
     assert.ok(findModal('.respond-confirmation-dialog'), 'The confirmation dialog is showing');
     await click('.modal-footer-buttons .is-primary button');

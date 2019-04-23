@@ -31,7 +31,10 @@ module('Integration | Component | delete-rules', function(hooks) {
 
   test('Delete a rule confirmation', async function(assert) {
     new ReduxDataHelper(setState).parserRulesFormatData(0, true).parserRulesSaveWait(false).build();
-    await render(hbs`{{content/log-parser-rules/parser-rules-list/buttons-container}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{content/log-parser-rules/parser-rules-list/buttons-container}}
+    `);
     click('.buttons-container .deleteRule button');
     return settled().then(() => {
       assert.ok(find('.buttons-container .deleteRule .confirmation-modal'), 'Modal Confirmation is not showing');
@@ -52,7 +55,10 @@ module('Integration | Component | delete-rules', function(hooks) {
 
   test('Add a new rule modal', async function(assert) {
     new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
-    await render(hbs`{{content/log-parser-rules/parser-rules-list/buttons-container}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{content/log-parser-rules/parser-rules-list/buttons-container}}
+    `);
     assert.ok(find('.buttons-container .add-new-parser-rule .modal-trigger'), 'Add New button is not showing');
     click('.buttons-container .add-new-parser-rule .modal-trigger');
     return settled().then(() => {

@@ -203,7 +203,7 @@ module('Integration | Component | host-list', function(hooks) {
           min-height: 1000px
         }
       </style>
-      {{host-list 
+      {{host-list
         openProperties=openProperties
         closeProperties=closeProperties}}`);
     await click(findAll('.rsa-data-table-body-row')[1]);
@@ -222,7 +222,7 @@ module('Integration | Component | host-list', function(hooks) {
           min-height: 1000px
         }
       </style>
-      {{host-list 
+      {{host-list
         openProperties=openProperties
         closeProperties=closeProperties}}`);
     await click(findAll('.rsa-form-checkbox')[1]);
@@ -239,7 +239,7 @@ module('Integration | Component | host-list', function(hooks) {
           min-height: 1000px
         }
       </style>
-      {{host-list 
+      {{host-list
         openProperties=openProperties
         closeProperties=closeProperties}}{{context-menu}}`);
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
@@ -259,7 +259,7 @@ module('Integration | Component | host-list', function(hooks) {
           min-height: 1000px
         }
       </style>
-      {{host-list 
+      {{host-list
         openProperties=openProperties
         closeProperties=closeProperties}}{{context-menu}}`);
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
@@ -281,7 +281,7 @@ module('Integration | Component | host-list', function(hooks) {
           min-height: 1000px
         }
       </style>
-      {{host-list 
+      {{host-list
         openProperties=openProperties
         closeProperties=closeProperties}}{{context-menu}}`);
 
@@ -301,9 +301,12 @@ module('Integration | Component | host-list', function(hooks) {
           min-height: 1000px
         }
       </style>
-      {{host-list 
+      <div id='modalDestination'></div>
+      {{host-list
         openProperties=openProperties
-        closeProperties=closeProperties}}{{context-menu}}`);
+        closeProperties=closeProperties}}
+      {{context-menu}}
+    `);
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
       const selector = '.context-menu';
@@ -325,9 +328,12 @@ module('Integration | Component | host-list', function(hooks) {
           min-height: 1000px
         }
       </style>
-      {{host-list 
+      <div id='modalDestination'></div>
+      {{host-list
         openProperties=openProperties
-        closeProperties=closeProperties}}{{context-menu}}`);
+        closeProperties=closeProperties}}
+      {{context-menu}}
+    `);
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
       const selector = '.context-menu';
@@ -349,9 +355,12 @@ module('Integration | Component | host-list', function(hooks) {
           min-height: 1000px
         }
       </style>
-      {{host-list 
+      <div id='modalDestination'></div>
+      {{host-list
         openProperties=openProperties
-        closeProperties=closeProperties}}{{context-menu}}`);
+        closeProperties=closeProperties}}
+      {{context-menu}}
+    `);
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
       const selector = '.context-menu';
@@ -375,9 +384,12 @@ module('Integration | Component | host-list', function(hooks) {
           min-height: 1000px
         }
       </style>
-      {{host-list 
+      <div id='modalDestination'></div>
+      {{host-list
         openProperties=openProperties
-        closeProperties=closeProperties}}{{context-menu}}`);
+        closeProperties=closeProperties}}
+      {{context-menu}}
+    `);
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
       const selector = '.context-menu';
@@ -400,9 +412,12 @@ module('Integration | Component | host-list', function(hooks) {
           min-height: 1000px
         }
       </style>
-      {{host-list 
+      <div id='modalDestination'></div>
+      {{host-list
         openProperties=openProperties
-        closeProperties=closeProperties}}{{context-menu}}`);
+        closeProperties=closeProperties}}
+      {{context-menu}}
+    `);
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
       const selector = '.context-menu';
@@ -425,9 +440,12 @@ module('Integration | Component | host-list', function(hooks) {
           min-height: 1000px
         }
       </style>
-      {{host-list 
+      <div id='modalDestination'></div>
+      {{host-list
         openProperties=openProperties
-        closeProperties=closeProperties}}{{context-menu}}`);
+        closeProperties=closeProperties}}
+      {{context-menu}}
+    `);
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {
       const selector = '.context-menu';
@@ -452,7 +470,7 @@ module('Integration | Component | host-list', function(hooks) {
           min-height: 1000px
         }
       </style>
-      {{host-list 
+      {{host-list
         openProperties=openProperties
         closeProperties=closeProperties}}{{context-menu}}`);
     triggerEvent('.content-context-menu a', 'contextmenu', e);

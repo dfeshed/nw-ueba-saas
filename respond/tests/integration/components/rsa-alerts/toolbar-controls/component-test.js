@@ -107,14 +107,24 @@ module('Integration | Component | Respond Alerts Toolbar Controls', function(hoo
   });
 
   test('Clicking the Create Incident button opens the create-incident modal', async function(assert) {
-    await render(hbs`{{rsa-alerts/toolbar-controls hasNoSelections=false}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-alerts/toolbar-controls
+        hasNoSelections=false
+      }}
+    `);
     assert.equal(findAll('.create-incident-modal').length, 0, 'There is no modal displayed');
     await click('.create-incident-button .rsa-form-button');
     assert.equal(findAll(createIncidentModalSelector).length, 1, 'The create-incident modal is displayed');
   });
 
   test('Clicking cancel in the modal closes the create-incident modal', async function(assert) {
-    await render(hbs`{{rsa-alerts/toolbar-controls hasNoSelections=false}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-alerts/toolbar-controls
+        hasNoSelections=false
+      }}
+    `);
     assert.equal(findAll('.create-incident-modal').length, 0, 'There is no modal displayed');
     await click('.create-incident-button .rsa-form-button');
     assert.equal(findAll(createIncidentModalSelector).length, 1, 'The create-incident modal is displayed');
@@ -123,14 +133,24 @@ module('Integration | Component | Respond Alerts Toolbar Controls', function(hoo
   });
 
   test('Clicking the Add to Incident button opens the add-to-incident modal', async function(assert) {
-    await render(hbs`{{rsa-alerts/toolbar-controls hasNoSelections=false}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-alerts/toolbar-controls
+        hasNoSelections=false
+      }}
+    `);
     assert.equal(findAll('.add-to-incident-modal').length, 0, 'There is no modal displayed');
     await click('.add-to-incident-button .rsa-form-button');
     assert.equal(findAll(addToIncidentModalSelector).length, 1, 'The add-to-incident modal is displayed');
   });
 
   test('Clicking cancel in the Add to Incident modal closes the modal', async function(assert) {
-    await render(hbs`{{rsa-alerts/toolbar-controls hasNoSelections=false}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-alerts/toolbar-controls
+        hasNoSelections=false
+      }}
+    `);
     assert.equal(findAll('.add-to-incident-modal').length, 0, 'There is no modal displayed');
     await click('.add-to-incident-button .rsa-form-button');
     assert.equal(findAll(addToIncidentModalSelector).length, 1, 'The add-to-incident modal is displayed');
@@ -142,7 +162,12 @@ module('Integration | Component | Respond Alerts Toolbar Controls', function(hoo
     assert.expect(5);
     const done = assert.async();
     setState();
-    await render(hbs`{{rsa-alerts/toolbar-controls hasNoSelections=false}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-alerts/toolbar-controls
+        hasNoSelections=false
+      }}
+    `);
     await click('.create-incident-button .rsa-form-button');
     const $input = find('.create-incident-form input');
     await fillIn($input, 'INC-123');
@@ -208,7 +233,11 @@ module('Integration | Component | Respond Alerts Toolbar Controls', function(hoo
         }
       });
     });
-    await render(hbs`{{rsa-alerts/toolbar-controls hasNoSelections=false}}`);
+
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-alerts/toolbar-controls hasNoSelections=false}}
+    `);
 
     await click('.create-incident-button .rsa-form-button');
 
@@ -229,7 +258,10 @@ module('Integration | Component | Respond Alerts Toolbar Controls', function(hoo
     assert.expect(2);
     setState();
     await init;
-    await render(hbs`{{rsa-alerts/toolbar-controls hasNoSelections=false}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-alerts/toolbar-controls hasNoSelections=false}}
+    `);
 
     await click('.create-incident-button .rsa-form-button');
 
@@ -269,7 +301,10 @@ module('Integration | Component | Respond Alerts Toolbar Controls', function(hoo
       incidentSearchResults: exampleIncidentSearchResults,
       selectedIncident: exampleIncidentSearchResults[0]
     });
-    await render(hbs`{{rsa-alerts/toolbar-controls hasNoSelections=false}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-alerts/toolbar-controls hasNoSelections=false}}
+    `);
     await click('.add-to-incident-button .rsa-form-button');
     await click('.apply button');
   });
@@ -289,7 +324,10 @@ module('Integration | Component | Respond Alerts Toolbar Controls', function(hoo
       incidentSearchResults: exampleIncidentSearchResults,
       selectedIncident: exampleIncidentSearchResults[0]
     });
-    await render(hbs`{{rsa-alerts/toolbar-controls hasNoSelections=false}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-alerts/toolbar-controls hasNoSelections=false}}
+    `);
     await click('.add-to-incident-button .rsa-form-button');
     await click('.apply button');
     return settled();

@@ -16,7 +16,10 @@ module('Integration | Component | endpoint/core-services-modal', function(hooks)
   });
 
   test('it renders the services modal', async function(assert) {
-    await render(hbs`{{endpoint/core-services-modal}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/core-services-modal}}
+    `);
     await eventBus.trigger('rsa-application-modal-open-service-modal');
     return settled().then(() => {
       assert.equal(document.querySelectorAll('#modalDestination .service-modal').length, 1, 'Expected to render service modal');
@@ -38,11 +41,14 @@ module('Integration | Component | endpoint/core-services-modal', function(hooks)
         name: 'test-2'
       }
     ]);
-    await render(hbs`{{#endpoint/core-services-modal serviceList=serviceList as |selectedService|}}
-      {{#rsa-form-button class='test' style='primary' click=(action pivot selectedService)}}
-        {{t 'investigateHosts.pivotToInvestigate.buttonText2'}}
-      {{/rsa-form-button}}
-    {{/endpoint/core-services-modal}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{#endpoint/core-services-modal serviceList=serviceList as |selectedService|}}
+        {{#rsa-form-button class='test' style='primary' click=(action pivot selectedService)}}
+          {{t 'investigateHosts.pivotToInvestigate.buttonText2'}}
+        {{/rsa-form-button}}
+      {{/endpoint/core-services-modal}}
+    `);
     await eventBus.trigger('rsa-application-modal-open-service-modal');
     await click(find('.rsa-data-table .rsa-data-table-body-row'));
     await click(find('.test'));
@@ -50,7 +56,10 @@ module('Integration | Component | endpoint/core-services-modal', function(hooks)
   });
 
   test('it renders the loading indicator when service list is null', async function(assert) {
-    await render(hbs`{{endpoint/core-services-modal}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/core-services-modal}}
+    `);
     await eventBus.trigger('rsa-application-modal-open-service-modal');
     return settled().then(() => {
       assert.equal(document.querySelectorAll('#modalDestination .rsa-loader').length, 1);
@@ -68,7 +77,13 @@ module('Integration | Component | endpoint/core-services-modal', function(hooks)
         name: 'test-2'
       }
     ]);
-    await render(hbs`{{endpoint/core-services-modal showServiceModal=showServiceModal serviceList=serviceList}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/core-services-modal
+        showServiceModal=showServiceModal
+        serviceList=serviceList
+      }}
+    `);
     await eventBus.trigger('rsa-application-modal-open-service-modal');
     return settled().then(() => {
       assert.equal(document.querySelectorAll('#modalDestination .rsa-data-table-body-row').length, 2, 'two rows');

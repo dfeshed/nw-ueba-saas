@@ -29,16 +29,18 @@ module('Integration | Component | title-bar', function(hooks) {
     initialize(this.owner);
   });
 
-  test('title-bar', async function(assert) {
+  test('title-bar click sends message', async function(assert) {
     assert.expect(1);
     this.set('tabs', DATASOURCE_TABS);
     this.set('setDataSourceTab', () => {
       assert.ok(true);
     });
 
-    await render(hbs`{{#title-bar tabs=tabs defaultAction=setDataSourceTab as |tab|}}
-    <div>{{t tab.label}}</div>
-    {{/title-bar}}`);
+    await render(hbs`
+      {{#title-bar tabs=tabs defaultAction=setDataSourceTab as |tab|}}
+        <div>{{t tab.label}}</div>
+      {{/title-bar}}
+    `);
     await click(findAll('.rsa-nav-tab')[0]);
   });
 });

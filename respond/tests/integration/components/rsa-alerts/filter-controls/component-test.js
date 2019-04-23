@@ -127,7 +127,10 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
     redux.dispatch(getAllCategories());
     await waitForReduxStateChange(redux, 'respond.dictionaries.categoryTags');
 
-    await render(hbs`{{rsa-alerts}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-alerts}}
+    `);
 
     const selector = '.alert-name-filter .rsa-form-checkbox-label';
 
@@ -177,9 +180,9 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
     const confirmOKButtonSelector = '.modal-footer-buttons .rsa-form-button';
     assert.equal(document.querySelectorAll('#modalDestination').length, 1);
     assert.equal(document.querySelector('#modalDestination').classList.contains('active'), true, 'the modal was not present for delete');
-    assert.equal(findAll(confirmOKButtonSelector)[3].innerHTML.trim(), 'OK', 'OK button is clicked');
-    assert.ok(findAll('[test-id=test-warning-title]').length == 1 && findAll('[test-id=test-warnings]').length == 1, 'Confirm modal has warnings');
-    await click(findAll(confirmOKButtonSelector)[3]);
+    assert.equal(findAll(confirmOKButtonSelector)[5].innerHTML.trim(), 'OK', 'OK button is clicked');
+    assert.ok(findAll('#modalDestination [test-id=test-warning-title]').length == 1 && findAll('#modalDestination [test-id=test-warnings]').length == 1, 'Confirm modal has warnings');
+    await click(findAll(confirmOKButtonSelector)[5]);
 
     await waitUntil(() => {
       const { respond: { dictionaries: { alertNames } } } = redux.getState();

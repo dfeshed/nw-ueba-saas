@@ -26,7 +26,10 @@ module('Integration | Component | Pivot to investigate', function(hooks) {
     this.set('serviceList', new Array(5));
     this.set('metaName', 'checksum');
     this.set('itemList', { checksum: 123 });
-    await render(hbs`{{pivot-to-investigate serviceList=serviceList metaName=metaName item=itemList}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{pivot-to-investigate serviceList=serviceList metaName=metaName item=itemList}}
+    `);
     click('.rsa-icon');
     return settled().then(() => {
       assert.equal(document.querySelectorAll('#modalDestination .service-modal').length, 1, 'Expected to render service modal');
@@ -48,7 +51,10 @@ module('Integration | Component | Pivot to investigate', function(hooks) {
     ]);
     this.set('metaName', 'checksum');
     this.set('itemList', { checksum: 123 });
-    await render(hbs`{{pivot-to-investigate serviceList=serviceList metaName=metaName item=itemList}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{pivot-to-investigate serviceList=serviceList metaName=metaName item=itemList}}
+    `);
     click('.rsa-icon');
     return settled().then(() => {
       assert.equal(document.querySelectorAll('#modalDestination .service-modal').length, 1, 'Expected to render service modal');
@@ -64,7 +70,10 @@ module('Integration | Component | Pivot to investigate', function(hooks) {
     ]);
     this.set('metaName', 'checksum');
     this.set('itemList', { 'machineIdentity.machineName': 123 });
-    await render(hbs`{{pivot-to-investigate metaName='machineIdentity.machineName' item=itemList serviceList=serviceList}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{pivot-to-investigate metaName='machineIdentity.machineName' item=itemList serviceList=serviceList}}
+    `);
     click('.rsa-icon');
     return settled().then(() => {
       assert.equal(document.querySelectorAll('#modalDestination .service-modal').length, 1, 'Expected to render service modal');
@@ -85,7 +94,10 @@ module('Integration | Component | Pivot to investigate', function(hooks) {
       { 'id': 'e90bd2a2-a768-4cb9-a19d-37cd9f47fdcc', 'displayName': 'loki-broker', 'name': 'BROKER' }
     ]);
     this.set('item', { machineIdentity: { machineName: 'test' } });
-    await render(hbs`{{pivot-to-investigate metaName='machineIdentity.machineName' item=item serviceList=serviceList}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{pivot-to-investigate metaName='machineIdentity.machineName' item=item serviceList=serviceList}}
+    `);
     click('.rsa-icon');
     return settled().then(() => {
       assert.equal(document.querySelectorAll('#modalDestination .service-modal').length, 1, 'Expected to render service modal');
@@ -109,7 +121,10 @@ module('Integration | Component | Pivot to investigate', function(hooks) {
     this.set('serviceId', '123456');
     this.set('timeRange', { value: 7, unit: 'days' });
     this.set('item', { machineIdentity: { machineName: 'test' } });
-    await render(hbs`{{pivot-to-investigate metaName='machineIdentity.machineName' serviceId=serviceId item=item timeRange=timeRange}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{pivot-to-investigate metaName='machineIdentity.machineName' serviceId=serviceId item=item timeRange=timeRange}}
+    `);
     click('.rsa-icon');
     return settled().then(() => {
       assert.equal(document.querySelectorAll('#modalDestination .service-modal').length, 0, 'Service modal not rendered');

@@ -26,7 +26,10 @@ module('Integration | Component | context-panel/add-to-list', function(hooks) {
       id: '10.10.10.10'
     };
 
-    await render(hbs`{{context-panel/add-to-list}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{context-panel/add-to-list}}
+    `);
 
     await eventBus.trigger('rsa-application-modal-open-addToList', entity);
 

@@ -392,11 +392,14 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     this.set('step', state.usm.groupWizard.steps[2]);
     this.set('transitionToStep', () => {});
     this.set('transitionToClose', () => {});
-    await render(hbs`{{usm-groups/group-wizard/group-toolbar
-      step=step
-      transitionToStep=(action transitionToStep)
-      transitionToClose=(action transitionToClose)}}`
-    );
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{usm-groups/group-wizard/group-toolbar
+        step=step
+        transitionToStep=(action transitionToStep)
+        transitionToClose=(action transitionToClose)
+      }}
+    `);
     await settled();
     assert.equal(findAll('.prev-button:not(.is-disabled)').length, 1, 'The Previous button appears in the DOM and is enabled');
     assert.equal(findAll('.next-button.is-disabled').length, 1, 'The Next button appears in the DOM and is disabled');

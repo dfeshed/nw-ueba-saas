@@ -1,5 +1,6 @@
-import { module, test, setupRenderingTest, render } from 'ember-qunit';
-import { findAll, find } from '@ember/test-helpers';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { findAll, find, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 

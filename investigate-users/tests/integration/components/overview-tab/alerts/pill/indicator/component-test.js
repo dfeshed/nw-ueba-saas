@@ -25,7 +25,10 @@ module('Integration | Component | overview-tab/alerts/pill/indicator', function(
     this.set('indicators', alertOverview.data[0].evidences);
     this.set('userId', alertOverview.data[0].entityId);
     this.set('alertId', alertOverview.data[0].id);
-    await render(hbs `{{overview-tab/alerts/pill/indicator userId=userId alertId=alertId indicators=indicators}} <div id='modalDestination'></div>`);
+    await render(hbs `
+      <div id='modalDestination'></div>
+      {{overview-tab/alerts/pill/indicator userId=userId alertId=alertId indicators=indicators}}
+    `);
     await this.$().find('.rsa-content-tethered-panel-trigger').mouseenter();
     return settled().then(() => {
       assert.ok(find('.user_alert_indicator_panel').textContent.replace(/\s/g, '').indexOf('MultipleActiveDirectory') === 0);

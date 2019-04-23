@@ -1,15 +1,17 @@
 /* eslint-env node */
 
 const common = require('../../common');
-const configureConfigGen = function(environment) {
 
-  // As new microservices need to be used in this Configure engine, we'll need to adjust the socketUrl handling,
-  // but currently the only microservice in use is "respond"
+// As new microservices need to be used in this Configure engine, we'll need to adjust the socketUrl handling,
+// but currently the only microservice in use is "respond"
+const licenseConfigGen = require('../../license').socketRouteGenerator;
+
+let mergedConfig;
+
+const configureConfigGen = function(environment) {
   const socketUrl = common.determineSocketUrl(environment, '/respond/socket');
   const socketUrlLogs = common.determineSocketUrl(environment, '/content/socket');
   const socketUrlEndpoint = common.determineSocketUrl(environment, '/endpoint/socket');
-  const contextSocketUrl = common.determineSocketUrl(environment, '/contexthub/socket');
-
 
   return {
     'log-parser-rules': {
@@ -170,18 +172,12 @@ const configureConfigGen = function(environment) {
   };
 };
 
-// order matters, first config in wins if there are matching configs
-const configGenerators = [
-  configureConfigGen
-];
-
-let socketConfig = null;
 
 const generateSocketConfiguration = function(environment) {
-
-  // this gets called a looooot on ember start up so use cache
-  if (socketConfig) {
-    return socketConfig;
+  // cache it, prevents super spammy console as this gets called
+  // many times during startup
+  if (mergedConfig) {
+    return mergedConfig;
   }
 
   // as of ember 2.14, for some reason environment can be undefined
@@ -189,12 +185,9 @@ const generateSocketConfiguration = function(environment) {
     return {};
   }
 
-  socketConfig = common.mergeSocketConfigs(configGenerators, environment);
-
-  // UNCOMMENT to see combined socketConfig on startup
-  // console.log(socketConfig)
-
-  return socketConfig;
+  const configGenerators = [configureConfigGen, licenseConfigGen];
+  mergedConfig = common.mergeSocketConfigs(configGenerators, environment);
+  return mergedConfig;
 };
 
 module.exports = generateSocketConfiguration;

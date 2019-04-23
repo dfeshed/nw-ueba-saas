@@ -52,7 +52,15 @@ module('Integration | Component | endpoint/edit-file-status', function(hooks) {
     this.set('retrieveRemediationStatus', function() {
       assert.ok(true);
     });
-    await render(hbs`{{endpoint/edit-file-status isDisabled=false itemList=itemList retrieveRemediationStatus=(action retrieveRemediationStatus) getSavedFileStatus=(action getSavedFileStatus)}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status
+        isDisabled=false
+        itemList=itemList
+        retrieveRemediationStatus=(action retrieveRemediationStatus)
+        getSavedFileStatus=(action getSavedFileStatus)
+      }}
+    `);
     await click('.file-status-button button');
   });
 
@@ -65,7 +73,15 @@ module('Integration | Component | endpoint/edit-file-status', function(hooks) {
     this.set('retrieveRemediationStatus', function() {
       assert.ok(true);
     });
-    await render(hbs`{{endpoint/edit-file-status isDisabled=false itemList=itemList retrieveRemediationStatus=(action retrieveRemediationStatus) getSavedFileStatus=(action getSavedFileStatus)}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status
+        isDisabled=false
+        itemList=itemList
+        retrieveRemediationStatus=(action retrieveRemediationStatus)
+        getSavedFileStatus=(action getSavedFileStatus)
+      }}
+    `);
     await click('.file-status-button button');
   });
 

@@ -308,7 +308,10 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .sortField('name')
       .isDescOrder(true)
       .build();
-    await render(hbs`{{host-detail/process}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{host-detail/process}}
+    `);
     await click('.file-status-button .rsa-form-button');
     return settled().then(() => {
       assert.equal(document.querySelectorAll('#modalDestination').length, 1, 'Edit file status modal has appeared.');

@@ -119,13 +119,11 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
   });
 
   test('save filter is getting called with save as option', async function(assert) {
-    const done = assert.async();
     assert.expect(4);
     this.set('showSaveFilterButton', true);
     this.set('isNameInvalid', false);
     this.set('createCustomSearch', function(action, filters) {
       assert.equal(filters.length, 2);
-      done();
     });
     this.set('applyFilter', function(filters) {
       const [filter] = filters.filterBy('propertyName', 'machine.scanStartTime');
@@ -135,6 +133,7 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     this.set('filterState', { filter: {}, expressionList: [] });
     this.set('filterTypes', FILTER_TYPE);
     await render(hbs`
+      <div id='modalDestination'></div>
       {{endpoint/filters-wrapper
         filterState=filterState
         applyFilters=(action applyFilter)
@@ -148,9 +147,10 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
     await click(document.querySelector('.save-filter-button button'));
     assert.equal(document.querySelectorAll('#modalDestination .save-search').length, 1, 'Save Filter modal rendered');
-    await fillIn('.custom-filter-name  input', 'test');
-    await blur('.custom-filter-name  input');
-    await click(document.querySelector('.save-filter button'));
+    await fillIn('#modalDestination .custom-filter-name  input', 'tes');
+    await triggerKeyEvent('#modalDestination .custom-filter-name  input', 'keyup', 84);
+    await blur('#modalDestination .custom-filter-name  input');
+    await click(document.querySelector('#modalDestination .save-filter button'));
   });
 
 
@@ -182,10 +182,12 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
   });
 
   test('save as filter is getting called', async function(assert) {
+    const done = assert.async();
     assert.expect(4);
     this.set('showSaveFilterButton', true);
     this.set('createCustomSearch', function(action, filters) {
       assert.equal(filters.length, 2);
+      done();
     });
     this.set('applyFilter', function(filters) {
       const [filter] = filters.filterBy('propertyName', 'machine.scanStartTime');
@@ -194,17 +196,22 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     });
     this.set('filterState', { filter: {}, expressionList: [] });
     this.set('filterTypes', FILTER_TYPE);
-    await render(hbs`{{endpoint/filters-wrapper
-    filterState=filterState
-    applyFilters=(action applyFilter)
-    filterTypes=filterTypes createCustomSearch=(action createCustomSearch)
-    showSaveFilterButton=showSaveFilterButton}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/filters-wrapper
+        filterState=filterState
+        applyFilters=(action applyFilter)
+        filterTypes=filterTypes createCustomSearch=(action createCustomSearch)
+        showSaveFilterButton=showSaveFilterButton
+      }}
+    `);
     await fillIn('.file-name-input  input', 'malware.exe');
     await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
     await click(document.querySelector('.save-as-filter-button button'));
     assert.equal(document.querySelectorAll('#modalDestination .save-search').length, 1, 'Save Filter modal rendered');
-    await fillIn('.custom-filter-name  input', 'test');
-    await blur('.custom-filter-name  input');
+    await fillIn('.custom-filter-name input', 'tes');
+    await triggerKeyEvent('.custom-filter-name input', 'keyup', 84);
+    await blur('.custom-filter-name input');
     await click(document.querySelector('.save-filter button'));
   });
 
@@ -253,11 +260,15 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     });
     this.set('filterState', { filter: {}, expressionList: [] });
     this.set('filterTypes', FILTER_TYPE);
-    await render(hbs`{{endpoint/filters-wrapper
-    filterState=filterState
-    applyFilters=(action applyFilter)
-    filterTypes=filterTypes
-    showSaveFilterButton=showSaveFilterButton}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/filters-wrapper
+        filterState=filterState
+        applyFilters=(action applyFilter)
+        filterTypes=filterTypes
+        showSaveFilterButton=showSaveFilterButton
+      }}
+    `);
     await fillIn('.file-name-input  input', 'malware.exe');
     await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
     await click(document.querySelector('.save-filter-button button'));
@@ -277,11 +288,15 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     });
     this.set('filterState', { filter: {}, expressionList: [] });
     this.set('filterTypes', FILTER_TYPE);
-    await render(hbs`{{endpoint/filters-wrapper
-    filterState=filterState
-    applyFilters=(action applyFilter)
-    filterTypes=filterTypes
-    showSaveFilterButton=showSaveFilterButton}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/filters-wrapper
+        filterState=filterState
+        applyFilters=(action applyFilter)
+        filterTypes=filterTypes
+        showSaveFilterButton=showSaveFilterButton
+      }}
+    `);
     await fillIn('.file-name-input  input', 'malware.exe');
     await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
     await click(document.querySelector('.save-filter-button button'));
@@ -301,11 +316,15 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     });
     this.set('filterState', { filter: {}, expressionList: [] });
     this.set('filterTypes', FILTER_TYPE);
-    await render(hbs`{{endpoint/filters-wrapper
-    filterState=filterState
-    applyFilters=(action applyFilter)
-    filterTypes=filterTypes
-    showSaveFilterButton=showSaveFilterButton}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/filters-wrapper
+        filterState=filterState
+        applyFilters=(action applyFilter)
+        filterTypes=filterTypes
+        showSaveFilterButton=showSaveFilterButton
+      }}
+    `);
     await fillIn('.file-name-input  input', 'malware.exe');
     await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
     await click(document.querySelector('.save-filter-button button'));
@@ -334,9 +353,9 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
       assert.equal(flash.type, 'error');
       assert.equal(flash.message.string, expectedMsg);
     });
-    await render(hbs`{{endpoint/filters-wrapper 
-    filterState=filterState 
-    applyFilters=(action applyFilter) 
+    await render(hbs`{{endpoint/filters-wrapper
+    filterState=filterState
+    applyFilters=(action applyFilter)
     filterTypes=filterTypes
     showSaveFilterButton=showSaveFilterButton}}`);
     await fillIn('.file-name-input  input', 'malware.exe');

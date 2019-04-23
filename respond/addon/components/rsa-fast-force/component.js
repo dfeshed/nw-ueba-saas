@@ -623,6 +623,10 @@ export default Component.extend({
    * @public
    */
   start(lastAlpha) {
+    if (this.isDestroyed || this.isDestroying) {
+      return;
+    }
+
     const { simulation } = this;
     if (!simulation) {
       // component hasn't rendered yet, exit
@@ -645,6 +649,10 @@ export default Component.extend({
   // Creates a d3 force simulation with configurable forces.
   // Caches some frequently used DOM in component, for performance.
   _initSimulation() {
+    if (this.isDestroyed || this.isDestroying) {
+      return;
+    }
+
     const simulation = this.simulation = forceSimulation();
 
     const {
@@ -744,6 +752,10 @@ export default Component.extend({
    * @public
    */
   stop() {
+    if (this.isDestroyed || this.isDestroying) {
+      return;
+    }
+
     if (this.simulation) {
       this.simulation.stop();
       this.set('alphaCurrent', 0);

@@ -195,6 +195,25 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
   });
 
   test('Download to server websocket called', async function(assert) {
+    const done = assert.async();
+
+    patchSocket((method, modelName, query) => {
+      assert.equal(method, 'downloadFileToServer');
+      assert.equal(modelName, 'agent');
+      assert.deepEqual(query, {
+        data: {
+          agentId: null,
+          files: [
+            {
+              fileName: 'acpi.sys',
+              hash: 'ae69c142dc2210a4ae657c23cea4a6e7cb32c4f4eba039414123cac52157509b',
+              path: undefined
+            }
+          ]
+        }
+      });
+      done();
+    });
 
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
@@ -256,26 +275,14 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
       .fileContextSelections(fileContextSelections)
       .selectedHostList(selectedHostList)
       .build();
-    await render(hbs`{{host-detail/utils/file-context-wrapper storeName=storeName tabName=tabName columnsConfig=columnConfig}}`);
 
-    assert.expect(3);
-
-    patchSocket((method, modelName, query) => {
-      assert.equal(method, 'downloadFileToServer');
-      assert.equal(modelName, 'agent');
-      assert.deepEqual(query, {
-        data: {
-          agentId: null,
-          files: [
-            {
-              fileName: 'acpi.sys',
-              hash: 'ae69c142dc2210a4ae657c23cea4a6e7cb32c4f4eba039414123cac52157509b',
-              path: undefined
-            }
-          ]
-        }
-      });
-    });
+    await render(hbs`
+      {{host-detail/utils/file-context-wrapper
+        storeName=storeName
+        tabName=tabName
+        columnsConfig=columnConfig
+      }}
+    `);
 
     await click('.more-action-button');
     await click('.rsa-dropdown-action-list .panel3');
@@ -404,10 +411,10 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
           min-height: 2000px
         }
       </style>
-      {{host-detail/utils/file-context-wrapper 
-      accessControl=accessControl 
-      storeName=storeName 
-      tabName=tabName 
+      {{host-detail/utils/file-context-wrapper
+      accessControl=accessControl
+      storeName=storeName
+      tabName=tabName
       columnsConfig=columnConfig}}
       {{context-menu}}`);
 
@@ -449,10 +456,10 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
           min-height: 2000px
         }
       </style>
-      {{host-detail/utils/file-context-wrapper 
-      accessControl=accessControl 
-      storeName=storeName 
-      tabName=tabName 
+      {{host-detail/utils/file-context-wrapper
+      accessControl=accessControl
+      storeName=storeName
+      tabName=tabName
       columnsConfig=columnConfig}}
       {{context-menu}}`);
     triggerEvent(findAll('.rsa-data-table-body-rows .rsa-form-checkbox-label')[1], 'contextmenu', e);

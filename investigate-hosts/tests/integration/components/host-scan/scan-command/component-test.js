@@ -36,7 +36,12 @@ test('it should render the proper title for start scan', function(assert) {
   new ReduxDataHelper(initState)
     .scanCount(3)
     .build();
-  this.render(hbs`{{host-scan/scan-command command=command modalTitle=modalTitle}}`);
+  this.render(hbs`
+    <div id='modalDestination'></div>
+    {{host-scan/scan-command
+      command=command
+      modalTitle=modalTitle}}
+  `);
   this.$('.host-start-scan-button .rsa-form-button').trigger('click');
   return wait().then(() => {
     assert.equal($('#modalDestination .scan-modal:visible').length, 1, 'Expected to render start scan modal');
@@ -49,7 +54,10 @@ test('it should render the proper title for stop scan', function(assert) {
   new ReduxDataHelper(initState)
     .scanCount(3)
     .build();
-  this.render(hbs`{{host-scan/scan-command command=command}}`);
+  this.render(hbs`
+    <div id='modalDestination'></div>
+    {{host-scan/scan-command command=command}}
+  `);
   this.$('.stop-scan-button .rsa-form-button').trigger('click');
   return wait().then(() => {
     assert.equal($('#modalDestination .stop-scan-modal:visible').length, 1, 'Expected to render start scan modal');

@@ -25,7 +25,8 @@
           isError=isError
           onKeyUp=(action 'validate')
           maxLength=255
-          value=saveFilterName }}
+          value=saveFilterName
+        }}
       </div>
       {{#if isError}}
         <label class="rsa-form-label is-error rsa-m-t-xs rsa-m-b-xs">
@@ -40,7 +41,8 @@
           style='primary'
           class= "rsa-m-r-md save-filter"
           isDisabled=disableSaveButton
-          click=(action 'saveFilter')}}
+          click=(action 'saveFilter')
+        }}
           {{t 'investigateFiles.button.save'}}
         {{/rsa-form-button}}
       </div>

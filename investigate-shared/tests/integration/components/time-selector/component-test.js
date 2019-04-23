@@ -1,6 +1,7 @@
-import { module, test, setupRenderingTest, render } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { find, findAll, click } from '@ember/test-helpers';
+import { find, findAll, click, render } from '@ember/test-helpers';
 
 module('Integration | Component | Time Selector', function(hooks) {
   setupRenderingTest(hooks);

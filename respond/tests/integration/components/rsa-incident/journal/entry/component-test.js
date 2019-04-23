@@ -69,7 +69,13 @@ module('Integration | Component | Journal Entry', function(hooks) {
     new DataHelper(redux).fetchIncidentDetails();
     await setup();
     this.set('journalEntry', journalEntry);
-    await render(hbs`{{rsa-incident/journal/entry incidentId='INC-1234' entry=journalEntry}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-incident/journal/entry
+        incidentId='INC-1234'
+        entry=journalEntry
+      }}
+    `);
     await click('header .delete button');
     assert.ok(findModal('.respond-confirmation-dialog'), 'The confirmation dialog is showing');
     await click('.modal-footer-buttons .is-primary button');
@@ -135,7 +141,13 @@ module('Integration | Component | Journal Entry', function(hooks) {
       done();
     });
     this.set('journalEntry', journalEntry);
-    await render(hbs`{{rsa-incident/journal/entry incidentId='INC-1234' entry=journalEntry}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-incident/journal/entry
+        incidentId='INC-1234'
+        entry=journalEntry
+      }}
+    `);
     throwSocket();
     await click('header .delete button');
     await click('.modal-footer-buttons .is-primary button');

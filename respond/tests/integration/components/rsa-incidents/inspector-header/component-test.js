@@ -116,7 +116,13 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
       id: 'INC-1234',
       name: 'Something Wicked This Way Comes'
     });
-    await render(hbs`{{rsa-incidents/inspector-header info=info isSendToArcherAvailable=true}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-incidents/inspector-header
+        info=info
+        isSendToArcherAvailable=true
+      }}
+    `);
     await click(selectors.sendToArcherButton);
     await click(selectors.confirmButton);
   });
@@ -137,7 +143,13 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
         id: 'INC-1234',
         name: 'Something Wicked This Way Comes'
       });
-      await render(hbs`{{rsa-incidents/inspector-header info=info isSendToArcherAvailable=true}}`);
+      await render(hbs`
+        <div id='modalDestination'></div>
+        {{rsa-incidents/inspector-header
+          info=info
+          isSendToArcherAvailable=true
+        }}
+      `);
       await click(selectors.sendToArcherButton);
       await click(selectors.confirmButton);
     };

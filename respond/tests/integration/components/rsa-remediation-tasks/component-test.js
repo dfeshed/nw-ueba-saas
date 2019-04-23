@@ -180,7 +180,10 @@ module('Integration | Component | Respond Remediation Tasks', function(hooks) {
       assert.equal(flash.message.string, expectedMessage);
       flashSuccess = true;
     });
-    await render(hbs`{{rsa-remediation-tasks}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-remediation-tasks}}
+    `);
     setState();
     await waitForReduxStateChange(redux, 'respond.remediationTasks.items');
     const onDelete = waitForReduxStateChange(redux, 'respond.remediationTasks.items');

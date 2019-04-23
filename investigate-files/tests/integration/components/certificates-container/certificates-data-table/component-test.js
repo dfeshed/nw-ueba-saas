@@ -212,7 +212,11 @@ module('Integration | Component | certificates-container/certificates-data-table
       .selectedCertificatesList([])
       .certificateStatusData({})
       .build();
-    await render(hbs`{{certificates-container/certificates-data-table}}{{context-menu}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{certificates-container/certificates-data-table}}
+      {{context-menu}}
+    `);
 
     triggerEvent('.content-context-menu', 'contextmenu', e);
     return settled().then(() => {
@@ -221,7 +225,7 @@ module('Integration | Component | certificates-container/certificates-data-table
       assert.equal(items.length, 2);
       click('.context-menu__item:nth-of-type(1)');
       return settled().then(() => {
-        assert.equal(findAll('.file-status-radio').length, 3, 'Edit Certificate status model is rendered.');
+        assert.equal(findAll('#modalDestination .file-status-radio').length, 3, 'Edit Certificate status model is rendered.');
       });
     });
   });

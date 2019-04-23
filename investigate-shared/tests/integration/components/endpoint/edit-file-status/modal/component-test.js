@@ -31,7 +31,13 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
   test('on click renders the file edit status modal', async function(assert) {
     this.set('itemList', itemList);
     this.set('restrictedFileList', ['test']);
-    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList itemList=itemList}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        restrictedFileList=restrictedFileList
+        itemList=itemList
+      }}
+    `);
     assert.equal((document.querySelectorAll('#modalDestination .file-status-modal')).length, 1, 'File status modal has rendered.');
   });
 
@@ -39,48 +45,93 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
     this.set('showFileStatusModal', true);
     this.set('itemList', itemList);
     this.set('restrictedFileList', ['test']);
-    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
-    assert.equal(findAll('.file-status-radio').length, 4, 'Four file status values have been rendered');
-    assert.equal(findAll('.file-status-radio')[0].textContent.trim(), 'Blacklist', 'first file status');
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        restrictedFileList=restrictedFileList
+        showFileStatusModal=showFileStatusModal
+        itemList=itemList
+      }}
+    `);
+    assert.equal(findAll('#modalDestination .file-status-radio').length, 4, 'Four file status values have been rendered');
+    assert.equal(findAll('#modalDestination .file-status-radio')[0].textContent.trim(), 'Blacklist', 'first file status');
   });
 
   test('toggle blacklist additional options', async function(assert) {
     this.set('showFileStatusModal', true);
     this.set('itemList', itemList);
     this.set('restrictedFileList', ['test']);
-    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        restrictedFileList=restrictedFileList
+        showFileStatusModal=showFileStatusModal
+        itemList=itemList
+      }}
+    `);
     assert.equal(findAll('.file-status-radio')[0].textContent.trim(), 'Blacklist', 'blacklist file status');
     await click(document.querySelectorAll('.file-status-modal .file-status-radio input.status-type')[0]);
-    assert.equal(findAll('.black-list-options').length, 1, 'blacklist options have been rendered');
+    assert.equal(findAll('#modalDestination .black-list-options').length, 1, 'blacklist options have been rendered');
   });
 
   test('on click of whitelist status should show info message for multiple files with restricted file', async function(assert) {
     this.set('showFileStatusModal', true);
     this.set('itemList', itemList);
     this.set('restrictedFileList', ['test']);
-    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        restrictedFileList=restrictedFileList
+        showFileStatusModal=showFileStatusModal
+        itemList=itemList
+      }}
+    `);
     await click(document.querySelectorAll('.file-status-modal .file-status-radio input.status-type')[2]);
-    assert.equal(findAll('.whitelist-alert').length, 1, 'info message displayed');
+    assert.equal(findAll('#modalDestination .whitelist-alert').length, 1, 'info message displayed');
   });
+
   test('it shows the white list waring message for restricted file', async function(assert) {
     this.set('showFileStatusModal', true);
     this.set('itemList', [itemList[0]]);
     this.set('restrictedFileList', ['test']);
-    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
-    assert.equal(findAll('.whitelist-alert').length, 1, 'warning message displayed');
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        restrictedFileList=restrictedFileList
+        showFileStatusModal=showFileStatusModal
+        itemList=itemList
+      }}
+    `);
+    assert.equal(findAll('#modalDestination .whitelist-alert').length, 1, 'warning message displayed');
   });
+
   test('it shows file status limit info for more than 1000 files selection', async function(assert) {
     this.set('showFileStatusModal', true);
     this.set('itemList', new Array(101));
     this.set('restrictedFileList', ['test']);
-    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
-    assert.equal(findAll('.max-limit-info').length, 1, 'info message displayed');
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        restrictedFileList=restrictedFileList
+        showFileStatusModal=showFileStatusModal
+        itemList=itemList
+      }}
+    `);
+    assert.equal(findAll('#modalDestination .max-limit-info').length, 1, 'info message displayed');
   });
+
   test('it shows file status limit info should hide for less than or equal to 1000 files selection', async function(assert) {
     this.set('showFileStatusModal', true);
     this.set('itemList', new Array(100));
-    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
-    assert.equal(findAll('.max-limit-info').length, 0, 'info message nt displayed');
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        restrictedFileList=restrictedFileList
+        showFileStatusModal=showFileStatusModal
+        itemList=itemList
+      }}
+    `);
+    assert.equal(findAll('#modalDestination .max-limit-info').length, 0, 'info message nt displayed');
   });
 
   test('it disable the white list radio for single selection', async function(assert) {
@@ -93,8 +144,15 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
       size: 100
     }]);
     this.set('restrictedFileList', ['test']);
-    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
-    assert.equal(findAll('.disabled').length, 1, 'white list radio disabled');
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        restrictedFileList=restrictedFileList
+        showFileStatusModal=showFileStatusModal
+        itemList=itemList
+      }}
+    `);
+    assert.equal(findAll('#modalDestination .disabled').length, 1, 'white list radio disabled');
   });
 
   test('it shows the warning message when comment length is too long', async function(assert) {
@@ -111,12 +169,18 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
       size: 100
     }]);
     this.set('restrictedFileList', ['test']);
-    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        restrictedFileList=restrictedFileList
+        showFileStatusModal=showFileStatusModal
+        itemList=itemList
+      }}
+    `);
     await fillIn('.rsa-form-textarea  textarea', comment);
     await blur('.rsa-form-textarea  textarea');
-    assert.equal(findAll('.limit-reached').length, 1);
+    assert.equal(findAll('#modalDestination .limit-reached').length, 1);
   });
-
 
   test('it disable the white list radio for multiple selection if all restricted', async function(assert) {
     this.set('showFileStatusModal', true);
@@ -137,10 +201,16 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
       }
     ]);
     this.set('restrictedFileList', ['test', 'test2']);
-    await render(hbs`{{endpoint/edit-file-status/modal restrictedFileList=restrictedFileList showFileStatusModal=showFileStatusModal itemList=itemList}}`);
-    assert.equal(findAll('.disabled').length, 1, 'white list radio disabled');
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        restrictedFileList=restrictedFileList
+        showFileStatusModal=showFileStatusModal
+        itemList=itemList
+      }}
+    `);
+    assert.equal(findAll('#modalDestination .disabled').length, 1, 'white list radio disabled');
   });
-
 
   test('it toggles save button based data modification state', async function(assert) {
     this.set('showFileStatusModal', true);
@@ -164,7 +234,14 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
       comment: 'Test',
       fileStatus: 'Whitelist'
     });
-    await render(hbs`{{endpoint/edit-file-status/modal data=data itemList=itemList showFileStatusModal=showFileStatusModal}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        data=data
+        itemList=itemList
+        showFileStatusModal=showFileStatusModal
+      }}
+    `);
     assert.equal(document.querySelectorAll('#modalDestination .is-disabled').length, 1, 'Save button disabled');
     await fillIn('.rsa-form-textarea  textarea', 'Updated comment');
     await blur('.rsa-form-textarea  textarea');
@@ -190,11 +267,17 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
       fileStatus: 'Blacklist',
       remediationAction: null
     });
-    await render(hbs`{{endpoint/edit-file-status/modal data=data itemList=itemList isRemediationAllowed=true showFileStatusModal=showFileStatusModal}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/edit-file-status/modal
+        data=data
+        itemList=itemList
+        isRemediationAllowed=true
+        showFileStatusModal=showFileStatusModal
+      }}
+    `);
     assert.equal(document.querySelectorAll('#modalDestination .is-disabled').length, 1, 'Save button disabled');
     await click('.remediation-action-checkbox');
     assert.equal(document.querySelectorAll('#modalDestination .is-disabled').length, 0, 'Save button not disabled');
   });
-
-
 });

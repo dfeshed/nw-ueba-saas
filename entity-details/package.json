@@ -59,7 +59,7 @@
     "ember-export-application-global": "^2.0.0",
     "ember-load-initializers": "2.0.0",
     "ember-lodash-shim": "4.0.0",
-    "ember-qunit": "^3.4.1",
+    "ember-qunit": "4.4.1",
     "ember-resolver": "4.3.0",
     "ember-source": "3.9.0",
     "ember-symbol-observable": "1.0.2",

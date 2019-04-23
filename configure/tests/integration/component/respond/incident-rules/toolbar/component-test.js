@@ -57,7 +57,10 @@ module('Integration | Component | Respond Incident Rules Toolbar', function(hook
     assert.expect(4);
 
     setState({ ...initialState, selectedRules: ['59b92bbf4cb0f0092b6b6a8b'] });
-    await render(hbs`{{respond/incident-rules/toolbar}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{respond/incident-rules/toolbar}}
+    `);
 
     patchSocket((method, modelName, query) => {
       assert.equal(method, 'deleteRecord');

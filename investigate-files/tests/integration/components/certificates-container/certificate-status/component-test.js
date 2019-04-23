@@ -49,7 +49,10 @@ module('Integration | Component | certificates-container/certificate-status', fu
     new ReduxDataHelper(initState)
       .selectedCertificatesList([{ thumbprint: '123' }])
       .build();
-    await render(hbs`{{certificates-container/certificate-status}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{certificates-container/certificate-status}}
+    `);
     await click('.certificate-status-button button');
     assert.equal(document.querySelectorAll('#modalDestination .modal-content').length, 1, 'Expecting to render modal');
   });
@@ -58,7 +61,10 @@ module('Integration | Component | certificates-container/certificate-status', fu
     new ReduxDataHelper(initState)
       .selectedCertificatesList([{ thumbprint: '123' }])
       .build();
-    await render(hbs`{{certificates-container/certificate-status}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{certificates-container/certificate-status}}
+    `);
     await click('.certificate-status-button button');
     assert.equal(document.querySelectorAll('#modalDestination .file-status-radio').length, 3, 'Expecting to render 3 radio button');
   });
@@ -66,7 +72,10 @@ module('Integration | Component | certificates-container/certificate-status', fu
   test('it should close the modal on clicking the cancel', async function(assert) {
     new ReduxDataHelper(initState)
       .certificatesItems(new Array(1)).build();
-    await render(hbs`{{certificates-container/certificate-status}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{certificates-container/certificate-status}}
+    `);
     await click('.certificate-status-button button');
     assert.equal(document.querySelectorAll('#modalDestination .modal-content').length, 1, 'Expecting to render modal');
     await click('.close-edit-modal button');
@@ -80,7 +89,10 @@ module('Integration | Component | certificates-container/certificate-status', fu
       .selectedCertificatesList([{ thumbprint: '23' }])
       .certificateStatusData({})
       .build();
-    await render(hbs`{{certificates-container/certificate-status}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{certificates-container/certificate-status}}
+    `);
     await click('.certificate-status-button button');
     await click(document.querySelectorAll('.file-status-radio')[0]);
     await fillIn('.comment-box textarea', 'test');

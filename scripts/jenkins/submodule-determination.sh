@@ -51,4 +51,7 @@ echo "*** BEGIN SUBMODULES TO TEST"
 echo $submodulesToTest | tr " " "\n"
 echo "*** END SUBMODULES TO TEST"
 
+# uncomment this to test just one thing
+# submodulesToTest='|investigate-files|'
+
 echo "SUBMODULES_TO_TEST='$submodulesToTest'" > submodules.txt

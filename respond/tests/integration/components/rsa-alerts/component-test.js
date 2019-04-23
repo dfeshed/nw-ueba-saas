@@ -42,7 +42,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     createdColumnSortButton: '.rsa-explorer-table .sort-indicator:first-of-type',
     explorerTableErrorMessage: '.rsa-explorer-table .items-error',
     deleteButton: '.rsa-explorer .rsa-explorer-toolbar .is-danger button',
-    confirmationOkButton: '.modal-footer-buttons .is-primary button',
+    confirmationOkButton: '#modalDestination .modal-footer-buttons .is-primary button',
     noResultsMessage: '.rsa-explorer-table .no-results-message .message'
   };
 
@@ -180,7 +180,10 @@ module('Integration | Component | Respond Alerts', function(hooks) {
       assert.equal(flash.message.string, expectedMessage);
       flashSuccess = true;
     });
-    await render(hbs`{{rsa-alerts}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{rsa-alerts}}
+    `);
     setState();
     await waitForReduxStateChange(redux, 'respond.alerts.items');
     const onDelete = waitForReduxStateChange(redux, 'respond.alerts.items');

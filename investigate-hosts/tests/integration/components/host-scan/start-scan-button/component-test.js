@@ -39,7 +39,11 @@ test('it renders the only icon', function(assert) {
 
 test('it should show scan start modal on clicking the button', function(assert) {
   this.set('modalTitle', 'Start Scan for 2 host(s)');
-  this.render(hbs`{{host-scan/start-scan-button modalTitle=modalTitle}}`);
+  this.render(hbs`
+    <div id='modalDestination'></div>
+    {{host-scan/start-scan-button
+      modalTitle=modalTitle}}
+  `);
   assert.equal($('#modalDestination .start-scan-modal:visible').length, 0); // Modal content not be added to dom
   this.$('.rsa-form-button').trigger('click');
   return wait().then(() => {
@@ -50,7 +54,10 @@ test('it should show scan start modal on clicking the button', function(assert) 
 
 test('it should show warning messages', function(assert) {
   this.set('warningMessage', ['Warning message', 'test message']);
-  this.render(hbs`{{host-scan/start-scan-button warningMessage=warningMessage}}`);
+  this.render(hbs`
+    <div id='modalDestination'></div>
+    {{host-scan/start-scan-button warningMessage=warningMessage}}
+  `);
   this.$('.rsa-form-button').trigger('click');
   return wait().then(() => {
     assert.equal($('#modalDestination .info-message').length, 2, 'Expected to render warning message');
@@ -65,8 +72,10 @@ test('it should show success message start scan is success', function(assert) {
     assert.equal(flash.type, 'success');
   });
   this.set('agentIds', [1]);
-  this.render(hbs`{{host-scan/start-scan-button agentIds=agentIds}}`);
-
+  this.render(hbs`
+    <div id='modalDestination'></div>
+    {{host-scan/start-scan-button agentIds=agentIds}}
+  `);
   this.$('.rsa-form-button').trigger('click');
   return wait().then(() => {
     this.$('.scan-command').trigger('click');
@@ -78,7 +87,10 @@ test('it should show success message start scan is success', function(assert) {
 test('it should show error message when failed to start scan', function(assert) {
   assert.expect(3);
   this.set('agentIds', [1]);
-  this.render(hbs`{{host-scan/start-scan-button agentIds=agentIds}}`);
+  this.render(hbs`
+    <div id='modalDestination'></div>
+    {{host-scan/start-scan-button agentIds=agentIds}}
+  `);
   throwSocket({ message: { meta: { message: 'test' } } });
 
   patchFlash((flash) => {

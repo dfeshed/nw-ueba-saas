@@ -529,7 +529,9 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
           min-height: 1000px
         }
       </style>
-    {{host-detail/process/process-tree showServiceModal=true}}`);
+      <div id='modalDestination'></div>
+      {{host-detail/process/process-tree showServiceModal=true}}
+    `);
     assert.equal(document.querySelectorAll('#modalDestination .service-modal').length, 1);
   });
 
@@ -542,12 +544,14 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .processTree(processData.processTree)
       .selectedTab(null).build();
     await render(hbs`
+      <div id='modalDestination'></div>
       <style>
         box, section {
           min-height: 1000px
         }
       </style>
-    {{host-detail/process/process-tree showFileStatusModal=true}}`);
+      {{host-detail/process/process-tree showFileStatusModal=true}}
+    `);
     assert.equal(document.querySelectorAll('#modalDestination .file-status-modal').length, 1);
   });
 
@@ -559,12 +563,14 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .processTree(processData.processTree)
       .selectedTab(null).build();
     await render(hbs`
+      <div id='modalDestination'></div>
       <style>
         box, section {
           min-height: 1000px
         }
       </style>
-    {{host-detail/process/process-tree showResetScoreModal=true}}`);
+      {{host-detail/process/process-tree showResetScoreModal=true}}
+    `);
     assert.equal(document.querySelectorAll('#modalDestination .reset-risk-score').length, 1);
   });
 
@@ -648,12 +654,14 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .isTreeView(true)
       .build();
     await render(hbs`
+      <div id='modalDestination'></div>
       <style>
         box, section {
           min-height: 2000px
         }
       </style>
-      {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
+      {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}
+    `);
 
     triggerEvent(findAll('.score')[0], 'contextmenu', e);
     return settled().then(async() => {

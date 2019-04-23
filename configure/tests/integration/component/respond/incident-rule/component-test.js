@@ -137,7 +137,10 @@ module('Integration | Component | Respond Incident Rule', function(hooks) {
 
   test('Changing the query mode displays a confirmation dialog. Canceling it keeps the Rule Builder query mode', async function(assert) {
     setState({ ...initialState });
-    await render(hbs`{{respond/incident-rule ruleId='12345'}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{respond/incident-rule ruleId='12345'}}
+    `);
     assert.equal(find(selectors.queryModeDropdown).textContent.trim(), 'Rule Builder', 'The query mode dropdown is Rule Builder');
     await selectChoose(selectors.queryMode, 'Advanced');
     assert.ok(findModal(selectors.queryModeConfirmationModal), 'The confirmation modal appears');
@@ -149,7 +152,10 @@ module('Integration | Component | Respond Incident Rule', function(hooks) {
   test('Confirming the query mode change dispatches the updateRule creator', async function(assert) {
     const actionSpy = sinon.spy(incidentRuleCreators, 'updateRule');
     setState({ ...initialState });
-    await render(hbs`{{respond/incident-rule ruleId='12345'}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{respond/incident-rule ruleId='12345'}}
+    `);
     await selectChoose(selectors.queryMode, 'Advanced');
     assert.ok(findModal(selectors.queryModeConfirmationModal), 'The confirmation modal appears');
     await click(`${selectors.queryModeConfirmationModal} .confirm-button .rsa-form-button`);

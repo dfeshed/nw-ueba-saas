@@ -36,7 +36,13 @@ module('Integration | Component | endpoint/reset-risk-score', function(hooks) {
     ]);
 
     this.set('buttonType', 'button');
-    await render(hbs`{{endpoint/reset-risk-score buttonType=buttonType selectedList=selectedList}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/reset-risk-score
+        buttonType=buttonType
+        selectedList=selectedList
+      }}
+    `);
     assert.equal(findAll('.reset-risk-score-dialog').length, 0, 'confirmation dialog is not opened');
     await click('.reset-score-button');
     assert.equal(findAll('.reset-risk-score-dialog').length, 1, 'confirmation dialog is opened');
@@ -46,15 +52,27 @@ module('Integration | Component | endpoint/reset-risk-score', function(hooks) {
     this.set('buttonType', 'button');
     this.set('showResetScoreModal', true);
     this.set('isMaxResetRiskScoreLimit', true);
-    await render(hbs`{{endpoint/reset-risk-score buttonType=buttonType showResetScoreModal=showResetScoreModal isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/reset-risk-score
+        buttonType=buttonType
+        showResetScoreModal=showResetScoreModal
+        isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
+      }}
+    `);
     await click('.reset-score-button');
     assert.equal(findAll('.reset-risk-score-dialog').length, 1, 'confirmation dialog is opened');
-    assert.equal(findAll('.reset-risk-score .max-limit-info').length, 1, 'Info message is present in Reset risk score');
+    assert.equal(findAll('#modalDestination .reset-risk-score .max-limit-info').length, 1, 'Info message is present in Reset risk score');
   });
 
   test('on click of cancel button confirmation dialog is closed', async function(assert) {
     this.set('showResetScoreModal', true);
-    await render(hbs`{{endpoint/reset-risk-score showResetScoreModal=showResetScoreModal}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/reset-risk-score
+        showResetScoreModal=showResetScoreModal
+      }}
+    `);
     await click('.closeReset');
     assert.equal(this.get('showResetScoreModal'), false, 'confirmation dialog is closed');
   });
@@ -62,7 +80,13 @@ module('Integration | Component | endpoint/reset-risk-score', function(hooks) {
   test('on click of reset button, showResetScoreModal is set true', async function(assert) {
     this.set('buttonType', 'button');
     this.set('showResetScoreModal', false);
-    await render(hbs`{{endpoint/reset-risk-score buttonType=buttonType showResetScoreModal=showResetScoreModal}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/reset-risk-score
+        buttonType=buttonType
+        showResetScoreModal=showResetScoreModal
+      }}
+    `);
     await click('.reset-score-button');
     assert.equal(this.get('showResetScoreModal'), true, 'showResetScoreModal is set true');
     assert.equal(findAll('.reset-risk-score-dialog').length, 1, 'confirmation dialog is opened');

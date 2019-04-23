@@ -509,9 +509,15 @@ module('Integration | Component | file list', function(hooks) {
       .build();
     this.set('showResetScoreModal', true);
     this.set('isMaxResetRiskScoreLimit', true);
-    await render(hbs`{{file-list showResetScoreModal=showResetScoreModal isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit}}`);
-    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
-    assert.equal(findAll('.modal-content.reset-risk-score .max-limit-info').length, 1, 'reset risk score info message is present');
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{file-list
+        showResetScoreModal=showResetScoreModal
+        isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
+      }}
+    `);
+    assert.equal(findAll('#modalDestination .modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
+    assert.equal(findAll('#modalDestination .modal-content.reset-risk-score .max-limit-info').length, 1, 'reset risk score info message is present');
   });
 
   test('Reset risk score confirmation dialog is closed on click of cancel', async function(assert) {
@@ -523,8 +529,14 @@ module('Integration | Component | file list', function(hooks) {
       .build();
     this.set('showResetScoreModal', true);
     this.set('isMaxResetRiskScoreLimit', true);
-    await render(hbs`{{file-list showResetScoreModal=showResetScoreModal isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit}}`);
-    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{file-list
+        showResetScoreModal=showResetScoreModal
+        isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
+      }}
+    `);
+    assert.equal(findAll('#modalDestination .modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
     await click('.closeReset');
     assert.equal(findAll('.modal-content.reset-risk-score').length, 0, 'Reset confirmation dialog is closed');
   });
@@ -545,8 +557,14 @@ module('Integration | Component | file list', function(hooks) {
     }];
     this.set('showResetScoreModal', true);
     this.set('selectedFiles', selectedFiles);
-    await render(hbs`{{file-list showResetScoreModal=showResetScoreModal selectedFiles=selectedFiles}}`);
-    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{file-list
+        showResetScoreModal=showResetScoreModal
+        selectedFiles=selectedFiles
+      }}
+    `);
+    assert.equal(findAll('#modalDestination .modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
     await click('.resetButton');
     assert.equal(this.get('showResetScoreModal'), false);
     assert.equal(this.get('selectedFiles'), null);
@@ -736,8 +754,14 @@ module('Integration | Component | file list', function(hooks) {
       .build();
     this.set('showResetScoreModal', true);
     this.set('isMaxResetRiskScoreLimit', false);
-    await render(hbs`{{file-list showResetScoreModal=showResetScoreModal isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit}}`);
-    assert.equal(findAll('.modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{file-list
+        showResetScoreModal=showResetScoreModal
+        isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
+      }}
+    `);
+    assert.equal(findAll('#modalDestination .modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
     assert.equal(findAll('.modal-content.reset-risk-score .max-limit-info').length, 0, 'reset risk score info message is not present');
   });
   test('remediationAction field displayed correctly', function(assert) {

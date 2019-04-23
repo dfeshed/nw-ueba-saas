@@ -51,7 +51,10 @@ module('Integration | Component | save-reset-rule', function(hooks) {
     const translation = this.owner.lookup('service:i18n');
     const expectedMessage = translation.t('configure.logsParser.modals.deployLogParser.confirm', { logParser: 'builtin' });
     new ReduxDataHelper(setState).formatOptions().parserRulesFormatData(0).build();
-    await render(hbs`{{content/log-parser-rules/save-reset-rule}}`);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{content/log-parser-rules/save-reset-rule}}
+    `);
     assert.ok(find('.deploy-log-parser'), 'Deploy button is not showing');
     await click('.deploy-log-parser button');
     assert.ok(find('.deploy-log-parser .confirmation-modal'), 'Modal Confirmation is not showing');
