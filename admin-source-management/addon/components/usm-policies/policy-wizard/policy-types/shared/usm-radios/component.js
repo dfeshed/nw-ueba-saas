@@ -4,13 +4,13 @@ import { updatePolicyProperty } from 'admin-source-management/actions/creators/p
 import {
   radioButtonValue,
   radioButtonOption
-} from 'admin-source-management/reducers/usm/policy-wizard/edrPolicy/edr-selectors';
+} from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 
 const stateToComputed = function stateToComputed(state) {
   const [, { selectedSettingId }] = arguments;
   return {
     radioButtonValue: radioButtonValue(state, selectedSettingId),
-    radioButtonOption: radioButtonOption(selectedSettingId)
+    radioButtonOption: radioButtonOption(state, selectedSettingId)
   };
 };
 

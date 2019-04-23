@@ -4,6 +4,8 @@ import { lookup } from 'ember-dependency-lookup';
 import { isArray } from '@ember/array';
 import _ from 'lodash';
 import { exceedsLength, isNameInList } from '../util/selector-helpers';
+import { ALL_RADIO_OPTIONS as edrPolicyRadioOptions } from './edrPolicy/edr-settings';
+import { ALL_RADIO_OPTIONS as windowsLogPolicyRadioOptions } from './windowsLogPolicy/windowsLog-settings';
 import { edrPolicyValidatorFnMap } from './edrPolicy/edr-selectors';
 import { windowsLogPolicyValidatorFnMap } from './windowsLogPolicy/windowsLog-selectors';
 
@@ -203,6 +205,32 @@ export const sortedSelectedSettings = createSelector(
     return _.sortBy(selectedSettings, 'index');
   }
 );
+
+/**
+ * Map to hold policyType specific radio button settings.
+ * @private
+ */
+const radioOptionsMap = {
+  'edrPolicy': edrPolicyRadioOptions,
+  'windowsLogPolicy': windowsLogPolicyRadioOptions
+};
+
+/**
+ * It returns the appropriate radio button option based on the policyType & selectedSettingId
+ * @public
+ */
+export const radioButtonOption = (state, selectedSettingId) => {
+  const { policyType } = policy(state);
+  const getOptionsById = radioOptionsMap[policyType].find((d) => d.id === selectedSettingId);
+  const { options } = getOptionsById;
+  return options;
+};
+
+/**
+ * It returns the appropriate radio button value based on the selectedSettingId
+ * @public
+ */
+export const radioButtonValue = (state, selectedSettingId) => _policyWizardState(state).policy[selectedSettingId];
 
 const _state = (state) => state;
 

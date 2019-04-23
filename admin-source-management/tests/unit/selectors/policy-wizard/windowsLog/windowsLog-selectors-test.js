@@ -5,7 +5,9 @@ import Immutable from 'seamless-immutable';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import {
   radioButtonValue,
-  radioButtonOption,
+  radioButtonOption
+} from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
+import {
   primaryLogServersList,
   selectedPrimaryLogServer,
   secondaryLogServersList,
@@ -29,7 +31,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
   test('enabled', function(assert) {
     const expectedState = false;
     const fullState = new ReduxDataHelper()
-      .policyWiz('windowsLog')
+      .policyWiz('windowsLogPolicy')
       .policyWizWinLogEnabled(expectedState)
       .build();
     const result = radioButtonValue(fullState, 'enabled');
@@ -39,7 +41,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
   test('sendTestLog', function(assert) {
     const expectedState = false;
     const fullState = new ReduxDataHelper()
-      .policyWiz('windowsLog')
+      .policyWiz('windowsLogPolicy')
       .policyWizWinLogSendTestLog(expectedState)
       .build();
     const result = radioButtonValue(fullState, 'sendTestLog');
@@ -47,9 +49,12 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
   });
 
   test('radioButtonOption returns the right radio button options based on the id', function(assert) {
-    const result1 = radioButtonOption('enabled');
+    const fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .build();
+    const result1 = radioButtonOption(fullState, 'enabled');
     assert.deepEqual(result1, ENABLED_CONFIG, 'should return ENABLED_CONFIG options for enabled id');
-    const result2 = radioButtonOption('sendTestLog');
+    const result2 = radioButtonOption(fullState, 'sendTestLog');
     assert.deepEqual(result2, SEND_TEST_LOG_CONFIG, 'should return SEND_TEST_LOG_CONFIG options for sendTestLog id');
   });
 
@@ -200,7 +205,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
   test('selectedProtocol', function(assert) {
     const expectedValue = 'TLS';
     const fullState = new ReduxDataHelper()
-      .policyWiz()
+      .policyWiz('windowsLogPolicy')
       .policyWizWinLogProtocol(expectedValue)
       .build();
     const result = selectedProtocol(Immutable.from(fullState));

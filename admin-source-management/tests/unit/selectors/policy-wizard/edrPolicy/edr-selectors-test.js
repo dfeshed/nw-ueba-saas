@@ -6,6 +6,10 @@ import Immutable from 'seamless-immutable';
 import moment from 'moment';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import {
+  radioButtonValue,
+  radioButtonOption
+} from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
+import {
   scanType,
   startDate,
   startDateValidator,
@@ -18,8 +22,6 @@ import {
   runIntervalConfig,
   cpuMax,
   cpuMaxVm,
-  radioButtonValue,
-  radioButtonOption,
   portValue,
   isPortValid,
   endpointServersList,
@@ -274,19 +276,22 @@ module('Unit | Selectors | policy-wizard/edrPolicy/edr-selectors', function(hook
   });
 
   test('radioButtonOption returns the right radio button options based on the id', function(assert) {
-    const result1 = radioButtonOption('scanType');
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .build();
+    const result1 = radioButtonOption(fullState, 'scanType');
     assert.deepEqual(result1, SCAN_SCHEDULE_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for scanType id');
-    // const result2 = radioButtonOption('captureFloatingCode');
+    // const result2 = radioButtonOption(fullState, 'captureFloatingCode');
     // assert.deepEqual(result2, CAPTURE_CODE_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for captureFloatingCode id');
-    const result3 = radioButtonOption('scanMbr');
+    const result3 = radioButtonOption(fullState, 'scanMbr');
     assert.deepEqual(result3, SCAN_MBR_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for scanMbr id');
-    // const result4 = radioButtonOption('filterSignedHooks');
+    // const result4 = radioButtonOption(fullState, 'filterSignedHooks');
     // assert.deepEqual(result4, FILTER_SIGNED_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for filterSignedHooks id');
-    const result5 = radioButtonOption('requestScanOnRegistration');
+    const result5 = radioButtonOption(fullState, 'requestScanOnRegistration');
     assert.deepEqual(result5, REQUEST_SCAN_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for requestScanOnRegistration id');
-    const result6 = radioButtonOption('blockingEnabled');
+    const result6 = radioButtonOption(fullState, 'blockingEnabled');
     assert.deepEqual(result6, BLOCKING_ENABLED_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for blockingEnabled id');
-    const result7 = radioButtonOption('agentMode');
+    const result7 = radioButtonOption(fullState, 'agentMode');
     assert.deepEqual(result7, AGENT_MODE_CONFIG, 'should return SCAN_SCHEDULE_CONFIG options for agentMode id');
   });
 

@@ -5,7 +5,6 @@ import moment from 'moment';
 // import { _policyWizardState, policy } from '../policy-wizard-selectors';
 import {
   RADIO_BUTTONS_CONFIG,
-  ALL_RADIO_OPTIONS,
   isBetween
 } from './edr-settings';
 import { VALID_HOSTNAME_REGEX } from '../../util/selector-helpers';
@@ -140,21 +139,7 @@ export const cpuMaxVm = createSelector(
 // Advanced Scan settings
 // * all edr-radios so all use radioButtonOption & radioButtonValue
 // ====================================================================
-/**
- * It returns the appropriate radio button option based on the selectedSettingId
- * @public
- */
-export const radioButtonOption = (selectedSettingId) => {
-  const getOptionsById = ALL_RADIO_OPTIONS.find((d) => d.id === selectedSettingId);
-  const { options } = getOptionsById;
-  return options;
-};
 
-/**
- * It returns the appropriate radio button value based on the selectedSettingId
- * @public
- */
-export const radioButtonValue = (state, selectedSettingId) => _policyWizardState(state).policy[selectedSettingId];
 
 // ====================================================================
 // Invasive Actions settings
