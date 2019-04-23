@@ -84,7 +84,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             smarts = smartPageIterator.next();
             for (SmartRecord smart : smarts) {
                 String entityId = smart.getContext().values().iterator().next();
-                String entityType = entityService.getEntityType(smart.getContext().keySet().iterator().next());
+                String entityType = smart.getContext().keySet().iterator().next();
 
                 if (entityId == null || entityId.isEmpty()) {
                     logger.error("Failed to get entity id from smart context, entity id is null or empty for smart {}. skipping to next smart", smart.getId());
