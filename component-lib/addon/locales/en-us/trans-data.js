@@ -4509,7 +4509,7 @@ export default {
     },
     policyTypes: {
       edrPolicy: 'Agent Endpoint',
-      fileLogPolicy: 'Agent Log Files',
+      filePolicy: 'Agent Log Files',
       windowsLogPolicy: 'Agent Windows Logs'
     },
     publishStatus: {

@@ -453,5 +453,86 @@ export default [
     secondaryDestination: '120.12.12.12',
     lastPublishedCopy: null,
     associatedGroups: []
+  },
+  {
+    id: '__default_file_policy',
+    policyType: 'filePolicy',
+    name: 'Default File Policy',
+    description: 'These are the settings that are applied when not defined in another policy applied to an agent.',
+    dirty: false,
+    defaultPolicy: true,
+    createdBy: 'admin',
+    createdOn: 0,
+    lastModifiedOn: 0,
+    lastModifiedBy: 'admin',
+    lastPublishedOn: 0,
+    lastPublishedCopy: {
+      createdOn: 0,
+      lastModifiedOn: 0,
+      id: '__default_file_policy',
+      policyType: 'filePolicy',
+      name: 'Default File Policy',
+      description: 'These are the settings that are applied when not defined in another policy applied to an agent.',
+      dirty: false,
+      defaultPolicy: true,
+      lastPublishedOn: 0,
+      enabled: false,
+      protocol: 'TLS',
+      sendTestLog: false,
+      sources: []
+    },
+    enabled: false,
+    protocol: 'TLS',
+    sendTestLog: false,
+    sources: []
+  },
+  {
+    id: 'policy_F001',
+    policyType: 'filePolicy',
+    name: 'F001',
+    description: 'File Policy # F001',
+    dirty: true,
+    defaultPolicy: false,
+    createdBy: 'admin',
+    createdOn: 1540318426092,
+    lastModifiedBy: 'admin',
+    lastModifiedOn: 1540318426092,
+    lastPublishedOn: 0,
+    lastPublishedCopy: null,
+    enabled: true,
+    protocol: 'TCP',
+    sendTestLog: false,
+    primaryDestination: '10.10.10.10',
+    secondaryDestination: '10.10.10.12',
+    sources: [
+      {
+        fileType: 'apache',
+        enabled: false,
+        startofEvents: false,
+        fileEncoding: 'UTF-8',
+        path: ['/c/apache_path-hint-1/*.log', '/c/Program Files/Apache Group/Apache[2-9]/*.log', 'apache_path-hint-2'],
+        sourceName: 'Meta-Source-Name',
+        exclusionFilter: ['exclude-string-1', 'exclude-string-2', 'exclude-string-3']
+      },
+      {
+        fileType: 'exchange',
+        enabled: true,
+        startofEvents: false,
+        fileEncoding: 'UTF-8',
+        path: ['/[cd]/exchange/logs/*.log'],
+        sourceName: '',
+        exclusionFilter: []
+      }
+    ],
+    associatedGroups: [
+      {
+        referenceId: '5x6d886500319b5520f4b67d',
+        name: 'Group 01'
+      },
+      {
+        referenceId: '58vd886500319b5520f4b672',
+        name: 'Group 02'
+      }
+    ]
   }
 ];

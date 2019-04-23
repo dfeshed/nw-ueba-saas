@@ -54,7 +54,7 @@ module('Integration | Component | usm-groups/groups', function(hooks) {
     await fetchPolicyList;
     const translation = this.owner.lookup('service:i18n');
     const expectedFilterText = translation.t('adminUsm.groups.filter.sourceType');
-    const exOptLen = 2;
+    const exOptLen = 3;
     // policy/source type will be the first list-filter
     const [el] = findAll('.filter-controls .list-filter');
     assert.equal(el.querySelector('.filter-text').textContent, expectedFilterText, `rendered ${expectedFilterText} filter`);
