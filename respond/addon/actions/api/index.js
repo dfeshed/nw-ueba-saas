@@ -5,6 +5,7 @@ import journal from './journal';
 import dictionaries from './dictionaries';
 import alerts from './alerts';
 import RemediationTasks from './remediation-tasks';
+import riac from './riac';
 
 export {
   Incidents,
@@ -13,5 +14,6 @@ export {
   users,
   journal,
   dictionaries,
-  alerts
+  alerts,
+  riac
 };

@@ -9,6 +9,7 @@ import incidents from './incidents';
 import users from './users';
 import remediationTasks from './remediation-tasks';
 import storyline from './storyline';
+import riac from './riac';
 
 export default combineReducers({
   recon,
@@ -20,5 +21,6 @@ export default combineReducers({
   incidents,
   remediationTasks,
   storyline,
-  users
+  users,
+  riac
 });

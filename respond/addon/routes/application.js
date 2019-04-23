@@ -2,6 +2,8 @@ import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
 import config from 'ember-get-config';
+import { riac as riacApi } from 'respond/actions/api';
+import creators from 'respond/actions/creators';
 
 const { useMockServer, mockServerUrl, environment } = config;
 
@@ -44,6 +46,8 @@ export default Route.extend({
     healthCheck.catch(() => {
       controller.set('respondServerOffline', true); // in case the server is offline
     });
+
+    this.redux.dispatch(creators.riac.createRiacAction(riacApi.fetchRiacValue()));
   },
 
   activate() {

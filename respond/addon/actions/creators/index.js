@@ -3,11 +3,13 @@ import dictionaryCreators from './dictionary-creators';
 import incidentsCreators from './incidents-creators';
 import alertsCreators from './alert-creators';
 import journalCreators from './journal-creators';
+import riacCreators from './riac-creators';
 
 export default {
   remediationTasks: remediationTaskCreators,
   dictionaries: dictionaryCreators,
   incidents: incidentsCreators,
   alerts: alertsCreators,
-  journal: journalCreators
+  journal: journalCreators,
+  riac: riacCreators
 };

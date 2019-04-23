@@ -11,11 +11,11 @@
           <div class="label">{{t "respond.entities.incidents"}}</div>
         {{/rsa-nav-tab}}
       {{/if}}
-      {{#if accessControl.hasRespondAlertsAccess}}
+      {{#alerts-tab-wrapper}}
         {{#rsa-nav-tab  align='left' isActive=(eq routePath 'alerts') click=(action 'navigateTo' 'alerts')}}
           <div class="label">{{t "respond.entities.alerts"}}</div>
         {{/rsa-nav-tab}}
-      {{/if}}
+      {{/alerts-tab-wrapper}}
       {{#if accessControl.hasRespondRemediationAccess}}
         {{#rsa-nav-tab  align='left' isActive=(eq routePath 'tasks') click=(action 'navigateTo' 'tasks')}}
           <div class="label">{{t "respond.entities.remediationTasks"}}</div>

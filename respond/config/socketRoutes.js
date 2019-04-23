@@ -205,7 +205,14 @@ const respondConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/alerts/distinct/names',
         requestDestination: '/ws/respond/alerts/distinct/names'
       }
-    }
+    },
+    'riac-settings': {
+      socketUrl,
+      queryRecord: {
+        subscriptionDestination: '/user/queue/riac',
+        requestDestination: '/ws/respond/incident/access/control/settings'
+      }
+    },
   };
 };
 
