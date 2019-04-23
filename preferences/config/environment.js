@@ -3,6 +3,13 @@
 
 module.exports = function(environment) {
   let ENV = {
+    flashMessageDefaults: {
+      timeout: 5000,
+      iconSize: 'larger',
+      iconStyle: 'lined',
+      type: 'info',
+      types: ['info', 'success', 'warning', 'error']
+    },
     moment: {
       includeLocales: true,
       includeTimezone: 'all'

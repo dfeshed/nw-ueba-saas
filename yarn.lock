@@ -4082,9 +4082,9 @@ ember-cli-eslint@5.0.0:
     rsvp "^4.6.1"
     walk-sync "^0.3.0"
 
-ember-cli-flash@1.6.5:
-  version "1.6.5"
-  resolved "https://registry.npmjs.org/ember-cli-flash/-/ember-cli-flash-1.6.5.tgz#a7d77ca5aab51f9406e8df7826a9b885dac8a701"
+ember-cli-flash@1.7.1:
+  version "1.7.1"
+  resolved "https://registry.npmjs.org/ember-cli-flash/-/ember-cli-flash-1.7.1.tgz#0b9d2464d80144df0c65e928b6fc006259ef6a58"
   dependencies:
     ember-cli-babel "^6.10.0"
     ember-cli-htmlbars "^2.0.1"
@@ -4474,13 +4474,12 @@ ember-cli@3.8.0:
     watch-detector "^0.1.0"
     yam "^1.0.0"
 
-ember-click-outside@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/ember-click-outside/-/ember-click-outside-1.0.0.tgz#068f910a9c93ee9ffda419925c92e23fd9c25ba3"
+ember-click-outside@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/ember-click-outside/-/ember-click-outside-1.0.4.tgz#a1f86e4a00c4e029349951a2e8bccb92cb9b22f4"
   dependencies:
     ember-cli-babel "^6.6.0"
     ember-cli-htmlbars "^2.0.1"
-    ember-native-dom-helpers "^0.5.10"
 
 ember-code-snippet@2.3.1:
   version "2.3.1"
@@ -4751,13 +4750,6 @@ ember-moment@7.8.0:
     ember-cli-babel "^6.7.2"
     ember-getowner-polyfill "^2.0.1"
     ember-macro-helpers "^1.0.0"
-
-ember-native-dom-helpers@^0.5.10:
-  version "0.5.10"
-  resolved "https://registry.npmjs.org/ember-native-dom-helpers/-/ember-native-dom-helpers-0.5.10.tgz#9c7172e4ddfa5dd86830c46a936e2f8eca3e5896"
-  dependencies:
-    broccoli-funnel "^1.1.0"
-    ember-cli-babel "^6.6.0"
 
 ember-power-select-typeahead@0.7.4:
   version "0.7.4"

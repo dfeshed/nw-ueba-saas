@@ -6,6 +6,13 @@ const mockServerUrl = `http://localhost:${mockPort}`;
 
 module.exports = function(environment/* , appConfig */) {
   const ENV = {
+    flashMessageDefaults: {
+      timeout: 5000,
+      iconSize: 'larger',
+      iconStyle: 'lined',
+      type: 'info',
+      types: ['info', 'success', 'warning', 'error']
+    },
     modulePrefix: 'rsa-dashboard',
     mockServerUrl,
     mockPort,
