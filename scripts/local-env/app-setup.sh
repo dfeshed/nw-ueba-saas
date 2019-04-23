@@ -82,7 +82,6 @@ prepareApp admin
 prepareApp context
 prepareApp preferences
 prepareApp test-helpers
-prepareApp ember-cli-document-title
 prepareApp investigate-process-analysis
 prepareApp ngcoreui
 prepareApp sa

@@ -14,6 +14,7 @@
     "@html-next/flexi-layouts": "2.2.2",
     "@html-next/vertical-collection": "1.0.0-beta.12",
     "@mind-trace/stompjs": "2.3.5",
+    "amcharts4-ember-hardcoded": "4.0.21-alpha.1",
     "babel-eslint": "10.0.1",
     "babel-plugin-transform-decorators-legacy": "1.3.4",
     "babel-plugin-transform-object-rest-spread": "6.23.0",
@@ -33,7 +34,7 @@
     "ember-cli-code-coverage": "1.0.0-beta.3",
     "ember-cli-content-security-policy": "1.0.0",
     "ember-cli-dependency-checker": "2.0.1",
-    "ember-cli-document-title": "file:ember-cli-document-title",
+    "ember-cli-document-title-northm": "1.0.3",
     "ember-cli-eslint": "5.0.0",
     "ember-cli-flash": "1.7.1",
     "ember-cli-head": "0.4.0",
@@ -68,7 +69,7 @@
     "ember-load-initializers": "2.0.0",
     "ember-lodash-shim": "4.0.0",
     "ember-math-helpers": "2.7.1",
-    "ember-moment": "7.8.0",
+    "ember-moment": "7.8.1",
     "ember-power-select": "2.2.2",
     "ember-power-select-typeahead": "0.7.4",
     "ember-qunit": "4.4.1",
@@ -116,8 +117,7 @@
     "sass": "1.17.2",
     "seamless-immutable": "7.1.2",
     "sockjs-client-web": "1.1.1-alpha.2",
-    "tether": "1.4.0",
-    "amcharts4-ember-hardcoded": "4.0.21-alpha.1"
+    "tether": "1.4.0"
   },
   "resolutions": {
     "ember-cli-htmlbars-inline-precompile": "1.0.2",

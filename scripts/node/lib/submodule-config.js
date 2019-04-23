@@ -25,7 +25,6 @@ const ALL_SUBMODULES = [
   'preferences',
   'license',
   'test-helpers',
-  'ember-cli-document-title',
   'investigate-process-analysis',
   'rsa-context-menu',
   'rsa-data-filters',
@@ -181,7 +180,6 @@ const saModuleDependants = {
   'hosts-scan-configure': ['sa', 'configure'],
   'ngcoreui': [],
   'test-helpers': [],
-  'ember-cli-document-title': [],
   'ember-computed-decorators': [],
   'ember-simple-auth': [],
   docs: [] // lol

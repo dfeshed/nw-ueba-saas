@@ -48,7 +48,6 @@ nukeNode admin
 nukeNode context
 nukeNode preferences
 nukeNode test-helpers
-nukeNode ember-cli-document-title
 nukeNode investigate-process-analysis
 nukeNode rsa-context-menu
 nukeNode rsa-data-filters
