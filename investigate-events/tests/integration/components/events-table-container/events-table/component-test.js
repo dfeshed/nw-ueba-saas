@@ -209,21 +209,6 @@ module('Integration | Component | events-table', function(hooks) {
     );
   });
 
-  test('renders event selection checkboxes if only download permissions are present', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('hasInvestigateContentExportAccess', true);
-    accessControl.set('respondCanManageIncidents', false);
-    new ReduxDataHelper(setState)
-      .getColumns('SUMMARY', EventColumnGroups)
-      .eventResults([])
-      .eventsPreferencesConfig()
-      .build();
-
-    await render(hbs`{{events-table-container/events-table}}`);
-
-    assert.equal(findAll('.rsa-form-checkbox-label').length, 1, 'Renders event selection checkboxes when permission is present');
-  });
-
   test('when a row is clicked selectEvent fired', async function(assert) {
     assert.expect(2);
     new ReduxDataHelper(setState)
@@ -275,21 +260,52 @@ module('Integration | Component | events-table', function(hooks) {
 
   });
 
+  test('renders event selection checkboxes if only download permissions are present', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('hasInvestigateContentExportAccess', true);
+    accessControl.set('respondCanManageIncidents', false);
+    new ReduxDataHelper(setState)
+      .getColumns('SUMMARY', EventColumnGroups)
+      .eventResults([{ sessionId: 'foo', time: 123 }, { sessionId: 'bar', time: 123 }])
+      .eventsPreferencesConfig()
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+
+    assert.equal(findAll('.rsa-form-checkbox-label').length, 3, 'Renders event selection checkboxes when permission is present');
+  });
+
+
   test('renders event selection checkboxes if only manage incident permissions are present', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('respondCanManageIncidents', true);
     accessControl.set('hasInvestigateContentExportAccess', false);
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
-      .eventResults([])
+      .eventResults([{ sessionId: 'foo', time: 123 }, { sessionId: 'bar', time: 123 }])
       .eventsPreferencesConfig()
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
-    assert.equal(findAll('.rsa-form-checkbox-label').length, 1, 'Renders event selection checkboxes when  manage incident permission is present');
+    assert.equal(findAll('.rsa-form-checkbox-label').length, 3, 'Renders event selection checkboxes when manage incident permission is present');
   });
 
   test('renders event selection checkboxes if both incident/download permissions are present', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('hasInvestigateContentExportAccess', true);
+    accessControl.set('respondCanManageIncidents', true);
+    new ReduxDataHelper(setState)
+      .getColumns('SUMMARY', EventColumnGroups)
+      .eventResults([{ sessionId: 'foo', time: 123 }, { sessionId: 'bar', time: 123 }])
+      .eventsPreferencesConfig()
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+    assert.equal(findAll('.rsa-form-checkbox-label').length, 3, 'Renders event selection checkboxes when both permission are present');
+  });
+
+
+  test('does not render event selection checkboxes if no results found, even though permissions are present', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('hasInvestigateContentExportAccess', true);
     accessControl.set('respondCanManageIncidents', true);
@@ -300,7 +316,7 @@ module('Integration | Component | events-table', function(hooks) {
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
-    assert.equal(findAll('.rsa-form-checkbox-label').length, 1, 'Renders event selection checkboxes when both permission are present');
+    assert.equal(findAll('.rsa-form-checkbox-label').length, 0, 'Does not render event selection checkboxes when both permission are present but there are 0 results');
   });
 
   test('does not render event selection checkboxes if permissions are not present', async function(assert) {
@@ -310,12 +326,12 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
       .eventsPreferencesConfig()
-      .eventResults([])
+      .eventResults([{ sessionId: 'foo', time: 123 }, { sessionId: 'bar', time: 123 }])
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
 
-    assert.equal(findAll('.rsa-form-checkbox-label').length, 0, 'Does not render event selection checkboxes when permission are not present');
+    assert.equal(findAll('.rsa-form-checkbox-label').length, 0, 'Does not render event selection checkboxes when neither permission is present');
   });
 
 });

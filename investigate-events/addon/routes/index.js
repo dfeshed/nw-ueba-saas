@@ -63,6 +63,7 @@ export default Route.extend({
     timerId = setInterval(() => this.get('redux').dispatch(updateSummaryData()), SUMMARY_CALL_INTERVAL);
     // dispatch call to open notification websocket
     this.get('redux').dispatch(initializeNotifications());
+    this._showDownloadQueueNotification();
   },
 
   deactivate() {
@@ -75,6 +76,7 @@ export default Route.extend({
     if (stopNotifications) {
       stopNotifications();
       this.get('redux').dispatch(teardownNotifications());
+      this._showDownloadQueueNotification();
     }
   },
 
@@ -154,6 +156,16 @@ export default Route.extend({
           mf: undefined
         }
       });
+    }
+  },
+
+  _showDownloadQueueNotification() {
+    if (this.get('redux').getState().investigate.files.fileExtractStatus == 'queued') {
+      const { flashMessages, i18n } = this.getProperties('flashMessages', 'i18n');
+      if (flashMessages && flashMessages.info) {
+        const url = `${window.location.origin}/profile#jobs`;
+        flashMessages.info(i18n.t('recon.extractWarning', { url }), { sticky: true });
+      }
     }
   },
 

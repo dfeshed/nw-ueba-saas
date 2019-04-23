@@ -102,9 +102,14 @@ const EventsTableContextMenu = RsaContextMenu.extend({
     language
   }),
 
-  @computed('columns', 'accessControl.hasInvestigateContentExportAccess', 'accessControl.respondCanManageIncidents', 'allItemsChecked')
-  extendedColumns: (columns, hasDownloadPermission, hasIncidentManagePermission) => {
-    if (hasDownloadPermission || hasIncidentManagePermission) {
+  /*
+   * Render event selection checkboxes if
+   * 1. Query has results.
+   * 2. User has permissions to either download or manage incidents
+   */
+  @computed('columns', 'accessControl.hasInvestigateContentExportAccess', 'accessControl.respondCanManageIncidents', 'hasResults', 'allItemsChecked')
+  extendedColumns: (columns, hasDownloadPermission, hasIncidentManagePermission, hasResults) => {
+    if ((hasDownloadPermission || hasIncidentManagePermission) && hasResults) {
       return [checkBoxElement, ...columns];
     }
     return columns;
