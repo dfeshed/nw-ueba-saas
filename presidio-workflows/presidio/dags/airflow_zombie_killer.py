@@ -7,6 +7,7 @@ from airflow.operators.subdag_operator import SubDagOperator
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
 from datetime import datetime, timedelta
+import pendulum
 
 unfinished_states = State.unfinished()
 delta_from_max_date = timedelta(minutes=10)
@@ -180,7 +181,7 @@ def kill_task_instances_stuck_in_up_for_retry():
     and all of its unfinished children.
     :return: None.
     """
-    max_datetime_to_mark_as_stuck = datetime.now() - delta_to_mark_as_stuck
+    max_datetime_to_mark_as_stuck = datetime.now(tz=pendulum.timezone("UTC")) - delta_to_mark_as_stuck
     execution_date_to_full_task_ids_to_kill_dictionary = {}
 
     for task_instance_in_up_for_retry in find_task_instances(first=False, state=State.UP_FOR_RETRY):

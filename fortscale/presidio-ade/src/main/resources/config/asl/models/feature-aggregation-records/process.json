@@ -27,7 +27,7 @@
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
-        "minAllowedDistFromMean": 6,
+        "minAllowedDistFromMean": 3,
         "distanceBetweenSegmentCenters": 1,
         "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
       }

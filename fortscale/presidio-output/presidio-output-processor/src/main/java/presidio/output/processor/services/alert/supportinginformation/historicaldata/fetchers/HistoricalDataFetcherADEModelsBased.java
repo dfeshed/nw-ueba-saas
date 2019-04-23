@@ -18,6 +18,7 @@ import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimeService;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.map.LRUMap;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
@@ -62,14 +63,24 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
 
     AccumulationsCache accumulationsCache;
 
+    private final LRUMap dailyHistogramsLruMap;
 
-    public HistoricalDataFetcherADEModelsBased(AdeManagerSdk adeManagerSdk, EnrichedDataStore enrichedDataStore, InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator, AggregationRecordsCreator aggregationRecordsCreator, AccumulatorService accumulatorService, AccumulationsCache accumulationsCache) {
+    public HistoricalDataFetcherADEModelsBased(
+            AdeManagerSdk adeManagerSdk,
+            EnrichedDataStore enrichedDataStore,
+            InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator,
+            AggregationRecordsCreator aggregationRecordsCreator,
+            AccumulatorService accumulatorService,
+            AccumulationsCache accumulationsCache,
+            int dailyHistogramsLruMapMaxSize) {
+
         this.adeManagerSdk = adeManagerSdk;
         this.enrichedDataStore = enrichedDataStore;
         this.inMemoryFeatureBucketAggregator = inMemoryFeatureBucketAggregator;
         this.aggregationRecordsCreator = aggregationRecordsCreator;
         this.accumulatorService = accumulatorService;
         this.accumulationsCache = accumulationsCache;
+        this.dailyHistogramsLruMap = new LRUMap(dailyHistogramsLruMapMaxSize);
     }
 
     /**
@@ -86,13 +97,21 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
      * Feature: operationType, Date: 01/02/2017, Histogram {FILE_OPENED:10, ACCESS_RIGHTS_CHANGED:1}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<DailyHistogram<String, Number>> getDailyHistogramsForFeature(
             TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName,
             HistoricalDataConfig historicalDataConfig, boolean includeOnlyBaseline) {
 
+        String featureBucketConfName = historicalDataConfig.getFeatureBucketConfName();
+        DailyHistogramsLruMapKey dailyHistogramsLruMapKey = new DailyHistogramsLruMapKey(
+                timeRange, contexts, schema, featureName, featureBucketConfName, includeOnlyBaseline);
+
+        if (dailyHistogramsLruMap.containsKey(dailyHistogramsLruMapKey)) {
+            return (List<DailyHistogram<String, Number>>)dailyHistogramsLruMap.get(dailyHistogramsLruMapKey);
+        }
+
         // Get historical data from model feature buckets.
         String contextId = FeatureBucketUtils.buildContextId(contexts);
-        String featureBucketConfName = historicalDataConfig.getFeatureBucketConfName();
         List<FeatureBucket> featureBuckets = adeManagerSdk.findFeatureBuckets(contextId, featureBucketConfName, timeRange);
 
         // Convert the model feature buckets to daily histograms.
@@ -100,10 +119,11 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
 
         // Complete historical data in memory if required.
         if (!includeOnlyBaseline) {
-            featureBuckets = calculateFeatureBuckets(timeRange, contexts, schema, featureName, featureBuckets, historicalDataConfig);
+            featureBuckets = calculateFeatureBuckets(timeRange, contexts, schema, featureBuckets, featureBucketConfName);
             dailyHistograms.addAll(convertFeatureBucketsToHistograms(featureName, featureBuckets));
         }
 
+        dailyHistogramsLruMap.put(dailyHistogramsLruMapKey, dailyHistograms);
         return dailyHistograms;
     }
 
@@ -136,16 +156,11 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
         return dailyHistogramList;
     }
 
+    private List<FeatureBucket> calculateFeatureBuckets(
+            TimeRange timeRange, Map<String, String> contexts, Schema schema,
+            List<FeatureBucket> featureBucketsFromModels, String featureBucketConfName) {
 
-    private List<FeatureBucket> calculateFeatureBuckets(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, List<FeatureBucket> featureBucketsFromModels, HistoricalDataConfig historicalDataConfig) {
-        String featureBucketConfName = historicalDataConfig.getFeatureBucketConfName();
-        TimeRange inMemoryTimeRange = getMissingTimeRange(timeRange, featureBucketsFromModels, new Function<Object, Instant>() {
-            @Override
-            public Instant apply(Object f) {
-                return ((FeatureBucket) f).getEndTime();
-            }
-        });
-
+        TimeRange inMemoryTimeRange = getMissingTimeRange(timeRange, featureBucketsFromModels, f -> ((FeatureBucket)f).getEndTime());
         Instant start = TimeService.floorTime(inMemoryTimeRange.getStart(), FixedDurationStrategy.DAILY.toDuration());
         Instant end = TimeService.floorTime(inMemoryTimeRange.getEnd(), FixedDurationStrategy.DAILY.toDuration());
         TimeRange flooredTimeRange = new TimeRange(start, end);
