@@ -5,9 +5,9 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { LIFECYCLE } from 'redux-pack';
-import makePackAction from '../../../helpers/make-pack-action';
+import makePackAction from '../../../../helpers/make-pack-action';
 
-module('Integration | Component | alerts-tab-wrapper', function(hooks) {
+module('Integration | Component | tasks-tab-wrapper', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('respond')
   });
@@ -35,9 +35,9 @@ module('Integration | Component | alerts-tab-wrapper', function(hooks) {
     }));
 
     await render(hbs`
-      {{#alerts-tab-wrapper}}
+      {{#tab-wrappers/tasks-tab-wrapper}}
         <div id="foobar">Foo</div>
-      {{/alerts-tab-wrapper}}
+      {{/tab-wrappers/tasks-tab-wrapper}}
     `);
 
     assert.equal(find('#foobar').textContent.trim(), 'Foo');
@@ -48,9 +48,9 @@ module('Integration | Component | alerts-tab-wrapper', function(hooks) {
     }));
 
     await render(hbs`
-      {{#alerts-tab-wrapper}}
+      {{#tab-wrappers/tasks-tab-wrapper}}
         <div id="foobar">Foo</div>
-      {{/alerts-tab-wrapper}}
+      {{/tab-wrappers/tasks-tab-wrapper}}
     `);
 
     assert.equal(find('#foobar'), undefined);

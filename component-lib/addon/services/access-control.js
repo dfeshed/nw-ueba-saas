@@ -56,6 +56,7 @@ export default Service.extend({
     'navigateEvents'
   ],
   respondAlertsRoles: ['Administrators', 'Respond_Administrator', 'SOC_Managers'],
+  respondTasksRoles: ['Administrators', 'Respond_Administrator', 'SOC_Managers'],
 
   // computed intersections between roles and role groups
 
@@ -148,6 +149,11 @@ export default Service.extend({
   @computed('roles.[]')
   hasRespondRemediationAccess(roles) {
     return this._hasPermission(roles, 'respond-server.remediation');
+  },
+
+  @computed('authorities.[]')
+  hasRiacRespondTasksAccess(authorities) {
+    return authorities.some((authority) => this.respondTasksRoles.includes(authority));
   },
 
   @computed('roles.[]')
