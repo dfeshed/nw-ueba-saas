@@ -54,7 +54,7 @@
     "ember-engines": "0.6.1",
     "ember-exam": "1.0.0",
     "ember-export-application-global": "^2.0.0",
-    "ember-load-initializers": "^1.0.0",
+    "ember-load-initializers": "2.0.0",
     "ember-lodash-shim": "4.0.0",
     "ember-qunit": "^3.4.1",
     "ember-resolver": "4.3.0",
