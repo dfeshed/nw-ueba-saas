@@ -95,7 +95,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
         try {
             String anomalyField = indicatorConfig.getAnomalyDescriptior().getAnomalyField();
             String historicalDataType = indicatorConfig.getHistoricalData().getType();
-            historicalDataPopulator = historicalDataPopulatorFactory.createHistoricalDataPopulation(CommonStrings.CONTEXT_USERID, anomalyField, historicalDataType);
+            historicalDataPopulator = historicalDataPopulatorFactory.createHistoricalDataPopulation(historicalDataType);
         } catch (IllegalArgumentException ex) {
             //TODO logger
             return null;

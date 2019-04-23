@@ -19,7 +19,7 @@ public class HistoricalDataPopulatorFactory {
     @Autowired
     private List<HistoricalDataPopulator> historicalDataPopulators;
 
-    public HistoricalDataPopulator createHistoricalDataPopulation(String contextType, String featureName, String aggregationType) {
+    public HistoricalDataPopulator createHistoricalDataPopulation(String aggregationType) {
         return historicalDataPopulators.stream()
                 .filter(generator -> aggregationType.equals(generator.getType()))
                 .findFirst()

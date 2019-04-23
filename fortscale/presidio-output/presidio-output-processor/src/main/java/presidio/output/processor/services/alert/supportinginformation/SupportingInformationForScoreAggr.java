@@ -82,7 +82,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         String userId = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
         TimeRange timeRange = new TimeRange(adeAggregationRecord.getStartInstant(), adeAggregationRecord.getEndInstant());
 
-        List<Pair<String, Object>> features = supportingInfoUtils.buildAnomalyFeatures(indicatorConfig,indicator.getContexts());
+        List<Pair<String, Object>> features = supportingInfoUtils.buildAnomalyFeatures(indicatorConfig, indicator.getContexts());
 
         List<ScoredEnrichedEvent> rawEvents = scoredEventService.findEventsAndScores(indicatorConfig.getSchema(), indicatorConfig.getAdeEventType(), userId, timeRange, features, eventsLimit, eventsPageSize);
 
@@ -115,9 +115,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
     public HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) {
 
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
-        HistoricalDataPopulator historicalDataPopulator = historicalDataPopulatorFactory.createHistoricalDataPopulation(CommonStrings.CONTEXT_USERID,
-                indicatorConfig.getAnomalyDescriptior().getAnomalyField(),
-                indicatorConfig.getHistoricalData().getType());
+        HistoricalDataPopulator historicalDataPopulator = historicalDataPopulatorFactory.createHistoricalDataPopulation(indicatorConfig.getHistoricalData().getType());
 
         Instant startInstant = EnrichedEvent.EVENT_DATE_FIELD_NAME.equals(indicatorConfig.getAnomalyDescriptior().getAnomalyField()) ?
                 adeAggregationRecord.getStartInstant().minus(historicalActivityTimePeriodInDays, ChronoUnit.DAYS) :
