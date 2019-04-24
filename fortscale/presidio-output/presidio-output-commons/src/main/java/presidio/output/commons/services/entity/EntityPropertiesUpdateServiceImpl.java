@@ -35,7 +35,7 @@ public class EntityPropertiesUpdateServiceImpl implements EntityPropertiesUpdate
     public Entity updateEntityProperties(Entity entity) {
         boolean isUpdated = false;
         List<String> collectionNames = collectionNamesByOrderForEvents();
-        EnrichedEvent enrichedEvent = eventPersistencyService.findLatestEventForEntity(entity.getEntityId(), collectionNames);
+        EnrichedEvent enrichedEvent = eventPersistencyService.findLatestEventForEntity(entity.getEntityId(), collectionNames, entity.getEntityType());
         if (enrichedEvent == null) {
             if (!Objects.equals(entity.getEntityName(), enrichedEvent.getUserName())) {
                 entity.setEntityName(enrichedEvent.getUserName());
