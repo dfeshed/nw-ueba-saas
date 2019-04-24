@@ -16,6 +16,7 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.spring.ApplicationConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,9 +30,9 @@ import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.event.ScoredEventService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
+import presidio.output.processor.services.alert.indicator.IndicatorsGeneratorFactory;
 import presidio.output.processor.services.alert.indicator.IndicatorsGeneratorForFeatureAggr;
 import presidio.output.processor.services.alert.indicator.IndicatorsGeneratorForScoreAggr;
-import presidio.output.processor.services.alert.indicator.IndicatorsGeneratorFactory;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationForFeatureAggr;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationForScoreAggr;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
@@ -75,12 +76,29 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
             InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator,
             SupportingInformationConfig supportingInformationConfig,
             EventPersistencyService eventPersistencyService,
-            ScoredEventService scoredEventService) {
+            ScoredEventService scoredEventService,
+            @Value("${daily.histograms.lru.map.max.size:1000}") int dailyHistogramsLruMapMaxSize) {
 
-        AggregationRecordsCreator aggregationRecordsCreator = new AggregationRecordsCreatorImpl(aggrFeatureEventFunctionsService, aggregatedFeatureEventsConfService, aggregationRecordsCreatorMetricsContainer);
-        AccumulatorService accumulatorService = new AccumulatorService(accumulationsCache, FixedDurationStrategy.DAILY, FixedDurationStrategy.HOURLY);
+        AggregationRecordsCreator aggregationRecordsCreator = new AggregationRecordsCreatorImpl(
+                aggrFeatureEventFunctionsService,
+                aggregatedFeatureEventsConfService,
+                aggregationRecordsCreatorMetricsContainer);
+
+        AccumulatorService accumulatorService = new AccumulatorService(
+                accumulationsCache,
+                FixedDurationStrategy.DAILY,
+                FixedDurationStrategy.HOURLY);
+
+        this.historicalDataFetcher = new HistoricalDataFetcherADEModelsBased(
+                adeManagerSdk,
+                enrichedDataStore,
+                inMemoryFeatureBucketAggregator,
+                aggregationRecordsCreator,
+                accumulatorService,
+                accumulationsCache,
+                dailyHistogramsLruMapMaxSize);
+
         this.adeManagerSdk = adeManagerSdk;
-        this.historicalDataFetcher = new HistoricalDataFetcherADEModelsBased(adeManagerSdk, enrichedDataStore, inMemoryFeatureBucketAggregator, aggregationRecordsCreator, accumulatorService, accumulationsCache);
         this.supportingInformationConfig = supportingInformationConfig;
         this.eventPersistencyService = eventPersistencyService;
         this.supportingInformationUtils = new SupportingInformationUtils(eventPersistencyService);

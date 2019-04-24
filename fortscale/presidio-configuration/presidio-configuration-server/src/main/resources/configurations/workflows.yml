@@ -130,8 +130,8 @@ components:
     jvm_args:
       jar_path: ${general.deployment.bins.base_path}/presidio-output-processor.jar
       main_class: presidio.output.processor.FortscaleOutputProcessorApplication
-      xmx: 2048
-      xms: 2048
+      xmx: 4096
+      xms: 4096
   output_forwarder:
     jvm_args:
       jar_path: ${general.deployment.bins.base_path}/presidio-output-forwarder.jar
