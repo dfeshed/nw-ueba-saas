@@ -15,7 +15,7 @@ public class OutputForwarderExecutionService {
         this.presidioOutputForwardService = presidioOutputForwardService;
     }
 
-    public int doRun(Instant startDate, Instant endDate) throws Exception {
+    public int doRun(String smartRecordConfName,Instant startDate, Instant endDate) throws Exception {
         return presidioOutputForwardService.forward(startDate, endDate);
 
     }

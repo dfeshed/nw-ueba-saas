@@ -5,15 +5,29 @@ general:
         /var/lib/netwitness/presidio/batch
 dags:
   dags_configs:
-  - dag_id: full_flow
-    args:
-      hourly_smart_events_confs:
-      - userId_hourly
-      data_sources: ${dataPipeline.schemas}
-      command: run
-      enable_output_forwarder: ${outputForwarding.enableForwarding}
-    schedule_interval: timedelta(hours=1)
+    data_schemas: ${dataPipeline.schemas}
     start_date: ${dataPipeline.startTime}
+    initial:
+      schedule_interval: timedelta(hours=1)
+    indicator:
+      schedule_interval: None
+    model:
+      schedule_interval: None
+    smart:
+      schedule_interval: timedelta(hours=1)
+      enable_output_forwarder: ${outputForwarding.enableForwarding}
+      smart_confs:
+       - smart_conf_name: userId_hourly
+         depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
+    smart_model:
+      schedule_interval: None
+      smart_confs:
+       - smart_conf_name: userId_hourly
+         depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
+    input_retention:
+      schedule_interval: None
+    output_retention:
+      schedule_interval: None
 
   pools_config:
     - slots: 10

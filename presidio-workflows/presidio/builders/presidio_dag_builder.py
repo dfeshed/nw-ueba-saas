@@ -10,6 +10,7 @@ from airflow.operators.python_operator import ShortCircuitOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 from presidio.utils.airflow.operators.group_connector.single_point_group_connector import SinglePointGroupConnector
 from presidio.utils.airflow.operators.group_connector.multi_point_group_connector import MultiPointGroupConnector
+from presidio.utils.airflow.operators.trigger.expended_trigger_dag_run_operator import ExpandedTriggerDagRunOperator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 
@@ -55,6 +56,19 @@ class PresidioDagBuilder(LoggingMixin):
             provide_context=True
         )
 
+    def _create_expanded_trigger_dag_run_operator(self, task_id, trigger_dag_id, dag, python_callable):
+        retry_args = self._calc_retry_args(None)
+        return ExpandedTriggerDagRunOperator(
+            task_id=task_id,
+            trigger_dag_id=trigger_dag_id,
+            dag=dag,
+            python_callable=python_callable,
+            retries=retry_args['retries'],
+            retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
+            retry_exponential_backoff=retry_args['retry_exponential_backoff'],
+            max_retry_delay=timedelta(
+                seconds=int(retry_args['max_retry_delay'])))
+
     def _create_multi_point_group_connector(self, builder, dag, multi_point_group_connector_id, short_circuit_operator,
                                             add_sequential_sensor):
         """
@@ -67,7 +81,7 @@ class PresidioDagBuilder(LoggingMixin):
         :param add_sequential_sensor: boolean
         :return: WireOperator
         """
-        retry_args = self._calc_subdag_retry_args(multi_point_group_connector_id)
+        retry_args = self._calc_retry_args(multi_point_group_connector_id)
         return MultiPointGroupConnector(builder=builder,
                                         dag=dag,
                                         add_sequential_sensor=add_sequential_sensor,
@@ -91,7 +105,7 @@ class PresidioDagBuilder(LoggingMixin):
         :param add_sequential_sensor: add_sequential_sensor
         :return: ContainerOperator
         """
-        retry_args = self._calc_subdag_retry_args(single_point_group_connector_id)
+        retry_args = self._calc_retry_args(single_point_group_connector_id)
         return SinglePointGroupConnector(
             builder=builder,
             dag=dag,
@@ -123,7 +137,7 @@ class PresidioDagBuilder(LoggingMixin):
             start_date=dag.start_date,
             default_args=dag.default_args)
 
-        retry_args = self._calc_subdag_retry_args(sub_dag_id)
+        retry_args = self._calc_retry_args(sub_dag_id)
 
         sub_dag = SubDagOperator(
             subdag=sub_dag_builder.build(sub_dag),
@@ -148,7 +162,7 @@ class PresidioDagBuilder(LoggingMixin):
     def validate_the_gap_between_dag_start_date_and_current_execution_date(dag, gap, execution_date, schedule_interval):
         return (dag.start_date + gap) <= execution_date + schedule_interval
 
-    def _calc_subdag_retry_args(self, task_id):
+    def _calc_retry_args(self, task_id):
         retry_args = {}
         if task_id:
             # read task subdag retry args
@@ -171,3 +185,38 @@ class PresidioDagBuilder(LoggingMixin):
 
     def get_default_retry_args_conf_key(self):
         return "%s.operators.default_jar_values.%s" % (DAGS_CONF_KEY, RETRY_ARGS_CONF_KEY)
+
+    @staticmethod
+    def remove_multi_point_group_container(dag):
+        PresidioDagBuilder._remove_relatives_of_multi_point_group_container(dag)
+        PresidioDagBuilder._remove_multi_point_group_container_tasks(dag)
+
+    @staticmethod
+    def _remove_relatives_of_multi_point_group_container(dag):
+        """
+         Remove MultiPointGroupConnector from downstream and upstream lists of other tasks
+        :param full_flow_dag:
+        :return:
+        """
+        tasks = dag.tasks
+        for task in tasks:
+            if not isinstance(task, MultiPointGroupConnector):
+                for t in task.downstream_list:
+                    if isinstance(t, MultiPointGroupConnector):
+                        task.downstream_task_ids.remove(t.task_id)
+                for t in task.upstream_list:
+                    if isinstance(t, MultiPointGroupConnector):
+                        task.upstream_task_ids.remove(t.task_id)
+
+    @staticmethod
+    def _remove_multi_point_group_container_tasks(dag):
+        """
+         Remove MultiPointGroupConnector tasks
+        :param full_flow_dag:
+        :return:
+        """
+        dicts = dag.task_dict
+        for task_id, task in dicts.items():
+            if isinstance(task, MultiPointGroupConnector):
+                dicts.pop(task_id)
+                dag.task_count = len(dag.tasks)

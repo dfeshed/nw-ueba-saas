@@ -1,5 +1,6 @@
 package presidio.ade.manager;
 
+import fortscale.utils.logging.Logger;
 import presidio.ade.sdk.common.AdeManagerSdk;
 
 import java.time.Duration;
@@ -14,6 +15,8 @@ public class AdeManagerApplicationService {
     private Duration enrichedTtl;
     private Duration enrichedCleanupInterval;
 
+    private static final Logger logger = Logger.getLogger(AdeManagerApplicationService.class);
+
     public AdeManagerApplicationService(AdeManagerSdk adeManagerSdk, Duration enrichedTtl, Duration enrichedCleanupInterval){
         this.adeManagerSdk = adeManagerSdk;
         this.enrichedTtl = enrichedTtl;
@@ -25,6 +28,19 @@ public class AdeManagerApplicationService {
      * @param until
      */
     public void cleanupEnrichedData(Instant until){
-        adeManagerSdk.cleanupEnrichedData(until, enrichedTtl, enrichedCleanupInterval);
+        if(enrichedTtlDurationValid()) {
+            adeManagerSdk.cleanupEnrichedData(until, enrichedTtl, enrichedCleanupInterval);
+        }
+    }
+
+    /**
+     * Ensure that we don't clean last 24 hours
+     */
+    public boolean enrichedTtlDurationValid(){
+        if (enrichedTtl.compareTo(Duration.ofDays(1)) < 0){
+            logger.info("Enriched ttl duration should be greater than 24 hours, enrichedTtl: {}", enrichedTtl.toString());
+            return false;
+        }
+        return true;
     }
 }

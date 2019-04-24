@@ -128,7 +128,7 @@ public class OutputForwarderExecutionServiceModuleTest {
     public void testRun() {
 
         try {
-            outputForwarderExecutionService.doRun(Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)));
+            outputForwarderExecutionService.doRun("userId_hourly", Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)));
             Assert.assertEquals(3, memoryStrategy.getAllMessages().size());
         } catch (Exception e) {
             e.printStackTrace();

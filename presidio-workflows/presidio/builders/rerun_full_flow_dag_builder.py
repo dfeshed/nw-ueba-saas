@@ -3,7 +3,7 @@ from copy import copy
 
 from airflow import configuration
 from airflow.bin import cli
-from airflow.models import DagRun, DAG, DagModel
+from airflow.models import DagRun, DAG, DagModel, Variable
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils import helpers
@@ -27,6 +27,7 @@ class RerunFullFlowDagBuilder(object):
 
     @classmethod
     def build(cls, dag, is_remove_ca_tables):
+        # type: (object, object) -> object
         """
         Receives a rerun full flow DAG, creates the operators, links them to the DAG and
         configures the dependencies between them.
@@ -37,7 +38,7 @@ class RerunFullFlowDagBuilder(object):
         logging.debug("populating the rerun full flow dag")
         config_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
-        dag_models = get_dag_models_by_prefix("full_flow")
+        dag_models = get_dag_models()
         dag_ids_to_clean = map(lambda x: x.dag_id, dag_models)
 
         pause_dags_operator = build_pause_dags_operator(dag, dag_models)
@@ -73,28 +74,28 @@ class RerunFullFlowDagBuilder(object):
 
 
 @provide_session
-def find_non_subdag_dags(session=None):
+def load_dags(dag_ids, session=None):
     DM = DagModel
-
     qry = session.query(DM)
-    qry = qry.filter(DM.is_subdag == False)
+    qry = qry.filter(DM.dag_id.in_(dag_ids))
     try:
         return qry.all()
-    except:
+    except Exception:
+        logging.error("got error while executing {} query".format(qry))
         return None
 
 
-def get_dag_models_by_prefix(dag_id_prefix):
+def get_dag_models():
     """
 
-    :return: dict of DAGs that are not a sub DAG (can be found in DAG's folder) and has dag_id by prefix given
+    :return: dict of DAGs (can be found in DAG's folder) and has dag_id by prefix given
     :rtype: dict[str,DAG]
     """
-    dag_models = find_non_subdag_dags()
+    dag_ids = Variable.get(key="dags", default_var=[])
+    if dag_ids:
+        dag_ids = load_dags(str(dag_ids).split(", "))
 
-    dag_models_by_prefix = [x for x in dag_models if x.dag_id.startswith(dag_id_prefix)]
-
-    return dag_models_by_prefix
+    return dag_ids
 
 
 def pause_dag(dag_id):
