@@ -169,7 +169,7 @@ public class EntityServiceImplTest {
         additionalInfo.put("isUserAdmin", "false");
         EnrichedEvent enrichedEvent = new EnrichedEvent(Instant.now(), Instant.now(), "event1", "Active Directory", "userId1", "userName1",
                 "userDisplayName1", "Active Directory", additionalInfo);
-        Mockito.when(this.mockEventPersistency.findLatestEventForEntity(Mockito.any(String.class), Mockito.any(List.class))).thenReturn(enrichedEvent);
+        Mockito.when(this.mockEventPersistency.findLatestEventForEntity(Mockito.any(String.class), Mockito.any(List.class), Mockito.any(String.class))).thenReturn(enrichedEvent);
 
         Entity entity = entityService.createEntity("entityId1", "entity");
         assertEquals(0, entity.getTags().size());
@@ -182,7 +182,7 @@ public class EntityServiceImplTest {
         additionalInfo.put("isUserAdmin", "true");
         EnrichedEvent enrichedEvent = new EnrichedEvent(Instant.now(), Instant.now(), "event1", "Active Directory", "userId1", "userName1",
                 "userDisplayName1", "Active Directory", additionalInfo);
-        Mockito.when(this.mockEventPersistency.findLatestEventForEntity(Mockito.any(String.class), Mockito.any(List.class))).thenReturn(enrichedEvent);
+        Mockito.when(this.mockEventPersistency.findLatestEventForEntity(Mockito.any(String.class), Mockito.any(List.class), Mockito.any(String.class))).thenReturn(enrichedEvent);
 
         Entity entity = entityService.createEntity("entityId1", "entity");
         assertEquals(1, entity.getTags().size());
@@ -199,7 +199,7 @@ public class EntityServiceImplTest {
         String userDisplayName = "userDisplayName1";
         EnrichedEvent enrichedEvent = new EnrichedEvent(Instant.now(), Instant.now(), "event1", "Active Directory", entityId, entityName,
                 userDisplayName, "Active Directory", additionalInfo);
-        Mockito.when(this.mockEventPersistency.findLatestEventForEntity(Mockito.any(String.class), Mockito.any(List.class))).thenReturn(enrichedEvent);
+        Mockito.when(this.mockEventPersistency.findLatestEventForEntity(Mockito.any(String.class), Mockito.any(List.class), Mockito.any(String.class))).thenReturn(enrichedEvent);
 
         Entity entity = entityService.createEntity(entityId, "entity");
         assertEquals(0, entity.getTags().size());

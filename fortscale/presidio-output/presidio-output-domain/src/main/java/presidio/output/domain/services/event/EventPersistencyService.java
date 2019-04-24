@@ -36,7 +36,7 @@ public interface EventPersistencyService {
 
     public Long countEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features);
 
-    EnrichedEvent findLatestEventForEntity(String entityId, List<String> collectionNames);
+    EnrichedEvent findLatestEventForEntity(String entityId, List<String> collectionNames, String entityType);
 
     /**
      * Determine the feature property type
