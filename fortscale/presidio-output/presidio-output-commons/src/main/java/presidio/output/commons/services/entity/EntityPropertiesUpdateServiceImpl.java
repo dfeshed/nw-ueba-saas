@@ -36,13 +36,13 @@ public class EntityPropertiesUpdateServiceImpl implements EntityPropertiesUpdate
         boolean isUpdated = false;
         List<String> collectionNames = collectionNamesByOrderForEvents();
         EnrichedEvent enrichedEvent = eventPersistencyService.findLatestEventForEntity(entity.getEntityId(), collectionNames, entity.getEntityType());
-        if (enrichedEvent == null) {
+        if (enrichedEvent != null) {
             if (!Objects.equals(entity.getEntityName(), enrichedEvent.getUserName())) {
                 entity.setEntityName(enrichedEvent.getUserName());
                 isUpdated = true;
             }
         } else {
-            log.debug("No events where found for this entity , therefore cannot update entity properties accordingly to latest event");
+            log.debug("No events whereAdeManagerSdkImpl.java found for this entity , therefore cannot update entity properties accordingly to latest event");
         }
         if (isUpdated) {
             return entity;
