@@ -6,6 +6,10 @@ import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/tes
 import { click, fillIn, find, findAll, focus, render, settled, triggerKeyEvent } from '@ember/test-helpers';
 
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
+import {
+  AFTER_OPTION_FREE_FORM_LABEL,
+  AFTER_OPTION_TEXT_LABEL
+} from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
 
@@ -375,8 +379,8 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await clickTrigger(PILL_SELECTORS.operator);
     const options = findAll(PILL_SELECTORS.powerSelectAfterOption);
     assert.equal(options.length, 2, 'incorrect number of Advanced Options');
-    assert.ok(_hasOption(options, 'Free-Form Filter'), 'incorrect option to create a free-form filter');
-    assert.ok(_hasOption(options, 'Text Filter'), 'incorrect option to create a text filter');
+    assert.ok(_hasOption(options, AFTER_OPTION_FREE_FORM_LABEL), 'missing option to create a free-form filter');
+    assert.ok(_hasOption(options, AFTER_OPTION_TEXT_LABEL), 'missing option to create a text filter');
   });
 
   test('it broadcasts a message to create a free-form pill when the ENTER key is pressed', async function(assert) {
@@ -435,7 +439,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
     await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
-    assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), 'Free-Form Filter', 'first Advanced Option was not highlighted');
+    assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), AFTER_OPTION_FREE_FORM_LABEL, 'first Advanced Option was not highlighted');
   });
 
   test('Highlight will move from operator list to Advanced Options list and back', async function(assert) {
@@ -454,7 +458,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_DOWN);
     // Should be in Advanced Options now
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
-    assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), 'e Free-Form Filter', 'first Advanced Option was not highlighted');
+    assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), `e ${AFTER_OPTION_FREE_FORM_LABEL}`, 'first Advanced Option was not highlighted');
     // Arrow up
     await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_UP);
     // Should be back in meta options list
@@ -484,7 +488,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await typeInSearch('foobar');
     // trigger Text Filter option
     const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
-    const textFilter = afterOptions.find((d) => d.textContent.includes('Text Filter'));
+    const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_LABEL));
     assert.ok(textFilter, 'unable to find Text Filter option');
     await click(textFilter);
   });

@@ -2,6 +2,7 @@ import { click, fillIn, findAll, focus, settled, triggerKeyEvent } from '@ember/
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
+import { AFTER_OPTION_TEXT_LABEL } from 'investigate-events/constants/pill';
 import PILL_SELECTORS from './pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
 
@@ -133,7 +134,7 @@ export const leaveNewPillTemplate = async() => {
 
 export const clickTextFilterOption = async() => {
   const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
-  const textFilter = afterOptions.find((el) => el.textContent.includes('Text Filter'));
+  const textFilter = afterOptions.find((el) => el.textContent.includes(AFTER_OPTION_TEXT_LABEL));
   if (textFilter) {
     await click(textFilter);
   }

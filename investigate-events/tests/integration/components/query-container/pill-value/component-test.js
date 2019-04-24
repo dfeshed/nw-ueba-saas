@@ -5,6 +5,11 @@ import hbs from 'htmlbars-inline-precompile';
 import { click, find, findAll, focus, render, triggerKeyEvent } from '@ember/test-helpers';
 import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
+import {
+  AFTER_OPTION_FREE_FORM_LABEL,
+  AFTER_OPTION_TEXT_LABEL,
+  AFTER_OPTION_QUERY_LABEL
+} from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
 
@@ -284,9 +289,9 @@ module('Integration | Component | Pill Value', function(hooks) {
     await clickTrigger(PILL_SELECTORS.value);
     const options = findAll(PILL_SELECTORS.powerSelectOption);
     assert.equal(options.length, 3, 'incorrect number of options');
-    assert.ok(_hasOption(options, 'Query Filter'), 'incorrect option to create a query filter');
-    assert.ok(_hasOption(options, 'Free-Form Filter'), 'incorrect option to create a free-form filter');
-    assert.ok(_hasOption(options, 'Text Filter'), 'incorrect option to create a text filter');
+    assert.ok(_hasOption(options, AFTER_OPTION_QUERY_LABEL), 'missing option to create a query filter');
+    assert.ok(_hasOption(options, AFTER_OPTION_FREE_FORM_LABEL), 'missing option to create a free-form filter');
+    assert.ok(_hasOption(options, AFTER_OPTION_TEXT_LABEL), 'missing option to create a text filter');
   });
 
   test('it broadcasts a message to create a free-form pill when the Free-Form Filter option is selected', async function(assert) {

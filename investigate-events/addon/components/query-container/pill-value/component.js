@@ -4,15 +4,17 @@ import { htmlSafe } from '@ember/string';
 import computed from 'ember-computed-decorators';
 import { isArrowLeft, isBackspace, isEscape } from 'investigate-events/util/keys';
 import { escapeBackslash, escapeSingleQuotes, properlyQuoted, stripOuterSingleQuotes } from 'investigate-events/util/quote';
-import { COMPLEX_OPERATORS } from 'investigate-events/constants/pill';
+import {
+  AFTER_OPTION_FREE_FORM_LABEL,
+  AFTER_OPTION_TEXT_LABEL,
+  AFTER_OPTION_QUERY_LABEL,
+  COMPLEX_OPERATORS
+} from 'investigate-events/constants/pill';
 import * as MESSAGE_TYPES from '../message-types';
 import Ember from 'ember';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
-const QUERY_FILTER = 'Query Filter';
-const FREE_FORM_FILTER = 'Free-Form Filter';
-const TEXT_FILTER = 'Text Filter';
 // This is used for an internal Ember API function: escapeExpression
 const { Handlebars: { Utils } } = Ember;
 
@@ -24,8 +26,8 @@ const { Handlebars: { Utils } } = Ember;
 * renders. That's why it's a space character.
 */
 const _dropDownOptions = [
-  { groupName: ' ', options: [QUERY_FILTER] },
-  { groupName: 'Advanced Options', options: [ FREE_FORM_FILTER, TEXT_FILTER ] }
+  { groupName: ' ', options: [AFTER_OPTION_QUERY_LABEL] },
+  { groupName: 'Advanced Options', options: [ AFTER_OPTION_FREE_FORM_LABEL, AFTER_OPTION_TEXT_LABEL ] }
 ];
 
 export default Component.extend({
@@ -203,7 +205,7 @@ export default Component.extend({
       if (!this.get('isEditing')) {
         const match = COMPLEX_OPERATORS.find((d) => input.includes(d));
         this.set('_isComplex', !!match);
-        const option = (match) ? FREE_FORM_FILTER : QUERY_FILTER;
+        const option = (match) ? AFTER_OPTION_FREE_FORM_LABEL : AFTER_OPTION_QUERY_LABEL;
         next(this, () => powerSelectAPI.actions.highlight(option));
       }
     },
@@ -254,17 +256,17 @@ export default Component.extend({
         // _debugContainerKey is a private Ember property that returns the full
         // component name (component:query-container/pill-value).
         const [ , source ] = this._debugContainerKey.split('/');
-        const message = selection === FREE_FORM_FILTER ?
+        const message = selection === AFTER_OPTION_FREE_FORM_LABEL ?
           MESSAGE_TYPES.CREATE_FREE_FORM_PILL : MESSAGE_TYPES.CREATE_TEXT_PILL;
         // send event
         switch (selection) {
-          case QUERY_FILTER:
+          case AFTER_OPTION_QUERY_LABEL:
             if (!this._isInputEmpty(value)) {
               this._broadcast(MESSAGE_TYPES.VALUE_ENTER_KEY, value);
             }
             break;
-          case FREE_FORM_FILTER:
-          case TEXT_FILTER:
+          case AFTER_OPTION_FREE_FORM_LABEL:
+          case AFTER_OPTION_TEXT_LABEL:
             // send value up to create a complex pill
             this._broadcast(message, [value, source]);
         }

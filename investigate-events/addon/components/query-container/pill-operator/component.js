@@ -3,6 +3,10 @@ import { cancel, later, next, scheduleOnce } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 
 import * as MESSAGE_TYPES from '../message-types';
+import {
+  AFTER_OPTION_FREE_FORM_LABEL,
+  AFTER_OPTION_TEXT_LABEL
+} from 'investigate-events/constants/pill';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
 import {
   isArrowDown,
@@ -17,11 +21,9 @@ import BoundedList from 'investigate-events/util/bounded-list';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
-const FREE_FORM_FILTER = 'Free-Form Filter';
-const TEXT_FILTER = 'Text Filter';
 const AFTER_OPTIONS_MENU = [
-  { label: FREE_FORM_FILTER, disabled: false, highlighted: false },
-  { label: TEXT_FILTER, disabled: false, highlighted: false }
+  { label: AFTER_OPTION_FREE_FORM_LABEL, disabled: false, highlighted: false },
+  { label: AFTER_OPTION_TEXT_LABEL, disabled: false, highlighted: false }
 ];
 
 const LEADING_SPACES = /^[\s\uFEFF\xA0]+/;
@@ -349,9 +351,9 @@ export default Component.extend({
     // component name (component:query-container/pill-meta).
     const [ , source ] = this._debugContainerKey.split('/');
     // send value up to create a complex pill
-    if (selection === FREE_FORM_FILTER) {
+    if (selection === AFTER_OPTION_FREE_FORM_LABEL) {
       this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, source]);
-    } else if (selection === TEXT_FILTER) {
+    } else if (selection === AFTER_OPTION_TEXT_LABEL) {
       this._broadcast(MESSAGE_TYPES.CREATE_TEXT_PILL, [value, source]);
     }
   },

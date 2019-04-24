@@ -5,13 +5,16 @@ import { click, find, findAll, render, settled, triggerEvent } from '@ember/test
 import hbs from 'htmlbars-inline-precompile';
 
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
+import {
+  AFTER_OPTION_FREE_FORM_LABEL,
+  AFTER_OPTION_TEXT_LABEL
+} from 'investigate-events/constants/pill';
 import PILL_SELECTORS from '../pill-selectors';
 
 const { log } = console; // eslint-disable-line no-unused-vars
 
-// These labels and options should match what's defined in the component
-const OPTION_A_LABEL = 'Free-Form Filter';
-const OPTION_B_LABEL = 'Text Filter';
+const OPTION_A_LABEL = AFTER_OPTION_FREE_FORM_LABEL;
+const OPTION_B_LABEL = AFTER_OPTION_TEXT_LABEL;
 const MENU_OPTIONS = [
   { label: OPTION_A_LABEL, disabled: false, highlighted: false },
   { label: OPTION_B_LABEL, disabled: false, highlighted: false }
