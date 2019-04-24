@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface EntityPropertiesUpdateService {
 
-    Entity entityPropertiesUpdate(Entity entity);
+    Entity updateEntityProperties(Entity entity);
 
     List<String> collectionNamesByOrderForEvents();
 }
