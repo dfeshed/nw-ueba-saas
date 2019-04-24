@@ -73,6 +73,29 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     assert.equal(findAll('.selected-settings .selected-setting').length, 1, 'All selected settings rendered on the UI');
   });
 
+  test('When policy is File Policy, All the components in the available settings is rendered on the UI', async function(assert) {
+    new ReduxDataHelper(setState).policyWiz('filePolicy').build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    assert.equal(findAll('.available-settings .available-setting').length, 2, 'All file policy available settings rendered on the UI');
+  });
+
+  test('When policy is File Policy, All the components in the selected settings is rendered on the UI ', async function(assert) {
+    const newSelectedSettings = [
+      { index: 1, id: 'enabled', label: 'adminUsm.policyWizard.filePolicy.enabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/shared/usm-radios', defaults: [{ field: 'enabled', value: false }] }
+    ];
+    const initialState = new ReduxDataHelper(/* setState */).policyWiz('filePolicy').build().usm.policyWizard;
+    setStateOldSchool({ ...initialState, selectedSettings: newSelectedSettings });
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    assert.equal(findAll('.selected-settings .selected-setting').length, 1, 'All selected settings rendered on the UI');
+  });
+
+  test('For the File Policy, all the components driven by usm-radios component is shown in the available settings', async function(assert) {
+    new ReduxDataHelper(setState).policyWiz('filePolicy').build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    assert.equal(findAll('.available-settings .enabled').length, 1, 'File Collection component is shown in the available settings');
+    assert.equal(findAll('.available-settings .sendTestLog').length, 1, 'Send Test Log component is shown in the available settings');
+  });
+
   test('Labels, sub-headers and components rendered correctly in available settings', async function(assert) {
     new ReduxDataHelper(setState).policyWiz().build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);

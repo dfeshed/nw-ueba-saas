@@ -6,8 +6,10 @@ import _ from 'lodash';
 import { exceedsLength, isNameInList } from '../util/selector-helpers';
 import { ALL_RADIO_OPTIONS as edrPolicyRadioOptions } from './edrPolicy/edr-settings';
 import { ALL_RADIO_OPTIONS as windowsLogPolicyRadioOptions } from './windowsLogPolicy/windowsLog-settings';
+import { ALL_RADIO_OPTIONS as filePolicyRadioOptions } from './filePolicy/file-settings';
 import { edrPolicyValidatorFnMap } from './edrPolicy/edr-selectors';
 import { windowsLogPolicyValidatorFnMap } from './windowsLogPolicy/windowsLog-selectors';
+import { filePolicyValidatorFnMap } from './filePolicy/file-selectors';
 
 const { createSelector } = reselect;
 
@@ -212,7 +214,8 @@ export const sortedSelectedSettings = createSelector(
  */
 const radioOptionsMap = {
   'edrPolicy': edrPolicyRadioOptions,
-  'windowsLogPolicy': windowsLogPolicyRadioOptions
+  'windowsLogPolicy': windowsLogPolicyRadioOptions,
+  'filePolicy': filePolicyRadioOptions
 };
 
 /**
@@ -241,7 +244,8 @@ const _state = (state) => state;
  */
 const validatorFnMap = {
   'edrPolicy': edrPolicyValidatorFnMap,
-  'windowsLogPolicy': windowsLogPolicyValidatorFnMap
+  'windowsLogPolicy': windowsLogPolicyValidatorFnMap,
+  'filePolicy': filePolicyValidatorFnMap
 };
 
 export const isDefinePolicyStepValid = createSelector(

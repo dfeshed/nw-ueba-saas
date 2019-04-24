@@ -310,6 +310,20 @@ export default class DataHelper {
     return this;
   }
 
+  // ====================================================================
+  // File Policy settings
+  // ====================================================================
+
+  policyWizFileEnabled(enabled) {
+    _set(this.state, 'usm.policyWizard.policy.enabled', enabled);
+    return this;
+  }
+
+  policyWizFileSendTestLog(sendTestLog) {
+    _set(this.state, 'usm.policyWizard.policy.sendTestLog', sendTestLog);
+    return this;
+  }
+
   /* TODO is this deprecated? Should this be deleted when group wizard is done ??? */
   group(config) {
     _set(this.state, 'usm.group', config);

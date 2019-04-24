@@ -4505,6 +4505,23 @@ export default {
         channelFiltersSettingsHeader: 'Channel Filter Settings',
         applicationInclude: 'Application Include',
         name: 'Policy Name'
+      },
+      // filePolicy settings
+      filePolicy: {
+        fileSettingsHeader: 'File Settings',
+        radioOptionEnabled: 'Enabled',
+        radioOptionDisabled: 'Disabled',
+        enabled: 'File Collection', // 'Status',
+        enabledTooltip: 'If enabled, logs from the Windows system will be collected and forwarded to the NetWitness Platform as they are generated.', // 'Status',
+        sendTestLog: 'Send Test Log',
+        sendTestLogTooltip: 'If enabled, a sample log will be sent to the configured server when the policy is loaded to test connectivity. This allows the configuration to be tested before standard logs are available. ',
+        primaryDestination: 'Primary Log Decoder / Log Collector',
+        primaryDestinationTooltip: 'The primary Log Decoder or Log Collector to which the collected windows logs will be forwarded.',
+        secondaryDestination: 'Secondary Log Decoder / Log Collector',
+        secondaryDestinationTooltip: 'If the primary Log Decoder or Log Collector is not reachable, collected windows logs will be forwarded to this server. Please note, NetWitness cannot detect failures when UDP is the protocol used.',
+        fileDestinationInvalidMsg: 'The log server host name should not be empty',
+        protocol: 'Protocol',
+        protocolTooltip: 'Select whether SSL, TCP, or UDP transport protocol is used to forward the collected windows logs to the NetWitness Platform servers. SSL is recommended but note that is is the heaviest option. TCP is reliable but unprotected, which may be acceptable within a corporate network. Finally, UDP is unsecured and delivery is not guaranteed.'
       }
     },
     policyTypes: {

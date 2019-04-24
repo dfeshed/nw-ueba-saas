@@ -118,6 +118,8 @@ const advancedConfigHeaderId = 'advancedConfigHeader';
 const allAdvancedConfigIds = 'customConfig';
 const windowsLogSettingsHeaderId = 'windowsLogSettingsHeader';
 const allWindowsLogSettingsHeaderIds = ['enabled', 'sendTestLog', 'primaryDestination', 'secondaryDestination', 'protocol', 'channelFilters'];
+const fileSettingsHeaderId = 'fileSettingsHeader';
+const allFileSettingsHeaderIds = ['enabled', 'sendTestLog'];
 
 // run for NEW_POLICY, FETCH_POLICY (edit), and UPDATE_POLICY_TYPE
 export const buildInitialState = (state, policyType, isUpdatePolicyType = false) => {
@@ -368,9 +370,24 @@ export default reduxActions.handleActions({
 
     const showWindowsLogSettingsHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, allWindowsLogSettingsHeaderIds);
     if (showWindowsLogSettingsHeader) {
-      newSelectedSettings.push(_findHeaderInAvailSettings(availableSettings, windowsLogSettingsHeaderId));
+      const selectedSetting = _findHeaderInAvailSettings(availableSettings, windowsLogSettingsHeaderId);
+      // only push when the selectedSetting exists
+      if (selectedSetting) {
+        newSelectedSettings.push(selectedSetting);
+      }
     } else {
       newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, windowsLogSettingsHeaderId);
+    }
+
+    const showFileSettingsHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, allFileSettingsHeaderIds);
+    if (showFileSettingsHeader) {
+      const selectedSetting = _findHeaderInAvailSettings(availableSettings, fileSettingsHeaderId);
+      // only push when the selectedSetting exists
+      if (selectedSetting) {
+        newSelectedSettings.push(selectedSetting);
+      }
+    } else {
+      newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, fileSettingsHeaderId);
     }
 
     const newAvailableSettings = availableSettings.map((el) => {
@@ -382,6 +399,9 @@ export default reduxActions.handleActions({
       }
       if (el.id === windowsLogSettingsHeaderId) {
         return _shouldShowHeaderInAvailSettings(allWindowsLogSettingsHeaderIds, selectedSettingsIds, el);
+      }
+      if (el.id === fileSettingsHeaderId) {
+        return _shouldShowHeaderInAvailSettings(allFileSettingsHeaderIds, selectedSettingsIds, el);
       }
       if (el.id === invActionsHeaderId) {
         return _shouldShowHeaderInAvailSettings([allInvActionsIds], selectedSettingsIds, el);
