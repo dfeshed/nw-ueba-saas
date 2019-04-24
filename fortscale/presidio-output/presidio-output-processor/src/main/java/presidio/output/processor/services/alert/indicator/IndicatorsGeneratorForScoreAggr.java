@@ -88,7 +88,7 @@ public class IndicatorsGeneratorForScoreAggr implements IndicatorsGenerator {
         AdeRecordReader firstRecordReader = (AdeRecordReader) recordReaderFactoryService.getRecordReader(scoreAggregationRecordContributor.getFirstScoredRecord());
 
         // add indicator context
-        contexts.put(CommonStrings.CONTEXT_USERID, firstRecordReader.getContext(CommonStrings.CONTEXT_USERID));
+        contexts.put(alert.getEntityType(), firstRecordReader.getContext(alert.getEntityType()));
 
         // add model context
         indicatorConfig.getModelContextFields().forEach(modelContextField -> contexts.put(modelContextField, firstRecordReader.getContext(modelContextField)));
@@ -118,7 +118,7 @@ public class IndicatorsGeneratorForScoreAggr implements IndicatorsGenerator {
                 .collect(Collectors.toMap(entry -> translateAdeNameToOutput(entry.getKey()),
                         entry -> entry.getValue()));
         // add indicator context
-        contexts.put(CommonStrings.CONTEXT_USERID, firstRecordReader.getContext(CommonStrings.CONTEXT_USERID));
+        contexts.put(alert.getEntityType(), firstRecordReader.getContext(alert.getEntityType()));
 
         // add model context
         indicatorConfig.getModelContextFields().forEach(modelContextField -> contexts.put(modelContextField, firstRecordReader.getContext(modelContextField)));

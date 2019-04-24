@@ -16,18 +16,20 @@ public class EventMongoPageIterator<U extends EnrichedEvent> implements PageIter
     private int totalAmountOfEvents;
     private int pageSize;
     private Schema schema;
-    private String userId;
+    private String entityId;
+    private String entityType;
     private TimeRange timeRange;
     private List<Pair<String, Object>> features;
     private int amountOfPages;
 
-    public EventMongoPageIterator(EventPersistencyService eventPersistencyService, int pageSize, Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int totalAmountOfEvents) {
+    public EventMongoPageIterator(EventPersistencyService eventPersistencyService, int pageSize, Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int totalAmountOfEvents, String entityType) {
         this.eventPersistencyService = eventPersistencyService;
         this.currentPage = 0;
         this.totalAmountOfEvents = totalAmountOfEvents;
         this.pageSize = pageSize;
         this.schema = schema;
-        this.userId = userId;
+        this.entityId = entityId;
+        this.entityType = entityType;
         this.timeRange = timeRange;
         this.features = features;
         amountOfPages = (int)Math.ceil(((double)totalAmountOfEvents)/ pageSize);
@@ -42,7 +44,7 @@ public class EventMongoPageIterator<U extends EnrichedEvent> implements PageIter
     public List<U> next() {
         int numOfItemsToSkip = this.currentPage * this.pageSize;
         this.currentPage++;
-        List<U> records = (List<U>) this.eventPersistencyService.readRecords(this.schema, this.userId, this.timeRange, this.features, numOfItemsToSkip, this.pageSize);
+        List<U> records = (List<U>) this.eventPersistencyService.readRecords(this.schema, this.entityId, this.timeRange, this.features, numOfItemsToSkip, this.pageSize, this.entityType);
 
         return records;
     }

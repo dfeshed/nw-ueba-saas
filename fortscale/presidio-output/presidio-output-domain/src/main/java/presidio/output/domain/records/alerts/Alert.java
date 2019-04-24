@@ -162,6 +162,10 @@ public class Alert extends AbstractElasticDocument {
         this.entityName = entityName;
     }
 
+    public String getEntityType() {
+        return entityType;
+    }
+
     public String getIndexedEntityName() {
         return indexedEntityName;
     }

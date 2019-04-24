@@ -27,7 +27,7 @@ public interface SupportingInformationGenerator {
             for (Indicator indicator : indicators) {
                 indicator.setAlertId(alert.getId());
                 // generate events
-                List<IndicatorEvent> events = generateEvents(adeAggregationRecord, indicator, eventsLimit, eventsPageSize);
+                List<IndicatorEvent> events = generateEvents(adeAggregationRecord, indicator, eventsLimit, eventsPageSize, alert.getEntityType());
                 if (CollectionUtils.isNotEmpty(events)) {
                     indicator.setEvents(events);
                     indicator.setEventsNum(events.size());
@@ -50,7 +50,7 @@ public interface SupportingInformationGenerator {
         return indicators;
     }
 
-    List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize) throws Exception;
+    List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize, String entityType) throws Exception;
 
     HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) throws Exception;
 

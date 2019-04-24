@@ -73,18 +73,18 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
     }
 
     @Override
-    public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize) throws Exception {
+    public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize, String entityType) throws Exception {
 
         List<IndicatorEvent> events = new ArrayList<>();
 
         // get raw events from the output (output_ collections)
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
-        String userId = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
+        String entityId = adeAggregationRecord.getContext().get(entityType);
         TimeRange timeRange = new TimeRange(adeAggregationRecord.getStartInstant(), adeAggregationRecord.getEndInstant());
 
         List<Pair<String, Object>> features = supportingInfoUtils.buildAnomalyFeatures(indicatorConfig, indicator.getContexts());
 
-        List<ScoredEnrichedEvent> rawEvents = scoredEventService.findEventsAndScores(indicatorConfig.getSchema(), indicatorConfig.getAdeEventType(), userId, timeRange, features, eventsLimit, eventsPageSize);
+        List<ScoredEnrichedEvent> rawEvents = scoredEventService.findEventsAndScores(indicatorConfig.getSchema(), indicatorConfig.getAdeEventType(), entityId, timeRange, features, eventsLimit, eventsPageSize, entityType);
 
         if (CollectionUtils.isNotEmpty(rawEvents)) {
 
