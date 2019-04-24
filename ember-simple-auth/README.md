@@ -545,11 +545,12 @@ Examples:
 import DS from 'ember-data';
 import { inject as service } from '@ember/service';
 import { isPresent } from '@ember/utils';
+import DataAdapterMixin from "ember-simple-auth/mixins/data-adapter-mixin";
 
 const { JSONAPIAdapter } = DS;
 
 export default JSONAPIAdapter.extend(DataAdapterMixin, {
-  session: service(),
+  session: service(), 
   authorize(xhr) {
     let { access_token } = this.get('session.data.authenticated');
     if (isPresent(access_token)) {
@@ -566,6 +567,7 @@ export default JSONAPIAdapter.extend(DataAdapterMixin, {
 // Devise
 import DS from 'ember-data';
 import { inject as service } from '@ember/service';
+import DataAdapterMixin from "ember-simple-auth/mixins/data-adapter-mixin";
 
 const { JSONAPIAdapter } = DS;
 
@@ -714,10 +716,10 @@ in `package.json`:
 Ember Simple Auth comes with a __set of test helpers that can be used in
 acceptance tests__.
 
-### ember-cli-qunit 4.2.0 and greater
+### ember-cli-qunit 4.2.0 and greater or ember-qunit 3.2.0 and greater
 
 If your app is using `ember-cli-qunit` [4.2.0 or
-greater](https://github.com/ember-cli/ember-cli-qunit/blob/master/CHANGELOG.md#v420-2017-12-17),
+greater](https://github.com/ember-cli/ember-cli-qunit/blob/master/CHANGELOG.md#v420-2017-12-17) or `ember-qunit` 3.2.0 or greater,
 you may want to migrate to the [more modern testing
 syntax](https://dockyard.com/blog/2018/01/11/modern-ember-testing). In that
 case, helpers can be imported from the `ember-simple-auth` addon namespace.
