@@ -205,8 +205,7 @@ export default Component.extend({
               }
             }
             this.updateLoginProperties(_STATUS.ERROR, errorMessage);
-
-            this.$('.js-test-login-username-input').focus();
+            this.element.querySelector('.js-test-login-username-input').focus();
           }
         }
       ).catch(() => {
@@ -344,9 +343,8 @@ export default Component.extend({
           });
 
         } else {
-
           // If Not Enabled, we simply need to Put Focus on Username Input
-          this.$('.js-test-login-username-input').focus();
+          this.element.querySelector('.js-test-login-username-input').focus();
 
           // If Pki is Enabled, we would like to auto Login
           // Let the handler figure it out, as we already know if pki is Enabled
@@ -385,9 +383,8 @@ export default Component.extend({
       // Set any Dummy value for Password so that Any Empty Checks are passed through
       this.set('password', 'pki');
       // We do not need user to input any Credential, So hide the input
-      this.$('.js-test-login-username-input').hide();
-      // We do not need user to input any Credential, So hide the input
-      this.$('.js-test-login-password-input').hide();
+      this.element.querySelector('.js-test-login-username-input').style.display = 'none';
+      this.element.querySelector('.js-test-login-password-input').style.display = 'none';
       // Finally make the call to authenticate so that Certificate is sent to NginX
       this.authenticate();
     }
