@@ -465,7 +465,7 @@ export default [
     createdOn: 0,
     lastModifiedOn: 0,
     lastModifiedBy: 'admin',
-    lastPublishedOn: 0,
+    lastPublishedOn: 1514744800000,
     lastPublishedCopy: {
       createdOn: 0,
       lastModifiedOn: 0,
@@ -475,7 +475,7 @@ export default [
       description: 'These are the settings that are applied when not defined in another policy applied to an agent.',
       dirty: false,
       defaultPolicy: true,
-      lastPublishedOn: 0,
+      lastPublishedOn: 1514744800000,
       enabled: false,
       protocol: 'TLS',
       sendTestLog: false,

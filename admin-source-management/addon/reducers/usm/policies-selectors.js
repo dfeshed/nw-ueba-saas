@@ -19,8 +19,11 @@ export const isPoliciesLoading = createSelector(
 export const selectedEditItem = createSelector(
   selectedPolicies, policies,
   (items, all) => {
-    // edit disabled for default windows log policies for 11.3
-    if (isPresent(items) && items.length == 1 && all.findBy('id', items[0]).id !== '__default_windows_log_policy') {
+    // edit disabled for default windows log policy and default file policy
+    if (isPresent(items) &&
+     items.length == 1 &&
+     all.findBy('id', items[0]).id !== '__default_windows_log_policy' &&
+     all.findBy('id', items[0]).id !== '__default_file_policy') {
       const [item] = items;
       return item;
     } else {

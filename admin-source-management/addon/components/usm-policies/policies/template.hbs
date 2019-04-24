@@ -16,7 +16,7 @@
     {{#row.cell as |item index column|}}
       <span class="{{concat 'usm-policy-column-' column.field}} {{if item.defaultPolicy 'usm-default-policy-row'}}">
         {{#if (eq column.dataType 'checkbox') }}
-          {{#if (not-eq item.id '__default_windows_log_policy') }}
+          {{#if (and (not-eq item.id '__default_windows_log_policy') (not-eq item.id '__default_file_policy'))}}
             <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
               {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
             </label>

@@ -84,6 +84,15 @@ module('Integration | Component | usm-policies/policies', function(hooks) {
     assert.equal(findAll('.rsa-data-table-body-row').length, 10, 'Returned expected number of rows of the datatable');
   });
 
+  test('Only Edr Default policy has the checkbox and not windows log and file default policies', async function(assert) {
+    assert.expect(1);
+    setState('name', false);
+    const getItems = waitForReduxStateChange(redux, 'usm.policies.items');
+    await render(hbs`{{usm-policies/policies}}`);
+    await getItems;
+    assert.equal(findAll('.usm-default-policy-row > .rsa-form-checkbox-label').length, 1, 'EDR default policy has the checkbox');
+  });
+
   test('Show policy list with sort=name ascending', async function(assert) {
     assert.expect(7);
     setState('name', false);
