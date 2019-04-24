@@ -255,7 +255,7 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
             Entity updatedEntity;
             double entityScore = entity.getScore();
             EntitySeverity newEntitySeverity = severitiesMap.getEntitySeverity(entityScore);
-            updatedEntity = entityPropertiesUpdateService.entityPropertiesUpdate(entity);
+            updatedEntity = entityPropertiesUpdateService.updateEntityProperties(entity);
             logger.debug("Updating entity severity for entityId: " + entity.getEntityId());
             if (updatedEntity != null) {
                 entity = updatedEntity;

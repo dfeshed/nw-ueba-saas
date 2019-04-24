@@ -27,7 +27,7 @@ public interface EventRepository {
 
     List<? extends EnrichedEvent> findEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize);
 
-    EnrichedEvent findLatestEventForEntity(String entityId, List<String> collectionNames);
+    EnrichedEvent findLatestEventForEntity(String entityId, List<String> collectionNames, String entityType);
 
     void remove(String collectionName, Instant startDate, Instant endDate);
 

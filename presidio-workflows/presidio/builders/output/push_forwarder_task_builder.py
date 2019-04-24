@@ -37,6 +37,7 @@ class PushForwarderTaskBuilder(LoggingMixin):
             fixed_duration_strategy=timedelta(hours=1),
             command=PresidioDagBuilder.presidio_command,
             jvm_args=self.jvm_args,
+            java_args={'smart_record_conf_name': 'userId_hourly'},
             dag=presidio_core_dag,
             condition=self.condition)
 

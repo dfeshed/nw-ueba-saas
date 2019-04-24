@@ -91,8 +91,8 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
     }
 
     @Override
-    public EnrichedEvent findLatestEventForEntity(String entityId, List<String> collectionNames) {
-        return eventRepository.findLatestEventForEntity(entityId, collectionNames);
+    public EnrichedEvent findLatestEventForEntity(String entityId, List<String> collectionNames, String entityType) {
+        return eventRepository.findLatestEventForEntity(entityId, collectionNames, entityType);
     }
 
     @Override

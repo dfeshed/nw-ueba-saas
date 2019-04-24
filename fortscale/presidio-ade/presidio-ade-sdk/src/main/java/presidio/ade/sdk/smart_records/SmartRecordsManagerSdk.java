@@ -4,6 +4,8 @@ import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
+import java.util.List;
+
 /**
  * Provides the ADE's consumers with APIs related to Smart Records.
  *
@@ -23,7 +25,7 @@ public interface SmartRecordsManagerSdk {
 	PageIterator<SmartRecord> getSmartRecords(int pageSize, int maxGroupSize, TimeRange timeRange, int scoreThreshold);
 
 
-	PageIterator<SmartRecord> getSmartRecords(int pageSize, int maxGroupSize, TimeRange timeRange, int scoreThreshold, String configurationName);
+	List<PageIterator<SmartRecord>> getSmartRecords(int pageSize, int maxGroupSize, TimeRange timeRange, int scoreThreshold, String configurationName);
 
 	/**
 	 * Get number of entities with smart over the specified time range.
@@ -31,5 +33,5 @@ public interface SmartRecordsManagerSdk {
 	 * @param timeRange 	the start and end instants of the smart records
 	 * @return number of entities which have smarts
 	 */
-	int getDistinctSmartEntities(TimeRange timeRange);
+	int getNumOfDistinctSmartEntities(TimeRange timeRange, String configurationName);
 }

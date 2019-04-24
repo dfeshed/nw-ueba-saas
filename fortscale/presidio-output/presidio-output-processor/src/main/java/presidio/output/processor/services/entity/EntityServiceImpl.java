@@ -86,7 +86,7 @@ public class EntityServiceImpl implements EntityService {
 
     private EntityDetails getEntityDetails(String entityId, String entityType) {
         List<String> collectionNames = entitySeverityService.collectionNamesByOrderForEvents();
-        EnrichedEvent event = eventPersistencyService.findLatestEventForEntity(entityId, collectionNames);
+        EnrichedEvent event = eventPersistencyService.findLatestEventForEntity(entityId, collectionNames, entityType);
         if (event == null) {
             log.error("no events were found for entity {}", entityId);
             return null;
