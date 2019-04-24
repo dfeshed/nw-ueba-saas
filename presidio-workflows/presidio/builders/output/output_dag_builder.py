@@ -72,6 +72,7 @@ class OutputDagBuilder(PresidioDagBuilder):
             fixed_duration_strategy=timedelta(hours=1),
             command=PresidioDagBuilder.presidio_command,
             jvm_args=self.jvm_args,
+            java_args={'smart_record_conf_name': 'userId_hourly'},
             dag=output_dag,
             condition=output_condition)
 
@@ -91,6 +92,7 @@ class OutputDagBuilder(PresidioDagBuilder):
             fixed_duration_strategy=timedelta(days=1),
             command=OUTPUT_RUN_DAILY_COMMAND,
             jvm_args=self.jvm_args,
+            java_args={'smart_record_conf_name': 'userId_hourly'},
             dag=output_dag,
             condition=output_daily_condition)
 
