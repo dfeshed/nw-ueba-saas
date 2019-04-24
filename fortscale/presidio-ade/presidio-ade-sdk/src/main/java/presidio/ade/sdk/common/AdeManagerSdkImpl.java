@@ -14,6 +14,7 @@ import fortscale.utils.store.StoreManager;
 import org.springframework.data.util.Pair;
 import org.springframework.util.Assert;
 import presidio.ade.domain.pagination.smart.MultipleSmartCollectionsPaginationService;
+import presidio.ade.domain.pagination.smart.SmartPaginationService;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
@@ -283,8 +284,8 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     }
 
     @Override
-    public PageIterator<SmartRecord> getSmartRecords(int pageSize, int maxGroupSize, TimeRange timeRange, int scoreThreshold, String configurationName) {
-        return new MultipleSmartCollectionsPaginationService(Arrays.asList(configurationName), smartDataReader, pageSize, maxGroupSize).getPageIterator(timeRange, scoreThreshold);
+    public List<PageIterator<SmartRecord>> getSmartRecords(int pageSize, int maxGroupSize, TimeRange timeRange, int scoreThreshold, String configurationName) {
+        return new SmartPaginationService(smartDataReader, pageSize, maxGroupSize).getPageIterators(configurationName, timeRange, scoreThreshold);
     }
 
     @Override
