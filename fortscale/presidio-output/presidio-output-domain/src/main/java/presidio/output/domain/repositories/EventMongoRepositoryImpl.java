@@ -85,9 +85,9 @@ public class EventMongoRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public EnrichedEvent findLatestEventForEntity(String entityId, List<String> collectionNamesPrioritized) {
+    public EnrichedEvent findLatestEventForEntity(String entityId, List<String> collectionNamesPrioritized, String entityType) {
         Query query = new Query()
-                .addCriteria(Criteria.where(EnrichedEvent.USER_ID_FIELD_NAME).is(entityId))
+                .addCriteria(Criteria.where(entityType).is(entityId))
                 .limit(1).with(new Sort(Sort.Direction.DESC, EnrichedEvent.EVENT_DATE_FIELD_NAME));
         List<EnrichedEvent> enrichedEvents = null;
         for (String collection : collectionNamesPrioritized) {
