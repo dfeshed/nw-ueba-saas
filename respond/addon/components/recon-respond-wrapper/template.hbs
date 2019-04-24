@@ -7,14 +7,12 @@
         </vbox>
         <vbox xs="2" class="recon-container__header-icons">
           <div>
-            <span class="recon-container__header-close-icon">
-              <button test-id="eventReconContextualHelp" class="rsa-form-button event-recon-contextual-help" onclick={{action 'goToHelp' 'investigation' 'invEventAnalysis'}}>
-                {{rsa-icon name="help-circle" style="lined"}}
-              </button>
-              <button test-id="reconRespondCloseBtn" onclick={{action "close"}} class="recon-container__header-close" title={{t 'respond.close'}}>
-                {{rsa-icon style='filled' name='close'}}
-              </button>
-            </span>
+            <button test-id="eventReconContextualHelp" class="rsa-form-button event-recon-contextual-help" onclick={{action 'goToHelp' 'investigation' 'invEventAnalysis'}}>
+              {{rsa-icon style='lined'  name='help-circle'}}
+            </button>
+            <button test-id="reconRespondCloseBtn" class="event-recon-close" onclick={{action "close"}} title={{t 'respond.close'}}>
+              {{rsa-icon style='filled' name='close'}}
+            </button>
           </div>
         </vbox>
       </hbox>

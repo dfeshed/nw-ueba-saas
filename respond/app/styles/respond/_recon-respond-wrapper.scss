@@ -34,25 +34,18 @@
       .recon-container__header-icons {
         padding-left: 1rem;
         align-items: flex-end;
+        cursor: default;
       }
 
       .event-recon-contextual-help {
-        padding-right: .7rem;
-      }
-
-      .event-recon-contextual-help:hover {
+        margin-right: .7rem;
         cursor: pointer;
       }
 
-      .recon-container__header-close-icon {
-        padding-right: 1rem;
+      .event-recon-close {
+        margin-top: 0;
+        cursor: pointer;
       }
-    }
-
-    .recon-container__header__inner .recon-container__header-close {
-      margin-top: 0;
-      margin-right: -1rem;
-      cursor: pointer;
     }
 
     .recon-container {
