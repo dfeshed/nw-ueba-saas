@@ -166,7 +166,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         logger.info("updating entities data completed successfully");
 
         logger.info("Starting to report daily metrics");
-        outputMonitoringService.reportDailyMetrics(startDate, endDate);
+        outputMonitoringService.reportDailyMetrics(startDate, endDate, configurationName);
     }
 
 

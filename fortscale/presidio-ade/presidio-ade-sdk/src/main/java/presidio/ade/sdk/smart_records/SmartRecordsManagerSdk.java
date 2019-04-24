@@ -31,5 +31,5 @@ public interface SmartRecordsManagerSdk {
 	 * @param timeRange 	the start and end instants of the smart records
 	 * @return number of entities which have smarts
 	 */
-	int getDistinctSmartEntities(TimeRange timeRange);
+	int getNumOfDistinctSmartEntities(TimeRange timeRange, String configurationName);
 }

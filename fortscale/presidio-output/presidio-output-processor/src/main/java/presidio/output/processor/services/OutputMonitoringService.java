@@ -112,11 +112,11 @@ public class OutputMonitoringService {
         metricCollectingService.addMetric(metric);
     }
 
-    public void reportDailyMetrics(Instant startDate, Instant endDate) {
+    public void reportDailyMetrics(Instant startDate, Instant endDate, String configurationName) {
 
         TimeRange timeRange = new TimeRange(startDate, endDate);
 
-        reportActiveEntitiesDaily(timeRange);
+        reportActiveEntitiesDaily(timeRange, configurationName);
         reportSmartsCountDaily(timeRange, "smart.scoring", MetricEnums.MetricValues.AMOUNT_OF_SCORED, SMARTS_COUNT_LAST_DAY_METRIC_NAME);
         reportDailyMetric(timeRange, OUTPUT_METRIC_NAME_PREFIX, NUMBER_OF_ALERTS_METRIC_NAME, ALERTS_COUNT_LAST_DAY_METRIC_NAME);
 
@@ -177,10 +177,10 @@ public class OutputMonitoringService {
         logger.info("smart count daily metric was successfully reported with value {}", sumOfHourlySmartsCount);
     }
 
-    private void reportActiveEntitiesDaily(TimeRange timeRange) {
+    private void reportActiveEntitiesDaily(TimeRange timeRange, String configurationName) {
         //----Report daily metric- number of active entities in the last 24 hours---
         //active entity = entity with smart (smart score >= 0)
-        int distinctSmartEntities = adeManagerSdk.getDistinctSmartEntities(timeRange);
+        int distinctSmartEntities = adeManagerSdk.getNumOfDistinctSmartEntities(timeRange, configurationName);
         reportNumericMetric(NUM_ACTIVE_ENTITIES_LAST_DAY_METRIC_NAME, distinctSmartEntities, timeRange.getStart());
         logger.info("active entities daily metric was successfully reported with value {}", distinctSmartEntities);
     }
