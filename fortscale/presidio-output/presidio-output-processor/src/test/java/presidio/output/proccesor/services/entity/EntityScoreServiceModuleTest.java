@@ -112,13 +112,13 @@ public class EntityScoreServiceModuleTest {
         entity1.setSeverity(null);
         Iterable<Entity> entityItr = entityPersistencyService.save(Arrays.asList(entity1));
         Entity savedEntity = entityItr.iterator().next();
-        String entityId = savedEntity.getId();
+        String entityDocumentId = savedEntity.getId();
 
 
         List<Alert> alerts = new ArrayList<>();
-        alerts.add(new Alert(entityId, "smartId", null, "entityName1", "entityName1",getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 15D, "entityType"));
-        alerts.add(new Alert(entityId, "smartId", null, "entityName1", "entityName1",getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 5D, "entityType"));
-        alerts.add(new Alert(entityId, "smartId", null, "entityName1", "entityName1",getMinusDay(100), getMinusDay(99), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 5D, "entityType"));
+        alerts.add(new Alert(entityDocumentId, "smartId", null, "entityName1", "entityName1",getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 15D, "entityType"));
+        alerts.add(new Alert(entityDocumentId, "smartId", null, "entityName1", "entityName1",getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 5D, "entityType"));
+        alerts.add(new Alert(entityDocumentId, "smartId", null, "entityName1", "entityName1",getMinusDay(100), getMinusDay(99), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 5D, "entityType"));
         alertPersistencyService.save(alerts);
 
 
@@ -131,7 +131,7 @@ public class EntityScoreServiceModuleTest {
         entityService.updateAllEntitiesAlertData(Instant.now());
         entitySeverityService.updateSeverities();
 
-        Entity updatedEntity = entityPersistencyService.findEntityById(entityId);
+        Entity updatedEntity = entityPersistencyService.findEntityByDocumentId(entityDocumentId);
         Assert.assertEquals("entityId1", updatedEntity.getEntityId());
         Assert.assertEquals("entityName1", updatedEntity.getEntityName());
         Assert.assertEquals(20, updatedEntity.getScore(), 0.00001);

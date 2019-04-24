@@ -16,7 +16,7 @@ public interface EntityPersistencyService {
 
     Iterable<Entity> save(List<Entity> entities);
 
-    Entity findEntityById(String id);
+    Entity findEntityByDocumentId(String id);
 
     Iterable<Entity> findAll();
 

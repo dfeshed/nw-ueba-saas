@@ -116,15 +116,15 @@ public class EntityScoreServiceImpl implements EntityScoreService {
                 Page<Alert> alertsPage = alertPersistencyService.find(alertQuery);
                 while (alertsPage != null && alertsPage.hasContent()) {
                     alertsPage.getContent().forEach(alert -> {
-                        String entityId = alert.getEntityId();
-                        if (aggregatedEntityScore.containsKey(entityId)) {
-                            EntitiesAlertData entitiesAlertData = aggregatedEntityScore.get(entityId);
+                        String entityDocumentId = alert.getEntityDocumentId();
+                        if (aggregatedEntityScore.containsKey(entityDocumentId)) {
+                            EntitiesAlertData entitiesAlertData = aggregatedEntityScore.get(entityDocumentId);
                             entitiesAlertData.incrementEntityScore(alert.getContributionToEntityScore());
                             entitiesAlertData.incrementAlertsCount();
                             entitiesAlertData.addClassification(alert.alertPrimaryClassification());
                             entitiesAlertData.addIndicators(alert.getIndicatorsNames());
                         } else {
-                            aggregatedEntityScore.put(entityId, new EntitiesAlertData(alert.getContributionToEntityScore(), 1, alert.alertPrimaryClassification(), alert.getIndicatorsNames()));
+                            aggregatedEntityScore.put(entityDocumentId, new EntitiesAlertData(alert.getContributionToEntityScore(), 1, alert.alertPrimaryClassification(), alert.getIndicatorsNames()));
                         }
 
                     });

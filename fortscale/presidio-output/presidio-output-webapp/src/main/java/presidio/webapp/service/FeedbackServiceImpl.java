@@ -81,9 +81,8 @@ public class FeedbackServiceImpl implements FeedbackService {
                 alert.setContributionToEntityScore(origContribution + contributionDelta);
 
                 //3. increase\decrease entity score with the updated alert contribution
-                Entity updatedEntity = updateEntityScore(alert.getEntityId(), entitiesToBeUpdated, contributionDelta);
+                Entity updatedEntity = updateEntityScore(alert.getEntityDocumentId(), entitiesToBeUpdated, contributionDelta);
                 entitiesToBeUpdated.put(updatedEntity.getId(), updatedEntity);
-
             }
         });
 
@@ -108,7 +107,7 @@ public class FeedbackServiceImpl implements FeedbackService {
             entity = entitiesCache.get(entityId);
         }
         else {
-            entity = entityPersistencyService.findEntityById(entityId);
+            entity = entityPersistencyService.findEntityByDocumentId(entityId);
         }
         entity.setScore(entity.getScore() + scoreDelta);
         return entity;

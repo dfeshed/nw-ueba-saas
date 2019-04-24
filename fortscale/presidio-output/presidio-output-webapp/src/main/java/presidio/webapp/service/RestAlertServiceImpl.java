@@ -162,7 +162,7 @@ public class RestAlertServiceImpl implements RestAlertService {
     private AlertQuery createQuery(presidio.webapp.model.AlertQuery alertQuery) {
         AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder();
         if (CollectionUtils.isNotEmpty(alertQuery.getUsersId())) {
-            alertQueryBuilder.filterByEntityId(alertQuery.getUsersId());
+            alertQueryBuilder.filterByEntityDocumentId(alertQuery.getUsersId());
         }
         if (CollectionUtils.isNotEmpty(alertQuery.getUserName())) {
             alertQueryBuilder.filterByEntityName(alertQuery.getUserName());
@@ -229,7 +229,7 @@ public class RestAlertServiceImpl implements RestAlertService {
     @Override
     public AlertsWrapper getAlertsByEntityId(String entityId, boolean expand) {
         Page<presidio.output.domain.records.alerts.Alert> alerts;
-        alerts = alertPersistencyService.findByEntityId(entityId, new PageRequest(pageNumber, pageSize));
+        alerts = alertPersistencyService.findByEntityDocumentId(entityId, new PageRequest(pageNumber, pageSize));
         List restAlerts = new ArrayList();
         int totalElements = 0;
         if (alerts.getTotalElements() > 0) {
@@ -259,7 +259,7 @@ public class RestAlertServiceImpl implements RestAlertService {
 
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
         entityIds.forEach(id -> {
-            Page<presidio.output.domain.records.alerts.Alert> alertsByEntityId = alertPersistencyService.findByEntityId(id, pageRequest);
+            Page<presidio.output.domain.records.alerts.Alert> alertsByEntityId = alertPersistencyService.findByEntityDocumentId(id, pageRequest);
             alertsByEntityIds.put(id, convertToRestAlerts(alertsByEntityId));
         });
 
@@ -333,8 +333,6 @@ public class RestAlertServiceImpl implements RestAlertService {
     @Override
     public void updateAlertFeedback(List<String> alertIds, AlertQueryEnums.AlertFeedback feedback) {
         feedbackService.updateAlertFeedback(alertIds, AlertEnums.AlertFeedback.valueOf(feedback.toString()));
-
-
     }
 
     private presidio.webapp.model.Alert createRestAlert(presidio.output.domain.records.alerts.Alert alert) {
@@ -345,7 +343,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         restAlert.setId(alert.getId());
         restAlert.setClassifiation(alert.getClassifications());
         restAlert.setUsername(alert.getEntityName());
-        restAlert.setUserId(alert.getEntityId());
+        restAlert.setUserId(alert.getEntityDocumentId());
         restAlert.setSeverity(AlertSeverity.fromValue(alert.getSeverity().toString()));
         restAlert.setIndicatorsNum(alert.getIndicatorsNum());
         restAlert.setIndicatorsName(alert.getIndicatorsNames());

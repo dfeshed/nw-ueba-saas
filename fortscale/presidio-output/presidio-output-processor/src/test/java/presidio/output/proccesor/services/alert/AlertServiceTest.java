@@ -76,7 +76,7 @@ public class AlertServiceTest {
         Entity entityEntity = new Entity("entityId", "entityName", 0d, new ArrayList<>(), new ArrayList<>(), null, EntitySeverity.CRITICAL, 0, "entity");
         SmartRecord smart = generateSingleSmart(60);
         Alert alert = alertService.generateAlert(smart, entityEntity, 50);
-        assertEquals(alert.getEntityId(), entityEntity.getId());
+        assertEquals(alert.getEntityDocumentId(), entityEntity.getId());
         assertEquals(alert.getEntityName(), entityEntity.getEntityName());
         assertEquals(alert.getScore(), smart.getScore(), 0.0);
     }

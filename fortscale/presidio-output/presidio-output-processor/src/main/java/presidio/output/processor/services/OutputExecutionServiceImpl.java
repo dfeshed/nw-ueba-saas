@@ -213,8 +213,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private void updateEntitiesScoreFromDeletedAlerts(List<Alert> cleanedAlerts) {
         Set<Entity> entitiesToUpdate = new HashSet<>();
         cleanedAlerts.forEach(alert -> {
-            if (!entitiesToUpdate.contains(alert.getEntityId())) {
-                entitiesToUpdate.add(entityService.findEntityById(alert.getEntityId()));
+            if (!entitiesToUpdate.contains(alert.getEntityDocumentId())) {
+                entitiesToUpdate.add(entityService.findEntityById(alert.getEntityDocumentId()));
             }
         });
         logger.info("{} entities are going to update score", entitiesToUpdate.size());

@@ -40,7 +40,7 @@ public class RestEntityServiceImpl implements RestEntityService {
     @Override
     public Entity getEntityById(String entityId, boolean expand) {
         List<Alert> alerts = null;
-        presidio.output.domain.records.entity.Entity entity = entityPersistencyService.findEntityById(entityId);
+        presidio.output.domain.records.entity.Entity entity = entityPersistencyService.findEntityByDocumentId(entityId);
         if (expand)
             alerts = restAlertService.getAlertsByEntityId(entityId, false).getAlerts();
         return createCompatibleResult(entity, alerts);
@@ -92,7 +92,7 @@ public class RestEntityServiceImpl implements RestEntityService {
     @Override
     public Entity updateEntity(String entityId, JsonPatch updateRequest)
     {
-        presidio.output.domain.records.entity.Entity entityById = entityPersistencyService.findEntityById(entityId);
+        presidio.output.domain.records.entity.Entity entityById = entityPersistencyService.findEntityByDocumentId(entityId);
         entityById = patchEntity(updateRequest, entityById);
         entityPersistencyService.save(entityById);
         return createCompatibleResult(entityById, null);

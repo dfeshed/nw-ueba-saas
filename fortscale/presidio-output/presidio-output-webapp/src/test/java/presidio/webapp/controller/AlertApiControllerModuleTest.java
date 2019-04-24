@@ -430,7 +430,7 @@ public class AlertApiControllerModuleTest {
         restAlert.setUserScoreContribution(alert.getContributionToEntityScore() == null ? BigDecimal.valueOf(0) : new BigDecimal(alert.getContributionToEntityScore()));
         restAlert.setClassifiation(alert.getClassifications());
         restAlert.setUsername(alert.getEntityName());
-        restAlert.setUserId(alert.getEntityId());
+        restAlert.setUserId(alert.getEntityDocumentId());
         restAlert.setSeverity(AlertQueryEnums.AlertSeverity.fromValue(alert.getSeverity().toString()));
         restAlert.setIndicatorsNum(alert.getIndicatorsNum());
         restAlert.setIndicatorsName(alert.getIndicatorsNames() == null ? new ArrayList<>() : alert.getIndicatorsNames());

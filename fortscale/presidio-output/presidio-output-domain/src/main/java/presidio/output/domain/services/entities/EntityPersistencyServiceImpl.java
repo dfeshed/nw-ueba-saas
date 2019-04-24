@@ -26,7 +26,7 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     @Override
     public Iterable<Entity> save(List<Entity> entities) {
         if (entities != null && entities.size() > 0) {
-            entities.forEach(entity -> entity.updateFieldsBeforeSave());
+            entities.forEach(Entity::updateFieldsBeforeSave);
             return entityRepository.save(entities);
         } else {
             return Collections.EMPTY_LIST;
@@ -34,7 +34,7 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     }
 
     @Override
-    public Entity findEntityById(String id) {
+    public Entity findEntityByDocumentId(String id) {
         return entityRepository.findOne(id);
     }
 
@@ -48,6 +48,7 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     }
 
     public Page<Entity> findByIds(Collection<String> ids, PageRequest pageRequest) {
+        // TODO find out how to find by multiple fields in given collection
         return entityRepository.findByIdIn(ids, pageRequest);
     }
 

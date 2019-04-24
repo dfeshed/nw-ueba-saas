@@ -95,7 +95,7 @@ public class IndicatorsForwarder extends Forwarder<Indicator> {
         @Override
         public void serialize(Alert alert, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
 
-            jsonGenerator.writeStringField("entityId", alert.getEntityId());
+            jsonGenerator.writeStringField("entityId", alert.getEntityDocumentId());
             jsonGenerator.writeStringField("entityName", alert.getVendorEntityId());
             jsonGenerator.writeStringField("alertId", alert.getId());
             jsonGenerator.writeStringField("alertSeverity", alert.getSeverity().name());

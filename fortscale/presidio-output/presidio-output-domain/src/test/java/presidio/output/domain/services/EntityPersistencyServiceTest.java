@@ -72,8 +72,8 @@ public class EntityPersistencyServiceTest{
         Entity entity = entity1;
         Entity createdEntity = entityPersistencyService.save(entity1);
 
-        assertNotNull(createdEntity.getId());
-        assertEquals(createdEntity.getId(), entity.getId());
+        assertNotNull(createdEntity.getEntityId());
+        assertEquals(createdEntity.getEntityId(), entity.getEntityId());
         assertEquals(createdEntity.getEntityName(), entity.getEntityName());
         assertTrue(createdEntity.getScore() == entity.getScore());
         assertEquals(createdEntity.getAlertClassifications().size(), entity.getAlertClassifications().size());
@@ -97,12 +97,12 @@ public class EntityPersistencyServiceTest{
         entityPersistencyService.save(entity);
 
         Date createdByBeforeFind = entity.getCreatedDate();
-        Entity foundEntity = entityPersistencyService.findEntityById(entity.getId());
+        Entity foundEntity = entityPersistencyService.findEntityByDocumentId(entity.getId());
         Date createdByAfterFind = foundEntity.getCreatedDate();
 
-        assertNotNull(foundEntity.getId());
+        assertNotNull(foundEntity.getEntityId());
         assertEquals(createdByBeforeFind, createdByAfterFind);
-        assertEquals(foundEntity.getId(), entity.getId());
+        assertEquals(foundEntity.getEntityId(), entity.getEntityId());
         assertEquals(foundEntity.getEntityName(), entity.getEntityName());
         assertTrue(foundEntity.getScore() == entity.getScore());
         assertEquals(foundEntity.getAlertClassifications().size(), entity.getAlertClassifications().size());
@@ -116,20 +116,20 @@ public class EntityPersistencyServiceTest{
         Entity entity = generateEntity(classifications1, "entity1", "entityId1", 50d);
         String created = entity.getUpdatedBy();
         entityPersistencyService.save(entity);
-        Entity foundEntity = entityPersistencyService.findEntityById(entity.getId());
+        Entity foundEntity = entityPersistencyService.findEntityByDocumentId(entity.getId());
         String createdBy = foundEntity.getUpdatedBy();
         Thread.sleep(1000);
         entityPersistencyService.save(foundEntity);
-        foundEntity = entityPersistencyService.findEntityById(entity.getId());
+        foundEntity = entityPersistencyService.findEntityByDocumentId(entity.getId());
         String updatedByAgain = foundEntity.getUpdatedBy();
         Thread.currentThread().setName("TEST2");
         Thread.sleep(1000);
         entityPersistencyService.save(foundEntity);
-        foundEntity = entityPersistencyService.findEntityById(entity.getId());
+        foundEntity = entityPersistencyService.findEntityByDocumentId(entity.getId());
         String updatedByAgain2 = foundEntity.getUpdatedBy();
 
-        assertNotNull(foundEntity.getId());
-        assertEquals(foundEntity.getId(), entity.getId());
+        assertNotNull(foundEntity.getEntityId());
+        assertEquals(foundEntity.getEntityId(), entity.getEntityId());
         assertNotEquals(null, createdBy);
         assertEquals(createdBy, updatedByAgain);
         assertNotEquals(createdBy, updatedByAgain2);

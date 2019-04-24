@@ -17,7 +17,6 @@ import presidio.output.domain.repositories.IndicatorRepository;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -123,13 +122,8 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public Page<Alert> findByEntityId(String entityId, PageRequest pageRequest) {
-        return alertRepository.findByEntityId(entityId, pageRequest);
-    }
-
-    @Override
-    public Page<Alert> findById(String id, PageRequest pageRequest) {
-        return alertRepository.findById(id, pageRequest);
+    public Page<Alert> findByEntityDocumentId(String entityDocumentId, PageRequest pageRequest) {
+        return alertRepository.findByEntityDocumentId(entityDocumentId, pageRequest);
     }
 
     @Override
@@ -138,28 +132,13 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public Page<Alert> findByEntityIdIn(Collection<String> entityId, PageRequest pageRequest) {
-        return alertRepository.findByEntityIdIn(entityId, pageRequest);
-    }
-
-    @Override
     public Indicator findIndicatorById(String indicatorId) {
         return indicatorRepository.findIndicatorById(indicatorId);
     }
 
     @Override
-    public IndicatorSummary findIndicatorSummaryById(String indicatorId) {
-        return indicatorRepository.findIndicatorSummaryById(indicatorId);
-    }
-
-    @Override
     public Page<Indicator> findIndicatorsByAlertId(String alertId, PageRequest pageRequest) {
         return indicatorRepository.findByAlertIdOrderByScoreContributionDesc(alertId, pageRequest);
-    }
-
-    @Override
-    public Page<IndicatorSummary> findIndicatorsSummaryByAlertId(String alertId, PageRequest pageRequest) {
-        return indicatorRepository.findIndicatorsSummaryByAlertId(alertId, pageRequest);
     }
 
     @Override
@@ -196,18 +175,9 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public List<IndicatorEvent> findIndicatorEventByIndicatorId(String indicatorId) {
-        List<IndicatorEvent> events = new ArrayList<>();
-        try (Stream<IndicatorEvent> stream = indicatorEventRepository.findByIndicatorId(indicatorId)) {
-            events = stream.collect(Collectors.toList());
-        }
-        return events;
-    }
-
-    @Override
-    public List<Alert> findByEntityId(String entityId) {
+    public List<Alert> findByEntityDocumentId(String entityDocumentId) {
         List<Alert> alerts = new ArrayList<Alert>();
-        try (Stream<Alert> stream = alertRepository.findByEntityId(entityId)) {
+        try (Stream<Alert> stream = alertRepository.findByEntityDocumentId(entityDocumentId)) {
             alerts = stream.collect(Collectors.toList());
         }
         return alerts;

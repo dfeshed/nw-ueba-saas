@@ -74,7 +74,7 @@ public class EntityServiceImpl implements EntityService {
 
     @Override
     public Entity findEntityById(String entityId) {
-        return entityPersistencyService.findEntityById(entityId);
+        return entityPersistencyService.findEntityByDocumentId(entityId);
     }
 
     @Override
@@ -240,7 +240,7 @@ public class EntityServiceImpl implements EntityService {
 
     @Override
     public void recalculateEntityAlertData(Entity entity) {
-        List<Alert> alerts = alertPersistencyService.findByEntityId(entity.getId());
+        List<Alert> alerts = alertPersistencyService.findByEntityDocumentId(entity.getId());
         EntitiesAlertData entitiesAlertData = new EntitiesAlertData();
         if (CollectionUtils.isNotEmpty(alerts)) {
             alerts.forEach(alert -> {
