@@ -85,7 +85,7 @@
     "git-repo-version": "^1.0.0",
     "glob": "^7.1.2",
     "handlebars": "~4.0.10",
-    "loader.js": "^4.5.1",
+    "loader.js": "4.7.0",
     "marked": "^0.6.0",
     "mermaid": "^7.0.3",
     "mocha": "^5.0.0",

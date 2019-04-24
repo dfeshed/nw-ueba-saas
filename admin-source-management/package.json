@@ -67,7 +67,7 @@
     "ember-sinon": "2.2.0",
     "eslint-plugin-ember-suave": "^1.0.0",
     "faker": "3.1.0",
-    "loader.js": "^4.2.3",
+    "loader.js": "4.7.0",
     "qunit-dom": "^0.8.0",
     "redux-pack": "0.1.5",
     "redux-persist": "4.8.3",

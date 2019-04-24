@@ -59,7 +59,7 @@
     "ember-symbol-observable": "1.0.2",
     "eslint-plugin-ember-suave": "^1.0.0",
     "liquid-fire": "0.29.5",
-    "loader.js": "^4.2.3",
+    "loader.js": "4.7.0",
     "qunit-dom": "^0.8.0",
     "sass": "1.17.2"
   },

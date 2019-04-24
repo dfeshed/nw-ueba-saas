@@ -98,7 +98,7 @@
     "ember-source": "3.9.0",
     "eslint-plugin-ember-suave": "^1.0.0",
     "javascript-detect-element-resize": "file:../javascript-detect-element-resize",
-    "loader.js": "^4.2.3",
+    "loader.js": "4.7.0",
     "qunit-dom": "^0.8.0",
     "redux-persist": "4.8.3",
     "redux-persist-transform-filter": "0.0.15",
