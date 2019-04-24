@@ -31,7 +31,7 @@ def test_valid_build():
         'email_on_retry': False,
         'retries': 1,
         'retry_delay': timedelta(minutes=5),
-        'schema': 'FILE'
+        'smart_conf_name': 'userId_hourly'
     }
 
     dag = DAG(
