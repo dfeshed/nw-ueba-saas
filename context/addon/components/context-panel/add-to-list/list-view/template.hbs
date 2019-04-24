@@ -1,19 +1,19 @@
 <div class="rsa-context-tree-table__addtoListBox">
   <div class="rsa-context-tree-table__headerMessage" title={{t 'context.addToList.headerMessage'}}>{{t 'context.addToList.headerMessage'}}</div>
   {{#rsa-content-tethered-panel-trigger panel='listMeta'}}
-    {{rsa-form-input class="rsa-context-tree-table__metaValue" isReadOnly=true label=(t 'context.addToList.metaValue') placeholder=entityId  isError=isError errorMessage=errorMessage}}
+    {{rsa-form-input class="rsa-context-tree-table__metaValue" isReadOnly=true label=(t 'context.addToList.metaValue') placeholder=entityType.id  isError=isError errorMessage=errorMessage}}
   {{/rsa-content-tethered-panel-trigger}}
   {{#rsa-content-tethered-panel displayCloseButton=false style="primary" position='left' panelId='listMeta'}}
-    <div class="rsa-context-panel-header__tooltip" >{{entityId}}</div>
+    <div class="rsa-context-panel-header__tooltip" >{{entityType.id}}</div>
   {{/rsa-content-tethered-panel}}
 
-  {{#rsa-form-button  class="rsa-context-tree-table__createList-button" isIconOnly=true isFullWidth=true click=(action 'createList')}}
+  {{#rsa-form-button  class="rsa-context-tree-table__createList-button" isIconOnly=true isFullWidth=true click=(action 'openCreateList')}}
     <div align="left">
       {{t 'context.addToList.newList'}}
       {{rsa-icon name="arrow-right-12" size='small'}}
     </div>
   {{/rsa-form-button}}
-  <div class='rsa-context-tree-table__createList_tab'> 
+  <div class='rsa-context-tree-table__createList_tab'>
     <hbox>
       <vbox xs="7">
         <hbox>
@@ -38,7 +38,7 @@
         {{rsa-icon name='filter-2' title=(t 'respond.filters')}}
       </vbox>
       <vbox xs="4">
-        {{rsa-form-input  placeholder=(t 'context.addToList.filter') value=model.filterStr}}
+        {{rsa-form-input  placeholder=(t 'context.addToList.filter') value=filterStr}}
       </vbox>
     </hbox>
   </div>
@@ -60,7 +60,7 @@
           <label class="rsa-form-checkbox-label {{if row.enabled 'checked'}}">
             {{rsa-form-checkbox
             checked=row.enabled
-            change=(action 'toggleCheckbox' row)}}
+            change=(action 'enableNewList' row)}}
           </label>
 
         </vbox>
@@ -75,7 +75,7 @@
         {{#rsa-form-button isFullWidth=true click=(action 'closeList')}}{{t 'context.addToList.cancel'}}{{/rsa-form-button}}
       </vbox>
       <vbox>
-        {{#rsa-form-button style='primary' isFullWidth=true click=(action 'saveList') isDisabled=isDisabled}}{{t 'context.addToList.save'}}{{/rsa-form-button}}
+        {{#rsa-form-button style='primary' isFullWidth=true click=(action 'saveListAction') isDisabled=isDisabled}}{{t 'context.addToList.save'}}{{/rsa-form-button}}
       </vbox>
     </hbox>
   </div>

@@ -1,61 +1,44 @@
 import layout from './template';
-import { inject as service } from '@ember/service';
 import Component from '@ember/component';
-import { debug, warn } from '@ember/debug';
+import { connect } from 'ember-redux';
 import { isEmpty } from '@ember/utils';
+import { addToList, resetList, createNewList, setErrorOnList, resetError } from 'context/actions/list-creators';
+import { listData, isError, errorMessage, isDisabled } from 'context/reducers/list/selectors';
+import computed from 'ember-computed-decorators';
 
-export default Component.extend({
+const stateToComputed = (state) => ({
+  listData: listData(state),
+  isError: isError(state),
+  errorMessageKey: errorMessage(state),
+  isDisabled: isDisabled(state)
+});
+
+const dispatchToActions = {
+  addToList,
+  resetList,
+  createNewList,
+  setErrorOnList,
+  resetError
+};
+
+const CreateListViewComponent = Component.extend({
   layout,
-  request: service(),
+  errorMessageForList: null,
 
-  resetProperties() {
-    this.setProperties({
-      createList: true,
-      name: null,
-      description: null,
-      isError: false,
-      errorMessage: null,
-      isDisabled: false
-    });
-  },
-
-  createNewList(list) {
-    this.set('isDisabled', true);
-    this.get('request').promiseRequest({
-      method: 'stream',
-      modelName: 'create-list',
-      query: {
-        filter: [
-          { field: 'name', value: list.name },
-          { field: 'description', value: list.description }
-        ]
-      }
-    }).then(({ data }) => {
-      debug(`Successfully created list: ${ data }`);
-      list.id = data.id;
-      this.get('model.list').push(list);
-      this.resetProperties();
-    }).catch(({ meta }) => {
-      const error = meta ? meta.message : 'context.error';
-      warn(`List is not created: ${ error }`, { id: 'context.components.context-panel.add-to-list.create-list-view.component' });
-      this.setProperties({
-        isDisabled: false,
-        isError: true,
-        errorMessage: this.get('i18n').t(`context.error.${error}`)
-      });
-    });
+  @computed('errorMessageKey')
+  errorMessage(errorMessageKey) {
+    return this.get('i18n').t(`context.error.${errorMessageKey}`);
   },
 
   actions: {
 
     checkListName(name) {
-      const rows = this.get('model.list');
+      this.send('resetError');
+      const rows = this.get('listData');
       const isDuplicateName = rows.find((list) => list.name.toUpperCase() === name.toUpperCase().trim());
-      this.setProperties({
-        isError: !!isDuplicateName,
-        errorMessage: isDuplicateName ? this.get('i18n').t('context.error.listDuplicateName') : null,
-        isDisabled: !!isDuplicateName
-      });
+      if (isDuplicateName) {
+        this.send('setErrorOnList', 'listDuplicateName');
+      }
     },
 
     appendList() {
@@ -66,20 +49,13 @@ export default Component.extend({
         description: this.get('description')
       };
       if (isEmpty(newList.name) || newList.name.length > 255) {
-        this.setProperties({
-          isError: true,
-          errorMessage: this.get('i18n').t('context.error.listValidName'),
-          isDisabled: true
-        });
-      } else if (!this.get('isError') || !this.get('isDisabled')) {
-        this.createNewList(newList);
+        this.send('setErrorOnList', 'listValidName');
+      } else {
+        this.send('createNewList', { newList });
       }
-    },
-
-    cancelList() {
-      this.set('createList', false);
-      this.resetProperties();
     }
   }
 
 });
+
+export default connect(stateToComputed, dispatchToActions)(CreateListViewComponent);

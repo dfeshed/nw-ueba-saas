@@ -33,7 +33,8 @@ export default [
     'errorMessage': null,
     'tags': [ 'LIST' ],
     'maxPages': 0
-  }, {
+  },
+  {
     'resultId': 'cd561944-8139-44e7-9511-2823c8c9bb0d/2',
     'queryId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
     'datasourceId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
@@ -58,7 +59,8 @@ export default [
     'errorMessage': null,
     'tags': [ 'LIST' ],
     'maxPages': 0
-  }, {
+  },
+  {
     'resultId': 'cd561944-8139-44e7-9511-2823c8c9bb0d/3',
     'queryId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
     'datasourceId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
@@ -132,7 +134,8 @@ export default [
     'errorMessage': null,
     'tags': [ 'LIST' ],
     'maxPages': 0
-  }, {
+  },
+  {
     'resultId': 'cd561944-8139-44e7-9511-2823c8c9bb0d/2',
     'queryId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
     'datasourceId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
@@ -157,7 +160,8 @@ export default [
     'errorMessage': null,
     'tags': [ 'LIST' ],
     'maxPages': 0
-  }, {
+  },
+  {
     'resultId': 'cd561944-8139-44e7-9511-2823c8c9bb0d/3',
     'queryId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
     'datasourceId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
@@ -231,7 +235,8 @@ export default [
     'errorMessage': null,
     'tags': [ 'LIST' ],
     'maxPages': 0
-  }, {
+  },
+  {
     'resultId': 'cd561944-8139-44e7-9511-2823c8c9bb0d/2',
     'queryId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
     'datasourceId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
@@ -256,7 +261,8 @@ export default [
     'errorMessage': null,
     'tags': [ 'LIST' ],
     'maxPages': 0
-  }, {
+  },
+  {
     'resultId': 'cd561944-8139-44e7-9511-2823c8c9bb0d/3',
     'queryId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
     'datasourceId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
@@ -330,7 +336,8 @@ export default [
     'errorMessage': null,
     'tags': [ 'LIST' ],
     'maxPages': 0
-  }, {
+  },
+  {
     'resultId': 'cd561944-8139-44e7-9511-2823c8c9bb0d/2',
     'queryId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
     'datasourceId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
@@ -355,7 +362,8 @@ export default [
     'errorMessage': null,
     'tags': [ 'LIST' ],
     'maxPages': 0
-  }, {
+  },
+  {
     'resultId': 'cd561944-8139-44e7-9511-2823c8c9bb0d/3',
     'queryId': 'f5714b1e-0cc0-4472-8acd-ffbc1e1ce537',
     'datasourceId': null,

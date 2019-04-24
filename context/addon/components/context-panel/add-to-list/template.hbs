@@ -1,9 +1,9 @@
 {{#rsa-application-modal label=(t 'context.addToList.title') eventId='addToList' contextualHelpRequired=true module=helpId.moduleId topic=helpId.topicId}}
   <div class='modal-content'>
-    {{#if createList}}
-      {{context-panel/add-to-list/list-view createList=createList model=model entityId=entity.id}}
+    {{#if isListView}}
+      {{context-panel/add-to-list/list-view}}
     {{else}}
-      {{context-panel/add-to-list/create-list-view createList=createList model=model}}
+      {{context-panel/add-to-list/create-list-view}}
     {{/if}}
   </div>
 {{/rsa-application-modal}}

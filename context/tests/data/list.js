@@ -44,7 +44,8 @@ export default [{
   advancedParameters: {},
   createdOn: 0,
   lastModifiedOn: 0
-}, {
+},
+{
   id: '5887775f37690731cc81d716',
   name: 'list2',
   enabled: true,
@@ -90,7 +91,8 @@ export default [{
   advancedParameters: {},
   createdOn: 0,
   lastModifiedOn: 0
-}, {
+},
+{
   id: '5887775f37690731cc81d71f',
   name: 'list3',
   enabled: true,
@@ -136,7 +138,8 @@ export default [{
   advancedParameters: {},
   createdOn: 0,
   lastModifiedOn: 0
-}, {
+},
+{
   id: '5887775e37690731cc81d70c',
   name: 'list1',
   enabled: true,

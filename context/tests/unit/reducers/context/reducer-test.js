@@ -5,7 +5,7 @@ import Immutable from 'seamless-immutable';
 import lookupData from '../../../data/subscriptions/context/stream/data/ip';
 import { entitiesMetas } from '../../../data/subscriptions/entity-meta/findAll/data';
 
-module('Unit | Reducers | preferences-panel | Preferences');
+module('Unit | Reducers | context-panel');
 
 const initialState = Immutable.from({
   meta: null,

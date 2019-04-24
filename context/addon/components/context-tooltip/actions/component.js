@@ -7,13 +7,15 @@ import { connect } from 'ember-redux';
 import { pivotToInvestigateUrl, pivotToEndpointUrl } from 'context/utils/context-data-modifier';
 import { getSummaryData } from 'context/actions/model-summary';
 import { inject as service } from '@ember/service';
+import { openAddToList } from 'context/actions/list-creators';
 
 const stateToComputed = ({ context: { hover: { modelSummary } } }) => ({
   modelSummary
 });
 
 const dispatchToActions = {
-  getSummaryData
+  getSummaryData,
+  openAddToList
 };
 
 const ContextToolTipActions = Component.extend({
@@ -157,6 +159,7 @@ const ContextToolTipActions = Component.extend({
   actions: {
     openAddToListModal() {
       safeCallback(this.get('hideAction'));
+      this.send('openAddToList', { type: this.get('entityType'), id: this.get('entityId') });
       safeCallback(this.get('addToListAction'), { type: this.get('entityType'), id: this.get('entityId') });
     }
   }

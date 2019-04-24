@@ -1,42 +1,62 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, findAll, render, waitUntil } from '@ember/test-helpers';
+import { findAll, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import Evented from '@ember/object/evented';
-import Service from '@ember/service';
-const eventBusStub = Service.extend(Evented, {});
+import ReduxDataHelper from '../../../../helpers/redux-data-helper';
+import { patchReducer } from '../../../../helpers/vnext-patch';
+import { revertPatch } from '../../../../helpers/patch-reducer';
+import Immutable from 'seamless-immutable';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
-let eventBus;
 
-const timeout = 15000;
+let setState;
 
 module('Integration | Component | context-panel/add-to-list', function(hooks) {
 
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
-    this.owner.register('service:event-bus', eventBusStub);
-    eventBus = this.owner.lookup('service:event-bus');
+    setState = (state) => {
+      patchReducer(this, Immutable.from(state));
+    };
+    initialize(this.owner);
   });
 
-  test('it renders', async function(assert) {
+  hooks.afterEach(function() {
+    revertPatch();
+  });
+  const entity = {
+    type: 'IP',
+    id: '10.10.10.10'
+  };
 
-    const entity = {
-      type: 'IP',
-      id: '10.10.10.10'
-    };
+  test('renders list-view screen', async function(assert) {
+    new ReduxDataHelper(setState)
+      .initializeContextPanel({ lookupKey: '1.1.1.1',
+        meta: 'IP' })
+      .setListView(true)
+      .setEntityType(entity)
+      .build();
 
     await render(hbs`
       <div id='modalDestination'></div>
       {{context-panel/add-to-list}}
     `);
+    assert.ok(findAll('.rsa-context-tree-table__addtoListBox').length);
+  });
 
-    await eventBus.trigger('rsa-application-modal-open-addToList', entity);
+  test('renders create-list screen', async function(assert) {
+    new ReduxDataHelper(setState)
+      .initializeContextPanel({ lookupKey: '1.1.1.1',
+        meta: 'IP' })
+      .setListView(false)
+      .setEntityType(entity)
+      .build();
 
-    await waitUntil(() => {
-      return find('.rsa-context-tree-table__listDetails').textContent.trim().length > 0;
-    }, { timeout });
-
-    assert.ok(findAll('.modal-content').length);
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{context-panel/add-to-list}}
+    `);
+    assert.ok(findAll('.rsa-context-tree-table__createList').length);
   });
 });
