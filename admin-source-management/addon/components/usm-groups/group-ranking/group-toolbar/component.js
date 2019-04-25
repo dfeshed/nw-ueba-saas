@@ -7,7 +7,8 @@ import { inject } from '@ember/service';
 import {
   groupRankingStatus,
   hasGroupRankingChanged,
-  selectedGroupRanking
+  selectedGroupRanking,
+  groupRankingSelectedIndex
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 import {
@@ -19,7 +20,8 @@ import {
 const stateToComputed = (state) => ({
   groupRankingStatus: groupRankingStatus(state),
   hasGroupRankingChanged: hasGroupRankingChanged(state),
-  selectedGroupRanking: selectedGroupRanking(state)
+  selectedGroupRanking: selectedGroupRanking(state),
+  groupRankingSelectedIndex: groupRankingSelectedIndex(state)
 });
 
 const dispatchToActions = {
@@ -47,9 +49,9 @@ const GroupWizardToolbar = Component.extend(Notifications, {
   isStepValid(groupRankingStatus) {
     return groupRankingStatus == 'complete';
   },
-  @computed('selectedGroupRanking')
-  hasSelectedGroup(selectedGroupRanking) {
-    return selectedGroupRanking !== null;
+  @computed('selectedGroupRanking', 'groupRankingSelectedIndex')
+  hasSelectedGroup(selectedGroupRanking, groupRankingSelectedIndex) {
+    return selectedGroupRanking !== null && groupRankingSelectedIndex !== 0;
   },
   actions: {
     transitionToPrevStep() {

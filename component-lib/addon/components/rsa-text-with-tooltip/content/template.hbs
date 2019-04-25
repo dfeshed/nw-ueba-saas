@@ -4,6 +4,8 @@
   {{/if}}
 {{else if (eq format 'SIZE')}}
   {{rsa-content-memsize size=text}}
+{{else if (eq format 'PREFORMAT')}}
+  <pre>{{text}}</pre>
 {{else}}
   {{text}}
 {{/if}}

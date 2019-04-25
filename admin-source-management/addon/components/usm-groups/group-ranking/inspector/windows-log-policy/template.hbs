@@ -1,0 +1,33 @@
+<vbox class="rsa-application-layout-panel-content" xs="12" fit>
+  {{#each selectedWindowsLogPolicy as |section|}}
+    {{#if section.channels}}
+      <div class="heading">
+        <hbox fit class="col-xs-12">
+          <hbox class="value col-xs-6 col-md-7">{{t section.header}}</hbox>
+          <hbox class="value col-xs-6 col-md-5">{{t 'adminUsm.groupWizard.applyPolicy.governingPolicy'}}</hbox>
+        </hbox>
+      </div>
+      {{#each section.channels as |channel|}}
+        <hbox fit class="col-xs-12">
+          <hbox class="title col-xs-6 col-md-4">{{channel.name}}</hbox>
+          <hbox class="value col-xs-6 col-md-3">{{channel.value}}</hbox>
+          <hbox class="value col-xs-6 col-md-5 propValue">{{channel.origin.policyName}} - {{channel.origin.groupName}}</hbox>
+        </hbox>
+      {{/each}}
+    {{else}} 
+      <div class="heading">
+        <hbox fit class="col-xs-12">
+          <hbox class="value col-xs-6 col-md-7">{{t section.header}}</hbox>
+          <hbox class="value col-xs-6 col-md-5">{{t 'adminUsm.groupWizard.applyPolicy.governingPolicy'}}</hbox>
+        </hbox>
+      </div>
+      {{#each section.props as |prop|}}
+        <hbox fit class="col-xs-12">
+          <hbox class="title col-xs-6 col-md-4">{{t prop.name}}</hbox>          
+          <hbox class="value col-xs-6 col-md-3">{{prop.value}}</hbox>
+          <hbox class="value col-xs-6 col-md-5 propValue">{{prop.origin.policyName}} - {{prop.origin.groupName}}</hbox>
+        </hbox>
+      {{/each}}
+    {{/if}}
+  {{/each}}
+</vbox>

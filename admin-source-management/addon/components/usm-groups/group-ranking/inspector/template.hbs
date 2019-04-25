@@ -1,8 +1,7 @@
 <vbox class="rsa-application-layout-panel-content" xs="12" fit> 
-  {{#if (eq focusedPolicy.policy.policyType 'edrPolicy')}}
+  {{#if (eq selectedSourceType 'edrPolicy')}}
     {{usm-groups/group-ranking/inspector/edr-policy}}
-  {{else if (eq focusedPolicy.policy.policyType 'windowsLogPolicy')}}
-    {{!--usm-groups/group-ranking/inspector/windows-log-policy--}}
-    {{usm-groups/group-ranking/inspector/edr-policy}}
+  {{else if (eq selectedSourceType 'windowsLogPolicy')}}
+    {{usm-groups/group-ranking/inspector/windows-log-policy}}
   {{/if}}
 </vbox>

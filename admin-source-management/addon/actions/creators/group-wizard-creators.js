@@ -232,12 +232,17 @@ const selectGroupRanking = (groupRankingName) => {
   };
 };
 
-const setTopRanking = () => {
+const setTopRanking = (topRanking) => {
   return (dispatch, getState) => {
     const groupRankingVal = groupRanking(getState());
     const selectedGroupRankingVal = selectedGroupRanking(getState());
     const selectedGroup = groupRankingVal.filter((group) => selectedGroupRankingVal === group.name);
-    const groupRankingNew = selectedGroup.concat(groupRankingVal.filter((group) => selectedGroupRankingVal !== group.name));
+    let groupRankingNew = [];
+    if (topRanking) {
+      groupRankingNew = selectedGroup.concat(groupRankingVal.filter((group) => selectedGroupRankingVal !== group.name));
+    } else { // bottom ranking
+      groupRankingNew = groupRankingVal.filter((group) => selectedGroupRankingVal !== group.name).concat(selectedGroup);
+    }
     const payload = {
       groupRankingNew
     };

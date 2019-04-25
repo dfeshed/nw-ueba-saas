@@ -65,7 +65,11 @@ module('Integration | Component | usm-groups/group-ranking/group-toolbar', funct
   });
 
   test('Toolbar buttons test fron second atep and data changes', async function(assert) {
-    const state = new ReduxDataHelper(setState).groupWiz().groupRankingWithData().build();
+    const state = new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupRankingWithData()
+      .selectedSourceType('edrPolicy')
+      .build();
     this.set('step', state.usm.groupWizard.rankingSteps[1]);
     await render(hbs`{{usm-groups/group-ranking/group-toolbar step=step}}`);
     assert.equal(findAll('.reset-ranking-button:not(.is-disabled)').length, 1, 'The reset-ranking-button button appears in the DOM and is enabled');
@@ -78,6 +82,7 @@ module('Integration | Component | usm-groups/group-ranking/group-toolbar', funct
     const state = new ReduxDataHelper(setState)
       .groupWiz()
       .groupRankingWithData()
+      .selectedSourceType('edrPolicy')
       .selectGroupRanking('Zebra 001')
       .build();
     this.set('step', state.usm.groupWizard.rankingSteps[1]);
@@ -87,7 +92,7 @@ module('Integration | Component | usm-groups/group-ranking/group-toolbar', funct
     await render(hbs`{{usm-groups/group-ranking/group-toolbar step=step transitionToClose=(action transitionToClose)}}`);
     await settled();
     assert.equal(findAll('.reset-ranking-button:not(.is-disabled)').length, 1, 'The reset-ranking-button button appears in the DOM and is enabled');
-    assert.equal(findAll('.top-ranking-button:not(.is-disabled)').length, 1, 'The top-ranking-button button appears in the DOM and is enabled');
+    assert.equal(findAll('.top-ranking-button.is-disabled').length, 1, 'The top-ranking-button button appears in the DOM and is disabled');
     assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The publish-button button appears in the DOM and is enabled');
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');

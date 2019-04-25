@@ -29,7 +29,8 @@ export default
     'primaryUdpBeaconInterval': 30,
     'primaryUdpBeaconIntervalUnit': 'SECONDS',
     'agentMode': 'ADVANCED',
-    'offlineDiskStorageSizeInMb': 100
+    'offlineDiskStorageSizeInMb': 100,
+    'customConfig': '{a:"test"}'
   },
   'origins': {
     'createdOn': {

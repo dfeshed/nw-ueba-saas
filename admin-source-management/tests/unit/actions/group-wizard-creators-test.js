@@ -109,8 +109,29 @@ module('Unit | Actions | group wizard creators', function(hooks) {
       assert.equal(action.type, ACTION_TYPES.SET_TOP_RANKING, 'action has the correct type');
       assert.deepEqual(action.payload, payloadResult, 'payload has the correct vals');
     };
-    const thunk = groupWizardCreators.setTopRanking();
+    const thunk = groupWizardCreators.setTopRanking(true);
     thunk(dispatch, setState3);
   });
 
+  const setState4 = () => {
+    return {
+      usm: {
+        groupWizard: {
+          groupRanking: [{ name: 1 }, { name: 2 }, { name: 3 }],
+          selectedGroupRanking: 1
+        }
+      }
+    };
+  };
+
+  test('on SET_TOP_RANKING to bottom, group', function(assert) {
+    const payloadResult = {
+      'groupRankingNew': [{ name: 2 }, { name: 3 }, { name: 1 }]
+    };
+    const dispatch = (action) => {
+      assert.deepEqual(action.payload, payloadResult, 'payload has the correct vals');
+    };
+    const thunk = groupWizardCreators.setTopRanking(false);
+    thunk(dispatch, setState4);
+  });
 });

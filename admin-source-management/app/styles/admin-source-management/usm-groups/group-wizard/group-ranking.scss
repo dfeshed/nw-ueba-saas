@@ -1,10 +1,21 @@
 .group-ranking {
   position: relative;
   .group-ranking-table {
+    max-height: calc(100vh - #{$wizardStepMaxHeight});
+    min-height: calc(100vh - #{$wizardStepMaxHeight});
+    max-width: calc(50% - 1px);
+    min-width: calc(50% - 1px);
+    overflow: auto;
     background-color: background-color(primary, darkest);
     z-index: 999;
+    scroll-behavior: smooth;
   }
   .preview-settings {
+    max-height: calc(100vh - #{$wizardStepMaxHeight});
+    min-height: calc(100vh - #{$wizardStepMaxHeight});
+    max-width: calc(50% - 200px);
+    min-width: calc(50% - 200px);
+    overflow: auto;
     border-left: 1px solid border-color(primary, dark);
     z-index: 888;
     position: absolute;
@@ -12,9 +23,8 @@
     -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
     animation-name: preview;
     animation-duration: 1s;
-    left: 900px;
+    left: calc(50% - 1px);
     padding-left: 30px;
-    width: 500px;
     .heading hbox {
       color: text-color(primary, light);
     }
@@ -36,13 +46,13 @@
   /* Safari 4.0 - 8.0 */
   @-webkit-keyframes preview {
     0%   {left:0px; top:0px;}
-    100%  {left:900px; top:0px;}
+    100%  {left:calc(50% - 1px); top:0px;}
   }
   
   /* Standard syntax */
   @keyframes preview {
     0%   {left:0px; top:0px;}
-    100%  {left:900px; top:0px;}
+    100%  {left:calc(50% - 1px); top:0px;}
   }
 
   .n-sources-cell {
@@ -76,6 +86,7 @@
     display: inline;
   }
   .edit-ranking-step {
+    width: 100%;
     .col-md-5 {
       padding-left: rsa-whitespace();
     }
@@ -84,11 +95,8 @@
       text-align: center;
       margin-top: 20%;
     }
-    overflow: auto;
-    max-height: calc(100vh - #{$wizardStepMaxHeight});
-    min-height: calc(100vh - #{$wizardStepMaxHeight});
     table {
-      width: 850px;
+      width: 97%;
       margin: rsa-whitespace();
       tbody {
         tr {
@@ -147,7 +155,9 @@
     }
   }
 }
-.admin-engine .license-banner.shown+page.admin-usm-engine .edit-ranking-step{
+/*
+.admin-engine .license-banner.shown+page.admin-usm-engine .edit-ranking-step {
   min-height: calc(100vh - #{$wizardStepMaxHeight} - 20);
   max-height: calc(100vh - #{$wizardStepMaxHeight} - 20);
 }
+*/

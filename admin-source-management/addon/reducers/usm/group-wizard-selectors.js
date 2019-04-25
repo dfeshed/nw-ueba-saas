@@ -26,7 +26,17 @@ export const groupAttributesMap = (state) => _groupWizardState(state).groupAttri
 export const andOrOperator = (state) => _groupWizardState(state).group.groupCriteria.conjunction;
 export const selectedGroupRanking = (state) => _groupWizardState(state).selectedGroupRanking;
 export const groupRankingPrevListStatus = (state) => _policiesState(state).groupRankingPrevListStatus;
-export const focusedItem = (state) => _policiesState(state).focusedItem;
+
+export const groupRankingSelectedIndex = createSelector(
+  groupRanking, selectedGroupRanking,
+  (groupRanking, selectedGroupRanking) => {
+    for (let i = 0; groupRanking.length > i; i++) {
+      if (groupRanking[i].name === selectedGroupRanking) {
+        return i;
+      }
+    }
+  }
+);
 
 export const hasGroupRankingChanged = createSelector(
   _groupRankingOrig, groupRanking,

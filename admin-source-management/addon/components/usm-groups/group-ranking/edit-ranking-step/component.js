@@ -13,7 +13,8 @@ import {
   selectGroupRanking,
   previewRanking,
   previewRankingWithFetch,
-  fetchRankingView
+  fetchRankingView,
+  setTopRanking
 } from 'admin-source-management/actions/creators/group-wizard-creators';
 
 const stateToComputed = (state) => ({
@@ -29,7 +30,8 @@ const dispatchToActions = {
   selectGroupRanking,
   previewRanking,
   fetchRankingView,
-  previewRankingWithFetch
+  previewRankingWithFetch,
+  setTopRanking
 };
 
 const EditRankingStep = Component.extend({
@@ -42,10 +44,18 @@ const EditRankingStep = Component.extend({
     handleKeyBoard(index, evt) {
       switch (evt.keyCode) {
         case 40:
-          evt.shiftKey ? this.send('reorderRanking', 'arrowDown', index) : evt.target.nextSibling.focus();
+          if (evt.shiftKey) {
+            evt.altKey ? this.send('setTopRanking', false) : this.send('reorderRanking', 'arrowDown', index);
+          } else {
+            evt.target.nextSibling.focus();
+          }
           break;
         case 38:
-          evt.shiftKey ? this.send('reorderRanking', 'arrowUp', index) : evt.target.previousSibling.focus();
+          if (evt.shiftKey) {
+            evt.altKey ? this.send('setTopRanking', true) : this.send('reorderRanking', 'arrowUp', index);
+          } else {
+            evt.target.previousSibling.focus();
+          }
           break;
         case 37:
           this.send('previewRankingWithFetch', index, 'arrowLeft');

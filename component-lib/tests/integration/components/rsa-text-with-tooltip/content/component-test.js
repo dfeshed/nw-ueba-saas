@@ -29,6 +29,13 @@ module('Integration | Component | rsa-text-with-tooltip/content', function(hooks
     assert.equal(find('.tool-tip-value .units').textContent.trim(), 'KB');
   });
 
+  test('it renders the PREFORMAT pre tag', async function(assert) {
+    this.set('format', 'PREFORMAT');
+    this.set('value', 'foo');
+    await render(hbs`{{rsa-text-with-tooltip/content format=format text=value}}`);
+    assert.equal(find('.tool-tip-value pre').textContent, 'foo');
+  });
+
   test('it renders the content-note when showNote is set true', async function(assert) {
     this.set('showNote', true);
     await render(hbs`{{rsa-text-with-tooltip/content showNote=showNote text='test-value'}}`);

@@ -195,7 +195,7 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step/row
     assert.equal(document.querySelectorAll('.tool-tip-value')[3].innerText.trim(), expectedSrcCountTip.string, '-3 source count tooltip as expected');
 
     assert.equal(document.querySelector('.edit-ranking-step table').rows[5].cells[5].innerText.trim(), 10, 'published and synced source count as expected');
-    assert.equal(document.querySelectorAll('.tooltip-text').length, 7, 'no tooltip rendered for normal count');
+    assert.equal(document.querySelectorAll('.tooltip-text').length, 6, 'no tooltip rendered for normal count');
   });
   test('Show edrPolicy policy applied', async function(assert) {
     const rankingData =

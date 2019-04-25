@@ -88,4 +88,88 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
     assert.equal(findAll('tr:nth-child(2) .x-toggle-container-checked').length, 1, 'second Toggle is checked');
   });
 
+  test('keypress arrowRight test', async function(assert) {
+    const data = [{ name: 'gOne' }, { name: 'gTwo' }];
+    const expectedResult = [{ name: 'gOne', isChecked: true }, { name: 'gTwo' }];
+    new ReduxDataHelper(setState).groupRankingWithData(data).build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    await triggerEvent(document.querySelectorAll('.group-ranking-table-body tr')[0], 'keydown', { key: 39 });
+    const state = this.owner.lookup('service:redux').getState();
+    assert.deepEqual(state.usm.groupWizard.groupRanking, expectedResult, 'first group is checked');
+  });
+
+  test('keypress arrowLeft test', async function(assert) {
+    const data = [{ name: 'gOne', isChecked: true }, { name: 'gTwo' }];
+    const expectedResult = [{ name: 'gOne', isChecked: false }, { name: 'gTwo' }];
+    new ReduxDataHelper(setState).groupRankingWithData(data).build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    await triggerEvent(document.querySelectorAll('.group-ranking-table-body tr')[0], 'keydown', { key: 37 });
+    const state = this.owner.lookup('service:redux').getState();
+    assert.deepEqual(state.usm.groupWizard.groupRanking, expectedResult, 'first group is checked to false');
+  });
+
+  test('keypress arrowDown test', async function(assert) {
+    const data = [{ name: 'gOne' }, { name: 'gTwo' }];
+    new ReduxDataHelper(setState).groupRankingWithData(data).build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    await triggerEvent(document.querySelectorAll('.group-ranking-table-body tr')[0], 'keydown', { key: 40 });
+    const state = this.owner.lookup('service:redux').getState();
+    assert.deepEqual(state.usm.groupWizard.selectedGroupRanking, 'gTwo', 'second group is selected');
+  });
+
+  test('keypress arrowUp test', async function(assert) {
+    const data = [{ name: 'gOne' }, { name: 'gTwo' }];
+    new ReduxDataHelper(setState).groupRankingWithData(data).build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    await triggerEvent(document.querySelectorAll('.group-ranking-table-body tr')[1], 'keydown', { key: 38 });
+    const state = this.owner.lookup('service:redux').getState();
+    assert.deepEqual(state.usm.groupWizard.selectedGroupRanking, 'gOne', 'first group is selected');
+  });
+
+  test('keypress arrowDown + shiftKey test', async function(assert) {
+    const data = [{ name: 'gOne' }, { name: 'gTwo' }, { name: 'gThree' }];
+    const expectedResult = [{ name: 'gTwo' }, { name: 'gOne' }, { name: 'gThree' }];
+    new ReduxDataHelper(setState).groupRankingWithData(data).build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    await triggerEvent(document.querySelectorAll('.group-ranking-table-body tr')[0], 'keydown', { key: 40, shiftKey: true });
+    const state = this.owner.lookup('service:redux').getState();
+    assert.deepEqual(state.usm.groupWizard.groupRanking, expectedResult, 'first group was moved down to second ranking');
+  });
+
+  test('keypress arrowUp + shiftKey test', async function(assert) {
+    const data = [{ name: 'gOne' }, { name: 'gTwo' }, { name: 'gThree' }];
+    const expectedResult = [{ name: 'gOne' }, { name: 'gThree' }, { name: 'gTwo' }];
+    new ReduxDataHelper(setState).groupRankingWithData(data).build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    await triggerEvent(document.querySelectorAll('.group-ranking-table-body tr')[2], 'keydown', { key: 38, shiftKey: true });
+    const state = this.owner.lookup('service:redux').getState();
+    assert.deepEqual(state.usm.groupWizard.groupRanking, expectedResult, 'third group was moved up to second ranking');
+  });
+
+  test('keypress arrowDown + shiftKey + altKey test', async function(assert) {
+    const data = [{ name: 'gOne' }, { name: 'gTwo' }, { name: 'gThree' }];
+    const expectedResult = [{ name: 'gTwo' }, { name: 'gThree' }, { name: 'gOne' }];
+    new ReduxDataHelper(setState).groupRankingWithData(data).build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    // select the first group
+    await triggerEvent(document.querySelectorAll('.group-ranking-table-body tr')[1], 'keydown', { key: 38 });
+    // moved first group to the bottom
+    await triggerEvent(document.querySelectorAll('.group-ranking-table-body tr')[0], 'keydown', { key: 40, shiftKey: true, altKey: true });
+    const state = this.owner.lookup('service:redux').getState();
+    assert.deepEqual(state.usm.groupWizard.groupRanking, expectedResult, 'first group was moved down to bottom ranking');
+  });
+
+  test('keypress arrowUp + shiftKey + altKey test', async function(assert) {
+    const data = [{ name: 'gOne' }, { name: 'gTwo' }, { name: 'gThree' }];
+    const expectedResult = [{ name: 'gThree' }, { name: 'gOne' }, { name: 'gTwo' }];
+    new ReduxDataHelper(setState).groupRankingWithData(data).build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    // select the third group
+    await triggerEvent(document.querySelectorAll('.group-ranking-table-body tr')[1], 'keydown', { key: 40 });
+    // moved third group to the top
+    await triggerEvent(document.querySelectorAll('.group-ranking-table-body tr')[2], 'keydown', { key: 38, shiftKey: true, altKey: true });
+    const state = this.owner.lookup('service:redux').getState();
+    assert.deepEqual(state.usm.groupWizard.groupRanking, expectedResult, 'third group was moved up to top ranking');
+  });
+
 });

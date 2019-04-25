@@ -28,7 +28,8 @@ import {
   limitedPolicySourceTypes,
   groupRankingQuery,
   groupRankingViewQuery,
-  isLoadingGroupRanking
+  isLoadingGroupRanking,
+  groupRankingSelectedIndex
 
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
@@ -837,4 +838,22 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
     assert.deepEqual(groupRankingViewQueryExpected, groupRankingQueryViewResult, 'groupRankingViewQuery is as expected');
   });
 
+  test('groupRankingSelectedIndex selector', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .selectGroupRanking('foo2')
+      .groupRankingWithData([{ name: 'foo', otherParam: 'fooOtherParam' }, { name: 'foo2', otherParam: 'fooOtherParam2' }])
+      .build();
+    const resultIndex = groupRankingSelectedIndex(Immutable.from(fullState));
+    assert.deepEqual(1, resultIndex, 'groupRankingSelectedIndex is as expected');
+  });
+  test('groupRankingSelectedIndex selector top index', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .groupWiz()
+      .selectGroupRanking('foo')
+      .groupRankingWithData([{ name: 'foo', otherParam: 'fooOtherParam' }, { name: 'foo2', otherParam: 'fooOtherParam2' }])
+      .build();
+    const resultIndex = groupRankingSelectedIndex(Immutable.from(fullState));
+    assert.deepEqual(0, resultIndex, 'groupRankingSelectedIndex is top as expected');
+  });
 });

@@ -1,5 +1,5 @@
 $panel-width: 200px;
-$panel-max-width: 400px;
+$panel-max-width: 500px;
 $panel-max-height: 250px;
 
 .tool-tip-value {
@@ -26,6 +26,9 @@ $panel-max-height: 250px;
       @include rsa-font(bold);
       display: contents;
     }
+  }
+  pre {
+    font-family: "Lucida Console", Monaco, monospace;
   }
 }
 

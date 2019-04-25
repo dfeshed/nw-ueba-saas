@@ -4,6 +4,7 @@ import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
+import testPolicyAndOrigins from '../../../../data/subscriptions/groups/fetchRankingView/dataWindow';
 
 import {
   focusedPolicy,
@@ -169,5 +170,93 @@ module('Unit | Selectors | Policy Details | Windows Log Policy | Windows Log Sel
       header: 'adminUsm.policies.detail.channelFilterSettings',
       props: []
     }), false, 'No Channel settings section as expected');
+  });
+
+  test('Group ranking default windows policy view', function(assert) {
+    const state = new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizWinLogLogServers()
+      .focusedPolicy(testPolicyAndOrigins)
+      .build();
+    assert.expect(7);
+    const policyForDetails = focusedPolicy(Immutable.from(state));
+    const policyDetails = selectedWindowsLogPolicy(Immutable.from(state), policyForDetails.policy);
+    assert.equal(policyDetails.length, 2, '2 section returned as expected');
+    assert.equal(policyDetails[0].header, 'adminUsm.policies.detail.windowsLogSettings', 'first section is as expected');
+    assert.equal(policyDetails[1].header, 'adminUsm.policies.detail.channelFilterSettings', 'second section is as expected');
+    assert.equal(policyDetails[0].props.length, 3, '3 properties returned as expected in endpoint server settings');
+    assert.equal(policyDetails[0].props[1].value, 'TLS', 'Protocol value shows as expected');
+    assert.equal(policyDetails[0].props[2].origin.groupName, 'test', 'groupName returned as expected');
+    assert.equal(policyDetails[0].props[2].origin.policyName, 'test', 'policyName returned as expected');
+  });
+
+  const testPolicyAndNoOrigins = {
+    ...testPolicyAndOrigins,
+    origins: { }
+  };
+
+  test('Group ranking default windows policy view with empty origins', function(assert) {
+    const state = new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizWinLogLogServers()
+      .focusedPolicy(testPolicyAndNoOrigins)
+      .build();
+    assert.expect(7);
+    const policyForDetails = focusedPolicy(Immutable.from(state));
+    const policyDetails = selectedWindowsLogPolicy(Immutable.from(state), policyForDetails.policy);
+    assert.equal(policyDetails.length, 2, '2 section returned as expected');
+    assert.equal(policyDetails[0].header, 'adminUsm.policies.detail.windowsLogSettings', 'first section is as expected');
+    assert.equal(policyDetails[1].header, 'adminUsm.policies.detail.channelFilterSettings', 'second section is as expected');
+    assert.equal(policyDetails[0].props.length, 3, '3 properties returned as expected in endpoint server settings');
+    assert.equal(policyDetails[0].props[1].value, 'TLS', 'Protocol value shows as expected');
+    assert.equal(policyDetails[0].props[2].origin.groupName, '', 'groupName returned as expected');
+    assert.equal(policyDetails[0].props[2].origin.policyName, '', 'policyName returned as expected');
+  });
+
+  test('focusedPolicy', function(assert) {
+    const state = new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizWinLogLogServers()
+      .focusedPolicy(testPolicyAndNoOrigins)
+      .build();
+    assert.expect(7);
+    const policyForDetails = focusedPolicy(Immutable.from(state));
+    const policyDetails = selectedWindowsLogPolicy(Immutable.from(state), policyForDetails.policy);
+    assert.equal(policyDetails.length, 2, '1 section returned as expected');
+    assert.equal(policyDetails[0].header, 'adminUsm.policies.detail.windowsLogSettings', 'first section is as expected');
+    assert.equal(policyDetails[1].header, 'adminUsm.policies.detail.channelFilterSettings', 'second section is as expected');
+    assert.equal(policyDetails[0].props.length, 3, '3 properties returned as expected in endpoint server settings');
+    assert.equal(policyDetails[0].props[1].value, 'TLS', 'Protocol value shows as expected');
+    assert.equal(policyDetails[0].props[2].origin.groupName, '', 'groupName returned as expected');
+    assert.equal(policyDetails[0].props[2].origin.policyName, '', 'policyName returned as expected');
+  });
+
+  test('focusedPolicy result with no origins', function(assert) {
+    const state = {
+      usm: {
+        policies: {
+          focusedItem: {
+            name: 'foo'
+          }
+        }
+      }
+    };
+    const policyExpected = { name: 'foo' };
+    assert.deepEqual(focusedPolicy(Immutable.from(state)), policyExpected, 'focusedPolicy policyyResult is as policyExpected when no origins are present');
+  });
+
+  test('focusedPolicy result with origins', function(assert) {
+    const state = {
+      usm: {
+        policies: {
+          focusedItem: {
+            policy: { name: 'foo2' },
+            origins: { group: 'test' }
+          }
+        }
+      }
+    };
+    const policyExpected = { name: 'foo2' };
+    assert.deepEqual(focusedPolicy(Immutable.from(state)), policyExpected, 'focusedPolicy policyyResult is as policyExpected when origins are present');
   });
 });
