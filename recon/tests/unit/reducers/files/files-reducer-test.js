@@ -95,6 +95,17 @@ test('test REHYDRATE', function(assert) {
   assert.equal(result.isAutoDownloadFile, false);
 });
 
+test('test CLOSE_RECON', function(assert) {
+  const currentState = initialState.merge({
+    fileExtractStatus: 'wait'
+  });
+  const action = {
+    type: ACTION_TYPES.CLOSE_RECON
+  };
+  const result = reducer(currentState, action);
+  assert.equal(result.fileExtractStatus, 'queued');
+});
+
 test('test FILES_RETRIEVE_SUCCESS removes backslash before operators for a given query filter', function(assert) {
   const action = {
     type: ACTION_TYPES.FILES_RETRIEVE_SUCCESS,

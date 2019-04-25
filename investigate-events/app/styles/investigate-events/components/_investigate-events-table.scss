@@ -94,13 +94,14 @@
 
     .rsa-loader {
       display: inline-block;
+      vertical-align: top;
       min-width: 1px;
       &__text {
         display: none;
       }
     }
       .rsa-loader__wheel {
-        margin: 0;
+        margin: -2px;
         min-width: 1px;
       }
     }

@@ -113,6 +113,10 @@ const filesReducer = handleActions({
     return state.merge(fileExtractInitialState);
   },
 
+
+  [ACTION_TYPES.CLOSE_RECON]: (state) => {
+    return state.merge(_fileExtractState(state));
+  },
   // Files-based notifcation handling
   [ACTION_TYPES.NOTIFICATION_TEARDOWN_SUCCESS]: (state) => {
     return state.merge(_fileExtractState(state));
