@@ -472,9 +472,14 @@ export default reduxActions.handleActions({
   [ACTION_TYPES.UPDATE_POLICY_TYPE]: (state, action) => {
     const policyType = action.payload;
     // reset everything from common initialState & type specific initialState
-    const mergedInitialState = buildInitialState(state, policyType, true);
+    let mergedInitialState = buildInitialState(state, policyType, true);
     // update the policy type
-    return mergedInitialState.setIn('policy.policyType'.split('.'), policyType);
+    mergedInitialState = mergedInitialState.setIn('policy.policyType'.split('.'), policyType);
+    const newState = state.merge({
+      ...mergedInitialState,
+      policyOrig: mergedInitialState.policy
+    });
+    return newState;
   },
 
   [ACTION_TYPES.UPDATE_POLICY_PROPERTY]: (state, action) => {

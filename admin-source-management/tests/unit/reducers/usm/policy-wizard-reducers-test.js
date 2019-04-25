@@ -46,6 +46,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const expectedPolicyType = 'windowsLogPolicy';
     const expectedEndState = new ReduxDataHelper()
       .policyWiz(expectedPolicyType)
+      .policyWizPolicyOrig()
       .build().usm.policyWizard;
     const action = { type: ACTION_TYPES.UPDATE_POLICY_TYPE, payload: expectedPolicyType };
     const endState = reducers(Immutable.from(initialStateEdr), action);
