@@ -71,7 +71,11 @@
         </div>
       {{/if}}
     {{else if hasPartialResults}}
-      {{t 'investigate.partialResults' totalCount=totalCount actualEventCount=actualEventCount}}
+      {{#if isEventResultsError}}
+        {{t 'investigate.partialResultsWithError' totalCount=totalCount actualEventCount=actualEventCount}}
+      {{else if isCanceled}}
+        {{t 'investigate.partialResults' totalCount=totalCount actualEventCount=actualEventCount}}
+      {{/if}}
     {{/if}}
   {{/rsa-data-table/load-more}}
 

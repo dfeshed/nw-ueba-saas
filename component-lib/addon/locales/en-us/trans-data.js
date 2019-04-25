@@ -477,6 +477,7 @@ export default {
     allLoaded: 'All results for this query have been loaded',
     notAllLoaded: 'Reached the {{maxEvents}} event limit. Consider refining your query.',
     partialResults: 'Retrieved {{actualEventCount}} of {{totalCount}} events prior to query cancellation.',
+    partialResultsWithError: 'Retrieved {{actualEventCount}} of {{totalCount}} events prior to query error.',
     allResultsLoaded: 'All results loaded',
     showNextXEvents: 'Show Next {{count}} Events',
     tryAgain: 'Try Again',

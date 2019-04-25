@@ -203,9 +203,37 @@ module('Integration | Component | events-table', function(hooks) {
     assert.equal(findAll('.rsa-investigate-events-table-row').length, 1,
       'correct number of rows'
     );
-    assert.equal(find('.rsa-data-table-load-more').textContent.trim(),
-      'Retrieved 1 of 2 events prior to query cancellation.',
-      'correct cancellation message when partial results returned'
+    assert.ok(
+      find('.rsa-data-table-load-more').textContent.trim().includes('1 of 2'),
+      'correct message when partial results returned'
+    );
+    assert.ok(
+      find('.rsa-data-table-load-more').textContent.trim().includes('cancellation'),
+      'correct message when partial results returned'
+    );
+  });
+
+  test('if an error is received, but some results have returned, a message is displayed', async function(assert) {
+    new ReduxDataHelper(setState)
+      .isEventResultsError(true, 'error')
+      .eventCount(2)
+      .streamLimit(100)
+      .eventsPreferencesConfig()
+      .eventResults([{ sessionId: 'foo', time: 123 }])
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+    assert.notOk(find('.rsa-loader'), 'spinner should not be present');
+    assert.equal(findAll('.rsa-investigate-events-table-row').length, 1,
+      'correct number of rows'
+    );
+    assert.ok(
+      find('.rsa-data-table-load-more').textContent.trim().includes('1 of 2'),
+      'correct message when partial results returned'
+    );
+    assert.ok(
+      find('.rsa-data-table-load-more').textContent.trim().includes('error'),
+      'correct message when partial results returned'
     );
   });
 
