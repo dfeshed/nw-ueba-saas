@@ -7,9 +7,14 @@ import activityTimeAnomalySettings from 'entity-details/utils/chart-settings/act
 import chartDataAdapter from 'entity-details/utils/chart-data-adapter';
 import chartData from '../../../data/presidio/indicator-hourlyCountGroupByDayOfWeek';
 import { waitUntil } from '@ember/test-helpers';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 module('Unit | Utils | column-chart-creator', (hooks) => {
   setupTest(hooks);
+
+  hooks.beforeEach(function() {
+    initialize(this.owner);
+  });
 
   test('it returns chart for column-chart-creator', (assert) => {
     $('body').append('<div id="chartComponentPlaceholder"></div>');

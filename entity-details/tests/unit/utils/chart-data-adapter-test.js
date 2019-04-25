@@ -101,10 +101,9 @@ module('Unit | Utils | chart-data-adapter', (hooks) => {
     };
     const data = chartDataAdapter(settings, chartData);
     assert.deepEqual(data.chartSettings.dataProvider[0], {
-      category: 'C:\\Windows\\System32\\wininit.exe',
-      originalCategory: 'C:\\Windows\\System32\\wininit.exe',
-      value: 50,
-      color: '#CC3300'
+      category: 'C:\\Program Files\\DellTPad\\normal_process_4.exe',
+      originalCategory: 'C:\\Program Files\\DellTPad\\normal_process_4.exe',
+      value: 50
     });
   });
 });

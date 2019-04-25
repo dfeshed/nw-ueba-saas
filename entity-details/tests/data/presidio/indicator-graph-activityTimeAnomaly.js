@@ -4,7 +4,7 @@ export default {
       keys: ['THURSDAY', '12'],
       additionalInformation: null,
       value: 2,
-      anomaly: false
+      anomaly: true
     },
     {
       keys: ['SUNDAY', '13'],

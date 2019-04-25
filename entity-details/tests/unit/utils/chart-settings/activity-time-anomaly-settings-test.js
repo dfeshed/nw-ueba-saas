@@ -12,7 +12,6 @@ module('Unit | Utils | activity-time-anomaly-settings', (hooks) => {
       feature: 'high_number_of_successful_object_change_operations',
       function: 'distinctEventsByTime'
     });
-    assert.notOk(settings.sortData);
     assert.ok(settings.dataAdapter);
   });
 });

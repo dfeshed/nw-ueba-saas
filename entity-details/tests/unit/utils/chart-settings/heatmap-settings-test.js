@@ -12,7 +12,6 @@ module('Unit | Utils | heatmap-settings', (hooks) => {
       feature: 'abnormal_logon_day_time',
       function: 'hourlyCountGroupByDayOfWeek'
     });
-    assert.notOk(settings.sortData);
     assert.ok(settings.dataAdapter);
   });
 });

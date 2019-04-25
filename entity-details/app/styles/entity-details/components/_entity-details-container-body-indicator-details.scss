@@ -101,7 +101,10 @@
 
   &_events-table {
     height: calc(100% - 615px);
-
+    &_href {
+      color: text-color(secondary, dark);
+      text-decoration: unset;
+    }
     .rsa-data-table {
       height: 100%;
     }

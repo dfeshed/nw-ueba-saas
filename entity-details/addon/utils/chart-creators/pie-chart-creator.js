@@ -7,13 +7,19 @@
 import * as Am4core from '@amcharts/amcharts4/core';
 import * as Am4charts from '@amcharts/amcharts4/charts';
 import _ from 'lodash';
+import { lookup } from 'ember-dependency-lookup';
 
 export default (settings) => {
+  const i18n = lookup('service:i18n');
   let chart = Am4core.create('chartComponentPlaceholder', Am4charts.PieChart3D);
 
   chart.legend = new Am4charts.Legend();
   chart.legend.fill = Am4core.color('#FFF');
   chart.hiddenState.properties.opacity = 0; // this creates initial fade-in;
+  const title = chart.titles.create();
+  title.text = `[bold white]${i18n.t(`investigateUsers.alerts.indicator.indicatorNames.${settings.title}.name`)}[/]`;
+  title.fontSize = '1rem';
+  title.marginTop = 10;
   chart = _.merge(chart, settings.chartSettings);
   chart.data = settings.chartSettings.dataProvider;
   const { colors } = settings.chartSettings;

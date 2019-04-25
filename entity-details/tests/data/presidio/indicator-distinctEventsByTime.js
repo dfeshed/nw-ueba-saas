@@ -5,7 +5,7 @@ export default {
     ],
     'additionalInformation': null,
     'value': 2,
-    'anomaly': false
+    'anomaly': true
   },
   {
     'keys': [

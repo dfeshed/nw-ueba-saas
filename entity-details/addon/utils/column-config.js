@@ -13,12 +13,14 @@ const baseColumnConfigForEvents = [{
   field: 'userName',
   title: 'User Name',
   visible: true,
+  linkField: 'user_link',
   disableSort: true
 }, {
   field: 'userId',
   width: '4.5vw',
   title: 'Normalized user name',
   visible: true,
+  linkField: 'user_sid_link',
   disableSort: true
 }, {
   field: 'operationType',

@@ -6,7 +6,13 @@
   {{/rsa-data-table/header}}
   {{#rsa-data-table/body as |item index column|}}
     {{#rsa-data-table/body-cell column=column}}
-      {{get item column.field}}
+      {{#if (eq column.type 'DATE_TIME')}}
+        {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
+      {{else if column.linkField}}
+        <a class='entity-details-container-body-indicator-details_events-table_href' href={{get item column.linkField}} target='_blank' rel='noopener'>{{get item column.field}}</a>  
+      {{else}}
+        {{get item column.field}}
+      {{/if}}  
     {{/rsa-data-table/body-cell}}
   {{/rsa-data-table/body}}
 {{/rsa-data-table}}

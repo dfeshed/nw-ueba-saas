@@ -6,12 +6,21 @@
 import * as Am4core from '@amcharts/amcharts4/core';
 import * as Am4charts from '@amcharts/amcharts4/charts';
 import _ from 'lodash';
+import { lookup } from 'ember-dependency-lookup';
+
 
 export default (settings) => {
+  const i18n = lookup('service:i18n');
+
   const chart = Am4core.create('chartComponentPlaceholder', Am4charts.XYChart);
   chart.maskBullets = false;
-  chart.allLabels = { color: 'red' };
-  chart.color = 'white';
+  chart.plotContainer.stroke = '#67b7dc';
+  chart.padding = 20;
+
+  const title = chart.titles.create();
+  title.text = `[bold white]${i18n.t(`investigateUsers.alerts.indicator.indicatorNames.${settings.title}.chartTitle`)}[/]`;
+  title.fontSize = '1rem';
+  title.marginTop = 10;
 
   const xAxis = chart.xAxes.push(new Am4charts.CategoryAxis());
   const yAxis = chart.yAxes.push(new Am4charts.CategoryAxis());
@@ -20,13 +29,13 @@ export default (settings) => {
   yAxis.dataFields.category = 'hour';
   xAxis.renderer.labels.template.fill = 'white';
   yAxis.renderer.labels.template.fill = 'white';
-
+  yAxis.renderer.labels.template.adapter.add('text', (text) => {
+    return `${text}:00`;
+  });
   // xAxis.renderer.grid.template.disabled = true
   xAxis.renderer.minGridDistance = 5;
 
-  yAxis.renderer.grid.template.disabled = true;
   yAxis.renderer.inversed = true;
-  yAxis.renderer.minGridDistance = 5;
 
   _.merge(chart, settings.chartSettings);
 
@@ -37,13 +46,17 @@ export default (settings) => {
   series.sequencedInterpolation = true;
   series.defaultState.transitionDuration = 3000;
   series.legendSettings.labelText = '[bold white]{value}[/]';
+  series.columns.template.propertyFields.fill = 'color';
+  series.columns.template.propertyFields.stroke = 'color';
 
   const bgColor = new Am4core.InterfaceColorSet().getFor('background');
 
   const columnTemplate = series.columns.template;
   columnTemplate.strokeWidth = 1;
   columnTemplate.strokeOpacity = 0.2;
-  columnTemplate.stroke = bgColor;
+  columnTemplate.stroke = Am4core.color('#ffffff');
+
+  // columnTemplate.stroke = bgColor;
   columnTemplate.tooltipText =
     "{weekday}, {hour}: {value.workingValue.formatNumber('#.')}";
   columnTemplate.width = Am4core.percent(100);
@@ -61,7 +74,7 @@ export default (settings) => {
   heatLegend.width = Am4core.percent(100);
   heatLegend.series = series;
   heatLegend.valueAxis.renderer.labels.template.fontSize = 9;
-  heatLegend.valueAxis.renderer.labels.template.fill = Am4core.color('ebebeb');
+  heatLegend.valueAxis.renderer.labels.template.fill = Am4core.color('white');
 
   heatLegend.valueAxis.renderer.minGridDistance = 10;
 

@@ -11,15 +11,7 @@ export default (anomalyTypeFieldName) => {
       feature: anomalyTypeFieldName,
       function: 'Count'
     },
-    styleSettings: {},
-    colorIndex: 0,
-    templates: {
-      titles: {
-        'Title-1':
-          "{{ anomalyTypeFieldName  | buildPieKey: 'title' " +
-          '| translate: this}}'
-      }
-    },
+    title: anomalyTypeFieldName,
     sortData: (data) => {
       return _.orderBy(data, ['anomaly', 'value'], ['asc', 'desc']);
     },
@@ -27,9 +19,9 @@ export default (anomalyTypeFieldName) => {
       const chartItem = {
         category: dataItem.keys[0],
         originalCategory: dataItem.keys[0],
-        value: dataItem.value
+        value: dataItem.value,
+        anomaly: dataItem.anomaly
       };
-
       if (dataItem.anomaly) {
         chartItem.color = '#CC3300';
       }
@@ -50,38 +42,14 @@ export default (anomalyTypeFieldName) => {
         color: 'red'
       },
       balloon: {
-        maxWidth: 400
+        maxWidth: 200
       },
-
-      balloonText:
-        "<span style='word-break: break-all'>[[title]]</span><br><span style='font-size:14px;padding-left:5px'><b>[[value]]</b> ([[percents]]%)</span>",
       innerRadius: '60%',
       labelRadius: 10,
       pullOutRadius: 10,
       radius: '40%',
       startRadius: 0,
-      colors: ['#0A335C', '#0D6ECD', '#0D8ECF', '#1689FA'],
-      colorField: 'color',
-      hideLabelsPercent: 10,
-      maxLabelWidth: 199,
-      pullOutDuration: 0,
-      pullOutEffect: 'easeOutSine',
-      startAlpha: 1,
-      titleField: 'category',
-      valueField: 'value',
-      color: '#eee',
-      creditsPosition: 'bottom-right',
-      fontFamily: 'Open Sans',
-      fontSize: 12,
-      processCount: 999,
-      titles: [
-        {
-          id: 'Title-1',
-          fontFamily: "'Open Sans', sans-serif",
-          color: 'red',
-          size: 12
-        }
-      ]
+      colors: ['#0A335C', '#0D6ECD', '#0D8ECF', '#1689FA']
     }
   };
 };
