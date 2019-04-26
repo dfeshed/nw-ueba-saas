@@ -141,7 +141,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     await settled().then(() => done());
   });
 
-  test('The reset filters button returns the filters to the original state', async function(assert) {
+  skip('The reset filters button returns the filters to the original state', async function(assert) {
     const done = assert.async();
     await render(hbs`{{rsa-alerts}}`);
     setState();
