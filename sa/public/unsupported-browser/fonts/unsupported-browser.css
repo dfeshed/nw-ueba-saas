@@ -1,0 +1,46 @@
+@font-face {
+    font-family: "Open Sans";
+    src: url("open-sans-v13-latin-regular.eot");
+    /* IE9 Compat Modes */
+    src: local("Open Sans"), local("OpenSans"), url("open-sans-v13-latin-regular.eot?#iefix") format("embedded-opentype"), url("open-sans-v13-latin-regular.woff2") format("woff2"), url("open-sans-v13-latin-regular.woff") format("woff"), url("open-sans-v13-latin-regular.ttf") format("truetype"), url("open-sans-v13-latin-regular.svg#OpenSans") format("svg");
+    /* Legacy iOS */
+}
+
+body {
+    color: rgba(238,238,238, 1);
+    background-image: url('../images/NW-Background-Blur.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+}
+
+.unsupported-browser-message {
+    border-color: rgba(236, 34, 39, 1);
+    border-width: 1px;
+    border-style: solid;
+    padding: 0.5rem;
+    background-color:rgba(150, 99, 42, .85);
+    color: rgba(189,189,189, 1);
+    width: 41rem;
+    height: 5rem;
+    line-height: 4.5rem;
+    text-align: center;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+}
+
+.unsupported-browser-message span {
+    font-family: "Open Sans";
+    font-size: .85rem;;
+    font-weight: 400;
+    font-style: normal;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+}
