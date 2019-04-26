@@ -98,13 +98,11 @@ const setFileContextSort = (belongsTo, config) => ({ type: ACTION_TYPES.SET_FILE
 
 const retrieveRemediationStatus = (belongsTo, selections) => {
   const thumbprints = selections.mapBy('signature.thumbprint').compact();
-  if (thumbprints && thumbprints.length) {
-    return {
-      type: ACTION_TYPES.FETCH_REMEDIATION_STATUS,
-      promise: HostDetails.fetchRemediation({ thumbprints }),
-      meta: { belongsTo }
-    };
-  }
+  return {
+    type: ACTION_TYPES.FETCH_REMEDIATION_STATUS,
+    promise: HostDetails.fetchRemediation({ thumbprints }),
+    meta: { belongsTo }
+  };
 };
 
 const _getListOfFilesToDownload = (slectedFiles, agentId) => {
