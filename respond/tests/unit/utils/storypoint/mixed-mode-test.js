@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { inMixedMode, extractSource, extractVersion } from 'respond/utils/storypoint/mixed-mode';
+import { inMixedMode, extractSource } from 'respond/utils/storypoint/mixed-mode';
 import { t } from '../../../integration/components/rsa-incident/container/helper';
 
 module('Unit | Utility | storypoint/mixed-mode', function(hooks) {
@@ -31,7 +31,7 @@ module('Unit | Utility | storypoint/mixed-mode', function(hooks) {
     ];
 
     const result = inMixedMode(services, events, minVersion);
-    const title = t(this, 'investigate.services.coreServiceNotUpdated', { version: '11.1.0.0', minVersion: '11.2' });
+    const title = t(this, 'respond.mixedModeMessage', { minVersion: '11.2' });
     assert.equal(result, title);
   });
 
@@ -143,66 +143,4 @@ module('Unit | Utility | storypoint/mixed-mode', function(hooks) {
     const result = extractSource(events);
     assert.deepEqual(result, ['10.4.61.33:56005']);
   });
-
-  test('extractVersion will not return null or undefined', function(assert) {
-    const services = [
-      {
-        displayName: 'loki-concentrator',
-        host: '10.4.61.33',
-        id: '555d9a6fe4b0d37c827d402a',
-        name: 'CONCENTRATOR',
-        port: 56005
-      },
-      {
-        displayName: 'loki-concentrator',
-        host: '10.4.61.33',
-        id: '555d9a6fe4b0d37c827d402b',
-        name: 'CONCENTRATOR',
-        port: 56005,
-        version: null
-      },
-      {
-        displayName: 'loki-concentrator',
-        host: '10.4.61.33',
-        id: '555d9a6fe4b0d37c827d402c',
-        name: 'CONCENTRATOR',
-        port: 56005,
-        version: '11.1.0.0'
-      }
-    ];
-    const result = extractVersion(services);
-    assert.equal(result, '11.1.0.0');
-  });
-
-  test('extractVersion will return the first version found', function(assert) {
-    const services = [
-      {
-        displayName: 'loki-concentrator',
-        host: '10.4.61.33',
-        id: '555d9a6fe4b0d37c827d402a',
-        name: 'CONCENTRATOR',
-        port: 56005,
-        version: '11.3.0.0'
-      },
-      {
-        displayName: 'loki-concentrator',
-        host: '10.4.61.33',
-        id: '555d9a6fe4b0d37c827d402b',
-        name: 'CONCENTRATOR',
-        port: 56005,
-        version: '11.2.0.0'
-      },
-      {
-        displayName: 'loki-concentrator',
-        host: '10.4.61.33',
-        id: '555d9a6fe4b0d37c827d402c',
-        name: 'CONCENTRATOR',
-        port: 56005,
-        version: '11.1.0.0'
-      }
-    ];
-    const result = extractVersion(services);
-    assert.equal(result, '11.3.0.0');
-  });
-
 });

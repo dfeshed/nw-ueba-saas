@@ -1652,7 +1652,8 @@ export default {
     },
     assignee: {
       none: '(Unassigned)'
-    }
+    },
+    mixedModeMessage: 'Event Analysis is not available from the Respond view because it requires all event sources to be on RSA NetWitness Platform version {{minVersion}} or greater.'
   },
   context: {
     noData: 'No matching context is available',

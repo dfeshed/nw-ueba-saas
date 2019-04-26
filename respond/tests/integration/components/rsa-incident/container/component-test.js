@@ -566,7 +566,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);
 
-    const title = t(this, 'investigate.services.coreServiceNotUpdated', { version: '11.1.0.0', minVersion: '11.2' });
+    const title = t(this, 'respond.mixedModeMessage', { minVersion: '11.2' });
     assert.equal(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).getAttribute('title'), title);
     assert.ok(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).getAttribute('class').includes('off'));
 

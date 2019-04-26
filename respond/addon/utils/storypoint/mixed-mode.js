@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { lookup } from 'ember-dependency-lookup';
 import { coreServiceNotUpdated } from 'component-lib/utils/core-services';
 
-const coreServicesKey = 'investigate.services.coreServiceNotUpdated';
+const coreServicesKey = 'respond.mixedModeMessage';
 
 export const inMixedMode = (services, events, minVersion) => {
   const sourceIds = extractSource(events);
@@ -12,8 +12,7 @@ export const inMixedMode = (services, events, minVersion) => {
     }
   });
 
-  const version = extractVersion(servicesInMixedMode);
-  return version ? localizeMessage(coreServicesKey, version, minVersion) : false;
+  return !_.isEmpty(servicesInMixedMode) ? localizeMessage(coreServicesKey, minVersion) : false;
 };
 
 export const extractSource = (events) => {
@@ -21,13 +20,7 @@ export const extractSource = (events) => {
   return events.map(({ event_source }) => event_source).filter((sources) => sources !== undefined && sources !== null);
 };
 
-export const extractVersion = (services) => {
-  const versions = services.map(({ version }) => version).filter((versions) => versions !== undefined && versions !== null);
-  const [ first ] = versions;
-  return first;
-};
-
-const localizeMessage = (key, version, minVersion) => {
+const localizeMessage = (key, minVersion) => {
   const i18n = lookup('service:i18n');
-  return i18n.t(key, { version, minVersion }).toString();
+  return i18n.t(key, { minVersion }).toString();
 };
