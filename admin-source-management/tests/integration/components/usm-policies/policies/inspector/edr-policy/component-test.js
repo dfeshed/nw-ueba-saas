@@ -105,7 +105,7 @@ module('Integration | Component | Policy Inspector | EDR Policy', function(hooks
       'custom config value is as expected');
     await triggerEvent('.value .tooltip-text', 'mouseover');
     assert.equal(document.querySelectorAll('.tool-tip-value')[0].innerText.trim(),
-      `${expectedCustomSetting.substring(0, 253)}...`,
+      expectedCustomSetting,
       'custom setting tooltip is as expected');
   });
 

@@ -295,7 +295,7 @@ const _getAdvancedConfigSetting = (prop, focusedPolicy, _focusedPolicyOrigin, em
   const advancedConfigSettings = {
     customConfig: {
       name: 'adminUsm.policyWizard.edrPolicy.customConfig',
-      value: _truncateCustomSetting(focusedPolicy[prop]),
+      value: focusedPolicy[prop],
       origin: _focusedPolicyOrigin && _focusedPolicyOrigin[prop] ? _focusedPolicyOrigin[prop] : emptyOrigin
     }
   };
@@ -313,11 +313,4 @@ const _getDisplayName = (prop, primaryAddress, listOfEndpoints) => {
     focusedPolicyPrimaryName = endpointServer[0].displayName;
   }
   return focusedPolicyPrimaryName;
-};
-
-const _truncateCustomSetting = (customSetting) => {
-  return {
-    nonTruncated: customSetting,
-    truncatedWithEllipsis: customSetting ? _.truncate(customSetting, { length: 256, omission: '...' }) : null
-  };
 };

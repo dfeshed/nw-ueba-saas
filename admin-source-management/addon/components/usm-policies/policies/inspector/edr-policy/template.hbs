@@ -6,9 +6,9 @@
         <hbox class="title col-xs-6 col-md-5">{{t prop.name}}</hbox>
         {{#if (eq prop.name 'adminUsm.policyWizard.edrPolicy.customConfig') }}
           <hbox class="value col-xs-6 col-md-7">
-            {{#rsa-text-with-tooltip value=prop.value.truncatedWithEllipsis
+            {{#rsa-text-with-tooltip value=prop.value
               style="standard"}}
-              <div class="table-cell-text">{{prop.value.nonTruncated}}</div>
+              <div class="table-cell-text">{{prop.value}}</div>
             {{/rsa-text-with-tooltip}}
           </hbox>
         {{else if prop.defaultEndpointServer }}

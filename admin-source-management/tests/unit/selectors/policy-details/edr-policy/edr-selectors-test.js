@@ -254,7 +254,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     const policyDetails = selectedEdrPolicy(Immutable.from(state), policyForDetails);
     assert.equal(policyDetails.length, 6, '6 sections returned as expected');
     assert.equal(policyDetails[5].props.length, 1, '1 property returned as expected');
-    assert.equal(policyDetails[5].props[0].value.nonTruncated,
+    assert.equal(policyDetails[5].props[0].value,
       '"trackingConfig": {"uniqueFilterSeconds": 28800,"beaconStdDev": 2.0}',
       'custom setting value returned as expected');
     assert.equal(policyDetails[4].props[0].value, '5 Minutes', 'https beacon interval unit is as expected');
