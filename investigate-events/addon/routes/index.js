@@ -127,12 +127,6 @@ export default Route.extend({
       });
     }
 
-    // If there are no new hashes, look to the old pdhash. This could happen if
-    // the user simply refreshes the browser.
-    if (!newHashes && params.pdhash) {
-      newHashes = params.pdhash;
-    }
-
     if (newHashes && textFilter) {
       // insert Text filter into correct location of hashes
       pdhash = [
@@ -142,7 +136,7 @@ export default Route.extend({
       ].join(',');
     } else if (textFilter) {
       pdhash = [textFilter];
-    } else {
+    } else if (newHashes) {
       pdhash = newHashes;
     }
 
