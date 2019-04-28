@@ -107,7 +107,7 @@ class SmartModelDagBuilder(PresidioDagBuilder):
         # defining the smart model
         smart_model_operator = SmartModelOperator(smart_events_conf=smart_model_dag.default_args.get("smart_conf_name"),
                                                   command="process",
-                                                  session_id=smart_model_dag,
+                                                  session_id=smart_model_dag.dag_id,
                                                   dag=smart_model_dag)
 
         smart_model_short_circuit_operator >> smart_model_operator
