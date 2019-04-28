@@ -56,19 +56,6 @@ public class EntityUpdatePropertiesServiceImplTest {
         Entity entity = generateEntityAndSave("userId", "userName", false);
         Entity entityUpdated = entityPropertiesUpdateService.updateEntityProperties(entity);
         Assert.assertEquals("userName1", entityUpdated.getEntityName());
-        Assert.assertEquals(entity.getTags().get(0), entityUpdated.getTags().get(0));
-    }
-
-    @Test
-    public void updateEntityPropertiesWithAuthenticationEventDeleteTags() {
-        Instant eventDate = Instant.now();
-        Map<String, String> additionalInfo = new HashMap<>();
-        additionalInfo.put("isUserAdmin", "true");
-        generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", null);
-        Entity entity = generateEntityAndSave("userId", "userName1", true);
-        Entity entityUpdated = entityPropertiesUpdateService.updateEntityProperties(entity);
-        Assert.assertEquals("userName1", entityUpdated.getEntityName());
-        Assert.assertTrue(CollectionUtils.isEmpty(entityUpdated.getTags()));
     }
 
     @Test
@@ -117,7 +104,6 @@ public class EntityUpdatePropertiesServiceImplTest {
         Entity entity = generateEntityAndSave("userId", "userName", false);
         Entity entityUpdated = entityPropertiesUpdateService.updateEntityProperties(entity);
         Assert.assertEquals("userName2", entityUpdated.getEntityName());
-        Assert.assertEquals(entity.getTags().get(0), entityUpdated.getTags().get(0));
     }
 
     @Test
@@ -160,56 +146,6 @@ public class EntityUpdatePropertiesServiceImplTest {
         Assert.assertEquals("userName1", entityUpdated.getEntityName());
     }
 
-    @Test
-    public void updateEntityAdminTag_AddAdmin() {
-        Instant eventDate = Instant.now();
-        Map<String, String> additionalInfo = new HashMap<>();
-        additionalInfo.put("isUserAdmin", "true");
-        generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", additionalInfo);
-        String someTagName = "someTag";
-        List<String> tags = new ArrayList<>();
-        tags.add(someTagName);
-        Entity entity = generateEntityAndSave("userId", "userName", tags);
-        Entity entityUpdated = entityPropertiesUpdateService.updateEntityProperties(entity);
-        Assert.assertEquals("userName1", entityUpdated.getEntityName());
-        Assert.assertEquals(2, entityUpdated.getTags().size());
-        Assert.assertTrue(entityUpdated.getTags().contains(someTagName));
-        Assert.assertTrue(entityUpdated.getTags().contains(TAG_ADMIN));
-    }
-
-    @Test
-    public void updateEntityAdminTag_AddAdminTagsNull() {
-        Instant eventDate = Instant.now();
-        Map<String, String> additionalInfo = new HashMap<>();
-        additionalInfo.put("isUserAdmin", "true");
-        generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", additionalInfo);
-        String someTagName = "someTag";
-        List<String> tags = new ArrayList<>();
-        tags.add(someTagName);
-        Entity entity = generateEntityAndSave("userId", "userName", null);
-        Entity entityUpdated = entityPropertiesUpdateService.updateEntityProperties(entity);
-        Assert.assertEquals("userName1", entityUpdated.getEntityName());
-        Assert.assertEquals(1, entityUpdated.getTags().size());
-        Assert.assertTrue(entityUpdated.getTags().contains(TAG_ADMIN));
-    }
-
-
-    @Test
-    public void updateEntityAdminTag_RemoveAdmin() {
-        Instant eventDate = Instant.now();
-        generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", null);
-        String someTagName = "someTag";
-        List<String> tags = new ArrayList<>();
-        tags.add(someTagName);
-        tags.add(TAG_ADMIN);
-        Entity entity = generateEntityAndSave("userId", "userName", tags);
-        Entity entityUpdated = entityPropertiesUpdateService.updateEntityProperties(entity);
-        Assert.assertEquals("userName1", entityUpdated.getEntityName());
-        Assert.assertNotNull(entityUpdated.getTags());
-        Assert.assertEquals(1, entityUpdated.getTags().size());
-        Assert.assertTrue(entityUpdated.getTags().contains(someTagName));
-    }
-
     private Entity generateEntityAndSave(String entityId, String entityName, boolean tagAdmin) {
         List<String> tags = new ArrayList<>();
         if (tagAdmin) {
@@ -219,7 +155,7 @@ public class EntityUpdatePropertiesServiceImplTest {
     }
 
     private Entity generateEntityAndSave(String entityId, String entityName, List<String> tags) {
-        Entity entity1 = new Entity(entityId, entityName, 0d, null, null, tags, EntitySeverity.LOW, 0, "entityType");
+        Entity entity1 = new Entity(entityId, entityName, 0d, null, null, tags, EntitySeverity.LOW, 0, "userId");
         entityPersistencyService.save(entity1);
         return entity1;
     }

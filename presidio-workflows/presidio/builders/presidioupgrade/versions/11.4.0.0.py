@@ -6,7 +6,7 @@ doc_type_user = "user"
 index_entity = "presidio-output-entity"
 doc_type_entity = "entity"
 size = 1000
-entity_type = "user"
+entity_type = "userId"
 
 
 # # Init Elasticsearch instance

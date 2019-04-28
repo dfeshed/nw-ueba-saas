@@ -74,55 +74,58 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     @Override
     public void run(Instant startDate, Instant endDate, String configurationName) throws Exception {
         logger.debug("Started output process with params: start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(smartPageSize, smartPageSize, new TimeRange(startDate, endDate), SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES, configurationName);
+        List<PageIterator<SmartRecord>> smartPageIterator = adeManagerSdk.getSmartRecords(smartPageSize, smartPageSize, new TimeRange(startDate, endDate), SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES, configurationName);
 
         List<Entity> entities = new ArrayList<>();
         List<SmartRecord> smarts = null;
         List<Alert> alerts = new ArrayList<>();
         int indicatorsCountHourly = 0;
-        while (smartPageIterator.hasNext()) {
-            smarts = smartPageIterator.next();
-            for (SmartRecord smart : smarts) {
-                String entityId = smart.getContext().values().iterator().next();
-                String entityType = smart.getContext().keySet().iterator().next();
+        for(PageIterator<SmartRecord> smartPage : smartPageIterator){
+            while (smartPage.hasNext()) {
+                smarts = smartPage.next();
+                for (SmartRecord smart : smarts) {
+                    String entityId = smart.getContext().values().iterator().next();
+                    String entityType = smart.getContext().keySet().iterator().next();
 
-                if (entityId == null || entityId.isEmpty()) {
-                    logger.error("Failed to get entity id from smart context, entity id is null or empty for smart {}. skipping to next smart", smart.getId());
-                    continue;
-                }
-                Entity entity;
-                if ((entity = getCreatedEntity(entities, entityId)) == null && (entity = getSingleEntityById(entityId)) == null) {
-                    //Need to create entity and add it to about to be created list
-                    entity = entityService.createEntity(entityId, entityType);
-                    entities.add(entity);
-                    if (entity == null) {
-                        logger.error("Failed to process entity details for smart {}, skipping to next smart in the batch", smart.getId());
+                    if (entityId == null || entityId.isEmpty()) {
+                        logger.error("Failed to get entity id from smart context, entity id is null or empty for smart {}. skipping to next smart", smart.getId());
                         continue;
                     }
+                    Entity entity;
+                    if ((entity = getCreatedEntity(entities, entityId)) == null && (entity = getSingleEntityById(entityId)) == null) {
+                        //Need to create entity and add it to about to be created list
+                        entity = entityService.createEntity(entityId, entityType);
+                        entities.add(entity);
+                        if (entity == null) {
+                            logger.error("Failed to process entity details for smart {}, skipping to next smart in the batch", smart.getId());
+                            continue;
+                        }
+                    }
+
+                    Alert alertEntity = alertService.generateAlert(smart, entity, smartThresholdScoreForCreatingAlert);
+                    if (alertEntity != null) {
+                        EntitiesAlertData entitiesAlertData = new EntitiesAlertData(alertEntity.getContributionToEntityScore(), 1, alertEntity.alertPrimaryClassification(), alertEntity.getIndicatorsNames());
+                        entityService.addEntityAlertData(entity, entitiesAlertData);
+                        alerts.add(alertEntity);
+                        indicatorsCountHourly += alertEntity.getIndicatorsNum();
+
+                        String classification = alertEntity.alertPrimaryClassification();
+                        outputMonitoringService.reportTotalAlertCount(1, alertEntity.getSeverity(), classification, startDate);
+                    }
+
+                    if (getCreatedEntity(entities, entity.getEntityId()) == null) {
+                        entities.add(entity);
+                    }
+
+                    if (alerts.size() >= alertPageSize) {
+                        flushAlerts(startDate, alerts);
+                    }
+
                 }
-
-                Alert alertEntity = alertService.generateAlert(smart, entity, smartThresholdScoreForCreatingAlert);
-                if (alertEntity != null) {
-                    EntitiesAlertData entitiesAlertData = new EntitiesAlertData(alertEntity.getContributionToEntityScore(), 1, alertEntity.alertPrimaryClassification(), alertEntity.getIndicatorsNames());
-                    entityService.addEntityAlertData(entity, entitiesAlertData);
-                    alerts.add(alertEntity);
-                    indicatorsCountHourly += alertEntity.getIndicatorsNum();
-
-                    String classification = alertEntity.alertPrimaryClassification();
-                    outputMonitoringService.reportTotalAlertCount(1, alertEntity.getSeverity(), classification, startDate);
-                }
-
-                if (getCreatedEntity(entities, entity.getEntityId()) == null) {
-                    entities.add(entity);
-                }
-
-                if (alerts.size() >= alertPageSize) {
-                    flushAlerts(startDate, alerts);
-                }
-
+                flushAlerts(startDate, alerts);
             }
-            flushAlerts(startDate, alerts);
         }
+
 
         storeEntities(entities); //Get the generated entities with the new elasticsearch ID
         outputMonitoringService.reportTotalEntitiesCount(entities.size(), startDate);
@@ -166,7 +169,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         logger.info("updating entities data completed successfully");
 
         logger.info("Starting to report daily metrics");
-        outputMonitoringService.reportDailyMetrics(startDate, endDate);
+        outputMonitoringService.reportDailyMetrics(startDate, endDate, configurationName);
     }
 
 
