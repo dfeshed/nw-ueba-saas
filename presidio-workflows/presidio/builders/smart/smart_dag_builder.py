@@ -33,6 +33,7 @@ class SmartDagBuilder(PresidioDagBuilder):
         self._build_ade_manager_operator(smart_dag, root_dag_gap_sensor_operator)
         self._get_output_retention_operator(smart_record_conf_name, smart_dag)
         self.remove_multi_point_group_container(smart_dag)
+        return smart_dag
 
     def _get_output_operator(self, smart_record_conf_name, smart_dag):
         output_operator_id = '{}_output_operator'.format(smart_record_conf_name)

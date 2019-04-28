@@ -1,4 +1,5 @@
 import functools
+import logging
 import os
 from abc import abstractmethod
 from datetime import timedelta
@@ -163,9 +164,12 @@ class SpringBootJarOperator(BashOperator):
 
     def _get_pool_name_if_exist(self):
         pool_name = self._get_conf(POOL_NAME_CONF_KEY)
+        try:
+            if not any(p.pool == pool_name for p in pool.get_pools()):
+                pool_name = None
+        except Exception:
+            logging.debug("Fails on Filling up the DagBag while airflow resetdb, before tables created")
 
-        if not any(p.pool == pool_name for p in pool.get_pools()):
-            pool_name = None
         return pool_name
 
     def get_execution_timeout(self):
