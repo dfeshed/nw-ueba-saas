@@ -1,7 +1,9 @@
 package fortscale.utils.elasticsearch.config;
 
 
+import fortscale.utils.elasticsearch.PresidioElasticsearchMappingContext;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
+import fortscale.utils.elasticsearch.PresidioResultMapper;
 import fortscale.utils.elasticsearch.services.TemplateAnnotationExtractor;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
@@ -13,6 +15,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.ResultsMapper;
+import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
 
 import java.net.InetAddress;
 
@@ -38,10 +42,19 @@ public class ElasticsearchTestConfig {
         return new PreBuiltTransportClient(esSettings).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(EsHost), EsPort));
     }
 
+
     @Bean
-    public ElasticsearchOperations elasticsearchTemplate() throws Exception {
-        return new PresidioElasticsearchTemplate(client(), new TemplateAnnotationExtractor());
+    public MappingElasticsearchConverter mappingElasticsearchConverter() {
+        return new MappingElasticsearchConverter(new PresidioElasticsearchMappingContext());
     }
 
+    @Bean
+    public ResultsMapper resultsMapper() {
+        return new PresidioResultMapper(mappingElasticsearchConverter().getMappingContext());
+    }
 
+    @Bean
+    public ElasticsearchOperations elasticsearchTemplate() throws Exception {
+        return new PresidioElasticsearchTemplate(client(), new TemplateAnnotationExtractor(), resultsMapper());
+    }
 }

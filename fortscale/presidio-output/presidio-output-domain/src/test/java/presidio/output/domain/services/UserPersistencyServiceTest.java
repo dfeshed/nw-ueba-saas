@@ -453,7 +453,7 @@ public class UserPersistencyServiceTest {
         Page<User> result = userPersistencyService.find(userQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<User>) result).getAggregations().asMap();
         StringTerms severityAgg = (StringTerms) stringAggregationMap.get(User.SEVERITY_FIELD_NAME);
-        List<Terms.Bucket> buckets = severityAgg.getBuckets();
+        List<StringTerms.Bucket> buckets = severityAgg.getBuckets();
 
         assertEquals(buckets.size(), 2L); //two buckets- HIGH and MEDIUM
         assertEquals(severityAgg.getBucketByKey("CRITICAL").getDocCount(), 2L);
@@ -490,7 +490,7 @@ public class UserPersistencyServiceTest {
         Page<User> result = userPersistencyService.find(userQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<User>) result).getAggregations().asMap();
         StringTerms severityAgg = (StringTerms) stringAggregationMap.get(User.TAGS_FIELD_NAME);
-        List<Terms.Bucket> buckets = severityAgg.getBuckets();
+        List<StringTerms.Bucket> buckets = severityAgg.getBuckets();
 
         assertEquals(buckets.size(), 2L); //two buckets- admin and watch
         assertEquals(severityAgg.getBucketByKey("admin").getDocCount(), 3L);
@@ -525,7 +525,7 @@ public class UserPersistencyServiceTest {
         Page<User> result = userPersistencyService.find(userQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<User>) result).getAggregations().asMap();
         StringTerms severityAgg = (StringTerms) stringAggregationMap.get(User.ALERT_CLASSIFICATIONS_FIELD_NAME);
-        List<Terms.Bucket> buckets = severityAgg.getBuckets();
+        List<StringTerms.Bucket> buckets = severityAgg.getBuckets();
 
         assertEquals(buckets.size(), 3L); //two buckets- admin and watch
         assertEquals(severityAgg.getBucketByKey("a").getDocCount(), 3L);
@@ -558,7 +558,7 @@ public class UserPersistencyServiceTest {
 
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<User>) foundUsers).getAggregations().asMap();
         StringTerms severityAgg = (StringTerms) stringAggregationMap.get(User.SEVERITY_FIELD_NAME);
-        List<Terms.Bucket> buckets = severityAgg.getBuckets();
+        List<StringTerms.Bucket> buckets = severityAgg.getBuckets();
 
         assertEquals(buckets.size(), 1L); //one bucket- CRITICAL
         assertEquals(3L, severityAgg.getBucketByKey("CRITICAL").getDocCount());
@@ -592,7 +592,7 @@ public class UserPersistencyServiceTest {
         Page<User> result = userPersistencyService.find(userQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<User>) result).getAggregations().asMap();
         StringTerms severityAgg = (StringTerms) stringAggregationMap.get(User.INDICATORS_FIELD_NAME);
-        List<Terms.Bucket> buckets = severityAgg.getBuckets();
+        List<StringTerms.Bucket> buckets = severityAgg.getBuckets();
 
         assertEquals(buckets.size(), 3L); //two buckets- admin and watch
         assertEquals(severityAgg.getBucketByKey("a").getDocCount(), 3L);

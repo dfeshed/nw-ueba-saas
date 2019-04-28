@@ -505,7 +505,7 @@ public class AlertPersistencyServiceTest {
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Alert>) testAlert).getAggregations().asMap();
         StringTerms severityAgg = (StringTerms) stringAggregationMap.get("severity");
-        List<Terms.Bucket> buckets = severityAgg.getBuckets();
+        List<StringTerms.Bucket> buckets = severityAgg.getBuckets();
 
         assertEquals(buckets.size(), 2L); //two buckets- HIGH and MEDIUM
         assertEquals(severityAgg.getBucketByKey("HIGH").getDocCount(), 5L);
@@ -539,7 +539,7 @@ public class AlertPersistencyServiceTest {
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Alert>) testAlert).getAggregations().asMap();
         StringTerms feedbackAgg = (StringTerms) stringAggregationMap.get("feedback");
-        List<Terms.Bucket> buckets = feedbackAgg.getBuckets();
+        List<StringTerms.Bucket> buckets = feedbackAgg.getBuckets();
 
         assertEquals(3L, buckets.size()); //two buckets- HIGH and MEDIUM
         assertEquals(3L, feedbackAgg.getBucketByKey("RISK").getDocCount());
@@ -576,7 +576,7 @@ public class AlertPersistencyServiceTest {
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Alert>) testAlert).getAggregations().asMap();
         StringTerms classificationsAgg = (StringTerms) stringAggregationMap.get(Alert.CLASSIFICATIONS);
-        List<Terms.Bucket> buckets = classificationsAgg.getBuckets();
+        List<StringTerms.Bucket> buckets = classificationsAgg.getBuckets();
 
         assertEquals(buckets.size(), 11L);//11 buckets
         assertEquals(classificationsAgg.getBucketByKey("a").getDocCount(), 3L);
@@ -614,7 +614,7 @@ public class AlertPersistencyServiceTest {
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Alert>) testAlert).getAggregations().asMap();
         StringTerms classificationsAgg = (StringTerms) stringAggregationMap.get(Alert.CLASSIFICATIONS);
-        List<Terms.Bucket> buckets = classificationsAgg.getBuckets();
+        List<StringTerms.Bucket> buckets = classificationsAgg.getBuckets();
 
         assertEquals(buckets.size(), 3L);//3 buckets- a,b,c
         assertEquals(classificationsAgg.getBucketByKey("a").getDocCount(), 3L);
@@ -720,7 +720,7 @@ public class AlertPersistencyServiceTest {
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Alert>) testAlert).getAggregations().asMap();
         StringTerms indicatorsAgg = (StringTerms) stringAggregationMap.get(Alert.INDICATOR_NAMES);
-        List<Terms.Bucket> buckets = indicatorsAgg.getBuckets();
+        List<StringTerms.Bucket> buckets = indicatorsAgg.getBuckets();
 
         assertEquals(buckets.size(), 3L);//3 buckets- a,b,c
         assertEquals(indicatorsAgg.getBucketByKey("a").getDocCount(), 3L);

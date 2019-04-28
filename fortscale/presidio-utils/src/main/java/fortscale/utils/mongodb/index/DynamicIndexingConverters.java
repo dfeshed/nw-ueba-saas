@@ -1,8 +1,11 @@
 package fortscale.utils.mongodb.index;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
+import org.bson.json.JsonReader;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexDefinition;
@@ -16,7 +19,7 @@ public class DynamicIndexingConverters {
     public static IndexDefinition convertCompoundIndexToIndexDefinition(CompoundIndex compoundIndex) {
         Assert.notNull(compoundIndex, "compoundIndex cannot be null.");
         String def = compoundIndex.def();
-        CompoundIndexDefinition compoundIndexDefinition = new CompoundIndexDefinition((Document) JSON.parse(def));
+        CompoundIndexDefinition compoundIndexDefinition = new CompoundIndexDefinition(Document.parse(def));
         if (compoundIndex.unique()) compoundIndexDefinition.unique();
         if (compoundIndex.sparse()) compoundIndexDefinition.sparse();
         //if (compoundIndex.dropDups()) compoundIndexDefinition.unique(Duplicates.DROP);

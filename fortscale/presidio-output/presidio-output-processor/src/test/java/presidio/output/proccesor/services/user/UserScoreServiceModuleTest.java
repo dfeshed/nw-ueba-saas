@@ -1,7 +1,6 @@
 package presidio.output.proccesor.services.user;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
-import fortscale.utils.elasticsearch.ScrolledPage;
 import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.elasticsearch.client.Client;
@@ -12,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.elasticsearch.core.ScrolledPage;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;

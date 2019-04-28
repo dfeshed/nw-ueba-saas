@@ -3,7 +3,6 @@ package presidio.output.domain.records.alerts;
 import fortscale.common.general.Schema;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import presidio.output.domain.records.AbstractElasticDocument;
 
@@ -15,10 +14,10 @@ public class IndicatorEvent extends AbstractElasticDocument {
 
     public static final String EVENT_TYPE = "event";
 
-    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
+    @Field(type = FieldType.Keyword, store = true)
     String indicatorId;
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.Keyword, store = true)
     Schema schema;
 
     @Field(type = FieldType.Date, store = true)

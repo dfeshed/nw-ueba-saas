@@ -15,7 +15,7 @@ public abstract class AbstractElasticDocument {
     public static final String INDEX_NAME = "presidio-output";
 
     @Id
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.Keyword)
     protected String id;
 
     @Field(type = FieldType.Date, store = true)
@@ -24,7 +24,7 @@ public abstract class AbstractElasticDocument {
     @Field(type = FieldType.Date, store = true)
     private Date updatedDate;
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.Keyword)
     private String updatedBy;
 
     public AbstractElasticDocument(String id, Date createdDate, Date updatedDate) {
