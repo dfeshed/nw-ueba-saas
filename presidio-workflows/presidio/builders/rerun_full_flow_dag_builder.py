@@ -27,7 +27,6 @@ class RerunFullFlowDagBuilder(object):
 
     @classmethod
     def build(cls, dag, is_remove_ca_tables):
-        # type: (object, object) -> object
         """
         Receives a rerun full flow DAG, creates the operators, links them to the DAG and
         configures the dependencies between them.
