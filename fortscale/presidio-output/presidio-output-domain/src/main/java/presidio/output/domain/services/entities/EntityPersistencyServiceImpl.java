@@ -43,12 +43,10 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
         return entityRepository.findAll();
     }
 
-    public Page<Entity> findByEntityName(String entityName, PageRequest pageRequest) {
-        return entityRepository.findByEntityName(entityName, pageRequest);
-    }
-
+    /**
+     * Finds by a collection of repository generated ids(elastic)
+     */
     public Page<Entity> findByIds(Collection<String> ids, PageRequest pageRequest) {
-        // TODO find out how to find by multiple fields in given collection
         return entityRepository.findByIdIn(ids, pageRequest);
     }
 
@@ -59,10 +57,5 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     @Override
     public Page<Entity> find(EntityQuery entityQuery) {
         return entityRepository.search(new EntityElasticsearchQueryBuilder(entityQuery).build());
-    }
-
-    @Override
-    public Stream<Entity> findEntitiesByUpdatedDate(Instant startDate, Instant endDate) {
-        return entityRepository.findByUpdatedByLogicalStartDateGreaterThanEqualAndUpdatedByLogicalEndDateLessThanEqual(startDate.toEpochMilli(), endDate.toEpochMilli());
     }
 }

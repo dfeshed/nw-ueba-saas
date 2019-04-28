@@ -227,9 +227,9 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public AlertsWrapper getAlertsByEntityId(String entityId, boolean expand) {
+    public AlertsWrapper getAlertsByEntityDocumentId(String entityDocumentId, boolean expand) {
         Page<presidio.output.domain.records.alerts.Alert> alerts;
-        alerts = alertPersistencyService.findByEntityDocumentId(entityId, new PageRequest(pageNumber, pageSize));
+        alerts = alertPersistencyService.findByEntityDocumentId(entityDocumentId, new PageRequest(pageNumber, pageSize));
         List restAlerts = new ArrayList();
         int totalElements = 0;
         if (alerts.getTotalElements() > 0) {
@@ -253,16 +253,13 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public Map<String, List<Alert>> getAlertsByEntityIds(Collection<String> entityIds) {
-
+    public Map<String, List<Alert>> getAlertsByEntityDocumentIds(Collection<String> entityDocumentIds) {
         Map<String, List<Alert>> alertsByEntityIds = new HashMap<>();
-
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
-        entityIds.forEach(id -> {
+        entityDocumentIds.forEach(id -> {
             Page<presidio.output.domain.records.alerts.Alert> alertsByEntityId = alertPersistencyService.findByEntityDocumentId(id, pageRequest);
             alertsByEntityIds.put(id, convertToRestAlerts(alertsByEntityId));
         });
-
         return alertsByEntityIds;
     }
 
@@ -313,7 +310,6 @@ public class RestAlertServiceImpl implements RestAlertService {
             totalElements = Math.toIntExact(indicators.getTotalElements());
         }
         return createIndicatorsWrapper(restIndicators, totalElements, pageRequest.getPageNumber());
-
     }
 
     @Override
@@ -465,7 +461,6 @@ public class RestAlertServiceImpl implements RestAlertService {
             ((HistoricalDataWeekdayAggregation) restHistoricalData).setBuckets(restDailyBuckets);
 
         }
-
         return restHistoricalData;
     }
 }

@@ -16,10 +16,10 @@ public interface EntitiesApi {
     @ApiOperation(value = "Use this endpoint to get the alerts of a single entity", notes = "Entities endpoint", response = AlertsWrapper.class, tags = {"entities",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "List of alerts and more general data", response = AlertsWrapper.class)})
-    @RequestMapping(value = "/entities/{entityId}/alerts",
+    @RequestMapping(value = "/entities/{entityDocumentId}/alerts",
             produces = "application/json",
             method = RequestMethod.GET)
-    default ResponseEntity<AlertsWrapper> getAlertsByEntity(@ApiParam(value = "The UUID of the entity to return", required = true) @PathVariable("entityId") String entityId,
+    default ResponseEntity<AlertsWrapper> getAlertsByEntity(@ApiParam(value = "The UUID of the entity to return", required = true) @PathVariable("entityDocumentId") String entityDocumentId,
                                                           @ApiParam(value = "object that holds all the parameters for getting alerts") EntityAlertsQuery body) {
         // do some magic!
         return new ResponseEntity<AlertsWrapper>(HttpStatus.OK);
@@ -29,10 +29,10 @@ public interface EntitiesApi {
     @ApiOperation(value = "Use this endpoint to get details about a single entity", notes = "Entities endpoint", response = Entity.class, tags = {"entities",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Single entity", response = Entity.class)})
-    @RequestMapping(value = "/entities/{entityId}",
+    @RequestMapping(value = "/entities/{entityDocumentId}",
             produces = "application/json",
             method = RequestMethod.GET)
-    default ResponseEntity<Entity> getEntity(@ApiParam(value = "The UUID of the entity to return", required = true) @PathVariable("entityId") String entityId,
+    default ResponseEntity<Entity> getEntity(@ApiParam(value = "The UUID of the entity to return", required = true) @PathVariable("entityDocumentId") String entityDocumentId,
                                          @ApiParam(value = "Expand response to get the entity alerts data", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue = "false") Boolean expand) {
         // do some magic!
         return new ResponseEntity<Entity>(HttpStatus.OK);
@@ -54,11 +54,11 @@ public interface EntitiesApi {
     @ApiOperation(value = "Use this method to update the entity tags", notes = "", response = Entity.class, tags = {"entities",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Single entity", response = Entity.class)})
-    @RequestMapping(value = "/entities/{entityId}",
+    @RequestMapping(value = "/entities/{entityDocumentId}",
             produces = "application/json",
             consumes = "application/json",
             method = RequestMethod.PATCH)
-    default ResponseEntity<Entity> updateEntity(@ApiParam(value = "Exact match to the entity id", required = true) @PathVariable("entityId") String entityId, @RequestBody JsonPatch jsonPatch) {
+    default ResponseEntity<Entity> updateEntity(@ApiParam(value = "Exact match to the entity UUID", required = true) @PathVariable("entityDocumentId") String entityDocumentId, @RequestBody JsonPatch jsonPatch) {
         // do some magic!
         return new ResponseEntity<Entity>(HttpStatus.OK);
     }

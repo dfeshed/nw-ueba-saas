@@ -20,13 +20,9 @@ public interface EntityPersistencyService {
 
     Iterable<Entity> findAll();
 
-    Page<Entity> findByEntityName(String entityName, PageRequest pageRequest);
-
     Page<Entity> findByEntityId(String entityId, PageRequest pageRequest);
 
     Page<Entity> find(EntityQuery entityQuery);
 
     Page<Entity> findByIds(Collection<String> ids, PageRequest pageRequest);
-
-    Stream<Entity> findEntitiesByUpdatedDate(Instant startDate, Instant endDate);
 }

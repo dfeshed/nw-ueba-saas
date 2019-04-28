@@ -38,11 +38,11 @@ public class RestEntityServiceImpl implements RestEntityService {
     }
 
     @Override
-    public Entity getEntityById(String entityId, boolean expand) {
+    public Entity getEntityByDocumentId(String entityDocumentId, boolean expand) {
         List<Alert> alerts = null;
-        presidio.output.domain.records.entity.Entity entity = entityPersistencyService.findEntityByDocumentId(entityId);
+        presidio.output.domain.records.entity.Entity entity = entityPersistencyService.findEntityByDocumentId(entityDocumentId);
         if (expand)
-            alerts = restAlertService.getAlertsByEntityId(entityId, false).getAlerts();
+            alerts = restAlertService.getAlertsByEntityDocumentId(entityDocumentId, false).getAlerts();
         return createCompatibleResult(entity, alerts);
     }
 
@@ -62,7 +62,7 @@ public class RestEntityServiceImpl implements RestEntityService {
                     entityIds.add(entity.getId());
                 }
 
-                entityIdsToAlertsMap = restAlertService.getAlertsByEntityIds(entityIds);
+                entityIdsToAlertsMap = restAlertService.getAlertsByEntityDocumentIds(entityIds);
             }
 
             // Create the rest response
@@ -85,14 +85,14 @@ public class RestEntityServiceImpl implements RestEntityService {
     }
 
     @Override
-    public AlertsWrapper getAlertsByEntityId(String entityId) {
-        return restAlertService.getAlertsByEntityId(entityId, false);
+    public AlertsWrapper getAlertsByEntityDocumentId(String entityDocumentId) {
+        return restAlertService.getAlertsByEntityDocumentId(entityDocumentId, false);
     }
 
     @Override
-    public Entity updateEntity(String entityId, JsonPatch updateRequest)
+    public Entity updateEntity(String entityDocumentId, JsonPatch updateRequest)
     {
-        presidio.output.domain.records.entity.Entity entityById = entityPersistencyService.findEntityByDocumentId(entityId);
+        presidio.output.domain.records.entity.Entity entityById = entityPersistencyService.findEntityByDocumentId(entityDocumentId);
         entityById = patchEntity(updateRequest, entityById);
         entityPersistencyService.save(entityById);
         return createCompatibleResult(entityById, null);

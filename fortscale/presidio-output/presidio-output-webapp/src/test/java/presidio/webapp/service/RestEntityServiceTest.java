@@ -55,7 +55,7 @@ public class RestEntityServiceTest {
     public void testReturnEntityWithoutExpand() {
         Entity entity = createEntity(1);
         when(entityPersistencyService.findEntityByDocumentId(eq(entity.getId()))).thenReturn(entity);
-        presidio.webapp.model.Entity resultEntity = restEntityService.getEntityById(entity.getId(), false);
+        presidio.webapp.model.Entity resultEntity = restEntityService.getEntityByDocumentId(entity.getId(), false);
         assertNotNull(resultEntity);
         assertEquals(entity.getEntityId(), resultEntity.getEntityId());
         assertEquals(entity.getAlertClassifications(), resultEntity.getAlertClassifications());
@@ -74,7 +74,7 @@ public class RestEntityServiceTest {
         when(alertPersistencyService.findByEntityDocumentId(eq(alert.getEntityDocumentId()), notNull(PageRequest.class))).thenReturn(page);
         Entity entity = createEntity(1);
         when(entityPersistencyService.findEntityByDocumentId(eq(entity.getEntityId()))).thenReturn(entity);
-        presidio.webapp.model.Entity resultEntity = restEntityService.getEntityById("entityId1", true);
+        presidio.webapp.model.Entity resultEntity = restEntityService.getEntityByDocumentId("entityId1", true);
         assertEquals(1, resultEntity.getAlerts().size());
     }
 
