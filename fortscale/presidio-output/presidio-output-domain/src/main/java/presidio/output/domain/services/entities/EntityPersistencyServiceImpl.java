@@ -34,8 +34,8 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     }
 
     @Override
-    public Entity findEntityByDocumentId(String id) {
-        return entityRepository.findOne(id);
+    public Entity findEntityByDocumentId(String documentId) {
+        return entityRepository.findOne(documentId);
     }
 
     @Override

@@ -73,15 +73,14 @@ public class EntityServiceImpl implements EntityService {
     }
 
     @Override
-    public Entity findEntityById(String entityId) {
-        return entityPersistencyService.findEntityByDocumentId(entityId);
+    public Entity findEntityById(String entityDocumentId) {
+        return entityPersistencyService.findEntityByDocumentId(entityDocumentId);
     }
 
     @Override
     public List<Entity> save(List<Entity> entities) {
         Iterable<Entity> savedEntities = entityPersistencyService.save(entities);
-        List<Entity> entitiesList = IteratorUtils.toList(savedEntities.iterator());
-        return entitiesList;
+        return IteratorUtils.toList(savedEntities.iterator());
     }
 
     private EntityDetails getEntityDetails(String entityId, String entityType) {

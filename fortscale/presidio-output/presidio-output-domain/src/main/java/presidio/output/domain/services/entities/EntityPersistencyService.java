@@ -2,21 +2,18 @@ package presidio.output.domain.services.entities;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.entity.EntityQuery;
 
-import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 public interface EntityPersistencyService {
     Entity save(Entity entity);
 
     Iterable<Entity> save(List<Entity> entities);
 
-    Entity findEntityByDocumentId(String id);
+    Entity findEntityByDocumentId(String documentId);
 
     Iterable<Entity> findAll();
 

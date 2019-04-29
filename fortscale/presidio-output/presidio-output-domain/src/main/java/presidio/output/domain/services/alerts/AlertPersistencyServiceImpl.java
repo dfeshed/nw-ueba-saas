@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import presidio.output.domain.records.AbstractElasticDocument;
 import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.IndicatorEventRepository;
@@ -24,7 +25,7 @@ import java.util.stream.Stream;
 @Service
 public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
-    Logger logger = Logger.getLogger(AlertPersistencyServiceImpl.class);
+    private Logger logger = Logger.getLogger(AlertPersistencyServiceImpl.class);
 
     @Autowired
     private AlertRepository alertRepository;
@@ -50,9 +51,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     public Iterable<Alert> save(List<Alert> alerts) {
-        alerts.forEach(alert -> {
-            alert.updateFieldsBeforeSave();
-        });
+        alerts.forEach(AbstractElasticDocument::updateFieldsBeforeSave);
         // atomic save for the entire alert entities
 
         // save alerts
@@ -60,7 +59,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         logger.info("{} alerts were saved", alerts.size());
 
         // save indicators
-        List<Indicator> indicators = new ArrayList<Indicator>();
+        List<Indicator> indicators = new ArrayList<>();
         alerts.stream()
                 .filter(alert -> alert.getIndicators() != null)
                 .forEach(alert -> indicators.addAll(alert.getIndicators()));
@@ -72,7 +71,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         logger.info("{} indicators were saved", indicators.size());
 
         // save events
-        List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
+        List<IndicatorEvent> events = new ArrayList<>();
         indicators.stream()
                 .filter(indicator -> indicator.getEvents() != null)
                 .forEach(indicator -> events.addAll(indicator.getEvents()));
@@ -96,9 +95,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         List<Indicator> indicators = indicatorRepository.removeByAlertId(alert.getId());
 
         // delete Indicators events
-        indicators.forEach(indicator -> {
-            indicatorEventRepository.removeByIndicatorId(indicator.getId());
-        });
+        indicators.forEach(indicator -> indicatorEventRepository.removeByIndicatorId(indicator.getId()));
     }
 
     @Override
@@ -176,7 +173,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
     @Override
     public List<Alert> findByEntityDocumentId(String entityDocumentId) {
-        List<Alert> alerts = new ArrayList<Alert>();
+        List<Alert> alerts;
         try (Stream<Alert> stream = alertRepository.findByEntityDocumentId(entityDocumentId)) {
             alerts = stream.collect(Collectors.toList());
         }

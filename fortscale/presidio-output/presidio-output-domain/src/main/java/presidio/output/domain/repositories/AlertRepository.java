@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import presidio.output.domain.records.alerts.Alert;
 
-import java.util.Collection;
 import java.util.stream.Stream;
 
 public interface AlertRepository extends ElasticsearchRepository<Alert, String> {
