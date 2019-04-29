@@ -1,24 +1,24 @@
 from __future__ import generators
 from airflow import DAG
 
-from presidio.builders.initial.initial_dag_builder import InitialDagBuilder
+from presidio.builders.root.root_dag_builder import RootDagBuilder
 import logging
 
 from presidio.factories.abstract_dag_factory import AbstractDagFactory
 
 
-class InitialDagFactory(AbstractDagFactory):
+class RootDagFactory(AbstractDagFactory):
 
-    initial_conf_key = "initial"
+    root_conf_key = "root"
 
     def build_dag(self, dag):
-        InitialDagBuilder().build(dag)
+        RootDagBuilder().build(dag)
 
     def create_dags(self, dags_configs, conf_key):
         """
-        create initial dag
+        create root dag
         """
-        logging.debug("creating initial dynamic dag")
+        logging.debug("creating root dynamic dag")
         dag_config = dags_configs.get(conf_key)
 
         dagrun_timeout, description, end_date, full_filepath, interval, params, start_date, template_searchpath = \

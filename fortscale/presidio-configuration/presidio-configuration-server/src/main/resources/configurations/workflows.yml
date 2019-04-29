@@ -7,7 +7,7 @@ dags:
   dags_configs:
     data_schemas: ${dataPipeline.schemas}
     start_date: ${dataPipeline.startTime}
-    initial:
+    root:
       schedule_interval: timedelta(hours=1)
     indicator:
       schedule_interval: None
@@ -23,7 +23,6 @@ dags:
       schedule_interval: None
       smart_confs:
        - smart_conf_name: userId_hourly
-         depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
     input_retention:
       schedule_interval: None
     output_retention:
