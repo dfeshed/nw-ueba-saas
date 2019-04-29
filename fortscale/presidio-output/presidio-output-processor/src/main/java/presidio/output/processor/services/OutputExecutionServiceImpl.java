@@ -92,7 +92,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                         continue;
                     }
                     Entity entity;
-                    if ((entity = getCreatedEntity(entities, entityId)) == null && (entity = getSingleEntityById(entityId)) == null) {
+                    if ((entity = getCreatedEntity(entities, entityId, entityType)) == null && (entity = getSingleEntityByIdAndType(entityId, entityType)) == null) {
                         //Need to create entity and add it to about to be created list
                         entity = entityService.createEntity(entityId, entityType);
                         entities.add(entity);
@@ -113,7 +113,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                         outputMonitoringService.reportTotalAlertCount(1, alertEntity.getSeverity(), classification, startDate);
                     }
 
-                    if (getCreatedEntity(entities, entity.getEntityId()) == null) {
+                    if (getCreatedEntity(entities, entity.getEntityId(), entity.getEntityType()) == null) {
                         entities.add(entity);
                     }
 
@@ -143,8 +143,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         alerts.clear();
     }
 
-    private Entity getSingleEntityById(String entityId) {
-        List<Entity> entities = entityService.findEntityByVendorEntityIds(Arrays.asList(entityId));
+    private Entity getSingleEntityByIdAndType(String entityId, String entityType) {
+        List<Entity> entities = entityService.findEntityByVendorEntityIdAndType(entityId, entityType);
         if (CollectionUtils.isEmpty(entities)) {
             return null;
         }
@@ -154,9 +154,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         return entities.get(0);
     }
 
-    private Entity getCreatedEntity(List<Entity> entities, String entityVendorId) {
+    private Entity getCreatedEntity(List<Entity> entities, String entityVendorId, String entityType) {
         for (Entity entity : entities) {
-            if (entity.getEntityId().equals(entityVendorId)) {
+            if (entity.getEntityId().equals(entityVendorId) && entity.getEntityType().equals(entityType)) {
                 return entity;
             }
 

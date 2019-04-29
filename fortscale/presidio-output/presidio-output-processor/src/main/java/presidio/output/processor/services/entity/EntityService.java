@@ -23,7 +23,7 @@ public interface EntityService {
 
     void recalculateEntityAlertData(Entity entity);
 
-    List<Entity> findEntityByVendorEntityIds(List<String> vendorEntityId);
+    List<Entity> findEntityByVendorEntityIdAndType(String vendorEntityId, String entityType);
 
     String getEntityType(String contextField);
 

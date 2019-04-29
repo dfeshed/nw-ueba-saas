@@ -17,12 +17,7 @@ import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.output.domain.services.event.EventPersistencyService;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by efratn on 22/08/2017.
@@ -214,14 +209,17 @@ public class EntityServiceImpl implements EntityService {
         return changedEntities;
     }
 
-    public List<Entity> findEntityByVendorEntityIds(List<String> vendorEntityId) {
-        EntityQuery entityQuery = new EntityQuery.EntityQueryBuilder().filterByEntitiesIds(vendorEntityId).build();
+    public List<Entity> findEntityByVendorEntityIdAndType(String vendorEntityId, String entityType) {
+        EntityQuery entityQuery = new EntityQuery
+                .EntityQueryBuilder()
+                .filterByEntitiesIds(Collections.singletonList(vendorEntityId))
+                .filterByEntitiesTypes(Collections.singletonList(entityType))
+                .build();
 
         Page<Entity> entitiesPage = this.entityPersistencyService.find(entityQuery);
         if (!entitiesPage.hasContent() || entitiesPage.getContent().size() < 1) {
             return null;
         }
-
         return entitiesPage.getContent();
     }
 
