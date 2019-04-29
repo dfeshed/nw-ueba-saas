@@ -209,7 +209,7 @@ const respondConfigGen = function(environment) {
     'riac-settings': {
       socketUrl,
       queryRecord: {
-        subscriptionDestination: '/user/queue/riac',
+        subscriptionDestination: '/user/queue/incident/access/control/settings',
         requestDestination: '/ws/respond/incident/access/control/settings'
       }
     },
