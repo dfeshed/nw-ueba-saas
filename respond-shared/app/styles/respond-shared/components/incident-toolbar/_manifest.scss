@@ -31,6 +31,7 @@ $footerHeight: 40px;
 .incident-toolbar {
   float: left;
   display: inline-flex;
+  margin-bottom: rsa-whitespace(less);
 
   .incident-buttons,
   .create-incident-button,

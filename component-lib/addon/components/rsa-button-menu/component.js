@@ -6,7 +6,7 @@ export default Component.extend({
 
   tagName: 'ul',
 
-  classNames: ['button-menu'],
+  classNames: ['rsa-button-menu'],
 
   classNameBindings: ['isExpanded:expanded:collapsed', 'menuStyle'],
 

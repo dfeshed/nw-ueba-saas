@@ -46,10 +46,10 @@
 
     &__manageIncident {
       margin-top: rsa-whitespace(less);
-      margin-left: rsa-whitespace();
+      margin-left: rsa-whitespace(less);
 
       .add-to-incident-button {
-        margin-left: rsa-whitespace();
+        margin-left: rsa-whitespace(less);
       }
     }
 
@@ -88,7 +88,8 @@
         }
       }
       div {
-        margin: rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace();
+        margin-top: rsa-whitespace(less);
+        margin-left: rsa-whitespace(less);
         min-width: 150px;
       }
 

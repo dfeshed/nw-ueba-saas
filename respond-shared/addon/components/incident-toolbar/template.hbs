@@ -16,18 +16,20 @@
 </div>
 
 <div class="incident-dropdown">
-  {{#rsa-content-tethered-panel-trigger panel="incidentSelect" triggerEvent='click' isDisabled=isDisabled}}
-    {{#rsa-form-button isDisabled=isDisabled withDropdown=true}}
-      {{t 'respond.alerts.createIncident'}}
+  <hbox class="rsa-button-group">
+    {{#rsa-form-button isDisabled=isDisabled}}
+      <a {{action 'createIncident'}} class="create-incident-list-item">{{t 'respond.alerts.createIncident'}}</a>
     {{/rsa-form-button}}
-  {{/rsa-content-tethered-panel-trigger}}
-
-  {{#rsa-content-tethered-panel displayCloseButton=false isPopover=true position='bottom-right' panelId="incidentSelect"}}
-    <ul class="rsa-dropdown-action-list">
-      <li {{action 'createIncident'}} class="create-incident-list-item">{{t 'respond.alerts.createIncident'}}</li>
-      <li {{action 'addToIncident'}} class="add-to-incident-list-item">{{t 'respond.alerts.addToIncident'}}</li>
-    </ul>
-  {{/rsa-content-tethered-panel}}
+    {{#click-outside action=(action "clickOutside")}}
+      {{#rsa-form-button class="rsa-split-dropdown" isDisabled=isDisabled isActive=isExpanded defaultAction=(action 'toggleExpand')}}
+        {{rsa-icon name="arrow-down-12"}}
+      {{/rsa-form-button}}
+      {{#rsa-button-menu isExpanded=isExpanded style=offsetsStyle}}
+        <li><a {{action 'createIncident'}} class="create-incident-list-item">{{t 'respond.alerts.createIncident'}}</a></li>
+        <li><a {{action 'addToIncident'}} class="add-to-incident-list-item">{{t 'respond.alerts.addToIncident'}}</a></li>
+      {{/rsa-button-menu}}
+    {{/click-outside}}
+  </hbox>
 </div>
 
 {{#if (eq activeModalId 'create-incident')}}

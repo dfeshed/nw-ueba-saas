@@ -20,7 +20,7 @@ module('Integration | Component | endpoint/pivot-to-event-analysis', function(ho
     this.set('selections', new Array(1));
     await render(hbs`{{endpoint/pivot-to-event-analysis selections=selections}}`);
     await click('.rsa-split-dropdown .rsa-form-button');
-    const selector = '.button-menu';
+    const selector = '.rsa-button-menu';
     const buttonMenu = find(selector);
     return settled().then(async() => {
       assert.ok(buttonMenu.classList.contains('expanded'));
@@ -32,7 +32,7 @@ module('Integration | Component | endpoint/pivot-to-event-analysis', function(ho
     this.set('selections', new Array(1));
     await render(hbs`{{endpoint/pivot-to-event-analysis selections=selections}}`);
     await click('.rsa-split-dropdown .rsa-form-button');
-    const selector = '.button-menu';
+    const selector = '.rsa-button-menu';
     const buttonMenu = find(selector);
     return settled().then(async() => {
       assert.ok(buttonMenu.classList.contains('expanded'));
@@ -70,7 +70,7 @@ module('Integration | Component | endpoint/pivot-to-event-analysis', function(ho
     });
     await render(hbs`{{endpoint/pivot-to-event-analysis selections=selections pivotToInvestigate=pivotToInvestigate}}`);
     await click('.rsa-split-dropdown .rsa-form-button');
-    const selector = '.button-menu';
+    const selector = '.rsa-button-menu';
     const buttonMenu = find(selector);
     return settled().then(async() => {
       assert.ok(buttonMenu.classList.contains('expanded'));

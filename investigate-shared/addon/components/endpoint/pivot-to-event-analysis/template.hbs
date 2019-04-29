@@ -11,7 +11,7 @@
     {{#rsa-form-button class="rsa-split-dropdown" isDisabled=isDisabled isActive=isExpanded defaultAction=(action 'toggleExpand')}}
       {{rsa-icon name="arrow-down-12"}}
     {{/rsa-form-button}}
-    {{#button-menu isExpanded=isExpanded style=offsetsStyle}}
+    {{#rsa-button-menu isExpanded=isExpanded style=offsetsStyle}}
       {{#each categories as |category|}}
         <li>
           <a {{action 'processMenuItem' category.category}}>
@@ -19,7 +19,7 @@
           </a>
         </li>
       {{/each}}
-    {{/button-menu}}
+    {{/rsa-button-menu}}
   {{/click-outside}}
 </hbox>
 
