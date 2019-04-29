@@ -1,9 +1,11 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { getTopAlerts } from 'investigate-users/reducers/alerts/selectors';
+import { getTopAlerts, hasTopAlerts, topAlertsError } from 'investigate-users/reducers/alerts/selectors';
 
 const stateToComputed = (state) => ({
-  topAlerts: getTopAlerts(state)
+  topAlerts: getTopAlerts(state),
+  topAlertsError: topAlertsError(state),
+  hasTopAlerts: hasTopAlerts(state)
 });
 
 const OverviewAlertComponent = Component.extend({

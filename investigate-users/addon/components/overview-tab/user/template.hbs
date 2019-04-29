@@ -2,19 +2,29 @@
   {{t 'investigateUsers.users.highRisk'}}
 </div>
 <div class='user-overview-tab_upper_users_rows'>
-  {{#each topUsers as |user|}}
-    <div class='user-overview-tab_upper_users_row'  {{action 'initiateUser' (hash userId=user.id)}}>
-      <div class='user-overview-tab_upper_users_row_score'>
-        {{rsa-content-badge-score score=user.score size='small' style=(get severityMap user.scoreSeverity) invertColor=true}}
+  {{#if hasTopRiskyUsers}}
+    {{#each topUsers as |user|}}
+      <div class='user-overview-tab_upper_users_row'  {{action 'initiateUser' (hash userId=user.id)}}>
+        <div class='user-overview-tab_upper_users_row_score'>
+          {{rsa-content-badge-score score=user.score size='small' style=(get severityMap user.scoreSeverity) invertColor=true}}
+        </div>
+        <div class='user-overview-tab_upper_users_row_name'>
+          {{user.displayName}}
+        </div>
+        <div class='user-overview-tab_upper_users_row_icon'>
+          {{#if (eq user.followed true)}}
+            {{rsa-icon size='large' style='filled' name='account-group-5'}}
+          {{/if}}
+        </div>
       </div>
-      <div class='user-overview-tab_upper_users_row_name'>
-        {{user.displayName}}
-      </div>
-      <div class='user-overview-tab_upper_users_row_icon'>
-        {{#if (eq user.followed true)}}
-          {{rsa-icon size='large' style='filled' name='account-group-5'}}
-        {{/if}}
-      </div>
-    </div>
-  {{/each}}
+    {{/each}}
+  {{else}}
+    <center class='center'>
+      {{#if topUsersError}}
+        {{t (concat 'investigateUsers.errorMessages.' topUsersError)}}
+      {{else}}
+        {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+      {{/if}}
+    </center>
+  {{/if}}
 </div>

@@ -47,6 +47,7 @@ const initialUsersSeverity = Immutable.from([{
 
 const resetState = Immutable.from({
   topUsers: [],
+  topUsersError: null,
   riskyUserCount: 0,
   watchedUserCount: 0,
   adminUserCount: 0,
@@ -55,6 +56,7 @@ const resetState = Immutable.from({
   existAlertTypes: null,
   favorites: null,
   users: [],
+  usersError: null,
   totalUsers: null,
   allWatched: false,
   filter: initialFilterState
@@ -90,6 +92,26 @@ module('Unit | Reducers | Users Reducer', (hooks) => {
     });
 
     assert.equal(result.watchedUserCount.data, 100);
+  });
+
+  test('test top users error', (assert) => {
+
+    const result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.TOP_USERS_ERROR,
+      payload: 'error'
+    });
+
+    assert.equal(result.topUsersError, 'error');
+  });
+
+  test('test users error', (assert) => {
+
+    const result = reducer(Immutable.from({}), {
+      type: ACTION_TYPES.USERS_ERROR,
+      payload: 'error'
+    });
+
+    assert.equal(result.usersError, 'error');
   });
 
   test('test get risky user count', (assert) => {

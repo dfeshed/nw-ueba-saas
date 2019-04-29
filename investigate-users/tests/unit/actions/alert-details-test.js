@@ -6,6 +6,7 @@ import { Promise } from 'rsvp';
 import dataIndex from '../../data/presidio';
 import moment from 'moment';
 import { later } from '@ember/runloop';
+import { patchFlash } from '../../helpers/patch-flash';
 import { updateDateRangeFilter, exportAlerts, getTopTenAlerts, getAlertsForTimeline, resetAlerts, updateFilter, getExistAnomalyTypesForAlert, getAlertsForGivenTimeInterval } from 'investigate-users/actions/alert-details';
 
 export const initialFilterState = Immutable.from({
@@ -42,6 +43,46 @@ module('Unit | Actions | Alert Details', (hooks) => {
     const dispatch = ({ type, payload }) => {
       assert.equal(type, 'INVESTIGATE_USER::GET_TOP_ALERTS');
       assert.equal(payload.length, 10);
+      done();
+    };
+    getTopTenAlerts()(dispatch);
+  });
+
+  test('it should dispatch error if getTopTenAlerts is failing', (assert) => {
+    patchFetch(() => {
+      return new Promise(function(resolve, reject) {
+        reject({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
+    assert.expect(2);
+    const done = assert.async();
+    const dispatch = ({ type, payload }) => {
+      assert.equal(type, 'INVESTIGATE_USER::TOP_ALERTS_ERROR');
+      assert.equal(payload, 'topAlertsError');
+      done();
+    };
+    getTopTenAlerts()(dispatch);
+  });
+
+  test('it should dispatch error if no alert data is present for getTopTenAlerts', (assert) => {
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          json() {
+            return { data: [] };
+          }
+        });
+      });
+    });
+    assert.expect(2);
+    const done = assert.async();
+    const dispatch = ({ type, payload }) => {
+      assert.equal(type, 'INVESTIGATE_USER::TOP_ALERTS_ERROR');
+      assert.equal(payload, 'noAlerts');
       done();
     };
     getTopTenAlerts()(dispatch);
@@ -91,11 +132,69 @@ module('Unit | Actions | Alert Details', (hooks) => {
     getExistAnomalyTypesForAlert()(dispatch);
   });
 
+  test('it should give flash message if getExistAnomalyTypesForAlert is not coming from server', (assert) => {
+    const done = assert.async();
+    patchFetch(() => {
+      return new Promise(function(resolve, reject) {
+        reject({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
+    getExistAnomalyTypesForAlert()();
+
+    patchFlash((flash) => {
+      assert.equal(flash.type, 'error');
+      done();
+    });
+  });
+
   test('it can getAlertsForTimeline', (assert) => {
     assert.expect(2);
     const dispatch = ({ type, payload }) => {
       assert.equal(type, 'INVESTIGATE_USER::GET_ALERTS_FOR_TIMELINE');
       assert.equal(payload.length, 5);
+    };
+    getAlertsForTimeline()(dispatch);
+  });
+
+  test('it should dispatch error if getAlertsForTimeline is failing', (assert) => {
+    patchFetch(() => {
+      return new Promise(function(resolve, reject) {
+        reject({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
+    assert.expect(2);
+    const done = assert.async();
+    const dispatch = ({ type, payload }) => {
+      assert.equal(type, 'INVESTIGATE_USER::ALERTS_FOR_TIMELINE_ERROR');
+      assert.equal(payload, 'alertsForTimeLineError');
+      done();
+    };
+    getAlertsForTimeline()(dispatch);
+  });
+
+  test('it should dispatch error if no alert data is present for getAlertsForTimeline', (assert) => {
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          json() {
+            return [];
+          }
+        });
+      });
+    });
+    assert.expect(2);
+    const done = assert.async();
+    const dispatch = ({ type, payload }) => {
+      assert.equal(type, 'INVESTIGATE_USER::ALERTS_FOR_TIMELINE_ERROR');
+      assert.equal(payload, 'noAlerts');
+      done();
     };
     getAlertsForTimeline()(dispatch);
   });
@@ -125,6 +224,63 @@ module('Unit | Actions | Alert Details', (hooks) => {
       return { alerts: { filter: initialFilterState } };
     };
     getAlertsForGivenTimeInterval()(dispatch, getState);
+  });
+
+  test('it should dispatch error if getAlertsForGivenTimeInterval is failing', (assert) => {
+    patchFetch(() => {
+      return new Promise(function(resolve, reject) {
+        reject({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
+    assert.expect(2);
+    const done = assert.async();
+    const getState = () => {
+      return { alerts: { filter: initialFilterState } };
+    };
+    const dispatch = ({ type, payload }) => {
+      assert.equal(type, 'INVESTIGATE_USER::ALERT_LIST_ERROR');
+      assert.equal(payload, 'alertListError');
+      done();
+    };
+    getAlertsForGivenTimeInterval()(dispatch, getState);
+  });
+
+  test('it should dispatch error if no alert data is present for getAlertsForGivenTimeInterval', (assert) => {
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          json() {
+            return { data: [] };
+          }
+        });
+      });
+    });
+    assert.expect(2);
+    const done = assert.async();
+    const getState = () => {
+      return { alerts: { filter: initialFilterState } };
+    };
+    const dispatch = ({ type, payload }) => {
+      assert.equal(type, 'INVESTIGATE_USER::ALERT_LIST_ERROR');
+      assert.equal(payload, 'noAlerts');
+      done();
+    };
+    getAlertsForGivenTimeInterval()(dispatch, getState);
+  });
+
+  test('it can exportAlerts', (assert) => {
+    assert.expect(1);
+    window.URL.createObjectURL = () => {
+      assert.ok(true, 'This function supposed to be called for altert export');
+    };
+    const getState = () => {
+      return { alerts: { filter: initialFilterState } };
+    };
+    exportAlerts(initialFilterState)(null, getState);
   });
 
   test('it can updateDateRangeFilter for relative date', (assert) => {

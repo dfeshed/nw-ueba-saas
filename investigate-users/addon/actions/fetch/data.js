@@ -50,7 +50,12 @@ export const fetchData = (endpointLocation, data = {}, method, args) => {
     });
   }
   return fetch(fetchUrl, options).then((fetched) => {
+    if (!fetched.json) {
+      return 'error';
+    }
     return fetched.json();
+  }).catch(() => {
+    return 'error';
   });
 };
 

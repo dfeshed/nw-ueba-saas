@@ -10,9 +10,12 @@ import alertsList from '../../data/presidio/alerts-list';
 
 const resetState = Immutable.from({
   topAlerts: [],
+  topAlertsError: null,
   alertList: [],
+  alertListError: null,
   existAnomalyTypes: null,
   alertsForTimeline: null,
+  alertsForTimelineError: null,
   alertsSeverity: {
     total_severity_count: {
       Critical: null,
@@ -65,6 +68,36 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
     });
 
     assert.equal(result.existAnomalyTypes.abnormal_active_directory_day_time_operation, 34);
+  });
+
+  test('test top alerts error', (assert) => {
+
+    const result = reducer(Immutable.from(resetState), {
+      type: ACTION_TYPES.TOP_ALERTS_ERROR,
+      payload: 'error'
+    });
+
+    assert.equal(result.topAlertsError, 'error');
+  });
+
+  test('test alerts error', (assert) => {
+
+    const result = reducer(Immutable.from(resetState), {
+      type: ACTION_TYPES.ALERT_LIST_ERROR,
+      payload: 'error'
+    });
+
+    assert.equal(result.alertListError, 'error');
+  });
+
+  test('test alerts  time line error', (assert) => {
+
+    const result = reducer(Immutable.from(resetState), {
+      type: ACTION_TYPES.ALERTS_FOR_TIMELINE_ERROR,
+      payload: 'error'
+    });
+
+    assert.equal(result.alertsForTimelineError, 'error');
   });
 
   test('test alerts For Timeline', (assert) => {

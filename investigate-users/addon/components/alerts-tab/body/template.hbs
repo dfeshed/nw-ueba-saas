@@ -9,5 +9,15 @@
   </div>
 </div>
 <div class='alerts-tab_body_body'>
-  {{alerts-tab/body/alerts-table}}
+  {{#if hasAlerts}}
+    {{alerts-tab/body/alerts-table}}
+  {{else}}
+    <center class='center'>
+      {{#if alertListError}}
+        {{t (concat 'investigateUsers.errorMessages.' alertListError)}}
+      {{else}}
+        {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+      {{/if}}
+    </center>
+  {{/if}}
 </div>

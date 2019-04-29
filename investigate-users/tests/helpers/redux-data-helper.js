@@ -1,4 +1,9 @@
 import Immutable from 'seamless-immutable';
+import userList from '../data/presidio/user-list';
+import UserOverview from '../data/presidio/usr_overview';
+import alertsList from '../data/presidio/alerts-list';
+import alertOverview from '../data/presidio/alert_overview';
+import alertByDayAndSeverity from '../data/presidio/alert-by-day-and-severity';
 
 const _set = (obj, key, val) => {
   if (obj[key]) {
@@ -28,10 +33,12 @@ export default class DataHelper {
         activeTabName: 'overview'
       },
       users: {
-        topUsers: [],
+        topUsers: UserOverview.data,
+        topUsersError: null,
         riskyUserCount: 0,
         watchedUserCount: 0,
         adminUserCount: 0,
+        users: userList.data,
         usersSeverity: [{
           High: {
             userCount: null
@@ -49,7 +56,7 @@ export default class DataHelper {
         existAnomalyTypes: null,
         existAlertTypes: null,
         favorites: null,
-        totalUsers: null,
+        totalUsers: 30,
         filter: {
           addAlertsAndDevices: true,
           addAllWatched: true,
@@ -68,9 +75,10 @@ export default class DataHelper {
         }
       },
       alerts: {
-        topAlerts: [],
-        alertList: [],
+        topAlerts: alertOverview.data,
+        alertList: alertsList.data,
         existAnomalyTypes: null,
+        alertsForTimeline: alertByDayAndSeverity,
         alertsSeverity: {
           total_severity_count: {
             Critical: null,
@@ -115,6 +123,21 @@ export default class DataHelper {
 
   alertTimeLine(obj) {
     _set(this.state, 'alerts.alertsForTimeline', obj);
+    return this;
+  }
+
+  topAlertsError(topAlertsError) {
+    _set(this.state, 'alerts.topAlertsError', topAlertsError);
+    return this;
+  }
+
+  alertListError(alertListError) {
+    _set(this.state, 'alerts.alertListError', alertListError);
+    return this;
+  }
+
+  alertsForTimelineError(alertsForTimelineError) {
+    _set(this.state, 'alerts.alertsForTimelineError', alertsForTimelineError);
     return this;
   }
 
@@ -175,6 +198,16 @@ export default class DataHelper {
 
   usersFavorites(favorites) {
     _set(this.state, 'users.favorites', favorites);
+    return this;
+  }
+
+  topUsersError(topUsersError) {
+    _set(this.state, 'users.topUsersError', topUsersError);
+    return this;
+  }
+
+  usersError(usersError) {
+    _set(this.state, 'users.usersError', usersError);
     return this;
   }
 

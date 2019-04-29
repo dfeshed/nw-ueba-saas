@@ -1,8 +1,18 @@
 <div class='user-overview-tab_title'>
   {{t 'investigateUsers.overview.topAlerts'}}
 </div>
-<div class='user-overview-tab_upper_alerts_container'>
-  {{#each topAlerts as |alert|}}
-    {{overview-tab/alerts/pill alert=alert}}
-  {{/each}}
-</div>
+{{#if hasTopAlerts}}
+  <div class='user-overview-tab_upper_alerts_container'>
+    {{#each topAlerts as |alert|}}
+      {{overview-tab/alerts/pill alert=alert}}
+    {{/each}}
+  </div>
+{{else}}
+  <center class='center'>
+    {{#if topAlertsError}}
+      {{t (concat 'investigateUsers.errorMessages.' topAlertsError)}}
+    {{else}}
+      {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+    {{/if}}
+  </center>
+{{/if}}  

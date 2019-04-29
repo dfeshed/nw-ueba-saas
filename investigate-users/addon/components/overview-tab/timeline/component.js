@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { getAlertsForTimeline, getFilter } from 'investigate-users/reducers/alerts/selectors';
+import { getAlertsForTimeline, getFilter, alertsForTimelineError } from 'investigate-users/reducers/alerts/selectors';
 import { select } from 'd3-selection';
 import { scaleBand, scaleLinear, scaleOrdinal } from 'd3-scale';
 import { max } from 'd3-array';
@@ -8,6 +8,7 @@ import { stack } from 'd3-shape';
 import { axisBottom } from 'd3-axis';
 import { timeFormat } from 'd3-time-format';
 import computed from 'ember-computed-decorators';
+import { next } from '@ember/runloop';
 import { updateFilter } from 'investigate-users/actions/alert-details';
 
 const createLegend = (g, keys, width, z) => {
@@ -54,7 +55,8 @@ const createTooltip = (svg) => {
 };
 const stateToComputed = (state) => ({
   filter: getFilter(state),
-  alerts: getAlertsForTimeline(state)
+  alerts: getAlertsForTimeline(state),
+  alertsForTimelineError: alertsForTimelineError(state)
 });
 
 const dispatchToActions = {
@@ -128,8 +130,10 @@ const OverviewAlertTimelineComponent = Component.extend({
 
   @computed('alerts')
   alertsTimeline(alerts) {
-    if (alerts) {
-      this._renderAlertsTimeLine(alerts);
+    if (alerts && alerts.length > 0) {
+      next(this, () => {
+        this._renderAlertsTimeLine(alerts);
+      });
       return true;
     }
   }

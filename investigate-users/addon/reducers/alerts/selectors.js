@@ -19,6 +19,12 @@ export const getTopAlerts = (state) => state.alerts.topAlerts;
 
 export const getFilter = (state) => state.alerts.filter;
 
+export const alertListError = (state) => state.alerts.alertListError;
+
+export const topAlertsError = (state) => state.alerts.topAlertsError;
+
+export const alertsForTimelineError = (state) => state.alerts.alertsForTimelineError;
+
 export const getSelectedFeedBack = (state) => state.alerts.filter.feedback;
 
 export const allAlertsReceived = createSelector(
@@ -27,6 +33,12 @@ export const allAlertsReceived = createSelector(
     return totalAlerts && totalAlerts <= alertList.length;
   });
 
+
+export const hasTopAlerts = createSelector(
+  [getTopAlerts],
+  (alerts) => {
+    return alerts !== null && alerts.length > 0;
+  });
 
 export const getSelectedSeverity = createSelector(
   [getFilter],
@@ -46,6 +58,12 @@ export const getAlertsGroupedHourly = createSelector(
   [_alertList],
   (alertList) => {
     return _.groupBy(alertList, 'startDate');
+  });
+
+export const hasAlerts = createSelector(
+  [getAlertsGroupedHourly],
+  (alerts) => {
+    return _.keys(alerts).length > 0;
   });
 
 export const getExistAnomalyTypes = createSelector(

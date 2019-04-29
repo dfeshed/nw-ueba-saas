@@ -66,4 +66,35 @@ module('Unit | API | data', (hooks) => {
     };
     exportData('severityBarForUser', initialFilterState);
   });
+
+  test('it can test fetch data for error cases', async(assert) => {
+    patchFetch(() => {
+      return new Promise(function(resolve, reject) {
+        reject({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
+
+    const response = fetchData('severityBarForUser');
+    later(() => {
+      assert.equal(response._result, 'error');
+    }, 400);
+  });
+
+  test('it can test fetch data if fetched data is not proper', async(assert) => {
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          error: 'some error'
+        });
+      });
+    });
+    const response = fetchData('severityBarForUser');
+    later(() => {
+      assert.equal(response._result, 'error');
+    }, 400);
+  });
 });

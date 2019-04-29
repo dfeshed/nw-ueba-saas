@@ -2,10 +2,15 @@
   {{t 'investigateUsers.alerts.all'}}
 </div>
 <div class='user-overview-tab_lower_alerts_graph'>
-  <svg width="100%" height="100%" id='alertTimeline'></svg>
-  {{#unless alertsTimeline}}
+  {{#if alertsTimeline}}
+    <svg width="100%" height="100%" id='alertTimeline'></svg>
+  {{else}}
     <center class='center'>
-      {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+      {{#if alertsForTimelineError}}
+        {{t (concat 'investigateUsers.errorMessages.' alertsForTimelineError)}}
+      {{else}}
+        {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+      {{/if}}
     </center>
-  {{/unless}}
+  {{/if}}
 </div>

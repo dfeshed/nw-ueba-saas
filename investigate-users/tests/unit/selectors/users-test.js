@@ -15,14 +15,16 @@ module('Unit | Selectors | Users Selectors');
 
 const state = Immutable.from({
   users: {
-    topUsers: usrOverview,
+    topUsers: usrOverview.data,
+    topUsersError: null,
     riskyUserCount: notRiskyCount,
     watchedUserCount: watchedCount,
     adminUserCount: userAdminCount,
     usersSeverity: [usersTabSeverityBar.data],
     existAnomalyTypes,
     existAlertTypes: existAlertTypes.data,
-    users: userList,
+    users: userList.data,
+    usersError: null,
     favorites: favoriteFilter.data,
     allWatched: true,
     totalUsers: 100,
@@ -47,7 +49,7 @@ const state = Immutable.from({
 });
 
 test('test Top Risky Users', (assert) => {
-  assert.equal(Users.getTopRiskyUsers(state).data.length, 5);
+  assert.equal(Users.getTopRiskyUsers(state).length, 5);
 });
 
 test('test Total Users', (assert) => {
@@ -94,6 +96,30 @@ test('test Exist Anomaly Types', (assert) => {
   assert.equal(Users.getExistAnomalyTypes(state).length, 26);
 });
 
+test('test users error', (assert) => {
+  assert.equal(Users.usersError(state), null);
+  const newState = state.setIn(['users', 'usersError'], 'error');
+  assert.equal(Users.usersError(newState), 'error');
+});
+
+test('test top users error', (assert) => {
+  assert.equal(Users.topUsersError(state), null);
+  const newState = state.setIn(['users', 'topUsersError'], 'error');
+  assert.equal(Users.topUsersError(newState), 'error');
+});
+
+test('test top users are present or not', function(assert) {
+  assert.equal(Users.hasTopRiskyUsers(state), true);
+  const newState = state.setIn(['users', 'topUsers'], null);
+  assert.equal(Users.hasTopRiskyUsers(newState), false);
+});
+
+test('test users are present or not', function(assert) {
+  assert.equal(Users.hasUsers(state), true);
+  const newState = state.setIn(['users', 'users'], null);
+  assert.equal(Users.hasUsers(newState), false);
+});
+
 test('test Selected Alert Types', (assert) => {
   assert.deepEqual(Users.getSelectedAlertTypes(state), [{
     id: 'snooping_user',
@@ -118,7 +144,7 @@ test('test Favorites', (assert) => {
 });
 
 test('test Users', (assert) => {
-  assert.equal(Users.getUsers(state).data.length, 2);
+  assert.equal(Users.getUsers(state).length, 2);
 });
 
 test('test AllWatched Users', (assert) => {

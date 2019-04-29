@@ -21,6 +21,10 @@ export const getTotalUsers = (state) => state.users.totalUsers;
 
 export const getTopRiskyUsers = (state) => state.users.topUsers;
 
+export const usersError = (state) => state.users.usersError;
+
+export const topUsersError = (state) => state.users.topUsersError;
+
 export const allWatched = (state) => state.users.allWatched;
 
 export const getUsers = (state) => state.users.users;
@@ -28,6 +32,18 @@ export const getUsers = (state) => state.users.users;
 export const severityFilter = ['Low', 'Medium', 'High', 'Critical'];
 
 export const getUserFilter = (state) => state.users.filter;
+
+export const hasTopRiskyUsers = createSelector(
+  [getTopRiskyUsers],
+  (users) => {
+    return users !== null && users.length > 0;
+  });
+
+export const hasUsers = createSelector(
+  [getUsers],
+  (users) => {
+    return users !== null && users.length > 0;
+  });
 
 export const getFavorites = createSelector(
   [_favorites],

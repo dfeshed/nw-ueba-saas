@@ -1,2 +1,12 @@
 {{users-tab/body/header}}
-{{users-tab/body/list}}
+{{#if hasUsers}}
+  {{users-tab/body/list}}
+{{else}}
+  <center class='center'>
+    {{#if usersError}}
+      {{t (concat 'investigateUsers.errorMessages.' usersError)}}
+    {{else}}
+      {{rsa-loader size="medium" label=(t 'investigate.loading')}}
+    {{/if}}
+  </center>
+{{/if}}

@@ -1,4 +1,4 @@
-import { find, render, findAll } from '@ember/test-helpers';
+import { render, findAll } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
@@ -23,11 +23,10 @@ module('Integration | Component | user-container/body', function(hooks) {
   });
 
   test('it should render user-container/body for overview', async function(assert) {
+    new ReduxDataHelper(setState).build();
     await render(hbs`{{user-container/body}}`);
-    assert.equal(find('.user-overview-tab_upper_users').textContent.trim(), 'High Risk Users');
-    assert.equal(find('.user-overview-tab_upper_alerts').textContent.trim(), 'Top Alerts');
-    assert.equal(find('.user-overview-tab_lower_users').textContent.replace(/\s/g, ''), 'AllUsers0RiskyUsers0Watched0Admin');
-    assert.equal(find('.user-overview-tab_lower_alerts').textContent.replace(/\s/g, ''), 'AllAlertsLoading');
+    assert.equal(findAll('.user-overview-tab_upper_users').length, 1);
+    assert.equal(findAll('.user-overview-tab_upper_alerts').length, 1);
   });
 
   test('it should render user-container/body for users', async function(assert) {

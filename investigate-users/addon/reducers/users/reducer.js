@@ -36,6 +36,7 @@ const initialUsersSeverity = Immutable.from([{
 
 const initialState = Immutable.from({
   topUsers: [],
+  topUsersError: null,
   riskyUserCount: 0,
   watchedUserCount: 0,
   adminUserCount: 0,
@@ -45,6 +46,7 @@ const initialState = Immutable.from({
   favorites: null,
   allWatched: false,
   users: [],
+  usersError: null,
   totalUsers: null,
   filter: initialFilterState
 });
@@ -53,6 +55,8 @@ const tabs = handleActions({
   [ACTION_TYPES.RESTORE_DEFAULT]: () => Immutable.from(initialState),
   [ACTION_TYPES.GET_TOP_RISKY_USER]: (state, { payload }) => state.set('topUsers', [].concat(payload)),
   [ACTION_TYPES.GET_RISKY_USER_COUNT]: (state, { payload }) => state.set('riskyUserCount', payload),
+  [ACTION_TYPES.TOP_USERS_ERROR]: (state, { payload }) => state.set('topUsersError', payload),
+  [ACTION_TYPES.USERS_ERROR]: (state, { payload }) => state.set('usersError', payload),
   [ACTION_TYPES.GET_WATCHED_USER_COUNT]: (state, { payload }) => state.set('watchedUserCount', payload),
   [ACTION_TYPES.GET_ADMIN_USER_COUNT]: (state, { payload }) => state.set('adminUserCount', payload),
   [ACTION_TYPES.GET_SEVERITY_FOR_USERS]: (state, { payload }) => state.set('usersSeverity', [].concat(payload)),

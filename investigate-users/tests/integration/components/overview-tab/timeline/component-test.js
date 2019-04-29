@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render, find, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -60,5 +60,19 @@ module('Integration | Component | overview-tab/timeline', function(hooks) {
     assert.equal(thirdYAxisElement.childNodes[1].getAttribute('height'), '0');
     assert.equal(thirdYAxisElement.childNodes[2].getAttribute('height'), '0');
     assert.equal(thirdYAxisElement.childNodes[3].getAttribute('height'), '1');
+  });
+
+  test('it renders loader till time line data is not there', async function(assert) {
+    new ReduxDataHelper(setState).alertTimeLine([]).build();
+    await render(hbs`{{overview-tab/timeline}}`);
+    assert.equal(findAll('.rsa-loader').length, 1);
+    assert.equal(findAll('.center').length, 1);
+  });
+
+  test('it renders error for any server issue', async function(assert) {
+    new ReduxDataHelper(setState).alertTimeLine([]).alertsForTimelineError('Error').build();
+    await render(hbs`{{overview-tab/timeline}}`);
+    assert.equal(findAll('.rsa-loader').length, 0);
+    assert.equal(findAll('.center').length, 1);
   });
 });

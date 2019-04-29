@@ -2,6 +2,7 @@ import * as ACTION_TYPES from './types';
 import { fetchData, exportData } from './fetch/data';
 import { getUserFilter } from 'investigate-users/reducers/users/selectors';
 import { getWatchedUserCount } from './user-details';
+import { flashErrorMessage } from 'investigate-users/utils/flash-message';
 import _ from 'lodash';
 
 const _filterPropertiesToPickFromCurrentFilterForPosting = ['alertTypes', 'indicatorTypes', 'isWatched', 'minScore', 'severity', 'sortDirection', 'sortField'];
@@ -14,7 +15,11 @@ const _followUnfollowUsers = (endpointLocation) => {
   return (dispatch, getState) => {
     let filter = getUserFilter(getState());
     const filterForPost = _removeUnwantedPropertyFromObject(filter);
-    fetchData(endpointLocation, filterForPost, 'POST').then(() => {
+    fetchData(endpointLocation, filterForPost, 'POST').then((result) => {
+      if (result === 'error') {
+        flashErrorMessage('investigateUsers.users.unableToFollowUsers');
+        return;
+      }
       dispatch(resetUsers());
       if (filter) {
         filter = filter.setIn(['fromPage'], 1);
@@ -28,10 +33,14 @@ const _followUnfollowUsers = (endpointLocation) => {
 
 const getSeverityDetailsForUserTabs = (filter) => {
   return (dispatch) => {
-    fetchData('severityBarForUser', filter).then(({ data }) => {
+    fetchData('severityBarForUser', filter).then((result) => {
+      if (result === 'error') {
+        flashErrorMessage('investigateUsers.users.unableToGetSeverityDetails');
+        return;
+      }
       dispatch({
         type: ACTION_TYPES.GET_SEVERITY_FOR_USERS,
-        payload: data
+        payload: result.data
       });
     });
   };
@@ -39,6 +48,10 @@ const getSeverityDetailsForUserTabs = (filter) => {
 const getExistAnomalyTypes = () => {
   return (dispatch) => {
     fetchData('existAnomalyTypes').then((data) => {
+      if (data === 'error') {
+        flashErrorMessage('investigateUsers.users.unableToGETExistAnomalyTypes');
+        return;
+      }
       dispatch({
         type: ACTION_TYPES.GET_EXIST_ANOMALY_TYPES,
         payload: data
@@ -49,10 +62,14 @@ const getExistAnomalyTypes = () => {
 
 const getExistAlertTypess = () => {
   return (dispatch) => {
-    fetchData('existAlertTypes').then(({ data }) => {
+    fetchData('existAlertTypes').then((result) => {
+      if (result === 'error') {
+        flashErrorMessage('investigateUsers.users.unableToGetExistAlertTypes');
+        return;
+      }
       dispatch({
         type: ACTION_TYPES.GET_EXIST_ALERT_TYPES,
-        payload: data
+        payload: result.data
       });
     });
   };
@@ -60,10 +77,14 @@ const getExistAlertTypess = () => {
 
 const getFavorites = () => {
   return (dispatch) => {
-    fetchData('favoriteFilter').then(({ data }) => {
+    fetchData('favoriteFilter').then((result) => {
+      if (result === 'error') {
+        flashErrorMessage('investigateUsers.users.unableToGetExistAlertTypes');
+        return;
+      }
       dispatch({
         type: ACTION_TYPES.GET_FAVORITES,
-        payload: data
+        payload: result.data
       });
     });
   };
@@ -72,7 +93,15 @@ const getFavorites = () => {
 const getUsers = (filter) => {
   return (dispatch, getState) => {
     filter = filter || getUserFilter(getState());
-    fetchData('userList', filter).then(({ data, total, info }) => {
+    fetchData('userList', filter).then((result) => {
+      const { data, total, info } = result;
+      if (result === 'error' || (data && data.length === 0)) {
+        dispatch({
+          type: ACTION_TYPES.USERS_ERROR,
+          payload: result === 'error' ? 'usersError' : 'noUserData'
+        });
+        return;
+      }
       dispatch({
         type: ACTION_TYPES.GET_USERS,
         payload: { data, total, info }
@@ -102,7 +131,11 @@ const updateFilter = (filter, needNotToPullUsers) => {
 const saveAsFavorite = (name) => {
   return (dispatch, getState) => {
     const filterForPost = _removeUnwantedPropertyFromObject(getUserFilter(getState()));
-    fetchData('createfavoriteFilter', filterForPost, 'POST', name).then(() => {
+    fetchData('createfavoriteFilter', filterForPost, 'POST', name).then((result) => {
+      if (result === 'error') {
+        flashErrorMessage('investigateUsers.users.unableToSaveAsFavorite');
+        return;
+      }
       dispatch(getFavorites());
     });
   };
@@ -110,7 +143,11 @@ const saveAsFavorite = (name) => {
 
 const deleteFavorite = (filterId) => {
   return (dispatch) => {
-    fetchData('deletefavoriteFilter', null, 'DELETE', filterId).then(() => {
+    fetchData('deletefavoriteFilter', null, 'DELETE', filterId).then((result) => {
+      if (result === 'error') {
+        flashErrorMessage('investigateUsers.users.unableToDeleteFavorite');
+        return;
+      }
       dispatch(getFavorites());
     });
   };

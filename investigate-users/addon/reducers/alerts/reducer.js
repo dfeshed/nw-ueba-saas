@@ -17,9 +17,12 @@ export const initialFilterState = Immutable.from({
 
 const initialState = Immutable.from({
   topAlerts: [],
+  topAlertsError: null,
   alertList: [],
+  alertListError: null,
   existAnomalyTypes: null,
   alertsForTimeline: null,
+  alertsForTimelineError: null,
   alertsSeverity: {
     total_severity_count: {
       Critical: null,
@@ -36,6 +39,9 @@ const tabs = handleActions({
   [ACTION_TYPES.RESTORE_DEFAULT]: () => (Immutable.from(initialState)),
   [ACTION_TYPES.GET_TOP_ALERTS]: (state, { payload }) => state.set('topAlerts', [].concat(payload)),
   [ACTION_TYPES.GET_ALERTS_FOR_TIMELINE]: (state, { payload }) => state.set('alertsForTimeline', payload),
+  [ACTION_TYPES.ALERT_LIST_ERROR]: (state, { payload }) => state.set('alertListError', payload),
+  [ACTION_TYPES.TOP_ALERTS_ERROR]: (state, { payload }) => state.set('topAlertsError', payload),
+  [ACTION_TYPES.ALERTS_FOR_TIMELINE_ERROR]: (state, { payload }) => state.set('alertsForTimelineError', payload),
   [ACTION_TYPES.GET_ALERTS]: (state, { payload: { data, info, total } }) => {
     // Concat data for requested page.
     let newState = state.set('alertList', state.getIn(['alertList']).concat(data));

@@ -1,4 +1,4 @@
-import { find, render } from '@ember/test-helpers';
+import { find, findAll, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
@@ -59,7 +59,14 @@ module('Integration | Component | alerts-tab/body', function(hooks) {
 
   test('it should render alert tab body and should loader if data is not there', async function(assert) {
     await render(hbs`{{alerts-tab/body}}`);
-    assert.equal(find('.rsa-loader__text').textContent.replace(/\s/g, ''), 'Loading');
+    assert.equal(findAll('.rsa-loader').length, 1);
+    assert.equal(findAll('.center').length, 1);
+  });
+  test('it should render alert tab body and should error in case of issue', async function(assert) {
+    new ReduxDataHelper(setState).alertsListdata([]).alertListError('Error').build();
+    await render(hbs`{{alerts-tab/body}}`);
+    assert.equal(findAll('.rsa-loader').length, 0);
+    assert.equal(findAll('.center').length, 1);
   });
 
 });
