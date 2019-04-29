@@ -21,6 +21,7 @@ public class AdeManagerApplicationService {
         this.adeManagerSdk = adeManagerSdk;
         this.enrichedTtl = enrichedTtl;
         this.enrichedCleanupInterval = enrichedCleanupInterval;
+        enrichedTtlDurationValidation();
     }
 
     /**
@@ -28,18 +29,16 @@ public class AdeManagerApplicationService {
      * @param until
      */
     public void cleanupEnrichedData(Instant until){
-        if(enrichedTtlDurationValid()) {
-            adeManagerSdk.cleanupEnrichedData(until, enrichedTtl, enrichedCleanupInterval);
-        }
+        adeManagerSdk.cleanupEnrichedData(until, enrichedTtl, enrichedCleanupInterval);
     }
 
     /**
      * Ensure that we don't clean last 24 hours
      */
-    public boolean enrichedTtlDurationValid(){
+    public boolean enrichedTtlDurationValidation(){
         if (enrichedTtl.compareTo(Duration.ofDays(1)) < 0){
-            logger.info("Enriched ttl duration should be greater than 24 hours, enrichedTtl: {}", enrichedTtl.toString());
-            return false;
+            String s = String.format("Enriched ttl duration should be greater than 24 hours, enrichedTtl: %s.", enrichedTtl.toString());
+            throw new IllegalArgumentException(s);
         }
         return true;
     }
