@@ -30,7 +30,7 @@
 
   {{#rsa-form-button
     class='top-ranking-button'
-    defaultAction=(action 'setTopRanking')
+    defaultAction=(action 'setTopRanking' true)
     isDisabled=(not hasSelectedGroup)
   }}
     {{t 'adminUsm.groupWizard.setTopRanking'}}
