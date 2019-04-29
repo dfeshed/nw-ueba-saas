@@ -21,7 +21,7 @@ import presidio.output.processor.services.OutputExecutionServiceImpl;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class OutputProcessorApplicationShellTest {
 
-    public static final String EXECUTION_COMMAND = "run  --start_date 2017-06-13T07:00:00.00Z --end_date 2017-06-13T09:00:00.00Z --fixed_duration_strategy 3600";
+    public static final String EXECUTION_COMMAND = "run --smart_record_conf_name userId_hourly --start_date 2017-06-13T07:00:00.00Z --end_date 2017-06-13T09:00:00.00Z --fixed_duration_strategy 3600";
 
     @Autowired
     private BootShim bootShim;
