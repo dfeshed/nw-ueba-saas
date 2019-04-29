@@ -218,7 +218,7 @@ export default class DataHelper {
   }
 
   eventTimeSortOrder(sort = 'Ascending') {
-    _set(this.state, 'eventResults.eventTimeSortOrder', sort);
+    _set(this.state, 'data.eventAnalysisPreferences.eventTimeSortOrder', sort);
     return this;
   }
 

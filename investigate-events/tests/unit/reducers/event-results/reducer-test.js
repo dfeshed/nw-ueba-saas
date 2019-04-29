@@ -92,42 +92,9 @@ test('ACTION_TYPES.INITIALIZE_INVESTIGATE reducer', function(assert) {
   assert.equal(result.selectedEventIds.length, 0);
 });
 
-test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate and sort events in Ascending order of Time', function(assert) {
+test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate', function(assert) {
   const initialState = Immutable.from({
-    data: [],
-    eventTimeSortOrderPreferenceWhenQueried: 'Ascending'
-  });
-
-  let action = {
-    type: ACTION_TYPES.SET_EVENTS_PAGE,
-    payload: [{ timeAsNumber: 7777, sessionId: 5 }]
-  };
-  let result = reducer(initialState, action);
-  assert.equal(result.data.length, 1, 'One event was absorbed');
-
-  action = {
-    type: ACTION_TYPES.SET_EVENTS_PAGE,
-    payload: [{ timeAsNumber: 9999, sessionId: 6 }]
-  };
-  result = reducer(result, action);
-  assert.equal(result.data.length, 2, 'Two events now');
-  assert.equal(result.data[0].timeAsNumber, 7777, 'sorted ascending');
-
-  action = {
-    type: ACTION_TYPES.SET_EVENTS_PAGE,
-    payload: [{ timeAsNumber: 5555, sessionId: 7 }]
-  };
-  result = reducer(result, action);
-  assert.equal(result.data.length, 3, 'Three events now');
-  assert.equal(result.data[0].timeAsNumber, 5555, 'sorted ascending');
-  assert.equal(result.data[1].timeAsNumber, 7777, 'sorted ascending');
-  assert.equal(result.data[2].timeAsNumber, 9999, 'sorted ascending');
-});
-
-test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate and sort events in Descending order of Time', function(assert) {
-  const initialState = Immutable.from({
-    data: [],
-    eventTimeSortOrderPreferenceWhenQueried: 'Descending'
+    data: []
   });
 
   let action = {
@@ -143,7 +110,8 @@ test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate and sort events in D
   };
   result = reducer(result, action);
   assert.equal(result.data.length, 2, 'Two events now');
-  assert.equal(result.data[0].timeAsNumber, 7777, 'sorted descending');
+  assert.equal(result.data[0].timeAsNumber, 7777, 'Two events was absorbed');
+  assert.equal(result.data[1].timeAsNumber, 5555, 'Two events was absorbed');
 
   action = {
     type: ACTION_TYPES.SET_EVENTS_PAGE,
@@ -151,9 +119,9 @@ test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate and sort events in D
   };
   result = reducer(result, action);
   assert.equal(result.data.length, 3, 'Three events now');
-  assert.equal(result.data[0].timeAsNumber, 9999, 'sorted descending');
-  assert.equal(result.data[1].timeAsNumber, 7777, 'sorted descending');
-  assert.equal(result.data[2].timeAsNumber, 5555, 'sorted descending');
+  assert.equal(result.data[0].timeAsNumber, 7777, 'Three events was absorbed');
+  assert.equal(result.data[1].timeAsNumber, 5555, 'Three events was absorbed');
+  assert.equal(result.data[2].timeAsNumber, 9999, 'Three events was absorbed');
 });
 
 test('ACTION_TYPES.SET_EVENTS_PAGE will truncate if going over the limit', function(assert) {
@@ -165,14 +133,14 @@ test('ACTION_TYPES.SET_EVENTS_PAGE will truncate if going over the limit', funct
 
   const action = {
     type: ACTION_TYPES.SET_EVENTS_PAGE,
-    payload: [{ timeAsNumber: 5555, sessionId: 5 }, { timeAsNumber: 9999, sessionId: 6 }, { timeAsNumber: 7777, sessionId: 7 }]
+    payload: [{ timeAsNumber: 5555, sessionId: 5 }, { timeAsNumber: 7777, sessionId: 7 }, { timeAsNumber: 9999, sessionId: 6 }]
   };
   const result = reducer(initialState, action);
   assert.equal(result.data.length, 2, 'Two events left after truncation');
 
   // the oldest data was the truncated data
-  assert.equal(result.data[0].timeAsNumber, 9999, 'sorted descending');
-  assert.equal(result.data[1].timeAsNumber, 7777, 'sorted descending');
+  assert.equal(result.data[0].timeAsNumber, 5555);
+  assert.equal(result.data[1].timeAsNumber, 7777);
 });
 
 test('ACTION_TYPES.SET_EVENTS_PAGE will truncate the right side of the results', function(assert) {
@@ -184,7 +152,7 @@ test('ACTION_TYPES.SET_EVENTS_PAGE will truncate the right side of the results',
 
   const action = {
     type: ACTION_TYPES.SET_EVENTS_PAGE,
-    payload: [{ timeAsNumber: 5555, sessionId: 5 }, { timeAsNumber: 9999, sessionId: 6 }, { timeAsNumber: 7777, sessionId: 7 }]
+    payload: [{ timeAsNumber: 5555, sessionId: 5 }, { timeAsNumber: 7777, sessionId: 7 }, { timeAsNumber: 9999, sessionId: 6 }]
   };
   const result = reducer(initialState, action);
   assert.equal(result.data.length, 2, 'Two events left after truncation');

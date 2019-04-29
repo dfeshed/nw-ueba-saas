@@ -21,6 +21,15 @@ import {
 
 const INITIAL_TIME_WINDOW_IN_SECONDS = 5 * 60;
 
+const deriveSort = (eventTimeSortOrder) => {
+  if (eventTimeSortOrder) {
+    return {
+      field: 'time',
+      descending: eventTimeSortOrder.toLowerCase() === 'descending'
+    };
+  }
+};
+
 const currentStreamState = {
   // tracks the callback function for the count stream
   // in the event we need to async cancel it
@@ -616,6 +625,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         streamBatch,
         handlers,
         currentStreamState.flattenedColumnList,
+        deriveSort(investigate.data.eventAnalysisPreferences.eventTimeSortOrder),
         'investigate-events-event-stream'
       );
 
@@ -790,13 +800,13 @@ export const eventsStartOldest = () => {
       }
     };
 
-
     const state = getState();
     currentStreamState.flattenedColumnList = getFlattenedColumnList(state);
     const { investigate } = state;
     const queryNode = getActiveQueryNode(getState());
     const { language } = investigate.dictionaries;
     const { streamBatch } = investigate.eventResults;
+
     fetchStreamingEvents(
       queryNode,
       language,
@@ -804,6 +814,7 @@ export const eventsStartOldest = () => {
       streamBatch,
       handlers,
       currentStreamState.flattenedColumnList,
+      deriveSort(investigate.data.eventAnalysisPreferences.eventTimeSortOrder),
       'investigate-events-event-stream'
     );
   };

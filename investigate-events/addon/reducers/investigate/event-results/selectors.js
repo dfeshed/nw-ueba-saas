@@ -15,7 +15,7 @@ const _resultsData = (state) => state.investigate.eventResults.data;
 const _eventResultCount = (state) => state.investigate.eventCount.data;
 const _status = (state) => state.investigate.eventResults.status;
 const _visibleColumns = (state) => state.investigate.eventResults.visibleColumns;
-const _eventTimeSortOrder = (state) => state.investigate.eventResults.eventTimeSortOrder;
+const _eventTimeSortOrder = (state) => state.investigate.data.eventAnalysisPreferences.eventTimeSortOrder;
 const _sessionId = (state) => state.investigate.queryNode.sessionId;
 const _errorMessage = (state) => state.investigate.eventResults.message;
 const _eventAnalysisPreferences = (state) => state.investigate.data.eventAnalysisPreferences;

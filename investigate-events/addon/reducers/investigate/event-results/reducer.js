@@ -2,7 +2,6 @@ import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
 import _ from 'lodash';
-import sort from 'fast-sort';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { SORT_ORDER } from './selectors';
@@ -20,7 +19,6 @@ const _initialState = Immutable.from({
   message: undefined,
   allEventsSelected: false,
   selectedEventIds: [],
-  eventTimeSortOrder: 'Ascending',
   // Pref might change in the middle of a query. Keeping a copy of preference with which the last query was performed.
   eventTimeSortOrderPreferenceWhenQueried: undefined,
   searchTerm: null,
@@ -79,18 +77,8 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SET_EVENTS_PAGE]: (state, { payload }) => {
-    // Merge the data into the current state data and perform a sort
-    // Have to sort it all as data can come in out of order.
-    let sortKey = 'desc';
-    if (state.eventTimeSortOrderPreferenceWhenQueried === SORT_ORDER.ASC) {
-      sortKey = 'asc';
-    }
-    let newEvents = state.data.asMutable().concat(payload);
-    newEvents = sort(newEvents).by([
-      { [sortKey]: 'timeAsNumber' },
-      { [sortKey]: 'sessionId' }
-    ]);
-
+    // Merge the data into the current state data
+    const newEvents = state.data.asMutable().concat(payload);
     // truncate the array if larger than max
     if (newEvents.length > state.streamLimit) {
       if (window.DEBUG_STREAMS) {
@@ -172,11 +160,6 @@ export default handleActions({
       }
     });
   }
-  // NewestFirst code commented out
-  /* [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
-    const eventTimeSortOrder = _.get(eventAnalysisPreferences, 'eventTimeSortOrder', state);
-    return state.set('eventTimeSortOrder', eventTimeSortOrder);
-  } */
 }, _initialState);
 
 const _find = (data, sessionId) => data.find((d) => d.sessionId === sessionId);

@@ -17,13 +17,13 @@ let queryResults = [];
 let streamBatch = 250;
 let streamLimit = 2000;
 
-
 const getState = () => {
   return new ReduxDataHelper()
     .isQueryRunning(queryIsRunning)
     .columnGroup('SUMMARY')
     .columnGroups()
     .endTime(1544026619)
+    .eventTimeSortOrder()
     .startTime(1513940220)
     .streamLimit(streamLimit)
     .streamBatch(streamBatch)
@@ -202,6 +202,7 @@ module('Unit | Actions | event-creators', function(hooks) {
         .columnGroup('SUMMARY')
         .columnGroups()
         .endTime(1544026619)
+        .eventTimeSortOrder()
         .startTime(1513940220)
         .streamLimit(streamLimit)
         .streamBatch(streamBatch)

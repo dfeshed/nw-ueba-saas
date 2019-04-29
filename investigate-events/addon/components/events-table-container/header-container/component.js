@@ -15,7 +15,7 @@ import { observer } from '@ember/object';
 const stateToComputed = (state) => ({
   reconSize: state.investigate.data.reconSize,
   isReconOpen: state.investigate.data.isReconOpen,
-  eventTimeSortOrder: state.investigate.eventResults.eventTimeSortOrder,
+  eventTimeSortOrder: state.investigate.data.eventAnalysisPreferences.eventTimeSortOrder,
   columnGroups: state.investigate.data.columnGroups,
   searchTerm: state.investigate.eventResults.searchTerm,
   selectedColumnGroup: getSelectedColumnGroup(state),

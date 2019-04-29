@@ -20,7 +20,7 @@ import {
  * @return {object} RSVP Promise
  * @public
  */
-export default function(queryNode, language, limit, batch, handlers, desiredMetas, dedicatedSocketName) {
+export default function(queryNode, language, limit, batch, handlers, desiredMetas, sort, dedicatedSocketName) {
   // conditions is legacy
   const filters = queryNode.metaFilter.conditions || queryNode.metaFilter;
   const { metaFilters, searchTerm } = extractSearchTermFromFilters(filters);
@@ -33,6 +33,10 @@ export default function(queryNode, language, limit, batch, handlers, desiredMeta
     ],
     stream: { limit, batch }
   };
+
+  if (sort) {
+    query.sort = [sort];
+  }
 
   if (desiredMetas) {
     query.filter.push({
@@ -53,4 +57,3 @@ export default function(queryNode, language, limit, batch, handlers, desiredMeta
     streamOptions
   );
 }
-

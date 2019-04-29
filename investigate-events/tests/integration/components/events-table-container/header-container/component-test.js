@@ -52,7 +52,7 @@ module('Integration | Component | header-container', function(hooks) {
   });
 
   test('render the events header with actualCount when canceled', async function(assert) {
-    new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').isCanceled().eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().columnGroups(EventColumnGroups).eventResults(eventResultsData).eventCount(10).build();
+    new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').isCanceled().eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().selectedEventIds([]).columnGroups(EventColumnGroups).eventResults(eventResultsData).eventCount(10).build();
     await render(hbs`{{events-table-container/header-container}}`);
     assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), '1Events(Asc)', 'rendered event header title');
   });
@@ -87,7 +87,7 @@ module('Integration | Component | header-container', function(hooks) {
   });
 
   test('persisted column group is preselected in the drop down', async function(assert) {
-    new ReduxDataHelper(setState).columnGroup('MALWARE').eventsPreferencesConfig().columnGroups(EventColumnGroups).build();
+    new ReduxDataHelper(setState).columnGroup('MALWARE').eventsPreferencesConfig().eventTimeSortOrder().columnGroups(EventColumnGroups).build();
     await render(hbs`{{events-table-container/header-container}}`);
     // return waitFor(columnSelector).then(() => {
     assert.equal(find(columnSelector).textContent.trim(), 'Malware Analysis', 'Expected Malware Analysis to be selected');

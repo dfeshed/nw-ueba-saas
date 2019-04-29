@@ -31,6 +31,7 @@ const renderDefaultEventTable = async function() {
     .columnGroup('SUMMARY')
     .reconSize('max')
     .eventsPreferencesConfig()
+    .eventTimeSortOrder()
     .columnGroups(EventColumnGroups)
     .build();
 
@@ -93,6 +94,8 @@ module('Integration | Component | events-table-container', function(hooks) {
       .columnGroup('SUMMARY')
       .columnGroups(EventColumnGroups)
       .eventsPreferencesConfig()
+      .eventTimeSortOrder()
+      .selectedEventIds([])
       .eventResults([])
       .build();
 
@@ -107,6 +110,8 @@ module('Integration | Component | events-table-container', function(hooks) {
       .columnGroup('SUMMARY')
       .columnGroups(EventColumnGroups)
       .eventsPreferencesConfig()
+      .eventTimeSortOrder()
+      .selectedEventIds([])
       .eventResults(['something'])
       .build();
 
@@ -163,6 +168,8 @@ module('Integration | Component | events-table-container', function(hooks) {
       .columnGroup('SUMMARY')
       .columnGroups(EventColumnGroups)
       .eventsPreferencesConfig()
+      .eventTimeSortOrder()
+      .selectedEventIds([])
       .eventResultsStatus('streaming')
       .eventResults([])
       .build();
@@ -176,6 +183,8 @@ module('Integration | Component | events-table-container', function(hooks) {
       .columnGroup('SUMMARY')
       .columnGroups(EventColumnGroups)
       .eventsPreferencesConfig()
+      .eventTimeSortOrder()
+      .selectedEventIds([])
       .eventResultsStatus('complete')
       .eventResults([])
       .build();
@@ -185,4 +194,3 @@ module('Integration | Component | events-table-container', function(hooks) {
   });
 
 });
-
