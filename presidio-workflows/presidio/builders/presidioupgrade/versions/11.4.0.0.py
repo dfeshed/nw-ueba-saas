@@ -15,8 +15,8 @@ doc_type_alert = "alert"
 es = Elasticsearch()
 
 
-# Process hits - convert users table to generic one
-def process_users_hits(hits):
+# Convert users table to entities table
+def convert_users_to_entities(hits):
     for item in hits:
         entity = {
                 'createdDate': item["_source"]["createdDate"],
@@ -36,8 +36,8 @@ def process_users_hits(hits):
         es.index(index=index_entity, doc_type=doc_type_entity, id=item["_id"], body=entity)
 
 
-# Convert alert table to generic one that include
-def process_alerts_hits(hits):
+# Update the alert table in elastic with the new field names
+def update_alerts_hits(hits):
     for item in hits:
         alert = {
             'createdDate': item["_source"]["createdDate"],
@@ -61,6 +61,7 @@ def process_alerts_hits(hits):
             'entityType': entity_type
 
         }
+
         es.update(index=index_alert, doc_type=doc_type_alert, id=item["_id"], body={"doc":alert})
 
 
@@ -83,14 +84,14 @@ scroll_size = len(data['hits']['hits'])
 
 
 # Before scroll, process current batch of hits
-process_users_hits(data['hits']['hits'])
+convert_users_to_entities(data['hits']['hits'])
 
 while scroll_size > 0:
-    "Scrolling..."
+    "Scrolling users..."
     data = es.scroll(scroll_id=sid, scroll='2m')
 
     # Process current batch of hits
-    process_users_hits(data['hits']['hits'])
+    convert_users_to_entities(data['hits']['hits'])
 
     # Update the scroll ID
     sid = data['_scroll_id']
@@ -98,6 +99,9 @@ while scroll_size > 0:
     # Get the number of results that returned in the last scroll
     scroll_size = len(data['hits']['hits'])
 
+
+# Remove user index
+es.indices.delete(index=index_user)
 
 # Check alert index is exists
 if not es.indices.exists(index=index_alert):
@@ -114,14 +118,14 @@ data = es.search(
 
 
 # Before scroll, process current batch of hits
-process_alerts_hits(data['hits']['hits'])
+update_alerts_hits(data['hits']['hits'])
 
 while scroll_size > 0:
-    "Scrolling..."
+    "Scrolling alerts..."
     data = es.scroll(scroll_id=sid, scroll='2m')
 
     # Process current batch of hits
-    process_alerts_hits(data['hits']['hits'])
+    update_alerts_hits(data['hits']['hits'])
 
     # Update the scroll ID
     sid = data['_scroll_id']
