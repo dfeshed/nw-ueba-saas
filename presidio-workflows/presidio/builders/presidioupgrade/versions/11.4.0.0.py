@@ -36,11 +36,32 @@ def process_users_hits(hits):
         es.index(index=index_entity, doc_type=doc_type_entity, id=item["_id"], body=entity)
 
 
+# Convert alert table to generic one that include
 def process_alerts_hits(hits):
     for item in hits:
         alert = {
+            'createdDate': item["_source"]["createdDate"],
+            'updatedDate': item["_source"]["updatedDate"],
+            'updatedBy': item["_source"]["updatedBy"],
+            'classifications': item["_source"]["classifications"],
+            'entityName': item["_source"]["userName"],
+            'indexedEntityName': item["_source"]["indexedUserName"],
+            'smartId': item["_source"]["smartId"],
+            'entityDocumentId': item["_source"]["userId"],
+            'startDate': item["_source"]["startDate"],
+            'endDate': item["_source"]["endDate"],
+            'score': item["_source"]["score"],
+            'indicatorsNum': item["_source"]["indicatorsNum"],
+            'timeframe': item["_source"]["timeframe"],
+            'severity': item["_source"]["severity"],
+            'indicatorsNames': item["_source"]["indicatorsNames"],
+            'entityTags': item["_source"]["userTags"],
+            'contributionToEntityScore': item["_source"]["contributionToUserScore"],
+            'feedback': item["_source"]["feedback"],
+            'entityType': entity_type
+
         }
-        es.update(index=index_alert, doc_type=doc_type_alert, id=item["_id"], body=alert)
+        es.update(index=index_alert, doc_type=doc_type_alert, id=item["_id"], body={"doc":alert})
 
 
 # Check user index is exists
@@ -86,7 +107,7 @@ if not es.indices.exists(index=index_alert):
 # Init scroll by search
 data = es.search(
     index=index_alert,
-    doc_type=index_alert,
+    doc_type=doc_type_alert,
     scroll='2m',
     size=size
 )
