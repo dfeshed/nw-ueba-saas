@@ -11,7 +11,7 @@
     {{#host-detail/utils/file-context-table/header enableColumnFilter=true translateTitles=true enableColumnSelector=true as |column|}}
       {{#if (eq column.dataType "checkbox")}}
         <label class="rsa-form-checkbox-label  {{if areAllSelected 'checked'}}">
-          {{rsa-form-checkbox checked=areAllSelected change=(action 'selectAllProcess')}}
+          {{rsa-form-checkbox checked=areAllSelected change=(action 'selectAllProcess' visibleItems)}}
         </label>
       {{else}}
         <span class='js-move-handle'>
@@ -96,7 +96,7 @@
   {{/rsa-data-table}}
 </box>
 <box class='process-tree-table-footer'>
-  {{host-table-footer total=visibleItems.length index=visibleItems.length label='processes' selectedItems=selectedProcessList.length }}
+  {{host-table-footer total=processList.length index=visibleItems.length label='processes' selectedItems=selectedProcessList.length }}
 </box>
 
 {{#if showServiceModal}}

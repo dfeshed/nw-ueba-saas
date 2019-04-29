@@ -120,7 +120,7 @@ const _setSelectedProcessId = (processId) => ({ type: ACTION_TYPES.SET_SELECTED_
 
 const toggleProcessSelection = (process) => ({ type: ACTION_TYPES.SET_SELECTED_PROCESS, payload: process });
 
-const selectAllProcess = () => ({ type: ACTION_TYPES.SELECT_ALL_PROCESS });
+const selectAllProcess = (visibleList) => ({ type: ACTION_TYPES.SELECT_ALL_PROCESS, payload: visibleList });
 
 const deSelectAllProcess = () => ({ type: ACTION_TYPES.DESELECT_ALL_PROCESS });
 

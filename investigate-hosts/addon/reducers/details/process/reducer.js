@@ -33,7 +33,8 @@ const initialState = Immutable.from({
   selectedRowIndex: null,
   selectedDllItem: null,
   selectedDllRowIndex: -1,
-  agentCountMapping: {}
+  agentCountMapping: {},
+  searchResultProcessList: []
 });
 const LOADING_STATUS = 'loading';
 
@@ -118,10 +119,10 @@ const processReducer = handleActions({
     return state.merge({ 'selectedProcessList': selectedList });
   },
 
-  [ACTION_TYPES.SELECT_ALL_PROCESS]: (state) => {
-    const { selectedProcessList, processList } = state;
-    if (selectedProcessList.length < processList.length) {
-      return state.set('selectedProcessList', processList.map((process) => {
+  [ACTION_TYPES.SELECT_ALL_PROCESS]: (state, { payload }) => {
+    const { selectedProcessList } = state;
+    if (selectedProcessList.length < payload.length) {
+      const updatedProcessList = payload.map((process) => {
         const { pid, name, fileProperties, path, parentPid, vpid, hasChild } = process;
         const { score, fileStatus, signature, size, checksumSha256, checksumSha1, checksumMd5, downloadInfo = {}, machineOsType, format, pe } = fileProperties;
         const features = pe ? pe.features : [];
@@ -146,7 +147,8 @@ const processReducer = handleActions({
           hasChild,
           score,
           fileStatus };
-      }));
+      });
+      return state.merge({ 'selectedProcessList': updatedProcessList, 'searchResultProcessList': payload });
     } else {
       return state.set('selectedProcessList', []);
     }

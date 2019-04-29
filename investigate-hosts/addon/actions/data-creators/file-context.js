@@ -51,7 +51,7 @@ const onHostFileSelection = (belongsTo, storeName, { id }, index) => {
 
 const toggleRowSelection = (belongsTo, item) => ({ type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ROW_SELECTION, payload: item, meta: { belongsTo } });
 
-const toggleAllSelection = (belongsTo) => ({ type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ALL_SELECTION, meta: { belongsTo } });
+const toggleAllSelection = (belongsTo, listOfFiles) => ({ type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ALL_SELECTION, payload: listOfFiles, meta: { belongsTo } });
 
 const deSelectAllSelection = (belongsTo) => ({ type: ACTION_TYPES.DESELECT_FILE_CONTEXT_ALL_SELECTION, meta: { belongsTo } });
 

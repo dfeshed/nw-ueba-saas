@@ -172,7 +172,7 @@ module('Unit | Reducers | File Context', function() {
         }
       }
     };
-    let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ALL_SELECTION });
+    let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ALL_SELECTION, payload: [driver] });
     assert.equal(result.fileContextSelections.length, 1);
     assert.equal(result.fileContextSelections[0].id, 0);
     const next = Immutable.from({

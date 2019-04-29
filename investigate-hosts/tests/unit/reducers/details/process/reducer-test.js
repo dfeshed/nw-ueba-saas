@@ -26,7 +26,8 @@ module('Unit | Reducers | process', function() {
     selectedRowIndex: null,
     selectedDllItem: null,
     selectedDllRowIndex: -1,
-    agentCountMapping: {}
+    agentCountMapping: {},
+    searchResultProcessList: []
   });
 
   test('should return the initial state', function(assert) {
@@ -329,7 +330,7 @@ module('Unit | Reducers | process', function() {
       }];
     const result = reducer(
       previous,
-      { type: ACTION_TYPES.SELECT_ALL_PROCESS }
+      { type: ACTION_TYPES.SELECT_ALL_PROCESS, payload: previous.processList }
     );
     assert.deepEqual(result.selectedProcessList, expectedResult);
   });

@@ -1017,20 +1017,32 @@ test('areAllSelected will check if all processes are selected or not', function(
     endpoint: {
       process: {
         selectedProcessList: [ { pid: 123 }, { pid: 566 } ],
-        processList: [ { checksumSha256: '46965656dffsdf664', name: 'p1', pid: 1, parentPid: 0 }, { checksumSha256: '89484fgfdgr546488', name: 'p2', pid: 2, parentPid: 1 } ]
+        processList: [ { checksumSha256: '46965656dffsdf664', name: 'p1', pid: 1, parentPid: 0 }, { checksumSha256: '89484fgfdgr546488', name: 'p2', pid: 2, parentPid: 1 } ],
+        searchResultProcessList: [ { checksumSha256: '46965656dffsdf664', name: 'p1', pid: 1, parentPid: 0 }, { checksumSha256: '89484fgfdgr546488', name: 'p2', pid: 2, parentPid: 1 } ]
       }
     }
   }));
-  assert.deepEqual(result, true, 'Returns true if processList and selectedProcessList have same lengths');
+  assert.deepEqual(result, true, 'Returns true if searchResultProcessList and selectedProcessList have same lengths');
   const result1 = areAllSelected(Immutable.from({
     endpoint: {
       process: {
         selectedProcessList: [ { pid: 123 } ],
-        processList: [ { checksumSha256: '46965656dffsdf664', name: 'p1', pid: 1, parentPid: 0 }, { checksumSha256: '89484fgfdgr546488', name: 'p2', pid: 2, parentPid: 1 } ]
+        processList: [ { checksumSha256: '46965656dffsdf664', name: 'p1', pid: 1, parentPid: 0 }, { checksumSha256: '89484fgfdgr546488', name: 'p2', pid: 2, parentPid: 1 } ],
+        searchResultProcessList: []
       }
     }
   }));
-  assert.deepEqual(result1, false, 'Returns false if processList and selectedProcessList have unequal lengths');
+  assert.deepEqual(result1, false, 'Returns true if processList and selectedProcessList have equal lengths');
+  const result2 = areAllSelected(Immutable.from({
+    endpoint: {
+      process: {
+        selectedProcessList: [ { pid: 123 } ],
+        processList: [ { checksumSha256: '89484fgfdgr546488', name: 'p2', pid: 2, parentPid: 1 } ],
+        searchResultProcessList: []
+      }
+    }
+  }));
+  assert.deepEqual(result2, true, 'Returns true if processList and selectedProcessList have unequal lengths');
 });
 
 test('selectedFileChecksums returns the checksums from the selected list of processes', function(assert) {

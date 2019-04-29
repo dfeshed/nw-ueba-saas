@@ -13,6 +13,7 @@ const _isProcessTreeLoading = (state) => state.endpoint.process.isProcessTreeLoa
 const _selectedProcessId = (state) => state.endpoint.process.selectedProcessId;
 const _processList = (state) => state.endpoint.process.processList;
 const _selectedProcessList = (state) => state.endpoint.process.selectedProcessList;
+const _searchResultProcessList = (state) => state.endpoint.process.searchResultProcessList;
 const _sortField = (state) => state.endpoint.process.sortField;
 const _isDescOrder = (state) => state.endpoint.process.isDescOrder;
 
@@ -282,9 +283,11 @@ export const suspiciousThreadsData = createSelector(
   });
 
 export const areAllSelected = createSelector(
-  [_processList, _selectedProcessList],
-  (processList, selectedProcessList) => {
-    if (selectedProcessList && selectedProcessList.length) {
+  [ _processList, _selectedProcessList, _searchResultProcessList],
+  (processList, selectedProcessList, searchResultProcessList) => {
+    if (searchResultProcessList.length > 0) {
+      return searchResultProcessList.length === selectedProcessList.length;
+    } else if (selectedProcessList && selectedProcessList.length) {
       return processList.length === selectedProcessList.length;
     }
     return false;

@@ -216,6 +216,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     assert.expect(3);
     new ReduxDataHelper(setState)
       .machineOSType('windows')
+      .searchResultProcessList([])
       .build();
 
     await render(hbs`{{host-detail/process/process-tree}}`);
@@ -234,6 +235,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .isTreeView(true)
       .sortField('name')
       .isDescOrder(true)
+      .searchResultProcessList([])
       .build();
     await render(hbs`
       <style>
@@ -260,6 +262,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('score')
       .isTreeView(false)
       .isProcessTreeLoading(false)
+      .searchResultProcessList([])
       .scanTime(1234567890)
       .isDescOrder(false).build();
     await render(hbs`<style>
@@ -284,6 +287,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .selectedTab(null)
       .sortField('name')
       .isDescOrder(true)
+      .searchResultProcessList([])
       .build();
     this.set('closePropertyPanel', function() {
       assert.ok('close property panel is called.');
@@ -313,6 +317,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .machineOSType('windows')
       .sortField('name')
       .isTreeView(true)
+      .searchResultProcessList([])
       .isDescOrder(true)
       .build();
     await render(hbs`
@@ -342,19 +347,19 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   });
 
   test('Should apply rsa-loader if process tree is loading', async function(assert) {
-    new ReduxDataHelper(setState).isProcessTreeLoading(true).machineOSType('windows').build();
+    new ReduxDataHelper(setState).isProcessTreeLoading(true).machineOSType('windows').searchResultProcessList([]).build();
     await render(hbs`{{host-detail/process/process-tree}}`);
     assert.equal(find('.rsa-loader').classList.contains('is-larger'), true, 'rsa-loader applied when process tree is loading');
   });
 
   test('Should not apply rsa-loader if process tree loading is complete', async function(assert) {
-    new ReduxDataHelper(setState).isProcessTreeLoading(false).machineOSType('windows').build();
+    new ReduxDataHelper(setState).isProcessTreeLoading(false).machineOSType('windows').searchResultProcessList([]).build();
     await render(hbs`{{host-detail/process/process-tree}}`);
     assert.equal(findAll('.rsa-loader').length, 0, 'rsa-loader not applied when process tree loading is complete');
   });
 
   test('Check that no results message rendered if there is no process information', async function(assert) {
-    new ReduxDataHelper(setState).machineOSType('windows').build();
+    new ReduxDataHelper(setState).machineOSType('windows').searchResultProcessList([]).build();
     await render(hbs`{{host-detail/process/process-tree}}`);
     assert.equal(find('.rsa-data-table-body').textContent.trim(), 'No process information was found.', 'No process information message rendered');
   });
@@ -369,6 +374,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
     await render(hbs`
       <style>
@@ -396,6 +402,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
     await render(hbs`
       <style>
@@ -423,6 +430,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
     await render(hbs`
       <style>
@@ -457,6 +465,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .selectedTab(null)
       .sortField('score')
       .isDescOrder(true)
+      .searchResultProcessList([])
       .build();
 
     await render(hbs`
@@ -490,6 +499,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .isTreeView(true)
       .sortField('score')
       .isDescOrder(true)
+      .searchResultProcessList([])
       .selectedTab(null).build();
     await render(hbs`
      <style>
@@ -522,6 +532,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .agentId(1)
       .scanTime(123456789)
       .processTree(processData.processTree)
+      .searchResultProcessList([])
       .selectedTab(null).build();
     await render(hbs`
       <style>
@@ -542,6 +553,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .scanTime(123456789)
       .selectedProcessList([])
       .processTree(processData.processTree)
+      .searchResultProcessList([])
       .selectedTab(null).build();
     await render(hbs`
       <div id='modalDestination'></div>
@@ -561,6 +573,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .scanTime(123456789)
       .isTreeView(true)
       .processTree(processData.processTree)
+      .searchResultProcessList([])
       .selectedTab(null).build();
     await render(hbs`
       <div id='modalDestination'></div>
@@ -584,6 +597,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
     await render(hbs`
       <style>
@@ -612,6 +626,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
     this.set('analyzeFile', function() {
@@ -652,6 +667,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
     await render(hbs`
       <div id='modalDestination'></div>
@@ -696,6 +712,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
 
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
@@ -755,6 +772,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: false });
     this.set('analyzeFile', function() {
@@ -852,6 +870,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
     await render(hbs`
       <style>
@@ -907,6 +926,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
     this.set('analyzeFile', function() {
@@ -962,6 +982,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: false });
     this.set('analyzeFile', function() {
@@ -1021,6 +1042,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
 
     await render(hbs`
@@ -1082,6 +1104,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
 
     await render(hbs`
@@ -1147,6 +1170,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
 
     await render(hbs`
@@ -1227,6 +1251,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
 
     await render(hbs`
@@ -1333,6 +1358,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
 
     await render(hbs`
@@ -1362,6 +1388,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .isTreeView(true)
       .sortField('score')
       .isDescOrder(true)
+      .searchResultProcessList([])
       .selectedTab(null).build();
     await render(hbs`
      <style>
@@ -1418,6 +1445,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
 
     await render(hbs`
@@ -1473,6 +1501,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       .sortField('name')
       .isDescOrder(true)
       .isTreeView(true)
+      .searchResultProcessList([])
       .build();
 
     await render(hbs`

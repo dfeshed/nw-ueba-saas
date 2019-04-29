@@ -69,11 +69,10 @@ const fileContext = reduxActions.handleActions({
 
   [ACTION_TYPES.TOGGLE_FILE_CONTEXT_ROW_SELECTION]: (state, { payload }) => _toggleSelection(state, payload),
 
-  [ACTION_TYPES.TOGGLE_FILE_CONTEXT_ALL_SELECTION]: (state) => {
-    const { fileContext, fileContextSelections } = state;
-    const contexts = Object.values(fileContext);
-    if (fileContextSelections.length < contexts.length) {
-      return state.set('fileContextSelections', contexts.map((driver) => {
+  [ACTION_TYPES.TOGGLE_FILE_CONTEXT_ALL_SELECTION]: (state, { payload }) => {
+    const { fileContextSelections } = state;
+    if (fileContextSelections.length < payload.length) {
+      return state.set('fileContextSelections', payload.map((driver) => {
         const { machineName, id, fileName, path, machineOsType, fileProperties: { signature, size, checksumSha256, checksumSha1, checksumMd5, format, pe, downloadInfo = {} } } = driver;
         const features = pe ? pe.features : [];
         return { machineName, id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size, path, downloadInfo, features, machineOsType, format };

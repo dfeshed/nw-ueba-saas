@@ -10,7 +10,7 @@
     {{#host-detail/utils/file-context-table/header enableColumnFilter=true enableColumnSelector=true as |column|}}
       {{#if (eq column.dataType "checkbox")}}
         <label class="rsa-form-checkbox-label  {{if isAllSelected 'checked'}}">
-          {{rsa-form-checkbox checked=isAllSelected change=(action 'toggleAllSelection' tabName)}}
+          {{rsa-form-checkbox checked=isAllSelected change=(action 'toggleAllSelection' tabName listOfFiles)}}
         </label>
       {{else}}
         <span class='js-move-handle'>

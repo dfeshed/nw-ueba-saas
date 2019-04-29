@@ -86,6 +86,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .sortField('name')
       .isDescOrder(true)
       .isProcessDetailsView(false)
+      .searchResultProcessList([])
       .build();
     // set height to get all lazy rendered items on the page
     await render(hbs`
@@ -106,6 +107,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .sortField('name')
       .isDescOrder(true)
       .isProcessDetailsView(true)
+      .searchResultProcessList([])
       .build();
     // set height to get all lazy rendered items on the page
     await render(hbs`
@@ -125,6 +127,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processDetails(processDetails)
       .machineOSType('windows')
       .machineIdentity(machineIdentity)
+      .searchResultProcessList([])
       .sortField('name')
       .isDescOrder(true)
       .build();
@@ -144,6 +147,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .selectedTab({ tabName: 'PROCESS' })
       .machineOSType('windows')
       .machineIdentity(machineIdentity)
+      .searchResultProcessList([])
       .build();
     // set height to get all lazy rendered items on the page
     await render(hbs`
@@ -162,6 +166,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processTree(processTree)
       .processDetails(processDetails)
       .isTreeView(true)
+      .searchResultProcessList([])
       .machineOSType('windows')
       .machineIdentity(machineIdentity)
       .sortField('name')
@@ -190,6 +195,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .processTree(processTree)
       .processDetails(processDetails)
       .isTreeView(false)
+      .searchResultProcessList([])
       .sortField('name')
       .isDescOrder(true)
       .build();
@@ -216,6 +222,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .isTreeView(true)
       .machineOSType('windows')
       .machineIdentity(machineIdentity)
+      .searchResultProcessList([])
       .sortField('name')
       .isDescOrder(true)
       .build();
@@ -255,6 +262,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
+      .searchResultProcessList([])
       .build();
     await render(hbs`{{host-detail/process}}`);
     assert.equal(findAll('.process-list-actions .pivot-to-process-analysis .rsa-form-button').length, 1, 'Analyze Process button is present');
@@ -279,6 +287,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
+      .searchResultProcessList([])
       .build();
     await render(hbs`{{host-detail/process}}`);
     await click('.process-list-actions .pivot-to-process-analysis .rsa-form-button');
@@ -307,6 +316,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
+      .searchResultProcessList([])
       .build();
     await render(hbs`
       <div id='modalDestination'></div>
@@ -333,6 +343,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
+      .searchResultProcessList([])
       .build();
     await render(hbs`{{host-detail/process}}`);
     await click('.more-action-button .rsa-form-button');
@@ -361,6 +372,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
+      .searchResultProcessList([])
       .build();
     await render(hbs`{{host-detail/process}}`);
     await click('.more-action-button .rsa-form-button');
@@ -390,6 +402,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .machineIdentity(machineIdentity)
       .sortField('name')
       .isDescOrder(true)
+      .searchResultProcessList([])
       .build();
     await render(hbs`{{host-detail/process}}`);
     await click('.more-action-button .rsa-form-button');
@@ -424,6 +437,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
         version: '4.3.0.0',
         managed: true
       }])
+      .searchResultProcessList([])
       .build();
     await render(hbs`{{host-detail/process}}`);
     await click('.more-action-button .rsa-form-button');
@@ -458,6 +472,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
         version: '4.3.0.0',
         managed: true
       }])
+      .searchResultProcessList([])
       .build();
     await render(hbs`{{host-detail/process}}`);
     await click('.more-action-button .rsa-form-button');
@@ -494,6 +509,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
         version: '4.3.0.0',
         managed: true
       }])
+      .searchResultProcessList([])
       .build();
 
     await render(hbs`{{host-detail/process}}`);
