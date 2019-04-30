@@ -144,6 +144,9 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
       type: ACTION_TYPES.RESET_ALERTS
     });
     assert.equal(result.alertList.length, 0);
+    assert.equal(result.alertListError, null);
+    assert.equal(result.topAlertsError, null);
+    assert.equal(result.alertsForTimelineError, null);
   });
 
 });

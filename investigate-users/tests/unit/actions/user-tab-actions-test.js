@@ -320,9 +320,12 @@ module('Unit | Actions | User Tab Actions', (hooks) => {
 
 
   test('it can exportUsers', (assert) => {
-    assert.expect(1);
+    assert.expect(2);
     window.URL.createObjectURL = () => {
       assert.ok(true, 'This function supposed to be called for altert export');
+    };
+    document.body.removeChild = (obj) => {
+      assert.equal(obj.download.indexOf('users_'), 0);
     };
     const getState = () => {
       return { users: { filter: initialFilterState } };

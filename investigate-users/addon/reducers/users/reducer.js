@@ -75,7 +75,7 @@ const tabs = handleActions({
   },
   [ACTION_TYPES.UPDATE_FILTER_FOR_USERS]: (state, { payload }) => state.set('filter', payload ? state.getIn(['filter']).merge(payload) : initialFilterState),
   [ACTION_TYPES.RESET_USERS]: (state) => {
-    const newState = state.merge({ topUsers: [], users: [], currentPage: 0, usersSeverity: initialUsersSeverity, allWatched: false, totalUsers: null });
+    const newState = state.merge({ topUsers: [], users: [], usersError: null, topUsersError: null, currentPage: 0, usersSeverity: initialUsersSeverity, allWatched: false, totalUsers: null });
     return newState.setIn(['filter', 'fromPage'], 1);
   }
 }, initialState);

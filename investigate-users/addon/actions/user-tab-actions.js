@@ -17,7 +17,7 @@ const _followUnfollowUsers = (endpointLocation) => {
     const filterForPost = _removeUnwantedPropertyFromObject(filter);
     fetchData(endpointLocation, filterForPost, 'POST').then((result) => {
       if (result === 'error') {
-        flashErrorMessage('investigateUsers.users.unableToFollowUsers');
+        flashErrorMessage('investigateUsers.errorMessages.unableToFollowUsers');
         return;
       }
       dispatch(resetUsers());
@@ -35,7 +35,7 @@ const getSeverityDetailsForUserTabs = (filter) => {
   return (dispatch) => {
     fetchData('severityBarForUser', filter).then((result) => {
       if (result === 'error') {
-        flashErrorMessage('investigateUsers.users.unableToGetSeverityDetails');
+        flashErrorMessage('investigateUsers.errorMessages.unableToGetSeverityDetails');
         return;
       }
       dispatch({
@@ -49,7 +49,7 @@ const getExistAnomalyTypes = () => {
   return (dispatch) => {
     fetchData('existAnomalyTypes').then((data) => {
       if (data === 'error') {
-        flashErrorMessage('investigateUsers.users.unableToGETExistAnomalyTypes');
+        flashErrorMessage('investigateUsers.errorMessages.unableToGETExistAnomalyTypes');
         return;
       }
       dispatch({
@@ -64,7 +64,7 @@ const getExistAlertTypess = () => {
   return (dispatch) => {
     fetchData('existAlertTypes').then((result) => {
       if (result === 'error') {
-        flashErrorMessage('investigateUsers.users.unableToGetExistAlertTypes');
+        flashErrorMessage('investigateUsers.errorMessages.unableToGetExistAlertTypes');
         return;
       }
       dispatch({
@@ -79,7 +79,7 @@ const getFavorites = () => {
   return (dispatch) => {
     fetchData('favoriteFilter').then((result) => {
       if (result === 'error') {
-        flashErrorMessage('investigateUsers.users.unableToGetExistAlertTypes');
+        flashErrorMessage('investigateUsers.errorMessages.unableToGetExistAlertTypes');
         return;
       }
       dispatch({
@@ -133,7 +133,7 @@ const saveAsFavorite = (name) => {
     const filterForPost = _removeUnwantedPropertyFromObject(getUserFilter(getState()));
     fetchData('createfavoriteFilter', filterForPost, 'POST', name).then((result) => {
       if (result === 'error') {
-        flashErrorMessage('investigateUsers.users.unableToSaveAsFavorite');
+        flashErrorMessage('investigateUsers.errorMessages.unableToSaveAsFavorite');
         return;
       }
       dispatch(getFavorites());
@@ -145,7 +145,7 @@ const deleteFavorite = (filterId) => {
   return (dispatch) => {
     fetchData('deletefavoriteFilter', null, 'DELETE', filterId).then((result) => {
       if (result === 'error') {
-        flashErrorMessage('investigateUsers.users.unableToDeleteFavorite');
+        flashErrorMessage('investigateUsers.errorMessages.unableToDeleteFavorite');
         return;
       }
       dispatch(getFavorites());
@@ -159,7 +159,7 @@ const exportUsers = () => {
     if (filter) {
       filter = filter.setIn(['fromPage'], 1);
     }
-    exportData('usersExport', filter, false, null, true, `users_${new Date().toISOString()}.csv`).then(() => {});
+    exportData('usersExport', filter, `users_${new Date().toISOString()}.csv`).then(() => {});
   };
 };
 

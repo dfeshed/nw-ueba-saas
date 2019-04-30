@@ -50,7 +50,7 @@ export const indicatorMapSettings = createSelector(
   (anomalyTypeFieldName) => {
     if (anomalyTypeFieldName) {
       const chartSettings = _.find(indicatorChartMap, (chartType) => chartType.anomalyTypeFieldName.includes(anomalyTypeFieldName));
-      return (chartSettings || indicatorChartMap.activityTimeAnomalySettings).settings(anomalyTypeFieldName);
+      return (chartSettings || indicatorChartMap.timeAggregation).settings(anomalyTypeFieldName);
     }
   });
 

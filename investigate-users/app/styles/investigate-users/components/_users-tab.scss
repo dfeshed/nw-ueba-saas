@@ -317,7 +317,9 @@
             padding: rsa-whitespace(least);
             justify-content: space-between;
             > div {
-              margin: 0 0 0 rsa-whitespace(least);
+              display: flex;
+              flex-direction: row;
+              margin: 0 rsa-whitespace(least);
             }
 
             .indicator {
@@ -326,6 +328,7 @@
               height: 15px;
 
               &_name {
+                padding-left: rsa-whitespace(least);
                 @include rsa-font(default);
               }
             }

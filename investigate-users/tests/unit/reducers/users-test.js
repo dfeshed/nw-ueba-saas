@@ -195,6 +195,8 @@ module('Unit | Reducers | Users Reducer', (hooks) => {
     assert.equal(result.users.length, 0);
 
     assert.equal(result.allWatched, false);
+    assert.equal(result.topUsersError, null);
+    assert.equal(result.usersError, null);
   });
 
   test('test update filters for user', (assert) => {

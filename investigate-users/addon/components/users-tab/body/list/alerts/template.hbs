@@ -11,10 +11,12 @@
   <ul>
     {{#each alerts as |alert|}}
       <li>
-        <div class='indicator {{alert.severity}}'>
-        </div>
-        <div class='indicator_name'>
-          {{alert.severity}}
+        <div>
+          <div class='indicator {{alert.severity}}'>
+          </div>
+          <div class='indicator_name'>
+            {{alert.severity}}
+          </div>
         </div>
         <div class='link' {{action 'initiateUser' (hash userId=userId alertId=alert.id)}}>
           {{t (concat 'investigateUsers.alerts.alertNames.' alert.name '.name')}} | {{alert.timeframe}}

@@ -62,7 +62,7 @@ const tabs = handleActions({
     return state.set('filter', filter);
   },
   [ACTION_TYPES.RESET_ALERTS]: (state) => {
-    const newState = state.merge({ topAlerts: [], alertList: [], currentPage: 0, filter: { fromPage: 1 } });
+    const newState = state.merge({ topAlerts: [], topAlertsError: null, alertsForTimelineError: null, alertListError: null, alertList: [], currentPage: 0, filter: { fromPage: 1 } });
     return newState.setIn(['filter', 'fromPage'], 1);
   }
 }, initialState);
