@@ -396,7 +396,7 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     assert.deepEqual(endState.policy.scanStartDate, moment().format('YYYY-MM-DD'), 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to scanStartDate correctly');
     assert.deepEqual(endState.policy.scanStartTime, '09:00', 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to scanStartTime correctly');
     assert.deepEqual(endState.policy.recurrenceInterval, 1, 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to recurrenceInterval correctly');
-    assert.deepEqual(endState.policy.recurrenceUnit, 'DAYS', 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to recurrenceUnit correctly');
+    assert.deepEqual(endState.policy.recurrenceUnit, 'WEEKS', 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to recurrenceUnit correctly');
     assert.deepEqual(endState.policy.cpuMax, 25, 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to cpuMax correctly');
     assert.deepEqual(endState.policy.cpuMaxVm, 10, 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to cpuMaxVm correctly');
     assert.deepEqual(endState.policy.agentMode, 'ADVANCED', 'for a default EDR policy, EDR_DEFAULT_POLICY sets default value to agentMode correctly');
