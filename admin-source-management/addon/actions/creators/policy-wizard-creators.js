@@ -242,43 +242,50 @@ const updatePolicyType = (policyType) => {
  * @public
  */
 const updatePolicyProperty = (field, value) => {
-  let type = ACTION_TYPES.UPDATE_POLICY_PROPERTY;
-  let payload = {};
-  switch (field) {
-    // edrPolicy specific props
-    case 'scanType':
-      type = ACTION_TYPES.TOGGLE_SCAN_TYPE;
-      payload = value;
-      break;
-    case 'recurrenceUnit':
-      payload = [
-        { field: 'policy.recurrenceUnit', value },
-        // reset recurrenceInterval & runOnDaysOfWeek when toggling recurrenceUnit
-        { field: 'policy.recurrenceInterval', value: 1 },
-        { field: 'policy.runOnDaysOfWeek', value: null }
-      ];
-      break;
-    case 'primaryAddress':
-      payload = [
-        { field: 'policy.primaryNwServiceId', value: value.id },
-        { field: 'policy.primaryAddress', value: value.host }
-      ];
-      break;
-    // windowsLogPolicy specific props
-    case 'primaryDestination':
-      payload = [
-        { field: 'policy.primaryDestination', value: value.host }
-      ];
-      break;
-    case 'secondaryDestination':
-      payload = [
-        { field: 'policy.secondaryDestination', value: value.host }
-      ];
-      break;
-    default:
-      payload = [{ field: `policy.${field}`, value }];
-  }
-  return { type, payload };
+  return (dispatch) => {
+    let type = ACTION_TYPES.UPDATE_POLICY_PROPERTY;
+    let payload = {};
+    let dispatchUpdateHeadersForAllSettings = false;
+    switch (field) {
+      // edrPolicy specific props
+      case 'scanType':
+        type = ACTION_TYPES.TOGGLE_SCAN_TYPE;
+        payload = value;
+        dispatchUpdateHeadersForAllSettings = true;
+        break;
+      case 'recurrenceUnit':
+        payload = [
+          { field: 'policy.recurrenceUnit', value },
+          // reset recurrenceInterval & runOnDaysOfWeek when toggling recurrenceUnit
+          { field: 'policy.recurrenceInterval', value: 1 },
+          { field: 'policy.runOnDaysOfWeek', value: null }
+        ];
+        break;
+      case 'primaryAddress':
+        payload = [
+          { field: 'policy.primaryNwServiceId', value: value.id },
+          { field: 'policy.primaryAddress', value: value.host }
+        ];
+        break;
+      // windowsLogPolicy specific props
+      case 'primaryDestination':
+        payload = [
+          { field: 'policy.primaryDestination', value: value.host }
+        ];
+        break;
+      case 'secondaryDestination':
+        payload = [
+          { field: 'policy.secondaryDestination', value: value.host }
+        ];
+        break;
+      default:
+        payload = [{ field: `policy.${field}`, value }];
+    }
+    dispatch({ type, payload });
+    if (dispatchUpdateHeadersForAllSettings) {
+      dispatch(_updateHeadersForAllSettings());
+    }
+  };
 };
 
 /**

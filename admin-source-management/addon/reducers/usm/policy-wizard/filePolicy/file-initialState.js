@@ -22,8 +22,8 @@ export default {
   // * make sure the id, the end of label i18n key, and the field (policy property) are all the same
   availableSettings: [
     { index: 0, id: 'fileSettingsHeader', label: 'adminUsm.policyWizard.filePolicy.fileSettingsHeader', isHeader: true, isEnabled: true },
-    { index: 1, id: 'enabled', label: 'adminUsm.policyWizard.filePolicy.enabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/shared/usm-radios', defaults: [{ field: 'enabled', value: false }] },
-    { index: 2, id: 'sendTestLog', label: 'adminUsm.policyWizard.filePolicy.sendTestLog', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/shared/usm-radios', defaults: [{ field: 'sendTestLog', value: false }] }
+    { index: 1, id: 'enabled', label: 'adminUsm.policyWizard.filePolicy.enabled', isEnabled: true, isGreyedOut: false, headerId: 'fileSettingsHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/shared/usm-radios', defaults: [{ field: 'enabled', value: false }] },
+    { index: 2, id: 'sendTestLog', label: 'adminUsm.policyWizard.filePolicy.sendTestLog', isEnabled: true, isGreyedOut: false, headerId: 'fileSettingsHeader', parentId: null, component: 'usm-policies/policy-wizard/policy-types/shared/usm-radios', defaults: [{ field: 'sendTestLog', value: false }] }
   ]
 
 };

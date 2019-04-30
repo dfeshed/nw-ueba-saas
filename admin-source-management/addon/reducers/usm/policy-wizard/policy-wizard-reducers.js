@@ -104,22 +104,6 @@ const INITIAL_STATES = {
 };
 
 const scanScheduleId = 'scanType';
-const allScanScheduleIds = ['scanType', 'scanStartDate', 'recurrenceInterval', 'scanStartTime', 'cpuMax', 'cpuMaxVm'];
-const scanSchedHeaderId = 'scanScheduleHeader';
-const allAdvScanSettingsIds = ['scanMbr', 'requestScanOnRegistration'];
-const advScanSettingsHeaderId = 'advScanSettingsHeader';
-const invActionsHeaderId = 'invActionsHeader';
-const allInvActionsIds = 'blockingEnabled';
-const endpointServerHeaderId = 'endpointServerHeader';
-const allEndpointServerIds = ['primaryAddress', 'primaryHttpsPort', 'primaryHttpsBeaconInterval', 'primaryUdpPort', 'primaryUdpBeaconInterval'];
-const agentSettingsHeaderId = 'agentSettingsHeader';
-const allAgentSettingsIds = 'agentMode';
-const advancedConfigHeaderId = 'advancedConfigHeader';
-const allAdvancedConfigIds = 'customConfig';
-const windowsLogSettingsHeaderId = 'windowsLogSettingsHeader';
-const allWindowsLogSettingsHeaderIds = ['enabled', 'sendTestLog', 'primaryDestination', 'secondaryDestination', 'protocol', 'channelFilters'];
-const fileSettingsHeaderId = 'fileSettingsHeader';
-const allFileSettingsHeaderIds = ['enabled', 'sendTestLog'];
 
 // run for NEW_POLICY, FETCH_POLICY (edit), and UPDATE_POLICY_TYPE
 export const buildInitialState = (state, policyType, isUpdatePolicyType = false) => {
@@ -141,53 +125,6 @@ export const buildInitialState = (state, policyType, isUpdatePolicyType = false)
     }, { deep: true }); // deep merge so we don't reset everything
   }
   return mergedInitialState;
-};
-
-// Private method used to determine if a top level header like "SCAN SCHEDULE" or "ADVANCED SCAN SETTINGS"
-// needs to be shown in the Selected settings vbox on the right.
-// Suppose a child component from "SCAN SCHEDULE" is moved to the right, we need to show the "SCAN SCHEDULE"
-// header on the right too for that child component.
-const _shouldShowHeaderInSelSettings = (selectedSettingsIds, matchingIds) => {
-  let showHeader = false;
-  const { length } = matchingIds;
-  for (let i = 0; i < length; ++i) {
-    if (_.indexOf(selectedSettingsIds, matchingIds[i]) !== -1) {
-      showHeader = true;
-      break;
-    }
-  }
-  return showHeader;
-};
-
-// Private method that does a find of headerId in the availableSettings array,
-// and returns that entire object.
-const _findHeaderInAvailSettings = (availableSettings, headerId) => {
-  return availableSettings.find((d) => d.id === headerId);
-};
-
-// Private method that returns a new selectedSettings array after removing the headerId
-const _removeHeaderFromSelSettings = (selectedSettings, headerId) => {
-  return selectedSettings.filter((el) => el.id !== headerId);
-};
-
-// Private method used to determine if a top level header like "SCAN SCHEDULE" or "ADVANCED SCAN SETTINGS"
-// needs to be shown in the Available settings vbox on the left.
-// If all the componenents under a header is moved to the right, this method changes the header's isEnabled flag
-// to false, meaning the header will not appear on left anymore
-// if even one component under the header is still on the left, the header stays intact.
-const _shouldShowHeaderInAvailSettings = (subset, superset, el) => {
-  // check if the superset contains all elements from the subset
-  if (_.difference(subset, superset).length === 0) {
-    return {
-      ...el,
-      isEnabled: false
-    };
-  } else {
-    return {
-      ...el,
-      isEnabled: true
-    };
-  }
 };
 
 export default reduxActions.handleActions({
@@ -324,98 +261,62 @@ export default reduxActions.handleActions({
     const { availableSettings, selectedSettings } = state;
     let newSelectedSettings = [...selectedSettings];
 
-    const selectedSettingsIds = _.map(selectedSettings, 'id'); // ["scanType", "scanScheduleHeader", ...]
-
-    const showScanSchedHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, allScanScheduleIds);
-    if (showScanSchedHeader) {
-      newSelectedSettings.push(_findHeaderInAvailSettings(availableSettings, scanSchedHeaderId));
-    } else {
-      newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, scanSchedHeaderId);
-    }
-
-    const showadvScanSettingsHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, allAdvScanSettingsIds);
-    if (showadvScanSettingsHeader) {
-      newSelectedSettings.push(_findHeaderInAvailSettings(availableSettings, advScanSettingsHeaderId));
-    } else {
-      newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, advScanSettingsHeaderId);
-    }
-
-    const showInvActionsHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, [allInvActionsIds]);
-    if (showInvActionsHeader) {
-      newSelectedSettings.push(_findHeaderInAvailSettings(availableSettings, invActionsHeaderId));
-    } else {
-      newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, invActionsHeaderId);
-    }
-
-    const showEndpointServerHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, allEndpointServerIds);
-    if (showEndpointServerHeader) {
-      newSelectedSettings.push(_findHeaderInAvailSettings(availableSettings, endpointServerHeaderId));
-    } else {
-      newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, endpointServerHeaderId);
-    }
-
-    const showAgentSettingsHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, [allAgentSettingsIds]);
-    if (showAgentSettingsHeader) {
-      newSelectedSettings.push(_findHeaderInAvailSettings(availableSettings, agentSettingsHeaderId));
-    } else {
-      newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, agentSettingsHeaderId);
-    }
-
-    const showAdvancedConfigHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, [allAdvancedConfigIds]);
-    if (showAdvancedConfigHeader) {
-      newSelectedSettings.push(_findHeaderInAvailSettings(availableSettings, advancedConfigHeaderId));
-    } else {
-      newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, advancedConfigHeaderId);
-    }
-
-    const showWindowsLogSettingsHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, allWindowsLogSettingsHeaderIds);
-    if (showWindowsLogSettingsHeader) {
-      const selectedSetting = _findHeaderInAvailSettings(availableSettings, windowsLogSettingsHeaderId);
-      // only push when the selectedSetting exists
-      if (selectedSetting) {
-        newSelectedSettings.push(selectedSetting);
+    // build a map keyed by header ID to keep counts of available/selected settings
+    const headerMap = {};
+    availableSettings.forEach((el) => {
+      if (el.isHeader) {
+        headerMap[el.id] = { availableCount: 0, selectedCount: 0 };
       }
-    } else {
-      newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, windowsLogSettingsHeaderId);
-    }
+    });
 
-    const showFileSettingsHeader = _shouldShowHeaderInSelSettings(selectedSettingsIds, allFileSettingsHeaderIds);
-    if (showFileSettingsHeader) {
-      const selectedSetting = _findHeaderInAvailSettings(availableSettings, fileSettingsHeaderId);
-      // only push when the selectedSetting exists
-      if (selectedSetting) {
-        newSelectedSettings.push(selectedSetting);
+    // count available/selected settings for each header, which works here
+    // because we never actually delete from available but instead set a flag
+    availableSettings.forEach((el) => {
+      if (!el.isHeader) {
+        const counts = headerMap[el.headerId];
+        if (el.isEnabled) {
+          counts.availableCount++;
+        } else if (!el.isEnabled) {
+          counts.selectedCount++;
+        }
       }
-    } else {
-      newSelectedSettings = _removeHeaderFromSelSettings(newSelectedSettings, fileSettingsHeaderId);
-    }
+    });
 
+    // copy all available & enable/disable available headers,
+    // and we can also add selected headers to the newSelectedSettings
     const newAvailableSettings = availableSettings.map((el) => {
-      if (el.id === scanSchedHeaderId) {
-        return _shouldShowHeaderInAvailSettings(allScanScheduleIds, selectedSettingsIds, el);
+      // header elements
+      if (el.isHeader) {
+        const counts = headerMap[el.id];
+        let elCopy = {};
+        // available headers
+        if (counts.availableCount > 0) {
+          elCopy = { ...el, isEnabled: true };
+        } else {
+          elCopy = { ...el, isEnabled: false };
+        }
+        // selected headers
+        if (counts.selectedCount > 0) {
+          newSelectedSettings.push(elCopy);
+        }
+        return elCopy;
       }
-      if (el.id === advScanSettingsHeaderId) {
-        return _shouldShowHeaderInAvailSettings(allAdvScanSettingsIds, selectedSettingsIds, el);
-      }
-      if (el.id === windowsLogSettingsHeaderId) {
-        return _shouldShowHeaderInAvailSettings(allWindowsLogSettingsHeaderIds, selectedSettingsIds, el);
-      }
-      if (el.id === fileSettingsHeaderId) {
-        return _shouldShowHeaderInAvailSettings(allFileSettingsHeaderIds, selectedSettingsIds, el);
-      }
-      if (el.id === invActionsHeaderId) {
-        return _shouldShowHeaderInAvailSettings([allInvActionsIds], selectedSettingsIds, el);
-      }
-      if (el.id === endpointServerHeaderId) {
-        return _shouldShowHeaderInAvailSettings(allEndpointServerIds, selectedSettingsIds, el);
-      }
-      if (el.id === agentSettingsHeaderId) {
-        return _shouldShowHeaderInAvailSettings([allAgentSettingsIds], selectedSettingsIds, el);
-      }
-      if (el.id === advancedConfigHeaderId) {
-        return _shouldShowHeaderInAvailSettings([allAdvancedConfigIds], selectedSettingsIds, el);
-      }
+      // settings elements
       return el;
+    });
+
+    // copy all selected and add/remove selected headers
+    newSelectedSettings = newSelectedSettings.filter((el) => {
+      // header elements
+      if (el.isHeader) {
+        const counts = headerMap[el.id];
+        if (counts.selectedCount > 0) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+      return true;
     });
 
     return state.merge({

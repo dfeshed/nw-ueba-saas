@@ -504,8 +504,10 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
 
   test('UPDATE_HEADERS_FOR_ALL_SETTINGS adds a label entry to the selectedSettings array', function(assert) {
     const initialStateCopy = _.cloneDeep(initialStateEdr);
+    const scanTypeSetting = _.find(initialStateCopy.availableSettings, { 'id': 'scanType' });
+    scanTypeSetting.isEnabled = false;
     initialStateCopy.selectedSettings = [
-      { index: 1, id: 'scanType' }
+      { ...scanTypeSetting }
     ];
     const action = { type: ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS };
     const endState = reducers(Immutable.from(initialStateCopy), action);
@@ -540,35 +542,51 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const initialStateEdrCopy = _.cloneDeep(initialStateEdr);
     const initialStateWinLogCopy = _.cloneDeep(initialStateWinLog);
 
+    const invActionsHeader = _.find(initialStateEdrCopy.availableSettings, { 'id': 'invActionsHeader' });
+    const blockingEnabled = _.find(initialStateEdrCopy.availableSettings, { 'id': 'blockingEnabled' });
+    blockingEnabled.isEnabled = false;
     initialStateEdrCopy.selectedSettings = [
-      { index: 13, id: 'blockingEnabled', label: 'adminUsm.policyWizard.edrPolicy.blockingEnabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'blockingEnabled', value: false }] }
+      { ...blockingEnabled }
     ];
 
     const expectedEndState = {
       selectedSettings: [
-        { index: 12, id: 'invActionsHeader', label: 'adminUsm.policyWizard.edrPolicy.invasiveActions', isHeader: true, isEnabled: true },
-        { index: 13, id: 'blockingEnabled', label: 'adminUsm.policyWizard.edrPolicy.blockingEnabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-radios', defaults: [{ field: 'blockingEnabled', value: false }] }
+        { ...invActionsHeader, isEnabled: false },
+        { ...blockingEnabled }
       ]
     };
 
+    const windowsLogSettingsHeader = _.find(initialStateWinLogCopy.availableSettings, { 'id': 'windowsLogSettingsHeader' });
+    const enabled = _.find(initialStateWinLogCopy.availableSettings, { 'id': 'enabled' });
+    enabled.isEnabled = false;
+    const sendTestLog = _.find(initialStateWinLogCopy.availableSettings, { 'id': 'sendTestLog' });
+    sendTestLog.isEnabled = false;
+    const primaryDestination = _.find(initialStateWinLogCopy.availableSettings, { 'id': 'primaryDestination' });
+    primaryDestination.isEnabled = false;
+    const secondaryDestination = _.find(initialStateWinLogCopy.availableSettings, { 'id': 'secondaryDestination' });
+    secondaryDestination.isEnabled = false;
+    const protocol = _.find(initialStateWinLogCopy.availableSettings, { 'id': 'protocol' });
+    protocol.isEnabled = false;
+    const channelFilters = _.find(initialStateWinLogCopy.availableSettings, { 'id': 'channelFilters' });
+    channelFilters.isEnabled = false;
     initialStateWinLogCopy.selectedSettings = [
-      { index: 1, id: 'enabled', label: 'adminUsm.policyWizard.windowsLogPolicy.enabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'enabled', value: false }] },
-      { index: 2, id: 'sendTestLog', label: 'adminUsm.policyWizard.windowsLogPolicy.sendTestLog', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'sendTestLog', value: false }] },
-      { index: 3, id: 'primaryDestination', label: 'adminUsm.policyWizard.windowsLogPolicy.primaryDestination', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations', defaults: [{ field: 'primaryDestination', value: '' }] },
-      { index: 4, id: 'secondaryDestination', label: 'adminUsm.policyWizard.windowsLogPolicy.secondaryDestination', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations', defaults: [{ field: 'secondaryDestination', value: '' }] },
-      { index: 5, id: 'protocol', label: 'adminUsm.policyWizard.windowsLogPolicy.protocol', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-protocol', defaults: [{ field: 'protocol', value: 'TCP' }] },
-      { index: 6, id: 'channelFilters', label: 'adminUsm.policyWizard.windowsLogPolicy.channelFilters', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-channel-filters', defaults: [{ field: 'channelFilters', value: [{ channel: '', filterType: 'INCLUDE', eventId: 'ALL' }] }] }
+      { ...enabled },
+      { ...sendTestLog },
+      { ...primaryDestination },
+      { ...secondaryDestination },
+      { ...protocol },
+      { ...channelFilters }
     ];
 
     const expectedWinLogEndState = {
       selectedSettings: [
-        { index: 0, id: 'windowsLogSettingsHeader', label: 'adminUsm.policyWizard.windowsLogPolicy.windowsLogSettingsHeader', isHeader: true, isEnabled: true },
-        { index: 1, id: 'enabled', label: 'adminUsm.policyWizard.windowsLogPolicy.enabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'enabled', value: false }] },
-        { index: 2, id: 'sendTestLog', label: 'adminUsm.policyWizard.windowsLogPolicy.sendTestLog', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'sendTestLog', value: false }] },
-        { index: 3, id: 'primaryDestination', label: 'adminUsm.policyWizard.windowsLogPolicy.primaryDestination', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations', defaults: [{ field: 'primaryDestination', value: '' }] },
-        { index: 4, id: 'secondaryDestination', label: 'adminUsm.policyWizard.windowsLogPolicy.secondaryDestination', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations', defaults: [{ field: 'secondaryDestination', value: '' }] },
-        { index: 5, id: 'protocol', label: 'adminUsm.policyWizard.windowsLogPolicy.protocol', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-protocol', defaults: [{ field: 'protocol', value: 'TCP' }] },
-        { index: 6, id: 'channelFilters', label: 'adminUsm.policyWizard.windowsLogPolicy.channelFilters', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-channel-filters', defaults: [{ field: 'channelFilters', value: [{ channel: '', filterType: 'INCLUDE', eventId: 'ALL' }] }] }
+        { ...windowsLogSettingsHeader, isEnabled: false },
+        { ...enabled },
+        { ...sendTestLog },
+        { ...primaryDestination },
+        { ...secondaryDestination },
+        { ...protocol },
+        { ...channelFilters }
       ]
     };
     const action = { type: ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS };
@@ -584,29 +602,39 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     const initialStateEdrCopy = _.cloneDeep(initialStateEdr);
     const initialStateWinLogCopy = _.cloneDeep(initialStateWinLog);
 
+    const endpointServerHeader = _.find(initialStateEdrCopy.availableSettings, { 'id': 'endpointServerHeader' });
+    const primaryAddress = _.find(initialStateEdrCopy.availableSettings, { 'id': 'primaryAddress' });
+    primaryAddress.isEnabled = false;
+    const primaryHttpsPort = _.find(initialStateEdrCopy.availableSettings, { 'id': 'primaryHttpsPort' });
+    primaryHttpsPort.isEnabled = false;
     initialStateEdrCopy.selectedSettings = [
-      { index: 15, id: 'primaryAddress', label: 'adminUsm.policyWizard.edrPolicy.primaryAddress', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/primary-address', defaults: [{ field: 'primaryAddress', value: '' }] },
-      { index: 16, id: 'primaryHttpsPort', label: 'adminUsm.policyWizard.edrPolicy.primaryHttpsPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-ports', defaults: [{ field: 'primaryHttpPort', value: 443 }] }
+      { ...primaryAddress },
+      { ...primaryHttpsPort }
     ];
 
     const expectedEndStateEdr = {
       selectedSettings: [
-        { index: 14, id: 'endpointServerHeader', label: 'adminUsm.policyWizard.edrPolicy.endpointServerSettings', isHeader: true, isEnabled: true },
-        { index: 15, id: 'primaryAddress', label: 'adminUsm.policyWizard.edrPolicy.primaryAddress', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/primary-address', defaults: [{ field: 'primaryAddress', value: '' }] },
-        { index: 16, id: 'primaryHttpsPort', label: 'adminUsm.policyWizard.edrPolicy.primaryHttpsPort', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/edr/edr-ports', defaults: [{ field: 'primaryHttpPort', value: 443 }] }
+        { ...endpointServerHeader },
+        { ...primaryAddress },
+        { ...primaryHttpsPort }
       ]
     };
 
+    const windowsLogSettingsHeader = _.find(initialStateWinLogCopy.availableSettings, { 'id': 'windowsLogSettingsHeader' });
+    const enabled = _.find(initialStateWinLogCopy.availableSettings, { 'id': 'enabled' });
+    enabled.isEnabled = false;
+    const sendTestLog = _.find(initialStateWinLogCopy.availableSettings, { 'id': 'sendTestLog' });
+    sendTestLog.isEnabled = false;
     initialStateWinLogCopy.selectedSettings = [
-      { index: 1, id: 'enabled', label: 'adminUsm.policyWizard.windowsLogPolicy.enabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'enabled', value: false }] },
-      { index: 2, id: 'sendTestLog', label: 'adminUsm.policyWizard.windowsLogPolicy.sendTestLog', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'sendTestLog', value: false }] }
+      { ...enabled },
+      { ...sendTestLog }
     ];
 
     const expectedWinLogEndState = {
       selectedSettings: [
-        { index: 0, id: 'windowsLogSettingsHeader', label: 'adminUsm.policyWizard.windowsLogPolicy.windowsLogSettingsHeader', isHeader: true, isEnabled: true },
-        { index: 1, id: 'enabled', label: 'adminUsm.policyWizard.windowsLogPolicy.enabled', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'enabled', value: false }] },
-        { index: 2, id: 'sendTestLog', label: 'adminUsm.policyWizard.windowsLogPolicy.sendTestLog', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/windows-log/windows-log-radios', defaults: [{ field: 'sendTestLog', value: false }] }
+        { ...windowsLogSettingsHeader },
+        { ...enabled },
+        { ...sendTestLog }
       ]
     };
 

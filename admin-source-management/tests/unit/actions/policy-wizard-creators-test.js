@@ -150,60 +150,103 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
   });
 
   test('updatePolicyProperty action creator returns proper type and payload when field is scanType', function(assert) {
-    const expectedAction = {
-      type: ACTION_TYPES.TOGGLE_SCAN_TYPE,
-      payload: 'DISABLED'
+    assert.expect(3);
+    const dispatch = (action) => {
+      switch (action.type) {
+        case ACTION_TYPES.TOGGLE_SCAN_TYPE:
+          assert.equal(action.type, ACTION_TYPES.TOGGLE_SCAN_TYPE, 'action has the correct type of TOGGLE_SCAN_TYPE');
+          assert.equal(action.payload, 'DISABLED', 'action has the correct payload of DISABLED');
+          break;
+        case ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS:
+          assert.equal(action.type, ACTION_TYPES.UPDATE_HEADERS_FOR_ALL_SETTINGS, 'action has the correct type of UPDATE_HEADERS_FOR_ALL_SETTINGS');
+          // no payload for this action
+          break;
+        default:
+          assert.equal(true, false, 'default case... action has the correct type');
+      }
     };
-    const action = policyWizardCreators.updatePolicyProperty('scanType', 'DISABLED');
-    assert.deepEqual(action, expectedAction, 'action has correct type & payload');
+    const thunk = policyWizardCreators.updatePolicyProperty('scanType', 'DISABLED');
+    thunk(dispatch);
   });
 
   test('updatePolicyProperty action creator returns proper type and payload when field is recurrenceUnit', function(assert) {
-    const expectedAction = {
-      type: ACTION_TYPES.UPDATE_POLICY_PROPERTY,
-      payload: [
-        { field: 'policy.recurrenceUnit', value: 'DAYS' },
-        { field: 'policy.recurrenceInterval', value: 1 },
-        { field: 'policy.runOnDaysOfWeek', value: null }
-      ]
+    assert.expect(2);
+    const expectedPayload = [
+      { field: 'policy.recurrenceUnit', value: 'DAYS' },
+      { field: 'policy.recurrenceInterval', value: 1 },
+      { field: 'policy.runOnDaysOfWeek', value: null }
+    ];
+    const dispatch = (action) => {
+      switch (action.type) {
+        case ACTION_TYPES.UPDATE_POLICY_PROPERTY:
+          assert.equal(action.type, ACTION_TYPES.UPDATE_POLICY_PROPERTY, 'action has the correct type of UPDATE_POLICY_PROPERTY');
+          assert.deepEqual(action.payload, expectedPayload, 'action has the correct payload');
+          break;
+        default:
+          assert.equal(true, false, 'default case... action has the correct type');
+      }
     };
-    const action = policyWizardCreators.updatePolicyProperty('recurrenceUnit', 'DAYS');
-    assert.deepEqual(action, expectedAction, 'action has correct type & payload');
+    const thunk = policyWizardCreators.updatePolicyProperty('recurrenceUnit', 'DAYS');
+    thunk(dispatch);
   });
 
   test('updatePolicyProperty action creator returns proper type and payload when field is primaryAddress', function(assert) {
-    const val = { id: 'id1', host: '10.10.10.10' };
-    const expectedAction = {
-      type: ACTION_TYPES.UPDATE_POLICY_PROPERTY,
-      payload: [
-        { field: 'policy.primaryNwServiceId', value: 'id1' },
-        { field: 'policy.primaryAddress', value: '10.10.10.10' }
-      ]
+    assert.expect(2);
+    const expectedPayload = [
+      { field: 'policy.primaryNwServiceId', value: 'id1' },
+      { field: 'policy.primaryAddress', value: '10.10.10.10' }
+    ];
+    const dispatch = (action) => {
+      switch (action.type) {
+        case ACTION_TYPES.UPDATE_POLICY_PROPERTY:
+          assert.equal(action.type, ACTION_TYPES.UPDATE_POLICY_PROPERTY, 'action has the correct type of UPDATE_POLICY_PROPERTY');
+          assert.deepEqual(action.payload, expectedPayload, 'action has the correct payload');
+          break;
+        default:
+          assert.equal(true, false, 'default case... action has the correct type');
+      }
     };
-    const action = policyWizardCreators.updatePolicyProperty('primaryAddress', val);
-    assert.deepEqual(action, expectedAction, 'action has correct type & payload');
+    const val = { id: 'id1', host: '10.10.10.10' };
+    const thunk = policyWizardCreators.updatePolicyProperty('primaryAddress', val);
+    thunk(dispatch);
   });
 
   test('updatePolicyProperty action creator returns proper type and payload when field is primaryDestination', function(assert) {
-    const val = { id: 'id1', host: '10.10.10.10' };
-    const expectedAction = {
-      type: ACTION_TYPES.UPDATE_POLICY_PROPERTY,
-      payload: [
-        { field: 'policy.primaryDestination', value: '10.10.10.10' }
-      ]
+    assert.expect(2);
+    const expectedPayload = [
+      { field: 'policy.primaryDestination', value: '10.10.10.10' }
+    ];
+    const dispatch = (action) => {
+      switch (action.type) {
+        case ACTION_TYPES.UPDATE_POLICY_PROPERTY:
+          assert.equal(action.type, ACTION_TYPES.UPDATE_POLICY_PROPERTY, 'action has the correct type of UPDATE_POLICY_PROPERTY');
+          assert.deepEqual(action.payload, expectedPayload, 'action has the correct payload');
+          break;
+        default:
+          assert.equal(true, false, 'default case... action has the correct type');
+      }
     };
-    const action = policyWizardCreators.updatePolicyProperty('primaryDestination', val);
-    assert.deepEqual(action, expectedAction, 'action has correct type & payload');
+    const val = { id: 'id1', host: '10.10.10.10' };
+    const thunk = policyWizardCreators.updatePolicyProperty('primaryDestination', val);
+    thunk(dispatch);
   });
 
   test('updatePolicyProperty action creator returns proper default type and payload for any other field', function(assert) {
-    const expectedAction = {
-      type: ACTION_TYPES.UPDATE_POLICY_PROPERTY,
-      payload: [
-        { field: 'policy.anyOtherField', value: 2 }
-      ]
+    assert.expect(2);
+    const expectedPayload = [
+      { field: 'policy.anyOtherField', value: 2 }
+    ];
+    const dispatch = (action) => {
+      switch (action.type) {
+        case ACTION_TYPES.UPDATE_POLICY_PROPERTY:
+          assert.equal(action.type, ACTION_TYPES.UPDATE_POLICY_PROPERTY, 'action has the correct type of UPDATE_POLICY_PROPERTY');
+          assert.deepEqual(action.payload, expectedPayload, 'action has the correct payload');
+          break;
+        default:
+          assert.equal(true, false, 'default case... action has the correct type');
+      }
     };
-    const action = policyWizardCreators.updatePolicyProperty('anyOtherField', 2);
-    assert.deepEqual(action, expectedAction, 'action has correct type & payload');
+    const thunk = policyWizardCreators.updatePolicyProperty('anyOtherField', 2);
+    thunk(dispatch);
   });
 });
