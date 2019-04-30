@@ -26,6 +26,7 @@ module('Integration | Component | events-table', function(hooks) {
   test('it renders with Context menu trigger', async function(assert) {
     new ReduxDataHelper(setState)
       .eventsPreferencesConfig()
+      .sortableColumns()
       .build();
 
     await render(hbs`
@@ -272,6 +273,73 @@ module('Integration | Component | events-table', function(hooks) {
     await click('.group-label-copy');
   });
 
+  test('event table is displayed with expected default column sort controls', async function(assert) {
+    new ReduxDataHelper(setState)
+      .columnGroup('SUMMARY')
+      .eventThreshold(100000)
+      .eventsPreferencesConfig()
+      .columnGroups(EventColumnGroups)
+      .eventsQuerySort('time', 'asc')
+      .sortableColumns(['time', 'size'])
+      .eventCount(100000)
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+    assert.equal(findAll('.rsa-data-table-header-row div > h2 .sort-indicator .rsa-icon-arrow-up-7-filled').length, 2);
+    assert.equal(findAll('.rsa-data-table-header-row div > h2 .sort-indicator.active .rsa-icon-arrow-up-7-filled').length, 1);
+    assert.equal(findAll('.rsa-data-table-header-row div > h2 .sort-indicator:not(.active) .rsa-icon-arrow-up-7-filled').length, 1);
+  });
+
+  test('event table is displayed with expected ascending sort controls', async function(assert) {
+    new ReduxDataHelper(setState)
+      .columnGroup('SUMMARY')
+      .eventThreshold(100000)
+      .eventsPreferencesConfig()
+      .columnGroups(EventColumnGroups)
+      .sortableColumns()
+      .eventsQuerySort('time', 'asc')
+      .eventCount(100000)
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+    assert.ok(find('.rsa-data-table-header-row div > h2 .sort-indicator.active .rsa-icon-arrow-up-7-filled'));
+  });
+
+  test('event table is displayed with expected descending sort controls', async function(assert) {
+    new ReduxDataHelper(setState)
+      .columnGroup('SUMMARY')
+      .eventThreshold(100000)
+      .eventsPreferencesConfig()
+      .columnGroups(EventColumnGroups)
+      .sortableColumns()
+      .eventsQuerySort('time', 'desc')
+      .eventCount(100000)
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+    assert.ok(find('.rsa-data-table-header-row div > h2 .sort-indicator.active .rsa-icon-arrow-down-7-filled'));
+  });
+
+  test('event table sort controls calls executeQuery', async function(assert) {
+    assert.expect(1);
+    new ReduxDataHelper(setState)
+      .columnGroup('SUMMARY')
+      .eventThreshold(100000)
+      .eventsPreferencesConfig()
+      .columnGroups(EventColumnGroups)
+      .sortableColumns()
+      .eventsQuerySort('time', 'asc')
+      .eventCount(100000)
+      .build();
+
+    this.set('executeQuery', () => {
+      assert.ok(true);
+    });
+
+    await render(hbs`{{events-table-container/events-table executeQuery=executeQuery}}`);
+    click('.rsa-data-table-header-row div > h2 .sort-indicator.active');
+  });
+
   test('event table is displayed with expected column group\'s default header values', async function(assert) {
     new ReduxDataHelper(setState)
       .columnGroup('SUMMARY')
@@ -285,7 +353,6 @@ module('Integration | Component | events-table', function(hooks) {
     const headerColumns = findAll('.rsa-data-table-header-row div > h2');
     assert.equal('COLLECTION TIME', headerColumns[0].innerText, 'Expected 1st column');
     assert.equal('TYPE', headerColumns[1].innerText, 'Expected 2nd column');
-
   });
 
   test('renders event selection checkboxes if only download permissions are present', async function(assert) {

@@ -12,7 +12,9 @@ const params = {
   rs: 'max',
   sid: 2,
   st: 3,
-  pdhash: 'foo,bar,baz'
+  pdhash: 'foo,bar,baz',
+  sortField: 'time',
+  sortDir: 'asc'
 };
 
 const ipv6Addresses = ['2001:0db8:85a3:0000:0000:8a2e:0370:7334', '2001:20::', '::ffff:0.0.0.0', '100::', 'fe80::', '::1', '2002::', '2001:db8::', '::ffff:0:255.255.255.255'];
@@ -25,7 +27,7 @@ module('Unit | Helper | Actions Utils', function(hooks) {
   });
 
   test('parseBasicQueryParams correctly parses URI', function(assert) {
-    assert.expect(7);
+    assert.expect(9);
     const result = queryUtils.parseBasicQueryParams(params, DEFAULT_LANGUAGES);
     assert.equal(result.endTime, params.et, '"et" was not parsed to "endTime"');
     assert.equal(result.sessionId, params.eid, '"eid" was not parsed to "sessionId"');
@@ -33,6 +35,8 @@ module('Unit | Helper | Actions Utils', function(hooks) {
     assert.equal(result.reconSize, params.rs, '"rs" was not parsed to "reconSize"');
     assert.equal(result.serviceId, params.sid, '"sid" was not parsed to "serviceId"');
     assert.equal(result.startTime, params.st, '"st" was not parsed to "startTime"');
+    assert.equal(result.sortField, params.sortField, '"sortField" was not parsed to "sortField"');
+    assert.equal(result.sortDir, params.sortDir, '"sortDir" was not parsed to "sortDir"');
     assert.deepEqual(result.pillDataHashes, ['foo', 'bar', 'baz'], '"pdhash" was not parsed to proper hashes');
   });
 

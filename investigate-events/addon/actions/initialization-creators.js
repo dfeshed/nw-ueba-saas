@@ -7,7 +7,7 @@ import { parseBasicQueryParams } from 'investigate-events/actions/utils';
 import { isSearchTerm, parsePillDataFromUri, transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { extractSearchTermFromFilters } from 'investigate-shared/actions/api/events/utils';
 import { fetchColumnGroups } from './fetch/column-groups';
-import { fetchInvestigateData, getServiceSummary, updateGlobalPreferences } from './data-creators';
+import { fetchInvestigateData, getServiceSummary, updateGlobalPreferences, updateSort } from './data-creators';
 import { isQueryExecutedByColumnGroup } from './interaction-creators';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 import CONFIG from 'investigate-events/reducers/investigate/config';
@@ -71,7 +71,6 @@ const _initializeGlobalPreferences = (dispatch) => {
     }));
   }
 };
-
 
 /**
  * Wraps the fetching of services in a promise
@@ -422,38 +421,42 @@ export const initializeInvestigate = function(
       // _fetchEventSettings(dispatch)
     ];
 
+    // 7) Update sort state with sort params in URL
+    const { sortField, sortDir } = parsedQueryParams;
+    dispatch(updateSort(sortField, sortDir));
+
     const hasService = !!parsedQueryParams.serviceId;
     if (hasService) {
       // If we have a service then...
-      // 7) Include getting the dictionaries with other requests,
+      // 8) Include getting the dictionaries with other requests,
       //    and kick them all off
       initializationPromises.push(_initializeDictionaries(dispatch, getState));
       await RSVP.all(initializationPromises).catch(errorHandler);
     } else {
       // If we do not have a service then...
-      // 7) Get all the dictionaries after we have fetched services and
+      // 8) Get all the dictionaries after we have fetched services and
       //    automatically chosen the first service as the active service
       await RSVP.all(initializationPromises);
       await _initializeDictionaries(dispatch, getState).catch(errorHandler);
     }
 
     if (parsedQueryParams.pillData && parsedQueryParams.pillDataHashes) {
-      // 8) If there is a pdhash and mf in the query, fetch a hash for the mf
+      // 9) If there is a pdhash and mf in the query, fetch a hash for the mf
       //    and combine the returned hash into pdhash and redirect.
       await _handleSearchParamsAndHashInQueryParams(parsedQueryParams, hashNavigateCallback, dispatch, getState);
     } else if (parsedQueryParams.pillData) {
-      // 8) If there was no hash in the incoming params, do checking to
+      // 9) If there was no hash in the incoming params, do checking to
       //    see if we need to create one and update the URL with a new hash.
       //    No need to await since we already have everything required
       dispatch(_handleSearchParamsInQueryParams(parsedQueryParams, hashNavigateCallback, isInternalQuery));
     } else if (parsedQueryParams.pillDataHashes) {
-      // 8) Perform all the checks to see if we need to retrieve hash
+      // 9) Perform all the checks to see if we need to retrieve hash
       //    params, and if we do, wait for that retrieval to finish.
       //    This must be done after the previous promises because
       //    fetching/creating pills relies on languages being in place
       await _handleHashInQueryParams(parsedQueryParams, dispatch, hashNavigateCallback, getState);
     } else {
-      // 8) This callback is required to maintain browser history. There are
+      // 9) This callback is required to maintain browser history. There are
       //    two conditions where we have to callback this without params fn.
       //      a) When we have hash in parsedQueryParams. Calling it in _handleHashInQueryParams
       //      b) When parsedQueryParams neither has hash or pill data(mf)
@@ -462,10 +465,10 @@ export const initializeInvestigate = function(
       });
     }
 
-    // 9) Initialize the querying state so we can get going
+    // 10) Initialize the querying state so we can get going
     dispatch(_intializeQuerying(hardReset));
 
-    // 10) If we have the minimum required values for querying (service id,
+    // 11) If we have the minimum required values for querying (service id,
     // start time and end time) specified in the URL, then kick off the query.
     const { serviceId, startTime, endTime } = parsedQueryParams;
     if (serviceId && startTime && endTime) {

@@ -180,6 +180,14 @@
       border: 0;
 
       .rsa-data-table-header-cell {
+        .sort-indicator {
+          color: text-color(primary);
+
+          &.active {
+            color: text-color(primary, lightest);
+          }
+        }
+
         &:first-of-type {
           & > div {
             overflow: visible;

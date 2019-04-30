@@ -27,6 +27,8 @@ const dispatchToActions = { cancelQuery };
 
 const stateToComputed = (state) => ({
   isPillValidationInProgress: isPillValidationInProgress(state),
+  sortField: state.investigate.data.sortField,
+  sortDirection: state.investigate.data.sortDirection,
   isQueryRunning: state.investigate.queryNode.isQueryRunning,
   requiredValuesToQuery: canQueryGuided(state)
 });
@@ -55,13 +57,15 @@ const QueryButton = Component.extend({
     cancelOrExecuteAction() {
       const {
         executeQuery,
-        isQueryRunning
-      } = this.getProperties('executeQuery', 'isQueryRunning');
+        isQueryRunning,
+        sortField,
+        sortDirection
+      } = this.getProperties('executeQuery', 'isQueryRunning', 'sortField', 'sortDirection');
       // Either execute the query, or cancel the query
       if (isQueryRunning) {
         this.send('cancelQuery');
       } else {
-        executeQuery();
+        executeQuery(false, sortField, sortDirection);
       }
     }
   }

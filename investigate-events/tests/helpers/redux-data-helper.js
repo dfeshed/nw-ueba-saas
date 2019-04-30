@@ -223,6 +223,17 @@ export default class DataHelper {
     return this;
   }
 
+  eventsQuerySort(field, dir) {
+    _set(this.state, 'data.sortField', field);
+    _set(this.state, 'data.sortDirection', dir);
+    return this;
+  }
+
+  sortableColumns(cols = ['time']) {
+    _set(this.state, 'data.validEventSortColumns', cols);
+    return this;
+  }
+
   streamLimit(limit) {
     _set(this.state, 'eventResults.streamLimit', limit);
     return this;

@@ -234,6 +234,8 @@ function parseBasicQueryParams(params) {
     reconSize: params.rs,
     serviceId: params.sid,
     startTime: params.st,
+    sortField: params.sortField,
+    sortDir: params.sortDir,
     selectedTimeRangeId: getTimeRangeIdFromRange(params.st, params.et)
   };
 }

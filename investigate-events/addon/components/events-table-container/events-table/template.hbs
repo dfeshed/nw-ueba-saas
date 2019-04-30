@@ -31,7 +31,32 @@
         </label>
       {{else}}
         <h2 class="title" title="{{if column.title column.title names.bothNames}}">
-          <span class="js-move-handle">{{if column.title column.title names.displayName}}</span>
+          {{#if (and column.field sortableColumns)}}
+            <span class="js-move-handle" {{action 'toggleSort' column.field}}>
+              {{#if (contains column.field sortableColumns)}}
+                {{#if (eq sortField column.field)}}
+                  {{#if (eq sortDirection 'asc')}}
+                    <span class="sort-indicator active">
+                      {{rsa-icon name="arrow-up-7" size="small"}}
+                    </span>
+                  {{else}}
+                    <span class="sort-indicator active">
+                      {{rsa-icon name="arrow-down-7" size="small"}}
+                    </span>
+                  {{/if}}
+                {{else}}
+                  <span class="sort-indicator">
+                    {{rsa-icon name="arrow-up-7" size="small"}}
+                  </span>
+                {{/if}}
+              {{/if}}
+              {{if column.title column.title names.displayName}}
+            </span>
+          {{else}}
+            <span class="js-move-handle">
+              {{if column.title column.title names.displayName}}
+            </span>
+          {{/if}}
         </h2>
       {{/if}}
     {{/with}}

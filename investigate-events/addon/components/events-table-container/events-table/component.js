@@ -20,7 +20,7 @@ import {
   toggleSelectAllEvents,
   toggleEventSelection
 } from 'investigate-events/actions/interaction-creators';
-import { setVisibleColumns } from 'investigate-events/actions/data-creators';
+import { setVisibleColumns, updateSort } from 'investigate-events/actions/data-creators';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
 
 const stateToComputed = (state) => ({
@@ -48,14 +48,18 @@ const stateToComputed = (state) => ({
   actualEventCount: thousandFormat(actualEventCount(state)),
   threshold: state.investigate.eventCount.threshold,
   isEventResultsError: isEventResultsError(state),
-  searchMatches: searchMatches(state)
+  searchMatches: searchMatches(state),
+  sortField: state.investigate.data.sortField,
+  sortDirection: state.investigate.data.sortDirection,
+  sortableColumns: state.investigate.data.validEventSortColumns
 });
 
 const dispatchToActions = {
   eventsLogsGet,
   toggleSelectAllEvents,
   toggleEventSelection,
-  setVisibleColumns
+  setVisibleColumns,
+  updateSort
 };
 
 // checkboxes for multiple event selection
@@ -168,6 +172,17 @@ const EventsTableContextMenu = RsaContextMenu.extend({
           this.get('selectEvent')(event);
         }
       }
+    },
+
+    toggleSort(field) {
+      let sortDirection;
+      if (this.get('sortField') === field && this.get('sortDirection') === 'asc') {
+        sortDirection = 'desc';
+      } else {
+        sortDirection = 'asc';
+      }
+      this.send('updateSort', field, sortDirection);
+      this.executeQuery(false);
     }
   }
 });

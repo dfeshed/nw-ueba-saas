@@ -22,6 +22,11 @@ module('Unit | Actions | Data-Creators', function(hooks) {
     assert.equal(type, ACTION_TYPES.UPDATE_GLOBAL_PREFERENCES, 'action has the correct type');
   });
 
+  test('updateSort action creator returns proper type', function(assert) {
+    const { type } = dataCreators.updateSort();
+    assert.equal(type, ACTION_TYPES.UPDATE_SORT, 'action has the correct type');
+  });
+
   test('updateSummary call will update timerange if autoSummaryCall is enabled', function(assert) {
     const done = assert.async();
     const getState = () => {

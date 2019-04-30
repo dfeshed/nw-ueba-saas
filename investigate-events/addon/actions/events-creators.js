@@ -21,11 +21,11 @@ import {
 
 const INITIAL_TIME_WINDOW_IN_SECONDS = 5 * 60;
 
-const deriveSort = (eventTimeSortOrder) => {
-  if (eventTimeSortOrder) {
+const deriveSort = (field, sortDirection) => {
+  if (field && sortDirection) {
     return {
-      field: 'time',
-      descending: eventTimeSortOrder.toLowerCase() === 'descending'
+      field,
+      descending: sortDirection.toLowerCase() === 'desc'
     };
   }
 };
@@ -614,6 +614,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         startTime: batchStartTime,
         endTime: batchEndTime
       };
+      const { sortField, sortDirection } = investigate.data;
       if (window.DEBUG_STREAMS) {
         console.log(`Running query with gap of ${batchEndTime - batchStartTime}`);
       }
@@ -625,7 +626,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         streamBatch,
         handlers,
         currentStreamState.flattenedColumnList,
-        deriveSort(investigate.data.eventAnalysisPreferences.eventTimeSortOrder),
+        deriveSort(sortField, sortDirection),
         'investigate-events-event-stream'
       );
 
@@ -806,6 +807,7 @@ export const eventsStartOldest = () => {
     const queryNode = getActiveQueryNode(getState());
     const { language } = investigate.dictionaries;
     const { streamBatch } = investigate.eventResults;
+    const { sortField, sortDirection } = investigate.data;
 
     fetchStreamingEvents(
       queryNode,
@@ -814,7 +816,7 @@ export const eventsStartOldest = () => {
       streamBatch,
       handlers,
       currentStreamState.flattenedColumnList,
-      deriveSort(investigate.data.eventAnalysisPreferences.eventTimeSortOrder),
+      deriveSort(sortField, sortDirection),
       'investigate-events-event-stream'
     );
   };

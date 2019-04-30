@@ -10,12 +10,14 @@ export default Controller.extend({
     'pdhash', // pillData hashes
     'rs', // reconSize
     'sid', // serviceId
-    'st' // startTime
+    'st', // startTime
+    'sortField',
+    'sortDir'
   ],
 
   actions: {
-    controllerExecuteQuery(externalLink) {
-      this.send('executeQuery', externalLink);
+    controllerExecuteQuery(externalLink, sortField, sortDir) {
+      this.send('executeQuery', externalLink, sortField, sortDir);
     },
     controllerMetaPanelSize(size) {
       this.send('metaPanelSize', size);

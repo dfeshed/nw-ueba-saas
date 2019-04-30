@@ -45,7 +45,9 @@ export default Route.extend({
     et: { refreshModel: true }, // endTime
     mf: { refreshModel: true }, // pillData
     mps: { refreshModel: false }, // metaPanelSize
-    rs: { refreshModel: false } // reconSize
+    rs: { refreshModel: false }, // reconSize
+    sortField: { refreshModel: true },
+    sortDir: { refreshModel: true }
   },
 
   /**
@@ -168,7 +170,7 @@ export default Route.extend({
       const redux = this.get('redux');
       const state = redux.getState();
       const {
-        data: { reconSize },
+        data: { reconSize, sortField, sortDirection },
         meta: { metaPanelSize },
         queryNode: { endTime, pillsData, queryView, serviceId, startTime }
       } = state.investigate;
@@ -199,6 +201,8 @@ export default Route.extend({
         rs: reconSize,
         sid: serviceId,
         st: startTime,
+        sortField,
+        sortDir: sortDirection,
         pdhash: undefined
       };
 

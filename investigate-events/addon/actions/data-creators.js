@@ -144,6 +144,14 @@ export const updateGlobalPreferences = (payload) => {
   };
 };
 
+export const updateSort = (sortField, sortDirection) => {
+  return {
+    type: ACTION_TYPES.UPDATE_SORT,
+    sortField,
+    sortDirection
+  };
+};
+
 export const setVisibleColumns = (payload) => {
   return {
     type: ACTION_TYPES.SET_VISIBLE_COLUMNS,

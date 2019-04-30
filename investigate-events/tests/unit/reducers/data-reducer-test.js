@@ -57,6 +57,22 @@ test('Should update global preferences', function(assert) {
   assert.deepEqual(newEndState.globalPreferences, 'foo');
 });
 
+test('Should update sort', function(assert) {
+  const previous = Immutable.from({
+    sortField: null,
+    sortDirection: null
+  });
+
+  const action = {
+    type: ACTION_TYPES.UPDATE_SORT,
+    sortField: 'foo',
+    sortDirection: 'asc'
+  };
+  const newEndState = reducer(previous, action);
+  assert.deepEqual(newEndState.sortField, 'foo');
+  assert.deepEqual(newEndState.sortDirection, 'asc');
+});
+
 test('Should show default column list in case of failure', function(assert) {
   const previous = Immutable.from({
     columnGroups: null

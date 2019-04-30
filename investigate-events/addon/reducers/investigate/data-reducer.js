@@ -19,10 +19,26 @@ const _initialState = Immutable.from({
   eventAnalysisPreferences: null,
   columnGroups: null,
   columnGroup: null, // null avoids rendering the events table before fetching the persisted column group from backend,
-  isQueryExecutedByColumnGroup: false
+  isQueryExecutedByColumnGroup: false,
+  sortField: 'time',
+  sortDirection: null,
+  validEventSortColumns: [ 'time' ] // hardcoded for now, pending languages based dynamic list
 });
 
 export default handleActions({
+  [ACTION_TYPES.UPDATE_SORT]: (state, { sortField = 'time', sortDirection }) => {
+    if (sortDirection || state.sortDirection) {
+      sortDirection = sortDirection || state.sortDirection;
+    } else {
+      sortDirection = (state.eventAnalysisPreferences && state.eventAnalysisPreferences.eventTimeSortOrder) || 'asc';
+    }
+
+    return state.merge({
+      sortField,
+      sortDirection
+    });
+  },
+
   [ACTION_TYPES.UPDATE_GLOBAL_PREFERENCES]: (state, { payload }) => {
     return state.set('globalPreferences', payload);
   },
@@ -43,6 +59,7 @@ export default handleActions({
   [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload }) => {
     let isReconOpen = false;
     const { queryParams } = payload;
+
     if (queryParams.sessionId && !Number.isNaN(queryParams.sessionId)) {
       isReconOpen = true;
     }
