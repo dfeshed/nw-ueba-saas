@@ -961,6 +961,10 @@ amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.npmjs.org/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
 
+animation-frame@~0.2.4:
+  version "0.2.5"
+  resolved "https://registry.npmjs.org/animation-frame/-/animation-frame-0.2.5.tgz#cdf5a91a69ad2c85ddac2b82daf7290300f05960"
+
 ansi-escapes@^3.0.0:
   version "3.1.0"
   resolved "http://registry.npmjs.org/ansi-escapes/-/ansi-escapes-3.1.0.tgz#f73207bb81207d75fd6c83f125af26eea378ca30"
@@ -4713,6 +4717,21 @@ ember-flatpickr@2.12.0:
     fastboot-transform "^0.1.3"
     flatpickr "^4.5.2"
 
+ember-gestures@0.5.0, ember-gestures@^0.4.7:
+  version "0.5.0"
+  resolved "https://registry.npmjs.org/ember-gestures/-/ember-gestures-0.5.0.tgz#ec363785ee6ab44871c569b36cdb06bb9d24cd8d"
+  dependencies:
+    animation-frame "~0.2.4"
+    broccoli-funnel "^2.0.1"
+    broccoli-merge-trees "^2.0.0"
+    broccoli-stew "^1.5.0"
+    ember-cli-babel "^6.8.2"
+    ember-cli-htmlbars "^2.0.1"
+    ember-cli-version-checker "^2.1.0"
+    ember-getowner-polyfill "^2.2.0"
+    hammerjs "^2.0.8"
+    rsvp "^3.1.0"
+
 ember-get-config@0.2.3:
   version "0.2.3"
   resolved "https://registry.npmjs.org/ember-get-config/-/ember-get-config-0.2.3.tgz#546e77c991792fffde2f6757a5edb0c5dd122c0e"
@@ -4733,6 +4752,17 @@ ember-get-config@^0.2.4:
   dependencies:
     ember-cli-version-checker "^2.1.0"
     ember-factory-for-polyfill "^1.3.1"
+
+ember-hammertime@^1.2.4:
+  version "1.6.0"
+  resolved "https://registry.npmjs.org/ember-hammertime/-/ember-hammertime-1.6.0.tgz#8333ef636b29f87d35ee9bded217cc0c7ccaf027"
+  dependencies:
+    broccoli-funnel "^2.0.1"
+    broccoli-merge-trees "^3.0.1"
+    broccoli-stew "^2.0.0"
+    ember-cli-babel "^6.16.0"
+    ember-get-config "^0.2.4"
+    hammer-timejs "^1.1.0"
 
 ember-hash-helper-polyfill@^0.2.0:
   version "0.2.1"
@@ -5048,12 +5078,14 @@ ember-text-measurer@^0.5.0:
   dependencies:
     ember-cli-babel "^7.1.0"
 
-ember-toggle@5.0.0-alpha.7:
-  version "5.0.0-alpha.7"
-  resolved "https://registry.npmjs.org/ember-toggle/-/ember-toggle-5.0.0-alpha.7.tgz#f6d9924769d264a62211c592d18740a90f7a5ebb"
+ember-toggle@5.1.1:
+  version "5.1.1"
+  resolved "https://registry.npmjs.org/ember-toggle/-/ember-toggle-5.1.1.tgz#ba1be51101cca97457296029138091971282d1d5"
   dependencies:
     ember-cli-babel "^6.6.0"
     ember-cli-htmlbars "^2.0.1"
+    ember-gestures "^0.4.7"
+    ember-hammertime "^1.2.4"
     ember-runtime-enumerable-includes-polyfill "^2.0.0"
 
 ember-truth-helpers@2.1.0, ember-truth-helpers@^2.1.0:
@@ -6182,6 +6214,14 @@ growl@1.10.5:
 growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.npmjs.org/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
+
+hammer-timejs@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/hammer-timejs/-/hammer-timejs-1.1.0.tgz#fc07ec1e4012228fe51b6a51218ec12661a32a42"
+
+hammerjs@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.npmjs.org/hammerjs/-/hammerjs-2.0.8.tgz#04ef77862cff2bb79d30f7692095930222bf60f1"
 
 handlebars@^4.0.11, handlebars@^4.0.3, handlebars@^4.0.4, handlebars@^4.0.6:
   version "4.0.12"
