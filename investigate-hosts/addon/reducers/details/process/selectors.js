@@ -285,7 +285,7 @@ export const suspiciousThreadsData = createSelector(
 export const areAllSelected = createSelector(
   [ _processList, _selectedProcessList, _searchResultProcessList],
   (processList, selectedProcessList, searchResultProcessList) => {
-    if (searchResultProcessList.length > 0) {
+    if (searchResultProcessList && searchResultProcessList.length > 0) {
       return searchResultProcessList.length === selectedProcessList.length;
     } else if (selectedProcessList && selectedProcessList.length) {
       return processList.length === selectedProcessList.length;

@@ -5283,18 +5283,27 @@ export const processTree = [
     name: 'systemd',
     checksumSha256: '20302a641da611ff5b68ce93870b541fd2d76571cb527b861aeda4feb0f9be68',
     parentPid: 0,
+    fileProperties: {
+      score: 80
+    },
     childProcesses: [
       {
         pid: 517,
         name: 'systemd-udevd',
         checksumSha256: '35a41bad1ca1bace64cc1d145af92fc7fc92351b49cbf315a5e4d2236aa1c0f2',
-        parentPid: 1
+        parentPid: 1,
+        fileProperties: {
+          score: 80
+        }
       },
       {
         pid: 29332,
         name: 'rsyslogd',
         checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
         parentPid: 1,
+        fileProperties: {
+          score: 50
+        },
         childProcesses: [
           {
             pid: 29680,

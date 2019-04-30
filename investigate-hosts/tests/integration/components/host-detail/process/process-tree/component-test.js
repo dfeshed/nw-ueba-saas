@@ -1008,6 +1008,89 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
   });
 
+  test('it should disable the right click analyze process option for linux machine', async function(assert) {
+    assert.expect(1);
+    this.set('closePropertyPanel', function() { });
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree([
+        {
+          pid: 29332,
+          name: 'rsyslogd',
+          checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+          parentPid: 1,
+          fileProperties: {
+            machineOsType: 'linux',
+            downloadInfo: {
+              status: 'Downloaded'
+            }
+          },
+          childProcesses: [
+            {
+              pid: 29680,
+              name: 'rsa_audit_onramp',
+              checksumSha256: '4a63263a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a77e525',
+              parentPid: 29332,
+              fileProperties: {
+                machineOsType: 'linux',
+                downloadInfo: {
+                  status: 'Downloaded'
+                }
+              }
+            }
+          ]
+        }
+      ])
+      .machineOSType('linux')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .isTreeView(true)
+      .build();
+    await render(hbs`
+       <style>
+         box, section {
+           min-height: 2000px
+         }
+       </style>
+       {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      assert.equal(document.querySelectorAll(`#${menuItems[0].id}.context-menu__item--disabled`).length, 1, 'Analyze process is disabled'); // analyze prcess status
+    });
+  });
+
+  test('it should disable the right click analyze process option for multiple row selection', async function(assert) {
+    assert.expect(1);
+    this.set('closePropertyPanel', function() { });
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree(processData.processTree)
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .selectedProcessList([{ pid: 0 }, { pid: 517 }])
+      .isTreeView(true)
+      .build();
+    await render(hbs`
+       <style>
+         box, section {
+           min-height: 2000px
+         }
+       </style>
+       {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[3], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      assert.equal(document.querySelectorAll(`#${menuItems[0].id}.context-menu__item--disabled`).length, 1, 'Analyze process is disabled'); // analyze process status
+    });
+  });
+
   test('it calls the analyze process', async function(assert) {
     assert.expect(5);
     const actionSpy = sinon.spy(window, 'open');

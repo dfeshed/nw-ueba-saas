@@ -168,6 +168,9 @@ export default DataTableBodyRow.extend({
       contextConf.push({
         label: 'analyzeProcess',
         prefix: 'investigateHosts.process.',
+        disabled(selection, context) {
+          return context.get('osType') === 'linux' || context.get('selections').length > 1;
+        },
         action(selection, context) {
           context.navigateToProcessAnalysis(context.get('item'));
         },
