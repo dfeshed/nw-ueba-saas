@@ -1,7 +1,11 @@
-from presidio.builders.smart.output_dag_builder import OutputDagBuilder
+from datetime import timedelta
+
+from presidio.builders.smart.output_operator_builder import OutputOperatorBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
-from presidio.builders.retention.output.output_retention_dag_builder import OutputRetentionDagBuilder
-from presidio.builders.smart_model.smart_model_dag_builder import SmartModelDagBuilder
+from presidio.builders.smart.output_retention_operator_builder import OutputRetentionOperatorBuilder
+from presidio.builders.smart.push_forwarder_task_builder import PushForwarderTaskBuilder
+from presidio.builders.smart.user_score_operator_builder import UserScoreOperatorBuilder
+from presidio.builders.smart_model.smart_model_accumulate_operator_builder import SmartModelAccumulateOperatorBuilder
 from presidio.factories.indicator_dag_factory import IndicatorDagFactory
 from presidio.factories.smart_model_dag_factory import SmartModelDagFactory
 from presidio.operators.ade_manager.ade_manager_operator import AdeManagerOperator
@@ -14,36 +18,25 @@ from presidio.utils.services.fixed_duration_strategy import FIX_DURATION_STRATEG
     FIX_DURATION_STRATEGY_DAILY
 
 
-
 class SmartDagBuilder(PresidioDagBuilder):
     """
-   The "Smart" builder consists of smart, smart_model and ade_manager
+   The "Smart" builder consists of smart, output, ade_manager and output_retention
     """
 
     def __init__(self):
-        self._min_gap_from_dag_start_date_to_start_scoring = SmartModelDagBuilder.get_min_gap_from_dag_start_date_to_start_accumulating(
-            SmartDagBuilder.conf_reader)
+        # currently the output should start when smart scoring starts.
+        self._min_gap_from_dag_start_date_to_start_scoring = SmartModelAccumulateOperatorBuilder.get_min_gap_from_dag_start_date_to_start_accumulating(
+            PresidioDagBuilder.conf_reader)
 
-    def build(self, smart_dag):
-        root_dag_gap_sensor_operator = self._build_root_dag_gap_sensor_operator(smart_dag)
-        smart_record_conf_name = smart_dag.default_args.get("smart_conf_name")
+    def build(self, dag):
+        root_dag_gap_sensor_operator = self._build_root_dag_gap_sensor_operator(dag)
 
-        output_operator = self._get_output_operator(smart_record_conf_name, smart_dag)
-        self._build_smart(root_dag_gap_sensor_operator, output_operator, smart_dag, smart_record_conf_name)
-        self._build_ade_manager_operator(smart_dag, root_dag_gap_sensor_operator)
-        self._get_output_retention_operator(smart_record_conf_name, smart_dag)
-        self.remove_multi_point_group_container(smart_dag)
-        return smart_dag
-
-    def _get_output_operator(self, smart_record_conf_name, smart_dag):
-        output_operator_id = '{}_output_operator'.format(smart_record_conf_name)
-        return self._create_multi_point_group_connector(OutputDagBuilder(smart_record_conf_name), smart_dag,
-                                                        output_operator_id, None, False)
-
-    def _get_output_retention_operator(self, smart_record_conf_name, smart_dag):
-        output_retention_operator_id = '{}_output_retention_operator'.format(smart_record_conf_name)
-        return self._create_multi_point_group_connector(OutputRetentionDagBuilder(smart_record_conf_name), smart_dag,
-                                                        output_retention_operator_id, None, False)
+        smart_record_conf_name = dag.default_args.get("smart_conf_name")
+        smart_operator = self._build_smart(root_dag_gap_sensor_operator, dag, smart_record_conf_name)
+        self._build_output_operator(smart_record_conf_name, dag, smart_operator)
+        self._build_ade_manager_operator(dag, root_dag_gap_sensor_operator)
+        self._build_output_retention_operator(dag)
+        return dag
 
     def _build_root_dag_gap_sensor_operator(self, smart_dag):
         schemas = smart_dag.default_args.get("depends_on_schemas")
@@ -58,7 +51,7 @@ class SmartDagBuilder(PresidioDagBuilder):
                                                                           poke_interval=5)
         return root_dag_gap_sensor_operator
 
-    def _build_smart(self, root_dag_gap_sensor_operator, output_operator, smart_dag, smart_record_conf_name):
+    def _build_smart(self, root_dag_gap_sensor_operator, smart_dag, smart_record_conf_name):
         task_sensor_service = TaskSensorService()
         smart_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='ade_scoring_hourly_short_circuit',
@@ -93,11 +86,63 @@ class SmartDagBuilder(PresidioDagBuilder):
                                                                              smart_model_dag_id, smart_dag,
                                                                              python_callable)
 
-
         set_schedule_interval(smart_model_dag_id, FIX_DURATION_STRATEGY_DAILY)
-
         smart_operator >> smart_model_trigger
-        smart_operator >> output_operator
+        return smart_operator
+
+    def _build_output_operator(self, smart_record_conf_name, dag, smart_operator):
+
+        # build hourly output processor
+        task_sensor_service = TaskSensorService()
+        # This operator validates that output run in intervals that are no less than hourly intervals and that the dag
+        # start only after the defined gap.
+        output_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
+            task_id='output_short_circuit',
+            dag=dag,
+            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
+                                                                     FIX_DURATION_STRATEGY_HOURLY,
+                                                                     dag.schedule_interval) &
+                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
+                                                 dag,
+                                                 self._min_gap_from_dag_start_date_to_start_scoring,
+                                                 kwargs['execution_date'],
+                                                 dag.schedule_interval))
+
+        hourly_output_operator = OutputOperatorBuilder(smart_record_conf_name).build(dag, task_sensor_service)
+
+        task_sensor_service.add_task_short_circuit(hourly_output_operator, output_short_circuit_operator)
+
+        # build user score
+        user_score_operator = UserScoreOperatorBuilder(smart_record_conf_name).build(dag)
+        # Create daily short circuit operator to wire the output processing and the user score recalculation
+        daily_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
+            task_id='output_daily_short_circuit',
+            dag=dag,
+            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
+                                                                     FIX_DURATION_STRATEGY_DAILY,
+                                                                     dag.schedule_interval) &
+                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
+                                                 dag,
+                                                 UserScoreOperatorBuilder.get_min_gap_from_dag_start_date_to_start_modeling(
+                                                     PresidioDagBuilder.conf_reader),
+                                                 kwargs['execution_date'],
+                                                 dag.schedule_interval)
+        )
+
+        daily_short_circuit_operator >> user_score_operator
+        self._push_forwarding(hourly_output_operator, daily_short_circuit_operator, dag)
+
+        smart_operator >> output_short_circuit_operator
+
+    def _push_forwarding(self, hourly_output_operator, daily_short_circuit_operator, smart_dag):
+        default_args = smart_dag.default_args
+        enable_output_forwarder = default_args.get("enable_output_forwarder")
+        self.log.debug("enable_output_forwarder=%s ", enable_output_forwarder)
+        if enable_output_forwarder == 'true':
+            push_forwarding_task = PushForwarderTaskBuilder().build(smart_dag)
+            hourly_output_operator >> push_forwarding_task >> daily_short_circuit_operator
+        else:
+            hourly_output_operator >> daily_short_circuit_operator
 
     def _build_ade_manager_operator(self, smart_dag, root_dag_gap_sensor_operator):
         """
@@ -128,3 +173,22 @@ class SmartDagBuilder(PresidioDagBuilder):
 
         daily_short_circuit_operator >> ade_manager_operator
         root_dag_gap_sensor_operator >> daily_short_circuit_operator
+
+    def _build_output_retention_operator(self, dag):
+        output_retention_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
+            task_id='output_retention_short_circuit',
+            dag=dag,
+            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
+                                                                     OutputRetentionOperatorBuilder.get_output_retention_interval_in_hours(
+                                                                         PresidioDagBuilder.conf_reader),
+                                                                     dag.schedule_interval) &
+                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
+                                                 dag,
+                                                 timedelta(
+                                                     days=OutputRetentionOperatorBuilder.get_output_min_time_to_start_retention_in_days(
+                                                         PresidioDagBuilder.conf_reader)),
+                                                 kwargs['execution_date'],
+                                                 dag.schedule_interval))
+
+        output_retention = OutputRetentionOperatorBuilder().build(dag)
+        output_retention_short_circuit_operator >> output_retention

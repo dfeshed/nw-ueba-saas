@@ -16,12 +16,11 @@ class PushForwarderTaskBuilder(LoggingMixin):
     def __init__(self):
 
         config_reader = ConfigServerConfigurationReaderSingleton().config_reader
-
         self.jvm_args = config_reader.read(conf_key=FORWARDER_JVM_ARGS_CONFIG_PATH)
 
     def build(self, smart_dag):
         """
-        Builds jar operators for each data source and adds them to the given DAG.
+        Builds data_forwarding_operator of the given smart_record_conf_name.
         :param smart_dag: The DAG to which the task should be added
         :type smart_dag: airflow.models.DAG
         :return: The created forwarder task
