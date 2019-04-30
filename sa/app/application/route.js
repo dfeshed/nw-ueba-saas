@@ -69,7 +69,7 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
     },
     logout() {
       this.set('persistStateOnLogout', false);
-      this._logout();
+      this._logout('User Triggered');
     }
   },
 
@@ -78,7 +78,7 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
    * @returns {RSVP.Promise}
    * @private
    */
-  _logout() {
+  _logout(reason) {
     return new Promise((resolve) => {
       const csrfKey = this.get('csrfLocalstorageKey');
       $.ajax({
@@ -89,7 +89,8 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
           'X-CSRF-TOKEN': localStorage.getItem(csrfKey)
         },
         data: {
-          access_token: this.get('session.persistedAccessToken')
+          access_token: this.get('session.persistedAccessToken'),
+          reason
         }
       }).always(() => {
         localStorage.removeItem(csrfKey);
@@ -108,7 +109,7 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
       // After configured idle timeout period, logout
       this.get('userIdle').on('idleChanged', (isIdle) => {
         if (isIdle && this.get('session.isAuthenticated')) {
-          this._logout();
+          this._logout('Session Expired');
         }
       });
     }
