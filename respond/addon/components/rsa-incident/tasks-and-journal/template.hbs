@@ -1,18 +1,18 @@
 <hbox fit justify="center" nowrap class="rsa-journal-and-tasks__toolbar">
-  <span class="rsa-tab text-only journal-tab {{if (eq tasksJournalMode 'journal') 'is-active' ''}}"
+  <div class="rsa-tab text-only journal-tab {{if (eq tasksJournalMode 'journal') 'is-active' ''}}"
     {{action (action "showTab" "journal")}}>
     {{t 'respond.journal.title'}} ({{journalEntryCount}})
-  </span>
-  <span class="rsa-tab text-only remediation-tab {{if (eq tasksJournalMode 'remediation') 'is-active' ''}}"
+  </div>
+  <div class="rsa-tab text-only remediation-tab {{if (eq tasksJournalMode 'remediation') 'is-active' ''}}"
     {{action (action "showTab" "remediation")}}>
     {{t 'respond.entities.remediationTasks'}} ({{taskCount}})
-  </span>
-  {{#if accessControl.hasRespondAlertsAccess}}
-    <span class="rsa-tab text-only search-tab {{if (eq tasksJournalMode 'search') 'is-active' ''}}"
+  </div>
+  {{#tab-wrappers/alerts-tab-wrapper}}
+    <div class="rsa-tab text-only search-tab {{if (eq tasksJournalMode 'search') 'is-active' ''}}"
       {{action (action "showTab" "search")}}>
       {{t 'respond.incident.search.tab'}}
-    </span>
-  {{/if}}
+    </div>
+  {{/tab-wrappers/alerts-tab-wrapper}}
 </hbox>
 {{#if (eq tasksJournalMode 'journal')}}
   {{#if accessControl.hasRespondJournalAccess}}
