@@ -45,7 +45,7 @@ class IndicatorDagBuilder(PresidioDagBuilder):
             task_id='ade_scoring_hourly_short_circuit',
             dag=dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                     self.fixed_duration,
+                                                                     FIX_DURATION_STRATEGY_HOURLY,
                                                                      get_schedule_interval(dag)) &
                                              PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
                                                  dag,
