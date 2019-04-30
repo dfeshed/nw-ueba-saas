@@ -28,6 +28,14 @@ export default Component.extend({
   metaOptions: null,
 
   /**
+   * Whether or not we have a text pill across all pills,
+   * passed along to rendered components, not used
+   * @type {Object}
+   * @public
+   */
+  hasTextPill: null,
+
+  /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public

@@ -8,6 +8,7 @@
 {{/if}}
 
 {{query-container/pill-meta
+  hasTextPill=hasTextPill
   isActive=(readonly isMetaActive)
   isAutoFocused=(readonly isMetaAutoFocused)
   isEditing=(readonly isEditing)
@@ -19,6 +20,7 @@
 }}
 
 {{query-container/pill-operator
+  hasTextPill=hasTextPill
   isActive=(readonly isOperatorActive)
   isEditing=(readonly isEditing)
   isExpanded=(readonly shouldOperatorExpand)
@@ -29,6 +31,7 @@
 }}
 
 {{query-container/pill-value
+  hasTextPill=hasTextPill
   isActive=(readonly isValueActive)
   isEditing=(readonly isEditing)
   isFocusAtBeginning=(readonly isValueFocusedAtBeginning)

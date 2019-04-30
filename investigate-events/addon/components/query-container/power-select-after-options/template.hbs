@@ -9,7 +9,14 @@
     onmouseleave={{action 'onMouseLeave'}}
     onmouseup={{action 'onMouseUp'}}
     role="option">
-    <span class="value">{{select.searchText}}</span>
-    <span class="description">{{opt.label}}</span>
+    <span class="value">
+      {{!-- do not show search text if option is disabled --}}
+      {{#unless opt.disabled}}
+        {{select.searchText}}
+      {{/unless}}
+    </span>
+    <span class="description">
+      {{opt.label}}
+    </span>
   </li>
 {{/each}}

@@ -16,7 +16,8 @@ import {
   selectedTimeRange,
   selectedTimeRangeId,
   selectedTimeRangeName,
-  useDatabaseTime
+  useDatabaseTime,
+  hasTextPill
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
@@ -513,4 +514,18 @@ test('determine if a pill is being validated', function(assert) {
     .pillsDataPopulated()
     .build();
   assert.notOk(isPillValidationInProgress(falsyState), 'validation is properly identified as NOT being in progress');
+});
+
+test('determine if pills contain a text pill', function(assert) {
+  // Test truthy case
+  const truthyState = new ReduxDataHelper()
+    .pillsDataVaried()
+    .build();
+  assert.ok(hasTextPill(truthyState), 'validation is properly identified as having a text pill');
+
+  // test falsy case
+  const falsyState = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .build();
+  assert.notOk(hasTextPill(falsyState), 'validation is properly identified as NOT having a text pill');
 });

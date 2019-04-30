@@ -30,6 +30,7 @@ const DEFAULT_PILLS_DATA = [{
   meta: 'a',
   operator: '=',
   value: '\'x\'',
+  type: 'query',
   isEditing: false,
   isFocused: false,
   isInvalid: false,
@@ -40,6 +41,7 @@ const DEFAULT_PILLS_DATA = [{
   meta: 'b',
   operator: '=',
   value: '\'y\'',
+  type: 'query',
   isEditing: false,
   isFocused: false,
   isInvalid: false,
@@ -52,10 +54,22 @@ const COMPLEX_PILL_DATA = [{
   meta: undefined,
   operator: undefined,
   value: undefined,
+  type: 'complex',
   isEditing: false,
   isInvalid: false,
   isSelected: false,
   complexFilterText: 'foo = bar'
+}];
+
+const TEXT_PILL_DATA = [{
+  id: '1',
+  type: 'text',
+  isEditing: false,
+  isFocused: false,
+  isInvalid: false,
+  isSelected: false,
+  isValidationInProgress: false,
+  searchTerm: 'blahblahblah'
 }];
 
 const INVALID_PILL_DATA = [{
@@ -63,6 +77,7 @@ const INVALID_PILL_DATA = [{
   meta: 'ip.proto',
   operator: '=',
   value: '\'boom\'',
+  type: 'query',
   isEditing: false,
   isInvalid: false,
   isSelected: false,
@@ -73,6 +88,7 @@ const INVALID_PILL_DATA = [{
   meta: 'starttime',
   operator: '=',
   value: '\'boom\'',
+  type: 'query',
   isEditing: false,
   isInvalid: true,
   isFocused: false,
@@ -463,6 +479,14 @@ export default class DataHelper {
   }
 
   pillsDataComplex(pD = COMPLEX_PILL_DATA) {
+    _set(this.state, 'queryNode.pillsData', pD);
+    return this;
+  }
+
+  pillsDataVaried(pD) {
+    if (!pD) {
+      pD = [...DEFAULT_PILLS_DATA, ...COMPLEX_PILL_DATA, ...TEXT_PILL_DATA];
+    }
     _set(this.state, 'queryNode.pillsData', pD);
     return this;
   }

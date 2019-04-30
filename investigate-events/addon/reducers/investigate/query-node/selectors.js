@@ -1,6 +1,7 @@
 import reselect from 'reselect';
 
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
+import { TEXT_FILTER } from 'investigate-events/constants/pill';
 import { selectedService, hasSummaryData } from 'investigate-events/reducers/investigate/services/selectors';
 import { createQueryHash } from 'investigate-events/util/query-hash';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
@@ -197,4 +198,9 @@ export const pillBeingEdited = createSelector(
 export const isPillValidationInProgress = createSelector(
   [_pillsData],
   (pillsData) => pillsData.isAny('isValidationInProgress')
+);
+
+export const hasTextPill = createSelector(
+  [_pillsData],
+  (pillsData) => pillsData.some((pD) => pD.type === TEXT_FILTER)
 );

@@ -73,6 +73,20 @@ module('Integration | Component | Power Select After Options', function(hooks) {
     assert.notOk(find(`${PILL_SELECTORS.powerSelectAfterOption}[aria-disabled=false]`), 'No enabled options');
   });
 
+  test('Disabled options do not have values shown', async function(assert) {
+    const disabledOption = {
+      ...MENU_OPTIONS[0],
+      disabled: true
+    };
+    this.set('options', [disabledOption]);
+    await render(hbs`
+      {{query-container/power-select-after-options
+        options=(readonly options)
+      }}
+    `);
+    assert.ok(find('.value').textContent.trim().length === 0, 'option has no text');
+  });
+
   test('Option can be highlighted', async function(assert) {
     const highlightedOption = {
       ...MENU_OPTIONS[0],

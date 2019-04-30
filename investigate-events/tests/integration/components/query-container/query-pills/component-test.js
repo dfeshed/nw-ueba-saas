@@ -1390,8 +1390,20 @@ module('Integration | Component | Query Pills', function(hooks) {
         assert.equal(deleteActionSpy.callCount, 1, 'The delete pill action creator was called once');
         assert.deepEqual(
           deleteActionSpy.args[0][0],
-          { pillData: [{ id: '2', meta: 'b', operator: '=', value: '\'y\'', isSelected: false,
-            complexFilterText: undefined, isEditing: false, isInvalid: false, isFocused: false }] },
+          {
+            pillData: [{
+              id: '2',
+              meta: 'b',
+              operator: '=',
+              value: '\'y\'',
+              isSelected: false,
+              complexFilterText: undefined,
+              isEditing: false,
+              isInvalid: false,
+              isFocused: false,
+              type: 'query'
+            }]
+          },
           'The action creator was called with the right arguments'
         );
         assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Number of pills present');

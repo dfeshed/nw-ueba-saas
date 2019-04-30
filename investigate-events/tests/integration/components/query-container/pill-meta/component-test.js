@@ -11,7 +11,8 @@ import ReduxDataHelper, { DEFAULT_LANGUAGES } from '../../../../helpers/redux-da
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
-  AFTER_OPTION_TEXT_LABEL
+  AFTER_OPTION_TEXT_LABEL,
+  AFTER_OPTION_TEXT_DISABLED_LABEL
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -533,5 +534,22 @@ module('Integration | Component | Pill Meta', function(hooks) {
     const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_LABEL));
     assert.ok(textFilter, 'unable to find Text Filter option');
     await click(textFilter);
+  });
+
+  test('it renders a disabled option for text filters when there is a text filter already', async function(assert) {
+    this.set('metaOptions', META_OPTIONS);
+    this.set('handleMessage', () => {});
+    await render(hbs`
+      {{query-container/pill-meta
+        hasTextPill=true
+        isActive=true
+        metaOptions=metaOptions
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    // trigger Text Filter option
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_DISABLED_LABEL));
+    assert.ok(textFilter, 'unable to find Text Filter option');
   });
 });

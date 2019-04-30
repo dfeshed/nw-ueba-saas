@@ -55,6 +55,14 @@ export default Component.extend({
   isActive: true,
 
   /**
+   * Whether or not we have a text pill across all pills,
+   * passed along to rendered components, not used
+   * @type {Object}
+   * @public
+   */
+  hasTextPill: null,
+
+  /**
    * List of meta provided from above and simply
    * passed through to meta component
    * @type {Object}

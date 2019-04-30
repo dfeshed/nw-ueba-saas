@@ -11,6 +11,7 @@ import {
   canQueryGuided,
   enrichedPillsData,
   hasInvalidSelectedPill,
+  hasTextPill,
   isPillValidationInProgress,
   selectedPills,
   deselectedPills
@@ -40,6 +41,7 @@ const stateToComputed = (state) => ({
   canQueryGuided: canQueryGuided(state),
   deselectedPills: deselectedPills(state),
   hasInvalidSelectedPill: hasInvalidSelectedPill(state),
+  hasTextPill: hasTextPill(state),
   isPillValidationInProgress: isPillValidationInProgress(state),
   metaOptions: metaKeySuggestionsForQueryBuilder(state),
   pillsData: enrichedPillsData(state),

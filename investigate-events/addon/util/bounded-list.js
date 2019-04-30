@@ -23,7 +23,19 @@ export default class BoundedList extends EmberObject {
   init() {
     this.list = this.list || [];
     this.limit = this.list.length - 1;
-    this.highlightedIndex = -1;
+
+    // Set list up with current highlight index.
+    // Allows list to be seeded with highlighted item
+    // Note: if multiple items come in as highlighted
+    // only the first will be marked as such
+    let highlightedIndex = -1;
+    for (let i = 0; i <= this.limit; i++) {
+      if (this.list[i].highlighted === true) {
+        highlightedIndex = i;
+        break;
+      }
+    }
+    this.highlightedIndex = highlightedIndex;
   }
 
   /**
@@ -32,7 +44,18 @@ export default class BoundedList extends EmberObject {
    * @public
    */
   get nextHighlightIndex() {
-    return Math.min(this.highlightedIndex + 1, this.limit);
+    for (let i = this.highlightedIndex + 1; i <= this.limit; i++) {
+      // If an item we encounter is not disabled,
+      // we have one we can highlight
+      if (!this.list[i].disabled) {
+        return i;
+      }
+    }
+
+    // Note: if NO next item is highlightable, then the
+    // highlight index remains unchanged and the currently
+    // highlighted item stays the same
+    return this.highlightedIndex;
   }
 
   /**
@@ -41,7 +64,18 @@ export default class BoundedList extends EmberObject {
    * @public
    */
   get previousHighlightIndex() {
-    return Math.max(this.highlightedIndex - 1, -1);
+    for (let i = this.highlightedIndex - 1; i > -1; i--) {
+      // If an item we encounter is not disabled,
+      // we have one we can highlight
+      if (!this.list[i].disabled) {
+        return i;
+      }
+    }
+
+    // Note: if NO previous item is highlightable,
+    // then return -1 to indicate nothing should
+    // be highlighted
+    return -1;
   }
 
   /**
@@ -103,6 +137,22 @@ export default class BoundedList extends EmberObject {
       this.highlightedIndex = -1;
       this.set('list', newList);
     }
+    return this;
+  }
+
+  /**
+   * Replaces an item with a different item
+   * based on label as locator
+   * @public
+   */
+  replaceItemByLabel(label, item) {
+    const newList = this.list.map((listItem) => {
+      if (listItem.label === label) {
+        listItem = { ...item };
+      }
+      return listItem;
+    });
+    this.set('list', newList);
     return this;
   }
 
