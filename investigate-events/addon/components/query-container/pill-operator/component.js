@@ -5,7 +5,8 @@ import computed from 'ember-computed-decorators';
 import * as MESSAGE_TYPES from '../message-types';
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
-  AFTER_OPTION_TEXT_LABEL
+  AFTER_OPTION_TEXT_LABEL,
+  AFTER_OPTION_TEXT_DISABLED_LABEL
 } from 'investigate-events/constants/pill';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
 import {
@@ -21,9 +22,21 @@ import BoundedList from 'investigate-events/util/bounded-list';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
+const DISABLED_TEXT_SEARCH = {
+  label: AFTER_OPTION_TEXT_DISABLED_LABEL,
+  disabled: true,
+  highlighted: false
+};
+
+const ENABLED_TEXT_SEARCH = {
+  label: AFTER_OPTION_TEXT_LABEL,
+  disabled: false,
+  highlighted: false
+};
+
 const AFTER_OPTIONS_MENU = [
   { label: AFTER_OPTION_FREE_FORM_LABEL, disabled: false, highlighted: false },
-  { label: AFTER_OPTION_TEXT_LABEL, disabled: false, highlighted: false }
+  ENABLED_TEXT_SEARCH
 ];
 
 const LEADING_SPACES = /^[\s\uFEFF\xA0]+/;
@@ -32,6 +45,13 @@ const AFTER_OPTIONS_COMPONENT = 'query-container/power-select-after-options';
 
 export default Component.extend({
   classNameBindings: ['isExpanded', 'isPopulated', ':pill-operator'],
+
+  /**
+   * Does the entire pills list have a text pill already?
+   * @type {string}
+   * @public
+   */
+  hasTextPill: false,
 
   /**
    * Does this component currently have focus?
@@ -85,6 +105,16 @@ export default Component.extend({
   sendMessage: () => {},
 
   _afterOptionsMenu: BoundedList.create({ list: AFTER_OPTIONS_MENU }),
+
+  @computed('hasTextPill')
+  _groomedAfterOptionsMenu(hasTextPill) {
+    if (hasTextPill) {
+      this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_LABEL, DISABLED_TEXT_SEARCH);
+    } else {
+      this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_DISABLED_LABEL, ENABLED_TEXT_SEARCH);
+    }
+    return this._afterOptionsMenu;
+  },
 
   // Indicates if something is being rendered by this template
   // and that it isn't empty. Controls whether padding/spacing is

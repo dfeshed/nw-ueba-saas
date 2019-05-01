@@ -8,7 +8,8 @@ import { click, fillIn, find, findAll, focus, render, settled, triggerKeyEvent }
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
-  AFTER_OPTION_TEXT_LABEL
+  AFTER_OPTION_TEXT_LABEL,
+  AFTER_OPTION_TEXT_DISABLED_LABEL
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -490,5 +491,21 @@ module('Integration | Component | Pill Operator', function(hooks) {
     const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_LABEL));
     assert.ok(textFilter, 'unable to find Text Filter option');
     await click(textFilter);
+  });
+
+  test('it renders a disabled option for text filters when there is a text filter already', async function(assert) {
+    this.set('meta', meta);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        hasTextPill=true
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.operator);
+    // trigger Text Filter option
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_DISABLED_LABEL));
+    assert.ok(textFilter, 'unable to find Text Filter option');
   });
 });
