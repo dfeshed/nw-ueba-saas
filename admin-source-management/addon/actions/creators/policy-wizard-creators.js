@@ -63,8 +63,9 @@ const initializePolicyType = (policyType, dispatch, isDefaultPolicy = false) => 
         dispatch(edrDefaultPolicy());
       }
       break;
-    // windowsLogPolicy picked from the dropdown
+    // windowsLogPolicy/filePolicy picked from the dropdown
     case 'windowsLogPolicy':
+    case 'filePolicy':
       dispatch(fetchLogServers());
       break;
   }

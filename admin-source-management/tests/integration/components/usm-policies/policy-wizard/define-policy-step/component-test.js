@@ -76,7 +76,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
   test('When policy is File Policy, All the components in the available settings is rendered on the UI', async function(assert) {
     new ReduxDataHelper(setState).policyWiz('filePolicy').build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
-    assert.equal(findAll('.available-settings .available-setting').length, 2, 'All file policy available settings rendered on the UI');
+    assert.equal(findAll('.available-settings .available-setting').length, 5, 'All file policy available settings rendered on the UI');
   });
 
   test('When policy is File Policy, All the components in the selected settings is rendered on the UI ', async function(assert) {
@@ -208,5 +208,13 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
       .build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
     assert.equal(findAll('.available-settings .channelFilters').length, 1, 'Channel Filters component is shown in the available settings');
+  });
+
+  test('When policy is File policy, destinations and protocols are shown in the available settings', async function(assert) {
+    new ReduxDataHelper(setState).policyWiz('filePolicy').build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    assert.equal(findAll('.available-settings .primaryDestination').length, 1, 'Primary Destination component is shown in the available settings');
+    assert.equal(findAll('.available-settings .secondaryDestination').length, 1, 'Secondary Destination component is shown in the available settings');
+    assert.equal(findAll('.available-settings .protocol').length, 1, 'Protocol is shown in the available settings');
   });
 });

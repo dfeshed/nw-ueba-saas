@@ -146,7 +146,7 @@ const fetchEndpointServers = () => {
 };
 
 // ===================================================
-// windowsLogPolicy specific action creators
+// windowsLogPolicy/filePolicy specific action creators
 // ===================================================
 const fetchLogServers = () => {
   return {
