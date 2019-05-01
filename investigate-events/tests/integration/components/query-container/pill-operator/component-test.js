@@ -22,7 +22,6 @@ const ARROW_UP = KEY_MAP.arrowUp.code;
 const BACKSPACE_KEY = KEY_MAP.backspace.code;
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
-const TAB_KEY = KEY_MAP.tab.code;
 
 const meta = { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A' };
 const eq = { displayName: '=', description: 'Equals', isExpensive: false, hasValue: true };
@@ -309,7 +308,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await typeInSearch('e');
     assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 2); // exists and ends
     // blur and assert no options present
-    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', TAB_KEY);
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ESCAPE_KEY);
     assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 0);
     // focus and assert number of options
     await focus(PILL_SELECTORS.operatorTrigger);

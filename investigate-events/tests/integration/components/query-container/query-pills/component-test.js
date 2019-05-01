@@ -2061,7 +2061,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     // Select an operator and move to value comp
     await selectChoose(PILL_SELECTORS.operatorTrigger, '=');
     // Should be able to see the Advanced Options
-    assert.equal(find('ul.ember-power-select-options li:nth-of-type(2)').textContent.trim().replace(/\s/g, ''), 'AdvancedOptionsFree-FormFilterTextFilter', 'Should be able to see Advanced Options in value component');
+    assert.ok(find(PILL_SELECTORS.powerSelectAfterOptions), 'Should be able to see Advanced Options in value component');
 
     // Remove all focus
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ESCAPE_KEY);
@@ -2099,5 +2099,76 @@ module('Integration | Component | Query Pills', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
 
     assert.equal(findAll(PILL_SELECTORS.complexPill).length, 0, 'There should be no complex pill from a guided pill edit');
+  });
+
+  test('it should have pill tabs in each of the power selects', async function(assert) {
+
+    const assertTabContents = (assert) => {
+      assert.ok(find(PILL_SELECTORS.pillTabs), 'Should be able to see tabs in current component');
+      assert.ok(find(PILL_SELECTORS.metaTab), 'Should be able to see tabs in current component');
+      assert.ok(find(PILL_SELECTORS.recentQueriesTab), 'Should be able to see tabs in current component');
+    };
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    // Should be able to see pill tabs
+    assertTabContents(assert);
+
+    // select some meta and move to operator comp
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // select some meta and move to operator comp
+    // Should be able to see tabs on operator dropdown
+    assertTabContents(assert);
+
+    // Select an operator and move to value comp
+    await selectChoose(PILL_SELECTORS.operatorTrigger, '=');
+    // Should be able to see tabs on value dropdown
+    assertTabContents(assert);
+
+    // Remove all focus
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ESCAPE_KEY);
+
+    // Open a pill for edit
+    await doubleClick(PILL_SELECTORS.queryPill, true);
+
+    // But while editing, there should not be tabs in the dropdown
+    assert.notOk(find(PILL_SELECTORS.pillTabs), 'Should be no tabs while editing');
+
+  });
+
+  test('it should have pill tabs and clicking on a tab selects it', async function(assert) {
+
+    const assertTabContents = (assert, metaTab, recentQueriesTab) => {
+      assert.ok(find(PILL_SELECTORS.pillTabs), 'Should be able to see tabs in current component');
+      assert.ok(find(metaTab), 'Should be able find metaTab component');
+      assert.ok(find(recentQueriesTab), 'Should be able to find recentQueries component');
+    };
+    assert.expect(6);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    // Should be able to see pill tabs with meta selected
+    assertTabContents(assert, PILL_SELECTORS.metaTabSelected, PILL_SELECTORS.recentQueriesTab);
+    await click(PILL_SELECTORS.recentQueriesTab);
+    // Should be able to see pill tabs with recent-queries selected
+    assertTabContents(assert, PILL_SELECTORS.metaTab, PILL_SELECTORS.recentQueriesTabSelected);
+
   });
 });

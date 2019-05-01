@@ -2,7 +2,14 @@ import Component from '@ember/component';
 import { next, scheduleOnce } from '@ember/runloop';
 import { htmlSafe } from '@ember/string';
 import computed from 'ember-computed-decorators';
-import { isArrowLeft, isBackspace, isEscape } from 'investigate-events/util/keys';
+import {
+  isArrowLeft,
+  isBackspace,
+  isEscape,
+  isArrowDown,
+  isArrowUp,
+  isEnter
+} from 'investigate-events/util/keys';
 import { escapeBackslash, escapeSingleQuotes, properlyQuoted, stripOuterSingleQuotes } from 'investigate-events/util/quote';
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
@@ -12,9 +19,15 @@ import {
 } from 'investigate-events/constants/pill';
 import * as MESSAGE_TYPES from '../message-types';
 import Ember from 'ember';
+import BoundedList from 'investigate-events/util/bounded-list';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
+const AFTER_OPTIONS_MENU = [
+  { label: AFTER_OPTION_FREE_FORM_LABEL, disabled: false, highlighted: false },
+  { label: AFTER_OPTION_TEXT_LABEL, disabled: false, highlighted: false }
+];
+const AFTER_OPTIONS_COMPONENT = 'query-container/power-select-after-options';
 // This is used for an internal Ember API function: escapeExpression
 const { Handlebars: { Utils } } = Ember;
 
@@ -25,10 +38,7 @@ const { Handlebars: { Utils } } = Ember;
 * group's name is hidden via CSS, but we still need to give it a name so it
 * renders. That's why it's a space character.
 */
-const _dropDownOptions = [
-  { groupName: ' ', options: [AFTER_OPTION_QUERY_LABEL] },
-  { groupName: 'Advanced Options', options: [ AFTER_OPTION_FREE_FORM_LABEL, AFTER_OPTION_TEXT_LABEL ] }
-];
+const _dropDownOptions = [AFTER_OPTION_QUERY_LABEL];
 
 export default Component.extend({
   classNameBindings: ['isPopulated', ':pill-value'],
@@ -39,6 +49,11 @@ export default Component.extend({
    * @public
    */
   swallowNextFocusOut: false,
+
+  /**
+   * List object for advanced dropdown options
+   */
+  _afterOptionsMenu: BoundedList.create({ list: AFTER_OPTIONS_MENU }),
 
   /**
    * Does this component currently have focus?
@@ -77,13 +92,18 @@ export default Component.extend({
   valueString: null,
 
   /*
-  * If an already existing pill is being edited, do not display
-  * Advanced Options in the dropdown.
+  * No options other than Query Filter to display
   * @private
   */
- @computed('isEditing')
-  _options: (isEditing) => {
-    return isEditing ? _dropDownOptions.filter((op) => op.groupName !== 'Advanced Options') : _dropDownOptions;
+  _options: _dropDownOptions,
+
+  /**
+   * We take away the ability to create FF in edit mode.
+   * Therefore, no Advanced Options while editing.
+   */
+  @computed('isEditing')
+  optionsComponent(isEditing) {
+    return isEditing ? _dropDownOptions : AFTER_OPTIONS_COMPONENT;
   },
 
   /**
@@ -129,6 +149,15 @@ export default Component.extend({
     return (!!valueString && valueString.length > 0) || isActive;
   },
 
+  init() {
+    this._super(...arguments);
+    this.set('_messageHandlerMap', {
+      [MESSAGE_TYPES.AFTER_OPTIONS_SELECTED]: (d) => this._createPillFromAdvancedOption(d),
+      [MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT]: (index) => this._afterOptionsMenu.highlightIndex = index,
+      [MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT]: () => this._afterOptionsMenu.clearHighlight()
+    });
+  },
+
   /**
    * The main point of this function is to check to see if we need to
    * automatically focus on the power-select trigger. We only need to do this
@@ -162,6 +191,23 @@ export default Component.extend({
   },
 
   actions: {
+    /**
+     * Handler for all messages coming from afterOptionsComponent.
+     * @param {string} type The event type from `message-types`
+     * @param {Object} data The event data
+     * @public
+     */
+    handleMessage(type, data) {
+      const messageHandlerFn = this.get('_messageHandlerMap')[type];
+      if (messageHandlerFn) {
+        messageHandlerFn(data);
+      } else {
+        // Any messages that do not match expected message types get send up
+        // to the query-pill component.
+        this._broadcast(type, data);
+      }
+    },
+
     onBlur(powerSelectAPI) {
       const { searchText } = powerSelectAPI;
       // If this component looses focus while there is a value, we need to save
@@ -231,6 +277,43 @@ export default Component.extend({
       } else if (isArrowLeft(event) && event.target.selectionStart === 0) {
         const { value } = event.target;
         next(this, () => this._broadcast(MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY, value));
+      } else if (isArrowDown(event)) {
+        const { highlighted, results } = powerSelectAPI;
+        const lastItem = results[results.length - 1];
+        if (event.ctrlKey || event.metaKey || highlighted === lastItem.options[0]) {
+          // CTRL/META was pressed or at bottom of meta list
+          // Jump to advanced options
+          powerSelectAPI.actions.highlight(null);
+          this._afterOptionsMenu.highlightNextIndex();
+          return false;
+        } else if (this._afterOptionsMenu.highlightedIndex !== -1) {
+          // In after options, move to next item
+          this._afterOptionsMenu.highlightNextIndex();
+          return false;
+        }
+      } else if (isArrowUp(event)) {
+        if (this._afterOptionsMenu.highlightedIndex > 0) {
+          // In after options, move to previous item
+          this._afterOptionsMenu.highlightPreviousIndex();
+          return false;
+        } else if (this._afterOptionsMenu.highlightedIndex === 0) {
+          // At top of advanced options, move back to meta
+          const { actions, results } = powerSelectAPI;
+          const lastItem = results[results.length - 1];
+          this._afterOptionsMenu.clearHighlight();
+          actions.scrollTo(lastItem);
+          actions.highlight(lastItem);
+          return false;
+        }
+      } else if (isEnter(event)) {
+        // This is triggered when choosing afterOptions and we hit enter.
+        // Since Query Filter option will always be there, onChange will
+        // handle it's selection. Here we just take care of afterOptions.
+        const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
+        if (afterOptionsMenuItem) {
+          this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
+          powerSelectAPI.actions.search('');
+        }
       }
     },
 
@@ -238,8 +321,8 @@ export default Component.extend({
      * This function is called when you press ENTER. It's effectively the same
      * as clicking on the 'Query Pill` option
      */
-    onChange(selection, powerSelectAPI/* event */) {
-      if (selection !== null) {
+    onChange(selection, powerSelectAPI/* , event */) {
+      if (selection !== null && selection === AFTER_OPTION_QUERY_LABEL) {
         const { actions, searchText } = powerSelectAPI;
         const isComplex = this.get('_isComplex');
         let value;
@@ -252,23 +335,9 @@ export default Component.extend({
         // cleanup
         this.set('_searchString', undefined);
         actions.search('');
-        // get data for event to dispatch
-        // _debugContainerKey is a private Ember property that returns the full
-        // component name (component:query-container/pill-value).
-        const [ , source ] = this._debugContainerKey.split('/');
-        const message = selection === AFTER_OPTION_FREE_FORM_LABEL ?
-          MESSAGE_TYPES.CREATE_FREE_FORM_PILL : MESSAGE_TYPES.CREATE_TEXT_PILL;
-        // send event
-        switch (selection) {
-          case AFTER_OPTION_QUERY_LABEL:
-            if (!this._isInputEmpty(value)) {
-              this._broadcast(MESSAGE_TYPES.VALUE_ENTER_KEY, value);
-            }
-            break;
-          case AFTER_OPTION_FREE_FORM_LABEL:
-          case AFTER_OPTION_TEXT_LABEL:
-            // send value up to create a complex pill
-            this._broadcast(message, [value, source]);
+
+        if (!this._isInputEmpty(value)) {
+          this._broadcast(MESSAGE_TYPES.VALUE_ENTER_KEY, value);
         }
       }
     },
@@ -302,6 +371,25 @@ export default Component.extend({
           this.set('isFocusAtBeginning', false);
         });
       }
+    }
+  },
+
+  _createPillFromAdvancedOption(selection) {
+    // get input text
+    const el = this.element.querySelector('.ember-power-select-typeahead-input');
+    const { value } = el;
+    // cleanup
+    el.value = '';
+    this._focusOnPowerSelectTrigger();
+    this._afterOptionsMenu.clearHighlight();
+    // send value up to create a complex pill
+    // _debugContainerKey is a private Ember property that returns the full
+    // component name (component:query-container/pill-meta).
+    const [ , source ] = this._debugContainerKey.split('/');
+    if (selection === AFTER_OPTION_FREE_FORM_LABEL) {
+      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, source]);
+    } else if (selection === AFTER_OPTION_TEXT_LABEL) {
+      this._broadcast(MESSAGE_TYPES.CREATE_TEXT_PILL, [value, source]);
     }
   },
 

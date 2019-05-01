@@ -1290,6 +1290,9 @@ module('Integration | Component | Query Pill', function(hooks) {
     await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 2); // =
     await clickTrigger(PILL_SELECTORS.value);
     await typeInSearch('foobar');
-    await selectChoose(PILL_SELECTORS.valueTrigger, PILL_SELECTORS.powerSelectOption, 1); // Free-Form
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const freeFormFilter = afterOptions.find((d) => d.textContent.includes('Free-Form Filter'));
+    assert.ok(freeFormFilter, 'unable to find Free-Form Filter option');
+    await click(freeFormFilter);
   });
 });

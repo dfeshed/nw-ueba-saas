@@ -1,5 +1,10 @@
 {{#if isActive}}
   {{#power-select-typeahead
+    afterOptionsComponent=(
+      component optionsComponent
+      options=(readonly _afterOptionsMenu.list)
+      sendMessage=(action 'handleMessage')
+    )
     allowClear=false
     dropdownClass='investigate-query-dropdown'
     calculatePosition=_calculatePosition

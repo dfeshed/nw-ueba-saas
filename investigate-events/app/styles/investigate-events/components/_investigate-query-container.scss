@@ -850,6 +850,22 @@
 // dropdown styles
 .investigate-query-dropdown {
   @include border(1px, solid, primary, lighter);
+  border-bottom: transparent;
+  border-right: transparent;
+  border-left: transparent;
+  // override default backgroud color
+  // add color separately to drop-down
+  // options to provide the effect like
+  // pill tabs are hanging off the edge
+  background-color: opacity-value(transparent);
+
+
+  .ember-power-select-options {
+    border-right: 1px solid text-color(primary);
+    border-left: 1px solid text-color(primary);
+    background: background-color(primary, darkest);
+  }
+
   .ember-power-select-option--no-matches-message {
     color: rsa-color(grey, light);
     font-weight: 100;
@@ -911,7 +927,59 @@
       text-overflow: ellipsis;
     }
   }
+  // power select after options
   .ember-power-select-after-options {
     border-top: 1px solid text-color(primary);
+    background-color: transparent;
+
+    .border-advanced-options-separater-box {
+      @include border(1px, solid, primary);
+      background: background-color(primary, darkest);
+    }
+  }
+
+  // afterOptions tabs
+  .power-select-tabs {
+    position: relative;
+    left: 10px;
+    bottom: 0.5px;
+
+    .tabrow {
+      display: flex;
+    }
+
+    .tabrow li {
+      border-bottom-left-radius: 6px;
+      border-bottom-right-radius: 6px;
+      padding: 0 30px;
+      background: background-color(primary, darkest);
+      border-bottom: 1px solid text-color(neutral);
+    }
+
+    .recent-queries-tab {
+      border-left: 1px solid text-color(neutral);
+      border-right: 1px solid text-color(neutral);
+    }
+    .meta-tab {
+      border-left: 1px solid text-color(neutral);
+    }
+    
+    .tabrow a {
+      text-decoration: none;
+      @include rsa-font(default, small);
+    }
+
+    .tabrow li:not(.selected) {
+      border-top: 1px solid text-color(neutral);
+      color: text-color(secondary);
+    }
+    
+    .tabrow li.selected {
+      font-weight: 100;
+      pointer-events: none;
+      color: text-color(neutral, light);
+      border-top: none;
+    }
+    
   }
 }

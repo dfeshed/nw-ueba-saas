@@ -60,5 +60,10 @@ export default {
   triggerValuePowerSelect,
   value: '.pill-value',
   valueSelectInput: '.pill-value .ember-power-select-trigger input',
-  valueTrigger
+  valueTrigger,
+  pillTabs: '.ember-power-select-after-options .power-select-tabs',
+  metaTab: '.ember-power-select-after-options .power-select-tabs .meta-tab',
+  metaTabSelected: '.ember-power-select-after-options .power-select-tabs .meta-tab.selected',
+  recentQueriesTab: '.ember-power-select-after-options .power-select-tabs .recent-queries-tab',
+  recentQueriesTabSelected: '.ember-power-select-after-options .power-select-tabs .recent-queries-tab.selected'
 };

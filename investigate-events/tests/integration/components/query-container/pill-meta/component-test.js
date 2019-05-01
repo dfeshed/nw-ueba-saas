@@ -31,7 +31,6 @@ const ARROW_RIGHT = KEY_MAP.arrowRight.code;
 const ARROW_UP = KEY_MAP.arrowUp.code;
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
-const TAB_KEY = KEY_MAP.tab.code;
 
 // This trim also removes extra spaces inbetween words
 const trim = (text) => text.replace(/\s+/g, ' ').trim();
@@ -355,7 +354,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await typeInSearch('c');
     assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 7);
     // blur and assert no options present
-    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', TAB_KEY);
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
     assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 0);
     // focus and assert number of options
     await focus(PILL_SELECTORS.metaTrigger);

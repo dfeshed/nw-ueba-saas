@@ -1,22 +1,25 @@
-<span class="ember-power-select-group-name">Advanced Options</span>
-<span class="ember-power-select-group-name-hint">CTRL + ↓</span>
-{{#each options as |opt index|}}
-  <li class="ember-power-select-option ember-power-select-after-option"
-    aria-disabled="{{opt.disabled}}"
-    aria-current="{{opt.highlighted}}"
-    data-option-index="{{index}}"
-    onmouseenter={{action 'onMouseEnter'}}
-    onmouseleave={{action 'onMouseLeave'}}
-    onmouseup={{action 'onMouseUp'}}
-    role="option">
-    <span class="value">
-      {{!-- do not show search text if option is disabled --}}
-      {{#unless opt.disabled}}
-        {{select.searchText}}
-      {{/unless}}
-    </span>
-    <span class="description">
-      {{opt.label}}
-    </span>
-  </li>
-{{/each}}
+<div class="border-advanced-options-separater-box">
+  <span class="ember-power-select-group-name">Advanced Options</span>
+  <span class="ember-power-select-group-name-hint">CTRL + ↓</span>
+  {{#each options as |opt index|}}
+    <li class="ember-power-select-option ember-power-select-after-option"
+      aria-disabled="{{opt.disabled}}"
+      aria-current="{{opt.highlighted}}"
+      data-option-index="{{index}}"
+      onmouseenter={{action 'onMouseEnter'}}
+      onmouseleave={{action 'onMouseLeave'}}
+      onmouseup={{action 'onMouseUp'}}
+      role="option">
+      <span class="value">
+        {{!-- do not show search text if option is disabled --}}
+        {{#unless opt.disabled}}
+          {{select.searchText}}
+        {{/unless}}
+      </span>
+      <span class="description">
+        {{opt.label}}
+      </span>
+    </li>
+  {{/each}}
+</div>
+{{query-container/power-select-tabs}}

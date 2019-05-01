@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { click, find, findAll, focus, render, triggerKeyEvent } from '@ember/test-helpers';
-import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
+import { clickTrigger, typeInSearch } from 'ember-power-select/test-support/helpers';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
@@ -17,6 +17,7 @@ const BACKSPACE_KEY = KEY_MAP.backspace.code;
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const LEFT_ARROW_KEY = KEY_MAP.arrowLeft.code;
+const ARROW_DOWN = KEY_MAP.arrowDown.code;
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -288,10 +289,12 @@ module('Integration | Component | Pill Value', function(hooks) {
     `);
     await clickTrigger(PILL_SELECTORS.value);
     const options = findAll(PILL_SELECTORS.powerSelectOption);
-    assert.equal(options.length, 3, 'incorrect number of options');
-    assert.ok(_hasOption(options, AFTER_OPTION_QUERY_LABEL), 'missing option to create a query filter');
-    assert.ok(_hasOption(options, AFTER_OPTION_FREE_FORM_LABEL), 'missing option to create a free-form filter');
-    assert.ok(_hasOption(options, AFTER_OPTION_TEXT_LABEL), 'missing option to create a text filter');
+    assert.equal(options.length, 1, 'incorrect number of options');
+    assert.ok(_hasOption(options, AFTER_OPTION_QUERY_LABEL), 'incorrect option to create a query filter');
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    assert.equal(afterOptions.length, 2, 'incorrect number of options');
+    assert.ok(_hasOption(afterOptions, AFTER_OPTION_FREE_FORM_LABEL), 'incorrect option to create a free-form filter');
+    assert.ok(_hasOption(afterOptions, AFTER_OPTION_TEXT_LABEL), 'incorrect option to create a text filter');
   });
 
   test('it broadcasts a message to create a free-form pill when the Free-Form Filter option is selected', async function(assert) {
@@ -311,7 +314,59 @@ module('Integration | Component | Pill Value', function(hooks) {
     `);
     await clickTrigger(PILL_SELECTORS.value);
     await typeInSearch('foobar');
-    await selectChoose(PILL_SELECTORS.valueTrigger, PILL_SELECTORS.powerSelectOption, 1); // Free-Form
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const freeFormFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_FREE_FORM_LABEL));
+    assert.ok(freeFormFilter, 'unable to find Free-Form Filter option');
+    await click(freeFormFilter);
+  });
+
+  test('it broadcasts a message to create a free-form pill when the Free-Form Filter option is selected and hit ENTER', async function(assert) {
+    const done = assert.async();
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
+        assert.ok(Array.isArray(data), 'correct data type');
+        assert.propEqual(data, ['foobar', 'pill-value'], 'correct data');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+    await typeInSearch('foobar');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
+    const text = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.split(/\n/g).map((s) => s.trim()).join('');
+    assert.equal(text, 'foobarFree-Form Filter', 'first Advanced Option was not highlighted');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+  });
+
+  test('it broadcasts a message to create a text pill when the Text Filter option is selected and hit ENTER', async function(assert) {
+    const done = assert.async();
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.CREATE_TEXT_PILL) {
+        assert.ok(Array.isArray(data), 'correct data type');
+        assert.propEqual(data, ['foobar', 'pill-value'], 'correct data');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+    await typeInSearch('foobar');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
+    const text = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.split(/\n/g).map((s) => s.trim()).join('');
+    assert.equal(text, 'foobarText Filter', 'second Advanced Option was not highlighted');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
   });
 
   test('it broadcasts a message to create a text pill when the Text Filter option is selected', async function(assert) {
@@ -331,7 +386,10 @@ module('Integration | Component | Pill Value', function(hooks) {
     `);
     await clickTrigger(PILL_SELECTORS.value);
     await typeInSearch('foobar');
-    await selectChoose(PILL_SELECTORS.valueTrigger, PILL_SELECTORS.powerSelectOption, 2); // Text
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_LABEL));
+    assert.ok(textFilter, 'unable to find Text Filter option');
+    await click(textFilter);
   });
 
   test('if there are quoted strings within a complex pill, do not remove the outer quotes', async function(assert) {
@@ -352,6 +410,34 @@ module('Integration | Component | Pill Value', function(hooks) {
     `);
     await clickTrigger(PILL_SELECTORS.value);
     await typeInSearch(inputString);
-    await selectChoose(PILL_SELECTORS.valueTrigger, PILL_SELECTORS.powerSelectOption, 1); // Free-Form
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const freeFormFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_FREE_FORM_LABEL));
+    assert.ok(freeFormFilter, 'unable to find Free-Form Filter option');
+    await click(freeFormFilter);
+  });
+
+  test('it selects Free-Form Filter via CTRL + ↓', async function(assert) {
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
+    assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), AFTER_OPTION_FREE_FORM_LABEL, 'first Advanced Option was not highlighted');
+  });
+
+  test('it selects Text Filter via CTRL + ↓', async function(assert) {
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
+    assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), AFTER_OPTION_TEXT_LABEL, 'second Advanced Option was not highlighted');
   });
 });
