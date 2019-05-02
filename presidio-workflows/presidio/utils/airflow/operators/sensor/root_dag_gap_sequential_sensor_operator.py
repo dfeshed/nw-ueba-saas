@@ -46,12 +46,12 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
         return self._is_finished_wait_for_gapped_dag(execution_date)
 
     @provide_session
-    def _is_finished_wait_for_gapped_dag(self, execution_date_lt, session=None):
+    def _is_finished_wait_for_gapped_dag(self, execution_date, session=None):
 
         for dag_id in self._dag_ids:
             gapped_root_dag_run = session.query(DagRun).filter(
                 DagRun.dag_id == dag_id,
-                DagRun.execution_date == execution_date_lt,
+                DagRun.execution_date == execution_date,
                 DagRun.state.in_({State.SUCCESS, State.FAILED}),
             ).order_by(
                 DagRun.execution_date.asc()

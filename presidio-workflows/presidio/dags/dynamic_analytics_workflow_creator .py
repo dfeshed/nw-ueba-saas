@@ -17,6 +17,10 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
 name_space = globals()
 config_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
+# create pool
+presidioPoolFactory = PresidioPoolFactory()
+presidioPoolFactory.create(config_reader=config_reader)
+
 # create and register dags
 rootDagFactory = RootDagFactory()
 root_dags = rootDagFactory.create_and_register_dags(conf_key=RootDagFactory.root_conf_key, name_space=name_space, config_reader=config_reader)
@@ -35,6 +39,3 @@ indicatorDagFactory.build_dags(indicator_dags)
 modelDagFactory.build_dags(model_dags)
 smartDagFactory.build_dags(smart_dags)
 smartModelDagFactory.build_dags(smart_model_dags)
-
-presidioPoolFactory = PresidioPoolFactory()
-presidioPoolFactory.create(config_reader=config_reader)

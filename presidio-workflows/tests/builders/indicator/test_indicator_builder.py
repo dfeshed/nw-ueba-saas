@@ -13,11 +13,11 @@ FIX_DURATION_STRATEGY_DAILY = timedelta(days=1)
 def test_valid_build():
     """
 
-    Test valid adapter dag build
+    Test valid indicator dag build
     :return:
     """
 
-    logging.info('Test valid adapter dag build')
+    logging.info('Test valid indicator dag build')
     ConfigServerConfigurationReaderTestBuilder().build()
 
     default = datetime(2014, 5, 13, 13, 00, 2)

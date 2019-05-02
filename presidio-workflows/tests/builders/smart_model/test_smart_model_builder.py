@@ -14,11 +14,11 @@ FIX_DURATION_STRATEGY_DAILY = timedelta(days=1)
 def test_valid_build():
     """
 
-    Test valid adapter dag build
+    Test valid smart model dag build
     :return:
     """
 
-    logging.info('Test valid adapter dag build')
+    logging.info('Test valid smart model dag build')
     ConfigServerConfigurationReaderTestBuilder().build()
 
     default = datetime(2014, 5, 13, 13, 00, 2)
@@ -32,8 +32,7 @@ def test_valid_build():
         'email_on_retry': False,
         'retries': 1,
         'retry_delay': timedelta(minutes=5),
-        'smart_conf_name': 'userId_hourly',
-        'depends_on_schemas': ['FILE']
+        'smart_conf_name': 'userId_hourly'
     }
 
     dag = DAG(

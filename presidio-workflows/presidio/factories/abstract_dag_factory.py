@@ -1,6 +1,6 @@
 from __future__ import generators
 
-from abc import abstractmethod
+from abc import abstractmethod, ABCMeta
 
 from airflow import LoggingMixin
 from airflow.models import Variable
@@ -10,6 +10,7 @@ from presidio.factories.dag_factories_exceptions import DagsConfigurationContain
 
 
 class AbstractDagFactory(LoggingMixin):
+    __metaclass__ = ABCMeta
 
     def create_and_register_dags(self, conf_key, name_space, config_reader):
         """
