@@ -510,21 +510,43 @@
         },
         {
           "type": "if_else",
-          "name": "logon-type-filter-for-4624-or-4625",
+          "name": "logon-type-filter-for-4624",
           "predicate": {
             "type": "regex",
-            "name": "reference-id-equal-4624-or-4625",
+            "name": "reference-id-equal-4624",
             "sourceKey": "reference_id",
-            "regex": "4624|4625"
+            "regex": "4624"
           },
           "ifTransformer": {
             "type": "filter",
             "name": "logon-type-filter",
             "predicate": {
               "type": "regex",
-              "name": "logon-type-equal-0-or-10",
+              "name": "logon-type-equal-2-or-10",
               "sourceKey": "logon_type",
               "regex": "2|10"
+            },
+            "filterIn": true
+          },
+          "elseTransformer": null
+        },
+        {
+          "type": "if_else",
+          "name": "logon-type-filter-for-4625",
+          "predicate": {
+            "type": "regex",
+            "name": "reference-id-equal-4625",
+            "sourceKey": "reference_id",
+            "regex": "4625"
+          },
+          "ifTransformer": {
+            "type": "filter",
+            "name": "logon-type-filter",
+            "predicate": {
+              "type": "regex",
+              "name": "logon-type-equal-2-or-3-or-10",
+              "sourceKey": "logon_type",
+              "regex": "2|3|10"
             },
             "filterIn": true
           },
@@ -852,6 +874,11 @@
                 {
                   "caseKey": "2",
                   "caseValue": "INTERACTIVE",
+                  "isRegex": false
+                },
+                {
+                  "caseKey": "3",
+                  "caseValue": "NETWORK",
                   "isRegex": false
                 },
                 {
