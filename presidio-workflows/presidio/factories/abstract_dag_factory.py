@@ -6,8 +6,6 @@ from airflow import LoggingMixin
 from airflow.models import Variable
 import dateutil
 
-from presidio.factories.dag_factories_exceptions import DagsConfigurationContainsOverlappingDatesException
-
 
 class AbstractDagFactory(LoggingMixin):
     __metaclass__ = ABCMeta
@@ -22,7 +20,6 @@ class AbstractDagFactory(LoggingMixin):
         """
         dags_configs = config_reader.read(conf_key='dags.dags_configs')
         dags = self.create_dags(dags_configs, conf_key)
-        self.validate(dags)
         for dag in dags:
             self.register_dag(dag=dag, name_space=name_space, logger=self.log)
         return dags
@@ -64,27 +61,6 @@ class AbstractDagFactory(LoggingMixin):
     @abstractmethod
     def create_dags(self, dags_configs, conf_key):
         pass
-
-    def validate(self, created_dags):
-        """
-        validates that all created dags have start and end time that does not overlap
-        :param created_dags: array of airflow dags
-        """
-        if not created_dags:
-            # empty list, nothing to validate
-            pass
-
-        created_dags.sort(key=lambda x: x.start_date)
-        last_start_date = None
-        last_end_date = None
-        last_dag_id = None
-        for dag in created_dags:
-            if last_start_date is not None and last_end_date is not None:
-                if dag.start_date <= last_end_date:
-                    raise DagsConfigurationContainsOverlappingDatesException(dag.dag_id, last_dag_id)
-            last_start_date = dag.start_date
-            last_end_date = dag.end_date
-            last_dag_id = dag.dag_id
 
     def _get_dag_params(self, dag_config, dags_configs):
         temp_interval = dag_config.get("schedule_interval")

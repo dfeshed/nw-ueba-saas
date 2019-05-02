@@ -21,7 +21,7 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
 TASK_KILL_TIMEOUT = 60
 
 
-class RerunAnalyticsFlowDagBuilder(object):
+class RerunUebaFlowDagBuilder(object):
     """
     The "rerun full flow run" DAG consists of all the actions needed in order to delete all presidio data
     """

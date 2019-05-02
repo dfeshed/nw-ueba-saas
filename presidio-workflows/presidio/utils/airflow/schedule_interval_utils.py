@@ -12,7 +12,7 @@ def get_schedule_interval(dag):
     """
     schedule_interval = dag.schedule_interval
     if schedule_interval is None:
-        interval_in_seconds = Variable.get(key=dag.dag_id, default_var='')
+        interval_in_seconds = Variable.get(key=get_key(dag.dag_id), default_var='')
         if interval_in_seconds == '':
             raise ValueError("The schedule_interval was not defined for (%s) dag." % dag.dag_id)
         schedule_interval = datetime.timedelta(seconds=float(interval_in_seconds))
@@ -20,7 +20,12 @@ def get_schedule_interval(dag):
 
 
 def set_schedule_interval(dag_id, schedule_interval):
-    interval = Variable.get(key=dag_id, default_var='')
+    key = get_key(dag_id)
+    interval = Variable.get(key=key, default_var='')
     if interval == '':
-        Variable.set(dag_id, schedule_interval.total_seconds())
+        Variable.set(key, schedule_interval.total_seconds())
+
+
+def get_key(dag_id):
+    return 'schedule_interval_{}'.format(dag_id)
 
