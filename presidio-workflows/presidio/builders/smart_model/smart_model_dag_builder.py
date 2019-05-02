@@ -45,8 +45,6 @@ class SmartModelDagBuilder(PresidioDagBuilder):
 
         smart_model_accumulate_operator = SmartModelAccumulateOperatorBuilder().build(dag)
 
-        smart_accumulate_short_circuit_operator >> smart_model_accumulate_operator
-
         smart_model_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='smart_model_short_circuit',
             dag=dag,
@@ -62,7 +60,5 @@ class SmartModelDagBuilder(PresidioDagBuilder):
                                                  get_schedule_interval(dag)))
 
         smart_model_operator = SmartModelOperatorBuilder().build(dag)
-
-        smart_model_short_circuit_operator >> smart_model_operator
-        smart_model_accumulate_operator.set_downstream(smart_model_short_circuit_operator)
+        smart_accumulate_short_circuit_operator >> smart_model_accumulate_operator >> smart_model_short_circuit_operator >> smart_model_operator
         return dag

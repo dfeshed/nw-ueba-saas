@@ -12,13 +12,18 @@ from presidio.factories.dag_factories_exceptions import DagsConfigurationContain
 class AbstractDagFactory(LoggingMixin):
 
     def create_and_register_dags(self, conf_key, name_space, config_reader):
+        """
+        Create and register all dags
+        :param conf_key: conf_key
+        :param name_space:  the global scope which the DAG would be assigned in to. notice: should be the globals()
+        :param config_reader: config_reader
+        :return: dags
+        """
         dags_configs = config_reader.read(conf_key='dags.dags_configs')
         dags = self.create_dags(dags_configs, conf_key)
         self.validate(dags)
         for dag in dags:
-            self.build_dag(dag)
             self.register_dag(dag=dag, name_space=name_space, logger=self.log)
-
         return dags
 
     def register_dag(self, dag, name_space, logger):
@@ -34,13 +39,22 @@ class AbstractDagFactory(LoggingMixin):
         logger.info("register dag_id=%s", dag_id)
         name_space[dag_id] = dag
 
-        dag_ids = Variable.get(key="dags", default_var=[])
-        if dag_ids:
-            dag_ids = dag_ids.split(", ")
+        dag_ids = self.get_registered_dag_ids()
 
         if dag_id not in dag_ids:
             dag_ids.append(dag_id)
             Variable.set(key="dags", value=(', '.join(str(e) for e in dag_ids)))
+
+    def build_dags(self, dags):
+        for dag in dags:
+            self.build_dag(dag)
+
+    @staticmethod
+    def get_registered_dag_ids():
+        dag_ids = Variable.get(key="dags", default_var=[])
+        if dag_ids:
+            dag_ids = str(dag_ids).split(", ")
+        return dag_ids
 
     @abstractmethod
     def build_dag(self, dag):

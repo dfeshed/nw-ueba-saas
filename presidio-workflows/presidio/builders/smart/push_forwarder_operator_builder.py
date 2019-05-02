@@ -9,7 +9,7 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
 FORWARDER_JVM_ARGS_CONFIG_PATH = 'components.output_forwarder.jvm_args'
 
 
-class PushForwarderTaskBuilder(LoggingMixin):
+class PushForwarderOperatorBuilder(LoggingMixin):
 
     conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
@@ -18,11 +18,11 @@ class PushForwarderTaskBuilder(LoggingMixin):
         config_reader = ConfigServerConfigurationReaderSingleton().config_reader
         self.jvm_args = config_reader.read(conf_key=FORWARDER_JVM_ARGS_CONFIG_PATH)
 
-    def build(self, smart_dag):
+    def build(self, dag):
         """
         Builds data_forwarding_operator of the given smart_record_conf_name.
-        :param smart_dag: The DAG to which the task should be added
-        :type smart_dag: airflow.models.DAG
+        :param dag: The DAG to which the task should be added
+        :type dag: airflow.models.DAG
         :return: The created forwarder task
         :rtype: FixedDurationJarOperator
         """
@@ -30,7 +30,7 @@ class PushForwarderTaskBuilder(LoggingMixin):
         self.log.debug("creating the forwarder task")
 
         java_args = {
-            'smart_record_conf_name':  smart_dag.default_args.get("name")
+            'smart_record_conf_name':  dag.default_args.get("name")
         }
 
         # Create jar operator
@@ -40,6 +40,6 @@ class PushForwarderTaskBuilder(LoggingMixin):
             command=PresidioDagBuilder.presidio_command,
             jvm_args=self.jvm_args,
             java_args=java_args,
-            dag=smart_dag)
+            dag=dag)
 
         return data_forwarding_operator

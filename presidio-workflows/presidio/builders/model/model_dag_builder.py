@@ -25,11 +25,11 @@ class ModelDagBuilder(PresidioDagBuilder):
         """
 
         schema = dag.default_args['schema']
-        self._build_raw_model_operator(schema, dag)
-        self._build_aggr_model_operator(schema, dag)
+        self._build_raw_model_flow(schema, dag)
+        self._build_aggr_model_flow(schema, dag)
         return dag
 
-    def _build_raw_model_operator(self, schema, dag):
+    def _build_raw_model_flow(self, schema, dag):
         feature_aggregation_buckets_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id=('feature_aggregation_buckets_short_circuit_{0}'.format(schema)),
             dag=dag,
@@ -57,7 +57,7 @@ class ModelDagBuilder(PresidioDagBuilder):
 
         feature_aggregation_buckets_short_circuit_operator >> feature_aggregation_buckets_operator >> raw_model_short_circuit_operator >> raw_model_operator
 
-    def _build_aggr_model_operator(self, schema, dag):
+    def _build_aggr_model_flow(self, schema, dag):
         acc_aggregation_operator = AccumulateAggregationsOperatorBuilder(schema, FIX_DURATION_STRATEGY_HOURLY).build(dag)
 
         aggr_accumulate_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(

@@ -59,12 +59,12 @@ class IndicatorDagBuilder(PresidioDagBuilder):
         task_sensor_service.add_task_short_circuit(feature_aggregations_operator, hourly_short_circuit_operator)
         task_sensor_service.add_task_short_circuit(score_aggregations_operator, hourly_short_circuit_operator)
 
+
         model_trigger = self._build_model_trigger_operator(dag, schema)
         feature_aggregations_operator >> model_trigger
         score_aggregations_operator >> model_trigger
 
-        self._build_input_retention(dag, schema)
-
+        self._build_input_retention(dag, schema, input_operator)
         return dag
 
     def _build_model_trigger_operator(self, dag, schema):
@@ -79,7 +79,7 @@ class IndicatorDagBuilder(PresidioDagBuilder):
         set_schedule_interval(model_dag_id, FIX_DURATION_STRATEGY_DAILY)
         return model_trigger
 
-    def _build_input_retention(self, dag, schema):
+    def _build_input_retention(self, dag, schema, input_operator):
         input_retention_operator = InputRetentionOperatorBuilder(schema).build(dag)
         input_retention_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='input_retention_short_circuit',
@@ -93,4 +93,5 @@ class IndicatorDagBuilder(PresidioDagBuilder):
                                                      days=InputRetentionOperatorBuilder.get_input_min_time_to_start_retention_in_days(PresidioDagBuilder.conf_reader)),
                                                  kwargs['execution_date'],
                                                  get_schedule_interval(dag)))
-        input_retention_short_circuit_operator >> input_retention_operator
+        input_operator >> input_retention_short_circuit_operator >> input_retention_operator
+

@@ -3,7 +3,7 @@ from datetime import timedelta
 from presidio.builders.smart.output_operator_builder import OutputOperatorBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.builders.smart.output_retention_operator_builder import OutputRetentionOperatorBuilder
-from presidio.builders.smart.push_forwarder_task_builder import PushForwarderTaskBuilder
+from presidio.builders.smart.push_forwarder_operator_builder import PushForwarderOperatorBuilder
 from presidio.builders.smart.user_score_operator_builder import UserScoreOperatorBuilder
 from presidio.builders.smart_model.smart_model_accumulate_operator_builder import SmartModelAccumulateOperatorBuilder
 from presidio.factories.indicator_dag_factory import IndicatorDagFactory
@@ -139,8 +139,8 @@ class SmartDagBuilder(PresidioDagBuilder):
         enable_output_forwarder = default_args.get("enable_output_forwarder")
         self.log.debug("enable_output_forwarder=%s ", enable_output_forwarder)
         if enable_output_forwarder == 'true':
-            push_forwarding_task = PushForwarderTaskBuilder().build(smart_dag)
-            hourly_output_operator >> push_forwarding_task >> daily_short_circuit_operator
+            push_forwarding_operator = PushForwarderOperatorBuilder().build(smart_dag)
+            hourly_output_operator >> push_forwarding_operator >> daily_short_circuit_operator
         else:
             hourly_output_operator >> daily_short_circuit_operator
 

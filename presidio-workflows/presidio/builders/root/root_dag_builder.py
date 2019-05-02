@@ -3,6 +3,7 @@ from datetime import timedelta
 from airflow.models import Variable
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
+from presidio.factories.abstract_dag_factory import AbstractDagFactory
 from presidio.factories.indicator_dag_factory import IndicatorDagFactory
 from presidio.utils.airflow.operators.sensor.root_dag_gap_sensor_operator import RootDagGapSensorOperator
 
@@ -29,9 +30,7 @@ class RootDagBuilder(PresidioDagBuilder):
             set_schedule_interval(dag_id, dag.schedule_interval)
             triggers.append(trigger)
 
-        dag_ids = Variable.get(key="dags", default_var=[])
-        if dag_ids:
-            dag_ids = dag_ids.split(", ")
+        dag_ids = AbstractDagFactory.get_registered_dag_ids()
 
         root_dag_gap_sensor_operator = RootDagGapSensorOperator(dag=dag,
                                                                 task_id='all_dags_root_gap_sensor',

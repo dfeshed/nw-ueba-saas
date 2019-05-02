@@ -13,6 +13,7 @@ from airflow.utils.state import State
 from presidio.builders.elasticsearch.elasticsearch_operator_builder import build_clean_elasticsearch_data_operator
 from presidio.builders.presidioconfiguration.presidio_configuration_operator_builder import \
     build_reset_presidio_configuration_operator
+from presidio.factories.abstract_dag_factory import AbstractDagFactory
 from presidio.utils.airflow.operators import spring_boot_jar_operator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
@@ -20,7 +21,7 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
 TASK_KILL_TIMEOUT = 60
 
 
-class RerunFullFlowDagBuilder(object):
+class RerunAnalyticsFlowDagBuilder(object):
     """
     The "rerun full flow run" DAG consists of all the actions needed in order to delete all presidio data
     """
@@ -37,10 +38,10 @@ class RerunFullFlowDagBuilder(object):
         logging.debug("populating the rerun full flow dag")
         config_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
-        dag_models = get_dag_models()
-        dag_ids_to_clean = map(lambda x: x.dag_id, dag_models)
+        dags = get_dags()
+        dag_ids_to_clean = map(lambda x: x.dag_id, dags)
 
-        pause_dags_operator = build_pause_dags_operator(dag, dag_models)
+        pause_dags_operator = build_pause_dags_operator(dag, dags)
 
         kill_dags_task_instances_operator = build_kill_dags_task_instances_operator(dag, dag_ids_to_clean)
 
@@ -84,17 +85,17 @@ def load_dags(dag_ids, session=None):
         return None
 
 
-def get_dag_models():
+def get_dags():
     """
 
     :return: dict of DAGs (can be found in DAG's folder) and has dag_id by prefix given
     :rtype: dict[str,DAG]
     """
-    dag_ids = Variable.get(key="dags", default_var=[])
+    dags = []
+    dag_ids = AbstractDagFactory.get_registered_dag_ids()
     if dag_ids:
-        dag_ids = load_dags(str(dag_ids).split(", "))
-
-    return dag_ids
+        dags = load_dags(dag_ids)
+    return dags
 
 
 def pause_dag(dag_id):

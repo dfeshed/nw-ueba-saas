@@ -35,11 +35,10 @@ public class AdeManagerApplicationService {
     /**
      * Ensure that we don't clean last 24 hours
      */
-    public boolean enrichedTtlDurationValidation(){
+    public void enrichedTtlDurationValidation(){
         if (enrichedTtl.compareTo(Duration.ofDays(1)) < 0){
             String s = String.format("Enriched ttl duration should be greater than 24 hours, enrichedTtl: %s.", enrichedTtl.toString());
             throw new IllegalArgumentException(s);
         }
-        return true;
     }
 }

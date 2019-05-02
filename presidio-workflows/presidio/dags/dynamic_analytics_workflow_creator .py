@@ -17,22 +17,24 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
 name_space = globals()
 config_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
+# create and register dags
 rootDagFactory = RootDagFactory()
-dags = rootDagFactory.create_and_register_dags(conf_key=RootDagFactory.root_conf_key, name_space=name_space, config_reader=config_reader)
-
+root_dags = rootDagFactory.create_and_register_dags(conf_key=RootDagFactory.root_conf_key, name_space=name_space, config_reader=config_reader)
 indicatorDagFactory = IndicatorDagFactory()
-dags = indicatorDagFactory.create_and_register_dags(conf_key=IndicatorDagFactory.indicator_conf_key, name_space=name_space, config_reader=config_reader)
-
+indicator_dags = indicatorDagFactory.create_and_register_dags(conf_key=IndicatorDagFactory.indicator_conf_key, name_space=name_space, config_reader=config_reader)
 modelDagFactory = ModelDagFactory()
-dags = modelDagFactory.create_and_register_dags(conf_key=ModelDagFactory.model_conf_key, name_space=name_space, config_reader=config_reader)
-
+model_dags = modelDagFactory.create_and_register_dags(conf_key=ModelDagFactory.model_conf_key, name_space=name_space, config_reader=config_reader)
 smartDagFactory = SmartDagFactory()
-dags = smartDagFactory.create_and_register_dags(conf_key=SmartDagFactory.smart_conf_key, name_space=name_space, config_reader=config_reader)
-
+smart_dags = smartDagFactory.create_and_register_dags(conf_key=SmartDagFactory.smart_conf_key, name_space=name_space, config_reader=config_reader)
 smartModelDagFactory = SmartModelDagFactory()
-dags = smartModelDagFactory.create_and_register_dags(conf_key=SmartModelDagFactory.smart_model_conf_key, name_space=name_space, config_reader=config_reader)
+smart_model_dags = smartModelDagFactory.create_and_register_dags(conf_key=SmartModelDagFactory.smart_model_conf_key, name_space=name_space, config_reader=config_reader)
+
+# build dags
+rootDagFactory.build_dags(root_dags)
+indicatorDagFactory.build_dags(indicator_dags)
+modelDagFactory.build_dags(model_dags)
+smartDagFactory.build_dags(smart_dags)
+smartModelDagFactory.build_dags(smart_model_dags)
 
 presidioPoolFactory = PresidioPoolFactory()
 presidioPoolFactory.create(config_reader=config_reader)
-
-
