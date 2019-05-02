@@ -3,7 +3,7 @@
     {{#rsa-form-button
       class="export-packet-button"
       defaultAction=(action 'processDefault' defaultPacketFormat)
-      isDisabled=isDisabled
+      isDisabled=isCaptionDisabled
     }}
       {{#if isDownloading}}
         {{rsa-loader}}
@@ -14,14 +14,21 @@
       {{#rsa-form-button
         class="rsa-split-dropdown"
         defaultAction=(action 'toggleExpand')
+        isDisabled=isToggleDisabled
       }}
         {{rsa-icon name="arrow-down-12"}}
       {{/rsa-form-button}}
       {{#recon-button-menu isExpanded=isExpanded currentIndex=-1 style=offsetsStyle items=downloadFormats menuStyle='export-packet-menu' tabindex=0}}
         {{#each downloadFormats as |download|}}
-          <li tabindex='-1' onkeydown={{action 'handleKeydown' download.key}}>
-            <a {{action 'processMenuItem' download.key}}>{{t (concat 'recon.packetView.' (get download 'value'))}}</a>
-          </li>
+          {{#if download.isEnabled}}
+            <li tabindex='-1' onkeydown={{action 'handleKeydown' download.key}} >
+              <a {{action 'processMenuItem' download.key}}>{{t (concat 'recon.packetView.' (get download 'value'))}}</a>
+            </li>
+          {{else}}
+            <li>
+              <a class = 'disabled'>{{t (concat 'recon.packetView.' (get download 'value'))}}</a>
+            </li>
+          {{/if}}
         {{/each}}
       {{/recon-button-menu}}
     {{/click-outside}}

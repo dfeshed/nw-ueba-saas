@@ -16,6 +16,8 @@ const ARROW_ENTER_KEY = 13;
 
 const downloadButtonSelector = '.export-packet-button .rsa-form-button';
 const dropdownArrowSelector = '.rsa-split-dropdown .rsa-form-button';
+const disabledButtonSelector = 'button:disabled';
+const buttonMenuSelector = '.recon-button-menu';
 
 const data = {
   eventType: { name: 'NETWORK' }
@@ -54,13 +56,12 @@ module('Integration | Component | recon event actionbar/export packet', function
     const i18n = this.owner.lookup('service:i18n');
     run(i18n, 'addTranslations', 'ja-jp', { 'recon.packetView.downloadPCAP': downloadPCAP });
 
-    const selector = 'button';
-    assert.equal(trim(find(selector).textContent), 'Download PCAP');
+    assert.equal(trim(find(downloadButtonSelector).textContent), 'Download PCAP');
 
     set(i18n, 'locale', 'ja-jp');
 
     return settled().then(async() => {
-      assert.equal(trim(find(selector).textContent), downloadPCAP);
+      assert.equal(trim(find(downloadButtonSelector).textContent), downloadPCAP);
     });
   });
 
@@ -91,22 +92,21 @@ module('Integration | Component | recon event actionbar/export packet', function
 
     await click('.rsa-split-dropdown .rsa-form-button');
 
-    const selector = '.recon-button-menu';
-    const buttonMenu = find(selector);
+    const buttonMenu = find(buttonMenuSelector);
     assert.ok(buttonMenu.classList.contains('expanded'));
 
-    assert.equal(trim(find(`${selector} li:nth-of-type(1)`).textContent), 'Download PCAP');
-    assert.equal(trim(find(`${selector} li:nth-of-type(2)`).textContent), 'Download Payloads');
-    assert.equal(trim(find(`${selector} li:nth-of-type(3)`).textContent), 'Download Request Payload');
-    assert.equal(trim(find(`${selector} li:nth-of-type(4)`).textContent), 'Download Response Payload');
+    assert.equal(trim(find(`${buttonMenuSelector} li:nth-of-type(1)`).textContent), 'Download PCAP');
+    assert.equal(trim(find(`${buttonMenuSelector} li:nth-of-type(2)`).textContent), 'Download Payloads');
+    assert.equal(trim(find(`${buttonMenuSelector} li:nth-of-type(3)`).textContent), 'Download Request Payload');
+    assert.equal(trim(find(`${buttonMenuSelector} li:nth-of-type(4)`).textContent), 'Download Response Payload');
 
     set(i18n, 'locale', 'ja-jp');
 
     return settled().then(async() => {
-      assert.equal(trim(find(`${selector} li:nth-of-type(1)`).textContent), downloadPCAP);
-      assert.equal(trim(find(`${selector} li:nth-of-type(2)`).textContent), downloadPayload);
-      assert.equal(trim(find(`${selector} li:nth-of-type(3)`).textContent), downloadPayload1);
-      assert.equal(trim(find(`${selector} li:nth-of-type(4)`).textContent), downloadPayload2);
+      assert.equal(trim(find(`${buttonMenuSelector} li:nth-of-type(1)`).textContent), downloadPCAP);
+      assert.equal(trim(find(`${buttonMenuSelector} li:nth-of-type(2)`).textContent), downloadPayload);
+      assert.equal(trim(find(`${buttonMenuSelector} li:nth-of-type(3)`).textContent), downloadPayload1);
+      assert.equal(trim(find(`${buttonMenuSelector} li:nth-of-type(4)`).textContent), downloadPayload2);
     });
   });
 
@@ -133,7 +133,7 @@ module('Integration | Component | recon event actionbar/export packet', function
   });
 
   test('it renders proper label when export pcap data', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     const redux = this.owner.lookup('service:redux');
     new DataHelper(redux).initializeData(data).startDownloadingData();
@@ -144,13 +144,13 @@ module('Integration | Component | recon event actionbar/export packet', function
     const i18n = this.owner.lookup('service:i18n');
     run(i18n, 'addTranslations', 'ja-jp', { 'recon.packetView.isDownloading': isDownloading });
 
-    const selector = 'button';
-    assert.equal(trim(find(selector).textContent), 'Downloading...');
+    assert.equal(findAll(disabledButtonSelector).length, 2, 'Both caption and toggle buttons are disabled when download in progress');
+    assert.equal(trim(findAll(disabledButtonSelector)[0].textContent), 'Downloading...');
 
     set(i18n, 'locale', 'ja-jp');
 
     return settled().then(async() => {
-      assert.equal(trim(find(selector).textContent), isDownloading);
+      assert.equal(trim(find(disabledButtonSelector).textContent), isDownloading);
     });
   });
 
@@ -172,8 +172,8 @@ module('Integration | Component | recon event actionbar/export packet', function
 
     await click(dropdownArrowSelector);
 
-    const buttonMenuSelector = '.recon-button-menu li:nth-child(1) a';
-    await click(buttonMenuSelector);
+    const buttonMenuItemSelector = '.recon-button-menu li:nth-child(1) a';
+    await click(buttonMenuItemSelector);
 
     return settled().then(async() => {
       assert.equal(find(downloadButtonSelector).outerText.trim(), 'Downloading...', 'Download menu button label for Packets when downloading');
@@ -197,8 +197,8 @@ module('Integration | Component | recon event actionbar/export packet', function
 
     await click(dropdownArrowSelector);
 
-    const buttonMenuSelector = '.recon-button-menu li:nth-child(1)';
-    await triggerKeyEvent(buttonMenuSelector, 'keydown', ARROW_ENTER_KEY);
+    const buttonMenuItemSelector = '.recon-button-menu li:nth-child(1)';
+    await triggerKeyEvent(buttonMenuItemSelector, 'keydown', ARROW_ENTER_KEY);
 
     return settled().then(async() => {
       assert.equal(find(downloadButtonSelector).outerText.trim(), 'Downloading...', 'Download menu button label for Packets when downloading');
@@ -209,7 +209,7 @@ module('Integration | Component | recon event actionbar/export packet', function
     assert.expect(2);
 
     const redux = this.owner.lookup('service:redux');
-    new DataHelper(redux).initializeData().setDownloadFormatToPayload();
+    new DataHelper(redux).initializeData().setDefaultNetworkDownloadFormat('PAYLOAD');
 
     await render(hbs`{{recon-event-actionbar/export-packet}}`);
 
@@ -217,14 +217,41 @@ module('Integration | Component | recon event actionbar/export packet', function
     const i18n = this.owner.lookup('service:i18n');
     run(i18n, 'addTranslations', 'ja-jp', { 'recon.packetView.downloadPayload': downloadPayload });
 
-    const selector = 'button';
-    assert.equal(trim(find(selector).textContent), 'Download Payloads');
+    assert.equal(trim(find(downloadButtonSelector).textContent), 'Download Payloads');
 
     set(i18n, 'locale', 'ja-jp');
 
     return settled().then(async() => {
-      assert.equal(trim(find(selector).textContent), downloadPayload);
+      assert.equal(trim(find(downloadButtonSelector).textContent), downloadPayload);
     });
+  });
+
+  test('Recon should disable default Packet format set by user along with dropdown toggle if no payload available', async function(assert) {
+
+    const redux = this.owner.lookup('service:redux');
+    new DataHelper(redux).initializeDataWithoutPayloads();
+
+    await render(hbs`{{recon-event-actionbar/export-packet}}`);
+
+    assert.equal(findAll(disabledButtonSelector).length, 2, 'Both caption and toggle disabled');
+
+  });
+
+  test('the menu renders properly and has the valid options/components enabled', async function(assert) {
+
+    const redux = this.owner.lookup('service:redux');
+    new DataHelper(redux).initializeData().setDefaultNetworkDownloadFormat('PAYLOAD2');
+
+    await render(hbs`{{recon-event-actionbar/export-packet}}`);
+
+    assert.equal(trim(find(disabledButtonSelector).textContent), 'Download Response Payload');
+    assert.equal(findAll(disabledButtonSelector).length, 1, 'Only caption is disabled');
+
+    await click(dropdownArrowSelector);
+
+    assert.equal(findAll(`${buttonMenuSelector} li:nth-of-type(3) a.disabled`).length, 0, 'Enabled Download Request Payload');
+    assert.equal(findAll(`${buttonMenuSelector} li:nth-of-type(4) a.disabled`).length, 1, 'Disabled Download Response Payload');
+
   });
 
   test('the extracted file must be downloaded automatically', async function(assert) {

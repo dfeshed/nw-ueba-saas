@@ -12,6 +12,7 @@ import {
   packetDataWithSide,
   packetDataWithoutPayload,
   summaryData,
+  summaryDataWithoutPayload,
   preferences
 } from './data';
 
@@ -28,15 +29,16 @@ const makePackAction = (lifecycle, { type, payload, meta = {} }) => {
   };
 };
 
-const summaryPromise = new RSVP.Promise(function(resolve) {
-  resolve(summaryData);
+const summaryPromise = (hasPayload = true) => new RSVP.Promise(function(resolve) {
+  const summaryDataToResolve = hasPayload ? summaryData : summaryDataWithoutPayload;
+  resolve(summaryDataToResolve);
 });
 
 const _dispatchInitializeData = (redux, inputs, hasPayload = true) => {
   const payload = hasPayload ? packetDataWithSide : packetDataWithoutPayload;
   run(() => {
     redux.dispatch({ type: ACTION_TYPES.INITIALIZE, payload: inputs });
-    redux.dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE, promise: summaryPromise });
+    redux.dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE, promise: summaryPromise(hasPayload) });
     redux.dispatch({ type: ACTION_TYPES.PACKETS_RECEIVE_PAGE, payload });
     redux.dispatch({ type: ACTION_TYPES.SET_PREFERENCES, payload: preferences });
   });
@@ -82,8 +84,8 @@ class DataHelper {
     return this;
   }
 
-  setDownloadFormatToPayload() {
-    preferences.eventAnalysisPreferences.defaultPacketFormat = 'PAYLOAD';
+  setDefaultNetworkDownloadFormat(format = 'PAYLOAD') {
+    preferences.eventAnalysisPreferences.defaultPacketFormat = format;
     this.redux.dispatch({ type: ACTION_TYPES.SET_PREFERENCES, payload: preferences });
     return this;
   }
@@ -148,7 +150,7 @@ class DataHelper {
   }
 
   noPackets() {
-    this.redux.dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE, promise: summaryPromise });
+    this.redux.dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE, promise: summaryPromise(false) });
     this.redux.dispatch({ type: ACTION_TYPES.PACKETS_RECEIVE_PAGE, payload: [] });
   }
 

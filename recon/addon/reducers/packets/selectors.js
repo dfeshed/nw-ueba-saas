@@ -122,14 +122,41 @@ export const packetRenderingUnderWay = createSelector(
 
 export const hasPayload = createSelector(
   headerItems,
-  (headerItems) => {
-    const headerItem = getHeaderItem(headerItems, 'payloadSize');
-
-    if (headerItem && headerItem.value !== '0') {
-      return true;
-    }
-
-    return false;
-  }
+  (headerItems) => _hasItem(headerItems, 'payloadSize')
 );
 
+const _hasItem = (headerItems, item) => {
+
+  const headerItem = getHeaderItem(headerItems, item);
+
+  return headerItem && headerItem.value !== 0;
+};
+
+export const getNetworkDownloadOptions = createSelector(
+  [headerItems],
+  (headerItems) => {
+    const downloadFormat = [
+      {
+        key: 'PCAP',
+        value: 'downloadPCAP',
+        isEnabled: _hasItem(headerItems, 'packetSize') // total packet header and payload bytes request and response
+      },
+      {
+        key: 'PAYLOAD',
+        value: 'downloadPayload',
+        isEnabled: _hasItem(headerItems, 'packetCount') // total packet count request and response
+      },
+      {
+        key: 'PAYLOAD1',
+        value: 'downloadPayload1',
+        isEnabled: _hasItem(headerItems, 'requestPacketCount') // total packet count request only
+      },
+      {
+        key: 'PAYLOAD2',
+        value: 'downloadPayload2',
+        isEnabled: _hasItem(headerItems, 'responsePacketCount') // total packet count response only
+      }
+    ];
+    return downloadFormat;
+  }
+);

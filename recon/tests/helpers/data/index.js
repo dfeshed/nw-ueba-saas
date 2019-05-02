@@ -21,8 +21,13 @@ const packetDataWithSide = augmentResult(packetData.slice(0, 10));
 const packetDataWithoutPayload = packetDataWithSide.filter((d) => d.payloadSize === 0);
 
 const summaryData = {
-  headerItems: _generateHeaderItems(summaryDataInput.summaryAttributes),
-  packetFields: summaryDataInput.packetFields
+  headerItems: _generateHeaderItems(summaryDataInput.withPayloads.summaryAttributes),
+  packetFields: summaryDataInput.withPayloads.packetFields
+};
+
+const summaryDataWithoutPayload = {
+  headerItems: _generateHeaderItems(summaryDataInput.noPayloads.summaryAttributes),
+  packetFields: summaryDataInput.noPayloads.packetFields
 };
 
 const preferences = {
@@ -50,5 +55,6 @@ export {
   packetDataWithSide,
   packetDataWithoutPayload,
   summaryData,
+  summaryDataWithoutPayload,
   preferences
 };

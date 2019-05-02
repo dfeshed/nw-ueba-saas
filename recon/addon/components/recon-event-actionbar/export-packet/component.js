@@ -3,13 +3,14 @@ import { connect } from 'ember-redux';
 import computed, { not, match } from 'ember-computed-decorators';
 import { extractFiles, didDownloadFiles } from 'recon/actions/interaction-creators';
 import layout from './template';
-import { hasPayload } from 'recon/reducers/packets/selectors';
+import { hasPayload, getNetworkDownloadOptions } from 'recon/reducers/packets/selectors';
 import { inject as service } from '@ember/service';
 
 const stateToComputed = ({ recon, recon: { files, visuals } }) => ({
   status: files.fileExtractStatus,
   extractLink: files.fileExtractLink,
   hasPayload: hasPayload(recon),
+  downloadFormats: getNetworkDownloadOptions(recon),
   defaultPacketFormat: visuals.defaultPacketFormat,
   isAutoDownloadFile: files.isAutoDownloadFile
 });
@@ -18,11 +19,6 @@ const dispatchToActions = {
   extractFiles,
   didDownloadFiles
 };
-
-const downloadFormat = [{ key: 'PCAP', value: 'downloadPCAP' },
-  { key: 'PAYLOAD', value: 'downloadPayload' },
-  { key: 'PAYLOAD1', value: 'downloadPayload1' },
-  { key: 'PAYLOAD2', value: 'downloadPayload2' } ];
 
 const menuOffsetsStyle = (el) => {
   if (el) {
@@ -43,23 +39,26 @@ const DownloadPacketComponent = Component.extend({
 
   offsetsStyle: null,
 
-  downloadFormats: downloadFormat,
-
   @match('status', /init|wait/)
   isDownloading: false,
 
-  @computed('isDownloading', 'defaultPacketFormat', 'i18n.locale')
-  caption(isDownloading, defaultPacketFormat) {
+  @computed('defaultPacketFormat')
+  _defaultDownloadFormat(defaultPacketFormat) {
+    return this.get('downloadFormats').find((x) => x.key === defaultPacketFormat);
+  },
+
+  @computed('isDownloading', '_defaultDownloadFormat', 'i18n.locale')
+  caption(isDownloading, defaultDownloadFormat) {
     if (isDownloading) {
       return this.get('i18n').t('recon.packetView.isDownloading');
     }
-    const packetFormat = downloadFormat.find((x) => x.key === defaultPacketFormat);
-    return this.get('i18n').t(`recon.packetView.${packetFormat.value}`);
+    return this.get('i18n').t(`recon.packetView.${defaultDownloadFormat.value}`);
   },
 
-  @computed('hasPayload', 'isDownloading')
-  isDisabled(hasPayload, isDownloading) {
-    if (hasPayload && !isDownloading) {
+  // Default download button will be disabled if the selected default format is disabled or download is in progress
+  @computed('isDownloading', '_defaultDownloadFormat')
+  isCaptionDisabled(isDownloading, defaultDownloadFormat) {
+    if (defaultDownloadFormat.isEnabled && !isDownloading) {
       return false;
     }
     return true;
@@ -67,13 +66,17 @@ const DownloadPacketComponent = Component.extend({
 
   @not('accessControl.hasInvestigateContentExportAccess') isHidden: true,
 
-  @computed('isDisabled')
-  isPayloadDisabled(isDisabled) {
-    if (isDisabled) {
-      return 'disabled';
+  // if there is no payload, none of the options will be enabled, thus eliminating the need to toggle
+  // if the download is in progress, downloading from other options should not be allowed
+  @computed('isDownloading', 'hasPayload')
+  isToggleDisabled(isDownloading, hasPayload) {
+
+    if (!isDownloading && hasPayload) {
+      return false;
     }
-    return 'enabled';
+    return true;
   },
+
   actions: {
     processDefault(type) {
       if (this.get('isExpanded')) {
