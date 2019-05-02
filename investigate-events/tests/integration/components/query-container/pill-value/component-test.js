@@ -8,7 +8,8 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
-  AFTER_OPTION_QUERY_LABEL
+  AFTER_OPTION_QUERY_LABEL,
+  AFTER_OPTION_TEXT_DISABLED_LABEL
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -439,5 +440,19 @@ module('Integration | Component | Pill Value', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
     assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), AFTER_OPTION_TEXT_LABEL, 'second Advanced Option was not highlighted');
+  });
+
+  test('david it renders a disabled option for text filters when there is a text filter already', async function(assert) {
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        hasTextPill=true
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+    // trigger Text Filter option
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_DISABLED_LABEL));
+    assert.ok(textFilter, 'unable to find Text Filter option');
   });
 });
