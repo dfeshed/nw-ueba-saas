@@ -62,6 +62,9 @@ def setBaseUrl (
     }else if (rpmVeriosn == '11.3.0.1'){
         baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.3/11.3.0/11.3.0.1-" + stability + "/"
         println (baseUrl)
+    }else if (rpmVeriosn == '11.3.1.0'){
+        baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.3/11.3.1/11.3.1.0-" + stability + "/"
+        println (baseUrl)
     }else if (rpmVeriosn == '11.4.0.0'){
         baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.4/11.4.0/11.4.0.0-" + stability + "/"
     }
