@@ -4102,7 +4102,9 @@ export default {
         systemCreated: 'System Created',
         recurrenceEvery: 'Every',
         enabled: 'Enabled',
-        disabled: 'Disabled'
+        disabled: 'Disabled',
+        fileSettings: 'File Settings',
+        filePolicyEnabled: 'Status'
       },
       modals: {
         deletePolicies: {

@@ -324,6 +324,21 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizFileProtocol(protocol) {
+    _set(this.state, 'usm.policyWizard.policy.protocol', protocol);
+    return this;
+  }
+
+  policyWizFilePrimaryDestination(primaryDestination) {
+    _set(this.state, 'usm.policyWizard.policy.primaryDestination', primaryDestination);
+    return this;
+  }
+
+  policyWizFileSecondaryDestination(secondaryDestination) {
+    _set(this.state, 'usm.policyWizard.policy.secondaryDestination', secondaryDestination);
+    return this;
+  }
+
   /* TODO is this deprecated? Should this be deleted when group wizard is done ??? */
   group(config) {
     _set(this.state, 'usm.group', config);
@@ -730,6 +745,31 @@ export default class DataHelper {
   }
 
   setPolicyWindowsSendTestLog(config) {
+    _set(this.state, 'usm.policies.focusedItem.sendTestLog', config);
+    return this;
+  }
+
+  setPolicyFilePrimaryDest(config) {
+    _set(this.state, 'usm.policies.focusedItem.primaryDestination', config);
+    return this;
+  }
+
+  setPolicyFileSecondaryDest(config) {
+    _set(this.state, 'usm.policies.focusedItem.secondaryDestination', config);
+    return this;
+  }
+
+  setPolicyFileProtocol(config) {
+    _set(this.state, 'usm.policies.focusedItem.protocol', config);
+    return this;
+  }
+
+  setPolicyFileEnabled(config) {
+    _set(this.state, 'usm.policies.focusedItem.enabled', config);
+    return this;
+  }
+
+  setPolicyFileSendTestLog(config) {
     _set(this.state, 'usm.policies.focusedItem.sendTestLog', config);
     return this;
   }
