@@ -266,12 +266,23 @@ export default Component.extend({
     onInput(input, powerSelectAPI /* event */) {
       const isSpace = input.slice(-1) === ' ';
       const { results, resultsCount } = powerSelectAPI;
+      const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
       if (isSpace && resultsCount === 1) {
-        this._broadcast(MESSAGE_TYPES.META_SELECTED, results[0]);
+        if (afterOptionsMenuItem) {
+          this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
+          powerSelectAPI.actions.search('');
+        } else {
+          this._broadcast(MESSAGE_TYPES.META_SELECTED, results[0]);
+        }
       } else if (isSpace && resultsCount > 1) {
-        const match = this._hasExactMatch(input.trim(), results);
-        if (match) {
-          this._broadcast(MESSAGE_TYPES.META_SELECTED, match);
+        if (afterOptionsMenuItem) {
+          this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
+          powerSelectAPI.actions.search('');
+        } else {
+          const match = this._hasExactMatch(input.trim(), results);
+          if (match) {
+            this._broadcast(MESSAGE_TYPES.META_SELECTED, match);
+          }
         }
       } else if (input.length === 0) {
         this.set('selection', null);
@@ -311,11 +322,11 @@ export default Component.extend({
           // runs before power-select reacts to the key press.
           this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
           powerSelectAPI.actions.search('');
+          next(this, () => powerSelectAPI.actions.open());
         } else if (selection && selected && selection === selected) {
           // If the user presses ENTER, selecting a meta that was already
           // selected, power-select does nothing. We want the focus to move onto
           // the pill operator.
-          // GTB    this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
           this.set('metaSelectedTimer', later(this, this._broadcast, {
             type: MESSAGE_TYPES.META_SELECTED,
             data: selection

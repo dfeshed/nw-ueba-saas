@@ -15,6 +15,7 @@ import PILL_SELECTORS from '../pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
 import { throwSocket } from '../../../../helpers/patch-socket';
 import { invalidServerResponseText } from '../../../../unit/actions/data';
+import { AFTER_OPTION_TEXT_LABEL } from 'investigate-events/constants/pill';
 
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
@@ -511,7 +512,6 @@ module('Integration | Component | Query Pills', function(hooks) {
     const [ [ calledWith ] ] = resetGuidedPillSpy.args;
     assert.deepEqual(calledWith.id, pillsData[0].id, 'shows as being selected as is being sent to be deselected');
   });
-
 
   test('If a pill is doubled clicked, a message will be sent to  mark it for editing', async function(assert) {
     assert.expect(1);
@@ -1989,7 +1989,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.powerSelectDropdown).length, 1, 'Nothing should happen.Should still have the new pill template meta open');
   });
 
-  skip('Meta pill can create a free-form pill', async function(assert) {
+  test('Meta pill can create a free-form pill', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -2009,10 +2009,10 @@ module('Integration | Component | Query Pills', function(hooks) {
     //   { freeFormText: 'foobar', position: 0, shouldAddFocusToNewPill: false, fromFreeFormMode: false, shouldForceComplex: true },
     //   'The action creator was called with the right arguments'
     // );
-    assert.equal(this.$(PILL_SELECTORS.complexPill).prop('title'), '(foobar)', 'Expected stringified pill');
+    assert.equal(this.$(PILL_SELECTORS.complexPill).prop('title'), 'foobar', 'Expected stringified pill');
   });
 
-  skip('Meta pill can create a text pill', async function(assert) {
+  test('Meta pill can create a text pill', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -2024,8 +2024,9 @@ module('Integration | Component | Query Pills', function(hooks) {
     // enter non-meta value for pill and press ENTER
     await clickTrigger(PILL_SELECTORS.meta);
     await typeInSearch('foo-bar-baz');
-    const advancedOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
-    await click(advancedOptions[1]);
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_LABEL));
+    await click(textFilter);
     await settled();
     // assert.equal(addTextFilterSpy.callCount, 1, 'The add text filter creator was called once');
     // assert.deepEqual(
@@ -2169,6 +2170,49 @@ module('Integration | Component | Query Pills', function(hooks) {
     await click(PILL_SELECTORS.recentQueriesTab);
     // Should be able to see pill tabs with recent-queries selected
     assertTabContents(assert, PILL_SELECTORS.metaTab, PILL_SELECTORS.recentQueriesTabSelected);
+  });
 
+  test('Power-select drop down appears after creating text filter from pill-meta', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .build();
+    await render(hbs`
+      {{query-container/query-pills
+        isActive=true
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeInSearch('jazzy');
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_LABEL));
+    await click(textFilter);
+    await settled();
+    assert.ok(find(PILL_SELECTORS.textPill), 'text pill was not created');
+    assert.ok(find(PILL_SELECTORS.powerSelectDropdown), 'power-select dropdown not rendered');
+  });
+
+  test('Power-select drop down appears after creating text filter from pill-operator', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .build();
+    await render(hbs`
+      {{query-container/query-pills
+        isActive=true
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // option A
+    await typeInSearch('jazzy');
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_LABEL));
+    await click(textFilter);
+    await settled();
+    assert.ok(find(PILL_SELECTORS.textPill), 'text pill was not created');
+    assert.ok(find(PILL_SELECTORS.textPill).textContent, 'a jazzy', 'text pill has incorrect text');
+    assert.ok(find(PILL_SELECTORS.powerSelectDropdown), 'power-select dropdown not rendered');
   });
 });

@@ -237,8 +237,14 @@ export default Component.extend({
       const isSpace = input.slice(-1) === ' ';
       const { options, results } = powerSelectAPI;
       const operatorAcceptsValue = this._operatorAcceptsValue(options, input);
+      const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
       if (isSpace && results.length === 1 && operatorAcceptsValue) {
-        this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, results[0]);
+        if (afterOptionsMenuItem) {
+          this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
+          powerSelectAPI.actions.search('');
+        } else {
+          this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, results[0]);
+        }
       } else if (input.length === 0) {
         this.set('selection', null);
         // Set the power-select highlight on the next runloop so that the
@@ -267,6 +273,7 @@ export default Component.extend({
           // empty search to restore all the options in the dropdown.
           this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
           powerSelectAPI.actions.search('');
+          next(this, () => powerSelectAPI.actions.open());
         } else if (selection && selected && selection === selected) {
           // This is called before the change event. We need to delay
           // performing this action to see if a change event occures. If it
