@@ -180,10 +180,13 @@ The following is a list of steps to perform to close out a sprint.
 - Drogon: Todd Little
 - House Stark: Geoff Bell
 ### Respond
-- Swayze: Toran Billups
+- Swayze: Abhinav Iyappan
 ### Endpoint
 - Beatles: Raghavendra Bhat
 - Nirvana: Meghna Murali
-- Orchestra: Suraj Sharma
+- Orchestra: Meghna Murali
+### USM
+- Lumberjanes: Srinivas Palghat
+- Boston Lager: Scott Volk
 ### UEBA
 - Wizard: Vishwas Gahoi

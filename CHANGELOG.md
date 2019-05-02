@@ -1,3 +1,29 @@
+# [12.2.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v12.2.0)
+## Features
+* [ASOC-43640](https://bedfordjira.na.rsa.net/browse/ASOC-43640):&emsp;Redux for Add to List
+* [ASOC-60413](https://bedfordjira.na.rsa.net/browse/ASOC-60413):&emsp;When RIAC is enabled Incidents should only be viewable by assignee
+* [ASOC-60414](https://bedfordjira.na.rsa.net/browse/ASOC-60414):&emsp;Establish a pattern for Incident listing page
+* [ASOC-65134](https://bedfordjira.na.rsa.net/browse/ASOC-65134):&emsp;Update operator so that it is capable of creating text search pill
+* [ASOC-65135](https://bedfordjira.na.rsa.net/browse/ASOC-65135):&emsp;Update value so that it is capable of creating text search pill
+* [ASOC-68244](https://bedfordjira.na.rsa.net/browse/ASOC-68244):&emsp;Duplicate data size in a normalized event
+* [ASOC-70652](https://bedfordjira.na.rsa.net/browse/ASOC-70652):&emsp;Add ability to find content inside of table
+* [ASOC-73371](https://bedfordjira.na.rsa.net/browse/ASOC-73371):&emsp;Use Calculated Event Limit When Making Event Stream Calls
+* [ASOC-73386](https://bedfordjira.na.rsa.net/browse/ASOC-73386):&emsp;Spike UX approach with tabs on current query UI control
+* [ASOC-73812](https://bedfordjira.na.rsa.net/browse/ASOC-73812):&emsp;Create USM sources page & feature toggle
+* [ASOC-74496](https://bedfordjira.na.rsa.net/browse/ASOC-74496):&emsp;Optimization to only query the last time range since the aggregation rule engine job has run
+* [ASOC-74869](https://bedfordjira.na.rsa.net/browse/ASOC-74869):&emsp;UI Component for Saving the column preference
+* [ASOC-74870](https://bedfordjira.na.rsa.net/browse/ASOC-74870):&emsp;Integration of API and UI Component
+* [ASOC-74981](https://bedfordjira.na.rsa.net/browse/ASOC-74981):&emsp;UI to Add support for multi select so we can export multiple rules at a time
+* [ASOC-75265](https://bedfordjira.na.rsa.net/browse/ASOC-75265):&emsp;Get List of Hosts from Endpoint Server via API
+* [ASOC-75395](https://bedfordjira.na.rsa.net/browse/ASOC-75395):&emsp;Hide alerts tab if RIAC is enabled
+* [ASOC-75523](https://bedfordjira.na.rsa.net/browse/ASOC-75523):&emsp;Prevent IE Access
+* [ASOC-75569](https://bedfordjira.na.rsa.net/browse/ASOC-75569):&emsp;Validate Migration of Data Privacy
+* [ASOC-75681](https://bedfordjira.na.rsa.net/browse/ASOC-75681):&emsp;Toggle for file policy
+* [ASOC-75683](https://bedfordjira.na.rsa.net/browse/ASOC-75683):&emsp;File policy creation wizard for identity
+* [ASOC-75685](https://bedfordjira.na.rsa.net/browse/ASOC-75685):&emsp;Refactor radio buttons to a common component across policy types
+* [ASOC-76238](https://bedfordjira.na.rsa.net/browse/ASOC-76238):&emsp;Add File Policy source type in policy creation
+
+
 # [12.1.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v12.1.0)
 ## Features
 * [ASOC-65130](https://bedfordjira.na.rsa.net/browse/ASOC-65130):&emsp;Update Meta Drop Down so it can Create a text search pill
