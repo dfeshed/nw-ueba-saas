@@ -125,6 +125,16 @@ export const hasPayload = createSelector(
   (headerItems) => _hasItem(headerItems, 'payloadSize')
 );
 
+const _hasRequestPayload = createSelector(
+  headerItems,
+  (headerItems) => _hasItem(headerItems, 'requestPayloadSize')
+);
+
+const _hasResponsePayload = createSelector(
+  headerItems,
+  (headerItems) => _hasItem(headerItems, 'responsePayloadSize')
+);
+
 const _hasItem = (headerItems, item) => {
 
   const headerItem = getHeaderItem(headerItems, item);
@@ -133,28 +143,28 @@ const _hasItem = (headerItems, item) => {
 };
 
 export const getNetworkDownloadOptions = createSelector(
-  [headerItems],
-  (headerItems) => {
+  [hasPackets, hasPayload, _hasRequestPayload, _hasResponsePayload],
+  (hasPackets, hasPayload, hasRequestPayload, hasResponsePayload) => {
     const downloadFormat = [
       {
         key: 'PCAP',
         value: 'downloadPCAP',
-        isEnabled: _hasItem(headerItems, 'packetSize') // total packet header and payload bytes request and response
+        isEnabled: hasPackets // total packet header and payload bytes request and response
       },
       {
         key: 'PAYLOAD',
         value: 'downloadPayload',
-        isEnabled: _hasItem(headerItems, 'packetCount') // total packet count request and response
+        isEnabled: hasPayload // total packet payload only bytes request and response
       },
       {
         key: 'PAYLOAD1',
         value: 'downloadPayload1',
-        isEnabled: _hasItem(headerItems, 'requestPacketCount') // total packet count request only
+        isEnabled: hasRequestPayload // total packet payload only bytes request only
       },
       {
         key: 'PAYLOAD2',
         value: 'downloadPayload2',
-        isEnabled: _hasItem(headerItems, 'responsePacketCount') // total packet count response only
+        isEnabled: hasResponsePayload // total packet payload only bytes response only
       }
     ];
     return downloadFormat;

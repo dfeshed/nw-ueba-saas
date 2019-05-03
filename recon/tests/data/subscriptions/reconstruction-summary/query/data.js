@@ -103,13 +103,13 @@ const summaryAttributesWithPayloads = [
     'name': 'requestPacketSize',
     'key': '',
     'type': 'UInt64',
-    'value': 7361
+    'value': 7360
   },
   {
     'name': 'responsePacketSize',
     'key': '',
     'type': 'UInt64',
-    'value': 0
+    'value': 1
   },
   {
     'name': 'payloadSize',
@@ -144,7 +144,7 @@ const summaryAttributesWithPayloads = [
     'name': 'responsePacketCount',
     'key': '',
     'type': 'UInt64',
-    'value': 0
+    'value': 1
   }
 ];
 
@@ -153,19 +153,19 @@ const summaryAttributesNoPayloads = [
     'name': 'packetSize',
     'key': '',
     'type': 'UInt64',
-    'value': 0
+    'value': 3
   },
   {
     'name': 'requestPacketSize',
     'key': '',
     'type': 'UInt64',
-    'value': 0
+    'value': 2
   },
   {
     'name': 'responsePacketSize',
     'key': '',
     'type': 'UInt64',
-    'value': 0
+    'value': 1
   },
   {
     'name': 'payloadSize',
@@ -189,19 +189,19 @@ const summaryAttributesNoPayloads = [
     'name': 'packetCount',
     'key': '',
     'type': 'UInt64',
-    'value': 0
+    'value': 3
   },
   {
     'name': 'requestPacketCount',
     'key': '',
     'type': 'UInt64',
-    'value': 0
+    'value': 2
   },
   {
     'name': 'responsePacketCount',
     'key': '',
     'type': 'UInt64',
-    'value': 0
+    'value': 1
   }
 ];
 

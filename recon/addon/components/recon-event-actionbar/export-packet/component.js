@@ -3,13 +3,13 @@ import { connect } from 'ember-redux';
 import computed, { not, match } from 'ember-computed-decorators';
 import { extractFiles, didDownloadFiles } from 'recon/actions/interaction-creators';
 import layout from './template';
-import { hasPayload, getNetworkDownloadOptions } from 'recon/reducers/packets/selectors';
+import { hasPackets, getNetworkDownloadOptions } from 'recon/reducers/packets/selectors';
 import { inject as service } from '@ember/service';
 
 const stateToComputed = ({ recon, recon: { files, visuals } }) => ({
   status: files.fileExtractStatus,
   extractLink: files.fileExtractLink,
-  hasPayload: hasPayload(recon),
+  hasPackets: hasPackets(recon),
   downloadFormats: getNetworkDownloadOptions(recon),
   defaultPacketFormat: visuals.defaultPacketFormat,
   isAutoDownloadFile: files.isAutoDownloadFile
@@ -66,12 +66,12 @@ const DownloadPacketComponent = Component.extend({
 
   @not('accessControl.hasInvestigateContentExportAccess') isHidden: true,
 
-  // if there is no payload, none of the options will be enabled, thus eliminating the need to toggle
+  // if there are no packets, none of the options will be enabled, thus eliminating the need to toggle
   // if the download is in progress, downloading from other options should not be allowed
-  @computed('isDownloading', 'hasPayload')
-  isToggleDisabled(isDownloading, hasPayload) {
+  @computed('isDownloading', 'hasPackets')
+  isToggleDisabled(isDownloading, hasPackets) {
 
-    if (!isDownloading && hasPayload) {
+    if (!isDownloading && hasPackets) {
       return false;
     }
     return true;

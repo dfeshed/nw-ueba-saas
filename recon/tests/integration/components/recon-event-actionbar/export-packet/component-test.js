@@ -226,13 +226,12 @@ module('Integration | Component | recon event actionbar/export packet', function
     });
   });
 
-  test('Recon should disable default Packet format set by user along with dropdown toggle if no payload available', async function(assert) {
+  test('Recon should disable default Packet format set by user along with dropdown toggle if no packet (header & payload) available', async function(assert) {
 
     const redux = this.owner.lookup('service:redux');
-    new DataHelper(redux).initializeDataWithoutPayloads();
+    new DataHelper(redux).noPackets();
 
     await render(hbs`{{recon-event-actionbar/export-packet}}`);
-
     assert.equal(findAll(disabledButtonSelector).length, 2, 'Both caption and toggle disabled');
 
   });
@@ -251,6 +250,19 @@ module('Integration | Component | recon event actionbar/export packet', function
 
     assert.equal(findAll(`${buttonMenuSelector} li:nth-of-type(3) a.disabled`).length, 0, 'Enabled Download Request Payload');
     assert.equal(findAll(`${buttonMenuSelector} li:nth-of-type(4) a.disabled`).length, 1, 'Disabled Download Response Payload');
+
+  });
+
+  test('PCAP download option available for packets without payloads', async function(assert) {
+
+    const redux = this.owner.lookup('service:redux');
+    new DataHelper(redux).initializeDataWithoutPayloads();
+
+    await render(hbs`{{recon-event-actionbar/export-packet}}`);
+
+    await click(dropdownArrowSelector);
+
+    assert.equal(findAll(`${buttonMenuSelector} a.disabled`).length, 3, 'Download Payload options are disabled, only PCAP download available');
 
   });
 
