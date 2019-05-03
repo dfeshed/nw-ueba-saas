@@ -3,6 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 module('Integration | Component | users-tab', function(hooks) {
   setupRenderingTest(hooks, {
@@ -10,7 +11,7 @@ module('Integration | Component | users-tab', function(hooks) {
   });
 
   hooks.beforeEach(function() {
-    this.owner.inject('component', 'i18n', 'service:i18n');
+    initialize(this.owner);
   });
 
   test('it renders', async function(assert) {

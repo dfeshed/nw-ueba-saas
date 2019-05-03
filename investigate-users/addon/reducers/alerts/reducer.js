@@ -5,6 +5,7 @@ import moment from 'moment';
 
 export const initialFilterState = Immutable.from({
   alert_start_range: `${moment().subtract('months', 3).unix() * 1000},${moment().unix() * 1000}`,
+  showCustomDate: false,
   sort_direction: 'DESC',
   sort_field: 'startDate',
   total_severity_count: true,
@@ -62,7 +63,7 @@ const tabs = handleActions({
     return state.set('filter', filter);
   },
   [ACTION_TYPES.RESET_ALERTS]: (state) => {
-    const newState = state.merge({ topAlerts: [], topAlertsError: null, alertsForTimelineError: null, alertListError: null, alertList: [], currentPage: 0, filter: { fromPage: 1 } });
+    const newState = state.merge({ topAlerts: [], topAlertsError: null, alertsForTimelineError: null, alertListError: null, alertList: [], currentPage: 0 });
     return newState.setIn(['filter', 'fromPage'], 1);
   }
 }, initialState);

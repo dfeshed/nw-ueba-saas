@@ -104,6 +104,9 @@ const updateFilter = (filter, needNotToPullAlerts) => {
 const updateDateRangeFilter = (filterOption) => {
   return (dispatch, getState) => {
     let filter = getFilter(getState());
+    if (filterOption.operator === 'LESS_THAN') {
+      filter = filter.setIn(['showCustomDate'], false);
+    }
     if (filterOption.operator === 'GREATER_THAN') {
       filter = filter.setIn(['alert_start_range'], `${moment().subtract(filterOption.unit, filterOption.value[0]).unix() * 1000}, ${moment().unix() * 1000}`);
     } else {

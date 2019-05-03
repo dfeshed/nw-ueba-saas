@@ -4,6 +4,7 @@ import UserOverview from '../data/presidio/usr_overview';
 import alertsList from '../data/presidio/alerts-list';
 import alertOverview from '../data/presidio/alert_overview';
 import alertByDayAndSeverity from '../data/presidio/alert-by-day-and-severity';
+import moment from 'moment';
 
 const _set = (obj, key, val) => {
   if (obj[key]) {
@@ -94,7 +95,7 @@ export default class DataHelper {
           severity: null,
           feedback: null,
           indicator_types: null,
-          alert_start_range: null,
+          alert_start_range: `${moment().subtract('months', 3).unix() * 1000},${moment().unix() * 1000}`,
           fromPage: 1,
           size: 25
         },

@@ -319,6 +319,30 @@ module('Unit | Actions | Alert Details', (hooks) => {
     updateDateRangeFilter(filterValue)(dispatch, getState);
   });
 
+  test('it can updateDateRangeFilter for showCustomDate false', (assert) => {
+    assert.expect(2);
+    const done = assert.async();
+    const filterValue = {
+      name: 'alertTimeRange',
+      operator: 'LESS_THAN',
+      value: [3],
+      unit: 'Months'
+    };
+    const dispatch = (fn) => {
+      fn(({ type, payload }) => {
+        if (type && payload) {
+          assert.equal('INVESTIGATE_USER::UPDATE_FILTER_FOR_ALERTS', type);
+          assert.equal(payload.showCustomDate, false);
+          done();
+        }
+      });
+    };
+    const getState = () => {
+      return { alerts: { filter: initialFilterState } };
+    };
+    updateDateRangeFilter(filterValue)(dispatch, getState);
+  });
+
   test('it can updateDateRangeFilter for wrong custom date', (assert) => {
     const done = assert.async();
     assert.expect(0);

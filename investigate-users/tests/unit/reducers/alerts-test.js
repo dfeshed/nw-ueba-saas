@@ -27,6 +27,7 @@ const resetState = Immutable.from({
   filter: {
     sort_direction: 'DESC',
     sort_field: 'startDate',
+    showCustomDate: false,
     total_severity_count: true,
     severity: null,
     feedback: null,
@@ -116,10 +117,11 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
 
     const result = reducer(Immutable.from({ filter: resetState.filter }), {
       type: ACTION_TYPES.UPDATE_FILTER_FOR_ALERTS,
-      payload: { feedback: 'none' }
+      payload: { feedback: 'none', showCustomDate: true }
     });
 
     assert.equal(result.filter.feedback, 'none');
+    assert.equal(result.filter.showCustomDate, true);
   });
 
   test('test alerts', (assert) => {
@@ -144,6 +146,7 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
       type: ACTION_TYPES.RESET_ALERTS
     });
     assert.equal(result.alertList.length, 0);
+    assert.equal(result.alertListError, null);
     assert.equal(result.alertListError, null);
     assert.equal(result.topAlertsError, null);
     assert.equal(result.alertsForTimelineError, null);

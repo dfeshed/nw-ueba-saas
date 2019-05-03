@@ -5,6 +5,7 @@ import { select } from 'd3-selection';
 import { scaleBand, scaleLinear, scaleOrdinal } from 'd3-scale';
 import { max } from 'd3-array';
 import { stack } from 'd3-shape';
+import moment from 'moment';
 import { axisBottom } from 'd3-axis';
 import { timeFormat } from 'd3-time-format';
 import computed from 'ember-computed-decorators';
@@ -111,7 +112,7 @@ const OverviewAlertTimelineComponent = Component.extend({
         tooltip.select('text').text(`${d[1] - d[0]} ${d.name} alerts occurred on ${timeFormat('%b %d')(d.data.day)}`);
       })
       .on('click', (d) => {
-        _that.applyFilter(d.name);
+        _that.applyFilter(d.name, d.data.day);
       });
 
     g.append('g')
@@ -123,9 +124,13 @@ const OverviewAlertTimelineComponent = Component.extend({
     const tooltip = createTooltip(svg);
 
   },
-  applyFilter(selection) {
+  applyFilter(severity, dateTime) {
     this.send('updateFilter', null, true);
-    this.get('applyAlertsFilter')(this.get('filter').merge({ severity: [selection] }));
+    this.get('applyAlertsFilter')(this.get('filter').merge({
+      severity: [severity],
+      alert_start_range: `${dateTime},${moment(dateTime).add(1, 'days').unix() * 1000}`,
+      showCustomDate: true
+    }));
   },
 
   @computed('alerts')

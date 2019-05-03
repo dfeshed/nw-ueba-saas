@@ -9,6 +9,7 @@
     {{#power-select-multiple
       options=severityFilter
       selected=selectedSeverity
+      searchEnabled=false
       onchange=(action 'updateSeverityFilter') as |option|}}
       <span title='{{t (concat 'investigateUsers.severity.' option)}}'>
         {{t (concat 'investigateUsers.severity.' option)}}
@@ -23,9 +24,10 @@
     {{#power-select-multiple
       options=existAlertTypes
       selected=selectedAlertTypes
+      searchField='displayLabel'
       onchange=(action 'updateFilterForAlertTypes') as |option|}}
-      <span title='{{t (concat 'investigateUsers.alerts.alertNames.' option.name '.name')}} {{option.count}}'>
-        {{t (concat 'investigateUsers.alerts.alertNames.' option.name '.name')}} {{option.count}}
+      <span title='{{option.displayLabel}}'>
+        {{option.displayLabel}}
       </span>
     {{/power-select-multiple}}
   </label>
@@ -37,9 +39,10 @@
     {{#power-select-multiple
       options=existAnomalyTypes
       selected=selectedAnomalyTypes
+      searchField='displayLabel'
       onchange=(action 'updateFilterForAnomalyTypes') as |option|}}
-      <span title='{{t (concat 'investigateUsers.alerts.indicator.indicatorNames.' option.name '.name')}} {{option.count}}'>
-        {{t (concat 'investigateUsers.alerts.indicator.indicatorNames.' option.name '.name')}} {{option.count}}
+      <span title='{{option.displayLabel}}'>
+        {{option.displayLabel}}
       </span>
     {{/power-select-multiple}}
   </label>

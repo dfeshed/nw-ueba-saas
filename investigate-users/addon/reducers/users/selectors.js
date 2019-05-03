@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import _ from 'lodash';
+import { lookup } from 'ember-dependency-lookup';
 
 const _usersSeverity = (state) => state.users.usersSeverity;
 
@@ -91,15 +92,23 @@ export const isWatched = createSelector(
 export const getExistAlertTypes = createSelector(
   [_existAlertTypes],
   (existAlertTypes) => {
+    const i18n = lookup('service:i18n');
     return _.map(existAlertTypes, (value) => {
-      return { id: value.alertTypes.getIn('0'), name: value.alertTypes.getIn('0'), count: `(${value.count} Users)` };
+      return {
+        id: value.alertTypes.getIn('0'),
+        displayLabel: `${i18n.t(`investigateUsers.alerts.alertNames.${value.alertTypes.getIn('0')}.name`)} (${value.count} Users)`
+      };
     });
   });
 
 export const getExistAnomalyTypes = createSelector(
   [_existAnomalyTypes],
   (existAnomalyTypes) => {
-    return _.toArray((_.mapValues(existAnomalyTypes, (value, key) => ({ id: key, name: key, count: `(${value} Users)` }))));
+    const i18n = lookup('service:i18n');
+    return _.toArray((_.mapValues(existAnomalyTypes, (value, key) => ({
+      id: key,
+      displayLabel: `${i18n.t(`investigateUsers.alerts.indicator.indicatorNames.${key}.name`)} (${value} Users)`
+    }))));
   });
 
 export const getSelectedAlertTypes = createSelector(

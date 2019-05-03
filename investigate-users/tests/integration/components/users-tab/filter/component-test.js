@@ -4,8 +4,8 @@ import { render, findAll, find, settled, fillIn, waitUntil } from '@ember/test-h
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchFetch } from '../../../../helpers/patch-fetch';
-import { next } from '@ember/runloop';
 import { Promise } from 'rsvp';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 module('Integration | Component | users-tab/filter', function(hooks) {
   setupRenderingTest(hooks, {
@@ -13,6 +13,7 @@ module('Integration | Component | users-tab/filter', function(hooks) {
   });
 
   hooks.beforeEach(function() {
+    initialize(this.owner);
     patchFetch(() => {
       return new Promise(function(resolve) {
         resolve({
@@ -31,8 +32,6 @@ module('Integration | Component | users-tab/filter', function(hooks) {
     assert.equal(findAll('.users-tab_filter_filter').length, 1);
     assert.equal(findAll('.users-tab_filter_favorites').length, 1);
     assert.equal(find('.users-tab_filter_user').textContent.replace(/\s/g, ''), 'RiskyUsers(0)WatchlistUsers(0)AdminUsers(0)');
-    await this.$("button:contains('Reset')").click();
-    return settled();
   });
 
   test('it can save as filter for cancel', async function(assert) {
@@ -43,12 +42,10 @@ module('Integration | Component | users-tab/filter', function(hooks) {
     `);
     await this.$("button:contains('Add')").click();
     return waitUntil(() => this.$('.rsa-application-modal.is-open').length === 1).then(() => {
-      next(() => {
-        assert.equal(find('.users-tab_filter_controls_save-as-favorites_name_label').textContent.replace(/\s/g, ''), 'FilterName:');
-        this.$("button:contains('Cancel')").click();
-        return waitUntil(() => this.$('.rsa-application-modal.is-open').length === 0).then(() => {
-          done();
-        });
+      assert.equal(find('.users-tab_filter_controls_save-as-favorites_name_label').textContent.replace(/\s/g, ''), 'FilterName:');
+      this.$("button:contains('Cancel')").click();
+      return waitUntil(() => this.$('.rsa-application-modal.is-open').length === 0).then(() => {
+        done();
       });
     });
   });
