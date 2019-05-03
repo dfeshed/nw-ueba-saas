@@ -3,6 +3,8 @@ import computed, { match, alias } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import { getDownloadOptions } from 'investigate-events/reducers/investigate/event-results/selectors';
+// TODO enable flash messaging after a certain fixed time
+// import 'didQueueDownload'
 import { didDownloadFiles, extractFiles } from 'investigate-events/actions/notification-creators';
 
 const stateToComputed = (state) => ({
@@ -17,13 +19,18 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   didDownloadFiles,
   extractFiles
+  // TODO enable flash messaging after a certain fixed time
+  // didQueueDownload
 };
 
 const DownloadDropdown = Component.extend({
   i18n: service(),
   accessControl: service(),
   classNames: ['rsa-investigate-events-table__header__downloadEvents'],
-  classNameBindings: ['isDisabled', 'extractWarningClass'],
+
+  // TODO enable flash messaging after a certain fixed time
+  // add 'extractWarningClass'
+  classNameBindings: ['isDisabled'],
 
   @alias('accessControl.hasInvestigateContentExportAccess') permissionAllowsDownload: true,
 
@@ -39,9 +46,10 @@ const DownloadDropdown = Component.extend({
     return true;
   },
 
-  // binds class extract-warned to component when file extraction is queued
-  // due to navigating away in the middle of download
-  @computed('status')
+  // displays a flash message pointing to job queue and changes fileExtractStatus to notified
+  // when file extraction is queued due to navigating away in the middle of download
+  // TODO enable flash messaging after a certain fixed time
+  /* @computed('status')
   extractWarningClass(status) {
 
     if (status === 'queued') {
@@ -49,10 +57,11 @@ const DownloadDropdown = Component.extend({
       if (flashMessages && flashMessages.info) {
         const url = `${window.location.origin}/profile#jobs`;
         flashMessages.info(i18n.t('recon.extractWarning', { url }), { sticky: true });
-        return 'extract-warned';
+        this.send('didQueueDownload');
       }
     }
   },
+  */
 
   @computed('isAllEventsSelected', 'isDownloading', 'i18n')
   downloadTitle(isAllEventsSelected, isDownloading, i18n) {

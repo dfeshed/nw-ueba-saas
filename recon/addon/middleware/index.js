@@ -31,7 +31,8 @@ if (config.environment !== 'test') {
       'visuals.isMetaShown',
       'visuals.defaultLogFormat',
       'visuals.defaultPacketFormat',
-      'files.isAutoDownloadFile'
+      'files.isAutoDownloadFile',
+      'files.fileExtractStatus'
     ]
   );
 

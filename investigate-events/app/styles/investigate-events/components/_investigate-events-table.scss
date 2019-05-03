@@ -66,9 +66,10 @@
         .ember-power-select-trigger{
           @include border(1px, solid, primary, dark);
           background-color: background-color(primary, darkest);
+          border-color: $formButtonDisabledBorderColor;
           cursor: default;
           span {
-            color : text-color(primary, dark) !important;
+            color: $formButtonDisabledTypeColor;
           }
         }
       }

@@ -91,6 +91,8 @@ export const teardownNotifications = () => ({ type: ACTION_TYPES.NOTIFICATION_TE
 
 export const didDownloadFiles = () => ({ type: ACTION_TYPES.FILE_EXTRACT_JOB_DOWNLOADED });
 
+export const didQueueDownload = () => ({ type: ACTION_TYPES.FILE_EXTRACT_NOTIFIED });
+
 // *******
 // END - Copy/pasted download code from Recon
 // *******

@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import Service from '@ember/service';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
@@ -66,7 +66,9 @@ module('Integration | Component | recon container', function(hooks) {
     assert.equal(findAll('.header-button').length, 2, 'Recon container when provided with a closeAction does not run in standalone mode and has \'close and expand\' buttons');
   });
 
-  test('recon container executes flash message info indicating download queued in job queue', async function(assert) {
+  // TODO enable flash messaging after a certain fixed time
+  // might not be needed
+  skip('recon container executes flash message info indicating download queued in job queue', async function(assert) {
     assert.expect(1);
 
     new ReduxDataHelper(setState).setFileExtractStatus('queued').build();

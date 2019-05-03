@@ -30,14 +30,14 @@ const filesInitialState = Immutable.from({
  * @param {Object} state The current state of Investigate
  * @private
  */
-const _fileExtractState = (state) => ({
-  fileExtractStatus: (state.fileExtractStatus === 'wait' ||
-                      state.fileExtractStatus === 'queued') ? 'queued' : null
-});
+const _fileExtractEnqueueState = (fileExtractStatus) => fileExtractStatus === 'wait' || fileExtractStatus === 'queued' ? 'queued' : null;
+
+const _fileExtractQueueUpdateState = (fileExtractStatus) => fileExtractStatus === 'queued' ? 'notified' : fileExtractStatus;
+
 export default handleActions({
 
   [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state) => {
-    return state.merge(_fileExtractState(state));
+    return state.merge({ 'fileExtractStatus': _fileExtractEnqueueState(state.fileExtractStatus) });
   },
 
   [ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE]: (state, action) => {
@@ -56,18 +56,25 @@ export default handleActions({
     return state.merge(fileExtractInitialState);
   },
 
+  [ACTION_TYPES.FILE_EXTRACT_NOTIFIED]: (state) => {
+    return state.merge({ 'fileExtractStatus': _fileExtractQueueUpdateState(state.fileExtractStatus) });
+  },
+
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
     const isAutoDownloadFile = _.get(eventAnalysisPreferences, 'autoDownloadExtractedFiles', state.isAutoDownloadFile);
     return state.merge({ isAutoDownloadFile });
   },
 
   [ACTION_TYPES.REHYDRATE]: (state, { payload }) => {
-    return state.set('isAutoDownloadFile', _.get(payload, 'investigate.files.isAutoDownloadFile', state.isAutoDownloadFile));
+    const isAutoDownloadFile = _.get(payload, 'investigate.files.isAutoDownloadFile', state.isAutoDownloadFile);
+    let fileExtractStatus = _.get(payload, 'investigate.files.fileExtractStatus', state.fileExtractStatus);
+    fileExtractStatus = _fileExtractEnqueueState(fileExtractStatus);
+    return state.merge({ isAutoDownloadFile, fileExtractStatus });
   },
 
   // Files-based notifcation handling
   [ACTION_TYPES.NOTIFICATION_TEARDOWN_SUCCESS]: (state) => {
-    return state.merge(_fileExtractState(state));
+    return state.merge({ 'fileExtractStatus': _fileExtractEnqueueState(state.fileExtractStatus) });
   }
 }, filesInitialState);
 // *******

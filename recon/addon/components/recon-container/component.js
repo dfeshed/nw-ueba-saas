@@ -13,6 +13,8 @@ import {
   setIndexAndTotal,
   teardownNotifications
 } from 'recon/actions/data-creators';
+// TODO enable flash messaging after a certain fixed time
+// import { didQueueDownload } from 'recon/actions/interaction-creators';
 
 const stateToComputed = ({ recon, recon: { files, visuals, notifications } }) => ({
   isMetaShown: visuals.isMetaShown,
@@ -29,6 +31,8 @@ const dispatchToActions = {
   initializeNotifications,
   setIndexAndTotal,
   teardownNotifications,
+  // TODO enable flash messaging after a certain fixed time
+  // didQueueDownload,
   toggleReconExpanded
 };
 
@@ -176,9 +180,10 @@ const ReconContainer = Component.extend({
     }
   }),
 
-  // binds class extract-warned to component when file extraction is queued
-  // due to navigating away in the middle of download
-  @computed('status')
+  // displays a flash message pointing to job queue and changes fileExtractStatus to notified
+  // when file extraction is queued due to navigating away in the middle of download
+  // TODO enable flash messaging after a certain fixed time
+  /* @computed('status')
   extractWarningClass(status) {
 
     if (status === 'queued') {
@@ -186,10 +191,12 @@ const ReconContainer = Component.extend({
       if (flashMessages && flashMessages.info) {
         const url = `${window.location.origin}/profile#jobs`;
         flashMessages.info(i18n.t('recon.extractWarning', { url }), { sticky: true });
-        return 'extract-warned';
+        this.send('didQueueDownload');
       }
     }
   },
+  */
+
   closeRecon: observer('isReconOpen', function() {
     if (!this.get('isReconOpen')) {
       this.get('closeAction')();

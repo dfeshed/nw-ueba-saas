@@ -20,7 +20,8 @@ if (config.environment !== 'test') {
       'queryNode.previouslySelectedTimeRanges',
       'queryNode.serviceId',
       'queryNode.queryView',
-      'data.reconSize'
+      'data.reconSize',
+      'files.fileExtractStatus'
     ]
   );
 
@@ -41,7 +42,8 @@ if (config.environment !== 'test') {
       'visuals.isMetaShown',
       'visuals.defaultLogFormat',
       'visuals.defaultPacketFormat',
-      'files.isAutoDownloadFile'
+      'files.isAutoDownloadFile',
+      'files.fileExtractStatus'
     ]
   );
 

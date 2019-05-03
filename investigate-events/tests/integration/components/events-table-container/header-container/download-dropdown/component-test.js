@@ -160,12 +160,4 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     assert.equal(findAll(downloadTitle)[0].textContent.trim(), 'Downloading...', 'Download dropdown should indicate Downloading when download in progress');
     assert.ok(find(`${downloadSelector}.is-disabled`), 'Download is disabled');
   });
-
-  test('dropdown executes flash message info indicating download queued in job queue', async function(assert) {
-    new ReduxDataHelper(setState)
-      .setFileExtractStatus('queued')
-      .build();
-    await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
-    assert.ok(find(`${downloadSelector}.extract-warned`), 'Warning issued stating download is queued');
-  });
 });

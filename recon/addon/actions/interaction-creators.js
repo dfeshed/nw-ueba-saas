@@ -86,6 +86,9 @@ const extractFiles = (type = 'FILES') => {
 
 const didDownloadFiles = () => ({ type: ACTION_TYPES.FILE_EXTRACT_JOB_DOWNLOADED });
 
+const didQueueDownload = () => ({ type: ACTION_TYPES.FILE_EXTRACT_NOTIFIED });
+
+
 const showPacketTooltip = (tootipData) => ({
   type: ACTION_TYPES.SHOW_PACKET_TOOLTIP,
   payload: tootipData
@@ -103,6 +106,7 @@ export {
   selectAllFiles,
   extractFiles,
   didDownloadFiles,
+  didQueueDownload,
   fileSelected,
   highlightMeta,
   showPacketTooltip,

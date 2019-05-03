@@ -110,11 +110,9 @@ test('FILE_EXTRACT_JOB_ID_RETRIEVE updates state with error object on failure', 
 
 test('test NOTIFICATION_TEARDOWN_SUCCESS changes fileExtractStatus to queue when wait', function(assert) {
   const action = {
-    type: ACTION_TYPES.NOTIFICATION_TEARDOWN_SUCCESS,
-    payload: {
-      fileExtractStatus: 'wait'
-    }
+    type: ACTION_TYPES.NOTIFICATION_TEARDOWN_SUCCESS
   };
+
   const currentState = initialState.merge({
     fileExtractStatus: 'wait'
   });
@@ -122,6 +120,17 @@ test('test NOTIFICATION_TEARDOWN_SUCCESS changes fileExtractStatus to queue when
   assert.equal(result.fileExtractStatus, 'queued');
 });
 
+test('test FILE_EXTRACT_NOTIFIED changes fileExtractStatus to notified when queued', function(assert) {
+  const action = {
+    type: ACTION_TYPES.FILE_EXTRACT_NOTIFIED
+  };
+
+  const currentState = initialState.merge({
+    fileExtractStatus: 'queued'
+  });
+  const result = reducer(currentState, action);
+  assert.equal(result.fileExtractStatus, 'notified');
+});
 // *******
 // END - Should be moved with Download Manager
 // *******

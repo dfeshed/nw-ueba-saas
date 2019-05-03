@@ -16,7 +16,7 @@ import {
   RECON_PANEL_SIZES
 } from 'investigate-events/constants/panelSizes';
 import { hasInvalidPill, isPillValidationInProgress } from '../reducers/investigate/query-node/selectors';
-import { teardownNotifications, initializeNotifications } from '../actions/notification-creators';
+import { teardownNotifications, initializeNotifications, didQueueDownload } from '../actions/notification-creators';
 
 const SUMMARY_CALL_INTERVAL = 60000;
 let timerId;
@@ -65,7 +65,8 @@ export default Route.extend({
     timerId = setInterval(() => this.get('redux').dispatch(updateSummaryData()), SUMMARY_CALL_INTERVAL);
     // dispatch call to open notification websocket
     this.get('redux').dispatch(initializeNotifications());
-    this._showDownloadQueueNotification();
+    // TODO enable flash messaging after a certain fixed time
+    // this._showDownloadQueueNotification();
   },
 
   deactivate() {
@@ -78,7 +79,8 @@ export default Route.extend({
     if (stopNotifications) {
       stopNotifications();
       this.get('redux').dispatch(teardownNotifications());
-      this._showDownloadQueueNotification();
+      // TODO enable flash messaging after a certain fixed time
+      // this._showDownloadQueueNotification();
     }
   },
 
@@ -161,6 +163,7 @@ export default Route.extend({
       if (flashMessages && flashMessages.info) {
         const url = `${window.location.origin}/profile#jobs`;
         flashMessages.info(i18n.t('recon.extractWarning', { url }), { sticky: true });
+        this.get('redux').dispatch(didQueueDownload());
       }
     }
   },
