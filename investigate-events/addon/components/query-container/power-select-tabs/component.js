@@ -1,9 +1,15 @@
 import Component from '@ember/component';
 
+import * as MESSAGE_TYPES from '../message-types';
+
 export default Component.extend({
   classNames: ['power-select-tabs'],
 
-  activeTab: 'meta',
+  /**
+   * Currently active tab
+   */
+  activePillTab: undefined,
+
   /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
@@ -13,7 +19,9 @@ export default Component.extend({
 
   actions: {
     switchTabs(tab) {
-      this.set('activeTab', tab);
+      if (this.get('activePillTab') !== tab) {
+        this.get('sendMessage')(MESSAGE_TYPES.AFTER_OPTIONS_TAB_CLICKED);
+      }
     }
   }
 });

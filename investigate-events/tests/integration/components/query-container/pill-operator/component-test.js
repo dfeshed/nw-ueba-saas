@@ -9,7 +9,8 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
-  AFTER_OPTION_TEXT_DISABLED_LABEL
+  AFTER_OPTION_TEXT_DISABLED_LABEL,
+  AFTER_OPTION_TAB_META
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -537,5 +538,25 @@ module('Integration | Component | Pill Operator', function(hooks) {
     // get the DOM input element and force in the space, then trigger an inputEvent
     document.querySelector(PILL_SELECTORS.operatorSelectInput).value = 'ends ';
     await triggerEvent(PILL_SELECTORS.operatorSelectInput, 'input');
+  });
+
+  test('it broadcasts a message to toggle tabs', async function(assert) {
+    assert.expect(1);
+    this.set('meta', meta);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'Correct message sent up');
+    });
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.operator);
+
+    await click(PILL_SELECTORS.recentQueriesTab);
   });
 });

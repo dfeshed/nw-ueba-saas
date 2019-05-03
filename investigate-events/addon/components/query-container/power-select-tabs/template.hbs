@@ -1,9 +1,9 @@
 
 <ul class="tabrow">
-  <li class="meta-tab {{if (eq activeTab 'meta') 'selected'}}" {{action 'switchTabs' 'meta'}}>
+  <li class="meta-tab {{if (eq activePillTab 'meta') 'selected'}}" {{action 'switchTabs' 'meta'}}>
     <a href="#">META</a>
   </li>
-  <li class="recent-queries-tab {{if (eq activeTab 'queries') 'selected'}}" {{action 'switchTabs' 'queries'}}>
+  <li class="recent-queries-tab {{if (eq activePillTab 'recent queries') 'selected'}}" {{action 'switchTabs' 'recent queries'}}>
     <a href="#">RECENT QUERIES</a>
   </li>
 </ul>

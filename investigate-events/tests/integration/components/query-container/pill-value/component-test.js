@@ -9,7 +9,8 @@ import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
   AFTER_OPTION_QUERY_LABEL,
-  AFTER_OPTION_TEXT_DISABLED_LABEL
+  AFTER_OPTION_TEXT_DISABLED_LABEL,
+  AFTER_OPTION_TAB_META
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -442,7 +443,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), AFTER_OPTION_TEXT_LABEL, 'second Advanced Option was not highlighted');
   });
 
-  test('david it renders a disabled option for text filters when there is a text filter already', async function(assert) {
+  test('it renders a disabled option for text filters when there is a text filter already', async function(assert) {
     await render(hbs`
       {{query-container/pill-value
         isActive=true
@@ -454,5 +455,48 @@ module('Integration | Component | Pill Value', function(hooks) {
     const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
     const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_DISABLED_LABEL));
     assert.ok(textFilter, 'unable to find Text Filter option');
+  });
+
+  test('it selects Free-Form Filter via ↓', async function(assert) {
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
+    assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), AFTER_OPTION_FREE_FORM_LABEL, 'first Advanced Option was not highlighted');
+  });
+
+  test('it selects Text Filter via ↓', async function(assert) {
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN);
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
+    assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), AFTER_OPTION_TEXT_LABEL, 'second Advanced Option was not highlighted');
+  });
+
+  test('it broadcasts a message to toggle tabs', async function(assert) {
+    assert.expect(1);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'Correct message sent up');
+    });
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+
+    await click(PILL_SELECTORS.recentQueriesTab);
   });
 });

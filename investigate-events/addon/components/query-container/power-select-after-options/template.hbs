@@ -22,4 +22,7 @@
     </li>
   {{/each}}
 </div>
-{{query-container/power-select-tabs}}
+{{query-container/power-select-tabs
+  activePillTab=(readonly activePillTab)
+  sendMessage=(action 'handleMessage')
+}}

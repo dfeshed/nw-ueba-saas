@@ -88,6 +88,12 @@ export default Component.extend({
   isExpanded: true,
 
   /**
+   * Which is the active tab for EPS?
+   * Options will change based on it
+   */
+  activePillTab: undefined,
+
+  /**
    * The option that is currently selected
    * @type {Object}
    * @public
@@ -162,7 +168,8 @@ export default Component.extend({
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.AFTER_OPTIONS_SELECTED]: (d) => this._createPillFromAdvancedOption(d),
       [MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT]: (index) => this._afterOptionsMenu.highlightIndex = index,
-      [MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT]: () => this._afterOptionsMenu.clearHighlight()
+      [MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT]: () => this._afterOptionsMenu.clearHighlight(),
+      [MESSAGE_TYPES.AFTER_OPTIONS_TAB_CLICKED]: () => this._afterOptionsTabToggle()
     });
   },
 
@@ -418,6 +425,13 @@ export default Component.extend({
   // ************************************************************************ //
   //                          PRIVATE FUNCTIONS                               //
   // ************************************************************************ //
+  /**
+   * Active tab was toggled.
+   */
+  _afterOptionsTabToggle() {
+    this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED);
+  },
+
   /**
    * Sends messages to the parent container.
    * @param {string} type The event type from `event-types`

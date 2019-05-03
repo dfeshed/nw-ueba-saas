@@ -1295,4 +1295,39 @@ module('Integration | Component | Query Pill', function(hooks) {
     assert.ok(freeFormFilter, 'unable to find Free-Form Filter option');
     await click(freeFormFilter);
   });
+
+  test('clicking away pill when meta tab is selected, then clicking back in - meta tab is selected', async function(assert) {
+    this.set('metaOptions', META_OPTIONS);
+
+    const assertTabContents = (assert, metaTab, recentQueriesTab) => {
+      assert.ok(find(PILL_SELECTORS.pillTabs), 'Should be able to see tabs in current component');
+      assert.ok(find(metaTab), 'Should be able to see meta tab in current component');
+      assert.ok(find(recentQueriesTab), 'Should be able to see recent queries tab in current component');
+    };
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    // Should be able to see pill tabs with meta tab selected
+    assertTabContents(assert, PILL_SELECTORS.metaTabSelected, PILL_SELECTORS.recentQueriesTab);
+    // click on recent queries tab
+    await click(PILL_SELECTORS.recentQueriesTab);
+    // remove focus
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ESCAPE_KEY);
+    // trigger drop-down
+    await clickTrigger(PILL_SELECTORS.meta);
+    // should be able to see tabs with recent queries tab selected
+    assertTabContents(assert, PILL_SELECTORS.metaTab, PILL_SELECTORS.recentQueriesTabSelected);
+
+  });
 });

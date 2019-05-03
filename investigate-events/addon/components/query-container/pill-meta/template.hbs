@@ -2,6 +2,7 @@
   {{#power-select-typeahead
     afterOptionsComponent=(
       component optionsComponent
+      activePillTab=(readonly activePillTab)
       options=(readonly _groomedAfterOptionsMenu.list)
       sendMessage=(action 'handleMessage')
     )

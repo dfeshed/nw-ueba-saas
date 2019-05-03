@@ -11,19 +11,21 @@ import { createFilter } from 'investigate-events/util/query-parsing';
 import {
   COMPLEX_FILTER,
   QUERY_FILTER,
-  TEXT_FILTER
+  TEXT_FILTER,
+  AFTER_OPTION_TAB_META,
+  AFTER_OPTION_TAB_RECENT_QUERIES
 } from 'investigate-events/constants/pill';
 
 const { log } = console; // eslint-disable-line no-unused-vars
 
 const RESET_PROPS = {
   isActive: true,
-  selectedMeta: null,
-  selectedOperator: null,
-  valueString: null,
   isMetaActive: true,
   isOperatorActive: false,
-  isValueActive: false
+  isValueActive: false,
+  selectedMeta: null,
+  selectedOperator: null,
+  valueString: null
 };
 
 export default Component.extend({
@@ -31,6 +33,11 @@ export default Component.extend({
   classNameBindings: ['isActive', 'isEditing', 'isInvalid', 'isSelected', 'isExpensive', 'isFocused'],
   attributeBindings: ['title'],
   i18n: service(),
+
+  /**
+   * After options active tab
+   */
+  activePillTab: AFTER_OPTION_TAB_META,
 
   /**
    * The position of this pill relative to other pills.
@@ -242,7 +249,8 @@ export default Component.extend({
       [MESSAGE_TYPES.VALUE_ESCAPE_KEY]: () => this._cancelPill(),
       [MESSAGE_TYPES.VALUE_SET]: (data) => this._valueSet(data),
       [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: ([data, dataSource]) => this._createFreeFormPill(data, dataSource),
-      [MESSAGE_TYPES.CREATE_TEXT_PILL]: ([data, dataSource]) => this._createTextPill(data, dataSource)
+      [MESSAGE_TYPES.CREATE_TEXT_PILL]: ([data, dataSource]) => this._createTextPill(data, dataSource),
+      [MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED]: () => this._toggleActiveTab()
     });
 
     if (this.get('isExistingPill')) {
@@ -367,7 +375,10 @@ export default Component.extend({
   },
 
   _reset() {
-    this.setProperties(RESET_PROPS);
+    this.setProperties({
+      ...RESET_PROPS,
+      activePillTab: AFTER_OPTION_TAB_META
+    });
   },
 
   /**
@@ -925,6 +936,18 @@ export default Component.extend({
    */
   _getStringFromSource(sources) {
     return (key) => sources.hasOwnProperty(key) ? sources[key] : null;
+  },
+
+  // ************************ EPS TAB FUNCTIONALITY *************************  //
+
+  _toggleActiveTab() {
+    const activeTab = this.get('activePillTab');
+    switch (activeTab) {
+      case AFTER_OPTION_TAB_META: this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
+        break;
+      case AFTER_OPTION_TAB_RECENT_QUERIES: this.set('activePillTab', AFTER_OPTION_TAB_META);
+        break;
+    }
   },
 
   // ************************ TODO FUNCTIONALITY **************************** //

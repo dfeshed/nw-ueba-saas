@@ -12,7 +12,8 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
-  AFTER_OPTION_TEXT_DISABLED_LABEL
+  AFTER_OPTION_TEXT_DISABLED_LABEL,
+  AFTER_OPTION_TAB_META
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -579,5 +580,25 @@ module('Integration | Component | Pill Meta', function(hooks) {
     const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
     const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_TEXT_DISABLED_LABEL));
     assert.ok(textFilter, 'unable to find Text Filter option');
+  });
+
+  test('it broadcasts a message to toggle tabs', async function(assert) {
+    assert.expect(1);
+    this.set('metaOptions', META_OPTIONS);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'Correct message sent up');
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        metaOptions=metaOptions
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await click(PILL_SELECTORS.recentQueriesTab);
   });
 });

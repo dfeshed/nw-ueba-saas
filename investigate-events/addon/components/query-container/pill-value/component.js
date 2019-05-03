@@ -93,6 +93,11 @@ export default Component.extend({
   isFocusAtBeginning: false,
 
   /**
+   * Which is the active tab for EPS?
+   */
+  activePillTab: undefined,
+
+  /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public
@@ -126,6 +131,7 @@ export default Component.extend({
     }
     return this._afterOptionsMenu;
   },
+
 
   /**
    * We take away the ability to create FF in edit mode.
@@ -184,7 +190,8 @@ export default Component.extend({
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.AFTER_OPTIONS_SELECTED]: (d) => this._createPillFromAdvancedOption(d),
       [MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT]: (index) => this._afterOptionsMenu.highlightIndex = index,
-      [MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT]: () => this._afterOptionsMenu.clearHighlight()
+      [MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT]: () => this._afterOptionsMenu.clearHighlight(),
+      [MESSAGE_TYPES.AFTER_OPTIONS_TAB_CLICKED]: () => this._afterOptionsTabToggle()
     });
   },
 
@@ -310,7 +317,7 @@ export default Component.extend({
       } else if (isArrowDown(event)) {
         const { highlighted, results } = powerSelectAPI;
         const lastItem = results[results.length - 1];
-        if (event.ctrlKey || event.metaKey || highlighted === lastItem.options[0]) {
+        if (event.ctrlKey || event.metaKey || highlighted === lastItem) {
           // CTRL/META was pressed or at bottom of meta list
           // Jump to advanced options
           powerSelectAPI.actions.highlight(null);
@@ -380,6 +387,13 @@ export default Component.extend({
   // ************************************************************************ //
   //                          PRIVATE FUNCTIONS                               //
   // ************************************************************************ //
+  /**
+   * Active tab was toggled.
+   */
+  _afterOptionsTabToggle() {
+    this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED);
+  },
+
   /**
    * Sends messages to the parent container.
    * @param {string} type The event type from `event-types`

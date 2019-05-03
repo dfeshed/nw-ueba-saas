@@ -7,7 +7,8 @@ import hbs from 'htmlbars-inline-precompile';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
-  AFTER_OPTION_TEXT_LABEL
+  AFTER_OPTION_TEXT_LABEL,
+  AFTER_OPTION_TAB_META
 } from 'investigate-events/constants/pill';
 import PILL_SELECTORS from '../pill-selectors';
 
@@ -178,5 +179,21 @@ module('Integration | Component | Power Select After Options', function(hooks) {
     const _options2 = findAll(PILL_SELECTORS.powerSelectAfterOption);
     const hasHighlight2 = _options2.some((d) => d.getAttribute('aria-current') === 'true');
     assert.ok(hasHighlight2, 'an item should be highlighted');
+  });
+
+  test('Clicking on a deselected tab will send out a message', async function(assert) {
+    assert.expect(1);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_CLICKED, 'Correct message sent up');
+    });
+
+    await render(hbs`
+      {{query-container/power-select-after-options
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await click(PILL_SELECTORS.recentQueriesTab);
   });
 });

@@ -11,6 +11,11 @@ export default Component.extend({
   role: 'listbox',
 
   /**
+   * What is the currently selected tab
+   */
+  activePillTab: undefined,
+
+  /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public
@@ -73,6 +78,11 @@ export default Component.extend({
     },
     onMouseUp(e) {
       this._chooseByElement(e.currentTarget);
+    },
+    // Not creating a message handler just yet as there is only one
+    // type of message coming in.
+    handleMessage(type) {
+      this._broadcast(type);
     }
   },
 
