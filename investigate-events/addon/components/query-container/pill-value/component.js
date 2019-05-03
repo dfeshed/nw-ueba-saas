@@ -343,6 +343,11 @@ export default Component.extend({
           return false;
         }
       } else if (isEnter(event)) {
+        const { searchText } = powerSelectAPI;
+        if (searchText === '') {
+          // No text was entered, so quick exit
+          return false;
+        }
         // This is triggered when choosing afterOptions and we hit enter.
         // Since Query Filter option will always be there, onChange will
         // handle it's selection. Here we just take care of afterOptions.

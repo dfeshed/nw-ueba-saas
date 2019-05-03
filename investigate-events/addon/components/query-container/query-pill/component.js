@@ -434,7 +434,9 @@ export default Component.extend({
   },
 
   _pillOpenForEdit() {
-    const pillData = this._createPillData(this.get('valueString'));
+    const oldPillData = this.get('pillData');
+    const newPillData = this._createPillData(this.get('valueString'));
+    const pillData = { ...oldPillData, ...newPillData };
     this._broadcast(MESSAGE_TYPES.PILL_OPEN_FOR_EDIT, pillData);
   },
 

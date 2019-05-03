@@ -2215,4 +2215,19 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.ok(find(PILL_SELECTORS.textPill).textContent, 'a jazzy', 'text pill has incorrect text');
     assert.ok(find(PILL_SELECTORS.powerSelectDropdown), 'power-select dropdown not rendered');
   });
+
+  test('An invalid pill should remain invalid if ESCAPEed during edit', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .invalidPillsDataPopulated()
+      .build();
+    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await leaveNewPillTemplate();
+    assert.ok(find(PILL_SELECTORS.invalidPill), 'invalid pill was not created');
+    await doubleClick(PILL_SELECTORS.queryPill, true);
+    assert.ok(find(PILL_SELECTORS.pillOpenForEdit), 'pill was not opened for editing');
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ESCAPE_KEY);
+    assert.ok(find(PILL_SELECTORS.invalidPill), 'invalid pill should have remained invalid');
+  });
 });

@@ -554,9 +554,9 @@ export default handleActions({
 
   [ACTION_TYPES.RESET_GUIDED_PILL]: (state, { payload }) => {
     const { id } = payload.pillData;
-    // Reset the id of the pill and then
-    // reset all the flags back to initial state, except isFocused flag.
-    // The edit cancelled pill should regain focus
+    // Set the id of the pill to a new value, then set the flags related
+    // to editing back to their initial state, except for the isFocused flag.
+    // The edit cancelled pill should regain focus.
     const newPillsData = state.pillsData.map((pD) => {
       if (id === pD.id) {
         return {
@@ -564,12 +564,9 @@ export default handleActions({
           id: _.uniqueId(ID_PREFIX),
           isEditing: false,
           isFocused: true,
-          isSelected: false,
-          isInvalid: false,
-          validationError: undefined
+          isSelected: false
         };
       }
-
       return pD;
     });
     return state.set('pillsData', newPillsData);
