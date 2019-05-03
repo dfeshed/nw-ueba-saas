@@ -35,12 +35,12 @@
   <div class="action-control bulk-update-assignee">
     {{#power-select
       options=users
-      disabled=(or hasNoSelections hasSelectedClosedIncidents)
+      disabled=(not canChangeAssignee)
       matchTriggerWidth=false
       horizontalPosition='right'
       searchEnabled=false
       triggerComponent=(component "respond-common/button-trigger"
-        isDisabled=(or hasNoSelections hasSelectedClosedIncidents)
+        isDisabled=(not canChangeAssignee)
         label=(t 'respond.incidents.actions.changeAssignee'))
       onchange=(action 'updateIncidentAssignee' itemsSelected) as |option|}}
 

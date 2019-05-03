@@ -4,12 +4,14 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { getPriorityTypes, getStatusTypes } from 'respond/selectors/dictionaries';
 import { getAssigneeOptions } from 'respond/selectors/users';
+import { isIncidentClosed } from 'respond/helpers/is-incident-closed';
 
 const stateToComputed = (state) => {
   return {
     priorityTypes: getPriorityTypes(state),
     statusTypes: getStatusTypes(state),
-    users: getAssigneeOptions(state)
+    users: getAssigneeOptions(state),
+    riacEnabled: state.respond.riac.isRiacEnabled
   };
 };
 
@@ -27,6 +29,16 @@ const IncidentOverview = Component.extend({
    * @public
    */
   info: null,
+
+  @computed(
+    'riacEnabled',
+    'accessControl.respondRiacCanChangeAssignee',
+    'info.status'
+  )
+  canChangeAssignee(riacEnabled, riacAc, status) {
+    const isClosed = isIncidentClosed(status);
+    return !isClosed && (riacEnabled ? riacAc : true);
+  },
 
   @computed('i18n.locale')
   unassignedLabel() {

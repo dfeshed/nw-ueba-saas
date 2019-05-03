@@ -76,10 +76,10 @@
           options=users
           selected=selectedUserOption
           matchTriggerWidth=false
-          disabled=(is-incident-closed info.status)
+          disabled=(not canChangeAssignee)
           searchEnabled=false
           triggerComponent=(component "respond-common/button-trigger"
-            isDisabled=(is-incident-closed info.status)
+            isDisabled=(not canChangeAssignee)
             label=assigneeName)
           onchange=(action 'handleUpdateAssignee' info.id 'assignee') as |option|}}
           {{#if (eq option.id 'UNASSIGNED')}}

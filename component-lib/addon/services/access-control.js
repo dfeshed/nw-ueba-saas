@@ -55,8 +55,7 @@ export default Service.extend({
     'navigateCreateIncidents',
     'navigateEvents'
   ],
-  respondAlertsRoles: ['Administrators', 'Respond_Administrator', 'SOC_Managers'],
-  respondTasksRoles: ['Administrators', 'Respond_Administrator', 'SOC_Managers'],
+  respondRiacAdmins: ['Administrators', 'Respond_Administrator', 'SOC_Managers'],
 
   // computed intersections between roles and role groups
 
@@ -138,7 +137,7 @@ export default Service.extend({
 
   @computed('authorities.[]')
   hasRiacRespondAlertsAccess(authorities) {
-    return authorities.some((authority) => this.respondAlertsRoles.includes(authority));
+    return authorities.some((authority) => this.respondRiacAdmins.includes(authority));
   },
 
   @computed('roles.[]')
@@ -153,7 +152,7 @@ export default Service.extend({
 
   @computed('authorities.[]')
   hasRiacRespondTasksAccess(authorities) {
-    return authorities.some((authority) => this.respondTasksRoles.includes(authority));
+    return authorities.some((authority) => this.respondRiacAdmins.includes(authority));
   },
 
   @computed('roles.[]')
@@ -176,6 +175,11 @@ export default Service.extend({
   @computed('roles.[]')
   respondCanManageIncidents(roles) {
     return this._hasPermission(roles, 'respond-server.incident.manage');
+  },
+
+  @computed('authorities.[]')
+  respondRiacCanChangeAssignee(authorities) {
+    return authorities.some((authority) => this.respondRiacAdmins.includes(authority));
   },
 
   @computed('roles.[]')

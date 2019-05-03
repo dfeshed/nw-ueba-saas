@@ -1,6 +1,14 @@
 import Component from '@ember/component';
-import { empty, gt } from 'ember-computed-decorators';
+import computed, { empty, gt } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
+import { connect } from 'ember-redux';
+
+
+const stateToComputed = (state) => {
+  return {
+    riacEnabled: state.respond.riac.isRiacEnabled
+  };
+};
 
 /**
  * @class IncidentsControls
@@ -8,13 +16,23 @@ import { inject as service } from '@ember/service';
  *
  * @public
  */
-export default Component.extend({
+const IncidentsControls = Component.extend({
   accessControl: service(),
   i18n: service(),
 
   @empty('itemsSelected') hasNoSelections: true,
 
   @gt('itemsSelected.length', 1) isBulkSelection: false,
+
+  @computed(
+    'riacEnabled',
+    'accessControl.respondRiacCanChangeAssignee',
+    'hasNoSelections',
+    'hasSelectedClosedIncidents'
+  )
+  canChangeAssignee(riacEnabled, riacAc, hasNoSelections, hasSelectedClosedIncidents) {
+    return !hasNoSelections && !hasSelectedClosedIncidents && (riacEnabled ? riacAc : true);
+  },
 
   updateConfirmationDialogId: 'bulk-update-entities',
   deleteConfirmationDialogId: 'delete-entities',
@@ -102,3 +120,5 @@ export default Component.extend({
     }
   }
 });
+
+export default connect(stateToComputed)(IncidentsControls);

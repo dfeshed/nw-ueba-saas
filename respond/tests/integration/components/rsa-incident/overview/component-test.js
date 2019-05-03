@@ -4,7 +4,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import hbs from 'htmlbars-inline-precompile';
-import { find, render, settled } from '@ember/test-helpers';
+import { find, findAll, render, settled } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { set } from '@ember/object';
 import { run } from '@ember/runloop';
@@ -83,5 +83,33 @@ module('Integration | Component | Incident Overview', function(hooks) {
     return settled().then(async() => {
       assert.equal(trim(find(selector).textContent), unassigned);
     });
+  });
+
+  test('Assignee dropdown is disabled for non RIAC-Admins in RIAC mode', async function(assert) {
+    const ac = this.owner.lookup('service:accessControl');
+    const redux = this.owner.lookup('service:redux');
+    const exampleUser = { id: 'admin' };
+
+    setState({
+      respond: {
+        users: {
+          enabledUsers: [exampleUser]
+        }
+      }
+    });
+
+    ac.set('authorities', ['Analysts']);
+    await redux.dispatch({
+      type: 'RESPOND::GET_RIAC_SETTINGS',
+      promise: Promise.resolve({ data: { enabled: true } })
+    });
+    this.set('info', {
+      assignee: exampleUser
+    });
+    await render(hbs`{{rsa-incident/overview info=info infoStatus='completed' updateItem=updateItem}}`);
+    assert.equal(findAll('.rsa-form-button-wrapper.is-disabled').length, 1,
+      'When itemsSelected has at least one item in RIAC mode, change assignee disabled');
+    assert.equal(findAll('.rsa-form-button-wrapper:not(.is-disabled)').length, 2,
+      'When itemsSelected has at least one item in RIAC mode, only 2 options enabled');
   });
 });

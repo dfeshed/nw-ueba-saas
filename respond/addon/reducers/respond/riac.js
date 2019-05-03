@@ -10,6 +10,7 @@ const initialState = {
 const riacReducers = reduxActions.handleActions({
   [ACTION_TYPES.GET_RIAC_SETTINGS]: (state, action) => (
     handle(state, action, {
+      start: (s) => ({ ...s }),
       success: (s) => ({ ...s, isRiacEnabled: action.payload.data.enabled })
     })
   )

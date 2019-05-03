@@ -121,4 +121,18 @@ module('Integration | Component | Respond Incidents Toolbar Controls', function(
     assert.equal(assigneeNames.length, 7, 'Each assignee option has a text value'); // ensure no empty options
     await selectChoose('.action-control.bulk-update-assignee', '.ember-power-select-option', 0);
   });
+
+  test('Change Assignee button is disabled when RIAC is enabled and user is non-privileged', async function(assert) {
+    await setup();
+    await redux.dispatch({
+      type: 'RESPOND::GET_RIAC_SETTINGS',
+      promise: Promise.resolve({ data: { enabled: true } })
+    });
+    this.set('itemsSelected', [{ id: 'test' }]);
+    await render(hbs`{{rsa-incidents/toolbar-controls itemsSelected=itemsSelected}}`);
+    assert.equal(findAll('.action-control .rsa-form-button-wrapper.is-disabled').length, 1,
+      'When itemsSelected has at least one item in RIAC mode, change assignee disabled');
+    assert.equal(findAll('.action-control .rsa-form-button-wrapper:not(.is-disabled)').length, 3,
+      'When itemsSelected has at least one item, 3 buttons are all enabled');
+  });
 });

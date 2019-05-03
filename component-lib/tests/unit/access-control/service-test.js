@@ -388,4 +388,16 @@ module('Unit | Service | access control', function(hooks) {
     service.set('roles', ['endpoint-server.filter.manage', 'accessInvestigationModule']);
     assert.equal(service.get('endpointCanManageFilter'), true);
   });
+
+  test('respondRiacCanChangeAssignee is set when required roles are included', async function(assert) {
+    const service = this.owner.lookup('service:access-control');
+
+    // admin should have access
+    service.set('authorities', ['Administrators']);
+    assert.equal(service.get('respondRiacCanChangeAssignee'), true);
+
+    // some groups don't have access
+    service.set('authorities', ['Analysts']);
+    assert.equal(service.get('respondRiacCanChangeAssignee'), false);
+  });
 });
