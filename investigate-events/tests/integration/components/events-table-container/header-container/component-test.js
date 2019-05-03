@@ -46,9 +46,9 @@ module('Integration | Component | header-container', function(hooks) {
     await render(hbs`{{events-table-container/header-container}}`);
     assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), 'oldest100,000Events(Asc)', 'rendered event header title');
     assert.ok(find('.rsa-investigate-events-table__header__container .at-threshold'), 'at threshold icon is present');
-    assert.equal(find('.rsa-investigate-events-table__header__container .at-threshold').getAttribute('title').trim(),
-      'Reached the 100,000 event limit. Displaying 100,000 of the oldest events from the time window. Consider refining your query to narrow the results.',
-      'at threshold tooltip');
+    const tooltip = find('.rsa-investigate-events-table__header__container .at-threshold').getAttribute('title').trim().split(' ');
+    assert.ok(tooltip.includes('100,000'));
+    assert.ok(tooltip.includes('oldest'));
   });
 
   test('render the events header with actualCount when canceled', async function(assert) {
