@@ -15,10 +15,10 @@ dags:
       schedule_interval: None
     smart:
       schedule_interval: timedelta(hours=1)
-      enable_output_forwarder: ${outputForwarding.enableForwarding}
       smart_confs:
        - smart_conf_name: userId_hourly
          depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
+         enable_output_forwarder: ${outputForwarding.enableForwarding}
     smart_model:
       schedule_interval: None
       smart_confs:

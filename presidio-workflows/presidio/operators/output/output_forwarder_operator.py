@@ -1,7 +1,7 @@
 from presidio.operators.output.abstract_output_operator import AbstractOutputOperator
 
 
-class PushForwarderOperator(AbstractOutputOperator):
+class OutputForwarderOperator(AbstractOutputOperator):
     """
     Runs an user score task (a JAR file) using a bash command.
     The c'tor accepts the task arguments that are constant throughout the

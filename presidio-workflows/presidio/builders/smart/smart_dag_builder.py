@@ -8,7 +8,7 @@ from presidio.factories.indicator_dag_factory import IndicatorDagFactory
 from presidio.factories.smart_model_dag_factory import SmartModelDagFactory
 from presidio.operators.ade_manager.ade_manager_operator import AdeManagerOperator
 from presidio.operators.output.output_operator import OutputOperator
-from presidio.operators.output.push_forwarder_operator import PushForwarderOperator
+from presidio.operators.output.output_forwarder_operator import OutputForwarderOperator
 from presidio.operators.smart.smart_events_operator import SmartEventsOperator
 from presidio.utils.airflow.operators.sensor.root_dag_gap_sequential_sensor_operator import \
     RootDagGapSequentialSensorOperator
@@ -147,8 +147,9 @@ class SmartDagBuilder(PresidioDagBuilder):
         default_args = dag.default_args
         enable_output_forwarder = default_args.get("enable_output_forwarder")
         self.log.debug("enable_output_forwarder=%s ", enable_output_forwarder)
+        self.log.error("enable_output_forwarder=%s ", enable_output_forwarder)
         if enable_output_forwarder == 'true':
-            push_forwarding_operator = PushForwarderOperator(
+            push_forwarding_operator = OutputForwarderOperator(
                 fixed_duration_strategy=timedelta(hours=1),
                 command=PresidioDagBuilder.presidio_command,
                 smart_record_conf_name=dag.default_args.get("smart_conf_name"),
