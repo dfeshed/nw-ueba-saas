@@ -56,7 +56,7 @@ public class OutputShellCommands implements CommandMarker {
         return executionService.doUpdateAllEntitiesData(startTime, endTime, configurationName);
     }
 
-    @CliCommand(value = "clean-alerts", help = "clean alerts for specified time range and entity type")
+    @CliCommand(value = "cleanup", help = "clean alerts for specified time range and entity type")
     public int cleanup(
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
 
