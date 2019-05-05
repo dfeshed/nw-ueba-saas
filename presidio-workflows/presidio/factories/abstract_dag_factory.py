@@ -6,6 +6,7 @@ from airflow import LoggingMixin
 from airflow.models import Variable
 import dateutil
 
+UEBA_DAGS_KEY = "ueba_dags"
 
 class AbstractDagFactory(LoggingMixin):
     __metaclass__ = ABCMeta
@@ -41,7 +42,7 @@ class AbstractDagFactory(LoggingMixin):
 
         if dag_id not in dag_ids:
             dag_ids.append(dag_id)
-            Variable.set(key="dags", value=(', '.join(str(e) for e in dag_ids)))
+            Variable.set(key=UEBA_DAGS_KEY, value=(', '.join(str(e) for e in dag_ids)))
 
     def build_dags(self, dags):
         for dag in dags:
@@ -49,7 +50,7 @@ class AbstractDagFactory(LoggingMixin):
 
     @staticmethod
     def get_registered_dag_ids():
-        dag_ids = Variable.get(key="dags", default_var=[])
+        dag_ids = Variable.get(key=UEBA_DAGS_KEY, default_var=[])
         if dag_ids:
             dag_ids = str(dag_ids).split(", ")
         return dag_ids

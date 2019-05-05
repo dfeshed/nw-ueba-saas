@@ -2,10 +2,9 @@ from datetime import timedelta
 
 from airflow import LoggingMixin
 
+from presidio.operators.output_retention.output_retention_operator import OutputRetentionOperator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
-from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
-
 
 # todo: should be changed after new smart entity will be added: split into 2 output_retention tasks:
 # todo: output_retention with smart_cof_name arg for alerts retention
@@ -17,7 +16,6 @@ class OutputRetentionOperatorBuilder(LoggingMixin):
     The "OutputRetentionOperatorBuilder" builds and returns output_retention operator.
     """
 
-    ADAPTER_JVM_ARGS_CONFIG_PATH = 'components.output.jvm_args'
     RETENTION_COMMAND_CONFIG_PATH = 'retention.command'
     RETENTION_COMMAND_DEFAULT_VALUE = 'retention'
     output_min_time_to_start_retention_in_days_conf_key = "retention.output.min_time_to_start_retention_in_days"
@@ -30,8 +28,6 @@ class OutputRetentionOperatorBuilder(LoggingMixin):
         self._retention_command = conf_reader.read(
             OutputRetentionOperatorBuilder.RETENTION_COMMAND_CONFIG_PATH,
             OutputRetentionOperatorBuilder.RETENTION_COMMAND_DEFAULT_VALUE)
-        self.jvm_args = conf_reader.read(
-            conf_key=OutputRetentionOperatorBuilder.ADAPTER_JVM_ARGS_CONFIG_PATH)
 
     @staticmethod
     def get_output_min_time_to_start_retention_in_days(conf_reader):
@@ -57,11 +53,9 @@ class OutputRetentionOperatorBuilder(LoggingMixin):
 
         self.log.debug("populating the %s dag with output_retention tasks", dag.dag_id)
 
-        output_retention = FixedDurationJarOperator(
-            task_id='retention_output',
+        output_retention = OutputRetentionOperator(
             fixed_duration_strategy=timedelta(hours=1),
             command=self._retention_command,
-            jvm_args=self.jvm_args,
             run_clean_command_before_retry=False,
             dag=dag)
 

@@ -2,11 +2,7 @@ from presidio.builders.model.aggr_model_operator_builder import AggrModelOperato
 from presidio.builders.model.raw_model_operator_builder import RawModelOperatorBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.model.smart_model_accumulate_operator import SmartModelAccumulateOperator
-from presidio.operators.model.smart_model_operator import SmartModelOperator
-from presidio.utils.airflow.schedule_interval_utils import get_schedule_interval
-from presidio.utils.services.fixed_duration_strategy import FIX_DURATION_STRATEGY_DAILY, is_execution_date_valid
-from presidio.utils.configuration.config_server_configuration_reader_singleton import \
-    ConfigServerConfigurationReaderSingleton
+from presidio.utils.services.fixed_duration_strategy import FIX_DURATION_STRATEGY_DAILY
 
 
 class SmartModelAccumulateOperatorBuilder(PresidioDagBuilder):

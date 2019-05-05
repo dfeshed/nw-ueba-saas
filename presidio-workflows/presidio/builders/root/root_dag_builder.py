@@ -1,6 +1,5 @@
 from datetime import timedelta
 
-from airflow.models import Variable
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.factories.abstract_dag_factory import AbstractDagFactory

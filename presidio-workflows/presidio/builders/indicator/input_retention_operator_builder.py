@@ -2,13 +2,12 @@ from datetime import timedelta
 
 from airflow import LoggingMixin
 
+from presidio.operators.input_retention.input_retention_operator import InputRetentionOperator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
-from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 
 
 class InputRetentionOperatorBuilder(LoggingMixin):
-    ADAPTER_JVM_ARGS_CONFIG_PATH = 'components.input.jvm_args'
     RETENTION_COMMAND_CONFIG_PATH = 'retention.command'
     RETENTION_COMMAND_DEFAULT_VALUE = 'retention'
     input_min_time_to_start_retention_in_days_conf_key = "retention.input.min_time_to_start_retention_in_days"
@@ -27,8 +26,6 @@ class InputRetentionOperatorBuilder(LoggingMixin):
         self.schema = schema
         self._retention_command = conf_reader.read(InputRetentionOperatorBuilder.RETENTION_COMMAND_CONFIG_PATH,
                                                    InputRetentionOperatorBuilder.RETENTION_COMMAND_DEFAULT_VALUE)
-        self.jvm_args = conf_reader.read(
-            conf_key=InputRetentionOperatorBuilder.ADAPTER_JVM_ARGS_CONFIG_PATH)
 
     @staticmethod
     def get_input_min_time_to_start_retention_in_days(conf_reader):
@@ -53,16 +50,10 @@ class InputRetentionOperatorBuilder(LoggingMixin):
 
         self.log.debug("populating the %s dag with input_retention tasks", dag.dag_id)
 
-        java_args = {
-            'schema': self.schema
-        }
-
-        input_retention_operator = FixedDurationJarOperator(
-            task_id='retention_input_{}'.format(self.schema),
+        input_retention_operator = InputRetentionOperator(
             fixed_duration_strategy=timedelta(hours=1),
             command=self._retention_command,
-            jvm_args=self.jvm_args,
-            java_args=java_args,
+            schema=self.schema,
             run_clean_command_before_retry=False,
             dag=dag)
 

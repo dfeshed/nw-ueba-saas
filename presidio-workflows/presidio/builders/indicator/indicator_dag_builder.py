@@ -1,13 +1,13 @@
 from datetime import timedelta
 
 from presidio.builders.indicator.adapter_operator_builder import AdapterOperatorBuilder
-from presidio.builders.indicator.feature_aggregations_operator_builder import FeatureAggregationsOperatorBuilder
-from presidio.builders.indicator.input_operator_builder import InputOperatorBuilder
-from presidio.builders.indicator.score_aggregations_operator_builder import ScoreAggregationsOperatorBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.builders.indicator.input_retention_operator_builder import InputRetentionOperatorBuilder
 from presidio.builders.smart_model.smart_model_accumulate_operator_builder import SmartModelAccumulateOperatorBuilder
 from presidio.factories.model_dag_factory import ModelDagFactory
+from presidio.operators.aggregation.feature_aggregations_operator import FeatureAggregationsOperator
+from presidio.operators.aggregation.score_aggregations_operator import ScoreAggregationsOperator
+from presidio.operators.input.input_operator import InputOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 from presidio.utils.airflow.schedule_interval_utils import get_schedule_interval, set_schedule_interval
 from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid, FIX_DURATION_STRATEGY_DAILY, \
@@ -30,16 +30,34 @@ class IndicatorDagBuilder(PresidioDagBuilder):
         :return: The given indicator DAG, after it has been populated
         :rtype: airflow.models.DAG
         """
-
-        task_sensor_service = TaskSensorService()
+        self.log.debug("populating the %s dag with input tasks", dag.dag_id)
         schema = dag.default_args.get('schema')
 
         adapter_operator = AdapterOperatorBuilder(schema).build(dag)
-        input_operator = InputOperatorBuilder(schema).build(dag)
-        feature_aggregations_operator = FeatureAggregationsOperatorBuilder(schema, FIX_DURATION_STRATEGY_HOURLY).build(
-            dag, task_sensor_service)
-        score_aggregations_operator = ScoreAggregationsOperatorBuilder(schema, FIX_DURATION_STRATEGY_HOURLY).build(dag,
-                                                                                                                   task_sensor_service)
+
+        input_task_sensor_service = TaskSensorService()
+        input_operator = InputOperator(
+            fixed_duration_strategy=timedelta(hours=1),
+            command=PresidioDagBuilder.presidio_command,
+            schema=schema,
+            dag=dag)
+        input_task_sensor_service.add_task_sequential_sensor(input_operator)
+
+        self.log.debug("populating the %s dag with scoring tasks", dag.dag_id)
+        scoring_task_sensor_service = TaskSensorService()
+        feature_aggregations_operator = FeatureAggregationsOperator(
+            fixed_duration_strategy=FIX_DURATION_STRATEGY_HOURLY,
+            command=PresidioDagBuilder.presidio_command,
+            data_source=schema,
+            dag=dag)
+        scoring_task_sensor_service.add_task_sequential_sensor(feature_aggregations_operator)
+
+        score_aggregations_operator = ScoreAggregationsOperator(
+            fixed_duration_strategy=FIX_DURATION_STRATEGY_HOURLY,
+            command=PresidioDagBuilder.presidio_command,
+            data_source=schema,
+            dag=dag)
+        scoring_task_sensor_service.add_task_sequential_sensor(score_aggregations_operator)
 
         hourly_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='ade_scoring_hourly_short_circuit',
@@ -56,9 +74,8 @@ class IndicatorDagBuilder(PresidioDagBuilder):
         )
 
         adapter_operator >> input_operator >> hourly_short_circuit_operator
-        task_sensor_service.add_task_short_circuit(feature_aggregations_operator, hourly_short_circuit_operator)
-        task_sensor_service.add_task_short_circuit(score_aggregations_operator, hourly_short_circuit_operator)
-
+        scoring_task_sensor_service.add_task_short_circuit(feature_aggregations_operator, hourly_short_circuit_operator)
+        scoring_task_sensor_service.add_task_short_circuit(score_aggregations_operator, hourly_short_circuit_operator)
 
         model_trigger = self._build_model_trigger_operator(dag, schema)
         feature_aggregations_operator >> model_trigger

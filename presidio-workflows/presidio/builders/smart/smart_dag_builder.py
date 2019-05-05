@@ -1,14 +1,14 @@
 from datetime import timedelta
 
-from presidio.builders.smart.output_operator_builder import OutputOperatorBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.builders.smart.output_retention_operator_builder import OutputRetentionOperatorBuilder
-from presidio.builders.smart.push_forwarder_operator_builder import PushForwarderOperatorBuilder
 from presidio.builders.smart.user_score_operator_builder import UserScoreOperatorBuilder
 from presidio.builders.smart_model.smart_model_accumulate_operator_builder import SmartModelAccumulateOperatorBuilder
 from presidio.factories.indicator_dag_factory import IndicatorDagFactory
 from presidio.factories.smart_model_dag_factory import SmartModelDagFactory
 from presidio.operators.ade_manager.ade_manager_operator import AdeManagerOperator
+from presidio.operators.output.output_operator import OutputOperator
+from presidio.operators.output.push_forwarder_operator import PushForwarderOperator
 from presidio.operators.smart.smart_events_operator import SmartEventsOperator
 from presidio.utils.airflow.operators.sensor.root_dag_gap_sequential_sensor_operator import \
     RootDagGapSequentialSensorOperator
@@ -92,6 +92,8 @@ class SmartDagBuilder(PresidioDagBuilder):
 
     def _build_output_operator(self, smart_record_conf_name, dag, smart_operator):
 
+        self.log.debug("populating the %s dag with output tasks", dag.dag_id)
+
         # build hourly output processor
         task_sensor_service = TaskSensorService()
         # This operator validates that output run in intervals that are no less than hourly intervals and that the dag
@@ -108,8 +110,13 @@ class SmartDagBuilder(PresidioDagBuilder):
                                                  kwargs['execution_date'],
                                                  dag.schedule_interval))
 
-        hourly_output_operator = OutputOperatorBuilder(smart_record_conf_name).build(dag, task_sensor_service)
-
+        hourly_output_operator = OutputOperator(
+            fixed_duration_strategy=timedelta(hours=1),
+            command=PresidioDagBuilder.presidio_command,
+            smart_record_conf_name=smart_record_conf_name,
+            dag=dag,
+        )
+        task_sensor_service.add_task_sequential_sensor(hourly_output_operator)
         task_sensor_service.add_task_short_circuit(hourly_output_operator, output_short_circuit_operator)
 
         # build user score
@@ -134,12 +141,19 @@ class SmartDagBuilder(PresidioDagBuilder):
 
         smart_operator >> output_short_circuit_operator
 
-    def _push_forwarding(self, hourly_output_operator, daily_short_circuit_operator, smart_dag):
-        default_args = smart_dag.default_args
+    def _push_forwarding(self, hourly_output_operator, daily_short_circuit_operator, dag):
+        self.log.debug("creating the forwarder task")
+
+        default_args = dag.default_args
         enable_output_forwarder = default_args.get("enable_output_forwarder")
         self.log.debug("enable_output_forwarder=%s ", enable_output_forwarder)
         if enable_output_forwarder == 'true':
-            push_forwarding_operator = PushForwarderOperatorBuilder().build(smart_dag)
+            push_forwarding_operator = PushForwarderOperator(
+                fixed_duration_strategy=timedelta(hours=1),
+                command=PresidioDagBuilder.presidio_command,
+                smart_record_conf_name=dag.default_args.get("smart_conf_name"),
+                dag=dag)
+
             hourly_output_operator >> push_forwarding_operator >> daily_short_circuit_operator
         else:
             hourly_output_operator >> daily_short_circuit_operator
