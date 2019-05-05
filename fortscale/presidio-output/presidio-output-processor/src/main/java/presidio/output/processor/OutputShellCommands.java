@@ -56,28 +56,26 @@ public class OutputShellCommands implements CommandMarker {
         return executionService.doUpdateAllEntitiesData(startTime, endTime, configurationName);
     }
 
-    @CliCommand(value = "cleanup", help = "clean application data for specified time range ")
+    @CliCommand(value = "clean-alerts", help = "clean alerts for specified time range and entity type")
     public int cleanup(
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime,
 
-            @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration
+            @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration,
 
+            @CliOption(key = {CommonStrings.COMMAND_LINE_SMART_RECORD_CONF_NAME_FIELD_NAME}, help = "smart configuration name") final String configurationName
 
     ) throws Exception {
-        return executionService.doClean(startTime, endTime);
+        return executionService.doCleanAlerts(startTime, endTime, configurationName);
     }
 
-    @CliCommand(value = "applyRetentionPolicy", help = "clean application data from start of time to specified endTime minus configured time  ")
-    public int applyRetentionPolicy(
-            @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
+    @CliCommand(value = "clean-documents", help = "clean output documents for specified time range ")
+    public int cleanDocuments(
+            @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime
 
-            @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime,
-            //TODO: Remove the COMMAND_LINE_FIXED_DURATION_FIELD_NAME  when fixing the JarOpertaor (Currently this is mandatory in the JarOperator)
-            @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration
     ) throws Exception {
-        return executionService.doApplyRetentionPolicy(endTime);
+        return executionService.doCleanDocuments(endTime);
     }
 
     @CliCommand(value = "cleanAll", help = "clean application data for specified data source")

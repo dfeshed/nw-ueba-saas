@@ -886,7 +886,7 @@ public class AlertPersistencyServiceTest {
     }
 
     @Test
-    public void testRemoveByTimeRange() {
+    public void removeByTimeRangeAndEntityType() {
 
         Instant startDate = Instant.parse("2017-11-10T15:00:00.000Z");
         Instant endDate = Instant.parse("2017-11-10T16:00:00.000Z");
@@ -897,7 +897,7 @@ public class AlertPersistencyServiceTest {
         alertPersistencyService.save(alert2);
 
         long count = alertPersistencyService.countAlerts();
-        alertPersistencyService.removeByTimeRange(startDate, endDate);
+        alertPersistencyService.removeByTimeRangeAndEntityType(startDate, endDate, "entityType");
         elasticsearchTemplate.refresh(Alert.class);
         AlertQuery alertQuery = new AlertQuery.AlertQueryBuilder().filterByStartDate(startDate.toEpochMilli()).filterByEndDate(endDate.toEpochMilli()).build();
         Assert.assertEquals(0, alertPersistencyService.find(alertQuery).getTotalElements());

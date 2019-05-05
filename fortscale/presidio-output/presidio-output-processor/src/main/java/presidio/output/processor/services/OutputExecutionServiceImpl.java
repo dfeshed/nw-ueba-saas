@@ -191,11 +191,10 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     }
 
-    @Override
-    public void clean(Instant startDate, Instant endDate) throws Exception {
+    public void clean(Instant startDate, Instant endDate, String entityType) throws Exception {
         logger.debug("Start deleting alerts and updating entities score.");
         // delete alerts
-        List<Alert> cleanedAlerts = alertService.cleanAlerts(startDate, endDate);
+        List<Alert> cleanedAlerts = alertService.cleanAlerts(startDate, endDate, entityType);
 
         // update entity scores
         updateEntitiesScoreFromDeletedAlerts(cleanedAlerts);
@@ -203,14 +202,22 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     }
 
     @Override
-    public void applyRetentionPolicy(Instant endDate) throws Exception {
-        List<Schema> schemas = Arrays.asList(Schema.values());
+    public void cleanAlerts(Instant startDate, Instant endDate, String entityType) throws Exception {
+        if(startDate == null){
+            clean(Instant.EPOCH, endDate.minus(retentionOutputDataDays, ChronoUnit.DAYS), entityType);
+        } else {
+            clean(startDate, endDate, entityType);
+        }
+    }
 
+    @Override
+    public void cleanDocuments(Instant endDate) throws Exception {
+        List<Schema> schemas = Arrays.asList(Schema.values());
         schemas.forEach(schema -> {
             logger.debug("Start retention clean to mongo for schema {}", schema);
             eventPersistencyService.remove(schema, Instant.EPOCH, endDate.minus(retentionEnrichedEventsDays, ChronoUnit.DAYS));
         });
-        clean(Instant.EPOCH, endDate.minus(retentionOutputDataDays, ChronoUnit.DAYS));
+
     }
 
     private void updateEntitiesScoreFromDeletedAlerts(List<Alert> cleanedAlerts) {

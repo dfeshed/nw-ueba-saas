@@ -13,9 +13,9 @@ public interface OutputExecutionService {
 
     void run(Instant startDate, Instant endDate, String configurationName) throws Exception;
     void updateAllEntitiesData(Instant startDate, Instant endDate, String configurationName) throws Exception;
-    void clean(Instant startDate, Instant endDate) throws Exception;
-    void applyRetentionPolicy(Instant endDate) throws Exception;
+    void cleanAlerts(Instant startDate, Instant endDate, String entityType) throws Exception;
     void cleanAll() throws Exception;
+    void cleanDocuments(Instant endDate) throws Exception;
 
     default int doRun(Instant startDate, Instant endDate, String configurationName) throws Exception {
         try {
@@ -37,9 +37,9 @@ public interface OutputExecutionService {
         return 0;
     }
 
-    default int doClean(Instant startDate, Instant endDate) throws Exception {
+    default int doCleanAlerts(Instant startDate, Instant endDate, String entityType) throws Exception {
         try {
-            clean(startDate, endDate);
+            cleanAlerts(startDate, endDate, entityType);
         }
         catch (Exception e) {
             return 1;
@@ -47,9 +47,9 @@ public interface OutputExecutionService {
         return 0;
     }
 
-    default int doApplyRetentionPolicy(Instant endDate) throws Exception {
+    default int doCleanDocuments(Instant endDate) throws Exception {
         try {
-            applyRetentionPolicy(endDate);
+            cleanDocuments(endDate);
         }
         catch (Exception e) {
             return 1;
