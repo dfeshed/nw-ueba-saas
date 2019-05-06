@@ -342,7 +342,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
     const text = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.split(/\n/g).map((s) => s.trim()).join('');
-    assert.equal(text, 'foobarFree-Form Filter', 'first Advanced Option was not highlighted');
+    assert.equal(text, AFTER_OPTION_FREE_FORM_LABEL, 'first Advanced Option was not highlighted');
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
   });
 
@@ -367,7 +367,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN, { ctrlKey: true });
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
     const text = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.split(/\n/g).map((s) => s.trim()).join('');
-    assert.equal(text, 'foobarText Filter', 'second Advanced Option was not highlighted');
+    assert.equal(text, AFTER_OPTION_TEXT_LABEL, 'second Advanced Option was not highlighted');
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
   });
 

@@ -460,7 +460,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_DOWN);
     // Should be in Advanced Options now
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
-    assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), `e ${AFTER_OPTION_FREE_FORM_LABEL}`, 'first Advanced Option was not highlighted');
+    assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_FREE_FORM_LABEL, 'first Advanced Option was not highlighted');
     // Arrow up
     await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_UP);
     // Should be back in meta options list

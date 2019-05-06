@@ -931,6 +931,12 @@
   .ember-power-select-after-options {
     border-top: 1px solid text-color(primary);
     background-color: transparent;
+    .value {
+      flex: 1 1 auto;
+    }
+    .description {
+      flex: 0 0 auto;
+    }
 
     .border-advanced-options-separater-box {
       @include border(1px, solid, primary);

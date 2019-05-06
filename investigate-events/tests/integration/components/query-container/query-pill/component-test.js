@@ -12,7 +12,10 @@ import { createBasicPill, doubleClick, isIgnoredInitialEvent } from '../pill-uti
 import KEY_MAP from 'investigate-events/util/keys';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
-
+import {
+  AFTER_OPTION_FREE_FORM_LABEL,
+  AFTER_OPTION_TEXT_LABEL
+} from 'investigate-events/constants/pill';
 let setState;
 
 const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
@@ -1232,6 +1235,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('it sends a message up from operator to create a free-form pill', async function(assert) {
     const done = assert.async();
+    const _getOption = (arr, str) => arr.find((d) => d.innerText.includes(str));
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
       .language()
@@ -1258,6 +1262,12 @@ module('Integration | Component | Query Pill', function(hooks) {
     await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);
     await clickTrigger(PILL_SELECTORS.operator);
     await typeInSearch('foobar');
+    const pillText = find(PILL_SELECTORS.activeQueryPill).textContent;
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const freeFormOption = _getOption(afterOptions, AFTER_OPTION_FREE_FORM_LABEL);
+    const textOption = _getOption(afterOptions, AFTER_OPTION_TEXT_LABEL);
+    assert.equal(trim(freeFormOption.textContent), trim(`${pillText}${AFTER_OPTION_FREE_FORM_LABEL}`), 'free-form after-option label incorrect');
+    assert.equal(trim(textOption.textContent), trim(`${pillText}${AFTER_OPTION_TEXT_LABEL}`), 'text after-option label incorrect');
     await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ENTER_KEY);
   });
 

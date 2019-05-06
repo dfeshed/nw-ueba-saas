@@ -33,6 +33,18 @@ export default Component.extend({
 
   _prevResultCount: null,
 
+  didReceiveAttrs() {
+    this._super(...arguments);
+    // When creating Free-Form of Text filters, we need to show the full text of
+    // the query in the "value" portion of the after-option option. For example,
+    // in the case of operator, we should show meta plus whatever's been
+    // typed in operator. So something like "action end".
+    const activePill = document.querySelector('.query-pill.is-active');
+    const text = activePill ? activePill.textContent : '';
+    const trimmedText = text.replace(/\s+/g, ' ').trim();
+    this.set('fullPillText', trimmedText);
+  },
+
   didUpdateAttrs() {
     this._super(...arguments);
     const { resultsCount } = this.get('select');
