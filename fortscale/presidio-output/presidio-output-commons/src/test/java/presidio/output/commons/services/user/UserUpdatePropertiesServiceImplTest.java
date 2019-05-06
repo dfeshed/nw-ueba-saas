@@ -253,8 +253,8 @@ public class UserUpdatePropertiesServiceImplTest {
         return user1;
     }
 
-    private void saveEvent(EnrichedEvent event, Schema schema) {
-        List<EnrichedEvent> events = new ArrayList<>();
+    private void saveEvent(EnrichedUserEvent event, Schema schema) {
+        List<EnrichedUserEvent> events = new ArrayList<>();
         events.add(event);
         try {
             eventPersistencyService.store(schema, events);
@@ -264,7 +264,7 @@ public class UserUpdatePropertiesServiceImplTest {
     }
 
     private void generateFileEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName, Map<String, String> additionalInfo) {
-        EnrichedEvent event = new FileEnrichedEvent(eventDate, eventDate, "eventId", Schema.FILE.toString(),
+        EnrichedUserEvent event = new FileEnrichedEvent(eventDate, eventDate, "eventId", Schema.FILE.toString(),
                 userId, userName, userDisplayName, "dataSource", "oppType", new ArrayList<String>(),
                 EventResult.FAILURE, "resultCode", additionalInfo, "absoluteSrcFilePath", "absoluteDstFilePath",
                 "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
@@ -273,7 +273,7 @@ public class UserUpdatePropertiesServiceImplTest {
     }
 
     private void generateActiveDirectoryEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName, Map<String, String> additionalInfo) {
-        EnrichedEvent event = new ActiveDirectoryEnrichedEvent(eventDate, eventDate, "eventId", Schema.ACTIVE_DIRECTORY.toString(),
+        EnrichedUserEvent event = new ActiveDirectoryEnrichedEvent(eventDate, eventDate, "eventId", Schema.ACTIVE_DIRECTORY.toString(),
                 userId, userName, userDisplayName, "dataSource", "USER_ACCOUNT_TYPE_CHANGED",
                 new ArrayList<String>(), EventResult.SUCCESS, "resultCode", additionalInfo, "objectId");
         saveEvent(event, Schema.ACTIVE_DIRECTORY);
@@ -290,7 +290,7 @@ public class UserUpdatePropertiesServiceImplTest {
     }
 
     private void generateAuthenticationEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName, Map<String, String> additionalInfo) {
-        EnrichedEvent event = new AuthenticationEnrichedEvent(eventDate, eventDate, "eventId1", Schema.AUTHENTICATION.toString(), userId, userName, userDisplayName,
+        EnrichedUserEvent event = new AuthenticationEnrichedEvent(eventDate, eventDate, "eventId1", Schema.AUTHENTICATION.toString(), userId, userName, userDisplayName,
                 "dataSource", "User authenticated through Kerberos", new ArrayList<String>(), EventResult.SUCCESS,
                 "SUCCESS", additionalInfo);
         saveEvent(event, Schema.AUTHENTICATION);

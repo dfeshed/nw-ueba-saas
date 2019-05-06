@@ -6,7 +6,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.ObjectUtils;
-import presidio.output.domain.records.events.EnrichedEvent;
+import presidio.output.domain.records.events.EnrichedUserEvent;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
@@ -42,27 +42,27 @@ public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateServ
     public User userPropertiesUpdate(User user) {
         boolean isUpdated = false;
         List<String> collectionNames = collectionNamesByOrderForEvents();
-        EnrichedEvent enrichedEvent = eventPersistencyService.findLatestEventForUser(user.getUserId(), collectionNames);
-        if (!ObjectUtils.isEmpty(enrichedEvent)) {
-            if (!Objects.equals(user.getUserDisplayName(), enrichedEvent.getUserDisplayName())) {
-                user.setUserDisplayName(enrichedEvent.getUserDisplayName());
+        EnrichedUserEvent enrichedUserEvent = eventPersistencyService.findLatestEventForUser(user.getUserId(), collectionNames);
+        if (!ObjectUtils.isEmpty(enrichedUserEvent)) {
+            if (!Objects.equals(user.getUserDisplayName(), enrichedUserEvent.getUserDisplayName())) {
+                user.setUserDisplayName(enrichedUserEvent.getUserDisplayName());
                 isUpdated = true;
             }
-            if (!Objects.equals(user.getUserId(), enrichedEvent.getUserId()) && !StringUtils.isEmpty(enrichedEvent.getUserId())) {
-                user.setUserId(enrichedEvent.getUserId());
+            if (!Objects.equals(user.getUserId(), enrichedUserEvent.getUserId()) && !StringUtils.isEmpty(enrichedUserEvent.getUserId())) {
+                user.setUserId(enrichedUserEvent.getUserId());
                 isUpdated = true;
             }
-            if (!Objects.equals(user.getUserName(), enrichedEvent.getUserName())) {
-                user.setUserName(enrichedEvent.getUserName());
-                user.setUserDisplayNameSortLowercase(enrichedEvent.getUserName());
-                user.setIndexedUserName(enrichedEvent.getUserName());
+            if (!Objects.equals(user.getUserName(), enrichedUserEvent.getUserName())) {
+                user.setUserName(enrichedUserEvent.getUserName());
+                user.setUserDisplayNameSortLowercase(enrichedUserEvent.getUserName());
+                user.setIndexedUserName(enrichedUserEvent.getUserName());
                 isUpdated = true;
             }
             List<String> userTags = user.getTags();
 
             boolean isAdmin = false;
-            if (MapUtils.isNotEmpty(enrichedEvent.getAdditionalInfo()) && StringUtils.isNotEmpty(enrichedEvent.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN))
-                    && Boolean.parseBoolean(enrichedEvent.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN))) {
+            if (MapUtils.isNotEmpty(enrichedUserEvent.getAdditionalInfo()) && StringUtils.isNotEmpty(enrichedUserEvent.getAdditionalInfo().get(EnrichedUserEvent.IS_USER_ADMIN))
+                    && Boolean.parseBoolean(enrichedUserEvent.getAdditionalInfo().get(EnrichedUserEvent.IS_USER_ADMIN))) {
                 isAdmin = true;
             }
 
