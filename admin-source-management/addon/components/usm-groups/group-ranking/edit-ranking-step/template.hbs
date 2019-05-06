@@ -3,82 +3,99 @@
     {{rsa-loader size='large'}}
   </div>
 {{else}}
-  <div class='group-ranking-table'>
-    {{#sortable-group onChange="reorderRanking" as |group|}}
-      <div class="source-type-top-text">
-        <span>{{t 'adminUsm.groupWizard.applyPolicy.sourceType'}}: </span>{{t (concat 'adminUsm.policyTypes.' selectedSourceType)}}
-        <div class="tooltip">
-          {{#rsa-text-with-tooltip value=(t 'adminUsm.groupRankingWizard.sourceTooltip')
-            style="standard"
-            format="PREFORMAT"
-            alwaysShow=true}}
-            {{rsa-icon size='medium' name="information-circle" style='lined'}}
-          {{/rsa-text-with-tooltip}}
+  <vbox class="rsa-application-layout-panel-content zzz" xs="12">
+    <hbox fit class="col-xs-12">
+      <hbox class="col-xs-6 col-md-6">
+        <div class="source-type-top-text">
+          <span>{{t 'adminUsm.groupWizard.applyPolicy.sourceType'}}: </span>{{t (concat 'adminUsm.policyTypes.' selectedSourceType)}}
+          <div class="tooltip" tabindex="0" {{action 'selectGroupRanking' false on='focusIn'}}>
+            {{#rsa-text-with-tooltip value=(t 'adminUsm.groupRankingWizard.sourceTooltip')
+              displayOnTab=true
+              style="standard"
+              format="PREFORMAT"
+              alwaysShow=true}}
+              {{rsa-icon size='medium' name="information-circle" style='lined'}}
+            {{/rsa-text-with-tooltip}}
+          </div>
         </div>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>
-            </th>
-            <th>
-              {{t 'adminUsm.groupRankingWizard.column.rank'}}
-            </th>
-            <th>
-              {{t 'adminUsm.groupRankingWizard.column.preview'}}
-            </th>
-            <th>
-              {{t 'adminUsm.groupRankingWizard.column.groupName'}}
-            </th>
-            <th>
-              {{t 'adminUsm.groupRankingWizard.column.policyApplied'}}
-            </th>
-            <th>
-              {{t 'adminUsm.groupRankingWizard.column.nSources'}}
-            </th>
-          </tr>
-        </thead>
-        <tbody class='group-ranking-table-body'>
-          {{#each groupRanking as |item index|}}
-            {{#usm-groups/group-ranking/edit-ranking-step/row
-              item=item
-              group=group
-              index=index
-              selectedItemId=selectedGroupRanking
-              tabindex=0
-              selectedSourceType=selectedSourceType
-              keyDown=(action 'handleKeyBoard' index)
-              focusIn=(action 'selectGroupRanking' item.name)
-              click=(action 'handleSelectGroupRanking')}}
-            {{/usm-groups/group-ranking/edit-ranking-step/row}}
-          {{/each}}
-        </tbody>
-      </table>
-    {{/sortable-group}}
-  </div>
-  {{#if (eq groupRankingPrevListStatus 'wait')}}
-    <span class='loading-spinner'>
-      {{rsa-loader size='large'}}
-    </span>
-  {{else if (eq groupRankingPrevListStatus 'error')}}
-    <span class='loading-error'>
-      {{t 'adminUsm.groupRankingWizard.error.generic'}}
-    </span>
-  {{else if (eq groupRankingPrevListStatus 'complete')}}
-    <div class='preview-settings'>
-      <div class="source-type-top-text">
-        <span>{{t 'adminUsm.groupWizard.applyPolicy.preview'}}</span>
-        <div class="tooltip">
-          {{#rsa-text-with-tooltip value=(t 'adminUsm.groupRankingWizard.previewTooltip')
-            style="standard"
-            alwaysShow=true}}
-            {{rsa-icon size='medium' name="information-circle" style='lined'}}
-          {{/rsa-text-with-tooltip}}
+      </hbox>
+      <hbox class="col-xs-6 col-md-6">
+        <div class="source-type-top-text">
+          <span>{{t 'adminUsm.groupWizard.applyPolicy.preview'}}</span>
+          <div class="tooltip" tabindex="0" {{action 'selectGroupRanking' false on='focusIn'}}>
+            {{#rsa-text-with-tooltip value=(t 'adminUsm.groupRankingWizard.previewTooltip')
+              displayOnTab=true
+              style="standard"
+              format="PREFORMAT"
+              alwaysShow=true}}
+              {{rsa-icon size='medium' name="information-circle" style='lined'}}
+            {{/rsa-text-with-tooltip}}
+          </div>
         </div>
-      </div>
-      <div class='usm-policies-inspector'>
-        {{usm-groups/group-ranking/inspector}}
-      </div>
-    </div>
-  {{/if}}
+      </hbox>
+    </hbox>
+    <hbox fit class="col-xs-12">
+      <hbox class="col-xs-6 col-md-6">
+        <div class='group-ranking-table'>
+          {{#sortable-group onChange="reorderRanking" as |group|}}
+            <table>
+              <thead>
+                <tr>
+                  <th>
+                  </th>
+                  <th>
+                    {{t 'adminUsm.groupRankingWizard.column.rank'}}
+                  </th>
+                  <th>
+                    {{t 'adminUsm.groupRankingWizard.column.preview'}}
+                  </th>
+                  <th>
+                    {{t 'adminUsm.groupRankingWizard.column.groupName'}}
+                  </th>
+                  <th>
+                    {{t 'adminUsm.groupRankingWizard.column.policyApplied'}}
+                  </th>
+                  <th>
+                    {{t 'adminUsm.groupRankingWizard.column.nSources'}}
+                  </th>
+                </tr>
+              </thead>
+              <tbody class='group-ranking-table-body'>
+                {{#each groupRanking as |item index|}}
+                  {{#usm-groups/group-ranking/edit-ranking-step/row
+                    item=item
+                    group=group
+                    index=index
+                    selectedItemId=selectedGroupRanking
+                    tabindex=(if index -1 0)
+                    selectedSourceType=selectedSourceType
+                    keyDown=(action 'handleKeyBoard' index)
+                    focusIn=(action 'selectGroupRanking' item.name)
+                    click=(action 'handleSelectGroupRanking')}}
+                  {{/usm-groups/group-ranking/edit-ranking-step/row}}
+                {{/each}}
+              </tbody>
+            </table>
+          {{/sortable-group}}
+        </div>
+      </hbox>
+      <hbox class="col-xs-6 col-md-6">
+        {{#if (eq groupRankingPrevListStatus 'wait')}}
+          <span class='loading-spinner'>
+            {{rsa-loader size='large'}}
+          </span>
+        {{else if (eq groupRankingPrevListStatus 'error')}}
+          <span class='loading-error'>
+            {{t 'adminUsm.groupRankingWizard.error.generic'}}
+          </span>
+        {{else if (eq groupRankingPrevListStatus 'complete')}}
+          <div class='preview-settings'>
+            <div class='usm-policies-inspector'>
+              {{usm-groups/group-ranking/inspector}}
+            </div>
+          </div>
+        {{/if}}
+      </hbox>
+    </hbox>
+  </vbox>
 {{/if}}

@@ -172,4 +172,23 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
     assert.deepEqual(state.usm.groupWizard.groupRanking, expectedResult, 'third group was moved up to top ranking');
   });
 
+  test('Focus on sourceTooltip test', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    const data = [{ name: 'gOne' }, { name: 'gTwo' }];
+    new ReduxDataHelper(setState).groupRankingWithData(data).build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    const expectedToolTip = translation.t('adminUsm.groupRankingWizard.sourceTooltip');
+    await triggerEvent(document.querySelectorAll('.tooltip-text')[0], 'focusIn');
+    assert.equal(document.querySelectorAll('.tool-tip-value')[0].innerText.trim(), expectedToolTip.string.trim(), 'Tool tip was activated for sourceTooltip via tab/focusIn');
+  });
+
+  test('Focus on previewTooltip test', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    const data = [{ name: 'gOne' }, { name: 'gTwo' }];
+    new ReduxDataHelper(setState).groupRankingWithData(data).build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    const expectedToolTip = translation.t('adminUsm.groupRankingWizard.previewTooltip');
+    await triggerEvent(document.querySelectorAll('.tooltip-text')[1], 'focusIn');
+    assert.equal(document.querySelectorAll('.tool-tip-value')[1].innerText.trim(), expectedToolTip.string.trim(), 'Tool tip was activated for previewTooltip via tab/focusIn');
+  });
 });

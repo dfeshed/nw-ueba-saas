@@ -445,7 +445,11 @@ export default reduxActions.handleActions({
 
   [ACTION_TYPES.SELECT_GROUP_RANKING]: (state, action) => {
     const { groupRankingName } = action.payload;
-    return state.set('selectedGroupRanking', groupRankingName);
+    if (groupRankingName) {
+      return state.set('selectedGroupRanking', groupRankingName);
+    } else {
+      return state.set('selectedGroupRanking', null);
+    }
   },
 
   [ACTION_TYPES.SET_TOP_RANKING]: (state, action) => {

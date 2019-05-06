@@ -4301,14 +4301,16 @@ export default {
       },
       chooseSource: 'Choose Source Type',
       sourceTooltip: '\
-  A source takes its settings from the\n\
+A source takes its settings from the\n\
 policies applied by the groups it belongs to,\n\
 starting with rank one and working its way down,\n\
 until it has a complete policy.\n\
-  If a source is a member of multiple groups with\n\
+\n\
+If a source is a member of multiple groups with\n\
 policies that set the same settings, it will\n\
 follow the highest ranked.\n\
-  If the group policies do not create a full\n\
+\n\
+If the group policies do not create a full\n\
 policy, the source will take the remaining\n\
 settings from the default policy. Drag and drop\n\
 the rows to change the order.\n\
@@ -4323,7 +4325,17 @@ Set Group Ranking Up One Step      Shift+UpArrow\n\
 Set Group Ranking Down One Step  Shift+DownArrow\n\
 Set Group To Top Ranking       Shift+Alt+UpArrow\n\
 Set Group To Bottom Ranking  Shift+Alt+DownArrow\n',
-      previewTooltip: 'The preview shows how the policy settings will be applied to a hypothetical source. Use the preview toggles in the table to choose what groups the previewed source belongs to. Selecting a row will highlight the settings that belong to that policy and any potential conflicts. Change the order of the row to see how this effects the previewed source.',
+      previewTooltip: '\
+The preview shows how the policy settings will be\n\
+applied to a hypothetical source.\n\
+\n\
+Use the preview toggles in the table to choose\n\
+what groups the previewed source belongs to.\n\
+\n\
+Selecting a row will highlight the settings that \n\
+belong to that policy and any potential conflicts.\n\
+Change the order of the row to see how this\n\
+effects the previewed source.',
       editRanking: 'Edit Ranking',
       chooseSourceTopText: 'Ranking is established per source type.  Select a source type to continue.',
       error: {

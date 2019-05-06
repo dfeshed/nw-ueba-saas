@@ -20,7 +20,7 @@ export default Component.extend({
   // for hideOnLeave. By default it is set to true, which means the tooltip will disappear
   // once the cursor enters the tooltip and then leaves
   hideOnLeave: true,
-  isDisplayed: false,
+  isDisplayed: null,
   isHovering: false,
   isPopover: false,
   // optional arbitrary data, passed from trigger to here via eventBus

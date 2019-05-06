@@ -1,58 +1,15 @@
 .group-ranking {
   position: relative;
-  .group-ranking-table {
-    max-height: calc(100vh - #{$wizardStepMaxHeight});
-    min-height: calc(100vh - #{$wizardStepMaxHeight});
-    max-width: calc(50% - 1px);
-    min-width: calc(50% - 1px);
-    overflow: auto;
-    background-color: background-color(primary, darkest);
-    z-index: 999;
-    scroll-behavior: smooth;
-  }
-  .preview-settings {
-    max-height: calc(100vh - #{$wizardStepMaxHeight});
-    min-height: calc(100vh - #{$wizardStepMaxHeight});
-    max-width: calc(50% - 200px);
-    min-width: calc(50% - 200px);
-    overflow: auto;
-    border-left: 1px solid border-color(primary, dark);
-    z-index: 888;
-    position: absolute;
-    -webkit-animation-name: preview; /* Safari 4.0 - 8.0 */
-    -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
-    animation-name: preview;
-    animation-duration: 1s;
-    left: calc(50% - 1px);
-    padding-left: 30px;
-    .heading hbox {
-      color: text-color(primary, light);
-    }
-    .source-type-top-text {
-      margin-left: 0px;
-      margin-bottom: 0px;
-      span {
-        margin-right: 0px;
-      }
-    }
-    .disabled .propValue {
-      color: text-color(primary); /* gray-out propValues */
-    }
-    .disabled .disabled .propValue {
-      color: text-color(neutral) /* set first propValue back to white */
-    }
-  }
-  
   /* Safari 4.0 - 8.0 */
   @-webkit-keyframes preview {
-    0%   {left:0px; top:0px;}
-    100%  {left:calc(50% - 1px); top:0px;}
-  }
+    0% { left:calc(1px - 100%); top:0px; }
+    100% { left:0px; top:0px; }
+  } 
   
   /* Standard syntax */
   @keyframes preview {
-    0%   {left:0px; top:0px;}
-    100%  {left:calc(50% - 1px); top:0px;}
+    0% {left:calc(1px - 100%); top:0px;}
+    100% {left:0px; top:0px;}
   }
 
   .n-sources-cell {
@@ -85,19 +42,55 @@
     color: text-color(primary);
     display: inline;
   }
+  .rsa-wizard-toolbar-container {
+    z-index: 3;
+  }
   .edit-ranking-step {
-    width: 100%;
+    .rsa-content-tethered-panel {
+      display: none;
+    }
+    .group-ranking-table, .preview-settings {
+      border-top: 1px solid border-color(primary);
+      max-height: calc(100vh - #{$wizardStepMaxHeight} - 65px);
+      min-height: calc(100vh - #{$wizardStepMaxHeight} - 65px);
+      overflow: auto;
+      background-color: background-color(primary, darkest);
+    }
+    .group-ranking-table {
+      scroll-behavior: smooth;
+      width: 100%;
+      z-index: 1;
+    }
+    .preview-settings {
+      border-left: 1px solid border-color(primary, dark);
+      z-index: 0;
+      position: absolute;
+      -webkit-animation-name: preview; /* Safari 4.0 - 8.0 */
+      -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
+      animation-name: preview;
+      animation-duration: 1s;
+      padding-left: 30px;
+      width: 90%;
+      .heading hbox {
+        color: text-color(primary, light);
+      }
+      .disabled .propValue {
+        color: text-color(primary); /* gray-out propValues */
+      }
+      .disabled .disabled .propValue {
+        color: text-color(neutral) /* set first propValue back to white */
+      }
+    }
+
     .col-md-5 {
       padding-left: rsa-whitespace();
     }
     .loading {
-      width: 100%;
       text-align: center;
       margin-top: 20%;
     }
     table {
-      width: 97%;
-      margin: rsa-whitespace();
+      width: 100%;
       tbody {
         tr {
           border-bottom: 1px solid border-color(primary, dark);
@@ -145,7 +138,6 @@
       th {
         padding: rsa-whitespace();
         padding-left: rsa-whitespace(less);
-        border-top: 1px solid border-color(primary);
         text-align: left;
         @include rsa-font(header);
       }
@@ -157,7 +149,7 @@
 }
 /*
 .admin-engine .license-banner.shown+page.admin-usm-engine .edit-ranking-step {
-  min-height: calc(100vh - #{$wizardStepMaxHeight} - 20);
-  max-height: calc(100vh - #{$wizardStepMaxHeight} - 20);
+  min-height: calc(100vh - #{$wizardStepMaxHeight} - 80px);
+  max-height: calc(100vh - #{$wizardStepMaxHeight} - 80px);
 }
 */

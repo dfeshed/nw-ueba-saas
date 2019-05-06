@@ -68,6 +68,13 @@ export default Mixin.create({
     }, this.get('hideDelay'));
     this.set('hideEvent', hideEvent);
   },
+
+  focusIn(e) {
+    this.mouseEnter(e);
+  },
+  focusOut() {
+    this.mouseLeave();
+  },
   /**
    * Register the window click event, on click set the show tooltip flag to false
    * @public

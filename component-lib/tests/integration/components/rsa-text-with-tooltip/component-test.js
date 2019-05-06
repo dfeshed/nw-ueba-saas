@@ -53,6 +53,16 @@ module('Integration | Component | rsa-text-with-tooltip', function(hooks) {
     assert.equal(findAll('.ember-tether .tool-tip-value').length, 0, 'Tool tip is hidden');
   });
 
+  test('it renders the tooltip on displayOnTab', async function(assert) {
+    assert.expect(2);
+    this.set('value', 'test value 123123 123123 123123 123123 123123');
+    this.set('tipPosition', 'top');
+    await render(hbs`{{rsa-text-with-tooltip value=value tipPosition=tipPosition displayOnTab=true}}`);
+    document.querySelector('.tooltip-text').setAttribute('style', 'width:100px');
+    assert.equal(findAll('.ember-tether').length, 1, 'Tool tip is rendered on displayOnTab');
+    assert.equal(find('.ember-tether .tool-tip-value').textContent.trim(), 'test value 123123 123123 123123 123123 123123');
+  });
+
   test('it renders the tooltip when alwaysShow is true', async function(assert) {
     assert.expect(3);
     this.set('value', 'test value');

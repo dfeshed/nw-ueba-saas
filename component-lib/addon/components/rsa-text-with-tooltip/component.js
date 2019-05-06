@@ -9,9 +9,15 @@ export default Component.extend(ToolTip, {
 
   classNames: [ 'tooltip-text' ],
 
+  attributeBindings: ['tabindex'],
+
+  displayOnTab: null,
+
+  tabindex: -1,
+
   classNameBindings: ['panelId', 'cssClass' ],
 
-  showToolTip: false,
+  showToolTip: true,
 
   tipPosition: 'top',
 
@@ -30,6 +36,12 @@ export default Component.extend(ToolTip, {
   panelId() {
     const id = Math.random().toString();
     return `tooltip-text-${id.slice(2, id.length)}`;
+  },
+  init() {
+    this._super(...arguments);
+    if (this.get('displayOnTab')) {
+      this.set('tabindex', 0);
+    }
   }
 
 });
