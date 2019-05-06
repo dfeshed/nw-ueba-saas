@@ -15,7 +15,7 @@ export default (settings) => {
   /* Create axes */
   const categoryAxis = chart.xAxes.push(new Am4charts.CategoryAxis());
   categoryAxis.dataFields.category = 'category';
-  categoryAxis.renderer.minGridDistance = 4;
+  categoryAxis.renderer.minGridDistance = 40;
   categoryAxis.dateFormatter = new Am4core.DateFormatter();
   categoryAxis.renderer.labels.template.fill = '#FFFFFF';
   categoryAxis.dateFormatter.dateFormat = 'MM-dd';

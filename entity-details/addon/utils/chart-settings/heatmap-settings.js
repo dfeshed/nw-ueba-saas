@@ -29,7 +29,7 @@ export default (anomalyTypeFieldName) => {
     dataAdapter: (dataItem) => {
       const chartItem = {
         weekday: dataItem.keys[0],
-        hour: parseInt(dataItem.keys[1], 2),
+        hour: parseInt(dataItem.keys[1], 10),
         value: dataItem.value
       };
 

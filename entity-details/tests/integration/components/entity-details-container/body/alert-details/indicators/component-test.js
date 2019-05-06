@@ -28,6 +28,7 @@ module('Integration | Component | entity-details-container/body/alert-details/in
     await render(hbs`{{entity-details-container/body/alert-details/indicators}}`);
 
     assert.equal(findAll('.entity-details-container-body-alert-details_indicators_flow_timeline_pill').length, 9);
+    assert.equal(findAll('.entity-details-container-body-alert-details_indicators_flow_timeline_pill_icon-row_line').length, 8);
   });
 
   test('it should scroll if left or right arrow clicks', async function(assert) {

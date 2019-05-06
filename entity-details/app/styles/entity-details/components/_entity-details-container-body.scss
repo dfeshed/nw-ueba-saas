@@ -80,6 +80,7 @@
           
           &_pill {
             width: calc(100% - 2rem);
+            cursor: pointer;
             height: 50px;
             display: flex;
             flex-direction: row;
@@ -109,6 +110,7 @@
 
               &_text {
                 @include rsa-font(header, medium);
+                cursor: pointer;
                 padding: rsa-whitespace(less);
               }
             }

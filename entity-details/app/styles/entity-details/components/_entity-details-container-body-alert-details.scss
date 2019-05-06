@@ -113,12 +113,12 @@
 
         &_pill {
           height: 100%;
+          cursor: pointer;
           width: 200px;
           display: flex;
           flex-direction: column;
-          justify-content: center;
           padding-right: 2*rsa-whitespace();
-      
+          padding-top: rsa-whitespace();
 
           &_icon-row {
             display: flex;

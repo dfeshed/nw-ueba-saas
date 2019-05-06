@@ -32,7 +32,7 @@ export default (settings) => {
   yAxis.renderer.labels.template.adapter.add('text', (text) => {
     return `${text}:00`;
   });
-  // xAxis.renderer.grid.template.disabled = true
+  xAxis.renderer.grid.template.disabled = true;
   xAxis.renderer.minGridDistance = 5;
 
   yAxis.renderer.inversed = true;

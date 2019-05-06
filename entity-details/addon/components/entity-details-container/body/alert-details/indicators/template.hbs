@@ -13,15 +13,17 @@
     {{/rsa-form-button}}
   </div>
   <div class='entity-details-container-body-alert-details_indicators_flow_timeline'>
-    {{#each alertDetails.evidences as |indicator|}}
+    {{#each alertDetails.evidences as |indicator index|}}
       <div class='entity-details-container-body-alert-details_indicators_flow_timeline_pill'>
         <div class='entity-details-container-body-alert-details_indicators_flow_timeline_pill_icon-row'>
           <div {{action 'initializeIndicator' indicator.id}}>
             {{rsa-icon size='larger' style='lined' name='add-circle-1' }}
           </div>
-          <div class='entity-details-container-body-alert-details_indicators_flow_timeline_pill_icon-row_line'>
-            <hr>
-          </div>
+          {{#if (not-eq (add index 1)  alertDetails.evidences.length)}}
+            <div class='entity-details-container-body-alert-details_indicators_flow_timeline_pill_icon-row_line'>
+              <hr>
+            </div>
+          {{/if}}
         </div>
         <div class='entity-details-container-body-alert-details_indicators_flow_timeline_pill_desc'>
           {{t (concat 'investigateUsers.alerts.indicator.indicatorNames.' indicator.anomalyTypeFieldName '.name')}}
