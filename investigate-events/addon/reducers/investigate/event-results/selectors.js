@@ -15,7 +15,6 @@ const _resultsData = (state) => state.investigate.eventResults.data;
 const _eventResultCount = (state) => state.investigate.eventCount.data;
 const _status = (state) => state.investigate.eventResults.status;
 const _visibleColumns = (state) => state.investigate.eventResults.visibleColumns;
-const _eventTimeSortOrder = (state) => state.investigate.data.eventAnalysisPreferences.eventTimeSortOrder;
 const _sessionId = (state) => state.investigate.queryNode.sessionId;
 const _errorMessage = (state) => state.investigate.eventResults.message;
 const _eventAnalysisPreferences = (state) => state.investigate.data.eventAnalysisPreferences;
@@ -28,12 +27,23 @@ const _timeFormat = (state) => state.investigate.data.globalPreferences.timeForm
 const _timeZone = (state) => state.investigate.data.globalPreferences.timeZone;
 const _locale = (state) => state.investigate.data.globalPreferences.locale;
 const _searchTerm = (state) => state.investigate.eventResults.searchTerm;
-export const streamLimit = (state) => state.investigate.eventResults.streamLimit;
 
 export const SORT_ORDER = {
   DESC: 'Descending',
   ASC: 'Ascending'
 };
+
+export const streamLimit = (state) => state.investigate.eventResults.streamLimit;
+
+export const eventTimeSortOrder = createSelector(
+  [_eventAnalysisPreferences],
+  (preferences) => {
+    if (preferences) {
+      return preferences.eventTimeSortOrder || SORT_ORDER.ASC;
+    }
+    return SORT_ORDER.ASC;
+  }
+);
 
 export const noEvents = createSelector(
   [_resultsData],
@@ -43,9 +53,9 @@ export const noEvents = createSelector(
 );
 
 export const shouldStartAtOldest = createSelector(
-  [_eventTimeSortOrder],
-  (_eventTimeSortOrder) => {
-    return _eventTimeSortOrder === SORT_ORDER.ASC;
+  [eventTimeSortOrder],
+  (eventTimeSortOrder) => {
+    return eventTimeSortOrder === SORT_ORDER.ASC;
   }
 );
 

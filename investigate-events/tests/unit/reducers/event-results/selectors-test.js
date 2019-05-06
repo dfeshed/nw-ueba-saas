@@ -13,7 +13,8 @@ import {
   noEvents,
   eventTableFormattingOpts,
   searchMatches,
-  searchMatchesCount
+  searchMatchesCount,
+  eventTimeSortOrder
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -431,6 +432,24 @@ module('Unit | Selectors | event-results', function(hooks) {
     await assertForCountsAndSessionIds(assert, result, 1, '1/2', [1], false);
     // preffered Meta option
     await assertForCountsAndSessionIds(assert, result, 2, '2/2', [1, 3], false);
+  });
+
+  test('eventTimeSortOrder returns proper data', async function(assert) {
+    let result = eventTimeSortOrder({
+      investigate: {
+        data: preferenceData
+      }
+    });
+    assert.equal(result, 'Ascending', 'with data passes correct return');
+
+    result = eventTimeSortOrder({
+      investigate: {
+        data: {
+          eventAnalysisPreferences: null
+        }
+      }
+    });
+    assert.equal(result, 'Ascending', 'when no data passes correct return');
   });
 
   test('isEventResultsError is false when status is not error', function(assert) {

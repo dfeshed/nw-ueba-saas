@@ -8,14 +8,19 @@ import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { setColumnGroup, searchForTerm } from 'investigate-events/actions/interaction-creators';
 import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
-import { shouldStartAtOldest, actualEventCount, searchMatchesCount } from 'investigate-events/reducers/investigate/event-results/selectors';
+import {
+  shouldStartAtOldest,
+  actualEventCount,
+  searchMatchesCount,
+  eventTimeSortOrder
+} from 'investigate-events/reducers/investigate/event-results/selectors';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
 import { observer } from '@ember/object';
 
 const stateToComputed = (state) => ({
   reconSize: state.investigate.data.reconSize,
   isReconOpen: state.investigate.data.isReconOpen,
-  eventTimeSortOrder: state.investigate.data.eventAnalysisPreferences.eventTimeSortOrder,
+  eventTimeSortOrder: eventTimeSortOrder(state),
   columnGroups: state.investigate.data.columnGroups,
   searchTerm: state.investigate.eventResults.searchTerm,
   selectedColumnGroup: getSelectedColumnGroup(state),

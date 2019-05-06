@@ -3,10 +3,9 @@ import * as ACTION_TYPES from './types';
 import { fetchSummary } from 'investigate-shared/actions/api/services';
 import getEventCount from './event-count-creators';
 import getEventTimeline from './event-timeline-creators';
-import { eventsStartNewest, eventsStartOldest } from './events-creators';
+import { eventsStartOldest } from './events-creators';
 import { setQueryTimeRange, searchForTerm } from 'investigate-events/actions/interaction-creators';
 import { selectedTimeRange, canFetchEvents } from 'investigate-events/reducers/investigate/query-node/selectors';
-import { shouldStartAtOldest } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaGet } from './meta-creators';
 import { canFetchMeta } from 'investigate-events/reducers/investigate/meta/selectors';
 
@@ -126,13 +125,19 @@ export const fetchInvestigateData = () => {
         dispatch(getEventTimeline());
       }
 
+      // COMMENTING OUT USAGE OF EVENTS START NEWEST AS IT ASSUMES
+      // IT HAS TO FIND THE NEWEST DATA ITSELF. eventsStartOldest
+      // IS CURRENTLY MISNAMED AS IT CAN CONTAIN A SORT PARAMETER.
+      // WE MAY NEED NEWEST CODE IN FUTURE, SO LEAVING THINGS AS
+      // THEY ARE
+
       // Get first batch of results either at top or bottom of
       // date range
-      if (shouldStartAtOldest(getState())) {
-        dispatch(eventsStartOldest());
-      } else {
-        dispatch(eventsStartNewest());
-      }
+      // if (shouldStartAtOldest(getState())) {
+      dispatch(eventsStartOldest());
+      // } else {
+      //   dispatch(eventsStartNewest());
+      // }
     }
   };
 };

@@ -1,12 +1,13 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
-import EventColumnGroups from 'investigate-events/constants/OOTBColumnGroups';
+import _ from 'lodash';
 
+import EventColumnGroups from 'investigate-events/constants/OOTBColumnGroups';
+import { SORT_ORDER } from './event-results/selectors';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import CONFIG from './config';
-import _ from 'lodash';
 
 const valueNotInArray = (arr, val) => arr.indexOf(val) < 0;
 const unknownReconSize = (val) => valueNotInArray(Object.values(RECON_PANEL_SIZES), val);
@@ -30,7 +31,8 @@ export default handleActions({
     if (sortDirection || state.sortDirection) {
       sortDirection = sortDirection || state.sortDirection;
     } else {
-      sortDirection = (state.eventAnalysisPreferences && state.eventAnalysisPreferences.eventTimeSortOrder) || 'asc';
+      const prefs = state.eventAnalysisPreferences;
+      sortDirection = (prefs && prefs.eventTimeSortOrder) || SORT_ORDER.ASC;
     }
 
     return state.merge({
