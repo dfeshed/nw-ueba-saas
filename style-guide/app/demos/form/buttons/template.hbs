@@ -266,14 +266,18 @@
 
   {{#spec-category title="Button with Menu"}}
     {{#spec-member title="Default"}}
-      <hbox class="rsa-button-group">
+      <hbox class="rsa-button-group button-menu-demo">
         {{#rsa-form-button}}
           Default Button
         {{/rsa-form-button}}
 
-        {{#rsa-form-button class="rsa-split-dropdown"}}
+        {{#rsa-form-button class="rsa-split-dropdown" isActive=isExpanded defaultAction=(action 'toggleExpand')}}
           {{rsa-icon name="arrow-down-12"}}
         {{/rsa-form-button}}
+        {{#rsa-button-menu isExpanded=isExpanded style=offsetsStyle}}
+          <li><a>Option1</a></li>
+          <li><a>Option2</a></li>
+        {{/rsa-button-menu}}
       </hbox>
       {{!-- BEGIN-SNIPPET button26
       <hbox class="rsa-button-group">
@@ -281,60 +285,16 @@
           Default Button
         {{/rsa-form-button}}
 
-        {{#rsa-form-button class="rsa-split-dropdown"}}
+        {{#rsa-form-button class="rsa-split-dropdown" isActive=isExpanded defaultAction=(action 'toggleExpand')}}
           {{rsa-icon name="arrow-down-12"}}
         {{/rsa-form-button}}
+        {{#rsa-button-menu isExpanded=isExpanded style=offsetsStyle}}
+          <li><a>Option1</a></li>
+          <li><a>Option2</a></li>
+        {{/rsa-button-menu}}
       </hbox>
       END-SNIPPET --}}
       {{code-snippet name="button26.hbs"}}
-    {{/spec-member}}
-
-    {{#spec-member title="Primary"}}
-      <hbox class="rsa-button-group">
-        {{#rsa-form-button style="primary"}}
-          Primary Button
-        {{/rsa-form-button}}
-
-        {{#rsa-form-button class="rsa-split-dropdown" style="primary"}}
-          {{rsa-icon name="arrow-down-12"}}
-        {{/rsa-form-button}}
-      </hbox>
-      {{!-- BEGIN-SNIPPET button27
-      <hbox class="rsa-button-group">
-        {{#rsa-form-button style="primary"}}
-          Primary Button
-        {{/rsa-form-button}}
-
-        {{#rsa-form-button class="rsa-split-dropdown" style="primary"}}
-          {{rsa-icon name="arrow-down-12"}}
-        {{/rsa-form-button}}
-      </hbox>
-      END-SNIPPET --}}
-      {{code-snippet name="button27.hbs"}}
-    {{/spec-member}}
-
-    {{#spec-member title="Danger"}}
-      <hbox class="rsa-button-group">
-        {{#rsa-form-button style="danger"}}
-          Danger Button
-        {{/rsa-form-button}}
-
-        {{#rsa-form-button class="rsa-split-dropdown" style="danger"}}
-          {{rsa-icon name="arrow-down-12"}}
-        {{/rsa-form-button}}
-      </hbox>
-      {{!-- BEGIN-SNIPPET button28
-      <hbox class="rsa-button-group">
-        {{#rsa-form-button style="danger"}}
-          Danger Button
-        {{/rsa-form-button}}
-
-        {{#rsa-form-button class="rsa-split-dropdown" style="danger"}}
-          {{rsa-icon name="arrow-down-12"}}
-        {{/rsa-form-button}}
-      </hbox>
-      END-SNIPPET --}}
-      {{code-snippet name="button28.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
 
