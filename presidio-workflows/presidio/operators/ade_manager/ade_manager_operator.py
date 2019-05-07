@@ -1,5 +1,6 @@
 from airflow.utils.decorators import apply_defaults
 
+from presidio.utils.airflow.schedule_interval_utils import get_schedule_interval
 from presidio.utils.services.time_service import convert_to_utc
 
 from presidio.utils.airflow.context_wrapper import ContextWrapper
@@ -21,7 +22,7 @@ class AdeManagerOperator(SpringBootJarOperator):
 
     @apply_defaults
     def __init__(self, command, *args, **kwargs):
-        self.interval = kwargs.get('dag').schedule_interval
+        self.interval = get_schedule_interval(kwargs.get('dag'))
         kwargs['retry_callback'] = AdeManagerOperator.handle_retry
         retry_extra_params = {'schedule_interval': self.interval}
 

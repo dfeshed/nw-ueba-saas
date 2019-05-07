@@ -17,7 +17,7 @@ public interface OutputExecutionService {
     void applyRetentionPolicy(Instant endDate) throws Exception;
     void cleanAll() throws Exception;
 
-    default int doRun(Instant startDate, Instant endDate) throws Exception {
+    default int doRun(String smartRecordConfName, Instant startDate, Instant endDate) throws Exception {
         try {
             run(startDate, endDate);
         }
@@ -27,7 +27,7 @@ public interface OutputExecutionService {
         return 0;
     }
 
-    default int doUpdateAllUsersData(Instant startDate, Instant endDate) throws Exception {
+    default int doUpdateAllUsersData(String smartRecordConfName, Instant startDate, Instant endDate) throws Exception {
         try {
             updateAllUsersData(startDate, endDate);
         } catch (Exception e) {

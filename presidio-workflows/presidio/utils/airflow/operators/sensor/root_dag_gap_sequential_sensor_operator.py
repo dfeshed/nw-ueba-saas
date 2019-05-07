@@ -5,15 +5,14 @@ from airflow.utils.state import State
 from datetime import timedelta
 
 
-class RootDagGapSensorOperator(BaseSensorOperator):
+class RootDagGapSequentialSensorOperator(BaseSensorOperator):
     """
-    Sensor all specified dag_ids instances until all dag instances with execution_date that has greater
-    gap than the given delta time finished running (reached to one of the following states: success, failed)
+    Ensure that dag instance are running sequentially after all the specified dag_ids instances finished running.
+    The sensor checks every poked interval if all the previous dag_ids instances ran already
+    (reached to one of the following states: success, failed).
 
     :param dag_ids: The dag_ids that you want to wait for
     :type dag_ids: list
-    :param execution_delta: the minimum time difference of all dag instances that should be sensored.
-    :type execution_delta: datetime.timedelta
     """
     ui_color = '#19647e'
     ui_fgcolor = '#fff'
@@ -21,9 +20,8 @@ class RootDagGapSensorOperator(BaseSensorOperator):
     def __init__(
             self,
             dag_ids,
-            execution_delta,
             *args, **kwargs):
-        super(RootDagGapSensorOperator, self).__init__(
+        super(RootDagGapSequentialSensorOperator, self).__init__(
             retries=99999,
             retry_exponential_backoff=True,
             max_retry_delay=timedelta(seconds=300),
@@ -31,7 +29,6 @@ class RootDagGapSensorOperator(BaseSensorOperator):
             *args,
             **kwargs
         )
-        self._execution_delta = execution_delta
         self._dag_ids = dag_ids
 
     def poke(self, context):
@@ -40,28 +37,27 @@ class RootDagGapSensorOperator(BaseSensorOperator):
         '''
 
         execution_date = context['execution_date']
-        execution_date_lt = execution_date - self._execution_delta
 
         self.log.info(
             'Poking for all dag instances of'
-            '{self._dag_ids} with time lt'
-            'execution_date_lt ... '.format(**locals()))
+            '{self._dag_ids} with time '
+            'execution_date ... '.format(**locals()))
 
-        return self._is_finished_wait_for_gapped_dag(execution_date_lt)
+        return self._is_finished_wait_for_gapped_dag(execution_date)
 
     @provide_session
-    def _is_finished_wait_for_gapped_dag(self, execution_date_lt, session=None):
+    def _is_finished_wait_for_gapped_dag(self, execution_date, session=None):
 
         for dag_id in self._dag_ids:
             gapped_root_dag_run = session.query(DagRun).filter(
                 DagRun.dag_id == dag_id,
-                DagRun.execution_date < execution_date_lt,
-                DagRun.state == State.RUNNING,
+                DagRun.execution_date == execution_date,
+                DagRun.state.in_({State.SUCCESS, State.FAILED}),
             ).order_by(
                 DagRun.execution_date.asc()
             ).first()
 
-            if gapped_root_dag_run is not None:
+            if gapped_root_dag_run is None:
                 return False
 
         return True
