@@ -1,5 +1,6 @@
 import dataEdr from './data';
 import dataWindow from './dataWindow';
+import dataFile from './dataFile';
 
 export default {
   subscriptionDestination: '/user/queue/usm/group/rank/effective-policy',
@@ -10,6 +11,8 @@ export default {
     const sourceType = body.data.policyType;
     if (sourceType == 'windowsLogPolicy') {
       data = dataWindow;
+    } else if (sourceType == 'filePolicy') {
+      data = dataFile;
     }
     return {
       code: 0,

@@ -8,6 +8,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import edrTestPolicy from '../../../../../data/subscriptions/groups/fetchRankingView/data';
 import windowsTestPolicy from '../../../../../data/subscriptions/groups/fetchRankingView/dataWindow';
+import fileTestPolicy from '../../../../../data/subscriptions/groups/fetchRankingView/dataFile';
 
 let setState;
 
@@ -49,6 +50,17 @@ module('Integration | Component | group-ranking/inspector | Policy Inspector', f
     await render(hbs`{{usm-groups/group-ranking/inspector}}`);
     assert.equal(findAll('.usm-ranking-inspector .heading').length, 2, 'expected headings are shown');
     assert.equal(findAll('.usm-ranking-inspector .title').length, 4, 'expected property names are shown');
+    assert.equal(findAll('.usm-ranking-inspector .value').length, 12, 'expected value elements are shown');
+  });
+
+  test('It shows the common sections for history and groups for filePolicy', async function(assert) {
+    new ReduxDataHelper(setState)
+      .selectedSourceType('filePolicy')
+      .focusedPolicy(fileTestPolicy)
+      .build();
+    await render(hbs`{{usm-groups/group-ranking/inspector}}`);
+    assert.equal(findAll('.usm-ranking-inspector .heading').length, 1, 'expected headings are shown');
+    assert.equal(findAll('.usm-ranking-inspector .title').length, 5, 'expected property names are shown');
     assert.equal(findAll('.usm-ranking-inspector .value').length, 12, 'expected value elements are shown');
   });
 });
