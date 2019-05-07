@@ -436,13 +436,17 @@ export default Component.extend({
           // In after options, move to previous item
           this._afterOptionsMenu.highlightPreviousIndex();
           return false;
-        } else if (this._afterOptionsMenu.highlightedIndex === 0) {
+        } else if (this._afterOptionsMenu.highlightedIndex === 0 && powerSelectAPI.resultsCount > 0) {
           // At top of advanced options, move back to meta
           const { actions, results } = powerSelectAPI;
           const lastItem = results[results.length - 1];
           this._afterOptionsMenu.clearHighlight();
           actions.scrollTo(lastItem);
           actions.highlight(lastItem);
+          return false;
+        } else if (this._afterOptionsMenu.highlightedIndex === 0 && powerSelectAPI.resultsCount === 0) {
+          // At top of after options, but there are no options to highlight in
+          // the meta list, so do nothing.
           return false;
         }
       } else if (isTab(event) || isShiftTab(event)) {
