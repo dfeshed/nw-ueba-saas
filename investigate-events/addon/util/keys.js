@@ -122,5 +122,12 @@ export const isSpace = (event) => matchesSpace(event.keyCode);
  * @public
  */
 export const isTab = (event) => matchesTab(event.keyCode);
+/**
+ * Is the event from shit + tab?
+ * @param {Object} event A KeyboardEvent.
+ * @return A Boolean value.
+ * @public
+ */
+export const isShiftTab = (event) => matchesTab(event.keyCode) && event.shiftKey;
 
 export default keyMap;

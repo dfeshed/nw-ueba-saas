@@ -14,12 +14,12 @@
     initiallyOpened=false
     matcher=_matcher
     matchTriggerWidth=false
-    noMatchesMessage='All meta filtered out'
+    noMatchesMessage=noMatchesMessage
     onchange=(action 'onChange')
     onfocus=(action 'onFocus')
     oninput=(action 'onInput')
     onkeydown=(action 'onKeyDown')
-    options=metaOptions
+    options=selectableOptions
     optionsComponent=(
       component 'query-container/power-select-options'
       onmousedown=(action 'onOptionMouseDown')
@@ -31,8 +31,12 @@
     triggerComponent='query-container/power-select-resizable-input'
     as |meta|
   }}
-    <span class="value">{{meta.metaName}}</span>
-    <span class="description" title="{{meta.displayName}}">{{meta.displayName}}</span>
+    {{#if isMetaTabActive}}
+      <span class="value">{{meta.metaName}}</span>
+      <span class="description" title="{{meta.displayName}}">{{meta.displayName}}</span>
+    {{else}}
+      <span class="recent-queries-option meta">{{meta}}</span>
+    {{/if}}
   {{/power-select-typeahead}}
 {{else}}
   {{selection.metaName}}

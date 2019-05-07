@@ -10,7 +10,8 @@ import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
   AFTER_OPTION_TEXT_DISABLED_LABEL,
-  AFTER_OPTION_TAB_META
+  AFTER_OPTION_TAB_META,
+  AFTER_OPTION_TAB_RECENT_QUERIES
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -24,6 +25,8 @@ const ARROW_UP = KEY_MAP.arrowUp.code;
 const BACKSPACE_KEY = KEY_MAP.backspace.code;
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
+const TAB_KEY = KEY_MAP.tab.code;
+const modifiers = { shiftKey: true };
 
 const meta = { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A' };
 const eq = { displayName: '=', description: 'Equals', isExpensive: false, hasValue: true };
@@ -34,6 +37,10 @@ const trim = (text) => text.replace(/\s+/g, ' ').trim();
 module('Integration | Component | Pill Operator', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
+  });
+
+  hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
   test('indicates it is populated when being used', async function(assert) {
@@ -74,10 +81,12 @@ module('Integration | Component | Pill Operator', function(hooks) {
   // The workaround is to provide focus to operator after rendering it.
   test('it shows an open Power Select if active', async function(assert) {
     this.set('meta', meta);
+    this.set('activePillTab', 'meta');
     await render(hbs`
       {{query-container/pill-operator
         isActive=true
         meta=meta
+        activePillTab=activePillTab
       }}
     `);
     await focus(PILL_SELECTORS.operatorTrigger);
@@ -540,7 +549,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await triggerEvent(PILL_SELECTORS.operatorSelectInput, 'input');
   });
 
-  test('it broadcasts a message to toggle tabs', async function(assert) {
+  test('it broadcasts a message to toggle tabs via pill operator', async function(assert) {
     assert.expect(1);
     this.set('meta', meta);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
@@ -558,5 +567,53 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await clickTrigger(PILL_SELECTORS.operator);
 
     await click(PILL_SELECTORS.recentQueriesTab);
+  });
+
+  test('it broadcasts a message to toggle tabs when tab or shiftTab is pressed via pill operator', async function(assert) {
+    assert.expect(2);
+    this.set('meta', meta);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'Correct message sent up');
+    });
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.operator);
+
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', TAB_KEY);
+
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', TAB_KEY, modifiers);
+  });
+
+  test('it displays recent queries in operator component', async function(assert) {
+    assert.expect(1);
+    const recentQueriesArray = [
+      'medium = 32',
+      'medium = 32 || medium = 1',
+      'foo = bar'
+    ];
+    this.set('meta', meta);
+    this.set('recentQueries', recentQueriesArray);
+    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
+
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        recentQueries=recentQueries
+        activePillTab=activePillTab
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.operator);
+
+    const selectorArray = findAll(PILL_SELECTORS.recentQueriesOptionsInOperator);
+    const optionsArray = selectorArray.map((el) => el.textContent);
+    assert.deepEqual(recentQueriesArray, optionsArray, 'Found the correct recent queries in the powerSelect');
   });
 });

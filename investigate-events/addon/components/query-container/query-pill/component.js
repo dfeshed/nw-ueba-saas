@@ -78,6 +78,11 @@ export default Component.extend({
   metaOptions: null,
 
   /**
+   * List of recent queries
+   */
+  recentQueries: null,
+
+  /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public
@@ -456,8 +461,16 @@ export default Component.extend({
     let isSubmit;
     const el = focusEvent.relatedTarget;
     if (el) {
+      const clickedOnContent = el.textContent.trim();
       const queryEvents = this.get('i18n').t('queryBuilder.queryEvents').string;
-      isSubmit = el.textContent.trim() === queryEvents;
+      isSubmit = clickedOnContent === queryEvents;
+      // if tabs are clicked on, do nothing here.
+      if (
+        clickedOnContent.toLowerCase() === AFTER_OPTION_TAB_META ||
+        clickedOnContent.toLowerCase() === AFTER_OPTION_TAB_RECENT_QUERIES
+      ) {
+        return;
+      }
     }
     if (this._isPillDataEmpty()) {
       // Treat this like an ESC was keyed

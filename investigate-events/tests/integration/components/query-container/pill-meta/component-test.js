@@ -13,7 +13,8 @@ import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
   AFTER_OPTION_TEXT_DISABLED_LABEL,
-  AFTER_OPTION_TAB_META
+  AFTER_OPTION_TAB_META,
+  AFTER_OPTION_TAB_RECENT_QUERIES
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -32,6 +33,8 @@ const ARROW_RIGHT = KEY_MAP.arrowRight.code;
 const ARROW_UP = KEY_MAP.arrowUp.code;
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
+const TAB_KEY = KEY_MAP.tab.code;
+const modifiers = { shiftKey: true };
 
 // This trim also removes extra spaces inbetween words
 const trim = (text) => text.replace(/\s+/g, ' ').trim();
@@ -42,6 +45,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       patchReducer(this, state);
     };
@@ -582,7 +586,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     assert.ok(textFilter, 'unable to find Text Filter option');
   });
 
-  test('it broadcasts a message to toggle tabs', async function(assert) {
+  test('it broadcasts a message to toggle tabs via pill meta', async function(assert) {
     assert.expect(1);
     this.set('metaOptions', META_OPTIONS);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
@@ -600,5 +604,53 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await clickTrigger(PILL_SELECTORS.meta);
 
     await click(PILL_SELECTORS.recentQueriesTab);
+  });
+
+  test('it broadcasts a message to toggle tabs when tab or shift tab is pressed via pill meta', async function(assert) {
+    assert.expect(2);
+    this.set('metaOptions', META_OPTIONS);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'Correct message sent up');
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        metaOptions=metaOptions
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', TAB_KEY);
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', TAB_KEY, modifiers);
+  });
+
+  test('it displays recent queries in meta component', async function(assert) {
+    assert.expect(1);
+    const recentQueriesArray = [
+      'medium = 32',
+      'medium = 32 || medium = 1',
+      'foo = bar'
+    ];
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueriesArray);
+    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
+
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        activePillTab=activePillTab
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    const selectorArray = findAll(PILL_SELECTORS.recentQueriesOptionsInMeta);
+    const optionsArray = selectorArray.map((el) => el.textContent);
+    assert.deepEqual(recentQueriesArray, optionsArray, 'Found the correct recent queries in the powerSelect');
   });
 });

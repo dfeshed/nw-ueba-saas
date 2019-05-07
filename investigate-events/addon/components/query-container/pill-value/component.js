@@ -1,14 +1,16 @@
 import Component from '@ember/component';
 import { next, scheduleOnce } from '@ember/runloop';
 import { htmlSafe } from '@ember/string';
-import computed from 'ember-computed-decorators';
+import computed, { equal } from 'ember-computed-decorators';
 import {
   isArrowLeft,
   isBackspace,
   isEscape,
   isArrowDown,
   isArrowUp,
-  isEnter
+  isEnter,
+  isTab,
+  isShiftTab
 } from 'investigate-events/util/keys';
 import { escapeBackslash, escapeSingleQuotes, properlyQuoted, stripOuterSingleQuotes } from 'investigate-events/util/quote';
 import {
@@ -16,7 +18,9 @@ import {
   AFTER_OPTION_TEXT_LABEL,
   AFTER_OPTION_TEXT_DISABLED_LABEL,
   AFTER_OPTION_QUERY_LABEL,
-  COMPLEX_OPERATORS
+  COMPLEX_OPERATORS,
+  AFTER_OPTION_TAB_META,
+  AFTER_OPTION_TAB_RECENT_QUERIES
 } from 'investigate-events/constants/pill';
 import * as MESSAGE_TYPES from '../message-types';
 import Ember from 'ember';
@@ -97,6 +101,15 @@ export default Component.extend({
    */
   activePillTab: undefined,
 
+  _dropDownOptions: [AFTER_OPTION_QUERY_LABEL],
+
+  /**
+   * List of recent queries
+   * @type {Array}
+   * @public
+   */
+  recentQueries: null,
+
   /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
@@ -111,16 +124,42 @@ export default Component.extend({
    */
   valueString: null,
 
-  /*
-  * No options other than Query Filter to display
-  * @private
-  */
-  _options: _dropDownOptions,
-
   /**
    * List object for advanced dropdown options
    */
   _afterOptionsMenu: BoundedList.create({ list: AFTER_OPTIONS_MENU }),
+
+  /**
+   * Based on the current tab selected, we replace options
+   * for the power select component.
+   * Default is Query_Pill option.
+   */
+  @computed('activePillTab', 'recentQueries')
+  selectableOptions(activePillTab, recentQueries) {
+    const options = this.get('_dropDownOptions');
+    return (activePillTab === AFTER_OPTION_TAB_RECENT_QUERIES) ? recentQueries : options;
+  },
+
+  /**
+   * This indicates if the meta tab is active.
+   * Not related to pill-value drop-down.
+   */
+  @equal('activePillTab', AFTER_OPTION_TAB_META)
+  isMetaTabActive: false,
+
+  /**
+   * Placeholder messages
+   */
+  @computed('isMetaTabActive', 'i18n.locale')
+  noMatchesMessage(isMetaTabActive) {
+    const i18n = this.get('i18n');
+    if (!isMetaTabActive) {
+      return i18n.t('queryBuilder.recentQueriesNoMatch');
+    } else {
+      // Query Pill will always be highlighted for pill-value
+      return undefined;
+    }
+  },
 
   @computed('hasTextPill')
   _groomedAfterOptionsMenu(hasTextPill) {
@@ -356,6 +395,13 @@ export default Component.extend({
           this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
           powerSelectAPI.actions.search('');
         }
+      } else if (isTab(event) || isShiftTab(event)) {
+        event.preventDefault();
+        // For now we have just 2 options, so can toggle.
+        // Will need to make  a informed decision once more tabs
+        // are added.
+        this._afterOptionsTabToggle();
+        return false;
       }
     },
 

@@ -1,11 +1,13 @@
 import Component from '@ember/component';
 import { cancel, later, next, scheduleOnce } from '@ember/runloop';
-import computed from 'ember-computed-decorators';
+import computed, { equal } from 'ember-computed-decorators';
 import * as MESSAGE_TYPES from '../message-types';
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
-  AFTER_OPTION_TEXT_DISABLED_LABEL
+  AFTER_OPTION_TEXT_DISABLED_LABEL,
+  AFTER_OPTION_TAB_META,
+  AFTER_OPTION_TAB_RECENT_QUERIES
 } from 'investigate-events/constants/pill';
 import {
   isArrowDown,
@@ -13,7 +15,9 @@ import {
   isArrowRight,
   isArrowUp,
   isEnter,
-  isEscape
+  isEscape,
+  isTab,
+  isShiftTab
 } from 'investigate-events/util/keys';
 import BoundedList from 'investigate-events/util/bounded-list';
 import { inject as service } from '@ember/service';
@@ -108,6 +112,12 @@ export default Component.extend({
   metaOptions: null,
 
   /**
+   * List of recent queries
+   * @type {Array}
+   * @public
+   */
+  recentQueries: null,
+  /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public
@@ -152,6 +162,36 @@ export default Component.extend({
   placeholder(isFirstPill) {
     const i18n = this.get('i18n');
     return isFirstPill ? i18n.t('queryBuilder.placeholder') : '';
+  },
+
+  /**
+   * Based on the current tab selected, we replace options
+   * for the power select component.
+   * Default are metaOptions.
+   */
+  @computed('activePillTab', 'metaOptions', 'recentQueries')
+  selectableOptions(activePillTab, metaOptions, recentQueries) {
+    return (activePillTab === AFTER_OPTION_TAB_RECENT_QUERIES) ? recentQueries : metaOptions;
+  },
+
+  /**
+   * This indicates if the meta tab is active.
+   * Not related to pill-meta drop-down.
+   */
+  @equal('activePillTab', AFTER_OPTION_TAB_META)
+  isMetaTabActive: false,
+
+  /**
+   * Placeholder messages
+   */
+  @computed('isMetaTabActive', 'i18n.locale')
+  noMatchesMessage(isMetaTabActive) {
+    const i18n = this.get('i18n');
+    if (isMetaTabActive) {
+      return i18n.t('queryBuilder.metaNoMatch');
+    } else {
+      return i18n.t('queryBuilder.recentQueriesNoMatch');
+    }
   },
 
   /**
@@ -405,6 +445,13 @@ export default Component.extend({
           actions.highlight(lastItem);
           return false;
         }
+      } else if (isTab(event) || isShiftTab(event)) {
+        event.preventDefault();
+        // For now we have just 2 options, so can toggle.
+        // Will need to make  a informed decision once more tabs
+        // are added.
+        this._afterOptionsTabToggle();
+        return false;
       }
     },
 

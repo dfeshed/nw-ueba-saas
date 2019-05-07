@@ -65,5 +65,9 @@ export default {
   metaTab: '.ember-power-select-after-options .power-select-tabs .meta-tab',
   metaTabSelected: '.ember-power-select-after-options .power-select-tabs .meta-tab.selected',
   recentQueriesTab: '.ember-power-select-after-options .power-select-tabs .recent-queries-tab',
-  recentQueriesTabSelected: '.ember-power-select-after-options .power-select-tabs .recent-queries-tab.selected'
+  recentQueriesTabSelected: '.ember-power-select-after-options .power-select-tabs .recent-queries-tab.selected',
+  powerSelectNoMatch: '.ember-power-select-option--no-matches-message',
+  recentQueriesOptionsInMeta: '.recent-queries-option.meta',
+  recentQueriesOptionsInOperator: '.recent-queries-option.operator',
+  recentQueriesOptionsInValue: '.recent-queries-option.value'
 };

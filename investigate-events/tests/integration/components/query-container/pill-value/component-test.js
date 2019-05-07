@@ -10,7 +10,8 @@ import {
   AFTER_OPTION_TEXT_LABEL,
   AFTER_OPTION_QUERY_LABEL,
   AFTER_OPTION_TEXT_DISABLED_LABEL,
-  AFTER_OPTION_TAB_META
+  AFTER_OPTION_TAB_META,
+  AFTER_OPTION_TAB_RECENT_QUERIES
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -20,12 +21,18 @@ const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const LEFT_ARROW_KEY = KEY_MAP.arrowLeft.code;
 const ARROW_DOWN = KEY_MAP.arrowDown.code;
+const TAB_KEY = KEY_MAP.tab.code;
+const modifiers = { shiftKey: true };
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
 module('Integration | Component | Pill Value', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
+  });
+
+  hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
   test('indicates it is populated when being used', async function(assert) {
@@ -482,7 +489,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), AFTER_OPTION_TEXT_LABEL, 'second Advanced Option was not highlighted');
   });
 
-  test('it broadcasts a message to toggle tabs', async function(assert) {
+  test('it broadcasts a message to toggle tabs via pill value', async function(assert) {
     assert.expect(1);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type) => {
@@ -498,5 +505,50 @@ module('Integration | Component | Pill Value', function(hooks) {
     await clickTrigger(PILL_SELECTORS.value);
 
     await click(PILL_SELECTORS.recentQueriesTab);
+  });
+
+  test('it broadcasts a message to toggle tabs when tab or shift is pressed via pill value', async function(assert) {
+    assert.expect(2);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'Correct message sent up');
+    });
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', TAB_KEY);
+
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', TAB_KEY, modifiers);
+  });
+
+  test('it displays recent queries in value component', async function(assert) {
+    assert.expect(1);
+    const recentQueriesArray = [
+      'medium = 32',
+      'medium = 32 || medium = 1',
+      'foo = bar'
+    ];
+    this.set('recentQueries', recentQueriesArray);
+    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
+
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        meta=meta
+        recentQueries=recentQueries
+        activePillTab=activePillTab
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+
+    const selectorArray = findAll(PILL_SELECTORS.recentQueriesOptionsInValue);
+    const optionsArray = selectorArray.map((el) => el.textContent);
+    assert.deepEqual(recentQueriesArray, optionsArray, 'Found the correct recent queries in the powerSelect');
   });
 });

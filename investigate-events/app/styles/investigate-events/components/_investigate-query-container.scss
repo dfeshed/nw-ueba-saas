@@ -959,15 +959,15 @@
       border-bottom-right-radius: 6px;
       padding: 0 30px;
       background: background-color(primary, darkest);
-      border-bottom: 1px solid text-color(neutral);
+      border-bottom: 1px solid text-color(primary);
     }
 
     .recent-queries-tab {
-      border-left: 1px solid text-color(neutral);
-      border-right: 1px solid text-color(neutral);
+      border-left: 1px solid text-color(primary);
+      border-right: 1px solid text-color(primary);
     }
     .meta-tab {
-      border-left: 1px solid text-color(neutral);
+      border-left: 1px solid text-color(primary);
     }
     
     .tabrow a {
@@ -976,7 +976,7 @@
     }
 
     .tabrow li:not(.selected) {
-      border-top: 1px solid text-color(neutral);
+      border-top: 1px solid text-color(primary);
       color: text-color(secondary);
     }
     

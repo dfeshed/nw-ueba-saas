@@ -2,6 +2,7 @@
   {{query-container/new-pill-trigger
     hasTextPill=hasTextPill
     metaOptions=metaOptions
+    recentQueries=recentQueries
     sendMessage=(action 'handleMessage')
     newPillPosition=index
     startTriggeredPosition=startTriggeredPosition
@@ -24,6 +25,7 @@
   {{else}}
     {{query-container/query-pill
       metaOptions=metaOptions
+      recentQueries=recentQueries
       pillData=(readonly pillData)
       sendMessage=(action 'handleMessage')
       position=index
@@ -37,6 +39,7 @@
   hasTextPill=hasTextPill
   isMetaAutoFocused=takeFocus
   metaOptions=metaOptions
+  recentQueries=recentQueries
   classNames='new-pill-template'
   sendMessage=(action 'handleMessage')
   position=newPillPosition

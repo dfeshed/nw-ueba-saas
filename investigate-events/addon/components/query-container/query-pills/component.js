@@ -116,6 +116,10 @@ const QueryPills = RsaContextMenu.extend({
   // Is a pill trigger open for add?
   isPillTriggerOpenForAdd: false,
 
+  // remove this constant array.
+  // Hook up an actual socket response.
+  recentQueries: [],
+
   contextMenu({ target }) {
     const currentClass = target.classList.contains('is-selected');
     const parentClass = target.parentElement.classList.contains('is-selected');

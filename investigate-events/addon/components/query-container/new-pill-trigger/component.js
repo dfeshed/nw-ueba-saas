@@ -36,6 +36,13 @@ export default Component.extend({
   hasTextPill: null,
 
   /**
+   * List of recent queries
+   * @type {Array}
+   * @public
+   */
+  recentQueries: null,
+
+  /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public

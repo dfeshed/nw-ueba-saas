@@ -33,6 +33,7 @@ const ESCAPE_KEY = KEY_MAP.escape.code;
 const X_KEY = 88;
 const DELETE_KEY = KEY_MAP.delete.code;
 const BACKSPACE_KEY = KEY_MAP.backspace.code;
+const TAB_KEY = KEY_MAP.tab.code;
 const modifiers = { shiftKey: true };
 
 const trim = (text) => text.replace(/\s+/g, '').trim();
@@ -56,6 +57,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       patchReducer(this, state);
     };
@@ -1338,6 +1340,121 @@ module('Integration | Component | Query Pill', function(hooks) {
     await clickTrigger(PILL_SELECTORS.meta);
     // should be able to see tabs with recent queries tab selected
     assertTabContents(assert, PILL_SELECTORS.metaTab, PILL_SELECTORS.recentQueriesTabSelected);
+
+  });
+
+  test('Pressing tab toggles between meta and recent queries tab', async function(assert) {
+    this.set('metaOptions', META_OPTIONS);
+
+    const assertTabContents = (assert, metaTab, recentQueriesTab) => {
+      assert.ok(find(PILL_SELECTORS.pillTabs), 'Should be able to see tabs in current component');
+      assert.ok(find(metaTab), 'Should be able to see meta tab in current component');
+      assert.ok(find(recentQueriesTab), 'Should be able to see recent queries tab in current component');
+    };
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', TAB_KEY);
+    // should be able to see tabs with recent queries tab selected
+    assertTabContents(assert, PILL_SELECTORS.metaTab, PILL_SELECTORS.recentQueriesTabSelected);
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', TAB_KEY);
+    // Should be able to see pill tabs with meta tab selected
+    assertTabContents(assert, PILL_SELECTORS.metaTabSelected, PILL_SELECTORS.recentQueriesTab);
+
+  });
+
+  test('If no recent queries, tabbing to recentQueries tab will show a placeholder message', async function(assert) {
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', []);
+
+    const assertTabContents = (assert, metaTab, recentQueriesTab) => {
+      assert.ok(find(PILL_SELECTORS.pillTabs), 'Should be able to see tabs in current component');
+      assert.ok(find(metaTab), 'Should be able to see meta tab in current component');
+      assert.ok(find(recentQueriesTab), 'Should be able to see recent queries tab in current component');
+    };
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', TAB_KEY);
+
+    assertTabContents(assert, PILL_SELECTORS.metaTab, PILL_SELECTORS.recentQueriesTabSelected);
+
+    // Should be able to see the placeholder for recent queries if none are present
+    assert.expect(find(PILL_SELECTORS.powerSelectNoMatch).textContent.trim(), 'No recent queries yet', 'Correct placeholder message');
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', TAB_KEY);
+
+    await selectChoose(PILL_SELECTORS.meta, 'sessionid');
+
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', TAB_KEY);
+    // can see it in operator component too
+    assert.expect(find(PILL_SELECTORS.powerSelectNoMatch).textContent.trim(), 'No recent queries yet', 'Correct placeholder message');
+
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', TAB_KEY);
+
+    await selectChoose(PILL_SELECTORS.operator, '=');
+
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', TAB_KEY);
+
+    // can see it in value component too
+    assert.expect(find(PILL_SELECTORS.powerSelectNoMatch).textContent.trim(), 'No recent queries yet', 'Correct placeholder message');
+  });
+
+  test('Recent Queries are available as power-select options if not empty', async function(assert) {
+    this.set('metaOptions', META_OPTIONS);
+    const recentQueriesArray = [
+      'medium = 32',
+      'medium = 32 || medium = 1',
+      'foo = bar'
+    ];
+    this.set('recentQueries', recentQueriesArray);
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', TAB_KEY);
+
+    const selectorArray = findAll(PILL_SELECTORS.recentQueriesOptionsInMeta);
+    const optionsArray = selectorArray.map((el) => el.textContent);
+    assert.deepEqual(recentQueriesArray, optionsArray, 'Found the correct recent queries in the powerSelect');
 
   });
 });

@@ -19,12 +19,12 @@
     initiallyOpened=false
     matcher=_matcher
     matchTriggerWidth=false
-    noMatchesMessage='All operators filtered out'
+    noMatchesMessage=noMatchesMessage
     onchange=(action 'onChange')
     onfocus=(action 'onFocus')
     oninput=(action 'onInput')
     onkeydown=(action 'onKeyDown')
-    options=options
+    options=selectableOptions
     optionsComponent=(
       component 'query-container/power-select-options'
       onmousedown=(action 'onOptionMouseDown')
@@ -35,19 +35,23 @@
     triggerComponent='query-container/power-select-resizable-input'
     as |operator|
   }}
-    {{!--
+    {{#if isMetaTabActive}}
+      {{!--
       The icon will be there for inexpensive operators too, but will
       be hidden, styled by class names. This was required to align
       operator display names
-    --}}
-    {{rsa-icon
-      name='stopwatch'
-      style='lined'
-      class=(if operator.isExpensive 'is-expensive expensive-indicator' 'expensive-indicator')
-      title=(if operator.isExpensive (t 'queryBuilder.expensive') '')
-    }}
-    <span class="value">{{operator.displayName}}</span>
-    <span class="description">{{operator.description}}</span>
+      --}}
+      {{rsa-icon
+        name='stopwatch'
+        style='lined'
+        class=(if operator.isExpensive 'is-expensive expensive-indicator' 'expensive-indicator')
+        title=(if operator.isExpensive (t 'queryBuilder.expensive') '')
+      }}
+      <span class="value">{{operator.displayName}}</span>
+      <span class="description">{{operator.description}}</span>
+    {{else}}
+      <span class="recent-queries-option operator">{{operator}}</span>
+    {{/if}}
   {{/power-select-typeahead}}
 {{else}}
   {{selection.displayName}}

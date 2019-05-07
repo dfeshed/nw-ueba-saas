@@ -212,6 +212,9 @@ export default {
     queryEvents: 'Query Events',
     querySelected: 'Query with selected filters',
     querySelectedNewTab: 'Query with selected filters in a new tab',
+    metaNoMatch: 'All meta filtered out',
+    operatorNoMatch: 'All operators filtered out',
+    recentQueriesNoMatch: 'No recent queries yet',
     validationMessages: {
       time: 'You must enter a valid date.',
       text: 'Strings must be quoted with "',

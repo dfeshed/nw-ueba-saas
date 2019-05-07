@@ -67,6 +67,7 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       patchReducer(this, state);
     };
@@ -2229,5 +2230,37 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.ok(find(PILL_SELECTORS.pillOpenForEdit), 'pill was not opened for editing');
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ESCAPE_KEY);
     assert.ok(find(PILL_SELECTORS.invalidPill), 'invalid pill should have remained invalid');
+  });
+
+  test('pills tabs should work the same way for new-pill-trigger', async function(assert) {
+
+    const assertTabContents = (assert) => {
+      assert.ok(find(PILL_SELECTORS.pillTabs), 'Should be able to see tabs in current component');
+      assert.ok(find(PILL_SELECTORS.metaTab), 'Should be able to see tabs in current component');
+      assert.ok(find(PILL_SELECTORS.recentQueriesTab), 'Should be able to see tabs in current component');
+    };
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+
+    await click(PILL_SELECTORS.newPillTrigger);
+
+    await click(PILL_SELECTORS.recentQueriesTab);
+    // Should be able to see pill tabs with recent-queries selected
+    assertTabContents(assert, PILL_SELECTORS.metaTab, PILL_SELECTORS.recentQueriesTabSelected);
+
+    await click(PILL_SELECTORS.metaTab);
+    // Should be able to see pill tabs with meta selected
+    assertTabContents(assert, PILL_SELECTORS.metaTabSelected, PILL_SELECTORS.recentQueriesTab);
   });
 });
