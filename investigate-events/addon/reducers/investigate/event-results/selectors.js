@@ -191,7 +191,8 @@ export const getDownloadOptions = createSelector(
     if (eventAnalysisPreferences && (isAllEventsSelected || selectedEventIds.length)) {
 
       const i18n = lookup('service:i18n');
-      const downloadOptions = [];
+      const preferredDownloadOptions = [];
+      const remainingDownloadOptions = [];
       let dropDownItems = items.filter((item) => !item.additionalFieldPrefix && item.type == 'dropdown');
       const total = selectedEventIds.length;
 
@@ -204,7 +205,7 @@ export const getDownloadOptions = createSelector(
         const option = i18n.t(`investigate.events.download.options.${fileType}`);
         const getIdsForEventType = _getIdsForEventType(eventDownloadType, selectedEventIds, resultsData);
         const num = getIdsForEventType.length;
-        downloadOptions.push({
+        preferredDownloadOptions.push({
           name: i18n.t(`investigate.events.download.${eventDownloadType}`, { option }),
           eventDownloadType,
           fileType: eventAnalysisPreferences[defaultEventType],
@@ -226,7 +227,7 @@ export const getDownloadOptions = createSelector(
         const num = getIdsForEventType.length;
         remainingOptions.forEach((option) => {
           const optionLabel = i18n.t(`investigate.events.download.options.${option}`);
-          downloadOptions.push({
+          remainingDownloadOptions.push({
             name: i18n.t(`investigate.events.download.${eventDownloadType}`, { option: optionLabel }),
             eventDownloadType,
             fileType: option,
@@ -236,6 +237,11 @@ export const getDownloadOptions = createSelector(
           });
         });
       });
+
+      const downloadOptions = [
+        { groupName: i18n.t('investigate.events.download.groups.default'), options: preferredDownloadOptions },
+        { groupName: i18n.t('investigate.events.download.groups.other'), options: remainingDownloadOptions }
+      ];
       return downloadOptions;
     }
     return [];

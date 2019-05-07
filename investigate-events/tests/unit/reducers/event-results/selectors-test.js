@@ -388,18 +388,22 @@ module('Unit | Selectors | event-results', function(hooks) {
     const result = getDownloadOptions(state);
     // number of options in download as per the number of preferences x number of options per
     // preference minus the 3 Network download options
-    assert.equal(result.length, 9, '9 options for download available');
-    await assertForDownloadOptions(assert, result, 0, 'LOG', 'TEXT', 'Logs as Text');
-    await assertForDownloadOptions(assert, result, 1, 'NETWORK', 'PCAP', 'Network as PCAP');
-    await assertForDownloadOptions(assert, result, 2, 'META', 'TEXT', 'Visible Meta as Text');
-    await assertForDownloadOptions(assert, result, 3, 'LOG', 'CSV', 'Logs as CSV');
-    await assertForDownloadOptions(assert, result, 6, 'META', 'CSV', 'Visible Meta as CSV');
+    assert.equal(result.length, 2, '2 groups of options for download available');
+    const defaultGroup = result[0].options;
+    const otherGroup = result[1].options;
+    assert.equal(defaultGroup.length, 3);
+    assert.equal(otherGroup.length, 6);
+    await assertForDownloadOptions(assert, defaultGroup, 0, 'LOG', 'TEXT', 'Logs as Text');
+    await assertForDownloadOptions(assert, defaultGroup, 1, 'NETWORK', 'PCAP', 'Network as PCAP');
+    await assertForDownloadOptions(assert, defaultGroup, 2, 'META', 'TEXT', 'Visible Meta as Text');
+    await assertForDownloadOptions(assert, otherGroup, 0, 'LOG', 'CSV', 'Logs as CSV');
+    await assertForDownloadOptions(assert, otherGroup, 3, 'META', 'CSV', 'Visible Meta as CSV');
     // preferred Log download option
-    await assertForCountsAndSessionIds(assert, result, 0, '', [], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 0, '', [], false);
     // The only available Network download option
-    await assertForCountsAndSessionIds(assert, result, 1, '', [], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 1, '', [], false);
     // prefierred Meta download option
-    await assertForCountsAndSessionIds(assert, result, 2, '', [], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 2, '', [], false);
   });
 
   test('getDownloadOptions returns appropriate counts for options when network events are selected', async function(assert) {
@@ -410,12 +414,16 @@ module('Unit | Selectors | event-results', function(hooks) {
       }
     };
     const result = getDownloadOptions(state);
+
+    assert.equal(result.length, 2, '2 groups of options for download available');
+
+    const defaultGroup = result[0].options;
     // preferred LOG option
-    await assertForCountsAndSessionIds(assert, result, 0, '0/2', [], true);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 0, '0/2', [], true);
     // preferred Network option
-    await assertForCountsAndSessionIds(assert, result, 1, '2/2', [1, 2], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 1, '2/2', [1, 2], false);
     // preffered Meta option
-    await assertForCountsAndSessionIds(assert, result, 2, '2/2', [1, 2], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 2, '2/2', [1, 2], false);
   });
 
   test('getDownloadOptions returns appropriate counts for options when one each of log and network events are selected', async function(assert) {
@@ -426,12 +434,16 @@ module('Unit | Selectors | event-results', function(hooks) {
       }
     };
     const result = getDownloadOptions(state);
+
+    assert.equal(result.length, 2, '2 groups of options for download available');
+
+    const defaultGroup = result[0].options;
     // preferred LOG option
-    await assertForCountsAndSessionIds(assert, result, 0, '1/2', [3], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 0, '1/2', [3], false);
     // preferred Network option
-    await assertForCountsAndSessionIds(assert, result, 1, '1/2', [1], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 1, '1/2', [1], false);
     // preffered Meta option
-    await assertForCountsAndSessionIds(assert, result, 2, '2/2', [1, 3], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 2, '2/2', [1, 3], false);
   });
 
   test('eventTimeSortOrder returns proper data', async function(assert) {

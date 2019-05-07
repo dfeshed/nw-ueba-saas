@@ -105,7 +105,8 @@ module('Integration | Component | Download Dropdown', function(hooks) {
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     await clickTrigger();
-    const options = findAll(`${downloadOptions} li`);
+    // actual options inside the groups
+    const options = findAll(`${downloadOptions} li ul li`);
 
     assert.equal(options.length, 9, '9 options found, only 1 of 4 Network download options available');
 
@@ -128,7 +129,7 @@ module('Integration | Component | Download Dropdown', function(hooks) {
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     await clickTrigger();
-    const options = findAll(`${downloadOptions} li`);
+    const options = findAll(`${downloadOptions} li ul li`);
     await assertForDownloadOptions(assert, options, 0, 'Logs as Text', '1/2');
     await assertForDownloadOptions(assert, options, 1, 'Network as PCAP', '1/2');
     await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '2/2');
@@ -145,7 +146,7 @@ module('Integration | Component | Download Dropdown', function(hooks) {
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     await clickTrigger();
-    const options = findAll(`${downloadOptions} li`);
+    const options = findAll(`${downloadOptions} li ul li`);
     await assertForDownloadOptions(assert, options, 0, 'Logs as Text', '0/2');
     await assertForDownloadOptions(assert, options, 1, 'Network as PCAP', '2/2');
     await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '2/2');

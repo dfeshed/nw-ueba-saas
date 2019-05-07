@@ -319,9 +319,6 @@
   min-width: 218px !important;
   .ember-power-select-options {
     max-height: 25rem;
-    li:nth-child(3) {
-    @include border-bottom(1px, solid, primary, light);
-    }
     span.right {
       padding-left: rsa-whitespace(less);
       float: right;

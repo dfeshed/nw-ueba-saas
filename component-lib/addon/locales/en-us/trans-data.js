@@ -548,6 +548,10 @@ export default {
         selected: 'Download',
         all: 'Download All',
         isDownloading: 'Downloading...',
+        groups: {
+          default: 'Default Options',
+          other: 'Other Options'
+        },
         LOG: 'Logs as {{option}}',
         NETWORK: 'Network as {{option}}',
         META: 'Visible Meta as {{option}}',
