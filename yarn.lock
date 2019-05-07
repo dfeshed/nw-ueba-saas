@@ -4717,9 +4717,9 @@ ember-flatpickr@2.12.0:
     fastboot-transform "^0.1.3"
     flatpickr "^4.5.2"
 
-ember-gestures@0.5.0, ember-gestures@^0.4.7:
-  version "0.5.0"
-  resolved "https://registry.npmjs.org/ember-gestures/-/ember-gestures-0.5.0.tgz#ec363785ee6ab44871c569b36cdb06bb9d24cd8d"
+ember-gestures@1.1.1, ember-gestures@^0.4.7:
+  version "1.1.1"
+  resolved "https://registry.npmjs.org/ember-gestures/-/ember-gestures-1.1.1.tgz#b2d583846aae2dfc0c38b1b6bd934efc761230d1"
   dependencies:
     animation-frame "~0.2.4"
     broccoli-funnel "^2.0.1"
