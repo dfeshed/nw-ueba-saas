@@ -4,6 +4,7 @@ import { inject as service } from '@ember/service';
 import complianceConfig from './compliance-config';
 import { or } from 'ember-computed-decorators';
 import ContextualHelp from 'component-lib/mixins/contextual-help';
+import { scheduleOnce } from '@ember/runloop';
 
 export default Component.extend(ContextualHelp, {
   layout,
@@ -19,10 +20,7 @@ export default Component.extend(ContextualHelp, {
   @or('compliant', 'dismissed')
   isHidden: true,
 
-  async init() {
-
-    this._super(...arguments);
-
+  async _getLicenseCompliance() {
     const { compliant, compliances: [ compliance ] } = await this.get('license').getCompliance();
 
     if (this.get('isDestroyed') || this.get('isDestroying')) {
@@ -36,6 +34,11 @@ export default Component.extend(ContextualHelp, {
     } else {
       this.set('dismissed', this.get('license').isBannerDismissed());
     }
+  },
+
+  init() {
+    this._super(...arguments);
+    scheduleOnce('afterRender', this, '_getLicenseCompliance');
   },
 
   actions: {
