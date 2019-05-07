@@ -23,7 +23,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     public static final String DESTINATION_NETNAME_FIELD_NAME = "dstNetname";
     public static final String JA3_FIELD_NAME = "ja3";
     public static final String JA3S_FIELD_NAME = "ja3s";
-    public static final String IS_OUTBOUND_FIELD_NAME = "isOutbound";
+    public static final String DIRECTION_FIELD_NAME = "direction";
     public static final String DESTINATION_PORT_FIELD_NAME = "dstPort";
 
 
@@ -65,8 +65,8 @@ public class TlsRawEvent extends AbstractInputDocument {
     @Field(JA3S_FIELD_NAME)
     private String ja3s;
 
-    @Field(IS_OUTBOUND_FIELD_NAME)
-    private Boolean isOutbound;
+    @Field(DIRECTION_FIELD_NAME)
+    private String direction;
 
     @Field(DESTINATION_PORT_FIELD_NAME)
     private Integer dstPort;
@@ -89,14 +89,14 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.dstNetname = other.dstNetname;
         this.ja3 = other.ja3;
         this.ja3s = other.ja3s;
-        this.isOutbound = other.isOutbound;
+        this.direction = other.direction;
         this.dstPort = other.dstPort;
     }
 
     public TlsRawEvent(Instant dateTime, String eventId, String dataSource, Map<String, String> additionalInfo,
                        String srcIp, String dstCountry, String sslSubject, String domain, String dstOrg,
                        String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
-                       String dstNetname, String ja3, String ja3s, Boolean isOutbound, Integer dstPort) {
+                       String dstNetname, String ja3, String ja3s, String direction, Integer dstPort) {
         super(dateTime, eventId, dataSource, additionalInfo);
         this.srcIp = srcIp;
         this.dstCountry = dstCountry;
@@ -110,7 +110,7 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.dstNetname = dstNetname;
         this.ja3 = ja3;
         this.ja3s = ja3s;
-        this.isOutbound = isOutbound;
+        this.direction = direction;
         this.dstPort = dstPort;
     }
 
@@ -211,12 +211,12 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.ja3s = ja3s;
     }
 
-    public Boolean getOutbound() {
-        return isOutbound;
+    public String getDirection() {
+        return direction;
     }
 
-    public void setOutbound(Boolean outbound) {
-        isOutbound = outbound;
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
 
     public Integer getDstPort() {

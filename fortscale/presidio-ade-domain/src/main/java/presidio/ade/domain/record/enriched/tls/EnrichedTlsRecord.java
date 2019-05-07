@@ -27,7 +27,7 @@ public class EnrichedTlsRecord extends EnrichedRecord {
     public static final String DESTINATION_NETNAME_FIELD_NAME = "dstNetname";
     public static final String JA3_FIELD_NAME = "ja3";
     public static final String JA3S_FIELD_NAME = "ja3s";
-    public static final String IS_OUTBOUND_FIELD_NAME = "isOutbound";
+    public static final String DIRECTION_FIELD_NAME = "direction";
     public static final String DESTINATION_PORT_FIELD_NAME = "dstPort";
 
 
@@ -67,8 +67,8 @@ public class EnrichedTlsRecord extends EnrichedRecord {
     @Field(JA3S_FIELD_NAME)
     private String ja3s;
 
-    @Field(IS_OUTBOUND_FIELD_NAME)
-    private Boolean isOutbound;
+    @Field(DIRECTION_FIELD_NAME)
+    private String direction;
 
     @Field(DESTINATION_PORT_FIELD_NAME)
     private Integer dstPort;
@@ -187,12 +187,12 @@ public class EnrichedTlsRecord extends EnrichedRecord {
         this.ja3s = ja3s;
     }
 
-    public Boolean getOutbound() {
-        return isOutbound;
+    public String getDirection() {
+        return direction;
     }
 
-    public void setOutbound(Boolean outbound) {
-        isOutbound = outbound;
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
 
     public Integer getDstPort() {

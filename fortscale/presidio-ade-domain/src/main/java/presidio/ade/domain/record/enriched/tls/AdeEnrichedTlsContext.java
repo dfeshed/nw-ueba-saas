@@ -15,7 +15,7 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
     private String dstNetname;
     private String ja3;
     private String ja3s;
-    private Boolean isOutbound;
+    private String direction;
     private Integer dstPort;
 
 
@@ -31,7 +31,7 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
         this.dstNetname = enrichedTlsRecord.getDstNetname();
         this.dstOrg = enrichedTlsRecord.getDstOrg();
         this.dstPort = enrichedTlsRecord.getDstPort();
-        this.isOutbound = enrichedTlsRecord.getOutbound();
+        this.direction = enrichedTlsRecord.getDirection();
         this.ja3 = enrichedTlsRecord.getJa3();
         this.ja3s = enrichedTlsRecord.getJa3s();
         this.srcIp = enrichedTlsRecord.getSrcIp();
@@ -119,12 +119,12 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
         this.ja3s = ja3s;
     }
 
-    public Boolean getOutbound() {
-        return isOutbound;
+    public String getDirection() {
+        return direction;
     }
 
-    public void setOutbound(Boolean outbound) {
-        isOutbound = outbound;
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
 
     public Integer getDstPort() {
