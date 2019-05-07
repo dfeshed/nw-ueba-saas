@@ -19,31 +19,31 @@ import java.util.Map;
 public class EntitySeverityServiceConfig {
 
     @Value("${user.severity.compute.data.critical.percentage.of.users:1}")
-    private String userSeverityComputeDataCriticalPercentageOfUsers;
+    private String entitySeverityComputeDataCriticalPercentageOfEntities;
 
-    @Value("${user.severity.compute.data.critical.minimum.delta.factor:1.5}")
-    private String userSeverityComputeDataCriticalMinimumDeltaFactor;
+    @Value("${entity.severity.compute.data.critical.minimum.delta.factor:1.5}")
+    private String entitySeverityComputeDataCriticalMinimumDeltaFactor;
 
-    @Value("${user.severity.compute.data.critical.maximum.users:5}")
-    private String userSeverityComputeDataCriticalMaximumUsers;
+    @Value("${entity.severity.compute.data.critical.maximum.entities:5}")
+    private String entitySeverityComputeDataCriticalMaximumEntities;
 
-    @Value("${user.severity.compute.data.high.percentage.of.users:4}")
-    private String userSeverityComputeDataHighPercentageOfUsers;
+    @Value("${entity.severity.compute.data.high.percentage.of.entities:4}")
+    private String entitySeverityComputeDataHighPercentageOfEntities;
 
-    @Value("${user.severity.compute.data.high.minimum.delta.factor:1.3}")
-    private String userSeverityComputeDataHighMinimumDeltaFactor;
+    @Value("${entity.severity.compute.data.high.minimum.delta.factor:1.3}")
+    private String entitySeverityComputeDataHighMinimumDeltaFactor;
 
-    @Value("${user.severity.compute.data.high.maximum.users:10}")
-    private String userSeverityComputeDataHighMaximumUsers;
+    @Value("${entity.severity.compute.data.high.maximum.entities:10}")
+    private String entitySeverityComputeDataHighMaximumEntities;
 
-    @Value("${user.severity.compute.data.medium.percentage.of.users:10}")
-    private String userSeverityComputeDataMediumPercentageOfUsers;
+    @Value("${entity.severity.compute.data.medium.percentage.of.entities:10}")
+    private String entitySeverityComputeDataMediumPercentageOfEntities;
 
-    @Value("${user.severity.compute.data.medium.minimum.delta.factor:1.1}")
-    private String userSeverityComputeDataMediumDeltaFactor;
+    @Value("${entity.severity.compute.data.medium.minimum.delta.factor:1.1}")
+    private String entitySeverityComputeDataMediumDeltaFactor;
 
-    @Value("${user.severity.compute.data.low.percentage.of.users:80}")
-    private String userSeverityComputeDataLowPercentageOfUsers;
+    @Value("${entity.severity.compute.data.low.percentage.of.entities:80}")
+    private String entitySeverityComputeDataLowPercentageOfEntities;
 
     @Autowired
     private EntityPropertiesUpdateService entityPropertiesUpdateService;
@@ -52,14 +52,14 @@ public class EntitySeverityServiceConfig {
     public EntitySeverityService entitySeverityService() {
 
         Map<EntitySeverity, EntitySeverityComputeData> severityToComputeDataMap = new LinkedHashMap<>();
-        severityToComputeDataMap.put(EntitySeverity.CRITICAL, new EntitySeverityComputeData(new Double(userSeverityComputeDataCriticalPercentageOfUsers),
-                new Double(userSeverityComputeDataCriticalMinimumDeltaFactor), new Double(userSeverityComputeDataCriticalMaximumUsers)));
-        severityToComputeDataMap.put(EntitySeverity.HIGH, new EntitySeverityComputeData(new Double(userSeverityComputeDataHighPercentageOfUsers),
-                new Double(userSeverityComputeDataHighMinimumDeltaFactor), new Double(userSeverityComputeDataHighMaximumUsers)));
-        severityToComputeDataMap.put(EntitySeverity.MEDIUM, new EntitySeverityComputeData(new Double(userSeverityComputeDataMediumPercentageOfUsers),
-                new Double(userSeverityComputeDataMediumDeltaFactor)));
+        severityToComputeDataMap.put(EntitySeverity.CRITICAL, new EntitySeverityComputeData(new Double(entitySeverityComputeDataCriticalPercentageOfEntities),
+                new Double(entitySeverityComputeDataCriticalMinimumDeltaFactor), new Double(entitySeverityComputeDataCriticalMaximumEntities)));
+        severityToComputeDataMap.put(EntitySeverity.HIGH, new EntitySeverityComputeData(new Double(entitySeverityComputeDataHighPercentageOfEntities),
+                new Double(entitySeverityComputeDataHighMinimumDeltaFactor), new Double(entitySeverityComputeDataHighMaximumEntities)));
+        severityToComputeDataMap.put(EntitySeverity.MEDIUM, new EntitySeverityComputeData(new Double(entitySeverityComputeDataMediumPercentageOfEntities),
+                new Double(entitySeverityComputeDataMediumDeltaFactor)));
 
-        severityToComputeDataMap.put(EntitySeverity.LOW, new EntitySeverityComputeData(new Double(userSeverityComputeDataLowPercentageOfUsers)));
+        severityToComputeDataMap.put(EntitySeverity.LOW, new EntitySeverityComputeData(new Double(entitySeverityComputeDataLowPercentageOfEntities)));
 
         return new EntitySeverityServiceImpl(severityToComputeDataMap, entityPropertiesUpdateService);
     }
