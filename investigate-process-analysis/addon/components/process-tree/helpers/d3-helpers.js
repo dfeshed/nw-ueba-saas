@@ -15,7 +15,7 @@ export const elbow = function(d, boxWidth) {
   return `M${sourceY - boxWidth},${sourceX}
           H${ sourceY + (targetY - sourceY) / 2}
           V${ targetX}
-          H${ targetY + boxWidth + 40}`;
+          H${ targetY + boxWidth + 50}`;
 };
 
 /**
@@ -29,13 +29,14 @@ export const transitionElbow = function(d) {
   return `M${ d.source.y },${ d.source.x }H${ d.source.y }V${ d.source.x }H${ d.source.y }`;
 };
 
-export const appendIcon = function({ node, fontSize, className, opacity = 1, text, dx = 0 }) {
+export const appendIcon = function({ node, fontSize, className, opacity = 1, text, dx = 0, dy = 0 }) {
   return node.append('text')
     .attr('class', className)
     .style('fill-opacity', opacity)
     .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'central')
     .attr('dx', dx)
+    .attr('dy', dy)
     .attr('font-family', 'nw-icon-library-all-1')
     .attr('font-size', fontSize)
     .text(text);

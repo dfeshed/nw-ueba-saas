@@ -39,7 +39,7 @@ module('Integration | Component | process-tree', function(hooks) {
     new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInput).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    assert.equal(findAll('circle.process').length, 3, 'Expected to render 4 nodes');
+    assert.equal(findAll('rect.process').length, 3, 'Expected to render 4 nodes');
   });
 
   test('it should display child count for process', async function(assert) {
@@ -77,7 +77,7 @@ module('Integration | Component | process-tree', function(hooks) {
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     await selectAll('g.process:nth-of-type(4) .button-wrapper').dispatch('click');
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    assert.equal(findAll('circle.process').length, 7, 'Expected to render 4 nodes');
+    assert.equal(findAll('rect.process').length, 7, 'Expected to render 7 nodes');
   });
 
   test('it should select the node on click', async function(assert) {
@@ -117,7 +117,7 @@ module('Integration | Component | process-tree', function(hooks) {
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     await selectAll('g.process:nth-of-type(3) .button-wrapper').dispatch('click');
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    assert.equal(findAll('circle.process').length, 4, 'Expected to render 4 nodes');
+    assert.equal(findAll('rect.process').length, 4, 'Expected to render 4 nodes');
   });
 
 
@@ -138,7 +138,7 @@ module('Integration | Component | process-tree', function(hooks) {
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     await selectAll('g.process:nth-of-type(3) .button-wrapper').dispatch('click');
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    assert.equal(findAll('circle.process').length, 4, 'Expected to render 4 nodes');
+    assert.equal(findAll('rect.process').length, 4, 'Expected to render 4 nodes');
 
   });
 
