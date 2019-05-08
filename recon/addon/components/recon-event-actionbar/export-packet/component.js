@@ -3,15 +3,15 @@ import { connect } from 'ember-redux';
 import computed, { not, match } from 'ember-computed-decorators';
 import { extractFiles, didDownloadFiles } from 'recon/actions/interaction-creators';
 import layout from './template';
-import { hasPackets, getNetworkDownloadOptions } from 'recon/reducers/packets/selectors';
+import { hasPackets, getNetworkDownloadOptions, getDefaultDownloadFormat } from 'recon/reducers/packets/selectors';
 import { inject as service } from '@ember/service';
 
-const stateToComputed = ({ recon, recon: { files, visuals } }) => ({
+const stateToComputed = ({ recon, recon: { files } }) => ({
   status: files.fileExtractStatus,
   extractLink: files.fileExtractLink,
   hasPackets: hasPackets(recon),
   downloadFormats: getNetworkDownloadOptions(recon),
-  defaultPacketFormat: visuals.defaultPacketFormat,
+  defaultDownloadFormat: getDefaultDownloadFormat(recon),
   isAutoDownloadFile: files.isAutoDownloadFile
 });
 
@@ -42,12 +42,7 @@ const DownloadPacketComponent = Component.extend({
   @match('status', /init|wait/)
   isDownloading: false,
 
-  @computed('defaultPacketFormat')
-  _defaultDownloadFormat(defaultPacketFormat) {
-    return this.get('downloadFormats').find((x) => x.key === defaultPacketFormat);
-  },
-
-  @computed('isDownloading', '_defaultDownloadFormat', 'i18n.locale')
+  @computed('isDownloading', 'defaultDownloadFormat', 'i18n.locale')
   caption(isDownloading, defaultDownloadFormat) {
     if (isDownloading) {
       return this.get('i18n').t('recon.packetView.isDownloading');
@@ -56,7 +51,7 @@ const DownloadPacketComponent = Component.extend({
   },
 
   // Default download button will be disabled if the selected default format is disabled or download is in progress
-  @computed('isDownloading', '_defaultDownloadFormat')
+  @computed('isDownloading', 'defaultDownloadFormat')
   isCaptionDisabled(isDownloading, defaultDownloadFormat) {
     if (defaultDownloadFormat.isEnabled && !isDownloading) {
       return false;

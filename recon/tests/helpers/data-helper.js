@@ -13,6 +13,7 @@ import {
   packetDataWithoutPayload,
   summaryData,
   summaryDataWithoutPayload,
+  summaryDataWithoutPackets,
   preferences
 } from './data';
 
@@ -29,8 +30,13 @@ const makePackAction = (lifecycle, { type, payload, meta = {} }) => {
   };
 };
 
-const summaryPromise = (hasPayload = true) => new RSVP.Promise(function(resolve) {
-  const summaryDataToResolve = hasPayload ? summaryData : summaryDataWithoutPayload;
+const summaryPromise = (hasPayload = true, hasPackets = true) => new RSVP.Promise(function(resolve) {
+  let summaryDataToResolve = summaryData;
+  if (!hasPackets) {
+    summaryDataToResolve = summaryDataWithoutPackets;
+  } else if (hasPackets && !hasPayload) {
+    summaryDataToResolve = summaryDataWithoutPayload;
+  }
   resolve(summaryDataToResolve);
 });
 
@@ -150,7 +156,7 @@ class DataHelper {
   }
 
   noPackets() {
-    this.redux.dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE, promise: summaryPromise(false) });
+    this.redux.dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE, promise: summaryPromise(false, false) });
     this.redux.dispatch({ type: ACTION_TYPES.PACKETS_RECEIVE_PAGE, payload: [] });
   }
 

@@ -148,6 +148,33 @@ const summaryAttributesWithPayloads = [
   }
 ];
 
+const summaryAttributesNoPackets = [
+  {
+    'name': 'packetSize',
+    'key': '',
+    'type': 'UInt64',
+    'value': 0
+  },
+  {
+    'name': 'payloadSize',
+    'key': '',
+    'type': 'UInt64',
+    'value': 0
+  },
+  {
+    'name': 'requestPayloadSize',
+    'key': '',
+    'type': 'UInt64',
+    'value': 0
+  },
+  {
+    'name': 'responsePayloadSize',
+    'key': '',
+    'type': 'UInt64',
+    'value': 0
+  }
+];
+
 const summaryAttributesNoPayloads = [
   {
     'name': 'packetSize',
@@ -217,7 +244,13 @@ const noPayloads = {
   'summaryAttributes': [...basicSummaryAttributes, ...summaryAttributesNoPayloads]
 };
 
+const noPackets = {
+  'id': 455,
+  'summaryAttributes': [...basicSummaryAttributes, ...summaryAttributesNoPackets]
+};
+
 export default {
   withPayloads,
-  noPayloads
+  noPayloads,
+  noPackets
 };

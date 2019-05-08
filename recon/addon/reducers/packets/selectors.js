@@ -12,6 +12,7 @@ const pageNumber = (recon) => recon.packets.pageNumber;
 const renderIds = (recon) => recon.packets.renderIds;
 const headerItems = (recon) => recon.header.headerItems;
 const isPayloadOnly = (recon) => recon.packets.isPayloadOnly;
+const defaultPacketFormat = (recon) => recon.visuals.defaultPacketFormat;
 
 // packets can at different times be null, an empty array
 // or a populated array. An empty array means the event has
@@ -83,11 +84,16 @@ export const renderedPackets = createSelector(
   }
 );
 
+const _headerHasPackets = createSelector(
+  headerItems,
+  (headerItems) => _hasItem(headerItems, 'packetSize')
+);
+
 // Do we actually have packets?
 // if they have been retrieved and there are none, then nope
 export const hasPackets = createSelector(
-  [packetsRetrieved, packets],
-  (packetsRetrieved, packets) => packetsRetrieved && packets.length !== 0
+  [packetsRetrieved, packets, _headerHasPackets],
+  (packetsRetrieved, packets, headerHasPackets) => headerHasPackets || (packetsRetrieved && packets.length !== 0)
 );
 
 export const numberOfPackets = createSelector(
@@ -168,5 +174,12 @@ export const getNetworkDownloadOptions = createSelector(
       }
     ];
     return downloadFormat;
+  }
+);
+
+export const getDefaultDownloadFormat = createSelector(
+  [defaultPacketFormat, getNetworkDownloadOptions],
+  (defaultPacketFormat, networkDownloadOptions) => {
+    return networkDownloadOptions.find((x) => x.key === defaultPacketFormat);
   }
 );

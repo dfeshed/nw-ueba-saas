@@ -30,6 +30,11 @@ const summaryDataWithoutPayload = {
   packetFields: summaryDataInput.noPayloads.packetFields
 };
 
+const summaryDataWithoutPackets = {
+  headerItems: _generateHeaderItems(summaryDataInput.noPackets.summaryAttributes),
+  packetFields: []
+};
+
 const preferences = {
   queryTimeFormat: 'DB',
   eventAnalysisPreferences: {
@@ -56,5 +61,6 @@ export {
   packetDataWithoutPayload,
   summaryData,
   summaryDataWithoutPayload,
+  summaryDataWithoutPackets,
   preferences
 };

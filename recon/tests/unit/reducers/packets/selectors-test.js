@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
-import { getNetworkDownloadOptions } from 'recon/reducers/packets/selectors';
+import { getNetworkDownloadOptions, getDefaultDownloadFormat } from 'recon/reducers/packets/selectors';
 
 import summaryDataInput from '../../../data/subscriptions/reconstruction-summary/query/data';
 
@@ -35,4 +35,25 @@ test('getNetworkDownloadOptions', function(assert) {
   }));
   assert.ok(result[0].isEnabled, 'PCAP download is enabled');
   assert.notOk(result[3].isEnabled, 'Response payload download is not enabled');
+});
+
+test('getDefaultDownloadOption', function(assert) {
+  const option = {
+    key: 'PAYLOAD',
+    value: 'downloadPayload',
+    isEnabled: true
+  };
+
+  const result = getDefaultDownloadFormat(Immutable.from({
+    visuals: {
+      defaultPacketFormat: 'PAYLOAD'
+    },
+    header: {
+      headerItems: summaryDataInput.withPayloads.summaryAttributes
+    },
+    packets: {
+      packets
+    }
+  }));
+  assert.deepEqual(result, option);
 });
