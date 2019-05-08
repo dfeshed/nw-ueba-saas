@@ -10,6 +10,8 @@ export default Component.extend(SortableItemMixin, {
   classNameBindings: ['isSelected'],
   @alias('rule') model: null, // used by ember-sortable
   handle: 'tr', // used by ember-sortable
+  distance: 2, // used by ember-sortable
+
   /**
    * Tracks which item is currently selected / highlighted by the user
    * @property isSelected
