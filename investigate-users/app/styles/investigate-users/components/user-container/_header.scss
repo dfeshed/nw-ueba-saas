@@ -1,7 +1,24 @@
 .user-header {
-  height: 45px;
+  display: flex;
+  flex-direction: row;
+  padding: 0 1rem;
+  justify-content: space-between;
+  &_tab{
+    height: 45px;
 
-  .rsa-nav-tab {
-    padding: 0 1rem;
+    .rsa-nav-tab {
+      padding: 0 1rem;
+    }
+  }
+  &_search {
+    width: 250px;
+    .ember-power-select-trigger {
+      outline: none;
+      background: transparent;
+      border: 1px SOLID  background-color(primary)
+    }
+    .ember-power-select-status-icon {
+      display: none;
+    }
   }
 }

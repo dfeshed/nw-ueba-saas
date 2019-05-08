@@ -4822,7 +4822,8 @@ effects the previewed source.',
       unableToDeleteFavorite: 'Unable to delete saved filter.',
       topUsersError: 'Unable to fetch top risky users.',
       usersError: 'Unable to fectch users.',
-      noUserData: 'No user data present.'
+      noUserData: 'No user data present.',
+      unableToFindUsers: 'Unable to find Users'
     },
     users: {
       title: 'Users',

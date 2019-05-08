@@ -24,5 +24,8 @@ export default {
   followUsers: '/presidio/api/user/true/followUsers', // Post call with filters
   unfollowUsers: '/presidio/api/user/false/followUsers', // Post call with filters
   createfavoriteFilter: '/presidio/api/user/{filterName}/favoriteFilter', // Post call with filters
-  deletefavoriteFilter: '/presidio/api/user/favoriteFilter/{filterId}'
+  deletefavoriteFilter: '/presidio/api/user/favoriteFilter/{filterId}',
+
+  // For global user search
+  searchUsers: '/presidio/api/user?page=1&size=10&sort_field=displayName&sort_direction=ASC&'
 };

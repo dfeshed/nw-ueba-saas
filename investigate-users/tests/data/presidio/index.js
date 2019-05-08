@@ -13,9 +13,13 @@ import existAlertTypes from './exist_alert_types';
 import favoriteFilter from './favorite_filter';
 import userList from './user-list';
 import alertsList from './alerts-list';
+import userSearch from './user_search';
 import alertsTimeline from './alert-by-day-and-severity';
 
 const urlMap = [{
+  url: 'presidio/api/user?page=1&size=10&sort_field=displayName&search_field_contains',
+  data: userSearch
+}, {
   url: 'presidio/api/user?min_score=0&size=5',
   data: usrOverview
 }, {

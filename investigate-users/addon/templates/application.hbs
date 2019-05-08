@@ -3,17 +3,28 @@
     {{outlet}}
   {{/if}}
 {{/investigate-header}}
-<div class="rsa-nav-tab-group user-header">
-  {{#rsa-nav-tab align='left' compact=true isActive=(eq routePath "overview")  click=(action 'controllerNavigateTo' 'index')}}
-    <div class="label">{{t 'investigateUsers.overview.title'}}</div>
-  {{/rsa-nav-tab}}
+<div class='user-header'>
+  <div class="rsa-nav-tab-group user-header_tab">
+    {{#rsa-nav-tab align='left' compact=true isActive=(eq routePath "overview")  click=(action 'controllerNavigateTo' 'index')}}
+      <div class="label">{{t 'investigateUsers.overview.title'}}</div>
+    {{/rsa-nav-tab}}
 
-  {{#rsa-nav-tab align='left' compact=true isActive=(eq routePath "users")  click=(action 'controllerNavigateTo' 'users')}}
-    <div class="label">{{t 'investigateUsers.users.title'}}</div>
-  {{/rsa-nav-tab}}
+    {{#rsa-nav-tab align='left' compact=true isActive=(eq routePath "users")  click=(action 'controllerNavigateTo' 'users')}}
+      <div class="label">{{t 'investigateUsers.users.title'}}</div>
+    {{/rsa-nav-tab}}
 
-  {{#rsa-nav-tab align='left' compact=true isActive=(eq routePath "alerts")  click=(action 'controllerNavigateTo' 'alerts')}}
-    <div class="label">{{t 'investigateUsers.alerts.title'}}</div>
-  {{/rsa-nav-tab}}
-</div> 
+    {{#rsa-nav-tab align='left' compact=true isActive=(eq routePath "alerts")  click=(action 'controllerNavigateTo' 'alerts')}}
+      <div class="label">{{t 'investigateUsers.alerts.title'}}</div>
+    {{/rsa-nav-tab}}
+  </div>
+  <div class='user-header_search'>
+    {{#power-select
+      search=(action 'searchUsers')
+      selected=selected
+      searchPlaceholder='Search user'
+      onchange=(action 'controllerShowUserDetails') as |user|}}
+      {{user.displayName}}
+    {{/power-select}}
+  </div>
+</div>
 {{user-container applyUserFilter=(action 'controllerApplyUserFilter') applyAlertsFilter=(action 'controllerApplyAlertsFilter')}}

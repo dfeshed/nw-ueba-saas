@@ -1,0 +1,50 @@
+export default {
+  data: [
+    {
+      id: '7f267ed7-400a-4f2e-b4e7-d264586d3115',
+      displayName: 'Ava Martin',
+      username: 'Ava Martin',
+      noDomainUsername: null,
+      followed: false,
+      logUsernameMap: {},
+      searchField: null,
+      adDn: null,
+      logLastActivityMap: {},
+      lastActivity: null,
+      tags: [],
+      scoreSeverity: 'Low',
+      score: 0.0,
+      terminationDate: null,
+      alertsCount: 0,
+      sourceMachineCount: 0,
+      adObjectGUID: null,
+      image: '',
+      ou: ''
+    },
+    {
+      id: '1d2bbc99-aece-414b-89db-67beae02e1be',
+      displayName: 'ava brown',
+      username: 'ava brown',
+      noDomainUsername: null,
+      followed: true,
+      logUsernameMap: {},
+      searchField: null,
+      adDn: null,
+      logLastActivityMap: {},
+      lastActivity: null,
+      tags: [],
+      scoreSeverity: 'High',
+      score: 380.0,
+      terminationDate: null,
+      alertsCount: 21,
+      sourceMachineCount: 0,
+      adObjectGUID: null,
+      image: '',
+      ou: ''
+    }
+  ],
+  total: 2,
+  offset: 0,
+  warning: null,
+  info: null
+};
