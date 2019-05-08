@@ -1,3 +1,5 @@
+import { SORT_ORDER } from 'investigate-events/reducers/investigate/event-results/selectors';
+
 /**
  * This config will help preferences details to render required preferences.
  *
@@ -12,6 +14,8 @@
  * defaultPreferences: In case data is not pulled from server or first time preferences not available.
  * @public
  **/
+
+
 export default {
   modelName: 'investigate-events-preferences',
   fieldPrefix: 'preferences.investigate-events',
@@ -81,8 +85,8 @@ export default {
     info: true, // for preferences that need additional information
     type: 'radio',
     options: [
-      'Ascending',
-      'Descending'
+      SORT_ORDER.ASC,
+      SORT_ORDER.DESC
     ],
     field: 'eventAnalysisPreferences.eventTimeSortOrder'
   },
@@ -106,7 +110,7 @@ export default {
       autoDownloadExtractedFiles: true,
       packetsPageSize: 100,
       autoUpdateSummary: false,
-      eventTimeSortOrder: 'Ascending'
+      eventTimeSortOrder: SORT_ORDER.ASC
     },
     eventPreferences: {
       columnGroup: 'SUMMARY'

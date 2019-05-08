@@ -114,7 +114,18 @@ module('Integration | Component | events-table', function(hooks) {
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
-    assert.equal(find('.rsa-loader').textContent.trim(), 'Query is being re-executed to fetch different columns', 'Displaying the correct message');
+    assert.equal(find('.rsa-loader').textContent.trim(), 'Query is being re-executed to fetch new data.', 'Displaying the correct message');
+  });
+
+  test('if events are streaming and the query was re-executed by changing sort, a spinner is displayed with following message', async function(assert) {
+    new ReduxDataHelper(setState)
+      .isQueryExecutedBySort()
+      .eventResultsStatus('between-streams')
+      .eventsPreferencesConfig()
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+    assert.equal(find('.rsa-loader').textContent.trim(), 'Query is being re-executed to fetch new data.', 'Displaying the correct message');
   });
 
   test('if events are complete, but hit the limit, a message is displayed', async function(assert) {
@@ -279,7 +290,7 @@ module('Integration | Component | events-table', function(hooks) {
       .eventThreshold(100000)
       .eventsPreferencesConfig()
       .columnGroups(EventColumnGroups)
-      .eventsQuerySort('time', 'asc')
+      .eventsQuerySort('time', 'Ascending')
       .sortableColumns(['time', 'size'])
       .eventCount(100000)
       .build();
@@ -297,7 +308,7 @@ module('Integration | Component | events-table', function(hooks) {
       .eventsPreferencesConfig()
       .columnGroups(EventColumnGroups)
       .sortableColumns()
-      .eventsQuerySort('time', 'asc')
+      .eventsQuerySort('time', 'Ascending')
       .eventCount(100000)
       .build();
 
@@ -312,7 +323,7 @@ module('Integration | Component | events-table', function(hooks) {
       .eventsPreferencesConfig()
       .columnGroups(EventColumnGroups)
       .sortableColumns()
-      .eventsQuerySort('time', 'desc')
+      .eventsQuerySort('time', 'Descending')
       .eventCount(100000)
       .build();
 
@@ -328,7 +339,7 @@ module('Integration | Component | events-table', function(hooks) {
       .eventsPreferencesConfig()
       .columnGroups(EventColumnGroups)
       .sortableColumns()
-      .eventsQuerySort('time', 'asc')
+      .eventsQuerySort('time', 'Ascending')
       .eventCount(100000)
       .build();
 

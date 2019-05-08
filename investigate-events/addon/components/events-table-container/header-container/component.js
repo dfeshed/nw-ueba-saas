@@ -8,11 +8,13 @@ import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { setColumnGroup, searchForTerm } from 'investigate-events/actions/interaction-creators';
 import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
+
 import {
   shouldStartAtOldest,
   actualEventCount,
   searchMatchesCount,
-  eventTimeSortOrder
+  eventTimeSortOrder,
+  SORT_ORDER
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
 import { observer } from '@ember/object';
@@ -30,7 +32,8 @@ const stateToComputed = (state) => ({
   actualEventCount: thousandFormat(actualEventCount(state)),
   searchMatchesCount: searchMatchesCount(state),
   isAllEventsSelected: state.investigate.eventResults.allEventsSelected,
-  selectedEventIds: state.investigate.eventResults.selectedEventIds
+  selectedEventIds: state.investigate.eventResults.selectedEventIds,
+  sortDirection: state.investigate.data.sortDirection
 });
 
 const dispatchToActions = {
@@ -59,9 +62,12 @@ const HeaderContainer = Component.extend({
     return shouldStartAtOldest ? i18n.t('investigate.events.oldest') : i18n.t('investigate.events.newest');
   },
 
-  @computed('eventTimeSortOrder', 'i18n')
-  abbreviatedSortOrder(eventTimeSortOrder, i18n) {
-    return i18n.t(`investigate.events.abbr.${eventTimeSortOrder}`);
+  @computed('sortDirection', 'i18n')
+  abbreviatedSortOrder(sortDirection, i18n) {
+    if (sortDirection) {
+      sortDirection = sortDirection.toLowerCase() === SORT_ORDER.ASC.toLowerCase() ? SORT_ORDER.ASC : SORT_ORDER.DESC;
+      return i18n.t(`investigate.events.abbr.${sortDirection}`);
+    }
   },
 
   @computed('columnGroups', 'i18n.locale')

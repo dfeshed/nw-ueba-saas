@@ -2,6 +2,7 @@ import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
 import _ from 'lodash';
+import { isEmpty } from '@ember/utils';
 
 import EventColumnGroups from 'investigate-events/constants/OOTBColumnGroups';
 import { SORT_ORDER } from './event-results/selectors';
@@ -23,11 +24,20 @@ const _initialState = Immutable.from({
   isQueryExecutedByColumnGroup: false,
   sortField: 'time',
   sortDirection: null,
+  isQueryExecutedBySort: false,
   validEventSortColumns: [ 'time' ] // hardcoded for now, pending languages based dynamic list
 });
 
 export default handleActions({
-  [ACTION_TYPES.UPDATE_SORT]: (state, { sortField = 'time', sortDirection }) => {
+  [ACTION_TYPES.UPDATE_SORT]: (state, { sortField, sortDirection, isQueryExecutedBySort }) => {
+    if (!sortField) {
+      sortField = _initialState.validEventSortColumns[0];
+    }
+
+    if (isEmpty(isQueryExecutedBySort)) {
+      isQueryExecutedBySort = state.isQueryExecutedBySort;
+    }
+
     if (sortDirection || state.sortDirection) {
       sortDirection = sortDirection || state.sortDirection;
     } else {
@@ -37,8 +47,13 @@ export default handleActions({
 
     return state.merge({
       sortField,
-      sortDirection
+      sortDirection,
+      isQueryExecutedBySort
     });
+  },
+
+  [ACTION_TYPES.SET_EVENTS_PAGE_STATUS]: (state) => {
+    return state.set('isQueryExecutedBySort', false);
   },
 
   [ACTION_TYPES.UPDATE_GLOBAL_PREFERENCES]: (state, { payload }) => {

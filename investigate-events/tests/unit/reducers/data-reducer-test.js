@@ -57,21 +57,54 @@ test('Should update global preferences', function(assert) {
   assert.deepEqual(newEndState.globalPreferences, 'foo');
 });
 
-test('Should update sort', function(assert) {
+test('Should update sort without isQueryExecutedBySort', function(assert) {
   const previous = Immutable.from({
     sortField: null,
-    sortDirection: null
+    sortDirection: null,
+    isQueryExecutedBySort: false
   });
 
   const action = {
     type: ACTION_TYPES.UPDATE_SORT,
     sortField: 'foo',
-    sortDirection: 'asc'
+    sortDirection: 'Ascending'
   };
   const newEndState = reducer(previous, action);
   assert.deepEqual(newEndState.sortField, 'foo');
-  assert.deepEqual(newEndState.sortDirection, 'asc');
+  assert.deepEqual(newEndState.sortDirection, 'Ascending');
+  assert.deepEqual(newEndState.isQueryExecutedBySort, false);
 });
+
+test('Should update sort with isQueryExecutedBySort', function(assert) {
+  const previous = Immutable.from({
+    sortField: null,
+    sortDirection: null,
+    isQueryExecutedBySort: false
+  });
+
+  const action = {
+    type: ACTION_TYPES.UPDATE_SORT,
+    sortField: 'foo',
+    sortDirection: 'Ascending',
+    isQueryExecutedBySort: true
+  };
+  const newEndState = reducer(previous, action);
+  assert.deepEqual(newEndState.sortField, 'foo');
+  assert.deepEqual(newEndState.sortDirection, 'Ascending');
+  assert.deepEqual(newEndState.isQueryExecutedBySort, true);
+});
+
+test('Should update sort', function(assert) {
+  const previous = Immutable.from({
+    isQueryExecutedBySort: true
+  });
+  const action = {
+    type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS
+  };
+  const newEndState = reducer(previous, action);
+  assert.deepEqual(newEndState.isQueryExecutedBySort, false);
+});
+
 
 test('Should show default column list in case of failure', function(assert) {
   const previous = Immutable.from({

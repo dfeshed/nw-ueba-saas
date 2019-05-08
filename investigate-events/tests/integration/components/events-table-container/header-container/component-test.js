@@ -20,7 +20,7 @@ const createIncidentSelector = '.create-incident-button';
 const addToIncidentSelector = '.add-to-incident-button';
 
 const renderDefaultHeaderContainer = async(assert) => {
-  new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventTimeSortOrder().eventsPreferencesConfig().columnGroups(EventColumnGroups).eventCount(55).build();
+  new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').columnGroups(EventColumnGroups).eventCount(55).build();
   await render(hbs`{{events-table-container/header-container}}`);
   assert.equal(findAll('.ember-power-select-trigger').length, 2, 'columnGroup, downloadEvents');
 };
@@ -42,7 +42,7 @@ module('Integration | Component | header-container', function(hooks) {
   });
 
   test('render the events header with data at threshold', async function(assert) {
-    new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().columnGroups(EventColumnGroups).eventCount(100000).build();
+    new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').columnGroups(EventColumnGroups).eventCount(100000).build();
     await render(hbs`{{events-table-container/header-container}}`);
     assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), 'oldest100,000Events(Asc)', 'rendered event header title');
     assert.ok(find('.rsa-investigate-events-table__header__container .at-threshold'), 'at threshold icon is present');
@@ -52,7 +52,7 @@ module('Integration | Component | header-container', function(hooks) {
   });
 
   test('render the events header with actualCount when canceled', async function(assert) {
-    new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').isCanceled().eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().selectedEventIds([]).columnGroups(EventColumnGroups).eventResults(eventResultsData).eventCount(10).build();
+    new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').isCanceled().eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').selectedEventIds([]).columnGroups(EventColumnGroups).eventResults(eventResultsData).eventCount(10).build();
     await render(hbs`{{events-table-container/header-container}}`);
     assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), '1Events(Asc)', 'rendered event header title');
   });

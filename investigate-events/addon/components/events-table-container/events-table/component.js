@@ -12,7 +12,8 @@ import {
   actualEventCount,
   isEventResultsError,
   eventTableFormattingOpts,
-  searchMatches
+  searchMatches,
+  SORT_ORDER
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
 import { eventsLogsGet } from 'investigate-events/actions/events-creators';
@@ -51,7 +52,8 @@ const stateToComputed = (state) => ({
   searchMatches: searchMatches(state),
   sortField: state.investigate.data.sortField,
   sortDirection: state.investigate.data.sortDirection,
-  sortableColumns: state.investigate.data.validEventSortColumns
+  sortableColumns: state.investigate.data.validEventSortColumns,
+  isQueryExecutedBySort: state.investigate.data.isQueryExecutedBySort
 });
 
 const dispatchToActions = {
@@ -176,12 +178,12 @@ const EventsTableContextMenu = RsaContextMenu.extend({
 
     toggleSort(field) {
       let sortDirection;
-      if (this.get('sortField') === field && this.get('sortDirection') === 'asc') {
-        sortDirection = 'desc';
+      if (this.get('sortField') === field && this.get('sortDirection') === SORT_ORDER.ASC) {
+        sortDirection = SORT_ORDER.DESC;
       } else {
-        sortDirection = 'asc';
+        sortDirection = SORT_ORDER.ASC;
       }
-      this.send('updateSort', field, sortDirection);
+      this.send('updateSort', field, sortDirection, true);
       this.executeQuery(false);
     }
   }

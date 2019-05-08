@@ -421,24 +421,25 @@ export const initializeInvestigate = function(
       _fetchEventSettings(dispatch)
     ];
 
-    // 7) Update sort state with sort params in URL
-    const { sortField, sortDir } = parsedQueryParams;
-    dispatch(updateSort(sortField, sortDir));
-
     const hasService = !!parsedQueryParams.serviceId;
     if (hasService) {
       // If we have a service then...
-      // 8) Include getting the dictionaries with other requests,
+      // 7) Include getting the dictionaries with other requests,
       //    and kick them all off
       initializationPromises.push(_initializeDictionaries(dispatch, getState));
       await RSVP.all(initializationPromises).catch(errorHandler);
     } else {
       // If we do not have a service then...
-      // 8) Get all the dictionaries after we have fetched services and
+      // 7) Get all the dictionaries after we have fetched services and
       //    automatically chosen the first service as the active service
       await RSVP.all(initializationPromises);
       await _initializeDictionaries(dispatch, getState).catch(errorHandler);
     }
+
+    // 8) Update sort state with sort params in URL
+    // requires the completion of _initializePreferences for preference defaults
+    const { sortField, sortDir } = parsedQueryParams;
+    dispatch(updateSort(sortField, sortDir));
 
     if (parsedQueryParams.pillData && parsedQueryParams.pillDataHashes) {
       // 9) If there is a pdhash and mf in the query, fetch a hash for the mf

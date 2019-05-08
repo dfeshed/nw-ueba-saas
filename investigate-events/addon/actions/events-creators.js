@@ -5,6 +5,7 @@
 
 import { lookup } from 'ember-dependency-lookup';
 
+import { SORT_ORDER } from 'investigate-events/reducers/investigate/event-results/selectors';
 import fetchStreamingEvents from 'investigate-shared/actions/api/events/events';
 import { queryIsRunning } from 'investigate-events/actions/initialization-creators';
 import { fetchLog } from './fetch/logs';
@@ -344,7 +345,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         if (isFirstStream) {
           dispatch({
             type: ACTION_TYPES.INIT_EVENTS_STREAMING,
-            payload: { eventTimeSortOrderPreferenceWhenQueried: 'Descending' }
+            payload: { eventTimeSortOrderPreferenceWhenQueried: SORT_ORDER.DESC }
           });
         }
       },
@@ -728,7 +729,7 @@ export const eventsStartOldest = () => {
         currentStreamState.eventStreamCallback = _stopStream;
         dispatch({
           type: ACTION_TYPES.INIT_EVENTS_STREAMING,
-          payload: { eventTimeSortOrderPreferenceWhenQueried: 'Ascending' }
+          payload: { eventTimeSortOrderPreferenceWhenQueried: SORT_ORDER.ASC }
         });
       },
       onResponse(response) {

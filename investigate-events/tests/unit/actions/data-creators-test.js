@@ -23,8 +23,11 @@ module('Unit | Actions | Data-Creators', function(hooks) {
   });
 
   test('updateSort action creator returns proper type', function(assert) {
-    const { type } = dataCreators.updateSort();
+    const { type, sortField, sortDirection, isQueryExecutedBySort } = dataCreators.updateSort('a', 'b', 'c');
     assert.equal(type, ACTION_TYPES.UPDATE_SORT, 'action has the correct type');
+    assert.equal(sortField, 'a', 'action has the correct sortField');
+    assert.equal(sortDirection, 'b', 'action has the correct sortDirection');
+    assert.equal(isQueryExecutedBySort, 'c', 'action has the correct isQueryExecutedBySort');
   });
 
   test('updateSummary call will update timerange if autoSummaryCall is enabled', function(assert) {

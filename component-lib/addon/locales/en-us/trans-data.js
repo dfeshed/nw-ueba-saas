@@ -475,7 +475,7 @@ export default {
     },
     title: 'Investigate',
     loading: 'Loading',
-    reExecutingQuery: 'Query is being re-executed to fetch different columns',
+    reExecutingQuery: 'Query is being re-executed to fetch new data.',
     loadMore: 'Load More',
     allLoaded: 'All results for this query have been loaded',
     notAllLoaded: 'Reached the {{maxEvents}} event limit. Consider refining your query.',

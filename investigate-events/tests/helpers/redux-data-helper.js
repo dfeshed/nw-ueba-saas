@@ -582,6 +582,11 @@ export default class DataHelper {
     return this;
   }
 
+  isQueryExecutedBySort(flag = true) {
+    _set(this.state, 'data.isQueryExecutedBySort', flag);
+    return this;
+  }
+
   isQueryExecutedByColumnGroup(flag = true) {
     _set(this.state, 'data.isQueryExecutedByColumnGroup', flag);
     return this;

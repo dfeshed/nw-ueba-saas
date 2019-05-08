@@ -3,7 +3,7 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
-import { actualEventCount } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { actualEventCount, SORT_ORDER } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
 
 import {
@@ -48,7 +48,7 @@ const DevicesStatus = Component.extend({
   @computed('resultCountAtThreshold', 'eventTimeSortOrderPreferenceWhenQueried')
   eventAge: (resultCountAtThreshold, eventTimeSortOrder) => {
     if (resultCountAtThreshold && eventTimeSortOrder) {
-      return (eventTimeSortOrder === 'Ascending') ? 'oldest' : 'newest';
+      return (eventTimeSortOrder === SORT_ORDER.ASC) ? 'oldest' : 'newest';
     }
   },
 

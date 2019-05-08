@@ -187,6 +187,10 @@
           &.active {
             color: text-color(primary, lightest);
           }
+
+          &:hover {
+            cursor: pointer;
+          }
         }
 
         &:first-of-type {

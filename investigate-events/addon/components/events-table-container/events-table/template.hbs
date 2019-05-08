@@ -32,24 +32,24 @@
       {{else}}
         <h2 class="title" title="{{if column.title column.title names.bothNames}}">
           {{#if (and column.field sortableColumns)}}
-            <span class="js-move-handle" {{action 'toggleSort' column.field}}>
-              {{#if (contains column.field sortableColumns)}}
-                {{#if (eq sortField column.field)}}
-                  {{#if (eq sortDirection 'asc')}}
-                    <span class="sort-indicator active">
-                      {{rsa-icon name="arrow-up-7" size="small"}}
-                    </span>
-                  {{else}}
-                    <span class="sort-indicator active">
-                      {{rsa-icon name="arrow-down-7" size="small"}}
-                    </span>
-                  {{/if}}
-                {{else}}
-                  <span class="sort-indicator">
+            {{#if (contains column.field sortableColumns)}}
+              {{#if (eq sortField column.field)}}
+                {{#if (eq sortDirection 'Ascending')}}
+                  <span class="sort-indicator active" {{action 'toggleSort' column.field}}>
                     {{rsa-icon name="arrow-up-7" size="small"}}
                   </span>
+                {{else}}
+                  <span class="sort-indicator active" {{action 'toggleSort' column.field}}>
+                    {{rsa-icon name="arrow-down-7" size="small"}}
+                  </span>
                 {{/if}}
+              {{else}}
+                <span class="sort-indicator" {{action 'toggleSort' column.field}}>
+                  {{rsa-icon name="arrow-up-7" size="small"}}
+                </span>
               {{/if}}
+            {{/if}}
+            <span class="js-move-handle">
               {{if column.title column.title names.displayName}}
             </span>
           {{else}}
@@ -80,7 +80,7 @@
       <div class='events-table-footer-status'>
         {{#if hasPartialResults}}
           {{t 'investigate.partialResults' totalCount=totalCount actualEventCount=actualEventCount}}
-        {{else if isQueryExecutedByColumnGroup}}
+        {{else if (or isQueryExecutedByColumnGroup isQueryExecutedBySort)}}
           {{rsa-loader size='large' label=(t 'investigate.reExecutingQuery')}}
         {{else}}
           {{rsa-loader size="large" label=(t 'investigate.loading')}}

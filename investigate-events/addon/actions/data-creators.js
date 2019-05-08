@@ -149,11 +149,12 @@ export const updateGlobalPreferences = (payload) => {
   };
 };
 
-export const updateSort = (sortField, sortDirection) => {
+export const updateSort = (sortField, sortDirection, isQueryExecutedBySort) => {
   return {
     type: ACTION_TYPES.UPDATE_SORT,
     sortField,
-    sortDirection
+    sortDirection,
+    isQueryExecutedBySort
   };
 };
 
