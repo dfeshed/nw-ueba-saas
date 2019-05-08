@@ -1,0 +1,65 @@
+.process-item-container {
+  color: white;
+  height: 100px;
+  padding: 40px;
+  .risk-score {
+    padding-top: 1px;
+  }
+  .process-icon {
+    padding: 5px;
+    font-size: 16px;
+  }
+  .process-name {
+    cursor: pointer;
+    background-color: background-color(primary, darker);
+    width: 170px;
+    height: 24px;
+    @include border(1px, solid, primary, dark);
+    border-radius: 20px;
+    line-height: 1.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    span {
+      padding: 0 10px;
+    }
+    &:hover {
+      background-color: background-color(primary, dark);
+      @include border(1px, solid, primary, dark);
+    }
+    &.selected {
+      background-color: background-color(secondary, dark);
+      @include border(1px, solid, secondary, dark);
+    }
+  }
+  .machine-count {
+    width: 80px;
+    padding: 7px 5px;
+    height: 12px;
+    font-size: 12px;
+    line-height: 0.9;
+    display: inline-flex;
+    .bracket-open {
+      padding-right: 2px;
+      line-height: 0.67;
+    }
+    .bracket-close {
+      line-height: 0.67;
+    }
+    .machine-count-number {
+      padding-left: 3px;
+      max-width: 50px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  .events {
+    padding-top: 5px;
+    .rsa-icon {
+      font-size: 12px;
+    }
+    .disabled {
+      color: text-color(primary, dark);
+    }
+  }
+
+}
