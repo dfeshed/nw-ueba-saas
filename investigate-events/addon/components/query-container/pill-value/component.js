@@ -234,29 +234,14 @@ export default Component.extend({
     });
   },
 
-  /**
-   * The main point of this function is to check to see if we need to
-   * automatically focus on the power-select trigger. We only need to do this
-   * when this component is set to active. Since dUA() runs on every property
-   * change, we could be needlessly running the trigger focusing function.
-   * To prevent this we track the previous state of `isActive` and only do
-   * something if we're active when we previously were not.
-   */
-  didUpdateAttrs: (function() {
-    let _wasActive = false; // tracking prop for isActive
-    return function() {
-      this._super(...arguments);
-      const isActive = this.get('isActive');
-      // This check basically ensures that we only run the auto focus function
-      // if this component is active after being inactive
-      if (isActive && isActive !== _wasActive) {
-        // We schedule this after render to give time for the input to
-        // be rendered before trying to focus on it.
-        scheduleOnce('afterRender', this, '_focusOnPowerSelectTrigger');
-      }
-      _wasActive = isActive;
-    };
-  })(),
+  didUpdateAttrs() {
+    this._super(...arguments);
+    if (this.get('isActive')) {
+      // We schedule this after render to give time for the power-select to
+      // be rendered before trying to focus on it.
+      scheduleOnce('afterRender', this, '_focusOnPowerSelectTrigger');
+    }
+  },
 
   click() {
     // If this component is not active and the user clicks on it, dispatch an
