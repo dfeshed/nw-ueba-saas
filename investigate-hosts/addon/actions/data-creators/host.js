@@ -369,6 +369,15 @@ const onHostSelection = (item) => {
   };
 };
 
+const downloadMFT = (agentId, serverId, callbacks = callbacksDefault) => {
+  Machines.downloadMFT({ agentId, serverId })
+    .then(() => {
+      callbacks.onSuccess();
+    }).catch(({ meta: message }) => {
+      callbacks.onFailure(message.message);
+    });
+};
+
 
 export {
   getAllServices,
@@ -390,5 +399,6 @@ export {
   setFocusedHost,
   bootstrapInvestigateHosts,
   changeEndpointServerSelection,
-  initializeHostDetailsPage
+  initializeHostDetailsPage,
+  downloadMFT
 };

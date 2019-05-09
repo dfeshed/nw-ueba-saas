@@ -223,6 +223,22 @@ const getContext = (query, handlers) => {
   });
 };
 
+const downloadMFT = (data) => {
+  const request = lookup('service:request');
+  const streamSelector = lookup('service:stream-selector');
+
+  const modelName = 'endpoint';
+  const method = 'downloadMFT';
+  const { serverId: socketUrlPostfix } = data;
+
+  return request.promiseRequest({
+    method,
+    modelName,
+    query: { data },
+    streamOptions: streamSelector.streamOptionSelector({ modelName, method, customOptions: { socketUrlPostfix } })
+  });
+};
+
 export default {
   getAllServices,
   getAllFilters,
@@ -234,5 +250,6 @@ export default {
   stopScanRequest,
   deleteHosts,
   pollAgentStatus,
-  getContext
+  getContext,
+  downloadMFT
 };

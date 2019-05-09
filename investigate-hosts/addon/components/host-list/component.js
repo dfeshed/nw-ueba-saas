@@ -4,11 +4,11 @@ import { selectedServiceWithStatus } from 'investigate-shared/selectors/endpoint
 
 import { startScanCommand, stopScanCommand } from 'investigate-hosts/util/scan-command';
 import { inject as service } from '@ember/service';
-import { isScanStartButtonDisabled, warningMessages, extractAgentIds } from 'investigate-hosts/reducers/hosts/selectors';
+import { isScanStartButtonDisabled, warningMessages, extractAgentIds, mftDownloadButtonStatus } from 'investigate-hosts/reducers/hosts/selectors';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
-import { deleteHosts } from 'investigate-hosts/actions/data-creators/host';
+import { deleteHosts, downloadMFT } from 'investigate-hosts/actions/data-creators/host';
 import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
@@ -18,12 +18,14 @@ const stateToComputed = (state) => ({
   isScanStartButtonDisabled: isScanStartButtonDisabled(state),
   agentIds: extractAgentIds(state),
   serviceId: serviceId(state),
-  timeRange: timeRange(state)
+  timeRange: timeRange(state),
+  isMFTEnabled: mftDownloadButtonStatus(state)
 });
 
 const dispatchToActions = {
   deleteHosts,
-  resetRiskScore
+  resetRiskScore,
+  downloadMFT
 };
 
 
@@ -124,6 +126,16 @@ const Container = Component.extend({
 
     onResetScoreModalClose() {
       this.set('showResetScoreModal', false);
+    },
+
+    requestMFTDownload() {
+      const callBackOptions = {
+        onSuccess: () => success('investigateHosts.hosts.downloadMFT.success'),
+        onFailure: (message) => failure(message, null, false)
+      };
+      const hosts = this.get('selections');
+      const [host] = hosts.length && hosts.length === 1 ? hosts : [{}];
+      this.send('downloadMFT', this.get('agentIds')[0], host.serviceId, callBackOptions);
     }
   }
 });

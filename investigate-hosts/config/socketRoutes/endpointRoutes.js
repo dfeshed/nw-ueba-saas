@@ -85,6 +85,10 @@ const hostsConfigGen = function(env) {
       fileAnalysisTextFormat: {
         subscriptionDestination: '/user/queue/endpoint/file/get-encoded-data',
         requestDestination: '/ws/endpoint/file/get-encoded-data'
+      },
+      downloadMFT: {
+        subscriptionDestination: '/user/queue/endpoint/command/download-mft',
+        requestDestination: '/ws/endpoint/command/download-mft'
       }
     },
     'context-service': {

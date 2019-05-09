@@ -1,17 +1,28 @@
 import * as ACTION_TYPES from './types';
 
 const toggleCustomFilter = (filter) => ({ type: ACTION_TYPES.TOGGLE_CUSTOM_FILTER, payload: filter });
-const toggleMachineSelected = (host) => ({
-  type: ACTION_TYPES.TOGGLE_MACHINE_SELECTED,
-  payload: {
-    id: host.id,
-    machineIdentity: { machineName: host.machineIdentity.machineName },
-    version: host.machineIdentity.agentVersion,
-    managed: host.groupPolicy.managed,
-    serviceId: host.serviceId
-  }
-});
+const toggleMachineSelected = (host) => {
+
+  const { machineName, machineOsType, agentMode, agentVersion: version } = host.machineIdentity;
+  return {
+    type: ACTION_TYPES.TOGGLE_MACHINE_SELECTED,
+    payload: {
+      id: host.id,
+      machineIdentity: {
+        machineName,
+        machineOsType,
+        agentMode
+      },
+      version,
+      managed: host.groupPolicy.managed,
+      serviceId: host.serviceId
+    }
+  };
+
+};
+
 const toggleIconVisibility = (flag, id) => ({ type: ACTION_TYPES.TOGGLE_ICON_VISIBILITY, payload: { flag, id } });
+
 const setSelectedHost = (host) => ({
   type: ACTION_TYPES.SET_SELECTED_HOST,
   payload: {

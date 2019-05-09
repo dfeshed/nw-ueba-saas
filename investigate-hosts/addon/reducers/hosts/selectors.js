@@ -79,26 +79,6 @@ export const hostExportLink = createSelector(
   }
 );
 
-export const processedHostList = createSelector(
-  [ _hostList ],
-  (machines) => {
-    return machines.map((machine) => {
-      let hasScanStatus = false;
-      let canStartScan = false;
-      if (machine.agentStatus) {
-        const { scanStatus } = machine.agentStatus;
-        hasScanStatus = true;
-        canStartScan = scanStatus === 'idle' || scanStatus === 'cancelPending';
-      }
-      return {
-        ...machine,
-        canStartScan,
-        hasScanStatus
-      };
-    });
-  }
-);
-
 export const isAllHostSelected = createSelector(
   _selectedHostList, _hostList,
   (selectedHostList, hostList) => {
@@ -262,5 +242,69 @@ export const actionsDisableMessage = createSelector(
     } else if (allAreMigratedHosts) {
       return 'Action disabled - Selected host(s) not managed by the current server';
     }
+  }
+);
+
+const _isOSWindows = function(value = '') {
+  return value.toLowerCase() === 'windows';
+};
+
+const _isModeAdvance = function(value = '') {
+  return value.toLowerCase() === 'advanced';
+};
+
+const _isAgentVersionAdvanced = function(version = '') {
+  const agentVersion = version.trim().split('.');
+  return (agentVersion.length >= 2) ? (agentVersion[0] == 11 && agentVersion[1] >= 4) || (agentVersion[0] > 11) : false;
+};
+
+const _isMachineOSWindows = createSelector(
+  [_selectedHostList],
+  (selectedHostList) => {
+    const { machineIdentity = { machineOsType: '' } } = selectedHostList.length ? selectedHostList[0] : { machineIdentity: { machineOsType: '' } };
+    return _isOSWindows(machineIdentity.machineOsType);
+  });
+
+const _agentMode = createSelector(
+  [_selectedHostList],
+  (selectedHostList) => {
+    const { machineIdentity = { agentMode: '' } } = selectedHostList.length ? selectedHostList[0] : { machineIdentity: { agentMode: '' } };
+    return _isModeAdvance(machineIdentity.agentMode);
+  });
+
+const _agentVersion = createSelector(
+  [_selectedHostList],
+  (selectedHostList) => {
+    const { version } = selectedHostList.length ? selectedHostList[0] : { version: '' };
+    return _isAgentVersionAdvanced(version);
+  });
+
+export const mftDownloadButtonStatus = createSelector(
+  [_isMachineOSWindows, _agentMode, _agentVersion],
+  (isMachineOSWindows, agentMode, agentVersion) => ({ isDisplayed: (isMachineOSWindows && agentMode && agentVersion) }));
+
+export const processedHostList = createSelector(
+  [ _hostList ],
+  (machines) => {
+    return machines.map((machine) => {
+      let hasScanStatus = false;
+      let canStartScan = false;
+      let isMFTEnabled = false;
+      const { machineOsType, agentMode, agentVersion } = machine.machineIdentity;
+      if (machine.agentStatus) {
+        const { scanStatus } = machine.agentStatus;
+        hasScanStatus = true;
+        canStartScan = scanStatus === 'idle' || scanStatus === 'cancelPending';
+      }
+      if (_isOSWindows(machineOsType) && _isModeAdvance(agentMode) && _isAgentVersionAdvanced(agentVersion)) {
+        isMFTEnabled = true;
+      }
+      return {
+        ...machine,
+        canStartScan,
+        hasScanStatus,
+        isMFTEnabled
+      };
+    });
   }
 );

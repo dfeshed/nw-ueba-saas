@@ -1,20 +1,24 @@
 {{host-list/host-table/action-bar
   openFilterPanel=openFilterPanel
   closeProperties=closeProperties
+  isMFTEnabled=isMFTEnabled
   showRiskScoreModal=(action 'showRiskScoreModal')
   pivotToInvestigate=(action 'pivotToInvestigate')
   showConfirmationModal=(action 'showConfirmationModal')
   showScanModal=(action 'showScanModal')
+  requestMFTDownload=(action 'requestMFTDownload')
 }}
 {{#if selectedServiceData.isServiceOnline}}
   {{host-list/host-table
     openFilterPanel=openFilterPanel
     openProperties=openProperties
     closeProperties=closeProperties
+    isMFTEnabled=isMFTEnabled
     pivotToInvestigate=(action 'pivotToInvestigate')
     showConfirmationModal=(action 'showConfirmationModal')
     showRiskScoreModal=(action 'showRiskScoreModal')
     showScanModal=(action 'showScanModal')
+    requestMFTDownload=(action 'requestMFTDownload')
   }}
 {{else}}
   {{error-page

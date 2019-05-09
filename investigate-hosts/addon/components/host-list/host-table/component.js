@@ -122,25 +122,42 @@ const HostTable = Component.extend({
         }
       }
     },
-
+    /* beforeContextMenuShow executes before the context menu is rendered.
+      it alters the list of context menu items based on conditions like;
+      a. Is MFT enabled
+      b. Is the target element an anchor tag
+      c. number of items selected */
     beforeContextMenuShow(menu, event) {
       const { contextSelection: item, contextItems } = menu;
+      const { isMFTEnabled } = item;
+      const selections = this.get('selections');
 
-      if (!this.get('contextItems')) {
-        // Need to store this locally set it back again to menu object
-        this.set('contextItems', contextItems);
+      // Need to store this locally set it back again to menu object
+      if (contextItems.length) {
+        if (!this.get('updatedContextConfBackup') && isMFTEnabled) {
+          this.set('updatedContextConfBackup', contextItems);
+        }
+        if (!this.get('initialContextConfBackup') && !isMFTEnabled) {
+          this.set('initialContextConfBackup', contextItems);
+        }
       }
+
       // For anchor tag hid the context menu and show browser default right click menu
       if (event.target.tagName.toLowerCase() === 'a') {
         menu.set('contextItems', []);
       } else {
-        menu.set('contextItems', this.get('contextItems'));
+        if (isMFTEnabled && (selections.length <= 1)) {
+          menu.set('contextItems', this.get('updatedContextConfBackup'));
+        } else {
+          menu.set('contextItems', this.get('initialContextConfBackup'));
+        }
+
         // Highlight is removed and right panel is closed when right clicked on non-highlighted row
         if (this.get('focusedHost') && this.get('focusedHost').id !== item.id) {
           this.send('setFocusedHostIndex', -1);
           this.closeProperties();
         }
-        if (!this.isAlreadySelected(this.get('selections'), item)) {
+        if (!this.isAlreadySelected(selections, item)) {
           this.send('deSelectAllHosts');
           this.send('toggleMachineSelected', item);
         }

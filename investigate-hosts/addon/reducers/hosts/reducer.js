@@ -164,13 +164,18 @@ const hosts = reduxActions.handleActions({
 
   [ACTION_TYPES.TOGGLE_ICON_VISIBILITY]: (state, { payload }) => _toggleIconVisibility(state, payload),
 
-  [ACTION_TYPES.SELECT_ALL_HOSTS]: (state) => state.set('selectedHostList', state.hostList.map((host) => ({
-    id: host.id,
-    machineIdentity: { machineName: host.machineIdentity.machineName },
-    version: host.machineIdentity.agentVersion,
-    managed: host.groupPolicy.managed,
-    serviceId: host.serviceId
-  }))),
+  [ACTION_TYPES.SELECT_ALL_HOSTS]: (state) => state.set('selectedHostList', state.hostList.map((host) => {
+
+    const { machineName, machineOsType, agentMode, agentVersion: version } = host.machineIdentity;
+    return {
+      id: host.id,
+      machineIdentity: { machineName, machineOsType, agentMode },
+      version,
+      managed: host.groupPolicy.managed,
+      serviceId: host.serviceId
+    };
+
+  })),
 
   [ACTION_TYPES.DESELECT_ALL_HOSTS]: (state) => state.set('selectedHostList', []),
 

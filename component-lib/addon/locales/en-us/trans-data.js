@@ -2982,6 +2982,10 @@ export default {
           status: 'Status'
         }
       },
+      downloadMFT: {
+        success: 'MFT is set for download. Check the "Downloads" column for status.',
+        tooltip: 'MFT can be downloaded only for Windows OS and only a single host can be selected at a time.'
+      },
       selected: 'selected ({{count}})',
       insightAgentTooltip: 'For insights agent mode, Risk Score feature is not supported. Please upgrade to advanced agent mode.',
       list: {
@@ -3717,6 +3721,7 @@ export default {
         consoleEvents: 'Console Events',
         viewCertificate: 'View Certificates',
         analyzeUser: 'Analyze User',
+        downloadMFT: 'Download MFT',
         tooltips: {
           downloadToServer: '',
           saveLocalCopy: 'Download the file to server to save a local copy.',

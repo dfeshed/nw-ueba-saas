@@ -171,9 +171,10 @@ export default {
         machineIdentity: {
           id: '019A39C8-3E18-387F-EAD4-EA217519638A',
           group: 'default',
-          agentVersion: '5.0.0.0',
-          machineOsType: 'mac',
+          agentVersion: '12.0.0.0',
+          machineOsType: 'windows',
           machineName: 'server.local',
+          agentMode: 'advanced',
           networkInterfaces: [
             {
               name: 'lo0',

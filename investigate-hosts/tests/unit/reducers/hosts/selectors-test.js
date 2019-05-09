@@ -19,6 +19,7 @@ import {
   nextLoadCount,
   isInsightsAgent,
   allAreMigratedHosts,
+  mftDownloadButtonStatus,
   actionsDisableMessage } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
@@ -33,8 +34,11 @@ const STATE = Immutable.from({
           agentStatus: {
             scanStatus: 'scaning'
           },
-          machine: {
-            agentVersion: '4.3.0.0'
+          machineIdentity: {
+            machineName: 'RAR113-EPS',
+            machineOsType: 'windows',
+            agentMode: 'advanced',
+            agentVersion: '11.3.0.0'
           }
         },
         {
@@ -42,8 +46,11 @@ const STATE = Immutable.from({
           agentStatus: {
             scanStatus: 'idle'
           },
-          machine: {
-            agentVersion: '4.4.0.0'
+          machineIdentity: {
+            machineName: 'RAR113-EPS',
+            machineOsType: 'windows',
+            agentMode: 'advanced',
+            agentVersion: '11.4.0.0'
           }
         }
       ],
@@ -95,6 +102,8 @@ test('processedHostList', function(assert) {
   assert.equal(result.length, 2);
   assert.equal(result[0].canStartScan, false);
   assert.equal(result[1].canStartScan, true);
+  assert.equal(result[0].isMFTEnabled, false);
+  assert.equal(result[1].isMFTEnabled, true);
 });
 
 test('serviceList', function(assert) {
@@ -706,4 +715,210 @@ test('actionsDisableMessage', function(assert) {
   });
   const result4 = actionsDisableMessage(state4);
   assert.equal(result4, 'Action disabled - Selected host(s) not managed by the current server');
+});
+
+test('mftDownloadButtonStatus', function(assert) {
+  const state1 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{
+          id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
+          machineIdentity: {
+            machineName: 'RAR113-EPS',
+            machineOsType: 'linux',
+            agentMode: 'advanced'
+          },
+          version: '11.4.0.0',
+          managed: true,
+          serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+        }]
+      }
+    }
+  });
+  const result1 = mftDownloadButtonStatus(state1);
+  assert.deepEqual(result1, { isDisplayed: false });
+
+  const state2 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{
+          id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
+          machineIdentity: {
+            machineName: 'RAR113-EPS',
+            machineOsType: 'windows',
+            agentMode: 'advanced'
+          },
+          version: '11.3.0.0',
+          managed: true,
+          serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+        }]
+      }
+    }
+  });
+  const result2 = mftDownloadButtonStatus(state2);
+  assert.deepEqual(result2, { isDisplayed: false });
+
+  const state3 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{
+          id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
+          machineIdentity: {
+            machineName: 'RAR113-EPS',
+            machineOsType: 'windows',
+            agentMode: 'insights'
+          },
+          version: '11.4.0.0',
+          managed: true,
+          serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+        }]
+      }
+    }
+  });
+  const result3 = mftDownloadButtonStatus(state3);
+  assert.deepEqual(result3, { isDisplayed: false });
+
+  const state4 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{
+          id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
+          machineIdentity: {
+            machineName: 'RAR113-EPS',
+            machineOsType: 'windows',
+            agentMode: 'advanced'
+          },
+          version: '15.0.0.0',
+          managed: true,
+          serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+        }]
+      }
+    }
+  });
+  const result4 = mftDownloadButtonStatus(state4);
+  assert.deepEqual(result4, { isDisplayed: true });
+
+  const state5 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{
+          id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
+          machineIdentity: {
+            machineName: 'RAR113-EPS',
+            machineOsType: 'windows',
+            agentMode: 'advanced'
+          },
+          version: '11.4.0.0',
+          managed: true,
+          serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+        }]
+      }
+    }
+  });
+  const result5 = mftDownloadButtonStatus(state5);
+  assert.deepEqual(result5, { isDisplayed: true });
+});
+
+test('processedHostList', function(assert) {
+  const state1 = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [{
+          id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
+          machineIdentity: {
+            machineName: 'RAR113-EPS',
+            machineOsType: 'linux',
+            agentMode: 'advanced',
+            agentVersion: '11.4.0.0'
+          },
+          managed: true,
+          serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+        }]
+      }
+    }
+  });
+  const result1 = processedHostList(state1);
+  assert.equal(result1[0].isMFTEnabled, false);
+
+  const state2 = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [{
+          id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
+          machineIdentity: {
+            machineName: 'RAR113-EPS',
+            machineOsType: 'windows',
+            agentMode: 'advanced',
+            agentVersion: '11.3.0.0'
+          },
+          managed: true,
+          serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+        }]
+      }
+    }
+  });
+  const result2 = processedHostList(state2);
+  assert.equal(result2[0].isMFTEnabled, false);
+
+  const state3 = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [{
+          id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
+          machineIdentity: {
+            machineName: 'RAR113-EPS',
+            machineOsType: 'windows',
+            agentMode: 'insights',
+            agentVersion: '11.4.0.0'
+          },
+          managed: true,
+          serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+        }]
+      }
+    }
+  });
+  const result3 = processedHostList(state3);
+  assert.equal(result3[0].isMFTEnabled, false);
+
+  const state4 = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [{
+          id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
+          machineIdentity: {
+            machineName: 'RAR113-EPS',
+            machineOsType: 'windows',
+            agentMode: 'advanced',
+            agentVersion: '15.0.0.0'
+          },
+          version: '15.0.0.0',
+          managed: true,
+          serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+        }]
+      }
+    }
+  });
+  const result4 = processedHostList(state4);
+  assert.equal(result4[0].isMFTEnabled, true);
+
+  const state5 = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [{
+          id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
+          machineIdentity: {
+            machineName: 'RAR113-EPS',
+            machineOsType: 'windows',
+            agentMode: 'advanced',
+            agentVersion: '11.4.0.0'
+          },
+          version: '11.4.0.0',
+          managed: true,
+          serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+        }]
+      }
+    }
+  });
+  const result5 = processedHostList(state5);
+  assert.equal(result5[0].isMFTEnabled, true);
 });

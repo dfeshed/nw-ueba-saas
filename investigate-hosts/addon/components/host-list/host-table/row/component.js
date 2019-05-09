@@ -11,6 +11,10 @@ export default DataTableBodyRow.extend({
 
   classNameBindings: ['isRowChecked'],
 
+  updatedContextConfBackup: [],
+
+  initialContextConfBackup: [],
+
   @computed('item', 'selections')
   isRowChecked(item, selections = []) {
     const isSelected = selections.findBy('id', item.id);
@@ -19,11 +23,20 @@ export default DataTableBodyRow.extend({
 
   @computed('item')
   contextItems() {
+    const mft = [{
+      label: 'downloadMFT',
+      order: 5,
+      prefix: 'investigateShared.endpoint.fileActions.',
+      showDivider: true,
+      action(selection, context) {
+        context.requestMFTDownload();
+      }
+    }];
 
     const contextConf = [
       {
         label: 'resetRiskScore',
-        order: 5,
+        order: 6,
         prefix: 'investigateShared.endpoint.fileActions.',
         showDivider: true,
         action(selection, context) {
@@ -107,6 +120,9 @@ export default DataTableBodyRow.extend({
         }
       }
     ];
+    if (this.get('item').isMFTEnabled) {
+      contextConf.push(...mft);
+    }
     return contextConf.sortBy('order');
   }
 
