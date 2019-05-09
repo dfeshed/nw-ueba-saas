@@ -129,17 +129,17 @@
 
   header {
     margin: calc(#{rsa-whitespace(more)} * -1);
-    padding: rsa-whitespace(more) rsa-whitespace(more);
-    position: relative;
-    padding-bottom: 0;
+    padding: rsa-whitespace(more) rsa-whitespace(more) 0;
 
     h3 {
-      position: absolute;
-      right: 0;
-      top: 0;
-      padding: rsa-whitespace(more) rsa-whitespace(more);
+      padding: rsa-whitespace(base) 0 rsa-whitespace(base);
+      margin: calc(#{rsa-whitespace(more)} * -1) 0 calc(#{rsa-whitespace(more)} * -1);
       line-height: 1.5rem;
       color: rgba(189,189,189, 1);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 36vw;
     }
 
     .rsa-logo {
