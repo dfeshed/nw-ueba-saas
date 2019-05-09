@@ -334,18 +334,11 @@ export default Component.extend({
         // Let others know ECS was pressed
         this._broadcast(MESSAGE_TYPES.META_ESCAPE_KEY);
       } else if (isSpace(event)) {
-        // Look to see if we need to create a filter or auto-select a meta value
         const { results, resultsCount, searchText } = powerSelectAPI;
-        const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
         // These conditionals return false to prevent any further handling of
         // the keypress that brought us here. Specifically, it prevents the
         // pill-operator from having a space at the beginning.
-        if (afterOptionsMenuItem) {
-          this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
-          powerSelectAPI.actions.search('');
-          powerSelectAPI.actions.highlight(null);
-          return false;
-        } else if (resultsCount === 1) {
+        if (resultsCount === 1) {
           this._broadcast(MESSAGE_TYPES.META_SELECTED, results[0]);
           return false;
         } else if (resultsCount > 1) {

@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
-import { blur, click, fillIn, find, findAll, focus, render, settled, triggerEvent, triggerKeyEvent, typeIn } from '@ember/test-helpers';
+import { blur, click, fillIn, find, findAll, focus, render, settled, triggerKeyEvent, typeIn } from '@ember/test-helpers';
 
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -33,7 +33,6 @@ const ARROW_RIGHT = KEY_MAP.arrowRight.code;
 const ARROW_UP = KEY_MAP.arrowUp.code;
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
-const SPACE_KEY = KEY_MAP.space.code;
 const TAB_KEY = KEY_MAP.tab.code;
 const modifiers = { shiftKey: true };
 
@@ -427,33 +426,6 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await clickTrigger(PILL_SELECTORS.meta);
     await typeInSearch('foobar');
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
-  });
-
-  test('it broadcasts a message to create a free-form pill when the SPACE key is pressed', async function(assert) {
-    const done = assert.async();
-    this.set('metaOptions', META_OPTIONS);
-    this.set('handleMessage', (type, data) => {
-      if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
-        assert.ok(Array.isArray(data), 'correct data type');
-        assert.propEqual(data, ['c.1', 'pill-meta'], 'correct data');
-        assert.equal(find(PILL_SELECTORS.metaInput).value, '', 'meta input was reset');
-        done();
-      }
-    });
-    await render(hbs`
-      {{query-container/pill-meta
-        isActive=true
-        metaOptions=metaOptions
-        sendMessage=(action handleMessage)
-      }}
-    `);
-    await clickTrigger(PILL_SELECTORS.meta);
-    await typeInSearch('c.1');
-    assert.ok(findAll(PILL_SELECTORS.powerSelectOption).length === 1, 'there should only be one option');
-    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
-    const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_FREE_FORM_LABEL));
-    await triggerEvent(textFilter, 'mouseenter');
-    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', SPACE_KEY);
   });
 
   test('it does NOT broadcasts a message to create a free-form pill if no value is entered', async function(assert) {

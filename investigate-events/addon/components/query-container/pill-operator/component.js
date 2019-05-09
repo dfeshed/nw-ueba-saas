@@ -302,16 +302,10 @@ export default Component.extend({
       } else if (isSpace(event)) {
         const { options, results, searchText } = powerSelectAPI;
         const operatorAcceptsValue = this._operatorAcceptsValue(options, searchText);
-        const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
         // These conditionals return false to prevent any further handling of
         // the keypress that brought us here. Specifically, it prevents the
         // pill-value from having a space at the beginning.
-        if (afterOptionsMenuItem) {
-          this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
-          powerSelectAPI.actions.search('');
-          powerSelectAPI.actions.highlight(null);
-          return false;
-        } else if (results.length === 1 && operatorAcceptsValue) {
+        if (results.length === 1 && operatorAcceptsValue) {
           this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, results[0]);
           return false;
         }
