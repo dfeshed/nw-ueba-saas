@@ -16,16 +16,25 @@ const policy = (state) => _policyWizardState(state).policy;
 // ====================================================================
 const _listOfLogServers = (state) => _policyWizardState(state).listOfLogServers || [];
 
+// Same list of log servers are being used for windowslog and file policy types.
+// For a file policy, if the log server version is older than 11.4
+// make it read only (user wont be able to pick from the dropdown)
 export const primaryLogServersList = createSelector(
   // only format/return what is in state - the reducer is responsible for the defaults for each setting
-  [_listOfLogServers],
-  (listOfLogServers) => {
+  [_listOfLogServers, policy],
+  (listOfLogServers, policy) => {
     const services = [];
     for (let i = 0; i < listOfLogServers.length; i++) {
+      // Disable the dropdown option if version < 11.4
+      let isOldVersion = false;
+      if (policy.policyType === 'filePolicy' && listOfLogServers[i].version < 11.4) {
+        isOldVersion = true;
+      }
       const service = {
         id: listOfLogServers[i].id,
         host: listOfLogServers[i].host,
-        name: listOfLogServers[i].displayName
+        name: listOfLogServers[i].displayName,
+        disabled: isOldVersion
       };
       services.push(service);
     }

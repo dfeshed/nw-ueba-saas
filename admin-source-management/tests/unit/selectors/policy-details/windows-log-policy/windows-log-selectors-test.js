@@ -74,7 +74,7 @@ module('Unit | Selectors | Policy Details | Windows Log Policy | Windows Log Sel
     assert.equal(policyDetails[0].props.length, 5, 'first section has 5 properties');
     assert.equal(policyDetails[0].props[0].value, 'Enabled', 'enabled property has expected value');
     assert.equal(policyDetails[0].props[3].value, 'NWAPPLIANCE55555 - Log Server', 'primary destination has expected value');
-    assert.equal(policyDetails[0].props[4].value, 'NWAPPLIANCE66666- Log Server', 'secondary destination has expected value');
+    assert.equal(policyDetails[0].props[4].value, 'NWAPPLIANCE113- Log Server', 'secondary destination has expected value');
     assert.equal(policyDetails[1].header, 'adminUsm.policies.detail.channelFilterSettings', 'second section  is as expected');
     assert.equal(policyDetails[1].channels.length, 3, 'second section has 3 channels');
     assert.equal(policyDetails[1].channels[0].name, 'System include', 'first channel name is as expected');

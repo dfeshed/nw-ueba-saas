@@ -61,28 +61,52 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
   test('primaryLogServersList selector', function(assert) {
     const hostExpected = '10.10.10.10';
     const idExpected = 'id1';
-    const fullState = new ReduxDataHelper()
+    let disabledExpected = false;
+    // when policy is windows log
+    let fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
       .policyWizWinLogLogServers()
       .build();
-    const logServersSelected = primaryLogServersList(Immutable.from(fullState));
-    assert.equal(logServersSelected.length, 2, 'number of primary log servers is as expected');
+    let logServersSelected = primaryLogServersList(Immutable.from(fullState));
+    assert.equal(logServersSelected.length, 5, 'number of primary log servers is as expected');
     assert.deepEqual(logServersSelected[0].host, hostExpected, `logServersSelected[0].host is ${hostExpected}`);
     assert.deepEqual(logServersSelected[0].id, idExpected, `logServersSelected[0].id is ${idExpected}`);
+    assert.deepEqual(logServersSelected[1].disabled, disabledExpected, `logServersSelected[1].disabled is ${disabledExpected}`);
+
+    // when policy is file log, some servers with version older than 11.4 will be disabled in the
+    // dropdown
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizWinLogLogServers()
+      .build();
+    logServersSelected = primaryLogServersList(Immutable.from(fullState));
+    disabledExpected = true;
+    assert.deepEqual(logServersSelected[1].disabled, disabledExpected, `logServersSelected[1].disabled is ${disabledExpected}`);
   });
 
   test('secondaryLogServersList selector', function(assert) {
     const hostExpected = '10.10.10.12';
     const idExpected = 'id2';
-    const fullState = new ReduxDataHelper()
+    let disabledExpected = false;
+    let fullState = new ReduxDataHelper()
       .policyWiz('windowsLogPolicy')
       .policyWizWinLogPrimaryDestination('10.10.10.10')
       .policyWizWinLogLogServers()
       .build();
-    const logServersSelected = secondaryLogServersList(Immutable.from(fullState));
-    assert.equal(logServersSelected.length, 1, 'number of secondary log servers is as expected');
+    let logServersSelected = secondaryLogServersList(Immutable.from(fullState));
+    assert.equal(logServersSelected.length, 4, 'number of secondary log servers is as expected');
     assert.deepEqual(logServersSelected[0].host, hostExpected, `logServersSelected[0].host is ${hostExpected}`);
     assert.deepEqual(logServersSelected[0].id, idExpected, `logServersSelected[0].id is ${idExpected}`);
+    assert.deepEqual(logServersSelected[0].disabled, disabledExpected, `logServersSelected[0].disabled is ${disabledExpected}`);
+
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizWinLogPrimaryDestination('10.10.10.10')
+      .policyWizWinLogLogServers()
+      .build();
+    logServersSelected = secondaryLogServersList(Immutable.from(fullState));
+    disabledExpected = true;
+    assert.deepEqual(logServersSelected[0].disabled, disabledExpected, `logServersSelected[0].disabled is ${disabledExpected}`);
   });
 
   test('selectedPrimaryLogServer selector', function(assert) {
@@ -95,7 +119,8 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
     const logServerExpected = {
       'id': 'id1',
       'host': '10.10.10.10',
-      'name': 'NWAPPLIANCE55555 - Log Server'
+      'name': 'NWAPPLIANCE55555 - Log Server',
+      'disabled': false
     };
     const logServerSelected = selectedPrimaryLogServer(Immutable.from(fullState));
     assert.deepEqual(logServerSelected, logServerExpected, 'The returned value from the selectedPrimaryLogServer selector is as expected');
@@ -117,13 +142,14 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
       .policyWiz('windowsLogPolicy')
       .policyWizPolicy()
       .policyWizWinLogPrimaryDestination('10.10.10.10')
-      .policyWizWinLogSecondaryDestination('10.10.10.12')
+      .policyWizWinLogSecondaryDestination('10.10.10.14')
       .policyWizWinLogLogServers()
       .build();
     const logServerExpected = {
-      'id': 'id2',
-      'host': '10.10.10.12',
-      'name': 'NWAPPLIANCE66666- Log Server'
+      'id': 'id4',
+      'host': '10.10.10.14',
+      'name': 'NWAPPLIANCE66666- Log Server',
+      'disabled': false
     };
     const logServerSelected = selectedSecondaryLogServer(Immutable.from(fullState));
     assert.deepEqual(logServerSelected, logServerExpected, 'The returned value from the selectedSecondaryLogServer selector is as expected');
