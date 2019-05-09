@@ -5035,14 +5035,14 @@ ember-source@3.9.0:
     jquery "^3.3.1"
     resolve "^1.10.0"
 
-ember-spaniel@0.5.1:
-  version "0.5.1"
-  resolved "https://registry.npmjs.org/ember-spaniel/-/ember-spaniel-0.5.1.tgz#21f3e9f608969cf88a5ad721fb7ad34455b99ac4"
+ember-spaniel@0.6.2:
+  version "0.6.2"
+  resolved "https://registry.npmjs.org/ember-spaniel/-/ember-spaniel-0.6.2.tgz#e352889592604ca64b2012f6779f4bea1094abb2"
   dependencies:
     calculate-cache-key-for-tree "^1.1.0"
-    ember-cli-babel "^6.14.1"
+    ember-cli-babel "^6.18.0"
     ember-rollup "^2.1.0"
-    spaniel "^2.5.0"
+    spaniel "^2.5.2"
 
 ember-symbol-observable@1.0.2:
   version "1.0.2"
@@ -9731,7 +9731,7 @@ sourcemap-validator@^1.1.0:
     lodash.template "~2.3.x"
     source-map "~0.1.x"
 
-spaniel@^2.5.0:
+spaniel@^2.5.2:
   version "2.5.2"
   resolved "https://registry.npmjs.org/spaniel/-/spaniel-2.5.2.tgz#d433c855585a1c162e0aacfb394a062411026c60"
 
