@@ -18,15 +18,16 @@ const _visibleColumns = (state) => state.investigate.eventResults.visibleColumns
 const _sessionId = (state) => state.investigate.queryNode.sessionId;
 const _errorMessage = (state) => state.investigate.eventResults.message;
 const _eventAnalysisPreferences = (state) => state.investigate.data.eventAnalysisPreferences;
-const _items = (state) => state.investigate.data.eventsPreferencesConfig.items;
+const _items = (state) => state.investigate.data.eventsPreferencesConfig && state.investigate.data.eventsPreferencesConfig.items;
 const _isAllEventsSelected = (state) => state.investigate.eventResults.allEventsSelected;
 const _selectedEventIds = (state) => state.investigate.eventResults.selectedEventIds;
 const _aliases = (state) => state.investigate.dictionaries.aliases;
-const _dateFormat = (state) => state.investigate.data.globalPreferences.dateFormat;
-const _timeFormat = (state) => state.investigate.data.globalPreferences.timeFormat;
-const _timeZone = (state) => state.investigate.data.globalPreferences.timeZone;
-const _locale = (state) => state.investigate.data.globalPreferences.locale;
+const _dateFormat = (state) => state.investigate.data.globalPreferences && state.investigate.data.globalPreferences.dateFormat;
+const _timeFormat = (state) => state.investigate.data.globalPreferences && state.investigate.data.globalPreferences.timeFormat;
+const _timeZone = (state) => state.investigate.data.globalPreferences && state.investigate.data.globalPreferences.timeZone;
+const _locale = (state) => state.investigate.data.globalPreferences && state.investigate.data.globalPreferences.locale;
 const _searchTerm = (state) => state.investigate.eventResults.searchTerm;
+const _searchScrollIndex = (state) => state.investigate.eventResults.searchScrollIndex;
 
 export const SORT_ORDER = {
   DESC: 'Descending',
@@ -42,6 +43,13 @@ export const eventTimeSortOrder = createSelector(
       return preferences.eventTimeSortOrder || SORT_ORDER.ASC;
     }
     return SORT_ORDER.ASC;
+  }
+);
+
+export const searchScrollDisplay = createSelector(
+  [_searchScrollIndex],
+  (index) => {
+    return index + 1;
   }
 );
 

@@ -20,9 +20,19 @@ export default Component.extend(RowMixin, HighlightsEntities, {
   entityEndpointId: 'CORE',
   autoHighlightEntities: true,
 
+  @computed('item.sessionId', 'table.searchScrollIndex', 'table.searchMatches')
+  isScrollMatch(id, searchScrollIndex = -1, matches = []) {
+    return id === matches[searchScrollIndex];
+  },
+
   @computed('item.sessionId', 'table.searchMatches', 'table.searchMatches.[]')
   isSearchMatch(id, matches) {
-    return matches && matches.includes(id);
+    if (matches && matches.includes(id)) {
+      this._highlightSearchMatch();
+      return true;
+    } else {
+      return false;
+    }
   },
 
   // Formatting configuration options. Passed to utils that generate cell DOM.
@@ -101,6 +111,19 @@ export default Component.extend(RowMixin, HighlightsEntities, {
     schedule('afterRender', this, this._afterRender);
   },
 
+  willDestroyElement() {
+    const el = this.get('element');
+    el.parentNode.removeChild(el);
+  },
+
+  _highlightSearchMatch() {
+    schedule('afterRender', () => {
+      const markup = this.get('element').innerHTML;
+      const newMarkup = markup.replace(new RegExp(this.get('table.searchTerm'), 'gi'), '<span class=\'search-match-text\'>$&</span>');
+      this.get('element').innerHTML = newMarkup;
+    });
+  },
+
   /**
    * Triggers the initial rendering of cell contents.  Ensures that this is done
    * first, before any inherited `afterRender` logic from `_super`. Why? Because
@@ -112,6 +135,9 @@ export default Component.extend(RowMixin, HighlightsEntities, {
   _afterRender() {
     this._renderCells();
     this._super(...arguments);
+    if (this.get('isSearchMatch')) {
+      this._highlightSearchMatch();
+    }
   },
 
   /**

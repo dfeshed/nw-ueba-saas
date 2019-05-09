@@ -108,7 +108,7 @@ export const fetchInvestigateData = () => {
   return (dispatch, getState) => {
     if (canFetchEvents(getState())) {
       // clear search term
-      dispatch(searchForTerm(null));
+      dispatch(searchForTerm(null, null));
 
       // Alert UI querying has begun
       dispatch({

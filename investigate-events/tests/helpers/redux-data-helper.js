@@ -229,8 +229,18 @@ export default class DataHelper {
     return this;
   }
 
+  visibleColumns() {
+    _set(this.state, 'eventResults.visibleColumns', ['time', 'medium']);
+    return this;
+  }
+
   sortableColumns(cols = ['time']) {
     _set(this.state, 'data.validEventSortColumns', cols);
+    return this;
+  }
+
+  searchTerm(term = 'foo') {
+    _set(this.state, 'eventResults.searchTerm', term);
     return this;
   }
 

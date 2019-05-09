@@ -5,7 +5,7 @@ import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import { later, debounce, schedule } from '@ember/runloop';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
-import { setColumnGroup, searchForTerm } from 'investigate-events/actions/interaction-creators';
+import { setColumnGroup, searchForTerm, setSearchScroll } from 'investigate-events/actions/interaction-creators';
 import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 
@@ -14,6 +14,7 @@ import {
   actualEventCount,
   searchMatchesCount,
   eventTimeSortOrder,
+  searchScrollDisplay,
   SORT_ORDER
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
@@ -25,6 +26,7 @@ const stateToComputed = (state) => ({
   eventTimeSortOrder: eventTimeSortOrder(state),
   columnGroups: state.investigate.data.columnGroups,
   searchTerm: state.investigate.eventResults.searchTerm,
+  searchScrollDisplay: searchScrollDisplay(state),
   selectedColumnGroup: getSelectedColumnGroup(state),
   count: thousandFormat(state.investigate.eventCount.data),
   isAtThreshold: resultCountAtThreshold(state),
@@ -38,7 +40,8 @@ const stateToComputed = (state) => ({
 
 const dispatchToActions = {
   setColumnGroup,
-  searchForTerm
+  searchForTerm,
+  setSearchScroll
 };
 
 const HeaderContainer = Component.extend({
@@ -92,7 +95,7 @@ const HeaderContainer = Component.extend({
   // This is the debounced execution of the searchForTerm action creator
   // sent onKeyUp of the tethered panel input for text search
   searchForTerm() {
-    this.send('searchForTerm', this._searchTerm);
+    this.send('searchForTerm', this._searchTerm, 0);
   },
 
   didInsertElement() {
@@ -108,12 +111,15 @@ const HeaderContainer = Component.extend({
     schedule('afterRender', () => {
       $('.rsa-data-table-search-panel input').focus();
     });
-
   },
 
   actions: {
-    debouncedSearchForTerm() {
-      debounce(this, 'searchForTerm', 250);
+    debouncedSearchForTerm(term, event) {
+      if (event.key === 'Enter') {
+        this._nextSearchMatch();
+      } else {
+        debounce(this, 'searchForTerm', 250);
+      }
     },
 
     attachTooltip() {

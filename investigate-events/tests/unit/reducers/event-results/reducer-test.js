@@ -30,10 +30,23 @@ test('Should update seach term', function(assert) {
 
   const action = {
     type: ACTION_TYPES.SET_SEARCH_TERM,
-    payload: 'foo'
+    searchTerm: 'foo'
   };
   const newEndState = reducer(previous, action);
   assert.deepEqual(newEndState.searchTerm, 'foo');
+});
+
+test('Should update searchScrollIndex', function(assert) {
+  const previous = Immutable.from({
+    searchScrollIndex: null
+  });
+
+  const action = {
+    type: ACTION_TYPES.SET_SEARCH_SCROLL,
+    searchScrollIndex: 0
+  };
+  const newEndState = reducer(previous, action);
+  assert.deepEqual(newEndState.searchScrollIndex, 0);
 });
 
 test('Should update visible columns', function(assert) {

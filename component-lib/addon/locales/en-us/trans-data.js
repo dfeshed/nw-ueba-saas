@@ -536,7 +536,9 @@ export default {
       newest: 'newest',
       abbr: {
         Ascending: 'Asc',
-        Descending: 'Desc'
+        asc: 'Asc',
+        Descending: 'Desc',
+        desc: 'Desc'
       },
       titleThresholdTooltip: 'Reached the {{count}} - event limit configured in the Admin > System view > Investigation settings. Displaying {{actualEventCount}} of the {{age}} events from the time window. Consider refining your query to narrow the results.',
       isAtThreshold: 'The event count reached the query threshold.',

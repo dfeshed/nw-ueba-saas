@@ -54,8 +54,9 @@
       panelDidOpen=searchPanelDidOpen}}
       <section>
         {{rsa-form-input value=_searchTerm onKeyUp=(action 'debouncedSearchForTerm') label=(t 'investigate.events.search') placeholder=(t 'investigate.events.searchPlaceholder')}}
+        {{events-table-container/header-container/search-controls}}
         {{#if searchMatchesCount}}
-          <p>{{searchMatchesCount}} match(es) found.</p>
+          <p>{{searchScrollDisplay}} / {{searchMatchesCount}}</p>
         {{/if}}
       </section>
     {{/rsa-content-tethered-panel}}

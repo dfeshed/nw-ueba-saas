@@ -22,6 +22,7 @@ const _initialState = Immutable.from({
   // Pref might change in the middle of a query. Keeping a copy of preference with which the last query was performed.
   eventTimeSortOrderPreferenceWhenQueried: undefined,
   searchTerm: null,
+  searchScrollIndex: -1,
   visibleColumns: []
 });
 
@@ -36,8 +37,15 @@ const _initialState = Immutable.from({
 // }
 
 export default handleActions({
-  [ACTION_TYPES.SET_SEARCH_TERM]: (state, { payload }) => {
-    return state.set('searchTerm', payload);
+  [ACTION_TYPES.SET_SEARCH_TERM]: (state, { searchTerm, searchScrollIndex }) => {
+    return state.merge({
+      searchTerm,
+      searchScrollIndex
+    });
+  },
+
+  [ACTION_TYPES.SET_SEARCH_SCROLL]: (state, { searchScrollIndex }) => {
+    return state.set('searchScrollIndex', searchScrollIndex);
   },
 
   [ACTION_TYPES.SET_VISIBLE_COLUMNS]: (state, { payload }) => {

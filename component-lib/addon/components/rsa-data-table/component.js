@@ -19,6 +19,8 @@ export default Component.extend(DomWatcher, {
   whitespace: 14,
   groupLabelHeight: 28,
 
+  searchScrollIndex: null,
+
   /**
    * Enables the rendering of a group-label based on groupingSize
    * @type {boolean}
@@ -426,10 +428,14 @@ export default Component.extend(DomWatcher, {
       enableGrouping
     } = this.getProperties('selectedIndex', 'groupingSize', 'groupLabelHeight', 'enableGrouping');
 
-    if (enableGrouping && (selectedIndex <= groupingSize)) {
+    if (!enableGrouping) {
       return 0;
     } else {
-      return ((selectedIndex / groupingSize) - 1) * groupLabelHeight;
+      if (selectedIndex <= groupingSize) {
+        return 0;
+      } else {
+        return ((Math.floor(selectedIndex / groupingSize) - 0)) * groupLabelHeight;
+      }
     }
   }),
 
@@ -453,15 +459,19 @@ export default Component.extend(DomWatcher, {
     });
   }),
 
-  _searchMatchesDidChange: observer('items.[]', 'items.length', 'searchMatches.firstObject', function() {
-    if (this.get('searchMatches.firstObject') && this.get('items.length')) {
+  _searchMatchesDidChange: observer('items.[]', 'searchMatches.[]', 'searchScrollIndex', function() {
+    const { searchMatches, items, searchScrollIndex } = this.getProperties('searchMatches', 'items', 'searchScrollIndex');
+
+    if (items && searchMatches && searchScrollIndex > -1) {
       let matchIndex;
-      this.get('items').find((item, index) => {
-        if (item.sessionId === this.get('searchMatches.firstObject')) {
+      items.find((item, index) => {
+        if (item.sessionId === this.get('searchMatches')[searchScrollIndex]) {
           matchIndex = index;
           return true;
         }
       });
+
+      this.set('selectedIndex', matchIndex);
       this._scrollToInitial(matchIndex);
     }
   }),

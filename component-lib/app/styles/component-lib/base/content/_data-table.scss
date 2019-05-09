@@ -228,14 +228,11 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     }
 
     &.is-search-match {
-      .rsa-data-table-body-cell {
-        background: background-color(accentTwo, darker);
-      }
-
-      &:hover {
-        .rsa-data-table-body-cell {
-          background: background-color(accentTwo, dark);
-        }
+      .search-match-text {
+        padding: .15rem;
+        margin: .15rem;
+        background: background-color(primary, lightest);
+        color: text-color(primary, darkest);
       }
     }
   }
@@ -436,5 +433,11 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 .rsa-data-table-search-panel > section {
   .rsa-form-label {
     line-height: .8rem;
+  }
+
+  .search-controls {
+    position: absolute;
+    top: 3rem;
+    right: 2rem;
   }
 }

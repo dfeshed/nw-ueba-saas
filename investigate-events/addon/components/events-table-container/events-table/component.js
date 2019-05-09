@@ -30,6 +30,7 @@ const stateToComputed = (state) => ({
   status: state.investigate.eventResults.status,
   maxEvents: thousandFormat(state.investigate.eventResults.streamLimit),
   searchTerm: state.investigate.eventResults.searchTerm,
+  searchScrollIndex: state.investigate.eventResults.searchScrollIndex,
   allEventsSelected: state.investigate.eventResults.allEventsSelected,
   selectedEventIds: state.investigate.eventResults.selectedEventIds,
   selectedIndex: selectedIndex(state),

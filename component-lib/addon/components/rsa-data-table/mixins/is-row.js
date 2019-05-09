@@ -15,7 +15,7 @@ import { thousandFormat } from 'component-lib/utils/numberFormats';
 
 export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
   classNames: 'rsa-data-table-body-row',
-  classNameBindings: ['isSelected', 'isAtGroupingSize', 'isLast', 'isSearchMatch'],
+  classNameBindings: ['isSelected', 'isAtGroupingSize', 'isLast', 'isSearchMatch', 'isScrollMatch'],
   attributeBindings: ['style'],
 
   // determines if this row is at the limit of the group size
@@ -155,6 +155,7 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
   // render a group label if table.enableGrouping is true
   didInsertElement() {
     this._super();
+
     if (this.get('table.enableGrouping')) {
       const index = this.get('index');
       const isAtGroupingSize = this.get('isAtGroupingSize');

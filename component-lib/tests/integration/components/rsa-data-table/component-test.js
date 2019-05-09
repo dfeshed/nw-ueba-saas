@@ -558,12 +558,13 @@ test('it scrolls table to top when scrollToInitialSelectedIndex is provided.', f
   assert.equal(scrollTop, rowHeight * index, 'seventh item is scrollTop\'d the correct number of pixels such that it is at the top of the table');
 });
 
-test('it scrolls table to top when there is a search match', function(assert) {
+test('it scrolls table to searchScrollIndex when there is a search match', function(assert) {
   const index = 1;
   this.setProperties({
     items: mockItems,
     columnsConfig: mockColumnsConfig,
-    searchMatches: []
+    searchMatches: [],
+    searchScrollIndex: -1
   });
   this.render(hbs`
     <style type="text/css">
@@ -572,7 +573,7 @@ test('it scrolls table to top when there is a search match', function(assert) {
         overflow: auto;
       }
     </style>
-    {{#rsa-data-table searchMatches=searchMatches lazy=false items=items columnsConfig=columnsConfig}}
+    {{#rsa-data-table searchScrollIndex=searchScrollIndex searchMatches=searchMatches lazy=false items=items columnsConfig=columnsConfig}}
       {{#rsa-data-table/body as |item index column|}}
         {{#rsa-data-table/body-cell item=item index=index column=column~}}
           {{get item column.field}}
@@ -582,14 +583,15 @@ test('it scrolls table to top when there is a search match', function(assert) {
   `);
 
   this.setProperties({
-    searchMatches: ['sessionId1']
+    searchMatches: ['sessionId1'],
+    searchScrollIndex: 0
   });
 
   assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
 
   const rowHeight = this.$('.rsa-data-table-body-row').outerHeight();
   const [ { scrollTop } ] = this.$('.rsa-data-table-body');
-  assert.equal(scrollTop, rowHeight * index, 'seventh item is scrollTop\'d the correct number of pixels such that it is at the top of the table');
+  assert.equal(scrollTop, rowHeight * index, 'second item is scrollTop\'d the correct number of pixels such that it is at the top of the table');
 });
 
 test('it sets the minHeight of the table body rows when enableGrouping is false', function(assert) {

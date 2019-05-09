@@ -39,10 +39,18 @@ export const cancelQuery = (dispatchStatus = true) => {
   };
 };
 
-export const searchForTerm = (term) => {
+export const setSearchScroll = (searchScrollIndex) => {
+  return {
+    type: ACTION_TYPES.SET_SEARCH_SCROLL,
+    searchScrollIndex
+  };
+};
+
+export const searchForTerm = (searchTerm, searchScrollIndex) => {
   return {
     type: ACTION_TYPES.SET_SEARCH_TERM,
-    payload: term
+    searchTerm,
+    searchScrollIndex
   };
 };
 

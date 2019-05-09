@@ -14,7 +14,8 @@ import {
   eventTableFormattingOpts,
   searchMatches,
   searchMatchesCount,
-  eventTimeSortOrder
+  eventTimeSortOrder,
+  searchScrollDisplay
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -70,6 +71,19 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.deepEqual(result[optionNumber].sessionIds, sessionIds);
     assert.equal(result[optionNumber].disabled, isDisabled);
   };
+
+  test('searchScrollDisplay', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          searchScrollIndex: 0
+        }
+      }
+    };
+
+    const result = searchScrollDisplay(state);
+    assert.equal(result, 1);
+  });
 
   test('searchMatches returns empty array with no searchTerm', async function(assert) {
     const state = {
