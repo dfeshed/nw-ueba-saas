@@ -564,7 +564,8 @@ test('it scrolls table to searchScrollIndex when there is a search match', funct
     items: mockItems,
     columnsConfig: mockColumnsConfig,
     searchMatches: [],
-    searchScrollIndex: -1
+    searchScrollIndex: -1,
+    searchTerm: 'foo'
   });
   this.render(hbs`
     <style type="text/css">
@@ -573,7 +574,7 @@ test('it scrolls table to searchScrollIndex when there is a search match', funct
         overflow: auto;
       }
     </style>
-    {{#rsa-data-table searchScrollIndex=searchScrollIndex searchMatches=searchMatches lazy=false items=items columnsConfig=columnsConfig}}
+    {{#rsa-data-table searchTerm=searchTerm searchScrollIndex=searchScrollIndex searchMatches=searchMatches lazy=false items=items columnsConfig=columnsConfig}}
       {{#rsa-data-table/body as |item index column|}}
         {{#rsa-data-table/body-cell item=item index=index column=column~}}
           {{get item column.field}}

@@ -111,11 +111,6 @@ export default Component.extend(RowMixin, HighlightsEntities, {
     schedule('afterRender', this, this._afterRender);
   },
 
-  willDestroyElement() {
-    const el = this.get('element');
-    el.parentNode.removeChild(el);
-  },
-
   _highlightSearchMatch() {
     schedule('afterRender', () => {
       const markup = this.get('element').innerHTML;

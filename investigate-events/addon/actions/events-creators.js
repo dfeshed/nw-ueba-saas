@@ -26,7 +26,7 @@ const deriveSort = (field, sortDirection) => {
   if (field && sortDirection) {
     return {
       field,
-      descending: sortDirection.toLowerCase() === 'desc'
+      descending: sortDirection.toLowerCase() === SORT_ORDER.DESC.toLowerCase()
     };
   }
 };

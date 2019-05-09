@@ -459,10 +459,9 @@ export default Component.extend(DomWatcher, {
     });
   }),
 
-  _searchMatchesDidChange: observer('items.[]', 'searchMatches.[]', 'searchScrollIndex', function() {
-    const { searchMatches, items, searchScrollIndex } = this.getProperties('searchMatches', 'items', 'searchScrollIndex');
-
-    if (items && searchMatches && searchScrollIndex > -1) {
+  _searchMatchesDidChange: observer('searchTerm', 'items.[]', 'searchMatches.[]', 'searchScrollIndex', function() {
+    const { searchTerm, searchMatches, items, searchScrollIndex } = this.getProperties('searchTerm', 'searchMatches', 'items', 'searchScrollIndex');
+    if (searchTerm && items && searchMatches && searchScrollIndex > -1) {
       let matchIndex;
       items.find((item, index) => {
         if (item.sessionId === this.get('searchMatches')[searchScrollIndex]) {
@@ -470,7 +469,6 @@ export default Component.extend(DomWatcher, {
           return true;
         }
       });
-
       this.set('selectedIndex', matchIndex);
       this._scrollToInitial(matchIndex);
     }
