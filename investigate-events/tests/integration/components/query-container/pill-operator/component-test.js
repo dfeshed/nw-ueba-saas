@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
-import { click, fillIn, find, findAll, focus, render, settled, triggerKeyEvent, triggerEvent } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, focus, render, settled, triggerKeyEvent, triggerEvent, typeIn } from '@ember/test-helpers';
 
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import {
@@ -25,6 +25,7 @@ const ARROW_UP = KEY_MAP.arrowUp.code;
 const BACKSPACE_KEY = KEY_MAP.backspace.code;
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
+const SPACE_KEY = KEY_MAP.space.code;
 const TAB_KEY = KEY_MAP.tab.code;
 const modifiers = { shiftKey: true };
 
@@ -282,8 +283,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
         sendMessage=(action handleMessage)
       }}
     `);
-    await typeInSearch('=');
-    await typeInSearch('= ');
+    await typeIn(PILL_SELECTORS.operatorSelectInput, '= ');
   });
 
   test('it does not select an operator if a trailing SPACE is entered and there is more than one option', async function(assert) {
@@ -526,7 +526,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.ok(Array.isArray(data), 'correct data type');
-        assert.propEqual(data, ['ends ', 'pill-operator'], 'correct data');
+        assert.propEqual(data, ['ends', 'pill-operator'], 'correct data');
         assert.equal(find(PILL_SELECTORS.operatorSelectInput).value, '', 'meta input was reset');
         done();
       }
@@ -544,9 +544,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
     const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_FREE_FORM_LABEL));
     await triggerEvent(textFilter, 'mouseenter');
-    // get the DOM input element and force in the space, then trigger an inputEvent
-    document.querySelector(PILL_SELECTORS.operatorSelectInput).value = 'ends ';
-    await triggerEvent(PILL_SELECTORS.operatorSelectInput, 'input');
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', SPACE_KEY);
   });
 
   test('it broadcasts a message to toggle tabs via pill operator', async function(assert) {

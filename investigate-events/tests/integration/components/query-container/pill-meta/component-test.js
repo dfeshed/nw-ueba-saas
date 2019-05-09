@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
-import { blur, click, fillIn, find, findAll, focus, render, settled, triggerEvent, triggerKeyEvent } from '@ember/test-helpers';
+import { blur, click, fillIn, find, findAll, focus, render, settled, triggerEvent, triggerKeyEvent, typeIn } from '@ember/test-helpers';
 
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -33,6 +33,7 @@ const ARROW_RIGHT = KEY_MAP.arrowRight.code;
 const ARROW_UP = KEY_MAP.arrowUp.code;
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
+const SPACE_KEY = KEY_MAP.space.code;
 const TAB_KEY = KEY_MAP.tab.code;
 const modifiers = { shiftKey: true };
 
@@ -304,7 +305,9 @@ module('Integration | Component | Pill Meta', function(hooks) {
         metaOptions=metaOptions
       }}
     `);
-    await fillIn('input', 'b ');
+    await typeIn(PILL_SELECTORS.metaSelectInput, 'b ');
+    // await fillIn('input', 'b');
+    // await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', SPACE_KEY);
   });
 
   test('it does not selects meta if a trailing SPACE is entered and there is more than one option', async function(assert) {
@@ -320,8 +323,8 @@ module('Integration | Component | Pill Meta', function(hooks) {
         metaOptions=metaOptions
       }}
     `);
-    await fillIn('input', 'c. ');// Will match 2 items (c.a and c.b)
-    return settled();
+    await typeIn(PILL_SELECTORS.metaSelectInput, 'c. ');// Will match 2 items (c.a and c.b)
+    // return settled();
   });
 
   test('it selects meta if a trailing SPACE is entered and there is an exact match', async function(assert) {
@@ -341,7 +344,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
         metaOptions=metaOptions
       }}
     `);
-    await fillIn('input', 'c ');
+    await typeIn(PILL_SELECTORS.metaSelectInput, 'c ');
   });
 
   test('it clears out last search if Power Select looses, then gains focus', async function(assert) {
@@ -432,7 +435,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.ok(Array.isArray(data), 'correct data type');
-        assert.propEqual(data, ['c.1 ', 'pill-meta'], 'correct data');
+        assert.propEqual(data, ['c.1', 'pill-meta'], 'correct data');
         assert.equal(find(PILL_SELECTORS.metaInput).value, '', 'meta input was reset');
         done();
       }
@@ -450,9 +453,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
     const textFilter = afterOptions.find((d) => d.textContent.includes(AFTER_OPTION_FREE_FORM_LABEL));
     await triggerEvent(textFilter, 'mouseenter');
-    // get the DOM input element and force in the space, then trigger an inputEvent
-    document.querySelector(PILL_SELECTORS.metaSelectInput).value = 'c.1 ';
-    await triggerEvent(PILL_SELECTORS.metaSelectInput, 'input');
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', SPACE_KEY);
   });
 
   test('it does NOT broadcasts a message to create a free-form pill if no value is entered', async function(assert) {

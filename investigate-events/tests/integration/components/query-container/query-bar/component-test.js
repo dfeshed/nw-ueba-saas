@@ -339,6 +339,7 @@ module('Integration | Component | Query Bar', function(hooks) {
 
     // Click back to guided
     await click(SELECTORS.queryFormatGuidedToggle);
+    await settled();
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 1, 'Should be just one template and no pills');
 
   });

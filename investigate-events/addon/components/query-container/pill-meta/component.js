@@ -16,11 +16,13 @@ import {
   isArrowUp,
   isEnter,
   isEscape,
-  isTab,
-  isShiftTab
+  isShiftTab,
+  isSpace,
+  isTab
 } from 'investigate-events/util/keys';
 import BoundedList from 'investigate-events/util/bounded-list';
 import { inject as service } from '@ember/service';
+import { assert } from '@ember/debug';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -302,41 +304,15 @@ export default Component.extend({
     /**
      * This function is called on every `input` event from the power-select's
      * trigger element. It happens before power-select has reacted to what was
-     * typed. What this function does:
-     * 1) It looks for an input string that ends with a space. If it finds one
-     * and the power-select has been down-selected to one result it trigger a
-     * `select` event.
-     * 2) If the input string is empty, it resets the `selection`. We do this to
-     * prevent the previously highlighted item from staying highlighted.
+     * typed. It clear out any EPS search related properties to prevent the
+     * previously highlighted item from staying highlighted.
      * @private
      */
     onInput(input, powerSelectAPI /* event */) {
-      const isSpace = input.slice(-1) === ' ';
-      const { results, resultsCount } = powerSelectAPI;
-      const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
-      if (isSpace && resultsCount === 1) {
-        if (afterOptionsMenuItem) {
-          this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
-          powerSelectAPI.actions.search('');
-        } else {
-          this._broadcast(MESSAGE_TYPES.META_SELECTED, results[0]);
-        }
-      } else if (isSpace && resultsCount > 1) {
-        if (afterOptionsMenuItem) {
-          this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
-          powerSelectAPI.actions.search('');
-        } else {
-          const match = this._hasExactMatch(input.trim(), results);
-          if (match) {
-            this._broadcast(MESSAGE_TYPES.META_SELECTED, match);
-          }
-        }
-      } else if (input.length === 0) {
+      if (input.length === 0) {
         this.set('selection', null);
         this._broadcast(MESSAGE_TYPES.META_SELECTED, null);
-        // Set the power-select highlight on the next runloop so that the
-        // power-select has time to render the full list of options.
-        next(this, () => powerSelectAPI.actions.highlight(null));
+        powerSelectAPI.actions.highlight(null);
       }
     },
 
@@ -357,6 +333,28 @@ export default Component.extend({
         _dropFocus();
         // Let others know ECS was pressed
         this._broadcast(MESSAGE_TYPES.META_ESCAPE_KEY);
+      } else if (isSpace(event)) {
+        // Look to see if we need to create a filter or auto-select a meta value
+        const { results, resultsCount, searchText } = powerSelectAPI;
+        const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
+        // These conditionals return false to prevent any further handling of
+        // the keypress that brought us here. Specifically, it prevents the
+        // pill-operator from having a space at the beginning.
+        if (afterOptionsMenuItem) {
+          this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
+          powerSelectAPI.actions.search('');
+          powerSelectAPI.actions.highlight(null);
+          return false;
+        } else if (resultsCount === 1) {
+          this._broadcast(MESSAGE_TYPES.META_SELECTED, results[0]);
+          return false;
+        } else if (resultsCount > 1) {
+          const match = this._hasExactMatch(searchText.trim(), results);
+          if (match) {
+            this._broadcast(MESSAGE_TYPES.META_SELECTED, match);
+            return false;
+          }
+        }
       } else if (isEnter(event)) {
         const { selected } = powerSelectAPI;
         const selection = this.get('selection');
@@ -493,10 +491,33 @@ export default Component.extend({
     this.get('sendMessage')(type, data);
   },
 
+  /**
+   * Used by power-select to position the dropdown.
+   * @private
+   */
+  _calculatePosition: (trigger, dropdown) => {
+    const { innerWidth } = window;
+    const { offsetWidth } = dropdown;
+    const pill = trigger.closest('.query-pill');
+    const { top, left } = pill ? pill.getBoundingClientRect() : { top: 0, left: 0 };
+    const rightEdge = left + offsetWidth;
+    const offset = (rightEdge > innerWidth) ? rightEdge - innerWidth + 14 : 5;
+    const style = {
+      top: top + 34,
+      left: Math.max(0, left - offset)
+    };
+    return {
+      horizontalPosition: 'auto',
+      verticalPosition: 'auto',
+      style
+    };
+  },
+
   _createPillFromAdvancedOption(selection) {
     // get input text
     const el = this.element.querySelector('.ember-power-select-typeahead-input');
-    const { value } = el;
+    assert('Power Select input was not found', el);
+    const value = el.value.trim();
     // cleanup
     el.value = '';
     this._focusOnPowerSelectTrigger();
@@ -556,27 +577,5 @@ export default Component.extend({
     const _metaName = meta.metaName.toLowerCase();
     const _displayName = meta.displayName.toLowerCase();
     return _metaName.indexOf(_input) & _displayName.indexOf(_input);
-  },
-
-  /**
-   * Used by power-select to position the dropdown.
-   * @private
-   */
-  _calculatePosition: (trigger, dropdown) => {
-    const { innerWidth } = window;
-    const { offsetWidth } = dropdown;
-    const pill = trigger.closest('.query-pill');
-    const { top, left } = pill ? pill.getBoundingClientRect() : { top: 0, left: 0 };
-    const rightEdge = left + offsetWidth;
-    const offset = (rightEdge > innerWidth) ? rightEdge - innerWidth + 14 : 5;
-    const style = {
-      top: top + 34,
-      left: Math.max(0, left - offset)
-    };
-    return {
-      horizontalPosition: 'auto',
-      verticalPosition: 'auto',
-      style
-    };
   }
 });

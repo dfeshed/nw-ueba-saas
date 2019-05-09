@@ -19,10 +19,12 @@ import {
   isBackspace,
   isEnter,
   isEscape,
-  isTab,
-  isShiftTab
+  isShiftTab,
+  isSpace,
+  isTab
 } from 'investigate-events/util/keys';
 import BoundedList from 'investigate-events/util/bounded-list';
+import { assert } from '@ember/debug';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -273,27 +275,14 @@ export default Component.extend({
     },
     /**
      * This function is called on every `input` event from the power-select's
-     * trigger element. It's looking for an input string that ends with a space.
-     * If it finds one and the power-select has been down-selected to one
-     * result (a result that accepts a pill value), then broadcast a `select`
-     * event. Ultimately, this triggers the `onChange` action above.
-     * If the input string is empty, it resets the `selection`. We do this to
-     * prevent the previously highlighted item from staying highlighted.
+     * trigger element. It happens before power-select has reacted to what was
+     * typed so when it sets the first item in the list to be highlighted, we
+     * do it in the next runloop.
      * @private
      */
     onInput(input, powerSelectAPI /* event */) {
-      const isSpace = input.slice(-1) === ' ';
-      const { options, results } = powerSelectAPI;
-      const operatorAcceptsValue = this._operatorAcceptsValue(options, input);
-      const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
-      if (isSpace && results.length === 1 && operatorAcceptsValue) {
-        if (afterOptionsMenuItem) {
-          this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
-          powerSelectAPI.actions.search('');
-        } else {
-          this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, results[0]);
-        }
-      } else if (input.length === 0) {
+      const { options } = powerSelectAPI;
+      if (input.length === 0) {
         this.set('selection', null);
         // Set the power-select highlight on the next runloop so that the
         // power-select has time to render the full list of options.
@@ -310,6 +299,22 @@ export default Component.extend({
     onKeyDown(powerSelectAPI, event) {
       if (isEscape(event)) {
         this._broadcast(MESSAGE_TYPES.OPERATOR_ESCAPE_KEY);
+      } else if (isSpace(event)) {
+        const { options, results, searchText } = powerSelectAPI;
+        const operatorAcceptsValue = this._operatorAcceptsValue(options, searchText);
+        const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
+        // These conditionals return false to prevent any further handling of
+        // the keypress that brought us here. Specifically, it prevents the
+        // pill-value from having a space at the beginning.
+        if (afterOptionsMenuItem) {
+          this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
+          powerSelectAPI.actions.search('');
+          powerSelectAPI.actions.highlight(null);
+          return false;
+        } else if (results.length === 1 && operatorAcceptsValue) {
+          this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, results[0]);
+          return false;
+        }
       } else if (isEnter(event)) {
         const { selected } = powerSelectAPI;
         const selection = this.get('selection');
@@ -441,7 +446,8 @@ export default Component.extend({
   _createPillFromAdvancedOption(selection) {
     // get input text
     const el = this.element.querySelector('.ember-power-select-typeahead-input');
-    const { value } = el;
+    assert('Power Select input was not found', el);
+    const value = el.value.trim();
     // cleanup
     el.value = '';
     this._focusOnPowerSelectTrigger();
