@@ -24,6 +24,15 @@
   }
 }
 .host-detail-wrapper {
+  .manual-section ~ .manual-section {
+    display: none;
+  }
+  .general-section {
+    display: none;
+  }
+  .general-section ~ .general-section {
+    display: inline-flex;
+  }
   background-color: $host-detail-background;
 
   .rsa-data-table-header-cell:first-child {

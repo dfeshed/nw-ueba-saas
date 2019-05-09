@@ -80,6 +80,11 @@
       .disabled .disabled .propValue {
         color: text-color(neutral) /* set first propValue back to white */
       }
+
+      vbox vbox div:first-child .heading::before {
+        background: none;
+        margin: 0px;
+      }
     }
 
     .col-md-5 {

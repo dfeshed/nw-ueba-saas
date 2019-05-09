@@ -112,7 +112,6 @@ export default Component.extend({
         });
 
         set(item, 'fields', fields);
-
         return item;
       });
       return properties;
@@ -129,7 +128,13 @@ export default Component.extend({
    */
   @computed('_searchText', 'properties', 'showNonEmptyProperty')
   visibleProperty(searchText, properties, showNonEmptyProperty) {
-    const props = properties.map((prop) => {
+    const props = properties.map((prop, index) => {
+      // Add css class to these sections so we can hide unwanted fields
+      if (index === 0) {
+        prop = prop.sectionName === 'General' ? { ...prop, sectionClass: 'general-section' } : prop;
+      } else if (index === 1) {
+        prop = prop.fields[0].value === 'Manual' ? { ...prop, sectionClass: 'manual-section' } : prop;
+      }
       // Filter the fields based on searchText
       const fields = prop.fields.filter((field) => {
         const flag = showNonEmptyProperty ? (!isEmpty(field.value) || field.field === 'signature.features') : true;

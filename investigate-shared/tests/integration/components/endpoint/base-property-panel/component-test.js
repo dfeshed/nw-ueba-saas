@@ -127,4 +127,42 @@ module('Integration | Component | endpoint/base-property-panel', function(hooks)
     assert.equal(findAll('.content-section__property').length, 0);
 
   });
+
+  const sampleConfig2 = [
+    {
+      sectionName: 'General',
+      fieldPrefix: 'fileProperties',
+      fields: [
+        {
+          field: 'firstFileName'
+        }
+      ]
+    },
+    {
+      sectionName: 'Scan Schedule',
+      fieldPrefix: 'fileProperties',
+      fields: [
+        {
+          field: 'enabled'
+        }
+      ]
+    }
+  ];
+
+  const sampleData2 = {
+    fileProperties: {
+      firstFileName: 'XXX Test',
+      enabled: 'Manual'
+    }
+  };
+
+  test('it should add css classes general-section and manual-section', async function(assert) {
+    assert.expect(2);
+    this.set('title', 'Test Panel');
+    this.set('config', sampleConfig2);
+    this.set('data', sampleData2);
+    await render(hbs`{{endpoint/base-property-panel config=config data=data title=title}}`);
+    assert.equal(findAll('.general-section').length, 1, 'general-section css class was added');
+    assert.equal(findAll('.manual-section').length, 1, 'manual-section css class was added');
+  });
 });

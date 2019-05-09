@@ -22,7 +22,7 @@
   {{#each visibleProperty as |property|}}
     <hbox fit class="content-section__section-name">{{property.sectionName}}</hbox>
     {{#each property.fields as |field|}}
-      <hbox fit class="content-section__property col-xs-12">
+      <hbox fit class="content-section__property col-xs-12 {{property.sectionClass}}">     
         {{endpoint/base-property-panel/property-name property=field}}
         {{endpoint/base-property-panel/property-value property=field hostName=hostName}}
       </hbox>
