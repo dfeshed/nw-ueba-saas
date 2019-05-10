@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll, triggerKeyEvent, triggerEvent } from '@ember/test-helpers';
+import { blur, click, find, findAll, focus, render, triggerEvent, triggerKeyEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | rsa-form-input', function(hooks) {
@@ -82,10 +82,16 @@ module('Integration | Component | rsa-form-input', function(hooks) {
     assert.equal(input.getAttribute('placeholder'), 'foo');
   });
 
-  test('Pop tooltip', async function(assert) {
-    await render(hbs `{{rsa-form-input tooltip='foo'}}`);
+  test('Show and dismiss tooltip', async function(assert) {
+    await render(hbs `
+      <div id='click-me'></div>
+      {{rsa-form-input tooltip='foo'}}
+    `);
     await triggerEvent('.tooltip-text', 'mouseover');
+    assert.equal(document.querySelectorAll('.tool-tip-value').length, 1, 'Tooltip displayed');
     assert.equal(document.querySelectorAll('.tool-tip-value')[0].innerText.trim(), 'foo', 'Tooltip form-input pops with correct text');
+    await click('#click-me');
+    assert.equal(document.querySelectorAll('.tool-tip-value').length, 0, 'Tooltip dismissed');
   });
 
   test('it can be disabled', async function(assert) {
@@ -108,7 +114,7 @@ module('Integration | Component | rsa-form-input', function(hooks) {
       done();
     };
     await render(hbs `{{rsa-form-input focusIn=(action 'focus')}}`);
-    this.$('input').focus();
+    await focus('input');
   });
 
   test('it calls closure action focusOut', async function(assert) {
@@ -119,7 +125,8 @@ module('Integration | Component | rsa-form-input', function(hooks) {
       done();
     };
     await render(hbs `{{rsa-form-input focusOut=(action 'blur')}}`);
-    this.$('input').blur();
+    await focus('input');
+    await blur('input');
   });
 
   test('it does not show the error message if there is no error', async function(assert) {
@@ -137,7 +144,7 @@ module('Integration | Component | rsa-form-input', function(hooks) {
     assert.equal(findAll('input[autofocus]').length, 1, 'expect component to be focused');
   });
 
-  test('it calls closure action focusOut', async function(assert) {
+  test('it calls closure action onKeyUp', async function(assert) {
     assert.expect(1);
     const done = assert.async();
     this.actions.onKeyUp = () => {

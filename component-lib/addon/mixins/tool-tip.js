@@ -1,7 +1,6 @@
 import Mixin from '@ember/object/mixin';
 import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
 import { run } from '@ember/runloop';
-import $ from 'jquery';
 import { inject as service } from '@ember/service';
 
 export default Mixin.create({
@@ -81,7 +80,7 @@ export default Mixin.create({
    */
   didInsertElement() {
     const windowClickFunct = this._handleWindowClick.bind(this);
-    $(window).click(windowClickFunct);
+    window.addEventListener('click', windowClickFunct);
     this.setProperties({ windowClickFunct });
   },
 
@@ -91,7 +90,7 @@ export default Mixin.create({
    */
   willDestroyElement() {
     const { windowClickFunct } = this.getProperties('windowClickFunct');
-    $(window).off('click', windowClickFunct);
+    window.removeEventListener('click', windowClickFunct);
   },
 
   /**
@@ -100,9 +99,9 @@ export default Mixin.create({
    * @private
    */
   _handleWindowClick(e) {
-    const $targetParent = $(e.target.parentElement);
+    const targetParent = e.target.parentElement;
     let isClickInsideTooltip = false;
-    if (!$targetParent.length || $targetParent.hasClass('tool-tip-value')) {
+    if (!targetParent || targetParent.classList.contains('tool-tip-value')) {
       isClickInsideTooltip = true;
     }
     if (!isClickInsideTooltip) {

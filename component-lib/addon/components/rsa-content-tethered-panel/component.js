@@ -1,10 +1,13 @@
-import $ from 'jquery';
 import Component from '@ember/component';
 import computed from 'ember-computed';
 import { htmlSafe } from '@ember/string';
 import { run } from '@ember/runloop';
 import { inject as service } from '@ember/service';
+
 import layout from './template';
+import {
+  offset as jOffset
+} from 'component-lib/utils/jquery-replacement';
 
 export default Component.extend({
   layout,
@@ -56,6 +59,7 @@ export default Component.extend({
     let position = null;
     switch (this.get('_position')) {
       case 'top':
+      case 'top-top':
         position = 'bottom center';
         break;
 
@@ -132,36 +136,41 @@ export default Component.extend({
   }),
 
   forceWithinWindow() {
+    const panel = document.querySelector('.ember-tether .panel-content');
+    if (!panel) {
+      return;
+    }
+
     let position = this.get('_position');
 
-    const width = $(window).width();
-    const height = $(window).height();
-    const panel = $('.ember-tether .panel-content');
-    const panelHeight = panel.height();
-    const panelWidth = panel.width();
-    const offset = panel.offset();
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const panelHeight = panel.offsetHeight;
+    const panelWidth = panel.offsetWidth;
+    const offset = jOffset(panel);
+
+    if (!offset) {
+      return;
+    }
+
     const borderWidth = 2;
     const edgeMargin = 7;
     const pxModifier = borderWidth + edgeMargin;
 
     const panelBottom = () => {
-      return panel.offset().top + panelHeight + pxModifier;
+      return jOffset(panel).top + panelHeight + pxModifier;
     };
     const panelTop = () => {
-      return panel.offset().top + pxModifier;
+      return jOffset(panel).top + pxModifier;
     };
     const panelLeft = () => {
-      return panel.offset().left + pxModifier;
+      return jOffset(panel).left + pxModifier;
     };
     const panelRight = () => {
-      return panel.offset().left + panelWidth + pxModifier;
+      return jOffset(panel).left + panelWidth + pxModifier;
     };
 
     let newPosition = position;
-
-    if (!offset) {
-      return;
-    }
 
     const reposition = (initialSide, newSide) => {
       newPosition = position.replace(initialSide, newSide);
@@ -242,8 +251,9 @@ export default Component.extend({
     },
     set(key, value) {
       run.schedule('afterRender', this, function() {
-        if ($('.ember-tether').length > 1) {
-          $('.ember-tether').first().remove();
+        const tetherElementList = document.querySelectorAll('.ember-tether');
+        if (tetherElementList.length > 1) {
+          tetherElementList[0].remove();
         }
       });
 
@@ -270,16 +280,30 @@ export default Component.extend({
     });
   },
 
+  _mouseEnter() {
+    this.set('isHovering', true);
+  },
+
+  _mouseLeave() {
+    this.set('isHovering', false);
+    run.later(() => {
+      if (!this.get('isHovering') && this.get('hideOnLeave')) {
+        this.set('isDisplayed', false);
+      }
+    }, this.get('hideDelay'));
+  },
+
   _didDisplay(anchorHeight, anchorWidth, elId, model) {
     // always reset _position to the original position config on display of the panel to avoid reusing the last repositioning
     // from forceWithinWindow()
     this.set('_position', this.get('position'));
     run.next(() => {
       if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-        if ($(this.get('targetClass')).length > 1) {
+        const tC = this.get('targetClass');
+        if (document.querySelectorAll(tC).length > 1) {
           this.set('target', `#${elId}`);
         } else {
-          this.set('target', this.get('targetClass'));
+          this.set('target', tC);
         }
 
         this.setProperties({
@@ -295,18 +319,9 @@ export default Component.extend({
             this.panelDidOpen();
           }
 
-          $(`.${this.get('elementId')}`).on('mouseenter', () => {
-            this.set('isHovering', true);
-          });
-
-          $(`.${this.get('elementId')}`).on('mouseleave', () => {
-            this.set('isHovering', false);
-            run.later(() => {
-              if (!this.get('isHovering') && this.get('hideOnLeave')) {
-                this.set('isDisplayed', false);
-              }
-            }, this.get('hideDelay'));
-          });
+          const element = document.querySelector(`.${this.get('elementId')}`);
+          element.addEventListener('mouseenter', this._mouseEnter);
+          element.addEventListener('mouseleave', this._mouseLeave);
         });
       }
     });
@@ -324,10 +339,11 @@ export default Component.extend({
     this.set('_position', this.get('position'));
     run.next(() => {
       if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-        if ($(this.get('targetClass')).length > 1) {
+        const tC = this.get('targetClass');
+        if (document.querySelectorAll(tC).length > 1) {
           this.set('target', `#${elId}`);
         } else {
-          this.set('target', this.get('targetClass'));
+          this.set('target', tC);
         }
 
         this.set('model', model);
@@ -351,7 +367,7 @@ export default Component.extend({
   },
 
   _didApplicationClick(target) {
-    if (!$(target).closest(this.get('targetClass')).length > 0) {
+    if (!target.closest(this.get('targetClass'))) {
       run.next(() => {
         if (!this.get('isDestroyed') && !this.get('isDestroying')) {
           this.set('isDisplayed', false);
@@ -367,8 +383,10 @@ export default Component.extend({
   },
 
   _hidepanel() {
-    $(`.${this.get('elementId')}`).off('mouseenter');
-    $(`.${this.get('elementId')}`).off('mouseleave');
+    const element = document.querySelector(`.${this.get('elementId')}`);
+    element.removeEventListener('mouseenter', this._mouseEnter);
+    element.removeEventListener('mouseleave', this._mouseLeave);
+
     if (!this.get('isDestroyed') && !this.get('isDestroying')) {
       this.set('isDisplayed', false);
     }
