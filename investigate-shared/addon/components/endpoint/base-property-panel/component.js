@@ -129,10 +129,8 @@ export default Component.extend({
   @computed('_searchText', 'properties', 'showNonEmptyProperty')
   visibleProperty(searchText, properties, showNonEmptyProperty) {
     const props = properties.map((prop, index) => {
-      // Add css class to these sections so we can hide unwanted fields
-      if (index === 0) {
-        prop = prop.sectionName === 'General' ? { ...prop, sectionClass: 'general-section' } : prop;
-      } else if (index === 1) {
+      // Add css class to this section so we can hide unwanted fields
+      if (index === 1) {
         prop = prop.fields[0].value === 'Manual' ? { ...prop, sectionClass: 'manual-section' } : prop;
       }
       // Filter the fields based on searchText

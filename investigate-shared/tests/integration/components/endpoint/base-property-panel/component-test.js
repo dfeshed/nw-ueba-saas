@@ -156,13 +156,12 @@ module('Integration | Component | endpoint/base-property-panel', function(hooks)
     }
   };
 
-  test('it should add css classes general-section and manual-section', async function(assert) {
-    assert.expect(2);
+  test('it should add css classe manual-section', async function(assert) {
+    assert.expect(1);
     this.set('title', 'Test Panel');
     this.set('config', sampleConfig2);
     this.set('data', sampleData2);
     await render(hbs`{{endpoint/base-property-panel config=config data=data title=title}}`);
-    assert.equal(findAll('.general-section').length, 1, 'general-section css class was added');
     assert.equal(findAll('.manual-section').length, 1, 'manual-section css class was added');
   });
 });

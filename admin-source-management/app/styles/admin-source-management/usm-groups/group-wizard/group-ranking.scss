@@ -81,7 +81,7 @@
         color: text-color(neutral) /* set first propValue back to white */
       }
 
-      vbox vbox div:first-child .heading::before {
+      .usm-policies-inspector-edr vbox div:first-child .heading::before, .usm-policies-inspector-windows-log vbox div.heading:first-child::before {
         background: none;
         margin: 0px;
       }

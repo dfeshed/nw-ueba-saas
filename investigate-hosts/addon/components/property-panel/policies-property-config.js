@@ -3,14 +3,6 @@ const policiesPropertyConfig = [
     sectionName: 'General',
     fields: [
       {
-        field: 'edrPolicy.name',
-        labelKey: 'policyWizard.edrPolicyName'
-      },
-      {
-        field: 'windowsLogPolicy.name',
-        labelKey: 'policyWizard.windowsLogPolicyName'
-      },
-      {
         field: 'policyStatus',
         labelKey: 'policyWizard.policyStatus'
       },
