@@ -3921,11 +3921,14 @@ export default {
     },
     buttons: {
       expandDetails: 'Process Details Expand/Collapse',
-      close: 'Process Details Close'
+      close: 'Process Details Close',
+      viewAll: 'View All',
+      processSelected: '{{processCount}} Process selected'
     },
     tabs: {
       properties: 'Properties',
-      events: 'Events ({{count}})'
+      events: 'Events ({{count}})',
+      all: 'All'
     },
     eventsTable: {
       header: 'Events'

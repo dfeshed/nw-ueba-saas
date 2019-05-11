@@ -5,6 +5,7 @@ import processVisuals from './process-visuals/reducer';
 import services from './services/reducer';
 import query from './query/reducer';
 import processFilter from './process-filter/reducer';
+import filterPopup from './filter-popup/reducer';
 
 export default combineReducers({
   processAnalysis: combineReducers({
@@ -13,6 +14,7 @@ export default combineReducers({
     processVisuals,
     services,
     query,
-    processFilter
+    processFilter,
+    filterPopup
   })
 });

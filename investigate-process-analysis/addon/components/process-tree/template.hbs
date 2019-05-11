@@ -51,3 +51,12 @@
   {{/each-in}}
 
 {{/rsa-content-tethered-panel}}
+{{#rsa-content-tethered-panel
+  style="primary"
+  panelClass='filter-popup'
+  position='bottom'
+  displayCloseButton=false
+  hideOnLeave=false
+  panelId='process-filter' as |hidePanel model|}}
+  {{filter-popup onView=(action 'appendNodes') hidePanel=hidePanel model=model}}
+{{/rsa-content-tethered-panel}}

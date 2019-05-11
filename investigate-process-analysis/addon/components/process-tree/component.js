@@ -273,7 +273,7 @@ const TreeComponent = Component.extend({
   /**
    * Build the chart for given source and root node
    * @param source
-   * @public
+   * @private
    */
   _buildChart(source) {
 
@@ -315,11 +315,36 @@ const TreeComponent = Component.extend({
     onNodeExit(node, source);
   },
 
-  _appendExpandCollapseIcon(nodeEnter, collapseIcon, expandIcon, width) {
-
+  _appendExpandCollapseIcon(nodeEnter, collapseIcon, expandIcon, width, counter) {
+    const self = this;
     const collapseWrapper = nodeEnter.append('g')
       .attr('class', 'button-wrapper')
-      .on('click', run.bind(this, 'expandCollapseProcess'));
+      .attr('id', function() {
+        return `expand-${counter++}`;
+      })
+      .on('click', function(currentNode) {
+        event.stopImmediatePropagation();
+
+        const $el = event.currentTarget;
+        $el.setAttribute('class', 'button-wrapper process-filter');
+
+        if (hideEvent) {
+          run.cancel(hideEvent);
+          hideEvent = null;
+        }
+
+        const event1 = run.later(async() => {
+          if (!$el) {
+            return;
+          }
+          sendTetherEvent($el, 'process-filter', self.get('eventBus'), 'display', currentNode);
+          if (hideEvent) {
+            run.cancel(hideEvent);
+            hideEvent = null;
+          }
+        }, 200);
+        displayEvent = event1;
+      });
     appendExpandCollapseIcon(collapseWrapper, collapseIcon, expandIcon, width);
   },
 
@@ -338,8 +363,7 @@ const TreeComponent = Component.extend({
       .on('mousedown', function() {
         event.stopImmediatePropagation();
       });
-
-    this._appendExpandCollapseIcon(nodeEnter, collapseIcon, expandIcon, CONST.NODE_WIDTH);
+    this._appendExpandCollapseIcon(nodeEnter, collapseIcon, expandIcon, CONST.NODE_WIDTH, freeIdCounter);
 
     const processNode = nodeEnter.append('g')
       .attr('id', function() {
@@ -457,6 +481,9 @@ const TreeComponent = Component.extend({
   actions: {
     copyLaunchArgument(launchArguments) {
       copyToClipboard(launchArguments);
+    },
+    appendNodes(d) {
+      this.expandProcess(d);
     }
   }
 });

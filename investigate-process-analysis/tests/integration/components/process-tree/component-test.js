@@ -60,7 +60,7 @@ module('Integration | Component | process-tree', function(hooks) {
     assert.equal(find('.child-count').textContent, 1, 'Expected to render child count');
   });
 
-  test('it should expand the node on click', async function(assert) {
+  test('should open the filter popup on click of plus', async function(assert) {
     const queryInputs = {
       sid: '1',
       vid: '3',
@@ -77,7 +77,9 @@ module('Integration | Component | process-tree', function(hooks) {
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     await selectAll('g.process:nth-of-type(4) .button-wrapper').dispatch('click');
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    assert.equal(findAll('rect.process').length, 7, 'Expected to render 7 nodes');
+    return settled().then(() => {
+      assert.equal(findAll('.filter-popup').length, 1, 'Expected to render tether panel');
+    });
   });
 
   test('it should select the node on click', async function(assert) {

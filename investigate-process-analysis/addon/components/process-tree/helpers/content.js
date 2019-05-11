@@ -4,6 +4,20 @@ import { truncateText } from '../util/data';
 import { hierarchy } from 'd3-hierarchy';
 import { select, selectAll } from 'd3-selection';
 
+const _getRiskScoreClass = (riskScore) => {
+  let riskClass = 'is-low';
+  if (riskScore <= 30) {
+    riskClass = 'is-low';
+  } else if (riskScore <= 69) {
+    riskClass = 'is-medium';
+  } else if (riskScore <= 99) {
+    riskClass = 'is-high';
+  } else if (riskScore > 99) {
+    riskClass = 'is-danger';
+  }
+  return riskClass;
+};
+
 export const addSelectedClass = (id) => {
   // Update the node style. First unselect previously selected nodes
   selectAll('circle.process').classed('selected', false);
@@ -113,21 +127,11 @@ export const addNodeContent = (processNode, nodeEnter) => {
 
   // draw risk score
   const riskScore = Math.floor(Math.random() * 100);
-  let riskClass = 'is-low';
-  if (riskScore <= 30) {
-    riskClass = 'is-low';
-  } else if (riskScore <= 69) {
-    riskClass = 'is-medium';
-  } else if (riskScore <= 99) {
-    riskClass = 'is-high';
-  } else if (riskScore > 99) {
-    riskClass = 'is-danger';
-  }
   processNode.append('circle')
     .attr('cx', DISTANCE.SCORE_X)
     .attr('cy', DISTANCE.SCORE_Y)
     .attr('r', CONST.RADIUS)
-    .attr('class', riskClass);
+    .attr('class', _getRiskScoreClass(riskScore));
 
   processNode.append('text')
     .attr('dx', DISTANCE.SCORE_X)

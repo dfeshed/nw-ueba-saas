@@ -1,0 +1,30 @@
+<hbox class='process-filter-popup__header'>
+  <box class='rsa-nav-tab-group'>
+    {{#each tabs as |tab|}}
+      {{#rsa-nav-tab align='center' align='left' compact=true isActive=tab.selected click=(action 'activate' tab.name)}}
+        <div class="label">
+          {{#if tab.label}}
+            <span class="tab-text">{{t tab.label}}</span>
+          {{else}}
+            {{rsa-icon class=tab.icon}}
+          {{/if}}
+        </div>
+      {{/rsa-nav-tab}}
+    {{/each}}
+  </box>
+  <box class='process-filter-popup__search'>
+  </box>
+</hbox>
+<box class='process-filter-popup__content'>
+
+</box>
+<box class='process-filter-popup__footer'>
+  <hbox>
+    <box>
+      <span>{{t 'investigateProcessAnalysis.buttons.processSelected' processCount=selectedProcessCount}}</span>
+    </box>
+    <box test-id='viewAll'>
+      {{#rsa-form-button style='primary' click=(action 'onViewAll' model hidePanel)}}{{t 'investigateProcessAnalysis.buttons.viewAll'}}{{/rsa-form-button}}
+    </box>
+  </hbox>
+</box>

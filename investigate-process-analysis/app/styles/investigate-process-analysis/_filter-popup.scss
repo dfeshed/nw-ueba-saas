@@ -1,0 +1,30 @@
+.process-filter-popup {
+  width: 700px;
+  height: 400px;
+  &__search {
+    float: right;
+  }
+  &__header {
+    height: 46px;
+    @include border-bottom(1px, solid, secondary);
+    .rsa-nav-tab-group {
+      padding: 0 rsa-whitespace();
+    }
+  }
+  &__footer {
+    bottom: 0;
+    height: 40px;
+    position: absolute;
+    width: 100%;
+    @include border-top(1px, solid, secondary);
+    box {
+      padding: rsa-whitespace(least) rsa-whitespace();
+      span {
+        margin: rsa-whitespace(less) 0;
+      }
+      .rsa-form-button {
+        float: right;
+      }
+    }
+  }
+}
