@@ -14,12 +14,9 @@ import java.util.List;
 public class FortscaleOutputManagerApplication {
 
     public static void main(String[] args) {
-        List<Class> sources = new ArrayList<Class>();
-        // The supported CLI commands for the application
-        sources.add(OutputManagerShellCommands.class);
+        List<Class> configurationClasses = new ArrayList<>();
         // The Spring configuration of the application
-        sources.add(OutputManagerConfiguration.class);
-
-        new PresidioShellableApplication().run(sources, args);
+        configurationClasses.add(OutputManagerConfiguration.class);
+        new PresidioShellableApplication().run(configurationClasses, args);
     }
 }

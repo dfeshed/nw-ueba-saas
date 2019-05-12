@@ -9,11 +9,14 @@ import org.springframework.context.annotation.Import;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.manager.OutputManagerService;
+import presidio.output.manager.OutputManagerShellCommands;
 
 @Configuration
 @Import({
         MongoConfig.class,
-        EventPersistencyServiceConfig.class
+        EventPersistencyServiceConfig.class,
+        // CLI commands related configurations
+        OutputManagerShellCommands.class
 })
 public class OutputManagerConfiguration {
 
