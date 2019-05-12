@@ -4,12 +4,12 @@ import fortscale.common.general.Schema;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import org.springframework.data.util.Pair;
-import presidio.output.domain.records.events.EnrichedEvent;
+import presidio.output.domain.records.events.EnrichedUserEvent;
 import presidio.output.domain.services.event.EventPersistencyService;
 
 import java.util.List;
 
-public class EventMongoPageIterator<U extends EnrichedEvent> implements PageIterator<U> {
+public class EventMongoPageIterator<U extends EnrichedUserEvent> implements PageIterator<U> {
 
     private final EventPersistencyService eventPersistencyService;
     private int currentPage;
@@ -42,7 +42,7 @@ public class EventMongoPageIterator<U extends EnrichedEvent> implements PageIter
     public List<U> next() {
         int numOfItemsToSkip = this.currentPage * this.pageSize;
         this.currentPage++;
-        List<U> records = (List<U>) this.eventPersistencyService.readRecords(this.schema, this.userId, this.timeRange, this.features, numOfItemsToSkip, this.pageSize);
+        List<U> records = (List<U>) this.eventPersistencyService.findUserEvents(this.schema, this.userId, this.timeRange, this.features, numOfItemsToSkip, this.pageSize);
 
         return records;
     }

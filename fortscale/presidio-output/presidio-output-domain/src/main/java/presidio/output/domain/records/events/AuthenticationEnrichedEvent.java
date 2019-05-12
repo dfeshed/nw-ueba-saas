@@ -12,7 +12,7 @@ import java.util.Map;
  * Created by efratn on 02/08/2017.
  */
 @Document
-public class AuthenticationEnrichedEvent extends EnrichedEvent {
+public class AuthenticationEnrichedEvent extends EnrichedUserEvent {
 
     public static final String SRC_MACHINE_ID_FIELD = "srcMachineId";
     public static final String DST_MACHINE_ID_FIELD = "dstMachineId";

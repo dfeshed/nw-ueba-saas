@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
-public class RegistryEnrichedEvent extends EnrichedEvent {
+public class RegistryEnrichedEvent extends EnrichedUserEvent {
 
     public static final String MACHINE_ID_FIELD_NAME = "machineId";
     public static final String MACHINE_NAME_FIELD_NAME = "machineName";

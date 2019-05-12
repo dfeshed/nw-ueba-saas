@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.events.EnrichedEvent;
+import presidio.output.domain.records.events.EnrichedUserEvent;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
 
     private UserDetails getUserDetails(String userId) {
         List<String> collectionNames = userSeverityService.collectionNamesByOrderForEvents();
-        EnrichedEvent event = eventPersistencyService.findLatestEventForUser(userId, collectionNames);
+        EnrichedUserEvent event = eventPersistencyService.findLatestEventForUser(userId, collectionNames);
         if (event == null) {
             log.error("no events were found for user {}", userId);
             return null;
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
         String userDisplayName = event.getUserDisplayName();
         String userName = event.getUserName();
         List<String> tags = new ArrayList<>();
-        if (event.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN) != null && Boolean.parseBoolean(event.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN))) {
+        if (event.getAdditionalInfo().get(EnrichedUserEvent.IS_USER_ADMIN) != null && Boolean.parseBoolean(event.getAdditionalInfo().get(EnrichedUserEvent.IS_USER_ADMIN))) {
             tags.add(TAG_ADMIN);
         }
         return new UserDetails(userName, userDisplayName, userId, tags);
