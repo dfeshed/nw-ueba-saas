@@ -15,7 +15,6 @@ public interface OutputExecutionService {
     void updateAllEntitiesData(Instant startDate, Instant endDate, String configurationName) throws Exception;
     void cleanAlerts(Instant startDate, Instant endDate, String entityType) throws Exception;
     void cleanAll() throws Exception;
-    void cleanDocuments(Instant endDate) throws Exception;
 
     default int doRun(Instant startDate, Instant endDate, String configurationName) throws Exception {
         try {
@@ -40,16 +39,6 @@ public interface OutputExecutionService {
     default int doCleanAlerts(Instant startDate, Instant endDate, String entityType) throws Exception {
         try {
             cleanAlerts(startDate, endDate, entityType);
-        }
-        catch (Exception e) {
-            return 1;
-        }
-        return 0;
-    }
-
-    default int doCleanDocuments(Instant endDate) throws Exception {
-        try {
-            cleanDocuments(endDate);
         }
         catch (Exception e) {
             return 1;

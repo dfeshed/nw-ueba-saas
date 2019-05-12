@@ -175,8 +175,6 @@ public class OutputExecutionServiceModuleTest {
             Assert.assertEquals(1, entities.getNumberOfElements());
             Entity entity = entities.iterator().next();
             Assert.assertEquals(8, entity.getAlertsCount());
-//            Assert.assertEquals(1, user.getAlertClassifications().size());
-//            Assert.assertEquals(1, user.getIndicators().size());
             Assert.assertEquals(55, new Double(entity.getScore()).intValue());
         } catch (Exception e) {
             e.printStackTrace();
@@ -225,37 +223,6 @@ public class OutputExecutionServiceModuleTest {
             entity = entities.iterator().next();
             // test entity score re-calculation
             Assert.assertEquals(0, new Double(entity.getScore()).intValue());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
-
-    @Test
-    public void testCleanDocuments() {
-        try {
-            String outputFileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
-            outputExecutionService.run(now().minus(Duration.ofDays(101)), now().plus(Duration.ofDays(2)), "userId_hourly");
-            Assert.assertEquals(10, Lists.newArrayList(alertPersistencyService.findAll()).size());
-            Assert.assertEquals(2, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
-            outputExecutionService.cleanDocuments(now().plus(Duration.ofDays(1)));
-            // 2 alerts and 1 enriched event should have been deleted by retention
-            Assert.assertEquals(1, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
-
-    @Test
-    public void testCleanDocumentsForNonExistingSchema() {
-        try {
-            String outputFileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.PRINT);
-            outputExecutionService.run(now().minus(Duration.ofDays(101)), now().plus(Duration.ofDays(2)), "userId_hourly");
-            Assert.assertEquals(10, Lists.newArrayList(alertPersistencyService.findAll()).size());
-            Assert.assertEquals(0, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
-            outputExecutionService.cleanDocuments(now().plus(Duration.ofDays(1)));
-            Assert.assertEquals(0, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();

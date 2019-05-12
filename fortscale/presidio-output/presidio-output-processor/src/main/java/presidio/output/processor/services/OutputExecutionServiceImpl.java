@@ -210,16 +210,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         }
     }
 
-    @Override
-    public void cleanDocuments(Instant endDate) throws Exception {
-        List<Schema> schemas = Arrays.asList(Schema.values());
-        schemas.forEach(schema -> {
-            logger.debug("Start retention clean to mongo for schema {}", schema);
-            eventPersistencyService.remove(schema, Instant.EPOCH, endDate.minus(retentionEnrichedEventsDays, ChronoUnit.DAYS));
-        });
-
-    }
-
     private void updateEntitiesScoreFromDeletedAlerts(List<Alert> cleanedAlerts) {
         Set<Entity> entitiesToUpdate = new HashSet<>();
         cleanedAlerts.forEach(alert -> {
