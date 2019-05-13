@@ -2,7 +2,6 @@ package presidio.output.manager.services;
 
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
-import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +23,7 @@ import java.util.*;
 import static java.time.Instant.now;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {OutputManagerTestConfig.class, MongodbTestConfig.class})
+@ContextConfiguration(classes = {OutputManagerTestConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class OutputManagerServiceTest {
     private static final String ENTITY_ID_TEST_ENTITY = "entityId#testEntity";
