@@ -1,5 +1,5 @@
 {
-  "user-severities-range": {
+  "entity-severities-range": {
     "properties": {
       "id": {
         "type": "string",

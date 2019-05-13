@@ -161,8 +161,8 @@ public class AlertQuery {
             return this;
         }
 
-        public AlertQueryBuilder filterByEntityName(List<String> filterBuEntityName) {
-            this.filterByEntityName = filterBuEntityName;
+        public AlertQueryBuilder filterByEntityName(List<String> filterByEntityName) {
+            this.filterByEntityName = filterByEntityName;
             return this;
         }
 

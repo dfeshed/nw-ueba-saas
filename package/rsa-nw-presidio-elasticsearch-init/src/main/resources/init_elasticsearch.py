@@ -90,7 +90,7 @@ def set_mapping(indexJson, name):
         with open(indexJson) as json_data:
             obj = json.load(json_data)
             data = json.dumps(obj[obj.keys()[0]])
-            if name != "presidio-output-user-severities-range":
+            if name != "presidio-output-entity-severities-range":
                 create_kibana_pattern_from_mapping(name, obj[obj.keys()[0]]["properties"])
             url = MACHINE_URL + name + '/_mappings/' + obj.keys()[0]
             put_request(url, data)
