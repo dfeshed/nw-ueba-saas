@@ -9,6 +9,10 @@ export const offset = (elem) => {
   };
 };
 
+export const isNumeric = (x) => {
+  return !Array.isArray(x) && (x - parseFloat(x) + 1) >= 0;
+};
+
 // Easy replacement docs
 
 //
@@ -56,6 +60,12 @@ export const offset = (elem) => {
 // $('.some-element').hasClass('foo-class')
 // document.querySelector('.some-element').classList.contains('foo-class')
 
+// $('.some-element').addClass('foo-class')
+// document.querySelector('.some-element').classList.add('foo-class');
+
+// $('.some-element').removeClass('foo-class')
+// document.querySelector('.some-element').classList.remove('foo-class');
+
 //
 // DIMENSIONS
 //
@@ -81,5 +91,12 @@ export const offset = (elem) => {
 
 // $('.some-element').off('mouseleave', this._someHandlerFunction);
 // document.querySelectorAll('.some-element').removeEventListener('mouseleave', this._someHandlerFunction);
+
+//
+// UTILITY
+//
+
+// $.isFunction(foo)
+// typeof foo === 'function'
 
 

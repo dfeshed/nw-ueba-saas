@@ -3,7 +3,6 @@
  * Equips a component with a `domIsReady` attribute, which indicates when its DOM is ready for manipulation.
  * @public
  */
-import $ from 'jquery';
 import Mixin from '@ember/object/mixin';
 import { run } from '@ember/runloop';
 
@@ -38,7 +37,7 @@ export default Mixin.create({
   afterRender() {
     this._super(...arguments);
     this.set('domIsReady', true);
-    if ($.isFunction(this.onDomIsReady)) {
+    if (typeof this.onDomIsReady === 'function') {
       this.onDomIsReady();
     }
   }

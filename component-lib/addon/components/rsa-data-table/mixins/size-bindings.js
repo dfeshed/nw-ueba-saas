@@ -16,7 +16,6 @@
 /* global addResizeListener */
 /* global removeResizeListener */
 
-import $ from 'jquery';
 import computed from 'ember-computed';
 import Mixin from '@ember/object/mixin';
 import { run } from '@ember/runloop';
@@ -71,7 +70,7 @@ export default Mixin.create({
           clientHeight: element.clientHeight
         });
 
-        if ($.isFunction(this.sizeDidChange)) {
+        if (typeof this.sizeDidChange === 'function') {
           this.sizeDidChange();
         }
       }

@@ -7,11 +7,11 @@
  * Note that the tooltip for this component's DOM will also be set.
  * @public
  */
-import $ from 'jquery';
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 
 import layout from '../templates/components/rsa-content-memsize';
+import { isNumeric } from 'component-lib/utils/jquery-replacement';
 
 const byteSizing = {
   label: 'memsize.B',
@@ -44,7 +44,7 @@ export default Component.extend({
 
   @computed('size')
   translatedSize: (size) => {
-    if ($.isNumeric(size)) {
+    if (isNumeric(size)) {
       return sizing.find(({ bytes }) => size >= bytes);
     }
     return byteSizing;
@@ -61,6 +61,6 @@ export default Component.extend({
   @computed('size')
   title(size) {
     const i18n = this.get('i18n');
-    return $.isNumeric(size) ? `${size} ${i18n.t('memsize.B')}` : '';
+    return isNumeric(size) ? `${size} ${i18n.t('memsize.B')}` : '';
   }
 });

@@ -9,7 +9,6 @@ import DomIsReady from './dom-is-ready';
 import HasTableParent from './has-table-parent';
 import { htmlSafe } from '@ember/string';
 import { set } from '@ember/object';
-import $ from 'jquery';
 import Mixin from '@ember/object/mixin';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
 
@@ -127,7 +126,7 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
    */
   click(e) {
     const fn = this.get('clickAction');
-    if ($.isFunction(fn)) {
+    if (typeof fn === 'function') {
       fn(this.get('item'), this.get('index'), e, this.get('table'));
     }
   },

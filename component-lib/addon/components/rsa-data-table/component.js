@@ -241,7 +241,7 @@ export default Component.extend(DomWatcher, {
           cfg = { field, title };
         }
         if (typeof cfg === 'object') {
-          const column = $.isFunction(cfg.get) ? cfg : EmberObject.create(cfg);
+          const column = typeof cfg.get === 'function' ? cfg : EmberObject.create(cfg);
 
           if (isEmpty(get(column, 'width'))) {
             set(column, 'width', DEFAULT_COLUMN_WIDTH);
@@ -487,7 +487,7 @@ export default Component.extend(DomWatcher, {
     if (nodeName === 'BODY' || classList.contains('rsa-data-table')) {
       const fn = this.get('onRowClick');
 
-      if ($.isFunction(fn)) {
+      if (typeof fn === 'function') {
         let selectedItemIndex, selectedItem, scrollTop;
         const items = this.get('items');
 
@@ -520,7 +520,7 @@ export default Component.extend(DomWatcher, {
     if (nodeName === 'BODY' || classList.contains('rsa-data-table')) {
       const fn = this.get('onRowClick');
 
-      if ($.isFunction(fn)) {
+      if (typeof fn === 'function') {
         let selectedItemIndex, selectedItem, scrollTop;
 
         if (this.get('selectedIndex') < 1) {
@@ -676,7 +676,7 @@ export default Component.extend(DomWatcher, {
       if (fromIndex !== toIndex) {
 
         const fn = this.get('onReorderColumns');
-        if ($.isFunction(fn)) {
+        if (typeof fn === 'function') {
           if (!fn.apply(this, [columns, newColumns, draggedColumn, fromIndex, toIndex])) {
             return;
           }
@@ -698,7 +698,7 @@ export default Component.extend(DomWatcher, {
         return;
       }
       const fn = this.get('onResizeColumn');
-      if ($.isFunction(fn)) {
+      if (typeof fn === 'function') {
         if (!fn.apply(this, [column, width])) {
           return;
         }
@@ -718,7 +718,7 @@ export default Component.extend(DomWatcher, {
      */
     rowClick(/* item, index, e */) {
       const fn = this.get('onRowClick');
-      if ($.isFunction(fn)) {
+      if (typeof fn === 'function') {
         fn.apply(this, arguments);
       }
     }

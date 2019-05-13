@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Component from '@ember/component';
 import { next, schedule } from '@ember/runloop';
 import { inject as service } from '@ember/service';
@@ -14,7 +13,8 @@ export default Component.extend({
 
   classNameBindings: [
     'isOpen',
-    'style'],
+    'style'
+  ],
 
   eventId: null,
 
@@ -66,10 +66,13 @@ export default Component.extend({
 
   updateModal(truth) {
     next(() => {
-      if (truth) {
-        $('#modalDestination').addClass('active');
-      } else {
-        $('#modalDestination').removeClass('active');
+      const modalDest = document.querySelector('#modalDestination');
+      if (modalDest) {
+        if (truth) {
+          modalDest.classList.add('active');
+        } else {
+          modalDest.classList.remove('active');
+        }
       }
 
       if (this.isDestroyed || this.isDestroying) {
