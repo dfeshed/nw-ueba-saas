@@ -189,8 +189,7 @@ public class Entity extends AbstractElasticDocument {
     public void addAlertClassifications(List<String> alertClassifications) {
         Set<String> newAlertClassifications = new HashSet<>(this.alertClassifications);
         newAlertClassifications.addAll(alertClassifications);
-        this.alertClassifications = new ArrayList<>();
-        this.alertClassifications.addAll(newAlertClassifications);
+        this.alertClassifications = new ArrayList<>(newAlertClassifications);
     }
 
     public void setIndicators(List<String> indicators) {
