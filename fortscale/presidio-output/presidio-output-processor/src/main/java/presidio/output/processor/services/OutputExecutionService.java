@@ -13,7 +13,7 @@ public interface OutputExecutionService {
 
     void run(Instant startDate, Instant endDate, String configurationName) throws Exception;
     void updateAllEntitiesData(Instant startDate, Instant endDate, String configurationName) throws Exception;
-    void cleanAlerts(Instant startDate, Instant endDate, String configurationName) throws Exception;
+    void cleanAlerts(Instant startDate, Instant endDate, String entityType) throws Exception;
     void cleanAll() throws Exception;
 
     default int doRun(Instant startDate, Instant endDate, String configurationName) throws Exception {
@@ -36,9 +36,9 @@ public interface OutputExecutionService {
         return 0;
     }
 
-    default int doCleanAlerts(Instant startDate, Instant endDate, String configurationName) throws Exception {
+    default int doCleanAlerts(Instant startDate, Instant endDate, String entityType) throws Exception {
         try {
-            cleanAlerts(startDate, endDate, configurationName);
+            cleanAlerts(startDate, endDate, entityType);
         }
         catch (Exception e) {
             return 1;

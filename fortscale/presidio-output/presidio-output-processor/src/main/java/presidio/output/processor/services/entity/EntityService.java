@@ -38,6 +38,4 @@ public interface EntityService {
 
     void updateEntityData(Instant endDate);
 
-    String convertConfigNameToEntityType(String configurationName);
-
 }
