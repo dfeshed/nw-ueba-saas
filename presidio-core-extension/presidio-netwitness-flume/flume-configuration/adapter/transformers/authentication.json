@@ -428,15 +428,6 @@
         },
         {
           "type": "copy_value",
-          "name": "rename-action-to-data-source",
-          "sourceKey": "action",
-          "isRemoveSourceKey": true,
-          "destinationKeys": [
-            "dataSource"
-          ]
-        },
-        {
-          "type": "copy_value",
           "name": "copy-user-id",
           "sourceKey": "userId",
           "isRemoveSourceKey": false,
