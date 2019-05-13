@@ -1,8 +1,7 @@
-package presidio.output.manager.service;
+package presidio.output.manager.services;
 
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
-import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,8 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
-import presidio.output.manager.OutputManagerService;
-import presidio.output.manager.spring.OutputManagerTestConfiguration;
+import presidio.output.manager.spring.OutputManagerTestConfig;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -26,7 +24,7 @@ import java.util.*;
 import static java.time.Instant.now;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {OutputManagerTestConfiguration.class, MongodbTestConfig.class, ElasticsearchTestConfig.class})
+@ContextConfiguration(classes = {OutputManagerTestConfig.class, MongodbTestConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class OutputManagerServiceTest {
     private static final String ENTITY_ID_TEST_ENTITY = "entityId#testEntity";
@@ -36,7 +34,6 @@ public class OutputManagerServiceTest {
 
     @Autowired
     private OutputManagerService outputManagerService;
-
 
     @Before
     public void setup() {

@@ -1,4 +1,4 @@
-package presidio.output.manager;
+package presidio.output.manager.services;
 
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
