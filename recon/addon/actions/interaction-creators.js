@@ -22,7 +22,7 @@ const deselectAllFiles = () => ({ type: ACTION_TYPES.FILES_SELECT_ALL });
 
 const selectAllFiles = () => ({ type: ACTION_TYPES.FILES_DESELECT_ALL });
 
-const createFilename = (headerItems, files = []) => {
+const createFilename = (eventType, headerItems, files = []) => {
   /*
    If the file name is empty, the service will return a UUID filename.  And
    if we do not have the required paramters to make a file name, it is best
@@ -34,12 +34,12 @@ const createFilename = (headerItems, files = []) => {
     ['nwService', 'sessionId'].map((k) => {
       return get(getHeaderItem(headerItems, k), 'value');
     });
-
   if (nwService && sessionId) {
-    fileName = `${nwService}_SID${sessionId}`;
+    fileName = `${nwService.replace(/\s/g, '')}_SID${sessionId}`;
     if (isArray(files) && files.length) {
-      fileName += `_FC${files.length}`;
+      fileName += `_${files.length}_FILES`;
     }
+    fileName += `_${eventType}`;
   }
 
   return fileName;
@@ -62,8 +62,6 @@ const extractFiles = (type = 'FILES') => {
 
     const selectedFileNames = selectedFiles(recon).map(({ fileName }) => fileName);
 
-    const filename = createFilename(headerItems, selectedFileNames);
-
     let eventType = 'NETWORK';
 
     if (isEndpointEvent(recon)) {
@@ -71,6 +69,8 @@ const extractFiles = (type = 'FILES') => {
     } else if (isLogEvent(recon)) {
       eventType = 'LOG';
     }
+
+    const filename = createFilename(eventType, headerItems, selectedFileNames);
 
     dispatch({
       type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE,

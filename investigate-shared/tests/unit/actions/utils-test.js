@@ -119,7 +119,7 @@ test('createFilename returns proper fileName when selectAll is true', function(a
   const isSelectAll = true;
 
   const result = createFilename(eventType, serviceName, sessionIds, isSelectAll);
-  assert.equal(result, 'Conc_All_NETWORK', 'return correct file name');
+  assert.equal(result, 'Conc_ALL_EVENTS_NETWORK', 'return correct file name');
 });
 
 test('createFilename returns proper fileName when there are multiple sessionIds', function(assert) {
@@ -129,7 +129,7 @@ test('createFilename returns proper fileName when there are multiple sessionIds'
   const isSelectAll = false;
 
   const result = createFilename(eventType, serviceName, sessionIds, isSelectAll);
-  assert.equal(result, 'Conc_3_NETWORK', 'return correct file name');
+  assert.equal(result, 'Conc_3_EVENTS_NETWORK', 'return correct file name');
 });
 
 test('createFilename returns proper fileName when there is one sessionid', function(assert) {
@@ -139,7 +139,7 @@ test('createFilename returns proper fileName when there is one sessionid', funct
   const isSelectAll = false;
 
   const result = createFilename(eventType, serviceName, sessionIds, isSelectAll);
-  assert.equal(result, 'Conc_3412_NETWORK', 'return correct file name');
+  assert.equal(result, 'Conc_SID3412_NETWORK', 'return correct file name');
 });
 
 test('extractSearchTermFromFilters returns an array of pills without any text filters', function(assert) {

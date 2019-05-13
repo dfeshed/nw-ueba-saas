@@ -329,11 +329,11 @@ export const createFilename = (eventDownloadType, serviceName, sessionIds, isSel
 
   if (serviceName && eventDownloadType) {
     if (isSelectAll) {
-      fileName = `${serviceName.replace(/\s/g, '')}_All_${eventDownloadType}`;
+      fileName = `${serviceName.replace(/\s/g, '')}_ALL_EVENTS_${eventDownloadType}`;
     } else if (sessionIds.length > 1) {
-      fileName = `${serviceName.replace(/\s/g, '')}_${sessionIds.length}_${eventDownloadType}`;
+      fileName = `${serviceName.replace(/\s/g, '')}_${sessionIds.length}_EVENTS_${eventDownloadType}`;
     } else if (sessionIds.length === 1) {
-      fileName = `${serviceName.replace(/\s/g, '')}_${sessionIds[0]}_${eventDownloadType}`;
+      fileName = `${serviceName.replace(/\s/g, '')}_SID${sessionIds[0]}_${eventDownloadType}`;
     }
   }
 
