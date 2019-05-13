@@ -243,13 +243,22 @@
       "name": "auth-linux-transformer",
       "transformerList": [
         {
+          "type": "copy_value",
+          "name": "rename-action-to-data-source",
+          "sourceKey": "action[0]",
+          "isRemoveSourceKey": true,
+          "destinationKeys": [
+            "dataSource"
+          ]
+        },
+        {
           "type": "filter",
           "name": "action-is-auth-filter",
           "predicate": {
             "type": "regex",
             "name": "action-is-login-or-sshd",
-            "sourceKey": "action",
-            "regex": "\\/usr\\/bin\\/login|\\/usr\\/sbin\\/sshd"
+            "sourceKey": "dataSource",
+            "regex": "/usr/bin/login|/usr/sbin/sshd"
           },
           "filterIn": true
         },
