@@ -11,6 +11,10 @@
       padding: 0 rsa-whitespace();
     }
   }
+  &__content {
+    overflow-y: auto;
+    height: 314px;
+  }
   &__footer {
     bottom: 0;
     height: 40px;

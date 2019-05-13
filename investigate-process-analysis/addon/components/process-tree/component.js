@@ -18,7 +18,6 @@ import {
   documentTitle
 } from './helpers/content';
 import { toggleProcessDetailsVisibility } from 'investigate-process-analysis/actions/creators/process-visuals';
-import $ from 'jquery';
 import { inject as service } from '@ember/service';
 import { processDetails } from 'investigate-process-analysis/reducers/process-properties/selectors';
 import { fetchProcessDetails } from 'investigate-process-analysis/actions/creators/process-properties';
@@ -315,6 +314,15 @@ const TreeComponent = Component.extend({
     onNodeExit(node, source);
   },
 
+  _showPopup(element, d) {
+    run.later(async() => {
+      if (!element) {
+        return;
+      }
+      sendTetherEvent(element, 'process-filter', this.get('eventBus'), 'display', d);
+    }, 200);
+  },
+
   _appendExpandCollapseIcon(nodeEnter, collapseIcon, expandIcon, width, counter) {
     const self = this;
     const collapseWrapper = nodeEnter.append('g')
@@ -322,28 +330,19 @@ const TreeComponent = Component.extend({
       .attr('id', function() {
         return `expand-${counter++}`;
       })
-      .on('click', function(currentNode) {
+      .on('click', function(d) {
         event.stopImmediatePropagation();
-
-        const $el = event.currentTarget;
-        $el.setAttribute('class', 'button-wrapper process-filter');
-
-        if (hideEvent) {
-          run.cancel(hideEvent);
-          hideEvent = null;
+        if (d._children || d.children) { // Child nodes are already fetched and partially drawn. Initial state
+          if (d.data._children) {
+            d.children = d.children.concat(getNewNodes(d, d.data._children));
+            d.data._children = null;
+          }
+          self._showPopup(this, d);
+        } else { // Children not fetched
+          self._getChildProcess(d, this);
         }
 
-        const event1 = run.later(async() => {
-          if (!$el) {
-            return;
-          }
-          sendTetherEvent($el, 'process-filter', self.get('eventBus'), 'display', currentNode);
-          if (hideEvent) {
-            run.cancel(hideEvent);
-            hideEvent = null;
-          }
-        }, 200);
-        displayEvent = event1;
+        this.setAttribute('class', `${this.getAttribute('class')} process-filter`);
       });
     appendExpandCollapseIcon(collapseWrapper, collapseIcon, expandIcon, width);
   },
@@ -370,8 +369,8 @@ const TreeComponent = Component.extend({
         return `endpoint-process-${freeIdCounter++}`;
       })
       .on('mouseover', function(d) {
-        const $el = $(this);
-        $el.addClass('panel1');
+        const element = this;
+        element.setAttribute('class', 'panel1');
         if (hideEvent) {
           run.cancel(hideEvent);
           hideEvent = null;
@@ -380,25 +379,25 @@ const TreeComponent = Component.extend({
         const hashes = [checksum];
 
         const event = run.later(async() => {
-          if (!$el[0]) {
+          if (!element) {
             return;
           }
           self.set('process', d.data);
           await self.send('getFileProperty', { hashes }, self.get('selectedServerId'));
-          sendTetherEvent($el[0], 'panel1', eventBus, 'display', processDetails(d.data));
+          sendTetherEvent(element, 'panel1', eventBus, 'display', processDetails(d.data));
         }, 200);
         displayEvent = event;
       })
       .on('mouseleave', function(d) {
-        const $el = $(this);
-        $el.addClass('panel1');
+        const element = this;
+        element.setAttribute('class', 'panel1');
         if (displayEvent) {
           run.cancel(displayEvent);
           displayEvent = null;
         }
         const event = run.later(() => {
-          if ($el[0]) {
-            sendTetherEvent($el[0], 'panel1', eventBus, 'hide', d);
+          if (element) {
+            sendTetherEvent(element, 'panel1', eventBus, 'hide', d);
           }
         }, 200);
         hideEvent = event;
@@ -424,32 +423,23 @@ const TreeComponent = Component.extend({
     }
   },
 
-  expandProcess(d) {
-    if (d._children || d.children) {
-      let modifiedChildren = [];
-      // Show remaining children
-      if (d.data._children && d.data._children.length) {
-        modifiedChildren = d.children.concat(getNewNodes(d, d.data._children));
-        d.data._children = null;
-      } else {
-        modifiedChildren = d.children || [];
+  _getChildProcess(d, element) {
+    const onComplete = () => {
+      const children = this.get('children');
+      if (children && children.length) {
+        const nodes = getNewNodes(d, children);
+        d.children = nodes;
+        d.data.children = nodes;
+        d._children = null;
       }
-      d.children = d._children || modifiedChildren;
-      d._children = null;
-      this._buildChart(d);
-    } else {
-      const onComplete = () => {
-        const children = this.get('children');
-        if (children && children.length) {
-          const nodes = getNewNodes(d, children);
-          d.children = nodes;
-          d.data.children = nodes;
-          d._children = null;
-          this._buildChart(d);
-        }
-      };
-      this.send('getChildEvents', d.data.processId, { onComplete });
-    }
+      this._showPopup(element, d);
+    };
+    this.send('getChildEvents', d.data.processId, { onComplete });
+  },
+
+  expandProcess(d) {
+    d._children = null;
+    this._buildChart(d);
   },
 
   processProperties(d) {
