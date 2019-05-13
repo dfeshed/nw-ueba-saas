@@ -290,7 +290,6 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
 
     @Override
     public int getNumOfDistinctSmartEntities(TimeRange timeRange, String configurationName) {
-        //reading smarts from the hourly smarts collections only!
         SmartRecordsMetadata smartRecordsMetadata = new SmartRecordsMetadata(configurationName, timeRange.getStart(), timeRange.getEnd());
         List<ContextIdToNumOfItems> contextIdToNumOfSmarts = smartDataReader.aggregateContextIdToNumOfEvents(smartRecordsMetadata, 0);
         if(contextIdToNumOfSmarts == null) {

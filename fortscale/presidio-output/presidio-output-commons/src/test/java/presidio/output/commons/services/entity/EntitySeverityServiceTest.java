@@ -22,10 +22,10 @@ public class EntitySeverityServiceTest {
     public EntitySeverityServiceTest() {
         Map<EntitySeverity, EntitySeverityComputeData> severityToComputeDataMap = new LinkedHashMap<>();
 
-        severityToComputeDataMap.put(EntitySeverity.CRITICAL, new EntitySeverityComputeData(1, 1.5, 5d));
-        severityToComputeDataMap.put(EntitySeverity.HIGH, new EntitySeverityComputeData(4, 1.3, 10d));
+        severityToComputeDataMap.put(EntitySeverity.CRITICAL, new EntitySeverityComputeData(1d, 1.5d, 5d));
+        severityToComputeDataMap.put(EntitySeverity.HIGH, new EntitySeverityComputeData(4d, 1.3, 10d));
         severityToComputeDataMap.put(EntitySeverity.MEDIUM, new EntitySeverityComputeData(10.0, 1.1));
-        severityToComputeDataMap.put(EntitySeverity.LOW, new EntitySeverityComputeData(80));
+        severityToComputeDataMap.put(EntitySeverity.LOW, new EntitySeverityComputeData(80d));
         entitySeverityService = new EntitySeverityServiceImpl(severityToComputeDataMap, entityPropertiesUpdateService);
     }
 

@@ -30,6 +30,8 @@ def convert_users_to_entities(hits):
                 'severity': item["_source"]["severity"],
                 'tags': item["_source"]["tags"],
                 'alertsCount': item["_source"]["alertsCount"],
+                'lastUpdateLogicalStartDate': item["_source"]["updatedByLogicalStartDate"],
+                'lastUpdateLogicalEndDate': item["_source"]["updatedByLogicalEndDate"],
                 'entityType': entity_type
         }
 
