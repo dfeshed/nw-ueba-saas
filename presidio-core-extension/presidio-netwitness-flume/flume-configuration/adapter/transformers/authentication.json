@@ -244,17 +244,6 @@
       "transformerList": [
         {
           "type": "filter",
-          "name": "action-is-auth-filter",
-          "predicate": {
-            "type": "regex",
-            "name": "action-is-login-or-sshd",
-            "sourceKey": "action",
-            "regex": "\\/usr\\/bin\\/login|\\/usr\\/sbin\\/sshd"
-          },
-          "filterIn": true
-        },
-        {
-          "type": "filter",
           "name": "user-is-unknown",
           "predicate": {
             "type": "regex",
@@ -280,6 +269,15 @@
           "name": "date-time-millis-to-nano-representation",
           "sourceKey": "event_time",
           "destinationKey": "dateTime"
+        },
+        {
+          "type": "copy_value",
+          "name": "rename-action-to-data-source",
+          "sourceKey": "action[0]",
+          "isRemoveSourceKey": true,
+          "destinationKeys": [
+            "dataSource"
+          ]
         },
         {
           "type": "regex_captor_and_formatter",
@@ -426,15 +424,6 @@
           "isRemoveSourceKey": true,
           "destinationKeys": [
             "eventId"
-          ]
-        },
-        {
-          "type": "copy_value",
-          "name": "rename-action-to-data-source",
-          "sourceKey": "action",
-          "isRemoveSourceKey": true,
-          "destinationKeys": [
-            "dataSource"
           ]
         },
         {
