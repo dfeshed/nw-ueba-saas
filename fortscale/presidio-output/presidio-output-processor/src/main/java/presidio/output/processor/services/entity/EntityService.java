@@ -35,6 +35,9 @@ public interface EntityService {
      */
     boolean updateAllEntitiesAlertData(Instant endDate);
 
+
     void updateEntityData(Instant endDate);
+
+    String convertConfigNameToEntityType(String configurationName);
 
 }

@@ -236,6 +236,15 @@ public class EntityServiceImpl implements EntityService {
     }
 
     @Override
+    public String convertConfigNameToEntityType(String configurationName){
+        if(configurationName.contains("_")){
+            return configurationName.substring(0, configurationName.indexOf("_"));
+        }
+
+        return configurationName;
+    }
+
+    @Override
     public void recalculateEntityAlertData(Entity entity) {
         List<Alert> alerts = alertPersistencyService.findByEntityDocumentId(entity.getId());
         EntitiesAlertData entitiesAlertData = new EntitiesAlertData();

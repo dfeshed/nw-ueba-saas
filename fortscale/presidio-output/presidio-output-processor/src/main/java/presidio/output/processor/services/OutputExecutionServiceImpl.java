@@ -202,7 +202,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     }
 
     @Override
-    public void cleanAlerts(Instant startDate, Instant endDate, String entityType) throws Exception {
+    public void cleanAlerts(Instant startDate, Instant endDate, String configurationName) throws Exception {
+        String entityType = entityService.convertConfigNameToEntityType(configurationName);
+
         if(startDate == null){
             clean(Instant.EPOCH, endDate.minus(retentionOutputDataDays, ChronoUnit.DAYS), entityType);
         } else {
