@@ -35,7 +35,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final int smartThresholdScoreForCreatingAlert;
     private final int smartPageSize;
     private final int alertPageSize;
-    private final long retentionEnrichedEventsDays;
     private final long retentionOutputDataDays;
 
 
@@ -46,7 +45,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                                       EntityService entityService,
                                       EventPersistencyService eventPersistencyService,
                                       OutputMonitoringService outputMonitoringService,
-                                      int smartThresholdScoreForCreatingAlert, int smartPageSize, int alertPageSize, long retentionEnrichedEventsDays, long retentionOutputDataDays) {
+                                      int smartThresholdScoreForCreatingAlert, int smartPageSize, int alertPageSize, long retentionOutputDataDays) {
         this.adeManagerSdk = adeManagerSdk;
         this.alertService = alertService;
         this.entityService = entityService;
@@ -54,7 +53,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         this.smartPageSize = smartPageSize;
         this.alertPageSize = alertPageSize;
         this.smartThresholdScoreForCreatingAlert = smartThresholdScoreForCreatingAlert;
-        this.retentionEnrichedEventsDays = retentionEnrichedEventsDays;
         this.retentionOutputDataDays = retentionOutputDataDays;
         this.outputMonitoringService = outputMonitoringService;
     }
