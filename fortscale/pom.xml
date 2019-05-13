@@ -131,6 +131,7 @@
         <auto-service.version>1.0-rc3</auto-service.version>
         <spring-context-support.version>${spring.version}</spring-context-support.version>
         <spring-test.version>4.3.20.RELEASE</spring-test.version>
+        <jackson.version>2.9.8</jackson.version>
     </properties>
 
     <dependencyManagement>
