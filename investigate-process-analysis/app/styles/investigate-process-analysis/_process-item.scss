@@ -1,7 +1,7 @@
 .process-item-container {
   color: white;
-  height: 100px;
-  padding: 40px;
+  width: 390px;
+  padding: 5px;
   .risk-score {
     padding-top: 1px;
   }
@@ -62,4 +62,9 @@
     }
   }
 
+  svg {
+    width: inherit;
+    height: inherit;
+    position: inherit;
+  }
 }
