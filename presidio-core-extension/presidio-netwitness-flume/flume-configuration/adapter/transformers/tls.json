@@ -1,0 +1,103 @@
+{
+  "type": "chain",
+  "name": "tls-transformer",
+  "transformerList": [
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-operation-type",
+      "sourceKey": "direction",
+      "targetKey": "direction",
+      "sourceStringFormat": "LOWER_UNDERSCORE",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
+      "type": "filter",
+      "name": "filter-direction",
+      "predicate": {
+        "type": "regex",
+        "name": "direction-white-list",
+        "sourceKey": "direction",
+        "regex": "OUTBOUND"
+      },
+      "filterIn": true
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-event-source-id-to-event-id",
+      "sourceKey": "event_source_id",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "eventId"
+      ]
+    },
+    {
+      "type": "epoch",
+      "name": "date-time-millis-to-nano-representation",
+      "sourceKey": "event_time",
+      "destinationKey": "dateTime"
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-ip-src",
+      "sourceKey": "ip_src",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "srcIp"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-country-dst",
+      "sourceKey": "country_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstCountry"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-ssl-subject",
+      "sourceKey": "ssl_subject",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "sslSubject"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-alias-host",
+      "sourceKey": "alias_host[0]",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "domain"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-org-dst",
+      "sourceKey": "org_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstOrg"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-asn-dst",
+      "sourceKey": "asn_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstAsn"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-payload-req",
+      "sourceKey": "payload_req",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "numOfBytesSent"
+      ]
+    }
+  ]
+}
