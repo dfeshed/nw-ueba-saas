@@ -32,7 +32,6 @@ const initializeAlerts = () => {
     if (!getCategoryTags(state).length) {
       dispatch(dictionaryCreators.getAllCategories());
     }
-    dispatch(dictionaryCreators.getAllAlertNames());
   };
 };
 

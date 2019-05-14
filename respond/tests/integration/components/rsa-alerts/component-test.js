@@ -128,11 +128,12 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     await settled().then(() => done());
   });
 
-  test('Selecting and deselecting a filter refelects the selection/deselection in the UI', async function(assert) {
+  test('Selecting and deselecting a filter reflects the selection/deselection in the UI', async function(assert) {
     const done = assert.async();
     await render(hbs`{{rsa-alerts}}`);
     setState();
     await waitForReduxStateChange(redux, 'respond.alerts.items');
+    await waitForReduxStateChange(redux, 'respond.dictionaries.alertNames');
     assert.equal(find(`${selectors.alertTypeFilters} .rsa-form-checkbox-label:first-of-type`).classList.contains('checked'), false, 'The filter is not selected');
     await click(`${selectors.alertTypeFilters} .rsa-form-checkbox-label:first-of-type`);
     assert.equal(find(`${selectors.alertTypeFilters} .rsa-form-checkbox-label:first-of-type`).classList.contains('checked'), true, 'The filter is selected');

@@ -146,7 +146,7 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     await settled().then(() => done());
   });
 
-  test('Selecting and deselecting a filter refelects the selection/deselection in the UI', async function(assert) {
+  test('Selecting and deselecting a filter reflects the selection/deselection in the UI', async function(assert) {
     const done = assert.async();
     await render(hbs`{{rsa-incidents}}`);
     setState();
