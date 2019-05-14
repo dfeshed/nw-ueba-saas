@@ -131,7 +131,7 @@
         <auto-service.version>1.0-rc3</auto-service.version>
         <spring-context-support.version>${spring.version}</spring-context-support.version>
         <spring-test.version>4.3.20.RELEASE</spring-test.version>
-        <jackson-databind.version>2.9.8</jackson-databind.version>
+        <jackson.version>2.9.8</jackson.version>
         <log4j.version>2.11.2</log4j.version>
     </properties>
 
@@ -208,7 +208,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson-databind.version}</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
