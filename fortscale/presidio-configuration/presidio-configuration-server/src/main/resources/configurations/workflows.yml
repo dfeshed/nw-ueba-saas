@@ -185,10 +185,11 @@ components:
         accumulate_interval_in_days: 1
         min_data_time_range_for_building_models_in_days: 14
 retention:
-  command: applyRetentionPolicy
   input:
+    command: applyRetentionPolicy
     min_time_to_start_retention_in_days: 2
     retention_interval_in_hours: 24
   output:
+    command: cleanup
     min_time_to_start_retention_in_days: 2
     retention_interval_in_hours: 24
