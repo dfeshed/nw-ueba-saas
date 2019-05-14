@@ -14,16 +14,26 @@ import static fortscale.utils.transform.TransformerUtil.*;
 
 
 
-public class ExtractFirstValueInAnArrayWhichAnswerRegexTransformerTest {
+public class FirstArrayValueRegexCaptorAndFormatterTest {
     private static final String SOURCE_KEY = "src";
     private static final String TARGET_KEY = "tgt";
+
+    @Test(expected = NullPointerException.class)
+    public void testNullCaptureAndFormatConfiguration(){
+        FirstArrayValueRegexCaptorAndFormatter extractSrc =
+                new FirstArrayValueRegexCaptorAndFormatter(
+                        "extract-src",
+                        SOURCE_KEY,
+                        TARGET_KEY,
+                        null);
+    }
 
     @Test
     public void test1(){
         CaptureAndFormatConfiguration srcConfiguration = new CaptureAndFormatConfiguration("(.+) src", "%s",
                 Collections.singletonList(new CapturingGroupConfiguration(1, "")));
-        ExtractFirstValueInAnArrayWhichAnswerRegexTransformer extractSrc =
-                new ExtractFirstValueInAnArrayWhichAnswerRegexTransformer(
+        FirstArrayValueRegexCaptorAndFormatter extractSrc =
+                new FirstArrayValueRegexCaptorAndFormatter(
                         "extract-src",
                         SOURCE_KEY,
                         TARGET_KEY,
@@ -43,8 +53,8 @@ public class ExtractFirstValueInAnArrayWhichAnswerRegexTransformerTest {
     public void test2(){
         CaptureAndFormatConfiguration srcConfiguration = new CaptureAndFormatConfiguration("(.+) dst", "%s",
                 Collections.singletonList(new CapturingGroupConfiguration(1, "")));
-        ExtractFirstValueInAnArrayWhichAnswerRegexTransformer extractSrc =
-                new ExtractFirstValueInAnArrayWhichAnswerRegexTransformer(
+        FirstArrayValueRegexCaptorAndFormatter extractSrc =
+                new FirstArrayValueRegexCaptorAndFormatter(
                         "extract-src",
                         SOURCE_KEY,
                         TARGET_KEY,

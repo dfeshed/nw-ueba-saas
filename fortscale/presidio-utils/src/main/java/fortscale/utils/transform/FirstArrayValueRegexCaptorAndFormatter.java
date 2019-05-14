@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import static org.apache.commons.lang3.Validate.notBlank;
+import static org.apache.commons.lang3.Validate.notNull;
 
 @JsonAutoDetect(
         creatorVisibility = JsonAutoDetect.Visibility.ANY,
@@ -20,9 +21,9 @@ import static org.apache.commons.lang3.Validate.notBlank;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
-public class ExtractFirstValueInAnArrayWhichAnswerRegexTransformer extends AbstractJsonObjectTransformer{
+public class FirstArrayValueRegexCaptorAndFormatter extends AbstractJsonObjectTransformer{
 
-    public static final String TYPE = "top_private_domain";
+    public static final String TYPE = "first_array_value_regex_captor_and_formatter";
 
     private String sourceArrayKey;
     private String targetKey;
@@ -34,7 +35,7 @@ public class ExtractFirstValueInAnArrayWhichAnswerRegexTransformer extends Abstr
     private SetterTransformer targetValueSetter;
 
     @JsonCreator
-    public ExtractFirstValueInAnArrayWhichAnswerRegexTransformer(
+    public FirstArrayValueRegexCaptorAndFormatter(
             @JsonProperty("name") String name,
             @JsonProperty("sourceArrayKey") String sourceArrayKey,
             @JsonProperty("targetKey") String targetKey,
@@ -45,7 +46,7 @@ public class ExtractFirstValueInAnArrayWhichAnswerRegexTransformer extends Abstr
         this.targetKey = notBlank(targetKey, "targetKey cannot be blank, empty or null.");
         this.jsonValueExtractor = new JsonPointerValueExtractor(sourceArrayKey);
         this.targetValueSetter = SetterTransformer.forKey(targetKey);
-        this.captureAndFormatConfiguration = captureAndFormatConfiguration;
+        this.captureAndFormatConfiguration = notNull(captureAndFormatConfiguration);
     }
 
     @Override
@@ -63,7 +64,6 @@ public class ExtractFirstValueInAnArrayWhichAnswerRegexTransformer extends Abstr
             }
         }
         targetValueSetter.setValue(destinationValue);
-        targetValueSetter.transform(jsonObject);
-        return jsonObject;
+        return targetValueSetter.transform(jsonObject);
     }
 }

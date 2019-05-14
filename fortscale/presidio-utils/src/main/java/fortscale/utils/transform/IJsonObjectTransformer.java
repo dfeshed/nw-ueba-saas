@@ -19,6 +19,8 @@ import org.json.JSONObject;
         @JsonSubTypes.Type(value = CopyValueTransformer.class, name = CopyValueTransformer.TYPE),
         @JsonSubTypes.Type(value = SetterTransformer.class, name = SetterTransformer.TYPE),
         @JsonSubTypes.Type(value = JoinTransformer.class, name = JoinTransformer.TYPE),
+        @JsonSubTypes.Type(value = TopLevelDomainTransformer.class, name = TopLevelDomainTransformer.TYPE),
+        @JsonSubTypes.Type(value = FirstArrayValueRegexCaptorAndFormatter.class, name = FirstArrayValueRegexCaptorAndFormatter.TYPE),
         @JsonSubTypes.Type(value = StringFormatTransformer.class, name = StringFormatTransformer.TYPE)
 })
 public interface IJsonObjectTransformer {

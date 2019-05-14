@@ -1,23 +1,17 @@
 package fortscale.utils.transform;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import fortscale.utils.transform.predicate.JsonObjectChainPredicate;
-import fortscale.utils.transform.predicate.JsonObjectKeyExistPredicate;
 import fortscale.utils.transform.predicate.JsonObjectRegexPredicate;
 import fortscale.utils.transform.regexcaptureandformat.CaptureAndFormatConfiguration;
 import fortscale.utils.transform.regexcaptureandformat.CapturingGroupConfiguration;
-import fortscale.utils.transform.regexcaptureandformat.RegexCaptorAndFormatter;
 import fortscale.utils.transform.stringformat.StringFormat;
 import fortscale.utils.transform.stringformat.StringFormatTransformer;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static fortscale.utils.transform.predicate.JsonObjectChainPredicate.LogicalOperation.AND;
 
 public class TlsTransformerTest extends TransformerTest{
     private static final String UDM_EVENT_SOURCE_ID_FIELD_NAME = "event_source_id";
@@ -165,8 +159,8 @@ public class TlsTransformerTest extends TransformerTest{
         //extract src netname
         CaptureAndFormatConfiguration srcNetnameConfiguration = new CaptureAndFormatConfiguration("(.+) src", "%s",
                 Collections.singletonList(new CapturingGroupConfiguration(1, "LOWER")));
-        ExtractFirstValueInAnArrayWhichAnswerRegexTransformer extractSrcNetname =
-                new ExtractFirstValueInAnArrayWhichAnswerRegexTransformer(
+        FirstArrayValueRegexCaptorAndFormatter extractSrcNetname =
+                new FirstArrayValueRegexCaptorAndFormatter(
                         "extract-src-netname",
                         UDM_NETNAME_FIELD_NAME,
                         SRC_NETNAME_FIELD_NAME,
@@ -176,8 +170,8 @@ public class TlsTransformerTest extends TransformerTest{
         //extract dst netname
         CaptureAndFormatConfiguration dstNetnameConfiguration = new CaptureAndFormatConfiguration("(.+) dst", "%s",
                 Collections.singletonList(new CapturingGroupConfiguration(1, "LOWER")));
-        ExtractFirstValueInAnArrayWhichAnswerRegexTransformer extractDstNetname =
-                new ExtractFirstValueInAnArrayWhichAnswerRegexTransformer(
+        FirstArrayValueRegexCaptorAndFormatter extractDstNetname =
+                new FirstArrayValueRegexCaptorAndFormatter(
                         "extract-dst-netname",
                         UDM_NETNAME_FIELD_NAME,
                         DST_NETNAME_FIELD_NAME,

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.net.InternetDomainName;
 import fortscale.utils.json.IJsonValueExtractor;
 import fortscale.utils.json.JsonPointerValueExtractor;
+import fortscale.utils.logging.Logger;
 import org.json.JSONObject;
 
 import static org.apache.commons.lang3.Validate.notBlank;
@@ -20,6 +21,7 @@ import static org.apache.commons.lang3.Validate.notBlank;
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
 public class TopLevelDomainTransformer extends AbstractJsonObjectTransformer{
+    private static final Logger logger = Logger.getLogger(TopLevelDomainTransformer.class);
 
     public static final String TYPE = "top_level_domain";
     private static final boolean IS_REMOVE_SOURCE_KEY_DEFAULT = false;
@@ -60,7 +62,9 @@ public class TopLevelDomainTransformer extends AbstractJsonObjectTransformer{
             targetValueSetter.transform(jsonObject);
             // Currently the removal of the source key is only supported for non-hierarchical keys.
             if (isRemoveSourceKey) jsonObject.remove(sourceKey);
-        } catch (Exception e){}
+        } catch (Exception e){
+            logger.debug("got an exception while trying to extract top level domain",e);
+        }
         return jsonObject;
     }
 }
