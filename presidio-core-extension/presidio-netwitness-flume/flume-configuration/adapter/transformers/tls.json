@@ -64,7 +64,7 @@
       ]
     },
     {
-      "type": "TopLevelDomainTransformer",
+      "type": "top_level_domain ",
       "name": "alias-host-to-top-level-domain",
       "sourceKey": "alias_host[0]",
       "isRemoveSourceKey": false,
@@ -107,7 +107,7 @@
       ]
     },
     {
-      "type": "ExtractFirstValueInAnArrayWhichAnswerRegexTransformer",
+      "type": "extract_first_value_in_an_array_which_answer_regex",
       "name": "extract-src-netname",
       "sourceArrayKey": "netname",
       "targetKey": "srcNetname",
@@ -123,7 +123,7 @@
       }
     },
     {
-      "type": "ExtractFirstValueInAnArrayWhichAnswerRegexTransformer",
+      "type": "extract_first_value_in_an_array_which_answer_regex",
       "name": "extract-dst-netname",
       "sourceArrayKey": "netname",
       "targetKey": "dstNetname",
