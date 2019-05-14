@@ -74,3 +74,16 @@ $filter-panel-width: 250px;
     }
   }
 }
+.host-more-actions {
+  .rsa-dropdown-action-list li{
+    &:first-child {
+      padding-top: 1rem;
+    }
+    &:last-child {
+      padding-bottom: 1rem;
+    }
+    &.divider {
+      margin: 0.75rem 0 0 0;
+    }
+  }
+}

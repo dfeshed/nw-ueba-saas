@@ -22,9 +22,16 @@
         color: text-color(primary);
       }
     }
+    &:first-child {
+      padding-top: 1rem;
+    }
+    &:last-child {
+      padding-bottom: 1rem;
+    }
    
   }
   .show-divider {
     @include border-top(1px, solid, primary, base, opaque);
+    padding: 1rem;
   }
 }

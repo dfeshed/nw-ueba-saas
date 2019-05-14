@@ -78,10 +78,9 @@
     padding-left: rsa-whitespace();
   }
   .host-action {
-    padding-top: 1rem;
     padding-right: rsa-whitespace(more);
     text-transform: uppercase;
-    height: 3rem;
+    margin: auto 0;
     &.rsa-content-definition {
       .label {
         @include rsa-font(header, small);
@@ -95,7 +94,7 @@
       }
       .value {
         color: text-color(primary, lightest);
-        font-weight: bold;
+        font-weight: 400;
       }
     }
   }

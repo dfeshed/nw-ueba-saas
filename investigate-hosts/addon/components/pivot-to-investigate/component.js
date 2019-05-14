@@ -30,6 +30,8 @@ const PivotToInvestigate = Component.extend({
 
   item: null,
 
+  size: 'small',
+
   investigateText: null,
 
   timeRange: {

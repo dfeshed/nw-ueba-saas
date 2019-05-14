@@ -25,7 +25,8 @@ export default Component.extend({
       {
         panelId: 'panel3',
         name: 'investigateShared.endpoint.fileActions.downloadMFT',
-        buttonId: 'downloadMFT-button'
+        buttonId: 'downloadMFT-button',
+        divider: true
       }
     ];
     if (this.get('isMFTEnabled').isDisplayed && (this.get('selectedHostList').length === 1)) {

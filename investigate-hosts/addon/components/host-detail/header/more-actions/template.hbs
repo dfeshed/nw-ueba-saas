@@ -1,0 +1,52 @@
+{{#rsa-content-tethered-panel-trigger
+  panel='host-details-more-actions'
+  triggerEvent='click'
+}}
+  {{#rsa-form-button
+    isIconOnly=true
+    title=(t 'investigateShared.endpoint.fileActions.moreActions')
+    withDropdown=false
+    class='more-action-button'}}
+    {{rsa-icon name='navigation-show-more-2' size='small'}}
+  {{/rsa-form-button}}
+{{/rsa-content-tethered-panel-trigger}}
+
+{{#rsa-content-tethered-panel
+  panelClass='host-details-more-actions'
+  displayCloseButton=false
+  isPopover=true
+  panelId='host-details-more-actions'
+  position='bottom-right'
+}}
+  <ul class='host-details_dropdown-action-list'>
+    {{#each moreOptions as |moreOption|}}
+      {{#if (eq moreOption.buttonId 'startScan-button')}}
+        <li>
+          {{host-scan/scan-command
+      modalTitle=(t 'investigateHosts.hosts.initiateScan.modal.modalTitle' name=hostName)
+      command='START_SCAN'
+      isStartScanIconDisplayed=false
+      title=actionsDisableMessage}}
+        </li>
+      {{else if (eq moreOption.buttonId 'export-button')}}
+        <li>
+          {{#if isJsonExportCompleted}}
+            <span title='{{t 'investigateHosts.hosts.button.exportTooltip'}}'>
+              {{#rsa-form-button
+                click=(action 'exportHostDetails')
+                isDisabled=isExportDisabled}}
+                {{t 'investigateHosts.hosts.button.export'}}
+              {{/rsa-form-button}}
+            </span>
+          {{else}}
+            {{#rsa-form-button isDisabled=true}}
+              {{rsa-loader}} {{t 'investigateHosts.hosts.button.downloading'}}
+            {{/rsa-form-button}}
+          {{/if}}
+        </li>
+      {{else if (eq moreOption.buttonId 'downloadMFT-button')}}
+        <li class="downloadMFT-button{{if moreOption.divider ' divider'}}" {{action 'requestMFTDownload'}}>{{t moreOption.name}}</li>
+      {{/if}}
+    {{/each}}
+  </ul>
+{{/rsa-content-tethered-panel}}

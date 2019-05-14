@@ -15,26 +15,23 @@
     {{/power-select}}
   </label>
 </div>
-<hbox class="rsa-button-group host-action-buttons">
-  <div class="action-button">
-    {{host-scan/scan-command
-      modalTitle=(t 'investigateHosts.hosts.initiateScan.modal.modalTitle' name=hostName)
-      command='START_SCAN' title=actionsDisableMessage}}
-  </div>
-  <div class="action-button">
-    {{#if isJsonExportCompleted}}
-      <span title="{{t 'investigateHosts.hosts.button.exportTooltip'}}">
-        {{#rsa-form-button
-          click=(action 'export')
-          isDisabled=isExportDisabled}}
-          {{t 'investigateHosts.hosts.button.export'}}
-        {{/rsa-form-button}}
-      </span>
-    {{else}}
-      {{#rsa-form-button isDisabled=true}}
-        {{rsa-loader}} {{t 'investigateHosts.hosts.button.downloading'}}
-      {{/rsa-form-button}}
-    {{/if}}
-  </div>
-</hbox>
+
 <iframe src="{{downloadLink}}" class="host_export-files-iframe"></iframe>
+<div class="titlebar__buttons-holder flexi-fit">
+  {{#if showRightPanelButton}}
+    {{#rsa-form-button
+       title=(t 'investigateHosts.hosts.button.rightPanel')
+       class="open-properties"
+       isActive=isDetailRightPanelVisible
+       isIconOnly=true
+       defaultAction=(action 'toggleDetailRightPanel')
+    }}
+      {{rsa-icon name='layout-2' size='small'}}
+    {{/rsa-form-button}}
+    <div class='divider'/>
+  {{/if}}
+
+  {{#link-to 'hosts.index' (query-params machineId=null tabName=null sid=null subTabName=null pid=null)}}
+    {{rsa-icon class='header-button' name='close' title=(t 'investigateHosts.hosts.button.close')}}
+  {{/link-to}}
+</div>

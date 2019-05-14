@@ -24,6 +24,8 @@ const ScanCommand = Component.extend({
 
   command: null,
 
+  isStartScanIconDisplayed: true,
+
   @computed('command', 'modalTitle', 'scanCount')
   title(command, modalTitle, scanCount) {
     if (modalTitle) {

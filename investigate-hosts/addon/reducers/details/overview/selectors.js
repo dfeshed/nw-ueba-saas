@@ -1,6 +1,7 @@
 import reselect from 'reselect';
 import securityConfig from './config';
 import { secondsToMinutesConverter } from 'investigate-hosts/reducers/details/selector-utils';
+import { isOSWindows, isModeAdvance, isAgentVersionAdvanced } from 'investigate-hosts/reducers/utils/mft-utils';
 import _ from 'lodash';
 
 const { createSelector } = reselect;
@@ -344,4 +345,16 @@ export const hostOverviewServerId = createSelector(
 export const policiesUnavailableMessage = createSelector(
   [_activePropertyPanelTab, getPoliciesPropertyData],
   (tab, policiesPropertyData) => tab === 'POLICIES' && _.isEmpty(policiesPropertyData) ? 'Policy unavailable' : null
+);
+
+export const mftDownloadButtonStatusDetails = createSelector(
+  [_hostDetails],
+  ({ machineIdentity = {} }) => {
+    const { machineOsType, agentMode, agentVersion } = machineIdentity;
+    let isMFTEnabled = false;
+    if (isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion)) {
+      isMFTEnabled = true;
+    }
+    return { isDisplayed: isMFTEnabled };
+  }
 );

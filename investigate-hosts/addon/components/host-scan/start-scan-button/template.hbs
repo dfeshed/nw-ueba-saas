@@ -5,7 +5,9 @@
   {{#if isIconOnly}}
     {{rsa-icon name='play-button-2'}}
   {{else}}
-    {{rsa-icon name='check-shield' style='lined' size='small'}}
+    {{#if isStartScanIconDisplayed}}
+      {{rsa-icon name='check-shield' style='lined' size='small'}}
+    {{/if}}
     {{buttonText}}
   {{/if}}
 {{/rsa-form-button}}

@@ -12,6 +12,7 @@ $result-text-color: text-color(primary, light);
   margin-left: auto;
   background: $background-color;
   height: 2.5rem;
+  margin-bottom: rsa-whitespace(less);
 
   &__loader {
     height: 0;

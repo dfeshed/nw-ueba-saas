@@ -1,39 +1,6 @@
-<hbox class="host-title" fit>
-  {{rsa-icon  disabled=false  class='host-title-icon'  name='computer-notebook-2'}}
-  {{#pivot-to-investigate
-    serviceList=serviceList
-    serviceId=serviceId
-    metaName='machineIdentity.machineName'
-    metaValue=hostName
-    showAsRightClick=true}}
-    <div class="host-name">{{hostName}}</div>
-  {{/pivot-to-investigate}}
-  <div class='divider'/>
-</hbox>
-
 {{#host-detail/utils/host-title-bar tabs=hostDetailTabs defaultAction=(action 'setNewTabView') as |tab|}}
   {{#link-to (query-params tabName=tab.name subTabName=null)}}
     <div class="label">{{t tab.label}}</div>
   {{/link-to}}
 {{/host-detail/utils/host-title-bar}}
 {{host-detail/header/titlebar/explore}}
-
-<hbox class="titlebar__buttons-holder flexi-fit">
-  {{#if showRightPanelButton}}
-    {{#rsa-form-button
-       title=(t 'investigateHosts.hosts.button.rightPanel')
-       class="open-properties"
-       isActive=isDetailRightPanelVisible
-       isIconOnly=true
-       defaultAction=(action 'toggleDetailRightPanel')
-    }}
-      {{rsa-icon name='layout-2' size='small'}}
-    {{/rsa-form-button}}
-  {{/if}}
-
-  <div class='divider'/>
-  {{#link-to 'hosts.index' (query-params machineId=null tabName=null sid=null subTabName=null pid=null)}}
-    {{rsa-icon class='header-button' name='close' title=(t 'investigateHosts.hosts.button.close')}}
-  {{/link-to}}
-</hbox>
-

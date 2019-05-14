@@ -257,7 +257,7 @@ module('Integration | Component | host-detail', function(hooks) {
       .host(host)
       .build();
     await render(hbs`{{host-detail}}`);
-    assert.equal(findAll('.rsa-loader').length, 2, 'loader is visible');
+    assert.equal(findAll('.rsa-loader').length, 1, 'loader is visible');
   });
 
   test('it renders loader when isSnapshotsLoading is false', async function(assert) {

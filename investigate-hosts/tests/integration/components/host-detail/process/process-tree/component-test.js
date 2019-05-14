@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled, find, findAll, click, waitUntil, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
@@ -1462,7 +1462,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
   });
 
-  test('Clicking on a column in the column selector, toggles the visibility of the column in the table', async function(assert) {
+  skip('Clicking on a column in the column selector, toggles the visibility of the column in the table', async function(assert) {
     new ReduxDataHelper(setState)
       .agentId(1)
       .scanTime(123456789)

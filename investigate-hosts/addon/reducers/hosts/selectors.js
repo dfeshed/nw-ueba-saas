@@ -1,6 +1,7 @@
 import reselect from 'reselect';
 import { getSelectedAgentIds } from 'investigate-hosts/util/util';
 import { isBrokerView } from 'investigate-shared/selectors/endpoint-server/selectors';
+import { isOSWindows, isModeAdvance, isAgentVersionAdvanced } from 'investigate-hosts/reducers/utils/mft-utils';
 const { createSelector } = reselect;
 
 const SUPPORTED_SERVICES = [ 'broker', 'concentrator', 'decoder', 'log-decoder', 'archiver' ];
@@ -245,38 +246,25 @@ export const actionsDisableMessage = createSelector(
   }
 );
 
-const _isOSWindows = function(value = '') {
-  return value.toLowerCase() === 'windows';
-};
-
-const _isModeAdvance = function(value = '') {
-  return value.toLowerCase() === 'advanced';
-};
-
-const _isAgentVersionAdvanced = function(version = '') {
-  const agentVersion = version.trim().split('.');
-  return (agentVersion.length >= 2) ? (agentVersion[0] == 11 && agentVersion[1] >= 4) || (agentVersion[0] > 11) : false;
-};
-
 const _isMachineOSWindows = createSelector(
   [_selectedHostList],
   (selectedHostList) => {
     const { machineIdentity = { machineOsType: '' } } = selectedHostList.length ? selectedHostList[0] : { machineIdentity: { machineOsType: '' } };
-    return _isOSWindows(machineIdentity.machineOsType);
+    return isOSWindows(machineIdentity.machineOsType);
   });
 
 const _agentMode = createSelector(
   [_selectedHostList],
   (selectedHostList) => {
     const { machineIdentity = { agentMode: '' } } = selectedHostList.length ? selectedHostList[0] : { machineIdentity: { agentMode: '' } };
-    return _isModeAdvance(machineIdentity.agentMode);
+    return isModeAdvance(machineIdentity.agentMode);
   });
 
 const _agentVersion = createSelector(
   [_selectedHostList],
   (selectedHostList) => {
     const { version } = selectedHostList.length ? selectedHostList[0] : { version: '' };
-    return _isAgentVersionAdvanced(version);
+    return isAgentVersionAdvanced(version);
   });
 
 export const mftDownloadButtonStatus = createSelector(
@@ -296,7 +284,7 @@ export const processedHostList = createSelector(
         hasScanStatus = true;
         canStartScan = scanStatus === 'idle' || scanStatus === 'cancelPending';
       }
-      if (_isOSWindows(machineOsType) && _isModeAdvance(agentMode) && _isAgentVersionAdvanced(agentVersion)) {
+      if (isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion)) {
         isMFTEnabled = true;
       }
       return {

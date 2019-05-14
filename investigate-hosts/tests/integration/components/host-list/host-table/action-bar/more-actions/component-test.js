@@ -91,7 +91,7 @@ module('Integration | Component | host table action bar more actions', function(
 
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 3, '3 list options should render as MFT is enabled.');
-    assert.equal(findAll('.rsa-dropdown-action-list li')[2].textContent.trim(), 'Download MFT', 'Download MFT option is rendered.');
+    assert.equal(findAll('.rsa-dropdown-action-list li')[2].textContent.trim(), 'Request MFT download', 'Download MFT option is rendered.');
     await click(findAll('.rsa-dropdown-action-list li')[2]);
   });
 

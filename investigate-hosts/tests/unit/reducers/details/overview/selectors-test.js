@@ -18,6 +18,7 @@ import {
   selectedSnapshot,
   channelFiltersConfig,
   showWindowsLogPolicy,
+  mftDownloadButtonStatusDetails,
   hostOverviewServerId } from 'investigate-hosts/reducers/details/overview/selectors';
 
 test('machineOsType', function(assert) {
@@ -590,4 +591,72 @@ test('hostOverviewServerId', function(assert) {
 
   const result2 = hostOverviewServerId(Immutable.from({ endpoint: { overview: { hostOverview: { serviceId: '123' } } } }));
   assert.deepEqual(result2, '123');
+});
+
+test('mftDownloadButtonStatusDetails when true', function(assert) {
+  const result = mftDownloadButtonStatusDetails(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: {
+          machineIdentity: {
+            machineOsType: 'windows',
+            agentMode: 'advanced',
+            agentVersion: '11.4.0.0'
+          }
+        }
+      }
+    }
+  }));
+  assert.deepEqual(result, { isDisplayed: true });
+});
+
+test('mftDownloadButtonStatusDetails when agentVersion is wrong', function(assert) {
+  const result = mftDownloadButtonStatusDetails(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: {
+          machineIdentity: {
+            machineOsType: 'windows',
+            agentMode: 'advanced',
+            agentVersion: '11.3.0.0'
+          }
+        }
+      }
+    }
+  }));
+  assert.deepEqual(result, { isDisplayed: false });
+});
+
+test('mftDownloadButtonStatusDetails when machineOsType is wrong', function(assert) {
+  const result = mftDownloadButtonStatusDetails(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: {
+          machineIdentity: {
+            machineOsType: 'mac',
+            agentMode: 'advanced',
+            agentVersion: '11.4.0.0'
+          }
+        }
+      }
+    }
+  }));
+  assert.deepEqual(result, { isDisplayed: false });
+});
+
+test('mftDownloadButtonStatusDetails when agentMode is wrong', function(assert) {
+  const result = mftDownloadButtonStatusDetails(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: {
+          machineIdentity: {
+            machineOsType: 'windows',
+            agentMode: 'insights',
+            agentVersion: '11.4.0.0'
+          }
+        }
+      }
+    }
+  }));
+  assert.deepEqual(result, { isDisplayed: false });
 });

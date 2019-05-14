@@ -1,5 +1,44 @@
 .host-overview.host-item {
+  padding: rsa-whitespace() 0 0 rsa-whitespace();
   svg {
-    padding-right: rsa-whitespace(more);
+    padding-right: 0.75rem;
+  }
+  .host-title-os-wrapper{
+    margin-right: rsa-whitespace();
+    .host-name {
+      @include rsa-font(default, larger);
+      margin-bottom: 0.25rem;
+      font-weight: 300;
+    }
+    .osType {
+      @include rsa-font(default);
+      font-weight: 300;
+    }
+  }
+  .host-title_action-wrapper {
+    padding-top: 0.4rem;
+  }
+}
+.actionbar {
+  .panel-control-group {
+    margin: auto 0;
+  }
+  .titlebar__buttons-holder {
+    margin-left: auto;
+    margin-right: rsa-whitespace(less);
+    .divider {
+      width: 0;
+      float: left;
+      margin-right: rsa-whitespace();
+      height: 2.28rem;
+    }
+    .open-properties {
+      position: static;
+      float: left;
+    }
+    > a{
+      display: inline-block;
+      margin-top: 4px;
+    }
   }
 }

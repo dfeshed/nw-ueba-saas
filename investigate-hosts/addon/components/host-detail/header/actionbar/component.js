@@ -3,8 +3,6 @@ import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 import moment from 'moment';
 import {
-  isJsonExportCompleted,
-  isSnapshotsAvailable,
   downloadLink,
   hostName,
   selectedSnapshot
@@ -15,6 +13,8 @@ import {
   setTransition,
   initializeAgentDetails
 } from 'investigate-hosts/actions/data-creators/details';
+import { toggleDetailRightPanel } from 'investigate-hosts/actions/ui-state-creators';
+import { isOnOverviewTab } from 'investigate-hosts/reducers/visuals/selectors';
 
 
 const stateToComputed = (state) => ({
@@ -25,22 +25,23 @@ const stateToComputed = (state) => ({
   agentId: state.endpoint.detailsInput.agentId,
   snapShots: state.endpoint.detailsInput.snapShots,
   downloadLink: downloadLink(state),
-  isExportDisabled: !isSnapshotsAvailable(state),
-  isJsonExportCompleted: isJsonExportCompleted(state),
-  isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView
+  isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView,
+  isDetailRightPanelVisible: state.endpoint.detailsInput.isDetailRightPanelVisible,
+  showRightPanelButton: isOnOverviewTab(state)
 });
 
 const dispatchToActions = {
   setTransition,
   initializeAgentDetails,
-  exportFileContext
+  exportFileContext,
+  toggleDetailRightPanel
 };
 
 const ActionBar = Component.extend({
 
   tagName: 'hbox',
 
-  classNames: 'actionbar controls flexi-fit',
+  classNames: ['actionbar', 'controls'],
 
   eventBus: service(),
 
@@ -69,11 +70,6 @@ const ActionBar = Component.extend({
       } else {
         this.get('flashMessage').showErrorMessage(i18n.t('investigateHosts.hosts.moreActions.notAnEcatAgent'));
       }
-    },
-    export() {
-      const scanTime = this.get('scanTime');
-      const agentId = this.get('agentId');
-      this.send('exportFileContext', { agentId, scanTime, categories: ['AUTORUNS'] });
     }
   }
 });

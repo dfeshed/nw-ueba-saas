@@ -2,12 +2,29 @@
   {{rsa-content-definition class='host-action' value='N/A'}}
 {{else}}
   {{#if hostDetails.score}}
-    {{rsa-risk-score score=hostDetails.score size='large'}}
+    {{rsa-risk-score score=hostDetails.score size='large' radius=24}}
   {{else}}
-    {{rsa-risk-score score='0' size='large'}}
+    {{rsa-risk-score score='0' size='large' radius=24}}
   {{/if}}
 {{/if}}
-{{rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.column.machineIdentity.machineOsType') value=hostDetails.machineIdentity.machineOsType}}
+<hbox class="host-title" fit>
+  <div class='host-title-os-wrapper'>
+    <div class='host-name' title={{hostName}}>{{hostName}}</div>
+    <div class='osType'>{{hostDetails.machineIdentity.machineOsType}}</div>
+  </div>
+  <div class='host-title_action-wrapper'>
+    {{#pivot-to-investigate
+      serviceList=serviceList
+      serviceId=serviceId
+      metaName='machineIdentity.machineName'
+      size='large'
+      metaValue=hostName
+      showAsRightClick=false}}
+    {{/pivot-to-investigate}}
+    {{host-detail/header/more-actions}}
+  </div>
+  <div class='divider'/>
+</hbox>
 {{#rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.column.agentStatus.scanStatus')}}
   {{host-scan-status agent=hostDetails}}
 {{/rsa-content-definition}}

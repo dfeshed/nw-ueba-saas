@@ -27,6 +27,8 @@ export default Component.extend({
 
   serverId: null,
 
+  isStartScanIconDisplayed: true,
+
   actions: {
 
     handleInitiateScan() {

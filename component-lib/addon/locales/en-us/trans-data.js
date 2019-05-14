@@ -2801,7 +2801,7 @@ export default {
       FILE: 'Files',
       drivers: 'Drivers',
       DRIVER: 'Drivers',
-      systemInformation: 'System Information',
+      systemInformation: 'System Info',
       services: 'Services',
       tasks: 'Tasks',
       hostFileEntries: 'Host File Entries',
@@ -2886,7 +2886,7 @@ export default {
         loadMore: 'Load More',
         exportCSV: 'Export to CSV',
         brokerExportCSV: 'Export to CSV is not supported for Endpoint Broker',
-        export: 'Export to JSON',
+        export: 'Export Host details',
         exportTooltip: 'Exports all scan data categories for the host.',
         downloading: 'Downloading',
         initiateScan: 'Start Scan',
@@ -3618,7 +3618,7 @@ export default {
       title: 'Select Service',
       buttonText: 'Navigate',
       buttonText2: 'Event Analysis',
-      iconTitle: 'Pivot to Event Analysis'
+      iconTitle: 'Analyze Events'
     },
     flash: {
       fileDownloadRequestSent: 'Files are set for download. Check the "Downloaded" column for status.'
@@ -3723,7 +3723,7 @@ export default {
         consoleEvents: 'Console Events',
         viewCertificate: 'View Certificates',
         analyzeUser: 'Analyze User',
-        downloadMFT: 'Download MFT',
+        downloadMFT: 'Request MFT download',
         tooltips: {
           downloadToServer: '',
           saveLocalCopy: 'Download the file to server to save a local copy.',

@@ -176,6 +176,10 @@ export default class DataHelper {
     _set(this.state, 'overview.hostDetails', host);
     return this;
   }
+  hostOverview(host) {
+    _set(this.state, 'overview.hostOverview', host);
+    return this;
+  }
   hostName(value) {
     const machineIdentity = { machineName: value };
     _set(this.state, 'overview.hostOverview', { machineIdentity });
@@ -269,6 +273,11 @@ export default class DataHelper {
 
   scanCount(count) {
     _set(this.state, 'machines.selectedHostList', new Array(count));
+    return this;
+  }
+
+  listOfServices(count) {
+    _set(this.state, 'endpoint.machines.listOfServices', new Array(count));
     return this;
   }
 

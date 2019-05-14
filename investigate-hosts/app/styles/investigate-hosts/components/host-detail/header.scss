@@ -11,20 +11,20 @@
 }
 
 .host-header {
-  background-color: background-color(primary, darkest, nearly-opaque);
+  background-color: background-color(primary, darker, nearly-opaque);
   @include border-bottom(1px, solid, primary, lightest, nearly-transparent);
-  padding-bottom: 1rem;
 
   .divider {
-    @include border-left(1px, solid, primary);
-    height: 1.5rem;
-    margin: rsa-whitespace(least);
-    margin-left: rsa-whitespace();
+    border-left: 1px solid border-color(primary, dark);
+    margin: rsa-whitespace(least) rsa-whitespace();
+  }
+  .host-header_status-actionbar-wrapper {
+    margin-bottom: rsa-whitespace();
   }
 }
 
 .titlebar {
-  padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace(less);
+  padding: 0 rsa-whitespace() 0 rsa-whitespace(less);
   .rsa-nav-tab.is-left-aligned-primary {
     margin: 0 rsa-whitespace() 0;
     padding: rsa-whitespace(less) 0;
@@ -38,10 +38,6 @@
     line-height: 2.25rem;
     .divider {
       height: 1.75rem;
-    }
-    .host-name {
-      border-bottom: 2px solid;
-      border-style: dashed;
     }
   }
   .host-title-icon {
@@ -76,14 +72,17 @@
       border-bottom: 3px solid border-color(secondary);
     }
   }
-  .open-properties {
-    left: rsa-whitespace(less);
-    bottom: 0.15rem;
+  .rsa-nav-tab.is-active {
+    align-self: initial;
   }
 }
 
 .actionbar {
-  padding-top: rsa-whitespace(less);
+  padding-top: rsa-whitespace();
+  .open-properties {
+    left: rsa-whitespace(less);
+    bottom: 0.15rem;
+  }
   .snapshot-select {
     width: 100px;
     font-size: inherit;
@@ -95,8 +94,7 @@
   }
 
   .divider {
-    @include border-left(1px, solid, primary);
-    height: 1.75rem;
+    border-left: 1px solid border-color(primary, dark);
     margin-right: rsa-whitespace(more);
   }
 
@@ -128,18 +126,76 @@
     .heading-tabs {
       display: inherit;
     }
+  }
+}
 
-    .host-title {
-      max-width: 300px;
-      .host-name {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 250px;
-        white-space: nowrap;
+.host-overview {
+  .host-title {
+    max-width: 300px;
+    .host-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 195px;
+      white-space: nowrap;
+      line-height: 2.2rem;
+    }
+    .host-title_action-wrapper {
+      > span {
+        float: left;
       }
-
+      .host_more_actions {
+        display: inline-block;
+        line-height: 0.5rem;
+        font-size: 2rem;
+        margin-left: 5px;
+        padding-bottom: 3px;
+        .more-action-button {
+          button {
+            padding: 0 0.2rem 3px 0.2rem;
+          }
+        }
+      }
+      .pivot-to-investigate:hover, .host_more_actions:hover {
+        border-bottom: 2px solid border-color(secondary);
+      }
+      button {
+        padding-top: 0px;
+        border-top: 0px;
+      }
     }
   }
+}
 
+.host-details_dropdown-action-list {
+  li {
+    .rsa-form-button-wrapper button {
+      border: none;
+    }
+    cursor: pointer;
+    &:first-child {
+      padding-top: rsa-whitespace(less);
+    }
+    &:last-child {
+      padding-bottom: rsa-whitespace();
+    }
+    &:hover {
+      background-color: background-color(secondary, darker);
+    }
+  }
+  .divider {
+    margin: 0.75rem 0 0 0;
+  }
+  .downloadMFT-button { 
+    padding: rsa-whitespace(less) rsa-whitespace();
+  }
+  .host-start-scan-button .scan-modal {
+    height: 0px;
+  }
+}
 
+.host-container-detail {
+  .titlebar .label {
+    @include rsa-font(navigation);
+    color: text-color(neutral);
+  }
 }

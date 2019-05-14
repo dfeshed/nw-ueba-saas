@@ -4,7 +4,6 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
-import { patchSocket } from '../../../../../helpers/patch-socket';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import { click, find, findAll, render, waitUntil } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -71,61 +70,6 @@ module('Integration | Component | host detail actionbar', function(hooks) {
     assert.equal(agentId, 1345);
   });
 
-  test('test for start scan button', async function(assert) {
-    await render(hbs `{{host-detail/header/actionbar}}`);
-    assert.ok(find('.host-start-scan-button'), 'scan-command renders giving the start scan button');
-  });
-
-  test('test for Export to JSON', async function(assert) {
-    assert.expect(2);
-    new ReduxDataHelper(setState)
-      .scanTime('2017-01-01T10:23:49.452Z')
-      .agentId(1)
-      .build();
-    await render(hbs `{{host-detail/header/actionbar}}`);
-
-    patchSocket((method, model, query) => {
-      assert.equal(method, 'exportFileContext');
-      assert.deepEqual(query,
-        {
-          'data': {
-            'agentId': 1,
-            'categories': [
-              'AUTORUNS'
-            ],
-            'scanTime': '2017-01-01T10:23:49.452Z'
-          }
-        });
-    });
-
-    await click('.host-action-buttons .action-button:nth-child(2) .rsa-form-button-wrapper');
-  });
-
-  test('test for Export to JSON disabled', async function(assert) {
-    new ReduxDataHelper(setState)
-      .snapShot([])
-      .build();
-    await render(hbs `{{host-detail/header/actionbar}}`);
-    assert.ok(find('.host-action-buttons .action-button:nth-child(2) .rsa-form-button-wrapper.is-disabled'), 'Export to JSON disabled when no snapshots available');
-  });
-
-  test('test when Export to JSON is in download status', async function(assert) {
-    new ReduxDataHelper(setState)
-      .isJsonExportCompleted(false)
-      .build();
-    await render(hbs `{{host-detail/header/actionbar}}`);
-    assert.ok(find('.host-action-buttons .action-button:nth-child(2) .rsa-form-button-wrapper.is-disabled'), 'Export to JSON disabled when in downloading state');
-    assert.equal(find('.host-action-buttons .action-button:nth-child(2) .rsa-form-button-wrapper').textContent.trim(), 'Downloading', 'Export to JSON is in downloading state and button is disabled');
-  });
-
-  test('when JSON export is completed', async function(assert) {
-    new ReduxDataHelper(setState)
-      .snapShot(snapShot)
-      .build();
-    await render(hbs `{{host-detail/header/actionbar}}`);
-    assert.equal(find('.host-action-buttons .action-button:nth-child(2) .rsa-form-button-wrapper').textContent.trim(), 'Export to JSON', 'In initial state and when previous export is completed, button is active');
-  });
-
   test('snapshot selection is disabled when process details is active', async function(assert) {
     new ReduxDataHelper(setState)
       .isProcessDetailsView(true)
@@ -135,5 +79,27 @@ module('Integration | Component | host detail actionbar', function(hooks) {
     await clickTrigger();
     assert.ok(find('.actionbar .ember-power-select-trigger'), 'should render the power-select trigger');
     assert.equal(findAll('.actionbar .ember-power-select-trigger[aria-disabled=true]').length, 1);
+  });
+
+  test('Show right panel button is present when Details tab is selected', async function(assert) {
+    new ReduxDataHelper(setState)
+      .snapShot(snapShot)
+      .hostName('XYZ')
+      .isDetailRightPanelVisible(true)
+      .build();
+    await render(hbs`{{host-detail/header/actionbar}}`);
+    assert.equal(findAll('.open-properties').length, 1, 'Show/Hide right panel button is present');
+  });
+
+  test('Right panel button is hidden when Process tab is selected', async function(assert) {
+    new ReduxDataHelper(setState)
+      .snapShot(snapShot)
+      .hostName('XYZ')
+      .isDetailRightPanelVisible(true)
+      .build();
+    await render(hbs`{{host-detail/header/actionbar}}`);
+    assert.equal(findAll('.is-active').length, 1, 'Right panel is Active');
+    await click(findAll('.open-properties button')[0]);
+    assert.equal(findAll('.is-active').length, 0, 'Right panel is hidden');
   });
 });
