@@ -9,7 +9,7 @@
       {{#if displayEula}}
         <h3 title={{t 'login.eula.title'}} test-id="securityBannerTitle">{{t 'login.eula.title'}}</h3>
       {{else if displaySecurityBanner}}
-        <h3 test-id="securityBannerTitle">{{{securityBannerTitle}}}</h3>
+        <h3 title={{securityBannerTitle}} test-id="securityBannerTitle">{{{securityBannerTitle}}}</h3>
       {{/if}}
     </header>
 
