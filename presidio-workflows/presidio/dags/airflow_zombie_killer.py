@@ -42,7 +42,7 @@ def delta_passed(delta, dates):
     :param dates: A list of datetime instances.
     :return: True if "delta" time has passed from each datetime in the list, False otherwise.
     """
-    max_allowed_datetime = datetime.now() - delta
+    max_allowed_datetime = pendulum.now() - delta
 
     for date in dates:
         if (date is not None) and (date > max_allowed_datetime):
