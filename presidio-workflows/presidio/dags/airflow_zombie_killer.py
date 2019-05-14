@@ -200,9 +200,11 @@ def kill_task_instances_stuck_in_up_for_retry():
     kill_task_instances(execution_date_to_full_task_ids_to_kill_dictionary)
 
 
+# since 11.4, we are not using sub dags anymore => zombie killer is not necessary
 airflow_zombie_killer = DAG(
     dag_id="airflow_zombie_killer",
-    schedule_interval=timedelta(minutes=15),
+    # schedule_interval=timedelta(minutes=15),
+    schedule_interval=None,
     start_date=datetime(year=2017, month=1, day=1),
     catchup=False,
     max_active_runs=1
