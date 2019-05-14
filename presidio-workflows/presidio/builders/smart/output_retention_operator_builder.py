@@ -42,7 +42,7 @@ class OutputRetentionOperatorBuilder(LoggingMixin):
                 OutputRetentionOperatorBuilder.output_retention_interval_in_hours_conf_key,
                 OutputRetentionOperatorBuilder.output_retention_interval_in_hours_default_value))
 
-    def build(self, dag):
+    def build(self, dag, entity_type):
         """
         Builds output_retention operator.
         :param dag: The DAG to which all relevant retention operators should be added
@@ -57,6 +57,7 @@ class OutputRetentionOperatorBuilder(LoggingMixin):
             fixed_duration_strategy=timedelta(hours=1),
             command=self._retention_command,
             run_clean_command_before_retry=False,
-            dag=dag)
+            dag=dag,
+            entity_type=entity_type)
 
         return output_retention

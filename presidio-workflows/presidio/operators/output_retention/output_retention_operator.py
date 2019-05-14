@@ -13,7 +13,7 @@ class OutputRetentionOperator(FixedDurationJarOperator):
 
 
     @apply_defaults
-    def __init__(self, fixed_duration_strategy, command, task_id=None, *args, **kwargs):
+    def __init__(self, fixed_duration_strategy, command, entity_type, task_id=None, *args, **kwargs):
         """
         C'tor.
         :param fixed_duration_strategy: The duration covered by the aggregations (e.g. hourly or daily)
@@ -29,10 +29,13 @@ class OutputRetentionOperator(FixedDurationJarOperator):
         self.task_id = task_id or 'retention_output'
 
         self.log.debug('agg operator. command=%s', command)
+
+        java_args = {'entity_type': entity_type}
         super(OutputRetentionOperator, self).__init__(
             task_id=self.task_id,
             fixed_duration_strategy=self.fixed_duration_strategy,
             command=command,
+            java_args=java_args,
             *args,
             **kwargs
         )

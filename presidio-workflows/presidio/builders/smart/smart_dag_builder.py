@@ -36,7 +36,7 @@ class SmartDagBuilder(PresidioDagBuilder):
         smart_operator = self._build_smart(root_dag_gap_sensor_operator, dag, smart_record_conf_name)
         self._build_output_operator(smart_record_conf_name, entity_type, dag, smart_operator)
         self._build_ade_manager_operator(dag, root_dag_gap_sensor_operator)
-        self._build_output_retention_operator(dag)
+        self._build_output_retention_operator(dag, entity_type)
         return dag
 
     def _build_root_dag_gap_sensor_operator(self, smart_dag):
@@ -191,7 +191,7 @@ class SmartDagBuilder(PresidioDagBuilder):
         daily_short_circuit_operator >> ade_manager_operator
         root_dag_gap_sensor_operator >> daily_short_circuit_operator
 
-    def _build_output_retention_operator(self, dag):
+    def _build_output_retention_operator(self, dag, entity_type):
         output_retention_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='output_retention_short_circuit',
             dag=dag,
@@ -207,5 +207,5 @@ class SmartDagBuilder(PresidioDagBuilder):
                                                  kwargs['execution_date'],
                                                  dag.schedule_interval))
 
-        output_retention = OutputRetentionOperatorBuilder().build(dag)
+        output_retention = OutputRetentionOperatorBuilder().build(dag, entity_type)
         output_retention_short_circuit_operator >> output_retention
