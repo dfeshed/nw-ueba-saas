@@ -32,8 +32,9 @@ class SmartDagBuilder(PresidioDagBuilder):
         root_dag_gap_sensor_operator = self._build_root_dag_gap_sensor_operator(dag)
 
         smart_record_conf_name = dag.default_args.get("smart_conf_name")
+        entity_type = dag.default_args.get("entity_type")
         smart_operator = self._build_smart(root_dag_gap_sensor_operator, dag, smart_record_conf_name)
-        self._build_output_operator(smart_record_conf_name, dag, smart_operator)
+        self._build_output_operator(smart_record_conf_name, entity_type, dag, smart_operator)
         self._build_ade_manager_operator(dag, root_dag_gap_sensor_operator)
         self._build_output_retention_operator(dag)
         return dag
@@ -90,7 +91,7 @@ class SmartDagBuilder(PresidioDagBuilder):
         smart_operator >> smart_model_trigger
         return smart_operator
 
-    def _build_output_operator(self, smart_record_conf_name, dag, smart_operator):
+    def _build_output_operator(self, smart_record_conf_name, entity_type, dag, smart_operator):
 
         self.log.debug("populating the %s dag with output tasks", dag.dag_id)
 
@@ -114,6 +115,7 @@ class SmartDagBuilder(PresidioDagBuilder):
             fixed_duration_strategy=timedelta(hours=1),
             command=PresidioDagBuilder.presidio_command,
             smart_record_conf_name=smart_record_conf_name,
+            entity_type=entity_type,
             dag=dag,
         )
         task_sensor_service.add_task_sequential_sensor(hourly_output_operator)

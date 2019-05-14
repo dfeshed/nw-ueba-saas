@@ -243,6 +243,7 @@ class SpringBootJarOperator(BashOperator):
         self.jmx(bash_command)
 
         self.jar_path(bash_command, self.command)
+        self.jar_args(bash_command, self.command)
 
         self.extra_args(bash_command)
 
@@ -342,10 +343,13 @@ class SpringBootJarOperator(BashOperator):
             bash_command.extend(['org.springframework.boot.loader.PropertiesLauncher'])
 
         if not is_blank(self.java_args):
-            java_args = ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in
-                                 self.java_args.iteritems())
+            java_args = self.get_retry_args()
             bash_command.append(command)
             bash_command.append(java_args)
+
+    def get_retry_args(self):
+        return ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in
+                             self.java_args.iteritems())
 
     def jmx(self, bash_command):
         """

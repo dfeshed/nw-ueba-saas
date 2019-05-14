@@ -3,6 +3,7 @@ from abc import ABCMeta, abstractmethod
 from airflow.utils.decorators import apply_defaults
 
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
+from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBootJarOperator
 
 
 class AbstractOutputOperator(FixedDurationJarOperator):
@@ -15,7 +16,7 @@ class AbstractOutputOperator(FixedDurationJarOperator):
     __metaclass__ = ABCMeta
 
     @apply_defaults
-    def __init__(self, fixed_duration_strategy, command, smart_record_conf_name, task_id=None, *args, **kwargs):
+    def __init__(self, fixed_duration_strategy, command, smart_record_conf_name, entity_type, task_id=None, *args, **kwargs):
         """
         C'tor.
         :param fixed_duration_strategy: The duration covered by the aggregations (e.g. hourly or daily)
@@ -30,6 +31,7 @@ class AbstractOutputOperator(FixedDurationJarOperator):
         self.log.debug('input operator init kwargs=%s', str(kwargs))
 
         self.fixed_duration_strategy = fixed_duration_strategy
+        self.entity_type = entity_type
         self.smart_record_conf_name = smart_record_conf_name
         self.task_id = task_id or self.get_task_name()
 
@@ -47,11 +49,19 @@ class AbstractOutputOperator(FixedDurationJarOperator):
             **kwargs
         )
 
-
     @abstractmethod
     def get_task_name(self):
         """
         :return: The task name
         """
         pass
+
+    def get_retry_args(self):
+        java_args = self.java_args
+        java_args.pop('smart_record_conf_name')
+        java_args.update({'entity_type': self.entity_type})
+        return ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in
+                        java_args.iteritems())
+
+
 

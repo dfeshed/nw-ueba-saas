@@ -17,6 +17,7 @@ dags:
       schedule_interval: timedelta(hours=1)
       smart_confs:
        - smart_conf_name: userId_hourly
+         entity_type : userId
          depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
          enable_output_forwarder: ${outputForwarding.enableForwarding}
     smart_model:
