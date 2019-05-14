@@ -21,7 +21,7 @@ import static org.apache.commons.lang3.Validate.notBlank;
 )
 public class TopLevelDomainTransformer extends AbstractJsonObjectTransformer{
 
-    public static final String TYPE = "top_private_domain";
+    public static final String TYPE = "top_level_domain";
     private static final boolean IS_REMOVE_SOURCE_KEY_DEFAULT = false;
 
     private String sourceKey;
