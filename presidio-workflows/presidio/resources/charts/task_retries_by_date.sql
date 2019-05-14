@@ -4,7 +4,8 @@ INSERT INTO chart (id, label, conn_id, user_id, chart_type, sql_layout, sql, y_l
        try_number,
        start_date
 FROM   task_instance
-WHERE  try_number > 1
+WHERE  dag_id LIKE ''full_flow%''
+       AND try_number > 1
        AND execution_date >= (SELECT Max(execution_date) - interval ''{{logical_hours_back}}'' hour
                                      AS from_date
                               FROM   task_instance
