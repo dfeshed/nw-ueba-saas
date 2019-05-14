@@ -4,6 +4,7 @@ import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.events.EnrichedEvent;
+import presidio.output.domain.records.events.EnrichedUserEvent;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 
@@ -35,10 +36,10 @@ public class EntityPropertiesUpdateServiceImpl implements EntityPropertiesUpdate
     public Entity updateEntityProperties(Entity entity) {
         boolean isUpdated = false;
         List<String> collectionNames = collectionNamesByOrderForEvents();
-        EnrichedEvent enrichedEvent = eventPersistencyService.findLatestEventForEntity(entity.getEntityId(), collectionNames, entity.getEntityType());
-        if (enrichedEvent != null) {
-            if (!Objects.equals(entity.getEntityName(), enrichedEvent.getUserName())) {
-                entity.setEntityName(enrichedEvent.getUserName());
+        EnrichedUserEvent enrichedUserEvent = eventPersistencyService.findLatestEventForEntity(entity.getEntityId(), collectionNames, entity.getEntityType());
+        if (enrichedUserEvent != null) {
+            if (!Objects.equals(entity.getEntityName(), enrichedUserEvent.getUserName())) {
+                entity.setEntityName(enrichedUserEvent.getUserName());
                 isUpdated = true;
             }
         } else {

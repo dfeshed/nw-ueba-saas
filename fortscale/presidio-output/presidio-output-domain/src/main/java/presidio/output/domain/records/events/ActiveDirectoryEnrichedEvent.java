@@ -12,7 +12,7 @@ import java.util.Map;
  * Created by efratn on 02/08/2017.
  */
 @Document
-public class ActiveDirectoryEnrichedEvent extends EnrichedEvent{
+public class ActiveDirectoryEnrichedEvent extends EnrichedUserEvent {
 
     public static final String OBJECT_ID_FIELD = "objectId";
     public static final String OPERATION_TYPE_FIELD = "operationType";

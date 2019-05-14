@@ -1,69 +1,83 @@
-from abc import ABCMeta, abstractmethod
+from __future__ import generators
 
-from airflow.utils.log.logging_mixin import LoggingMixin
-from presidio.utils.airflow.dag.dag_factory import DagFactories
+from abc import abstractmethod, ABCMeta
 
+from airflow import LoggingMixin
+from airflow.models import Variable
+import dateutil
+
+UEBA_DAGS_KEY = "ueba_dags"
 
 class AbstractDagFactory(LoggingMixin):
     __metaclass__ = ABCMeta
 
-    def __init__(self):
-        super(AbstractDagFactory, self).__init__()
-        DagFactories.add_factory(self.get_id(),self)
-
-    def create_and_register_dags(self, **dag_params):
-        dags = self.create(**dag_params)
-        self.validate(dags)
+    def create_and_register_dags(self, conf_key, name_space, config_reader):
+        """
+        Create and register all dags
+        :param conf_key: conf_key
+        :param name_space:  the global scope which the DAG would be assigned in to. notice: should be the globals()
+        :param config_reader: config_reader
+        :return: dags
+        """
+        dags_configs = config_reader.read(conf_key='dags.dags_configs')
+        dags = self.create_dags(dags_configs, conf_key)
         for dag in dags:
-            dag_builder = dag_params.get('dag_builder')
-            self.generate_dag_tasks(dag, dag_builder=dag_builder, logger=self.log)
-            name_space = dag_params.get('name_space')
             self.register_dag(dag=dag, name_space=name_space, logger=self.log)
-
         return dags
 
-    @staticmethod
-    def register_dag(dag, name_space, logger):
+    def register_dag(self, dag, name_space, logger):
         """
-        :param name_space: the global scope which the DAG would be assigned in to. notice: should be the globals() 
-        method from the file that airflow scheduler scans (at the dag directory) 
+        :param logger: logger
+        :param name_space: the global scope which the DAG would be assigned in to. notice: should be the globals()
+        method from the file that airflow scheduler scans (at the dag directory)
         :type dag: DAG instance
         :param dag: dag to be registered to airflow
-         once DAG is registered -> it can be scheduled and executed  
+         once DAG is registered -> it can be scheduled and executed
         """
         dag_id = dag.dag_id
-        logger.debug("registering dag_id=%s", dag_id)
+        logger.info("register dag_id=%s", dag_id)
         name_space[dag_id] = dag
 
+        dag_ids = self.get_registered_dag_ids()
 
-    @abstractmethod
-    def create(self, **dag_params):
-        """
-        :rtype: list of DAG
-        :param dag_params: params by which dags will be created
-        :returns created DAG array
-        """
-        pass
+        if dag_id not in dag_ids:
+            dag_ids.append(dag_id)
+            Variable.set(key=UEBA_DAGS_KEY, value=(', '.join(str(e) for e in dag_ids)))
 
-    @abstractmethod
-    def validate(self,dags):
-        """
-        validates that all created dags have start and end time that does not overlap
-        :param dags: array of airflow dags to be validated
-        """
-        pass
-
-    @abstractmethod
-    def get_id(self):
-        """The factory id"""
-        pass
+    def build_dags(self, dags):
+        for dag in dags:
+            self.build_dag(dag)
 
     @staticmethod
-    def generate_dag_tasks(dag, dag_builder, logger):
-        """
-        add task to given dag
-        :param dag_builder: a service that adds tasks to a given dag
-        :param dag: the airflow dag, containing scheduling params etc.
-        """
-        logger.debug("building dag_id=%s tasks", dag.dag_id)
-        dag_builder.build(dag)
+    def get_registered_dag_ids():
+        dag_ids = Variable.get(key=UEBA_DAGS_KEY, default_var=[])
+        if dag_ids:
+            dag_ids = str(dag_ids).split(", ")
+        return dag_ids
+
+    @abstractmethod
+    def build_dag(self, dag):
+        pass
+
+    @abstractmethod
+    def create_dags(self, dags_configs, conf_key):
+        pass
+
+    def _get_dag_params(self, dag_config, dags_configs):
+        temp_interval = dag_config.get("schedule_interval")
+        if temp_interval.startswith("timedelta") or temp_interval == "None":
+            from datetime import timedelta
+            interval = eval(temp_interval)
+        else:
+            interval = temp_interval
+        start_date = dateutil.parser.parse(dags_configs.get("start_date"), ignoretz=True)
+        if dags_configs.get("end_date"):
+            end_date = dateutil.parser.parse(dags_configs.get("end_date"), ignoretz=True)
+        else:
+            end_date = None
+        full_filepath = dag_config.get("full_filepath")
+        description = dag_config.get("description")
+        template_searchpath = dag_config.get("template_searchpath")
+        params = dag_config.get("params")
+        dagrun_timeout = dag_config.get("dagrun_timeout")
+        return dagrun_timeout, description, end_date, full_filepath, interval, params, start_date, template_searchpath
