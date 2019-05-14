@@ -16,7 +16,7 @@ class OutputRetentionOperatorBuilder(LoggingMixin):
     The "OutputRetentionOperatorBuilder" builds and returns output_retention operator.
     """
 
-    RETENTION_COMMAND_CONFIG_PATH = 'retention.command'
+    RETENTION_COMMAND_CONFIG_PATH = 'retention.output.command'
     RETENTION_COMMAND_DEFAULT_VALUE = 'retention'
     output_min_time_to_start_retention_in_days_conf_key = "retention.output.min_time_to_start_retention_in_days"
     output_min_time_to_start_retention_in_days_default_value = 2

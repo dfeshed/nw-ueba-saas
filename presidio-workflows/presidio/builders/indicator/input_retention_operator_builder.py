@@ -8,7 +8,7 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
 
 
 class InputRetentionOperatorBuilder(LoggingMixin):
-    RETENTION_COMMAND_CONFIG_PATH = 'retention.command'
+    RETENTION_COMMAND_CONFIG_PATH = 'retention.input.command'
     RETENTION_COMMAND_DEFAULT_VALUE = 'retention'
     input_min_time_to_start_retention_in_days_conf_key = "retention.input.min_time_to_start_retention_in_days"
     input_min_time_to_start_retention_in_days_default_value = 2
