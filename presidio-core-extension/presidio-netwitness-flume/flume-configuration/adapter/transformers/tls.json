@@ -4,7 +4,7 @@
   "transformerList": [
     {
       "type": "string_format",
-      "name": "convert-string-format-of-operation-type",
+      "name": "convert-string-format-of-direction",
       "sourceKey": "direction",
       "targetKey": "direction",
       "sourceStringFormat": "LOWER_UNDERSCORE",
@@ -12,7 +12,7 @@
     },
     {
       "type": "filter",
-      "name": "filter-direction",
+      "name": "direction-filter",
       "predicate": {
         "type": "regex",
         "name": "direction-white-list",
@@ -22,6 +22,12 @@
       "filterIn": true
     },
     {
+      "type": "epoch",
+      "name": "date-time-millis-to-nano-representation",
+      "sourceKey": "event_time",
+      "destinationKey": "dateTime"
+    },
+    {
       "type": "copy_value",
       "name": "rename-event-source-id-to-event-id",
       "sourceKey": "event_source_id",
@@ -29,12 +35,6 @@
       "destinationKeys": [
         "eventId"
       ]
-    },
-    {
-      "type": "epoch",
-      "name": "date-time-millis-to-nano-representation",
-      "sourceKey": "event_time",
-      "destinationKey": "dateTime"
     },
     {
       "type": "copy_value",
@@ -64,13 +64,11 @@
       ]
     },
     {
-      "type": "copy_value",
-      "name": "rename-alias-host",
+      "type": "TopLevelDomainTransformer",
+      "name": "alias-host-to-top-level-domain",
       "sourceKey": "alias_host[0]",
-      "isRemoveSourceKey": true,
-      "destinationKeys": [
-        "domain"
-      ]
+      "isRemoveSourceKey": false,
+      "targetKey": "domain"
     },
     {
       "type": "copy_value",
@@ -97,6 +95,56 @@
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "numOfBytesSent"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-payload-res",
+      "sourceKey": "payload_res",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "numOfBytesReceived"
+      ]
+    },
+    {
+      "type": "ExtractFirstValueInAnArrayWhichAnswerRegexTransformer",
+      "name": "extract-src-netname",
+      "sourceArrayKey": "netname",
+      "targetKey": "srcNetname",
+      "captureAndFormatConfiguration": {
+        "pattern": "(.+) src",
+        "format": "%s",
+        "capturingGroupConfigurations": [
+          {
+            "index": 1,
+            "caseFormat": "LOWER"
+          }
+        ]
+      }
+    },
+    {
+      "type": "ExtractFirstValueInAnArrayWhichAnswerRegexTransformer",
+      "name": "extract-dst-netname",
+      "sourceArrayKey": "netname",
+      "targetKey": "dstNetname",
+      "captureAndFormatConfiguration": {
+        "pattern": "(.+) dst",
+        "format": "%s",
+        "capturingGroupConfigurations": [
+          {
+            "index": 1,
+            "caseFormat": "LOWER"
+          }
+        ]
+      }
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-tcp-dstport",
+      "sourceKey": "tcp_dstport",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstPort"
       ]
     }
   ]
