@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import presidio.output.manager.services.OutputManagerService;
 
 import java.time.Instant;
+import java.util.List;
 
 @Component
 public class OutputManagerShellCommands {
@@ -19,9 +20,9 @@ public class OutputManagerShellCommands {
     public void cleanDocuments(
             @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime,
 
-            @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, mandatory = true, help = "events schema") final Schema schema
+            @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, help = "events schemas") final List<Schema> schemas
 
             ) throws Exception {
-        outputManagerService.cleanDocuments(endTime, schema);
+        outputManagerService.cleanDocuments(endTime, schemas);
     }
 }
