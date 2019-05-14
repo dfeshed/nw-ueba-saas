@@ -6,7 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.Validate;
 
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
  * Configures a regular expression and a format string whose arguments are input sub-sequences captured by groups during
@@ -56,5 +59,26 @@ public class CaptureAndFormatConfiguration {
 
     public List<CapturingGroupConfiguration> getCapturingGroupConfigurations() {
         return capturingGroupConfigurations;
+    }
+
+    public String captureAndFormat(String sourceValue){
+        Matcher matcher = getPattern().matcher(sourceValue);
+
+        if (matcher.matches()) {
+            Object[] args = getArgs(getCapturingGroupConfigurations(), matcher);
+            return String.format(getFormat(), args);
+        }
+
+        return null;
+    }
+
+    private static Object[] getArgs(List<CapturingGroupConfiguration> capturingGroupConfigurations, Matcher matcher) {
+        return isEmpty(capturingGroupConfigurations) ? null : capturingGroupConfigurations.stream()
+                .map(capturingGroupConfiguration -> {
+                    String group = matcher.group(capturingGroupConfiguration.getIndex());
+                    CapturingGroupConfiguration.CaseFormat caseFormat = capturingGroupConfiguration.getCaseFormat();
+                    return caseFormat == null ? group : caseFormat.convert(group);
+                })
+                .toArray(Object[]::new);
     }
 }
