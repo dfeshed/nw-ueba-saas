@@ -1,0 +1,28 @@
+import { module, test } from 'qunit';
+import {
+  LANGUAGE_KEY_INDEX_MASK,
+  LANGUAGE_KEY_INDEX_FILTER,
+  LANGUAGE_KEY_INDEX_VALUES,
+  LANGUAGE_KEY_ACTION_MASK,
+  LANGUAGE_KEY_ACTION_HIDDEN,
+  LANGUAGE_KEY_ACTION_OPEN,
+  LANGUAGE_KEY_ACTION_CLOSE,
+  LANGUAGE_KEY_ACTION_AUTO,
+  LANGUAGE_KEY_SPECIAL_MASK,
+  LANGUAGE_KEY_SPECIAL_SINGLETON
+} from 'investigate-events/reducers/investigate/dictionaries/utils';
+
+module('Unit | Utils | dictionaries');
+
+test('export constants have correct value', function(assert) {
+  assert.equal(LANGUAGE_KEY_INDEX_MASK, 0x000F, 'LANGUAGE_KEY_INDEX_MASK is correct');
+  assert.equal(LANGUAGE_KEY_INDEX_FILTER, 0, 'LANGUAGE_KEY_INDEX_FILTER is correct');
+  assert.equal(LANGUAGE_KEY_INDEX_VALUES, 3, 'LANGUAGE_KEY_INDEX_VALUES is correct');
+  assert.equal(LANGUAGE_KEY_ACTION_MASK, 0x0F00, 'LANGUAGE_KEY_ACTION_MASK is correct');
+  assert.equal(LANGUAGE_KEY_ACTION_HIDDEN, 0x0100, 'LANGUAGE_KEY_ACTION_HIDDEN is correct');
+  assert.equal(LANGUAGE_KEY_ACTION_OPEN, 0x0200, 'LANGUAGE_KEY_ACTION_OPEN is correct');
+  assert.equal(LANGUAGE_KEY_ACTION_CLOSE, 0x0300, 'LANGUAGE_KEY_ACTION_CLOSE is correct');
+  assert.equal(LANGUAGE_KEY_ACTION_AUTO, 0x0400, 'LANGUAGE_KEY_ACTION_AUTO is correct');
+  assert.equal(LANGUAGE_KEY_SPECIAL_MASK, 0x000000F0, 'LANGUAGE_KEY_SPECIAL_MASK is correct');
+  assert.equal(LANGUAGE_KEY_SPECIAL_SINGLETON, 0x00000010, 'LANGUAGE_KEY_SPECIAL_SINGLETON is correct');
+});

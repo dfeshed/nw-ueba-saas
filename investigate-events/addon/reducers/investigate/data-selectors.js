@@ -1,8 +1,16 @@
 import reselect from 'reselect';
-import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import $ from 'jquery';
 import { lookup } from 'ember-dependency-lookup';
 import { isEmpty } from '@ember/utils';
+
+import { isMixedMode } from 'investigate-events/reducers/investigate/query-stats/selectors';
+import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
+import {
+  LANGUAGE_KEY_INDEX_MASK,
+  LANGUAGE_KEY_INDEX_VALUES,
+  LANGUAGE_KEY_SPECIAL_MASK,
+  LANGUAGE_KEY_SPECIAL_SINGLETON
+} from 'investigate-events/reducers/investigate/dictionaries/utils';
 
 const { createSelector } = reselect;
 
@@ -40,6 +48,8 @@ export const SUMMARY_COLUMN_KEYS = {
 };
 
 // ACCESSOR FUNCTIONS
+const _services = (state) => state.investigate.services.serviceData;
+const _languages = (state) => state.investigate.dictionaries.language;
 const _reconSize = (state) => state.investigate.data.reconSize;
 const _isReconOpen = (state) => state.investigate.data.isReconOpen;
 const _metaPanelSize = (state) => state.investigate.meta.metaPanelSize;
@@ -63,6 +73,50 @@ export const queryBodyClass = createSelector(
       recon = 'full';
     }
     return `rsa-investigate-query__body recon-is-${recon} meta-panel-size-${panelSize}`;
+  }
+);
+
+export const validEventSortColumns = createSelector(
+  [_languages, isMixedMode],
+  (languages, isMixedMode) => {
+    if (isMixedMode || !languages) {
+      return {
+        columns: []
+      };
+    } else {
+      const notIndexedAtValue = [];
+      const notSingleton = [];
+      const notValid = [];
+      const columns = languages.filter((language) => {
+        // we can only sort when indexed by value
+        const isIndexedAtValue = (language.flags & LANGUAGE_KEY_INDEX_MASK) === LANGUAGE_KEY_INDEX_VALUES;
+
+        // we can only sort singletons
+        const isSingleton = (language.flags & LANGUAGE_KEY_SPECIAL_MASK) === LANGUAGE_KEY_SPECIAL_SINGLETON;
+
+        // time is always sortable
+        const isTime = language.format.toLowerCase().indexOf('time') > -1;
+
+        // for any key not sortable, capture the reason
+        // to be displayed as table header tooltip
+        if (!isIndexedAtValue && !isSingleton) {
+          notValid.push(language.metaName);
+        } else if (!isSingleton) {
+          notSingleton.push(language.metaName);
+        } else if (!isIndexedAtValue) {
+          notIndexedAtValue.push(language.metaName);
+        }
+
+        return isTime || (isIndexedAtValue && isSingleton);
+      }).map((col) => col.metaName);
+
+      return {
+        columns,
+        notIndexedAtValue,
+        notSingleton,
+        notValid
+      };
+    }
   }
 );
 
@@ -175,5 +229,16 @@ export const getColumnGroups = createSelector(
         { groupName: i18n.t('investigate.events.columnGroups.default'), options: columnGroups.filter((column) => column.ootb) }
       ];
     }
+  }
+);
+
+export const disableSort = createSelector(
+  [_services],
+  (services = []) => {
+    const unsupportedService = services.find(({ version }) => {
+      return parseFloat(version) < 11.4;
+    });
+
+    return !!unsupportedService;
   }
 );

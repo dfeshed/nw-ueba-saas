@@ -1,0 +1,21 @@
+{{#if disableSort}}
+  <span class="disable-sort">
+    {{t 'investigate.sortTooltips.disableSort'}}
+  </span>
+{{else if (contains field notIndexedAtValue)}}
+  <span class="not-indexed-at-value">
+    {{t 'investigate.sortTooltips.notIndexedAtValue'}}
+  </span>
+{{else if (contains field notSingleton)}}
+  <span class="not-singleton">
+    {{t 'investigate.sortTooltips.notSingleton'}}
+  </span>
+{{else if (contains field notValid)}}
+  <span class="not-valid">
+    {{t 'investigate.sortTooltips.notValid'}}
+  </span>
+{{else}}
+  <span class="composed">
+    {{t 'investigate.sortTooltips.composed'}}
+  </span>
+{{/if}}

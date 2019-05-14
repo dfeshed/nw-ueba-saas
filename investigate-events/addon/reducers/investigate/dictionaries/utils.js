@@ -1,26 +1,32 @@
 // Mask for the index level of a language's meta key.
-const LANGUAGE_KEY_INDEX_MASK = 0x000F;
+export const LANGUAGE_KEY_INDEX_MASK = 0x000F;
 
 // Indicates that key is filtered, so data related to the key should be ignored.
-const LANGUAGE_KEY_INDEX_FILTER = 0;
+export const LANGUAGE_KEY_INDEX_FILTER = 0;
 
 // Indicates that key is indexed at the key and value level.
-const LANGUAGE_KEY_INDEX_VALUES = 3;
+export const LANGUAGE_KEY_INDEX_VALUES = 3;
 
 // Mask for default behavior of language's meta key in Investigate UI.
-const LANGUAGE_KEY_ACTION_MASK = 0x0F00;
+export const LANGUAGE_KEY_ACTION_MASK = 0x0F00;
 
 // Default behavior is to hide the key.
-const LANGUAGE_KEY_ACTION_HIDDEN = 0x0100;
+export const LANGUAGE_KEY_ACTION_HIDDEN = 0x0100;
 
 // Default behavior is to show the key & its values.
-const LANGUAGE_KEY_ACTION_OPEN = 0x0200;
+export const LANGUAGE_KEY_ACTION_OPEN = 0x0200;
 
 // Default behavior is to show the key closed, without its values.
-const LANGUAGE_KEY_ACTION_CLOSE = 0x0300;
+export const LANGUAGE_KEY_ACTION_CLOSE = 0x0300;
 
 // Default behavior is to auto open the key, based on its index level.
-const LANGUAGE_KEY_ACTION_AUTO = 0x0400;
+export const LANGUAGE_KEY_ACTION_AUTO = 0x0400;
+
+// Special flags about each language key
+export const LANGUAGE_KEY_SPECIAL_MASK = 0x000000F0;
+
+// Token appears only once per session
+export const LANGUAGE_KEY_SPECIAL_SINGLETON = 0x00000010;
 
 // Some keys are always hidden from view by UI.
 const LANGUAGE_KEYS_ALWAYS_HIDDEN = ['time', 'sessionid'];

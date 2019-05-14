@@ -24,14 +24,13 @@ const _initialState = Immutable.from({
   isQueryExecutedByColumnGroup: false,
   sortField: 'time',
   sortDirection: null,
-  isQueryExecutedBySort: false,
-  validEventSortColumns: [ 'time' ] // hardcoded for now, pending languages based dynamic list
+  isQueryExecutedBySort: false
 });
 
 export default handleActions({
   [ACTION_TYPES.UPDATE_SORT]: (state, { sortField, sortDirection, isQueryExecutedBySort }) => {
     if (!sortField) {
-      sortField = _initialState.validEventSortColumns[0];
+      sortField = 'time';
     }
 
     if (isEmpty(isQueryExecutedBySort)) {

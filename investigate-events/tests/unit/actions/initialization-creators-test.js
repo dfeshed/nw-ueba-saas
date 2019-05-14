@@ -49,7 +49,6 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
       } else if (count === 0) {
         assert.equal(action.type, ACTION_TYPES.SERVICES_RETRIEVE, 'action has the correct type');
         action.promise.then((resolve) => {
-
           assert.deepEqual(resolve.data, serviceData, 'Expected services from websocket call');
           const [ service ] = resolve.data;
           fetchedServiceId = service.id;

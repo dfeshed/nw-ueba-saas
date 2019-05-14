@@ -3,7 +3,7 @@ import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 
-import { getColumns } from 'investigate-events/reducers/investigate/data-selectors';
+import { getColumns, validEventSortColumns, disableSort } from 'investigate-events/reducers/investigate/data-selectors';
 import {
   selectedIndex,
   allExpectedDataLoaded,
@@ -24,38 +24,45 @@ import {
 import { setVisibleColumns, updateSort } from 'investigate-events/actions/data-creators';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
 
-const stateToComputed = (state) => ({
-  eventTableFormattingOpts: eventTableFormattingOpts(state),
-  areEventsStreaming: areEventsStreaming(state),
-  status: state.investigate.eventResults.status,
-  maxEvents: thousandFormat(state.investigate.eventResults.streamLimit),
-  searchTerm: state.investigate.eventResults.searchTerm,
-  searchScrollIndex: state.investigate.eventResults.searchScrollIndex,
-  allEventsSelected: state.investigate.eventResults.allEventsSelected,
-  selectedEventIds: state.investigate.eventResults.selectedEventIds,
-  selectedIndex: selectedIndex(state),
-  items: state.investigate.eventResults.data,
-  aliases: state.investigate.dictionaries.aliases,
-  allExpectedDataLoaded: allExpectedDataLoaded(state),
-  language: state.investigate.dictionaries.language,
-  columns: getColumns(state),
-  endpointId: state.investigate.queryNode.serviceId,
-  startTime: state.investigate.queryNode.startTime,
-  endTime: state.investigate.queryNode.endTime,
-  queryConditions: state.investigate.queryNode.metaFilter,
-  metaFormatMap: metaFormatMap(state.investigate.dictionaries.language),
-  isCanceled: isCanceled(state),
-  isQueryExecutedByColumnGroup: state.investigate.data.isQueryExecutedByColumnGroup,
-  totalCount: thousandFormat(state.investigate.eventCount.data),
-  actualEventCount: thousandFormat(actualEventCount(state)),
-  threshold: state.investigate.eventCount.threshold,
-  isEventResultsError: isEventResultsError(state),
-  searchMatches: searchMatches(state),
-  sortField: state.investigate.data.sortField,
-  sortDirection: state.investigate.data.sortDirection,
-  sortableColumns: state.investigate.data.validEventSortColumns,
-  isQueryExecutedBySort: state.investigate.data.isQueryExecutedBySort
-});
+const stateToComputed = (state) => {
+  const { columns, notIndexedAtValue, notSingleton, notValid } = validEventSortColumns(state);
+  return {
+    eventTableFormattingOpts: eventTableFormattingOpts(state),
+    areEventsStreaming: areEventsStreaming(state),
+    status: state.investigate.eventResults.status,
+    maxEvents: thousandFormat(state.investigate.eventResults.streamLimit),
+    searchTerm: state.investigate.eventResults.searchTerm,
+    searchScrollIndex: state.investigate.eventResults.searchScrollIndex,
+    allEventsSelected: state.investigate.eventResults.allEventsSelected,
+    selectedEventIds: state.investigate.eventResults.selectedEventIds,
+    selectedIndex: selectedIndex(state),
+    items: state.investigate.eventResults.data,
+    aliases: state.investigate.dictionaries.aliases,
+    allExpectedDataLoaded: allExpectedDataLoaded(state),
+    language: state.investigate.dictionaries.language,
+    columns: getColumns(state),
+    endpointId: state.investigate.queryNode.serviceId,
+    startTime: state.investigate.queryNode.startTime,
+    endTime: state.investigate.queryNode.endTime,
+    queryConditions: state.investigate.queryNode.metaFilter,
+    metaFormatMap: metaFormatMap(state.investigate.dictionaries.language),
+    isCanceled: isCanceled(state),
+    isQueryExecutedByColumnGroup: state.investigate.data.isQueryExecutedByColumnGroup,
+    totalCount: thousandFormat(state.investigate.eventCount.data),
+    actualEventCount: thousandFormat(actualEventCount(state)),
+    threshold: state.investigate.eventCount.threshold,
+    isEventResultsError: isEventResultsError(state),
+    searchMatches: searchMatches(state),
+    sortField: state.investigate.data.sortField,
+    sortDirection: state.investigate.data.sortDirection,
+    sortableColumns: columns,
+    notIndexedAtValue,
+    notSingleton,
+    notValid,
+    isQueryExecutedBySort: state.investigate.data.isQueryExecutedBySort,
+    disableSort: disableSort(state)
+  };
+};
 
 const dispatchToActions = {
   eventsLogsGet,
@@ -108,7 +115,6 @@ const EventsTableContextMenu = RsaContextMenu.extend({
     queryConditions,
     language
   }),
-
   /*
    * Render event selection checkboxes if
    * 1. Query has results.

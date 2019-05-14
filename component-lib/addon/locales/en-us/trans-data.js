@@ -473,6 +473,13 @@ export default {
       toggle: 'Show/Hide Events List Panel',
       togglePreferences: 'Toggle Investigate Preferences'
     },
+    sortTooltips: {
+      disableSort: 'Sorting is disabled because your environment requires an update to support sorting.',
+      notIndexedAtValue: 'This column is not sortable because it is not indexed by value.',
+      notSingleton: 'This column is not sortable because it has multiple values.',
+      notValid: 'This column is not sortable because it has multiple unindexed values.',
+      composed: 'This column is not sortable because it is composed of multiple fields.'
+    },
     title: 'Investigate',
     loading: 'Loading',
     reExecutingQuery: 'Query is being re-executed to fetch new data.',

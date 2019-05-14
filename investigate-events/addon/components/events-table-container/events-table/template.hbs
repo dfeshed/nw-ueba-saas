@@ -32,7 +32,7 @@
         </label>
       {{else}}
         <h2 class="title" title="{{if column.title column.title names.bothNames}}">
-          {{#if (and column.field sortableColumns)}}
+          {{#if (and column.field sortableColumns (not disableSort))}}
             {{#if (contains column.field sortableColumns)}}
               {{#if (eq sortField column.field)}}
                 {{#if (eq sortDirection 'Ascending')}}
@@ -49,15 +49,35 @@
                   {{rsa-icon name="arrow-up-7" size="small"}}
                 </span>
               {{/if}}
+              <span class="js-move-handle">
+                {{if column.title column.title names.displayName}}
+              </span>
+            {{else}}
+              {{#rsa-content-tethered-panel-trigger panel=(concat 'columnSortTooltip' column.displayIndex)}}
+                <span class="js-move-handle">
+                  {{if column.title column.title names.displayName}}
+                </span>
+              {{/rsa-content-tethered-panel-trigger}}
             {{/if}}
-            <span class="js-move-handle">
-              {{if column.title column.title names.displayName}}
-            </span>
           {{else}}
-            <span class="js-move-handle">
-              {{if column.title column.title names.displayName}}
-            </span>
+            {{#rsa-content-tethered-panel-trigger panel=(concat 'columnSortTooltip' column.displayIndex)}}
+              <span class="js-move-handle">
+                {{if column.title column.title names.displayName}}
+              </span>
+            {{/rsa-content-tethered-panel-trigger}}
           {{/if}}
+
+          {{#rsa-content-tethered-panel displayCloseButton=false position='top' panelId=(concat 'columnSortTooltip' column.displayIndex)}}
+            <section>
+              {{events-table-container/events-table/sort-tooltip
+                field=column.field
+                disableSort=disableSort
+                notIndexedAtValue=notIndexedAtValue
+                notSingleton=notSingleton
+                notValid=notValid
+              }}
+            </section>
+          {{/rsa-content-tethered-panel}}
         </h2>
       {{/if}}
     {{/with}}

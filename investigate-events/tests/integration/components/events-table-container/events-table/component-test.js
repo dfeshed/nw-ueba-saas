@@ -287,11 +287,13 @@ module('Integration | Component | events-table', function(hooks) {
   test('event table is displayed with expected default column sort controls', async function(assert) {
     new ReduxDataHelper(setState)
       .columnGroup('SUMMARY')
+      .hasRequiredValuesToQuery(true)
       .eventThreshold(100000)
       .eventsPreferencesConfig()
       .columnGroups(EventColumnGroups)
       .eventsQuerySort('time', 'Ascending')
       .sortableColumns(['time', 'size'])
+      .language([{ format: 'TimeT', metaName: 'time', flags: -2147482605 }, { format: 'Int', metaName: 'size', flags: -2147482605 }])
       .eventCount(100000)
       .build();
 
@@ -304,11 +306,13 @@ module('Integration | Component | events-table', function(hooks) {
   test('event table is displayed with expected ascending sort controls', async function(assert) {
     new ReduxDataHelper(setState)
       .columnGroup('SUMMARY')
+      .hasRequiredValuesToQuery(true)
       .eventThreshold(100000)
       .eventsPreferencesConfig()
       .columnGroups(EventColumnGroups)
       .sortableColumns()
       .eventsQuerySort('time', 'Ascending')
+      .language([{ format: 'TimeT', metaName: 'time', flags: -2147482605 }])
       .eventCount(100000)
       .build();
 
@@ -319,11 +323,13 @@ module('Integration | Component | events-table', function(hooks) {
   test('event table is displayed with expected descending sort controls', async function(assert) {
     new ReduxDataHelper(setState)
       .columnGroup('SUMMARY')
+      .hasRequiredValuesToQuery(true)
       .eventThreshold(100000)
       .eventsPreferencesConfig()
       .columnGroups(EventColumnGroups)
       .sortableColumns()
       .eventsQuerySort('time', 'Descending')
+      .language([{ format: 'TimeT', metaName: 'time', flags: -2147482605 }])
       .eventCount(100000)
       .build();
 
@@ -335,12 +341,14 @@ module('Integration | Component | events-table', function(hooks) {
     assert.expect(1);
     new ReduxDataHelper(setState)
       .columnGroup('SUMMARY')
+      .hasRequiredValuesToQuery(true)
       .eventThreshold(100000)
       .eventsPreferencesConfig()
       .columnGroups(EventColumnGroups)
       .sortableColumns()
       .eventsQuerySort('time', 'Ascending')
       .eventCount(100000)
+      .language([{ format: 'TimeT', metaName: 'time', flags: -2147482605 }])
       .build();
 
     this.set('executeQuery', () => {
@@ -348,6 +356,7 @@ module('Integration | Component | events-table', function(hooks) {
     });
 
     await render(hbs`{{events-table-container/events-table executeQuery=executeQuery}}`);
+
     click('.rsa-data-table-header-row div > h2 .sort-indicator.active');
   });
 
