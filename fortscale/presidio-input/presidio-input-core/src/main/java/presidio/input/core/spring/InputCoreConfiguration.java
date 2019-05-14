@@ -148,6 +148,12 @@ public class InputCoreConfiguration {
         return new IocTransformerManager();
     }
 
+    @Bean(name = "TLS.transformer")
+    @Lazy
+    public TlsTransformerManager tlsTransformerManager() {
+        return new TlsTransformerManager();
+    }
+
     @Bean(name = "FILE.input-output-converter")
     @Lazy
     public FileInputToOutputConverter fileInputToOutputConverter() {
@@ -190,6 +196,12 @@ public class InputCoreConfiguration {
         return new IocInputToOutputConverter();
     }
 
+    @Bean(name = "TLS.input-output-converter")
+    @Lazy
+    public TlsInputToOutputConverter tlsInputToOutputConverter() {
+        return new TlsInputToOutputConverter();
+    }
+
     @Bean(name = "FILE.input-ade-converter")
     @Lazy
     public FileInputToAdeConverter fileInputToAdeConverter() {
@@ -230,5 +242,11 @@ public class InputCoreConfiguration {
     @Lazy
     public IocInputToAdeConverter iocInputToAdeConverter() {
         return new IocInputToAdeConverter();
+    }
+
+    @Bean(name = "TLS.input-ade-converter")
+    @Lazy
+    public TlsInputToAdeConverter tlsInputToAdeConverter() {
+        return new TlsInputToAdeConverter();
     }
 }

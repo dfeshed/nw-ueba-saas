@@ -11,7 +11,7 @@ import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.entity.EntityQuery;
 import presidio.output.domain.records.entity.EntitySeverity;
 import presidio.output.domain.records.entity.EntityTypeConverter;
-import presidio.output.domain.records.events.EnrichedEvent;
+import presidio.output.domain.records.events.EnrichedUserEvent;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.output.domain.services.event.EventPersistencyService;
@@ -80,14 +80,14 @@ public class EntityServiceImpl implements EntityService {
 
     private EntityDetails getEntityDetails(String entityId, String entityType) {
         List<String> collectionNames = entitySeverityService.collectionNamesByOrderForEvents();
-        EnrichedEvent event = eventPersistencyService.findLatestEventForEntity(entityId, collectionNames, entityType);
+        EnrichedUserEvent event = eventPersistencyService.findLatestEventForEntity(entityId, collectionNames, entityType);
         if (event == null) {
             log.error("no events were found for entity {}", entityId);
             return null;
         }
         String entityName = event.getUserName();
         List<String> tags = new ArrayList<>();
-        if (event.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN) != null && Boolean.parseBoolean(event.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN))) {
+        if (event.getAdditionalInfo().get(EnrichedUserEvent.IS_USER_ADMIN) != null && Boolean.parseBoolean(event.getAdditionalInfo().get(EnrichedUserEvent.IS_USER_ADMIN))) {
             tags.add(TAG_ADMIN);
         }
         return new EntityDetails(entityName, entityId, tags, entityType);

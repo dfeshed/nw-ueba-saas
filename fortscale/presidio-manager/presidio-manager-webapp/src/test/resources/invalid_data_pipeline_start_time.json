@@ -1,0 +1,20 @@
+{
+  "dataPipeline": {
+    "schemas": [
+      "AUTHENTICATION",
+      "ACTIVE_DIRECTORY",
+      "FILE"
+    ],
+    "startTime": "Invalid start time"
+  },
+  "outputForwarding": {
+    "enableForwarding": true
+  },
+  "uiIntegration": {
+    "brokerId": "12345",
+    "adminServer": "10.11.12.13"
+  },
+  "dataPulling": {
+    "source": "nw://admin:netwitness@10.11.12.13:12345"
+  }
+}

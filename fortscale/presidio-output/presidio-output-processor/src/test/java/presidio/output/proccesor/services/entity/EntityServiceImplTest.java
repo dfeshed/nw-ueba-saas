@@ -16,6 +16,7 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.entity.EntitySeverity;
 import presidio.output.domain.records.events.EnrichedEvent;
+import presidio.output.domain.records.events.EnrichedUserEvent;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;
 import presidio.output.domain.services.entities.EntityPersistencyService;
@@ -167,7 +168,7 @@ public class EntityServiceImplTest {
         EventResult result = EventResult.SUCCESS;
         Map<String, String> additionalInfo = new HashMap<>();
         additionalInfo.put("isUserAdmin", "false");
-        EnrichedEvent enrichedEvent = new EnrichedEvent(Instant.now(), Instant.now(), "event1", "Active Directory", "userId1", "userName1",
+        EnrichedUserEvent enrichedEvent = new EnrichedUserEvent(Instant.now(), Instant.now(), "event1", "Active Directory", "userId1", "userName1",
                 "userDisplayName1", "Active Directory", additionalInfo);
         Mockito.when(this.mockEventPersistency.findLatestEventForEntity(Mockito.any(String.class), Mockito.any(List.class), Mockito.any(String.class))).thenReturn(enrichedEvent);
 
@@ -180,7 +181,7 @@ public class EntityServiceImplTest {
         EventResult result = EventResult.SUCCESS;
         Map<String, String> additionalInfo = new HashMap<>();
         additionalInfo.put("isUserAdmin", "true");
-        EnrichedEvent enrichedEvent = new EnrichedEvent(Instant.now(), Instant.now(), "event1", "Active Directory", "userId1", "userName1",
+        EnrichedUserEvent  enrichedEvent = new EnrichedUserEvent (Instant.now(), Instant.now(), "event1", "Active Directory", "userId1", "userName1",
                 "userDisplayName1", "Active Directory", additionalInfo);
         Mockito.when(this.mockEventPersistency.findLatestEventForEntity(Mockito.any(String.class), Mockito.any(List.class), Mockito.any(String.class))).thenReturn(enrichedEvent);
 
@@ -197,7 +198,7 @@ public class EntityServiceImplTest {
         String entityId = "entityId1";
         String entityName = "entityName1";
         String userDisplayName = "userDisplayName1";
-        EnrichedEvent enrichedEvent = new EnrichedEvent(Instant.now(), Instant.now(), "event1", "Active Directory", entityId, entityName,
+        EnrichedUserEvent enrichedEvent = new EnrichedUserEvent(Instant.now(), Instant.now(), "event1", "Active Directory", entityId, entityName,
                 userDisplayName, "Active Directory", additionalInfo);
         Mockito.when(this.mockEventPersistency.findLatestEventForEntity(Mockito.any(String.class), Mockito.any(List.class), Mockito.any(String.class))).thenReturn(enrichedEvent);
 

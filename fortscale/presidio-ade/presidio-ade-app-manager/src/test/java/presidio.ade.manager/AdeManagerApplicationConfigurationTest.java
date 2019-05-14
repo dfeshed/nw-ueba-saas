@@ -30,7 +30,7 @@ public class AdeManagerApplicationConfigurationTest extends AdeManagerApplicatio
     public static TestPropertiesPlaceholderConfigurer managerApplicationTestProperties() {
         Properties properties = new Properties();
         properties.put("spring.application.name", "ade-manager");
-        properties.put("presidio.enriched.ttl.duration", "PT5H");
+        properties.put("presidio.enriched.ttl.duration", "PT24H");
         properties.put("presidio.enriched.cleanup.interval", "PT24H");
         properties.put("enable.metrics.export", false);
         properties.put("monitoring.fixed.rate","60000");

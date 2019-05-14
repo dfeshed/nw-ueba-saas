@@ -11,7 +11,7 @@ import java.util.Map;
 
 
 @Document
-public class IocEnrichedEvent extends EnrichedEvent {
+public class IocEnrichedEvent extends EnrichedUserEvent {
 
     public static final String NAME_FIELD_NAME = "name";
     public static final String TACTIC_FIELD_NAME = "tactic";

@@ -5,6 +5,7 @@ import fortscale.common.general.Schema;
 import fortscale.utils.time.TimeRange;
 import org.springframework.data.util.Pair;
 import presidio.output.domain.records.events.EnrichedEvent;
+import presidio.output.domain.records.events.EnrichedUserEvent;
 
 import java.time.Instant;
 import java.util.List;
@@ -30,13 +31,13 @@ public interface EventPersistencyService {
      * @param eventsLimit
      * @return
      */
-    List<? extends EnrichedEvent> findEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit);
+    List<? extends EnrichedUserEvent> findEntityEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit);
 
-    List<? extends EnrichedEvent> readRecords(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize);
+    List<? extends EnrichedUserEvent> findEntityEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize);
 
-    public Long countEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features);
+    public Long countEntityEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features);
 
-    EnrichedEvent findLatestEventForEntity(String entityId, List<String> collectionNames, String entityType);
+    EnrichedUserEvent findLatestEventForEntity(String entityId, List<String> collectionNames, String entityType);
 
     /**
      * Determine the feature property type
