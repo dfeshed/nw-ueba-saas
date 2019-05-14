@@ -19,6 +19,9 @@
 
   .events {
     overflow: hidden;
+    .rsa-panel-message{
+      height: 100%;
+    }
   }
   .events-list__scroller {
     display: block;

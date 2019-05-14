@@ -28,6 +28,12 @@
     opacity: opacity-value(opaque);
   }
 
+  .events {
+    .rsa-panel-message{
+      height: 100%;
+    }
+  }
+
   .alert-context__container {
     cursor: pointer;
   }
