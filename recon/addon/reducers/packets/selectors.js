@@ -86,7 +86,12 @@ export const renderedPackets = createSelector(
 
 const _headerHasPackets = createSelector(
   headerItems,
-  (headerItems) => _hasItem(headerItems, 'packetSize')
+  (headerItems) => {
+    const headerItem = getHeaderItem(headerItems, 'packetSize');
+    if (headerItem && headerItem.value) {
+      return headerItem.value > 0;
+    }
+  },
 );
 
 // Do we actually have packets?
@@ -128,25 +133,33 @@ export const packetRenderingUnderWay = createSelector(
 
 export const hasPayload = createSelector(
   headerItems,
-  (headerItems) => _hasItem(headerItems, 'payloadSize')
+  (headerItems) => {
+    const headerItem = getHeaderItem(headerItems, 'payloadSize');
+    if (headerItem && headerItem.value) {
+      return headerItem.value > 0;
+    }
+  },
 );
 
 const _hasRequestPayload = createSelector(
   headerItems,
-  (headerItems) => _hasItem(headerItems, 'requestPayloadSize')
+  (headerItems) => {
+    const headerItem = getHeaderItem(headerItems, 'requestPayloadSize');
+    if (headerItem && headerItem.value) {
+      return headerItem.value > 0;
+    }
+  },
 );
 
 const _hasResponsePayload = createSelector(
   headerItems,
-  (headerItems) => _hasItem(headerItems, 'responsePayloadSize')
+  (headerItems) => {
+    const headerItem = getHeaderItem(headerItems, 'responsePayloadSize');
+    if (headerItem && headerItem.value) {
+      return headerItem.value > 0;
+    }
+  },
 );
-
-const _hasItem = (headerItems, item) => {
-
-  const headerItem = getHeaderItem(headerItems, item);
-
-  return headerItem && headerItem.value !== 0;
-};
 
 export const getNetworkDownloadOptions = createSelector(
   [hasPackets, hasPayload, _hasRequestPayload, _hasResponsePayload],

@@ -57,3 +57,18 @@ test('getDefaultDownloadOption', function(assert) {
   }));
   assert.deepEqual(result, option);
 });
+
+test('getDefaultDownloadOption when headerItems are not loaded', function(assert) {
+  const result = getDefaultDownloadFormat(Immutable.from({
+    visuals: {
+      defaultPacketFormat: 'PAYLOAD'
+    },
+    header: {
+      headerItems: []
+    },
+    packets: {
+    }
+  }));
+  assert.equal(typeof result.isEnabled, 'undefined');
+});
+

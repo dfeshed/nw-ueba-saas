@@ -65,7 +65,6 @@ const DownloadPacketComponent = Component.extend({
   // if the download is in progress, downloading from other options should not be allowed
   @computed('isDownloading', 'hasPackets')
   isToggleDisabled(isDownloading, hasPackets) {
-
     if (!isDownloading && hasPackets) {
       return false;
     }
