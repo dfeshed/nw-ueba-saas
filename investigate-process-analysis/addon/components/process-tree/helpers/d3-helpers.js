@@ -1,3 +1,4 @@
+const COUNT_OFFSET = 55;
 /**
  * Custom path function that connects node with lines. Calculate start and end position of link. Elbow function uses
  * the svg Paths to draw a path between the two nodes. Need to attach the curve to middle of the rectangle node and
@@ -15,7 +16,7 @@ export const elbow = function(d, boxWidth) {
   return `M${sourceY - boxWidth},${sourceX}
           H${ sourceY + (targetY - sourceY) / 2}
           V${ targetX}
-          H${ targetY + boxWidth + 50}`;
+          H${ targetY + boxWidth + COUNT_OFFSET}`;
 };
 
 /**

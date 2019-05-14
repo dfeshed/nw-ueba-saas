@@ -21,8 +21,8 @@ module('Integration | Component | process-item', function(hooks) {
   };
   test('it renders static legends', async function(assert) {
     await render(hbs`{{process-item}}`);
-    assert.equal(findAll('.process-item').length, 1, 'Row component renders.');
-    assert.equal(findAll('.process-item div').length, 5, 'Component has 5 sub items.');
+    assert.equal(findAll('.process-item-container').length, 1, 'Row component renders.');
+    assert.equal(findAll('.process-item-container div').length, 5, 'Component has 5 sub items.');
     assert.equal(findAll('.risk-score').length, 1, 'risk score element is present.');
     assert.equal(findAll('.process-name').length, 1, 'process-name box is rendered');
     assert.equal(findAll('.process-icon').length, 1, 'process-icon is present.');

@@ -2,7 +2,8 @@ import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 
 export default Component.extend({
-  classNames: ['process-item'],
+  classNames: ['process-item-container', 'flexi-fit'],
+  tagName: 'hbox',
 
   isProcessSelected: false,
 

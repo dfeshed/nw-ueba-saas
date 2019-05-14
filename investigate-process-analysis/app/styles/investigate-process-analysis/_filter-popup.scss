@@ -1,5 +1,5 @@
 .process-filter-popup {
-  width: 700px;
+  width: 425px;
   height: 400px;
   &__search {
     float: right;
@@ -12,6 +12,7 @@
     }
   }
   &__content {
+    padding: 0 rsa-whitespace(less);
     overflow-y: auto;
     height: 314px;
   }

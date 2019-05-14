@@ -1,38 +1,36 @@
-<hbox class='process-item-container'>
-  <div class='risk-score'>
-    {{#if data.riskScore}}
-      {{rsa-risk-score score=data.riskScore radius=10 }}
-    {{else}}
-      {{rsa-risk-score score='0'}}
-    {{/if}}
-  </div>
-  <div class='process-icon'>
-    {{rsa-icon name=processIcon size='medium'}}
-  </div>
-  <div class='process-name {{if isProcessSelected 'selected'}}' onclick={{action "itemClick" data}}>
-    <span title='{{data.processName}}'>{{data.processName}}</span>
-  </div>
-  <div class='machine-count'>
+<div class='risk-score'>
+  {{#if data.riskScore}}
+    {{rsa-risk-score score=data.riskScore radius=10 }}
+  {{else}}
+    {{rsa-risk-score score='0'}}
+  {{/if}}
+</div>
+<div class='process-icon'>
+  {{rsa-icon name=processIcon size='medium'}}
+</div>
+<div class='process-name {{if isProcessSelected 'selected'}}' onclick={{action "itemClick" data}}>
+  <span title='{{data.processName}}'>{{data.processName}}</span>
+</div>
+<div class='machine-count'>
 
-    <span class='bracket-open'> ( </span>
-    <span>{{rsa-icon class='rsa-icon-computer-notebook-2-filled' size='medium'}} </span>
-    <span class='machine-count-number' title='{{data.machineCount}}'>
-      {{data.machineCount}}
-    </span>
-    <span class='bracket-close'>
-      )
-    </span>
-  </div>
+  <span class='bracket-open'> ( </span>
+  <span>{{rsa-icon class='rsa-icon-computer-notebook-2-filled' size='medium'}} </span>
+  <span class='machine-count-number' title='{{data.machineCount}}'>
+    {{data.machineCount}}
+  </span>
+  <span class='bracket-close'>
+    )
+  </span>
+</div>
 
-  <div class='events'>
-    <span class ='{{if data.events.hasNetworkEvent "network-event" "network-event disabled"}}'>
-      {{rsa-icon class='rsa-icon-network'}}
-    </span>
-    <span class='{{if data.events.hasFileEvent "file-event" "file-event disabled"}}'>
-      {{rsa-icon class='rsa-icon-common-file-empty'}}
-    </span>
-    <span class='{{if data.events.hasRegistryEvent "registry-event" "registry-event disabled"}}'>
-      {{rsa-icon class='rsa-icon-cell-border-bottom'}}
-    </span>
-  </div>
-</hbox>
+<div class='events'>
+  <span class ='{{if data.events.hasNetworkEvent "network-event" "network-event disabled"}}'>
+    {{rsa-icon class='rsa-icon-network'}}
+  </span>
+  <span class='{{if data.events.hasFileEvent "file-event" "file-event disabled"}}'>
+    {{rsa-icon class='rsa-icon-common-file-empty'}}
+  </span>
+  <span class='{{if data.events.hasRegistryEvent "registry-event" "registry-event disabled"}}'>
+    {{rsa-icon class='rsa-icon-cell-border-bottom'}}
+  </span>
+</div>

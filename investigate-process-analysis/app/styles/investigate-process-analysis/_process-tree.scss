@@ -124,7 +124,7 @@ section {
   }
   .process-icon, .process-type, .process-name, .score-text, .machine-count {
     &.selected {
-      fill: #000;
+      fill: text-color(neutral, dark);
     }
   }
 }
