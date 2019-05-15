@@ -1,3 +1,18 @@
+# [12.3.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v12.3.0)
+## Features
+* [ASOC-76503](https://bedfordjira.na.rsa.net/browse/ASOC-76503):&emsp;Query Builder - User Experience Issues
+* [ASOC-65133](https://bedfordjira.na.rsa.net/browse/ASOC-65133):&emsp;Limit to Only One Text Pill
+* [ASOC-73196](https://bedfordjira.na.rsa.net/browse/ASOC-65133):&emsp;User preference for Export Log/Meta Format in Navigate requires reload to take effect
+* [ASOC-59815](https://bedfordjira.na.rsa.net/browse/ASOC-59815):&emsp;Perform Download - Display
+* [ASOC-59816](https://bedfordjira.na.rsa.net/browse/ASOC-59815):&emsp;Perform Download - Downloaded Content
+* [ASOC-74557](https://bedfordjira.na.rsa.net/browse/ASOC-74557):&emsp;Leverage New Preference to Sort Results by Time Asc/Desc
+* [ASOC-76232](https://bedfordjira.na.rsa.net/browse/ASOC-76232):&emsp;Admin settings for Event Analysis
+* [ASOC-76712](https://bedfordjira.na.rsa.net/browse/ASOC-76712):&emsp;UX styling of the download dropdown menu on events list
+* [ASOC-76765](https://bedfordjira.na.rsa.net/browse/ASOC-76765):&emsp;Calculating wrong event count in certain cases
+* [ASOC-76855](https://bedfordjira.na.rsa.net/browse/ASOC-76855):&emsp;Improve wording on Reconstruction Cache Settings in Classic
+* [ASOC-77057](https://bedfordjira.na.rsa.net/browse/ASOC-77057):&emsp;Too many calls being made in websocket
+* [ASOC-77274](https://bedfordjira.na.rsa.net/browse/ASOC-77274):&emsp;Memory limit of X GB reached, controlled by setting max.query.memory
+
 # [12.2.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v12.2.0)
 ## Features
 * [ASOC-43640](https://bedfordjira.na.rsa.net/browse/ASOC-43640):&emsp;Redux for Add to List
