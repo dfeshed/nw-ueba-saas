@@ -31,6 +31,7 @@ export default Component.extend({
   spellcheck: true,
   autofocus: false,
   onKeyUp: null,
+  bubbles: false,
 
   resolvedDisabled: or('isDisabled', 'isReadOnly')
 });

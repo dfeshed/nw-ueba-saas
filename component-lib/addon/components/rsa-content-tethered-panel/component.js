@@ -17,6 +17,8 @@ export default Component.extend({
 
   anchorHeight: 0,
   anchorWidth: 0,
+  closeOnAppClick: true,
+  closeOnEsc: false,
   displayCloseButton: true,
   hideDelay: 500,
   // optional The component that is using the tethered-panel can pass in true/false
@@ -262,12 +264,19 @@ export default Component.extend({
     }
   }),
 
+  _onEscapeKey(e) {
+    if (this.get('closeOnEsc') && e.keyCode === 27) {
+      this._didHide();
+    }
+  },
+
   willDestroyElement() {
     this.get('eventBus').off(this.get('displayEventName'), this, this._didDisplay);
     this.get('eventBus').off(this.get('hideEventName'), this, this._didHide);
     this.get('eventBus').off(this.get('toggleEventName'), this, this._didToggle);
     this.get('eventBus').off('rsa-application-click', this, this._didApplicationClick);
     this.get('eventBus').off('rsa-application-header-click', this, this._didApplicationClick);
+    document.removeEventListener('keydown', this.get('_boundClickListener'));
   },
 
   didInsertElement() {
@@ -277,6 +286,9 @@ export default Component.extend({
       this.get('eventBus').on(this.get('toggleEventName'), this, this._didToggle);
       this.get('eventBus').on('rsa-application-click', this, this._didApplicationClick);
       this.get('eventBus').on('rsa-application-header-click', this, this._didApplicationClick);
+      const _boundClickListener = this._onEscapeKey.bind(this);
+      this.set('_boundClickListener', _boundClickListener);
+      document.addEventListener('keydown', _boundClickListener);
     });
   },
 
@@ -329,7 +341,7 @@ export default Component.extend({
 
   _didHide() {
     run.next(() => {
-      if (!this.get('isHovering')) {
+      if (!this.get('isHovering') && !this.get('isDestroyed') && !this.get('isDestroying')) {
         this._hidepanel();
       }
     });
@@ -367,12 +379,14 @@ export default Component.extend({
   },
 
   _didApplicationClick(target) {
-    if (!target.closest(this.get('targetClass'))) {
-      run.next(() => {
-        if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-          this.set('isDisplayed', false);
-        }
-      });
+    if (this.get('closeOnAppClick')) {
+      if (!target.closest(this.get('targetClass'))) {
+        run.next(() => {
+          if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+            this.set('isDisplayed', false);
+          }
+        });
+      }
     }
   },
 
@@ -384,10 +398,9 @@ export default Component.extend({
 
   _hidepanel() {
     const element = document.querySelector(`.${this.get('elementId')}`);
-    element.removeEventListener('mouseenter', this._mouseEnter);
-    element.removeEventListener('mouseleave', this._mouseLeave);
-
-    if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+    if (element && !this.get('isDestroyed') && !this.get('isDestroying')) {
+      element.removeEventListener('mouseenter', this._mouseEnter);
+      element.removeEventListener('mouseleave', this._mouseLeave);
       this.set('isDisplayed', false);
     }
   }

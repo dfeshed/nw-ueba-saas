@@ -1,7 +1,7 @@
 import Service from '@ember/service';
 import Evented from '@ember/object/evented';
 import $ from 'jquery';
-import { moduleForComponent, test } from 'ember-qunit';
+import { moduleForComponent, test, skip } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 
@@ -148,6 +148,51 @@ test('it updates isDisplayed when relevant events are fired', function(assert) {
   this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tethered-panel isDisplayed=isDisplayed panelId="foo"}}Label{{/rsa-content-tethered-panel}}`);
 
   this.get('eventBus').trigger('rsa-content-tethered-panel-display-foo');
+
+  return wait().then(() => {
+    assert.equal(this.get('isDisplayed'), true);
+  });
+});
+
+test('it does not update isDisplayed when app click event are fired but turned off', function(assert) {
+  this.set('isDisplayed', false);
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tethered-panel closeOnAppClick=false isDisplayed=isDisplayed panelId="foo"}}Label{{/rsa-content-tethered-panel}}`);
+
+  this.get('eventBus').trigger('rsa-application-click');
+
+  return wait().then(() => {
+    assert.equal(this.get('isDisplayed'), false);
+
+    this.get('eventBus').trigger('rsa-application-header-click');
+
+    return wait().then(() => {
+      assert.equal(this.get('isDisplayed'), false);
+    });
+  });
+});
+
+skip('it updates isDisplayed when esc is pressed', function(assert) {
+  this.set('isDisplayed', true);
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tethered-panel closeOnEsc=true isDisplayed=isDisplayed panelId="foo"}}Label{{/rsa-content-tethered-panel}}`);
+
+  const event = new KeyboardEvent('keydown', {
+    keyCode: 27
+  });
+  document.dispatchEvent(event);
+
+  return wait().then(() => {
+    assert.equal(this.get('isDisplayed'), false);
+  });
+});
+
+skip('it does not update isDisplayed when esc is pressed when turned off', function(assert) {
+  this.set('isDisplayed', true);
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tethered-panel isDisplayed=isDisplayed panelId="foo"}}Label{{/rsa-content-tethered-panel}}`);
+
+  const event = new KeyboardEvent('keydown', {
+    keyCode: 27
+  });
+  document.dispatchEvent(event);
 
   return wait().then(() => {
     assert.equal(this.get('isDisplayed'), true);

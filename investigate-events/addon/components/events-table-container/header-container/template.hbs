@@ -47,13 +47,14 @@
     {{/rsa-content-tethered-panel-trigger}}
 
     {{#rsa-content-tethered-panel
-      displayCloseButton=false
+      closeOnAppClick=false
+      closeOnEsc=true
       position='left'
       panelClass="rsa-data-table-search-panel"
       panelId='tableSearchPanel'
       panelDidOpen=searchPanelDidOpen}}
       <section>
-        {{rsa-form-input value=_searchTerm onKeyUp=(action 'debouncedSearchForTerm') label=(t 'investigate.events.search') placeholder=(t 'investigate.events.searchPlaceholder')}}
+        {{rsa-form-input bubbles=true value=_searchTerm onKeyUp=(action 'debouncedSearchForTerm') label=(t 'investigate.events.search') placeholder=(t 'investigate.events.searchPlaceholder')}}
         {{events-table-container/header-container/search-controls}}
         {{#if searchMatchesCount}}
           <p>{{searchScrollDisplay}} / {{searchMatchesCount}}</p>

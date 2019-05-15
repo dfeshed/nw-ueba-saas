@@ -33,6 +33,7 @@ const stateToComputed = (state) => ({
   searchMatchesCount: searchMatchesCount(state),
   isAllEventsSelected: state.investigate.eventResults.allEventsSelected,
   selectedEventIds: state.investigate.eventResults.selectedEventIds,
+  searchScrollIndex: state.investigate.eventResults.searchScrollIndex,
   sortDirection: state.investigate.data.sortDirection
 });
 
@@ -117,9 +118,9 @@ const HeaderContainer = Component.extend({
   actions: {
     debouncedSearchForTerm(term, event) {
       if (event.key === 'Enter') {
-        this._nextSearchMatch();
+        this.send('setSearchScroll', this.get('searchScrollIndex') + 1);
       } else {
-        debounce(this, 'searchForTerm', 250);
+        debounce(this, 'searchForTerm', 500);
       }
     },
 

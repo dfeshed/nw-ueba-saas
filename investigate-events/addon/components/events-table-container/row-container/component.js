@@ -25,7 +25,7 @@ export default Component.extend(RowMixin, HighlightsEntities, {
     return id === matches[searchScrollIndex];
   },
 
-  @computed('item.sessionId', 'table.searchMatches', 'table.searchMatches.[]')
+  @computed('item.sessionId', 'table.searchMatches', 'table.searchMatches.[]', 'table.searchTerm')
   isSearchMatch(id, matches) {
     if (matches && matches.includes(id)) {
       this._highlightSearchMatch();
@@ -113,9 +113,19 @@ export default Component.extend(RowMixin, HighlightsEntities, {
 
   _highlightSearchMatch() {
     schedule('afterRender', () => {
-      const markup = this.get('element').innerHTML;
-      const newMarkup = markup.replace(new RegExp(this.get('table.searchTerm'), 'gi'), '<span class=\'search-match-text\'>$&</span>');
-      this.get('element').innerHTML = newMarkup;
+      const el = this.get('element');
+      const matchEl = el.querySelector('.search-match-text');
+
+      if (matchEl) {
+        matchEl.outerHTML = matchEl.innerHTML;
+      }
+
+      const cells = el.querySelectorAll('.rsa-data-table-body-cell .content');
+      for (let cell = 0; cell < cells.length; cell++) {
+        const markup = cells[cell].children[0].innerHTML;
+        const newMarkup = markup.replace(new RegExp(this.get('table.searchTerm'), 'gi'), '<span class=\'search-match-text\'>$&</span>');
+        cells[cell].children[0].innerHTML = newMarkup;
+      }
     });
   },
 
