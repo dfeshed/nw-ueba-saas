@@ -110,7 +110,7 @@ module('Unit | Route | incident', function(hooks) {
         id: '555d9a6fe4b0d37c827d402e',
         name: 'CONCENTRATOR',
         port: 56005,
-        version: '10.6.0.0'
+        version: '11.4.0.0'
       },
       '555d9a6fe4b0d37c827d4021': {
         displayName: 'loki-broker',
@@ -118,7 +118,7 @@ module('Unit | Route | incident', function(hooks) {
         id: '555d9a6fe4b0d37c827d4021',
         name: 'BROKER',
         port: 56003,
-        version: '11.1.0.0'
+        version: '11.4.0.0'
       },
       '555d9a6fe4b0d37c827d402d': {
         displayName: 'loki-concentrator',
@@ -126,7 +126,7 @@ module('Unit | Route | incident', function(hooks) {
         id: '555d9a6fe4b0d37c827d402d',
         name: 'CONCENTRATOR',
         port: 56005,
-        version: '11.2.0.0'
+        version: '11.4.0.0'
       },
       '555d9a6fe4b0d37c827d402f': {
         displayName: 'qamac01-concentrator',
@@ -134,7 +134,7 @@ module('Unit | Route | incident', function(hooks) {
         id: '555d9a6fe4b0d37c827d402f',
         name: 'CONCENTRATOR',
         port: 56005,
-        version: '11.1.0.0'
+        version: '11.4.0.0'
       }
     });
   });
