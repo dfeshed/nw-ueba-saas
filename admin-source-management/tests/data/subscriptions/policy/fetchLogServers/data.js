@@ -54,5 +54,16 @@ export default
     'version': 11.3,
     'family': null,
     'meta': { }
+  },
+  {
+    'id': 'id6',
+    'name': 'endpoint-server',
+    'displayName': 'Old Log Server',
+    'host': '10.10.10.17',
+    'port': 7050,
+    'useTls': false,
+    'version': '11.3.1',
+    'family': null,
+    'meta': { }
   }
 ];

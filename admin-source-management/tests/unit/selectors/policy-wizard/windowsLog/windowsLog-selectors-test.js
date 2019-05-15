@@ -68,10 +68,11 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
       .policyWizWinLogLogServers()
       .build();
     let logServersSelected = primaryLogServersList(Immutable.from(fullState));
-    assert.equal(logServersSelected.length, 5, 'number of primary log servers is as expected');
+    assert.equal(logServersSelected.length, 6, 'number of primary log servers is as expected');
     assert.deepEqual(logServersSelected[0].host, hostExpected, `logServersSelected[0].host is ${hostExpected}`);
     assert.deepEqual(logServersSelected[0].id, idExpected, `logServersSelected[0].id is ${idExpected}`);
     assert.deepEqual(logServersSelected[1].disabled, disabledExpected, `logServersSelected[1].disabled is ${disabledExpected}`);
+    assert.deepEqual(logServersSelected[5].disabled, disabledExpected, `logServersSelected[5].disabled is ${disabledExpected}`);
 
     // when policy is file log, some servers with version older than 11.4 will be disabled in the
     // dropdown
@@ -82,6 +83,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
     logServersSelected = primaryLogServersList(Immutable.from(fullState));
     disabledExpected = true;
     assert.deepEqual(logServersSelected[1].disabled, disabledExpected, `logServersSelected[1].disabled is ${disabledExpected}`);
+    assert.deepEqual(logServersSelected[5].disabled, disabledExpected, `logServersSelected[5].disabled is ${disabledExpected}`);
   });
 
   test('secondaryLogServersList selector', function(assert) {
@@ -94,7 +96,7 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
       .policyWizWinLogLogServers()
       .build();
     let logServersSelected = secondaryLogServersList(Immutable.from(fullState));
-    assert.equal(logServersSelected.length, 4, 'number of secondary log servers is as expected');
+    assert.equal(logServersSelected.length, 5, 'number of secondary log servers is as expected');
     assert.deepEqual(logServersSelected[0].host, hostExpected, `logServersSelected[0].host is ${hostExpected}`);
     assert.deepEqual(logServersSelected[0].id, idExpected, `logServersSelected[0].id is ${idExpected}`);
     assert.deepEqual(logServersSelected[0].disabled, disabledExpected, `logServersSelected[0].disabled is ${disabledExpected}`);

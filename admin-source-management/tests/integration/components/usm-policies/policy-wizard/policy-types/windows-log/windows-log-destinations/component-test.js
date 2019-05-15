@@ -54,7 +54,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
       .build();
     await render(hbs`{{usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations selectedSettingId='primaryDestination'}}`);
     await click('.ember-power-select-placeholder');
-    assert.equal(findAll('.ember-power-select-option[aria-disabled=true]').length, 2, 'Primary Log servers with version older than 11.4 are disabled for a file policy');
+    assert.equal(findAll('.ember-power-select-option[aria-disabled=true]').length, 3, 'Primary Log servers with version older than 11.4 are disabled for a file policy');
   });
 
   test('Some secondary destination options can be disabled for a filePolicy', async function(assert) {
@@ -64,7 +64,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/window
       .build();
     await render(hbs`{{usm-policies/policy-wizard/policy-types/windows-log/windows-log-destinations selectedSettingId='secondaryDestination'}}`);
     await click('.ember-power-select-placeholder');
-    assert.equal(findAll('.ember-power-select-option[aria-disabled=true]').length, 2, 'Secondary Log servers with version older than 11.4 are disabled for a file policy');
+    assert.equal(findAll('.ember-power-select-option[aria-disabled=true]').length, 3, 'Secondary Log servers with version older than 11.4 are disabled for a file policy');
   });
 
   // works locally but is flaky on Jenkins

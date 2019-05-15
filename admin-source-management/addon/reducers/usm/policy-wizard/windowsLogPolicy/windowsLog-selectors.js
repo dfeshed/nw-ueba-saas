@@ -27,7 +27,7 @@ export const primaryLogServersList = createSelector(
     for (let i = 0; i < listOfLogServers.length; i++) {
       // Disable the dropdown option if version < 11.4
       let isOldVersion = false;
-      if (policy.policyType === 'filePolicy' && listOfLogServers[i].version < 11.4) {
+      if (policy.policyType === 'filePolicy' && parseFloat(listOfLogServers[i].version) < 11.4) {
         isOldVersion = true;
       }
       const service = {
