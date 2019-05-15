@@ -16,6 +16,7 @@ import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import presidio.output.manager.spring.OutputManagerTestConfig;
 
+import java.sql.Array;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -59,7 +60,7 @@ public class OutputManagerServiceTest {
         try {
             String outputFileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
             Assert.assertEquals(2, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
-            outputManagerService.cleanDocuments(now().plus(Duration.ofDays(1)), Schema.FILE);
+            outputManagerService.cleanDocuments(now().plus(Duration.ofDays(1)), Arrays.asList(Schema.FILE));
             // 1 enriched event should have been deleted
             Assert.assertEquals(1, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
         } catch (Exception e) {
@@ -73,7 +74,7 @@ public class OutputManagerServiceTest {
         try {
             String outputFileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.PRINT);
             Assert.assertEquals(0, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
-            outputManagerService.cleanDocuments(now().plus(Duration.ofDays(1)), Schema.PRINT);
+            outputManagerService.cleanDocuments(now().plus(Duration.ofDays(1)), Arrays.asList(Schema.PRINT));
             Assert.assertEquals(0, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
         } catch (Exception e) {
             e.printStackTrace();
