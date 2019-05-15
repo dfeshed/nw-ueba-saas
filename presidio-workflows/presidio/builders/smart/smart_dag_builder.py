@@ -34,9 +34,9 @@ class SmartDagBuilder(PresidioDagBuilder):
         smart_record_conf_name = dag.default_args.get("smart_conf_name")
         entity_type = dag.default_args.get("entity_type")
         smart_operator = self._build_smart(root_dag_gap_sensor_operator, dag, smart_record_conf_name)
-        self._build_output_operator(smart_record_conf_name, entity_type, dag, smart_operator)
+        user_score_operator = self._build_output_operator(smart_record_conf_name, entity_type, dag, smart_operator)
         self._build_ade_manager_operator(dag, root_dag_gap_sensor_operator)
-        self._build_output_retention_operator(dag, entity_type)
+        self._build_output_retention_operator(dag, user_score_operator, entity_type)
         return dag
 
     def _build_root_dag_gap_sensor_operator(self, smart_dag):
@@ -143,6 +143,8 @@ class SmartDagBuilder(PresidioDagBuilder):
 
         smart_operator >> output_short_circuit_operator
 
+        return user_score_operator
+
     def _push_forwarding(self, hourly_output_operator, daily_short_circuit_operator, dag):
         self.log.debug("creating the forwarder task")
 
@@ -191,7 +193,9 @@ class SmartDagBuilder(PresidioDagBuilder):
         daily_short_circuit_operator >> ade_manager_operator
         root_dag_gap_sensor_operator >> daily_short_circuit_operator
 
-    def _build_output_retention_operator(self, dag, entity_type):
+        return ade_manager_operator
+
+    def _build_output_retention_operator(self, dag, user_score_operator, entity_type):
         output_retention_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='output_retention_short_circuit',
             dag=dag,
@@ -208,4 +212,6 @@ class SmartDagBuilder(PresidioDagBuilder):
                                                  dag.schedule_interval))
 
         output_retention = OutputRetentionOperatorBuilder().build(dag, entity_type)
+
+        user_score_operator >> output_retention_short_circuit_operator
         output_retention_short_circuit_operator >> output_retention
