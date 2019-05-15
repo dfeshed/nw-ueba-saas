@@ -209,7 +209,7 @@ const TreeComponent = Component.extend({
           const rootNode = prepareTreeData(children, selectedProcessId, path); // Only initial load
 
           const root = hierarchy(rootNode[0], (d) => {
-            return d.children || [];
+            return d.children || null;
           });
 
           root.x0 = 0;
@@ -319,7 +319,11 @@ const TreeComponent = Component.extend({
       if (!element) {
         return;
       }
-      sendTetherEvent(element, 'process-filter', this.get('eventBus'), 'display', d);
+      let children = d.children || [];
+      if (d._children) {
+        children = children.concat(d._children);
+      }
+      sendTetherEvent(element, 'process-filter', this.get('eventBus'), 'display', { node: d, children });
     }, 200);
   },
 
@@ -328,13 +332,19 @@ const TreeComponent = Component.extend({
     const collapseWrapper = nodeEnter.append('g')
       .attr('class', 'button-wrapper')
       .attr('id', function() {
-        return `expand-${counter++}`;
+        counter++;
+        return `expand-${counter}`;
       })
       .on('click', function(d) {
         event.stopImmediatePropagation();
+        /*
+         * d.children => visible child nodes
+         * d._children => hidden child nodes
+         * d.data._children => raw child nodes
+         */
         if (d._children || d.children) { // Child nodes are already fetched and partially drawn. Initial state
-          if (d.data._children) {
-            d.children = d.children.concat(getNewNodes(d, d.data._children));
+          if (d.data._children && d.data._children.length) {
+            d._children = getNewNodes(d, d.data._children);
             d.data._children = null;
           }
           self._showPopup(this, d);
@@ -428,18 +438,19 @@ const TreeComponent = Component.extend({
       const children = this.get('children');
       if (children && children.length) {
         const nodes = getNewNodes(d, children);
-        d.children = nodes;
-        d.data.children = nodes;
-        d._children = null;
+        d._children = nodes;
       }
       this._showPopup(element, d);
     };
     this.send('getChildEvents', d.data.processId, { onComplete });
   },
 
-  expandProcess(d) {
-    d._children = null;
-    this._buildChart(d);
+  expandProcess({ node, children }) {
+    node.children = children;
+    node.data._children = null;
+    node._children = null;
+
+    this._buildChart(node);
   },
 
   processProperties(d) {

@@ -60,7 +60,7 @@ module('Integration | Component | process-tree', function(hooks) {
     assert.equal(find('.child-count').textContent, 1, 'Expected to render child count');
   });
 
-  test('should open the filter popup on click of plus', async function(assert) {
+  test('should open the filter popup on click of plus and then View All', async function(assert) {
     const queryInputs = {
       sid: '1',
       vid: '3',
@@ -77,8 +77,41 @@ module('Integration | Component | process-tree', function(hooks) {
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     await selectAll('g.process:nth-of-type(4) .button-wrapper').dispatch('click');
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    return settled().then(() => {
+    return settled().then(async() => {
       assert.equal(findAll('.filter-popup').length, 1, 'Expected to render tether panel');
+      await click('.process-filter-popup__footer .rsa-form-button');
+      assert.equal(findAll('rect.process').length, 7, 'Expected to render 7 nodes after view all is clicked');
+    });
+  });
+
+  test('Check multiple popup and expand one node', async function(assert) {
+    const queryInputs = {
+      sid: '1',
+      vid: '3',
+      pn: 'test',
+      st: 1231233,
+      et: 13123,
+      osType: 'windows',
+      checksum: '07d15ddf2eb7be486d01bcabab7ad8df35b7942f25f5261e3c92cd7a8931190a',
+      aid: '51687D32-BB0F-A424-1D64-A8B94C957BD2'
+    };
+    this.set('queryInput', queryInputs);
+    new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInputs).build();
+    await render(hbs`{{process-tree queryInput=queryInput}}`);
+    await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
+    assert.equal(findAll('rect.process').length, 4, 'Initially 4 nodes are rendered');
+    await selectAll('g.process:nth-of-type(1) .button-wrapper').dispatch('click');
+    await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
+    return settled().then(async() => {
+      assert.equal(findAll('.filter-popup').length, 1, 'Expected to render tether panel');
+      assert.equal(findAll('.filter-popup .process-item-container').length, 1, '1 child is present for first node');
+      await selectAll('g.process:nth-of-type(4) .button-wrapper').dispatch('click');
+      await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
+      return settled().then(async() => {
+        assert.equal(findAll('.filter-popup .process-item-container').length, 3, '3 child is present for fourth node');
+        await click('.process-filter-popup__footer .rsa-form-button');
+        assert.equal(findAll('rect.process').length, 7, 'Expected to render 7 nodes after view all is clicked');
+      });
     });
   });
 
