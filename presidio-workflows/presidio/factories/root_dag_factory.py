@@ -30,7 +30,8 @@ class RootDagFactory(AbstractDagFactory):
         new_dag = DAG(dag_id=new_dag_id, start_date=start_date, schedule_interval=interval,
                       default_args={"schemas": schemas},
                       end_date=end_date, full_filepath=full_filepath, description=description,
-                      template_searchpath=template_searchpath, params=params, dagrun_timeout=dagrun_timeout)
+                      template_searchpath=template_searchpath, params=params, dagrun_timeout=dagrun_timeout,
+                      max_active_runs=1)
         logging.debug("dag_id=%s successful initiated", new_dag_id)
 
         return [new_dag]
