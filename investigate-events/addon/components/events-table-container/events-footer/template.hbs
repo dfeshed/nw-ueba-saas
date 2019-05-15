@@ -1,0 +1,29 @@
+{{#rsa-data-table/load-more}}
+  {{!-- still streaming, show loader --}}
+  {{#if areEventsStreaming}}
+    <div class='events-table-footer-status'>
+      {{#if hasPartialResults}}
+        {{t 'investigate.partialResults' totalCount=totalCount actualEventCount=actualEventCount}}
+      {{else if (or isQueryExecutedByColumnGroup isQueryExecutedBySort)}}
+        {{rsa-loader size='large' label=(t 'investigate.reExecutingQuery')}}
+      {{else}}
+        {{rsa-loader size="large" label=(t 'investigate.loading')}}
+      {{/if}}
+    </div>
+  {{else if (is-equal status 'complete')}}
+    {{#if (not allExpectedDataLoaded)}}
+      {{!-- do not have all the data, say so --}}
+      {{t 'investigate.notAllLoaded' maxEvents=maxEvents}}
+    {{else if hasResults}}
+      <div class='events-table-footer-status'>
+        {{t 'investigate.allResultsLoaded'}}
+      </div>
+    {{/if}}
+  {{else if hasPartialResults}}
+    {{#if isEventResultsError}}
+      {{t 'investigate.partialResultsWithError' totalCount=totalCount actualEventCount=actualEventCount}}
+    {{else if (and (not noEvents) isCanceled)}}
+      {{t 'investigate.partialResults' totalCount=totalCount actualEventCount=actualEventCount}}
+    {{/if}}
+  {{/if}}
+{{/rsa-data-table/load-more}}

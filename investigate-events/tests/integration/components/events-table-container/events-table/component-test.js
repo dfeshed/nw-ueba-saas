@@ -128,62 +128,6 @@ module('Integration | Component | events-table', function(hooks) {
     assert.equal(find('.rsa-loader').textContent.trim(), 'Query is being re-executed to fetch new data.', 'Displaying the correct message');
   });
 
-  test('if events are complete, but hit the limit, a message is displayed', async function(assert) {
-    new ReduxDataHelper(setState)
-      .eventResultsStatus('complete')
-      .eventCount(1)
-      .streamLimit(1)
-      .eventResults([{ sessionId: 'foo', time: 123 }])
-      .eventsPreferencesConfig()
-      .build();
-
-    await render(hbs`{{events-table-container/events-table}}`);
-    assert.notOk(find('.rsa-loader'), 'spinner present');
-    assert.equal(
-      find('.rsa-data-table-load-more').textContent.trim().length > 0,
-      true,
-      'a message is displayed when we get the max events'
-    );
-    assert.equal(find('.rsa-data-table-load-more').textContent.trim(), 'Reached the 1 event limit. Consider refining your query.', 'Footer message when limit reached');
-  });
-
-  test('if events are complete, and there are results, and did not hit the limit, a message is displayed', async function(assert) {
-    new ReduxDataHelper(setState)
-      .eventResultsStatus('complete')
-      .eventCount(1)
-      .streamLimit(100)
-      .eventResults([{ sessionId: 'foo', time: 123 }])
-      .eventsPreferencesConfig()
-      .build();
-
-    await render(hbs`{{events-table-container/events-table}}`);
-    assert.notOk(find('.rsa-loader'), 'spinner present');
-    assert.equal(
-      find('.rsa-data-table-load-more').textContent.trim().length > 0,
-      true,
-      'a message is displayed when the entire event result is fetched'
-    );
-    assert.equal(find('.rsa-data-table-load-more').textContent.trim(), 'All results loaded', 'Footer message when the entire event result is fetched');
-  });
-
-  test('if events are complete, and there are no results, a message is not displayed', async function(assert) {
-    new ReduxDataHelper(setState)
-      .eventResultsStatus('complete')
-      .eventCount(1)
-      .streamLimit(100)
-      .eventResults([])
-      .eventsPreferencesConfig()
-      .build();
-
-    await render(hbs`{{events-table-container/events-table}}`);
-    assert.notOk(find('.rsa-loader'), 'spinner present');
-    assert.equal(
-      find('.rsa-data-table-load-more').textContent.trim().length > 0,
-      false,
-      'a message is not displayed when the entire event result is fetched and there are no results'
-    );
-  });
-
   test('if events are canceled before any results are returned, a message is displayed', async function(assert) {
     new ReduxDataHelper(setState)
       .eventResultsStatus('canceled')

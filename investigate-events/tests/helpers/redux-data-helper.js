@@ -637,6 +637,19 @@ export default class DataHelper {
     return this;
   }
 
+  queryCanceledWithResults() {
+    _set(this.state, 'eventResults.status', 'canceled');
+    _set(this.state, 'eventResults.data', ['fooo']);
+    _set(this.state, 'eventCount.data', 100);
+    return this;
+  }
+
+  queryCanceledWithNoResults() {
+    _set(this.state, 'eventResults.status', 'canceled');
+    _set(this.state, 'eventResults.data', []);
+    return this;
+  }
+
   queryStatsIsRetrieving() {
     _set(this.state, 'eventResults.status', 'streaming');
     _set(this.state, 'eventResults.data', ['foo']);

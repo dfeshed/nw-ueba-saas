@@ -5,14 +5,10 @@ import { inject as service } from '@ember/service';
 
 import { getColumns, validEventSortColumns, disableSort } from 'investigate-events/reducers/investigate/data-selectors';
 import {
-  selectedIndex,
-  allExpectedDataLoaded,
-  areEventsStreaming,
   isCanceled,
-  actualEventCount,
-  isEventResultsError,
   eventTableFormattingOpts,
   searchMatches,
+  selectedIndex,
   SORT_ORDER
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
@@ -22,15 +18,12 @@ import {
   toggleEventSelection
 } from 'investigate-events/actions/interaction-creators';
 import { setVisibleColumns, updateSort } from 'investigate-events/actions/data-creators';
-import { thousandFormat } from 'component-lib/utils/numberFormats';
 
 const stateToComputed = (state) => {
   const { columns, notIndexedAtValue, notSingleton, notValid } = validEventSortColumns(state);
   return {
     eventTableFormattingOpts: eventTableFormattingOpts(state),
-    areEventsStreaming: areEventsStreaming(state),
     status: state.investigate.eventResults.status,
-    maxEvents: thousandFormat(state.investigate.eventResults.streamLimit),
     searchTerm: state.investigate.eventResults.searchTerm,
     searchScrollIndex: state.investigate.eventResults.searchScrollIndex,
     allEventsSelected: state.investigate.eventResults.allEventsSelected,
@@ -38,7 +31,6 @@ const stateToComputed = (state) => {
     selectedIndex: selectedIndex(state),
     items: state.investigate.eventResults.data,
     aliases: state.investigate.dictionaries.aliases,
-    allExpectedDataLoaded: allExpectedDataLoaded(state),
     language: state.investigate.dictionaries.language,
     columns: getColumns(state),
     endpointId: state.investigate.queryNode.serviceId,
@@ -47,11 +39,7 @@ const stateToComputed = (state) => {
     queryConditions: state.investigate.queryNode.metaFilter,
     metaFormatMap: metaFormatMap(state.investigate.dictionaries.language),
     isCanceled: isCanceled(state),
-    isQueryExecutedByColumnGroup: state.investigate.data.isQueryExecutedByColumnGroup,
-    totalCount: thousandFormat(state.investigate.eventCount.data),
-    actualEventCount: thousandFormat(actualEventCount(state)),
     threshold: state.investigate.eventCount.threshold,
-    isEventResultsError: isEventResultsError(state),
     searchMatches: searchMatches(state),
     sortField: state.investigate.data.sortField,
     sortDirection: state.investigate.data.sortDirection,
@@ -59,7 +47,6 @@ const stateToComputed = (state) => {
     notIndexedAtValue,
     notSingleton,
     notValid,
-    isQueryExecutedBySort: state.investigate.data.isQueryExecutedBySort,
     disableSort: disableSort(state)
   };
 };
@@ -134,16 +121,6 @@ const EventsTableContextMenu = RsaContextMenu.extend({
     return (isCanceled) ?
       i18n.t('investigate.empty.canceled') :
       i18n.t('investigate.empty.description');
-  },
-
-  @computed('isCanceled', 'isEventResultsError', 'actualEventCount')
-  hasPartialResults(isCanceled, isEventResultsError, actualEventCount) {
-    const i18n = this.get('i18n');
-    if (isEventResultsError && actualEventCount) {
-      return i18n.t('investigate.empty.errorWithPartial');
-    } else if (isCanceled && actualEventCount) {
-      return i18n.t('investigate.empty.canceledWithPartial');
-    }
   },
 
   contextMenu({ target: { attributes } }) {
