@@ -332,8 +332,12 @@ export default Component.extend({
           }
 
           const element = document.querySelector(`.${this.get('elementId')}`);
-          element.addEventListener('mouseenter', this._mouseEnter);
-          element.addEventListener('mouseleave', this._mouseLeave);
+          const mouseEnter = this._mouseEnter.bind(this);
+          const mouseLeave = this._mouseLeave.bind(this);
+          this.set('mouseEnter', mouseEnter);
+          this.set('mouseLeave', mouseLeave);
+          element.addEventListener('mouseenter', mouseEnter);
+          element.addEventListener('mouseleave', mouseLeave);
         });
       }
     });
@@ -399,8 +403,8 @@ export default Component.extend({
   _hidepanel() {
     const element = document.querySelector(`.${this.get('elementId')}`);
     if (element && !this.get('isDestroyed') && !this.get('isDestroying')) {
-      element.removeEventListener('mouseenter', this._mouseEnter);
-      element.removeEventListener('mouseleave', this._mouseLeave);
+      element.removeEventListener('mouseenter', this.get('mouseEnter'));
+      element.removeEventListener('mouseleave', this.get('mouseLeave'));
       this.set('isDisplayed', false);
     }
   }
