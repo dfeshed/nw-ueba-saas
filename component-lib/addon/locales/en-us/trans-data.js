@@ -943,7 +943,7 @@ export default {
       missingRequiredInfo: 'There is required information missing from the incident rule'
     },
     notifications: {
-      settings: 'Respond Incident Settings',
+      settings: 'Incident Email Notification Settings',
       emailServer: 'Email Server',
       socEmailAddresses: 'SOC Manager Email Addresses',
       noSocEmails: 'There are no SOC Manager emails configured',
