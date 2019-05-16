@@ -127,7 +127,16 @@ const selectedOperationRoles = createSelector(
       const getRoles = new RegExp('security.roles: (.*)');
       let results = getRoles.exec(roleString);
       // There shouldn't be more than one security role but we handle it just in case
-      results = results[1] ? results[1].split(',') : [];
+      results = results[1];
+      if (results) {
+        results = results.replace('&amp;', ',')
+          .split(',')
+          .map((result) => {
+            return result.trim();
+          });
+      } else {
+        results = [];
+      }
       return results.filter((role) => {
         return role !== 'everyone';
       });
