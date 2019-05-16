@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 @Service
 public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
-    private Logger logger = Logger.getLogger(AlertPersistencyServiceImpl.class);
+    private static final Logger logger = Logger.getLogger(AlertPersistencyServiceImpl.class);
 
     @Autowired
     private AlertRepository alertRepository;
