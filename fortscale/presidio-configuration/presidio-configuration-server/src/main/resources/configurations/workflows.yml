@@ -29,10 +29,12 @@ dags:
       schedule_interval: None
 
   pools_config:
-    - slots: 10
+    - slots: 7
       name: spring_boot_jar_pool
       description: A pool for the spring boot jars with 2G xmx that belong to the dag
-
+    - slots : 8
+      name : retention_spring_boot_jar_pool
+      description : A pool for the retention spring boot jars
   tasks_instances:
     hourly_DLPFILE_feature_aggregations:
       jvm_args:
@@ -122,6 +124,7 @@ dags:
         xms: 4096
         extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
     AdeManagerOperator:
+      pool_name : retention_spring_boot_jar_pool
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-manager.jar
         main_class: presidio.ade.manager.AdeManagerApplication
@@ -157,17 +160,19 @@ dags:
         xmx: 2048
         xms: 2048
     InputRetentionOperator:
+      pool_name : retention_spring_boot_jar_pool
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-input-core.jar
         main_class: presidio.input.core.FortscaleInputCoreApplication
-        xmx: 2048
-        xms: 2048
+        xmx: 512
+        xms: 512
     OutputRetentionOperator:
+      pool_name : retention_spring_boot_jar_pool
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-output-processor.jar
         main_class: presidio.output.processor.FortscaleOutputProcessorApplication
-        xmx: 4096
-        xms: 4096
+        xmx: 512
+        xms: 512
 components:
   ade:
     models:
