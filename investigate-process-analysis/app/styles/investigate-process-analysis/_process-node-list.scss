@@ -1,0 +1,16 @@
+.process-node-list {
+  .rsa-data-table-body-row.is-row-checked {
+    background-color: background-color(primary, darker);
+  }
+  .rsa-data-table {
+    height: 100%;
+  }
+
+  svg {
+    width: inherit;
+    height: inherit;
+    position: inherit;
+    top: 0 !important;
+    right: 0 !important;
+  }
+}

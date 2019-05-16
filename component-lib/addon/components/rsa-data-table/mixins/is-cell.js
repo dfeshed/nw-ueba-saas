@@ -98,7 +98,10 @@ export default Mixin.create(HasTableParent, {
   // Resolves to `true` when `resolvedWidth` is 'auto'.
   @equal('_resolvedWidth', 'auto') _resolvedWidthIsAuto: null,
 
-  @equal('column.field', 'currentSort.field') isSorted: null,
+  @computed('column.field', 'currentSort.field')
+  isSorted(columnField, sortField) {
+    return columnField === sortField;
+  },
 
   @computed('isSorted', 'currentSort.direction')
   sortDir(isSorted, currentDir) {

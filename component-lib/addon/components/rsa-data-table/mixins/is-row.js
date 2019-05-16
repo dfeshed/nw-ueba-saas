@@ -3,7 +3,7 @@
  * @public
  */
 import { schedule } from '@ember/runloop';
-import computed from 'ember-computed-decorators';
+import computed, { alias } from 'ember-computed-decorators';
 import SizeBindings from './size-bindings';
 import DomIsReady from './dom-is-ready';
 import HasTableParent from './has-table-parent';
@@ -14,7 +14,7 @@ import { thousandFormat } from 'component-lib/utils/numberFormats';
 
 export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
   classNames: 'rsa-data-table-body-row',
-  classNameBindings: ['isSelected', 'isAtGroupingSize', 'isLast', 'isSearchMatch', 'isScrollMatch'],
+  classNameBindings: ['isSelected', 'isAtGroupingSize', 'isLast', 'isSearchMatch', 'isScrollMatch', 'isRowChecked'],
   attributeBindings: ['style'],
 
   // determines if this row is at the limit of the group size
@@ -90,6 +90,9 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
     return index === selectedIndex;
   },
 
+  @alias('item.selected')
+  isRowChecked: false,
+
   /**
    * The y-coordinate (in pixels) of this row relative to the table body's root DOM element.
    * If enableGrouping is true, will offset for group-label's inclusion
@@ -154,7 +157,6 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
   // render a group label if table.enableGrouping is true
   didInsertElement() {
     this._super();
-
     if (this.get('table.enableGrouping')) {
       const index = this.get('index');
       const isAtGroupingSize = this.get('isAtGroupingSize');

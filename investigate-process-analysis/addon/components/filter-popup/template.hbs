@@ -16,9 +16,7 @@
   </box>
 </hbox>
 <box class='process-filter-popup__content'>
-  {{#each model.children as |node|}}
-    {{process-item data=node.data}}
-  {{/each}}
+  {{process-node-list nodeList=model.children}}
 </box>
 <box class='process-filter-popup__footer'>
   <hbox>

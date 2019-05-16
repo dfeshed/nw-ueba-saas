@@ -104,11 +104,11 @@ module('Integration | Component | process-tree', function(hooks) {
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     return settled().then(async() => {
       assert.equal(findAll('.filter-popup').length, 1, 'Expected to render tether panel');
-      assert.equal(findAll('.filter-popup .process-item-container').length, 1, '1 child is present for first node');
+      assert.equal(findAll('.filter-popup .rsa-data-table-body-row').length, 1, '1 child is present for first node');
       await selectAll('g.process:nth-of-type(4) .button-wrapper').dispatch('click');
       await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
       return settled().then(async() => {
-        assert.equal(findAll('.filter-popup .process-item-container').length, 3, '3 child is present for fourth node');
+        assert.equal(findAll('.filter-popup .process-node-list .rsa-data-table-body-row').length, 3, '3 child is present for fourth node');
         await click('.process-filter-popup__footer .rsa-form-button');
         assert.equal(findAll('rect.process').length, 7, 'Expected to render 7 nodes after view all is clicked');
       });

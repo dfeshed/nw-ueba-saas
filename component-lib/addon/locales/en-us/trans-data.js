@@ -3807,6 +3807,11 @@ export default {
     }
   },
   investigateProcessAnalysis: {
+    nodeList: {
+      processName: 'Process Name',
+      riskScore: 'Risk Score',
+      hostCount: 'Active On'
+    },
     property: {
       title: 'File Properties',
       file: {
