@@ -65,7 +65,7 @@ public class RegexCaptorAndFormatter extends AbstractJsonObjectTransformer {
         Object destinationValue = JSONObject.NULL;
 
         for (CaptureAndFormatConfiguration captureAndFormatConfiguration : captureAndFormatConfigurations) {
-            String tmp = captureAndFormatConfiguration.captureAndFormat(sourceValue);
+            String tmp = CaptureAndFormatUtil.captureAndFormat(captureAndFormatConfiguration, sourceValue);
             if (tmp != null) {
                 destinationValue = tmp;
                 break;

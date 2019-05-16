@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.utils.json.IJsonValueExtractor;
 import fortscale.utils.json.JsonPointerValueExtractor;
 import fortscale.utils.transform.regexcaptureandformat.CaptureAndFormatConfiguration;
+import fortscale.utils.transform.regexcaptureandformat.CaptureAndFormatUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -57,7 +58,7 @@ public class FirstArrayValueRegexCaptorAndFormatter extends AbstractJsonObjectTr
         Object destinationValue = JSONObject.NULL;
         JSONArray jsonArray = (JSONArray)sourceValue;
         for (int i = 0; i < jsonArray.length(); i++){
-            String value = captureAndFormatConfiguration.captureAndFormat(jsonArray.getString(i));
+            String value = CaptureAndFormatUtil.captureAndFormat(captureAndFormatConfiguration, jsonArray.getString(i));
             if(value != null){
                 destinationValue = value;
                 break;
