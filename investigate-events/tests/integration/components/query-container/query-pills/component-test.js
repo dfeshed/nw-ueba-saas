@@ -364,7 +364,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await createBasicPill(false, 'TimeT');
     // component class updates when store is updated
     assert.equal(findAll(PILL_SELECTORS.invalidPill).length, 1, 'Class for invalid pill should be present');
-    assert.equal(this.$(PILL_SELECTORS.invalidPill).prop('title'), 'You must enter a valid date.', 'Expected title with the error message');
+    assert.equal(this.$(PILL_SELECTORS.invalidPill).prop('title'), 'You entered \'x\'. You must enter a valid date.', 'Expected title with the error message');
   });
 
   test('Creating a pill validates the pill (serverSide) and updates if necessary', async function(assert) {
@@ -380,7 +380,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await createBasicPill(false, 'Text');
     // component class updates when store is updated
     assert.equal(findAll(PILL_SELECTORS.invalidPill).length, 1, 'Class for invalid pill should be present');
-    assert.equal(this.$(PILL_SELECTORS.invalidPill).prop('title'), 'Invalid server response', 'Expected title with the error message');
+    assert.equal(this.$(PILL_SELECTORS.invalidPill).prop('title'), 'You entered \'\'x\'\'. Invalid server response', 'Expected title with the error message');
     done();
   });
 

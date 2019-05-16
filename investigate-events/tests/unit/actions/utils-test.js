@@ -206,7 +206,7 @@ module('Unit | Helper | Actions Utils', function(hooks) {
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
       .catch((error) => {
         assert.ok(error.meta, 'Filter is invalid');
-        assert.equal(error.meta, 'You must enter an 8 bit Integer.', 'Invalid error message');
+        assert.equal(error.meta, 'You must enter an 8-bit Integer.', 'Invalid error message');
       });
   });
 
@@ -227,7 +227,7 @@ module('Unit | Helper | Actions Utils', function(hooks) {
       .clientSideParseAndValidate(pillData.meta.format, pillData.value)
       .catch((error) => {
         assert.ok(error.meta, 'Filter is invalid');
-        assert.equal(error.meta, 'You must enter an 8 bit Integer.', 'Invalid error message');
+        assert.equal(error.meta, 'You must enter an 8-bit Integer.', 'Invalid error message');
       });
 
   });
@@ -249,7 +249,7 @@ module('Unit | Helper | Actions Utils', function(hooks) {
       .clientSideParseAndValidate(pillData.meta.format, pillData.value)
       .catch((error) => {
         assert.ok(error.meta, 'Filter is invalid');
-        assert.equal(error.meta, 'You must enter an 8 bit Integer.', 'Invalid error message');
+        assert.equal(error.meta, 'You must enter an 8-bit Integer.', 'Invalid error message');
       });
 
   });
@@ -304,7 +304,7 @@ module('Unit | Helper | Actions Utils', function(hooks) {
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
       .catch((error) => {
         assert.ok(error.meta, 'Filter is invalid');
-        assert.equal(error.meta, 'You must enter a 16 bit Integer.', 'Invalid error message');
+        assert.equal(error.meta, 'You must enter a 16-bit Integer.', 'Invalid error message');
       });
   });
 
@@ -341,7 +341,7 @@ module('Unit | Helper | Actions Utils', function(hooks) {
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
       .catch((error) => {
         assert.ok(error.meta, 'Filter is invalid');
-        assert.equal(error.meta, 'You must enter a 32 bit Integer.', 'Invalid error message');
+        assert.equal(error.meta, 'You must enter a 32-bit Integer.', 'Invalid error message');
       });
   });
 
@@ -378,7 +378,7 @@ module('Unit | Helper | Actions Utils', function(hooks) {
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
       .catch((error) => {
         assert.ok(error.meta, 'Filter is invalid');
-        assert.equal(error.meta, 'You must enter a 32 bit Float.', 'Invalid error message');
+        assert.equal(error.meta, 'You must enter a 32-bit Float.', 'Invalid error message');
       });
   });
 

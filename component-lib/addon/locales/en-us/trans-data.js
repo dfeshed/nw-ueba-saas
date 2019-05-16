@@ -220,13 +220,13 @@ export default {
       text: 'Strings must be quoted with "',
       ipv4: 'You must enter an IPv4 address.',
       ipv6: 'You must enter an IPv6 address.',
-      uint8: 'You must enter an 8 bit Integer.',
-      uint16: 'You must enter a 16 bit Integer.',
-      uint32: 'You must enter a 32 bit Integer.',
-      uint64: 'You must enter a 64 bit Integer.',
-      float32: 'You must enter a 32 bit Float.',
+      uint8: 'You must enter an 8-bit Integer.',
+      uint16: 'You must enter a 16-bit Integer.',
+      uint32: 'You must enter a 32-bit Integer.',
+      uint64: 'You must enter a 64-bit Integer.',
+      float32: 'You must enter a 32-bit Float.',
       mac: 'You must enter a MAC address.'
-    }
+    },
   },
   ipConnections: {
     ipCount: '({{count}} IPs)',

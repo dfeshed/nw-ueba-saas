@@ -37,7 +37,7 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     const validateDispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.VALIDATE_GUIDED_PILL, 'action has the correct type - validate');
       action.promise.catch((error) => {
-        assert.equal(error.meta, 'You must enter an 8 bit Integer.', 'Expected validaiton error');
+        assert.equal(error.meta, 'You must enter an 8-bit Integer.', 'Expected validaiton error');
         done();
       });
     };
@@ -73,7 +73,7 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     const validateDispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.VALIDATE_GUIDED_PILL, 'action has the correct type - validate');
       action.promise.catch((error) => {
-        assert.equal(error.meta, 'You must enter an 8 bit Integer.', 'Expected validaiton error');
+        assert.equal(error.meta, 'You must enter an 8-bit Integer.', 'Expected validaiton error');
         done();
       });
     };
