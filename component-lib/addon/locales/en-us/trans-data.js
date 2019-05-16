@@ -226,7 +226,7 @@ export default {
       uint64: 'You must enter a 64-bit Integer.',
       float32: 'You must enter a 32-bit Float.',
       mac: 'You must enter a MAC address.'
-    },
+    }
   },
   ipConnections: {
     ipCount: '({{count}} IPs)',
