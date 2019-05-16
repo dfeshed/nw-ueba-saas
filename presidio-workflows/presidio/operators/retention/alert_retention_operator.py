@@ -3,9 +3,9 @@ from airflow.utils.decorators import apply_defaults
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 
 
-class OutputRetentionOperator(FixedDurationJarOperator):
+class AlertRetentionOperator(FixedDurationJarOperator):
     """
-    Runs an output retention task (a JAR file) using a bash command.
+    Runs an alert retention task (a JAR file) using a bash command.
     The c'tor accepts the task arguments that are constant throughout the
     operator runs (e.g. the fixed duration strategy and the schema).
     Other arguments, such as the start date and the end date, are evaluated before every run.
@@ -26,12 +26,12 @@ class OutputRetentionOperator(FixedDurationJarOperator):
         self.log.debug('input operator init kwargs=%s', str(kwargs))
 
         self.fixed_duration_strategy = fixed_duration_strategy
-        self.task_id = task_id or 'retention_output'
+        self.task_id = task_id or 'alert_retention'
 
         self.log.debug('agg operator. command=%s', command)
 
         java_args = {'entity_type': entity_type}
-        super(OutputRetentionOperator, self).__init__(
+        super(AlertRetentionOperator, self).__init__(
             task_id=self.task_id,
             fixed_duration_strategy=self.fixed_duration_strategy,
             command=command,

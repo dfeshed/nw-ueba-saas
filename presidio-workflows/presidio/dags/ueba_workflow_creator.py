@@ -6,6 +6,7 @@ i.e. if i want to create historical load for two different dates: i can
 
 from airflow import DAG
 from presidio.factories.indicator_dag_factory import IndicatorDagFactory
+from presidio.factories.retention_dag_factory import RetentionDagFactory
 from presidio.factories.root_dag_factory import RootDagFactory
 from presidio.factories.model_dag_factory import ModelDagFactory
 from presidio.factories.presidio_pool_factory import PresidioPoolFactory
@@ -32,6 +33,8 @@ smartDagFactory = SmartDagFactory()
 smart_dags = smartDagFactory.create_and_register_dags(conf_key=SmartDagFactory.smart_conf_key, name_space=name_space, config_reader=config_reader)
 smartModelDagFactory = SmartModelDagFactory()
 smart_model_dags = smartModelDagFactory.create_and_register_dags(conf_key=SmartModelDagFactory.smart_model_conf_key, name_space=name_space, config_reader=config_reader)
+retentionDagFactory = RetentionDagFactory()
+retention_dag = retentionDagFactory.create_and_register_dags(conf_key=RetentionDagFactory.root_conf_key, name_space=name_space, config_reader=config_reader)
 
 # build dags
 rootDagFactory.build_dags(root_dags)
@@ -39,3 +42,4 @@ indicatorDagFactory.build_dags(indicator_dags)
 modelDagFactory.build_dags(model_dags)
 smartDagFactory.build_dags(smart_dags)
 smartModelDagFactory.build_dags(smart_model_dags)
+retentionDagFactory.build_dag(retention_dag)

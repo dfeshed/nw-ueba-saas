@@ -16,7 +16,6 @@ import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import presidio.output.manager.spring.OutputManagerTestConfig;
 
-import java.sql.Array;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;

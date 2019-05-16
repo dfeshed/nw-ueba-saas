@@ -2,18 +2,15 @@ from datetime import timedelta
 
 from airflow import LoggingMixin
 
-from presidio.operators.input_retention.input_retention_operator import InputRetentionOperator
+from presidio.operators.retention.input_retention_operator import InputRetentionOperator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 
 
 class InputRetentionOperatorBuilder(LoggingMixin):
+
     RETENTION_COMMAND_CONFIG_PATH = 'retention.input.command'
     RETENTION_COMMAND_DEFAULT_VALUE = 'retention'
-    input_min_time_to_start_retention_in_days_conf_key = "retention.input.min_time_to_start_retention_in_days"
-    input_min_time_to_start_retention_in_days_default_value = 2
-    input_retention_interval_in_hours_conf_key = "retention.input.retention_interval_in_hours"
-    input_retention_interval_in_hours_default_value = 24
 
     def __init__(self, schema):
         """
@@ -22,22 +19,9 @@ class InputRetentionOperatorBuilder(LoggingMixin):
         :type schema: str
         """
         conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
-
-        self.schema = schema
         self._retention_command = conf_reader.read(InputRetentionOperatorBuilder.RETENTION_COMMAND_CONFIG_PATH,
                                                    InputRetentionOperatorBuilder.RETENTION_COMMAND_DEFAULT_VALUE)
-
-    @staticmethod
-    def get_input_min_time_to_start_retention_in_days(conf_reader):
-        return conf_reader.read(
-            InputRetentionOperatorBuilder.input_min_time_to_start_retention_in_days_conf_key,
-            InputRetentionOperatorBuilder.input_min_time_to_start_retention_in_days_default_value)
-
-    @staticmethod
-    def get_input_retention_interval_in_hours(conf_reader):
-        return timedelta(
-            hours=conf_reader.read(InputRetentionOperatorBuilder.input_retention_interval_in_hours_conf_key,
-                                   InputRetentionOperatorBuilder.input_retention_interval_in_hours_default_value))
+        self.schema = schema
 
     def build(self, dag):
         """

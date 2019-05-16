@@ -13,6 +13,8 @@ dags:
       schedule_interval: None
     model:
       schedule_interval: None
+    retention:
+      schedule_interval: timedelta(days=1)
     smart:
       schedule_interval: timedelta(hours=1)
       smart_confs:
@@ -24,10 +26,6 @@ dags:
       schedule_interval: None
       smart_confs:
        - smart_conf_name: userId_hourly
-    input_retention:
-      schedule_interval: None
-    output_retention:
-      schedule_interval: None
 
   pools_config:
     - slots: 10
@@ -163,12 +161,18 @@ dags:
         main_class: presidio.input.core.FortscaleInputCoreApplication
         xmx: 2048
         xms: 2048
-    OutputRetentionOperator:
+    AlertRetentionOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-output-processor.jar
         main_class: presidio.output.processor.FortscaleOutputProcessorApplication
         xmx: 4096
         xms: 4096
+    OutputRetentionOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-output-manager.jar
+        main_class: presidio.output.manager.FortscaleOutputManagerApplication
+        xmx: 2048
+        xms: 2048
 components:
   ade:
     models:
@@ -187,9 +191,10 @@ components:
 retention:
   input:
     command: applyRetentionPolicy
-    min_time_to_start_retention_in_days: 2
-    retention_interval_in_hours: 24
   output:
+    command: clean-documents
+  alert:
     command: cleanup
-    min_time_to_start_retention_in_days: 2
-    retention_interval_in_hours: 24
+    min_time_to_start_retention_in_days : 2
+    retention_interval_in_hours : 24
+
