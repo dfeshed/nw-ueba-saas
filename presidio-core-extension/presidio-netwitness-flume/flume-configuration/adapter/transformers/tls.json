@@ -1,0 +1,151 @@
+{
+  "type": "chain",
+  "name": "tls-transformer",
+  "transformerList": [
+    {
+      "type": "filter",
+      "name": "direction-filter",
+      "predicate": {
+        "type": "regex",
+        "name": "direction-white-list",
+        "sourceKey": "direction",
+        "regex": "outbound"
+      },
+      "filterIn": true
+    },
+    {
+      "type": "epoch",
+      "name": "date-time-millis-to-nano-representation",
+      "sourceKey": "event_time",
+      "destinationKey": "dateTime"
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-event-source-id-to-event-id",
+      "sourceKey": "event_source_id",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "eventId"
+      ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-direction",
+      "sourceKey": "direction",
+      "targetKey": "direction",
+      "sourceStringFormat": "LOWER_UNDERSCORE",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-ip-src",
+      "sourceKey": "ip_src",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "srcIp"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-country-dst",
+      "sourceKey": "country_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstCountry"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-ssl-subject",
+      "sourceKey": "ssl_subject",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "sslSubject"
+      ]
+    },
+    {
+      "type": "top_level_domain",
+      "name": "alias-host-to-top-level-domain",
+      "sourceKey": "alias_host[0]",
+      "isRemoveSourceKey": false,
+      "targetKey": "domain"
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-org-dst",
+      "sourceKey": "org_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstOrg"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-asn-dst",
+      "sourceKey": "asn_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstAsn"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-payload-req",
+      "sourceKey": "payload_req",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "numOfBytesSent"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-payload-res",
+      "sourceKey": "payload_res",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "numOfBytesReceived"
+      ]
+    },
+    {
+      "type": "first_array_value_regex_captor_and_formatter",
+      "name": "extract-src-netname",
+      "sourceArrayKey": "netname",
+      "targetKey": "srcNetname",
+      "captureAndFormatConfiguration": {
+        "pattern": "(.+) src",
+        "format": "%s",
+        "capturingGroupConfigurations": [
+          {
+            "index": 1,
+            "caseFormat": "LOWER"
+          }
+        ]
+      }
+    },
+    {
+      "type": "first_array_value_regex_captor_and_formatter",
+      "name": "extract-dst-netname",
+      "sourceArrayKey": "netname",
+      "targetKey": "dstNetname",
+      "captureAndFormatConfiguration": {
+        "pattern": "(.+) dst",
+        "format": "%s",
+        "capturingGroupConfigurations": [
+          {
+            "index": 1,
+            "caseFormat": "LOWER"
+          }
+        ]
+      }
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-tcp-dstport",
+      "sourceKey": "tcp_dstport",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstPort"
+      ]
+    }
+  ]
+}
