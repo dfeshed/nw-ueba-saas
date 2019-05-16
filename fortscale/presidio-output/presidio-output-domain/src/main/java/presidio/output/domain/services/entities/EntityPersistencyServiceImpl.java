@@ -18,7 +18,7 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     private EntityRepository entityRepository;
 
     @Override
-    public Entity save(Entity entity) {
+    public Entity save(Entity entity) {  String entityName
         entity.updateFieldsBeforeSave();
         return entityRepository.save(entity);
     }

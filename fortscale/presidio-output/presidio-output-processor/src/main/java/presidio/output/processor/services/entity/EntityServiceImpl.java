@@ -10,7 +10,6 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.entity.EntityQuery;
 import presidio.output.domain.records.entity.EntitySeverity;
-import presidio.output.domain.records.entity.EntityTypeConverter;
 import presidio.output.domain.records.events.EnrichedUserEvent;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.entities.EntityPersistencyService;
@@ -253,10 +252,5 @@ public class EntityServiceImpl implements EntityService {
         } else {
             setEntityAlertDataToDefault(entity);
         }
-    }
-
-    @Override
-    public String getEntityType(String contextField){
-        return EntityTypeConverter.getEntityType(contextField);
     }
 }

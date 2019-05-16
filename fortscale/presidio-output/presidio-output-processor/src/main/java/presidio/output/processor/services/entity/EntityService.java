@@ -25,8 +25,6 @@ public interface EntityService {
 
     List<Entity> findEntityByVendorEntityIdAndType(String vendorEntityId, String entityType);
 
-    String getEntityType(String contextField);
-
     /**
      * Recalculate all alerts related data on the entity for the last X days (configurable).
      * Recalculating- entity score, alerts count and classification
