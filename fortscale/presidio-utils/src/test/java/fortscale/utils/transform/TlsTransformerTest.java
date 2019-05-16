@@ -54,18 +54,8 @@ public class TlsTransformerTest extends TransformerTest{
     private IJsonObjectTransformer buildTlsTransformer(){
         List<IJsonObjectTransformer> transformerChainList = new ArrayList<>();
 
-        //change direction format to upper case
-        StringFormatTransformer convertStringFormatOfDirection =
-                new StringFormatTransformer(
-                        "convert-string-format-of-direction",
-                        UDM_DIRECTION_FIELD_NAME,
-                        DIRECTION_FIELD_NAME,
-                        StringFormat.LOWER_UNDERSCORE,
-                        StringFormat.UPPER_UNDERSCORE);
-        transformerChainList.add(convertStringFormatOfDirection);
-
         // Filtering in only events with direction=='OUTBOUND'
-        JsonObjectRegexPredicate directionWhiteListPredicate = new JsonObjectRegexPredicate("direction-white-list", DIRECTION_FIELD_NAME, "OUTBOUND");
+        JsonObjectRegexPredicate directionWhiteListPredicate = new JsonObjectRegexPredicate("direction-white-list", DIRECTION_FIELD_NAME, "outbound");
         FilterTransformer directionFilter = new FilterTransformer("direction-filter", directionWhiteListPredicate, true);
         transformerChainList.add(directionFilter);
 
@@ -83,6 +73,16 @@ public class TlsTransformerTest extends TransformerTest{
                         true,
                         Collections.singletonList(EVENT_ID_FIELD_NAME));
         transformerChainList.add(ranameEventSourceIdToEventId);
+
+        //change direction format to upper case
+        StringFormatTransformer convertStringFormatOfDirection =
+                new StringFormatTransformer(
+                        "convert-string-format-of-direction",
+                        UDM_DIRECTION_FIELD_NAME,
+                        DIRECTION_FIELD_NAME,
+                        StringFormat.LOWER_UNDERSCORE,
+                        StringFormat.UPPER_UNDERSCORE);
+        transformerChainList.add(convertStringFormatOfDirection);
 
         //rename ip.src
         CopyValueTransformer ranameIpSrc =
