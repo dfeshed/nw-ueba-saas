@@ -211,7 +211,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.propEqual(data, {
           type: 'complex',
-          complexFilterText: 'foobar'
+          complexFilterText: '(foobar)'
         }, 'Correct data');
         assert.equal(position, 0, 'Correct position of the pill');
       }
@@ -226,7 +226,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     `);
     await click(PILL_SELECTORS.newPillTrigger);
     await clickTrigger(PILL_SELECTORS.meta);
-    await typeInSearch('foobar');
+    await typeInSearch('(foobar)');
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
   });
 
@@ -237,7 +237,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.propEqual(data, {
           type: 'complex',
-          complexFilterText: 'a foobar'
+          complexFilterText: 'a (foobar)'
         }, 'Correct data');
         assert.equal(position, 0, 'Correct position of the pill');
         done();
@@ -253,7 +253,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     await click(PILL_SELECTORS.newPillTrigger);
     await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);
     await clickTrigger(PILL_SELECTORS.operator);
-    await typeInSearch('foobar');
+    await typeInSearch('(foobar)');
     await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ENTER_KEY);
   });
 

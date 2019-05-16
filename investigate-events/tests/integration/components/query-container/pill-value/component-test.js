@@ -551,4 +551,23 @@ module('Integration | Component | Pill Value', function(hooks) {
     const optionsArray = selectorArray.map((el) => el.textContent);
     assert.deepEqual(recentQueriesArray, optionsArray, 'Found the correct recent queries in the powerSelect');
   });
+
+  test('it highlights proper EPS option depending upon text entered', async function(assert) {
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        meta=meta
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+    // Type in text
+    await typeInSearch('x');
+    assert.notOk(find(PILL_SELECTORS.powerSelectAfterOptionHighlight), 'Advanced Options should not be highlighted');
+    // Reset
+    await typeInSearch('');
+    // Type in complex text
+    await typeInSearch('(x)');
+    const option = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent;
+    assert.ok(option.includes(AFTER_OPTION_FREE_FORM_LABEL), 'Free-Form Filter was not highlighted');
+  });
 });

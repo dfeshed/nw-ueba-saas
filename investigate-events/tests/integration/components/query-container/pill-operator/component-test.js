@@ -398,7 +398,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.ok(Array.isArray(data), 'correct data type');
-        assert.propEqual(data, ['foobar', 'pill-operator'], 'correct data');
+        assert.propEqual(data, ['(foobar)', 'pill-operator'], 'correct data');
         assert.equal(find(PILL_SELECTORS.operatorSelectInput).value, '', 'meta input was reset');
         done();
       }
@@ -411,7 +411,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
       }}
     `);
     await clickTrigger(PILL_SELECTORS.operator);
-    await typeInSearch('foobar');
+    await typeInSearch('(foobar)');
     await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ENTER_KEY);
   });
 
@@ -585,5 +585,27 @@ module('Integration | Component | Pill Operator', function(hooks) {
     const selectorArray = findAll(PILL_SELECTORS.recentQueriesOptionsInOperator);
     const optionsArray = selectorArray.map((el) => el.textContent);
     assert.deepEqual(recentQueriesArray, optionsArray, 'Found the correct recent queries in the powerSelect');
+  });
+
+  test('it highlights proper Advanced Option if all EPS options filtered out', async function(assert) {
+    let option;
+    this.set('meta', meta);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.operator);
+    // Type in text
+    await typeInSearch('x');
+    option = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent;
+    assert.ok(option.includes(AFTER_OPTION_TEXT_LABEL), 'Text Filter was not highlighted');
+    // Reset
+    await typeInSearch('');
+    // Type in complex text
+    await typeInSearch('(x)');
+    option = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent;
+    assert.ok(option.includes(AFTER_OPTION_FREE_FORM_LABEL), 'Free-Form Filter was not highlighted');
   });
 });

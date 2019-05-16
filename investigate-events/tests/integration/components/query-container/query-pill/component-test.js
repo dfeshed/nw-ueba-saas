@@ -1216,7 +1216,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.propEqual(data, {
-          complexFilterText: 'foobar',
+          complexFilterText: '(foobar)',
           type: 'complex'
         }, 'correct data');
         done();
@@ -1231,7 +1231,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       }}
     `);
     await clickTrigger(PILL_SELECTORS.meta);
-    await typeInSearch('foobar');
+    await typeInSearch('(foobar)');
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
   });
 
@@ -1246,7 +1246,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.propEqual(data, {
-          complexFilterText: 'a foobar',
+          complexFilterText: 'a (foobar)',
           type: 'complex'
         }, 'correct data');
         done();
@@ -1263,7 +1263,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     await click(PILL_SELECTORS.queryPill);
     await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);
     await clickTrigger(PILL_SELECTORS.operator);
-    await typeInSearch('foobar');
+    await typeInSearch('(foobar)');
     const pillText = find(PILL_SELECTORS.activeQueryPill).textContent;
     const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
     const freeFormOption = _getOption(afterOptions, AFTER_OPTION_FREE_FORM_LABEL);
@@ -1283,7 +1283,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.propEqual(data, {
-          complexFilterText: 'a = foobar',
+          complexFilterText: 'a = (foobar)',
           type: 'complex'
         }, 'correct data');
         done();
@@ -1301,7 +1301,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // a
     await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 2); // =
     await clickTrigger(PILL_SELECTORS.value);
-    await typeInSearch('foobar');
+    await typeInSearch('(foobar)');
     const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
     const freeFormFilter = afterOptions.find((d) => d.textContent.includes('Free-Form Filter'));
     assert.ok(freeFormFilter, 'unable to find Free-Form Filter option');

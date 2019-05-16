@@ -847,6 +847,7 @@
     }
   }
 }
+
 // dropdown styles
 .investigate-query-dropdown {
   @include border(1px, solid, primary, lighter);
@@ -858,14 +859,11 @@
   // options to provide the effect like
   // pill tabs are hanging off the edge
   background-color: opacity-value(transparent);
-
-
   .ember-power-select-options {
     border-right: 1px solid text-color(primary);
     border-left: 1px solid text-color(primary);
     background: background-color(primary, darkest);
   }
-
   .ember-power-select-option--no-matches-message {
     color: rsa-color(grey, light);
     font-weight: 100;
@@ -913,6 +911,9 @@
     max-width: 600px;
     display: flex;
     font-weight: 100;
+    &[aria-current=true] {
+      transition: background-color 50ms;
+    }
     .value {
       flex: 1 0 auto;
       white-space: nowrap;
@@ -943,7 +944,6 @@
       background: background-color(primary, darkest);
     }
   }
-
   // afterOptions tabs
   .power-select-tabs {
     position: relative;

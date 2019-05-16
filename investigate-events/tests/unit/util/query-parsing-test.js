@@ -3,6 +3,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { setupTest } from 'ember-qunit';
 import {
   createFilter,
+  hasComplexText,
   isSearchTerm,
   parsePillDataFromUri,
   transformTextToPillData,
@@ -209,5 +210,43 @@ module('Unit | Util | Query Parsing', function(hooks) {
     const result = createFilter(TEXT_FILTER, searchTerm);
     assert.equal(result.type, TEXT_FILTER, 'type should match');
     assert.equal(result.searchTerm, searchTerm, 'complexFilterText should match');
+  });
+
+  test('hasComplexText can properly detect complex strings', function(assert) {
+    // AND
+    assert.ok(hasComplexText('&&'), 'Missed detecting "&&"');
+    assert.ok(hasComplexText('x&&x'), 'Missed detecting "&&"');
+    assert.ok(hasComplexText('AND'), 'Missed detecting "AND"');
+    assert.ok(hasComplexText('xANDx'), 'Missed detecting "AND"');
+    assert.notOk(hasComplexText('and'), 'Improperly detected "and" as complex');
+    // OR
+    assert.ok(hasComplexText('||'), 'Missed detecting "||"');
+    assert.ok(hasComplexText('x||x'), 'Missed detecting "||"');
+    assert.ok(hasComplexText('OR'), 'Missed detecting "OR"');
+    assert.ok(hasComplexText('xORx'), 'Missed detecting "OR"');
+    assert.notOk(hasComplexText('or'), 'Improperly detected "or" as complex');
+    // NOT
+    assert.ok(hasComplexText('!'), 'Missed detecting "!"');
+    assert.ok(hasComplexText('x!x'), 'Missed detecting "!"');
+    assert.ok(hasComplexText('NOT'), 'Missed detecting "NOT"');
+    assert.ok(hasComplexText('xNOTx'), 'Missed detecting "NOT"');
+    assert.notOk(hasComplexText('not'), 'Improperly detected "not" as complex');
+    // PARENS
+    assert.ok(hasComplexText('('), 'Missed detecting "("');
+    assert.ok(hasComplexText('x(x'), 'Missed detecting "("');
+    assert.ok(hasComplexText(')'), 'Missed detecting ")"');
+    assert.ok(hasComplexText('x)x'), 'Missed detecting ")"');
+    // IMPLIED OR
+    assert.ok(hasComplexText(','), 'Missed detecting ","');
+    assert.ok(hasComplexText('x,x'), 'Missed detecting ","');
+    // RANGE
+    assert.ok(hasComplexText('-'), 'Missed detecting "-"');
+    assert.ok(hasComplexText('x-x'), 'Missed detecting "-"');
+    // LENGTH
+    assert.ok(hasComplexText('length'), 'Missed detecting "length"');
+    assert.ok(hasComplexText('xlengthx'), 'Missed detecting "length"');
+    // REGEX
+    assert.ok(hasComplexText('regex'), 'Missed detecting "regex"');
+    assert.ok(hasComplexText('xregexx'), 'Missed detecting "regex"');
   });
 });

@@ -119,6 +119,7 @@ export default Component.extend({
    * @public
    */
   recentQueries: null,
+
   /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}

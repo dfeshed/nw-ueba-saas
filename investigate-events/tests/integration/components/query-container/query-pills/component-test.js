@@ -2001,16 +2001,16 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     // enter non-meta value for pill and press ENTER
     await clickTrigger(PILL_SELECTORS.meta);
-    await typeInSearch('foobar');
+    await typeInSearch('(foobar)');
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
     await settled();
     // assert.equal(addFreeFormFilterSpy.callCount, 1, 'The add free form filter creator was called once');
     // assert.deepEqual(
     //   addFreeFormFilterSpy.args[0][0],
-    //   { freeFormText: 'foobar', position: 0, shouldAddFocusToNewPill: false, fromFreeFormMode: false, shouldForceComplex: true },
+    //   { freeFormText: '(foobar)', position: 0, shouldAddFocusToNewPill: false, fromFreeFormMode: false, shouldForceComplex: true },
     //   'The action creator was called with the right arguments'
     // );
-    assert.equal(this.$(PILL_SELECTORS.complexPill).prop('title'), 'foobar', 'Expected stringified pill');
+    assert.equal(this.$(PILL_SELECTORS.complexPill).prop('title'), '(foobar)', 'Expected stringified pill');
   });
 
   test('Meta pill can create a text pill', async function(assert) {

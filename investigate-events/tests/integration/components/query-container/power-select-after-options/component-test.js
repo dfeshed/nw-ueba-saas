@@ -26,11 +26,12 @@ const MENU_OPTIONS_WITH_HIGHLIGHT = [
 ];
 
 const EPS_API = {
-  results: MENU_OPTIONS,
-  resultsCount: null,
   actions: {
     search: () => {}
-  }
+  },
+  results: MENU_OPTIONS,
+  resultsCount: null,
+  searchText: ''
 };
 
 module('Integration | Component | Power Select After Options', function(hooks) {
@@ -149,7 +150,7 @@ module('Integration | Component | Power Select After Options', function(hooks) {
     await click(PILL_SELECTORS.powerSelectAfterOption);
   });
 
-  test('First item in list is automatically highlighted if EPS search result has 0 items', async function(assert) {
+  test('Text Filter item is automatically highlighted if EPS search result has 0 items', async function(assert) {
     const apiWithNoResults = {
       ...EPS_API,
       results: [],
@@ -159,7 +160,7 @@ module('Integration | Component | Power Select After Options', function(hooks) {
     this.set('select', EPS_API);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT) {
-        assert.equal(data, 0, 'correct data');
+        assert.equal(data, 1, 'correct data');
         this.set('options', MENU_OPTIONS_WITH_HIGHLIGHT);
       }
     });

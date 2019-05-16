@@ -80,6 +80,10 @@ export const createFilter = (type, ...args) => {
   return filter;
 };
 
+export const hasComplexText = (str) => {
+  return COMPLEX_OPERATORS.some((d) => str.includes(d));
+};
+
 /**
  * Determines if the provided string is marked as a searchTerm.
  * @param {string} str A string
@@ -138,8 +142,7 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
   }
 
   // 2. Check if the text contains characters make the query complex
-  const hasComplexItem = COMPLEX_OPERATORS.some((operator) => queryText.includes(operator));
-  if (hasComplexItem || shouldForceComplex) {
+  if (hasComplexText(queryText) || shouldForceComplex) {
     if (!queryText.startsWith('(') && !queryText.endsWith(')')) {
       queryText = `(${queryText})`;
     }

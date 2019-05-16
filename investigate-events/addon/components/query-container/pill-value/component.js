@@ -18,13 +18,13 @@ import {
   AFTER_OPTION_TEXT_LABEL,
   AFTER_OPTION_TEXT_DISABLED_LABEL,
   AFTER_OPTION_QUERY_LABEL,
-  COMPLEX_OPERATORS,
   AFTER_OPTION_TAB_META,
   AFTER_OPTION_TAB_RECENT_QUERIES
 } from 'investigate-events/constants/pill';
 import * as MESSAGE_TYPES from '../message-types';
 import Ember from 'ember';
 import BoundedList from 'investigate-events/util/bounded-list';
+import { hasComplexText } from 'investigate-events/util/query-parsing';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -300,20 +300,32 @@ export default Component.extend({
     },
 
     /**
-     * This function is call after a key is pressed and after power-select has
+     * This function is call after a key is pressed but before power-select has
      * had an opportunity to react.
      * @private
      */
-    onInput(input, powerSelectAPI) {
+    onInput(input, powerSelectAPI /* event */) {
       this.set('_searchString', input);
-
+      const { options } = powerSelectAPI;
+      if (input.length === 0) {
+        this.set('selection', null);
+        // Set the power-select highlight on the next runloop so that the
+        // power-select has time to render the full list of options.
+        next(this, () => powerSelectAPI.actions.highlight(options[0]));
+      }
       // Need to make a decision about highlight and marking it as complex
       // only for the first time while creating a pill.
       if (!this.get('isEditing')) {
-        const match = COMPLEX_OPERATORS.find((d) => input.includes(d));
-        this.set('_isComplex', !!match);
-        const option = (match) ? AFTER_OPTION_FREE_FORM_LABEL : AFTER_OPTION_QUERY_LABEL;
-        next(this, () => powerSelectAPI.actions.highlight(option));
+        const isComplex = hasComplexText(input);
+        this.set('_isComplex', isComplex);
+        if (isComplex) {
+          next(this, () => {
+            // Remove highlighting of any item in main list. Advanced Options
+            // highlighting is handled in power-select-after-options
+            // component
+            powerSelectAPI.actions.highlight(null);
+          });
+        }
       }
     },
 

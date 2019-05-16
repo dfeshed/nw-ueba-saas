@@ -411,7 +411,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.ok(Array.isArray(data), 'correct data type');
-        assert.propEqual(data, ['foobar', 'pill-meta'], 'correct data');
+        assert.propEqual(data, ['(foobar)', 'pill-meta'], 'correct data');
         assert.equal(find(PILL_SELECTORS.metaInput).value, '', 'meta input was reset');
         done();
       }
@@ -424,7 +424,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
       }}
     `);
     await clickTrigger(PILL_SELECTORS.meta);
-    await typeInSearch('foobar');
+    await typeInSearch('(foobar)');
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
   });
 
@@ -529,7 +529,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await typeInSearch('x');
     // Should be in Advanced Options now
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
-    assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_FREE_FORM_LABEL, 'first Advanced Option was not highlighted');
+    assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_TEXT_LABEL, 'first Advanced Option was not highlighted');
     // Arrow up
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
     // Should still be back in Advanced Options
@@ -646,5 +646,27 @@ module('Integration | Component | Pill Meta', function(hooks) {
     const selectorArray = findAll(PILL_SELECTORS.recentQueriesOptionsInMeta);
     const optionsArray = selectorArray.map((el) => el.textContent);
     assert.deepEqual(recentQueriesArray, optionsArray, 'Found the correct recent queries in the powerSelect');
+  });
+
+  test('it highlights proper Advanced Option if all EPS options filtered out', async function(assert) {
+    let option;
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        metaOptions=metaOptions
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    // Type in text
+    await typeInSearch('x');
+    option = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent;
+    assert.ok(option.includes(AFTER_OPTION_TEXT_LABEL), 'Text Filter was not highlighted');
+    // Reset
+    await typeInSearch('');
+    // Type in complex text
+    await typeInSearch('(x)');
+    option = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent;
+    assert.ok(option.includes(AFTER_OPTION_FREE_FORM_LABEL), 'Free-Form Filter was not highlighted');
   });
 });

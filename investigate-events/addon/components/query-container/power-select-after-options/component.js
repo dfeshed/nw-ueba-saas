@@ -1,8 +1,13 @@
 import Component from '@ember/component';
 import * as MESSAGE_TYPES from '../message-types';
 import { next } from '@ember/runloop';
+import { hasComplexText } from 'investigate-events/util/query-parsing';
 
 const { log } = console; // eslint-disable-line no-unused-vars
+
+// index values for Advanced Options
+const FREE_FORM_INDEX = 0;
+const TEXT_INDEX = 1;
 
 export default Component.extend({
   tagName: 'ul',
@@ -14,6 +19,15 @@ export default Component.extend({
    * What is the currently selected tab
    */
   activePillTab: undefined,
+
+  /**
+   * Is this component being used by the pill value component? Why do we care?
+   * Because meta/operator behave differently than value as value never
+   * down-selects to zero options. This forces us to handle updated attributes
+   * differently.
+   * @see `didReceiveAttrs()`.
+   */
+  isPillValue: false,
 
   /**
    * An action to call when sending messages and data to the parent component.
@@ -47,29 +61,48 @@ export default Component.extend({
 
   didUpdateAttrs() {
     this._super(...arguments);
-    const { resultsCount } = this.get('select');
+    const { resultsCount, searchText } = this.get('select');
     // Since this is a power-select scoped component, the API that's passed to
     // power-select sub-components (named `select` in this case), get's a new
     // API every time power-select updates itself. For our concerns, this
     // happens when the list get's down-selected as the user types.
-    // If the user types something that filters out all options, the
-    // `resultsCount` will be 0. This is how we know we should automatically
-    // highlight the first item. If the `resultsCount` was more than 0, we send
-    // a "remove highlight" message. Both of these are done on the next runloop
-    // because this API update happens before power-select visually reacts to
-    // the change. If we didn't delay our intent, it would get overwritten by
-    // power-selects default behavior.
-    if (this._prevResultCount !== resultsCount) {
-      if (resultsCount === 0) {
-        // No results, auto highlight first item in options list
-        next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT, 0);
-      } else {
-        // Something was highlighted in main list, so remove any highlighting of
-        // these options
-        next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT);
+    // Any messages that are broadcast from this component are done on the next
+    // runloop because this API update happens before power-select visually
+    // reacts to the change. If we didn't delay our intent, it would get
+    // overwritten by power-selects default behavior.
+    if (this.get('isPillValue')) {
+      // Pill Value will auto-select between Query Filter and Free-Form Filter.
+      // Text Filter is never auto-selected, so we don't consider it like we do
+      // for meta/operator.
+      if (this._prevSearchText !== searchText) {
+        if (hasComplexText(searchText)) {
+          next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT, FREE_FORM_INDEX);
+        } else {
+          next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT);
+        }
       }
-      this._prevResultCount = resultsCount;
+    } else {
+      // Pill Meta/Operator will auto-select between Free-Form Filter and
+      // Text Filter. If all options were filtered out, make a smart guess about
+      // which Advanced Option to highlight.
+      if (this._prevResultCount !== resultsCount) {
+        if (resultsCount === 0) {
+          // All options filterd out. If text is complex or a text filter was
+          // previously created, choose free-form, otherwise default to text.
+          if (hasComplexText(searchText) || this.get('hasTextPill')) {
+            next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT, FREE_FORM_INDEX);
+          } else {
+            next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT, TEXT_INDEX);
+          }
+        } else {
+          // Something was highlighted in main list, so remove any highlighting of
+          // these options
+          next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT);
+        }
+      }
     }
+    this._prevResultCount = resultsCount;
+    this._prevSearchText = searchText;
   },
 
   actions: {
