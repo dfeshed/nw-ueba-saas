@@ -3,6 +3,7 @@ import { isArray } from '@ember/array';
 
 import * as ACTION_TYPES from './types';
 import { fetchExtractJobId } from './fetch';
+import { displayDownloadError } from './data-creators';
 import { getHeaderItem } from 'recon/utils/recon-event-header';
 import { selectedFiles } from 'recon/reducers/files/selectors';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
@@ -78,6 +79,7 @@ const extractFiles = (type = 'FILES') => {
       meta: {
         onFailure(response) {
           handleInvestigateErrorCode(response, `FETCH_EXTRACT_JOB_ID; ${endpointId} ${eventId}`);
+          dispatch(displayDownloadError());
         }
       }
     });

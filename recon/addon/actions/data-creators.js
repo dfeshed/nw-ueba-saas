@@ -598,14 +598,25 @@ const initializeNotifications = () => {
         // that the download is ready, but we do not want to download
         // from every browser, just the browser where the download originated.
         const extractStatus = getState().recon.files.fileExtractStatus;
-        const { fileExtractJobId } = getState().recon.files;
-        // fetch the second-to-last item as jobId in data.link
-        const [, responseJobId] = data.link.split('/').reverse();
-        if (['init', 'wait'].includes(extractStatus) && fileExtractJobId === responseJobId) {
-          dispatch({
-            type: ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS,
-            payload: data
-          });
+        if (['init', 'wait'].includes(extractStatus)) {
+
+          if (data.success && data.link) {
+
+            const { fileExtractJobId } = getState().recon.files;
+            // fetch the second-to-last item as responseJobId in data.link
+            const [, responseJobId] = data.link.split('/').reverse();
+            if (fileExtractJobId === responseJobId) {
+
+              dispatch({
+                type: ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS,
+                payload: data
+              });
+            }
+          } else {
+
+            dispatch({ type: ACTION_TYPES.FILE_EXTRACT_FAILURE });
+            dispatch(displayDownloadError(data.errorMessage));
+          }
         }
       },
       // some job failed
@@ -614,6 +625,15 @@ const initializeNotifications = () => {
       }
     );
   };
+};
+
+const displayDownloadError = (errorMessage) => {
+  const flashMessages = lookup('service:flashMessages');
+  if (flashMessages && flashMessages.error) {
+    const i18n = lookup('service:i18n');
+    errorMessage = errorMessage || i18n.t('fileExtract.error.generic');
+    flashMessages.error(errorMessage, { sticky: true });
+  }
 };
 
 /**
@@ -673,6 +693,7 @@ export {
   jumpToPage,
   determineReconView,
   reconPreferencesUpdated,
+  displayDownloadError,
   cookieStore as _cookieStore, // exported for testing only
   authCookie as _authCookie // exported for testing only
 };

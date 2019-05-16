@@ -468,6 +468,11 @@ export default {
   },
   midnight: 'Midnight',
   noon: 'Noon',
+  fileExtract: {
+    error: {
+      generic: 'An unexpected error has occurred attempting to download file(s). If further details are available, they can be found in the console.'
+    }
+  },
   investigate: {
     controls: {
       toggle: 'Show/Hide Events List Panel',

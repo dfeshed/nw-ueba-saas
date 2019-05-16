@@ -8,7 +8,6 @@ module('Unit | Reducers | Files | Recon');
 const initialState = Immutable.from({
   files: null,
   fileExtractStatus: null,
-  fileExtractError: null,
   fileExtractJobId: null,
   fileExtractLink: null,
   selectedFileIds: [],
@@ -104,6 +103,18 @@ test('test CLOSE_RECON', function(assert) {
   };
   const result = reducer(currentState, action);
   assert.equal(result.fileExtractStatus, 'queued');
+});
+
+test('test FILE_EXTRACT_FAILURE', function(assert) {
+  const action = {
+    type: ACTION_TYPES.FILE_EXTRACT_FAILURE
+  };
+
+  const currentState = initialState.merge({
+    fileExtractStatus: 'wait'
+  });
+  const result = reducer(currentState, action);
+  assert.equal(result.fileExtractStatus, 'error');
 });
 
 test('test FILES_RETRIEVE_SUCCESS removes backslash before operators for a given query filter', function(assert) {

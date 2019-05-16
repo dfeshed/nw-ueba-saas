@@ -12,7 +12,6 @@ module('Unit | Reducers | Files | Investigate');
 
 const initialState = Immutable.from({
   fileExtractStatus: null,
-  fileExtractError: null,
   fileExtractJobId: null,
   fileExtractLink: null,
   isAutoDownloadFile: true
@@ -131,6 +130,19 @@ test('test FILE_EXTRACT_NOTIFIED changes fileExtractStatus to notified when queu
   const result = reducer(currentState, action);
   assert.equal(result.fileExtractStatus, 'notified');
 });
+
+test('test FILE_EXTRACT_FAILURE', function(assert) {
+  const action = {
+    type: ACTION_TYPES.FILE_EXTRACT_FAILURE
+  };
+
+  const currentState = initialState.merge({
+    fileExtractStatus: 'wait'
+  });
+  const result = reducer(currentState, action);
+  assert.equal(result.fileExtractStatus, 'error');
+});
+
 // *******
 // END - Should be moved with Download Manager
 // *******

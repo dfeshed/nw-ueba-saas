@@ -6,6 +6,7 @@ import { getActiveQueryNode } from 'investigate-events/reducers/investigate/quer
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import { EVENT_DOWNLOAD_TYPES } from 'component-lib/constants/event-download-types';
 
+import { lookup } from 'ember-dependency-lookup';
 // *******
 // BEGIN - Copy/pasted download code from Recon
 // *******
@@ -37,15 +38,25 @@ export const initializeNotifications = () => {
         // that the download is ready, but we do not want to download
         // from every browser, just the browser where the download originated.
         const extractStatus = getState().investigate.files.fileExtractStatus;
-        const extractedJobId = getState().investigate.files.fileExtractJobId;
-        // fetch the second-to-last item as jobId in data.link
-        const [, jobId] = data.link.split('/').reverse();
-        if (extractStatus === 'wait' && extractedJobId === jobId) {
+        if (extractStatus === 'wait') {
 
-          dispatch({
-            type: ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS,
-            payload: data
-          });
+          if (data.success && data.link) {
+
+            const { fileExtractJobId } = getState().investigate.files;
+            // fetch the second-to-last item as responseJobId in data.link
+            const [, responseJobId] = data.link.split('/').reverse();
+            if (fileExtractJobId === responseJobId) {
+
+              dispatch({
+                type: ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS,
+                payload: data
+              });
+            }
+          } else {
+
+            dispatch({ type: ACTION_TYPES.FILE_EXTRACT_FAILURE });
+            dispatch(_displayDownloadError(data.errorMessage));
+          }
         }
       },
       // some job failed
@@ -81,6 +92,7 @@ export const extractFiles = (eventDownloadType, fileType, sessionIds = [], isSel
       meta: {
         onFailure(response) {
           handleInvestigateErrorCode(response, `FETCH_EXTRACT_JOB_ID; ${serviceId} ${eventDownloadType}`);
+          dispatch(_displayDownloadError());
         }
       }
     });
@@ -92,6 +104,15 @@ export const teardownNotifications = () => ({ type: ACTION_TYPES.NOTIFICATION_TE
 export const didDownloadFiles = () => ({ type: ACTION_TYPES.FILE_EXTRACT_JOB_DOWNLOADED });
 
 export const didQueueDownload = () => ({ type: ACTION_TYPES.FILE_EXTRACT_NOTIFIED });
+
+const _displayDownloadError = (errorMessage) => {
+  const flashMessages = lookup('service:flashMessages');
+  if (flashMessages && flashMessages.error) {
+    const i18n = lookup('service:i18n');
+    errorMessage = errorMessage || i18n.t('fileExtract.error.generic');
+    flashMessages.error(errorMessage, { sticky: true });
+  }
+};
 
 // *******
 // END - Copy/pasted download code from Recon

@@ -11,7 +11,6 @@ import _ from 'lodash';
 // State of server jobs for downloading file(s)
 const fileExtractInitialState = {
   fileExtractStatus: null, // either 'init' (creating job), 'wait' (job executing), 'success' or 'error'
-  fileExtractError: null, // error object
   fileExtractJobId: null, // job id for tracking notifications
   fileExtractLink: null // url for downloading successful job's results
 };
@@ -43,13 +42,17 @@ export default handleActions({
   [ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.set('fileExtractStatus', 'init'),
-      failure: (s) => s.merge({ fileExtractStatus: 'error', fileExtractError: action.payload }),
+      failure: (s) => s.merge({ fileExtractStatus: 'error' }),
       success: (s) => s.merge({ fileExtractStatus: 'wait', fileExtractJobId: action.payload.data.jobId })
     });
   },
 
   [ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS]: (state, { payload }) => {
     return state.merge({ fileExtractStatus: 'success', fileExtractLink: payload.link });
+  },
+
+  [ACTION_TYPES.FILE_EXTRACT_FAILURE]: (state) => {
+    return state.set('fileExtractStatus', 'error');
   },
 
   [ACTION_TYPES.FILE_EXTRACT_JOB_DOWNLOADED]: (state) => {

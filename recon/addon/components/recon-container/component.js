@@ -40,7 +40,9 @@ const ReconContainer = Component.extend({
   layout,
   tagName: 'vbox',
   classNames: ['recon-container'],
-  classNameBindings: ['isReady::loading', 'extractWarningClass'],
+  // TODO enable flash messaging after a certain fixed time
+  // add 'extractWarningClass'
+  classNameBindings: ['isReady::loading'],
 
   accessControl: service(),
   flashMessages: service(),
