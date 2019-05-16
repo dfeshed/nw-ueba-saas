@@ -3,21 +3,13 @@
   "name": "tls-transformer",
   "transformerList": [
     {
-      "type": "string_format",
-      "name": "convert-string-format-of-direction",
-      "sourceKey": "direction",
-      "targetKey": "direction",
-      "sourceStringFormat": "LOWER_UNDERSCORE",
-      "targetStringFormat": "UPPER_UNDERSCORE"
-    },
-    {
       "type": "filter",
       "name": "direction-filter",
       "predicate": {
         "type": "regex",
         "name": "direction-white-list",
         "sourceKey": "direction",
-        "regex": "OUTBOUND"
+        "regex": "outbound"
       },
       "filterIn": true
     },
@@ -35,6 +27,14 @@
       "destinationKeys": [
         "eventId"
       ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-direction",
+      "sourceKey": "direction",
+      "targetKey": "direction",
+      "sourceStringFormat": "LOWER_UNDERSCORE",
+      "targetStringFormat": "UPPER_UNDERSCORE"
     },
     {
       "type": "copy_value",
