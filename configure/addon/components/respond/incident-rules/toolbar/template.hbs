@@ -24,6 +24,14 @@
         {{t 'configure.incidentRules.deleteRule'}}
       {{/rsa-form-button}}
     </div>
+    <div class="action-control export-rules-button">
+      {{#rsa-form-button
+        isDisabled=isNoneSelected
+        defaultAction=(action 'export')
+      }}
+        {{t 'configure.incidentRules.export'}}
+      {{/rsa-form-button}}
+    </div>
   {{/if}}
 </section>
 {{#if showConfirmationDialog}}

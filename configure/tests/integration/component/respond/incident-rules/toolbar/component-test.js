@@ -7,6 +7,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { waitUntil, click, find, render } from '@ember/test-helpers';
 import { patchSocket } from '../../../../../helpers/patch-socket';
 import { patchFlash } from '../../../../../helpers/patch-flash';
+import { patchFetch } from '../../../../../helpers/patch-fetch';
 import rules from '../../../../../data/subscriptions/incident-rules/findAll/data';
 
 const initialState = {
@@ -37,20 +38,23 @@ module('Integration | Component | Respond Incident Rules Toolbar', function(hook
     assert.ok(find('.incident-rules-toolbar'), 'The component appears in the DOM');
     assert.ok(find('.clone-rule-button .rsa-form-button-wrapper.is-disabled'), 'The clone button is disabled');
     assert.ok(find('.delete-rule-button .rsa-form-button-wrapper.is-disabled'), 'The delete button is disabled');
+    assert.ok(find('.export-rules-button .rsa-form-button-wrapper.is-disabled'), 'The export button is disabled');
   });
 
-  test('The clone and delete buttons are enabled if a rule is selected', async function(assert) {
+  test('The clone, delete and export buttons are enabled if a rule is selected', async function(assert) {
     setState({ ...initialState, selectedRules: ['59b92bbf4cb0f0092b6b6a8b'] });
     await render(hbs`{{respond/incident-rules/toolbar}}`);
     assert.notOk(find('.clone-rule-button .rsa-form-button-wrapper.is-disabled'), 'The clone button is disabled');
     assert.notOk(find('.delete-rule-button .rsa-form-button-wrapper.is-disabled'), 'The delete button is disabled');
+    assert.notOk(find('.export-rules-button .rsa-form-button-wrapper.is-disabled'), 'The export button is disabled');
   });
 
-  test('The clone and delete buttons are disabled if multiple rules are selected', async function(assert) {
+  test('The clone and delete buttons are disabled, export button enabled if multiple rules are selected', async function(assert) {
     setState({ ...initialState, selectedRules: ['59b92bbf4cb0f0092b6b6a8b', '987654321'] });
     await render(hbs`{{respond/incident-rules/toolbar}}`);
     assert.ok(find('.clone-rule-button .rsa-form-button-wrapper.is-disabled'), 'The clone button is disabled');
     assert.ok(find('.delete-rule-button .rsa-form-button-wrapper.is-disabled'), 'The delete button is disabled');
+    assert.notOk(find('.export-rules-button .rsa-form-button-wrapper.is-disabled'), 'The export button is disabled');
   });
 
   test('Clicking on delete button dispatches deleteRule creator', async function(assert) {
@@ -106,5 +110,30 @@ module('Integration | Component | Respond Incident Rules Toolbar', function(hook
 
     await click('.clone-rule-button button');
     await waitUntil(() => clonedRuleId !== undefined, { timeout: 15000 });
+  });
+
+  test('Clicking on export button downloads a file', async function(assert) {
+    setState({ ...initialState, selectedRules: ['59b92bbf4cb0f0092b6b6a8b'] });
+    patchFetch((url, opts) => {
+      assert.equal(url, '/api/respond/rules/export');
+      assert.equal(opts.method, 'POST');
+      assert.ok(opts.body.includes('59b92bbf4cb0f0092b6b6a8b'));
+      return patchedResponse;
+    });
+
+    localStorage.setItem('rsa-x-csrf-token', '1111-2222-3333-4444');
+
+    await render(hbs`{{respond/incident-rules/toolbar}}`);
+    await click('.export-rules-button button');
+  });
+});
+
+const patchedResponse = new Promise(function(resolve) {
+  resolve({
+    ok: true,
+    headers: new Headers(),
+    blob() {
+      return new Blob([ JSON.stringify({ patched: 'response' }) ], { type: 'application/json' });
+    }
   });
 });

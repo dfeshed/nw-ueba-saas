@@ -28,3 +28,8 @@ export const hasOneSelectedRule = createSelector(
   getSelectedIncidentRules,
   (selectedRules) => selectedRules && selectedRules.length === 1
 );
+
+export const isNoneSelected = createSelector(
+  getSelectedIncidentRules,
+  (selectedRules) => selectedRules && selectedRules.length === 0
+);

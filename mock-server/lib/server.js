@@ -235,10 +235,20 @@ const _isClosed = function(ws) {
 const _processConfiguredRoutes = function(routes, app) {
   if (routes) {
     routes.forEach((route) => {
+      let responseCallback;
       if (typeof(route.response) === 'function') {
-        app.get(route.path, route.response);
+        responseCallback = route.response;
       } else {
-        app.get(route.path, (req, res) => res.json(route.response));
+        responseCallback = (req, res) => res.json(route.response);
+      }
+      switch (route.method) {
+        case 'post':
+          app.post(route.path, responseCallback);
+          break;
+        case 'get':
+        default:
+          app.get(route.path, responseCallback);
+          break;
       }
     });
   }
