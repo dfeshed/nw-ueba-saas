@@ -11,6 +11,7 @@ import fields from '../../../../../../data/subscriptions/incident-fields/findAll
 import * as aggregationRuleCreators from 'configure/actions/creators/respond/incident-rule-creators';
 import sinon from 'sinon';
 import { setFlatpickrDate } from 'ember-flatpickr/test-support/helpers';
+import moment from 'moment';
 
 const initialState = {
   ruleInfo,
@@ -154,6 +155,9 @@ module('Integration | Component | Respond Rule Builder Condition', function(hook
   });
 
   test('Date picker returns the value as a string', async function(assert) {
+    const timezone = this.owner.lookup('service:timezone');
+    timezone.set('selected', { zoneId: 'UTC', offset: 'GMT+00:00' });
+
     const actionSpy = sinon.spy(aggregationRuleCreators, 'updateCondition');
     const conditions = { '0': { id: 0, property: 'alert.timestamp', operator: '=', value: null } };
     const inputSelector = '.condition-control.value input[type=text]';
@@ -165,8 +169,13 @@ module('Integration | Component | Respond Rule Builder Condition', function(hook
     await render(hbs`{{respond/incident-rule/rule-builder/condition info=conditionInfo }}`);
 
     const [ pickr ] = findAll(inputSelector);
-    setFlatpickrDate(pickr, new Date(), true);
+    const timestamp = moment();
+    setFlatpickrDate(pickr, timestamp.valueOf(), true);
     assert.equal(Array.isArray(actionSpy.args[0][1].value), false, 'Date picker returns the value as a string');
+
+    const expected = timestamp.format('YYYY-MM-DD HH:mm:ss');
+    const actual = moment(actionSpy.args[0][1].value).utc().format('YYYY-MM-DD HH:mm:ss');
+    assert.equal(expected, actual, 'Date picker returns the datetime in the correct timezone');
     actionSpy.restore();
   });
 });

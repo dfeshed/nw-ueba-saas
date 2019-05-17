@@ -1,6 +1,8 @@
 import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import computed, { alias } from 'ember-computed-decorators';
 import operators from 'configure/utils/rules/operators';
+import moment from 'moment';
 import { connect } from 'ember-redux';
 import { updateCondition, removeCondition } from 'configure/actions/creators/respond/incident-rule-creators';
 import { getConditionFields } from 'configure/reducers/respond/incident-rules/rule/selectors';
@@ -30,6 +32,8 @@ const Condition = Component.extend({
   classNames: ['rsa-rule-condition'],
 
   info: null,
+
+  timezone: service(),
 
   @computed('selectedField.type')
   operators(dataType) {
@@ -61,6 +65,13 @@ const Condition = Component.extend({
     return list.findBy('value', value);
   },
 
+  @computed('info.value')
+  localizedDate(value) {
+    const timezoneOffset = this.get('timezone.selected.offset');
+    const dateValue = moment(value).utcOffset(timezoneOffset).format('YYYY-MM-DD HH:mm:ss');
+    return moment(dateValue).valueOf();
+  },
+
   @alias('info.operator') selectedOperator: null,
 
   actions: {
@@ -88,7 +99,9 @@ const Condition = Component.extend({
       this.send('updateCondition', { value });
     },
     handleDateChange(value) {
-      this.send('updateCondition', { value: value[0] });
+      const timezoneOffset = this.get('timezone.selected.offset');
+      const dateValue = moment(value[0]).utcOffset(timezoneOffset, true).utc().format();
+      this.send('updateCondition', { value: dateValue });
     }
   }
 });

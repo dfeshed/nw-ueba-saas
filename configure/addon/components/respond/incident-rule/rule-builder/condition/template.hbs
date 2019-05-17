@@ -38,7 +38,7 @@
         </label>
       {{else if (eq selectedField.type 'datefield')}}
         {{rsa-form-datetime
-          value=(unbound info.value)
+          value=localizedDate
           label=(t 'configure.incidentRules.ruleBuilder.value')
           onChange=(action 'handleDateChange')}}
       {{else}}
