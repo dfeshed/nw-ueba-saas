@@ -3,9 +3,10 @@ import {
   getIncidentRules,
   getIncidentRulesStatus,
   getIsIncidentRulesTransactionUnderway,
-  getSelectedIncidentRules
+  getSelectedIncidentRules,
+  isAllSelected
 } from 'configure/reducers/respond/incident-rules/selectors';
-import { selectRule, reorderRules } from 'configure/actions/creators/respond/incident-rule-creators';
+import { reorderRules, selectAllRules, selectRule } from 'configure/actions/creators/respond/incident-rule-creators';
 import { connect } from 'ember-redux';
 import { inject } from '@ember/service';
 import _ from 'lodash';
@@ -14,22 +15,14 @@ const stateToComputed = (state) => ({
   rules: getIncidentRules(state),
   rulesStatus: getIncidentRulesStatus(state),
   selectedRules: getSelectedIncidentRules(state),
-  isTransactionUnderway: getIsIncidentRulesTransactionUnderway(state)
+  isTransactionUnderway: getIsIncidentRulesTransactionUnderway(state),
+  isAllSelected: isAllSelected(state)
 });
 
-const dispatchToActions = function(dispatch) {
-  return {
-    selectRule: (item) => {
-      dispatch(selectRule(item.id));
-    },
-    reorderRules: (reorderedItems) => {
-      // Only if a rule order change has actually occurred
-      if (!_.isEqual(this.get('rules'), reorderedItems)) {
-        const reorderedIds = reorderedItems.map((item) => item.id);
-        dispatch(reorderRules(reorderedIds));
-      }
-    }
-  };
+const dispatchToActions = {
+  selectRule,
+  reorderRules,
+  selectAllRules
 };
 
 /**
@@ -52,7 +45,15 @@ const IncidentRules = Component.extend({
      * @private
      */
     handleRowClick(item) {
-      this.send('selectRule', item);
+      this.send('selectRule', item.id);
+    },
+
+    reorder(reorderedItems) {
+      // Dispatch only if a rule order change has actually occurred
+      if (!_.isEqual(this.get('rules'), reorderedItems)) {
+        const reorderedIds = reorderedItems.map((item) => item.id);
+        this.send('reorderRules', reorderedIds);
+      }
     }
   }
 });

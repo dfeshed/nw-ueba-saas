@@ -18,13 +18,19 @@
       </div>
     </centered>
   {{else}}
-    {{#sortable-group onChange="reorderRules" as |group|}}
+    {{#sortable-group onChange="reorder" as |group|}}
       <table class="{{if accessControl.respondCanManageAlertRules 'editable' 'not-editable'}}">
         <thead>
           <tr>
             <th class="reorder">&varr;</th>
-            <th class="select" title="{{t 'configure.incidentRules.select'}}">
-              {{t 'configure.incidentRules.select'}}
+            <th class="select" {{action 'selectAllRules'}}>
+              <centered>
+                <label class="rsa-form-checkbox-label {{if isAllSelected 'checked'}}">
+                  {{rsa-form-checkbox
+                    checked=isAllSelected
+                  }}
+                </label>
+              </centered>
             </th>
             <th class="order" title="{{t 'configure.incidentRules.order'}}">
               {{t 'configure.incidentRules.order'}}
@@ -66,7 +72,6 @@
                   <label class="rsa-form-checkbox-label {{if (contains rule.id selectedRules) 'checked'}}">
                     {{rsa-form-checkbox
                       checked=(contains rule.id selectedRules)
-                      change=(action 'selectRule' rule)
                     }}
                   </label>
                 </centered>

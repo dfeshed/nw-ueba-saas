@@ -114,6 +114,15 @@ module('Integration | Component | Respond Incident Rules Toolbar', function(hook
 
   test('Clicking on export button downloads a file', async function(assert) {
     setState({ ...initialState, selectedRules: ['59b92bbf4cb0f0092b6b6a8b'] });
+    const patchedResponse = new Promise(function(resolve) {
+      resolve({
+        ok: true,
+        headers: new Headers(),
+        blob() {
+          return new Blob([ JSON.stringify({ patched: 'response' }) ], { type: 'application/json' });
+        }
+      });
+    });
     patchFetch((url, opts) => {
       assert.equal(url, '/api/respond/rules/export');
       assert.equal(opts.method, 'POST');
@@ -128,12 +137,3 @@ module('Integration | Component | Respond Incident Rules Toolbar', function(hook
   });
 });
 
-const patchedResponse = new Promise(function(resolve) {
-  resolve({
-    ok: true,
-    headers: new Headers(),
-    blob() {
-      return new Blob([ JSON.stringify({ patched: 'response' }) ], { type: 'application/json' });
-    }
-  });
-});

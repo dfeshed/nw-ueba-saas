@@ -71,7 +71,7 @@ module('Integration | Component | Respond Incident Rules', function(hooks) {
     await render(hbs`{{respond/incident-rules}}`);
     const $firstRowCells = this.$('tbody tr').first().find('td');
     assert.equal($($firstRowCells[0]).find('.handle').length, 1, 'The first cell in the row has a drag handle for reordering results');
-    assert.equal($($firstRowCells[1]).find('input[type=checkbox]').length, 1, 'The second cell in the row has a selection radio button');
+    assert.equal($($firstRowCells[1]).find('input[type=checkbox]').length, 1, 'The second cell in the row has a selection checkbox');
     assert.equal($($firstRowCells[3]).find('.enabled-rule').length, 1, 'The fourth cell in the row has an enabled-rule class');
     assert.equal($($firstRowCells[4]).find('a').length, 1, 'The fifth cell in the row has a link');
     assert.equal($($firstRowCells[6]).find('.rsa-content-datetime').length, 1, 'The seventh cell in the row has a converted date');
@@ -142,5 +142,18 @@ module('Integration | Component | Respond Incident Rules', function(hooks) {
 
     await waitUntil(() => transitions.length > 0, { timeout });
     assert.deepEqual(transitions, ['respond.incident-rule']);
+  });
+
+  test('clicking on the select-all checkbox toggles the selected rules', async function(assert) {
+    await setState({ ...initialState, selectedRules: ['59b92bbf4cb0f0092b6b6a8b'] });
+    await render(hbs`{{respond/incident-rules}}`);
+
+    await click('.select input.rsa-form-checkbox');
+    assert.equal(findAll('tbody tr.is-selected').length, 20, 'Select-All selects the 20 rules');
+    assert.ok(find('.select input.rsa-form-checkbox.checked'), 'the select-all checkbox is checked');
+
+    await click('.select input.rsa-form-checkbox');
+    assert.equal(findAll('tbody tr:not(.is-selected)').length, 20, 'Select-All unselects the 20 rules');
+    assert.ok(find('.select input.rsa-form-checkbox:not(.checked)'), 'the select-all checkbox is unchecked');
   });
 });

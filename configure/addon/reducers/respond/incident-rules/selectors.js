@@ -1,4 +1,5 @@
 import reselect from 'reselect';
+import _ from 'lodash';
 
 const { createSelector } = reselect;
 
@@ -32,4 +33,10 @@ export const hasOneSelectedRule = createSelector(
 export const isNoneSelected = createSelector(
   getSelectedIncidentRules,
   (selectedRules) => selectedRules && selectedRules.length === 0
+);
+
+export const isAllSelected = createSelector(
+  getIncidentRules,
+  getSelectedIncidentRules,
+  (rules, selectedRules) => _.difference(rules.map((rule) => rule.id), selectedRules).length === 0
 );

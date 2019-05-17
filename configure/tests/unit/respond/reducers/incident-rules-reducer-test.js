@@ -101,6 +101,40 @@ test('With INCIDENT_RULES_SELECT_RULE, the selectedRule is appended if the rule 
   assert.deepEqual(endState, expectedEndState);
 });
 
+test('With INCIDENT_RULES_SELECT_ALL_RULES, if all rules are selected then unselect all', function(assert) {
+  const initialState = {
+    rules: [{ id: 'foo' }, { id: 'bar' } ],
+    selectedRules: ['foo', 'bar']
+  };
+
+  const expectedEndState = {
+    ...initialState,
+    selectedRules: []
+  };
+
+  const endState = reducer(Immutable.from(initialState), {
+    type: ACTION_TYPES.INCIDENT_RULES_SELECT_ALL_RULES
+  });
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('With INCIDENT_RULES_SELECT_ALL_RULES, if all rules are not selected then select all', function(assert) {
+  const initialState = {
+    rules: [{ id: 'foo' }, { id: 'bar' }],
+    selectedRules: ['foo']
+  };
+
+  const expectedEndState = {
+    ...initialState,
+    selectedRules: ['foo', 'bar']
+  };
+
+  const endState = reducer(Immutable.from(initialState), {
+    type: ACTION_TYPES.INCIDENT_RULES_SELECT_ALL_RULES
+  });
+  assert.deepEqual(endState, expectedEndState);
+});
+
 test('With INCIDENT_RULES_DELETE_STARTED, the isTransactionUnderway prop is properly set', function(assert) {
   const expectedEndState = {
     ...initialState,

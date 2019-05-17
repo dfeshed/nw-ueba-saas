@@ -37,6 +37,16 @@ const reducer = reduxActions.handleActions({
     return state.set('selectedRules', selectedRules);
   },
 
+  [ACTION_TYPES.INCIDENT_RULES_SELECT_ALL_RULES]: (state) => {
+    const { rules, selectedRules } = state;
+    // if all rules are already selected, then unselect all rules, otherwise select-all
+    if (selectedRules.length === rules.length) {
+      return state.set('selectedRules', []);
+    } else {
+      return state.set('selectedRules', rules.map((rule) => rule.id));
+    }
+  },
+
   [ACTION_TYPES.INCIDENT_RULES_DELETE_STARTED]: (state) => state.set('isTransactionUnderway', true),
 
   [ACTION_TYPES.INCIDENT_RULES_DELETE_FAILED]: (state) => state.set('isTransactionUnderway', false),

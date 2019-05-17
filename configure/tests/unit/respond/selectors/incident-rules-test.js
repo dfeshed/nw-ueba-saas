@@ -5,7 +5,8 @@ import {
   getIsIncidentRulesTransactionUnderway,
   getSelectedIncidentRules,
   hasOneSelectedRule,
-  isNoneSelected
+  isNoneSelected,
+  isAllSelected
 } from 'configure/reducers/respond/incident-rules/selectors';
 
 module('Unit | Utility | Incident Rules Selectors');
@@ -83,4 +84,20 @@ test('isNoneSelected returns true only when 0 rules are selected', function(asse
     }
   };
   assert.equal(isNoneSelected(state2), false, 'The returned value from the isNoneSelected selector is as expected');
+});
+
+test('isAllSelected returns true only when all rules are selected', function(assert) {
+  assert.equal(isAllSelected(state), false, 'The returned value from the isAllSelected selector is as expected');
+
+  const state2 = {
+    configure: {
+      respond: {
+        incidentRules: {
+          ...incidentRules,
+          selectedRules: ['123', '124']
+        }
+      }
+    }
+  };
+  assert.equal(isAllSelected(state2), true, 'The returned value from the isAllSelected selector is as expected');
 });

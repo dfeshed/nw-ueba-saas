@@ -199,6 +199,12 @@ const selectRule = (ruleId) => {
   };
 };
 
+const selectAllRules = () => {
+  return {
+    type: ACTION_TYPES.INCIDENT_RULES_SELECT_ALL_RULES
+  };
+};
+
 /**
  * Adds a new rule builder grouping, which can contain conditions. The following example illustrates this
  *
@@ -332,6 +338,7 @@ export {
   reorderRules,
   saveRule,
   selectRule,
+  selectAllRules,
   updateCondition,
   updateGroup,
   updateRule
