@@ -2858,7 +2858,8 @@ export default {
       details: 'Details',
       error: {
         'context.service.timeout': 'Context Hub server is not running or is inaccessible. Check with your Administrator to resolve this issue.',
-        'context.error': 'Context service is not reachable. Check your service connectivity.'
+        'context.error': 'Context service is not reachable. Check your service connectivity.',
+        'transport.data.read.failed': 'Context Lookup has timed out. No results found.'
       },
       button: {
         close: 'Close Panel'
