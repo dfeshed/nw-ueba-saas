@@ -1,14 +1,14 @@
 from elasticsearch import Elasticsearch
 
 
-index_user = "presidio-output-user"
-doc_type_user = "user"
-index_entity = "presidio-output-entity"
-doc_type_entity = "entity"
-size = 1000
-entity_type = "userId"
-index_alert = "presidio-output-alert"
-doc_type_alert = "alert"
+INDEX_USER = "presidio-output-user"
+DOC_TYPE_USER = "user"
+INDEX_ENTITY = "presidio-output-entity"
+DOC_TYPE_ENTITY = "entity"
+SIZE = 1000
+ENTITY_TYPE = "userId"
+INDEX_ALERT = "presidio-output-alert"
+DOC_TYPE_ALERT = "alert"
 
 
 # # Init Elasticsearch instance
@@ -32,10 +32,10 @@ def convert_users_to_entities(hits):
                 'alertsCount': item["_source"]["alertsCount"],
                 'lastUpdateLogicalStartDate': item["_source"]["updatedByLogicalStartDate"],
                 'lastUpdateLogicalEndDate': item["_source"]["updatedByLogicalEndDate"],
-                'entityType': entity_type
+                'entityType': ENTITY_TYPE
         }
 
-        es.index(index=index_entity, doc_type=doc_type_entity, id=item["_id"], body=entity)
+        es.index(index=INDEX_ENTITY, doc_type=DOC_TYPE_ENTITY, id=item["_id"], body=entity)
 
 
 # Update the alert table in elastic with the new field names
@@ -60,30 +60,29 @@ def update_alerts_hits(hits):
             'entityTags': item["_source"]["userTags"],
             'contributionToEntityScore': item["_source"]["contributionToUserScore"],
             'feedback': item["_source"]["feedback"],
-            'entityType': entity_type
+            'entityType': ENTITY_TYPE
 
         }
 
-        es.update(index=index_alert, doc_type=doc_type_alert, id=item["_id"], body={"doc":alert})
+        es.update(index=INDEX_ALERT, doc_type=DOC_TYPE_ALERT, id=item["_id"], body={"doc":alert})
 
 
 # Check user index is exists
-if not es.indices.exists(index=index_user):
-    print("Index {} not exists".format(index_user))
+if not es.indices.exists(index=INDEX_USER):
+    print("Index {} not exists".format(INDEX_USER))
     exit()
 
 # Init scroll by search
 data = es.search(
-    index=index_user,
-    doc_type=doc_type_user,
+    index=INDEX_USER,
+    doc_type=DOC_TYPE_USER,
     scroll='2m',
-    size=size
+    size=SIZE
 )
 
 # Get the scroll ID
 sid = data['_scroll_id']
 scroll_size = len(data['hits']['hits'])
-
 
 # Before scroll, process current batch of hits
 convert_users_to_entities(data['hits']['hits'])
@@ -103,21 +102,24 @@ while scroll_size > 0:
 
 
 # Remove user index
-es.indices.delete(index=index_user)
+es.indices.delete(index=INDEX_USER)
 
 # Check alert index is exists
-if not es.indices.exists(index=index_alert):
-    print("Index {} not exists".format(index_alert))
+if not es.indices.exists(index=INDEX_ALERT):
+    print("Index {} not exists".format(INDEX_ALERT))
     exit()
 
 # Init scroll by search
 data = es.search(
-    index=index_alert,
-    doc_type=doc_type_alert,
+    index=INDEX_ALERT,
+    doc_type=DOC_TYPE_ALERT,
     scroll='2m',
-    size=size
+    size=SIZE
 )
 
+# Get the scroll ID
+sid = data['_scroll_id']
+scroll_size = len(data['hits']['hits'])
 
 # Before scroll, process current batch of hits
 update_alerts_hits(data['hits']['hits'])

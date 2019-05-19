@@ -10,7 +10,6 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.entity.EntityQuery;
 import presidio.output.domain.records.entity.EntitySeverity;
-import presidio.output.domain.records.entity.EntityTypeConverter;
 import presidio.output.domain.records.events.EnrichedUserEvent;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.entities.EntityPersistencyService;
@@ -85,11 +84,10 @@ public class EntityServiceImpl implements EntityService {
             log.error("no events were found for entity {}", entityId);
             return null;
         }
-        String entityName = event.getUserName();
+        //We need to resolve the entityName getter according to the type
+        //For now - we chose to return the entityId instead.
+        String entityName = entityId;
         List<String> tags = new ArrayList<>();
-        if (event.getAdditionalInfo().get(EnrichedUserEvent.IS_USER_ADMIN) != null && Boolean.parseBoolean(event.getAdditionalInfo().get(EnrichedUserEvent.IS_USER_ADMIN))) {
-            tags.add(TAG_ADMIN);
-        }
         return new EntityDetails(entityName, entityId, tags, entityType);
     }
 
@@ -253,10 +251,5 @@ public class EntityServiceImpl implements EntityService {
         } else {
             setEntityAlertDataToDefault(entity);
         }
-    }
-
-    @Override
-    public String getEntityType(String contextField){
-        return EntityTypeConverter.getEntityType(contextField);
     }
 }
