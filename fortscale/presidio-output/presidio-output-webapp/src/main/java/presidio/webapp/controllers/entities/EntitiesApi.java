@@ -3,7 +3,6 @@ package presidio.webapp.controllers.entities;
 
 import fortscale.utils.rest.jsonpatch.JsonPatch;
 import io.swagger.annotations.*;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import presidio.webapp.model.*;
@@ -19,12 +18,8 @@ public interface EntitiesApi {
     @RequestMapping(value = "/entities/{entityDocumentId}/alerts",
             produces = "application/json",
             method = RequestMethod.GET)
-    default ResponseEntity<AlertsWrapper> getAlertsByEntity(@ApiParam(value = "The UUID of the entity to return", required = true) @PathVariable("entityDocumentId") String entityDocumentId,
-                                                          @ApiParam(value = "object that holds all the parameters for getting alerts") EntityAlertsQuery body) {
-        // do some magic!
-        return new ResponseEntity<AlertsWrapper>(HttpStatus.OK);
-    }
-
+    ResponseEntity<AlertsWrapper> getAlertsByEntity(@ApiParam(value = "The UUID of the entity to return", required = true) @PathVariable("entityDocumentId") String entityDocumentId,
+                                                          @ApiParam(value = "object that holds all the parameters for getting alerts") EntityAlertsQuery body);
 
     @ApiOperation(value = "Use this endpoint to get details about a single entity", notes = "Entities endpoint", response = Entity.class, tags = {"entities",})
     @ApiResponses(value = {
@@ -32,11 +27,8 @@ public interface EntitiesApi {
     @RequestMapping(value = "/entities/{entityDocumentId}",
             produces = "application/json",
             method = RequestMethod.GET)
-    default ResponseEntity<Entity> getEntity(@ApiParam(value = "The UUID of the entity to return", required = true) @PathVariable("entityDocumentId") String entityDocumentId,
-                                         @ApiParam(value = "Expand response to get the entity alerts data", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue = "false") Boolean expand) {
-        // do some magic!
-        return new ResponseEntity<Entity>(HttpStatus.OK);
-    }
+    ResponseEntity<Entity> getEntity(@ApiParam(value = "The UUID of the entity to return", required = true) @PathVariable("entityDocumentId") String entityDocumentId,
+                                         @ApiParam(value = "Expand response to get the entity alerts data", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue = "false") Boolean expand);
 
 
     @ApiOperation(value = "Use this endpoint to get a filtered list of entities from Presidio", notes = "Entities endpoint", response = EntitiesWrapper.class, tags = {"entities",})
@@ -45,10 +37,7 @@ public interface EntitiesApi {
     @RequestMapping(value = "/entities",
             produces = "application/json",
             method = RequestMethod.GET)
-    default ResponseEntity<EntitiesWrapper> getEntities(@ApiParam(value = "object that holds all the parameters for getting specific alerts") EntityQuery entityQuery) {
-        // do some magic!
-        return new ResponseEntity<EntitiesWrapper>(HttpStatus.OK);
-    }
+    ResponseEntity<EntitiesWrapper> getEntities(@ApiParam(value = "object that holds all the parameters for getting specific alerts") EntityQuery entityQuery);
 
 
     @ApiOperation(value = "Use this method to update the entity tags", notes = "", response = Entity.class, tags = {"entities",})
@@ -58,10 +47,7 @@ public interface EntitiesApi {
             produces = "application/json",
             consumes = "application/json",
             method = RequestMethod.PATCH)
-    default ResponseEntity<Entity> updateEntity(@ApiParam(value = "Exact match to the entity UUID", required = true) @PathVariable("entityDocumentId") String entityDocumentId, @RequestBody JsonPatch jsonPatch) {
-        // do some magic!
-        return new ResponseEntity<Entity>(HttpStatus.OK);
-    }
+    ResponseEntity<Entity> updateEntity(@ApiParam(value = "Exact match to the entity UUID", required = true) @PathVariable("entityDocumentId") String entityDocumentId, @RequestBody JsonPatch jsonPatch);
 
 
     @ApiOperation(value = "Use this endpoint to update entities by filter", notes = "Entities endpoint", response = EntitiesWrapper.class, tags = {"entities",})
@@ -71,10 +57,7 @@ public interface EntitiesApi {
             produces = "application/json",
             consumes = "application/json",
             method = RequestMethod.PATCH)
-    default ResponseEntity<EntitiesWrapper> updateEntities(@ApiParam(value = "object that holds all the parameters for getting specific entities") @RequestBody EntityPatchBody entityPatchBody) {
-        // do some magic!
-        return new ResponseEntity<EntitiesWrapper>(HttpStatus.OK);
-    }
+    ResponseEntity<EntitiesWrapper> updateEntities(@ApiParam(value = "object that holds all the parameters for getting specific entities") @RequestBody EntityPatchBody entityPatchBody);
 
 
     @ApiOperation(value = "Use this endpoint to get the alerts of a single user", notes = "Users endpoint", response = AlertsWrapper.class, tags = {"users",})
@@ -83,12 +66,8 @@ public interface EntitiesApi {
     @RequestMapping(value = "/users/{userId}/alerts",
             produces = "application/json",
             method = RequestMethod.GET)
-    default ResponseEntity<AlertsWrapper> getAlertsByUser(@ApiParam(value = "The UUID of the user to return", required = true) @PathVariable("userId") String userId,
-                                                          @ApiParam(value = "object that hold all the parameters for getting alerts") EntityAlertsQuery body) {
-        // do some magic!
-        return new ResponseEntity<AlertsWrapper>(HttpStatus.OK);
-    }
-
+    ResponseEntity<AlertsWrapper> getAlertsByUser(@ApiParam(value = "The UUID of the user to return", required = true) @PathVariable("userId") String userId,
+                                                          @ApiParam(value = "object that hold all the parameters for getting alerts") EntityAlertsQuery body);
 
     @ApiOperation(value = "Use this endpoint to get details about single user", notes = "Users endpoint", response = User.class, tags = {"users",})
     @ApiResponses(value = {
@@ -96,11 +75,8 @@ public interface EntitiesApi {
     @RequestMapping(value = "/users/{userId}",
             produces = "application/json",
             method = RequestMethod.GET)
-    default ResponseEntity<User> getUser(@ApiParam(value = "The UUID of the user to return", required = true) @PathVariable("userId") String userId,
-                                         @ApiParam(value = "Expand response to get user alerts data", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue = "false") Boolean expand) {
-        // do some magic!
-        return new ResponseEntity<User>(HttpStatus.OK);
-    }
+    ResponseEntity<User> getUser(@ApiParam(value = "The UUID of the user to return", required = true) @PathVariable("userId") String userId,
+                                         @ApiParam(value = "Expand response to get user alerts data", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue = "false") Boolean expand);
 
 
     @ApiOperation(value = "Use this endpoint to get and filters list of users from Presidio", notes = "Users endpoint", response = UsersWrapper.class, tags = {"users",})
@@ -109,10 +85,7 @@ public interface EntitiesApi {
     @RequestMapping(value = "/users",
             produces = "application/json",
             method = RequestMethod.GET)
-    default ResponseEntity<UsersWrapper> getUsers(@ApiParam(value = "object that hold all the parameters for getting specific alerts") UserQuery userQuery) {
-        // do some magic!
-        return new ResponseEntity<UsersWrapper>(HttpStatus.OK);
-    }
+    ResponseEntity<UsersWrapper> getUsers(@ApiParam(value = "object that hold all the parameters for getting specific alerts") UserQuery userQuery);
 
 
     @ApiOperation(value = "Use this method to update the user tags", notes = "", response = User.class, tags = {"users",})
@@ -122,10 +95,7 @@ public interface EntitiesApi {
             produces = "application/json",
             consumes = "application/json",
             method = RequestMethod.PATCH)
-    default ResponseEntity<User> updateUser(@ApiParam(value = "Exact match to user name", required = true) @PathVariable("userId") String userId, @RequestBody JsonPatch jsonPatch) {
-        // do some magic!
-        return new ResponseEntity<User>(HttpStatus.OK);
-    }
+    ResponseEntity<User> updateUser(@ApiParam(value = "Exact match to user name", required = true) @PathVariable("userId") String userId, @RequestBody JsonPatch jsonPatch);
 
 
     @ApiOperation(value = "Use this endpoint to update users by filter", notes = "Users endpoint", response = UsersWrapper.class, tags = {"users",})
@@ -135,9 +105,6 @@ public interface EntitiesApi {
             produces = "application/json",
             consumes = "application/json",
             method = RequestMethod.PATCH)
-    default ResponseEntity<UsersWrapper> updateUsers(@ApiParam(value = "object that hold all the parameters for getting specific users") @RequestBody UserPatchBody userPatchBody) {
-        // do some magic!
-        return new ResponseEntity<UsersWrapper>(HttpStatus.OK);
-    }
+    ResponseEntity<UsersWrapper> updateUsers(@ApiParam(value = "object that hold all the parameters for getting specific users") @RequestBody UserPatchBody userPatchBody);
 }
 

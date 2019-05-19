@@ -3,6 +3,7 @@ package presidio.output.domain.records.entity;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Objects;
 
 public class EntityQuery {
     // filters
@@ -230,22 +231,15 @@ public class EntityQuery {
         if (isPrefix != entityQuery.isPrefix) return false;
         if (pageNumber != entityQuery.pageNumber) return false;
         if (pageSize != entityQuery.pageSize) return false;
-        if (filterByAlertClassifications != null ? !filterByAlertClassifications.equals(entityQuery.filterByAlertClassifications) : entityQuery.filterByAlertClassifications != null)
-            return false;
-        if (filterByIndicators != null ? !filterByIndicators.equals(entityQuery.filterByIndicators) : entityQuery.filterByIndicators != null)
-            return false;
-        if (filterBySeverities != null ? !filterBySeverities.equals(entityQuery.filterBySeverities) : entityQuery.filterBySeverities != null)
-            return false;
-        if (filterByEntityTags != null ? !filterByEntityTags.equals(entityQuery.filterByEntityTags) : entityQuery.filterByEntityTags != null)
-            return false;
-        if (filterByEntitiesIds != null ? !filterByEntitiesIds.equals(entityQuery.filterByEntitiesIds) : entityQuery.filterByEntitiesIds != null)
-            return false;
-        if (filterByEntitiesTypes != null ? !filterByEntitiesTypes.equals(entityQuery.filterByEntitiesTypes) : entityQuery.filterByEntitiesTypes != null)
-            return false;
-        if (filterByEntityName != null ? !filterByEntityName.equals(entityQuery.filterByEntityName) : entityQuery.filterByEntityName != null)
-            return false;
-        if (sort != null ? !sort.equals(entityQuery.sort) : entityQuery.sort != null) return false;
-        return aggregateByFields != null ? aggregateByFields.equals(entityQuery.aggregateByFields) : entityQuery.aggregateByFields == null;
+        return (Objects.equals(filterByAlertClassifications, entityQuery.filterByAlertClassifications) &&
+                Objects.equals(filterByIndicators, entityQuery.filterByIndicators) &&
+                Objects.equals(filterBySeverities, entityQuery.filterBySeverities) &&
+                Objects.equals(filterByEntityTags, entityQuery.filterByEntityTags) &&
+                Objects.equals(filterByEntitiesIds, entityQuery.filterByEntitiesIds) &&
+                Objects.equals(filterByEntitiesTypes, entityQuery.filterByEntitiesTypes) &&
+                Objects.equals(filterByEntityName, entityQuery.filterByEntityName) &&
+                Objects.equals(sort, entityQuery.sort) &&
+                Objects.equals(aggregateByFields, entityQuery.aggregateByFields));
     }
 
     @Override
