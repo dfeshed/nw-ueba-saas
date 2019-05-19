@@ -1,15 +1,14 @@
 package presidio.output.commons.services.spring;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.output.commons.services.entity.EntityPropertiesUpdateService;
 import presidio.output.commons.services.entity.EntitySeverityComputeData;
 import presidio.output.commons.services.entity.EntitySeverityService;
 import presidio.output.commons.services.entity.EntitySeverityServiceImpl;
 import presidio.output.domain.records.entity.EntitySeverity;
+import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -45,9 +44,6 @@ public class EntitySeverityServiceConfig {
     @Value("${entity.severity.compute.data.low.percentage.of.entities:80}")
     private String entitySeverityComputeDataLowPercentageOfEntities;
 
-    @Autowired
-    private EntityPropertiesUpdateService entityPropertiesUpdateService;
-
     @Bean
     public EntitySeverityService entitySeverityService() {
 
@@ -61,7 +57,7 @@ public class EntitySeverityServiceConfig {
 
         severityToComputeDataMap.put(EntitySeverity.LOW, new EntitySeverityComputeData(new Double(entitySeverityComputeDataLowPercentageOfEntities)));
 
-        return new EntitySeverityServiceImpl(severityToComputeDataMap, entityPropertiesUpdateService);
+        return new EntitySeverityServiceImpl(severityToComputeDataMap, new OutputToCollectionNameTranslator());
     }
 
 }

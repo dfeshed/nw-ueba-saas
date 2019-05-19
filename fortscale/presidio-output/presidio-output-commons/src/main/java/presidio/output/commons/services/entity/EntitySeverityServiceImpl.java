@@ -1,5 +1,6 @@
 package presidio.output.commons.services.entity;
 
+import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import presidio.output.domain.records.entity.EntityQuery;
 import presidio.output.domain.records.entity.EntitySeverity;
 import presidio.output.domain.repositories.EntitySeveritiesRangeRepository;
 import presidio.output.domain.services.entities.EntityPersistencyService;
+import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,14 +41,15 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
     @Autowired
     private EntityPersistencyService entityPersistencyService;
 
-    private EntityPropertiesUpdateService entityPropertiesUpdateService;
+    private final OutputToCollectionNameTranslator outputToCollectionNameTranslator;
 
     @Value("${entity.batch.size:2000}")
     private int defaultEntitiesBatchSize;
 
-    public EntitySeverityServiceImpl(Map<EntitySeverity, EntitySeverityComputeData> severityToComputeDataMap, EntityPropertiesUpdateService entityPropertiesUpdateService) {
+    public EntitySeverityServiceImpl(Map<EntitySeverity, EntitySeverityComputeData> severityToComputeDataMap,
+                                     OutputToCollectionNameTranslator outputToCollectionNameTranslator) {
         this.severityToComputeDataMap = severityToComputeDataMap;
-        this.entityPropertiesUpdateService = entityPropertiesUpdateService;
+        this.outputToCollectionNameTranslator = outputToCollectionNameTranslator;
     }
 
     /**
@@ -78,8 +81,7 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
 
         Map<EntitySeverity, PresidioRange<Double>> severityToScoreRangeMap = calculateEntitySeverityRangeMap(entityScores);
 
-        EntitySeveritiesRangeDocument entitySeveritiesRangeDocument = new EntitySeveritiesRangeDocument(severityToScoreRangeMap);
-        return entitySeveritiesRangeDocument;
+        return new EntitySeveritiesRangeDocument(severityToScoreRangeMap);
     }
 
     protected Map<EntitySeverity, PresidioRange<Double>> calculateEntitySeverityRangeMap(double[] entityScores) {
@@ -194,7 +196,7 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
 
         while (page != null && page.hasContent()) {
             logger.info("Updating severity for entity's page: " + page.toString());
-            updateEntitySeveritiesAndProperties(severitiesMap, page.getContent(), true);
+            updateEntitySeverities(severitiesMap, page.getContent());
             page = getNextEntityPage(entityQueryBuilder, page);
 
         }
@@ -216,9 +218,7 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
         AtomicInteger courser = new AtomicInteger(0);
 
         while (page != null && page.hasContent()) {
-            page.getContent().forEach(entity -> {
-                scores[courser.getAndAdd(1)] = entity.getScore();
-            });
+            page.getContent().forEach(entity -> scores[courser.getAndAdd(1)] = entity.getScore());
             page = getNextEntityPage(entityQueryBuilder, page);
 
         }
@@ -227,9 +227,6 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
 
     /**
      * Return the next entity page or null if no next
-     *
-     * @param page
-     * @return
      */
 
     private Page<Entity> getNextEntityPage(EntityQuery.EntityQueryBuilder entityQueryBuilder, Page<Entity> page) {
@@ -244,34 +241,19 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
         return page;
     }
 
-    private void updateEntitySeveritiesAndProperties(EntityScoreToSeverity severitiesMap, List<Entity> entities, boolean persistChanges) {
-        List<Entity> updatedEntities = new ArrayList<>();
+    private void updateEntitySeverities(EntityScoreToSeverity severitiesMap, List<Entity> entities) {
         if (entities == null) {
             return;
         }
 
         entities.forEach(entity -> {
-            boolean entityInUpdatedEntities = false;
-            Entity updatedEntity;
             double entityScore = entity.getScore();
             EntitySeverity newEntitySeverity = severitiesMap.getEntitySeverity(entityScore);
-            updatedEntity = entityPropertiesUpdateService.updateEntityProperties(entity);
             logger.debug("Updating entity severity for entityId: " + entity.getEntityId());
-            if (updatedEntity != null) {
-                entity = updatedEntity;
-                updatedEntities.add(entity);
-                entityInUpdatedEntities = true;
-            }
             if (!newEntitySeverity.equals(entity.getSeverity())) {
                 entity.setSeverity(newEntitySeverity);
-                if (!entityInUpdatedEntities) {
-                    updatedEntities.add(entity);
-                }
             }
         });
-        if (updatedEntities.size() > 0 && persistChanges) {
-            entityPersistencyService.save(updatedEntities);
-        }
     }
 
     public static class EntityScoreToSeverity {
@@ -300,6 +282,9 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
 
     @Override
     public List<String> collectionNamesByOrderForEvents() {
-        return entityPropertiesUpdateService.collectionNamesByOrderForEvents();
+        List<Schema> schemas = Arrays.asList(Schema.values());
+        List<String> collections = new ArrayList<>();
+        schemas.forEach(schema -> collections.add(outputToCollectionNameTranslator.toCollectionName(schema)));
+        return collections;
     }
 }

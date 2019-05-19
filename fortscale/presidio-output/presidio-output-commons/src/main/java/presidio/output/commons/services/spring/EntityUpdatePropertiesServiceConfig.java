@@ -6,8 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import presidio.output.commons.services.entity.EntityPropertiesUpdateService;
-import presidio.output.commons.services.entity.EntityPropertiesUpdateServiceImpl;
 import presidio.output.domain.repositories.EventMongoRepositoryImpl;
 import presidio.output.domain.repositories.EventRepository;
 import presidio.output.domain.services.event.EventPersistencyService;
@@ -30,10 +28,5 @@ public class EntityUpdatePropertiesServiceConfig {
     @Bean
     public EventRepository eventRepository() {
         return new EventMongoRepositoryImpl(mongoTemplate);
-    }
-
-    @Bean
-    public EntityPropertiesUpdateService entityPropertiesUpdateService() {
-        return new EntityPropertiesUpdateServiceImpl(eventPersistencyService(), new OutputToCollectionNameTranslator());
     }
 }
