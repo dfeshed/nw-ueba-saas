@@ -56,7 +56,7 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
         try {
             events = eventRepository.findEntityEvents(collectionName, entityId, timeRange, features, eventsLimit);
         } catch (Exception e) {
-            String errorMsg = String.format("Failed to findEvents events by schema %s, user %s, time range %s, features %s", schema, entityId, timeRange, features);
+            String errorMsg = String.format("Failed to find events by schema %s, entity ID %s, time range %s, features %s", schema, entityId, timeRange, features);
             logger.error(errorMsg, e);
             throw new RuntimeException(e);
         }
@@ -70,7 +70,7 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
         try {
             events = eventRepository.findEntityEvents(collectionName, entityId, timeRange, features, numOfItemsToSkip, pageSize);
         } catch (Exception e) {
-            String errorMsg = String.format("Failed to readRecords by schema %s, user %s, time range %s, features %s", schema, entityId, timeRange, features);
+            String errorMsg = String.format("\"Failed to find events by schema %s, entity ID %s, time range %s, features %s", schema, entityId, timeRange, features);
             logger.error(errorMsg, e);
             throw new RuntimeException(e);
         }
@@ -84,7 +84,7 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
         try {
             count = eventRepository.countEntityEvents(collectionName, entityId, timeRange, features);
         } catch (Exception e) {
-            String errorMsg = String.format("Failed to countEvents by schema %s, user %s, time range %s, features %s", schema, entityId, timeRange, features);
+            String errorMsg = String.format("Failed to count events by schema %s, entity ID %s, time range %s, features %s", schema, entityId, timeRange, features);
             logger.error(errorMsg, e);
             throw new RuntimeException(e);
         }

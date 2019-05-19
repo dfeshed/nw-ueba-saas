@@ -14,6 +14,8 @@ import presidio.output.domain.records.entity.EntityQuery;
 import presidio.output.domain.records.entity.EntitySeverity;
 import presidio.output.domain.services.ElasticsearchQueryBuilder;
 
+import java.util.List;
+
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 public class EntityElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<EntityQuery>  {
@@ -143,17 +145,18 @@ public class EntityElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<E
 
     @Override
     public void addAggregation(EntityQuery entityQuery) {
-        if (CollectionUtils.isNotEmpty(entityQuery.getAggregateByFields())) {
-            if (entityQuery.getAggregateByFields().contains(Entity.SEVERITY_FIELD_NAME)) {
+        List<String> aggregateByFields = entityQuery.getAggregateByFields();
+        if (CollectionUtils.isNotEmpty(aggregateByFields)) {
+            if (aggregateByFields.contains(Entity.SEVERITY_FIELD_NAME)) {
                 super.addAggregation(AggregationBuilders.terms(Entity.SEVERITY_FIELD_NAME).field(Entity.SEVERITY_FIELD_NAME));
             }
-            if (entityQuery.getAggregateByFields().contains(Entity.TAGS_FIELD_NAME)) {
+            if (aggregateByFields.contains(Entity.TAGS_FIELD_NAME)) {
                 super.addAggregation(AggregationBuilders.terms(Entity.TAGS_FIELD_NAME).field(Entity.TAGS_FIELD_NAME).size(DEFAULT_AGG_BULK_SIZE));
             }
-            if (entityQuery.getAggregateByFields().contains(Entity.ALERT_CLASSIFICATIONS_FIELD_NAME)) {
+            if (aggregateByFields.contains(Entity.ALERT_CLASSIFICATIONS_FIELD_NAME)) {
                 super.addAggregation(AggregationBuilders.terms(Entity.ALERT_CLASSIFICATIONS_FIELD_NAME).field(Entity.ALERT_CLASSIFICATIONS_FIELD_NAME).size(DEFAULT_AGG_BULK_SIZE));
             }
-            if (entityQuery.getAggregateByFields().contains(Entity.INDICATORS_FIELD_NAME)) {
+            if (aggregateByFields.contains(Entity.INDICATORS_FIELD_NAME)) {
                 super.addAggregation(AggregationBuilders.terms(Entity.INDICATORS_FIELD_NAME).field(Entity.INDICATORS_FIELD_NAME).size(DEFAULT_AGG_BULK_SIZE));
             }
         }

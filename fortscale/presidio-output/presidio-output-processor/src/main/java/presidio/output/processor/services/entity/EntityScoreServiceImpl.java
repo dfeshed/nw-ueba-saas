@@ -61,12 +61,12 @@ public class EntityScoreServiceImpl implements EntityScoreService {
         EntityQuery.EntityQueryBuilder entityQueryBuilder = new EntityQuery.EntityQueryBuilder().minScore(1)
                 .pageSize(defaultEntitiesBatchSize)
                 .pageNumber(0);
-        Page<Entity> entiitesPage = entityPersistencyService.find(entityQueryBuilder.build());
+        Page<Entity> entitiesPage = entityPersistencyService.find(entityQueryBuilder.build());
 
-        log.debug("found " + entiitesPage.getTotalElements() + " entities which score that should be reset");
+        log.debug("found " + entitiesPage.getTotalElements() + " entities which score that should be reset");
         List<Entity> clearedEntitiesList = new ArrayList<>();
-        while (entiitesPage != null && entiitesPage.hasContent()) {
-            entiitesPage.getContent().forEach(entity -> {
+        while (entitiesPage != null && entitiesPage.hasContent()) {
+            entitiesPage.getContent().forEach(entity -> {
                 if (!excludedEntitiesIds.contains(entity.getId())) {
                     entity.setScore(0D);
                     entity.setSeverity(null);
@@ -74,7 +74,7 @@ public class EntityScoreServiceImpl implements EntityScoreService {
                 }
             });
 
-            entiitesPage = getNextEntityPage(entityQueryBuilder, entiitesPage);
+            entitiesPage = getNextEntityPage(entityQueryBuilder, entitiesPage);
         }
 
         log.info("Resetting " + clearedEntitiesList.size() + " entities scores and severity");

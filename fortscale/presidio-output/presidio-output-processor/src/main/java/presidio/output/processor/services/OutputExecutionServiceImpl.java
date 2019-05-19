@@ -1,11 +1,13 @@
 package presidio.output.processor.services;
 
+import com.google.common.collect.Iterators;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.util.Assert;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.monitoring.aspect.annotations.RunTime;
@@ -74,18 +76,30 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     @Override
     public void run(Instant startDate, Instant endDate, String configurationName) throws Exception {
         logger.debug("Started output process with params: start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        List<PageIterator<SmartRecord>> smartPageIterator = adeManagerSdk.getSmartRecords(smartPageSize, smartPageSize, new TimeRange(startDate, endDate), SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES, configurationName);
+        List<PageIterator<SmartRecord>> smartPageIterators = adeManagerSdk.getSmartRecords(smartPageSize, smartPageSize, new TimeRange(startDate, endDate), SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES, configurationName);
 
-        List<Entity> entities = new ArrayList<>();
+        Map<String, Entity> entities = new HashMap<>();
         List<SmartRecord> smarts = null;
         List<Alert> alerts = new ArrayList<>();
         int indicatorsCountHourly = 0;
-        for(PageIterator<SmartRecord> smartPage : smartPageIterator){
-            while (smartPage.hasNext()) {
-                smarts = smartPage.next();
+        boolean firstSmart = true;
+        String lastEntityType = null;
+        for(PageIterator<SmartRecord> smartPageIterator : smartPageIterators){
+            while (smartPageIterator.hasNext()) {
+                smarts = smartPageIterator.next();
                 for (SmartRecord smart : smarts) {
-                    String entityId = smart.getContext().values().iterator().next();
-                    String entityType = smart.getContext().keySet().iterator().next();
+                    String unexpectedSizeOfSmartContextMessage = String.format("Unexpected smart context size for smart: %s.", smart.getId());
+                    Set<Map.Entry<String, String>> smartContextEntries = smart.getContext().entrySet();
+                    Assert.isTrue(smartContextEntries.size() == 1, unexpectedSizeOfSmartContextMessage);
+                    Map.Entry<String, String> contextEntry = smartContextEntries.iterator().next();
+                    String entityId = contextEntry.getValue();
+                    String entityType = contextEntry.getKey();
+                    if(firstSmart){
+                        lastEntityType = entityType;
+                        firstSmart = false;
+                    }
+                    Assert.isTrue(entityType.equals(lastEntityType), "Not all smarts have the same entity type");
+                    lastEntityType = entityType;
 
                     if (entityId == null || entityId.isEmpty()) {
                         logger.error("Failed to get entity id from smart context, entity id is null or empty for smart {}. skipping to next smart", smart.getId());
@@ -95,11 +109,11 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     if ((entity = getCreatedEntity(entities, entityId, entityType)) == null && (entity = getSingleEntityByIdAndType(entityId, entityType)) == null) {
                         //Need to create entity and add it to about to be created list
                         entity = entityService.createEntity(entityId, entityType);
-                        entities.add(entity);
                         if (entity == null) {
                             logger.error("Failed to process entity details for smart {}, skipping to next smart in the batch", smart.getId());
                             continue;
                         }
+                        entities.put(entity.getEntityId(), entity);
                     }
 
                     Alert alertEntity = alertService.generateAlert(smart, entity, smartThresholdScoreForCreatingAlert);
@@ -114,7 +128,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     }
 
                     if (getCreatedEntity(entities, entity.getEntityId(), entity.getEntityType()) == null) {
-                        entities.add(entity);
+                        entities.put(entity.getEntityId(), entity);
                     }
 
                     if (alerts.size() >= alertPageSize) {
@@ -127,8 +141,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         }
 
 
-        storeEntities(entities); //Get the generated entities with the new elasticsearch ID
-        outputMonitoringService.reportTotalEntitiesCount(entities.size(), startDate);
+        storeEntities(new ArrayList<>(entities.values())); //Get the generated entities with the new elasticsearch ID
+        outputMonitoringService.reportTotalEntitiesCount(entities.size(), startDate, configurationName);
         outputMonitoringService.reportNumericMetric(outputMonitoringService.INDICATORS_COUNT_HOURLY_METRIC_NAME, indicatorsCountHourly, startDate);
 
         if (CollectionUtils.isNotEmpty(smarts)) {
@@ -154,12 +168,12 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         return entities.get(0);
     }
 
-    private Entity getCreatedEntity(List<Entity> entities, String entityVendorId, String entityType) {
-        for (Entity entity : entities) {
-            if (entity.getEntityId().equals(entityVendorId) && entity.getEntityType().equals(entityType)) {
+    private Entity getCreatedEntity(Map<String, Entity> entities, String entityId, String entityType) {
+        if(entities.containsKey(entityId) ) {
+            Entity entity = entities.get(entityId);
+            if (entity.getEntityType().equals(entityType)) {
                 return entity;
             }
-
         }
         return null;
     }
