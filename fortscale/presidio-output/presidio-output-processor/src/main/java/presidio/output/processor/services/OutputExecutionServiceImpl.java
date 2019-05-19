@@ -89,9 +89,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 smarts = smartPageIterator.next();
                 for (SmartRecord smart : smarts) {
                     String unexpectedSizeOfSmartContextMessage = String.format("Unexpected smart context size for smart: %s.", smart.getId());
-                    Iterator<Map.Entry<String, String>> smartContextEntries = smart.getContext().entrySet().iterator();
-                    Assert.isTrue(Iterators.size(smartContextEntries) == 1, unexpectedSizeOfSmartContextMessage);
-                    Map.Entry<String, String> contextEntry = smartContextEntries.next();
+                    Set<Map.Entry<String, String>> smartContextEntries = smart.getContext().entrySet();
+                    Assert.isTrue(smartContextEntries.size() == 1, unexpectedSizeOfSmartContextMessage);
+                    Map.Entry<String, String> contextEntry = smartContextEntries.iterator().next();
                     String entityId = contextEntry.getValue();
                     String entityType = contextEntry.getKey();
                     if(firstSmart){

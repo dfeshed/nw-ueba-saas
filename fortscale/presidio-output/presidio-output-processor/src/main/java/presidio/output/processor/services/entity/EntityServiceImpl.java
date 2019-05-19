@@ -84,11 +84,10 @@ public class EntityServiceImpl implements EntityService {
             log.error("no events were found for entity {}", entityId);
             return null;
         }
-        String entityName = event.getUserName();
+        //We need to resolve the entityName getter according to the type
+        //For now - we chose to return the entityId instead.
+        String entityName = entityId;
         List<String> tags = new ArrayList<>();
-        if (event.getAdditionalInfo().get(EnrichedUserEvent.IS_USER_ADMIN) != null && Boolean.parseBoolean(event.getAdditionalInfo().get(EnrichedUserEvent.IS_USER_ADMIN))) {
-            tags.add(TAG_ADMIN);
-        }
         return new EntityDetails(entityName, entityId, tags, entityType);
     }
 
