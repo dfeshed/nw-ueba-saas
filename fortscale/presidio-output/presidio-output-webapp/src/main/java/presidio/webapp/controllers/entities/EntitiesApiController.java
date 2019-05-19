@@ -68,7 +68,7 @@ public class EntitiesApiController implements EntitiesApi {
     }
 
     @Override
-    public ResponseEntity<UsersWrapper> getUsers(presidio.webapp.model.UserQuery userQuery) {
+    public ResponseEntity<UsersWrapper> getUsers(UserQuery userQuery) {
         try {
             UsersWrapper usersWrapper = entitiesWrapperToUsersWrapper(
                     restEntityService.getEntities(userQueryToEntityQuery(userQuery)));
@@ -125,7 +125,6 @@ public class EntitiesApiController implements EntitiesApi {
             HttpStatus httpStatus = response != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
             return new ResponseEntity(response, httpStatus);
         } catch (Exception ex) {
-            assert response != null;
             logger.error("Trying to get entity with id:{}, but got exception {}", id, ex);
             return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

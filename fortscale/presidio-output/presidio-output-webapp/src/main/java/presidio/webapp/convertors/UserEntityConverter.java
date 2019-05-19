@@ -6,6 +6,7 @@ import presidio.webapp.model.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class UserEntityConverter {
 
     public static User entityToUser(Entity entity) {
