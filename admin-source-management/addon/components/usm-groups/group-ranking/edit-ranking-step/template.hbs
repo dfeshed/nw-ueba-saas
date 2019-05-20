@@ -5,7 +5,7 @@
 {{else}}
   <vbox class="rsa-application-layout-panel-content" xs="12">
     <hbox fit class="col-xs-12">
-      <hbox class="col-xs-6 col-md-6">
+      <hbox class="col-xs-7 col-md-7">
         <div class="source-type-top-text">
           <span>{{t 'adminUsm.groupWizard.applyPolicy.sourceType'}}: </span>{{t (concat 'adminUsm.policyTypes.' selectedSourceType)}}
           <div class="tooltip" tabindex="0" {{action 'selectGroupRanking' false on='focusIn'}}>
@@ -19,8 +19,8 @@
           </div>
         </div>
       </hbox>
-      <hbox class="col-xs-6 col-md-6">
-        <div class="source-type-top-text">
+      <hbox class="col-xs-5 col-md-5">
+        <div class="source-type-top-text simulate">
           <span>{{t 'adminUsm.groupWizard.applyPolicy.preview'}}</span>
           <div class="tooltip" tabindex="0" {{action 'selectGroupRanking' false on='focusIn'}}>
             {{#rsa-text-with-tooltip value=(t 'adminUsm.groupRankingWizard.previewTooltip')
@@ -35,7 +35,7 @@
       </hbox>
     </hbox>
     <hbox fit class="col-xs-12">
-      <hbox class="col-xs-6 col-md-6">
+      <hbox class="col-xs-7 col-md-7">
         <div class='group-ranking-table'>
           {{#sortable-group onChange="reorderRanking" as |group|}}
             <table>
@@ -79,7 +79,7 @@
           {{/sortable-group}}
         </div>
       </hbox>
-      <hbox class="col-xs-6 col-md-6">
+      <hbox class="col-xs-5 col-md-5">
         {{#if (eq groupRankingPrevListStatus 'wait')}}
           <span class='loading-spinner'>
             {{rsa-loader size='large'}}

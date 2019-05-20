@@ -36,7 +36,7 @@ module('Integration | Component | group-ranking/inspector | windows-log-policy',
     await render(hbs`{{usm-groups/group-ranking/inspector/windows-log-policy}}`);
     assert.equal(findAll('.heading').length, 2, '2 headings are shown');
     assert.equal(findAll('.heading .col-md-7')[0].innerText, 'Windows Log Settings', 'first heading first part is as expected');
-    assert.equal(findAll('.heading .col-md-5')[0].innerText, 'GOVERNING POLICY - GROUP', 'first heading second part is as expected');
+    assert.equal(findAll('.heading .col-md-5')[0].innerText, '', 'first heading second part is as expected');
     assert.equal(findAll('.heading .col-md-7')[1].innerText, 'Channel Filter Settings', 'second heading first part is as expected');
     assert.equal(findAll('.title').length, 4, '4 property names are shown');
     assert.equal(findAll('.value').length, 12, '12 value elements are shown');

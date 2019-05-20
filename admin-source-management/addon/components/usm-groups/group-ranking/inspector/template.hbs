@@ -1,4 +1,11 @@
-<vbox class="rsa-application-layout-panel-content" xs="12" fit> 
+<vbox class="rsa-application-layout-panel-content" xs="12" fit>
+  <div class="heading-top">
+    <hbox fit class="col-xs-12">
+      <hbox class="title col-xs-6 col-md-4"></hbox>
+      <hbox class="value col-xs-6 col-md-3">{{t 'adminUsm.groupWizard.applyPolicy.setting'}}</hbox>
+      <hbox class="value col-xs-6 col-md-5">{{t 'adminUsm.groupWizard.applyPolicy.governingPolicy'}}</hbox>
+    </hbox>
+  </div>
   {{#if (eq selectedSourceType 'edrPolicy')}}
     {{usm-groups/group-ranking/inspector/edr-policy}}
   {{else if (eq selectedSourceType 'windowsLogPolicy')}}

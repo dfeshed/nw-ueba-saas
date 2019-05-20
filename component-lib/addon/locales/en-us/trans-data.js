@@ -4274,6 +4274,7 @@ export default {
           label4: 'New policies can be created in the the Policies Tab.'
         },
         preview: 'Simulated Source Settings',
+        setting: 'SETTING',
         governingPolicy: 'GOVERNING POLICY - GROUP',
         sourceType: 'Source Type',
         sourceTypeTooltip: 'Choose a source type to apply policies for.',

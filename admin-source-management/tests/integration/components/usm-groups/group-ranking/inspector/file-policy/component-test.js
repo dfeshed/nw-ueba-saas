@@ -36,7 +36,7 @@ module('Integration | Component | group-ranking/inspector | file-policy', functi
     await render(hbs`{{usm-groups/group-ranking/inspector/file-policy}}`);
     assert.equal(findAll('.heading').length, 1, '1 headings are shown');
     assert.equal(findAll('.heading .col-md-7')[0].innerText, 'File Settings', 'first heading first part is as expected');
-    assert.equal(findAll('.heading .col-md-5')[0].innerText, 'GOVERNING POLICY - GROUP', 'first heading second part is as expected');
+    assert.equal(findAll('.heading .col-md-5')[0].innerText, '', 'first heading second part is as expected');
     // TODO when we have separate section headings for non-source settings & source settings
     // assert.equal(findAll('.heading .col-md-7')[1].innerText, 'Some 2nd Section Heading', 'second heading first part is as expected');
     assert.equal(findAll('.title').length, 5, '5 property names are shown');

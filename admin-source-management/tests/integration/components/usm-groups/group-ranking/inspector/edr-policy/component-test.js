@@ -221,7 +221,7 @@ module('Integration | Component | group-ranking/inspector | EDR Policy', functio
     await render(hbs`{{usm-groups/group-ranking/inspector/edr-policy}}`);
     assert.equal(findAll('.heading').length, 5, '5 headings are shown');
     assert.equal(findAll('.heading .col-md-7')[0].innerText, 'Scan Schedule', 'first heading first part is as expected');
-    assert.equal(findAll('.heading .col-md-5')[0].innerText, 'GOVERNING POLICY - GROUP', 'first heading second part is as expected');
+    assert.equal(findAll('.heading .col-md-5')[0].innerText, '', 'first heading second part is as expected');
     assert.equal(findAll('.title').length, 13, '13 property names are shown');
     assert.equal(findAll('.value').length, 36, '36 value elements are shown');
     assert.equal(findAll('.value')[34].innerText.trim(), primaryUdpBeaconInterval, 'primaryUdpBeaconInterval config value is as expected');

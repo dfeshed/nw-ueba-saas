@@ -38,8 +38,8 @@ module('Integration | Component | group-ranking/inspector | Policy Inspector', f
       .build();
     await render(hbs`{{usm-groups/group-ranking/inspector}}`);
     assert.equal(findAll('.usm-ranking-inspector .heading').length, 6, 'expected headings are shown');
-    assert.equal(findAll('.usm-ranking-inspector .title').length, 15, 'expected property names are shown');
-    assert.equal(findAll('.usm-ranking-inspector .value').length, 42, 'expected value elements are shown');
+    assert.equal(findAll('.usm-ranking-inspector .title').length, 16, 'expected property names are shown');
+    assert.equal(findAll('.usm-ranking-inspector .value').length, 44, 'expected value elements are shown');
   });
 
   test('It shows the common sections for history and groups for windowPolicy', async function(assert) {
@@ -49,8 +49,8 @@ module('Integration | Component | group-ranking/inspector | Policy Inspector', f
       .build();
     await render(hbs`{{usm-groups/group-ranking/inspector}}`);
     assert.equal(findAll('.usm-ranking-inspector .heading').length, 2, 'expected headings are shown');
-    assert.equal(findAll('.usm-ranking-inspector .title').length, 4, 'expected property names are shown');
-    assert.equal(findAll('.usm-ranking-inspector .value').length, 12, 'expected value elements are shown');
+    assert.equal(findAll('.usm-ranking-inspector .title').length, 5, 'expected property names are shown');
+    assert.equal(findAll('.usm-ranking-inspector .value').length, 14, 'expected value elements are shown');
   });
 
   test('It shows the common sections for history and groups for filePolicy', async function(assert) {
@@ -60,7 +60,7 @@ module('Integration | Component | group-ranking/inspector | Policy Inspector', f
       .build();
     await render(hbs`{{usm-groups/group-ranking/inspector}}`);
     assert.equal(findAll('.usm-ranking-inspector .heading').length, 1, 'expected headings are shown');
-    assert.equal(findAll('.usm-ranking-inspector .title').length, 5, 'expected property names are shown');
-    assert.equal(findAll('.usm-ranking-inspector .value').length, 12, 'expected value elements are shown');
+    assert.equal(findAll('.usm-ranking-inspector .title').length, 6, 'expected property names are shown');
+    assert.equal(findAll('.usm-ranking-inspector .value').length, 14, 'expected value elements are shown');
   });
 });

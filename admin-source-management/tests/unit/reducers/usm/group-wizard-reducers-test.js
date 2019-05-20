@@ -75,16 +75,16 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
   });
 
   test('on FETCH_GROUP_RANKING, get-all complete', function(assert) {
-    const fetchGroupPayload = {
-      data: [
-        {
-          'id': 'group_001',
-          'name': 'Zebra 001',
-          'description': 'Zebra 001 of group group_001',
-          'dirty': false
-        }
-      ]
-    };
+    const fetchGroupPayload = [
+      {
+        'id': 'group_001',
+        'name': 'Zebra 001',
+        'dirty': false,
+        'assignedPolicies': 'ABC',
+        'sourceCount': 2,
+        'lastPublishedOn': '1/1/1'
+      }
+    ];
     const expectedEndState = new ReduxDataHelper()
       .groupWiz()
       .groupRanking('complete')
@@ -184,17 +184,13 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
   });
 
   test('on SAVE_GROUP_RANKING, save complete', function(assert) {
-    const fetchGroupPayload = {
-      data: { policyType: 'selectedSourceType', groupIds: ['abc'] }
-    };
     const expectedEndState = new ReduxDataHelper()
       .groupWiz()
       .groupRanking('complete')
-      .groupRankingWithData(fetchGroupPayload)
       .build().usm.groupWizard;
     const action = makePackAction(LIFECYCLE.SUCCESS, {
       type: ACTION_TYPES.SAVE_GROUP_RANKING,
-      payload: { data: fetchGroupPayload }
+      payload: { data: [] }
     });
     const result = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
     assert.deepEqual(result.groupRanking, expectedEndState.groupRanking);

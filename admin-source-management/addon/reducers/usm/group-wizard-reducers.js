@@ -415,9 +415,18 @@ export default reduxActions.handleActions({
         return state.set('groupRankingStatus', 'error');
       },
       success: (state) => {
+        // only store in state what's needed
+        const groupRankingVals = action.payload.data.map((group) => ({
+          id: group.id,
+          assignedPolicies: group.assignedPolicies,
+          name: group.name,
+          sourceCount: group.sourceCount,
+          dirty: group.dirty,
+          lastPublishedOn: group.lastPublishedOn
+        }));
         return state.merge({
-          groupRanking: action.payload.data,
-          groupRankingOrig: action.payload.data,
+          groupRanking: groupRankingVals,
+          groupRankingOrig: groupRankingVals,
           groupRankingStatus: 'complete'
         });
       }
@@ -474,8 +483,8 @@ export default reduxActions.handleActions({
       },
       success: (state) => {
         return state.merge({
-          groupRanking: action.payload.data,
-          groupRankingOrig: action.payload.data,
+          groupRanking: [],
+          groupRankingOrig: [],
           groupRankingStatus: 'complete'
         });
       }

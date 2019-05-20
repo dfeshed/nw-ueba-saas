@@ -18,6 +18,11 @@
       align-items: flex-start;
     }
   }
+  .heading-top {
+    margin-top: rsa-whitespace();
+    margin-bottom: -20px;
+    z-index: 99;
+  }
   .source-type-top-text, .source-type-selector {
     margin-top: rsa-whitespace();
     margin-bottom: rsa-whitespace(more);
@@ -30,6 +35,12 @@
     span {
       @include rsa-font(header);
       margin-right: rsa-whitespace(less);
+    }
+  }
+  .source-type-top-text.simulate {
+    padding-left: rsa-whitespace();
+    span {
+      margin-right: 0px;
     }
   }
   .choose-source-step {
@@ -50,7 +61,6 @@
       display: none;
     }
     .group-ranking-table, .preview-settings {
-      border-top: 1px solid border-color(primary);
       max-height: calc(100vh - #{$wizardStepMaxHeight} - 65px);
       min-height: calc(100vh - #{$wizardStepMaxHeight} - 65px);
       overflow: auto;
@@ -60,9 +70,12 @@
       scroll-behavior: smooth;
       width: 100%;
       z-index: 1;
+      th {
+        border: 1px solid border-color(primary, dark);
+        background-color: background-color(primary, darker);
+      }
     }
-    .preview-settings {
-      border-left: 1px solid border-color(primary, dark);
+    .preview-settings {   
       z-index: 0;
       position: absolute;
       -webkit-animation-name: preview; /* Safari 4.0 - 8.0 */
@@ -80,16 +93,11 @@
       .disabled .disabled .propValue {
         color: text-color(neutral) /* set first propValue back to white */
       }
-
-      .usm-policies-inspector-edr vbox div:first-child .heading::before, .usm-policies-inspector-windows-log vbox div.heading:first-child::before {
-        background: none;
-        margin: 0px;
+      .col-md-3.propValue {
+        padding-right: rsa-whitespace();
       }
     }
 
-    .col-md-5 {
-      padding-left: rsa-whitespace();
-    }
     .loading {
       text-align: center;
       margin-top: 20%;
