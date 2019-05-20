@@ -187,7 +187,6 @@ def build_clean_logs_operator(cleanup_dag, dag_ids):
     airflow_base_log_folder = str(configuration.get('core', 'BASE_LOG_FOLDER'))
 
     airflow_log_folder = "{}/scheduler/".format(airflow_base_log_folder)
-    # airflow_log_folder = ""
     for dag_id in dag_ids:
         airflow_log_folder = airflow_log_folder + " {}/{}".format(airflow_base_log_folder, dag_id)
 
