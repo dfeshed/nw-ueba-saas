@@ -7,6 +7,7 @@ import org.springframework.test.context.ContextConfiguration;
 import presidio.output.commons.services.spring.EntityUpdatePropertiesTestConfiguration;
 import presidio.output.domain.records.PresidioRange;
 import presidio.output.domain.records.entity.EntitySeverity;
+import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -16,9 +17,6 @@ public class EntitySeverityServiceTest {
 
     private EntitySeverityServiceImpl entitySeverityService;
 
-    @Autowired
-    public EntityPropertiesUpdateService entityPropertiesUpdateService;
-
     public EntitySeverityServiceTest() {
         Map<EntitySeverity, EntitySeverityComputeData> severityToComputeDataMap = new LinkedHashMap<>();
 
@@ -26,7 +24,7 @@ public class EntitySeverityServiceTest {
         severityToComputeDataMap.put(EntitySeverity.HIGH, new EntitySeverityComputeData(4d, 1.3, 10d));
         severityToComputeDataMap.put(EntitySeverity.MEDIUM, new EntitySeverityComputeData(10.0, 1.1));
         severityToComputeDataMap.put(EntitySeverity.LOW, new EntitySeverityComputeData(80d));
-        entitySeverityService = new EntitySeverityServiceImpl(severityToComputeDataMap, entityPropertiesUpdateService);
+        entitySeverityService = new EntitySeverityServiceImpl(severityToComputeDataMap, new OutputToCollectionNameTranslator());
     }
 
     @Test

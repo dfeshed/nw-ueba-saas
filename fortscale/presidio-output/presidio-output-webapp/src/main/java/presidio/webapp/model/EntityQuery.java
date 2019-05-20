@@ -381,9 +381,7 @@ public class EntityQuery {
     }
 
     /**
-     * Get expand
-     *
-     * @return expand
+     * Get EntityQueryAggregationFieldNames
      **/
     @ApiModelProperty(value = "")
     public List<EntityQueryAggregationFieldName> getAggregateBy() {
