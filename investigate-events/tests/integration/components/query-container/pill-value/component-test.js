@@ -15,6 +15,7 @@ import {
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
+import { toggleTab } from '../pill-util';
 
 const BACKSPACE_KEY = KEY_MAP.backspace.code;
 const ENTER_KEY = KEY_MAP.enter.code;
@@ -569,5 +570,24 @@ module('Integration | Component | Pill Value', function(hooks) {
     await typeInSearch('(x)');
     const option = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent;
     assert.ok(option.includes(AFTER_OPTION_FREE_FORM_LABEL), 'Free-Form Filter was not highlighted');
+  });
+
+  test('it does not broadcast a message to toggle tabs when a pill is open for edit', async function(assert) {
+    assert.expect(0);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'Correct message sent up');
+    });
+    await render(hbs`
+      {{query-container/pill-value
+        isEditing=true
+        isActive=true
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+
+    await toggleTab(PILL_SELECTORS.valueSelectInput);
   });
 });

@@ -15,6 +15,7 @@ import {
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
+import { toggleTab } from '../pill-util';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -520,11 +521,12 @@ module('Integration | Component | Pill Operator', function(hooks) {
   });
 
   test('it broadcasts a message to toggle tabs via pill operator', async function(assert) {
-    assert.expect(1);
+    assert.expect(2);
     this.set('meta', meta);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
-    this.set('handleMessage', (type) => {
+    this.set('handleMessage', (type, data) => {
       assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'Correct message sent up');
+      assert.deepEqual(data, { data: 'foobar', dataSource: 'pill-operator' }, 'Correct data sent up');
     });
     await render(hbs`
       {{query-container/pill-operator
@@ -535,6 +537,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
       }}
     `);
     await clickTrigger(PILL_SELECTORS.operator);
+    await typeInSearch('foobar');
 
     await click(PILL_SELECTORS.recentQueriesTab);
   });
@@ -607,5 +610,53 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await typeInSearch('(x)');
     option = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent;
     assert.ok(option.includes(AFTER_OPTION_FREE_FORM_LABEL), 'Free-Form Filter was not highlighted');
+  });
+
+  test('it does not broadcast a messaage to toggle if a pill is opened in edit state', async function(assert) {
+    assert.expect(0);
+    this.set('meta', meta);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'This should not be triggered');
+    });
+    await render(hbs`
+      {{query-container/pill-operator
+        isEditing=true
+        isActive=true
+        meta=meta
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.operator);
+
+    await toggleTab(PILL_SELECTORS.operatorSelectInput);
+  });
+
+  test('it broadcasts a message when operator is backspaced length 0', async function(assert) {
+    assert.expect(4);
+    this.set('meta', meta);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    let count = 0;
+    this.set('handleMessage', (type, data) => {
+      assert.equal(type, MESSAGE_TYPES.OPERATOR_SELECTED, 'correct message sent up');
+      if (count === 0) {
+        assert.deepEqual(data, eq, 'Wrong message data');
+        count++;
+      } else {
+        assert.equal(data, null, 'Should be no data being sent up');
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-operator
+        activePillTab=activePillTab
+        isActive=true
+        meta=meta
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0); // `=`
+    await typeInSearch('');
+    return settled();
   });
 });

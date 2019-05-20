@@ -69,5 +69,6 @@ export default {
   powerSelectNoMatch: '.ember-power-select-option--no-matches-message',
   recentQueriesOptionsInMeta: '.recent-queries-option.meta',
   recentQueriesOptionsInOperator: '.recent-queries-option.operator',
-  recentQueriesOptionsInValue: '.recent-queries-option.value'
+  recentQueriesOptionsInValue: '.recent-queries-option.value',
+  powerSelectOptionValue: '.js-test-power-select-option .value'
 };

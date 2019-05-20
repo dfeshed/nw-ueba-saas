@@ -10,3 +10,5 @@ export const OPERATORS = ['!exists', 'exists', 'contains', 'begins', 'ends', '<=
 export const QUERY_FILTER = 'query';
 export const SEARCH_TERM_MARKER = '~';
 export const TEXT_FILTER = 'text';
+export const PILL_META_DATA_SOURCE = 'pill-meta';
+export const PILL_OPERATOR_DATA_SOURCE = 'pill-operator';

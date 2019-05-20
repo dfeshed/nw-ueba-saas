@@ -234,3 +234,129 @@ export const uriEncodeMetaFilters = (filters = []) => {
 
   return encodedFilters || undefined;
 };
+
+const _possibleMeta = (textChunk, availableMeta, originalText, pillData) => {
+  let hasInvalidMeta = false;
+
+  const metaConfig = availableMeta.find((m) => m.metaName === textChunk);
+  if (!metaConfig) {
+    pillData.meta = originalText;
+    hasInvalidMeta = true;
+  } else {
+    pillData.meta = metaConfig;
+  }
+
+  return {
+    pillData,
+    hasInvalidMeta
+  };
+};
+
+const _possibleOperator = (textChunk, selectedMeta, pillData, originalText, chunks) => {
+  const possibleOperators = relevantOperators(selectedMeta);
+  const operatorConfig = possibleOperators.find((o) => o.displayName === textChunk);
+  let hasInvalidOperator = false;
+
+  // no relevant operator, append all original text
+  // to operator and bail OR
+  // if exists or !exists is present and we have a value,
+  // append all original text and bail
+  if (!operatorConfig || ((!operatorConfig.hasValue && chunks.length > 2))) {
+    pillData.operator = originalText;
+    hasInvalidOperator = true;
+  } else {
+    pillData.operator = operatorConfig;
+  }
+
+  return {
+    pillData,
+    hasInvalidOperator
+  };
+};
+
+/**
+ *
+ * @param {String} queryText
+ * @param { String } dataSource
+ * @param { Object[] } availableMeta: Languages
+ * @param { Object } selectedMeta: if a meta is already selected in EPS
+ * @returns { Object } pillData: pill object with meta, operator and value maybe
+ * The intention here is to bail at the first possible discrepancy.
+ * Discrepancy in terms of not being able to match with possible meta/operator.
+ * Splitting into chunk is based on rules for typing in META.
+ * ex: Space between meta/operator/value is a must.
+ * Maintains the string that has been typed in case of a bailout.
+ */
+export const convertTextToPillData = ({ queryText, dataSource, availableMeta, selectedMeta }) => {
+  const originalText = queryText;
+  let pillData = {};
+
+  // Nuke any surrounding white space and split them up
+  queryText = queryText.trim();
+  const chunks = queryText.split(' ');
+
+  switch (dataSource) {
+    // if coming from pill-operator, we don't need to worry about
+    // parsing meta as it is already selected.
+    case 'pill-operator': {
+
+      const [ operator, ...values] = chunks;
+
+      if (operator) {
+        const possibleOperators = _possibleOperator(
+          operator,
+          selectedMeta,
+          pillData,
+          originalText,
+          chunks
+        );
+        pillData = possibleOperators.pillData;
+        if (possibleOperators.hasInvalidOperator) {
+          return pillData;
+        }
+      }
+
+      if (values.length > 0) {
+        pillData.value = values.join(' ');
+      }
+
+      return pillData;
+
+    }
+    default: {
+
+      const [ meta, operator, ...values ] = chunks;
+
+      if (meta) {
+        const possibleMeta = _possibleMeta(meta, availableMeta, originalText, pillData);
+        pillData = possibleMeta.pillData;
+        if (possibleMeta.hasInvalidMeta) {
+          return pillData;
+        }
+      }
+
+      if (operator) {
+        // strip away meta from the original text as it has been proccessd
+        const unprocessedText = originalText.replace(`${meta}`, '');
+        const possibleOperator = _possibleOperator(
+          operator,
+          pillData.meta,
+          pillData,
+          unprocessedText,
+          chunks
+        );
+        pillData = possibleOperator.pillData;
+        if (possibleOperator.hasInvalidOperator) {
+          return pillData;
+        }
+      }
+
+      if (values.length > 0) {
+        pillData.value = values.join(' ');
+      }
+
+      return pillData;
+    }
+  }
+
+};

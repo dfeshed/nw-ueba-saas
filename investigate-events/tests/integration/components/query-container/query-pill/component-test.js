@@ -3,12 +3,12 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
-import { blur, click, fillIn, find, findAll, focus, render, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
+import { blur, click, fillIn, find, findAll, focus, render, triggerKeyEvent, waitUntil, settled } from '@ember/test-helpers';
 
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { enrichedPillsData } from 'investigate-events/reducers/investigate/query-node/selectors';
-import { createBasicPill, doubleClick, isIgnoredInitialEvent } from '../pill-util';
+import { createBasicPill, doubleClick, isIgnoredInitialEvent, toggleTab } from '../pill-util';
 import KEY_MAP from 'investigate-events/util/keys';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
@@ -49,6 +49,71 @@ const _setPillData = (component) => {
   const enrichedPill = _getEnrichedPill(component);
   component.set('pillData', enrichedPill);
   return enrichedPill;
+};
+
+const _assertOptionsInPowerSelect = (assert, optionArray, selector) => {
+  const selectorArray = findAll(selector);
+  const optionsArray = selectorArray.map((el) => el.textContent);
+  assert.deepEqual(
+    optionsArray,
+    optionArray,
+    'Should see options that are relevant to the text typed in'
+  );
+};
+
+// meta ob, op ob, with value
+const _validateUntilValue = (assert, meta, operator, value) => {
+  // meta should be selected
+  assert.equal(find(PILL_SELECTORS.meta).textContent.trim(), meta, 'correct pill-meta selected');
+  // operator should be selected too
+  assert.equal(find(PILL_SELECTORS.operator).textContent.trim(), operator, 'correct pill-operator selected');
+  // focus should be in pill-value
+  assert.equal(findAll(PILL_SELECTORS.valueSelectInput).length, 1, 'Should be placed in pill-value');
+  // with that value
+  assert.equal(
+    find(PILL_SELECTORS.valueSelectInput).value.trim(),
+    value,
+    'Should be placed in pill-value with the correct text'
+  );
+};
+
+// meta ob, op ob, no value
+const _validateUntilOperator = (assert, meta, operator) => {
+  // meta should be selected
+  assert.equal(find(PILL_SELECTORS.meta).textContent.trim(), meta, 'correct pill-meta selected');
+  // operator should be selected too
+  assert.equal(find(PILL_SELECTORS.operator).textContent.trim(), operator, 'correct pill-operator selected');
+  // focus should be in pill-value
+  assert.equal(findAll(PILL_SELECTORS.valueSelectInput).length, 1, 'Should be placed in pill-value');
+};
+
+// metaString, no operator ob, no value
+const _validateUntilInvalidMeta = (assert, metaString) => {
+  assert.equal(
+    find(PILL_SELECTORS.powerSelectNoMatch).textContent.trim(),
+    'All meta filtered out',
+    'no relevant meta present'
+  );
+  assert.equal(find(PILL_SELECTORS.metaInput).value.trim(), metaString, 'With the correct text pasted in');
+};
+
+// meta ob, operator string, no value
+const _validateUntilInvalidOperator = (assert, meta, operatorString) => {
+  // meta should be selected
+  assert.equal(find(PILL_SELECTORS.meta).textContent.trim(), meta, 'correct pill-meta selected');
+  // operator couldn't be mapped, so pasting the remaining string in operator
+  // Preserve the string once we've decided it's not a valid object
+  assert.equal(
+    find(PILL_SELECTORS.operatorSelectInput).value.trim(),
+    operatorString,
+    'correct text should be placed in operator power-select'
+  );
+  // no relevant operators though
+  assert.equal(
+    find(PILL_SELECTORS.powerSelectNoMatch).textContent.trim(),
+    'All operators filtered out',
+    'no relevant operator present'
+  );
 };
 
 module('Integration | Component | Query Pill', function(hooks) {
@@ -1377,6 +1442,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('If no recent queries, tabbing to recentQueries tab will show a placeholder message', async function(assert) {
+    assert.expect(6);
     this.set('metaOptions', META_OPTIONS);
     this.set('recentQueries', []);
 
@@ -1406,7 +1472,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     assertTabContents(assert, PILL_SELECTORS.metaTab, PILL_SELECTORS.recentQueriesTabSelected);
 
     // Should be able to see the placeholder for recent queries if none are present
-    assert.expect(find(PILL_SELECTORS.powerSelectNoMatch).textContent.trim(), 'No recent queries yet', 'Correct placeholder message');
+    assert.equal(find(PILL_SELECTORS.powerSelectNoMatch).textContent.trim(), 'No recent queries yet', 'Correct placeholder message');
 
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', TAB_KEY);
 
@@ -1414,7 +1480,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
     await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', TAB_KEY);
     // can see it in operator component too
-    assert.expect(find(PILL_SELECTORS.powerSelectNoMatch).textContent.trim(), 'No recent queries yet', 'Correct placeholder message');
+    assert.equal(find(PILL_SELECTORS.powerSelectNoMatch).textContent.trim(), 'No recent queries yet', 'Correct placeholder message');
 
     await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', TAB_KEY);
 
@@ -1423,7 +1489,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', TAB_KEY);
 
     // can see it in value component too
-    assert.expect(find(PILL_SELECTORS.powerSelectNoMatch).textContent.trim(), 'No recent queries yet', 'Correct placeholder message');
+    assert.equal(find(PILL_SELECTORS.powerSelectNoMatch).textContent.trim(), 'No recent queries yet', 'Correct placeholder message');
   });
 
   test('Recent Queries are available as power-select options if not empty', async function(assert) {
@@ -1456,5 +1522,642 @@ module('Integration | Component | Query Pill', function(hooks) {
     const optionsArray = selectorArray.map((el) => el.textContent);
     assert.deepEqual(recentQueriesArray, optionsArray, 'Found the correct recent queries in the powerSelect');
 
+  });
+
+  // ***************************** Typed in Recent Queries and toggled to Meta **************** //
+
+  // ***************************** Requests coming from  pill-meta **************************** //
+
+  // Testing pill-meta behavior
+  // type in `al`
+  test('Tabbing to meta component with prepopulated meta string with many matches will filter meta options', async function(assert) {
+    assert.expect(1);
+    const recentQueries = [];
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    // options for typed in `al`
+    const optionsSet = [
+      'alias.ip',
+      'alias.ipv6',
+      'alias.mac',
+      'alert'
+    ];
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.metaInput, 'al');
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    // Should see meta options relevant to text typed in
+    _assertOptionsInPowerSelect(assert, optionsSet, PILL_SELECTORS.powerSelectOptionValue);
+  });
+
+  // type in `alert`
+  test('Tabbing to meta component with string that maps to a meta object and leaves focus in pill-operator', async function(assert) {
+    assert.expect(3);
+    const recentQueries = [];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.metaInput, 'alert');
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    // Should see meta being selected as it maps to a relevant object
+    assert.equal(find(PILL_SELECTORS.meta).textContent.trim(), 'alert', 'correct pill-meta selected');
+    // Should be placed in operator drop-down
+    assert.equal(findAll(PILL_SELECTORS.operatorTrigger).length, 1, 'operator drop-down visible');
+    assert.equal(findAll(PILL_SELECTORS.operatorSelectInput).length, 1, 'operator input visible');
+  });
+
+  // type in no relevant text - `foobar`
+  test('Tabbing to meta component with prepopulated meta string that does\'t match with any options', async function(assert) {
+    assert.expect(2);
+    const recentQueries = [];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.metaInput, 'foobar');
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await settled();
+
+    // Should see a string with no relevant meta in options
+    _validateUntilInvalidMeta(assert, 'foobar');
+  });
+
+  // type in no relevant text with a space in between? - `foo bar`
+  test('Tabbing to meta component with prepopulated meta string with spaces that does\'t match with any options', async function(assert) {
+    assert.expect(2);
+    const recentQueries = [];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.metaInput, 'foo bar');
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await settled();
+
+    // still in meta component. Space does not put it in pill-operator
+    _validateUntilInvalidMeta(assert, 'foo bar');
+  });
+
+  // Testing pill-operator behavior
+  // type in `alert e`
+  test('Tabbing to meta comp with prepopulated operator string with many matches will filter operator options', async function(assert) {
+    assert.expect(1);
+    const recentQueries = [];
+    const operatorOptions = ['exists', 'ends'];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.metaInput, 'alert e');
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await settled();
+
+    // options relevant to text typed in
+    _assertOptionsInPowerSelect(assert, operatorOptions, PILL_SELECTORS.powerSelectOptionValue);
+  });
+
+  // type in `alert contains`
+  test('Tabbing to meta comp with a string that maps to meta & operaror object will place focus in pill-value', async function(assert) {
+    assert.expect(3);
+    const recentQueries = [];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.metaInput, 'alert contains');
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await settled();
+
+    // Should see meta and operator selected, placed in value
+    _validateUntilOperator(assert, 'alert', 'contains');
+  });
+
+  // type in `alert =`, hit backspace to delete, toggle view should remain same
+  test('hitting backspace in a recent queries tab and toggling the view keeps the text intact', async function(assert) {
+    assert.expect(4);
+    const recentQueries = [];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.metaInput, 'alert =');
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await settled();
+
+    await toggleTab(PILL_SELECTORS.valueSelectInput);
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', BACKSPACE_KEY);
+
+    // Backspace isn't working as it's supposed to, so this is a workaround.
+    await fillIn(PILL_SELECTORS.operatorSelectInput, '');
+
+    await toggleTab(PILL_SELECTORS.operatorSelectInput);
+
+    // Should see meta being selected as it maps to a relevant object
+    assert.equal(find(PILL_SELECTORS.meta).textContent.trim(), 'alert', 'correct pill-meta selected');
+    // Should be placed in operator drop-down
+    assert.equal(findAll(PILL_SELECTORS.operatorTrigger).length, 1, 'operator drop-down visible');
+    assert.equal(findAll(PILL_SELECTORS.operatorSelectInput).length, 1, 'operator input visible');
+    assert.equal(
+      find(PILL_SELECTORS.operatorSelectInput).value.trim(),
+      '',
+      'correct text -> no text should be found after hitting backspace in recent queries tab'
+    );
+  });
+
+  // type in `alert foo`
+  test('Tabbing to meta comp with prepopulated operator string with no matches leaves all options filtered out', async function(assert) {
+    assert.expect(3);
+    const recentQueries = [];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.metaInput, 'alert foo');
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await settled();
+
+    // meta selected, text pasted in operator with no relevant options
+    _validateUntilInvalidOperator(assert, 'alert', 'foo');
+  });
+
+  // type in `alert foo abcd`
+  test('Tabbing to meta comp with prepopulated operator with spaces string with no matches leaves all options filtered out', async function(assert) {
+    assert.expect(3);
+    const recentQueries = [];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.metaInput, 'alert foo abcd');
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await settled();
+
+    // meta selected, text pasted in operator with no relevant options
+    _validateUntilInvalidOperator(assert, 'alert', 'foo abcd');
+
+  });
+
+  // type in `alert exists foo`
+  test('Tabbing to meta comp with a operator string that does not accept a value, but is provided one will leave all options filtered out', async function(assert) {
+    assert.expect(3);
+    const recentQueries = [];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.metaInput, 'alert exists foo');
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await settled();
+
+    // operator that does not accept values, but is provided with one
+    // should remain in operator comp with no options filtered out.
+    _validateUntilInvalidOperator(assert, 'alert', 'exists foo');
+  });
+
+  // type in `alert ! = foo`
+  test('Tabbing to meta comp with spaces between prepopulated operator string will give no results', async function(assert) {
+    assert.expect(3);
+    const recentQueries = [];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.metaInput, 'alert ! = foo');
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await settled();
+
+    // Should respect the rules for typing in meta, op
+    // Remain in operator with no relevant operators.
+    _validateUntilInvalidOperator(assert, 'alert', '! = foo');
+  });
+
+  // Testing pill-value behavior
+  // type in `alert contains foo`
+  test('Tabbing to meta comp with a string that sets meta, operator and value components', async function(assert) {
+    assert.expect(4);
+    const recentQueries = [];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.metaInput, 'alert contains foo');
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+    await settled();
+
+    // perfect mapping
+    _validateUntilValue(assert, 'alert', 'contains', 'foo');
+
+
+  });
+
+  // ***************************** Requests coming from  pill-operator **************************** //
+  // Meta has already been set. Tab was toggled while in operator.
+
+  // Testing pill-operator behavior
+  // type in `e`
+  test('Tabbing to meta comp with prepopulated operator which matches multiple options', async function(assert) {
+    assert.expect(1);
+    const recentQueries = [];
+    const operatorOptions = ['exists', 'ends'];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await selectChoose(PILL_SELECTORS.metaTrigger, 'alert');
+
+    await toggleTab(PILL_SELECTORS.operatorSelectInput);
+
+    await fillIn(PILL_SELECTORS.operatorSelectInput, 'e');
+
+    await toggleTab(PILL_SELECTORS.operatorSelectInput);
+    await settled();
+
+    _assertOptionsInPowerSelect(assert, operatorOptions, PILL_SELECTORS.powerSelectOptionValue);
+  });
+
+  // type in `=`
+  test('Tabbing to meta comp with prepopulated operator that maps to op object will leave the focus on pill-value', async function(assert) {
+    assert.expect(3);
+    const recentQueries = [];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await selectChoose(PILL_SELECTORS.metaTrigger, 'alert');
+
+    await toggleTab(PILL_SELECTORS.operatorSelectInput);
+
+    await fillIn(PILL_SELECTORS.operatorSelectInput, '=');
+
+    await toggleTab(PILL_SELECTORS.operatorSelectInput);
+    await settled();
+
+    _validateUntilOperator(assert, 'alert', '=');
+  });
+
+  // type in `foo`
+  test('Tabbing to meta comp with prepopulated string that does not match with anything leaves all options filtered out', async function(assert) {
+    assert.expect(3);
+    const recentQueries = [];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await selectChoose(PILL_SELECTORS.metaTrigger, 'alert');
+
+    await toggleTab(PILL_SELECTORS.operatorSelectInput);
+
+    await fillIn(PILL_SELECTORS.operatorSelectInput, 'foo bar');
+
+    await toggleTab(PILL_SELECTORS.operatorSelectInput);
+    await settled();
+
+    _validateUntilInvalidOperator(assert, 'alert', 'foo bar');
+  });
+
+  // type in `! = foo`
+  test('Tabbing to meta comp with prepopulated operator string with spaces in between leaves all options filtered out', async function(assert) {
+    assert.expect(3);
+    const recentQueries = [];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await selectChoose(PILL_SELECTORS.metaTrigger, 'alert');
+
+    await toggleTab(PILL_SELECTORS.operatorSelectInput);
+
+    await fillIn(PILL_SELECTORS.operatorSelectInput, '! = foo');
+
+    await toggleTab(PILL_SELECTORS.operatorSelectInput);
+    await settled();
+
+    _validateUntilInvalidOperator(assert, 'alert', '! = foo');
+  });
+
+  // Testing pill-value behavior
+  // type in `!= foo`
+  test('Tabbing to meta comp with prepopulated operator string that maps to operator, sets text in pill-value with focus', async function(assert) {
+    assert.expect(4);
+    const recentQueries = [];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueries', recentQueries);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        recentQueries=recentQueries
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await selectChoose(PILL_SELECTORS.metaTrigger, 'alert');
+
+    await toggleTab(PILL_SELECTORS.operatorSelectInput);
+
+    await fillIn(PILL_SELECTORS.operatorSelectInput, '!= foo');
+
+    await toggleTab(PILL_SELECTORS.operatorSelectInput);
+    await settled();
+
+    _validateUntilValue(assert, 'alert', '!=', 'foo');
   });
 });

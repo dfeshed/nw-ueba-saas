@@ -379,26 +379,30 @@ export default Component.extend({
           return false;
         }
       } else if (isEnter(event)) {
+        const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
         const { searchText } = powerSelectAPI;
-        if (searchText === '') {
-          // No text was entered, so quick exit
+        if (searchText === '' && !afterOptionsMenuItem) {
+          // No text was entered and it's not a FF or text selection,
+          // so quick exit
           return false;
         }
         // This is triggered when choosing afterOptions and we hit enter.
         // Since Query Filter option will always be there, onChange will
         // handle it's selection. Here we just take care of afterOptions.
-        const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
         if (afterOptionsMenuItem) {
           this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
           powerSelectAPI.actions.search('');
         }
       } else if (isTab(event) || isShiftTab(event)) {
-        event.preventDefault();
-        // For now we have just 2 options, so can toggle.
-        // Will need to make  a informed decision once more tabs
-        // are added.
-        this._afterOptionsTabToggle();
-        return false;
+        // Won't toggle once a pill is created.
+        if (!this.get('isEditing')) {
+          event.preventDefault();
+          // For now we have just 2 options, so can toggle.
+          // Will need to make  a informed decision once more tabs
+          // are added.
+          this._afterOptionsTabToggle();
+          return false;
+        }
       }
     },
 
@@ -439,7 +443,7 @@ export default Component.extend({
    * Active tab was toggled.
    */
   _afterOptionsTabToggle() {
-    this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED);
+    this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, {});
   },
 
   /**

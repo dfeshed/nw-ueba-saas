@@ -9,6 +9,7 @@ import KEY_MAP from 'investigate-events/util/keys';
 const ENTER_KEY = 13;
 const X_KEY = 88;
 const ESCAPE_KEY = KEY_MAP.escape.code;
+const TAB_KEY = KEY_MAP.tab.code;
 
 const ALL_META_OPTIONS = [
   // IndexedByValue
@@ -138,4 +139,8 @@ export const clickTextFilterOption = async() => {
   if (textFilter) {
     await click(textFilter);
   }
+};
+
+export const toggleTab = async(selector) => {
+  await triggerKeyEvent(selector, 'keydown', TAB_KEY);
 };

@@ -114,6 +114,15 @@ export default Component.extend({
   metaOptions: null,
 
   /**
+   * Will keep it undefined most of the times. But
+   * when it's not, this string will be used to prepopulate
+   * pil-meta EPS input.
+   * @type {String}
+   * @public
+   */
+  prepopulatedMetaText: undefined,
+
+  /**
    * List of recent queries
    * @type {Array}
    * @public
@@ -223,6 +232,17 @@ export default Component.extend({
         // We schedule this after render to give time for the power-select to
         // be rendered before trying to focus on it.
         scheduleOnce('afterRender', this, '_focusOnPowerSelectTrigger');
+      }
+      // if some text has been forced down through query-pill because the
+      // tabs were toggled, we need to accomodate it and paste it here.
+      if (this.get('prepopulatedMetaText')) {
+        next(() => {
+          const el = this.element.querySelector('.ember-power-select-typeahead-input');
+          const { value } = el;
+          if (value !== this.get('prepopulatedMetaText')) {
+            el.value = this.get('prepopulatedMetaText');
+          }
+        });
       }
     }
   },
@@ -442,12 +462,15 @@ export default Component.extend({
           return false;
         }
       } else if (isTab(event) || isShiftTab(event)) {
-        event.preventDefault();
-        // For now we have just 2 options, so can toggle.
-        // Will need to make  a informed decision once more tabs
-        // are added.
-        this._afterOptionsTabToggle();
-        return false;
+        // Won't toggle once a pill is created.
+        if (!this.get('isEditing')) {
+          event.preventDefault();
+          // For now we have just 2 options, so can toggle.
+          // Will need to make  a informed decision once more tabs
+          // are added.
+          this._afterOptionsTabToggle();
+          return false;
+        }
       }
     },
 
@@ -472,7 +495,10 @@ export default Component.extend({
    * Active tab was toggled.
    */
   _afterOptionsTabToggle() {
-    this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED);
+    const el = this.element.querySelector('.ember-power-select-typeahead-input');
+    const { value } = el;
+    const [ , source ] = this._debugContainerKey.split('/');
+    this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, { data: value, dataSource: source });
   },
 
   /**

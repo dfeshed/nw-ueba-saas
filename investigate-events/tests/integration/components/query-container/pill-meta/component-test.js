@@ -18,6 +18,7 @@ import {
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
+import { toggleTab } from '../pill-util';
 
 let setState;
 
@@ -581,11 +582,12 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   test('it broadcasts a message to toggle tabs via pill meta', async function(assert) {
-    assert.expect(1);
+    assert.expect(2);
     this.set('metaOptions', META_OPTIONS);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
-    this.set('handleMessage', (type) => {
+    this.set('handleMessage', (type, data) => {
       assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'Correct message sent up');
+      assert.deepEqual(data, { data: 'foobar', dataSource: 'pill-meta' }, 'Correct data sent up');
     });
     await render(hbs`
       {{query-container/pill-meta
@@ -596,6 +598,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
       }}
     `);
     await clickTrigger(PILL_SELECTORS.meta);
+    await typeInSearch('foobar');
 
     await click(PILL_SELECTORS.recentQueriesTab);
   });
@@ -668,5 +671,26 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await typeInSearch('(x)');
     option = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent;
     assert.ok(option.includes(AFTER_OPTION_FREE_FORM_LABEL), 'Free-Form Filter was not highlighted');
+  });
+
+  test('it does not broadcast a message to toggle when a pill is opened in edit mode', async function(assert) {
+    assert.expect(0);
+    this.set('metaOptions', META_OPTIONS);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'This should not have triggered');
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        isEditing=true
+        metaOptions=metaOptions
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
   });
 });

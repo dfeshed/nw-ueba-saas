@@ -103,6 +103,15 @@ export default Component.extend({
   meta: null,
 
   /**
+   * Will keep it undefined most of the times. But
+   * when it's not, this string will be used to prepopulate
+   * pil-operator EPS input.
+   * @type {String}
+   * @public
+   */
+  prepopulatedOperatorText: undefined,
+
+  /**
    * List of recent queries
    * @type {Array}
    * @public
@@ -200,9 +209,24 @@ export default Component.extend({
   didUpdateAttrs() {
     this._super(...arguments);
     if (this.get('isActive')) {
-      // We schedule this after render to give time for the power-select to
-      // be rendered before trying to focus on it.
-      scheduleOnce('afterRender', this, '_focusOnPowerSelectTrigger');
+      if (this.get('prepopulatedOperatorText')) {
+        // if some text was passed down through query-pill because tabs were
+        // toggled, paste it here and add explicit focus so it gets matched
+        // against possible options
+        next(() => {
+          const el = this.element.querySelector('.ember-power-select-typeahead-input');
+          const { value } = el;
+          if (value !== this.get('prepopulatedOperatorText')) {
+            el.value = this.get('prepopulatedOperatorText');
+            // add focus so that text is matched with options.
+            this._focusOnPowerSelectTrigger();
+          }
+        });
+      } else {
+        // We schedule this after render to give time for the power-select to
+        // be rendered before trying to focus on it.
+        scheduleOnce('afterRender', this, '_focusOnPowerSelectTrigger');
+      }
     }
   },
 
@@ -270,6 +294,10 @@ export default Component.extend({
         } else {
           this.set('selection', null);
         }
+      } else if (targetValue && this.get('prepopulatedOperatorText')) {
+        // Tab has been switched from recent queries to meta
+        // Some text has been prepopulated and focused in to be searched.
+        powerSelectAPI.actions.search(targetValue);
       }
       powerSelectAPI.actions.open();
     },
@@ -284,6 +312,10 @@ export default Component.extend({
       const { options } = powerSelectAPI;
       if (input.length === 0) {
         this.set('selection', null);
+        // if operator was selected initially and we backspaced to length 0,
+        // we relay this info query-pill so it can set selectedOperator
+        // property as null.
+        this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, null);
         // Set the power-select highlight on the next runloop so that the
         // power-select has time to render the full list of options.
         next(this, () => powerSelectAPI.actions.highlight(options[0]));
@@ -368,12 +400,15 @@ export default Component.extend({
           return false;
         }
       } else if (isTab(event) || isShiftTab(event)) {
-        event.preventDefault();
-        // For now we have just 2 options, so can toggle.
-        // Will need to make  a informed decision once more tabs
-        // are added.
-        this._afterOptionsTabToggle();
-        return false;
+        // Won't toggle once a pill is created.
+        if (!this.get('isEditing')) {
+          event.preventDefault();
+          // For now we have just 2 options, so can toggle.
+          // Will need to make  a informed decision once more tabs
+          // are added.
+          this._afterOptionsTabToggle();
+          return false;
+        }
       }
     },
 
@@ -402,7 +437,10 @@ export default Component.extend({
    * Active tab was toggled.
    */
   _afterOptionsTabToggle() {
-    this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED);
+    const el = this.element.querySelector('.ember-power-select-typeahead-input');
+    const { value } = el;
+    const [ , source ] = this._debugContainerKey.split('/');
+    this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, { data: value, dataSource: source });
   },
 
   /**

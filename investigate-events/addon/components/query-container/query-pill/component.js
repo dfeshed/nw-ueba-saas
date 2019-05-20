@@ -7,13 +7,16 @@ import _ from 'lodash';
 
 import * as MESSAGE_TYPES from '../message-types';
 import quote from 'investigate-events/util/quote';
-import { createFilter } from 'investigate-events/util/query-parsing';
+import { createFilter, convertTextToPillData } from 'investigate-events/util/query-parsing';
+import { determineNewComponentPropsFromPillData } from './query-pill-util';
 import {
   COMPLEX_FILTER,
   QUERY_FILTER,
   TEXT_FILTER,
   AFTER_OPTION_TAB_META,
-  AFTER_OPTION_TAB_RECENT_QUERIES
+  AFTER_OPTION_TAB_RECENT_QUERIES,
+  PILL_META_DATA_SOURCE,
+  PILL_OPERATOR_DATA_SOURCE
 } from 'investigate-events/constants/pill';
 
 const { log } = console; // eslint-disable-line no-unused-vars
@@ -95,6 +98,8 @@ export default Component.extend({
   isOperatorFocusedAtBeginning: false,
   isValueActive: false,
   isValueFocusedAtBeginning: false,
+  prepopulatedMetaText: null,
+  prepopulatedOperatorText: null,
   selectedMeta: null,
   selectedOperator: null,
   valueString: null,
@@ -259,7 +264,7 @@ export default Component.extend({
       [MESSAGE_TYPES.VALUE_SET]: (data) => this._valueSet(data),
       [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: ([data, dataSource]) => this._createFreeFormPill(data, dataSource),
       [MESSAGE_TYPES.CREATE_TEXT_PILL]: ([data, dataSource]) => this._createTextPill(data, dataSource),
-      [MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED]: () => this._toggleActiveTab()
+      [MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED]: ({ data, dataSource }) => this._toggleActiveTab(data, dataSource)
     });
 
     if (this.get('isExistingPill')) {
@@ -638,21 +643,25 @@ export default Component.extend({
    * @private
    */
   _operatorSelected(selectedOperator) {
-    // save operator and move focus to value if the operator accepts values
-    this.setProperties({
-      selectedOperator,
-      isMetaActive: false,
-      isOperatorActive: false,
-      isValueActive: selectedOperator && selectedOperator.hasValue
-    });
-    if (selectedOperator && !selectedOperator.hasValue) {
-      // An operator that doesn't accept a value was selected,
-      // so either create or edit the pill
-      if (this.get('isExistingPill')) {
-        this._editPill();
-      } else {
-        this._createPill();
+    if (selectedOperator) {
+      // save operator and move focus to value if the operator accepts values
+      this.setProperties({
+        selectedOperator,
+        isMetaActive: false,
+        isOperatorActive: false,
+        isValueActive: selectedOperator && selectedOperator.hasValue
+      });
+      if (selectedOperator && !selectedOperator.hasValue) {
+        // An operator that doesn't accept a value was selected,
+        // so either create or edit the pill
+        if (this.get('isExistingPill')) {
+          this._editPill();
+        } else {
+          this._createPill();
+        }
       }
+    } else {
+      this.set('selectedOperator', null);
     }
   },
 
@@ -959,13 +968,58 @@ export default Component.extend({
 
   // ************************ EPS TAB FUNCTIONALITY *************************  //
 
-  _toggleActiveTab() {
+  _toggleActiveTab(data, dataSource) {
     const activeTab = this.get('activePillTab');
     switch (activeTab) {
       case AFTER_OPTION_TAB_META: this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
         break;
-      case AFTER_OPTION_TAB_RECENT_QUERIES: this.set('activePillTab', AFTER_OPTION_TAB_META);
+      case AFTER_OPTION_TAB_RECENT_QUERIES: {
+        // If the current tab is recent queries, before we toggle,
+        // we parse the text typed in and set meta, operator and value (if available)
+        // and place focus on the correct component.
+
+        if (!isEmpty(data)) {
+          let pillData;
+          const meta = this.get('metaOptions');
+          if (dataSource === PILL_META_DATA_SOURCE) {
+            pillData = convertTextToPillData({
+              queryText: data,
+              dataSource,
+              availableMeta: meta,
+              selectedMeta: null
+            });
+          } else if (dataSource === PILL_OPERATOR_DATA_SOURCE) {
+            pillData = convertTextToPillData({
+              queryText: data,
+              dataSource,
+              availableMeta: meta,
+              selectedMeta: this.get('selectedMeta')
+            });
+          }
+
+          const props = determineNewComponentPropsFromPillData(pillData);
+          this.setProperties(props);
+          this._runNext(props);
+        }
+        this.set('activePillTab', AFTER_OPTION_TAB_META);
         break;
+      }
+    }
+  },
+
+  /**
+   * Will clear out prepopulated text (provided) in the next
+   * event loop.
+   * We do this because we do not want prepopulated text
+   * to meddle with the workings of respective components.
+   * Should prepopulate only when explicity asked, and clear away once set.
+   */
+  _runNext(properties) {
+    if (properties.prepopulatedMetaText || properties.prepopulatedOperatorText) {
+      next(() => {
+        this.set('prepopulatedMetaText', undefined);
+        this.set('prepopulatedOperatorText', undefined);
+      });
     }
   },
 
