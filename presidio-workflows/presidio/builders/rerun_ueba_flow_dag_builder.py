@@ -188,7 +188,7 @@ def build_clean_logs_operator(cleanup_dag, dag_ids):
 
     airflow_log_folder = "{}/scheduler/".format(airflow_base_log_folder)
     for dag_id in dag_ids:
-        airflow_log_folder = airflow_log_folder + " {}/{}".format(airflow_base_log_folder, dag_id)
+        airflow_log_folder = "{} {}/{}".format(airflow_log_folder, airflow_base_log_folder, dag_id)
 
     clean_logs_operator = BashOperator(task_id='clean_logs',
                                        bash_command="rm -rf {}".format(
