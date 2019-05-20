@@ -57,7 +57,7 @@ module('Integration | Component | process-tree', function(hooks) {
     new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInput).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    assert.equal(find('.child-count').textContent, 1, 'Expected to render child count');
+    assert.equal(find('.child-count').textContent, '(1)', 'Expected to render child count');
   });
 
   test('should open the filter popup on click of plus and then View All', async function(assert) {
@@ -75,7 +75,7 @@ module('Integration | Component | process-tree', function(hooks) {
     new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInputs).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    await selectAll('g.process:nth-of-type(4) .button-wrapper').dispatch('click');
+    await selectAll('g.process .button-wrapper#expand-4').dispatch('click');
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     return settled().then(async() => {
       assert.equal(findAll('.filter-popup').length, 1, 'Expected to render tether panel');
@@ -84,7 +84,7 @@ module('Integration | Component | process-tree', function(hooks) {
     });
   });
 
-  test('Check multiple popup and expand one node', async function(assert) {
+  test('Check multiple popup and view all one of the node', async function(assert) {
     const queryInputs = {
       sid: '1',
       vid: '3',
@@ -100,12 +100,13 @@ module('Integration | Component | process-tree', function(hooks) {
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     assert.equal(findAll('rect.process').length, 4, 'Initially 4 nodes are rendered');
-    await selectAll('g.process:nth-of-type(1) .button-wrapper').dispatch('click');
+
+    await selectAll('g.process .button-wrapper#expand-1').dispatch('click');
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     return settled().then(async() => {
       assert.equal(findAll('.filter-popup').length, 1, 'Expected to render tether panel');
       assert.equal(findAll('.filter-popup .rsa-data-table-body-row').length, 1, '1 child is present for first node');
-      await selectAll('g.process:nth-of-type(4) .button-wrapper').dispatch('click');
+      await selectAll('g.process .button-wrapper#expand-4').dispatch('click');
       await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
       return settled().then(async() => {
         assert.equal(findAll('.filter-popup .process-node-list .rsa-data-table-body-row').length, 3, '3 child is present for fourth node');
@@ -114,6 +115,34 @@ module('Integration | Component | process-tree', function(hooks) {
       });
     });
   });
+
+  test('Collapse node and expand, process count in filter popup should match', async function(assert) {
+    const queryInputs = {
+      sid: '1',
+      vid: '3',
+      pn: 'test',
+      st: 1231233,
+      et: 13123,
+      osType: 'windows',
+      checksum: '07d15ddf2eb7be486d01bcabab7ad8df35b7942f25f5261e3c92cd7a8931190a',
+      aid: '51687D32-BB0F-A424-1D64-A8B94C957BD2'
+    };
+    this.set('queryInput', queryInputs);
+    new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInputs).build();
+    await render(hbs`{{process-tree queryInput=queryInput}}`);
+    await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
+    assert.equal(findAll('rect.process').length, 4, 'Initially 4 nodes are rendered');
+    await selectAll('g.process .button-wrapper#collapse-2').dispatch('click');
+    await waitUntil(() => findAll('rect.process').length === 2, { timeout: Infinity });
+    assert.equal(findAll('rect.process').length, 2, 'Expected to render 2 nodes after third node is collapsed');
+
+    await selectAll('g.process .button-wrapper#expand-2').dispatch('click');
+    await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
+    return settled().then(async() => {
+      assert.equal(findAll('.filter-popup .rsa-data-table-body-row').length, 1, '1 child is present in second node');
+    });
+  });
+
 
   test('it should select the node on click', async function(assert) {
     const queryInputs = {
@@ -135,7 +164,7 @@ module('Integration | Component | process-tree', function(hooks) {
     assert.equal(findAll('[data-id=\'2\'] .process.selected').length, 1, 'Second node is selected');
   });
 
-  test('it should just expand the node on click', async function(assert) {
+  test('it should just expand the partially expanded node on click (as child is 1, count remains same)', async function(assert) {
     const queryInputs = {
       sid: '1',
       vid: '3',
@@ -150,9 +179,15 @@ module('Integration | Component | process-tree', function(hooks) {
     new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInputs).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    await selectAll('g.process:nth-of-type(3) .button-wrapper').dispatch('click');
+    assert.equal(findAll('rect.process').length, 4, 'Render 4 nodes initially');
+    await selectAll('g.process .button-wrapper#expand-3').dispatch('click');
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    assert.equal(findAll('rect.process').length, 4, 'Expected to render 4 nodes');
+    return settled().then(async() => {
+      assert.equal(findAll('.filter-popup .process-node-list .rsa-data-table-body-row').length, 1,
+        '1 child is present for third node which is already displayed');
+      await click('.process-filter-popup__footer .rsa-form-button');
+      assert.equal(findAll('rect.process').length, 4, 'Expected to render 4 nodes after view all is clicked');
+    });
   });
 
 
@@ -171,10 +206,12 @@ module('Integration | Component | process-tree', function(hooks) {
     new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInputs).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    await selectAll('g.process:nth-of-type(3) .button-wrapper').dispatch('click');
-    await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    assert.equal(findAll('rect.process').length, 4, 'Expected to render 4 nodes');
-
+    assert.equal(findAll('rect.process').length, 4, 'Render 4 nodes initially');
+    await selectAll('g.process .button-wrapper#collapse-1').dispatch('click');
+    await waitUntil(() => findAll('rect.process').length === 1, { timeout: Infinity });
+    return settled().then(() => {
+      assert.equal(findAll('rect.process').length, 1, 'Expected to render 1 node');
+    });
   });
 
   test('it should show tooltip on mouseover', async function(assert) {

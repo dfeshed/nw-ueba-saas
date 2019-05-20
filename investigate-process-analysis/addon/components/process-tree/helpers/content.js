@@ -1,4 +1,4 @@
-import { CONST, DISTANCE } from '../const';
+import { CONST, DISTANCE, ICON } from '../const';
 import { appendIcon, appendText, elbow, transitionElbow, updateText } from './d3-helpers';
 import { truncateText } from '../util/data';
 import { hierarchy } from 'd3-hierarchy';
@@ -148,31 +148,43 @@ export const addNodeContent = (processNode, nodeEnter) => {
   appendText({
     className: 'child-count',
     node: nodeEnter,
-    dx: (CONST.NODE_WIDTH / 2) + CONST.COLLAPSE_ICON_SIZE + CONST.SPACING + CONST.COUNT_SPACING,
-    dy: 0,
+    dx: (d) => (CONST.NODE_WIDTH / 2) + CONST.COLLAPSE_ICON_SIZE - (d.data.childCount.toString().length),
+    dy: 20,
     opacity: 1,
-    text: (d) => d.data.childCount ? d.data.childCount : ''
+    text: (d) => d.data.childCount ? `(${d.data.childCount})` : ''
   });
   return nodeEnter;
 };
 
-export const appendExpandCollapseIcon = (collapseWrapper, collapseIcon, expandIcon, width) => {
-
+export const appendExpandCollapseIcon = (expandWrapper, collapseWrapper) => {
   const text = (d) => {
-    if (d.data.childCount || d.children) {
-      if (d.data.expanded) {
-        return collapseIcon;
+    let retValue = '';
+    if (d.data.childCount) {
+      if (d.children) {
+        retValue = ICON.FILTER;
       } else {
-        return expandIcon;
+        retValue = ICON.EXPAND;
       }
+    }
+    return retValue;
+  };
+  appendIcon({
+    className: 'text-icon',
+    node: expandWrapper, dx: (CONST.NODE_WIDTH / 2) + (CONST.COLLAPSE_ICON_SIZE / 2) + CONST.SPACING,
+    fontSize: CONST.COLLAPSE_ICON_SIZE,
+    text
+  });
+  const collapseIcon = (d) => {
+    if (d.data.childCount && d.children) {
+      return ICON.COLLAPSE;
     }
     return '';
   };
   appendIcon({
-    className: 'text-icon',
-    node: collapseWrapper, dx: (width / 2) + (CONST.COLLAPSE_ICON_SIZE / 2) + CONST.SPACING,
+    className: 'collapse-icon',
+    node: collapseWrapper, dx: (CONST.NODE_WIDTH / 2) + (CONST.COLLAPSE_ICON_SIZE / 2) + CONST.SPACING + 20,
     fontSize: CONST.COLLAPSE_ICON_SIZE,
-    text
+    text: collapseIcon
   });
 };
 

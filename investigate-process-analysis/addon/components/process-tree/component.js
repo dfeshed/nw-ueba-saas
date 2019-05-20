@@ -25,7 +25,7 @@ import { resetFilterValue } from 'investigate-process-analysis/actions/creators/
 import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
 import zoomed from './helpers/zoomed';
 import copyToClipboard from 'component-lib/utils/copy-to-clipboard';
-import { CONST } from './const';
+import { CONST, ICON } from './const';
 
 import {
   isStreaming,
@@ -113,9 +113,6 @@ const TreeComponent = Component.extend({
    * @property
    * @public
    */
-  collapseIcon: '\uea78', // Unicode
-
-  expandIcon: '\uea77', // Unicode
 
   rootNode: null,
 
@@ -327,13 +324,14 @@ const TreeComponent = Component.extend({
     }, 200);
   },
 
-  _appendExpandCollapseIcon(nodeEnter, collapseIcon, expandIcon, width, counter) {
+  _appendExpandCollapseIcon(nodeEnter, counter) {
     const self = this;
-    const collapseWrapper = nodeEnter.append('g')
+    let tempCounter = counter;
+    const expandWrapper = nodeEnter.append('g')
       .attr('class', 'button-wrapper')
       .attr('id', function() {
-        counter++;
-        return `expand-${counter}`;
+        tempCounter++;
+        return `expand-${tempCounter}`;
       })
       .on('click', function(d) {
         event.stopImmediatePropagation();
@@ -344,7 +342,8 @@ const TreeComponent = Component.extend({
          */
         if (d._children || d.children) { // Child nodes are already fetched and partially drawn. Initial state
           if (d.data._children && d.data._children.length) {
-            d._children = getNewNodes(d, d.data._children);
+            const newNodes = getNewNodes(d, d.data._children);
+            d._children = d._children ? [...d._children, ...newNodes] : newNodes;
             d.data._children = null;
           }
           self._showPopup(this, d);
@@ -354,12 +353,23 @@ const TreeComponent = Component.extend({
 
         this.setAttribute('class', `${this.getAttribute('class')} process-filter`);
       });
-    appendExpandCollapseIcon(collapseWrapper, collapseIcon, expandIcon, width);
+    tempCounter = counter;
+    const collapseWrapper = nodeEnter.append('g')
+      .attr('class', 'button-wrapper')
+      .attr('id', function() {
+        tempCounter++;
+        return `collapse-${tempCounter}`;
+      })
+      .on('click', function(d) {
+        event.stopImmediatePropagation();
+        self.collapseProcess(d);
+      });
+    appendExpandCollapseIcon(expandWrapper, collapseWrapper);
   },
 
   _onNodeEnter(node, source) {
     const self = this;
-    const { expandIcon, collapseIcon, eventBus } = this.getProperties('expandIcon', 'collapseIcon', 'eventBus');
+    const eventBus = this.get('eventBus');
     const nodeEnter = node.enter().append('g')
       .attr('class', 'process')
       .attr('data-id', function(d) {
@@ -372,7 +382,7 @@ const TreeComponent = Component.extend({
       .on('mousedown', function() {
         event.stopImmediatePropagation();
       });
-    this._appendExpandCollapseIcon(nodeEnter, collapseIcon, expandIcon, CONST.NODE_WIDTH, freeIdCounter);
+    this._appendExpandCollapseIcon(nodeEnter, freeIdCounter);
 
     const processNode = nodeEnter.append('g')
       .attr('id', function() {
@@ -416,23 +426,6 @@ const TreeComponent = Component.extend({
     return addNodeContent(processNode, nodeEnter);
   },
 
-
-  expandCollapseProcess(d) {
-    event.stopImmediatePropagation();
-    d.data.expanded = !d.data.expanded;
-    if (d.data.childCount) {
-      if (d.data.expanded) {
-        this.expandProcess(d);
-      } else {
-        this.collapseProcess(d);
-      }
-
-      const { expandIcon, collapseIcon } = this.getProperties('expandIcon', 'collapseIcon');
-      const icon = d.data.expanded ? collapseIcon : expandIcon;
-      select(`*[data-id='${ d.data.processId }']`).select('text.text-icon').text(icon);
-    }
-  },
-
   _getChildProcess(d, element) {
     const onComplete = () => {
       const children = this.get('children');
@@ -445,7 +438,7 @@ const TreeComponent = Component.extend({
     this.send('getChildEvents', d.data.processId, { onComplete });
   },
 
-  expandProcess({ node, children }) {
+  expandProcess(node, children) {
     node.children = children;
     node.data._children = null;
     node._children = null;
@@ -472,7 +465,10 @@ const TreeComponent = Component.extend({
       d._children = d.children;
       d.children = null;
     }
+    d.data.expanded = false;
     this._buildChart(d);
+    select(`*[data-id='${ d.data.processId }']`).select('text.text-icon').text(ICON.EXPAND);
+    select(`*[data-id='${ d.data.processId }']`).select('text.collapse-icon').text('');
   },
 
   willDestroyElement() {
@@ -483,8 +479,14 @@ const TreeComponent = Component.extend({
     copyLaunchArgument(launchArguments) {
       copyToClipboard(launchArguments);
     },
-    appendNodes(d) {
-      this.expandProcess(d);
+    appendNodes({ node, children }) {
+      node.data.expanded = true;
+      if (node.data.childCount) {
+        this.expandProcess(node, children);
+
+        select(`*[data-id='${ node.data.processId }']`).select('text.text-icon').text(ICON.FILTER);
+        select(`*[data-id='${ node.data.processId }']`).select('text.collapse-icon').text(ICON.COLLAPSE);
+      }
     }
   }
 });

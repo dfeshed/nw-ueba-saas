@@ -11,6 +11,12 @@ const CONST = {
   DURATION: 750
 };
 
+const ICON = {
+  EXPAND: '\uea77',
+  FILTER: '\uea78',
+  COLLAPSE: '\uea7c'
+};
+
 const DISTANCE = {
   ICON_Y: -10,
   ICON_X: -10,
@@ -24,5 +30,6 @@ const DISTANCE = {
 
 export {
   CONST,
+  ICON,
   DISTANCE
 };
