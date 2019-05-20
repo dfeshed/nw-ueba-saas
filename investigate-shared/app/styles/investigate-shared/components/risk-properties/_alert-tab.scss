@@ -59,10 +59,14 @@
 
   .alert-error-message {
     height: 40vh;
-    top: 6rem;
+
+    .rsa-panel-message {
+      height: 100%;
+    }
   }
   .insight-message {
     width: 410px;
+    height: 100%;
   }
   .alerts-loading {
     display: inline;
