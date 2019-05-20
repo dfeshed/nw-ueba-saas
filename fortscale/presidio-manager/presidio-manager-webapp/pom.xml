@@ -25,21 +25,6 @@
         </dependency>
         <dependency>
             <groupId>fortscale</groupId>
-            <artifactId>presidio-manager-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>fortscale</groupId>
-            <artifactId>presidio-security-manager</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>fortscale</groupId>
-            <artifactId>presidio-manager-airflow</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>fortscale</groupId>
             <artifactId>presidio-configuration-client</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -125,11 +110,6 @@
         <dependency>
             <groupId>com.github.kongchen</groupId>
             <artifactId>swagger-maven-plugin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fortscale</groupId>
-            <artifactId>presidio-forwarder-manager</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

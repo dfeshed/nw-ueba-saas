@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBootJarOperator
 from presidio.utils.airflow.context_wrapper import ContextWrapper
+from presidio.utils.airflow.schedule_interval_utils import get_schedule_interval
 from presidio.utils.services.time_service import convert_to_utc
 
 
@@ -24,7 +25,7 @@ class ModelOperator(SpringBootJarOperator):
         """
 
         self.task_id = task_id or self.get_task_id()
-        self.interval = kwargs.get('dag').schedule_interval
+        self.interval = get_schedule_interval(kwargs.get('dag'))
 
         java_args = {
             'group_name': group_name,

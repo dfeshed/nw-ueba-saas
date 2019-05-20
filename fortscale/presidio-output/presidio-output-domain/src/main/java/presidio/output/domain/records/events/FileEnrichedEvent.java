@@ -12,7 +12,7 @@ import java.util.Map;
  * Created by efratn on 02/08/2017.
  */
 @Document
-public class FileEnrichedEvent extends EnrichedEvent {
+public class FileEnrichedEvent extends EnrichedUserEvent {
 
     public static final String ABSOLUTE_SRC_FILE_PATH_FIELD = "absoluteSrcFilePath";
     public static final String ABSOLUTE_DST_FILE_PATH_FIELD = "absoluteDstFilePath";

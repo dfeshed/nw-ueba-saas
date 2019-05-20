@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
-public class PrintEnrichedEvent extends EnrichedEvent {
+public class PrintEnrichedEvent extends EnrichedUserEvent {
 
     public static final String SRC_MACHINE_ID_FIELD_NAME = "srcMachineId";
     public static final String PRINTER_ID_FIELD_NAME = "printerId";
