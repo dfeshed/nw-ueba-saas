@@ -147,7 +147,6 @@ class SmartDagBuilder(PresidioDagBuilder):
         default_args = dag.default_args
         enable_output_forwarder = default_args.get("enable_output_forwarder")
         self.log.debug("enable_output_forwarder=%s ", enable_output_forwarder)
-        self.log.error("enable_output_forwarder=%s ", enable_output_forwarder)
         if enable_output_forwarder == 'true':
             push_forwarding_operator = OutputForwarderOperator(
                 fixed_duration_strategy=timedelta(hours=1),
