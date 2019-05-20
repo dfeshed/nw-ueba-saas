@@ -3,14 +3,15 @@ from copy import copy
 
 from airflow import configuration
 from airflow.bin import cli
-from airflow.models import DagRun, DAG, DagModel, Variable
+from airflow.models import DagRun, DAG, DagModel
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils import helpers
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
 
-from presidio.builders.adapter.adapter_properties_cleanup_operator_builder import build_adapter_properties_cleanup_operator
+from presidio.builders.adapter.adapter_properties_cleanup_operator_builder import \
+    build_adapter_properties_cleanup_operator
 from presidio.builders.elasticsearch.elasticsearch_operator_builder import build_clean_elasticsearch_data_operator
 from presidio.builders.presidioconfiguration.presidio_configuration_operator_builder import \
     build_reset_presidio_configuration_operator
@@ -18,7 +19,6 @@ from presidio.factories.abstract_dag_factory import AbstractDagFactory
 from presidio.utils.airflow.operators import spring_boot_jar_operator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
-
 
 TASK_KILL_TIMEOUT = 60
 
@@ -57,7 +57,7 @@ class RerunUebaFlowDagBuilder(object):
 
         clean_dags_from_db_operator = build_clean_dags_from_db_operator(dag, dag_ids_to_clean)
 
-        clean_logs_operator = build_clean_logs_operator(dag)
+        clean_logs_operator = build_clean_logs_operator(dag, dag_ids_to_clean)
 
         pause_dags_operator >> kill_dags_task_instances_operator
         kill_dags_task_instances_operator >> clean_mongo_operator
@@ -141,7 +141,7 @@ def stop_kill_dag_run_task_instances(dag_run):
                                                                                 task_instance.execution_date,
                                                                                 task_instance.dag_id))
         try:
-            helpers.kill_process_tree(logger=logging.getLogger(), pid=pid, timeout=TASK_KILL_TIMEOUT)
+            helpers.reap_process_group(pid=pid, log=logging.getLogger(), timeout=TASK_KILL_TIMEOUT)
         except Exception as e:
             logging.exception("failed to kill pid: {} ".format(pid))
 
@@ -164,7 +164,7 @@ def cleanup_dags_from_postgres(dag_ids, session=None):
     logging.info("query: %s", query)
     paused_dags = query.all()
 
-    for t in ["xcom", "task_instance", "sla_miss", "log", "job", "dag_run", "dag"]:
+    for t in ["xcom", "task_instance", "sla_miss", "log", "job", "dag_run", "dag_stats", "task_reschedule", "dag"]:
         for paused_dag in paused_dags:
             sql = "DELETE FROM {} WHERE dag_id LIKE \'{}%\'".format(t, paused_dag.dag_id)
             logging.info("executing: %s", sql)
@@ -183,11 +183,17 @@ def build_pause_dags_operator(cleanup_dag, dag_models):
     return pause_dags_operator
 
 
-def build_clean_logs_operator(cleanup_dag):
+def build_clean_logs_operator(cleanup_dag, dag_ids):
     airflow_base_log_folder = str(configuration.get('core', 'BASE_LOG_FOLDER'))
+
+    airflow_log_folder = "{}/scheduler/".format(airflow_base_log_folder)
+    # airflow_log_folder = ""
+    for dag_id in dag_ids:
+        airflow_log_folder = airflow_log_folder + " {}/{}".format(airflow_base_log_folder, dag_id)
+
     clean_logs_operator = BashOperator(task_id='clean_logs',
-                                       bash_command="rm -rf {}/full_flow_* && rm -rf {}/logs/scheduler/ ".format(
-                                           airflow_base_log_folder, airflow_base_log_folder),
+                                       bash_command="rm -rf {}".format(
+                                           airflow_log_folder),
                                        dag=cleanup_dag, retries=5)
     return clean_logs_operator
 

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import pendulum
 
 from airflow.jobs import BaseJob
-from airflow.models import DagRun, TaskInstance, Log, XCom, SlaMiss
+from airflow.models import DagRun, TaskInstance, Log, XCom, SlaMiss, TaskReschedule
 from airflow.models import settings
 from airflow.operators.python_operator import PythonOperator
 
@@ -24,6 +24,7 @@ class AirflowDbCleanupDagBuilder(MaintenanceDagBuilder):
             {"airflow_db_model": XCom, "age_check_column": XCom.timestamp},
             {"airflow_db_model": BaseJob, "age_check_column": BaseJob.latest_heartbeat},
             {"airflow_db_model": SlaMiss, "age_check_column": SlaMiss.timestamp},
+            {"airflow_db_model": TaskReschedule, "age_check_column": TaskReschedule.reschedule_date},
         ]
 
     def build(self, dag):
