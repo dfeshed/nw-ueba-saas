@@ -7,7 +7,7 @@ from presidio.operators.retention.ade_manager_operator import AdeManagerOperator
 class RetentionDagBuilder(PresidioDagBuilder):
     """
         The "Retention" builder consists of input_retention, ade manager and output_retention
-        This dag run one a day.
+        This dag run once a day.
     """
 
     def build(self, dag):
@@ -18,16 +18,16 @@ class RetentionDagBuilder(PresidioDagBuilder):
             self._build_output_retention_operator(dag, [schema])
         return dag
 
-    def _build_output_retention_operator(self, dag, schema):
+    def _build_output_retention_operator(self, dag, schemas_list):
         """
         Create OutputRetentionOperator in order to output documents after all tasks finished to use it.
 
         :param dag: The retention DAG
         :type dag: airflow.models.DAG
-        :param schema: The schema to process the retention
-        :type schema: String
+        :param schemas_list: The schema to process the retention
+        :type schemas_list: String
         """
-        OutputRetentionOperatorBuilder(schema).build(dag)
+        OutputRetentionOperatorBuilder(schemas_list).build(dag)
 
     def _build_input_retention(self, dag, schema):
         InputRetentionOperatorBuilder(schema).build(dag)

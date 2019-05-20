@@ -19,16 +19,16 @@ class OutputRetentionOperatorBuilder(LoggingMixin):
     RETENTION_COMMAND_CONFIG_PATH = 'retention.output.command'
     RETENTION_COMMAND_DEFAULT_VALUE = 'retention'
 
-    def __init__(self, schema):
+    def __init__(self, schemas_list):
         """
         C'tor.
-        :param schema: The schema we should work on
-        :type schema: str
+        :param schemas_list: The schema we should work on
+        :type schemas_list: str
         """
         conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
         self._retention_command = conf_reader.read(OutputRetentionOperatorBuilder.RETENTION_COMMAND_CONFIG_PATH,
                                                    OutputRetentionOperatorBuilder.RETENTION_COMMAND_DEFAULT_VALUE)
-        self.schema = schema
+        self.schemas_list = schemas_list
 
     def build(self, dag):
         """
@@ -44,7 +44,7 @@ class OutputRetentionOperatorBuilder(LoggingMixin):
         output_retention = OutputRetentionOperator(
             fixed_duration_strategy=timedelta(hours=1),
             command=self._retention_command,
-            schema=self.schema,
+            schema=self.schemas_list,
             run_clean_command_before_retry=False,
             dag=dag)
 
