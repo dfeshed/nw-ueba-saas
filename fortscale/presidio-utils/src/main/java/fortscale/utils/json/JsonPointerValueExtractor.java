@@ -14,4 +14,8 @@ public class JsonPointerValueExtractor implements IJsonValueExtractor{
     public Object getValue(JSONObject jsonObject) {
         return jsonPointer.get(jsonObject);
     }
+
+    public String getPath(){
+        return jsonPointer.getPath();
+    }
 }

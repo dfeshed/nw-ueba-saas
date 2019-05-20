@@ -64,4 +64,8 @@ public class SetterTransformer extends AbstractJsonObjectTransformer {
         String name = String.format("%s-setter-transformer", key);
         return new SetterTransformer(name, key, null);
     }
+
+    public String getKey() {
+        return key;
+    }
 }
