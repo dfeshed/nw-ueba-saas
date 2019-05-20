@@ -54,6 +54,42 @@ function deleteIncidentRule(id) {
 }
 
 /**
+ * Enables incident rules
+ * @method enableIncidentRules
+ * @param ids
+ * @returns {*}
+ * @public
+ */
+function enableIncidentRules(ids) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'enableRules',
+    modelName: 'incident-rules',
+    query: {
+      data: ids
+    }
+  });
+}
+
+/**
+ * Disables incident rules
+ * @method disableIncidentRules
+ * @param ids
+ * @returns {*}
+ * @public
+ */
+function disableIncidentRules(ids) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'disableRules',
+    modelName: 'incident-rules',
+    query: {
+      data: ids
+    }
+  });
+}
+
+/**
  * Returns a list of all of the known incident rules
  * @method getIncidentRules
  * @returns {*}
@@ -142,6 +178,8 @@ export default {
   cloneIncidentRule,
   createIncidentRule,
   deleteIncidentRule,
+  enableIncidentRules,
+  disableIncidentRules,
   getIncidentRule,
   getIncidentRules,
   getIncidentFields,

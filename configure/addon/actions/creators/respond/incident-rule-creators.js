@@ -75,6 +75,32 @@ const deleteRule = (ruleId) => {
 };
 
 /**
+ * Enables selected rules by ID
+ * @method enableRules
+ * @param ruleIds list of rules to enable.
+ * @public
+ */
+const enableRules = (ruleIds) => {
+  return {
+    type: ACTION_TYPES.INCIDENT_RULES_ENABLE_SAGA,
+    ruleIds
+  };
+};
+
+/**
+ * Disables selected rules by ID
+ * @method disableRules
+ * @param ruleIds list of rules to disable.
+ * @public
+ */
+const disableRules = (ruleIds) => {
+  return {
+    type: ACTION_TYPES.INCIDENT_RULES_DISABLE_SAGA,
+    ruleIds
+  };
+};
+
+/**
 * Returns all known aggregation rules
 * @method getRules
 * @public
@@ -329,6 +355,8 @@ export {
   clearMatchConditions,
   cloneRule,
   deleteRule,
+  enableRules,
+  disableRules,
   getFields,
   getRule,
   getRules,

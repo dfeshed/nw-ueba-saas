@@ -4,7 +4,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import hbs from 'htmlbars-inline-precompile';
-import { waitUntil, click, find, render } from '@ember/test-helpers';
+import { waitUntil, click, find, render, findAll } from '@ember/test-helpers';
 import { patchSocket } from '../../../../../helpers/patch-socket';
 import { patchFlash } from '../../../../../helpers/patch-flash';
 import { patchFetch } from '../../../../../helpers/patch-fetch';
@@ -55,6 +55,18 @@ module('Integration | Component | Respond Incident Rules Toolbar', function(hook
     assert.ok(find('.clone-rule-button .rsa-form-button-wrapper.is-disabled'), 'The clone button is disabled');
     assert.ok(find('.delete-rule-button .rsa-form-button-wrapper.is-disabled'), 'The delete button is disabled');
     assert.notOk(find('.export-rules-button .rsa-form-button-wrapper.is-disabled'), 'The export button is disabled');
+  });
+
+  test('The disable buttons is greyed out if selected rules are disable respectively', async function(assert) {
+    setState({ ...initialState, selectedRules: ['59b92bbf4cb0f0092b6b6a8b'] });
+    await render(hbs`{{respond/incident-rules/toolbar}}`);
+    assert.equal(findAll('.disable-rules-button .is-disabled').length, 1, 'Disable button is greyed');
+  });
+
+  test('The enable buttons is greyed out if selected rules are enabled respectively', async function(assert) {
+    setState({ ...initialState, selectedRules: ['59b92bbf4cb0f0092b6b6a8a'] });
+    await render(hbs`{{respond/incident-rules/toolbar}}`);
+    assert.equal(findAll('.enable-rules-button .is-disabled').length, 1, 'Enable button is greyed');
   });
 
   test('Clicking on delete button dispatches deleteRule creator', async function(assert) {
@@ -134,6 +146,54 @@ module('Integration | Component | Respond Incident Rules Toolbar', function(hook
 
     await render(hbs`{{respond/incident-rules/toolbar}}`);
     await click('.export-rules-button button');
+  });
+
+  test('Clicking on Enable-All button triggers confirmation dialog', async function(assert) {
+
+    setState({ ...initialState, selectedRules: ['59b92bbf4cb0f0092b6b6a8b'] });
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{respond/incident-rules/toolbar}}
+    `);
+
+    patchSocket((method, modelName, query) => {
+      assert.equal(method, 'enableRules');
+      assert.equal(modelName, 'incident-rules');
+      assert.deepEqual(query, {
+        data: [
+          '59b92bbf4cb0f0092b6b6a8b'
+        ]
+      });
+    });
+
+    await click('.enable-rules-button button');
+    const confirmDialogOkButton = find('.respond-confirmation-dialog .confirm-button .rsa-form-button');
+    assert.ok(confirmDialogOkButton, 'The confirmation dialog appears');
+    confirmDialogOkButton.click();
+  });
+
+  test('Clicking on Disable-All button triggers confirmation dialog', async function(assert) {
+
+    setState({ ...initialState, selectedRules: ['59b92bbf4cb0f0092b6b6a8a'] });
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{respond/incident-rules/toolbar}}
+    `);
+
+    patchSocket((method, modelName, query) => {
+      assert.equal(method, 'disableRules');
+      assert.equal(modelName, 'incident-rules');
+      assert.deepEqual(query, {
+        data: [
+          '59b92bbf4cb0f0092b6b6a8a'
+        ]
+      });
+    });
+
+    await click('.disable-rules-button button');
+    const confirmDialogOkButton = find('.respond-confirmation-dialog .confirm-button .rsa-form-button');
+    assert.ok(confirmDialogOkButton, 'The confirmation dialog appears');
+    confirmDialogOkButton.click();
   });
 });
 

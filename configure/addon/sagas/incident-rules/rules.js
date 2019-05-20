@@ -49,6 +49,32 @@ function* deleteRuleAsync(action) {
   }
 }
 
+function* enableRulesAsync(action) {
+  const { ruleIds } = action;
+  try {
+    yield put({ type: ACTION_TYPES.INCIDENT_RULES_ENABLE_STARTED });
+    const payload = yield call(incidentRules.enableIncidentRules, ruleIds);
+    yield put({ type: ACTION_TYPES.INCIDENT_RULES_ENABLE, payload });
+    success('configure.incidentRules.actionMessages.enableSuccess');
+  } catch (e) {
+    yield put({ type: ACTION_TYPES.INCIDENT_RULES_ENABLE_FAILED });
+    failure('configure.incidentRules.actionMessages.enableFailure');
+  }
+}
+
+function* disableRulesAsync(action) {
+  const { ruleIds } = action;
+  try {
+    yield put({ type: ACTION_TYPES.INCIDENT_RULES_DISABLE_STARTED });
+    const payload = yield call(incidentRules.disableIncidentRules, ruleIds);
+    yield put({ type: ACTION_TYPES.INCIDENT_RULES_DISABLE, payload });
+    success('configure.incidentRules.actionMessages.disableSuccess');
+  } catch (e) {
+    yield put({ type: ACTION_TYPES.INCIDENT_RULES_DISABLE_FAILED });
+    failure('configure.incidentRules.actionMessages.disableFailure');
+  }
+}
+
 function* reorderRulesAsync(action) {
   const { ruleIds } = action;
   try {
@@ -128,6 +154,14 @@ export function* fetchFields() {
 
 export function* deleteRule() {
   yield takeLatest(ACTION_TYPES.INCIDENT_RULES_DELETE_SAGA, deleteRuleAsync);
+}
+
+export function* enableRules() {
+  yield takeLatest(ACTION_TYPES.INCIDENT_RULES_ENABLE_SAGA, enableRulesAsync);
+}
+
+export function* disableRules() {
+  yield takeLatest(ACTION_TYPES.INCIDENT_RULES_DISABLE_SAGA, disableRulesAsync);
 }
 
 export function* reorderRules() {

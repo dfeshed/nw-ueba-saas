@@ -1,10 +1,13 @@
 import Component from '@ember/component';
 import Confirmable from 'component-lib/mixins/confirmable';
-import { deleteRule, cloneRule } from 'configure/actions/creators/respond/incident-rule-creators';
+import { deleteRule, cloneRule, enableRules, disableRules } from 'configure/actions/creators/respond/incident-rule-creators';
 import {
   hasOneSelectedRule,
   getSelectedIncidentRules,
-  isNoneSelected
+  isNoneSelected,
+  getSelectedRuleSwitches,
+  isAllEnabled,
+  isAllDisabled
 } from 'configure/reducers/respond/incident-rules/selectors';
 import { connect } from 'ember-redux';
 import { inject } from '@ember/service';
@@ -66,7 +69,10 @@ const fetchRules = (selRules, csrfKey) => {
 const stateToComputed = (state) => ({
   hasOneSelectedRule: hasOneSelectedRule(state),
   selectedRules: getSelectedIncidentRules(state),
-  isNoneSelected: isNoneSelected(state)
+  isNoneSelected: isNoneSelected(state),
+  selectedRuleSwitches: getSelectedRuleSwitches(state),
+  isAllEnabled: isAllEnabled(state),
+  isAllDisabled: isAllDisabled(state)
 });
 
 const dispatchToActions = function(dispatch) {
@@ -91,6 +97,22 @@ const dispatchToActions = function(dispatch) {
       const selRules = this.get('selectedRules');
       const csrfKey = this.get('csrfLocalstorageKey');
       fetchRules(selRules, csrfKey);
+    },
+
+    enable: () => {
+      const selected = this.get('selectedRules');
+      const numSelected = selected.length;
+      this.send('showConfirmationDialog', 'enable-rules', { numSelected }, () => {
+        dispatch(enableRules(selected));
+      });
+    },
+
+    disable: () => {
+      const selected = this.get('selectedRules');
+      const numSelected = selected.length;
+      this.send('showConfirmationDialog', 'disable-rules', { numSelected }, () => {
+        dispatch(disableRules(selected));
+      });
     }
   };
 };

@@ -15,6 +15,22 @@
         {{t 'configure.incidentRules.export'}}
       {{/rsa-form-button}}
     </div>
+    <div class="action-control enable-rules-button">
+      {{#rsa-form-button
+        isDisabled=(or isNoneSelected isAllEnabled)
+        defaultAction=(action 'enable')
+      }}
+        {{t 'configure.incidentRules.enable'}}
+      {{/rsa-form-button}}
+    </div>
+    <div class="action-control disable-rules-button">
+      {{#rsa-form-button
+        isDisabled=(or isNoneSelected isAllDisabled)
+        defaultAction=(action 'disable')
+      }}
+        {{t 'configure.incidentRules.disable'}}
+      {{/rsa-form-button}}
+    </div>
     <div class="action-control clone-rule-button">
       {{#rsa-form-button
         isDisabled=(not hasOneSelectedRule)
@@ -38,6 +54,36 @@
   {{#rsa-application-modal eventId='delete-rule' label=(t "configure.incidentRules.deleteRule") style="standard respond-confirmation-dialog"}}
     <div class='modal-content'>
       <p>{{t 'configure.incidentRules.actionMessages.deleteRuleConfirmation'}}</p>
+    </div>
+    <footer>
+      <hbox class="modal-footer-buttons">
+        {{#rsa-form-button class='cancel-button' defaultAction=(action 'cancel')}}
+          {{t 'forms.cancel'}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button style='primary' class='confirm-button' defaultAction=(action 'confirm')}}
+          {{t 'forms.ok'}}
+        {{/rsa-form-button}}
+      </hbox>
+    </footer>
+  {{/rsa-application-modal}}
+  {{#rsa-application-modal eventId='enable-rules' label=(t "configure.incidentRules.enable") style="standard respond-confirmation-dialog"}}
+    <div class='modal-content'>
+      <p>{{t 'configure.incidentRules.actionMessages.enableRulesConfirmation' count=confirmationData.numSelected}}</p>
+    </div>
+    <footer>
+      <hbox class="modal-footer-buttons">
+        {{#rsa-form-button class='cancel-button' defaultAction=(action 'cancel')}}
+          {{t 'forms.cancel'}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button style='primary' class='confirm-button' defaultAction=(action 'confirm')}}
+          {{t 'forms.ok'}}
+        {{/rsa-form-button}}
+      </hbox>
+    </footer>
+  {{/rsa-application-modal}}
+  {{#rsa-application-modal eventId='disable-rules' label=(t "configure.incidentRules.disable") style="standard respond-confirmation-dialog"}}
+    <div class='modal-content'>
+      <p>{{t 'configure.incidentRules.actionMessages.disableRulesConfirmation' count=confirmationData.numSelected}}</p>
     </div>
     <footer>
       <hbox class="modal-footer-buttons">

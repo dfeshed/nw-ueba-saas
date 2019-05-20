@@ -108,6 +108,14 @@ const configureConfigGen = function(environment) {
       createRecord: {
         subscriptionDestination: '/user/queue/alertrules/create',
         requestDestination: '/ws/respond/alertrules/create'
+      },
+      enableRules: {
+        subscriptionDestination: '/user/queue/alertrules/enable',
+        requestDestination: '/ws/respond/alertrules/enable'
+      },
+      disableRules: {
+        subscriptionDestination: '/user/queue/alertrules/disable',
+        requestDestination: '/ws/respond/alertrules/disable'
       }
     },
     'incident-fields': {

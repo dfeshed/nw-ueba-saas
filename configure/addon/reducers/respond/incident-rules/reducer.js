@@ -67,16 +67,72 @@ const reducer = reduxActions.handleActions({
       selectedRules: newSelectedRules
     });
   },
+
+  [ACTION_TYPES.INCIDENT_RULES_ENABLE_STARTED]: (state) => state.set('isTransactionUnderway', true),
+
+  [ACTION_TYPES.INCIDENT_RULES_ENABLE_FAILED]: (state) => state.set('isTransactionUnderway', false),
+
+  [ACTION_TYPES.INCIDENT_RULES_ENABLE]: (state, { payload: { data } }) => {
+    const { rules } = state;
+    // Update the enable/disable toggle on rules
+    const updatedRules = rules.map((rule) => {
+      if (data.includes(rule.id)) {
+        return {
+          ...rule,
+          enabled: true
+        };
+      } else {
+        return rule;
+      }
+    });
+
+    return state.merge({
+      rules: updatedRules,
+      isTransactionUnderway: false,
+      selectedRules: []
+    });
+  },
+
+  [ACTION_TYPES.INCIDENT_RULES_DISABLE_STARTED]: (state) => state.set('isTransactionUnderway', true),
+
+  [ACTION_TYPES.INCIDENT_RULES_DISABLE_FAILED]: (state) => state.set('isTransactionUnderway', false),
+
+  [ACTION_TYPES.INCIDENT_RULES_DISABLE]: (state, { payload: { data } }) => {
+    const { rules } = state;
+    // Update the enable/disable toggle on rules
+    const updatedRules = rules.map((rule) => {
+      if (data.includes(rule.id)) {
+        return {
+          ...rule,
+          enabled: false
+        };
+      } else {
+        return rule;
+      }
+    });
+
+    return state.merge({
+      rules: updatedRules,
+      isTransactionUnderway: false,
+      selectedRules: []
+    });
+  },
+
   [ACTION_TYPES.INCIDENT_RULES_REORDER_STARTED]: (state) => state.set('isTransactionUnderway', true),
+
   [ACTION_TYPES.INCIDENT_RULES_REORDER_FAILED]: (state) => state.set('isTransactionUnderway', false),
+
   [ACTION_TYPES.INCIDENT_RULES_REORDER]: (state, { payload: { data } }) => {
     return state.merge({
       isTransactionUnderway: false,
       rules: data
     });
   },
+
   [ACTION_TYPES.INCIDENT_RULES_CLONE_STARTED]: (state) => state.set('isTransactionUnderway', true),
+
   [ACTION_TYPES.INCIDENT_RULES_CLONE]: (state) => state.set('isTransactionUnderway', false),
+
   [ACTION_TYPES.INCIDENT_RULES_CLONE_FAILED]: (state) => state.set('isTransactionUnderway', false)
 }, Immutable.from(initialState));
 

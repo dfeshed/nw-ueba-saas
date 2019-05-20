@@ -185,6 +185,106 @@ test('With INCIDENT_RULES_DELETE_FAILED, the isTransactionUnderway prop is prope
   assert.deepEqual(endState, expectedEndState);
 });
 
+test('With INCIDENT_RULES_ENABLE_STARTED, the isTransactionUnderway prop is properly set', function(assert) {
+  const expectedEndState = {
+    ...initialState,
+    isTransactionUnderway: true
+  };
+
+  const endState = reducer(Immutable.from(initialState), {
+    type: ACTION_TYPES.INCIDENT_RULES_ENABLE_STARTED
+  });
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('With INCIDENT_RULES_ENABLE, the rules are properly updated', function(assert) {
+  const initState = {
+    ...initialState,
+    rules: [{ id: '54321', order: 1, enabled: false }, { id: '12345', order: 2, enabled: true }, { id: '787933', order: 3, enabled: false }],
+    isTransactionUnderway: true,
+    selectedRules: ['12345', '54321']
+  };
+  const payload = { data: ['12345', '54321'] };
+  const action = {
+    type: ACTION_TYPES.INCIDENT_RULES_ENABLE,
+    payload
+  };
+
+  const expectedEndState = {
+    ...initialState,
+    rules: [{ id: '54321', order: 1, enabled: true }, { id: '12345', order: 2, enabled: true }, { id: '787933', order: 3, enabled: false }],
+    isTransactionUnderway: false,
+    selectedRules: []
+  };
+
+  const endState = reducer(Immutable.from(initState), action);
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('With INCIDENT_RULES_ENABLE_FAILED, the isTransactionUnderway prop is properly set', function(assert) {
+  const initState = { ...initialState, isTransactionUnderway: true };
+  const action = {
+    type: ACTION_TYPES.INCIDENT_RULES_ENABLE_FAILED
+  };
+  const expectedEndState = {
+    ...initialState,
+    isTransactionUnderway: false
+  };
+
+  const endState = reducer(Immutable.from(initState), action);
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('With INCIDENT_RULES_DISABLE_STARTED, the isTransactionUnderway prop is properly set', function(assert) {
+  const expectedEndState = {
+    ...initialState,
+    isTransactionUnderway: true
+  };
+
+  const endState = reducer(Immutable.from(initialState), {
+    type: ACTION_TYPES.INCIDENT_RULES_DISABLE_STARTED
+  });
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('With INCIDENT_RULES_DISABLE, the rules are properly updated', function(assert) {
+  const initState = {
+    ...initialState,
+    rules: [{ id: '54321', order: 1, enabled: false }, { id: '12345', order: 2, enabled: true }, { id: '787933', order: 3, enabled: false }],
+    isTransactionUnderway: true,
+    selectedRules: ['12345', '54321']
+  };
+  const payload = { data: ['12345', '54321'] };
+  const action = {
+    type: ACTION_TYPES.INCIDENT_RULES_DISABLE,
+    payload
+  };
+
+  const expectedEndState = {
+    ...initialState,
+    rules: [{ id: '54321', order: 1, enabled: false }, { id: '12345', order: 2, enabled: false }, { id: '787933', order: 3, enabled: false }],
+    isTransactionUnderway: false,
+    selectedRules: []
+  };
+
+  const endState = reducer(Immutable.from(initState), action);
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('With INCIDENT_RULES_DISABLE_FAILED, the isTransactionUnderway prop is properly set', function(assert) {
+  const initState = { ...initialState, isTransactionUnderway: true };
+  const action = {
+    type: ACTION_TYPES.INCIDENT_RULES_DISABLE_FAILED
+  };
+  const expectedEndState = {
+    ...initialState,
+    isTransactionUnderway: false
+  };
+
+  const endState = reducer(Immutable.from(initState), action);
+  assert.deepEqual(endState, expectedEndState);
+});
+
 test('With INCIDENT_RULES_REORDER_STARTED, the isTransactionUnderway prop is properly set', function(assert) {
   const initState = { ...initialState };
   const action = {
