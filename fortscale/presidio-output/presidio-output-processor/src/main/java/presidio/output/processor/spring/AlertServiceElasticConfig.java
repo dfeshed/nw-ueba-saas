@@ -19,7 +19,7 @@ import presidio.output.processor.services.alert.indicator.IndicatorsGeneratorFac
 @Import({
         PresidioOutputPersistencyServiceConfig.class,
         AlertSeverityServiceConfig.class,
-        UserServiceConfig.class,
+        EntityServiceConfig.class,
         SupportingInformationServiceConfig.class,
         AlertClassificationPriorityConfig.class
 })

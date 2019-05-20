@@ -11,15 +11,15 @@ public interface OutputExecutionService {
 
     Logger logger = Logger.getLogger(OutputExecutionService.class);
 
-    void run(Instant startDate, Instant endDate) throws Exception;
-    void updateAllUsersData(Instant startDate, Instant endDate) throws Exception;
+    void run(Instant startDate, Instant endDate, String configurationName) throws Exception;
+    void updateAllEntitiesData(Instant startDate, Instant endDate, String configurationName) throws Exception;
     void clean(Instant startDate, Instant endDate) throws Exception;
     void applyRetentionPolicy(Instant endDate) throws Exception;
     void cleanAll() throws Exception;
 
-    default int doRun(String smartRecordConfName, Instant startDate, Instant endDate) throws Exception {
+    default int doRun(Instant startDate, Instant endDate, String configurationName) throws Exception {
         try {
-            run(startDate, endDate);
+            run(startDate, endDate, configurationName);
         }
         catch (Exception e) {
             return 1;
@@ -27,11 +27,11 @@ public interface OutputExecutionService {
         return 0;
     }
 
-    default int doUpdateAllUsersData(String smartRecordConfName, Instant startDate, Instant endDate) throws Exception {
+    default int doUpdateAllEntitiesData(Instant startDate, Instant endDate, String configurationName) throws Exception {
         try {
-            updateAllUsersData(startDate, endDate);
+            updateAllEntitiesData(startDate, endDate, configurationName);
         } catch (Exception e) {
-            logger.error("Failed to update users data as part of output daily job", e);
+            logger.error("Failed to update entities data as part of output daily job", e);
             return 1;
         }
         return 0;

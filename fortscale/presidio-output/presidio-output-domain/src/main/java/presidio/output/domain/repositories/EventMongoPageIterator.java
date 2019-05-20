@@ -42,7 +42,7 @@ public class EventMongoPageIterator<U extends EnrichedUserEvent> implements Page
     public List<U> next() {
         int numOfItemsToSkip = this.currentPage * this.pageSize;
         this.currentPage++;
-        List<U> records = (List<U>) this.eventPersistencyService.findUserEvents(this.schema, this.userId, this.timeRange, this.features, numOfItemsToSkip, this.pageSize);
+        List<U> records = (List<U>) this.eventPersistencyService.findEntityEvents(this.schema, this.userId, this.timeRange, this.features, numOfItemsToSkip, this.pageSize);
 
         return records;
     }

@@ -4,10 +4,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
+import presidio.output.domain.services.alerts.AlertPersistencyService;
+import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.webapp.convertors.MetricConverter;
 import presidio.webapp.service.*;
-import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.output.domain.services.users.UserPersistencyService;
 
 @Configuration
 public class RestServiceTestConfig {
@@ -15,7 +15,7 @@ public class RestServiceTestConfig {
     AlertPersistencyService alertService;
 
     @MockBean
-    UserPersistencyService userService;
+    EntityPersistencyService entityService;
 
     @MockBean
     FeedbackService feedbackService;
@@ -30,8 +30,8 @@ public class RestServiceTestConfig {
     }
 
     @Bean
-    RestUserService restUserService() {
-        return new RestUserServiceImpl(restAlertService(), userService, 0, 100);
+    RestEntityService restEntityService() {
+        return new RestEntityServiceImpl(restAlertService(), entityService, 0, 100);
     }
 
     @Bean

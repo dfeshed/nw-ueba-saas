@@ -9,14 +9,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
+import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.output.domain.services.event.EventPersistencyService;
-import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 import presidio.output.processor.services.OutputMonitoringService;
 import presidio.output.processor.services.alert.AlertService;
-import presidio.output.processor.services.user.UserService;
+import presidio.output.processor.services.entity.EntityService;
 
 /**
  * Created by shays on 17/05/2017.
@@ -38,10 +38,10 @@ public class OutputProcessorConfiguration {
     private AlertService alertService;
 
     @Autowired
-    private UserService userService;
+    private EntityService entityService;
 
     @Autowired
-    private UserPersistencyService userPersistencyService;
+    private EntityPersistencyService entityPersistencyService;
 
     @Autowired
     private EventPersistencyService eventPersistencyService;
@@ -66,6 +66,6 @@ public class OutputProcessorConfiguration {
 
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, eventPersistencyService, outputMonitoringService, smartThreshold, smartPageSize, alertPageSize, retentionEnrichedEventsDays, retentionOutputDataDays);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, entityService, eventPersistencyService, outputMonitoringService, smartThreshold, smartPageSize, alertPageSize, retentionEnrichedEventsDays, retentionOutputDataDays);
     }
 }
