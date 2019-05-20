@@ -9,6 +9,8 @@ SIZE = 1000
 ENTITY_TYPE = "userId"
 INDEX_ALERT = "presidio-output-alert"
 DOC_TYPE_ALERT = "alert"
+USER_SEVERITY_RANGE = "presidio-output-user-severities-range"
+ENTITY_SEVERITY_RANGE = "presidio-output-entity-severities-range"
 
 
 # # Init Elasticsearch instance
@@ -84,8 +86,17 @@ data = es.search(
 sid = data['_scroll_id']
 scroll_size = len(data['hits']['hits'])
 
+
 # Before scroll, process current batch of hits
 convert_users_to_entities(data['hits']['hits'])
+
+es.reindex({
+    "source": {"index": USER_SEVERITY_RANGE},
+    "dest": {"index": ENTITY_SEVERITY_RANGE}
+}, wait_for_completion=True)
+
+# Remove user severity range index
+es.indices.delete(index=USER_SEVERITY_RANGE)
 
 while scroll_size > 0:
     "Scrolling users..."
