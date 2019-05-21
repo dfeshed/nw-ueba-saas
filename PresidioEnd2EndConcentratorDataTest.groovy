@@ -10,7 +10,9 @@ pipeline {
 
         stages {
                 stage('Reset Log-Decoder and Concentrator DBs') {
-                    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/reset_ld_and_concentrator_hybrid_dbs.sh"
+                    steps {
+                        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/reset_ld_and_concentrator_hybrid_dbs.sh"
+                    }
                 }
 
                                 
