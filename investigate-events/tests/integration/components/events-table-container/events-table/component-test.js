@@ -281,8 +281,8 @@ module('Integration | Component | events-table', function(hooks) {
     assert.ok(find('.rsa-data-table-header-row div > h2 .sort-indicator.active .rsa-icon-arrow-down-7-filled'));
   });
 
-  test('event table sort controls calls executeQuery', async function(assert) {
-    assert.expect(1);
+  test('event table sort controls calls _toggleSort', async function(assert) {
+    assert.expect(2);
     new ReduxDataHelper(setState)
       .columnGroup('SUMMARY')
       .hasRequiredValuesToQuery(true)
@@ -295,11 +295,12 @@ module('Integration | Component | events-table', function(hooks) {
       .language([{ format: 'TimeT', metaName: 'time', flags: -2147482605 }])
       .build();
 
-    this.set('executeQuery', () => {
-      assert.ok(true);
+    this.set('_toggleSort', (field, dir) => {
+      assert.equal(field, 'time');
+      assert.equal(dir, 'Descending');
     });
 
-    await render(hbs`{{events-table-container/events-table executeQuery=executeQuery}}`);
+    await render(hbs`{{events-table-container/events-table _toggleSort=_toggleSort}}`);
 
     click('.rsa-data-table-header-row div > h2 .sort-indicator.active');
   });

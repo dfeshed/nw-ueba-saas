@@ -8,8 +8,8 @@ import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import {
   LANGUAGE_KEY_INDEX_MASK,
   LANGUAGE_KEY_INDEX_VALUES,
-  LANGUAGE_KEY_SPECIAL_MASK,
-  LANGUAGE_KEY_SPECIAL_SINGLETON
+  LANGUAGE_KEY_SPECIAL_SINGLETON,
+  LANGUAGE_KEY_SPECIAL_MASK
 } from 'investigate-events/reducers/investigate/dictionaries/utils';
 
 const { createSelector } = reselect;
@@ -92,7 +92,9 @@ export const validEventSortColumns = createSelector(
         const isIndexedAtValue = (language.flags & LANGUAGE_KEY_INDEX_MASK) === LANGUAGE_KEY_INDEX_VALUES;
 
         // we can only sort singletons
-        const isSingleton = (language.flags & LANGUAGE_KEY_SPECIAL_MASK) === LANGUAGE_KEY_SPECIAL_SINGLETON;
+        const specialBitSet = (language.flags & LANGUAGE_KEY_SPECIAL_MASK) !== 0;
+        const singletonMasked = language.flags & LANGUAGE_KEY_SPECIAL_SINGLETON;
+        const isSingleton = specialBitSet && (singletonMasked === LANGUAGE_KEY_SPECIAL_SINGLETON);
 
         // time is always sortable
         const isTime = language.format.toLowerCase().indexOf('time') > -1;

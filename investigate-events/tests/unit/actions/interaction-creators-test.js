@@ -3,7 +3,7 @@ import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../helpers/redux-data-helper';
 
-import interactionCreators from 'investigate-events/actions/interaction-creators';
+import interactionCreators, { updateUrl } from 'investigate-events/actions/interaction-creators';
 import ACTION_TYPES from 'investigate-events/actions/types';
 
 let queryIsRunning = true;
@@ -253,5 +253,9 @@ module('Unit | Actions | interaction creators', function(hooks) {
 
   });
 
+  test('updateUrl prepares url with new sort values', function(assert) {
+    const initialUrl = '?sortField=time&sortDir=Ascending';
+    assert.equal(updateUrl(initialUrl, 'medium', 'Descending'), 'sortField=medium&sortDir=Descending');
+  });
 
 });

@@ -3,7 +3,7 @@ import moment from 'moment';
 import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 
-import { fetchInvestigateData, getServiceSummary } from './data-creators';
+import { fetchInvestigateData, getServiceSummary, updateSort } from './data-creators';
 import { getDictionaries, queryIsRunning } from './initialization-creators';
 import { cancelEventCountStream } from './event-count-creators';
 import { cancelEventsStream } from './events-creators';
@@ -221,6 +221,35 @@ export const setColumnGroup = (selectedGroup) => {
     dispatch(cancelQuery(false));
     dispatch(setReconClosed());
     dispatch(isQueryExecutedByColumnGroup(true));
+    dispatch(fetchInvestigateData());
+  };
+};
+
+export const updateUrl = (initialUrl, sortField, sortDirection) => {
+  const params = new URLSearchParams(initialUrl);
+  params.set('sortField', sortField);
+  params.set('sortDir', sortDirection);
+  return params.toString();
+};
+
+// update sort state, perform ux cleanup, and fetch updated event data
+export const setSort = (sortField, sortDirection, isQueryExecutedBySort) => {
+  return (dispatch) => {
+    // Extracts (and merges) all the preferences from redux state and sends to the backend for persisting.
+    dispatch(updateSort(sortField, sortDirection, isQueryExecutedBySort));
+    dispatch(cancelQuery(false));
+    dispatch(setReconClosed());
+
+    // manually update url as router is not handling this interaction
+    if (window.location.search && sortField && sortDirection) {
+      const params = updateUrl(window.location.search, sortField, sortDirection);
+      history.pushState(
+        null,
+        document.querySelector('title').innerHTML,
+        `${window.location.pathname}?${params}`
+      );
+    }
+
     dispatch(fetchInvestigateData());
   };
 };

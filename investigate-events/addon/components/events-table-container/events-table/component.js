@@ -15,9 +15,10 @@ import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
 import { eventsLogsGet } from 'investigate-events/actions/events-creators';
 import {
   toggleSelectAllEvents,
-  toggleEventSelection
+  toggleEventSelection,
+  setSort
 } from 'investigate-events/actions/interaction-creators';
-import { setVisibleColumns, updateSort } from 'investigate-events/actions/data-creators';
+import { setVisibleColumns } from 'investigate-events/actions/data-creators';
 
 const stateToComputed = (state) => {
   const { columns, notIndexedAtValue, notSingleton, notValid } = validEventSortColumns(state);
@@ -56,7 +57,7 @@ const dispatchToActions = {
   toggleSelectAllEvents,
   toggleEventSelection,
   setVisibleColumns,
-  updateSort
+  setSort
 };
 
 // checkboxes for multiple event selection
@@ -142,6 +143,10 @@ const EventsTableContextMenu = RsaContextMenu.extend({
     } // do not call super so that the browser right-click event is preserved
   },
 
+  _toggleSort(field, sortDirection) {
+    this.send('setSort', field, sortDirection, true);
+  },
+
   actions: {
     onRowClick(event, index, { keyCode, target }) {
       const { className } = target;
@@ -167,8 +172,8 @@ const EventsTableContextMenu = RsaContextMenu.extend({
       } else {
         sortDirection = SORT_ORDER.ASC;
       }
-      this.send('updateSort', field, sortDirection, true);
-      this.executeQuery(false);
+
+      this._toggleSort(field, sortDirection);
     }
   }
 });
