@@ -1,6 +1,8 @@
 from airflow.utils.decorators import apply_defaults
 
 from presidio.utils.airflow.schedule_interval_utils import get_schedule_interval
+from presidio.utils.configuration.config_server_configuration_reader_singleton import \
+    ConfigServerConfigurationReaderSingleton
 from presidio.utils.services.time_service import convert_to_utc
 
 from presidio.utils.airflow.context_wrapper import ContextWrapper
@@ -18,15 +20,20 @@ class AdeManagerOperator(SpringBootJarOperator):
     ui_color = '#1abc9c'
     ui_fgcolor = '#000000'
 
-    enriched_ttl_cleanup_command = "enriched_ttl_cleanup"
+    RETENTION_COMMAND_CONFIG_PATH = 'retention.ade_manager.command'
+    RETENTION_COMMAND_DEFAULT_VALUE = 'retention'
 
     @apply_defaults
-    def __init__(self, command, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
+        self._retention_command = conf_reader.read(AdeManagerOperator.RETENTION_COMMAND_CONFIG_PATH,
+                                                   AdeManagerOperator.RETENTION_COMMAND_DEFAULT_VALUE)
+
         self.interval = get_schedule_interval(kwargs.get('dag'))
         kwargs['retry_callback'] = AdeManagerOperator.handle_retry
         retry_extra_params = {'schedule_interval': self.interval}
 
-        super(AdeManagerOperator, self).__init__(command=command,
+        super(AdeManagerOperator, self).__init__(command=self._retention_command,
                                                  retry_extra_params=retry_extra_params,
                                                  retry_java_args_method=AdeManagerOperator.add_java_args,
                                                  task_id=self.get_task_id(),
