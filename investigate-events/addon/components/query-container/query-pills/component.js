@@ -2,6 +2,7 @@ import { warn } from '@ember/debug';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
+import { run } from '@ember/runloop';
 
 import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
 import * as MESSAGE_TYPES from '../message-types';
@@ -299,7 +300,14 @@ const QueryPills = RsaContextMenu.extend({
     this.set('startTriggeredPosition', undefined);
     this.set('isPillOpen', false);
     this.set('isPillOpenForEdit', false);
-    this.set('isPillTriggerOpenForAdd', false);
+
+    // Need possible ramifications of state updates
+    // to hit first before processing this update
+    // which hides pill triggers
+    // Fixed https://bedfordjira.na.rsa.net/browse/ASOC-77261
+    run.next(() => {
+      this.set('isPillTriggerOpenForAdd', false);
+    });
   },
 
   /**
