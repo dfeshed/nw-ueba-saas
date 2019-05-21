@@ -16,11 +16,11 @@ class AlertRetentionOperatorBuilder(LoggingMixin):
     The "AlertRetentionOperatorBuilder" builds and returns alert_retention operator.
     """
 
-    RETENTION_COMMAND_CONFIG_PATH = 'retention.alert.command'
+    RETENTION_COMMAND_CONFIG_PATH = 'retention.command'
     RETENTION_COMMAND_DEFAULT_VALUE = 'retention'
-    alert_min_time_to_start_retention_in_days_conf_key = "retention.alert.min_time_to_start_retention_in_days"
+    alert_min_time_to_start_retention_in_days_conf_key = "retention.min_time_to_start_retention_in_days"
     alert_min_time_to_start_retention_in_days_default_value = 2
-    alert_retention_interval_in_hours_conf_key = "retention.alert.retention_interval_in_hours"
+    alert_retention_interval_in_hours_conf_key = "retention.retention_interval_in_hours"
     alert_retention_interval_in_hours_default_value = 24
 
     def __init__(self):

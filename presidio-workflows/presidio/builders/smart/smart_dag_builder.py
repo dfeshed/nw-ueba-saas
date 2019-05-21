@@ -6,7 +6,6 @@ from presidio.builders.smart.user_score_operator_builder import UserScoreOperato
 from presidio.builders.smart_model.smart_model_accumulate_operator_builder import SmartModelAccumulateOperatorBuilder
 from presidio.factories.indicator_dag_factory import IndicatorDagFactory
 from presidio.factories.smart_model_dag_factory import SmartModelDagFactory
-from presidio.operators.retention.ade_manager_operator import AdeManagerOperator
 from presidio.operators.output.output_operator import OutputOperator
 from presidio.operators.output.output_forwarder_operator import OutputForwarderOperator
 from presidio.operators.smart.smart_events_operator import SmartEventsOperator
