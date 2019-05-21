@@ -34,7 +34,7 @@ smart_dags = smartDagFactory.create_and_register_dags(conf_key=SmartDagFactory.s
 smartModelDagFactory = SmartModelDagFactory()
 smart_model_dags = smartModelDagFactory.create_and_register_dags(conf_key=SmartModelDagFactory.smart_model_conf_key, name_space=name_space, config_reader=config_reader)
 retentionDagFactory = RetentionDagFactory()
-retention_dag = retentionDagFactory.create_and_register_dags(conf_key=RetentionDagFactory.root_conf_key, name_space=name_space, config_reader=config_reader)
+retention_dag = retentionDagFactory.create_and_register_dags(conf_key=RetentionDagFactory.retention_conf_key, name_space=name_space, config_reader=config_reader)
 
 # build dags
 rootDagFactory.build_dags(root_dags)
