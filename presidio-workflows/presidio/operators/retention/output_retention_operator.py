@@ -11,6 +11,9 @@ class OutputRetentionOperator(FixedDurationJarOperator):
     Other arguments, such as the start date and the end date, are evaluated before every run.
     """
 
+    # Color configurations for the Airflow UI
+    ui_color = '#A6E6A6'
+
     @apply_defaults
     def __init__(self, fixed_duration_strategy, command, schema, task_id=None, *args, **kwargs):
         """
@@ -25,7 +28,7 @@ class OutputRetentionOperator(FixedDurationJarOperator):
         self.log.debug('input operator init kwargs=%s', str(kwargs))
 
         self.fixed_duration_strategy = fixed_duration_strategy
-        self.task_id = task_id or 'output_retention'
+        self.task_id = task_id or 'output_retention_{0}'.format(schema)
 
         self.log.debug('agg operator. command=%s', command)
         self.schema = schema
