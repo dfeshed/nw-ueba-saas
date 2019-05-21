@@ -10,7 +10,7 @@ import java.util.*;
  * Created by shays on 23/07/2017.
  */
 public class DemoAlertFactory extends DemoFactoryAbstract<Alert>{
-    private static final String [] FILE_HEADER_MAPPING = {"Alert Name","User Name","Start Time","# of Indicators","Severity","Daily/Hourly"};
+    private static final String [] FILE_HEADER_MAPPING = {"Alert Name","Entity Name","Start Time","# of Indicators","Severity","Daily/Hourly"};
     protected String getFileName(){
         return "demo_alerts.csv";
     }
@@ -19,7 +19,7 @@ public class DemoAlertFactory extends DemoFactoryAbstract<Alert>{
         return  FILE_HEADER_MAPPING;
     }
     protected Alert getRecord(CSVRecord csvRecord) throws RuntimeException {
-        String username = csvRecord.get("User Name");
+        String username = csvRecord.get("Entity Name");
         String alertName = csvRecord.get("Alert Name");
         String startTimeString = csvRecord.get("Start Time");
         int totalIndicators= Integer.parseInt(csvRecord.get("# of Indicators"));

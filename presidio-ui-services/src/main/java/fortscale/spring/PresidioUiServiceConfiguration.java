@@ -1,9 +1,9 @@
 package fortscale.spring;
 
 import fortscale.common.dataentity.DataEntitiesConfig;
-import fortscale.domain.core.User;
+import fortscale.domain.core.Entity;
 import fortscale.domain.core.dao.ApplicationConfigurationRepository;
-import fortscale.domain.rest.UserRestFilter;
+import fortscale.domain.rest.EntityRestFilter;
 import fortscale.domain.spring.PresidioUiDomainConfiguration;
 import fortscale.presidio.output.client.api.AlertsPresidioOutputClient;
 import fortscale.presidio.output.client.api.UsersPresidioOutputClient;
@@ -13,11 +13,10 @@ import fortscale.services.impl.*;
 import fortscale.services.presidio.core.converters.AggregationConverterHelper;
 import fortscale.services.presidio.core.converters.AlertConverterHelper;
 import fortscale.services.presidio.core.converters.IndicatorConverter;
-import fortscale.services.presidio.core.converters.UserConverterHelper;
+import fortscale.services.presidio.core.converters.EntityConverterHelper;
 
 import fortscale.utils.configurations.ConfigrationServerClientUtils;
 
-import fortscale.utils.configurations.ConfigrationServerClientUtilsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
@@ -27,7 +26,6 @@ import presidio.utils.spring.PresidioUiUtilsConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 @Configuration
 
@@ -61,10 +59,10 @@ public class PresidioUiServiceConfiguration {
 
 
     @Bean
-    UserService userService(){
-        UserConverterHelper userConverterHelper = new UserConverterHelper();
+    EntityService userService(){
+        EntityConverterHelper entityConverterHelper = new EntityConverterHelper();
         AggregationConverterHelper aggregationConverterHelper = new AggregationConverterHelper();
-        return new UserServiceImpl(userConverterHelper, aggregationConverterHelper,remoteUsersClientService) ;
+        return new EntityServiceImpl(entityConverterHelper, aggregationConverterHelper,remoteUsersClientService) ;
 
     }
 
@@ -98,13 +96,13 @@ public class PresidioUiServiceConfiguration {
     }
 
     @Bean
-    UserServiceFacade userServiceFacade(){
-        return new UserServiceFacadeImpl(userService());
+    EntityServiceFacade userServiceFacade(){
+        return new EntityServiceFacadeImpl(userService());
     }
 
     @Bean
-    UserTagService userTagService(){
-        return new UserTagsServiceImpl();
+    EntityTagService userTagService(){
+        return new EntityTagsServiceImpl();
     }
 
     @Value("${users.with.alerts.service.cache.max.items:10}")
@@ -113,10 +111,10 @@ public class PresidioUiServiceConfiguration {
     @Value("${users.with.alerts.service.cache.timeToExpireSec:600}")
     int usersWithAlertsServiceCacheTtl;
     @Bean
-    UserWithAlertService userWithAlertService(){
-        MemoryBasedCache<UserRestFilter, List<User>> memoryBasedCache =
+    EntityWithAlertService userWithAlertService(){
+        MemoryBasedCache<EntityRestFilter, List<Entity>> memoryBasedCache =
                 new MemoryBasedCache(usersWithAlertsServiceCacheMaxSize,usersWithAlertsServiceCacheTtl,ArrayList.class);
-        return new UserWithAlertServiceImpl(userService(),alertsService(),memoryBasedCache);
+        return new EntityWithAlertServiceImpl(userService(),alertsService(),memoryBasedCache);
     }
 
     @Autowired

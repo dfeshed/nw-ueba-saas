@@ -2,14 +2,14 @@ package fortscale.services.impl;
 
 import fortscale.domain.core.*;
 import fortscale.domain.core.Alert;
-import fortscale.domain.core.User;
+import fortscale.domain.core.Entity;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
 import fortscale.presidio.output.client.api.AlertsPresidioOutputClient;
 
 import fortscale.services.AlertsService;
-import fortscale.services.UserService;
+import fortscale.services.EntityService;
 import fortscale.services.exception.UserNotFoundExeption;
 import fortscale.services.presidio.core.converters.AggregationConverterHelper;
 import fortscale.services.presidio.core.converters.AlertConverterHelper;
@@ -35,7 +35,7 @@ public class AlertsServiceImpl implements AlertsService {
 
 
     private final AlertsPresidioOutputClient remoteAlertClientService;
-    private final UserService userService;
+    private final EntityService entityService;
     private final AlertConverterHelper alertConverterHelper;
 
     private final AggregationConverterHelper aggregationConverterHelper;
@@ -45,9 +45,9 @@ public class AlertsServiceImpl implements AlertsService {
 
     protected Logger logger = Logger.getLogger(this.getClass());
 
-    public AlertsServiceImpl(UserService userService, AlertConverterHelper alertConverterHelper,
-                             AggregationConverterHelper aggregationConverterHelper,AlertsPresidioOutputClient remoteAlertClientService) {
-        this.userService = userService;
+    public AlertsServiceImpl(EntityService entityService, AlertConverterHelper alertConverterHelper,
+                             AggregationConverterHelper aggregationConverterHelper, AlertsPresidioOutputClient remoteAlertClientService) {
+        this.entityService = entityService;
         this.alertConverterHelper = alertConverterHelper;
 
         this.aggregationConverterHelper = aggregationConverterHelper;
@@ -67,7 +67,7 @@ public class AlertsServiceImpl implements AlertsService {
     }
 
 //	@Autowired
-//	private UserWithAlertService userWithAlertService;
+//	private EntityWithAlertService userWithAlertService;
 
     @Override
     public Alerts findAll(PageRequest pageRequest,boolean expand) {
@@ -94,7 +94,7 @@ public class AlertsServiceImpl implements AlertsService {
         Set<String> ids = null;
         if (entityTags != null) {
             String[] tagsFilter = entityTags.split(",");
-            ids = userService.findIdsByTags(tagsFilter, entityId);
+            ids = entityService.findIdsByTags(tagsFilter, entityId);
         }
 
         return ids;
@@ -491,7 +491,7 @@ public class AlertsServiceImpl implements AlertsService {
 
             if (alertUpdated) {
 
-                User oldUser = getUser(alert);
+                Entity oldEntity = getUser(alert);
                 //Update Presidio-Output
                 List<presidio.output.client.model.AlertQuery.FeedbackEnum> feedbackEnum = alertConverterHelper.getFeedbackConverter().convertUiFilterToQueryDto(alertFeedback.name());
                 UpdateFeedbackRequest.FeedbackEnum feedbackForUpdate = UpdateFeedbackRequest.FeedbackEnum.fromValue(feedbackEnum.get(0).getValue());
@@ -509,7 +509,7 @@ public class AlertsServiceImpl implements AlertsService {
                 //Get the new user score
 
 
-                User newUser = getUser(alert);
+                Entity newEntity = getUser(alert);
 
 
             }
@@ -521,15 +521,15 @@ public class AlertsServiceImpl implements AlertsService {
 
     }
 
-    private User getUser(Alert alert) throws UserNotFoundExeption {
+    private Entity getUser(Alert alert) throws UserNotFoundExeption {
         double userScore;
-        List<User> users = userService.findByIds(Arrays.asList(alert.getEntityId()));
-        if (users.size()!=1){
+        List<Entity> entities = entityService.findByIds(Arrays.asList(alert.getEntityId()));
+        if (entities.size()!=1){
             //Cannot find user
             logger.error("Cannot find user with id {}",alert.getEntityId());
             throw new UserNotFoundExeption(alert.getEntityId());
         }
-        return users.get(0);
+        return entities.get(0);
     }
 
     @Override

@@ -6,9 +6,9 @@ import fortscale.domain.core.*;
 
 import fortscale.domain.core.dao.TagPair;
 
-import fortscale.domain.core.dao.rest.Users;
-import fortscale.domain.rest.UserFilter;
-import fortscale.domain.rest.UserRestFilter;
+import fortscale.domain.core.dao.rest.Entities;
+import fortscale.domain.rest.EntityFilter;
+import fortscale.domain.rest.EntityRestFilter;
 import fortscale.services.*;
 
 import fortscale.temp.HardCodedMocks;
@@ -26,7 +26,6 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -79,44 +78,44 @@ public class ApiUserController extends BaseController {
 	private List<String> fieldsRequired;
 
 
-	private UserServiceFacade userServiceFacade;
-	private UserTagService userTagService;
-	private UserService userService;
-	private UserWithAlertService userWithAlertService;
+	private EntityServiceFacade entityServiceFacade;
+	private EntityTagService entityTagService;
+	private EntityService entityService;
+	private EntityWithAlertService entityWithAlertService;
 
 	private static final String DEFAULT_SORT_FIELD = "username";
 
 
 	private List<String> extendedSearchfieldsRequired;
 
-	public ApiUserController(UserServiceFacade userServiceFacade, UserTagService userTagService, UserService userService, UserWithAlertService userWithAlertService) {
-		this.userServiceFacade = userServiceFacade;
-		this.userTagService = userTagService;
-		this.userService = userService;
-		this.userWithAlertService = userWithAlertService;
+	public ApiUserController(EntityServiceFacade entityServiceFacade, EntityTagService entityTagService, EntityService entityService, EntityWithAlertService entityWithAlertService) {
+		this.entityServiceFacade = entityServiceFacade;
+		this.entityTagService = entityTagService;
+		this.entityService = entityService;
+		this.entityWithAlertService = entityWithAlertService;
 
 		initRequiredFields();
 	}
 
 	private void initRequiredFields() {
 		fieldsRequired = new ArrayList<>();
-		fieldsRequired.add(User.ID_FIELD);
-		fieldsRequired.add(User.usernameField);
-		fieldsRequired.add(User.followedField);
-		fieldsRequired.add(User.displayNameField);
-		fieldsRequired.add(User.alertsCountField);
-		fieldsRequired.add(User.tagsField);
-		fieldsRequired.add(User.sourceMachineCountField);
-		fieldsRequired.add(User.scoreField);
+		fieldsRequired.add(Entity.ID_FIELD);
+		fieldsRequired.add(Entity.usernameField);
+		fieldsRequired.add(Entity.followedField);
+		fieldsRequired.add(Entity.displayNameField);
+		fieldsRequired.add(Entity.alertsCountField);
+		fieldsRequired.add(Entity.tagsField);
+		fieldsRequired.add(Entity.sourceMachineCountField);
+		fieldsRequired.add(Entity.scoreField);
 
 
 		extendedSearchfieldsRequired = new ArrayList<>();
-		extendedSearchfieldsRequired.add(User.ID_FIELD);
+		extendedSearchfieldsRequired.add(Entity.ID_FIELD);
 
-		extendedSearchfieldsRequired.add(User.usernameField);
-		extendedSearchfieldsRequired.add(User.followedField);
-		extendedSearchfieldsRequired.add(User.displayNameField);
-		extendedSearchfieldsRequired.add(User.scoreField);
+		extendedSearchfieldsRequired.add(Entity.usernameField);
+		extendedSearchfieldsRequired.add(Entity.followedField);
+		extendedSearchfieldsRequired.add(Entity.displayNameField);
+		extendedSearchfieldsRequired.add(Entity.scoreField);
 	}
 
 
@@ -124,16 +123,16 @@ public class ApiUserController extends BaseController {
 	 * The API to get all users. GET: /api/user
 	 */
 	@RequestMapping(method = RequestMethod.GET) @ResponseBody 
-	public DataBean<List<UserDetailsBean>> getUsers(UserRestFilter userRestFilter) {
+	public DataBean<List<UserDetailsBean>> getUsers(EntityRestFilter userRestFilter) {
 
 		PageRequest pageRequest = createPaging(userRestFilter);
 
-		Users users = getUsers(userRestFilter, pageRequest, null);
+		Entities entities = getUsers(userRestFilter, pageRequest, null);
 
 		// Build the response
-		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users.getUsers());
+		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(entities.getEntities());
 		usersList.setOffset(pageRequest.getPageNumber() * pageRequest.getPageSize());
-		usersList.setTotal(new Long(users.getTotalCount()).intValue());
+		usersList.setTotal(new Long(entities.getTotalCount()).intValue());
 //		if (BooleanUtils.isTrue(userRestFilter.getAddAlertsAndDevices())) {
 //			addAlertsAndDevices(usersList.getData());
 //		}
@@ -149,8 +148,8 @@ public class ApiUserController extends BaseController {
 	@RequestMapping(value="/count", method=RequestMethod.GET)
 	@ResponseBody
 
-	public DataBean<Integer> countUsers(UserRestFilter userRestFilter) {
-		Integer count = userWithAlertService.countUsersByFilter(userRestFilter);
+	public DataBean<Integer> countUsers(EntityRestFilter userRestFilter) {
+		Integer count = entityWithAlertService.countEntitiesByFilter(userRestFilter);
 		DataBean<Integer> bean = new DataBean<>();
 		bean.setData(count);
 		bean.setTotal(count);
@@ -161,10 +160,10 @@ public class ApiUserController extends BaseController {
 			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	
-	public ResponseEntity<Response> addFavoriteFilter(@RequestBody UserFilter userFilter,
+	public ResponseEntity<Response> addFavoriteFilter(@RequestBody EntityFilter entityFilter,
 			@PathVariable String filterName) {
 		try {
-			userService.saveFavoriteFilter(userFilter, filterName);
+			entityService.saveFavoriteFilter(entityFilter, filterName);
 		} catch (DuplicateKeyException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT)
 					.body(Response.status(Response.Status.CONFLICT).
@@ -181,7 +180,7 @@ public class ApiUserController extends BaseController {
 	@ResponseBody
 	
 	public ResponseEntity<Response> deleteFavoriteFilter(@PathVariable String filterId) {
-		long lineDeleted = userService.deleteFavoriteFilter(filterId);
+		long lineDeleted = entityService.deleteFavoriteFilter(filterId);
 		if (lineDeleted > 0) {
 			return ResponseEntity.status(HttpStatus.OK).body(Response.status(Response.Status.OK).build());
 		}
@@ -194,7 +193,7 @@ public class ApiUserController extends BaseController {
 	@ResponseBody
 	
 	public DataBean<List<FavoriteUserFilter>> getFavoriteFilters() {
-		List<FavoriteUserFilter> allFavoriteFilters = userService.getAllFavoriteFilters();
+		List<FavoriteUserFilter> allFavoriteFilters = entityService.getAllFavoriteFilters();
 		DataBean<List<FavoriteUserFilter>> result = new DataBean<>();
 		result.setData(allFavoriteFilters);
 		result.setTotal(allFavoriteFilters.size());
@@ -207,7 +206,7 @@ public class ApiUserController extends BaseController {
 //	//@LogException
 //	public  DataBean<List<UserSearchBean>> search(@RequestParam(required = true) String prefix,
 //			@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) {
-//		List<User> users = userServiceFacade.findBySearchFieldContaining(prefix, page, size);
+//		List<Entity> users = entityServiceFacade.findBySearchFieldContaining(prefix, page, size);
 //		List<UserSearchBean> data = users.stream().map(UserSearchBean::new).collect(Collectors.toList());
 //		DataBean<List<UserSearchBean>> ret = new DataBean<>();
 //		ret.setData(data);
@@ -219,7 +218,7 @@ public class ApiUserController extends BaseController {
 	@ResponseBody
 //	//@LogException
 	public Map<String,Integer> getDistinctAnomalyType () {
-		Map<String,Integer> anomalyTypePairs =  userService.getDistinctAnomalyType();
+		Map<String,Integer> anomalyTypePairs =  entityService.getDistinctAnomalyType();
 
 
 		return anomalyTypePairs;
@@ -228,7 +227,7 @@ public class ApiUserController extends BaseController {
 	@RequestMapping(value="/extendedSearch", method=RequestMethod.GET)
 	@ResponseBody
 //	//@LogException
-	public DataBean<List<UserDetailsBean>> extendedSearch(UserRestFilter userRestFilter){
+	public DataBean<List<UserDetailsBean>> extendedSearch(EntityRestFilter userRestFilter){
 		DataBean<List<UserDetailsBean>> result = new DataBean<>();
 
 		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())) {
@@ -236,14 +235,14 @@ public class ApiUserController extends BaseController {
 			Sort sorting = createSorting("", userRestFilter.getSortDirection());
 			PageRequest pageRequest = new PageRequest(FIRST_PAGE_INDEX, USERS_SEARCH_DEFAULT_PAGE_SIZE, sorting);
 
-//			List<User> users = userWithAlertService.findUsersWithSearchValue(userRestFilter, pageRequest, extendedSearchfieldsRequired);
+//			List<Entity> entities = entityWithAlertService.findUsersWithSearchValue(userRestFilter, pageRequest, extendedSearchfieldsRequired);
 			userRestFilter.setSearchFieldContains(userRestFilter.getSearchValue());
-			Users usersObject = userService.findUsersByFilter(userRestFilter,pageRequest,null,null,false);
-			List<User> users = usersObject!=null?usersObject.getUsers():new ArrayList();
-			// Add severity to the users
-//			setSeverityOnUsersList(users);
+			Entities entitiesObject = entityService.findEntitiesByFilter(userRestFilter,pageRequest,null,null,false);
+			List<Entity> entities = entitiesObject !=null? entitiesObject.getEntities():new ArrayList();
+			// Add severity to the entities
+//			setSeverityOnUsersList(entities);
 
-			result = getUsersDetails(users);
+			result = getUsersDetails(entities);
 
 			return result;
 
@@ -261,9 +260,9 @@ public class ApiUserController extends BaseController {
 	@ResponseBody
 //	//@LogException
 	public DataBean<List<UserDetailsBean>> userDataByName(@PathVariable String username) {
-		User user = userService.findByUsername(username);
-//		setSeverityOnUsersList(Arrays.asList(user));
-		return getUsersDetails(user);
+		Entity entity = entityService.findByUsername(username);
+//		setSeverityOnUsersList(Arrays.asList(entity));
+		return getUsersDetails(entity);
 	}
 
 	/**
@@ -276,14 +275,14 @@ public class ApiUserController extends BaseController {
 //	//@LogException
 	public DataBean<List<UserDetailsBean>> details(@PathVariable List<String> ids,
 			@RequestParam(required = false, value = "add_alerts_and_devices") Boolean addAlertsAndDevices) {
-		// Get Users
-		List<User> users = userService.findByIds(ids);
-//		setSeverityOnUsersList(users);
-		DataBean<List<UserDetailsBean>> usersDetails = getUsersDetails(users);
+		// Get Entities
+		List<Entity> entities = entityService.findByIds(ids);
+//		setSeverityOnUsersList(entities);
+		DataBean<List<UserDetailsBean>> usersDetails = getUsersDetails(entities);
 		if (BooleanUtils.isTrue(addAlertsAndDevices)) {
 			addAlertsAndDevices(usersDetails.getData());
 		}
-		// Return detailed users
+		// Return detailed entities
 		return usersDetails;
 	}
 
@@ -295,7 +294,7 @@ public class ApiUserController extends BaseController {
 	@RequestMapping(value="{id}", method = RequestMethod.POST)
 //	//@LogException
 	public Response addRemoveTag(@PathVariable String id, @RequestBody String body) throws JSONException {
-		User user = userService.findOne(id);
+		Entity entity = entityService.findOne(id);
 		JSONObject params = new JSONObject(body);
 		String tag;
 		boolean addTag;
@@ -309,7 +308,7 @@ public class ApiUserController extends BaseController {
 			throw new RuntimeException(String.format("param %s is invalid", params.toString()));
 		}
 		try {
-			addTagToUser(user, Arrays.asList(new String[] { tag }), addTag);
+			addTagToUser(entity, Arrays.asList(new String[] { tag }), addTag);
 		} catch (Exception ex) {
 			return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
 		}
@@ -323,7 +322,7 @@ public class ApiUserController extends BaseController {
 	@RequestMapping(value="/{addTag}/{tagNames}/tagUsers", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 //	//@LogException
 	@ResponseBody
-	public ResponseEntity<UsersCount> addRemoveTagByFilter(@RequestBody UserRestFilter userRestFilter,
+	public ResponseEntity<UsersCount> addRemoveTagByFilter(@RequestBody EntityRestFilter userRestFilter,
 														   @PathVariable Boolean addTag, @PathVariable List<String> tagNames) throws JSONException {
 
 		UsersCount result = new UsersCount();
@@ -331,7 +330,7 @@ public class ApiUserController extends BaseController {
 			return new ResponseEntity(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		try {
-			result.count = userWithAlertService.updateTags(userRestFilter, addTag, tagNames);
+			result.count = entityWithAlertService.updateTags(userRestFilter, addTag, tagNames);
 			return new ResponseEntity(result, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -345,7 +344,7 @@ public class ApiUserController extends BaseController {
 	@ResponseBody
 //	//@LogException
 	public DataBean<List<String>> followedUsers() {
-		List<String> userIds = userService.findByFollowed().stream().map(User::getId).
+		List<String> userIds = entityService.findByFollowed().stream().map(Entity::getId).
 				collect(Collectors.toList());
 		DataBean<List<String>> ret = new DataBean<>();
 		ret.setData(userIds);
@@ -357,9 +356,9 @@ public class ApiUserController extends BaseController {
 	@ResponseBody
 //	//@LogException
 	public DataBean<List<UserDetailsBean>> usersDetails(@RequestParam(required = true) List<String> ids) {
-		List<User> users = userService.findByIds(ids);
-//		setSeverityOnUsersList(users);
-		return userDetails(users);
+		List<Entity> entities = entityService.findByIds(ids);
+//		setSeverityOnUsersList(entities);
+		return userDetails(entities);
 	}
 
 	@RequestMapping(value="/usersTagsCount", method=RequestMethod.GET)
@@ -367,7 +366,7 @@ public class ApiUserController extends BaseController {
 //	//@LogException
 	public DataBean<List<TagPair>> usersTagsCount() {
 		List<TagPair> result = new ArrayList();
-		Map<String, Long> items = userService.groupByTags(false);
+		Map<String, Long> items = entityService.groupByTags(false);
 		result.addAll(items.entrySet().stream().map(entry -> new TagPair(entry.getKey(), entry.getValue())).
 				collect(Collectors.toList()));
 		DataBean<List<TagPair>> ret = new DataBean();
@@ -383,17 +382,17 @@ public class ApiUserController extends BaseController {
 	@ResponseBody
 //	//@LogException
 	public DataBean<List<UserDetailsBean>> followedUsersDetails(Model model) {
-		Set<User> users = userService.findByFollowed();
+		Set<Entity> entities = entityService.findByFollowed();
 
-//		setSeverityOnUsersList(new ArrayList<>(users));
-		return userDetails(new ArrayList<>(users));
+//		setSeverityOnUsersList(new ArrayList<>(entities));
+		return userDetails(new ArrayList<>(entities));
 	}
 
 //	@RequestMapping(value="/{id}/machines", method=RequestMethod.GET)
 //	@ResponseBody
 //	//@LogException
 //	public DataBean<List<UserMachine>> userMachines(@PathVariable String id) {
-//		List<UserMachine> userMachines = userServiceFacade.getUserMachines(id);
+//		List<UserMachine> userMachines = entityServiceFacade.getUserMachines(id);
 //		DataBean<List<UserMachine>> ret = new DataBean<>();
 //		ret.setData(userMachines);
 //		ret.setTotal(userMachines.size());
@@ -404,7 +403,7 @@ public class ApiUserController extends BaseController {
 //	@ResponseBody
 //	//@LogException
 //	public DataBean<List<UserMachinesBean>> usersMachines(@RequestParam(required = true) List<String> ids) {
-//		List<User> users = userService.findByIds(ids);
+//		List<Entity> users = entityService.findByIds(ids);
 //		return usersMachinesAux(users);
 //	}
 
@@ -418,7 +417,7 @@ public class ApiUserController extends BaseController {
 //			@PathVariable String param, @RequestParam(defaultValue="50") int minScore,
 //			@RequestParam(required = false) Long latestDate, @RequestParam(required = false) Long earliestDate,
 //			@RequestParam(defaultValue="10") int maxValues) {
-//		PropertiesDistribution distribution = userServiceFacade.getDestinationComputerPropertyDistribution(uid, param,
+//		PropertiesDistribution distribution = entityServiceFacade.getDestinationComputerPropertyDistribution(uid, param,
 //				latestDate, earliestDate, maxValues, minScore);
 //		// convert the distribution properties to data bean
 //		DataBean<Collection<PropertyEntry>> ret = new DataBean<>();
@@ -435,14 +434,14 @@ public class ApiUserController extends BaseController {
 	@RequestMapping(value = "/severityBar", method = RequestMethod.GET)
 	@ResponseBody
 	////@LogException
-	public DataBean<Map<String, Map<String, Integer>>> getSeverityBarInfo(UserRestFilter userRestFilter){
+	public DataBean<Map<String, Map<String, Integer>>> getSeverityBarInfo(EntityRestFilter userRestFilter){
 		DataBean<Map<String, Map<String, Integer>>> dataBean = new DataBean<>();
 
 
-		dataBean.setData(userService.getSeverityScoreMap(userRestFilter));
+		dataBean.setData(entityService.getSeverityScoreMap(userRestFilter));
 
 
-		dataBean.setTotal(userService.countUsersByFilter(userRestFilter,null));
+		dataBean.setTotal(entityService.countEntitiesByFilter(userRestFilter,null));
 		return dataBean;
 
 
@@ -454,7 +453,7 @@ public class ApiUserController extends BaseController {
 	public DataBean<Set<AlertTypesCountBean>> getDistinctAlertNames(@RequestParam(required=true,
 			value = "ignore_rejected") Boolean ignoreRejected) {
 		//TODO: ignore rejected is not supported
-		Set<AlertTypesCountBean> alertTypesNameAndCount = userService.
+		Set<AlertTypesCountBean> alertTypesNameAndCount = entityService.
 				getAlertsTypes().entrySet().stream().map(alertTypeToCountEntry -> {
 					String alertName = (String)(alertTypeToCountEntry.getKey());
 					Set<String> alertsWithCommonName = new HashSet<String>(Arrays.asList(alertName));
@@ -469,10 +468,10 @@ public class ApiUserController extends BaseController {
 
 	@RequestMapping(method = RequestMethod.GET , value = "/export")
 	//@LogException
-	public void exportUsersToCsv(UserRestFilter filter, HttpServletResponse httpResponse)  throws  Exception{
+	public void exportUsersToCsv(EntityRestFilter filter, HttpServletResponse httpResponse)  throws  Exception{
 		PageRequest pageRequest = new PageRequest(FIRST_PAGE_INDEX, DEFAULT_EXPORT_USERS_SIZE);
 
-		List<User> users = getUsers(filter, pageRequest, fieldsRequired).getUsers();
+		List<Entity> entities = getUsers(filter, pageRequest, fieldsRequired).getEntities();
 
 		/*
 			Set response type as CSV
@@ -489,7 +488,7 @@ public class ApiUserController extends BaseController {
 				USER_ALERT_COUNT_COLUMN_NAME, USER_DEVICE_COUNT_COLUMN_NAME, USER_TAGS_COLUMN_NAME };
 
 		csvWriter.writeNext(tableTitleRow);
-		users.stream().forEach(user -> {
+		entities.stream().forEach(user -> {
 			String[] userRow = {user.getUsername(), user.getDisplayName(), "",
 					"", BooleanUtils.toStringTrueFalse(user.getFollowed()),
 					String.valueOf(user.getScore()), String.valueOf(user.getAlertsCount()),
@@ -503,7 +502,7 @@ public class ApiUserController extends BaseController {
 	@RequestMapping(value="/{watch}/followUsers", method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	//@LogException
-	public ResponseEntity<UsersCount> followUsersByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean watch) {
+	public ResponseEntity<UsersCount> followUsersByFilter(@RequestBody EntityRestFilter userRestFilter, @PathVariable Boolean watch) {
 
 		if (userRestFilter.getSize() == null) {
 			userRestFilter.setSize(Integer.MAX_VALUE);
@@ -511,9 +510,9 @@ public class ApiUserController extends BaseController {
 
 		int usersUpdated;
 		if (userRestFilter.getUserIds() !=null && userRestFilter.getUserIds().size()==1){//Update single user
-			usersUpdated = userService.updateSingleUserWatched(userRestFilter.getUserIds().get(0),watch);
+			usersUpdated = entityService.updateSingleEntityWatched(userRestFilter.getUserIds().get(0),watch);
 		} else { //Update fy filer
-			usersUpdated = userWithAlertService.followUsersByFilter(userRestFilter, watch);
+			usersUpdated = entityWithAlertService.followEntitiesByFilter(userRestFilter, watch);
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(new UsersCount(usersUpdated));
 	}
@@ -523,7 +522,7 @@ public class ApiUserController extends BaseController {
 	//@LogException
 	public DataBean<List<String>> getDistinctValues(@PathVariable String fieldName) {
 
-		List<String> distinctValues = userService.getDistinctValuesByFieldName(fieldName);
+		List<String> distinctValues = entityService.getDistinctValuesByFieldName(fieldName);
 
 		DataBean<List<String>> result = new DataBean<>();
 		result.setData(distinctValues);
@@ -539,22 +538,22 @@ public class ApiUserController extends BaseController {
 	 * @param fieldsRequired
 	 * @return
 	 */
-	private Users getUsers(UserRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired) {
+	private Entities getUsers(EntityRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired) {
 
 //		// Get the relevant users by filter requested
-//		List<User> users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, fieldsRequired);
+//		List<Entity> users = entityWithAlertService.findEntitiesByFilter(userRestFilter, pageRequest, fieldsRequired);
 //
 //		// Add severity to the users
 //		setSeverityOnUsersList(users);
 
-//		List<User> users = new ArrayList<>();
-//		User user1 = new UsersMockBuilder(1).setWatched(true).createInstance();
-//		User user2 = new UsersMockBuilder(2).createInstance();
+//		List<Entity> users = new ArrayList<>();
+//		Entity user1 = new UsersMockBuilder(1).setWatched(true).createInstance();
+//		Entity user2 = new UsersMockBuilder(2).createInstance();
 //
-//		users.addAll(Arrays.asList(new User[]{user1,user2}));
+//		users.addAll(Arrays.asList(new Entity[]{user1,user2}));
 //		return users;
 
-		return userService.findUsersByFilter(userRestFilter,pageRequest,null,fieldsRequired,true);
+		return entityService.findEntitiesByFilter(userRestFilter,pageRequest,null,fieldsRequired,true);
 	}
 
 	public class UsersCount {
@@ -604,13 +603,13 @@ public class ApiUserController extends BaseController {
 
 
 		Set<Map<String, String>> entities = new HashSet<>();
-		List<User> users=new ArrayList<>();
+		List<Entity> users=new ArrayList<>();
 		// Read users
 		if (entityName != null) {
 			entityName = ApiUtils.stringReplacement(entityName);
-			 users = userService.getUsersByPrefix(entityName, pageRequest);
+			 users = entityService.getEntitiesByPrefix(entityName, pageRequest);
 		} else if (entityId != null) {
-			 users = Arrays.asList(userService.getUserById(entityId));
+			 users = Arrays.asList(entityService.getEntityById(entityId));
 		}
 		users.forEach(user -> {
 			Map<String,String> userMap = new HashMap<>();
@@ -639,7 +638,7 @@ public class ApiUserController extends BaseController {
 	 * @param usersList
 	 * @param userRestFilter
 	 */
-	private void addAllWatched(DataBean<List<UserDetailsBean>> usersList, UserRestFilter userRestFilter) {
+	private void addAllWatched(DataBean<List<UserDetailsBean>> usersList, EntityRestFilter userRestFilter) {
 		Map<String, Object> info = usersList.getInfo();
 		if (info == null) {
 			info = new HashMap<>();
@@ -649,26 +648,26 @@ public class ApiUserController extends BaseController {
 
 		//Workaround. Need to remove after Presidio GA 1.0
 
-		List<String> originalUsersTag = userRestFilter.getUserTags();
-		userRestFilter.setUserTags(null);
+		List<String> originalUsersTag = userRestFilter.getEntityTags();
+		userRestFilter.setEntityTags(null);
 
 		//End of workaround
-		info.put(ALL_WATCHED, usersList.getTotal() == userService.countUsersByFilter(userRestFilter,null));
+		info.put(ALL_WATCHED, usersList.getTotal() == entityService.countEntitiesByFilter(userRestFilter,null));
 
 		//Revert changes
 		userRestFilter.setIsWatched(oldIsWatched);
-		userRestFilter.setUserTags(originalUsersTag);
+		userRestFilter.setEntityTags(originalUsersTag);
 		//end of revert changes
 		usersList.setInfo(info);
 	}
 
 	private void addAlertsAndDevices(List<UserDetailsBean> users) {
 		for (UserDetailsBean userDetailsBean: users) {
-//			User user = userDetailsBean.getUser();
+//			Entity user = userDetailsBean.getEntity();
 //			List<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
 			userDetailsBean.setAlerts(MockScenarioGenerator.generateMocksAlertsList());
-//			userDetailsBean.getUser().setAlertsCount(HardCodedMocks.DEFAULT_USER_COUNT);
-			userDetailsBean.getUser().setSourceMachineCount(HardCodedMocks.DEFAULT_USER_COUNT);
+//			userDetailsBean.getEntity().setAlertsCount(HardCodedMocks.DEFAULT_USER_COUNT);
+			userDetailsBean.getEntity().setSourceMachineCount(HardCodedMocks.DEFAULT_USER_COUNT);
 
 
 
@@ -677,7 +676,7 @@ public class ApiUserController extends BaseController {
 
 	}
 
-//	private List<UserActivitySourceMachineDocument> getDevices(User user) {
+//	private List<UserActivitySourceMachineDocument> getDevices(Entity user) {
 //		List<UserActivitySourceMachineDocument> userSourceMachines;
 //		try {
 //            userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(),
@@ -689,7 +688,7 @@ public class ApiUserController extends BaseController {
 //		return userSourceMachines;
 //	}
 
-	private PageRequest createPaging(UserRestFilter userRestFilter) {
+	private PageRequest createPaging(EntityRestFilter userRestFilter) {
 
 		Sort sortUserDesc = createSorting(userRestFilter.getSortField(), userRestFilter.getSortDirection());
 
@@ -726,22 +725,22 @@ public class ApiUserController extends BaseController {
 		return sortUserDesc;
 	}
 
-	private void addTagToUser(User user, List<String> tags, boolean addTag) throws Exception {
+	private void addTagToUser(Entity entity, List<String> tags, boolean addTag) throws Exception {
 		if (addTag) {
-			userTagService.addUserTags(user.getUsername(), tags);
+			entityTagService.addEntityTags(entity.getUsername(), tags);
 		} else {
-			userTagService.removeUserTags(user.getUsername(), tags);
+			entityTagService.removeEntityTags(entity.getUsername(), tags);
 		}
 	}
 
-	private DataBean<List<UserDetailsBean>> getUsersDetails(List<User> users) {
+	private DataBean<List<UserDetailsBean>> getUsersDetails(List<Entity> entities) {
 		List<UserDetailsBean> detailsUsers = new ArrayList<>();
-		if (users != null) {
-			users.forEach(user -> {
+		if (entities != null) {
+			entities.forEach(user -> {
 				Set<String> userRelatedDnsSet = new HashSet<>();
-				Map<String, User> dnToUserMap = new HashMap<>();
-//				userServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
-//				userServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
+				Map<String, Entity> dnToUserMap = new HashMap<>();
+//				entityServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
+//				entityServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
 				UserDetailsBean detailsUser = createUserDetailsBean(user, dnToUserMap, true);
 				detailsUsers.add(detailsUser);
 			});
@@ -751,39 +750,39 @@ public class ApiUserController extends BaseController {
 		return ret;
 	}
 
-	private DataBean<List<UserDetailsBean>> getUsersDetails(User user) {
-		if(user == null) {
+	private DataBean<List<UserDetailsBean>> getUsersDetails(Entity entity) {
+		if(entity == null) {
 			return null;
 		}
 		Set<String> userRelatedDnsSet = new HashSet<>();
-		Map<String, User> dnToUserMap = new HashMap<>();
-//		userServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
-//		userServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
-		UserDetailsBean ret = createUserDetailsBean(user, dnToUserMap, true);
+		Map<String, Entity> dnToUserMap = new HashMap<>();
+//		entityServiceFacade.fillUserRelatedDns(entity, userRelatedDnsSet);
+//		entityServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
+		UserDetailsBean ret = createUserDetailsBean(entity, dnToUserMap, true);
 		return new DataListWrapperBean<>(ret);
 	}
 
-	private UserDetailsBean createUserDetailsBean(User user, Map<String, User> dnToUserMap, boolean isWithThumbnail) {
-		User manager = userServiceFacade.getUserManager(user, dnToUserMap);
-		List<User> directReports = userServiceFacade.getUserDirectReports(user, dnToUserMap);
-		UserDetailsBean ret =  new UserDetailsBean(user, manager, directReports,userServiceFacade);
+	private UserDetailsBean createUserDetailsBean(Entity entity, Map<String, Entity> dnToUserMap, boolean isWithThumbnail) {
+		Entity manager = entityServiceFacade.getUserManager(entity, dnToUserMap);
+		List<Entity> directReports = entityServiceFacade.getUserDirectReports(entity, dnToUserMap);
+		UserDetailsBean ret =  new UserDetailsBean(entity, manager, directReports, entityServiceFacade);
 		if(isWithThumbnail) {
-			ret.setThumbnailPhoto(userServiceFacade.getUserThumbnail(user));
+			ret.setThumbnailPhoto(entityServiceFacade.getUserThumbnail(entity));
 		}
-		ret.setAlerts(user.getAlerts());
+		ret.setAlerts(entity.getAlerts());
 		return ret;
 	}
 
-	private DataBean<List<UserDetailsBean>> userDetails(List<User> users) {
+	private DataBean<List<UserDetailsBean>> userDetails(List<Entity> entities) {
 		List<UserDetailsBean> userDetailsBeans = new ArrayList<>();
 		Set<String> userRelatedDnsSet = new HashSet<>();
-		Map<String, User> dnToUserMap = new HashMap<>();
-//		for (User user: users) {
-//			userServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
+		Map<String, Entity> dnToUserMap = new HashMap<>();
+//		for (Entity user: entities) {
+//			entityServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
 //		}
-//		userServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
-		for (User user: users) {
-			UserDetailsBean userDetailsBean = createUserDetailsBean(user, dnToUserMap, true);
+//		entityServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
+		for (Entity entity : entities) {
+			UserDetailsBean userDetailsBean = createUserDetailsBean(entity, dnToUserMap, true);
 			userDetailsBeans.add(userDetailsBean);
 		}
 		DataBean<List<UserDetailsBean>> ret = new DataBean<>();
@@ -792,10 +791,10 @@ public class ApiUserController extends BaseController {
 		return ret;
 	}
 
-//	private DataBean<List<UserMachinesBean>> usersMachinesAux(List<User> users) {
+//	private DataBean<List<UserMachinesBean>> usersMachinesAux(List<Entity> users) {
 //		List<UserMachinesBean> usersMachinesList = new ArrayList<>();
-////		for (User user: users) {
-//////			List<UserMachine> userMachines = userServiceFacade.getUserMachines(user.getId());
+////		for (Entity user: users) {
+//////			List<UserMachine> userMachines = entityServiceFacade.getUserMachines(user.getId());
 //////			usersMachinesList.add(new UserMachinesBean(user.getId(), userMachines));
 ////		}
 //		DataBean<List<UserMachinesBean>> ret = new DataBean<>();
@@ -804,21 +803,21 @@ public class ApiUserController extends BaseController {
 //		return ret;
 //	}
 
-	private void setSeverityOnUsersList(List<User> users) {
-		users.forEach(this::setSeverityOnUser);
+	private void setSeverityOnUsersList(List<Entity> entities) {
+		entities.forEach(this::setSeverityOnUser);
 	}
 
-	private void setSeverityOnUser(User user) {
-//		double userScore = user.getScore();
+	private void setSeverityOnUser(Entity entity) {
+//		double userScore = entity.getScore();
 //		Severity userSeverity;
 //		try {
 //			userSeverity = userScoreService.getUserSeverityForScore(userScore);
 //		} catch (RuntimeException ex) {
-//			logger.error("Cannot find user severity for score: " + userScore);
+//			logger.error("Cannot find entity severity for score: " + userScore);
 //			userSeverity = Severity.Low; // Handle fallback
 //		}
-//		user.setScoreSeverity(userSeverity);
-		user.setScoreSeverity(Severity.Critical);
+//		entity.setScoreSeverity(userSeverity);
+		entity.setScoreSeverity(Severity.Critical);
 	}
 
 }

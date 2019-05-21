@@ -60,7 +60,7 @@ import java.util.List;
         if (ex.getMessage()!=null){
             return new ErrorMessage(null,ex.getMessage());
         } else {
-            return new ErrorMessage(null,"User already exists");
+            return new ErrorMessage(null,"Entity already exists");
         }
     }
 

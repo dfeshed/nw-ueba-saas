@@ -1,6 +1,7 @@
 package fortscale.presidio.output.client.spring;
 
 import fortscale.presidio.output.client.api.AlertsPresidioOutputClient;
+import fortscale.presidio.output.client.api.EntitiesPresidioOutputClient;
 import fortscale.presidio.output.client.api.UsersPresidioOutputClient;
 import fortscale.presidio.output.client.mock.FakeRemoteAlertClientService;
 import fortscale.presidio.output.client.mock.FakeRemoteUserClientService;
@@ -48,7 +49,7 @@ public class PresidioUiOutputMockClientConfig {
         }
 
         @Bean()
-        UsersPresidioOutputClient remoteUsersClient() {
+        EntitiesPresidioOutputClient remoteUsersClient() {
 
             return new FakeRemoteUserClientService(fakeAlertsCreator(),fakeUsersCreator());
         }

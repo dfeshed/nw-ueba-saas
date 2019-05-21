@@ -5,6 +5,7 @@ import fortscale.presidio.output.client.api.UsersPresidioOutputClient;
 import fortscale.presidio.output.client.mock.creators.FakeAlertsCreator;
 import fortscale.presidio.output.client.mock.creators.FakeUsersCreator;
 
+import presidio.output.client.api.EntitiesApi;
 import presidio.output.client.api.UsersApi;
 
 import presidio.output.client.client.ApiException;
@@ -26,12 +27,12 @@ public class FakeRemoteUserClientService implements UsersPresidioOutputClient {
     }
 
     @Override
-    public UsersApi getConterollerApi() {
-        return new FakeUsersApi();
+    public EntitiesApi getConterollerApi() {
+        return new FakeEntitiesApi();
     }
 
 
-    private class FakeUsersApi extends UsersApi {
+    private class FakeEntitiesApi extends EntitiesApi {
 
         @Override
         public AlertsWrapper getAlertsByUser(String userId, EntityAlertsQuery body) throws ApiException {
@@ -39,12 +40,12 @@ public class FakeRemoteUserClientService implements UsersPresidioOutputClient {
         }
 
         @Override
-        public User getUser(String userId, Boolean expand) throws ApiException {
+        public Entity getEntity(String userId, Boolean expand) throws ApiException {
             return usersCreator.getUser(userId,"user"+userId);
         }
 
         @Override
-        public UsersWrapper getUsers(UserQuery body) throws ApiException {
+        public UsersWrapper getEn(UserQuery body) throws ApiException {
             UsersWrapper usersWrapper = usersCreator.getUsers(10);
 
             Map<String,Long> indicatorsMap = new HashMap<>();

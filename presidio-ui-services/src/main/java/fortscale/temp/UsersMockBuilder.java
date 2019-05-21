@@ -1,7 +1,7 @@
 package fortscale.temp;
 
+import fortscale.domain.core.Entity;
 import fortscale.domain.core.Severity;
-import fortscale.domain.core.User;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -75,16 +75,16 @@ public class UsersMockBuilder {
         return this;
     }
 
-    public User createInstance(){
-        User user = new User();
-        user.setTags(this.tags);
-        user.setMockId(this.id);
-        user.setUsername(this.usernmae);
-        user.setDisplayName(this.displayName);
-        user.setScore(this.score);
-        user.setScoreSeverity(this.severity);
-        user.setAlertsCount(alertsCounts);
+    public Entity createInstance(){
+        Entity entity = new Entity();
+        entity.setTags(this.tags);
+        entity.setMockId(this.id);
+        entity.setUsername(this.usernmae);
+        entity.setDisplayName(this.displayName);
+        entity.setScore(this.score);
+        entity.setScoreSeverity(this.severity);
+        entity.setAlertsCount(alertsCounts);
 
-        return user;
+        return entity;
     }
 }

@@ -54,7 +54,7 @@ public class ApiAlertController extends BaseController {
 	private static final String SEVERITY_COLUMN_NAME = "Severity";
 	private static final String ALERTS_CSV_FILE_NAME = "alerts.csv";
 	private static final String CSV_CONTENT_TYPE = "text/plain; charset=utf-8";
-	public static final String UNAUTHENTICATED_USER_NAME = "Unauthenticated User";
+	public static final String UNAUTHENTICATED_USER_NAME = "Unauthenticated Entity";
 	public static final String AUTHENTICATED_USER_HEADER_PARAM_NAME = "Authenticated_User";
 	public static Logger logger = Logger.getLogger(ApiAlertController.class);
 
@@ -303,7 +303,7 @@ public class ApiAlertController extends BaseController {
 
 		String username = request.getHeader(AUTHENTICATED_USER_HEADER_PARAM_NAME);
 		if (StringUtils.isBlank(username)){
-			logger.warn("User updating system is not authenticated");
+			logger.warn("Entity updating system is not authenticated");
 			return UNAUTHENTICATED_USER_NAME;
 		} else {
 			return username;
@@ -392,7 +392,7 @@ public class ApiAlertController extends BaseController {
 			alert= alertsService.updateAlertStatus(alert, request.getStatus(), request.getFeedback(), analystUserName);
 			return new ResponseEntity(alert,HttpStatus.OK);
 		} catch (UserNotFoundExeption userNotFoundExeption){
-			return new ResponseEntity(String.format("User with id {} not found", alert.getEntityId()), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(String.format("Entity with id {} not found", alert.getEntityId()), HttpStatus.BAD_REQUEST);
 		}
 
 

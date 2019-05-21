@@ -1,11 +1,8 @@
 package presidio.ui.presidiouiapp.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Joiner;
 import fortscale.common.dataentity.DataEntitiesConfig;
-import fortscale.services.UserServiceFacade;
+import fortscale.services.EntityServiceFacade;
 import fortscale.common.dataentity.DataEntity;
-import fortscale.common.dataentity.DataEntityField;
 
 import fortscale.utils.logging.Logger;
 
@@ -13,7 +10,6 @@ import presidio.ui.presidiouiapp.beans.DataBean;
 import presidio.ui.presidiouiapp.beans.UserIdBean;
 import org.apache.commons.lang.StringUtils;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
@@ -23,10 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
@@ -37,11 +29,11 @@ public class ApiController{
 
 
 	protected DataEntitiesConfig dataEntitiesConfig;
-	private UserServiceFacade userServiceFacade;
+	private EntityServiceFacade entityServiceFacade;
 
-	public ApiController(DataEntitiesConfig dataEntitiesConfig, UserServiceFacade userServiceFacade) {
+	public ApiController(DataEntitiesConfig dataEntitiesConfig, EntityServiceFacade entityServiceFacade) {
 		this.dataEntitiesConfig = dataEntitiesConfig;
-		this.userServiceFacade = userServiceFacade;
+		this.entityServiceFacade = entityServiceFacade;
 	}
 
 	/**
@@ -75,7 +67,7 @@ public class ApiController{
 		List<UserIdBean> idList = new LinkedList<UserIdBean>();
 			
 		// translate the normalized username to user id
-//		String userId = userServiceFacade.findByNormalizedUserName(normalizedUsername);
+//		String userId = entityServiceFacade.findByNormalizedUserName(normalizedUsername);
 		String userId = "userId";
 		idList.add(new UserIdBean(userId));
 		

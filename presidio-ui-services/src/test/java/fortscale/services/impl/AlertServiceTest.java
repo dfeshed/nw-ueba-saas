@@ -9,7 +9,7 @@
 //import fortscale.presidio.output.client.mock.creators.FakeCreatorUtils;
 //import fortscale.presidio.output.client.mock.creators.FakeIndicatorCreators;
 //import fortscale.services.AlertCommentsServiceImpl;
-//import fortscale.services.UserService;
+//import fortscale.services.EntityService;
 //import fortscale.services.presidio.core.converters.AggregationConverterHelper;
 //import fortscale.services.presidio.core.converters.AlertConverterHelper;
 //import org.junit.Assert;
@@ -40,7 +40,7 @@
 //     * Mongo repository for users
 //     */
 //    @Mock
-//    private UserService userService;
+//    private EntityService userService;
 //
 //
 //    AlertsServiceImpl alertsService;

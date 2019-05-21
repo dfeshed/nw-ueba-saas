@@ -1,7 +1,7 @@
 package fortscale.domain.core.dao;
 
 import fortscale.domain.core.FavoriteUserFilter;
-import fortscale.domain.rest.UserFilter;
+import fortscale.domain.rest.EntityFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
@@ -13,9 +13,9 @@ public class FavoriteUserFilterRepositoryImpl implements FavoriteUserFilterRepos
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	@Override public void save(UserFilter userFilter, String filterName) {
+	@Override public void save(EntityFilter entityFilter, String filterName) {
 		FavoriteUserFilter favoriteUserFilter = new FavoriteUserFilter();
-		favoriteUserFilter.setFilter(userFilter);
+		favoriteUserFilter.setFilter(entityFilter);
 		favoriteUserFilter.setDateCreated(System.currentTimeMillis());
 		favoriteUserFilter.setFilterName(filterName);
 

@@ -5,19 +5,19 @@ package fortscale.services.impl;
 import fortscale.domain.core.*;
 
 
-import fortscale.domain.core.User;
+import fortscale.domain.core.Entity;
 import fortscale.domain.core.dao.FavoriteUserFilterRepository;
 
-import fortscale.domain.core.dao.rest.Users;
-import fortscale.domain.rest.UserFilter;
-import fortscale.domain.rest.UserRestFilter;
+import fortscale.domain.core.dao.rest.Entities;
+import fortscale.domain.rest.EntityFilter;
+import fortscale.domain.rest.EntityRestFilter;
 
-import fortscale.presidio.output.client.api.UsersPresidioOutputClient;
+import fortscale.presidio.output.client.api.EntitiesPresidioOutputClient;
 
-import fortscale.services.UserService;
+import fortscale.services.EntityService;
 
 import fortscale.services.presidio.core.converters.AggregationConverterHelper;
-import fortscale.services.presidio.core.converters.UserConverterHelper;
+import fortscale.services.presidio.core.converters.EntityConverterHelper;
 import fortscale.utils.JksonSerilaizablePair;
 
 import fortscale.utils.logging.Logger;
@@ -32,8 +32,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-import presidio.output.client.api.UsersApi;
-import presidio.output.client.client.ApiClient;
 import presidio.output.client.client.ApiException;
 import presidio.output.client.model.*;
 import presidio.output.client.model.JsonPatch;
@@ -46,9 +44,9 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service("userService")
-public class UserServiceImpl implements UserService {
+public class EntityServiceImpl implements EntityService {
 
-	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
+	private static Logger logger = Logger.getLogger(EntityServiceImpl.class);
 	private static final String SEARCH_FIELD_PREFIX = "##";
 
 
@@ -73,16 +71,16 @@ public class UserServiceImpl implements UserService {
 	private String listOfBuiltInADUsers;
 
 
-	private UserConverterHelper userConverterHelper;
+	private EntityConverterHelper entityConverterHelper;
 	private AggregationConverterHelper aggregationConverterHelper;
 	private List<String> setOfBuiltInADUsers;
-	private UsersPresidioOutputClient remoteUserClientService;
+	private EntitiesPresidioOutputClient remoteentityClientService;
 
-	public UserServiceImpl(UserConverterHelper userConverterHelper, AggregationConverterHelper aggregationConverterHelper,
-						   UsersPresidioOutputClient remoteUserClientService) {
-		this.userConverterHelper = userConverterHelper;
+	public EntityServiceImpl(EntityConverterHelper entityConverterHelper, AggregationConverterHelper aggregationConverterHelper,
+							 EntitiesPresidioOutputClient remoteUserClientService) {
+		this.entityConverterHelper = entityConverterHelper;
 		this.aggregationConverterHelper = aggregationConverterHelper;
-		this.remoteUserClientService = remoteUserClientService;
+		this.remoteentityClientService = remoteentityClientService;
 	}
 
 	// For unit tests only
@@ -103,8 +101,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 //	@Override
-//	public User createUser(String userApplication, String username, String appUsername){
-//		User user = new User();
+//	public Entity createUser(String userApplication, String username, String appUsername){
+//		Entity user = new Entity();
 //		user.setUsername(username);
 //		user.setSearchField("");
 //		user.setWhenCreated(new Date());
@@ -114,7 +112,7 @@ public class UserServiceImpl implements UserService {
 //
 //
 //	//NOTICE: The user of this method should check the status of the event if he doesn't want to add new users with fail status he should call with onlyUpdate=true
-//	//        The same goes for cases like security events where we don't want to create new User if there is no correlation with the active directory.
+//	//        The same goes for cases like security events where we don't want to create new Entity if there is no correlation with the active directory.
 //	@Override
 //	public void updateOrCreateUserWithClassifierUsername(String classifierId, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername) {
 //		if(StringUtils.isEmpty(normalizedUsername)){
@@ -127,32 +125,32 @@ public class UserServiceImpl implements UserService {
 //		return;
 //	}
 
-	public List<User> findByIds(List<String> ids){
+	public List<Entity> findByIds(List<String> ids){
 
-		List<User> users = new ArrayList<>();
+		List<Entity> entities = new ArrayList<>();
 		//TODO: set IDS
 		if (ids!=null) {
 			for (String id:ids){
 				try {
-					presidio.output.client.model.User userFromResponse = remoteUserClientService.getConterollerApi().getUser(id,true);
+					presidio.output.client.model.Entity entityFromResponse = remoteentityClientService.getConterollerApi().getEntity(id,true);
 
-					if (userFromResponse!=null){
-						User user = userConverterHelper.convertFromResponseToUi(userFromResponse);
-						users.add(user);
+					if (entityFromResponse!=null){
+						Entity entity = entityConverterHelper.convertFromResponseToUi(entityFromResponse);
+						entities.add(entity);
 					}
 				} catch (ApiException e) {
 					logger.error("Failed to get user with id"+id);
 				}
 			}
 		}
-		return users;
+		return entities;
 	}
 
 	public Map<String,Integer> getAlertsTypes(){
-		UserQuery userQuery = new UserQuery();
-		userQuery.addAggregateByItem(UserQuery.AggregateByEnum.ALERT_CLASSIFICATIONS);
+		EntityQuery entityQuery = new EntityQuery();
+		entityQuery.addAggregateByItem(EntityQuery.AggregateByEnum.ALERT_CLASSIFICATIONS);
 		try {
-			Map<String,Map<String,Long>> aggregationData = remoteUserClientService.getConterollerApi().getUsers(userQuery).getAggregationData();
+			Map<String,Map<String,Long>> aggregationData = remoteentityClientService.getConterollerApi().getEntities(entityQuery).getAggregationData();
 			Map<String,Integer> classificiations = aggregationConverterHelper.convertAggregation(aggregationData,UserQuery.AggregateByEnum.ALERT_CLASSIFICATIONS.name());
 			return classificiations;
 
@@ -167,15 +165,15 @@ public class UserServiceImpl implements UserService {
 
 
 //	@Override
-//	public User saveUser(User user){
+//	public Entity saveUser(Entity user){
 //		user = userRepository.save(user);
 //		usernameService.updateUsernameInCache(user);
 //		return user;
 //	}
 //
-//	private void saveUsers(List<User> users) {
+//	private void saveUsers(List<Entity> users) {
 //		userRepository.save(users);
-//		for (User user : users) {
+//		for (Entity user : users) {
 //			usernameService.updateUsernameInCache(user);
 //		}
 //	}
@@ -183,7 +181,7 @@ public class UserServiceImpl implements UserService {
 //	@Override
 //	public void updateUsersInfo(String username, Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap) {
 //		// get user by username
-//		User user = userRepository.getLastActivityAndLogUserNameByUserName(username);
+//		Entity user = userRepository.getLastActivityAndLogUserNameByUserName(username);
 //
 //		serviceMetrics.findByUsername++;
 //
@@ -232,7 +230,7 @@ public class UserServiceImpl implements UserService {
 //				if (userCurrLast == null || currTime.isAfter(userCurrLast)) {
 //					if (update == null)
 //						update = new Update();
-//					update.set(User.lastActivityField, currTime);
+//					update.set(Entity.lastActivityField, currTime);
 //					userCurrLast = currTime;
 //				}
 //
@@ -241,7 +239,7 @@ public class UserServiceImpl implements UserService {
 //				if (userCurrLastOfType == null || currTime.isAfter(userCurrLastOfType)) {
 //					if (update == null)
 //						update = new Update();
-//					update.set(User.getLogLastActivityField(logEventId), currTime);
+//					update.set(Entity.getLogLastActivityField(logEventId), currTime);
 //				}
 //
 //
@@ -253,7 +251,7 @@ public class UserServiceImpl implements UserService {
 //
 //					if (update == null)
 //						update = new Update();
-//					update.set(User.getLogUserNameField(usernameService.getLogname(logEventId)), logUsernameValue);
+//					update.set(Entity.getLogUserNameField(usernameService.getLogname(logEventId)), logUsernameValue);
 //				}
 //
 //			}
@@ -262,7 +260,7 @@ public class UserServiceImpl implements UserService {
 //			// update user
 //			if (update != null) {
 //				serviceMetrics.updatedUsers++;
-//				mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
+//				mongoTemplate.updateFirst(query(where(Entity.usernameField).is(username)), update, Entity.class);
 //			}
 //
 //		} catch (Exception e) {
@@ -316,13 +314,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String getUserThumbnail(User user) {
+	public String getEntityThumbnail(Entity entity) {
 		return "";
 	}
 
 
 
-	public boolean needToBeDeleted(User oldUserRecord)
+	public boolean needToBeDeleted(Entity oldEntityRecord)
 	{
 		//laze upload
 		if (setOfBuiltInADUsers == null || setOfBuiltInADUsers.size()==0)
@@ -335,7 +333,7 @@ public class UserServiceImpl implements UserService {
 
 
 
-		return !setOfBuiltInADUsers.contains(oldUserRecord.getUsername());
+		return !setOfBuiltInADUsers.contains(oldEntityRecord.getUsername());
 
 
 	}
@@ -343,30 +341,30 @@ public class UserServiceImpl implements UserService {
 
 
 
-	private User findUserByObjectGUID(String objectGUID){
+	private Entity findUserByObjectGUID(String objectGUID){
 		return null;
 	}
 
 
 
 	private void updateUserInMongo(String userId, Update update){
-		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(userId)), update, User.class);
+		mongoTemplate.updateFirst(query(where(Entity.ID_FIELD).is(userId)), update, Entity.class);
 	}
 
 	@Override
-	public List<User> findBySearchFieldContaining(String prefix, int page, int size) {
+	public List<Entity> findBySearchFieldContaining(String prefix, int page, int size) {
 
 		return null;
 	}
 
 	private String getUserNameFromID(String uid) {
 
-		User user = new User();
-		user.setUsername("mock");
-		if(user == null){
-			throw new RuntimeException(String.format("user with id [%s] does not exist", uid));
+		Entity entity = new Entity();
+		entity.setUsername("mock");
+		if(entity == null){
+			throw new RuntimeException(String.format("entity with id [%s] does not exist", uid));
 		}
-		return user.getUsername();
+		return entity.getUsername();
 	}
 
 
@@ -376,7 +374,7 @@ public class UserServiceImpl implements UserService {
 //		return "mock user name";
 //	}
 
-	public Set<User> findByFollowed(){
+	public Set<Entity> findByFollowed(){
 		return SetUtils.EMPTY_SET;
 	}
 
@@ -426,11 +424,11 @@ public class UserServiceImpl implements UserService {
 //	public Map<String, Set<String>> findAllTaggedUsers() {
 //		Map<String, Set<String>> result = new HashMap();
 //		Query query = new Query();
-//		query.fields().include(User.usernameField);
-//		query.fields().include(User.tagsField);
-//		query.addCriteria(new Criteria().where(User.tagsField + ".0").exists(true));
-//		List<User> users = mongoTemplate.find(query, User.class);
-//		for (User user: users) {
+//		query.fields().include(Entity.usernameField);
+//		query.fields().include(Entity.tagsField);
+//		query.addCriteria(new Criteria().where(Entity.tagsField + ".0").exists(true));
+//		List<Entity> users = mongoTemplate.find(query, Entity.class);
+//		for (Entity user: users) {
 //			result.put(user.getUsername(), user.getTags());
 //		}
 //		return result;
@@ -440,14 +438,14 @@ public class UserServiceImpl implements UserService {
 	public Set<String> findIdsByTags(String[] tags, String entityIds) {
 		Set<String> idsByTag = new HashSet();
 		Query query = new Query();
-		query.fields().include(User.ID_FIELD);
+		query.fields().include(Entity.ID_FIELD);
 		List<Criteria> criterias = new ArrayList<>();
 
-		criterias.add(where(User.tagsField).in(tags));
+		criterias.add(where(Entity.tagsField).in(tags));
 
 		if (entityIds != null) {
 			String[] entityIdsList = entityIds.split(",");
-			criterias.add(where(User.ID_FIELD).in(entityIdsList));
+			criterias.add(where(Entity.ID_FIELD).in(entityIdsList));
 		}
 
 		Criteria[] criteriasArr;
@@ -458,24 +456,24 @@ public class UserServiceImpl implements UserService {
 		}
 		query.addCriteria(new Criteria().andOperator(criteriasArr));
 
-		List<User> users = mongoTemplate.find(query, User.class);
-		for (User user: users) {
-			idsByTag.add(user.getId());
+		List<Entity> entities = mongoTemplate.find(query, Entity.class);
+		for (Entity entity : entities) {
+			idsByTag.add(entity.getId());
 		}
 		return idsByTag;
 	}
 
 	@Override
-	public Set<String> findUsernamesByTags(String[] tags) {
+	public Set<String> findEntityNamesByTags(String[] tags) {
 		Set<String> usernamesByTags = new HashSet();
 		Query query = new Query();
-		query.fields().include(User.usernameField);
+		query.fields().include(Entity.usernameField);
 		List<Criteria> criterias = new ArrayList<>();
-		criterias.add(where(User.tagsField).in(tags));
+		criterias.add(where(Entity.tagsField).in(tags));
 		Criteria[] criteriasArr = new Criteria[]{criterias.get(0)};
 		query.addCriteria(new Criteria().andOperator(criteriasArr));
-		List<User> users = mongoTemplate.find(query, User.class);
-		usernamesByTags.addAll(users.stream().map(User::getUsername).collect(Collectors.toList()));
+		List<Entity> entities = mongoTemplate.find(query, Entity.class);
+		usernamesByTags.addAll(entities.stream().map(Entity::getUsername).collect(Collectors.toList()));
 		return usernamesByTags;
 	}
 
@@ -505,7 +503,7 @@ public class UserServiceImpl implements UserService {
 
 	}
 
-//	@Override public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
+//	@Override public List<Map<String, String>> getEntitiesByPrefix(String prefix, Pageable pageable) {
 //		return null;
 //	}
 //
@@ -515,87 +513,87 @@ public class UserServiceImpl implements UserService {
 //	}
 
 	@Override
-	public User getUserById(String id) {
-		return new User();
+	public Entity getEntityById(String id) {
+		return new Entity();
 	}
 
 	@Override
-	public Boolean isPasswordExpired(User user) {
+	public Boolean isPasswordExpired(Entity entity) {
 		return false;
 	}
 	@Override
-	public Boolean isNoPasswordRequiresValue(User user) {
+	public Boolean isNoPasswordRequiresValue(Entity entity) {
 		return false;
 	}
 	@Override
-	public Boolean isNormalUserAccountValue(User user) {
+	public Boolean isNormalUserAccountValue(Entity entity) {
 		return false;
 	}
 
 
 	@Override
-	public Boolean isPasswordNeverExpiresValue(User user) {
+	public Boolean isPasswordNeverExpiresValue(Entity entity) {
 		return false;
 	}
 	@Override
-	public String getOu(User user){
+	public String getOu(Entity entity){
 		return "";
 	}
 
 
 
 	@Override
-	public User getUserManager(User user, Map<String, User> dnToUserMap){
+	public Entity getUserManager(Entity entity, Map<String, Entity> dnToUserMap){
 		return null;
 	}
 	@Override
-	public List<User> getUserDirectReports(User user, Map<String, User> dnToUserMap){
+	public List<Entity> getUserDirectReports(Entity entity, Map<String, Entity> dnToUserMap){
 
 		return null;
 	}
 
 	@Override
-	public User findByUsername(String username){
+	public Entity findByUsername(String username){
 		return null;
 	}
 
-	@Override public Users findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest,
-											 Set<String> relevantUserIds, List<String> fieldsRequired,boolean fetchAlertsOnUsers) {
+	@Override public Entities findEntitiesByFilter(EntityRestFilter userRestFilter, PageRequest pageRequest,
+												   Set<String> relevantUserIds, List<String> fieldsRequired, boolean fetchAlertsOnUsers) {
 
 
-		UserQuery userQuery = userConverterHelper.convertUiFilterToQueryDto(userRestFilter,pageRequest,relevantUserIds,fetchAlertsOnUsers);
-		Users users=null;
+		EntityQuery entityQuery = entityConverterHelper.convertUiFilterToQueryDto(userRestFilter,pageRequest,relevantUserIds,fetchAlertsOnUsers);
+		Entities entities =null;
 		try {
-			UsersWrapper usersWrapper = remoteUserClientService.getConterollerApi().getUsers(userQuery);
-			if (usersWrapper!=null && usersWrapper.getTotal()>0){
-				users= new Users(userConverterHelper.convertResponseToUiDto(usersWrapper.getUsers()),usersWrapper.getTotal());
+			EntitiesWrapper entitiesWrapper = remoteentityClientService.getConterollerApi().getEntities(entityQuery);
+			if (entitiesWrapper!=null && entitiesWrapper.getTotal()>0){
+				entities = new Entities(entityConverterHelper.convertResponseToUiDto(entitiesWrapper.getEntities()),entitiesWrapper.getTotal());
 
 			}
 		} catch (ApiException e) {
-			logger.error("Can't fetch users. Reson {} "+e.getMessage());
+			logger.error("Can't fetch entities. Reson {} "+e.getMessage());
 
 		}
 
-		if (users == null){
-			users= new Users(Collections.emptyList(),0);
+		if (entities == null){
+			entities = new Entities(Collections.emptyList(),0);
 		}
-		return users;
+		return entities;
 	}
 
 
-	@Override public int countUsersByFilter(UserRestFilter userRestFilter, Set<String> relevantUsers) {
+	@Override public int countEntitiesByFilter(EntityRestFilter userRestFilter, Set<String> relevantUsers) {
 
-		Users users = findUsersByFilter(userRestFilter,null,relevantUsers,null,false);
-		if (users!=null){
-			return new Long(users.getTotalCount()).intValue();
+		Entities entities = findEntitiesByFilter(userRestFilter,null,relevantUsers,null,false);
+		if (entities !=null){
+			return new Long(entities.getTotalCount()).intValue();
 		} else {
 			return 0;
 		}
 
 	}
 
-	@Override public void saveFavoriteFilter(UserFilter userFilter, String filterName) {
-		favoriteUserFilterRepository.save(userFilter, filterName);
+	@Override public void saveFavoriteFilter(EntityFilter entityFilter, String filterName) {
+		favoriteUserFilterRepository.save(entityFilter, filterName);
 	}
 
 	@Override public List<FavoriteUserFilter> getAllFavoriteFilters() {
@@ -615,21 +613,21 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public int updateWatched(UserRestFilter userRestFilter, Set<String> relevantUsers, Boolean watch) {
+	public int updateWatched(EntityRestFilter userRestFilter, Set<String> relevantUsers, Boolean watch) {
 
-		UserQuery userQuery = userConverterHelper.convertUiFilterToQueryDto(userRestFilter,null,null,true);
+		EntityQuery entityQuery = entityConverterHelper.convertUiFilterToQueryDto(userRestFilter,null,null,true);
 
 
-		JsonPatch jsonPatch = userConverterHelper.createPatchOperation(watch);
+		JsonPatch jsonPatch = entityConverterHelper.createPatchOperation(watch);
 		if (jsonPatch.getOperations().size()!=1 ){
 			throw new RuntimeException("Must have watched value");
 		}
 
 		try {
-			UserPatchBody userPatchBody = new UserPatchBody();
-			userPatchBody.setJsonPatch(jsonPatch);
-			userPatchBody.setUserQuery(userQuery);
-			remoteUserClientService.getConterollerApi().updateUsers(userPatchBody);
+			EntityPatchBody entityPatchBody = new EntityPatchBody();
+			entityPatchBody.setJsonPatch(jsonPatch);
+			entityPatchBody.setEntityQuery(entityQuery);
+			remoteentityClientService.getConterollerApi().updateEntities(entityPatchBody);
 		} catch (ApiException e) {
 			e.printStackTrace();
 		}
@@ -637,18 +635,18 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public int updateSingleUserWatched(String userId, Boolean watch) {
+	public int updateSingleEntityWatched(String userId, Boolean watch) {
 //		List<Criteria> criteriaList = getCriteriaListByFilterAndUserIds(userRestFilter, relevantUsers);
 
 
 
-		JsonPatch jsonPatch = userConverterHelper.createPatchOperation(watch);
+		JsonPatch jsonPatch = entityConverterHelper.createPatchOperation(watch);
 		if (jsonPatch.getOperations().size()!=1 ){
 			throw new RuntimeException("Must have watched value");
 		}
 
 		try {
-			remoteUserClientService.getConterollerApi().updateUser(userId,jsonPatch);
+			remoteentityClientService.getConterollerApi().updateEntity(userId,jsonPatch);
 		} catch (ApiException e) {
 			e.printStackTrace();
 		}
@@ -664,7 +662,7 @@ public class UserServiceImpl implements UserService {
 //	 * @return the amount of modified users
 //	 */
 //    @Override
-//    public int removeTagFromAllUsers(String tagName) {
+//    public int removeTagFromAllEntities(String tagName) {
 //		return 1;
 //	}
 //
@@ -685,7 +683,7 @@ public class UserServiceImpl implements UserService {
 //		Set<String> anomalyTypes=new HashSet<>();
 //
 //
-//		UserQuery userQuery = userConverterHelper.convertUiFilterToQueryDto(new UserRestFilter(),null,null,false);
+//		UserQuery userQuery = userConverterHelper.convertUiFilterToQueryDto(new EntityRestFilter(),null,null,false);
 //		userQuery.addAggregateByItem(UserQuery.AggregateByEnum.I);
 //
 //		try {
@@ -707,11 +705,11 @@ public class UserServiceImpl implements UserService {
 		Set<String> anomalyTypes=new HashSet<>();
 
 
-	UserQuery userQuery= userConverterHelper.convertUiFilterToQueryDto(null,null,null,false );
-		userQuery.addAggregateByItem(UserQuery.AggregateByEnum.INDICATORS);
+	EntityQuery entityQuery= entityConverterHelper.convertUiFilterToQueryDto(null,null,null,false );
+		entityQuery.addAggregateByItem(EntityQuery.AggregateByEnum.INDICATORS);
 
 		try {
-			Map<String, Map<String, Long>> aggregationData = remoteUserClientService.getConterollerApi().getUsers(userQuery).getAggregationData();
+			Map<String, Map<String, Long>> aggregationData = remoteentityClientService.getConterollerApi().getEntities(entityQuery).getAggregationData();
 			Map<String, Integer> aggregation = aggregationConverterHelper.convertAggregation(aggregationData, UserQuery.AggregateByEnum.INDICATORS.name());
 
 			return  aggregation;
@@ -725,15 +723,15 @@ public class UserServiceImpl implements UserService {
 
 
 
-	public Map<String,Map<String,Integer>> getSeverityScoreMap(UserRestFilter userRestFilter){
-		UserQuery userQuery = userConverterHelper.convertUiFilterToQueryDto(userRestFilter,null,null,false);
+	public Map<String,Map<String,Integer>> getSeverityScoreMap(EntityRestFilter userRestFilter){
+		EntityQuery entityQuery = entityConverterHelper.convertUiFilterToQueryDto(userRestFilter,null,null,false);
 
-		userQuery.setAggregateBy(Arrays.asList(UserQuery.AggregateByEnum.SEVERITY));
+		entityQuery.setAggregateBy(Arrays.asList(EntityQuery.AggregateByEnum.SEVERITY));
 		Map<String,Map<String,Integer>> response=new HashMap<>();
 
 		try {
-			UsersWrapper usersWrapper = remoteUserClientService.getConterollerApi().getUsers(userQuery);
-			Map<String,Long> counts = usersWrapper.getAggregationData().get(UserQuery.AggregateByEnum.SEVERITY.name());
+			EntitiesWrapper entitiesWrapper = remoteentityClientService.getConterollerApi().getEntities(entityQuery);
+			Map<String,Long> counts = entitiesWrapper.getAggregationData().get(UserQuery.AggregateByEnum.SEVERITY.name());
 
 
 			for (Severity severity : Severity.values()){
@@ -757,35 +755,35 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> getUsersByPrefix(String entityName, PageRequest pageRequest) {
-		UserRestFilter filter = new UserRestFilter();
+	public List<Entity> getEntitiesByPrefix(String entityName, PageRequest pageRequest) {
+		EntityRestFilter filter = new EntityRestFilter();
 //		filter.setSearchFieldContains(entityName);
 //		filter.setPrefix(true);
-		UserQuery userQuery = userConverterHelper.convertUiFilterToQueryDto(filter,pageRequest,null,false);
-		userQuery.setUserName(entityName);
+		EntityQuery entityQuery = entityConverterHelper.convertUiFilterToQueryDto(filter,pageRequest,null,false);
+		entityQuery.setEntityName(entityName);
 //		userQuery.isPrefix(true);
 
-		Users users = null;
+		Entities entities = null;
 		try {
-			UsersWrapper usersWrapper = remoteUserClientService.getConterollerApi().getUsers(userQuery);
-			List<User> usersList = this.userConverterHelper.convertResponseToUiDto(usersWrapper.getUsers());
-			users = new Users(usersList,usersWrapper.getTotal());
+			EntitiesWrapper entitiesWrapper = remoteentityClientService.getConterollerApi().getEntities(entityQuery);
+			List<Entity> usersList = this.entityConverterHelper.convertResponseToUiDto(entitiesWrapper.getEntities());
+			entities = new Entities(usersList,entitiesWrapper.getTotal());
 		} catch (ApiException e) {
 			e.printStackTrace();
 		}
 
-//		Users users = findUsersByFilter(filter,pageRequest,null,null);
+//		Entities entities = findEntitiesByFilter(filter,pageRequest,null,null);
 
-		if (users==null){
+		if (entities ==null){
 			return null;
 		} else {
-			return users.getUsers();
+			return entities.getEntities();
 		}
 	}
 
 
-	public User findOne(String id){
-		return new User();
+	public Entity findOne(String id){
+		return new Entity();
 	}
 
 

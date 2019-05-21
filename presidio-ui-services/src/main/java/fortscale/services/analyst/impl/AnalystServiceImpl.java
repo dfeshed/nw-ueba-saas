@@ -10,9 +10,7 @@ import org.springframework.stereotype.Service;
 
 
 import fortscale.domain.analyst.Analyst;
-import fortscale.domain.analyst.AnalystAuth;
 import fortscale.domain.analyst.dao.AnalystRepository;
-import fortscale.domain.core.User;
 import fortscale.services.analyst.AnalystService;
 import fortscale.utils.logging.Logger;
 

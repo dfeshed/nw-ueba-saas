@@ -48,7 +48,7 @@ public class WebConf extends WebMvcConfigurerAdapter{
     }
     @Bean
     ApiController apiController(){
-        return new ApiController(dataEntitiesConfig,userServiceFacade);
+        return new ApiController(dataEntitiesConfig, entityServiceFacade);
     }
 
 
@@ -83,7 +83,7 @@ public class WebConf extends WebMvcConfigurerAdapter{
     @Bean
     ApiUserController apiUserController(){
 
-        return new ApiUserController(userServiceFacade,userTagService,userService,userWithAlertService);
+        return new ApiUserController(entityServiceFacade, entityTagService, entityService, entityWithAlertService);
     }
 
     @Bean
@@ -119,16 +119,16 @@ public class WebConf extends WebMvcConfigurerAdapter{
 
 
     @Autowired
-    UserServiceFacade userServiceFacade;
+    EntityServiceFacade entityServiceFacade;
 
     @Autowired
-    UserTagService userTagService;
+    EntityTagService entityTagService;
 
     @Autowired
-    UserWithAlertService userWithAlertService;
+    EntityWithAlertService entityWithAlertService;
 
     @Autowired
-    UserService userService;
+    EntityService entityService;
 
 
     @Autowired

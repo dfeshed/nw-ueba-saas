@@ -1,14 +1,7 @@
 package fortscale.temp;
 
-import fortscale.domain.core.Severity;
 import fortscale.domain.core.Tag;
-import fortscale.domain.core.User;
 import org.apache.commons.collections.ListUtils;
-import org.apache.commons.collections.SetUtils;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by shays on 05/07/2017.

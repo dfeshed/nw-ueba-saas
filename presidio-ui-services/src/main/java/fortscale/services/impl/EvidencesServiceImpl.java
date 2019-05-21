@@ -14,9 +14,9 @@ import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.domain.historical.data.SupportingInformationTimestampKey;
 import fortscale.presidio.output.client.api.AlertsPresidioOutputClient;
+import fortscale.services.EntityService;
 import fortscale.services.EvidencesService;
 import fortscale.services.NwInvestigateHelper;
-import fortscale.services.UserService;
 import fortscale.services.presidio.core.converters.IndicatorConverter;
 import fortscale.temp.EvidenceMockBuilder;
 import fortscale.temp.HardCodedMocks;
@@ -54,11 +54,11 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 //	final String TAG_ANOMALY_TYPE_FIELD_NAME = "tag";
 //	final String TAG_DATA_ENTITY ="active_directory";
 
-	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
+	private static Logger logger = Logger.getLogger(EntityServiceImpl.class);
 
 
 	private DataEntitiesConfig dataEntitiesConfig;
-	private UserService userService;
+	private EntityService entityService;
 	private IndicatorConverter indicatorConverter;
 	private AlertsPresidioOutputClient remoteAlertClientService;
 
@@ -82,13 +82,13 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 
 	public EvidencesServiceImpl(
 			DataEntitiesConfig dataEntitiesConfig,
-			UserService userService,
+			EntityService entityService,
 			IndicatorConverter indicatorConverter,
 			AlertsPresidioOutputClient remoteAlertClientService,
 			NwInvestigateHelper  nwInvestigateHelper
 	) {
 		this.dataEntitiesConfig = dataEntitiesConfig;
-		this.userService = userService;
+		this.entityService = entityService;
 		this.indicatorConverter = indicatorConverter;
 		this.remoteAlertClientService = remoteAlertClientService;
 		this.nwInvestigateHelper = nwInvestigateHelper;

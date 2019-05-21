@@ -5,7 +5,7 @@ import org.apache.commons.lang.BooleanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import presidio.output.client.model.AlertQuery;
-import presidio.output.client.model.UserQuery;
+import presidio.output.client.model.EntityQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,22 +70,22 @@ public class PageConverter {
 
     }
 
-    public List<UserQuery.SortFieldNamesEnum> convertUiFilterToQueryDtoUserSortFields(PageRequest pageRequest) {
+    public List<EntityQuery.SortFieldNamesEnum> convertUiFilterToQueryDtoUserSortFields(PageRequest pageRequest) {
         if (pageRequest==null || pageRequest.getSort()==null){
             return null;
 
         }
-        List<UserQuery.SortFieldNamesEnum> sortByFields = new ArrayList<>();
+        List<EntityQuery.SortFieldNamesEnum> sortByFields = new ArrayList<>();
         pageRequest.getSort().forEach(field->{
             switch(field.getProperty()){
                 case "name":
-                    sortByFields.add(UserQuery.SortFieldNamesEnum.USER_DISPLAY_NAME);
+                    sortByFields.add(EntityQuery.SortFieldNamesEnum.ENTITY_NAME);
                     break;
                 case "score":
-                    sortByFields.add(UserQuery.SortFieldNamesEnum.SCORE);
+                    sortByFields.add(EntityQuery.SortFieldNamesEnum.SCORE);
                     break;
                 case "alertsCount":
-                    sortByFields.add(UserQuery.SortFieldNamesEnum.ALERT_NUM);
+                    sortByFields.add(EntityQuery.SortFieldNamesEnum.ALERT_NUM);
                     break;
 
             }
@@ -120,18 +120,18 @@ public class PageConverter {
         return null;
     }
 
-    public UserQuery.SortDirectionEnum convertUiFilterToQueryDtoSortDirectionForUser(PageRequest pageRequest) {
+    public EntityQuery.SortDirectionEnum convertUiFilterToQueryDtoSortDirectionForUser(PageRequest pageRequest) {
         if (pageRequest==null || pageRequest.getSort()==null){
             return null;
 
         }
-        List<UserQuery.SortDirectionEnum> list = new ArrayList<>();
+        List<EntityQuery.SortDirectionEnum> list = new ArrayList<>();
 
         pageRequest.getSort().forEach(field->{
             if (Sort.Direction.ASC.equals(field.getDirection())){
-                list.add(UserQuery.SortDirectionEnum.ASC);
+                list.add(EntityQuery.SortDirectionEnum.ASC);
             } else {
-                list.add(UserQuery.SortDirectionEnum.DESC);
+                list.add(EntityQuery.SortDirectionEnum.DESC);
             }
         });
 

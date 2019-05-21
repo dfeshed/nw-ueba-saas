@@ -5,6 +5,6 @@ package fortscale.services.exception;
  */
 public class UserNotFoundExeption extends Exception {
     public UserNotFoundExeption(String userId) {
-        super("User with ID "+userId+" not found");
+        super("Entity with ID "+userId+" not found");
     }
 }

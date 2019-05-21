@@ -53,7 +53,7 @@ public interface EvidencesService {
 	 * @param userName
 	 * @return
 	 */
-//	User getUserIdByUserName(String userName);
+//	Entity getUserIdByUserName(String userName);
 
 
 	/**
