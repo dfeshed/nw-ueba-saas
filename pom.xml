@@ -145,6 +145,11 @@
                 <artifactId>ehcache-core</artifactId>
                 <version>${ehcache-core.version}</version>
             </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>1.2.3</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

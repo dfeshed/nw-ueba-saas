@@ -50,7 +50,7 @@ public class PageConverter {
                 case "score":
                     sortByFields.add(AlertQuery.SortFieldNamesEnum.SCORE);
                     break;
-                case "entityName": sortByFields.add(AlertQuery.SortFieldNamesEnum.USER_NAME); break;
+                case "entityName": sortByFields.add(AlertQuery.SortFieldNamesEnum.ENTITY_NAME); break;
                 case "startDate": sortByFields.add(AlertQuery.SortFieldNamesEnum.START_DATE);break;
                 case "indicatorsNum":
                     sortByFields.add(AlertQuery.SortFieldNamesEnum.INDICATORS_NUM);
