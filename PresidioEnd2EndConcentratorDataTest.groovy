@@ -9,19 +9,20 @@ pipeline {
         }
 
         stages {
-                stage('Reset Log-Decoder and Concentrator DBs') {
-                    steps {
-                        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/reset_ld_and_concentrator_hybrid_dbs.sh"
-                    }
-                }
-
-                                
- /**           stage('presidio-integration-test Project Clone') {
+            stage('presidio-integration-test Project Clone') {
                 steps {
                     cleanWs()
                     buildIntegrationTestProject()
                 }
             }
+            stage('Reset Log-Decoder and Concentrator DBs') {
+                steps {
+                    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/reset_ld_and_concentrator_hybrid_dbs.sh"
+                }
+            }
+
+                                
+ /**
             stage('UEBA Cleanup and RPMs Upgrade') {
                 steps {
                     script {
