@@ -9,8 +9,9 @@ from presidio.factories.abstract_dag_factory import AbstractDagFactory
 class RetentionDagFactory(AbstractDagFactory):
     retention_conf_key = "retention"
 
-    def build_dag(self, dag):
-        RetentionDagBuilder().build(dag)
+    def build_dag(self, dags):
+        for dag in dags:
+            RetentionDagBuilder().build(dag)
 
     def create_dags(self, dags_configs, conf_key):
         """
@@ -22,8 +23,7 @@ class RetentionDagFactory(AbstractDagFactory):
         dagrun_timeout, description, end_date, full_filepath, interval, params, start_date, template_searchpath = \
             self._get_dag_params(dag_config, dags_configs)
 
-        dag_id_start_date = str(start_date).replace(" ", "_").replace(":", "_")
-        new_dag_id = "{0}_{1}".format("ueba", dag_id_start_date)
+        new_dag_id = "retention"
         schemas = [item.strip() for item in dags_configs.get("data_schemas").split(',')]
         new_dag = DAG(dag_id=new_dag_id, start_date=start_date, schedule_interval=interval,
                       default_args={"schemas": schemas},
