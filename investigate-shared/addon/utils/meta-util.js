@@ -14,7 +14,9 @@ const META_MAP = {
   'size': 'size',
   'sessionid': 'event_source_id',
   'agent.id': 'agent_id',
-  'process.vid.src': 'process_vid'
+  'process.vid.src': 'process_vid',
+  'filename': 'filename',
+  'checksum': 'checksum'
 };
 
 const OS_TYPE_SUPPORTED = ['windows', 'linux', 'mac'];
@@ -56,7 +58,6 @@ export const transform = (event) => {
     const source = {};
     const srcUser = {};
     const destination = {};
-    let checksum;
 
     const len = (metas && metas.length) || 0;
     for (let i = 0; i < len; i++) {
@@ -107,9 +108,6 @@ export const transform = (event) => {
             newEvent.operating_system = metaValue;
           }
           break;
-        case 'checksum':
-          checksum = metaValue;
-          break;
       }
     }
     newEvent.type = 'Endpoint';
@@ -121,7 +119,8 @@ export const transform = (event) => {
     newEvent.related_links = _prepareQueryString(newEvent);
     const data = [];
     data[0] = {
-      hash: checksum || source.hash
+      hash: newEvent.checksum || source.hash,
+      filename: newEvent.filename || source.filename
     };
     newEvent.data = data;
   }

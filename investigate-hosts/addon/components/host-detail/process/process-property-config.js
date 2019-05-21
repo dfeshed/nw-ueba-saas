@@ -5,6 +5,9 @@ const fileProperty = [
     sectionName: 'Process',
     fields: [
       {
+        field: 'process.owner'
+      },
+      {
         field: 'process.createUtcTime',
         format: 'DATE'
       },

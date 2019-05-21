@@ -1561,6 +1561,7 @@ export default {
         hostname: 'HOSTNAME',
         userAccount: 'USER ACCOUNT',
         operatingSystem: 'OPERATING SYSTEM',
+        fileName: 'FILE NAME',
         hash: 'HASH',
         fileHash: 'FILE HASH',
         tableFILENAME: 'FILE NAME',

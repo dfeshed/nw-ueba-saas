@@ -8,6 +8,11 @@ const defaultSummaryConfig = [
     cssClass: 'col-xs-2 col-md-2'
   },
   {
+    label: 'investigateHosts.process.owner',
+    field: 'process.owner',
+    cssClass: 'col-xs-1 col-md-1'
+  },
+  {
     label: 'investigateHosts.process.parentId',
     field: 'process.parentPid',
     cssClass: 'col-xs-1 col-md-1'

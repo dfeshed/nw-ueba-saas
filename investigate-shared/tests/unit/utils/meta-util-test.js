@@ -124,3 +124,22 @@ test('consider checksum as hash when checksum is present otherwise set checksum.
   result = transform(event);
   assert.equal(result.data[0].hash, '09a1afb374069223e1ec1d2609a42e87', 'checksum.src is set as hash');
 });
+
+test('set the filename', function(assert) {
+  let event = {
+    metas: [['sessionid', 116414],
+      ['time', '2018-12-07T05:19:22.000+0000'],
+      ['checksum', '822e401c0d0612810c4398838fd5cf2bdec21cd35f2f24295a331b61e92bc5ef'],
+      ['filename.src', 'malware.exe']
+    ] };
+  let result = transform(event);
+  assert.equal(result.data[0].filename, 'malware.exe', 'filename.src is set');
+
+  event = {
+    metas: [['sessionid', 116414],
+      ['time', '2018-12-07T05:19:22.000+0000'],
+      ['filename', 'malware.exe']
+    ] };
+  result = transform(event);
+  assert.equal(result.data[0].filename, 'malware.exe', 'filename is used');
+});
