@@ -29,7 +29,7 @@ class InputRetentionOperator(FixedDurationJarOperator):
 
         self.fixed_duration_strategy = fixed_duration_strategy
         self.schema = schema
-        self.task_id = task_id or 'retention_input_{}'.format(self.schema)
+        self.task_id = task_id or 'input_retention_{}'.format(self.schema)
 
         java_args = {
             'schema': self.schema,
