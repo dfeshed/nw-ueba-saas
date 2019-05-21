@@ -59,7 +59,7 @@ public class OutputManagerServiceTest {
         try {
             String outputFileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
             Assert.assertEquals(2, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
-            outputManagerService.cleanDocuments(now().plus(Duration.ofDays(1)), Arrays.asList(Schema.FILE));
+            outputManagerService.cleanDocuments(now().plus(Duration.ofDays(1)), new Schema[]{Schema.FILE});
             // 1 enriched event should have been deleted
             Assert.assertEquals(1, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
         } catch (Exception e) {
@@ -73,7 +73,7 @@ public class OutputManagerServiceTest {
         try {
             String outputFileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.PRINT);
             Assert.assertEquals(0, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
-            outputManagerService.cleanDocuments(now().plus(Duration.ofDays(1)), Arrays.asList(Schema.PRINT));
+            outputManagerService.cleanDocuments(now().plus(Duration.ofDays(1)), new Schema[]{Schema.PRINT});
             Assert.assertEquals(0, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
         } catch (Exception e) {
             e.printStackTrace();

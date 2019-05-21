@@ -20,11 +20,11 @@ public class OutputManagerService {
         this.retentionEnrichedEventsDays = retentionEnrichedEventsDays;
     }
 
-    public void cleanDocuments(Instant endDate, List<Schema> schemas){
+    public void cleanDocuments(Instant endDate, Schema[] schemas){
         if(schemas == null){
-            schemas = Arrays.asList(Schema.values());
+            schemas = Schema.values();
         }
-        schemas.forEach(schema -> {
+        Arrays.asList(schemas).forEach(schema -> {
             logger.debug("Start retention clean to mongo for schema {}", schema);
             eventPersistencyService.remove(schema, Instant.EPOCH, endDate.minus(retentionEnrichedEventsDays, ChronoUnit.DAYS));
         });

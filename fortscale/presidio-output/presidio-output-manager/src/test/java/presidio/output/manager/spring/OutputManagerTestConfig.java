@@ -12,8 +12,7 @@ import java.util.Properties;
 
 @Configuration
 @Import({
-        MongodbTestConfig.class,
-        MongoDbBulkOpUtilConfig.class
+        MongodbTestConfig.class
 })
 public class OutputManagerTestConfig extends OutputManagerBaseConfig {
 
