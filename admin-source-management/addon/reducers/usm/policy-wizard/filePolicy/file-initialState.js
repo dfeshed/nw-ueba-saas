@@ -21,6 +21,51 @@ export default {
     protocol: null // 'UDP' | 'TCP' | 'TLS'
   },
 
+  steps: [
+    {
+      id: 'identifyPolicyStep',
+      prevStepId: '',
+      nextStepId: 'definePolicyStep',
+      title: 'adminUsm.policyWizard.identifyPolicy',
+      stepComponent: 'usm-policies/policy-wizard/identify-policy-step',
+      titlebarComponent: 'usm-policies/policy-wizard/policy-titlebar',
+      toolbarComponent: 'usm-policies/policy-wizard/policy-toolbar',
+      prevButtonDisabled: true,
+      nextButtonDisabled: false,
+      saveButtonDisabled: true,
+      publishButtonDisabled: true,
+      showErrors: false
+    },
+    {
+      id: 'definePolicyStep',
+      prevStepId: 'identifyPolicyStep',
+      nextStepId: 'definePolicySourcesStep',
+      title: 'adminUsm.policyWizard.definePolicyConnection',
+      stepComponent: 'usm-policies/policy-wizard/define-policy-step',
+      titlebarComponent: 'usm-policies/policy-wizard/policy-titlebar',
+      toolbarComponent: 'usm-policies/policy-wizard/policy-toolbar',
+      prevButtonDisabled: false,
+      nextButtonDisabled: false,
+      saveButtonDisabled: false,
+      publishButtonDisabled: false,
+      showErrors: false
+    },
+    {
+      id: 'definePolicySourcesStep',
+      prevStepId: 'definePolicyStep',
+      nextStepId: '',
+      title: 'adminUsm.policyWizard.definePolicySources',
+      stepComponent: 'usm-policies/policy-wizard/define-policy-sources-step',
+      titlebarComponent: 'usm-policies/policy-wizard/policy-titlebar',
+      toolbarComponent: 'usm-policies/policy-wizard/policy-toolbar',
+      prevButtonDisabled: false,
+      nextButtonDisabled: true,
+      saveButtonDisabled: false,
+      publishButtonDisabled: false,
+      showErrors: false
+    }
+  ],
+
   // define-policy-step - available settings to render the left col
   // * make sure the id, the end of label i18n key, and the field (policy property) are all the same
   availableSettings: [

@@ -28,6 +28,15 @@ module('Unit | Selectors | policy-wizard/windowsLogPolicy/windowsLog-selectors',
     initialize(this.owner);
   });
 
+  test('windows log policy steps', function(assert) {
+    const expectedSteps = 2;
+    const fullState = new ReduxDataHelper()
+      .policyWiz('windowsLogPolicy')
+      .build();
+    const { steps } = fullState.usm.policyWizard;
+    assert.deepEqual(steps.length, expectedSteps, `windows log policy should have ${expectedSteps} steps`);
+  });
+
   test('enabled', function(assert) {
     const expectedState = false;
     const fullState = new ReduxDataHelper()

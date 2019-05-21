@@ -17,6 +17,15 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
     initialize(this.owner);
   });
 
+  test('file policy steps', function(assert) {
+    const expectedSteps = 3;
+    const fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .build();
+    const { steps } = fullState.usm.policyWizard;
+    assert.deepEqual(steps.length, expectedSteps, `file policy should have ${expectedSteps} steps`);
+  });
+
   test('enabled', function(assert) {
     const expectedState = false;
     const fullState = new ReduxDataHelper()

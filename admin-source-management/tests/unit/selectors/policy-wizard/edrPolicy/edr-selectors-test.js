@@ -53,6 +53,15 @@ module('Unit | Selectors | policy-wizard/edrPolicy/edr-selectors', function(hook
     initialize(this.owner);
   });
 
+  test('edr policy steps', function(assert) {
+    const expectedSteps = 2;
+    const fullState = new ReduxDataHelper()
+      .policyWiz('edrPolicy')
+      .build();
+    const { steps } = fullState.usm.policyWizard;
+    assert.deepEqual(steps.length, expectedSteps, `edr policy should have ${expectedSteps} steps`);
+  });
+
   test('scanType', function(assert) {
     const expectedScanType = 'DISABLED';
     const fullState = new ReduxDataHelper()

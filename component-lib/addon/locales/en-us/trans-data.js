@@ -4419,6 +4419,8 @@ effects the previewed source.',
       descriptionExceedsMaxLength: 'Policy description is limited to 8000 characters',
       // define-policy-step
       definePolicy: 'Define Policy',
+      definePolicyConnection: 'Define Connection Settings',
+      definePolicySources: 'Define File Policy Settings',
       availableSettings: 'Available Settings',
       availableTooltip: 'Available Settings are the settings that can be used in this policy type. Select the settings you wish to include ' +
         'using the + icon. A policy does not need to include all settings as a source takes its settings from the policies applied by all ' +
