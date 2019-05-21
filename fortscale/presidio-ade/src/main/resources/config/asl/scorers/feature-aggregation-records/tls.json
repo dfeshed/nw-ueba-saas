@@ -1,0 +1,44 @@
+{
+  "ade-event-type-scorers": [
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctSrcIpJa3TlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctSrcIp.userId.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfDistinctSrcIp.ja3.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctSrcIp.ja3.tls.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctSrcIp.ja3.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfDistinctSrcIp.ja3.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "numberOfDistinctSrcIpJa3TlsHourly",
+      "type": "F",
+      "bucketConfName": "srcIpHistogramJa3TlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctSrcIpHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "BucketConfs": [
+    {
+      "name": "srcIpHistogramJa3TlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "distinctSrcIpHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    }
+  ]
+}
