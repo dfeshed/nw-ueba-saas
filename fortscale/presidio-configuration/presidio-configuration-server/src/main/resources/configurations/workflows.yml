@@ -148,7 +148,7 @@ dags:
         xms: 4096
     UserScoreOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/presidio-output-processor.jar
+        jar_path: ${general.deployment.bins.baseFttpath}/presidio-output-processor.jar
         main_class: presidio.output.processor.FortscaleOutputProcessorApplication
         xmx: 4096
         xms: 4096
@@ -195,11 +195,13 @@ components:
         accumulate_interval_in_days: 1
         min_data_time_range_for_building_models_in_days: 14
 retention:
+  min_time_to_start_retention_in_days : 2
+  retention_interval_in_hours : 24
   input:
     command: applyRetentionPolicy
   output:
     command: clean-documents
   alert:
     command: cleanup
-    min_time_to_start_retention_in_days : 2
-    retention_interval_in_hours : 24
+  ade_manager:
+    command: enriched_ttl_cleanup
