@@ -16,7 +16,7 @@ class AlertRetentionOperatorBuilder(LoggingMixin):
     The "AlertRetentionOperatorBuilder" builds and returns alert_retention operator.
     """
 
-    RETENTION_COMMAND_CONFIG_PATH = 'retention.command'
+    RETENTION_COMMAND_CONFIG_PATH = 'retention.alert.command'
     RETENTION_COMMAND_DEFAULT_VALUE = 'retention'
     alert_min_time_to_start_retention_in_days_conf_key = "retention.min_time_to_start_retention_in_days"
     alert_min_time_to_start_retention_in_days_default_value = 2
