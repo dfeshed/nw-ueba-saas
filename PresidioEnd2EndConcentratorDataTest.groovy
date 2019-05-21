@@ -92,7 +92,9 @@ def uebaPreparingEnv (){
 }
 
 def CleanEpHybridDBs (){
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/reset_ld_and_concentrator_hybrid_dbs.sh"
+    sh "cp ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/reset_ld_and_concentrator_hybrid_dbs.sh /home/presidio/"
+    sh "sudo bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
+    sh "rm -f /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
 }
 
 /**************************
