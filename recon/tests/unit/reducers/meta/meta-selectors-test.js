@@ -332,6 +332,11 @@ module('Unit | selector | meta', function(hooks) {
     const result = eventTime(Immutable.from(data));
     assert.equal(result, '2019-02-08T04:17:20.000+0000', 'start time is returned');
   });
+  test('eventTime when time is present', function(assert) {
+    const data = { meta: { meta: [['time', '2019-02-08T04:17:20.000+0000']] } };
+    const result = eventTime(Immutable.from(data));
+    assert.equal(result, '2019-02-08T04:17:20.000+0000', 'time time is returned');
+  });
 
   test('eventCategory', function(assert) {
     const data = { meta: { meta: [['category', 'Machine']] } };

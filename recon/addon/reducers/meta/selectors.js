@@ -210,7 +210,7 @@ export const isProcessAnalysisDisabled = createSelector(
 
 export const eventTime = createSelector(
   [_meta],
-  (meta) => findMetaValue('event.time', meta) || findMetaValue('starttime', meta)
+  (meta) => findMetaValue('event.time', meta) || findMetaValue('starttime', meta) || findMetaValue('time', meta)
 );
 
 export const eventCategory = createSelector(
