@@ -9,10 +9,8 @@ pipeline {
         }
 
         stages {
-                stage('Uploading Data to The Log-Decoder') {
-                        steps {
-                              build job: 'Test-Target', parameters: [[$class: 'StringParameterValue', name: 'VERSION', value: env.VERSION],[$class: 'StringParameterValue', name: 'NODE', value: env.NODE]]
-                        }
+                stage('Reset Log-Decoder and Concentrator DBs') {
+                    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/reset_ld_and_concentrator_hybrid_dbs.sh"
                 }
 
                                 
@@ -64,6 +62,12 @@ def setBaseUrl (
         println (baseUrl)
     } else if (rpmVeriosn == '11.3.0.0'){
         baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.3/11.3.0/11.3.0.0-" + stability + "/"
+        println (baseUrl)
+    }else if (rpmVeriosn == '11.3.0.1'){
+        baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.3/11.3.0/11.3.0.1-" + stability + "/"
+        println (baseUrl)
+    }else if (rpmVeriosn == '11.3.1.0'){
+        baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.3/11.3.1/11.3.1.0-" + stability + "/"
         println (baseUrl)
     }else if (rpmVeriosn == '11.4.0.0'){
         baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.4/11.4.0/11.4.0.0-" + stability + "/"
