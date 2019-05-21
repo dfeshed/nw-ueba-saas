@@ -3,7 +3,6 @@ from abc import ABCMeta, abstractmethod
 from airflow.utils.decorators import apply_defaults
 
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
-from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBootJarOperator
 
 
 class AbstractOutputOperator(FixedDurationJarOperator):
@@ -55,13 +54,6 @@ class AbstractOutputOperator(FixedDurationJarOperator):
         :return: The task name
         """
         pass
-
-    def get_retry_args(self):
-        java_args = self.java_args
-        java_args.pop('smart_record_conf_name')
-        java_args.update({'entity_type': self.entity_type})
-        return ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in
-                        java_args.iteritems())
 
 
 

@@ -242,7 +242,8 @@ class SpringBootJarOperator(BashOperator):
 
         self.jmx(bash_command)
 
-        self.jar_path(bash_command, self.command)
+        self.jar_path(bash_command)
+
         self.jar_args(bash_command, self.command)
 
         self.extra_args(bash_command)
@@ -312,7 +313,7 @@ class SpringBootJarOperator(BashOperator):
         if not is_blank(extra_args):
             bash_command.extend(extra_args.split(' '))
 
-    def jar_path(self, bash_command, command):
+    def jar_path(self, bash_command):
         """
 
         Validate that main_class, jar_path or class_path exist in merged_args,
@@ -342,14 +343,15 @@ class SpringBootJarOperator(BashOperator):
             bash_command.extend(['-Dloader.main=%s' % self.merged_args.get(JVM_ARGS_CONF_KEY).get(main_class_conf_key)])
             bash_command.extend(['org.springframework.boot.loader.PropertiesLauncher'])
 
+    def jar_args(self, bash_command, command):
         if not is_blank(self.java_args):
-            java_args = self.get_retry_args()
+            java_args = ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in
+                             self.java_args.iteritems())
             bash_command.append(command)
             bash_command.append(java_args)
 
-    def get_retry_args(self):
-        return ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in
-                             self.java_args.iteritems())
+    def get_retry_args(self, bash_command, command):
+        self.jar_args(bash_command, command)
 
     def jmx(self, bash_command):
         """
@@ -500,7 +502,9 @@ class SpringBootJarOperator(BashOperator):
 
         self.logback(bash_command)
 
-        self.jar_path(bash_command=bash_command, command="cleanup")
+        self.jar_path(bash_command=bash_command)
+
+        self.get_retry_args(bash_command, command="cleanup")
 
         bash_command = [elem for elem in bash_command if (elem != "''" and elem != "")]
 
