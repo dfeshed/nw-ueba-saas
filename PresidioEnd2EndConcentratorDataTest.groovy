@@ -10,17 +10,26 @@ pipeline {
 
     stages {
         stage('presidio-integration-test Project Clone') {
+            when {
+                expression { return params.ENABLE_PROJECT_CLONE_STAGE }
+            }
             steps {
                 cleanWs()
                 buildIntegrationTestProject()
             }
         }
         stage('Reset Log-Decoder and Concentrator DBs') {
+            when {
+                expression { return params.ENABLE_RESET_LOG_DECODER_AND_CONCENTRATOR_DBS_STAGE }
+            }
             steps {
                 CleanEpHybridDBs()
             }
         }
         stage('UEBA - Reset DBs and RPMs Upgrade') {
+            when {
+                expression { return params.ENABLE_RESET_DBS_AND_RPMS_UPGRADE_STAGE }
+            }
             steps {
                 script {
                     setBaseUrl()
@@ -29,6 +38,9 @@ pipeline {
             }
         }
         stage('presidio-integration-test Project Build Pipeline Initialization') {
+            when {
+                expression { return params.ENABLE_BUILD_INITIALIZATION_STAGE }
+            }
             steps {
                 script {
                     mvnCleanInstall()
@@ -36,6 +48,9 @@ pipeline {
             }
         }
         stage('End 2 End Test Automation') {
+            when {
+                expression { return params.ENABLE_E2E_TEST_AUTOMATION_STAGE }
+            }
             steps {
                 script {
                     runEnd2EndTestAutomation()
