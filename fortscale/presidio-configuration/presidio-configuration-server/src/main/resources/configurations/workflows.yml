@@ -14,7 +14,7 @@ dags:
     model:
       schedule_interval: None
     retention:
-      schedule_interval: timedelta(days=1)
+      schedule_interval: None
     smart:
       schedule_interval: timedelta(hours=1)
       smart_confs:
