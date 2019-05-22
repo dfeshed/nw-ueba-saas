@@ -196,11 +196,17 @@ export const allExpectedDataLoaded = createSelector(
 export const getDownloadOptions = createSelector(
   [_eventAnalysisPreferences, _items, _isAllEventsSelected, _selectedEventIds, _resultsData],
   (eventAnalysisPreferences, items, isAllEventsSelected, selectedEventIds, resultsData) => {
+
     if (eventAnalysisPreferences && (isAllEventsSelected || selectedEventIds.length)) {
+
+      if (isAllEventsSelected) {
+        selectedEventIds = resultsData.map(({ sessionId }) => sessionId);
+      }
 
       const i18n = lookup('service:i18n');
       const preferredDownloadOptions = [];
       const remainingDownloadOptions = [];
+
       let dropDownItems = items.filter((item) => !item.additionalFieldPrefix && item.type == 'dropdown');
       const total = selectedEventIds.length;
 
@@ -219,7 +225,7 @@ export const getDownloadOptions = createSelector(
           fileType: eventAnalysisPreferences[defaultEventType],
           sessionIds: getIdsForEventType,
           count: !isAllEventsSelected ? `${num}/${total}` : '',
-          disabled: !isAllEventsSelected && num < 1
+          disabled: num < 1
         });
       });
 
@@ -241,7 +247,7 @@ export const getDownloadOptions = createSelector(
             fileType: option,
             sessionIds: getIdsForEventType,
             count: !isAllEventsSelected ? `${num}/${total}` : '',
-            disabled: !isAllEventsSelected && num < 1
+            disabled: num < 1
           });
         });
       });

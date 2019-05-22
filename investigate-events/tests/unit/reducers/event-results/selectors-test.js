@@ -39,11 +39,17 @@ module('Unit | Selectors | event-results', function(hooks) {
     { sessionId: 3, medium: 32 }
   ];
 
-  const withAllEventsSelected = {
+  const networkEventResultsData = [
+    { sessionId: 1, medium: 1 },
+    { sessionId: 2, medium: 1 },
+    { sessionId: 5, medium: 1 }
+  ];
+
+  const withAllEventsAndNetworkResults = {
     status: 'stopped',
     allEventsSelected: true,
     selectedEventIds: [],
-    data: eventResultsData
+    data: networkEventResultsData
   };
 
   const withNetworkEvents = {
@@ -392,11 +398,11 @@ module('Unit | Selectors | event-results', function(hooks) {
     });
   });
 
-  test('getDownloadOptions returns options with no counts when selectAll is checked', async function(assert) {
+  test('getDownloadOptions returns options with no counts when selectAll is checked and disables appropriate options', async function(assert) {
     const state = {
       investigate: {
         data: preferenceData,
-        eventResults: withAllEventsSelected
+        eventResults: withAllEventsAndNetworkResults
       }
     };
     const result = getDownloadOptions(state);
@@ -412,12 +418,13 @@ module('Unit | Selectors | event-results', function(hooks) {
     await assertForDownloadOptions(assert, defaultGroup, 2, 'META', 'TEXT', 'Visible Meta as Text');
     await assertForDownloadOptions(assert, otherGroup, 0, 'LOG', 'CSV', 'Logs as CSV');
     await assertForDownloadOptions(assert, otherGroup, 3, 'META', 'CSV', 'Visible Meta as CSV');
+
     // preferred Log download option
-    await assertForCountsAndSessionIds(assert, defaultGroup, 0, '', [], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 0, '', [], true);
     // The only available Network download option
-    await assertForCountsAndSessionIds(assert, defaultGroup, 1, '', [], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 1, '', [1, 2, 5], false);
     // prefierred Meta download option
-    await assertForCountsAndSessionIds(assert, defaultGroup, 2, '', [], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 2, '', [1, 2, 5], false);
   });
 
   test('getDownloadOptions returns appropriate counts for options when network events are selected', async function(assert) {

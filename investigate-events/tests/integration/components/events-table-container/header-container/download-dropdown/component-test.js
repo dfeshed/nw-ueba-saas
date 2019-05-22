@@ -31,7 +31,6 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     resolver: engineResolverFor('investigate-events')
   });
 
-
   hooks.beforeEach(function() {
 
     this.owner.inject('component', 'flashMessages', 'service:flashMessages', 'i18n', 'service:i18n');
@@ -62,37 +61,41 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     assert.notOk(find(`${downloadSelector} .ember-power-select`), 'Download option not present');
   });
 
-  test('download dropdown should read Download All if selectAll is checked', async function(assert) {
+  test('download dropdown should be disabled & read Download if nothing is checked', async function(assert) {
+    new ReduxDataHelper(setState)
+      .allEventsSelected(false)
+      .build();
+    await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
+    assert.ok(find(`${downloadSelector}.is-disabled`), 'Download is disabled');
+    assert.equal(findAll(downloadTitle)[0].textContent.trim(), 'Download', 'Download dropdown should read `Download` if selectAll is not checked');
+  });
+
+  test('download dropdown should be enabled & read Download All if selectAll is checked', async function(assert) {
     new ReduxDataHelper(setState)
       .allEventsSelected(true)
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
+    assert.notOk(find(`${downloadSelector}.is-disabled`), 'Download is enabled');
     assert.equal(findAll(downloadTitle)[0].textContent.trim(), 'Download All', 'Download dropdown should read `Download All` if selectAll is checked');
   });
 
-  test('download dropdown should read Download if selectAll is not checked', async function(assert) {
+  test('download dropdown should be enabled & read Download if 1+ and not all events are selected ', async function(assert) {
     new ReduxDataHelper(setState)
-      .allEventsSelected(false)
       .withSelectedEventIds()
-      .build();
-    await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
-    assert.equal(findAll(downloadTitle)[0].textContent.trim(), 'Download', 'Download dropdown should read `Download` if selectAll is not checked');
-  });
-
-  test('download dropdown should be enabled if all or 1+ events are selected ', async function(assert) {
-    new ReduxDataHelper(setState)
       .allEventsSelected(false)
-      .withSelectedEventIds()
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     assert.notOk(find(`${downloadSelector}.is-disabled`), 'Download is enabled');
+    assert.equal(findAll(downloadTitle)[0].textContent.trim(), 'Download', 'Download dropdown should read `Download` if selectAll is not checked');
   });
 
-  test('download dropdown should be disabled if no events are selected ', async function(assert) {
+  test('dropdown should be disabled & show correct label when downloading', async function(assert) {
     new ReduxDataHelper(setState)
-      .allEventsSelected(false)
+      .setFileExtractStatus('wait')
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
+    assert.ok(findAll(downloadLoader).length == 1, 'Loading icon present');
+    assert.equal(findAll(downloadTitle)[0].textContent.trim(), 'Downloading...', 'Download dropdown should indicate Downloading when download in progress');
     assert.ok(find(`${downloadSelector}.is-disabled`), 'Download is disabled');
   });
 
@@ -152,13 +155,4 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '2/2');
   });
 
-  test('dropdown should show correct label when downloading', async function(assert) {
-    new ReduxDataHelper(setState)
-      .setFileExtractStatus('wait')
-      .build();
-    await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
-    assert.ok(findAll(downloadLoader).length == 1, 'Loading icon present');
-    assert.equal(findAll(downloadTitle)[0].textContent.trim(), 'Downloading...', 'Download dropdown should indicate Downloading when download in progress');
-    assert.ok(find(`${downloadSelector}.is-disabled`), 'Download is disabled');
-  });
 });

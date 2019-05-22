@@ -256,29 +256,6 @@ export const endpointFilter = (endpointId) => {
   return query;
 };
 
-export const addQueryFilters = (query, value) => {
-  return _addFilter(
-    query,
-    'query',
-    value
-  );
-};
-
-export const addTimerangeFilter = (query, start, end) => {
-  if (!query.filter) {
-    query.filter = [];
-  }
-  const obj = {
-    field: 'timeRange',
-    range: {
-      from: start,
-      to: end
-    }
-  };
-  query.filter.push(obj);
-  return query;
-};
-
 export const addFileTypeFilter = (query, type) => {
   return _addFilter(
     query,

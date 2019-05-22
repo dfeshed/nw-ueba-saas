@@ -84,11 +84,12 @@ export const extractFiles = (eventDownloadType, fileType, sessionIds = [], isSel
     const { serviceId } = queryNode;
     const { investigate: { services: { serviceData } } } = getState();
     const selectedServiceData = serviceData.find((s) => s.id === serviceId);
+
     const filename = createFilename(eventDownloadType, selectedServiceData.displayName, sessionIds, isSelectAll);
 
     dispatch({
       type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE,
-      promise: fetchExtractJobId(queryNode, serviceId, sessionIds, fileType, filename, eventDownloadType, isSelectAll, columnList),
+      promise: fetchExtractJobId(serviceId, sessionIds, fileType, filename, eventDownloadType, columnList),
       meta: {
         onFailure(response) {
           handleInvestigateErrorCode(response, `FETCH_EXTRACT_JOB_ID; ${serviceId} ${eventDownloadType}`);

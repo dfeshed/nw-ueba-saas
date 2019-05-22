@@ -5,6 +5,7 @@ import { inject as service } from '@ember/service';
 
 import { getColumns, validEventSortColumns, disableSort } from 'investigate-events/reducers/investigate/data-selectors';
 import {
+  areEventsStreaming,
   isCanceled,
   eventTableFormattingOpts,
   searchMatches,
@@ -24,6 +25,7 @@ const stateToComputed = (state) => {
   const { columns, notIndexedAtValue, notSingleton, notValid } = validEventSortColumns(state);
   return {
     eventTableFormattingOpts: eventTableFormattingOpts(state),
+    areEventsStreaming: areEventsStreaming(state),
     status: state.investigate.eventResults.status,
     searchTerm: state.investigate.eventResults.searchTerm,
     searchScrollIndex: state.investigate.eventResults.searchScrollIndex,

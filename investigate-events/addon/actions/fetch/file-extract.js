@@ -7,10 +7,7 @@ import {
   addFileTypeFilter,
   addSessionIdsFilter,
   addFilenameFilter,
-  addQueryFilters,
-  addTimerangeFilter,
-  addMetaToDownloadFilter,
-  encodeMetaFilterConditions
+  addMetaToDownloadFilter
 } from 'investigate-shared/actions/api/events/utils';
 
 /**
@@ -27,20 +24,13 @@ import {
  * download URL, which can be used to fetch the actual files
  * @public
  */
-export default function fetchExtractJobId(queryNode, endpointId, eventIds, fileType, filename, eventDownloadType, isSelectAll, columnList) {
+export default function fetchExtractJobId(endpointId, eventIds, fileType, filename, eventDownloadType, columnList) {
   const request = lookup('service:request');
 
   let query = endpointFilter(endpointId);
   query = addFilenameFilter(query, filename);
   query = addFileTypeFilter(query, fileType);
-
-  if (isSelectAll) {
-    const filters = queryNode.metaFilter.conditions || queryNode.metaFilter;
-    query = addQueryFilters(query, encodeMetaFilterConditions(filters));
-    query = addTimerangeFilter(query, queryNode.startTime, queryNode.endTime);
-  } else {
-    query = addSessionIdsFilter(query, eventIds);
-  }
+  query = addSessionIdsFilter(query, eventIds);
   query = addMetaToDownloadFilter(query, columnList);
 
   // separate socket enpoint call based on eventDownloadType (eg. META, NETWORK, LOG)

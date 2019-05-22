@@ -8,7 +8,7 @@ import { setupTest } from 'ember-qunit';
 import fetchExtractJobId from 'investigate-events/actions/fetch/file-extract';
 import { patchSocket } from '../../../helpers/patch-socket';
 
-const queryWithSessionIds = {
+const queryForLogAndNetwork = {
   filter: [
     { field: 'endpointId', value: 2 },
     { field: 'filename', value: '2_NETWORK_AS_PCAP' },
@@ -17,23 +17,12 @@ const queryWithSessionIds = {
   ]
 };
 
-const queryWithoutSessionIds = {
-  filter: [
-    { field: 'endpointId', value: 2 },
-    { field: 'filename', value: '2_NETWORK_AS_PCAP' },
-    { field: 'outputContentType', value: 'PCAP' },
-    { field: 'query', value: '' },
-    { field: 'timeRange', range: { from: 1540237800, to: 1540324199 } }
-  ]
-};
-
-const queryforMETAWithoutSessionIds = {
+const queryforMETA = {
   filter: [
     { field: 'endpointId', value: 2 },
     { field: 'filename', value: '2_META_AS_TSV' },
     { field: 'outputContentType', value: 'TSV' },
-    { field: 'query', value: '' },
-    { field: 'timeRange', range: { from: 1540237800, to: 1540324199 } },
+    { field: 'sessionIds', values: [3, 7] },
     { field: 'exportSelections', values: [ 'a', 'b'] }
   ]
 };
@@ -43,77 +32,39 @@ module('Unit | API | extract-file', function(hooks) {
     initialize(this.owner);
   });
 
-  test('Should create a query with sessionids when all events are not selected', function(assert) {
+  test('Should create a valid query for Log and Network downloads', function(assert) {
     const done = assert.async();
-    const queryNode = {
-      endTime: 1540324199,
-      serviceId: '2',
-      startTime: 1540237800
-    };
     const endpointId = 2;
     const eventIds = [3, 7];
     const fileType = 'PCAP';
     const fileName = '2_NETWORK_AS_PCAP';
     const eventDownloadType = 'NETWORK';
-    const isSelectAll = false;
     assert.expect(3);
     patchSocket((method, modelName, query) => {
       assert.equal(modelName, 'extract-NETWORK-job-id');
       assert.equal(method, 'query');
-      assert.deepEqual(query, queryWithSessionIds);
+      assert.deepEqual(query, queryForLogAndNetwork);
       done();
     });
-    fetchExtractJobId(queryNode, endpointId, eventIds, fileType, fileName, eventDownloadType, isSelectAll);
+    fetchExtractJobId(endpointId, eventIds, fileType, fileName, eventDownloadType);
   });
 
-
-  test('Should create a query with params when all events are selected', function(assert) {
+  test('Should create a valid query for Meta downloads', function(assert) {
     const done = assert.async();
-    const queryNode = {
-      endTime: 1540324199,
-      serviceId: '2',
-      startTime: 1540237800,
-      metaFilter: []
-    };
-    const endpointId = 2;
-    const eventIds = [3, 7];
-    const fileType = 'PCAP';
-    const fileName = '2_NETWORK_AS_PCAP';
-    const eventDownloadType = 'NETWORK';
-    const isSelectAll = true;
-    assert.expect(3);
-    patchSocket((method, modelName, query) => {
-      assert.equal(modelName, 'extract-NETWORK-job-id');
-      assert.equal(method, 'query');
-      assert.deepEqual(query, queryWithoutSessionIds);
-      done();
-    });
-    fetchExtractJobId(queryNode, endpointId, eventIds, fileType, fileName, eventDownloadType, isSelectAll);
-  });
-
-  test('Should create a query with params for meta download when all events are selected', function(assert) {
-    const done = assert.async();
-    const queryNode = {
-      endTime: 1540324199,
-      serviceId: '2',
-      startTime: 1540237800,
-      metaFilter: []
-    };
     const endpointId = 2;
     const eventIds = [3, 7];
     const fileType = 'TSV';
     const fileName = '2_META_AS_TSV';
     const eventDownloadType = 'META';
-    const isSelectAll = true;
     const columnList = ['a', 'b'];
     assert.expect(3);
     patchSocket((method, modelName, query) => {
       assert.equal(modelName, 'extract-META-job-id');
       assert.equal(method, 'query');
-      assert.deepEqual(query, queryforMETAWithoutSessionIds);
+      assert.deepEqual(query, queryforMETA);
       done();
     });
-    fetchExtractJobId(queryNode, endpointId, eventIds, fileType, fileName, eventDownloadType, isSelectAll, columnList);
+    fetchExtractJobId(endpointId, eventIds, fileType, fileName, eventDownloadType, columnList);
   });
 
 
