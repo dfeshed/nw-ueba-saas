@@ -2,13 +2,13 @@
 //
 //import fortscale.remote.RemoteAlertClientService;
 //
-//import fortscale.remote.RemoteUserClientService;
+//import fortscale.remote.RemoteEntityClientService;
 //import fortscale.remote.fake.FakeRemoteAlertClientService;
 //import fortscale.remote.fake.FakeRemoteUserClientService;
 //import fortscale.remote.fake.creators.FakeAlertsCreator;
 //import fortscale.remote.fake.creators.FakeCreatorUtils;
 //import fortscale.remote.fake.creators.FakeIndicatorCreators;
-//import fortscale.remote.fake.creators.FakeUsersCreator;
+//import fortscale.remote.fake.creators.FakeEntitiesCreator;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;
 //import org.springframework.context.annotation.Import;
@@ -32,9 +32,9 @@
 //        }
 //
 //        @Bean()
-//        RemoteUserClientService remoteUsersClient() {
+//        RemoteEntityClientService remoteUsersClient() {
 //
-//            return new RemoteUserClientService();
+//            return new RemoteEntityClientService();
 //        }
 //    }
 //
@@ -48,9 +48,9 @@
 //        }
 //
 //        @Bean()
-//        FakeUsersCreator fakeUsersCreator() {
+//        FakeEntitiesCreator fakeUsersCreator() {
 //
-//            return new FakeUsersCreator(fakeCreatorUtils(),fakeAlertsCreator());
+//            return new FakeEntitiesCreator(fakeCreatorUtils(),fakeAlertsCreator());
 //        }
 //
 //        @Bean()
@@ -73,7 +73,7 @@
 //        }
 //
 //        @Bean()
-//        RemoteUserClientService remoteUsersClient() {
+//        RemoteEntityClientService remoteUsersClient() {
 //
 //            return new FakeRemoteUserClientService(fakeAlertsCreator(),fakeUsersCreator());
 //        }

@@ -1,9 +1,9 @@
 package fortscale.presidio.output.client.spring;
 
 import fortscale.presidio.output.client.api.AlertsPresidioOutputClient;
-import fortscale.presidio.output.client.api.UsersPresidioOutputClient;
+import fortscale.presidio.output.client.api.EntitiesPresidioOutputClient;
 import fortscale.presidio.output.client.remote.RemoteAlertClientService;
-import fortscale.presidio.output.client.remote.RemoteUserClientService;
+import fortscale.presidio.output.client.remote.RemoteEntityClientService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -19,9 +19,9 @@ public class PresidioUiOutputRemoteClientConfig {
         }
 
         @Bean()
-        UsersPresidioOutputClient remoteUsersClient() {
+        EntitiesPresidioOutputClient remoteUsersClient() {
 
-            return new RemoteUserClientService();
+            return new RemoteEntityClientService();
         }
 
 }

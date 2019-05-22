@@ -6,7 +6,7 @@ import fortscale.domain.core.dao.ApplicationConfigurationRepository;
 import fortscale.domain.rest.EntityRestFilter;
 import fortscale.domain.spring.PresidioUiDomainConfiguration;
 import fortscale.presidio.output.client.api.AlertsPresidioOutputClient;
-import fortscale.presidio.output.client.api.UsersPresidioOutputClient;
+import fortscale.presidio.output.client.api.EntitiesPresidioOutputClient;
 import fortscale.services.*;
 import fortscale.services.cache.MemoryBasedCache;
 import fortscale.services.impl.*;
@@ -62,7 +62,7 @@ public class PresidioUiServiceConfiguration {
     EntityService userService(){
         EntityConverterHelper entityConverterHelper = new EntityConverterHelper();
         AggregationConverterHelper aggregationConverterHelper = new AggregationConverterHelper();
-        return new EntityServiceImpl(entityConverterHelper, aggregationConverterHelper,remoteUsersClientService) ;
+        return new EntityServiceImpl(entityConverterHelper, aggregationConverterHelper, remoteEntitiesClientService) ;
 
     }
 
@@ -131,5 +131,5 @@ public class PresidioUiServiceConfiguration {
     private AlertsPresidioOutputClient remoteAlertClientService;
 
     @Autowired
-    private UsersPresidioOutputClient remoteUsersClientService;
+    private EntitiesPresidioOutputClient remoteEntitiesClientService;
 }

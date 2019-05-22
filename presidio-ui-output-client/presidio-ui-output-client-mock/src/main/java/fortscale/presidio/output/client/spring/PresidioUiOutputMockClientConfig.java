@@ -2,13 +2,12 @@ package fortscale.presidio.output.client.spring;
 
 import fortscale.presidio.output.client.api.AlertsPresidioOutputClient;
 import fortscale.presidio.output.client.api.EntitiesPresidioOutputClient;
-import fortscale.presidio.output.client.api.UsersPresidioOutputClient;
 import fortscale.presidio.output.client.mock.FakeRemoteAlertClientService;
 import fortscale.presidio.output.client.mock.FakeRemoteUserClientService;
 import fortscale.presidio.output.client.mock.creators.FakeAlertsCreator;
 import fortscale.presidio.output.client.mock.creators.FakeCreatorUtils;
+import fortscale.presidio.output.client.mock.creators.FakeEntitiesCreator;
 import fortscale.presidio.output.client.mock.creators.FakeIndicatorCreators;
-import fortscale.presidio.output.client.mock.creators.FakeUsersCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -24,9 +23,9 @@ public class PresidioUiOutputMockClientConfig {
         }
 
         @Bean()
-        FakeUsersCreator fakeUsersCreator() {
+        FakeEntitiesCreator fakeUsersCreator() {
 
-            return new FakeUsersCreator(fakeCreatorUtils(),fakeAlertsCreator());
+            return new FakeEntitiesCreator(fakeCreatorUtils(),fakeAlertsCreator());
         }
 
         @Bean()
