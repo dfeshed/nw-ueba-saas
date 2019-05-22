@@ -9,8 +9,9 @@ FROM   ((SELECT Min(start_date)                   AS start_time,
                Date_trunc(''day'', execution_date) AS execution_day_1,
                dag_id AS dag_id1
         FROM   dag_run
-        WHERE  dag_id LIKE ''full_flow%''
-               AND dag_id NOT LIKE ''full_flow%.%''
+        WHERE  dag_id NOT LIKE ''maintenance_flow_dag%''
+               AND dag_id NOT LIKE ''airflow_zombie_killer%''
+               AND dag_id NOT LIKE ''reset_presidio%''
         GROUP  BY 2,3) AS t1
         inner join (SELECT Max(start_date)
                            AS end_time,
@@ -20,8 +21,9 @@ FROM   ((SELECT Min(start_date)                   AS start_time,
                                                           execution_day_2,
                                                           dag_id AS dag_id2
                     FROM   dag_run
-                    WHERE  dag_id LIKE ''full_flow%''
-                           AND dag_id NOT LIKE ''full_flow%.%''
+                    WHERE  dag_id NOT LIKE ''maintenance_flow_dag%''
+                           AND dag_id NOT LIKE ''airflow_zombie_killer%''
+                           AND dag_id NOT LIKE ''reset_presidio%''
                     GROUP  BY 2,3) AS t2
                 ON (t1.execution_day_1 = t2.execution_day_2 AND t1.dag_id1 = t2.dag_id2)) AS t3
 WHERE execution_day_1 >= (SELECT Max(execution_date) - interval ''{{logical_days_back}}'' day AS
@@ -29,4 +31,7 @@ WHERE execution_day_1 >= (SELECT Max(execution_date) - interval ''{{logical_days
                              FROM   task_instance
                              WHERE  operator != ''SubDagOperator''
                                     AND state = ''success''
-                                    AND dag_id LIKE ''full_flow%'') ', false, true, false, 600, '{"logical_days_back":"30"}', true, 16, '2017-10-31 14:33:22.879552');
+                                    AND dag_id NOT LIKE ''maintenance_flow_dag%''
+                                    AND dag_id NOT LIKE ''airflow_zombie_killer%''
+                                    AND dag_id NOT LIKE ''reset_presidio%''
+                                    ) ', false, true, false, 600, '{"logical_days_back":"30"}', true, 16, '2017-10-31 14:33:22.879552');

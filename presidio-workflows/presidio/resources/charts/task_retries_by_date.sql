@@ -4,10 +4,14 @@ INSERT INTO chart (id, label, conn_id, user_id, chart_type, sql_layout, sql, y_l
        try_number,
        start_date
 FROM   task_instance
-WHERE  dag_id LIKE ''full_flow%''
+WHERE  dag_id NOT LIKE ''maintenance_flow_dag%''
+       AND dag_id NOT LIKE ''airflow_zombie_killer%''
+       AND dag_id NOT LIKE ''reset_presidio%''
        AND try_number > 1
        AND execution_date >= (SELECT Max(execution_date) - interval ''{{logical_hours_back}}'' hour
                                      AS from_date
                               FROM   task_instance
-                              WHERE  dag_id LIKE ''full_flow%''
+                              WHERE  dag_id NOT LIKE ''maintenance_flow_dag%''
+                                     AND dag_id NOT LIKE ''airflow_zombie_killer%''
+                                     AND dag_id NOT LIKE ''reset_presidio%''
                                      AND try_number > 1) ', false, true, false, 600, '{"logical_hours_back":"720"}', true, 5, '2017-12-20 10:03:36.547683');
