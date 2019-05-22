@@ -422,7 +422,8 @@ export default reduxActions.handleActions({
           name: group.name,
           sourceCount: group.sourceCount,
           dirty: group.dirty,
-          lastPublishedOn: group.lastPublishedOn
+          lastPublishedOn: group.lastPublishedOn,
+          isChecked: false
         }));
         return state.merge({
           groupRanking: groupRankingVals,

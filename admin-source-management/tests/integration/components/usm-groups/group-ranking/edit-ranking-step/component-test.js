@@ -65,9 +65,9 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
   test('Show group list preview toggle and click', async function(assert) {
     new ReduxDataHelper(setState).groupRankingWithData().build();
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
-    assert.equal(findAll('.edit-ranking-step .group-preview-cell .x-toggle-container').length, 14, 'All 14 preview toggles are showing');
-    await triggerEvent(document.querySelectorAll('.group-preview-cell .x-toggle-container div')[4], 'click');
-    assert.equal(findAll('.edit-ranking-step .group-preview-cell .x-toggle-container-checked').length, 1, 'A Toggle is checked');
+    assert.equal(findAll('.edit-ranking-step .group-preview-cell .float-toggle').length, 14, 'All 14 preview toggles are showing');
+    await triggerEvent(document.querySelectorAll('.group-preview-cell .float-toggle')[4], 'click');
+    assert.equal(findAll('.edit-ranking-step .group-preview-cell .simulate-true').length, 1, 'A Toggle is checked');
   });
 
   test('Show simulation by selected index first', async function(assert) {
@@ -76,7 +76,7 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
       .groupRankingWithViewData(0)
       .build();
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
-    assert.equal(findAll('tr:nth-child(1) .x-toggle-container-checked').length, 1, 'first Toggle is checked');
+    assert.equal(findAll('tr:nth-child(1) .simulate-true').length, 1, 'first Toggle is checked');
   });
 
   test('Show simulation by selected index second', async function(assert) {
@@ -85,7 +85,7 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
       .groupRankingWithViewData(1)
       .build();
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
-    assert.equal(findAll('tr:nth-child(2) .x-toggle-container-checked').length, 1, 'second Toggle is checked');
+    assert.equal(findAll('tr:nth-child(2) .simulate-true').length, 1, 'second Toggle is checked');
   });
 
   test('keypress arrowRight test', async function(assert) {

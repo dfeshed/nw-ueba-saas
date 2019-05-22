@@ -159,6 +159,32 @@
       }
     }
   }
+  .simulate-true, .simulate-false {
+    width: 24px;
+    height: 12px;
+    border: 1px solid border-color(primary);
+    border-radius: 6px;
+    background-color: background-color(neutral, dark);
+    .float-ball {
+      height: 10px;
+      width: 10px;
+      border: 1px solid border-color(neutral);
+      border-radius: 5px;
+      background-color: background-color(neutral);
+    }
+  }
+  .simulate-true {
+    background-color: background-color(secondary);
+    .float-ball {
+      float: right;
+    }
+  }
+  .simulate-false .float-ball {
+    float: left;
+  }
+  .simulate-true:hover, .simulate-false:hover {
+    border: 1px solid border-color(primary, lighter);
+  }
 }
 /*
 .admin-engine .license-banner.shown+page.admin-usm-engine .edit-ranking-step {

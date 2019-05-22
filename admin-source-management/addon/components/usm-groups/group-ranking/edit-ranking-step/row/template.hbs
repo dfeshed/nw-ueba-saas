@@ -7,10 +7,9 @@
   {{add index 1}}
 </td>
 <td class="group-preview-cell">
-  {{x-toggle
-    value=item.isChecked
-    onToggle=(action 'previewRankingWithFetch' index item.isChecked)
-  }}
+  <div class="float-toggle simulate-{{item.isChecked}}" {{action 'previewRankingWithFetch' index item.isChecked on='click'}}>
+    <div class="float-ball"></div>
+  </div>
 </td>
 <td class="group-name-cell">
   {{item.name}}

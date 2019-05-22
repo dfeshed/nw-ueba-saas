@@ -77,12 +77,13 @@ module('Unit | Reducers | Group Wizard Reducers', function() {
   test('on FETCH_GROUP_RANKING, get-all complete', function(assert) {
     const fetchGroupPayload = [
       {
-        'id': 'group_001',
-        'name': 'Zebra 001',
-        'dirty': false,
-        'assignedPolicies': 'ABC',
-        'sourceCount': 2,
-        'lastPublishedOn': '1/1/1'
+        id: 'group_001',
+        name: 'Zebra 001',
+        isChecked: false,
+        dirty: false,
+        assignedPolicies: 'ABC',
+        sourceCount: 2,
+        lastPublishedOn: '1/1/1'
       }
     ];
     const expectedEndState = new ReduxDataHelper()
