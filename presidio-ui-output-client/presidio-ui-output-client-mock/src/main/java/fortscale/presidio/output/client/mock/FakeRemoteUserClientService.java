@@ -34,7 +34,7 @@ public class FakeRemoteUserClientService implements UsersPresidioOutputClient {
     private class FakeUsersApi extends UsersApi {
 
         @Override
-        public AlertsWrapper getAlertsByUser(String userId, UserAlertsQuery body) throws ApiException {
+        public AlertsWrapper getAlertsByUser(String userId, EntityAlertsQuery body) throws ApiException {
             return alertsCreator.getAlerts(10);
         }
 
