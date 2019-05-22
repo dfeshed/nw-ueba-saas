@@ -541,6 +541,7 @@ export default {
     },
     events: {
       search: 'Find text in table',
+      searchMin: '2 character minimum to find text.',
       searchPlaceholder: 'Enter text to be found.',
       titleThreshold: '{{age}} {{count}} Events ({{sort}})',
       title: '{{count}} Events ({{sort}})',

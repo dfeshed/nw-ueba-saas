@@ -48,6 +48,7 @@ const HeaderContainer = Component.extend({
   tagName: 'hbox',
   i18n: service(),
   accessControl: service(),
+  eventBus: service(),
   toggleReconSize: () => {},
   toggleSlaveFullScreen: () => {},
   _searchTerm: null,
@@ -116,6 +117,11 @@ const HeaderContainer = Component.extend({
   },
 
   actions: {
+    decoratedSetColumnGroup() {
+      this.get('eventBus').trigger('rsa-content-tethered-panel-hide-tableSearchPanel');
+      this.send('setColumnGroup', ...arguments);
+    },
+
     debouncedSearchForTerm(term, event) {
       if (event.key === 'Enter') {
         this.send('setSearchScroll', this.get('searchScrollIndex') + 1);

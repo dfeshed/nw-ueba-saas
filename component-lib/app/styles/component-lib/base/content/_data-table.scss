@@ -231,8 +231,15 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       .search-match-text {
         padding: .15rem;
         margin: .15rem;
-        background: background-color(primary, lightest);
-        color: text-color(primary, darkest);
+        background: background-color(secondary);
+        color: text-color(primary, lightest);
+      }
+    }
+
+    &.is-search-match.is-selected {
+      .search-match-text {
+        background: background-color(primary, darkest);
+        color: text-color(primary, lightest);
       }
     }
   }

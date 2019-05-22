@@ -86,6 +86,7 @@ const EventsTableContextMenu = RsaContextMenu.extend({
   metaValue: null,
   selectEvent: () => {},
   accessControl: service(),
+  eventBus: service(),
   i18n: service(),
   groupingSize: 100,
 
@@ -162,6 +163,7 @@ const EventsTableContextMenu = RsaContextMenu.extend({
         if (notKeyboardControl && (checkboxClicked || checkboxWrapperClicked)) {
           this.send('toggleEventSelection', event);
         } else {
+          this.get('eventBus').trigger('rsa-content-tethered-panel-hide-tableSearchPanel');
           this.get('selectEvent')(event);
         }
       }

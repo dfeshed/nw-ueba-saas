@@ -25,6 +25,7 @@ export default Route.extend({
   contextualHelp: service(),
   redux: service(),
   request: service(),
+  eventBus: service(),
 
   /**
    * The `queryParams` property controls how changes to query params in the URL
@@ -221,6 +222,7 @@ export default Route.extend({
           window.open(path, '_blank');
         }
       } else {
+        this.get('eventBus').trigger('rsa-content-tethered-panel-hide-tableSearchPanel');
         redux.dispatch(setReconClosed());
         this.set('nextQueryParams', qp);
         this.runInvestigateQuery(qp, true);

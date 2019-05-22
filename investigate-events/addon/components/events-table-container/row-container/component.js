@@ -95,6 +95,9 @@ export default Component.extend(RowMixin, HighlightsEntities, {
   _columnsOrDataDidChange: observer('item', 'table.visibleColumns.[]', function() {
     once(this, this._renderCells);
     once(this, this._highlightEntities);
+    if (this.get('isSearchMatch')) {
+      once(this, this._highlightSearchMatch);
+    }
   }),
 
   /**
@@ -114,6 +117,10 @@ export default Component.extend(RowMixin, HighlightsEntities, {
   _highlightSearchMatch() {
     schedule('afterRender', () => {
       const el = this.get('element');
+      if (!el) {
+        return;
+      }
+
       const matchEl = el.querySelector('.search-match-text');
 
       if (matchEl) {
@@ -122,9 +129,10 @@ export default Component.extend(RowMixin, HighlightsEntities, {
 
       const cells = el.querySelectorAll('.rsa-data-table-body-cell .content');
       for (let cell = 0; cell < cells.length; cell++) {
-        const markup = cells[cell].children[0].innerHTML;
+        const root = cells[cell].children[0] ? cells[cell].children[0] : cells[cell];
+        const markup = root.innerHTML;
         const newMarkup = markup.replace(new RegExp(this.get('table.searchTerm'), 'gi'), '<span class=\'search-match-text\'>$&</span>');
-        cells[cell].children[0].innerHTML = newMarkup;
+        root.innerHTML = newMarkup;
       }
     });
   },
