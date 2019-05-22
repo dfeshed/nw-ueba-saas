@@ -58,8 +58,8 @@ class AlertRetentionOperatorBuilder(LoggingMixin):
         alert_retention = AlertRetentionOperator(
             fixed_duration_strategy=timedelta(hours=1),
             command=self._retention_command,
+            entity_type=entity_type,
             run_clean_command_before_retry=False,
-            dag=dag,
-            entity_type=entity_type)
+            dag=dag)
 
         return alert_retention
