@@ -28,7 +28,7 @@ pipeline {
                 }
             }
         }
-/**        stage('presidio-integration-test Project Build Pipeline Initialization') {
+        stage('presidio-integration-test Project Build Pipeline Initialization') {
             steps {
                 script {
                     mvnCleanInstall()
@@ -41,7 +41,7 @@ pipeline {
                     runEnd2EndTestAutomation()
                 }
             }
-        }**/
+        }
     }
 }
 
