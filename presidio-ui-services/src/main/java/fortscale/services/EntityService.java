@@ -2,7 +2,7 @@ package fortscale.services;
 
 
 import fortscale.domain.core.Entity;
-import fortscale.domain.core.FavoriteUserFilter;
+import fortscale.domain.core.FavoriteEntityFilter;
 import fortscale.domain.core.dao.rest.Entities;
 import fortscale.domain.rest.EntityFilter;
 import fortscale.domain.rest.EntityRestFilter;
@@ -93,7 +93,7 @@ public interface EntityService {
 
 	void saveFavoriteFilter(EntityFilter entityFilter, String filterName);
 
-	List<FavoriteUserFilter> getAllFavoriteFilters();
+	List<FavoriteEntityFilter> getAllFavoriteFilters();
 
 	long deleteFavoriteFilter(String filterName);
 

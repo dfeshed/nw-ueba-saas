@@ -8,7 +8,7 @@ import fortscale.services.EntityServiceFacade;
 import java.io.Serializable;
 import java.util.List;
 
-public class UserDetailsBean implements Serializable{
+public class EntityDetailsBean implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -23,7 +23,7 @@ public class UserDetailsBean implements Serializable{
 
 	private List<Alert> alerts;
 
-	public UserDetailsBean(Entity entity, Entity manager, List<Entity> directReports, EntityServiceFacade entityServiceFacade){
+	public EntityDetailsBean(Entity entity, Entity manager, List<Entity> directReports, EntityServiceFacade entityServiceFacade){
 		this.entity = entity;
 		this.manager = manager;
 		this.directReports = directReports;

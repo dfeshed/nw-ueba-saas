@@ -39,7 +39,7 @@ import presidio.ui.presidiouiapp.BaseController;
 import presidio.ui.presidiouiapp.beans.AlertTypesCountBean;
 import presidio.ui.presidiouiapp.beans.DataBean;
 import presidio.ui.presidiouiapp.beans.DataListWrapperBean;
-import presidio.ui.presidiouiapp.beans.UserDetailsBean;
+import presidio.ui.presidiouiapp.beans.EntityDetailsBean;
 import presidio.ui.presidiouiapp.rest.Utils.ApiUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,12 +52,12 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api/user")
-public class ApiUserController extends BaseController {
+public class ApiEntityController extends BaseController {
 
 	public static final int DEFAULT_EXPORT_USERS_SIZE = 1000;
 	public static final int FIRST_PAGE_INDEX = 0;
 	public static final int USERS_SEARCH_DEFAULT_PAGE_SIZE = 5;
-	private static Logger logger = Logger.getLogger(ApiUserController.class);
+	private static Logger logger = Logger.getLogger(ApiEntityController.class);
 
 	public static final String USER_COUNT = "userCount";
 	public static final String ADMINISTRATOR_TAG = "administrator";
@@ -88,7 +88,7 @@ public class ApiUserController extends BaseController {
 
 	private List<String> extendedSearchfieldsRequired;
 
-	public ApiUserController(EntityServiceFacade entityServiceFacade, EntityTagService entityTagService, EntityService entityService, EntityWithAlertService entityWithAlertService) {
+	public ApiEntityController(EntityServiceFacade entityServiceFacade, EntityTagService entityTagService, EntityService entityService, EntityWithAlertService entityWithAlertService) {
 		this.entityServiceFacade = entityServiceFacade;
 		this.entityTagService = entityTagService;
 		this.entityService = entityService;
@@ -123,21 +123,21 @@ public class ApiUserController extends BaseController {
 	 * The API to get all users. GET: /api/user
 	 */
 	@RequestMapping(method = RequestMethod.GET) @ResponseBody 
-	public DataBean<List<UserDetailsBean>> getUsers(EntityRestFilter userRestFilter) {
+	public DataBean<List<EntityDetailsBean>> getEntities(EntityRestFilter entityRestFilter) {
 
-		PageRequest pageRequest = createPaging(userRestFilter);
+		PageRequest pageRequest = createPaging(entityRestFilter);
 
-		Entities entities = getUsers(userRestFilter, pageRequest, null);
+		Entities entities = getEntities(entityRestFilter, pageRequest, null);
 
 		// Build the response
-		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(entities.getEntities());
+		DataBean<List<EntityDetailsBean>> usersList = getEntitiesDetails(entities.getEntities());
 		usersList.setOffset(pageRequest.getPageNumber() * pageRequest.getPageSize());
 		usersList.setTotal(new Long(entities.getTotalCount()).intValue());
 //		if (BooleanUtils.isTrue(userRestFilter.getAddAlertsAndDevices())) {
 //			addAlertsAndDevices(usersList.getData());
 //		}
-		if (BooleanUtils.isTrue(userRestFilter.getAddAllWatched())) {
-			addAllWatched(usersList, userRestFilter);
+		if (BooleanUtils.isTrue(entityRestFilter.getAddAllWatched())) {
+			addAllWatched(usersList, entityRestFilter);
 		}
 
 		return usersList;
@@ -148,7 +148,7 @@ public class ApiUserController extends BaseController {
 	@RequestMapping(value="/count", method=RequestMethod.GET)
 	@ResponseBody
 
-	public DataBean<Integer> countUsers(EntityRestFilter userRestFilter) {
+	public DataBean<Integer> countEntities(EntityRestFilter userRestFilter) {
 		Integer count = entityWithAlertService.countEntitiesByFilter(userRestFilter);
 		DataBean<Integer> bean = new DataBean<>();
 		bean.setData(count);
@@ -192,9 +192,9 @@ public class ApiUserController extends BaseController {
 	@RequestMapping(value = "/favoriteFilter", method = RequestMethod.GET)
 	@ResponseBody
 	
-	public DataBean<List<FavoriteUserFilter>> getFavoriteFilters() {
-		List<FavoriteUserFilter> allFavoriteFilters = entityService.getAllFavoriteFilters();
-		DataBean<List<FavoriteUserFilter>> result = new DataBean<>();
+	public DataBean<List<FavoriteEntityFilter>> getFavoriteFilters() {
+		List<FavoriteEntityFilter> allFavoriteFilters = entityService.getAllFavoriteFilters();
+		DataBean<List<FavoriteEntityFilter>> result = new DataBean<>();
 		result.setData(allFavoriteFilters);
 		result.setTotal(allFavoriteFilters.size());
 		return result;
@@ -227,8 +227,8 @@ public class ApiUserController extends BaseController {
 	@RequestMapping(value="/extendedSearch", method=RequestMethod.GET)
 	@ResponseBody
 //	//@LogException
-	public DataBean<List<UserDetailsBean>> extendedSearch(EntityRestFilter userRestFilter){
-		DataBean<List<UserDetailsBean>> result = new DataBean<>();
+	public DataBean<List<EntityDetailsBean>> extendedSearch(EntityRestFilter userRestFilter){
+		DataBean<List<EntityDetailsBean>> result = new DataBean<>();
 
 		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())) {
 
@@ -240,9 +240,9 @@ public class ApiUserController extends BaseController {
 			Entities entitiesObject = entityService.findEntitiesByFilter(userRestFilter,pageRequest,null,null,false);
 			List<Entity> entities = entitiesObject !=null? entitiesObject.getEntities():new ArrayList();
 			// Add severity to the entities
-//			setSeverityOnUsersList(entities);
+//			setSeverityOnEntitiesList(entities);
 
-			result = getUsersDetails(entities);
+			result = getEntitiesDetails(entities);
 
 			return result;
 
@@ -254,31 +254,31 @@ public class ApiUserController extends BaseController {
 	/**
 	 * Search user data by user name. This function is the same as details() but the parameter is username and notuserid
 	 * @param username the name of the user
-	 * @return a {@link DataBean} that holds a list of details{@link UserDetailsBean}
+	 * @return a {@link DataBean} that holds a list of details{@link EntityDetailsBean}
 	 */
 	@RequestMapping(value="/{username}/userdata", method=RequestMethod.GET)
 	@ResponseBody
 //	//@LogException
-	public DataBean<List<UserDetailsBean>> userDataByName(@PathVariable String username) {
+	public DataBean<List<EntityDetailsBean>> entityDataByName(@PathVariable String username) {
 		Entity entity = entityService.findByUsername(username);
-//		setSeverityOnUsersList(Arrays.asList(entity));
-		return getUsersDetails(entity);
+//		setSeverityOnEntitiesList(Arrays.asList(entity));
+		return getEntitiesDetails(entity);
 	}
 
 	/**
 	 * Search user's data by user id (uuid is auto-generated in MongoDB)
 	 * @param ids the lost of user id from mongoDB
-	 * @return a {@link DataBean} that holds a list of {@link UserDetailsBean}
+	 * @return a {@link DataBean} that holds a list of {@link EntityDetailsBean}
 	 */
 	@RequestMapping(value="/{ids}/details", method=RequestMethod.GET)
 	@ResponseBody
 //	//@LogException
-	public DataBean<List<UserDetailsBean>> details(@PathVariable List<String> ids,
-			@RequestParam(required = false, value = "add_alerts_and_devices") Boolean addAlertsAndDevices) {
+	public DataBean<List<EntityDetailsBean>> details(@PathVariable List<String> ids,
+													 @RequestParam(required = false, value = "add_alerts_and_devices") Boolean addAlertsAndDevices) {
 		// Get Entities
 		List<Entity> entities = entityService.findByIds(ids);
-//		setSeverityOnUsersList(entities);
-		DataBean<List<UserDetailsBean>> usersDetails = getUsersDetails(entities);
+//		setSeverityOnEntitiesList(entities);
+		DataBean<List<EntityDetailsBean>> usersDetails = getEntitiesDetails(entities);
 		if (BooleanUtils.isTrue(addAlertsAndDevices)) {
 			addAlertsAndDevices(usersDetails.getData());
 		}
@@ -308,7 +308,7 @@ public class ApiUserController extends BaseController {
 			throw new RuntimeException(String.format("param %s is invalid", params.toString()));
 		}
 		try {
-			addTagToUser(entity, Arrays.asList(new String[] { tag }), addTag);
+			addTagToEntity(entity, Arrays.asList(new String[] { tag }), addTag);
 		} catch (Exception ex) {
 			return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
 		}
@@ -322,10 +322,10 @@ public class ApiUserController extends BaseController {
 	@RequestMapping(value="/{addTag}/{tagNames}/tagUsers", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 //	//@LogException
 	@ResponseBody
-	public ResponseEntity<UsersCount> addRemoveTagByFilter(@RequestBody EntityRestFilter userRestFilter,
-														   @PathVariable Boolean addTag, @PathVariable List<String> tagNames) throws JSONException {
+	public ResponseEntity<EntitiesCount> addRemoveTagByFilter(@RequestBody EntityRestFilter userRestFilter,
+															  @PathVariable Boolean addTag, @PathVariable List<String> tagNames) throws JSONException {
 
-		UsersCount result = new UsersCount();
+		EntitiesCount result = new EntitiesCount();
 		if (CollectionUtils.isEmpty(tagNames)) {
 			return new ResponseEntity(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -343,7 +343,7 @@ public class ApiUserController extends BaseController {
 	@RequestMapping(value="/followedUsers", method=RequestMethod.GET)
 	@ResponseBody
 //	//@LogException
-	public DataBean<List<String>> followedUsers() {
+	public DataBean<List<String>> followedEntities() {
 		List<String> userIds = entityService.findByFollowed().stream().map(Entity::getId).
 				collect(Collectors.toList());
 		DataBean<List<String>> ret = new DataBean<>();
@@ -355,16 +355,16 @@ public class ApiUserController extends BaseController {
 	@RequestMapping(value="/usersDetails", method=RequestMethod.GET)
 	@ResponseBody
 //	//@LogException
-	public DataBean<List<UserDetailsBean>> usersDetails(@RequestParam(required = true) List<String> ids) {
+	public DataBean<List<EntityDetailsBean>> entitiesDetails(@RequestParam(required = true) List<String> ids) {
 		List<Entity> entities = entityService.findByIds(ids);
-//		setSeverityOnUsersList(entities);
-		return userDetails(entities);
+//		setSeverityOnEntitiesList(entities);
+		return entityDetails(entities);
 	}
 
 	@RequestMapping(value="/usersTagsCount", method=RequestMethod.GET)
 	@ResponseBody
 //	//@LogException
-	public DataBean<List<TagPair>> usersTagsCount() {
+	public DataBean<List<TagPair>> entitiesTagsCount() {
 		List<TagPair> result = new ArrayList();
 		Map<String, Long> items = entityService.groupByTags(false);
 		result.addAll(items.entrySet().stream().map(entry -> new TagPair(entry.getKey(), entry.getValue())).
@@ -381,11 +381,11 @@ public class ApiUserController extends BaseController {
 	@RequestMapping(value="/followedUsersDetails", method=RequestMethod.GET)
 	@ResponseBody
 //	//@LogException
-	public DataBean<List<UserDetailsBean>> followedUsersDetails(Model model) {
+	public DataBean<List<EntityDetailsBean>> followedEntitiesDetails(Model model) {
 		Set<Entity> entities = entityService.findByFollowed();
 
-//		setSeverityOnUsersList(new ArrayList<>(entities));
-		return userDetails(new ArrayList<>(entities));
+//		setSeverityOnEntitiesList(new ArrayList<>(entities));
+		return entityDetails(new ArrayList<>(entities));
 	}
 
 //	@RequestMapping(value="/{id}/machines", method=RequestMethod.GET)
@@ -468,10 +468,10 @@ public class ApiUserController extends BaseController {
 
 	@RequestMapping(method = RequestMethod.GET , value = "/export")
 	//@LogException
-	public void exportUsersToCsv(EntityRestFilter filter, HttpServletResponse httpResponse)  throws  Exception{
+	public void exportEntitiesToCsv(EntityRestFilter filter, HttpServletResponse httpResponse)  throws  Exception{
 		PageRequest pageRequest = new PageRequest(FIRST_PAGE_INDEX, DEFAULT_EXPORT_USERS_SIZE);
 
-		List<Entity> entities = getUsers(filter, pageRequest, fieldsRequired).getEntities();
+		List<Entity> entities = getEntities(filter, pageRequest, fieldsRequired).getEntities();
 
 		/*
 			Set response type as CSV
@@ -502,7 +502,7 @@ public class ApiUserController extends BaseController {
 	@RequestMapping(value="/{watch}/followUsers", method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	//@LogException
-	public ResponseEntity<UsersCount> followUsersByFilter(@RequestBody EntityRestFilter userRestFilter, @PathVariable Boolean watch) {
+	public ResponseEntity<EntitiesCount> followEntitiesByFilter(@RequestBody EntityRestFilter userRestFilter, @PathVariable Boolean watch) {
 
 		if (userRestFilter.getSize() == null) {
 			userRestFilter.setSize(Integer.MAX_VALUE);
@@ -514,7 +514,7 @@ public class ApiUserController extends BaseController {
 		} else { //Update fy filer
 			usersUpdated = entityWithAlertService.followEntitiesByFilter(userRestFilter, watch);
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(new UsersCount(usersUpdated));
+		return ResponseEntity.status(HttpStatus.OK).body(new EntitiesCount(usersUpdated));
 	}
 
 	@RequestMapping(value="/{fieldName}/distinctValues", method=RequestMethod.GET)
@@ -538,13 +538,13 @@ public class ApiUserController extends BaseController {
 	 * @param fieldsRequired
 	 * @return
 	 */
-	private Entities getUsers(EntityRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired) {
+	private Entities getEntities(EntityRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired) {
 
 //		// Get the relevant users by filter requested
 //		List<Entity> users = entityWithAlertService.findEntitiesByFilter(userRestFilter, pageRequest, fieldsRequired);
 //
 //		// Add severity to the users
-//		setSeverityOnUsersList(users);
+//		setSeverityOnEntitiesList(users);
 
 //		List<Entity> users = new ArrayList<>();
 //		Entity user1 = new UsersMockBuilder(1).setWatched(true).createInstance();
@@ -556,15 +556,15 @@ public class ApiUserController extends BaseController {
 		return entityService.findEntitiesByFilter(userRestFilter,pageRequest,null,fieldsRequired,true);
 	}
 
-	public class UsersCount {
+	public class EntitiesCount {
 
 		public int count;
 
-		public UsersCount(int usersUpdated) {
+		public EntitiesCount(int usersUpdated) {
 			this.count = usersUpdated;
 		}
 
-		public UsersCount() {
+		public EntitiesCount() {
 		}
 	}
 
@@ -638,7 +638,7 @@ public class ApiUserController extends BaseController {
 	 * @param usersList
 	 * @param userRestFilter
 	 */
-	private void addAllWatched(DataBean<List<UserDetailsBean>> usersList, EntityRestFilter userRestFilter) {
+	private void addAllWatched(DataBean<List<EntityDetailsBean>> usersList, EntityRestFilter userRestFilter) {
 		Map<String, Object> info = usersList.getInfo();
 		if (info == null) {
 			info = new HashMap<>();
@@ -661,13 +661,13 @@ public class ApiUserController extends BaseController {
 		usersList.setInfo(info);
 	}
 
-	private void addAlertsAndDevices(List<UserDetailsBean> users) {
-		for (UserDetailsBean userDetailsBean: users) {
-//			Entity user = userDetailsBean.getEntity();
+	private void addAlertsAndDevices(List<EntityDetailsBean> users) {
+		for (EntityDetailsBean entityDetailsBean : users) {
+//			Entity user = entityDetailsBean.getEntity();
 //			List<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
-			userDetailsBean.setAlerts(MockScenarioGenerator.generateMocksAlertsList());
-//			userDetailsBean.getEntity().setAlertsCount(HardCodedMocks.DEFAULT_USER_COUNT);
-			userDetailsBean.getEntity().setSourceMachineCount(HardCodedMocks.DEFAULT_USER_COUNT);
+			entityDetailsBean.setAlerts(MockScenarioGenerator.generateMocksAlertsList());
+//			entityDetailsBean.getEntity().setAlertsCount(HardCodedMocks.DEFAULT_USER_COUNT);
+			entityDetailsBean.getEntity().setSourceMachineCount(HardCodedMocks.DEFAULT_USER_COUNT);
 
 
 
@@ -725,7 +725,7 @@ public class ApiUserController extends BaseController {
 		return sortUserDesc;
 	}
 
-	private void addTagToUser(Entity entity, List<String> tags, boolean addTag) throws Exception {
+	private void addTagToEntity(Entity entity, List<String> tags, boolean addTag) throws Exception {
 		if (addTag) {
 			entityTagService.addEntityTags(entity.getUsername(), tags);
 		} else {
@@ -733,24 +733,24 @@ public class ApiUserController extends BaseController {
 		}
 	}
 
-	private DataBean<List<UserDetailsBean>> getUsersDetails(List<Entity> entities) {
-		List<UserDetailsBean> detailsUsers = new ArrayList<>();
+	private DataBean<List<EntityDetailsBean>> getEntitiesDetails(List<Entity> entities) {
+		List<EntityDetailsBean> detailsUsers = new ArrayList<>();
 		if (entities != null) {
 			entities.forEach(user -> {
 				Set<String> userRelatedDnsSet = new HashSet<>();
 				Map<String, Entity> dnToUserMap = new HashMap<>();
 //				entityServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
 //				entityServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
-				UserDetailsBean detailsUser = createUserDetailsBean(user, dnToUserMap, true);
+				EntityDetailsBean detailsUser = createEntityDetailsBean(user, dnToUserMap, true);
 				detailsUsers.add(detailsUser);
 			});
 		}
-		DataBean<List<UserDetailsBean>> ret = new DataBean<>();
+		DataBean<List<EntityDetailsBean>> ret = new DataBean<>();
 		ret.setData(detailsUsers);
 		return ret;
 	}
 
-	private DataBean<List<UserDetailsBean>> getUsersDetails(Entity entity) {
+	private DataBean<List<EntityDetailsBean>> getEntitiesDetails(Entity entity) {
 		if(entity == null) {
 			return null;
 		}
@@ -758,14 +758,14 @@ public class ApiUserController extends BaseController {
 		Map<String, Entity> dnToUserMap = new HashMap<>();
 //		entityServiceFacade.fillUserRelatedDns(entity, userRelatedDnsSet);
 //		entityServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
-		UserDetailsBean ret = createUserDetailsBean(entity, dnToUserMap, true);
+		EntityDetailsBean ret = createEntityDetailsBean(entity, dnToUserMap, true);
 		return new DataListWrapperBean<>(ret);
 	}
 
-	private UserDetailsBean createUserDetailsBean(Entity entity, Map<String, Entity> dnToUserMap, boolean isWithThumbnail) {
+	private EntityDetailsBean createEntityDetailsBean(Entity entity, Map<String, Entity> dnToUserMap, boolean isWithThumbnail) {
 		Entity manager = entityServiceFacade.getUserManager(entity, dnToUserMap);
 		List<Entity> directReports = entityServiceFacade.getUserDirectReports(entity, dnToUserMap);
-		UserDetailsBean ret =  new UserDetailsBean(entity, manager, directReports, entityServiceFacade);
+		EntityDetailsBean ret =  new EntityDetailsBean(entity, manager, directReports, entityServiceFacade);
 		if(isWithThumbnail) {
 			ret.setThumbnailPhoto(entityServiceFacade.getUserThumbnail(entity));
 		}
@@ -773,8 +773,8 @@ public class ApiUserController extends BaseController {
 		return ret;
 	}
 
-	private DataBean<List<UserDetailsBean>> userDetails(List<Entity> entities) {
-		List<UserDetailsBean> userDetailsBeans = new ArrayList<>();
+	private DataBean<List<EntityDetailsBean>> entityDetails(List<Entity> entities) {
+		List<EntityDetailsBean> entityDetailsBeans = new ArrayList<>();
 		Set<String> userRelatedDnsSet = new HashSet<>();
 		Map<String, Entity> dnToUserMap = new HashMap<>();
 //		for (Entity user: entities) {
@@ -782,12 +782,12 @@ public class ApiUserController extends BaseController {
 //		}
 //		entityServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
 		for (Entity entity : entities) {
-			UserDetailsBean userDetailsBean = createUserDetailsBean(entity, dnToUserMap, true);
-			userDetailsBeans.add(userDetailsBean);
+			EntityDetailsBean entityDetailsBean = createEntityDetailsBean(entity, dnToUserMap, true);
+			entityDetailsBeans.add(entityDetailsBean);
 		}
-		DataBean<List<UserDetailsBean>> ret = new DataBean<>();
-		ret.setData(userDetailsBeans);
-		ret.setTotal(userDetailsBeans.size());
+		DataBean<List<EntityDetailsBean>> ret = new DataBean<>();
+		ret.setData(entityDetailsBeans);
+		ret.setTotal(entityDetailsBeans.size());
 		return ret;
 	}
 
@@ -803,11 +803,11 @@ public class ApiUserController extends BaseController {
 //		return ret;
 //	}
 
-	private void setSeverityOnUsersList(List<Entity> entities) {
-		entities.forEach(this::setSeverityOnUser);
+	private void setSeverityOnEntitiesList(List<Entity> entities) {
+		entities.forEach(this::setSeverityOnEntity);
 	}
 
-	private void setSeverityOnUser(Entity entity) {
+	private void setSeverityOnEntity(Entity entity) {
 //		double userScore = entity.getScore();
 //		Severity userSeverity;
 //		try {

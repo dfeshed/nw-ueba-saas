@@ -81,9 +81,9 @@ public class WebConf extends WebMvcConfigurerAdapter{
     }
 
     @Bean
-    ApiUserController apiUserController(){
+    ApiEntityController apiEntityController(){
 
-        return new ApiUserController(entityServiceFacade, entityTagService, entityService, entityWithAlertService);
+        return new ApiEntityController(entityServiceFacade, entityTagService, entityService, entityWithAlertService);
     }
 
     @Bean

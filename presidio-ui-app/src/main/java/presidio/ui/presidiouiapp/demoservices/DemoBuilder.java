@@ -24,15 +24,15 @@ public class DemoBuilder {
     public DemoBuilder(){
         try {
 
-            this.entities = new DemoUserFactory().getUsers();
+            this.entities = new DemoEntityFactory().getEntities();
             this.alerts = new DemoAlertFactory().getAlerts();
             DemoIndicatorsFactory demoIndicatorsFactory = new DemoIndicatorsFactory();
             this.indicators = demoIndicatorsFactory.getEvidences();
             suppotingInformationForIndicatorId = demoIndicatorsFactory.suppotingInformationForIndicatorId;
 
-            populateUserNamesOnAlert();
+            populateEntityNamesOnAlert();
             populateEvidenceToAlerts();
-            populateUserSeverity();
+            populateEntitySeverity();
 
 
 
@@ -50,7 +50,7 @@ public class DemoBuilder {
 
     }
 
-    public void populateUserSeverity(){
+    public void populateEntitySeverity(){
         Entity entityWithMaxScore = this.entities.stream().max((user1, user2)->Double.compare(user1.getScore(),user2.getScore())).get();
 
         double maxScore =  entityWithMaxScore.getScore();
@@ -70,9 +70,9 @@ public class DemoBuilder {
 
     }
 
-    private void populateUserNamesOnAlert(){
+    private void populateEntityNamesOnAlert(){
         alerts.forEach((alert -> {
-            Entity entity1 = getUserByName(alert.getEntityName());
+            Entity entity1 = getEntityByName(alert.getEntityName());
             alert.setEntityId(entity1.getId());
             int alertsCount = entity1.getAlertsCount();
             entity1.setAlertsCount(alertsCount+1);
@@ -80,7 +80,7 @@ public class DemoBuilder {
         }));
     }
 
-    public Entity getUserByName(String userName) {
+    public Entity getEntityByName(String userName) {
         List<Entity> immutableUsersForStreaming = Collections.unmodifiableList(this.entities);
         return immutableUsersForStreaming.stream()
                         .filter(user -> userName.equals(user.getUsername()))
@@ -122,7 +122,7 @@ public class DemoBuilder {
                 Collectors.groupingBy(Alert::getEntityName, Collectors.counting()));
 
         counting.forEach((user,count)->{
-            getUserByName(user).setAlertsCount(count.intValue());
+            getEntityByName(user).setAlertsCount(count.intValue());
         });
 
     }
@@ -139,7 +139,7 @@ public class DemoBuilder {
            long endTime = indicator.getEndDate();
            String username = indicator.getEntityName();
 
-           Alert a = getAlertsByUserNameAndTime(username,startTime,endTime,indicator.getTimeframe());
+           Alert a = getAlertsByEntityNameAndTime(username,startTime,endTime,indicator.getTimeframe());
            if (a!=null) {
                List<Evidence> indicators = a.getEvidences();
 
@@ -194,11 +194,11 @@ public class DemoBuilder {
         return indicators;
     }
 
-    public List<Alert> getAlertsByUserName(String username) {
+    public List<Alert> getAlertsByEntityName(String username) {
         return alerts.stream().filter(alert -> alert.getEntityName().equals(username)).collect(Collectors.toList());
     }
 
-    public Alert getAlertsByUserNameAndTime(String username, long startTime, long endTime, EvidenceTimeframe evidenceTimeframe) {
+    public Alert getAlertsByEntityNameAndTime(String username, long startTime, long endTime, EvidenceTimeframe evidenceTimeframe) {
         try {
             return alerts.stream().filter(alert ->
                     alert.getEntityName().equals(username) &&

@@ -8,8 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 /**
  * Created by alexp on 16/08/2016.
  */
-@Document(collection=FavoriteUserFilter.COLLECTION_NAME)
-public class FavoriteUserFilter extends AbstractDocument {
+@Document(collection= FavoriteEntityFilter.COLLECTION_NAME)
+public class FavoriteEntityFilter extends AbstractDocument {
 
 	public static final String COLLECTION_NAME = "favorite_user_filter";
 	public static final String filterNameField = "filterName";

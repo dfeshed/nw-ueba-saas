@@ -6,8 +6,8 @@ import fortscale.domain.core.*;
 
 
 import fortscale.domain.core.Entity;
-import fortscale.domain.core.dao.FavoriteUserFilterRepository;
 
+import fortscale.domain.core.dao.FavoriteEntityFilterRepository;
 import fortscale.domain.core.dao.rest.Entities;
 import fortscale.domain.rest.EntityFilter;
 import fortscale.domain.rest.EntityRestFilter;
@@ -54,7 +54,7 @@ public class EntityServiceImpl implements EntityService {
 	private MongoOperations mongoTemplate;
 
 	@Autowired
-	private FavoriteUserFilterRepository favoriteUserFilterRepository;
+	private FavoriteEntityFilterRepository favoriteUserFilterRepository;
 
 
 	@Value("${ad.info.update.read.page.size:1000}")
@@ -596,7 +596,7 @@ public class EntityServiceImpl implements EntityService {
 		favoriteUserFilterRepository.save(entityFilter, filterName);
 	}
 
-	@Override public List<FavoriteUserFilter> getAllFavoriteFilters() {
+	@Override public List<FavoriteEntityFilter> getAllFavoriteFilters() {
 		return favoriteUserFilterRepository.findAll();
 	}
 

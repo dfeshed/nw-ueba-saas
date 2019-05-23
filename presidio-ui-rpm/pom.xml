@@ -98,7 +98,7 @@
                             echo "Starting mongo service"
                             systemctl start mongod.service
                             wait ${!}
-                            echo "Mongo: creating presidio entity"
+                            echo "Mongo: creating presidio user"
                             sleep 5
                             mongo localhost:27017/quest-ca /temp/mongo_create_ca_user.js
                             echo "Stopping mongo service"

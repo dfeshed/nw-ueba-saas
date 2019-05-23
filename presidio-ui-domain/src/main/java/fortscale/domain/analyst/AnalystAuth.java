@@ -20,7 +20,7 @@ import org.springframework.util.Assert;
 import fortscale.domain.core.AbstractDocument;
 
 /*
- * This class is a copy of the class org.springframework.security.core.userdetails.Entity with mongodb additions.
+ * This class is a copy of the class org.springframework.security.core.userdetails.User with mongodb additions.
  */
 
 @Document

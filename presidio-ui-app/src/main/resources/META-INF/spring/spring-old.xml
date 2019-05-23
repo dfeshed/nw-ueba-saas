@@ -26,8 +26,8 @@
 </bean>
 
 <bean id="filterToUsersCache" class="fortscale.services.cache.MemoryBasedCache">
-<constructor-arg name="maxSize" value="${entities.with.alerts.service.cache.max.items:10}" />
-<constructor-arg name="timeToExpire" value="${entities.with.alerts.service.cache.timeToExpireSec:600}" />
+<constructor-arg name="maxSize" value="${users.with.alerts.service.cache.max.items:10}" />
+<constructor-arg name="timeToExpire" value="${users.with.alerts.service.cache.timeToExpireSec:600}" />
 <constructor-arg name="clazz" value="java.util.ArrayList" />
 </bean>
 
@@ -63,9 +63,9 @@
 
 <bean id="alertFilterHelperImpl" class="fortscale.web.beans.request.AlertFilterHelperImpl"/>
 
-        <!-- Cache for entitiessers severities percentile mapo -->
+        <!-- Cache for the users severities percentile mapo -->
 <bean id="userScoreSeveritiesCache" class="fortscale.services.cache.MemoryBasedCache">
-<constructor-arg name="maxSize" value="${entity.score.service.cache.max.items:0}" />
-<constructor-arg name="timeToExpire" value="${entity.score.service.cache.timeToExpireSec:3600}" />
+<constructor-arg name="maxSize" value="${user.score.service.cache.max.items:0}" />
+<constructor-arg name="timeToExpire" value="${user.score.service.cache.timeToExpireSec:3600}" />
 <constructor-arg name="clazz" value="fortscale.domain.core.Severity" />
 </bean>

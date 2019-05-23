@@ -19,7 +19,7 @@ public class DemoAlertFactory extends DemoFactoryAbstract<Alert>{
         return  FILE_HEADER_MAPPING;
     }
     protected Alert getRecord(CSVRecord csvRecord) throws RuntimeException {
-        String username = csvRecord.get("Entity Name");
+        String entityName = csvRecord.get("Entity Name");
         String alertName = csvRecord.get("Alert Name");
         String startTimeString = csvRecord.get("Start Time");
         int totalIndicators= Integer.parseInt(csvRecord.get("# of Indicators"));
@@ -29,7 +29,7 @@ public class DemoAlertFactory extends DemoFactoryAbstract<Alert>{
         Alert a = new Alert();
         a.setSeverity(severity);
         a.setName(alertName);
-        a.setEntityName(username);
+        a.setEntityName(entityName);
         a.setEvidenceSize(totalIndicators);
         a.setTimeframe(AlertTimeframe.valueOf(timeframe));
         a.setEntityType(EntityType.User);

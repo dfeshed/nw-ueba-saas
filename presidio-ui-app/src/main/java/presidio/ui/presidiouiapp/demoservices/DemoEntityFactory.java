@@ -12,7 +12,7 @@ import org.apache.commons.lang.BooleanUtils;
 /**
  * Created by shays on 23/07/2017.
  */
-public class  DemoUserFactory extends DemoFactoryAbstract<Entity>{
+public class DemoEntityFactory extends DemoFactoryAbstract<Entity>{
     private static final String [] FILE_HEADER_MAPPING = {"Username","Risk Score","Total Alerts","Admin"};
 
     protected String getFileName(){
@@ -38,7 +38,7 @@ public class  DemoUserFactory extends DemoFactoryAbstract<Entity>{
         return entity;
     }
 
-    public List getUsers() throws Exception {
+    public List getEntities() throws Exception {
         return getData(csvRecord -> this.getRecord(csvRecord),getFileName(),headers());
     }
 

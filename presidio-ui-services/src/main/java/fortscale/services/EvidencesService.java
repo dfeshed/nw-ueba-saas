@@ -53,7 +53,7 @@ public interface EvidencesService {
 	 * @param userName
 	 * @return
 	 */
-//	Entity getUserIdByUserName(String userName);
+//	User getUserIdByUserName(String userName);
 
 
 	/**
@@ -136,7 +136,7 @@ public interface EvidencesService {
 	 *
 	 * @param fieldName the field name to get distinct values by.
 	 * @return A map of distinct keys
-     */
+	 */
 	List getDistinctByFieldName (String fieldName);
 
 //	 List<String> getDistinctAnomalyType();

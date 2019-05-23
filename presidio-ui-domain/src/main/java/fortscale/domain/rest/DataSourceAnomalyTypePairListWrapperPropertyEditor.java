@@ -45,11 +45,11 @@ public class DataSourceAnomalyTypePairListWrapperPropertyEditor extends Property
             String dataSourceId = breakdown[0];
             java.util.List<String> anomalyTypes = new ArrayList<>();
 
-            if(breakdown.length > 1) { //Entity select data source + indicator
+            if(breakdown.length > 1) { //User select data source + indicator
                 Arrays.asList(breakdown[1].split(ANOMALY_TYPES_MINOR_DELIMITER)).forEach(anomalyType -> {
                     anomalyTypesList.add(new DataSourceAnomalyTypePair(dataSourceId, anomalyType));
                 });
-            } else { // Entity select only data source, and need all the indicator for the data source
+            } else { // User select only data source, and need all the indicator for the data source
                 anomalyTypesList.add(new DataSourceAnomalyTypePair(dataSourceId, null));
             }
 

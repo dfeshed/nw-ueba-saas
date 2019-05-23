@@ -514,7 +514,7 @@ public class MockDemoAlertsServiceImpl implements AlertsService {
 	}
 
 	private void recalculateUserScore(Entity entity){
-		List<Alert> userAlerts = demoBuilder.getAlertsByUserName(entity.getUsername());
+		List<Alert> userAlerts = demoBuilder.getAlertsByEntityName(entity.getUsername());
 
 		double[] score=new double[1];
 

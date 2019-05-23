@@ -2,7 +2,7 @@ package presidio.ui.presidiouiapp.demoservices.services;
 
 
 import fortscale.domain.core.*;
-import fortscale.domain.core.dao.FavoriteUserFilterRepository;
+import fortscale.domain.core.dao.FavoriteEntityFilterRepository;
 import fortscale.domain.core.dao.rest.Entities;
 import fortscale.domain.rest.EntityFilter;
 import fortscale.domain.rest.EntityRestFilter;
@@ -28,7 +28,7 @@ public class MockDemoEntityServiceImpl implements EntityService {
 
 
 
-	private FavoriteUserFilterRepository favoriteUserFilterRepository;
+	private FavoriteEntityFilterRepository favoriteUserFilterRepository;
 
 
 	private DemoBuilder demoBuilder;
@@ -50,7 +50,7 @@ public class MockDemoEntityServiceImpl implements EntityService {
 	private List<String> setOfBuiltInADUsers;
 
 	@Autowired
-	public MockDemoEntityServiceImpl(FavoriteUserFilterRepository favoriteUserFilterRepository, DemoBuilder demoBuilder){
+	public MockDemoEntityServiceImpl(FavoriteEntityFilterRepository favoriteUserFilterRepository, DemoBuilder demoBuilder){
 		this.favoriteUserFilterRepository = favoriteUserFilterRepository;
 		this.demoBuilder = demoBuilder;
 	}
@@ -282,21 +282,21 @@ public class MockDemoEntityServiceImpl implements EntityService {
 		return Math.abs(Days.daysBetween(entity.getLastActivity(), new DateTime()).getDays())>90;
 	}
 	private boolean isUserHasAlertWithAnyOfThoseTypes(Entity u, Collection<String> alertNames){
-		List<Alert> alerts = demoBuilder.getAlertsByUserName(u.getUsername());
+		List<Alert> alerts = demoBuilder.getAlertsByEntityName(u.getUsername());
 		if (alerts == null || alerts.size()==0){
 			return false;
 		}
 		return alerts.stream().anyMatch(alert->alertNames.contains(alert.getName()));
 	}
 	private boolean isUserHasAlertWithAnyOfThoseDataEntities(Entity u, Collection<String> dataEntities){
-		return demoBuilder.getAlertsByUserName(u.getUsername()).stream().anyMatch(alert->{
+		return demoBuilder.getAlertsByEntityName(u.getUsername()).stream().anyMatch(alert->{
 			Set<String> alertDataSources = alert.getDataSourceAnomalyTypePair().stream().map(DataSourceAnomalyTypePair::getDataSource).collect(Collectors.toSet());
 			return CollectionUtils.intersection(alertDataSources,dataEntities).size()>0;
 		});
 	}
 
 	private boolean userHasIndicatorTypes(Entity u, Set<String> anomalyTypePairs){
-		return demoBuilder.getAlertsByUserName(u.getUsername()).stream().anyMatch(alert->{
+		return demoBuilder.getAlertsByEntityName(u.getUsername()).stream().anyMatch(alert->{
 
 			return CollectionUtils.intersection(alert.getDataSourceAnomalyTypePair(),anomalyTypePairs).size()>0;
 		});
@@ -315,7 +315,7 @@ public class MockDemoEntityServiceImpl implements EntityService {
 		favoriteUserFilterRepository.save(entityFilter, filterName);
 	}
 
-	@Override public List<FavoriteUserFilter> getAllFavoriteFilters() {
+	@Override public List<FavoriteEntityFilter> getAllFavoriteFilters() {
 		return favoriteUserFilterRepository.findAll();
 	}
 
