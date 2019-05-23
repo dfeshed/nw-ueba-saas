@@ -6,7 +6,9 @@ import {
   hasScanTime,
   getColumnsConfig,
   hostDetailPropertyTabs,
-  downloadLink
+  downloadLink,
+  updateConfig,
+  savedColumnsConfig
 } from 'investigate-hosts/reducers/details/selectors';
 
 module('Unit | selectors | details');
@@ -50,7 +52,7 @@ test('Get OS specific column config', function(assert) {
   });
 
   const linuxConfig = columnConfig.linux;
-  const state = { endpoint: { overview: { hostDetails } } };
+  const state = { preferences: { preferences: {} }, endpoint: { overview: { hostDetails } } };
 
   assert.equal(getColumnsConfig(state, columnConfig), linuxConfig, 'Should return OS specific config (linux)');
 });
@@ -87,4 +89,100 @@ test('downloadLink for save local copy when null', function(assert) {
   });
   const result = downloadLink(state);
   assert.equal(result, null);
+});
+
+
+test('updateConfig updates the schema based on saved config', function(assert) {
+  const schema = [{
+    field: 'fileName',
+    title: 'investigateHosts.process.dll.dllName',
+    width: 89
+  },
+  {
+    field: 'timeCreated',
+    title: 'investigateHosts.process.creationTime',
+    format: 'DATE',
+    width: 100
+  }];
+  const result = updateConfig(schema, [{ columns: [
+    {
+      field: 'timeCreated',
+      width: '2vw'
+    }
+  ] }]);
+  assert.equal(result[1].width, '2vw');
+  assert.equal(result[0].width, 89);
+});
+
+
+test('updateConfig updates the schema based on saved config', function(assert) {
+  const schema = [{
+    field: 'fileName',
+    title: 'investigateHosts.process.dll.dllName',
+    width: 89
+  },
+  {
+    field: 'timeCreated',
+    title: 'investigateHosts.process.creationTime',
+    format: 'DATE',
+    width: 100
+  }];
+  const result = updateConfig(schema, []);
+  assert.equal(result[1].width, 100);
+  assert.equal(result[0].width, 89);
+});
+
+
+test('savedColumnsConfig will extract the columns', function(assert) {
+  const state = Immutable.from({
+    preferences: {
+      preferences: {
+        machinePreference: {
+          columnConfig: [
+            {
+              tableId: 'FILE',
+              columns: [
+                {
+                  field: 'test'
+                }
+              ]
+            },
+            {
+              tableId: 'DRIVER',
+              columns: [
+                {
+                  field: 'test'
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  });
+  const result = savedColumnsConfig(state, 'FILE');
+  assert.equal(result[0].tableId, 'FILE');
+});
+
+test('savedColumnsConfig returns empty columns', function(assert) {
+  const state = Immutable.from({
+    preferences: {
+      preferences: {
+        filePreference: {
+          columnConfig: [
+            {
+              tableId: 'FILE',
+              columns: [
+                {
+                  field: 'test'
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  });
+  const result = savedColumnsConfig(state, 'FILE');
+  assert.equal(result.length, 0);
 });

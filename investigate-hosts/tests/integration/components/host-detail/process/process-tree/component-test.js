@@ -166,7 +166,42 @@ const testTree = [
     ]
   }
 ];
-
+const config = [
+  {
+    'dataType': 'checkbox',
+    'width': 20,
+    'class': 'rsa-form-row-checkbox',
+    'componentClass': 'rsa-form-checkbox',
+    'visible': true,
+    'disableSort': true,
+    'headerComponentClass': 'rsa-form-checkbox'
+  },
+  {
+    field: 'fileName',
+    title: 'File Name',
+    format: 'FILENAME'
+  },
+  {
+    field: 'timeModified',
+    title: 'LAST MODIFIED TIME',
+    format: 'DATE'
+  },
+  {
+    field: 'signature.features',
+    title: 'Signature',
+    format: 'SIGNATURE'
+  },
+  {
+    field: 'machineCount',
+    title: 'Machine Count',
+    format: 'MACHINECOUNT'
+  },
+  {
+    field: 'machineFileScore',
+    title: 'Local Risk Score',
+    width: '8vw'
+  }
+];
 module('Integration | Component | host-detail/process/process-tree', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolver('investigate-hosts')
@@ -202,6 +237,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     document.addEventListener('contextmenu', callback);
     modifiedList = processData.processList.map((data) => ({ ...data, fileProperties }));
     modifiedTree = processData.processTree.map((data) => ({ ...data, fileProperties }));
+    this.set('columnConfig', config);
   });
 
   hooks.afterEach(function() {
@@ -221,7 +257,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
     await render(hbs`{{host-detail/process/process-tree}}`);
 
-    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 13, '13 columns in header, including the checkbox');
+    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 7, '7 columns in header, including the checkbox');
     assert.equal(findAll('.rsa-data-table-header-cell')[1].textContent.trim(), 'Process Name', 'First column is Process Name');
     assert.equal(findAll('.rsa-data-table-header-cell')[2].textContent.trim(), 'Local Risk Score', 'Second column is Local Risk Score');
   });
@@ -1202,17 +1238,17 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'One row highlighted');
     const redux = this.owner.lookup('service:redux');
     await waitUntil(() => {
-      return !!redux.getState().endpoint.process.selectedProcessId;
+      return !!redux.getState().endpoint.process.selectedRowIndex;
     }, { timeout: 6000 });
-    const { selectedProcessId } = redux.getState().endpoint.process;
-    assert.equal(selectedProcessId, 2, 'Focused host set as first row');
+    const { selectedRowIndex } = redux.getState().endpoint.process;
+    assert.equal(selectedRowIndex, 1, 'Focused host set as first row');
     triggerEvent(findAll('.rsa-data-table-body-row')[1], 'contextmenu', e);
     await waitUntil(() => {
-      return !!redux.getState().endpoint.process.selectedProcessId;
+      return !!redux.getState().endpoint.process.selectedRowIndex;
     }, { timeout: 6000 });
     return settled().then(async() => {
-      const newSelectedProcessId = redux.getState().endpoint.process.selectedProcessId;
-      assert.equal(newSelectedProcessId, 2, 'Focused host remains unchanged');
+      const newSelectedRowIndex = redux.getState().endpoint.process.selectedRowIndex;
+      assert.equal(newSelectedRowIndex, 1, 'Focused host remains unchanged');
     });
   });
 
@@ -1268,18 +1304,14 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'One row highlighted');
     const redux = this.owner.lookup('service:redux');
     await waitUntil(() => {
-      return !!redux.getState().endpoint.process.selectedProcessId;
+      return !!redux.getState().endpoint.process.selectedRowIndex;
     }, { timeout: 6000 });
-    const { selectedProcessId } = redux.getState().endpoint.process;
-    assert.equal(selectedProcessId, 2, 'Focused host set as first row');
-    triggerEvent(findAll('.download-status')[0], 'contextmenu', e);
-    await waitUntil(() => {
-      return !!redux.getState().endpoint.process.selectedProcessId;
-    }, { timeout: 6000 });
-    return settled().then(async() => {
-      const newSelectedProcessId = redux.getState().endpoint.process.selectedProcessId;
-      assert.equal(newSelectedProcessId, 2, 'Focused host remains unchanged');
-    });
+    const { selectedRowIndex } = redux.getState().endpoint.process;
+    assert.equal(selectedRowIndex, 1, 'Focused host set as first row');
+    triggerEvent(findAll('.rsa-data-table-body-row')[0], 'contextmenu', e);
+    const newSelectedProcessId = redux.getState().endpoint.process.selectedRowIndex;
+    assert.equal(newSelectedProcessId, 1, 'Focused host remains unchanged');
+
   });
 
   test('selecting an already check-boxed row, opens the right panel', async function(assert) {
@@ -1481,17 +1513,17 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       </style>
     {{host-detail/process/process-tree}}
     `);
-    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 11, '11 columns in header by default, including the checkbox');
+    assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 7, '7 columns in header by default, including the checkbox');
     await click('.rsa-data-table-header__column-selector');
     return settled().then(async() => {
       await click(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[3]);
       return settled().then(() => {
-        assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 12, '12 columns in header, including the checkbox after togglinf from column selector');
+        assert.equal(findAll('.rsa-data-table-header .rsa-data-table-header-cell').length, 6, '6 columns in header, including the checkbox after togglinf from column selector');
       });
     });
   });
 
-  test('Machine count, is hidden in the table by default', async function(assert) {
+  test('launchArguments, is hidden in the table by default', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('endpointCanManageFiles', true);
     this.set('closePropertyPanel', function() { });
@@ -1538,7 +1570,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
         }
       </style>
       {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
-    assert.equal(findAll('.machine-count').length, 0, 'machine count doesnt exist as a column by default.');
+    assert.equal(findAll('.launchArguments').length, 0, 'launchArguments doesnt exist as a column by default.');
   });
 
   test('local risk score is shown as N/A for insight agent mode', async function(assert) {
@@ -1595,6 +1627,76 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       </style>
       {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
     assert.equal(findAll('.content-context-menu .insights-host')[0].textContent.trim(), 'N/A', 'N/A is shown in column for insight agent');
+  });
+  test('Save config should  call on resizing the column', async function(assert) {
+    assert.expect(3);
+    const focusedHost = {
+      machineIdentity: {
+        agentMode: 'insights'
+      }
+    };
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('endpointCanManageFiles', true);
+    this.set('closePropertyPanel', function() { });
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree([
+        {
+          pid: 29332,
+          name: 'rsyslogd',
+          checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+          parentPid: 1,
+          fileProperties: {
+            downloadInfo: {
+              status: 'Downloaded'
+            }
+          },
+          childProcesses: [
+            {
+              pid: 2,
+              name: 'rsa_audit_onramp',
+              checksumSha256: '4a63263a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a77e525',
+              parentPid: 1,
+              fileProperties: {
+                downloadInfo: {
+                  status: 'Downloaded'
+                }
+              }
+            }
+          ]
+        }
+      ])
+      .setFocusedHost(focusedHost)
+      .machineOSType('windows')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .isTreeView(true)
+      .searchResultProcessList([])
+      .build();
+
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
+    const [, , draggedItem] = document.querySelectorAll('.rsa-data-table-header-cell-resizer.left');
+    let done = false;
+    patchSocket((method, modelName) => {
+      done = true;
+      assert.equal(method, 'getPreferences');
+      assert.equal(modelName, 'endpoint-preferences');
+    });
+
+    await triggerEvent(draggedItem, 'mousedown', { clientX: draggedItem.offsetLeft, clientY: draggedItem.offsetTop, which: 3 });
+    await triggerEvent(draggedItem, 'mousemove', { clientX: draggedItem.offsetLeft - 10, clientY: draggedItem.offsetTop, which: 3 });
+    await triggerEvent(draggedItem, 'mouseup', { clientX: 510, clientY: draggedItem.offsetTop, which: 3 });
+
+    return waitUntil(() => done, { timeout: 6000 }).then(() => {
+      assert.ok(true);
+    });
   });
 
 });

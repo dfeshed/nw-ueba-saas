@@ -1,17 +1,20 @@
 import RSADataTableHeader from 'component-lib/components/rsa-data-table/header/component';
-import { connect } from 'ember-redux';
-import { updateColumnVisibility } from 'investigate-files/actions/data-creators';
+import { next } from '@ember/runloop';
 
-const dispatchToActions = {
-  updateColumnVisibility
-};
-const tableHeader = RSADataTableHeader.extend({
+export default RSADataTableHeader.extend({
   actions: {
     toggleColumn(column) {
+      const field = column.get('field');
+      // File name and Scores are required columns, don't allow to deselect
+      if (field === 'firstFileName' || field === 'score') {
+        return;
+      }
       column.toggleProperty('selected');
-      const { field, selected } = column.getProperties('field', 'selected');
-      this.send('updateColumnVisibility', { field, selected });
+      const columns = this.get('table.visibleColumns');
+      // Checkbox are rendering twice, to avoid calling it in next run-loop
+      next(() => {
+        this.onToggleColumn(columns);
+      });
     }
   }
 });
-export default connect(undefined, dispatchToActions)(tableHeader);

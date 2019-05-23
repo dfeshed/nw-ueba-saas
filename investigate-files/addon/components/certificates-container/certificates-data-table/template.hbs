@@ -1,9 +1,13 @@
 {{#rsa-data-table
   columnsConfig=certificatesColumns
   items=certificatesItems
-  onRowClick=(action 'toggleSelectedRow')}}
-  {{#certificates-container/certificates-data-table/header  
-    translateTitles=true enableColumnSelector=isCertificateView as |column|}}
+  onColumnConfigChange=(action 'onColumnConfigChange')
+  onRowClick=(action 'toggleSelectedRow')
+  onReorderColumns=(action 'onReorderColumns')}}
+  {{#certificates-container/certificates-data-table/header
+    translateTitles=true
+    onToggleColumn=(action 'onColumnConfigChange' 'display')
+    enableColumnSelector=isCertificateView as |column|}}
     {{#if (not-eq column.dataType "radio")}}
       <span class='js-move-handle'>
         {{t column.title}}
@@ -28,7 +32,7 @@
       noResultsMessage=(t 'configure.endpoint.certificates.noResultsMessage') as |item index column|}}
       {{#rsa-data-table/body-cell column=column}}
         {{#if (eq column.dataType "radio")}}
-          <label class='rsa-form-radio-label certificate-radio 
+          <label class='rsa-form-radio-label certificate-radio
           {{if (is-selected selections item) 'checked'}}'>
             {{radio-button
               radioClass='certificate-row-radio'}}
@@ -38,9 +42,9 @@
         {{/if}}
       {{/rsa-data-table/body-cell}}
     {{/rsa-data-table/body}}
-    {{rsa-data-table/load-more 
-      status=loadMoreStatus 
-      title=(t 'investigateFiles.showNextRecords' count=nextLoadCount label='certificates') 
+    {{rsa-data-table/load-more
+      status=loadMoreStatus
+      title=(t 'investigateFiles.showNextRecords' count=nextLoadCount label='certificates')
       click=(action 'getPageOfCertificates')}}
   {{/if}}
 {{/rsa-data-table}}

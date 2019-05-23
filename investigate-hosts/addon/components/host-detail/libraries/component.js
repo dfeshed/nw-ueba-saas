@@ -5,7 +5,7 @@ import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
 import columnsConfig from './libraries-columns';
 
 const stateToComputed = (state) => ({
-  columnsConfig: getColumnsConfig(state, columnsConfig)
+  columnsConfig: getColumnsConfig(state, columnsConfig, 'LIBRARY')
 });
 
 

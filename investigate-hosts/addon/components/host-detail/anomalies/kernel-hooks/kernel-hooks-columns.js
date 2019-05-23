@@ -8,7 +8,8 @@ export default {
     'componentClass': 'rsa-form-checkbox',
     'visible': true,
     'disableSort': true,
-    'headerComponentClass': 'rsa-form-checkbox'
+    'headerComponentClass': 'rsa-form-checkbox',
+    field: 'checkbox'
   },
   {
     field: 'type',

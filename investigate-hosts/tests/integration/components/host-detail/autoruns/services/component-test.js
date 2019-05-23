@@ -41,7 +41,7 @@ module('Integration | Component | host-detail/autoruns/services', function(hooks
         }
       </style>
     {{host-detail/autoruns/services}}`);
-    assert.equal(findAll('.rsa-data-table-header-row .rsa-data-table-header-cell span')[1].textContent.trim(), 'DISPLAY NAME', 'Display name being, sorted at second place as it has order 2 in the config');
+    assert.equal(findAll('.rsa-data-table-header-row .rsa-data-table-header-cell span')[1].textContent.trim(), 'Local Risk Score', 'Local Risk Score being, sorted at second place as it has order 2 in the config');
     assert.equal(findAll('.rsa-data-table-header-row .rsa-data-table-header-cell span')[11].textContent.trim(), 'FILE CREATION TIME', 'File creation time being sorted based on order.');
   });
 });

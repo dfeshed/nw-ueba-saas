@@ -1,11 +1,17 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { observer } from '@ember/object';
-import TREE_CONFIG from './process-config';
-import LIST_CONFIG from './process-list-config';
 import { connect } from 'ember-redux';
 import { updateRowVisibility } from './utils';
-import { processTree, areAllSelected, selectedFileChecksums, processList } from 'investigate-hosts/reducers/details/process/selectors';
+import {
+  processTree,
+  areAllSelected,
+  selectedFileChecksums,
+  processList,
+  updateProcessColumns,
+  schema,
+  savedProcessColumns
+} from 'investigate-hosts/reducers/details/process/selectors';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { inject as service } from '@ember/service';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
@@ -15,7 +21,7 @@ import { machineOsType, hostName } from 'investigate-hosts/reducers/details/over
 import { fileStatus, isRemediationAllowed } from 'investigate-hosts/reducers/details/file-context/selectors';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
 import { once } from '@ember/runloop';
-
+import { saveColumnConfig } from 'investigate-hosts/actions/data-creators/host';
 import {
   setRowIndex,
   getProcessDetails,
@@ -46,7 +52,8 @@ const dispatchToActions = {
   setFileContextFileStatus,
   retrieveRemediationStatus,
   resetRiskScore,
-  downloadFilesToServer
+  downloadFilesToServer,
+  saveColumnConfig
 };
 
 
@@ -73,7 +80,9 @@ const stateToComputed = (state) => ({
   agentCountMapping: state.endpoint.process.agentCountMapping,
   sortField: state.endpoint.process.sortField,
   serverId: state.endpointQuery.serverId,
-  isInsightsAgent: isInsightsAgent(state)
+  isInsightsAgent: isInsightsAgent(state),
+  savedProcessColumns: savedProcessColumns(state),
+  defaultSchema: schema(state)
 });
 
 
@@ -97,15 +106,6 @@ const TreeComponent = Component.extend({
 
   contextItems: null,
 
-  @computed('isTreeView')
-  columnsConfig(isTreeView) {
-    if (isTreeView) {
-      return TREE_CONFIG;
-    } else {
-      return LIST_CONFIG;
-    }
-  },
-
   /**
    * Filtering the the items based on visible property, hiding the virtual child element based the parent expanded or not
    * @param items
@@ -120,6 +120,10 @@ const TreeComponent = Component.extend({
     }
   },
 
+  @computed('defaultSchema', 'savedProcessColumns')
+  columns(schema, savedColumns) {
+    return updateProcessColumns(savedColumns, schema);
+  },
   /**
    * We are using observer here because we need to close the property panel when snapshot changes, snapshot is outside
    * of the this component
@@ -233,7 +237,6 @@ const TreeComponent = Component.extend({
 
     beforeContextMenuShow(menu, event) {
       const { contextSelection: item, contextItems } = menu;
-
       const machineName = this.get('hostName');
 
       if (!this.get('contextItems')) {
@@ -310,6 +313,24 @@ const TreeComponent = Component.extend({
 
     onResetScoreModalClose() {
       this.set('showResetScoreModal', false);
+    },
+    /**
+     * Abort the action if dragged column is machine name, risk score and checkbox also abort if column in dropped to
+     * machine name, risk score and checkbox.
+     *
+     */
+    onReorderColumns(columns, newColumns, column, fromIndex, toIndex) {
+      return !(column.dataType === 'checkbox' ||
+        column.field === 'name' ||
+        column.field === 'machineFileScore' ||
+        column.field === 'fileProperties.score' ||
+        toIndex === 0 ||
+        toIndex === 1 ||
+        toIndex === 2);
+
+    },
+    onColumnConfigChange(changedProperty, changedColumns) {
+      this.send('saveColumnConfig', 'hosts-process-tree', changedProperty, changedColumns);
     }
   }
 });

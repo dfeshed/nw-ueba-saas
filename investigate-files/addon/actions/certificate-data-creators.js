@@ -6,6 +6,7 @@ import { run } from '@ember/runloop';
 import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { setupEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import _ from 'lodash';
+import { initializeFilesPreferences } from 'investigate-files/actions/data-creators';
 
 const _expressionListForThumbprint = (thumbprint, selectedFileList) => {
   const certificateValues = selectedFileList.map((item) => {
@@ -46,6 +47,7 @@ const bootstrapInvestigateCertificates = () => {
       if (!serviceData) {
         // Wait for endpoint server to load and availability
         await dispatch(setupEndpointServer());
+        await dispatch(initializeFilesPreferences());
       }
     } catch (e) {
       // Endpoint server offline

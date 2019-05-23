@@ -9,7 +9,7 @@ import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   registryDiscrepancies: registryDiscrepancies(state),
-  columnsConfig: getColumnsConfig(state, columnsConfig)
+  columnsConfig: getColumnsConfig(state, columnsConfig, 'registry')
 });
 
 const dispatchToActions = {

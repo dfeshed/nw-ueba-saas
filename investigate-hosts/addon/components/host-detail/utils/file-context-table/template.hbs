@@ -2,12 +2,17 @@
   {{#rsa-data-table
     lazy=true
     items=listOfFiles
-    columnsConfig=columnsConfig
+    columnsConfig=columns
+    usePreferredDisplayIndex=true
     agentCountMapping=agentCountMapping
     tabName=tabName
     selectedIndex=selectedRowIndex
+    onColumnConfigChange=(action 'onColumnConfigChange')
     onRowClick=(action 'onRowClick')}}
-    {{#host-detail/utils/file-context-table/header enableColumnFilter=true enableColumnSelector=true as |column|}}
+    {{#rsa-data-table/header
+      enableColumnFilter=true
+      onToggleColumn=(action 'onToggleColumn')
+      enableColumnSelector=true as |column|}}
       {{#if (eq column.dataType "checkbox")}}
         <label class="rsa-form-checkbox-label  {{if isAllSelected 'checked'}}">
           {{rsa-form-checkbox checked=isAllSelected change=(action 'toggleAllSelection' tabName listOfFiles)}}
@@ -23,7 +28,7 @@
           name=(if column.isDescending "arrow-down-7" "arrow-up-7")
           class="sort"}}
       {{/unless}}
-    {{/host-detail/utils/file-context-table/header}}
+    {{/rsa-data-table/header}}
     {{#if isDataLoading}}
       <centered>
         {{rsa-loader size="larger"}}

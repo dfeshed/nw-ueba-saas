@@ -110,6 +110,11 @@ module('Unit | Selectors | investigate-files | certificates', function(hooks) {
 
   test('columns', function(assert) {
     let stateNew = Immutable.from({
+      preferences: {
+        preferences: {
+          filePreference: {}
+        }
+      },
       certificate: {
         list: {
           certificateVisibleColumns: []
@@ -119,6 +124,35 @@ module('Unit | Selectors | investigate-files | certificates', function(hooks) {
     let result = columns(stateNew);
     assert.equal(result.length, 11, 'no visible columns.');
     stateNew = Immutable.from({
+      preferences: {
+        preferences: {
+          filePreference: {
+            columnConfig: [
+              {
+                tableId: 'files-certificates',
+                columns: [
+                  {
+                    field: 'friendlyName',
+                    displayIndex: '1'
+                  },
+                  {
+                    field: 'score',
+                    displayIndex: '2'
+                  },
+                  {
+                    field: 'certificateStatus',
+                    displayIndex: '3'
+                  },
+                  {
+                    field: 'issuer',
+                    displayIndex: '4'
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
       certificate: {
         list: {
           certificateVisibleColumns: ['friendlyName']
@@ -126,7 +160,8 @@ module('Unit | Selectors | investigate-files | certificates', function(hooks) {
       }
     });
     result = columns(stateNew);
-    assert.equal(result[1].visible, true, 'visible column updated.');
+    assert.equal(result[3].field, 'issuer', 'issuer');
+    assert.equal(result[2].preferredDisplayIndex, 3);
   });
 
   test('nextLoadCount', function(assert) {

@@ -1,15 +1,5 @@
 const FILE_LIST_COLUMNS_CONFIG = [
   {
-    name: 'firstFileName',
-    description: 'File Name',
-    dataType: 'STRING'
-  },
-  {
-    name: 'score',
-    description: '',
-    dataType: 'INT'
-  },
-  {
     dataType: 'string',
     width: 100,
     field: 'machineCount',
@@ -75,6 +65,14 @@ const FILE_LIST_COLUMNS_CONFIG = [
   },
   {
     name: 'signature.thumbprint',
+    dataType: 'STRING'
+  },
+  {
+    name: 'firstFileName',
+    dataType: 'STRING'
+  },
+  {
+    name: 'score',
     dataType: 'STRING'
   },
   {

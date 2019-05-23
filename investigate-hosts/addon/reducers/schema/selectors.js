@@ -2,6 +2,7 @@ import reselect from 'reselect';
 import { RESTRICTION_TYPE } from './restriction-type';
 import HOST_LIST_COLUMNS from './host-columns';
 import Immutable from 'seamless-immutable';
+import DEFAULT_HOSTS_PREFERENCE from './host-default-preference';
 
 const COLUMN_WIDTH = {
   'agentStatus.scanStatus': '8vw',
@@ -31,13 +32,15 @@ const SORTABLE_COLUMNS = [
 
 const DEFAULT_COLUMN = Immutable.from([
   {
+    field: 'checkbox',
     dataType: 'checkbox',
     width: '1vw',
     class: 'rsa-form-row-checkbox',
     componentClass: 'rsa-form-checkbox',
     visible: true,
     disableSort: true,
-    headerComponentClass: 'rsa-form-checkbox'
+    headerComponentClass: 'rsa-form-checkbox',
+    preferredDisplayIndex: 0
   },
   {
     dataType: 'string',
@@ -45,14 +48,16 @@ const DEFAULT_COLUMN = Immutable.from([
     visible: true,
     field: 'machineIdentity.machineName',
     searchable: true,
-    title: 'investigateHosts.hosts.column.machineIdentity.machineName'
+    title: 'investigateHosts.hosts.column.machineIdentity.machineName',
+    preferredDisplayIndex: 1
   },
   {
     dataType: 'string',
     visible: true,
     field: 'score',
     searchable: false,
-    title: 'investigateHosts.hosts.column.score'
+    title: 'investigateHosts.hosts.column.score',
+    preferredDisplayIndex: 2
   }
 ]);
 
@@ -64,40 +69,87 @@ const _visibleColumns = createSelector(
   _preferences,
   (preferences) => {
     if (preferences.machinePreference) {
-      return preferences.machinePreference.visibleColumns;
+      return preferences.machinePreference.columnConfig || [];
     }
     return [];
   }
 );
 
-export const getHostTableColumns = createSelector(
-  [_schema, _visibleColumns],
-  (schema, _visibleColumns) => {
-    let finalSchema = [];
-    if (schema && schema.length) {
-      const updatedSchema = schema.map((item) => {
-        const { dataType, name: field, searchable, values } = item;
-        const visible = _visibleColumns.includes(field);
-        return {
-          visible,
-          dataType,
-          field,
-          searchable,
-          values,
-          title: `investigateHosts.hosts.column.${field}`,
-          width: COLUMN_WIDTH[field] || '10vw',
-          disableSort: !SORTABLE_COLUMNS.includes(field)
-        };
-      });
+export const extractHostColumns = createSelector(
+  _visibleColumns,
+  (visibleColumns) => {
+    const savedColumns = visibleColumns.filter((item) => {
+      return item.tableId === 'hosts';
+    });
 
-      const visibleList = updatedSchema.filter((column) => column.visible);
-
-      if (visibleList) {
-        // Making it as mutable as schema is passed down to data-table component and data-table component expecting simple array/ember array
-        finalSchema = DEFAULT_COLUMN.concat(updatedSchema).asMutable();
-      }
+    if (savedColumns && savedColumns.length) {
+      const [{ columns }] = savedColumns;
+      return columns;
+    } else {
+      const [{ columns }] = DEFAULT_HOSTS_PREFERENCE.machinePreference.columnConfig;
+      return columns;
     }
-    return finalSchema;
+  }
+);
+
+export const getHostTableColumns = createSelector(
+  [_schema, extractHostColumns],
+  (schema, columns) => {
+    if (columns && columns.length) {
+      let counter = columns.length + 3;
+      if (schema && schema.length) {
+        const updatedSchema = schema.map((item) => {
+          const { dataType, name: field, searchable, values } = item;
+          const currentColumn = columns.filter((column) => {
+            return column.field === field;
+          });
+          let visible = false;
+          let displayIndex, width;
+
+          if (currentColumn && currentColumn.length) {
+            visible = true;
+            const [{ displayIndex: index, width: columnWidth }] = currentColumn;
+            displayIndex = parseInt(index, 10);
+            width = columnWidth;
+          } else {
+            displayIndex = counter;
+            counter++;
+          }
+
+          return {
+            visible,
+            dataType,
+            field,
+            searchable,
+            values,
+            preferredDisplayIndex: displayIndex,
+            title: `investigateHosts.hosts.column.${field}`,
+            width: width || COLUMN_WIDTH[field] || '10vw',
+            disableSort: !SORTABLE_COLUMNS.includes(field)
+          };
+        });
+        // Set the default columns, if not present in stored configuration
+        DEFAULT_COLUMN.forEach((column) => {
+          if (column.dataType === 'checkbox') {
+            updatedSchema.unshift(column);
+          } else {
+            const [item] = columns.filter((col) => {
+              return column.field === col.field;
+            });
+            if (!item) {
+              updatedSchema.unshift(column);
+            }
+          }
+
+        });
+        const visibleList = updatedSchema.filter((column) => column.visible);
+        if (visibleList) {
+          return updatedSchema;
+        }
+      }
+      return [];
+    }
+
   }
 );
 

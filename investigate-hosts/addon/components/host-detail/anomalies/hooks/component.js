@@ -11,7 +11,7 @@ import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   machineOsType: machineOsType(state),
-  columnsConfig: getColumnsConfig(state, columnsConfig)
+  columnsConfig: getColumnsConfig(state, columnsConfig, 'IMAGEHOOK')
 });
 
 const Hooks = Component.extend({

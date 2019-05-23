@@ -7,6 +7,7 @@ import Immutable from 'seamless-immutable';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { revertPatch } from '../../../../helpers/patch-reducer';
 import { patchReducer } from '../../../../helpers/vnext-patch';
+import { patchSocket } from '../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import sinon from 'sinon';
 import CertificateCreators from 'investigate-files/actions/certificate-data-creators';
@@ -196,12 +197,12 @@ module('Integration | Component | certificates-container/certificates-data-table
     find('.rsa-icon-cog-filled').click();
 
     return settled().then(() => {
-      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 1, 'initial visible column count is 1');
-      findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[1].click();
+      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 10, 'initial visible column count is 1');
+      findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[3].click();
       return waitUntil(() => {
-        return findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label.checked').length === 2;
+        return findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label.checked').length === 9;
       }).then(() => {
-        assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 2, 'visible column is 2');
+        assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 9, 'visible column is 2');
       });
     });
   });
@@ -270,6 +271,36 @@ module('Integration | Component | certificates-container/certificates-data-table
       const subItems = findAll(`#${menuItems[1].id} > .context-menu--sub .context-menu__item`);
       assert.equal(subItems.length, 5, 'Sub menu rendered');
       click(`#${subItems[0].id}`);
+    });
+  });
+  test('re-sizing the certificate table column will call set the preference', async function(assert) {
+    new ReduxDataHelper(initState)
+      .certificatesItems(items)
+      .loadMoreCertificateStatus('stopped')
+      .selectedCertificatesList([])
+      .certificateStatusData({})
+      .build();
+    this.set('pivotToInvestigate', () => {
+      assert.ok(true);
+    });
+    await render(hbs`{{certificates-container/certificates-data-table pivotToInvestigate=(action pivotToInvestigate)}}{{context-menu}}`);
+    this.timezone = this.owner.lookup('service:timezone');
+    this.get('timezone').set('selected', { zoneId: 'UTC' });
+    const [, , draggedItem] = document.querySelectorAll('.rsa-data-table-header-cell-resizer.left'); // 3 column
+
+    let done = false;
+    patchSocket((method, modelName) => {
+      done = true;
+      assert.equal(method, 'getPreferences');
+      assert.equal(modelName, 'endpoint-preferences');
+    });
+
+    await triggerEvent(draggedItem, 'mousedown', { clientX: draggedItem.offsetLeft, clientY: draggedItem.offsetTop, which: 3 });
+    await triggerEvent(draggedItem, 'mousemove', { clientX: draggedItem.offsetLeft - 10, clientY: draggedItem.offsetTop, which: 3 });
+    await triggerEvent(draggedItem, 'mouseup', { clientX: 510, clientY: draggedItem.offsetTop, which: 3 });
+
+    return waitUntil(() => done, { timeout: 6000 }).then(() => {
+      assert.ok(true);
     });
   });
 });

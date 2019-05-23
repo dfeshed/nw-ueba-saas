@@ -6,6 +6,9 @@ import { inject as service } from '@ember/service';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { observer } from '@ember/object';
 import { once } from '@ember/runloop';
+import computed from 'ember-computed-decorators';
+import { saveColumnConfig } from 'investigate-hosts/actions/data-creators/host';
+import { savedColumnsConfig, updateConfig } from 'investigate-hosts/reducers/details/selectors';
 
 import {
   listOfFiles,
@@ -35,7 +38,7 @@ import {
 
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 
-const stateToComputed = (state, { storeName }) => ({
+const stateToComputed = (state, { storeName, tabName }) => ({
   agentId: state.endpoint.detailsInput.agentId,
   listOfFiles: listOfFiles(state, storeName),
   fileContextSelections: fileContextSelections(state, storeName),
@@ -56,7 +59,8 @@ const stateToComputed = (state, { storeName }) => ({
   sortConfig: state.endpoint[storeName].sortConfig,
   selectedRowIndex: state.endpoint[storeName].selectedRowIndex,
   isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, storeName),
-  isInsightsAgent: isInsightsAgent(state)
+  isInsightsAgent: isInsightsAgent(state),
+  savedColumns: savedColumnsConfig(state, tabName)
 });
 
 const dispatchToActions = {
@@ -69,7 +73,8 @@ const dispatchToActions = {
   retrieveRemediationStatus,
   resetSelection,
   resetRiskScore,
-  deSelectAllSelection
+  deSelectAllSelection,
+  saveColumnConfig
 };
 
 const FileContextTable = Component.extend({
@@ -93,6 +98,11 @@ const FileContextTable = Component.extend({
   selectedIndex: 0,
 
   contextItems: null,
+
+  @computed('columnsConfig', 'savedColumns')
+  columns(schema, savedConfig) {
+    return updateConfig(schema, savedConfig);
+  },
 
   _isAlreadySelected(selections, item) {
     let selected = false;
@@ -239,6 +249,13 @@ const FileContextTable = Component.extend({
 
     onResetScoreModalClose() {
       this.set('showResetScoreModal', false);
+    },
+
+    onColumnConfigChange(changedProperty, columns) {
+      this.send('saveColumnConfig', this.get('tabName'), changedProperty, columns);
+    },
+    onToggleColumn(column, columns) {
+      this.send('saveColumnConfig', this.get('tabName'), 'display', columns);
     }
   }
 });

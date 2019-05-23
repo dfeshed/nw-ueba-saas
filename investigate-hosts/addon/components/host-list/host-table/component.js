@@ -1,8 +1,14 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getHostTableColumns } from 'investigate-hosts/reducers/schema/selectors';
-import { getNextMachines, setHostColumnSort, fetchHostContext, onHostSelection, setFocusedHostIndex }
-  from 'investigate-hosts/actions/data-creators/host';
+import {
+  getNextMachines,
+  setHostColumnSort,
+  fetchHostContext,
+  onHostSelection,
+  setFocusedHostIndex,
+  saveColumnConfig
+} from 'investigate-hosts/actions/data-creators/host';
 import {
   processedHostList,
   serviceList,
@@ -59,7 +65,8 @@ const dispatchToActions = {
   onHostSelection,
   setFocusedHostIndex,
   deSelectAllHosts,
-  selectAllHosts
+  selectAllHosts,
+  saveColumnConfig
 };
 
 const HostTable = Component.extend({
@@ -91,6 +98,23 @@ const HostTable = Component.extend({
       };
       this.send('handleRowSelection', entity);
     },
+
+    /**
+     * Abort the action if dragged column is machine name, risk score and checkbox also abort if column in dropped to
+     * machine name, risk score and checkbox.
+     *
+     */
+    onReorderColumns(columns, newColumns, column, fromIndex, toIndex) {
+
+      return !(column.dataType === 'checkbox' ||
+        column.field === 'machineIdentity.machineName' ||
+        column.field === 'score' ||
+        toIndex === 0 ||
+        toIndex === 1 ||
+        toIndex === 2);
+
+    },
+
     toggleSelectedRow(item, index, e, table) {
       const { target: { classList } } = e;
       // If it's machine name click don't select the row
@@ -175,6 +199,13 @@ const HostTable = Component.extend({
         this.closeProperties();
       }
       this.send('setHostColumnSort', columnSort);
+    },
+
+    onColumnConfigChange(changedProperty, changedColumns) {
+      this.send('saveColumnConfig', 'hosts', changedProperty, changedColumns);
+    },
+    onToggleColumn(column, columns) {
+      this.send('saveColumnConfig', 'hosts', 'display', columns);
     }
   }
 });

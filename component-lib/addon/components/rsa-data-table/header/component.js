@@ -5,6 +5,8 @@ import computed from 'ember-computed-decorators';
 import HasTableParent from 'component-lib/components/rsa-data-table/mixins/has-table-parent';
 import layout from './template';
 import { isNumeric } from 'component-lib/utils/jquery-replacement';
+import { next } from '@ember/runloop';
+
 
 export default Component.extend(HasTableParent, {
   layout,
@@ -96,6 +98,13 @@ export default Component.extend(HasTableParent, {
   actions: {
     toggleColumn(col) {
       col.toggleProperty('selected');
+      const fn = this.get('onToggleColumn');
+      if (typeof fn === 'function') {
+        const columns = this.get('table.visibleColumns');
+        next(() => {
+          fn.apply(this, [col, columns]);
+        });
+      }
     },
 
     clearSearchTerm() {

@@ -10,7 +10,16 @@ module('Unit |  Reducers | Preferences');
 const preferencesInitialState = Immutable.from({
   preferences: {
     filePreference: {
-      visibleColumns: [],
+      columnConfig: [{
+        tableId: 'files',
+        columns: [
+          {
+            field: 'machineCount',
+            width: '7vw',
+            displayIndex: 3
+          }
+        ]
+      }],
       sortField: null
     },
     machinePreference: null
@@ -21,57 +30,27 @@ test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
   assert.deepEqual(result, {
     preferences: {
-      filePreference: {
-        visibleColumns: [
-          'firstFileName',
-          'firstSeenTime',
-          'reputationStatus',
-          'score',
-          'size',
-          'signature.features',
-          'pe.resources.company',
-          'fileStatus',
-          'remediationAction',
-          'downloadInfo.status',
-          'size',
-          'signature.features',
-          'firstSeenTime',
-          'machineOsType'
-        ],
-        sortField: '{ "sortField": "score", "isSortDescending": false }'
+      machinePreference: {
+        sortField: '{ "key": "score", "descending": true }'
       }
     }
   });
-});
-
-
-test('The UPDATE_COLUMN_VISIBILITY action will set the selected column', function(assert) {
-
-  const result = reducer(preferencesInitialState, { type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: { field: 'fileFirstName', selected: true } });
-  assert.equal(result.preferences.filePreference.visibleColumns.length, 1, 'expected to have one column');
-  assert.equal(result.preferences.filePreference.visibleColumns[0], 'fileFirstName', 'expected to match fileFirstName');
-});
-
-test('The UPDATE_COLUMN_VISIBILITY  action unchecking column', function(assert) {
-  const response = Immutable.from({
-    preferences: {
-      filePreference: {
-        visibleColumns: ['fileFirstName', 'score', 'machineCount'],
-        sortField: null
-      },
-      machinePreference: null
-    }
-  });
-
-  const result = reducer(response, { type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: { field: 'machineCount', selected: false } });
-  assert.equal(result.preferences.filePreference.visibleColumns.length, 2, 'expected to return 2 column');
 });
 
 test('The SET_FILE_PREFERENCES  action will set visibleColumns', function(assert) {
 
   const response = {
     filePreference: {
-      visibleColumns: ['fileFirstName']
+      columnConfig: [{
+        tableId: 'files',
+        columns: [
+          {
+            field: 'size',
+            width: '7vw',
+            displayIndex: 4
+          }
+        ]
+      }]
     }
   };
 
@@ -81,13 +60,10 @@ test('The SET_FILE_PREFERENCES  action will set visibleColumns', function(assert
   });
 
   const result = reducer(preferencesInitialState, newAction);
-  assert.equal(result.preferences.filePreference.visibleColumns.length, 1, 'expected to return 1 column');
+  assert.equal(result.preferences.filePreference.columnConfig[0].columns.length, 1, 'expected to return 1 column');
 });
 
 test('The SET_SORT_BY  action will set sortField', function(assert) {
-  // Initial state
-  const initialResult = reducer(undefined, {});
-  assert.equal(initialResult.preferences.filePreference.sortField, '{ "sortField": "score", "isSortDescending": false }', 'original sortField value');
 
   const response = { 'sortField': 'firstSeenTime', 'isSortDescending': true };
 
@@ -98,4 +74,15 @@ test('The SET_SORT_BY  action will set sortField', function(assert) {
 
   const result = reducer(preferencesInitialState, newAction);
   assert.equal(result.preferences.filePreference.sortField, '{"sortField":"firstSeenTime","isSortDescending":true}', 'sortField value is set');
+});
+
+
+test('SAVE_COLUMN_CONFIG action will set the columns config', function(assert) {
+
+  const columnToChange = [{
+    field: 'machineCount',
+    width: 100
+  }];
+  const result = reducer(preferencesInitialState, { type: ACTION_TYPES.SAVE_COLUMN_CONFIG, payload: { columns: columnToChange } });
+  assert.equal(result.preferences.filePreference.columnConfig[0].columns[0].width, '7vw', 'new width, converted to vw is set in preferences state for that column.');
 });

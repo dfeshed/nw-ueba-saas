@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import Component from '@ember/component';
-import { run } from '@ember/runloop';
-
+import { run, next } from '@ember/runloop';
 import { isNumeric } from 'component-lib/utils/jquery-replacement';
 import HasTableParent from '../mixins/has-table-parent';
 import layout from './template';
@@ -69,6 +68,14 @@ export default Component.extend(HasTableParent, {
 
   _dragEnd() {
     this.set('isDragging', false);
+
+    next(() => {
+      const fn = this.get('columnsConfigDidChange');
+      if ($.isFunction(fn)) {
+        fn('COLUMN_WIDTH');
+      }
+    });
+
     $(document.body).off({
       mousemove: this._mousemoveCallback,
       mouseup: this._mouseupCallback

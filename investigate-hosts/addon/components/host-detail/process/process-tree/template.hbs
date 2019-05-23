@@ -2,13 +2,20 @@
   {{#rsa-data-table
     items=visibleItems
     tabName='PROCESS'
+    usePreferredDisplayIndex=true
     agentCountMapping=agentCountMapping
     selectedIndex=selectedRowIndex
     lazy=true
     onRowClick=(action "handleRowClickAction")
-    columnsConfig=columnsConfig}}
+    onColumnConfigChange=(action 'onColumnConfigChange')
+    onReorderColumns=(action 'onReorderColumns')
+    columnsConfig=columns}}
 
-    {{#host-detail/utils/file-context-table/header enableColumnFilter=true translateTitles=true enableColumnSelector=true as |column|}}
+    {{#host-detail/utils/file-context-table/header
+      onToggleColumn=(action 'onColumnConfigChange' 'display')
+      enableColumnFilter=true
+      translateTitles=true
+      enableColumnSelector=true as |column|}}
       {{#if (eq column.dataType "checkbox")}}
         <label class="rsa-form-checkbox-label  {{if areAllSelected 'checked'}}">
           {{rsa-form-checkbox checked=areAllSelected change=(action 'selectAllProcess' visibleItems)}}

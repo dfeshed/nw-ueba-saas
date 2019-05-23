@@ -35,12 +35,46 @@ export default class DataHelper {
       preferences: {
         preferences: {
           machinePreference: {
-            visibleColumns: [
-              'id',
-              'machineIdentity.agentVersion',
-              'machine.scanStartTime',
-              'machineIdentity.machineOsType'
-            ]
+            columnConfig: [{
+              tableId: 'hosts',
+              columns: [
+                {
+                  field: 'id'
+                },
+                {
+                  field: 'machineIdentity.agentVersion'
+                },
+                {
+                  field: 'machine.scanStartTime'
+                },
+                {
+                  field: 'machineIdentity.machineOsType'
+                }
+              ]
+            },
+            {
+              tableId: 'hosts-process-tree',
+              columns: [
+                {
+                  field: 'name'
+                },
+                {
+                  field: 'machineFileScore'
+                },
+                {
+                  field: 'fileProperties.score'
+                },
+                {
+                  field: 'machineCount'
+                },
+                {
+                  field: 'fileProperties.reputationStatus'
+                },
+                {
+                  field: 'fileProperties.fileStatus'
+                }
+              ]
+            }]
           }
         }
       },

@@ -1,17 +1,15 @@
 import RSADataTableHeader from 'component-lib/components/rsa-data-table/header/component';
-import { connect } from 'ember-redux';
-import { updateCertificateColumnVisibility } from 'investigate-files/actions/certificate-data-creators';
+import { next } from '@ember/runloop';
 
-const dispatchToActions = {
-  updateCertificateColumnVisibility
-};
 const tableHeader = RSADataTableHeader.extend({
   actions: {
     toggleColumn(column) {
       column.toggleProperty('selected');
-      const { field, selected } = column.getProperties('field', 'selected');
-      this.send('updateCertificateColumnVisibility', { field, selected });
+      const columns = this.get('table.visibleColumns');
+      next(() => {
+        this.onToggleColumn(columns);
+      });
     }
   }
 });
-export default connect(undefined, dispatchToActions)(tableHeader);
+export default tableHeader;

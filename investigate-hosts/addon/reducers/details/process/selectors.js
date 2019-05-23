@@ -1,6 +1,8 @@
 import reselect from 'reselect';
 import { convertTreeToList } from './util';
 import _ from 'lodash';
+import TREE_CONFIG from './process-config';
+import LIST_CONFIG from './process-list-config';
 
 const { createSelector } = reselect;
 const _processData = (state) => state.endpoint.process.processDetails;
@@ -16,6 +18,20 @@ const _selectedProcessList = (state) => state.endpoint.process.selectedProcessLi
 const _searchResultProcessList = (state) => state.endpoint.process.searchResultProcessList;
 const _sortField = (state) => state.endpoint.process.sortField;
 const _isDescOrder = (state) => state.endpoint.process.isDescOrder;
+
+const PROCESS_DEFAULT_COLUMN = [
+  {
+    'dataType': 'checkbox',
+    'width': '2vw',
+    'class': 'rsa-form-row-checkbox',
+    'componentClass': 'rsa-form-checkbox',
+    'visible': true,
+    'disableSort': true,
+    'headerComponentClass': 'rsa-form-checkbox',
+    field: 'checkbox',
+    'preferredDisplayIndex': 1
+  }
+];
 
 const _getTree = (selectedTab, tabName, data) => {
   if (selectedTab && selectedTab.tabName === tabName) {
@@ -303,3 +319,73 @@ export const selectedFileChecksums = createSelector(
     return [];
   }
 );
+const _preferences = (state) => state.preferences.preferences;
+
+export const savedProcessColumns = createSelector(
+  _preferences,
+  (preferences) => {
+    let columnsInPreference = [];
+    if (preferences.machinePreference) {
+      columnsInPreference = preferences.machinePreference.columnConfig || [];
+    }
+    const savedColumns = columnsInPreference.filter((item) => {
+      return item.tableId === 'hosts-process-tree';
+    });
+
+    if (savedColumns && savedColumns.length) {
+      const [{ columns }] = savedColumns;
+      return columns;
+    } else {
+      return LIST_CONFIG;
+    }
+  }
+);
+const _isTreeView = (state) => state.endpoint.visuals.isTreeView;
+
+export const schema = createSelector(
+  _isTreeView,
+  (isTreeView) => {
+    if (isTreeView) {
+      return TREE_CONFIG;
+    } else {
+      return LIST_CONFIG;
+    }
+  });
+
+export const updateProcessColumns = (savedProcessColumns, schema) => {
+  let updatedSchema = schema;
+  if (savedProcessColumns && savedProcessColumns.length) {
+    if (savedProcessColumns.length) {
+      updatedSchema = schema.map((item, index) => {
+        const currentColumn = savedProcessColumns.filter((column) => {
+          return column.field === item.field;
+        });
+        let visible = false;
+        let displayIndex, width;
+        if (currentColumn && currentColumn.length) {
+          visible = true;
+          const [{ displayIndex: index, width: columnWidth }] = currentColumn;
+          displayIndex = parseInt(index, 10);
+          width = columnWidth;
+        } else {
+          width = item.width;
+          displayIndex = index;
+        }
+        return { ...item, visible, preferredDisplayIndex: displayIndex, width };
+      });
+    }
+  }
+  // Set the default columns, if not present in stored configuration
+  PROCESS_DEFAULT_COLUMN.forEach((column) => {
+    if (column.dataType === 'checkbox') {
+      updatedSchema.unshift(column);
+    }
+  });
+
+  const visibleList = updatedSchema.filter((column) => column.visible);
+  if (visibleList) {
+    return updatedSchema;
+  }
+
+  return [];
+};

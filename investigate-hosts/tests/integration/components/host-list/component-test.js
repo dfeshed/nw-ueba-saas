@@ -70,6 +70,23 @@ const endpointServer = {
   isServicesRetrieveError: false,
   isSummaryRetrieveError: false
 };
+const config = [{
+  tableId: 'hosts',
+  columns: [
+    {
+      field: 'id'
+    },
+    {
+      field: 'machineIdentity.agentVersion'
+    },
+    {
+      field: 'machine.scanStartTime'
+    },
+    {
+      field: 'machineIdentity.machineOsType'
+    }
+  ]
+}];
 
 const endpointQuery = {
   serverId: 'e82241fc-0681-4276-a930-dd6e5d00f152'
@@ -88,12 +105,7 @@ const endpointState =
     preferences: {
       preferences: {
         machinePreference: {
-          visibleColumns: [
-            'id',
-            'machineIdentity.agentVersion',
-            'machine.scanStartTime',
-            'machineIdentity.machineOsType'
-          ]
+          columnConfig: config
         }
       }
     },
@@ -121,12 +133,7 @@ const selectedMoreHostsState =
     preferences: {
       preferences: {
         machinePreference: {
-          visibleColumns: [
-            'id',
-            'machineIdentity.agentVersion',
-            'machine.scanStartTime',
-            'machineIdentity.machineOsType'
-          ]
+          columnConfig: config
         }
       }
     },

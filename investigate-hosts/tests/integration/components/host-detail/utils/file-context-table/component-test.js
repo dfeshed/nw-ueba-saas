@@ -6,6 +6,7 @@ import { click, findAll, find, render, waitUntil, triggerEvent, settled } from '
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'investigate-hosts/actions/types';
+import { patchSocket } from '../../../../../helpers/patch-socket';
 
 const fileContext = {
   1: {
@@ -137,7 +138,6 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
       document.querySelector('#ember-testing').removeChild(wormholeElement);
     }
   });
-
 
   test('should show loading indicator', async function(assert) {
     initState({
@@ -708,8 +708,8 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
     });
   });
 
-  test('External action is called if items length is zero', async function(assert) {
-    assert.expect(1);
+  test('saveConfig is getting called on re-size', async function(assert) {
+    assert.expect(3);
     initState({
       endpoint: {
         drivers: {
@@ -728,7 +728,19 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
         }
       </style>
     {{host-detail/utils/file-context-table storeName=storeName tabName=tabName closePropertyPanel=closePropertyPanel columnsConfig=columnConfig}}`);
-    const redux = this.owner.lookup('service:redux');
-    redux.dispatch({ type: ACTION_TYPES.RESET_CONTEXT_DATA, meta: { belongsTo: 'DRIVER' } });
+    const [, , draggedItem] = document.querySelectorAll('.rsa-data-table-header-cell-resizer.left');
+    let done = false;
+    patchSocket((method, modelName) => {
+      done = true;
+      assert.equal(method, 'getPreferences');
+      assert.equal(modelName, 'endpoint-preferences');
+    });
+    await triggerEvent(draggedItem, 'mousedown', { clientX: draggedItem.offsetLeft, clientY: draggedItem.offsetTop, which: 3 });
+    await triggerEvent(draggedItem, 'mousemove', { clientX: draggedItem.offsetLeft - 10, clientY: draggedItem.offsetTop, which: 3 });
+    await triggerEvent(draggedItem, 'mouseup', { clientX: 510, clientY: draggedItem.top, which: 3 });
+
+    return waitUntil(() => done, { timeout: 10000 }).then(() => {
+      assert.ok(true);
+    });
   });
 });

@@ -213,6 +213,13 @@ export default Component.extend(DomWatcher, {
    */
   columnsDefinedDeclaratively: computed.not('columnsConfig'),
 
+  /** If true, `visibleColumns` will be sorted based on user preferred display index(@property preferredDisplayIndex)
+   *  else sorting will be based on the `displayIndex`
+   * @type {boolean}
+   * @public
+   */
+  usePreferredDisplayIndex: false,
+
   /**
    * An array of Ember.Objects, each one representing a current column definition.
    * Each Ember.Object represents a column to be displayed, with properties: `field`, `title`, `width` & `componentClass`.
@@ -296,7 +303,14 @@ export default Component.extend(DomWatcher, {
    */
   visibleColumns: computed('columns.@each.selected', function() {
     const columnWidths = [];
-    const columns = this.get('columns').filterBy('selected', true).sortBy('displayIndex');
+    let columns = this.get('columns').filterBy('selected', true);
+    // If we use displayIndex, it's affecting the column chooser hence using the other index for saved configuration
+    if (!this.get('usePreferredDisplayIndex')) {
+      columns = columns.sortBy('displayIndex');
+    } else {
+      columns = columns.sortBy('preferredDisplayIndex');
+    }
+
     const newCols = columns.map((column) => {
       if (get(column, 'width') != get(column, 'defaultWidth')) {
         set(column, 'width', get(column, 'defaultWidth'));
@@ -656,7 +670,17 @@ export default Component.extend(DomWatcher, {
     }, 250);
   },
 
+
   actions: {
+
+    columnsConfigDidChange(changedConfig) {
+      const fn = this.get('onColumnConfigChange');
+      if ($.isFunction(fn)) {
+        const columns = this.get('columns').filterBy('selected', true);
+        fn.apply(this, [changedConfig, columns]);
+      }
+    },
+
     /**
      * Callback from child component(s) after user tries to reorder columns via drag-drop.
      * Responsible for invoking the (optional) configurable callback `onReorderColumns`.
@@ -683,6 +707,10 @@ export default Component.extend(DomWatcher, {
         }
         columns.removeObject(draggedColumn);
         columns.insertAt(toIndex, draggedColumn);
+        columns.forEach((column, index) => {
+          set(column, 'preferredDisplayIndex', index);
+        });
+        this.send('columnsConfigDidChange', 'COLUMN_ORDER');
       }
     },
 

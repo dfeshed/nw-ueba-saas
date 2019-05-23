@@ -8,6 +8,7 @@ import {
   saveCertificateStatus,
   getSavedCertificateStatus
 } from 'investigate-files/actions/certificate-data-creators';
+import { saveColumnConfig } from 'investigate-files/actions/data-creators';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 
 const stateToComputed = (state) => ({
@@ -26,7 +27,8 @@ const dispatchToActions = {
   getPageOfCertificates,
   toggleCertificateSelection,
   saveCertificateStatus,
-  getSavedCertificateStatus
+  getSavedCertificateStatus,
+  saveColumnConfig
 };
 
 const Certificates = Component.extend({
@@ -72,6 +74,23 @@ const Certificates = Component.extend({
       if (selections && selections.length === 1) {
         this.send('getSavedCertificateStatus', selections);
       }
+    },
+    /**
+     * Abort the action if dragged column is file name, risk score and checkbox also abort if column in dropped to
+     * file name, risk score and checkbox.
+     *
+     */
+    onReorderColumns(columns, newColumns, column, fromIndex, toIndex) {
+      return !(column.dataType === 'radio' ||
+        column.field === 'friendlyName' ||
+        column.field === 'certificateStatus' ||
+        toIndex === 0 ||
+        toIndex === 1 ||
+        toIndex === 2);
+    },
+
+    onColumnConfigChange(changedProperty, changedColumns) {
+      this.send('saveColumnConfig', changedProperty, changedColumns, 'files-certificates');
     }
   }
 });

@@ -1,48 +1,47 @@
 import * as ACTION_TYPES from 'investigate-files/actions/types';
 import reduxActions from 'redux-actions';
 import Immutable from 'seamless-immutable';
+import { convertPixelToVW } from 'investigate-shared/utils/common-util';
 
-const DEFAULT_FILE_PREFERENCES = {
-  filePreference: {
-    visibleColumns: [
-      'firstFileName',
-      'firstSeenTime',
-      'reputationStatus',
-      'score',
-      'size',
-      'signature.features',
-      'pe.resources.company',
-      'fileStatus',
-      'remediationAction',
-      'downloadInfo.status',
-      'size',
-      'signature.features',
-      'firstSeenTime',
-      'machineOsType'
-    ],
-    sortField: '{ "sortField": "score", "isSortDescending": false }'
+const key = ['preferences', 'filePreference', 'columnConfig'];
+
+function _updateConfig(tableId, updated, columnConfig) {
+  let data = [];
+  const updatedConfig = { tableId, columns: updated };
+  if (columnConfig && columnConfig.length) {
+    const index = columnConfig.findIndex((col) => col.tableId === tableId);
+    if (index > -1) {
+      data = columnConfig.set(index, updatedConfig);
+    } else {
+      data = columnConfig.concat([updatedConfig]);
+    }
+  } else {
+    data.push(updatedConfig);
   }
-};
+  return data;
+}
 
 const filePreferencesInitialState = Immutable.from({
-  preferences: DEFAULT_FILE_PREFERENCES
+  preferences: {
+    machinePreference: {
+      sortField: '{ "key": "score", "descending": true }'
+    }
+  }
 });
 
 const filePreferences = reduxActions.handleActions({
 
   [ACTION_TYPES.SET_SORT_BY]: (state, { payload }) => state.setIn(['preferences', 'filePreference', 'sortField' ], JSON.stringify(payload)),
 
-  [ACTION_TYPES.UPDATE_COLUMN_VISIBILITY]: (state, { payload }) => {
-    const key = ['preferences', 'filePreference', 'visibleColumns'];
-    const visibleColumns = state.getIn(key);
-    const { selected, field } = payload;
-    if (selected) {
-      const updatedVisibleColumns = visibleColumns.concat([field]);
-      return state.setIn(key, updatedVisibleColumns);
-    } else {
-      const newColumns = visibleColumns.filter((column) => column !== field);
-      return state.setIn(key, newColumns);
-    }
+  [ACTION_TYPES.SAVE_COLUMN_CONFIG]: (state, { payload }) => {
+    const { columns, tableId } = payload;
+    const columnConfig = state.getIn(key);
+    const updated = columns.sortBy('preferredDisplayIndex').map((column, index) => {
+      const { width, field } = column;
+      return { field, width: convertPixelToVW(width), displayIndex: index };
+    });
+    const data = _updateConfig(tableId, updated, columnConfig);
+    return state.setIn(key, data);
   },
 
   [ACTION_TYPES.SET_FILE_PREFERENCES]: (state, { payload }) => {

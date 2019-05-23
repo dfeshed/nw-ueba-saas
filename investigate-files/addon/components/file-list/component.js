@@ -27,18 +27,18 @@ import {
   getSavedFileStatus,
   retrieveRemediationStatus,
   onFileSelection,
-  setSelectedIndex
+  setSelectedIndex,
+  saveColumnConfig
 } from 'investigate-files/actions/data-creators';
+import { toggleCertificateView } from 'investigate-files/actions/certificate-data-creators';
 
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
-import FIXED_COLUMNS from './file-list-fixed-columns';
 
 const stateToComputed = (state) => ({
   areFilesLoading: areFilesLoading(state),
   serviceList: serviceList(state),
-  columnConfig: columns(state),
   loadMoreStatus: state.files.fileList.loadMoreStatus,
   files: files(state), // All visible files
   totalItems: state.files.fileList.totalItems,
@@ -61,7 +61,8 @@ const stateToComputed = (state) => ({
   isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state),
   fileDownloadButtonStatus: fileDownloadButtonStatus(state),
   downloadLink: downloadLink(state),
-  isCertificateViewDisabled: isCertificateViewDisabled(state)
+  isCertificateViewDisabled: isCertificateViewDisabled(state),
+  columns: columns(state)
 });
 
 const dispatchToActions = {
@@ -76,7 +77,9 @@ const dispatchToActions = {
   retrieveRemediationStatus,
   resetRiskScore,
   onFileSelection,
-  setSelectedIndex
+  setSelectedIndex,
+  toggleCertificateView,
+  saveColumnConfig
 };
 
 /**
@@ -107,15 +110,10 @@ const FileList = Component.extend({
 
   contextItems: null,
 
+
   @computed('isCertificateView')
   showColumnChooser(isCertificateView) {
     return !isCertificateView;
-  },
-
-  @computed('columnConfig')
-  updatedColumns(columns) {
-    const UPDATED_COLUMNS = columns.filter((column) => !this.CONFIG_FIXED_COLUMNS.includes(column.field));
-    return FIXED_COLUMNS.concat(UPDATED_COLUMNS);
   },
 
   @computed('fileStatusData')
@@ -181,6 +179,24 @@ const FileList = Component.extend({
           this.send('setSelectedIndex', -1);
         }
       }
+    },
+
+    /**
+     * Abort the action if dragged column is file name, risk score and checkbox also abort if column in dropped to
+     * file name, risk score and checkbox.
+     *
+     */
+    onReorderColumns(columns, newColumns, column, fromIndex, toIndex) {
+      return !(column.dataType === 'checkbox' ||
+        column.field === 'firstFileName' ||
+        column.field === 'score' ||
+        toIndex === 0 ||
+        toIndex === 1 ||
+        toIndex === 2);
+    },
+
+    onColumnConfigChange(changedProperty, changedColumns) {
+      this.send('saveColumnConfig', changedProperty, changedColumns, 'files');
     },
 
     showRiskScoreModal(fileList) {

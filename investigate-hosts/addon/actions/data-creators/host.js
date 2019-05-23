@@ -15,6 +15,7 @@ import { getServiceId } from 'investigate-shared/actions/data-creators/investiga
 import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
 import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { toggleProcessDetailsView } from 'investigate-hosts/actions/data-creators/process';
+import { extractHostColumns } from 'investigate-hosts/reducers/schema/selectors';
 
 import { debug } from '@ember/debug';
 
@@ -47,6 +48,8 @@ const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTa
     if (isPageLoading) {
       const id = sid || getState().endpointQuery.serverId;
       await dispatch(changeEndpointServer({ id }));
+      // Wait for user preference to load
+      await dispatch(initializeHostsPreferences());
     }
 
     dispatch(resetHostDownloadLink());
@@ -224,8 +227,16 @@ const exportAsFile = () => {
 };
 
 const _getVisibleColumnNames = (getState) => {
-  const { preferences: { machinePreference } } = getState().preferences;
-  return ['machineIdentity.machineName', 'score', ...machinePreference.visibleColumns];
+  const columns = extractHostColumns(getState());
+  let savedColumns;
+  if (columns && columns.length) {
+    savedColumns = columns.map((column) => {
+      if (column.field !== 'checkbox') {
+        return column.field;
+      }
+    });
+  }
+  return savedColumns.compact();
 };
 
 const _setPreferences = (getState) => {
@@ -234,14 +245,15 @@ const _setPreferences = (getState) => {
   prefService.setPreferences('endpoint-preferences', null, { ...preferences }, null, { socketUrlPostfix: 'any' });
 };
 
-const updateColumnVisibility = (column) => {
+const saveColumnConfig = (tableId, changedProperty, columns) => {
   return (dispatch, getState) => {
-    dispatch({ type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: column });
+    dispatch({ type: ACTION_TYPES.SAVE_COLUMN_CONFIG, payload: { tableId, changedProperty, columns } });
     next(() => {
       _setPreferences(getState);
     });
   };
 };
+
 
 const setHostColumnSort = (columnSort) => {
   return (dispatch, getState) => {
@@ -385,7 +397,6 @@ export {
   getPageOfMachines,
   getNextMachines,
   exportAsFile,
-  updateColumnVisibility,
   setHostColumnSort,
   deleteHosts,
   initializeHostsPreferences,
@@ -400,5 +411,6 @@ export {
   bootstrapInvestigateHosts,
   changeEndpointServerSelection,
   initializeHostDetailsPage,
-  downloadMFT
+  downloadMFT,
+  saveColumnConfig
 };

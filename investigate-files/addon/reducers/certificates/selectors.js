@@ -1,4 +1,7 @@
 import { createSelector } from 'reselect';
+import CERTIFICATE_PREFERENCE from './default_certificate_columns_config';
+import CERTIFICATE_COLUMNS_CONFIG from './certificate_columns';
+import Immutable from 'seamless-immutable';
 
 const _totalItems = (state) => state.certificate.list.totalItems;
 
@@ -8,107 +11,128 @@ const _certificatesLoadingStatus = (state) => state.certificate.list.certificate
 
 const _selectedCertificateList = (state) => state.certificate.list.selectedCertificateList || [];
 
-export const CERTIFICATE_COLUMNS = [
-  {
-    field: 'radio',
-    dataType: 'radio',
-    width: 20,
-    class: 'rsa-form-row-radio',
-    componentClass: 'rsa-form-radio',
-    visible: true,
-    disableSort: true,
-    headerComponentClass: 'rsa-form-radio'
-  },
+export const CERTIFICATE_DEFAULT_COLUMNS = [
   {
     field: 'friendlyName',
     title: 'configure.endpoint.certificates.columns.friendlyName',
     label: 'Friendly Name',
-    width: 350,
-    disableSort: false
+    width: '35vw',
+    disableSort: false,
+    visible: true,
+    preferredDisplayIndex: 2
   },
   {
     field: 'certificateStatus',
     title: 'configure.endpoint.certificates.columns.certificateStatus',
     label: 'Status',
-    width: 100,
-    disableSort: true
+    width: '10vw',
+    disableSort: true,
+    visible: true,
+    preferredDisplayIndex: 3
   },
   {
-    field: 'issuer',
-    title: 'configure.endpoint.certificates.columns.issuer',
-    label: 'Issuer',
-    width: 300,
-    disableSort: false
-  },
-  {
-    field: 'thumbprint',
-    title: 'configure.endpoint.certificates.columns.thumbprint',
-    label: 'Thumb Print',
-    width: 300,
-    disableSort: false
-  },
-  {
-    field: 'notValidBeforeUtcDate',
-    title: 'configure.endpoint.certificates.columns.notValidBeforeUtcDate',
-    label: 'notValidBeforeUtcDate',
-    width: 200,
-    disableSort: false
-  },
-  {
-    field: 'notValidAfterUtcDate',
-    title: 'configure.endpoint.certificates.columns.notValidAfterUtcDate',
-    label: 'notValidAfterUtcDate',
-    width: 200,
-    disableSort: false
-  },
-  {
-    field: 'subject',
-    title: 'configure.endpoint.certificates.columns.subject',
-    label: 'Subject',
-    width: 300,
-    disableSort: false
-  },
-  {
-    field: 'subjectKey',
-    title: 'configure.endpoint.certificates.columns.subjectKey',
-    label: 'Subject Key',
-    width: 280,
-    disableSort: false
-  },
-  {
-    field: 'serial',
-    title: 'configure.endpoint.certificates.columns.serial',
-    label: 'Serial',
-    width: 260,
-    disableSort: false
-  },
-  {
-    field: 'authorityKey',
-    title: 'configure.endpoint.certificates.columns.authorityKey',
-    label: 'Authority Key',
-    width: 260,
-    disableSort: false
+    field: 'radio',
+    dataType: 'radio',
+    width: '2vw',
+    class: 'rsa-form-row-radio',
+    componentClass: 'rsa-form-radio',
+    visible: true,
+    disableSort: true,
+    headerComponentClass: 'rsa-form-radio',
+    preferredDisplayIndex: 1
   }
 ];
-const _visibleColumns = (state) => state.certificate.list.certificateVisibleColumns || [];
+const _preferences = (state) => state.preferences.preferences;
+const schema = () => CERTIFICATE_COLUMNS_CONFIG || Immutable.from([]);
+
+const _visibleColumns = createSelector(
+  _preferences,
+  (preferences) => {
+    if (preferences.filePreference) {
+      return preferences.filePreference.columnConfig || [];
+    }
+    return [];
+  }
+);
+
+const extractFilesColumns = createSelector(
+  _visibleColumns,
+  (visibleColumns) => {
+    const savedColumns = visibleColumns.filter((item) => {
+      return item.tableId === 'files-certificates';
+    });
+
+    if (savedColumns && savedColumns.length) {
+      const [{ columns }] = savedColumns;
+      return columns;
+    } else {
+      const [{ columns }] = CERTIFICATE_PREFERENCE.certificatePreference.columnConfig;
+      return columns;
+    }
+  }
+);
 
 export const columns = createSelector(
-  [_visibleColumns],
-  (_visibleColumns) => {
-    return CERTIFICATE_COLUMNS.map((item) => {
-      const { dataType, field, searchable, values, width, disableSort, title } = item;
+  [schema, extractFilesColumns],
+  (schema, columns) => {
+    if (columns && columns.length) {
+      const sortedSchema = [];
 
-      return {
-        visible: _visibleColumns.includes(field),
-        dataType,
-        field,
-        searchable,
-        values,
-        title,
-        width,
-        disableSort
-      };
-    });
+      let counter = columns.length + 3;
+      if (schema && schema.length) {
+        const updatedSchema = schema.map((item) => {
+          const { dataType, field, searchable, values } = item;
+          let { width } = item;
+          const currentColumn = columns.filter((column) => {
+            return column.field === field;
+          });
+          let visible = false;
+          let displayIndex;
+
+          if (currentColumn && currentColumn.length) {
+            visible = true;
+            const [{ displayIndex: index, width: columnWidth }] = currentColumn;
+            displayIndex = parseInt(index, 10);
+            width = columnWidth;
+          } else {
+            displayIndex = counter;
+            counter++;
+          }
+
+          return {
+            visible,
+            dataType,
+            field,
+            searchable,
+            values,
+            preferredDisplayIndex: displayIndex,
+            title: `configure.endpoint.certificates.columns.${field}`,
+            width: width || '4vw',
+            disableSort: false
+          };
+        });
+
+        // Set the default columns, if not present in stored configuration
+        CERTIFICATE_DEFAULT_COLUMNS.forEach((column) => {
+          if (column.dataType === 'radio') {
+            updatedSchema.unshift(column);
+          } else {
+            const [item] = columns.filter((col) => {
+              return column.field === col.field;
+            });
+            if (!item) {
+              updatedSchema.unshift(column);
+            }
+          }
+        });
+        const visibleList = updatedSchema.filter((column) => column.visible);
+        if (visibleList) {
+          // Making it as mutable as schema is passed down to data-table component and data-table component expecting simple array/ember array
+          return updatedSchema;
+        }
+      }
+      return sortedSchema;
+    }
   }
 );
 

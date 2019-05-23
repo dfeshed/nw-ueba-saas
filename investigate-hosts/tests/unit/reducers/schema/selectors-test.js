@@ -23,24 +23,51 @@ const SCHEMA = Immutable.from({
     }
   },
   preferences: {
-    preferences: {}
+    preferences: {
+      machinePreference: {
+        columnConfig: [{
+          tableId: 'hosts',
+          columns: [
+            { field: 'machineIdentity.machineOsType', displayIndex: 3 }
+          ]
+        }]
+      }
+    }
   }
 });
 test('getHostTableColumns', function(assert) {
   const result = getHostTableColumns(SCHEMA);
   // length = total size + 1 checkbox column
-  assert.equal(result.length, 59, 'should return 59 columns including checkbox column');
+  assert.equal(result.length, 61, 'should return 61 columns including checkbox column');
   // 0th field is a checkbox.
-  assert.equal(result[1].visible, true, 'Agent Id field is not visible');
-  assert.equal(result[3].visible, false, 'Agent Version field is visible');
-  assert.equal(result[8].disableSort, false, 'Agent Mode field sort is enabled');
-  assert.equal(result[15].disableSort, true, 'Agent ID field sort is disabled');
+  assert.equal(result[3].field, 'agentStatus.lastSeenTime', 'Machine OS Type field is visible');
+  assert.equal(result[3].visible, false, 'Machine OS Type field is visible');
+  assert.equal(result[12].field, 'machineIdentity.agent.driverErrorCode', 'Agent version is 12th child in the config');
+  assert.equal(result[12].visible, false, 'Agent Version field is not visible');
+});
+
+test('getHostTableColumns returns the default columns', function(assert) {
+  const result = getHostTableColumns({ preferences: { preferences: {} } });
+  // length = total size + 1 checkbox column
+  assert.equal(result.length, 61, 'should return 61 columns including checkbox column');
+  // 0th field is a checkbox.
+  assert.equal(result[3].field, 'agentStatus.lastSeenTime', 'Machine OS Type field is visible');
+  assert.equal(result[3].visible, true, 'Machine OS Type field is visible');
+  assert.equal(result[12].field, 'machineIdentity.agent.driverErrorCode', 'Agent version is 12th child in the config');
+  assert.equal(result[12].visible, true, 'Agent Version field is not visible');
+});
+
+
+test('displayIndex for non-visible columns being set', function(assert) {
+  const result = getHostTableColumns(SCHEMA);
+  const newIndex = result[4].preferredDisplayIndex;
+  assert.equal(newIndex, 5, 'agentStatus.lastSeenTime, has index more than, number of items in visible columns');
 });
 
 
 test('prepareSchema', function(assert) {
   const result = prepareSchema(SCHEMA);
-  assert.equal(result.length, 56, 'should return 56 columns ');
+  assert.equal(result.length, 58, 'should return 58 columns ');
   assert.equal(result[0].title, 'investigateHosts.hosts.column.agentStatus.lastSeenTime', 'should return the added title property');
 });
 

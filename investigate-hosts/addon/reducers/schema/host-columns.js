@@ -140,6 +140,10 @@ const HOST_LIST_COLUMNS = [
     dataType: 'STRING'
   },
   {
+    name: 'machineIdentity.machineName',
+    dataType: 'STRING'
+  },
+  {
     name: 'machineIdentity.agent.exeCompileTime',
     dataType: 'DATE'
   },
@@ -280,6 +284,10 @@ const HOST_LIST_COLUMNS = [
   {
     name: 'groupPolicy.serverName',
     dataType: 'STRING'
+  },
+  {
+    name: 'score',
+    dataType: 'INT'
   }
 ];
 export default HOST_LIST_COLUMNS;

@@ -5,7 +5,7 @@ import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
 import columnsConfig from './host-files-columns';
 
 const stateToComputed = (state) => ({
-  columnsConfig: getColumnsConfig(state, columnsConfig)
+  columnsConfig: getColumnsConfig(state, columnsConfig, 'FILE') // Need to pass the tabName
 });
 
 

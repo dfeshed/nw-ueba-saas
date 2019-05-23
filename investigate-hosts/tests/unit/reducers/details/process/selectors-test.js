@@ -21,7 +21,10 @@ import {
   suspiciousThreadsData,
   areAllSelected,
   selectedFileChecksums,
-  selectedProcessName
+  selectedProcessName,
+  savedProcessColumns,
+  schema,
+  updateProcessColumns
 } from 'investigate-hosts/reducers/details/process/selectors';
 
 test('getProcessData', function(assert) {
@@ -1078,4 +1081,124 @@ test('selectedProcessName returns the processName', function(assert) {
     }
   }));
   assert.deepEqual(result, 'TEST', 'Returns selected process name');
+});
+test('savedProcessColumns returns the saved preference columns', function(assert) {
+
+  const result1 = savedProcessColumns(Immutable.from({
+    preferences: {
+      preferences: {
+        filePreference: {},
+        machinePreference: {
+          columnConfig: [{
+            tableId: 'hosts-process-tree',
+            columns: [
+              {
+                field: 'name',
+                dataType: 'tree-column',
+                width: '18vw',
+                title: 'investigateHosts.process.processName',
+                componentClass: 'host-detail/process/process-tree/tree-name',
+                disableSort: true
+              },
+              {
+                field: 'machineFileScore',
+                width: '7vw',
+                title: 'investigateHosts.process.localRiskScore',
+                isDescending: false,
+                disableSort: true
+              }]
+          }]
+        }
+      }
+    }
+  }));
+  const testResult1 = [{
+    field: 'name',
+    dataType: 'tree-column',
+    width: '18vw',
+    title: 'investigateHosts.process.processName',
+    componentClass: 'host-detail/process/process-tree/tree-name',
+    disableSort: true
+  }, {
+    field: 'machineFileScore',
+    width: '7vw',
+    title: 'investigateHosts.process.localRiskScore',
+    isDescending: false,
+    disableSort: true
+  }];
+  const result2 = savedProcessColumns(Immutable.from({
+    preferences: {
+      preferences: {
+        filePreference: {},
+        machinePreference: {
+          columnConfig: [{
+            tableId: 'dummy',
+            columns: [
+              {
+                field: 'name',
+                dataType: 'tree-column',
+                width: '18vw',
+                title: 'investigateHosts.process.processName',
+                componentClass: 'host-detail/process/process-tree/tree-name',
+                disableSort: true
+              },
+              {
+                field: 'machineFileScore',
+                width: '7vw',
+                title: 'investigateHosts.process.localRiskScore',
+                isDescending: false,
+                disableSort: true
+              }]
+          }]
+        }
+      }
+    }
+  }));
+  assert.deepEqual(result1, testResult1, 'Returns selected table preference');
+  assert.deepEqual(result2.length, 12, 'Returns default table preference');
+});
+
+test('process Schema returns the default columns', function(assert) {
+
+  const result1 = schema(Immutable.from({
+    endpoint: {
+      visuals: { isTreeView: false }
+    }
+  }));
+  const result2 = schema(Immutable.from({
+    endpoint: {
+      visuals: { isTreeView: true }
+    }
+  }));
+  assert.deepEqual(result1.length, 12, 'Returns list table columns');
+  assert.deepEqual(result2.length, 11, 'Returns tree table columns');
+});
+test('updateProcessColumns returns the all columns with user preferences', function(assert) {
+  const schema = [
+    {
+      field: 'name',
+      dataType: 'tree-column',
+      width: '15vw',
+      title: 'investigateHosts.process.processName',
+      isDescending: false
+    },
+    {
+      field: 'machineFileScore',
+      width: '8vw',
+      title: 'investigateHosts.process.localRiskScore',
+      isDescending: false
+    }
+  ];
+  const savedColumns = [
+    {
+      field: 'name',
+      width: 25,
+      displayIndex: 2
+    }
+  ];
+  const result1 = updateProcessColumns(savedColumns, schema);
+  const result2 = updateProcessColumns([], schema);
+  assert.deepEqual(result1.length, 3, 'Returns list table columns along with check box column');
+  assert.deepEqual(result2.length, 3, 'Returns list table columns along with check box column');
+
 });

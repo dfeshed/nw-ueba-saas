@@ -3,10 +3,17 @@
   lazy=true
   items=files
   selectedIndex=selectedIndex
+  usePreferredDisplayIndex=true
   agentCountMapping=agentCountMapping
-  columnsConfig=updatedColumns
-  onRowClick=(action 'toggleSelectedRow')}}
-  {{#file-list/header enableColumnFilter=true translateTitles=true enableColumnSelector=showColumnChooser as |column|}}
+  columnsConfig=columns
+  onColumnConfigChange=(action 'onColumnConfigChange')
+  onRowClick=(action 'toggleSelectedRow')
+  onReorderColumns=(action 'onReorderColumns')}}
+  {{#file-list/header
+    enableColumnFilter=true
+    translateTitles=true
+    onToggleColumn=(action 'onColumnConfigChange' 'display')
+    enableColumnSelector=showColumnChooser as |column|}}
     {{#if (eq column.dataType "checkbox")}}
       <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if isAllSelected 'checked'}}">
         {{rsa-form-checkbox

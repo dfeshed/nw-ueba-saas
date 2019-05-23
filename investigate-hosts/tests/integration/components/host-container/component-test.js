@@ -71,12 +71,23 @@ const endpointState =
       preferences: {
         preferences: {
           machinePreference: {
-            visibleColumns: [
-              'id',
-              'machineIdentity.agentVersion',
-              'machine.scanStartTime',
-              'machineIdentity.machineOsType'
-            ]
+            columnConfig: [{
+              tableId: 'hosts',
+              columns: [
+                {
+                  field: 'id'
+                },
+                {
+                  field: 'machineIdentity.agentVersion'
+                },
+                {
+                  field: 'machine.scanStartTime'
+                },
+                {
+                  field: 'machineIdentity.machineOsType'
+                }
+              ]
+            }]
           }
         }
       },

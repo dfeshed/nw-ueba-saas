@@ -1,14 +1,5 @@
 export default [
   {
-    'dataType': 'checkbox',
-    'width': '2vw',
-    'class': 'rsa-form-row-checkbox',
-    'componentClass': 'rsa-form-checkbox',
-    'visible': true,
-    'disableSort': true,
-    'headerComponentClass': 'rsa-form-checkbox'
-  },
-  {
     field: 'name',
     dataType: 'tree-column',
     width: '15vw',

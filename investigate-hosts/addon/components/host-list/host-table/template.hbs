@@ -4,10 +4,15 @@
     selectedIndex=focusedHostIndex
     items=hostList
     columnsConfig=columns
+    usePreferredDisplayIndex=true
+    onColumnConfigChange=(action 'onColumnConfigChange')
+    onReorderColumns=(action 'onReorderColumns')
     onRowClick=(action 'toggleSelectedRow')}}
     {{#rsa-data-table/header
       closeProperties=closeProperties
-      translateTitles=true enableColumnSelector=true as |column|}}
+      translateTitles=true
+      onToggleColumn=(action 'onToggleColumn')
+      enableColumnSelector=true as |column|}}
       {{#if (eq column.dataType "checkbox")}}
         <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if isAllHostSelected 'checked'}}">
           {{rsa-form-checkbox
@@ -27,7 +32,7 @@
           sortBy=(action 'sort')}}
       {{/unless}}
     {{/rsa-data-table/header}}
-  
+
     {{#if (eq hostFetchStatus 'wait')}}
       <centered>
         {{rsa-loader size='larger'}}

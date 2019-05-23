@@ -29,6 +29,7 @@ import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/fi
 import { setNewFileTab } from 'investigate-files/actions/visual-creators';
 import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { parseQueryString } from 'investigate-shared/utils/query-util';
+import { extractFilesColumns } from 'investigate-files/reducers/schema/selectors';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -218,8 +219,16 @@ const exportFileAsCSV = () => {
 };
 
 const _getVisibleColumnNames = (getState) => {
-  const { preferences: { filePreference } } = getState().preferences;
-  return ['firstFileName', 'score', ...filePreference.visibleColumns];
+  const columns = extractFilesColumns(getState());
+  let savedColumns;
+  if (columns && columns.length) {
+    savedColumns = columns.map((column) => {
+      if (column.field !== 'checkbox') {
+        return column.field;
+      }
+    });
+  }
+  return savedColumns.compact();
 };
 
 
@@ -229,12 +238,19 @@ const _setPreferences = (getState) => {
   prefService.setPreferences('endpoint-preferences', null, { ...preferences }, null, { socketUrlPostfix: 'any' });
 };
 
-const updateColumnVisibility = (column) => {
+const updateColumnVisibility = (column, tableId) => {
   return (dispatch, getState) => {
-    dispatch({ type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: column });
+    dispatch({ type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: { column, tableId } });
     next(() => {
       _setPreferences(getState);
     });
+  };
+};
+
+const saveColumnConfig = (changedProperty, columns, tableId) => {
+  return (dispatch, getState) => {
+    dispatch({ type: ACTION_TYPES.SAVE_COLUMN_CONFIG, payload: { changedProperty, columns, tableId } });
+    _setPreferences(getState);
   };
 };
 
@@ -350,7 +366,7 @@ const _getMetaValues = (dispatch, { filter, queryNode, metaName, size = 1, onCom
     onInit() {
       dispatch({ type: ACTION_TYPES.INIT_FETCH_HOST_NAME_LIST });
     },
-    onError(dispatch) {
+    onError() {
       dispatch({ type: ACTION_TYPES.FETCH_HOST_NAME_LIST_ERROR });
     },
     onResponse() {},
@@ -607,5 +623,6 @@ export {
   initializerForFileDetailsAndAnalysis,
   bootstrapInvestigateFiles,
   changeEndpointServerSelection,
-  downloadFilesToServer
+  downloadFilesToServer,
+  saveColumnConfig
 };
