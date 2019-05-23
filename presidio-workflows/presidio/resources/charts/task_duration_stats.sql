@@ -11,9 +11,7 @@ WHERE  operator != ''SubDagOperator''
        AND task_id NOT LIKE ''%circuit%''
        AND task_id NOT LIKE ''start_operator.%''
        AND task_id NOT LIKE ''end_operator.%''
-       AND dag_id NOT LIKE ''maintenance_flow_dag%''
-       AND dag_id NOT LIKE ''airflow_zombie_killer%''
-       AND dag_id NOT LIKE ''reset_presidio%''
+       AND dag_id LIKE ''%ueba_flow''
        AND execution_date  >= (SELECT Max(execution_date) - interval ''{{logical_hours_back}}'' hour AS
                                     from_date
                              FROM   task_instance
@@ -21,8 +19,6 @@ WHERE  operator != ''SubDagOperator''
                                     AND state = ''success''
                                     AND task_id NOT LIKE ''%sensor%''
                                     AND task_id NOT LIKE ''%circuit%''
-                                    AND dag_id NOT LIKE ''maintenance_flow_dag%''
-                                    AND dag_id NOT LIKE ''airflow_zombie_killer%''
-                                    AND dag_id NOT LIKE ''reset_presidio%'')
+                                    AND dag_id LIKE ''%ueba_flow'')
 GROUP  BY task_id
 ORDER  BY avg_duration DESC ', false, true, false, 600, '{"logical_hours_back":"720"}', false, 8, '2017-10-31 14:24:03.74253');

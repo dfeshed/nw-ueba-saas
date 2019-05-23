@@ -4,7 +4,7 @@ from airflow import DAG
 from presidio.builders.root.root_dag_builder import RootDagBuilder
 import logging
 
-from presidio.factories.abstract_dag_factory import AbstractDagFactory
+from presidio.factories.abstract_dag_factory import AbstractDagFactory, DAG_ID_SUFIX
 
 
 class RootDagFactory(AbstractDagFactory):
@@ -26,7 +26,7 @@ class RootDagFactory(AbstractDagFactory):
 
         dag_id_start_date = str(start_date).replace(" ", "_").replace(":", "_")
         schemas = [item.strip() for item in dags_configs.get("data_schemas").split(',')]
-        new_dag_id = "{0}_{1}".format("ueba", dag_id_start_date)
+        new_dag_id = "{0}_{1}_{2}".format("root", dag_id_start_date, DAG_ID_SUFIX)
         new_dag = DAG(dag_id=new_dag_id, start_date=start_date, schedule_interval=interval,
                       default_args={"schemas": schemas},
                       end_date=end_date, full_filepath=full_filepath, description=description,

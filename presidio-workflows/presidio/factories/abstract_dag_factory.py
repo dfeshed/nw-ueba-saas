@@ -7,6 +7,7 @@ from airflow.models import Variable
 import dateutil
 
 UEBA_DAGS_KEY = "ueba_dags"
+DAG_ID_SUFIX = "ueba_flow"
 
 class AbstractDagFactory(LoggingMixin):
     __metaclass__ = ABCMeta
