@@ -19,7 +19,7 @@ export default {
     primaryDestination: null,
     secondaryDestination: null,
     protocol: null, // 'UDP' | 'TCP' | 'TLS'
-    channelFilters: []
+    channelFilters: null // []
   },
 
   // define-policy-step - available settings to render the left col
