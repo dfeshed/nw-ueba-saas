@@ -472,6 +472,7 @@ module('Integration | Component | Pill Value', function(hooks) {
       }}
     `);
     await clickTrigger(PILL_SELECTORS.value);
+    assert.notOk(find(PILL_SELECTORS.powerSelectAfterOptionHighlight), 'No Advanced Options should be highlighted');
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN);
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
     assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), AFTER_OPTION_FREE_FORM_LABEL, 'first Advanced Option was not highlighted');
@@ -484,6 +485,7 @@ module('Integration | Component | Pill Value', function(hooks) {
       }}
     `);
     await clickTrigger(PILL_SELECTORS.value);
+    assert.notOk(find(PILL_SELECTORS.powerSelectAfterOptionHighlight), 'No Advanced Options should be highlighted');
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN);
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN);
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');

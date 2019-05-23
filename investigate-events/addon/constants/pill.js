@@ -4,7 +4,9 @@ export const AFTER_OPTION_TEXT_DISABLED_LABEL = 'Text Filter is unavailable. Onl
 export const AFTER_OPTION_QUERY_LABEL = 'Query Filter';
 export const AFTER_OPTION_TAB_META = 'meta';
 export const AFTER_OPTION_TAB_RECENT_QUERIES = 'recent queries';
-export const COMPLEX_OPERATORS = ['!', '&&', '||', '(', ')', ',', '-', 'AND', 'NOT', 'OR', 'length', 'regex'];
+// TODO: Removing "!" for now as it's causing issues with "!=" being flagged as
+// complex.
+export const COMPLEX_OPERATORS = ['&&', '||', '(', ')', ',', '-', 'AND', 'NOT', 'OR', 'length', 'regex'];
 export const COMPLEX_FILTER = 'complex';
 export const OPERATORS = ['!exists', 'exists', 'contains', 'begins', 'ends', '<=', '>=', '!=', '='];
 export const QUERY_FILTER = 'query';

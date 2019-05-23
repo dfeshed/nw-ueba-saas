@@ -125,11 +125,6 @@ export default Component.extend({
   valueString: null,
 
   /**
-   * List object for advanced dropdown options
-   */
-  _afterOptionsMenu: BoundedList.create({ list: AFTER_OPTIONS_MENU }),
-
-  /**
    * Based on the current tab selected, we replace options
    * for the power select component.
    * Default is Query_Pill option.
@@ -226,6 +221,7 @@ export default Component.extend({
 
   init() {
     this._super(...arguments);
+    this._afterOptionsMenu = BoundedList.create({ list: AFTER_OPTIONS_MENU });
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.AFTER_OPTIONS_SELECTED]: (d) => this._createPillFromAdvancedOption(d),
       [MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT]: (index) => this._afterOptionsMenu.highlightIndex = index,

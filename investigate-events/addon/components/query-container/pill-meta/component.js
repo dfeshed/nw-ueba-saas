@@ -155,8 +155,6 @@ export default Component.extend({
 
   i18n: service(),
 
-  _afterOptionsMenu: BoundedList.create({ list: AFTER_OPTIONS_MENU }),
-
   @computed('hasTextPill')
   _groomedAfterOptionsMenu(hasTextPill) {
     if (hasTextPill) {
@@ -217,6 +215,7 @@ export default Component.extend({
 
   init() {
     this._super(...arguments);
+    this._afterOptionsMenu = BoundedList.create({ list: AFTER_OPTIONS_MENU });
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.AFTER_OPTIONS_SELECTED]: (d) => this._createPillFromAdvancedOption(d),
       [MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT]: (index) => this._afterOptionsMenu.highlightIndex = index,
