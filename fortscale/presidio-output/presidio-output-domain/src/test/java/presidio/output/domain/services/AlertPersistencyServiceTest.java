@@ -182,7 +182,7 @@ public class AlertPersistencyServiceTest {
 
         Page<Alert> byName1 = alertPersistencyService.findByEntityName("entity1@fortscale.com", new PageRequest(0, 10));
         assertThat(byName1.getTotalElements(), is(1L));
-        assertEquals("entityId", byName1.getContent().get(0).getEntityId());
+        assertEquals("entityId", byName1.getContent().get(0).getEntityDocumentId());
         assertEquals("smartId", byName1.getContent().get(0).getSmartId());
 
         Page<Alert> byName2 = alertPersistencyService.findByEntityName("entity2", new PageRequest(0, 10));
@@ -920,7 +920,7 @@ public class AlertPersistencyServiceTest {
         alertPersistencyService.save(Arrays.asList(alert1, alert2));
 
 
-        AlertQuery alertQuery = new AlertQuery.AlertQueryBuilder().filterByEntityId(Arrays.asList("123-000")).build();
+        AlertQuery alertQuery = new AlertQuery.AlertQueryBuilder().filterByEntityDocumentId(Arrays.asList("123-000")).build();
         Page<Alert> alertsResult = alertPersistencyService.find(alertQuery);
         Assert.assertEquals(1, alertsResult.getTotalElements());
     }

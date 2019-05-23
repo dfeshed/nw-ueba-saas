@@ -10,7 +10,6 @@ import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.processor.services.alert.AlertServiceImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface SupportingInformationGenerator {

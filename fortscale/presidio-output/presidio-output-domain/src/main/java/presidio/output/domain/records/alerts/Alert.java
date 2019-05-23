@@ -33,7 +33,7 @@ public class Alert extends AbstractElasticDocument {
     public static final String TIMEFRAME = "timeframe";
     public static final String SEVERITY = "severity";
     public static final String VENDOR_ENTITY_ID = "vendorEntityId";
-    public static final String ENTITY_ID = "entityId";
+    public static final String ENTITY_DOCUMENT_ID = "entityDocumentId";
     public static final String SMART_ID = "smartId";
     public static final String ENTITY_TAGS_FIELD_NAME = "entityTags";
     public static final String CONTRIBUTION_TO_ENTITY_SCORE_FIELD_NAME = "contributionToEntityScore";
@@ -56,8 +56,8 @@ public class Alert extends AbstractElasticDocument {
     @JsonProperty(SMART_ID)
     private String smartId;
 
-    @JsonProperty(ENTITY_ID)
-    private String entityId;
+    @JsonProperty(ENTITY_DOCUMENT_ID)
+    private String entityDocumentId;
 
     @JsonProperty(ENTITY_TYPE)
     private String entityType;
@@ -106,10 +106,10 @@ public class Alert extends AbstractElasticDocument {
         // empty const for JSON deserialization
     }
 
-    public Alert(String entityId, String smartId, List<String> classifications, String vendorEntityId, String entityName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> entityTags, Double contributionToEntityScore, String entityType) {
+    public Alert(String entityDocumentId, String smartId, List<String> classifications, String vendorEntityId, String entityName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> entityTags, Double contributionToEntityScore, String entityType) {
         super();
         this.classifications = classifications;
-        this.entityId = entityId;
+        this.entityDocumentId = entityDocumentId;
         this.smartId = smartId;
         this.vendorEntityId = vendorEntityId;
         this.entityName = entityName;
@@ -130,16 +130,16 @@ public class Alert extends AbstractElasticDocument {
         return smartId;
     }
 
-    public void setSmartId(String smartId) {
-        this.smartId = smartId;
+    public String getEntityDocumentId() {
+        return entityDocumentId;
     }
 
-    public String getEntityId() {
-        return entityId;
+    public void setEntityDocumentId(String entityDocumentId) {
+        this.entityDocumentId = entityDocumentId;
     }
 
-    public void setEntityId(String entityId) {
-        this.entityId = entityId;
+    public String getEntityType() {
+        return entityType;
     }
 
     public List<String> getClassifications() {
@@ -160,10 +160,6 @@ public class Alert extends AbstractElasticDocument {
 
     public void setEntityName(String entityName) {
         this.entityName = entityName;
-    }
-
-    public String getEntityType() {
-        return entityType;
     }
 
     public String getIndexedEntityName() {
@@ -210,20 +206,12 @@ public class Alert extends AbstractElasticDocument {
         return timeframe;
     }
 
-    public void setTimeframe(AlertEnums.AlertTimeframe timeframe) {
-        this.timeframe = timeframe;
-    }
-
     public AlertEnums.AlertSeverity getSeverity() {
         return severity;
     }
 
     public void setSeverity(AlertEnums.AlertSeverity severity) {
         this.severity = severity;
-    }
-
-    public List<String> getEntityTags() {
-        return entityTags;
     }
 
     public List<Indicator> getIndicators() {
@@ -269,10 +257,6 @@ public class Alert extends AbstractElasticDocument {
 
     public String getVendorEntityId() {
         return vendorEntityId;
-    }
-
-    public void setVendorEntityId(String vendorEntityId) {
-        this.vendorEntityId = vendorEntityId;
     }
 
     @Override

@@ -31,23 +31,15 @@ public interface AlertPersistencyService {
 
     Page<Alert> findByEntityName(String entityName, PageRequest pageRequest);
 
-    Page<Alert> findByEntityId(String entityId, PageRequest pageRequest);
+    Page<Alert> findByEntityDocumentId(String entityDocumentId, PageRequest pageRequest);
 
-    List<Alert> findByEntityId(String entityId);
-
-    Page<Alert> findByEntityIdIn(Collection<String> entityId, PageRequest pageRequest);
-
-    Page<Alert> findById(String id, PageRequest pageRequest);
+    List<Alert> findByEntityDocumentId(String entityDocumentId);
 
     Page<Alert> find(AlertQuery alertQuery);
 
     Indicator findIndicatorById(String indicatorId);
 
-    IndicatorSummary findIndicatorSummaryById(String indicatorId);
-
     Page<Indicator> findIndicatorsByAlertId(String alertId, PageRequest pageRequest);
-
-    Page<IndicatorSummary> findIndicatorsSummaryByAlertId(String alertId, PageRequest pageRequest);
 
     Page<IndicatorEvent> findIndicatorEventsByIndicatorId(String indicatorId, PageRequest pageRequest);
 
@@ -56,8 +48,6 @@ public interface AlertPersistencyService {
     Stream<Alert> findAlertsByDate(Instant startDate, Instant endDate);
 
     Stream<Indicator> findIndicatorByDate(Instant startDate, Instant endDate);
-
-    List<IndicatorEvent> findIndicatorEventByIndicatorId(String indicatorId);
 
     long countAlerts();
 

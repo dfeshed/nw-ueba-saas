@@ -5,13 +5,13 @@ import fortscale.utils.rest.jsonpatch.JsonPatch;
 import presidio.webapp.model.*;
 
 public interface RestEntityService {
-    Entity getEntityById(String entityId, boolean expand);
+    Entity getEntityByDocumentId(String entityDocumentId, boolean expand);
 
     EntitiesWrapper getEntities(EntityQuery entityQuery);
 
-    AlertsWrapper getAlertsByEntityId(String entityId);
+    AlertsWrapper getAlertsByEntityDocumentId(String entityDocumentId);
 
-    Entity updateEntity(String entityId, JsonPatch updateRequest);
+    Entity updateEntity(String entityDocumentId, JsonPatch updateRequest);
 
     EntitiesWrapper updateEntities(EntityQuery entityQuery, JsonPatch jsonPatch);
 }

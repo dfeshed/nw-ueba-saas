@@ -70,11 +70,9 @@ public class Entity {
     }
 
     /**
-     * Get id
-     *
-     * @return id
+     * Get the entity id
      **/
-    @ApiModelProperty(example = "d290f1ee-6c54-4b01-90e6-d701748f0851", required = true, value = "")
+    @ApiModelProperty(example = "JohnDoe", required = true, value = "")
     public String getEntityId() {
         return entityId;
     }
@@ -270,7 +268,7 @@ public class Entity {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("User{");
+        final StringBuilder sb = new StringBuilder("Entity{");
         sb.append("id='").append(id).append('\'');
         sb.append(", entityId='").append(entityId).append('\'');
         sb.append(", entityName='").append(entityName).append('\'');
@@ -282,17 +280,6 @@ public class Entity {
         sb.append(", alertClassifications=").append(alertClassifications);
         sb.append('}');
         return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(java.lang.Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
     }
 }
 

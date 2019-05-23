@@ -9,7 +9,7 @@ public class AlertQuery {
 
     // filters
     private final List<String> filterByEntityName;
-    private final List<String> filterByEntityId;
+    private final List<String> filterByEntityDocumentId;
     private final List<String> filterByClassification;
     private final List<String> filterBySeverity;
     private final long filterByStartDate;
@@ -18,7 +18,6 @@ public class AlertQuery {
     private final double filterByMinScore;
     private final double filterByMaxScore;
     private final List<String> filterByTags;
-    private final List<String> filterByAlertsIds;
     private final List<String> filterByIndicatorNames;
 
     // sort
@@ -44,9 +43,8 @@ public class AlertQuery {
         this.filterByMinScore = builder.filterByMinScore;
         this.filterByMaxScore = builder.filterByMaxScore;
         this.filterByTags = builder.filterByTags;
-        this.filterByAlertsIds = builder.filterByAlertsIds;
         this.filterByIndicatorNames = builder.filterByIndicatorNames;
-        this.filterByEntityId = builder.filterByEntityId;
+        this.filterByEntityDocumentId = builder.filterByEntityDocumentId;
         this.aggregateByFields = builder.aggregateByFields;
     }
 
@@ -68,10 +66,6 @@ public class AlertQuery {
 
     public List<String> getFilterByTags() {
         return filterByTags;
-    }
-
-    public List<String> getFilterByAlertsIds() {
-        return filterByAlertsIds;
     }
 
     public List<String> getFilterByIndicatorNames() {
@@ -106,8 +100,8 @@ public class AlertQuery {
         return filterByMaxScore;
     }
 
-    public List<String> getFilterByEntityId() {
-        return filterByEntityId;
+    public List<String> getFilterByEntityDocumentId() {
+        return filterByEntityDocumentId;
     }
 
     public List<String> getAggregateByFields() {
@@ -126,9 +120,8 @@ public class AlertQuery {
         private double filterByMinScore = -1;
         private double filterByMaxScore = -1;
         private List<String> filterByTags;
-        private List<String> filterByAlertsIds;
         private List<String> filterByIndicatorNames;
-        private List<String> filterByEntityId;
+        private List<String> filterByEntityDocumentId;
 
         // sort
         private Sort sort;
@@ -153,11 +146,6 @@ public class AlertQuery {
             return this;
         }
 
-        public AlertQueryBuilder filterByAlertsIds(List<String> filterByAlertsIds) {
-            this.filterByAlertsIds = filterByAlertsIds;
-            return this;
-        }
-
         public AlertQueryBuilder filterByMinScore(double filterByMinScore) {
             this.filterByMinScore = filterByMinScore;
             return this;
@@ -173,13 +161,13 @@ public class AlertQuery {
             return this;
         }
 
-        public AlertQueryBuilder filterByEntityName(List<String> filterBuEntityName) {
-            this.filterByEntityName = filterBuEntityName;
+        public AlertQueryBuilder filterByEntityName(List<String> filterByEntityName) {
+            this.filterByEntityName = filterByEntityName;
             return this;
         }
 
-        public AlertQueryBuilder filterByEntityId(List<String> filterByEntityId) {
-            this.filterByEntityId = filterByEntityId;
+        public AlertQueryBuilder filterByEntityDocumentId(List<String> filterByEntityDocumentId) {
+            this.filterByEntityDocumentId = filterByEntityDocumentId;
             return this;
         }
 

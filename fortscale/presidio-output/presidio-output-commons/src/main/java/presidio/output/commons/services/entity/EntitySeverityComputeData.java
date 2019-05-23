@@ -5,19 +5,18 @@ public class EntitySeverityComputeData {
     private Double minimumDeltaFactor;
     private Double maximumEntities;
 
-    public EntitySeverityComputeData(double percentageOfEntities, double minimumDeltaFactor, Double maximumEntity) {
+    public EntitySeverityComputeData(Double percentageOfEntities, Double minimumDeltaFactor, Double maximumEntity) {
         this.percentageOfEntities = percentageOfEntities;
         this.minimumDeltaFactor = minimumDeltaFactor;
         this.maximumEntities = maximumEntity;
     }
 
-    public EntitySeverityComputeData(double percentageOfEntities) {
-        this.percentageOfEntities = percentageOfEntities;
+    public EntitySeverityComputeData(Double percentageOfEntities) {
+        this(percentageOfEntities, null, null);
     }
 
     public EntitySeverityComputeData(Double percentageOfEntities, Double minimumDeltaFactor) {
-        this.percentageOfEntities = percentageOfEntities;
-        this.minimumDeltaFactor = minimumDeltaFactor;
+        this(percentageOfEntities, minimumDeltaFactor, null);
     }
 
     public Double getPercentageOfEntities() {

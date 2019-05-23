@@ -1,7 +1,6 @@
 package presidio.output.processor.services.alert.supportinginformation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.emory.mathcs.backport.java.util.Collections;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.utils.json.ObjectMapperProvider;
@@ -10,8 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
-import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
-import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.repositories.EventMongoPageIterator;

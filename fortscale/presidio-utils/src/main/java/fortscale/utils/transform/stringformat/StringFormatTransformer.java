@@ -14,7 +14,7 @@ import static org.apache.commons.lang3.Validate.*;
 @JsonAutoDetect(
         creatorVisibility = JsonAutoDetect.Visibility.ANY,
         fieldVisibility = JsonAutoDetect.Visibility.NONE,
-        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        getterVisibility = JsonAutoDetect.Visibility.ANY,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
@@ -94,5 +94,21 @@ public class StringFormatTransformer extends AbstractJsonObjectTransformer {
             isInstanceOf(String.class, object, "object must be an instance of String.");
             return convert((String)object);
         }
+    }
+
+    public String getSourceKey(){
+        return this.sourceValueGetter.getPath();
+    }
+
+    public String getTargetKey(){
+        return this.targetValueSetter.getKey();
+    }
+
+    public StringFormat getSourceStringFormat(){
+        return sourceStringFormat;
+    }
+
+    public StringFormat getTargetStringFormat(){
+        return targetStringFormat;
     }
 }

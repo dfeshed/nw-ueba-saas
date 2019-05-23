@@ -23,9 +23,7 @@ public interface EntityService {
 
     void recalculateEntityAlertData(Entity entity);
 
-    List<Entity> findEntityByVendorEntityIds(List<String> vendorEntityId);
-
-    String getEntityType(String contextField);
+    List<Entity> findEntityByVendorEntityIdAndType(String vendorEntityId, String entityType);
 
     /**
      * Recalculate all alerts related data on the entity for the last X days (configurable).

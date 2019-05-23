@@ -1,7 +1,6 @@
 package presidio.output.processor.services.alert.supportinginformation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
@@ -18,7 +17,7 @@ import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
-import presidio.output.domain.records.events.ScoredEnrichedEvent;
+import presidio.output.domain.records.events.ScoredEnrichedUserEvent;
 import presidio.output.domain.services.event.ScoredEventService;
 import presidio.output.processor.config.IndicatorConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
@@ -84,18 +83,18 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
         List<Pair<String, Object>> features = supportingInfoUtils.buildAnomalyFeatures(indicatorConfig, indicator.getContexts());
 
-        List<ScoredEnrichedEvent> rawEvents = scoredEventService.findEventsAndScores(indicatorConfig.getSchema(), indicatorConfig.getAdeEventType(), entityId, timeRange, features, eventsLimit, eventsPageSize, entityType);
+        List<ScoredEnrichedUserEvent> rawEvents = scoredEventService.findUserEventsAndScores(indicatorConfig.getSchema(), indicatorConfig.getAdeEventType(), entityId, timeRange, features, eventsLimit, eventsPageSize, entityType);
 
         if (CollectionUtils.isNotEmpty(rawEvents)) {
 
             // build Event for each raw event
-            for (ScoredEnrichedEvent rawEvent : rawEvents) {
-                Map<String, Object> rawEventFeatures = objectMapper.convertValue(rawEvent.getEnrichedEvent(), Map.class);
+            for (ScoredEnrichedUserEvent rawEvent : rawEvents) {
+                Map<String, Object> rawEventFeatures = objectMapper.convertValue(rawEvent.getEnrichedUserEvent(), Map.class);
 
                 IndicatorEvent event = new IndicatorEvent();
                 event.setFeatures(rawEventFeatures);
                 event.setIndicatorId(indicator.getId());
-                event.setEventTime(Date.from(rawEvent.getEnrichedEvent().getEventDate()));
+                event.setEventTime(Date.from(rawEvent.getEnrichedUserEvent().getEventDate()));
                 event.setSchema(indicatorConfig.getSchema());
                 if (rawEvent.getScore() > 0) {
                     Map<String, Double> scores = new HashMap<>();

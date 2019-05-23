@@ -28,9 +28,9 @@ public class EntitiesApiController implements EntitiesApi {
     }
 
     @Override
-    public ResponseEntity<AlertsWrapper> getAlertsByEntity(@PathVariable String entityId, EntityAlertsQuery entityAlertsQuery) {
+    public ResponseEntity<AlertsWrapper> getAlertsByEntity(@PathVariable String entityDocumentId, EntityAlertsQuery entityAlertsQuery) {
         try {
-            AlertsWrapper alertsWrapper = restEntityService.getAlertsByEntityId(entityId);
+            AlertsWrapper alertsWrapper = restEntityService.getAlertsByEntityDocumentId(entityDocumentId);
             HttpStatus httpStatus = alertsWrapper.getTotal() > 0 ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
             return new ResponseEntity(alertsWrapper, httpStatus);
         } catch (Exception ex) {
@@ -45,15 +45,15 @@ public class EntitiesApiController implements EntitiesApi {
     }
 
     @Override
-    public ResponseEntity<Entity> getEntity(@ApiParam(name = "entityId", value = "The UUID of the entity to return", required = true) @PathVariable String entityId,
+    public ResponseEntity<Entity> getEntity(@ApiParam(name = "entityDocumentId", value = "The UUID of the entity to return", required = true) @PathVariable String entityDocumentId,
                                           @ApiParam(value = "Expand response to get entity alerts data", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue = "false") Boolean expand) {
-        return toResponseEntity(restEntityService.getEntityById(entityId, expand), entityId);
+        return toResponseEntity(restEntityService.getEntityByDocumentId(entityDocumentId, expand), entityDocumentId);
     }
 
     @Override
     public ResponseEntity<User> getUser(@ApiParam(name = "userId", value = "The UUID of the user to return", required = true) @PathVariable String userId,
                                         @ApiParam(value = "Expand response to get user alerts data", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue = "false") Boolean expand) {
-        return toResponseEntity(entityToUser(restEntityService.getEntityById(userId, expand)), userId);
+        return toResponseEntity(entityToUser(restEntityService.getEntityByDocumentId(userId, expand)), userId);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class EntitiesApiController implements EntitiesApi {
     }
 
     @Override
-    public ResponseEntity<UsersWrapper> getUsers(presidio.webapp.model.UserQuery userQuery) {
+    public ResponseEntity<UsersWrapper> getUsers(UserQuery userQuery) {
         try {
             UsersWrapper usersWrapper = entitiesWrapperToUsersWrapper(
                     restEntityService.getEntities(userQueryToEntityQuery(userQuery)));
@@ -80,9 +80,9 @@ public class EntitiesApiController implements EntitiesApi {
     }
 
     @Override
-    public ResponseEntity<Entity> updateEntity(@ApiParam(name = "entityId", value = "The UUID of the entity to return", required = true) @PathVariable String entityId, @RequestBody JsonPatch jsonPatch) {
+    public ResponseEntity<Entity> updateEntity(@ApiParam(name = "entityDocumentId", value = "The UUID of the entity to return", required = true) @PathVariable String entityDocumentId, @RequestBody JsonPatch jsonPatch) {
         if (updateRequestIsInvalid(jsonPatch)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(restEntityService.updateEntity(entityId, jsonPatch), HttpStatus.OK);
+        return new ResponseEntity<>(restEntityService.updateEntity(entityDocumentId, jsonPatch), HttpStatus.OK);
     }
 
     @Override
@@ -125,7 +125,6 @@ public class EntitiesApiController implements EntitiesApi {
             HttpStatus httpStatus = response != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
             return new ResponseEntity(response, httpStatus);
         } catch (Exception ex) {
-            assert response != null;
             logger.error("Trying to get entity with id:{}, but got exception {}", id, ex);
             return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

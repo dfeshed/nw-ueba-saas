@@ -10,9 +10,11 @@ import java.util.List;
 public class JsonPointer {
 
     private List<IJsonPointerElement> pointerElements = new ArrayList<>();
+    private String path;
 
     public JsonPointer(String path){
         Validate.notBlank(path);
+        this.path = path;
         for(String key: path.split("\\.")){
             if(key.endsWith("]")){
                 Validate.isTrue(key.contains("["));
@@ -24,6 +26,10 @@ public class JsonPointer {
                 pointerElements.add(new JsonObjectPointerElement(key));
             }
         }
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public Object get(JSONObject jsonObject, boolean createPathIfNotExist){

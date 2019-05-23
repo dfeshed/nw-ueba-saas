@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import presidio.output.domain.records.AbstractElasticDocument;
 import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.IndicatorEventRepository;
@@ -17,7 +18,6 @@ import presidio.output.domain.repositories.IndicatorRepository;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 @Service
 public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
-    Logger logger = Logger.getLogger(AlertPersistencyServiceImpl.class);
+    private static final Logger logger = Logger.getLogger(AlertPersistencyServiceImpl.class);
 
     @Autowired
     private AlertRepository alertRepository;
@@ -51,9 +51,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     public Iterable<Alert> save(List<Alert> alerts) {
-        alerts.forEach(alert -> {
-            alert.updateFieldsBeforeSave();
-        });
+        alerts.forEach(AbstractElasticDocument::updateFieldsBeforeSave);
         // atomic save for the entire alert entities
 
         // save alerts
@@ -61,7 +59,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         logger.info("{} alerts were saved", alerts.size());
 
         // save indicators
-        List<Indicator> indicators = new ArrayList<Indicator>();
+        List<Indicator> indicators = new ArrayList<>();
         alerts.stream()
                 .filter(alert -> alert.getIndicators() != null)
                 .forEach(alert -> indicators.addAll(alert.getIndicators()));
@@ -73,7 +71,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         logger.info("{} indicators were saved", indicators.size());
 
         // save events
-        List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
+        List<IndicatorEvent> events = new ArrayList<>();
         indicators.stream()
                 .filter(indicator -> indicator.getEvents() != null)
                 .forEach(indicator -> events.addAll(indicator.getEvents()));
@@ -97,9 +95,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         List<Indicator> indicators = indicatorRepository.removeByAlertId(alert.getId());
 
         // delete Indicators events
-        indicators.forEach(indicator -> {
-            indicatorEventRepository.removeByIndicatorId(indicator.getId());
-        });
+        indicators.forEach(indicator -> indicatorEventRepository.removeByIndicatorId(indicator.getId()));
     }
 
     @Override
@@ -123,13 +119,8 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public Page<Alert> findByEntityId(String entityId, PageRequest pageRequest) {
-        return alertRepository.findByEntityId(entityId, pageRequest);
-    }
-
-    @Override
-    public Page<Alert> findById(String id, PageRequest pageRequest) {
-        return alertRepository.findById(id, pageRequest);
+    public Page<Alert> findByEntityDocumentId(String entityDocumentId, PageRequest pageRequest) {
+        return alertRepository.findByEntityDocumentId(entityDocumentId, pageRequest);
     }
 
     @Override
@@ -138,28 +129,13 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public Page<Alert> findByEntityIdIn(Collection<String> entityId, PageRequest pageRequest) {
-        return alertRepository.findByEntityIdIn(entityId, pageRequest);
-    }
-
-    @Override
     public Indicator findIndicatorById(String indicatorId) {
         return indicatorRepository.findIndicatorById(indicatorId);
     }
 
     @Override
-    public IndicatorSummary findIndicatorSummaryById(String indicatorId) {
-        return indicatorRepository.findIndicatorSummaryById(indicatorId);
-    }
-
-    @Override
     public Page<Indicator> findIndicatorsByAlertId(String alertId, PageRequest pageRequest) {
         return indicatorRepository.findByAlertIdOrderByScoreContributionDesc(alertId, pageRequest);
-    }
-
-    @Override
-    public Page<IndicatorSummary> findIndicatorsSummaryByAlertId(String alertId, PageRequest pageRequest) {
-        return indicatorRepository.findIndicatorsSummaryByAlertId(alertId, pageRequest);
     }
 
     @Override
@@ -196,18 +172,9 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public List<IndicatorEvent> findIndicatorEventByIndicatorId(String indicatorId) {
-        List<IndicatorEvent> events = new ArrayList<>();
-        try (Stream<IndicatorEvent> stream = indicatorEventRepository.findByIndicatorId(indicatorId)) {
-            events = stream.collect(Collectors.toList());
-        }
-        return events;
-    }
-
-    @Override
-    public List<Alert> findByEntityId(String entityId) {
-        List<Alert> alerts = new ArrayList<Alert>();
-        try (Stream<Alert> stream = alertRepository.findByEntityId(entityId)) {
+    public List<Alert> findByEntityDocumentId(String entityDocumentId) {
+        List<Alert> alerts;
+        try (Stream<Alert> stream = alertRepository.findByEntityDocumentId(entityDocumentId)) {
             alerts = stream.collect(Collectors.toList());
         }
         return alerts;

@@ -217,7 +217,7 @@ public class EntityScoreServiceImplTest {
         map.put(EntitySeverity.HIGH, new PresidioRange<>(50d, 90d));
         map.put(EntitySeverity.CRITICAL, new PresidioRange<>(90d, 90d));
         EntitySeverityServiceImpl.EntityScoreToSeverity entityScoreToSeverity = new EntitySeverityServiceImpl.EntityScoreToSeverity(map);
-        Whitebox.invokeMethod(entitySeverityService, "updateEntitySeveritiesAndProperties", entityScoreToSeverity, page1.getContent(), true);
+        Whitebox.invokeMethod(entitySeverityService, "updateEntitySeverities", entityScoreToSeverity, page1.getContent());
         Assert.assertEquals(EntitySeverity.LOW, page.get(0).getSeverity());
         Assert.assertEquals(EntitySeverity.LOW, page.get(1).getSeverity());
         Assert.assertEquals(EntitySeverity.LOW, page.get(2).getSeverity());

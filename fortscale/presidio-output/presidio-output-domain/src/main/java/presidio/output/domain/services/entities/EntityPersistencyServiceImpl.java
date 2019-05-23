@@ -26,7 +26,7 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     @Override
     public Iterable<Entity> save(List<Entity> entities) {
         if (entities != null && entities.size() > 0) {
-            entities.forEach(entity -> entity.updateFieldsBeforeSave());
+            entities.forEach(Entity::updateFieldsBeforeSave);
             return entityRepository.save(entities);
         } else {
             return Collections.EMPTY_LIST;
@@ -34,8 +34,8 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     }
 
     @Override
-    public Entity findEntityById(String id) {
-        return entityRepository.findOne(id);
+    public Entity findEntityByDocumentId(String documentId) {
+        return entityRepository.findOne(documentId);
     }
 
     @Override
@@ -43,10 +43,9 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
         return entityRepository.findAll();
     }
 
-    public Page<Entity> findByEntityName(String entityName, PageRequest pageRequest) {
-        return entityRepository.findByEntityName(entityName, pageRequest);
-    }
-
+    /**
+     * Finds by a collection of repository generated ids(elastic)
+     */
     public Page<Entity> findByIds(Collection<String> ids, PageRequest pageRequest) {
         return entityRepository.findByIdIn(ids, pageRequest);
     }
@@ -58,10 +57,5 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     @Override
     public Page<Entity> find(EntityQuery entityQuery) {
         return entityRepository.search(new EntityElasticsearchQueryBuilder(entityQuery).build());
-    }
-
-    @Override
-    public Stream<Entity> findEntitiesByUpdatedDate(Instant startDate, Instant endDate) {
-        return entityRepository.findByUpdatedByLogicalStartDateGreaterThanEqualAndUpdatedByLogicalEndDateLessThanEqual(startDate.toEpochMilli(), endDate.toEpochMilli());
     }
 }

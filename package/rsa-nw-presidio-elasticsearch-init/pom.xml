@@ -29,6 +29,7 @@
                         <mapping>
                             <directoryIncluded>true</directoryIncluded>
                             <directory>${presidio-app.directory}/elasticsearch/init</directory>
+                            <configuration>true</configuration>
                             <username>${presidio.username}</username>
                             <groupname>${presidio.groupname}</groupname>
                             <sources>

@@ -5,21 +5,36 @@ general:
         /var/lib/netwitness/presidio/batch
 dags:
   dags_configs:
-  - dag_id: full_flow
-    args:
-      hourly_smart_events_confs:
-      - userId_hourly
-      data_sources: ${dataPipeline.schemas}
-      command: run
-      enable_output_forwarder: ${outputForwarding.enableForwarding}
-    schedule_interval: timedelta(hours=1)
+    data_schemas: ${dataPipeline.schemas}
     start_date: ${dataPipeline.startTime}
+    root:
+      schedule_interval: timedelta(hours=1)
+    indicator:
+      schedule_interval: None
+    model:
+      schedule_interval: None
+    smart:
+      schedule_interval: timedelta(hours=1)
+      smart_confs:
+       - smart_conf_name: userId_hourly
+         depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
+         enable_output_forwarder: ${outputForwarding.enableForwarding}
+    smart_model:
+      schedule_interval: None
+      smart_confs:
+       - smart_conf_name: userId_hourly
+    input_retention:
+      schedule_interval: None
+    output_retention:
+      schedule_interval: None
 
   pools_config:
-    - slots: 10
+    - slots: 7
       name: spring_boot_jar_pool
       description: A pool for the spring boot jars with 2G xmx that belong to the dag
-
+    - slots : 8
+      name : retention_spring_boot_jar_pool
+      description : A pool for the retention spring boot jars
   tasks_instances:
     hourly_DLPFILE_feature_aggregations:
       jvm_args:
@@ -109,35 +124,56 @@ dags:
         xms: 4096
         extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
     AdeManagerOperator:
+      pool_name : retention_spring_boot_jar_pool
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-manager.jar
         main_class: presidio.ade.manager.AdeManagerApplication
         xmx: 512
         xms: 512
+    AdapterOperator:
+      jvm_args:
+          jar_path: ${general.deployment.bins.base_path}/presidio-adapter.jar
+          main_class: presidio.adapter.FortscaleAdapterApplication
+      execution_timeout_in_seconds: 7200
+    InputOperator:
+      jvm_args:
+            jar_path: ${general.deployment.bins.base_path}/presidio-input-core.jar
+            main_class: presidio.input.core.FortscaleInputCoreApplication
+            xmx: 2048
+            xms: 2048
+    OutputOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-output-processor.jar
+        main_class: presidio.output.processor.FortscaleOutputProcessorApplication
+        xmx: 4096
+        xms: 4096
+    UserScoreOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-output-processor.jar
+        main_class: presidio.output.processor.FortscaleOutputProcessorApplication
+        xmx: 4096
+        xms: 4096
+    OutputForwarderOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-output-forwarder.jar
+        main_class: presidio.output.forwarder.shell.OutputForwarderApplication
+        xmx: 2048
+        xms: 2048
+    InputRetentionOperator:
+      pool_name : retention_spring_boot_jar_pool
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-input-core.jar
+        main_class: presidio.input.core.FortscaleInputCoreApplication
+        xmx: 512
+        xms: 512
+    OutputRetentionOperator:
+      pool_name : retention_spring_boot_jar_pool
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-output-processor.jar
+        main_class: presidio.output.processor.FortscaleOutputProcessorApplication
+        xmx: 512
+        xms: 512
 components:
-  adapter:
-    jvm_args:
-      jar_path: ${general.deployment.bins.base_path}/presidio-adapter.jar
-      main_class: presidio.adapter.FortscaleAdapterApplication
-    execution_timeout_in_seconds: 7200
-  input:
-    jvm_args:
-      jar_path: ${general.deployment.bins.base_path}/presidio-input-core.jar
-      main_class: presidio.input.core.FortscaleInputCoreApplication
-      xmx: 2048
-      xms: 2048
-  output:
-    jvm_args:
-      jar_path: ${general.deployment.bins.base_path}/presidio-output-processor.jar
-      main_class: presidio.output.processor.FortscaleOutputProcessorApplication
-      xmx: 4096
-      xms: 4096
-  output_forwarder:
-    jvm_args:
-      jar_path: ${general.deployment.bins.base_path}/presidio-output-forwarder.jar
-      main_class: presidio.output.forwarder.shell.OutputForwarderApplication
-      xmx: 2048
-      xms: 2048
   ade:
     models:
       feature_aggregation_records:

@@ -2,6 +2,7 @@ from airflow.utils.decorators import apply_defaults
 
 from presidio.utils.airflow.context_wrapper import ContextWrapper
 from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBootJarOperator
+from presidio.utils.airflow.schedule_interval_utils import get_schedule_interval
 from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid
 from presidio.utils.services.time_service import convert_to_utc
 from presidio.utils.services.time_service import floor_time
@@ -23,7 +24,7 @@ class FixedDurationJarOperator(SpringBootJarOperator):
 
     @apply_defaults
     def __init__(self, fixed_duration_strategy, command, java_args={}, *args, **kwargs):
-        self.interval = kwargs.get('dag').schedule_interval
+        self.interval = get_schedule_interval(kwargs.get('dag'))
         self.fixed_duration_strategy = fixed_duration_strategy
         self.add_fixed_duration_strategy(java_args)
         retry_extra_params = {}

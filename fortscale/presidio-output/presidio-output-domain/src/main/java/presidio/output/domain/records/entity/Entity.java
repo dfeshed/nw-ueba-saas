@@ -31,8 +31,8 @@ public class Entity extends AbstractElasticDocument {
     public static final String ENTITY_NAME_FIELD_NAME = "entityName";
     public static final String TAGS_FIELD_NAME = "tags";
     public static final String ALERTS_COUNT_FIELD_NAME = "alertsCount";
-    public static final String UPDATED_BY_LOGICAL_START_DATE_FIELD_NAME = "updatedByLogicalStartDate";
-    public static final String UPDATED_BY_LOGICAL_END_DATE_FIELD_NAME = "updatedByLogicalEndDate";
+    public static final String LAST_UPDATE_BY_LOGICAL_START_DATE_FIELD_NAME = "lastUpdateLogicalStartDate";
+    public static final String LAST_UPDATE_BY_LOGICAL_END_DATE_FIELD_NAME = "lastUpdateLogicalEndDate";
     public static final String ENTITY_TYPE_FIELD_NAME = "entityType";
 
 
@@ -61,11 +61,11 @@ public class Entity extends AbstractElasticDocument {
     @JsonProperty(ALERTS_COUNT_FIELD_NAME)
     private int alertsCount;
 
-    @JsonProperty(UPDATED_BY_LOGICAL_START_DATE_FIELD_NAME)
-    private Date updatedByLogicalStartDate;
+    @JsonProperty(LAST_UPDATE_BY_LOGICAL_START_DATE_FIELD_NAME)
+    private Date lastUpdateLogicalStartDate;
 
-    @JsonProperty(UPDATED_BY_LOGICAL_END_DATE_FIELD_NAME)
-    private Date updatedByLogicalEndDate;
+    @JsonProperty(LAST_UPDATE_BY_LOGICAL_END_DATE_FIELD_NAME)
+    private Date lastUpdateLogicalEndDate;
 
     @JsonProperty(ENTITY_TYPE_FIELD_NAME)
     private String entityType;
@@ -170,27 +170,26 @@ public class Entity extends AbstractElasticDocument {
         this.alertClassifications = alertClassifications;
     }
 
-    public Date getUpdatedByLogicalStartDate() {
-        return updatedByLogicalStartDate;
+    public Date getLastUpdateLogicalStartDate() {
+        return lastUpdateLogicalStartDate;
     }
 
-    public void setUpdatedByLogicalStartDate(Date updatedByLogicalStartDate) {
-        this.updatedByLogicalStartDate = updatedByLogicalStartDate;
+    public void setLastUpdateLogicalStartDate(Date lastUpdateLogicalStartDate) {
+        this.lastUpdateLogicalStartDate = lastUpdateLogicalStartDate;
     }
 
-    public Date getUpdatedByLogicalEndDate() {
-        return updatedByLogicalEndDate;
+    public Date getLastUpdateLogicalEndDate() {
+        return lastUpdateLogicalEndDate;
     }
 
-    public void setUpdatedByLogicalEndDate(Date updatedByLogicalEndDate) {
-        this.updatedByLogicalEndDate = updatedByLogicalEndDate;
+    public void setLastUpdateLogicalEndDate(Date lastUpdateLogicalEndDate) {
+        this.lastUpdateLogicalEndDate = lastUpdateLogicalEndDate;
     }
 
     public void addAlertClassifications(List<String> alertClassifications) {
         Set<String> newAlertClassifications = new HashSet<>(this.alertClassifications);
         newAlertClassifications.addAll(alertClassifications);
-        this.alertClassifications = new ArrayList<>();
-        this.alertClassifications.addAll(newAlertClassifications);
+        this.alertClassifications = new ArrayList<>(newAlertClassifications);
     }
 
     public void setIndicators(List<String> indicators) {
@@ -209,8 +208,8 @@ public class Entity extends AbstractElasticDocument {
     public void updateFieldsBeforeSave() {
         super.updateFieldsBeforeSave();
         if (ThreadLocalWithBatchInformation.getCurrentProcessedTime() != null) {
-            setUpdatedByLogicalStartDate(ThreadLocalWithBatchInformation.getCurrentProcessedTime().getStartAsDate());
-            setUpdatedByLogicalEndDate(ThreadLocalWithBatchInformation.getCurrentProcessedTime().getEndAsDate());
+            setLastUpdateLogicalStartDate(ThreadLocalWithBatchInformation.getCurrentProcessedTime().getStartAsDate());
+            setLastUpdateLogicalEndDate(ThreadLocalWithBatchInformation.getCurrentProcessedTime().getEndAsDate());
         }
     }
 

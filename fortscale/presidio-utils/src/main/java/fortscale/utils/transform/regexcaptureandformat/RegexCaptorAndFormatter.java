@@ -65,11 +65,9 @@ public class RegexCaptorAndFormatter extends AbstractJsonObjectTransformer {
         Object destinationValue = JSONObject.NULL;
 
         for (CaptureAndFormatConfiguration captureAndFormatConfiguration : captureAndFormatConfigurations) {
-            Matcher matcher = captureAndFormatConfiguration.getPattern().matcher(sourceValue);
-
-            if (matcher.matches()) {
-                Object[] args = getArgs(captureAndFormatConfiguration.getCapturingGroupConfigurations(), matcher);
-                destinationValue = String.format(captureAndFormatConfiguration.getFormat(), args);
+            String tmp = CaptureAndFormatUtil.captureAndFormat(captureAndFormatConfiguration, sourceValue);
+            if (tmp != null) {
+                destinationValue = tmp;
                 break;
             }
         }
@@ -78,13 +76,5 @@ public class RegexCaptorAndFormatter extends AbstractJsonObjectTransformer {
         return jsonObject;
     }
 
-    private static Object[] getArgs(List<CapturingGroupConfiguration> capturingGroupConfigurations, Matcher matcher) {
-        return isEmpty(capturingGroupConfigurations) ? null : capturingGroupConfigurations.stream()
-                .map(capturingGroupConfiguration -> {
-                    String group = matcher.group(capturingGroupConfiguration.getIndex());
-                    CapturingGroupConfiguration.CaseFormat caseFormat = capturingGroupConfiguration.getCaseFormat();
-                    return caseFormat == null ? group : caseFormat.convert(group);
-                })
-                .toArray(Object[]::new);
-    }
+
 }

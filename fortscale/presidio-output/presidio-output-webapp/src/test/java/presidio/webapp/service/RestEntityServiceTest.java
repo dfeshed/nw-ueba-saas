@@ -54,8 +54,8 @@ public class RestEntityServiceTest {
     @Test
     public void testReturnEntityWithoutExpand() {
         Entity entity = createEntity(1);
-        when(entityPersistencyService.findEntityById(eq(entity.getId()))).thenReturn(entity);
-        presidio.webapp.model.Entity resultEntity = restEntityService.getEntityById(entity.getId(), false);
+        when(entityPersistencyService.findEntityByDocumentId(eq(entity.getId()))).thenReturn(entity);
+        presidio.webapp.model.Entity resultEntity = restEntityService.getEntityByDocumentId(entity.getId(), false);
         assertNotNull(resultEntity);
         assertEquals(entity.getEntityId(), resultEntity.getEntityId());
         assertEquals(entity.getAlertClassifications(), resultEntity.getAlertClassifications());
@@ -71,10 +71,10 @@ public class RestEntityServiceTest {
     public void testReturnEntityWithExpand() {
         Alert alert = createAlert(1);
         Page<Alert> page = new PageImpl<Alert>(new ArrayList<>(Arrays.asList(alert)));
-        when(alertPersistencyService.findByEntityId(eq(alert.getEntityId()), notNull(PageRequest.class))).thenReturn(page);
+        when(alertPersistencyService.findByEntityDocumentId(eq(alert.getEntityDocumentId()), notNull(PageRequest.class))).thenReturn(page);
         Entity entity = createEntity(1);
-        when(entityPersistencyService.findEntityById(eq(entity.getEntityId()))).thenReturn(entity);
-        presidio.webapp.model.Entity resultEntity = restEntityService.getEntityById("entityId1", true);
+        when(entityPersistencyService.findEntityByDocumentId(eq(entity.getEntityId()))).thenReturn(entity);
+        presidio.webapp.model.Entity resultEntity = restEntityService.getEntityByDocumentId("entityId1", true);
         assertEquals(1, resultEntity.getAlerts().size());
     }
 
@@ -130,7 +130,7 @@ public class RestEntityServiceTest {
         Alert alert2 = createAlert(2);
         Alert alert3 = createAlert(3);
         Alert alert4 = createAlert(4);
-        alert4.setEntityId(entity2.getId());
+        alert4.setEntityDocumentId(entity2.getId());
         alert4.setEntityName(entity2.getEntityName());
         entity2.setAlertsCount(2);
 
@@ -141,7 +141,7 @@ public class RestEntityServiceTest {
         Page<Alert> firstPage = new PageImpl<>(new ArrayList<>(Arrays.asList(alert1)));
         Page<Alert> secondPage = new PageImpl<>(new ArrayList<>(Arrays.asList(alert4, alert2)));
         Page<Alert> thirdPage = new PageImpl<>(new ArrayList<>(Arrays.asList(alert3)));
-        when(alertPersistencyService.findByEntityId(notNull(String.class), notNull(PageRequest.class))).thenReturn(firstPage, secondPage, thirdPage);
+        when(alertPersistencyService.findByEntityDocumentId(notNull(String.class), notNull(PageRequest.class))).thenReturn(firstPage, secondPage, thirdPage);
         List<presidio.webapp.model.Entity> resultEntity = restEntityService.getEntities(userQuery).getEntities();
         resultEntity.forEach(entity -> {
             if (entity.getId().equals(entity1.getId()) || entity.getId().equals(entity3.getId()))
@@ -161,7 +161,7 @@ public class RestEntityServiceTest {
         Entity entity = createEntity(1);
         String patchOperationString = "{\"operations\":[{ \"op\": \"add\", \"path\": \"/tags/-\", \"value\":\"1\"}]}";
         JsonNode jsonNode = ObjectMapperProvider.defaultJsonObjectMapper().readTree(patchOperationString);
-        when(entityPersistencyService.findEntityById(anyString())).thenReturn(entity);
+        when(entityPersistencyService.findEntityByDocumentId(anyString())).thenReturn(entity);
         when(entityPersistencyService.save(Matchers.any(Entity.class))).thenReturn(entity);
 
         presidio.webapp.model.Entity updatedEntity = restEntityService.updateEntity(entity.getId(), JsonPatch.fromJson(jsonNode));
@@ -177,7 +177,7 @@ public class RestEntityServiceTest {
         String patchOperationString = "{\"operations\":[{ \"op\": \"add\", \"path\": \"/tags/-\", \"value\":\"1\"}]}";
         JsonNode jsonNode = ObjectMapperProvider.defaultJsonObjectMapper().readTree(patchOperationString);
 
-        when(entityPersistencyService.findEntityById(anyString())).thenReturn(entity);
+        when(entityPersistencyService.findEntityByDocumentId(anyString())).thenReturn(entity);
         when(entityPersistencyService.save(Matchers.any(Entity.class))).thenReturn(entity);
 
         presidio.webapp.model.Entity updatedEntity = restEntityService.updateEntity(entity.getId(), JsonPatch.fromJson(jsonNode));
@@ -193,7 +193,7 @@ public class RestEntityServiceTest {
         String patchOperationString = "{\"operations\":[{ \"op\": \"add\", \"path\": \"/tags/-\", \"value\":\"Tag\"}]}";
         JsonNode jsonNode = ObjectMapperProvider.defaultJsonObjectMapper().readTree(patchOperationString);
 
-        when(entityPersistencyService.findEntityById(anyString())).thenReturn(entity);
+        when(entityPersistencyService.findEntityByDocumentId(anyString())).thenReturn(entity);
         when(entityPersistencyService.save(Matchers.any(Entity.class))).thenReturn(entity);
 
         presidio.webapp.model.Entity updatedEntity = restEntityService.updateEntity(entity.getId(), JsonPatch.fromJson(jsonNode));
@@ -209,7 +209,7 @@ public class RestEntityServiceTest {
         String patchOperationString = "{\"operations\":[{ \"op\": \"remove\", \"path\": \"/tags/-\", \"value\":\"Tag\"}]}";
         JsonNode jsonNode = ObjectMapperProvider.defaultJsonObjectMapper().readTree(patchOperationString);
 
-        when(entityPersistencyService.findEntityById(anyString())).thenReturn(entity);
+        when(entityPersistencyService.findEntityByDocumentId(anyString())).thenReturn(entity);
         when(entityPersistencyService.save(Matchers.any(Entity.class))).thenReturn(entity);
 
         presidio.webapp.model.Entity updatedEntity = restEntityService.updateEntity(entity.getId(), JsonPatch.fromJson(jsonNode));
@@ -225,7 +225,7 @@ public class RestEntityServiceTest {
         String patchOperationString = "{\"operations\":[{ \"op\": \"remove\", \"path\": \"/tags/-\", \"value\":\"notExistingTag\"}]}";
         JsonNode jsonNode = ObjectMapperProvider.defaultJsonObjectMapper().readTree(patchOperationString);
 
-        when(entityPersistencyService.findEntityById(anyString())).thenReturn(entity);
+        when(entityPersistencyService.findEntityByDocumentId(anyString())).thenReturn(entity);
         when(entityPersistencyService.save(Matchers.any(Entity.class))).thenReturn(entity);
 
         presidio.webapp.model.Entity updatedEntity = restEntityService.updateEntity(entity.getId(), JsonPatch.fromJson(jsonNode));

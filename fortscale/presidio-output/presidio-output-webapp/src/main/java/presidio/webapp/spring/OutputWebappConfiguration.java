@@ -62,10 +62,10 @@ public class OutputWebappConfiguration {
     }
 
     @Value("${default.page.size.for.rest.user}")
-    private int pageSizeUser;
+    private int pageSizeEntity;
 
     @Value("${default.page.number.for.rest.user}")
-    private int pageNumberUser;
+    private int pageNumberEntity;
 
     @Value("${default.page.size.for.rest.alert}")
     private int pageSizeAlert;
@@ -75,7 +75,7 @@ public class OutputWebappConfiguration {
 
     @Bean
     RestEntityService restEntityService() {
-        return new RestEntityServiceImpl(restAlertService(), entityService, pageSizeUser, pageNumberUser);
+        return new RestEntityServiceImpl(restAlertService(), entityService, pageSizeEntity, pageNumberEntity);
     }
 
     @Bean
@@ -95,15 +95,12 @@ public class OutputWebappConfiguration {
 
     @Bean
     public EmbeddedServletContainerFactory servletContainer() {
-        TomcatEmbeddedServletContainerFactory factory =
-                new TomcatEmbeddedServletContainerFactory();
-        return factory;
+        return new TomcatEmbeddedServletContainerFactory();
     }
 
     @Bean
     public HttpMethodOverrideHeaderFilter overrideHeaderFilter() {
-        HttpMethodOverrideHeaderFilter filter = new HttpMethodOverrideHeaderFilter();
-        return filter;
+        return new HttpMethodOverrideHeaderFilter();
     }
 
 }

@@ -186,7 +186,7 @@ public class OutputExecutionServiceModuleTest {
 
     @Test
     public void createAlertForExistingEntity() {
-        Entity entity = new Entity(ENTITY_ID_TEST_ENTITY, "userName", 95d, Arrays.asList("existingClassification"), Arrays.asList("existingIndicator"), null, EntitySeverity.CRITICAL, 8, "entity");
+        Entity entity = new Entity(ENTITY_ID_TEST_ENTITY, "userName", 95d, Arrays.asList("existingClassification"), Arrays.asList("existingIndicator"), null, EntitySeverity.CRITICAL, 8, "userId");
         entityPersistencyService.save(entity);
         try {
             outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)), "userId_hourly");

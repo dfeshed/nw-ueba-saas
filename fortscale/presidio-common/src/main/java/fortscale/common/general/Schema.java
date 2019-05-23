@@ -13,6 +13,7 @@ public enum Schema {
     PROCESS("process"),
     REGISTRY("registry"),
     IOC("ioc"),
+    TLS("tls"),
     // Dlp file is used only in the ade tests
     DLPFILE("dlpfile");
 

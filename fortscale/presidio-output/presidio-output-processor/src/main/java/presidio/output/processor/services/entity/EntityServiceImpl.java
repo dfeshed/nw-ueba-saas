@@ -10,19 +10,13 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.entity.EntityQuery;
 import presidio.output.domain.records.entity.EntitySeverity;
-import presidio.output.domain.records.entity.EntityTypeConverter;
-import presidio.output.domain.records.events.EnrichedEvent;
+import presidio.output.domain.records.events.EnrichedUserEvent;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.output.domain.services.event.EventPersistencyService;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by efratn on 22/08/2017.
@@ -73,29 +67,27 @@ public class EntityServiceImpl implements EntityService {
     }
 
     @Override
-    public Entity findEntityById(String entityId) {
-        return entityPersistencyService.findEntityById(entityId);
+    public Entity findEntityById(String entityDocumentId) {
+        return entityPersistencyService.findEntityByDocumentId(entityDocumentId);
     }
 
     @Override
     public List<Entity> save(List<Entity> entities) {
         Iterable<Entity> savedEntities = entityPersistencyService.save(entities);
-        List<Entity> entitiesList = IteratorUtils.toList(savedEntities.iterator());
-        return entitiesList;
+        return IteratorUtils.toList(savedEntities.iterator());
     }
 
     private EntityDetails getEntityDetails(String entityId, String entityType) {
         List<String> collectionNames = entitySeverityService.collectionNamesByOrderForEvents();
-        EnrichedEvent event = eventPersistencyService.findLatestEventForEntity(entityId, collectionNames, entityType);
+        EnrichedUserEvent event = eventPersistencyService.findLatestEventForEntity(entityId, collectionNames, entityType);
         if (event == null) {
             log.error("no events were found for entity {}", entityId);
             return null;
         }
-        String entityName = event.getUserName();
+        //We need to resolve the entityName getter according to the type
+        //For now - we chose to return the entityId instead.
+        String entityName = entityId;
         List<String> tags = new ArrayList<>();
-        if (event.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN) != null && Boolean.parseBoolean(event.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN))) {
-            tags.add(TAG_ADMIN);
-        }
         return new EntityDetails(entityName, entityId, tags, entityType);
     }
 
@@ -215,14 +207,17 @@ public class EntityServiceImpl implements EntityService {
         return changedEntities;
     }
 
-    public List<Entity> findEntityByVendorEntityIds(List<String> vendorEntityId) {
-        EntityQuery entityQuery = new EntityQuery.EntityQueryBuilder().filterByEntitiesIds(vendorEntityId).build();
+    public List<Entity> findEntityByVendorEntityIdAndType(String vendorEntityId, String entityType) {
+        EntityQuery entityQuery = new EntityQuery
+                .EntityQueryBuilder()
+                .filterByEntitiesIds(Collections.singletonList(vendorEntityId))
+                .filterByEntitiesTypes(Collections.singletonList(entityType))
+                .build();
 
         Page<Entity> entitiesPage = this.entityPersistencyService.find(entityQuery);
         if (!entitiesPage.hasContent() || entitiesPage.getContent().size() < 1) {
             return null;
         }
-
         return entitiesPage.getContent();
     }
 
@@ -240,7 +235,7 @@ public class EntityServiceImpl implements EntityService {
 
     @Override
     public void recalculateEntityAlertData(Entity entity) {
-        List<Alert> alerts = alertPersistencyService.findByEntityId(entity.getId());
+        List<Alert> alerts = alertPersistencyService.findByEntityDocumentId(entity.getId());
         EntitiesAlertData entitiesAlertData = new EntitiesAlertData();
         if (CollectionUtils.isNotEmpty(alerts)) {
             alerts.forEach(alert -> {
@@ -256,10 +251,5 @@ public class EntityServiceImpl implements EntityService {
         } else {
             setEntityAlertDataToDefault(entity);
         }
-    }
-
-    @Override
-    public String getEntityType(String contextField){
-        return EntityTypeConverter.getEntityType(contextField);
     }
 }

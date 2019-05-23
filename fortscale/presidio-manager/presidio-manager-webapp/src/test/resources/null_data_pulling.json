@@ -1,0 +1,18 @@
+{
+  "dataPipeline": {
+    "schemas": [
+      "AUTHENTICATION",
+      "ACTIVE_DIRECTORY",
+      "FILE"
+    ],
+    "startTime": "2010-12-31T23:59:59Z"
+  },
+  "outputForwarding": {
+    "enableForwarding": true
+  },
+  "uiIntegration": {
+    "brokerId": "12345",
+    "adminServer": "10.11.12.13"
+  },
+  "dataPulling": null
+}

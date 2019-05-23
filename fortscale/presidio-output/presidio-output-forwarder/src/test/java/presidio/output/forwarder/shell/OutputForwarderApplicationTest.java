@@ -16,7 +16,7 @@ import presidio.output.forwarder.spring.OutputForwarderTestConfig;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class OutputForwarderApplicationTest {
 
-    public static final String EXECUTION_COMMAND = "run --start_date 2018-03-16T00:00:00Z --end_date 2018-03-16T01:00:00Z";
+    public static final String EXECUTION_COMMAND = "run --start_date 2018-03-16T00:00:00Z --end_date 2018-03-16T01:00:00Z --smart_record_conf_name userId_hourly";
 
     @Autowired
     private BootShim bootShim;
