@@ -52,6 +52,7 @@ export const prepareTreeData = (eventsData, selectedProcessId, path) => {
     hashTable[aData.processId].expanded = selectedProcessId === aData.processId;
     if (aData.parentId) {
       if (path.includes(aData.processId) || selectedProcessId === aData.parentId) {
+        hashTable[aData.processId].selected = true;
         hashTable[aData.parentId].children.push(hashTable[aData.processId]);
       } else {
         hashTable[aData.parentId]._children.push(hashTable[aData.processId]);

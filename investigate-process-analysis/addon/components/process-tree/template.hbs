@@ -58,5 +58,10 @@
   displayCloseButton=false
   hideOnLeave=false
   panelId='process-filter' as |hidePanel model|}}
-  {{filter-popup onView=(action 'appendNodes') hidePanel=hidePanel model=model}}
+  {{filter-popup
+    hidePanel=hidePanel
+    model=model
+    onView=(action 'appendNodes')
+    onViewSelected=(action 'filterNodes')
+  }}
 {{/rsa-content-tethered-panel}}

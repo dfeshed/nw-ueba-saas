@@ -25,10 +25,14 @@
     box {
       padding: rsa-whitespace(least) rsa-whitespace();
       span {
+        width: 188px;
         margin: rsa-whitespace(less) 0;
       }
-      .rsa-form-button {
-        float: right;
+    }
+    .buttons {
+      padding-top: rsa-whitespace(least);
+      div {
+        padding-right: rsa-whitespace(less);
       }
     }
   }

@@ -3954,6 +3954,8 @@ export default {
       expandDetails: 'Process Details Expand/Collapse',
       close: 'Process Details Close',
       viewAll: 'View All',
+      viewSelected: 'View Selected',
+      cancel: 'Cancel',
       processSelected: '{{processCount}} Process selected'
     },
     tabs: {

@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { select, event, selectAll } from 'd3-selection';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { tree, hierarchy } from 'd3-hierarchy';
+import { set } from '@ember/object';
 import {
   addNodeContent,
   addSelectedClass,
@@ -346,6 +347,14 @@ const TreeComponent = Component.extend({
             d._children = d._children ? [...d._children, ...newNodes] : newNodes;
             d.data._children = null;
           }
+          if (d.children) {
+            d.children.map((node) => {
+              if (!node.selected && node.data.selected) {
+                set(node, 'selected', true);
+              }
+              return node;
+            });
+          }
           self._showPopup(this, d);
         } else { // Children not fetched
           self._getChildProcess(d, this);
@@ -439,6 +448,20 @@ const TreeComponent = Component.extend({
   },
 
   expandProcess(node, children) {
+    node.children = children.filter((node) => node.selected);
+    node._children = children.filter((node) => !node.selected);
+    node.data._children = null;
+
+    this._buildChart(node);
+  },
+
+  expandAllProcess(node, children) {
+    children.map((node) => {
+      if (!node.selected) {
+        set(node, 'selected', true);
+      }
+      return node;
+    });
     node.children = children;
     node.data._children = null;
     node._children = null;
@@ -462,7 +485,13 @@ const TreeComponent = Component.extend({
   collapseProcess(d) {
     event.stopImmediatePropagation();
     if (d.children) {
-      d._children = d.children;
+      d._children = d._children ? [...d._children, ...d.children] : d.children;
+      d._children = d._children.map((node) => {
+        if (node.selected) {
+          set(node, 'selected', false);
+        }
+        return node;
+      });
       d.children = null;
     }
     d.data.expanded = false;
@@ -480,6 +509,16 @@ const TreeComponent = Component.extend({
       copyToClipboard(launchArguments);
     },
     appendNodes({ node, children }) {
+      node.data.expanded = true;
+      if (node.data.childCount) {
+        this.expandAllProcess(node, children);
+
+        select(`*[data-id='${ node.data.processId }']`).select('text.text-icon').text(ICON.FILTER);
+        select(`*[data-id='${ node.data.processId }']`).select('text.collapse-icon').text(ICON.COLLAPSE);
+      }
+    },
+
+    filterNodes({ node, children }) {
       node.data.expanded = true;
       if (node.data.childCount) {
         this.expandProcess(node, children);

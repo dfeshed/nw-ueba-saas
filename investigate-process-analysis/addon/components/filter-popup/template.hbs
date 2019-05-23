@@ -16,15 +16,29 @@
   </box>
 </hbox>
 <box class='process-filter-popup__content'>
-  {{process-node-list nodeList=model.children}}
+  {{process-node-list
+    nodeList=model.children
+    onRowSelection=(action 'getSelectedItems')
+  }}
 </box>
 <box class='process-filter-popup__footer'>
   <hbox>
     <box>
-      <span>{{t 'investigateProcessAnalysis.buttons.processSelected' processCount=selectedProcessCount}}</span>
+      <span test-id='selected-process-count'>{{t 'investigateProcessAnalysis.buttons.processSelected' processCount=selectedProcessCount}}</span>
     </box>
-    <box test-id='viewAll'>
-      {{#rsa-form-button style='primary' click=(action 'onViewAll' model hidePanel)}}{{t 'investigateProcessAnalysis.buttons.viewAll'}}{{/rsa-form-button}}
-    </box>
+    <hbox class="buttons">
+      {{#rsa-form-button testId='cancel-popup' class='cancel-popup'
+                         click=(action 'onCancel' hidePanel)}}
+        {{t 'investigateProcessAnalysis.buttons.cancel'}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button testId='view-all' class='viewAll' click=(action 'onViewAll' model hidePanel)}}
+        {{t 'investigateProcessAnalysis.buttons.viewAll'}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button style='primary' testId='view-selected' class='viewSelected'
+                         isDisabled=isViewSelectedDisabled
+                         click=(action 'onViewSelected' model hidePanel)}}
+        {{t 'investigateProcessAnalysis.buttons.viewSelected'}}
+      {{/rsa-form-button}}
+    </hbox>
   </hbox>
 </box>
