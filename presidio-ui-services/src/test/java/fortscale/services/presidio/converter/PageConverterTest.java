@@ -1,12 +1,12 @@
 package fortscale.services.presidio.converter;
 
 import fortscale.services.presidio.core.converters.PageConverter;
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import presidio.output.client.model.AlertQuery;
+import presidio.output.client.model.EntityQuery;
 import presidio.output.client.model.UserQuery;
 
 import java.util.List;
@@ -85,8 +85,8 @@ public class PageConverterTest {
     public void testUserScoreSorting(){
         Sort sort = new Sort(Sort.Direction.DESC,"score");
         PageRequest p = new PageRequest(1,10, sort);
-        UserQuery.SortDirectionEnum directionEnum =pageConverter.convertUiFilterToQueryDtoSortDirectionForUser(p);
-        List<UserQuery.SortFieldNamesEnum> fieldsEnum =pageConverter.convertUiFilterToQueryDtoUserSortFields(p);
+        EntityQuery.SortDirectionEnum directionEnum =pageConverter.convertUiFilterToQueryDtoSortDirectionForUser(p);
+        List<EntityQuery.SortFieldNamesEnum> fieldsEnum =pageConverter.convertUiFilterToQueryDtoUserSortFields(p);
 
 
         Assert.assertEquals(UserQuery.SortDirectionEnum.DESC, directionEnum);
@@ -100,8 +100,8 @@ public class PageConverterTest {
     public void testUserSortNotExistField(){
         Sort sort = new Sort(Sort.Direction.DESC,"somefile");
         PageRequest p = new PageRequest(1,10, sort);
-        UserQuery.SortDirectionEnum directionEnum =pageConverter.convertUiFilterToQueryDtoSortDirectionForUser(p);
-        List<UserQuery.SortFieldNamesEnum> fieldsEnum =pageConverter.convertUiFilterToQueryDtoUserSortFields(p);
+        EntityQuery.SortDirectionEnum directionEnum =pageConverter.convertUiFilterToQueryDtoSortDirectionForUser(p);
+        List<EntityQuery.SortFieldNamesEnum> fieldsEnum =pageConverter.convertUiFilterToQueryDtoUserSortFields(p);
 
         Assert.assertEquals(null, fieldsEnum);
 

@@ -77,7 +77,7 @@ public class EntityServiceImpl implements EntityService {
 	private EntitiesPresidioOutputClient remoteentityClientService;
 
 	public EntityServiceImpl(EntityConverterHelper entityConverterHelper, AggregationConverterHelper aggregationConverterHelper,
-							 EntitiesPresidioOutputClient remoteUserClientService) {
+							 EntitiesPresidioOutputClient remoteentityClientService) {
 		this.entityConverterHelper = entityConverterHelper;
 		this.aggregationConverterHelper = aggregationConverterHelper;
 		this.remoteentityClientService = remoteentityClientService;
