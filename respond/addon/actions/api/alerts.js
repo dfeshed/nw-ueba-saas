@@ -1,6 +1,6 @@
 import { lookup } from 'ember-dependency-lookup';
 import buildExplorerQuery from './util/explorer-build-query';
-import filterQuery from 'respond/utils/filter-query';
+import FilterQuery from 'respond-shared/utils/filter-query';
 import chunk from 'respond/utils/array/chunk';
 import RSVP from 'rsvp';
 
@@ -65,7 +65,7 @@ export default {
    */
   getAlertEvents(alertId) {
     const request = lookup('service:request');
-    const query = filterQuery.create()
+    const query = FilterQuery.create()
       .addSortBy('timestamp', false)
       .addFilter('_id', alertId);
 
@@ -88,7 +88,7 @@ export default {
     const request = lookup('service:request');
     const alertIdChunks = chunk(alertId, 500);
     const requests = alertIdChunks.map((chunk) => {
-      const query = filterQuery.create().addFilter('_id', chunk);
+      const query = FilterQuery.create().addFilter('_id', chunk);
       return request.promiseRequest({
         method: 'deleteRecord',
         modelName: 'alerts',
@@ -107,7 +107,7 @@ export default {
    */
   getOriginalAlert(alertId) {
     const request = lookup('service:request');
-    const query = filterQuery.create();
+    const query = FilterQuery.create();
     query.addFilter('_id', alertId);
 
     return request.promiseRequest({

@@ -1,8 +1,8 @@
-import filterQuery from 'respond/utils/filter-query';
+import FilterQuery from 'respond-shared/utils/filter-query';
 import moment from 'moment';
 
 export default (filters = { created: { name: 'ALL_TIME', unit: 'years', subtract: 50 } }, { sortField, isSortDescending = true }, defaultDateFilterField) => {
-  const query = filterQuery.create().addSortBy(sortField, isSortDescending);
+  const query = FilterQuery.create().addSortBy(sortField, isSortDescending);
 
   Object.keys(filters).forEach((filterField) => {
     const value = filters[filterField];

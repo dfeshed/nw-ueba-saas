@@ -1,5 +1,5 @@
 import { resolveSinceWhenStartTime } from 'respond/utils/since-when-types';
-import FilterQuery from 'respond/utils/filter-query';
+import FilterQuery from 'respond-shared/utils/filter-query';
 import chunk from 'respond/utils/array/chunk';
 import RSVP from 'rsvp';
 import buildExplorerQuery from './util/explorer-build-query';

@@ -1,5 +1,5 @@
 import { lookup } from 'ember-dependency-lookup';
-import FilterQuery from 'respond/utils/filter-query';
+import FilterQuery from 'respond-shared/utils/filter-query';
 import buildExplorerQuery from './util/explorer-build-query';
 import chunk from 'respond/utils/array/chunk';
 import RSVP from 'rsvp';
