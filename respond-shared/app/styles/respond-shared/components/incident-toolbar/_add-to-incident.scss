@@ -1,4 +1,5 @@
 $searchInputHeight: 75.5px;
+$alertSectionHeight: 100px;
 
 .rsa-add-to-incident {
   height: 100%;
@@ -11,9 +12,16 @@ $searchInputHeight: 75.5px;
     line-height: 2rem;
   }
 
-  .rsa-data-table {
-    height: calc(100% - #{$searchInputHeight});
+  .from-investigate  {
+    height: calc(100% - #{$searchInputHeight} - #{$alertSectionHeight});
+  }
 
+  .from-respond {
+    height: calc(100% - #{$searchInputHeight});
+  }
+
+  .rsa-data-table {
+    height: 100%;
     .rsa-data-table-header .rsa-data-table-header-cell {
       .header-title {
         &.sortable {
@@ -72,5 +80,12 @@ $searchInputHeight: 75.5px;
         margin: 0 0 0 rsa-whitespace();
       }
     }
+  }
+
+  .add-to-incident-alert-summary {
+    border: 1px solid border-color(primary);
+    padding: rsa-whitespace(less);
+    overflow-y: auto;
+    width: 66%;
   }
 }

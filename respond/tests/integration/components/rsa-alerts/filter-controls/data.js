@@ -224,12 +224,6 @@ export const alertData = [
 export const alertFilterData = {
   respond: {
     dictionaries: {
-      priorityTypes: [
-        'LOW',
-        'MEDIUM',
-        'HIGH',
-        'CRITICAL'
-      ],
       statusTypes: [
         'NEW',
         'ASSIGNED',

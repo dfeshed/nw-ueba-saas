@@ -28,5 +28,11 @@
         margin: 0 0 0 rsa-whitespace();
       }
     }
+
+    .alert-summary-section {
+      border: 1px solid border-color(primary);
+      padding-bottom: rsa-whitespace(less);
+    }
+
   }
 }
