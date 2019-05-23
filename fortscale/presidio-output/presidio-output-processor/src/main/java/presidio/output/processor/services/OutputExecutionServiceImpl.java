@@ -214,12 +214,13 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     }
 
     @Override
-    public void cleanAlerts(Instant startDate, Instant endDate, String entityType) throws Exception {
-        if(startDate == null){
-            clean(Instant.EPOCH, endDate.minus(retentionOutputDataDays, ChronoUnit.DAYS), entityType);
-        } else {
-            clean(startDate, endDate, entityType);
-        }
+    public void cleanAlertsByTimeRangeAndEntityType(Instant startDate, Instant endDate, String entityType) throws Exception {
+        clean(startDate, endDate, entityType);
+    }
+
+    @Override
+    public void cleanAlertsForRetention(Instant endDate, String entityType) throws Exception {
+        clean(Instant.EPOCH, endDate.minus(retentionOutputDataDays, ChronoUnit.DAYS), entityType);
     }
 
     private void updateEntitiesScoreFromDeletedAlerts(List<Alert> cleanedAlerts) {

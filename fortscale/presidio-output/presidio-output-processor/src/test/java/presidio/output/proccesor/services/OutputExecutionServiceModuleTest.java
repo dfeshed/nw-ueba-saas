@@ -32,7 +32,6 @@ import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.entity.EntitySeverity;
-import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.entities.EntityPersistencyService;
@@ -216,7 +215,7 @@ public class OutputExecutionServiceModuleTest {
             Entity entity = entities.iterator().next();
             Assert.assertEquals(8, entity.getAlertsCount());
             Assert.assertEquals(55, new Double(entity.getScore()).intValue());
-            outputExecutionService.cleanAlerts(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)), "userId");
+            outputExecutionService.cleanAlertsByTimeRangeAndEntityType(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)), "userId");
             // test alerts cleanup
             Assert.assertEquals(0, Lists.newArrayList(alertPersistencyService.findAll()).size());
             entities = entityPersistencyService.findByEntityId(ENTITY_ID_TEST_ENTITY, new PageRequest(0, 9999));
