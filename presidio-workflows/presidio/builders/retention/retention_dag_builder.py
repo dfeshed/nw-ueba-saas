@@ -38,12 +38,19 @@ class RetentionDagBuilder(PresidioDagBuilder):
         OutputRetentionOperatorBuilder(schema).build(dag)
 
     def _build_input_retention(self, dag, schema):
+        """
+        Create InputRetentionOperatorBuilder in order to clean input data after all input data customer tasks finished
+        to use it.
+        :param dag: The retention DAG
+        :param schema: The schema to process the retention
+        :type schema: String
+        """
         InputRetentionOperatorBuilder(schema).build(dag)
 
     def _build_ade_manager_operator(self, dag):
         """
-        Create AdeManagerOperator in order to clean enriched data after all enriched data customer tasks finished to use it.
-
+        Create AdeManagerOperator in order to clean enriched data after all enriched data customer tasks finished
+        to use it.
         :param dag: The retention DAG
         :type dag: airflow.models.DAG
         """
