@@ -6,9 +6,9 @@ export const AFTER_OPTION_TAB_META = 'meta';
 export const AFTER_OPTION_TAB_RECENT_QUERIES = 'recent queries';
 // TODO: Removing "!" for now as it's causing issues with "!=" being flagged as
 // complex.
-export const COMPLEX_OPERATORS = ['&&', '||', '(', ')', ',', '-', 'AND', 'NOT', 'OR', 'length', 'regex'];
+export const COMPLEX_OPERATORS = ['<=', '<', '>=', '>', '&&', '||', '(', ')', ',', '-', 'AND', 'NOT', 'OR', 'length', 'regex'];
 export const COMPLEX_FILTER = 'complex';
-export const OPERATORS = ['!exists', 'exists', 'contains', 'begins', 'ends', '<=', '>=', '!=', '='];
+export const OPERATORS = ['!exists', 'exists', 'contains', 'begins', 'ends', '!=', '='];
 export const QUERY_FILTER = 'query';
 export const SEARCH_TERM_MARKER = '~';
 export const TEXT_FILTER = 'text';

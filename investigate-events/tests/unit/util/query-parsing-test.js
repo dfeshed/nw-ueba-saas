@@ -21,7 +21,7 @@ const { log } = console; // eslint-disable-line no-unused-vars
 const params = {
   et: 0,
   eid: 1,
-  mf: 'filename%20%3D%20<reston%3D\'virginia.sys>',
+  mf: 'filename%20%3D%20reston%3D\'virginia.sys',
   mps: 'default',
   rs: 'max',
   sid: 2,
@@ -147,15 +147,15 @@ module('Unit | Util | Query Parsing', function(hooks) {
     const result = parsePillDataFromUri(params.mf, DEFAULT_LANGUAGES);
     assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');
     assert.equal(result[0].operator, '=', 'forward slash was not parsed correctly');
-    assert.equal(result[0].value, '<reston=\'virginia.sys>', 'forward slash was not parsed correctly');
+    assert.equal(result[0].value, 'reston=\'virginia.sys', 'forward slash was not parsed correctly');
   });
 
   test('parsePillDataFromUri correctly parses multiple params', function(assert) {
-    const result = parsePillDataFromUri('filename%20%3D%20<reston%3D\'virginia.sys>/medium%20%3D%20foo', DEFAULT_LANGUAGES);
+    const result = parsePillDataFromUri('filename%20%3D%20reston%3D\'virginia.sys/medium%20%3D%20foo', DEFAULT_LANGUAGES);
     assert.equal(result.length, 2, 'two pills came out');
     assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');
     assert.equal(result[0].operator, '=', 'forward slash was not parsed correctly');
-    assert.equal(result[0].value, '<reston=\'virginia.sys>', 'forward slash was not parsed correctly');
+    assert.equal(result[0].value, 'reston=\'virginia.sys', 'forward slash was not parsed correctly');
     assert.equal(result[1].meta, 'medium', 'forward slash was not parsed correctly');
     assert.equal(result[1].operator, '=', 'forward slash was not parsed correctly');
     assert.equal(result[1].value, 'foo', 'forward slash was not parsed correctly');
@@ -248,5 +248,11 @@ module('Unit | Util | Query Parsing', function(hooks) {
     // REGEX
     assert.ok(hasComplexText('regex'), 'Missed detecting "regex"');
     assert.ok(hasComplexText('xregexx'), 'Missed detecting "regex"');
+    // <, <=, >, >=
+    assert.ok(hasComplexText('<'), 'Missed detecting "<"');
+    assert.ok(hasComplexText('<='), 'Missed detecting "<="');
+    assert.ok(hasComplexText('>'), 'Missed detecting ">"');
+    assert.ok(hasComplexText('>='), 'Missed detecting ">="');
+    assert.notOk(hasComplexText('='), 'Improperly detected "=" as complex');
   });
 });

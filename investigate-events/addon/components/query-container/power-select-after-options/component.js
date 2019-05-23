@@ -45,8 +45,6 @@ export default Component.extend({
 
   _previouslyHighlightedIndex: null,
 
-  _prevResultCount: null,
-
   didReceiveAttrs() {
     this._super(...arguments);
     // When creating Free-Form of Text filters, we need to show the full text of
@@ -85,7 +83,7 @@ export default Component.extend({
       // Pill Meta/Operator will auto-select between Free-Form Filter and
       // Text Filter. If all options were filtered out, make a smart guess about
       // which Advanced Option to highlight.
-      if (this._prevResultCount !== resultsCount) {
+      if (this._prevSearchText !== searchText) {
         if (resultsCount === 0) {
           // All options filterd out. If text is complex or a text filter was
           // previously created, choose free-form, otherwise default to text.
@@ -101,7 +99,6 @@ export default Component.extend({
         }
       }
     }
-    this._prevResultCount = resultsCount;
     this._prevSearchText = searchText;
   },
 
