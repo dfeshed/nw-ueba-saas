@@ -58,7 +58,7 @@ class SpringBootJarOperator(BashOperator):
     conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
     @apply_defaults
-    def __init__(self, command, jvm_args={}, java_args={}, component=None, condition=None, *args, **kwargs):
+    def __init__(self, command, jvm_args={}, java_args={}, java_retry_args={}, component=None, condition=None, *args, **kwargs):
         self.log.debug("creating operator %s" % str(self.__class__))
         self.task_id = kwargs['task_id']
         self.log.debug("task %s" % str(kwargs['task_id']))
@@ -66,6 +66,7 @@ class SpringBootJarOperator(BashOperator):
         self.component = component
         self._calc_jvm_args(jvm_args)
         self.java_args = java_args
+        self.java_retry_args = java_retry_args
         self.validate_mandatory_fields()
         self.merged_args = self.merge_args()
         self.command = command
@@ -87,7 +88,7 @@ class SpringBootJarOperator(BashOperator):
             retry_fn = SpringBootJarOperator.clean_before_retry
         retry_callback = self.get_retry_callback(retry_fn=retry_fn)
         if self._should_run_clean_command_before_retry(kwargs):
-            kwargs['params']['retry_command'] = self.get_retry_command()
+            kwargs['params']['retry_command'] = self.get_retry_command(java_retry_args)
 
         super(SpringBootJarOperator, self).__init__(retries=retry_args['retries'],
                                                     retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
@@ -344,14 +345,21 @@ class SpringBootJarOperator(BashOperator):
             bash_command.extend(['org.springframework.boot.loader.PropertiesLauncher'])
 
     def jar_args(self, bash_command, command):
-        if not is_blank(self.java_args):
-            java_args = ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in
-                             self.java_args.iteritems())
-            bash_command.append(command)
-            bash_command.append(java_args)
+        self.get_args(self.java_args, bash_command, command)
 
     def get_retry_args(self, bash_command, command):
-        self.jar_args(bash_command, command)
+        if not is_blank(self.java_retry_args):
+            self.get_args(self.java_retry_args, bash_command, command)
+        else:
+            self.get_args(self.java_args, bash_command, command)
+
+    def get_args(self, args, bash_command, command):
+        if not is_blank(args):
+            args = ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in
+                             args.iteritems())
+            bash_command.append(command)
+            bash_command.append(args)
+
 
     def jmx(self, bash_command):
         """
@@ -488,7 +496,7 @@ class SpringBootJarOperator(BashOperator):
     def get_args_task_instance_conf_key_prefix(self, args_conf_key):
         return "%s.%s.%s" % (SpringBootJarOperator.get_task_instance_conf_key_prefix(), self.task_id, args_conf_key)
 
-    def get_retry_command(self):
+    def get_retry_command(self, java_retry_args):
         bash_command = []
         self.java_path(bash_command)
 

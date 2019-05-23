@@ -1,6 +1,5 @@
 from presidio.operators.output.abstract_output_operator import AbstractOutputOperator
-from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBootJarOperator
-from presidio.utils.services.string_service import is_blank
+from airflow.utils.decorators import apply_defaults
 
 
 class OutputOperator(AbstractOutputOperator):
@@ -11,19 +10,28 @@ class OutputOperator(AbstractOutputOperator):
     Other arguments, such as the start date and the end date, are evaluated before every run.
     """
 
+    @apply_defaults
+    def __init__(self, fixed_duration_strategy, command, smart_record_conf_name, entity_type, task_id=None, *args, **kwargs):
+
+        self.fixed_duration_strategy = fixed_duration_strategy
+
+        java_retry_args = {
+            'entity_type': entity_type,
+        }
+
+        super(OutputOperator, self).__init__(
+            task_id=task_id,
+            fixed_duration_strategy=self.fixed_duration_strategy,
+            command=command,
+            smart_record_conf_name=smart_record_conf_name,
+            java_retry_args=java_retry_args,
+            *args,
+            **kwargs
+        )
+
     def get_task_name(self):
         """
         :return: The task name
         """
         return 'hourly_output_processor'
-
-    def get_retry_args(self, bash_command, command):
-        if not is_blank(self.java_args):
-            java_args = self.java_args
-            java_args.pop('smart_record_conf_name')
-            java_args.update({'entity_type': self.entity_type})
-            java_args_str = ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in
-                        java_args.iteritems())
-            bash_command.append(command)
-            bash_command.append(java_args_str)
 

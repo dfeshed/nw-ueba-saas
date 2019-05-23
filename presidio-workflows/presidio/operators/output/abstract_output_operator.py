@@ -15,7 +15,7 @@ class AbstractOutputOperator(FixedDurationJarOperator):
     __metaclass__ = ABCMeta
 
     @apply_defaults
-    def __init__(self, fixed_duration_strategy, command, smart_record_conf_name, entity_type, task_id=None, *args, **kwargs):
+    def __init__(self, fixed_duration_strategy, command, smart_record_conf_name, java_retry_args={}, task_id=None, *args, **kwargs):
         """
         C'tor.
         :param fixed_duration_strategy: The duration covered by the aggregations (e.g. hourly or daily)
@@ -28,9 +28,7 @@ class AbstractOutputOperator(FixedDurationJarOperator):
         :type task_id: string
         """
         self.log.debug('input operator init kwargs=%s', str(kwargs))
-
         self.fixed_duration_strategy = fixed_duration_strategy
-        self.entity_type = entity_type
         self.smart_record_conf_name = smart_record_conf_name
         self.task_id = task_id or self.get_task_name()
 
@@ -44,6 +42,7 @@ class AbstractOutputOperator(FixedDurationJarOperator):
             fixed_duration_strategy=self.fixed_duration_strategy,
             command=command,
             java_args=java_args,
+            java_retry_args=java_retry_args,
             *args,
             **kwargs
         )
