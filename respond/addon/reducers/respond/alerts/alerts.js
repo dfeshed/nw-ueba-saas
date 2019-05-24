@@ -1,7 +1,7 @@
 import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'respond/actions/types';
+import * as SHARED_ACTION_TYPES from 'respond-shared/actions/types';
 import reduxActions from 'redux-actions';
-import { handle } from 'redux-pack';
 import { load, persist } from '../util/local-storage';
 import explorerInitialState from 'component-lib/utils/rsa-explorer/explorer-reducer-initial-state';
 import explorerReducers from 'component-lib/utils/rsa-explorer/explorer-reducer-fns';
@@ -68,19 +68,17 @@ const alertsReducers = reduxActions.handleActions({
       return alert;
     }));
   },
-  [ACTION_TYPES.ALERTS_ADD_TO_INCIDENT]: (state, action) => (
-    handle(state, action, {
-      success: (s) => {
-        const { payload: { data, request: { data: { entity: { id } } } } } = action;
-        return s.set('items', s.items.map((alert) => { // Update the alerts (items) that now have an associated incident
-          if (data.includes(alert.id)) {
-            return { ...alert, incidentId: id, partOfIncident: true };
-          }
-          return alert;
-        }));
+
+  [SHARED_ACTION_TYPES.UPDATE_INCIDENT_ON_ADD]: (state, { payload }) => {
+    const { data, request: { data: { entity: { id } } } } = payload;
+    return state.set('items', state.items.map((alert) => { // Update the alerts (items) that now have an associated incident
+      if (data.includes(alert.id)) {
+        return { ...alert, incidentId: id, partOfIncident: true };
       }
-    })
-  )
+      return alert;
+    }));
+  }
+
 
 }, Immutable.from(initialState));
 

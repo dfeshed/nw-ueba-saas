@@ -3,6 +3,64 @@ import Component from '@ember/component';
 import { debounce } from '@ember/runloop';
 import Notifications from 'component-lib/mixins/notifications';
 import columns from './columns';
+import { connect } from 'ember-redux';
+import { inject as service } from '@ember/service';
+import {
+  clearSearchIncidentsResults,
+  updateSearchIncidentsText,
+  updateSearchIncidentsSortBy,
+  selectIncident,
+  addEventsToIncident,
+  addAlertsToIncident
+} from 'respond-shared/actions/creators/add-to-incident-creators';
+import {
+  getIncidentSearchStatus,
+  getIncidentSearchResults,
+  getSelectedIncident,
+  getIncidentSearchSortBy,
+  getIncidentSearchSortIsDescending,
+  getIsIncidentNotSelected,
+  hasSearchQuery
+} from 'respond-shared/selectors/add-to-incident/selectors';
+
+const stateToComputed = (state) => ({
+  sortBy: getIncidentSearchSortBy(state),
+  isSortDescending: getIncidentSearchSortIsDescending(state),
+  incidentSearchStatus: getIncidentSearchStatus(state),
+  incidentSearchResults: getIncidentSearchResults(state),
+  selectedIncident: getSelectedIncident(state),
+  hasSearchQuery: hasSearchQuery(state),
+  isIncidentNotSelected: getIsIncidentNotSelected(state)
+});
+
+const dispatchToActions = (dispatch) => {
+  return {
+    searchIncident(value) {
+      return dispatch(updateSearchIncidentsText(value));
+    },
+    clearResults() {
+      dispatch(clearSearchIncidentsResults());
+    },
+    sortIncident(column, isCurrentSortDescending) {
+      const currentSortBy = this.get('sortBy');
+      // If we're resorting the current column again, flip the sort order, otherwise default to descending in
+      // order to make the sort order for a new column predictable.
+      const isNewSortDescending = currentSortBy === column.field ? !isCurrentSortDescending : true;
+      dispatch(updateSearchIncidentsSortBy(column.field, isNewSortDescending));
+    },
+    selectIncident(incident) {
+      dispatch(selectIncident(incident));
+    },
+    addtoIncident(data, callbacks) {
+      if (this.get('selectedEventIds')) {
+        dispatch(addEventsToIncident(data, callbacks));
+      } else {
+        const { selectedAlerts } = this.getProperties('selectedAlerts');
+        dispatch(addAlertsToIncident(selectedAlerts, data, callbacks));
+      }
+    }
+  };
+};
 
 /**
  * @class AddToIncident
@@ -10,8 +68,9 @@ import columns from './columns';
  *
  * @public
  */
-export default Component.extend(Notifications, {
+const addToIncidentButton = Component.extend(Notifications, {
   layout,
+  i18n: service(),
 
   classNames: ['rsa-add-to-incident'],
 
@@ -32,12 +91,77 @@ export default Component.extend(Notifications, {
   searchWait: 500,
 
   /**
+   * Represents the alert name/summary that will be set on all the alerts created from the selected events (internally)
+   * @property alertName
+   * @type {string}
+   * @public
+   */
+  alertName: null,
+
+
+  /**
+   * Represents the alert Severity that will be set on all the alerts created from the selected events (internally)
+   * @property alertSeverity
+   * @type {number}
+   * @public
+   */
+  alertSeverity: 50,
+
+  /**
+   * Represents the selected events that has to go into an incident, passed from investigation-events
+   * @property selectedEvents
+   * @type {[]}
+   * @public
+   */
+  selectedEventIds: null,
+
+  /**
+   * Represents the selected serviceId (passed from) on the investigation-events Page, required to be sent to
+   * Investigation Server for incident creation
+   * @property selectedEndpointId
+   * @type {string}
+   * @public
+   */
+  endpointId: null,
+
+  /**
+   * Represents the query start Time (passed from) on the investigation-events Page, required to be sent to
+   * Investigation Server for incident creation
+   * @property startTime
+   * @type {long}
+   * @public
+   */
+  startTime: null,
+
+  /**
+   * Represents the query end Time (passed from) on the investigation-events Page, required to be sent to
+   * Investigation Server for incident creation
+   * @property endTime
+   * @type {long}
+   * @public
+   */
+  endTime: null,
+
+  /**
+   * Represents the selected alerts that has to go into an incident, passed from respond
+   * @property selectedAlerts
+   * @type {[]}
+   * @public
+   */
+  selectedAlerts: null,
+
+  /**
    * Debounceable search function that delegates to the `search` action
    * @param value
    * @private
    */
   _search(value) {
-    this.searchIncident(value);
+    this.send('searchIncident', value);
+  },
+
+  didInsertElement() {
+    this._super(...arguments);
+    this.set('alertName', this.get('i18n').t('respond.alerts.defaultAlertSummaryText').string);
   },
 
   actions: {
@@ -66,38 +190,43 @@ export default Component.extend(Notifications, {
      */
     handleSubmit() {
       const { selectedIncident } = this.getProperties('selectedIncident');
+      let data = selectedIncident;
+      const selectedEventIds = this.get('selectedEventIds');
 
-      this.set('isAddAlertsInProgress', true);
-      this.addtoIncident(selectedIncident.id, {
+      if (selectedEventIds) {
+        const { endpointId, startTime, endTime, alertName, alertSeverity } =
+            this.getProperties('endpointId', 'startTime', 'endTime', 'alertName', 'alertSeverity');
+        data = {
+          eventIds: selectedEventIds,
+          endpointId,
+          range: {
+            from: startTime,
+            to: endTime
+          },
+          alertSeverity,
+          alertName,
+          id: selectedIncident.id
+        };
+      }
+
+      this.set('isAddToIncidentInProgress', true);
+      this.send('addtoIncident', data, {
         // Close the modal and show success notification to the user, if the add-to-incident call has succeeded
         onSuccess: () => {
           this.finish();
-          this.send('success', 'respond.incidents.actions.actionMessages.addAlertToIncidentSucceeded', { incidentId: selectedIncident.id });
-          this.set('isAddAlertsInProgress', false);
+          this.send('success', 'respond.incidents.actions.actionMessages.addAlertToIncidentSucceeded',
+            { incidentId: selectedIncident.id, entity: this.get('selectedEventIds') ? 'events' : 'alerts' });
+          this.set('isAddToIncidentInProgress', false);
         },
         // Show a failure notification if the add-to-incident call has failed
         onFailure: () => {
-          this.send('failure', 'respond.incidents.actions.actionMessages.addAlertToIncidentFailed');
-          this.set('isAddAlertsInProgress', false);
+          this.send('failure', 'respond.incidents.actions.actionMessages.addAlertToIncidentFailed',
+            { entity: this.get('selectedEventIds') ? 'events' : 'alerts' });
+          this.set('isAddToIncidentInProgress', false);
         }
       });
-    },
-    /**
-     * Handler for a sort click on column in the incident search results table
-     * @param column
-     * @param isCurrentSortDescending
-     * @private
-     */
-    handleResultsSortBy(column, isCurrentSortDescending) {
-      const currentSortBy = this.get('sortBy');
-      // If we're resorting the current column again, flip the sort order, otherwise default to descending in
-      // order to make the sort order for a new column predictable.
-      const isNewSortDescending = currentSortBy === column.field ? !isCurrentSortDescending : true;
-      this.sortIncident(column.field, isNewSortDescending);
-    },
-
-    handleIncidentSelection(incident) {
-      this.selectIncident(incident);
     }
   }
 });
+
+export default connect(stateToComputed, dispatchToActions)(addToIncidentButton);

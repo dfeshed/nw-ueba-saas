@@ -1,8 +1,8 @@
 import Immutable from 'seamless-immutable';
 import { module, test } from 'qunit';
 import { LIFECYCLE } from 'redux-pack';
-import ACTION_TYPES from 'respond/actions/types';
-import reducer from 'respond/reducers/respond/alerts/add-to-incident';
+import ACTION_TYPES from 'respond-shared/actions/types';
+import reducer from 'respond-shared/reducers/add-to-incident/reducer';
 import makePackAction from '../../helpers/make-pack-action';
 
 module('Unit | Utility | Add To Incident Reducer');
@@ -15,7 +15,7 @@ const initialState = {
   incidentSearchResults: [],
   selectedIncident: null,
   stopSearchStream: null,
-  isAddAlertsInProgress: false
+  isAddToIncidentInProgress: false
 };
 
 test('With ALERTS_SEARCH_INCIDENTS_STARTED, the incidentSearchStatus changes to streaming', function(assert) {
@@ -32,7 +32,7 @@ test('With ALERTS_SEARCH_INCIDENTS_STARTED, the incidentSearchStatus changes to 
     incidentSearchResults: [],
     selectedIncident: null
   };
-  const action = { type: ACTION_TYPES.ALERTS_SEARCH_INCIDENTS_STARTED };
+  const action = { type: ACTION_TYPES.SEARCH_INCIDENTS_STARTED };
   const endState = reducer(Immutable.from(state), action);
   assert.deepEqual(endState, expectedEndState);
 });
@@ -45,7 +45,7 @@ test('With ALERTS_SEARCH_INCIDENTS_ERROR fails, the incidentSearchStatus changes
     incidentSearchStatus,
     stopSearchStream
   };
-  const action = { type: ACTION_TYPES.ALERTS_SEARCH_INCIDENTS_ERROR };
+  const action = { type: ACTION_TYPES.SEARCH_INCIDENTS_ERROR };
   const endState = reducer(Immutable.from(initialState), action);
   assert.deepEqual(endState, expectedEndState);
 });
@@ -59,7 +59,7 @@ test('With ALERTS_SEARCH_INCIDENTS_RETRIEVE_BATCH, the incidentSearchResults are
     incidentSearchStatus: 'streaming'
   };
   const action = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.ALERTS_SEARCH_INCIDENTS_RETRIEVE_BATCH,
+    type: ACTION_TYPES.SEARCH_INCIDENTS_RETRIEVE_BATCH,
     payload: { data: incidentSearchResults, meta: { complete: false } }
   });
   const endState = reducer(Immutable.from(initialState), action);
@@ -72,7 +72,7 @@ test('With ALERTS_SEARCH_INCIDENTS_STREAM_INITIALIZED, the payload function is s
     ...initialState,
     stopSearchStream: stopStreamFunc
   };
-  const action = { type: ACTION_TYPES.ALERTS_SEARCH_INCIDENTS_STREAM_INITIALIZED, payload: stopStreamFunc };
+  const action = { type: ACTION_TYPES.SEARCH_INCIDENTS_STREAM_INITIALIZED, payload: stopStreamFunc };
   const endState = reducer(Immutable.from(initialState), action);
   assert.deepEqual(endState, expectedEndState);
 });
@@ -86,7 +86,7 @@ test('With ALERTS_SEARCH_INCIDENTS_COMPLETED, the stopSearchStream is set to nul
   const expectedEndState = {
     ...initialState // default in initial state has stopSearchStream as null
   };
-  const action = { type: ACTION_TYPES.ALERTS_SEARCH_INCIDENTS_COMPLETED };
+  const action = { type: ACTION_TYPES.SEARCH_INCIDENTS_COMPLETED };
   const endState = reducer(Immutable.from(state), action);
   assert.deepEqual(endState, expectedEndState);
 });
@@ -97,7 +97,7 @@ test('With ALERTS_UPDATE_SEARCH_INCIDENTS_TEXT, the incidentSearchText is update
     ...initialState,
     incidentSearchText
   };
-  const action = { type: ACTION_TYPES.ALERTS_UPDATE_SEARCH_INCIDENTS_TEXT, payload: incidentSearchText };
+  const action = { type: ACTION_TYPES.UPDATE_SEARCH_INCIDENTS_TEXT, payload: incidentSearchText };
   const endState = reducer(Immutable.from(initialState), action);
   assert.deepEqual(endState, expectedEndState);
 });
@@ -111,7 +111,7 @@ test('With ALERTS_UPDATE_SEARCH_INCIDENTS_SORTBY, the incidentSearchSortBy and i
     incidentSearchSortIsDescending
   };
   const action = {
-    type: ACTION_TYPES.ALERTS_UPDATE_SEARCH_INCIDENTS_SORTBY,
+    type: ACTION_TYPES.UPDATE_SEARCH_INCIDENTS_SORTBY,
     payload: {
       sortField: incidentSearchSortBy,
       isSortDescending: incidentSearchSortIsDescending
@@ -121,10 +121,10 @@ test('With ALERTS_UPDATE_SEARCH_INCIDENTS_SORTBY, the incidentSearchSortBy and i
   assert.deepEqual(endState, expectedEndState);
 });
 
-test('With ALERTS_ADD_TO_INCIDENT, the isAddAlertsInProgress is set to true on start', function(assert) {
+test('With ALERTS_ADD_TO_INCIDENT, the isAddToIncidentInProgress is set to true on start', function(assert) {
   const expectedEndState = {
     ...initialState,
-    isAddAlertsInProgress: true
+    isAddToIncidentInProgress: true
   };
   const action = makePackAction(LIFECYCLE.START, {
     type: ACTION_TYPES.ALERTS_ADD_TO_INCIDENT
@@ -141,7 +141,7 @@ test('With ALERTS_SEARCH_INCIDENTS_SELECT, the selectedIncident is updated', fun
     selectedIncident
   };
   const action = {
-    type: ACTION_TYPES.ALERTS_SEARCH_INCIDENTS_SELECT,
+    type: ACTION_TYPES.SEARCH_INCIDENTS_SELECT,
     payload: selectedIncident
   };
   const endState = reducer(Immutable.from(initialState), action);
@@ -157,7 +157,7 @@ test('With CLEAR_SEARCH_INCIDENTS_RESULTS_FOR_ALERTS, the state is reset to init
   };
   const expectedEndState = { ...initialState };
 
-  const action = { type: ACTION_TYPES.CLEAR_SEARCH_INCIDENTS_RESULTS_FOR_ALERTS };
+  const action = { type: ACTION_TYPES.CLEAR_SEARCH_INCIDENTS_RESULTS };
   const endState = reducer(Immutable.from(state), action);
   assert.deepEqual(endState, expectedEndState);
 });

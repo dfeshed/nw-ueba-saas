@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import context from 'context/reducers';
+import respondShared from 'respond-shared/reducers';
 /**
  * Dummy app will be working as global container. Adding reducer will initialize context
  * redux store on global level.
@@ -7,5 +8,6 @@ import context from 'context/reducers';
  * @public
  */
 export default combineReducers({
-  context
+  context,
+  respondShared
 });

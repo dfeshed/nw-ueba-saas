@@ -34,7 +34,11 @@ const stateToComputed = (state) => ({
   isAllEventsSelected: state.investigate.eventResults.allEventsSelected,
   selectedEventIds: state.investigate.eventResults.selectedEventIds,
   searchScrollIndex: state.investigate.eventResults.searchScrollIndex,
-  sortDirection: state.investigate.data.sortDirection
+  sortDirection: state.investigate.data.sortDirection,
+  endpointId: state.investigate.queryNode.serviceId,
+  items: state.investigate.eventResults.data,
+  startTime: state.investigate.queryNode.startTime,
+  endTime: state.investigate.queryNode.endTime
 });
 
 const dispatchToActions = {

@@ -25,8 +25,8 @@ const FilterQuery = EmberObject.extend({
    * @property filters
    * @public
    */
-      @readOnly
-      @computed('_filters')
+    @readOnly
+    @computed('_filters')
   filters(filters) {
     return filters.map((filter) => {
       // if values is only one item, pull out of array (some queries do not support values array property)

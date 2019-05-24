@@ -2,72 +2,15 @@ import Component from '@ember/component';
 import { gt } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
-import * as ACTION_TYPES from '../../../actions/types';
 import {
   getSelectedAlerts,
   hasSelectedAlertsBelongingToIncidents
 } from 'respond/selectors/alerts';
-import {
-  getGroupedCategories,
-  getPriorityTypes
-} from 'respond/selectors/dictionaries';
-import { getEnabledUsers } from 'respond/selectors/users';
-import {
-  getIncidentSearchStatus,
-  getIncidentSearchResults,
-  getSelectedIncident,
-  getIncidentSearchSortBy,
-  getIncidentSearchSortIsDescending,
-  getIsAddToAlertsUnavailable,
-  hasSearchQuery
-} from 'respond/selectors/alert-to-incident';
-import {
-  addAlertsToIncident,
-  clearSearchIncidentsResults,
-  updateSearchIncidentsText,
-  updateSearchIncidentsSortBy,
-  selectIncident
-} from 'respond/actions/creators/add-alerts-to-incident-creators';
 
 const stateToComputed = (state) => {
   return {
     hasSelectedAlertsBelongingToIncidents: hasSelectedAlertsBelongingToIncidents(state),
-    priorityTypes: getPriorityTypes(state),
-    groupedCategories: getGroupedCategories(state),
-    enabledUsers: getEnabledUsers(state),
-    alertIds: getSelectedAlerts(state),
-    sortBy: getIncidentSearchSortBy(state),
-    isSortDescending: getIncidentSearchSortIsDescending(state),
-    incidentSearchStatus: getIncidentSearchStatus(state),
-    incidentSearchResults: getIncidentSearchResults(state),
-    selectedIncident: getSelectedIncident(state),
-    hasSearchQuery: hasSearchQuery(state),
-    isAddToAlertsUnavailable: getIsAddToAlertsUnavailable(state)
-  };
-};
-
-const dispatchToActions = (dispatch) => {
-  return {
-    search(value) {
-      return dispatch(updateSearchIncidentsText(value));
-    },
-    clearSearchIncidentsResults() {
-      dispatch(clearSearchIncidentsResults());
-    },
-    addtoIncident(incidentId, callbacks) {
-      const { alertIds } = this.getProperties('alertIds');
-      dispatch(addAlertsToIncident(alertIds, incidentId, callbacks));
-    },
-    sortBy(sortField, isSortDescending) {
-      dispatch(updateSearchIncidentsSortBy(sortField, isSortDescending));
-    },
-    selectIncident(incident) {
-      dispatch(selectIncident(incident));
-    },
-    create(incidentDetails) {
-      const { alertIds } = this.getProperties('alertIds');
-      dispatch({ type: ACTION_TYPES.CREATE_INCIDENT_SAGA, incidentDetails, alertIds });
-    }
+    alertIds: getSelectedAlerts(state)
   };
 };
 
@@ -116,7 +59,7 @@ const AlertControls = Component.extend({
   actions: {
     deleteAlerts() {
       const { itemsSelected, confirm, i18n, deleteConfirmationDialogId } =
-        this.getProperties('itemsSelected', 'confirm', 'i18n', 'deleteConfirmationDialogId');
+          this.getProperties('itemsSelected', 'confirm', 'i18n', 'deleteConfirmationDialogId');
       const deleteWarningTitle = i18n.t('respond.alerts.actions.actionMessages.deleteWarningTitle');
       const deleteWarnings = [
         i18n.t('respond.alerts.actions.actionMessages.removeFromIncidentWarning'),
@@ -133,4 +76,4 @@ const AlertControls = Component.extend({
   }
 });
 
-export default connect(stateToComputed, dispatchToActions)(AlertControls);
+export default connect(stateToComputed)(AlertControls);

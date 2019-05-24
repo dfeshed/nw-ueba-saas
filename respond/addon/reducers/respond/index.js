@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import alertIncidentAssociation from './alerts/add-to-incident';
 import alerts from './alerts/alerts';
 import alert from './alert';
 import recon from './recon/index';
@@ -13,7 +12,6 @@ import riac from './riac';
 
 export default combineReducers({
   recon,
-  alertIncidentAssociation,
   alerts,
   alert,
   dictionaries,

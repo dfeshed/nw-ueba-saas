@@ -1,23 +1,9 @@
 {{#if accessControl.respondCanManageAlerts}}
   {{incident-toolbar
     isDisabled=(or hasNoSelections hasSelectedAlertsBelongingToIncidents)
-    priorityTypes=priorityTypes
-    enabledUsers=enabledUsers
-    groupedCategories=groupedCategories
+    selectedAlerts=alertIds
     alertCount=alertIds.length
-    sortBy=sortBy
-    isSortDescending=isSortDescending
-    incidentSearchStatus=incidentSearchStatus
-    incidentSearchResults=incidentSearchResults
-    selectedIncident=selectedIncident
-    hasSearchQuery=hasSearchQuery
-    isAddToAlertsUnavailable=isAddToAlertsUnavailable
-    createIncident=(action 'create')
-    searchIncident=(action 'search')
-    selectIncident=(action 'selectIncident')
-    addtoIncident=(action 'addtoIncident')
-    sortIncident=(action 'sortBy')
-    clearResults=(action 'clearSearchIncidentsResults')}}
+ }}
 {{/if}}
 {{#if accessControl.respondCanDeleteAlerts}}
   <div class="action-control delete-button">

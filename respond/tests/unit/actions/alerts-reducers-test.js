@@ -4,6 +4,7 @@ import alertsReducer from 'respond/reducers/respond/alerts/alerts';
 import ACTION_TYPES from 'respond/actions/types';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../helpers/make-pack-action';
+import SHARED_ACTION_TYPES from 'respond-shared/actions/types';
 
 const alertNotPartOfIncident = Immutable.from({
   id: '5833fee2a7c89226086a0956',
@@ -72,7 +73,7 @@ test('The ALERTS_ADD_TO_INCIDENT reducer updates the alerts with incidentId and 
     items: [alertNotPartOfIncident, testAlert]
   };
   const action = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.ALERTS_ADD_TO_INCIDENT,
+    type: SHARED_ACTION_TYPES.UPDATE_INCIDENT_ON_ADD,
     payload: addAlertsToIncidentResponsePayload
   });
   const endState = alertsReducer(initialState, action);

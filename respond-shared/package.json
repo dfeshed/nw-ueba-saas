@@ -54,6 +54,10 @@
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-qunit": "4.4.1",
     "ember-redux": "4.0.3",
+    "redux-pack": "0.1.5",
+    "redux-persist": "4.8.3",
+    "redux-persist-transform-filter": "0.0.15",
+    "redux-thunk": "2.3.0",
     "ember-resolver": "4.3.0",
     "ember-source": "3.9.0",
     "ember-symbol-observable": "1.0.2",
@@ -61,7 +65,8 @@
     "liquid-fire": "0.29.5",
     "loader.js": "4.7.0",
     "qunit-dom": "^0.8.0",
-    "sass": "1.17.2"
+    "sass": "1.17.2",
+    "ember-sinon": "2.2.0"
   },
   "engines": {
     "node": "10.15.3"
@@ -71,7 +76,8 @@
     "paths": [
       "../context",
       "../test-helpers",
-      "../component-lib"
+      "../component-lib",
+      "../streaming-data"
     ]
   }
 }

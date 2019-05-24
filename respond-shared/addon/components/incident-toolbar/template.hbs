@@ -1,15 +1,15 @@
 <div class="incident-buttons">
   <div class="create-incident-button">
     {{#rsa-form-button
-        isDisabled=isDisabled
-        defaultAction=(action 'createIncident')}}
+      isDisabled=isDisabled
+      defaultAction=(action 'createIncident')}}
       {{t 'respond.alerts.createIncident'}}
     {{/rsa-form-button}}
   </div>
   <div class="add-to-incident-button">
     {{#rsa-form-button
-        isDisabled=isDisabled
-        defaultAction=(action 'addToIncident')}}
+      isDisabled=isDisabled
+      defaultAction=(action 'addToIncident')}}
       {{t 'respond.alerts.addToIncident'}}
     {{/rsa-form-button}}
   </div>
@@ -36,11 +36,12 @@
   {{#rsa-application-modal eventId='create-incident' label=(t "respond.alerts.createIncident") style="standard create-incident-modal"}}
     <div class='modal-content'>
       {{incident-toolbar/create-incident
-        priorityTypes=priorityTypes
-        enabledUsers=enabledUsers
-        groupedCategories=groupedCategories
         alertCount=alertIds.length
-        createIncident=createIncident
+        selectedEventIds=selectedEventIds
+        endpointId=endpointId
+        startTime=startTime
+        endTime=endTime
+        selectedAlerts=selectedAlerts
         close=(action 'closeModal' 'create-incident')}}
     </div>
   {{/rsa-application-modal}}
@@ -49,17 +50,11 @@
   {{#rsa-application-modal eventId='add-to-incident' label=(t "respond.alerts.addToIncident") style="standard add-to-incident-modal" onClose=clearResults}}
     <div class='modal-content'>
       {{incident-toolbar/add-to-incident
-        sortBy=sortBy
-        isSortDescending=isSortDescending
-        incidentSearchStatus=incidentSearchStatus
-        incidentSearchResults=incidentSearchResults
-        selectedIncident=selectedIncident
-        hasSearchQuery=hasSearchQuery
-        isAddToAlertsUnavailable=isAddToAlertsUnavailable
-        searchIncident=searchIncident
-        selectIncident=selectIncident
-        addtoIncident=addtoIncident
-        sortIncident=sortIncident
+        selectedEventIds=selectedEventIds
+        endpointId=endpointId
+        startTime=startTime
+        endTime=endTime
+        selectedAlerts=selectedAlerts
         finish=(action 'closeModal' 'add-to-incident')}}
     </div>
   {{/rsa-application-modal}}

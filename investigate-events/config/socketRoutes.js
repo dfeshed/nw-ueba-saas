@@ -3,6 +3,8 @@ const reconConfigGen = require('../../recon').socketRouteGenerator;
 const contextConfigGen = require('../../context').socketRouteGenerator;
 const preferencesConfigGen = require('../../preferences').socketRouteGenerator;
 const licenseConfigGen = require('../../license').socketRouteGenerator;
+const respondSharedConfigGen = require('../../respond-shared').socketRouteGenerator;
+
 const common = require('../../common');
 
 const cancelDestination = '/ws/investigate/cancel';
@@ -158,7 +160,7 @@ module.exports = function(environment) {
     return {};
   }
 
-  const configGenerators = [investigateConfigGen, reconConfigGen, contextConfigGen, preferencesConfigGen, licenseConfigGen];
+  const configGenerators = [investigateConfigGen, reconConfigGen, contextConfigGen, preferencesConfigGen, licenseConfigGen, respondSharedConfigGen];
   mergedConfig = common.mergeSocketConfigs(configGenerators, environment);
   return mergedConfig;
 };

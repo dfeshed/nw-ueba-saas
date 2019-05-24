@@ -10,6 +10,7 @@ const recon = require('../recon').mockDestinations;
 const preferences = require('../preferences').mockDestinations;
 const contextMockDirectory = require('../context').mockDestinations;
 const licenseMockDirectory = require('../license').mockDestinations;
+const respondSharedMockDir = require('../respond-shared').mockDestinations;
 
 
 module.exports = EngineAddon.extend({
@@ -42,7 +43,7 @@ module.exports = EngineAddon.extend({
 
   // local mock endpoints last as any dupes = last one wins
   mockDestinations: [
-    subscriptionPath, ...recon, preferences, contextMockDirectory, licenseMockDirectory
+    subscriptionPath, ...recon, preferences, contextMockDirectory, licenseMockDirectory, respondSharedMockDir
   ],
 
   // See ../common.js for details on this function
