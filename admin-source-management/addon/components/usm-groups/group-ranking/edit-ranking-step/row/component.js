@@ -42,6 +42,15 @@ const Row = Component.extend(SortableItemMixin, {
   @computed('item.sourceCount')
   srcCount(sourceCount) {
     return getSourceCount(sourceCount);
+  },
+
+  actions: {
+    showTip(index) {
+      document.getElementsByClassName('tip')[index].classList.add('show');
+    },
+    hideTip(index) {
+      document.getElementsByClassName('tip')[index].classList.remove('show');
+    }
   }
 });
 

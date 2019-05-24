@@ -16,6 +16,7 @@
     display: flex;
     .table-cell-text {
       align-items: flex-start;
+      position: relative;
     }
   }
   .heading-top {
@@ -43,12 +44,7 @@
       margin-right: 0px;
     }
   }
-  .choose-source-step {
-    .loading {
-      min-height: 40px;
-      margin-left: rsa-whitespace(more);
-    }
-  }
+
   .status-nosource-count {
     color: text-color(primary);
     display: inline;
@@ -100,7 +96,7 @@
 
     .loading {
       text-align: center;
-      margin-top: 20%;
+      margin: 10%;
     }
     table {
       width: 100%;
@@ -160,6 +156,7 @@
     }
   }
   .simulate-true, .simulate-false {
+    margin: 2px;
     width: 24px;
     height: 12px;
     border: 1px solid border-color(primary);
@@ -184,6 +181,33 @@
   }
   .simulate-true:hover, .simulate-false:hover {
     border: 1px solid border-color(primary, lighter);
+  }
+  .tip {
+    position: absolute;
+    top:30px;
+    display: none;
+    border: 1px solid border-color(primary, lighter);
+    padding: 10px;
+    background-color: background-color(primary, darker);
+    left: -75px;
+    width: 150px;
+    z-index: 9999;
+    svg {
+      position: absolute;
+      left: 75px;
+      top: -7px;
+      width: 14px;
+      height: 7px;
+      .poly-line-1 {
+        fill: background-color(primary, lighter);
+      }
+      .poly-line-2 {
+        fill: background-color(primary, darker);
+      }
+    }
+  }
+  .tip.show {
+    display: block;
   }
 }
 /*

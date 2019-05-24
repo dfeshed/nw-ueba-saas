@@ -22,15 +22,19 @@
   {{/each-in}}
 </td>
 <td class="n-sources-cell">
-  <div class="table-cell-text">
+  <div class="table-cell-text" {{action 'hideTip' index on='mouseLeave'}}>
     {{#if srcCountTooltip}}
-      {{#rsa-text-with-tooltip value=srcCountTooltip
-        style="standard"
-        alwaysShow=true}}
-        {{srcCount}}
-      {{/rsa-text-with-tooltip}}
+      <div class="src-count-text src-count" {{action 'showTip' index on='mouseEnter'}}>{{srcCount}}</div>
+      <div class="tip">
+        <svg>
+          <polygon class="poly-line-1" points="0,7 7,0 14,7"/>
+          <polygon class="poly-line-2" points="2,7 7,2 12,7"/>
+        </svg>
+        <p class="src-count-tip">{{srcCountTooltip}}</p>
+      </div>
     {{else}}
-      {{srcCount}}
+      <div class="src-count">{{srcCount}}</div>
+      <div class="tip"></div>
     {{/if}}
   </div>
 </td>
