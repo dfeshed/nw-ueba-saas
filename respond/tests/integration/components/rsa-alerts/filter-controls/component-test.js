@@ -8,8 +8,9 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import {
   getAllAlertTypes,
   getAllAlertSources,
-  getAllAlertNames,
-  getAllCategories } from 'respond/actions/creators/dictionary-creators';
+  getAllAlertNames
+} from 'respond/actions/creators/dictionary-creators';
+import { getAllCategories } from 'respond-shared/actions/creators/create-incident-creators';
 import RSVP from 'rsvp';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -125,7 +126,7 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
     const redux = this.owner.lookup('service:redux');
 
     redux.dispatch(getAllCategories());
-    await waitForReduxStateChange(redux, 'respond.dictionaries.categoryTags');
+    await waitForReduxStateChange(redux, 'respondShared.createIncident.categoryTags');
 
     await render(hbs`
       <div id='modalDestination'></div>

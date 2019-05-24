@@ -12,11 +12,14 @@ const stateToComputed = (state) => {
   const {
     respond: {
       dictionaries
+    },
+    respondShared: {
+      createIncident
     }
   } = state;
 
   return {
-    priorityTypes: dictionaries.priorityTypes,
+    priorityTypes: createIncident.priorityTypes,
     remediationStatusTypes: dictionaries.remediationStatusTypes
   };
 };

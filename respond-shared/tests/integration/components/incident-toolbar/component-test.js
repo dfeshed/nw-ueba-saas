@@ -4,7 +4,13 @@ import hbs from 'htmlbars-inline-precompile';
 import { click, findAll, render } from '@ember/test-helpers';
 import { patchReducer } from '../../../../tests/helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
+import {
+  getAllEnabledUsers,
+  getAllPriorityTypes,
+  getAllCategories
+} from 'respond-shared/actions/creators/create-incident-creators';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import RSVP from 'rsvp';
 
 const createIncidentModalSelector = '.rsa-application-modal.create-incident-modal';
 const addToIncidentModalSelector = '.rsa-application-modal.add-to-incident-modal';
@@ -22,6 +28,13 @@ module('Integration | Component | incident-toolbar', function(hooks) {
         }
       };
       patchReducer(this, Immutable.from(fullState));
+      // initialize all of the required data into redux app state
+      const redux = this.owner.lookup('service:redux');
+      init = RSVP.allSettled([
+        redux.dispatch(getAllPriorityTypes()),
+        redux.dispatch(getAllEnabledUsers()),
+        redux.dispatch(getAllCategories())
+      ]);
     };
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');

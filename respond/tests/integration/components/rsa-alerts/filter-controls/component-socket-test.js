@@ -9,7 +9,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { findElement } from '../../../../helpers/find-element';
 import { getItems } from 'respond/actions/creators/alert-creators';
-import { getAllCategories } from 'respond/actions/creators/dictionary-creators';
+import { getAllCategories } from 'respond-shared/actions/creators/create-incident-creators';
 import waitForReduxStateChange from '../../../../helpers/redux-async-helpers';
 
 module('Integration | Component | Respond Alerts Filters Socket', function(hooks) {
@@ -27,7 +27,7 @@ module('Integration | Component | Respond Alerts Filters Socket', function(hooks
     const redux = this.owner.lookup('service:redux');
 
     redux.dispatch(getAllCategories());
-    await waitForReduxStateChange(redux, 'respond.dictionaries.categoryTags');
+    await waitForReduxStateChange(redux, 'respondShared.createIncident.categoryTags');
 
     await render(hbs`{{rsa-alerts}}`);
 

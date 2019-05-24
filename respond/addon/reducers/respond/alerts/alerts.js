@@ -59,8 +59,8 @@ const alertsReducers = reduxActions.handleActions({
   [ACTION_TYPES.FINISH_TRANSACTION]: (state) => {
     return state.set('isTransactionUnderway', false);
   },
-  [ACTION_TYPES.CREATE_INCIDENT]: (state, action) => {
-    const { payload: { data: { id }, request: { data: { associated } } } } = action;
+  [SHARED_ACTION_TYPES.UPDATE_INCIDENT_ON_CREATE]: (state, { payload }) => {
+    const { data: { id }, request: { data: { associated } } } = payload;
     return state.set('items', state.items.map((alert) => { // Update the alerts (items) that now have an associated incident
       if (associated.includes(alert.id)) {
         return { ...alert, incidentId: id, partOfIncident: true };

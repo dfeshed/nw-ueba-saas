@@ -4,9 +4,7 @@ import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
 
 const initialState = {
-  priorityTypes: [],
   statusTypes: [],
-  categoryTags: [],
   remediationStatusTypes: [],
   remediationTypes: null,
   alertTypes: [],
@@ -16,22 +14,6 @@ const initialState = {
 };
 
 export default reduxActions.handleActions({
-  [ACTION_TYPES.FETCH_CATEGORY_TAGS]: (state, action) => (
-    handle(state, action, {
-      start: (s) => s.set('categoryTags', []),
-      failure: (s) => s.set('categoryTags', []),
-      success: (s) => s.set('categoryTags', action.payload.data) }
-    )
-  ),
-
-  [ACTION_TYPES.FETCH_PRIORITY_TYPES]: (state, action) => (
-    handle(state, action, {
-      start: (s) => s.set('priorityTypes', []),
-      failure: (s) => s.set('priorityTypes', []),
-      success: (s) => s.set('priorityTypes', action.payload.data) }
-    )
-  ),
-
   [ACTION_TYPES.FETCH_STATUS_TYPES]: (state, action) => (
     handle(state, action, {
       start: (s) => s.set('statusTypes', []),

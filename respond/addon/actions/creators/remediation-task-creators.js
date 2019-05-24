@@ -1,11 +1,10 @@
 import { RemediationTasks } from '../api';
 import * as ACTION_TYPES from '../types';
 import * as dictionaryCreators from './dictionary-creators';
+import * as incidentCreators from 'respond-shared/actions/creators/create-incident-creators';
 import { getAllUsers } from 'respond/selectors/users';
-import {
-  getPriorityTypes,
-  getRemediationStatusTypes
-} from 'respond/selectors/dictionaries';
+import { getRemediationStatusTypes } from 'respond/selectors/dictionaries';
+import { getPriorityTypes } from 'respond-shared/selectors/create-incident/selectors';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -18,7 +17,7 @@ const initializeTasks = () => {
       dispatch(dictionaryCreators.getAllUsers());
     }
     if (!getPriorityTypes(state).length) {
-      dispatch(dictionaryCreators.getAllPriorityTypes());
+      dispatch(incidentCreators.getAllPriorityTypes());
     }
     if (!getRemediationStatusTypes(state).length) {
       dispatch(dictionaryCreators.getAllRemediationStatusTypes());

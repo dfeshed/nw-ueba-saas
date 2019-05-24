@@ -2,21 +2,6 @@ import { lookup } from 'ember-dependency-lookup';
 import RSVP from 'rsvp';
 
 export default {
-  /**
-   * Executes a websocket fetch call for all priority types that can be applied to an incident.
-   *
-   * @method getAllPriorityTypes
-   * @public
-   * @returns {Promise}
-   */
-  getAllPriorityTypes() {
-    const request = lookup('service:request');
-    return request.promiseRequest({
-      method: 'findAll',
-      modelName: 'priority-types',
-      query: {}
-    });
-  },
 
   /**
    * Executes a websocket fetch call for all status types that can be applied to an incident.
@@ -30,22 +15,6 @@ export default {
     return request.promiseRequest({
       method: 'findAll',
       modelName: 'status-types',
-      query: {}
-    });
-  },
-
-  /**
-   * Executes a websocket fetch call for the hierarchical (two-level) set of categories (e.g., Error/Malfunction,
-   * Environmental/Flood, etc) which can be tagged to Incidents
-   * @method getAllCategories
-   * @public
-   * @returns {*}
-   */
-  getAllCategories() {
-    const request = lookup('service:request');
-    return request.promiseRequest({
-      method: 'findAll',
-      modelName: 'category-tags',
       query: {}
     });
   },

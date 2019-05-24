@@ -8,9 +8,8 @@ import { click, fillIn, find, findAll, render, triggerKeyEvent } from '@ember/te
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import {
   getAllUsers,
-  getAllPriorityTypes,
   getAllRemediationStatusTypes } from 'respond/actions/creators/dictionary-creators';
-
+import { getAllPriorityTypes } from 'respond-shared/actions/creators/create-incident-creators';
 let redux, setup;
 
 module('Integration | Component | Respond Remediation Tasks Filters', function(hooks) {

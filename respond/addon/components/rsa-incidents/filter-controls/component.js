@@ -4,10 +4,12 @@ import computed from 'ember-computed-decorators';
 import { debounce } from '@ember/runloop';
 import {
   getTopLevelCategoryNames,
-  getPriorityTypes,
   getStatusTypes
 } from 'respond/selectors/dictionaries';
-
+import {
+  getPriorityTypes,
+  getEnabledUsers
+} from 'respond-shared/selectors/create-incident/selectors';
 import {
   getPriorityFilters,
   getStatusFilters,
@@ -20,7 +22,6 @@ import {
   isSendToArcherAvailable
 } from 'respond/selectors/incidents';
 
-import { getEnabledUsers } from 'respond/selectors/users';
 
 const stateToComputed = (state) => {
   const enabledUsers = [].concat(getEnabledUsers(state));

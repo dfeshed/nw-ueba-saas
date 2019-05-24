@@ -7,8 +7,11 @@ const stateToComputed = (state) => {
   const {
     respond: {
       users,
-      dictionaries: { priorityTypes, remediationStatusTypes },
+      dictionaries: { remediationStatusTypes },
       remediationTasks: { itemsFilters }
+    },
+    respondShared: {
+      createIncident: { priorityTypes }
     }
   } = state;
 

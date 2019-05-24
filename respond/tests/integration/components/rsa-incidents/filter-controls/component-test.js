@@ -8,10 +8,13 @@ import { click, fillIn, find, findAll, render, settled, triggerKeyEvent } from '
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import Immutable from 'seamless-immutable';
 import {
-  getAllEnabledUsers,
+  getAllStatusTypes
+} from 'respond/actions/creators/dictionary-creators';
+import {
   getAllPriorityTypes,
-  getAllStatusTypes,
-  getAllCategories } from 'respond/actions/creators/dictionary-creators';
+  getAllEnabledUsers,
+  getAllCategories
+} from 'respond-shared/actions/creators/create-incident-creators';
 import RSVP from 'rsvp';
 
 let init, setState;

@@ -7,10 +7,11 @@ import RSVP from 'rsvp';
 import { findAll, render } from '@ember/test-helpers';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import {
-  getAllEnabledUsers,
   getAllPriorityTypes,
-  getAllStatusTypes } from 'respond/actions/creators/dictionary-creators';
-import { getAssigneeOptions } from 'respond/selectors/users';
+  getAllEnabledUsers
+} from 'respond-shared/actions/creators/create-incident-creators';
+import { getAllStatusTypes } from 'respond/actions/creators/dictionary-creators';
+import { getAssigneeOptions } from 'respond-shared/selectors/create-incident/selectors';
 
 let redux, setup;
 
@@ -81,7 +82,7 @@ module('Integration | Component | Respond Incidents Toolbar Controls', function(
   test('All of the priorities appear in the dropdown button, and clicking one dispatches an action', async function(assert) {
     assert.expect(2);
     await setup();
-    const { respond: { dictionaries: { priorityTypes } } } = redux.getState();
+    const { respondShared: { createIncident: { priorityTypes } } } = redux.getState();
     this.set('priorityTypes', priorityTypes);
     this.set('itemsSelected', [{}]); // ensure that buttons are not disabled
     this.set('updateItem', function() {

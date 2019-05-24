@@ -1,15 +1,16 @@
 import { Incidents, alerts } from '../api';
 import * as ACTION_TYPES from '../types';
 import * as dictionaryCreators from './dictionary-creators';
+import * as incidentCreators from 'respond-shared/actions/creators/create-incident-creators';
 import { next } from '@ember/runloop';
 import { getRemediationTasksForIncident } from 'respond/actions/creators/remediation-task-creators';
 import RSVP from 'rsvp';
-import { getEnabledUsers } from 'respond/selectors/users';
+import { getStatusTypes } from 'respond/selectors/dictionaries';
 import {
   getPriorityTypes,
-  getStatusTypes,
-  getCategoryTags
-} from 'respond/selectors/dictionaries';
+  getCategoryTags,
+  getEnabledUsers
+} from 'respond-shared/selectors/create-incident/selectors';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -19,16 +20,16 @@ const initializeIncidents = () => {
     dispatch(getItems());
 
     if (!getEnabledUsers(state).length) {
-      dispatch(dictionaryCreators.getAllEnabledUsers());
+      dispatch(incidentCreators.getAllEnabledUsers());
     }
     if (!getPriorityTypes(state).length) {
-      dispatch(dictionaryCreators.getAllPriorityTypes());
+      dispatch(incidentCreators.getAllPriorityTypes());
     }
     if (!getStatusTypes(state).length) {
       dispatch(dictionaryCreators.getAllStatusTypes());
     }
     if (!getCategoryTags(state).length) {
-      dispatch(dictionaryCreators.getAllCategories());
+      dispatch(incidentCreators.getAllCategories());
     }
     dispatch(getIncidentsSettings());
   };
@@ -349,10 +350,10 @@ const initializeIncident = (incidentId) => {
 
       // If we haven't already fetched users (say, from incidents route), fetch now
       if (!state.respond.users.usersStatus) {
-        dispatch(dictionaryCreators.getAllEnabledUsers());
+        dispatch(incidentCreators.getAllEnabledUsers());
       }
-      if (!state.respond.dictionaries.priorityTypes.length) {
-        dispatch(dictionaryCreators.getAllPriorityTypes());
+      if (!state.respondShared.createIncident.priorityTypes.length) {
+        dispatch(incidentCreators.getAllPriorityTypes());
       }
       if (!state.respond.dictionaries.statusTypes.length) {
         dispatch(dictionaryCreators.getAllStatusTypes());

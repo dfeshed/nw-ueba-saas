@@ -8,10 +8,8 @@ import RSVP from 'rsvp';
 import { click, find, findAll, render } from '@ember/test-helpers';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import * as RemediationTaskCreators from 'respond/actions/creators/remediation-task-creators';
-import {
-  getAllPriorityTypes,
-  getAllRemediationStatusTypes
-} from 'respond/actions/creators/dictionary-creators';
+import { getAllRemediationStatusTypes } from 'respond/actions/creators/dictionary-creators';
+import { getAllPriorityTypes } from 'respond-shared/actions/creators/create-incident-creators';
 
 let dispatchSpy, redux, setup;
 

@@ -1,18 +1,6 @@
 import { dictionaries, users } from '../api';
 import * as ACTION_TYPES from '../types';
 
-/**
- * Action creator for fetching all known "enabled" Users
- * @method getAllEnabledUsers
- * @public
- * @returns {Object}
- */
-const getAllEnabledUsers = () => {
-  return {
-    type: ACTION_TYPES.FETCH_ALL_ENABLED_USERS,
-    promise: users.getAllEnabledUsers()
-  };
-};
 
 /**
  * Action creator for fetching all known Users (including disabled users)
@@ -28,19 +16,6 @@ const getAllUsers = () => {
 };
 
 /**
- * Action creator for fetching all known priority types
- * @method getAllPriorityTypes
- * @public
- * @returns {Object}
- */
-const getAllPriorityTypes = () => {
-  return {
-    type: ACTION_TYPES.FETCH_PRIORITY_TYPES,
-    promise: dictionaries.getAllPriorityTypes()
-  };
-};
-
-/**
  * Action creator for fetching all known status types
  * @method getAllStatusTypes
  * @public
@@ -50,18 +25,6 @@ const getAllStatusTypes = () => {
   return {
     type: ACTION_TYPES.FETCH_STATUS_TYPES,
     promise: dictionaries.getAllStatusTypes()
-  };
-};
-
-/**
- * Action creator for fetching the list of categories available for incidents
- * @public
- * @returns {Object}
- */
-const getAllCategories = () => {
-  return {
-    type: ACTION_TYPES.FETCH_CATEGORY_TAGS,
-    promise: dictionaries.getAllCategories()
   };
 };
 
@@ -130,10 +93,7 @@ const getAllMilestoneTypes = () => {
 
 export {
   getAllUsers,
-  getAllEnabledUsers,
-  getAllPriorityTypes,
   getAllStatusTypes,
-  getAllCategories,
   getAllRemediationStatusTypes,
   getAllAlertTypes,
   getAllAlertSources,

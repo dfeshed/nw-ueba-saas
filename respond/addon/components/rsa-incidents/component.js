@@ -2,8 +2,11 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import columns from './columns';
 import { hasSelectedClosedIncidents, isSendToArcherAvailable } from 'respond/selectors/incidents';
-import { getPriorityTypes, getStatusTypes } from 'respond/selectors/dictionaries';
-import { getAssigneeOptions } from 'respond/selectors/users';
+import { getStatusTypes } from 'respond/selectors/dictionaries';
+import {
+  getPriorityTypes,
+  getAssigneeOptions
+} from 'respond-shared/selectors/create-incident/selectors';
 import creators from 'respond/actions/creators';
 
 const stateToComputed = (state) => {

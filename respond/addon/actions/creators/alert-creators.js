@@ -2,13 +2,16 @@ import { alerts } from '../api';
 import * as ACTION_TYPES from '../types';
 import { next } from '@ember/runloop';
 import * as dictionaryCreators from './dictionary-creators';
-import { getEnabledUsers } from 'respond/selectors/users';
+import * as incidentCreators from 'respond-shared/actions/creators/create-incident-creators';
+import {
+  getAlertTypes,
+  getAlertSources
+} from 'respond/selectors/dictionaries';
 import {
   getPriorityTypes,
-  getAlertTypes,
-  getAlertSources,
-  getCategoryTags
-} from 'respond/selectors/dictionaries';
+  getCategoryTags,
+  getEnabledUsers
+} from 'respond-shared/selectors/create-incident/selectors';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -18,10 +21,10 @@ const initializeAlerts = () => {
     dispatch(getItems());
 
     if (!getEnabledUsers(state).length) {
-      dispatch(dictionaryCreators.getAllEnabledUsers());
+      dispatch(incidentCreators.getAllEnabledUsers());
     }
     if (!getPriorityTypes(state).length) {
-      dispatch(dictionaryCreators.getAllPriorityTypes());
+      dispatch(incidentCreators.getAllPriorityTypes());
     }
     if (!getAlertTypes(state).length) {
       dispatch(dictionaryCreators.getAllAlertTypes());
@@ -30,7 +33,7 @@ const initializeAlerts = () => {
       dispatch(dictionaryCreators.getAllAlertSources());
     }
     if (!getCategoryTags(state).length) {
-      dispatch(dictionaryCreators.getAllCategories());
+      dispatch(incidentCreators.getAllCategories());
     }
   };
 };

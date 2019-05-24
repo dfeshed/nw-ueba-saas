@@ -1,7 +1,19 @@
 <div class="create-incident-form">
   <p>
-    {{t 'respond.incidents.actions.actionMessages.createIncidentInstruction' alertCount=alertIds.length}}
+    {{#if selectedEventIds}}
+      {{t 'respond.incidents.actions.actionMessages.createIncidentFromEventsInstruction' alertCount=alertIds.length}}
+    {{else}}
+      {{t 'respond.incidents.actions.actionMessages.createIncidentInstruction' alertCount=alertIds.length}}
+    {{/if}}
   </p>
+
+  {{#if selectedEventIds}}
+    <div class="alert-summary-section">
+      {{rsa-form-input label=(t 'respond.alerts.alertSummary') value=alertName}}
+      {{rsa-form-input type="number" label=(t 'respond.alerts.severity') value=alertSeverity min="1" max="100"}}
+    </div>
+  {{/if}}
+
   {{rsa-form-input label=(t 'respond.incidents.incidentName') value=name}}
 
   <label class="rsa-form-label power-select create-incident-priority">
@@ -9,10 +21,10 @@
       {{t 'respond.incident.priority'}}
     </div>
     {{#power-select
-      options=priorityTypes
-      selected=priority
-      searchEnabled=false
-      onchange=(action (mut priority)) as |option|}}
+        options=priorityTypes
+        selected=priority
+        searchEnabled=false
+        onchange=(action (mut priority)) as |option|}}
       {{t (concat 'respond.priority.' option)}}
     {{/power-select}}
   </label>
@@ -21,11 +33,11 @@
       {{t 'respond.incident.assignee'}}
     </div>
     {{#power-select
-      options=enabledUsers
-      selected=assignee
-      searchEnabled=false
-      placeholder=(t 'respond.incident.chooseAssignee')
-      onchange=(action (mut assignee)) as |option|}}
+        options=enabledUsers
+        selected=assignee
+        searchEnabled=false
+        placeholder=(t 'respond.incident.chooseAssignee')
+        onchange=(action (mut assignee)) as |option|}}
       {{or option.name option.id}}
     {{/power-select}}
   </label>
@@ -34,11 +46,11 @@
       {{t 'respond.incident.categories'}}
     </div>
     {{#power-select-multiple
-      options=groupedCategories
-      selected=categories
-      searchEnabled=false
-      placeholder=(t 'respond.incident.chooseCategory')
-      onchange=(action (mut categories)) as |category|}}
+        options=groupedCategories
+        selected=categories
+        searchEnabled=false
+        placeholder=(t 'respond.incident.chooseCategory')
+        onchange=(action (mut categories)) as |category|}}
       {{category.parent}}: {{category.name}}
     {{/power-select-multiple}}
   </label>
@@ -49,10 +61,10 @@
       {{t 'forms.cancel'}}
     {{/rsa-form-button}}
     {{#rsa-form-button
-      class="apply"
-      isDisabled=isInvalid
-      style='primary'
-      defaultAction=(action 'handleCreate')
+        class="apply"
+        isDisabled=isInvalid
+        style='primary'
+        defaultAction=(action 'handleCreate')
     }}
       {{t 'forms.ok'}}
     {{/rsa-form-button}}

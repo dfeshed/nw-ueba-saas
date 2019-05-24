@@ -3,6 +3,7 @@ import layout from './template';
 import { next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { htmlSafe } from '@ember/string';
+import { initializeAlerts } from 'respond-shared/actions/creators/create-incident-creators';
 
 const menuOffsetsStyle = (el) => {
   if (el) {
@@ -16,7 +17,7 @@ const menuOffsetsStyle = (el) => {
 export default Component.extend({
   layout,
 
-  tagName: 'div',
+  redux: service(),
 
   eventBus: service(),
 
@@ -41,6 +42,8 @@ export default Component.extend({
         }
       }
     });
+    const redux = this.get('redux');
+    redux.dispatch(initializeAlerts());
   },
 
   actions: {

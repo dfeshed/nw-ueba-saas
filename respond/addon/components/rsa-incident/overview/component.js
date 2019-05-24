@@ -2,8 +2,11 @@ import Component from '@ember/component';
 import { inject } from '@ember/service';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import { getPriorityTypes, getStatusTypes } from 'respond/selectors/dictionaries';
-import { getAssigneeOptions } from 'respond/selectors/users';
+import { getStatusTypes } from 'respond/selectors/dictionaries';
+import {
+  getPriorityTypes,
+  getAssigneeOptions
+} from 'respond-shared/selectors/create-incident/selectors';
 import { isIncidentClosed } from 'respond/helpers/is-incident-closed';
 
 const stateToComputed = (state) => {

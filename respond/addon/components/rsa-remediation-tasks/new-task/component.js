@@ -3,7 +3,7 @@ import { connect } from 'ember-redux';
 import { createItem } from 'respond/actions/creators/remediation-task-creators';
 import computed from 'ember-computed-decorators';
 import Notifications from 'component-lib/mixins/notifications';
-import { getPriorityTypes } from 'respond/selectors/dictionaries';
+import { getPriorityTypes } from 'respond-shared/selectors/create-incident/selectors';
 import { getTasksStatus } from 'respond/selectors/incidents';
 
 const stateToComputed = (state) => {

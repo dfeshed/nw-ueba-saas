@@ -150,7 +150,7 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     const done = assert.async();
     await render(hbs`{{rsa-incidents}}`);
     setState();
-    const loadPriorityTypes = waitForReduxStateChange(redux, 'respond.dictionaries.priorityTypes');
+    const loadPriorityTypes = waitForReduxStateChange(redux, 'respondShared.createIncident.priorityTypes');
     await loadPriorityTypes;
 
     assert.equal(find(`${selectors.priorityFilters} .rsa-form-checkbox-label:first-of-type`).classList.contains('checked'), false, 'The filter is not selected');
@@ -165,7 +165,7 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     const done = assert.async();
     await render(hbs`{{rsa-incidents}}`);
     setState();
-    const loadPriorityTypes = waitForReduxStateChange(redux, 'respond.dictionaries.priorityTypes');
+    const loadPriorityTypes = waitForReduxStateChange(redux, 'respondShared.createIncident.priorityTypes');
     await loadPriorityTypes;
     assert.equal(find(`${selectors.priorityFilters} .rsa-form-checkbox-label:first-of-type`).classList.contains('checked'), false, 'The filter is not selected');
     await click(`${selectors.priorityFilters} .rsa-form-checkbox-label:first-of-type`);
