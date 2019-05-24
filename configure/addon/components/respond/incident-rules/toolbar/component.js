@@ -14,14 +14,16 @@ import { inject } from '@ember/service';
 import fetch from 'component-lib/services/fetch';
 import csrfToken from 'component-lib/mixins/csrf-token';
 import { success, failure } from 'configure/sagas/flash-messages';
+import { later } from '@ember/runloop';
 
 let contentDisposition;
 const triggerDownload = (blob, isZip) => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-
+  a.style.display = 'none';
   a.download = isZip ? 'exported-rules.zip' : 'failure.json';
+  document.body.appendChild(a);
   if (contentDisposition) {
     const props = contentDisposition.split(';');
     const [fileNameProp] = props.filter((str) => str.toLowerCase().includes('filename='));
@@ -33,7 +35,9 @@ const triggerDownload = (blob, isZip) => {
   }
   a.click();
   a.remove();
-  URL.revokeObjectURL(url);
+  later(null, () => {
+    URL.revokeObjectURL(url);
+  }, 10);
   if (isZip) {
     success('configure.incidentRules.actionMessages.exportSuccess');
   } else {
