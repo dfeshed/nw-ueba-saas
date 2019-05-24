@@ -14,7 +14,6 @@
           "name": "sslSubjectSrcNetnameOutboundToHighestScoreMap",
           "featureNamesMap": {
             "groupBy": [
-              "context.sslSubject",
               "context.srcNetname"
             ],
             "maximize": [
