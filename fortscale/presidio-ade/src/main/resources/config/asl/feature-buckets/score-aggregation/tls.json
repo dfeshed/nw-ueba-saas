@@ -1,9 +1,9 @@
 {
   "BucketConfs": [
     {
-      "name": "sslSubjectToHighestScoreMapSrcNetnameOutboundTlsHourly",
+      "name": "sslSubjectSrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
       "contextFieldNames": [
-        "srcNetname"
+        "sslSubject"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.sslSubject.srcNetnameOutbound.tls.score"
@@ -11,10 +11,11 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "sslSubjectToHighestScoreMap",
+          "name": "sslSubjectSrcNetnameOutboundToHighestScoreMap",
           "featureNamesMap": {
             "groupBy": [
-              "context.sslSubject"
+              "context.sslSubject",
+              "context.srcNetname"
             ],
             "maximize": [
               "score"

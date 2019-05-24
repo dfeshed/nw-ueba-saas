@@ -3,12 +3,12 @@
     {
       "name": "sumOfHighestSslSubjectScoresSrcNetnameOutboundTlsHourly",
       "type": "P",
-      "bucketConfName": "sslSubjectToHighestScoreMapSrcNetnameOutboundTlsHourly",
+      "bucketConfName": "sslSubjectSrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "sslSubjectToHighestScoreMap"
+          "sslSubjectSrcNetnameOutboundToHighestScoreMap"
         ]
       },
       "aggregatedFeatureEventFunction": {
