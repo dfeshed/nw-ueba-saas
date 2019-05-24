@@ -14,6 +14,21 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_multi_key_values_max_sum_func"
       }
+    },
+    {
+      "name": "sumOfHighestDomainSrcNetnameOutboundScoresSslSubjectTlsHourly",
+      "type": "P",
+      "bucketConfName": "domainSrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "domainSrcNetnameOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
     }
   ]
 }
