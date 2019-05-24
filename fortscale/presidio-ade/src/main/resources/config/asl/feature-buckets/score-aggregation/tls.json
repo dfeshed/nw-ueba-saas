@@ -52,6 +52,33 @@
           }
         }
       ]
+    },
+    {
+      "name": "dstPortSrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.dstPort.srcNetnameOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortSrcNetnameOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcNetname",
+              "context.dstPort"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
     }
   ]
 }
