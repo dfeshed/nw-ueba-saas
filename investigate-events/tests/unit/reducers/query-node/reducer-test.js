@@ -893,3 +893,56 @@ test('ADD_FOCUS_GUIDED_PILL adds focus to a pill at the provided position', func
   assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
   assert.ok(result.pillsData[1].isFocused === true, 'Correct pill has been focused');
 });
+
+test('SET_RECENT_QUERIES reducer stores queries when no text is sent', function(assert) {
+
+  const initialState = Immutable.from({
+    recentQueriesUnfilteredList: [],
+    recentQueriesFilteredList: ['some', 'random', 'strings'],
+    recentQueriesFilterText: 'med'
+  });
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.SET_RECENT_QUERIES,
+    meta: {
+      query: ''
+    },
+    payload: {
+      data: ['foo', 'foobar', 'bar-baz']
+    }
+  });
+
+  const successState = {
+    ...initialState,
+    recentQueriesUnfilteredList: ['foo', 'foobar', 'bar-baz']
+  };
+  const result = reducer(initialState, successAction);
+
+  assert.deepEqual(successState, result, 'Recent queries with no text array should be modified');
+});
+
+test('SET_RECENT_QUERIES reducer stores queries when some text is sent', function(assert) {
+
+  const initialState = Immutable.from({
+    recentQueriesUnfilteredList: ['foo, bar', 'baz'],
+    recentQueriesFilteredList: ['some', 'random', 'strings'],
+    recentQueriesFilterText: 'med'
+  });
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.SET_RECENT_QUERIES,
+    meta: {
+      query: 'medi'
+    },
+    payload: {
+      data: ['action = foo', 'action = bar']
+    }
+  });
+
+  const successState = {
+    ...initialState,
+    recentQueriesFilteredList: ['action = foo', 'action = bar'],
+    recentQueriesFilterText: 'medi'
+  };
+  const result = reducer(initialState, successAction);
+
+  assert.deepEqual(successState, result, 'Recent queries with text array should be modified');
+});

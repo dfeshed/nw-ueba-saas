@@ -2,6 +2,7 @@ import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import _ from 'lodash';
 import { handle } from 'redux-pack';
+import { isEmpty } from '@ember/utils';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { createQueryHash } from 'investigate-events/util/query-hash';
@@ -53,7 +54,21 @@ const _initialState = Immutable.from({
   // as a series of ids so that URLs do not grow unbounded
   // and get unexpectedly truncated. This array tracks
   // the pillDataHashes for the current query
-  pillDataHashes: undefined
+  pillDataHashes: undefined,
+
+  // Default list of most recent queries used to display when
+  // no text is supplied to API.
+  // This list is updated every time a new predicate is added and
+  // also when we enter the route for the first time.
+  // This is required to prevent calling the API everytime user
+  // backspaces, focuses on the query bar.
+  recentQueriesUnfilteredList: [],
+
+  // Holds queries from query history stack which match the provided
+  // recentQueriesFilterText
+  recentQueriesFilteredList: [],
+  recentQueriesFilterText: undefined
+
 });
 
 const _initialPillState = {
@@ -582,6 +597,21 @@ export default handleActions({
         // no use for the rest of the data in there
         const hashIds = action.payload.data.map((hashConfig) => hashConfig.id);
         return s.set('pillDataHashes', hashIds);
+      }
+    });
+  },
+  [ACTION_TYPES.SET_RECENT_QUERIES]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        const filterText = action.meta.query;
+        if (!isEmpty(filterText.trim())) {
+          return s.merge({
+            recentQueriesFilteredList: action.payload.data,
+            recentQueriesFilterText: filterText
+          });
+        } else {
+          return s.set('recentQueriesUnfilteredList', action.payload.data);
+        }
       }
     });
   }

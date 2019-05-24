@@ -3,6 +3,7 @@ import { lookup } from 'ember-dependency-lookup';
 import { run } from '@ember/runloop';
 import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
 import { getParamsForHashes, getHashForParams } from './fetch/query-hashes';
+import fetchRecentQueries from './fetch/recent-queries';
 import { parseBasicQueryParams } from 'investigate-events/actions/utils';
 import { isSearchTerm, parsePillDataFromUri, transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { extractSearchTermFromFilters } from 'investigate-shared/actions/api/events/utils';
@@ -230,6 +231,12 @@ const _handleSearchParamsAndHashInQueryParams = (parsedQueryParams, hashNavigate
               }
             });
 
+            // fetch recent queries as a new hash has been added.
+            // Ideally we should not need this call, we can build our own cache and remove this overhead
+            // as we know what query is being executed.
+            // But with Classic's ability to query, we can't just do that yet.
+            // dispatch(getRecentQueries());
+
             // pass the hash ids to the navigation callback
             // so that it can be included in the URL
             resolve();
@@ -282,8 +289,11 @@ const _handleSearchParamsInQueryParams = ({ pillData }, hashNavigateCallback, is
         promise: getHashForParams(metaFilters),
         meta: {
           onSuccess({ data }) {
-            const hashIds = data.map((d) => d.id);
 
+            // fetch recent queries
+            // dispatch(getRecentQueries());
+
+            const hashIds = data.map((d) => d.id);
             // pass the hash ids to the navigation callback
             // so that it can be included in the URL
             hashNavigateCallback(hashIds);
@@ -420,6 +430,15 @@ export const initializeInvestigate = function(
       _initializeServices(dispatch, getState),
       _fetchEventSettings(dispatch)
     ];
+
+    // Will want to retrive recent queries for the first time we land
+    // on investigate-events route.
+    // Will retrieve them again only when a new query is executed with
+    // some filters or some text is typed in the query bar.
+    /* const { investigate: { queryNode: { recentQueriesUnfilteredList } } } = getState();
+    if (recentQueriesUnfilteredList.length === 0) {
+      dispatch(getRecentQueries());
+    } */
 
     const hasService = !!parsedQueryParams.serviceId;
     if (hasService) {
@@ -645,3 +664,14 @@ export const getEventSettings = (resolve = noop, reject = noop) => {
     });
   };
 };
+
+export const getRecentQueries = (query = '') => ({
+  type: ACTION_TYPES.SET_RECENT_QUERIES,
+  promise: fetchRecentQueries(query),
+  meta: {
+    query,
+    onFailure(error) {
+      handleInvestigateErrorCode(error, 'RECENT_QUERIES_RETRIEVAL_ERROR');
+    }
+  }
+});

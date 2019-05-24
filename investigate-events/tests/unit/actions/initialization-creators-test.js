@@ -132,4 +132,45 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
     const thunk = initializationCreators.getEventSettings();
     thunk(dispatchAdminEventSetting);
   });
+
+  test('getRecentQueries - Should dispatch action with a appropriate response when no text is sent', async function(assert) {
+    assert.expect(2);
+    const done = assert.async();
+    const recentQueries = [
+      'medium = 32',
+      'medium = 32 || medium = 1',
+      'action = \'get\'',
+      'action = \'get\' || action = \'put\'',
+      '(ip.dst = 10.2.54.11 && ip.src = 1.1.1.1 || ip.dst = 10.2.54.1 && ip.src = 1.1.3.3) && medium = 32',
+      'service = 80 || service = 90',
+      'foo = bar && bar = foo'
+    ];
+
+    const action = initializationCreators.getRecentQueries();
+
+    assert.equal(action.type, ACTION_TYPES.SET_RECENT_QUERIES, 'action has the correct type');
+    action.promise.then((resolve) => {
+      assert.deepEqual(recentQueries, resolve.data, 'Queries containing text should be returned');
+      done();
+    });
+  });
+
+  test('getRecentQueries - Should dispatch action with a appropriate response when some text is sent along', async function(assert) {
+    assert.expect(2);
+    const done = assert.async();
+    const recentQueries = [
+      'medium = 32',
+      'medium = 32 || medium = 1',
+      '(ip.dst = 10.2.54.11 && ip.src = 1.1.1.1 || ip.dst = 10.2.54.1 && ip.src = 1.1.3.3) && medium = 32'
+    ];
+    const query = 'med';
+
+    const action = initializationCreators.getRecentQueries(query);
+
+    assert.equal(action.type, ACTION_TYPES.SET_RECENT_QUERIES, 'action has the correct type');
+    action.promise.then((resolve) => {
+      assert.deepEqual(recentQueries, resolve.data, 'Queries containing text should be returned');
+      done();
+    });
+  });
 });

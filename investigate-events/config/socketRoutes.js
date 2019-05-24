@@ -95,6 +95,13 @@ const investigateConfigGen = function(env) {
         requestDestination: '/ws/investigate/eventanalysis/settings'
       }
     },
+    'recent-queries': {
+      socketUrl,
+      query: {
+        subscriptionDestination: '/user/queue/investigate/predicate/recent-queries',
+        requestDestination: '/ws/investigate/predicate/get-recent-by-filter'
+      }
+    },
     'investigate-columns': {
       socketUrl,
       findAll: {
