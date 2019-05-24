@@ -332,6 +332,17 @@
       }
     }
   }
+
+  .rsa-data-table-header-row:last-child {
+    .sortable-item:last-child {
+        h2 {
+          padding-right: 2rem;
+        }
+      .sort-indicator {
+        right: 1.5rem;
+      }
+    }
+  }
 }
 
 .download-dropdown {
