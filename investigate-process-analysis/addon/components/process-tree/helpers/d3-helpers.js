@@ -14,7 +14,7 @@ export const elbow = function(d, boxWidth) {
   const targetY = d.parent.y - (boxWidth / 2);
 
   return `M${sourceY - boxWidth},${sourceX}
-          H${ sourceY + (targetY - sourceY) / 2}
+          H${ sourceY + (targetY - sourceY) / 2 + 20}
           V${ targetX}
           H${ targetY + boxWidth + COUNT_OFFSET}`;
 };

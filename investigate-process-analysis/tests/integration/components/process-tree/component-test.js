@@ -158,6 +158,41 @@ module('Integration | Component | process-tree', function(hooks) {
     });
   });
 
+  test('Filter and select process. Close popup. Selection should not be remembered', async function(assert) {
+    const queryInputs = {
+      sid: '1',
+      vid: '3',
+      pn: 'test',
+      st: 1231233,
+      et: 13123,
+      osType: 'windows',
+      checksum: '07d15ddf2eb7be486d01bcabab7ad8df35b7942f25f5261e3c92cd7a8931190a',
+      aid: '51687D32-BB0F-A424-1D64-A8B94C957BD2'
+    };
+    this.set('queryInput', queryInputs);
+    new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInputs).build();
+    await render(hbs`{{process-tree queryInput=queryInput}}`);
+    await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
+    assert.equal(findAll('rect.process').length, 4, 'Initially 4 nodes are rendered');
+
+    await selectAll('g.process .button-wrapper#expand-4').dispatch('click');
+    await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
+    return settled().then(async() => {
+      assert.equal(findAll(selectors.processList).length, 3, '3 child is present for fourth node');
+      assert.equal(findAll(selectors.selectedCheckbox).length, 0, 'Initially 0 checkbox is selected');
+      await click(selectors.checkAll); // select all process
+      await waitUntil(() => findAll(selectors.selectedCheckbox).length === 3, { timeout: Infinity });
+      return settled().then(async() => {
+        assert.equal(findAll(selectors.selectedCheckbox).length, 3, 'Totally 3 checkbox is selected after selecting all');
+
+        await selectAll('g.process .button-wrapper#expand-4').dispatch('click');
+        await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
+        await waitUntil(() => findAll(selectors.selectedCheckbox).length === 0, { timeout: Infinity });
+        assert.equal(findAll(selectors.selectedCheckbox).length, 0, 'process selection is not persisted if view does not happen');
+      });
+    });
+  });
+
   test('Collapse node and expand, process count in filter popup should match', async function(assert) {
     const queryInputs = {
       sid: '1',
@@ -174,6 +209,7 @@ module('Integration | Component | process-tree', function(hooks) {
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     assert.equal(findAll('rect.process').length, 4, 'Initially 4 nodes are rendered');
+
     await selectAll('g.process .button-wrapper#collapse-2').dispatch('click');
     await waitUntil(() => findAll('rect.process').length === 2, { timeout: Infinity });
     assert.equal(findAll('rect.process').length, 2, 'Expected to render 2 nodes after third node is collapsed');
@@ -181,7 +217,34 @@ module('Integration | Component | process-tree', function(hooks) {
     await selectAll('g.process .button-wrapper#expand-2').dispatch('click');
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     return settled().then(async() => {
-      assert.equal(findAll(selectors.processList).length, 1, '1 child is present in second node');
+      assert.equal(findAll(selectors.processList).length, 3, '3 child is present in second node');
+    });
+  });
+
+  test('Open filter, collapse another node. Popup should close', async function(assert) {
+    const queryInputs = {
+      sid: '1',
+      vid: '3',
+      pn: 'test',
+      st: 1231233,
+      et: 13123,
+      osType: 'windows',
+      checksum: '07d15ddf2eb7be486d01bcabab7ad8df35b7942f25f5261e3c92cd7a8931190a',
+      aid: '51687D32-BB0F-A424-1D64-A8B94C957BD2'
+    };
+    this.set('queryInput', queryInputs);
+    new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInputs).build();
+    await render(hbs`{{process-tree queryInput=queryInput}}`);
+    await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
+
+    assert.equal(findAll('rect.process').length, 4, 'Initially 4 nodes are rendered');
+    await selectAll('g.process .button-wrapper#expand-4').dispatch('click');
+    await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
+    return settled().then(async() => {
+      assert.equal(findAll('.process-filter-popup').length, 1, 'Filter popup is shown');
+      await selectAll('g.process .button-wrapper#collapse-2').dispatch('click');
+      await waitUntil(() => findAll('.process-filter-popup').length === 0, { timeout: Infinity });
+      assert.equal(findAll('.process-filter-popup').length, 0, 'Filter popup is also closed on collapsing another node');
     });
   });
 

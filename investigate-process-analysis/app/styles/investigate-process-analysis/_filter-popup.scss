@@ -6,6 +6,7 @@
   }
   &__header {
     height: 46px;
+    background-color: text-color(primary, darker);
     @include border-bottom(1px, solid, secondary);
     .rsa-nav-tab-group {
       padding: 0 rsa-whitespace();
@@ -17,6 +18,7 @@
     height: 314px;
   }
   &__footer {
+    background-color: text-color(primary, darker);
     bottom: 0;
     height: 40px;
     position: absolute;
@@ -25,7 +27,7 @@
     box {
       padding: rsa-whitespace(least) rsa-whitespace();
       span {
-        width: 188px;
+        width: 181px;
         margin: rsa-whitespace(less) 0;
       }
     }
@@ -33,6 +35,9 @@
       padding-top: rsa-whitespace(least);
       div {
         padding-right: rsa-whitespace(less);
+      }
+      .cancel-popup {
+        margin-right: rsa-whitespace(less)
       }
     }
   }

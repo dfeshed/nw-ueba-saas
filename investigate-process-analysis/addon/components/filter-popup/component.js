@@ -34,7 +34,7 @@ const PopupFilter = Component.extend({
       hidePanelAction();
     },
     onViewSelected(d, hidePanelAction) {
-      this.onViewSelected(d);
+      this.onViewSelected({ node: d.node, children: this.get('selectedProcess') });
       hidePanelAction();
     },
     getSelectedItems(items) {

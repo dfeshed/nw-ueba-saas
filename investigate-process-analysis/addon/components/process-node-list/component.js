@@ -1,5 +1,7 @@
 import Component from '@ember/component';
 import { set } from '@ember/object';
+import computed from 'ember-computed-decorators';
+import _ from 'lodash';
 
 const COLUMNS = [
   {
@@ -36,8 +38,6 @@ export default Component.extend({
 
   columnsConfig: COLUMNS,
 
-  allItemsChecked: false,
-
   onRowSelection: null,
 
   nodeList: null,
@@ -47,11 +47,22 @@ export default Component.extend({
     direction: 'desc'
   },
 
+  @computed('nodeList')
+  nodeListCopy(nodeList) {
+    return _.cloneDeep(nodeList);
+  },
+
+  @computed('nodeListCopy')
+  allItemsChecked(nodeList) {
+    const selections = nodeList.filter((node) => node.selected);
+    return selections.length === nodeList.length;
+  },
+
   actions: {
     toggleSelection(item) {
       set(item, 'selected', !item.selected);
-      const nodeList = this.get('nodeList');
-      const selections = this.get('nodeList').filter((node) => node.selected);
+      const nodeList = this.get('nodeListCopy');
+      const selections = this.get('nodeListCopy').filter((node) => node.selected);
 
       this.set('allItemsChecked', selections.length === nodeList.length);
 
@@ -85,11 +96,11 @@ export default Component.extend({
       }
       this.set('currentSort', { field, direction });
 
-      const sorted = this.get('nodeList').sortBy(this.get('currentSort.field'));
+      const sorted = this.get('nodeListCopy').sortBy(this.get('currentSort.field'));
       if (this.get('currentSort.direction') === 'asc') {
         sorted.reverse();
       }
-      this.set('nodeList', sorted);
+      this.set('nodeListCopy', sorted);
     }
   }
 

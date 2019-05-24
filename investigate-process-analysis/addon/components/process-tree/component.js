@@ -74,6 +74,8 @@ const TreeComponent = Component.extend({
 
   eventBus: service(),
 
+  currentElement: null,
+
   classNames: 'process-tree',
 
   classNameBindings: ['isStreaming:show-nodes:hide-nodes'],
@@ -313,6 +315,7 @@ const TreeComponent = Component.extend({
   },
 
   _showPopup(element, d) {
+    this.set('currentElement', element);
     run.later(async() => {
       if (!element) {
         return;
@@ -348,11 +351,10 @@ const TreeComponent = Component.extend({
             d.data._children = null;
           }
           if (d.children) {
-            d.children.map((node) => {
+            d.children.forEach((node) => {
               if (!node.selected && node.data.selected) {
                 set(node, 'selected', true);
               }
-              return node;
             });
           }
           self._showPopup(this, d);
@@ -456,11 +458,10 @@ const TreeComponent = Component.extend({
   },
 
   expandAllProcess(node, children) {
-    children.map((node) => {
+    children.forEach((node) => {
       if (!node.selected) {
         set(node, 'selected', true);
       }
-      return node;
     });
     node.children = children;
     node.data._children = null;
@@ -484,13 +485,16 @@ const TreeComponent = Component.extend({
 
   collapseProcess(d) {
     event.stopImmediatePropagation();
+    const currentElement = this.get('currentElement');
+    if (currentElement) {
+      sendTetherEvent(currentElement, 'process-filter', this.get('eventBus'), 'hide');
+    }
     if (d.children) {
       d._children = d._children ? [...d._children, ...d.children] : d.children;
-      d._children = d._children.map((node) => {
+      d._children = d._children.forEach((node) => {
         if (node.selected) {
           set(node, 'selected', false);
         }
-        return node;
       });
       d.children = null;
     }

@@ -43,8 +43,14 @@ module('Integration | Component | process-node-list', function(hooks) {
   });
 
   test('it renders the process list component', async function(assert) {
-    await render(hbs`{{process-node-list}}`);
+    testData.forEach((node) => {
+      node.selected = true;
+    });
+    this.set('nodeList', testData);
+    await render(hbs`{{process-node-list nodeList=nodeList}}`);
     assert.strictEqual(document.querySelectorAll('.process-node-list').length, 1, 'Process node list rendered');
+    assert.strictEqual(document.querySelectorAll('.rsa-data-table-header-cell .rsa-form-checkbox.checked').length, 1,
+      'Select all is checked when all process is checked');
   });
 
   test('it renders the process list table', async function(assert) {
