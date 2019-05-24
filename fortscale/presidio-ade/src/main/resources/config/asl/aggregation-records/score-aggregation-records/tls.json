@@ -1,7 +1,7 @@
 {
   "AggregatedFeatureEvents": [
     {
-      "name": "sumOfHighestSslSubjectScoresSrcNetnameOutboundTlsHourly",
+      "name": "sumOfHighestSslSubjectSrcNetnameOutboundScoresSslSubjectTlsHourly",
       "type": "P",
       "bucketConfName": "sslSubjectSrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
       "numberOfBuckets": 1,
