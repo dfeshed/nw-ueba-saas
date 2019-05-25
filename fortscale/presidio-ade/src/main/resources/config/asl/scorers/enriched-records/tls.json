@@ -51,6 +51,38 @@
               "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": true,
               "max-num-of-rare-partitions": 15
+            },
+            {
+              "type": "reduction-scorer",
+              "name": "country.sslSubjectOutbound.tls.score",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "country.sslSubjectOutbound.tls.score",
+                "model": {
+                  "name": "country.sslSubjectOutbound.tls"
+                },
+                "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-num-of-rare-partitions": 15
+              },
+              "reduction-scorer": {
+                "type": "score-and-certainty-multiplier-scorer",
+                "name": "sslSubject.countryOutbound.tls.reduction.score",
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "sslSubject.countryOutbound.tls.score",
+                  "model": {
+                    "name": "sslSubject.countryOutbound.tls"
+                  },
+                  "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "min-number-of-partitions-to-influence": 10,
+                  "use-certainty-to-calculate-score": false,
+                  "max-num-of-rare-partitions": 15
+                }
+              },
+              "reduction-weight": 0.5
             }
           ]
         }
