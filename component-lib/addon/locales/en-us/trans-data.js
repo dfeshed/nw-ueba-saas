@@ -540,6 +540,7 @@ export default {
       clickToOpen: 'Click to open'
     },
     events: {
+      eventCount: '{{current}}/{{total}} event matches',
       search: 'Find text in table',
       searchMin: '2 character minimum to find text.',
       searchPlaceholder: 'Enter text to be found.',

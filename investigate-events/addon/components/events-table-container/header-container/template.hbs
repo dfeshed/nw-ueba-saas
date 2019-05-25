@@ -61,7 +61,7 @@
         {{rsa-form-input bubbles=true value=_searchTerm onKeyUp=(action 'debouncedSearchForTerm') label=(t 'investigate.events.search') placeholder=(t 'investigate.events.searchPlaceholder')}}
         {{events-table-container/header-container/search-controls}}
         {{#if searchMatchesCount}}
-          <p>{{searchScrollDisplay}} / {{searchMatchesCount}}</p>
+          <p>{{t 'investigate.events.eventCount' current=searchScrollDisplay total=searchMatchesCount}}</p>
         {{/if}}
         {{#if (eq _searchTerm.length 1)}}
           {{t 'investigate.events.searchMin'}}
