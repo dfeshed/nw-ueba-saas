@@ -32,7 +32,7 @@ class DagPerSmartFactory(AbstractDagFactory):
         for smart_conf in smart_confs:
             new_dag_id = self.get_dag_id(smart_conf.get("smart_conf_name"))
             new_dag = DAG(dag_id=new_dag_id, start_date=start_date, schedule_interval=interval,
-                          default_args=smart_conf,
+                          default_args=self.get_default_args(dags_configs, smart_conf),
                           end_date=end_date, full_filepath=full_filepath, description=description,
                           template_searchpath=template_searchpath, params=params, dagrun_timeout=dagrun_timeout)
             logging.debug("dag_id=%s successful initiated", new_dag_id)
@@ -44,3 +44,6 @@ class DagPerSmartFactory(AbstractDagFactory):
     @abstractmethod
     def get_dag_id(smart_conf_name):
         pass
+
+    def get_default_args(self, dags_configs, smart_conf):
+        return smart_conf
