@@ -343,6 +343,32 @@
           }
         }
       ]
+    },
+    {
+      "name": "dstPortToHighestScoreMapJa3OutboundTlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.dstPort.ja3Outbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstPort"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
     }
   ]
 }
