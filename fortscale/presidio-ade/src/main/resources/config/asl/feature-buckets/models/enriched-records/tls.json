@@ -389,6 +389,36 @@
           }
         }
       ]
+    },
+    {
+      "name": "ja3HistogramSrcNetnameOutboundTlsDaily",
+      "contextFieldNames": [
+        "srcNetname"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "ja3Histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "ja3"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
     }
   ]
 }
