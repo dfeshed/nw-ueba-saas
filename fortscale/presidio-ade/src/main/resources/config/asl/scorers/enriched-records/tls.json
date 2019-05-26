@@ -128,6 +128,38 @@
                 }
               },
               "reduction-weight": 0.5
+            },
+            {
+              "type": "reduction-scorer",
+              "name": "dstPort.domainOutbound.tls.score",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "dstPort.domainOutbound.tls.score",
+                "model": {
+                  "name": "dstPort.domainOutbound.tls"
+                },
+                "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-num-of-rare-partitions": 15
+              },
+              "reduction-scorer": {
+                "type": "score-and-certainty-multiplier-scorer",
+                "name": "domain.dstPortOutbound.tls.reduction.score",
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "domain.dstPortOutbound.tls.score",
+                  "model": {
+                    "name": "domain.dstPortOutbound.tls"
+                  },
+                  "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "min-number-of-partitions-to-influence": 10,
+                  "use-certainty-to-calculate-score": false,
+                  "max-num-of-rare-partitions": 15
+                }
+              },
+              "reduction-weight": 0.5
             }
           ]
         }

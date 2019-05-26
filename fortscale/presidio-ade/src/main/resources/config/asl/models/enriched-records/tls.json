@@ -180,6 +180,46 @@
         "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
       }
+    },
+    {
+      "name": "dstPort.domainOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "dstPortHistogramDomainOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "dstPortHistogramDomainOutboundTlsDaily",
+        "featureName": "dstPortHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "domain.dstPortOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "domainHistogramDstPortOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "domainHistogramDstPortOutboundTlsDaily",
+        "featureName": "domainHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
     }
   ]
 }

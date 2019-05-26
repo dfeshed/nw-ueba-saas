@@ -104,6 +104,21 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_multi_key_values_max_sum_func"
       }
+    },
+    {
+      "name": "sumOfHighestDstPortDomainOutboundScoresSslSubjectTlsHourly",
+      "type": "P",
+      "bucketConfName": "dstPortDomainOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstPortDomainOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
     }
   ]
 }
