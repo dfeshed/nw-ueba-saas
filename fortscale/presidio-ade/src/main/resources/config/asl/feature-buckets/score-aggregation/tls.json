@@ -1,6 +1,32 @@
 {
   "BucketConfs": [
     {
+      "name": "highestStartInstantScoreSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubjectOutbound"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.startInstant.sslSubjectOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highestStartInstantScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ],
+            "context": [
+              "startInstant"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_max_func"
+          }
+        }
+      ]
+    },
+    {
       "name": "sslSubjectSrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
       "contextFieldNames": [
         "sslSubject"

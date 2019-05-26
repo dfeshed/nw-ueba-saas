@@ -1,6 +1,27 @@
 {
   "ModelConfs": [
     {
+      "name": "startInstant.sslSubjectOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "startInstantHistogramSslSubjectOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "startInstantHistogramSslSubjectOutboundTlsDaily",
+        "featureName": "startInstantHistogram",
+        "partitionsResolutionInSeconds": 86400
+      },
+      "builder": {
+        "type": "time_model_builder",
+        "timeResolution": 86400,
+        "bucketSize": 600,
+        "categoryRarityModelNumOfBuckets": 30
+      }
+    },
+    {
       "name": "sslSubject.srcNetnameOutbound.tls",
       "selector": {
         "type": "feature_bucket_context_selector",

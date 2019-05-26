@@ -1,6 +1,21 @@
 {
   "AggregatedFeatureEvents": [
     {
+      "name": "highestStartInstantScoreSslSubjectOutboundTlsHourly",
+      "type": "P",
+      "bucketConfName": "highestStartInstantScoreSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "highestStartInstantScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
       "name": "sumOfHighestSslSubjectSrcNetnameOutboundScoresSslSubjectTlsHourly",
       "type": "P",
       "bucketConfName": "sslSubjectSrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
