@@ -1,7 +1,7 @@
 from __future__ import generators
 from presidio.builders.smart.smart_dag_builder import SmartDagBuilder
-from presidio.factories.abstract_dag_factory import DAG_ID_SUFIX
 from presidio.factories.dag_per_smart_factory import DagPerSmartFactory
+from presidio.utils.decorators.ueba_flow_decorator import ueba_flow_decorator_wrapper
 
 
 class SmartDagFactory(DagPerSmartFactory):
@@ -11,7 +11,8 @@ class SmartDagFactory(DagPerSmartFactory):
         SmartDagBuilder().build(dag)
 
     @staticmethod
+    @ueba_flow_decorator_wrapper
     def get_dag_id(smart_conf_name):
-        return "{0}_{1}".format(smart_conf_name, DAG_ID_SUFIX)
+        return "{0}".format(smart_conf_name)
 
 
