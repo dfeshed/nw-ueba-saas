@@ -220,6 +220,46 @@
         "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
       }
+    },
+    {
+      "name": "dstPort.dstOrgOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "dstPortHistogramDstOrgOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "dstPortHistogramDstOrgOutboundTlsDaily",
+        "featureName": "dstPortHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "dstOrg.dstPortOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "dstOrgHistogramDstPortOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "dstOrgHistogramDstPortOutboundTlsDaily",
+        "featureName": "dstOrgHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
     }
   ]
 }
