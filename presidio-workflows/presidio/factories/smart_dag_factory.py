@@ -13,4 +13,9 @@ class SmartDagFactory(DagPerSmartFactory):
     def get_dag_id(smart_conf_name):
         return smart_conf_name
 
+    def get_default_args(self, dags_configs, smart_conf):
+        schemas = [item.strip() for item in dags_configs.get("data_schemas").split(',')]
+        smart_conf['depends_on_schemas'] = set(schemas) & set(smart_conf.get('depends_on_schemas'))
+        return smart_conf
+
 
