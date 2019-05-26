@@ -179,6 +179,66 @@
           }
         }
       ]
+    },
+    {
+      "name": "dstPortHistogramSslSubjectOutboundTlsDaily",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstPort"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "sslSubjectHistogramDstPortOutboundTlsDaily",
+      "contextFieldNames": [
+        "dstPort"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "sslSubjectHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "sslSubject"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
     }
   ]
 }

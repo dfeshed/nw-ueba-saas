@@ -119,6 +119,46 @@
         "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
       }
+    },
+    {
+      "name": "dstPort.sslSubjectOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "dstPortHistogramSslSubjectOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "dstPortHistogramSslSubjectOutboundTlsDaily",
+        "featureName": "dstPortHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "sslSubject.dstPortOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "sslSubjectHistogramDstPortOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "sslSubjectHistogramDstPortOutboundTlsDaily",
+        "featureName": "sslSubjectHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
     }
   ]
 }
