@@ -301,6 +301,46 @@
         "entriesToSaveInModel": 100000,
         "partitionsResolutionInSeconds": 86400
       }
+    },
+    {
+      "name": "sslSubject.ja3Outbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "sslSubjectHistogramJa3OutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "sslSubjectHistogramJa3OutboundTlsDaily",
+        "featureName": "sslSubjectHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "ja3.sslSubjectOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "ja3HistogramSslSubjectOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "ja3HistogramSslSubjectOutboundTlsDaily",
+        "featureName": "ja3Histogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
     }
   ]
 }
