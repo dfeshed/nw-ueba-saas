@@ -31,6 +31,36 @@
       ]
     },
     {
+      "name": "startInstantHistogramJa3OutboundTlsDaily",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "startInstantHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
       "name": "sslSubjectHistogramSrcNetnameOutboundTlsDaily",
       "contextFieldNames": [
         "srcNetname"

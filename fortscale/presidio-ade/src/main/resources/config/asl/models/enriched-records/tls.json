@@ -22,6 +22,27 @@
       }
     },
     {
+      "name": "startInstant.ja3Outbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "startInstantHistogramJa3OutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "startInstantHistogramJa3OutboundTlsDaily",
+        "featureName": "startInstantHistogram",
+        "partitionsResolutionInSeconds": 86400
+      },
+      "builder": {
+        "type": "time_model_builder",
+        "timeResolution": 86400,
+        "bucketSize": 600,
+        "categoryRarityModelNumOfBuckets": 30
+      }
+    },
+    {
       "name": "sslSubject.srcNetnameOutbound.tls",
       "selector": {
         "type": "feature_bucket_context_selector",

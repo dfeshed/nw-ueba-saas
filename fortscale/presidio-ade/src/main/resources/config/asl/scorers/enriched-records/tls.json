@@ -22,6 +22,19 @@
               "use-certainty-to-calculate-score": true
             },
             {
+              "type": "time-model-scorer",
+              "name": "startInstant.ja3Outbound.tls.score",
+              "additional-models": [],
+              "model": {
+                "name": "startInstant.ja3Outbound.tls"
+              },
+              "number-of-partitions-to-influence-enough": 10,
+              "min-number-of-partitions-to-influence": 1,
+              "max-rare-count": 8,
+              "max-num-of-rare-partitions": 8,
+              "use-certainty-to-calculate-score": true
+            },
+            {
               "type": "category-rarity-model-scorer",
               "name": "sslSubject.srcNetnameOutbound.tls.score",
               "model": {
