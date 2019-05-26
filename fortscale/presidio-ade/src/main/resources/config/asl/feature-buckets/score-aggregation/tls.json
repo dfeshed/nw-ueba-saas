@@ -317,6 +317,32 @@
           }
         }
       ]
+    },
+    {
+      "name": "domainToHighestScoreMapJa3OutboundTlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.domain.ja3Outbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "domainToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.domain"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
     }
   ]
 }

@@ -509,6 +509,66 @@
           }
         }
       ]
+    },
+    {
+      "name": "domainHistogramJa3OutboundTlsDaily",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "domainHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "domain"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ja3HistogramDomainOutboundTlsDaily",
+      "contextFieldNames": [
+        "domain"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "ja3Histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "ja3"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
     }
   ]
 }
