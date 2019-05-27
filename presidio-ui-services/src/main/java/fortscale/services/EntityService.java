@@ -60,9 +60,9 @@ public interface EntityService {
 
 	Map<String, Long> groupByTags(boolean forceCacheUpdate);
 
-	Entities findEntitiesByFilter(EntityRestFilter userRestFilter, PageRequest pageRequest, Set<String> relevantUserIds, List<String> fieldsRequired, boolean fetchAlertsOnUsers);
+	Entities findEntitiesByFilter(EntityRestFilter entityRestFilter, PageRequest pageRequest, Set<String> relevantUserIds, List<String> fieldsRequired, boolean fetchAlertsOnUsers);
 
-	int countEntitiesByFilter(EntityRestFilter userRestFilter, Set<String> relevantUsers);
+	int countEntitiesByFilter(EntityRestFilter entityRestFilter, Set<String> relevantUsers);
 
 	void saveFavoriteFilter(EntityFilter entityFilter, String filterName);
 
@@ -74,13 +74,13 @@ public interface EntityService {
 
 
 
-	int updateWatched(EntityRestFilter userRestFilter, Set<String> relevantUsers, Boolean watch);
-	int updateSingleEntityWatched(String userId, Boolean watch);
+	int updateWatched(EntityRestFilter entityRestFilter, Set<String> relevantEntities, Boolean watch);
+	int updateSingleEntityWatched(String entityId, Boolean watch);
 
 
 	Entity findOne(String id);
 
-	Map<String,Map<String,Integer>> getSeverityScoreMap(EntityRestFilter userRestFilter);
+	Map<String,Map<String,Integer>> getSeverityScoreMap(EntityRestFilter entityRestFilter);
 	List<Entity> getEntitiesByPrefix(String entityName, PageRequest pageRequest);
 	Map<String,Integer> getDistinctAnomalyType();
 

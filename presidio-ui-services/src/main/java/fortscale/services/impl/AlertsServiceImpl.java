@@ -491,7 +491,7 @@ public class AlertsServiceImpl implements AlertsService {
 
             if (alertUpdated) {
 
-                Entity oldEntity = getUser(alert);
+                Entity oldEntity = getEntity(alert);
                 //Update Presidio-Output
                 List<presidio.output.client.model.AlertQuery.FeedbackEnum> feedbackEnum = alertConverterHelper.getFeedbackConverter().convertUiFilterToQueryDto(alertFeedback.name());
                 UpdateFeedbackRequest.FeedbackEnum feedbackForUpdate = UpdateFeedbackRequest.FeedbackEnum.fromValue(feedbackEnum.get(0).getValue());
@@ -509,7 +509,7 @@ public class AlertsServiceImpl implements AlertsService {
                 //Get the new user score
 
 
-                Entity newEntity = getUser(alert);
+                Entity newEntity = getEntity(alert);
 
 
             }
@@ -521,12 +521,12 @@ public class AlertsServiceImpl implements AlertsService {
 
     }
 
-    private Entity getUser(Alert alert) throws UserNotFoundExeption {
+    private Entity getEntity(Alert alert) throws UserNotFoundExeption {
         double userScore;
         List<Entity> entities = entityService.findByIds(Arrays.asList(alert.getEntityId()));
         if (entities.size()!=1){
-            //Cannot find user
-            logger.error("Cannot find user with id {}",alert.getEntityId());
+            //Cannot find entity
+            logger.error("Cannot find entity with id {}",alert.getEntityId());
             throw new UserNotFoundExeption(alert.getEntityId());
         }
         return entities.get(0);

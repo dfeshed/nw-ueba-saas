@@ -206,11 +206,11 @@ public class MockDemoEntityServiceImpl implements EntityService {
 		return this.demoBuilder.getEntities().stream().filter(user -> user.getUsername().equals(username)).findFirst().orElse(null);
 	}
 
-	@Override public Entities findEntitiesByFilter(EntityRestFilter userRestFilter, PageRequest pageRequest,
+	@Override public Entities findEntitiesByFilter(EntityRestFilter entityRestFilter, PageRequest pageRequest,
 												   Set<String> relevantUserIds, List<String> fieldsRequired, boolean exapnd) {
 
 		List<Entity> entities = demoBuilder.getEntities();
-		entities = entities.stream().filter(user -> getUserByCondition(user,userRestFilter,relevantUserIds)).collect(Collectors.toList());
+		entities = entities.stream().filter(user -> getUserByCondition(user, entityRestFilter,relevantUserIds)).collect(Collectors.toList());
 		int totalCount = entities.size();
 		entities = MockServiceUtils.getPage(entities,pageRequest,Entity.class);
 		return  new Entities(entities,totalCount);
@@ -330,11 +330,11 @@ public class MockDemoEntityServiceImpl implements EntityService {
 
 
 	@Override
-	public int updateWatched(EntityRestFilter userRestFilter, Set<String> relevantUsers, Boolean watch) {
+	public int updateWatched(EntityRestFilter entityRestFilter, Set<String> relevantEntities, Boolean watch) {
 
 		final AtomicInteger atomicInteger = new AtomicInteger(0);
 		List<Entity> entities = demoBuilder.getEntities();
-		entities = entities.stream().filter(user -> getUserByCondition(user,userRestFilter,relevantUsers)).collect(Collectors.toList());
+		entities = entities.stream().filter(user -> getUserByCondition(user, entityRestFilter, relevantEntities)).collect(Collectors.toList());
 		entities.forEach(user-> {
 			user.setFollowed(watch);
 			atomicInteger.addAndGet(1);
@@ -345,7 +345,7 @@ public class MockDemoEntityServiceImpl implements EntityService {
 	}
 
 	@Override
-	public int updateSingleEntityWatched(String userId, Boolean watch){
+	public int updateSingleEntityWatched(String entityId, Boolean watch){
 		return 0;
 	}
 
@@ -360,10 +360,10 @@ public class MockDemoEntityServiceImpl implements EntityService {
 	}
 
 	@Override
-	public Map<String, Map<String, Integer>> getSeverityScoreMap(EntityRestFilter userRestFilter) {
+	public Map<String, Map<String, Integer>> getSeverityScoreMap(EntityRestFilter entityRestFilter) {
 		Map<String, Map<String, Integer>> severitiesMap= new HashMap<>();
 		for (Severity severity : Severity.values()){
-			long count = findEntitiesByFilter(userRestFilter,null,null,null,true).getEntities()
+			long count = findEntitiesByFilter(entityRestFilter,null,null,null,true).getEntities()
 					.stream()
 
 					.filter(user->severity.equals(user.getScoreSeverity()))

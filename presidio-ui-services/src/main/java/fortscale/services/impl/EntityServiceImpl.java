@@ -371,11 +371,11 @@ public class EntityServiceImpl implements EntityService {
 		return null;
 	}
 
-	@Override public Entities findEntitiesByFilter(EntityRestFilter userRestFilter, PageRequest pageRequest,
+	@Override public Entities findEntitiesByFilter(EntityRestFilter entityRestFilter, PageRequest pageRequest,
 												   Set<String> relevantUserIds, List<String> fieldsRequired, boolean fetchAlertsOnUsers) {
 
 
-		EntityQuery entityQuery = entityConverterHelper.convertUiFilterToQueryDto(userRestFilter,pageRequest,relevantUserIds,fetchAlertsOnUsers);
+		EntityQuery entityQuery = entityConverterHelper.convertUiFilterToQueryDto(entityRestFilter,pageRequest,relevantUserIds,fetchAlertsOnUsers);
 		Entities entities =null;
 		try {
 			EntitiesWrapper entitiesWrapper = remoteEntityClientService.getConterollerApi().getEntities(entityQuery);
@@ -427,9 +427,9 @@ public class EntityServiceImpl implements EntityService {
 
 
 	@Override
-	public int updateWatched(EntityRestFilter userRestFilter, Set<String> relevantUsers, Boolean watch) {
+	public int updateWatched(EntityRestFilter entityRestFilter, Set<String> relevantEntities, Boolean watch) {
 
-		EntityQuery entityQuery = entityConverterHelper.convertUiFilterToQueryDto(userRestFilter,null,null,true);
+		EntityQuery entityQuery = entityConverterHelper.convertUiFilterToQueryDto(entityRestFilter,null,null,true);
 
 
 		JsonPatch jsonPatch = entityConverterHelper.createPatchOperation(watch);
@@ -449,7 +449,7 @@ public class EntityServiceImpl implements EntityService {
 	}
 
 	@Override
-	public int updateSingleEntityWatched(String userId, Boolean watch) {
+	public int updateSingleEntityWatched(String entityId, Boolean watch) {
 //		List<Criteria> criteriaList = getCriteriaListByFilterAndUserIds(userRestFilter, relevantUsers);
 
 
@@ -460,7 +460,7 @@ public class EntityServiceImpl implements EntityService {
 		}
 
 		try {
-			remoteEntityClientService.getConterollerApi().updateEntity(userId,jsonPatch);
+			remoteEntityClientService.getConterollerApi().updateEntity(entityId,jsonPatch);
 		} catch (ApiException e) {
 			e.printStackTrace();
 		}
@@ -490,8 +490,8 @@ public class EntityServiceImpl implements EntityService {
 
 
 
-	public Map<String,Map<String,Integer>> getSeverityScoreMap(EntityRestFilter userRestFilter){
-		EntityQuery entityQuery = entityConverterHelper.convertUiFilterToQueryDto(userRestFilter,null,null,false);
+	public Map<String,Map<String,Integer>> getSeverityScoreMap(EntityRestFilter entityRestFilter){
+		EntityQuery entityQuery = entityConverterHelper.convertUiFilterToQueryDto(entityRestFilter,null,null,false);
 
 		entityQuery.setAggregateBy(Arrays.asList(EntityQuery.AggregateByEnum.SEVERITY));
 		Map<String,Map<String,Integer>> response=new HashMap<>();

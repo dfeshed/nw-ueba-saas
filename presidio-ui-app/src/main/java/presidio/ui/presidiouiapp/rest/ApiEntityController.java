@@ -655,19 +655,16 @@ public class ApiEntityController extends BaseController {
 	}
 
 	private DataBean<List<EntityDetailsBean>> getEntitiesDetails(List<Entity> entities) {
-		List<EntityDetailsBean> detailsUsers = new ArrayList<>();
+		List<EntityDetailsBean> detailsEntities = new ArrayList<>();
 		if (entities != null) {
-			entities.forEach(user -> {
-				Set<String> userRelatedDnsSet = new HashSet<>();
-				Map<String, Entity> dnToUserMap = new HashMap<>();
-//				entityServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
-//				entityServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
-				EntityDetailsBean detailsUser = createEntityDetailsBean(user, dnToUserMap, true);
-				detailsUsers.add(detailsUser);
+			entities.forEach(entity -> {
+				Map<String, Entity> dnToEntityMap = new HashMap<>();
+				EntityDetailsBean detailsEntity = createEntityDetailsBean(entity, dnToEntityMap, true);
+				detailsEntities.add(detailsEntity);
 			});
 		}
 		DataBean<List<EntityDetailsBean>> ret = new DataBean<>();
-		ret.setData(detailsUsers);
+		ret.setData(detailsEntities);
 		return ret;
 	}
 
