@@ -453,6 +453,33 @@
       ]
     },
     {
+      "name": "dstPortDomainOutboundToHighestScoreMapJa3TlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.dstPort.domainOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortDomainOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.domain",
+              "context.dstPort"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
       "name": "dstPortDstOrgOutboundToHighestScoreMapSslSubjectTlsHourly",
       "contextFieldNames": [
         "sslSubject"

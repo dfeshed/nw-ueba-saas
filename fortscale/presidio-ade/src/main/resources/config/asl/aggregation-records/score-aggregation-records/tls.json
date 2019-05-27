@@ -256,6 +256,21 @@
       }
     },
     {
+      "name": "sumOfHighestDstPortDomainOutboundScoresJa3TlsHourly",
+      "type": "P",
+      "bucketConfName": "dstPortDomainOutboundToHighestScoreMapJa3TlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstPortDomainOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
       "name": "sumOfHighestDstPortDstOrgOutboundScoresSslSubjectTlsHourly",
       "type": "P",
       "bucketConfName": "dstPortDstOrgOutboundToHighestScoreMapSslSubjectTlsHourly",
