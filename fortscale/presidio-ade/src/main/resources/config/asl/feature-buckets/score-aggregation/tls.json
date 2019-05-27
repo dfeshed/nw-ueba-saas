@@ -613,6 +613,32 @@
       ]
     },
     {
+      "name": "sslSubjectJa3OutboundToHighestScoreMapSslSubjectTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.sslSubject.ja3Outbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "sslSubjectJa3OutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.ja3"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
       "name": "domainToHighestScoreMapJa3OutboundTlsHourly",
       "contextFieldNames": [
         "ja3"
