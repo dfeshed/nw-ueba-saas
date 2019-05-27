@@ -10,37 +10,28 @@ pipeline {
 
     stages {
         stage('presidio-integration-test Project Clone') {
-            when {
-                expression { return params.ENABLE_PROJECT_CLONE_STAGE }
-            }
             steps {
                 cleanWs()
                 buildIntegrationTestProject()
             }
         }
-        stage('Reset Log-Decoder and Concentrator DBs') {
-            when {
-                expression { return params.ENABLE_RESET_LOG_DECODER_AND_CONCENTRATOR_DBS_STAGE }
-            }
+        stage('Reset DBs LogHybrid and UEBA') {
             steps {
-                CleanEpHybridDBs()
+                CleanEpHybridUebaDBs()
             }
         }
-        stage('UEBA - Reset DBs and RPMs Upgrade') {
+        stage('UEBA - RPMs Upgrade') {
             when {
-                expression { return params.ENABLE_RESET_DBS_AND_RPMS_UPGRADE_STAGE }
+                expression { return params.INSTALL_UEBA_RPMS }
             }
             steps {
                 script {
                     setBaseUrl()
-                    uebaPreparingEnv()
+                    uebaInstallRPMs()
                 }
             }
         }
         stage('presidio-integration-test Project Build Pipeline Initialization') {
-            when {
-                expression { return params.ENABLE_BUILD_INITIALIZATION_STAGE }
-            }
             steps {
                 script {
                     mvnCleanInstall()
@@ -48,9 +39,6 @@ pipeline {
             }
         }
         stage('End 2 End Test Automation') {
-            when {
-                expression { return params.ENABLE_E2E_TEST_AUTOMATION_STAGE }
-            }
             steps {
                 script {
                     runEnd2EndTestAutomation()
@@ -96,16 +84,21 @@ def setBaseUrl(
     }
 }
 
-def uebaPreparingEnv() {
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/dbsCleanup.sh"
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/logsCleanup.sh"
+def uebaInstallRPMs() {
     sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh"
+
 }
 
-def CleanEpHybridDBs() {
+def CleanEpHybridUebaDBs() {
     sh "cp ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/reset_ld_and_concentrator_hybrid_dbs.sh /home/presidio/"
     sh "sudo bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
     sh "rm -f /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/dbsCleanup.sh"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/logsCleanup.sh"
+    if (params.INSTALL_UEBA_RPMS == false) {
+        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh"
+    }
 }
 
 /**************************
