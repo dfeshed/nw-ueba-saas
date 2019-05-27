@@ -17,46 +17,46 @@ import userSearch from './user_search';
 import alertsTimeline from './alert-by-day-and-severity';
 
 const urlMap = [{
-  url: 'presidio/api/user?page=1&size=10&sort_field=displayName&search_field_contains',
+  url: 'presidio/api/entity?page=1&size=10&sort_field=displayName&search_field_contains',
   data: userSearch
 }, {
-  url: 'presidio/api/user?min_score=0&size=5',
+  url: 'presidio/api/entity?min_score=0&size=5',
   data: usrOverview
 }, {
   url: 'presidio/data/controls/user_types',
   data: userType
 }, {
-  url: 'presidio/api/user/usersTagsCount',
+  url: 'presidio/api/entity/usersTagsCount',
   data: userTag
 }, {
-  url: 'presidio/api/user/count?userTags=admin',
+  url: 'presidio/api/entity/count?userTags=admin',
   data: userAdminCount
 }, {
-  url: 'presidio/api/user/count?isWatched=true',
+  url: 'presidio/api/entity/count?isWatched=true',
   data: watchedCount
 }, {
-  url: 'presidio/api/user/count?minScore=0',
+  url: 'presidio/api/entity/count?minScore=0',
   data: notRiskyCount
 }, {
   url: 'presidio/api/alerts?alert_start_range=',
   data: alertOverview
 }, {
-  url: 'presidio/api/user?min_score=0&size=5&sort_direction=DESC&sort_field=score',
+  url: 'presidio/api/entity?min_score=0&size=5&sort_direction=DESC&sort_field=score',
   data: userData
 }, {
-  url: 'presidio/api/user/severityBar',
+  url: 'presidio/api/entity/severityBar',
   data: usersTabSeverityBar
 }, {
-  url: 'presidio/api/user/exist-anomaly-types',
+  url: 'presidio/api/entity/exist-anomaly-types',
   data: existAnomalyTypes
 }, {
-  url: 'presidio/api/user/exist-alert-types?ignore_rejected=true',
+  url: 'presidio/api/entity/exist-alert-types?ignore_rejected=true',
   data: existAlertTypes
 }, {
-  url: 'presidio/api/user/favoriteFilter',
+  url: 'presidio/api/entity/favoriteFilter',
   data: favoriteFilter
 }, {
-  url: 'presidio/api/user?addAlertsAndDevices=true&addAllWatched=true',
+  url: 'presidio/api/entity?addAlertsAndDevices=true&addAllWatched=true',
   data: userList
 }, {
   url: 'presidio/api/alerts/exist-anomaly-types',
@@ -68,7 +68,7 @@ const urlMap = [{
   url: 'presidio/api/alerts/alert-by-day-and-severity',
   data: alertsTimeline
 }, {
-  url: 'presidio/api/user/favoriteFilter/',
+  url: 'presidio/api/entity/favoriteFilter/',
   data: true
 }, {
   url: 'favoriteFilter',

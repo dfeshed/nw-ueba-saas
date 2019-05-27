@@ -55,7 +55,7 @@ module('Acceptance | investigate-users', function(hooks) {
     assert.equal(findAll('.ember-power-select-option').length, 1);
     // Element identification is failing in jenkins due to unknown reason. Asserting fetch call to ensure options are pulled everytime user search.
     patchFetch((url) => {
-      assert.equal(url, '/presidio/api/user?page=1&size=10&sort_field=displayName&sort_direction=ASC&search_field_contains=auth&');
+      assert.equal(url, '/presidio/api/entity?page=1&size=10&sort_field=displayName&sort_direction=ASC&search_field_contains=auth&');
       done();
     });
     await fillIn('.ember-power-select-search-input', 'auth');

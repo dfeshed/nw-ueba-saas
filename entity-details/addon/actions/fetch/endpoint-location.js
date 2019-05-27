@@ -1,6 +1,6 @@
 export default {
   // Entity details Url
-  userDetails: '/presidio/api/user/{entityId}/details',
+  userDetails: '/presidio/api/entity/{entityId}/details',
 
   //  For getting alerts for entity '/presidio/api/alerts?entity_id={entityId}&load_comments=true
   entityAlerts: '/presidio/api/alerts?',
@@ -14,10 +14,10 @@ export default {
   // presidio/api/evidences/{indicatorId}/historical-data?feature=abnormal_process_injects_into_windows_process&function=Count
   historicalData: '/presidio/api/evidences/{indicatorId}/historical-data?',
 
-  // Watch User : /presidio/api/user/true/followUsers  -- POST { 'userIds': ['af2284e2-d278-4101-97aa-7a980e781bf0'] }
-  followUser: '/presidio/api/user/true/followUsers',
-  // UNFOLLOW USER: /presidio/api/user/false/followUsers -- POST { 'userIds':['af2284e2-d278-4101-97aa-7a980e781bf0'] }
-  unfollowUser: '/presidio/api/user/false/followUsers',
+  // Watch User : /presidio/api/entity/true/followUsers  -- POST { 'userIds': ['af2284e2-d278-4101-97aa-7a980e781bf0'] }
+  followUser: '/presidio/api/entity/true/followUsers',
+  // UNFOLLOW USER: /presidio/api/entity/false/followUsers -- POST { 'userIds':['af2284e2-d278-4101-97aa-7a980e781bf0'] }
+  unfollowUser: '/presidio/api/entity/false/followUsers',
 
   // Not a risk: presidio/api/alerts/0bd963d0-a0ae-4601-8497-b0c363becd1f -- Patch Call  { 'status':'Closed', 'feedback':'Rejected','analystUserName':'ca-admin' }
   // {"status":"Open","feedback":"None","analystUserName":"ca-admin"}
