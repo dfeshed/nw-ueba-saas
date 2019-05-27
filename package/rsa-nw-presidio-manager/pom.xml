@@ -74,6 +74,7 @@
                                 <source>
                                     <includes>
                                         <include>presidio-manager.service</include>
+                                        <include>presidio-manager-init.py</include>
                                     </includes>
                                     <location>src/main/resources</location>
                                 </source>

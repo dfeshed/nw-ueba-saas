@@ -7,11 +7,8 @@ User=presidio
 Group=presidio
 Type=simple
 ExecStart=/usr/bin/java -Dserver.port=8881 -jar /usr/sbin/presidio/manager/presidio-manager-webapp.jar
-# Wait for the service to load, by sending Get requests until there is a response.
-# ExecStartPost=/usr/bin/bash -c "while ! curl --output /dev/null --silent --head --fail http://localhost:8881/configuration; do sleep 1; done;"
-# After an upgrade, the system needs to be restarted. Changed or new configurations need to be updated outside the Configuration Server as well:
-# Send an empty Patch request, in order to update the "workflows-default.json" file.
-# ExecStartPost=/usr/bin/curl -X PATCH http://localhost:8881/configuration -H "Cache-Control: no-cache" -H "Content-Type: application/json" -d "{\"operations\":[]}"
+Environment="OWB_ALLOW_NON_FIPS=on"
+ExecStartPost=/usr/bin/python /usr/lib/systemd/system/presidio-manager-init.py
 KillMode=mixed
 KillSignal=SIGKILL
 Restart=on-failure
