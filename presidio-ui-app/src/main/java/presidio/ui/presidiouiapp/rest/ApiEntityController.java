@@ -116,6 +116,7 @@ public class ApiEntityController extends BaseController {
 		extendedSearchfieldsRequired.add(Entity.followedField);
 		extendedSearchfieldsRequired.add(Entity.displayNameField);
 		extendedSearchfieldsRequired.add(Entity.scoreField);
+		extendedSearchfieldsRequired.add(Entity.entityTypeField);
 	}
 
 

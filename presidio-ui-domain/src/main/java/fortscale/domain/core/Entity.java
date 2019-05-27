@@ -40,6 +40,7 @@ public class Entity extends AbstractDocument {
 	public static final String usernameField = "username";
 	public static final String noDomainUsernameField = "noDomainUsername";
 	public static final String displayNameField = "displayName";
+	public static final String entityTypeField = "entityType";
 	public static final String searchFieldName = "sf";
 	public static final String followedField = "followed";
 	public static final String adInfoField = "adInfo";
@@ -72,7 +73,11 @@ public class Entity extends AbstractDocument {
 	@Indexed
 	@Field(displayNameField)
 	private String displayName;
-	
+
+	@Indexed
+	@Field(entityTypeField)
+	private String entityType;
+
 	@Indexed
 	@Field(usernameField)
 	private String username;
@@ -180,6 +185,14 @@ public class Entity extends AbstractDocument {
 		this.displayName = displayName;
 	}
 
+	public String getEntityType() {
+		return this.entityType;
+	}
+
+	public void setEntityType(String entityType) {
+		this.entityType = entityType;
+	}
+
 	public String getNoDomainUsername() {
 		return noDomainUsername;
 	}
@@ -276,11 +289,11 @@ public class Entity extends AbstractDocument {
         this.scoreSeverity = scoreSeverity;
     }
 
-    public void setScore(double score) {
-        this.score = score;
-    }
+	public void setScore(double score) {
+		this.score = score;
+	}
 
-    public double getScore() {
+	public double getScore() {
         return score;
     }
 
