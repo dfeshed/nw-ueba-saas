@@ -2,33 +2,32 @@ package presidio.ui.presidiouiapp.beans;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import fortscale.domain.core.Alert;
-import fortscale.domain.core.User;
-import fortscale.services.UserServiceFacade;
-import fortscale.utils.logging.Logger;
+import fortscale.domain.core.Entity;
+import fortscale.services.EntityServiceFacade;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class UserDetailsBean implements Serializable{
+public class EntityDetailsBean implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
     @JsonUnwrapped
-	private User user;
+	private Entity entity;
 
 
-	private User manager;
-	private List<User> directReports;
+	private Entity manager;
+	private List<Entity> directReports;
 	private String thumbnailPhoto;
-	private UserServiceFacade userServiceFacade;
+	private EntityServiceFacade entityServiceFacade;
 
 	private List<Alert> alerts;
 
-	public UserDetailsBean(User user, User manager, List<User> directReports, UserServiceFacade userServiceFacade){
-		this.user = user;
+	public EntityDetailsBean(Entity entity, Entity manager, List<Entity> directReports, EntityServiceFacade entityServiceFacade){
+		this.entity = entity;
 		this.manager = manager;
 		this.directReports = directReports;
-		this.userServiceFacade = userServiceFacade;
+		this.entityServiceFacade = entityServiceFacade;
 	}
 
 	public List<Alert> getAlerts() {
@@ -39,12 +38,12 @@ public class UserDetailsBean implements Serializable{
 		this.alerts = alerts;
 	}
 
-	public User getUser() {
-        return user;
+	public Entity getEntity() {
+        return entity;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setEntity(Entity entity) {
+        this.entity = entity;
     }
 
 	public void setThumbnailPhoto(String thumbnailPhoto) {
@@ -52,7 +51,7 @@ public class UserDetailsBean implements Serializable{
 	}
 
 	public String getOu(){
-	    return userServiceFacade.getOu(user);
+	    return entityServiceFacade.getOu(entity);
 	}
 
 	public String getImage() {

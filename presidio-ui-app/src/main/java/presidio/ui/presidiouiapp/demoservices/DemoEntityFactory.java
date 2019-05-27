@@ -1,6 +1,6 @@
 package presidio.ui.presidiouiapp.demoservices;
 
-import fortscale.domain.core.User;
+import fortscale.domain.core.Entity;
 
 
 import java.util.List;
@@ -12,7 +12,7 @@ import org.apache.commons.lang.BooleanUtils;
 /**
  * Created by shays on 23/07/2017.
  */
-public class  DemoUserFactory extends DemoFactoryAbstract<User>{
+public class DemoEntityFactory extends DemoFactoryAbstract<Entity>{
     private static final String [] FILE_HEADER_MAPPING = {"Username","Risk Score","Total Alerts","Admin"};
 
     protected String getFileName(){
@@ -22,23 +22,23 @@ public class  DemoUserFactory extends DemoFactoryAbstract<User>{
     protected String[] headers(){
         return  FILE_HEADER_MAPPING;
     }
-    protected User getRecord(CSVRecord csvRecord){
+    protected Entity getRecord(CSVRecord csvRecord){
         String username = csvRecord.get("Username");
         int riskScore = Integer.parseInt(csvRecord.get("Risk Score"));
         boolean isAdmin = BooleanUtils.toBoolean(csvRecord.get("Admin"));
 
-        User user = new User();
-        user.setAlertsCount(0);
-        user.setScore(riskScore);
-        user.setUsername(username);
-        user.setMockId(username);
+        Entity entity = new Entity();
+        entity.setAlertsCount(0);
+        entity.setScore(riskScore);
+        entity.setUsername(username);
+        entity.setMockId(username);
         if(isAdmin) {
-            user.addTag("admin");
+            entity.addTag("admin");
         }
-        return user;
+        return entity;
     }
 
-    public List getUsers() throws Exception {
+    public List getEntities() throws Exception {
         return getData(csvRecord -> this.getRecord(csvRecord),getFileName(),headers());
     }
 

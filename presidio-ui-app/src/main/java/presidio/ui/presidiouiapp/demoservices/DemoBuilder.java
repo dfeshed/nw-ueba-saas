@@ -4,10 +4,7 @@ import fortscale.common.dataentity.DataSourceType;
 import fortscale.domain.core.*;
 import presidio.ui.presidiouiapp.rest.entities.SupportingInformationEntry;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Service;
 
-import javax.activation.DataSource;
 import java.util.*;
 
 import java.util.stream.Collectors;
@@ -20,22 +17,22 @@ import java.util.stream.Collectors;
 public class DemoBuilder {
 
     private Map<String, List<SupportingInformationEntry>> suppotingInformationForIndicatorId=new HashMap<>();
-    private List<User> users;
+    private List<Entity> entities;
     private List<Alert> alerts;
     private List<Evidence> indicators;
 
     public DemoBuilder(){
         try {
 
-            this.users = new DemoUserFactory().getUsers();
+            this.entities = new DemoEntityFactory().getEntities();
             this.alerts = new DemoAlertFactory().getAlerts();
             DemoIndicatorsFactory demoIndicatorsFactory = new DemoIndicatorsFactory();
             this.indicators = demoIndicatorsFactory.getEvidences();
             suppotingInformationForIndicatorId = demoIndicatorsFactory.suppotingInformationForIndicatorId;
 
-            populateUserNamesOnAlert();
+            populateEntityNamesOnAlert();
             populateEvidenceToAlerts();
-            populateUserSeverity();
+            populateEntitySeverity();
 
 
 
@@ -44,90 +41,73 @@ public class DemoBuilder {
         }
     }
 
-    public DemoBuilder(List<User> users, List<Alert> alerts,  List<Evidence> indicators){
+    public DemoBuilder(List<Entity> entities, List<Alert> alerts, List<Evidence> indicators){
 
-            this.users = users;
+            this.entities = entities;
             this.alerts = alerts;
             this.indicators = indicators;
 
 
     }
 
-    public void populateUserSeverity(){
-        User userWithMaxScore = this.users.stream().max((user1,user2)->Double.compare(user1.getScore(),user2.getScore())).get();
+    public void populateEntitySeverity(){
+        Entity entityWithMaxScore = this.entities.stream().max((user1, user2)->Double.compare(user1.getScore(),user2.getScore())).get();
 
-        double maxScore =  userWithMaxScore.getScore();
+        double maxScore =  entityWithMaxScore.getScore();
 
-        this.users.forEach(user->{
-            double percent = 100*user.getScore()/maxScore;
+        this.entities.forEach(entity->{
+            double percent = 100*entity.getScore()/maxScore;
             if (percent<70){
-                user.setScoreSeverity(Severity.Low);
+                entity.setScoreSeverity(Severity.Low);
             } else if (percent<80){
-                user.setScoreSeverity(Severity.Medium);
+                entity.setScoreSeverity(Severity.Medium);
             } else if (percent<95){
-                user.setScoreSeverity(Severity.High);
+                entity.setScoreSeverity(Severity.High);
             } else {
-                user.setScoreSeverity(Severity.Critical);
+                entity.setScoreSeverity(Severity.Critical);
             }
         });
 
     }
 
-    private void populateUserNamesOnAlert(){
+    private void populateEntityNamesOnAlert(){
         alerts.forEach((alert -> {
-            User user1 = getUserByName(alert.getEntityName());
-            alert.setEntityId(user1.getId());
-            int alertsCount = user1.getAlertsCount();
-            user1.setAlertsCount(alertsCount+1);
+            Entity entity1 = getEntityByName(alert.getEntityName());
+            alert.setEntityId(entity1.getId());
+            int alertsCount = entity1.getAlertsCount();
+            entity1.setAlertsCount(alertsCount+1);
 
         }));
     }
 
-    public User getUserByName(String userName) {
-        List<User> immutableUsersForStreaming = Collections.unmodifiableList(this.users);
+    public Entity getEntityByName(String entityName) {
+        List<Entity> immutableUsersForStreaming = Collections.unmodifiableList(this.entities);
         return immutableUsersForStreaming.stream()
-                        .filter(user -> userName.equals(user.getUsername()))
+                        .filter(user -> entityName.equals(user.getUsername()))
                         .findAny()
-                        .orElse(createAndReturnUser(userName));
+                        .orElse(createAndReturnEntity(entityName));
     }
 
-    private User createAndReturnUser(String userName){
-        User user= new User();
-        user.setMockId(userName);
-        user.setUsername(userName);
-        user.setNoDomainUsername(userName);
-        user.setDisplayName(userName);
-        user.setScore(0);
-        user.setScoreSeverity(Severity.Low);
-        user.setNoDomainUsername(userName);
-        user.setAlertsCount(0);
-        user.setFollowed(false);
-        user.setSearchField(userName);
+    private Entity createAndReturnEntity(String entityName){
+        Entity entity = new Entity();
+        entity.setMockId(entityName);
+        entity.setUsername(entityName);
+        entity.setNoDomainUsername(entityName);
+        entity.setDisplayName(entityName);
+        entity.setScore(0);
+        entity.setScoreSeverity(Severity.Low);
+        entity.setNoDomainUsername(entityName);
+        entity.setAlertsCount(0);
+        entity.setFollowed(false);
+        entity.setSearchField(entityName);
 
-        boolean isExist=this.getUsers().stream()
-                .filter(tempUser -> userName.equals(user.getUsername()))
+        boolean isExist=this.getEntities().stream()
+                .filter(tempUser -> entityName.equals(entity.getUsername()))
                 .count()>0;
         if(isExist) {
-            this.getUsers().add(user);
+            this.getEntities().add(entity);
         }
-        return user;
-    }
-
-    private User getDefaultUser(){
-        User def = new User();
-        def.setMockId("def");
-        def.setUsername("default user");
-        return def;
-    }
-
-    private void populateAlertsCountForUser(){
-        Map<String, Long> counting = alerts.stream().collect(
-                Collectors.groupingBy(Alert::getEntityName, Collectors.counting()));
-
-        counting.forEach((user,count)->{
-            getUserByName(user).setAlertsCount(count.intValue());
-        });
-
+        return entity;
     }
 
     private void populateEvidenceToAlerts(){
@@ -142,7 +122,7 @@ public class DemoBuilder {
            long endTime = indicator.getEndDate();
            String username = indicator.getEntityName();
 
-           Alert a = getAlertsByUserNameAndTime(username,startTime,endTime,indicator.getTimeframe());
+           Alert a = getAlertsByEntityNameAndTime(username,startTime,endTime,indicator.getTimeframe());
            if (a!=null) {
                List<Evidence> indicators = a.getEvidences();
 
@@ -185,8 +165,8 @@ public class DemoBuilder {
 
     }
 
-    public List<User> getUsers() {
-        return users;
+    public List<Entity> getEntities() {
+        return entities;
     }
 
     public List<Alert> getAlerts() {
@@ -197,11 +177,11 @@ public class DemoBuilder {
         return indicators;
     }
 
-    public List<Alert> getAlertsByUserName(String username) {
-        return alerts.stream().filter(alert -> alert.getEntityName().equals(username)).collect(Collectors.toList());
+    public List<Alert> getAlertsByEntityName(String entityName) {
+        return alerts.stream().filter(alert -> alert.getEntityName().equals(entityName)).collect(Collectors.toList());
     }
 
-    public Alert getAlertsByUserNameAndTime(String username, long startTime, long endTime, EvidenceTimeframe evidenceTimeframe) {
+    public Alert getAlertsByEntityNameAndTime(String username, long startTime, long endTime, EvidenceTimeframe evidenceTimeframe) {
         try {
             return alerts.stream().filter(alert ->
                     alert.getEntityName().equals(username) &&

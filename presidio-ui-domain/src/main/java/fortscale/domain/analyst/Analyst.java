@@ -1,5 +1,6 @@
 package fortscale.domain.analyst;
 
+import fortscale.domain.core.Entity;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -7,10 +8,6 @@ import org.springframework.util.Assert;
 
 import fortscale.domain.core.AbstractDocument;
 import fortscale.domain.core.EmailAddress;
-import fortscale.domain.core.User;
-
-
-
 
 
 @Document
@@ -37,7 +34,7 @@ public class Analyst extends AbstractDocument{
 	
 	
 	/**
-	 * Creates a new {@link User} from the given adDn.
+	 * Creates a new {@link Entity} from the given adDn.
 	 * 
 	 * @param userName must not be {@literal null} or empty.
 	 * @param emailAddress must not be {@literal null}.

@@ -1,15 +1,13 @@
 package fortscale.services.impl;
 
 
-import fortscale.domain.core.User;
-import fortscale.domain.rest.UserRestFilter;
+import fortscale.domain.core.Entity;
+import fortscale.domain.rest.EntityRestFilter;
 import fortscale.services.*;
 import fortscale.services.cache.CacheHandler;
 import fortscale.temp.HardCodedMocks;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -22,49 +20,49 @@ import java.util.Set;
 /**
  * Created by alexp on 09/08/2016.
  */
-@Service("userWithAlertService") public class UserWithAlertServiceImpl implements UserWithAlertService {
+@Service("userWithAlertService") public class EntityWithAlertServiceImpl implements EntityWithAlertService {
 
-    private static Logger logger = Logger.getLogger(UserWithAlertService.class);
+    private static Logger logger = Logger.getLogger(EntityWithAlertService.class);
 
-	private UserService userService;
+	private EntityService entityService;
 
 	private AlertsService alertsService;
 
 //	@Autowired()
 //	@Qualifier("filterToUsersCache")
-	private CacheHandler<UserRestFilter, List<User>> filterToUsersCache;
+	private CacheHandler<EntityRestFilter, List<Entity>> filterToUsersCache;
 
 
 	private List<String> fieldsRequired;
 
-	public UserWithAlertServiceImpl(UserService userService, AlertsService alertsService,
-									CacheHandler<UserRestFilter, List<User>> filterToUsersCache) {
+	public EntityWithAlertServiceImpl(EntityService entityService, AlertsService alertsService,
+                                      CacheHandler<EntityRestFilter, List<Entity>> filterToUsersCache) {
 
-		this.userService = userService;
+		this.entityService = entityService;
 		this.alertsService = alertsService;
 
 		fieldsRequired = new ArrayList<>();
-		fieldsRequired.add(User.ID_FIELD);
-		fieldsRequired.add(User.usernameField);
-		fieldsRequired.add(User.followedField);
-		fieldsRequired.add(User.displayNameField);
+		fieldsRequired.add(Entity.ID_FIELD);
+		fieldsRequired.add(Entity.usernameField);
+		fieldsRequired.add(Entity.followedField);
+		fieldsRequired.add(Entity.displayNameField);
 	}
 
 
 
-	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired,boolean fetchUserslerts) {
-		List<User> result = new ArrayList<>();
+	@Override public List<Entity> findEntitiesByFilter(EntityRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired, boolean fetchUserslerts) {
+		List<Entity> result = new ArrayList<>();
 
 		Set<String> relevantUsers = filterPreparations(userRestFilter);
 
 		if (!shouldStop(userRestFilter, relevantUsers)) {
-			result = userService.findUsersByFilter(userRestFilter, pageRequest, relevantUsers, fieldsRequired,fetchUserslerts).getUsers();
+			result = entityService.findEntitiesByFilter(userRestFilter, pageRequest, relevantUsers, fieldsRequired,fetchUserslerts).getEntities();
 		}
 
 		return result;
 	}
 
-	private Set<String> filterPreparations(UserRestFilter userRestFilter) {
+	private Set<String> filterPreparations(EntityRestFilter userRestFilter) {
 		Set<String> relevantUsers = new HashSet<>();
 
 		return relevantUsers;
@@ -78,7 +76,7 @@ import java.util.Set;
 	 * @param relevantUsers
 	 * @return
 	 */
-	private boolean shouldStop(UserRestFilter userRestFilter, Set<String> relevantUsers) {
+	private boolean shouldStop(EntityRestFilter userRestFilter, Set<String> relevantUsers) {
 		return (CollectionUtils.isNotEmpty(userRestFilter.getIndicatorTypes()) ||
 				CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes()) ||
 				CollectionUtils.isNotEmpty(userRestFilter.getLocations()) ||
@@ -87,26 +85,26 @@ import java.util.Set;
 	}
 
 
-	@Override public int countUsersByFilter(UserRestFilter userRestFilter) {
+	@Override public int countEntitiesByFilter(EntityRestFilter userRestFilter) {
 		Set<String> relevantUsers = filterPreparations(userRestFilter);
 
 		if (shouldStop(userRestFilter, relevantUsers)) {
 			return HardCodedMocks.DEFAULT_USER_COUNT;
 		}
 
-		return userService.countUsersByFilter(userRestFilter, relevantUsers);
+		return entityService.countEntitiesByFilter(userRestFilter, relevantUsers);
 	}
 
 	@Override
-	public int updateTags(UserRestFilter userRestFilter, Boolean addTag, List<String> tagNames) throws Exception {
+	public int updateTags(EntityRestFilter userRestFilter, Boolean addTag, List<String> tagNames) throws Exception {
 
 		return 0;
 	}
 
 	@Override
-	public int followUsersByFilter(UserRestFilter userRestFilter, Boolean watch) {
+	public int followEntitiesByFilter(EntityRestFilter userRestFilter, Boolean watch) {
 		// Creating the filter
-		userService.updateWatched(userRestFilter, null, watch);
+		entityService.updateWatched(userRestFilter, null, watch);
 
 		return 0;
 	}

@@ -1,9 +1,8 @@
 package spring;
 
 import fortscale.presidio.output.client.api.AlertsPresidioOutputClient;
-import fortscale.presidio.output.client.api.UsersPresidioOutputClient;
+import fortscale.presidio.output.client.api.EntitiesPresidioOutputClient;
 import fortscale.spring.PresidioUiServiceConfiguration;
-import fortscale.utils.mongodb.config.SpringMongoConfiguration;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +27,7 @@ public class SpringContextTest {
         private AlertsPresidioOutputClient fakeRemoteAlertClientService;
 
         @Autowired
-        private UsersPresidioOutputClient fakeRemoteUserClientService;
+        private EntitiesPresidioOutputClient fakeRemoteUserClientService;
 
 
         @Test
@@ -40,7 +39,7 @@ public class SpringContextTest {
         public void testFake() throws ApiException {
 
                 Assert.assertTrue(fakeRemoteAlertClientService.getConterollerApi().getAlerts(null).getAlerts().size()>0);
-                Assert.assertTrue(fakeRemoteUserClientService.getConterollerApi().getUsers(null).getUsers().size()>0);
+                Assert.assertTrue(fakeRemoteUserClientService.getConterollerApi().getEntities(null).getEntities().size()>0);
         }
 
 

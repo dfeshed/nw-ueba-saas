@@ -136,7 +136,7 @@ public interface EvidencesService {
 	 *
 	 * @param fieldName the field name to get distinct values by.
 	 * @return A map of distinct keys
-     */
+	 */
 	List getDistinctByFieldName (String fieldName);
 
 //	 List<String> getDistinctAnomalyType();

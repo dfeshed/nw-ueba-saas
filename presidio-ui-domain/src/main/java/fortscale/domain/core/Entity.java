@@ -2,7 +2,6 @@ package fortscale.domain.core;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -18,7 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 
 
-@Document(collection=User.collectionName)
+@Document(collection= Entity.collectionName)
 @CompoundIndexes({
 		@CompoundIndex(name="ad_objectGUID_1", def = "{'adInfo.objectGUID': 1}", unique=true, sparse=true),
 		@CompoundIndex(name="ad_dn_1", def = "{'adInfo.dn': 1}"),
@@ -30,7 +29,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 		@CompoundIndex(name="logUsername_sshscores_1", def = "{'logUsername.sshscores': 1}"),
 })
 @ApiModel
-public class User extends AbstractDocument {
+public class Entity extends AbstractDocument {
 	private static final long serialVersionUID = -2544779887545246880L;
 	
 	public static final String collectionName = "user";
@@ -41,6 +40,7 @@ public class User extends AbstractDocument {
 	public static final String usernameField = "username";
 	public static final String noDomainUsernameField = "noDomainUsername";
 	public static final String displayNameField = "displayName";
+	public static final String entityTypeField = "entityType";
 	public static final String searchFieldName = "sf";
 	public static final String followedField = "followed";
 	public static final String adInfoField = "adInfo";
@@ -73,7 +73,11 @@ public class User extends AbstractDocument {
 	@Indexed
 	@Field(displayNameField)
 	private String displayName;
-	
+
+	@Indexed
+	@Field(entityTypeField)
+	private String entityType;
+
 	@Indexed
 	@Field(usernameField)
 	private String username;
@@ -181,6 +185,14 @@ public class User extends AbstractDocument {
 		this.displayName = displayName;
 	}
 
+	public String getEntityType() {
+		return this.entityType;
+	}
+
+	public void setEntityType(String entityType) {
+		this.entityType = entityType;
+	}
+
 	public String getNoDomainUsername() {
 		return noDomainUsername;
 	}
@@ -250,15 +262,15 @@ public class User extends AbstractDocument {
 
 
 	public static String getAppField(String applicationName) {
-		return String.format("%s.%s", User.appField,applicationName);
+		return String.format("%s.%s", Entity.appField,applicationName);
 	}
 	
 	public static String getLogUserNameField(String logname) {
-		return String.format("%s.%s", User.logUsernameField,logname);
+		return String.format("%s.%s", Entity.logUsernameField,logname);
 	}
 	
 	public static String getLogLastActivityField(String logEventsName) {
-		return String.format("%s.%s", User.logLastActivityField, logEventsName);
+		return String.format("%s.%s", Entity.logLastActivityField, logEventsName);
 	}
 	
 	public DateTime getLastActivity() {
@@ -266,7 +278,7 @@ public class User extends AbstractDocument {
 	}
 
 	public static String getAdInfoField(String adInfoFieldName) {
-		return String.format("%s.%s", User.adInfoField,adInfoFieldName);
+		return String.format("%s.%s", Entity.adInfoField,adInfoFieldName);
 	}
 
 	public Severity getScoreSeverity() {
@@ -277,11 +289,11 @@ public class User extends AbstractDocument {
         this.scoreSeverity = scoreSeverity;
     }
 
-    public void setScore(double score) {
-        this.score = score;
-    }
+	public void setScore(double score) {
+		this.score = score;
+	}
 
-    public double getScore() {
+	public double getScore() {
         return score;
     }
 

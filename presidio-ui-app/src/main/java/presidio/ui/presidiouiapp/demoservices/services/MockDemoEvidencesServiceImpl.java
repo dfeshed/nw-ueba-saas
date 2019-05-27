@@ -4,22 +4,13 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.common.dataentity.DataSourceType;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Events;
-import fortscale.domain.dto.DateRange;
 import fortscale.services.EvidencesService;
-import fortscale.services.UserService;
-import fortscale.services.UserSupportingInformationService;
-import fortscale.temp.EvidenceMockBuilder;
-import fortscale.temp.HardCodedMocks;
 import presidio.ui.presidiouiapp.demoservices.DemoBuilder;
 import presidio.ui.presidiouiapp.demoservices.DemoEventsFactory;
 import presidio.ui.presidiouiapp.rest.Utils.ResourceNotFoundException;
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;

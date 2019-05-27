@@ -1,8 +1,7 @@
 package fortscale.domain.core.dao.rest;
 
 
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.User;
+import fortscale.domain.core.Entity;
 
 import java.io.Serializable;
 import java.util.List;
@@ -11,26 +10,26 @@ import java.util.List;
  * Created by rans on 22/06/15.
  * This bean is used to serialize json for alerts request in the REST API
  */
-public class Users implements Serializable {
+public class Entities implements Serializable {
     private static final long serialVersionUID = 9109074252875664042L;
-    private List<User> users;
+    private List<Entity> entities;
     private long totalCount;
 
-    public Users(List<User> users, long totalCount) {
-        this.users = users;
+    public Entities(List<Entity> entities, long totalCount) {
+        this.entities = entities;
         this.totalCount = totalCount;
     }
 
-    public Users(List<User> users){
-        this.users= users;
+    public Entities(List<Entity> entities){
+        this.entities = entities;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public List<Entity> getEntities() {
+        return entities;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setEntities(List<Entity> entities) {
+        this.entities = entities;
     }
 
     public long getTotalCount() {

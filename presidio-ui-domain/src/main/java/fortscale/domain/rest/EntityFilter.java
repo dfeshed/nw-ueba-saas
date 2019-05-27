@@ -1,14 +1,12 @@
 package fortscale.domain.rest;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.Severity;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-public class UserFilter extends RestFilter {
+public class EntityFilter extends RestFilter {
 
 
 	private String disabledSince;
@@ -22,7 +20,7 @@ public class UserFilter extends RestFilter {
 	private String searchFieldContains;
 	private Boolean addAlertsAndDevices;
 	private Boolean addAllWatched;
-	private List<String> userTags;
+	private List<String> entityTags;
 	private Boolean isWatched;
 	private List<String> alertTypes;
 	private Set<String> indicatorTypes;
@@ -106,12 +104,12 @@ public class UserFilter extends RestFilter {
 		this.addAlertsAndDevices = addAlertsAndDevices;
 	}
 
-	public List<String> getUserTags() {
-		return userTags;
+	public List<String> getEntityTags() {
+		return entityTags;
 	}
 
-	public void setUserTags(List<String> userTags) {
-		this.userTags = userTags;
+	public void setEntityTags(List<String> entityTags) {
+		this.entityTags = entityTags;
 	}
 
 	public Boolean getIsWatched() {
@@ -210,7 +208,7 @@ public class UserFilter extends RestFilter {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		UserFilter that = (UserFilter) o;
+		EntityFilter that = (EntityFilter) o;
 
 		return (   Objects.equals(disabledSince, that.disabledSince)
 				|| Objects.equals(isDisabled, that.isDisabled)
@@ -222,7 +220,7 @@ public class UserFilter extends RestFilter {
 				|| Objects.equals(isServiceAccount, that.isServiceAccount)
 				|| Objects.equals(searchFieldContains, that.searchFieldContains)
 				|| Objects.equals(addAlertsAndDevices, that.addAlertsAndDevices)
-				|| Objects.equals(userTags, that.userTags)
+				|| Objects.equals(entityTags, that.entityTags)
 				|| Objects.equals(isWatched, that.isWatched)
 				|| Objects.equals(alertTypes, that.alertTypes)
 				|| Objects.equals(indicatorTypes, that.indicatorTypes)
@@ -239,7 +237,7 @@ public class UserFilter extends RestFilter {
 	public int hashCode() {
 
 		return Objects.hash(disabledSince, isDisabled, isDisabledWithActivity, isTerminatedWithActivity, inactiveSince,
-				dataEntities, entityMinScore, isServiceAccount, searchFieldContains,  userTags, isWatched, alertTypes,
+				dataEntities, entityMinScore, isServiceAccount, searchFieldContains, entityTags, isWatched, alertTypes,
 				indicatorTypes, locations, severity, minScore, maxScore, positions, departments);
 	}
 

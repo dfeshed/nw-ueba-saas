@@ -5,8 +5,8 @@ import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
 import fortscale.services.AlertsService;
-import fortscale.services.UserService;
-import fortscale.services.UserWithAlertService;
+import fortscale.services.EntityService;
+import fortscale.services.EntityWithAlertService;
 import presidio.ui.presidiouiapp.demoservices.DemoBuilder;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
@@ -36,7 +36,7 @@ public class MockDemoAlertsServiceImpl implements AlertsService {
 	 * Mongo repository for users
 	 */
 
-	private UserService userService;
+	private EntityService entityService;
 
 //    @Autowired
 //    private UserScoreService userScoreService;
@@ -56,13 +56,13 @@ public class MockDemoAlertsServiceImpl implements AlertsService {
 		});
 	}
 
-	public MockDemoAlertsServiceImpl(UserService userService, DemoBuilder demoBuilder){
-		this.userService = userService;
+	public MockDemoAlertsServiceImpl(EntityService entityService, DemoBuilder demoBuilder){
+		this.entityService = entityService;
 		this.demoBuilder = demoBuilder;
 	}
 
 	@Autowired
-	private UserWithAlertService userWithAlertService;
+	private EntityWithAlertService entityWithAlertService;
 
 	@Override
 	public Alerts findAll(PageRequest pageRequest, boolean expand) {
@@ -89,11 +89,11 @@ public class MockDemoAlertsServiceImpl implements AlertsService {
 
 		if (entityTags != null) {
 			String[] tagsFilter = entityTags.split(",");
-//			ids = userService.findIdsByTags(tagsFilter, entityId);
-			ids=demoBuilder.getUsers().
+//			ids = entityService.findIdsByTags(tagsFilter, entityId);
+			ids=demoBuilder.getEntities().
 					stream().
 					filter(user -> user.getTags().contains("admin")).
-					map(User::getId).
+					map(Entity::getId).
 					collect(Collectors.toSet());
 		}
 
@@ -513,8 +513,8 @@ public class MockDemoAlertsServiceImpl implements AlertsService {
 
 	}
 
-	private void recalculateUserScore(User user){
-		List<Alert> userAlerts = demoBuilder.getAlertsByUserName(user.getUsername());
+	private void recalculateUserScore(Entity entity){
+		List<Alert> userAlerts = demoBuilder.getAlertsByEntityName(entity.getUsername());
 
 		double[] score=new double[1];
 
@@ -525,7 +525,7 @@ public class MockDemoAlertsServiceImpl implements AlertsService {
 				}
 			});
 		}
-		user.setScore(score[0]);
+		entity.setScore(score[0]);
 
 
 	}

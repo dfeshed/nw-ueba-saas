@@ -2,9 +2,9 @@ package fortscale.temp;
 
 
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.Entity;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.Tag;
-import fortscale.domain.core.User;
 
 import java.util.*;
 
@@ -13,21 +13,21 @@ import java.util.*;
  */
 public class MockScenarioGenerator {
 
-    public static List<User> generateMocksUsersList(){
-        List<User> users =  Arrays.asList(
+    public static List<Entity> generateMocksUsersList(){
+        List<Entity> entities =  Arrays.asList(
                 new UsersMockBuilder(1).createInstance(),
                 new UsersMockBuilder(2).createInstance(),
                 new UsersMockBuilder(3).createInstance(),
                 new UsersMockBuilder(4).createInstance()
         );
-        return users;
+        return entities;
     }
 
-    public static Set<User> generateMocksUsersSet(){
+    public static Set<Entity> generateMocksUsersSet(){
         return new HashSet<>(generateMocksUsersList());
     }
 
-    public static User generateMocksUser(){
+    public static Entity generateMocksUser(){
         return generateMocksUsersList().get(0);
     }
 

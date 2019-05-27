@@ -1,6 +1,6 @@
 package fortscale.domain.core;
 
-import fortscale.domain.rest.UserFilter;
+import fortscale.domain.rest.EntityFilter;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -8,8 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 /**
  * Created by alexp on 16/08/2016.
  */
-@Document(collection=FavoriteUserFilter.COLLECTION_NAME)
-public class FavoriteUserFilter extends AbstractDocument {
+@Document(collection= FavoriteEntityFilter.COLLECTION_NAME)
+public class FavoriteEntityFilter extends AbstractDocument {
 
 	public static final String COLLECTION_NAME = "favorite_user_filter";
 	public static final String filterNameField = "filterName";
@@ -21,7 +21,7 @@ public class FavoriteUserFilter extends AbstractDocument {
 	private String filterName;
 
 	@Field(filterField)
-	private UserFilter filter;
+	private EntityFilter filter;
 
 	@Field(dateCreatedField)
 	private long dateCreated;
@@ -42,11 +42,11 @@ public class FavoriteUserFilter extends AbstractDocument {
 		this.dateCreated = dateCreated;
 	}
 
-	public UserFilter getFilter() {
+	public EntityFilter getFilter() {
 		return filter;
 	}
 
-	public void setFilter(UserFilter filter) {
+	public void setFilter(EntityFilter filter) {
 		this.filter = filter;
 	}
 }
