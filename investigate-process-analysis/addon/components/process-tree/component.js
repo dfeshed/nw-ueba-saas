@@ -65,6 +65,7 @@ const dispatchToActions = {
 };
 
 let freeIdCounter = 0;
+let nodeIdCounter = 0;
 let hideEvent = null;
 let displayEvent = null;
 
@@ -383,6 +384,10 @@ const TreeComponent = Component.extend({
     const eventBus = this.get('eventBus');
     const nodeEnter = node.enter().append('g')
       .attr('class', 'process')
+      .attr('test-id', function() {
+        nodeIdCounter++;
+        return `process-${nodeIdCounter}`;
+      })
       .attr('data-id', function(d) {
         return d.data.processId;
       })
@@ -397,7 +402,8 @@ const TreeComponent = Component.extend({
 
     const processNode = nodeEnter.append('g')
       .attr('id', function() {
-        return `endpoint-process-${freeIdCounter++}`;
+        freeIdCounter++;
+        return `endpoint-process-${freeIdCounter}`;
       })
       .on('mouseover', function(d) {
         const element = this;
@@ -506,6 +512,7 @@ const TreeComponent = Component.extend({
 
   willDestroyElement() {
     freeIdCounter = 0;
+    nodeIdCounter = 0;
   },
 
   actions: {
