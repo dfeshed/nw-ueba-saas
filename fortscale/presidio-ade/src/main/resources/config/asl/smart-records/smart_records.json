@@ -35,7 +35,7 @@
         "numberOfEventsUserIdProcessHourly",
         "highestStartInstantScoreUserIdProcessHourly",
         "highestStartInstantScoreUserIdRegistryHourly",
-        "numberOfDistinctSrcIpJa3TlsHourly"
+        "numberOfDistinctSrcIpJa3OutboundTlsHourly"
       ],
       "defaultWeight": 0.5,
       "fullCorrelations": [

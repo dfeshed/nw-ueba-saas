@@ -1,7 +1,7 @@
 {
   "BucketConfs": [
     {
-      "name": "srcIpHistogramJa3TlsHourly",
+      "name": "srcIpHistogramJa3OutboundTlsHourly",
       "contextFieldNames": [
         "ja3"
       ],
@@ -9,6 +9,13 @@
         "tls"
       ],
       "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
       "aggrFeatureConfs": [
         {
           "name": "distinctSrcIpHistogram",

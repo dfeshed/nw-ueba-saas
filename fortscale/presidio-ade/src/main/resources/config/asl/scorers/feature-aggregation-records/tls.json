@@ -1,27 +1,27 @@
 {
   "ade-event-type-scorers": [
     {
-      "ade-event-type": "aggr_event.numberOfDistinctSrcIpJa3TlsHourly",
+      "ade-event-type": "aggr_event.numberOfDistinctSrcIpJa3OutboundTlsHourly",
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "numberOfDistinctSrcIp.userId.tls.hourly.scorer",
+          "name": "numberOfDistinctSrcIp.ja3Outbound.tls.hourly.scorer",
           "base-scorer": {
             "type": "score-exponential-steps-mapper",
-            "name": "numberOfDistinctSrcIp.ja3.tls.hourly.mapper",
+            "name": "numberOfDistinctSrcIp.ja3Outbound.tls.hourly.mapper",
             "score-mapping-conf": {
               "amountOfSteps": 25,
               "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
-              "name": "numberOfDistinctSrcIp.ja3.tls.hourly.base_scorer",
+              "name": "numberOfDistinctSrcIp.ja3Outbound.tls.hourly.base_scorer",
               "model": {
-                "name": "numberOfDistinctSrcIp.ja3.tls.hourly"
+                "name": "numberOfDistinctSrcIp.ja3Outbound.tls.hourly"
               },
               "additional-models": [
                 {
-                  "name": "numberOfDistinctSrcIp.ja3.prior.tls.hourly"
+                  "name": "numberOfDistinctSrcIp.ja3Outbound.prior.tls.hourly"
                 }
               ],
               "global-influence": 15,

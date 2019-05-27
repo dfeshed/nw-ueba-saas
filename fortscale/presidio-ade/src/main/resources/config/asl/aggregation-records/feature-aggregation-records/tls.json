@@ -1,9 +1,9 @@
 {
   "AggregatedFeatureEvents": [
     {
-      "name": "numberOfDistinctSrcIpJa3TlsHourly",
+      "name": "numberOfDistinctSrcIpJa3OutboundTlsHourly",
       "type": "F",
-      "bucketConfName": "srcIpHistogramJa3TlsHourly",
+      "bucketConfName": "srcIpHistogramJa3OutboundTlsHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
