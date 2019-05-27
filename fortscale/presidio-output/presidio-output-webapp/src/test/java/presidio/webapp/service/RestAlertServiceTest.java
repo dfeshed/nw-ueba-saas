@@ -44,7 +44,7 @@ public class RestAlertServiceTest {
         when(alertPersistencyService.findOne(eq(alert.getId()))).thenReturn(alert);
 
         presidio.webapp.model.Alert alertById = restAlertService.getAlertById("id", false);
-        Assert.assertEquals(alert.getEntityName(), alertById.getUsername());
+        Assert.assertEquals(alert.getEntityName(), alertById.getEntityName());
     }
 
     @Test
@@ -79,7 +79,7 @@ public class RestAlertServiceTest {
 
         AlertQuery alertQuery = new AlertQuery();
 
-        alertQuery.setUsersId(new ArrayList<>(Arrays.asList(firstAlert.getEntityName())));
+        alertQuery.setEntityDocumentIds(new ArrayList<>(Collections.singletonList(firstAlert.getEntityName())));
         AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
         List<presidio.webapp.model.Alert> alerts = alertsWrapper.getAlerts();
         Assert.assertEquals(1, alerts.size());
@@ -92,7 +92,7 @@ public class RestAlertServiceTest {
         when(alertPersistencyService.find(anyObject())).thenReturn(page);
 
         AlertQuery alertQuery = new AlertQuery();
-        alertQuery.setUsersId(new ArrayList<>(Arrays.asList("someUserName")));
+        alertQuery.setEntityDocumentIds(new ArrayList<>(Collections.singletonList("someUserName")));
         AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
         Assert.assertEquals(0, alertsWrapper.getAlerts().size());
     }
@@ -127,7 +127,7 @@ public class RestAlertServiceTest {
         EventQuery eventQuery = new EventQuery();
         EventsWrapper eventsWrapper = restAlertService.getIndicatorEventsByIndicatorId("indicatorId",eventQuery);
         Assert.assertEquals(1, eventsWrapper.getEvents().size());
-        Assert.assertEquals(null,eventsWrapper.getEvents().get(0).getScores());
+        Assert.assertNull(eventsWrapper.getEvents().get(0).getScores());
 
     }
 
@@ -143,7 +143,7 @@ public class RestAlertServiceTest {
         AlertQuery alertQuery = new AlertQuery();
         alertQuery.setPageNumber(3);
         alertQuery.setPageSize(10);
-        alertQuery.setUsersId(new ArrayList<>(Arrays.asList("someUserName")));
+        alertQuery.setEntityDocumentIds(new ArrayList<>(Collections.singletonList("someUserName")));
         AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
         Assert.assertEquals(0, alertsWrapper.getAlerts().size());
         Assert.assertEquals(Math.toIntExact(total), alertsWrapper.getTotal().intValue());
@@ -151,8 +151,8 @@ public class RestAlertServiceTest {
     }
 
     private Alert createAlert() {
-        List<String> classifications = new ArrayList<>(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
-        return new Alert("userId", "smartId", classifications, "username","username",
+        List<String> classifications = new ArrayList<>(Collections.singletonList("Mass Changes to Critical Enterprise Groups"));
+        return new Alert("entityDocumentId", "smartId", classifications, "entityName","entityName",
                 Date.from(Instant.parse("2017-01-01T00:00:00Z")), Date.from(Instant.parse("2017-01-01T11:00:00Z")),
                 10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, null,0D, "entityType");
     }

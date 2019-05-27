@@ -82,7 +82,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         if (alerts.getTotalElements() > 0) {
             for (presidio.output.domain.records.alerts.Alert alert : alerts) {
                 presidio.webapp.model.Alert restAlert = createRestAlert(alert);
-                if (alertQuery.getExpand().booleanValue()) {
+                if (alertQuery.getExpand()) {
                     // TODO: improve performance with in query
                     List<Indicator> restIndicators = new ArrayList<Indicator>();
                     Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(alert.getId(), new PageRequest(pageNumber, pageSize));
@@ -112,9 +112,7 @@ public class RestAlertServiceImpl implements RestAlertService {
 
             if (MapUtils.isNotEmpty(alertAggregations)) {
                 Map<String, String> aggregationNamesEnumMapping = new HashMap<>();
-                alertAggregations.keySet().forEach(aggregationName -> {
-                    aggregationNamesEnumMapping.put(aggregationName, AlertQueryEnums.AlertQueryAggregationFieldName.fromValue(aggregationName).name());
-                });
+                alertAggregations.keySet().forEach(aggregationName -> aggregationNamesEnumMapping.put(aggregationName, AlertQueryEnums.AlertQueryAggregationFieldName.fromValue(aggregationName).name()));
                 Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(alertAggregations, aggregationNamesEnumMapping);
                 alertsWrapper.setAggregationData(aggregations);
             }
@@ -161,11 +159,11 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     private AlertQuery createQuery(presidio.webapp.model.AlertQuery alertQuery) {
         AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder();
-        if (CollectionUtils.isNotEmpty(alertQuery.getUsersId())) {
-            alertQueryBuilder.filterByEntityDocumentId(alertQuery.getUsersId());
+        if (CollectionUtils.isNotEmpty(alertQuery.getEntityDocumentIds())) {
+            alertQueryBuilder.filterByEntityDocumentId(alertQuery.getEntityDocumentIds());
         }
-        if (CollectionUtils.isNotEmpty(alertQuery.getUserName())) {
-            alertQueryBuilder.filterByEntityName(alertQuery.getUserName());
+        if (CollectionUtils.isNotEmpty(alertQuery.getEntityName())) {
+            alertQueryBuilder.filterByEntityName(alertQuery.getEntityName());
         }
         if (alertQuery.getPageSize() != null) {
             alertQueryBuilder.setPageSize(alertQuery.getPageSize());
@@ -196,34 +194,25 @@ public class RestAlertServiceImpl implements RestAlertService {
         }
         if (CollectionUtils.isNotEmpty(alertQuery.getSeverity())) {
             List<String> severity = new ArrayList<>();
-            alertQuery.getSeverity().forEach(severityParam -> {
-                severity.add(severityParam.toString());
-            });
+            alertQuery.getSeverity().forEach(severityParam -> severity.add(severityParam.toString()));
             alertQueryBuilder.filterBySeverity(severity);
         }
         if (CollectionUtils.isNotEmpty(alertQuery.getFeedback())) {
             List<String> feedback = new ArrayList<>();
-            alertQuery.getFeedback().forEach(feedbackParam -> {
-                feedback.add(feedbackParam.toString());
-            });
+            alertQuery.getFeedback().forEach(feedbackParam -> feedback.add(feedbackParam.toString()));
             alertQueryBuilder.filterByFeedback(feedback);
         }
         if (CollectionUtils.isNotEmpty(alertQuery.getSortFieldNames()) && alertQuery.getSortDirection() != null) {
             List<Sort.Order> orders = new ArrayList<>();
-            alertQuery.getSortFieldNames().forEach(s -> {
-                orders.add(new Sort.Order(alertQuery.getSortDirection(), s.toString()));
-            });
+            alertQuery.getSortFieldNames().forEach(s -> orders.add(new Sort.Order(alertQuery.getSortDirection(), s.toString())));
             alertQueryBuilder.sortField(new Sort(orders));
         }
         if (CollectionUtils.isNotEmpty(alertQuery.getAggregateBy())) {
             List<String> aggregateByFields = new ArrayList<>();
-            alertQuery.getAggregateBy().forEach(alertQueryAggregationFieldName -> {
-                aggregateByFields.add(alertQueryAggregationFieldName.toString());
-            });
+            alertQuery.getAggregateBy().forEach(alertQueryAggregationFieldName -> aggregateByFields.add(alertQueryAggregationFieldName.toString()));
             alertQueryBuilder.aggregateByFields(aggregateByFields);
         }
-        AlertQuery convertedAlertQuery = alertQueryBuilder.build();
-        return convertedAlertQuery;
+        return alertQueryBuilder.build();
     }
 
     @Override
@@ -265,9 +254,7 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     private List<Alert> convertToRestAlerts(Page<presidio.output.domain.records.alerts.Alert> alertsByUserId) {
         List<Alert> restAlerts = new ArrayList<>();
-        alertsByUserId.forEach(alert -> {
-            restAlerts.add(createRestAlert(alert));
-        });
+        alertsByUserId.forEach(alert -> restAlerts.add(createRestAlert(alert)));
         return restAlerts;
     }
 
@@ -288,7 +275,7 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     @Override
     public IndicatorsWrapper getIndicatorsByAlertId(String alertId, IndicatorQuery indicatorQuery) {
-        List<Indicator> restIndicators = new ArrayList<Indicator>();
+        List<Indicator> restIndicators = new ArrayList<>();
         int totalElements = 0;
         int pageNumber = indicatorQuery.getPageNumber() != null ? indicatorQuery.getPageNumber() : 0;
         int pageSize = indicatorQuery.getPageSize() != null ? indicatorQuery.getPageSize() : 10;
@@ -314,7 +301,7 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     @Override
     public EventsWrapper getIndicatorEventsByIndicatorId(String indicatorId, EventQuery eventQuery) {
-        List<presidio.webapp.model.Event> restEvents = new ArrayList<presidio.webapp.model.Event>();
+        List<presidio.webapp.model.Event> restEvents = new ArrayList<>();
         int pageNumber = eventQuery.getPageNumber() != null ? eventQuery.getPageNumber() : 0;
         int pageSize = eventQuery.getPageSize() != null ? eventQuery.getPageSize() : 10;
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
@@ -338,13 +325,13 @@ public class RestAlertServiceImpl implements RestAlertService {
         restAlert.setStartDate(BigDecimal.valueOf(alert.getStartDate().getTime()));
         restAlert.setId(alert.getId());
         restAlert.setClassifiation(alert.getClassifications());
-        restAlert.setUsername(alert.getEntityName());
-        restAlert.setUserId(alert.getEntityDocumentId());
+        restAlert.setEntityName(alert.getEntityName());
+        restAlert.setEntityDocumentId(alert.getEntityDocumentId());
         restAlert.setSeverity(AlertSeverity.fromValue(alert.getSeverity().toString()));
         restAlert.setIndicatorsNum(alert.getIndicatorsNum());
         restAlert.setIndicatorsName(alert.getIndicatorsNames());
         restAlert.setTimeframe(Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
-        restAlert.setUserScoreContribution(new BigDecimal(alert.getContributionToEntityScore()));
+        restAlert.setEntityScoreContribution(new BigDecimal(alert.getContributionToEntityScore()));
         restAlert.setFeedback(AlertQueryEnums.AlertFeedback.fromValue(alert.getFeedback().toString()));
         return restAlert;
     }
