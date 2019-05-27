@@ -27,6 +27,32 @@
       ]
     },
     {
+      "name": "highestStartInstantSslSubjectOutboundScoresJa3TlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.startInstant.sslSubjectOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "sslSubjectToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.sslSubject"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
       "name": "highestStartInstantScoreJa3OutboundTlsHourly",
       "contextFieldNames": [
         "ja3"
