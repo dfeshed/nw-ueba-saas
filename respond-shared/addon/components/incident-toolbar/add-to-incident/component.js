@@ -190,7 +190,7 @@ const addToIncidentButton = Component.extend(Notifications, {
      */
     handleSubmit() {
       const { selectedIncident } = this.getProperties('selectedIncident');
-      let data = selectedIncident;
+      let data = selectedIncident.id;
       const selectedEventIds = this.get('selectedEventIds');
 
       if (selectedEventIds) {

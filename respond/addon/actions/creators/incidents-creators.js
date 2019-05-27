@@ -2,6 +2,7 @@ import { Incidents, alerts } from '../api';
 import * as ACTION_TYPES from '../types';
 import * as dictionaryCreators from './dictionary-creators';
 import * as incidentCreators from 'respond-shared/actions/creators/create-incident-creators';
+import { AlertToIncident } from 'respond-shared/actions/api/add-to-incident';
 import { next } from '@ember/runloop';
 import { getRemediationTasksForIncident } from 'respond/actions/creators/remediation-task-creators';
 import RSVP from 'rsvp';
@@ -428,7 +429,7 @@ const stopSearchRelatedIndicators = () => {
 const addRelatedIndicatorsToIncident = (indicatorIds, incidentId, callbacks) => {
   return (dispatch, getState) => {
     const { respond: { incident: { searchResults } } } = getState();
-    const addAlertsToIncident = Incidents.addAlertsToIncident(indicatorIds, incidentId);
+    const addAlertsToIncident = AlertToIncident.addAlertsToIncident(indicatorIds, incidentId);
     // Wrap the addAlertsToIncident promise with another so that we can pass along the searchResults as part of the promise resolve response
     // This allows the storyline reducer to have access to the searchResults for adding the corresponding alert(s) to the storyline
     const promise = new RSVP.Promise(function(resolve, reject) {

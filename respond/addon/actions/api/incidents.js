@@ -174,30 +174,6 @@ export default {
   },
 
   /**
-   * Executes a websocket promise request to add a given list of alerts to a given incident ID.
-   * @param {[]} alertIds The alertIds for the alerts to be added to the incident.
-   * @param {string} incidentId The ID of the incident to be added to.
-   * @returns {Promise}
-   * @public
-   */
-  addAlertsToIncident(alertIds, incidentId) {
-    const request = lookup('service:request');
-    return request.promiseRequest({
-      method: 'updateRecord',
-      modelName: 'alerts-associated',
-      query: {
-        data: {
-          // entity = POJO with incident ID
-          entity: {
-            id: incidentId
-          },
-          associated: alertIds
-        }
-      }
-    });
-  },
-
-  /**
    * Executes a websocket delete incident call and returns a Promise
    * @method delete
    * @public
@@ -250,21 +226,6 @@ export default {
       query: {}
     });
   },
-
-  createIncidentFromAlerts(incidentDetails, alertIds) {
-    const request = lookup('service:request');
-    return request.promiseRequest({
-      method: 'createRecord',
-      modelName: 'incidents',
-      query: {
-        data: {
-          entity: incidentDetails,
-          associated: alertIds
-        }
-      }
-    });
-  },
-
   /**
    * Searches incident name and incident ID fields
    * @param searchText

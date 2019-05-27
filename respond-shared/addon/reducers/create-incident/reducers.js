@@ -2,6 +2,8 @@ import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from '../../actions/types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
+import { lookup } from 'ember-dependency-lookup';
+import { success, failure } from 'respond-shared/utils/flash-messages';
 
 const initialState = {
   priorityTypes: [],
@@ -55,7 +57,20 @@ export default reduxActions.handleActions({
       failure: (s) => s.set('enabledUsersStatus', 'error'),
       success: (s) => s.merge({ enabledUsers: remapDisabledProperty(action.payload.data), enabledUsersStatus: 'completed' })
     });
-  }
+  },
 
+  [ACTION_TYPES.CREATE_INCIDENT_FROM_EVENTS]: (state, action) => {
+    return handle(state, action, {
+      failure: (s) => {
+        failure('respond.incidents.actions.actionMessages.incidentCreationFromEventsFailed');
+        return s;
+      },
+      success: (s) => {
+        lookup('service:eventBus').trigger('rsa-application-modal-close-create-incident');
+        success('respond.incidents.actions.actionMessages.incidentCreatedFromEvents', { incidentId: action.payload.data.id });
+        return s;
+      }
+    });
+  }
 
 }, Immutable.from(initialState));
