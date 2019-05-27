@@ -3,7 +3,7 @@
     {
       "name": "highestStartInstantScoreSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
-        "sslSubjectOutbound"
+        "sslSubject"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.startInstant.sslSubjectOutbound.tls.score"
@@ -29,7 +29,7 @@
     {
       "name": "highestStartInstantScoreJa3OutboundTlsHourly",
       "contextFieldNames": [
-        "ja3Outbound"
+        "ja3"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.startInstant.ja3Outbound.tls.score"
