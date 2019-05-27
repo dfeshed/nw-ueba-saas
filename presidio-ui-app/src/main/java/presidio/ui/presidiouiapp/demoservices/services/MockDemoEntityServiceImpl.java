@@ -163,7 +163,7 @@ public class MockDemoEntityServiceImpl implements EntityService {
 
 	@Override
 	public Entity getEntityById(String id) {
-		return demoBuilder.getEntities().stream().filter(user -> user.getId().equals(id)).findAny().get();
+		return demoBuilder.getEntities().stream().filter(entity -> entity.getId().equals(id)).findAny().get();
 	}
 
 	@Override

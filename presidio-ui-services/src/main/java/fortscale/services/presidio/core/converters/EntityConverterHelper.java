@@ -141,19 +141,6 @@ public class EntityConverterHelper {
     }
 
 
-//    private List<UserQuery.SeverityEnum> getSeverityEnums(EntityRestFilter userRestFilter) {
-//        if (userRestFilter.getSeverity()==null){
-//            return null;
-//        }
-//        List<presidio.output.client.model.Entity.SeverityEnum> SeverityEnumList  = severityEnumConverter.convertUiFilterToQueryDto(userRestFilter.getSeverity().name());
-//        if (SeverityEnumList==null){
-//            return null;
-//        }
-//        return SeverityEnumList.stream().map(SeverityEnum -> {
-//            return UserQuery.SeverityEnum.valueOf(SeverityEnum.name());
-//        }).collect(Collectors.toList());
-//    }
-
     private Integer doubleToInteger(Double score) {
         if (score==null){
             return null;

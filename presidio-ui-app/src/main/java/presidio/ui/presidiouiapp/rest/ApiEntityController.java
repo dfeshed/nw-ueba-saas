@@ -51,7 +51,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/api/user")
+@RequestMapping("/api/entity")
 public class ApiEntityController extends BaseController {
 
 	public static final int DEFAULT_EXPORT_USERS_SIZE = 1000;
@@ -133,7 +133,7 @@ public class ApiEntityController extends BaseController {
 		DataBean<List<EntityDetailsBean>> usersList = getEntitiesDetails(entities.getEntities());
 		usersList.setOffset(pageRequest.getPageNumber() * pageRequest.getPageSize());
 		usersList.setTotal(new Long(entities.getTotalCount()).intValue());
-//		if (BooleanUtils.isTrue(userRestFilter.getAddAlertsAndDevices())) {
+//		if (BooleanUtils.isTrue(entityRestFilter.getAddAlertsAndDevices())) {
 //			addAlertsAndDevices(usersList.getData());
 //		}
 		if (BooleanUtils.isTrue(entityRestFilter.getAddAllWatched())) {
@@ -148,8 +148,8 @@ public class ApiEntityController extends BaseController {
 	@RequestMapping(value="/count", method=RequestMethod.GET)
 	@ResponseBody
 
-	public DataBean<Integer> countEntities(EntityRestFilter userRestFilter) {
-		Integer count = entityWithAlertService.countEntitiesByFilter(userRestFilter);
+	public DataBean<Integer> countEntities(EntityRestFilter entityRestFilter) {
+		Integer count = entityWithAlertService.countEntitiesByFilter(entityRestFilter);
 		DataBean<Integer> bean = new DataBean<>();
 		bean.setData(count);
 		bean.setTotal(count);
@@ -201,18 +201,6 @@ public class ApiEntityController extends BaseController {
 
 	}
 
-//	@RequestMapping(value="/search", method=RequestMethod.GET)
-//	@ResponseBody
-//	//@LogException
-//	public  DataBean<List<UserSearchBean>> search(@RequestParam(required = true) String prefix,
-//			@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) {
-//		List<Entity> users = entityServiceFacade.findBySearchFieldContaining(prefix, page, size);
-//		List<UserSearchBean> data = users.stream().map(UserSearchBean::new).collect(Collectors.toList());
-//		DataBean<List<UserSearchBean>> ret = new DataBean<>();
-//		ret.setData(data);
-//		ret.setTotal(data.size());
-//		return ret;
-//	}
 
 	@RequestMapping(value="/exist-anomaly-types", method = RequestMethod.GET)
 	@ResponseBody
@@ -227,17 +215,17 @@ public class ApiEntityController extends BaseController {
 	@RequestMapping(value="/extendedSearch", method=RequestMethod.GET)
 	@ResponseBody
 //	//@LogException
-	public DataBean<List<EntityDetailsBean>> extendedSearch(EntityRestFilter userRestFilter){
+	public DataBean<List<EntityDetailsBean>> extendedSearch(EntityRestFilter entityRestFilter){
 		DataBean<List<EntityDetailsBean>> result = new DataBean<>();
 
-		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())) {
+		if (StringUtils.isNotEmpty(entityRestFilter.getSearchValue())) {
 
-			Sort sorting = createSorting("", userRestFilter.getSortDirection());
+			Sort sorting = createSorting("", entityRestFilter.getSortDirection());
 			PageRequest pageRequest = new PageRequest(FIRST_PAGE_INDEX, USERS_SEARCH_DEFAULT_PAGE_SIZE, sorting);
 
-//			List<Entity> entities = entityWithAlertService.findUsersWithSearchValue(userRestFilter, pageRequest, extendedSearchfieldsRequired);
-			userRestFilter.setSearchFieldContains(userRestFilter.getSearchValue());
-			Entities entitiesObject = entityService.findEntitiesByFilter(userRestFilter,pageRequest,null,null,false);
+//			List<Entity> entities = entityWithAlertService.findUsersWithSearchValue(entityRestFilter, pageRequest, extendedSearchfieldsRequired);
+			entityRestFilter.setSearchFieldContains(entityRestFilter.getSearchValue());
+			Entities entitiesObject = entityService.findEntitiesByFilter(entityRestFilter,pageRequest,null,null,false);
 			List<Entity> entities = entitiesObject !=null? entitiesObject.getEntities():new ArrayList();
 			// Add severity to the entities
 //			setSeverityOnEntitiesList(entities);
@@ -322,7 +310,7 @@ public class ApiEntityController extends BaseController {
 	@RequestMapping(value="/{addTag}/{tagNames}/tagUsers", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 //	//@LogException
 	@ResponseBody
-	public ResponseEntity<EntitiesCount> addRemoveTagByFilter(@RequestBody EntityRestFilter userRestFilter,
+	public ResponseEntity<EntitiesCount> addRemoveTagByFilter(@RequestBody EntityRestFilter entityRestFilter,
 															  @PathVariable Boolean addTag, @PathVariable List<String> tagNames) throws JSONException {
 
 		EntitiesCount result = new EntitiesCount();
@@ -330,7 +318,7 @@ public class ApiEntityController extends BaseController {
 			return new ResponseEntity(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		try {
-			result.count = entityWithAlertService.updateTags(userRestFilter, addTag, tagNames);
+			result.count = entityWithAlertService.updateTags(entityRestFilter, addTag, tagNames);
 			return new ResponseEntity(result, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -388,60 +376,18 @@ public class ApiEntityController extends BaseController {
 		return entityDetails(new ArrayList<>(entities));
 	}
 
-//	@RequestMapping(value="/{id}/machines", method=RequestMethod.GET)
-//	@ResponseBody
-//	//@LogException
-//	public DataBean<List<UserMachine>> userMachines(@PathVariable String id) {
-//		List<UserMachine> userMachines = entityServiceFacade.getUserMachines(id);
-//		DataBean<List<UserMachine>> ret = new DataBean<>();
-//		ret.setData(userMachines);
-//		ret.setTotal(userMachines.size());
-//		return ret;
-//	}
-
-//	@RequestMapping(value="/usersMachines", method=RequestMethod.GET)
-//	@ResponseBody
-//	//@LogException
-//	public DataBean<List<UserMachinesBean>> usersMachines(@RequestParam(required = true) List<String> ids) {
-//		List<Entity> users = entityService.findByIds(ids);
-//		return usersMachinesAux(users);
-//	}
-
-	/**
-	 * Gets the destination machines operating systems distribution for a user
-	 */
-//	@RequestMapping(value="/{uid}/destination/{param}/distribution", method=RequestMethod.GET)
-//	@ResponseBody
-//	//@LogException
-//	public DataBean<Collection<PropertyEntry>> getDestinationPropertyDistribution(@PathVariable String uid,
-//			@PathVariable String param, @RequestParam(defaultValue="50") int minScore,
-//			@RequestParam(required = false) Long latestDate, @RequestParam(required = false) Long earliestDate,
-//			@RequestParam(defaultValue="10") int maxValues) {
-//		PropertiesDistribution distribution = entityServiceFacade.getDestinationComputerPropertyDistribution(uid, param,
-//				latestDate, earliestDate, maxValues, minScore);
-//		// convert the distribution properties to data bean
-//		DataBean<Collection<PropertyEntry>> ret = new DataBean<>();
-//		if (distribution.isConclusive()) {
-//			ret.setData(distribution.getPropertyValues());
-//			ret.setTotal(distribution.getNumberOfValues());
-//		} else {
-//			ret.addWarning(DataWarningsEnum.NON_CONCLUSIVE_DATA);
-//		}
-//		return ret;
-//	}
-
 
 	@RequestMapping(value = "/severityBar", method = RequestMethod.GET)
 	@ResponseBody
 	////@LogException
-	public DataBean<Map<String, Map<String, Integer>>> getSeverityBarInfo(EntityRestFilter userRestFilter){
+	public DataBean<Map<String, Map<String, Integer>>> getSeverityBarInfo(EntityRestFilter entityRestFilter){
 		DataBean<Map<String, Map<String, Integer>>> dataBean = new DataBean<>();
 
 
-		dataBean.setData(entityService.getSeverityScoreMap(userRestFilter));
+		dataBean.setData(entityService.getSeverityScoreMap(entityRestFilter));
 
 
-		dataBean.setTotal(entityService.countEntitiesByFilter(userRestFilter,null));
+		dataBean.setTotal(entityService.countEntitiesByFilter(entityRestFilter,null));
 		return dataBean;
 
 
@@ -488,11 +434,11 @@ public class ApiEntityController extends BaseController {
 				USER_ALERT_COUNT_COLUMN_NAME, USER_DEVICE_COUNT_COLUMN_NAME, USER_TAGS_COLUMN_NAME };
 
 		csvWriter.writeNext(tableTitleRow);
-		entities.stream().forEach(user -> {
-			String[] userRow = {user.getUsername(), user.getDisplayName(), "",
-					"", BooleanUtils.toStringTrueFalse(user.getFollowed()),
-					String.valueOf(user.getScore()), String.valueOf(user.getAlertsCount()),
-					String.valueOf(user.getSourceMachineCount()), StringUtils.join(user.getTags(), ',')};
+		entities.stream().forEach(entity -> {
+			String[] userRow = {entity.getUsername(), entity.getDisplayName(), "",
+					"", BooleanUtils.toStringTrueFalse(entity.getFollowed()),
+					String.valueOf(entity.getScore()), String.valueOf(entity.getAlertsCount()),
+					String.valueOf(entity.getSourceMachineCount()), StringUtils.join(entity.getTags(), ',')};
 			csvWriter.writeNext(userRow);
 		});
 		csvWriter.close();
@@ -502,19 +448,19 @@ public class ApiEntityController extends BaseController {
 	@RequestMapping(value="/{watch}/followUsers", method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	//@LogException
-	public ResponseEntity<EntitiesCount> followEntitiesByFilter(@RequestBody EntityRestFilter userRestFilter, @PathVariable Boolean watch) {
+	public ResponseEntity<EntitiesCount> followEntitiesByFilter(@RequestBody EntityRestFilter entityRestFilter, @PathVariable Boolean watch) {
 
-		if (userRestFilter.getSize() == null) {
-			userRestFilter.setSize(Integer.MAX_VALUE);
+		if (entityRestFilter.getSize() == null) {
+			entityRestFilter.setSize(Integer.MAX_VALUE);
 		}
 
-		int usersUpdated;
-		if (userRestFilter.getUserIds() !=null && userRestFilter.getUserIds().size()==1){//Update single user
-			usersUpdated = entityService.updateSingleEntityWatched(userRestFilter.getUserIds().get(0),watch);
+		int entitiesUpdated;
+		if (entityRestFilter.getUserIds() !=null && entityRestFilter.getUserIds().size()==1){//Update single user
+			entitiesUpdated = entityService.updateSingleEntityWatched(entityRestFilter.getUserIds().get(0),watch);
 		} else { //Update fy filer
-			usersUpdated = entityWithAlertService.followEntitiesByFilter(userRestFilter, watch);
+			entitiesUpdated = entityWithAlertService.followEntitiesByFilter(entityRestFilter, watch);
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(new EntitiesCount(usersUpdated));
+		return ResponseEntity.status(HttpStatus.OK).body(new EntitiesCount(entitiesUpdated));
 	}
 
 	@RequestMapping(value="/{fieldName}/distinctValues", method=RequestMethod.GET)
@@ -533,27 +479,14 @@ public class ApiEntityController extends BaseController {
 
 	/**
 	 * Getting the relevant users according to the filter requested
-	 * @param userRestFilter
+	 * @param entityRestFilter
 	 * @param pageRequest
 	 * @param fieldsRequired
 	 * @return
 	 */
-	private Entities getEntities(EntityRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired) {
+	private Entities getEntities(EntityRestFilter entityRestFilter, PageRequest pageRequest, List<String> fieldsRequired) {
 
-//		// Get the relevant users by filter requested
-//		List<Entity> users = entityWithAlertService.findEntitiesByFilter(userRestFilter, pageRequest, fieldsRequired);
-//
-//		// Add severity to the users
-//		setSeverityOnEntitiesList(users);
-
-//		List<Entity> users = new ArrayList<>();
-//		Entity user1 = new UsersMockBuilder(1).setWatched(true).createInstance();
-//		Entity user2 = new UsersMockBuilder(2).createInstance();
-//
-//		users.addAll(Arrays.asList(new Entity[]{user1,user2}));
-//		return users;
-
-		return entityService.findEntitiesByFilter(userRestFilter,pageRequest,null,fieldsRequired,true);
+		return entityService.findEntitiesByFilter(entityRestFilter,pageRequest,null,fieldsRequired,true);
 	}
 
 	public class EntitiesCount {
@@ -636,27 +569,27 @@ public class ApiEntityController extends BaseController {
 	/**
 	 * Add indicator on the responce if all users (relevant to this filter) are "watched"
 	 * @param usersList
-	 * @param userRestFilter
+	 * @param entityRestFilter
 	 */
-	private void addAllWatched(DataBean<List<EntityDetailsBean>> usersList, EntityRestFilter userRestFilter) {
+	private void addAllWatched(DataBean<List<EntityDetailsBean>> usersList, EntityRestFilter entityRestFilter) {
 		Map<String, Object> info = usersList.getInfo();
 		if (info == null) {
 			info = new HashMap<>();
 		}
-		Boolean oldIsWatched = userRestFilter.getIsWatched();
-		userRestFilter.setIsWatched(true);
+		Boolean oldIsWatched = entityRestFilter.getIsWatched();
+		entityRestFilter.setIsWatched(true);
 
 		//Workaround. Need to remove after Presidio GA 1.0
 
-		List<String> originalUsersTag = userRestFilter.getEntityTags();
-		userRestFilter.setEntityTags(null);
+		List<String> originalUsersTag = entityRestFilter.getEntityTags();
+		entityRestFilter.setEntityTags(null);
 
 		//End of workaround
-		info.put(ALL_WATCHED, usersList.getTotal() == entityService.countEntitiesByFilter(userRestFilter,null));
+		info.put(ALL_WATCHED, usersList.getTotal() == entityService.countEntitiesByFilter(entityRestFilter,null));
 
 		//Revert changes
-		userRestFilter.setIsWatched(oldIsWatched);
-		userRestFilter.setEntityTags(originalUsersTag);
+		entityRestFilter.setIsWatched(oldIsWatched);
+		entityRestFilter.setEntityTags(originalUsersTag);
 		//end of revert changes
 		usersList.setInfo(info);
 	}
@@ -676,30 +609,18 @@ public class ApiEntityController extends BaseController {
 
 	}
 
-//	private List<UserActivitySourceMachineDocument> getDevices(Entity user) {
-//		List<UserActivitySourceMachineDocument> userSourceMachines;
-//		try {
-//            userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(),
-//                    Integer.MAX_VALUE);
-//        } catch (Exception ex) {
-//            logger.warn("failed to get user source machines");
-//            userSourceMachines = new ArrayList<>();
-//        }
-//		return userSourceMachines;
-//	}
+	private PageRequest createPaging(EntityRestFilter entityRestFilter) {
 
-	private PageRequest createPaging(EntityRestFilter userRestFilter) {
-
-		Sort sortUserDesc = createSorting(userRestFilter.getSortField(), userRestFilter.getSortDirection());
+		Sort sortUserDesc = createSorting(entityRestFilter.getSortField(), entityRestFilter.getSortDirection());
 
 		// Create paging
 		Integer pageSize = 10;
-		if (userRestFilter.getSize() != null) {
-			pageSize = userRestFilter.getSize();
+		if (entityRestFilter.getSize() != null) {
+			pageSize = entityRestFilter.getSize();
 		}
 		Integer pageNumber = 0;
-		if (userRestFilter.getFromPage() != null) {
-			pageNumber = userRestFilter.getFromPage() - 1;
+		if (entityRestFilter.getFromPage() != null) {
+			pageNumber = entityRestFilter.getFromPage() - 1;
 		}
 		return new PageRequest(pageNumber, pageSize, sortUserDesc);
 	}
@@ -789,35 +710,6 @@ public class ApiEntityController extends BaseController {
 		ret.setData(entityDetailsBeans);
 		ret.setTotal(entityDetailsBeans.size());
 		return ret;
-	}
-
-//	private DataBean<List<UserMachinesBean>> usersMachinesAux(List<Entity> users) {
-//		List<UserMachinesBean> usersMachinesList = new ArrayList<>();
-////		for (Entity user: users) {
-//////			List<UserMachine> userMachines = entityServiceFacade.getUserMachines(user.getId());
-//////			usersMachinesList.add(new UserMachinesBean(user.getId(), userMachines));
-////		}
-//		DataBean<List<UserMachinesBean>> ret = new DataBean<>();
-//		ret.setData(usersMachinesList);
-//		ret.setTotal(usersMachinesList.size());
-//		return ret;
-//	}
-
-	private void setSeverityOnEntitiesList(List<Entity> entities) {
-		entities.forEach(this::setSeverityOnEntity);
-	}
-
-	private void setSeverityOnEntity(Entity entity) {
-//		double userScore = entity.getScore();
-//		Severity userSeverity;
-//		try {
-//			userSeverity = userScoreService.getUserSeverityForScore(userScore);
-//		} catch (RuntimeException ex) {
-//			logger.error("Cannot find entity severity for score: " + userScore);
-//			userSeverity = Severity.Low; // Handle fallback
-//		}
-//		entity.setScoreSeverity(userSeverity);
-		entity.setScoreSeverity(Severity.Critical);
 	}
 
 }

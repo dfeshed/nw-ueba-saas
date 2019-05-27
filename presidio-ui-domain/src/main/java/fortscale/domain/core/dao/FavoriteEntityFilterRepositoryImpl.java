@@ -14,11 +14,11 @@ public class FavoriteEntityFilterRepositoryImpl implements FavoriteEntityFilterR
 	private MongoTemplate mongoTemplate;
 
 	@Override public void save(EntityFilter entityFilter, String filterName) {
-		FavoriteEntityFilter favoriteUserFilter = new FavoriteEntityFilter();
-		favoriteUserFilter.setFilter(entityFilter);
-		favoriteUserFilter.setDateCreated(System.currentTimeMillis());
-		favoriteUserFilter.setFilterName(filterName);
+		FavoriteEntityFilter favoriteEntityFilter = new FavoriteEntityFilter();
+		favoriteEntityFilter.setFilter(entityFilter);
+		favoriteEntityFilter.setDateCreated(System.currentTimeMillis());
+		favoriteEntityFilter.setFilterName(filterName);
 
-		mongoTemplate.insert(favoriteUserFilter);
+		mongoTemplate.insert(favoriteEntityFilter);
 	}
 }

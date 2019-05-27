@@ -55,16 +55,16 @@ public class DemoBuilder {
 
         double maxScore =  entityWithMaxScore.getScore();
 
-        this.entities.forEach(user->{
-            double percent = 100*user.getScore()/maxScore;
+        this.entities.forEach(entity->{
+            double percent = 100*entity.getScore()/maxScore;
             if (percent<70){
-                user.setScoreSeverity(Severity.Low);
+                entity.setScoreSeverity(Severity.Low);
             } else if (percent<80){
-                user.setScoreSeverity(Severity.Medium);
+                entity.setScoreSeverity(Severity.Medium);
             } else if (percent<95){
-                user.setScoreSeverity(Severity.High);
+                entity.setScoreSeverity(Severity.High);
             } else {
-                user.setScoreSeverity(Severity.Critical);
+                entity.setScoreSeverity(Severity.Critical);
             }
         });
 
@@ -80,51 +80,34 @@ public class DemoBuilder {
         }));
     }
 
-    public Entity getEntityByName(String userName) {
+    public Entity getEntityByName(String entityName) {
         List<Entity> immutableUsersForStreaming = Collections.unmodifiableList(this.entities);
         return immutableUsersForStreaming.stream()
-                        .filter(user -> userName.equals(user.getUsername()))
+                        .filter(user -> entityName.equals(user.getUsername()))
                         .findAny()
-                        .orElse(createAndReturnUser(userName));
+                        .orElse(createAndReturnEntity(entityName));
     }
 
-    private Entity createAndReturnUser(String userName){
+    private Entity createAndReturnEntity(String entityName){
         Entity entity = new Entity();
-        entity.setMockId(userName);
-        entity.setUsername(userName);
-        entity.setNoDomainUsername(userName);
-        entity.setDisplayName(userName);
+        entity.setMockId(entityName);
+        entity.setUsername(entityName);
+        entity.setNoDomainUsername(entityName);
+        entity.setDisplayName(entityName);
         entity.setScore(0);
         entity.setScoreSeverity(Severity.Low);
-        entity.setNoDomainUsername(userName);
+        entity.setNoDomainUsername(entityName);
         entity.setAlertsCount(0);
         entity.setFollowed(false);
-        entity.setSearchField(userName);
+        entity.setSearchField(entityName);
 
         boolean isExist=this.getEntities().stream()
-                .filter(tempUser -> userName.equals(entity.getUsername()))
+                .filter(tempUser -> entityName.equals(entity.getUsername()))
                 .count()>0;
         if(isExist) {
             this.getEntities().add(entity);
         }
         return entity;
-    }
-
-    private Entity getDefaultUser(){
-        Entity def = new Entity();
-        def.setMockId("def");
-        def.setUsername("default user");
-        return def;
-    }
-
-    private void populateAlertsCountForUser(){
-        Map<String, Long> counting = alerts.stream().collect(
-                Collectors.groupingBy(Alert::getEntityName, Collectors.counting()));
-
-        counting.forEach((user,count)->{
-            getEntityByName(user).setAlertsCount(count.intValue());
-        });
-
     }
 
     private void populateEvidenceToAlerts(){
@@ -194,8 +177,8 @@ public class DemoBuilder {
         return indicators;
     }
 
-    public List<Alert> getAlertsByEntityName(String username) {
-        return alerts.stream().filter(alert -> alert.getEntityName().equals(username)).collect(Collectors.toList());
+    public List<Alert> getAlertsByEntityName(String entityName) {
+        return alerts.stream().filter(alert -> alert.getEntityName().equals(entityName)).collect(Collectors.toList());
     }
 
     public Alert getAlertsByEntityNameAndTime(String username, long startTime, long endTime, EvidenceTimeframe evidenceTimeframe) {
