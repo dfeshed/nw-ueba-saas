@@ -63,30 +63,30 @@ module('Integration | Component | events-table-container', function(hooks) {
     assert.equal(findAll('.rsa-icon-cog-filled').length, 1, 'There should be a column selector icon.');
   });
 
-  // 15 columns not including checkbox as only default table without results is being rendered
+  // 16 columns including column for checkbox though checkbox itself might be hidden if no results are populated
   test('it should show columns for Email Analysis', async function(assert) {
     await renderDefaultEventTable();
-    await assertForInvestigateColumnAndColumnSelector(assert, 15, 41, 'Email Analysis');
+    await assertForInvestigateColumnAndColumnSelector(assert, 16, 41, 'Email Analysis');
   });
 
   test('it should show columns for Malware Analysis', async function(assert) {
     await renderDefaultEventTable();
-    await assertForInvestigateColumnAndColumnSelector(assert, 15, 27, 'Malware Analysis');
+    await assertForInvestigateColumnAndColumnSelector(assert, 16, 27, 'Malware Analysis');
   });
 
   test('it should show columns for Threat Analysis', async function(assert) {
     await renderDefaultEventTable();
-    await assertForInvestigateColumnAndColumnSelector(assert, 15, 57, 'Threat Analysis');
+    await assertForInvestigateColumnAndColumnSelector(assert, 16, 57, 'Threat Analysis');
   });
 
   test('it should show columns for Web Analysis', async function(assert) {
     await renderDefaultEventTable();
-    await assertForInvestigateColumnAndColumnSelector(assert, 15, 53, 'Web Analysis');
+    await assertForInvestigateColumnAndColumnSelector(assert, 16, 53, 'Web Analysis');
   });
 
   test('it should show columns for Endpoint Analysis', async function(assert) {
     await renderDefaultEventTable();
-    await assertForInvestigateColumnAndColumnSelector(assert, 15, 32, 'Endpoint Analysis');
+    await assertForInvestigateColumnAndColumnSelector(assert, 16, 32, 'Endpoint Analysis');
   });
 
   test('it should show "no results" message only if there are zero results', async function(assert) {

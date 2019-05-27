@@ -24,15 +24,14 @@
     enableColumnSelector=true as |column|}}
     {{#with (meta-key-alias column.field language) as |names|}}
       {{#if (eq column.field 'checkbox')}}
-        {{!-- 'Select All' available only once the events are done streaming --}}
-        {{#if (not areEventsStreaming)}}
-          <label class="rsa-form-checkbox-label {{if allEventsSelected 'checked'}}">
-            {{rsa-form-checkbox
-              checked=allEventsSelected
-              change=(action 'toggleSelectAllEvents')
-            }}
-          </label>
-        {{/if}}
+        {{!-- 'Select All' enabled only once the events are done streaming & query has results --}}
+        <label class="rsa-form-checkbox-label {{if true 'disabled'}} {{if allEventsSelected 'checked'}}">
+          {{rsa-form-checkbox
+            checked=allEventsSelected
+            change=(action 'toggleSelectAllEvents')
+            disabled=isSelectAllDisabled
+          }}
+        </label>
       {{else}}
         <h2 class="title" title="{{if column.title column.title names.bothNames}}">
           {{#if (and column.field sortableColumns (not disableSort))}}

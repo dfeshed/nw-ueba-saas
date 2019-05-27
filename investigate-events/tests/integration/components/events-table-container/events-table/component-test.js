@@ -171,6 +171,7 @@ module('Integration | Component | events-table', function(hooks) {
       'correct message when partial results returned'
     );
     assert.equal(findAll('.rsa-data-table-header .rsa-form-checkbox-label').length, 1, 'Status - cancelled: Renders selectAll checkbox when all results are loaded in cancelling a query in between');
+    assert.equal(findAll('.rsa-data-table-header .rsa-form-checkbox.disabled').length, 0, 'Status - cancelled: selectAll checkbox is enabled when all results are loaded in cancelling a query in between');
     assert.equal(findAll('.rsa-data-table-body .rsa-form-checkbox-label').length, 1, 'Individual row selection checkbox available for the 1 event loaded');
   });
 
@@ -368,10 +369,11 @@ module('Integration | Component | events-table', function(hooks) {
     await render(hbs`{{events-table-container/events-table}}`);
     assert.equal(findAll('.rsa-form-checkbox-label').length, 3, 'Renders event selection checkboxes when both permission are present');
     assert.equal(findAll('.rsa-data-table-header .rsa-form-checkbox-label').length, 1, 'Status - complete: Renders selectAll checkbox when all expected data loaded');
+    assert.equal(findAll('.rsa-data-table-header .rsa-form-checkbox.disabled').length, 0, 'Status - complete: selectAll checkbox is enabled when all results are loaded in cancelling a query in between');
   });
 
 
-  test('does not render event selection checkboxes if no results found, even though permissions are present', async function(assert) {
+  test('disables event selection checkboxes if no results found, even though permissions are present', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('hasInvestigateContentExportAccess', true);
     accessControl.set('respondCanManageIncidents', true);
@@ -382,7 +384,7 @@ module('Integration | Component | events-table', function(hooks) {
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
-    assert.equal(findAll('.rsa-form-checkbox-label').length, 0, 'Does not render event selection checkboxes when both permission are present but there are 0 results');
+    assert.equal(findAll('.rsa-form-checkbox.disabled').length, 1, 'Render disabled selectAll checkbox when both permission are present but there are 0 results');
   });
 
   test('does not render event selection checkboxes if permissions are not present', async function(assert) {
@@ -400,7 +402,7 @@ module('Integration | Component | events-table', function(hooks) {
     assert.equal(findAll('.rsa-form-checkbox-label').length, 0, 'Does not render event selection checkboxes when neither permission is present');
   });
 
-  test('If the search is still under way, do not display the "Select All" checkbox', async function(assert) {
+  test('If the search is still under way, the "Select All" checkbox is disabled', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('hasInvestigateContentExportAccess', true);
     new ReduxDataHelper(setState)
@@ -412,7 +414,7 @@ module('Integration | Component | events-table', function(hooks) {
 
     await render(hbs`{{events-table-container/events-table}}`);
 
-    assert.equal(findAll('.rsa-data-table-header .rsa-form-checkbox-label').length, 0, 'Status - streaming/between-streams: Does not render selectAll checkbox');
+    assert.equal(findAll('.rsa-data-table-header .rsa-form-checkbox.disabled').length, 1, 'Status - streaming/between-streams: Render disabled  selectAll checkbox');
     assert.equal(findAll('.rsa-data-table-body .rsa-form-checkbox-label').length, 2, 'Individual row selection checkboxes available for the 2 events loaded');
   });
 });
