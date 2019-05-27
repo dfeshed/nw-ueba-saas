@@ -1,4 +1,8 @@
-{{#rsa-data-table items=nodeListCopy columnsConfig=columnsConfig enableResizeColumn=false}}
+{{#rsa-data-table
+    items=nodeListCopy
+    onRowClick=(action 'toggleSelectedRow')
+    columnsConfig=columnsConfig
+    enableResizeColumn=false}}
   {{#rsa-data-table/header currentSort=currentSort as |column|}}
     {{#if column.headerComponentClass}}
       <label class="rsa-form-checkbox-label {{if allItemsChecked 'checked'}}">

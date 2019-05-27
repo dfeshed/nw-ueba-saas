@@ -114,4 +114,12 @@ module('Integration | Component | process-node-list', function(hooks) {
     assert.strictEqual(document.querySelectorAll('.is-row-checked').length, 1, 'correct css class is added the row selection');
   });
 
+  test('clicking on the row selects the checkbox', async function(assert) {
+    this.set('nodeList', testData);
+    await render(hbs`{{process-node-list nodeList=nodeList}}`);
+    await click(document.querySelectorAll('.rsa-data-table-body-row')[2]);
+    assert.strictEqual(document.querySelectorAll('.rsa-form-checkbox-label.checked').length, 1, '1 row selected');
+    assert.strictEqual(document.querySelectorAll('.is-row-checked').length, 1, 'correct css class is added the row selection');
+  });
+
 });

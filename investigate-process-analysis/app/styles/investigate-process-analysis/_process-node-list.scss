@@ -3,7 +3,19 @@
     background-color: background-color(primary, darker);
   }
   .rsa-data-table {
+    .rsa-data-table-body {
+      overflow-x: hidden;
+    }
     height: 100%;
+    .rsa-data-table-body-cell {
+      padding: 3px 7px 0 7px;
+    }
+    .rsa-data-table-body-row {
+      left: 0;
+    }
+    .rsa-data-table-header-cell:first-child {
+      padding-left: 0.5rem;
+    }
   }
 
   svg {

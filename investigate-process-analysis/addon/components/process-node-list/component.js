@@ -15,7 +15,7 @@ const COLUMNS = [
     headerComponentClass: 'rsa-form-checkbox'
   },
   {
-    width: '10vw',
+    width: '8vw',
     field: 'data.processName',
     title: 'investigateProcessAnalysis.nodeList.processName'
   },
@@ -58,17 +58,28 @@ export default Component.extend({
     return selections.length === nodeList.length;
   },
 
+  _toggleSelection(item) {
+    set(item, 'selected', !item.selected);
+    const nodeList = this.get('nodeListCopy');
+    const selections = this.get('nodeListCopy').filter((node) => node.selected);
+
+    this.set('allItemsChecked', selections.length === nodeList.length);
+
+    if (this.onRowSelection) {
+      this.onRowSelection(nodeList);
+    }
+  },
   actions: {
     toggleSelection(item) {
-      set(item, 'selected', !item.selected);
-      const nodeList = this.get('nodeListCopy');
-      const selections = this.get('nodeListCopy').filter((node) => node.selected);
+      this._toggleSelection(item);
+    },
 
-      this.set('allItemsChecked', selections.length === nodeList.length);
-
-      if (this.onRowSelection) {
-        this.onRowSelection(nodeList);
+    toggleSelectedRow(item, index, e) {
+      const { target: { classList } } = e;
+      if (classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox')) {
+        return;
       }
+      this._toggleSelection(item);
     },
 
     toggleAllSelection(items) {
