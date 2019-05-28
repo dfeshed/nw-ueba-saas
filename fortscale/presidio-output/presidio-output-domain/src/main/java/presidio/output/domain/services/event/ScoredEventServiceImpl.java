@@ -30,11 +30,11 @@ public class ScoredEventServiceImpl implements ScoredEventService {
     }
 
     @Override
-    public Collection<ScoredEnrichedUserEvent> findDistinctScoredEnrichedUserEvent(Schema schema, String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, Set<String> distinctFieldNames, Double scoreThreshold, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize) {
+    public Collection<ScoredEnrichedUserEvent> findDistinctScoredEnrichedUserEvent(Schema schema, String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, Set<String> distinctFieldNames, Double scoreThreshold, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize, String entityType) {
 
         Map<Object, ScoredEnrichedUserEvent> scoredEnrichedEvent = new HashMap<Object, ScoredEnrichedUserEvent>();
-        int totalEvents = eventPersistencyService.countEntityEvents(schema,  contextFieldAndValue.getSecond(), timeRange, featuresFilters).intValue();
-        EventMongoPageIterator eventMongoPageIterator = new EventMongoPageIterator(eventPersistencyService, eventsPageSize, schema, contextFieldAndValue.getSecond(), timeRange, featuresFilters, totalEvents);
+        int totalEvents = eventPersistencyService.countEvents(schema,  contextFieldAndValue.getSecond(), timeRange, featuresFilters, entityType).intValue();
+        EventMongoPageIterator eventMongoPageIterator = new EventMongoPageIterator(eventPersistencyService, eventsPageSize, schema, contextFieldAndValue.getSecond(), timeRange, featuresFilters, totalEvents, entityType);
 
         while (eventMongoPageIterator.hasNext()) {
             List<? extends EnrichedUserEvent> events = eventMongoPageIterator.next();
@@ -66,10 +66,10 @@ public class ScoredEventServiceImpl implements ScoredEventService {
     }
 
 
-    public List<ScoredEnrichedUserEvent> findUserEventsAndScores(Schema schema, String adeEventType, String userId, TimeRange timeRange, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize) {
+    public List<ScoredEnrichedUserEvent> findUserEventsAndScores(Schema schema, String adeEventType, String entityId, TimeRange timeRange, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize, String entityType) {
 
         List<ScoredEnrichedUserEvent> scoredEnrichedUserEvents = new ArrayList<>();
-        EventMongoPageIterator eventMongoPageIterator = new EventMongoPageIterator(eventPersistencyService, eventsPageSize, schema, userId, timeRange, featuresFilters, eventsLimit);
+        EventMongoPageIterator eventMongoPageIterator = new EventMongoPageIterator(eventPersistencyService, eventsPageSize, schema, entityId, timeRange, featuresFilters, eventsLimit, entityType);
 
         while (eventMongoPageIterator.hasNext()) {
             // get raw events from output_ collections

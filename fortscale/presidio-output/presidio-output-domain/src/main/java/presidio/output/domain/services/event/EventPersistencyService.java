@@ -31,11 +31,11 @@ public interface EventPersistencyService {
      * @param eventsLimit
      * @return
      */
-    List<? extends EnrichedUserEvent> findEntityEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit);
+    List<? extends EnrichedUserEvent> findEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit, String entityType);
 
-    List<? extends EnrichedUserEvent> findEntityEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize);
+    List<? extends EnrichedUserEvent> readRecords(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize, String entityType);
 
-    public Long countEntityEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features);
+    public Long countEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, String entityType);
 
     EnrichedUserEvent findLatestEventForEntity(String entityId, List<String> collectionNames, String entityType);
 
