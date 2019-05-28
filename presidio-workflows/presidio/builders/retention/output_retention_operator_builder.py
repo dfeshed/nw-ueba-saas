@@ -42,7 +42,7 @@ class OutputRetentionOperatorBuilder(LoggingMixin):
         self.log.debug("populating the %s dag with output_retention tasks", dag.dag_id)
 
         output_retention = OutputRetentionOperator(
-            fixed_duration_strategy=timedelta(hours=1),
+            fixed_duration_strategy=timedelta(days=1),
             command=self._retention_command,
             schema=self.schema,
             run_clean_command_before_retry=False,

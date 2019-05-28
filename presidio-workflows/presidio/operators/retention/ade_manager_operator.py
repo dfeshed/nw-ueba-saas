@@ -1,9 +1,11 @@
+from datetime import timedelta
+
 from airflow.utils.decorators import apply_defaults
 
 from presidio.utils.airflow.schedule_interval_utils import get_schedule_interval
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
-from presidio.utils.services.time_service import convert_to_utc
+from presidio.utils.services.time_service import convert_to_utc, floor_time
 
 from presidio.utils.airflow.context_wrapper import ContextWrapper
 
@@ -45,7 +47,8 @@ class AdeManagerOperator(SpringBootJarOperator):
         """
         context_wrapper = ContextWrapper(context)
         execution_date = context_wrapper.get_execution_date()
-        until_date = execution_date + self.interval
+
+        until_date = floor_time(execution_date + self.interval, time_delta=timedelta(days=1))
 
         java_args = {
             'until_date': convert_to_utc(until_date),
