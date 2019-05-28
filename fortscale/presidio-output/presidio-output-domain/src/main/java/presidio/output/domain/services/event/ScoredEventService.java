@@ -11,8 +11,8 @@ import java.util.Set;
 
 public interface ScoredEventService {
 
-    Collection<ScoredEnrichedUserEvent> findDistinctScoredEnrichedUserEvent(Schema schema, String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, Set<String> distinctFieldNames, Double scoreThreshold, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize);
+    Collection<ScoredEnrichedUserEvent> findDistinctScoredEnrichedUserEvent(Schema schema, String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, Set<String> distinctFieldNames, Double scoreThreshold, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize, String entityType);
 
-    List<ScoredEnrichedUserEvent> findUserEventsAndScores(Schema schema, String adeEventType, String userId, TimeRange timeRange, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize);
+    List<ScoredEnrichedUserEvent> findUserEventsAndScores(Schema schema, String adeEventType, String userId, TimeRange timeRange, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize, String entityType);
 
 }

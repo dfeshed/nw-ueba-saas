@@ -1,12 +1,14 @@
 [Unit]
 Description=Presidio manager REST API daemon
-After= network.target
+After=network.target presidio-configserver.service
 
 [Service]
 User=presidio
 Group=presidio
 Type=simple
 ExecStart=/usr/bin/java -Dserver.port=8881 -jar /usr/sbin/presidio/manager/presidio-manager-webapp.jar
+Environment="OWB_ALLOW_NON_FIPS=on"
+ExecStartPost=/usr/bin/python /usr/lib/systemd/system/presidio-manager-init.py
 KillMode=mixed
 KillSignal=SIGKILL
 Restart=on-failure

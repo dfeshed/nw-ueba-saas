@@ -22,11 +22,11 @@ public interface EventRepository {
      */
     void saveEvents(String collectionName, List<? extends EnrichedEvent> events) throws Exception;
 
-    List<? extends EnrichedUserEvent> findEntityEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int limitEvents) throws Exception;
+    List<? extends EnrichedUserEvent> findEntityEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int limitEvents, String entityType) throws Exception;
 
-    long countEntityEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features);
+    long countEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, String entityType);
 
-    List<? extends EnrichedUserEvent> findEntityEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize);
+    List<? extends EnrichedUserEvent> findEntityEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize, String entityType);
 
     EnrichedUserEvent findLatestEventForEntity(String entityId, List<String> collectionNames, String entityType);
 

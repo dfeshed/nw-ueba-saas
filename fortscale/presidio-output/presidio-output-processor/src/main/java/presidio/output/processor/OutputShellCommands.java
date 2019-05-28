@@ -34,7 +34,7 @@ public class OutputShellCommands implements CommandMarker {
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration,
 
-            @CliOption(key = {CommonStrings.COMMAND_LINE_SMART_RECORD_CONF_NAME_FIELD_NAME}, help = "smart configuration name") final String configurationName
+            @CliOption(key = {CommonStrings.COMMAND_LINE_SMART_RECORD_CONF_NAME_FIELD_NAME}, mandatory = true, help = "smart configuration name") final String configurationName
 
     ) throws Exception {
         ThreadLocalWithBatchInformation.storeBatchInformation(HOURLY_OUTPUT_PROCESSOR_RUN + startTime.toString(), new TimeRange(startTime, endTime));

@@ -40,7 +40,7 @@ public class IndicatorsGeneratorForFeatureAggr implements IndicatorsGenerator {
         indicator.setType(AlertEnums.IndicatorTypes.valueOf(indicatorConfig.getType()));
         indicator.setScore(((ScoredFeatureAggregationRecord) adeAggregationRecord).getScore());
         indicator.setScoreContribution(smartAggregationRecord.getContribution());
-        Map<String, String> contexts = Collections.singletonMap(CommonStrings.CONTEXT_USERID, adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID));
+        Map<String, String> contexts = adeAggregationRecord.getContext();
         indicator.setContexts(contexts);
         indicators.add(indicator);
 

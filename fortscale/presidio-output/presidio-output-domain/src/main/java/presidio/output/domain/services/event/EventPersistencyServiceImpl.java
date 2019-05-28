@@ -50,11 +50,11 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
     }
 
     @Override
-    public List<? extends EnrichedUserEvent> findEntityEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit) {
+    public List<? extends EnrichedUserEvent> findEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit, String entityType) {
         String collectionName = toCollectionNameTranslator.toCollectionName(schema);
         List<? extends EnrichedUserEvent> events;
         try {
-            events = eventRepository.findEntityEvents(collectionName, entityId, timeRange, features, eventsLimit);
+            events = eventRepository.findEntityEvents(collectionName, entityId, timeRange, features, eventsLimit, entityType);
         } catch (Exception e) {
             String errorMsg = String.format("Failed to find events by schema %s, entity ID %s, time range %s, features %s", schema, entityId, timeRange, features);
             logger.error(errorMsg, e);
@@ -64,11 +64,11 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
     }
 
     @Override
-    public List<? extends EnrichedUserEvent> findEntityEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize) {
+    public List<? extends EnrichedUserEvent> readRecords(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize, String entityType) {
         String collectionName = toCollectionNameTranslator.toCollectionName(schema);
         List<? extends EnrichedUserEvent> events;
         try {
-            events = eventRepository.findEntityEvents(collectionName, entityId, timeRange, features, numOfItemsToSkip, pageSize);
+            events = eventRepository.findEntityEvents(collectionName, entityId, timeRange, features, numOfItemsToSkip, pageSize, entityType);
         } catch (Exception e) {
             String errorMsg = String.format("\"Failed to find events by schema %s, entity ID %s, time range %s, features %s", schema, entityId, timeRange, features);
             logger.error(errorMsg, e);
@@ -78,11 +78,11 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
     }
 
     @Override
-    public Long countEntityEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features) {
+    public Long countEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, String entityType) {
         String collectionName = toCollectionNameTranslator.toCollectionName(schema);
         long count = 0;
         try {
-            count = eventRepository.countEntityEvents(collectionName, entityId, timeRange, features);
+            count = eventRepository.countEvents(collectionName, entityId, timeRange, features, entityType);
         } catch (Exception e) {
             String errorMsg = String.format("Failed to count events by schema %s, entity ID %s, time range %s, features %s", schema, entityId, timeRange, features);
             logger.error(errorMsg, e);
