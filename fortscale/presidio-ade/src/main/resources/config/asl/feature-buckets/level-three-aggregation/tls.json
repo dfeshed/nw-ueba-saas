@@ -1,0 +1,30 @@
+{
+  "BucketConfs": [
+    {
+      "name": "sumOfBytesSentByScoresSumDstOrgSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "aggr_event.sumOfBytesSentByDstOrgSslSubjectOutboundTlsHourly"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "sumOfBytesSentByScoresSum",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstOrg"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    }
+  ]
+}

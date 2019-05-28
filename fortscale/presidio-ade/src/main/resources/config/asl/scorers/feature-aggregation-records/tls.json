@@ -41,6 +41,46 @@
       ]
     },
     {
+      "ade-event-type": "aggr_event.sumOfBytesSentByDstOrgSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "sumOfBytesSent.DstOrgSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "sumOfBytesSent.DstOrgSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "sumOfBytesSent.DstOrgSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "sumOfBytesSent.DstOrgOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "sumOfBytesSent.DstOrgOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
       "ade-event-type": "aggr_event.numberOfDistinctSrcIpJa3OutboundTlsHourly",
       "scorers": [
         {
