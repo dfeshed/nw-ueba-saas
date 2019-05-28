@@ -174,7 +174,7 @@ The following is a list of steps to perform to close out a sprint.
 
 ## Points of Contact
 ### Context Hub
-- Supernova: Pooja Shetty
+- Supernova: Aditi Garg
 ### Investigate
 - Avengers: Ramachandra Thejasvi
 - Drogon: Todd Little

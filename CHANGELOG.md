@@ -1,3 +1,23 @@
+# [12.4.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v12.4.0)
+## Features
+* [ASOC-64151](https://bedfordjira.na.rsa.net/browse/ASOC-64151):&emsp;Enforce Maximum Number of Events that can be added to an incident to 1000
+* [ASOC-73388](https://bedfordjira.na.rsa.net/browse/ASOC-73388):&emsp;Add Tabbed Interface to current query UI control
+* [ASOC-74053](https://bedfordjira.na.rsa.net/browse/ASOC-74053):&emsp;Showing MFT file details
+* [ASOC-74192](https://bedfordjira.na.rsa.net/browse/ASOC-74192):&emsp;Build "Create Incident from Events" & "Add Events to Incident" behavior in Event Analysis
+* [ASOC-75108](https://bedfordjira.na.rsa.net/browse/ASOC-75108):&emsp;Redraw the tree on single or multiple selection from the child list
+* [ASOC-75110](https://bedfordjira.na.rsa.net/browse/ASOC-75110):&emsp;Redraw all the child node on View All button
+* [ASOC-76462](https://bedfordjira.na.rsa.net/browse/ASOC-76462):&emsp;Error Handler for Save Configuration
+* [ASOC-76541](https://bedfordjira.na.rsa.net/browse/ASOC-76541):&emsp;Filter out unsupported log collectors/decoders from file policy destinations
+* [ASOC-76579](https://bedfordjira.na.rsa.net/browse/ASOC-76579):&emsp;Tech Debt: E2E component for policy details in investigation
+* [ASOC-77105](https://bedfordjira.na.rsa.net/browse/ASOC-77105):&emsp;Java 11 compatibility analysis - Source Server
+* [ASOC-77191](https://bedfordjira.na.rsa.net/browse/ASOC-77191):&emsp;Introduce "Define File Policy Settings" step to the wizard
+* [ASOC-77518](https://bedfordjira.na.rsa.net/browse/ASOC-77518):&emsp;Password Error message is incorrect
+* [ASOC-77564](https://bedfordjira.na.rsa.net/browse/ASOC-77564):&emsp;Error message for RAR Installer generation failure
+* [ASOC-77610](https://bedfordjira.na.rsa.net/browse/ASOC-77610):&emsp;Change filter popup to table
+* [ASOC-78094](https://bedfordjira.na.rsa.net/browse/ASOC-78094):&emsp;Change the text for Password on Agent packager Tab
+* [ASOC-78102](https://bedfordjira.na.rsa.net/browse/ASOC-78102):&emsp;Relay server page- Not showing Proper error message while clicking Enable check box
+
+
 # [12.3.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v12.3.0)
 ## Features
 * [ASOC-76503](https://bedfordjira.na.rsa.net/browse/ASOC-76503):&emsp;Query Builder - User Experience Issues
