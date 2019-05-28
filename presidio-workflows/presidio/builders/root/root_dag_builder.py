@@ -35,14 +35,14 @@ class RootDagBuilder(PresidioDagBuilder):
 
         conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
         retention_trigger = self._create_expanded_trigger_dag_run_operator('retention_trigger', "retention", dag,
-                                                                    python_callable=lambda context, dag_run_obj: is_execution_date_valid(context['execution_date'],
+                                                                    python_callable=lambda context, dag_run_obj: dag_run_obj if is_execution_date_valid(context['execution_date'],
                                                                     RetentionDagBuilder.get_retention_interval_in_hours(conf_reader),
                                                                     dag.schedule_interval) &
                                                                     PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
                                                                     dag,
                                                                     timedelta(days=RetentionDagBuilder.get_min_time_to_start_retention_in_days(conf_reader)),
                                                                     context['execution_date'],
-                                                                    dag.schedule_interval))
+                                                                    dag.schedule_interval) else None)
 
         triggers.append(retention_trigger)
         set_schedule_interval('retention', FIX_DURATION_STRATEGY_DAILY)
