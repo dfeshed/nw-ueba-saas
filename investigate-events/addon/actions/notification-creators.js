@@ -111,7 +111,7 @@ const _displayDownloadError = (errorMessage) => {
   if (flashMessages && flashMessages.error) {
     const i18n = lookup('service:i18n');
     errorMessage = errorMessage || i18n.t('fileExtract.error.generic');
-    flashMessages.error(errorMessage, { sticky: true });
+    flashMessages.error(errorMessage);
   }
 };
 
