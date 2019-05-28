@@ -7,9 +7,6 @@ const selectors = {
   files: '.export-files-iframe.js-export-files-iframe'
 };
 
-// For more tests on donwload functionality's integration with a component,
-// refer export-files, export-logs and export-packet under recon.
-// https://github.rsa.lab.emc.com/asoc/sa-ui/tree/master/recon/tests/integration/components/recon-event-actionbar
 module('Integration - Component - rsa-download-export', function(hooks) {
 
   setupRenderingTest(hooks);

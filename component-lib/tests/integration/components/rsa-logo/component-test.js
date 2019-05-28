@@ -1,14 +1,16 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { findAll, render } from '@ember/test-helpers';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('/rsa-logo', 'Integration | Component | rsa-logo', {
-  integration: true
-});
+module('Integration | Component | rsa-logo', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it renders', function(assert) {
-  assert.expect(1);
+  test('it renders', async function(assert) {
+    assert.expect(1);
 
-  this.render(hbs`{{rsa-logo}}`);
+    await render(hbs`{{rsa-logo}}`);
 
-  assert.equal(this.$('.rsa-logo').length, 1, 'Could not find the component root DOM element.');
+    assert.equal(findAll('.rsa-logo').length, 1, 'Could not find the component root DOM element.');
+  });
 });

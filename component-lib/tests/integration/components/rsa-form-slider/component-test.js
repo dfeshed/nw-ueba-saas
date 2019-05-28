@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import { render, find, focus, triggerKeyEvent } from '@ember/test-helpers';
+import { render, find, focus, triggerKeyEvent, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 
@@ -18,17 +18,17 @@ module('Integration | Component | range-slider', function(hooks) {
     this.set('start', [25, 75]);
     this.set('steps', 1);
     await render(hbs `{{range-slider start=start step=steps}}`);
-    assert.equal(this.$('.noUi-target').length, 1, 'Could not find the component root DOM element');
+    assert.equal(findAll('.noUi-target').length, 1, 'Could not find the component root DOM element');
   });
 
   test('it includes proper classes', async function(assert) {
     this.set('start', [25, 75]);
     this.set('steps', 1);
     await render(hbs `{{range-slider start=start step=steps}}`);
-    assert.equal(this.$('.noUi-base').length, 1, 'Testing to see if the .noUi-base class exists');
-    assert.equal(this.$('.noUi-handle-lower').length, 1, 'Testing to see if the .noUi-handle-lower class exists');
-    assert.equal(this.$('.noUi-handle-upper').length, 1, 'Testing to see if the .noUi-handle-upper class exists');
-    assert.equal(this.$('.noUi-tooltip').length, 2, 'Testing to see if the .noUi-tooltip class exists for all handles');
+    assert.equal(findAll('.noUi-base').length, 1, 'Testing to see if the .noUi-base class exists');
+    assert.equal(findAll('.noUi-handle-lower').length, 1, 'Testing to see if the .noUi-handle-lower class exists');
+    assert.equal(findAll('.noUi-handle-upper').length, 1, 'Testing to see if the .noUi-handle-upper class exists');
+    assert.equal(findAll('.noUi-tooltip').length, 2, 'Testing to see if the .noUi-tooltip class exists for all handles');
   });
 
   test('it includes the proper classes when isReadOnly is true', async function(assert) {
@@ -39,7 +39,7 @@ module('Integration | Component | range-slider', function(hooks) {
     this.set('isReadOnly', true);
     this.set('disabled', true);
     await render(hbs `{{range-slider start=start step=steps isReadOnly=isReadOnly disabled=disabled}}`);
-    assert.equal(this.$('.is-read-only').length, 1, 'Testing to see if the .is-read-only class exists');
+    assert.equal(findAll('.is-read-only').length, 1, 'Testing to see if the .is-read-only class exists');
   });
 
   test('it includes the proper classes when disabled is true', async function(assert) {
@@ -47,7 +47,7 @@ module('Integration | Component | range-slider', function(hooks) {
     this.set('steps', 1);
     this.set('disabled', true);
     await render(hbs `{{range-slider start=start step=steps disabled=disabled}}`);
-    assert.equal(this.$('.is-disabled').length, 1, 'Testing to see if the .is-disabled class exists');
+    assert.equal(findAll('.is-disabled').length, 1, 'Testing to see if the .is-disabled class exists');
   });
 
   test('it includes the proper classes when isError is true', async function(assert) {
@@ -55,15 +55,15 @@ module('Integration | Component | range-slider', function(hooks) {
     this.set('steps', 1);
     this.set('isError', true);
     await render(hbs `{{range-slider start=start step=steps isError=isError}}`);
-    assert.equal(this.$('.is-error').length, 1, 'Testing to see if the .is-error class exists');
+    assert.equal(findAll('.is-error').length, 1, 'Testing to see if the .is-error class exists');
   });
 
   test('it sets the handle positions correctly based on default values in the start array', async function(assert) {
     this.set('start', [25, 75]);
     this.set('steps', 1);
     await render(hbs `{{range-slider start=start step=steps}}`);
-    assert.equal(this.$('.noUi-handle-lower').text().trim(), this.get('start')[0], 'Lower handle default value is incorrect');
-    assert.equal(this.$('.noUi-handle-upper').text().trim(), this.get('start')[1], 'Upper handle default value is incorrect');
+    assert.equal(find('.noUi-handle-lower').textContent.trim(), this.get('start')[0], 'Lower handle default value is incorrect');
+    assert.equal(find('.noUi-handle-upper').textContent.trim(), this.get('start')[1], 'Upper handle default value is incorrect');
   });
 
   test('it renders the single handle version of the range-slider', async function(assert) {
@@ -71,9 +71,9 @@ module('Integration | Component | range-slider', function(hooks) {
     this.set('step', 1);
     this.set('connect', false);
     await render(hbs `{{range-slider start=start step=step connect=connect}}`);
-    assert.equal(this.$('.noUi-handle').length, 1, 'there is only 1 handle');
-    assert.equal(this.$('.noUi-handle-lower').length, 1, 'there is 1 .noUi-handle-lower handle');
-    assert.equal(this.$('.noUi-handle-upper').length, 0, 'there are 0 .noUi-handle-upper handles');
+    assert.equal(findAll('.noUi-handle').length, 1, 'there is only 1 handle');
+    assert.equal(findAll('.noUi-handle-lower').length, 1, 'there is 1 .noUi-handle-lower handle');
+    assert.equal(findAll('.noUi-handle-upper').length, 0, 'there are 0 .noUi-handle-upper handles');
   });
 
   test('the single handle version of the range-slider is keyboard accessible', async function(assert) {

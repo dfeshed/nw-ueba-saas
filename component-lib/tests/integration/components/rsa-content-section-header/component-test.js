@@ -1,12 +1,14 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('/rsa-content-section-header', 'Integration | Component | rsa-content-section-header', {
-  integration: true
-});
+module('Integration | Component | rsa-content-section-header', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it includes the proper classes', function(assert) {
-  this.render(hbs `{{rsa-content-section-header label='foo'}}`);
-  const header = this.$().find('.rsa-content-section-header').length;
-  assert.equal(header, 1);
+  test('it includes the proper classes', async function(assert) {
+    await render(hbs `{{rsa-content-section-header label='foo'}}`);
+    const header = this.$().find('.rsa-content-section-header').length;
+    assert.equal(header, 1);
+  });
 });

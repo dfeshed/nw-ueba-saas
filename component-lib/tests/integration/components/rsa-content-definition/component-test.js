@@ -1,20 +1,22 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('/rsa-content-definition', 'Integration | Component | rsa-content-definition', {
-  integration: true
-});
+module('Integration | Component | rsa-content-definition', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it includes the proper classes', function(assert) {
-  this.render(hbs `{{rsa-content-definition}}`);
-  const contentCount = this.$().find('.rsa-content-definition').length;
-  assert.equal(contentCount, 1);
-});
+  test('it includes the proper classes', async function(assert) {
+    await render(hbs `{{rsa-content-definition}}`);
+    const contentCount = this.$().find('.rsa-content-definition').length;
+    assert.equal(contentCount, 1);
+  });
 
-test('it includes the proper inner element', function(assert) {
-  this.render(hbs `{{#rsa-content-definition}}
-  <p class='inner-element-class'>something</p>
-  {{/rsa-content-definition}}`);
-  const contentCount = this.$().find('.inner-element-class').length;
-  assert.equal(contentCount, 1, 'Checking inner content is displayed');
+  test('it includes the proper inner element', async function(assert) {
+    await render(hbs `{{#rsa-content-definition}}
+    <p class='inner-element-class'>something</p>
+    {{/rsa-content-definition}}`);
+    const contentCount = this.$().find('.inner-element-class').length;
+    assert.equal(contentCount, 1, 'Checking inner content is displayed');
+  });
 });

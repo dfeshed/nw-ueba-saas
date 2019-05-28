@@ -1,37 +1,39 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { findAll, render } from '@ember/test-helpers';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('/rsa-application-header', 'Integration | Component | rsa-application-header', {
-  integration: true
-});
+module('Integration | Component | rsa-application-header', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it includes the proper classes', function(assert) {
-  this.render(hbs `{{rsa-application-header}}`);
-  const header = this.$().find('.rsa-application-header').length;
-  assert.equal(header, 1);
-});
-
-test('it included a link to User Preferences', function(assert) {
-  this.set('session', {
-    isAuthenticated: true
+  test('it includes the proper classes', async function(assert) {
+    await render(hbs `{{rsa-application-header}}`);
+    const header = this.$().find('.rsa-application-header').length;
+    assert.equal(header, 1);
   });
 
-  this.render(hbs `{{rsa-application-header session=session}}`);
+  test('it included a link to User Preferences', async function(assert) {
+    this.set('session', {
+      isAuthenticated: true
+    });
 
-  assert.equal(this.$('.user-preferences-trigger').length, 1);
-});
+    await render(hbs `{{rsa-application-header session=session}}`);
 
-test('it does not include help link when contextualHelp.module is not populated', function(assert) {
-  this.render(hbs `<div id="modalDestination"></div>{{rsa-application-header}}`);
+    assert.equal(findAll('.user-preferences-trigger').length, 1);
+  });
 
-  assert.equal(this.$('.global-contextual-help').length, 0);
-});
+  test('it does not include help link when contextualHelp.module is not populated', async function(assert) {
+    await render(hbs `<div id="modalDestination"></div>{{rsa-application-header}}`);
 
-test('it includes help link when contextualHelp.module is populated', function(assert) {
-  this.set('helpStub', {});
-  this.set('helpStub.module', 'foo');
+    assert.equal(findAll('.global-contextual-help').length, 0);
+  });
 
-  this.render(hbs `<div id="modalDestination"></div>{{rsa-application-header contextualHelp=helpStub}}`);
+  test('it includes help link when contextualHelp.module is populated', async function(assert) {
+    this.set('helpStub', {});
+    this.set('helpStub.module', 'foo');
 
-  assert.equal(this.$('.global-contextual-help').length, 1);
+    await render(hbs `<div id="modalDestination"></div>{{rsa-application-header contextualHelp=helpStub}}`);
+
+    assert.equal(findAll('.global-contextual-help').length, 1);
+  });
 });
