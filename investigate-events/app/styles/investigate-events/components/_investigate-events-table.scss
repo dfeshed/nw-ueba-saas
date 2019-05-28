@@ -61,10 +61,6 @@
     &__manageIncident {
       margin-top: rsa-whitespace(less);
       margin-left: rsa-whitespace(less);
-
-      .add-to-incident-button {
-        margin-left: rsa-whitespace(less);
-      }
     }
 
     &__columnGroup, &__downloadEvents {
@@ -357,32 +353,15 @@
   }
 }
 
-@media (min-width: 1300px) {
-  .recon-is-open, .recon-is-expanded {
-    .incident-buttons {
-      display: none;
-    }
-    .incident-dropdown {
-      display: inherit;
-    }
+.recon-is-open, .recon-is-expanded, .recon-is-closed {
+  .incident-buttons {
+    display: none;
   }
-  .recon-is-closed {
-    .incident-buttons {
-      display: inline-flex;
-    }
-    .incident-dropdown {
-      display: none;
-    }
+  .incident-dropdown {
+    display: inherit;
   }
-}
-
-@media (max-width: 1300px) {
-  .recon-is-open, .recon-is-expanded, .recon-is-closed {
-    .incident-buttons {
-      display: none;
-    }
-    .incident-dropdown {
-      display: inherit;
-    }
+  .selected-events-threshold {
+    position: relative;
+    color: text-color(accentFour);
   }
 }

@@ -57,6 +57,11 @@ const HeaderContainer = Component.extend({
   toggleSlaveFullScreen: () => {},
   _searchTerm: null,
 
+  /*
+   * maximum events selection limit
+   */
+  maxEventsSelectionLimit: 1000,
+
   @alias('accessControl.respondCanManageIncidents') permissionAllowsIncidentManagement: true,
 
   @computed('selectedEventIds', 'isAllEventsSelected')
@@ -97,6 +102,12 @@ const HeaderContainer = Component.extend({
       class: isSizeNotMax ? 'shrink-diagonal-2' : 'expand-diagonal-4',
       title: isSizeNotMax ? 'investigate.events.shrink' : 'investigate.events.expand'
     };
+  },
+
+  // Computed property to pass selected event Ids to respondShared for incident creation
+  @computed('selectedEventIds', 'items', 'isAllEventsSelected')
+  allSelectedEventIds(selectedEventIds, allEvents, isAllEventsSelected) {
+    return isAllEventsSelected ? allEvents.map((event) => event.sessionId) : selectedEventIds;
   },
 
   // This is the debounced execution of the searchForTerm action creator

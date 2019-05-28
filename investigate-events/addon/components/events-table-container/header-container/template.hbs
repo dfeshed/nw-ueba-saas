@@ -33,10 +33,11 @@
     {{#if permissionAllowsIncidentManagement}}
       {{incident-toolbar
         isDisabled=isIncidentButtonsDisabled
-        selectedEventIds=selectedEventIds
+        allSelectedEventIds=allSelectedEventIds
         endpointId=endpointId
         startTime=startTime
         endTime=endTime
+        limit=maxEventsSelectionLimit
         class="rsa-investigate-events-table__header__manageIncident"}}
     {{/if}}
   </div>

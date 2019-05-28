@@ -1038,7 +1038,8 @@ export default {
       error: 'User Entity Behavior Analytics is unavailable at this time. Please try again later.'
     },
     investigation: {
-      eventAnalysis: 'Event Analysis'
+      eventAnalysis: 'Event Analysis',
+      selectedEventsThresoldTooltip: 'Maximum of 1000 events will be added to incident'
     },
     errorPage: {
       serviceDown: 'Respond Server is offline',

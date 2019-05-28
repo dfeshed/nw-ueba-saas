@@ -18,6 +18,14 @@
 <div class="incident-dropdown">
   <hbox class="rsa-button-group">
     {{#rsa-form-button isDisabled=isDisabled}}
+      {{#if isSelectedEventsLimitCrossed}}
+        {{rsa-icon
+          class="selected-events-threshold"
+          style='lined'
+          size='small'
+          name='report-problem-triangle'
+          title=(t 'respond.investigation.selectedEventsThresoldTooltip')}}
+      {{/if}}
       <a {{action 'createIncident'}} class="create-incident-list-item">{{t 'respond.alerts.createIncident'}}</a>
     {{/rsa-form-button}}
     {{#click-outside action=(action "clickOutside")}}

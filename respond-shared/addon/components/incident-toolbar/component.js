@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import layout from './template';
+import computed from 'ember-computed-decorators';
 import { next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { htmlSafe } from '@ember/string';
@@ -30,6 +31,19 @@ export default Component.extend({
   isExpanded: false,
 
   offsetsStyle: null,
+
+  @computed('allSelectedEventIds', 'limit')
+  selectedEventIds(allSelectedEventIds, limit) {
+    if (!Number.isNaN(limit) && limit > 0) {
+      return allSelectedEventIds.slice(0, limit);
+    }
+    return allSelectedEventIds;
+  },
+
+  @computed('allSelectedEventIds', 'limit')
+  isSelectedEventsLimitCrossed(allSelectedEventIds, limit) {
+    return allSelectedEventIds && allSelectedEventIds.length > limit;
+  },
 
   init() {
     this._super(arguments);
