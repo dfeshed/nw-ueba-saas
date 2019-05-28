@@ -1,6 +1,39 @@
 {
   "ModelConfs": [
     {
+      "name": "sumOfBytesSent.ja3Outbound.tls.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "sumOfBytesSentByJa3OutboundTlsHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "sumOfBytesSentByJa3OutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "sumOfBytesSent.ja3Outbound.prior.tls.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "sumOfBytesSent.ja3Outbound.tls.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 1000000,
+        "distanceBetweenSegmentCenters": 1000000,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3,
+        "padding": 1000000
+      }
+    },
+    {
       "name": "numberOfDistinctSrcIp.ja3Outbound.tls.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",

@@ -1,6 +1,21 @@
 {
   "AggregatedFeatureEvents": [
     {
+      "name": "sumOfBytesSentByJa3OutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationJa3OutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
       "name": "numberOfDistinctSrcIpJa3OutboundTlsHourly",
       "type": "F",
       "bucketConfName": "srcIpHistogramJa3OutboundTlsHourly",
