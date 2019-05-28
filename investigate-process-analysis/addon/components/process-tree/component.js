@@ -497,7 +497,7 @@ const TreeComponent = Component.extend({
     }
     if (d.children) {
       d._children = d._children ? [...d._children, ...d.children] : d.children;
-      d._children = d._children.forEach((node) => {
+      d._children.forEach((node) => {
         if (node.selected) {
           set(node, 'selected', false);
         }

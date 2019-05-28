@@ -89,7 +89,7 @@ module('Integration | Component | process-tree', function(hooks) {
     return settled().then(async() => {
       assert.equal(findAll('.filter-popup').length, 1, 'Expected to render tether panel');
       await click(selectors.viewAll);
-      assert.equal(findAll('rect.process').length, 7, 'Expected to render 7 nodes after view all is clicked');
+      assert.equal(findAll('rect.process').length, 8, 'Expected to render 8 nodes after view all is clicked');
     });
   });
 
@@ -114,14 +114,14 @@ module('Integration | Component | process-tree', function(hooks) {
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     return settled().then(async() => {
       assert.equal(findAll('.filter-popup').length, 1, 'Expected to render tether panel');
-      assert.equal(findAll(selectors.processList).length, 1, '1 child is present for first node');
-      assert.equal(findAll(selectors.selectedCheckbox).length, 1, 'One of the process is selected in initial state');
+      assert.equal(findAll(selectors.processList).length, 2, '2 child is present for first node');
+      assert.equal(findAll(selectors.checkAll).length, 1, 'Select all checkbox (2)');
       await selectAll('g.process .button-wrapper#expand-4').dispatch('click');
       await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
       return settled().then(async() => {
-        assert.equal(findAll(selectors.processList).length, 3, '3 child is present for fourth node');
+        assert.equal(findAll(selectors.processList).length, 4, '4 child is present for fourth node');
         await click(selectors.viewAll);
-        assert.equal(findAll('rect.process').length, 7, 'Expected to render 7 nodes after view all is clicked');
+        assert.equal(findAll('rect.process').length, 8, 'Expected to render 8 nodes after view all is clicked');
       });
     });
   });
@@ -145,7 +145,7 @@ module('Integration | Component | process-tree', function(hooks) {
     await selectAll('g.process .button-wrapper#expand-4').dispatch('click');
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     return settled().then(async() => {
-      assert.equal(findAll(selectors.processList).length, 3, '3 child is present for fourth node');
+      assert.equal(findAll(selectors.processList).length, 4, '4 child is present for fourth node');
       await click('.process-filter-popup__content .rsa-data-table-body .rsa-form-checkbox'); // select first process
       await click(selectors.viewSelected);
       assert.equal(findAll('rect.process').length, 5, 'Expected to render 5 nodes after 1 process is selected in popup');
@@ -155,6 +155,36 @@ module('Integration | Component | process-tree', function(hooks) {
       assert.equal(findAll(selectors.selectedCheckbox).length, 1,
         'process selection is retained when same node popup shows up');
       assert.equal(find(selectors.selectedProcessCount).textContent.trim(), '1 Process selected', 'Selected process count is 1');
+    });
+  });
+
+  test('Select some process in first node. View selected process. Collapse grandchild', async function(assert) {
+    const queryInputs = {
+      sid: '1',
+      vid: '3',
+      pn: 'test',
+      st: 1231233,
+      et: 13123,
+      osType: 'windows',
+      checksum: '07d15ddf2eb7be486d01bcabab7ad8df35b7942f25f5261e3c92cd7a8931190a',
+      aid: '51687D32-BB0F-A424-1D64-A8B94C957BD2'
+    };
+    this.set('queryInput', queryInputs);
+    new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInputs).build();
+    await render(hbs`{{process-tree queryInput=queryInput}}`);
+    await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
+    assert.equal(findAll('rect.process').length, 4, 'Initially 4 nodes are rendered');
+    await selectAll('g.process .button-wrapper#expand-1').dispatch('click');
+    await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
+    return settled().then(async() => {
+      assert.equal(findAll(selectors.processList).length, 2, '2 child is present for first node');
+      await click(selectors.checkAll); // select all (2) process
+      await click(selectors.viewSelected);
+      assert.equal(findAll('rect.process').length, 5, 'Expected to render 5 nodes after 2 process is selected in popup');
+
+      await selectAll('g.process .button-wrapper#collapse-3').dispatch('click');
+      await waitUntil(() => findAll('rect.process').length === 4, { timeout: Infinity });
+      assert.equal(findAll('rect.process').length, 4, 'Expected to render 4 nodes after third node is collapsed');
     });
   });
 
@@ -178,12 +208,12 @@ module('Integration | Component | process-tree', function(hooks) {
     await selectAll('g.process .button-wrapper#expand-4').dispatch('click');
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     return settled().then(async() => {
-      assert.equal(findAll(selectors.processList).length, 3, '3 child is present for fourth node');
+      assert.equal(findAll(selectors.processList).length, 4, '4 child is present for fourth node');
       assert.equal(findAll(selectors.selectedCheckbox).length, 0, 'Initially 0 checkbox is selected');
       await click(selectors.checkAll); // select all process
-      await waitUntil(() => findAll(selectors.selectedCheckbox).length === 3, { timeout: Infinity });
+      await waitUntil(() => findAll(selectors.selectedCheckbox).length === 4, { timeout: Infinity });
       return settled().then(async() => {
-        assert.equal(findAll(selectors.selectedCheckbox).length, 3, 'Totally 3 checkbox is selected after selecting all');
+        assert.equal(findAll(selectors.selectedCheckbox).length, 4, 'Totally 4 checkbox is selected after selecting all');
 
         await selectAll('g.process .button-wrapper#expand-4').dispatch('click');
         await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
@@ -217,7 +247,7 @@ module('Integration | Component | process-tree', function(hooks) {
     await selectAll('g.process .button-wrapper#expand-2').dispatch('click');
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     return settled().then(async() => {
-      assert.equal(findAll(selectors.processList).length, 3, '3 child is present in second node');
+      assert.equal(findAll(selectors.processList).length, 1, '1 child is present in second node');
     });
   });
 
@@ -290,8 +320,9 @@ module('Integration | Component | process-tree', function(hooks) {
     return settled().then(async() => {
       assert.equal(findAll(selectors.processList).length, 1,
         '1 child is present for third node which is already displayed');
-      await click('.process-filter-popup__footer .rsa-form-button');
+      await click(selectors.viewSelected);
       assert.equal(findAll('rect.process').length, 4, 'Expected to render 4 nodes after view all is clicked');
+      assert.equal(findAll('.filter-popup').length, 0, 'Expected to close tether panel');
     });
   });
 
