@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, skip } from 'qunit';
 import Service from '@ember/service';
 import { setupTest } from 'ember-qunit';
 import Immutable from 'seamless-immutable';
@@ -41,7 +41,7 @@ module('Unit | Route | hosts.details', function(hooks) {
     return PatchedRoute.create();
   };
 
-  test('should call changeEndpointServer', async function(assert) {
+  skip('should call changeEndpointServer', async function(assert) {
     const endpointServerCreatorsMock = sinon.stub(endpointServerCreators, 'changeEndpointServer');
 
     // setup reducer and route
