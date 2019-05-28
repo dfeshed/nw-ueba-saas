@@ -21,7 +21,8 @@
     padding: rsa-whitespace();
   }
   &_switch {
-    width: 70px;
-    height: 70px;
+    position: absolute;
+    right: 0;
+    padding: rsa-whitespace();
   }
 }

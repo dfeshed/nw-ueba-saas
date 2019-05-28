@@ -17,6 +17,10 @@ export default Service.extend({
   invEndpointFileAnalysis: 'invAnalysis',
   invEndpointCertificates: 'invCertificates',
 
+  invEntities: 'InvestigateEntitiesOverview',
+  invEntitiesList: 'InvestigateEntitiesList',
+  invEntitiesAlerts: 'InvestigateEntitiesAlerts',
+
   invHosts: 'hosts',
   invFiles: 'files',
   invHostsOverview: 'Overviewhosts',

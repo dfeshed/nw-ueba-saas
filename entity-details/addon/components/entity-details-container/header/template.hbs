@@ -19,4 +19,11 @@
   {{/rsa-form-button}}
 </div>
 <div class='entity-details-container-header_switch'>
+  {{#rsa-form-button
+    isIconOnly=true
+    title=(t 'context.header.help.title')
+    click=(action 'goToHelp')
+  }}
+    {{rsa-icon name="help-circle" style="lined" }}
+  {{/rsa-form-button}}
 </div>

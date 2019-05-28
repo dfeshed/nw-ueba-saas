@@ -5,6 +5,14 @@ import { getUserFilter } from 'investigate-users/reducers/users/selectors';
 
 export default Route.extend({
   redux: service(),
+  contextualHelp: service(),
+
+  deactivate() {
+    this.set('contextualHelp.topic', null);
+  },
+  activate() {
+    this.set('contextualHelp.topic', this.get('contextualHelp.invEntitiesList'));
+  },
 
   model() {
     const redux = this.get('redux');

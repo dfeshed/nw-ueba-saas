@@ -12,7 +12,7 @@ export default Route.extend({
     this.set('contextualHelp.topic', null);
   },
   activate() {
-    this.set('contextualHelp.topic', this.get('contextualHelp.invUsers'));
+    this.set('contextualHelp.topic', this.get('contextualHelp.invEntities'));
   },
   model() {
     const redux = this.get('redux');

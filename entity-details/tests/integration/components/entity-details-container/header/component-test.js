@@ -9,8 +9,14 @@ import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchFetch } from '../../../../helpers/patch-fetch';
 import dataIndex from '../../../../data/presidio';
 import details from '../../../../data/presidio/user_details';
+import Service from '@ember/service';
 
-let setState;
+let setState, helpIds;
+const contextualHelpStub = Service.extend({
+  goToHelp: (moduleId, topicId) => {
+    helpIds = { moduleId, topicId };
+  }
+});
 
 module('Integration | Component | entity-details-container/header', function(hooks) {
   setupRenderingTest(hooks, {
@@ -24,6 +30,7 @@ module('Integration | Component | entity-details-container/header', function(hoo
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
     this.owner.register('helper:mount', function() {});
+    this.owner.register('service:contextualHelp', contextualHelpStub);
     patchFetch((url) => {
       return new Promise(function(resolve) {
         resolve({
@@ -75,5 +82,11 @@ module('Integration | Component | entity-details-container/header', function(hoo
     assert.equal(find('.entity-details-container-header_watch').textContent.trim(), 'Stop Watching');
     await click('.rsa-form-button');
     assert.equal(find('.entity-details-container-header_watch').textContent.trim(), 'Watch Profile');
+  });
+
+  test('it should allow user test contextual help', async function(assert) {
+    await render(hbs`{{entity-details-container/header}}`);
+    await click('.rsa-icon-help-circle-lined');
+    assert.deepEqual(helpIds, { moduleId: 'investigation', topicId: 'InvestigateEntityDetails' });
   });
 });
