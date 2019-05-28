@@ -65,6 +65,29 @@ const getPageOfMachines = (pageNumber, [{ key, descending } = {}], expressionLis
 };
 
 /**
+ * Executes a websocket fetch call for all downloads and returns a Promise.
+ * @returns Promise that will resolve with the server response.
+ * @public
+ */
+const getPageOfDownloadsApi = (pageNumber, key, descending, expressionList) => {
+  let data = {
+    pageNumber: pageNumber || 0,
+    pageSize: 100,
+    sort: { keys: [key], descending }
+  };
+
+  data = addFilter(data, expressionList);
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'hostDownload',
+    modelName: 'endpoint',
+    query: {
+      data
+    }
+  });
+};
+
+/**
  * Executes a websocket fetch call for all machines and returns a Promise.
  *
  * @method downloadMachine
@@ -243,6 +266,7 @@ export default {
   getAllServices,
   getAllFilters,
   getPageOfMachines,
+  getPageOfDownloadsApi,
   downloadMachine,
   createCustomSearch,
   getAllSchemas,

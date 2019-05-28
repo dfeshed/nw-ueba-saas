@@ -155,12 +155,18 @@ export const getHostDetailTabs = createSelector(
     const HOST_DETAILS_TABS_CLONE = [...HOST_DETAILS_TABS];
 
     if (isWindowsFlag) {
-      const anomaliesTab = {
+      /* Tabs that are specific to Windows; Anomalies and Downloads*/
+      const windowsSpecificTabs = [{
         label: 'investigateHosts.tabs.anomalies',
         name: 'ANOMALIES',
         componentClass: 'host-detail/anomalies'
-      };
-      HOST_DETAILS_TABS_CLONE.splice(6, 0, anomaliesTab);
+      },
+      {
+        label: 'investigateHosts.tabs.downloads',
+        name: 'DOWNLOADS',
+        componentClass: 'host-detail/downloads'
+      }];
+      HOST_DETAILS_TABS_CLONE.splice(6, 0, ...windowsSpecificTabs);
     }
     return HOST_DETAILS_TABS_CLONE.map((tab) => ({ ...tab, selected: tab.name === activeHostDetailTab }));
   }
@@ -182,4 +188,9 @@ export const getPropertyPanelTabs = createSelector(
   (activePropertyPanelTab) => {
     return PROPERTY_PANEL_TABS.map((tab) => ({ ...tab, selected: tab.name === activePropertyPanelTab }));
   }
+);
+
+export const isActiveTabDownloads = createSelector(
+  [_activeHostDetailTab],
+  (activeHostDetailTab) => activeHostDetailTab === 'DOWNLOADS'
 );

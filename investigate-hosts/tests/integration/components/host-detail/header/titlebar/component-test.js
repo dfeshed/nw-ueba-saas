@@ -4,7 +4,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
-import { render, waitUntil } from '@ember/test-helpers';
+import { render, waitUntil, findAll } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState;
@@ -44,5 +44,23 @@ module('Integration | Component | host detail header titlebar', function(hooks) 
       return redux.getState().endpoint.visuals.activeHostDetailTab === 'FILES';
     }, { timeout: 6000 });
     assert.equal(this.$('.rsa-nav-tab.is-active').text().trim().toUpperCase(), 'FILES', 'Rendered the tab name that is passed');
+  });
+
+  test('Search does not render for Downloads', async function(assert) {
+    new ReduxDataHelper(setState)
+      .hostName('XYZ')
+      .selectedTabComponent('DOWNLOADS')
+      .build();
+    await render(hbs`{{host-detail/header/titlebar}}`);
+    assert.equal(findAll('.titlebar .host-explore').length, 0, 'should not render the Search');
+  });
+
+  test('Search does render for non download tabs', async function(assert) {
+    new ReduxDataHelper(setState)
+      .hostName('XYZ')
+      .selectedTabComponent('AUTORUNS')
+      .build();
+    await render(hbs`{{host-detail/header/titlebar}}`);
+    assert.equal(findAll('.titlebar .host-explore').length, 1, 'should render the Search');
   });
 });

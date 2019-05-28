@@ -24,7 +24,7 @@ const DetailComponent = Component.extend({
       return false;
     } else {
       // if snapshots are not there show empty message for all except (overview and system tab)
-      return !['host-detail/overview', 'host-detail/system-information'].includes(selectedTabComponent);
+      return !['host-detail/overview', 'host-detail/system-information', 'host-detail/downloads'].includes(selectedTabComponent);
     }
   }
 

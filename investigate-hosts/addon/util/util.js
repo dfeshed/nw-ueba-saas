@@ -18,3 +18,13 @@ export const generateColumns = (customColumns, defaultColumns) => {
 export const getSelectedAgentIds = (selectedAgentList) => {
   return _.map(selectedAgentList.filter((agent) => agent && agent.version && !agent.version.startsWith('4.4') && agent.managed), 'id');
 };
+
+/* Checks if the clicked on file is already selected */
+
+export const isAlreadySelected = (selections, item) => {
+  let selected = false;
+  if (selections && selections.length) {
+    selected = selections.findBy('id', item.id) || false;
+  }
+  return selected;
+};

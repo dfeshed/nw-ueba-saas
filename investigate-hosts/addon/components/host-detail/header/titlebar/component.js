@@ -1,14 +1,15 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { setNewTabView } from 'investigate-hosts/actions/data-creators/details';
-import { getHostDetailTabs, isOnOverviewTab } from 'investigate-hosts/reducers/visuals/selectors';
+import { getHostDetailTabs, isOnOverviewTab, isActiveTabDownloads } from 'investigate-hosts/reducers/visuals/selectors';
 import { hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 
 const stateToComputed = (state) => ({
   hostDetailTabs: getHostDetailTabs(state),
   hostName: hostName(state),
   activeHostDetailTab: state.endpoint.visuals.activeHostDetailTab,
-  showRightPanelButton: isOnOverviewTab(state)
+  showRightPanelButton: isOnOverviewTab(state),
+  hideSnapshotAndExploreSearch: isActiveTabDownloads(state)
 });
 
 const dispatchToActions = {

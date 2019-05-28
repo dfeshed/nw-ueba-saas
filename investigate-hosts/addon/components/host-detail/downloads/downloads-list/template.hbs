@@ -1,0 +1,53 @@
+{{#rsa-data-table
+  lazy=true
+  items=files
+  selectedIndex=selectedIndex
+  columnsConfig=columnsConfig
+  onRowClick=(action 'toggleSelectedRow')}}
+  {{#rsa-data-table/header currentSort=currentSort translateTitles=true as |column|}}
+    {{#if (eq column.dataType "checkbox")}}
+      <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if isAllSelected 'checked'}}">
+        {{rsa-form-checkbox
+          checked=isAllSelected
+          change=(action 'toggleAllSelection')}}
+      </label>
+    {{else}}
+      {{t column.title}}
+      {{#unless column.disableSort}}
+        {{rsa-icon
+          click=(action 'sortData' column)
+          name="arrow-down-7"
+          class="sort"}}
+      {{/unless}}
+    {{/if}}
+  {{/rsa-data-table/header}}
+  {{#if areFilesLoading}}
+    <centered>
+      {{rsa-loader size='larger'}}
+    </centered>
+  {{else}}
+    {{#rsa-data-table/body
+      rowComponentClass=(
+        component 'host-detail.downloads.downloads-list.row'
+        selections=selections
+        deleteFiles=deleteFiles
+        saveLocalCopy=saveLocalCopy
+        beforeContextMenuShow=(action 'beforeContextMenuShow')
+      )
+      noResultsMessage=(t 'investigateHosts.downloads.errorMessages.noResultsMessage') as |item index column|}}
+      {{host-detail/downloads/downloads-list/body-cell
+        column=column
+        item=item
+        selections=selections
+        serverId=serverId
+        checkBoxAction=(action 'toggleFileSelection' item)}}
+    {{/rsa-data-table/body}}
+
+    {{endpoint/load-more
+      status=loadMoreStatus
+      serverId=serverId
+      title=(t 'investigateHosts.downloads.showNextRecords' count=nextLoadCount label='files')
+      count=totalItems
+      getMoreData=(action 'getPageOfDownloads')}}
+  {{/if}}
+{{/rsa-data-table}}

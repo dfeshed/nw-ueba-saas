@@ -12,6 +12,7 @@ import { getServiceId } from 'investigate-shared/actions/data-creators/investiga
 import { setSelectedMachineServerId } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { toggleFileAnalysisView } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
+import { getFirstPageOfDownloads } from './downloads';
 
 const _getAllSnapShots = (agentId, tabName) => {
   return (dispatch, getState) => {
@@ -131,6 +132,9 @@ const _fetchDataForSelectedTab = () => {
         if (!libraries.library) {
           dispatch(getFileContext('LIBRARY', ['LOADED_LIBRARIES']));
         }
+        break;
+      case 'DOWNLOADS':
+        dispatch(getFirstPageOfDownloads());
         break;
     }
   };

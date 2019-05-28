@@ -1,0 +1,17 @@
+<box class="files-content">
+  {{#rsa-page-layout showRightZone=false as |layout|}}
+    {{#layout.left as |leftPanel|}}
+      {{leftPanel.header iconName='filter-2' title=(t 'investigateHosts.downloads.filters.title')}}
+    {{/layout.left}}
+    {{#layout.center}}
+      <box class="downloaded-files-body">
+        {{host-detail/downloads/downloads-list
+          deleteFiles=(action 'onDeleteFilesFromServer')
+          saveLocalCopy=(action 'onSaveLocalCopy')}}
+      </box>
+      <box class="downloaded-files-footer">
+        {{host-detail/downloads/file-pagination}}
+      </box>
+    {{/layout.center}}
+  {{/rsa-page-layout}}
+</box>

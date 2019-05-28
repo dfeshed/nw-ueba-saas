@@ -11,7 +11,8 @@ const HELP_ID_MAPPING = {
   'FILES': 'contextualHelp.invHostsFiles',
   'DRIVERS': 'contextualHelp.invHostsDrivers',
   'LIBRARIES': 'contextualHelp.invHostsLibraries',
-  'SYSTEM': 'contextualHelp.invHostsSysInfo'
+  'SYSTEM': 'contextualHelp.invHostsSysInfo',
+  'DOWNLOADS': 'contextualHelp.invHostsDownloads'
 };
 
 export default Route.extend({

@@ -8,6 +8,7 @@ import {
   hasMachineId,
   selectedTabComponent,
   getPropertyPanelTabs,
+  isActiveTabDownloads,
   riskState } from 'investigate-hosts/reducers/visuals/selectors';
 
 module('Unit | selectors | visuals');
@@ -147,4 +148,26 @@ test('getPropertyPanelTabs', function(assert) {
   const result3 = getPropertyPanelTabs(state3);
   assert.equal(result3.length, 2, 'tabs count');
   assert.equal(result3.findBy('name', 'HOST_DETAILS').selected, true, 'HOST_DETAILS tab is selected');
+});
+
+test('isActiveTabDownloads', function(assert) {
+  const state1 = Immutable.from({
+    endpoint: {
+      visuals: {
+        activeHostDetailTab: 'FILES'
+      }
+    }
+  });
+
+  assert.equal(isActiveTabDownloads(state1), false);
+
+  const state2 = Immutable.from({
+    endpoint: {
+      visuals: {
+        activeHostDetailTab: 'DOWNLOADS'
+      }
+    }
+  });
+
+  assert.equal(isActiveTabDownloads(state2), true);
 });

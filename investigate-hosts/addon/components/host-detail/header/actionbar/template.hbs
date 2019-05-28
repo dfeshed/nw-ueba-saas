@@ -1,20 +1,22 @@
-<div class="divider"/>
-<div class="rsa-button-group panel-control-group">
-  <label class="rsa-form-label power-select snapshot-select">
-    <span class="label-text snap-shot-text">{{t 'investigateHosts.hosts.summary.snapshotTime'}}</span>
-    {{#power-select
-      searchEnabled=false
-      triggerClass="inline"
-      options=snapShots
-      disabled=isProcessDetailsView
-      selected=selectedSnapshot
-      onchange=(action 'setSelect') as |option|}}
-      {{#if option}}
-        {{rsa-content-datetime timestamp=option.scanStartTime }}
-      {{/if}}
-    {{/power-select}}
-  </label>
-</div>
+{{#unless hideSnapshotAndExploreSearch}}
+  <div class="divider"/>
+  <div class="rsa-button-group panel-control-group">
+    <label class="rsa-form-label power-select snapshot-select">
+      <span class="label-text snap-shot-text">{{t 'investigateHosts.hosts.summary.snapshotTime'}}</span>
+      {{#power-select
+        searchEnabled=false
+        triggerClass="inline"
+        options=snapShots
+        disabled=isProcessDetailsView
+        selected=selectedSnapshot
+        onchange=(action 'setSelect') as |option|}}
+        {{#if option}}
+          {{rsa-content-datetime timestamp=option.scanStartTime }}
+        {{/if}}
+      {{/power-select}}
+    </label>
+  </div>
+{{/unless}}
 
 <iframe src="{{downloadLink}}" class="host_export-files-iframe"></iframe>
 <div class="titlebar__buttons-holder flexi-fit">

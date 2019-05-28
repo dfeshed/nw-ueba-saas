@@ -14,7 +14,7 @@ import {
   initializeAgentDetails
 } from 'investigate-hosts/actions/data-creators/details';
 import { toggleDetailRightPanel } from 'investigate-hosts/actions/ui-state-creators';
-import { isOnOverviewTab } from 'investigate-hosts/reducers/visuals/selectors';
+import { isOnOverviewTab, isActiveTabDownloads } from 'investigate-hosts/reducers/visuals/selectors';
 
 
 const stateToComputed = (state) => ({
@@ -27,7 +27,8 @@ const stateToComputed = (state) => ({
   downloadLink: downloadLink(state),
   isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView,
   isDetailRightPanelVisible: state.endpoint.detailsInput.isDetailRightPanelVisible,
-  showRightPanelButton: isOnOverviewTab(state)
+  showRightPanelButton: isOnOverviewTab(state),
+  hideSnapshotAndExploreSearch: isActiveTabDownloads(state)
 });
 
 const dispatchToActions = {

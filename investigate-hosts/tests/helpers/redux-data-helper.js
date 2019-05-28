@@ -414,4 +414,24 @@ export default class DataHelper {
     _set(this.state, 'machines.focusedHost', value);
     return this;
   }
+
+  hostDownloads(value) {
+    _set(this.state, 'hostDownloads', value);
+    return this;
+  }
+
+  downloadsHasNext(value) {
+    _set(this.state, 'hostDownloads.downloads.hasNext', value);
+    return this;
+  }
+
+  downloadsFilterExpressionList(expressionList) {
+    _set(this.state, 'hostDownloads.filter.expressionList', expressionList);
+    return this;
+  }
+
+  areFilesLoading(areFilesLoading) {
+    _set(this.state, 'hostDownloads.downloads.areFilesLoading', areFilesLoading);
+    return this;
+  }
 }

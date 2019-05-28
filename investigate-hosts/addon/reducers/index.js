@@ -3,6 +3,7 @@ import visuals from './visuals/reducer';
 import machines from './hosts/reducer';
 import explore from './details/explore/reducer';
 import process from './details/process/reducer';
+import downloads from './details/downloads/reducer';
 import detailsInput from './details/reducer';
 import overview from './details/overview/reducer';
 import schema from './schema/reducer';
@@ -46,7 +47,12 @@ export default combineReducers({
     processes: createFilteredReducer(fileContext, reducerPredicate('PROCESS')),
     filter: createFilteredReducer(filter, reducerPredicate('MACHINE')),
     fileAnalysis,
-    risk: createFilteredReducer(risk, reducerPredicate('HOST'))
+    risk: createFilteredReducer(risk, reducerPredicate('HOST')),
+    hostDownloads: combineReducers({
+      downloads,
+      filter: createFilteredReducer(filter, reducerPredicate('HOSTDOWNLOADS'))
+    })
+
   }),
   fileStatus: createFilteredReducer(fileStatus, reducerPredicate),
   investigate: createFilteredReducer(investigate, reducerPredicate('MACHINE')),

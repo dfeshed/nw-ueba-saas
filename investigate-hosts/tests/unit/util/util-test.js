@@ -2,7 +2,8 @@ import { module, test } from 'qunit';
 
 import {
   generateColumns,
-  getSelectedAgentIds
+  getSelectedAgentIds,
+  isAlreadySelected
 } from 'investigate-hosts/util/util';
 
 module('Unit | Util');
@@ -84,4 +85,12 @@ test('Extract the agent id', function(assert) {
   assert.equal(getSelectedAgentIds(list3).length, 1, 'some agents are managed');
   const list4 = [{ id: 1, managed: false }, { id: 2, managed: true }];
   assert.equal(getSelectedAgentIds(list4).length, 0, 'list is empty because versions are undefined');
+});
+
+test('isAlreadySelected', function(assert) {
+  const selectedItems = [{ id: 1 }, { id: 2 }];
+  const result1 = isAlreadySelected(selectedItems, { id: 2 });
+  assert.deepEqual(result1, { id: 2 });
+  const result2 = isAlreadySelected(selectedItems, { id: 3 });
+  assert.equal(result2, false);
 });

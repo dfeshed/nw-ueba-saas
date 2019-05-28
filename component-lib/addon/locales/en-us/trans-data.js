@@ -2825,6 +2825,38 @@ export default {
         }
       }
     },
+    downloads: {
+      filters: {
+        title: 'Filters',
+        fileType: 'File Type',
+        mft: 'MFT',
+        files: 'File',
+        memoryDump: 'Memory Dump',
+        fileName: 'File Name',
+        checksum: 'checksumSha256',
+        requestTime: 'Request time'
+      },
+      errorMessages: {
+        invalidFilterInputLength: 'Filter input longer than 256 characters',
+        invalidCharsAlphaNumericOnly: 'Special characters are not allowed',
+        noResultsMessage: 'No downloads found'
+      },
+      tableHeader: {
+        filename: 'File name',
+        fileType: 'Type',
+        downloaded: 'Downloaded',
+        fileSize: 'Size',
+        downloadedTime: 'Date Requested',
+        agentId: 'Id of the agent',
+        hash: 'checksumSha256'
+      },
+      buttons: {
+        saveLocalCopy: 'Save local copy',
+        delete: 'Delete file'
+      },
+      showNextRecords: 'Show next {{count}} {{label}}',
+      footer: 'Showing {{count}} out of {{total}} {{label}} | {{selectedItems}} selected'
+    },
     tabs: {
       overview: 'Details',
       process: 'Processes',
@@ -2856,7 +2888,8 @@ export default {
       policyDetails: 'Policy Details',
       riskDetails: 'Risk Details',
       localRiskDetails: 'Local Risk Details',
-      fileDetails: 'File Details'
+      fileDetails: 'File Details',
+      downloads: 'Downloads'
     },
     context: {
       score: 'Score',

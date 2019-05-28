@@ -102,4 +102,22 @@ module('Integration | Component | host detail actionbar', function(hooks) {
     await click(findAll('.open-properties button')[0]);
     assert.equal(findAll('.is-active').length, 0, 'Right panel is hidden');
   });
+
+  test('snapshot power select does not render for Downloads', async function(assert) {
+    new ReduxDataHelper(setState)
+      .snapShot(snapShot)
+      .selectedTabComponent('DOWNLOADS')
+      .build();
+    await render(hbs`{{host-detail/header/actionbar}}`);
+    assert.equal(findAll('.actionbar .power-select').length, 0, 'should not render the power-select');
+  });
+
+  test('snapshot power select does not render for non download tabs', async function(assert) {
+    new ReduxDataHelper(setState)
+      .snapShot(snapShot)
+      .selectedTabComponent('AUTORUNS')
+      .build();
+    await render(hbs`{{host-detail/header/actionbar}}`);
+    assert.equal(findAll('.actionbar .power-select').length, 1, 'should render the power-select');
+  });
 });
