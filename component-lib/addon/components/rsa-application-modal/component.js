@@ -46,6 +46,10 @@ export default Component.extend({
       if (this.get('autoOpen')) {
         this.openModal();
       }
+
+      // clear inlinestyles that get appended and break the cursor styles
+      // https://bedfordjira.na.rsa.net/browse/ASOC-77271
+      this.get('element').setAttribute('style', '');
     });
   },
 

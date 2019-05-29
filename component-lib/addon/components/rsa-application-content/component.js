@@ -1,7 +1,7 @@
 import Component from '@ember/component';
-import { run } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import layout from './template';
+import { schedule, run } from '@ember/runloop';
 
 export default Component.extend({
 
@@ -53,6 +53,15 @@ export default Component.extend({
 
   click(event) {
     this.get('eventBus').trigger('rsa-application-click', event.target);
+  },
+
+  didInsertElement() {
+    this._super(...arguments);
+    schedule('afterRender', () => {
+      // clear inlinestyles that get appended and break the cursor styles
+      // https://bedfordjira.na.rsa.net/browse/ASOC-77271
+      this.get('element').setAttribute('style', '');
+    });
   },
 
   init() {
