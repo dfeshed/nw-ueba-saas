@@ -26,23 +26,11 @@ export default Component.extend({
     this._super(...arguments);
     const oldSelect = this.get('oldSelect');
     const newSelect = this.set('oldSelect', this.get('select'));
-    // if no selection on init
     if (!oldSelect) {
       return;
     }
-    // We need to update the input field with value of the selected option
-    // whenever we're closing the select box.
-    if (oldSelect.isOpen && !newSelect.isOpen && newSelect.searchText) {
-      const input = document.querySelector(`#ember-power-select-typeahead-input-${newSelect.uniqueId}`);
-      const newText = this.getSelectedAsText();
-      if (input.value !== newText) {
-        input.value = newText;
-      }
-      this.set('text', newText);
-    }
-
-    if (oldSelect.selected !== newSelect.selected) {
-      this.set('text', this.getSelectedAsText());
+    if (oldSelect.searchText !== newSelect.searchText) {
+      this.set('text', newSelect.searchText);
     }
   },
 
@@ -109,28 +97,5 @@ export default Component.extend({
         return false;
       }
     }
-  },
-
-  /**
-   * obtains seleted value based on complex object or primitive value from
-   * power-select publicAPI
-   *
-   * @private
-   * @method getSelectedAsText
-   */
-  getSelectedAsText() {
-    const labelPath = this.get('extra.labelPath');
-    let value;
-    if (labelPath) {
-      // complex object
-      value = this.get(`select.selected.${labelPath}`);
-    } else {
-      // primitive value
-      value = this.get('select.selected');
-    }
-    if (value === undefined) {
-      value = '';
-    }
-    return value;
   }
 });

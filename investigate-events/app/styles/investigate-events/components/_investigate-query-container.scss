@@ -830,7 +830,8 @@
     text-overflow: unset;
     .shadow-text {
       visibility: hidden;
-      padding: 0 1px;// helps prevent subpixel difference between span and input
+      white-space: pre;
+      padding: 0 2px;// helps prevent subpixel difference between span and input
     }
     input {
       position: absolute;
