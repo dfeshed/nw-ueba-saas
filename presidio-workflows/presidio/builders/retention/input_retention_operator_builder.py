@@ -35,7 +35,6 @@ class InputRetentionOperatorBuilder(LoggingMixin):
         self.log.debug("populating the %s dag with input_retention tasks", dag.dag_id)
 
         input_retention_operator = InputRetentionOperator(
-            fixed_duration_strategy=timedelta(days=1),
             command=self._retention_command,
             schema=self.schema,
             run_clean_command_before_retry=False,

@@ -70,7 +70,7 @@ public class OutputShellCommands implements CommandMarker {
         return executionService.doCleanAlertsByTimeRange(startTime, endTime, entityType);
     }
 
-    @CliCommand(value = "applyRetentionPolicy", help = "clean alerts from start of time to specified endTime minus configured time and entity type")
+    @CliCommand(value = "applyRetentionPolicy", help = "clean alerts up to specified date and entity type")
     public int applyRetentionPolicy(
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, help = "alerts with (logical) time greater than specified start time will be processed") final Instant startTime,
 

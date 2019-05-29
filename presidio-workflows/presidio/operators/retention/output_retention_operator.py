@@ -1,9 +1,9 @@
 from airflow.utils.decorators import apply_defaults
 
-from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
+from presidio.utils.airflow.operators.retention.retention_operator import RetentionOperator
 
 
-class OutputRetentionOperator(FixedDurationJarOperator):
+class OutputRetentionOperator(RetentionOperator):
     """
     Runs an output retention task (a JAR file) using a bash command.
     The c'tor accepts the task arguments that are constant throughout the
@@ -15,7 +15,7 @@ class OutputRetentionOperator(FixedDurationJarOperator):
     ui_color = '#A6E6A6'
 
     @apply_defaults
-    def __init__(self, fixed_duration_strategy, command, schema, task_id=None, *args, **kwargs):
+    def __init__(self, command, schema, task_id=None, *args, **kwargs):
         """
         C'tor.
         :param fixed_duration_strategy: The duration covered by the aggregations (e.g. hourly or daily)
@@ -27,9 +27,7 @@ class OutputRetentionOperator(FixedDurationJarOperator):
         """
         self.log.debug('input operator init kwargs=%s', str(kwargs))
 
-        self.fixed_duration_strategy = fixed_duration_strategy
         self.task_id = task_id or 'output_retention_{0}'.format(schema)
-
         self.log.debug('agg operator. command=%s', command)
         self.schema = schema
 
@@ -39,7 +37,6 @@ class OutputRetentionOperator(FixedDurationJarOperator):
 
         super(OutputRetentionOperator, self).__init__(
             task_id=self.task_id,
-            fixed_duration_strategy=self.fixed_duration_strategy,
             command=command,
             java_args=java_args,
             *args,

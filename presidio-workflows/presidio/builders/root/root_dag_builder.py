@@ -6,11 +6,10 @@ from presidio.builders.retention.retention_dag_builder import RetentionDagBuilde
 from presidio.factories.abstract_dag_factory import AbstractDagFactory
 from presidio.factories.indicator_dag_factory import IndicatorDagFactory
 from presidio.utils.airflow.operators.sensor.root_dag_gap_sensor_operator import RootDagGapSensorOperator
-
 from presidio.utils.airflow.schedule_interval_utils import set_schedule_interval
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
-from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid, FIX_DURATION_STRATEGY_DAILY
+from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid_first_interval
 
 
 class RootDagBuilder(PresidioDagBuilder):
@@ -35,7 +34,7 @@ class RootDagBuilder(PresidioDagBuilder):
 
         conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
         retention_trigger = self._create_expanded_trigger_dag_run_operator('retention_trigger', "retention", dag,
-                                                                    python_callable=lambda context, dag_run_obj: dag_run_obj if is_execution_date_valid(context['execution_date'],
+                                                                    python_callable=lambda context, dag_run_obj: dag_run_obj if is_execution_date_valid_first_interval(context['execution_date'],
                                                                     RetentionDagBuilder.get_retention_interval_in_hours(conf_reader),
                                                                     dag.schedule_interval) &
                                                                     PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
@@ -45,7 +44,6 @@ class RootDagBuilder(PresidioDagBuilder):
                                                                     dag.schedule_interval) else None)
 
         triggers.append(retention_trigger)
-        set_schedule_interval('retention', FIX_DURATION_STRATEGY_DAILY)
 
         dag_ids = AbstractDagFactory.get_registered_dag_ids()
 

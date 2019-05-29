@@ -43,6 +43,43 @@ def is_execution_date_valid(date_time, fixed_duration_strategy, interval):
     return is_last
 
 
+def is_execution_date_valid_first_interval(date_time, fixed_duration_strategy, interval):
+    """
+    If interval greater than fixed_duration the date_time is valid,
+    Otherwise checks whether the given date_time is the first interval of fixed_duration_strategy
+
+    e.g:
+        valid date_time:
+            date_time = datetime(2014, 11, 28, 0, 0, 0)
+            interval = timedelta(minutes=5)
+            fixed_duration = timedelta(days=1)
+        invalid date_time:
+            date_time = datetime(2014, 11, 28, 13, 40, 0)
+            interval = timedelta(minutes=5)
+            fixed_duration = timedelta(days=1)
+
+    :param date_time: The timestamp to check
+    :type date_time: datetime.datetime
+    :param fixed_duration_strategy:
+    :type fixed_duration_strategy: datetime.timedelta
+    :param interval:
+    :type interval: datetime.timedelta
+    :return: boolean
+    """
+    is_last = True
+    interval = interval.total_seconds()
+
+    if interval < fixed_duration_strategy.total_seconds():
+        date = datetime_to_epoch(date_time)
+        date_round = floor_time(date_time,
+                                time_delta=fixed_duration_strategy)
+        time = datetime_to_epoch(date_round) + interval
+
+        is_last = date < time
+
+    return is_last
+
+
 def fixed_duration_strategy_to_string(fixed_duration_strategy):
     """
     Returns a string representation of the given fixed_duration_strategy.

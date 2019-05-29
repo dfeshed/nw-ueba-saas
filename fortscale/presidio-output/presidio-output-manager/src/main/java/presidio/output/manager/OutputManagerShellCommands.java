@@ -17,15 +17,11 @@ public class OutputManagerShellCommands implements CommandMarker {
     @Autowired
     private OutputManagerService outputManagerService;
 
-    @CliCommand(value = "clean-documents", help = "clean output documents for specified time range ")
+    @CliCommand(value = "clean-documents", help = "clean output documents up to specified date")
     public void cleanDocuments(
             @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime,
 
-            @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, help = "events schemas") final Schema[] schemas,
-
-            @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
-
-            @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration
+            @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, help = "events schemas") final Schema[] schemas
             ) throws Exception {
         outputManagerService.cleanDocuments(endTime, schemas);
     }
