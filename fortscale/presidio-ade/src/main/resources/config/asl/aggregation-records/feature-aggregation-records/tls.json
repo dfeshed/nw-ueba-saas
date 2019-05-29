@@ -16,7 +16,7 @@
       }
     },
     {
-      "name": "sumOfBytesSentByDstOrgOutboundTlsHourly",
+      "name": "sumOfBytesSentToDstOrgOutboundTlsHourly",
       "type": "F",
       "bucketConfName": "numOfBytesSentSummationDstOrgOutboundTlsHourly",
       "numberOfBuckets": 1,
@@ -31,7 +31,7 @@
       }
     },
     {
-      "name": "sumOfBytesSentByDstOrgSslSubjectOutboundTlsHourly",
+      "name": "sumOfBytesSentToDstOrgSslSubjectOutboundTlsHourly",
       "type": "F",
       "bucketConfName": "numOfBytesSentSummationDstOrgSslSubjectOutboundTlsHourly",
       "numberOfBuckets": 1,
@@ -46,7 +46,7 @@
       }
     },
     {
-      "name": "sumOfBytesSentByDstPortOutboundTlsHourly",
+      "name": "sumOfBytesSentToDstPortOutboundTlsHourly",
       "type": "F",
       "bucketConfName": "numOfBytesSentSummationDstPortOutboundTlsHourly",
       "numberOfBuckets": 1,
@@ -61,7 +61,7 @@
       }
     },
     {
-      "name": "sumOfBytesSentByDstPortSslSubjectOutboundTlsHourly",
+      "name": "sumOfBytesSentToDstPortSslSubjectOutboundTlsHourly",
       "type": "F",
       "bucketConfName": "numOfBytesSentSummationDstPortSslSubjectOutboundTlsHourly",
       "numberOfBuckets": 1,
@@ -76,7 +76,7 @@
       }
     },
     {
-      "name": "sumOfBytesSentByDomainOutboundTlsHourly",
+      "name": "sumOfBytesSentToDomainOutboundTlsHourly",
       "type": "F",
       "bucketConfName": "numOfBytesSentSummationDomainOutboundTlsHourly",
       "numberOfBuckets": 1,
@@ -91,7 +91,7 @@
       }
     },
     {
-      "name": "sumOfBytesSentByDomainSslSubjectOutboundTlsHourly",
+      "name": "sumOfBytesSentToDomainSslSubjectOutboundTlsHourly",
       "type": "F",
       "bucketConfName": "numOfBytesSentSummationDomainSslSubjectOutboundTlsHourly",
       "numberOfBuckets": 1,

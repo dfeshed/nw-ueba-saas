@@ -37,13 +37,13 @@
       "name": "sumOfBytesSent.dstOrgOutbound.tls.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
-        "aggregatedFeatureEventConfName": "sumOfBytesSentByDstOrgOutboundTlsHourly"
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToDstOrgOutboundTlsHourly"
       },
       "retriever": {
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "sumOfBytesSentByDstOrgOutboundTlsHourly"
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToDstOrgOutboundTlsHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder",
@@ -70,13 +70,13 @@
       "name": "sumOfBytesSent.dstPortOutbound.tls.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
-        "aggregatedFeatureEventConfName": "sumOfBytesSentByDstPortOutboundTlsHourly"
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToDstPortOutboundTlsHourly"
       },
       "retriever": {
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "sumOfBytesSentByDstPortOutboundTlsHourly"
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToDstPortOutboundTlsHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder",
@@ -103,13 +103,13 @@
       "name": "sumOfBytesSent.domainOutbound.tls.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
-        "aggregatedFeatureEventConfName": "sumOfBytesSentByDomainOutboundTlsHourly"
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToDomainOutboundTlsHourly"
       },
       "retriever": {
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "sumOfBytesSentByDomainOutboundTlsHourly"
+        "aggregatedFeatureEventConfName": "sumOfBytesSentToDomainOutboundTlsHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder",

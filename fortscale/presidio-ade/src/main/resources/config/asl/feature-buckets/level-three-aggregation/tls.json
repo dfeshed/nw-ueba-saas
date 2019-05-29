@@ -6,12 +6,12 @@
         "sslSubject"
       ],
       "adeEventTypes": [
-        "aggr_event.sumOfBytesSentByDstOrgSslSubjectOutboundTlsHourly"
+        "aggr_event.sumOfBytesSentToDstOrgSslSubjectOutboundTlsHourly"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "sumOfBytesSentByScoresSum",
+          "name": "sumOfBytesSentScoresSum",
           "featureNamesMap": {
             "groupBy": [
               "context.dstOrg"
@@ -32,12 +32,12 @@
         "sslSubject"
       ],
       "adeEventTypes": [
-        "aggr_event.sumOfBytesSentByDstPortSslSubjectOutboundTlsHourly"
+        "aggr_event.sumOfBytesSentToDstPortSslSubjectOutboundTlsHourly"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "sumOfBytesSentByScoresSum",
+          "name": "sumOfBytesSentScoresSum",
           "featureNamesMap": {
             "groupBy": [
               "context.dstPort"
@@ -58,12 +58,12 @@
         "sslSubject"
       ],
       "adeEventTypes": [
-        "aggr_event.sumOfBytesSentByDomainSslSubjectOutboundTlsHourly"
+        "aggr_event.sumOfBytesSentToDomainSslSubjectOutboundTlsHourly"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "sumOfBytesSentByScoresSum",
+          "name": "sumOfBytesSentScoresSum",
           "featureNamesMap": {
             "groupBy": [
               "context.domain"

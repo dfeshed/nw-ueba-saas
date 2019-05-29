@@ -8,7 +8,7 @@
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "sumOfBytesSentByScoresSum"
+          "sumOfBytesSentScoresSum"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -23,7 +23,7 @@
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "sumOfBytesSentByScoresSum"
+          "sumOfBytesSentScoresSum"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -38,7 +38,7 @@
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "sumOfBytesSentByScoresSum"
+          "sumOfBytesSentScoresSum"
         ]
       },
       "aggregatedFeatureEventFunction": {

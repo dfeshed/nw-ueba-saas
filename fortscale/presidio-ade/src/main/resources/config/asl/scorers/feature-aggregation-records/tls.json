@@ -41,7 +41,7 @@
       ]
     },
     {
-      "ade-event-type": "aggr_event.sumOfBytesSentByDstOrgSslSubjectOutboundTlsHourly",
+      "ade-event-type": "aggr_event.sumOfBytesSentToDstOrgSslSubjectOutboundTlsHourly",
       "scorers": [
         {
           "type": "low-values-score-reducer",
@@ -81,7 +81,7 @@
       ]
     },
     {
-      "ade-event-type": "aggr_event.sumOfBytesSentByDstPortSslSubjectOutboundTlsHourly",
+      "ade-event-type": "aggr_event.sumOfBytesSentToDstPortSslSubjectOutboundTlsHourly",
       "scorers": [
         {
           "type": "low-values-score-reducer",
@@ -121,7 +121,7 @@
       ]
     },
     {
-      "ade-event-type": "aggr_event.sumOfBytesSentByDomainSslSubjectOutboundTlsHourly",
+      "ade-event-type": "aggr_event.sumOfBytesSentToDomainSslSubjectOutboundTlsHourly",
       "scorers": [
         {
           "type": "low-values-score-reducer",
