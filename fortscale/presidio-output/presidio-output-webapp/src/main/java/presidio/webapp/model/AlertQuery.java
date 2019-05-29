@@ -42,8 +42,8 @@ public class AlertQuery {
     @JsonProperty("tags")
     private List<String> tags = new ArrayList<String>();
 
-    @JsonProperty("entityName")
-    private List<String> entityName = new ArrayList<String>();
+    @JsonProperty("entityNames")
+    private List<String> entityNames = new ArrayList<String>();
 
     @JsonProperty("classification")
     private List<String> classification = new ArrayList<String>();
@@ -182,17 +182,17 @@ public class AlertQuery {
     }
 
     /**
-     * Get entityName
+     * Get entityNames
      *
-     * @return entityName
+     * @return entityNames
      **/
     @ApiModelProperty(value = "")
-    public List<String> getEntityName() {
-        return entityName;
+    public List<String> getEntityNames() {
+        return entityNames;
     }
 
-    public void setEntityName(List<String> entityName) {
-        this.entityName = entityName;
+    public void setEntityNames(List<String> entityNames) {
+        this.entityNames = entityNames;
     }
 
     /**
@@ -324,7 +324,7 @@ public class AlertQuery {
                 Objects.equals(this.startTimeTo, alertQuery.startTimeTo) &&
                 Objects.equals(this.feedback, alertQuery.feedback) &&
                 Objects.equals(this.tags, alertQuery.tags) &&
-                Objects.equals(this.entityName, alertQuery.entityName) &&
+                Objects.equals(this.entityNames, alertQuery.entityNames) &&
                 Objects.equals(this.classification, alertQuery.classification) &&
                 Objects.equals(this.indicatorsName, alertQuery.indicatorsName) &&
                 Objects.equals(this.entityDocumentIds, alertQuery.entityDocumentIds) &&
@@ -337,7 +337,7 @@ public class AlertQuery {
 
     @Override
     public int hashCode() {
-        return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, entityName, classification, indicatorsName, entityDocumentIds, sortFieldNames, severity, expand, sortDirection, aggregateBy);
+        return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, entityNames, classification, indicatorsName, entityDocumentIds, sortFieldNames, severity, expand, sortDirection, aggregateBy);
 
     }
 
@@ -354,7 +354,7 @@ public class AlertQuery {
         sb.append("    startTimeTo: ").append(toIndentedString(startTimeTo)).append("\n");
         sb.append("    feedback: ").append(toIndentedString(feedback)).append("\n");
         sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
-        sb.append("    entityName: ").append(toIndentedString(entityName)).append("\n");
+        sb.append("    entityNames: ").append(toIndentedString(entityNames)).append("\n");
         sb.append("    classification: ").append(toIndentedString(classification)).append("\n");
         sb.append("    indicatorsName: ").append(toIndentedString(indicatorsName)).append("\n");
         sb.append("    entityDocumentIds: ").append(toIndentedString(entityDocumentIds)).append("\n");

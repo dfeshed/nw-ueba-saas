@@ -54,7 +54,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         if (alertData != null) {
             resultAlert = createRestAlert(alertData);
             if (expand) {
-                List<Indicator> restIndicators = new ArrayList<Indicator>();
+                List<Indicator> restIndicators = new ArrayList<>();
                 Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(id, new PageRequest(pageNumber, pageSize));
                 for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
                     // workaround - projection doesn't work
@@ -84,7 +84,7 @@ public class RestAlertServiceImpl implements RestAlertService {
                 presidio.webapp.model.Alert restAlert = createRestAlert(alert);
                 if (alertQuery.getExpand()) {
                     // TODO: improve performance with in query
-                    List<Indicator> restIndicators = new ArrayList<Indicator>();
+                    List<Indicator> restIndicators = new ArrayList<>();
                     Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(alert.getId(), new PageRequest(pageNumber, pageSize));
                     for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
                         indicator.setHistoricalData(null);
@@ -162,8 +162,8 @@ public class RestAlertServiceImpl implements RestAlertService {
         if (CollectionUtils.isNotEmpty(alertQuery.getEntityDocumentIds())) {
             alertQueryBuilder.filterByEntityDocumentId(alertQuery.getEntityDocumentIds());
         }
-        if (CollectionUtils.isNotEmpty(alertQuery.getEntityName())) {
-            alertQueryBuilder.filterByEntityName(alertQuery.getEntityName());
+        if (CollectionUtils.isNotEmpty(alertQuery.getEntityNames())) {
+            alertQueryBuilder.filterByEntityName(alertQuery.getEntityNames());
         }
         if (alertQuery.getPageSize() != null) {
             alertQueryBuilder.setPageSize(alertQuery.getPageSize());
