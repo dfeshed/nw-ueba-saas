@@ -41,4 +41,4 @@ def test_valid_build():
 
     dag = SmartDagBuilder().build(dag)
 
-    assert dag.task_count == 14
+    assert dag.task_count == 12
