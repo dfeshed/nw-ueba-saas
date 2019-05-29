@@ -30,7 +30,7 @@ public class OutputForwardService {
         this.metricCollectingService = metricCollectingService;
     }
 
-    public int forward(Instant startDate, Instant endDate) {
+    public int forward(Instant startDate, Instant endDate, String configurationName) {
         logger.info(String.format("about to forward data from %s to %s", startDate, endDate));
 
         forwardUsers(startDate, endDate);

@@ -22,7 +22,7 @@ import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 import presidio.output.processor.services.OutputMonitoringService;
 import presidio.output.processor.services.alert.AlertService;
-import presidio.output.processor.services.user.UserService;
+import presidio.output.processor.services.entity.EntityService;
 import presidio.output.processor.spring.AlertServiceElasticConfig;
 import presidio.output.processor.spring.OutputMonitoringConfiguration;
 
@@ -72,7 +72,7 @@ public class OutputProcessorTestConfiguration {
     private AlertService alertService;
 
     @Autowired
-    private UserService userService;
+    private EntityService entityService;
 
     @Autowired
     private EventPersistencyService eventPersistencyService;
@@ -97,7 +97,7 @@ public class OutputProcessorTestConfiguration {
 
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, eventPersistencyService,
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, entityService, eventPersistencyService,
                 outputMonitoringService, smartThreshold, smartPageSize, alertPageSize, retentionEnrichedEventsDays,
                 retentionOutputDataDays);
     }

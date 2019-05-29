@@ -132,6 +132,8 @@
         <auto-service.version>1.0-rc3</auto-service.version>
         <spring-context-support.version>${spring.version}</spring-context-support.version>
         <spring-test.version>4.3.20.RELEASE</spring-test.version>
+        <jackson.version>2.9.8</jackson.version>
+        <log4j.version>2.11.2</log4j.version>
     </properties>
 
     <dependencyManagement>
@@ -203,6 +205,11 @@
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-csv</artifactId>
                 <version>${jackson.dataformat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
@@ -436,10 +443,12 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>

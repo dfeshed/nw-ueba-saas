@@ -12,8 +12,6 @@ import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +24,7 @@ public class Alert extends AbstractElasticDocument {
 
     // field names
     public static final String CLASSIFICATIONS = "classifications";
-    public static final String USER_NAME = "userName";
+    public static final String ENTITY_NAME = "entityName";
     public static final String START_DATE = "startDate";
     public static final String END_DATE = "endDate";
     public static final String SCORE = "score";
@@ -34,33 +32,38 @@ public class Alert extends AbstractElasticDocument {
     public static final String INDICATOR_NAMES = "indicatorsNames";
     public static final String TIMEFRAME = "timeframe";
     public static final String SEVERITY = "severity";
-    public static final String VENDOR_USER_ID = "vendorUserId";
-    public static final String USER_ID = "userId";
+    public static final String VENDOR_ENTITY_ID = "vendorEntityId";
+    public static final String ENTITY_DOCUMENT_ID = "entityDocumentId";
     public static final String SMART_ID = "smartId";
-    public static final String USER_TAGS_FIELD_NAME = "userTags";
-    public static final String CONTRIBUTION_TO_USER_SCORE_FIELD_NAME = "contributionToUserScore";
+    public static final String ENTITY_TAGS_FIELD_NAME = "entityTags";
+    public static final String CONTRIBUTION_TO_ENTITY_SCORE_FIELD_NAME = "contributionToEntityScore";
     public static final String AGGR_SEVERITY_PER_DAY = "severityPerDay";
-    public static final String INDEXED_USER_NAME = "indexedUserName";
+    public static final String INDEXED_ENTITY_NAME = "indexedEntityName";
     public static final String FEEDBACK = "feedback";
+    public static final String ENTITY_TYPE = "entityType";
+
 
 
     @JsonProperty(CLASSIFICATIONS)
     private List<String> classifications;
 
-    @JsonProperty(USER_NAME)
-    private String userName;
+    @JsonProperty(ENTITY_NAME)
+    private String entityName;
 
-    @JsonProperty(INDEXED_USER_NAME)
-    private String indexedUserName;
+    @JsonProperty(INDEXED_ENTITY_NAME)
+    private String indexedEntityName;
 
     @JsonProperty(SMART_ID)
     private String smartId;
 
-    @JsonProperty(USER_ID)
-    private String userId;
+    @JsonProperty(ENTITY_DOCUMENT_ID)
+    private String entityDocumentId;
 
-    @JsonProperty(VENDOR_USER_ID)
-    private String vendorUserId;
+    @JsonProperty(ENTITY_TYPE)
+    private String entityType;
+
+    @JsonProperty(VENDOR_ENTITY_ID)
+    private String vendorEntityId;
 
     @JsonProperty(START_DATE)
     private Date startDate;
@@ -89,11 +92,11 @@ public class Alert extends AbstractElasticDocument {
     @ToStringExclude
     private transient List<Indicator> indicators;
 
-    @JsonProperty(USER_TAGS_FIELD_NAME)
-    private List<String> userTags;
+    @JsonProperty(ENTITY_TAGS_FIELD_NAME)
+    private List<String> entityTags;
 
-    @JsonProperty(CONTRIBUTION_TO_USER_SCORE_FIELD_NAME)
-    private Double contributionToUserScore;
+    @JsonProperty(CONTRIBUTION_TO_ENTITY_SCORE_FIELD_NAME)
+    private Double contributionToEntityScore;
 
     @Enumerated(EnumType.STRING)
     @JsonProperty(FEEDBACK)
@@ -103,39 +106,40 @@ public class Alert extends AbstractElasticDocument {
         // empty const for JSON deserialization
     }
 
-    public Alert(String userId, String smartId, List<String> classifications, String vendorUserId, String userName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags, Double contributionToUserScore) {
+    public Alert(String entityDocumentId, String smartId, List<String> classifications, String vendorEntityId, String entityName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> entityTags, Double contributionToEntityScore, String entityType) {
         super();
         this.classifications = classifications;
-        this.userId = userId;
+        this.entityDocumentId = entityDocumentId;
         this.smartId = smartId;
-        this.vendorUserId = vendorUserId;
-        this.userName = userName;
-        this.indexedUserName = userName;
+        this.vendorEntityId = vendorEntityId;
+        this.entityName = entityName;
+        this.indexedEntityName = entityName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.score = score;
         this.indicatorsNum = indicatorsNum;
         this.timeframe = timeframe;
         this.severity = severity;
-        this.userTags = userTags;
-        this.contributionToUserScore = contributionToUserScore;
+        this.entityTags = entityTags;
+        this.contributionToEntityScore = contributionToEntityScore;
         this.feedback = AlertEnums.AlertFeedback.NONE;
+        this.entityType = entityType;
     }
 
     public String getSmartId() {
         return smartId;
     }
 
-    public void setSmartId(String smartId) {
-        this.smartId = smartId;
+    public String getEntityDocumentId() {
+        return entityDocumentId;
     }
 
-    public String getUserId() {
-        return userId;
+    public void setEntityDocumentId(String entityDocumentId) {
+        this.entityDocumentId = entityDocumentId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public String getEntityType() {
+        return entityType;
     }
 
     public List<String> getClassifications() {
@@ -150,20 +154,20 @@ public class Alert extends AbstractElasticDocument {
         this.classifications = classifications;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getEntityName() {
+        return entityName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
     }
 
-    public String getIndexedUserName() {
-        return indexedUserName;
+    public String getIndexedEntityName() {
+        return indexedEntityName;
     }
 
-    public void setIndexedUserName(String indexedUserName) {
-        this.indexedUserName = indexedUserName;
+    public void setIndexedEntityName(String indexedEntityName) {
+        this.indexedEntityName = indexedEntityName;
     }
 
     public Date getStartDate() {
@@ -202,20 +206,12 @@ public class Alert extends AbstractElasticDocument {
         return timeframe;
     }
 
-    public void setTimeframe(AlertEnums.AlertTimeframe timeframe) {
-        this.timeframe = timeframe;
-    }
-
     public AlertEnums.AlertSeverity getSeverity() {
         return severity;
     }
 
     public void setSeverity(AlertEnums.AlertSeverity severity) {
         this.severity = severity;
-    }
-
-    public List<String> getUserTags() {
-        return userTags;
     }
 
     public List<Indicator> getIndicators() {
@@ -234,12 +230,12 @@ public class Alert extends AbstractElasticDocument {
         this.indicatorsNames = indicatorsNames;
     }
 
-    public Double getContributionToUserScore() {
-        return contributionToUserScore;
+    public Double getContributionToEntityScore() {
+        return contributionToEntityScore;
     }
 
-    public void setContributionToUserScore(Double contributionToUserScore) {
-        this.contributionToUserScore = contributionToUserScore;
+    public void setContributionToEntityScore(Double contributionToEntityScore) {
+        this.contributionToEntityScore = contributionToEntityScore;
     }
 
     public AlertEnums.AlertFeedback getFeedback() {
@@ -259,12 +255,8 @@ public class Alert extends AbstractElasticDocument {
         return events;
     }
 
-    public String getVendorUserId() {
-        return vendorUserId;
-    }
-
-    public void setVendorUserId(String vendorUserId) {
-        this.vendorUserId = vendorUserId;
+    public String getVendorEntityId() {
+        return vendorEntityId;
     }
 
     @Override

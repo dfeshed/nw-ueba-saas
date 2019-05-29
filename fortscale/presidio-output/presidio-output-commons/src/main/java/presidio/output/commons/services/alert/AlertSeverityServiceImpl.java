@@ -48,7 +48,7 @@ public class AlertSeverityServiceImpl implements AlertSeverityService {
     }
 
     @Override
-    public Double getUserScoreContributionFromSeverity(AlertEnums.AlertSeverity severity) {
+    public Double getEntityScoreContributionFromSeverity(AlertEnums.AlertSeverity severity) {
         return this.alertSeverityToScoreContribution.get(severity);
     }
 

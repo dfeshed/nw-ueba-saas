@@ -11,20 +11,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.output.commons.services.spring.AlertSeverityServiceConfig;
-import presidio.output.commons.services.spring.UserSeverityServiceConfig;
+import presidio.output.commons.services.spring.EntitySeverityServiceConfig;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.output.domain.services.users.UserPersistencyService;
+import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.webapp.controllers.alerts.AlertsApi;
 import presidio.webapp.controllers.alerts.AlertsController;
+import presidio.webapp.controllers.entities.EntitiesApi;
+import presidio.webapp.controllers.entities.EntitiesApiController;
 import presidio.webapp.controllers.licensing.DailyMetricsApi;
 import presidio.webapp.controllers.licensing.DailyMetricsController;
-import presidio.webapp.controllers.users.UsersApi;
-import presidio.webapp.controllers.users.UsersApiController;
 import presidio.webapp.convertors.MetricConverter;
 import presidio.webapp.service.*;
 
-@Import({PresidioOutputPersistencyServiceConfig.class, AlertSeverityServiceConfig.class, UserSeverityServiceConfig.class, MongoConfig.class})
+@Import({PresidioOutputPersistencyServiceConfig.class, AlertSeverityServiceConfig.class, EntitySeverityServiceConfig.class, MongoConfig.class})
 @Configuration
 public class OutputWebappConfiguration {
 
@@ -32,7 +32,7 @@ public class OutputWebappConfiguration {
     private AlertPersistencyService alertService;
 
     @Autowired
-    private UserPersistencyService userService;
+    private EntityPersistencyService entityService;
 
     @Autowired
     private  PresidioMetricPersistencyService presidioMetricPersistencyService;
@@ -62,10 +62,10 @@ public class OutputWebappConfiguration {
     }
 
     @Value("${default.page.size.for.rest.user}")
-    private int pageSizeUser;
+    private int pageSizeEntity;
 
     @Value("${default.page.number.for.rest.user}")
-    private int pageNumberUser;
+    private int pageNumberEntity;
 
     @Value("${default.page.size.for.rest.alert}")
     private int pageSizeAlert;
@@ -74,8 +74,8 @@ public class OutputWebappConfiguration {
     private int pageNumberAlert;
 
     @Bean
-    RestUserService restUserService() {
-        return new RestUserServiceImpl(restAlertService(), userService, pageSizeUser, pageNumberUser);
+    RestEntityService restEntityService() {
+        return new RestEntityServiceImpl(restAlertService(), entityService, pageSizeEntity, pageNumberEntity);
     }
 
     @Bean
@@ -89,20 +89,18 @@ public class OutputWebappConfiguration {
     }
 
     @Bean
-    UsersApi getUsersController() {
-        return new UsersApiController(restUserService());
+    EntitiesApi getEntitiesController() {
+        return new EntitiesApiController(restEntityService());
     }
 
     @Bean
     public AbstractServletWebServerFactory servletContainer() {
-        TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory ();
-        return factory;
+        return new TomcatServletWebServerFactory();
     }
 
     @Bean
     public HttpMethodOverrideHeaderFilter overrideHeaderFilter() {
-        HttpMethodOverrideHeaderFilter filter = new HttpMethodOverrideHeaderFilter();
-        return filter;
+        return new HttpMethodOverrideHeaderFilter();
     }
 
 }

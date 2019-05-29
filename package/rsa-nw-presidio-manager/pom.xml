@@ -47,6 +47,9 @@
                 <artifactId>rpm-maven-plugin</artifactId>
                 <version>${rpm-maven-plugin.version}</version>
                 <configuration>
+                    <defineStatements>
+                        <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
+                    </defineStatements>
                     <summary>Presidio(UEBA) core manager REST API</summary>
                     <defaultGroupname>${presidio.username}</defaultGroupname>
                     <defaultUsername>${presidio.groupname}</defaultUsername>
@@ -74,6 +77,7 @@
                                 <source>
                                     <includes>
                                         <include>presidio-manager.service</include>
+                                        <include>presidio-manager-init.py</include>
                                     </includes>
                                     <location>src/main/resources</location>
                                 </source>

@@ -1,20 +1,22 @@
 package presidio.output.processor.services;
 
+import com.google.common.collect.Iterators;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.util.Assert;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.monitoring.aspect.annotations.RunTime;
 import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.users.User;
+import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.processor.services.alert.AlertService;
-import presidio.output.processor.services.user.UserService;
-import presidio.output.processor.services.user.UsersAlertData;
+import presidio.output.processor.services.entity.EntityService;
+import presidio.output.processor.services.entity.EntitiesAlertData;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -29,7 +31,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     private final AdeManagerSdk adeManagerSdk;
     private final AlertService alertService;
-    private final UserService userService;
+    private final EntityService entityService;
     private final EventPersistencyService eventPersistencyService;
     private final OutputMonitoringService outputMonitoringService;
     private final int smartThresholdScoreForCreatingAlert;
@@ -41,17 +43,15 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     private final int SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES = 0;
 
-    private static final String ADE_SMART_USER_ID = "userId";
-
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
                                       AlertService alertService,
-                                      UserService userService,
+                                      EntityService entityService,
                                       EventPersistencyService eventPersistencyService,
                                       OutputMonitoringService outputMonitoringService,
                                       int smartThresholdScoreForCreatingAlert, int smartPageSize, int alertPageSize, long retentionEnrichedEventsDays, long retentionOutputDataDays) {
         this.adeManagerSdk = adeManagerSdk;
         this.alertService = alertService;
-        this.userService = userService;
+        this.entityService = entityService;
         this.eventPersistencyService = eventPersistencyService;
         this.smartPageSize = smartPageSize;
         this.alertPageSize = alertPageSize;
@@ -74,60 +74,75 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
      */
     @RunTime
     @Override
-    public void run(Instant startDate, Instant endDate) throws Exception {
+    public void run(Instant startDate, Instant endDate, String configurationName) throws Exception {
         logger.debug("Started output process with params: start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(smartPageSize, smartPageSize, new TimeRange(startDate, endDate), SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES);
+        List<PageIterator<SmartRecord>> smartPageIterators = adeManagerSdk.getSmartRecords(smartPageSize, smartPageSize, new TimeRange(startDate, endDate), SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES, configurationName);
 
-        List<User> users = new ArrayList<>();
+        Map<String, Entity> entities = new HashMap<>();
         List<SmartRecord> smarts = null;
         List<Alert> alerts = new ArrayList<>();
         int indicatorsCountHourly = 0;
-        while (smartPageIterator.hasNext()) {
-            smarts = smartPageIterator.next();
-            for (SmartRecord smart : smarts) {
-                User userEntity;
-                String userId = smart.getContext().get(ADE_SMART_USER_ID);
+        boolean firstSmart = true;
+        String lastEntityType = null;
+        for(PageIterator<SmartRecord> smartPageIterator : smartPageIterators){
+            while (smartPageIterator.hasNext()) {
+                smarts = smartPageIterator.next();
+                for (SmartRecord smart : smarts) {
+                    String unexpectedSizeOfSmartContextMessage = String.format("Unexpected smart context size for smart: %s.", smart.getId());
+                    Set<Map.Entry<String, String>> smartContextEntries = smart.getContext().entrySet();
+                    Assert.isTrue(smartContextEntries.size() == 1, unexpectedSizeOfSmartContextMessage);
+                    Map.Entry<String, String> contextEntry = smartContextEntries.iterator().next();
+                    String entityId = contextEntry.getValue();
+                    String entityType = contextEntry.getKey();
+                    if(firstSmart){
+                        lastEntityType = entityType;
+                        firstSmart = false;
+                    }
+                    Assert.isTrue(entityType.equals(lastEntityType), "Not all smarts have the same entity type");
+                    lastEntityType = entityType;
 
-                if (userId == null || userId.isEmpty()) {
-                    logger.error("Failed to get user id from smart context, user id is null or empty for smart {}. skipping to next smart", smart.getId());
-                    continue;
-                }
-                if ((userEntity = getCreatedUser(users, userId)) == null && (userEntity = getSingleUserEntityById(userId)) == null) {
-                    //Need to create user and add it to about to be created list
-                    userEntity = userService.createUserEntity(userId);
-                    users.add(userEntity);
-                    if (userEntity == null) {
-                        logger.error("Failed to process user details for smart {}, skipping to next smart in the batch", smart.getId());
+                    if (entityId == null || entityId.isEmpty()) {
+                        logger.error("Failed to get entity id from smart context, entity id is null or empty for smart {}. skipping to next smart", smart.getId());
                         continue;
+                    }
+                    Entity entity;
+                    if ((entity = getCreatedEntity(entities, entityId, entityType)) == null && (entity = getSingleEntityByIdAndType(entityId, entityType)) == null) {
+                        //Need to create entity and add it to about to be created list
+                        entity = entityService.createEntity(entityId, entityType);
+                        if (entity == null) {
+                            logger.error("Failed to process entity details for smart {}, skipping to next smart in the batch", smart.getId());
+                            continue;
+                        }
+                        entities.put(entity.getEntityId(), entity);
+                    }
+
+                    Alert alertEntity = alertService.generateAlert(smart, entity, smartThresholdScoreForCreatingAlert);
+                    if (alertEntity != null) {
+                        EntitiesAlertData entitiesAlertData = new EntitiesAlertData(alertEntity.getContributionToEntityScore(), 1, alertEntity.alertPrimaryClassification(), alertEntity.getIndicatorsNames());
+                        entityService.addEntityAlertData(entity, entitiesAlertData);
+                        alerts.add(alertEntity);
+                        indicatorsCountHourly += alertEntity.getIndicatorsNum();
+
+                        String classification = alertEntity.alertPrimaryClassification();
+                        outputMonitoringService.reportTotalAlertCount(1, alertEntity.getSeverity(), classification, startDate);
+                    }
+
+                    if (getCreatedEntity(entities, entity.getEntityId(), entity.getEntityType()) == null) {
+                        entities.put(entity.getEntityId(), entity);
+                    }
+
+                    if (alerts.size() >= alertPageSize) {
+                        flushAlerts(startDate, alerts);
                     }
 
                 }
-
-
-                Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
-                if (alertEntity != null) {
-                    UsersAlertData usersAlertData = new UsersAlertData(alertEntity.getContributionToUserScore(), 1, alertEntity.alertPrimaryClassification(), alertEntity.getIndicatorsNames());
-                    userService.addUserAlertData(userEntity, usersAlertData);
-                    alerts.add(alertEntity);
-                    indicatorsCountHourly += alertEntity.getIndicatorsNum();
-
-                    String classification = alertEntity.alertPrimaryClassification();
-                    outputMonitoringService.reportTotalAlertCount(1, alertEntity.getSeverity(), classification, startDate);
-                }
-                if (getCreatedUser(users, userEntity.getUserId()) == null) {
-                    users.add(userEntity);
-                }
-
-                if (alerts.size() >= alertPageSize) {
-                    flushAlerts(startDate, alerts);
-                }
-
+                flushAlerts(startDate, alerts);
             }
-            flushAlerts(startDate, alerts);
         }
 
-        storeUsers(users); //Get the generated users with the new elasticsearch ID
-        outputMonitoringService.reportTotalUsersCount(users.size(), startDate);
+
+        storeEntities(new ArrayList<>(entities.values())); //Get the generated entities with the new elasticsearch ID
+        outputMonitoringService.reportTotalEntitiesCount(entities.size(), startDate, configurationName);
         outputMonitoringService.reportNumericMetric(outputMonitoringService.INDICATORS_COUNT_HOURLY_METRIC_NAME, indicatorsCountHourly, startDate);
 
         if (CollectionUtils.isNotEmpty(smarts)) {
@@ -142,33 +157,33 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         alerts.clear();
     }
 
-    private User getSingleUserEntityById(String userId) {
-        List<User> userEntities = userService.findUserByVendorUserIds(Arrays.asList(userId));
-        if (CollectionUtils.isEmpty(userEntities)) {
+    private Entity getSingleEntityByIdAndType(String entityId, String entityType) {
+        List<Entity> entities = entityService.findEntityByVendorEntityIdAndType(entityId, entityType);
+        if (CollectionUtils.isEmpty(entities)) {
             return null;
         }
-        if (userEntities.size() > 1) {
-            logger.error("Cannot have vendor userId more then once {}", userId);
+        if (entities.size() > 1) {
+            logger.error("Cannot have vendor entityId more then once {}", entityId);
         }
-        return userEntities.get(0);
+        return entities.get(0);
     }
 
-    private User getCreatedUser(List<User> users, String userVendorId) {
-        for (User user : users) {
-            if (user.getUserId().equals(userVendorId)) {
-                return user;
+    private Entity getCreatedEntity(Map<String, Entity> entities, String entityId, String entityType) {
+        if(entities.containsKey(entityId) ) {
+            Entity entity = entities.get(entityId);
+            if (entity.getEntityType().equals(entityType)) {
+                return entity;
             }
-
         }
         return null;
     }
 
-    public void updateAllUsersData(Instant startDate, Instant endDate) throws Exception {
-        this.userService.updateUserData(endDate);
-        logger.info("updating users data completed successfully");
+    public void updateAllEntitiesData(Instant startDate, Instant endDate, String configurationName) throws Exception {
+        this.entityService.updateEntityData(endDate);
+        logger.info("updating entities data completed successfully");
 
         logger.info("Starting to report daily metrics");
-        outputMonitoringService.reportDailyMetrics(startDate, endDate);
+        outputMonitoringService.reportDailyMetrics(startDate, endDate, configurationName);
     }
 
 
@@ -180,24 +195,24 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         logger.info("{} output alerts were generated", alerts.size());
     }
 
-    private List<User> storeUsers(List<User> users) {
-        List<User> savedUsers = Collections.EMPTY_LIST;
-        if (CollectionUtils.isNotEmpty(users)) {
-            logger.info("{} output users were generated", users.size());
-            savedUsers = userService.save(users);
+    private List<Entity> storeEntities(List<Entity> entities) {
+        List<Entity> savedEntities = Collections.EMPTY_LIST;
+        if (CollectionUtils.isNotEmpty(entities)) {
+            logger.info("{} output entities were generated", entities.size());
+            savedEntities = entityService.save(entities);
         }
-        return savedUsers;
+        return savedEntities;
 
     }
 
     @Override
     public void clean(Instant startDate, Instant endDate) throws Exception {
-        logger.debug("Start deleting alerts and updating users score.");
+        logger.debug("Start deleting alerts and updating entities score.");
         // delete alerts
         List<Alert> cleanedAlerts = alertService.cleanAlerts(startDate, endDate);
 
-        // update user scores
-        updateUsersScoreFromDeletedAlerts(cleanedAlerts);
+        // update entity scores
+        updateEntitiesScoreFromDeletedAlerts(cleanedAlerts);
 
     }
 
@@ -212,18 +227,18 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         clean(Instant.EPOCH, endDate.minus(retentionOutputDataDays, ChronoUnit.DAYS));
     }
 
-    private void updateUsersScoreFromDeletedAlerts(List<Alert> cleanedAlerts) {
-        Set<User> usersToUpdate = new HashSet<>();
+    private void updateEntitiesScoreFromDeletedAlerts(List<Alert> cleanedAlerts) {
+        Set<Entity> entitiesToUpdate = new HashSet<>();
         cleanedAlerts.forEach(alert -> {
-            if (!usersToUpdate.contains(alert.getUserId())) {
-                usersToUpdate.add(userService.findUserById(alert.getUserId()));
+            if (!entitiesToUpdate.contains(alert.getEntityDocumentId())) {
+                entitiesToUpdate.add(entityService.findEntityById(alert.getEntityDocumentId()));
             }
         });
-        logger.info("{} users are going to update score", usersToUpdate.size());
-        usersToUpdate.forEach(user -> {
-            userService.recalculateUserAlertData(user);
+        logger.info("{} entities are going to update score", entitiesToUpdate.size());
+        entitiesToUpdate.forEach(entity -> {
+            entityService.recalculateEntityAlertData(entity);
         });
-        userService.save(new ArrayList<>(usersToUpdate));
+        entityService.save(new ArrayList<>(entitiesToUpdate));
     }
 
 

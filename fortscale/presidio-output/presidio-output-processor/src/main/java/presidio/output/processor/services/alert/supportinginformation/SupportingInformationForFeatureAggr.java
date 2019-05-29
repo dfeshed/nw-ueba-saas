@@ -1,7 +1,6 @@
 package presidio.output.processor.services.alert.supportinginformation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.emory.mathcs.backport.java.util.Collections;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.utils.json.ObjectMapperProvider;
@@ -10,8 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
-import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
-import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.repositories.EventMongoPageIterator;
@@ -55,14 +52,14 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     }
 
     @Override
-    public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize) throws Exception {
+    public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize, String entityType) throws Exception {
 
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
-        String userId = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
+        String entityId = adeAggregationRecord.getContext().get(entityType);
         TimeRange timeRange = new TimeRange(adeAggregationRecord.getStartInstant(), adeAggregationRecord.getEndInstant());
         List<Pair<String, Object>> features = supportingInfoUtils.buildAnomalyFeatures(indicatorConfig,indicator.getContexts());
         
-        EventMongoPageIterator eventMongoPageIterator = new EventMongoPageIterator(eventPersistencyService, eventsPageSize, indicatorConfig.getSchema(), userId, timeRange, features, eventsLimit);
+        EventMongoPageIterator eventMongoPageIterator = new EventMongoPageIterator(eventPersistencyService, eventsPageSize, indicatorConfig.getSchema(), entityId, timeRange, features, eventsLimit, entityType);
         List<IndicatorEvent> events = new ArrayList<>();
 
         while (eventMongoPageIterator.hasNext()) {
@@ -95,7 +92,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
         try {
             String anomalyField = indicatorConfig.getAnomalyDescriptior().getAnomalyField();
             String historicalDataType = indicatorConfig.getHistoricalData().getType();
-            historicalDataPopulator = historicalDataPopulatorFactory.createHistoricalDataPopulation(CommonStrings.CONTEXT_USERID, anomalyField, historicalDataType);
+            historicalDataPopulator = historicalDataPopulatorFactory.createHistoricalDataPopulation(historicalDataType);
         } catch (IllegalArgumentException ex) {
             //TODO logger
             return null;

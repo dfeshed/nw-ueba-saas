@@ -69,11 +69,11 @@ public class OutputForwarderExecutionServiceModuleTest {
         userPersistencyService.save(user2);
 
         Alert alert1 =
-                new Alert("userId", "smartId", new ArrayList<>(), "user1", "user1", now, now, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D);
+                new Alert("userId", "smartId", new ArrayList<>(), "user1", "user1", now, now, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D, "user");
         alertPersistencyService.save(alert1);
 
         Alert alert2 =
-                new Alert("userId", "smartId", new ArrayList<>(), "user1", "user1", fiveDaysAgo, fiveDaysAgo, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D);
+                new Alert("userId", "smartId", new ArrayList<>(), "user1", "user1", fiveDaysAgo, fiveDaysAgo, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D, "user");
         alertPersistencyService.save(alert2);
 
         Indicator indicator1 = new Indicator();
@@ -128,7 +128,7 @@ public class OutputForwarderExecutionServiceModuleTest {
     public void testRun() {
 
         try {
-            outputForwarderExecutionService.doRun("userId_hourly", Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)));
+            outputForwarderExecutionService.doRun(Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)), "userId");
             Assert.assertEquals(3, memoryStrategy.getAllMessages().size());
         } catch (Exception e) {
             e.printStackTrace();

@@ -18,6 +18,7 @@ import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimeService;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -15,9 +15,9 @@ public interface RestAlertService {
 
     AlertsWrapper getAlerts(presidio.webapp.model.AlertQuery alertQuery);
 
-    AlertsWrapper getAlertsByUserId(String userId, boolean expand);
+    AlertsWrapper getAlertsByEntityDocumentId(String entityDocumentId, boolean expand);
 
-    Map<String, List<presidio.webapp.model.Alert>> getAlertsByUsersIds(Collection<String> userId);
+    Map<String, List<presidio.webapp.model.Alert>> getAlertsByEntityDocumentIds(Collection<String> entityDocumentIds);
 
     presidio.webapp.model.Indicator getIndicatorById(String indicatorId, boolean expand);
 
