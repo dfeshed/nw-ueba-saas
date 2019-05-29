@@ -30,8 +30,8 @@ public class Alert {
     @JsonProperty("endDate")
     private BigDecimal endDate = null;
 
-    @JsonProperty("username")
-    private String username = null;
+    @JsonProperty("entityName")
+    private String entityName = null;
 
     @JsonProperty("indicatorsName")
     private List<String> indicatorsName = new ArrayList<String>();
@@ -45,8 +45,8 @@ public class Alert {
     @JsonProperty("feedback")
     private AlertQueryEnums.AlertFeedback feedback = null;
 
-    @JsonProperty("userScoreContribution")
-    private BigDecimal userScoreContribution = null;
+    @JsonProperty("entityScoreContribution")
+    private BigDecimal entityScoreContribution = null;
 
     /**
      * Gets or Sets timeframe
@@ -85,17 +85,12 @@ public class Alert {
     @JsonProperty("severity")
     private AlertSeverity severity = null;
 
-    @JsonProperty("userId")
-    private String userId = null;
+    @JsonProperty("entityDocumentId")
+    private String entityDocumentId = null;
 
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     @JsonProperty("indicators")
     private List<Indicator> indicators = new ArrayList<Indicator>();
-
-    public Alert id(String id) {
-        this.id = id;
-        return this;
-    }
 
     /**
      * Get id
@@ -109,16 +104,6 @@ public class Alert {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Alert classifiation(List<String> classifiation) {
-        this.classifiation = classifiation;
-        return this;
-    }
-
-    public Alert addClassifiationItem(String classifiationItem) {
-        this.classifiation.add(classifiationItem);
-        return this;
     }
 
     /**
@@ -135,11 +120,6 @@ public class Alert {
         this.classifiation = classifiation;
     }
 
-    public Alert startDate(BigDecimal startDate) {
-        this.startDate = startDate;
-        return this;
-    }
-
     /**
      * Get startDate
      *
@@ -152,11 +132,6 @@ public class Alert {
 
     public void setStartDate(BigDecimal startDate) {
         this.startDate = startDate;
-    }
-
-    public Alert endDate(BigDecimal endDate) {
-        this.endDate = endDate;
-        return this;
     }
 
     /**
@@ -173,33 +148,18 @@ public class Alert {
         this.endDate = endDate;
     }
 
-    public Alert username(String username) {
-        this.username = username;
-        return this;
-    }
-
     /**
-     * Get username
+     * Get entityName
      *
-     * @return username
+     * @return entityName
      **/
     @ApiModelProperty(value = "")
-    public String getUsername() {
-        return username;
+    public String getEntityName() {
+        return entityName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public Alert indicatorsName(List<String> indicatorsName) {
-        this.indicatorsName = indicatorsName;
-        return this;
-    }
-
-    public Alert addIndicatorsNameItem(String indicatorsNameItem) {
-        this.indicatorsName.add(indicatorsNameItem);
-        return this;
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
     }
 
     /**
@@ -216,11 +176,6 @@ public class Alert {
         this.indicatorsName = indicatorsName;
     }
 
-    public Alert indicatorsNum(Integer indicatorsNum) {
-        this.indicatorsNum = indicatorsNum;
-        return this;
-    }
-
     /**
      * Get indicatorsNum
      *
@@ -233,11 +188,6 @@ public class Alert {
 
     public void setIndicatorsNum(Integer indicatorsNum) {
         this.indicatorsNum = indicatorsNum;
-    }
-
-    public Alert score(Integer score) {
-        this.score = score;
-        return this;
     }
 
     /**
@@ -256,11 +206,6 @@ public class Alert {
         this.score = score;
     }
 
-    public Alert feedback(AlertQueryEnums.AlertFeedback feedback) {
-        this.feedback = feedback;
-        return this;
-    }
-
     /**
      * Get feedback
      *
@@ -275,28 +220,18 @@ public class Alert {
         this.feedback = feedback;
     }
 
-    public Alert userScoreContribution(BigDecimal userScoreContribution) {
-        this.userScoreContribution = userScoreContribution;
-        return this;
-    }
-
     /**
-     * Get userScoreContribution
+     * Get entityScoreContribution
      *
-     * @return userScoreContribution
+     * @return entityScoreContribution
      **/
     @ApiModelProperty(value = "")
-    public BigDecimal getUserScoreContribution() {
-        return userScoreContribution;
+    public BigDecimal getEntityScoreContribution() {
+        return entityScoreContribution;
     }
 
-    public void setUserScoreContribution(BigDecimal userScoreContribution) {
-        this.userScoreContribution = userScoreContribution;
-    }
-
-    public Alert timeframe(TimeframeEnum timeframe) {
-        this.timeframe = timeframe;
-        return this;
+    public void setEntityScoreContribution(BigDecimal entityScoreContribution) {
+        this.entityScoreContribution = entityScoreContribution;
     }
 
     /**
@@ -313,11 +248,6 @@ public class Alert {
         this.timeframe = timeframe;
     }
 
-    public Alert severity(AlertSeverity severity) {
-        this.severity = severity;
-        return this;
-    }
-
     /**
      * Get severity
      *
@@ -332,33 +262,18 @@ public class Alert {
         this.severity = severity;
     }
 
-    public Alert userId(String userId) {
-        this.userId = userId;
-        return this;
-    }
-
     /**
-     * Get userId
+     * Get entityDocumentId
      *
-     * @return userId
+     * @return entityDocumentId
      **/
     @ApiModelProperty(value = "")
-    public String getUserId() {
-        return userId;
+    public String getEntityDocumentId() {
+        return entityDocumentId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public Alert indicators(List<Indicator> indicators) {
-        this.indicators = indicators;
-        return this;
-    }
-
-    public Alert addIndicatorsItem(Indicator indicatorsItem) {
-        this.indicators.add(indicatorsItem);
-        return this;
+    public void setEntityDocumentId(String entityDocumentId) {
+        this.entityDocumentId = entityDocumentId;
     }
 
     /**
@@ -389,21 +304,21 @@ public class Alert {
                 Objects.equals(this.classifiation, alert.classifiation) &&
                 Objects.equals(this.startDate, alert.startDate) &&
                 Objects.equals(this.endDate, alert.endDate) &&
-                Objects.equals(this.username, alert.username) &&
+                Objects.equals(this.entityName, alert.entityName) &&
                 Objects.equals(this.indicatorsName, alert.indicatorsName) &&
                 Objects.equals(this.indicatorsNum, alert.indicatorsNum) &&
                 Objects.equals(this.score, alert.score) &&
                 Objects.equals(this.feedback, alert.feedback) &&
-                Objects.equals(this.userScoreContribution, alert.userScoreContribution) &&
+                Objects.equals(this.entityScoreContribution, alert.entityScoreContribution) &&
                 Objects.equals(this.timeframe, alert.timeframe) &&
                 Objects.equals(this.severity, alert.severity) &&
-                Objects.equals(this.userId, alert.userId) &&
+                Objects.equals(this.entityDocumentId, alert.entityDocumentId) &&
                 Objects.equals(this.indicators, alert.indicators);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, classifiation, startDate, endDate, username, indicatorsName, indicatorsNum, score, feedback, userScoreContribution, timeframe, severity, userId, indicators);
+        return Objects.hash(id, classifiation, startDate, endDate, entityName, indicatorsName, indicatorsNum, score, feedback, entityScoreContribution, timeframe, severity, entityDocumentId, indicators);
     }
 
     @Override
@@ -415,15 +330,15 @@ public class Alert {
         sb.append("    classifiation: ").append(toIndentedString(classifiation)).append("\n");
         sb.append("    startDate: ").append(toIndentedString(startDate)).append("\n");
         sb.append("    endDate: ").append(toIndentedString(endDate)).append("\n");
-        sb.append("    username: ").append(toIndentedString(username)).append("\n");
+        sb.append("    entityName: ").append(toIndentedString(entityName)).append("\n");
         sb.append("    indicatorsName: ").append(toIndentedString(indicatorsName)).append("\n");
         sb.append("    indicatorsNum: ").append(toIndentedString(indicatorsNum)).append("\n");
         sb.append("    score: ").append(toIndentedString(score)).append("\n");
         sb.append("    feedback: ").append(toIndentedString(feedback)).append("\n");
-        sb.append("    userScoreContribution: ").append(toIndentedString(userScoreContribution)).append("\n");
+        sb.append("    entityScoreContribution: ").append(toIndentedString(entityScoreContribution)).append("\n");
         sb.append("    timeframe: ").append(toIndentedString(timeframe)).append("\n");
         sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
-        sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
+        sb.append("    entityDocumentId: ").append(toIndentedString(entityDocumentId)).append("\n");
         sb.append("    indicators: ").append(toIndentedString(indicators)).append("\n");
         sb.append("}");
         return sb.toString();
