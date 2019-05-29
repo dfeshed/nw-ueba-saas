@@ -106,6 +106,21 @@
       }
     },
     {
+      "name": "sumOfBytesSentToSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
       "name": "numberOfDistinctSrcIpJa3OutboundTlsHourly",
       "type": "F",
       "bucketConfName": "srcIpHistogramJa3OutboundTlsHourly",
