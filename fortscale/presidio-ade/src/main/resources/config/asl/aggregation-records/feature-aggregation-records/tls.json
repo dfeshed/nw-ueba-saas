@@ -46,6 +46,36 @@
       }
     },
     {
+      "name": "sumOfBytesSentByDstPortOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationDstPortOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentByDstPortSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationDstPortSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
       "name": "numberOfDistinctSrcIpJa3OutboundTlsHourly",
       "type": "F",
       "bucketConfName": "srcIpHistogramJa3OutboundTlsHourly",

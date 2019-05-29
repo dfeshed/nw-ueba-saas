@@ -25,6 +25,32 @@
           }
         }
       ]
+    },
+    {
+      "name": "sumOfBytesSentByScoresSumDstPortSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "aggr_event.sumOfBytesSentByDstPortSslSubjectOutboundTlsHourly"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "sumOfBytesSentByScoresSum",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstPort"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
     }
   ]
 }
