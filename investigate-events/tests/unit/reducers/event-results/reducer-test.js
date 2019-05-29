@@ -10,17 +10,17 @@ module('Unit | Reducers | event-results');
 
 const stateWithoutSelections = Immutable.from({
   allEventsSelected: false,
-  selectedEventIds: []
+  selectedEventIds: {}
 });
 
 const stateWithSelections = Immutable.from({
   allEventsSelected: false,
-  selectedEventIds: ['foo']
+  selectedEventIds: { foo: 'foo' }
 });
 
 const stateWithAllSelected = Immutable.from({
   allEventsSelected: true,
-  selectedEventIds: ['foo', 'bar']
+  selectedEventIds: { foo: 'foo', bar: 'bar' }
 });
 
 test('Should update seach term', function(assert) {
@@ -74,13 +74,13 @@ test('ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS reducer', function(assert) {
 test('ACTION_TYPES.SELECT_EVENTS reducer', function(assert) {
   const action = {
     type: ACTION_TYPES.SELECT_EVENTS,
-    payload: ['foo']
+    payload: { foo: 'foo' }
   };
 
   const result = reducer(stateWithoutSelections, action);
 
-  assert.equal(result.selectedEventIds.length, 1);
-  assert.equal(result.selectedEventIds[0], 'foo');
+  assert.equal(Object.keys(result.selectedEventIds).length, 1);
+  assert.deepEqual(result.selectedEventIds, { foo: 'foo' });
 });
 
 test('ACTION_TYPES.DESELECT_EVENT reducer', function(assert) {
@@ -91,7 +91,7 @@ test('ACTION_TYPES.DESELECT_EVENT reducer', function(assert) {
 
   const result = reducer(stateWithSelections, action);
 
-  assert.equal(result.selectedEventIds.length, 0);
+  assert.deepEqual(result.selectedEventIds, {});
 });
 
 test('ACTION_TYPES.INITIALIZE_INVESTIGATE reducer', function(assert) {
@@ -102,7 +102,7 @@ test('ACTION_TYPES.INITIALIZE_INVESTIGATE reducer', function(assert) {
   const result = reducer(stateWithAllSelected, action);
 
   assert.equal(result.allEventsSelected, false);
-  assert.equal(result.selectedEventIds.length, 0);
+  assert.equal(Object.keys(result.selectedEventIds).length, 0);
 });
 
 test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate', function(assert) {

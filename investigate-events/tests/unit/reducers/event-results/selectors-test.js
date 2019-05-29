@@ -48,21 +48,21 @@ module('Unit | Selectors | event-results', function(hooks) {
   const withAllEventsAndNetworkResults = {
     status: 'stopped',
     allEventsSelected: true,
-    selectedEventIds: [],
+    selectedEventIds: {},
     data: networkEventResultsData
   };
 
   const withNetworkEvents = {
     status: 'stopped',
     allEventsSelected: false,
-    selectedEventIds: [1, 2],
+    selectedEventIds: { 1: 1, 2: 2 },
     data: eventResultsData
   };
 
   const withMixedEvents = {
     status: 'stopped',
     allEventsSelected: false,
-    selectedEventIds: [1, 3],
+    selectedEventIds: { 1: 1, 3: 3 },
     data: eventResultsData
   };
 
@@ -70,12 +70,6 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[optionNumber].name.string, nameString, 'Option');
     assert.equal(result[optionNumber].eventDownloadType, eventDownloadType, 'Event Type');
     assert.equal(result[optionNumber].fileType, fileType, 'File Type');
-  };
-
-  const assertForCountsAndSessionIds = async function(assert, result, optionNumber, count, sessionIds, isDisabled) {
-    assert.equal(result[optionNumber].count, count);
-    assert.deepEqual(result[optionNumber].sessionIds, sessionIds);
-    assert.equal(result[optionNumber].disabled, isDisabled);
   };
 
   test('searchScrollDisplay', async function(assert) {
@@ -397,6 +391,12 @@ module('Unit | Selectors | event-results', function(hooks) {
       timeZone: 'timeZone'
     });
   });
+
+  const assertForCountsAndSessionIds = async function(assert, result, optionNumber, count, sessionIds, isDisabled) {
+    assert.equal(result[optionNumber].count, count);
+    assert.deepEqual(result[optionNumber].sessionIds, sessionIds);
+    assert.equal(result[optionNumber].disabled, isDisabled);
+  };
 
   test('getDownloadOptions returns options with no counts when selectAll is checked and disables appropriate options', async function(assert) {
     const state = {

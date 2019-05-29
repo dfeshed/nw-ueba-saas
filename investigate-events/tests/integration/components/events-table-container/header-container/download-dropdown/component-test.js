@@ -64,6 +64,7 @@ module('Integration | Component | Download Dropdown', function(hooks) {
   test('download dropdown should be disabled & read Download if nothing is checked', async function(assert) {
     new ReduxDataHelper(setState)
       .allEventsSelected(false)
+      .withSelectedEventIds({})
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     assert.ok(find(`${downloadSelector}.is-disabled`), 'Download is disabled');
@@ -128,11 +129,15 @@ module('Integration | Component | Download Dropdown', function(hooks) {
       .eventsPreferencesConfig()
       .defaultEventAnalysisPreferences()
       .eventResults(eventResultsData)
-      .selectedEventIds([1, 3])
+      .selectedEventIds({
+        1: 1,
+        3: 3
+      })
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     await clickTrigger();
     const options = findAll(`${downloadOptions} li ul li`);
+
     await assertForDownloadOptions(assert, options, 0, 'Logs as Text', '1/2');
     await assertForDownloadOptions(assert, options, 1, 'Network as PCAP', '1/2');
     await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '2/2');
@@ -145,11 +150,15 @@ module('Integration | Component | Download Dropdown', function(hooks) {
       .eventsPreferencesConfig()
       .defaultEventAnalysisPreferences()
       .eventResults(eventResultsData)
-      .selectedEventIds([1, 2])
+      .selectedEventIds({
+        1: 1,
+        2: 2
+      })
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     await clickTrigger();
     const options = findAll(`${downloadOptions} li ul li`);
+
     await assertForDownloadOptions(assert, options, 0, 'Logs as Text', '0/2');
     await assertForDownloadOptions(assert, options, 1, 'Network as PCAP', '2/2');
     await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '2/2');

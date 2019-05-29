@@ -95,7 +95,7 @@ module('Integration | Component | events-table-container', function(hooks) {
       .columnGroups(EventColumnGroups)
       .eventsPreferencesConfig()
       .eventTimeSortOrder()
-      .selectedEventIds([])
+      .selectedEventIds({})
       .eventResults([])
       .build();
 
@@ -111,7 +111,7 @@ module('Integration | Component | events-table-container', function(hooks) {
       .columnGroups(EventColumnGroups)
       .eventsPreferencesConfig()
       .eventTimeSortOrder()
-      .selectedEventIds([])
+      .selectedEventIds({})
       .eventResults(['something'])
       .build();
 
@@ -169,7 +169,7 @@ module('Integration | Component | events-table-container', function(hooks) {
       .columnGroups(EventColumnGroups)
       .eventsPreferencesConfig()
       .eventTimeSortOrder()
-      .selectedEventIds([])
+      .selectedEventIds({})
       .eventResultsStatus('streaming')
       .eventResults([])
       .build();
@@ -184,7 +184,7 @@ module('Integration | Component | events-table-container', function(hooks) {
       .columnGroups(EventColumnGroups)
       .eventsPreferencesConfig()
       .eventTimeSortOrder()
-      .selectedEventIds([])
+      .selectedEventIds({})
       .eventResultsStatus('complete')
       .eventResults([])
       .build();

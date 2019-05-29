@@ -66,7 +66,8 @@ const HeaderContainer = Component.extend({
 
   @computed('selectedEventIds', 'isAllEventsSelected')
   isIncidentButtonsDisabled(selectedEventIds, isAllEventsSelected) {
-    return !((selectedEventIds && selectedEventIds.length) || isAllEventsSelected);
+    const ids = Object.keys(selectedEventIds);
+    return !((ids && ids.length) || isAllEventsSelected);
   },
 
   @computed('sortDirection', 'i18n')

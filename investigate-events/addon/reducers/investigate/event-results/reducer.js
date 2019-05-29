@@ -1,7 +1,6 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
-import _ from 'lodash';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { SORT_ORDER } from './selectors';
@@ -18,7 +17,7 @@ const _initialState = Immutable.from({
   streamBatch: 1000,
   message: undefined,
   allEventsSelected: false,
-  selectedEventIds: [],
+  selectedEventIds: {},
   // Pref might change in the middle of a query. Keeping a copy of preference with which the last query was performed.
   eventTimeSortOrderPreferenceWhenQueried: undefined,
   searchTerm: null,
@@ -55,23 +54,27 @@ export default handleActions({
   [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state) => {
     return state.merge({
       allEventsSelected: false,
-      selectedEventIds: []
+      selectedEventIds: {}
     });
   },
 
   [ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS]: (state) => {
     return state.merge({
       allEventsSelected: !state.allEventsSelected,
-      selectedEventIds: []
+      selectedEventIds: {}
     });
   },
 
   [ACTION_TYPES.SELECT_EVENTS]: (state, { payload }) => {
-    return state.set('selectedEventIds', state.selectedEventIds.concat(payload));
+    return state.set('selectedEventIds', payload);
   },
 
   [ACTION_TYPES.DESELECT_EVENT]: (state, { payload }) => {
-    return state.set('selectedEventIds', _.without(state.selectedEventIds, payload));
+    const newIds = {
+      ...state.selectedEventIds
+    };
+    delete newIds[payload];
+    return state.set('selectedEventIds', newIds);
   },
 
   [ACTION_TYPES.INIT_EVENTS_STREAMING]: (state, { payload: { eventTimeSortOrderPreferenceWhenQueried } }) => {

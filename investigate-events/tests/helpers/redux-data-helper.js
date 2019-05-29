@@ -331,13 +331,13 @@ export default class DataHelper {
   allEventsSelected(val) {
     _set(this.state, 'eventResults.allEventsSelected', val);
     if (val) {
-      _set(this.state, 'eventResults.selectedEventIds', []);
+      _set(this.state, 'eventResults.selectedEventIds', {});
     }
     return this;
   }
 
-  withSelectedEventIds() {
-    _set(this.state, 'eventResults.selectedEventIds', ['bar']);
+  withSelectedEventIds(ids = { bar: 'bar' }) {
+    _set(this.state, 'eventResults.selectedEventIds', ids);
     return this;
   }
 

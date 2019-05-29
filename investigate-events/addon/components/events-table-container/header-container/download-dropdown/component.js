@@ -40,7 +40,11 @@ const DownloadDropdown = Component.extend({
   // dropDown will be disabled when no event is selected or a download is already in progress
   @computed('selectedEventIds', 'isAllEventsSelected', 'isDownloading')
   isDisabled(selectedEventIds, isAllEventsSelected, isDownloading) {
-    if (((selectedEventIds && selectedEventIds.length) || isAllEventsSelected) && !isDownloading) {
+    if (!selectedEventIds) {
+      return true;
+    }
+    const ids = Object.keys(selectedEventIds);
+    if (((ids && ids.length) || isAllEventsSelected) && !isDownloading) {
       return false;
     }
     return true;

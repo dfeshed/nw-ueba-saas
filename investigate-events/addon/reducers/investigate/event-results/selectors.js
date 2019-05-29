@@ -196,19 +196,27 @@ export const allExpectedDataLoaded = createSelector(
 export const getDownloadOptions = createSelector(
   [_eventAnalysisPreferences, _items, _isAllEventsSelected, _selectedEventIds, _resultsData],
   (eventAnalysisPreferences, items, isAllEventsSelected, selectedEventIds, resultsData) => {
+    let selectedEventIdsArray;
+    if (resultsData && isAllEventsSelected) {
+      selectedEventIds = {};
+      selectedEventIdsArray = resultsData.map(({ sessionId }) => {
+        selectedEventIds[sessionId] = sessionId;
+        return sessionId;
+      });
+    } else if (selectedEventIds) {
+      selectedEventIdsArray = Object.values(selectedEventIds);
+    } else {
+      selectedEventIdsArray = [];
+    }
 
-    if (eventAnalysisPreferences && (isAllEventsSelected || selectedEventIds.length)) {
-
-      if (isAllEventsSelected) {
-        selectedEventIds = resultsData.map(({ sessionId }) => sessionId);
-      }
+    if (eventAnalysisPreferences && (isAllEventsSelected || selectedEventIdsArray.length)) {
 
       const i18n = lookup('service:i18n');
       const preferredDownloadOptions = [];
       const remainingDownloadOptions = [];
 
       let dropDownItems = items.filter((item) => !item.additionalFieldPrefix && item.type == 'dropdown');
-      const total = selectedEventIds.length;
+      const total = selectedEventIdsArray.length;
 
       // preferredOptions
       dropDownItems.forEach((item) => {
@@ -217,7 +225,7 @@ export const getDownloadOptions = createSelector(
         const { eventDownloadType } = item;
         const fileType = eventDownloadType === EVENT_DOWNLOAD_TYPES.NETWORK ? FILE_TYPES.PCAP : eventAnalysisPreferences[defaultEventType];
         const option = i18n.t(`investigate.events.download.options.${fileType}`);
-        const getIdsForEventType = _getIdsForEventType(eventDownloadType, selectedEventIds, resultsData);
+        const getIdsForEventType = _getIdsForEventType(eventDownloadType, selectedEventIdsArray, resultsData, selectedEventIds);
         const num = getIdsForEventType.length;
         preferredDownloadOptions.push({
           name: i18n.t(`investigate.events.download.${eventDownloadType}`, { option }),
@@ -237,7 +245,7 @@ export const getDownloadOptions = createSelector(
         const [,, defaultEventType ] = item.name.split('.');
         const { eventDownloadType } = item;
         const remainingOptions = item.options.without(eventAnalysisPreferences[defaultEventType]);
-        const getIdsForEventType = _getIdsForEventType(eventDownloadType, selectedEventIds, resultsData);
+        const getIdsForEventType = _getIdsForEventType(eventDownloadType, selectedEventIdsArray, resultsData, selectedEventIds);
         const num = getIdsForEventType.length;
         remainingOptions.forEach((option) => {
           const optionLabel = i18n.t(`investigate.events.download.options.${option}`);
@@ -405,11 +413,15 @@ const _indexOfBy = (arr, key, value) => {
  * Returns sessionIds for each download type based on number of events of the type selected
  * @private
  */
-const _getIdsForEventType = (eventDownloadType, selectedEventIds, resultsData) => {
+const _getIdsForEventType = (eventDownloadType, selectedEventIdsArray, resultsData, selectedEventIds) => {
   if (eventDownloadType === EVENT_DOWNLOAD_TYPES.META) {
-    return selectedEventIds;
+    return selectedEventIdsArray;
   }
-  const selectedEvents = resultsData.filter((event) => selectedEventIds.indexOf(event.sessionId) >= 0);
-  const selectedEventsOfType = selectedEvents.filter((event) => eventDownloadType === (event.medium === 32 ? EVENT_TYPES.LOG : EVENT_TYPES.NETWORK));
-  return selectedEventsOfType.map((event) => event.sessionId);
+  const ids = [];
+  resultsData.forEach((event) => {
+    if (selectedEventIds[event.sessionId] && (eventDownloadType === (event.medium === 32 ? EVENT_TYPES.LOG : EVENT_TYPES.NETWORK))) {
+      ids.push(event.sessionId);
+    }
+  });
+  return ids;
 };

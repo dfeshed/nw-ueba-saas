@@ -121,8 +121,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
         case ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS:
           break;
         case ACTION_TYPES.SELECT_EVENTS:
-          assert.equal(action.payload.length, 1, 'action has the correct payload length');
-          assert.equal(action.payload[0], 'bar', 'action has the correct payload');
+          assert.deepEqual(action.payload, { bar: 'bar' }, 'action has the correct payload');
           break;
         default:
           assert.equal(true, false, 'action has the correct type');
@@ -180,8 +179,10 @@ module('Unit | Actions | interaction creators', function(hooks) {
 
     const dispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.SELECT_EVENTS, 'action has the correct type');
-      assert.equal(action.payload.length, 1, 'action has the correct payload length');
-      assert.equal(action.payload[0], 'baz', 'action has the correct payload');
+      assert.deepEqual(action.payload, {
+        bar: 'bar',
+        baz: 'baz'
+      }, 'action has the correct payload length');
     };
 
     const thunk = interactionCreators.toggleEventSelection({ sessionId: 'baz' });

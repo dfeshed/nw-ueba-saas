@@ -1,7 +1,6 @@
 import * as ACTION_TYPES from './types';
 import moment from 'moment';
 import { lookup } from 'ember-dependency-lookup';
-import _ from 'lodash';
 
 import { fetchInvestigateData, getServiceSummary, updateSort } from './data-creators';
 import { getDictionaries, queryIsRunning } from './initialization-creators';
@@ -284,23 +283,33 @@ export const toggleEventSelection = ({ sessionId }) => {
       // if all events already selected and one event is toggled
       // toggle allEventsSelected and also select all event ids minus the one just toggled
       dispatch(toggleSelectAllEvents());
+      const newIds = {};
+      for (let i = 0; i < data.length; i++) {
+        newIds[data[i].sessionId] = data[i].sessionId;
+      }
+
+      delete newIds[sessionId];
       dispatch({
         type: ACTION_TYPES.SELECT_EVENTS,
-        payload: _.without(data.map((d) => d.sessionId), sessionId)
+        payload: newIds
       });
     } else {
-      if (selectedEventIds.includes(sessionId)) {
+      if (selectedEventIds[sessionId]) {
         // otherwise, if the event is already selected, deselect it
         dispatch({ type: ACTION_TYPES.DESELECT_EVENT, payload: sessionId });
       } else {
-        if (selectedEventIds.length === (getState().investigate.eventCount.data - 1)) {
+        if (Object.keys(selectedEventIds).length === (getState().investigate.eventCount.data - 1)) {
           // if the event is not already selected, but it's the last unselected event
           // toggle allEventsSelected
           dispatch(toggleSelectAllEvents());
         } else {
           // lastly, if the toggled event is not already selected, and is not the last unselected event
           // select the event
-          dispatch({ type: ACTION_TYPES.SELECT_EVENTS, payload: [sessionId] });
+          const newIds = {
+            ...selectedEventIds
+          };
+          newIds[sessionId] = sessionId;
+          dispatch({ type: ACTION_TYPES.SELECT_EVENTS, payload: newIds });
         }
       }
     }
