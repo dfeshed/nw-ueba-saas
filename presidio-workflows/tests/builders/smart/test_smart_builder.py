@@ -32,7 +32,8 @@ def test_valid_build():
         'retries': 1,
         'retry_delay': timedelta(minutes=5),
         'smart_conf_name': 'userId_hourly',
-        'depends_on_schemas': ['FILE']
+        'depends_on_schemas': ['FILE'],
+        'entity_type': 'userId'
     }
 
     dag = DAG(
