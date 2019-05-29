@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
 import {
@@ -148,7 +148,7 @@ module('Unit | Actions | event-creators', function(hooks) {
     actionsByType = {};
   });
 
-  test('Pages way through large query properly', function(assert) {
+  skip('Pages way through large query properly', function(assert) {
     assert.expect(10);
     const done = assert.async();
 
