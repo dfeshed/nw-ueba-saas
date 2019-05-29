@@ -1,9 +1,9 @@
 {
   "AggregatedFeatureEvents": [
     {
-      "name": "sumOfBytesSentByScoresSumDstOrgSslSubjectOutboundTlsHourly",
+      "name": "sumOfBytesSentToDstOrgScoresSumSslSubjectOutboundTlsHourly",
       "type": "P",
-      "bucketConfName": "sumOfBytesSentByScoresSumDstOrgSslSubjectOutboundTlsHourly",
+      "bucketConfName": "sumOfBytesSentToDstOrgScoresSumSslSubjectOutboundTlsHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
@@ -16,9 +16,9 @@
       }
     },
     {
-      "name": "sumOfBytesSentByScoresSumDstPortSslSubjectOutboundTlsHourly",
+      "name": "sumOfBytesSentToDstPortScoresSumSslSubjectOutboundTlsHourly",
       "type": "P",
-      "bucketConfName": "sumOfBytesSentByScoresSumDstPortSslSubjectOutboundTlsHourly",
+      "bucketConfName": "sumOfBytesSentToDstPortScoresSumSslSubjectOutboundTlsHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
@@ -31,9 +31,9 @@
       }
     },
     {
-      "name": "sumOfBytesSentByScoresSumDomainSslSubjectOutboundTlsHourly",
+      "name": "sumOfBytesSentToDomainScoresSumSslSubjectOutboundTlsHourly",
       "type": "P",
-      "bucketConfName": "sumOfBytesSentByScoresSumDomainSslSubjectOutboundTlsHourly",
+      "bucketConfName": "sumOfBytesSentToDomainScoresSumSslSubjectOutboundTlsHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {

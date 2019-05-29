@@ -1,7 +1,7 @@
 {
   "BucketConfs": [
     {
-      "name": "sumOfBytesSentByScoresSumDstOrgSslSubjectOutboundTlsHourly",
+      "name": "sumOfBytesSentToDstOrgScoresSumSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
         "sslSubject"
       ],
@@ -27,7 +27,7 @@
       ]
     },
     {
-      "name": "sumOfBytesSentByScoresSumDstPortSslSubjectOutboundTlsHourly",
+      "name": "sumOfBytesSentToDstPortScoresSumSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
         "sslSubject"
       ],
@@ -53,7 +53,7 @@
       ]
     },
     {
-      "name": "sumOfBytesSentByScoresSumDomainSslSubjectOutboundTlsHourly",
+      "name": "sumOfBytesSentToDomainScoresSumSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
         "sslSubject"
       ],
