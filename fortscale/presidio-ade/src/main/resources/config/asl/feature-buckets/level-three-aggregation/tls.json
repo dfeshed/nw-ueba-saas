@@ -51,6 +51,32 @@
           }
         }
       ]
+    },
+    {
+      "name": "sumOfBytesSentByScoresSumDomainSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "aggr_event.sumOfBytesSentByDomainSslSubjectOutboundTlsHourly"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "sumOfBytesSentByScoresSum",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.domain"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
     }
   ]
 }
