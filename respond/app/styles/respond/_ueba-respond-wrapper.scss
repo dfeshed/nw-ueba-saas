@@ -34,25 +34,18 @@
       .ueba-container__header-icons {
         padding-left: 1rem;
         align-items: flex-end;
+        cursor: default;
       }
 
       .event-ueba-contextual-help {
-        padding-right: .7rem;
-      }
-
-      .event-ueba-contextual-help:hover {
+        margin-right: .7rem;
         cursor: pointer;
       }
 
-      .ueba-container__header-close-icon {
-        padding-right: 1rem;
+      .event-ueba-close {
+        margin-top: 0;
+        cursor: pointer;
       }
-    }
-
-    .ueba-container__header__inner .ueba-container__header-close {
-      margin-top: 0;
-      margin-right: -1rem;
-      cursor: pointer;
     }
 
     .ueba-container {

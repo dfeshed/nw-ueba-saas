@@ -1265,7 +1265,7 @@ export default {
       source: {
         'Risk Scoring': 'Risk Scoring',
         'ESA Correlation': 'ESA Correlation',
-        ECAT: 'Endpoint',
+        'ECAT': 'Endpoint',
         'Event Stream Analysis': 'Event Stream Analysis',
         'Event Streaming Analytics': 'Event Stream Analysis',
         'Security Analytics Investigator': 'Security Analytics Investigator',

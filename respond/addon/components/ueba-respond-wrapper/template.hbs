@@ -1,6 +1,5 @@
 <hbox nowrap class="ueba-container__main" style={{resolvedWidth}}>
   <vbox class="ueba-container__main__inner" nowrap fill>
-
     <header class="ueba-container__header">
       <hbox class="ueba-container__header__inner">
         <vbox xs="10">
@@ -8,11 +7,12 @@
         </vbox>
         <vbox xs="2" class="ueba-container__header-icons">
           <div>
-            <span class="ueba-container__header-close-icon">
-              <button test-id="uebaRespondCloseBtn" onclick={{action "close"}} class="ueba-container__header-close" title={{t 'respond.close'}}>
-                {{rsa-icon style='filled' name='close'}}
-              </button>
-            </span>
+            <button test-id="eventUebaContextualHelp" class="rsa-form-button event-ueba-contextual-help" onclick={{action 'goToHelp' 'respond' 'incUeba'}}>
+              {{rsa-icon style='lined'  name='help-circle'}}
+            </button>
+            <button test-id="uebaRespondCloseBtn" onclick={{action "close"}} class="event-ueba-close" title={{t 'respond.close'}}>
+              {{rsa-icon style='filled' name='close'}}
+            </button>
           </div>
         </vbox>
       </hbox>
