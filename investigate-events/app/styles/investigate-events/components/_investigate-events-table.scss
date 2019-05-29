@@ -61,6 +61,32 @@
     &__manageIncident {
       margin-top: rsa-whitespace(less);
       margin-left: rsa-whitespace(less);
+
+      .rsa-button-group {
+        > .rsa-form-button-wrapper:first-of-type {
+          button {
+            text-align: left;
+            padding-left: rsa-whitespace(least);
+            font-size: .85rem;
+            width: 189px;
+          }
+        }
+
+        i.rsa-icon.selected-events-threshold {
+          margin: 0 rsa-whitespace(least);
+          font-size: 1rem;
+        }
+      }
+
+      .rsa-form-button-wrapper:last-of-type {
+        i {
+          font-size: .65rem;
+        }
+      }
+
+      .incident-dropdown ul {
+        width: 216px;
+      }
     }
 
     &__columnGroup, &__downloadEvents {
@@ -364,4 +390,8 @@
     position: relative;
     color: text-color(accentFour);
   }
+}
+
+.rsa-form-button-wrapper.is-standard:not(.is-disabled):not(.is-icon-only) .rsa-form-button {
+  border-color: border-color(primary, light);
 }
