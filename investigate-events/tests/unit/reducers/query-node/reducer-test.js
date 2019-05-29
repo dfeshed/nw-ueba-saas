@@ -864,7 +864,7 @@ test('INITIALIZE_QUERYING sets a proper query hash', function(assert) {
 
   assert.equal(
     result.currentQueryHash,
-    '1-early-late-a-=-\'x\'-undefined-b-=-\'y\'-undefined',
+    '1-early-late-a-=-\'x\'-undefined-undefined-b-=-\'y\'-undefined-undefined',
     'pillsData is the correct length'
   );
 });

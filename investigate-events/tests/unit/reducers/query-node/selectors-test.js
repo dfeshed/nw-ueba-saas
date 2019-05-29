@@ -237,8 +237,8 @@ test('is not dirty so cannot query', function(assert) {
         // serviceId can be undefined because we select a default service
         serviceId: '1',
         startTime: '1',
-        currentQueryHash: '1-1-undefined-a-b-c-undefined',
-        pillsData: [{ meta: 'a', operator: 'b', value: 'c', complexPillText: undefined }]
+        currentQueryHash: '1-1-undefined-a-b-c-undefined-undefined',
+        pillsData: [{ meta: 'a', operator: 'b', value: 'c' }]
       },
       services: {
         serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
@@ -260,7 +260,7 @@ test('is dirty due to pills so can query', function(assert) {
         startTime: '1',
         // note service is 2
         currentQueryHash: '2-1-undefined-a-b-c-undefined',
-        pillsData: [{ meta: 'a', operator: 'b', value: 'c', complexPillText: undefined }]
+        pillsData: [{ meta: 'a', operator: 'b', value: 'c' }]
       },
       services: {
         serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
@@ -282,10 +282,8 @@ test('is dirty due to updated free form text', function(assert) {
         startTime: '1',
         // note hash is the same as data
         currentQueryHash: '1-1-undefined-a-b-c-undefined',
-        pillsData: [{ meta: 'a', operator: 'b', value: 'c', complexPillText: undefined }],
-        updatedFreeFormTextPill: {
-          meta: undefined, operator: undefined, value: undefined, complexPillText: 'boom'
-        }
+        pillsData: [{ meta: 'a', operator: 'b', value: 'c' }],
+        updatedFreeFormTextPill: { complexFilterText: 'boom' }
       },
       services: {
         serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
@@ -306,10 +304,10 @@ test('is not dirty even with free form updated', function(assert) {
         serviceId: '1',
         startTime: '1',
         // note hash is the same as data
-        currentQueryHash: '1-1-undefined-a-=-b-undefined',
-        pillsData: [{ meta: 'a', operator: '=', value: 'b', complexPillText: undefined }],
+        currentQueryHash: '1-1-undefined-a-=-b-undefined-undefined',
+        pillsData: [{ meta: 'a', operator: '=', value: 'b' }],
         updatedFreeFormTextPill: {
-          meta: 'a', operator: '=', value: 'b', complexPillText: undefined
+          meta: 'a', operator: '=', value: 'b'
         }
       },
       services: {

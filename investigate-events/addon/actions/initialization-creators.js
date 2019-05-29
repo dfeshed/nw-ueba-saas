@@ -16,7 +16,7 @@ import { fetchServices } from 'investigate-shared/actions/api/services';
 import { fetchAdminEventSettings } from 'investigate-shared/actions/api/events/event-settings';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
-
+import { TextFilter } from 'investigate-events/util/filter-types';
 import * as ACTION_TYPES from './types';
 
 const noop = () => {};
@@ -332,9 +332,7 @@ const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, hashNavigateCall
       dispatch({
         type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
         payload: {
-          pillData: [
-            { meta: undefined, operator: undefined, value: undefined, searchTerm }
-          ]
+          pillData: [TextFilter.create({ searchTerm })]
         }
       });
       hashNavigateCallback();
