@@ -53,9 +53,9 @@ module('Integration | Component | Files toolbar', function(hooks) {
     actionStub.returns(() => () => {});
     new ReduxDataHelper(setState).totalItems(3).setSelectedFileList(item).build();
     await render(hbs`{{files-toolbar}}`);
-    assert.equal(this.$('.title-header').length, 1, 'Files toolbar present');
-    assert.equal(this.$('.export-button').length, 1, 'Export button present');
-    assert.equal(this.$('.view-certificate-button').length, 1, 'View certificate button present');
+    assert.equal(findAll('.title-header').length, 1, 'Files toolbar present');
+    assert.equal(findAll('.export-button').length, 1, 'Export button present');
+    assert.equal(findAll('.view-certificate-button').length, 1, 'View certificate button present');
     assert.equal(find('.rsa-loader').classList.contains('is-small'), true, 'certificate rsa loader displayed');
     return settled().then(() => {
       actionStub.restore();

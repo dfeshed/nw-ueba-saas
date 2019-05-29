@@ -4,7 +4,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
-import { render, waitUntil, findAll } from '@ember/test-helpers';
+import { render, waitUntil, findAll, find, click } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState;
@@ -39,11 +39,11 @@ module('Integration | Component | host detail header titlebar', function(hooks) 
       .hostName('XYZ')
       .build();
     await render(hbs`{{host-detail/header/titlebar}}`);
-    this.$('.rsa-nav-tab')[3].click();
+    await click(document.querySelectorAll('.rsa-nav-tab')[3]);
     await waitUntil(() => {
       return redux.getState().endpoint.visuals.activeHostDetailTab === 'FILES';
     }, { timeout: 6000 });
-    assert.equal(this.$('.rsa-nav-tab.is-active').text().trim().toUpperCase(), 'FILES', 'Rendered the tab name that is passed');
+    assert.equal(find('.rsa-nav-tab.is-active').textContent.trim().toUpperCase(), 'FILES', 'Rendered the tab name that is passed');
   });
 
   test('Search does not render for Downloads', async function(assert) {

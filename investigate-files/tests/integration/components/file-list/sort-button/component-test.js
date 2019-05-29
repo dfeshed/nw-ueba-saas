@@ -1,25 +1,27 @@
-import { moduleForComponent, skip } from 'ember-qunit';
+import { module, skip } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('file-list/sort-button', 'Integration | Component | file list/sort button', {
-  integration: true
-});
+module('Integration | Component | file list/sort button', function(hooks) {
+  setupRenderingTest(hooks);
 
-skip('it renders', function(assert) {
+  skip('it renders', function(assert) {
 
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
+    // Set any properties with this.set('myProperty', 'value');
+    // Handle any actions with this.on('myAction', function(val) { ... });
 
-  this.render(hbs`{{file-list/sort-button}}`);
+    this.render(hbs`{{file-list/sort-button}}`);
 
-  assert.equal(this.$().text().trim(), '');
+    assert.equal(find('*').textContent.trim(), '');
 
-  // Template block usage:
-  this.render(hbs`
-    {{#file-list/sort-button}}
-      template block text
-    {{/file-list/sort-button}}
-  `);
+    // Template block usage:
+    this.render(hbs`
+      {{#file-list/sort-button}}
+        template block text
+      {{/file-list/sort-button}}
+    `);
 
-  assert.equal(this.$().text().trim(), 'template block text');
+    assert.equal(find('*').textContent.trim(), 'template block text');
+  });
 });

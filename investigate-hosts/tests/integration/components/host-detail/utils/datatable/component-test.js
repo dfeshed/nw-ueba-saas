@@ -1,10 +1,10 @@
-import { module, test, setupRenderingTest } from 'ember-qunit';
+import { module, test } from 'qunit';
 
+import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, findAll, find, render } from '@ember/test-helpers';
-import wait from 'ember-test-helpers/wait';
+import { click, find, findAll, render, settled } from '@ember/test-helpers';
 
 const dataItems = [
   {
@@ -72,7 +72,7 @@ module('Integration | Component | host-detail/utils/datatable', function(hooks) 
       </style>
     {{host-detail/utils/datatable items=data columnsConfig=columnsConfig selectedIndex=value selectRowAction=selectRowAction }}`);
 
-    return wait().then(() => {
+    return settled().then(() => {
 
       assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 0, 'is-selected is not present before click');
       click('.rsa-data-table-body-row:nth-child(1)');
@@ -97,7 +97,7 @@ module('Integration | Component | host-detail/utils/datatable', function(hooks) 
         }
       </style>
     {{host-detail/utils/datatable items=data columnsConfig=columnsConfig}}`);
-    return wait().then(() => {
+    return settled().then(() => {
       assert.equal(findAll('.rsa-data-table-body-row').length, 2, 'Returned the number of rows/length of the datatable');
     });
   });
@@ -106,7 +106,7 @@ module('Integration | Component | host-detail/utils/datatable', function(hooks) 
     this.set('data', dataItems);
     this.set('columnsConfig', config);
     await render(hbs`{{host-detail/utils/datatable items=data columnsConfig=columnsConfig}}`);
-    return wait().then(() => {
+    return settled().then(() => {
       assert.equal(findAll('.rsa-data-table-header-cell').length, 3, 'Returned the number of columns of the datatable');
     });
   });

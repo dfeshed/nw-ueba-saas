@@ -1628,7 +1628,7 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       {{host-detail/process/process-tree closePropertyPanel=closePropertyPanel}}{{context-menu}}`);
     assert.equal(findAll('.content-context-menu .insights-host')[0].textContent.trim(), 'N/A', 'N/A is shown in column for insight agent');
   });
-  test('Save config should  call on resizing the column', async function(assert) {
+  skip('Save config should  call on resizing the column', async function(assert) {
     assert.expect(3);
     const focusedHost = {
       machineIdentity: {

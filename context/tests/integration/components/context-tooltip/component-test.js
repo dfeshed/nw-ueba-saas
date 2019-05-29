@@ -1,6 +1,7 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, settled, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import wait from 'ember-test-helpers/wait';
 import Service from '@ember/service';
 import Evented from '@ember/object/evented';
 import { waitForSockets } from '../../../helpers/wait-for-sockets';
@@ -26,45 +27,47 @@ function removeTetherFix() {
   document.body.removeChild(styleElement);
 }
 
-moduleForComponent('context-tooltip', 'Integration | Component | context tooltip', {
-  integration: true,
-  beforeEach() {
+module('Integration | Component | context tooltip', function(hooks) {
+  setupRenderingTest(hooks);
+
+  hooks.beforeEach(function() {
     insertTetherFix();
-    this.register('service:event-bus', eventBusStub);
-    this.inject.service('event-bus', { as: 'eventBus' });
-    initialize(this);
-  },
-  afterEach() {
+    this.owner.register('service:event-bus', eventBusStub);
+    this.eventBus = this.owner.lookup('service:event-bus');
+    initialize(this.owner);
+  });
+
+  hooks.afterEach(function() {
     removeTetherFix();
-  }
-});
+  });
 
-test('it renders', function(assert) {
-  assert.expect(4);
+  test('it renders', async function(assert) {
+    assert.expect(4);
 
-  const done = waitForSockets();
+    const done = waitForSockets();
 
-  const model = { type: 'IP', id: '10.20.30.40' };
+    const model = { type: 'IP', id: '10.20.30.40' };
 
-  const clickDataAction = (arg) => {
-    assert.ok(true, 'Expected callback action to be invoked.');
-    assert.equal(arg, model, 'Expected callback action to receive the model as an input argument.');
-  };
-  this.set('clickDataAction', clickDataAction);
+    const clickDataAction = (arg) => {
+      assert.ok(true, 'Expected callback action to be invoked.');
+      assert.equal(arg, model, 'Expected callback action to receive the model as an input argument.');
+    };
+    this.set('clickDataAction', clickDataAction);
 
-  // rsa-content-tethered-panel requires us to render an element whose class matches the tooltip's panelId.
-  this.render(hbs`<a class="foo">Link</a>{{context-tooltip panelId="foo" clickDataAction=clickDataAction}}`);
+    // rsa-content-tethered-panel requires us to render an element whose class matches the tooltip's panelId.
+    await render(hbs`<a class="foo">Link</a>{{context-tooltip panelId="foo" clickDataAction=clickDataAction}}`);
 
-  return wait()
-    .then(() => {
-      // Simulate an event that will cause the tooltip to render its contents.
-      this.get('eventBus').trigger('rsa-content-tethered-panel-display-foo', null, null, null, model);
-      return wait();
-    })
-    .then(() => {
-      assert.equal(this.$('.rsa-context-tooltip').length, 1, 'Expected to find root DOM node');
-      assert.equal(this.$('.js-open-overview button').length, 1, 'Expected to find Open Overview DOM node');
-      this.$('.js-open-overview button').click();
-      return wait().then(() => done());
-    });
+    return settled()
+      .then(() => {
+        // Simulate an event that will cause the tooltip to render its contents.
+        this.get('eventBus').trigger('rsa-content-tethered-panel-display-foo', null, null, null, model);
+        return settled();
+      })
+      .then(async() => {
+        assert.equal(document.querySelectorAll('.rsa-context-tooltip').length, 1, 'Expected to find root DOM node');
+        assert.equal(document.querySelectorAll('.js-open-overview button').length, 1, 'Expected to find Open Overview DOM node');
+        await click('.js-open-overview button');
+        return settled().then(() => done());
+      });
+  });
 });
