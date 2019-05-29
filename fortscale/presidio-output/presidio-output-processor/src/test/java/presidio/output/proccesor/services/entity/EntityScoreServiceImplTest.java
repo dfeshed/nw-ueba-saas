@@ -32,10 +32,7 @@ import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.spring.EntityServiceConfig;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by shays on 27/08/2017.
@@ -100,7 +97,7 @@ public class EntityScoreServiceImplTest {
             }
         });
 
-        Mockito.verify(Mockito.spy(EntitySeveritiesRangeRepository.class), Mockito.times(0)).findOne(EntitySeveritiesRangeDocument.ENTITY_SEVERITIES_RANGE_DOC_ID);
+        Mockito.verify(Mockito.spy(EntitySeveritiesRangeRepository.class), Mockito.times(0)).findById(EntitySeveritiesRangeDocument.ENTITY_SEVERITIES_RANGE_DOC_ID);
         EntitySeverityServiceImpl.EntityScoreToSeverity severityTreeMap = entitySeverityService.getSeveritiesMap(true);
         Assert.assertEquals(EntitySeverity.LOW, severityTreeMap.getEntitySeverity(55D));
         Assert.assertEquals(EntitySeverity.MEDIUM, severityTreeMap.getEntitySeverity(270D));
@@ -138,7 +135,7 @@ public class EntityScoreServiceImplTest {
         map.put(EntitySeverity.HIGH, new PresidioRange<>(343.2d, 343.2d));
         map.put(EntitySeverity.CRITICAL, new PresidioRange<>(518.8d, 514.8d));
         entitySeveritiesRangeDocument.setSeverityToScoreRangeMap(map);
-        Mockito.when(entitySeveritiesRangeRepository.findOne(EntitySeveritiesRangeDocument.ENTITY_SEVERITIES_RANGE_DOC_ID)).thenReturn(entitySeveritiesRangeDocument);
+        Mockito.when(entitySeveritiesRangeRepository.findById(EntitySeveritiesRangeDocument.ENTITY_SEVERITIES_RANGE_DOC_ID)).thenReturn(Optional.of(entitySeveritiesRangeDocument));
         EntitySeverityServiceImpl.EntityScoreToSeverity severityTreeMap = entitySeverityService.getSeveritiesMap(false);
         Assert.assertEquals(EntitySeverity.LOW, severityTreeMap.getEntitySeverity(50D));
         Assert.assertEquals(EntitySeverity.LOW, severityTreeMap.getEntitySeverity(250D));

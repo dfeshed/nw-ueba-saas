@@ -17,13 +17,7 @@ import presidio.output.domain.repositories.EntitySeveritiesRangeRepository;
 import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -163,7 +157,7 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
     }
 
     private EntityScoreToSeverity getExistingEntityScoreToSeverity() {
-        EntitySeveritiesRangeDocument entitySeveritiesRangeDocument = entitySeveritiesRangeRepository.findOne(EntitySeveritiesRangeDocument.ENTITY_SEVERITIES_RANGE_DOC_ID);
+        EntitySeveritiesRangeDocument entitySeveritiesRangeDocument = entitySeveritiesRangeRepository.findById(EntitySeveritiesRangeDocument.ENTITY_SEVERITIES_RANGE_DOC_ID).get();
 
         if (entitySeveritiesRangeDocument == null) { //no existing percentiles were found
             logger.debug("No entity score percentile calculation results were found, setting scores thresholds to zero (all entities will get LOW severity (till next daily calculation)");

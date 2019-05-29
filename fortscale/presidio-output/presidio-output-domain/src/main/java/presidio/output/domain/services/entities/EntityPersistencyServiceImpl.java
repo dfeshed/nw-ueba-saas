@@ -7,11 +7,9 @@ import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.entity.EntityQuery;
 import presidio.output.domain.repositories.EntityRepository;
 
-import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     @Autowired
@@ -27,15 +25,15 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     public Iterable<Entity> save(List<Entity> entities) {
         if (entities != null && entities.size() > 0) {
             entities.forEach(Entity::updateFieldsBeforeSave);
-            return entityRepository.save(entities);
+            return entityRepository.saveAll(entities);
         } else {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 
     @Override
     public Entity findEntityByDocumentId(String documentId) {
-        return entityRepository.findOne(documentId);
+        return entityRepository.findById(documentId).get();
     }
 
     @Override
