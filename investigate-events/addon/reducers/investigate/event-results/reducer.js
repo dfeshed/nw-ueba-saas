@@ -51,13 +51,6 @@ export default handleActions({
     return state.set('visibleColumns', payload);
   },
 
-  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state) => {
-    return state.merge({
-      allEventsSelected: false,
-      selectedEventIds: {}
-    });
-  },
-
   [ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS]: (state) => {
     return state.merge({
       allEventsSelected: !state.allEventsSelected,
@@ -83,6 +76,8 @@ export default handleActions({
       message: undefined,
       reason: undefined,
       status: 'streaming',
+      allEventsSelected: false,
+      selectedEventIds: {},
       eventTimeSortOrderPreferenceWhenQueried
     });
   },
