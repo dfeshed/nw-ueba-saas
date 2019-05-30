@@ -32,6 +32,22 @@ const _expressionList = (state) => state.endpoint.filter.expressionList || [];
 const _hasNext = (state) => state.endpoint.machines.hasNext;
 const _focusedHost = (state) => state.endpoint.machines.focusedHost;
 
+const _allAreIdle = (state) => {
+  const selectedHosts = state.endpoint.machines.selectedHostList || [];
+  const idleHosts = selectedHosts.filter((item) => {
+    return item ? item.scanStatus === 'idle' : false;
+  });
+  return idleHosts.length > 0;
+};
+
+const _allAreNotIdle = (state) => {
+  const selectedHosts = state.endpoint.machines.selectedHostList || [];
+  const activeHosts = selectedHosts.filter((item) => {
+    return item ? item.scanStatus !== 'idle' : false;
+  });
+  return activeHosts.length > 0;
+};
+
 export const allAreMigratedHosts = createSelector(
   _selectedHostList,
   (selectedHostList) => selectedHostList.every((host) => host && !host.managed)
@@ -162,11 +178,16 @@ export const warningMessages = createSelector(
     return messages;
   }
 );
-
 export const isScanStartButtonDisabled = createSelector(
-  [tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts],
-  (tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts) => {
-    return tooManyHostsSelected || allAreEcatAgents || allAreMigratedHosts;
+  [tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts, _allAreIdle],
+  (tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts, allAreIdle) => {
+    return tooManyHostsSelected || allAreEcatAgents || allAreMigratedHosts || !allAreIdle;
+  }
+);
+export const isScanStopButtonDisabled = createSelector(
+  [tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts, _allAreNotIdle],
+  (tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts, allAreNotIdle) => {
+    return tooManyHostsSelected || allAreEcatAgents || allAreMigratedHosts || !allAreNotIdle;
   }
 );
 
@@ -232,16 +253,23 @@ export const isInsightsAgent = createSelector(
 );
 
 export const actionsDisableMessage = createSelector(
-  [noHostsSelected, tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts],
-  (noHostsSelected, tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts) => {
+  [noHostsSelected, tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts, _allAreIdle, _allAreNotIdle],
+  (noHostsSelected, tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts, allAreIdle, allAreNotIdle) => {
     if (noHostsSelected) {
-      return 'Action disabled - No host is selected.';
+      return 'Select a host to perform this action.';
     } else if (tooManyHostsSelected) {
-      return 'Action disabled - More than 100 hosts are selected.';
+      return 'More than 100 hosts are selected.';
     } else if (allAreEcatAgents) {
-      return 'Action disabled - 4.4 agent(s) selected.';
+      return '4.4 agent(s) selected.';
     } else if (allAreMigratedHosts) {
-      return 'Action disabled - Selected host(s) not managed by the current server';
+      return 'Selected hosts not managed by the current server.';
+    } else if (allAreIdle || allAreNotIdle) {
+      if (allAreIdle && !allAreNotIdle) {
+        return 'Scan cannot be stopped as scan status is idle.';
+      } else if (!allAreIdle && allAreNotIdle) {
+        return 'Selected hosts are already being scanned.';
+      }
+      return '';
     }
   }
 );

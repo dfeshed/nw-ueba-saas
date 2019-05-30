@@ -36,7 +36,7 @@ module('Integration | Component | Host Scan Command', function(hooks) {
     this.set('command', 'START_SCAN');
     this.set('modalTitle', 'Test title');
     new ReduxDataHelper(initState)
-      .scanCount(3)
+      .selectedHostList([{ version: '11.3', managed: true, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F', scanStatus: 'idle' }])
       .build();
     await render(hbs`
       <div id='modalDestination'></div>
@@ -54,7 +54,7 @@ module('Integration | Component | Host Scan Command', function(hooks) {
   test('it should render the proper title for stop scan', async function(assert) {
     this.set('command', 'STOP_SCAN');
     new ReduxDataHelper(initState)
-      .scanCount(3)
+      .selectedHostList([{ version: '11.3', managed: true, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F', scanStatus: 'scanning' }])
       .build();
     await render(hbs`
       <div id='modalDestination'></div>
@@ -63,7 +63,7 @@ module('Integration | Component | Host Scan Command', function(hooks) {
     await click('.stop-scan-button .rsa-form-button');
     return settled().then(() => {
       assert.equal(document.querySelector('#modalDestination .stop-scan-modal').getClientRects().length > 0, true, 'Expected to render start scan modal');
-      assert.equal(document.querySelector('#modalDestination .rsa-application-modal-content h3').textContent.trim(), 'Stop Scan for 3 host(s)');
+      assert.equal(document.querySelector('#modalDestination .rsa-application-modal-content h3').textContent.trim(), 'Stop Scan for 1 host(s)');
     });
   });
 });

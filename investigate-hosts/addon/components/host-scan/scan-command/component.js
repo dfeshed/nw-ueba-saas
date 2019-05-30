@@ -4,6 +4,7 @@ import computed from 'ember-computed-decorators';
 
 import {
   isScanStartButtonDisabled,
+  isScanStopButtonDisabled,
   warningMessages,
   scanCount,
   extractAgentIds,
@@ -14,6 +15,7 @@ import { hostOverviewServerId } from 'investigate-hosts/reducers/details/overvie
 const stateToComputed = (state) => ({
   warningMessages: warningMessages(state),
   isScanStartButtonDisabled: isScanStartButtonDisabled(state),
+  isScanStopButtonDisabled: isScanStopButtonDisabled(state),
   agentIds: extractAgentIds(state),
   scanCount: scanCount(state),
   actionsDisableMessage: actionsDisableMessage(state),

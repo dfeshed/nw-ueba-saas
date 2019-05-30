@@ -168,6 +168,11 @@ export default {
         analysisData: {
           machineRiskScore: 89
         },
+        agentStatus: {
+          lastSeenTime: '2017-03-08T11:55:33.814Z',
+          lastUpdatedTime: '2017-03-08T11:55:33.814Z',
+          scanStatus: 'idle'
+        },
         machineIdentity: {
           id: '019A39C8-3E18-387F-EAD4-EA217519638A',
           group: 'default',
@@ -290,6 +295,11 @@ export default {
         analysisData: {
           machineRiskScore: 0
         },
+        agentStatus: {
+          lastSeenTime: '2017-03-08T11:55:33.814Z',
+          lastUpdatedTime: '2017-03-08T11:55:33.814Z',
+          scanStatus: 'idle'
+        },
         machineIdentity: {
           id: '3e6febe6-0cb6-4e9f-bdf6-ce238c7011b6',
           agentVersion: '5000',
@@ -391,6 +401,11 @@ export default {
         analysisData: {
           machineRiskScore: 100
         },
+        agentStatus: {
+          lastSeenTime: '2017-03-08T11:55:33.814Z',
+          lastUpdatedTime: '2017-03-08T11:55:33.814Z',
+          scanStatus: 'idle'
+        },
         machineIdentity: {
           id: '71827985-aaf5-45c7-970f-c54329505d60',
           agentVersion: '5000',
@@ -491,6 +506,11 @@ export default {
         id: 'cda86315-c941-4749-8cdb-43f33497a4f8',
         analysisData: {
           machineRiskScore: 45
+        },
+        agentStatus: {
+          lastSeenTime: '2017-03-08T11:55:33.814Z',
+          lastUpdatedTime: '2017-03-08T11:55:33.814Z',
+          scanStatus: 'idle'
         },
         machineIdentity: {
           id: 'cda86315-c941-4749-8cdb-43f33497a4f8',
@@ -597,6 +617,11 @@ export default {
         analysisData: {
           machineRiskScore: 15
         },
+        agentStatus: {
+          lastSeenTime: '2017-03-08T11:55:33.814Z',
+          lastUpdatedTime: '2017-03-08T11:55:33.814Z',
+          scanStatus: 'idle'
+        },
         machineIdentity: {
           id: '3d91b489-8522-486d-aec7-4c3916348e77',
           agentVersion: '5000',
@@ -696,6 +721,11 @@ export default {
       },
       {
         id: '6993fa8c-e00a-4afa-9c60-344736deca65',
+        agentStatus: {
+          lastSeenTime: '2017-03-08T11:55:33.814Z',
+          lastUpdatedTime: '2017-03-08T11:55:33.814Z',
+          scanStatus: 'idle'
+        },
         machineIdentity: {
           id: '6993fa8c-e00a-4afa-9c60-344736deca65',
           agentVersion: '5000',
@@ -795,6 +825,11 @@ export default {
       },
       {
         id: '724530a0-6550-4ff4-a392-23cc00f93197',
+        agentStatus: {
+          lastSeenTime: '2017-03-08T11:55:33.814Z',
+          lastUpdatedTime: '2017-03-08T11:55:33.814Z',
+          scanStatus: 'idle'
+        },
         machineIdentity: {
           id: '724530a0-6550-4ff4-a392-23cc00f93197',
           agentVersion: '5000',
@@ -894,6 +929,11 @@ export default {
       },
       {
         id: '3364e166-512c-43f2-82d6-8bb853b91794',
+        agentStatus: {
+          lastSeenTime: '2017-03-08T11:55:33.814Z',
+          lastUpdatedTime: '2017-03-08T11:55:33.814Z',
+          scanStatus: 'idle'
+        },
         machineIdentity: {
           id: '3364e166-512c-43f2-82d6-8bb853b91794',
           agentVersion: '5000',
@@ -993,6 +1033,11 @@ export default {
       },
       {
         id: '66badcbf-0479-4ec5-bcc0-75641f608cb5',
+        agentStatus: {
+          lastSeenTime: '2017-03-08T11:55:33.814Z',
+          lastUpdatedTime: '2017-03-08T11:55:33.814Z',
+          scanStatus: 'idle'
+        },
         machineIdentity: {
           id: '66badcbf-0479-4ec5-bcc0-75641f608cb5',
           agentVersion: '5000',

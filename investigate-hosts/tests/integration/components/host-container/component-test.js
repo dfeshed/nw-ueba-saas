@@ -63,7 +63,9 @@ const endpointState =
             schema: { schema: endpoint.schema },
             machines: {
               hostList: hostListState.machines.hostList,
-              selectedHostList: [],
+              selectedHostList: [{
+                scanStatus: 'idle'
+              }],
               hostColumnSort: 'machineIdentity.machineName',
               activeHostListPropertyTab: 'HOST_DETAILS'
             }
@@ -190,7 +192,6 @@ module('Integration | Component | host-container', function(hooks) {
     this.set('closeProperties', () => {});
     this.set('openProperties', () => {});
     await render(hbs`{{host-container}}`);
-
     await click(findAll('.rsa-data-table-body-row')[1]);
     assert.equal(findAll('.show-right-zone').length, 1, 'Properties panel is open on host row click');
     assert.equal(findAll('.rsa-data-table-body-row.is-selected').length, 1, 'Clicked row is highlighted');

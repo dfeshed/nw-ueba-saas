@@ -16,7 +16,8 @@ const HOST_LIST = [
     },
     groupPolicy: {
       managed: true
-    }
+    },
+    agentStatus: { scanStatus: 'idle' }
   },
   {
     id: 2,
@@ -26,7 +27,8 @@ const HOST_LIST = [
     },
     groupPolicy: {
       managed: false
-    }
+    },
+    agentStatus: { scanStatus: 'idle' }
   },
   {
     id: 3,
@@ -36,7 +38,8 @@ const HOST_LIST = [
     },
     groupPolicy: {
       managed: true
-    }
+    },
+    agentStatus: { scanStatus: 'idle' }
   }
 ];
 test('should return the initial state', function(assert) {

@@ -16,7 +16,8 @@ module('Unit | Actions | Data Creators', function(hooks) {
       },
       version: '11.4.0.0',
       groupPolicy: { managed: true },
-      serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+      serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0',
+      agentStatus: { scanStatus: 'idle' }
     };
     const action = dataCreators.toggleMachineSelected(data);
     assert.equal(action.type, ACTION_TYPES.TOGGLE_MACHINE_SELECTED);

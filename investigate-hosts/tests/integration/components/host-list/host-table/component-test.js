@@ -214,7 +214,8 @@ module('Integration | Component | host-list/host-table', function(hooks) {
             machineIdentity:
               {
                 machineName: 'INWILLL2Cmac'
-              }
+              },
+            scanStatus: 'idle'
           }
         ])
       .build();
@@ -246,14 +247,16 @@ module('Integration | Component | host-list/host-table', function(hooks) {
             id: '3e6febe6-0cb6-4e9f-bdf6-ce238c7011b6',
             machineIdentity: {
               machineName: 'INWILLL2Cmac'
-            }
+            },
+            scanStatus: 'idle'
           },
           {
             id: 'cda86315-c941-4749-8cdb-43f33497a4f8',
             machineIdentity: {
               machineName: 'INLINDSAYL1Cmac'
 
-            }
+            },
+            scanStatus: 'idle'
           }
         ])
       .build();
@@ -338,14 +341,16 @@ module('Integration | Component | host-list/host-table', function(hooks) {
             id: '3e6febe6-0cb6-4e9f-bdf6-ce238c7011b6',
             machineIdentity: {
               machineName: 'INWILLL2Cmac'
-            }
+            },
+            scanStatus: 'idle'
           },
           {
             id: 'cda86315-c941-4749-8cdb-43f33497a4f8',
             machineIdentity: {
               machineName: 'INLINDSAYL1Cmac'
 
-            }
+            },
+            scanStatus: 'idle'
           }
         ])
       .build();

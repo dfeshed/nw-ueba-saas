@@ -12,6 +12,7 @@ import {
   hasEcatAgents,
   warningMessages,
   isScanStartButtonDisabled,
+  isScanStopButtonDisabled,
   extractAgentIds,
   isExportButtonDisabled,
   hostListPropertyTabs,
@@ -347,7 +348,7 @@ test('isScanStartButtonDisabled', function(assert) {
             }
           }
         ],
-        selectedHostList: [{ id: 1, managed: true }]
+        selectedHostList: [{ id: 1, managed: true, scanStatus: 'idle' }]
       },
       overview: {}
     }
@@ -402,6 +403,45 @@ test('isScanStartButtonDisabled', function(assert) {
   assert.equal(isScanStartButtonDisabled(state5), true, 'should be true when host list is empty');
 });
 
+test('isScanStopButtonDisabled', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [
+          {
+            id: 1,
+            agentStatus: {
+              scanStatus: 'scanning'
+            }
+          }
+        ],
+        selectedHostList: []
+      },
+      overview: {}
+    }
+  });
+  const result = isScanStopButtonDisabled(state);
+  assert.equal(result, true, 'should be true');
+
+  const state2 = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [
+          {
+            id: 1,
+            agentStatus: {
+              scanStatus: 'scanning'
+            }
+          }
+        ],
+        selectedHostList: [{ id: 1, managed: true }]
+      },
+      overview: {}
+    }
+  });
+  assert.equal(isScanStopButtonDisabled(state2), false, 'should be false when some host are selected');
+
+});
 test('extractAgentIds', function(assert) {
   const state1 = Immutable.from({
     endpoint: {
@@ -661,12 +701,14 @@ test('allAreMigratedHosts returns true if the selected agent has been migrated',
         selectedHostList: [{
           id: 1,
           version: '4.3.0.0',
-          managed: true
+          managed: true,
+          scanStatus: 'idle'
         },
         {
           id: 2,
           version: '4.3.0.0',
-          managed: true
+          managed: true,
+          scanStatus: 'idle'
         }]
       }
     }
@@ -684,7 +726,7 @@ test('actionsDisableMessage', function(assert) {
     }
   });
   const result1 = actionsDisableMessage(state1);
-  assert.equal(result1, 'Action disabled - No host is selected.');
+  assert.equal(result1, 'Select a host to perform this action.');
 
   const state2 = Immutable.from({
     endpoint: {
@@ -694,7 +736,7 @@ test('actionsDisableMessage', function(assert) {
     }
   });
   const result2 = actionsDisableMessage(state2);
-  assert.equal(result2, 'Action disabled - More than 100 hosts are selected.');
+  assert.equal(result2, 'More than 100 hosts are selected.');
 
   const state3 = Immutable.from({
     endpoint: {
@@ -704,7 +746,7 @@ test('actionsDisableMessage', function(assert) {
     }
   });
   const result3 = actionsDisableMessage(state3);
-  assert.equal(result3, 'Action disabled - 4.4 agent(s) selected.');
+  assert.equal(result3, '4.4 agent(s) selected.');
 
   const state4 = Immutable.from({
     endpoint: {
@@ -714,7 +756,36 @@ test('actionsDisableMessage', function(assert) {
     }
   });
   const result4 = actionsDisableMessage(state4);
-  assert.equal(result4, 'Action disabled - Selected host(s) not managed by the current server');
+  assert.equal(result4, 'Selected hosts not managed by the current server.');
+
+  const state5 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{ id: '1', version: '4.5', managed: true, scanStatus: 'idle' }]
+      }
+    }
+  });
+  const result5 = actionsDisableMessage(state5);
+  assert.equal(result5, 'Scan cannot be stopped as scan status is idle.');
+  const state6 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{ id: '1', version: '4.5', managed: true, scanStatus: 'scanning' }]
+      }
+    }
+  });
+  const result6 = actionsDisableMessage(state6);
+  assert.equal(result6, 'Selected hosts are already being scanned.');
+  const state7 = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [{ id: '1', version: '4.5', managed: true, scanStatus: 'scanning' },
+          { id: '2', version: '4.5', managed: true, scanStatus: 'idle' }]
+      }
+    }
+  });
+  const result7 = actionsDisableMessage(state7);
+  assert.equal(result7, '');
 });
 
 test('mftDownloadButtonStatus', function(assert) {

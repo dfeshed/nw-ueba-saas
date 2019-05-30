@@ -57,44 +57,50 @@ module('Integration | Component | host table action bar', function(hooks) {
   });
 
   test('it renders action bar start button when some hosts are selected', async function(assert) {
-    new ReduxDataHelper(setState).scanCount(2).build();
+    new ReduxDataHelper(setState)
+      .selectedHostList([{ id: '123', version: '4.4', managed: true, scanStatus: 'idle' }])
+      .scanCount(2)
+      .build();
     await render(hbs`{{host-list/host-table/action-bar}}`);
     assert.equal(document.querySelector('.host-table__toolbar .start-scan-button button').textContent.trim(), 'Start Scan', 'action bar start button label');
-    assert.equal(document.querySelectorAll('.host-table__toolbar .start-scan-button.is-disabled').length, 0, 'action bar start button is enabled');
+    assert.equal(document.querySelectorAll('.host-table__toolbar .start-scan-button.is-disabled').length, 1, 'action bar start button is enabled');
   });
 
   test('it renders action bar stop button when some hosts are selected', async function(assert) {
-    new ReduxDataHelper(setState).scanCount(2).build();
+    new ReduxDataHelper(setState)
+      .selectedHostList([{ id: '123', version: '11.3', managed: true, scanStatus: 'scanning' }])
+      .scanCount(2)
+      .build();
     await render(hbs`{{host-list/host-table/action-bar}}`);
     assert.equal(document.querySelector('.host-table__toolbar .stop-scan-button button').textContent.trim(), 'Stop Scan', 'action bar stop button label');
-    assert.equal(document.querySelectorAll('.host-table__toolbar .stop-scan-button.is-disabled').length, 0, 'action bar stop button is enabled');
+    assert.equal(document.querySelectorAll('.host-table__toolbar .stop-scan-button.is-disabled').length, 1, 'action bar stop button is enabled');
   });
 
   test('it disables start/stop scan button when selected hosts are migrated', async function(assert) {
-    new ReduxDataHelper(setState).selectedHostList([{ id: '123', version: '11.3', managed: false }]).build();
+    new ReduxDataHelper(setState).selectedHostList([{ id: '123', version: '11.3', managed: false, scanStatus: 'idle' }]).build();
     await render(hbs`{{host-list/host-table/action-bar}}`);
     assert.equal(document.querySelectorAll('.host-table__toolbar .start-scan-button.is-disabled').length, 1, 'start scan button is disabled');
     assert.equal(document.querySelectorAll('.host-table__toolbar .stop-scan-button.is-disabled').length, 1, 'stop scan button is disabled');
   });
 
   test('it enables start/stop scan button when selected hosts are managed', async function(assert) {
-    new ReduxDataHelper(setState).selectedHostList([{ id: '123', version: '11.3', managed: true }]).build();
+    new ReduxDataHelper(setState).selectedHostList([{ id: '123', version: '11.3', managed: true, scanStatus: 'idle' }]).build();
     await render(hbs`{{host-list/host-table/action-bar}}`);
     assert.equal(document.querySelectorAll('.host-table__toolbar .start-scan-button.is-disabled').length, 0, 'start scan button is enabled');
-    assert.equal(document.querySelectorAll('.host-table__toolbar .stop-scan-button.is-disabled').length, 0, 'stop scan button is enabled');
+    assert.equal(document.querySelectorAll('.host-table__toolbar .stop-scan-button.is-disabled').length, 1, 'stop scan button is enabled');
   });
 
   test('it enables start/stop scan button when selected hosts contains migrated and managed', async function(assert) {
     new ReduxDataHelper(setState).selectedHostList([
-      { id: '123', version: '11.3', managed: false },
-      { id: '131', version: '11.3', managed: true } ]).build();
+      { id: '123', version: '11.3', managed: false, scanStatus: 'idle' },
+      { id: '131', version: '11.3', managed: true, scanStatus: 'idle' } ]).build();
     await render(hbs`{{host-list/host-table/action-bar}}`);
     assert.equal(document.querySelectorAll('.host-table__toolbar .start-scan-button.is-disabled').length, 0, 'start scan button is enabled');
-    assert.equal(document.querySelectorAll('.host-table__toolbar .stop-scan-button.is-disabled').length, 0, 'stop scan button is enabled');
+    assert.equal(document.querySelectorAll('.host-table__toolbar .stop-scan-button.is-disabled').length, 1, 'stop scan button is disabled');
   });
 
   test('it disables start/stop scan button when selected hosts are 4.4 agents', async function(assert) {
-    new ReduxDataHelper(setState).selectedHostList([{ id: '123', version: '4.4', managed: true }]).build();
+    new ReduxDataHelper(setState).selectedHostList([{ id: '123', version: '4.4', managed: true, scanStatus: 'idle' }]).build();
     await render(hbs`{{host-list/host-table/action-bar}}`);
     assert.equal(document.querySelectorAll('.host-table__toolbar .start-scan-button.is-disabled').length, 1, 'start scan button is disabled');
     assert.equal(document.querySelectorAll('.host-table__toolbar .stop-scan-button.is-disabled').length, 1, 'stop scan button is disabled');
@@ -102,11 +108,11 @@ module('Integration | Component | host table action bar', function(hooks) {
 
   test('it enables start/stop scan button when selected hosts contains 4.4 agents and 11.3 agents', async function(assert) {
     new ReduxDataHelper(setState).selectedHostList([
-      { id: '123', version: '4.4', managed: true },
-      { id: '131', version: '11.3', managed: true } ]).build();
+      { id: '123', version: '4.4', managed: true, scanStatus: 'idle' },
+      { id: '131', version: '11.3', managed: true, scanStatus: 'idle' } ]).build();
     await render(hbs`{{host-list/host-table/action-bar}}`);
-    assert.equal(document.querySelectorAll('.host-table__toolbar .start-scan-button.is-disabled').length, 0, 'start scan button is enabled');
-    assert.equal(document.querySelectorAll('.host-table__toolbar .stop-scan-button.is-disabled').length, 0, 'stop scan button is enabled');
+    assert.equal(document.querySelectorAll('.host-table__toolbar .start-scan-button.is-disabled').length, 0, 'start scan button is disabled');
+    assert.equal(document.querySelectorAll('.host-table__toolbar .stop-scan-button.is-disabled').length, 1, 'stop scan button is enabled');
   });
 
   test('On changing the service host properties is closed', async function(assert) {

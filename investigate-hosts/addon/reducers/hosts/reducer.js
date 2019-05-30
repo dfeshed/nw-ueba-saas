@@ -172,7 +172,8 @@ const hosts = reduxActions.handleActions({
       machineIdentity: { machineName, machineOsType, agentMode },
       version,
       managed: host.groupPolicy.managed,
-      serviceId: host.serviceId
+      serviceId: host.serviceId,
+      scanStatus: host.agentStatus.scanStatus
     };
 
   })),

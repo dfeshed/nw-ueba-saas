@@ -11,7 +11,7 @@
 {{else if (eq command 'STOP_SCAN')}}
   {{host-scan/stop-scan-button
     warningMessage=warningMessages
-    isDisabled=isScanStartButtonDisabled
+    isDisabled=isScanStopButtonDisabled
     agentIds=agentIds
     modalTitle=title
     buttonText=(t 'investigateHosts.hosts.moreActions.cancelScan')
