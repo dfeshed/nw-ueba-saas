@@ -398,7 +398,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[optionNumber].disabled, isDisabled);
   };
 
-  test('getDownloadOptions returns options with no counts when selectAll is checked and disables appropriate options', async function(assert) {
+  test('getDownloadOptions returns options with counts when selectAll is checked and disables appropriate options', async function(assert) {
     const state = {
       investigate: {
         data: preferenceData,
@@ -420,11 +420,11 @@ module('Unit | Selectors | event-results', function(hooks) {
     await assertForDownloadOptions(assert, otherGroup, 3, 'META', 'CSV', 'Visible Meta as CSV');
 
     // preferred Log download option
-    await assertForCountsAndSessionIds(assert, defaultGroup, 0, '', [], true);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 0, '0/3', [], true);
     // The only available Network download option
-    await assertForCountsAndSessionIds(assert, defaultGroup, 1, '', [1, 2, 5], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 1, '3/3', [1, 2, 5], false);
     // prefierred Meta download option
-    await assertForCountsAndSessionIds(assert, defaultGroup, 2, '', [1, 2, 5], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 2, '3/3', [1, 2, 5], false);
   });
 
   test('getDownloadOptions returns appropriate counts for options when network events are selected', async function(assert) {
