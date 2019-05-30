@@ -1,25 +1,32 @@
 version: '2.1'
+volumes:
+  incidents:
+
 services:
-  respond-data:
-      image: asoc-dtr2.rsa.lab.emc.com/rsa/respond-data:11.0
+  respond-data-incidents:
+    image: docker-registry-mirror.rsa.lab.emc.com/netwitness/rsa-nw-data-respond-incidents
+    volumes:
+      - incidents:/data/db
 
   mongo:
-    image: asoc-dtr2.rsa.lab.emc.com/3rd/mongo
+    image: docker-registry-mirror.rsa.lab.emc.com/netwitness/rsa-nw-mongodb
     hostname: mongo
     ports:
       - "27017:27017"
-    volumes_from:
-      - respond-data
+    volumes:
+      - "incidents:/var/lib/mongo"
+    depends_on:
+      - respond-data-incidents
 
   rabbitmq:
-    image: asoc-dtr2.rsa.lab.emc.com/3rd/rabbitmq
+    image: docker-registry-mirror.rsa.lab.emc.com/netwitness/rsa-nw-rabbitmq
     hostname: rabbitmq
     ports:
       - "15672:15672"
       - "5672:5672"
 
   respond-server:
-    image: asoc-dtr2.rsa.lab.emc.com/rsa/respond-server:11.2.0-latest
+    image: docker-registry-mirror.rsa.lab.emc.com/netwitness/rsa-nw-respond-server
     ports:
       - "7003:7003"
     depends_on:
