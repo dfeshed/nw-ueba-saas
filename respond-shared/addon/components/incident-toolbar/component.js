@@ -34,15 +34,25 @@ export default Component.extend({
 
   @computed('allSelectedEventIds', 'limit')
   selectedEventIds(allSelectedEventIds, limit) {
-    if (!Number.isNaN(limit) && limit > 0) {
-      return allSelectedEventIds.slice(0, limit);
+    if (!allSelectedEventIds) {
+      return [];
+    } else {
+      const allSelectedEventIdsArray = Object.values(allSelectedEventIds);
+      if (!Number.isNaN(limit) && limit > 0) {
+        return allSelectedEventIdsArray.slice(0, limit);
+      }
+      return allSelectedEventIdsArray;
     }
-    return allSelectedEventIds;
   },
 
   @computed('allSelectedEventIds', 'limit')
   isSelectedEventsLimitCrossed(allSelectedEventIds, limit) {
-    return allSelectedEventIds && allSelectedEventIds.length > limit;
+    if (!allSelectedEventIds) {
+      return [];
+    } else {
+      const allSelectedEventIdsArray = Object.values(allSelectedEventIds);
+      return allSelectedEventIdsArray && allSelectedEventIdsArray.length > limit;
+    }
   },
 
   init() {

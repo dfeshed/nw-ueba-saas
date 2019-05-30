@@ -18,9 +18,9 @@ const addToIncidentModalSelector = '.rsa-application-modal.add-to-incident-modal
 let init, setState;
 
 const selectedEventIds = (count) => {
-  const eventIds = [];
+  const eventIds = {};
   for (let i = 1; i < count; i++) {
-    eventIds.push(i);
+    eventIds[i] = i;
   }
   return eventIds;
 };
