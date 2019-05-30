@@ -123,7 +123,9 @@ const downloadFilesToServer = (agentId, selectedFiles, callbacks) => {
     .then(() => {
       callbacks.onSuccess();
     }).catch(({ meta: message }) => {
-      callbacks.onFailure(message.message);
+      if (message) {
+        callbacks.onFailure(message.message);
+      }
     });
 };
 
