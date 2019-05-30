@@ -69,6 +69,40 @@
           ]
         }
       ]
+    },
+    {
+      "name": "sslSubject_hourly",
+      "contextToFieldsMap": {
+        "sslSubject": [
+          "sslSubject"
+        ]
+      },
+      "fixedDurationStrategy": "fixed_duration_hourly",
+      "includeAllAggregationRecords": true,
+      "clusterConfs": [
+      ],
+      "excludedAggregationRecords": [
+      ],
+      "defaultWeight": 0.5,
+      "fullCorrelations": [
+      ]
+    },
+    {
+      "name": "ja3_hourly",
+      "contextToFieldsMap": {
+        "ja3": [
+          "ja3"
+        ]
+      },
+      "fixedDurationStrategy": "fixed_duration_hourly",
+      "includeAllAggregationRecords": true,
+      "clusterConfs": [
+      ],
+      "excludedAggregationRecords": [
+      ],
+      "defaultWeight": 0.5,
+      "fullCorrelations": [
+      ]
     }
   ]
 }
