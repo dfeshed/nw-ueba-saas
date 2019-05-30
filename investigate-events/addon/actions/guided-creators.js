@@ -5,6 +5,7 @@ import validateQueryFragment from './fetch/query-validation';
 import { selectPillsFromPosition } from 'investigate-events/actions/utils';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { TEXT_FILTER } from 'investigate-events/constants/pill';
 
 const { log } = console; // eslint-disable-line no-unused-vars
 
@@ -89,7 +90,10 @@ export const editGuidedPill = ({ pillData, position }) => {
         pillData
       }
     });
-    dispatch(_clientSideValidation(pillData, position));
+    // Don't validate Text filters
+    if (pillData.type !== TEXT_FILTER) {
+      dispatch(_clientSideValidation(pillData, position));
+    }
   };
 };
 

@@ -90,6 +90,35 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk(myDispatch);
   });
 
+  test('editGuidedPill action creator returns proper type and payload for Text filter', function(assert) {
+    assert.expect(2);
+    const done = assert.async();
+    const getState = () => {};
+    const pillData = { searchTerm: 'foobar', type: 'text' };
+
+    const myDispatch = (action) => {
+      if (typeof action === 'function') {
+        action(validateDispatch, getState);
+      } else {
+        assert.equal(action.type, ACTION_TYPES.EDIT_GUIDED_PILL, 'action has the correct type');
+        assert.deepEqual(action.payload.pillData, pillData, 'action pillData has the right value');
+      }
+    };
+
+    const validateDispatch = () => {
+      assert.notOk('Should not validate Text filters');
+    };
+
+    // this thunk will shoot out 1 action to edit, but not one for validation
+    const thunk = guidedCreators.editGuidedPill({ pillData, position: 0 });
+
+    thunk(myDispatch);
+
+    return settled().then(() => {
+      done();
+    });
+  });
+
   test('deleteGuidedPill action creator returns proper types/payloads', function(assert) {
     const done = assert.async(2);
     const state = new ReduxDataHelper()
