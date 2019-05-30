@@ -229,8 +229,6 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
     &.is-search-match {
       .search-match-text {
-        padding: .15rem;
-        margin: .15rem;
         background: background-color(secondary);
         color: text-color(primary, lightest);
       }

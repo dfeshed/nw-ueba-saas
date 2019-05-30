@@ -65,7 +65,14 @@ module('Integration | Component | header-container', function(hooks) {
     assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), '55Events(Asc)', 'rendered event header title');
     assert.equal(find('.rsa-investigate-events-table__header__columnGroup span').textContent.trim(), 'Summary List', 'rendered event header title');
     assert.equal(find('.rsa-investigate-events-table__header__downloadEvents span').textContent.trim(), 'Download', 'rendered event header title');
-    assert.ok(find('.rsa-data-table-header__search-selector'), 'rendered event header text search');
+    assert.ok(find('.rsa-data-table-header__search-selector.disabled'), 'rendered event header text search');
+  });
+
+  test('enables the search selector when loading is complete', async function(assert) {
+    new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').columnGroups(EventColumnGroups).eventCount(55).queryStatsIsComplete().build();
+    await render(hbs`{{events-table-container/header-container}}`);
+    assert.equal(findAll('.ember-power-select-trigger').length, 2, 'columnGroup, downloadEvents');
+    assert.ok(find('.rsa-data-table-header__search-selector.disabled'), 'rendered event header text search');
   });
 
   test('it provides option to select column groups', async function(assert) {

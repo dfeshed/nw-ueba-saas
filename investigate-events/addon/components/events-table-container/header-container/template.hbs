@@ -42,33 +42,44 @@
     {{/if}}
   </div>
   <div class="events-table-control">
-    {{#rsa-content-tethered-panel-trigger
-      panel='tableSearchPanel'
-      triggerEvent='click'
-      class='rsa-data-table-header__search-selector'}}
+    {{#if isSearchDisabled}}
       {{rsa-icon
         name='search'
-        title=(t 'investigate.events.search')}}
-    {{/rsa-content-tethered-panel-trigger}}
+        class='rsa-data-table-header__search-selector disabled'
+        title=(t 'investigate.events.searchDisabled')}}
+    {{else}}
+      {{#rsa-content-tethered-panel-trigger
+        panel='tableSearchPanel'
+        triggerEvent='click'
+        class='rsa-data-table-header__search-selector'}}
+        {{rsa-icon
+          name='search'
+          title=(t 'investigate.events.search')}}
+      {{/rsa-content-tethered-panel-trigger}}
 
-    {{#rsa-content-tethered-panel
-      closeOnAppClick=false
-      closeOnEsc=true
-      position='left'
-      panelClass="rsa-data-table-search-panel"
-      panelId='tableSearchPanel'
-      panelDidOpen=searchPanelDidOpen}}
-      <section>
-        {{rsa-form-input bubbles=true value=_searchTerm onKeyUp=(action 'debouncedSearchForTerm') label=(t 'investigate.events.search') placeholder=(t 'investigate.events.searchPlaceholder')}}
-        {{events-table-container/header-container/search-controls}}
-        {{#if searchMatchesCount}}
-          <p>{{t 'investigate.events.eventCount' current=searchScrollDisplay total=searchMatchesCount}}</p>
-        {{/if}}
-        {{#if (eq _searchTerm.length 1)}}
-          {{t 'investigate.events.searchMin'}}
-        {{/if}}
-      </section>
-    {{/rsa-content-tethered-panel}}
+      {{#rsa-content-tethered-panel
+        closeOnAppClick=false
+        closeOnEsc=true
+        position='left'
+        panelClass="rsa-data-table-search-panel"
+        panelId='tableSearchPanel'
+        panelDidOpen=searchPanelDidOpen}}
+        <section>
+          {{rsa-form-input bubbles=true value=_searchTerm onKeyUp=(action 'debouncedSearchForTerm') label=(t 'investigate.events.search') placeholder=(t 'investigate.events.searchPlaceholder')}}
+          {{events-table-container/header-container/search-controls}}
+          {{#if searchMatchesCount}}
+            <p>{{t 'investigate.events.eventCount' current=searchScrollDisplay total=searchMatchesCount}}</p>
+          {{/if}}
+          {{#if (eq _searchTerm.length 1)}}
+            {{t 'investigate.events.searchMin'}}
+          {{/if}}
+          {{#if (and (gt _searchTerm.length 1) (eq searchMatchesCount 0))}}
+            {{t 'investigate.events.noMatches'}}
+          {{/if}}
+
+        </section>
+      {{/rsa-content-tethered-panel}}
+    {{/if}}
 
     {{rsa-icon
       disabled=(not isReconOpen)

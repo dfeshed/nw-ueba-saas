@@ -8,13 +8,13 @@ import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { setColumnGroup, searchForTerm, setSearchScroll } from 'investigate-events/actions/interaction-creators';
 import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
-
 import {
   actualEventCount,
   searchMatchesCount,
   eventTimeSortOrder,
   searchScrollDisplay,
-  SORT_ORDER
+  SORT_ORDER,
+  areEventsStreaming
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
 import { observer } from '@ember/object';
@@ -38,7 +38,8 @@ const stateToComputed = (state) => ({
   endpointId: state.investigate.queryNode.serviceId,
   items: state.investigate.eventResults.data,
   startTime: state.investigate.queryNode.startTime,
-  endTime: state.investigate.queryNode.endTime
+  endTime: state.investigate.queryNode.endTime,
+  areEventsStreaming: areEventsStreaming(state)
 });
 
 const dispatchToActions = {
@@ -64,10 +65,24 @@ const HeaderContainer = Component.extend({
 
   @alias('accessControl.respondCanManageIncidents') permissionAllowsIncidentManagement: true,
 
+  @computed('hasResults', 'areEventsStreaming')
+  isSearchDisabled(hasResults, areEventsStreaming) {
+    return (!hasResults || areEventsStreaming);
+  },
+
+  @computed('items')
+  hasResults(results) {
+    return !!results && results.length > 0;
+  },
+
   @computed('selectedEventIds', 'isAllEventsSelected')
   isIncidentButtonsDisabled(selectedEventIds, isAllEventsSelected) {
-    const ids = Object.keys(selectedEventIds);
-    return !((ids && ids.length) || isAllEventsSelected);
+    if (selectedEventIds) {
+      const ids = Object.keys(selectedEventIds);
+      return !((ids && ids.length) || isAllEventsSelected);
+    } else {
+      return false;
+    }
   },
 
   @computed('sortDirection', 'i18n')

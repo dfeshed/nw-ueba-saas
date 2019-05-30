@@ -540,9 +540,13 @@ export default {
       clickToOpen: 'Click to open'
     },
     events: {
+      selectAll: 'Select all events',
+      selectAllDisabled: 'Select all is disabled while events load, and when there are no events to select',
       eventCount: '{{current}}/{{total}} event matches',
       search: 'Find text in table',
+      searchDisabled: 'Find is disabled while events load.',
       searchMin: '2 character minimum to find text.',
+      noMatches: 'No matches were found.',
       searchPlaceholder: 'Enter text to be found.',
       titleThreshold: '{{age}} {{count}} Events ({{sort}})',
       title: '{{count}} Events ({{sort}})',
