@@ -21,7 +21,14 @@ const TasksTabWrapper = Component.extend({
     'accessControl.hasRespondRemediationAccess'
   )
   show(riacEnabled, riacAc, rbacAc) {
-    return riacEnabled ? riacAc : rbacAc;
+    switch (riacEnabled) {
+      case true:
+        return riacAc;
+      case false:
+        return rbacAc;
+      default:
+        return false;
+    }
   }
 });
 

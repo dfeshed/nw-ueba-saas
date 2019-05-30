@@ -4,7 +4,7 @@ import { handle } from 'redux-pack';
 
 const initialState = {
   // RIAC is disabled by default until we get the actual backend value
-  isRiacEnabled: false
+  isRiacEnabled: undefined
 };
 
 const riacReducers = reduxActions.handleActions({
