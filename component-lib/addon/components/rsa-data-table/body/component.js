@@ -113,16 +113,18 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
    * @readonly
    * @private
    */
-  @computed('_rowHeight', 'items.length', 'table.groupingSize', 'table.enableGrouping', 'table.groupLabelHeight', 'table.threshold')
-  _minScrollHeight(rowHeight, itemsLength, groupSize, enableGrouping, groupLabelHeight, threshold) {
+  @computed('_rowHeight', 'items.length', 'table.groupingSize', 'table.enableGrouping', 'table.groupLabelHeight')
+  _minScrollHeight(rowHeight, itemsLength, groupSize, enableGrouping, groupLabelHeight) {
     const rowsHeight = rowHeight * itemsLength;
-    const groupCount = itemsLength / groupSize;
-
-    if (enableGrouping && itemsLength === threshold) {
-      return rowsHeight + ((groupCount - 1) * groupLabelHeight);
-    } else if (enableGrouping && itemsLength > groupSize) {
-      // ensure enough room is provided for grouping labels
-      return (rowsHeight + (groupCount * groupLabelHeight));
+    const groupCount = Math.floor(itemsLength / groupSize);
+    if (enableGrouping) {
+      if (itemsLength <= groupSize) {
+        return rowsHeight || 0;
+      } else if (itemsLength % groupSize === 0) {
+        return rowsHeight + ((groupCount - 1) * groupLabelHeight);
+      } else {
+        return rowsHeight + ((groupCount) * groupLabelHeight);
+      }
     } else {
       return rowsHeight || 0;
     }
