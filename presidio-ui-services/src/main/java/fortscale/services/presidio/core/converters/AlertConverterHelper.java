@@ -91,8 +91,8 @@ public class AlertConverterHelper {
         uiAlert.setScore(alert.getScore().intValue());
         uiAlert.setEvidenceSize(alert.getIndicatorsNum());
         uiAlert.setTimeframe(AlertTimeframe.Hourly);
-        uiAlert.setEntityId(alert.getUserId());
-        uiAlert.setEntityName(alert.getUsername());
+        uiAlert.setEntityId(alert.getEntityDocumentId());
+        uiAlert.setEntityName(alert.getEntityName());
         uiAlert.setEntityType(EntityType.User);
         uiAlert.setMockId(alert.getId());
 
@@ -109,8 +109,8 @@ public class AlertConverterHelper {
         }
         uiAlert.setStatus(feedbackConverter.getStatus(alert.getFeedback()));
         uiAlert.setUserScoreContributionFlag(calculateIsAlertContributeToUserScore(alert.getFeedback(),uiAlert.getStartDate()));
-        if(alert.getUserScoreContribution()!=null) {
-            uiAlert.setUserScoreContribution(alert.getUserScoreContribution() == null ? 0D : alert.getUserScoreContribution().doubleValue());
+        if(alert.getEntityScoreContribution()!=null) {
+            uiAlert.setUserScoreContribution(alert.getEntityScoreContribution() == null ? 0D : alert.getEntityScoreContribution().doubleValue());
         }
         return  uiAlert;
     }
@@ -202,11 +202,11 @@ public class AlertConverterHelper {
         List<String> tags = tagsConverter.convertUiFilterToQueryDto(entityTags,null);
         alertQuery.setTags(tags);
 
-        List<String> userNames = stringConverter.convertUiFilterToQueryDto(entityName);
-        alertQuery.setUserName(userNames);
+        List<String> entityNames = stringConverter.convertUiFilterToQueryDto(entityName);
+        alertQuery.setEntityNames(entityNames);
 
-        List<String> userIds = stringConverter.convertUiFilterToQueryDto(entityId);
-        alertQuery.setUsersId(userIds);
+        List<String> entityIds = stringConverter.convertUiFilterToQueryDto(entityId);
+        alertQuery.setEntityDocumentIds(entityIds);
 
         alertQuery.setIndicatorsName(indicatorTypesConverter.convertUiFilterToQueryDto(indicatorTypes));
 
