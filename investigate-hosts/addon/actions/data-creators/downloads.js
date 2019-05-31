@@ -13,6 +13,7 @@ import { debug } from '@ember/debug';
 import * as ACTION_TYPES from '../types';
 import { Machines } from '../api';
 import { next } from '@ember/runloop';
+import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
 
 /**
  * Action creator that dispatches a set of actions for fetching files (with or without filters) and sorted by one field.
@@ -71,6 +72,7 @@ const getPageOfDownloads = () => {
  */
 const getFirstPageOfDownloads = () => {
   return (dispatch) => {
+    dispatch(getFilter(() => {}, 'DOWNLOAD'));
     dispatch({ type: ACTION_TYPES.RESET_DOWNLOADED_FILES });
     dispatch({ type: ACTION_TYPES.INCREMENT_DOWNLOADED_FILES_PAGE_NUMBER });
     next(() => {

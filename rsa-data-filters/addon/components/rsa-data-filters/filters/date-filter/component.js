@@ -120,11 +120,11 @@ export default Component.extend({
 
 
   _handleChange(value, unit) {
-    const { name } = this.get('filterOptions');
+    const { name, operator = 'LESS_THAN' } = this.get('filterOptions');
     const onChange = this.get('onChange');
     if (onChange) {
       if (unit) {
-        onChange({ name, operator: 'LESS_THAN', value, unit });
+        onChange({ name, operator, value, unit });
       } else {
         onChange({ name, operator: 'BETWEEN', value });
       }

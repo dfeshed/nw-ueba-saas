@@ -71,11 +71,9 @@ const DownloadedFileList = Component.extend({
       const { isSortDescending } = this.getProperties('isSortDescending');
       const sortDirection = !isSortDescending;
       const field = column.get('field');
-      let direction = 'asc';
+      let direction = 'desc';
       if (this.get('currentSort.direction') === 'desc') {
         direction = 'asc';
-      } else {
-        direction = 'desc';
       }
 
       this.set('currentSort', { field, direction });

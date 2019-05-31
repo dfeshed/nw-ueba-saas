@@ -50,7 +50,7 @@ export default combineReducers({
     risk: createFilteredReducer(risk, reducerPredicate('HOST')),
     hostDownloads: combineReducers({
       downloads,
-      filter: createFilteredReducer(filter, reducerPredicate('HOSTDOWNLOADS'))
+      filter: createFilteredReducer(filter, reducerPredicate('DOWNLOAD'))
     })
 
   }),

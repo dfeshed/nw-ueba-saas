@@ -4,13 +4,13 @@ const FILTER_TYPES = [
     label: 'investigateHosts.downloads.filters.fileType',
     type: 'list',
     listOptions: [
-      { name: 'mft', label: 'investigateHosts.downloads.filters.mft' },
-      { name: 'files', label: 'investigateHosts.downloads.filters.files' },
+      { name: 'Mft', label: 'investigateHosts.downloads.filters.mft' },
+      { name: 'File', label: 'investigateHosts.downloads.filters.files' },
       { name: 'memory dump', label: 'investigateHosts.downloads.filters.memoryDump' }
     ]
   },
   {
-    'name': 'fileName',
+    'name': 'filename',
     'label': 'investigateHosts.downloads.filters.fileName',
     'type': 'text',
     'validations': {
@@ -43,21 +43,20 @@ const FILTER_TYPES = [
     }
   },
   {
-    name: 'requestTime',
-    label: 'investigateHosts.downloads.filters.requestTime',
+    name: 'downloadedTime',
+    label: 'investigateHosts.downloads.filters.downloadedTime',
     type: 'date',
+    operator: 'GREATER_THAN',
     timeframes: [
-      { name: 'LAST_FIVE_MINUTES', value: 5, unit: 'Minutes' },
-      { name: 'LAST_TEN_MINUTES', value: 10, unit: 'Minutes' },
-      { name: 'LAST_FIFTEEN_MINUTES', value: 15, unit: 'Minutes' },
-      { name: 'LAST_THIRTY_MINUTES', value: 30, unit: 'Minutes' },
-      { name: 'LAST_ONE_HOUR', value: 1, unit: 'Hours' },
-      { name: 'LAST_THREE_HOURS', value: 3, unit: 'Hours' },
-      { name: 'LAST_SIX_HOURS', value: 6, unit: 'Hours' },
-      { name: 'LAST_TWELVE_HOURS', value: 12, unit: 'Hours' },
-      { name: 'LAST_TWENTY_FOUR_HOURS', value: 24, unit: 'Hours' },
-      { name: 'LAST_TWO_DAYS', value: 2, unit: 'Days' },
-      { name: 'LAST_SEVEN_DAYS', value: 7, unit: 'Days' }
+      { name: 'IN_LAST_ONE_HOUR', selected: true, value: 1, unit: 'Hours' },
+      { name: 'IN_LAST_THREE_HOURS', value: 3, unit: 'Hours' },
+      { name: 'IN_LAST_SIX_HOURS', value: 6, unit: 'Hours' },
+      { name: 'IN_LAST_TWELVE_HOURS', value: 12, unit: 'Hours' },
+      { name: 'IN_LAST_TWENTY_FOUR_HOURS', value: 24, unit: 'Hours' },
+      { name: 'IN_LAST_TWO_DAYS', value: 2, unit: 'Days' },
+      { name: 'IN_LAST_SEVEN_DAYS', value: 7, unit: 'Days' },
+      { name: 'IN_LAST_TWO_WEEKS', value: 14, unit: 'Days' },
+      { name: 'IN_LAST_ONE_MONTH', value: 30, unit: 'Days' }
     ]
   }
 ];

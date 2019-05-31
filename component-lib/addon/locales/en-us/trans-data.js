@@ -2838,7 +2838,7 @@ export default {
         memoryDump: 'Memory Dump',
         fileName: 'File Name',
         checksum: 'checksumSha256',
-        requestTime: 'Request time'
+        downloadedTime: 'Downloaded Time'
       },
       errorMessages: {
         invalidFilterInputLength: 'Filter input longer than 256 characters',
@@ -2850,9 +2850,9 @@ export default {
         fileType: 'Type',
         downloaded: 'Downloaded',
         fileSize: 'Size',
-        downloadedTime: 'Date Requested',
+        downloadedTime: 'Downloaded Time',
         agentId: 'Id of the agent',
-        hash: 'checksumSha256'
+        hash: 'SHA256'
       },
       buttons: {
         saveLocalCopy: 'Save local copy',
@@ -5546,7 +5546,19 @@ effects the previewed source.',
       LAST_TWO_WEEKS: '2 Weeks ago',
       LAST_ONE_MONTH: '1 Month ago',
       LAST_THREE_MONTH: '3 Month ago',
-      LAST_SIX_MONTH: '6 Month ago'
+      LAST_SIX_MONTH: '6 Month ago',
+      IN_LAST_ONE_HOUR: 'Last 1 Hour',
+      IN_LAST_THREE_HOURS: 'Last 3 Hours',
+      IN_LAST_SIX_HOURS: 'Last 6 Hours',
+      IN_LAST_TWELVE_HOURS: 'Last 12 Hours',
+      IN_LAST_TWENTY_FOUR_HOURS: 'Last 24 Hours',
+      IN_LAST_TWO_DAYS: 'Last 2 Days',
+      IN_LAST_SEVEN_DAYS: 'Last 7 Days',
+      IN_LAST_TWO_WEEKS: 'Last 2 Weeks',
+      IN_LAST_ONE_MONTH: 'Last 1 Month',
+      IN_LAST_THREE_MONTH: 'Last 3 Months',
+      IN_LAST_SIX_MONTH: 'Last 6 Month'
+
     },
     startDate: 'Start Date',
     endDate: 'End Date',

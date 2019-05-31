@@ -2,6 +2,19 @@
   {{#rsa-page-layout showRightZone=false as |layout|}}
     {{#layout.left as |leftPanel|}}
       {{leftPanel.header iconName='filter-2' title=(t 'investigateHosts.downloads.filters.title')}}
+      {{endpoint/filters-wrapper
+        filterState=filter
+        filterType='DOWNLOAD'
+        filterTypes=filterTypes
+        savedFilter=savedFilter
+        savedFilters=hostDownloadsFilters
+        selectedFilterId=selectedFilterId
+        resetFilters=(action 'resetFilters')
+        applyFilters=(action 'applyFilters' (action 'getFirstPageOfDownloads'))
+        applySavedFilters=(action 'applySavedFilters' (action 'getFirstPageOfDownloads'))
+        deleteFilter=(action 'deleteFilter')
+        createCustomSearch=(action 'createCustomSearch')
+        closeEntityDetails=(action layout.close 'right')}}
     {{/layout.left}}
     {{#layout.center}}
       <box class="downloaded-files-body">

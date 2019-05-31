@@ -1,12 +1,13 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, findAll, render, settled, triggerEvent } from '@ember/test-helpers';
+import { find, findAll, render, settled, triggerEvent, click } from '@ember/test-helpers';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { revertPatch } from '../../../../helpers/patch-reducer';
 import { patchReducer } from '../../../../helpers/vnext-patch';
+import { patchSocket } from '../../../../helpers/patch-socket';
 import { hostDownloads } from '../../../components/state/downloads';
 import Immutable from 'seamless-immutable';
 
@@ -65,8 +66,8 @@ module('Integration | Component | downloads', function(hooks) {
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(3)').textContent.trim(), 'Type', 'Column 3 is Type');
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(4)').textContent.trim(), 'Downloaded', 'Column 4 is Downloaded');
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(5)').textContent.trim(), 'Size', 'Column 5 is Size');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(6)').textContent.trim(), 'Date Requested', 'Column 6 is Date Requested');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(7)').textContent.trim(), 'checksumSha256', 'Column 7 is checksumSha256');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(6)').textContent.trim(), 'Downloaded Time', 'Column 6 is Downloaded Time');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(7)').textContent.trim(), 'SHA256', 'Column 7 is SHA256');
 
   });
   test('On right clicking the row it renders the context menu', async function(assert) {
@@ -84,5 +85,19 @@ module('Integration | Component | downloads', function(hooks) {
       const items = findAll(`${selector} > .context-menu__item`);
       assert.equal(items.length, 2, 'Context menu rendered with 2 items');
     });
+  });
+
+  test('Downloads Filter has loaded', async function(assert) {
+    await render(hbs`{{host-detail/downloads}}`);
+    assert.equal(findAll('.files-content .filter-wrapper').length, 1, 'Filter has loaded');
+    assert.equal(findAll('.files-content .filter-wrapper .filter-controls').length, 4, '4 Filter types present');
+
+    patchSocket((method, modelName) => {
+      assert.equal(method, 'getFilter');
+      assert.equal(modelName, 'filters');
+    });
+
+    await click(find('.list-filter-content a'));
+
   });
 });
