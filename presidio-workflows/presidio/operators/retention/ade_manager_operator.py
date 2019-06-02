@@ -1,8 +1,7 @@
 from airflow.utils.decorators import apply_defaults
 
 from presidio.utils.airflow.operators.retention.retention_operator import RetentionOperator
-from presidio.utils.configuration.config_server_configuration_reader_singleton import \
-    ConfigServerConfigurationReaderSingleton
+
 
 class AdeManagerOperator(RetentionOperator):
     """
@@ -14,19 +13,11 @@ class AdeManagerOperator(RetentionOperator):
     ui_color = '#1abc9c'
     ui_fgcolor = '#000000'
 
-    RETENTION_COMMAND_CONFIG_PATH = 'retention.ade_manager.command'
-    RETENTION_COMMAND_DEFAULT_VALUE = 'retention'
-
     @apply_defaults
-    def __init__(self, *args, **kwargs):
-        conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
-        self._retention_command = conf_reader.read(AdeManagerOperator.RETENTION_COMMAND_CONFIG_PATH,
-                                                   AdeManagerOperator.RETENTION_COMMAND_DEFAULT_VALUE)
-
-        super(AdeManagerOperator, self).__init__(command=self._retention_command,
+    def __init__(self, command, *args, **kwargs):
+        super(AdeManagerOperator, self).__init__(command=command,
                                                  task_id=self.get_task_id(),
                                                  *args, **kwargs)
-
 
     def get_task_id(self):
         """

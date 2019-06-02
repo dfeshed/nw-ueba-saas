@@ -197,11 +197,4 @@ components:
 retention:
   min_time_to_start_retention_in_days : 2
   retention_interval_in_hours : 24
-  input:
-    command: applyRetentionPolicy
-  output:
-    command: clean-documents
-  alert:
-    command: applyRetentionPolicy
-  ade_manager:
-    command: enriched_ttl_cleanup
+  command: applyRetentionPolicy

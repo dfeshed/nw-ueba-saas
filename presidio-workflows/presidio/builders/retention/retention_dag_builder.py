@@ -4,6 +4,8 @@ from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.builders.retention.input_retention_operator_builder import InputRetentionOperatorBuilder
 from presidio.builders.retention.output_retention_operator_builder import OutputRetentionOperatorBuilder
 from presidio.operators.retention.ade_manager_operator import AdeManagerOperator
+from presidio.utils.configuration.config_server_configuration_reader_singleton import \
+    ConfigServerConfigurationReaderSingleton
 
 
 class RetentionDagBuilder(PresidioDagBuilder):
@@ -12,11 +14,18 @@ class RetentionDagBuilder(PresidioDagBuilder):
     min_time_to_start_retention_in_days_default_value = 2
     retention_interval_in_hours_conf_key = "retention.retention_interval_in_hours"
     retention_interval_in_hours_default_value = 24
+    RETENTION_COMMAND_CONFIG_PATH = 'retention.command'
+    RETENTION_COMMAND_DEFAULT_VALUE = 'retention'
 
     """
-        The "Retention" builder consists of input_retention, ade manager and output_retention
+        The "Retention" builder consists of input_retention, ade manager and output_retention.
         This dag run once a day.
     """
+
+    def __init__(self):
+        conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
+        self._retention_command = conf_reader.read(RetentionDagBuilder.RETENTION_COMMAND_CONFIG_PATH,
+                                                   RetentionDagBuilder.RETENTION_COMMAND_DEFAULT_VALUE)
 
     def build(self, dag):
         schemas = dag.default_args['schemas']
@@ -28,14 +37,14 @@ class RetentionDagBuilder(PresidioDagBuilder):
 
     def _build_output_retention_operator(self, dag, schema):
         """
-        Create OutputRetentionOperator in order to output documents after all tasks finished to use it.
+        Create OutputRetentionOperator in order to clean output documents after all tasks finished to use it.
 
         :param dag: The retention DAG
         :type dag: airflow.models.DAG
         :param schema: The schema to process the retention
         :type schema: String
         """
-        OutputRetentionOperatorBuilder(schema).build(dag)
+        OutputRetentionOperatorBuilder(schema=schema, command=self._retention_command).build(dag)
 
     def _build_input_retention(self, dag, schema):
         """
@@ -45,7 +54,7 @@ class RetentionDagBuilder(PresidioDagBuilder):
         :param schema: The schema to process the retention
         :type schema: String
         """
-        InputRetentionOperatorBuilder(schema).build(dag)
+        InputRetentionOperatorBuilder(schema=schema, command=self._retention_command).build(dag)
 
     def _build_ade_manager_operator(self, dag):
         """
@@ -55,7 +64,7 @@ class RetentionDagBuilder(PresidioDagBuilder):
         :type dag: airflow.models.DAG
         """
 
-        AdeManagerOperator(dag=dag)
+        AdeManagerOperator(dag=dag, command=self._retention_command)
 
     @staticmethod
     def get_min_time_to_start_retention_in_days(conf_reader):
@@ -67,4 +76,3 @@ class RetentionDagBuilder(PresidioDagBuilder):
     def get_retention_interval_in_hours(conf_reader):
         return timedelta(hours=conf_reader.read(RetentionDagBuilder.retention_interval_in_hours_conf_key,
                                                 RetentionDagBuilder.retention_interval_in_hours_default_value))
-

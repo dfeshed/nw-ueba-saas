@@ -17,7 +17,7 @@ public class OutputManagerShellCommands implements CommandMarker {
     @Autowired
     private OutputManagerService outputManagerService;
 
-    @CliCommand(value = "clean-documents", help = "clean output documents up to specified date")
+    @CliCommand(value = "applyRetentionPolicy", help = "clean output documents up to specified date")
     public void cleanDocuments(
             @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime,
 

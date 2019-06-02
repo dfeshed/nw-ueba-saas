@@ -1,14 +1,8 @@
 from datetime import timedelta
-
 from airflow import LoggingMixin
-
 from presidio.operators.retention.alert_retention_operator import AlertRetentionOperator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
-
-# todo: should be changed after new smart entity will be added: split into 2 alert_retention tasks:
-# todo: alert_retention with smart_cof_name arg for alerts retention
-# todo: alert_retention with schema arg for alert collection retention
 
 
 class AlertRetentionOperatorBuilder(LoggingMixin):
@@ -16,7 +10,7 @@ class AlertRetentionOperatorBuilder(LoggingMixin):
     The "AlertRetentionOperatorBuilder" builds and returns alert_retention operator.
     """
 
-    RETENTION_COMMAND_CONFIG_PATH = 'retention.alert.command'
+    RETENTION_COMMAND_CONFIG_PATH = 'retention.command'
     RETENTION_COMMAND_DEFAULT_VALUE = 'retention'
     alert_min_time_to_start_retention_in_days_conf_key = "retention.min_time_to_start_retention_in_days"
     alert_min_time_to_start_retention_in_days_default_value = 2
@@ -56,7 +50,6 @@ class AlertRetentionOperatorBuilder(LoggingMixin):
         self.log.debug("populating the %s dag with alert_retention tasks", dag.dag_id)
 
         alert_retention = AlertRetentionOperator(
-            fixed_duration_strategy=timedelta(hours=1),
             command=self._retention_command,
             entity_type=entity_type,
             run_clean_command_before_retry=False,

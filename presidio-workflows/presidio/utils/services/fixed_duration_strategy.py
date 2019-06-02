@@ -66,7 +66,7 @@ def is_execution_date_valid_first_interval(date_time, fixed_duration_strategy, i
     :type interval: datetime.timedelta
     :return: boolean
     """
-    is_last = True
+    is_first = True
     interval = interval.total_seconds()
 
     if interval < fixed_duration_strategy.total_seconds():
@@ -75,9 +75,9 @@ def is_execution_date_valid_first_interval(date_time, fixed_duration_strategy, i
                                 time_delta=fixed_duration_strategy)
         time = datetime_to_epoch(date_round) + interval
 
-        is_last = date < time
+        is_first = date < time
 
-    return is_last
+    return is_first
 
 
 def fixed_duration_strategy_to_string(fixed_duration_strategy):

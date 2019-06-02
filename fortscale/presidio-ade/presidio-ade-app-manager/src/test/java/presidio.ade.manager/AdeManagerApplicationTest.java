@@ -25,7 +25,7 @@ public class AdeManagerApplicationTest extends EnrichedFileSourceBaseAppTest {
     private static final Duration DURATION = Duration.ofDays(1);
     private static final Instant UNTIL_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(1)), DURATION);
     private static final String COLLECTION_NAME = "enriched_file";
-    public static final String EXECUTION_COMMAND = String.format("enriched_ttl_cleanup --end_date %s", UNTIL_DATE.toString());
+    public static final String EXECUTION_COMMAND = String.format("applyRetentionPolicy --end_date %s", UNTIL_DATE.toString());
 
     @Autowired
     private MongoTemplate mongoTemplate;

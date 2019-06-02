@@ -178,5 +178,4 @@ class SmartDagBuilder(PresidioDagBuilder):
 
         alert_retention = AlertRetentionOperatorBuilder().build(dag, entity_type)
 
-        user_score_operator >> alert_retention_short_circuit_operator
-        alert_retention_short_circuit_operator >> alert_retention
+        user_score_operator >> alert_retention_short_circuit_operator >> alert_retention

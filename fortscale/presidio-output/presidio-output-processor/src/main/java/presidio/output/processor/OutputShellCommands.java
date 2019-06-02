@@ -72,11 +72,8 @@ public class OutputShellCommands implements CommandMarker {
 
     @CliCommand(value = "applyRetentionPolicy", help = "clean alerts up to specified date and entity type")
     public int applyRetentionPolicy(
-            @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, help = "alerts with (logical) time greater than specified start time will be processed") final Instant startTime,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "alerts with (logical) time smaller than specified end time will be processed") final Instant endTime,
-
-            @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_ENTITY_TYPE_FIELD_NAME}, mandatory = true, help = "the entity type that will be processed") final String entityType
 

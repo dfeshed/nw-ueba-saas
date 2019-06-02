@@ -1,6 +1,6 @@
 from airflow.utils.decorators import apply_defaults
 
-from presidio.utils.services.time_service import convert_to_utc, floor_time
+from presidio.utils.services.time_service import convert_to_utc
 from presidio.utils.airflow.context_wrapper import ContextWrapper
 from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBootJarOperator
 

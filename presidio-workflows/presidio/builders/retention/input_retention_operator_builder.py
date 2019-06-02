@@ -1,26 +1,18 @@
-from datetime import timedelta
-
 from airflow import LoggingMixin
-
 from presidio.operators.retention.input_retention_operator import InputRetentionOperator
-from presidio.utils.configuration.config_server_configuration_reader_singleton import \
-    ConfigServerConfigurationReaderSingleton
 
 
 class InputRetentionOperatorBuilder(LoggingMixin):
 
-    RETENTION_COMMAND_CONFIG_PATH = 'retention.input.command'
-    RETENTION_COMMAND_DEFAULT_VALUE = 'retention'
-
-    def __init__(self, schema):
+    def __init__(self, schema, command):
         """
         C'tor.
         :param schema: The schema we should work on
         :type schema: str
+        :param command: command
+        :type command: str
         """
-        conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
-        self._retention_command = conf_reader.read(InputRetentionOperatorBuilder.RETENTION_COMMAND_CONFIG_PATH,
-                                                   InputRetentionOperatorBuilder.RETENTION_COMMAND_DEFAULT_VALUE)
+        self._retention_command = command
         self.schema = schema
 
     def build(self, dag):

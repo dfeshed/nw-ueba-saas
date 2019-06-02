@@ -316,13 +316,11 @@ class SpringBootJarOperator(BashOperator):
 
     def jar_path(self, bash_command):
         """
-
         Validate that main_class, jar_path or class_path exist in merged_args,
         otherwise throw an error
 
         :param bash_command: list of bash comments
         :type bash_command: []
-        :param command:
         :raise ValueError: main_class, class path or jar path were not defined
         :return:
         """
@@ -496,7 +494,7 @@ class SpringBootJarOperator(BashOperator):
     def get_args_task_instance_conf_key_prefix(self, args_conf_key):
         return "%s.%s.%s" % (SpringBootJarOperator.get_task_instance_conf_key_prefix(), self.task_id, args_conf_key)
 
-    def get_retry_command(self, java_retry_args):
+    def get_retry_command(self):
         bash_command = []
         self.java_path(bash_command)
 
