@@ -41,7 +41,7 @@ public class OutputShellCommands implements CommandMarker {
         return executionService.doRun(startTime, endTime, configurationName);
     }
 
-    @CliCommand(value = "recalculate-user-score", help = "run daily calculation for output")
+    @CliCommand(value = "recalculate-entity-score", help = "run daily calculation for output")
     public int runDaily(
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "alert with (logical) time greater than specified start time will be processed") final Instant startTime,
 
