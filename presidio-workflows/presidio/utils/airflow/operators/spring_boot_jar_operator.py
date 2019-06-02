@@ -88,7 +88,7 @@ class SpringBootJarOperator(BashOperator):
             retry_fn = SpringBootJarOperator.clean_before_retry
         retry_callback = self.get_retry_callback(retry_fn=retry_fn)
         if self._should_run_clean_command_before_retry(kwargs):
-            kwargs['params']['retry_command'] = self.get_retry_command(java_retry_args)
+            kwargs['params']['retry_command'] = self.get_retry_command()
 
         super(SpringBootJarOperator, self).__init__(retries=retry_args['retries'],
                                                     retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
