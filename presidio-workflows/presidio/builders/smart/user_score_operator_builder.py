@@ -7,7 +7,7 @@ from presidio.operators.output.user_score_operator import UserScoreOperator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 
-OUTPUT_RUN_DAILY_COMMAND = 'recalculate-user-score'
+OUTPUT_RUN_DAILY_COMMAND = 'recalculate-entity-score'
 
 
 class UserScoreOperatorBuilder(LoggingMixin):
