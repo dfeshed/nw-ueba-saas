@@ -140,7 +140,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
 
         storeEntities(new ArrayList<>(entities.values())); //Get the generated entities with the new elasticsearch ID
-        outputMonitoringService.reportTotalEntitiesCount(entities.size(), startDate, configurationName);
+        outputMonitoringService.reportTotalEntitiesCount(entities.size(), startDate, lastEntityType);
         outputMonitoringService.reportNumericMetric(outputMonitoringService.INDICATORS_COUNT_HOURLY_METRIC_NAME, indicatorsCountHourly, startDate);
 
         if (CollectionUtils.isNotEmpty(smarts)) {
@@ -176,12 +176,12 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         return null;
     }
 
-    public void updateAllEntitiesData(Instant startDate, Instant endDate, String configurationName) throws Exception {
+    public void updateAllEntitiesData(Instant startDate, Instant endDate, String configurationName, String entityType) throws Exception {
         this.entityService.updateEntityData(endDate);
         logger.info("updating entities data completed successfully");
 
         logger.info("Starting to report daily metrics");
-        outputMonitoringService.reportDailyMetrics(startDate, endDate, configurationName);
+        outputMonitoringService.reportDailyMetrics(startDate, endDate, configurationName, entityType);
     }
 
 

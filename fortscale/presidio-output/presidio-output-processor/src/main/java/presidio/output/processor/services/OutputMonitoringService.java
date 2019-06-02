@@ -37,7 +37,7 @@ public class OutputMonitoringService {
     public static final String OUTPUT_INDICATORS_COUNT_DAILY_METRIC_NAME = "alert_indicators_count_daily";
     public static final String ADE_INDICATORS_COUNT_DAILY_METRIC_NAME = "smart_indicators_count_daily";
     public static final String INDICATORS_COUNT_HOURLY_METRIC_NAME = "alert_indicators_count_hourly";
-    public static final String NUM_ACTIVE_ENTITIES_LAST_DAY_METRIC_NAME = "active_entities_count_last_day";
+    public static final String NUM_ACTIVE_ENTITIES_LAST_DAY_METRIC_NAME = "active_%s_count_last_day";
     public static final String SMARTS_COUNT_LAST_DAY_METRIC_NAME = "smarts_count_last_day";
     public static final String ALERTS_COUNT_LAST_DAY_METRIC_NAME = "alerts_count_last_day";
 
@@ -75,8 +75,8 @@ public class OutputMonitoringService {
                 build());
     }
 
-    public void reportTotalEntitiesCount(int count, Instant startDate, String configurationName) {
-        String metricName = String.format(NUMBER_OF_ENTITIES_METRIC_NAME, configurationName);
+    public void reportTotalEntitiesCount(int count, Instant startDate, String entityType) {
+        String metricName = String.format(NUMBER_OF_ENTITIES_METRIC_NAME, entityType);
         Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
         metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(metricName).
                 setMetricValue(count).
@@ -113,11 +113,11 @@ public class OutputMonitoringService {
         metricCollectingService.addMetric(metric);
     }
 
-    public void reportDailyMetrics(Instant startDate, Instant endDate, String configurationName) {
+    public void reportDailyMetrics(Instant startDate, Instant endDate, String configurationName, String entityType) {
 
         TimeRange timeRange = new TimeRange(startDate, endDate);
 
-        reportActiveEntitiesDaily(timeRange, configurationName);
+        reportActiveEntitiesDaily(timeRange, configurationName, entityType);
         reportSmartsCountDaily(timeRange, "smart.scoring", MetricEnums.MetricValues.AMOUNT_OF_SCORED, SMARTS_COUNT_LAST_DAY_METRIC_NAME);
         reportDailyMetric(timeRange, OUTPUT_METRIC_NAME_PREFIX, NUMBER_OF_ALERTS_METRIC_NAME, ALERTS_COUNT_LAST_DAY_METRIC_NAME);
 
@@ -178,11 +178,12 @@ public class OutputMonitoringService {
         logger.info("smart count daily metric was successfully reported with value {}", sumOfHourlySmartsCount);
     }
 
-    private void reportActiveEntitiesDaily(TimeRange timeRange, String configurationName) {
+    private void reportActiveEntitiesDaily(TimeRange timeRange, String configurationName, String entityType) {
         //----Report daily metric- number of active entities in the last 24 hours---
         //active entity = entity with smart (smart score >= 0)
+        String metricName = String.format(NUM_ACTIVE_ENTITIES_LAST_DAY_METRIC_NAME, entityType);
         int distinctSmartEntities = adeManagerSdk.getNumOfDistinctSmartEntities(timeRange, configurationName);
-        reportNumericMetric(NUM_ACTIVE_ENTITIES_LAST_DAY_METRIC_NAME, distinctSmartEntities, timeRange.getStart());
+        reportNumericMetric(metricName, distinctSmartEntities, timeRange.getStart());
         logger.info("active entities daily metric was successfully reported with value {}", distinctSmartEntities);
     }
 }
