@@ -34,8 +34,7 @@
         "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly",
         "numberOfEventsUserIdProcessHourly",
         "highestStartInstantScoreUserIdProcessHourly",
-        "highestStartInstantScoreUserIdRegistryHourly",
-        "numberOfDistinctSrcIpJa3OutboundTlsHourly"
+        "highestStartInstantScoreUserIdRegistryHourly"
       ],
       "defaultWeight": 0.5,
       "fullCorrelations": [

@@ -53,7 +53,7 @@
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "highestStartInstantScore"
+          "ja3ToHighestScoreMap"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -233,7 +233,7 @@
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "dstPortToHighestScoreMap"
+          "dstPortSslSubjectOutboundToHighestScoreMap"
         ]
       },
       "aggregatedFeatureEventFunction": {
