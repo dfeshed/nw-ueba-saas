@@ -13,15 +13,13 @@ class OutputOperator(AbstractOutputOperator):
     @apply_defaults
     def __init__(self, fixed_duration_strategy, command, smart_record_conf_name, entity_type, task_id=None, *args, **kwargs):
 
-        self.fixed_duration_strategy = fixed_duration_strategy
-
         java_retry_args = {
             'entity_type': entity_type,
         }
 
         super(OutputOperator, self).__init__(
             task_id=task_id,
-            fixed_duration_strategy=self.fixed_duration_strategy,
+            fixed_duration_strategy=fixed_duration_strategy,
             command=command,
             smart_record_conf_name=smart_record_conf_name,
             java_retry_args=java_retry_args,

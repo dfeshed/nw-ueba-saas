@@ -407,7 +407,7 @@ class TestOperator (SpringBootJarOperator):
     #
     # def get_retry_callback(self, retry_fn):
     #     return retry_fn
-    def get_retry_command(self, java_retry_args):
+    def get_retry_command(self):
         self.cleanup_cnt=self.cleanup_cnt+1
         return "echo hiiiiiii"
 
