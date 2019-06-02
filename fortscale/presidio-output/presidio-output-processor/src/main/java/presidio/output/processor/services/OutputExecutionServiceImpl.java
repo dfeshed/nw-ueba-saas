@@ -37,7 +37,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final int smartThresholdScoreForCreatingAlert;
     private final int smartPageSize;
     private final int alertPageSize;
-    private final long retentionEnrichedEventsDays;
     private final long retentionOutputDataDays;
 
 
@@ -48,7 +47,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                                       EntityService entityService,
                                       EventPersistencyService eventPersistencyService,
                                       OutputMonitoringService outputMonitoringService,
-                                      int smartThresholdScoreForCreatingAlert, int smartPageSize, int alertPageSize, long retentionEnrichedEventsDays, long retentionOutputDataDays) {
+                                      int smartThresholdScoreForCreatingAlert, int smartPageSize, int alertPageSize, long retentionOutputDataDays) {
         this.adeManagerSdk = adeManagerSdk;
         this.alertService = alertService;
         this.entityService = entityService;
@@ -56,7 +55,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         this.smartPageSize = smartPageSize;
         this.alertPageSize = alertPageSize;
         this.smartThresholdScoreForCreatingAlert = smartThresholdScoreForCreatingAlert;
-        this.retentionEnrichedEventsDays = retentionEnrichedEventsDays;
         this.retentionOutputDataDays = retentionOutputDataDays;
         this.outputMonitoringService = outputMonitoringService;
     }
@@ -205,11 +203,10 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     }
 
-    @Override
-    public void clean(Instant startDate, Instant endDate) throws Exception {
+    public void clean(Instant startDate, Instant endDate, String entityType) throws Exception {
         logger.debug("Start deleting alerts and updating entities score.");
         // delete alerts
-        List<Alert> cleanedAlerts = alertService.cleanAlerts(startDate, endDate);
+        List<Alert> cleanedAlerts = alertService.cleanAlerts(startDate, endDate, entityType);
 
         // update entity scores
         updateEntitiesScoreFromDeletedAlerts(cleanedAlerts);
@@ -217,14 +214,13 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     }
 
     @Override
-    public void applyRetentionPolicy(Instant endDate) throws Exception {
-        List<Schema> schemas = Arrays.asList(Schema.values());
+    public void cleanAlertsByTimeRangeAndEntityType(Instant startDate, Instant endDate, String entityType) throws Exception {
+        clean(startDate, endDate, entityType);
+    }
 
-        schemas.forEach(schema -> {
-            logger.debug("Start retention clean to mongo for schema {}", schema);
-            eventPersistencyService.remove(schema, Instant.EPOCH, endDate.minus(retentionEnrichedEventsDays, ChronoUnit.DAYS));
-        });
-        clean(Instant.EPOCH, endDate.minus(retentionOutputDataDays, ChronoUnit.DAYS));
+    @Override
+    public void cleanAlertsForRetention(Instant endDate, String entityType) throws Exception {
+        clean(Instant.EPOCH, endDate.minus(retentionOutputDataDays, ChronoUnit.DAYS), entityType);
     }
 
     private void updateEntitiesScoreFromDeletedAlerts(List<Alert> cleanedAlerts) {

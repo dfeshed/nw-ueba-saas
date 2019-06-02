@@ -13,9 +13,13 @@ public interface AlertRepository extends ElasticsearchRepository<Alert, String> 
 
     Page<Alert> findByEntityDocumentId(String entityDocumentId, Pageable pageable);
 
+    Stream<Alert> findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndEntityType(long startDate, long endDate, String entityType); // the stream must be closed after usage
+
     Stream<Alert> findByStartDateGreaterThanEqualAndEndDateLessThanEqual(long startDate, long endDate); // the stream must be closed after usage
 
     Stream<Alert> findByEndDateLessThan(long endDate); // the stream must be closed after usage
+
+    Stream<Alert> findByEndDateLessThanAndEntityType(long endDate, String entityType); // the stream must be closed after usage
 
     Stream<Alert> findByEntityDocumentId(String entityDocumentId); // the stream must be closed after usage
 

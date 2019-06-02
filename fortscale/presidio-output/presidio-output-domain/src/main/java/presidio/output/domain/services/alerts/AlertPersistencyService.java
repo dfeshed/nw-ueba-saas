@@ -43,7 +43,9 @@ public interface AlertPersistencyService {
 
     Page<IndicatorEvent> findIndicatorEventsByIndicatorId(String indicatorId, PageRequest pageRequest);
 
-    List<Alert> removeByTimeRange(Instant startDate, Instant endDate);
+    List<Alert> removeByTimeRangeAndEntityType(Instant startDate, Instant endDate, String entityType);
+
+    Stream<Alert> findAlertsByDateAndEntityType(Instant startDate, Instant endDate, String entityType);
 
     Stream<Alert> findAlertsByDate(Instant startDate, Instant endDate);
 

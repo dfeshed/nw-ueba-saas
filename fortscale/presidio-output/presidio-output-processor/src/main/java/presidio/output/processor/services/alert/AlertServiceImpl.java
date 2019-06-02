@@ -165,8 +165,8 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
-    public List<Alert> cleanAlerts(Instant startDate, Instant endDate) {
-        return alertPersistencyService.removeByTimeRange(startDate, endDate);
+    public List<Alert> cleanAlerts(Instant startDate, Instant endDate, String entityType) {
+        return alertPersistencyService.removeByTimeRangeAndEntityType(startDate, endDate, entityType);
     }
 
 
