@@ -242,6 +242,7 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
     }
 
     private void updateEntitySeverities(EntityScoreToSeverity severitiesMap, List<Entity> entities) {
+        List<Entity> updatedEntities = new ArrayList<>();
         if (entities == null) {
             return;
         }
@@ -252,8 +253,12 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
             logger.debug("Updating entity severity for entityId: " + entity.getEntityId());
             if (!newEntitySeverity.equals(entity.getSeverity())) {
                 entity.setSeverity(newEntitySeverity);
+                updatedEntities.add(entity);
             }
         });
+        if (updatedEntities.size() > 0) {
+            entityPersistencyService.save(updatedEntities);
+        }
     }
 
     public static class EntityScoreToSeverity {
