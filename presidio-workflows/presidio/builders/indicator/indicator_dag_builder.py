@@ -2,7 +2,6 @@ from datetime import timedelta
 
 from presidio.builders.indicator.adapter_operator_builder import AdapterOperatorBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
-from presidio.builders.indicator.input_retention_operator_builder import InputRetentionOperatorBuilder
 from presidio.builders.smart_model.smart_model_accumulate_operator_builder import SmartModelAccumulateOperatorBuilder
 from presidio.factories.model_dag_factory import ModelDagFactory
 from presidio.operators.aggregation.feature_aggregations_operator import FeatureAggregationsOperator
@@ -81,7 +80,6 @@ class IndicatorDagBuilder(PresidioDagBuilder):
         feature_aggregations_operator >> model_trigger
         score_aggregations_operator >> model_trigger
 
-        self._build_input_retention(dag, schema, input_operator)
         return dag
 
     def _build_model_trigger_operator(self, dag, schema):
@@ -95,20 +93,4 @@ class IndicatorDagBuilder(PresidioDagBuilder):
 
         set_schedule_interval(model_dag_id, FIX_DURATION_STRATEGY_DAILY)
         return model_trigger
-
-    def _build_input_retention(self, dag, schema, input_operator):
-        input_retention_operator = InputRetentionOperatorBuilder(schema).build(dag)
-        input_retention_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
-            task_id='input_retention_short_circuit',
-            dag=dag,
-            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                     InputRetentionOperatorBuilder.get_input_retention_interval_in_hours(PresidioDagBuilder.conf_reader),
-                                                                     get_schedule_interval(dag)) &
-                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
-                                                 dag,
-                                                 timedelta(
-                                                     days=InputRetentionOperatorBuilder.get_input_min_time_to_start_retention_in_days(PresidioDagBuilder.conf_reader)),
-                                                 kwargs['execution_date'],
-                                                 get_schedule_interval(dag)))
-        input_operator >> input_retention_short_circuit_operator >> input_retention_operator
 

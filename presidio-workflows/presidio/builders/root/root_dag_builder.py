@@ -2,11 +2,14 @@ from datetime import timedelta
 
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
+from presidio.builders.retention.retention_dag_builder import RetentionDagBuilder
 from presidio.factories.abstract_dag_factory import AbstractDagFactory
 from presidio.factories.indicator_dag_factory import IndicatorDagFactory
 from presidio.utils.airflow.operators.sensor.root_dag_gap_sensor_operator import RootDagGapSensorOperator
-
 from presidio.utils.airflow.schedule_interval_utils import set_schedule_interval
+from presidio.utils.configuration.config_server_configuration_reader_singleton import \
+    ConfigServerConfigurationReaderSingleton
+from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid_first_interval
 
 
 class RootDagBuilder(PresidioDagBuilder):
@@ -28,6 +31,19 @@ class RootDagBuilder(PresidioDagBuilder):
             trigger = self._create_expanded_trigger_dag_run_operator('{0}_{1}'.format(schema, "trigger"), dag_id, dag, None)
             set_schedule_interval(dag_id, dag.schedule_interval)
             triggers.append(trigger)
+
+        conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
+        retention_trigger = self._create_expanded_trigger_dag_run_operator('retention_trigger', "retention", dag,
+                                                                    python_callable=lambda context, dag_run_obj: dag_run_obj if is_execution_date_valid_first_interval(context['execution_date'],
+                                                                    RetentionDagBuilder.get_retention_interval_in_hours(conf_reader),
+                                                                    dag.schedule_interval) &
+                                                                    PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
+                                                                    dag,
+                                                                    timedelta(days=RetentionDagBuilder.get_min_time_to_start_retention_in_days(conf_reader)),
+                                                                    context['execution_date'],
+                                                                    dag.schedule_interval) else None)
+
+        triggers.append(retention_trigger)
 
         dag_ids = AbstractDagFactory.get_registered_dag_ids()
 

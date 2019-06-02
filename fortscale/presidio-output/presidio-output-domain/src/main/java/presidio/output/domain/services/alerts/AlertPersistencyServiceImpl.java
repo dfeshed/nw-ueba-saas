@@ -144,10 +144,10 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public List<Alert> removeByTimeRange(Instant startDate, Instant endDate) {
+    public List<Alert> removeByTimeRangeAndEntityType(Instant startDate, Instant endDate, String entityType) {
         logger.info("Going to delete alerts that were created from date {} until date {}", startDate, endDate);
         List<Alert> removedAlerts = new ArrayList<>();
-        try (Stream<Alert> alerts = findAlertsByDate(startDate, endDate)) {
+        try (Stream<Alert> alerts = findAlertsByDateAndEntityType(startDate, endDate, entityType)) {
             alerts.forEach(alert -> {
                 deleteAlertAndIndicators(alert);
                 removedAlerts.add(alert);
@@ -155,6 +155,15 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         }
         logger.info("{} alerts were deleted", removedAlerts.size());
         return removedAlerts;
+    }
+
+    @Override
+    public Stream<Alert> findAlertsByDateAndEntityType(Instant startDate, Instant endDate, String entityType) {
+        if (startDate.equals(Instant.EPOCH)) {
+            return alertRepository.findByEndDateLessThanAndEntityType(endDate.toEpochMilli(), entityType);
+        } else {
+            return alertRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndEntityType(startDate.toEpochMilli(), endDate.toEpochMilli(), entityType);
+        }
     }
 
     @Override

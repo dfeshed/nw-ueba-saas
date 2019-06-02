@@ -1,7 +1,6 @@
 package presidio.output.processor.services.alert.supportinginformation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
@@ -18,7 +17,6 @@ import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
-import presidio.output.domain.records.events.EnrichedUserEvent;
 import presidio.output.domain.records.events.ScoredEnrichedUserEvent;
 import presidio.output.domain.services.event.ScoredEventService;
 import presidio.output.processor.config.IndicatorConfig;
@@ -74,18 +72,18 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
     }
 
     @Override
-    public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize) throws Exception {
+    public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize, String entityType) throws Exception {
 
         List<IndicatorEvent> events = new ArrayList<>();
 
         // get raw events from the output (output_ collections)
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
-        String userId = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
+        String entityId = adeAggregationRecord.getContext().get(entityType);
         TimeRange timeRange = new TimeRange(adeAggregationRecord.getStartInstant(), adeAggregationRecord.getEndInstant());
 
-        List<Pair<String, Object>> features = supportingInfoUtils.buildAnomalyFeatures(indicatorConfig,indicator.getContexts());
+        List<Pair<String, Object>> features = supportingInfoUtils.buildAnomalyFeatures(indicatorConfig, indicator.getContexts());
 
-        List<ScoredEnrichedUserEvent> rawEvents = scoredEventService.findUserEventsAndScores(indicatorConfig.getSchema(), indicatorConfig.getAdeEventType(), userId, timeRange, features, eventsLimit, eventsPageSize);
+        List<ScoredEnrichedUserEvent> rawEvents = scoredEventService.findUserEventsAndScores(indicatorConfig.getSchema(), indicatorConfig.getAdeEventType(), entityId, timeRange, features, eventsLimit, eventsPageSize, entityType);
 
         if (CollectionUtils.isNotEmpty(rawEvents)) {
 
@@ -116,9 +114,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
     public HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) {
 
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
-        HistoricalDataPopulator historicalDataPopulator = historicalDataPopulatorFactory.createHistoricalDataPopulation(CommonStrings.CONTEXT_USERID,
-                indicatorConfig.getAnomalyDescriptior().getAnomalyField(),
-                indicatorConfig.getHistoricalData().getType());
+        HistoricalDataPopulator historicalDataPopulator = historicalDataPopulatorFactory.createHistoricalDataPopulation(indicatorConfig.getHistoricalData().getType());
 
         Instant startInstant = EnrichedEvent.EVENT_DATE_FIELD_NAME.equals(indicatorConfig.getAnomalyDescriptior().getAnomalyField()) ?
                 adeAggregationRecord.getStartInstant().minus(historicalActivityTimePeriodInDays, ChronoUnit.DAYS) :

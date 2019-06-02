@@ -162,6 +162,14 @@ public class Alert extends AbstractElasticDocument {
         this.entityName = entityName;
     }
 
+    public String getIndexedEntityName() {
+        return indexedEntityName;
+    }
+
+    public void setIndexedEntityName(String indexedEntityName) {
+        this.indexedEntityName = indexedEntityName;
+    }
+
     public Date getStartDate() {
         return startDate;
     }

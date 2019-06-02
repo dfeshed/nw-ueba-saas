@@ -42,8 +42,8 @@ public class AlertQuery {
     @JsonProperty("tags")
     private List<String> tags = new ArrayList<String>();
 
-    @JsonProperty("userName")
-    private List<String> userName = new ArrayList<String>();
+    @JsonProperty("entityNames")
+    private List<String> entityNames = new ArrayList<String>();
 
     @JsonProperty("classification")
     private List<String> classification = new ArrayList<String>();
@@ -51,8 +51,8 @@ public class AlertQuery {
     @JsonProperty("indicatorsName")
     private List<String> indicatorsName = new ArrayList<String>();
 
-    @JsonProperty("usersId")
-    private List<String> usersId = new ArrayList<String>();
+    @JsonProperty("entityDocumentIds")
+    private List<String> entityDocumentIds = new ArrayList<String>();
 
     @JsonProperty("sortFieldNames")
     private List<AlertQuerySortFieldName> sortFieldNames = new ArrayList<AlertQuerySortFieldName>();
@@ -69,11 +69,6 @@ public class AlertQuery {
     @JsonProperty("aggregateBy")
     private List<AlertQueryAggregationFieldName> aggregateBy;
 
-    public AlertQuery pageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-        return this;
-    }
-
     /**
      * Get pageSize
      *
@@ -86,11 +81,6 @@ public class AlertQuery {
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
-    }
-
-    public AlertQuery pageNumber(Integer pageNumber) {
-        this.pageNumber = pageNumber;
-        return this;
     }
 
     /**
@@ -107,11 +97,6 @@ public class AlertQuery {
         this.pageNumber = pageNumber;
     }
 
-    public AlertQuery minScore(Integer minScore) {
-        this.minScore = minScore;
-        return this;
-    }
-
     /**
      * Get minScore
      *
@@ -124,11 +109,6 @@ public class AlertQuery {
 
     public void setMinScore(Integer minScore) {
         this.minScore = minScore;
-    }
-
-    public AlertQuery maxScore(Integer maxScore) {
-        this.maxScore = maxScore;
-        return this;
     }
 
     /**
@@ -145,11 +125,6 @@ public class AlertQuery {
         this.maxScore = maxScore;
     }
 
-    public AlertQuery startTimeFrom(BigDecimal startTimeFrom) {
-        this.startTimeFrom = startTimeFrom;
-        return this;
-    }
-
     /**
      * Get startTimeFrom
      *
@@ -162,11 +137,6 @@ public class AlertQuery {
 
     public void setStartTimeFrom(BigDecimal startTimeFrom) {
         this.startTimeFrom = startTimeFrom;
-    }
-
-    public AlertQuery startTimeTo(BigDecimal startTimeTo) {
-        this.startTimeTo = startTimeTo;
-        return this;
     }
 
     /**
@@ -183,16 +153,6 @@ public class AlertQuery {
         this.startTimeTo = startTimeTo;
     }
 
-    public AlertQuery feedback(List<AlertQueryEnums.AlertFeedback> feedback) {
-        this.feedback = feedback;
-        return this;
-    }
-
-    public AlertQuery addFeedbackItem(AlertQueryEnums.AlertFeedback feedbackItem) {
-        this.feedback.add(feedbackItem);
-        return this;
-    }
-
     /**
      * Get feedback
      *
@@ -205,16 +165,6 @@ public class AlertQuery {
 
     public void setFeedback(List<AlertQueryEnums.AlertFeedback> feedback) {
         this.feedback = feedback;
-    }
-
-    public AlertQuery tags(List<String> tags) {
-        this.tags = tags;
-        return this;
-    }
-
-    public AlertQuery addTagsItem(String tagsItem) {
-        this.tags.add(tagsItem);
-        return this;
     }
 
     /**
@@ -231,38 +181,18 @@ public class AlertQuery {
         this.tags = tags;
     }
 
-    public AlertQuery userName(List<String> userName) {
-        this.userName = userName;
-        return this;
-    }
-
-    public AlertQuery addUserNameItem(String userNameItem) {
-        this.userName.add(userNameItem);
-        return this;
-    }
-
     /**
-     * Get userName
+     * Get entityNames
      *
-     * @return userName
+     * @return entityNames
      **/
     @ApiModelProperty(value = "")
-    public List<String> getUserName() {
-        return userName;
+    public List<String> getEntityNames() {
+        return entityNames;
     }
 
-    public void setUserName(List<String> userName) {
-        this.userName = userName;
-    }
-
-    public AlertQuery classification(List<String> classification) {
-        this.classification = classification;
-        return this;
-    }
-
-    public AlertQuery addClassificationItem(String classificationItem) {
-        this.classification.add(classificationItem);
-        return this;
+    public void setEntityNames(List<String> entityNames) {
+        this.entityNames = entityNames;
     }
 
     /**
@@ -279,16 +209,6 @@ public class AlertQuery {
         this.classification = classification;
     }
 
-    public AlertQuery indicatorsName(List<String> indicatorsName) {
-        this.indicatorsName = indicatorsName;
-        return this;
-    }
-
-    public AlertQuery addIndicatorsNameItem(String indicatorsNameItem) {
-        this.indicatorsName.add(indicatorsNameItem);
-        return this;
-    }
-
     /**
      * Get indicatorsName
      *
@@ -303,38 +223,18 @@ public class AlertQuery {
         this.indicatorsName = indicatorsName;
     }
 
-    public AlertQuery usersId(List<String> usersId) {
-        this.usersId = usersId;
-        return this;
-    }
-
-  public AlertQuery addUsersIdItem(String usersIdItem) {
-    this.usersId.add(usersIdItem);
-    return this;
-  }
-
     /**
-     * Get usersId
+     * Get entityDocumentIds
      *
-     * @return usersId
+     * @return entityDocumentIds
      **/
     @ApiModelProperty(value = "")
-    public List<String> getUsersId() {
-        return usersId;
+    public List<String> getEntityDocumentIds() {
+        return entityDocumentIds;
     }
 
-    public void setUsersId(List<String> usersId) {
-        this.usersId = usersId;
-    }
-
-    public AlertQuery sortFieldNames(List<AlertQuerySortFieldName> sortFieldNames) {
-        this.sortFieldNames = sortFieldNames;
-        return this;
-    }
-
-    public AlertQuery addSortFieldNameItem(AlertQuerySortFieldName sortFieldName) {
-        this.sortFieldNames.add(sortFieldName);
-        return this;
+    public void setEntityDocumentIds(List<String> entityDocumentIds) {
+        this.entityDocumentIds = entityDocumentIds;
     }
 
     /**
@@ -351,16 +251,6 @@ public class AlertQuery {
         this.sortFieldNames = sortFieldNames;
     }
 
-    public AlertQuery severity(List<AlertSeverity> severity) {
-        this.severity = severity;
-        return this;
-    }
-
-    public AlertQuery addSeverityItem(AlertSeverity severityItem) {
-        this.severity.add(severityItem);
-        return this;
-    }
-
     /**
      * Get severity
      *
@@ -373,16 +263,6 @@ public class AlertQuery {
 
     public void setSeverity(List<AlertSeverity> severity) {
         this.severity = severity;
-    }
-
-    public AlertQuery expand(Boolean expand) {
-        this.expand = expand;
-        return this;
-    }
-
-    public AlertQuery sortDirection(Sort.Direction sortDirection) {
-        this.sortDirection = sortDirection;
-        return this;
     }
 
     /**
@@ -411,11 +291,6 @@ public class AlertQuery {
 
     public void setExpand(Boolean expand) {
         this.expand = expand;
-    }
-
-    public AlertQuery aggregateBy(List<AlertQueryAggregationFieldName> aggregateBy) {
-        this.aggregateBy = aggregateBy;
-        return this;
     }
 
     /**
@@ -449,10 +324,10 @@ public class AlertQuery {
                 Objects.equals(this.startTimeTo, alertQuery.startTimeTo) &&
                 Objects.equals(this.feedback, alertQuery.feedback) &&
                 Objects.equals(this.tags, alertQuery.tags) &&
-                Objects.equals(this.userName, alertQuery.userName) &&
+                Objects.equals(this.entityNames, alertQuery.entityNames) &&
                 Objects.equals(this.classification, alertQuery.classification) &&
                 Objects.equals(this.indicatorsName, alertQuery.indicatorsName) &&
-                Objects.equals(this.usersId, alertQuery.usersId) &&
+                Objects.equals(this.entityDocumentIds, alertQuery.entityDocumentIds) &&
                 Objects.equals(this.sortFieldNames, alertQuery.sortFieldNames) &&
                 Objects.equals(this.severity, alertQuery.severity) &&
                 Objects.equals(this.expand, alertQuery.expand) &&
@@ -462,7 +337,7 @@ public class AlertQuery {
 
     @Override
     public int hashCode() {
-        return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, userName, classification, indicatorsName, usersId, sortFieldNames, severity, expand, sortDirection, aggregateBy);
+        return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, entityNames, classification, indicatorsName, entityDocumentIds, sortFieldNames, severity, expand, sortDirection, aggregateBy);
 
     }
 
@@ -479,10 +354,10 @@ public class AlertQuery {
         sb.append("    startTimeTo: ").append(toIndentedString(startTimeTo)).append("\n");
         sb.append("    feedback: ").append(toIndentedString(feedback)).append("\n");
         sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
-        sb.append("    userName: ").append(toIndentedString(userName)).append("\n");
+        sb.append("    entityNames: ").append(toIndentedString(entityNames)).append("\n");
         sb.append("    classification: ").append(toIndentedString(classification)).append("\n");
         sb.append("    indicatorsName: ").append(toIndentedString(indicatorsName)).append("\n");
-        sb.append("    usersId: ").append(toIndentedString(usersId)).append("\n");
+        sb.append("    entityDocumentIds: ").append(toIndentedString(entityDocumentIds)).append("\n");
         sb.append("    sortFieldNames: ").append(toIndentedString(sortFieldNames)).append("\n");
         sb.append("    sortDirection: ").append(toIndentedString(sortDirection)).append("\n");
         sb.append("    severity: ").append(toIndentedString(severity)).append("\n");

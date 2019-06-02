@@ -1,12 +1,11 @@
 from datetime import timedelta
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
-from presidio.builders.smart.output_retention_operator_builder import OutputRetentionOperatorBuilder
+from presidio.builders.smart.alert_retention_operator_builder import AlertRetentionOperatorBuilder
 from presidio.builders.smart.user_score_operator_builder import UserScoreOperatorBuilder
 from presidio.builders.smart_model.smart_model_accumulate_operator_builder import SmartModelAccumulateOperatorBuilder
 from presidio.factories.indicator_dag_factory import IndicatorDagFactory
 from presidio.factories.smart_model_dag_factory import SmartModelDagFactory
-from presidio.operators.ade_manager.ade_manager_operator import AdeManagerOperator
 from presidio.operators.output.output_operator import OutputOperator
 from presidio.operators.output.output_forwarder_operator import OutputForwarderOperator
 from presidio.operators.smart.smart_events_operator import SmartEventsOperator
@@ -32,10 +31,10 @@ class SmartDagBuilder(PresidioDagBuilder):
         root_dag_gap_sensor_operator = self._build_root_dag_gap_sensor_operator(dag)
 
         smart_record_conf_name = dag.default_args.get("smart_conf_name")
+        entity_type = dag.default_args.get("entity_type")
         smart_operator = self._build_smart(root_dag_gap_sensor_operator, dag, smart_record_conf_name)
-        self._build_output_operator(smart_record_conf_name, dag, smart_operator)
-        self._build_ade_manager_operator(dag, root_dag_gap_sensor_operator)
-        self._build_output_retention_operator(dag)
+        user_score_operator = self._build_output_operator(smart_record_conf_name, entity_type, dag, smart_operator)
+        self._build_alert_retention_operator(dag, user_score_operator, entity_type)
         return dag
 
     def _build_root_dag_gap_sensor_operator(self, smart_dag):
@@ -90,7 +89,7 @@ class SmartDagBuilder(PresidioDagBuilder):
         smart_operator >> smart_model_trigger
         return smart_operator
 
-    def _build_output_operator(self, smart_record_conf_name, dag, smart_operator):
+    def _build_output_operator(self, smart_record_conf_name, entity_type, dag, smart_operator):
 
         self.log.debug("populating the %s dag with output tasks", dag.dag_id)
 
@@ -114,6 +113,7 @@ class SmartDagBuilder(PresidioDagBuilder):
             fixed_duration_strategy=timedelta(hours=1),
             command=PresidioDagBuilder.presidio_command,
             smart_record_conf_name=smart_record_conf_name,
+            entity_type=entity_type,
             dag=dag,
         )
         task_sensor_service.add_task_sequential_sensor(hourly_output_operator)
@@ -141,6 +141,8 @@ class SmartDagBuilder(PresidioDagBuilder):
 
         smart_operator >> output_short_circuit_operator
 
+        return user_score_operator
+
     def _push_forwarding(self, hourly_output_operator, daily_short_circuit_operator, dag):
         self.log.debug("creating the forwarder task")
 
@@ -158,51 +160,22 @@ class SmartDagBuilder(PresidioDagBuilder):
         else:
             hourly_output_operator >> daily_short_circuit_operator
 
-    def _build_ade_manager_operator(self, smart_dag, root_dag_gap_sensor_operator):
-        """
-        Create AdeManagerOperator in order to clean enriched data after all enriched data customer tasks finished to use it.
-        Set daily_short_circuit in order to run AdeManagerOperator once a day.
-
-        AdeManagerOperator instances do not run sequentially (AdeManagerOperator does not use sequential sensor)
-         as a result of following assumption: AdeManagerOperator should run once a day (using daily_short_circuit),
-         all instances will get skip status except the last instance, therefore sequential sensor is unnecessary.
-
-
-        :param smart_dag: The smart DAG
-        :type smart_dag: airflow.models.DAG
-        :param root_dag_gap_sensor_operator: validate that all indicator dags finished to run
-        """
-
-        daily_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
-            task_id='ade_modeling_daily_short_circuit',
-            dag=smart_dag,
-            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                     FIX_DURATION_STRATEGY_DAILY,
-                                                                     smart_dag.schedule_interval)
-        )
-
-        ade_manager_operator = AdeManagerOperator(
-            command=AdeManagerOperator.enriched_ttl_cleanup_command,
-            dag=smart_dag)
-
-        daily_short_circuit_operator >> ade_manager_operator
-        root_dag_gap_sensor_operator >> daily_short_circuit_operator
-
-    def _build_output_retention_operator(self, dag):
-        output_retention_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
-            task_id='output_retention_short_circuit',
+    def _build_alert_retention_operator(self, dag, user_score_operator, entity_type):
+        alert_retention_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
+            task_id='alert_retention_short_circuit',
             dag=dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                     OutputRetentionOperatorBuilder.get_output_retention_interval_in_hours(
+                                                                     AlertRetentionOperatorBuilder.get_alert_retention_interval_in_hours(
                                                                          PresidioDagBuilder.conf_reader),
                                                                      dag.schedule_interval) &
                                              PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
                                                  dag,
                                                  timedelta(
-                                                     days=OutputRetentionOperatorBuilder.get_output_min_time_to_start_retention_in_days(
+                                                     days=AlertRetentionOperatorBuilder.get_alert_min_time_to_start_retention_in_days(
                                                          PresidioDagBuilder.conf_reader)),
                                                  kwargs['execution_date'],
                                                  dag.schedule_interval))
 
-        output_retention = OutputRetentionOperatorBuilder().build(dag)
-        output_retention_short_circuit_operator >> output_retention
+        alert_retention = AlertRetentionOperatorBuilder().build(dag, entity_type)
+
+        user_score_operator >> alert_retention_short_circuit_operator >> alert_retention

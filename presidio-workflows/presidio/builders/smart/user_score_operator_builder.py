@@ -45,7 +45,7 @@ class UserScoreOperatorBuilder(LoggingMixin):
             fixed_duration_strategy=timedelta(days=1),
             command=OUTPUT_RUN_DAILY_COMMAND,
             smart_record_conf_name=self.smart_record_conf_name,
-            dag=dag,
-        )
+            run_clean_command_before_retry=False,
+            dag=dag)
 
         return user_score_operator

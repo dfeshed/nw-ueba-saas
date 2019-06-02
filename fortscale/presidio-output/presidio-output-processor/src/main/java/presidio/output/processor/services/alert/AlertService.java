@@ -22,6 +22,6 @@ public interface AlertService {
 
     void save(List<Alert> alerts);
 
-    List<Alert> cleanAlerts(Instant startDate, Instant endDate);
+    List<Alert> cleanAlerts(Instant startDate, Instant endDate, String entityType);
 
 }

@@ -58,7 +58,7 @@ class SpringBootJarOperator(BashOperator):
     conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
     @apply_defaults
-    def __init__(self, command, jvm_args={}, java_args={}, component=None, condition=None, *args, **kwargs):
+    def __init__(self, command, jvm_args={}, java_args={}, java_retry_args={}, component=None, condition=None, *args, **kwargs):
         self.log.debug("creating operator %s" % str(self.__class__))
         self.task_id = kwargs['task_id']
         self.log.debug("task %s" % str(kwargs['task_id']))
@@ -66,6 +66,7 @@ class SpringBootJarOperator(BashOperator):
         self.component = component
         self._calc_jvm_args(jvm_args)
         self.java_args = java_args
+        self.java_retry_args = java_retry_args
         self.validate_mandatory_fields()
         self.merged_args = self.merge_args()
         self.command = command
@@ -242,7 +243,9 @@ class SpringBootJarOperator(BashOperator):
 
         self.jmx(bash_command)
 
-        self.jar_path(bash_command, self.command)
+        self.jar_path(bash_command)
+
+        self.jar_args(bash_command, self.command)
 
         self.extra_args(bash_command)
 
@@ -311,15 +314,13 @@ class SpringBootJarOperator(BashOperator):
         if not is_blank(extra_args):
             bash_command.extend(extra_args.split(' '))
 
-    def jar_path(self, bash_command, command):
+    def jar_path(self, bash_command):
         """
-
         Validate that main_class, jar_path or class_path exist in merged_args,
         otherwise throw an error
 
         :param bash_command: list of bash comments
         :type bash_command: []
-        :param command:
         :raise ValueError: main_class, class path or jar path were not defined
         :return:
         """
@@ -341,11 +342,22 @@ class SpringBootJarOperator(BashOperator):
             bash_command.extend(['-Dloader.main=%s' % self.merged_args.get(JVM_ARGS_CONF_KEY).get(main_class_conf_key)])
             bash_command.extend(['org.springframework.boot.loader.PropertiesLauncher'])
 
-        if not is_blank(self.java_args):
-            java_args = ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in
-                                 self.java_args.iteritems())
+    def jar_args(self, bash_command, command):
+        self.get_args(self.java_args, bash_command, command)
+
+    def get_retry_args(self, bash_command, command):
+        if not is_blank(self.java_retry_args):
+            self.get_args(self.java_retry_args, bash_command, command)
+        else:
+            self.get_args(self.java_args, bash_command, command)
+
+    def get_args(self, args, bash_command, command):
+        if not is_blank(args):
+            args = ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in
+                             args.iteritems())
             bash_command.append(command)
-            bash_command.append(java_args)
+            bash_command.append(args)
+
 
     def jmx(self, bash_command):
         """
@@ -496,7 +508,9 @@ class SpringBootJarOperator(BashOperator):
 
         self.logback(bash_command)
 
-        self.jar_path(bash_command=bash_command, command="cleanup")
+        self.jar_path(bash_command=bash_command)
+
+        self.get_retry_args(bash_command, command="cleanup")
 
         bash_command = [elem for elem in bash_command if (elem != "''" and elem != "")]
 
