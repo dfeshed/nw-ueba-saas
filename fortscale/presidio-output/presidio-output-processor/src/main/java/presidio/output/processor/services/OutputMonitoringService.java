@@ -179,7 +179,7 @@ public class OutputMonitoringService {
     }
 
     private void reportActiveEntitiesDaily(TimeRange timeRange, String configurationName, String entityType) {
-        //----Report daily metric- number of active entities in the last 24 hours---
+        //----Report daily metric- number of active entities (e.g users, machines etc.) in the last 24 hours---
         //active entity = entity with smart (smart score >= 0)
         String metricName = String.format(NUM_ACTIVE_ENTITIES_LAST_DAY_METRIC_NAME, entityType);
         int distinctSmartEntities = adeManagerSdk.getNumOfDistinctSmartEntities(timeRange, configurationName);
