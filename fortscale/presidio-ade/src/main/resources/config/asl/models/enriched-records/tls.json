@@ -1,0 +1,426 @@
+{
+  "ModelConfs": [
+    {
+      "name": "startInstant.sslSubjectOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "startInstantHistogramSslSubjectOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "startInstantHistogramSslSubjectOutboundTlsDaily",
+        "featureName": "startInstantHistogram",
+        "partitionsResolutionInSeconds": 86400
+      },
+      "builder": {
+        "type": "time_model_builder",
+        "timeResolution": 86400,
+        "bucketSize": 600,
+        "categoryRarityModelNumOfBuckets": 30
+      }
+    },
+    {
+      "name": "startInstant.ja3Outbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "startInstantHistogramJa3OutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "startInstantHistogramJa3OutboundTlsDaily",
+        "featureName": "startInstantHistogram",
+        "partitionsResolutionInSeconds": 86400
+      },
+      "builder": {
+        "type": "time_model_builder",
+        "timeResolution": 86400,
+        "bucketSize": 600,
+        "categoryRarityModelNumOfBuckets": 30
+      }
+    },
+    {
+      "name": "sslSubject.srcNetnameOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "sslSubjectHistogramSrcNetnameOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "sslSubjectHistogramSrcNetnameOutboundTlsDaily",
+        "featureName": "sslSubjectHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "domain.srcNetnameOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "domainHistogramSrcNetnameOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "domainHistogramSrcNetnameOutboundTlsDaily",
+        "featureName": "domainHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "dstPort.srcNetnameOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "dstPortHistogramSrcNetnameOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "dstPortHistogramSrcNetnameOutboundTlsDaily",
+        "featureName": "dstPortHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "dstOrg.srcNetnameOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "dstOrgHistogramSrcNetnameOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "dstOrgHistogramSrcNetnameOutboundTlsDaily",
+        "featureName": "dstOrgHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "country.sslSubjectOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "countryHistogramSslSubjectOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "countryHistogramSslSubjectOutboundTlsDaily",
+        "featureName": "countryHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "sslSubject.countryOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "sslSubjectHistogramCountryOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "sslSubjectHistogramCountryOutboundTlsDaily",
+        "featureName": "sslSubjectHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "dstPort.sslSubjectOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "dstPortHistogramSslSubjectOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "dstPortHistogramSslSubjectOutboundTlsDaily",
+        "featureName": "dstPortHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "sslSubject.dstPortOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "sslSubjectHistogramDstPortOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "sslSubjectHistogramDstPortOutboundTlsDaily",
+        "featureName": "sslSubjectHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "dstPort.domainOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "dstPortHistogramDomainOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "dstPortHistogramDomainOutboundTlsDaily",
+        "featureName": "dstPortHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "domain.dstPortOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "domainHistogramDstPortOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "domainHistogramDstPortOutboundTlsDaily",
+        "featureName": "domainHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "dstPort.dstOrgOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "dstPortHistogramDstOrgOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "dstPortHistogramDstOrgOutboundTlsDaily",
+        "featureName": "dstPortHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "dstOrg.dstPortOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "dstOrgHistogramDstPortOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "dstOrgHistogramDstPortOutboundTlsDaily",
+        "featureName": "dstOrgHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "ja3.srcNetnameOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "ja3HistogramSrcNetnameOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "ja3HistogramSrcNetnameOutboundTlsDaily",
+        "featureName": "ja3Histogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "sslSubject.ja3Outbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "sslSubjectHistogramJa3OutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "sslSubjectHistogramJa3OutboundTlsDaily",
+        "featureName": "sslSubjectHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "ja3.sslSubjectOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "ja3HistogramSslSubjectOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "ja3HistogramSslSubjectOutboundTlsDaily",
+        "featureName": "ja3Histogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "domain.ja3Outbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "domainHistogramJa3OutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "domainHistogramJa3OutboundTlsDaily",
+        "featureName": "domainHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "ja3.domainOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "ja3HistogramDomainOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "ja3HistogramDomainOutboundTlsDaily",
+        "featureName": "ja3Histogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "dstPort.ja3Outbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "dstPortHistogramJa3OutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "dstPortHistogramJa3OutboundTlsDaily",
+        "featureName": "dstPortHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "ja3.dstPortOutbound.tls",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "ja3HistogramDstPortOutboundTlsDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "ja3HistogramDstPortOutboundTlsDaily",
+        "featureName": "ja3Histogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    }
+  ]
+}

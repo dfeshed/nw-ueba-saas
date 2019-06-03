@@ -1,0 +1,424 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "highestStartInstantScoreSslSubjectOutboundTlsHourly",
+      "type": "P",
+      "bucketConfName": "highestStartInstantScoreSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "highestStartInstantScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "highestStartInstantSslSubjectOutboundScoreJa3TlsHourly",
+      "type": "P",
+      "bucketConfName": "highestStartInstantSslSubjectOutboundScoresJa3TlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "sslSubjectToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "highestStartInstantScoreJa3OutboundTlsHourly",
+      "type": "P",
+      "bucketConfName": "highestStartInstantScoreJa3OutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "highestStartInstantScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "highestStartInstantJa3OutboundScoresSslSubjectTlsHourly",
+      "type": "P",
+      "bucketConfName": "highestStartInstantJa3OutboundScoresSslSubjectTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "ja3ToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestSslSubjectSrcNetnameOutboundScoresSslSubjectTlsHourly",
+      "type": "P",
+      "bucketConfName": "sslSubjectSrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "sslSubjectSrcNetnameOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestSslSubjectSrcNetnameOutboundScoresJa3TlsHourly",
+      "type": "P",
+      "bucketConfName": "sslSubjectSrcNetnameOutboundToHighestScoreMapJa3TlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "sslSubjectSrcNetnameOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDomainSrcNetnameOutboundScoresSslSubjectTlsHourly",
+      "type": "P",
+      "bucketConfName": "domainSrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "domainSrcNetnameOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDomainSrcNetnameOutboundScoresJa3TlsHourly",
+      "type": "P",
+      "bucketConfName": "domainSrcNetnameOutboundToHighestScoreMapJa3TlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "domainSrcNetnameOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstPortSrcNetnameOutboundScoresSslSubjectTlsHourly",
+      "type": "P",
+      "bucketConfName": "dstPortSrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstPortSrcNetnameOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstPortSrcNetnameOutboundScoresJa3TlsHourly",
+      "type": "P",
+      "bucketConfName": "dstPortSrcNetnameOutboundToHighestScoreMapJa3TlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstPortSrcNetnameOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstOrgSrcNetnameOutboundScoresSslSubjectTlsHourly",
+      "type": "P",
+      "bucketConfName": "dstOrgSrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstOrgSrcNetnameOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstOrgSrcNetnameOutboundScoresJa3TlsHourly",
+      "type": "P",
+      "bucketConfName": "dstOrgSrcNetnameOutboundToHighestScoreMapJa3TlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstOrgSrcNetnameOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestCountryScoresSslSubjectOutboundTlsHourly",
+      "type": "P",
+      "bucketConfName": "countryToHighestScoreMapSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "countryToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestCountrySslSubjectOutboundScoresJa3TlsHourly",
+      "type": "P",
+      "bucketConfName": "countrySslSubjectOutboundToHighestScoreMapJa3TlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "countrySslSubjectOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstPortScoresSslSubjectOutboundTlsHourly",
+      "type": "P",
+      "bucketConfName": "dstPortToHighestScoreMapSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstPortToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstPortSslSubjectOutboundScoresJa3TlsHourly",
+      "type": "P",
+      "bucketConfName": "dstPortSslSubjectOutboundToHighestScoreMapJa3TlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstPortSslSubjectOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstPortDomainOutboundScoresSslSubjectTlsHourly",
+      "type": "P",
+      "bucketConfName": "dstPortDomainOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstPortDomainOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstPortDomainOutboundScoresJa3TlsHourly",
+      "type": "P",
+      "bucketConfName": "dstPortDomainOutboundToHighestScoreMapJa3TlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstPortDomainOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstPortDstOrgOutboundScoresSslSubjectTlsHourly",
+      "type": "P",
+      "bucketConfName": "dstPortDstOrgOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstPortDstOrgOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstPortDstOrgOutboundScoresJa3TlsHourly",
+      "type": "P",
+      "bucketConfName": "dstPortDstOrgOutboundToHighestScoreMapJa3TlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstPortDstOrgOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestJa3SrcNetnameOutboundScoresSslSubjectTlsHourly",
+      "type": "P",
+      "bucketConfName": "ja3SrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "ja3SrcNetnameOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestJa3SrcNetnameOutboundScoresJa3TlsHourly",
+      "type": "P",
+      "bucketConfName": "ja3SrcNetnameOutboundToHighestScoreMapJa3TlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "ja3SrcNetnameOutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestSslSubjectScoresJa3OutboundTlsHourly",
+      "type": "P",
+      "bucketConfName": "sslSubjectToHighestScoreMapJa3OutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "sslSubjectToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestSslSubjectJa3OutboundScoresSslSubjectTlsHourly",
+      "type": "P",
+      "bucketConfName": "sslSubjectJa3OutboundToHighestScoreMapSslSubjectTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "sslSubjectJa3OutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDomainJa3OutboundScoresSslSubjectTlsHourly",
+      "type": "P",
+      "bucketConfName": "domainJa3OutboundToHighestScoreMapSslSubjectTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "domainJa3OutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDomainScoresJa3OutboundTlsHourly",
+      "type": "P",
+      "bucketConfName": "domainToHighestScoreMapJa3OutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "domainToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstPortScoresJa3OutboundTlsHourly",
+      "type": "P",
+      "bucketConfName": "dstPortToHighestScoreMapJa3OutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstPortToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstPortJa3OutboundScoresSslSubjectTlsHourly",
+      "type": "P",
+      "bucketConfName": "dstPortJa3OutboundToHighestScoreMapSslSubjectTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstPortJa3OutboundToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    }
+  ]
+}
