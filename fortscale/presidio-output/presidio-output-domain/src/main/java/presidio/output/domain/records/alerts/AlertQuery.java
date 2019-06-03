@@ -19,6 +19,7 @@ public class AlertQuery {
     private final double filterByMaxScore;
     private final List<String> filterByTags;
     private final List<String> filterByIndicatorNames;
+    private String filterByEntityType;
 
     // sort
     private final Sort sort;
@@ -46,6 +47,7 @@ public class AlertQuery {
         this.filterByIndicatorNames = builder.filterByIndicatorNames;
         this.filterByEntityDocumentId = builder.filterByEntityDocumentId;
         this.aggregateByFields = builder.aggregateByFields;
+        this.filterByEntityType = builder.filterByEntityType;
     }
 
     public List<String> getFilterByEntityName() {
@@ -104,6 +106,8 @@ public class AlertQuery {
         return filterByEntityDocumentId;
     }
 
+    public String getFilterByEntityType() { return filterByEntityType; }
+
     public List<String> getAggregateByFields() {
         return aggregateByFields;
     }
@@ -122,6 +126,7 @@ public class AlertQuery {
         private List<String> filterByTags;
         private List<String> filterByIndicatorNames;
         private List<String> filterByEntityDocumentId;
+        private String filterByEntityType = null;
 
         // sort
         private Sort sort;
@@ -188,6 +193,11 @@ public class AlertQuery {
 
         public AlertQueryBuilder filterByEndDate(long filterByEndDate) {
             this.filterByEndDate = filterByEndDate;
+            return this;
+        }
+
+        public AlertQueryBuilder filterByEntityType(String filterByEntityType) {
+            this.filterByEntityType = filterByEntityType;
             return this;
         }
 

@@ -185,10 +185,11 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
     }
 
     @Override
-    public void updateSeverities() {
+    public void updateSeverities(String entityType) {
         final EntityScoreToSeverity severitiesMap = getSeveritiesMap(true);
         EntityQuery.EntityQueryBuilder entityQueryBuilder =
                 new EntityQuery.EntityQueryBuilder()
+                        .filterByEntitiesTypes(Collections.singletonList(entityType))
                         .pageNumber(0)
                         .pageSize(defaultEntitiesBatchSize)
                         .sort(new Sort(new Sort.Order(Sort.Direction.ASC, Entity.SCORE_FIELD_NAME)));

@@ -177,7 +177,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     }
 
     public void updateAllEntitiesData(Instant startDate, Instant endDate, String configurationName, String entityType) throws Exception {
-        this.entityService.updateEntityData(endDate);
+        this.entityService.updateEntityData(endDate, entityType);
         logger.info("updating entities data completed successfully");
 
         logger.info("Starting to report daily metrics");

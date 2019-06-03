@@ -31,9 +31,9 @@ public interface EntityService {
      *
      * @return
      */
-    boolean updateAllEntitiesAlertData(Instant endDate);
+    boolean updateAllEntitiesAlertData(Instant endDate, String entityType);
 
 
-    void updateEntityData(Instant endDate);
+    void updateEntityData(Instant endDate, String entityType);
 
 }

@@ -12,7 +12,7 @@ public interface EntitySeverityService {
     /**
      * Iterate all entities and re-calculate the severities percentiles - read entities from DB and update severities in DB
      */
-    void updateSeverities();
+    void updateSeverities(String entityType);
 
     List<String> collectionNamesByOrderForEvents();
 }
