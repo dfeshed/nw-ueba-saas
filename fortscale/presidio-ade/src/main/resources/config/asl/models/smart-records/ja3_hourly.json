@@ -1,0 +1,50 @@
+{
+  "ModelConfs": [
+    {
+      "name": "smart.global.weights.ja3.hourly",
+      "retriever": {
+        "type": "accumulated_smart_data_retriever",
+        "timeRangeInSeconds": 2592000,
+        "functions": [],
+        "smartRecordConfName": "ja3_hourly",
+        "partitionsResolutionInSeconds": 86400
+      },
+      "builder": {
+        "type": "weights_model_builder",
+        "smartRecordConfName": "ja3_hourly"
+      }
+    },
+    {
+      "name": "smart.ja3.hourly",
+      "selector": {
+        "type": "accumulated_smart_context_selector",
+        "smartRecordConfName": "ja3_hourly"
+      },
+      "retriever": {
+        "type": "accumulated_context_smart_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "smartRecordConfName": "ja3_hourly",
+        "weightsModelName": "smart.global.weights.ja3.hourly"
+      },
+      "builder": {
+        "type": "smart_max_values_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "smart.global.prior.ja3.hourly",
+      "retriever": {
+        "type": "accumulated_smart_value_retriever",
+        "timeRangeInSeconds": 2592000,
+        "functions": [],
+        "smartRecordConfName": "ja3_hourly",
+        "weightsModelName": "smart.global.weights.ja3.hourly",
+        "partitionsResolutionInSeconds": 86400
+      },
+      "builder": {
+        "type": "smart_values_prior_model_builder"
+      }
+    }
+  ]
+}

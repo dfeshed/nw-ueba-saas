@@ -73,7 +73,7 @@ public class ModelingServiceApplicationSmartModelsTest {
     @Value("${presidio.ade.modeling.smart.records.base.configuration.path}")
     private String smartRecordsBaseConfigurationPath;
     @Value("${presidio.ade.modeling.feature.aggregation.records.group.name}")
-    private String groupName;
+private String groupName;
     @MockBean
     MetricCollectingService metricCollectingService;
     @MockBean
@@ -357,6 +357,7 @@ public class ModelingServiceApplicationSmartModelsTest {
                 .collect(Collectors.toSet());
         List<String> excludedAggregationRecords = smartRecordConfService.getSmartRecordConf("userId_hourly").getExcludedAggregationRecords();
         return aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream()
+                .filter(aggregatedFeatureEventConf -> aggregatedFeatureEventConf.getBucketConf().getContextFieldNames().size() == 1 && aggregatedFeatureEventConf.getBucketConf().getContextFieldNames().get(0).equals("userId"))
                 .filter(aggregatedFeatureEventConf -> !aggregationRecordNamesWithLowWeights.contains(aggregatedFeatureEventConf.getName()))
                 .filter(aggregatedFeatureEventConf -> !excludedAggregationRecords.contains(aggregatedFeatureEventConf.getName()))
                 .collect(Collectors.toList());

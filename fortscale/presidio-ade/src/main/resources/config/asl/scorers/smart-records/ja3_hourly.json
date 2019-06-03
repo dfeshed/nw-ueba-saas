@@ -1,0 +1,32 @@
+{
+  "ade-event-type-scorers": [
+    {
+      "ade-event-type": "smart_ja3_hourly",
+      "scorers": [
+        {
+          "type": "smart-max-values-model-scorer",
+          "name": "smart.ja3.hourly.scorer",
+          "model": {
+            "name": "smart.ja3.hourly"
+          },
+          "global-model": {
+            "name": "smart.global.prior.ja3.hourly"
+          },
+          "number-of-partitions-to-influence-enough": 10,
+          "use-certainty-to-calculate-score": true,
+          "base-scorer": {
+            "type": "smart-weights-model-scorer",
+            "name": "smart.ja3.smart_value.hourly.scorer",
+            "model": {
+              "name": "smart.global.weights.ja3.hourly"
+            }
+          },
+          "global-influence": 5,
+          "max-user-influence": 10,
+          "num-of-partition-user-influence": 5,
+          "min-num-of-user-values": 5
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,748 @@
+{
+  "BucketConfs": [
+    {
+      "name": "highestStartInstantScoreSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.startInstant.sslSubjectOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highestStartInstantScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ],
+            "context": [
+              "startInstant"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "highestStartInstantSslSubjectOutboundScoresJa3TlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.startInstant.sslSubjectOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "sslSubjectToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.sslSubject"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "highestStartInstantScoreJa3OutboundTlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.startInstant.ja3Outbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highestStartInstantScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ],
+            "context": [
+              "startInstant"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "highestStartInstantJa3OutboundScoresSslSubjectTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.startInstant.ja3Outbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "ja3ToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.ja3"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "sslSubjectSrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.sslSubject.srcNetnameOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "sslSubjectSrcNetnameOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcNetname"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "sslSubjectSrcNetnameOutboundToHighestScoreMapJa3TlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.sslSubject.srcNetnameOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "sslSubjectSrcNetnameOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcNetname",
+              "context.sslSubject"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "domainSrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.domain.srcNetnameOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "domainSrcNetnameOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcNetname",
+              "context.domain"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "domainSrcNetnameOutboundToHighestScoreMapJa3TlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.domain.srcNetnameOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "domainSrcNetnameOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcNetname",
+              "context.domain"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstPortSrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.dstPort.srcNetnameOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortSrcNetnameOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcNetname",
+              "context.dstPort"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstPortSrcNetnameOutboundToHighestScoreMapJa3TlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.dstPort.srcNetnameOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortSrcNetnameOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcNetname",
+              "context.dstPort"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstOrgSrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.dstOrg.srcNetnameOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstOrgSrcNetnameOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcNetname",
+              "context.dstOrg"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstOrgSrcNetnameOutboundToHighestScoreMapJa3TlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.dstOrg.srcNetnameOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstOrgSrcNetnameOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcNetname",
+              "context.dstOrg"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "countryToHighestScoreMapSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.country.sslSubjectOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "countryToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.country"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "countrySslSubjectOutboundToHighestScoreMapJa3TlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.country.sslSubjectOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "countrySslSubjectOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.sslSubject",
+              "context.country"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstPortToHighestScoreMapSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.dstPort.sslSubjectOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstPort"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstPortSslSubjectOutboundToHighestScoreMapJa3TlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.dstPort.sslSubjectOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortSslSubjectOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.sslSubject",
+              "context.dstPort"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstPortDomainOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.dstPort.domainOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortDomainOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.domain",
+              "context.dstPort"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstPortDomainOutboundToHighestScoreMapJa3TlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.dstPort.domainOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortDomainOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.domain",
+              "context.dstPort"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstPortDstOrgOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.dstPort.dstOrgOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortDstOrgOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstOrg",
+              "context.dstPort"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstPortDstOrgOutboundToHighestScoreMapJa3TlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.dstPort.dstOrgOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortDstOrgOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstOrg",
+              "context.dstPort"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ja3SrcNetnameOutboundToHighestScoreMapSslSubjectTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.ja3.srcNetnameOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "ja3SrcNetnameOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcNetname",
+              "context.ja3"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ja3SrcNetnameOutboundToHighestScoreMapJa3TlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.ja3.srcNetnameOutbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "ja3SrcNetnameOutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcNetname"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "sslSubjectToHighestScoreMapJa3OutboundTlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.sslSubject.ja3Outbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "sslSubjectToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.sslSubject"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "sslSubjectJa3OutboundToHighestScoreMapSslSubjectTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.sslSubject.ja3Outbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "sslSubjectJa3OutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.ja3"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "domainToHighestScoreMapJa3OutboundTlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.domain.ja3Outbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "domainToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.domain"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "domainJa3OutboundToHighestScoreMapSslSubjectTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.domain.ja3Outbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "domainJa3OutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.ja3",
+              "context.domain"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstPortToHighestScoreMapJa3OutboundTlsHourly",
+      "contextFieldNames": [
+        "ja3"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.dstPort.ja3Outbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstPort"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstPortJa3OutboundToHighestScoreMapSslSubjectTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.tls.dstPort.ja3Outbound.tls.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortJa3OutboundToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.ja3",
+              "context.dstPort"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    }
+  ]
+}
