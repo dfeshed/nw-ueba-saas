@@ -39,9 +39,9 @@ public class FakeAlertsCreator {
         a.startDate(fakeCreatorUtils.timeStringToEpochBig(startTime));
         a.endDate(fakeCreatorUtils.timeStringToEpochBig(endTime));
         a.setIndicatorsNum(numberOfIndicators);
-        a.setUserId("userId1");
-        a.setUsername("User Id 1");
-        a.setUserScoreContribution(new BigDecimal(20));
+        a.setEntityDocumentId("userId1");
+        a.setEntityName("User Id 1");
+        a.setEntityScoreContribution(new BigDecimal(20));
 
         //Set the indicators
         List<Indicator> indicators = fakeIndicatorCreators.getIndicators(10,startTime,endTime).getIndicators();

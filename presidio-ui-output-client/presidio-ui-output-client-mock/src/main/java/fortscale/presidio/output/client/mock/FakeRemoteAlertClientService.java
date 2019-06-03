@@ -95,10 +95,6 @@ public class FakeRemoteAlertClientService implements AlertsPresidioOutputClient 
             return fakeIndicatorCreators.getIndicators(1, "2018-01-01 13:00","2018-01-01 14:00");
         }
 
-        @Override
-        public Alert updateAlert(List<Patch> body) throws ApiException {
-            return fakeAlertsCreator.getAlerts(1).getAlerts().get(0);
-        }
 
         @Override
         public void updateAlertsFeedback(UpdateFeedbackRequest body) throws ApiException {

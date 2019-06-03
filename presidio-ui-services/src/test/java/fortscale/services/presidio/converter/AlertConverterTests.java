@@ -34,10 +34,10 @@ public class AlertConverterTests {
         alertFromResponse.setId("blaIdId");
         alertFromResponse.setTimeframe(presidio.output.client.model.Alert.TimeframeEnum.HOURLY);
         alertFromResponse.setIndicatorsNum(3);
-        alertFromResponse.setUserScoreContribution(new BigDecimal(50));
+        alertFromResponse.setEntityScoreContribution(new BigDecimal(50));
         alertFromResponse.setSeverity(presidio.output.client.model.Alert.SeverityEnum.LOW);
-        alertFromResponse.setUsername("userName");
-        alertFromResponse.setUserId("userId");
+        alertFromResponse.setEntityName("userName");
+        alertFromResponse.setEntityDocumentId("userId");
 
         uiAlerts=alertConverterHelper.convertResponseToUiDto(alertFromResponse);
 
@@ -73,8 +73,8 @@ public class AlertConverterTests {
         alertFromResponse.setIndicatorsNum(2);
 
         alertFromResponse.setSeverity(null);
-        alertFromResponse.setUsername(null);
-        alertFromResponse.setUserId("userId");
+        alertFromResponse.setEntityName(null);
+        alertFromResponse.setEntityDocumentId("userId");
 
         uiAlerts=alertConverterHelper.convertResponseToUiDto(alertFromResponse);
 
@@ -177,13 +177,13 @@ public class AlertConverterTests {
 
         Assert.assertEquals("admin",alertQuery.getTags().get(0));
 
-        Assert.assertEquals(2,alertQuery.getUserName().size());
-        Assert.assertTrue(alertQuery.getUserName().contains("user1"));
-        Assert.assertTrue(alertQuery.getUserName().contains("user2"));
+        Assert.assertEquals(2,alertQuery.getEntityNames().size());
+        Assert.assertTrue(alertQuery.getEntityNames().contains("user1"));
+        Assert.assertTrue(alertQuery.getEntityNames().contains("user2"));
 
-        Assert.assertEquals(2,alertQuery.getUsersId().size());
-        Assert.assertTrue(alertQuery.getUsersId().contains("id1"));
-        Assert.assertTrue(alertQuery.getUsersId().contains("id2"));
+        Assert.assertEquals(2,alertQuery.getEntityDocumentIds().size());
+        Assert.assertTrue(alertQuery.getEntityDocumentIds().contains("id1"));
+        Assert.assertTrue(alertQuery.getEntityDocumentIds().contains("id2"));
 
     }
 
