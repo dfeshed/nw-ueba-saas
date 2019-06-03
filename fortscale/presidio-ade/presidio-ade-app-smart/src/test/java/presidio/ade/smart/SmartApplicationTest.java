@@ -166,12 +166,12 @@ public class SmartApplicationTest extends BaseAppTest {
         List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
         Assert.assertEquals(smartRecords.size(), contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
         Assert.assertEquals(smartRecords.size(), contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
-        Map<Integer, List<SmartRecord>> smartAggregationRecordsSizeToSmartRecords = smartRecords.stream().collect(Collectors.groupingBy(smartRecord -> smartRecord.getSmartAggregationRecords().size()));
+        Map<Integer, List<SmartRecord>> smartAggregationRecordsSizeToSmartRecords = smartRecords.stream().collect(Collectors.groupingBy(smartRecord -> (int)(smartRecord.getSmartValue()*1000)));
         smartAggregationRecordsSizeToSmartRecords.values().forEach(smartRecordList -> {
             Double expectedScore = smartRecordList.get(0).getScore();
-            Double expectedSmartValue = smartRecordList.get(0).getSmartValue();
+            int expectedSmartAggregationRecordsSize = smartRecordList.get(0).getSmartAggregationRecords().size();
             Assert.assertTrue(expectedScore > 0);
-            Assert.assertTrue(smartRecordList.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
+            Assert.assertTrue(smartRecordList.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartAggregationRecords().size() == expectedSmartAggregationRecordsSize));
         });
     }
 
@@ -296,12 +296,12 @@ public class SmartApplicationTest extends BaseAppTest {
         Instant smartRecordEnd = smartRecords.stream().max(Comparator.comparing(SmartRecord::getEndInstant)).get().getStartInstant();
         Assert.assertEquals(start, smartRecordStart);
         Assert.assertEquals(end, smartRecordEnd.plus(Duration.ofHours(1)));
-        Map<Integer, List<SmartRecord>> smartAggregationRecordsSizeToSmartRecords = smartRecords.stream().collect(Collectors.groupingBy(smartRecord -> smartRecord.getSmartAggregationRecords().size()));
+        Map<Integer, List<SmartRecord>> smartAggregationRecordsSizeToSmartRecords = smartRecords.stream().collect(Collectors.groupingBy(smartRecord -> (int)(smartRecord.getSmartValue()*1000)));
         smartAggregationRecordsSizeToSmartRecords.values().forEach(smartRecordList -> {
             Double expectedScore = smartRecordList.get(0).getScore();
-            Double expectedSmartValue = smartRecordList.get(0).getSmartValue();
+            int numOfSmartAggregationRecords = smartRecordList.get(0).getSmartAggregationRecords().size();
             Assert.assertTrue(expectedScore > 0);
-            Assert.assertTrue(smartRecordList.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
+            Assert.assertTrue(smartRecordList.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartAggregationRecords().size() == numOfSmartAggregationRecords));
         });
     }
 
@@ -673,6 +673,7 @@ public class SmartApplicationTest extends BaseAppTest {
     private List<AggregatedFeatureEventConf> getIncludedAggregatedFeatureEventConfs() {
         SmartRecordConf smartRecordConf = smartRecordConfService.getSmartRecordConf("userId_hourly");
         return aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfs(smartRecordConf).stream()
+                .filter(aggregatedFeatureEventConf -> aggregatedFeatureEventConf.getBucketConf().getContextFieldNames().size() == 1 && aggregatedFeatureEventConf.getBucketConf().getContextFieldNames().get(0).equals("userId"))
                 .filter(conf -> !smartRecordConf.getExcludedAggregationRecords().contains(conf.getName()))
                 .collect(Collectors.toList());
     }
