@@ -525,6 +525,7 @@ public class AlertApiControllerModuleTest {
         entity.setScore(150);
         entity.setEntityName("testEntity");
         entity.setSeverity(EntitySeverity.MEDIUM);
+        entity.setEntityType("entityType");
         Entity savedEntity = entityRepository.save(entity);
 
         //save alerts in elastic
@@ -633,6 +634,7 @@ public class AlertApiControllerModuleTest {
         entity.setScore(170);
         entity.setEntityName("testEntity");
         entity.setSeverity(EntitySeverity.LOW);
+        entity.setEntityType("entityType");
         Entity savedEntity = entityRepository.save(entity);
 
         //save alerts in elastic
@@ -680,6 +682,7 @@ public class AlertApiControllerModuleTest {
         entity.setScore(170);
         entity.setEntityName("testEntity");
         entity.setSeverity(EntitySeverity.LOW);
+        entity.setEntityType("entityType");
         Entity savedEntity = entityRepository.save(entity);
 
         //save alerts in elastic
