@@ -1,8 +1,6 @@
 import * as ACTION_TYPES from './types';
-import { setQueryTimeRange } from 'investigate-events/actions/interaction-creators';
-import { selectedTimeRange } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { setQueryTimeFormat } from 'investigate-events/actions/interaction-creators';
 import { reconPreferencesUpdated } from 'recon/actions/data-creators';
-import { fetchInvestigateData } from './data-creators';
 
 /**
  * This action is triggered when the preferences are updated for this module.
@@ -21,9 +19,7 @@ export const preferencesUpdated = (preferences) => {
       payload: preferences
     });
     if (preferences.queryTimeFormat && preferences.queryTimeFormat !== currentTimeFormat) {
-      const range = selectedTimeRange(getState());
-      dispatch(setQueryTimeRange(range));
-      dispatch(fetchInvestigateData());
+      dispatch(setQueryTimeFormat());
     }
 
     /* Dispatch a Recon action to update preference state in recon.

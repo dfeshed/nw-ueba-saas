@@ -7,7 +7,7 @@ import { getDictionaries, queryIsRunning } from './initialization-creators';
 import { cancelEventCountStream } from './event-count-creators';
 import { cancelEventsStream } from './events-creators';
 import { getDbStartTime, getDbEndTime } from '../reducers/investigate/services/selectors';
-import { useDatabaseTime } from '../reducers/investigate/query-node/selectors';
+import { useDatabaseTime, selectedTimeRange } from '../reducers/investigate/query-node/selectors';
 import {
   getCurrentPreferences,
   getDefaultPreferences
@@ -224,11 +224,39 @@ export const setColumnGroup = (selectedGroup) => {
   };
 };
 
-export const updateUrl = (initialUrl, sortField, sortDirection) => {
+export const updateUrl = (initialUrl, updateParameters) => {
   const params = new URLSearchParams(initialUrl);
-  params.set('sortField', sortField);
-  params.set('sortDir', sortDirection);
+
+  for (const param in updateParameters) {
+    params.set(param, updateParameters[param]);
+  }
+
   return params.toString();
+};
+
+// update timeRange if not custom, and fetch updated event data
+export const setQueryTimeFormat = () => {
+  return (dispatch, getState) => {
+    const range = selectedTimeRange(getState());
+    dispatch(setQueryTimeRange(range));
+
+    const { endTime, startTime } = getState().investigate.queryNode;
+
+    const updateParameters = {
+      et: endTime,
+      st: startTime
+    };
+    // manually update url as router is not handling this interaction
+    const params = updateUrl(window.location.search, updateParameters);
+    history.pushState(
+      null,
+      document.querySelector('title').innerHTML,
+      `${window.location.pathname}?${params}`
+    );
+
+    dispatch(fetchInvestigateData());
+
+  };
 };
 
 // update sort state, perform ux cleanup, and fetch updated event data
@@ -241,7 +269,14 @@ export const setSort = (sortField, sortDirection, isQueryExecutedBySort) => {
 
     // manually update url as router is not handling this interaction
     if (window.location.search && sortField && sortDirection) {
-      const params = updateUrl(window.location.search, sortField, sortDirection);
+
+      const updateParameters = {
+        sortField,
+        sortDir: sortDirection
+      };
+
+      const params = updateUrl(window.location.search, updateParameters);
+
       history.pushState(
         null,
         document.querySelector('title').innerHTML,

@@ -256,7 +256,11 @@ module('Unit | Actions | interaction creators', function(hooks) {
 
   test('updateUrl prepares url with new sort values', function(assert) {
     const initialUrl = '?sortField=time&sortDir=Ascending';
-    assert.equal(updateUrl(initialUrl, 'medium', 'Descending'), 'sortField=medium&sortDir=Descending');
+    const updateParams = {
+      sortField: 'medium',
+      sortDir: 'Descending'
+    };
+    assert.equal(updateUrl(initialUrl, updateParams), 'sortField=medium&sortDir=Descending');
   });
 
 });
