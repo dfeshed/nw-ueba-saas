@@ -100,16 +100,7 @@ const PolicyWizardToolbar = Component.extend(Notifications, {
 
   actions: {
     transitionToPrevStep() {
-      if (this.isStepValid) {
-        this.get('transitionToStep')(this.get('step').prevStepId);
-      } else {
-        this.setShowErrors(true);
-        if ((this.step.id === 'definePolicyStep') && this.isPolicySettingsEmpty) {
-          this.send('failure', 'adminUsm.policyWizard.actionMessages.prevEmptyFailure');
-        } else {
-          this.send('failure', 'adminUsm.policyWizard.actionMessagesprevFailure');
-        }
-      }
+      this.get('transitionToStep')(this.get('step').prevStepId);
     },
 
     transitionToNextStep() {

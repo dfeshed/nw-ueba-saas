@@ -191,6 +191,41 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     await click(saveBtnEl);
   });
 
+  test('Define Policy Step - Toolbar previous button closure actions', async function(assert) {
+
+    assert.expect(2);
+
+    // build state with ReduxDataHelper
+    const state = new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizPolicy(policyPayload, true)
+      .build();
+
+    // set the transitionToStep function
+    this.set('step', state.usm.policyWizard.steps[1]);
+
+    // clicking the prev-button should call transitionToStep() with the correct stepId
+    // update transitionToStep for prev-button
+    this.set('transitionToStep', (stepId) => {
+      assert.equal(stepId, this.get('step').prevStepId, `transitionToStep(${stepId}) was called with the correct stepId by Previous`);
+    });
+    this.set('transitionToClose', () => {});
+
+    // render the policy-toolbar
+    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar
+      step=step
+      transitionToStep=(action transitionToStep)
+      transitionToClose=(action transitionToClose)}}`
+    );
+
+    //  find the previous button and make sure it is enabled
+    assert.equal(findAll('.prev-button:not(.is-disabled)').length, 1, 'The Previous button appears in the DOM and is enabled');
+
+    const [prevBtnEl] = findAll('.prev-button:not(.is-disabled) button');
+    await click(prevBtnEl);
+
+  });
+
   test('On selecting the Cancel button with no changes does closure action', async function(assert) {
     const done = assert.async(1);
     assert.expect(6);
