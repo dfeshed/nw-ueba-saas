@@ -1043,7 +1043,7 @@ export default {
     },
     investigation: {
       eventAnalysis: 'Event Analysis',
-      selectedEventsThresoldTooltip: 'Maximum of 1000 events will be added to incident'
+      selectedEventsThresoldTooltip: 'A maximum of 1000 events will be added to incident at once'
     },
     errorPage: {
       serviceDown: 'Respond Server is offline',
