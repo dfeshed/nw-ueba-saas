@@ -57,7 +57,7 @@ module('Integration | Component | process-node-list', function(hooks) {
     this.set('nodeList', testData);
     await render(hbs`{{process-node-list nodeList=nodeList}}`);
     assert.strictEqual(document.querySelectorAll('.rsa-data-table').length, 1, 'Process node list table rendered');
-    assert.strictEqual(document.querySelectorAll('.rsa-data-table-header-cell').length, 4, '4 columns are rendered');
+    assert.strictEqual(document.querySelectorAll('.rsa-data-table-header-cell').length, 5, '5 columns are rendered');
     assert.strictEqual(document.querySelectorAll('.rsa-data-table-body-row').length, 3, '3 rows are rendered');
   });
 

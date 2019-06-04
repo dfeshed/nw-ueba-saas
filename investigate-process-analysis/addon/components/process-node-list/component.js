@@ -28,6 +28,11 @@ const COLUMNS = [
     width: '5vw',
     field: 'data.hostCount',
     title: 'investigateProcessAnalysis.nodeList.hostCount'
+  },
+  {
+    width: '8vw',
+    field: 'data.paramSrc',
+    title: 'investigateProcessAnalysis.nodeList.launchArguments'
   }
 ];
 export default Component.extend({

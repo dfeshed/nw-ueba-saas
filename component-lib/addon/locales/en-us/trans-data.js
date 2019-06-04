@@ -3954,7 +3954,8 @@ export default {
     nodeList: {
       processName: 'Process Name',
       riskScore: 'Risk Score',
-      hostCount: 'Active On'
+      hostCount: 'Active On',
+      launchArguments: 'Launch Arguments'
     },
     property: {
       title: 'File Properties',
