@@ -2159,7 +2159,7 @@ export default {
       invalidPort: 'Please enter valid port number',
       invalidName: 'Please enter a valid name without special characters',
       passwordEmptyMessage: 'Please enter certificate password',
-      invalidPasswordString: 'Can contain alphanumeric or special characters, and a minimum of 3 characters.',
+      invalidPasswordString: 'Password must contain at least 3 characters.',
       NAME_EMPTY: 'Warning: The configuration name is empty.',
       SERVERS_EMPTY: 'Warning: No servers are found.',
       EVENT_ID_INVALID: 'Warning: Event ID is invalid.',
@@ -2172,31 +2172,35 @@ export default {
       CHANNEL_NAME_INVALID: 'Warning: The channel name is invalid.',
       EMPTY_CHANNELS: 'Warning: The channel name is empty.',
       CHANNEL_FILTER_INVALID: 'Warning: The channel filter is invalid.',
-      DESTINATIONS_NOT_UNIQUE: 'Warning: Primary Destination and Secondary Destination are same.'
+      DESTINATIONS_NOT_UNIQUE: 'Warning: Primary Destination and Secondary Destination are same.',
+      packagerNotCreated: 'Agent Packager could not be created, please check whether the selected server is online'
     },
     errorPage: {
       errorTitle: 'Endpoint Server is offline',
       errorDescription: 'Endpoint Server may not be configured properly. See the Host Installation Guide for instructions on Endpoint Log Hybrid installation.'
     },
-    packagerTitle: 'Packager',
-    serviceName: 'Service Name*',
-    server: 'Endpoint Server*',
-    port: 'HTTPS Port*',
+    packagerTitle: 'Agent Packager',
+    serverListSearch: 'Type to filter options',
+    serviceName: 'Service Name<sup>*</sup>',
+    serverSettings: 'Endpoint Server Settings',
+    server: 'Endpoint Server',
+    serverEdit: 'Server Alias (Optional)',
+    port: 'HTTPS Port<sup>*</sup>',
     certificateValidation: 'Server Validation',
-    certificatePassword: 'Certificate Password*',
+    certificatePassword: 'Certificate Password<sup>*</sup>',
     none: 'None',
     fullChain: 'Full Chain',
     thumbprint: 'Certificate Thumbprint',
-    reset: 'Reset',
-    generateAgent: 'Generate Agent',
+    reset: 'Cancel',
+    generateAgent: 'Generate Agent Packager',
     generateLogConfig: 'Generate Log Configuration Only',
     loadExistingLogConfig: 'Load Existing Configuration...',
     description: 'Description',
-    title: 'Packager',
+    title: 'Agent Packager',
     becon: 'Beacon',
-    displayName: 'Display Name*',
-    driverServiceName: 'Driver Service Name*',
-    driverDisplayName: 'Driver Display Name*',
+    displayName: 'Display Name<sup>*</sup>',
+    driverServiceName: 'Driver Service Name<sup>*</sup>',
+    driverDisplayName: 'Driver Display Name<sup>*</sup>',
     driverDescription: 'Driver Description',
     monitoringMode: 'Enable Monitoring',
     forceOverwriteWarningMessage: 'Force overwrite option is applicable only for windows agent',
@@ -2209,9 +2213,10 @@ export default {
     },
     autoUninstall: 'Auto Uninstall',
     forceOverwrite: 'Force Overwrite',
+    overwriteInfo: 'Overwrites the installed Windows agent regardless of the version.',
     windowsLogCollectionCongfig: 'Windows Log Collection Configuration',
     enableWindowsLogCollection: 'Configure Windows Log Collection',
-    configurationName: 'Configuration Name*',
+    configurationName: 'Configuration Name<sup>*</sup>',
     statusLabel: 'Status',
     enabled: 'Enabled',
     disabled: 'Disabled',
@@ -2240,7 +2245,80 @@ export default {
     agentConfiguration: 'AGENT CONFIGURATION',
     service: 'SERVICE',
     driver: 'DRIVER',
-    agentConfigNote: 'For a subsequent installation/upgrade, use the same service names.'
+    agentConfigNote: 'For a subsequent installation/upgrade, use the same service names.',
+    helpText: {
+      title: 'Quick Help',
+      downloadInstaller: 'Download Installer',
+      downloadInstallerContent: 'Packager is a zip file that contains executables and configuration files for Linux, Mac, and Windows operating systems.',
+      whatNext: 'What next?',
+      whatNextContentStep1: '1. Specify the Endpoint server, password, agent configuration settings, and generate the agent packager.',
+      whatNextContentStep2: '2. Copy the AgentPackager.zip file to a Windows machine and generate agent installers. When prompted for a password, use the same password that you used to generate the agent packager.',
+      whatNextContentStep3: '3. Deploy the agent on the host you want to monitor.',
+      whatNextContentStep4: 'After the agent is installed and it successfully communicates with the Endpoint server, it appears in the Hosts view.',
+      moreInfo: 'For more information, see the NetWitness Endpoint Agent Installation Guide.'
+    }
+  },
+  endpointRAR: {
+    title: 'Relay Server',
+    notPermitted: 'Unable to load page due to insufficient permissions.',
+    rarInstaller: {
+      title: 'Download Installer',
+      instruction: 'Specify a password that will be used during the Relay Server installation.',
+      password: 'Password<sup>*</sup>',
+      downloadButton: 'Download'
+    },
+    rarConfig: {
+      enabled: 'Enable Relay Server',
+      enabledMessage: 'Agents outside the corporate network can connect to the relay server only if the relay server configuration is enabled.',
+      infoMessage: 'ESH is a hostname which can be resolved only within the corporate network.',
+      title: 'Configure',
+      hostName: 'Enterprise Specific hostname (ESH)<sup>*</sup>',
+      endpointServer: 'RELAY SERVER',
+      server: 'Server<sup>*</sup>',
+      port: 'Port<sup>*</sup>',
+      beaconInterval: 'HTTP BEACON INTERVAL<sup>*</sup>',
+      mins: 'mins',
+      saveConfig: 'Save configuration',
+      resetConfig: 'Cancel',
+      testConfiguration: 'Test connection',
+      successMessage: 'Configuration saved successfully.',
+      failureMessage: 'Unable to save configuration.',
+      failureMessageForStatus: 'Unable to save the status.',
+      dbFailureMessage: 'Unable to save configuration due to database connection timeout.',
+      dbFailureMessageForStatus: 'Unable to save the status due to database connection timeout.',
+      permissionDenied: 'Unable to save configuration due to insufficient permissions.',
+      permissionDeniedForEnable: 'Unable to save status due to insufficient permissions.',
+      permissionDeniedForDownload: 'Unable to download due to insufficient permissions.',
+      testConfigSuccess: 'Test connection successful.',
+      testConfigFailure: 'Test connection failed.',
+      disableRar: 'Relay Sever configuration is disabled.',
+      enableRar: 'Relay Sever configuration is enabled.',
+      dbFailureMessageForLoad: 'Unable to load the page due to database connection timeout. Retry after sometime.',
+      failureMessageForLoad: 'Unable to load the page. Retry after sometime.',
+      installerFailure: 'Unable to download the installer. Retry after sometime.'
+    },
+    errorMessages: {
+      passwordEmptyMessage: 'Enter the relay server installation password.',
+      invalidPasswordString: 'Password must contain at least 3 characters.',
+      invalidPort: 'Enter valid port number.',
+      serverEmptyMessage: 'Enter an IP address or a hostname.',
+      invalidServer: 'Enter valid IP address or hostname.',
+      invalidBeaconInterval: 'Interval ranges from 60-1440 minutes.',
+      invalidHostName: 'Enter a valid hostname.'
+    },
+    errorPage: {
+      errorTitle: 'Endpoint Server is offline',
+      errorDescription: 'Endpoint Server may not be configured properly. See the Host Installation Guide for instructions on Endpoint Log Hybrid installation.'
+    },
+    helpText: {
+      title: 'Quick Help',
+      quickHelpText: 'Relay Server allows hosts that are outside the corporate network to connect to the network and provide visibility into activities occurring on these hosts. When the agent is not able to communicate to the corporate network, it sends data to the configured Relay Server. The Endpoint server pulls this data from the Relay Server.',
+      whatNext: 'What next?',
+      whatNextContentStep1: '1. Specify the password and download the Relay Server installer. The same installer can be used for multiple Relay server installation.',
+      whatNextContentStep2: '2. Install the Relay Server on a CentOS 7 appliance (for example, a server in cloud/DMZ).',
+      whatNextContentStep3: '3. Configure the Relay Server and ESH details.',
+      moreHelp: 'For more information on the agent installation, see NetWitness Endpoint Agent Installation Guide.'
+    }
   },
   investigateFiles: {
     title: 'Files',
@@ -3065,6 +3143,7 @@ export default {
         noResultsMessage: 'No Results Found.',
         errorOffline: 'An error has occurred. The Endpoint Server may be offline or inaccessible.'
       },
+      rarIconTitle: 'Roaming Agent',
       filters: {
         systemFilter: 'This search is system defined and cannot be edited.',
         since: 'Since',
@@ -3093,6 +3172,7 @@ export default {
           lastSeenTime: 'Agent Not Seen Since'
         },
         showOnlyManageAgents: 'Show Only Managed Agents',
+        showOnlyRARAgents: 'Show Only Roaming Agents',
         securityConfig: {
           allowAccessDataSourceDomain: 'Allow Access DataSource Domain',
           allowDisplayMixedContent: 'Allow Display Mixed Content',
@@ -4601,8 +4681,12 @@ effects the previewed source.',
         advancedConfig: 'Advanced Configuration',
         customConfig: 'Advanced Setting',
         customConfigTooltip: 'It is strongly recommended not to use this setting unless advised to by RSA support staff.',
-        customConfigInvalidMsg: 'The custom setting cannot be empty or greater than 4000 characters'
-
+        customConfigInvalidMsg: 'The custom setting cannot be empty or greater than 4000 characters',
+        rarPolicy: {
+          server: 'Server',
+          port: 'Port',
+          beaconInterval: 'HTTP Beacon Interval'
+        }
       },
       // windowsLog policy settings
       windowsLogPolicy: {

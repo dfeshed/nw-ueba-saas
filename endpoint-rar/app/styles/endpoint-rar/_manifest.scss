@@ -1,0 +1,143 @@
+// Wrapper
+.rar-container {
+  padding: rsa-whitespace(more) rsa-whitespace(more) 0 rsa-whitespace(more);
+  height: 100%;
+  width: 100vw;
+  overflow-y: auto;
+  .rsa-page-layout .right-zone {
+    border: none;
+    height: initial;
+  }
+
+  .rsa-page-layout {
+    height: initial;
+  }
+
+  sup {
+    color: $red;
+  }
+  .endpoint-rar-header {
+    @include border-bottom(1px, solid, primary, lightest, nearly-transparent);
+    @include rsa-font(header, larger);
+    padding-bottom: 1.5rem;
+    color: text-color(neutral);
+
+    h1, .rar-container_description {
+      @include rsa-font(body, large);
+      line-height: 2rem;
+      color: text-color(primary, light);
+    }
+    h1 {
+      font-size: 2rem;
+    }
+    .back-to-services {
+      margin-bottom: 1.5rem;
+    }
+    .rar-container_description {
+      line-height: 3rem;
+      @include rsa-font(header, larger);
+    }
+  }
+  .rar-configuration {
+    margin-left: rsa-whitespace(less);
+    h3 {
+      color: text-color(secondary);
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .rar-container_rar-installer_note {
+      display: inline-block;
+      margin: rsa-whitespace(less) 0 1.5rem 0;
+      line-height: 1.2rem;
+      color: text-color(primary, light);
+      @include rsa-font(body, medium);
+    }
+  }
+  .download-rar-installer {
+    height: 0px;
+  }
+  .rar-container_rar-installer_downloadInstaller button{
+    width: 153px;
+    margin: rsa-whitespace(more) 0;
+  }
+  .rar-installer {
+    margin-top: rsa-whitespace(more);
+    .rar-installer_password-field {
+      width: 270px;
+    }
+  }
+  .rar-config {
+    margin-top: rsa-whitespace(more);
+    .rar-enable {
+      padding-bottom: rsa-whitespace(more);
+    }
+    .enable-rar-message {
+      @include rsa-font(body, small);
+      color: text-color(primary, light);
+      padding-bottom: rsa-whitespace();
+      padding-top: rsa-whitespace(less);
+      padding-left: 1.5rem;
+    }
+    .server-input-group {
+      margin: rsa-whitespace(more) 0;
+      .esh-name {
+        width: 270px;
+        margin-bottom: rsa-whitespace(more);
+        position: relative;
+        .tooltip {
+          width: 17px;
+          position: absolute;
+          right: 20px;
+          top: -5px;
+          i {
+            color: text-color(primary, light);
+          }
+        }
+      }
+      .endpoint-server {
+        vertical-align: text-top;
+        margin-bottom: rsa-whitespace(least);
+        color: $formInputLabelColor;
+        @include rsa-font(header, small);
+        text-transform: uppercase;
+      }
+      .field {
+        @include border(1px, solid, primary, lightest, nearly-transparent);
+        padding: rsa-whitespace(more) rsa-whitespace(more) rsa-whitespace() rsa-whitespace(more);
+        margin-top: rsa-whitespace();
+        width: 700px;
+        min-height: 90px;
+        > div {
+          display: inline-block;
+          margin-left: rsa-whitespace(less);
+        }
+        .host-ip {
+          width: 270px;
+          margin-right: 10px;
+        }
+        .host-port {
+          width: 170px;
+          margin-right: 10px;
+        }
+
+        .beacon-interval-unit {
+          @include rsa-font(body, large);
+          color: text-color(primary, light);
+          margin-left: rsa-whitespace(less);
+          line-height: 4rem;
+        }
+      }
+      .button-wrapper {
+        margin: rsa-whitespace(more) 0;
+        [class*='rar-container_rar-config_'] {
+          margin-right: rsa-whitespace(less);
+        }
+        .rar-container_rar-config_test-configuration {
+          button {
+            width: 149px;
+          }
+        }
+      }
+    }
+  }
+}

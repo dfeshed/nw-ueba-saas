@@ -34,7 +34,7 @@ const getConfiguration = (model) => {
 export const fetchEndpointServers = () => {
   const request = lookup('service:request');
   return request.promiseRequest({
-    method: 'findAll',
+    method: 'getEndpointServers',
     modelName: 'endpoint-server',
     query: {}
   });

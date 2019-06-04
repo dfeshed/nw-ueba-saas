@@ -11,6 +11,12 @@ const FILTER_TYPES = [
     type: 'list'
   },
   {
+    'name': 'agentStatus.lastSeen',
+    'hideLabel': true,
+    'listOptions': [ { name: 'RelayServer', label: 'investigateHosts.hosts.filters.showOnlyRARAgents' }],
+    type: 'list'
+  },
+  {
     'name': 'score',
     'label': 'investigateHosts.hosts.column.score',
     'step': 1,

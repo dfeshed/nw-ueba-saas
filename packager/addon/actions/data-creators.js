@@ -29,19 +29,31 @@ const _handleFilesError = (response) => {
   };
 };
 
+const setSelectedServer = (selectedServer) => ({
+  type: ACTION_TYPES.SET_SELECTED_SERVER_IP,
+  payload: selectedServer
+});
+
 /**
  * Action creator for fetching packager config information.
  * @method getConfig
  * @public
  * @returns {Object}
  */
-const getConfig = () => {
+const getConfig = (servers, serverIdFromURL) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.GET_INFO,
       promise: getPackagerConfig(),
       meta: {
-        onSuccess: (response) => debug(`${ACTION_TYPES.GET_INFO} ${JSON.stringify(response)}`),
+        onSuccess: (response) => {
+          const serverId = response.data.serviceId || serverIdFromURL;
+          const selectedServer = servers.find((server) => server.id === serverId);
+          if (selectedServer) {
+            dispatch(setSelectedServer(selectedServer));
+          }
+          debug(`${ACTION_TYPES.GET_INFO} ${JSON.stringify(response)}`);
+        },
         onFailure: (response) => _handleFilesError(response)
       }
     });
@@ -58,9 +70,10 @@ const setConfig = (configData, callback, serverId) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.SAVE_INFO,
-      promise: setPackagerConfig(configData),
+      promise: setPackagerConfig(configData.packageConfig),
       meta: {
         onSuccess: (response) => {
+          dispatch(saveUIState(configData));
           debug(`${ACTION_TYPES.GET_INFO} ${JSON.stringify(response)}`);
 
           let url = '';
@@ -73,6 +86,9 @@ const setConfig = (configData, callback, serverId) => {
             dispatch({ type: ACTION_TYPES.DOWNLOAD_PACKAGE, payload: url });
           }
           callback.onSuccess();
+        },
+        onFailure: () => {
+          callback.onFailure();
         }
       }
     });
@@ -85,10 +101,17 @@ const saveUIState = (fieldValues) => ({
 });
 
 /**
+ * Action for resetting form back to previous saved state
+ * @public
+ */
+const resetForm = () => ({ type: ACTION_TYPES.RESET_FORM });
+
+/**
  * action creator to fetch enpoint server list
  * @method getEndpointServerList
  * @public
  */
+
 const getEndpointServerList = (serverId) => {
   return (dispatch) => {
     const request = lookup('service:request');
@@ -100,31 +123,20 @@ const getEndpointServerList = (serverId) => {
         onSuccess: (response) => {
           request.registerPersistentStreamOptions({ 'socketUrlPostfix': serverId });
           const servers = [...response.data];
-          const selectedServer = servers.find((server) => server.id === serverId);
-          if (selectedServer) {
-            dispatch({ type: ACTION_TYPES.SET_SELECTED_SERVER_IP, payload: selectedServer.host });
-          }
-          dispatch(getConfig());
+
+          dispatch(getConfig(servers, serverId));
           debug(`onSuccess: ${response}`);
-        },
-        onfailure: () => {
-          request.clearPersistentStreamOptions(['socketUrlPostfix', 'requiredSocketUrl']);
         }
       }
     });
   };
 };
 
-/**
- * Action for resetting form back to previous saved state
- * @public
- */
-const resetForm = () => ({ type: ACTION_TYPES.RESET_FORM });
-
 export {
   setConfig,
   getConfig,
   resetForm,
   saveUIState,
-  getEndpointServerList
+  getEndpointServerList,
+  setSelectedServer
 };

@@ -276,12 +276,23 @@ export const getPoliciesPropertyData = createSelector(
       let newTransportConfig = {};
       if (transportConfig) {
         const { primary } = transportConfig;
-        const { httpsBeaconIntervalInSeconds, udpBeaconIntervalInSeconds } = primary;
+        const { httpsBeaconIntervalInSeconds, udpBeaconIntervalInSeconds, rar = {} } = primary;
+        let config = {};
+        if (rar) {
+          const { servers = [{}] } = rar;
+          const [{ httpsBeaconIntervalInSeconds }] = servers;
+          const httpsBeaconInterval = httpsBeaconIntervalInSeconds ? secondsToMinutesConverter(httpsBeaconIntervalInSeconds) : '';
+          config = { ...servers[0], httpsBeaconInterval };
+        }
         newTransportConfig = {
           primary: {
             ...primary,
             httpsBeaconInterval: secondsToMinutesConverter(httpsBeaconIntervalInSeconds),
-            udpBeaconInterval: secondsToMinutesConverter(udpBeaconIntervalInSeconds)
+            udpBeaconInterval: secondsToMinutesConverter(udpBeaconIntervalInSeconds),
+            rar: {
+              ...rar,
+              config
+            }
           }
         };
       }
@@ -357,4 +368,9 @@ export const mftDownloadButtonStatusDetails = createSelector(
     }
     return { isDisplayed: isMFTEnabled };
   }
+);
+
+export const getRARStatus = createSelector(
+  [_hostDetails],
+  ({ agentStatus = {} }) => (agentStatus.lastSeen === 'RelayServer')
 );

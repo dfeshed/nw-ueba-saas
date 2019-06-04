@@ -141,6 +141,11 @@ module('Integration | Component | host-container', function(hooks) {
     assert.equal(find('.filter-controls .range-filter .filter-text').textContent, 'Risk Score', 'Filter name is Risk Score');
   });
 
+  test('RAR filter is rendered', async function(assert) {
+    await render(hbs`{{host-container}}`);
+    assert.equal(find('.filter-controls:nth-child(2) .list-filter-content').textContent.trim(), 'Show Only Roaming Agents', 'Roaming agent filter is present');
+  });
+
   test('on selecting the row right panel is open/close', async function(assert) {
     setState(endpointState);
     this.set('closeProperties', () => {});

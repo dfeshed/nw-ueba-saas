@@ -30,5 +30,10 @@
 {{/rsa-content-definition}}
 {{#rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.column.agentStatus.lastSeenTime')}}
   <span>{{moment-from-now hostDetails.agentStatus.lastSeenTime locale=i18n.locale timeZone=timezone.selected.zoneId}}</span>
+  {{#if isAgentRoaming}}
+    <span class='rar-icon' title="{{t 'investigateHosts.hosts.rarIconTitle'}}">
+      {{rsa-icon name='cloud-wifi'}}
+    </span>
+  {{/if}}
 {{/rsa-content-definition}}
 {{rsa-content-definition class='host-action agent-version' label=(t 'investigateHosts.hosts.column.machineIdentity.agentVersion') value=hostDetails.machineIdentity.agentVersion}}

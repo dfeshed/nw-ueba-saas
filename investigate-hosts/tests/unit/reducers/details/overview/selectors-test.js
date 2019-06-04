@@ -19,6 +19,7 @@ import {
   channelFiltersConfig,
   showWindowsLogPolicy,
   mftDownloadButtonStatusDetails,
+  getRARStatus,
   hostOverviewServerId } from 'investigate-hosts/reducers/details/overview/selectors';
 
 test('machineOsType', function(assert) {
@@ -288,7 +289,11 @@ test('getPoliciesPropertyData', function(assert) {
                   'udpBeaconIntervalInSeconds': 30,
                   'address': '10.40.12.8',
                   'httpsPort': 7050,
-                  'udpPort': 7052
+                  'udpPort': 7052,
+                  'rar': {
+                    'esh': 'esh',
+                    'servers': [{ 'address': '10.40.15.116', 'httpsPort': 443, 'httpsBeaconIntervalInSeconds': 900 }]
+                  }
                 }
               },
               'scheduledScanConfig': {
@@ -327,7 +332,17 @@ test('getPoliciesPropertyData', function(assert) {
         'udpBeaconIntervalInSeconds': 30,
         'address': '10.40.12.8',
         'httpsPort': 7050,
-        'udpPort': 7052
+        'udpPort': 7052,
+        'rar': {
+          'config': {
+            'address': '10.40.15.116',
+            'httpsBeaconInterval': '15 minutes',
+            'httpsBeaconIntervalInSeconds': 900,
+            'httpsPort': 443
+          },
+          'esh': 'esh',
+          'servers': [{ 'address': '10.40.15.116', 'httpsPort': 443, 'httpsBeaconIntervalInSeconds': 900 }]
+        }
       }
     },
     'scheduledScanConfig': {
@@ -659,4 +674,11 @@ test('mftDownloadButtonStatusDetails when agentMode is wrong', function(assert) 
     }
   }));
   assert.deepEqual(result, { isDisplayed: false });
+});
+
+test('getRARStatus', function(assert) {
+  const result1 = getRARStatus(Immutable.from({ endpoint: { overview: { hostDetails: { agentStatus: { lastSeen: 'RelayServer' } } } } }));
+  assert.equal(result1, true, 'Is a roaming agent');
+  const result2 = getRARStatus(Immutable.from({ endpoint: { overview: { hostDetails: { agentStatus: { lastSeen: 'EndpointServer' } } } } }));
+  assert.equal(result2, false, 'Is not a roaming agent');
 });

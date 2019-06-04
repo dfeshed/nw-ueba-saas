@@ -13,7 +13,8 @@ let setState;
 const selectors = {
   summary: '.host-overview.host-item',
   scoreField: 'svg.rsa-risk-score',
-  summaryFields: '.rsa-content-definition'
+  summaryFields: '.rsa-content-definition',
+  rarIcon: '.rar-icon'
 };
 
 module('Integration | Component | host detail host-status', function(hooks) {
@@ -39,8 +40,10 @@ module('Integration | Component | host detail host-status', function(hooks) {
             },
             agentStatus: {
               lastSeenTime: '2018-10-26T04:00:22.898+0000',
-              scanStatus: 'idle'
+              scanStatus: 'idle',
+              lastSeen: 'RelayServer'
             },
+            isAgentRoaming: true,
             score: 10
           }
         }
@@ -54,7 +57,36 @@ module('Integration | Component | host detail host-status', function(hooks) {
     assert.equal(findAll(selectors.summary).length, 1, 'summary is present');
     assert.equal(findAll(selectors.scoreField).length, 1, 'score is present');
     assert.equal(findAll(selectors.summaryFields).length, 3, '3 summary fields present');
+    assert.equal(findAll(selectors.rarIcon).length, 1, 'RAR icon is present');
+  });
 
+  test('RAR icon does not render if last seen is not RelayServer', async function(assert) {
+    const state = {
+      endpoint: {
+        overview: {
+          hostDetails: {
+            machine: {
+              machineAgentId: 'A8F19AA5-A48D-D17E-2930-DF5F1A75A711',
+              machineName: 'INENDHUPAAL1C',
+              machineOsType: 'windows'
+            },
+            agentStatus: {
+              lastSeenTime: '2018-10-26T04:00:22.898+0000',
+              scanStatus: 'idle',
+              lastSeen: 'EndpointServer'
+            },
+            isAgentRoaming: false,
+            score: 10
+          }
+        }
+      }
+    };
+    this.owner.inject('component', 'i18n', 'service:i18n');
+    patchReducer(this, Immutable.from(state));
+
+    await render(hbs`{{host-detail/header/host-status}}`);
+
+    assert.equal(findAll(selectors.rarIcon).length, 0, 'RAR icon is not present');
   });
 
   test('for insight agent risk score should displayed as N/A', async function(assert) {

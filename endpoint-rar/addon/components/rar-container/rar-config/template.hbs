@@ -1,0 +1,86 @@
+<div class='rar-enable'>
+  <label class="rsa-form-checkbox-label {{if isRarEnabled 'checked'}}">
+    {{rsa-form-checkbox
+      checked=isRarEnabled
+      change=(action 'toggleIsChecked')}}
+    {{t 'endpointRAR.rarConfig.enabled'}}
+  </label>
+  <div class="enable-rar-message">{{t 'endpointRAR.rarConfig.enabledMessage'}}</div>
+</div>
+
+<h3>{{t 'endpointRAR.rarConfig.title'}}</h3>
+
+<div class="server-input-group">
+  <div class="esh-name">
+    {{rsa-form-input
+      isError=isHostError
+      isDisabled=isRarDisabled
+      class='server-input-js'
+      errorMessage=(t invalidHostNameMessage)
+      label=(t 'endpointRAR.rarConfig.hostName')
+      value=configData.rarConfig.esh}}
+    <div class='tooltip'>
+      {{#rsa-text-with-tooltip  copyText=false value=(t 'endpointRAR.rarConfig.infoMessage')
+      style='standard'
+      alwaysShow=true}}
+        {{rsa-icon size='medium' name='information-circle' style='filled'}}
+      {{/rsa-text-with-tooltip}}
+    </div>
+  </div>
+  <div class='endpoint-server'>{{t 'endpointRAR.rarConfig.endpointServer'}}</div>
+  <div class="field">
+    <hbox xs="12">
+      <div class="col-xs-3 host-ip">
+        {{rsa-form-input
+          isError=isServerError
+          isDisabled=isRarDisabled
+          class='server-input'
+          errorMessage=(t invalidServerMessage)
+          label=(t 'endpointRAR.rarConfig.server')
+          value=configData.rarConfig.address}}
+      </div>
+      <div class="col-xs-3 host-port">
+        {{rsa-form-input
+          maxLength=10
+          class='port-input'
+          isDisabled=isRarDisabled
+          isError=isPortError
+          errorMessage=(t invalidPortMessage)
+          label=(t 'endpointRAR.rarConfig.port')
+          value=configData.rarConfig.httpsPort}}
+      </div>
+      <div class="col-xs-4 beacon-interval-value">
+        {{rsa-form-input
+          class='beacon-interval'
+          isError=isBeaconError
+          isDisabled=isRarDisabled
+          errorMessage=(t invalidBeaconIntervalMessage)
+          label=(t 'endpointRAR.rarConfig.beaconInterval')
+          value=configData.rarConfig.httpsBeaconIntervalInSeconds
+        }}
+      </div>
+      <div class="col-xs-1 beacon-interval-unit">
+        {{t 'endpointRAR.rarConfig.mins'}}
+      </div>
+    </hbox>
+  </div>
+  <div class='button-wrapper'>
+    {{#rsa-form-button isDisabled=isRarDisabled class='rar-container_rar-config_test-configuration' defaultAction=(action 'generateAgent' true)}}
+      {{#if isTestingConfig}}
+        {{rsa-loader size='small'}}
+      {{else}}
+        <span class='backButton'>{{t 'endpointRAR.rarConfig.testConfiguration'}}</span>
+      {{/if}}
+    {{/rsa-form-button}}
+    {{#rsa-form-button
+      style='primary'
+      class='rar-container_rar-config_save-configuration'
+      isDisabled=(or isRarDisabled isSaveDisabled)
+      defaultAction=(action 'generateAgent')}}
+      <span class='backButton'>{{t 'endpointRAR.rarConfig.saveConfig'}}</span>
+    {{/rsa-form-button}}
+    {{#rsa-form-button isDisabled=isRarDisabled class='rar-container_rar-config_cancel-configuration' defaultAction=(action 'reset')}}
+      <span class='backButton'>{{t 'endpointRAR.rarConfig.resetConfig'}}</span>
+    {{/rsa-form-button}}
+  </div>
+</div>

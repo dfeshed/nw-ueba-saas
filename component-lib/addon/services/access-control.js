@@ -243,6 +243,16 @@ export default Service.extend({
   endpointCanManageFilter(roles) {
     return this._hasPermission(roles, 'endpoint-server.filter.manage');
   },
+
+  @computed('roles.[]')
+  hasEndpointRarPermission(roles) {
+    return this._hasPermission(roles, 'endpoint-server.rar.manage');
+  },
+
+  @computed('roles.[]')
+  hasEndpointRarReadPermission(roles) {
+    return this._hasPermission(roles, 'endpoint-server.rar.read');
+  },
   // Begin Configure Permissions
 
   @computed('roles.[]')

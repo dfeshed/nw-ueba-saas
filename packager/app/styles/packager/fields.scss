@@ -15,8 +15,9 @@
       }
     }
     .buttons {
+      margin-top: rsa-whitespace(more);
       div {
-        padding-right: rsa-whitespace();
+        padding-right: rsa-whitespace(less);
       }
     }
     .rsa-form-radio-label {
@@ -24,8 +25,12 @@
     }
   }
   .server-input-group {
-    div:first-child {
-      padding-right: rsa-whitespace();
+    .endpoint-server {
+      width: 356px;
+      height: 230px;
+      @include border(1px, solid, primary, lightest, nearly-transparent);
+      padding-top: rsa-whitespace(more);
+      margin: rsa-whitespace() rsa-whitespace() rsa-whitespace(more) rsa-whitespace();
     }
   }
   .windows-log-collection {
@@ -101,20 +106,63 @@
 .device {
   padding-right: rsa-whitespace(more);
 }
+.endpoint-server-list-title, .endpoint-server-setting-title {
+  vertical-align: text-top;
+  margin-bottom: rsa-whitespace(least);
+  color: $formInputLabelColor;
+  @include rsa-font(header, small);
+  text-transform: uppercase;
+}
+.endpoint-server-setting-title {
+  margin-left: rsa-whitespace();
+  margin-top: rsa-whitespace(more);
+}
+.server-list-dropdown, .host-port-js {
+  margin: 0.6rem 0 rsa-whitespace(more) 0;
+}
+.overwrite-info {
+  @include rsa-font(body, small);
+  color: text-color(primary, light);
+  margin-left: 2.5rem;
+}
+.host-ip-js {
+  height: 70px;
+  margin: 0.6rem 0 rsa-whitespace() 0;
+}
+.packager-form {
+  .divider {
+    @include border-left(1px, solid, primary, lightest, nearly-transparent);
+    height: 30px;
+    margin-left: rsa-whitespace();
+    margin-right: rsa-whitespace();
+  }
+  sup {
+    color: red;
+  }
+}
 
 .agentConfiguration {
   margin-left: rsa-whitespace(less);
+  margin-top: 1.25rem;
   .agentConfigNote {
-    margin: 0 rsa-whitespace(less) rsa-whitespace();
+    margin: 0 rsa-whitespace(less) rsa-whitespace() 1.1rem;
     line-height: 1.2rem;
     color: text-color(primary, light);
     @include rsa-font(body, small);
   }
+  .display-name-js {
+    padding-left: rsa-whitespace();
+  }
 }
 
 [class*='agentConfiguration'] {
+  padding-top: rsa-whitespace(less);
+  margin-left: rsa-whitespace(less);
   h3 {
     color: text-color(secondary);
     font-weight: bold;
+  }
+  .field {
+    padding-left: 7px;
   }
 }

@@ -306,11 +306,13 @@ export const processedHostList = createSelector(
       let hasScanStatus = false;
       let canStartScan = false;
       let isMFTEnabled = false;
+      let isAgentRoaming = false;
       const { machineOsType, agentMode, agentVersion } = machine.machineIdentity;
       if (machine.agentStatus) {
-        const { scanStatus } = machine.agentStatus;
+        const { scanStatus, lastSeen } = machine.agentStatus;
         hasScanStatus = true;
         canStartScan = scanStatus === 'idle' || scanStatus === 'cancelPending';
+        isAgentRoaming = (lastSeen === 'RelayServer');
       }
       if (isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion)) {
         isMFTEnabled = true;
@@ -319,7 +321,8 @@ export const processedHostList = createSelector(
         ...machine,
         canStartScan,
         hasScanStatus,
-        isMFTEnabled
+        isMFTEnabled,
+        isAgentRoaming
       };
     });
   }

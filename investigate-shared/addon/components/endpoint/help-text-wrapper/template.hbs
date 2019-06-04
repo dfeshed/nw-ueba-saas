@@ -1,0 +1,20 @@
+{{#if content}}
+  {{#each content as |item|}}
+    {{#if item.title}}
+      <h1 class='help-text-wrapper_title'>{{t item.title}}</h1>
+    {{/if}}
+    {{#if item.subTitle}}
+      <h3 class='help-text-wrapper_sub-title'>{{t item.subTitle}}</h3>
+    {{/if}}
+    {{#if item.helpText}}
+      <div class='help-text-wrapper_help-text'>{{t item.helpText}}</div>
+    {{/if}}
+    {{#if item.contentSeparator}}
+      <div class='help-text-wrapper_content-separator-wrapper'>
+        <div class='help-text-wrapper_content-separator'>
+          <span class='help-text-wrapper_content'>{{t item.contentSeparator}}</span>
+        </div>
+      </div>
+    {{/if}}
+  {{/each}}
+{{/if}}

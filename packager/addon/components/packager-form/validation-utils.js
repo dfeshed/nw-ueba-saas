@@ -9,14 +9,14 @@ const VALID_PASSWORD_PATTERN = /^[!-~]{3,}$/;
 
 export const validatePackageConfig = (formData) => {
   const { port, server, serviceName, displayName, certificatePassword, driverServiceName, driverDisplayName } = formData;
-  if (!VALID_IP_PATTERN.test(server) && !VALID_HOST_NAME_PATTERN.test(server)) {
+  if (server && (!(VALID_IP_PATTERN.test(server) || VALID_HOST_NAME_PATTERN.test(server)))) {
     return {
       isServerError: true,
       invalidServerMessage: 'packager.errorMessages.invalidServer'
     };
   }
 
-  if (!VALID_PORT_PATTERN.test(port)) {
+  if (!VALID_PORT_PATTERN.test(port) || ((port < 1) || (port > 65535))) {
     return {
       isPortError: true,
       invalidPortMessage: 'packager.errorMessages.invalidPort'

@@ -33,7 +33,8 @@ const STATE = Immutable.from({
         {
           id: 1,
           agentStatus: {
-            scanStatus: 'scaning'
+            scanStatus: 'scaning',
+            lastSeen: 'RelayServer'
           },
           machineIdentity: {
             machineName: 'RAR113-EPS',
@@ -45,7 +46,8 @@ const STATE = Immutable.from({
         {
           id: 2,
           agentStatus: {
-            scanStatus: 'idle'
+            scanStatus: 'idle',
+            lastSeen: 'EndpointServer'
           },
           machineIdentity: {
             machineName: 'RAR113-EPS',
@@ -102,9 +104,12 @@ test('processedHostList', function(assert) {
   const result = processedHostList(STATE);
   assert.equal(result.length, 2);
   assert.equal(result[0].canStartScan, false);
-  assert.equal(result[1].canStartScan, true);
   assert.equal(result[0].isMFTEnabled, false);
+  assert.equal(result[0].isAgentRoaming, true);
+
+  assert.equal(result[1].canStartScan, true);
   assert.equal(result[1].isMFTEnabled, true);
+  assert.equal(result[1].isAgentRoaming, false);
 });
 
 test('serviceList', function(assert) {

@@ -1,18 +1,30 @@
-{{#if isLoading}}
-  <centered>
-    {{rsa-loader size='larger'}}
-  </centered>
-{{else}}
-  {{#if error}}
-    {{rsa-panel-message message=errorMessage}}
-  {{else}}
-    <div class="input-content__header">
-      {{t 'packager.packagerTitle'}}
-    </div>
-    <div class="input-content__fields">
-      {{packager-form serverId=serverId}}
-    </div>
+<div class="input-content__header">
+  <h1>{{t 'packager.packagerTitle'}}</h1>
+</div>
+{{#rsa-page-layout showRightZone=true as |layout|}}
+  {{#layout.center}}
 
-    <iframe src="{{iframeSrc}}" class="export-files-iframe"></iframe>
-  {{/if}}
-{{/if}}
+    {{#if isLoading}}
+      <centered>
+        {{rsa-loader size='larger'}}
+      </centered>
+    {{else}}
+      {{#if error}}
+        {{rsa-panel-message message=errorMessage}}
+      {{else}}
+
+        <div class="input-content__fields">
+          {{packager-form serverId=serverId}}
+        </div>
+
+        <iframe src="{{iframeSrc}}" class="export-files-iframe"></iframe>
+      {{/if}}
+    {{/if}}
+
+  {{/layout.center}}
+  {{#layout.right}}
+
+    {{endpoint/help-text-wrapper content=helpText}}
+
+  {{/layout.right}}
+{{/rsa-page-layout}}

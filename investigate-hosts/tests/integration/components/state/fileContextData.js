@@ -15,7 +15,8 @@ export const selectedProcessItemInfo = {
     'file.debugDirectoryPresent',
     'file.richSignaturePresent'
   ],
-  format: 'pe'
+  format: 'pe',
+  size: 21536
 };
 
 export const fileContextSelectionsData = [

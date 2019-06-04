@@ -14,7 +14,8 @@ const initialState = Immutable.from({
   initialState: {
     packageConfig: {}
   },
-  selectedServerIP: null
+  selectedServerIP: null,
+  endpointServerList: []
 });
 
 const packagerReducer = handleActions({
@@ -26,11 +27,11 @@ const packagerReducer = handleActions({
       success: (s) => s.merge({
         defaultPackagerConfig: {
           ...action.payload.data,
-          packageConfig: { ...action.payload.data, server: s.selectedServerIP }
+          packageConfig: { ...action.payload.data }
         },
         initialState: {
           ...action.payload.data,
-          packageConfig: { ...action.payload.data, server: s.selectedServerIP }
+          packageConfig: { ...action.payload.data }
         }
       })
     });
@@ -54,7 +55,19 @@ const packagerReducer = handleActions({
 
   [ACTION_TYPES.RESET_FORM]: (state) => state.set('defaultPackagerConfig', { ...state.initialState }),
 
-  [ACTION_TYPES.SET_SELECTED_SERVER_IP]: (state, { payload }) => state.set('selectedServerIP', payload)
+  [ACTION_TYPES.SET_SELECTED_SERVER_IP]: (state, { payload }) => state.set('selectedServerIP', payload),
+
+  [ACTION_TYPES.GET_ENDPOINT_SERVERS]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        const listOfServers = action.payload.data;
+        listOfServers.forEach((item) => {
+          item.hostIpClone = item.host;
+        });
+        return s.set('endpointServerList', listOfServers);
+      }
+    });
+  }
 }, initialState);
 
 export default packagerReducer;

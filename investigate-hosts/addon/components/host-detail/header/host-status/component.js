@@ -1,12 +1,10 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { lastScanTime,
-  hostWithStatus,
-  hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { isInsightsAgent, serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import { serviceId } from 'investigate-shared/selectors/investigate/selectors';
 import { exportFileContext } from 'investigate-hosts/actions/data-creators/details';
 import { downloadMFT } from 'investigate-hosts/actions/data-creators/host';
+import { lastScanTime, hostWithStatus, getRARStatus, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 
 const stateToComputed = (state) => ({
   hostDetails: hostWithStatus(state),
@@ -16,7 +14,8 @@ const stateToComputed = (state) => ({
   serviceId: serviceId(state),
   hostName: hostName(state),
   scanTime: state.endpoint.detailsInput.scanTime,
-  agentId: state.endpoint.detailsInput.agentId
+  agentId: state.endpoint.detailsInput.agentId,
+  isAgentRoaming: getRARStatus(state)
 });
 
 const dispatchToActions = {

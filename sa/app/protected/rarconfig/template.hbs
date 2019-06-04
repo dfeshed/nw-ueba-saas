@@ -1,0 +1,7 @@
+{{#if model.endpointServerOffline}}
+  {{error-page
+    errorDescription=(t 'endpointRAR.errorPage.errorDescription')
+    title=(t 'endpointRAR.errorPage.errorTitle')}}
+{{else}}
+  {{rar-container serverId=model.serverId}}
+{{/if}}

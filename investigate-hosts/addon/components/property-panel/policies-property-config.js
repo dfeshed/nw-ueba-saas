@@ -94,6 +94,23 @@ const policiesPropertyConfig = [
     ]
   },
   {
+    sectionName: 'Relay Server',
+    fields: [
+      {
+        field: 'edrPolicy.transportConfig.primary.rar.config.address',
+        labelKey: 'policyWizard.edrPolicy.rarPolicy.server'
+      },
+      {
+        field: 'edrPolicy.transportConfig.primary.rar.config.httpsPort',
+        labelKey: 'policyWizard.edrPolicy.rarPolicy.port'
+      },
+      {
+        field: 'edrPolicy.transportConfig.primary.rar.config.httpsBeaconInterval',
+        labelKey: 'policyWizard.edrPolicy.rarPolicy.beaconInterval'
+      }
+    ]
+  },
+  {
     sectionName: 'Agent Settings',
     fields: [
       {
