@@ -272,6 +272,39 @@
           }
         }
       ]
+    },
+    {
+      "name": "numOfBytesSentToSrcIpSummationSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentToSrcIpSummation",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ],
+            "incrementBy": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
     }
   ]
 }

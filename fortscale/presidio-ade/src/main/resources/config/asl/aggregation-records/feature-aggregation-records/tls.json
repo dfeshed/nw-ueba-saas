@@ -121,6 +121,22 @@
       }
     },
     {
+      "name": "maxSumOfBytesSentBySrcIpToSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentToSrcIpSummationSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentToSrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func",
+        "contextsToFilterIn":[]
+      }
+    },
+    {
       "name": "numberOfDistinctSrcIpJa3OutboundTlsHourly",
       "type": "F",
       "bucketConfName": "srcIpHistogramJa3OutboundTlsHourly",
