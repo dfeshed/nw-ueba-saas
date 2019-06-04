@@ -88,7 +88,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
         //4. update entity severity according to new score (based on already calculated severities percentiles)
         for (Entity entity: entitiesToBeUpdated.values()) {
-            EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false).getEntitySeverity(entity.getScore());
+            EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false, entity.getEntityType()).getEntitySeverity(entity.getScore());
             entity.setSeverity(newSeverity);
         }
 

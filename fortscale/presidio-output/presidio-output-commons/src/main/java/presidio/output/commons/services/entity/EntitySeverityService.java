@@ -7,7 +7,7 @@ import java.util.List;
  */
 public interface EntitySeverityService {
 
-    EntitySeverityServiceImpl.EntityScoreToSeverity getSeveritiesMap(boolean recalcEntityScorePercentiles);
+    EntitySeverityServiceImpl.EntityScoreToSeverity getSeveritiesMap(boolean recalcEntityScorePercentiles, String entityType);
 
     /**
      * Iterate all entities and re-calculate the severities percentiles - read entities from DB and update severities in DB

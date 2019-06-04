@@ -184,7 +184,7 @@ public class EntityScoreServiceModuleTest {
         severityToScoreRangeMap.put(EntitySeverity.MEDIUM, new PresidioRange<>(500d, 100d));
         severityToScoreRangeMap.put(EntitySeverity.HIGH, new PresidioRange<>(100d, 150d));
         severityToScoreRangeMap.put(EntitySeverity.CRITICAL, new PresidioRange<>(150d, 200d));
-        entitySeveritiesRangeRepository.save(new EntitySeveritiesRangeDocument(severityToScoreRangeMap));
+        entitySeveritiesRangeRepository.save(new EntitySeveritiesRangeDocument(severityToScoreRangeMap, entityType));
         entityService.updateAllEntitiesAlertData(Instant.now(), entityType);
         entitySeverityService.updateSeverities(entityType);
 
@@ -194,7 +194,7 @@ public class EntityScoreServiceModuleTest {
         Assert.assertEquals(20, updatedEntity.getScore(), 0.00001);
         Assert.assertEquals(EntitySeverity.LOW, updatedEntity.getSeverity());
 
-        EntitySeveritiesRangeDocument entitySeveritiesRangeDocument = entitySeveritiesRangeRepository.findOne(EntitySeveritiesRangeDocument.ENTITY_SEVERITIES_RANGE_DOC_ID);
+        EntitySeveritiesRangeDocument entitySeveritiesRangeDocument = entitySeveritiesRangeRepository.findOne(EntitySeveritiesRangeDocument.getEntitySeveritiesDocIdName(entityType));
         Assert.assertEquals(new Double(0), entitySeveritiesRangeDocument.getSeverityToScoreRangeMap().get(EntitySeverity.LOW).getLowerBound());
         Assert.assertEquals(new Double(20), entitySeveritiesRangeDocument.getSeverityToScoreRangeMap().get(EntitySeverity.LOW).getUpperBound());
         Assert.assertEquals(new Double(22), entitySeveritiesRangeDocument.getSeverityToScoreRangeMap().get(EntitySeverity.MEDIUM).getLowerBound());
@@ -398,7 +398,7 @@ public class EntityScoreServiceModuleTest {
         //re-calculate percentiles with new entities
         entitySeverityService.updateSeverities(entityType);
 
-        EntitySeverityServiceImpl.EntityScoreToSeverity severitiesMap = entitySeverityService.getSeveritiesMap(false);
+        EntitySeverityServiceImpl.EntityScoreToSeverity severitiesMap = entitySeverityService.getSeveritiesMap(false, entityType);
         all = entitySeveritiesRangeRepository.findAll();
         Assert.assertEquals(1, ((ScrolledPage<EntitySeveritiesRangeDocument>) all).getNumberOfElements());
 

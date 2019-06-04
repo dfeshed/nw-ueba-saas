@@ -722,7 +722,7 @@ public class AlertApiControllerModuleTest {
         entitySeveritiesRangeMap.put(EntitySeverity.MEDIUM, new PresidioRange<>(lowSeverityUpperBound, mediumSeverityUpperBound));
         entitySeveritiesRangeMap.put(EntitySeverity.HIGH, new PresidioRange<>(mediumSeverityUpperBound, highSeverityUpperBound));
         entitySeveritiesRangeMap.put(EntitySeverity.CRITICAL, new PresidioRange<>(highSeverityUpperBound, highSeverityUpperBound * 1.5));
-        return new EntitySeveritiesRangeDocument(entitySeveritiesRangeMap);
+        return new EntitySeveritiesRangeDocument(entitySeveritiesRangeMap, "entityType");
     }
 
     @Test

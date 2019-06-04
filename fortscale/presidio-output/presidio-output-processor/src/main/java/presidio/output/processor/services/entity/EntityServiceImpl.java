@@ -102,7 +102,7 @@ public class EntityServiceImpl implements EntityService {
         }
         entity.setAlertsCount(entitiesAlertData.getAlertsCount());
         entity.setScore(entitiesAlertData.getEntityScore());
-        EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false).getEntitySeverity(entity.getScore());
+        EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false, entity.getEntityType()).getEntitySeverity(entity.getScore());
         entity.setSeverity(newSeverity);
     }
 
@@ -124,7 +124,7 @@ public class EntityServiceImpl implements EntityService {
         entity.setIndicators(indicatorsUnion);
         entity.incrementAlertsCountByNumber(entitiesAlertData.getAlertsCount());
         entity.incrementEntityScoreByNumber(entitiesAlertData.getEntityScore());
-        EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false).getEntitySeverity(entity.getScore());
+        EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false, entity.getEntityType()).getEntitySeverity(entity.getScore());
         entity.setSeverity(newSeverity);
     }
 
