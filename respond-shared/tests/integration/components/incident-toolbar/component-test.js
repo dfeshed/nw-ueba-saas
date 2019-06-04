@@ -125,7 +125,7 @@ module('Integration | Component | incident-toolbar', function(hooks) {
     this.set('allSelectedEventIds', selectedEventIds(15));
     await render(hbs`{{incident-toolbar isDisabled=false allSelectedEventIds=allSelectedEventIds limit=10  clearResults=clearResults}}`);
     assert.equal(findAll('.selected-events-threshold').length, 1, 'Warning sign should displayed ahead of incident dropdown');
-    assert.equal(find('.selected-events-threshold').title, 'Maximum of 1000 events will be added to incident', 'appropriate tooltip text should display when hovering on warning sign icon');
+    assert.equal(find('.selected-events-threshold').title, 'A maximum of 1000 events will be added to incident at once', 'appropriate tooltip text should display when hovering on warning sign icon');
   });
 
   test('Warning Sign ahead of Create Incident/Add to Incident dropdown should be displayed if selected events are within event selection limit', async function(assert) {
