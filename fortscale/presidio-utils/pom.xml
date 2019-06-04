@@ -20,6 +20,12 @@
             <groupId>pl.allegro.tech</groupId>
             <artifactId>embedded-elasticsearch</artifactId>
             <version>2.4.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.lingala.zip4j</groupId>
+                    <artifactId>zip4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
