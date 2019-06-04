@@ -234,10 +234,6 @@
         &:first-of-type {
           & > div {
             overflow: visible;
-
-            .rsa-form-checkbox-label {
-              padding: 1000rem;
-            }
           }
         }
       }
@@ -254,21 +250,12 @@
       .rsa-data-table-body-cell[data-field="checkbox"] {
         text-align: right;
 
-        .rsa-form-checkbox-label {
-          &::before {
-            position: static;
-            color: text-color(neutral, base);
-            margin-right: rsa-whitespace(least);
-          }
-        }
-
         &:hover {
           cursor: pointer;
 
           .rsa-form-checkbox-label {
             &::before {
               color: text-color(secondary);
-              position: static;
             }
           }
         }
