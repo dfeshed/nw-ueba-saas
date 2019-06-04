@@ -27,7 +27,7 @@ module.exports = function(config) {
          * Libraries
          */
 
-            'app/libs/jquery/jquery-2.2.1.js',
+            'app/libs/jquery/jquery-2.2.2.js',
             'app/libs/bootstrap/js/bootstrap.js',
             'app/libs/jquery-ui/jquery-ui-1.11.0.custom.min.js',
             'app/libs/d3/d3.v3.min.js',
