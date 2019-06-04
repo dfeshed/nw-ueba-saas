@@ -5,6 +5,7 @@ from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.builders.retention.retention_dag_builder import RetentionDagBuilder
 from presidio.factories.abstract_dag_factory import AbstractDagFactory
 from presidio.factories.indicator_dag_factory import IndicatorDagFactory
+from presidio.factories.retention_dag_factory import RetentionDagFactory
 from presidio.utils.airflow.operators.sensor.root_dag_gap_sensor_operator import RootDagGapSensorOperator
 from presidio.utils.airflow.schedule_interval_utils import set_schedule_interval
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
@@ -33,7 +34,7 @@ class RootDagBuilder(PresidioDagBuilder):
             triggers.append(trigger)
 
         conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
-        retention_trigger = self._create_expanded_trigger_dag_run_operator('retention_trigger', "retention", dag,
+        retention_trigger = self._create_expanded_trigger_dag_run_operator('retention_trigger', RetentionDagFactory.get_dag_id(), dag,
                                                                     python_callable=lambda context, dag_run_obj: dag_run_obj if is_execution_date_valid_first_interval(context['execution_date'],
                                                                     RetentionDagBuilder.get_retention_interval_in_hours(conf_reader),
                                                                     dag.schedule_interval) &
