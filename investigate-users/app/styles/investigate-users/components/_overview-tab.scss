@@ -5,7 +5,7 @@
     &_title {
       color: text-color(primary, light);
       @include rsa-font(header);
-      padding: rsa-whitespace() rsa-whitespace() 0;
+      padding: 2*rsa-whitespace() rsa-whitespace()+rsa-whitespace(less);
       border-bottom: 2px SOLID background-color(primary, darker);
     }
 
@@ -26,26 +26,38 @@
         &_rows {
           height: calc(100% - 45px);
           overflow-y: auto;
-          padding: rsa-whitespace(less);
+          padding: rsa-whitespace()+rsa-whitespace(less);
         }
 
         &_row {
           padding: rsa-whitespace(less) 0;
-          height: 70px;
+          height: 60px;
           text-align: center;
           display: flex;
           flex-direction: row;
+          justify-content: space-between;
           border-bottom: 1px SOLID background-color(primary, dark);
 
           &_score {
-            width: 70px;
+            width: 60px;
+            .rsa-content-badge-score {
+              padding: 0.25rem;
+              .score {
+                @include rsa-font(bold, large);
+              }
+            }
+            .rsa-content-badge-score  > svg > circle {
+              stroke-width: 3px;
+            }
           }
 
           &_name {
             align-items: center;
             display: flex;
             color: text-color(secondary, light);
-            @include rsa-font(navigation);
+            width: calc(100% - 120px);
+            @include rsa-font(bold);
+            color: text-color(secondary, light);
             padding: rsa-whitespace(less) rsa-whitespace();
           }
 
@@ -53,6 +65,11 @@
             align-items: center;
             display: flex;
             padding: rsa-whitespace(less);
+            width: 30px;
+            .rsa-icon.is-large {
+              font-size: 1.75em;
+              color: text-color(primary, lighter);
+            }
           }
         }
 
@@ -107,9 +124,10 @@
               display: flex;
               padding: rsa-whitespace(less);
               width: 80%;
+              align-items: center;
 
               &_score {
-                height: 25px;
+                height: 18px;
                 border-radius: 6px;
                 width: 6px;
               }
@@ -131,8 +149,7 @@
                 white-space: nowrap;
                 overflow: hidden;
                 display: inline-flex;
-                padding: .35rem;
-                height: 1.2rem;
+                padding: 0 .35rem;
                 color: text-color(secondary, light);
                 @include rsa-font(default);
 
@@ -140,6 +157,7 @@
                   white-space: nowrap;
                   overflow: hidden;
                   text-overflow: ellipsis;
+                  padding-right: rsa-whitespace(less);
                 }
 
                 &_time {
@@ -154,7 +172,7 @@
                 white-space: nowrap;
                 overflow: hidden;
                 display: inline-flex;
-                padding: rsa-whitespace(least);
+                padding: rsa-whitespace(least) rsa-whitespace(least) 0 rsa-whitespace(least);
                 @include rsa-font(default, small);
 
                 &_name {
@@ -186,11 +204,12 @@
                 @include rsa-font(header, larger);
                 display: flex;
                 justify-content: center;
-                color: text-color(primary, lighter);
+                color: text-color(primary, lightest);
               }
 
               &_text {
                 color: text-color(primary);
+                padding-top: rsa-whitespace(least);
                 @include rsa-font(default, small);
               }
 
@@ -238,12 +257,12 @@
             height: 100%;
             justify-content: space-between;
             min-width: 100px;
-            min-height: 125px;
+            min-height: 120px;
             text-align: -webkit-center;
             border: none;
             display: flex !important;
             flex-direction: column;
-            padding: rsa-whitespace(more);
+            padding: rsa-whitespace() rsa-whitespace() 2*rsa-whitespace() rsa-whitespace(); 
 
             > div {
               align-self: center;
@@ -260,13 +279,13 @@
           }
 
           .count {
-            @include rsa-font(default);
+            @include rsa-font(bold, large);
             color: text-color(secondary, light);
             padding-top: rsa-whitespace(less);
           }
 
           .text {
-            @include rsa-font(default, small);
+            @include rsa-font(default);
           }
 
           &_risk {

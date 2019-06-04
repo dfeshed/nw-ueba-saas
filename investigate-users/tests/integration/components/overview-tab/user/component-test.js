@@ -45,7 +45,7 @@ module('Integration | Component | overview-tab/user', function(hooks) {
     new ReduxDataHelper(setState).build();
     await render(hbs `{{overview-tab/user}}`);
     assert.equal(findAll('.user-overview-tab_upper_users_row').length, 5);
-    assert.equal(findAll('.rsa-icon-account-group-5-filled').length, 1);
+    assert.equal(findAll('.rsa-icon-view-1-filled').length, 1);
   });
 
   test('it should show loader till data is not there', async function(assert) {

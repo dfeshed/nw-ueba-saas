@@ -186,7 +186,7 @@
       &_bar {
         display: flex;
         padding: 0 rsa-whitespace(less);
-        @include rsa-font(header, large);
+        @include rsa-font(header);
         color: text-color(primary, lightest);
         text-align: center;
         justify-content: space-between;
@@ -194,25 +194,23 @@
         &_count {
           display: flex;
           justify-content: center;
-          padding: rsa-whitespace(least);
 
           &_number {
-            padding-top: rsa-whitespace(less) + rsa-whitespace(least);
+            padding: rsa-whitespace()+rsa-whitespace(less) rsa-whitespace() 0 0;
           }
 
           &_sort {
-            padding: 0 rsa-whitespace();
+            padding: rsa-whitespace(less) rsa-whitespace() 0 0;
             color: text-color(primary, light);
             display: flex;
 
             .label-text {
-              padding-top: rsa-whitespace();
+              padding: rsa-whitespace() rsa-whitespace() 0 0;
               @include rsa-font(header);
             }
 
             .ember-power-select-trigger {
               @include rsa-font(default);
-              width: 10rem;
             }
 
             .ember-power-select-trigger {
@@ -220,13 +218,8 @@
               height: 2*rsa-whitespace();
               top: rsa-whitespace(least);
               left: rsa-whitespace(least);
-              border: 1px solid text-color(primary);
-          }
-
-            .ember-power-select-dropdown {
-              @include rsa-font(default);
-              width: 10rem;
             }
+
           }
         }
 
@@ -236,7 +229,6 @@
           width: 50%;
           justify-content: flex-end;
           padding: 0 2*rsa-whitespace(less);
-          height: 80px;
 
           > div {
             padding: 0 rsa-whitespace(least);
@@ -279,7 +271,7 @@
       .rsa-data-table-body {
         overflow: hidden;
       }
-      
+
       .rsa-data-table-body-row:hover .rsa-data-table-body-cell {
         background-color: background-color(primary, darkest);
       }
@@ -316,6 +308,7 @@
             display: flex;
             padding: rsa-whitespace(least);
             justify-content: space-between;
+
             > div {
               display: flex;
               flex-direction: row;

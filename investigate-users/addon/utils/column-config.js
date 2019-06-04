@@ -18,7 +18,7 @@ export const columnsDataForIndicatorTable = [{
 
 export const columnConfigForUsers = [{
   field: 'score',
-  width: '3.5vw',
+  width: '3vw',
   disableSort: true
 }, {
   field: 'displayName',

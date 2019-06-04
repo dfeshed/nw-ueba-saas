@@ -23,15 +23,15 @@
     <div class='users-tab_body_header_bar_control'>
       <div>
         {{#rsa-form-button click=(action 'exportUsers')}} 
-          {{rsa-icon size='medium' style='lined' name='arrow-up-1'}} {{t 'investigateUsers.export'}}
+          {{rsa-icon size='medium' style='filled' name='file-zipped'}} {{t 'investigateUsers.export'}}
         {{/rsa-form-button}}
       </div>
       <div>
         {{#rsa-form-button click=(action 'followUsersAction')}}
           {{#if (eq allWatched true)}}
-            {{rsa-icon size='medium' style='lined' name='binoculars'}} {{t 'investigateUsers.users.removeAllFromWatchedList'}}
+            {{rsa-icon size='medium' style='filled' name='view-1'}} {{t 'investigateUsers.users.removeAllFromWatchedList'}}
           {{else}}
-            {{rsa-icon size='medium' style='filled' name='binoculars'}} {{t 'investigateUsers.users.addAllToWatchedList'}}
+            {{rsa-icon size='medium' style='lined' name='view-1'}} {{t 'investigateUsers.users.addAllToWatchedList'}}
           {{/if}}
         {{/rsa-form-button}}
       </div>

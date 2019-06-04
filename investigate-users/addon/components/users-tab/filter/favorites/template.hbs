@@ -13,14 +13,14 @@
           {{favoriteFilter.filterName}}
         {{/rsa-form-button}}
       </div>
-      <div class='users-tab_filter_favorites_filter_close'>
+      <div class='users-tab_filter_favorites_filter_close' title='Delete saved filter'>
         {{#rsa-form-button 
           isIconOnly=true 
           isFullWidth=true
           class=(if (eq selected favoriteFilter.id) 'rsa-form-button-clicked')
           click=(action 'deleteFavorite' favoriteFilter.id)
         }}
-          {{rsa-icon name='close' style='filled' size='smaller'}}
+          {{rsa-icon name='bin-1' style='filled' size='smaller'}}
         {{/rsa-form-button}}
       </div>
     </div>
