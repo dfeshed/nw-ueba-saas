@@ -26,6 +26,7 @@ public class TlsInputToOutputConverter implements InputOutputConverter {
         outputEvent.setNumOfBytesSent(tlsTransformedEvent.getNumOfBytesSent());
         outputEvent.setDirection(tlsTransformedEvent.getDirection());
         outputEvent.setSrcIp(tlsTransformedEvent.getSrcIp());
+        outputEvent.setDstIp(tlsTransformedEvent.getDstIp());
         outputEvent.setSrcNetname(tlsTransformedEvent.getSrcNetname());
         outputEvent.setSslSubject(tlsTransformedEvent.getSslSubject());
         outputEvent.setAdditionalInfo(tlsTransformedEvent.getAdditionalInfo());
