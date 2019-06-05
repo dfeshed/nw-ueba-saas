@@ -10,6 +10,7 @@ import {
   eventTableFormattingOpts,
   searchMatches,
   selectedIndex,
+  dataCount,
   SORT_ORDER
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
@@ -33,6 +34,7 @@ const stateToComputed = (state) => {
     selectedEventIds: state.investigate.eventResults.selectedEventIds,
     selectedIndex: selectedIndex(state),
     items: state.investigate.eventResults.data,
+    itemsCount: dataCount(state),
     aliases: state.investigate.dictionaries.aliases,
     language: state.investigate.dictionaries.language,
     columns: getColumns(state),

@@ -729,7 +729,7 @@ test('_scrollTopWillChange is called when items.length is updated', function(ass
   assert.expect(1);
 
   this.setProperties({
-    items: null,
+    itemsCount: null,
     columnsConfig: mockColumnsConfig,
     _scrollTopWillChange: () => {
       assert.ok(true, '_scrollTopWillChange called');
@@ -737,7 +737,7 @@ test('_scrollTopWillChange is called when items.length is updated', function(ass
   });
 
   this.render(hbs`
-    {{#rsa-data-table items=items columnsConfig=columnsConfig _scrollTopWillChange=_scrollTopWillChange}}
+    {{#rsa-data-table itemsCount=itemsCount columnsConfig=columnsConfig _scrollTopWillChange=_scrollTopWillChange}}
       {{#rsa-data-table/body as |item index column|}}
         {{#rsa-data-table/body-cell item=item index=index column=column~}}
           {{get item column.field}}
@@ -746,5 +746,5 @@ test('_scrollTopWillChange is called when items.length is updated', function(ass
     {{/rsa-data-table}}
   `);
 
-  this.set('items', mockItems);
+  this.set('itemsCount', 1);
 });

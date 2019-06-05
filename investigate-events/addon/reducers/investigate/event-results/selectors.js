@@ -36,6 +36,13 @@ export const SORT_ORDER = {
 
 export const streamLimit = (state) => state.investigate.eventResults.streamLimit;
 
+export const dataCount = createSelector(
+  [_resultsData],
+  (data) => {
+    return data ? data.length : 0;
+  }
+);
+
 export const eventTimeSortOrder = createSelector(
   [_eventAnalysisPreferences],
   (preferences) => {

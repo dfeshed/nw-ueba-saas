@@ -15,7 +15,8 @@ import {
   searchMatches,
   searchMatchesCount,
   eventTimeSortOrder,
-  searchScrollDisplay
+  searchScrollDisplay,
+  dataCount
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -71,6 +72,30 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[optionNumber].eventDownloadType, eventDownloadType, 'Event Type');
     assert.equal(result[optionNumber].fileType, fileType, 'File Type');
   };
+
+  test('dataCount', async function(assert) {
+    assert.equal(dataCount({
+      investigate: {
+        eventResults: {
+          data: [{}]
+        }
+      }
+    }), 1);
+
+    assert.equal(dataCount({
+      investigate: {
+        eventResults: {
+          data: []
+        }
+      }
+    }), 0);
+
+    assert.equal(dataCount({
+      investigate: {
+        eventResults: {}
+      }
+    }), 0);
+  });
 
   test('searchScrollDisplay', async function(assert) {
     const state = {
