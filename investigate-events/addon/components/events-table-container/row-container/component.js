@@ -121,11 +121,11 @@ export default Component.extend(RowMixin, HighlightsEntities, {
         return;
       }
 
-      const matchEl = el.querySelector('.search-match-text');
+      const matchEls = el.querySelectorAll('.search-match-text');
 
-      if (matchEl) {
-        matchEl.outerHTML = matchEl.innerHTML;
-      }
+      matchEls.forEach((el) => {
+        el.outerHTML = el.innerHTML;
+      });
 
       const cells = el.querySelectorAll('.rsa-data-table-body-cell .content');
       for (let cell = 0; cell < cells.length; cell++) {

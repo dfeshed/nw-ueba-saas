@@ -483,8 +483,10 @@ export default Component.extend(DomWatcher, {
           return true;
         }
       });
-      this.set('selectedIndex', matchIndex);
-      this._scrollToInitial(matchIndex);
+      if (matchIndex >= 0) {
+        this.set('selectedIndex', matchIndex);
+        this._scrollToInitial(matchIndex);
+      }
     }
   }),
 
