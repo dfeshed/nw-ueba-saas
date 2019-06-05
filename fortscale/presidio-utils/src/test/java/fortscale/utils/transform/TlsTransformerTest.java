@@ -17,8 +17,11 @@ public class TlsTransformerTest extends TransformerTest{
     private static final String UDM_EVENT_SOURCE_ID_FIELD_NAME = "event_source_id";
     private static final String UDM_EVENT_TIME_FIELD_NAME = "event_time";
     private static final String UDM_SRC_IP_FIELD_NAME = "ip_src";
+    private static final String UDM_DST_IP_FIELD_NAME = "ip_dst";
+    private static final String UDM_SRC_COUNTRY_FIELD_NAME = "country_src";
     private static final String UDM_DST_COUNTRY_FIELD_NAME = "country_dst";
     private static final String UDM_SSL_SUBJECT_FIELD_NAME = "ssl_subject";
+    private static final String UDM_SSL_CA_FIELD_NAME = "ssl_ca";
     private static final String UDM_ALIAS_HOST_FIELD_NAME = "alias_host";
     private static final String UDM_DST_ORG_FIELD_NAME = "org_dst";
     private static final String UDM_DST_ASN_FIELD_NAME = "asn_dst";
@@ -29,13 +32,17 @@ public class TlsTransformerTest extends TransformerTest{
     private static final String UDM_JA3S_FIELD_NAME = "ja3s";
     private static final String UDM_DIRECTION_FIELD_NAME = "direction";
     private static final String UDM_DST_PORT_FIELD_NAME = "tcp_dstport";
+    private static final String UDM_IS_SELF_SIGNED_FIELD_NAME = "analysis_service";
 
     private static final String EVENT_ID_FIELD_NAME = "eventId";
     private static final String DATA_SOURCE_FIELD_NAME = "dataSource";
     private static final String DATE_TIME_FIELD_NAME = "dateTime";
     private static final String SRC_IP_FIELD_NAME = "srcIp";
+    private static final String DST_IP_FIELD_NAME = "dstIp";
+    private static final String SRC_COUNTRY_FIELD_NAME = "srcCountry";
     private static final String DST_COUNTRY_FIELD_NAME = "dstCountry";
     private static final String SSL_SUBJECT_FIELD_NAME = "sslSubject";
+    private static final String SSL_CA_FIELD_NAME = "sslCa";
     private static final String DOMAIN_FIELD_NAME = "domain";
     private static final String DST_ORG_FIELD_NAME = "dstOrg";
     private static final String DST_ASN_FIELD_NAME = "dstAsn";
@@ -47,6 +54,8 @@ public class TlsTransformerTest extends TransformerTest{
     private static final String JA3S_FIELD_NAME = "ja3s";
     private static final String DIRECTION_FIELD_NAME = "direction";
     private static final String DST_PORT_FIELD_NAME = "dstPort";
+    private static final String FQDN_FIELD_NAME = "fqdn";
+    private static final String IS_SELF_SIGNED_FIELD_NAME = "isSelfSigned";
 
     private static final String OUTBOUND_DIRECTION = "OUTBOUND";
 
@@ -64,6 +73,11 @@ public class TlsTransformerTest extends TransformerTest{
         EpochTimeToNanoRepresentationTransformer dateTimeMillisToSeconds =
                 new EpochTimeToNanoRepresentationTransformer("date-time-millis-to-nano-representation", UDM_EVENT_TIME_FIELD_NAME, DATE_TIME_FIELD_NAME);
         transformerChainList.add(dateTimeMillisToSeconds);
+
+        SetterTransformer dataSourceTransformer =
+                new SetterTransformer("data-source-transformer", DATA_SOURCE_FIELD_NAME, "network");
+
+        transformerChainList.add(dataSourceTransformer);
 
         //rename event_source_id to eventId
         CopyValueTransformer ranameEventSourceIdToEventId =
@@ -93,23 +107,59 @@ public class TlsTransformerTest extends TransformerTest{
                         Collections.singletonList(SRC_IP_FIELD_NAME));
         transformerChainList.add(ranameIpSrc);
 
+        //rename ip.dst
+        CopyValueTransformer ranameIpDst =
+                new CopyValueTransformer(
+                        "rename-ip-dst",
+                        UDM_DST_IP_FIELD_NAME,
+                        true,
+                        Collections.singletonList(DST_IP_FIELD_NAME));
+        transformerChainList.add(ranameIpDst);
+
+        //rename country.src
+        CopyValueTransformer renameCountrySrc =
+                new CopyValueTransformer(
+                        "rename-country-src",
+                        UDM_SRC_COUNTRY_FIELD_NAME,
+                        true,
+                        Collections.singletonList(SRC_COUNTRY_FIELD_NAME));
+        transformerChainList.add(renameCountrySrc);
+
         //rename country.dst
-        CopyValueTransformer ranameCountryDst =
+        CopyValueTransformer renameCountryDst =
                 new CopyValueTransformer(
                         "rename-country-dst",
                         UDM_DST_COUNTRY_FIELD_NAME,
                         true,
                         Collections.singletonList(DST_COUNTRY_FIELD_NAME));
-        transformerChainList.add(ranameCountryDst);
+        transformerChainList.add(renameCountryDst);
 
         //rename ssl.subject
-        CopyValueTransformer ranameSslSubject =
+        CopyValueTransformer renameSslSubject =
                 new CopyValueTransformer(
                         "rename-ssl-subject",
                         UDM_SSL_SUBJECT_FIELD_NAME,
                         true,
                         Collections.singletonList(SSL_SUBJECT_FIELD_NAME));
-        transformerChainList.add(ranameSslSubject);
+        transformerChainList.add(renameSslSubject);
+
+        //rename ssl.ca
+        CopyValueTransformer renameSslCa =
+                new CopyValueTransformer(
+                        "rename-ssl-ca",
+                        UDM_SSL_CA_FIELD_NAME,
+                        true,
+                        Collections.singletonList(SSL_CA_FIELD_NAME));
+        transformerChainList.add(renameSslCa);
+
+        //rename analysis.service
+        CopyValueTransformer renameAnalysisService =
+                new CopyValueTransformer(
+                        "rename-analysis-service",
+                        UDM_IS_SELF_SIGNED_FIELD_NAME,
+                        true,
+                        Collections.singletonList(IS_SELF_SIGNED_FIELD_NAME));
+        transformerChainList.add(renameAnalysisService);
 
         //extract from the first value of alias host the top level domain.
         TopLevelDomainTransformer aliasHostToTopLevelDomain =
@@ -119,6 +169,15 @@ public class TlsTransformerTest extends TransformerTest{
                         false,
                         DOMAIN_FIELD_NAME);
         transformerChainList.add(aliasHostToTopLevelDomain);
+
+        //copy alias_host
+        CopyValueTransformer copyAliasHostArray =
+                new CopyValueTransformer(
+                        "copy-alias-host-to-fqdn",
+                        UDM_ALIAS_HOST_FIELD_NAME,
+                        false,
+                        Collections.singletonList(FQDN_FIELD_NAME));
+        transformerChainList.add(copyAliasHostArray);
 
         //rename org.dst
         CopyValueTransformer ranameOrgDst =
