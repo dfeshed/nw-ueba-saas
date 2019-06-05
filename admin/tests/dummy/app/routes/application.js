@@ -35,8 +35,9 @@ export default Route.extend({
 
     // also set as part of protected route in sa
     this.get('features').setFeatureFlags({
-      'rsa.usm.allowFilePolicyCreation': true,
-      'rsa.usm.viewSources': false
+      'rsa.usm.viewSourcesFeature': false,
+      'rsa.usm.filePolicyFeature': true,
+      'rsa.usm.allowFilePolicies': true
     });
 
     // When running microservices, need to login and get cookie

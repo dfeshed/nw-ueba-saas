@@ -12,9 +12,9 @@
         placeholder=(t 'adminUsm.groupWizard.sourceTypePlaceholder')
         selected=selectedSourceType
         options=availablePolicySourceTypes
-        onchange=(action 'fetchGroupRanking') as |option|
+        onchange=(action 'handleSourceTypeChange') as |option|
       }}
-        {{t (concat 'adminUsm.policyTypes.' option)}}
+        {{t (concat 'adminUsm.policyTypes.' option.policyType)}}
       {{/power-select}}
     </label>
   </hbox>

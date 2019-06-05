@@ -11,9 +11,9 @@ import { waitUntil } from '@ember/test-helpers';
 //   code: 0,
 //   data: {
 //     'rsa.usm': true,
-//     'rsa.usm.allowFilePolicyCreation,
-//     'rsa.usm.viewSources,
-//     'rsa.usm.featureTwo
+//     'rsa.usm.viewSourcesFeature': false,
+//     'rsa.usm.filePolicyFeature': true,
+//     'rsa.usm.allowFilePolicies': true
 //   }
 // }
 
@@ -39,7 +39,7 @@ module('Unit | Route | protected', function(hooks) {
   });
 
   test('should fetch Source Management (USM) feature flags and store in features service', async function(assert) {
-    assert.expect(3);
+    assert.expect(6);
     const features = this.owner.lookup('service:features');
 
     this.owner.register('service:-routing', Service.extend({
@@ -47,20 +47,26 @@ module('Unit | Route | protected', function(hooks) {
     }));
     const route = this.owner.lookup('route:protected');
 
-    // disabled by default
-    let isRsaUsmAllowFilePolicyCreationEnabled = features.isEnabled('rsa.usm.allowFilePolicyCreation');
-    assert.equal(isRsaUsmAllowFilePolicyCreationEnabled, false, 'feature rsa.usm.allowFilePolicyCreation is disabled by default');
+    // everything is disabled by default before being enabled by the service call
+    let isRsaUsmViewSourcesFeatureEnabled = features.isEnabled('rsa.usm.viewSourcesFeature');
+    assert.equal(isRsaUsmViewSourcesFeatureEnabled, false, 'feature rsa.usm.viewSourcesFeature is disabled by default');
+    let isRsaUsmFilePolicyFeatureEnabled = features.isEnabled('rsa.usm.filePolicyFeature');
+    assert.equal(isRsaUsmFilePolicyFeatureEnabled, false, 'feature rsa.usm.filePolicyFeature is disabled by default');
+    let isRsaUsmAllowFilePoliciesEnabled = features.isEnabled('rsa.usm.allowFilePolicies');
+    assert.equal(isRsaUsmAllowFilePoliciesEnabled, false, 'feature rsa.usm.allowFilePolicies is disabled by default');
 
     const promise = route.getSourceManagementFeatures();
     await promise;
 
-    // enabled by the service call
-    isRsaUsmAllowFilePolicyCreationEnabled = features.isEnabled('rsa.usm.allowFilePolicyCreation');
-    assert.equal(isRsaUsmAllowFilePolicyCreationEnabled, true, 'feature rsa.usm.allowFilePolicyCreation is enabled by the service call');
-
     // disabled for 11.4 for now
-    const isRsaUsmViewSourcesEnabled = features.isEnabled('rsa.usm.viewSources');
-    assert.equal(isRsaUsmViewSourcesEnabled, false, 'feature rsa.usm.viewSources is disabled by default');
+    isRsaUsmViewSourcesFeatureEnabled = features.isEnabled('rsa.usm.viewSourcesFeature');
+    assert.equal(isRsaUsmViewSourcesFeatureEnabled, false, 'feature rsa.usm.viewSourcesFeature is disabled disabled for 11.4 for now');
+
+    // enabled by the service call
+    isRsaUsmFilePolicyFeatureEnabled = features.isEnabled('rsa.usm.filePolicyFeature');
+    assert.equal(isRsaUsmFilePolicyFeatureEnabled, true, 'feature rsa.usm.filePolicyFeature is enabled by the service call');
+    isRsaUsmAllowFilePoliciesEnabled = features.isEnabled('rsa.usm.allowFilePolicies');
+    assert.equal(isRsaUsmAllowFilePoliciesEnabled, true, 'feature rsa.usm.allowFilePolicies is enabled by the service call');
   });
 
 });

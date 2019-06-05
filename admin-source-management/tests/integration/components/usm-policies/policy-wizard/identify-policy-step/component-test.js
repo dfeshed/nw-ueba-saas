@@ -1,7 +1,7 @@
 import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { blur, find, findAll, focus, render, settled } from '@ember/test-helpers';
+import { blur, click, find, findAll, focus, render, settled } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import sinon from 'sinon';
 import hbs from 'htmlbars-inline-precompile';
@@ -22,7 +22,7 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
       patchReducer(this, state);
     };
     initialize(this.owner);
-    this.owner.inject('component', 'i18n', 'service:i18n');
+    this.owner.inject('component', 'i18n', 'service:i18n', 'service:features');
   });
 
   test('The component appears in the DOM', async function(assert) {
@@ -108,6 +108,46 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
     assert.equal(nameEl.value, testName, `Policy Name is ${testName}`);
     const [descEl] = findAll('.control-with-error .policy-description textarea');
     assert.equal(descEl.value, testDesc, `Policy Description is ${testDesc}`);
+  });
+
+  test('The source type select control should have the correct options', async function(assert) {
+    const features = this.owner.lookup('service:features');
+    const testName = 'test name';
+    const testDesc = 'test desc';
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizSourceType('edrPolicy') // the ID since it's a power-select
+      .policyWizName(testName)
+      .policyWizDescription(testDesc)
+      .build();
+
+    // filePolicyFeature enabled so all types should be rendered
+    // & allowFilePolicies enabled so filePolicy type should be enabled
+    features.setFeatureFlags({ 'rsa.usm.filePolicyFeature': true });
+    features.setFeatureFlags({ 'rsa.usm.allowFilePolicies': true });
+    await render(hbs`{{usm-policies/policy-wizard/identify-policy-step}}`);
+    await click('.control.source-type .ember-power-select-trigger');
+    let sourceTypesAll = findAll('.ember-power-select-option');
+    let sourceTypesDisabled = findAll('.ember-power-select-option[aria-disabled=true]');
+    assert.equal(sourceTypesAll.length, 3, 'All source types rendered');
+    assert.equal(sourceTypesDisabled.length, 0, 'All source types enabled');
+
+    // filePolicyFeature enabled so all types should be rendered
+    // & allowFilePolicies disabled so filePolicy type should be disabled
+    features.setFeatureFlags({ 'rsa.usm.allowFilePolicies': false });
+    await render(hbs`{{usm-policies/policy-wizard/identify-policy-step}}`);
+    await click('.control.source-type .ember-power-select-trigger');
+    sourceTypesAll = findAll('.ember-power-select-option');
+    sourceTypesDisabled = findAll('.ember-power-select-option[aria-disabled=true]');
+    assert.equal(sourceTypesAll.length, 3, 'All source types rendered');
+    assert.equal(sourceTypesDisabled.length, 1, '2 source types enabled, and 1 source type disabled');
+
+    // filePolicyFeature disabled so filePolicy type should not be rendered
+    features.setFeatureFlags({ 'rsa.usm.filePolicyFeature': false });
+    await render(hbs`{{usm-policies/policy-wizard/identify-policy-step}}`);
+    await click('.control.source-type .ember-power-select-trigger');
+    sourceTypesAll = findAll('.ember-power-select-option');
+    assert.equal(sourceTypesAll.length, 2, '2 source types rendered, and 1 NOT rendered');
   });
 
   // TODO - the spy props are not getting set

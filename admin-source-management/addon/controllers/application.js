@@ -23,7 +23,7 @@ export default Controller.extend({
 
   @computed()
   isViewSourcesEnabled() {
-    return this.get('features').isEnabled('rsa.usm.viewSources');
+    return this.get('features').isEnabled('rsa.usm.viewSourcesFeature');
   },
 
   @computed('routing.currentRouteName')

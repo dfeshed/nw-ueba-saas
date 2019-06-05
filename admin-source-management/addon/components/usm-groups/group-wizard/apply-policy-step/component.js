@@ -5,7 +5,8 @@ import Notifications from 'component-lib/mixins/notifications';
 import {
   assignedPolicyList,
   assignedPolicies,
-  availablePolicySourceTypes
+  availablePolicySourceTypes,
+  enabledPolicySourceTypesAsObjs
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 import {
   addSourceType,
@@ -15,7 +16,7 @@ import {
 const stateToComputed = (state) => ({
   assignedPolicyList: assignedPolicyList(state),
   assignedPolicies: assignedPolicies(state),
-  availablePolicySourceTypes: availablePolicySourceTypes(state)
+  availablePolicySourceTypes: enabledPolicySourceTypesAsObjs(availablePolicySourceTypes(state))
 });
 
 const dispatchToActions = {
@@ -36,7 +37,9 @@ const ApplyPolicyStep = Component.extend(Notifications, {
 
   @computed('availablePolicySourceTypes', 'assignedPolicyList')
   hasSourceTypesAvailable(sourceTypes, assignedPolicyList) {
-    return (assignedPolicyList.length > 0 && sourceTypes.length != assignedPolicyList.length);
+    // first filter out disabled policy source types
+    const onlyEnabledTypes = sourceTypes.filter((sourceType) => !sourceType.disabled);
+    return (assignedPolicyList.length > 0 && onlyEnabledTypes.length != assignedPolicyList.length);
   },
 
   actions: {

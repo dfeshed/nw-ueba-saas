@@ -16,12 +16,12 @@
           tabIndex='1'
           placeholder=(t 'adminUsm.groupWizard.sourceTypePlaceholder')
           options=limitedPolicySourceTypes
-          selected=selectedSourceType
+          selected=selectedSourceTypeObj
           searchField='name'
           triggerClass=(if validator.showError 'selector-error')
           onchange=(action 'handleSourceTypeChange') as |option|
         }}
-          {{t (concat 'adminUsm.policyTypes.' option)}}
+          {{t (concat 'adminUsm.policyTypes.' option.policyType)}}
         {{/power-select}}
         {{#if validator.showError}}
           <span class="input-error">

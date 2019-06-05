@@ -56,22 +56,47 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
   test('sourceTypes selector', function(assert) {
     const features = lookup('service:features');
 
-    // filePolicy enabled so all types should be returned
-    features.setFeatureFlags({ 'rsa.usm.allowFilePolicyCreation': true });
+    // filePolicyFeature enabled so all types should be returned
+    // & allowFilePolicies enabled so filePolicy type should be enabled
+    features.setFeatureFlags({ 'rsa.usm.filePolicyFeature': true });
+    features.setFeatureFlags({ 'rsa.usm.allowFilePolicies': true });
     let type0Expected = 'edrPolicy';
+    const disabled0Expected = false;
     let type1Expected = 'windowsLogPolicy';
+    const disabled1Expected = false;
     const type2Expected = 'filePolicy';
+    let disabled2Expected = false;
     let fullState = new ReduxDataHelper().policyWiz().build();
     let sourceTypesExpected = _.cloneDeep(fullState.usm.policyWizard.sourceTypes);
     let sourceTypesSelected = sourceTypes(Immutable.from(fullState));
     assert.deepEqual(sourceTypesSelected.length, 3, 'All sourceTypes returned as expected');
     assert.deepEqual(sourceTypesSelected, sourceTypesExpected, 'The returned value from the sourceTypes selector is as expected');
     assert.deepEqual(sourceTypesSelected[0].policyType, type0Expected, `sourceTypes[0].policyType is ${type0Expected}`);
+    assert.deepEqual(sourceTypesSelected[0].disabled, disabled0Expected, `sourceTypes[0].disabled is ${disabled0Expected}`);
     assert.deepEqual(sourceTypesSelected[1].policyType, type1Expected, `sourceTypes[1].policyType is ${type1Expected}`);
+    assert.deepEqual(sourceTypesSelected[1].disabled, disabled1Expected, `sourceTypes[1].disabled is ${disabled1Expected}`);
     assert.deepEqual(sourceTypesSelected[2].policyType, type2Expected, `sourceTypes[2].policyType is ${type2Expected}`);
+    assert.deepEqual(sourceTypesSelected[2].disabled, disabled2Expected, `sourceTypes[2].disabled is ${disabled2Expected}`);
 
-    // filePolicy disabled so it should not be returned
-    features.setFeatureFlags({ 'rsa.usm.allowFilePolicyCreation': false });
+    // filePolicyFeature enabled so all types should be returned
+    // & allowFilePolicies disabled so filePolicy type should be disabled
+    features.setFeatureFlags({ 'rsa.usm.allowFilePolicies': false });
+    disabled2Expected = true;
+    fullState = new ReduxDataHelper().policyWiz().build();
+    sourceTypesExpected = _.cloneDeep(fullState.usm.policyWizard.sourceTypes);
+    sourceTypesExpected[2].disabled = true;
+    sourceTypesSelected = sourceTypes(Immutable.from(fullState));
+    assert.deepEqual(sourceTypesSelected.length, 3, 'All sourceTypes returned as expected');
+    assert.deepEqual(sourceTypesSelected, sourceTypesExpected, 'The returned value from the sourceTypes selector is as expected');
+    assert.deepEqual(sourceTypesSelected[0].policyType, type0Expected, `sourceTypes[0].policyType is ${type0Expected}`);
+    assert.deepEqual(sourceTypesSelected[0].disabled, disabled0Expected, `sourceTypes[0].disabled is ${disabled0Expected}`);
+    assert.deepEqual(sourceTypesSelected[1].policyType, type1Expected, `sourceTypes[1].policyType is ${type1Expected}`);
+    assert.deepEqual(sourceTypesSelected[1].disabled, disabled1Expected, `sourceTypes[1].disabled is ${disabled1Expected}`);
+    assert.deepEqual(sourceTypesSelected[2].policyType, type2Expected, `sourceTypes[2].policyType is ${type2Expected}`);
+    assert.deepEqual(sourceTypesSelected[2].disabled, disabled2Expected, `sourceTypes[2].disabled is ${disabled2Expected}`);
+
+    // filePolicyFeature disabled so filePolicy type should not be returned
+    features.setFeatureFlags({ 'rsa.usm.filePolicyFeature': false });
     type0Expected = 'edrPolicy';
     type1Expected = 'windowsLogPolicy';
     fullState = new ReduxDataHelper().policyWiz().build();

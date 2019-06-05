@@ -1,4 +1,7 @@
 import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { lookup } from 'ember-dependency-lookup';
 import Immutable from 'seamless-immutable';
 import _ from 'lodash';
 import ReduxDataHelper from '../../helpers/redux-data-helper';
@@ -22,6 +25,8 @@ import {
   hasGroupChanged,
   policyList,
   availablePolicySourceTypes,
+  enabledPolicySourceTypesAsObjs,
+  selectedSourceTypeAsObj,
   assignedPolicyList,
   groupCriteriaValidator,
   policyAssignmentValidator,
@@ -33,7 +38,11 @@ import {
 
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
-module('Unit | Selectors | Group Wizard Selectors', function() {
+module('Unit | Selectors | Group Wizard Selectors', function(hooks) {
+  setupTest(hooks);
+  hooks.beforeEach(function() {
+    initialize(this.owner);
+  });
 
   test('group selector', function(assert) {
     const nameExpected = 'test name';
@@ -514,6 +523,41 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
     assert.deepEqual(sourceTypes, ['edrPolicy', 'windowsLogPolicy'], 'The returned value from the availablePolicySourceTypes is as expected');
   });
 
+  test('enabledPolicySourceTypesAsObjs selector', function(assert) {
+    const features = lookup('service:features');
+    const availableSourceTypes = ['edrPolicy', 'windowsLogPolicy', 'filePolicy'];
+
+    // allowFilePolicies enabled so filePolicy type should be enabled
+    features.setFeatureFlags({ 'rsa.usm.allowFilePolicies': true });
+    let expectedSourceTypesAsObjs = [
+      { policyType: 'edrPolicy', disabled: false },
+      { policyType: 'windowsLogPolicy', disabled: false },
+      { policyType: 'filePolicy', disabled: false }
+    ];
+    let actualSourceTypesAsObjs = enabledPolicySourceTypesAsObjs(availableSourceTypes);
+    assert.deepEqual(actualSourceTypesAsObjs, expectedSourceTypesAsObjs, 'The returned value from the enabledPolicySourceTypesAsObjs is as expected');
+
+    // allowFilePolicies disabled so filePolicy type should be disabled
+    features.setFeatureFlags({ 'rsa.usm.allowFilePolicies': false });
+    expectedSourceTypesAsObjs = [
+      { policyType: 'edrPolicy', disabled: false },
+      { policyType: 'windowsLogPolicy', disabled: false },
+      { policyType: 'filePolicy', disabled: true }
+    ];
+    actualSourceTypesAsObjs = enabledPolicySourceTypesAsObjs(availableSourceTypes);
+    assert.deepEqual(actualSourceTypesAsObjs, expectedSourceTypesAsObjs, 'The returned value from the enabledPolicySourceTypesAsObjs is as expected');
+  });
+
+  test('selectedSourceTypeAsObj selector', function(assert) {
+    const availableSourceTypesAsObjs = [
+      { policyType: 'edrPolicy', disabled: false },
+      { policyType: 'windowsLogPolicy', disabled: false },
+      { policyType: 'filePolicy', disabled: false }
+    ];
+    const [expectedSelectedSourceTypeAsObj] = availableSourceTypesAsObjs;
+    const actualSelectedSourceTypeAsObj = selectedSourceTypeAsObj(availableSourceTypesAsObjs, 'edrPolicy');
+    assert.deepEqual(actualSelectedSourceTypeAsObj, expectedSelectedSourceTypeAsObj, 'The returned value from the selectedSourceTypeAsObj is as expected');
+  });
 
   test('limitedPolicySourceTypes selector - has edrPolicy policy', function(assert) {
     const expectedPolicyList = ['windowsLogPolicy'];

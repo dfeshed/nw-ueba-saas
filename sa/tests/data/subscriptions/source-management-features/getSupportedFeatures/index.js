@@ -5,8 +5,9 @@ export default {
     return {
       code: 0,
       data: {
-        'rsa.usm.allowFilePolicyCreation': true,
-        'rsa.usm.viewSources': false
+        'rsa.usm.viewSourcesFeature': false,
+        'rsa.usm.filePolicyFeature': true,
+        'rsa.usm.allowFilePolicies': true
       }
     };
   }

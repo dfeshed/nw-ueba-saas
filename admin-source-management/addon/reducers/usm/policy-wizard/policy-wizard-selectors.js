@@ -49,10 +49,17 @@ export const isPolicyFetchError = createSelector(
  */
 export const sourceTypes = (state) => {
   const features = lookup('service:features');
-  const isFilePolicyEnabled = features.isEnabled('rsa.usm.allowFilePolicyCreation');
-  let enabledSourceTypes = _policyWizardState(state).sourceTypes;
-  if (!isFilePolicyEnabled) {
-    enabledSourceTypes = enabledSourceTypes.filter((sourceType) => sourceType.policyType !== 'filePolicy');
+  const isFilePolicyFeatureEnabled = features.isEnabled('rsa.usm.filePolicyFeature');
+  const isAllowFilePoliciesEnabled = features.isEnabled('rsa.usm.allowFilePolicies');
+  const allSourceTypes = _policyWizardState(state).sourceTypes;
+  const enabledSourceTypes = [];
+  for (let s = 0; s < allSourceTypes.length; s++) {
+    const sourceType = allSourceTypes[s];
+    if (sourceType.policyType === 'filePolicy' && isFilePolicyFeatureEnabled) {
+      enabledSourceTypes.push({ ...sourceType, disabled: !isAllowFilePoliciesEnabled });
+    } else if (sourceType.policyType !== 'filePolicy') {
+      enabledSourceTypes.push({ ...sourceType, disabled: false });
+    }
   }
   return enabledSourceTypes;
 };

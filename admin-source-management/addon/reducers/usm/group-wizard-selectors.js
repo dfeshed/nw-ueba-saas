@@ -1,6 +1,7 @@
 import reselect from 'reselect';
 import _ from 'lodash';
 import { isBlank, isEmpty } from '@ember/utils';
+import { lookup } from 'ember-dependency-lookup';
 import { exceedsLength, isNameInList, groupExpressionValidator } from './util/selector-helpers';
 import { getValidatorForExpression } from 'admin-source-management/reducers/usm/group-wizard-reducers';
 
@@ -149,6 +150,46 @@ export const limitedPolicySourceTypes = createSelector(
     return list;
   }
 );
+
+/**
+ * Enables/Disables specific policy types based on feature toggles and converts them to objects for #power-select components.
+ * This works in tandem with the output of selectors such as availablePolicySourceTypes() and limitedPolicySourceTypes().
+ * Takes policy types as strings ['edrPolicy', 'filePolicy'],
+ * and converts them to objects [{ policyType: 'edrPolicy', disabled: false }, { policyType: 'filePolicy', disabled: true }]
+ * @param {Array} policySourceTypes an array of policy types as strings ['edrPolicy', 'filePolicy']
+ * @returns {Array} an array of policy types as objects [{ policyType: 'edrPolicy', disabled: false }, { policyType: 'filePolicy', disabled: true }]
+ */
+export const enabledPolicySourceTypesAsObjs = (sourceTypes) => {
+  const features = lookup('service:features');
+  const isAllowFilePoliciesEnabled = features.isEnabled('rsa.usm.allowFilePolicies');
+  const sourceTypesObjs = sourceTypes.map((sourceType) => {
+    const sourceTypesObj = { policyType: sourceType, disabled: false };
+    if (sourceTypesObj.policyType === 'filePolicy') {
+      sourceTypesObj.disabled = !isAllowFilePoliciesEnabled;
+    }
+    return sourceTypesObj;
+  });
+  return sourceTypesObjs;
+};
+
+/**
+ * Finds the selected policy type object by the policy type string.
+ * @param {Array} policySourceTypesAsObjs the array of policy types as objects see @see enabledPolicySourceTypesAsObjs
+ * @param {String} selectedSourceType the selected policy type string such as 'edrPolicy' or 'filePolicy'
+ * @returns {Object} the selected policy type object such as { policyType: 'edrPolicy', disabled: false }
+ */
+export const selectedSourceTypeAsObj = (policySourceTypesAsObjs, selectedSourceType) => {
+  let selectedSourceTypeObj = null;
+  for (let s = 0; s < policySourceTypesAsObjs.length; s++) {
+    const sourceTypeObj = policySourceTypesAsObjs[s];
+    if (selectedSourceType === sourceTypeObj.policyType) {
+      selectedSourceTypeObj = sourceTypeObj;
+      break;
+    }
+  }
+  return selectedSourceTypeObj;
+};
+
 // Validation related selectors
 // ----------------------------------------
 

@@ -2,15 +2,17 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import Notifications from 'component-lib/mixins/notifications';
 import computed from 'ember-computed-decorators';
-import { sourceTypes } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
+// import { sourceTypes } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 import { sortBy } from 'admin-source-management/reducers/usm/util/selector-helpers';
 import {
   policyList,
   assignedPolicies,
   assignedPolicyList,
   availablePolicySourceTypes,
-  applyPolicyStepShowErrors,
-  limitedPolicySourceTypes
+  limitedPolicySourceTypes,
+  enabledPolicySourceTypesAsObjs,
+  selectedSourceTypeAsObj,
+  applyPolicyStepShowErrors
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 import {
   editGroup,
@@ -18,13 +20,13 @@ import {
 } from 'admin-source-management/actions/creators/group-wizard-creators';
 
 const stateToComputed = (state) => ({
-  sourceTypes: sourceTypes(state),
+  // sourceTypes: sourceTypes(state),
   assignedPolicies: assignedPolicies(state),
   assignedPolicyList: assignedPolicyList(state),
   policyList: policyList(state),
-  availablePolicySourceTypes: availablePolicySourceTypes(state),
-  stepShowErrors: applyPolicyStepShowErrors(state),
-  limitedPolicySourceTypes: limitedPolicySourceTypes(state)
+  availablePolicySourceTypes: enabledPolicySourceTypesAsObjs(availablePolicySourceTypes(state)),
+  limitedPolicySourceTypes: enabledPolicySourceTypesAsObjs(limitedPolicySourceTypes(state)),
+  stepShowErrors: applyPolicyStepShowErrors(state)
 });
 
 const dispatchToActions = {
@@ -36,6 +38,15 @@ const ApplyPolicySourceType = Component.extend(Notifications, {
   classNames: ['source-type'],
   selectedSourceType: null,
   selectedPolicy: null,
+
+  @computed('availablePolicySourceTypes', 'selectedSourceType')
+  selectedSourceTypeObj(policySourceTypesAsObjs, sourceType) {
+    const sourceTypeObj = selectedSourceTypeAsObj(policySourceTypesAsObjs, sourceType);
+    if (sourceTypeObj && sourceTypeObj.disabled) {
+      return null;
+    }
+    return sourceTypeObj;
+  },
 
   @computed('policyList', 'selectedSourceType')
   availablePoliciesForSourceType(policyList, sourceType) {
@@ -75,7 +86,8 @@ const ApplyPolicySourceType = Component.extend(Notifications, {
   actions: {
     handleSourceTypeChange(value) {
       const previousType = this.get('selectedSourceType');
-      this.send('placeholderPrep', 'group.assignedPolicies', value, 'change', previousType);
+      // power-select passes the whole object, we only want the policy type
+      this.send('placeholderPrep', 'group.assignedPolicies', value.policyType, 'change', previousType);
     },
 
     handlePolicyAssignment(value) {
