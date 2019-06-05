@@ -1273,26 +1273,6 @@ indicators:
     featureName: sslSubjectHistogram
   classification:
 
-- id: sumOfHighestDstPortSrcNetnameOutboundScoresJa3TlsHourly
-  type: SCORE_AGGREGATION
-  name: ja3_abnormal_dst_port_for_src_netname_outbound
-  adeEventType: scored_enriched.tls.dstPort.srcNetnameOutbound.tls.score
-  modelContextFields:
-    - srcNetname
-  schema: TLS
-  anomalyDescriptior:
-    anomalyField: dstPort
-    anomalyFilters:
-      - fieldName: direction
-        fieldValue: OUTBOUND
-  splitFields:
-    - srcNetname
-    - dstPort
-  historicalData:
-    type: count_aggregations
-    featureBucketConfName: dstPortHistogramSrcNetnameOutboundTlsDaily
-    featureName: dstPortHistogram
-  classification:
 
 - id: sumOfHighestDomainSrcNetnameOutboundScoresJa3TlsHourly
   type: SCORE_AGGREGATION
@@ -1313,6 +1293,27 @@ indicators:
     type: count_aggregations
     featureBucketConfName: domainHistogramSrcNetnameOutboundTlsDaily
     featureName: domainHistogram
+  classification:
+
+- id: sumOfHighestDstPortSrcNetnameOutboundScoresJa3TlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_dst_port_for_src_netname_outbound
+  adeEventType: scored_enriched.tls.dstPort.srcNetnameOutbound.tls.score
+  modelContextFields:
+    - srcNetname
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: dstPort
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - srcNetname
+    - dstPort
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstPortHistogramSrcNetnameOutboundTlsDaily
+    featureName: dstPortHistogram
   classification:
 
 - id: sumOfHighestDstOrgSrcNetnameOutboundScoresJa3TlsHourly
