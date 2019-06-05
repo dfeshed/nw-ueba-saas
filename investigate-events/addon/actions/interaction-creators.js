@@ -13,6 +13,7 @@ import {
   getDefaultPreferences
 } from 'investigate-events/reducers/investigate/data-selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
+import { SORT_ORDER } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { isConsoleEmpty } from 'investigate-events/reducers/investigate/query-stats/selectors';
 
 /**
@@ -214,9 +215,17 @@ export const setColumnGroup = (selectedGroup) => {
       type: ACTION_TYPES.SET_SELECTED_COLUMN_GROUP,
       payload: selectedGroup.id
     });
+    const state = getState();
     // Extracts (and merges) all the preferences from redux state and sends to the backend for persisting.
     const prefService = lookup('service:preferences');
-    prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(getState()), getDefaultPreferences(getState()));
+    prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(state), getDefaultPreferences(state));
+    const prefs = state.investigate.data.eventAnalysisPreferences;
+
+    // reset sort state to ensure the column being sorted on exists
+    // time is the default sort meta, and has it's own default in preferences
+    const sortDirection = (prefs && prefs.eventTimeSortOrder) || SORT_ORDER.ASC;
+    dispatch(updateSort('time', sortDirection));
+
     dispatch(cancelQuery(false));
     dispatch(setReconClosed());
     dispatch(isQueryExecutedByColumnGroup(true));
