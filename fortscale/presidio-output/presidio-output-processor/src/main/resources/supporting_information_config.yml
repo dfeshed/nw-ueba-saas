@@ -1147,6 +1147,10 @@ indicators:
 #*                   TLS INDICATORS                      *
 #*********************************************************
 
+#***************************************
+#*             ssl subject             *
+#***************************************
+
 - id: numberOfDistinctSrcIpJa3OutboundTlsHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_distinct_outbound_src_ip
@@ -1159,7 +1163,51 @@ indicators:
         fieldValue: OUTBOUND
   historicalData:
     type: hourly_aggregations
-  classification: powershell_scripting
+  classification:
+
+- id: sumOfHighestSslSubjectSrcNetnameOutboundScoresSslSubjectTlsHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_ssl_subject_for_src_netname_outbound
+  adeEventType: scored_enriched.tls.sslSubject.srcNetnameOutbound.tls.score
+  modelContextFields:
+    - srcNetname
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: sslSubject
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - srcNetname
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: sslSubjectHistogramSrcNetnameOutboundTlsDaily
+    featureName: sslSubjectHistogram
+  classification:
+
+#***************************************
+#*                ja3                  *
+#***************************************
+- id: sslSubjectSrcNetnameOutboundToHighestScoreMapJa3TlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_ssl_subject_for_src_netname_outbound
+  adeEventType: scored_enriched.tls.sslSubject.srcNetnameOutbound.tls.score
+  modelContextFields:
+    - srcNetname
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: sslSubject
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - srcNetname
+    - sslSubject
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: sslSubjectHistogramSrcNetnameOutboundTlsDaily
+    featureName: sslSubjectHistogram
+  classification:
 
 classificationPriority:
 
