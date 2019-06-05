@@ -16,6 +16,7 @@ public class TlsInputToOutputConverter implements InputOutputConverter {
         outputEvent.setDataSource(tlsTransformedEvent.getDataSource());
         outputEvent.setDomain(tlsTransformedEvent.getDomain());
         outputEvent.setDstAsn(tlsTransformedEvent.getDstAsn());
+        outputEvent.setSrcCountry(tlsTransformedEvent.getSrcCountry());
         outputEvent.setDstCountry(tlsTransformedEvent.getDstCountry());
         outputEvent.setDstNetname(tlsTransformedEvent.getDstNetname());
         outputEvent.setDstOrg(tlsTransformedEvent.getDstOrg());

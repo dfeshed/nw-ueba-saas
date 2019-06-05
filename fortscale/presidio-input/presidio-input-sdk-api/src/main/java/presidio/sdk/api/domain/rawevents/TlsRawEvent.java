@@ -13,6 +13,7 @@ import java.util.Map;
 public class TlsRawEvent extends AbstractInputDocument {
     public static final String SOURCE_IP_FIELD_NAME = "srcIp";
     public static final String DESTINATION_IP_FIELD_NAME = "dstIp";
+    public static final String SOURCE_COUNTRY_FIELD_NAME = "srcCountry";
     public static final String DESTINATION_COUNTRY_FIELD_NAME = "dstCountry";
     public static final String SSL_SUBJECT_FIELD_NAME = "sslSubject";
     public static final String DOMAIN_FIELD_NAME = "domain";
@@ -35,6 +36,9 @@ public class TlsRawEvent extends AbstractInputDocument {
 
     @Field(DESTINATION_IP_FIELD_NAME)
     private String dstIp;
+
+    @Field(SOURCE_COUNTRY_FIELD_NAME)
+    private String srcCountry;
 
     @Field(DESTINATION_COUNTRY_FIELD_NAME)
     private String dstCountry;
@@ -83,6 +87,7 @@ public class TlsRawEvent extends AbstractInputDocument {
         super(other);
         this.srcIp = other.srcIp;
         this.dstIp = other.dstIp;
+        this.srcCountry = other.srcCountry;
         this.dstCountry = other.dstCountry;
         this.sslSubject = other.sslSubject;
         this.domain = other.domain;
@@ -99,12 +104,13 @@ public class TlsRawEvent extends AbstractInputDocument {
     }
 
     public TlsRawEvent(Instant dateTime, String eventId, String dataSource, Map<String, String> additionalInfo,
-                       String srcIp, String dstIp, String dstCountry, String sslSubject, String domain, String dstOrg,
+                       String srcIp, String dstIp, String srcCountry, String dstCountry, String sslSubject, String domain, String dstOrg,
                        String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
                        String dstNetname, String ja3, String ja3s, String direction, Integer dstPort) {
         super(dateTime, eventId, dataSource, additionalInfo);
         this.srcIp = srcIp;
         this.dstIp = dstIp;
+        this.srcCountry = srcCountry;
         this.dstCountry = dstCountry;
         this.sslSubject = sslSubject;
         this.domain = domain;
@@ -131,6 +137,14 @@ public class TlsRawEvent extends AbstractInputDocument {
 
     public String getDstIp() {
         return dstIp;
+    }
+
+    public String getSrcCountry() {
+        return srcCountry;
+    }
+
+    public void setSrcCountry(String srcCountry) {
+        this.srcCountry = srcCountry;
     }
 
     public void setDstIp(String dstIp) {

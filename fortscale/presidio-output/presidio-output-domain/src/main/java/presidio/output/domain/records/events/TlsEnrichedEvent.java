@@ -12,6 +12,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
 
     public static final String SOURCE_IP_FIELD_NAME = "srcIp";
     public static final String DESTINATION_IP_FIELD_NAME = "dstIp";
+    public static final String SOURCE_COUNTRY_FIELD_NAME = "srcCountry";
     public static final String DESTINATION_COUNTRY_FIELD_NAME = "dstCountry";
     public static final String SSL_SUBJECT_FIELD_NAME = "sslSubject";
     public static final String DOMAIN_FIELD_NAME = "domain";
@@ -34,6 +35,9 @@ public class TlsEnrichedEvent extends EnrichedEvent {
 
     @Field(DESTINATION_IP_FIELD_NAME)
     private String dstIp;
+
+    @Field(SOURCE_COUNTRY_FIELD_NAME)
+    private String srcCountry;
 
     @Field(DESTINATION_COUNTRY_FIELD_NAME)
     private String dstCountry;
@@ -78,12 +82,13 @@ public class TlsEnrichedEvent extends EnrichedEvent {
 
     public TlsEnrichedEvent(Instant createdDate, Instant eventDate, String eventId, String schema, String dataSource,
                             Map<String, String> additionalInfo,
-                            String srcIp, String dstIp, String dstCountry, String sslSubject, String domain, String dstOrg,
+                            String srcIp, String dstIp, String srcCountry, String dstCountry, String sslSubject, String domain, String dstOrg,
                             String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
                             String dstNetname, String ja3, String ja3s, String direction, Integer dstPort) {
         super(createdDate, eventDate, eventId, schema, dataSource, additionalInfo);
         this.srcIp = srcIp;
         this.dstIp = dstIp;
+        this.srcCountry = srcCountry;
         this.dstCountry = dstCountry;
         this.sslSubject = sslSubject;
         this.domain = domain;
@@ -115,6 +120,14 @@ public class TlsEnrichedEvent extends EnrichedEvent {
 
     public void setDstIp(String dstIp) {
         this.dstIp = dstIp;
+    }
+
+    public String getSrcCountry() {
+        return srcCountry;
+    }
+
+    public void setSrcCountry(String srcCountry) {
+        this.srcCountry = srcCountry;
     }
 
     public String getDstCountry() {

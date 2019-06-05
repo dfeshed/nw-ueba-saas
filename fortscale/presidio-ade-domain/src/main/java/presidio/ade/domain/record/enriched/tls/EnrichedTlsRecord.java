@@ -17,6 +17,7 @@ public class EnrichedTlsRecord extends EnrichedRecord {
 
     public static final String SOURCE_IP_FIELD_NAME = "srcIp";
     public static final String DESTINATION_IP_FIELD_NAME = "dstIp";
+    public static final String SOURCE_COUNTRY_FIELD_NAME = "srcCountry";
     public static final String DESTINATION_COUNTRY_FIELD_NAME = "dstCountry";
     public static final String SSL_SUBJECT_FIELD_NAME = "sslSubject";
     public static final String DOMAIN_FIELD_NAME = "domain";
@@ -37,6 +38,9 @@ public class EnrichedTlsRecord extends EnrichedRecord {
 
     @Field(DESTINATION_IP_FIELD_NAME)
     private String dstIp;
+
+    @Field(SOURCE_COUNTRY_FIELD_NAME)
+    private String srcCountry;
 
     @Field(DESTINATION_COUNTRY_FIELD_NAME)
     private String dstCountry;
@@ -109,6 +113,14 @@ public class EnrichedTlsRecord extends EnrichedRecord {
 
     public void setDstIp(String dstIp) {
         this.dstIp = dstIp;
+    }
+
+    public String getSrcCountry() {
+        return srcCountry;
+    }
+
+    public void setSrcCountry(String srcCountry) {
+        this.srcCountry = srcCountry;
     }
 
     public String getDstCountry() {

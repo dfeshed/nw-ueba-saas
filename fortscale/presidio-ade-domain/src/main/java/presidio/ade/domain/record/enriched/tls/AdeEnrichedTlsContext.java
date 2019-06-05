@@ -7,6 +7,7 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
 
     private String srcIp;
     private String dstIp;
+    private String srcCountry;
     private String dstCountry;
     private String sslSubject;
     private String domain;
@@ -28,6 +29,7 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
         super(enrichedTlsRecord.getEventId());
         this.domain = enrichedTlsRecord.getDomain();
         this.dstAsn = enrichedTlsRecord.getDstAsn();
+        this.srcCountry = enrichedTlsRecord.getSrcCountry();
         this.dstCountry = enrichedTlsRecord.getDstCountry();
         this.dstNetname = enrichedTlsRecord.getDstNetname();
         this.dstOrg = enrichedTlsRecord.getDstOrg();
@@ -55,6 +57,14 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
 
     public void setDstIp(String dstIp) {
         this.dstIp = dstIp;
+    }
+
+    public String getSrcCountry() {
+        return srcCountry;
+    }
+
+    public void setSrcCountry(String srcCountry) {
+        this.srcCountry = srcCountry;
     }
 
     public String getDstCountry() {
