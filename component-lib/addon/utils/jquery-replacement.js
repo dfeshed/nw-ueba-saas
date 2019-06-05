@@ -99,4 +99,9 @@ export const isNumeric = (x) => {
 // $.isFunction(foo)
 // typeof foo === 'function'
 
+//
+// ATTRIBUTES
+//
 
+// this.$('.some-element').prop('some-attribute')
+// document.querySelector('.some-element').getAttribute('some-attribute')
