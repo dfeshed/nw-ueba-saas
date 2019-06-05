@@ -84,7 +84,7 @@
     "ember-spaniel": "0.6.2",
     "ember-symbol-observable": "1.0.2",
     "ember-tether": "1.0.0",
-    "ember-toggle": "5.1.1",
+    "ember-toggle": "5.3.2",
     "ember-truth-helpers": "2.1.0",
     "ember-user-activity": "1.2.1",
     "ember-wormhole": "0.5.5",
@@ -121,8 +121,7 @@
   },
   "resolutions": {
     "ember-cli-htmlbars-inline-precompile": "1.0.2",
-    "moment": "2.18.1",
-    "ember-gestures": "1.1.1"
+    "moment": "2.18.1"
   },
   "engines": {
     "node": "10.15.3"
