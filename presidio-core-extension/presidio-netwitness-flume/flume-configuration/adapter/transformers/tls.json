@@ -20,6 +20,12 @@
       "destinationKey": "dateTime"
     },
     {
+      "type": "set_value",
+      "name": "data-source-transformer",
+      "key": "dataSource",
+      "value": "network"
+    },
+    {
       "type": "copy_value",
       "name": "rename-event-source-id-to-event-id",
       "sourceKey": "event_source_id",
@@ -47,6 +53,24 @@
     },
     {
       "type": "copy_value",
+      "name": "rename-ip-dst",
+      "sourceKey": "ip_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstIp"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-country-src",
+      "sourceKey": "country_src",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "srcCountry"
+      ]
+    },
+    {
+      "type": "copy_value",
       "name": "rename-country-dst",
       "sourceKey": "country_dst",
       "isRemoveSourceKey": true,
@@ -64,11 +88,38 @@
       ]
     },
     {
+      "type": "copy_value",
+      "name": "rename-ssl-ca",
+      "sourceKey": "ssl_ca",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "sslCa"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-analysis-service",
+      "sourceKey": "analysis_service",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "isSelfSigned"
+      ]
+    },
+    {
       "type": "top_level_domain",
       "name": "alias-host-to-top-level-domain",
       "sourceKey": "alias_host[0]",
       "isRemoveSourceKey": false,
       "targetKey": "domain"
+    },
+    {
+      "type": "copy_value",
+      "name": "copy-alias-host-to-fqdn",
+      "sourceKey": "alias_host",
+      "isRemoveSourceKey": false,
+      "destinationKeys": [
+        "fqdn"
+      ]
     },
     {
       "type": "copy_value",
