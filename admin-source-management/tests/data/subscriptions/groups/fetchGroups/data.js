@@ -319,6 +319,10 @@ export default [
       'windowsLogPolicy': {
         'referenceId': 'policy_WL001',
         'name': 'WL001'
+      },
+      'filePolicy': {
+        'referenceId': 'policy_F001',
+        'name': 'F001'
       }
     },
     'groupCriteria': {

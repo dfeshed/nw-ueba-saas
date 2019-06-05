@@ -121,6 +121,41 @@ module('Integration | Component | Group Inspector', function(hooks) {
     assert.equal(findAll('.usm-groups-inspector .count-desc')[0].textContent.trim(), `(${expectedSrcCount.string})`, 'source count description shows as expected');
   });
 
+  test('It shows the applied policies section with correct values', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    const expectedEdrTitle = translation.t('adminUsm.groupWizard.edrSourceType');
+    const expectedEdrValue = 'policy_02';
+    const expectedWinTitle = translation.t('adminUsm.groupWizard.windowsLogSourceType');
+    const expectedWinValue = 'WL001';
+    const expectedFileTitle = translation.t('adminUsm.groupWizard.fileLogSourceType');
+    const expectedFileValue = 'F001';
+    const groupAssignedPolicies = {
+      'edrPolicy': {
+        'referenceId': 'policy_002',
+        'name': expectedEdrValue
+      },
+      'windowsLogPolicy': {
+        'referenceId': 'policy_WL001',
+        'name': expectedWinValue
+      },
+      'filePolicy': {
+        'referenceId': 'policy_F001',
+        'name': expectedFileValue
+      }
+    };
+    new ReduxDataHelper(setState)
+      .focusedGroup(testGroup)
+      .setGroupAssignedPolicies(groupAssignedPolicies)
+      .build();
+    await render(hbs`{{usm-groups/groups/inspector}}`);
+    assert.equal(findAll('.usm-groups-inspector .title')[0].innerText, expectedEdrTitle, `Applied edr policy title is ${expectedEdrTitle}`);
+    assert.equal(findAll('.usm-groups-inspector .value')[0].innerText, expectedEdrValue, `Applied edr policy value is ${expectedEdrValue}`);
+    assert.equal(findAll('.usm-groups-inspector .title')[1].innerText, expectedWinTitle, `Applied win policy title is ${expectedWinTitle}`);
+    assert.equal(findAll('.usm-groups-inspector .value')[1].innerText, expectedWinValue, `Applied win policy value is ${expectedWinValue}`);
+    assert.equal(findAll('.usm-groups-inspector .title')[2].innerText, expectedFileTitle, `Applied file policy title is ${expectedFileTitle}`);
+    assert.equal(findAll('.usm-groups-inspector .value')[2].innerText, expectedFileValue, `Applied file policy value is ${expectedFileValue}`);
+  });
+
   test('It shows the history properties with values', async function(assert) {
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)

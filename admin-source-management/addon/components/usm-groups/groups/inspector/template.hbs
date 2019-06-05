@@ -1,5 +1,5 @@
 <vbox class="rsa-application-layout-panel-content" xs="12" fit>    
-  {{#if (or focusedGroup.assignedPolicies.edrPolicy focusedGroup.assignedPolicies.windowsLogPolicy)}}
+  {{#if (or focusedGroup.assignedPolicies.edrPolicy focusedGroup.assignedPolicies.windowsLogPolicy focusedGroup.assignedPolicies.filePolicy)}}
     <div class="heading">{{t 'adminUsm.groups.list.assignedPolicies'}}</div>
     {{#if focusedGroup.assignedPolicies.edrPolicy}}
       <hbox fit class="col-xs-12">
@@ -11,6 +11,12 @@
       <hbox fit class="col-xs-12">
         <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.groupWizard.windowsLogSourceType'}}</hbox>
         <hbox class="value col-xs-6 col-md-7">{{focusedGroup.assignedPolicies.windowsLogPolicy.name}}</hbox>
+      </hbox>
+    {{/if}}
+    {{#if focusedGroup.assignedPolicies.filePolicy}}
+      <hbox fit class="col-xs-12">
+        <hbox class="title col-xs-6 col-md-5">{{t 'adminUsm.groupWizard.fileLogSourceType'}}</hbox>
+        <hbox class="value col-xs-6 col-md-7">{{focusedGroup.assignedPolicies.filePolicy.name}}</hbox>
       </hbox>
     {{/if}}
   {{/if}}
