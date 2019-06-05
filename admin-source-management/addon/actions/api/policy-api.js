@@ -144,6 +144,20 @@ function fetchLogServers() {
 }
 
 /**
+ * Get a list of file source types for a file policy that the
+ * agent will push the policy to.
+ * @public
+ */
+function fetchFileSourceTypes() {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    modelName: 'policy',
+    method: 'fetchFileSourceTypes',
+    query: {}
+  });
+}
+
+/**
 * Get policy resolution from group ranking.
 * Contains policy and origins object that has group, policy and conflict elements for each policy setting
 */
@@ -166,5 +180,6 @@ export default {
   savePublishPolicy,
   fetchEndpointServers,
   fetchLogServers,
+  fetchFileSourceTypes,
   fetchRankingView
 };

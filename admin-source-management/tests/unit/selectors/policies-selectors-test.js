@@ -357,8 +357,8 @@ test('filterTypesConfig selector', function(assert) {
       label: 'adminUsm.policies.filter.sourceType',
       listOptions: [
         { name: 'edrPolicy', label: 'adminUsm.policyTypes.edrPolicy' },
-        { name: 'filePolicy', label: 'adminUsm.policyTypes.filePolicy' },
-        { name: 'windowsLogPolicy', label: 'adminUsm.policyTypes.windowsLogPolicy' }
+        { name: 'windowsLogPolicy', label: 'adminUsm.policyTypes.windowsLogPolicy' },
+        { name: 'filePolicy', label: 'adminUsm.policyTypes.filePolicy' }
       ],
       type: 'list'
     },

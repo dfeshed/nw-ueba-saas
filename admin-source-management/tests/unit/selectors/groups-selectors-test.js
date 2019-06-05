@@ -230,7 +230,8 @@ module('Unit | Selectors | Groups Selectors', function() {
         label: 'adminUsm.groups.filter.sourceType',
         listOptions: [
           { name: 'edrPolicy', label: 'adminUsm.policyTypes.edrPolicy' },
-          { name: 'windowsLogPolicy', label: 'adminUsm.policyTypes.windowsLogPolicy' }
+          { name: 'windowsLogPolicy', label: 'adminUsm.policyTypes.windowsLogPolicy' },
+          { name: 'filePolicy', label: 'adminUsm.policyTypes.filePolicy' }
         ],
         type: 'list'
       },

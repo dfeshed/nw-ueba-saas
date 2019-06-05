@@ -107,6 +107,22 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
     policyWizardCreators.initializePolicyType('windowsLogPolicy', dispatch);
   });
 
+  test('initializePolicyType action creator returns proper type(s) and payload(s) when policy is filePolicy', function(assert) {
+    const dispatch = (action) => {
+      switch (action.type) {
+        case ACTION_TYPES.FETCH_LOG_SERVERS:
+          assert.equal(action.type, ACTION_TYPES.FETCH_LOG_SERVERS, 'action has the correct type');
+          break;
+        case ACTION_TYPES.FETCH_FILE_SOURCE_TYPES:
+          assert.equal(action.type, ACTION_TYPES.FETCH_FILE_SOURCE_TYPES, 'action has the correct type');
+          break;
+        default:
+          assert.equal(true, false, 'action has the correct type');
+      }
+    };
+    policyWizardCreators.initializePolicyType('filePolicy', dispatch);
+  });
+
   test('updatePolicyType action creator returns proper type(s), payload(s), and/or promise(s) when policyType is edrPolicy', function(assert) {
     const dispatch = (action) => {
       switch (action.type) {

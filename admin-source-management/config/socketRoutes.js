@@ -87,6 +87,10 @@ const adminUsmConfigGen = function(environment) {
       fetchLogServers: {
         subscriptionDestination: '/user/queue/usm/log/servers',
         requestDestination: '/ws/usm/log/servers'
+      },
+      fetchFileSourceTypes: {
+        subscriptionDestination: '/user/queue/usm/policy/file/types',
+        requestDestination: '/ws/usm/policy/file/types'
       }
     },
     source: {

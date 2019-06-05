@@ -63,10 +63,14 @@ const initializePolicyType = (policyType, dispatch, isDefaultPolicy = false) => 
         dispatch(edrDefaultPolicy());
       }
       break;
-    // windowsLogPolicy/filePolicy picked from the dropdown
+    // windowsLogPolicy picked from the dropdown
     case 'windowsLogPolicy':
+      dispatch(fetchLogServers());
+      break;
+    // filePolicy picked from the dropdown
     case 'filePolicy':
       dispatch(fetchLogServers());
+      dispatch(fetchFileSourceTypes());
       break;
   }
 };
@@ -328,6 +332,16 @@ const fetchLogServers = () => {
   };
 };
 
+// ===================================================
+// filePolicy specific action creators
+// ===================================================
+const fetchFileSourceTypes = () => {
+  return {
+    type: ACTION_TYPES.FETCH_FILE_SOURCE_TYPES,
+    promise: policyAPI.fetchFileSourceTypes()
+  };
+};
+
 export {
   initializePolicy,
   newPolicy,
@@ -345,5 +359,7 @@ export {
   // edrPolicy specific action creators
   fetchEndpointServers,
   // windowsLogPolicy specific action creators
-  fetchLogServers
+  fetchLogServers,
+  // filePolicy specific action creators
+  fetchFileSourceTypes
 };

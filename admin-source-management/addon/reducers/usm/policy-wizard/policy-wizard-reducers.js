@@ -8,7 +8,7 @@ import edrPolicyReducers from './edrPolicy/edr-reducerFns';
 import windowsLogPolicyReducers from './windowsLogPolicy/windowsLog-reducerFns';
 import windowsLogPolicyInitialState from './windowsLogPolicy/windowsLog-initialState';
 import filePolicyInitialState from './filePolicy/file-initialState';
-// import filePolicyReducers from './filePolicy/file-reducerFns';
+import filePolicyReducers from './filePolicy/file-reducerFns';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 
 const INITIAL_STATES = {
@@ -99,7 +99,12 @@ const INITIAL_STATES = {
     // ===================================================
     // windowsLogPolicy specific state to be fetched
     // ===================================================
-    listOfLogServers: []
+    listOfLogServers: [],
+
+    // ===================================================
+    // filePolicy specific state to be fetched
+    // ===================================================
+    listOfFileSourceTypes: []
   }
 };
 
@@ -361,6 +366,9 @@ export default reduxActions.handleActions({
 
   // windowsLogPolicy actions
   [ACTION_TYPES.FETCH_LOG_SERVERS]: windowsLogPolicyReducers.fetchLogServers,
+
+  // filePolicy actions
+  [ACTION_TYPES.FETCH_FILE_SOURCE_TYPES]: filePolicyReducers.fetchFileSourceTypes,
 
   // define-policy-step -
   [ACTION_TYPES.TOGGLE_SCAN_TYPE]: edrPolicyReducers.toggleScanType,
