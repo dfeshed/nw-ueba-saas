@@ -40,8 +40,8 @@ export default Component.extend({
 
   // Updates the DOM with the latest `percent` value.
   _percentDidChange() {
-    if (this._$fill) {
-      this._$fill.css('flex-basis', `${this._percent}%`);
+    if (this._fill) {
+      this._fill.style['flex-basis'] = `${this._percent}%`;
     }
   },
 
@@ -50,12 +50,12 @@ export default Component.extend({
     this._super(...arguments);
 
     // Cache reference to the DOM element whose size varies according to `percent`.
-    this._$fill = this.$('.js-progress-bar__fill');
+    this._fill = this.element.querySelector('.js-progress-bar__fill');
 
     run.schedule('afterRender', this, this._percentDidChange);
   },
 
   willDestroyElement() {
-    this._$fill = null;
+    this._fill = null;
   }
 });
