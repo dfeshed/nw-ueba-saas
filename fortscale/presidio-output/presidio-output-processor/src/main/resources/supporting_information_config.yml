@@ -1248,6 +1248,25 @@ indicators:
     featureName: dstOrgHistogram
   classification:
 
+- id: sumOfHighestCountryScoresSslSubjectOutboundTlsHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_country_for_ssl_subject_outbound
+  adeEventType: scored_enriched.tls.country.sslSubjectOutbound.tls.score
+  modelContextFields:
+    - sslSubject
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: country
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - country
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: countryHistogramSslSubjectOutboundTlsDaily
+    featureName: countryHistogram
+  classification:
 
 #***************************************
 #*                ja3                  *
@@ -1337,6 +1356,26 @@ indicators:
     featureName: dstOrgHistogram
   classification:
 
+- id: sumOfHighestCountrySslSubjectOutboundScoresJa3TlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_country_for_ssl_subject_outbound
+  adeEventType: scored_enriched.tls.country.sslSubjectOutbound.tls.score
+  modelContextFields:
+    - sslSubject
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: country
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - country
+    - sslSubject
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: countryHistogramSslSubjectOutboundTlsDaily
+    featureName: countryHistogram
+  classification:
 
 classificationPriority:
 
