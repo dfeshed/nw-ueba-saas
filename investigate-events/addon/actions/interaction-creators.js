@@ -233,6 +233,8 @@ export const setColumnGroup = (selectedGroup) => {
   };
 };
 
+// Approach discouraged : If there is a need to alter URL, use executeQuery route action as opposed to
+// updating URL manually through this function.
 export const updateUrl = (initialUrl, updateParameters) => {
   const params = new URLSearchParams(initialUrl);
 
@@ -246,22 +248,10 @@ export const updateUrl = (initialUrl, updateParameters) => {
 // update timeRange if not custom, and fetch updated event data
 export const setQueryTimeFormat = () => {
   return (dispatch, getState) => {
+
     const range = selectedTimeRange(getState());
+
     dispatch(setQueryTimeRange(range));
-
-    const { endTime, startTime } = getState().investigate.queryNode;
-
-    const updateParameters = {
-      et: endTime,
-      st: startTime
-    };
-    // manually update url as router is not handling this interaction
-    const params = updateUrl(window.location.search, updateParameters);
-    history.pushState(
-      null,
-      document.querySelector('title').innerHTML,
-      `${window.location.pathname}?${params}`
-    );
 
     dispatch(fetchInvestigateData());
 
