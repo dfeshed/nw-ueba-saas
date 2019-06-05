@@ -1188,7 +1188,7 @@ indicators:
 - id: sumOfHighestDomainSrcNetnameOutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
   name: ssl_subject_abnormal_domain_for_src_netname_outbound
-  adeEventType: scored_enriched.tls.sslSubject.srcNetnameOutbound.tls.score
+  adeEventType: scored_enriched.tls.domain.srcNetnameOutbound.tls.score
   modelContextFields:
     - srcNetname
   schema: TLS
@@ -1233,7 +1233,7 @@ indicators:
 - id: sumOfHighestDomainSrcNetnameOutboundScoresJa3TlsHourly
   type: SCORE_AGGREGATION
   name: ja3_abnormal_domain_for_src_netname_outbound
-  adeEventType: scored_enriched.tls.sslSubject.srcNetnameOutbound.tls.score
+  adeEventType: scored_enriched.tls.domain.srcNetnameOutbound.tls.score
   modelContextFields:
     - srcNetname
   schema: TLS
