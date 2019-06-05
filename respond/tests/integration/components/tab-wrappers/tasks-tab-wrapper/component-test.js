@@ -22,7 +22,8 @@ module('Integration | Component | tasks-tab-wrapper', function(hooks) {
   const makePayload = function(bool) {
     return {
       data: {
-        enabled: bool
+        enabled: bool,
+        adminRoles: ['Administrators']
       }
     };
   };

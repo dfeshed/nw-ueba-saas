@@ -127,7 +127,12 @@ module('Integration | Component | Respond Incidents Toolbar Controls', function(
     await setup();
     await redux.dispatch({
       type: 'RESPOND::GET_RIAC_SETTINGS',
-      promise: Promise.resolve({ data: { enabled: true } })
+      promise: Promise.resolve({
+        data: {
+          enabled: true,
+          adminRoles: ['Administrators']
+        }
+      })
     });
     this.set('itemsSelected', [{ id: 'test' }]);
     await render(hbs`{{rsa-incidents/toolbar-controls itemsSelected=itemsSelected}}`);

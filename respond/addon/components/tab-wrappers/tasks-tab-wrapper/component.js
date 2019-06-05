@@ -1,35 +1,13 @@
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
-import { connect } from 'ember-redux';
+import { alias } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 
-const stateToComputed = (state) => {
-  return {
-    riacEnabled: state.respond.riac.isRiacEnabled
-  };
-};
+export default Component.extend({
 
-const TasksTabWrapper = Component.extend({
-
-  accessControl: service(),
+  riac: service(),
 
   classNames: ['tasks-tab-wrapper'],
 
-  @computed(
-    'riacEnabled',
-    'accessControl.hasRiacRespondTasksAccess',
-    'accessControl.hasRespondRemediationAccess'
-  )
-  show(riacEnabled, riacAc, rbacAc) {
-    switch (riacEnabled) {
-      case true:
-        return riacAc;
-      case false:
-        return rbacAc;
-      default:
-        return false;
-    }
-  }
+  @alias('riac.hasTasksAccess')
+  show: null
 });
-
-export default connect(stateToComputed)(TasksTabWrapper);

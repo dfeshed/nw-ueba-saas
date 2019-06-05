@@ -89,7 +89,6 @@ module('Integration | Component | Incident Overview', function(hooks) {
     const ac = this.owner.lookup('service:accessControl');
     const redux = this.owner.lookup('service:redux');
     const exampleUser = { id: 'admin' };
-
     setState({
       respond: {
         users: {
@@ -97,11 +96,15 @@ module('Integration | Component | Incident Overview', function(hooks) {
         }
       }
     });
-
     ac.set('authorities', ['Analysts']);
     await redux.dispatch({
       type: 'RESPOND::GET_RIAC_SETTINGS',
-      promise: Promise.resolve({ data: { enabled: true } })
+      promise: Promise.resolve({
+        data: {
+          enabled: true,
+          adminRoles: ['Administrators']
+        }
+      })
     });
     this.set('info', {
       assignee: exampleUser

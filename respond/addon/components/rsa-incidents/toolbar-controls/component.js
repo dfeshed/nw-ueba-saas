@@ -1,14 +1,6 @@
 import Component from '@ember/component';
 import computed, { empty, gt } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
-import { connect } from 'ember-redux';
-
-
-const stateToComputed = (state) => {
-  return {
-    riacEnabled: state.respond.riac.isRiacEnabled
-  };
-};
 
 /**
  * @class IncidentsControls
@@ -16,7 +8,8 @@ const stateToComputed = (state) => {
  *
  * @public
  */
-const IncidentsControls = Component.extend({
+export default Component.extend({
+  riac: service(),
   accessControl: service(),
   i18n: service(),
 
@@ -25,13 +18,12 @@ const IncidentsControls = Component.extend({
   @gt('itemsSelected.length', 1) isBulkSelection: false,
 
   @computed(
-    'riacEnabled',
-    'accessControl.respondRiacCanChangeAssignee',
+    'riac.canChangeAssignee',
     'hasNoSelections',
     'hasSelectedClosedIncidents'
   )
-  canChangeAssignee(riacEnabled, riacAc, hasNoSelections, hasSelectedClosedIncidents) {
-    return !hasNoSelections && !hasSelectedClosedIncidents && (riacEnabled ? riacAc : true);
+  canChangeAssignee(canChangeAssignee, hasNoSelections, hasSelectedClosedIncidents) {
+    return !hasNoSelections && !hasSelectedClosedIncidents && canChangeAssignee;
   },
 
   updateConfirmationDialogId: 'bulk-update-entities',
@@ -120,5 +112,3 @@ const IncidentsControls = Component.extend({
     }
   }
 });
-
-export default connect(stateToComputed)(IncidentsControls);

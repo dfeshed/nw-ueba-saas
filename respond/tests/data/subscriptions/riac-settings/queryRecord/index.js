@@ -5,7 +5,8 @@ export default {
   message() {
     return {
       data: {
-        enabled: false
+        enabled: false,
+        adminRoles: ['Administrators', 'Respond_Administrator', 'SOC_Managers']
       }
     };
   }

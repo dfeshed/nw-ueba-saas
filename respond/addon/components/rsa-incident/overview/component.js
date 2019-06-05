@@ -13,12 +13,12 @@ const stateToComputed = (state) => {
   return {
     priorityTypes: getPriorityTypes(state),
     statusTypes: getStatusTypes(state),
-    users: getAssigneeOptions(state),
-    riacEnabled: state.respond.riac.isRiacEnabled
+    users: getAssigneeOptions(state)
   };
 };
 
 const IncidentOverview = Component.extend({
+  riac: inject(),
   accessControl: inject(),
   i18n: inject(),
   classNames: ['rsa-incident-overview'],
@@ -34,13 +34,12 @@ const IncidentOverview = Component.extend({
   info: null,
 
   @computed(
-    'riacEnabled',
-    'accessControl.respondRiacCanChangeAssignee',
+    'riac.canChangeAssignee',
     'info.status'
   )
-  canChangeAssignee(riacEnabled, riacAc, status) {
+  canChangeAssignee(canChangeAssignee, status) {
     const isClosed = isIncidentClosed(status);
-    return !isClosed && (riacEnabled ? riacAc : true);
+    return !isClosed && canChangeAssignee;
   },
 
   @computed('i18n.locale')
