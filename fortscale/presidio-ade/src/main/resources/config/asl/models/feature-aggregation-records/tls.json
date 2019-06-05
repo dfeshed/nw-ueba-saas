@@ -199,6 +199,39 @@
       }
     },
     {
+      "name": "maxSumOfBytesSentBySrcIp.domainOutbound.tls.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "maxSumOfBytesSentBySrcIpToDomainOutboundTlsHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "maxSumOfBytesSentBySrcIpToDomainOutboundTlsHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIp.domainOutbound.prior.tls.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "maxSumOfBytesSentBySrcIp.domainOutbound.tls.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 10000000,
+        "distanceBetweenSegmentCenters": 10000000,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3,
+        "padding": 10000000
+      }
+    },
+    {
       "name": "numberOfDistinctSrcIp.ja3Outbound.tls.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",

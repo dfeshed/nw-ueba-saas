@@ -241,6 +241,46 @@
       ]
     },
     {
+      "ade-event-type": "aggr_event.maxSumOfBytesSentBySrcIpToDomainSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "maxSumOfBytesSentBySrcIp.domainSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "maxSumOfBytesSentBySrcIp.domainSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "maxSumOfBytesSentBySrcIp.domainSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "maxSumOfBytesSentBySrcIp.domainOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "maxSumOfBytesSentBySrcIp.domainOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
       "ade-event-type": "aggr_event.numberOfDistinctSrcIpJa3OutboundTlsHourly",
       "scorers": [
         {
