@@ -1142,6 +1142,25 @@ indicators:
     featureName: processFilePathHistogram
   classification: registry_run_keys
 
+
+#*********************************************************
+#*                   TLS INDICATORS                      *
+#*********************************************************
+
+- id: numberOfDistinctSrcIpJa3OutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_outbound_src_ip
+  schema: TLS
+  adeEventType: tls
+  anomalyDescriptior:
+    anomalyField: srcIp
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  historicalData:
+    type: hourly_aggregations
+  classification: powershell_scripting
+
 classificationPriority:
 
 - classificationName: credential_dumping
