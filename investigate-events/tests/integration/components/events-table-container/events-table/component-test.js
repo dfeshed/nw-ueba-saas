@@ -293,6 +293,7 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .columnGroup('SUMMARY')
       .hasRequiredValuesToQuery(true)
+      .language()
       .eventThreshold(100000)
       .eventsPreferencesConfig()
       .columnGroups(EventColumnGroups)
@@ -316,6 +317,7 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .columnGroup('SUMMARY')
       .eventThreshold(100000)
+      .language([{ metaName: 'time', format: 'TimeT' }, { metaName: 'medium', format: 'UInt8' }, { metaName: 'custom.meta-summary', format: 'Text' }])
       .eventsPreferencesConfig()
       .columnGroups(EventColumnGroups)
       .eventCount(100000)
@@ -323,8 +325,8 @@ module('Integration | Component | events-table', function(hooks) {
 
     await render(hbs`{{events-table-container/events-table}}`);
     const headerColumns = findAll('.rsa-data-table-header-row div > h2');
-    assert.equal('COLLECTION TIME', headerColumns[0].innerText, 'Expected 1st column');
-    assert.equal('TYPE', headerColumns[1].innerText, 'Expected 2nd column');
+    assert.equal('COLLECTION TIME', headerColumns[0].innerText.trim(), 'Expected 1st column');
+    assert.equal('TYPE', headerColumns[1].innerText.trim(), 'Expected 2nd column');
   });
 
   test('renders event selection checkboxes if only download permissions are present', async function(assert) {

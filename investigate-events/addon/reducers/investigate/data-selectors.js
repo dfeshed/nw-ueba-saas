@@ -157,22 +157,28 @@ export const getSelectedColumnGroup = createSelector(
 );
 
 export const getColumns = createSelector(
-  [getSelectedColumnGroup],
-  (selectedColumns) => {
+  [getSelectedColumnGroup, _languages],
+  (selectedColumns, languages) => {
     if (selectedColumns) {
       const mutableColumns = selectedColumns.columns.asMutable();
-      // slice out `custom.meta-details` column because that is a column
-      // of every single meta and 1) it looks horrible and has likely
-      // never been tested and 2) it causes us to keep all of the meta
-      // for every event in memory and that is no beuno
-
+      // validate and prune columns against
       return mutableColumns.filter((col) => {
-        return ![
+        // metas not included in languages are not valid
+        // examples: meta blacklisted by admin based on user perms/role
+        const validMeta = languages && languages.findBy('metaName', col.field);
+
+        // slice out `custom.meta-details` column because that is a column
+        // of every single meta and 1) it looks horrible and has likely
+        // never been tested and 2) it causes us to keep all of the meta
+        // for every event in memory and that is no beuno
+        const toExclude = [
           'custom.logdata',
           'custom.source',
           'custom.destination',
           'custom.meta-details'
         ].includes(col.field);
+
+        return validMeta && !toExclude;
       });
     }
   }

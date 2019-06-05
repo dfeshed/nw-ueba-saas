@@ -13,6 +13,7 @@ import {
   disableSort
 } from 'investigate-events/reducers/investigate/data-selectors';
 import EventColumnGroups from '../../data/subscriptions/investigate-columns/data';
+import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
 
 module('Unit | Selectors | data-selectors');
 
@@ -376,6 +377,9 @@ test('Should get default column group as Summary', function(assert) {
 test('Should fall back to Summary for wrong column group', function(assert) {
   const state = {
     investigate: {
+      dictionaries: {
+        language: DEFAULT_LANGUAGES
+      },
       data: {
         columnGroup: 'XYZ',
         columnGroups: EventColumnGroups
@@ -392,6 +396,9 @@ test('Should fall back to Summary for wrong column group', function(assert) {
 test('Should get selected column groups', function(assert) {
   const state = {
     investigate: {
+      dictionaries: {
+        language: DEFAULT_LANGUAGES
+      },
       data: {
         columnGroup: 'WEB',
         columnGroups: EventColumnGroups
@@ -407,6 +414,18 @@ test('Should get selected column groups', function(assert) {
 test('Should get mutable columns for data table', function(assert) {
   const state = Immutable.from({
     investigate: {
+      dictionaries: {
+        language: [
+          { metaName: 'time' },
+          { metaName: 'medium' },
+          { metaName: 'custom.theme' },
+          { metaName: 'size' },
+          { metaName: 'nwe.callback_id' },
+          { metaName: 'sessionid' },
+          { metaName: 'ip.dst' },
+          { metaName: 'custom.meta-summary' }
+        ]
+      },
       data: {
         columnGroup: 'SUMMARY',
         columnGroups: EventColumnGroups
@@ -418,10 +437,50 @@ test('Should get mutable columns for data table', function(assert) {
   assert.notOk(columns.isMutable, 'Columns should not be a mutable object.');
 });
 
+test('columns should exclude meta not included in language dictionary', function(assert) {
+  assert.expect(2);
+  const state = Immutable.from({
+    investigate: {
+      dictionaries: {
+        language: [
+          { metaName: 'time' }
+        ]
+      },
+      data: {
+        columnGroup: 'SUMMARY',
+        columnGroups: [{
+          id: 'SUMMARY',
+          name: 'Summary List',
+          ootb: true,
+          columns: [
+            { field: 'time', title: 'Collection Time', width: 135 },
+            { field: 'medium', title: 'Type' }
+          ]
+        }]
+      }
+    }
+  });
+  const columns = getColumns(state);
+  assert.equal(columns.length, 1);
+  assert.equal(columns[0].field, 'time');
+});
+
 test('columns should not include meta-details column', function(assert) {
   assert.expect(5);
   const state = Immutable.from({
     investigate: {
+      dictionaries: {
+        language: [
+          { metaName: 'time' },
+          { metaName: 'medium' },
+          { metaName: 'custom.theme' },
+          { metaName: 'size' },
+          { metaName: 'nwe.callback_id' },
+          { metaName: 'sessionid' },
+          { metaName: 'ip.dst' },
+          { metaName: 'custom.meta-details' }
+        ]
+      },
       data: {
         columnGroup: 'SUMMARY2',
         columnGroups: EventColumnGroups
@@ -429,7 +488,6 @@ test('columns should not include meta-details column', function(assert) {
     }
   });
   const columns = getColumns(state);
-
   assert.equal(columns.length, 4);
   columns.forEach((col) => {
     assert.ok(![
@@ -444,6 +502,15 @@ test('columns should not include meta-details column', function(assert) {
 test('flattened list should include fields inside meta-summary and fields always required', function(assert) {
   const state = Immutable.from({
     investigate: {
+      dictionaries: {
+        language: [
+          { metaName: 'medium' },
+          { metaName: 'nwe.callback_id' },
+          { metaName: 'sessionid' },
+          { metaName: 'ip.dst' },
+          { metaName: 'custom.meta-summary' }
+        ]
+      },
       data: {
         columnGroup: 'SUMMARY',
         columnGroups: EventColumnGroups
@@ -461,6 +528,9 @@ test('flattened list should include fields inside meta-summary and fields always
 test('flattened list of columns do not include summary fields if no meta-summary column', function(assert) {
   const state = Immutable.from({
     investigate: {
+      dictionaries: {
+        language: DEFAULT_LANGUAGES
+      },
       data: {
         columnGroup: 'SUMMARY2',
         columnGroups: EventColumnGroups
@@ -474,6 +544,14 @@ test('flattened list of columns do not include summary fields if no meta-summary
 test('flattened list of columns do not include dupe columns if exist in list and in', function(assert) {
   const state = Immutable.from({
     investigate: {
+      dictionaries: {
+        language: [
+          { metaName: 'medium' },
+          { metaName: 'nwe.callback_id' },
+          { metaName: 'sessionid' },
+          { metaName: 'ip.dst' }
+        ]
+      },
       data: {
         columnGroup: 'SUMMARY3',
         columnGroups: EventColumnGroups
@@ -488,6 +566,14 @@ test('flattened list of columns do not include dupe columns if exist in list and
 test('flattened list should include fields inside metasummary and fields always required', function(assert) {
   const state = Immutable.from({
     investigate: {
+      dictionaries: {
+        language: [
+          { metaName: 'medium' },
+          { metaName: 'nwe.callback_id' },
+          { metaName: 'sessionid' },
+          { metaName: 'ip.dst' }
+        ]
+      },
       data: {
         columnGroup: 'SUMMARY4',
         columnGroups: EventColumnGroups
@@ -501,7 +587,6 @@ test('flattened list should include fields inside metasummary and fields always 
   assert.ok(columns.includes('sessionid'), 'must always include sessionid');
   assert.ok(columns.includes('ip.dst'), 'fields from inside meta-summary are flattened into array');
 });
-
 
 test('Should set hasColumnGroups', function(assert) {
   assert.ok(
@@ -521,6 +606,9 @@ test('Should set hasColumnGroups', function(assert) {
     hasColumnGroups(
       Immutable.from({
         investigate: {
+          dictionaries: {
+            language: DEFAULT_LANGUAGES
+          },
           data: {}
         }
       })
@@ -550,6 +638,13 @@ test('hasMetaSummaryColumn should return true if it has metasummary', function(a
 
   const state = Immutable.from({
     investigate: {
+      dictionaries: {
+        language: [
+          { count: 0, format: 'Text', metaName: 'custom.meta-summary', flags: 2, displayName: 'A', formattedName: 'a (A)' },
+          { count: 0, format: 'Text', metaName: 'size', flags: 2, displayName: 'B', formattedName: 'b (B)' },
+          { count: 0, format: 'Text', metaName: 'custom.theme', flags: 3, displayName: 'C', formattedName: 'c (C)' }
+        ]
+      },
       data: {
         columnGroup: 'SUMMARY',
         columnGroups
@@ -582,6 +677,9 @@ test('hasMetaSummaryColumn should return false if it does not have metasummary',
 
   const state = Immutable.from({
     investigate: {
+      dictionaries: {
+        language: DEFAULT_LANGUAGES
+      },
       data: {
         columnGroup: 'SUMMARY',
         columnGroups
