@@ -103,6 +103,32 @@
           }
         }
       ]
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDstOrgScoresSumSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "aggr_event.maxSumOfBytesSentBySrcIpToDstOrgSslSubjectOutboundTlsHourly"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "maxSumOfBytesSentBySrcIpToDstOrgScoresSum",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstOrg"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
     }
   ]
 }
