@@ -79,7 +79,7 @@
     "ember-resolver": "4.3.0",
     "ember-simple-auth": "file:ember-simple-auth",
     "ember-sinon": "2.2.0",
-    "ember-sortable": "1.12.7",
+    "ember-sortable": "1.12.8",
     "ember-source": "3.9.0",
     "ember-spaniel": "0.6.2",
     "ember-symbol-observable": "1.0.2",

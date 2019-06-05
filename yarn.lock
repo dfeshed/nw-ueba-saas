@@ -668,7 +668,7 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@ember/jquery@0.6.0", "@ember/jquery@^0.6.0":
+"@ember/jquery@0.6.0":
   version "0.6.0"
   resolved "https://registry.npmjs.org/@ember/jquery/-/jquery-0.6.0.tgz#5fe9d39b15c9d47fe495302b2a6176059a6267cd"
   dependencies:
@@ -4992,11 +4992,10 @@ ember-sinon@2.2.0:
     ember-cli-babel "^6.6.0"
     sinon "^6.0.1"
 
-ember-sortable@1.12.7:
-  version "1.12.7"
-  resolved "https://registry.npmjs.org/ember-sortable/-/ember-sortable-1.12.7.tgz#29bff9ca5d0630c8a3dabd7e31b4b86a981a862a"
+ember-sortable@1.12.8:
+  version "1.12.8"
+  resolved "https://registry.npmjs.org/ember-sortable/-/ember-sortable-1.12.8.tgz#7ff4de993b557a55983b870c61a4aa9bc4679582"
   dependencies:
-    "@ember/jquery" "^0.6.0"
     ember-cli-babel "^7.1.2"
     ember-cli-htmlbars "^3.0.0"
 
