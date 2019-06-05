@@ -11,6 +11,13 @@ require('mock-server').startServer({
       response: (req, res) => {
         res.download('tests/data/routes/export/dummy-success.zip', 'foobar.zip');
       }
+    },
+    {
+      path: '/api/respond/rules/import',
+      method: 'post',
+      response: (req, res) => {
+        res.status(200).json(['rule-id1', 'rule-id2']);
+      }
     }
   ]
 });

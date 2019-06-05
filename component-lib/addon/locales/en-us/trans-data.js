@@ -854,6 +854,7 @@ export default {
       deleteRule: 'Delete',
       cloneRule: 'Clone',
       export: 'Export',
+      import: 'Import',
       enable: 'Enable',
       disable: 'Disable',
       select: 'Select',
@@ -957,6 +958,8 @@ export default {
         saveFailure: 'There was a problem saving the changes to the rule',
         exportSuccess: 'You successfully exported the selected rules',
         exportFailure: 'There was a problem exporting the selected rules',
+        importSuccess: 'You successfully imported the rules from the selected file',
+        importFailure: 'There was a problem importing the rules from the selected file',
         duplicateNameFailure: 'There is already another rule with the same name. Please modify the rule name so that it is unique.'
       },
       missingRequiredInfo: 'There is required information missing from the incident rule'

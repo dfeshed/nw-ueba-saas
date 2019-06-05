@@ -7,6 +7,13 @@
         {{/rsa-form-button}}
       {{/link-to}}
     </div>
+    <div class="action-control import-rules-button">
+      {{#rsa-form-button
+        defaultAction=(action 'import')
+      }}
+        {{t 'configure.incidentRules.import'}}
+      {{/rsa-form-button}}
+    </div>
     <div class="action-control export-rules-button">
       {{#rsa-form-button
         isDisabled=isNoneSelected

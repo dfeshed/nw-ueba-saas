@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import Confirmable from 'component-lib/mixins/confirmable';
-import { deleteRule, cloneRule, enableRules, disableRules } from 'configure/actions/creators/respond/incident-rule-creators';
+import { deleteRule, cloneRule, enableRules, disableRules, getRules } from 'configure/actions/creators/respond/incident-rule-creators';
 import {
   hasOneSelectedRule,
   getSelectedIncidentRules,
@@ -70,6 +70,32 @@ const fetchRules = (selRules, csrfKey) => {
   });
 };
 
+const triggerUpload = (dispatch, csrfKey) => {
+  const input = document.createElement('input');
+  input.style.display = 'none';
+  input.type = 'file';
+  input.accept = '.zip';
+  input.addEventListener('change', () => {
+    const formData = new FormData();
+    formData.append('import-file', input.files[0]);
+    fetch('/api/respond/rules/import', {
+      mode: 'same-origin',
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-CSRF-TOKEN': localStorage.getItem(csrfKey)
+      }
+    }).then(() => {
+      dispatch(getRules());
+      success('configure.incidentRules.actionMessages.importSuccess');
+    }, () => {
+      failure('configure.incidentRules.actionMessages.importFailure');
+    });
+  });
+  document.body.appendChild(input);
+  input.click();
+};
+
 const stateToComputed = (state) => ({
   hasOneSelectedRule: hasOneSelectedRule(state),
   selectedRules: getSelectedIncidentRules(state),
@@ -101,6 +127,11 @@ const dispatchToActions = function(dispatch) {
       const selRules = this.get('selectedRules');
       const csrfKey = this.get('csrfLocalstorageKey');
       fetchRules(selRules, csrfKey);
+    },
+
+    import: () => {
+      const csrfKey = this.get('csrfLocalstorageKey');
+      triggerUpload(dispatch, csrfKey);
     },
 
     enable: () => {
