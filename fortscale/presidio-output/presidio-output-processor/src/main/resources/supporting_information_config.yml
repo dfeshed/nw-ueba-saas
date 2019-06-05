@@ -1288,6 +1288,23 @@ indicators:
     featureName: dstPortHistogram
   classification:
 
+- id: highestStartInstantScoreSslSubjectOutboundTlsHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_ssl_subject_day_time
+  adeEventType: scored_enriched.tls.startInstant.sslSubjectOutbound.tls.score
+  modelContextFields:
+    - sslSubject
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: eventDate
+  splitFields:
+    - eventDate
+  historicalData:
+    type: weekday_aggregations
+    featureBucketConfName: startInstantHistogramSslSubjectOutboundTlsDaily
+    featureName: startInstantHistogram
+  classification: non_standard_hours
+
 #***************************************
 #*                ja3                  *
 #***************************************
@@ -1417,6 +1434,23 @@ indicators:
     featureBucketConfName: dstPortHistogramSslSubjectOutboundTlsDaily
     featureName: dstPortHistogram
   classification:
+
+- id: highestStartInstantSslSubjectOutboundScoreJa3TlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_ssl_subject_day_time
+  adeEventType: scored_enriched.tls.startInstant.sslSubjectOutbound.tls.score
+  modelContextFields:
+    - sslSubject
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: eventDate
+  splitFields:
+    - sslSubject
+  historicalData:
+    type: weekday_aggregations
+    featureBucketConfName: startInstantHistogramSslSubjectOutboundTlsDaily
+    featureName: startInstantHistogram
+  classification: non_standard_hours
 
 classificationPriority:
 
