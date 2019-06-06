@@ -84,6 +84,26 @@ export default reduxActions.handleActions({
     return state.set('rawData', newData);
   },
 
+  [ACTION_TYPES.SET_LOCAL_RISK_SCORE]: (state, { payload: { score } }) => {
+    const { rawData } = state;
+    const newData = rawData.map((data) => {
+      let localScore = null;
+      if (score) { // Error case score will be null
+        localScore = 0; // Success case set the default value to 0
+        const filter = score.filter((item) => {
+          return item.id === data.checksumDst;
+        });
+
+        if (filter && filter.length) {
+          localScore = filter[0].score;
+        }
+      }
+      const newData = data.merge({ localScore });
+      return newData;
+    });
+    return state.set('rawData', newData);
+  },
+
   [ACTION_TYPES.GET_FILE_PROPERTY]: (state, action) => {
     return handle(state, action, {
       success: (s) => {

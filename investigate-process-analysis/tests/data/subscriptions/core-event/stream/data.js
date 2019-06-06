@@ -22,7 +22,7 @@ export default function() {
         ],
         [
           'checksum.dst',
-          '0769b94396554b157ff08179c76061ac'
+          '07d15ddf2eb7be486d01bcabab7ad8df35b7942f25f5261e3c92cd7a8931190b'
         ],
         [
           'process.vid.src',
@@ -68,7 +68,7 @@ export default function() {
         ],
         [
           'checksum.dst',
-          '0769b94396554b157ff08179c76061a1'
+          '07d15ddf2eb7be486d01bcabab7ad8df35b7942f25f5261e3c92cd7a8931190c'
         ],
         [
           'process.vid.src',
@@ -114,7 +114,7 @@ export default function() {
         ],
         [
           'checksum.dst',
-          '0769b94396554b157ff08179c76061ac'
+          '07d15ddf2eb7be486d01bcabab7ad8df35b7942f25f5261e3c92cd7a8931190c'
         ],
         [
           'process.vid.src',
@@ -160,7 +160,7 @@ export default function() {
         ],
         [
           'checksum.dst',
-          '0769b94396554b157ff08179c76061ac'
+          '07d15ddf2eb7be486d01bcabab7ad8df35b7942f25f5261e3c92cd7a8931190c'
         ],
         [
           'process.vid.src',

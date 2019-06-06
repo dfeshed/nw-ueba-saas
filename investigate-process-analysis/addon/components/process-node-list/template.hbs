@@ -25,7 +25,7 @@
           {{rsa-form-checkbox checked=item.selected change=(action 'toggleSelection' item)}}
         </label>
       {{/rsa-data-table/body-cell}}
-    {{else if (eq column.field 'data.riskScore')}}
+    {{else if (eq column.field 'data.localScore')}}
       {{#rsa-data-table/body-cell item=item column=column}}
         <centered>
           {{#if (get item column.field)}}

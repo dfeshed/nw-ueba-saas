@@ -158,6 +158,29 @@ module('Unit | Reducers | process-tree', function() {
     assert.equal(result.selectedServerId, 'abc-test-server');
   });
 
+  test('raghs SET_LOCAL_RISK_SCORE sets the score', function(assert) {
+    const previous = Immutable.from({
+      rawData: [
+        {
+          sessionId: 45328,
+          time: 1525950159000,
+          checksumDst: '1234567890'
+        },
+        {
+          sessionId: 45337,
+          time: 1525950159000,
+          checksumDst: '1234567891'
+        }
+      ]
+    });
+    let result = reducer(previous, { type: ACTION_TYPES.SET_LOCAL_RISK_SCORE, payload: { score: [{ id: '1234567891', score: 100 }] } });
+    assert.equal(result.rawData[1].localScore, 100, 'Expected 100');
+    assert.equal(result.rawData[0].localScore, 0);
+    result = reducer(previous, { type: ACTION_TYPES.SET_LOCAL_RISK_SCORE, payload: { score: null } });
+    assert.equal(result.rawData[1].localScore, null);
+    assert.equal(result.rawData[0].localScore, null);
+  });
+
   test('GET_FILE_PROPERTY will sets file property', function(assert) {
     const previous = Immutable.from({
       fileProperty: null

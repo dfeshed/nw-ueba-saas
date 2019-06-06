@@ -5,6 +5,10 @@ import { hierarchy } from 'd3-hierarchy';
 import { select, selectAll } from 'd3-selection';
 
 const _getRiskScoreClass = (riskScore) => {
+  if (riskScore === null) {
+    return '';
+  }
+
   let riskClass = 'is-low';
   if (riskScore <= 30) {
     riskClass = 'is-low';
@@ -15,7 +19,7 @@ const _getRiskScoreClass = (riskScore) => {
   } else if (riskScore > 99) {
     riskClass = 'is-danger';
   }
-  return riskClass;
+  return `local-risk-score ${riskClass}`;
 };
 
 export const addSelectedClass = (id) => {
@@ -127,17 +131,17 @@ export const addNodeContent = (processNode, nodeEnter) => {
   });
 
   // draw risk score
-  const riskScore = Math.floor(Math.random() * 100);
   processNode.append('circle')
     .attr('cx', DISTANCE.SCORE_X)
     .attr('cy', DISTANCE.SCORE_Y)
     .attr('r', CONST.RADIUS)
-    .attr('class', _getRiskScoreClass(riskScore));
+    .attr('style', (d) => d.data.localScore == null ? 'display: none;' : null)
+    .attr('class', (d) => _getRiskScoreClass(d.data.localScore));
 
   processNode.append('text')
     .attr('dx', DISTANCE.SCORE_X)
     .attr('dy', DISTANCE.SCORE_Y + 4)
-    .text(riskScore)
+    .text((d) => d.data.localScore)
     .attr('class', 'score-text');
 
 

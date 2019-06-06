@@ -424,4 +424,25 @@ module('Integration | Component | process-tree', function(hooks) {
     });
 
   });
+
+  test('it should hide the score element if score is null', async function(assert) {
+    const queryInputs = {
+      sid: '1',
+      vid: '3',
+      pn: 'test',
+      st: 1231233,
+      et: 13123,
+      osType: 'windows',
+      checksum: '07d15ddf2eb7be486d01bcabab7ad8df35b7942f25f5261e3c92cd7a8931190a',
+      aid: '51687D32-BB0F-A424-1D64-A8B94C957BD2'
+    };
+    this.set('queryInput', queryInputs);
+    new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInputs).build();
+    await render(hbs`{{process-tree queryInput=queryInput}}`);
+    await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
+    assert.equal(findAll('rect.process').length, 4, 'Render 4 nodes initially');
+    assert.equal(findAll('[data-id=\'1\'] .local-risk-score').length, 0, 'No Risk Score');
+    assert.equal(findAll('[data-id=\'2\'] .local-risk-score').length, 1, 'No Risk Score');
+  });
+
 });

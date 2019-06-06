@@ -9,7 +9,7 @@ const data = [
   {
     data: {
       processName: 'malware.exe',
-      riskScore: 100,
+      localScore: 90,
       machineCount: 10,
       selected: false
     }
@@ -17,7 +17,7 @@ const data = [
   {
     data: {
       processName: 'chrome.exe',
-      riskScore: 70,
+      localScore: 70,
       machineCount: 1,
       selected: false
     }
@@ -25,7 +25,7 @@ const data = [
   {
     data: {
       processName: 'virus.exe',
-      riskScore: 90,
+      localScore: 100,
       machineCount: 3,
       selected: false
     }
@@ -59,6 +59,7 @@ module('Integration | Component | process-node-list', function(hooks) {
     assert.strictEqual(document.querySelectorAll('.rsa-data-table').length, 1, 'Process node list table rendered');
     assert.strictEqual(document.querySelectorAll('.rsa-data-table-header-cell').length, 5, '5 columns are rendered');
     assert.strictEqual(document.querySelectorAll('.rsa-data-table-body-row').length, 3, '3 rows are rendered');
+    assert.strictEqual(document.querySelectorAll('.rsa-risk-score')[0].textContent.trim(), '100');
   });
 
   test('clicking on the header checkbox selects all the row', async function(assert) {
@@ -91,16 +92,16 @@ module('Integration | Component | process-node-list', function(hooks) {
   test('on clicking the process name sorts the table', async function(assert) {
     this.set('nodeList', testData);
     this.set('currentSort', {
-      field: 'data.processName',
+      field: 'data.localScore',
       direction: 'desc'
     });
     await render(hbs`{{process-node-list nodeList=nodeList currentSort=currentSort}}`);
     assert.strictEqual(document.querySelectorAll('.rsa-data-table-header-cell.is-sorted .rsa-icon-arrow-down-7-filled').length, 1, 'Default arrow up icon before sorting');
-    assert.strictEqual(document.querySelector('.process-node-list .rsa-data-table-body-row:nth-child(1) .rsa-data-table-body-cell:nth-child(2)').textContent.trim(), 'malware.exe');
-    await click(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('.rsa-icon'));
     assert.strictEqual(document.querySelector('.process-node-list .rsa-data-table-body-row:nth-child(1) .rsa-data-table-body-cell:nth-child(2)').textContent.trim(), 'virus.exe');
     await click(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('.rsa-icon'));
     assert.strictEqual(document.querySelector('.process-node-list .rsa-data-table-body-row:nth-child(1) .rsa-data-table-body-cell:nth-child(2)').textContent.trim(), 'chrome.exe');
+    await click(document.querySelectorAll('.rsa-data-table-header-cell')[1].querySelector('.rsa-icon'));
+    assert.strictEqual(document.querySelector('.process-node-list .rsa-data-table-body-row:nth-child(1) .rsa-data-table-body-cell:nth-child(2)').textContent.trim(), 'virus.exe');
   });
 
   test('clicking on the checkbox select the row', async function(assert) {

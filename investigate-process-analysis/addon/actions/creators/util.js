@@ -128,6 +128,11 @@ export const getMetaFilterFor = (filterFor, agentId, pid, filters) => {
   return { conditions };
 };
 
+const _hasSha256 = (hash) => {
+  return hash && hash.length === 64;
+};
+
+
 /**
  * Event response is in ['key', 'value] formate, So need to convert the event meta into object
  * @param {*} event
@@ -150,12 +155,18 @@ export const hasherizeEventMeta = (event) => {
       if (meta[0] === 'agent.id') {
         event.agentId = meta[1];
       }
+
       if (meta[0] === 'checksum.dst') {
-        if (meta[1].length === 64) {
-          event.checksum = meta[1];
+        if (_hasSha256(meta[1])) {
+          event.checksumDst = meta[1];
         }
+      } else if (meta[0] === 'checksum.src') {
+        if (_hasSha256(meta[1])) {
+          event.checksumSrc = meta[1];
+        }
+      } else {
+        event[camelize(meta[0])] = meta[1];
       }
-      event[camelize(meta[0])] = meta[1];
     }
     event.childCount = 0;
     event.metas = null;

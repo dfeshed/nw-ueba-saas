@@ -7,6 +7,7 @@ const cancelDestination = '/ws/investigate/cancel';
 const processAnalysisConfigGen = function(env) {
   const endpointSocketUrl = common.determineSocketUrl(env, '/endpoint/socket');
   const eventsSocketURL = common.determineSocketUrl(env, '/investigate/socket');
+  const respondSocketURL = common.determineSocketUrl(env, '/respond/socket');
   return {
     'endpoint': {
       socketUrl: endpointSocketUrl,
@@ -42,6 +43,13 @@ const processAnalysisConfigGen = function(env) {
       query: {
         subscriptionDestination: '/user/queue/investigate/summary',
         requestDestination: '/ws/investigate/summary'
+      }
+    },
+    'risk-score': {
+      socketUrl: respondSocketURL,
+      localRiskScore: {
+        subscriptionDestination: '/user/queue/risk/local/score',
+        requestDestination: '/ws/respond/risk/local/score'
       }
     }
   };

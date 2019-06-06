@@ -21,7 +21,7 @@ const COLUMNS = [
   },
   {
     width: '5vw',
-    field: 'data.riskScore',
+    field: 'data.localScore',
     title: 'investigateProcessAnalysis.nodeList.riskScore'
   },
   {
@@ -48,13 +48,13 @@ export default Component.extend({
   nodeList: null,
 
   currentSort: {
-    field: 'data.riskScore',
+    field: 'data.localScore',
     direction: 'desc'
   },
 
   @computed('nodeList')
   nodeListCopy(nodeList) {
-    return _.cloneDeep(nodeList);
+    return _.cloneDeep(nodeList).sort((node1, node2) => node2.data.localScore - node1.data.localScore);
   },
 
   @computed('nodeListCopy')
