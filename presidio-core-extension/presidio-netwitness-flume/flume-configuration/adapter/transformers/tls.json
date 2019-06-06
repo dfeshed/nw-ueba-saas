@@ -97,15 +97,6 @@
       ]
     },
     {
-      "type": "copy_value",
-      "name": "rename-analysis-service",
-      "sourceKey": "analysis_service",
-      "isRemoveSourceKey": true,
-      "destinationKeys": [
-        "isSelfSigned"
-      ]
-    },
-    {
       "type": "top_level_domain",
       "name": "alias-host-to-top-level-domain",
       "sourceKey": "alias_host[0]",
