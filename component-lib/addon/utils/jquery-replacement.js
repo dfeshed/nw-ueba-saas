@@ -34,7 +34,8 @@ export const isNumeric = (x) => {
 // document.querySelector('.some-element').closest()
 
 // $('.some-elements').first()
-// document.querySelectorAll('.some-elements')[0]
+// document.querySelectorAll('.some-element').item(0)
+// findAll('.some-element').shift()
 
 //
 // MANIPULATING ELEMENTS
@@ -49,6 +50,13 @@ export const isNumeric = (x) => {
 
 // $('.some-element').focus()
 // document.querySelector('.some-element').focus();
+// await focus('.some-element');
+
+// $('.some-element').blur()
+// {
+//    await focus('.some-element');
+//    this.element.querySelector('.some-element').blur();
+// }
 
 //
 // STYLE
@@ -104,4 +112,7 @@ export const isNumeric = (x) => {
 //
 
 // this.$('.some-element').prop('some-attribute')
+// document.querySelector('.some-element').getAttribute('some-attribute')
+
+// this.$('.some-element').attr('some-attribute)
 // document.querySelector('.some-element').getAttribute('some-attribute')
