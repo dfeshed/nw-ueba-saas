@@ -28,9 +28,7 @@ import java.util.List;
 })
 public class IndicatorConfig {
 
-    public IndicatorConfig() {
-        this.modelContextFields = new ArrayList(Arrays.asList(CommonStrings.CONTEXT_USERID));
-    }
+    public IndicatorConfig() { }
 
     @JsonProperty("id")
     private String id;
