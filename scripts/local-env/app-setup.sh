@@ -13,8 +13,8 @@ function prepareApp {
     # https://blogs.windows.com/buildingapps/2016/12/02/symlinks-windows-10/
     info "Ensure you are running on elevated privileges, else the next command will fail!"
     cmd //c 'mklink /D node_modules ..\node_modules'
-    # TO_FIX: ember windows not working because of symbolic links
-    # ember windows
+    # To improve build time on windows, this optimizes windows defender and search index
+    ember-cli-windows
   fi
 
   yarn link mock-server --silent
