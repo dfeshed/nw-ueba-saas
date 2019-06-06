@@ -1,6 +1,6 @@
 <box class="content-body">
   {{#each updatedConfig as |config|}}
-    <div class='filter-controls'>
+    <div class='filter-controls' test-id={{replace-dot config.filterOptions.name}}>
       {{component config.component onChange=(action 'onChange') isReset=isReset filterOptions=config.filterOptions}}
     </div>
   {{/each}}

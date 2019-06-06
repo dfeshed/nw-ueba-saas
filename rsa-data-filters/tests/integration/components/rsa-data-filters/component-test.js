@@ -7,7 +7,7 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
   setupRenderingTest(hooks);
 
   test('it renders configured filters', async function(assert) {
-    this.set('config', [{ type: 'text', name: 'filterName' }, { type: 'list', listOptions: [{ name: 'one', label: 'ONE' }] }]);
+    this.set('config', [{ type: 'text', name: 'filterName' }, { type: 'list', listOptions: [{ name: 'one', label: 'ONE' }], name: 'filter2' }]);
     await render(hbs`{{rsa-data-filters config=config}}`);
     assert.equal(findAll('.filter-controls').length, 2, 'Expecting to render one filter control');
     assert.equal(findAll('.text-filter').length, 1, 'Expected render text filter');
