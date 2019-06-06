@@ -68,6 +68,9 @@
                             </sources>
                         </mapping>
                     </mappings>
+                    <preinstallScriptlet>
+                        <script>rm -rf ${presidio-app.directory}/elasticsearch/init/data/indexes/*</script>
+                    </preinstallScriptlet>
                     <requires>
                         <require>python &gt;= 2.7.5</require>
                         <require>unzip</require>
