@@ -27,6 +27,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     public static final String JA3S_FIELD_NAME = "ja3s";
     public static final String DIRECTION_FIELD_NAME = "direction";
     public static final String DESTINATION_PORT_FIELD_NAME = "dstPort";
+    public static final String FQDN_FIELD_NAME = "fqdn";
 
 
 
@@ -79,6 +80,9 @@ public class TlsRawEvent extends AbstractInputDocument {
     @Field(DESTINATION_PORT_FIELD_NAME)
     private Integer dstPort;
 
+    @Field(FQDN_FIELD_NAME)
+    private String fqdn;
+
 
 
     public TlsRawEvent(){super();}
@@ -101,12 +105,13 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.ja3s = other.ja3s;
         this.direction = other.direction;
         this.dstPort = other.dstPort;
+        this.fqdn = other.fqdn;
     }
 
     public TlsRawEvent(Instant dateTime, String eventId, String dataSource, Map<String, String> additionalInfo,
                        String srcIp, String dstIp, String srcCountry, String dstCountry, String sslSubject, String domain, String dstOrg,
                        String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
-                       String dstNetname, String ja3, String ja3s, String direction, Integer dstPort) {
+                       String dstNetname, String ja3, String ja3s, String direction, Integer dstPort, String fqdn) {
         super(dateTime, eventId, dataSource, additionalInfo);
         this.srcIp = srcIp;
         this.dstIp = dstIp;
@@ -124,6 +129,7 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.ja3s = ja3s;
         this.direction = direction;
         this.dstPort = dstPort;
+        this.fqdn = fqdn;
     }
 
 
@@ -255,6 +261,13 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.dstPort = dstPort;
     }
 
+    public String getFqdn() {
+        return fqdn;
+    }
+
+    public void setFqdn(String fqdn) {
+        this.fqdn = fqdn;
+    }
 
     @Override
     public String toString() {
