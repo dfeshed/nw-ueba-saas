@@ -31,7 +31,6 @@ public class EnrichedTlsRecord extends EnrichedRecord {
     public static final String JA3S_FIELD_NAME = "ja3s";
     public static final String DIRECTION_FIELD_NAME = "direction";
     public static final String DESTINATION_PORT_FIELD_NAME = "dstPort";
-    public static final String IS_SELF_SIGNED_FIELD_NAME = "isSelfSigned";
 
 
     @Field(SOURCE_IP_FIELD_NAME)
@@ -81,9 +80,6 @@ public class EnrichedTlsRecord extends EnrichedRecord {
 
     @Field(DESTINATION_PORT_FIELD_NAME)
     private Integer dstPort;
-
-    @Field(IS_SELF_SIGNED_FIELD_NAME)
-    private Boolean isSelfSigned;
 
 
 
@@ -229,13 +225,5 @@ public class EnrichedTlsRecord extends EnrichedRecord {
 
     public void setDstPort(Integer dstPort) {
         this.dstPort = dstPort;
-    }
-
-    public Boolean getSelfSigned() {
-        return isSelfSigned;
-    }
-
-    public void setSelfSigned(Boolean selfSigned) {
-        isSelfSigned = selfSigned;
     }
 }

@@ -32,7 +32,6 @@ public class TlsTransformerTest extends TransformerTest{
     private static final String UDM_JA3S_FIELD_NAME = "ja3s";
     private static final String UDM_DIRECTION_FIELD_NAME = "direction";
     private static final String UDM_DST_PORT_FIELD_NAME = "tcp_dstport";
-    private static final String UDM_IS_SELF_SIGNED_FIELD_NAME = "analysis_service";
 
     private static final String EVENT_ID_FIELD_NAME = "eventId";
     private static final String DATA_SOURCE_FIELD_NAME = "dataSource";
@@ -55,7 +54,6 @@ public class TlsTransformerTest extends TransformerTest{
     private static final String DIRECTION_FIELD_NAME = "direction";
     private static final String DST_PORT_FIELD_NAME = "dstPort";
     private static final String FQDN_FIELD_NAME = "fqdn";
-    private static final String IS_SELF_SIGNED_FIELD_NAME = "isSelfSigned";
 
     private static final String OUTBOUND_DIRECTION = "OUTBOUND";
 
@@ -151,15 +149,6 @@ public class TlsTransformerTest extends TransformerTest{
                         true,
                         Collections.singletonList(SSL_CA_FIELD_NAME));
         transformerChainList.add(renameSslCa);
-
-        //rename analysis.service
-        CopyValueTransformer renameAnalysisService =
-                new CopyValueTransformer(
-                        "rename-analysis-service",
-                        UDM_IS_SELF_SIGNED_FIELD_NAME,
-                        true,
-                        Collections.singletonList(IS_SELF_SIGNED_FIELD_NAME));
-        transformerChainList.add(renameAnalysisService);
 
         //extract from the first value of alias host the top level domain.
         TopLevelDomainTransformer aliasHostToTopLevelDomain =

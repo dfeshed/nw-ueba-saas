@@ -32,7 +32,6 @@ public class TlsInputToOutputConverter implements InputOutputConverter {
         outputEvent.setSslSubject(tlsTransformedEvent.getSslSubject());
         outputEvent.setSslCa(tlsTransformedEvent.getSslCa());
         outputEvent.setFqdn(tlsTransformedEvent.getFqdn());
-        outputEvent.setSelfSigned(tlsTransformedEvent.getSelfSigned());
         outputEvent.setAdditionalInfo(tlsTransformedEvent.getAdditionalInfo());
 
         return outputEvent;

@@ -30,7 +30,6 @@ public class TlsRawEvent extends AbstractInputDocument {
     public static final String DESTINATION_PORT_FIELD_NAME = "dstPort";
     public static final String FQDN_FIELD_NAME = "fqdn";
     public static final String SSL_CA_FIELD_NAME = "sslCa";
-    public static final String IS_SELF_SIGNED_FIELD_NAME = "isSelfSigned";
 
 
 
@@ -89,9 +88,6 @@ public class TlsRawEvent extends AbstractInputDocument {
     @Field(SSL_CA_FIELD_NAME)
     private List<String> sslCa;
 
-    @Field(IS_SELF_SIGNED_FIELD_NAME)
-    private Boolean isSelfSigned;
-
 
 
     public TlsRawEvent(){super();}
@@ -116,7 +112,6 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.dstPort = other.dstPort;
         this.fqdn = other.fqdn;
         this.sslCa = other.sslCa;
-        this.isSelfSigned = other.isSelfSigned;
     }
 
     public TlsRawEvent(Instant dateTime, String eventId, String dataSource, Map<String, String> additionalInfo,
@@ -124,7 +119,7 @@ public class TlsRawEvent extends AbstractInputDocument {
                        String domain, String dstOrg,
                        String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
                        String dstNetname, String ja3, String ja3s, String direction, Integer dstPort, List<String> fqdn,
-                       List<String> sslCa, Boolean isSelfSigned) {
+                       List<String> sslCa) {
         super(dateTime, eventId, dataSource, additionalInfo);
         this.srcIp = srcIp;
         this.dstIp = dstIp;
@@ -144,7 +139,6 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.dstPort = dstPort;
         this.fqdn = fqdn;
         this.sslCa = sslCa;
-        this.isSelfSigned = isSelfSigned;
     }
 
 
@@ -290,14 +284,6 @@ public class TlsRawEvent extends AbstractInputDocument {
 
     public void setSslCa(List<String> sslCa) {
         this.sslCa = sslCa;
-    }
-
-    public Boolean getSelfSigned() {
-        return isSelfSigned;
-    }
-
-    public void setSelfSigned(Boolean selfSigned) {
-        isSelfSigned = selfSigned;
     }
 
     @Override

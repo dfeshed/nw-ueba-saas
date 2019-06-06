@@ -29,7 +29,6 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     public static final String DESTINATION_PORT_FIELD_NAME = "dstPort";
     public static final String FQDN_FIELD_NAME = "fqdn";
     public static final String SSL_CA_FIELD_NAME = "sslCa";
-    public static final String IS_SELF_SIGNED_FIELD_NAME = "isSelfSigned";
 
 
 
@@ -88,9 +87,6 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     @Field(SSL_CA_FIELD_NAME)
     private List<String> sslCa;
 
-    @Field(IS_SELF_SIGNED_FIELD_NAME)
-    private Boolean isSelfSigned;
-
 
 
     public TlsEnrichedEvent(){}
@@ -101,7 +97,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
                             String domain, String dstOrg,
                             String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
                             String dstNetname, String ja3, String ja3s, String direction, Integer dstPort,
-                            List<String> fqdn, List<String> sslCa, Boolean isSelfSigned) {
+                            List<String> fqdn, List<String> sslCa) {
         super(createdDate, eventDate, eventId, schema, dataSource, additionalInfo);
         this.srcIp = srcIp;
         this.dstIp = dstIp;
@@ -121,7 +117,6 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.dstPort = dstPort;
         this.fqdn = fqdn;
         this.sslCa = sslCa;
-        this.isSelfSigned = isSelfSigned;
     }
 
 
@@ -268,13 +263,5 @@ public class TlsEnrichedEvent extends EnrichedEvent {
 
     public void setSslCa(List<String> sslCa) {
         this.sslCa = sslCa;
-    }
-
-    public Boolean getSelfSigned() {
-        return isSelfSigned;
-    }
-
-    public void setSelfSigned(Boolean selfSigned) {
-        isSelfSigned = selfSigned;
     }
 }

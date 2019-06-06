@@ -19,7 +19,6 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
     private String ja3s;
     private String direction;
     private Integer dstPort;
-    private Boolean isSelfSigned;
 
 
     public AdeEnrichedTlsContext() {
@@ -42,7 +41,6 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
         this.dstIp = enrichedTlsRecord.getDstIp();
         this.srcNetname = enrichedTlsRecord.getSrcNetname();
         this.sslSubject = enrichedTlsRecord.getSslSubject();
-        this.isSelfSigned = enrichedTlsRecord.getSelfSigned();
     }
 
     public String getSrcIp() {
@@ -155,13 +153,5 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
 
     public void setDstPort(Integer dstPort) {
         this.dstPort = dstPort;
-    }
-
-    public Boolean getSelfSigned() {
-        return isSelfSigned;
-    }
-
-    public void setSelfSigned(Boolean selfSigned) {
-        isSelfSigned = selfSigned;
     }
 }
