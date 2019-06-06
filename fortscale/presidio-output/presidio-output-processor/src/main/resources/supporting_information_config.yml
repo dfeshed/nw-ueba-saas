@@ -8,6 +8,8 @@ indicators:
   type: SCORE_AGGREGATION
   name: abnormal_file_day_time
   adeEventType: scored_enriched.file.startInstant.userId.file.score
+  modelContextFields:
+    - userId
   schema: FILE
   anomalyDescriptior:
     anomalyField: eventDate
@@ -23,6 +25,8 @@ indicators:
   type: SCORE_AGGREGATION
   name: abnormal_file_permision_change_operation_type
   adeEventType: scored_enriched.file.operationType.userIdFilePermissionChange.file.score
+  modelContextFields:
+    - userId
   schema: FILE
   anomalyDescriptior:
     anomalyField: operationType
@@ -42,6 +46,8 @@ indicators:
   name: abnormal_file_action_operation_type
   schema: FILE
   adeEventType: scored_enriched.file.operationType.userIdFileAction.file.score
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationType
   splitFields:
@@ -57,6 +63,8 @@ indicators:
   name: high_number_of_successful_file_permission_change
   schema: FILE
   adeEventType: file
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationTypeCategories
     anomalyValue: FILE_PERMISSION_CHANGE
@@ -72,6 +80,8 @@ indicators:
   name: high_number_of_successful_file_action_operations
   schema: FILE
   adeEventType: file
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationTypeCategories
     anomalyValue: FILE_ACTION
@@ -87,6 +97,8 @@ indicators:
   name: high_number_of_failed_file_permission_change_attempts
   schema: FILE
   adeEventType: file
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationTypeCategories
     anomalyValue: FILE_PERMISSION_CHANGE
@@ -102,6 +114,8 @@ indicators:
   name: high_number_of_failed_file_action_attempts
   schema: FILE
   adeEventType: file
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationTypeCategories
     anomalyValue: FILE_ACTION
@@ -117,6 +131,8 @@ indicators:
   name: high_number_of_distinct_files_opened_attempts
   schema: FILE
   adeEventType: file
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationType
     anomalyValue: FILE_OPENED
@@ -130,6 +146,8 @@ indicators:
   name: high_number_of_distinct_folders_opened_attempts
   schema: FILE
   adeEventType: file
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationType
     anomalyValue: FOLDER_OPENED
@@ -143,6 +161,8 @@ indicators:
   name: high_number_of_deletions
   schema: FILE
   adeEventType: file
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationType
     anomalyValue: FILE_DELETED
@@ -155,6 +175,8 @@ indicators:
   name: high_number_of_successful_file_rename_operations
   schema: FILE
   adeEventType: file
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationType
     anomalyValue: FILE_RENAMED
@@ -170,6 +192,8 @@ indicators:
   name: high_number_of_file_move_operations
   schema: FILE
   adeEventType: file
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationType
     anomalyValue: FILE_MOVED
@@ -182,6 +206,8 @@ indicators:
   name: high_number_of_file_move_operations_from_shared_drive
   schema: FILE
   adeEventType: file
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationType
     anomalyValue: FILE_MOVED
@@ -197,6 +223,8 @@ indicators:
   name: high_number_of_file_move_operations_to_shared_drive
   schema: FILE
   adeEventType: file
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationType
     anomalyValue: FILE_MOVED
@@ -212,6 +240,8 @@ indicators:
   name: high_number_of_file_downloaded_operations
   schema: FILE
   adeEventType: file
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationType
     anomalyValue: FILE_DOWNLOADED
@@ -224,6 +254,8 @@ indicators:
   name: high_number_of_file_copied_operations
   schema: FILE
   adeEventType: file
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationType
     anomalyValue: FILE_COPIED
@@ -240,6 +272,8 @@ indicators:
   name: abnormal_active_directory_day_time_operation
   adeEventType: scored_enriched.active_directory.startInstant.userId.activeDirectory.score
   schema: ACTIVE_DIRECTORY
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: eventDate
   splitFields:
@@ -255,6 +289,8 @@ indicators:
   name: abnormal_group_membership_sensitive_operation
   adeEventType: scored_enriched.active_directory.operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score
   schema: ACTIVE_DIRECTORY
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationType
     anomalyFilters:
@@ -273,6 +309,8 @@ indicators:
   name: abnormal_object_change_operation
   adeEventType: scored_enriched.active_directory.operationType.userIdObjectManagement.activeDirectory.score
   schema: ACTIVE_DIRECTORY
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationType
     anomalyFilters:
@@ -291,6 +329,8 @@ indicators:
   name: high_number_of_senesitive_group_membership_events
   adeEventType: active_directory
   schema: ACTIVE_DIRECTORY
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationTypeCategories
     anomalyValue: GROUP_MEMBERSHIP_OPERATION,SECURITY_SENSITIVE_OPERATION
@@ -303,6 +343,8 @@ indicators:
   name: high_number_of_group_membership_events
   adeEventType: active_directory
   schema: ACTIVE_DIRECTORY
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationTypeCategories
     anomalyValue: GROUP_MEMBERSHIP_OPERATION
@@ -315,6 +357,8 @@ indicators:
   name: high_number_of_successful_object_change_operations
   adeEventType: active_directory
   schema: ACTIVE_DIRECTORY
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationTypeCategories
     anomalyValue: OBJECT_MANAGEMENT
@@ -331,6 +375,8 @@ indicators:
   name: high_number_of_successful_user_change_security_sensitive_operations
   adeEventType: active_directory
   schema: ACTIVE_DIRECTORY
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationTypeCategories
     anomalyValue: USER_MANAGEMENT,SECURITY_SENSITIVE_OPERATION
@@ -346,6 +392,8 @@ indicators:
   name: high_number_of_failed_active_directory_events
   adeEventType: active_directory
   schema: ACTIVE_DIRECTORY
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: result
     anomalyValue: FAILURE
@@ -358,6 +406,8 @@ indicators:
   name: user_account_enabled
   adeEventType: scored_enriched.active_directory.userAccountEnabled.userId.activeDirectory.score
   schema: ACTIVE_DIRECTORY
+  modelContextFields:
+    - userId
   anomalyDescriptior:
       anomalyField: operationType
       anomalyValue: USER_ACCOUNT_ENABLED
@@ -375,6 +425,8 @@ indicators:
   name: user_account_disabled
   adeEventType: scored_enriched.active_directory.userAccountDisabled.userId.activeDirectory.score
   schema: ACTIVE_DIRECTORY
+  modelContextFields:
+    - userId
   anomalyDescriptior:
       anomalyField: operationType
       anomalyValue: USER_ACCOUNT_DISABLED
@@ -391,6 +443,8 @@ indicators:
   name: user_account_unlocked
   adeEventType: scored_enriched.active_directory.userAccountUnlocked.userId.activeDirectory.score
   schema: ACTIVE_DIRECTORY
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: operationType
     anomalyValue: USER_ACCOUNT_UNLOCKED
@@ -407,6 +461,8 @@ indicators:
   name: user_account_type_changed
   adeEventType: scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score
   schema: ACTIVE_DIRECTORY
+  modelContextFields:
+    - userId
   anomalyDescriptior:
       anomalyField: operationType
       anomalyValue: USER_ACCOUNT_TYPE_CHANGED
@@ -423,6 +479,8 @@ indicators:
   name: user_account_locked
   adeEventType: scored_enriched.active_directory.userAccountLocked.userId.activeDirectory.score
   schema: ACTIVE_DIRECTORY
+  modelContextFields:
+    - userId
   anomalyDescriptior:
       anomalyField: operationType
       anomalyValue: USER_ACCOUNT_LOCKED
@@ -439,6 +497,8 @@ indicators:
   name: user_password_never_expires_option_changed
   adeEventType: scored_enriched.active_directory.userPasswordNeverExpiresOptionChanged.userId.activeDirectory.score
   schema: ACTIVE_DIRECTORY
+  modelContextFields:
+    - userId
   anomalyDescriptior:
       anomalyField: operationType
       anomalyValue: USER_PASSWORD_NEVER_EXPIRES_OPTION_CHANGED
@@ -455,6 +515,8 @@ indicators:
   name: user_password_reset
   adeEventType: scored_enriched.active_directory.userPasswordReset.userId.activeDirectory.score
   schema: ACTIVE_DIRECTORY
+  modelContextFields:
+    - userId
   anomalyDescriptior:
       anomalyField: operationType
       anomalyValue: USER_PASSWORD_RESET
@@ -476,6 +538,8 @@ indicators:
   name: abnormal_logon_day_time
   adeEventType: scored_enriched.authentication.startInstant.userId.authentication.score
   schema: AUTHENTICATION
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: eventDate
   splitFields:
@@ -491,6 +555,8 @@ indicators:
   name: abnormal_source_machine
   adeEventType: scored_enriched.authentication.srcMachine.userId.authentication.score
   schema: AUTHENTICATION
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: srcMachineNameRegexCluster
   splitFields:
@@ -507,6 +573,8 @@ indicators:
   name: abnormal_destination_machine
   adeEventType: scored_enriched.authentication.dstMachine.userId.authentication.score
   schema: AUTHENTICATION
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: dstMachineNameRegexCluster
   splitFields:
@@ -522,6 +590,8 @@ indicators:
   name: abnormal_site
   adeEventType: scored_enriched.authentication.site.userId.authentication.score
   schema: AUTHENTICATION
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: site
   splitFields:
@@ -537,6 +607,8 @@ indicators:
   name: high_number_of_successful_authentications
   adeEventType: authentication
   schema: AUTHENTICATION
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: result
     anomalyValue: SUCCESS
@@ -549,6 +621,8 @@ indicators:
   name: high_number_of_failed_authentications
   adeEventType: authentication
   schema: AUTHENTICATION
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: result
     anomalyValue: FAILURE
@@ -561,6 +635,8 @@ indicators:
   name: high_number_of_distinct_destination_domains
   adeEventType: authentication
   schema: AUTHENTICATION
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: dstMachineDomain
   historicalData:
@@ -572,6 +648,8 @@ indicators:
   name: high_number_of_distinct_src_computers
   adeEventType: authentication
   schema: AUTHENTICATION
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: srcMachineId
   historicalData:
@@ -583,6 +661,8 @@ indicators:
   name: high_number_of_distinct_dst_computers
   adeEventType: authentication
   schema: AUTHENTICATION
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: dstMachineId
   historicalData:
@@ -594,6 +674,8 @@ indicators:
   name: high_number_of_distinct_src_computer_clusters
   adeEventType: authentication
   schema: AUTHENTICATION
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: srcMachineNameRegexCluster
   historicalData:
@@ -605,6 +687,8 @@ indicators:
   name: high_number_of_distinct_dst_computer_clusters
   adeEventType: authentication
   schema: AUTHENTICATION
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: dstMachineNameRegexCluster
   historicalData:
@@ -616,6 +700,8 @@ indicators:
   name: high_number_of_distinct_sites
   adeEventType: authentication
   schema: AUTHENTICATION
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: site
   historicalData:
@@ -631,6 +717,8 @@ indicators:
   name: abnormal_print_time
   adeEventType: scored_enriched.print.startInstant.userId.print.score
   schema: PRINT
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: eventDate
   splitFields:
@@ -646,6 +734,8 @@ indicators:
   name: abnormal_source_machine_cluster_print
   adeEventType: scored_enriched.print.srcMachineNameRegexCluster.userId.print.score
   schema: PRINT
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: srcMachineCluster
   splitFields:
@@ -661,6 +751,8 @@ indicators:
   name: abnormal_destination_machine_print
   adeEventType: scored_enriched.print.dstMachineId.userId.print.score
   schema: PRINT
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: printerId
   splitFields:
@@ -676,6 +768,8 @@ indicators:
   name: abnormal_destination_machine_cluster_print
   adeEventType: scored_enriched.print.dstMachineNameRegexCluster.userId.print.score
   schema: PRINT
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: printerCluster
   splitFields:
@@ -691,6 +785,8 @@ indicators:
   name: abnormal_shared_folder_path_print
   schema: PRINT
   adeEventType: scored_enriched.print.absoluteSharedFolderPath.userId.print.score
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: srcFolderPath
     anomalyFilters:
@@ -709,6 +805,8 @@ indicators:
   name: abnormal_file_extension_print
   adeEventType: scored_enriched.print.fileExtension.userId.print.score
   schema: PRINT
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: srcFileExtension
   splitFields:
@@ -724,6 +822,8 @@ indicators:
   name: abnormal_number_of_pages_print
   adeEventType: scored_enriched.print.numOfPages.userId.print.score
   schema: PRINT
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: numOfPages
   splitFields:
@@ -739,6 +839,8 @@ indicators:
   name: high_number_of_successful_prints
   schema: PRINT
   adeEventType: print
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: result
     anomalyValue: SUCCESS
@@ -751,6 +853,8 @@ indicators:
   name: high_number_of_failed_prints
   schema: PRINT
   adeEventType: print
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: result
     anomalyValue: FAILURE
@@ -763,6 +867,8 @@ indicators:
   name: high_number_of_distinct_src_computers_print
   adeEventType: print
   schema: PRINT
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: srcMachineId
   historicalData:
@@ -774,6 +880,8 @@ indicators:
   name: high_number_of_distinct_dst_computers_print
   adeEventType: print
   schema: PRINT
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: printerId
   historicalData:
@@ -785,6 +893,8 @@ indicators:
   name: high_number_of_distinct_src_computer_clusters_print
   adeEventType: print
   schema: PRINT
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: srcMachineNameRegexClusterHistogram
   historicalData:
@@ -796,6 +906,8 @@ indicators:
   name: high_number_of_distinct_dst_computer_clusters_print
   adeEventType: print
   schema: PRINT
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: dstMachineNameRegexClusterHistogram
   historicalData:
@@ -807,6 +919,8 @@ indicators:
   name: high_number_of_distinct_folders_print
   schema: PRINT
   adeEventType: print
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: absoluteFolderPathHistogram
   historicalData:
@@ -823,6 +937,8 @@ indicators:
   name: abnormal_process_day_time
   adeEventType: scored_enriched.process.startInstant.userId.process.score
   schema: PROCESS
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: eventDate
   splitFields:
@@ -838,6 +954,8 @@ indicators:
   name: high_number_of_reconnaissance_tool_activities_executed
   schema: PROCESS
   adeEventType: process
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: dstProcessCategories
     anomalyValue: RECONNAISSANCE_TOOL
@@ -853,6 +971,8 @@ indicators:
   name: abnormal_reconnaissance_tool_executed
   adeEventType: scored_enriched.process.dstProcessFileName.userId.process.score
   schema: PROCESS
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: dstProcessFileName
     anomalyFilters:
@@ -1069,6 +1189,8 @@ indicators:
   name: high_number_of_distinct_reconnaissance_tools_executed
   schema: PROCESS
   adeEventType: process
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: dstProcessCategories
     anomalyValue: RECONNAISSANCE_TOOL
@@ -1110,6 +1232,8 @@ indicators:
   name: abnormal_registry_day_time
   adeEventType: scored_enriched.registry.startInstant.userId.registry.score
   schema: REGISTRY
+  modelContextFields:
+    - userId
   anomalyDescriptior:
     anomalyField: eventDate
   splitFields:
