@@ -1169,7 +1169,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: sslSubjectHistogramSrcNetnameOutboundTlsDaily
     featureName: sslSubjectHistogram
-  classification:
+  classification: exfiltration
 
 - id: sumOfHighestDomainSrcNetnameOutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
@@ -1190,7 +1190,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: domainHistogramSrcNetnameOutboundTlsDaily
     featureName: domainHistogram
-  classification:
+  classification: exfiltration
 
 - id: sumOfHighestDstPortSrcNetnameOutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
@@ -1211,7 +1211,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramSrcNetnameOutboundTlsDaily
     featureName: dstPortHistogram
-  classification:
+  classification: exfiltration
 
 - id: sumOfHighestDstOrgSrcNetnameOutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
@@ -1232,7 +1232,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstOrgHistogramSrcNetnameOutboundTlsDaily
     featureName: dstOrgHistogram
-  classification:
+  classification: exfiltration
 
 - id: sumOfHighestCountryScoresSslSubjectOutboundTlsHourly
   type: SCORE_AGGREGATION
@@ -1252,7 +1252,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: countryHistogramSslSubjectOutboundTlsDaily
     featureName: countryHistogram
-  classification:
+  classification: phishing
 
 - id: sumOfHighestDstPortScoresSslSubjectOutboundTlsHourly
   type: SCORE_AGGREGATION
@@ -1272,7 +1272,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramSslSubjectOutboundTlsDaily
     featureName: dstPortHistogram
-  classification:
+  classification: exfiltration
 
 - id: highestStartInstantScoreSslSubjectOutboundTlsHourly
   type: SCORE_AGGREGATION
@@ -1310,7 +1310,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramDomainOutboundTlsDaily
     featureName: dstPortHistogram
-  classification:
+  classification: exfiltration
 
 - id: sumOfHighestDstPortDstOrgOutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
@@ -1331,7 +1331,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramDstOrgOutboundTlsDaily
     featureName: dstPortHistogram
-  classification:
+  classification: exfiltration
 
 - id: highestStartInstantJa3OutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
@@ -1369,7 +1369,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: ja3HistogramSrcNetnameOutboundTlsDaily
     featureName: ja3Histogram
-  classification:
+  classification: phishing
 
 - id: sumOfHighestSslSubjectJa3OutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
@@ -1389,7 +1389,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: sslSubjectHistogramJa3OutboundTlsDaily
     featureName: sslSubjectHistogram
-  classification:
+  classification: phishing
 
 - id: sumOfHighestDomainJa3OutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
@@ -1410,7 +1410,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: domainHistogramJa3OutboundTlsDaily
     featureName: domainHistogram
-  classification:
+  classification: phishing
 
 - id: sumOfHighestDstPortJa3OutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
@@ -1431,7 +1431,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramJa3OutboundTlsDaily
     featureName: dstPortHistogram
-  classification:
+  classification: phishing
 
 #***************************************
 #*                ja3                  *
@@ -1449,7 +1449,7 @@ indicators:
         fieldValue: OUTBOUND
   historicalData:
     type: hourly_aggregations
-  classification:
+  classification: phishing
 
 - id: sslSubjectSrcNetnameOutboundToHighestScoreMapJa3TlsHourly
   type: SCORE_AGGREGATION
@@ -1470,7 +1470,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: sslSubjectHistogramSrcNetnameOutboundTlsDaily
     featureName: sslSubjectHistogram
-  classification:
+  classification: exfiltration
 
 
 - id: sumOfHighestDomainSrcNetnameOutboundScoresJa3TlsHourly
@@ -1492,7 +1492,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: domainHistogramSrcNetnameOutboundTlsDaily
     featureName: domainHistogram
-  classification:
+  classification: exfiltration
 
 - id: sumOfHighestDstPortSrcNetnameOutboundScoresJa3TlsHourly
   type: SCORE_AGGREGATION
@@ -1513,7 +1513,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramSrcNetnameOutboundTlsDaily
     featureName: dstPortHistogram
-  classification:
+  classification: exfiltration
 
 - id: sumOfHighestDstOrgSrcNetnameOutboundScoresJa3TlsHourly
   type: SCORE_AGGREGATION
@@ -1534,7 +1534,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstOrgHistogramSrcNetnameOutboundTlsDaily
     featureName: dstOrgHistogram
-  classification:
+  classification: exfiltration
 
 - id: sumOfHighestCountrySslSubjectOutboundScoresJa3TlsHourly
   type: SCORE_AGGREGATION
@@ -1555,7 +1555,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: countryHistogramSslSubjectOutboundTlsDaily
     featureName: countryHistogram
-  classification:
+  classification: phishing
 
 - id: sumOfHighestDstPortSslSubjectOutboundScoresJa3TlsHourly
   type: SCORE_AGGREGATION
@@ -1576,7 +1576,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramSslSubjectOutboundTlsDaily
     featureName: dstPortHistogram
-  classification:
+  classification: exfiltration
 
 - id: highestStartInstantSslSubjectOutboundScoreJa3TlsHourly
   type: SCORE_AGGREGATION
@@ -1614,7 +1614,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramDomainOutboundTlsDaily
     featureName: dstPortHistogram
-  classification:
+  classification: exfiltration
 
 - id: sumOfHighestDstPortDstOrgOutboundScoresJa3TlsHourly
   type: SCORE_AGGREGATION
@@ -1635,7 +1635,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramDstOrgOutboundTlsDaily
     featureName: dstPortHistogram
-  classification:
+  classification: exfiltration
 
 - id: highestStartInstantScoreJa3OutboundTlsHourly
   type: SCORE_AGGREGATION
@@ -1672,7 +1672,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: ja3HistogramSrcNetnameOutboundTlsDaily
     featureName: ja3Histogram
-  classification:
+  classification: phishing
 
 - id: sumOfHighestSslSubjectScoresJa3OutboundTlsHourly
   type: SCORE_AGGREGATION
@@ -1692,7 +1692,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: sslSubjectHistogramJa3OutboundTlsDaily
     featureName: sslSubjectHistogram
-  classification:
+  classification: phishing
 
 - id: sumOfHighestDomainScoresJa3OutboundTlsHourly
   type: SCORE_AGGREGATION
@@ -1712,7 +1712,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: domainHistogramJa3OutboundTlsDaily
     featureName: domainHistogram
-  classification:
+  classification: phishing
 
 - id: sumOfHighestDstPortScoresJa3OutboundTlsHourly
   type: SCORE_AGGREGATION
@@ -1732,7 +1732,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramJa3OutboundTlsDaily
     featureName: dstPortHistogram
-  classification:
+  classification: phishing
 
 classificationPriority:
 
@@ -1819,3 +1819,9 @@ classificationPriority:
 
 - classificationName: suspicious_user_activity
   priority: 28
+
+- classificationName: phishing
+  priority: 29
+
+- classificationName: exfiltration
+  priority: 30
