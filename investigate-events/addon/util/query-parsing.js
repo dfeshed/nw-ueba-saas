@@ -32,7 +32,7 @@ const _asString = (filter) => {
     ret = filter.complexFilterText ? filter.complexFilterText.trim() : '';
   } else if (filter.type === TEXT_FILTER) {
     const text = filter.searchTerm ? filter.searchTerm.trim() : null;
-    ret = text ? `${SEARCH_TERM_MARKER}${text}` : '';
+    ret = text ? `${SEARCH_TERM_MARKER}${text}${SEARCH_TERM_MARKER}` : '';
   }
   return ret;
 };
@@ -88,7 +88,10 @@ export const hasComplexText = (str) => {
  * Determines if the provided string is marked as a searchTerm.
  * @param {string} str A string
  */
-export const isSearchTerm = (str) => str.charAt(0) === SEARCH_TERM_MARKER;
+export const isSearchTerm = (str) => {
+  return str.charAt(0) === SEARCH_TERM_MARKER &&
+    str.charAt(str.length - 1) === SEARCH_TERM_MARKER;
+};
 
 /**
  * Parses a given URI string component that represents 0, 1 or more metaFilters
@@ -134,10 +137,11 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
   // Nuke any surrounding white space
   queryText = queryText.trim();
 
-  // 1. Check if the text contains characters that mark it as a Text filter
+  // 1. Check if the text contains characters that mark it as a Text filter, and
+  // remove them if it does.
   const hasSearchTerm = isSearchTerm(queryText);
   if (hasSearchTerm) {
-    const term = queryText.slice(1);
+    const term = queryText.slice(1, -1);
     return _createTextQueryFilter(term);
   }
 

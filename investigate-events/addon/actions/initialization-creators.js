@@ -313,10 +313,10 @@ const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, hashNavigateCall
   let searchTextString;
   const pdHashesWithoutTextFilter = pillDataHashes.reduce((acc, hash, index) => {
     if (isSearchTerm(hash)) {
-      // The hash is a 4 character alphanumeric string like "r8w3". If there is
-      // a tilde as the first character, this hash is actually a text search
-      // string. We need to remove the tilde.
-      const searchTerm = hash.slice(1);
+      // The hash is a 4 character alphanumeric string like "r8w3". If the hash
+      // has been identified as a Text Filter, we need to remove the first and
+      // last characters which were used to denote this hash as a Text Filter.
+      const searchTerm = hash.slice(1, -1);
       searchTextString = { index, searchTerm };
       return acc;
     } else {

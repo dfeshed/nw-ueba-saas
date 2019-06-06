@@ -10,7 +10,7 @@ export const COMPLEX_OPERATORS = ['<=', '<', '>=', '>', '&&', '||', '(', ')', ',
 export const COMPLEX_FILTER = 'complex';
 export const OPERATORS = ['!exists', 'exists', 'contains', 'begins', 'ends', '!=', '='];
 export const QUERY_FILTER = 'query';
-export const SEARCH_TERM_MARKER = '~';
+export const SEARCH_TERM_MARKER = '\u02F8'; // RAISED COLON "˸"
 export const TEXT_FILTER = 'text';
 export const PILL_META_DATA_SOURCE = 'pill-meta';
 export const PILL_OPERATOR_DATA_SOURCE = 'pill-operator';

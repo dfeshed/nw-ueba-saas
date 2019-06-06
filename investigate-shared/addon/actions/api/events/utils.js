@@ -6,7 +6,7 @@
  */
 import { lookup } from 'ember-dependency-lookup';
 
-const SEARCH_TERM_MARKER = '~';
+const SEARCH_TERM_MARKER = '\u02F8'; // RAISED COLON "˸"
 
 /**
  * Creates a metaFilter conditions filter
@@ -204,7 +204,7 @@ export const encodeMetaFilterConditions = (conditions = []) => {
       if (complexFilterText) {
         return complexFilterText;
       } else if (searchTerm) {
-        return `${SEARCH_TERM_MARKER}${searchTerm}`;
+        return `${SEARCH_TERM_MARKER}${searchTerm}${SEARCH_TERM_MARKER}`;
       } else {
         return `${(meta) ? meta.trim() : ''} ${(operator) ? operator.trim() : ''} ${(value) ? value.trim() : ''}`;
       }

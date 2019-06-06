@@ -13,6 +13,7 @@ import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
 import {
   COMPLEX_FILTER,
   QUERY_FILTER,
+  SEARCH_TERM_MARKER,
   TEXT_FILTER
 } from 'investigate-events/constants/pill';
 
@@ -130,17 +131,17 @@ module('Unit | Util | Query Parsing', function(hooks) {
   });
 
   test('transformTextToPillData returns text filter object because of Text filter marker', function(assert) {
-    const text = '~some random text';
+    const text = `${SEARCH_TERM_MARKER}text${SEARCH_TERM_MARKER}`;
     const result = transformTextToPillData(text, DEFAULT_LANGUAGES);
     assert.equal(result.type, TEXT_FILTER, 'type should match');
-    assert.equal(result.searchTerm, 'some random text', 'complexFilterText should match');
+    assert.equal(result.searchTerm, 'text', 'complexFilterText should match');
   });
 
   test('transformTextToPillData returns text filter even if it contains complex characters', function(assert) {
-    const text = '~(some random text)';
+    const text = `${SEARCH_TERM_MARKER}(text)${SEARCH_TERM_MARKER}`;
     const result = transformTextToPillData(text, DEFAULT_LANGUAGES);
     assert.equal(result.type, TEXT_FILTER, 'type should match');
-    assert.equal(result.searchTerm, '(some random text)', 'complexFilterText should match');
+    assert.equal(result.searchTerm, '(text)', 'complexFilterText should match');
   });
 
   test('parsePillDataFromUri correctly parses forward slashes and operators into pills', function(assert) {
@@ -166,25 +167,27 @@ module('Unit | Util | Query Parsing', function(hooks) {
     const encQP = encodeURIComponent('medium = 1');
     const complexPill = transformTextToPillData('(bar)', DEFAULT_LANGUAGES);
     const encCP = encodeURIComponent('(bar)');
-    const textPill = transformTextToPillData('~baz', DEFAULT_LANGUAGES);
-    const encTP = encodeURIComponent('~baz');
+    const textPill = transformTextToPillData(`${SEARCH_TERM_MARKER}baz${SEARCH_TERM_MARKER}`, DEFAULT_LANGUAGES);
+    const unencTP = `${SEARCH_TERM_MARKER}baz${SEARCH_TERM_MARKER}`; // Text Filters are not encoded
     const empty = transformTextToPillData('', DEFAULT_LANGUAGES);
     assert.equal(uriEncodeMetaFilters([queryPill]), encQP, 'query pill only');
     assert.equal(uriEncodeMetaFilters([complexPill]), encCP, 'complex pill only');
-    assert.equal(uriEncodeMetaFilters([textPill]), encTP, 'text pill only');
+    assert.equal(uriEncodeMetaFilters([textPill]), unencTP, 'text pill only');
     assert.equal(uriEncodeMetaFilters([queryPill, complexPill]), `${encQP}/${encCP}`, 'query and complex pills');
-    assert.equal(uriEncodeMetaFilters([queryPill, textPill]), `${encQP}/${encTP}`, 'query and text pills');
-    assert.equal(uriEncodeMetaFilters([complexPill, textPill]), `${encCP}/${encTP}`, 'complex and text pills');
-    assert.equal(uriEncodeMetaFilters([queryPill, complexPill, textPill]), `${encQP}/${encCP}/${encTP}`, 'query, complex, and text pills');
+    assert.equal(uriEncodeMetaFilters([queryPill, textPill]), `${encQP}/${unencTP}`, 'query and text pills');
+    assert.equal(uriEncodeMetaFilters([complexPill, textPill]), `${encCP}/${unencTP}`, 'complex and text pills');
+    assert.equal(uriEncodeMetaFilters([queryPill, complexPill, textPill]), `${encQP}/${encCP}/${unencTP}`, 'query, complex, and text pills');
     assert.deepEqual(uriEncodeMetaFilters([empty]), undefined, 'empty pill');
     assert.equal(uriEncodeMetaFilters([queryPill, empty]), `${encQP}`, 'query and empty pills');
-    assert.equal(uriEncodeMetaFilters([queryPill, empty, textPill]), `${encQP}/${encTP}`, 'query, empty, and text pills');
+    assert.equal(uriEncodeMetaFilters([queryPill, empty, textPill]), `${encQP}/${unencTP}`, 'query, empty, and text pills');
   });
 
   test('isSearchTerm is capable of determining if a string is marked as a Text pill', function(assert) {
-    assert.ok(isSearchTerm('~foobar'));
+    assert.ok(isSearchTerm(`${SEARCH_TERM_MARKER}foobar${SEARCH_TERM_MARKER}`));
+    assert.notOk(isSearchTerm(`${SEARCH_TERM_MARKER}foobar`));
+    assert.notOk(isSearchTerm(`foobar${SEARCH_TERM_MARKER}`));
+    assert.notOk(isSearchTerm(`foo${SEARCH_TERM_MARKER}bar`));
     assert.notOk(isSearchTerm('foobar'));
-    assert.notOk(isSearchTerm('foo~bar'));
   });
 
   test('createFilter can create a Query filter', function(assert) {
