@@ -4,7 +4,7 @@ import Immutable from 'seamless-immutable';
 
 const dataInitialState = Immutable.from({
   detailsTabSelected: 'Events', // Possible values Properties or Events at this point.
-  isEventPanelExpanded: true,
+  isEventPanelExpanded: false,
   isProcessDetailsVisible: true
 });
 

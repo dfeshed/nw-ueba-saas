@@ -477,6 +477,14 @@ const TreeComponent = Component.extend({
   },
 
   processProperties(d) {
+    // recenter
+    const transform = zoomIdentity
+      .scale(1)
+      .translate(-d.y, -d.x);
+    this.parent.transition()
+      .duration(CONST.DURATION)
+      .call(this.get('zoomBehaviour').transform, transform);
+
     const checksum = d.data.checksum ? d.data.checksum : d.data['checksum.dst'];
     const hashes = [checksum];
     this.send('fetchProcessDetails', { hashes }, this.get('selectedServerId'));

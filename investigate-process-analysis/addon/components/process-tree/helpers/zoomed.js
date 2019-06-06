@@ -1,6 +1,9 @@
 import { event } from 'd3-selection';
 
 export default function() {
+  if (this.isDestroyed) {
+    return;
+  }
   const { centeringElement } = this;
   if (!centeringElement) {
     return;
