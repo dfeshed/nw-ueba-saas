@@ -1,7 +1,10 @@
 {{#if selectedEventIds}}
   <div class="add-to-incident-alert-summary">
     {{rsa-form-input label=(t 'respond.alerts.alertSummary') value=alertName}}
-    {{rsa-form-input type="number" label=(t 'respond.alerts.severity') value=alertSeverity min="1" max="100"}}
+    <span class="rsa-form-label">
+      <label>{{t 'respond.alerts.severity'}}</label>
+    </span>
+    {{input type='number' min=1 max=100 name='alertSeverity' value=alertSeverity}}
   </div>
 {{/if}}
 

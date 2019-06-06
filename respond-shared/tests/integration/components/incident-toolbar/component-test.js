@@ -88,6 +88,7 @@ module('Integration | Component | incident-toolbar', function(hooks) {
     assert.equal(findAll('.add-to-incident-modal').length, 0, 'There is no modal displayed');
     await click('.add-to-incident-button .rsa-form-button');
     assert.equal(findAll(addToIncidentModalSelector).length, 1, 'The add-to-incident modal is displayed');
+    assert.equal(findAll('.respond-panel').length, 1, 'The add-to-incident modal, by default, has respond css style');
   });
 
   test('Clicking cancel in the Add to Incident modal closes the modal', async function(assert) {
@@ -133,5 +134,14 @@ module('Integration | Component | incident-toolbar', function(hooks) {
     this.set('allSelectedEventIds', selectedEventIds(5));
     await render(hbs`{{incident-toolbar isDisabled=false allSelectedEventIds=allSelectedEventIds limit=10  clearResults=clearResults}}`);
     assert.notOk(find('.selected-events-threshold'), 'Warning sign should not displayed ahead of incident dropdown');
+  });
+
+  test('The Add-to_Incident Modal has Investigate css style applied when opened from Investigate events', async function(assert) {
+    await setState();
+    this.set('allSelectedEventIds', selectedEventIds(2));
+    await render(hbs`{{incident-toolbar isDisabled=false allSelectedEventIds=allSelectedEventIds clearResults=clearResults}}`);
+    await click('.add-to-incident-button .rsa-form-button');
+    assert.equal(findAll(addToIncidentModalSelector).length, 1, 'The add-to-incident modal is displayed');
+    assert.equal(findAll('.investigate-panel').length, 1, 'The add-to-incident modal, by default, has respond css style');
   });
 });

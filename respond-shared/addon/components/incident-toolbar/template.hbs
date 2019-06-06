@@ -55,7 +55,7 @@
   {{/rsa-application-modal}}
 {{/if}}
 {{#if (eq activeModalId 'add-to-incident')}}
-  {{#rsa-application-modal eventId='add-to-incident' label=(t "respond.alerts.addToIncident") style="standard add-to-incident-modal" onClose=clearResults}}
+  {{#rsa-application-modal eventId='add-to-incident' label=(t "respond.alerts.addToIncident") style=modalClassName onClose=clearResults}}
     <div class='modal-content'>
       {{incident-toolbar/add-to-incident
         selectedEventIds=selectedEventIds

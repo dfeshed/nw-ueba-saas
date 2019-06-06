@@ -55,6 +55,14 @@ export default Component.extend({
     }
   },
 
+  @computed('selectedEventIds')
+  modalClassName(selectedEventIds) {
+    if (selectedEventIds != null && selectedEventIds.length > 0) {
+      return 'standard add-to-incident-modal investigate-panel';
+    }
+    return 'standard add-to-incident-modal respond-panel';
+  },
+
   init() {
     this._super(arguments);
     this.get('eventBus').on('rsa-application-click', (target = '') => {
