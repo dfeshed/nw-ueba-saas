@@ -1405,6 +1405,27 @@ indicators:
     featureName: sslSubjectHistogram
   classification:
 
+- id: sumOfHighestDomainJa3OutboundScoresSslSubjectTlsHourly
+  type: SCORE_AGGREGATION
+  name: ssl_subject_abnormal_domain_for_ja3_outbound
+  adeEventType: scored_enriched.tls.domain.ja3Outbound.tls.score
+  modelContextFields:
+    - ja3
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: domain
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - ja3
+    - domain
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: domainHistogramJa3OutboundTlsDaily
+    featureName: domainHistogram
+  classification:
+
 #***************************************
 #*                ja3                  *
 #***************************************
@@ -1651,6 +1672,25 @@ indicators:
     featureName: sslSubjectHistogram
   classification:
 
+- id: sumOfHighestDomainScoresJa3OutboundTlsHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_domain_for_ja3_outbound
+  adeEventType: scored_enriched.tls.domain.ja3Outbound.tls.score
+  modelContextFields:
+    - ja3
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: domain
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - domain
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: domainHistogramJa3OutboundTlsDaily
+    featureName: domainHistogram
+  classification:
 
 classificationPriority:
 
