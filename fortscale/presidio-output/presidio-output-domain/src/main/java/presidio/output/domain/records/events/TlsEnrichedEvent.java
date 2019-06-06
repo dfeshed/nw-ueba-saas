@@ -4,6 +4,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 
@@ -80,7 +81,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     private Integer dstPort;
 
     @Field(FQDN_FIELD_NAME)
-    private String fqdn;
+    private List<String> fqdn;
 
 
 
@@ -90,7 +91,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
                             Map<String, String> additionalInfo,
                             String srcIp, String dstIp, String srcCountry, String dstCountry, String sslSubject, String domain, String dstOrg,
                             String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
-                            String dstNetname, String ja3, String ja3s, String direction, Integer dstPort, String fqdn) {
+                            String dstNetname, String ja3, String ja3s, String direction, Integer dstPort, List<String> fqdn) {
         super(createdDate, eventDate, eventId, schema, dataSource, additionalInfo);
         this.srcIp = srcIp;
         this.dstIp = dstIp;
@@ -240,11 +241,11 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.dstPort = dstPort;
     }
 
-    public String getFqdn() {
+    public List<String> getFqdn() {
         return fqdn;
     }
 
-    public void setFqdn(String fqdn) {
+    public void setFqdn(List<String> fqdn) {
         this.fqdn = fqdn;
     }
 }

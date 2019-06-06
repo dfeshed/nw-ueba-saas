@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 @Document
@@ -81,7 +82,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     private Integer dstPort;
 
     @Field(FQDN_FIELD_NAME)
-    private String fqdn;
+    private List<String> fqdn;
 
 
 
@@ -111,7 +112,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     public TlsRawEvent(Instant dateTime, String eventId, String dataSource, Map<String, String> additionalInfo,
                        String srcIp, String dstIp, String srcCountry, String dstCountry, String sslSubject, String domain, String dstOrg,
                        String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
-                       String dstNetname, String ja3, String ja3s, String direction, Integer dstPort, String fqdn) {
+                       String dstNetname, String ja3, String ja3s, String direction, Integer dstPort, List<String> fqdn) {
         super(dateTime, eventId, dataSource, additionalInfo);
         this.srcIp = srcIp;
         this.dstIp = dstIp;
@@ -261,11 +262,11 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.dstPort = dstPort;
     }
 
-    public String getFqdn() {
+    public List<String> getFqdn() {
         return fqdn;
     }
 
-    public void setFqdn(String fqdn) {
+    public void setFqdn(List<String> fqdn) {
         this.fqdn = fqdn;
     }
 
