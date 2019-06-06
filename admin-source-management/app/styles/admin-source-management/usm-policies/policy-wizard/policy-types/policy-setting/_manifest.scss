@@ -18,39 +18,43 @@
     }
   }
   
-  .header-added {
+  /* .header-added {
     position: relative;
     animation-name: addedSettingHeader;
-    animation-duration: 3s;
+    animation-duration: 1250ms;
     animation-direction: normal;
-    animation-timing-function: ease-in;
-  }
+    animation-timing-function: ease;
+  } */
 }
 
 .selected-setting-added {
   position: relative;
   animation-name: addedSelectedSetting;
-  animation-duration: 3s;
+  animation-duration: 1250ms;
   animation-direction: normal;
+  animation-timing-function: ease;
 }
 
 @keyframes addedSelectedSetting {
   0% {
-    background-color: background-color(primary, base, transparent);
+    /* background-color: background-color(primary, base, transparent); */
     left: -100%;
   }
   
-  25% {
+  /* 30% {
     background-color: background-color(secondary, base, translucent);
+  } */
+
+  60% {
     left: 0px;
   }
-  
-  100% {
+
+  /* 100% {
     background-color: background-color(primary, base, transparent);
-  }
+  } */
 }
 
-@keyframes addedSettingHeader {
+/* @keyframes addedSettingHeader {
   from { color: text-color(secondary);  }
   to { color: text-color(primary, light);  }
-}  
+} */
