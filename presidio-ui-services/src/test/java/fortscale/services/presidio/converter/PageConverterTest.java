@@ -82,16 +82,16 @@ public class PageConverterTest {
 
 
     @Test
-    public void testUserScoreSorting(){
+    public void testEntityScoreSorting(){
         Sort sort = new Sort(Sort.Direction.DESC,"score");
         PageRequest p = new PageRequest(1,10, sort);
         EntityQuery.SortDirectionEnum directionEnum =pageConverter.convertUiFilterToQueryDtoSortDirectionForUser(p);
         List<EntityQuery.SortFieldNamesEnum> fieldsEnum =pageConverter.convertUiFilterToQueryDtoUserSortFields(p);
 
 
-        Assert.assertEquals(UserQuery.SortDirectionEnum.DESC, directionEnum);
+        Assert.assertEquals(EntityQuery.SortDirectionEnum.DESC, directionEnum);
         Assert.assertEquals(1, fieldsEnum.size());
-        Assert.assertEquals(UserQuery.SortFieldNamesEnum.SCORE, fieldsEnum.get(0));
+        Assert.assertEquals(EntityQuery.SortFieldNamesEnum.SCORE, fieldsEnum.get(0));
 
 
     }

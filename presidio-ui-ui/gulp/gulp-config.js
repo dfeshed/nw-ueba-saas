@@ -53,7 +53,7 @@ config.srcCssIndexVendors = _.map([
     'ammaps/ammap.css'
 ], attachSrcLibsDir);
 config.srcIndexVendorScripts = [
-    'jquery/jquery-2.2.1.js',
+    'jquery/jquery-2.2.2.js',
     'bootstrap/js/bootstrap.min.js',
     'highchart/highcharts.js',
     'highchart/highcharts-more.js',
@@ -765,7 +765,7 @@ config.srcIndexAppScripts = _.map([
 config.srcCssSigninVendors = _.map([], attachSrcLibsDir);
 config.srcScssSignin = config.srcStylesDir + '/signin.scss';
 config.srcSigninVendorScripts = [
-    'jquery/jquery-2.2.1.js',
+    'jquery/jquery-2.2.2.js',
     'angular/angular.js'
 ];
 config.srcSigninAppScripts = _.map([
@@ -792,7 +792,7 @@ config.srcCssAdminVendors = _.map([
 
 config.srcScssAdmin = config.srcStylesDir + '/signin.scss';
 config.srcAdminVendorScripts = [
-    'jquery/jquery-2.2.1.js',
+    'jquery/jquery-2.2.2.js',
     '/bootstrap/js/bootstrap.min.js',
     '/detail-wrap/scripts/theme.js',
     '/angular/angular.js'
@@ -811,7 +811,7 @@ config.srcAdminAppScripts = _.map([
 config.srcCssChangePasswordVendors = _.map([], attachSrcLibsDir);
 config.srcScssChangePassword = config.srcStylesDir + '/signin.scss';
 config.srcChangePasswordVendorScripts = [
-    'jquery/jquery-2.2.1.js',
+    'jquery/jquery-2.2.2.js',
     'angular/angular.js'
 ];
 config.srcChangePasswordAppScripts = _.map([
