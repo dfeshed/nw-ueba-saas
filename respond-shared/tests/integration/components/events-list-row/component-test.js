@@ -266,6 +266,36 @@ module('Integration | Component | events-list-row', function(hooks) {
       username: 'proc_qa_1_3'
     });
 
+    process.assertTableColumns(assert);
+
+    process.assertTableSource(assert, {
+      fileName: 'macmnsvc.exe',
+      checksum: '120EA8A25E5D487BF68B5F7096440019',
+      directory: 'C:\\Program Files\\McAfee\\Agent',
+      username: 'proc_qa_1_3',
+      categories: 'N/A'
+    });
+
+    process.assertTableTarget(assert, {
+      fileName: 'TOOL_17.exe',
+      checksum: 'CE114E4501D2F4E2DCEA3E17B546F339',
+      directory: 'C:\\Windows\\System32',
+      username: 'N/A',
+      categories: 'RECONNAISSANCE_TOOL'
+    });
+
+    process.assertTableSourceContext(assert, {
+      fileName: 'macmnsvc.exe',
+      checksum: '120EA8A25E5D487BF68B5F7096440019',
+      username: 'proc_qa_1_3'
+    });
+
+    process.assertTableTargetContext(assert, {
+      fileName: 'TOOL_17.exe',
+      checksum: 'CE114E4501D2F4E2DCEA3E17B546F339',
+      username: ''
+    });
+
   });
 
   test('event summary renders correctly with invalid eventIndex value', async function(assert) {

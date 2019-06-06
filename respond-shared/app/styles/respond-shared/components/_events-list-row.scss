@@ -81,6 +81,11 @@
       text-decoration-style: dashed;
     }
   }
+
+  .has-context-data {
+    text-decoration: underline;
+    text-decoration-style: dashed;
+  }
   .events-list-generic-header .row .column.verbose {
     flex: 1 0 5%;
   }

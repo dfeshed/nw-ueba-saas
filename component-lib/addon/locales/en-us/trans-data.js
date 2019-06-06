@@ -1600,6 +1600,7 @@ export default {
           sourceLabel: 'SOURCE',
           destinationLabel: 'DESTINATION',
           tableFileName: 'FILE NAME',
+          tableChecksum: 'CHECKSUM',
           tableDirectory: 'DIRECTORY',
           tableUsername: 'USERNAME',
           tableCategories: 'CATEGORIES'

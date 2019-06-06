@@ -171,7 +171,8 @@ export default [].concat(
         'device': {
           'ip_address': ''
         },
-        'processFileName': 'TOOL_17.exe'
+        'processFileName': 'TOOL_17.exe',
+        'processChecksum': 'CE114E4501D2F4E2DCEA3E17B546F339'
       },
       'updatedDate': '2018-11-02T07:30:12.100.000Z',
       'source': {
@@ -189,7 +190,8 @@ export default [].concat(
         'device': {
           'ip_address': ''
         },
-        'processFileName': 'macmnsvc.exe'
+        'processFileName': 'macmnsvc.exe',
+        'processChecksum': '120EA8A25E5D487BF68B5F7096440019'
       },
       'processFileName': '',
       'machineName': 'host_3',

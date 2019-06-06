@@ -4,6 +4,7 @@
     <tr>
       <th></th>
       <th scope="col" test-id="eventTableFileNameLabel">{{t 'respond.eventsList.ueba.process.tableFileName'}}</th>
+      <th scope="col" test-id="eventTableChecksumLabel">{{t 'respond.eventsList.ueba.process.tableChecksum'}}</th>
       <th scope="col" test-id="eventTableDirectoryLabel">{{t 'respond.eventsList.ueba.process.tableDirectory'}}</th>
       <th scope="col" test-id="eventTableUsernameLabel">{{t 'respond.eventsList.ueba.process.tableUsername'}}</th>
       <th scope="col" test-id="eventTableCategoriesLabel">{{t 'respond.eventsList.ueba.process.tableCategories'}}</th>
@@ -12,16 +13,18 @@
   <tbody>
     <tr>
       <th scope="row" test-id="eventSourceLabel">{{t 'respond.eventsList.ueba.process.sourceLabel'}}</th>
-      <td test-id="eventSourceFileNameValue">{{properties-for/determine-value value=item.source.processFileName}}</td>
+      {{properties-for/determine-value key="filename.src" value=item.source.processFileName tag="td" testId="eventSourceFileNameValue"}}
+      {{properties-for/determine-value key="checksum.src" value=item.source.processChecksum tag="td" testId="eventSourceChecksumValue"}}
       <td test-id="eventSourceDirectoryValue">{{properties-for/determine-value value=item.source.processDirectory}}</td>
-      <td test-id="eventSourceUsernameValue">{{properties-for/determine-value value=item.source.user.username}}</td>
+      {{properties-for/determine-value key="user.src" value=item.source.user.username tag="td" testId="eventSourceUsernameValue"}}
       <td test-id="eventSourceCategoriesValue">{{properties-for/determine-value value=item.source.processCategories}}</td>
     </tr>
     <tr>
       <th scope="row" test-id="eventTargetLabel">{{t 'respond.eventsList.ueba.process.destinationLabel'}}</th>
-      <td test-id="eventDestinationFileNameValue">{{properties-for/determine-value value=item.destination.processFileName}}</td>
-      <td test-id="eventDestintionDirectoryValue">{{properties-for/determine-value value=item.destination.processDirectory}}</td>
-      <td test-id="eventDestinationUsernameValue">{{properties-for/determine-value value=item.destination.user.username}}</td>
+      {{properties-for/determine-value key="filename.dst" value=item.destination.processFileName tag="td" testId="eventDestinationFileNameValue"}}
+      {{properties-for/determine-value key="checksum.dst" value=item.destination.processChecksum tag="td" testId="eventDestinationChecksumValue"}}
+      <td test-id="eventDestinationDirectoryValue">{{properties-for/determine-value value=item.destination.processDirectory}}</td>
+      {{properties-for/determine-value key="user.dst" value=item.destination.user.username tag="td" testId="eventDestinationUsernameValue"}}
       <td test-id="eventDestinationCategoriesValue">{{properties-for/determine-value value=item.destination.processCategories}}</td>
     </tr>
   </tbody>

@@ -178,24 +178,28 @@ function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
   // Generate nodes & links for the filenames & hashes, if any.
   const fileNameNodes = [];
   const fileHashNodes = [];
-  data.forEach(({ filename, hash }) => {
-
+  const parseFilesAndHashes = ({ filename, hash }) => {
     // Generate nodes for filename & hash, if any.
     const fileNameNode = checkNode(NodeTypes.FILE_NAME, filename, nodeHash, evt);
     fileNameNodes.push(fileNameNode);
 
     const fileHashNode = checkNode(NodeTypes.FILE_HASH, hash, nodeHash, evt);
     fileHashNodes.push(fileHashNode);
-
     // Link the 2 nodes for filename & corresponding hash, if found.
     if (fileHashNode && fileNameNode) {
       checkLink(LinkTypes.IS_NAMED, fileHashNode, fileNameNode, linkHash, evt);
     }
-
     // Link either filename or hash to source & dest "anchor" nodes, if any.
     checkLink(LinkTypes.HAS_FILE, sourceAnchorNode, fileHashNode || fileNameNode, linkHash, evt);
     checkLink(LinkTypes.HAS_FILE, destAnchorNode, fileHashNode || fileNameNode, linkHash, evt);
-  });
+  };
+
+  data.forEach(parseFilesAndHashes);
+
+  // parse filename & checksum for ueba-process event ( endpoint )
+  [source || {}, destination || {} ]
+    .map(({ processFileName: filename, processChecksum: hash }) => ({ filename, hash }))
+    .forEach(parseFilesAndHashes);
 }
 
 /**

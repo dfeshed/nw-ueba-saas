@@ -59,19 +59,22 @@ export const process = {
   eventDataSourceLabel: '[test-id=eventDataSourceLabel]',
   eventDataSourceValue: '[test-id=eventDataSourceValue]',
   eventTableFileNameLabel: '[test-id=eventTableFileNameLabel]',
+  eventTableChecksumLabel: '[test-id=eventTableChecksumLabel]',
   eventTableDirectoryLabel: '[test-id=eventTableDirectoryLabel]',
   eventTableUsernameLabel: '[test-id=eventTableUsernameLabel]',
   eventTableCategoriesLabel: '[test-id=eventTableCategoriesLabel]',
   eventSourceLabel: '[test-id=eventSourceLabel]',
   eventSourceFileNameValue: '[test-id=eventSourceFileNameValue]',
+  eventSourceChecksumValue: '[test-id=eventSourceChecksumValue]',
   eventSourceDirectoryValue: '[test-id=eventSourceDirectoryValue]',
   eventSourceUsernameValue: '[test-id=eventSourceUsernameValue]',
   eventSourceCategoriesValue: '[test-id=eventSourceCategoriesValue]',
   eventTargetLabel: '[test-id=eventTargetLabel]',
-  eventTargetFileNameValue: '[test-id=eventTargetFileNameValue]',
-  eventTargetDirectoryValue: '[test-id=eventTargetDirectoryValue]',
-  eventTargetUsernameValue: '[test-id=eventTargetUsernameValue]',
-  eventTargetCategoriesValue: '[test-id=eventTargetCategoriesValue]'
+  eventTargetFileNameValue: '[test-id=eventDestinationFileNameValue]',
+  eventTargetChecksumValue: '[test-id=eventDestinationChecksumValue]',
+  eventTargetDirectoryValue: '[test-id=eventDestinationDirectoryValue]',
+  eventTargetUsernameValue: '[test-id=eventDestinationUsernameValue]',
+  eventTargetCategoriesValue: '[test-id=eventDestinationCategoriesValue]'
 };
 
 export const endpoint = {

@@ -19,6 +19,8 @@ module.exports = {
     USER: [
       'user_src',
       'user_dst',
+      'user.src',
+      'user.dst',
       'username',
       'user_all'
     ],
@@ -29,27 +31,31 @@ module.exports = {
       'dns_domain',
       'domain_all'
     ],
-    'MAC_ADDRESS': [
+    MAC_ADDRESS: [
       'alias_mac',
       'eth_src',
       'eth_dst',
       'mac_address',
       'eth_all'
     ],
-    'FILE_NAME': [
+    FILE_NAME: [
       'file',
       'filename',
       'sourcefile',
       'filename_src',
       'filename_dst',
-      'filename_all'
+      'filename_all',
+      'filename.src',
+      'filename.dst'
     ],
-    'FILE_HASH': [
+    FILE_HASH: [
       'checksum',
       'hash',
       'checksum_src',
       'checksum_dst',
-      'checksum_all'
+      'checksum_all',
+      'checksum.src',
+      'checksum.dst'
     ],
     HOST: [
       'domain',
