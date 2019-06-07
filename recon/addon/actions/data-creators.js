@@ -418,9 +418,12 @@ const initializeRecon = (reconInputs) => {
         type: ACTION_TYPES.SUMMARY_RETRIEVE,
         promise: fetchReconSummary(reconInputs),
         meta: {
-          onFailure(response) {
-            const { errorCode } = handleInvestigateErrorCode(response, 'FETCH_RECON_SUMMARY');
-            dispatch(_checkForFatalApiError(errorCode));
+          onFailure(response = {}) {
+            const error = handleInvestigateErrorCode(response, 'FETCH_RECON_SUMMARY');
+            if (error) {
+              const { errorCode } = error;
+              dispatch(_checkForFatalApiError(errorCode));
+            }
           }
         }
       });

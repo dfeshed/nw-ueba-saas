@@ -5,6 +5,7 @@ import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
+const _headerError = (state) => state.header.headerError;
 const _headerErrorCode = (state) => state.header.headerErrorCode;
 const _headerItems = (state) => state.header.headerItems || [];
 
@@ -19,16 +20,17 @@ export const packetTotal = createSelector(
 );
 
 export const headerErrorMessage = createSelector(
-  [_headerErrorCode],
-  (headerErrorCode) => {
-    const errorObj = handleInvestigateErrorCode({ code: headerErrorCode });
+  [_headerError, _headerErrorCode],
+  (headerError, headerErrorCode) => {
+    if (headerError) {
+      const errorObj = handleInvestigateErrorCode({ code: headerErrorCode });
+      if (!errorObj) {
+        return lookup('service:i18n').t('recon.fatalError.permissions');
+      }
 
-    if (!errorObj) {
-      return;
+      const { errorCode, type, messageLocaleKey } = errorObj;
+
+      return lookup('service:i18n').t(messageLocaleKey, { errorCode, type });
     }
-
-    const { errorCode, type, messageLocaleKey } = errorObj;
-
-    return lookup('service:i18n').t(messageLocaleKey, { errorCode, type });
   }
 );
