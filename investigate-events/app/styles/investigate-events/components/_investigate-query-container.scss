@@ -144,7 +144,7 @@
     }
 
     .query-bar-options {
-      @include border(1px, solid, primary, lighter);
+      @include border(1px, solid, primary, light);
     }
 
     &.is-console-open {
@@ -970,7 +970,7 @@
     .meta-tab {
       border-left: 1px solid text-color(primary);
     }
-    
+
     .tabrow a {
       text-decoration: none;
       @include rsa-font(default, small);
@@ -980,13 +980,13 @@
       border-top: 1px solid text-color(primary);
       color: text-color(secondary);
     }
-    
+
     .tabrow li.selected {
       font-weight: 100;
       pointer-events: none;
       color: text-color(neutral, light);
       border-top: none;
     }
-    
+
   }
 }

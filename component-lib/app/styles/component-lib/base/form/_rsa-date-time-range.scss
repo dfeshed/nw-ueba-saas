@@ -1,7 +1,7 @@
 $datePickerFontSize: 1rem;
 $datePickerSpacing: $datePickerFontSize * 0.1;
 .rsa-date-time-range {
-  border: 1px solid border-color(primary, lighter);
+  border: 1px solid border-color(primary, light);
   padding-right: rsa-whitespace(less);
   white-space: nowrap;
   font-size: 0; // remove whitespace between inline-block elements
