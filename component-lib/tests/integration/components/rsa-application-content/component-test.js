@@ -2,7 +2,7 @@ import Service from '@ember/service';
 import Evented from '@ember/object/evented';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled } from '@ember/test-helpers';
+import { render, settled, findAll, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 const eventBusStub = Service.extend(Evented, {});
@@ -20,14 +20,14 @@ module('Integration | Component | rsa-application-content', function(hooks) {
 
   test('it includes the proper classes', async function(assert) {
     await render(hbs `{{rsa-application-content}}`);
-    const content = this.$().find('.rsa-application-content').length;
+    const content = findAll('.rsa-application-content').length;
     assert.equal(content, 1);
   });
 
   test('it includes the proper classes when hasBlur is true', async function(assert) {
     await render(hbs `{{#rsa-application-content hasBlur=true}}foo{{/rsa-application-content}}`);
-    const content = this.$().find('.rsa-application-content').first();
-    assert.ok(content.hasClass('has-blur'));
+    const content = find('.rsa-application-content');
+    assert.ok(content.classList.contains('has-blur'));
   });
 
   test('it updates hasBlur when rsa-application-modal-did-open is triggered', async function(assert) {

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | rsa-content-definition', function(hooks) {
@@ -8,7 +8,7 @@ module('Integration | Component | rsa-content-definition', function(hooks) {
 
   test('it includes the proper classes', async function(assert) {
     await render(hbs `{{rsa-content-definition}}`);
-    const contentCount = this.$().find('.rsa-content-definition').length;
+    const contentCount = findAll('.rsa-content-definition').length;
     assert.equal(contentCount, 1);
   });
 
@@ -16,7 +16,7 @@ module('Integration | Component | rsa-content-definition', function(hooks) {
     await render(hbs `{{#rsa-content-definition}}
     <p class='inner-element-class'>something</p>
     {{/rsa-content-definition}}`);
-    const contentCount = this.$().find('.inner-element-class').length;
+    const contentCount = findAll('.inner-element-class').length;
     assert.equal(contentCount, 1, 'Checking inner content is displayed');
   });
 });

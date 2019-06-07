@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 // import Ember from 'ember';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | rsa-application-user-preferences-panel', function(hooks) {
@@ -9,7 +9,7 @@ module('Integration | Component | rsa-application-user-preferences-panel', funct
 
   test('it includes the proper classes', async function(assert) {
     await render(hbs `{{rsa-application-user-preferences-panel}}`);
-    const pref = this.$().find('.rsa-application-user-preferences-panel').length;
+    const pref = findAll('.rsa-application-user-preferences-panel').length;
     assert.equal(pref, 1);
   });
 

@@ -8,7 +8,7 @@ module('Integration | Component | rsa-application-header', function(hooks) {
 
   test('it includes the proper classes', async function(assert) {
     await render(hbs `{{rsa-application-header}}`);
-    const header = this.$().find('.rsa-application-header').length;
+    const header = findAll('.rsa-application-header').length;
     assert.equal(header, 1);
   });
 

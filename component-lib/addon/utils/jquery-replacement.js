@@ -74,7 +74,14 @@ export const isNumeric = (x) => {
 // $('.some-element').removeClass('foo-class')
 // document.querySelector('.some-element').classList.remove('foo-class');
 
-//
+// element css properties
+// this.$('.some-element').css('cssProperty')
+// find('.some-element').style['cssProperty'];
+
+// computed css properties
+// this.$('.some-element').css('cssProperty')
+// window.getComputedStyle(find('.some-element')).getPropertyValue('flex-grow')git stt
+
 // DIMENSIONS
 //
 
@@ -99,6 +106,17 @@ export const isNumeric = (x) => {
 
 // $('.some-element').off('mouseleave', this._someHandlerFunction);
 // document.querySelectorAll('.some-element').removeEventListener('mouseleave', this._someHandlerFunction);
+
+//
+// TRIGGER EVENTS ( using ember test helpers)
+//
+// const e = window.$.Event('keyup');
+// e.keyCode = 27
+// this.$('.rsa-application-modal').trigger(e);
+// await triggerKeyEvent(find('.rsa-application-modal'), 'keyup', 27);
+
+// this.$().find('.rsa-application-overlay').click();
+// await click(find('.rsa-application-overlay'));
 
 //
 // UTILITY

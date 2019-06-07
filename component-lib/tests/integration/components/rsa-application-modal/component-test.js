@@ -2,10 +2,9 @@ import Service from '@ember/service';
 import Evented from '@ember/object/evented';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { clearRender, render, settled } from '@ember/test-helpers';
+import { clearRender, render, settled, findAll, find, click, triggerKeyEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
-import $ from 'jquery';
 
 const eventBusStub = Service.extend(Evented, {});
 
@@ -19,15 +18,15 @@ module('Integration | Component | rsa-application-modal', function(hooks) {
 
   test('it includes the proper classes', async function(assert) {
     await render(hbs `<div id="modalDestination"></div>{{rsa-application-modal}}`);
-    const content = this.$().find('.rsa-application-modal').length;
-    assert.equal(this.$().find('.standard').length, 1);
+    const content = findAll('.rsa-application-modal').length;
+    assert.equal(findAll('.standard').length, 1);
     assert.equal(content, 1);
   });
 
   test('it includes the proper classes when style is error', async function(assert) {
     await render(hbs `<div id="modalDestination"></div>{{rsa-application-modal style="error"}}`);
-    const content = this.$().find('.rsa-application-modal').length;
-    assert.equal(this.$().find('.error').length, 1);
+    const content = findAll('.rsa-application-modal').length;
+    assert.equal(findAll('.error').length, 1);
     assert.equal(content, 1);
   });
 
@@ -36,15 +35,15 @@ module('Integration | Component | rsa-application-modal', function(hooks) {
     await render(
       hbs `<div id="modalDestination"></div>{{#rsa-application-modal isOpen=true}}foo{{/rsa-application-modal}}`
     );
-    const modal = this.$().find('.rsa-application-modal').first();
-    assert.ok(modal.hasClass('is-open'));
+    const modal = find('.rsa-application-modal');
+    assert.ok(modal.classList.contains('is-open'));
   });
 
   test('it does not render content initially', async function(assert) {
     await render(
       hbs `<div id="modalDestination"></div>{{#rsa-application-modal}}<button class='modal-trigger'>Click</button>{{/rsa-application-modal}}`
     );
-    const modal = this.$().find('#modalDestination .rsa-application-modal-content').length;
+    const modal = findAll('#modalDestination .rsa-application-modal-content').length;
     assert.equal(modal, 0);
   });
 
@@ -52,11 +51,10 @@ module('Integration | Component | rsa-application-modal', function(hooks) {
     await render(
       hbs `<div id="modalDestination"></div>{{#rsa-application-modal}}<button class='modal-trigger'>Click</button>{{/rsa-application-modal}}`
     );
-    this.$().find('.modal-trigger').click();
+    await click('.modal-trigger');
 
-    const that = this;
     return settled().then(function() {
-      const modal = that.$().find('#modalDestination .rsa-application-modal-content').length;
+      const modal = findAll('#modalDestination .rsa-application-modal-content').length;
       assert.equal(modal, 1);
     });
 
@@ -66,11 +64,10 @@ module('Integration | Component | rsa-application-modal', function(hooks) {
     await render(
       hbs `<div id="modalDestination"></div>{{#rsa-application-modal isOpen=true}}<button class='modal-trigger'>Click</button>{{/rsa-application-modal}}`
     );
-    this.$().find('.rsa-application-overlay').click();
+    await click('.rsa-application-overlay');
 
-    const that = this;
     return settled().then(function() {
-      const modal = that.$().find('#modalDestination .rsa-application-modal-content').length;
+      const modal = findAll('#modalDestination .rsa-application-modal-content').length;
       assert.equal(modal, 0);
     });
   });
@@ -80,16 +77,10 @@ module('Integration | Component | rsa-application-modal', function(hooks) {
       hbs `<div id="modalDestination"></div>{{#rsa-application-modal isOpen=true}}<button class='modal-trigger'>Click</button>{{/rsa-application-modal}}`
     );
 
-    // this.$ does not have "Event" on it, use window
-    // eslint-disable-next-line new-cap
-    const e = window.$.Event('keyup');
-    e.keyCode = 27;
+    await triggerKeyEvent('.rsa-application-modal', 'keyup', 27);
 
-    this.$('.rsa-application-modal').trigger(e);
-
-    const that = this;
     return settled().then(function() {
-      const modal = that.$().find('#modalDestination .rsa-application-modal-content').length;
+      const modal = findAll('#modalDestination .rsa-application-modal-content').length;
       assert.equal(modal, 0);
     });
   });
@@ -101,7 +92,7 @@ module('Integration | Component | rsa-application-modal', function(hooks) {
 
     const spy = sinon.spy(this.get('eventBus'), 'trigger');
 
-    this.$().find('.modal-trigger').click();
+    await click('.modal-trigger');
 
     return settled().then(function() {
       assert.ok(spy.withArgs('rsa-application-modal-did-open').calledOnce);
@@ -152,7 +143,11 @@ module('Integration | Component | rsa-application-modal', function(hooks) {
     await render(
       hbs `<div id="modalDestination"></div>{{#rsa-application-modal eventId="test" isOpen=isOpen}}<button class='modal-trigger'>Click</button><div class='modal-content'><div class='modal-close'>Close</div></div>{{/rsa-application-modal}}`
     );
-    this.$().find('.modal-close').click();
+
+    // while jquery click can trigger multiple elements ember helper click can only trigger one at a time. previous code this.$().find('.modal-close').click();
+    const closeButtons = findAll('.modal-close');
+    await click(closeButtons[0]);
+    await click(closeButtons[1]);
 
     const that = this;
     return settled().then(function() {
@@ -161,16 +156,18 @@ module('Integration | Component | rsa-application-modal', function(hooks) {
   });
 
   test('it no longer has an active modal destination after the modal is destroyed', async function(assert) {
-    $('body').append('<div id="modalDestination"></div>'); // don't render the modalDestination with the modal otherwise it will be removed on clearRender
+    const modelDiv = document.createElement('div');
+    modelDiv.id = 'modalDestination';
+    document.body.appendChild(modelDiv); // don't render the modalDestination with the modal otherwise it will be removed on clearRender
     await render(
       hbs `{{#rsa-application-modal eventId="test" autoOpen=true}}<button class='modal-trigger'>Click</button><div class='modal-content'><div class='modal-close'>Close</div></div>{{/rsa-application-modal}}`
     );
     return settled().then(async() => {
-      assert.equal($('#modalDestination.active').length, 1, 'The modal is active');
+      assert.equal(document.querySelectorAll('#modalDestination.active').length, 1, 'The modal is active');
       await clearRender();
       return settled().then(() => {
-        assert.equal($('#modalDestination.active').length, 0, 'The modal is no longer active');
-        $('#modalDestination').remove(); // clean up
+        assert.equal(document.querySelectorAll('#modalDestination.active').length, 0, 'The modal is no longer active');
+        document.body.removeChild(modelDiv);// clean up
       });
     });
   });

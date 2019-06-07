@@ -8,7 +8,7 @@ module('Integration | Component | rsa-gauge', function(hooks) {
 
   test('it renders', async function(assert) {
     await render(hbs `{{rsa-gauge}}`);
-    assert.ok(this.$('svg')[0]);
+    assert.ok(find('svg'));
   });
 
   test('it does not rotate for a value of 0', async function(assert) {
@@ -65,7 +65,7 @@ module('Integration | Component | rsa-gauge', function(hooks) {
 
   test('it does not display value text if showValue is false', async function(assert) {
     await render(hbs `{{rsa-gauge value=1 showValue=false}}`);
-    assert.notOk(this.$('.gauge-value-text')[0]);
+    assert.notOk(find('.gauge-value-text'));
   });
 
   test('it uses custom display text if passed', async function(assert) {
