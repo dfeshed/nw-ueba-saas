@@ -167,6 +167,12 @@ export const getColumns = createSelector(
         // examples: meta blacklisted by admin based on user perms/role
         const validMeta = languages && languages.findBy('metaName', col.field);
 
+        // summary field is special and allowed to pass
+        const isSummary = col.field === 'custom.metasummary' || col.field === 'custom.meta-summary';
+
+        // theme field is special and allowed to pass
+        const isTheme = col.field === 'custom.theme';
+
         // slice out `custom.meta-details` column because that is a column
         // of every single meta and 1) it looks horrible and has likely
         // never been tested and 2) it causes us to keep all of the meta
@@ -178,7 +184,7 @@ export const getColumns = createSelector(
           'custom.meta-details'
         ].includes(col.field);
 
-        return validMeta && !toExclude;
+        return (isTheme || isSummary || validMeta) && !toExclude;
       });
     }
   }

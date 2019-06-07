@@ -437,6 +437,31 @@ test('Should get mutable columns for data table', function(assert) {
   assert.notOk(columns.isMutable, 'Columns should not be a mutable object.');
 });
 
+test('Should include custom.meta-summary, custom.meta-summary, and custom.theme', function(assert) {
+  const state = Immutable.from({
+    investigate: {
+      dictionaries: {
+        language: []
+      },
+      data: {
+        columnGroup: 'SUMMARY',
+        columnGroups: [{
+          id: 'SUMMARY',
+          name: 'Summary List',
+          ootb: true,
+          columns: [
+            { field: 'custom.theme', title: 'Type' },
+            { field: 'custom.metasummary', title: 'Type' },
+            { field: 'custom.meta-summary', title: 'Type' }
+          ]
+        }]
+      }
+    }
+  });
+  const columns = getColumns(state);
+  assert.equal(columns.length, 3);
+});
+
 test('columns should exclude meta not included in language dictionary', function(assert) {
   assert.expect(2);
   const state = Immutable.from({
