@@ -155,7 +155,9 @@ const HeaderContainer = Component.extend({
 
     debouncedSearchForTerm(term, event) {
       if (event.key === 'Enter') {
-        this.send('setSearchScroll', this.get('searchScrollIndex') + 1);
+        const { searchScrollIndex, searchMatchesCount } = this.getProperties('searchScrollIndex', 'searchMatchesCount');
+        const pendingIndex = searchScrollIndex + 1 === searchMatchesCount ? 0 : searchScrollIndex + 1;
+        this.send('setSearchScroll', pendingIndex);
       } else {
         debounce(this, 'searchForTerm', 500);
       }
