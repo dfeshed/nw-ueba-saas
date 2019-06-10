@@ -35,4 +35,23 @@
     }
 
   }
+
+  .create-incident-alert-summary {
+    border: 1px solid border-color(primary);
+  }
+
+  .severity-input {
+    margin-left: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .rsa-label {
+    display: flex;
+    align-items: flex-start;
+    vertical-align: text-top;
+    margin-bottom: rsa-whitespace(least);
+    color: text-color(primary, light);
+    @include rsa-font(header, small);
+    text-transform: uppercase;
+  }
 }
