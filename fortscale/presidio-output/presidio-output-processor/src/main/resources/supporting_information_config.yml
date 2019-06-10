@@ -1153,7 +1153,7 @@ indicators:
 
 - id: sumOfHighestSslSubjectSrcNetnameOutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
-  name: abnormal_ssl_subject_for_src_netname_outbound
+  name: ssl_subject_abnormal_ssl_subject_for_src_netname_outbound
   adeEventType: scored_enriched.tls.sslSubject.srcNetnameOutbound.tls.score
   modelContextFields:
     - srcNetname
@@ -1236,7 +1236,7 @@ indicators:
 
 - id: sumOfHighestCountryScoresSslSubjectOutboundTlsHourly
   type: SCORE_AGGREGATION
-  name: abnormal_country_for_ssl_subject_outbound
+  name: ssl_subject_abnormal_country_for_ssl_subject_outbound
   adeEventType: scored_enriched.tls.country.sslSubjectOutbound.tls.score
   modelContextFields:
     - sslSubject
@@ -1256,7 +1256,7 @@ indicators:
 
 - id: sumOfHighestDstPortScoresSslSubjectOutboundTlsHourly
   type: SCORE_AGGREGATION
-  name: abnormal_dst_port_for_ssl_subject_outbound
+  name: ssi_bubject_abnormal_dst_port_for_ssl_subject_outbound
   adeEventType: scored_enriched.tls.dstPort.sslSubjectOutbound.tls.score
   modelContextFields:
     - sslSubject
@@ -1276,7 +1276,7 @@ indicators:
 
 - id: highestStartInstantScoreSslSubjectOutboundTlsHourly
   type: SCORE_AGGREGATION
-  name: abnormal_ssl_subject_day_time
+  name: ssl_subject_abnormal_ssl_subject_day_time
   adeEventType: scored_enriched.tls.startInstant.sslSubjectOutbound.tls.score
   modelContextFields:
     - sslSubject
@@ -1293,7 +1293,7 @@ indicators:
 
 - id: sumOfHighestDstPortDomainOutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
-  name: ssl_suject_abnormal_dst_port_for_domain_outbound
+  name: ssl_subject_abnormal_dst_port_for_domain_outbound
   adeEventType: scored_enriched.tls.dstPort.domainOutbound.tls.score
   modelContextFields:
     - domain
@@ -1314,7 +1314,7 @@ indicators:
 
 - id: sumOfHighestDstPortDstOrgOutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
-  name: ssl_suject_abnormal_dst_port_for_dst_org_outbound
+  name: ssl_subject_abnormal_dst_port_for_dst_org_outbound
   adeEventType: scored_enriched.tls.dstPort.dstOrgOutbound.tls.score
   modelContextFields:
     - dstOrg
@@ -1443,7 +1443,6 @@ indicators:
   schema: TLS
   adeEventType: tls
   anomalyDescriptior:
-    anomalyField: srcIp
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
@@ -1639,7 +1638,7 @@ indicators:
 
 - id: highestStartInstantScoreJa3OutboundTlsHourly
   type: SCORE_AGGREGATION
-  name: abnormal_ja3_day_time
+  name: ja3_abnormal_ja3_day_time
   adeEventType: scored_enriched.tls.startInstant.ja3Outbound.tls.score
   modelContextFields:
     - ja3
@@ -1656,7 +1655,7 @@ indicators:
 
 - id: sumOfHighestJa3SrcNetnameOutboundScoresJa3TlsHourly
   type: SCORE_AGGREGATION
-  name: abnormal_ja3_for_source_netname_outbound
+  name: ja3_abnormal_ja3_for_source_netname_outbound
   adeEventType: scored_enriched.tls.ja3.srcNetnameOutbound.tls.score
   modelContextFields:
     - srcNetname
@@ -1696,7 +1695,7 @@ indicators:
 
 - id: sumOfHighestDomainScoresJa3OutboundTlsHourly
   type: SCORE_AGGREGATION
-  name: abnormal_domain_for_ja3_outbound
+  name: ja3_abnormal_domain_for_ja3_outbound
   adeEventType: scored_enriched.tls.domain.ja3Outbound.tls.score
   modelContextFields:
     - ja3
@@ -1716,7 +1715,7 @@ indicators:
 
 - id: sumOfHighestDstPortScoresJa3OutboundTlsHourly
   type: SCORE_AGGREGATION
-  name: abnormal_dst_port_for_ja3_outbound
+  name: ja3_abnormal_dst_port_for_ja3_outbound
   adeEventType: scored_enriched.tls.domain.ja3Outbound.tls.score
   modelContextFields:
     - ja3
