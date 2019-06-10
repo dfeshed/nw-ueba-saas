@@ -37,35 +37,36 @@ export default RangeSlider.extend({
     this._super();
 
     // get the slider handle so's we can add listener(s)
-    // * if we want to add a listener without jQuery style we can use one of...
-    //    - this.slider.target.querySelector('.noUi-handle');
-    //    - this.get('element').querySelector('.noUi-handle');
-    const sliderHandle = this.sliderHandle = this.$('.noUi-handle');
+    const sliderHandles = this.slider.target.getElementsByClassName('noUi-handle noUi-handle-lower');
+    if (sliderHandles.length !== 1) {
+      return;
+    }
+    const sliderHandle = this.sliderHandle = sliderHandles.item(0);
 
     // currently only handling sliders using a single handle
     // * if we want to support multi handles we may need to get them separately with one of or combo of...
     //    - class names of 'noUi-handle-lower' & 'noUi-handle-upper'
     //    - data-handle attr value (ex. data-handle="0", data-handle="1", etc.)
-    if (sliderHandle.length !== 1) {
-      return;
-    }
 
-    // add the listener (* keep in mind we can't use an anonymous function if we switch to using add/removeEventListener()'s)
-    sliderHandle.on('keydown', (e) => {
+    // define keydownHandler to use to add and remove event listener
+    this.keydownHandler = (event) => {
       run(this, function() {
         const value = Number(this.slider.get());
         // left arrow
-        if (e.which === 37) {
+        if (event.keyCode === 37) {
           this.slider.set(value - 1);
           this['on-change'](value - 1);
         }
         // right arrow
-        if (e.which === 39) {
+        if (event.keyCode === 39) {
           this.slider.set(value + 1);
           this['on-change'](value + 1);
         }
       });
-    });
+    };
+
+    // add event listener
+    sliderHandle.addEventListener('keydown', this.keydownHandler);
   },
 
   willDestroyElement() {
@@ -75,9 +76,8 @@ export default RangeSlider.extend({
   },
 
   teardown() {
-    // remove all listeners
-    this.sliderHandle.off();
+    // remove event listener
+    this.sliderHandle.removeEventListener('keydown', this.keydownHandler);
     this._super();
   }
-
 });

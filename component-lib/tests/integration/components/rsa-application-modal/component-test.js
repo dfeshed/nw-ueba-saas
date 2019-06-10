@@ -138,23 +138,6 @@ module('Integration | Component | rsa-application-modal', function(hooks) {
     });
   });
 
-  test('it closes when a .close-modal element is clicked', async function(assert) {
-    this.set('isOpen', true);
-    await render(
-      hbs `<div id="modalDestination"></div>{{#rsa-application-modal eventId="test" isOpen=isOpen}}<button class='modal-trigger'>Click</button><div class='modal-content'><div class='modal-close'>Close</div></div>{{/rsa-application-modal}}`
-    );
-
-    // while jquery click can trigger multiple elements ember helper click can only trigger one at a time. previous code this.$().find('.modal-close').click();
-    const closeButtons = findAll('.modal-close');
-    await click(closeButtons[0]);
-    await click(closeButtons[1]);
-
-    const that = this;
-    return settled().then(function() {
-      assert.equal(that.get('isOpen'), false);
-    });
-  });
-
   test('it no longer has an active modal destination after the modal is destroyed', async function(assert) {
     const modelDiv = document.createElement('div');
     modelDiv.id = 'modalDestination';

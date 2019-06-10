@@ -35,14 +35,6 @@ export default Component.extend({
 
   didInsertElement() {
     schedule('afterRender', () => {
-      this.$('.modal-close').on('click', () => {
-        next(() => {
-          if (this.isDestroyed || this.isDestroying) {
-            return;
-          }
-          this.closeModal();
-        });
-      });
       if (this.get('autoOpen')) {
         this.openModal();
       }

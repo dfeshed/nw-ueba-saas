@@ -107,5 +107,4 @@ module('Integration | Component | range-slider', function(hooks) {
     await triggerKeyEvent(handleEl, 'keydown', 37); // 37 is the left arrow key
     await triggerKeyEvent(handleEl, 'keydown', 37); // 37 is the left arrow key
   });
-
 });

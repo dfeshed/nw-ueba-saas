@@ -24,10 +24,10 @@ export default Component.extend({
       }
     },
     handleRowClickAction(item, index, event) {
-      const $eventTarget = this.$(event.target);
+      const eventTarget = event.target;
 
       // Do not send the action if the checkbox is being selected
-      if (!$eventTarget.is('.rsa-form-checkbox') && !$eventTarget.is('.rsa-form-checkbox-label')) {
+      if (!eventTarget.classList.contains('rsa-form-checkbox') && !eventTarget.classList.contains('rsa-form-checkbox-label')) {
         this.focus(item);
       }
       return false;

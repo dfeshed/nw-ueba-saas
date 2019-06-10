@@ -27,10 +27,16 @@ export const isNumeric = (x) => {
 // Where this selector is expected to return MANY elements
 // document.querySelectorAll('.some-element')
 
+// $('.some-class')
+// to get many elements
+// .getElementsByClassName('some-class')
+// to get one element
+// .getElementsByClassName('some-class').item(0)
+
 // $('.some-element').length
 // document.querySelectorAll('.some-element').length
 
-// $('.some-element').closest();
+// $('.some-element').closest()
 // document.querySelector('.some-element').closest()
 
 // $('.some-elements').first()
@@ -49,38 +55,38 @@ export const isNumeric = (x) => {
 //
 
 // $('.some-element').focus()
-// document.querySelector('.some-element').focus();
-// await focus('.some-element');
+// document.querySelector('.some-element').focus()
+// await focus('.some-element')
 
 // $('.some-element').blur()
 // {
-//    await focus('.some-element');
-//    this.element.querySelector('.some-element').blur();
+//    await focus('.some-element')
+//    this.element.querySelector('.some-element').blur()
 // }
 
 //
 // STYLE
 //
 
-// $('.some-element').hide();
+// $('.some-element').hide()
 // document.querySelector('.some-element').style.display = 'none'
 
 // $('.some-element').hasClass('foo-class')
 // document.querySelector('.some-element').classList.contains('foo-class')
 
 // $('.some-element').addClass('foo-class')
-// document.querySelector('.some-element').classList.add('foo-class');
+// document.querySelector('.some-element').classList.add('foo-class')
 
 // $('.some-element').removeClass('foo-class')
-// document.querySelector('.some-element').classList.remove('foo-class');
+// document.querySelector('.some-element').classList.remove('foo-class')
 
 // element css properties
 // this.$('.some-element').css('cssProperty')
-// find('.some-element').style['cssProperty'];
+// find('.some-element').style['cssProperty']
 
 // computed css properties
 // this.$('.some-element').css('cssProperty')
-// window.getComputedStyle(find('.some-element')).getPropertyValue('flex-grow')git stt
+// window.getComputedStyle(find('.some-element')).getPropertyValue('flex-grow')
 
 // DIMENSIONS
 //
@@ -104,19 +110,22 @@ export const isNumeric = (x) => {
 // $('.some-elenent').on('mouseleave', this._someHandlerFunction)
 // document.querySelectorAll('.some-element').addEventListener('mouseleave', this._someHandlerFunction)
 
-// $('.some-element').off('mouseleave', this._someHandlerFunction);
-// document.querySelectorAll('.some-element').removeEventListener('mouseleave', this._someHandlerFunction);
+// .off() removes all event handlers
+// with .removeEventListener(), need to identify specific event handler to remove
+// https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener
+// $('.some-element').off('mouseleave', this._someHandlerFunction)
+// document.querySelectorAll('.some-element').removeEventListener('mouseleave', this._someHandlerFunction)
 
 //
-// TRIGGER EVENTS ( using ember test helpers)
+// TRIGGER EVENTS (using ember test helpers)
 //
-// const e = window.$.Event('keyup');
+// const e = window.$.Event('keyup')
 // e.keyCode = 27
-// this.$('.rsa-application-modal').trigger(e);
-// await triggerKeyEvent(find('.rsa-application-modal'), 'keyup', 27);
+// this.$('.rsa-application-modal').trigger(e)
+// await triggerKeyEvent(find('.rsa-application-modal'), 'keyup', 27)
 
-// this.$().find('.rsa-application-overlay').click();
-// await click(find('.rsa-application-overlay'));
+// this.$().find('.rsa-application-overlay').click()
+// await click(find('.rsa-application-overlay'))
 
 //
 // UTILITY
@@ -124,6 +133,9 @@ export const isNumeric = (x) => {
 
 // $.isFunction(foo)
 // typeof foo === 'function'
+
+// $.is('.some-class')
+// Element.classList.contains('some-class')
 
 //
 // ATTRIBUTES
