@@ -1,5 +1,6 @@
 {{#each pillsData key="id" as | pillData index |}}
   {{query-container/new-pill-trigger
+    canPerformTextSearch=canPerformTextSearch
     hasTextPill=hasTextPill
     metaOptions=metaOptions
     recentQueries=recentQueries
@@ -36,12 +37,13 @@
 {{/each}}
 
 {{query-container/query-pill
+  canPerformTextSearch=canPerformTextSearch
+  classNames='new-pill-template'
   hasTextPill=hasTextPill
   isMetaAutoFocused=takeFocus
   metaOptions=metaOptions
-  recentQueries=recentQueries
-  classNames='new-pill-template'
-  sendMessage=(action 'handleMessage')
   position=newPillPosition
+  recentQueries=recentQueries
+  sendMessage=(action 'handleMessage')
 }}
 

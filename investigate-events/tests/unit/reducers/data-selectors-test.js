@@ -9,8 +9,7 @@ import {
   hasColumnGroups,
   getFlattenedColumnList,
   hasMetaSummaryColumn,
-  validEventSortColumns,
-  disableSort
+  validEventSortColumns
 } from 'investigate-events/reducers/investigate/data-selectors';
 import EventColumnGroups from '../../data/subscriptions/investigate-columns/data';
 import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
@@ -65,32 +64,6 @@ test('data is not empty', function(assert) {
   const dataEmpty = isDataEmpty(state);
 
   assert.equal(dataEmpty, false);
-});
-
-test('disableSort when true', function(assert) {
-  const state = {
-    investigate: {
-      services: {
-        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator', version: '11.0.0' }]
-      }
-    }
-  };
-  const sort = disableSort(state);
-
-  assert.equal(sort, true);
-});
-
-test('disableSort when false', function(assert) {
-  const state = {
-    investigate: {
-      services: {
-        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator', version: '11.4.0' }]
-      }
-    }
-  };
-  const sort = disableSort(state);
-
-  assert.equal(sort, false);
 });
 
 test('validEventSortColumns returns as expected when sortable', function(assert) {
@@ -188,7 +161,6 @@ test('validEventSortColumns returns as expected when notIndexedAtValue', functio
   assert.equal(notSingleton.length, 0);
   assert.equal(notValid.length, 0);
 });
-
 
 test('validEventSortColumns returns as expected when notIndexedAtValue and notSingleton', function(assert) {
   const state = {
@@ -329,7 +301,6 @@ test('data is empty and status is resolved', function(assert) {
 
   assert.equal(dataEmpty, true);
 });
-
 
 test('should show status', function(assert) {
   const state = {

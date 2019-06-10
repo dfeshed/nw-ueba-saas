@@ -693,4 +693,26 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
     await toggleTab(PILL_SELECTORS.metaSelectInput);
   });
+
+  test('it disables Text Filter if not supported by core services', async function(assert) {
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/pill-meta
+        canPerformTextSearch=false
+        isActive=true
+        metaOptions=metaOptions
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    // Reduce options so that no Query Filter options are left
+    await typeInSearch('foo');
+    // Highlight should be in Advanced Options on Free-Form
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
+    assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_FREE_FORM_LABEL, 'Free-Form option was not highlighted');
+    // Text Filter should be disabled with a message stating reason
+    const advancedOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    assert.equal(advancedOptions.length, 2, 'incorrect number of Advanced Options present');
+    assert.equal(trim(advancedOptions[1].textContent), 'Text Filter is unavailable. All services must be 11.3 or greater.', 'incorrect label for Text Filter option');
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionDisabled).length, 1, 'incorrect number of disabled items');
+  });
 });

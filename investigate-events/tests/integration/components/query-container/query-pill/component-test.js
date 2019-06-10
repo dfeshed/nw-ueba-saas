@@ -1319,6 +1319,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     });
     await render(hbs`
       {{query-container/query-pill
+        canPerformTextSearch=true
         isActive=true
         metaOptions=metaOptions
         position=0

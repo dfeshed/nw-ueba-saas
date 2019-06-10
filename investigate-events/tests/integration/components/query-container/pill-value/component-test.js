@@ -592,4 +592,21 @@ module('Integration | Component | Pill Value', function(hooks) {
 
     await toggleTab(PILL_SELECTORS.valueSelectInput);
   });
+
+  test('it disables Text Filter if not supported by core services', async function(assert) {
+    await render(hbs`
+      {{query-container/pill-value
+        canPerformTextSearch=false
+        isActive=true
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+    // Reduce options so that no Query Filter options are left
+    await typeInSearch('foo');
+    // Text Filter should be disabled with a message stating reason
+    const advancedOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    assert.equal(advancedOptions.length, 2, 'incorrect number of Advanced Options present');
+    assert.equal(advancedOptions[1].textContent.trim(), 'Text Filter is unavailable. All services must be 11.3 or greater.', 'incorrect label for Text Filter option');
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionDisabled).length, 1, 'incorrect number of disabled items');
+  });
 });

@@ -46,6 +46,7 @@ export default {
   populatedItem: '.is-populated',
   powerSelectAfterOption: '.ember-power-select-after-option',
   powerSelectAfterOptionHighlight: '.ember-power-select-after-option[aria-current="true"]',
+  powerSelectAfterOptionDisabled: '.ember-power-select-after-option[aria-disabled="true"]',
   powerSelectAfterOptions: '.ember-power-select-after-options',
   powerSelectDropdown,
   powerSelectOption: '.js-test-power-select-option',

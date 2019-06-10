@@ -9,10 +9,26 @@ const _summaryData = (state) => state.investigate.services.summaryData;
 const _isSummaryRetrieveError = (state) => state.investigate.services.isSummaryRetrieveError;
 const _summaryErrorCode = (state) => state.investigate.services.summaryErrorCode;
 
+/**
+ * Helper function to detect if all of the services are above a certain version.
+ * @param {array} services List of services
+ * @param {number} minVersion Minimum service version that supports feature
+ * @private
+ */
+const _servicesMeetMinimumVersion = (services, minVersion) => {
+  // Need to check services.length instead of just checking if it's an array
+  // because an Array.every() will return `true` if passed an empty array.
+  return services && services.length > 0 && services.every((service) => {
+    const { version } = service;
+    return parseFloat(version) >= minVersion;
+  });
+};
+
 export const getDbEndTime = (state) => {
   const { summaryData } = state.investigate.services;
   return summaryData ? summaryData.endTime : null;
 };
+
 export const getDbStartTime = (state) => {
   const { summaryData } = state.investigate.services;
   return summaryData ? summaryData.startTime : null;
@@ -45,4 +61,23 @@ export const hasSummaryData = createSelector(
 export const hasFatalSummaryError = createSelector(
   [_isSummaryRetrieveError, _summaryErrorCode],
   (isSummaryRetrieveError, errorCode) => isSummaryRetrieveError && errorCode === 3
+);
+
+/**
+ * Check if all of the available services can support Text searching of meta
+ * data.
+ * @public
+ */
+export const hasMinimumCoreServicesVersionForTextSearch = createSelector(
+  [_services],
+  (services) => _servicesMeetMinimumVersion(services, 11.3)
+);
+
+/**
+ * Check if all of the available services can support column sorting.
+ * @public
+ */
+export const hasMinimumCoreServicesVersionForColumnSorting = createSelector(
+  [_services],
+  (services) => _servicesMeetMinimumVersion(services, 11.4)
 );

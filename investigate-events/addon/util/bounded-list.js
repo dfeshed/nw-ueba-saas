@@ -158,6 +158,8 @@ export default class BoundedList extends EmberObject {
 
   /**
    * Highlights a specific index, setting all others to not be highlighted.
+   * If you try to set highlighting on an item that's disabled, nothing will be
+   * highlighted.
    * @param {Number} index The index to highlight
    * @return {Array}
    * @private
@@ -165,9 +167,9 @@ export default class BoundedList extends EmberObject {
   _highlightIndex(index) {
     const newList = this.list.map((d, i) => ({
       ...d,
-      highlighted: i === index
+      highlighted: (i === index && !d.disabled)
     }));
-    this.highlightedIndex = index;
+    this.highlightedIndex = newList[index].highlighted ? index : -1;
     this.set('list', newList);
   }
 }

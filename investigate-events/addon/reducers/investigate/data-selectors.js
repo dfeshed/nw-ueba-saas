@@ -48,7 +48,6 @@ export const SUMMARY_COLUMN_KEYS = {
 };
 
 // ACCESSOR FUNCTIONS
-const _services = (state) => state.investigate.services.serviceData;
 const _languages = (state) => state.investigate.dictionaries.language;
 const _reconSize = (state) => state.investigate.data.reconSize;
 const _isReconOpen = (state) => state.investigate.data.isReconOpen;
@@ -243,16 +242,5 @@ export const getColumnGroups = createSelector(
         { groupName: i18n.t('investigate.events.columnGroups.default'), options: columnGroups.filter((column) => column.ootb) }
       ];
     }
-  }
-);
-
-export const disableSort = createSelector(
-  [_services],
-  (services = []) => {
-    const unsupportedService = services.find(({ version }) => {
-      return parseFloat(version) < 11.4;
-    });
-
-    return !!unsupportedService;
   }
 );

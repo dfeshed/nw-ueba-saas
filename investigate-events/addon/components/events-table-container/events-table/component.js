@@ -3,7 +3,8 @@ import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 
-import { getColumns, validEventSortColumns, disableSort } from 'investigate-events/reducers/investigate/data-selectors';
+import { getColumns, validEventSortColumns } from 'investigate-events/reducers/investigate/data-selectors';
+import { hasMinimumCoreServicesVersionForColumnSorting } from 'investigate-events/reducers/investigate/services/selectors';
 import {
   areEventsStreaming,
   isCanceled,
@@ -52,7 +53,7 @@ const stateToComputed = (state) => {
     notIndexedAtValue,
     notSingleton,
     notValid,
-    disableSort: disableSort(state)
+    canSort: hasMinimumCoreServicesVersionForColumnSorting(state)
   };
 };
 

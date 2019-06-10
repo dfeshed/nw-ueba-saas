@@ -1,6 +1,7 @@
 export const AFTER_OPTION_FREE_FORM_LABEL = 'Free-Form Filter';
 export const AFTER_OPTION_TEXT_LABEL = 'Text Filter';
 export const AFTER_OPTION_TEXT_DISABLED_LABEL = 'Text Filter is unavailable. Only one is permitted.';
+export const AFTER_OPTION_TEXT_UNAVAILABLE_LABEL = 'Text Filter is unavailable. All services must be 11.3 or greater.';
 export const AFTER_OPTION_QUERY_LABEL = 'Query Filter';
 export const AFTER_OPTION_TAB_META = 'meta';
 export const AFTER_OPTION_TAB_RECENT_QUERIES = 'recent queries';

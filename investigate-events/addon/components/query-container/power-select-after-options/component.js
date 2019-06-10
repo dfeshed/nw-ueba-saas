@@ -20,6 +20,10 @@ export default Component.extend({
    */
   activePillTab: undefined,
 
+  canPerformTextSearch: true,
+
+  hasTextPill: false,
+
   /**
    * Is this component being used by the pill value component? Why do we care?
    * Because meta/operator behave differently than value as value never
@@ -87,7 +91,7 @@ export default Component.extend({
         if (resultsCount === 0) {
           // All options filterd out. If text is complex or a text filter was
           // previously created, choose free-form, otherwise default to text.
-          if (hasComplexText(searchText) || this.get('hasTextPill')) {
+          if (hasComplexText(searchText) || !this.get('canPerformTextSearch') || this.get('hasTextPill')) {
             next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT, FREE_FORM_INDEX);
           } else {
             next(this, this._broadcast, MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT, TEXT_INDEX);

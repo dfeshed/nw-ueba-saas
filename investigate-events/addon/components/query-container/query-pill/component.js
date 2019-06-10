@@ -43,6 +43,14 @@ export default Component.extend({
   activePillTab: AFTER_OPTION_TAB_META,
 
   /**
+   * Are all Core Services at a revision that allows Text searching to be
+   * performed? Passed to subcomponents, not used directly.
+   * @type {boolean}
+   * @public
+   */
+  canPerformTextSearch: true,
+
+  /**
    * The position of this pill relative to other pills.
    * Used when messaging up to parent.
    * @type {Number}

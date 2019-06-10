@@ -1,8 +1,8 @@
 import { module, test } from 'qunit';
 import {
-  isCoreServiceNotUpdated,
   getCoreDeviceVersion,
-  hasSummaryData
+  hasSummaryData,
+  isCoreServiceNotUpdated
 } from 'investigate-shared/selectors/services/selectors';
 
 module('Unit | Selectors | services');

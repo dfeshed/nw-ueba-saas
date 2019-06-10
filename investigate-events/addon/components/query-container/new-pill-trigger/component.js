@@ -6,6 +6,14 @@ export default Component.extend({
   classNames: ['new-pill-trigger-container'],
 
   /**
+   * Are all Core Services at a revision that allows Text searching to be
+   * performed? Passed to subcomponents, not used directly.
+   * @type {boolean}
+   * @public
+   */
+  canPerformTextSearch: true,
+
+  /**
    * Whether or not the new pill trigger is in new pill mode or trigger mode
    * @type {boolean}
    * @public

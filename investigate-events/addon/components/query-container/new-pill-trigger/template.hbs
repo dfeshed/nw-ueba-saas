@@ -1,5 +1,6 @@
 {{#if isAddNewPill}}
   {{query-container/query-pill
+    canPerformTextSearch=canPerformTextSearch
     metaOptions=metaOptions
     recentQueries=recentQueries
     sendMessage=(action 'handleMessage')

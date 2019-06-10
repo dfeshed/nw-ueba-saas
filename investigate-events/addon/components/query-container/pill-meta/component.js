@@ -6,6 +6,7 @@ import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
   AFTER_OPTION_TEXT_DISABLED_LABEL,
+  AFTER_OPTION_TEXT_UNAVAILABLE_LABEL,
   AFTER_OPTION_TAB_META,
   AFTER_OPTION_TAB_RECENT_QUERIES
 } from 'investigate-events/constants/pill';
@@ -28,6 +29,12 @@ const { log } = console;// eslint-disable-line no-unused-vars
 
 const DISABLED_TEXT_SEARCH = {
   label: AFTER_OPTION_TEXT_DISABLED_LABEL,
+  disabled: true,
+  highlighted: false
+};
+
+const UNAVAILABLE_TEXT_SEARCH = {
+  label: AFTER_OPTION_TEXT_UNAVAILABLE_LABEL,
   disabled: true,
   highlighted: false
 };
@@ -58,8 +65,16 @@ export default Component.extend({
   classNameBindings: ['isExpanded', ':pill-meta'],
 
   /**
+   * Are all Core Services at a revision that allows Text searching to be
+   * performed?
+   * @type {boolean}
+   * @public
+   */
+  canPerformTextSearch: true,
+
+  /**
    * Does the entire pills list have a text pill already?
-   * @type {string}
+   * @type {boolean}
    * @public
    */
   hasTextPill: false,
@@ -155,9 +170,11 @@ export default Component.extend({
 
   i18n: service(),
 
-  @computed('hasTextPill')
-  _groomedAfterOptionsMenu(hasTextPill) {
-    if (hasTextPill) {
+  @computed('hasTextPill', 'canPerformTextSearch')
+  _groomedAfterOptionsMenu(hasTextPill, canPerformTextSearch) {
+    if (!canPerformTextSearch) {
+      this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_LABEL, UNAVAILABLE_TEXT_SEARCH);
+    } else if (hasTextPill) {
       this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_LABEL, DISABLED_TEXT_SEARCH);
     } else {
       this._afterOptionsMenu.replaceItemByLabel(AFTER_OPTION_TEXT_DISABLED_LABEL, ENABLED_TEXT_SEARCH);

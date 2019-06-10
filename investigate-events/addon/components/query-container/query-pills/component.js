@@ -33,7 +33,7 @@ import {
   selectGuidedPills,
   selectAllPillsTowardsDirection
 } from 'investigate-events/actions/guided-creators';
-
+import { hasMinimumCoreServicesVersionForTextSearch } from 'investigate-events/reducers/investigate/services/selectors';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
 const { log } = console;// eslint-disable-line no-unused-vars
@@ -46,7 +46,8 @@ const stateToComputed = (state) => ({
   isPillValidationInProgress: isPillValidationInProgress(state),
   metaOptions: metaKeySuggestionsForQueryBuilder(state),
   pillsData: enrichedPillsData(state),
-  selectedPills: selectedPills(state)
+  selectedPills: selectedPills(state),
+  canPerformTextSearch: hasMinimumCoreServicesVersionForTextSearch(state)
 });
 
 const dispatchToActions = {

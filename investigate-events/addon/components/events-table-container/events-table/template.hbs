@@ -37,7 +37,7 @@
         </label>
       {{else}}
         <h2 class="title" title="{{if column.title column.title names.bothNames}}">
-          {{#if (and column.field sortableColumns (not disableSort))}}
+          {{#if (and column.field sortableColumns canSort)}}
             {{#if (contains column.field sortableColumns)}}
               {{#if (eq sortField column.field)}}
                 {{#if (eq sortDirection 'Ascending')}}
@@ -76,7 +76,7 @@
             <section>
               {{events-table-container/events-table/sort-tooltip
                 field=column.field
-                disableSort=disableSort
+                disableSort=(not canSort)
                 notIndexedAtValue=notIndexedAtValue
                 notSingleton=notSingleton
                 notValid=notValid

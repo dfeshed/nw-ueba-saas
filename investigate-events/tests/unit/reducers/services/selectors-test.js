@@ -5,6 +5,8 @@ import {
   getDbStartTime,
   hasSummaryData,
   hasFatalSummaryError,
+  hasMinimumCoreServicesVersionForColumnSorting,
+  hasMinimumCoreServicesVersionForTextSearch,
   selectedService,
   queriedService
 } from 'investigate-events/reducers/investigate/services/selectors';
@@ -92,4 +94,80 @@ test('check for summaryFatalError', function(assert) {
   assert.expect(1);
 
   assert.ok(hasFatalSummaryError(errorState), 'has fetch summary error - shut down events');
+});
+
+test('determine if Core Services supports text search', function(assert) {
+  let flag;
+  const falsyState = {
+    investigate: {
+      services: {
+        serviceData: [{ version: '11.2.0.0' }, { version: '11.4.0.0' }]
+      }
+    }
+  };
+  flag = hasMinimumCoreServicesVersionForTextSearch(falsyState);
+  assert.notOk(flag, 'Failed to detect that not all Core Service above desired version');
+
+  const truthyState = {
+    investigate: {
+      services: {
+        serviceData: [{ version: '11.4.0.0' }, { version: '11.4.0.0' }]
+      }
+    }
+  };
+  flag = hasMinimumCoreServicesVersionForTextSearch(truthyState);
+  assert.ok(flag, 'Failed to detect that all Core Service are above desired version');
+
+  const emptyState = {
+    investigate: {
+      services: {
+        serviceData: []
+      }
+    }
+  };
+  flag = hasMinimumCoreServicesVersionForTextSearch(emptyState);
+  assert.notOk(flag, 'Failed to detect that empty Core Services should return "false"');
+
+  const undefinedState = {
+    investigate: {
+      services: {
+        serviceData: undefined
+      }
+    }
+  };
+  flag = hasMinimumCoreServicesVersionForTextSearch(undefinedState);
+  assert.notOk(flag, 'Failed to detect that undefined Core Services should return "false"');
+
+  const invalidState = {
+    investigate: {
+      services: {
+        serviceData: [{ version: undefined }, { version: '' }, { version: '11.4.0.0' }]
+      }
+    }
+  };
+  flag = hasMinimumCoreServicesVersionForTextSearch(invalidState);
+  assert.notOk(flag, 'Failed to detect that invalid Core Services data should return "false"');
+});
+
+test('determine if Core Services supports column sorting', function(assert) {
+  let flag;
+  const falsyState = {
+    investigate: {
+      services: {
+        serviceData: [{ version: '11.0.0' }, { version: '11.4.0' }]
+      }
+    }
+  };
+  flag = hasMinimumCoreServicesVersionForColumnSorting(falsyState);
+  assert.notOk(flag, 'Failed to detect that not all Core Service above desired version');
+
+  const truthyState = {
+    investigate: {
+      services: {
+        serviceData: [{ version: '11.4.0' }, { version: '11.4.0' }]
+      }
+    }
+  };
+  flag = hasMinimumCoreServicesVersionForColumnSorting(truthyState);
+  assert.ok(flag, 'Failed to detect that all Core Service are above desired version');
 });
