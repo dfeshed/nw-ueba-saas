@@ -1442,6 +1442,8 @@ indicators:
   name: high_number_of_distinct_src_ip_for_ja3_outbound
   schema: TLS
   adeEventType: tls
+  modelContextFields:
+    - ja3
   anomalyDescriptior:
     anomalyFilters:
       - fieldName: direction
@@ -1449,6 +1451,21 @@ indicators:
   historicalData:
     type: hourly_aggregations
   classification: phishing
+
+- id: sumOfBytesSentByJa3OutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_by_ja3_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - ja3
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+  historicalData:
+    type: hourly_aggregations
+  classification: exfiltration
 
 - id: sslSubjectSrcNetnameOutboundToHighestScoreMapJa3TlsHourly
   type: SCORE_AGGREGATION
