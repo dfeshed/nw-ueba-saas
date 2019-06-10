@@ -57,11 +57,11 @@ public class AlertsForwarder extends Forwarder<Alert> {
     @JsonPropertyOrder({ "id","startDate","endDate","UebaEntityId","entityDocumentId","score","severity","indicatorsNum","indicatorsNames","classifications","scoreContribution" })
     class AlertJsonMixin extends Alert {
 
-        @JsonProperty("UebaEtityId")
-        String userId;
+        @JsonProperty("UebaEntityId")
+        String entityId;
 
         @JsonProperty("entityVendorId")
-        String vendorUserId;
+        String vendorEntityId;
 
     }
 }

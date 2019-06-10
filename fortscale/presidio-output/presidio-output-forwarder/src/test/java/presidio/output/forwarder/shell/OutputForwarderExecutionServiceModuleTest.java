@@ -15,10 +15,10 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
-import presidio.output.domain.records.users.User;
-import presidio.output.domain.records.users.UserSeverity;
+import presidio.output.domain.records.entity.Entity;
+import presidio.output.domain.records.entity.EntitySeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.output.domain.services.users.UserPersistencyService;
+import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.output.forwarder.spring.OutputForwarderTestConfigBeans;
 import presidio.output.forwarder.MemoryStrategy;
 import presidio.output.forwarder.spring.OutputForwarderTestConfig;
@@ -39,7 +39,7 @@ public class OutputForwarderExecutionServiceModuleTest {
     private OutputForwarderExecutionService outputForwarderExecutionService;
 
     @Autowired
-    UserPersistencyService userPersistencyService;
+    EntityPersistencyService entityPersistencyService;
 
     @Autowired
     AlertPersistencyService alertPersistencyService;
@@ -58,22 +58,22 @@ public class OutputForwarderExecutionServiceModuleTest {
         Date fiveDaysAgo = Date.from(Instant.now().minus(5, ChronoUnit.DAYS));
         Date now = new Date();
 
-        User user1 = new User("test", "test1", "test3", 90.0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
-        user1.setUpdatedByLogicalStartDate(now);
-        user1.setUpdatedByLogicalEndDate(now);
-        userPersistencyService.save(user1);
+        Entity entity1 = new Entity("test", "test1", 90.0d, new ArrayList<>(), new ArrayList<>(), null, EntitySeverity.CRITICAL, 0, "entityType");
+        entity1.setLastUpdateLogicalStartDate(now);
+        entity1.setLastUpdateLogicalEndDate(now);
+        entityPersistencyService.save(entity1);
 
-        User user2 = new User("test", "test1", "test3", 90.0d, new ArrayList<>(), new ArrayList<>(), null, UserSeverity.CRITICAL, 0);
-        user2.setUpdatedByLogicalStartDate(fiveDaysAgo);
-        user2.setUpdatedByLogicalEndDate(fiveDaysAgo);
-        userPersistencyService.save(user2);
+        Entity entity2 = new Entity("test", "test1", 90.0d, new ArrayList<>(), new ArrayList<>(), null, EntitySeverity.CRITICAL, 0, "entityType");
+        entity2.setLastUpdateLogicalStartDate(fiveDaysAgo);
+        entity2.setLastUpdateLogicalEndDate(fiveDaysAgo);
+        entityPersistencyService.save(entity2);
 
         Alert alert1 =
-                new Alert("userId", "smartId", new ArrayList<>(), "user1", "user1", now, now, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D, "user");
+                new Alert("entityId", "smartId", new ArrayList<>(), "entity1", "entity1", now, now, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D, "entityType");
         alertPersistencyService.save(alert1);
 
         Alert alert2 =
-                new Alert("userId", "smartId", new ArrayList<>(), "user1", "user1", fiveDaysAgo, fiveDaysAgo, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D, "user");
+                new Alert("entityId", "smartId", new ArrayList<>(), "entity1", "entity1", fiveDaysAgo, fiveDaysAgo, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D, "entityType");
         alertPersistencyService.save(alert2);
 
         Indicator indicator1 = new Indicator();
@@ -117,10 +117,10 @@ public class OutputForwarderExecutionServiceModuleTest {
         esTemplate.putMapping(IndicatorEvent.class);
         esTemplate.refresh(IndicatorEvent.class);
 
-        esTemplate.deleteIndex(User.class);
-        esTemplate.createIndex(User.class);
-        esTemplate.putMapping(User.class);
-        esTemplate.refresh(User.class);
+        esTemplate.deleteIndex(Entity.class);
+        esTemplate.createIndex(Entity.class);
+        esTemplate.putMapping(Entity.class);
+        esTemplate.refresh(Entity.class);
     }
 
 
@@ -128,7 +128,7 @@ public class OutputForwarderExecutionServiceModuleTest {
     public void testRun() {
 
         try {
-            outputForwarderExecutionService.doRun(Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)), "userId");
+            outputForwarderExecutionService.doRun(Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)), "entityType");
             Assert.assertEquals(3, memoryStrategy.getAllMessages().size());
         } catch (Exception e) {
             e.printStackTrace();

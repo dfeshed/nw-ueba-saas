@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import presidio.output.domain.records.entity.Entity;
+import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.output.forwarder.payload.JsonPayloadBuilder;
-import presidio.output.domain.records.users.User;
-import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.forwarder.strategy.ForwarderStrategy;
 import presidio.output.forwarder.strategy.ForwarderConfiguration;
 import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
@@ -15,35 +15,35 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class UsersForwarder extends Forwarder<User> {
+public class EntitiesForwarder extends Forwarder<Entity> {
 
-    UserPersistencyService userPersistencyService;
+    EntityPersistencyService entityPersistencyService;
     JsonPayloadBuilder payloadBuilder;
 
 
-    public UsersForwarder(UserPersistencyService userPersistencyService, ForwarderConfiguration forwarderStrategyConfiguration, ForwarderStrategyFactory forwarderStrategyFactory) {
+    public EntitiesForwarder(EntityPersistencyService entityPersistencyService, ForwarderConfiguration forwarderStrategyConfiguration, ForwarderStrategyFactory forwarderStrategyFactory) {
         super(forwarderStrategyConfiguration, forwarderStrategyFactory);
-        this.userPersistencyService = userPersistencyService;
-        payloadBuilder = new JsonPayloadBuilder<>(User.class, UserJsonMixin.class);
+        this.entityPersistencyService = entityPersistencyService;
+        payloadBuilder = new JsonPayloadBuilder<>(Entity.class, EntityJsonMixin.class);
     }
 
     @Override
-    Stream<User> getEntitiesToForward(Instant startDate, Instant endDate) {
-        return userPersistencyService.findUsersByUpdatedDate(startDate, endDate);
+    Stream<Entity> getEntitiesToForward(Instant startDate, Instant endDate) {
+        return entityPersistencyService.findEntitiesByUpdatedDate(startDate, endDate);
     }
 
     @Override
-    String getId(User user) {
-        return user.getId();
+    String getId(Entity entity) {
+        return entity.getId();
     }
 
     @Override
-    String buildPayload(User entity) throws Exception {
+    String buildPayload(Entity entity) throws Exception {
         return payloadBuilder.buildPayload(entity);
     }
 
     @Override
-    Map buildHeader(User entity) {
+    Map buildHeader(Entity entity) {
         return null;
     }
 
@@ -56,10 +56,10 @@ public class UsersForwarder extends Forwarder<User> {
     @JsonFilter(JsonPayloadBuilder.INCLUDE_PROPERTIES_FILTER)
     @JsonPayloadBuilder.JsonIncludeProperties({"id","entitiyId","entitytType","severity","alertsCount"})
     @JsonPropertyOrder({"id","entitiyId","entitytType","severity","alertsCount"})
-    class UserJsonMixin extends User {
+    class EntityJsonMixin extends Entity {
 
         @JsonProperty("entitiyId")
-        String userId;
+        String entityId;
 
     }
 }

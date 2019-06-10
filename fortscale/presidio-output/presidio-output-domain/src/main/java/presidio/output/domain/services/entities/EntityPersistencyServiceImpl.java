@@ -58,4 +58,9 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     public Page<Entity> find(EntityQuery entityQuery) {
         return entityRepository.search(new EntityElasticsearchQueryBuilder(entityQuery).build());
     }
+
+    @Override
+    public Stream<Entity> findEntitiesByUpdatedDate(Instant startDate, Instant endDate) {
+        return entityRepository.findByLastUpdateLogicalStartDateGreaterThanEqualAndLastUpdateLogicalEndDateLessThanEqual(startDate.toEpochMilli(), endDate.toEpochMilli());
+    }
 }

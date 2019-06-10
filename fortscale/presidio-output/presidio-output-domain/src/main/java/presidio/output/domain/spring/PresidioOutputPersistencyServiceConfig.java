@@ -14,8 +14,6 @@ import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;
 import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.output.domain.services.entities.EntityPersistencyServiceImpl;
-import presidio.output.domain.services.users.UserPersistencyService;
-import presidio.output.domain.services.users.UserPersistencyServiceImpl;
 
 @Configuration
 @EnableElasticsearchRepositories(basePackages = {"presidio.output.domain.repositories","presidio.monitoring.elastic.repositories"})
@@ -31,13 +29,13 @@ public class PresidioOutputPersistencyServiceConfig {
     }
 
     @Bean
-    public UserPersistencyService userPersistencyService() {
-        return new UserPersistencyServiceImpl();
+    public EntityPersistencyService entitiesPersistencyService() {
+        return new EntityPersistencyServiceImpl();
     }
 
     @Bean
-    public EntityPersistencyService entityPersistencyService() {
-        return new EntityPersistencyServiceImpl();
+    public presidio.output.domain.services.entities.EntityPersistencyService entityPersistencyService() {
+        return new presidio.output.domain.services.entities.EntityPersistencyServiceImpl();
     }
 
     @Autowired

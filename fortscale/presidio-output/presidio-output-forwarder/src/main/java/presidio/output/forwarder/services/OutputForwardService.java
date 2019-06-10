@@ -6,7 +6,7 @@ import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.forwarder.AlertsForwarder;
 import presidio.output.forwarder.IndicatorsForwarder;
-import presidio.output.forwarder.UsersForwarder;
+import presidio.output.forwarder.EntitiesForwarder;
 import presidio.output.forwarder.shell.OutputForwarderApplication;
 
 
@@ -18,22 +18,22 @@ public class OutputForwardService {
 
     private static final Logger logger = Logger.getLogger(OutputForwarderApplication.class);
 
-    UsersForwarder usersForwarder;
+    EntitiesForwarder entitiesForwarder;
     AlertsForwarder alertsForwarder;
     IndicatorsForwarder indicatorsForwarder;
     MetricCollectingService metricCollectingService;
 
-    public OutputForwardService(UsersForwarder usersForwarder, AlertsForwarder alertsForwarder, IndicatorsForwarder indicatorsForwarder, MetricCollectingService metricCollectingService) {
-        this.usersForwarder = usersForwarder;
+    public OutputForwardService(EntitiesForwarder entitiesForwarder, AlertsForwarder alertsForwarder, IndicatorsForwarder indicatorsForwarder, MetricCollectingService metricCollectingService) {
+        this.entitiesForwarder = entitiesForwarder;
         this.alertsForwarder = alertsForwarder;
         this.indicatorsForwarder = indicatorsForwarder;
         this.metricCollectingService = metricCollectingService;
     }
 
-    public int forward(Instant startDate, Instant endDate, String configurationName) {
+    public int forward(Instant startDate, Instant endDate, String entityType) {
         logger.info(String.format("about to forward data from %s to %s", startDate, endDate));
 
-        forwardUsers(startDate, endDate);
+        forwardEntities(startDate, endDate);
 
         forwardAlerts(startDate, endDate);
 
@@ -45,13 +45,13 @@ public class OutputForwardService {
     }
 
 
-    public void forwardUsers(Instant startDate, Instant endDate) {
-        logger.info(String.format("about to forward users from %s to %s", startDate, endDate));
+    public void forwardEntities(Instant startDate, Instant endDate) {
+        logger.info(String.format("about to forward entities from %s to %s", startDate, endDate));
 
-        int count = usersForwarder.forward(startDate, endDate);
+        int count = entitiesForwarder.forward(startDate, endDate);
 
-        reportMetric("users", count, startDate);
-        logger.info("finish to forward {} users", count);
+        reportMetric("entities", count, startDate);
+        logger.info("finish to forward {} entities", count);
 
     }
 

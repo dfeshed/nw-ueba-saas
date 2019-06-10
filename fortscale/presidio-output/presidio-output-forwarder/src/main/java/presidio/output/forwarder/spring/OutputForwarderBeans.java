@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Import;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.output.domain.services.users.UserPersistencyService;
+import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.output.forwarder.AlertsForwarder;
 import presidio.output.forwarder.IndicatorsForwarder;
-import presidio.output.forwarder.UsersForwarder;
+import presidio.output.forwarder.EntitiesForwarder;
 import presidio.output.forwarder.services.OutputForwardService;
 import presidio.output.forwarder.shell.OutputForwarderExecutionService;
 import presidio.output.forwarder.strategy.ForwarderConfiguration;
@@ -26,7 +26,7 @@ public class OutputForwarderBeans {
 
 
     @Autowired
-    UserPersistencyService userPersistencyService;
+    EntityPersistencyService entityPersistencyService;
 
     @Autowired
     AlertPersistencyService alertPersistencyService;
@@ -41,8 +41,8 @@ public class OutputForwarderBeans {
     MetricCollectingService metricCollectingService;
 
     @Bean
-    public UsersForwarder usersForwarder() {
-        return new UsersForwarder(userPersistencyService, forwarderStrategyConfiguration, forwarderStrategyFactory);
+    public EntitiesForwarder entitiesForwarder() {
+        return new EntitiesForwarder(entityPersistencyService, forwarderStrategyConfiguration, forwarderStrategyFactory);
     }
 
     @Bean
@@ -57,7 +57,7 @@ public class OutputForwarderBeans {
 
     @Bean
     public OutputForwardService presidioOutputForwardService() {
-        return new OutputForwardService(usersForwarder(), alertsForwarder(), indicatorsForwarder(), metricCollectingService);
+        return new OutputForwardService(entitiesForwarder(), alertsForwarder(), indicatorsForwarder(), metricCollectingService);
     }
 
     @Bean
