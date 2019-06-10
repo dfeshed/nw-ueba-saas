@@ -1169,7 +1169,6 @@ indicators:
     featureName: sumOfBytesSentToDstOrgOutboundTlsHourly
   classification: exfiltration
 
-
 - id: sumOfBytesSentToDstPortScoresSumSslSubjectOutboundTlsHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound
@@ -1186,6 +1185,24 @@ indicators:
   historicalData:
     type: hourly_aggregations
     featureName: sumOfBytesSentToDstPortOutboundTlsHourly
+  classification: exfiltration
+
+- id: sumOfBytesSentToDomainScoresSumSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_to_domain_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - domain
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+  splitFields:
+    - domain
+  historicalData:
+    type: hourly_aggregations
+    featureName: sumOfBytesSentToDomainOutboundTlsHourly
   classification: exfiltration
 
 - id: sumOfHighestSslSubjectSrcNetnameOutboundScoresSslSubjectTlsHourly
