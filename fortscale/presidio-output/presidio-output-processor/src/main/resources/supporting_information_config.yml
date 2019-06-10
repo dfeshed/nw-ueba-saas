@@ -1256,7 +1256,7 @@ indicators:
 
 - id: sumOfHighestDstPortScoresSslSubjectOutboundTlsHourly
   type: SCORE_AGGREGATION
-  name: ssi_bubject_abnormal_dst_port_for_ssl_subject_outbound
+  name: ssl_subject_abnormal_dst_port_for_ssl_subject_outbound
   adeEventType: scored_enriched.tls.dstPort.sslSubjectOutbound.tls.score
   modelContextFields:
     - sslSubject
