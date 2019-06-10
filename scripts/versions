@@ -1,6 +1,6 @@
 # Central place to list/control versions for key tools
 : ${NODE_VERSION:="10.15.3"}
-: ${YARN_VERSION:="1.9.4"}
+: ${YARN_VERSION:="1.16.0"}
 : ${EMBER_CLI_VERSION:="3.8.0"}
 : ${NETWITNESS_VERSION:="11.4.0.0"}
 : ${STABILITY_ID:="1"}

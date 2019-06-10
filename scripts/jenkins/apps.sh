@@ -28,8 +28,6 @@ function runEmberTestWithMockServer {
   local mockPort=${MOCK_SERVER_PORTS_ARRAY[$RANDOM % ${#MOCK_SERVER_PORTS_ARRAY[@]} ]}
   local testemPort=${TESTEM_PORTS_ARRAY[$RANDOM % ${#TESTEM_PORTS_ARRAY[@]} ]}
 
-  yarn link mock-server
-
   info "Starting Express mock test server for $1"
 
   # run mock server
@@ -176,6 +174,8 @@ function buildEmberApp {
 function buildMockServer {
   cd mock-server
 
+  yarn unlink
+
   setWebProxy
   yarn
   unsetWebProxy
@@ -220,6 +220,8 @@ function buildLibrary {
 info "***********************"
 info "Building apps"
 
+yarn unlink mock-server
+
 # install node scripts deps
 info "Running install for node build utilities"
 cd scripts/node
@@ -232,6 +234,10 @@ yarn
 cd $CWD
 
 buildMockServer
+
+# link in mock-server to root node_modules
+yarn link mock-server
+
 . ./scripts/jenkins/ngcoreui.sh
 buildEmberApp streaming-data false true true
 buildEmberApp component-lib false false true

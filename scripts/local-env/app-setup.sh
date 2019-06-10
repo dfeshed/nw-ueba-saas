@@ -14,10 +14,11 @@ function prepareApp {
     info "Ensure you are running on elevated privileges, else the next command will fail!"
     cmd //c 'mklink /D node_modules ..\node_modules'
     # To improve build time on windows, this optimizes windows defender and search index
-    ember-cli-windows
-  fi
 
-  yarn link mock-server --silent
+    # See issue for reason for commenting out
+    # https://github.rsa.lab.emc.com/asoc/sa-ui/pull/5109#issuecomment-71004
+    # ember-cli-windows
+  fi
 
   success "$1 is ready to go!"
 }
@@ -50,9 +51,13 @@ cd $scriptDir/../mock-server
 yarn
 yarn link
 
+# link mock into top level node_modules
+cd ..
+yarn link mock-server
+
 # ngcoreui-mock-server is also just Yarn install
 info "Running install for ngcoreui mock server"
-cd ../ngcoreui/ngcoreui-mock-server
+cd ngcoreui/ngcoreui-mock-server
 yarn
 # prepareApp expects to be only one folder level deep when it starts
 cd ..

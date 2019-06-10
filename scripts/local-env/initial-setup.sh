@@ -100,5 +100,8 @@ installGlobalDependency "ember-cli" "ember-cli" "ember" $EMBER_CLI_VERSION
 # in case the Yarn folks feel that improvements can be made on the other end
 yarn config set registry https://registry.npmjs.org/
 
+# remove mock-server linkage, will be reapplied later
+yarn unlink mock-server
+
 # Yay!
 success "Initial setup complete!"
