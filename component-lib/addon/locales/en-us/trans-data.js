@@ -4090,8 +4090,10 @@ export default {
     },
     tabs: {
       properties: 'Properties',
-      events: 'Events ({{count}})',
-      all: 'All'
+      events: 'Events List ({{count}})',
+      all: 'All',
+      alerts: 'Alerts ({{count}})',
+      hosts: 'Hosts ({{count}})'
     },
     eventsTable: {
       header: 'Events'

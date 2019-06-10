@@ -2,11 +2,14 @@ import reselect from 'reselect';
 
 const { createSelector } = reselect;
 
-const _selectedTab = (state) => state.processAnalysis.processVisuals.detailsTabSelected;
+export const selectedTab = (state) => state.processAnalysis.processVisuals.detailsTabSelected;
 
 export const isEventsSelected = createSelector(
-  [_selectedTab],
+  [selectedTab],
   (selectedTab) => {
-    return selectedTab === 'Events';
+    if (selectedTab) {
+      return selectedTab.name === 'Events';
+    }
+    return false;
   }
 );

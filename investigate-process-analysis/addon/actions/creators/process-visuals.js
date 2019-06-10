@@ -7,4 +7,4 @@ export const setDetailsTab = (input) => ({
 
 export const toggleEventPanelExpanded = () => ({ type: ACTION_TYPES.TOGGLE_EVENT_PANEL_EXPANDED });
 
-export const toggleProcessDetailsVisibility = () => ({ type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VISIBILITY });
+export const toggleProcessDetailsVisibility = (payload) => ({ type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VISIBILITY, payload });

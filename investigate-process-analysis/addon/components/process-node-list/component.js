@@ -31,7 +31,7 @@ const COLUMNS = [
   },
   {
     width: '8vw',
-    field: 'data.paramSrc',
+    field: 'data.paramDst',
     title: 'investigateProcessAnalysis.nodeList.launchArguments'
   }
 ];

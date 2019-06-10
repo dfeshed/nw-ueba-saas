@@ -4,7 +4,9 @@ import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import { getQueryNode, hasherizeEventMeta } from './util';
 import { constructFilterQueryString } from 'investigate-process-analysis/reducers/process-filter/selectors';
 import { getProcessDetails } from '../api/process-properties';
-
+import { setDetailsTab, toggleProcessDetailsVisibility } from 'investigate-process-analysis/actions/creators/process-visuals';
+import { fetchProcessDetails } from 'investigate-process-analysis/actions/creators/process-properties';
+import { resetFilterValue } from 'investigate-process-analysis/actions/creators/process-filter';
 const callbacksDefault = { onComplete() {} };
 
 let done = false;
@@ -87,7 +89,6 @@ export const selectedProcessEvents = (pid, callbacks = callbacksDefault) => {
     fetchStreamingEvents(queryNode, null, streamLimit, streamBatch, handlers);
   };
 };
-
 /**
  * For selected process need find out the parents and children. To find the parent need to back track from the selected process.
  * getParentAndChildEvents is a recursive call, fist it's making get event call to selected process, if it has a parent
@@ -186,3 +187,20 @@ export const getFileProperty = (data, serverId) => ({
   type: ACTION_TYPES.GET_FILE_PROPERTY,
   promise: getProcessDetails(data, serverId)
 });
+export const onEventNodeSelected = (payload) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { selectedServerId } = state.processAnalysis.processTree;
+    if (payload) {
+      const { hashes } = payload;
+      dispatch(fetchProcessDetails({ hashes }, selectedServerId));
+      dispatch({ type: ACTION_TYPES.SET_SELECTED_PROCESS, payload: payload.process });
+      dispatch(resetFilterValue(payload.processId));
+    } else {
+      // To make states empty on deselect of the process
+      dispatch({ type: ACTION_TYPES.SET_SELECTED_EVENTS });
+      dispatch(setDetailsTab(''));
+      dispatch(toggleProcessDetailsVisibility(false));
+    }
+  };
+};

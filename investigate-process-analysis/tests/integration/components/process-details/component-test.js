@@ -43,7 +43,6 @@ module('Integration | Component | process-details', function(hooks) {
     // Handle any actions with this.set('myAction', function(val) { ... });
 
     await render(hbs`{{process-details}}`);
-    assert.equal(findAll('.rsa-nav-tab').length, 2, 'Expected to 2 tabs');
     assert.equal(findAll('.rsa-icon-expand-diagonal-4-filled').length, 1, 'Expand diagonal by default');
 
   });
@@ -69,23 +68,11 @@ module('Integration | Component | process-details', function(hooks) {
     assert.equal(findAll('.rsa-icon-expand-diagonal-4-filled').length, 1, 'Expand diagonal by default');
     const redux = this.owner.lookup('service:redux');
     const state = redux.getState();
-    assert.equal(state.processAnalysis.processVisuals.isProcessDetailsVisible, true, 'visible');
+    assert.equal(state.processAnalysis.processVisuals.isProcessDetailsVisible, false, 'not visible');
     await click('.rsa-icon-close-filled');
     return settled().then(() => {
       const state = redux.getState();
       assert.equal(state.processAnalysis.processVisuals.isProcessDetailsVisible, false, 'not visible');
-    });
-  });
-
-
-  test('sets the tab correctly', async function(assert) {
-    await render(hbs`{{process-details}}`);
-    assert.equal(findAll('.rsa-icon-expand-diagonal-4-filled').length, 1, 'Expand diagonal by default');
-    const redux = this.owner.lookup('service:redux');
-    await click(findAll('.rsa-nav-tab')[1]); // Properties Tab, default tab is Events
-    return settled().then(() => {
-      const state = redux.getState();
-      assert.equal(state.processAnalysis.processVisuals.detailsTabSelected, 'Properties', 'not visible');
     });
   });
 });

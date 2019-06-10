@@ -8,7 +8,8 @@
       white-space: nowrap;
     }
     width: 100vw;
-    height: 40px;
+    height: 42px;
+    border-bottom: 1px solid text-color(primary);
 
     .time-range-invalid {
       .rsa-form-button {
@@ -21,6 +22,25 @@
       position: absolute;
       right: 0;
       padding-right: rsa-whitespace();
+      width: 35rem;
+      .rsa-nav-group {
+        width: 24rem;
+        float: left;
+      }
+      .rsa-nav-tab-group {
+        .label {
+          font-size: 1rem;
+        }
+        .icon {
+          margin: 15px -9px 1px 1px;
+        }
+        &.disabled {
+          color: text-color(primary, dark);
+          .label {
+            color: text-color(primary, dark);
+          }
+        }
+      }
     }
   }
 
@@ -46,6 +66,7 @@
   display: block;
   transition: width .5s;
   width: calc(100vw - 4px);
+  height: 100vh;
 }
 
 .show-process-details {

@@ -23,6 +23,9 @@ const _getRiskScoreClass = (riskScore) => {
 };
 
 export const addSelectedClass = (id) => {
+
+  // To toggle the existing selection
+  const previousSelection = select(`*[data-id='${id}']`).select('.machine-count').classed('selected');
   // Update the node style. First unselect previously selected nodes
   selectAll('circle.process').classed('selected', false);
   selectAll('.process-icon').classed('selected', false);
@@ -31,13 +34,14 @@ export const addSelectedClass = (id) => {
   selectAll('.process-type').classed('selected', false);
   selectAll('.score-text').classed('selected', false);
   selectAll('rect').classed('selected', false);
-  select(`*[data-id='${id}']`).select('circle.process').classed('selected', true);
-  select(`*[data-id='${id}']`).select('.process-icon').classed('selected', true);
-  select(`*[data-id='${id}']`).selectAll('.process-type').classed('selected', true);
-  select(`*[data-id='${id}']`).select('.process-name').classed('selected', true);
-  select(`*[data-id='${id}']`).select('.score-text').classed('selected', true);
-  select(`*[data-id='${id}']`).select('.machine-count').classed('selected', true);
-  select(`*[data-id='${id}']`).select('rect').classed('selected', true);
+  select(`*[data-id='${id}']`).select('circle.process').classed('selected', !previousSelection);
+  select(`*[data-id='${id}']`).select('.process-icon').classed('selected', !previousSelection);
+  select(`*[data-id='${id}']`).selectAll('.process-type').classed('selected', !previousSelection);
+  select(`*[data-id='${id}']`).select('.process-name').classed('selected', !previousSelection);
+  select(`*[data-id='${id}']`).select('.score-text').classed('selected', !previousSelection);
+  select(`*[data-id='${id}']`).select('.machine-count').classed('selected', !previousSelection);
+  select(`*[data-id='${id}']`).select('rect').classed('selected', !previousSelection);
+  return !previousSelection;
 };
 
 /**

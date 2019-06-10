@@ -18,7 +18,6 @@ import {
   prepareTreeData,
   documentTitle
 } from './helpers/content';
-import { toggleProcessDetailsVisibility } from 'investigate-process-analysis/actions/creators/process-visuals';
 import { inject as service } from '@ember/service';
 import { processDetails } from 'investigate-process-analysis/reducers/process-properties/selectors';
 import { fetchProcessDetails } from 'investigate-process-analysis/actions/creators/process-properties';
@@ -33,13 +32,15 @@ import {
   children,
   selectedProcessPath
 } from 'investigate-process-analysis/reducers/process-tree/selectors';
+import { setDetailsTab, toggleProcessDetailsVisibility } from 'investigate-process-analysis/actions/creators/process-visuals';
 
 import {
   getFileProperty,
   getParentAndChildEvents,
   getChildEvents,
   setSelectedProcess,
-  selectedProcessEvents } from 'investigate-process-analysis/actions/creators/events-creators';
+  selectedProcessEvents,
+  onEventNodeSelected } from 'investigate-process-analysis/actions/creators/events-creators';
 
 
 const stateToComputed = (state) => ({
@@ -60,8 +61,10 @@ const dispatchToActions = {
   fetchProcessDetails,
   selectedProcessEvents,
   resetFilterValue,
+  getFileProperty,
+  setDetailsTab,
   toggleProcessDetailsVisibility,
-  getFileProperty
+  onEventNodeSelected
 };
 
 let freeIdCounter = 0;
@@ -487,13 +490,13 @@ const TreeComponent = Component.extend({
 
     const checksum = d.data.checksum ? d.data.checksum : d.data['checksum.dst'];
     const hashes = [checksum];
-    this.send('fetchProcessDetails', { hashes }, this.get('selectedServerId'));
-    this.send('setSelectedProcess', _.omit(d.data, 'children'));
-    if (!this.get('isProcessDetailsVisible')) {
-      this.send('toggleProcessDetailsVisibility');
+    const isSelected = addSelectedClass(d.data.processId);
+    if (isSelected) {
+      const payload = { process: _.omit(d.data, 'children'), hashes, processId: d.data.processId };
+      this.send('onEventNodeSelected', payload);
+    } else {
+      this.send('onEventNodeSelected');
     }
-    addSelectedClass(d.data.processId);
-    this.send('resetFilterValue', d.data.processId);
     document.title = documentTitle(d.data.processName, this.get('queryInput'));
   },
 

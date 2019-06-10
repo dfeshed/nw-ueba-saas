@@ -35,10 +35,10 @@ module('Integration | Component | process-analysis-container', function(hooks) {
     assert.equal(findAll('.processDetailsBox.collapse').length, 1, 'Collapse class added to process details');
   });
 
-  test('Collapse and expand classes toggle when Events is clicked on ', async function(assert) {
+  test('Collapse and expand classes should not toggle when Events is clicked on ', async function(assert) {
     new ReduxDataHelper(setState).detailsTabSelected('Events').build();
     await render(hbs`{{process-analysis-container}}`);
-    assert.equal(findAll('.processTreeBox.collapse').length, 1, 'Collapse class added to process tree');
-    assert.equal(findAll('.processDetailsBox.expand').length, 1, 'Expand class added to process details');
+    assert.equal(findAll('.processTreeBox.collapse').length, 0, 'Collapse class not added to process tree');
+    assert.equal(findAll('.processDetailsBox.expand').length, 0, 'Expand class not added to process details');
   });
 });

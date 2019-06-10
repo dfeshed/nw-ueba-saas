@@ -6,16 +6,25 @@ import { isEventsSelected } from 'investigate-process-analysis/reducers/process-
 module('Unit | Selectors | process-visuals', function() {
 
   test('Returns true if Tab is Events', function(assert) {
-    const state = Immutable.from({
+    const state1 = Immutable.from({
       processAnalysis: {
         processVisuals: {
-          detailsTabSelected: 'Events'
+          detailsTabSelected: { name: 'Events' }
+        }
+      }
+    });
+    const state2 = Immutable.from({
+      processAnalysis: {
+        processVisuals: {
+          detailsTabSelected: { name: 'Hosts' }
         }
       }
     });
 
-    const data = isEventsSelected(state);
-    assert.equal(data, true);
+    const data1 = isEventsSelected(state1);
+    const data2 = isEventsSelected(state2);
+    assert.equal(data1, true);
+    assert.equal(data2, false);
   });
 
   test('Returns false if Tab is not Events', function(assert) {

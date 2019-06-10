@@ -104,4 +104,13 @@ module('Integration | Component | Query Container', function(hooks) {
     await click('.query-container .rsa-icon-help-circle-lined');
     return settled();
   });
+
+  test('it renders the tabs in query-container', async function(assert) {
+    await render(hbs`{{query-container}}`);
+    assert.equal(findAll('.rsa-nav-tab').length, 3);
+  });
+  test('It renders the tabs in query-container disabled', async function(assert) {
+    await render(hbs`{{query-container}}`);
+    assert.equal(find('.rsa-nav-tab-group').classList.contains('disabled'), true, 'Tabs are disabled on no node selected');
+  });
 });
