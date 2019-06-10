@@ -1,1 +1,45 @@
-define-policy-sources-step
+<hbox class="control">
+  <div class="label">
+    {{t 'adminUsm.policyWizard.filePolicy.filePolicySettingsHeader'}}
+  </div>
+</hbox>
+<div class="help-title">
+  {{t 'adminUsm.policyWizard.filePolicy.helpTitle'}}
+</div>
+<div class="file-source-parent-container">
+  <div class="source-container">
+    {{#rsa-data-table lazy=true  items=fileSources columnsConfig=columns}}
+
+      {{#rsa-data-table/body as |item index column|}}
+        {{usm-policies/policy-wizard/define-policy-sources-step/body-cell
+          item=item
+          index=index
+          column=column
+          delete=(action "deleteRow")
+          sourceUpdated=(action 'sourceUpdated')}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  </div>
+
+  <hbox class="file-source-type__list">
+    <div class="file-source-type">
+      {{#power-select
+        placeholder=(t 'adminUsm.policyWizard.filePolicy.fileSourceType.placeholder')
+        options=fileSourcesList
+        selected=selectedFileSource
+        searchPlaceholder=(t 'packager.searchPlaceholder')
+        searchEnabled=false
+        onchange=(action 'updatePolicyProperty' 'selectedFileSource') as |option|}}
+        {{option.name}}
+      {{/power-select}}
+    </div>
+    <div class="add-row">
+      {{#rsa-form-button
+        class='add-selected-file-type'
+        click=(action 'addRowFilter')
+      }}
+        {{t 'adminUsm.policyWizard.filePolicy.fileSourceType.add'}}
+      {{/rsa-form-button}}
+    </div>
+  </hbox>
+</div>

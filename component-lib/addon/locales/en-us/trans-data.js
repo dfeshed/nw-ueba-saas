@@ -4736,8 +4736,12 @@ effects the previewed source.',
       // filePolicy settings
       filePolicy: {
         fileSettingsHeader: 'File Settings',
+        filePolicySettingsHeader: 'File Policy Settings',
+        helpTitle: 'Select an application log file type from the list of supported file types to configure its log collection settings',
         radioOptionEnabled: 'Enabled',
         radioOptionDisabled: 'Disabled',
+        radioOptionEnable: 'Enable',
+        radioOptionDisable: 'Disable',
         enabled: 'File Collection', // 'Status',
         enabledTooltip: 'If enabled, logs from the Windows system will be collected and forwarded to the NetWitness Platform as they are generated.', // 'Status',
         sendTestLog: 'Send Test Log',
@@ -4748,7 +4752,18 @@ effects the previewed source.',
         secondaryDestinationTooltip: 'If the primary Log Decoder or Log Collector is not reachable, collected windows logs will be forwarded to this server. Please note, NetWitness cannot detect failures when UDP is the protocol used.',
         fileDestinationInvalidMsg: 'The log server host name should not be empty',
         protocol: 'Protocol',
-        protocolTooltip: 'Select whether SSL, TCP, or UDP transport protocol is used to forward the collected windows logs to the NetWitness Platform servers. SSL is recommended but note that is is the heaviest option. TCP is reliable but unprotected, which may be acceptable within a corporate network. Finally, UDP is unsecured and delivery is not guaranteed.'
+        protocolTooltip: 'Select whether SSL, TCP, or UDP transport protocol is used to forward the collected windows logs to the NetWitness Platform servers. SSL is recommended but note that is is the heaviest option. TCP is reliable but unprotected, which may be acceptable within a corporate network. Finally, UDP is unsecured and delivery is not guaranteed.',
+        logFileType: 'Log File Type',
+        enableOnAgent: 'Enable On Agent',
+        dataCollection: 'Data Collection',
+        collectNew: 'Collect only new log data on initial collection',
+        collectAll: 'Collect both historical and new log data on initial collection',
+        fileEncoding: 'File Encoding',
+        sourceName: 'Source Name',
+        fileSourceType: {
+          add: 'Add selected file type',
+          placeholder: 'Pick a Log file type'
+        }
       }
     },
     policyTypes: {

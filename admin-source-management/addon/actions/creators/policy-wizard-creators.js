@@ -283,6 +283,11 @@ const updatePolicyProperty = (field, value) => {
           { field: 'policy.secondaryDestination', value: value.host }
         ];
         break;
+      case 'selectedFileSource':
+        payload = [
+          { field: 'policy.selectedFileSource', value: value.name }
+        ];
+        break;
       default:
         payload = [{ field: `policy.${field}`, value }];
     }

@@ -247,6 +247,26 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
     thunk(dispatch);
   });
 
+  test('updatePolicyProperty action creator returns proper type and payload when field is selectedFileSource', function(assert) {
+    assert.expect(2);
+    const expectedPayload = [
+      { field: 'policy.selectedFileSource', value: 'apache' }
+    ];
+    const dispatch = (action) => {
+      switch (action.type) {
+        case ACTION_TYPES.UPDATE_POLICY_PROPERTY:
+          assert.equal(action.type, ACTION_TYPES.UPDATE_POLICY_PROPERTY, 'action has the correct type of UPDATE_POLICY_PROPERTY');
+          assert.deepEqual(action.payload, expectedPayload, 'action has the correct payload');
+          break;
+        default:
+          assert.equal(true, false, 'default case... action has the correct type');
+      }
+    };
+    const val = { name: 'apache', prettyName: 'apache' };
+    const thunk = policyWizardCreators.updatePolicyProperty('selectedFileSource', val);
+    thunk(dispatch);
+  });
+
   test('updatePolicyProperty action creator returns proper default type and payload for any other field', function(assert) {
     assert.expect(2);
     const expectedPayload = [

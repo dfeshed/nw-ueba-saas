@@ -508,7 +508,7 @@ export default [
       {
         fileType: 'apache',
         enabled: false,
-        startofEvents: false,
+        startOfEvents: false,
         fileEncoding: 'UTF-8',
         path: ['/c/apache_path-hint-1/*.log', '/c/Program Files/Apache Group/Apache[2-9]/*.log', 'apache_path-hint-2'],
         sourceName: 'Meta-Source-Name',
@@ -517,7 +517,7 @@ export default [
       {
         fileType: 'exchange',
         enabled: true,
-        startofEvents: false,
+        startOfEvents: false,
         fileEncoding: 'UTF-8',
         path: ['/[cd]/exchange/logs/*.log'],
         sourceName: '',

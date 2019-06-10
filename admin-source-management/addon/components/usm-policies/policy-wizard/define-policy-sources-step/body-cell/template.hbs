@@ -1,0 +1,87 @@
+{{#rsa-data-table/body-cell item=item index=index column=column delete=delete class='body-cell'}}
+  {{#if (eq column.displayType 'fileTypeInput')}}
+    <h4 class='subheading'>
+      <span class="text">{{t column.title}}</span>
+      <span class="remove-setting"
+        {{action delete index bubble=false}}>
+        {{rsa-icon name="remove-circle-1" style="lined"}}
+      </span>
+    </h4>
+    <div class="file-type">
+      {{#power-select
+        placeholder=(t 'adminUsm.policyWizard.dropdownPlaceholder')
+        selected=item.fileType
+        searchPlaceholder=(t 'packager.searchPlaceholder')
+        disabled=true
+        onchange=(action 'setSelected' column.field bubbles=false) as |option|
+      }}
+        <span title={{option}}>{{option}}</span>
+      {{/power-select}}
+    </div>
+
+  {{else if (eq column.displayType 'fileEncoding')}}
+    <h4 class='subheading'>
+      {{t column.title}}
+    </h4>
+    <div class="file-encoding">
+      {{#power-select
+        placeholder=(t 'packager.placeholder')
+        options=encodingOptions
+        selected=item.fileEncoding
+        searchPlaceholder=(t 'packager.searchPlaceholder')
+        searchEnabled=false
+        onchange=(action 'setSelected' column.field bubbles=false) as |option|}}
+        {{option}}
+      {{/power-select}}
+    </div>
+
+  {{else if (eq column.displayType 'enabledRadio')}}
+    <vbox class='rsa-form-radio-group'>
+      <h4 class='rsa-form-radio-group-label'>
+        {{t column.title}}
+      </h4>
+      <vbox class="radio-buttons">
+        {{#each enableOnAgentConfig.items as |option|}}
+          {{#radio-button
+            classNames='rsa-form-radio-wrapper'
+            value=option.name
+            groupValue=(readonly item.enabled)
+            changed=(action 'setSelected' column.field bubbles=false)
+          }}
+            <span>{{t option.label}}</span>
+          {{/radio-button}}
+        {{/each}}
+      </vbox>
+    </vbox>
+
+  {{else if (eq column.displayType 'eventsRadio')}}
+    <vbox class='rsa-form-radio-group'>
+      <h4 class='rsa-form-radio-group-label'>
+        {{t column.title}}
+      </h4>
+      <vbox class="radio-buttons">
+        {{#each dataCollectionConfig.items as |option|}}
+          {{#radio-button
+            classNames='rsa-form-radio-wrapper'
+            value=option.name
+            groupValue=(readonly item.startOfEvents)
+            changed=(action 'setSelected' column.field bubbles=false)
+          }}
+            <span>{{t option.label}}</span>
+          {{/radio-button}}
+        {{/each}}
+      </vbox>
+    </vbox>
+
+  {{else if (eq column.displayType 'sourceNameInput') }}
+    <h4 class='subheading'>
+      {{t column.title}}
+    </h4>
+    <div class="source-name">
+      {{rsa-form-input
+        value=item.sourceName
+        focusOut=sourceUpdated
+      }}
+    </div>
+  {{/if}}
+{{/rsa-data-table/body-cell}}

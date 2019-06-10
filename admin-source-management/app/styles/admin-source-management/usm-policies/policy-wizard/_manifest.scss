@@ -10,6 +10,7 @@ $wizardStepMaxHeight: 215px;
 @import "policy-toolbar";
 @import "identify-policy-step";
 @import "define-policy-step";
+@import "define-policy-sources-step";
 @import "policy-types/policy-setting/manifest";
 @import "policy-types/edr/manifest";
 @import "policy-types/windowsLog/manifest";

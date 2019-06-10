@@ -1,11 +1,17 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import Immutable from 'seamless-immutable';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import {
   radioButtonValue,
   radioButtonOption
 } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
+import {
+  fileSources,
+  fileSourcesList,
+  selectedFileSource
+} from 'admin-source-management/reducers/usm/policy-wizard/filePolicy/file-selectors';
 import {
   ENABLED_CONFIG,
   SEND_TEST_LOG_CONFIG
@@ -54,5 +60,41 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
     assert.deepEqual(result1, ENABLED_CONFIG, 'should return ENABLED_CONFIG options for enabled id');
     const result2 = radioButtonOption(fullState, 'sendTestLog');
     assert.deepEqual(result2, SEND_TEST_LOG_CONFIG, 'should return SEND_TEST_LOG_CONFIG options for sendTestLog id');
+  });
+
+  test('fileSources', function(assert) {
+    const expectedValue = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1' } ];
+    const fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(expectedValue)
+      .build();
+    const result = fileSources(Immutable.from(fullState));
+    assert.deepEqual(result, expectedValue, `should return fileSources with value ${expectedValue}`);
+  });
+
+  test('fileSourcesList selector', function(assert) {
+    const nameExpected = 'accurev';
+    const prettyNameExpected = 'accurev';
+    const fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .build();
+    const fileSources = fileSourcesList(Immutable.from(fullState));
+    assert.equal(fileSources.length, 3, 'number of file type sources is as expected');
+    assert.deepEqual(fileSources[0].name, nameExpected, `fileSources[0].name is ${nameExpected}`);
+    assert.deepEqual(fileSources[0].prettyName, prettyNameExpected, `fileSources[0].prettyName is ${prettyNameExpected}`);
+  });
+
+  test('selectedFileSource selector', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .build();
+    const fileTypeExpected = {
+      'name': 'apache',
+      'prettyName': 'apache'
+    };
+    const fileTypeSelected = selectedFileSource(Immutable.from(fullState));
+    assert.deepEqual(fileTypeSelected, fileTypeExpected, 'The returned value from the selectedFileSource selector is as expected');
   });
 });

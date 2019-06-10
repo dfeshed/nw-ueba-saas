@@ -9,6 +9,7 @@ import {
   sources,
   endpointServers,
   logServers,
+  fileSourceTypes,
   focusedItem
 } from '../data/data';
 
@@ -336,6 +337,26 @@ export default class DataHelper {
 
   policyWizFileSecondaryDestination(secondaryDestination) {
     _set(this.state, 'usm.policyWizard.policy.secondaryDestination', secondaryDestination);
+    return this;
+  }
+
+  policyWizFileSources(sources) {
+    _set(this.state, 'usm.policyWizard.policy.sources', sources);
+    return this;
+  }
+
+  policyWizSelectedFileSource(source) {
+    _set(this.state, 'usm.policyWizard.policy.selectedFileSource', source);
+    return this;
+  }
+
+  policyWizFileSourceTypes() {
+    _set(this.state, 'usm.policyWizard.listOfFileSourceTypes', fileSourceTypes);
+    return this;
+  }
+
+  policyWizFileSourceTypesEmpty() {
+    _set(this.state, 'usm.policyWizard.listOfFileSourceTypes', []);
     return this;
   }
 

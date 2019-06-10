@@ -18,7 +18,9 @@ export default {
     sendTestLog: null, // true or false
     primaryDestination: null,
     secondaryDestination: null,
-    protocol: null // 'UDP' | 'TCP' | 'TLS'
+    protocol: null, // 'UDP' | 'TCP' | 'TLS'
+    sources: [],
+    selectedFileSource: 'apache' // Defaulting to apache
   },
 
   steps: [
