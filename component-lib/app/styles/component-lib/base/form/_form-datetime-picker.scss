@@ -137,6 +137,13 @@ span.flatpickr-weekday,
   color: text-color(primary, lightest);
 }
 
+.flatpickr-time input:hover,
+.flatpickr-time .flatpickr-am-pm:hover,
+.flatpickr-time input:focus,
+.flatpickr-time .flatpickr-am-pm:focus {
+  background-color: background-color(primary, dark);
+}
+
 .flatpickr-time .numInputWrapper span.arrowUp:after {
   border-bottom-color: border-color(primary, lightest);
 }
