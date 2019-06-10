@@ -224,7 +224,17 @@ export const setColumnGroup = (selectedGroup) => {
     // reset sort state to ensure the column being sorted on exists
     // time is the default sort meta, and has it's own default in preferences
     const sortDirection = (prefs && prefs.eventTimeSortOrder) || SORT_ORDER.ASC;
+    const sortField = 'time';
     dispatch(updateSort('time', sortDirection));
+    const params = updateUrl(window.location.search, {
+      sortField,
+      sortDir: sortDirection
+    });
+    history.pushState(
+      null,
+      document.querySelector('title').innerHTML,
+      `${window.location.pathname}?${params}`
+    );
 
     dispatch(cancelQuery(false));
     dispatch(setReconClosed());
