@@ -77,6 +77,84 @@
           }
         }
       ]
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDomainScoresSumSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "aggr_event.maxSumOfBytesSentBySrcIpToDomainSslSubjectOutboundTlsHourly"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "maxSumOfBytesSentBySrcIpToDomainScoresSum",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.domain"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDstOrgScoresSumSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "aggr_event.maxSumOfBytesSentBySrcIpToDstOrgSslSubjectOutboundTlsHourly"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "maxSumOfBytesSentBySrcIpToDstOrgScoresSum",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstOrg"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDstPortScoresSumSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject"
+      ],
+      "adeEventTypes": [
+        "aggr_event.maxSumOfBytesSentBySrcIpToDstPortSslSubjectOutboundTlsHourly"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "maxSumOfBytesSentBySrcIpToDstPortScoresSum",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstPort"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
     }
   ]
 }

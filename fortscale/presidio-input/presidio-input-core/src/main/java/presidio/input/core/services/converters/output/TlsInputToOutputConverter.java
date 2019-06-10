@@ -16,6 +16,7 @@ public class TlsInputToOutputConverter implements InputOutputConverter {
         outputEvent.setDataSource(tlsTransformedEvent.getDataSource());
         outputEvent.setDomain(tlsTransformedEvent.getDomain());
         outputEvent.setDstAsn(tlsTransformedEvent.getDstAsn());
+        outputEvent.setSrcCountry(tlsTransformedEvent.getSrcCountry());
         outputEvent.setDstCountry(tlsTransformedEvent.getDstCountry());
         outputEvent.setDstNetname(tlsTransformedEvent.getDstNetname());
         outputEvent.setDstOrg(tlsTransformedEvent.getDstOrg());
@@ -26,8 +27,11 @@ public class TlsInputToOutputConverter implements InputOutputConverter {
         outputEvent.setNumOfBytesSent(tlsTransformedEvent.getNumOfBytesSent());
         outputEvent.setDirection(tlsTransformedEvent.getDirection());
         outputEvent.setSrcIp(tlsTransformedEvent.getSrcIp());
+        outputEvent.setDstIp(tlsTransformedEvent.getDstIp());
         outputEvent.setSrcNetname(tlsTransformedEvent.getSrcNetname());
         outputEvent.setSslSubject(tlsTransformedEvent.getSslSubject());
+        outputEvent.setSslCa(tlsTransformedEvent.getSslCa());
+        outputEvent.setFqdn(tlsTransformedEvent.getFqdn());
         outputEvent.setAdditionalInfo(tlsTransformedEvent.getAdditionalInfo());
 
         return outputEvent;

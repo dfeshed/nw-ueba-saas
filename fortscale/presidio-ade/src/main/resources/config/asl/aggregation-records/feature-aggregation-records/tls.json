@@ -121,6 +121,111 @@
       }
     },
     {
+      "name": "maxSumOfBytesSentBySrcIpToSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentToSrcIpSummationSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentToSrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDomainOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentToSrcIpSummationDomainOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentToSrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDomainSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentToSrcIpSummationDomainSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentToSrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDstOrgOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentToSrcIpSummationDstOrgOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentToSrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDstOrgSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentToSrcIpSummationDstOrgSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentToSrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDstPortOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentToSrcIpSummationDstPortOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentToSrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDstPortSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentToSrcIpSummationDstPortSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentToSrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
       "name": "numberOfDistinctSrcIpJa3OutboundTlsHourly",
       "type": "F",
       "bucketConfName": "srcIpHistogramJa3OutboundTlsHourly",

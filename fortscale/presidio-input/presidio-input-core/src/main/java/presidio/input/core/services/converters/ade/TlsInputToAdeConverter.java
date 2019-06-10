@@ -15,6 +15,7 @@ public class TlsInputToAdeConverter implements InputAdeConverter {
         adeRecord.setDataSource(tlsTransformedEvent.getDataSource());
         adeRecord.setDomain(tlsTransformedEvent.getDomain());
         adeRecord.setDstAsn(tlsTransformedEvent.getDstAsn());
+        adeRecord.setSrcCountry(tlsTransformedEvent.getSrcCountry());
         adeRecord.setDstCountry(tlsTransformedEvent.getDstCountry());
         adeRecord.setDstNetname(tlsTransformedEvent.getDstNetname());
         adeRecord.setDstOrg(tlsTransformedEvent.getDstOrg());
@@ -25,6 +26,7 @@ public class TlsInputToAdeConverter implements InputAdeConverter {
         adeRecord.setNumOfBytesSent(tlsTransformedEvent.getNumOfBytesSent());
         adeRecord.setDirection(tlsTransformedEvent.getDirection());
         adeRecord.setSrcIp(tlsTransformedEvent.getSrcIp());
+        adeRecord.setDstIp(tlsTransformedEvent.getDstIp());
         adeRecord.setSrcNetname(tlsTransformedEvent.getSrcNetname());
         adeRecord.setSslSubject(tlsTransformedEvent.getSslSubject());
 

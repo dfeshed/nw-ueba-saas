@@ -4,6 +4,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 
@@ -11,6 +12,8 @@ import java.util.Map;
 public class TlsEnrichedEvent extends EnrichedEvent {
 
     public static final String SOURCE_IP_FIELD_NAME = "srcIp";
+    public static final String DESTINATION_IP_FIELD_NAME = "dstIp";
+    public static final String SOURCE_COUNTRY_FIELD_NAME = "srcCountry";
     public static final String DESTINATION_COUNTRY_FIELD_NAME = "dstCountry";
     public static final String SSL_SUBJECT_FIELD_NAME = "sslSubject";
     public static final String DOMAIN_FIELD_NAME = "domain";
@@ -24,12 +27,20 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     public static final String JA3S_FIELD_NAME = "ja3s";
     public static final String DIRECTION_FIELD_NAME = "direction";
     public static final String DESTINATION_PORT_FIELD_NAME = "dstPort";
+    public static final String FQDN_FIELD_NAME = "fqdn";
+    public static final String SSL_CA_FIELD_NAME = "sslCa";
 
 
 
 
     @Field(SOURCE_IP_FIELD_NAME)
     private String srcIp;
+
+    @Field(DESTINATION_IP_FIELD_NAME)
+    private String dstIp;
+
+    @Field(SOURCE_COUNTRY_FIELD_NAME)
+    private String srcCountry;
 
     @Field(DESTINATION_COUNTRY_FIELD_NAME)
     private String dstCountry;
@@ -70,15 +81,27 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     @Field(DESTINATION_PORT_FIELD_NAME)
     private Integer dstPort;
 
+    @Field(FQDN_FIELD_NAME)
+    private List<String> fqdn;
+
+    @Field(SSL_CA_FIELD_NAME)
+    private List<String> sslCa;
+
+
+
     public TlsEnrichedEvent(){}
 
     public TlsEnrichedEvent(Instant createdDate, Instant eventDate, String eventId, String schema, String dataSource,
                             Map<String, String> additionalInfo,
-                            String srcIp, String dstCountry, String sslSubject, String domain, String dstOrg,
+                            String srcIp, String dstIp, String srcCountry, String dstCountry, String sslSubject,
+                            String domain, String dstOrg,
                             String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
-                            String dstNetname, String ja3, String ja3s, String direction, Integer dstPort) {
+                            String dstNetname, String ja3, String ja3s, String direction, Integer dstPort,
+                            List<String> fqdn, List<String> sslCa) {
         super(createdDate, eventDate, eventId, schema, dataSource, additionalInfo);
         this.srcIp = srcIp;
+        this.dstIp = dstIp;
+        this.srcCountry = srcCountry;
         this.dstCountry = dstCountry;
         this.sslSubject = sslSubject;
         this.domain = domain;
@@ -92,6 +115,8 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.ja3s = ja3s;
         this.direction = direction;
         this.dstPort = dstPort;
+        this.fqdn = fqdn;
+        this.sslCa = sslCa;
     }
 
 
@@ -102,6 +127,22 @@ public class TlsEnrichedEvent extends EnrichedEvent {
 
     public void setSrcIp(String srcIp) {
         this.srcIp = srcIp;
+    }
+
+    public String getDstIp() {
+        return dstIp;
+    }
+
+    public void setDstIp(String dstIp) {
+        this.dstIp = dstIp;
+    }
+
+    public String getSrcCountry() {
+        return srcCountry;
+    }
+
+    public void setSrcCountry(String srcCountry) {
+        this.srcCountry = srcCountry;
     }
 
     public String getDstCountry() {
@@ -208,7 +249,19 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.dstPort = dstPort;
     }
 
+    public List<String> getFqdn() {
+        return fqdn;
+    }
 
+    public void setFqdn(List<String> fqdn) {
+        this.fqdn = fqdn;
+    }
 
+    public List<String> getSslCa() {
+        return sslCa;
+    }
 
+    public void setSslCa(List<String> sslCa) {
+        this.sslCa = sslCa;
+    }
 }
