@@ -8,6 +8,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.feature.*;
 import fortscale.common.util.GenericHistogram;
 import fortscale.utils.AggrFeatureFunctionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 import java.util.*;
@@ -18,6 +19,7 @@ import java.util.*;
 public class AggrFeatureMultiKeyHistogramFunc implements IAggrFeatureFunction, IAggrFeatureEventFunction {
     final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_multi_key_histogram_func";
     public final static String GROUP_BY_FIELD_NAME = "groupBy";
+    public final static String INCREMENT_BY_FIELD_NAME = "incrementBy";
 
     private Map<String, List<String>> groupByValues;
 
@@ -55,16 +57,35 @@ public class AggrFeatureMultiKeyHistogramFunc implements IAggrFeatureFunction, I
         MultiKeyHistogram multiKeyHistogram = (MultiKeyHistogram) value;
         if (features != null) {
             List<String> featureNames = aggregatedFeatureConf.getFeatureNamesMap().get(GROUP_BY_FIELD_NAME);
+
+            double incrementBy = extractIncrementBy(aggregatedFeatureConf, features);
+
             List<MultiKeyFeature> multiKeyFeatures = AggrFeatureFunctionUtils.extractGroupByFeatureValues(features, featureNames, groupByValues);
 
             multiKeyFeatures.forEach(multiKeyFeature -> {
                 Double oldCount = multiKeyHistogram.getCount(multiKeyFeature);
-                Double newValCount = oldCount != null ? 1.0 + oldCount : 1.0;
+                Double newValCount = oldCount != null ? incrementBy + oldCount : incrementBy;
                 multiKeyHistogram.set(multiKeyFeature, newValCount);
             });
         }
 
         return multiKeyHistogram;
+    }
+
+    private double extractIncrementBy(AggregatedFeatureConf aggregatedFeatureConf, Map<String, Feature> features){
+        List<String> incrementByList = aggregatedFeatureConf.getFeatureNamesMap().get(INCREMENT_BY_FIELD_NAME);
+
+        double ret = 1.0;
+        if(incrementByList != null && incrementByList.size() > 0){
+            if(incrementByList.size() == 1){
+                Feature incrementByFeatureValue = features.get(incrementByList.get(0));
+                ret = ((FeatureNumericValue) incrementByFeatureValue.getValue()).getValue().doubleValue();
+            } else{
+                throw new IllegalArgumentException(INCREMENT_BY_FIELD_NAME + " should be of size 1. the list: " + StringUtils.join(incrementByList, ","));
+            }
+        }
+
+        return ret;
     }
 
     /**

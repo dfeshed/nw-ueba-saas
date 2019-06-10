@@ -201,6 +201,166 @@
       ]
     },
     {
+      "ade-event-type": "aggr_event.maxSumOfBytesSentBySrcIpToSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "maxSumOfBytesSentBySrcIp.sslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "maxSumOfBytesSentBySrcIp.sslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "maxSumOfBytesSentBySrcIp.sslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "maxSumOfBytesSentBySrcIp.sslSubjectOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "maxSumOfBytesSentBySrcIp.sslSubjectOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.maxSumOfBytesSentBySrcIpToDomainSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "maxSumOfBytesSentBySrcIp.domainSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "maxSumOfBytesSentBySrcIp.domainSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "maxSumOfBytesSentBySrcIp.domainSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "maxSumOfBytesSentBySrcIp.domainOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "maxSumOfBytesSentBySrcIp.domainOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.maxSumOfBytesSentBySrcIpToDstOrgSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "maxSumOfBytesSentBySrcIp.dstOrgSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "maxSumOfBytesSentBySrcIp.dstOrgSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "maxSumOfBytesSentBySrcIp.dstOrgSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "maxSumOfBytesSentBySrcIp.dstOrgOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "maxSumOfBytesSentBySrcIp.dstOrgOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.maxSumOfBytesSentBySrcIpToDstPortSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "maxSumOfBytesSentBySrcIp.dstPortSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "maxSumOfBytesSentBySrcIp.dstPortSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "maxSumOfBytesSentBySrcIp.dstPortSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "maxSumOfBytesSentBySrcIp.dstPortOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "maxSumOfBytesSentBySrcIp.dstPortOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
       "ade-event-type": "aggr_event.numberOfDistinctSrcIpJa3OutboundTlsHourly",
       "scorers": [
         {
