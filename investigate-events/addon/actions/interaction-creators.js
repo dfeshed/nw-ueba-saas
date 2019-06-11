@@ -263,7 +263,14 @@ export const setQueryTimeFormat = () => {
 
     dispatch(setQueryTimeRange(range));
 
-    dispatch(fetchInvestigateData());
+    /* changing queryTimeFormat preference should executeQuery via route, inorder to take
+     * the time stamp changes into account while fetching query results
+     * fetchInvestigateData on the other hand is intervened by getActiveQueryNode which
+     * rejects changes (like startTime and endTime) that cause queryHash to change,
+     * resulting in previousQueryParams to fetch results.
+     */
+    const router = lookup('service:-routing').get('router');
+    router.send('executeQuery');
 
   };
 };
