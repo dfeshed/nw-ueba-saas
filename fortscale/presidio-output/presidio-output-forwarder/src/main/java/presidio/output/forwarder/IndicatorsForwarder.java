@@ -39,8 +39,8 @@ public class IndicatorsForwarder extends Forwarder<Indicator> {
     }
 
     @Override
-    Stream<Indicator> getEntitiesToForward(Instant startDate, Instant endDate) {
-        return alertPersistencyService.findIndicatorByDate(startDate, endDate); //TODO: add alerts and events events
+    Stream<Indicator> getEntitiesToForward(Instant startDate, Instant endDate, String entityType) {
+        return alertPersistencyService.findIndicatorByDateAndAlertIds(startDate, endDate, alertIds); //TODO: add alerts and events events
     }
 
     @Override

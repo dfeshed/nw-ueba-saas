@@ -3,14 +3,13 @@ package presidio.output.forwarder;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Iterators;
 import fortscale.utils.logging.Logger;
-import org.apache.commons.collections.ArrayStack;
+import presidio.output.domain.records.alerts.Alert;
 import presidio.output.forwarder.strategy.ForwarderStrategy;
 import presidio.output.forwarder.strategy.ForwarderConfiguration;
 import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,6 +18,7 @@ import java.util.stream.Stream;
 public abstract class Forwarder<T>{
 
     private static final Logger logger = Logger.getLogger(Forwarder.class);
+    protected List<String> alertIds = new ArrayList<>();
 
     ForwarderConfiguration forwarderConfiguration;
     ForwarderStrategyFactory forwarderStrategyFactory;
@@ -29,7 +29,7 @@ public abstract class Forwarder<T>{
         this.forwarderStrategyFactory = forwarderStrategyFactory;
     }
 
-    public int forward(Instant startDate, Instant endDate) {
+    public int forward(Instant startDate, Instant endDate, String entityType, boolean isAlerts) {
 
         ForwarderStrategy.PAYLOAD_TYPE payloadType = getPayloadType();
 
@@ -50,10 +50,13 @@ public abstract class Forwarder<T>{
 
         // forward messages in a batch
         final AtomicInteger forwardedCount = new AtomicInteger();
-        try (Stream<T> entities = getEntitiesToForward(startDate, endDate)){
+        try (Stream<T> entities = getEntitiesToForward(startDate, endDate, entityType)){
             Iterators.partition(entities.iterator(), bulkSize).forEachRemaining(entitiesBulk -> {
                 try {
-                    int success = forwardBatch(forwarderStrategy, payloadType,entitiesBulk);
+                    if(isAlerts){
+                        entitiesBulk.forEach(alert -> alertIds.add(getId(alert)));
+                    }
+                    int success = forwardBatch(forwarderStrategy, payloadType, entitiesBulk);
                     forwardedCount.addAndGet(success);
                 } catch (Exception ex) {
                     logger.error("failed to forward bulk '{}'", entitiesBulk);
@@ -81,7 +84,7 @@ public abstract class Forwarder<T>{
         return messages.size();
     };
 
-    abstract Stream<T> getEntitiesToForward(Instant startDate, Instant endDate);
+    abstract Stream<T> getEntitiesToForward(Instant startDate, Instant endDate, String entityType);
 
     abstract String getId(T entity);
 

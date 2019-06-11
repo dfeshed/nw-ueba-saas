@@ -28,8 +28,8 @@ public class EntitiesForwarder extends Forwarder<Entity> {
     }
 
     @Override
-    Stream<Entity> getEntitiesToForward(Instant startDate, Instant endDate) {
-        return entityPersistencyService.findEntitiesByUpdatedDate(startDate, endDate);
+    Stream<Entity> getEntitiesToForward(Instant startDate, Instant endDate, String entityType) {
+        return entityPersistencyService.findEntitiesByUpdatedDateAndEntityType(startDate, endDate, entityType);
     }
 
     @Override

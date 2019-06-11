@@ -25,5 +25,5 @@ public interface EntityPersistencyService {
 
     Page<Entity> findByIds(Collection<String> ids, PageRequest pageRequest);
 
-    Stream<Entity> findEntitiesByUpdatedDate(Instant startDate, Instant endDate);
+    Stream<Entity> findEntitiesByUpdatedDateAndEntityType(Instant startDate, Instant endDate, String entityType);
 }

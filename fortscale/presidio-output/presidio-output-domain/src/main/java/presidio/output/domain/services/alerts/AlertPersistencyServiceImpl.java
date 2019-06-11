@@ -167,17 +167,8 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public Stream<Alert> findAlertsByDate(Instant startDate, Instant endDate) {
-        if (startDate.equals(Instant.EPOCH)) {
-            return alertRepository.findByEndDateLessThan(endDate.toEpochMilli());
-        } else {
-            return alertRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqual(startDate.toEpochMilli(), endDate.toEpochMilli());
-        }
-    }
-
-    @Override
-    public Stream<Indicator> findIndicatorByDate(Instant startDate, Instant endDate) {
-        return indicatorRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqual(startDate.toEpochMilli(), endDate.toEpochMilli());
+    public Stream<Indicator> findIndicatorByDateAndAlertIds(Instant startDate, Instant endDate, List<String> alertIds) {
+        return indicatorRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndAlertIdIn(startDate.toEpochMilli(), endDate.toEpochMilli(), alertIds);
     }
 
     @Override

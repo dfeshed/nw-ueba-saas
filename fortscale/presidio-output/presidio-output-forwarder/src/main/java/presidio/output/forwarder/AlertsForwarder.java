@@ -11,6 +11,7 @@ import presidio.output.forwarder.strategy.ForwarderConfiguration;
 import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -27,8 +28,8 @@ public class AlertsForwarder extends Forwarder<Alert> {
     }
 
     @Override
-    Stream<Alert> getEntitiesToForward(Instant startDate, Instant endDate) {
-        return alertPersistencyService.findAlertsByDate(startDate, endDate);
+    Stream<Alert> getEntitiesToForward(Instant startDate, Instant endDate, String entityType) {
+        return alertPersistencyService.findAlertsByDateAndEntityType(startDate, endDate, entityType);
     }
 
     @Override

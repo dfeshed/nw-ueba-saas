@@ -28,6 +28,6 @@ public interface IndicatorRepository extends ElasticsearchRepository<Indicator, 
 
     Stream<Indicator> findByAlertId(String alertId);
 
-    Stream<Indicator> findByStartDateGreaterThanEqualAndEndDateLessThanEqual(long startDate, long endDate); // the stream must be closed after usage
+    Stream<Indicator> findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndAlertIdIn(long startDate, long endDate, List<String> alertIds); // the stream must be closed after usage
 
 }

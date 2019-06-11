@@ -47,9 +47,7 @@ public interface AlertPersistencyService {
 
     Stream<Alert> findAlertsByDateAndEntityType(Instant startDate, Instant endDate, String entityType);
 
-    Stream<Alert> findAlertsByDate(Instant startDate, Instant endDate);
-
-    Stream<Indicator> findIndicatorByDate(Instant startDate, Instant endDate);
+    Stream<Indicator> findIndicatorByDateAndAlertIds(Instant startDate, Instant endDate, List<String> alertIds);
 
     long countAlerts();
 
