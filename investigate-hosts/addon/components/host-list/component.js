@@ -79,7 +79,7 @@ const Container = Component.extend({
     handleDeleteHosts() {
       const callBackOptions = {
         onSuccess: () => success('investigateHosts.hosts.deleteHosts.success'),
-        onFailure: ({ meta: message }) => failure(message.message)
+        onFailure: () => failure('investigateHosts.hosts.deleteHosts.failure')
       };
       this.closeProperties();
       this.send('deleteHosts', callBackOptions);

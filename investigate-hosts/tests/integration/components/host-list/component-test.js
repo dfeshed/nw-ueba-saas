@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, click, settled, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
@@ -11,7 +11,8 @@ import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import HostCreators from 'investigate-hosts/actions/data-creators/host';
 import RiskCreators from 'investigate-shared/actions/data-creators/risk-creators';
 import sinon from 'sinon';
-
+import { throwSocket } from '../../../helpers/patch-socket';
+import { patchFlash } from '../../../helpers/patch-flash';
 let deleteHostsSpy, startScanSpy, stopScanSpy, resetRiskScoreSpy, setState;
 
 const spys = [];
@@ -485,6 +486,42 @@ module('Integration | Component | host-list', function(hooks) {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
       assert.equal(items.length, 0, 'Context menu not rendered');
+    });
+  });
+
+  skip('on clicking delete hosts, and when socket throws error', async function(assert) {
+    assert.expect(2);
+    spys.forEach((s) => {
+      s.reset();
+      s.restore();
+    });
+    const done = throwSocket({ methodToThrow: 'deleteHosts', modelNameToThrow: 'agent' });
+    setState(endpointState);
+    this.set('closeProperties', () => {
+    });
+    this.set('openProperties', () => {
+    });
+    await render(hbs`
+      <div id='modalDestination'></div>
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-list
+        openProperties=openProperties
+        closeProperties=closeProperties}}`);
+    await click('.more-action-button button');
+    patchFlash((flash) => {
+      assert.equal(flash.type, 'error');
+      assert.equal(flash.message.string, 'Host is already deleted.');
+    });
+    return settled().then(async() => {
+      await click(findAll('.host-more-actions li')[1]);
+      return settled().then(async() => {
+        await click(findAll('.delete-host-modal .modal-footer-buttons .rsa-form-button-wrapper button')[1]);
+        return settled().then(() => done());
+      });
     });
   });
 });

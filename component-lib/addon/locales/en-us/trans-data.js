@@ -3626,6 +3626,7 @@ export default {
             'All scan data associated with the host will be deleted. Do you want to continue? '
         },
         success: 'Hosts deleted successfully',
+        failure: 'Host is already deleted.',
         error: 'Host(s) deletion failed'
       },
       resetHosts: {
