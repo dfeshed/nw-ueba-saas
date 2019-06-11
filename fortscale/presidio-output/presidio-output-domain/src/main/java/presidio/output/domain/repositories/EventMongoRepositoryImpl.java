@@ -86,18 +86,18 @@ public class EventMongoRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public EnrichedUserEvent findLatestEventForEntity(String entityId, List<String> collectionNamesPrioritized, String entityType) {
+    public EnrichedEvent findLatestEventForEntity(String entityId, List<String> collectionNamesPrioritized, String entityType) {
         Query query = new Query()
                 .addCriteria(Criteria.where(entityType).is(entityId))
-                .limit(1).with(new Sort(Sort.Direction.DESC, EnrichedUserEvent.EVENT_DATE_FIELD_NAME));
-        List<EnrichedUserEvent> enrichedUserEvents = null;
+                .limit(1).with(new Sort(Sort.Direction.DESC, EnrichedEvent.EVENT_DATE_FIELD_NAME));
+        List<EnrichedEvent> enrichedEvents = null;
         for (String collection : collectionNamesPrioritized) {
-            enrichedUserEvents = mongoTemplate.find(query, EnrichedUserEvent.class, collection);
-            if (enrichedUserEvents.size() > 0)
+            enrichedEvents = mongoTemplate.find(query, EnrichedEvent.class, collection);
+            if (enrichedEvents.size() > 0)
                 break;
         }
-        if (enrichedUserEvents.size() > 0) {
-            return enrichedUserEvents.get(0);
+        if (enrichedEvents.size() > 0) {
+            return enrichedEvents.get(0);
         } else {
             return null;
         }

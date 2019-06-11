@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.output.commons.services.alert.AlertSeverityService;
+import presidio.output.commons.services.entity.EntityMappingServiceImpl;
 import presidio.output.commons.services.spring.EntitySeverityServiceConfig;
 import presidio.output.commons.services.entity.EntitySeverityService;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
@@ -51,7 +52,7 @@ public class EntityServiceConfig {
 
     @Bean
     public EntityService entityService() {
-        return new EntityServiceImpl(eventPersistencyService, entityPersistencyService, alertPersistencyService, entityScoreService(), entitySeverityService, alertEffectiveDurationInDays, defaultAlertsBatchSize);
+        return new EntityServiceImpl(eventPersistencyService, entityPersistencyService, alertPersistencyService, entityScoreService(), entitySeverityService, alertEffectiveDurationInDays, defaultAlertsBatchSize, new EntityMappingServiceImpl());
     }
 
     @Bean

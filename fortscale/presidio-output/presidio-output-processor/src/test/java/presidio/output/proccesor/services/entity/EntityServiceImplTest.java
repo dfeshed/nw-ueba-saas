@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import presidio.output.commons.services.entity.EntityMappingServiceImpl;
 import presidio.output.commons.services.entity.EntitySeverityService;
 import presidio.output.commons.services.entity.EntitySeverityServiceImpl;
 import presidio.output.domain.records.PresidioRange;
@@ -54,6 +55,7 @@ public class EntityServiceImplTest {
     private EntityScoreService mockEntityScoreService;
     private AlertPersistencyService mockAlertPersistency;
     private EntitySeverityService mockEntitySeverityService;
+    private EntityMappingServiceImpl mockEntityMappingServiceImpl;
 
     private Page<Alert> emptyAlertPage;
 
@@ -65,6 +67,7 @@ public class EntityServiceImplTest {
         mockEntityScoreService = Mockito.mock(EntityScoreService.class);
         mockAlertPersistency = Mockito.mock(AlertPersistencyServiceImpl.class);
         mockEntitySeverityService = Mockito.mock(EntitySeverityService.class);
+        mockEntityMappingServiceImpl = Mockito.mock(EntityMappingServiceImpl.class);
         Map<EntitySeverity, PresidioRange<Double>> severityRangeMap = new LinkedHashMap<>();
         severityRangeMap.put(EntitySeverity.LOW, new PresidioRange<>(0d, 30d));
         severityRangeMap.put(EntitySeverity.MEDIUM, new PresidioRange<>(30d, 60d));
@@ -78,7 +81,8 @@ public class EntityServiceImplTest {
                 mockEntityScoreService,
                 mockEntitySeverityService,
                 ALERT_EFFECTIVE_DURATION_IN_DAYS,
-                1000);
+                1000,
+                mockEntityMappingServiceImpl);
         emptyAlertPage = new PageImpl<>(Collections.emptyList());
     }
 
@@ -165,18 +169,19 @@ public class EntityServiceImplTest {
 
     @Test
     public void createEntityFromEnrichedEvent() {
-        EventResult result = EventResult.SUCCESS;
         Map<String, String> additionalInfo = new HashMap<>();
         additionalInfo.put("isUserAdmin", "false");
         String entityId = "entityId1";
+        String entityName = "entityName";
         String userDisplayName = "userDisplayName1";
-        EnrichedUserEvent enrichedEvent = new EnrichedUserEvent(Instant.now(), Instant.now(), "event1", "Active Directory", entityId, entityId,
+        EnrichedUserEvent enrichedEvent = new EnrichedUserEvent(Instant.now(), Instant.now(), "event1", "Active Directory", entityId, entityName,
                 userDisplayName, "Active Directory", additionalInfo);
         Mockito.when(this.mockEventPersistency.findLatestEventForEntity(Mockito.any(String.class), Mockito.any(List.class), Mockito.any(String.class))).thenReturn(enrichedEvent);
+        Mockito.when(this.mockEntityMappingServiceImpl.getEntityName(Mockito.any(EnrichedEvent.class), Mockito.any(String.class))).thenReturn(((EnrichedUserEvent) enrichedEvent).getUserName());
 
-        Entity entity = entityService.createEntity(entityId, "entity");
+        Entity entity = entityService.createEntity(entityId, "userId");
         assertEquals(0, entity.getTags().size());
         assertEquals(entityId, entity.getEntityId());
-        assertEquals(entityId, entity.getEntityName());
+        assertEquals(entityName, entity.getEntityName());
     }
 }

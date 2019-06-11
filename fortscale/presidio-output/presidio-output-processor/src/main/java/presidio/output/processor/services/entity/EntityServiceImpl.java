@@ -1,16 +1,18 @@
 package presidio.output.processor.services.entity;
 
+import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.IteratorUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import presidio.output.commons.services.entity.EntityMappingServiceImpl;
 import presidio.output.commons.services.entity.EntitySeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.entity.EntityQuery;
 import presidio.output.domain.records.entity.EntitySeverity;
-import presidio.output.domain.records.events.EnrichedUserEvent;
+import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.output.domain.services.event.EventPersistencyService;
@@ -32,6 +34,7 @@ public class EntityServiceImpl implements EntityService {
     private final EntityPersistencyService entityPersistencyService;
     private final EntityScoreService entityScoreService;
     private final EntitySeverityService entitySeverityService;
+    private final EntityMappingServiceImpl entityMappingServiceImpl;
     private final String TAG_ADMIN = "admin";
 
     private final int alertEffectiveDurationInDays;//How much days an alert can affect on the entity score
@@ -43,7 +46,8 @@ public class EntityServiceImpl implements EntityService {
                              EntityScoreService entityScoreService,
                              EntitySeverityService entitySeverityService,
                              int alertEffectiveDurationInDays,
-                             int defaultEntitiesBatchSize) {
+                             int defaultEntitiesBatchSize,
+                             EntityMappingServiceImpl entityMappingServiceImpl) {
         this.eventPersistencyService = eventPersistencyService;
         this.entityPersistencyService = entityPersistencyService;
         this.alertPersistencyService = alertPersistencyService;
@@ -51,6 +55,7 @@ public class EntityServiceImpl implements EntityService {
         this.entitySeverityService = entitySeverityService;
         this.alertEffectiveDurationInDays = alertEffectiveDurationInDays;
         this.defaultEntitiesBatchSize = defaultEntitiesBatchSize;
+        this.entityMappingServiceImpl = entityMappingServiceImpl;
     }
 
     public int getDefaultEntitiesBatchSize() {
@@ -78,15 +83,15 @@ public class EntityServiceImpl implements EntityService {
     }
 
     private EntityDetails getEntityDetails(String entityId, String entityType) {
-        List<String> collectionNames = entitySeverityService.collectionNamesByOrderForEvents();
-        EnrichedUserEvent event = eventPersistencyService.findLatestEventForEntity(entityId, collectionNames, entityType);
+        List <Schema> schemas = entityMappingServiceImpl.getSchemas(entityType);
+        List<String> collectionNames = entitySeverityService.collectionNamesForSchemas(schemas);
+        EnrichedEvent event = eventPersistencyService.findLatestEventForEntity(entityId, collectionNames, entityType);
         if (event == null) {
             log.error("no events were found for entity {}", entityId);
             return null;
         }
-        //We need to resolve the entityName getter according to the type
-        //For now - we chose to return the entityId instead.
-        String entityName = entityId;
+
+        String entityName = entityMappingServiceImpl.getEntityName(event, entityType);
         List<String> tags = new ArrayList<>();
         return new EntityDetails(entityName, entityId, tags, entityType);
     }
