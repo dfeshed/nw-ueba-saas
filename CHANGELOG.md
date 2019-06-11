@@ -1,3 +1,18 @@
+# [12.5.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v12.5.0)
+## Features
+* [ASOC-65137](https://bedfordjira.na.rsa.net/browse/ASOC-65137):&emsp;Pill Behavior for Text Pill
+* [ASOC-66199](https://bedfordjira.na.rsa.net/browse/ASOC-66199):&emsp;Cannot Edit a Pill into Another Pill
+* [ASOC-70653](https://bedfordjira.na.rsa.net/browse/ASOC-70653):&emsp;Add ability to handle multiple matches in data table
+* [ASOC-74054](https://bedfordjira.na.rsa.net/browse/ASOC-74054):&emsp;Implement filters in download tabs inside host details
+* [ASOC-74984](https://bedfordjira.na.rsa.net/browse/ASOC-74984):&emsp;Add an import button to allow an archive to be imported from a file
+* [ASOC-75405](https://bedfordjira.na.rsa.net/browse/ASOC-75405):&emsp;Match download options between single and bulk
+* [ASOC-76406](https://bedfordjira.na.rsa.net/browse/ASOC-76406):&emsp;Merge RAR Changes for Endpoint Server
+* [ASOC-77256](https://bedfordjira.na.rsa.net/browse/ASOC-77256):&emsp;Consume the list of configurable RIAC Admins
+* [ASOC-77310](https://bedfordjira.na.rsa.net/browse/ASOC-77310):&emsp;Add fields missing in bulk downloads that are in single downloads
+* [ASOC-78211](https://bedfordjira.na.rsa.net/browse/ASOC-78211):&emsp;Add a launch argument column in process node filter popup
+* [ASOC-78215](https://bedfordjira.na.rsa.net/browse/ASOC-78215):&emsp;Change the process analysis page toolbar
+
+
 # [12.4.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v12.4.0)
 ## Features
 * [ASOC-64151](https://bedfordjira.na.rsa.net/browse/ASOC-64151):&emsp;Enforce Maximum Number of Events that can be added to an incident to 1000
