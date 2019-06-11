@@ -88,8 +88,10 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/re
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
     await click('.recurrence-interval .rsa-form-radio-wrapper:nth-of-type(2) input');
     assert.equal(this.$('.recurrence-run-interval__week-options').length, 1, 'Expected to display week options');
-    await click('.week-button');
-    assert.equal(this.$('.week-button:eq(0).is-primary').length, 1);
+    assert.equal(this.$('.week-button:eq(1).is-primary').length, 1, 'By default Monday is selected');
+    await click('.recurrence-interval .rsa-form-radio-wrapper:nth-of-type(1) input'); // select days
+    await click('.recurrence-interval .rsa-form-radio-wrapper:nth-of-type(2) input'); // select week again
+    assert.equal(this.$('.week-button:eq(1).is-primary').length, 1, 'Default week selection is retained while switching between days and weeks');
   });
 
   // TODO - fix this test, the behaviour is very erratic. Even though action creator is being called, callCount is not being incremented.

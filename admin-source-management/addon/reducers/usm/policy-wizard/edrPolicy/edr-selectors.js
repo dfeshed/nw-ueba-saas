@@ -97,6 +97,9 @@ export const weekOptions = createSelector(
   intervalType, runOnDaysOfWeek,
   (intervalType, runOnDaysOfWeek) => {
     if (intervalType === 'WEEKS') {
+      if (!runOnDaysOfWeek) {
+        runOnDaysOfWeek = 'MONDAY';
+      }
       const config = weeks.map((week) => {
         const label = `adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.week.${week}`;
         return {
