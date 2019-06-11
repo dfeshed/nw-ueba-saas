@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { findAll, render, click, triggerEvent } from '@ember/test-helpers';
+import { findAll, render, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
@@ -31,13 +31,13 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step/row
     assert.equal(findAll('tr').length, 1, 'The component appears in the DOM');
   });
 
-  test('The component click on the row', async function(assert) {
+  test('The component mouseUp on the row', async function(assert) {
     new ReduxDataHelper(setState)
       .groupWiz()
       .groupRankingWithData()
       .build();
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step/row}}`);
-    await click('tr');
+    await triggerEvent(document.querySelectorAll('tr')[0], 'mouseUp');
     assert.equal(findAll('tr.is-selected').length, 1, 'The row is selected');
   });
 

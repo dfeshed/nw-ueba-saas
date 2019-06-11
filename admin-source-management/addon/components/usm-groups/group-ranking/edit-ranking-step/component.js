@@ -37,24 +37,43 @@ const dispatchToActions = {
 const EditRankingStep = Component.extend({
   tagName: 'hbox',
   classNames: 'edit-ranking-step',
+  prevDraggVal: 0,
+  scrollPos: 0,
   actions: {
+    handleScroll(evt) {
+      if (evt.buttons) { // mouse down and moving while dragging
+        const groupRankingTable = document.getElementsByClassName('group-ranking-table');
+        let scrollPos = groupRankingTable[0].scrollTop;
+        const tableHeight = groupRankingTable[0].offsetHeight;
+        const draggVal = evt.clientY - groupRankingTable[0].getBoundingClientRect().top;
+        if (this.get('prevDraggVal') - draggVal < 0 && scrollPos + tableHeight - 100 < scrollPos + draggVal) {
+          groupRankingTable[0].scrollTop = scrollPos += 300; // scroll up
+        } else if (this.get('prevDraggVal') - draggVal > 0 && scrollPos + 100 > scrollPos + draggVal) {
+          groupRankingTable[0].scrollTop = scrollPos -= 300; // scroll down
+        }
+        this.set('prevDraggVal', draggVal);
+      }
+    },
     handleSelectGroupRanking(evt) {
       evt.currentTarget.focus();
     },
     handleKeyBoard(index, evt) {
+      const groupRankingTable = document.getElementsByClassName('group-ranking-table');
       switch (evt.keyCode) {
         case 40:
           if (evt.shiftKey) {
             evt.altKey ? this.send('setTopRanking', false) : this.send('reorderRanking', 'arrowDown', index);
+            groupRankingTable[0].scrollTop += evt.target.offsetHeight;
           } else {
-            evt.target.nextSibling.focus();
+            evt.target.nextSibling.firstChild ? evt.target.nextSibling.focus() : '';
           }
           break;
         case 38:
           if (evt.shiftKey) {
             evt.altKey ? this.send('setTopRanking', true) : this.send('reorderRanking', 'arrowUp', index);
+            groupRankingTable[0].scrollTop -= evt.target.offsetHeight;
           } else {
-            evt.target.previousSibling.focus();
+            evt.target.previousSibling.firstChild ? evt.target.previousSibling.focus() : '';
           }
           break;
         case 37:
@@ -68,6 +87,14 @@ const EditRankingStep = Component.extend({
       }
     }
   },
+  willRender() {
+    this._super(...arguments);
+    const groupRankingTable = document.getElementsByClassName('group-ranking-table');
+    if (groupRankingTable.length > 0) {
+      const scrollPos = groupRankingTable[0].scrollTop;
+      this.set('scrollPos', scrollPos);
+    }
+  },
   didRender() {
     this._super(...arguments);
     const groupRankingTable = document.getElementsByClassName('group-ranking-table');
@@ -76,6 +103,7 @@ const EditRankingStep = Component.extend({
       if (selectedGroup.length > 0) {
         selectedGroup[0].focus();
       }
+      groupRankingTable[0].scrollTop = this.get('scrollPos');
     }
   },
   init() {
