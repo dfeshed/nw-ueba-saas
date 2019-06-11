@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Component from '@ember/component';
-import computed, { alias } from 'ember-computed-decorators';
+import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import { later, debounce, schedule } from '@ember/runloop';
@@ -63,7 +63,10 @@ const HeaderContainer = Component.extend({
    */
   maxEventsSelectionLimit: 1000,
 
-  @alias('accessControl.respondCanManageIncidents') permissionAllowsIncidentManagement: true,
+  @computed('accessControl.respondCanManageIncidents', 'accessControl.investigateCanManageIncidents')
+  permissionAllowsIncidentManagement(respondCanManageIncidents, investigateCanManageIncidents) {
+    return investigateCanManageIncidents && respondCanManageIncidents;
+  },
 
   @computed('hasResults', 'areEventsStreaming')
   isSearchDisabled(hasResults, areEventsStreaming) {

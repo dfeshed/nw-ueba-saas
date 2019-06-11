@@ -61,7 +61,7 @@ module('Integration | Component | header-container', function(hooks) {
     await renderDefaultHeaderContainer(assert);
     assert.ok(find('.rsa-investigate-events-table__header__container'), 'render event header container');
     assert.equal(find('.rsa-investigate-events-table__header__container').childElementCount, 2, 'rendered with two elements - header__content, events-table-control');
-    assert.equal(find('.rsa-investigate-events-table__header__content').childElementCount, 4, 'rendered with 4 elements - eventLabel, columnGroup, downloadEvents, manageIncident');
+    assert.equal(find('.rsa-investigate-events-table__header__content').childElementCount, 3, 'rendered with 3 elements - eventLabel, columnGroup, downloadEvents');
     assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), '55Events(Asc)', 'rendered event header title');
     assert.equal(find('.rsa-investigate-events-table__header__columnGroup span').textContent.trim(), 'Summary List', 'rendered event header title');
     assert.equal(find('.rsa-investigate-events-table__header__downloadEvents span').textContent.trim(), 'Download', 'rendered event header title');
@@ -139,15 +139,28 @@ module('Integration | Component | header-container', function(hooks) {
     assert.ok(find(addToIncidentSelector), 'Add to Incident button is visible');
   });
 
-  test('Create Incident/Add to Incident buttons should be hidden if missing permissions', async function(assert) {
+  test('Create Incident/Add to Incident buttons should not be displayed, if user does not have manage incident permissions on respond and investigate both', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('respondCanManageIncidents', false);
+    accessControl.set('investigateCanManageIncidents', false);
     new ReduxDataHelper(setState)
       .allEventsSelected(false)
       .withSelectedEventIds()
       .build();
-    assert.notOk(find(createIncidentSelector), 'Create Incident button is not visible');
-    assert.notOk(find(addToIncidentSelector), 'Add to Incident button is not visible');
+    assert.notOk(find(createIncidentSelector), 'Create Incident button is not displayed');
+    assert.notOk(find(addToIncidentSelector), 'Add to Incident button is not displayed');
+  });
+
+  test('Create Incident/Add to Incident buttons should not be displayed, if user does not have manage incident permissions only on investigate', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('respondCanManageIncidents', true);
+    accessControl.set('investigateCanManageIncidents', false);
+    new ReduxDataHelper(setState)
+      .allEventsSelected(false)
+      .withSelectedEventIds()
+      .build();
+    assert.notOk(find(createIncidentSelector), 'Create Incident button is not displayed');
+    assert.notOk(find(addToIncidentSelector), 'Add to Incident button is not displayed');
   });
 
 });

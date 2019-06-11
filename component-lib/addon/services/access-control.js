@@ -36,6 +36,7 @@ export default Service.extend({
     'investigate-server.logs.manage',
     'investigate-server.security.read',
     'investigate-server.process.manage',
+    'investigate-server.incident.manage',
     'investigate-server.health.read',
     'investigate-server.*',
     'investigate-server.security.manage',
@@ -120,6 +121,11 @@ export default Service.extend({
   @computed('roles.[]')
   hasReconAccess(roles) {
     return this._hasPermission(roles, 'investigate-server.content.reconstruct');
+  },
+
+  @computed('roles.[]')
+  investigateCanManageIncidents(roles) {
+    return this._hasPermission(roles, 'investigate-server.incident.manage');
   },
 
   // Begin respond access permissions

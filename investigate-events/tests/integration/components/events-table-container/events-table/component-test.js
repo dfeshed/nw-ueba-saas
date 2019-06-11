@@ -344,11 +344,11 @@ module('Integration | Component | events-table', function(hooks) {
     assert.equal(findAll('.rsa-form-checkbox-label').length, 3, 'Renders event selection checkboxes when permission is present');
   });
 
-
-  test('renders event selection checkboxes if only manage incident permissions are present', async function(assert) {
+  test('renders event selection checkboxes if manage incident permissions are present on respond and investigate both', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('respondCanManageIncidents', true);
     accessControl.set('hasInvestigateContentExportAccess', false);
+    accessControl.set('investigateCanManageIncidents', true);
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
       .eventResults([{ sessionId: 'foo', time: 123 }, { sessionId: 'bar', time: 123 }])
@@ -357,6 +357,21 @@ module('Integration | Component | events-table', function(hooks) {
 
     await render(hbs`{{events-table-container/events-table}}`);
     assert.equal(findAll('.rsa-form-checkbox-label').length, 3, 'Renders event selection checkboxes when manage incident permission is present');
+  });
+
+  test('renders event selection checkboxes if manage incident permissions are present only on respond', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('respondCanManageIncidents', true);
+    accessControl.set('hasInvestigateContentExportAccess', false);
+    accessControl.set('investigateCanManageIncidents', false);
+    new ReduxDataHelper(setState)
+      .getColumns('SUMMARY', EventColumnGroups)
+      .eventResults([{ sessionId: 'foo', time: 123 }, { sessionId: 'bar', time: 123 }])
+      .eventsPreferencesConfig()
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+    assert.equal(findAll('.rsa-form-checkbox-label').length, 0, 'Do not renders event selection checkboxes when manage incident permission is not present on investigate and respond both');
   });
 
   test('renders event selection checkboxes if both incident/download permissions are present', async function(assert) {
