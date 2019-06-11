@@ -34,9 +34,7 @@ export default Component.extend({
 
   @computed('allSelectedEventIds', 'limit')
   selectedEventIds(allSelectedEventIds, limit) {
-    if (!allSelectedEventIds) {
-      return [];
-    } else {
+    if (allSelectedEventIds) {
       const allSelectedEventIdsArray = Object.values(allSelectedEventIds);
       if (!Number.isNaN(limit) && limit > 0) {
         return allSelectedEventIdsArray.slice(0, limit);
