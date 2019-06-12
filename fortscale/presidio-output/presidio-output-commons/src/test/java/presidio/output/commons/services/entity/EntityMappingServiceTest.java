@@ -21,7 +21,7 @@ public class EntityMappingServiceTest {
     @Test
     public void testGetSchemasForNotUser() {
         List<Schema> schemas = entityMappingService.getSchemas("machineId");
-        Assert.assertEquals(schemas, Arrays.asList(Schema.values()));
+        Assert.assertEquals(schemas, Collections.emptyList());
     }
 
     @Test

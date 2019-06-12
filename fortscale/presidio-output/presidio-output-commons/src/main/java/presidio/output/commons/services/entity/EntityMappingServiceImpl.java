@@ -2,8 +2,8 @@ package presidio.output.commons.services.entity;
 
 import fortscale.common.general.Schema;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class EntityMappingServiceImpl implements EntityMappingService {
@@ -15,7 +15,7 @@ public class EntityMappingServiceImpl implements EntityMappingService {
                     Schema.PROCESS, Schema.REGISTRY, Schema.IOC);
         }
 
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Override
