@@ -154,4 +154,5 @@ module('Integration | Component | rsa-application-modal', function(hooks) {
       });
     });
   });
+
 });

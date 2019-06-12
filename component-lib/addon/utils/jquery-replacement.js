@@ -146,3 +146,6 @@ export const isNumeric = (x) => {
 
 // this.$('.some-element').attr('some-attribute)
 // document.querySelector('.some-element').getAttribute('some-attribute')
+
+// this.$().removeAttr('some-attribute')
+// this.element.removeAttribute('some-attribute')

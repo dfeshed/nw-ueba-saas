@@ -26,7 +26,7 @@ export default LinkComponent.extend({
   // Prevent some browsers from rendering an empty `href` by default.
   didInsertElement() {
     this._super(...arguments);
-    this.$().removeAttr('href');
+    this.element.removeAttribute('href');
   },
 
   // Clicking on an `<a data-href=..>` will do nothing natively.
