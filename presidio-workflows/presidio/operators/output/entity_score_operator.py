@@ -15,9 +15,10 @@ class EntityScoreOperator(AbstractOutputOperator):
     def __init__(self, fixed_duration_strategy, command, smart_record_conf_name, entity_type, task_id=None, *args, **kwargs):
 
         java_args = {'entity_type': entity_type}
+        self.smart_record_conf_name = smart_record_conf_name
 
         super(EntityScoreOperator, self).__init__(
-            task_id='{0}_score_processor'.format(smart_record_conf_name),
+            task_id=task_id,
             fixed_duration_strategy=fixed_duration_strategy,
             command=command,
             smart_record_conf_name=smart_record_conf_name,
@@ -25,3 +26,9 @@ class EntityScoreOperator(AbstractOutputOperator):
             *args,
             **kwargs
         )
+
+    def get_task_name(self):
+        """
+        :return: The task name
+        """
+        return '{0}_score_processor'.format(self.smart_record_conf_name)
