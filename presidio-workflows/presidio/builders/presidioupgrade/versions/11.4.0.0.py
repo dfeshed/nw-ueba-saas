@@ -92,9 +92,6 @@ scroll_size = len(data['hits']['hits'])
 # Before scroll, process current batch of hits
 convert_users_to_entities(data['hits']['hits'])
 
-# Remove user severity range index
-es.indices.delete(index=INDEX_USER_SEVERITY_RANGE)
-
 while scroll_size > 0:
     "Scrolling users..."
     data = es.scroll(scroll_id=sid, scroll='2m')
@@ -157,4 +154,6 @@ es.reindex({
     "dest": {"index": INDEX_ENTITY_SEVERITY_RANGE}
 }, wait_for_completion=True)
 
+# Remove user severity range index
+es.indices.delete(index=INDEX_USER_SEVERITY_RANGE)
 
