@@ -72,6 +72,11 @@
             <artifactId>presidio-output-processor</artifactId>
             <version>${presidio-core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-output-manager</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
     </dependencies>
     <properties>
         <presidio-app-venv.directory>${presidio-app.directory}/airflow/venv</presidio-app-venv.directory>
