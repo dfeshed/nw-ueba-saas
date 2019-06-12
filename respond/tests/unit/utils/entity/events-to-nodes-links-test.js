@@ -34,10 +34,27 @@ const event2 = {
   }
 };
 
+const event3 = {
+  source: {
+    filename: 'srcFile',
+    hash: '1234'
+  },
+  destination: {
+    filename: 'dstFile',
+    hash: '5678'
+  }
+};
+
 test('it parses normalized alert events as expected', function(assert) {
   const result = eventsToNodesLinks([ event1 ]);
   assert.equal(result.nodes.length, 8, 'Expected nodes for source & destination values');
   assert.equal(result.links.length, 7, 'Expected links for source & destination values');
+});
+
+test('it parses endpoint src -> target links as expected', function(assert) {
+  const result = eventsToNodesLinks([ event3 ]);
+  assert.equal(result.nodes.length, 4, 'Expected nodes for source & destination values');
+  assert.equal(result.links.length, 3, 'Expected links for source & destination values');
 });
 
 test('it responds to empty input with empty arrays', function(assert) {

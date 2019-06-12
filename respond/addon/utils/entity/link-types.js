@@ -9,5 +9,6 @@ export default {
   USES: 'uses',
   COMMUNICATES_WITH: 'communicates with',
   IS_NAMED: 'is named',
-  HAS_FILE: 'has file'
+  HAS_FILE: 'has file',
+  LAUNCHES: 'calls'
 };

@@ -178,6 +178,7 @@ function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
   // Generate nodes & links for the filenames & hashes, if any.
   const fileNameNodes = [];
   const fileHashNodes = [];
+
   const parseFilesAndHashes = ({ filename, hash }) => {
     // Generate nodes for filename & hash, if any.
     const fileNameNode = checkNode(NodeTypes.FILE_NAME, filename, nodeHash, evt);
@@ -196,10 +197,20 @@ function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
 
   data.forEach(parseFilesAndHashes);
 
+  const srcNode = source || {};
+  const dstNode = destination || {};
+
   // parse filename & checksum for ueba-process event ( endpoint )
-  [source || {}, destination || {} ]
-    .map(({ processFileName: filename, processChecksum: hash }) => ({ filename, hash }))
-    .forEach(parseFilesAndHashes);
+  [srcNode, dstNode].map(({ processFileName: filename, processChecksum: hash }) => ({ filename, hash })).forEach(parseFilesAndHashes);
+  let srcFileNode = checkNode(NodeTypes.FILE_HASH, srcNode.processChecksum, nodeHash, evt) || checkNode(NodeTypes.FILE_NAME, srcNode.processFileName, nodeHash, evt);
+  let dstFileNode = checkNode(NodeTypes.FILE_HASH, dstNode.processChecksum, nodeHash, evt) || checkNode(NodeTypes.FILE_NAME, dstNode.processFileName, nodeHash, evt);
+  checkLink(LinkTypes.LAUNCHES, srcFileNode, dstFileNode, linkHash, evt);
+
+  // endpoint src to target linking, prioritizing hash nodes over file nodes.
+  [srcNode, dstNode].forEach(parseFilesAndHashes);
+  srcFileNode = checkNode(NodeTypes.FILE_HASH, srcNode.hash, nodeHash, evt) || checkNode(NodeTypes.FILE_NAME, srcNode.filename, nodeHash, evt);
+  dstFileNode = checkNode(NodeTypes.FILE_HASH, dstNode.hash, nodeHash, evt) || checkNode(NodeTypes.FILE_NAME, dstNode.filename, nodeHash, evt);
+  checkLink(LinkTypes.LAUNCHES, srcFileNode, dstFileNode, linkHash, evt);
 }
 
 /**
