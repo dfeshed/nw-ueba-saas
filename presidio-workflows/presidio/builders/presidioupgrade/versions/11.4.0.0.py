@@ -9,8 +9,10 @@ SIZE = 1000
 ENTITY_TYPE = "userId"
 INDEX_ALERT = "presidio-output-alert"
 DOC_TYPE_ALERT = "alert"
-USER_SEVERITY_RANGE = "presidio-output-user-severities-range"
-ENTITY_SEVERITY_RANGE = "presidio-output-entity-severities-range"
+INDEX_USER_SEVERITY_RANGE = "presidio-output-user-severities-range"
+INDEX_ENTITY_SEVERITY_RANGE = "presidio-output-entity-severities-range"
+DOC_TYPE_USER_SEVERITY_RANGE = "user-severities-range"
+DOC_TYPE_ENTITY_SEVERITY_RANGE = "entity-severities-range"
 
 
 # # Init Elasticsearch instance
@@ -66,7 +68,7 @@ def update_alerts_hits(hits):
 
         }
 
-        es.update(index=INDEX_ALERT, doc_type=DOC_TYPE_ALERT, id=item["_id"], body={"doc":alert})
+        es.update(index=INDEX_ALERT, doc_type=DOC_TYPE_ALERT, id=item["_id"], body=dict(alert))
 
 
 # Check user index is exists
@@ -90,13 +92,8 @@ scroll_size = len(data['hits']['hits'])
 # Before scroll, process current batch of hits
 convert_users_to_entities(data['hits']['hits'])
 
-es.reindex({
-    "source": {"index": USER_SEVERITY_RANGE},
-    "dest": {"index": ENTITY_SEVERITY_RANGE}
-}, wait_for_completion=True)
-
 # Remove user severity range index
-es.indices.delete(index=USER_SEVERITY_RANGE)
+es.indices.delete(index=INDEX_USER_SEVERITY_RANGE)
 
 while scroll_size > 0:
     "Scrolling users..."
@@ -147,3 +144,17 @@ while scroll_size > 0:
 
     # Get the number of results that returned in the last scroll
     scroll_size = len(data['hits']['hits'])
+
+doc = es.get(index=INDEX_USER_SEVERITY_RANGE, doc_type=DOC_TYPE_USER_SEVERITY_RANGE, id='user-severities-range-doc-id')
+doc["_source"]["id"] = 'userId-severities-range-doc-id'
+es.index(index=INDEX_USER_SEVERITY_RANGE, doc_type=DOC_TYPE_ENTITY_SEVERITY_RANGE,
+                id='userId-severities-range-doc-id', body=dict(doc["_source"]))
+es.delete(index=INDEX_USER_SEVERITY_RANGE, doc_type=DOC_TYPE_USER_SEVERITY_RANGE, id='user-severities-range-doc-id')
+
+
+es.reindex({
+    "source": {"index": INDEX_USER_SEVERITY_RANGE},
+    "dest": {"index": INDEX_ENTITY_SEVERITY_RANGE}
+}, wait_for_completion=True)
+
+
