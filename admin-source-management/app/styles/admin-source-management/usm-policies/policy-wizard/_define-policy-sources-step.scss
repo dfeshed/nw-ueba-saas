@@ -30,6 +30,17 @@
           background: background-color(primary);
         }
       }
+      .subheading {
+        @include rsa-font(default,small);
+        font-style: normal;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        padding-top: rsa-whitespace();
+        text-transform: uppercase;
+        color: text-color(primary);
+      }
+
       .child-source-container {
         min-width: 85%;
         .source-name {
@@ -69,6 +80,7 @@
           padding-top: 0px;
           .rsa-form-radio-wrapper {
             input[type=radio]+span::before {
+              padding-bottom: 0.25rem;
               height: 1.25rem;
             }
           }
@@ -77,7 +89,6 @@
     }
 
     .file-source-type__list {
-      padding: rsa-whitespace() 0;
       .file-source-type {
         padding-right: 1rem;
         padding-top: 0.6rem;
@@ -116,6 +127,8 @@
       margin: 0;
       padding: 0;
       width: 55%;
+      margin-bottom: rsa-whitespace(most);
+      background-color: background-color(primary, darker);
       &:hover {
           width: 55%;
       }

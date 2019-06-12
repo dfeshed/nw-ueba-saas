@@ -83,5 +83,19 @@
         focusOut=sourceUpdated
       }}
     </div>
+
+  {{else if (eq column.displayType 'exclusionFilter') }}
+    <h4 class='subheading'>
+      {{t column.title}}
+    </h4>
+    <div class="exclusion-filter">
+      {{rsa-form-textarea
+        tabIndex='3'
+        placeholder=(t 'adminUsm.policyWizard.descPlaceholder')
+        value=exclusionFilter
+        maxLength=8000
+        focusOut=(action 'setExclusionFilter' column.field bubbles=false)
+      }}
+    </div>
   {{/if}}
 {{/rsa-data-table/body-cell}}

@@ -4755,15 +4755,16 @@ effects the previewed source.',
         protocol: 'Protocol',
         protocolTooltip: 'Select whether SSL, TCP, or UDP transport protocol is used to forward the collected windows logs to the NetWitness Platform servers. SSL is recommended but note that is is the heaviest option. TCP is reliable but unprotected, which may be acceptable within a corporate network. Finally, UDP is unsecured and delivery is not guaranteed.',
         logFileType: 'Log File Type',
-        enableOnAgent: 'Enable On Agent',
+        enableOnAgent: 'Log File Collection on Agent',
         dataCollection: 'Data Collection',
-        collectNew: 'Collect only new log data on initial collection',
-        collectAll: 'Collect both historical and new log data on initial collection',
+        collectNew: 'Collect new data only',
+        collectAll: 'Collect historical and new data',
         fileEncoding: 'File Encoding',
         sourceName: 'Source Name',
+        exclusionFilter: 'Exclusion Filter',
         fileSourceType: {
-          add: 'Add selected file type',
-          placeholder: 'Pick a Log file type'
+          add: 'Add Selected File Type',
+          placeholder: 'Pick a Log File Type'
         }
       }
     },

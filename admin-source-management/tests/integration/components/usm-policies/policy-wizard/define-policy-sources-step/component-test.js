@@ -12,7 +12,7 @@ import sinon from 'sinon';
 
 let setState, updatePolicyPropertySpy;
 const spys = [];
-const sources = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1' } ];
+const sources = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilter: ['abc', 'def'] } ];
 
 module('Integration | Component | usm-policies/policy-wizard/define-policy-sources-step', function(hooks) {
   setupRenderingTest(hooks, {
@@ -73,7 +73,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       .policyWizFileSources(sources)
       .build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    assert.equal(findAll('.child-source-container').length, 5, 'body cell child-source-containers are rendered correctly');
+    assert.equal(findAll('.child-source-container').length, 6, 'body cell child-source-containers are rendered correctly');
     assert.equal(findAll('.file-source-type').length, 1, 'file-source-type dropdown is rendered correctly');
     assert.equal(findAll('.add-row').length, 1, 'add-row button is rendered correctly');
   });
@@ -84,13 +84,14 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       .policyWizFileSources(sources)
       .build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    assert.equal(findAll('.child-source-container').length, 5, 'body cell child-source-containers are rendered correctly');
-    assert.equal(findAll('.subheading').length, 3, 'All the subheadings rendered correctly');
+    assert.equal(findAll('.child-source-container').length, 6, 'body cell child-source-containers are rendered correctly');
+    assert.equal(findAll('.subheading').length, 5, 'All the subheadings rendered correctly');
     assert.equal(findAll('.rsa-form-radio-group-label').length, 2, 'All the radio labels rendered correctly');
     assert.equal(findAll('.file-type').length, 1, 'file type dropdown rendered correctly');
     assert.equal(findAll('.child-source-container .enabled').length, 1, 'Enable on Agent radio rendered correctly');
     assert.equal(findAll('.child-source-container .startOfEvents').length, 1, 'Data Collection radio rendered correctly');
     assert.equal(findAll('.child-source-container .sourceName').length, 1, 'Source Name input rendered correctly');
+    assert.equal(findAll('.child-source-container .exclusionFilter').length, 1, 'Source Name input rendered correctly');
   });
 
   test('It triggers the update policy action creator when the main fileType is changed', async function(assert) {
@@ -124,6 +125,20 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
     const value = 'new-server';
     const [eventIdEl] = findAll('.source-name input');
+    await fillIn(eventIdEl, value);
+    await triggerEvent(eventIdEl, 'blur');
+    assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
+  });
+
+  test('It triggers the update policy action creator when the exclusion filter is changed', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources(sources)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
+    const value = 'filter-1, filter-2';
+    const [eventIdEl] = findAll('.exclusion-filter textarea');
     await fillIn(eventIdEl, value);
     await triggerEvent(eventIdEl, 'blur');
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');

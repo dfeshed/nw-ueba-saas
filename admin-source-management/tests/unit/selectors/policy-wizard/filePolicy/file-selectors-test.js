@@ -63,7 +63,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
   });
 
   test('fileSources', function(assert) {
-    const expectedValue = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1' } ];
+    const expectedValue = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilter: ['filter-1', 'filter-2'] } ];
     const fullState = new ReduxDataHelper()
       .policyWiz('filePolicy')
       .policyWizFileSources(expectedValue)

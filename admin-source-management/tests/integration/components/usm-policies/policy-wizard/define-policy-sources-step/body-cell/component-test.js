@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { find, findAll, render } from '@ember/test-helpers';
+import { find, findAll, render, fillIn, triggerEvent } from '@ember/test-helpers';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
@@ -29,7 +29,8 @@ const item = {
   fileEncoding: 'UTF-16',
   enabled: true,
   startOfEvents: false,
-  sourceName: 'apache-server-1'
+  sourceName: 'apache-server-1',
+  exclusionFilter: ['filter-1', 'filter-2']
 };
 
 module('Integration | Component | usm-policies/policy-wizard/define-policy-sources-step/body-cell', function(hooks) {
@@ -158,6 +159,45 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       }}
     `);
     assert.equal(findAll('.source-name').length, 1);
+  });
+
+  test('exclusion filter is displayed in the text area container', async function(assert) {
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources(sources)
+      .build();
+
+    const column = {
+      field: 'exclusionFilter',
+      title: 'adminUsm.policyWizard.filePolicy.exclusionFilter',
+      width: '30vw',
+      displayType: 'exclusionFilter'
+    };
+
+    this.setProperties({
+      column,
+      item
+    });
+
+    this.set('sourceUpdated', () => {
+      assert.ok(true, 'sourceUpdated should be called');
+    });
+
+    await render(hbs`
+      {{usm-policies/policy-wizard/define-policy-sources-step/body-cell
+        column=column
+        sourceUpdated=sourceUpdated
+        item=item
+      }}
+    `);
+    const value = 'filter-3, filter-4';
+    const [eventIdEl] = findAll('.exclusion-filter textarea');
+    await fillIn(eventIdEl, value);
+    await triggerEvent(eventIdEl, 'blur');
+
+    assert.equal(findAll('.exclusion-filter').length, 1);
   });
 
   test('file type is displayed in the container', async function(assert) {
