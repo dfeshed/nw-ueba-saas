@@ -1,1 +1,0 @@
-export { default } from 'investigate-shared/components/endpoint/risk-panel/component';
