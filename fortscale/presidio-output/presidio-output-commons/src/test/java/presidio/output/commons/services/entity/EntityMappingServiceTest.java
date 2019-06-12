@@ -15,10 +15,16 @@ public class EntityMappingServiceTest {
     private EntityMappingService entityMappingService = new EntityMappingServiceImpl();
 
     @Test
-    public void testGetSchemas() {
+    public void testGetSchemasForUser() {
         List<Schema> schemas = entityMappingService.getSchemas("userId");
         Assert.assertEquals(schemas, Arrays.asList(Schema.AUTHENTICATION, Schema.FILE, Schema.PRINT, Schema.ACTIVE_DIRECTORY,
                 Schema.PROCESS, Schema.REGISTRY, Schema.IOC));
+    }
+
+    @Test
+    public void testGetSchemasForNotUser() {
+        List<Schema> schemas = entityMappingService.getSchemas("machineId");
+        Assert.assertEquals(schemas, Arrays.asList(Schema.values()));
     }
 
     @Test
