@@ -85,17 +85,23 @@ public class EntityServiceImpl implements EntityService {
     }
 
     private EntityDetails getEntityDetails(String entityId, String entityType) {
-        List <Schema> schemas = entityMappingServiceImpl.getSchemas(entityType);
-        List<String> collectionNames = entitySeverityService.collectionNamesForSchemas(schemas);
-        EnrichedEvent event = eventPersistencyService.findLatestEventForEntity(entityId, collectionNames, entityType);
-        if (event == null) {
-            log.error("no events were found for entity {}", entityId);
-            return null;
-        }
-
         String entityNameField = entityMappingServiceImpl.getEntityNameField(entityType);
-        RecordReader recordReader = new ReflectionRecordReader(event);
-        String entityName = recordReader.get(entityNameField, String.class);
+        String entityName;
+        if(entityNameField.equals(entityType)){
+            entityName = entityId;
+        }
+        else {
+            List <Schema> schemas = entityMappingServiceImpl.getSchemas(entityType);
+            List<String> collectionNames = entitySeverityService.collectionNamesForSchemas(schemas);
+            EnrichedEvent event = eventPersistencyService.findLatestEventForEntity(entityId, collectionNames, entityType);
+            if (event == null) {
+                log.error("no events were found for entity {}", entityId);
+                return null;
+            }
+
+            RecordReader recordReader = new ReflectionRecordReader(event);
+            entityName = recordReader.get(entityNameField, String.class);
+        }
 
         List<String> tags = new ArrayList<>();
         return new EntityDetails(entityName, entityId, tags, entityType);

@@ -4,12 +4,9 @@ package presidio.output.commons.services.entity;
 import fortscale.common.general.Schema;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
 
-@RunWith(SpringRunner.class)
 public class EntityMappingServiceTest {
 
     private EntityMappingService entityMappingService = new EntityMappingServiceImpl();
