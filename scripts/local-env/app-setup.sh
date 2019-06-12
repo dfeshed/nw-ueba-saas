@@ -59,6 +59,11 @@ yarn link mock-server
 info "Running install for ngcoreui mock server"
 cd ngcoreui/ngcoreui-mock-server
 yarn
+# ngcoreui-proxy-server is also just Yarn install
+info "Running install for ngcoreui proxy server"
+cd ../ngcoreui-proxy-server
+yarn
+
 # prepareApp expects to be only one folder level deep when it starts
 cd ..
 
