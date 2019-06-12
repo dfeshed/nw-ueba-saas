@@ -59,10 +59,8 @@ public class AlertsForwarderTest {
 
     @Test
     public void testAlertsForwarding() {
-        alertsForwarder.forward(Instant.now(), Instant.now(), "entityType", true);
+        alertsForwarder.forward(Instant.now(), Instant.now(), "entityType", null);
         Assert.assertEquals(1, memoryStrategy.allMessages.size());
         Assert.assertEquals("{\"id\":\"c678bb28-f795-402c-8d64-09f26e82807d\",\"startDate\":\"1970-01-18T14:37:46.653+0000\",\"endDate\":\"1970-01-18T14:37:46.653+0000\",\"entityDocumentId\":\"entityDocumentId1\",\"score\":95.0,\"severity\":\"HIGH\",\"indicatorsNum\":3,\"classifications\":[]}", memoryStrategy.allMessages.get(0).getPayload());
     }
-
-
 }

@@ -57,7 +57,7 @@ public class EntitiesForwarderTest {
 
     @Test
     public void testEntitiesForwarding() {
-        entitiesForwarder.forward(Instant.now(), Instant.now(), "entityType", false);
+        entitiesForwarder.forward(Instant.now(), Instant.now(), "entityType", null);
         Assert.assertEquals(1,memoryForwarder.allMessages.size());
         Assert.assertEquals("{\"id\":\"c678bb28-f795-402c-8d64-09f26e82807d\",\"entitiyId\":\"test\",\"severity\":\"CRITICAL\",\"alertsCount\":0}",memoryForwarder.allMessages.get(0).getPayload());
     }
