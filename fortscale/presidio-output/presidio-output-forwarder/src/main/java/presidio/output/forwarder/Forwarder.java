@@ -3,7 +3,6 @@ package presidio.output.forwarder;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Iterators;
 import fortscale.utils.logging.Logger;
-import presidio.output.domain.records.alerts.Alert;
 import presidio.output.forwarder.strategy.ForwarderStrategy;
 import presidio.output.forwarder.strategy.ForwarderConfiguration;
 import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
@@ -18,7 +17,6 @@ import java.util.stream.Stream;
 public abstract class Forwarder<T>{
 
     private static final Logger logger = Logger.getLogger(Forwarder.class);
-    protected List<String> alertIds = new ArrayList<>();
 
     ForwarderConfiguration forwarderConfiguration;
     ForwarderStrategyFactory forwarderStrategyFactory;
@@ -29,12 +27,12 @@ public abstract class Forwarder<T>{
         this.forwarderStrategyFactory = forwarderStrategyFactory;
     }
 
-    public int forward(Instant startDate, Instant endDate, String entityType, boolean isAlerts) {
+    public ForwardedEntity forward(Instant startDate, Instant endDate, String entityType, List<String> alertIds) {
 
         ForwarderStrategy.PAYLOAD_TYPE payloadType = getPayloadType();
 
         if (!forwarderConfiguration.isForwardEntity(payloadType)) {
-            return 0;
+            return new ForwardedEntity(0, new ArrayList<>());
         }
 
         // select forwarding strategy
@@ -47,15 +45,13 @@ public abstract class Forwarder<T>{
         }
         int bulkSize = forwarderConfiguration.getForwardBulkSize(payloadType);
 
-
         // forward messages in a batch
         final AtomicInteger forwardedCount = new AtomicInteger();
-        try (Stream<T> entities = getEntitiesToForward(startDate, endDate, entityType)){
+        List<String> ids = new ArrayList<>();
+        try (Stream<T> entities = getEntitiesToForward(startDate, endDate, entityType, alertIds)){
             Iterators.partition(entities.iterator(), bulkSize).forEachRemaining(entitiesBulk -> {
                 try {
-                    if(isAlerts){
-                        entitiesBulk.forEach(alert -> alertIds.add(getId(alert)));
-                    }
+                    entitiesBulk.forEach(entity -> ids.add(getId(entity)));
                     int success = forwardBatch(forwarderStrategy, payloadType, entitiesBulk);
                     forwardedCount.addAndGet(success);
                 } catch (Exception ex) {
@@ -65,7 +61,7 @@ public abstract class Forwarder<T>{
             });
         }
         logger.info("{} '{}' messages were forwarded successfully", forwardedCount.get(),  getPayloadType());
-        return forwardedCount.get();
+        return new ForwardedEntity(forwardedCount.get(), ids);
     }
 
 
@@ -84,7 +80,7 @@ public abstract class Forwarder<T>{
         return messages.size();
     };
 
-    abstract Stream<T> getEntitiesToForward(Instant startDate, Instant endDate, String entityType);
+    abstract Stream<T> getEntitiesToForward(Instant startDate, Instant endDate, String entityType, List<String> alertIds);
 
     abstract String getId(T entity);
 
@@ -94,4 +90,20 @@ public abstract class Forwarder<T>{
 
     abstract ForwarderStrategy.PAYLOAD_TYPE getPayloadType();
 
+    public class ForwardedEntity {
+        private int forwardedCount;
+        private List<String> ids;
+
+        public ForwardedEntity(int forwardedCount, List<String> ids){
+            this.forwardedCount = forwardedCount;
+            this.ids = ids;
+        }
+
+        public int getForwardedCount() {
+            return forwardedCount;
+        }
+        public List<String> getIds() {
+            return ids;
+        }
+    }
 }

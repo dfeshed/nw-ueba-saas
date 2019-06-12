@@ -28,7 +28,7 @@ public class AlertsForwarder extends Forwarder<Alert> {
     }
 
     @Override
-    Stream<Alert> getEntitiesToForward(Instant startDate, Instant endDate, String entityType) {
+    Stream<Alert> getEntitiesToForward(Instant startDate, Instant endDate, String entityType, List<String> alertIds) {
         return alertPersistencyService.findAlertsByDateAndEntityType(startDate, endDate, entityType);
     }
 
