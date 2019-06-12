@@ -5,6 +5,7 @@ import { getHostDetailTabs, isOnOverviewTab, isActiveTabDownloads } from 'invest
 import { hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 
 const stateToComputed = (state) => ({
+  agentId: state.endpoint.detailsInput.agentId,
   hostDetailTabs: getHostDetailTabs(state),
   hostName: hostName(state),
   activeHostDetailTab: state.endpoint.visuals.activeHostDetailTab,

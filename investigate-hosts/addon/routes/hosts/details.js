@@ -2,6 +2,8 @@ import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { initializeHostDetailsPage } from 'investigate-hosts/actions/data-creators/host';
 import { resetDetailsInputAndContent } from 'investigate-hosts/actions/ui-state-creators';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { getOwner } from '@ember/application';
 
 const HELP_ID_MAPPING = {
   'OVERVIEW': 'contextualHelp.invHostsOverview',
@@ -52,6 +54,12 @@ export default Route.extend({
 
   activate() {
     this.set('isPageLoading', false);
+  },
+
+  beforeModel() {
+    // On back button (from Event Analysis) => services are not loaded and lookup failed.
+    // Forcefully initializing the container solves the problem
+    initialize(getOwner(this));
   },
 
   model(params) {
