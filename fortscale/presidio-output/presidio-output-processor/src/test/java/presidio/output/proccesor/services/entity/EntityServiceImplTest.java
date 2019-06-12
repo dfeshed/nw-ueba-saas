@@ -1,6 +1,5 @@
 package presidio.output.proccesor.services.entity;
 
-import fortscale.domain.core.EventResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -177,7 +176,7 @@ public class EntityServiceImplTest {
         EnrichedUserEvent enrichedEvent = new EnrichedUserEvent(Instant.now(), Instant.now(), "event1", "Active Directory", entityId, entityName,
                 userDisplayName, "Active Directory", additionalInfo);
         Mockito.when(this.mockEventPersistency.findLatestEventForEntity(Mockito.any(String.class), Mockito.any(List.class), Mockito.any(String.class))).thenReturn(enrichedEvent);
-        Mockito.when(this.mockEntityMappingServiceImpl.getEntityName(Mockito.any(EnrichedEvent.class), Mockito.any(String.class))).thenReturn(((EnrichedUserEvent) enrichedEvent).getUserName());
+        Mockito.when(this.mockEntityMappingServiceImpl.getEntityNameField(Mockito.any(String.class))).thenReturn("userName");
 
         Entity entity = entityService.createEntity(entityId, "userId");
         assertEquals(0, entity.getTags().size());

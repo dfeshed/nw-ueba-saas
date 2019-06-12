@@ -2,6 +2,8 @@ package presidio.output.processor.services.entity;
 
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.recordreader.RecordReader;
+import fortscale.utils.recordreader.ReflectionRecordReader;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.IteratorUtils;
 import org.springframework.data.domain.Page;
@@ -91,7 +93,10 @@ public class EntityServiceImpl implements EntityService {
             return null;
         }
 
-        String entityName = entityMappingServiceImpl.getEntityName(event, entityType);
+        String entityNameField = entityMappingServiceImpl.getEntityNameField(entityType);
+        RecordReader recordReader = new ReflectionRecordReader(event);
+        String entityName = recordReader.get(entityNameField, String.class);
+
         List<String> tags = new ArrayList<>();
         return new EntityDetails(entityName, entityId, tags, entityType);
     }
