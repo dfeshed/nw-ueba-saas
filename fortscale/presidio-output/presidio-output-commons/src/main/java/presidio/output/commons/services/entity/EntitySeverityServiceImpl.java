@@ -281,8 +281,7 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
     }
 
     @Override
-    public List<String> collectionNamesByOrderForEvents() {
-        List<Schema> schemas = Arrays.asList(Schema.values());
+    public List<String> collectionNamesForSchemas(List<Schema> schemas) {
         List<String> collections = new ArrayList<>();
         schemas.forEach(schema -> collections.add(outputToCollectionNameTranslator.toCollectionName(schema)));
         return collections;

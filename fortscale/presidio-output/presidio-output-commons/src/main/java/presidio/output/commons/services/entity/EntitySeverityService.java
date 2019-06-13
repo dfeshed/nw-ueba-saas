@@ -1,5 +1,7 @@
 package presidio.output.commons.services.entity;
 
+import fortscale.common.general.Schema;
+
 import java.util.List;
 
 /**
@@ -14,5 +16,5 @@ public interface EntitySeverityService {
      */
     void updateSeverities();
 
-    List<String> collectionNamesByOrderForEvents();
+    List<String> collectionNamesForSchemas(List<Schema> schemas);
 }
