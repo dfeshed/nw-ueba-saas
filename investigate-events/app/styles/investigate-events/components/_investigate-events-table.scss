@@ -224,6 +224,7 @@
 
           &.active {
             color: text-color(primary, lightest);
+            display: block;
           }
 
           &:hover {
