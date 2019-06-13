@@ -420,6 +420,11 @@ export default class DataHelper {
     return this;
   }
 
+  downloadsSelectedFileList(value) {
+    _set(this.state, 'hostDownloads.downloads.selectedFileList', value);
+    return this;
+  }
+
   downloadsHasNext(value) {
     _set(this.state, 'hostDownloads.downloads.hasNext', value);
     return this;

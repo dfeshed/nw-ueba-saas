@@ -100,4 +100,31 @@ module('Integration | Component | downloads', function(hooks) {
     await click(find('.list-filter-content a'));
 
   });
+
+  test('Delete downloaded files', async function(assert) {
+    const selectedFileList = [{
+      id: '5ce784209829f106f0ce60b3',
+      filename: 'mft-C-Shyam1809-x64-2019-05-24T05-41-51-200Z',
+      size: 293376,
+      fileType: 'Mft',
+      serviceId: '2cf81ac2-3d00-40f6-99fd-f5c3e9b254b4'
+    }];
+
+    new ReduxDataHelper(initState).hostDownloads(hostDownloads).downloadsSelectedFileList(selectedFileList).build();
+    await render(hbs `<div id='modalDestination'></div>
+      {{host-detail/downloads}}`);
+
+    patchSocket((method, modelName) => {
+      assert.equal(method, 'hostDownloadDelete');
+      assert.equal(modelName, 'endpoint');
+    });
+
+    assert.equal(findAll('.delete-downloaded-files').length, 0, 'confirmation dialog box not present');
+
+    await click(findAll('.downloads-action-bar .rsa-form-button')[2]);
+
+    assert.equal(findAll('.delete-downloaded-files').length, 1, 'confirmation dialog box present after click');
+
+    await click(findAll('.modal-footer-buttons .is-primary button')[0]);
+  });
 });

@@ -37,7 +37,7 @@
 {{/if}}
 
 {{#if showConfirmationModal}}
-  {{host-list/host-table/confirmation-modal
+  {{utils/confirmation-modal
     confirmAction=(action 'handleDeleteHosts')
     closeConfirmModal=(action 'hideConfirmationModal')
     class='delete-host-modal'

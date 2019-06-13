@@ -133,6 +133,20 @@ const sendFileDownloadToServerRequest = (selectedFileDetails) => {
   });
 };
 
+const deleteSelectedFiles = (socketUrlPostfix, ids = []) => {
+  const request = lookup('service:request');
+  const streamSelector = lookup('service:stream-selector');
+  const method = 'hostDownloadDelete';
+  const modelName = 'endpoint';
+
+  return request.promiseRequest({
+    method,
+    modelName,
+    query: { data: { ids } },
+    streamOptions: streamSelector.streamOptionSelector({ modelName, method, customOptions: { socketUrlPostfix } })
+  });
+};
+
 export default {
   getAllSnapShots,
   getHostDetails,
@@ -141,5 +155,6 @@ export default {
   getFileSearchResults,
   policyDetails,
   fetchRemediation,
-  sendFileDownloadToServerRequest
+  sendFileDownloadToServerRequest,
+  deleteSelectedFiles
 };

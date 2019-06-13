@@ -7,15 +7,18 @@ import {
   deleteFilter,
   resetFilters
 } from 'investigate-shared/actions/data-creators/filter-creators';
-import { getFirstPageOfDownloads } from 'investigate-hosts/actions/data-creators/downloads';
+import { getFirstPageOfDownloads, deleteSelectedFiles } from 'investigate-hosts/actions/data-creators/downloads';
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 import { FILTER_TYPES } from './filter-types';
+import { success, failure } from 'investigate-shared/utils/flash-messages';
+import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   filter: state.endpoint.hostDownloads.filter,
   selectedFilterId: selectedFilterId(state.endpoint.hostDownloads),
   savedFilter: savedFilter(state.endpoint.hostDownloads),
-  hostDownloadsFilters: state.endpoint.hostDownloads.filter.savedFilterList
+  hostDownloadsFilters: state.endpoint.hostDownloads.filter.savedFilterList,
+  selectedFileList: state.endpoint.hostDownloads.downloads.selectedFileList
 });
 
 const dispatchToActions = {
@@ -24,7 +27,8 @@ const dispatchToActions = {
   applySavedFilters,
   deleteFilter,
   resetFilters,
-  getFirstPageOfDownloads
+  getFirstPageOfDownloads,
+  deleteSelectedFiles
 };
 
 const HostDownloads = Component.extend({
@@ -33,13 +37,37 @@ const HostDownloads = Component.extend({
 
   filterTypes: FILTER_TYPES,
 
+  showConfirmationModal: false,
+
+  @computed('selectedFileList')
+  disableActions(selectedFileList) {
+    return {
+      deleteFile: !selectedFileList.length,
+      saveLocalCopy: selectedFileList.length !== 1
+    };
+  },
+
   actions: {
     onDeleteFilesFromServer() {
-      // Placeholder
+      const callbacks = {
+        onSuccess: () => success('investigateHosts.downloads.deleteDownloadedFiles.success'),
+        onFailure: (message) => failure(message, null, false)
+      };
+      const selectedFileList = this.get('selectedFileList');
+      this.send('deleteSelectedFiles', selectedFileList, callbacks);
+      this.set('showConfirmationModal', false);
     },
 
     onSaveLocalCopy() {
       // placeholder
+    },
+
+    showConfirmationModal() {
+      this.set('showConfirmationModal', true);
+    },
+
+    hideConfirmationModal() {
+      this.set('showConfirmationModal', false);
     }
   }
 });

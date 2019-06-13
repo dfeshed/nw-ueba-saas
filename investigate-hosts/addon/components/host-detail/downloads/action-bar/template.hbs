@@ -1,0 +1,26 @@
+<div class="title-header">
+  {{#rsa-form-button
+    class='close-filter'
+    defaultAction=openFilterPanel
+  }}
+    {{rsa-icon name='filter-2' size='small'}}
+    <span>{{t 'investigateFiles.filter.filter'}}</span>
+  {{/rsa-form-button}}
+</div>
+<div class='title'>{{t 'investigateHosts.downloads.deleteDownloadedFiles.title'}}</div>
+<div>
+  {{#rsa-form-button
+    class='save-local-copy'
+    isDisabled=disableActions.saveLocalCopy
+    defaultAction=saveLocalCopy
+  }}
+    <span>{{t 'investigateHosts.downloads.buttons.saveLocalCopy'}}</span>
+  {{/rsa-form-button}}
+  {{#rsa-form-button
+    class='delete-file'
+    isDisabled=disableActions.deleteFile
+    defaultAction=deleteFiles
+  }}
+    <span>{{t 'investigateHosts.downloads.buttons.deleteFiles'}}</span>
+  {{/rsa-form-button}}
+</div>

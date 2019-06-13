@@ -18,8 +18,15 @@
     {{/layout.left}}
     {{#layout.center}}
       <box class="downloaded-files-body">
+        {{host-detail/downloads/action-bar
+          disableActions=disableActions
+          deleteFiles=(action 'showConfirmationModal')
+          saveLocalCopy=(action 'onSaveLocalCopy')
+          openFilterPanel=(action layout.open 'left')}}
+
         {{host-detail/downloads/downloads-list
-          deleteFiles=(action 'onDeleteFilesFromServer')
+          disableActions=disableActions
+          deleteFiles=(action 'showConfirmationModal')
           saveLocalCopy=(action 'onSaveLocalCopy')}}
       </box>
       <box class="downloaded-files-footer">
@@ -28,3 +35,12 @@
     {{/layout.center}}
   {{/rsa-page-layout}}
 </box>
+
+{{#if showConfirmationModal}}
+  {{utils/confirmation-modal
+    confirmAction=(action 'onDeleteFilesFromServer')
+    closeConfirmModal=(action 'hideConfirmationModal')
+    class='delete-downloaded-files'
+    title=(t 'investigateHosts.downloads.deleteDownloadedFiles.modal.title')
+    confirmationMessage=(t 'investigateHosts.downloads.deleteDownloadedFiles.modal.message')}}
+{{/if}}

@@ -25,15 +25,21 @@ export default DataTableBodyRow.extend({
         showDivider: true,
         action(selection, context) {
           context.saveLocalCopy();
+        },
+        disabled(selection, context) {
+          return context.get('disableActions').saveLocalCopy;
         }
       },
       {
-        label: 'delete',
+        label: 'deleteFiles',
         order: 2,
         prefix: 'investigateHosts.downloads.buttons.',
         showDivider: true,
         action(selection, context) {
           context.deleteFiles();
+        },
+        disabled(selection, context) {
+          return context.get('disableActions').deleteFile;
         }
       }
     ];

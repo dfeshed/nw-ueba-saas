@@ -2938,7 +2938,15 @@ export default {
       },
       buttons: {
         saveLocalCopy: 'Save local copy',
-        delete: 'Delete file'
+        deleteFiles: 'Delete file'
+      },
+      deleteDownloadedFiles: {
+        title: 'Downloads',
+        modal: {
+          title: 'Delete downloaded files',
+          message: 'Do you want to delete the downloaded files from the server?'
+        },
+        success: 'Selected downloaded files have been deleted from the server'
       },
       showNextRecords: 'Show next {{count}} {{label}}',
       footer: 'Showing {{count}} out of {{total}} {{label}} | {{selectedItems}} selected'

@@ -45,6 +45,10 @@ const hostsConfigGen = function(env) {
         subscriptionDestination: '/user/queue/endpoint/download/search',
         requestDestination: '/ws/endpoint/download/search'
       },
+      hostDownloadDelete: {
+        subscriptionDestination: '/user/queue/endpoint/download/delete',
+        requestDestination: '/ws/endpoint/download/delete'
+      },
       'machine-schema': {
         subscriptionDestination: '/user/queue/endpoint/machine/schema',
         requestDestination: '/ws/endpoint/machine/schema',

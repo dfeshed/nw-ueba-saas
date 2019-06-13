@@ -11,9 +11,11 @@
 
 import { debug } from '@ember/debug';
 import * as ACTION_TYPES from '../types';
-import { Machines } from '../api';
+import { Machines, HostDetails } from '../api';
 import { next } from '@ember/runloop';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
+
+const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 /**
  * Action creator that dispatches a set of actions for fetching files (with or without filters) and sorted by one field.
@@ -103,6 +105,42 @@ const onFileSelection = (item) => ({ type: ACTION_TYPES.SET_SELECTED_FILE, paylo
 
 const setSelectedIndex = (index) => ({ type: ACTION_TYPES.SET_SELECTED_DOWNLOADED_FILE_INDEX, payload: index });
 
+const _processSelectedDownloadedFiles = (selectedFiles) => {
+
+  return selectedFiles.reduce((selectedFilesAndServerIds, item) => {
+    const { serviceId } = item;
+    if (!selectedFilesAndServerIds[serviceId]) {
+      selectedFilesAndServerIds[serviceId] = [];
+    }
+    selectedFilesAndServerIds[serviceId].push(item.id);
+    return selectedFilesAndServerIds;
+  }, {});
+
+};
+
+/* This is to account for multiple EPSs.
+The next ws call needs to be made only after the previous one has resolved and is successful */
+const deleteSelectedFiles = (selectedFiles, callback = callbacksDefault) => {
+  const selectedFilesAndServerIds = _processSelectedDownloadedFiles(selectedFiles);
+
+  const serverIds = Object.keys(selectedFilesAndServerIds);
+  return (dispatch) => {
+    (async(dispatch) => {
+      for (let i = 0; i < serverIds.length; i++) {
+        const serverId = serverIds[i];
+        try {
+          await HostDetails.deleteSelectedFiles(serverId, selectedFilesAndServerIds[serverId]);
+        } catch (e) {
+          callback.onFailure(e);
+          return;
+        }
+      }
+      callback.onSuccess();
+      dispatch(getFirstPageOfDownloads());
+    })(dispatch);
+  };
+};
+
 export {
   getPageOfDownloads,
   sortBy,
@@ -111,5 +149,6 @@ export {
   deSelectAllFiles,
   getFirstPageOfDownloads,
   onFileSelection,
-  setSelectedIndex
+  setSelectedIndex,
+  deleteSelectedFiles
 };

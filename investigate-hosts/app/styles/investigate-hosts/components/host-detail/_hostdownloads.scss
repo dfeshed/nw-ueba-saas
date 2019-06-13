@@ -4,3 +4,23 @@
     text-transform: uppercase;
   }
 }
+
+.host-downloads{
+  .downloads-action-bar {
+    padding: rsa-whitespace();
+    > div {
+      display: inline-block;
+    }
+    .title, .rsa-form-button-wrapper {
+      margin-right: rsa-whitespace();
+    }
+  }
+
+  .show-left-zone .title-header {
+    display: none;
+  }
+
+  .rsa-data-table {
+    height: calc(100% - 86px);
+  }
+}

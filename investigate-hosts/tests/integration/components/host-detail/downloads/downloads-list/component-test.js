@@ -57,7 +57,14 @@ module('Integration | Component | downloads-list', function(hooks) {
   });
 
   test('Downloads-list toggleSelectedRow', async function(assert) {
-    new ReduxDataHelper(initState).hostDownloads(hostDownloads).build();
+    const selectedFileList = [{
+      id: '5ce784209829f106f0ce60b3',
+      filename: 'mft-C-Shyam1809-x64-2019-05-24T05-41-51-200Z',
+      size: 293376,
+      fileType: 'Mft',
+      serviceId: '2cf81ac2-3d00-40f6-99fd-f5c3e9b254b4'
+    }];
+    new ReduxDataHelper(initState).hostDownloads(hostDownloads).downloadsSelectedFileList(selectedFileList).build();
     await render(hbs`{{host-detail/downloads/downloads-list}}`);
     await click(findAll('.filename')[1]);
     assert.equal(findAll('.rsa-data-table .is-selected').length, 1, 'Row is selected');
