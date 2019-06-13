@@ -2,13 +2,13 @@ import Component from '@ember/component';
 import computed, { match, alias } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
-import { getDownloadOptions } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { areAllEventsSelected, getDownloadOptions } from 'investigate-events/reducers/investigate/event-results/selectors';
 // TODO enable flash messaging after a certain fixed time
 // import 'didQueueDownload'
 import { didDownloadFiles, extractFiles } from 'investigate-events/actions/notification-creators';
 
 const stateToComputed = (state) => ({
-  isAllEventsSelected: state.investigate.eventResults.allEventsSelected,
+  areAllEventsSelected: areAllEventsSelected(state),
   selectedEventIds: state.investigate.eventResults.selectedEventIds,
   downloadOptions: getDownloadOptions(state),
   extractLink: state.investigate.files.fileExtractLink,
@@ -38,13 +38,13 @@ const DownloadDropdown = Component.extend({
   isDownloading: false,
 
   // dropDown will be disabled when no event is selected or a download is already in progress
-  @computed('selectedEventIds', 'isAllEventsSelected', 'isDownloading')
-  isDisabled(selectedEventIds, isAllEventsSelected, isDownloading) {
+  @computed('selectedEventIds', 'isDownloading')
+  isDisabled(selectedEventIds, isDownloading) {
     if (!selectedEventIds) {
       return true;
     }
     const ids = Object.keys(selectedEventIds);
-    if (((ids && ids.length) || isAllEventsSelected) && !isDownloading) {
+    if (((ids && ids.length)) && !isDownloading) {
       return false;
     }
     return true;
@@ -67,20 +67,20 @@ const DownloadDropdown = Component.extend({
   },
   */
 
-  @computed('isAllEventsSelected', 'isDownloading', 'i18n')
-  downloadTitle(isAllEventsSelected, isDownloading, i18n) {
+  @computed('areAllEventsSelected', 'isDownloading', 'i18n')
+  downloadTitle(areAllEventsSelected, isDownloading, i18n) {
     if (isDownloading) {
       return { name: i18n.t('investigate.events.download.isDownloading') };
     } else {
-      return { name: i18n.t(`investigate.events.download.${isAllEventsSelected ? 'all' : 'selected'}`) };
+      return { name: i18n.t(`investigate.events.download.${areAllEventsSelected ? 'all' : 'selected'}`) };
     }
   },
 
   actions: {
     downloadFiles(option) {
-      const isAllEventsSelected = this.get('isAllEventsSelected');
+      const areAllEventsSelected = this.get('areAllEventsSelected');
       const { eventDownloadType, fileType, sessionIds } = option;
-      this.send('extractFiles', eventDownloadType, fileType, sessionIds, isAllEventsSelected);
+      this.send('extractFiles', eventDownloadType, fileType, sessionIds, areAllEventsSelected);
     }
   }
 });

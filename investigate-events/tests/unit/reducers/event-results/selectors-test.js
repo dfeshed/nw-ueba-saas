@@ -6,6 +6,7 @@ import {
   eventResultsErrorMessage,
   eventType,
   getDownloadOptions,
+  areAllEventsSelected,
   isCanceled,
   isEventResultsError,
   percentageOfEventsDataReturned,
@@ -34,37 +35,22 @@ module('Unit | Selectors | event-results', function(hooks) {
     eventsPreferencesConfig: CONFIG
   };
 
-  const eventResultsData = [
+  const mixEventResultsData = [
     { sessionId: 1, medium: 1 },
     { sessionId: 2, medium: 1 },
     { sessionId: 3, medium: 32 }
   ];
 
-  const networkEventResultsData = [
-    { sessionId: 1, medium: 1 },
-    { sessionId: 2, medium: 1 },
-    { sessionId: 5, medium: 1 }
-  ];
-
-  const withAllEventsAndNetworkResults = {
-    status: 'stopped',
-    allEventsSelected: true,
-    selectedEventIds: {},
-    data: networkEventResultsData
-  };
-
   const withNetworkEvents = {
     status: 'stopped',
-    allEventsSelected: false,
     selectedEventIds: { 1: 1, 2: 2 },
-    data: eventResultsData
+    data: mixEventResultsData
   };
 
   const withMixedEvents = {
     status: 'stopped',
-    allEventsSelected: false,
     selectedEventIds: { 1: 1, 3: 3 },
-    data: eventResultsData
+    data: mixEventResultsData
   };
 
   const assertForDownloadOptions = async function(assert, result, optionNumber, eventDownloadType, fileType, nameString) {
@@ -423,33 +409,43 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[optionNumber].disabled, isDisabled);
   };
 
-  test('getDownloadOptions returns options with counts when selectAll is checked and disables appropriate options', async function(assert) {
-    const state = {
+  test('areAllEventsSelected returns appropriate result', async function(assert) {
+    const stateWithNoData = {
       investigate: {
-        data: preferenceData,
-        eventResults: withAllEventsAndNetworkResults
+        eventResults: {
+          data: [],
+          selectedEventIds: {}
+        }
       }
     };
-    const result = getDownloadOptions(state);
-    // number of options in download as per the number of preferences x number of options per
-    // preference minus the 3 Network download options
-    assert.equal(result.length, 2, '2 groups of options for download available');
-    const defaultGroup = result[0].options;
-    const otherGroup = result[1].options;
-    assert.equal(defaultGroup.length, 3);
-    assert.equal(otherGroup.length, 6);
-    await assertForDownloadOptions(assert, defaultGroup, 0, 'LOG', 'TEXT', 'Logs as Text');
-    await assertForDownloadOptions(assert, defaultGroup, 1, 'NETWORK', 'PCAP', 'Network as PCAP');
-    await assertForDownloadOptions(assert, defaultGroup, 2, 'META', 'TEXT', 'Visible Meta as Text');
-    await assertForDownloadOptions(assert, otherGroup, 0, 'LOG', 'CSV', 'Logs as CSV');
-    await assertForDownloadOptions(assert, otherGroup, 3, 'META', 'CSV', 'Visible Meta as CSV');
+    const result = areAllEventsSelected(stateWithNoData);
+    assert.notOk(result);
+  });
 
-    // preferred Log download option
-    await assertForCountsAndSessionIds(assert, defaultGroup, 0, '0/3', [], true);
-    // The only available Network download option
-    await assertForCountsAndSessionIds(assert, defaultGroup, 1, '3/3', [1, 2, 5], false);
-    // prefierred Meta download option
-    await assertForCountsAndSessionIds(assert, defaultGroup, 2, '3/3', [1, 2, 5], false);
+  test('areAllEventsSelected returns appropriate result', async function(assert) {
+    const stateWithSomeSelections = {
+      investigate: {
+        eventResults: {
+          data: [{ sessionId: 1 }, { sessionId: 2 }],
+          selectedEventIds: { 1: 1 }
+        }
+      }
+    };
+    const result = areAllEventsSelected(stateWithSomeSelections);
+    assert.notOk(result);
+  });
+
+  test('areAllEventsSelected returns appropriate result', async function(assert) {
+    const stateWithAllSelections = {
+      investigate: {
+        eventResults: {
+          data: [{ sessionId: 1 }],
+          selectedEventIds: { 1: 1 }
+        }
+      }
+    };
+    const result = areAllEventsSelected(stateWithAllSelections);
+    assert.ok(result);
   });
 
   test('getDownloadOptions returns appropriate counts for options when network events are selected', async function(assert) {
@@ -464,6 +460,15 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result.length, 2, '2 groups of options for download available');
 
     const defaultGroup = result[0].options;
+    const otherGroup = result[1].options;
+    assert.equal(defaultGroup.length, 3);
+    assert.equal(otherGroup.length, 6);
+    await assertForDownloadOptions(assert, defaultGroup, 0, 'LOG', 'TEXT', 'Logs as Text');
+    await assertForDownloadOptions(assert, defaultGroup, 1, 'NETWORK', 'PCAP', 'Network as PCAP');
+    await assertForDownloadOptions(assert, defaultGroup, 2, 'META', 'TEXT', 'Visible Meta as Text');
+    await assertForDownloadOptions(assert, otherGroup, 0, 'LOG', 'CSV', 'Logs as CSV');
+    await assertForDownloadOptions(assert, otherGroup, 3, 'META', 'CSV', 'Visible Meta as CSV');
+
     // preferred LOG option
     await assertForCountsAndSessionIds(assert, defaultGroup, 0, '0/2', [], true);
     // preferred Network option

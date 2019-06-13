@@ -27,10 +27,10 @@
       {{#if (eq column.field 'checkbox')}}
         {{!-- 'Select All' enabled only once the events are done streaming & query has results --}}
         <label
-          class="rsa-form-checkbox-label {{if isSelectAllDisabled 'disabled'}} {{if allEventsSelected 'checked'}}"
+          class="rsa-form-checkbox-label {{if isSelectAllDisabled 'disabled'}} {{if areAllEventsSelected 'checked'}}"
           title={{if isSelectAllDisabled (t 'investigate.events.selectAllDisabled') (t 'investigate.events.selectAll')}}>
           {{rsa-form-checkbox
-            checked=allEventsSelected
+            checked=areAllEventsSelected
             change=(action 'toggleSelectAllEvents')
             disabled=isSelectAllDisabled
           }}
@@ -91,7 +91,7 @@
   {{events-table-container/body-container
     buffer=5
     selectedItems=selectedEventIds
-    allItemsSelected=allEventsSelected
+    allItemsSelected=areAllEventsSelected
     rowComponentClass="events-table-container/row-container"
     noResultsMessage=noResultsMessage
   }}

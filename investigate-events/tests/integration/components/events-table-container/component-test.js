@@ -223,7 +223,6 @@ module('Integration | Component | events-table-container', function(hooks) {
   test('keyDown will trigger event selection if dropdown not in view', async function(assert) {
 
     new ReduxDataHelper(setState)
-      .allEventsSelected(true)
       .getColumns('SUMMARY', EventColumnGroups)
       .isEventResultsError(false)
       .eventsPreferencesConfig()
@@ -244,7 +243,6 @@ module('Integration | Component | events-table-container', function(hooks) {
   test('keyDown will not trigger event selection if dropdown in view', async function(assert) {
 
     new ReduxDataHelper(setState)
-      .allEventsSelected(true)
       .getColumns('SUMMARY', EventColumnGroups)
       .isEventResultsError(false)
       .eventsPreferencesConfig()

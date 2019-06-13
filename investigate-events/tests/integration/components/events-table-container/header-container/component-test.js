@@ -16,8 +16,9 @@ const eventResultsData = [
 ];
 
 const columnSelector = '.rsa-investigate-events-table__header__columnGroup .ember-power-select-selected-item';
-const createIncidentSelector = '.create-incident-button';
-const addToIncidentSelector = '.add-to-incident-button';
+const headerContentSelector = '.rsa-investigate-events-table__header__content';
+const createIncidentSelector = '.create-incident-button .rsa-form-button-wrapper';
+const addToIncidentSelector = '.add-to-incident-button .rsa-form-button-wrapper';
 
 const renderDefaultHeaderContainer = async(assert) => {
   new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').columnGroups(EventColumnGroups).eventCount(55).build();
@@ -38,7 +39,9 @@ module('Integration | Component | header-container', function(hooks) {
     initialize(this.owner);
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('hasInvestigateContentExportAccess', true);
+    // both respondCanManageIncidents && investigateCanManageIncidents need to be true to enable incident management
     accessControl.set('respondCanManageIncidents', true);
+    accessControl.set('investigateCanManageIncidents', true);
   });
 
   test('render the events header with data at threshold', async function(assert) {
@@ -61,10 +64,12 @@ module('Integration | Component | header-container', function(hooks) {
     await renderDefaultHeaderContainer(assert);
     assert.ok(find('.rsa-investigate-events-table__header__container'), 'render event header container');
     assert.equal(find('.rsa-investigate-events-table__header__container').childElementCount, 2, 'rendered with two elements - header__content, events-table-control');
-    assert.equal(find('.rsa-investigate-events-table__header__content').childElementCount, 3, 'rendered with 3 elements - eventLabel, columnGroup, downloadEvents');
+    assert.equal(find(headerContentSelector).childElementCount, 4, 'rendered with 4 elements - eventLabel, columnGroup, downloadEvents, manageIncidents');
     assert.equal(find('.rsa-investigate-events-table__header__eventLabel').textContent.trim().replace(/\s+/g, ''), '55Events(Asc)', 'rendered event header title');
     assert.equal(find('.rsa-investigate-events-table__header__columnGroup span').textContent.trim(), 'Summary List', 'rendered event header title');
     assert.equal(find('.rsa-investigate-events-table__header__downloadEvents span').textContent.trim(), 'Download', 'rendered event header title');
+    assert.equal(find(`${headerContentSelector} .create-incident-button`).textContent.trim(), 'Create Incident', 'rendered Create Incident title');
+    assert.equal(find(`${headerContentSelector} .add-to-incident-button`).textContent.trim(), 'Add to Incident', 'rendered Create Incident title');
     assert.ok(find('.rsa-data-table-header__search-selector.disabled'), 'rendered event header text search');
   });
 
@@ -101,40 +106,40 @@ module('Integration | Component | header-container', function(hooks) {
     // });
   });
 
-  test('Create Incident/Add to Incident buttons should be disabled if none of the rows are checked', async function(assert) {
+  test('Create Incident/Add to Incident buttons should be disabled if there are no selected events', async function(assert) {
     new ReduxDataHelper(setState)
-      .allEventsSelected(false)
+      .selectedEventIds({})
       .build();
-    await render(hbs`{{incident-toolbar}}`);
-    assert.ok(findAll(`${createIncidentSelector}.is-disabled`), 'Create Incident button is disabled');
-    assert.ok(findAll(`${addToIncidentSelector}.is-disabled`), 'Add to Incident button is disabled');
+
+    await render(hbs`{{events-table-container/header-container}}`);
+
+    assert.ok(find(`${createIncidentSelector}.is-disabled`), 'Create Incident button is disabled');
+    assert.ok(find(`${addToIncidentSelector}.is-disabled`), 'Add to Incident button is disabled');
   });
 
-  test('Create Incident/Add to Incident buttons should be enabled if selectAll is checked', async function(assert) {
+  test('Create Incident/Add to Incident buttons should be enabled if 1+ events are checked', async function(assert) {
     new ReduxDataHelper(setState)
-      .allEventsSelected(true)
-      .build();
-    await render(hbs`{{incident-toolbar}}`);
-    assert.notOk(find(`${createIncidentSelector}.is-disabled`), 'Create Incident button is enabled');
-    assert.notOk(find(`${addToIncidentSelector}.is-disabled`), 'Add to Incident button is enabled');
-  });
-
-  test('Create Incident/Add to Incident buttons should be enabled if all or 1+ events are selected ', async function(assert) {
-    new ReduxDataHelper(setState)
-      .allEventsSelected(false)
       .withSelectedEventIds()
       .build();
-    await render(hbs`{{incident-toolbar}}`);
-    assert.notOk(find(`${createIncidentSelector}.is-disabled`), 'Create Incident is enabled');
-    assert.notOk(find(`${addToIncidentSelector}.is-disabled`), 'Add to Incident is enabled');
+
+    await render(hbs`{{events-table-container/header-container}}`);
+
+    assert.ok(find(`${createIncidentSelector}`), 'Create Incident button is present');
+    assert.notOk(find(`${createIncidentSelector}.is-disabled`), 'Create Incident button is enabled');
+
+    assert.ok(find(`${addToIncidentSelector}`), 'Add to Incident button is present');
+    assert.notOk(find(`${addToIncidentSelector}.is-disabled`), 'Add to Incident button is enabled');
   });
 
   test('Create Incident/Add to Incident buttons should be visible if user has permissions', async function(assert) {
     new ReduxDataHelper(setState)
-      .allEventsSelected(false)
       .withSelectedEventIds()
       .build();
-    await render(hbs`{{incident-toolbar}}`);
+
+    await render(hbs`{{events-table-container/header-container}}`);
+
+    assert.equal(find(headerContentSelector).childElementCount, 4, '__eventLabel, __columngroup, _downloadEvents, __manageIncident visible.');
+
     assert.ok(find(createIncidentSelector), 'Create Incident button is visible');
     assert.ok(find(addToIncidentSelector), 'Add to Incident button is visible');
   });
@@ -143,22 +148,31 @@ module('Integration | Component | header-container', function(hooks) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('respondCanManageIncidents', false);
     accessControl.set('investigateCanManageIncidents', false);
+
     new ReduxDataHelper(setState)
-      .allEventsSelected(false)
       .withSelectedEventIds()
       .build();
+
+    await render(hbs`{{events-table-container/header-container}}`);
+
+    assert.equal(find(headerContentSelector).childElementCount, 3, 'only __eventLabel, __columngroup, _downloadEvents visible.');
+
     assert.notOk(find(createIncidentSelector), 'Create Incident button is not displayed');
     assert.notOk(find(addToIncidentSelector), 'Add to Incident button is not displayed');
   });
 
-  test('Create Incident/Add to Incident buttons should not be displayed, if user does not have manage incident permissions only on investigate', async function(assert) {
+  test('Create Incident/Add to Incident buttons should not be displayed, if user does not have manage incident permissions only on investigate or respond', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('respondCanManageIncidents', true);
     accessControl.set('investigateCanManageIncidents', false);
     new ReduxDataHelper(setState)
-      .allEventsSelected(false)
       .withSelectedEventIds()
       .build();
+
+    await render(hbs`{{events-table-container/header-container}}`);
+
+    assert.equal(find(headerContentSelector).childElementCount, 3, 'only __eventLabel, __columngroup, _downloadEvents visible.');
+
     assert.notOk(find(createIncidentSelector), 'Create Incident button is not displayed');
     assert.notOk(find(addToIncidentSelector), 'Add to Incident button is not displayed');
   });

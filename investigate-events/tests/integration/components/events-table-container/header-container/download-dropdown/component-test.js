@@ -9,6 +9,7 @@ import { find, findAll, render } from '@ember/test-helpers';
 import { clickTrigger } from 'ember-power-select/test-support/helpers';
 
 const downloadSelector = '.rsa-investigate-events-table__header__downloadEvents';
+const downloadPowerSelect = `${downloadSelector} .power-select`;
 const downloadTitle = `${downloadSelector} span span`;
 const downloadLoader = `${downloadSelector} .rsa-loader`;
 const downloadOptions = '.ember-power-select-options';
@@ -45,53 +46,59 @@ module('Integration | Component | Download Dropdown', function(hooks) {
   });
 
   test('download option should be visible if user has permissions', async function(assert) {
-    new ReduxDataHelper(setState).allEventsSelected(false).withSelectedEventIds().build();
+    new ReduxDataHelper(setState)
+      .eventResults(eventResultsData)
+      .selectedEventIds({ 1: 1 })
+      .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
-    assert.ok(find(downloadSelector), 'Download option present');
+    assert.ok(find(downloadPowerSelect), 'Download option present');
   });
 
   test('download dropdown should be hidden if missing permissions', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('hasInvestigateContentExportAccess', false);
     new ReduxDataHelper(setState)
-      .allEventsSelected(false)
-      .withSelectedEventIds()
+      .eventResults(eventResultsData)
+      .selectedEventIds({ 1: 1 })
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
-    assert.notOk(find(`${downloadSelector} .ember-power-select`), 'Download option not present');
+    assert.notOk(find(downloadPowerSelect), 'Download option not present');
   });
 
   test('download dropdown should be disabled & read Download if nothing is checked', async function(assert) {
     new ReduxDataHelper(setState)
-      .allEventsSelected(false)
-      .withSelectedEventIds({})
+      .eventResults(eventResultsData)
+      .selectedEventIds({})
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     assert.ok(find(`${downloadSelector}.is-disabled`), 'Download is disabled');
     assert.equal(findAll(downloadTitle)[0].textContent.trim(), 'Download', 'Download dropdown should read `Download` if selectAll is not checked');
   });
 
-  test('download dropdown should be enabled & read Download All if selectAll is checked', async function(assert) {
-    new ReduxDataHelper(setState)
-      .allEventsSelected(true)
-      .build();
-    await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
-    assert.notOk(find(`${downloadSelector}.is-disabled`), 'Download is enabled');
-    assert.equal(findAll(downloadTitle)[0].textContent.trim(), 'Download All', 'Download dropdown should read `Download All` if selectAll is checked');
-  });
-
   test('download dropdown should be enabled & read Download if 1+ and not all events are selected ', async function(assert) {
     new ReduxDataHelper(setState)
-      .withSelectedEventIds()
-      .allEventsSelected(false)
+      .eventResults(eventResultsData)
+      .selectedEventIds({ 1: 1, 2: 2 })
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     assert.notOk(find(`${downloadSelector}.is-disabled`), 'Download is enabled');
     assert.equal(findAll(downloadTitle)[0].textContent.trim(), 'Download', 'Download dropdown should read `Download` if selectAll is not checked');
   });
 
+  test('download dropdown should be enabled & read Download All if all events are selected', async function(assert) {
+    new ReduxDataHelper(setState)
+      .eventResults(eventResultsData)
+      .selectedEventIds({ 1: 1, 2: 2, 3: 3 })
+      .build();
+    await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
+    assert.notOk(find(`${downloadSelector}.is-disabled`), 'Download is enabled');
+    assert.equal(findAll(downloadTitle)[0].textContent.trim(), 'Download All', 'Download dropdown should read `Download All` if selectAll is checked');
+  });
+
   test('dropdown should be disabled & show correct label when downloading', async function(assert) {
     new ReduxDataHelper(setState)
+      .eventResults(eventResultsData)
+      .selectedEventIds({ 1: 1, 2: 2, 3: 3 })
       .setFileExtractStatus('wait')
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
@@ -102,10 +109,10 @@ module('Integration | Component | Download Dropdown', function(hooks) {
 
   test('download dropdown should show valid options with counts for selectAllEvents', async function(assert) {
     new ReduxDataHelper(setState)
-      .allEventsSelected(true)
       .eventsPreferencesConfig()
       .setEventAnalysisPreferencesForDownload('CSV', 'PAYLOAD1', 'TSV')
       .eventResults(eventResultsData)
+      .selectedEventIds({ 1: 1, 2: 2, 3: 3 })
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     await clickTrigger();
@@ -124,15 +131,11 @@ module('Integration | Component | Download Dropdown', function(hooks) {
 
   test('download dropdown should show appropriate options if log and Network events are selected ', async function(assert) {
     new ReduxDataHelper(setState)
-      .allEventsSelected(false)
       .isEventResultsError(false)
       .eventsPreferencesConfig()
       .defaultEventAnalysisPreferences()
       .eventResults(eventResultsData)
-      .selectedEventIds({
-        1: 1,
-        3: 3
-      })
+      .selectedEventIds({ 1: 1, 3: 3 })
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     await clickTrigger();
@@ -145,15 +148,11 @@ module('Integration | Component | Download Dropdown', function(hooks) {
 
   test('download dropdown should show appropriate options if only Network events are selected ', async function(assert) {
     new ReduxDataHelper(setState)
-      .allEventsSelected(false)
       .isEventResultsError(false)
       .eventsPreferencesConfig()
       .defaultEventAnalysisPreferences()
       .eventResults(eventResultsData)
-      .selectedEventIds({
-        1: 1,
-        2: 2
-      })
+      .selectedEventIds({ 1: 1, 2: 2 })
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     await clickTrigger();

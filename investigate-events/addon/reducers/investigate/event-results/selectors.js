@@ -19,7 +19,6 @@ const _sessionId = (state) => state.investigate.queryNode.sessionId;
 const _errorMessage = (state) => state.investigate.eventResults.message;
 const _eventAnalysisPreferences = (state) => state.investigate.data.eventAnalysisPreferences;
 const _items = (state) => state.investigate.data.eventsPreferencesConfig && state.investigate.data.eventsPreferencesConfig.items;
-const _isAllEventsSelected = (state) => state.investigate.eventResults.allEventsSelected;
 const _selectedEventIds = (state) => state.investigate.eventResults.selectedEventIds;
 const _aliases = (state) => state.investigate.dictionaries.aliases;
 const _dateFormat = (state) => state.investigate.data.globalPreferences && state.investigate.data.globalPreferences.dateFormat;
@@ -40,6 +39,16 @@ export const dataCount = createSelector(
   [_resultsData],
   (data) => {
     return data ? data.length : 0;
+  }
+);
+
+export const areAllEventsSelected = createSelector(
+  [_resultsData, _selectedEventIds],
+  (data, selectedEventIds) => {
+    if (data && data.length && selectedEventIds) {
+      return (data.length === Object.keys(selectedEventIds).length);
+    }
+    return false;
   }
 );
 
@@ -201,22 +210,17 @@ export const allExpectedDataLoaded = createSelector(
 );
 
 export const getDownloadOptions = createSelector(
-  [_eventAnalysisPreferences, _items, _isAllEventsSelected, _selectedEventIds, _resultsData],
-  (eventAnalysisPreferences, items, isAllEventsSelected, selectedEventIds, resultsData) => {
+  [_eventAnalysisPreferences, _items, _selectedEventIds, _resultsData],
+  (eventAnalysisPreferences, items, selectedEventIds, resultsData) => {
+
     let selectedEventIdsArray;
-    if (resultsData && isAllEventsSelected) {
-      selectedEventIds = {};
-      selectedEventIdsArray = resultsData.map(({ sessionId }) => {
-        selectedEventIds[sessionId] = sessionId;
-        return sessionId;
-      });
-    } else if (selectedEventIds) {
+    if (selectedEventIds) {
       selectedEventIdsArray = Object.values(selectedEventIds);
     } else {
       selectedEventIdsArray = [];
     }
 
-    if (eventAnalysisPreferences && (isAllEventsSelected || selectedEventIdsArray.length)) {
+    if (eventAnalysisPreferences && selectedEventIdsArray.length) {
 
       const i18n = lookup('service:i18n');
       const preferredDownloadOptions = [];

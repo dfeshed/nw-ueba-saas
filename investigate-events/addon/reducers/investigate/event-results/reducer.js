@@ -16,7 +16,6 @@ const _initialState = Immutable.from({
   streamLimit: MAX_EVENTS_ALLOWED, // default default. In case our event-settings api returns an error
   streamBatch: 1000,
   message: undefined,
-  allEventsSelected: false,
   selectedEventIds: {},
   // Pref might change in the middle of a query. Keeping a copy of preference with which the last query was performed.
   eventTimeSortOrderPreferenceWhenQueried: undefined,
@@ -51,13 +50,6 @@ export default handleActions({
     return state.set('visibleColumns', payload);
   },
 
-  [ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS]: (state) => {
-    return state.merge({
-      allEventsSelected: !state.allEventsSelected,
-      selectedEventIds: {}
-    });
-  },
-
   [ACTION_TYPES.SELECT_EVENTS]: (state, { payload }) => {
     return state.set('selectedEventIds', payload);
   },
@@ -76,7 +68,6 @@ export default handleActions({
       message: undefined,
       reason: undefined,
       status: 'streaming',
-      allEventsSelected: false,
       selectedEventIds: {},
       eventTimeSortOrderPreferenceWhenQueried
     });

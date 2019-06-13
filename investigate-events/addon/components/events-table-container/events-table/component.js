@@ -12,6 +12,7 @@ import {
   searchMatches,
   selectedIndex,
   dataCount,
+  areAllEventsSelected,
   SORT_ORDER
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
@@ -31,7 +32,7 @@ const stateToComputed = (state) => {
     status: state.investigate.eventResults.status,
     searchTerm: state.investigate.eventResults.searchTerm,
     searchScrollIndex: state.investigate.eventResults.searchScrollIndex,
-    allEventsSelected: state.investigate.eventResults.allEventsSelected,
+    areAllEventsSelected: areAllEventsSelected(state),
     selectedEventIds: state.investigate.eventResults.selectedEventIds,
     selectedIndex: selectedIndex(state),
     items: state.investigate.eventResults.data,
@@ -166,7 +167,6 @@ const EventsTableContextMenu = RsaContextMenu.extend({
       const hasCheckboxChildren = target.getElementsByClassName('rsa-form-checkbox-label');
       const checkboxWrapperClicked = hasCheckboxChildren && hasCheckboxChildren.length;
       const labelClicked = className.includes('group-label') || className.includes('group-label-copy');
-
       if (!labelClicked) {
         if (notKeyboardControl && (checkboxClicked || checkboxWrapperClicked)) {
           this.send('toggleEventSelection', event);

@@ -31,7 +31,6 @@ const stateToComputed = (state) => ({
   isAtThreshold: resultCountAtThreshold(state),
   actualEventCount: thousandFormat(actualEventCount(state)),
   searchMatchesCount: searchMatchesCount(state),
-  isAllEventsSelected: state.investigate.eventResults.allEventsSelected,
   selectedEventIds: state.investigate.eventResults.selectedEventIds,
   searchScrollIndex: state.investigate.eventResults.searchScrollIndex,
   sortDirection: state.investigate.data.sortDirection,
@@ -78,13 +77,13 @@ const HeaderContainer = Component.extend({
     return !!results && results.length > 0;
   },
 
-  @computed('selectedEventIds', 'isAllEventsSelected')
-  isIncidentButtonsDisabled(selectedEventIds, isAllEventsSelected) {
+  @computed('selectedEventIds')
+  isIncidentButtonsDisabled(selectedEventIds) {
     if (selectedEventIds) {
       const ids = Object.keys(selectedEventIds);
-      return !((ids && ids.length) || isAllEventsSelected);
+      return !(ids && ids.length);
     } else {
-      return false;
+      return true;
     }
   },
 
@@ -121,12 +120,6 @@ const HeaderContainer = Component.extend({
       class: isSizeNotMax ? 'shrink-diagonal-2' : 'expand-diagonal-4',
       title: isSizeNotMax ? 'investigate.events.shrink' : 'investigate.events.expand'
     };
-  },
-
-  // Computed property to pass selected event Ids to respondShared for incident creation
-  @computed('selectedEventIds', 'items', 'isAllEventsSelected')
-  allSelectedEventIds(selectedEventIds, allEvents, isAllEventsSelected) {
-    return isAllEventsSelected ? allEvents.map((event) => event.sessionId) : selectedEventIds;
   },
 
   // This is the debounced execution of the searchForTerm action creator

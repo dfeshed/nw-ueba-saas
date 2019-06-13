@@ -9,13 +9,11 @@ import reducer from 'investigate-events/reducers/investigate/event-results/reduc
 module('Unit | Reducers | event-results');
 
 const stateWithoutSelections = Immutable.from({
-  allEventsSelected: false,
   selectedEventIds: {}
 });
 
 const stateWithSelections = Immutable.from({
-  allEventsSelected: false,
-  selectedEventIds: { foo: 'foo' }
+  selectedEventIds: { foo: 'foo', bar: 'bar' }
 });
 
 test('Should update seach term', function(assert) {
@@ -57,15 +55,6 @@ test('Should update visible columns', function(assert) {
   assert.deepEqual(newEndState.visibleColumns, 'foo');
 });
 
-test('ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS reducer', function(assert) {
-  const toggle = {
-    type: ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS
-  };
-
-  const result = reducer(stateWithoutSelections, toggle);
-  assert.equal(result.allEventsSelected, true);
-});
-
 test('ACTION_TYPES.SELECT_EVENTS reducer', function(assert) {
   const action = {
     type: ACTION_TYPES.SELECT_EVENTS,
@@ -86,7 +75,7 @@ test('ACTION_TYPES.DESELECT_EVENT reducer', function(assert) {
 
   const result = reducer(stateWithSelections, action);
 
-  assert.deepEqual(result.selectedEventIds, {});
+  assert.deepEqual(result.selectedEventIds, { bar: 'bar' });
 });
 
 test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate', function(assert) {
@@ -246,7 +235,6 @@ test('ACTION_TYPES.SET_LOG will properly set error data', function(assert) {
 test('ACTION_TYPES.INIT_EVENTS_STREAMING will set eventTimeSortOrderPreferenceWhenQueried properly and reset all event selections', function(assert) {
   let initialState = Immutable.from({
     eventTimeSortOrderPreferenceWhenQueried: undefined,
-    allEventsSelected: false,
     selectedEventIds: { foo: 'foo' }
   });
 
@@ -257,12 +245,10 @@ test('ACTION_TYPES.INIT_EVENTS_STREAMING will set eventTimeSortOrderPreferenceWh
 
   let result = reducer(initialState, action);
   assert.equal(result.eventTimeSortOrderPreferenceWhenQueried, 'Descending', 'State set properly with the correct value');
-  assert.equal(result.allEventsSelected, false);
   assert.equal(Object.keys(result.selectedEventIds).length, 0);
 
   initialState = Immutable.from({
     eventTimeSortOrderPreferenceWhenQueried: undefined,
-    allEventsSelected: true,
     selectedEventIds: {}
   });
 
@@ -273,7 +259,6 @@ test('ACTION_TYPES.INIT_EVENTS_STREAMING will set eventTimeSortOrderPreferenceWh
 
   result = reducer(initialState, action);
   assert.equal(result.eventTimeSortOrderPreferenceWhenQueried, 'Ascending', 'State set properly with the correct value');
-  assert.equal(result.allEventsSelected, false);
   assert.equal(Object.keys(result.selectedEventIds).length, 0);
 });
 

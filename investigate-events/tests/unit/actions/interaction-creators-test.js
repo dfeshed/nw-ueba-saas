@@ -15,6 +15,12 @@ const streamBatch = 250;
 const streamLimit = 1000; // limit of 1000, 500 get returned so stream ends naturally
 let allActionsDispatched = [];
 
+const eventResultsData = [
+  { sessionId: 1, medium: 1 },
+  { sessionId: 2, medium: 1 },
+  { sessionId: 3, medium: 32 }
+];
+
 const downstreamOldestDispatchCreator = (assert, asserts, getState) => {
 
   const downstreamDispatch = (actionOrThunk) => {
@@ -72,6 +78,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
     queryResults = [];
     actionsByType = {};
   });
+
   test('setQueryView action creator returns proper type and payload', function(assert) {
     const action = interactionCreators.setQueryView('foo');
     assert.equal(action.type, ACTION_TYPES.SET_QUERY_VIEW, 'action has the correct type');
@@ -103,89 +110,86 @@ module('Unit | Actions | interaction creators', function(hooks) {
     assert.equal(type, ACTION_TYPES.SET_SEARCH_TERM, 'action has the correct type');
   });
 
-  test('toggleSelectAllEvents action creator returns proper type', function(assert) {
-    const { type } = interactionCreators.toggleSelectAllEvents();
-    assert.equal(type, ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS, 'action has the correct type');
-  });
-
-  test('toggleEventSelection action creator returns proper type and payload when allEventsSelected is true', function(assert) {
+  test('toggleSelectAllEvents has the correct payload when all events were not selected before toggling', function(assert) {
     const getState = () => {
-      return new ReduxDataHelper().allEventsSelected(true).eventResults([
-        { sessionId: 'foo' },
-        { sessionId: 'bar' }
-      ]).build();
+      return new ReduxDataHelper()
+        .eventResults(eventResultsData)
+        .selectedEventIds({
+          1: 1,
+          3: 3
+        })
+        .build();
     };
 
     const dispatch = (action) => {
-      switch (action.type) {
-        case ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS:
-          break;
-        case ACTION_TYPES.SELECT_EVENTS:
-          assert.deepEqual(action.payload, { bar: 'bar' }, 'action has the correct payload');
-          break;
-        default:
-          assert.equal(true, false, 'action has the correct type');
-      }
+      assert.equal(action.type, ACTION_TYPES.SELECT_EVENTS, 'action has correct type');
+      assert.deepEqual(action.payload, { 1: 1, 2: 2, 3: 3 }, 'action selects all events');
     };
 
-    const thunk = interactionCreators.toggleEventSelection({ sessionId: 'foo' });
+    const thunk = interactionCreators.toggleSelectAllEvents();
 
     thunk(dispatch, getState);
   });
 
-  test('toggleEventSelection action creator returns proper type and payload when allEventsSelected is false and selectedEventIds includes payload', function(assert) {
+  test('toggleSelectAllEvents action creator returns proper type and payload when all events were selected before toggling', function(assert) {
     const getState = () => {
-      return new ReduxDataHelper().allEventsSelected(false).eventResults([
-        { sessionId: 'foo' },
-        { sessionId: 'bar' }
-      ]).withSelectedEventIds().build();
+      return new ReduxDataHelper()
+        .eventResults(eventResultsData)
+        .selectedEventIds({
+          1: 1,
+          2: 2,
+          3: 3
+        })
+        .build();
+    };
+
+    const dispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.SELECT_EVENTS, 'action has correct type');
+      assert.deepEqual(action.payload, {}, 'action de-selects all events');
+    };
+
+    const thunk = interactionCreators.toggleSelectAllEvents();
+
+    thunk(dispatch, getState);
+  });
+
+  test('toggleEventSelection action creator returns proper type and payload when selectedEventIds includes the sessionId being toggled', function(assert) {
+    const getState = () => {
+      return new ReduxDataHelper()
+        .eventResults(eventResultsData)
+        .selectedEventIds({
+          1: 1,
+          3: 3
+        })
+        .build();
     };
 
     const dispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.DESELECT_EVENT, 'action has the correct type');
-      assert.equal(action.payload, 'bar', 'action has the correct payload');
+      assert.equal(action.payload, 1, 'action has the correct payload');
     };
 
-    const thunk = interactionCreators.toggleEventSelection({ sessionId: 'bar' });
+    const thunk = interactionCreators.toggleEventSelection({ sessionId: 1 });
 
     thunk(dispatch, getState);
   });
 
-  test('toggleEventSelection action creator returns proper type and payload when allEventsSelected is false, and last unselected event is selected', function(assert) {
+  test('toggleEventSelection action creator returns proper type and payload when selectedEventIds does not include the sessionId being toggled', function(assert) {
     const getState = () => {
-      return new ReduxDataHelper().allEventsSelected(false).eventResults([
-        { sessionId: 'foo' },
-        { sessionId: 'bar' }
-      ]).eventCount(2).withSelectedEventIds().build();
-    };
-
-    const dispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS, 'action has the correct type');
-    };
-
-    const thunk = interactionCreators.toggleEventSelection({ sessionId: 'foo' });
-
-    thunk(dispatch, getState);
-  });
-
-  test('toggleEventSelection action creator returns proper type and payload when allEventsSelected is false, selectedEventIds does not include payload, and all event ids are not selected', function(assert) {
-    const getState = () => {
-      return new ReduxDataHelper().allEventsSelected(false).eventResults([
-        { sessionId: 'foo' },
-        { sessionId: 'bar' },
-        { sessionId: 'baz' }
-      ]).eventCount(3).withSelectedEventIds().build();
+      return new ReduxDataHelper()
+        .eventResults(eventResultsData)
+        .selectedEventIds({
+          3: 3
+        })
+        .build();
     };
 
     const dispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.SELECT_EVENTS, 'action has the correct type');
-      assert.deepEqual(action.payload, {
-        bar: 'bar',
-        baz: 'baz'
-      }, 'action has the correct payload length');
+      assert.deepEqual(action.payload, { 2: 2, 3: 3 }, 'action has the correct payload');
     };
 
-    const thunk = interactionCreators.toggleEventSelection({ sessionId: 'baz' });
+    const thunk = interactionCreators.toggleEventSelection({ sessionId: 2 });
 
     thunk(dispatch, getState);
   });

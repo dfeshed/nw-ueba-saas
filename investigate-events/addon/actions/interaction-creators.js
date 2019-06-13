@@ -13,7 +13,7 @@ import {
   getDefaultPreferences
 } from 'investigate-events/reducers/investigate/data-selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
-import { SORT_ORDER } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { SORT_ORDER, areAllEventsSelected } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { isConsoleEmpty } from 'investigate-events/reducers/investigate/query-stats/selectors';
 
 /**
@@ -321,48 +321,41 @@ export const toggleQueryConsole = () => {
   };
 };
 
-export const toggleSelectAllEvents = () => ({
-  type: ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS
-});
+export const toggleSelectAllEvents = () => {
+  return (dispatch, getState) => {
+
+    const state = getState().investigate.eventResults;
+    const { data } = state;
+
+    const newIds = {};
+    if (!areAllEventsSelected(getState())) {
+      for (let i = 0; i < data.length; i++) {
+        newIds[data[i].sessionId] = data[i].sessionId;
+      }
+    }
+
+    dispatch({
+      type: ACTION_TYPES.SELECT_EVENTS,
+      payload: newIds
+    });
+  };
+};
 
 export const toggleEventSelection = ({ sessionId }) => {
   return (dispatch, getState) => {
     const state = getState().investigate.eventResults;
-    const { allEventsSelected, selectedEventIds, data } = state;
+    const { selectedEventIds } = state;
 
-    if (allEventsSelected) {
-      // if all events already selected and one event is toggled
-      // toggle allEventsSelected and also select all event ids minus the one just toggled
-      dispatch(toggleSelectAllEvents());
-      const newIds = {};
-      for (let i = 0; i < data.length; i++) {
-        newIds[data[i].sessionId] = data[i].sessionId;
-      }
-
-      delete newIds[sessionId];
-      dispatch({
-        type: ACTION_TYPES.SELECT_EVENTS,
-        payload: newIds
-      });
+    if (selectedEventIds[sessionId]) {
+      // if the event is already selected, deselect it
+      dispatch({ type: ACTION_TYPES.DESELECT_EVENT, payload: sessionId });
     } else {
-      if (selectedEventIds[sessionId]) {
-        // otherwise, if the event is already selected, deselect it
-        dispatch({ type: ACTION_TYPES.DESELECT_EVENT, payload: sessionId });
-      } else {
-        if (Object.keys(selectedEventIds).length === (getState().investigate.eventCount.data - 1)) {
-          // if the event is not already selected, but it's the last unselected event
-          // toggle allEventsSelected
-          dispatch(toggleSelectAllEvents());
-        } else {
-          // lastly, if the toggled event is not already selected, and is not the last unselected event
-          // select the event
-          const newIds = {
-            ...selectedEventIds
-          };
-          newIds[sessionId] = sessionId;
-          dispatch({ type: ACTION_TYPES.SELECT_EVENTS, payload: newIds });
-        }
-      }
+      // if the toggled event is not already selected, select the event
+      const newIds = {
+        ...selectedEventIds
+      };
+      newIds[sessionId] = sessionId;
+      dispatch({ type: ACTION_TYPES.SELECT_EVENTS, payload: newIds });
     }
   };
 };
