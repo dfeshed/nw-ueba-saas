@@ -4,7 +4,6 @@ import reducer from 'investigate-users/reducers/users/reducer';
 import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'investigate-users/actions/types';
 import notRiskyCount from '../../data/presidio/not_risky_count';
-import userAdminCount from '../../data/presidio/user_admin_count';
 import usersTabSeverityBar from '../../data/presidio/users_tab_severityBar';
 import usrOverview from '../../data/presidio/usr_overview';
 import watchedCount from '../../data/presidio/watched_count';
@@ -50,7 +49,6 @@ const resetState = Immutable.from({
   topUsersError: null,
   riskyUserCount: 0,
   watchedUserCount: 0,
-  adminUserCount: 0,
   usersSeverity: initialUsersSeverity,
   existAnomalyTypes: null,
   existAlertTypes: null,
@@ -122,16 +120,6 @@ module('Unit | Reducers | Users Reducer', (hooks) => {
     });
 
     assert.equal(result.riskyUserCount.data, 57);
-  });
-
-  test('test get admin user count', (assert) => {
-
-    const result = reducer(Immutable.from({}), {
-      type: ACTION_TYPES.GET_ADMIN_USER_COUNT,
-      payload: userAdminCount
-    });
-
-    assert.equal(result.adminUserCount.data, 40);
   });
 
   test('test get favorites', (assert) => {

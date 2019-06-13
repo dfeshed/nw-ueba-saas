@@ -9,9 +9,24 @@ import * as Am4charts from '@amcharts/amcharts4/charts';
 import _ from 'lodash';
 import { lookup } from 'ember-dependency-lookup';
 
+const createChildDivForPie = () => {
+  const chartComponentPlaceholder = document.getElementById('chartComponentPlaceholder');
+  const chartDiv = document.createElement('div');
+  chartDiv.id = 'chartComponentPlaceholderChart';
+  chartDiv.className = 'entity-details-container-body-indicator-details_graph_placeHolder_chart';
+  const legendDiv = document.createElement('div');
+  legendDiv.className = 'entity-details-container-body-indicator-details_graph_placeHolder_legends';
+  const legendDivContainer = document.createElement('div');
+  legendDivContainer.id = 'chartComponentPlaceholderLegend';
+  legendDiv.appendChild(legendDivContainer);
+  chartComponentPlaceholder.appendChild(chartDiv);
+  chartComponentPlaceholder.appendChild(legendDiv);
+};
+
 export default (settings) => {
   const i18n = lookup('service:i18n');
-  let chart = Am4core.create('chartComponentPlaceholder', Am4charts.PieChart3D);
+  createChildDivForPie();
+  let chart = Am4core.create('chartComponentPlaceholderChart', Am4charts.PieChart3D);
 
   chart.legend = new Am4charts.Legend();
   chart.legend.fill = Am4core.color('#FFF');
@@ -30,6 +45,18 @@ export default (settings) => {
   series.legendSettings.labelText = '[bold white]{category}[/]';
   series.legendSettings.valueText = '[bold white]{value}[/]';
   series.labels.template.fill = Am4core.color('#ebebeb');
+
+  const legendContainer = Am4core.create('chartComponentPlaceholderLegend', Am4core.Container);
+  legendContainer.width = Am4core.percent(100);
+  legendContainer.height = Am4core.percent(100);
+  chart.legend.parent = legendContainer;
+
+  chart.events.on('datavalidated', resizeLegend);
+  chart.events.on('maxsizechanged', resizeLegend);
+
+  function resizeLegend() {
+    document.getElementById('chartComponentPlaceholderLegend').style.height = `${chart.legend.contentHeight}px`;
+  }
   series.colors.list = _.map(chart.data, ({ color }) => {
     if (color) {
       return Am4core.color(color);

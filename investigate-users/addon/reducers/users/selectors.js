@@ -14,8 +14,6 @@ export const _favorites = (state) => state.users.favorites;
 
 export const riskyUserCount = (state) => state.users.riskyUserCount;
 
-export const adminUserCount = (state) => state.users.adminUserCount;
-
 export const watchedUserCount = (state) => state.users.watchedUserCount;
 
 export const getTotalUsers = (state) => state.users.totalUsers;

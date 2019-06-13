@@ -38,7 +38,6 @@ export default class DataHelper {
         topUsersError: null,
         riskyUserCount: 0,
         watchedUserCount: 0,
-        adminUserCount: 0,
         users: userList.data,
         usersSeverity: [{
           High: {
@@ -217,10 +216,9 @@ export default class DataHelper {
     return this;
   }
 
-  usersCount(riskyUserCount, watchedUserCount, adminUserCount) {
+  usersCount(riskyUserCount, watchedUserCount) {
     _set(this.state, 'users.riskyUserCount', riskyUserCount);
     _set(this.state, 'users.watchedUserCount', watchedUserCount);
-    _set(this.state, 'users.adminUserCount', adminUserCount);
     return this;
   }
 

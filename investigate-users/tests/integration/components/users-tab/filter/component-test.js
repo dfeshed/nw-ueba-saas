@@ -31,7 +31,7 @@ module('Integration | Component | users-tab/filter', function(hooks) {
     assert.equal(findAll('.users-tab_filter_options').length, 1);
     assert.equal(findAll('.users-tab_filter_filter').length, 1);
     assert.equal(findAll('.users-tab_filter_favorites').length, 1);
-    assert.equal(find('.users-tab_filter_user').textContent.replace(/\s/g, ''), 'RiskyUsers(0)WatchlistUsers(0)AdminUsers(0)');
+    assert.equal(find('.users-tab_filter_user').textContent.replace(/\s/g, ''), 'RiskyUsers(0)WatchlistUsers(0)');
   });
 
   test('it can save as filter for cancel', async function(assert) {

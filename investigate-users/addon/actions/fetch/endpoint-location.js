@@ -3,7 +3,6 @@ import moment from 'moment';
 export default {
   // Overview Tab Urls.
   riskyUserCount: '/presidio/api/entity/count?minScore=0',
-  adminUserCount: '/presidio/api/entity/count?userTags=admin',
   watchedUserCount: '/presidio/api/entity/count?isWatched=true',
   userOverview: '/presidio/api/entity?min_score=0&size=5&sort_direction=DESC&sort_field=score',
   alertOverview: `/presidio/api/alerts?alert_start_range=${moment().subtract('months', 3).unix() * 1000},${moment().unix() * 1000}&page=1&size=10&sort_direction=DESC&sort_field=score&status=open`,

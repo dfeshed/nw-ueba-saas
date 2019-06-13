@@ -2,7 +2,6 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import * as Users from 'investigate-users/reducers/users/selectors';
 import notRiskyCount from '../../data/presidio/not_risky_count';
-import userAdminCount from '../../data/presidio/user_admin_count';
 import usersTabSeverityBar from '../../data/presidio/users_tab_severityBar';
 import usrOverview from '../../data/presidio/usr_overview';
 import watchedCount from '../../data/presidio/watched_count';
@@ -19,7 +18,6 @@ const state = Immutable.from({
     topUsersError: null,
     riskyUserCount: notRiskyCount,
     watchedUserCount: watchedCount,
-    adminUserCount: userAdminCount,
     usersSeverity: [usersTabSeverityBar.data],
     existAnomalyTypes,
     existAlertTypes: existAlertTypes.data,

@@ -5,7 +5,7 @@ import { patchFetch } from '../../helpers/patch-fetch';
 import { Promise } from 'rsvp';
 import dataIndex from '../../data/presidio';
 import { patchFlash } from '../../helpers/patch-flash';
-import { getAdminUserCount, getRiskyUserCount, getWatchedUserCount, getUserOverview, resetUser, initiateUser } from 'investigate-users/actions/user-details';
+import { getRiskyUserCount, getWatchedUserCount, getUserOverview, resetUser, initiateUser } from 'investigate-users/actions/user-details';
 
 module('Unit | Actions | User Details Actions', (hooks) => {
   setupTest(hooks);
@@ -20,35 +20,6 @@ module('Unit | Actions | User Details Actions', (hooks) => {
           }
         });
       });
-    });
-  });
-
-  test('it can getAdminUserCount', (assert) => {
-    assert.expect(2);
-    const done = assert.async();
-    const dispatch = ({ type, payload }) => {
-      assert.equal(type, 'INVESTIGATE_USER::GET_ADMIN_USER_COUNT');
-      assert.equal(payload, 40);
-      done();
-    };
-    getAdminUserCount()(dispatch);
-  });
-
-  test('it can give flash message if getAdminUserCount is not coming from server', (assert) => {
-    const done = assert.async();
-    patchFetch(() => {
-      return new Promise(function(resolve, reject) {
-        reject({
-          ok: true,
-          error: 'some error'
-        });
-      });
-    });
-    getAdminUserCount()();
-
-    patchFlash((flash) => {
-      assert.equal(flash.type, 'error');
-      done();
     });
   });
 

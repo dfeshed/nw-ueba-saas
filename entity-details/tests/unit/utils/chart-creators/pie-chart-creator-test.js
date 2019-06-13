@@ -21,7 +21,7 @@ module('Unit | Utils | pie-chart-creator', (hooks) => {
     const settings = singlePieSettings('account_management_change_anomaly');
     const updatedSettings = chartDataAdapter(settings, chartData.data);
     const chart = pieChartCreator(updatedSettings);
-    return waitUntil(() => $('svg').length === 2).then(() => {
+    return waitUntil(() => document.getElementById('chartComponentPlaceholderLegend') != null).then(() => {
       assert.ok(chart);
     });
   });

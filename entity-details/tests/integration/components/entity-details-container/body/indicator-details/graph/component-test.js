@@ -35,9 +35,9 @@ module('Integration | Component | entity-details-container/body/indicator-detail
     new ReduxDataHelper(setState).build();
 
     await render(hbs`{{entity-details-container/body/indicator-details/graph}}`);
-    return waitUntil(() => this.$('svg').length === 1, { timeout: 2000 }).then(() => {
-      assert.equal(findAll('svg > g > g >g > g > g > g > g:nth-child(2) > g > g').length, 4);
-      assert.equal(findAll('svg > g > g >g > g > g > g > g').length, 7);
+    return waitUntil(() => this.$('svg').length === 2, { timeout: 2000 }).then(() => {
+      assert.equal(findAll('svg > g > g >g > g > g > g > g:nth-child(2) > g > g').length, 3);
+      assert.equal(findAll('svg > g > g >g > g > g > g > g').length, 14);
     });
   });
 
@@ -45,7 +45,7 @@ module('Integration | Component | entity-details-container/body/indicator-detail
     new ReduxDataHelper(setState).build();
 
     await render(hbs`{{entity-details-container/body/indicator-details/graph}}`);
-    return waitUntil(() => this.$('svg').length === 1, { timeout: 2000 }).then(() => {
+    return waitUntil(() => this.$('svg').length === 2, { timeout: 2000 }).then(() => {
       assert.ok(find('svg > g > g >g > g > g > g > g > g > g > g > g > g > g:nth-child(3) > g > g').outerHTML.indexOf('fill="#cc3300"') > -1);
       assert.ok(find('svg > g > g >g > g > g > g > g > g > g > g > g > g > g:nth-child(3) > g > g:nth-child(2)').outerHTML.indexOf('fill="#0d8ecf"') > -1);
       assert.ok(find('svg > g > g >g > g > g > g > g > g > g > g > g > g > g:nth-child(3) > g > g:nth-child(3)').outerHTML.indexOf('fill="#0a335c"') > -1);

@@ -93,7 +93,26 @@
   &_graph {
     padding: rsa-whitespace(less) 0;
     border-bottom: 2px solid background-color(primary);
-    min-height: 450px;
+    min-height: 430px;
+    &_placeHolder {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      height: 400px;
+      &_chart{
+        width: 80%;
+        height: 100%;
+      }
+      &_legends {
+        width: 20%;
+        margin-top: 30px;
+        height: 100%;
+        overflow-y: auto;
+        > div {
+          overflow: hidden;
+        }
+      }
+    }
     g[shape-rendering="auto"] {
       display: none;
     }

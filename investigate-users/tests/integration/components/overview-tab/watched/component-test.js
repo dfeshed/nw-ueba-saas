@@ -61,7 +61,7 @@ module('Integration | Component | overview-tab/watched', function(hooks) {
       assert.deepEqual(filterToUpdate, updatedFilter);
     });
     await render(hbs `{{overview-tab/watched applyUserFilter=applyUserFilter}}`);
-    assert.equal(find('.user-overview-tab_lower_users_watched').textContent.replace(/\s/g, ''), '10RiskyUsers20Watched30Admin');
+    assert.equal(find('.user-overview-tab_lower_users_watched').textContent.replace(/\s/g, ''), '10RiskyUsers20Watched');
     await click('.user-overview-tab_lower_users_watched_risk');
   });
 
@@ -73,19 +73,7 @@ module('Integration | Component | overview-tab/watched', function(hooks) {
       assert.deepEqual(filterToUpdate, updatedFilter);
     });
     await render(hbs `{{overview-tab/watched applyUserFilter=applyUserFilter}}`);
-    assert.equal(find('.user-overview-tab_lower_users_watched').textContent.replace(/\s/g, ''), '10RiskyUsers20Watched30Admin');
+    assert.equal(find('.user-overview-tab_lower_users_watched').textContent.replace(/\s/g, ''), '10RiskyUsers20Watched');
     await click('.user-overview-tab_lower_users_watched_watched');
-  });
-
-  test('it should show proper count and update filter for admin', async function(assert) {
-    assert.expect(2);
-    new ReduxDataHelper(setState).usersCount(10, 20, 30).build();
-    const updatedFilter = initialFilterState.merge({ userTags: ['admin'] });
-    this.set('applyUserFilter', (filterToUpdate) => {
-      assert.deepEqual(filterToUpdate, updatedFilter);
-    });
-    await render(hbs `{{overview-tab/watched applyUserFilter=applyUserFilter}}`);
-    assert.equal(find('.user-overview-tab_lower_users_watched').textContent.replace(/\s/g, ''), '10RiskyUsers20Watched30Admin');
-    await click('.user-overview-tab_lower_users_watched_admin');
   });
 });

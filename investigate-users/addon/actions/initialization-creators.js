@@ -1,5 +1,5 @@
 import { UPDATE_ACTIVE_TAB } from './types';
-import { getAdminUserCount, getRiskyUserCount, getWatchedUserCount, getUserOverview } from './user-details';
+import { getRiskyUserCount, getWatchedUserCount, getUserOverview } from './user-details';
 import { resetAlerts, getTopTenAlerts, updateFilter as updateFilterForALerts, getExistAnomalyTypesForAlert, getAlertsForTimeline } from './alert-details';
 import { resetUsers, getExistAnomalyTypes, getExistAlertTypess, getFavorites, updateFilter } from './user-tab-actions';
 
@@ -10,7 +10,6 @@ import { resetUsers, getExistAnomalyTypes, getExistAlertTypess, getFavorites, up
 */
 const _overviewTabCreation = () => {
   return (dispatch) => {
-    dispatch(getAdminUserCount());
     dispatch(getRiskyUserCount());
     dispatch(getWatchedUserCount());
     dispatch(getUserOverview());
@@ -29,7 +28,6 @@ const _overviewTabCreation = () => {
 const _usersTabCreation = (filter) => {
   return (dispatch) => {
     dispatch(resetUsers());
-    dispatch(getAdminUserCount());
     dispatch(getRiskyUserCount());
     dispatch(getWatchedUserCount());
     dispatch(updateFilter(filter));

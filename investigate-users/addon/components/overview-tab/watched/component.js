@@ -1,11 +1,10 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { riskyUserCount, adminUserCount, watchedUserCount, getUserFilter } from 'investigate-users/reducers/users/selectors';
+import { riskyUserCount, watchedUserCount, getUserFilter } from 'investigate-users/reducers/users/selectors';
 import { updateFilter } from 'investigate-users/actions/user-tab-actions';
 
 const stateToComputed = (state) => ({
   riskyUserCount: riskyUserCount(state),
-  adminUserCount: adminUserCount(state),
   watchedUserCount: watchedUserCount(state),
   filter: getUserFilter(state)
 });
