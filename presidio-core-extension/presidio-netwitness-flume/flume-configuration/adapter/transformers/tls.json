@@ -16,7 +16,7 @@
     {
       "type": "epoch",
       "name": "date-time-millis-to-nano-representation",
-      "sourceKey": "event_time",
+      "sourceKey": "time",
       "destinationKey": "dateTime"
     },
     {
