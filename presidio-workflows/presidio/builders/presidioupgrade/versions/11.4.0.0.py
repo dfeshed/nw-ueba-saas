@@ -116,15 +116,8 @@ scroll_and_update_data(INDEX_ALERT, DOC_TYPE_ALERT, update_alerts_hits)
 
 doc = es.get(index=INDEX_USER_SEVERITY_RANGE, doc_type=DOC_TYPE_USER_SEVERITY_RANGE, id='user-severities-range-doc-id')
 doc["_source"]["id"] = 'userId-severities-range-doc-id'
-es.index(index=INDEX_USER_SEVERITY_RANGE, doc_type=DOC_TYPE_ENTITY_SEVERITY_RANGE,
+es.index(index=INDEX_ENTITY_SEVERITY_RANGE, doc_type=DOC_TYPE_ENTITY_SEVERITY_RANGE,
                 id='userId-severities-range-doc-id', body=dict(doc["_source"]))
-es.delete(index=INDEX_USER_SEVERITY_RANGE, doc_type=DOC_TYPE_USER_SEVERITY_RANGE, id='user-severities-range-doc-id')
-
-
-es.reindex({
-    "source": {"index": INDEX_USER_SEVERITY_RANGE},
-    "dest": {"index": INDEX_ENTITY_SEVERITY_RANGE}
-}, wait_for_completion=True)
 
 # Remove user severity range index
 es.indices.delete(index=INDEX_USER_SEVERITY_RANGE)
