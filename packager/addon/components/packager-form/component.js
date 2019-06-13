@@ -13,7 +13,6 @@ import { listOfServices,
 
 import { validatePackageConfig } from './validation-utils';
 import columns from './columns';
-import $ from 'jquery';
 import { failure } from 'investigate-shared/utils/flash-messages';
 
 import {
@@ -145,7 +144,7 @@ const formComponent = Component.extend({
   },
 
   _scrollTo(target) {
-    $(target)[0].scrollIntoView();
+    document.querySelectorAll(target)[0].scrollIntoView();
   },
 
   _getCallbackFunction(configDataOld) {

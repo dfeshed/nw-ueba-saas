@@ -1,9 +1,8 @@
 import RSVP from 'rsvp';
 import { module, test, skip } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import $ from 'jquery';
 import sinon from 'sinon';
-import { click, waitFor, visit, currentURL } from '@ember/test-helpers';
+import { click, waitFor, visit, currentURL, find } from '@ember/test-helpers';
 import { lookup } from 'ember-dependency-lookup';
 
 module('Acceptance | basic', function(hooks) {
@@ -31,6 +30,6 @@ module('Acceptance | basic', function(hooks) {
     assert.equal(currentURL(), '/investigate-hosts');
 
     await waitFor('.error-page', { timeout: 10000 });
-    assert.equal($('.error-page .title').text().trim(), 'Endpoint Server is offline');
+    assert.equal(find('.error-page .title').text().trim(), 'Endpoint Server is offline');
   });
 });

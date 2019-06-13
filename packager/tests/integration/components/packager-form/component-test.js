@@ -6,7 +6,7 @@ import { revertPatch } from '../../../helpers/patch-reducer';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import Packager from 'packager/actions/fetch';
 import sinon from 'sinon';
-import { find, findAll, render, click, triggerKeyEvent } from '@ember/test-helpers';
+import { find, findAll, render, click, triggerKeyEvent, triggerEvent } from '@ember/test-helpers';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 import { clickTrigger } from 'ember-power-select/test-support/helpers';
@@ -190,51 +190,49 @@ module('Integration | Component | packager-form', function(hooks) {
       .build();
 
     await render(hbs`{{packager-form}}`);
-
-    const $IP_FIELD = this.$('.server-input-js input');
-    const $PORT_FIELD = this.$('.port-input-js input');
-    const $SERVICE_NAME_FIELD = this.$('.service-name-input-js input');
-    const $PASSWORD_FIELD = this.$('.password-input-js input');
-    const $INPUT = this.$('.server-input-group input');
-    const $DISPLAY_NAME_FIELD = this.$('.display-name-input-js input');
+    const IP_FIELD = find('.server-input-js input');
+    const PORT_FIELD = find('.port-input-js input');
+    const SERVICE_NAME_FIELD = find('.service-name-input-js input');
+    const PASSWORD_FIELD = find('.password-input-js input');
+    const DISPLAY_NAME_FIELD = find('.display-name-input-js input');
 
     // Invalid ip/hostname
-    $IP_FIELD.val('-1.1.x.x');
-    $INPUT.change();
+    IP_FIELD.value = '-1.1.x.x';
+    await triggerEvent(IP_FIELD, 'change');
 
     await click('.generate-button-js .rsa-form-button');
     assert.ok(find('.server-input-js').classList.contains('is-error'), 'Expected to have error class on server field');
 
     // Invalid port
-    $IP_FIELD.val('1.1.1.1');
-    $PORT_FIELD.val('10X');
-    $INPUT.change();
+    IP_FIELD.value = '1.1.1.1';
+    PORT_FIELD.value = '10X';
+
+    await triggerEvent(IP_FIELD, 'change');
+    await triggerEvent(PORT_FIELD, 'change');
     await click('.generate-button-js .rsa-form-button');
     assert.ok(find('.port-input-js').classList.contains('is-error'), 'Expected to have error class on port field');
 
     // Invalid Service name
-    $IP_FIELD.val('1.1.1.1');
-    $PORT_FIELD.val('123');
-    $SERVICE_NAME_FIELD.val('End##Server');
-    $INPUT.change();
+    PORT_FIELD.value = '123';
+    SERVICE_NAME_FIELD.value = 'End##Server';
+    await triggerEvent(PORT_FIELD, 'change');
+    await triggerEvent(SERVICE_NAME_FIELD, 'change');
     await click('.generate-button-js .rsa-form-button');
     assert.ok(find('.service-name-input-js').classList.contains('is-error'), 'Expected to have error class on service field');
 
-    // Invalid Displpay name
-    $IP_FIELD.val('1.1.1.1');
-    $PORT_FIELD.val('123');
-    $SERVICE_NAME_FIELD.val('EndServer');
-    $DISPLAY_NAME_FIELD.val('Display&Name#Test');
-    $INPUT.change();
+    // Invalid Display name
+    SERVICE_NAME_FIELD.value = 'EndServer';
+    DISPLAY_NAME_FIELD.value = 'Display&Name#Test';
+    await triggerEvent(SERVICE_NAME_FIELD, 'change');
+    await triggerEvent(DISPLAY_NAME_FIELD, 'change');
     await click('.generate-button-js .rsa-form-button');
     assert.ok(find('.display-name-input-js').classList.contains('is-error'), 'Expected to have error class on display field');
 
     // Password is required
-    $IP_FIELD.val('1.1.1.1');
-    $PORT_FIELD.val('123');
-    $SERVICE_NAME_FIELD.val('EndpointServer');
-    $PASSWORD_FIELD.val('');
-    $INPUT.change();
+    SERVICE_NAME_FIELD.value = 'EndpointServer';
+    PASSWORD_FIELD.value = '';
+    await triggerEvent(SERVICE_NAME_FIELD, 'change');
+    await triggerEvent(PASSWORD_FIELD, 'change');
     await click('.generate-button-js .rsa-form-button');
     assert.ok(find('.password-input-js').classList.contains('is-error'), 'Expected to have error class on password field');
   });

@@ -1,7 +1,6 @@
 import Component from '@ember/component';
 import { run } from '@ember/runloop';
 import { inject as service } from '@ember/service';
-import $ from 'jquery';
 import { connect } from 'ember-redux';
 import { toggleExploreSearchResults } from 'investigate-hosts/actions/ui-state-creators';
 
@@ -29,8 +28,8 @@ const Explore = Component.extend({
 
   onApplicationClick(target) {
     const result = this.get('fileSearchResults');
-    const isLength = $(target).closest('.host-explore') ? !$(target).closest('.host-explore').length : false;
-    if (isLength && !$(target).hasClass('rsa-icon-search-filled')) {
+    const showSearchResults = target ? !target.closest('.host-explore') && !target.classList.contains('rsa-icon-search-filled') : true;
+    if (showSearchResults) {
       run.next(() => {
         if (!this.get('isDestroyed') && !this.get('isDestroying')) {
           this.send('toggleExploreSearchResults', false);

@@ -1,7 +1,7 @@
 import rsvp from 'rsvp';
 import { test, skip } from 'qunit';
+import { find } from '@ember/test-helpers';
 import moduleForAcceptance from '../helpers/module-for-acceptance';
-import $ from 'jquery';
 import sinon from 'sinon';
 import Service from '@ember/service';
 import { lookup } from 'ember-dependency-lookup';
@@ -74,6 +74,6 @@ skip('visiting /investigate-files shows server down message', function(assert) {
   waitFor('.error-page');
 
   andThen(() => {
-    assert.equal($('.error-page .title').text().trim(), 'Endpoint Server is offline');
+    assert.equal(find('.error-page .title').text().trim(), 'Endpoint Server is offline');
   });
 });

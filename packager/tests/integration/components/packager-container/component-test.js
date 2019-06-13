@@ -1,17 +1,19 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { findAll, render } from '@ember/test-helpers';
+import { setupRenderingTest } from 'ember-qunit';
 
-moduleForComponent('packager-container', 'Integration | Component | packager Container', {
-  integration: true,
-  beforeEach() {
-    this.registry.injection('component', 'i18n', 'service:i18n');
-    initialize(this);
-  }
-});
+module('packager-container', 'Integration | Component | packager Container', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it renders', function(assert) {
-  this.render(hbs`{{packager-container}}`);
-  const $el = this.$('.packager-container');
-  assert.equal($el.length, 1, 'Expected to find packager container root element in DOM.');
+  hooks.beforeEach(function() {
+    initialize(this.owner);
+  });
+
+  test('it renders', async function(assert) {
+    await render(hbs`{{packager-container}}`);
+    const element = findAll('.packager-container');
+    assert.equal(element.length, 1, 'Expected to find packager container root element in DOM.');
+  });
 });
