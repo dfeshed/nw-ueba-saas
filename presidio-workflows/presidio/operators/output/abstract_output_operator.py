@@ -27,7 +27,7 @@ class AbstractOutputOperator(FixedDurationJarOperator):
         :param task_id: The task ID of this operator - If None, the ID is generated automatically
         :type task_id: string
         """
-        self.log.debug('input operator init kwargs=%s', str(kwargs))
+        self.log.debug('output operator init kwargs=%s', str(kwargs))
         self.fixed_duration_strategy = fixed_duration_strategy
         self.smart_record_conf_name = smart_record_conf_name
         self.task_id = task_id or self.get_task_name()
