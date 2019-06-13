@@ -71,76 +71,48 @@ def update_alerts_hits(hits):
         es.update(index=INDEX_ALERT, doc_type=DOC_TYPE_ALERT, id=item["_id"], body=dict(alert))
 
 
-# Check user index is exists
-if not es.indices.exists(index=INDEX_USER):
-    print("Index {} not exists".format(INDEX_USER))
-    exit()
+def scroll_and_update_data(index, doc_type, update_function):
+    # Check index is exists
+    if not es.indices.exists(index=index):
+        print("Index {} not exists".format(index))
+        exit()
 
-# Init scroll by search
-data = es.search(
-    index=INDEX_USER,
-    doc_type=DOC_TYPE_USER,
-    scroll='2m',
-    size=SIZE
-)
+    # Init scroll by search
+    data = es.search(
+        index=index,
+        doc_type=doc_type,
+        scroll='2m',
+        size=SIZE
+    )
 
-# Get the scroll ID
-sid = data['_scroll_id']
-scroll_size = len(data['hits']['hits'])
-
-
-# Before scroll, process current batch of hits
-convert_users_to_entities(data['hits']['hits'])
-
-while scroll_size > 0:
-    "Scrolling users..."
-    data = es.scroll(scroll_id=sid, scroll='2m')
-
-    # Process current batch of hits
-    convert_users_to_entities(data['hits']['hits'])
-
-    # Update the scroll ID
+    # Get the scroll ID
     sid = data['_scroll_id']
-
-    # Get the number of results that returned in the last scroll
     scroll_size = len(data['hits']['hits'])
 
+    # Before scroll, process current batch of hits
+    update_function(data['hits']['hits'])
+
+    while scroll_size > 0:
+        data = es.scroll(scroll_id=sid, scroll='2m')
+
+        # Process current batch of hits
+        update_function(data['hits']['hits'])
+
+        # Update the scroll ID
+        sid = data['_scroll_id']
+
+        # Get the number of results that returned in the last scroll
+        scroll_size = len(data['hits']['hits'])
+
+
+# Scrolling users
+scroll_and_update_data(INDEX_USER, DOC_TYPE_USER, convert_users_to_entities)
 
 # Remove user index
 es.indices.delete(index=INDEX_USER)
 
-# Check alert index is exists
-if not es.indices.exists(index=INDEX_ALERT):
-    print("Index {} not exists".format(INDEX_ALERT))
-    exit()
-
-# Init scroll by search
-data = es.search(
-    index=INDEX_ALERT,
-    doc_type=DOC_TYPE_ALERT,
-    scroll='2m',
-    size=SIZE
-)
-
-# Get the scroll ID
-sid = data['_scroll_id']
-scroll_size = len(data['hits']['hits'])
-
-# Before scroll, process current batch of hits
-update_alerts_hits(data['hits']['hits'])
-
-while scroll_size > 0:
-    "Scrolling alerts..."
-    data = es.scroll(scroll_id=sid, scroll='2m')
-
-    # Process current batch of hits
-    update_alerts_hits(data['hits']['hits'])
-
-    # Update the scroll ID
-    sid = data['_scroll_id']
-
-    # Get the number of results that returned in the last scroll
-    scroll_size = len(data['hits']['hits'])
+# Scrolling alerts
+scroll_and_update_data(INDEX_ALERT, DOC_TYPE_ALERT, update_alerts_hits)
 
 doc = es.get(index=INDEX_USER_SEVERITY_RANGE, doc_type=DOC_TYPE_USER_SEVERITY_RANGE, id='user-severities-range-doc-id')
 doc["_source"]["id"] = 'userId-severities-range-doc-id'
