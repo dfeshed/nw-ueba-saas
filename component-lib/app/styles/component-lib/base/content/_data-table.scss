@@ -210,6 +210,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
     &.has-focus,
     &.is-selected,
+    &.is-scroll-match,
     &.has-focus:hover,
     &.is-selected:hover {
       .rsa-data-table-body-cell {
@@ -228,6 +229,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       }
     }
 
+    &.is-search-match.is-scroll-match,
     &.is-search-match.is-selected {
       .search-match-text {
         background: background-color(primary, darkest);

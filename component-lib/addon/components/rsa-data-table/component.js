@@ -473,7 +473,7 @@ export default Component.extend(DomWatcher, {
     });
   }),
 
-  _searchMatchesDidChange: observer('searchTerm', 'items.[]', 'searchMatches.[]', 'searchScrollIndex', function() {
+  _searchMatchesDidChange: observer('searchMatches.[]', 'searchScrollIndex', function() {
     const { searchTerm, searchMatches, items, searchScrollIndex } = this.getProperties('searchTerm', 'searchMatches', 'items', 'searchScrollIndex');
     if (searchTerm && items && searchMatches && searchScrollIndex > -1) {
       let matchIndex;
@@ -484,8 +484,11 @@ export default Component.extend(DomWatcher, {
         }
       });
       if (matchIndex >= 0) {
-        this.set('selectedIndex', matchIndex);
-        this._scrollToInitial(matchIndex);
+        if (this.get('cachedSearchScrollIndex') !== searchScrollIndex) {
+          this.set('selectedIndex', matchIndex);
+          this.set('cachedSearchScrollIndex', searchScrollIndex);
+          this._scrollToInitial(matchIndex);
+        }
       }
     }
   }),
