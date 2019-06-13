@@ -118,7 +118,7 @@ public class EntityServiceImpl implements EntityService {
         }
         entity.setAlertsCount(entitiesAlertData.getAlertsCount());
         entity.setScore(entitiesAlertData.getEntityScore());
-        EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false).getEntitySeverity(entity.getScore());
+        EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false, entity.getEntityType()).getEntitySeverity(entity.getScore());
         entity.setSeverity(newSeverity);
     }
 
@@ -140,23 +140,23 @@ public class EntityServiceImpl implements EntityService {
         entity.setIndicators(indicatorsUnion);
         entity.incrementAlertsCountByNumber(entitiesAlertData.getAlertsCount());
         entity.incrementEntityScoreByNumber(entitiesAlertData.getEntityScore());
-        EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false).getEntitySeverity(entity.getScore());
+        EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false, entity.getEntityType()).getEntitySeverity(entity.getScore());
         entity.setSeverity(newSeverity);
     }
 
     @Override
-    public void updateEntityData(Instant endDate) {
+    public void updateEntityData(Instant endDate, String entityType) {
         log.debug("Starting Updating all entities alert data.");
-        updateAllEntitiesAlertData(endDate);
+        updateAllEntitiesAlertData(endDate, entityType);
         log.debug("finished updating all entities alert data.");
-        entitySeverityService.updateSeverities();
+        entitySeverityService.updateSeverities(entityType);
     }
 
     @Override
-    public boolean updateAllEntitiesAlertData(Instant endDate) {
+    public boolean updateAllEntitiesAlertData(Instant endDate, String entityType) {
 
         //Get map of entities ids to new score and alerts count
-        Map<String, EntitiesAlertData> aggregatedEntityScore = entityScoreService.calculateEntityScores(alertEffectiveDurationInDays, endDate);
+        Map<String, EntitiesAlertData> aggregatedEntityScore = entityScoreService.calculateEntityScores(alertEffectiveDurationInDays, endDate, entityType);
 
         //Get entities in batches and update the score only if it changed, and add to changesEntities
         Set<String> entitiesIDForBatch = new HashSet<>();
@@ -192,7 +192,7 @@ public class EntityServiceImpl implements EntityService {
         log.info(changedEntities.size() + " entities saved to database");
 
         //Clean entities which not have alert in the last 90 days, but still have score
-        entityScoreService.clearEntityScoreForEntitiesThatShouldNotHaveScore(aggregatedEntityScore.keySet());
+        entityScoreService.clearEntityScoreForEntitiesThatShouldNotHaveScore(aggregatedEntityScore.keySet(), entityType);
 
         return true;
     }

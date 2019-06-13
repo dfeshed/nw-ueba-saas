@@ -9,8 +9,8 @@ import java.util.Set;
  */
 public interface EntityScoreService {
 
-    void clearEntityScoreForEntitiesThatShouldNotHaveScore(Set<String> excludedEntitiesIds);
+    void clearEntityScoreForEntitiesThatShouldNotHaveScore(Set<String> excludedEntitiesIds, String entityType);
 
-    Map<String, EntitiesAlertData> calculateEntityScores(int alertEffectiveDurationInDays, Instant endDate);
+    Map<String, EntitiesAlertData> calculateEntityScores(int alertEffectiveDurationInDays, Instant endDate, String entityType);
 
 }

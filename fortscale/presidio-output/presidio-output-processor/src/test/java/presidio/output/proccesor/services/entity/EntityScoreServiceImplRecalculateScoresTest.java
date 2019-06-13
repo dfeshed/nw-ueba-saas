@@ -73,6 +73,7 @@ public class EntityScoreServiceImplRecalculateScoresTest {
 
     @Test
     public void testBasicScoreCalculation() throws Exception {
+
         Pageable pageable1 = new PageRequest(0, 10);
         List<Alert> mockAlerts;
 
@@ -80,19 +81,21 @@ public class EntityScoreServiceImplRecalculateScoresTest {
 
         Date startTimeAWeekAgo = Date.from(weekAgo.atZone(ZoneOffset.UTC).toInstant());
 
+        String entityType = "entityType";
+
         mockAlerts = Arrays.asList(
-                new Alert("entity1", "smartId", null, null, null,startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null,(double)ALERT_CONTRIBUTION_CRITICAL, "entityType"),
-                new Alert("entity1", "smartId", null, null,null, startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.HIGH, null,(double)ALERT_CONTRIBUTION_HIGH, "entityType"),
-                new Alert("entity1", "smartId", null, null, null,startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.LOW, null,(double)ALERT_CONTRIBUTION_LOW, "entityType"),
-                new Alert("entity2", "smartId", null, null,null, startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null,(double)ALERT_CONTRIBUTION_CRITICAL, "entityType"),
-                new Alert("entity2", "smartId", null, null,null, startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null,(double)ALERT_CONTRIBUTION_CRITICAL, "entityType")
+                new Alert("entity1", "smartId", null, null, null,startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null,(double)ALERT_CONTRIBUTION_CRITICAL, entityType),
+                new Alert("entity1", "smartId", null, null,null, startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.HIGH, null,(double)ALERT_CONTRIBUTION_HIGH, entityType),
+                new Alert("entity1", "smartId", null, null, null,startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.LOW, null,(double)ALERT_CONTRIBUTION_LOW, entityType),
+                new Alert("entity2", "smartId", null, null,null, startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null,(double)ALERT_CONTRIBUTION_CRITICAL, entityType),
+                new Alert("entity2", "smartId", null, null,null, startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null,(double)ALERT_CONTRIBUTION_CRITICAL, entityType)
         );
         Page<Alert> alertPage1 = new PageImpl<Alert>(mockAlerts, pageable1, 5);
         Mockito.when(this.mockAlertPresistency.find(Mockito.any(AlertQuery.class))).thenAnswer(new Answer<Page>() {
             @Override
             public Page answer(InvocationOnMock invocation) throws Throwable {
                 AlertQuery query = (AlertQuery) invocation.getArguments()[0];
-                if (query.getFilterByStartDate() <= startTimeAWeekAgo.getTime() && query.getFilterByEndDate() >= startTimeAWeekAgo.getTime()) {
+                if (query.getFilterByStartDate() <= startTimeAWeekAgo.getTime() && query.getFilterByEndDate() >= startTimeAWeekAgo.getTime() && query.getFilterByEntityType() == entityType) {
                     return alertPage1;
                 } else {
                     return emptyAlertPage;
@@ -101,7 +104,7 @@ public class EntityScoreServiceImplRecalculateScoresTest {
         });
 
 
-        Map<String, EntitiesAlertData> aggregatedEntityScore = entityScoreService.calculateEntityScores(ALERT_EFFECTIVE_DURATION_IN_DAYS, Instant.now());
+        Map<String, EntitiesAlertData> aggregatedEntityScore = entityScoreService.calculateEntityScores(ALERT_EFFECTIVE_DURATION_IN_DAYS, Instant.now(), entityType);
         Assert.assertEquals(2, aggregatedEntityScore.size());
         double entity1Expected = (ALERT_CONTRIBUTION_CRITICAL + ALERT_CONTRIBUTION_HIGH + ALERT_CONTRIBUTION_LOW) * 1D;
         double entity2Expected = (ALERT_CONTRIBUTION_CRITICAL * 2) * 1D;
@@ -114,6 +117,7 @@ public class EntityScoreServiceImplRecalculateScoresTest {
 
         List<Alert> mockAlertsPage1;
         List<Alert> mockAlertsPage2;
+        String entityType = "entityType";
 
         LocalDateTime weekAgo = LocalDate.now().minusDays(7).atStartOfDay().plusHours(3);
 
@@ -123,21 +127,21 @@ public class EntityScoreServiceImplRecalculateScoresTest {
         mockAlertsPage1 = Arrays.asList(
 
                 //Page1-one entity which 3 alerts one entity with 2 alrrts
-                new Alert("entity1", "smartId", null, null, null, startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null,(double)ALERT_CONTRIBUTION_CRITICAL, "entityType"),
-                new Alert("entity1", "smartId", null, null, null, startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.HIGH, null,(double)ALERT_CONTRIBUTION_HIGH, "entityType"),
-                new Alert("entity1", "smartId", null, null,null, oldStartTime, new Date(), 95, 0, null, AlertEnums.AlertSeverity.LOW, null,(double)ALERT_CONTRIBUTION_LOW, "entityType"),
-                new Alert("entity2", "smartId", null, null,null, oldStartTime, new Date(), 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null,(double)ALERT_CONTRIBUTION_CRITICAL, "entityType"),
-                new Alert("entity2", "smartId", null, null, null,startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null,(double)ALERT_CONTRIBUTION_CRITICAL, "entityType")
+                new Alert("entity1", "smartId", null, null, null, startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null,(double)ALERT_CONTRIBUTION_CRITICAL, entityType),
+                new Alert("entity1", "smartId", null, null, null, startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.HIGH, null,(double)ALERT_CONTRIBUTION_HIGH, entityType),
+                new Alert("entity1", "smartId", null, null,null, oldStartTime, new Date(), 95, 0, null, AlertEnums.AlertSeverity.LOW, null,(double)ALERT_CONTRIBUTION_LOW, entityType),
+                new Alert("entity2", "smartId", null, null,null, oldStartTime, new Date(), 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null,(double)ALERT_CONTRIBUTION_CRITICAL, entityType),
+                new Alert("entity2", "smartId", null, null, null,startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null,(double)ALERT_CONTRIBUTION_CRITICAL, entityType)
         );
 
         mockAlertsPage2 = Arrays.asList(
 
                 //Page2-3  alerts that should be counted, and 2 alerts which should not be counted
-                new Alert("entity1", "smartId", null, null, null,startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.LOW, null,(double)ALERT_CONTRIBUTION_LOW, "entityType"),
-                new Alert("entity1", "smartId", null, null, null,startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.LOW, null,(double)ALERT_CONTRIBUTION_LOW, "entityType"),
-                new Alert("entity1", "smartId", null, null, null,oldStartTime, new Date(), 95, 0, null, AlertEnums.AlertSeverity.LOW, null,(double)ALERT_CONTRIBUTION_LOW, "entityType"),
-                new Alert("entity2", "smartId", null, null, null,startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.HIGH, null,(double)ALERT_CONTRIBUTION_HIGH, "entityType"),
-                new Alert("entity3", "smartId", null, null, null,startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.HIGH, null,(double)ALERT_CONTRIBUTION_HIGH, "entityType")
+                new Alert("entity1", "smartId", null, null, null,startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.LOW, null,(double)ALERT_CONTRIBUTION_LOW, entityType),
+                new Alert("entity1", "smartId", null, null, null,startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.LOW, null,(double)ALERT_CONTRIBUTION_LOW, entityType),
+                new Alert("entity1", "smartId", null, null, null,oldStartTime, new Date(), 95, 0, null, AlertEnums.AlertSeverity.LOW, null,(double)ALERT_CONTRIBUTION_LOW, entityType),
+                new Alert("entity2", "smartId", null, null, null,startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.HIGH, null,(double)ALERT_CONTRIBUTION_HIGH, entityType),
+                new Alert("entity3", "smartId", null, null, null,startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.HIGH, null,(double)ALERT_CONTRIBUTION_HIGH, entityType)
         );
         Pageable pageable1 = new PageRequest(0, 5);
         Page<Alert> alertPage1 = new PageImpl<Alert>(mockAlertsPage1, pageable1, 10);
@@ -148,7 +152,7 @@ public class EntityScoreServiceImplRecalculateScoresTest {
             @Override
             public Page answer(InvocationOnMock invocation) throws Throwable {
                 AlertQuery query = (AlertQuery) invocation.getArguments()[0];
-                if (query.getFilterByStartDate() <= startTimeAWeekAgo.getTime() && query.getFilterByEndDate() >= startTimeAWeekAgo.getTime()) {
+                if (query.getFilterByStartDate() <= startTimeAWeekAgo.getTime() && query.getFilterByEndDate() >= startTimeAWeekAgo.getTime() && query.getFilterByEntityType() == entityType) {
                     if (query.getPageNumber() == 0) {
                         return alertPage1;
                     } else {
@@ -161,7 +165,7 @@ public class EntityScoreServiceImplRecalculateScoresTest {
         });
 
 
-        Map<String, EntitiesAlertData> aggregatedEntityScore = Whitebox.invokeMethod(entityScoreService, "calculateEntityScores", ALERT_EFFECTIVE_DURATION_IN_DAYS, Instant.now());
+        Map<String, EntitiesAlertData> aggregatedEntityScore = Whitebox.invokeMethod(entityScoreService, "calculateEntityScores", ALERT_EFFECTIVE_DURATION_IN_DAYS, Instant.now(), entityType);
         Assert.assertEquals(3, aggregatedEntityScore.size());
 
         Assert.assertEquals(95D, aggregatedEntityScore.get("entity1").getEntityScore(), 0.1);

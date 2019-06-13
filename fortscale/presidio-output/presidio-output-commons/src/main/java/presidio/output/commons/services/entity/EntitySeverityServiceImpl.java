@@ -58,14 +58,14 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
      * @return map from score to getSeverity
      */
     @Override
-    public EntityScoreToSeverity getSeveritiesMap(boolean recalcEntityScorePercentiles) {
+    public EntityScoreToSeverity getSeveritiesMap(boolean recalcEntityScorePercentiles, String entityType) {
         if (!recalcEntityScorePercentiles) {
-            return getExistingEntityScoreToSeverity();
+            return getExistingEntityScoreToSeverity(entityType);
         }
 
         //calculating percentiles according all entity scores
-        double[] entityScores = getScoresArray();
-        EntitySeveritiesRangeDocument entitySeveritiesRangeDocument = createEntitySeveritiesRangeDocument(entityScores);
+        double[] entityScores = getScoresArray(entityType);
+        EntitySeveritiesRangeDocument entitySeveritiesRangeDocument = createEntitySeveritiesRangeDocument(entityScores, entityType);
         entitySeveritiesRangeRepository.save(entitySeveritiesRangeDocument);
 
         return new EntityScoreToSeverity(entitySeveritiesRangeDocument.getSeverityToScoreRangeMap());
@@ -77,11 +77,11 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
      * @param entityScores
      * @return
      */
-    protected EntitySeveritiesRangeDocument createEntitySeveritiesRangeDocument(double[] entityScores) {
+    protected EntitySeveritiesRangeDocument createEntitySeveritiesRangeDocument(double[] entityScores, String entityType) {
 
         Map<EntitySeverity, PresidioRange<Double>> severityToScoreRangeMap = calculateEntitySeverityRangeMap(entityScores);
 
-        return new EntitySeveritiesRangeDocument(severityToScoreRangeMap);
+        return new EntitySeveritiesRangeDocument(severityToScoreRangeMap, entityType);
     }
 
     protected Map<EntitySeverity, PresidioRange<Double>> calculateEntitySeverityRangeMap(double[] entityScores) {
@@ -162,8 +162,8 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
         return severityToScoreRangeMap;
     }
 
-    private EntityScoreToSeverity getExistingEntityScoreToSeverity() {
-        EntitySeveritiesRangeDocument entitySeveritiesRangeDocument = entitySeveritiesRangeRepository.findOne(EntitySeveritiesRangeDocument.ENTITY_SEVERITIES_RANGE_DOC_ID);
+    private EntityScoreToSeverity getExistingEntityScoreToSeverity(String entityType) {
+        EntitySeveritiesRangeDocument entitySeveritiesRangeDocument = entitySeveritiesRangeRepository.findOne(EntitySeveritiesRangeDocument.getEntitySeveritiesDocIdName(entityType));
 
         if (entitySeveritiesRangeDocument == null) { //no existing percentiles were found
             logger.debug("No entity score percentile calculation results were found, setting scores thresholds to zero (all entities will get LOW severity (till next daily calculation)");
@@ -185,10 +185,11 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
     }
 
     @Override
-    public void updateSeverities() {
-        final EntityScoreToSeverity severitiesMap = getSeveritiesMap(true);
+    public void updateSeverities(String entityType) {
+        final EntityScoreToSeverity severitiesMap = getSeveritiesMap(true, entityType);
         EntityQuery.EntityQueryBuilder entityQueryBuilder =
                 new EntityQuery.EntityQueryBuilder()
+                        .filterByEntitiesTypes(Collections.singletonList(entityType))
                         .pageNumber(0)
                         .pageSize(defaultEntitiesBatchSize)
                         .sort(new Sort(new Sort.Order(Sort.Direction.ASC, Entity.SCORE_FIELD_NAME)));
@@ -207,11 +208,13 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
      * This function load all entities score and store it in a double array
      * Only for entity scores above 0
      */
-    private double[] getScoresArray() {
-
-
+    private double[] getScoresArray(String entityType) {
         Sort sort = new Sort(Sort.Direction.ASC, Entity.SCORE_FIELD_NAME);
-        EntityQuery.EntityQueryBuilder entityQueryBuilder = new EntityQuery.EntityQueryBuilder().minScore(1).pageNumber(0).pageSize(this.defaultEntitiesBatchSize).sort(sort);
+        EntityQuery.EntityQueryBuilder entityQueryBuilder = new EntityQuery.EntityQueryBuilder()
+                .minScore(1)
+                .pageNumber(0)
+                .filterByEntitiesTypes(Collections.singletonList(entityType))
+                .pageSize(this.defaultEntitiesBatchSize).sort(sort);
         Page<Entity> page = entityPersistencyService.find(entityQueryBuilder.build());
         int numberOfElements = new Long(page.getTotalElements()).intValue();
         double[] scores = new double[numberOfElements];
@@ -242,6 +245,7 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
     }
 
     private void updateEntitySeverities(EntityScoreToSeverity severitiesMap, List<Entity> entities) {
+        List<Entity> updatedEntities = new ArrayList<>();
         if (entities == null) {
             return;
         }
@@ -252,8 +256,12 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
             logger.debug("Updating entity severity for entityId: " + entity.getEntityId());
             if (!newEntitySeverity.equals(entity.getSeverity())) {
                 entity.setSeverity(newEntitySeverity);
+                updatedEntities.add(entity);
             }
         });
+        if (updatedEntities.size() > 0) {
+            entityPersistencyService.save(updatedEntities);
+        }
     }
 
     public static class EntityScoreToSeverity {

@@ -72,7 +72,7 @@ public class EntityServiceImplTest {
         severityRangeMap.put(EntitySeverity.MEDIUM, new PresidioRange<>(30d, 60d));
         severityRangeMap.put(EntitySeverity.HIGH, new PresidioRange<>(60d, 90d));
         severityRangeMap.put(EntitySeverity.CRITICAL, new PresidioRange<>(90d, 100d));
-        Mockito.when(mockEntitySeverityService.getSeveritiesMap(false)).thenReturn(new EntitySeverityServiceImpl.EntityScoreToSeverity(severityRangeMap));
+        Mockito.when(mockEntitySeverityService.getSeveritiesMap(false, "entityType")).thenReturn(new EntitySeverityServiceImpl.EntityScoreToSeverity(severityRangeMap));
 
         entityService = new EntityServiceImpl(mockEventPersistency,
                 mockEntityPresistency,
@@ -89,9 +89,9 @@ public class EntityServiceImplTest {
     @Test
     public void testUpdateEntityScoreBatch() throws Exception {
         List<Entity> entitiesWithOldScore = Arrays.asList(
-                new Entity("entity1", null, 50, null, null, null, EntitySeverity.CRITICAL, 0, "entity"),
-                new Entity("entity2", null, 50, null, null, null, EntitySeverity.CRITICAL, 0, "entity"),
-                new Entity("entity3", null, 50, null, null, null, EntitySeverity.CRITICAL, 0, "entity")
+                new Entity("entity1", null, 50, null, null, null, EntitySeverity.CRITICAL, 0, "entityType"),
+                new Entity("entity2", null, 50, null, null, null, EntitySeverity.CRITICAL, 0, "entityType"),
+                new Entity("entity3", null, 50, null, null, null, EntitySeverity.CRITICAL, 0, "entityType")
         );
 
         Pageable pageable1 = new PageRequest(0, 3);
@@ -128,7 +128,7 @@ public class EntityServiceImplTest {
 
     @Test
     public void testAddEntityAlertData() {
-        Entity entity1 = new Entity("entity1", null, 50, null, null, null, EntitySeverity.CRITICAL, 0, "entity");
+        Entity entity1 = new Entity("entity1", null, 50, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
         List<String> classification1 = null, classification2, classification3, classification4;
         List<String> indicators1 = null, indicators2, indicators3;
         classification2 = new ArrayList<>(Arrays.asList("a", "b"));

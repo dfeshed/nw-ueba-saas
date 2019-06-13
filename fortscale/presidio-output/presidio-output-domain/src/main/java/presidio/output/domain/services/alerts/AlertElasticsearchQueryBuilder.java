@@ -37,6 +37,14 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             boolQueryBuilder.must(entityNameQuery);
         }
 
+        // filter by entity type
+        if (alertQuery.getFilterByEntityType() != null) {
+            BoolQueryBuilder entityTypeQuery = new BoolQueryBuilder();
+            String entityType = alertQuery.getFilterByEntityType();
+            entityTypeQuery.should(matchQuery(Alert.ENTITY_TYPE, entityType));
+            boolQueryBuilder.must(entityTypeQuery);
+        }
+
         // filter by entity id
         if (CollectionUtils.isNotEmpty(alertQuery.getFilterByEntityDocumentId())) {
             BoolQueryBuilder entityIdQuery = new BoolQueryBuilder();
