@@ -9,7 +9,9 @@
   </aside>
 </article>
 {{context-tooltip clickDataAction=(action 'openContextPanel') addToListAction=(action 'openContextAddToList')}}
-{{context-panel/add-to-list entity=entityToAddToList}}
+{{#if (or entityToAddToList entityId)}}
+  {{context-panel/add-to-list entity=entityToAddToList}}
+{{/if}}
 
 <ul class="rsa-flash-messages">
   {{#each flashMessages.queue as |flash|}}

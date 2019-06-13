@@ -1,5 +1,6 @@
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
+import { later } from '@ember/runloop';
 
 const contextAddToListModalId = 'addToList';
 
@@ -27,7 +28,10 @@ export default Controller.extend({
         `rsa-application-modal-open-${contextAddToListModalId}` :
         `rsa-application-modal-close-${contextAddToListModalId}`;
       this.set('entityToAddToList', entity);
-      this.get('eventBus').trigger(eventName);
+
+      later(() => {
+        this.get('eventBus').trigger(eventName);
+      }, 400);
     },
 
     closeContextAddToList() {
