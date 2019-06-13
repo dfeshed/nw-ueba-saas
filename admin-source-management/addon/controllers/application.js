@@ -40,7 +40,8 @@ export default Controller.extend({
   isGroupsActive(currentRouteName) {
     let isActive = false;
     if (currentRouteName.indexOf('admin-source-management.groups') !== -1 ||
-        currentRouteName.indexOf('admin-source-management.group-wizard') !== -1) {
+        currentRouteName.indexOf('admin-source-management.group-wizard') !== -1 ||
+        currentRouteName.indexOf('admin-source-management.group-ranking') !== -1) {
       isActive = true;
     }
     return isActive;
