@@ -5,6 +5,20 @@ $incidentsToolbarHeight: 40px;
 $licenseBannerHeight: 36px;
 
 .rsa-protected {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: text-color(primary, light);
+  }
 
   &__outlet {
     z-index: 1;
