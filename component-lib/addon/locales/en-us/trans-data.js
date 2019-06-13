@@ -4771,7 +4771,7 @@ effects the previewed source.',
         collectAll: 'Collect historical and new data',
         fileEncoding: 'File Encoding',
         sourceName: 'Source Name',
-        exclusionFilter: 'Exclusion Filter',
+        exclusionFilters: 'Exclusion Filters',
         fileSourceType: {
           add: 'Add Selected File Type',
           placeholder: 'Pick a Log File Type'

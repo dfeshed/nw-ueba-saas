@@ -11,8 +11,8 @@ export default DataTableBody.extend({
   enableOnAgentConfig: enableOnAgentConfig(),
   dataCollectionConfig: dataCollectionConfig(),
 
-  @computed('item.exclusionFilter')
-  exclusionFilter(filter) {
+  @computed('item.exclusionFilters')
+  exclusionFilters(filter) {
     // Since filter is stored as an array in state, convert to string and display it in the textarea.
     return arrToString(filter);
   },
@@ -22,7 +22,7 @@ export default DataTableBody.extend({
       this.set(`item.${column}`, value);
       this.get('sourceUpdated')();
     },
-    setExclusionFilter(column, option) {
+    setexclusionFilters(column, option) {
       // capture the value from the textarea
       const { value } = option.target;
       // convert the entered string into an array delimited by comma and store in state

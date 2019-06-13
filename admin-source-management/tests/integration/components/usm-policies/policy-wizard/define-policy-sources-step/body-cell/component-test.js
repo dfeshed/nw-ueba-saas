@@ -30,7 +30,7 @@ const item = {
   enabled: true,
   startOfEvents: false,
   sourceName: 'apache-server-1',
-  exclusionFilter: ['filter-1', 'filter-2']
+  exclusionFilters: ['filter-1', 'filter-2']
 };
 
 module('Integration | Component | usm-policies/policy-wizard/define-policy-sources-step/body-cell', function(hooks) {
@@ -170,10 +170,10 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       .build();
 
     const column = {
-      field: 'exclusionFilter',
-      title: 'adminUsm.policyWizard.filePolicy.exclusionFilter',
+      field: 'exclusionFilters',
+      title: 'adminUsm.policyWizard.filePolicy.exclusionFilters',
       width: '30vw',
-      displayType: 'exclusionFilter'
+      displayType: 'exclusionFilters'
     };
 
     this.setProperties({
@@ -193,11 +193,11 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       }}
     `);
     const value = 'filter-3, filter-4';
-    const [eventIdEl] = findAll('.exclusion-filter textarea');
+    const [eventIdEl] = findAll('.exclusion-filters textarea');
     await fillIn(eventIdEl, value);
     await triggerEvent(eventIdEl, 'blur');
 
-    assert.equal(findAll('.exclusion-filter').length, 1);
+    assert.equal(findAll('.exclusion-filters').length, 1);
   });
 
   test('file type is displayed in the container', async function(assert) {

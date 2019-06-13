@@ -84,17 +84,17 @@
       }}
     </div>
 
-  {{else if (eq column.displayType 'exclusionFilter') }}
+  {{else if (eq column.displayType 'exclusionFilters') }}
     <h4 class='subheading'>
       {{t column.title}}
     </h4>
-    <div class="exclusion-filter">
+    <div class="exclusion-filters">
       {{rsa-form-textarea
         tabIndex='3'
         placeholder=(t 'adminUsm.policyWizard.descPlaceholder')
-        value=exclusionFilter
+        value=exclusionFilters
         maxLength=8000
-        focusOut=(action 'setExclusionFilter' column.field bubbles=false)
+        focusOut=(action 'setexclusionFilters' column.field bubbles=false)
       }}
     </div>
   {{/if}}

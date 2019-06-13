@@ -512,7 +512,7 @@ export default [
         fileEncoding: 'UTF-8',
         path: ['/c/apache_path-hint-1/*.log', '/c/Program Files/Apache Group/Apache[2-9]/*.log', 'apache_path-hint-2'],
         sourceName: 'Meta-Source-Name',
-        exclusionFilter: ['exclude-string-1', 'exclude-string-2', 'exclude-string-3']
+        exclusionFilters: ['exclude-string-1', 'exclude-string-2', 'exclude-string-3']
       },
       {
         fileType: 'exchange',
@@ -521,7 +521,7 @@ export default [
         fileEncoding: 'UTF-8',
         path: ['/[cd]/exchange/logs/*.log'],
         sourceName: '',
-        exclusionFilter: []
+        exclusionFilters: []
       }
     ],
     associatedGroups: [

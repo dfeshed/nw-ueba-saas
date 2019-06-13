@@ -12,7 +12,7 @@ import sinon from 'sinon';
 
 let setState, updatePolicyPropertySpy;
 const spys = [];
-const sources = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilter: ['abc', 'def'] } ];
+const sources = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['abc', 'def'] } ];
 
 module('Integration | Component | usm-policies/policy-wizard/define-policy-sources-step', function(hooks) {
   setupRenderingTest(hooks, {
@@ -91,7 +91,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     assert.equal(findAll('.child-source-container .enabled').length, 1, 'Enable on Agent radio rendered correctly');
     assert.equal(findAll('.child-source-container .startOfEvents').length, 1, 'Data Collection radio rendered correctly');
     assert.equal(findAll('.child-source-container .sourceName').length, 1, 'Source Name input rendered correctly');
-    assert.equal(findAll('.child-source-container .exclusionFilter').length, 1, 'Source Name input rendered correctly');
+    assert.equal(findAll('.child-source-container .exclusionFilters').length, 1, 'Source Name input rendered correctly');
   });
 
   test('It triggers the update policy action creator when the main fileType is changed', async function(assert) {
@@ -138,7 +138,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       .build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
     const value = 'filter-1, filter-2';
-    const [eventIdEl] = findAll('.exclusion-filter textarea');
+    const [eventIdEl] = findAll('.exclusion-filters textarea');
     await fillIn(eventIdEl, value);
     await triggerEvent(eventIdEl, 'blur');
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');

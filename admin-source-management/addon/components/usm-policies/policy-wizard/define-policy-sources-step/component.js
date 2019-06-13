@@ -49,7 +49,7 @@ const DefinePolicySourcesStep = Component.extend({
     // adding a container to the sources
     addRowFilter() {
       const selectedFileSource = this.get('selectedFileSource').name;
-      this.get('fileSources').pushObject({ fileType: selectedFileSource, fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: '', exclusionFilter: [] });
+      this.get('fileSources').pushObject({ fileType: selectedFileSource, fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: '', exclusionFilters: [] });
       this._updateFileSources();
       scheduleOnce('afterRender', this, '_scrollToAddSelectedFileTypeBtn');
     },

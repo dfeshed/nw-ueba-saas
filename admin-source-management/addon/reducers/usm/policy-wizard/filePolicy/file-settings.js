@@ -41,6 +41,6 @@ export const SOURCE_CONFIG = [
   { field: 'startOfEvents', title: 'adminUsm.policyWizard.filePolicy.dataCollection', width: '30vw', displayType: 'eventsRadio' },
   { field: 'fileEncoding', title: 'adminUsm.policyWizard.filePolicy.fileEncoding', width: '15vw', displayType: 'fileEncoding' },
   { field: 'sourceName', title: 'adminUsm.policyWizard.filePolicy.sourceName', width: '15vw', displayType: 'sourceNameInput' },
-  { field: 'exclusionFilter', title: 'adminUsm.policyWizard.filePolicy.exclusionFilter', width: '30vw', displayType: 'exclusionFilter' }
+  { field: 'exclusionFilters', title: 'adminUsm.policyWizard.filePolicy.exclusionFilters', width: '30vw', displayType: 'exclusionFilters' }
 
 ];
