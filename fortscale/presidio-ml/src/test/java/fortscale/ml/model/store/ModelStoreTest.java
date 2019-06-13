@@ -37,7 +37,7 @@ public class ModelStoreTest {
 		Assert.assertFalse(mongoTemplate.getCollectionNames().contains(collectionName));
 		StoreManager storeManager = mock(StoreManager.class);
 		modelStore.setStoreManager(storeManager);
-		modelStore.save(modelConf, "sessionId", "contextId", mock(Model.class), new TimeRange(0, 0),
+		modelStore.save(modelConf, "sessionId", "contextId", null, new TimeRange(0, 0),
 				new StoreMetadataProperties(), null);
 		Assert.assertTrue(mongoTemplate.getCollectionNames().contains(collectionName));
 	}

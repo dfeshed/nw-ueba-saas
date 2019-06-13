@@ -159,13 +159,11 @@ public class ModelStore implements ModelReader, StoreManagerAware {
                 Aggregation.group(ModelDAO.getContextFieldNamePath(contextFieldName)),
                 Aggregation.project(contextFieldName).and("_id").as(contextFieldName).andExclude("_id")
         );
-        AggregationResults<DBObject> aggrResult = mongoTemplate.aggregate(agg, collectionName, DBObject.class);
+        AggregationResults<Document> aggrResult = mongoTemplate.aggregate(agg, collectionName, Document.class);
 
-        Set<String> ret = aggrResult.getMappedResults().stream()
-                .map(result -> (String)result.get(contextFieldName))
+        return aggrResult.getMappedResults().stream()
+                .map(result -> result.getString(contextFieldName))
                 .collect(Collectors.toSet());
-
-        return ret;
     }
 
     public Collection<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, Instant eventEpochtime) {

@@ -124,7 +124,7 @@
         <swagger-annotations.version>1.5.16</swagger-annotations.version>
         <json-patch.version>1.9</json-patch.version>
         <javax.el-version>3.0.0</javax.el-version>
-        <mongodb-driver-async.version>3.8.2</mongodb-driver-async.version>
+        <mongodb-driver-async.version>3.10.2</mongodb-driver-async.version>
         <swagger-maven-plugin.version>3.1.5</swagger-maven-plugin.version>
         <jackson-coreutils.version>1.8</jackson-coreutils.version>
         <commons-io.version>2.4</commons-io.version>
@@ -188,7 +188,17 @@
             <dependency>
                 <groupId>com.malt.fakemongo</groupId>
                 <artifactId>fongo-mongo-3.8</artifactId>
-                <version>${fongo.version}</version>
+                <version>2.1.2-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-commons</artifactId>
+                <version>2.1.8.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-mongodb</artifactId>
+                <version>2.1.8.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.data</groupId>
@@ -404,6 +414,11 @@
             <dependency>
                 <groupId>org.mongodb</groupId>
                 <artifactId>mongodb-driver-async</artifactId>
+                <version>${mongodb-driver-async.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver</artifactId>
                 <version>${mongodb-driver-async.version}</version>
             </dependency>
             <dependency>
