@@ -58,7 +58,7 @@
     "ember-wormhole": "0.5.5",
     "sanitize-html": "^1.18.2",
     "flexi": "2.0.1",
-    "liquid-fire": "0.29.5",
+    "liquid-fire": "0.30.0",
     "pikaday-time": "1.4.1",
     "redux": "4.0.0",
     "redux-actions": "2.6.4",
