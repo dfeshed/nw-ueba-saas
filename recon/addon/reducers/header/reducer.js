@@ -16,17 +16,41 @@ const headerReducer = handleActions({
 
   [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {
     return handle(state, action, {
-      start: (/* s */) => Immutable.from(headerInitialState).set('headerLoading', true),
+      start: (s) => {
+        return s.merge({
+          headerLoading: true
+        });
+      },
+      always: (s) => {
+        // in the case of missing perms, MT will not respond to this request
+        // if success or failure, headerLoading will be false before arriving here
+        if (s.headerLoading) {
+          return s.merge({
+            headerLoading: false,
+            headerError: true
+          });
+        } else {
+          return s;
+        }
+      },
       finish: (s) => s.set('headerLoading', false),
-      failure: (s) => s.merge({
-        headerError: true,
-        headerErrorCode: action.payload.code
-      }),
-      success: (s) => s.set('headerItems', Immutable.from(action.payload.headerItems))
+      failure: (s) => {
+        return s.merge({
+          headerLoading: false,
+          headerError: true,
+          headerErrorCode: action.payload.code
+        });
+      },
+      success: (s) => {
+        return s.merge({
+          headerLoading: false,
+          headerError: false,
+          headerItems: Immutable.from(action.payload.headerItems)
+        });
+      }
     });
   }
 
 }, Immutable.from(headerInitialState));
 
 export default headerReducer;
-
