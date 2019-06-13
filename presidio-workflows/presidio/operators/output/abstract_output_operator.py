@@ -38,7 +38,7 @@ class AbstractOutputOperator(FixedDurationJarOperator):
 
         java_args.update(java_args_smart_record_conf_name)
 
-        self.log.debug('agg operator. command=%s', command)
+        self.log.debug('output operator. command=%s', command)
         super(AbstractOutputOperator, self).__init__(
             task_id=self.task_id,
             fixed_duration_strategy=self.fixed_duration_strategy,
