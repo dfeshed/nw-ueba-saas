@@ -16,8 +16,10 @@ import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.IndicatorEventRepository;
 import presidio.output.domain.repositories.IndicatorRepository;
 
+import java.lang.reflect.Array;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -168,6 +170,9 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
     @Override
     public Stream<Indicator> findIndicatorByDateAndAlertIds(Instant startDate, Instant endDate, List<String> alertIds) {
+        if(alertIds.isEmpty()){
+            return Stream.empty();
+        }
         return indicatorRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndAlertIdIn(startDate.toEpochMilli(), endDate.toEpochMilli(), alertIds);
     }
 

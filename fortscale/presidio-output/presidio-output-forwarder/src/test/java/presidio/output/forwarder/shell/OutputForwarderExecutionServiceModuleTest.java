@@ -77,7 +77,7 @@ public class OutputForwarderExecutionServiceModuleTest {
         alertPersistencyService.save(alert2);
 
         Indicator indicator1 = new Indicator();
-        indicator1.setAlertId("c678bb28-f795-402c-8d64-09f26e82807d");
+        indicator1.setAlertId(alert1.getId());
         indicator1.setName("high_number_of_distinct_src_computer_clusters_print");
         indicator1.setStartDate(now);
         indicator1.setEndDate(now);
@@ -88,7 +88,7 @@ public class OutputForwarderExecutionServiceModuleTest {
         alertPersistencyService.save(indicator1);
 
         Indicator indicator2 = new Indicator();
-        indicator2.setAlertId("c678bb28-f795-402c-8d64-09f26e82807d");
+        indicator2.setAlertId(alert2.getId());
         indicator2.setName("high_number_of_distinct_src_computer_clusters_print");
         indicator2.setStartDate(fiveDaysAgo);
         indicator2.setEndDate(fiveDaysAgo);
