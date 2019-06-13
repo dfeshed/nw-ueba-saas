@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.builders.smart.alert_retention_operator_builder import AlertRetentionOperatorBuilder
-from presidio.builders.smart.user_score_operator_builder import UserScoreOperatorBuilder
+from presidio.builders.smart.entity_score_operator_builder import EntityScoreOperatorBuilder
 from presidio.builders.smart_model.smart_model_accumulate_operator_builder import SmartModelAccumulateOperatorBuilder
 from presidio.factories.indicator_dag_factory import IndicatorDagFactory
 from presidio.factories.smart_model_dag_factory import SmartModelDagFactory
@@ -33,8 +33,8 @@ class SmartDagBuilder(PresidioDagBuilder):
         smart_record_conf_name = dag.default_args.get("smart_conf_name")
         entity_type = dag.default_args.get("entity_type")
         smart_operator = self._build_smart(root_dag_gap_sensor_operator, dag, smart_record_conf_name)
-        user_score_operator = self._build_output_operator(smart_record_conf_name, entity_type, dag, smart_operator)
-        self._build_alert_retention_operator(dag, user_score_operator, entity_type)
+        entity_score_operator = self._build_output_operator(smart_record_conf_name, entity_type, dag, smart_operator)
+        self._build_alert_retention_operator(dag, entity_score_operator, entity_type)
         return dag
 
     def _build_root_dag_gap_sensor_operator(self, smart_dag):
@@ -119,9 +119,9 @@ class SmartDagBuilder(PresidioDagBuilder):
         task_sensor_service.add_task_sequential_sensor(hourly_output_operator)
         task_sensor_service.add_task_short_circuit(hourly_output_operator, output_short_circuit_operator)
 
-        # build user score
-        user_score_operator = UserScoreOperatorBuilder(smart_record_conf_name).build(dag)
-        # Create daily short circuit operator to wire the output processing and the user score recalculation
+        # build entity score
+        entity_score_operator = EntityScoreOperatorBuilder(smart_record_conf_name, entity_type).build(dag)
+        # Create daily short circuit operator to wire the output processing and the entity score recalculation
         daily_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='output_daily_short_circuit',
             dag=dag,
@@ -130,18 +130,18 @@ class SmartDagBuilder(PresidioDagBuilder):
                                                                      dag.schedule_interval) &
                                              PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
                                                  dag,
-                                                 UserScoreOperatorBuilder.get_min_gap_from_dag_start_date_to_start_modeling(
+                                                 EntityScoreOperatorBuilder.get_min_gap_from_dag_start_date_to_start_modeling(
                                                      PresidioDagBuilder.conf_reader),
                                                  kwargs['execution_date'],
                                                  dag.schedule_interval)
         )
 
-        daily_short_circuit_operator >> user_score_operator
+        daily_short_circuit_operator >> entity_score_operator
         self._push_forwarding(hourly_output_operator, daily_short_circuit_operator, dag)
 
         smart_operator >> output_short_circuit_operator
 
-        return user_score_operator
+        return entity_score_operator
 
     def _push_forwarding(self, hourly_output_operator, daily_short_circuit_operator, dag):
         self.log.debug("creating the forwarder task")
@@ -160,7 +160,7 @@ class SmartDagBuilder(PresidioDagBuilder):
         else:
             hourly_output_operator >> daily_short_circuit_operator
 
-    def _build_alert_retention_operator(self, dag, user_score_operator, entity_type):
+    def _build_alert_retention_operator(self, dag, entity_score_operator, entity_type):
         alert_retention_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='alert_retention_short_circuit',
             dag=dag,
@@ -178,4 +178,4 @@ class SmartDagBuilder(PresidioDagBuilder):
 
         alert_retention = AlertRetentionOperatorBuilder().build(dag, entity_type)
 
-        user_score_operator >> alert_retention_short_circuit_operator >> alert_retention
+        entity_score_operator >> alert_retention_short_circuit_operator >> alert_retention

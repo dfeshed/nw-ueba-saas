@@ -525,6 +525,7 @@ public class AlertApiControllerModuleTest {
         entity.setScore(150);
         entity.setEntityName("testEntity");
         entity.setSeverity(EntitySeverity.MEDIUM);
+        entity.setEntityType("entityType");
         Entity savedEntity = entityRepository.save(entity);
 
         //save alerts in elastic
@@ -633,6 +634,7 @@ public class AlertApiControllerModuleTest {
         entity.setScore(170);
         entity.setEntityName("testEntity");
         entity.setSeverity(EntitySeverity.LOW);
+        entity.setEntityType("entityType");
         Entity savedEntity = entityRepository.save(entity);
 
         //save alerts in elastic
@@ -680,6 +682,7 @@ public class AlertApiControllerModuleTest {
         entity.setScore(170);
         entity.setEntityName("testEntity");
         entity.setSeverity(EntitySeverity.LOW);
+        entity.setEntityType("entityType");
         Entity savedEntity = entityRepository.save(entity);
 
         //save alerts in elastic
@@ -722,7 +725,7 @@ public class AlertApiControllerModuleTest {
         entitySeveritiesRangeMap.put(EntitySeverity.MEDIUM, new PresidioRange<>(lowSeverityUpperBound, mediumSeverityUpperBound));
         entitySeveritiesRangeMap.put(EntitySeverity.HIGH, new PresidioRange<>(mediumSeverityUpperBound, highSeverityUpperBound));
         entitySeveritiesRangeMap.put(EntitySeverity.CRITICAL, new PresidioRange<>(highSeverityUpperBound, highSeverityUpperBound * 1.5));
-        return new EntitySeveritiesRangeDocument(entitySeveritiesRangeMap);
+        return new EntitySeveritiesRangeDocument(entitySeveritiesRangeMap, "entityType");
     }
 
     @Test

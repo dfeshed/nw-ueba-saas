@@ -146,7 +146,7 @@ dags:
         main_class: presidio.output.processor.FortscaleOutputProcessorApplication
         xmx: 4096
         xms: 4096
-    UserScoreOperator:
+    EntityScoreOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-output-processor.jar
         main_class: presidio.output.processor.FortscaleOutputProcessorApplication

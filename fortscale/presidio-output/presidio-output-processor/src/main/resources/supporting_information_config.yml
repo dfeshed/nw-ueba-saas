@@ -1266,6 +1266,752 @@ indicators:
     featureName: processFilePathHistogram
   classification: registry_run_keys
 
+
+#*********************************************************
+#*                   TLS INDICATORS                      *
+#*********************************************************
+
+#***************************************
+#*             ssl subject             *
+#***************************************
+
+- id: sumOfBytesSentToDstOrgScoresSumSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_to_dst_org_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - dstOrg
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+  splitFields:
+    - dstOrg
+  historicalData:
+    type: hourly_aggregations
+    featureName: sumOfBytesSentToDstOrgOutboundTlsHourly
+  classification: exfiltration
+
+- id: sumOfBytesSentToDstPortScoresSumSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - dstPort
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+  splitFields:
+    - dstPort
+  historicalData:
+    type: hourly_aggregations
+    featureName: sumOfBytesSentToDstPortOutboundTlsHourly
+  classification: exfiltration
+
+- id: sumOfBytesSentToDomainScoresSumSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_to_domain_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - domain
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+  splitFields:
+    - domain
+  historicalData:
+    type: hourly_aggregations
+    featureName: sumOfBytesSentToDomainOutboundTlsHourly
+  classification: exfiltration
+
+- id: sumOfBytesSentToSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_to_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - sslSubject
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+  historicalData:
+    type: hourly_aggregations
+  classification: exfiltration
+
+- id: maxSumOfBytesSentBySrcIpToDstPortScoresSumSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_by_src_ip_to_dst_port_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - dstPort
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+  splitFields:
+    - dstPort
+  historicalData:
+    type: hourly_aggregations
+    featureName: maxSumOfBytesSentBySrcIpToDstPortOutboundTlsHourly
+  classification: exfiltration
+
+- id: maxSumOfBytesSentBySrcIpToDstOrgScoresSumSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_by_src_ip_to_dst_org_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - dstOrg
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+  splitFields:
+    - dstOrg
+  historicalData:
+    type: hourly_aggregations
+    featureName: maxSumOfBytesSentBySrcIpToDstOrgOutboundTlsHourly
+  classification: exfiltration
+
+- id: maxSumOfBytesSentBySrcIpToDomainScoresSumSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_by_src_ip_to_domain_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - domain
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+  splitFields:
+    - domain
+  historicalData:
+    type: hourly_aggregations
+    featureName: maxSumOfBytesSentBySrcIpToDomainOutboundTlsHourly
+  classification: exfiltration
+
+- id: maxSumOfBytesSentBySrcIpToSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_by_src_ip_to_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - sslSubject
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+  historicalData:
+    type: hourly_aggregations
+  classification: exfiltration
+
+- id: sumOfHighestSslSubjectSrcNetnameOutboundScoresSslSubjectTlsHourly
+  type: SCORE_AGGREGATION
+  name: ssl_subject_abnormal_ssl_subject_for_src_netname_outbound
+  adeEventType: scored_enriched.tls.sslSubject.srcNetnameOutbound.tls.score
+  modelContextFields:
+    - srcNetname
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: sslSubject
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - srcNetname
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: sslSubjectHistogramSrcNetnameOutboundTlsDaily
+    featureName: sslSubjectHistogram
+  classification: exfiltration
+
+- id: sumOfHighestDomainSrcNetnameOutboundScoresSslSubjectTlsHourly
+  type: SCORE_AGGREGATION
+  name: ssl_subject_abnormal_domain_for_src_netname_outbound
+  adeEventType: scored_enriched.tls.domain.srcNetnameOutbound.tls.score
+  modelContextFields:
+    - srcNetname
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: domain
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - srcNetname
+    - domain
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: domainHistogramSrcNetnameOutboundTlsDaily
+    featureName: domainHistogram
+  classification: exfiltration
+
+- id: sumOfHighestDstPortSrcNetnameOutboundScoresSslSubjectTlsHourly
+  type: SCORE_AGGREGATION
+  name: ssl_subject_abnormal_dst_port_for_src_netname_outbound
+  adeEventType: scored_enriched.tls.dstPort.srcNetnameOutbound.tls.score
+  modelContextFields:
+    - srcNetname
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: dstPort
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - srcNetname
+    - dstPort
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstPortHistogramSrcNetnameOutboundTlsDaily
+    featureName: dstPortHistogram
+  classification: exfiltration
+
+- id: sumOfHighestDstOrgSrcNetnameOutboundScoresSslSubjectTlsHourly
+  type: SCORE_AGGREGATION
+  name: ssl_subject_abnormal_dst_org_for_src_netname_outbound
+  adeEventType: scored_enriched.tls.dstOrg.srcNetnameOutbound.tls.score
+  modelContextFields:
+    - srcNetname
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: dstOrg
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - srcNetname
+    - dstOrg
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstOrgHistogramSrcNetnameOutboundTlsDaily
+    featureName: dstOrgHistogram
+  classification: exfiltration
+
+- id: sumOfHighestCountryScoresSslSubjectOutboundTlsHourly
+  type: SCORE_AGGREGATION
+  name: ssl_subject_abnormal_country_for_ssl_subject_outbound
+  adeEventType: scored_enriched.tls.country.sslSubjectOutbound.tls.score
+  modelContextFields:
+    - sslSubject
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: country
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - country
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: countryHistogramSslSubjectOutboundTlsDaily
+    featureName: countryHistogram
+  classification: phishing
+
+- id: sumOfHighestDstPortScoresSslSubjectOutboundTlsHourly
+  type: SCORE_AGGREGATION
+  name: ssl_subject_abnormal_dst_port_for_ssl_subject_outbound
+  adeEventType: scored_enriched.tls.dstPort.sslSubjectOutbound.tls.score
+  modelContextFields:
+    - sslSubject
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: dstPort
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - dstPort
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstPortHistogramSslSubjectOutboundTlsDaily
+    featureName: dstPortHistogram
+  classification: exfiltration
+
+- id: highestStartInstantScoreSslSubjectOutboundTlsHourly
+  type: SCORE_AGGREGATION
+  name: ssl_subject_abnormal_ssl_subject_day_time
+  adeEventType: scored_enriched.tls.startInstant.sslSubjectOutbound.tls.score
+  modelContextFields:
+    - sslSubject
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: eventDate
+  splitFields:
+    - eventDate
+  historicalData:
+    type: weekday_aggregations
+    featureBucketConfName: startInstantHistogramSslSubjectOutboundTlsDaily
+    featureName: startInstantHistogram
+  classification: non_standard_hours
+
+- id: sumOfHighestDstPortDomainOutboundScoresSslSubjectTlsHourly
+  type: SCORE_AGGREGATION
+  name: ssl_subject_abnormal_dst_port_for_domain_outbound
+  adeEventType: scored_enriched.tls.dstPort.domainOutbound.tls.score
+  modelContextFields:
+    - domain
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: dstPort
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - domain
+    - dstPort
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstPortHistogramDomainOutboundTlsDaily
+    featureName: dstPortHistogram
+  classification: exfiltration
+
+- id: sumOfHighestDstPortDstOrgOutboundScoresSslSubjectTlsHourly
+  type: SCORE_AGGREGATION
+  name: ssl_subject_abnormal_dst_port_for_dst_org_outbound
+  adeEventType: scored_enriched.tls.dstPort.dstOrgOutbound.tls.score
+  modelContextFields:
+    - dstOrg
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: dstPort
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - dstOrg
+    - dstPort
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstPortHistogramDstOrgOutboundTlsDaily
+    featureName: dstPortHistogram
+  classification: exfiltration
+
+- id: highestStartInstantJa3OutboundScoresSslSubjectTlsHourly
+  type: SCORE_AGGREGATION
+  name: ssl_subject_abnormal_ja3_day_time
+  adeEventType: scored_enriched.tls.startInstant.ja3Outbound.tls.score
+  modelContextFields:
+    - ja3
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: eventDate
+  splitFields:
+    - ja3
+  historicalData:
+    type: weekday_aggregations
+    featureBucketConfName: startInstantHistogramJa3OutboundTlsDaily
+    featureName: startInstantHistogram
+  classification: non_standard_hours
+
+- id: sumOfHighestJa3SrcNetnameOutboundScoresSslSubjectTlsHourly
+  type: SCORE_AGGREGATION
+  name: ssl_subject_abnormal_ja3_for_source_netname_outbound
+  adeEventType: scored_enriched.tls.ja3.srcNetnameOutbound.tls.score
+  modelContextFields:
+    - srcNetname
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: ja3
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - ja3
+    - srcNetname
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: ja3HistogramSrcNetnameOutboundTlsDaily
+    featureName: ja3Histogram
+  classification: phishing
+
+- id: sumOfHighestSslSubjectJa3OutboundScoresSslSubjectTlsHourly
+  type: SCORE_AGGREGATION
+  name: ssl_subject_abnormal_ssl_subject_for_ja3_outbound
+  adeEventType: scored_enriched.tls.sslSubject.ja3Outbound.tls.score
+  modelContextFields:
+    - ja3
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: sslSubject
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - ja3
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: sslSubjectHistogramJa3OutboundTlsDaily
+    featureName: sslSubjectHistogram
+  classification: phishing
+
+- id: sumOfHighestDomainJa3OutboundScoresSslSubjectTlsHourly
+  type: SCORE_AGGREGATION
+  name: ssl_subject_abnormal_domain_for_ja3_outbound
+  adeEventType: scored_enriched.tls.domain.ja3Outbound.tls.score
+  modelContextFields:
+    - ja3
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: domain
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - ja3
+    - domain
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: domainHistogramJa3OutboundTlsDaily
+    featureName: domainHistogram
+  classification: phishing
+
+- id: sumOfHighestDstPortJa3OutboundScoresSslSubjectTlsHourly
+  type: SCORE_AGGREGATION
+  name: ssl_subject_abnormal_dst_port_for_ja3_outbound
+  adeEventType: scored_enriched.tls.domain.ja3Outbound.tls.score
+  modelContextFields:
+    - ja3
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: dstPort
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - dstPort
+    - ja3
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstPortHistogramJa3OutboundTlsDaily
+    featureName: dstPortHistogram
+  classification: phishing
+
+#***************************************
+#*                ja3                  *
+#***************************************
+
+- id: numberOfDistinctSrcIpJa3OutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_src_ip_for_ja3_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - ja3
+  anomalyDescriptior:
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  historicalData:
+    type: hourly_aggregations
+  classification: phishing
+
+- id: sumOfBytesSentByJa3OutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_by_ja3_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - ja3
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+  historicalData:
+    type: hourly_aggregations
+  classification: exfiltration
+
+- id: sslSubjectSrcNetnameOutboundToHighestScoreMapJa3TlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_ssl_subject_for_src_netname_outbound
+  adeEventType: scored_enriched.tls.sslSubject.srcNetnameOutbound.tls.score
+  modelContextFields:
+    - srcNetname
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: sslSubject
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - srcNetname
+    - sslSubject
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: sslSubjectHistogramSrcNetnameOutboundTlsDaily
+    featureName: sslSubjectHistogram
+  classification: exfiltration
+
+
+- id: sumOfHighestDomainSrcNetnameOutboundScoresJa3TlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_domain_for_src_netname_outbound
+  adeEventType: scored_enriched.tls.domain.srcNetnameOutbound.tls.score
+  modelContextFields:
+    - srcNetname
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: domain
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - srcNetname
+    - domain
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: domainHistogramSrcNetnameOutboundTlsDaily
+    featureName: domainHistogram
+  classification: exfiltration
+
+- id: sumOfHighestDstPortSrcNetnameOutboundScoresJa3TlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_dst_port_for_src_netname_outbound
+  adeEventType: scored_enriched.tls.dstPort.srcNetnameOutbound.tls.score
+  modelContextFields:
+    - srcNetname
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: dstPort
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - srcNetname
+    - dstPort
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstPortHistogramSrcNetnameOutboundTlsDaily
+    featureName: dstPortHistogram
+  classification: exfiltration
+
+- id: sumOfHighestDstOrgSrcNetnameOutboundScoresJa3TlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_dst_org_for_src_netname_outbound
+  adeEventType: scored_enriched.tls.dstOrg.srcNetnameOutbound.tls.score
+  modelContextFields:
+    - srcNetname
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: dstOrg
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - srcNetname
+    - dstOrg
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstOrgHistogramSrcNetnameOutboundTlsDaily
+    featureName: dstOrgHistogram
+  classification: exfiltration
+
+- id: sumOfHighestCountrySslSubjectOutboundScoresJa3TlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_country_for_ssl_subject_outbound
+  adeEventType: scored_enriched.tls.country.sslSubjectOutbound.tls.score
+  modelContextFields:
+    - sslSubject
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: country
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - country
+    - sslSubject
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: countryHistogramSslSubjectOutboundTlsDaily
+    featureName: countryHistogram
+  classification: phishing
+
+- id: sumOfHighestDstPortSslSubjectOutboundScoresJa3TlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_dst_port_for_ssl_subject_outbound
+  adeEventType: scored_enriched.tls.dstPort.sslSubjectOutbound.tls.score
+  modelContextFields:
+    - sslSubject
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: dstPort
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - dstPort
+    - sslSubject
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstPortHistogramSslSubjectOutboundTlsDaily
+    featureName: dstPortHistogram
+  classification: exfiltration
+
+- id: highestStartInstantSslSubjectOutboundScoreJa3TlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_ssl_subject_day_time
+  adeEventType: scored_enriched.tls.startInstant.sslSubjectOutbound.tls.score
+  modelContextFields:
+    - sslSubject
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: eventDate
+  splitFields:
+    - sslSubject
+  historicalData:
+    type: weekday_aggregations
+    featureBucketConfName: startInstantHistogramSslSubjectOutboundTlsDaily
+    featureName: startInstantHistogram
+  classification: non_standard_hours
+
+- id: sumOfHighestDstPortDomainOutboundScoresJa3TlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_dst_port_for_domain_outbound
+  adeEventType: scored_enriched.tls.dstPort.domainOutbound.tls.score
+  modelContextFields:
+    - domain
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: dstPort
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - domain
+    - dstPort
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstPortHistogramDomainOutboundTlsDaily
+    featureName: dstPortHistogram
+  classification: exfiltration
+
+- id: sumOfHighestDstPortDstOrgOutboundScoresJa3TlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_dst_port_for_dst_org_outbound
+  adeEventType: scored_enriched.tls.dstPort.dstOrgOutbound.tls.score
+  modelContextFields:
+    - dstOrg
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: dstPort
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - dstOrg
+    - dstPort
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstPortHistogramDstOrgOutboundTlsDaily
+    featureName: dstPortHistogram
+  classification: exfiltration
+
+- id: highestStartInstantScoreJa3OutboundTlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_ja3_day_time
+  adeEventType: scored_enriched.tls.startInstant.ja3Outbound.tls.score
+  modelContextFields:
+    - ja3
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: eventDate
+  splitFields:
+    - eventDate
+  historicalData:
+    type: weekday_aggregations
+    featureBucketConfName: startInstantHistogramJa3OutboundTlsDaily
+    featureName: startInstantHistogram
+  classification: non_standard_hours
+
+- id: sumOfHighestJa3SrcNetnameOutboundScoresJa3TlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_ja3_for_source_netname_outbound
+  adeEventType: scored_enriched.tls.ja3.srcNetnameOutbound.tls.score
+  modelContextFields:
+    - srcNetname
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: ja3
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - srcNetname
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: ja3HistogramSrcNetnameOutboundTlsDaily
+    featureName: ja3Histogram
+  classification: phishing
+
+- id: sumOfHighestSslSubjectScoresJa3OutboundTlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_ssl_subject_for_ja3_outbound
+  adeEventType: scored_enriched.tls.sslSubject.ja3Outbound.tls.score
+  modelContextFields:
+    - ja3
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: sslSubject
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - sslSubject
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: sslSubjectHistogramJa3OutboundTlsDaily
+    featureName: sslSubjectHistogram
+  classification: phishing
+
+- id: sumOfHighestDomainScoresJa3OutboundTlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_domain_for_ja3_outbound
+  adeEventType: scored_enriched.tls.domain.ja3Outbound.tls.score
+  modelContextFields:
+    - ja3
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: domain
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - domain
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: domainHistogramJa3OutboundTlsDaily
+    featureName: domainHistogram
+  classification: phishing
+
+- id: sumOfHighestDstPortScoresJa3OutboundTlsHourly
+  type: SCORE_AGGREGATION
+  name: ja3_abnormal_dst_port_for_ja3_outbound
+  adeEventType: scored_enriched.tls.domain.ja3Outbound.tls.score
+  modelContextFields:
+    - ja3
+  schema: TLS
+  anomalyDescriptior:
+    anomalyField: dstPort
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  splitFields:
+    - dstPort
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstPortHistogramJa3OutboundTlsDaily
+    featureName: dstPortHistogram
+  classification: phishing
+
 classificationPriority:
 
 - classificationName: credential_dumping
@@ -1351,3 +2097,9 @@ classificationPriority:
 
 - classificationName: suspicious_user_activity
   priority: 28
+
+- classificationName: phishing
+  priority: 29
+
+- classificationName: exfiltration
+  priority: 30

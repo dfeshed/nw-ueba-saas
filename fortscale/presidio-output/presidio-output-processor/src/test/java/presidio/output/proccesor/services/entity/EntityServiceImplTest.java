@@ -1,6 +1,5 @@
 package presidio.output.proccesor.services.entity;
 
-import fortscale.domain.core.EventResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -9,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import presidio.output.commons.services.entity.EntityMappingServiceImpl;
 import presidio.output.commons.services.entity.EntitySeverityService;
 import presidio.output.commons.services.entity.EntitySeverityServiceImpl;
 import presidio.output.domain.records.PresidioRange;
@@ -54,6 +54,7 @@ public class EntityServiceImplTest {
     private EntityScoreService mockEntityScoreService;
     private AlertPersistencyService mockAlertPersistency;
     private EntitySeverityService mockEntitySeverityService;
+    private EntityMappingServiceImpl mockEntityMappingServiceImpl;
 
     private Page<Alert> emptyAlertPage;
 
@@ -65,12 +66,13 @@ public class EntityServiceImplTest {
         mockEntityScoreService = Mockito.mock(EntityScoreService.class);
         mockAlertPersistency = Mockito.mock(AlertPersistencyServiceImpl.class);
         mockEntitySeverityService = Mockito.mock(EntitySeverityService.class);
+        mockEntityMappingServiceImpl = Mockito.mock(EntityMappingServiceImpl.class);
         Map<EntitySeverity, PresidioRange<Double>> severityRangeMap = new LinkedHashMap<>();
         severityRangeMap.put(EntitySeverity.LOW, new PresidioRange<>(0d, 30d));
         severityRangeMap.put(EntitySeverity.MEDIUM, new PresidioRange<>(30d, 60d));
         severityRangeMap.put(EntitySeverity.HIGH, new PresidioRange<>(60d, 90d));
         severityRangeMap.put(EntitySeverity.CRITICAL, new PresidioRange<>(90d, 100d));
-        Mockito.when(mockEntitySeverityService.getSeveritiesMap(false)).thenReturn(new EntitySeverityServiceImpl.EntityScoreToSeverity(severityRangeMap));
+        Mockito.when(mockEntitySeverityService.getSeveritiesMap(false, "entityType")).thenReturn(new EntitySeverityServiceImpl.EntityScoreToSeverity(severityRangeMap));
 
         entityService = new EntityServiceImpl(mockEventPersistency,
                 mockEntityPresistency,
@@ -78,7 +80,8 @@ public class EntityServiceImplTest {
                 mockEntityScoreService,
                 mockEntitySeverityService,
                 ALERT_EFFECTIVE_DURATION_IN_DAYS,
-                1000);
+                1000,
+                mockEntityMappingServiceImpl);
         emptyAlertPage = new PageImpl<>(Collections.emptyList());
     }
 
@@ -86,9 +89,9 @@ public class EntityServiceImplTest {
     @Test
     public void testUpdateEntityScoreBatch() throws Exception {
         List<Entity> entitiesWithOldScore = Arrays.asList(
-                new Entity("entity1", null, 50, null, null, null, EntitySeverity.CRITICAL, 0, "entity"),
-                new Entity("entity2", null, 50, null, null, null, EntitySeverity.CRITICAL, 0, "entity"),
-                new Entity("entity3", null, 50, null, null, null, EntitySeverity.CRITICAL, 0, "entity")
+                new Entity("entity1", null, 50, null, null, null, EntitySeverity.CRITICAL, 0, "entityType"),
+                new Entity("entity2", null, 50, null, null, null, EntitySeverity.CRITICAL, 0, "entityType"),
+                new Entity("entity3", null, 50, null, null, null, EntitySeverity.CRITICAL, 0, "entityType")
         );
 
         Pageable pageable1 = new PageRequest(0, 3);
@@ -125,7 +128,7 @@ public class EntityServiceImplTest {
 
     @Test
     public void testAddEntityAlertData() {
-        Entity entity1 = new Entity("entity1", null, 50, null, null, null, EntitySeverity.CRITICAL, 0, "entity");
+        Entity entity1 = new Entity("entity1", null, 50, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
         List<String> classification1 = null, classification2, classification3, classification4;
         List<String> indicators1 = null, indicators2, indicators3;
         classification2 = new ArrayList<>(Arrays.asList("a", "b"));
@@ -165,18 +168,19 @@ public class EntityServiceImplTest {
 
     @Test
     public void createEntityFromEnrichedEvent() {
-        EventResult result = EventResult.SUCCESS;
         Map<String, String> additionalInfo = new HashMap<>();
         additionalInfo.put("isUserAdmin", "false");
         String entityId = "entityId1";
+        String entityName = "entityName";
         String userDisplayName = "userDisplayName1";
-        EnrichedUserEvent enrichedEvent = new EnrichedUserEvent(Instant.now(), Instant.now(), "event1", "Active Directory", entityId, entityId,
+        EnrichedUserEvent enrichedEvent = new EnrichedUserEvent(Instant.now(), Instant.now(), "event1", "Active Directory", entityId, entityName,
                 userDisplayName, "Active Directory", additionalInfo);
         Mockito.when(this.mockEventPersistency.findLatestEventForEntity(Mockito.any(String.class), Mockito.any(List.class), Mockito.any(String.class))).thenReturn(enrichedEvent);
+        Mockito.when(this.mockEntityMappingServiceImpl.getEntityNameField(Mockito.any(String.class))).thenReturn("userName");
 
-        Entity entity = entityService.createEntity(entityId, "entity");
+        Entity entity = entityService.createEntity(entityId, "userId");
         assertEquals(0, entity.getTags().size());
         assertEquals(entityId, entity.getEntityId());
-        assertEquals(entityId, entity.getEntityName());
+        assertEquals(entityName, entity.getEntityName());
     }
 }
