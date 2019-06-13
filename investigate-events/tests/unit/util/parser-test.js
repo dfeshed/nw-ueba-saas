@@ -15,16 +15,20 @@ module('Unit | Util | Parser', function(hooks) {
     ];
     const p = new Parser(tokens);
     const result = p.parse();
-    assert.strictEqual(result.type, GRAMMAR.CRITERIA, 'Top level is criteria');
-    assert.deepEqual(result.meta, { type: LEXEMES.META, text: 'medium' }, 'Meta is "medium"');
-    assert.deepEqual(result.operator, { type: LEXEMES.OPERATOR, text: '=' }, 'Operator is "="');
-    assert.deepEqual(result.valueRanges[0], {
-      type: GRAMMAR.META_VALUE,
-      value: {
-        type: LEXEMES.NUMBER,
-        text: '3'
+    assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
+    assert.deepEqual(result.children, [
+      {
+        type: GRAMMAR.CRITERIA,
+        meta: { type: LEXEMES.META, text: 'medium' },
+        operator: { type: LEXEMES.OPERATOR, text: '=' },
+        valueRanges: [
+          {
+            type: GRAMMAR.META_VALUE,
+            value: { type: LEXEMES.NUMBER, text: '3' }
+          }
+        ]
       }
-    }, 'Left value is "3"');
+    ], 'children contains the expected single criteria with correct values');
   });
 
   test('correctly parses two meta and &&', function(assert) {
@@ -39,27 +43,32 @@ module('Unit | Util | Parser', function(hooks) {
     ];
     const p = new Parser(tokens);
     const result = p.parse();
-    assert.strictEqual(result.type, GRAMMAR.AND_EXPRESSION, 'Top level is and expression');
-    assert.ok(result.left, 'Left side of and exists');
-    assert.ok(result.right, 'Right side of and exists');
-    assert.deepEqual(result.left.meta, { type: LEXEMES.META, text: 'medium' }, 'Left meta is "medium"');
-    assert.deepEqual(result.right.meta, { type: LEXEMES.META, text: 'filename' }, 'Right meta is "filename"');
-    assert.deepEqual(result.left.operator, { type: LEXEMES.OPERATOR, text: '=' }, 'Left operator is "="');
-    assert.deepEqual(result.right.operator, { type: LEXEMES.OPERATOR, text: '!=' }, 'Right operator is "!="');
-    assert.deepEqual(result.left.valueRanges[0], {
-      type: GRAMMAR.META_VALUE,
-      value: {
-        type: LEXEMES.NUMBER,
-        text: '3'
+    assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
+    assert.deepEqual(result.children, [
+      {
+        type: GRAMMAR.CRITERIA,
+        meta: { type: LEXEMES.META, text: 'medium' },
+        operator: { type: LEXEMES.OPERATOR, text: '=' },
+        valueRanges: [
+          {
+            type: GRAMMAR.META_VALUE,
+            value: { type: LEXEMES.NUMBER, text: '3' }
+          }
+        ]
+      },
+      { type: LEXEMES.AND, text: '&&' },
+      {
+        type: GRAMMAR.CRITERIA,
+        meta: { type: LEXEMES.META, text: 'filename' },
+        operator: { type: LEXEMES.OPERATOR, text: '!=' },
+        valueRanges: [
+          {
+            type: GRAMMAR.META_VALUE,
+            value: { type: LEXEMES.STRING, text: 'hyberfile.sys' }
+          }
+        ]
       }
-    }, 'Left value is "3"');
-    assert.deepEqual(result.right.valueRanges[0], {
-      type: GRAMMAR.META_VALUE,
-      value: {
-        type: LEXEMES.STRING,
-        text: 'hyberfile.sys'
-      }
-    }, 'Right value is "hyberfile.sys"');
+    ], 'children contains the expected two criteria with correct values, separated by a LEXEMES.AND');
   });
 
   test('correctly parses a group (parenthesis)', function(assert) {
@@ -72,17 +81,28 @@ module('Unit | Util | Parser', function(hooks) {
     ];
     const p = new Parser(tokens);
     const result = p.parse();
-    assert.strictEqual(result.type, GRAMMAR.GROUP, 'Top level is a group');
-    assert.strictEqual(result.group.type, GRAMMAR.CRITERIA, 'Inside of group is a criteria');
-    assert.deepEqual(result.group.meta, { type: LEXEMES.META, text: 'b' }, 'Meta is "b"');
-    assert.deepEqual(result.group.operator, { type: LEXEMES.OPERATOR, text: '=' }, 'Operator is "="');
-    assert.deepEqual(result.group.valueRanges[0], {
-      type: GRAMMAR.META_VALUE,
-      value: {
-        type: LEXEMES.STRING,
-        text: 'netwitness'
+    assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
+    assert.deepEqual(result.children, [
+      {
+        type: GRAMMAR.GROUP,
+        group: {
+          type: GRAMMAR.WHERE_CRITERIA,
+          children: [
+            {
+              type: GRAMMAR.CRITERIA,
+              meta: { type: LEXEMES.META, text: 'b' },
+              operator: { type: LEXEMES.OPERATOR, text: '=' },
+              valueRanges: [
+                {
+                  type: GRAMMAR.META_VALUE,
+                  value: { type: LEXEMES.STRING, text: 'netwitness' }
+                }
+              ]
+            }
+          ]
+        }
       }
-    }, 'Left value is "netwitness"');
+    ]);
   });
 
   test('throws error for mismatched parentheses', function(assert) {
@@ -171,14 +191,18 @@ module('Unit | Util | Parser', function(hooks) {
     ];
     const p = new Parser(tokens);
     const result = p.parse();
-    assert.strictEqual(result.type, GRAMMAR.CRITERIA);
-    assert.deepEqual(result.meta, { type: LEXEMES.META, text: 'medium' });
-    assert.deepEqual(result.operator, { type: LEXEMES.OPERATOR, text: 'exists' });
-    assert.notOk(result.valueRanges);
+    assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA);
+    assert.deepEqual(result.children, [
+      {
+        type: GRAMMAR.CRITERIA,
+        meta: { type: LEXEMES.META, text: 'medium' },
+        operator: { type: LEXEMES.OPERATOR, text: 'exists' }
+      }
+    ]);
   });
 
   test('correctly parses multiple complex filters', function(assert) {
-    // ((b = text) || (medium != 44)) && (bytes.src >= 1)
+    // ((b = "text") || (medium != 44)) && (bytes.src >= 1)
     const tokens = [
       { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.LEFT_PAREN, text: '(' },
@@ -202,41 +226,75 @@ module('Unit | Util | Parser', function(hooks) {
     ];
     const p = new Parser(tokens);
     const result = p.parse();
-    assert.strictEqual(result.type, GRAMMAR.AND_EXPRESSION);
-    assert.strictEqual(result.left.type, GRAMMAR.GROUP);
-    assert.strictEqual(result.left.group.type, GRAMMAR.OR_EXPRESSION);
-    assert.strictEqual(result.left.group.left.type, GRAMMAR.GROUP);
-    assert.strictEqual(result.left.group.left.group.type, GRAMMAR.CRITERIA);
-    assert.deepEqual(result.left.group.left.group.meta, { type: LEXEMES.META, text: 'b' });
-    assert.deepEqual(result.left.group.left.group.operator, { type: LEXEMES.OPERATOR, text: '=' });
-    assert.deepEqual(result.left.group.left.group.valueRanges[0], {
-      type: GRAMMAR.META_VALUE,
-      value: {
-        type: LEXEMES.STRING,
-        text: 'text'
+    assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA);
+    assert.deepEqual(result.children, [
+      {
+        type: GRAMMAR.GROUP,
+        group: {
+          type: GRAMMAR.WHERE_CRITERIA,
+          children: [
+            {
+              type: GRAMMAR.GROUP,
+              group: {
+                type: GRAMMAR.WHERE_CRITERIA,
+                children: [
+                  {
+                    type: GRAMMAR.CRITERIA,
+                    meta: { type: LEXEMES.META, text: 'b' },
+                    operator: { type: LEXEMES.OPERATOR, text: '=' },
+                    valueRanges: [
+                      {
+                        type: GRAMMAR.META_VALUE,
+                        value: { type: LEXEMES.STRING, text: 'text' }
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            { type: LEXEMES.OR, text: '||' },
+            {
+              type: GRAMMAR.GROUP,
+              group: {
+                type: GRAMMAR.WHERE_CRITERIA,
+                children: [
+                  {
+                    type: GRAMMAR.CRITERIA,
+                    meta: { type: LEXEMES.META, text: 'medium' },
+                    operator: { type: LEXEMES.OPERATOR, text: '!=' },
+                    valueRanges: [
+                      {
+                        type: GRAMMAR.META_VALUE,
+                        value: { type: LEXEMES.NUMBER, text: '44' }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      { type: LEXEMES.AND, text: '&&' },
+      {
+        type: GRAMMAR.GROUP,
+        group: {
+          type: GRAMMAR.WHERE_CRITERIA,
+          children: [
+            {
+              type: GRAMMAR.CRITERIA,
+              meta: { type: LEXEMES.META, text: 'bytes.src' },
+              operator: { type: LEXEMES.OPERATOR, text: '>=' },
+              valueRanges: [
+                {
+                  type: GRAMMAR.META_VALUE,
+                  value: { type: LEXEMES.NUMBER, text: '1' }
+                }
+              ]
+            }
+          ]
+        }
       }
-    });
-    assert.strictEqual(result.left.group.right.type, GRAMMAR.GROUP);
-    assert.strictEqual(result.left.group.right.group.type, GRAMMAR.CRITERIA);
-    assert.deepEqual(result.left.group.right.group.meta, { type: LEXEMES.META, text: 'medium' });
-    assert.deepEqual(result.left.group.right.group.operator, { type: LEXEMES.OPERATOR, text: '!=' });
-    assert.deepEqual(result.left.group.right.group.valueRanges[0], {
-      type: GRAMMAR.META_VALUE,
-      value: {
-        type: LEXEMES.NUMBER,
-        text: '44'
-      }
-    });
-    assert.strictEqual(result.right.type, GRAMMAR.GROUP);
-    assert.strictEqual(result.right.group.type, GRAMMAR.CRITERIA);
-    assert.deepEqual(result.right.group.meta, { type: LEXEMES.META, text: 'bytes.src' });
-    assert.deepEqual(result.right.group.operator, { type: LEXEMES.OPERATOR, text: '>=' });
-    assert.deepEqual(result.right.group.valueRanges[0], {
-      type: GRAMMAR.META_VALUE,
-      value: {
-        type: LEXEMES.NUMBER,
-        text: '1'
-      }
-    });
+    ]);
   });
 });

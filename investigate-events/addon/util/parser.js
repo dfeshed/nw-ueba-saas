@@ -111,23 +111,24 @@ class Parser {
   }
 
   /**
-   * This can return either a GRAMMAR.CRITERIA, or a GRAMMAR.AND_EXPRESSION
-   * /GRAMMAR.OR_EXPRESSION depending on whether or not it is one expression
-   * or multiple separated by logical operators.
+   * Returns a GRAMMAR.WHERE_CRITERIA, which has a property `children` that
+   * contains one guaranteed criteria or group, followed optionally by 0 or more
+   * groups of logical operators with additional groups or criteria.
+   * e.g. (criteriaOrGroup, [logicalOperator, criteriaOrGroup]*) where the group
+   * of logicalOperator followed by criteriaOrGroup is repeated 0 or more times.
+   * The criteria or group will haves types of GRAMMAR.CRITERIA or GRAMMAR.GROUP
+   * respectively, while the logical operators will be of type LEXEMES.OR or LEXEMES.AND.
    * @private
    */
   _whereCriteria() {
-    let result = this._criteriaOrGroup();
+    const result = {
+      type: GRAMMAR.WHERE_CRITERIA,
+      children: [ this._criteriaOrGroup() ]
+    };
     while (this._nextTokenIsOfType([ LEXEMES.AND, LEXEMES.OR ])) {
-      // True if and expression, false if or expression. Also consumes the AND/OR
-      const isAnd = this._advance().type === LEXEMES.AND;
-      // Recursively parse the next criteria or group
-      const right = this._criteriaOrGroup();
-      result = {
-        type: isAnd ? GRAMMAR.AND_EXPRESSION : GRAMMAR.OR_EXPRESSION,
-        left: result,
-        right
-      };
+      const operator = this._advance();
+      const nextCriteriaOrGroup = this._criteriaOrGroup();
+      result.children.push(operator, nextCriteriaOrGroup);
     }
     return result;
   }
