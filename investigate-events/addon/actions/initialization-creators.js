@@ -354,12 +354,7 @@ const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, hashNavigateCall
         if (searchTextString) {
           // Create a textSearch pill and insert it into the correct index
           const { index, searchTerm } = searchTextString;
-          const textFilter = {
-            meta: undefined,
-            operator: undefined,
-            value: undefined,
-            searchTerm
-          };
+          const textFilter = TextFilter.create({ searchTerm });
           newPillData.insertAt(index, textFilter);
         }
         dispatch({

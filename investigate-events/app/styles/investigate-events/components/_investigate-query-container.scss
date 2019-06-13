@@ -401,9 +401,9 @@
         }
 
         code {
-          margin: 0 rsa-whitespace() rsa-whitespace();
           color: text-color(primary, light);
           font-size: .85rem;
+          display: inline;
         }
 
         &.has-warning {
@@ -459,8 +459,8 @@
           margin-bottom: rsa-whitespace();
         }
 
-        .progress, .service, .timerange {
-          margin: rsa-whitespace(least) rsa-whitespace(more) 0 rsa-whitespace();
+        .progress, .service, .timerange, .filters {
+          margin: 0 0 rsa-whitespace() rsa-whitespace();
           color: text-color(primary, light);
           white-space: nowrap;
 
@@ -474,11 +474,8 @@
           }
         }
 
-        .timerange .value {
-          margin-left: 0;
-        }
-
         .progress {
+          margin: rsa-whitespace(least) rsa-whitespace(more) 0 rsa-whitespace();
           display: inline-block;
         }
 

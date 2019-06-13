@@ -7,6 +7,8 @@ import { find, findAll, render } from '@ember/test-helpers';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 
+const _trim = (text) => text.replace(/\s+/g, '').trim();
+
 let setState;
 
 module('Integration | Component | console-panel', function(hooks) {
@@ -181,4 +183,37 @@ module('Integration | Component | console-panel', function(hooks) {
       'incorrect message displayed if query canceled');
   });
 
+  test('renders meta and text filter data', async function(assert) {
+    const metaFilters = [
+      { id: '1', type: 'query', meta: 'a', operator: '=', value: '"a"' },
+      { id: '2', type: 'query', meta: 'b', operator: 'exists' },
+      { id: '3', type: 'text', searchTerm: 'blahblahblah' }
+    ];
+    new ReduxDataHelper(setState)
+      .withPreviousQuery(metaFilters)
+      .queryStats()
+      .queryStatsIsOpen()
+      .build();
+    await render(hbs`
+      {{query-container/console-panel timezone=timezone}}
+    `);
+    const filters = findAll('.console-panel .filters');
+    assert.equal(filters.length, 2, 'incorrect number of filters');
+    assert.equal(_trim(filters[0].textContent), 'MetaFilter:a="a"&&bexists', 'incorrect DOM for meta filter');
+    assert.equal(_trim(filters[1].textContent), 'TextFilter:blahblahblah', 'incorrect DOM for text filter');
+  });
+
+  test('does not render meta and text filter DOM if no data', async function(assert) {
+    // No filter data
+    const metaFilters = [];
+    new ReduxDataHelper(setState)
+      .withPreviousQuery(metaFilters)
+      .queryStats()
+      .queryStatsIsOpen()
+      .build();
+    await render(hbs`
+      {{query-container/console-panel timezone=timezone}}
+    `);
+    assert.notOk(findAll('.console-panel .filters').length, 'found filter DOM when there should be none');
+  });
 });

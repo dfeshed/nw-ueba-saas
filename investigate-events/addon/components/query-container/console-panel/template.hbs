@@ -23,11 +23,25 @@
         </span>
       </span>
     </div>
-  </div>
 
-  {{#if filters.length}}
-    <code>{{filters}}</code>
-  {{/if}}
+    {{#if filters.metaFilters}}
+      <div class="filters">
+        <span class="label">{{t 'investigate.queryStats.metaFilter'}}</span>
+        <span class="value">
+          <code>{{filters.metaFilters}}</code>
+        </span>
+      </div>
+    {{/if}}
+
+    {{#if filters.textFilter}}
+      <div class="filters">
+        <span class="label">{{t 'investigate.queryStats.textFilter'}}</span>
+        <span class="value">
+          <code>{{filters.textFilter}}</code>
+        </span>
+      </div>
+    {{/if}}
+  </div>
 
   {{#if (or hasWarning isMixedMode)}}
     <ul class="warnings">

@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
-
+import { COMPLEX_FILTER, TEXT_FILTER } from 'investigate-events/constants/pill';
 import {
   hasError,
   hasWarning,
@@ -15,7 +15,6 @@ import {
 } from 'investigate-events/reducers/investigate/query-stats/selectors';
 import { isCanceled, percentageOfEventsDataReturned } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { queriedService } from 'investigate-events/reducers/investigate/services/selectors';
-import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 
 const stateToComputed = (state) => ({
   startTime: state.investigate.queryNode.previousQueryParams.startTime,
@@ -29,7 +28,7 @@ const stateToComputed = (state) => ({
   hasError: hasError(state),
   hasWarning: hasWarning(state),
   devices: decoratedDevices(state),
-  filters: encodeMetaFilterConditions(state.investigate.queryNode.previousQueryParams.metaFilter),
+  queryFilters: state.investigate.queryNode.previousQueryParams.metaFilter,
   queriedService: queriedService(state),
   percentageOfEventsDataReturned: percentageOfEventsDataReturned(state),
   isMixedMode: isMixedMode(state)
@@ -47,6 +46,26 @@ const ConsolePanel = Component.extend({
   ],
 
   format: '"YYYY-MM-DD HH:mm:ss"',
+
+  @computed('queryFilters')
+  filters: (queryFilters) => {
+    const metaFilters = [];
+    let textFilter;
+    queryFilters.forEach((filter) => {
+      if (filter.type === TEXT_FILTER) {
+        textFilter = filter.searchTerm;
+      } else {
+        if (filter.type === COMPLEX_FILTER) {
+          metaFilters.push(filter.complexFilterText);
+        } else {
+          const { meta, operator } = filter;
+          const value = filter.value ? filter.value : '';
+          metaFilters.push(`${meta} ${operator} ${value}`.trim());
+        }
+      }
+    });
+    return { metaFilters: metaFilters.join(' && '), textFilter };
+  },
 
   @computed('endTime') formattedEndDate: (endTime) => endTime * 1000,
   @computed('startTime') formattedStartDate: (startTime) => startTime * 1000,
