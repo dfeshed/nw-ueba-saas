@@ -20,6 +20,15 @@ const dispatchToActions = {
 
 const LogParsers = Component.extend(Confirmable, {
   classNames: ['log-parsers'],
+  domIsReady: false,
+  didRender() {
+    // Delay rendering the no loaded parsers text
+    setTimeout(() => {
+      if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+        this.set('domIsReady', true);
+      }
+    }, 2000);
+  },
   actions: {
     selectParser(parserIndex) {
       if (this.get('hasRuleChanges')) {

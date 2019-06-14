@@ -1,0 +1,56 @@
+version: "2.1"
+
+services:
+  mongo:
+    image: docker-registry-mirror.rsa.lab.emc.com/netwitness/rsa-nw-mongodb:latest
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "'db.ServerStatus()'"]
+    ports:
+      - 27017:27017
+
+  rabbitmq:
+    image: docker-registry-mirror.rsa.lab.emc.com/netwitness/rsa-nw-rabbitmq:latest
+    healthcheck:
+       test: ["CMD", "rabbitmqctl", "status"]
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  source-server:
+    image: docker-registry-mirror.rsa.lab.emc.com/netwitness/rsa-nw-source-server:${DOCKER_INTEGRATION_TAG:-latest}
+    environment:
+      logging.level.DataAccess: DEBUG
+      rsa.admin.security.settings.same-origin-required: "false"
+      rsa.configuration.remote-enabled: "false"
+      rsa.security.authorization.remote-enabled: "false"
+      rsa.security.pki.use-deployment-trust: "false"
+      rsa.transport.bus.shutdown-timeout: 1ms
+      rsa.transport.bus.host: rabbitmq
+      rsa.process.shutdown-delay: 1s
+      rsa.transport.http.secure: "false"
+      rsa.data.enabled: "true"
+      rsa.data.control.enabled: "true"
+      rsa.data.control.servers[0]: mongo
+      rsa.data.application.servers[0]: mongo
+      rsa.orchestration.service.remote-enabled: "false"
+      rsa.orchestration.service.instances[0].id: 1
+      rsa.orchestration.service.instances[0].name: log-decoder
+      rsa.orchestration.service.instances[0].display-name: logDecoder
+      rsa.orchestration.service.instances[0].host: logdecoder
+      rsa.orchestration.service.instances[0].port: 50002
+      rsa.orchestration.service.instances[0].use-tls: "false"
+      rsa.orchestration.service.instances[0].version: 11.3.0.0
+      rsa.orchestration.service.instances[1].id: 2
+      rsa.orchestration.service.instances[1].name: endpoint-server
+      rsa.orchestration.service.instances[1].display-name: endpointServer
+      rsa.orchestration.service.instances[1].host: endpointserver
+      rsa.orchestration.service.instances[1].port: 7050
+      rsa.orchestration.service.instances[1].use-tls: "false"
+      rsa.orchestration.service.instances[1].version: 11.3.0.0
+      rsa.security.oauth.auth-server: "true"
+      rsa.service.password: changeMe
+    ports:
+      - 7015:7015
+    depends_on:
+      - rabbitmq
+      - mongo

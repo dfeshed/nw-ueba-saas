@@ -22,6 +22,13 @@ module('Integration | Component | log parsers', function(hooks) {
     initialize(this.owner);
   });
 
+  test('Log Parsers will render infotext with no parsers', async function(assert) {
+    new ReduxDataHelper(setState).build();
+    await render(hbs`{{content/log-parser-rules/log-parsers domIsReady=true}}`);
+    assert.notOk(find('.log-parsers .firstItem'), 'First item is not showing with no parsers loaded');
+    assert.ok(find('.log-parsers .no-loaded-parsers'), 'InfoText is showing with no parsers loaded');
+  });
+
   test('Log Parsers will render', async function(assert) {
     new ReduxDataHelper(setState).parserRulesSaveWait(false).parserRulesFormatData(0, true).build();
     await render(hbs`{{content/log-parser-rules/log-parsers}}`);

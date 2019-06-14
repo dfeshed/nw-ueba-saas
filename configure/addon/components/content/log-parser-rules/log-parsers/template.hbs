@@ -13,6 +13,12 @@
           </div>
         </td>
       </tr>
+    {{else}}
+      {{#if domIsReady}}
+        <div class="no-loaded-parsers">
+          <p>{{t 'configure.logsParser.noLoadedParsersInfo'}}</p>
+        </div>
+      {{/if}}
     {{/each}}
   </table>
 </div>

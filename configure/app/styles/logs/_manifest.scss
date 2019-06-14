@@ -283,6 +283,17 @@ div.modal-content.add-new-parser-rule {
         }
       }
     }
+    .no-loaded-parsers {
+      overflow: hidden; 
+      white-space: pre-line;
+      max-width: 300px;
+      color: text-color(primary, light);
+      @include rsa-font();
+      margin-top: rsa-whitespace(more);
+      margin-bottom: rsa-whitespace(more);
+      margin-right: rsa-whitespace();
+      margin-left: rsa-whitespace();
+    }
   }
   .parser-rules-list {
     .invalid-rule {

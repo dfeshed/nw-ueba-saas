@@ -725,6 +725,7 @@ export default {
       confirmDiscardChanges: 'Confirm Discard Changes',
       switchParserUnsavedChanges: 'Your parser has unsaved changes. Are you sure you want to discard these changes and switch ' +
         'to another parser?',
+      noLoadedParsersInfo: 'No Log Parser rules or content found.  This feature requires at least one Log Decoder running version 11.2 or higher.',
       error: {
         generic: 'An unexpected error has occurred attempting to retrieve this data.',
         contentOffLine: 'There was a problem loading the Content Log Parser Rules. The Content Server may be offline or inaccessible.'
