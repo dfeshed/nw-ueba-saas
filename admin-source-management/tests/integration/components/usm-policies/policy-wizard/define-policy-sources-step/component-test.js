@@ -78,6 +78,19 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     assert.equal(findAll('.add-row').length, 1, 'add-row button is rendered correctly');
   });
 
+  test('should render the body-cell child-source-container component when except exclusionFilters is empty and other sources are populated', async function(assert) {
+    const emptyExF = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: [] } ];
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSources(emptyExF)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
+    assert.equal(findAll('.child-source-container').length, 6, 'body cell child-source-containers are rendered correctly');
+    assert.equal(findAll('.file-source-type').length, 1, 'file-source-type dropdown is rendered correctly');
+    assert.equal(findAll('.add-row').length, 1, 'add-row button is rendered correctly');
+    assert.equal(findAll('.child-source-container .exclusionFilters').length, 1, 'Exclusion filters rendered correctly when null');
+  });
+
   test('should render the all the components within body-cell child-source-container component', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz('filePolicy')

@@ -14,7 +14,9 @@ export default DataTableBody.extend({
   @computed('item.exclusionFilters')
   exclusionFilters(filter) {
     // Since filter is stored as an array in state, convert to string and display it in the textarea.
-    return arrToString(filter);
+    if (filter) {
+      return arrToString(filter);
+    }
   },
 
   actions: {
