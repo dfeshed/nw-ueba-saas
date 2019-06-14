@@ -2063,6 +2063,7 @@ export default {
       'transport.validation.error': 'The data format is not supported for the data source.',
       'transport.http.auth.failed': 'Could not fetch context from this data source - Authorization failed.',
       'service.unavailable': 'Maximum queries permissible in a day for RSA Live File Reputation Service has exceeded. Retry after 00:00 UTC tomorrow. Click Help for more details.',
+      'transport.data.read.failed': 'Context Lookup has timed out. No results found.',
       archer: {
         noData: 'Data in RSA Archer is not available.',
         notConfigured: 'Configure Archer as a data source, add or enable to pivot successfully.',
