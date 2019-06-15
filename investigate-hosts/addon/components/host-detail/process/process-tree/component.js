@@ -133,7 +133,7 @@ const TreeComponent = Component.extend({
   }),
 
   closePanel() {
-    if (this.closePropertyPanel) {
+    if (!this.get('isDestroyed') && !this.get('isDestroying') && this.closePropertyPanel) {
       this.send('deSelectAllProcess');
       this.closePropertyPanel();
     }
