@@ -9,18 +9,16 @@ import presidio.data.generators.ssl_subject.ISslSubjectGenerator;
 public class EntityGenerator implements IEntityGenerator {
 
     private StringCyclicValuesGenerator iterator = new StringCyclicValuesGenerator(new String[] {"ja3", "sslSubject"});
-    private Imd5Generator ja3Generator;
-    private ISslSubjectGenerator sslSubjectGenerator;
+    private IBaseGenerator<String> ja3Generator;
+    private IBaseGenerator<String> sslSubjectGenerator;
     private String ja3;
     private String sslSubject;
 
-    public EntityGenerator(IBaseGenerator ja3Generator, IBaseGenerator sslSubjectGenerator) {
-        if ( (ja3Generator instanceof Imd5Generator) && (sslSubjectGenerator instanceof ISslSubjectGenerator)) {
-            this.ja3Generator = (Imd5Generator) ja3Generator;
-            this.sslSubjectGenerator = (ISslSubjectGenerator) sslSubjectGenerator;
-            ja3 = this.ja3Generator.getNext();
-            sslSubject = this.sslSubjectGenerator.getNext();
-        } else throw new RuntimeException("Type mismatch");
+    public EntityGenerator(IBaseGenerator<String> ja3Generator, IBaseGenerator<String> sslSubjectGenerator) {
+        this.ja3Generator = ja3Generator;
+        this.sslSubjectGenerator = sslSubjectGenerator;
+        ja3 = ja3Generator.getNext();
+        sslSubject = sslSubjectGenerator.getNext();
     }
 
 
