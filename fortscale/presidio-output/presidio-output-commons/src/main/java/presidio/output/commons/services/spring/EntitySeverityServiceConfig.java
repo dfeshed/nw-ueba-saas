@@ -17,7 +17,7 @@ import java.util.Map;
 @Import(EntityUpdatePropertiesServiceConfig.class)
 public class EntitySeverityServiceConfig {
 
-    @Value("${user.severity.compute.data.critical.percentage.of.users:1}")
+    @Value("${entity.severity.compute.data.critical.percentage.of.entities:1}")
     private String entitySeverityComputeDataCriticalPercentageOfEntities;
 
     @Value("${entity.severity.compute.data.critical.minimum.delta.factor:1.5}")

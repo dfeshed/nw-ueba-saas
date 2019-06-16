@@ -58,53 +58,5 @@ public interface EntitiesApi {
             consumes = "application/json",
             method = RequestMethod.PATCH)
     ResponseEntity<EntitiesWrapper> updateEntities(@ApiParam(value = "object that holds all the parameters for getting specific entities") @RequestBody EntityPatchBody entityPatchBody);
-
-
-    @ApiOperation(value = "Use this endpoint to get the alerts of a single user", notes = "Users endpoint", response = AlertsWrapper.class, tags = {"users",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "List of alerts and more general data", response = AlertsWrapper.class)})
-    @RequestMapping(value = "/users/{userId}/alerts",
-            produces = "application/json",
-            method = RequestMethod.GET)
-    ResponseEntity<AlertsWrapper> getAlertsByUser(@ApiParam(value = "The UUID of the user to return", required = true) @PathVariable("userId") String userId,
-                                                          @ApiParam(value = "object that hold all the parameters for getting alerts") EntityAlertsQuery body);
-
-    @ApiOperation(value = "Use this endpoint to get details about single user", notes = "Users endpoint", response = User.class, tags = {"users",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Single user", response = User.class)})
-    @RequestMapping(value = "/users/{userId}",
-            produces = "application/json",
-            method = RequestMethod.GET)
-    ResponseEntity<User> getUser(@ApiParam(value = "The UUID of the user to return", required = true) @PathVariable("userId") String userId,
-                                         @ApiParam(value = "Expand response to get user alerts data", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue = "false") Boolean expand);
-
-
-    @ApiOperation(value = "Use this endpoint to get and filters list of users from Presidio", notes = "Users endpoint", response = UsersWrapper.class, tags = {"users",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "List of users and more general data", response = UsersWrapper.class)})
-    @RequestMapping(value = "/users",
-            produces = "application/json",
-            method = RequestMethod.GET)
-    ResponseEntity<UsersWrapper> getUsers(@ApiParam(value = "object that hold all the parameters for getting specific alerts") UserQuery userQuery);
-
-
-    @ApiOperation(value = "Use this method to update the user tags", notes = "", response = User.class, tags = {"users",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Single user", response = User.class)})
-    @RequestMapping(value = "/users/{userId}",
-            produces = "application/json",
-            consumes = "application/json",
-            method = RequestMethod.PATCH)
-    ResponseEntity<User> updateUser(@ApiParam(value = "Exact match to user name", required = true) @PathVariable("userId") String userId, @RequestBody JsonPatch jsonPatch);
-
-
-    @ApiOperation(value = "Use this endpoint to update users by filter", notes = "Users endpoint", response = UsersWrapper.class, tags = {"users",})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "List of updated users", response = UsersWrapper.class)})
-    @RequestMapping(value = "/users",
-            produces = "application/json",
-            consumes = "application/json",
-            method = RequestMethod.PATCH)
-    ResponseEntity<UsersWrapper> updateUsers(@ApiParam(value = "object that hold all the parameters for getting specific users") @RequestBody UserPatchBody userPatchBody);
 }
 

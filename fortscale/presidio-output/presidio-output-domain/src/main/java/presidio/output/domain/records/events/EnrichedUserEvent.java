@@ -27,7 +27,6 @@ public class EnrichedUserEvent extends EnrichedEvent{
     public static final String USER_NAME_FIELD_NAME = "userName";
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String USER_ID_FIELD_NAME = "userId";
-    public static final String IS_USER_ADMIN = "isUserAdmin";
 
     @Indexed
     @Field(USER_ID_FIELD_NAME)
