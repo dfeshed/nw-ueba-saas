@@ -40,6 +40,8 @@ const deleteLogParser = (parser) => {
       meta: {
         onSuccess() {
           success('configure.logsParser.modals.deleteParser.success', { parserName });
+          // fetch the parser rules for the selected parser
+          dispatch(fetchParserRules(selectedLogParserName));
         },
         onFailure() {
           failure('configure.logsParser.modals.deleteParser.failure', { parserName });
