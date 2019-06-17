@@ -10,14 +10,15 @@
         "score",
         "classifications",
         "severity",
-        "userName",
-        "userTags",
+        "entityName",
+        "entityTags",
         "indicatorsNum",
         "startDate",
         "id",
         "endDate",
         "indicatorsNames",
-        "userId"
+        "entityDocumentId",
+        "entityType"
       ],
       "sort": [
         "score",
