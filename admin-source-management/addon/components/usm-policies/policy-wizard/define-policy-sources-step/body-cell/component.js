@@ -27,13 +27,13 @@ export default DataTableBody.extend({
     setexclusionFilters(column, option) {
       // capture the value from the textarea
       const { value } = option.target;
-      // convert the entered string into an array delimited by comma and store in state
-      // abc, def becomes ["abc", "def"]
-      // 'abc', 'def' -> ["abc", "def"]
-      // "abc", "def" -> ["abc", "def"]
-      // "abc", 'def' -> ["abc", "def"]
-      // "abc*", "def-*" -> ["abc*", "def-*"]
-      const arr = value.split(',').map((entry) => removeQuotes(entry));
+      // convert the entered string into an array delimited by a new line and store in state
+      // abc\ndef becomes ["abc", "def"]
+      // 'abc'\n'def' -> ["abc", "def"]
+      // "abc"\n"def" -> ["abc", "def"]
+      // "abc"\n'def' -> ["abc", "def"]
+      // "abc*"\n"def-*" -> ["abc*", "def-*"]
+      const arr = value.trim().split('\n').map((entry) => removeQuotes(entry));
       this.set(`item.${column}`, arr);
       this.get('sourceUpdated')();
     }

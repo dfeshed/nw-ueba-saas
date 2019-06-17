@@ -192,7 +192,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
         item=item
       }}
     `);
-    const value = 'filter-3, filter-4';
+    const value = 'filter-3\nfilter-4';
     const [eventIdEl] = findAll('.exclusion-filters textarea');
     await fillIn(eventIdEl, value);
     await triggerEvent(eventIdEl, 'blur');
