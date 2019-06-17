@@ -1,0 +1,26 @@
+{{#if isLoading}}
+  <centered class='loader_icon'>
+    {{rsa-loader size='large'}}
+  </centered>
+{{else}}
+  {{#if hasData}}
+    <div test-id="hostNameListTitle" class="host-name-list__title">
+      {{t 'investigateFiles.fields.machineCount'}} {{t countLabelKey count=itemCount}}
+    </div>
+    <ul class="host-name-list__items" test-id="hostNameListItems">
+      {{#each items as |item|}}
+        <li class="host-name">
+          <a class='host-name__link' title={{item}} href='#' target='_blank' rel='noopener' {{action 'handleHostNameClick' item}}>
+            {{item}}
+          </a>
+          <span class='host-name__divider'></span>
+          {{#rsa-form-button isIconOnly=true class='pivot-to-investigate' defaultAction=(action 'onPivotClick' item)}}
+            {{rsa-icon name='expand-6' size='small' title=(t 'investigateShared.endpoint.fileActions.pivotToInvestigate')}}
+          {{/rsa-form-button}}
+        </li>
+      {{/each}}
+    </ul>
+  {{else}}
+    {{rsa-panel-message message=(t 'investigateFiles.message.noResultsFoundMessage') messageType='no-results-message'}}
+  {{/if}}
+{{/if}}

@@ -51,6 +51,14 @@ const processAnalysisConfigGen = function(env) {
         subscriptionDestination: '/user/queue/risk/local/score',
         requestDestination: '/ws/respond/risk/local/score'
       }
+    },
+    'core-meta-value': {
+      socketUrl: eventsSocketURL,
+      stream: {
+        subscriptionDestination: '/user/queue/investigate/meta/values',
+        requestDestination: '/ws/investigate/meta/values/stream',
+        cancelDestination: '/ws/investigate/cancel'
+      }
     }
   };
 };

@@ -7,6 +7,10 @@ import { getProcessDetails } from '../api/process-properties';
 import { setDetailsTab, toggleProcessDetailsVisibility } from 'investigate-process-analysis/actions/creators/process-visuals';
 import { fetchProcessDetails } from 'investigate-process-analysis/actions/creators/process-properties';
 import { resetFilterValue } from 'investigate-process-analysis/actions/creators/process-filter';
+import fetchMetaValue from 'investigate-shared/actions/api/events/meta-values';
+
+import RSVP from 'rsvp';
+
 const callbacksDefault = { onComplete() {} };
 
 let done = false;
@@ -192,8 +196,9 @@ export const onEventNodeSelected = (payload) => {
     const state = getState();
     const { selectedServerId } = state.processAnalysis.processTree;
     if (payload) {
-      const { hashes } = payload;
+      const { hashes, process: { checksumDst } } = payload;
       dispatch(fetchProcessDetails({ hashes }, selectedServerId));
+      dispatch(getHostContext('alias.host', [{ value: `(checksum.all = '${checksumDst}')` }], 300000));
       dispatch({ type: ACTION_TYPES.SET_SELECTED_PROCESS, payload: payload.process });
       dispatch(resetFilterValue(payload.processId));
     } else {
@@ -202,5 +207,63 @@ export const onEventNodeSelected = (payload) => {
       dispatch(setDetailsTab(''));
       dispatch(toggleProcessDetailsVisibility(false));
     }
+  };
+};
+
+export const getMetaValues = ({ filter, serviceId, metaName, startTime, endTime, size = 1 }) => {
+  return new RSVP.Promise((resolve, reject) => {
+    const query = {
+      startTime,
+      endTime,
+      serviceId
+    };
+    query.metaFilter = {
+      conditions: [
+        {
+          meta: 'device.type',
+          operator: '=',
+          value: '\'nwendpoint\''
+        },
+        ...filter
+      ]
+    };
+
+    const handlers = {
+      onError() {
+        reject();
+      },
+      onResponse() {},
+      onCompleted(response) {
+        resolve(response.data);
+      }
+    };
+    fetchMetaValue(query, metaName, size, null, 10000, 10000, handlers, 0);
+  });
+};
+
+export const fetchAgentId = (hostName, callBack) => {
+  return (dispatch, getState) => {
+    const { serviceId, startTime, endTime } = getState().processAnalysis.query;
+    getMetaValues({
+      serviceId,
+      startTime,
+      endTime,
+      metaName: 'agent.id',
+      filter: ['{ value: `(alias.host = \'${hostName}\')`']
+    }).then((data) => {
+      if (callBack) {
+        callBack(data);
+      }
+    });
+  };
+};
+
+export const getHostContext = (metaName, filter, size) => {
+  return (dispatch, getState) => {
+    const { serviceId, startTime, endTime } = getState().processAnalysis.query;
+    dispatch({
+      type: ACTION_TYPES.SET_HOST_CONTEXT,
+      promise: getMetaValues({ metaName, filter, serviceId, startTime, endTime, size })
+    });
   };
 };

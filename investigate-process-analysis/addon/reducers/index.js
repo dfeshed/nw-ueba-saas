@@ -6,6 +6,7 @@ import services from './services/reducer';
 import query from './query/reducer';
 import processFilter from './process-filter/reducer';
 import filterPopup from './filter-popup/reducer';
+import hostContext from './host-context/reducer';
 
 export default combineReducers({
   processAnalysis: combineReducers({
@@ -15,6 +16,7 @@ export default combineReducers({
     services,
     query,
     processFilter,
-    filterPopup
+    filterPopup,
+    hostContext
   })
 });
