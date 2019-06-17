@@ -9,6 +9,7 @@ import { hostWithStatus,
 import { exportFileContext } from 'investigate-hosts/actions/data-creators/details';
 import { downloadMFT } from 'investigate-hosts/actions/data-creators/host';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
+import { inject as service } from '@ember/service';
 
 const stateToComputed = (state) => ({
   hostDetails: hostWithStatus(state),
@@ -28,6 +29,8 @@ const dispatchToActions = {
 const HostDetailsMoreActions = Component.extend({
 
   classNames: ['host_more_actions'],
+
+  accessControl: service(),
 
   @computed('isMFTEnabled')
   moreOptions() {
@@ -51,7 +54,7 @@ const HostDetailsMoreActions = Component.extend({
         buttonId: 'downloadMFT-button'
       }
     ];
-    if (this.get('isMFTEnabled').isDisplayed) {
+    if (this.get('isMFTEnabled').isDisplayed && this.get('accessControl.endpointCanManageFiles')) {
       moreActionOptions.push(...mft);
     }
     return moreActionOptions;

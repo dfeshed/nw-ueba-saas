@@ -82,6 +82,9 @@ module('Integration | Component | host table action bar more actions', function(
       assert.ok(true);
     });
     this.set('selectedHostList', [selectedData]);
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
+
     await render(hbs`{{host-list/host-table/action-bar/more-actions
       showRiskScoreModal=showRiskScoreModal
       deleteAction=deleteAction

@@ -1,6 +1,7 @@
 import DataTableBodyRow from 'component-lib/components/rsa-data-table/body-row/component';
 import computed from 'ember-computed-decorators';
 import layout from './template';
+import { inject as service } from '@ember/service';
 
 /**
  * Extension of the Data Table default row class for supporting focus on the row
@@ -14,6 +15,8 @@ export default DataTableBodyRow.extend({
   updatedContextConfBackup: [],
 
   initialContextConfBackup: [],
+
+  accessControl: service(),
 
   @computed('item', 'selections')
   isRowChecked(item, selections = []) {
@@ -120,7 +123,7 @@ export default DataTableBodyRow.extend({
         }
       }
     ];
-    if (this.get('item').isMFTEnabled) {
+    if (this.get('item').isMFTEnabled && this.get('accessControl.endpointCanManageFiles')) {
       contextConf.push(...mft);
     }
     return contextConf.sortBy('order');

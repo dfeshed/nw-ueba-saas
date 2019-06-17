@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
+import { inject as service } from '@ember/service';
 
 export default Component.extend({
 
@@ -7,7 +8,9 @@ export default Component.extend({
 
   classNames: 'host_more_actions',
 
-  @computed('isMFTEnabled', 'selectedHostList')
+  accessControl: service(),
+
+  @computed('isMFTEnabled', 'selectedHostList', 'accessControl')
   moreOptions() {
     const moreActionOptions = [
       {
@@ -29,7 +32,7 @@ export default Component.extend({
         divider: true
       }
     ];
-    if (this.get('isMFTEnabled').isDisplayed && (this.get('selectedHostList').length === 1)) {
+    if (this.get('isMFTEnabled').isDisplayed && (this.get('selectedHostList').length === 1) && this.get('accessControl.endpointCanManageFiles')) {
       moreActionOptions.push(...mft);
     }
     return moreActionOptions;

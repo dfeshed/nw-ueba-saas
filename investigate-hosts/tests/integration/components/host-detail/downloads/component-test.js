@@ -109,6 +109,8 @@ module('Integration | Component | downloads', function(hooks) {
       fileType: 'Mft',
       serviceId: '2cf81ac2-3d00-40f6-99fd-f5c3e9b254b4'
     }];
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
 
     new ReduxDataHelper(initState).hostDownloads(hostDownloads).downloadsSelectedFileList(selectedFileList).build();
     await render(hbs `<div id='modalDestination'></div>

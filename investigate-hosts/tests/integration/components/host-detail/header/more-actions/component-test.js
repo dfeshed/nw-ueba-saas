@@ -43,14 +43,27 @@ module('Integration | Component | host detail more-actions', function(hooks) {
       .host(data)
       .isJsonExportCompleted(true)
       .build();
-
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
     await render(hbs `{{host-detail/header/more-actions}}`);
     await click('.host_more_actions .host-details-more-actions');
-    assert.equal(findAll('.host-details_dropdown-action-list li').length, 3, 'Number of actions present is 3 as MFT is enabled');
+    assert.equal(findAll('.host-details_dropdown-action-list li').length, 3, 'Number of actions present is 3 as MFT permission added');
+
     assert.ok(find('.host-start-scan-button'), 'scan-command renders giving the start scan button');
     assert.equal(findAll('.rsa-icon-check-shield-lined').length, 0, 'Start scan icon not present');
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(2)').textContent.trim(), 'Export Host details', 'Export Host details button renders');
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(3)').textContent.trim(), 'Request MFT download', 'Request MFT downloads button renders');
+  });
+  test('test for More Actions with no manage permission', async function(assert) {
+    new ReduxDataHelper(setState)
+      .host(data)
+      .isJsonExportCompleted(true)
+      .build();
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', []);
+    await render(hbs `{{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+    assert.equal(findAll('.host-details_dropdown-action-list li').length, 2, 'Number of actions present is 2 as No MFT permission added');
   });
 
   test('test for Request MFT', async function(assert) {
@@ -62,10 +75,10 @@ module('Integration | Component | host detail more-actions', function(hooks) {
       .isSnapshotsAvailable(true)
       .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
       .build();
-
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
     await render(hbs `{{host-detail/header/more-actions}}`);
     await click('.host_more_actions .host-details-more-actions');
-
     patchSocket((method, model, query) => {
       assert.equal(method, 'downloadMFT');
       assert.deepEqual(query,
