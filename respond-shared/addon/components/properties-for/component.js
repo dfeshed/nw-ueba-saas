@@ -7,7 +7,7 @@ export default Component.extend({
   layout,
   tagName: 'dl',
   testId: 'propertiesFor',
-  attributeBindings: ['testId:test-id'],
+  attributeBindings: ['testId:test-id', 'keyName:test-key-name'],
   classNames: ['properties-for'],
 
   @computed('item')
