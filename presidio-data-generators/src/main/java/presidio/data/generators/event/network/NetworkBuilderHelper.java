@@ -1,6 +1,5 @@
 package presidio.data.generators.event.network;
 
-import com.google.common.base.CaseFormat;
 import presidio.data.domain.Location;
 import presidio.data.domain.MachineEntity;
 import presidio.data.generators.FixedValueGenerator;
@@ -19,26 +18,14 @@ public class NetworkBuilderHelper {
 
     private static Map<String, Long> stateHolder = new ConcurrentHashMap<>();
 
-    public enum NETWORK_FIELD {
-        SSL_SUBJECT_GENERATOR,
-        JA3_GENERATOR,
-        JA3S_GENERATOR,
-        DATA_SOURCE_GENERATOR,
-        SRC_MACHINE_GENERATOR,
-        DST_MACHINE_GENERATOR,
-        SOURCE_NETNAME_GEN,
-        DESTINATION_NETNAME_GEN,
-        LOCATION_GEN
-    }
-
     public NetworkBuilderHelper(NetworkEventsGenerator eventGen){
         this.eventGen = eventGen;
 
-        stateHolder.putIfAbsent(eventGen.testMarker,0L);
+        stateHolder.putIfAbsent(eventGen.getTestMarker(),0L);
 
-        fixedStringModifier = new FixedValueGenerator<>(testNameToValue.apply(eventGen.testMarker));
+        fixedStringModifier = new FixedValueGenerator<>(testNameToValue.apply(eventGen.getTestMarker()));
 
-        stateHolder.compute(eventGen.testMarker,(s, aLong) -> aLong++);
+        stateHolder.computeIfPresent(eventGen.getTestMarker(),(s, aLong) -> aLong++);
 
     }
 
@@ -57,11 +44,6 @@ public class NetworkBuilderHelper {
 
     public NetworkBuilderHelper fixJa3s(){
         eventGen.setJa3sGenerator(fixedStringModifier);
-        return this;
-    }
-
-    public NetworkBuilderHelper fixDataSource(){
-        eventGen.setDataSourceGenerator(fixedStringModifier);
         return this;
     }
 
