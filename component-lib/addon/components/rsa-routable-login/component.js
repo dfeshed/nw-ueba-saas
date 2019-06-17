@@ -4,7 +4,6 @@
  * @public
  */
 
-import $ from 'jquery';
 import Component from '@ember/component';
 import Ember from 'ember';
 import getOwner from 'ember-owner/get';
@@ -216,24 +215,30 @@ export default Component.extend({
 
   changePassword() {
     this.set('status', _STATUS.WAIT);
-
+    this.set('data', {
+      'userName': this.get('username'),
+      'currentPassword': this.get('password'),
+      'newPassword': this.get('newPassword')
+    });
     if (this.get('newPassword') !== this.get('newPasswordConfirm')) {
       this.updateLoginProperties(_STATUS.INIT, 'login.passwordMismatch', true);
     } else if (this.get('newPassword') === this.get('password')) {
       this.updateLoginProperties(_STATUS.INIT, 'login.passwordNoChange', true);
     } else {
       this.set('status', _STATUS.SUCCESS);
-      $.ajax({
-        url: '/api/administration/security/user/updatePassword',
+      fetch('/api/administration/security/user/updatePassword', {
         method: 'POST',
-        data: {
-          'userName': this.get('username'),
-          'currentPassword': this.get('password'),
-          'newPassword': this.get('newPassword')
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: Object.entries(this.get('data')).map(([key, value]) => `${key}=${value}`).join('&')// Body is expected as RequestParams
+      }).then((response) => {
+        if (response.status === 200) {
+          this.updateLoginProperties(_STATUS.SUCCESS);
+        } else {
+          this.updateLoginProperties(_STATUS.INIT, 'login.passwordChangeFailed', true);
         }
-      }).then(() => {
-        this.updateLoginProperties(_STATUS.SUCCESS);
-      }).fail(() => {
+      }).catch(() => {
         this.updateLoginProperties(_STATUS.INIT, 'login.passwordChangeFailed', true);
       });
     }
@@ -241,7 +246,6 @@ export default Component.extend({
 
   fetchPasswordPolicy() {
     this.updateLoginProperties(_STATUS.INIT, null, true);
-
     if (config.adminServerAvailable) {
       this.get('ajax').request('/api/administration/security/password/policyMessages').then((response) => {
         this.setProperties({
