@@ -318,6 +318,11 @@ export default class DataHelper {
     return this;
   }
 
+  eventTimeSortOrderPreferenceWhenQueried(pref = 'Ascending') {
+    _set(this.state, 'eventResults.eventTimeSortOrderPreferenceWhenQueried', pref);
+    return this;
+  }
+
   eventResults(data) {
     _set(this.state, 'eventResults.data', data);
     return this;

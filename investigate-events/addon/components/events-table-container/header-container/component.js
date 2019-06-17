@@ -16,6 +16,7 @@ import {
   SORT_ORDER,
   areEventsStreaming
 } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { hasMinimumCoreServicesVersionForColumnSorting } from 'investigate-events/reducers/investigate/services/selectors';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
 import { observer } from '@ember/object';
 
@@ -38,7 +39,9 @@ const stateToComputed = (state) => ({
   items: state.investigate.eventResults.data,
   startTime: state.investigate.queryNode.startTime,
   endTime: state.investigate.queryNode.endTime,
-  areEventsStreaming: areEventsStreaming(state)
+  areEventsStreaming: areEventsStreaming(state),
+  eventTimeSortOrderPreferenceWhenQueried: state.investigate.eventResults.eventTimeSortOrderPreferenceWhenQueried,
+  canSort: hasMinimumCoreServicesVersionForColumnSorting(state)
 });
 
 const dispatchToActions = {
@@ -95,10 +98,11 @@ const HeaderContainer = Component.extend({
     }
   },
 
-  @computed('sortDirection', 'i18n')
-  abbreviatedSortOrder(sortDirection, i18n) {
-    if (sortDirection) {
-      sortDirection = sortDirection.toLowerCase() === SORT_ORDER.ASC.toLowerCase() ? SORT_ORDER.ASC : SORT_ORDER.DESC;
+  @computed('sortDirection', 'eventTimeSortOrderPreferenceWhenQueried', 'canSort', 'i18n')
+  abbreviatedSortOrder(sortDirection, eventTimeSortOrder, canSort, i18n) {
+    const sortBy = sortDirection && canSort ? sortDirection : eventTimeSortOrder;
+    if (sortBy) {
+      sortDirection = sortBy.toLowerCase() === SORT_ORDER.ASC.toLowerCase() ? SORT_ORDER.ASC : SORT_ORDER.DESC;
       return i18n.t(`investigate.events.abbr.${sortDirection}`);
     }
   },

@@ -15,6 +15,7 @@ import {
   META_PANEL_SIZES,
   RECON_PANEL_SIZES
 } from 'investigate-events/constants/panelSizes';
+import { hasMinimumCoreServicesVersionForColumnSorting } from '../reducers/investigate/services/selectors';
 import { hasInvalidPill, isPillValidationInProgress } from '../reducers/investigate/query-node/selectors';
 import { teardownNotifications, initializeNotifications, didQueueDownload } from '../actions/notification-creators';
 
@@ -205,10 +206,13 @@ export default Route.extend({
         rs: reconSize,
         sid: serviceId,
         st: startTime,
-        sortField,
-        sortDir: sortDirection,
         pdhash: undefined
       };
+
+      if (hasMinimumCoreServicesVersionForColumnSorting(state)) {
+        qp.sortField = sortField;
+        qp.sortDir = sortDirection;
+      }
 
       if (externalLink) {
         const selectedPills = pillsData.filter((pill) => pill.isSelected);

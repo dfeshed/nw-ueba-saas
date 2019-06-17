@@ -16,6 +16,7 @@ import { fetchServices } from 'investigate-shared/actions/api/services';
 import { fetchAdminEventSettings } from 'investigate-shared/actions/api/events/event-settings';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { hasMinimumCoreServicesVersionForColumnSorting } from '../reducers/investigate/services/selectors';
 import { TextFilter } from 'investigate-events/util/filter-types';
 import * as ACTION_TYPES from './types';
 
@@ -450,8 +451,10 @@ export const initializeInvestigate = function(
 
     // 8) Update sort state with sort params in URL
     // requires the completion of _initializePreferences for preference defaults
-    const { sortField, sortDir } = parsedQueryParams;
-    dispatch(updateSort(sortField, sortDir));
+    if (hasMinimumCoreServicesVersionForColumnSorting(getState())) {
+      const { sortField, sortDir } = parsedQueryParams;
+      dispatch(updateSort(sortField, sortDir));
+    }
 
     if (parsedQueryParams.pillData && parsedQueryParams.pillDataHashes) {
       // 9) If there is a pdhash and mf in the query, fetch a hash for the mf
