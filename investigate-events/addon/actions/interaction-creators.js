@@ -6,7 +6,7 @@ import { fetchInvestigateData, getServiceSummary, updateSort } from './data-crea
 import { getDictionaries, queryIsRunning } from './initialization-creators';
 import { cancelEventCountStream } from './event-count-creators';
 import { cancelEventsStream } from './events-creators';
-import { getDbStartTime, getDbEndTime } from '../reducers/investigate/services/selectors';
+import { getDbStartTime, getDbEndTime, hasMinimumCoreServicesVersionForColumnSorting } from '../reducers/investigate/services/selectors';
 import { useDatabaseTime, selectedTimeRange } from '../reducers/investigate/query-node/selectors';
 import {
   getCurrentPreferences,
@@ -221,20 +221,22 @@ export const setColumnGroup = (selectedGroup) => {
     prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(state), getDefaultPreferences(state));
     const prefs = state.investigate.data.eventAnalysisPreferences;
 
-    // reset sort state to ensure the column being sorted on exists
-    // time is the default sort meta, and has it's own default in preferences
-    const sortDirection = (prefs && prefs.eventTimeSortOrder) || SORT_ORDER.ASC;
-    const sortField = 'time';
-    dispatch(updateSort('time', sortDirection));
-    const params = updateUrl(window.location.search, {
-      sortField,
-      sortDir: sortDirection
-    });
-    history.pushState(
-      null,
-      document.querySelector('title').innerHTML,
-      `${window.location.pathname}?${params}`
-    );
+    if (hasMinimumCoreServicesVersionForColumnSorting(getState())) {
+      // reset sort state to ensure the column being sorted on exists
+      // time is the default sort meta, and has it's own default in preferences
+      const sortDirection = (prefs && prefs.eventTimeSortOrder) || SORT_ORDER.ASC;
+      const sortField = 'time';
+      dispatch(updateSort('time', sortDirection));
+      const params = updateUrl(window.location.search, {
+        sortField,
+        sortDir: sortDirection
+      });
+      history.pushState(
+        null,
+        document.querySelector('title').innerHTML,
+        `${window.location.pathname}?${params}`
+      );
+    }
 
     dispatch(cancelQuery(false));
     dispatch(setReconClosed());
