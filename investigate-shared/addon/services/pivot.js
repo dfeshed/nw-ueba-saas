@@ -1,5 +1,5 @@
 import Service, { inject as service } from '@ember/service';
-import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
+import { serviceId, timeRange, startTime, endTime } from 'investigate-shared/selectors/investigate/selectors';
 import { navigateToInvestigateEventsAnalysis, navigateToInvestigateNavigate } from 'investigate-shared/utils/pivot-util';
 
 export default Service.extend({
@@ -13,6 +13,8 @@ export default Service.extend({
     const investigateServer = serviceId(state);
     if (investigateServer !== '-1') {
       const dateRange = timeRange(state);
+      const sTime = startTime(state);
+      const eTime = endTime(state);
       const { zoneId } = this.get('timezone.selected');
       const additionalFilter = [];
       if (category) {
@@ -27,13 +29,17 @@ export default Service.extend({
         navigateToInvestigateEventsAnalysis({
           metaName,
           itemList: [item],
-          additionalFilter: additionalFilter.join(' && ')
+          additionalFilter: additionalFilter.join(' && '),
+          startTime: sTime,
+          endTime: eTime
         }, investigateServer, dateRange, zoneId);
       } else {
         navigateToInvestigateNavigate({
           metaName,
           itemList: [item],
-          additionalFilter: additionalFilter.join(' && ')
+          additionalFilter: additionalFilter.join(' && '),
+          startTime: sTime,
+          endTime: eTime
         }, investigateServer, dateRange, zoneId);
       }
     }

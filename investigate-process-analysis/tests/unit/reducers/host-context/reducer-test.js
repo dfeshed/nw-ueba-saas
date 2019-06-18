@@ -13,7 +13,7 @@ module('Unit | Reducers | host-context', function() {
     });
     const successAction = makePackAction(LIFECYCLE.SUCCESS, {
       type: ACTION_TYPES.SET_HOST_CONTEXT,
-      payload: { data: new Array(10) }
+      payload: new Array(10)
     });
     const newEndState = reducer(previous, successAction);
     assert.equal(newEndState.hostList.length, 10);

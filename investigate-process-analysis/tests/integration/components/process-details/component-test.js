@@ -52,9 +52,6 @@ module('Integration | Component | process-details', function(hooks) {
       .processProperties(processProperties)
       .queryInput(queryInput)
       .build();
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.set('myAction', function(val) { ... });
-
     await render(hbs`{{process-details}}`);
     assert.equal(findAll('.rsa-icon-expand-diagonal-4-filled').length, 1, 'Expand diagonal by default');
     await click('.rsa-icon-expand-diagonal-4-filled');
@@ -75,4 +72,33 @@ module('Integration | Component | process-details', function(hooks) {
       assert.equal(state.processAnalysis.processVisuals.isProcessDetailsVisible, false, 'not visible');
     });
   });
+
+  test('it adds the proper class - expand', async function(assert) {
+    new ReduxDataHelper(setState)
+      .isEventPanelExpanded(true)
+      .detailsTabSelected({ name: 'events' })
+      .build();
+    await render(hbs`{{process-details}}`);
+    assert.equal(findAll('.process-details.expand').length, 1);
+  });
+
+  test('it adds the proper class - collapse', async function(assert) {
+    new ReduxDataHelper(setState)
+      .isEventPanelExpanded(false)
+      .detailsTabSelected({ name: 'events' })
+      .build();
+    await render(hbs`{{process-details}}`);
+    assert.equal(findAll('.process-details.collapse').length, 1);
+  });
+
+
+  test('it adds the proper class no events panel', async function(assert) {
+    new ReduxDataHelper(setState)
+      .detailsTabSelected({ name: 'hosts' })
+      .build();
+    await render(hbs`{{process-details}}`);
+    assert.equal(findAll('.process-details.collapse').length, 0);
+    assert.equal(findAll('.process-details.expand').length, 0);
+  });
+
 });

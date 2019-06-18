@@ -74,4 +74,23 @@ module('Unit | Utils | pivot to investigate', function() {
     actionSpy.resetHistory();
     actionSpy.restore();
   });
+
+  test('if timeRange is not supplied it takes startTime and endTime', function(assert) {
+    const actionSpy = sinon.spy(window, 'open');
+    navigateToInvestigateNavigate({
+      metaName: 'checksumSha256',
+      itemList: [{ fileName: 'test_file.exe', checksumSha256: 'test' }],
+      additionalFilter: 'category="network event"',
+      startTime: 1234567890,
+      endTime: 1234567891
+    }, '12345');
+    assert.ok(actionSpy.calledOnce);
+    assert.ok(actionSpy.args[0][0].includes('test_file.exe'));
+    assert.ok(actionSpy.args[0][0].includes('filename.all'));
+    assert.ok(actionSpy.args[0][0].includes('2009-02-13T23:31:30Z'));
+    assert.ok(actionSpy.args[0][0].includes('2009-02-13T23:31:31Z'));
+    actionSpy.resetHistory();
+    actionSpy.restore();
+  });
+
 });

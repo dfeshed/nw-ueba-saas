@@ -6,6 +6,7 @@ import computed from 'ember-computed-decorators';
 import { setDetailsTab, toggleProcessDetailsVisibility } from 'investigate-process-analysis/actions/creators/process-visuals';
 import { eventsCount } from 'investigate-process-analysis/reducers/process-tree/selectors';
 import { selectedTab } from 'investigate-process-analysis/reducers/process-visuals/selectors';
+import { hostCount } from 'investigate-process-analysis/reducers/host-context/selectors';
 
 const dispatchToActions = {
   setSelectedService,
@@ -17,19 +18,19 @@ const dispatchToActions = {
 const TABS = [
   {
     label: 'investigateProcessAnalysis.tabs.events',
-    name: 'Events',
+    name: 'events',
     component: 'process-details/events-table',
     icon: 'list-bullets-1'
   },
   {
     label: 'investigateProcessAnalysis.tabs.hosts',
-    name: 'Hosts',
-    component: 'process-details/property-container',
+    name: 'hosts',
+    component: 'process-details/host-list-container',
     icon: 'computer-notebook-2'
   },
   {
     label: 'investigateProcessAnalysis.tabs.alerts',
-    name: 'Alerts',
+    name: 'alerts',
     component: 'process-details/property-container',
     icon: 'alarm'
   }
@@ -40,6 +41,7 @@ const stateToComputed = (state) => ({
   startTime: state.processAnalysis.query.startTime,
   endTime: state.processAnalysis.query.endTime,
   eventsCount: eventsCount(state),
+  hostCount: hostCount(state),
   activeTab: selectedTab(state)
 });
 
@@ -47,7 +49,7 @@ const QueryContainer = Component.extend({
 
   tagName: 'hbox',
 
-  classNames: 'query-container',
+  classNames: 'query-container flexi-fit',
 
   timeRangeInvalid: false,
 

@@ -1,17 +1,14 @@
-<hbox>
+<hbox class='process-details-buttons'>
+  {{rsa-icon
+    class='header-button resize-button'
+    click=(action 'toggleDetailsExpanded')
+    name=toggleEventsClass
+    title=(t 'investigateProcessAnalysis.buttons.expandDetails')}}
 
-  <div class='process-details-buttons'>
-    {{rsa-icon
-      class='header-button'
-      click=(action 'toggleDetailsExpanded')
-      name=toggleEventsClass
-      title=(t 'investigateProcessAnalysis.buttons.expandDetails')}}
-
-    {{rsa-icon
-      class='header-button'
-      click=(action 'toggleProcessDetailsVisibility' false)
-      name='close'
-      title=(t 'investigateProcessAnalysis.buttons.close')}}
-  </div>
+  {{rsa-icon
+    class='header-button'
+    click=(action 'toggleProcessDetailsVisibility' false)
+    name='close'
+    title=(t 'investigateProcessAnalysis.buttons.close')}}
 </hbox>
-  {{component tabComponent}}
+{{component tabComponent}}

@@ -18,5 +18,6 @@ export default combineReducers({
     processFilter,
     filterPopup,
     hostContext
-  })
+  }),
+  investigate: query
 });

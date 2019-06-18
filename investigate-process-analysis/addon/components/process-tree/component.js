@@ -13,8 +13,8 @@ import {
   addLinks,
   appendExpandCollapseIcon,
   getNewNodes,
-  updateStyle,
-  onNodeExit, onNodeUpdate,
+  onNodeExit,
+  onNodeUpdate,
   prepareTreeData,
   documentTitle
 } from './helpers/content';
@@ -40,6 +40,7 @@ import {
   getChildEvents,
   setSelectedProcess,
   selectedProcessEvents,
+  getHostContext,
   onEventNodeSelected } from 'investigate-process-analysis/actions/creators/events-creators';
 
 
@@ -64,7 +65,8 @@ const dispatchToActions = {
   getFileProperty,
   setDetailsTab,
   toggleProcessDetailsVisibility,
-  onEventNodeSelected
+  onEventNodeSelected,
+  getHostContext
 };
 
 let freeIdCounter = 0;
@@ -75,6 +77,8 @@ let displayEvent = null;
 const TreeComponent = Component.extend({
 
   zoomed,
+
+  tagName: 'box',
 
   eventBus: service(),
 
@@ -188,8 +192,6 @@ const TreeComponent = Component.extend({
   didReceiveAttrs() {
     this._super(...arguments);
 
-    const toolBarButtons = document.querySelector('.process-details-buttons');
-
     if (this.isDestroyed) {
       return;
     }
@@ -224,10 +226,7 @@ const TreeComponent = Component.extend({
           }
           this.set('rootNode', root);
           this.set('hasEvents', true);
-          updateStyle(toolBarButtons, 'block');
         } else {
-          // Hide the close button
-          updateStyle(toolBarButtons, 'none');
           this.set('hasEvents', false);
         }
 
@@ -236,7 +235,9 @@ const TreeComponent = Component.extend({
         this.send('selectedProcessEvents', this.get('selectedProcessId'), {});
         this._initializeChart();
         const hashes = [checksum];
+        const filter = [{ value: `(checksum.all = '${checksum}')` }];
         this.send('fetchProcessDetails', { hashes }, this.get('selectedServerId'));
+        this.send('getHostContext', 'alias.host', filter);
       };
       this.send('getParentAndChildEvents', this.get('selectedProcessId'), { onComplete });
     }

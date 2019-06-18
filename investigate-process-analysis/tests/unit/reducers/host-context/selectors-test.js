@@ -8,12 +8,22 @@ module('Unit | selectors | host-context', function() {
     const state = Immutable.from({
       processAnalysis: {
         hostContext: {
-          hostList: new Array(10),
+          hostList: [
+            {
+              value: 'windows'
+            },
+            {
+              value: 'mac'
+            },
+            {
+              value: 'linux'
+            }
+          ],
           isLoading: false
         }
       }
     });
     const result = listOfHostNames(state);
-    assert.deepEqual(result.length, 10, 'Expected to return 10 host names');
+    assert.deepEqual(result.length, 3, 'Expected to return 3 host names');
   });
 });

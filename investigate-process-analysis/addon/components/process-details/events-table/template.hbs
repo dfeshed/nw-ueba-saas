@@ -1,7 +1,5 @@
 {{#if hasError}}
   {{rsa-panel-message title=(t 'investigateShared.endpoint.errorTitle') message=errorMessage}}
 {{else}}
-  <vbox xs="9" class="panel events-table-panel">
-    {{process-details/events-table/table toggleFilterPanel=(action 'toggleFilterPanel')}}
-  </vbox>
+  {{process-details/events-table/table toggleFilterPanel=(action 'toggleFilterPanel')}}
 {{/if}}

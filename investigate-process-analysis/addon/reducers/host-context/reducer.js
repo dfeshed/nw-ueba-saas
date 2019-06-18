@@ -13,7 +13,7 @@ const HostContext = reduxActions.handleActions({
   [ACTION_TYPES.SET_HOST_CONTEXT]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.merge({ hostList: [], loading: true }),
-      success: (s) => s.merge({ hostList: action.payload.data, loading: false })
+      success: (s) => s.merge({ hostList: action.payload, loading: false })
     });
   }
 }, hostContextInitialState);

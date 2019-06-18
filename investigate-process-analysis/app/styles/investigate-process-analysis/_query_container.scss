@@ -3,15 +3,13 @@ $query_container_height: 47px;
 .query-container {
   z-index: 2;
   top: 0;
-  margin: .5rem 1rem;
+  margin: .5rem 1rem 0 1rem;
+  height: 47px;
   .rsa-form-button {
     height: 40px;
     white-space: nowrap;
   }
   width: 100vw;
-  height: $query_container_height;
-  border-bottom: 1px solid text-color(secondary);
-
   .time-range-invalid {
     .rsa-form-button {
       border-left-width: 0;
@@ -34,6 +32,7 @@ $query_container_height: 47px;
   }
 
   .rsa-nav-tab-group {
+    justify-content: flex-end;
     height: $query_container_height;
     .label {
       font-size: 1rem;

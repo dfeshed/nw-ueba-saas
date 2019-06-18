@@ -158,7 +158,7 @@ module('Unit | Reducers | process-tree', function() {
     assert.equal(result.selectedServerId, 'abc-test-server');
   });
 
-  test('raghs SET_LOCAL_RISK_SCORE sets the score', function(assert) {
+  test('SET_LOCAL_RISK_SCORE sets the score', function(assert) {
     const previous = Immutable.from({
       rawData: [
         {

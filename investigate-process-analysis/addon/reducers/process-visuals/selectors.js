@@ -8,7 +8,7 @@ export const isEventsSelected = createSelector(
   [selectedTab],
   (selectedTab) => {
     if (selectedTab) {
-      return selectedTab.name === 'Events';
+      return selectedTab.name === 'events';
     }
     return false;
   }

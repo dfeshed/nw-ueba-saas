@@ -13,14 +13,16 @@
   Analyze
 {{/rsa-form-button}}
 
-<div class="button-modal help-button">
+<div class="process-detail-navigation">
   <hbox class="rsa-nav-tab-group {{if isTabDisabled 'disabled' }}">
     {{#each tabs as |tab|}}
-      <span class="icon">{{rsa-icon name=tab.icon}}</span>
       {{#rsa-nav-tab align='left' isActive=tab.isActive click=(action 'activate' tab) }}
         <div class="label">
-          {{#if (eq tab.name 'Events')}}
+          {{rsa-icon name=tab.icon}}
+          {{#if (eq tab.name 'events')}}
             {{t tab.label count=eventsCount}}
+          {{else if (eq tab.name 'hosts')}}
+            {{t tab.label count=hostCount}}
           {{else}}
             {{t tab.label}}
           {{/if}}

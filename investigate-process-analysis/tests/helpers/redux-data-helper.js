@@ -58,6 +58,12 @@ export default class DataHelper {
     _set(this.state, 'processVisuals.detailsTabSelected', detailsTabSelected);
     return this;
   }
+
+  isEventPanelExpanded(flag) {
+    _set(this.state, 'processVisuals.isEventPanelExpanded', flag);
+    return this;
+  }
+
   eventsData(data = []) {
     _set(this.state, 'processTree.eventsData', data);
     return this;

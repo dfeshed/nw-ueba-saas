@@ -79,9 +79,13 @@ const navigateToInvestigateEventsAnalysis = ({ metaName, metaValue, itemList, ad
  * Opens the investigate/navigate page with query
  * @private
  */
-const navigateToInvestigateNavigate = ({ metaName, metaValue, itemList, additionalFilter }, serviceId, timeRange, zoneId) => {
-  const { value, unit } = timeRange;
-  const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
+const navigateToInvestigateNavigate = ({ metaName, metaValue, itemList, additionalFilter, startTime, endTime }, serviceId, timeRange, zoneId) => {
+
+  let range = { startTime, endTime };
+  if (timeRange) {
+    const { value, unit } = timeRange;
+    range = buildTimeRange(value, unit, zoneId);
+  }
 
   let mf = _buildFilter(metaName, metaValue, itemList);
 
@@ -90,9 +94,10 @@ const navigateToInvestigateNavigate = ({ metaName, metaValue, itemList, addition
   }
   const baseURL = `${window.location.origin}/investigation/endpointid/${serviceId}/navigate/query`;
   const query = encodeURIComponent(mf);
-  const path = `${baseURL}/${query}/date/${moment(startTime * 1000).tz('UTC').format()}/${moment(endTime * 1000).tz('UTC').format()}`;
+  const path = `${baseURL}/${query}/date/${moment(range.startTime * 1000).tz('UTC').format()}/${moment(range.endTime * 1000).tz('UTC').format()}`;
   window.open(path);
 };
+
 
 /**
  * Creates a serialized representation of an array suitable for use in a URL query string.

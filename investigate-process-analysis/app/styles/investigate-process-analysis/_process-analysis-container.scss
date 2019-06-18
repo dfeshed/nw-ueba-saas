@@ -1,50 +1,62 @@
 .process-analysis-container {
-  .query-container {
-    z-index: 2;
-    top: 0;
-    margin: .5rem 1rem;
-    .rsa-form-button {
-      height: 40px;
-      white-space: nowrap;
-    }
-    width: 100vw;
-    height: 42px;
-    border-bottom: 1px solid text-color(primary);
 
-    .time-range-invalid {
-      .rsa-form-button {
-        border-left-width: 0px;
-        border-color: border-color(accentOne, darker);
-      }
-    }
+  .process-details-container {
+    @include border(1px, solid, primary, dark);
+  }
 
-    .help-button {
-      position: absolute;
-      right: 0;
-      padding-right: rsa-whitespace();
-      width: 35rem;
-      .rsa-nav-group {
-        width: 24rem;
-        float: left;
+
+  .process-details-buttons {
+    @include border-bottom(1px, solid, primary, dark);
+    padding: rsa-whitespace(less);
+    justify-content: flex-end;
+  }
+
+  .process-details {
+    transition: width .5s;
+    width: 0;
+    opacity: 0;
+  }
+
+  .resize-button {
+    display: none;
+  }
+
+  &.show-process-details {
+    .process-details {
+      @include border-left(1px, solid, primary, dark);
+      transition: width .5s;
+      opacity: 1;
+      width: 400px;
+
+      &.expand {
+        width: 1000px;
+        .resize-button {
+          display: block;
+        }
       }
-      .rsa-nav-tab-group {
-        .label {
-          font-size: 1rem;
-        }
-        .icon {
-          margin: 15px -9px 1px 1px;
-        }
-        &.disabled {
-          color: text-color(primary, dark);
-          .label {
-            color: text-color(primary, dark);
-          }
+
+      &.collapse {
+        width: 700px;
+        .resize-button {
+          display: block;
         }
       }
     }
   }
+  .process-events-details, .host-list-container, .process-details-container {
+    height: calc(100vh - 138px);
+  }
 
+  .rsa-nav-tab {
+    .label {
+      cursor: pointer;
+      .icon {
+        display: none;
+      }
+    }
+  }
 }
+
 .rsa-loader {
   height: 0.9rem;
   margin-right: rsa-whitespace(less);
@@ -53,129 +65,4 @@
 
 .disclaimer {
   color:text-color(accentThree);
-}
-
-
-.processDetailsBox {
-  display: block;
-  transition: width .5s;
-  width: 0;
-  opacity: 0;
-}
-.processTreeBox {
-  display: block;
-  transition: width .5s;
-  width: calc(100vw - 4px);
-  height: 100vh;
-}
-
-.show-process-details {
-  .process-list-box {
-    @include border(1px, solid, primary, dark);
-    position: relative;
-  }
-  .processDetailsBox {
-    display: block;
-    transition: width .5s;
-    opacity: 1;
-    &.collapse {
-      width: 700px;
-    }
-    &.expand {
-      width: calc(100vw - 504px);
-      .process-events-details {
-        &.is-show-filter {
-          .events-table-panel {
-            max-width: calc((100vw - 504px) - 200px);
-            min-width: calc(100vw/2 - 204px);
-          }
-        }
-        .events-table-panel {
-          max-width: calc((100vw - 504px) - 0px);
-          min-width: calc(100vw/2 - 0px);
-        }
-      }
-    }
-    &.collapse-event-panel {
-      width: calc(100vw/2 - 4px);
-      .process-events-details {
-        &.is-show-filter {
-          .events-table-panel {
-            max-width: calc((100vw/2 - 4px) - 200px);
-            min-width: calc((100vw/2 - 4px) - 200px);
-          }
-        }
-        .events-table-panel {
-          min-width: calc(100vw/2 - 200px);
-        }
-      }
-    }
-  }
-
-  .processTreeBox {
-    display: block;
-    transition: width .5s;
-    &.collapse {
-      width: 500px
-    }
-    &.expand {
-      width: calc(100vw - 704px)
-    }
-    &.collapse-event-panel {
-      width: calc(100vw - (100vw/2) - 4px);
-    }
-  }
-}
-
-.hide-process-details {
-  .rsa-nav-tab {
-    border: none;
-  }
-}
-
-.process-tool-tip {
-  max-height: 30rem;
-  overflow: unset;
-}
-
-.property-container {
-  overflow-y: auto;
-  height: calc(100vh - 104px);
-  .rsa-content-accordion h3 {
-    color: text-color(secondary, light);
-  }
-  .process-property-panel {
-    margin: 0 0 0 22px;
-  }
-}
-
-.execution-details.process-property-panel {
-  height: 210px;
-}
-.execution-details {
-  padding: 10px 0;
-}
-
-.process-details-buttons {
-  padding: 10px;
-}
-
-.process-events-details {
-  &.is-show-filter {
-    .filter-button {
-      display: none;
-    }
-  }
-  .filter-button {
-    button {
-      width: 100%;
-    }
-    display: block;
-  }
-}
-
-.filter-footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
 }

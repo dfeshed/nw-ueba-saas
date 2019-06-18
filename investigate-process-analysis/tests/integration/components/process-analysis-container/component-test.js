@@ -23,22 +23,42 @@ module('Integration | Component | process-analysis-container', function(hooks) {
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
-  test('process-analysis/container renders', async function(assert) {
-    await render(hbs`{{process-analysis-container}}`);
-    assert.equal(findAll('.process-list-box').length, 2, '2 columns present');
-  });
-
-  test('Collapse and expand classes on load', async function(assert) {
+  test('it render the process-analysis component', async function(assert) {
     new ReduxDataHelper(setState).detailsTabSelected('Properties').build();
     await render(hbs`{{process-analysis-container}}`);
-    assert.equal(findAll('.processTreeBox.expand').length, 1, 'Expand class added to process tree');
-    assert.equal(findAll('.processDetailsBox.collapse').length, 1, 'Collapse class added to process details');
+    assert.equal(findAll('.process-analysis-container').length, 1, 'Component rendered');
   });
 
-  test('Collapse and expand classes should not toggle when Events is clicked on ', async function(assert) {
-    new ReduxDataHelper(setState).detailsTabSelected('Events').build();
+  test('it sets the proper class to component', async function(assert) {
+    setState({
+      processAnalysis: {
+        processVisuals: {
+          isProcessDetailsVisible: true,
+          detailsTabSelected: {
+            name: 'events'
+          }
+        }
+      }
+    });
     await render(hbs`{{process-analysis-container}}`);
-    assert.equal(findAll('.processTreeBox.collapse').length, 0, 'Collapse class not added to process tree');
-    assert.equal(findAll('.processDetailsBox.expand').length, 0, 'Expand class not added to process details');
+    assert.equal(findAll('.process-analysis-container.show-process-details').length, 1, 'details visible');
+    assert.equal(findAll('.process-analysis-container.hide-process-details').length, 0);
   });
+
+  test('it sets the proper class to component', async function(assert) {
+    setState({
+      processAnalysis: {
+        processVisuals: {
+          isProcessDetailsVisible: false,
+          detailsTabSelected: {
+            name: 'events'
+          }
+        }
+      }
+    });
+    await render(hbs`{{process-analysis-container}}`);
+    assert.equal(findAll('.process-analysis-container.show-process-details').length, 0);
+    assert.equal(findAll('.process-analysis-container.hide-process-details').length, 1, 'details hidden');
+  });
+
 });

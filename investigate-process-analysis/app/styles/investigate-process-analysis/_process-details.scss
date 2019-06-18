@@ -1,4 +1,5 @@
 .process-events-table {
+  height: 100%;
   .label {
     color: text-color(primary, lighter);
     font-weight: 100;
@@ -9,7 +10,7 @@
     padding: rsa-whitespace(less);
   }
   .rsa-data-table {
-    height: calc(100vh - 158px);
+    height: 100%;
   }
   .rsa-data-table-body-row {
     width: fit-content;

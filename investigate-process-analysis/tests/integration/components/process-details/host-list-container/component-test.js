@@ -18,6 +18,7 @@ module('Integration | Component | process-details/host-list-container', function
 
   hooks.beforeEach(function() {
     initialize(this.owner);
+    this.owner.lookup('service:timezone').set('selected', { zoneId: 'UTC' });
     setState = (state) => {
       patchReducer(this, Immutable.from(state));
     };
@@ -58,5 +59,35 @@ module('Integration | Component | process-details/host-list-container', function
     assert.ok(actionSpy.calledOnce, 'Window.open is called');
     assert.ok(actionSpy.args[0][0].includes('123456789'), 'expected to include agent id');
     assert.ok(actionSpy.args[0][0].includes('/investigate/hosts/'), 'expected to include details in url');
+    actionSpy.resetHistory();
+    actionSpy.restore();
   });
+
+  test('clicking on the icon navigates to events page', async function(assert) {
+    assert.expect(4);
+    setState({
+      processAnalysis: {
+        hostContext: {
+          hostList: [ 'windows', 'mac', 'linux']
+        }
+      },
+      investigate: {
+        serviceId: 123456789,
+        startTime: 1234567890,
+        endTime: 1234567891
+      }
+    });
+
+    await render(hbs`{{process-details/host-list-container}}`);
+    const actionSpy = sinon.spy(window, 'open');
+    await click(findAll('.pivot-to-investigate button')[0]);
+    assert.ok(actionSpy.calledOnce, 'Window.open is called');
+    assert.ok(actionSpy.args[0][0].includes('123456789'), 'expected to include agent id');
+    assert.ok(actionSpy.args[0][0].includes('2009-02-13T23:31:30Z'));
+    assert.ok(actionSpy.args[0][0].includes('/navigate/query'), 'expected to include details in url');
+    actionSpy.resetHistory();
+    actionSpy.restore();
+  });
+
+
 });

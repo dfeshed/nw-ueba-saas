@@ -5,7 +5,9 @@ import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 
 const stateToComputed = (state) => ({
-  listOfHostNames: listOfHostNames(state)
+  listOfHostNames: listOfHostNames(state),
+  isLoading: state.processAnalysis.hostContext.loading,
+  serverId: state.processAnalysis.processTree.selectedServerId
 });
 
 const dispatchToActions = {
@@ -15,21 +17,23 @@ const dispatchToActions = {
 
 const HostListContainer = Component.extend({
 
+  tagName: 'vbox',
+
   classNames: ['host-list-container'],
 
   pivot: service(),
 
   actions: {
-    onHostNameClick(target, item) {
+    onHostNameClick(target, machineName) {
       if ('HOST_NAME' === target) {
-        this.send('fetchAgentId', item, ([data]) => {
+        this.send('fetchAgentId', machineName, ([data]) => {
           if (!this.get('isDestroyed') && !this.get('isDestroying')) {
             const serverId = this.get('serverId');
             window.open(`${window.location.origin}/investigate/hosts/${data.value.toUpperCase()}?machineId=${data.value.toUpperCase()}&tabName=OVERVIEW&sid=${serverId}`);
           }
         });
       } else if ('PIVOT_ICON' === target) {
-        // TODO : will add it another PR
+        this.get('pivot').pivotToInvestigate('machineIdentity.machineName', { machineIdentity: { machineName } });
       }
     }
   }

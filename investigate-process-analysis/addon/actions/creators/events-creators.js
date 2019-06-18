@@ -204,7 +204,7 @@ export const onEventNodeSelected = (payload) => {
     } else {
       // To make states empty on deselect of the process
       dispatch({ type: ACTION_TYPES.SET_SELECTED_EVENTS });
-      dispatch(setDetailsTab(''));
+      dispatch(setDetailsTab({}));
       dispatch(toggleProcessDetailsVisibility(false));
     }
   };
@@ -249,7 +249,7 @@ export const fetchAgentId = (hostName, callBack) => {
       startTime,
       endTime,
       metaName: 'agent.id',
-      filter: ['{ value: `(alias.host = \'${hostName}\')`']
+      filter: [{ value: `(alias.host = '${hostName}')` }]
     }).then((data) => {
       if (callBack) {
         callBack(data);
@@ -258,7 +258,7 @@ export const fetchAgentId = (hostName, callBack) => {
   };
 };
 
-export const getHostContext = (metaName, filter, size) => {
+export const getHostContext = (metaName = 'alias.host', filter, size) => {
   return (dispatch, getState) => {
     const { serviceId, startTime, endTime } = getState().processAnalysis.query;
     dispatch({

@@ -1,5 +1,4 @@
 import Component from '@ember/component';
-import layout from './template';
 import { connect } from 'ember-redux';
 import {
   hasError,
@@ -12,8 +11,8 @@ const stateToComputed = (state) => ({
 });
 
 const EventsTableComponent = Component.extend({
-  layout,
-  tagName: 'hbox',
+
+  tagName: 'box',
 
   classNames: ['process-events-details'],
 

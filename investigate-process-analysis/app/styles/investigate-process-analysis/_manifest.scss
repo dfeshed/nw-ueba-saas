@@ -7,36 +7,11 @@
 @import "risk-score";
 @import "filter-popup";
 @import "process-node-list";
+@import "query_container";
 
 .process-analysis {
   .rsa-application-header{
     display: none;
-  }
-}
-.process-analysis-container {
-  color: text-color(neutral);
-  .content-section__section-name {
-    cursor: pointer;
-  }
-  .rsa-nav-tab-group, .process-details-buttons {
-    @include border-bottom(1px, solid, secondary);
-  }
-  .rsa-nav-tab {
-    .label {
-      cursor: pointer;
-      .icon {
-        display: none;
-      }
-    }
-    &.is-active {
-      @include border-bottom(3px, solid, secondary);
-      .label {
-        .icon {
-          display: inline;
-          margin-left: 10px;
-        }
-      }
-    }
   }
 }
 

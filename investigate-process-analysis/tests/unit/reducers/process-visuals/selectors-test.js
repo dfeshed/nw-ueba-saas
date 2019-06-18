@@ -9,14 +9,14 @@ module('Unit | Selectors | process-visuals', function() {
     const state1 = Immutable.from({
       processAnalysis: {
         processVisuals: {
-          detailsTabSelected: { name: 'Events' }
+          detailsTabSelected: { name: 'events' }
         }
       }
     });
     const state2 = Immutable.from({
       processAnalysis: {
         processVisuals: {
-          detailsTabSelected: { name: 'Hosts' }
+          detailsTabSelected: { name: 'hosts' }
         }
       }
     });
