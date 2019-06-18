@@ -118,6 +118,16 @@ test('determine if Core Services supports text search', function(assert) {
   flag = hasMinimumCoreServicesVersionForTextSearch(truthyState);
   assert.ok(flag, 'Failed to detect that all Core Service are above desired version');
 
+  const truthyWithNullState = {
+    investigate: {
+      services: {
+        serviceData: [{ version: '11.4.0.0' }, { version: null }]
+      }
+    }
+  };
+  flag = hasMinimumCoreServicesVersionForTextSearch(truthyWithNullState);
+  assert.ok(flag, 'Failed to detect that all Core Service are above desired version if a null is present');
+
   const emptyState = {
     investigate: {
       services: {

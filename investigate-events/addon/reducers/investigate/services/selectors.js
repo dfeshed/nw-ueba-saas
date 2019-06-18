@@ -20,7 +20,10 @@ const _servicesMeetMinimumVersion = (services, minVersion) => {
   // because an Array.every() will return `true` if passed an empty array.
   return services && services.length > 0 && services.every((service) => {
     const { version } = service;
-    return parseFloat(version) >= minVersion;
+    // There is a specific situation in a Docker stack that can return `null`
+    // for the service's version. We will ignore this service for determining if
+    // all services meet the minimum required version. See ASOC-79476.
+    return version === null || parseFloat(version) >= minVersion;
   });
 };
 
