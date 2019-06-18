@@ -333,7 +333,7 @@
           "name": "countryToHighestScoreMap",
           "featureNamesMap": {
             "groupBy": [
-              "context.country"
+              "context.srcCountry"
             ],
             "maximize": [
               "score"
@@ -360,7 +360,7 @@
           "featureNamesMap": {
             "groupBy": [
               "context.sslSubject",
-              "context.country"
+              "context.srcCountry"
             ],
             "maximize": [
               "score"
