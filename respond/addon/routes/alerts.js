@@ -3,7 +3,7 @@ import { inject as service } from '@ember/service';
 import { initializeAlerts } from 'respond/actions/creators/alert-creators';
 
 export default Route.extend({
-  accessControl: service(),
+  riac: service(),
   contextualHelp: service(),
   i18n: service(),
   redux: service(),
@@ -13,7 +13,7 @@ export default Route.extend({
   },
 
   beforeModel() {
-    if (!this.get('accessControl.hasRespondAlertsAccess')) {
+    if (!this.get('riac.hasAlertsAccess')) {
       this.transitionTo('index');
     }
   },

@@ -4,7 +4,7 @@ import { initializeIncidents } from 'respond/actions/creators/incidents-creators
 import { get } from '@ember/object';
 
 export default Route.extend({
-  accessControl: service(),
+  riac: service(),
   contextualHelp: service(),
   i18n: service(),
   redux: service(),
@@ -15,7 +15,7 @@ export default Route.extend({
 
   beforeModel() {
     // TODO: we should use more complex redirects here, but we're just going to send back to / for now
-    if (!this.get('accessControl.hasRespondIncidentsAccess')) {
+    if (!this.get('riac.hasIncidentsAccess')) {
       this.transitionTo('index');
     }
   },

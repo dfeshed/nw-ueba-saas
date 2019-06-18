@@ -27,8 +27,8 @@ module('Unit | Route | incidents', function(hooks) {
     this.owner.register('service:-routing', Service.extend({
       currentRouteName: 'incidents'
     }));
-    const accessControl = Service.extend({
-      hasRespondIncidentsAccess: computed(function() {
+    const riac = Service.extend({
+      hasIncidentsAccess: computed(function() {
         return hasPermission;
       })
     }).create();
@@ -41,8 +41,8 @@ module('Unit | Route | incidents', function(hooks) {
       contextualHelp: computed(function() {
         return contextualHelp;
       }),
-      accessControl: computed(function() {
-        return accessControl;
+      riac: computed(function() {
+        return riac;
       }),
       redux: computed(function() {
         return redux;

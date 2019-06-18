@@ -10,7 +10,7 @@ import { patchReducer } from '../../../helpers/vnext-patch';
 
 let redux, transition, hasPermission;
 
-module('Unit | Route | incidents', function(hooks) {
+module('Unit | Route | alerts', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
@@ -23,8 +23,8 @@ module('Unit | Route | incidents', function(hooks) {
     this.owner.register('service:-routing', Service.extend({
       currentRouteName: 'alerts'
     }));
-    const accessControl = Service.extend({
-      hasRespondAlertsAccess: computed(function() {
+    const riac = Service.extend({
+      hasAlertsAccess: computed(function() {
         return hasPermission;
       })
     }).create();
@@ -38,8 +38,8 @@ module('Unit | Route | incidents', function(hooks) {
       contextualHelp: computed(function() {
         return contextualHelp;
       }),
-      accessControl: computed(function() {
-        return accessControl;
+      riac: computed(function() {
+        return riac;
       }),
       redux: computed(function() {
         return redux;

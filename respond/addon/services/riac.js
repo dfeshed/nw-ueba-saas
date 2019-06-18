@@ -69,7 +69,10 @@ const RiacService = Service.extend({
     } else {
       return true;
     }
-  }
+  },
+
+  @alias('accessControl.hasRespondIncidentsAccess')
+  hasIncidentsAccess: null
 
 });
 

@@ -3,7 +3,7 @@ import { inject as service } from '@ember/service';
 import { initializeTasks } from 'respond/actions/creators/remediation-task-creators';
 
 export default Route.extend({
-  accessControl: service(),
+  riac: service(),
   contextualHelp: service(),
   i18n: service(),
   redux: service(),
@@ -13,7 +13,7 @@ export default Route.extend({
   },
 
   beforeModel() {
-    if (!this.get('accessControl.hasRespondRemediationAccess')) {
+    if (!this.get('riac.hasTasksAccess')) {
       this.transitionTo('index');
     }
   },

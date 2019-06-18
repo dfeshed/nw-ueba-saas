@@ -40,14 +40,16 @@ export default Route.extend({
     // Health check against the Respond service. If it returns an error, treat the service as offline
     const healthCheck = $.ajax({ url: this._socketInfoUrl(), cache: false });
     const controller = this.controllerFor('application');
-    healthCheck.then(() => {
+
+    // don't transition to any sub-routes until the healthcheck[ and riac WS call ] completes.
+    return healthCheck.then(() => {
       controller.set('respondServerOffline', false); // in case the server was previously offline but is now back online
-    });
-    healthCheck.catch(() => {
+      const promise = riacApi.fetchRiacValue();
+      this.redux.dispatch(creators.riac.createRiacAction(promise));
+      return promise;
+    }, () => {
       controller.set('respondServerOffline', true); // in case the server is offline
     });
-
-    this.redux.dispatch(creators.riac.createRiacAction(riacApi.fetchRiacValue()));
   },
 
   activate() {
