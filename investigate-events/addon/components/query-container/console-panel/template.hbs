@@ -35,7 +35,10 @@
 
     {{#if filters.textFilter}}
       <div class="filters">
-        <span class="label">{{t 'investigate.queryStats.textFilter'}}</span>
+        <span class="label" title={{t 'investigate.queryStats.textFilterWarning'}}>
+          {{t 'investigate.queryStats.textFilter'}}
+          {{rsa-icon name='report-problem-triangle'}}:
+        </span>
         <span class="value">
           <code>{{filters.textFilter}}</code>
         </span>

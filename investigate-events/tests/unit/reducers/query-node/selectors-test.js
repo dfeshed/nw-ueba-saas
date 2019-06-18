@@ -1,5 +1,4 @@
 import { module, test } from 'qunit';
-
 import {
   canQueryGuided,
   deselectedPills,
@@ -7,6 +6,8 @@ import {
   freeFormText,
   hasInvalidSelectedPill,
   hasRequiredValuesToQuery,
+  hadTextPill,
+  hasTextPill,
   isOnFreeForm,
   isOnGuided,
   isPillBeingEdited,
@@ -16,11 +17,11 @@ import {
   selectedTimeRange,
   selectedTimeRangeId,
   selectedTimeRangeName,
-  useDatabaseTime,
-  hasTextPill
+  useDatabaseTime
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
+import { TEXT_FILTER, QUERY_FILTER } from 'investigate-events/constants/pill';
 
 module('Unit | Selectors | queryNode');
 
@@ -526,4 +527,38 @@ test('determine if pills contain a text pill', function(assert) {
     .pillsDataPopulated()
     .build();
   assert.notOk(hasTextPill(falsyState), 'validation is properly identified as NOT having a text pill');
+});
+
+test('hadTextPill detects if a previous query had a Text Filter', function(assert) {
+  // Test truthy case
+  const truthyState = { investigate: {
+    queryNode: {
+      previousQueryParams: {
+        metaFilter: [
+          { type: TEXT_FILTER }
+        ]
+      }
+    }
+  } };
+  assert.ok(hadTextPill(truthyState), 'did not detect text pill');
+
+  // Test falsy case
+  const falsyState = { investigate: {
+    queryNode: {
+      previousQueryParams: {
+        metaFilter: [
+          { type: QUERY_FILTER }
+        ]
+      }
+    }
+  } };
+  assert.notOk(hadTextPill(falsyState), 'detected a text pill when there was not one');
+
+  // Test invalid case
+  const invalidState = { investigate: {
+    queryNode: {
+      previousQueryParams: undefined
+    }
+  } };
+  assert.notOk(hadTextPill(invalidState), 'detected a text pill when there was no previous query data');
 });

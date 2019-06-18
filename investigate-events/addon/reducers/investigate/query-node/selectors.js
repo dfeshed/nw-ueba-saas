@@ -200,7 +200,22 @@ export const isPillValidationInProgress = createSelector(
   (pillsData) => pillsData.isAny('isValidationInProgress')
 );
 
+/**
+ * Does the current query have a Text Filter?
+ */
 export const hasTextPill = createSelector(
   [_pillsData],
   (pillsData) => pillsData.some((pD) => pD.type === TEXT_FILTER)
+);
+
+/**
+ * Did the query that was executed have a Text Filter?
+ */
+export const hadTextPill = createSelector(
+  [_previousQueryParams],
+  (previousQueryParams) => {
+    return !!(previousQueryParams &&
+      previousQueryParams.metaFilter &&
+      previousQueryParams.metaFilter.some((pD) => pD.type === TEXT_FILTER));
+  }
 );

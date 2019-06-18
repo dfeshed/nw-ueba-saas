@@ -16,7 +16,7 @@
       {{t 'investigate.notAllLoaded' maxEvents=maxEvents}}
     {{else if hasResults}}
       <div class='events-table-footer-status'>
-        {{t 'investigate.allResultsLoaded'}}
+        {{footerMessage}}
       </div>
     {{/if}}
   {{else if hasPartialResults}}
