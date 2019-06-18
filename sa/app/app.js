@@ -23,7 +23,8 @@ const App = Application.extend({
           'router',
           'app-version',
           'features',
-          'global-preferences'
+          'global-preferences',
+          'session'
         ],
         externalRoutes: {
           protected: 'protected',
@@ -46,7 +47,8 @@ const App = Application.extend({
           'router',
           'app-version',
           'features',
-          'global-preferences'
+          'global-preferences',
+          'session'
         ],
         externalRoutes: {
           protected: 'protected'

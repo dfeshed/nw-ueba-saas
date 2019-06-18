@@ -28,7 +28,8 @@ const Eng = Engine.extend({
       'eventBus',
       'router',
       'app-version',
-      'features'
+      'features',
+      'session'
     ],
     externalRoutes: [
       'protected'

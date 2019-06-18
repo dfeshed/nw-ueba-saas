@@ -15,6 +15,7 @@ export default Route.extend({
   timeFormat: service(),
   timezone: service(),
   features: service(),
+  session: service(),
 
   model() {
 
@@ -38,6 +39,8 @@ export default Route.extend({
       'rsa.usm.filePolicyFeature': true,
       'rsa.usm.allowFilePolicies': true
     });
+
+    this.set('session.isNwUIPrimary', true);
 
     // When running microservices, need to login and get cookie
     // so requests do not fail.
