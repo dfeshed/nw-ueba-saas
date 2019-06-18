@@ -122,7 +122,7 @@ public class EntityPersistencyServiceTest{
         entity.setLastUpdateLogicalEndDate(Date.from(end));
         entityPersistencyService.save(entity);
 
-        Stream<Entity> entities = entityPersistencyService.findEntitiesByUpdatedDateAndEntityType(start, end, "entityType");
+        Stream<Entity> entities = entityPersistencyService.findEntitiesByLastUpdateLogicalDateAndEntityType(start, end, "entityType");
 
         assertNotNull(entities);
         assertEquals(1, entities.count());

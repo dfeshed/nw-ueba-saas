@@ -17,7 +17,6 @@ import presidio.output.forwarder.strategy.ForwarderConfiguration;
 import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -26,7 +25,6 @@ public class IndicatorsForwarder extends Forwarder<Indicator> {
 
     AlertPersistencyService alertPersistencyService;
     JsonPayloadBuilder payloadBuilder;
-
 
     public IndicatorsForwarder(AlertPersistencyService alertPersistencyService, ForwarderConfiguration forwarderStrategyConfiguration, ForwarderStrategyFactory forwarderStrategyFactory) {
         super(forwarderStrategyConfiguration, forwarderStrategyFactory);
@@ -38,9 +36,13 @@ public class IndicatorsForwarder extends Forwarder<Indicator> {
         }
     }
 
-    @Override
-    Stream<Indicator> getEntitiesToForward(Instant startDate, Instant endDate, String entityType, List<String> alertIds) {
-        return alertPersistencyService.findIndicatorByDateAndAlertIds(startDate, endDate, alertIds); //TODO: add alerts and events events
+    public ForwardedEntity forwardIndicators(List<String> alertIds){
+        Stream<Indicator> indicators = getIndicatorsToForward(alertIds);
+        return doForward(indicators);
+    }
+
+    private Stream<Indicator> getIndicatorsToForward(List<String> alertIds) {
+        return alertPersistencyService.findIndicatorsAlertIds(alertIds);
     }
 
     @Override

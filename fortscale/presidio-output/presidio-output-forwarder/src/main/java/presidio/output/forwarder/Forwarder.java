@@ -27,7 +27,7 @@ public abstract class Forwarder<T>{
         this.forwarderStrategyFactory = forwarderStrategyFactory;
     }
 
-    public ForwardedEntity forward(Instant startDate, Instant endDate, String entityType, List<String> alertIds) {
+    protected ForwardedEntity doForward(Stream<T> instances) {
 
         ForwarderStrategy.PAYLOAD_TYPE payloadType = getPayloadType();
 
@@ -45,21 +45,19 @@ public abstract class Forwarder<T>{
         }
         int bulkSize = forwarderConfiguration.getForwardBulkSize(payloadType);
 
-        // forward messages in a batch
+        // doForward messages in a batch
         final AtomicInteger forwardedCount = new AtomicInteger();
         List<String> ids = new ArrayList<>();
-        try (Stream<T> entities = getEntitiesToForward(startDate, endDate, entityType, alertIds)){
-            Iterators.partition(entities.iterator(), bulkSize).forEachRemaining(entitiesBulk -> {
-                try {
-                    entitiesBulk.forEach(entity -> ids.add(getId(entity)));
-                    int success = forwardBatch(forwarderStrategy, payloadType, entitiesBulk);
-                    forwardedCount.addAndGet(success);
-                } catch (Exception ex) {
-                    logger.error("failed to forward bulk '{}'", entitiesBulk);
-                    Throwables.propagate(ex);
-                }
-            });
-        }
+        Iterators.partition(instances.iterator(), bulkSize).forEachRemaining(instancesBulk -> {
+            try {
+                instancesBulk.forEach(instance -> ids.add(getId(instance)));
+                int success = forwardBatch(forwarderStrategy, payloadType, instancesBulk);
+                forwardedCount.addAndGet(success);
+            } catch (Exception ex) {
+                logger.error("failed to doForward bulk '{}'", instancesBulk);
+                Throwables.propagate(ex);
+            }
+        });
         logger.info("{} '{}' messages were forwarded successfully", forwardedCount.get(),  getPayloadType());
         return new ForwardedEntity(forwardedCount.get(), ids);
     }
@@ -79,8 +77,6 @@ public abstract class Forwarder<T>{
         forwarderStrategy.forward(messages, payloadType);
         return messages.size();
     };
-
-    abstract Stream<T> getEntitiesToForward(Instant startDate, Instant endDate, String entityType, List<String> alertIds);
 
     abstract String getId(T entity);
 

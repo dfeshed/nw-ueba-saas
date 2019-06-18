@@ -60,7 +60,7 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     }
 
     @Override
-    public Stream<Entity> findEntitiesByUpdatedDateAndEntityType(Instant startDate, Instant endDate, String entityType) {
+    public Stream<Entity> findEntitiesByLastUpdateLogicalDateAndEntityType(Instant startDate, Instant endDate, String entityType) {
         return entityRepository.findByLastUpdateLogicalStartDateGreaterThanEqualAndLastUpdateLogicalEndDateLessThanEqualAndEntityType(startDate.toEpochMilli(), endDate.toEpochMilli(), entityType);
     }
 }

@@ -191,32 +191,24 @@ public class AlertPersistencyServiceTest {
     }
 
     @Test
-    public void testFindIndicatorByDateAndAlertIds() {
-        Instant startDate = Instant.parse("2017-11-10T15:00:00.000Z");
-        Instant endDate = Instant.parse("2017-11-10T16:00:00.000Z");
+    public void testFindIndicatorsAlertIds() {
         List<String> alertIds = new ArrayList<>();
         alertIds.add("0");
         alertIds.add("1");
 
         Indicator indicator = new Indicator();
         indicator.setAlertId("0");
-        indicator.setStartDate(Date.from(startDate));
-        indicator.setEndDate(Date.from(endDate));
         alertPersistencyService.save(indicator);
 
         Indicator indicator1 = new Indicator();
         indicator1.setAlertId("1");
-        indicator1.setStartDate(Date.from(startDate));
-        indicator1.setEndDate(Date.from(endDate));
         alertPersistencyService.save(indicator1);
 
         Indicator indicator2 = new Indicator();
         indicator2.setAlertId("2");
-        indicator2.setStartDate(Date.from(startDate));
-        indicator2.setEndDate(Date.from(endDate));
         alertPersistencyService.save(indicator2);
 
-        Stream<Indicator> indicators = alertPersistencyService.findIndicatorByDateAndAlertIds(startDate, endDate, alertIds);
+        Stream<Indicator> indicators = alertPersistencyService.findIndicatorsAlertIds(alertIds);
 
         assertThat(indicators.count(), is(2L));
     }

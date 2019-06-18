@@ -12,7 +12,6 @@ import presidio.output.forwarder.strategy.ForwarderConfiguration;
 import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -21,16 +20,19 @@ public class EntitiesForwarder extends Forwarder<Entity> {
     EntityPersistencyService entityPersistencyService;
     JsonPayloadBuilder payloadBuilder;
 
-
     public EntitiesForwarder(EntityPersistencyService entityPersistencyService, ForwarderConfiguration forwarderStrategyConfiguration, ForwarderStrategyFactory forwarderStrategyFactory) {
         super(forwarderStrategyConfiguration, forwarderStrategyFactory);
         this.entityPersistencyService = entityPersistencyService;
         payloadBuilder = new JsonPayloadBuilder<>(Entity.class, EntityJsonMixin.class);
     }
 
-    @Override
-    Stream<Entity> getEntitiesToForward(Instant startDate, Instant endDate, String entityType, List<String> alertIds) {
-        return entityPersistencyService.findEntitiesByUpdatedDateAndEntityType(startDate, endDate, entityType);
+    public ForwardedEntity forwardEntities(Instant startDate, Instant endDate, String entityType){
+        Stream<Entity> entities = getEntitiesToForward(startDate, endDate, entityType);
+        return doForward(entities);
+    }
+
+    private Stream<Entity> getEntitiesToForward(Instant startDate, Instant endDate, String entityType) {
+        return entityPersistencyService.findEntitiesByLastUpdateLogicalDateAndEntityType(startDate, endDate, entityType);
     }
 
     @Override
