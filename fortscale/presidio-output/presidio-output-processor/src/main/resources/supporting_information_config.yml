@@ -1504,12 +1504,12 @@ indicators:
     - sslSubject
   schema: TLS
   anomalyDescriptior:
-    anomalyField: srcCountry
+    anomalyField: dstCountry
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
-    - srcCountry
+    - dstCountry
   historicalData:
     type: count_aggregations
     featureBucketConfName: countryHistogramSslSubjectOutboundTlsDaily
@@ -1822,12 +1822,12 @@ indicators:
     - sslSubject
   schema: TLS
   anomalyDescriptior:
-    anomalyField: srcCountry
+    anomalyField: dstCountry
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
-    - srcCountry
+    - dstCountry
     - sslSubject
   historicalData:
     type: count_aggregations

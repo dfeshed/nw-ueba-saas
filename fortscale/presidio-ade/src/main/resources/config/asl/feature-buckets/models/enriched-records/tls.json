@@ -201,7 +201,7 @@
           "name": "countryHistogram",
           "featureNamesMap": {
             "groupBy": [
-              "srcCountry"
+              "dstCountry"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -213,7 +213,7 @@
     {
       "name": "sslSubjectHistogramCountryOutboundTlsDaily",
       "contextFieldNames": [
-        "srcCountry"
+        "dstCountry"
       ],
       "adeEventTypes": [
         "tls"
