@@ -34,7 +34,6 @@ export default Component.extend({
   iframeSrc(extractLink) {
     const lastExtractLink = this.get('lastExtractLink');
     const reallyDidChange = extractLink !== lastExtractLink;
-
     let source = null;
     if (reallyDidChange && !isEmpty(extractLink)) {
       // The extracted file is downloaded, only if the autoDownloadExtractedFiles preference
@@ -42,7 +41,7 @@ export default Component.extend({
       if (this.get('isAutoDownloadFile')) {
         source = extractLink;
       } else {
-        this.get('flashMessages').success(this.get('i18n').t('recon.extractedFileReady'));
+        this.get('flashMessages').success(this.get('i18n').t('fileExtract.ready'));
       }
       this.set('lastExtractLink', extractLink);
       debounce(this, this.debouncedAction, 200);

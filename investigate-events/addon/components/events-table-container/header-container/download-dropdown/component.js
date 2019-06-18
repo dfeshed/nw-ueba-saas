@@ -3,8 +3,6 @@ import computed, { match, alias } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import { areAllEventsSelected, getDownloadOptions } from 'investigate-events/reducers/investigate/event-results/selectors';
-// TODO enable flash messaging after a certain fixed time
-// import 'didQueueDownload'
 import { didDownloadFiles, extractFiles } from 'investigate-events/actions/notification-creators';
 
 const stateToComputed = (state) => ({
@@ -19,8 +17,6 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   didDownloadFiles,
   extractFiles
-  // TODO enable flash messaging after a certain fixed time
-  // didQueueDownload
 };
 
 const DownloadDropdown = Component.extend({
@@ -28,8 +24,6 @@ const DownloadDropdown = Component.extend({
   accessControl: service(),
   classNames: ['rsa-investigate-events-table__header__downloadEvents'],
 
-  // TODO enable flash messaging after a certain fixed time
-  // add 'extractWarningClass'
   classNameBindings: ['isDisabled'],
 
   @alias('accessControl.hasInvestigateContentExportAccess') permissionAllowsDownload: true,
@@ -49,23 +43,6 @@ const DownloadDropdown = Component.extend({
     }
     return true;
   },
-
-  // displays a flash message pointing to job queue and changes fileExtractStatus to notified
-  // when file extraction is queued due to navigating away in the middle of download
-  // TODO enable flash messaging after a certain fixed time
-  /* @computed('status')
-  extractWarningClass(status) {
-
-    if (status === 'queued') {
-      const { flashMessages, i18n } = this.getProperties('flashMessages', 'i18n');
-      if (flashMessages && flashMessages.info) {
-        const url = `${window.location.origin}/profile#jobs`;
-        flashMessages.info(i18n.t('recon.extractWarning', { url }), { sticky: true });
-        this.send('didQueueDownload');
-      }
-    }
-  },
-  */
 
   @computed('areAllEventsSelected', 'isDownloading', 'i18n')
   downloadTitle(areAllEventsSelected, isDownloading, i18n) {

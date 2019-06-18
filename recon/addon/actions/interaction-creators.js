@@ -3,7 +3,7 @@ import { isArray } from '@ember/array';
 
 import * as ACTION_TYPES from './types';
 import { fetchExtractJobId } from './fetch';
-import { displayDownloadError } from './data-creators';
+import { showDownloadInQueueInfo, displayDownloadError } from './data-creators';
 import { getHeaderItem } from 'recon/utils/recon-event-header';
 import { selectedFiles } from 'recon/reducers/files/selectors';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
@@ -77,9 +77,12 @@ const extractFiles = (type = 'FILES') => {
       type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE,
       promise: fetchExtractJobId(endpointId, eventId, type, filename, selectedFileNames, eventType),
       meta: {
+        onStart() {
+          showDownloadInQueueInfo();
+        },
         onFailure(response) {
           handleInvestigateErrorCode(response, `FETCH_EXTRACT_JOB_ID; ${endpointId} ${eventId}`);
-          dispatch(displayDownloadError());
+          displayDownloadError();
         }
       }
     });
@@ -87,9 +90,6 @@ const extractFiles = (type = 'FILES') => {
 };
 
 const didDownloadFiles = () => ({ type: ACTION_TYPES.FILE_EXTRACT_JOB_DOWNLOADED });
-
-const didQueueDownload = () => ({ type: ACTION_TYPES.FILE_EXTRACT_NOTIFIED });
-
 
 const showPacketTooltip = (tootipData) => ({
   type: ACTION_TYPES.SHOW_PACKET_TOOLTIP,
@@ -108,7 +108,6 @@ export {
   selectAllFiles,
   extractFiles,
   didDownloadFiles,
-  didQueueDownload,
   fileSelected,
   highlightMeta,
   showPacketTooltip,

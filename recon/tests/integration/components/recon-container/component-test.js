@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import Service from '@ember/service';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
@@ -17,6 +17,7 @@ module('Integration | Component | recon container', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
+    this.owner.inject('component', 'flashMessages', 'service:flashMessages', 'i18n', 'service:i18n');
     setState = (state) => patchReducer(this, state);
     initialize(this.owner);
     this.owner.register('service:-routing', Service.extend({
@@ -64,32 +65,6 @@ module('Integration | Component | recon container', function(hooks) {
     `);
 
     assert.equal(findAll('.header-button').length, 2, 'Recon container when provided with a closeAction does not run in standalone mode and has \'close and expand\' buttons');
-  });
-
-  // TODO enable flash messaging after a certain fixed time
-  // might not be needed
-  skip('recon container executes flash message info indicating download queued in job queue', async function(assert) {
-    assert.expect(1);
-
-    new ReduxDataHelper(setState).setFileExtractStatus('queued').build();
-
-    this.set('endpointId', '555d9a6fe4b0d37c827d402e');
-    this.set('eventId', '5');
-    this.set('eventType', NETWORK);
-    this.set('closeAction', () => {});
-    this.set('expandAction', () => {});
-
-    await render(hbs`
-      {{recon-container
-        endpointId=endpointId
-        eventId=eventId
-        eventType=eventType
-        closeAction=(action closeAction)
-        expandAction=(action expandAction)
-      }}
-    `);
-
-    assert.ok(findAll('.recon-container.extract-warned'), 'Recon container with extract warning flash message');
   });
 
   test('recon container with fatal error code - invalid session', async function(assert) {

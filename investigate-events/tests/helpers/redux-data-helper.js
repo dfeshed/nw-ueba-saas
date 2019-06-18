@@ -308,8 +308,18 @@ export default class DataHelper {
     return this;
   }
 
+  setAutoDownloadPreference(autoDownload) {
+    _set(this.state, 'files.isAutoDownloadFile', autoDownload);
+    return this;
+  }
+
   setFileExtractStatus(status) {
     _set(this.state, 'files.fileExtractStatus', status);
+    return this;
+  }
+
+  setFileExtractLink(link) {
+    _set(this.state, 'files.fileExtractLink', link);
     return this;
   }
 

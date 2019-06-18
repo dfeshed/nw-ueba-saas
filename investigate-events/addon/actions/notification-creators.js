@@ -55,7 +55,7 @@ export const initializeNotifications = () => {
           } else {
 
             dispatch({ type: ACTION_TYPES.FILE_EXTRACT_FAILURE });
-            dispatch(_displayDownloadError(data.errorMessage));
+            _displayDownloadError(data.errorMessage);
           }
         }
       },
@@ -91,9 +91,12 @@ export const extractFiles = (eventDownloadType, fileType, sessionIds = [], isSel
       type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE,
       promise: fetchExtractJobId(serviceId, sessionIds, fileType, filename, eventDownloadType, columnList),
       meta: {
+        onStart() {
+          _showDownloadInQueueInfo();
+        },
         onFailure(response) {
           handleInvestigateErrorCode(response, `FETCH_EXTRACT_JOB_ID; ${serviceId} ${eventDownloadType}`);
-          dispatch(_displayDownloadError());
+          _displayDownloadError();
         }
       }
     });
@@ -104,7 +107,14 @@ export const teardownNotifications = () => ({ type: ACTION_TYPES.NOTIFICATION_TE
 
 export const didDownloadFiles = () => ({ type: ACTION_TYPES.FILE_EXTRACT_JOB_DOWNLOADED });
 
-export const didQueueDownload = () => ({ type: ACTION_TYPES.FILE_EXTRACT_NOTIFIED });
+const _showDownloadInQueueInfo = () => {
+  const flashMessages = lookup('service:flashMessages');
+  if (flashMessages && flashMessages.info) {
+    const i18n = lookup('service:i18n');
+    const url = `${window.location.origin}/profile#jobs`;
+    flashMessages.info(i18n.t('fileExtract.info', { url }));
+  }
+};
 
 const _displayDownloadError = (errorMessage) => {
   const flashMessages = lookup('service:flashMessages');

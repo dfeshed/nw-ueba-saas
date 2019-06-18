@@ -5,6 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { set, computed } from '@ember/object';
 import { setupRenderingTest } from 'ember-qunit';
 import DataHelper from '../../../../helpers/data-helper';
+import { patchFlash } from '../../../../helpers/patch-flash';
 import { click, render, find, findAll, settled, triggerKeyEvent } from '@ember/test-helpers';
 import sinon from 'sinon';
 
@@ -267,6 +268,7 @@ module('Integration | Component | recon event actionbar/export packet', function
   });
 
   test('the extracted file must be downloaded automatically', async function(assert) {
+    // Expects 3 assertions to run only. Flash message wont be shown when autoDownloadPreference is true
     assert.expect(3);
 
     const fileLink = 'http://extracted-file-download-link/';
@@ -276,6 +278,13 @@ module('Integration | Component | recon event actionbar/export packet', function
       .initializeData()
       .setAutoDownloadPreference(true)
       .setExtractedFileLink(fileLink);
+
+    patchFlash((flash) => {
+      const translation = this.owner.lookup('service:i18n');
+      const expectedMsg = translation.t('fileExtract.ready');
+      assert.equal(flash.type, 'success');
+      assert.equal(flash.message.string, expectedMsg);
+    });
     await render(hbs`{{recon-event-actionbar/export-packet}}`);
 
     assert.equal(didDownloadCreatorsStub.callCount, 1, 'didDownload interaction creator called one time');
@@ -286,7 +295,7 @@ module('Integration | Component | recon event actionbar/export packet', function
   });
 
   test('the extracted file must not be downloaded automatically', async function(assert) {
-    assert.expect(2);
+    assert.expect(4);
 
     const fileLink = 'http://extracted-file-download-link/';
 
@@ -295,6 +304,13 @@ module('Integration | Component | recon event actionbar/export packet', function
       .initializeData()
       .setAutoDownloadPreference(false)
       .setExtractedFileLink(fileLink);
+
+    patchFlash((flash) => {
+      const translation = this.owner.lookup('service:i18n');
+      const expectedMsg = translation.t('fileExtract.ready');
+      assert.equal(flash.type, 'success');
+      assert.equal(flash.message.string, expectedMsg);
+    });
 
     await render(hbs`{{recon-event-actionbar/export-packet}}`);
 

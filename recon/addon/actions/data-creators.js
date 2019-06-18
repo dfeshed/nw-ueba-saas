@@ -618,7 +618,7 @@ const initializeNotifications = () => {
           } else {
 
             dispatch({ type: ACTION_TYPES.FILE_EXTRACT_FAILURE });
-            dispatch(displayDownloadError(data.errorMessage));
+            displayDownloadError(data.errorMessage);
           }
         }
       },
@@ -628,6 +628,15 @@ const initializeNotifications = () => {
       }
     );
   };
+};
+
+const showDownloadInQueueInfo = () => {
+  const flashMessages = lookup('service:flashMessages');
+  if (flashMessages && flashMessages.info) {
+    const i18n = lookup('service:i18n');
+    const url = `${window.location.origin}/profile#jobs`;
+    flashMessages.info(i18n.t('fileExtract.info', { url }));
+  }
 };
 
 const displayDownloadError = (errorMessage) => {
@@ -696,6 +705,7 @@ export {
   jumpToPage,
   determineReconView,
   reconPreferencesUpdated,
+  showDownloadInQueueInfo,
   displayDownloadError,
   cookieStore as _cookieStore, // exported for testing only
   authCookie as _authCookie // exported for testing only

@@ -247,8 +247,6 @@ export default {
     'other': 'updates'
   },
   recon: {
-    extractWarning: '<span>You have navigated away before the downloaded files could be attached to the browser tray. Your download will be available <a href="{{url}}" target="_blank">here</a>.</span>',
-    extractedFileReady: 'The file has been extracted. Please go to the job queue to download',
     titleBar: {
       titles: {
         endpoint: 'Endpoint Event Details',
@@ -469,6 +467,8 @@ export default {
   midnight: 'Midnight',
   noon: 'Noon',
   fileExtract: {
+    info: '<span>Preparing your download. The downloaded file(s) also available in <a href="{{url}}" target="_blank">the job queue</a> for later retrieval.</span>',
+    ready: 'The file has been extracted. Please go to <a href="{{url}}" target="_blank">the job queue</a> to download',
     error: {
       generic: 'An unexpected error has occurred attempting to download file(s). If further details are available, they can be found in the console.'
     }

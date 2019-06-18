@@ -5,8 +5,11 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
+import { patchFlash } from '../../../../../helpers/patch-flash';
 import { find, findAll, render } from '@ember/test-helpers';
 import { clickTrigger } from 'ember-power-select/test-support/helpers';
+import * as notificationCreators from 'investigate-events/actions/notification-creators';
+import sinon from 'sinon';
 
 const downloadSelector = '.rsa-investigate-events-table__header__downloadEvents';
 const downloadPowerSelect = `${downloadSelector} .power-select`;
@@ -27,6 +30,8 @@ const assertForDownloadOptions = async function(assert, options, index, value, c
   assert.equal(options[index].children[1].textContent.trim(), count);
 };
 
+const didDownloadCreatorsStub = sinon.stub(notificationCreators, 'didDownloadFiles');
+
 module('Integration | Component | Download Dropdown', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
@@ -35,14 +40,20 @@ module('Integration | Component | Download Dropdown', function(hooks) {
   hooks.beforeEach(function() {
 
     this.owner.inject('component', 'flashMessages', 'service:flashMessages', 'i18n', 'service:i18n');
-    const flashMessages = this.owner.lookup('service:flashMessages');
-    flashMessages.set('info', () => {});
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('hasInvestigateContentExportAccess', true);
     setState = (state) => {
       patchReducer(this, state);
     };
     initialize(this.owner);
+  });
+
+  hooks.afterEach(function() {
+    didDownloadCreatorsStub.resetHistory();
+  });
+
+  hooks.after(function() {
+    didDownloadCreatorsStub.restore();
   });
 
   test('download option should be visible if user has permissions', async function(assert) {
@@ -163,4 +174,52 @@ module('Integration | Component | Download Dropdown', function(hooks) {
     await assertForDownloadOptions(assert, options, 2, 'Visible Meta as Text', '2/2');
   });
 
+
+  test('should download file automatically when autoDownload preference is set to true', async function(assert) {
+    // Expects 3 assertions to run only. Flash message wont be shown when autoDownloadPreference is true
+    assert.expect(3);
+
+    const fileLink = 'http://extracted-file-download-link/';
+    new ReduxDataHelper(setState)
+      .defaultEventAnalysisPreferences()
+      .setFileExtractLink(fileLink)
+      .setAutoDownloadPreference(true)
+      .build();
+
+    patchFlash((flash) => {
+      const translation = this.owner.lookup('service:i18n');
+      const expectedMsg = translation.t('fileExtract.ready');
+      assert.equal(flash.type, 'success');
+      assert.equal(flash.message.string, expectedMsg);
+    });
+
+    await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
+    assert.equal(didDownloadCreatorsStub.callCount, 1, 'didDownload interaction creator called one time');
+    const iframe = findAll('.export-events-iframe');
+    assert.equal(iframe.length, 1, 'iframe found');
+    assert.equal(iframe[0].src, fileLink);
+  });
+
+  test('should not download file automatically when autoDownload preference is set to false', async function(assert) {
+    assert.expect(5);
+    const fileLink = 'http://extracted-file-download-link/';
+    new ReduxDataHelper(setState)
+      .defaultEventAnalysisPreferences()
+      .setFileExtractLink(fileLink)
+      .setAutoDownloadPreference(false)
+      .build();
+
+    patchFlash((flash) => {
+      const translation = this.owner.lookup('service:i18n');
+      const expectedMsg = translation.t('fileExtract.ready');
+      assert.equal(flash.type, 'success');
+      assert.equal(flash.message.string, expectedMsg);
+    });
+
+    await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
+    assert.equal(didDownloadCreatorsStub.callCount, 1, 'didDownload interaction creator called one time');
+    const iframe = findAll('.export-events-iframe');
+    assert.equal(iframe.length, 1, 'iframe found');
+    assert.equal(iframe[0].src, '');
+  });
 });

@@ -119,18 +119,6 @@ test('test NOTIFICATION_TEARDOWN_SUCCESS changes fileExtractStatus to queue when
   assert.equal(result.fileExtractStatus, 'queued');
 });
 
-test('test FILE_EXTRACT_NOTIFIED changes fileExtractStatus to notified when queued', function(assert) {
-  const action = {
-    type: ACTION_TYPES.FILE_EXTRACT_NOTIFIED
-  };
-
-  const currentState = initialState.merge({
-    fileExtractStatus: 'queued'
-  });
-  const result = reducer(currentState, action);
-  assert.equal(result.fileExtractStatus, 'notified');
-});
-
 test('test FILE_EXTRACT_FAILURE', function(assert) {
   const action = {
     type: ACTION_TYPES.FILE_EXTRACT_FAILURE

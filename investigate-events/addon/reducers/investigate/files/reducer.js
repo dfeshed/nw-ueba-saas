@@ -31,8 +31,6 @@ const filesInitialState = Immutable.from({
  */
 const _fileExtractEnqueueState = (fileExtractStatus) => fileExtractStatus === 'wait' || fileExtractStatus === 'queued' ? 'queued' : null;
 
-const _fileExtractQueueUpdateState = (fileExtractStatus) => fileExtractStatus === 'queued' ? 'notified' : fileExtractStatus;
-
 export default handleActions({
 
   [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state) => {
@@ -57,10 +55,6 @@ export default handleActions({
 
   [ACTION_TYPES.FILE_EXTRACT_JOB_DOWNLOADED]: (state) => {
     return state.merge(fileExtractInitialState);
-  },
-
-  [ACTION_TYPES.FILE_EXTRACT_NOTIFIED]: (state) => {
-    return state.merge({ 'fileExtractStatus': _fileExtractQueueUpdateState(state.fileExtractStatus) });
   },
 
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {

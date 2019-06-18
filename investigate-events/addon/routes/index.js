@@ -17,7 +17,7 @@ import {
 } from 'investigate-events/constants/panelSizes';
 import { hasMinimumCoreServicesVersionForColumnSorting } from '../reducers/investigate/services/selectors';
 import { hasInvalidPill, isPillValidationInProgress } from '../reducers/investigate/query-node/selectors';
-import { teardownNotifications, initializeNotifications, didQueueDownload } from '../actions/notification-creators';
+import { teardownNotifications, initializeNotifications } from '../actions/notification-creators';
 
 const SUMMARY_CALL_INTERVAL = 60000;
 let timerId;
@@ -67,8 +67,6 @@ export default Route.extend({
     timerId = setInterval(() => this.get('redux').dispatch(updateSummaryData()), SUMMARY_CALL_INTERVAL);
     // dispatch call to open notification websocket
     this.get('redux').dispatch(initializeNotifications());
-    // TODO enable flash messaging after a certain fixed time
-    // this._showDownloadQueueNotification();
   },
 
   deactivate() {
@@ -81,8 +79,6 @@ export default Route.extend({
     if (stopNotifications) {
       stopNotifications();
       this.get('redux').dispatch(teardownNotifications());
-      // TODO enable flash messaging after a certain fixed time
-      // this._showDownloadQueueNotification();
     }
   },
 
@@ -156,17 +152,6 @@ export default Route.extend({
           mf: undefined
         }
       });
-    }
-  },
-
-  _showDownloadQueueNotification() {
-    if (this.get('redux').getState().investigate.files.fileExtractStatus == 'queued') {
-      const { flashMessages, i18n } = this.getProperties('flashMessages', 'i18n');
-      if (flashMessages && flashMessages.info) {
-        const url = `${window.location.origin}/profile#jobs`;
-        flashMessages.info(i18n.t('recon.extractWarning', { url }), { sticky: true });
-        this.get('redux').dispatch(didQueueDownload());
-      }
     }
   },
 
