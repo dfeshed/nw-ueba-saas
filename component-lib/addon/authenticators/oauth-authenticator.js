@@ -136,12 +136,25 @@ export default OAuth2PasswordGrant.extend(csrfToken, {
     if (csrfKey) {
       return new RSVP.Promise((resolve, reject) => {
         fetch(this.get('checkTokenEndpoint'), { credentials: 'include', method: 'GET' }).then((response) => {
+          const { headers } = response;
+          // ASOC-75358 - Check if the machine is Analyst UI.
+          // For Analyst UI, the flag `isNwUIPrimary` will be false. If the flag is true or not set, it is
+          // assumed to be a primary machine.
+          // This flag is set in the nginx conf file by the platform and is captured as part of http headers
+          let isNwUIPrimary = true;
+          if (headers) {
+            const isNwUIPrimaryStr = headers.get('x-nw-ui-primary') || 'true';
+            // Since headers.get returns a string, covert the string to boolean
+            isNwUIPrimary = (isNwUIPrimaryStr === 'true');
+          }
+
           // Http Status code 401/500 is 'successful'. See https://github.com/github/fetch#caveats
           if (!this._validate(data) || response.status >= 300) {
             reject();
           } else {
             response.text().then((token) => {
               this.set('session.persistedAccessToken', token);
+              this.set('session.isNwUIPrimary', isNwUIPrimary);
               resolve(data);
             });
           }

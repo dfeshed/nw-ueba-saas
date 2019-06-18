@@ -9,6 +9,7 @@ export default Route.extend({
   timeFormat: service(),
   timezone: service(),
   i18n: service(),
+  session: service(),
 
   model() {
 
@@ -25,6 +26,8 @@ export default Route.extend({
       'timeFormat.selected': 'HR24',
       'timezone.selected': 'UTC'
     });
+
+    this.set('session.isNwUIPrimary', true);
 
     // When running microservices, need to login and get cookie
     // so requests do not fail.

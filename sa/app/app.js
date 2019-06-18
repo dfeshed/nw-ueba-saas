@@ -87,7 +87,8 @@ const App = Application.extend({
           'flashMessages',
           'eventBus',
           'router',
-          'global-preferences'
+          'global-preferences',
+          'session'
         ],
         externalRoutes: {
           protected: 'protected'

@@ -24,7 +24,8 @@ const Eng = Engine.extend({
       'i18n',
       'flashMessages',
       'eventBus',
-      'router'
+      'router',
+      'session'
     ],
     externalRoutes: [
       'protected'

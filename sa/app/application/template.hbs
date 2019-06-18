@@ -49,12 +49,18 @@
       <a href="/unified/dashboard" class="rsa-header-nav-monitor js-test-nav-monitor-link">{{t "monitor.title"}}</a>
     {{/if}}
 
-    {{#if accessControl.hasConfigAccess}}
-      <a href="{{accessControl.configUrl}}" class="rsa-header-nav-configure js-test-nav-configure-link {{if isConfigureRoute 'active'}}">{{t "config.title"}}</a>
+    {{#if session.isNwUIPrimary}}
+      {{#if accessControl.hasConfigAccess}}
+        <a href="{{accessControl.configUrl}}" class="rsa-header-nav-configure js-test-nav-configure-link {{if isConfigureRoute 'active'}}">{{t "config.title"}}</a>
+      {{/if}}
     {{/if}}
 
     {{#if accessControl.hasAdminAccess}}
-      <a href="{{accessControl.adminUrl}}" class="rsa-header-nav-admin js-test-nav-admin-link {{if isAdminRoute 'active'}}">{{t "admin.title"}}</a>
+      {{#if session.isNwUIPrimary}}
+        <a href="{{accessControl.adminUrl}}" class="rsa-header-nav-admin js-test-nav-admin-link {{if isAdminRoute 'active'}}">{{t "admin.title"}}</a>
+      {{else}}
+        <a href="/admin/monitoring" class="rsa-header-nav-admin js-test-nav-admin-link">{{t "admin.title"}}</a>
+      {{/if}}
     {{/if}}
   {{/rsa-application-header}}
 

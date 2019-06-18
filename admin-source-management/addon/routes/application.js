@@ -8,10 +8,13 @@ export default Route.extend({
   accessControl: service(),
   contextualHelp: service(),
   eventBus: service(),
+  session: service(),
 
   beforeModel() {
     const hasUsmAccess = this.get('accessControl.hasAdminViewUnifiedSourcesAccess');
-    if (!hasUsmAccess) {
+    // ASOC-75358 - if it is analyst UI machine (not primary), block access to USM
+    const isNwUIPrimary = this.get('session.isNwUIPrimary');
+    if (!(hasUsmAccess && isNwUIPrimary)) {
       this.transitionToExternal('protected');
     }
   },

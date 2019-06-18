@@ -7,7 +7,7 @@ import { settled } from '@ember/test-helpers';
 import ApplicationRoute from 'admin-source-management/routes/application';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 
-let transitionToExternal, hasPermission;
+let transitionToExternal, hasPermission, primary;
 
 module('Unit | Route | application', function(hooks) {
   setupTest(hooks, {
@@ -16,6 +16,7 @@ module('Unit | Route | application', function(hooks) {
 
   hooks.beforeEach(function() {
     hasPermission = true;
+    primary = true;
     transitionToExternal = null;
     initialize(this.owner);
   });
@@ -29,6 +30,11 @@ module('Unit | Route | application', function(hooks) {
         return hasPermission;
       })
     }).create();
+    const session = Service.extend({
+      isNwUIPrimary: computed(function() {
+        return primary;
+      })
+    }).create();
     const i18n = this.owner.lookup('service:i18n');
     const PatchedRoute = ApplicationRoute.extend({
       i18n: computed(function() {
@@ -36,6 +42,9 @@ module('Unit | Route | application', function(hooks) {
       }),
       accessControl: computed(function() {
         return accessControl;
+      }),
+      session: computed(function() {
+        return session;
       }),
       transitionToExternal(routeName) {
         transitionToExternal = routeName;
@@ -61,13 +70,43 @@ module('Unit | Route | application', function(hooks) {
     assert.equal(transitionToExternal, 'protected', 'transitionToExternal was called with protected');
   });
 
-  test('it should NOT transitionToExternal "protected" route if the user has access', async function(assert) {
+  test('it should transitionToExternal "protected" route if the the session.isNwUIPrimary flag is false', async function(assert) {
+    assert.expect(1);
+    const route = setupRoute.call(this);
+    primary = false;
+    await route.beforeModel();
+    await settled();
+    assert.equal(transitionToExternal, 'protected', 'transitionToExternal was called with protected');
+  });
+
+  test('it should NOT transitionToExternal "protected" route if the user has access and isNwUIPrimary flag is true', async function(assert) {
     assert.expect(1);
     const route = setupRoute.call(this);
     hasPermission = true;
+    primary = true;
     await route.beforeModel();
     await settled();
     assert.equal(transitionToExternal, null, 'transitionToExternal was NOT called');
+  });
+
+  test('it should transitionToExternal "protected" route if the user does not have access and session.isNwUIPrimary flag is true', async function(assert) {
+    assert.expect(1);
+    const route = setupRoute.call(this);
+    hasPermission = false;
+    primary = true;
+    await route.beforeModel();
+    await settled();
+    assert.equal(transitionToExternal, 'protected', 'transitionToExternal was called when isNwUIPrimary is true and user does not have access');
+  });
+
+  test('it should transitionToExternal "protected" route if the user does not have access and session.isNwUIPrimary flag is false', async function(assert) {
+    assert.expect(1);
+    const route = setupRoute.call(this);
+    hasPermission = false;
+    primary = false;
+    await route.beforeModel();
+    await settled();
+    assert.equal(transitionToExternal, 'protected', 'transitionToExternal was called when isNwUIPrimary is false and user does not have access');
   });
 
 });

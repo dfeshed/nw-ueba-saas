@@ -79,7 +79,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
     });
   });
 
-  test('onchange will display flash error when socket throws', async function(assert) {
+  skip('onchange will display flash error when socket throws', async function(assert) {
     assert.expect(3);
 
     await render(hbs `{{rsa-locale-preferences}}`);
