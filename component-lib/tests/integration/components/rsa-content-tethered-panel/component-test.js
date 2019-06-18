@@ -1,7 +1,6 @@
 import { click, find, findAll, render, settled } from '@ember/test-helpers';
 import Service from '@ember/service';
 import Evented from '@ember/object/evented';
-import $ from 'jquery';
 import { module, skip, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
@@ -47,7 +46,7 @@ module('Integration | Component | rsa-content-tethered-panel', function(hooks) {
     await render(
       hbs `<a class='foo'>Link</a>{{#rsa-content-tethered-panel isPopover=true isDisplayed=true panelId="foo"}}Label{{/rsa-content-tethered-panel}}`
     );
-    assert.equal($('.is-popover').length, 1);
+    assert.equal(findAll('.is-popover').length, 1);
   });
 
   test('it includes the proper classes when is style is standard', async function(assert) {

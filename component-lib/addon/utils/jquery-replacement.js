@@ -124,6 +124,9 @@ export const isNumeric = (x) => {
 // this.$('.rsa-application-modal').trigger(e)
 // await triggerKeyEvent(find('.rsa-application-modal'), 'keyup', 27)
 
+// this.$('.some-element').trigger('some-event')
+// await triggerEvent(find('.some-element'), 'some-event')
+
 // this.$().find('.rsa-application-overlay').click()
 // await click(find('.rsa-application-overlay'))
 
@@ -149,3 +152,8 @@ export const isNumeric = (x) => {
 
 // this.$().removeAttr('some-attribute')
 // this.element.removeAttribute('some-attribute')
+
+// this.$('.some-element').attr('data-*-attribute')
+// use data attributes https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
+// $el.attr('data-entity-id')
+// el.dataset[entityId]

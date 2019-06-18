@@ -48,5 +48,4 @@ export default Component.extend(ContextualHelp, {
       this.get('layoutService').toggleUserPreferences();
     }
   }
-
 });

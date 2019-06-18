@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { cancel, later } from '@ember/runloop';
 
 const timerProp = '__rsa-tethered-panel-trigger-timer';
@@ -16,9 +15,9 @@ const timerProp = '__rsa-tethered-panel-trigger-timer';
  * @public
  */
 const sendTetherEvent = function(el, panelId, eventBus, eventType, model) {
-  const $el = $(el);
-  const height = $el.height();
-  const width = $el.width();
+  const style = getComputedStyle(el);
+  const height = style.getPropertyValue('height');
+  const width = style.getPropertyValue('width');
   eventBus.trigger(
     `rsa-content-tethered-panel-${eventType}-${panelId}`,
     height,
@@ -26,6 +25,27 @@ const sendTetherEvent = function(el, panelId, eventBus, eventType, model) {
     el.id,
     model
   );
+};
+
+// to store element's event handlers
+// { elementId: { eventType1: handler, eventType2: handler } }
+const eventHandlerMap = {};
+
+// function to use to add to eventHandlerMap
+const addToMap = function(elementId, eventType, handler) {
+  if (eventHandlerMap[elementId]) {
+    eventHandlerMap[elementId][eventType] = handler;
+  } else {
+    eventHandlerMap[elementId] = {};
+    eventHandlerMap[elementId][eventType] = handler;
+  }
+};
+
+// function to use to remove from eventHandlerMap
+const removeFromMap = function(elementId, eventType) {
+  if (eventHandlerMap[elementId] && eventHandlerMap[elementId][eventType]) {
+    eventHandlerMap[elementId][eventType] = null;
+  }
 };
 
 /**
@@ -44,21 +64,26 @@ const sendTetherEvent = function(el, panelId, eventBus, eventType, model) {
  * @public
  */
 const wireTriggerToClick = function(el, panelId, eventBus, opts = {}) {
-  const getIsDisabled = typeof opts.getIsDisabled === 'function' ? opts.getIsDisabled : null;
-  const $el = $(el);
+  if (el) {
 
-  // rsa-content-tethered-panel assumes its trigger ("target") DOM node has a
-  // css class that matches its the panelId
-  if (!$el.hasClass(panelId)) {
-    $el.addClass(panelId);
-  }
+    const getIsDisabled = typeof opts.getIsDisabled === 'function' ? opts.getIsDisabled : null;
+    const eventHandler = function() {
+      if (!getIsDisabled || !getIsDisabled()) {
+        sendTetherEvent(this, panelId, eventBus, 'toggle', opts.model);
+      }
+    };
 
-  const eventName = opts.rightClick ? 'contextmenu' : 'click';
-  $el.on(`${eventName}.rsa-tethered-panel-trigger`, function() {
-    if (!getIsDisabled || !getIsDisabled()) {
-      sendTetherEvent(this, panelId, eventBus, 'toggle', opts.model);
+    // rsa-content-tethered-panel assumes its trigger ("target") DOM node has a
+    // css class that matches its the panelId
+    if (!el.classList.contains(panelId)) {
+      el.classList.add(panelId);
     }
-  });
+
+    // add event handler
+    const eventName = opts.rightClick ? 'contextmenu' : 'click';
+    addToMap(el.id, eventName, eventHandler);
+    el.addEventListener(eventName, eventHandler);
+  }
 };
 
 /**
@@ -69,7 +94,21 @@ const wireTriggerToClick = function(el, panelId, eventBus, opts = {}) {
  * @public
  */
 const unwireTriggerToClick = function(el) {
-  $(el).off('.rsa-tethered-panel-trigger'); // unwires both click & contextmenu
+  if (el && eventHandlerMap[el.id]) {
+    const contextmenuEventHandler = eventHandlerMap[el.id].contextmenu;
+    const clickEventHandler = eventHandlerMap[el.id].click;
+
+    // if this element is wired, remove handlers
+    if (contextmenuEventHandler) {
+      el.removeEventListener('contextmenu', contextmenuEventHandler);
+      removeFromMap(el.id, 'contextmenu');
+    }
+
+    if (clickEventHandler) {
+      el.removeEventListener('click', clickEventHandler);
+      removeFromMap(el.id, 'click');
+    }
+  }
 };
 
 /**
@@ -92,20 +131,20 @@ const unwireTriggerToClick = function(el) {
  * @public
  */
 const wireTriggerToHover = function(el, panelId, eventBus, opts = {}) {
-  const getIsDisabled = typeof opts.getIsDisabled === 'function' ? opts.getIsDisabled : null;
-  const { trigger } = opts;
-  const $el = $(el);
+  if (el) {
+    const getIsDisabled = typeof opts.getIsDisabled === 'function' ? opts.getIsDisabled : null;
+    const { trigger } = opts;
 
-  // rsa-content-tethered-panel assumes its trigger ("target") DOM node has a
-  // css class that matches its the panelId
-  if (!$el.hasClass(panelId)) {
-    $el.addClass(panelId);
-  }
+    // rsa-content-tethered-panel assumes its trigger ("target") DOM node has a
+    // css class that matches its the panelId
+    if (!el.classList.contains(panelId)) {
+      el.classList.add(panelId);
+    }
 
-  $el
-    .on('mouseenter.rsa-tethered-panel-trigger', function() {
+    const mouseenterHandler = function() {
       if (!getIsDisabled || !getIsDisabled()) {
         const lastTimer = this[timerProp];
+
         if (lastTimer) {
           cancel(lastTimer);
           this[timerProp] = null;
@@ -121,8 +160,9 @@ const wireTriggerToHover = function(el, panelId, eventBus, opts = {}) {
           sendTetherEvent(this, panelId, eventBus, 'display', opts.model);
         }
       }
-    })
-    .on('mouseleave.rsa-tethered-panel-trigger', function() {
+    };
+
+    const mouseleaveHandler = function() {
       const lastTimer = this[timerProp];
       if (lastTimer) {
         cancel(lastTimer);
@@ -135,7 +175,14 @@ const wireTriggerToHover = function(el, panelId, eventBus, opts = {}) {
       } else {
         sendTetherEvent(this, panelId, eventBus, 'hide', opts.model);
       }
-    });
+    };
+
+    // add event handlers
+    addToMap(el.id, 'mouseenter', mouseenterHandler);
+    addToMap(el.id, 'mouseleave', mouseleaveHandler);
+    el.addEventListener('mouseenter', mouseenterHandler);
+    el.addEventListener('mouseleave', mouseleaveHandler);
+  }
 };
 
 /**
@@ -146,9 +193,16 @@ const wireTriggerToHover = function(el, panelId, eventBus, opts = {}) {
  * @public
  */
 const unwireTriggerToHover = function(el) {
-  $(el)
-    .off('mouseenter.rsa-tethered-panel-trigger')
-    .off('mouseleave.rsa-tethered-panel-trigger');
+  if (el && eventHandlerMap[el.id]) {
+    const mouseenterHandler = eventHandlerMap[el.id].mouseenter;
+    const mouseleaveHandler = eventHandlerMap[el.id].mouseleave;
+
+    // if this element is wired, remove handlers
+    el.removeEventListener('mouseenter', mouseenterHandler);
+    el.removeEventListener('mouseleave', mouseleaveHandler);
+    removeFromMap(el.id, 'mouseenter');
+    removeFromMap(el.id, 'mouseleave');
+  }
 };
 
 /**

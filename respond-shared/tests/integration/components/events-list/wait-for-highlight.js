@@ -7,10 +7,11 @@ const CSS_CLASS_ENTITY_HAS_BEEN_VALIDATED = '.entity-has-been-validated';
 
 export const waitForEntityHighlight = async function() {
   await new Promise(async(resolve, reject) => {
-    await waitUntil(() => findAll(CSS_CLASS_ENTITY_HAS_BEEN_VALIDATED).length !== 0, { timeout }).then(() => {
-      next(null, resolve);
-    }).catch(() => {
-      next(null, reject);
-    });
+    await waitUntil(() => findAll(CSS_CLASS_ENTITY_HAS_BEEN_VALIDATED).length > 0, { timeout })
+      .then(() => {
+        next(null, resolve);
+      }).catch(() => {
+        next(null, reject);
+      });
   });
 };

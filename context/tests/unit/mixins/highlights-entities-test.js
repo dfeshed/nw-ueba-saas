@@ -6,6 +6,7 @@ import Evented from '@ember/object/evented';
 import rsvp from 'rsvp';
 import { next } from '@ember/runloop';
 import { isArray } from '@ember/array';
+import { triggerEvent } from '@ember/test-helpers';
 
 module('Unit | Mixin | highlights entities');
 
@@ -177,7 +178,7 @@ test('it applies CSS classes, wires up clicks, and fires callbacks correctly', f
   });
 });
 
-test('it supports launching the tooltip from right clicks', function(assert) {
+test('it supports launching the tooltip from right clicks', async function(assert) {
   assert.expect(3);
 
   const element2 = document.createElement('svg');
@@ -197,7 +198,7 @@ test('it supports launching the tooltip from right clicks', function(assert) {
   next(() => {
 
     // Use `next()` to wait long enough for `highlightEntities()` to complete DOM manipulations.
-    next(() => {
+    next(async() => {
       let spyCounter = 0;
       const tooltipSpy = () => {
         spyCounter++;
@@ -212,7 +213,7 @@ test('it supports launching the tooltip from right clicks', function(assert) {
       assert.equal(spyCounter, 0, 'Expected no asserts yet');
 
       // Right-clicking on a context-enabled DOM node should trigger an eventBus event to display the tooltip. Assert expected!
-      subject.$('.is-context-enabled').first().trigger('contextmenu');
+      await triggerEvent(subject.$('.is-context-enabled').first()[0], 'contextmenu');
       assert.equal(spyCounter, 1, 'Expected just one assert from the contextmenu event');
 
       eventBusStub.off(tooltipDisplayEventName, tooltipSpy);

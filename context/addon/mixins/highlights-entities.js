@@ -390,7 +390,6 @@ export default Mixin.create({
     // Read the entity type from the DOM node.
     let type = $el.attr(HTML_ATTR_ENTITY_TYPE);
     if (!type) {
-
       // DOM doesn't say entity type. Try to compute entity type from meta key (if given).
       const metaKey = $el.attr(HTML_ATTR_META_KEY);
       type = Object.keys(metas).find((entity) => {
@@ -408,7 +407,6 @@ export default Mixin.create({
     // Apply corresponding CSS classes.
     $el.addClass(isContextEnabled ? CSS_CLASS_IS_CONTEXT_ENABLED : CSS_CLASS_IS_NOT_CONTEXT_ENABLED);
     $el.addClass(CSS_CLASS_ENTITY_HAS_BEEN_VALIDATED);
-
     return isContextEnabled ? { type, id } : null;
   },
 
