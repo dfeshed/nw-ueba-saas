@@ -227,17 +227,24 @@ export default Route.extend({
 
     selectEvent(event) {
       const redux = this.get('redux');
-      const { reconSize } = redux.getState().investigate.data;
+      const state = redux.getState();
+      const { reconSize, sortField, sortDirection } = state.investigate.data;
       const { sessionId } = event;
       redux.dispatch(setReconOpen(event));
       this.send('contextPanelClose');
-      this.transitionTo({
-        queryParams: {
-          eid: sessionId,
-          rs: reconSize,
-          mps: META_PANEL_SIZES.MIN
-        }
-      });
+
+      const queryParams = {
+        eid: sessionId,
+        rs: reconSize,
+        mps: META_PANEL_SIZES.MIN
+      };
+
+      if (hasMinimumCoreServicesVersionForColumnSorting(state)) {
+        queryParams.sortField = sortField;
+        queryParams.sortDir = sortDirection;
+      }
+
+      this.transitionTo({ queryParams });
     },
 
     /**
