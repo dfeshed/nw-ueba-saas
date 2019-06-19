@@ -11,6 +11,7 @@ import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 public class DataSourceRepositoryImpl implements DataSourceRepository {
 
@@ -53,9 +54,9 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
     }
 
     @Override
-    public <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize) {
+    public <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter) {
         Query query = getQuery(startDate, endDate, numOfItemsToSkip, pageSize);
-
+        query = createFilterCriteria(query, filter);
         query.with(new Sort(Sort.Direction.ASC, AbstractInputDocument.DATE_TIME_FIELD_NAME));
 
         List<U> recordList = mongoTemplate.find(query, (Class<U>) AbstractInputDocument.class, collectionName);
@@ -63,8 +64,9 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
 
     }
 
-    public long count(String collectionName, Instant startDate, Instant endDate) {
+    public long count(String collectionName, Instant startDate, Instant endDate, Map<String, Object> filter) {
         Query query = new Query(createDateCriteria(startDate, endDate));
+        query = createFilterCriteria(query, filter);
         return mongoTemplate.count(query, collectionName);
     }
 
@@ -75,5 +77,15 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
 
     private Criteria createDateCriteria(Instant startTime, Instant endTime) {
         return Criteria.where(AbstractAuditableDocument.DATE_TIME_FIELD_NAME).gte(startTime).lt(endTime);
+    }
+
+
+    private Query createFilterCriteria(Query query, Map<String, Object> filter) {
+        if(!filter.isEmpty()){
+            filter.forEach((key, value) -> {
+                query.addCriteria(Criteria.where(key).is(value));
+            });
+        }
+        return query;
     }
 }

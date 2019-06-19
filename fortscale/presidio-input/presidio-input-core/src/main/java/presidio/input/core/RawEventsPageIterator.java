@@ -7,6 +7,7 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 public class RawEventsPageIterator<U extends AbstractInputDocument> implements PageIterator<U> {
 
@@ -17,20 +18,22 @@ public class RawEventsPageIterator<U extends AbstractInputDocument> implements P
     private int currentPage;
     private int totalAmountOfPages;
     private int pageSize;
+    private Map<String, Object> filter;
 
     /**
      * @param presidioInputPersistencyService
      * @param schema                          event type
      * @param pageSize                        num of events in each page
      */
-    public RawEventsPageIterator(Instant startDate, Instant endDate, PresidioInputPersistencyService presidioInputPersistencyService, Schema schema, int pageSize) {
+    public RawEventsPageIterator(Instant startDate, Instant endDate, PresidioInputPersistencyService presidioInputPersistencyService, Schema schema, int pageSize, Map<String, Object> filter) {
         this.presidioInputPersistencyService = presidioInputPersistencyService;
         this.currentPage = 0;
         this.schema = schema;
         this.pageSize = pageSize;
         this.startDate = startDate;
         this.endDate = endDate;
-        float totalNumberOfEvents = presidioInputPersistencyService.count(schema, startDate, endDate);
+        this.filter = filter;
+        float totalNumberOfEvents = presidioInputPersistencyService.count(schema, startDate, endDate, filter);
         this.totalAmountOfPages = (int) Math.ceil(totalNumberOfEvents / pageSize);
     }
 
@@ -48,7 +51,7 @@ public class RawEventsPageIterator<U extends AbstractInputDocument> implements P
     public List<U> next() {
         int numOfItemsToSkip = this.currentPage * this.pageSize;
         this.currentPage++;
-        List<U> records = this.presidioInputPersistencyService.readRecords(this.schema, this.startDate, this.endDate, numOfItemsToSkip, this.pageSize);
+        List<U> records = this.presidioInputPersistencyService.readRecords(this.schema, this.startDate, this.endDate, numOfItemsToSkip, this.pageSize, filter);
 
         return records;
     }

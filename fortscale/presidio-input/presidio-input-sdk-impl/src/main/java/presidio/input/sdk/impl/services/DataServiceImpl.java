@@ -13,6 +13,7 @@ import presidio.sdk.api.validation.ValidationResults;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 public class DataServiceImpl implements DataService {
 
@@ -68,13 +69,13 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
-    public <U extends AbstractInputDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize) {
-        return dataSourceRepository.readRecords(toCollectionNameTranslator.toCollectionName(schema), startDate, endDate, numOfItemsToSkip, pageSize);
+    public <U extends AbstractInputDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter) {
+        return dataSourceRepository.readRecords(toCollectionNameTranslator.toCollectionName(schema), startDate, endDate, numOfItemsToSkip, pageSize, filter);
     }
 
     @Override
-    public long count(Schema schema, Instant startDate, Instant endDate) {
-        return dataSourceRepository.count(toCollectionNameTranslator.toCollectionName(schema), startDate, endDate);
+    public long count(Schema schema, Instant startDate, Instant endDate, Map<String, Object> filter) {
+        return dataSourceRepository.count(toCollectionNameTranslator.toCollectionName(schema), startDate, endDate, filter);
     }
 }
 

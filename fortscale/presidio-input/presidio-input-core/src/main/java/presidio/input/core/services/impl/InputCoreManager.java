@@ -20,6 +20,7 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class InputCoreManager {
         if (pageSize == null) {
             pageSize = DEFAULT_PAGE_SIZE;
         }
-        RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(startDate, endDate, inputPersistencyService, schema, pageSize);
+        RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(startDate, endDate, inputPersistencyService, schema, pageSize, Collections.emptyMap());
         List transformedEvents = null;
         List nextEvents = null;
         Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap();

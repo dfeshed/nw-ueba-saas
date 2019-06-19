@@ -5,6 +5,7 @@ import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 public interface DataSourceRepository {
     List<? extends AbstractAuditableDocument> getDataSourceDataBetweenDates(String collectionName, Instant startTime, Instant endTime);
@@ -17,7 +18,7 @@ public interface DataSourceRepository {
 
     void cleanCollection(String collectionName);
 
-    <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize);
+    <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter);
 
-    long count(String collectionName, Instant startDate, Instant endDate);
+    long count(String collectionName, Instant startDate, Instant endDate, Map<String, Object> filter);
 }

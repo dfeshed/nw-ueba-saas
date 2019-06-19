@@ -8,6 +8,7 @@ import presidio.sdk.api.validation.ValidationResults;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 public interface PresidioInputPersistencyService {
     ValidationResults store(Schema schema, List<? extends AbstractAuditableDocument> records);
@@ -20,7 +21,7 @@ public interface PresidioInputPersistencyService {
 
     void cleanAll(Schema schema) throws Exception;
 
-    <U extends AbstractInputDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize);
+    <U extends AbstractInputDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter);
 
-    long count(Schema schema, Instant startDate, Instant endDate);
+    long count(Schema schema, Instant startDate, Instant endDate, Map<String, Object> filter);
 }
