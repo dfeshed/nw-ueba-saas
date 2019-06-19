@@ -86,6 +86,10 @@ const _fetchTextData = function(dispatch, state) {
   );
 };
 
+const _fetchMailData = function(dispatch) {
+  dispatch({ type: ACTION_TYPES.MAIL_RENDER_NEXT });
+};
+
 /**
  * Generic handler for errors fetching recon view data.
  * @param {object} response - Promise response object.
@@ -161,6 +165,9 @@ const _handleFetchingNewData = (newViewCode) => {
       case RECON_VIEW_TYPES_BY_NAME.TEXT.code:
         _fetchTextData(dispatch, state);
         break;
+      case RECON_VIEW_TYPES_BY_NAME.MAIL.code:
+        _fetchMailData(dispatch, state);
+        break;
     }
   };
 };
@@ -186,6 +193,9 @@ const _handleRenderingStateData = (newViewCode) => {
           getState().recon.text.textContent,
           (payload) => dispatch({ type: ACTION_TYPES.TEXT_RENDER_NEXT, payload }),
         );
+        break;
+      case RECON_VIEW_TYPES_BY_NAME.MAIL.code:
+        dispatch({ type: ACTION_TYPES.MAIL_RENDER_NEXT });
         break;
     }
   };

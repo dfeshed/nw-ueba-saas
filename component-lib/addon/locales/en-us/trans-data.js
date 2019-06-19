@@ -259,7 +259,7 @@ export default {
         packet: 'Packet Analysis',
         file: 'File Analysis',
         web: 'Web',
-        mail: 'Email'
+        mail: 'Email Analysis'
       }
     },
     meta: {
@@ -2139,7 +2139,8 @@ export default {
       reconView: {
         FILE: 'File Analysis',
         TEXT: 'Text Analysis',
-        PACKET: 'Packet Analysis'
+        PACKET: 'Packet Analysis',
+        MAIL: 'Email Analysis'
       },
       queryTimeFormat: 'Time format for query',
       DB: 'Database Time',
