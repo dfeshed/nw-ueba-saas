@@ -21,7 +21,7 @@ class OutputForwarderOperator(SpringBootJarOperator):
         self.interval = get_schedule_interval(kwargs.get('dag'))
 
         super(OutputForwarderOperator, self).__init__(
-            task_id=task_id,
+            task_id=task_id or self.get_task_name(),
             command=command,
             java_args=java_args,
             retry_java_args_method=OutputForwarderOperator.retry_java_args,
