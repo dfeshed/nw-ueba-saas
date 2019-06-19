@@ -42,7 +42,7 @@ public class IndicatorsForwarder extends Forwarder<Indicator> {
     }
 
     private Stream<Indicator> getIndicatorsToForward(List<String> alertIds) {
-        return alertPersistencyService.findIndicatorsAlertIds(alertIds);
+        return alertPersistencyService.findIndicatorsByAlertIds(alertIds);
     }
 
     @Override
