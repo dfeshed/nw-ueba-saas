@@ -100,15 +100,11 @@ const _getRiskScoreDetailContext = (currentReduxState, riskType, alertName) => {
   return riskType === 'FILE' ? api.getDetailedFileRiskScoreContext(data) : api.getDetailedHostRiskScoreContext(data);
 };
 
-const activeRiskSeverityTab = (tabName) => {
-  return (dispatch, getState) => {
-    dispatch({ type: ACTION_TYPES.ACTIVE_RISK_SEVERITY_TAB, payload: { tabName }, meta: { belongsTo: riskType(getState()) } });
-  };
-};
+const activeRiskSeverityTab = (tabName, riskType) => ({ type: ACTION_TYPES.ACTIVE_RISK_SEVERITY_TAB, payload: { tabName }, meta: { belongsTo: riskType } });
 
 const getUpdatedRiskScoreContext = (id, riskType, agentId, tabName) => {
   return (dispatch) => {
-    dispatch(activeRiskSeverityTab(tabName));
+    dispatch(activeRiskSeverityTab(tabName, riskType));
     if (agentId) {
       dispatch(getHostFileScoreContext(id, agentId, tabName));
     } else {

@@ -8,7 +8,7 @@ import { setDetailsTab, toggleProcessDetailsVisibility } from 'investigate-proce
 import { fetchProcessDetails } from 'investigate-process-analysis/actions/creators/process-properties';
 import { resetFilterValue } from 'investigate-process-analysis/actions/creators/process-filter';
 import fetchMetaValue from 'investigate-shared/actions/api/events/meta-values';
-
+import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 import RSVP from 'rsvp';
 
 const callbacksDefault = { onComplete() {} };
@@ -197,10 +197,13 @@ export const onEventNodeSelected = (payload) => {
     const { selectedServerId } = state.processAnalysis.processTree;
     if (payload) {
       const { hashes, process: { checksumDst } } = payload;
+      dispatch({ type: ACTION_TYPES.SET_SELECTED_PROCESS, payload: payload.process });
+      dispatch(getRespondServerStatus());
+      dispatch(resetRiskContext());
       dispatch(fetchProcessDetails({ hashes }, selectedServerId));
       dispatch(getHostContext('alias.host', [{ value: `(checksum.all = '${checksumDst}')` }], 300000));
-      dispatch({ type: ACTION_TYPES.SET_SELECTED_PROCESS, payload: payload.process });
       dispatch(resetFilterValue(payload.processId));
+      dispatch(getRiskScoreContext(checksumDst, 'FILE'));
     } else {
       // To make states empty on deselect of the process
       dispatch({ type: ACTION_TYPES.SET_SELECTED_EVENTS });

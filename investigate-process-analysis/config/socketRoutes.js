@@ -52,6 +52,28 @@ const processAnalysisConfigGen = function(env) {
         requestDestination: '/ws/respond/risk/local/score'
       }
     },
+    'respond-server-ping': {
+      socketUrl: respondSocketURL
+    },
+    'respond-server': {
+      socketUrl: respondSocketURL,
+      'get-events': {
+        subscriptionDestination: '/user/queue/alerts/events/batch',
+        requestDestination: '/ws/respond/alerts/events/batch'
+      },
+      getFileContext: {
+        subscriptionDestination: '/user/queue/risk/context/file',
+        requestDestination: '/ws/respond/risk/context/file'
+      },
+      getDetailFileContext: {
+        subscriptionDestination: '/user/queue/risk/context/detail/file',
+        requestDestination: '/ws/respond/risk/context/detail/file'
+      },
+      resetRiskScore: {
+        subscriptionDestination: '/user/queue/risk/context/file/reset',
+        requestDestination: '/ws/respond/risk/context/file/reset'
+      }
+    },
     'core-meta-value': {
       socketUrl: eventsSocketURL,
       stream: {

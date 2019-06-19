@@ -33,6 +33,7 @@ import {
   selectedProcessPath
 } from 'investigate-process-analysis/reducers/process-tree/selectors';
 import { setDetailsTab, toggleProcessDetailsVisibility } from 'investigate-process-analysis/actions/creators/process-visuals';
+import { getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 
 import {
   getFileProperty,
@@ -66,7 +67,9 @@ const dispatchToActions = {
   setDetailsTab,
   toggleProcessDetailsVisibility,
   onEventNodeSelected,
-  getHostContext
+  getHostContext,
+  getRespondServerStatus,
+  getRiskScoreContext
 };
 
 let freeIdCounter = 0;
@@ -236,8 +239,10 @@ const TreeComponent = Component.extend({
         this._initializeChart();
         const hashes = [checksum];
         const filter = [{ value: `(checksum.all = '${checksum}')` }];
+        this.send('getRespondServerStatus');
         this.send('fetchProcessDetails', { hashes }, this.get('selectedServerId'));
         this.send('getHostContext', 'alias.host', filter);
+        this.send('getRiskScoreContext', checksum, 'FILE');
       };
       this.send('getParentAndChildEvents', this.get('selectedProcessId'), { onComplete });
     }

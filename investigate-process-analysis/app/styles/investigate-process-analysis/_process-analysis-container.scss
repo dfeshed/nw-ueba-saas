@@ -4,7 +4,6 @@
     @include border(1px, solid, primary, dark);
   }
 
-
   .process-details-buttons {
     @include border-bottom(1px, solid, primary, dark);
     padding: rsa-whitespace(less);
@@ -12,6 +11,8 @@
   }
 
   .process-details {
+    display: flex;
+    flex-direction: column;
     transition: width .5s;
     width: 0;
     opacity: 0;
@@ -43,9 +44,6 @@
       }
     }
   }
-  .process-events-details, .host-list-container, .process-details-container {
-    height: calc(100vh - 138px);
-  }
 
   .rsa-nav-tab {
     .label {
@@ -54,6 +52,11 @@
         display: none;
       }
     }
+  }
+
+  .process-property-container {
+    height: 300px;
+    border: 1px solid;
   }
 }
 

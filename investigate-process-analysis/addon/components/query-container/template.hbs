@@ -24,7 +24,7 @@
           {{else if (eq tab.name 'hosts')}}
             {{t tab.label count=hostCount}}
           {{else}}
-            {{t tab.label}}
+            {{t tab.label count=allAlertCount}}
           {{/if}}
         </div>
       {{/rsa-nav-tab}}

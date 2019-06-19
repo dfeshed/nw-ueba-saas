@@ -5,7 +5,7 @@ import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
 import { setDetailsTab, toggleProcessDetailsVisibility } from 'investigate-process-analysis/actions/creators/process-visuals';
 import { eventsCount } from 'investigate-process-analysis/reducers/process-tree/selectors';
-import { selectedTab } from 'investigate-process-analysis/reducers/process-visuals/selectors';
+import { selectedTab, allAlertCount } from 'investigate-process-analysis/reducers/process-visuals/selectors';
 import { hostCount } from 'investigate-process-analysis/reducers/host-context/selectors';
 
 const dispatchToActions = {
@@ -31,7 +31,7 @@ const TABS = [
   {
     label: 'investigateProcessAnalysis.tabs.alerts',
     name: 'alerts',
-    component: 'process-details/property-container',
+    component: 'process-details/alerts-container',
     icon: 'alarm'
   }
 ];
@@ -42,7 +42,8 @@ const stateToComputed = (state) => ({
   endTime: state.processAnalysis.query.endTime,
   eventsCount: eventsCount(state),
   hostCount: hostCount(state),
-  activeTab: selectedTab(state)
+  activeTab: selectedTab(state),
+  allAlertCount: allAlertCount(state)
 });
 
 const QueryContainer = Component.extend({

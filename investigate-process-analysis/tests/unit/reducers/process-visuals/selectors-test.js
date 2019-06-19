@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
 
-import { isEventsSelected } from 'investigate-process-analysis/reducers/process-visuals/selectors';
+import { isEventsSelected, allAlertCount, riskState } from 'investigate-process-analysis/reducers/process-visuals/selectors';
 
 module('Unit | Selectors | process-visuals', function() {
 
@@ -38,5 +38,55 @@ module('Unit | Selectors | process-visuals', function() {
 
     const data = isEventsSelected(state);
     assert.equal(data, false);
+  });
+
+  test('Returns all alerts count', function(assert) {
+    const state = Immutable.from({
+      processAnalysis: {
+        risk: {
+          riskScoreContext: {
+            distinctAlertCount: {
+              critical: 1,
+              medium: 2,
+              low: 0,
+              high: 0
+            }
+          }
+        }
+      }
+    });
+
+    const data = allAlertCount(state);
+    assert.equal(data, 3);
+  });
+
+  test('Returns all alerts count ( 0 )', function(assert) {
+    const state = Immutable.from({
+      processAnalysis: {
+        risk: {
+          riskScoreContext: null
+        }
+      }
+    });
+
+    const data = allAlertCount(state);
+    assert.equal(data, 0);
+  });
+
+  test('Returns risk state', function(assert) {
+    const state = Immutable.from({
+      processAnalysis: {
+        risk: {
+          riskScoreContext: {
+            distinctAlertCount: {
+              critical: 1
+            }
+          }
+        }
+      }
+    });
+
+    const data = riskState(state);
+    assert.equal(data.riskScoreContext.distinctAlertCount.critical, 1);
   });
 });
