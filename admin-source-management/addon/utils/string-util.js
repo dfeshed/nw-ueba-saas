@@ -8,10 +8,10 @@ export const removeQuotes = (entry) => {
 };
 
 /**
- * Utility function to convert the passed in array to a string separated by a comma
+ * Utility function to convert the passed in array to a string separated by a new line
   * @param {*} array
  * @public
  */
 export const arrToString = (arr) => {
-  return arr.map((d) => `"${d}"`).join(', ');
+  return arr.map((d) => `"${d}"`).join('\n');
 };

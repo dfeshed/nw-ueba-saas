@@ -26,17 +26,17 @@ module('Unit | Utils | utils/string-util', function(hooks) {
     assert.equal(output, 'abc', `removeQuotes returns ${output} when input is ${string}`);
   });
 
-  test('arrToString should convert the array to string separated by a comma', function(assert) {
+  test('arrToString should convert the array to string separated by a new line', function(assert) {
     assert.expect(3);
     /* eslint-disable quotes */
     let arr = ['abc', 'def'];
     let output = arrToString(arr);
-    assert.equal(output, '"abc", "def"', 'arrToString returns the correct string');
+    assert.equal(output, '"abc"\n"def"', 'arrToString returns the correct string');
     arr = ["abc", "def"];
     output = arrToString(arr);
-    assert.equal(output, '"abc", "def"', 'arrToString returns the correct string');
+    assert.equal(output, '"abc"\n"def"', 'arrToString returns the correct string');
     arr = ['abc', "def"];
     output = arrToString(arr);
-    assert.equal(output, '"abc", "def"', 'arrToString returns the correct string');
+    assert.equal(output, '"abc"\n"def"', 'arrToString returns the correct string');
   });
 });

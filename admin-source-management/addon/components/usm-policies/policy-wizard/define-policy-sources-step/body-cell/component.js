@@ -33,7 +33,10 @@ export default DataTableBody.extend({
       // "abc"\n"def" -> ["abc", "def"]
       // "abc"\n'def' -> ["abc", "def"]
       // "abc*"\n"def-*" -> ["abc*", "def-*"]
-      const arr = value.trim().split('\n').map((entry) => removeQuotes(entry));
+      let arr = [];
+      if (value.trim()) {
+        arr = value.trim().split('\n').map((entry) => removeQuotes(entry));
+      }
       this.set(`item.${column}`, arr);
       this.get('sourceUpdated')();
     }
