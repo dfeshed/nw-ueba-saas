@@ -5,10 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.utils.elasticsearch.config.ElasticsearchConfig;
+import fortscale.utils.factory.AbstractServiceAutowiringFactory;
+import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
@@ -18,12 +21,11 @@ import presidio.input.core.services.converters.ConverterServiceImpl;
 import presidio.input.core.services.converters.ade.*;
 import presidio.input.core.services.converters.output.*;
 import presidio.input.core.services.data.AdeDataService;
-import presidio.input.core.services.impl.InputCoreManager;
-import presidio.input.core.services.impl.InputExecutionServiceImpl;
-import presidio.input.core.services.impl.SchemaFactory;
+import presidio.input.core.services.impl.*;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.input.core.services.transformation.TransformationServiceImpl;
 import presidio.input.core.services.transformation.managers.*;
+import presidio.input.core.services.transformation.transformer.Transformer;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 import presidio.output.sdk.api.OutputDataServiceSDK;
@@ -34,9 +36,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 @Configuration
-@ComponentScan()
+@ComponentScan(value = {"presidio.input.core.services.transformation.factory"})
 @Import({
         PresidioInputPersistencyServiceConfig.class,
         AdeDataServiceConfig.class,
@@ -78,6 +81,20 @@ public class InputCoreConfiguration {
 
     @Autowired
     private OutputDataServiceSDK outputDataServiceSDK;
+
+    @Autowired
+    public List<AbstractServiceAutowiringFactory<Transformer>> transformersFactories;
+
+    @Autowired
+    public FactoryService<Transformer> transformerFactoryService;
+
+    @Bean
+    public FactoryService<Transformer> transformerFactoryService() {
+        FactoryService<Transformer> transformerFactoryService = new FactoryService<>();
+        transformersFactories.forEach(x -> x.registerFactoryService(transformerFactoryService));
+        return transformerFactoryService;
+    }
+
 
     @Bean
     public TransformationService transformationService() {
@@ -151,7 +168,7 @@ public class InputCoreConfiguration {
     @Bean(name = "TLS.transformer")
     @Lazy
     public TlsTransformerManager tlsTransformerManager() {
-        return new TlsTransformerManager();
+        return new TlsTransformerManager(transformerFactoryService);
     }
 
     @Bean(name = "FILE.input-output-converter")

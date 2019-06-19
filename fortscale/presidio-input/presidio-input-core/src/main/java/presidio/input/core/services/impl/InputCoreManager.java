@@ -73,7 +73,7 @@ public class InputCoreManager {
 
                 logger.debug("Processing {} events", nextEvents.size());
 
-                transformedEvents = transformationService.run(nextEvents, schema);
+                transformedEvents = transformationService.run(nextEvents, schema, endDate);
 
                 try {
                     storeToAde(schema, startDate, endDate, transformedEvents);
