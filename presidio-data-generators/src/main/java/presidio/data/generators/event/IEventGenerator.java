@@ -1,13 +1,13 @@
 package presidio.data.generators.event;
 
+import presidio.data.domain.event.Event;
 import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.common.time.ITimeGenerator;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface IEventGenerator<T> {
+public interface IEventGenerator<T extends Event> {
     default List<T> generate() throws GeneratorException {
         List<T> events = new ArrayList<T>();
         // fill list of events
