@@ -7,8 +7,8 @@ import presidio.output.forwarder.strategy.ForwarderStrategy;
 import presidio.output.forwarder.strategy.ForwarderConfiguration;
 import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
 
-import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,12 +27,12 @@ public abstract class Forwarder<T>{
         this.forwarderStrategyFactory = forwarderStrategyFactory;
     }
 
-    protected ForwardedEntity doForward(Stream<T> instances) {
+    protected ForwardedInstances doForward(Stream<T> instances, boolean needIds) {
 
         ForwarderStrategy.PAYLOAD_TYPE payloadType = getPayloadType();
 
         if (!forwarderConfiguration.isForwardEntity(payloadType)) {
-            return new ForwardedEntity(0, new ArrayList<>());
+            return new ForwardedInstances(0, Collections.emptyList());
         }
 
         // select forwarding strategy
@@ -50,7 +50,9 @@ public abstract class Forwarder<T>{
         List<String> ids = new ArrayList<>();
         Iterators.partition(instances.iterator(), bulkSize).forEachRemaining(instancesBulk -> {
             try {
-                instancesBulk.forEach(instance -> ids.add(getId(instance)));
+                if(needIds){
+                    instancesBulk.forEach(instance -> ids.add(getId(instance)));
+                }
                 int success = forwardBatch(forwarderStrategy, payloadType, instancesBulk);
                 forwardedCount.addAndGet(success);
             } catch (Exception ex) {
@@ -59,7 +61,7 @@ public abstract class Forwarder<T>{
             }
         });
         logger.info("{} '{}' messages were forwarded successfully", forwardedCount.get(),  getPayloadType());
-        return new ForwardedEntity(forwardedCount.get(), ids);
+        return new ForwardedInstances(forwardedCount.get(), ids);
     }
 
 
@@ -86,11 +88,11 @@ public abstract class Forwarder<T>{
 
     abstract ForwarderStrategy.PAYLOAD_TYPE getPayloadType();
 
-    public class ForwardedEntity {
+    public class ForwardedInstances {
         private int forwardedCount;
         private List<String> ids;
 
-        public ForwardedEntity(int forwardedCount, List<String> ids){
+        public ForwardedInstances(int forwardedCount, List<String> ids){
             this.forwardedCount = forwardedCount;
             this.ids = ids;
         }

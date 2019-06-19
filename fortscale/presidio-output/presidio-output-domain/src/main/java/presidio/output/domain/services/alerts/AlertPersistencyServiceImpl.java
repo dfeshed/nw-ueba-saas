@@ -168,10 +168,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
     @Override
     public Stream<Indicator> findIndicatorsByAlertIds(List<String> alertIds) {
-        if(alertIds.isEmpty()){
-            return Stream.empty();
-        }
-        return indicatorRepository.findByAlertIdIn(alertIds);
+        return alertIds.isEmpty() ? Stream.empty() : indicatorRepository.findByAlertIdIn(alertIds);
     }
 
     @Override

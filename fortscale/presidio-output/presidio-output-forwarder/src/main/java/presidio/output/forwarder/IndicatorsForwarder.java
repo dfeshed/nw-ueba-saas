@@ -36,13 +36,9 @@ public class IndicatorsForwarder extends Forwarder<Indicator> {
         }
     }
 
-    public ForwardedEntity forwardIndicators(List<String> alertIds){
-        Stream<Indicator> indicators = getIndicatorsToForward(alertIds);
-        return doForward(indicators);
-    }
-
-    private Stream<Indicator> getIndicatorsToForward(List<String> alertIds) {
-        return alertPersistencyService.findIndicatorsByAlertIds(alertIds);
+    public ForwardedInstances forwardIndicators(List<String> alertIds){
+        Stream<Indicator> indicators = alertPersistencyService.findIndicatorsByAlertIds(alertIds);
+        return doForward(indicators, false);
     }
 
     @Override
