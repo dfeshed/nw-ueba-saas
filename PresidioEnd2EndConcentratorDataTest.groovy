@@ -79,6 +79,10 @@ def setBaseUrl(
     baseUrlresponsecode = sh(returnStdout: true, script: "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}").trim()
     if (baseUrlresponsecode == '200') {
         sh "sudo sed -i \"s|.*baseurl=.*|${baseUrl}|g\" /etc/yum.repos.d/tier2-rsa-nw-upgrade.repo"
+        sh "sudo sed -i \"s|enabled=.*|enabled=0|g\" /etc/yum.repos.d/*.repo"
+        sh "sudo sed -i \"s|enabled=.*|enabled=1|g\" /etc/yum.repos.d/tier2-rsa-nw-upgrade.repo"
+        sh "sudo yum clean all"
+        sh "sudo rm -rf /var/cache/yum"
     } else {
         error("RPM Location is Wrong- ${baseUrlValidation}")
     }
