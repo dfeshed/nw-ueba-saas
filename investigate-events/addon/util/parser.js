@@ -33,14 +33,15 @@ class Parser {
    * @private
    */
   _consume(types) {
+    const typeString = types === LEXEMES.OPERATOR_TYPES ? 'OPERATOR' : types.join(',');
     if (this._isAtEnd()) {
-      throw new Error(`Expected token of type ${types.join(',')} but reached the end of the input`);
+      throw new Error(`Expected token of type ${typeString} but reached the end of the input`);
     }
     const nextTypeIsOk = types.some((type) => {
       return type === this._peek().type;
     });
     if (!nextTypeIsOk) {
-      throw new Error(`Expected token of type ${types.join(',')} but got type ${this._peek().type}`);
+      throw new Error(`Expected token of type ${typeString} but got type ${this._peek().type}`);
     }
     return this._advance();
   }
@@ -177,7 +178,7 @@ class Parser {
    */
   _criteria() {
     const meta = this._consume([ LEXEMES.META ]);
-    const operator = this._consume([ LEXEMES.OPERATOR ]);
+    const operator = this._consume(LEXEMES.OPERATOR_TYPES);
     // Unary operators (exists & !exists) do not have values, so push them
     // without a `valueRanges` property
     if (operator.text === 'exists' || operator.text === '!exists') {

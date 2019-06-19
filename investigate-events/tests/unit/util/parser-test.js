@@ -10,7 +10,7 @@ module('Unit | Util | Parser', function(hooks) {
   test('correctly parses a basic meta operator value set', function(assert) {
     const tokens = [
       { type: LEXEMES.META, text: 'medium' },
-      { type: LEXEMES.OPERATOR, text: '=' },
+      { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.NUMBER, text: '3' }
     ];
     const p = new Parser(tokens);
@@ -20,7 +20,7 @@ module('Unit | Util | Parser', function(hooks) {
       {
         type: GRAMMAR.CRITERIA,
         meta: { type: LEXEMES.META, text: 'medium' },
-        operator: { type: LEXEMES.OPERATOR, text: '=' },
+        operator: { type: LEXEMES.OPERATOR_EQ, text: '=' },
         valueRanges: [
           {
             type: GRAMMAR.META_VALUE,
@@ -34,11 +34,11 @@ module('Unit | Util | Parser', function(hooks) {
   test('correctly parses two meta and &&', function(assert) {
     const tokens = [
       { type: LEXEMES.META, text: 'medium' },
-      { type: LEXEMES.OPERATOR, text: '=' },
+      { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.NUMBER, text: '3' },
       { type: LEXEMES.AND, text: '&&' },
       { type: LEXEMES.META, text: 'filename' },
-      { type: LEXEMES.OPERATOR, text: '!=' },
+      { type: LEXEMES.OPERATOR_NOT_EQ, text: '!=' },
       { type: LEXEMES.STRING, text: 'hyberfile.sys' }
     ];
     const p = new Parser(tokens);
@@ -48,7 +48,7 @@ module('Unit | Util | Parser', function(hooks) {
       {
         type: GRAMMAR.CRITERIA,
         meta: { type: LEXEMES.META, text: 'medium' },
-        operator: { type: LEXEMES.OPERATOR, text: '=' },
+        operator: { type: LEXEMES.OPERATOR_EQ, text: '=' },
         valueRanges: [
           {
             type: GRAMMAR.META_VALUE,
@@ -60,7 +60,7 @@ module('Unit | Util | Parser', function(hooks) {
       {
         type: GRAMMAR.CRITERIA,
         meta: { type: LEXEMES.META, text: 'filename' },
-        operator: { type: LEXEMES.OPERATOR, text: '!=' },
+        operator: { type: LEXEMES.OPERATOR_NOT_EQ, text: '!=' },
         valueRanges: [
           {
             type: GRAMMAR.META_VALUE,
@@ -75,7 +75,7 @@ module('Unit | Util | Parser', function(hooks) {
     const tokens = [
       { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.META, text: 'b' },
-      { type: LEXEMES.OPERATOR, text: '=' },
+      { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.STRING, text: 'netwitness' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' }
     ];
@@ -91,7 +91,7 @@ module('Unit | Util | Parser', function(hooks) {
             {
               type: GRAMMAR.CRITERIA,
               meta: { type: LEXEMES.META, text: 'b' },
-              operator: { type: LEXEMES.OPERATOR, text: '=' },
+              operator: { type: LEXEMES.OPERATOR_EQ, text: '=' },
               valueRanges: [
                 {
                   type: GRAMMAR.META_VALUE,
@@ -109,7 +109,7 @@ module('Unit | Util | Parser', function(hooks) {
     const tokens = [
       { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.META, text: 'medium' },
-      { type: LEXEMES.OPERATOR, text: '=' },
+      { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.NUMBER, text: '3' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' }
@@ -123,7 +123,7 @@ module('Unit | Util | Parser', function(hooks) {
   test('throws an error for a meta without operator', function(assert) {
     const tokens = [
       { type: LEXEMES.META, text: 'b' },
-      { type: LEXEMES.OPERATOR, text: '=' },
+      { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.STRING, text: 'netwitness' },
       { type: LEXEMES.AND, text: '&&' },
       { type: LEXEMES.META, text: 'medium' }
@@ -137,21 +137,21 @@ module('Unit | Util | Parser', function(hooks) {
   test('throws an error for unexpected tokens', function(assert) {
     const tokens = [
       { type: LEXEMES.META, text: 'b' },
-      { type: LEXEMES.OPERATOR, text: '=' },
+      { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.STRING, text: 'netwitness' },
       { type: LEXEMES.META, text: 'medium' },
-      { type: LEXEMES.OPERATOR, text: '=' }
+      { type: LEXEMES.OPERATOR_EQ, text: '=' }
     ];
     const p = new Parser(tokens);
     assert.throws(() => {
       p.parse();
-    }, new Error('Unexpected tokens: META(medium) OPERATOR(=)'));
+    }, new Error('Unexpected tokens: META(medium) OPERATOR_EQ(=)'));
   });
 
   test('throws an error for a meta without value when operator requires one (string)', function(assert) {
     const tokens = [
       { type: LEXEMES.META, text: 'b' },
-      { type: LEXEMES.OPERATOR, text: '=' },
+      { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.META, text: 'medium' }
     ];
     const p = new Parser(tokens);
@@ -163,7 +163,7 @@ module('Unit | Util | Parser', function(hooks) {
   test('throws an error for a meta without value when operator requires one (number)', function(assert) {
     const tokens = [
       { type: LEXEMES.META, text: 'medium' },
-      { type: LEXEMES.OPERATOR, text: '=' },
+      { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.META, text: 'b' }
     ];
     const p = new Parser(tokens);
@@ -175,7 +175,7 @@ module('Unit | Util | Parser', function(hooks) {
   test('throws an error for a meta with value but having a unary operator', function(assert) {
     const tokens = [
       { type: LEXEMES.META, text: 'medium' },
-      { type: LEXEMES.OPERATOR, text: 'exists' },
+      { type: LEXEMES.OPERATOR_EXISTS, text: 'exists' },
       { type: LEXEMES.NUMBER, text: '7' }
     ];
     const p = new Parser(tokens);
@@ -187,7 +187,7 @@ module('Unit | Util | Parser', function(hooks) {
   test('does not throw an error for a unary operator without a value', function(assert) {
     const tokens = [
       { type: LEXEMES.META, text: 'medium' },
-      { type: LEXEMES.OPERATOR, text: 'exists' }
+      { type: LEXEMES.OPERATOR_EXISTS, text: 'exists' }
     ];
     const p = new Parser(tokens);
     const result = p.parse();
@@ -196,7 +196,7 @@ module('Unit | Util | Parser', function(hooks) {
       {
         type: GRAMMAR.CRITERIA,
         meta: { type: LEXEMES.META, text: 'medium' },
-        operator: { type: LEXEMES.OPERATOR, text: 'exists' }
+        operator: { type: LEXEMES.OPERATOR_EXISTS, text: 'exists' }
       }
     ]);
   });
@@ -207,20 +207,20 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.META, text: 'b' },
-      { type: LEXEMES.OPERATOR, text: '=' },
+      { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.STRING, text: 'text' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' },
       { type: LEXEMES.OR, text: '||' },
       { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.META, text: 'medium' },
-      { type: LEXEMES.OPERATOR, text: '!=' },
+      { type: LEXEMES.OPERATOR_NOT_EQ, text: '!=' },
       { type: LEXEMES.NUMBER, text: '44' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' },
       { type: LEXEMES.AND, text: '&&' },
       { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.META, text: 'bytes.src' },
-      { type: LEXEMES.OPERATOR, text: '>=' },
+      { type: LEXEMES.OPERATOR_GTE, text: '>=' },
       { type: LEXEMES.NUMBER, text: '1' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' }
     ];
@@ -241,7 +241,7 @@ module('Unit | Util | Parser', function(hooks) {
                   {
                     type: GRAMMAR.CRITERIA,
                     meta: { type: LEXEMES.META, text: 'b' },
-                    operator: { type: LEXEMES.OPERATOR, text: '=' },
+                    operator: { type: LEXEMES.OPERATOR_EQ, text: '=' },
                     valueRanges: [
                       {
                         type: GRAMMAR.META_VALUE,
@@ -261,7 +261,7 @@ module('Unit | Util | Parser', function(hooks) {
                   {
                     type: GRAMMAR.CRITERIA,
                     meta: { type: LEXEMES.META, text: 'medium' },
-                    operator: { type: LEXEMES.OPERATOR, text: '!=' },
+                    operator: { type: LEXEMES.OPERATOR_NOT_EQ, text: '!=' },
                     valueRanges: [
                       {
                         type: GRAMMAR.META_VALUE,
@@ -284,7 +284,7 @@ module('Unit | Util | Parser', function(hooks) {
             {
               type: GRAMMAR.CRITERIA,
               meta: { type: LEXEMES.META, text: 'bytes.src' },
-              operator: { type: LEXEMES.OPERATOR, text: '>=' },
+              operator: { type: LEXEMES.OPERATOR_GTE, text: '>=' },
               valueRanges: [
                 {
                   type: GRAMMAR.META_VALUE,
