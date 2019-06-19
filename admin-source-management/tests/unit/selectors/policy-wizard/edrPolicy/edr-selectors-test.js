@@ -190,23 +190,6 @@ module('Unit | Selectors | policy-wizard/edrPolicy/edr-selectors', function(hook
     assert.deepEqual(resultWeekOptions[0], expectedWeekOptions, 'should add label and isActive');
   });
 
-  test('weekOptions no day mentioned', function(assert) {
-    const expectedRecurrenceUnit = 'WEEKS';
-    const expectedRunOnDaysOfWeek = null;
-    const fullState = new ReduxDataHelper()
-      .policyWiz()
-      .policyWizRecurrenceUnit(expectedRecurrenceUnit)
-      .policyWizRunOnDaysOfWeek(expectedRunOnDaysOfWeek)
-      .build();
-    const expectedWeekOptions = {
-      label: 'adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.week.MONDAY',
-      week: 'MONDAY',
-      isActive: true
-    };
-    const resultWeekOptions = weekOptions(fullState);
-    assert.deepEqual(resultWeekOptions[1], expectedWeekOptions, 'should add label and isActive');
-  });
-
   test('runIntervalConfig', function(assert) {
     const expectedRecurrenceUnit = 'WEEKS';
     const fullState = new ReduxDataHelper()

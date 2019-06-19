@@ -258,13 +258,15 @@ const updatePolicyProperty = (field, value) => {
         payload = value;
         dispatchUpdateHeadersForAllSettings = true;
         break;
-      case 'recurrenceUnit':
+      case 'recurrenceUnit': {
+        const runOnDaysOfWeek = value === 'WEEKS' ? ['MONDAY'] : null;
         payload = [
           { field: 'policy.recurrenceUnit', value },
           // reset recurrenceInterval & runOnDaysOfWeek when toggling recurrenceUnit
           { field: 'policy.recurrenceInterval', value: 1 },
-          { field: 'policy.runOnDaysOfWeek', value: null }
+          { field: 'policy.runOnDaysOfWeek', value: runOnDaysOfWeek }
         ];
+      }
         break;
       case 'primaryAddress':
         payload = [
