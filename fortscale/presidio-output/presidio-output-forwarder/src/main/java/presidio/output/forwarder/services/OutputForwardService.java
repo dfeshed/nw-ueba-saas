@@ -50,7 +50,7 @@ public class OutputForwardService {
     public void forwardEntities(Instant startDate, Instant endDate, String entityType) {
         logger.info(String.format("about to forward entities from %s to %s", startDate, endDate));
 
-        Forwarder.ForwardedEntity forwarderEntity = entitiesForwarder.forward(startDate, endDate, entityType, null);
+        Forwarder.ForwardedEntity forwarderEntity = entitiesForwarder.forwardEntities(startDate, endDate, entityType);
 
         reportMetric("entities", forwarderEntity.getForwardedCount(), startDate);
         logger.info("finish to forward {} entities", forwarderEntity.getForwardedCount());
@@ -60,7 +60,7 @@ public class OutputForwardService {
     public List<String> forwardAlerts(Instant startDate, Instant endDate, String entityType) {
         logger.info(String.format("about to forward alerts from %s to %s", startDate, endDate));
 
-        Forwarder.ForwardedEntity forwarderEntity = alertsForwarder.forward(startDate, endDate, entityType, null);
+        Forwarder.ForwardedEntity forwarderEntity = alertsForwarder.forwardAlerts(startDate, endDate, entityType);
 
         reportMetric("alerts", forwarderEntity.getForwardedCount(), startDate);
         logger.info("finish to forward {} alerts", forwarderEntity.getForwardedCount());
@@ -72,7 +72,7 @@ public class OutputForwardService {
     public void forwardIndicators(Instant startDate, Instant endDate, List<String> alertIds) {
         logger.info(String.format("about to forward indicators from %s to %s", startDate, endDate));
 
-        Forwarder.ForwardedEntity forwarderEntity = indicatorsForwarder.forward(startDate, endDate, null, alertIds);
+        Forwarder.ForwardedEntity forwarderEntity = indicatorsForwarder.forwardIndicators(alertIds);
 
         reportMetric("indicators", forwarderEntity.getForwardedCount(), startDate);
         logger.info("finish to forward indicators", forwarderEntity.getForwardedCount());

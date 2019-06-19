@@ -49,7 +49,7 @@ public class IndicatorsForwarderTest {
             indicator.setScoreContribution(0.19593662136570342);
             indicator.setId("c678bb28-f795-402c-8d64-09f26e82807c");
             AlertPersistencyService alertPersistencyService = Mockito.mock(AlertPersistencyService.class);
-            Mockito.when(alertPersistencyService.findIndicatorByDateAndAlertIds(Mockito.any(Instant.class),Mockito.any(Instant.class), Mockito.any(List.class))).thenReturn(Collections.singletonList(indicator).stream());
+            Mockito.when(alertPersistencyService.findIndicatorsAlertIds(Mockito.any(List.class))).thenReturn(Collections.singletonList(indicator).stream());
             return alertPersistencyService;
         }
 
@@ -68,7 +68,7 @@ public class IndicatorsForwarderTest {
 
     @Test
     public void testAlertsForwarding() {
-        indicatorsForwarder.forward(Instant.now(), Instant.now(), "entityType", Arrays.asList("c678bb28-f795-402c-8d64-09f26e82807d"));
+        indicatorsForwarder.forwardIndicators(Arrays.asList("c678bb28-f795-402c-8d64-09f26e82807d"));
         Assert.assertEquals(1, memoryStrategy.allMessages.size());
         Assert.assertEquals("{\"id\":\"c678bb28-f795-402c-8d64-09f26e82807c\",\"startDate\":\"1970-01-18T14:37:46.653+0000\",\"endDate\":\"1970-01-18T14:37:46.653+0000\",\"schema\":\"PRINT\",\"name\":\"high_number_of_distinct_src_computer_clusters_print\",\"alertId\":\"c678bb28-f795-402c-8d64-09f26e82807d\",\"score\":0.0,\"scoreContribution\":0.19593662136570342,\"anomalyValue\":\"60.0\",\"eventsNum\":0}", memoryStrategy.allMessages.get(0).getPayload());
     }
