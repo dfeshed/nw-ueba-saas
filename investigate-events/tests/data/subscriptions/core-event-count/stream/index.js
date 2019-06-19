@@ -4,13 +4,16 @@ export default {
   subscriptionDestination: '/user/queue/investigate/events/count',
   requestDestination: '/ws/investigate/events/count',
   page(frame, sendMessage) {
-    let meta;
+    let meta, dataCount;
     const { body } = frame;
     const bodyParsed = JSON.parse(body);
     const { filter } = bodyParsed;
+    const query = (filter || []).find((ele) => ele.field === 'query');
+    const searchTerm = (filter || []).find((ele) => ele.field === 'searchTerm');
+    const queryValue = query && query.value;
+    const searchTermValue = searchTerm && searchTerm.value;
     const threshold = (filter || []).find((ob) => ob.field === 'threshold');
     const thresholdValue = threshold && threshold.value;
-    const dataCount = Math.min(thresholdValue, data().length);
 
     for (let i = 0; i <= 5; i++) {
       setTimeout((index) => {
@@ -68,7 +71,13 @@ export default {
               description: 'Executing'
             };
         }
-
+        // If we query for a Free-Form Filter or Text Filter of "(limited)" or
+        // "limited", respectively, send back zero results.
+        if (queryValue === '(limited)' || searchTermValue === 'limited') {
+          dataCount = 0;
+        } else {
+          dataCount = Math.min(thresholdValue, data().length);
+        }
         sendMessage({
           data: dataCount,
           meta

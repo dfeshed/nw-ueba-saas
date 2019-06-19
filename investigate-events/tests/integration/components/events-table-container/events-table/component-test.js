@@ -391,7 +391,6 @@ module('Integration | Component | events-table', function(hooks) {
     assert.equal(findAll('.rsa-data-table-header .rsa-form-checkbox.disabled').length, 0, 'Status - complete: selectAll checkbox is enabled when all results are loaded in cancelling a query in between');
   });
 
-
   test('disables event selection checkboxes if no results found, even though permissions are present', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('hasInvestigateContentExportAccess', true);
@@ -437,5 +436,23 @@ module('Integration | Component | events-table', function(hooks) {
     assert.equal(findAll('.rsa-data-table-header .rsa-form-checkbox-label.disabled').length, 1, 'Status - streaming/between-streams: Render disabled selectAll checkbox label wrapper');
     assert.equal(findAll('.rsa-data-table-header .rsa-form-checkbox.disabled').length, 1, 'Status - streaming/between-streams: Render disabled  selectAll checkbox');
     assert.equal(findAll('.rsa-data-table-body .rsa-form-checkbox-label').length, 2, 'Individual row selection checkboxes available for the 2 events loaded');
+  });
+
+  test('if no results are returned and there is a text filter, a message is displayed', async function(assert) {
+    const textFilter = { type: 'text', searchTerm: 'limited' };
+    new ReduxDataHelper(setState)
+      .withPreviousQuery([textFilter])
+      .eventCount(0)
+      .streamLimit(100)
+      .eventResults([])
+      .eventsPreferencesConfig()
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+    assert.notOk(find('.rsa-loader'), 'spinner should not be present');
+    assert.equal(find('.no-results-message').textContent.trim(),
+      'Your filter criteria did not match any records. Results may be limited by a text filter, which matches only indexed meta keys.',
+      'incorrect message'
+    );
   });
 });

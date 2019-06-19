@@ -16,6 +16,7 @@ import {
   SORT_ORDER
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
+import { hadTextPill } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { eventsLogsGet } from 'investigate-events/actions/events-creators';
 import {
   toggleSelectAllEvents,
@@ -54,7 +55,8 @@ const stateToComputed = (state) => {
     notIndexedAtValue,
     notSingleton,
     notValid,
-    canSort: hasMinimumCoreServicesVersionForColumnSorting(state)
+    canSort: hasMinimumCoreServicesVersionForColumnSorting(state),
+    hadTextPill: hadTextPill(state)
   };
 };
 
@@ -128,12 +130,19 @@ const EventsTableContextMenu = RsaContextMenu.extend({
     return columns;
   },
 
-  @computed('isCanceled')
-  noResultsMessage(isCanceled) {
+  @computed('isCanceled', 'hadTextPill')
+  noResultsMessage(isCanceled, hadTextPill) {
     const i18n = this.get('i18n');
-    return (isCanceled) ?
-      i18n.t('investigate.empty.canceled') :
-      i18n.t('investigate.empty.description');
+    let message;
+    if (isCanceled) {
+      message = i18n.t('investigate.empty.canceled');
+    } else {
+      message = i18n.t('investigate.empty.description');
+      if (hadTextPill) {
+        message = `${message} ${i18n.t('investigate.textSearchLimitedResults')}`;
+      }
+    }
+    return message;
   },
 
   contextMenu({ target: { attributes } }) {
