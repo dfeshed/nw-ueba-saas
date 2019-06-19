@@ -224,43 +224,7 @@ public abstract class UseCaseEventGeneratorsBuilder extends ProcessEventGenerato
 
 
 
-    public List<AbstractEventGenerator<Event>> buildGenerators(Instant startInstant, Instant endInstant){
-        List<AbstractEventGenerator<Event>> eventGenerators = new ArrayList<>();
-        RandomMultiEventGenerator eventGenerator =
-                createNormalUsersRandomEventGenerator(
-                        startInstant, endInstant
-                );
-        eventGenerators.add(eventGenerator);
-        eventGenerator =
-                createAdminUsersEventGenerator(
-                        startInstant, endInstant
-                );
-        eventGenerators.add(eventGenerator);
-        eventGenerator =
-                createServiceAccountUsersEventGenerator(
-                        startInstant, endInstant
-                );
-        eventGenerators.add(eventGenerator);
 
-        //Abnormal events:
-        eventGenerator =
-                createNormalUsersRandomAbnormalEventGenerator(
-                        startInstant, endInstant
-                );
-        eventGenerators.add(eventGenerator);
-        eventGenerator =
-                createAdminUsersAbnormalEventGenerator(
-                        startInstant, endInstant
-                );
-        eventGenerators.add(eventGenerator);
-        eventGenerator =
-                createServiceAccountUsersAbnormalEventGenerator(
-                        startInstant, endInstant
-                );
-        eventGenerators.add(eventGenerator);
-
-        return eventGenerators;
-    }
 
     //==================================================================================
     // Creating Random Event Generators for all kind of users
@@ -268,7 +232,7 @@ public abstract class UseCaseEventGeneratorsBuilder extends ProcessEventGenerato
 
 
 
-    private RandomMultiEventGenerator createNormalUsersRandomEventGenerator(Instant startInstant,
+    protected RandomMultiEventGenerator createNormalUsersRandomEventGenerator(Instant startInstant,
                                                                             Instant endInstant){
         IUserGenerator normalUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfNormalUsersDaily()*getUsersMultiplier())), allNormalUsers);
         normalUsersEventGenerator.setUserGenerator(normalUsersDailyGenerator);
@@ -281,7 +245,7 @@ public abstract class UseCaseEventGeneratorsBuilder extends ProcessEventGenerato
         );
     }
 
-    private RandomMultiEventGenerator createNormalUsersRandomAbnormalEventGenerator(Instant startInstant,
+    protected RandomMultiEventGenerator createNormalUsersRandomAbnormalEventGenerator(Instant startInstant,
                                                                                     Instant endInstant){
         IUserGenerator normalUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfNormalUsersDailyForNonActiveWorkingHours()*getUsersMultiplier())), allNormalUsers);
         normalUsersAbnormalEventGenerator.setUserGenerator(normalUsersDailyGenerator);
@@ -294,7 +258,7 @@ public abstract class UseCaseEventGeneratorsBuilder extends ProcessEventGenerato
         );
     }
 
-    private RandomMultiEventGenerator createAdminUsersEventGenerator(Instant startInstant,
+    protected RandomMultiEventGenerator createAdminUsersEventGenerator(Instant startInstant,
                                                                      Instant endInstant){
         IUserGenerator adminUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfAdminUsersDaily()*getUsersMultiplier())), allAdminUsers);
         adminUsersEventGenerator.setUserGenerator(adminUsersDailyGenerator);
@@ -307,7 +271,7 @@ public abstract class UseCaseEventGeneratorsBuilder extends ProcessEventGenerato
         );
     }
 
-    private RandomMultiEventGenerator createAdminUsersAbnormalEventGenerator(Instant startInstant,
+    protected RandomMultiEventGenerator createAdminUsersAbnormalEventGenerator(Instant startInstant,
                                                                              Instant endInstant){
         IUserGenerator adminUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfAdminUsersDailyForNonActiveWorkingHours()*getUsersMultiplier())), allAdminUsers);
         adminUsersAbnormalEventGenerator.setUserGenerator(adminUsersDailyGenerator);
@@ -320,7 +284,7 @@ public abstract class UseCaseEventGeneratorsBuilder extends ProcessEventGenerato
         );
     }
 
-    private RandomMultiEventGenerator createServiceAccountUsersEventGenerator(Instant startInstant,
+    protected RandomMultiEventGenerator createServiceAccountUsersEventGenerator(Instant startInstant,
                                                                               Instant endInstant){
         IUserGenerator serviceAccountUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfServiceAccountUsersDaily()*getUsersMultiplier())), allServiceAccountUsers);
         serviceAccountUsersEventGenerator.setUserGenerator(serviceAccountUsersDailyGenerator);
@@ -333,7 +297,7 @@ public abstract class UseCaseEventGeneratorsBuilder extends ProcessEventGenerato
         );
     }
 
-    private RandomMultiEventGenerator createServiceAccountUsersAbnormalEventGenerator(Instant startInstant,
+    protected RandomMultiEventGenerator createServiceAccountUsersAbnormalEventGenerator(Instant startInstant,
                                                                                       Instant endInstant){
         IUserGenerator serviceAccountUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfServiceAccountUsersDailyForAbnormalEvents()*getUsersMultiplier())), allServiceAccountUsers);
         serviceAccountUsersAbnormalEventGenerator.setUserGenerator(serviceAccountUsersDailyGenerator);
