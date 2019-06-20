@@ -19,9 +19,10 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
             CategoryRarityModelScorer.class.getSimpleName(),
             CategoryRarityModel.class.getSimpleName());
     private static final String WRONG_FEATURE_VALUE_TYPE_ERROR_MSG = String.format(
-            "%s.calculateScore expects to get a feature value of type %s",
+            "%s.calculateScore expects to get a feature value of type %s or %s",
             CategoryRarityModelScorer.class.getSimpleName(),
-            FeatureStringValue.class.getSimpleName());
+            FeatureStringValue.class.getSimpleName(),
+            FeatureNumericValue.class.getSimpleName());
     private static final String ADDITIONAL_MODELS_ERROR_MSG = String.format(
             "%s.calculateScore expects to get at most one additional model of type %s",
             CategoryRarityModelScorer.class.getSimpleName(),
