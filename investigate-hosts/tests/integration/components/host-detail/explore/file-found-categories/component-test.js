@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click } from '@ember/test-helpers';
+import { render, click, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchSocket } from '../../../../../helpers/patch-socket';
@@ -30,6 +30,7 @@ module('Integration | Component | host detail explore file found categories', fu
 
   test('file found categories should render', async function(assert) {
 
+    let patchSuccess = false;
     assert.expect(4);
     this.set('file', file);
     this.set('scanTime', file.scanStartTime);
@@ -39,9 +40,11 @@ module('Integration | Component | host detail explore file found categories', fu
     patchSocket((method, modelName) => {
       assert.equal(method, 'getFileContextList');
       assert.equal(modelName, 'endpoint');
+      patchSuccess = true;
     });
 
     await click('.file-found-categories__list');
+    await waitUntil(() => patchSuccess === true, { timeout: Infinity });
     const state = this.get('redux').getState();
     assert.equal(state.endpoint.explore.selectedTab.tabName, 'AUTORUNS', 'Selected tab validated');
   });

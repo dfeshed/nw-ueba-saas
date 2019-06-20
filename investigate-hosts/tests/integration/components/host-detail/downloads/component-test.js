@@ -140,6 +140,10 @@ module('Integration | Component | downloads', function(hooks) {
     }];
 
     new ReduxDataHelper(initState).hostDownloads(hostDownloads).downloadsSelectedFileList(selectedFileList).build();
+
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
+
     await render(hbs `<div id='modalDestination'></div>
       {{host-detail/downloads}}`);
 
@@ -160,6 +164,10 @@ module('Integration | Component | downloads', function(hooks) {
     }];
 
     new ReduxDataHelper(initState).hostDownloads(hostDownloads).downloadsSelectedFileList(selectedFileList).build();
+
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
+
     await render(hbs `<div id='modalDestination'></div>
       {{host-detail/downloads}}`);
 
