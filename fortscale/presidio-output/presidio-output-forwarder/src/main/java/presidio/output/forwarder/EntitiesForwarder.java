@@ -26,13 +26,9 @@ public class EntitiesForwarder extends Forwarder<Entity> {
         payloadBuilder = new JsonPayloadBuilder<>(Entity.class, EntityJsonMixin.class);
     }
 
-    public ForwardedEntity forwardEntities(Instant startDate, Instant endDate, String entityType){
-        Stream<Entity> entities = getEntitiesToForward(startDate, endDate, entityType);
-        return doForward(entities);
-    }
-
-    private Stream<Entity> getEntitiesToForward(Instant startDate, Instant endDate, String entityType) {
-        return entityPersistencyService.findEntitiesByLastUpdateLogicalDateAndEntityType(startDate, endDate, entityType);
+    public ForwardedInstances forwardEntities(Instant startDate, Instant endDate, String entityType){
+        Stream<Entity> entities = entityPersistencyService.findEntitiesByLastUpdateLogicalDateAndEntityType(startDate, endDate, entityType);
+        return doForward(entities, false);
     }
 
     @Override
@@ -57,11 +53,11 @@ public class EntitiesForwarder extends Forwarder<Entity> {
 
 
     @JsonFilter(JsonPayloadBuilder.INCLUDE_PROPERTIES_FILTER)
-    @JsonPayloadBuilder.JsonIncludeProperties({"id","entitiyId","entitytType","severity","alertsCount"})
-    @JsonPropertyOrder({"id","entitiyId","entitytType","severity","alertsCount"})
+    @JsonPayloadBuilder.JsonIncludeProperties({"id","entityId","entityType","severity","alertsCount"})
+    @JsonPropertyOrder({"id","entityId","entityType","severity","alertsCount"})
     class EntityJsonMixin extends Entity {
 
-        @JsonProperty("entitiyId")
+        @JsonProperty("entityId")
         String entityId;
 
     }

@@ -22,11 +22,7 @@ public class OutputForwarderServiceCommands implements CommandMarker {
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime,
 
-            @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration,
-
-            @CliOption(key = {CommonStrings.COMMAND_LINE_SMART_RECORD_CONF_NAME_FIELD_NAME}, help = "smart configuration name") final String configurationName,
-
-            @CliOption(key = {CommonStrings.COMMAND_LINE_ENTITY_TYPE_FIELD_NAME},mandatory = true , help = "entity type") final String entityType
+            @CliOption(key = {CommonStrings.COMMAND_LINE_ENTITY_TYPE_FIELD_NAME}, mandatory = true , help = "entity type") final String entityType
 
     ) throws Exception {
         return executionService.doRun(startTime, endTime, entityType);

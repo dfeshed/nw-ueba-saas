@@ -59,7 +59,7 @@ public class EntitiesForwarderTest {
     public void testEntitiesForwarding() {
         entitiesForwarder.forwardEntities(Instant.now(), Instant.now(), "entityType");
         Assert.assertEquals(1,memoryForwarder.allMessages.size());
-        Assert.assertEquals("{\"id\":\"c678bb28-f795-402c-8d64-09f26e82807d\",\"entitiyId\":\"test\",\"severity\":\"CRITICAL\",\"alertsCount\":0}",memoryForwarder.allMessages.get(0).getPayload());
+        Assert.assertEquals("{\"id\":\"c678bb28-f795-402c-8d64-09f26e82807d\",\"entityId\":\"test\",\"entityType\":\"entityType\",\"severity\":\"CRITICAL\",\"alertsCount\":0}",memoryForwarder.allMessages.get(0).getPayload());
     }
 
 

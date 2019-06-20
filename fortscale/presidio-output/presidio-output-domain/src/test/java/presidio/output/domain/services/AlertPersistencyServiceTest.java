@@ -208,7 +208,7 @@ public class AlertPersistencyServiceTest {
         indicator2.setAlertId("2");
         alertPersistencyService.save(indicator2);
 
-        Stream<Indicator> indicators = alertPersistencyService.findIndicatorsAlertIds(alertIds);
+        Stream<Indicator> indicators = alertPersistencyService.findIndicatorsByAlertIds(alertIds);
 
         assertThat(indicators.count(), is(2L));
     }

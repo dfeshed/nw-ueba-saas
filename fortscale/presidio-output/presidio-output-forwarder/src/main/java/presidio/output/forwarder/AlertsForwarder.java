@@ -25,13 +25,9 @@ public class AlertsForwarder extends Forwarder<Alert> {
         payloadBuilder = new JsonPayloadBuilder<>(Alert.class, AlertJsonMixin.class);
     }
 
-    public ForwardedEntity forwardAlerts(Instant startDate, Instant endDate, String entityType){
-        Stream<Alert> alerts = getAlertsToForward(startDate, endDate, entityType);
-        return doForward(alerts);
-    }
-
-    private Stream<Alert> getAlertsToForward(Instant startDate, Instant endDate, String entityType) {
-        return alertPersistencyService.findAlertsByDateAndEntityType(startDate, endDate, entityType);
+    public ForwardedInstances forwardAlerts(Instant startDate, Instant endDate, String entityType){
+        Stream<Alert> alerts = alertPersistencyService.findAlertsByDateAndEntityType(startDate, endDate, entityType);
+        return doForward(alerts, true);
     }
 
     @Override

@@ -17,7 +17,6 @@ import presidio.output.forwarder.spring.OutputForwarderTestConfigBeans;
 import presidio.output.forwarder.strategy.ForwarderConfiguration;
 import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
 
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -49,7 +48,7 @@ public class IndicatorsForwarderTest {
             indicator.setScoreContribution(0.19593662136570342);
             indicator.setId("c678bb28-f795-402c-8d64-09f26e82807c");
             AlertPersistencyService alertPersistencyService = Mockito.mock(AlertPersistencyService.class);
-            Mockito.when(alertPersistencyService.findIndicatorsAlertIds(Mockito.any(List.class))).thenReturn(Collections.singletonList(indicator).stream());
+            Mockito.when(alertPersistencyService.findIndicatorsByAlertIds(Mockito.any(List.class))).thenReturn(Collections.singletonList(indicator).stream());
             return alertPersistencyService;
         }
 
