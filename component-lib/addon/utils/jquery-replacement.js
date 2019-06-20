@@ -13,6 +13,88 @@ export const isNumeric = (x) => {
   return !Array.isArray(x) && (x - parseFloat(x) + 1) >= 0;
 };
 
+export const getHeight = (elem) => {
+  const style = getComputedStyle(elem);
+  const paddingY = getPaddingY(elem);
+  const borderY = getBorderY(elem);
+  let height;
+
+  // .offsetHeight includes padding and border
+  // jQuery .height() does not
+  if (elem.offsetHeight !== undefined) {
+    height = elem.offsetHeight - paddingY - borderY;
+
+  } else { // CSS border box
+    if (elem.getClientRects().length > 0) {
+      height = elem.getBoundingClientRect().height;
+    }
+  }
+
+  // if style.height has px value (not 'auto'), use it
+  // more precise than .offsetHeight which is rounded
+  const computedStyleHeight = style.getPropertyValue('height');
+  if (computedStyleHeight && computedStyleHeight.indexOf('px') > -1) {
+    height = +(computedStyleHeight.split('px')[0]);
+  }
+
+  return height;
+};
+
+export const getWidth = (elem) => {
+  const style = getComputedStyle(elem);
+  const paddingX = getPaddingX(elem);
+  const borderX = getBorderX(elem);
+  let width;
+
+  // .offsetWidth includes padding and border
+  // jQuery .width() does not
+  if (elem.offsetWidth !== undefined) {
+    width = elem.offsetWidth - paddingX - borderX;
+
+  } else { // CSS border box
+    if (elem.getClientRects().length > 0) {
+      width = elem.getBoundingClientRect().width;
+    }
+  }
+
+  // if style.width has px value (not 'auto'), use it
+  // more precise than .offsetWidth which is rounded
+  const computedStyleWidth = style.getPropertyValue('width');
+  if (computedStyleWidth && computedStyleWidth.indexOf('px') > -1) {
+    width = +(computedStyleWidth.split('px')[0]);
+  }
+
+  return width;
+};
+
+export const getPaddingX = (elem) => {
+  const style = getComputedStyle(elem);
+  const paddingLeft = style.getPropertyValue('paddingLeft') ? +(style.getPropertyValue('paddingLeft').split('px')[0]) : 0;
+  const paddingRight = style.getPropertyValue('paddingRight') ? +(style.getPropertyValue('paddingRight').split('px')[0]) : 0;
+  return paddingLeft + paddingRight;
+};
+
+export const getPaddingY = (elem) => {
+  const style = getComputedStyle(elem);
+  const paddingTop = style.getPropertyValue('paddingTop') ? +(style.getPropertyValue('paddingTop').split('px')[0]) : 0;
+  const paddingBottom = style.getPropertyValue('paddingBottom') ? +(style.getPropertyValue('paddingBottom').split('px')[0]) : 0;
+  return paddingTop + paddingBottom;
+};
+
+export const getBorderX = (elem) => {
+  const style = getComputedStyle(elem);
+  const borderLeft = style.getPropertyValue('borderLeft') ? +(style.getPropertyValue('borderLeft').split('px')[0]) : 0;
+  const borderRight = style.getPropertyValue('borderRight') ? +(style.getPropertyValue('borderRight').split('px')[0]) : 0;
+  return borderLeft + borderRight;
+};
+
+export const getBorderY = (elem) => {
+  const style = getComputedStyle(elem);
+  const borderTop = style.getPropertyValue('borderTop') ? +(style.getPropertyValue('borderTop').split('px')[0]) : 0;
+  const borderBottom = style.getPropertyValue('borderBottom') ? +(style.getPropertyValue('borderBottom').split('px')[0]) : 0;
+  return borderTop + borderBottom;
+};
+
 // Easy replacement docs
 
 //
@@ -88,6 +170,7 @@ export const isNumeric = (x) => {
 // this.$('.some-element').css('cssProperty')
 // window.getComputedStyle(find('.some-element')).getPropertyValue('flex-grow')
 
+//
 // DIMENSIONS
 //
 
@@ -98,10 +181,10 @@ export const isNumeric = (x) => {
 // window.innerHeight
 
 // $('.some-element').height()
-// document.querySelector('.some-element').offsetHeight
+// getHeight(Element) - see above
 
 // $('.some-element').width()
-// document.querySelector('.some-element').offsetWidth
+// getWidth(Element) - see above
 
 //
 // EVENT HANDLERS

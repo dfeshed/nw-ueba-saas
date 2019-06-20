@@ -1,4 +1,5 @@
 import { cancel, later } from '@ember/runloop';
+import { getHeight, getWidth } from './jquery-replacement';
 
 const timerProp = '__rsa-tethered-panel-trigger-timer';
 
@@ -15,9 +16,10 @@ const timerProp = '__rsa-tethered-panel-trigger-timer';
  * @public
  */
 const sendTetherEvent = function(el, panelId, eventBus, eventType, model) {
-  const style = getComputedStyle(el);
-  const height = style.getPropertyValue('height');
-  const width = style.getPropertyValue('width');
+
+  const height = getHeight(el);
+  const width = getWidth(el);
+
   eventBus.trigger(
     `rsa-content-tethered-panel-${eventType}-${panelId}`,
     height,
@@ -65,7 +67,6 @@ const removeFromMap = function(elementId, eventType) {
  */
 const wireTriggerToClick = function(el, panelId, eventBus, opts = {}) {
   if (el) {
-
     const getIsDisabled = typeof opts.getIsDisabled === 'function' ? opts.getIsDisabled : null;
     const eventHandler = function() {
       if (!getIsDisabled || !getIsDisabled()) {
