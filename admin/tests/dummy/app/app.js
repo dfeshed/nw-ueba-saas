@@ -49,7 +49,8 @@ const App = Application.extend({
           'eventBus',
           'router',
           'app-version',
-          'features'
+          'features',
+          'session'
         ],
         externalRoutes: {
           protected: 'protected'
