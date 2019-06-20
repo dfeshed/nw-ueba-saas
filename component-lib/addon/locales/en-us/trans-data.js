@@ -4302,7 +4302,8 @@ export default {
         enabled: 'Enabled',
         disabled: 'Disabled',
         fileSettings: 'File Settings',
-        filePolicyEnabled: 'Status'
+        filePolicyEnabled: 'Status',
+        sourceSettings: 'Source Settings ({{fileType}})'
       },
       modals: {
         deletePolicies: {
@@ -4777,6 +4778,7 @@ effects the previewed source.',
         fileEncoding: 'File Encoding',
         sourceName: 'Source Name',
         exclusionFilters: 'Exclusion Filters',
+        paths: 'Paths',
         fileSourceType: {
           add: 'Add Selected File Type',
           placeholder: 'Pick a Log File Type'

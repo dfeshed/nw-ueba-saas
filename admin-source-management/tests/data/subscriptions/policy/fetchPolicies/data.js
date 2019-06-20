@@ -510,17 +510,17 @@ export default [
         enabled: false,
         startOfEvents: false,
         fileEncoding: 'UTF-8',
-        path: ['/c/apache_path-hint-1/*.log', '/c/Program Files/Apache Group/Apache[2-9]/*.log', 'apache_path-hint-2'],
+        paths: ['/c/apache_path-hint-1/*.log', '/c/Program Files/Apache Group/Apache[2-9]/*.log', 'apache_path-hint-2'],
         sourceName: 'Meta-Source-Name',
         exclusionFilters: ['exclude-string-1', 'exclude-string-2', 'exclude-string-3']
       },
       {
         fileType: 'exchange',
         enabled: true,
-        startOfEvents: false,
+        startOfEvents: true,
         fileEncoding: 'UTF-8',
-        path: ['/[cd]/exchange/logs/*.log'],
-        sourceName: '',
+        paths: ['/[cd]/exchange/logs/*.log'],
+        sourceName: 'Exchange aye!',
         exclusionFilters: []
       }
     ],

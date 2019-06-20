@@ -795,6 +795,11 @@ export default class DataHelper {
     return this;
   }
 
+  setPolicyFileSources(sources) {
+    _set(this.state, 'usm.policies.focusedItem.sources', sources);
+    return this;
+  }
+
   selectedPolicies(config) {
     _set(this.state, 'usm.policies.itemsSelected', config);
     return this;

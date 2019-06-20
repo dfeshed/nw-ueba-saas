@@ -2,6 +2,11 @@ import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import policyAPI from 'admin-source-management/actions/api/policy-api';
 import { handleError } from './utils-creators';
 import {
+  fetchEndpointServers,
+  fetchLogServers,
+  fetchFileSourceTypes
+} from './policy-wizard-creators';
+import {
   selectedDeleteItems,
   selectedPublishItems
 } from 'admin-source-management/reducers/usm/policies-selectors';
@@ -13,6 +18,7 @@ const initializePolicies = () => {
     dispatch(fetchPolicies());
     dispatch(fetchEndpointServers());
     dispatch(fetchLogServers());
+    dispatch(fetchFileSourceTypes());
   };
 };
 
@@ -135,27 +141,6 @@ const sortBy = (sortField, isSortDescending) => {
   };
 };
 
-// ===================================================
-// edrPolicy specific action creators
-// ===================================================
-const fetchEndpointServers = () => {
-  return {
-    type: ACTION_TYPES.FETCH_ENDPOINT_SERVERS,
-    promise: policyAPI.fetchEndpointServers()
-  };
-};
-
-// ===================================================
-// windowsLogPolicy/filePolicy specific action creators
-// ===================================================
-const fetchLogServers = () => {
-  return {
-    type: ACTION_TYPES.FETCH_LOG_SERVERS,
-    promise: policyAPI.fetchLogServers()
-  };
-};
-
-
 const toggleFilterPanel = () => ({ type: ACTION_TYPES.POLICIES_TOGGLE_FILTER_PANEL });
 const toggleItemSelected = (item) => ({ type: ACTION_TYPES.POLICIES_TOGGLE_SELECTED, payload: item });
 const toggleFocusItem = (item) => ({ type: ACTION_TYPES.POLICIES_TOGGLE_FOCUS, payload: item });
@@ -174,9 +159,5 @@ export {
   toggleItemSelected,
   toggleFocusItem,
   clearFocusItem,
-  toggleSelectAll,
-  // edrPolicy specific action creators
-  fetchEndpointServers,
-  // windowsLogPolicy specific action creators
-  fetchLogServers
+  toggleSelectAll
 };

@@ -20,6 +20,7 @@ export const focusedPolicy = (state) => {
 };
 
 const _listOfLogServers = (state) => state.usm.policyWizard.listOfLogServers || [];
+const _listOfFileSourceTypes = (state) => state.usm.policyWizard.listOfFileSourceTypes || [];
 
 /**
  * formats the policy in focus to return an array of sections
@@ -32,16 +33,23 @@ const _listOfLogServers = (state) => state.usm.policyWizard.listOfLogServers || 
  * @public
 */
 export const selectedFilePolicy = createSelector(
-  focusedPolicy, _listOfLogServers, _focusedPolicyOrigin,
-  (focusedPolicy, _listOfLogServers, _focusedPolicyOrigin) => {
+  focusedPolicy, _listOfLogServers, _listOfFileSourceTypes, _focusedPolicyOrigin,
+  (focusedPolicy, _listOfLogServers, _listOfFileSourceTypes, _focusedPolicyOrigin) => {
     const policyDetails = [];
+    const sourceSections = [];
     const basicSettings = [];
     const emptyOrigin = { groupName: '', policyName: '', conflict: false };
     for (const prop in focusedPolicy) {
-      if (!isBlank(focusedPolicy[prop])) {
-        const basicSetting = _getBasicSetting(prop, focusedPolicy, _listOfLogServers, _focusedPolicyOrigin, emptyOrigin);
-        if (basicSetting) {
-          basicSettings.push(basicSetting);
+      if (prop === 'sources') {
+        for (let i = 0; i < focusedPolicy.sources.length; i++) {
+          sourceSections.push(_getSourceSection(focusedPolicy.sources[i], _listOfFileSourceTypes));
+        }
+      } else {
+        if (!isBlank(focusedPolicy[prop])) {
+          const basicSetting = _getBasicSetting(prop, focusedPolicy, _listOfLogServers, _focusedPolicyOrigin, emptyOrigin);
+          if (basicSetting) {
+            basicSettings.push(basicSetting);
+          }
         }
       }
     }
@@ -51,6 +59,10 @@ export const selectedFilePolicy = createSelector(
         props: basicSettings
       });
     }
+    // each source is rendered as separate section
+    sourceSections.forEach((sourceSection) => {
+      policyDetails.push(sourceSection);
+    });
     return policyDetails;
   }
 );
@@ -103,4 +115,62 @@ const _getDisplayName = (prop, destAddress, listOfLogServers) => {
     focusedPolicyDestinationName = logServer[0].displayName;
   }
   return focusedPolicyDestinationName;
+};
+
+const _getSourceSection = (source, _listOfFileSourceTypes) => {
+  const sourceSettings = [];
+  for (const prop in source) {
+    if (!isBlank(source[prop])) {
+      const sourceSetting = _getSourceSetting(prop, source);
+      if (sourceSetting) {
+        sourceSettings.push(sourceSetting);
+      }
+    }
+  }
+  const sourceSection = {
+    header: 'adminUsm.policies.detail.sourceSettings',
+    headerVars: { fileType: _getFileSourceTypeDisplayName(source.fileType, _listOfFileSourceTypes) },
+    props: sourceSettings
+  };
+  return sourceSection;
+};
+
+const _getSourceSetting = (prop, source) => {
+  const _i18n = lookup('service:i18n');
+  const sourceSettings = {
+    enabled: {
+      name: 'adminUsm.policyWizard.filePolicy.enableOnAgent',
+      value: (source[prop] === true) ? _i18n.t('adminUsm.policies.detail.enabled') : _i18n.t('adminUsm.policies.detail.disabled')
+    },
+    startOfEvents: {
+      name: 'adminUsm.policyWizard.filePolicy.dataCollection',
+      value: (source[prop] === true) ? _i18n.t('adminUsm.policyWizard.filePolicy.collectNew') : _i18n.t('adminUsm.policyWizard.filePolicy.collectAll')
+    },
+    fileEncoding: {
+      name: 'adminUsm.policyWizard.filePolicy.fileEncoding',
+      value: source[prop]
+    },
+    paths: {
+      name: 'adminUsm.policyWizard.filePolicy.paths',
+      value: source[prop] && source[prop].join ? source[prop].join(', ') : ''
+    },
+    sourceName: {
+      name: 'adminUsm.policyWizard.filePolicy.sourceName',
+      value: source[prop]
+    },
+    exclusionFilters: {
+      name: 'adminUsm.policyWizard.filePolicy.exclusionFilters',
+      value: source[prop] && source[prop].join ? source[prop].join(', ') : ''
+    }
+  };
+  return sourceSettings[prop];
+};
+
+const _getFileSourceTypeDisplayName = (sourceFileType, _listOfFileSourceTypes) => {
+  let displayName = sourceFileType;
+  const fileSourceType = _listOfFileSourceTypes.filter((obj) => obj.name === sourceFileType);
+  if (fileSourceType != null && fileSourceType.length === 1) {
+    displayName = fileSourceType[0].prettyName;
+  }
+  return displayName;
 };
