@@ -13,10 +13,11 @@ pipeline {
             steps {
                 cleanWs()
                 buildIntegrationTestProject()
+                setBaseUrl()
             }
         }
         stage('Reset DBs LogHybrid and UEBA') {
-            steps {
+                steps {
                 CleanEpHybridUebaDBs()
             }
         }
@@ -26,7 +27,6 @@ pipeline {
             }
             steps {
                 script {
-                    setBaseUrl()
                     uebaInstallRPMs()
                 }
             }
