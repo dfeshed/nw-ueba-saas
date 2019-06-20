@@ -118,8 +118,8 @@ pipeline {
                                 properties: ["presidio.core.version"],
                                 command: """
                                     export SASS_BINARY_PATH=/mnt/libhq-SA/tools/node-sass/v4.9.0/linux-x64-46_binding.node &&
-                                    export HTTP_PROXY=http://emc-proxy1:82 &&
-                                    export HTTPS_PROXY=http://emc-proxy1:82 &&
+                                    export HTTP_PROXY=http://rsa-eng-proxy1:82 &&
+                                    export HTTPS_PROXY=http://rsa-eng-proxy1:82 &&
                                     export NODE_TLS_REJECT_UNAUTHORIZED=0 &&
                                     export NO_PROXY="localhost,127.0.0.1,.emc.com" &&
                                     mvn clean install deploy -B -U -f pom.xml
