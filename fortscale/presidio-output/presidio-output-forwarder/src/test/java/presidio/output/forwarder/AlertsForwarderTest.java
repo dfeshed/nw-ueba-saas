@@ -40,7 +40,7 @@ public class AlertsForwarderTest {
                     new Alert("entityDocumentId1", "smartId", new ArrayList<>(), "entity1", "entity1", new Date(1521466653), new Date(1521466653), 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D, "entityType");
             alert.setId("c678bb28-f795-402c-8d64-09f26e82807d");
             AlertPersistencyService alertPersistencyService = Mockito.mock(AlertPersistencyService.class);
-            Mockito.when(alertPersistencyService.findAlertsByDate(Mockito.any(Instant.class),Mockito.any(Instant.class))).thenReturn(Collections.singletonList(alert).stream());
+            Mockito.when(alertPersistencyService.findAlertsByDateAndEntityType(Mockito.any(Instant.class),Mockito.any(Instant.class), Mockito.any(String.class))).thenReturn(Collections.singletonList(alert).stream());
             return alertPersistencyService;
         }
 
@@ -59,10 +59,8 @@ public class AlertsForwarderTest {
 
     @Test
     public void testAlertsForwarding() {
-        alertsForwarder.forward(Instant.now(), Instant.now());
+        alertsForwarder.forwardAlerts(Instant.now(), Instant.now(), "entityType");
         Assert.assertEquals(1, memoryStrategy.allMessages.size());
         Assert.assertEquals("{\"id\":\"c678bb28-f795-402c-8d64-09f26e82807d\",\"startDate\":\"1970-01-18T14:37:46.653+0000\",\"endDate\":\"1970-01-18T14:37:46.653+0000\",\"entityDocumentId\":\"entityDocumentId1\",\"score\":95.0,\"severity\":\"HIGH\",\"indicatorsNum\":3,\"classifications\":[]}", memoryStrategy.allMessages.get(0).getPayload());
     }
-
-
 }

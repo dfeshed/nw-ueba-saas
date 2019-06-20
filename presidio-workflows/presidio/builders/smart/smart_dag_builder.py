@@ -137,13 +137,13 @@ class SmartDagBuilder(PresidioDagBuilder):
         )
 
         daily_short_circuit_operator >> entity_score_operator
-        self._push_forwarding(hourly_output_operator, daily_short_circuit_operator, dag)
+        self._push_forwarding(hourly_output_operator, daily_short_circuit_operator, dag, entity_type)
 
         smart_operator >> output_short_circuit_operator
 
         return entity_score_operator
 
-    def _push_forwarding(self, hourly_output_operator, daily_short_circuit_operator, dag):
+    def _push_forwarding(self, hourly_output_operator, daily_short_circuit_operator, dag, entity_type):
         self.log.debug("creating the forwarder task")
 
         default_args = dag.default_args
@@ -151,9 +151,9 @@ class SmartDagBuilder(PresidioDagBuilder):
         self.log.debug("enable_output_forwarder=%s ", enable_output_forwarder)
         if enable_output_forwarder == 'true':
             push_forwarding_operator = OutputForwarderOperator(
-                fixed_duration_strategy=timedelta(hours=1),
                 command=PresidioDagBuilder.presidio_command,
-                smart_record_conf_name=dag.default_args.get("smart_conf_name"),
+                entity_type=entity_type,
+                run_clean_command_before_retry=False,
                 dag=dag)
 
             hourly_output_operator >> push_forwarding_operator >> daily_short_circuit_operator

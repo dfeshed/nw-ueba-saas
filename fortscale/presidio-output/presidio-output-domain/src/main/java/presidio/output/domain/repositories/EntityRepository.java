@@ -15,6 +15,6 @@ public interface EntityRepository extends ElasticsearchRepository<Entity, String
 
     Page<Entity> findByIdIn(Collection<String> ids, Pageable pageable);
 
-    Stream<Entity> findByLastUpdateLogicalStartDateGreaterThanEqualAndLastUpdateLogicalEndDateLessThanEqual(long startDate, long endDate); // the stream must be closed after usage
+    Stream<Entity> findByLastUpdateLogicalStartDateGreaterThanEqualAndLastUpdateLogicalEndDateLessThanEqualAndEntityType(long startDate, long endDate, String entityType); // the stream must be closed after usage
 
 }

@@ -15,8 +15,8 @@ public class OutputForwarderExecutionService {
         this.presidioOutputForwardService = presidioOutputForwardService;
     }
 
-    public int doRun(Instant startDate, Instant endDate, String configurationName) throws Exception {
-        return presidioOutputForwardService.forward(startDate, endDate, configurationName);
+    public int doRun(Instant startDate, Instant endDate, String entityType) throws Exception {
+        return presidioOutputForwardService.forward(startDate, endDate, entityType);
 
     }
 
