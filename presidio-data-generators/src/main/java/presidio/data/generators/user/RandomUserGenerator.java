@@ -20,4 +20,9 @@ public class RandomUserGenerator implements IUserGenerator {
 
         return user;
     }
+
+    @Override
+    public Long getMaxNumOfDistinctUsers(){
+        throw new UnsupportedOperationException();
+    }
 }

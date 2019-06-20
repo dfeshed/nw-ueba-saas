@@ -14,35 +14,12 @@ import java.time.Instant;
 import java.util.List;
 
 public abstract class AuthenticationUseCaseEventGeneratorsBuilder extends AuthenticationEventGeneratorsBuilder{
+    private static final long NANOS_PER_SECOND = 1000_000_000L;
 
-    //Normal behavior + abnormal time.
-    protected abstract int getNumOfNormalUsers();
-    protected abstract int getNumOfNormalUsersDaily();
-    protected abstract double getEventProbabilityForNormalUsers();
-    protected abstract int getTimeIntervalForNonActiveRangeForNormalUsers();
-
-
-    protected abstract int getNumOfAdminUsers();
-    protected abstract int getNumOfAdminUsersDaily();
-    protected abstract double getEventProbabilityForAdminUsers();
-    protected abstract int getTimeIntervalForNonActiveRangeForAdminUsers();
-
-    protected abstract int getNumOfServiceAccountUsers();
-    protected abstract int getNumOfServiceAccountUsersDaily();
-    protected abstract double getEventProbabilityForServiceAccountUsers();
-    protected abstract int getTimeIntervalForNonActiveRangeForServiceAccountUsers();
 
     protected abstract String getUseCaseTestName();
 
-    //abnormal behavior.
-    protected abstract int getNumOfNormalUsersDailyForNonActiveWorkingHours();
-    protected abstract double getEventProbabilityForNormalUsersForNonActiveWorkingHours();
 
-    protected abstract int getNumOfAdminUsersDailyForNonActiveWorkingHours();
-    protected abstract double getEventProbabilityForAdminUsersForNonActiveWorkingHours();
-
-    protected abstract int getNumOfServiceAccountUsersDailyForNonActiveWorkingHours();
-    protected abstract double getEventProbabilityForServiceAccountUsersForNonActiveWorkingHours();
 
 
 
@@ -86,6 +63,8 @@ public abstract class AuthenticationUseCaseEventGeneratorsBuilder extends Authen
 
     //Abnormal events Generator for service account users
     private AuthenticationEventsGenerator serviceAccountUsersAbnormalEventGenerator;
+
+
 
 
     public AuthenticationUseCaseEventGeneratorsBuilder(IUserGenerator normalUserGenerator,
@@ -235,6 +214,143 @@ public abstract class AuthenticationUseCaseEventGeneratorsBuilder extends Authen
     }
 
 
+    protected abstract double getPercentOfNormalUserPerDayOutOfTotalAmountOfUsers();
+    protected abstract int getNumOfEventsPerNormalUserPerHourOnAvg();
+    protected abstract double getPercentOfAdminUserPerDayOutOfTotalAmountOfUsers();
+    protected abstract int getNumOfEventsPerAdminUserPerHourOnAvg();
+    protected abstract double getPercentOfServiceAccountUserPerDayOutOfTotalAmountOfUsers();
+    protected abstract int getNumOfEventsPerServiceAccountUserPerHourOnAvg();
+    protected abstract double getPercentOfNormalUserWithAnomaliesPerDayOutOfTotalAmountOfUsers();
+    protected abstract int getNumOfEventsPerNormalUserWithAnomaliesPerHourOnAvg();
+    protected abstract double getPercentOfAdminUserWithAnomaliesPerDayOutOfTotalAmountOfUsers();
+    protected abstract int getNumOfEventsPerAdminUserWithAnomaliesPerHourOnAvg();
+    protected abstract double getPercentOfServiceAccountUserWithAnomaliesPerDayOutOfTotalAmountOfUsers();
+    protected abstract int getNumOfEventsPerServiceAccountUserWithAnomaliesPerHourOnAvg();
+
+    private long getNumOfIterationsInAnHour(List<MultiRangeTimeGenerator.ActivityRange> activityRanges){
+        return (3600*NANOS_PER_SECOND)/activityRanges.get(0).getDuration().toNanos();
+    }
+
+    private double getEventProbability(long numOfDailyUsers,
+                                       double numOfEventsPerUserPerHourOnAvg,
+                                       List<MultiRangeTimeGenerator.ActivityRange> activityRanges){
+        double numOfHourlyEvents = (double) (numOfDailyUsers* numOfEventsPerUserPerHourOnAvg);
+        return Math.min(1.0, numOfHourlyEvents/ getNumOfIterationsInAnHour(activityRanges));
+    }
+
+    private long getNumOfUsersDaily(long numOfUsers, double percentOfUserPerDayOutOfTotalAmountOfUsers) {
+        return (long) Math.max(1, numOfUsers*percentOfUserPerDayOutOfTotalAmountOfUsers);
+    }
+
+    //Normal behavior + abnormal time.
+
+    protected long getNumOfNormalUsers() {
+        return normalUserGenerator.getMaxNumOfDistinctUsers();
+    }
+
+
+
+    protected long getNumOfNormalUsersDaily() {
+        return getNumOfUsersDaily(getNumOfNormalUsers(), getPercentOfNormalUserPerDayOutOfTotalAmountOfUsers());
+    }
+
+
+    protected double getEventProbabilityForNormalUsers() {
+        return getEventProbability(getNumOfNormalUsersDaily(),
+                getNumOfEventsPerNormalUserPerHourOnAvg(),
+                normalUserActivityRange);
+    }
+
+
+    protected int getTimeIntervalForNonActiveRangeForNormalUsers() {
+        return 120000;
+    }
+
+
+    protected int getNumOfAdminUsers() {
+        return Math.toIntExact(adminUserGenerator.getMaxNumOfDistinctUsers());
+    }
+
+
+    protected int getNumOfAdminUsersDaily() {
+        return (int) getNumOfUsersDaily(getNumOfAdminUsers(), getPercentOfAdminUserPerDayOutOfTotalAmountOfUsers());
+    }
+
+
+    protected double getEventProbabilityForAdminUsers() {
+        return getEventProbability(getNumOfAdminUsersDaily(),
+                getNumOfEventsPerAdminUserPerHourOnAvg(),
+                adminUserActivityRange);
+    }
+
+
+    protected int getTimeIntervalForNonActiveRangeForAdminUsers() {
+        return 120000;
+    }
+
+
+
+
+    protected int getNumOfServiceAccountUsers() {
+        return Math.toIntExact(serviceAccountUserGenerator.getMaxNumOfDistinctUsers());
+    }
+
+
+    protected int getNumOfServiceAccountUsersDaily() {
+        return (int) getNumOfUsersDaily(getNumOfServiceAccountUsers(), getPercentOfServiceAccountUserPerDayOutOfTotalAmountOfUsers());
+    }
+
+
+    protected double getEventProbabilityForServiceAccountUsers() {
+        return getEventProbability(getNumOfServiceAccountUsers(),
+                getNumOfEventsPerServiceAccountUserPerHourOnAvg(),
+                serviceAcountUserActivityRange);
+    }
+
+
+    protected int getTimeIntervalForNonActiveRangeForServiceAccountUsers() {
+        return 120000;
+    }
+
+
+    //abnormal behavior.
+
+    protected int getNumOfNormalUsersDailyForNonActiveWorkingHours() {
+        return (int) getNumOfUsersDaily(getNumOfNormalUsers(), getPercentOfNormalUserWithAnomaliesPerDayOutOfTotalAmountOfUsers());
+    }
+
+
+    protected double getEventProbabilityForNormalUsersForNonActiveWorkingHours() {
+        return getEventProbability(getNumOfNormalUsersDailyForNonActiveWorkingHours(),
+                getNumOfEventsPerNormalUserWithAnomaliesPerHourOnAvg(),
+                normalUserAbnormalActivityRange);
+    }
+
+
+    protected int getNumOfAdminUsersDailyForNonActiveWorkingHours() {
+        return (int) getNumOfUsersDaily(getNumOfAdminUsers(), getPercentOfAdminUserWithAnomaliesPerDayOutOfTotalAmountOfUsers());
+    }
+
+
+    protected double getEventProbabilityForAdminUsersForNonActiveWorkingHours() {
+        return getEventProbability(getNumOfAdminUsersDailyForNonActiveWorkingHours(),
+                getNumOfEventsPerAdminUserWithAnomaliesPerHourOnAvg(),
+                adminUserAbnormalActivityRange);
+    }
+
+
+    protected int getNumOfServiceAccountUsersDailyForNonActiveWorkingHours() {
+        return (int) getNumOfUsersDaily(getNumOfServiceAccountUsers(), getPercentOfServiceAccountUserWithAnomaliesPerDayOutOfTotalAmountOfUsers());
+    }
+
+
+    protected double getEventProbabilityForServiceAccountUsersForNonActiveWorkingHours() {
+        return getEventProbability(getNumOfServiceAccountUsersDailyForNonActiveWorkingHours(),
+                getNumOfEventsPerServiceAccountUserWithAnomaliesPerHourOnAvg(),
+                serviceAcountUserActivityRange);
+    }
+
+
 
     //==================================================================================
     // Creating Random Event Generators for all kind of users
@@ -319,5 +435,6 @@ public abstract class AuthenticationUseCaseEventGeneratorsBuilder extends Authen
                 endInstant
         );
     }
+
 
 }

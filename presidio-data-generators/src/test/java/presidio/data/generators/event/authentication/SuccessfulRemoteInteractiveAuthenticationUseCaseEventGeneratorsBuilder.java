@@ -16,6 +16,72 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuilder extends AuthenticationUseCaseEventGeneratorsBuilder{
+    private static final double PERCENT_OF_NORMAL_USER_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS = 0.7d;
+    private static final int NUM_OF_EVENTS_PER_NORMAL_USER_PER_HOUR_ON_AVG = 2;
+
+    private static final double PERCENT_OF_ADMIN_USER_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS = 0.99d;
+    private static final int NUM_OF_EVENTS_PER_ADMIN_USER_PER_HOUR_ON_AVG = 20;
+
+    private static final double PERCENT_OF_SERVICE_ACCOUNT_USER_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS = 1d;
+    private static final int NUM_OF_EVENTS_PER_SERVICE_ACCOUNT_USER_PER_HOUR_ON_AVG = 5;
+
+    private static final double PERCENT_OF_NORMAL_USER_WITH_ANOMALIES_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS = 0.002d;
+    private static final int NUM_OF_EVENTS_PER_NORMAL_USER_WITH_ANOMALIES_PER_HOUR_ON_AVG = 8;
+
+    private static final double PERCENT_OF_ADMIN_USER_WITH_ANOMALIES_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS = 0.002d;
+    private static final int NUM_OF_EVENTS_PER_ADMIN_USER_WITH_ANOMALIES_PER_HOUR_ON_AVG = 80;
+
+    private static final double PERCENT_OF_SERVICE_ACCOUNT_USER_WITH_ANOMALIES_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS = 0.002d;
+    private static final int NUM_OF_EVENTS_PER_SERVICE_ACCOUNT_USER_WITH_ANOMALIES_PER_HOUR_ON_AVG = 20;
+
+    @Override
+    protected double getPercentOfNormalUserPerDayOutOfTotalAmountOfUsers(){
+        return PERCENT_OF_NORMAL_USER_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS;
+    }
+    @Override
+    protected int getNumOfEventsPerNormalUserPerHourOnAvg() {
+        return NUM_OF_EVENTS_PER_NORMAL_USER_PER_HOUR_ON_AVG;
+    }
+    @Override
+    protected double getPercentOfAdminUserPerDayOutOfTotalAmountOfUsers() {
+        return PERCENT_OF_ADMIN_USER_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS;
+    }
+    @Override
+    protected int getNumOfEventsPerAdminUserPerHourOnAvg() {
+        return NUM_OF_EVENTS_PER_ADMIN_USER_PER_HOUR_ON_AVG;
+    }
+    @Override
+    protected double getPercentOfServiceAccountUserPerDayOutOfTotalAmountOfUsers() {
+        return PERCENT_OF_SERVICE_ACCOUNT_USER_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS;
+    }
+    @Override
+    protected int getNumOfEventsPerServiceAccountUserPerHourOnAvg() {
+        return NUM_OF_EVENTS_PER_SERVICE_ACCOUNT_USER_PER_HOUR_ON_AVG;
+    }
+    @Override
+    protected double getPercentOfNormalUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return PERCENT_OF_NORMAL_USER_WITH_ANOMALIES_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS;
+    }
+    @Override
+    protected int getNumOfEventsPerNormalUserWithAnomaliesPerHourOnAvg() {
+        return NUM_OF_EVENTS_PER_NORMAL_USER_WITH_ANOMALIES_PER_HOUR_ON_AVG;
+    }
+    @Override
+    protected double getPercentOfAdminUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return PERCENT_OF_ADMIN_USER_WITH_ANOMALIES_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS;
+    }
+    @Override
+    protected int getNumOfEventsPerAdminUserWithAnomaliesPerHourOnAvg() {
+        return NUM_OF_EVENTS_PER_ADMIN_USER_WITH_ANOMALIES_PER_HOUR_ON_AVG;
+    }
+    @Override
+    protected double getPercentOfServiceAccountUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return PERCENT_OF_SERVICE_ACCOUNT_USER_WITH_ANOMALIES_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS;
+    }
+    @Override
+    protected int getNumOfEventsPerServiceAccountUserWithAnomaliesPerHourOnAvg() {
+        return NUM_OF_EVENTS_PER_SERVICE_ACCOUNT_USER_WITH_ANOMALIES_PER_HOUR_ON_AVG;
+    }
 
 
 
@@ -65,102 +131,7 @@ public class SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuil
         return null;//should not happen. TODO: Add unit test.
     }
 
-    @Override
-    protected int getNumOfNormalUsers() {
-        return 94500;
-    }
 
-    @Override
-    protected int getNumOfNormalUsersDaily() {
-        return 70000;
-    }
-
-    @Override
-    protected double getEventProbabilityForNormalUsers() {
-        return 0.49;
-    }
-
-    @Override
-    protected int getTimeIntervalForNonActiveRangeForNormalUsers() {
-        return 120000;
-    }
-
-
-
-    @Override
-    protected int getNumOfAdminUsers() {
-        return 5000;
-    }
-
-    @Override
-    protected int getNumOfAdminUsersDaily() {
-        return 4900;
-    }
-
-    @Override
-    protected double getEventProbabilityForAdminUsers() {
-        return 0.3;
-    }
-
-    @Override
-    protected int getTimeIntervalForNonActiveRangeForAdminUsers() {
-        return 120000;
-    }
-
-
-
-    @Override
-    protected int getNumOfServiceAccountUsers() {
-        return 500;
-    }
-
-    @Override
-    protected int getNumOfServiceAccountUsersDaily() {
-        return 500;
-    }
-
-    @Override
-    protected double getEventProbabilityForServiceAccountUsers() {
-        return 0.0025;
-    }
-
-    @Override
-    protected int getTimeIntervalForNonActiveRangeForServiceAccountUsers() {
-        return 120000;
-    }
-
-
-
-
-    @Override
-    protected int getNumOfNormalUsersDailyForNonActiveWorkingHours() {
-        return 180;
-    }
-
-    @Override
-    protected double getEventProbabilityForNormalUsersForNonActiveWorkingHours() {
-        return 0.00081;
-    }
-
-    @Override
-    protected int getNumOfAdminUsersDailyForNonActiveWorkingHours() {
-        return 10;
-    }
-
-    @Override
-    protected double getEventProbabilityForAdminUsersForNonActiveWorkingHours() {
-        return 0.001;
-    }
-
-    @Override
-    protected int getNumOfServiceAccountUsersDailyForNonActiveWorkingHours() {
-        return 2;
-    }
-
-    @Override
-    protected double getEventProbabilityForServiceAccountUsersForNonActiveWorkingHours() {
-        return 0.0005;
-    }
 
 
 

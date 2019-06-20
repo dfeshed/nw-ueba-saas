@@ -11,4 +11,9 @@ public class NullUserGenerator implements IUserGenerator {
     public User getNext(){
         return null;
     }
+
+    @Override
+    public Long getMaxNumOfDistinctUsers(){
+        return 0L;
+    }
 }

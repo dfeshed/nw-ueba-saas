@@ -32,4 +32,9 @@ public class SingleUserGenerator implements IUserGenerator {
     public User getNext(){
         return this.user;
     }
+
+    @Override
+    public Long getMaxNumOfDistinctUsers(){
+        return 1L;
+    }
 }

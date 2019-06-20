@@ -88,11 +88,11 @@ public class AuthenticationPerformanceStabilityTest {
         stopWatch.start();
 
         Instant startInstant    = Instant.parse("2010-01-01T06:00:00.00Z");
-        Instant endInstant      = Instant.parse("2010-01-01T06:01:00.00Z");
+        Instant endInstant      = Instant.parse("2010-01-01T06:31:00.00Z");
 
         AuthenticationPerformanceStabilityScenario scenario =
                 new AuthenticationPerformanceStabilityScenario(
-                        startInstant, endInstant, 1, 0.01,
+                        startInstant, endInstant, 1, 1,
                         createGlobalServerMachinePool(),
                         createLocalServerMachinePool(),
                         createAdminServerMachinePool());

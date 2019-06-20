@@ -10,6 +10,32 @@ import java.util.List;
 public abstract class AuthenticationEventGeneratorsBuilder extends UserOrientedEventGeneratorsBuilder {
 
 
+//    //Normal behavior + abnormal time.
+//    protected abstract long getNumOfNormalUsers();
+//    protected abstract long getNumOfNormalUsersDaily();
+//    protected abstract double getEventProbabilityForNormalUsers();
+//    protected abstract int getTimeIntervalForNonActiveRangeForNormalUsers();
+//
+//
+//    protected abstract int getNumOfAdminUsers();
+//    protected abstract int getNumOfAdminUsersDaily();
+//    protected abstract double getEventProbabilityForAdminUsers();
+//    protected abstract int getTimeIntervalForNonActiveRangeForAdminUsers();
+//
+//    protected abstract int getNumOfServiceAccountUsers();
+//    protected abstract int getNumOfServiceAccountUsersDaily();
+//    protected abstract double getEventProbabilityForServiceAccountUsers();
+//    protected abstract int getTimeIntervalForNonActiveRangeForServiceAccountUsers();
+//
+//    //abnormal behavior.
+//    protected abstract int getNumOfNormalUsersDailyForNonActiveWorkingHours();
+//    protected abstract double getEventProbabilityForNormalUsersForNonActiveWorkingHours();
+//
+//    protected abstract int getNumOfAdminUsersDailyForNonActiveWorkingHours();
+//    protected abstract double getEventProbabilityForAdminUsersForNonActiveWorkingHours();
+//
+//    protected abstract int getNumOfServiceAccountUsersDailyForNonActiveWorkingHours();
+//    protected abstract double getEventProbabilityForServiceAccountUsersForNonActiveWorkingHours();
 
     public AuthenticationEventGeneratorsBuilder(IUserGenerator normalUserGenerator,
                                                 List<MultiRangeTimeGenerator.ActivityRange> normalUserActivityRange,
