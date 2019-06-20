@@ -1,6 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.feature.Feature;
+import fortscale.common.feature.FeatureNumericValue;
 import fortscale.common.feature.FeatureStringValue;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
@@ -18,9 +19,10 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
             CategoryRarityModelScorer.class.getSimpleName(),
             CategoryRarityModel.class.getSimpleName());
     private static final String WRONG_FEATURE_VALUE_TYPE_ERROR_MSG = String.format(
-            "%s.calculateScore expects to get a feature value of type %s",
+            "%s.calculateScore expects to get a feature value of type %s or %s",
             CategoryRarityModelScorer.class.getSimpleName(),
-            FeatureStringValue.class.getSimpleName());
+            FeatureStringValue.class.getSimpleName(),
+            FeatureNumericValue.class.getSimpleName());
     private static final String ADDITIONAL_MODELS_ERROR_MSG = String.format(
             "%s.calculateScore expects to get at most one additional model of type %s",
             CategoryRarityModelScorer.class.getSimpleName(),
@@ -123,7 +125,7 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
             return false;
         }
         Assert.hasText(feature.getName(), String.format("Feature name cannot be null, empty or blank. scorer: %s", this.toString()));
-        Assert.isInstanceOf(FeatureStringValue.class, feature.getValue(), WRONG_FEATURE_VALUE_TYPE_ERROR_MSG);
+        Assert.isTrue((feature.getValue() instanceof FeatureStringValue) || (feature.getValue() instanceof FeatureNumericValue) , WRONG_FEATURE_VALUE_TYPE_ERROR_MSG);
         Assert.notNull(feature.getValue().toString(), String.format("Feature value cannot be null. feature name: %s, scorer: %s", feature.getName(), this.toString()));
 
 
