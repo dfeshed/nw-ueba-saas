@@ -1,18 +1,21 @@
 import { queryPromiseRequest } from 'investigate-shared/actions/api/events/utils';
 
-export default function fetchRecentQueries(queryText) {
+export default function fetchRecentQueries(queryText, cancelPreviouslyExecuting) {
 
+  const streamOptions = {
+    cancelPreviouslyExecuting
+  };
   const query = {
-    predicateRequest: [{
+    predicateRequests: [{
       filterText: queryText
     }],
     stream: {
-      limit: 100,
-      cancelPreviouslyExecuting: false
+      limit: 100
     }
   };
   return queryPromiseRequest(
     'recent-queries',
-    query
+    query,
+    streamOptions
   );
 }

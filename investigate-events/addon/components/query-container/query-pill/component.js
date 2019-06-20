@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { later, next, throttle } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
-import computed, { alias, and } from 'ember-computed-decorators';
+import computed, { alias, and, equal } from 'ember-computed-decorators';
 import _ from 'lodash';
 
 import * as MESSAGE_TYPES from '../message-types';
@@ -14,9 +14,7 @@ import {
   QUERY_FILTER,
   TEXT_FILTER,
   AFTER_OPTION_TAB_META,
-  AFTER_OPTION_TAB_RECENT_QUERIES,
-  PILL_META_DATA_SOURCE,
-  PILL_OPERATOR_DATA_SOURCE
+  AFTER_OPTION_TAB_RECENT_QUERIES
 } from 'investigate-events/constants/pill';
 
 const { log } = console; // eslint-disable-line no-unused-vars
@@ -33,7 +31,7 @@ const RESET_PROPS = {
 
 export default Component.extend({
   classNames: ['pill', 'query-pill'],
-  classNameBindings: ['isActive', 'isEditing', 'isInvalid', 'isSelected', 'isExpensive', 'isFocused'],
+  classNameBindings: ['isActive', 'isEditing', 'isInvalid', 'isSelected', 'isExpensive', 'isFocused', 'activeTab'],
   attributeBindings: ['title'],
   i18n: service(),
 
@@ -89,11 +87,6 @@ export default Component.extend({
   metaOptions: null,
 
   /**
-   * List of recent queries
-   */
-  recentQueries: null,
-
-  /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public
@@ -106,8 +99,9 @@ export default Component.extend({
   isOperatorFocusedAtBeginning: false,
   isValueActive: false,
   isValueFocusedAtBeginning: false,
-  prepopulatedMetaText: null,
-  prepopulatedOperatorText: null,
+  prepopulatedMetaText: undefined,
+  prepopulatedOperatorText: undefined,
+  prepopulatedRecentQueryText: undefined,
   selectedMeta: null,
   selectedOperator: null,
   valueString: null,
@@ -148,6 +142,15 @@ export default Component.extend({
   @alias('pillData.isFocused')
   isFocused: false,
 
+  @computed('activePillTab')
+  activeTab: (activePillTab) => {
+    if (activePillTab === AFTER_OPTION_TAB_RECENT_QUERIES) {
+      return 'recent-queries-tab';
+    }
+    return 'meta-tab';
+  },
+
+
   /**
    * Update the component once validation completes. A pill is valid if both
    * client and server side validation passes.
@@ -156,6 +159,18 @@ export default Component.extend({
    */
   @alias('pillData.isInvalid')
   isInvalid: false,
+
+  /**
+   * Is meta-tab active?
+   */
+  @equal('activePillTab', AFTER_OPTION_TAB_META)
+  isMetaTabActive: false,
+
+  /**
+   * Is recentQuery-tab active?
+   */
+  @equal('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES)
+  isRecentQueriesTabActive: false,
 
   /**
    * Whether or not this pill is selected
@@ -218,9 +233,9 @@ export default Component.extend({
    * active.
    * @public
    */
-  @computed('selectedOperator', 'valueString', 'isMetaActive')
-  shouldMetaExpand: (selectedOperator, valueString, isMetaActive) => {
-    return !selectedOperator && isEmpty(valueString) && isMetaActive;
+  @computed('selectedOperator', 'valueString', 'isMetaActive', 'isMetaTabActive')
+  shouldMetaExpand: (selectedOperator, valueString, isMetaActive, isMetaTabActive) => {
+    return !selectedOperator && isEmpty(valueString) && isMetaActive && isMetaTabActive;
   },
 
   /**
@@ -228,10 +243,10 @@ export default Component.extend({
    * operator control can expand if there is no value set and is active.
    * @public
    */
-  @computed('valueString', 'isOperatorActive')
-  shouldOperatorExpand: (valueString, isOperatorActive) => {
+  @computed('valueString', 'isOperatorActive', 'isMetaTabActive')
+  shouldOperatorExpand: (valueString, isOperatorActive, isMetaTabActive) => {
     // log('shouldOperatorExpand called', valueString, isOperatorActive);
-    return isEmpty(valueString) && isOperatorActive;
+    return isEmpty(valueString) && isOperatorActive && isMetaTabActive;
   },
 
   init() {
@@ -272,7 +287,9 @@ export default Component.extend({
       [MESSAGE_TYPES.VALUE_SET]: (data) => this._valueSet(data),
       [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: ([data, dataSource]) => this._createFreeFormPill(data, dataSource),
       [MESSAGE_TYPES.CREATE_TEXT_PILL]: ([data, dataSource]) => this._createTextPill(data, dataSource),
-      [MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED]: ({ data, dataSource }) => this._toggleActiveTab(data, dataSource)
+      [MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED]: ({ data, dataSource }) => this._toggleActiveTab(data, dataSource),
+      [MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED]: ({ data, dataSource }) => this._recentQueryTextEntered(data, dataSource),
+      [MESSAGE_TYPES.RECENT_QUERIES_ESCAPE_KEY]: () => this._cancelPill()
     });
 
     if (this.get('isExistingPill')) {
@@ -958,7 +975,8 @@ export default Component.extend({
     return this._getStringFromSource({
       'pill-meta': data,
       'pill-operator': `${metaStr} ${data}`,
-      'pill-value': `${metaStr} ${operatorStr} ${data}`
+      'pill-value': `${metaStr} ${operatorStr} ${data}`,
+      'recent-query': data
     })(dataSource);
   },
 
@@ -976,40 +994,68 @@ export default Component.extend({
 
   // ************************ EPS TAB FUNCTIONALITY *************************  //
 
+  /**
+   * Regardless of where entered query text is coming from, need to form
+   * full pill text from all the components
+   */
+  _recentQueryTextEntered(data, dataSource) {
+    const stringifiedPill = this._getStringifiedPill(data, dataSource);
+    if (stringifiedPill && stringifiedPill.length > 0) {
+      this._broadcast(MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT, stringifiedPill);
+    }
+  },
+
+  /**
+   * Set all meta-tab triggers to false
+   */
+  _deactivateMetaTab() {
+    this.setProperties({
+      isMetaActive: false,
+      isOperatorActive: false,
+      isValueActive: false
+    });
+  },
+
   _toggleActiveTab(data, dataSource) {
     const activeTab = this.get('activePillTab');
     switch (activeTab) {
-      case AFTER_OPTION_TAB_META: this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
+      case AFTER_OPTION_TAB_META: {
+        // First thing we do is to deactivate meta-tab's drop-downs
+        this._deactivateMetaTab();
+        // If we have tabbed to recent queries, we potentially need to
+        // send a query to get the latest recent queries so they can be
+        // rendered
+        this._recentQueryTextEntered(data, dataSource);
+        const stringifiedPill = this._getStringifiedPill(data, dataSource);
+
+        // Now we can set recent-query's input with the text coming in from meta-tab
+        this.setProperties({
+          activePillTab: AFTER_OPTION_TAB_RECENT_QUERIES,
+          prepopulatedRecentQueryText: stringifiedPill
+        });
+        this._resetPrePopulatedProperties();
         break;
+      }
       case AFTER_OPTION_TAB_RECENT_QUERIES: {
-        // If the current tab is recent queries, before we toggle,
-        // we parse the text typed in and set meta, operator and value (if available)
-        // and place focus on the correct component.
-
+        let props;
         if (!isEmpty(data)) {
-          let pillData;
           const meta = this.get('metaOptions');
-          if (dataSource === PILL_META_DATA_SOURCE) {
-            pillData = convertTextToPillData({
-              queryText: data,
-              dataSource,
-              availableMeta: meta,
-              selectedMeta: null
-            });
-          } else if (dataSource === PILL_OPERATOR_DATA_SOURCE) {
-            pillData = convertTextToPillData({
-              queryText: data,
-              dataSource,
-              availableMeta: meta,
-              selectedMeta: this.get('selectedMeta')
-            });
-          }
-
-          const props = determineNewComponentPropsFromPillData(pillData);
-          this.setProperties(props);
-          this._runNext(props);
+          const pillData = convertTextToPillData({ queryText: data, availableMeta: meta });
+          props = determineNewComponentPropsFromPillData(pillData);
+        } else {
+          // If there is no data, activate pill-meta component
+          props = {
+            isMetaAutoFocused: true,
+            isMetaActive: true,
+            selectedMeta: null
+          };
         }
-        this.set('activePillTab', AFTER_OPTION_TAB_META);
+        const newProps = {
+          ...props,
+          activePillTab: AFTER_OPTION_TAB_META
+        };
+        this.setProperties(newProps);
+        this._resetPrePopulatedProperties();
         break;
       }
     }
@@ -1022,13 +1068,12 @@ export default Component.extend({
    * to meddle with the workings of respective components.
    * Should prepopulate only when explicity asked, and clear away once set.
    */
-  _runNext(properties) {
-    if (properties.prepopulatedMetaText || properties.prepopulatedOperatorText) {
-      next(() => {
-        this.set('prepopulatedMetaText', undefined);
-        this.set('prepopulatedOperatorText', undefined);
-      });
-    }
+  _resetPrePopulatedProperties() {
+    next(() => {
+      this.set('prepopulatedMetaText', undefined);
+      this.set('prepopulatedOperatorText', undefined);
+      this.set('prepopulatedRecentQueryText', undefined);
+    });
   },
 
   // ************************ TODO FUNCTIONALITY **************************** //

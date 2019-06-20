@@ -144,3 +144,13 @@ export const clickTextFilterOption = async() => {
 export const toggleTab = async(selector) => {
   await triggerKeyEvent(selector, 'keydown', TAB_KEY);
 };
+
+export function getRecentQueryObjects(array) {
+  const obArray = array.map((st) => {
+    return {
+      query: st,
+      displayName: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    };
+  });
+  return obArray;
+}

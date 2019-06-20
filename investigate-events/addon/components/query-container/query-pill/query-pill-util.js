@@ -1,3 +1,12 @@
+
+/**
+ * Static Object. Useful for assigning properties from query-pill.
+ * Based on the what type of pill { meta, operator, value } is formed while toggling
+ * from recentQueries tab, we need to activate the right components with either string (prepopulatedText)
+ * or proper objects (selected).
+ * There are a set number of use cases that would need these different types of properties sprinkled with.
+ * Read more about these cases @determineNewComponentPropsFromPillData
+ */
 const propertiesMap = {
   meta: {
     object: {
@@ -7,8 +16,13 @@ const propertiesMap = {
     },
     string: {
       prepopulatedMetaText: null,
+      selectedMeta: null,
       isMetaAutoFocused: true,
-      isMetaActive: true
+      isMetaActive: true,
+      selectedOperator: null,
+      isOperatorActive: false,
+      valueString: null,
+      isValueActive: false
     }
   },
   operator: {
@@ -18,7 +32,11 @@ const propertiesMap = {
     },
     string: {
       prepopulatedOperatorText: null,
-      isOperatorActive: true
+      selectedOperator: null,
+      isOperatorActive: true,
+      valueString: null,
+      isValueActive: false
+
     }
   },
   value: {
@@ -78,6 +96,7 @@ export const determineNewComponentPropsFromPillData = (pillData) => {
   if (typeof pillData.operator === 'object' && !pillData.value) {
     if (pillData.operator.hasValue) {
       propertyObject.isValueActive = true;
+      propertyObject.valueString = '';
     } else if (!pillData.operator.hasValue) {
       propertyObject.isOperatorActive = true;
     }

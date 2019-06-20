@@ -136,6 +136,9 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
   test('getRecentQueries - Should dispatch action with a appropriate response when no text is sent', async function(assert) {
     assert.expect(2);
     const done = assert.async();
+    const getState = () => {
+      return new ReduxDataHelper().hasRequiredValuesToQuery().build();
+    };
     const recentQueries = [
       'medium = 32',
       'medium = 32 || medium = 1',
@@ -146,31 +149,60 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
       'foo = bar && bar = foo'
     ];
 
-    const action = initializationCreators.getRecentQueries();
+    const dispatchRecentQueries = (action) => {
+      assert.equal(action.type, ACTION_TYPES.SET_RECENT_QUERIES, 'action has the correct type');
+      action.promise.then((resolve) => {
+        const responseQueryArray = resolve.data.map((ob) => ob.query);
+        assert.deepEqual(recentQueries, responseQueryArray, 'Queries containing text should be returned');
+        done();
+      });
+    };
 
-    assert.equal(action.type, ACTION_TYPES.SET_RECENT_QUERIES, 'action has the correct type');
-    action.promise.then((resolve) => {
-      assert.deepEqual(recentQueries, resolve.data, 'Queries containing text should be returned');
-      done();
-    });
+    const thunk = initializationCreators.getRecentQueries();
+    thunk(dispatchRecentQueries, getState);
+
   });
 
   test('getRecentQueries - Should dispatch action with a appropriate response when some text is sent along', async function(assert) {
     assert.expect(2);
     const done = assert.async();
+    const getState = () => {
+      return new ReduxDataHelper().hasRequiredValuesToQuery().build();
+    };
     const recentQueries = [
       'medium = 32',
       'medium = 32 || medium = 1',
-      '(ip.dst = 10.2.54.11 && ip.src = 1.1.1.1 || ip.dst = 10.2.54.1 && ip.src = 1.1.3.3) && medium = 32'
+      '(ip.dst = 10.2.54.11 && ip.src = 1.1.1.1 || ip.dst = 10.2.54.1 && ip.src = 1.1.3.3) && medium = 32',
+      '(ip.dst = 10.2.54.11 && ip.src = 1.1.1.1 && medium = 32'
     ];
     const query = 'med';
 
-    const action = initializationCreators.getRecentQueries(query);
+    const dispatchRecentQueries = (action) => {
+      assert.equal(action.type, ACTION_TYPES.SET_RECENT_QUERIES, 'action has the correct type');
+      action.promise.then((resolve) => {
 
-    assert.equal(action.type, ACTION_TYPES.SET_RECENT_QUERIES, 'action has the correct type');
-    action.promise.then((resolve) => {
-      assert.deepEqual(recentQueries, resolve.data, 'Queries containing text should be returned');
-      done();
-    });
+        const responseQueryArray = resolve.data.map((ob) => ob.query);
+        assert.deepEqual(recentQueries, responseQueryArray, 'Queries containing text should be returned');
+        done();
+      });
+    };
+
+    const thunk = initializationCreators.getRecentQueries(query);
+    thunk(dispatchRecentQueries, getState);
+  });
+
+  test('getRecentQueries - No call is made if query is non-empty string and we already have queries for that string', async function(assert) {
+    assert.expect(0);
+    const getState = () => {
+      return new ReduxDataHelper().hasRequiredValuesToQuery().recentQueriesFilterText('med').build();
+    };
+    const query = 'med';
+
+    const dispatchRecentQueries = () => {
+      assert.ok(false, 'Should not have called dispatch');
+    };
+
+    const thunk = initializationCreators.getRecentQueries(query);
+    thunk(dispatchRecentQueries, getState);
   });
 });

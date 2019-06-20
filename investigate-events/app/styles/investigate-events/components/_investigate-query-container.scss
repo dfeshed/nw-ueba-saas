@@ -735,6 +735,16 @@
   }
 
   .query-pill {
+    &.meta-tab {
+      .recent-query {
+        display: none;
+      }
+    }
+    &.recent-queries-tab {
+      .pill-meta, .pill-operator, .pill-value {
+        display: none;
+      }
+    }
     &.is-active {
       .pill-value {
         text-overflow: clip;
@@ -861,8 +871,13 @@
     border-right: 1px solid text-color(primary);
     border-left: 1px solid text-color(primary);
     background: background-color(primary, darkest);
+    height: 15rem;
   }
   .ember-power-select-option--no-matches-message {
+    /* If message needs to be centered
+    position: relative;
+    top: 6.5rem;
+    left: 4rem; */
     color: rsa-color(grey, light);
     font-weight: 100;
   }
@@ -903,6 +918,16 @@
     position: absolute;
     right: rsa-whitespace(less);
     font-weight: 100;
+  }
+  .ember-power-select-loading-options-spinner {
+    display: flex;
+    background: background-color(primary, darkest);
+    .rsa-loader {
+      position: relative;
+      vertical-align: middle;
+      margin-left: 10rem;
+      top: 0.4rem;
+    }
   }
   .ember-power-select-option {
     min-width: 300px;

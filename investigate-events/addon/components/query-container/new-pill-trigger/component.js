@@ -44,13 +44,6 @@ export default Component.extend({
   hasTextPill: null,
 
   /**
-   * List of recent queries
-   * @type {Array}
-   * @public
-   */
-  recentQueries: null,
-
-  /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public
@@ -99,6 +92,9 @@ export default Component.extend({
         case MESSAGE_TYPES.CREATE_TEXT_PILL:
           this._broadcast(type, data);
           this.set('isAddNewPill', false);
+          break;
+        case MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT:
+          this._broadcast(type, data);
           break;
       }
     }

@@ -4,6 +4,7 @@
 const metaTrigger = '.pill-meta .ember-power-select-trigger';
 const operatorTrigger = '.pill-operator .ember-power-select-trigger';
 const valueTrigger = '.pill-value .ember-power-select-trigger';
+const recentQueryTrigger = '.recent-query .ember-power-select-trigger';
 
 const powerSelectDropdown = '.ember-power-select-dropdown';
 const newPillTriggerContainer = '.new-pill-trigger-container';
@@ -68,8 +69,11 @@ export default {
   recentQueriesTab: '.ember-power-select-after-options .power-select-tabs .recent-queries-tab',
   recentQueriesTabSelected: '.ember-power-select-after-options .power-select-tabs .recent-queries-tab.selected',
   powerSelectNoMatch: '.ember-power-select-option--no-matches-message',
-  recentQueriesOptionsInMeta: '.recent-queries-option.meta',
-  recentQueriesOptionsInOperator: '.recent-queries-option.operator',
-  recentQueriesOptionsInValue: '.recent-queries-option.value',
-  powerSelectOptionValue: '.js-test-power-select-option .value'
+  recentQuery: '.recent-query',
+  recentQuerySelectInput: '.recent-query .ember-power-select-trigger input',
+  recentQueryTrigger,
+  recentQueriesOptions: '.recent-queries-option.value',
+  powerSelectOptionValue: '.js-test-power-select-option .value',
+  loadingSpinnerSelector: '.investigate-query-dropdown .ember-power-select-options .ember-power-select-loading-options-spinner',
+  noResultsMessageSelector: '.investigate-query-dropdown .ember-power-select-option.ember-power-select-option--no-matches-message'
 };

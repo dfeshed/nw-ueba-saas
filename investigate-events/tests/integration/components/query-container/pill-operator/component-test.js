@@ -10,8 +10,7 @@ import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
   AFTER_OPTION_TEXT_DISABLED_LABEL,
-  AFTER_OPTION_TAB_META,
-  AFTER_OPTION_TAB_RECENT_QUERIES
+  AFTER_OPTION_TAB_META
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -126,6 +125,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     const done = assert.async();
     assert.expect(1);
     this.set('meta', meta);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type) => {
       if (type === MESSAGE_TYPES.OPERATOR_ARROW_LEFT_KEY) {
         assert.ok('message dispatched');
@@ -135,6 +135,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await render(hbs`
       {{query-container/pill-operator
         isActive=true
+        activePillTab=activePillTab
         meta=meta
         sendMessage=(action handleMessage)
       }}
@@ -145,12 +146,14 @@ module('Integration | Component | Pill Operator', function(hooks) {
   test('it does not broadcasts a message when the ARROW_RIGHT key is pressed and there is no selection', async function(assert) {
     assert.expect(0);
     this.set('meta', meta);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', () => {
       assert.notOk('message dispatched');
     });
     await render(hbs`
       {{query-container/pill-operator
         isActive=true
+        activePillTab=activePillTab
         meta=meta
         sendMessage=(action handleMessage)
       }}
@@ -163,6 +166,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     const done = assert.async();
     assert.expect(1);
     this.set('meta', meta);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.OPERATOR_SELECTED) {
         this.set('selection', data);
@@ -174,6 +178,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await render(hbs`
       {{query-container/pill-operator
         isActive=true
+        activePillTab=activePillTab
         meta=meta
         selection=selection
         sendMessage=(action handleMessage)
@@ -183,11 +188,11 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_RIGHT);
   });
 
-  test('it does not broadcasts a message when the BACKSPACE key is pressed mid string', async function(assert) {
+  test('it does not broadcasts a OPERATOR_BACKSPACE_KEY message when the BACKSPACE key is pressed mid string', async function(assert) {
     assert.expect(0);
     this.set('meta', meta);
     this.set('handleMessage', () => {
-      assert.notOk('message dispatched');
+      assert.notOk('Should not dispatch this message');
     });
     await render(hbs`
       {{query-container/pill-operator
@@ -205,6 +210,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     const done = assert.async();
     assert.expect(1);
     this.set('meta', meta);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type) => {
       if (type === MESSAGE_TYPES.OPERATOR_BACKSPACE_KEY) {
         assert.ok('message dispatched');
@@ -214,6 +220,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await render(hbs`
       {{query-container/pill-operator
         isActive=true
+        activePillTab=activePillTab
         meta=meta
         sendMessage=(action handleMessage)
       }}
@@ -270,6 +277,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     const done = assert.async();
     assert.expect(1);
     this.set('meta', meta);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.OPERATOR_SELECTED) {
         assert.deepEqual(data, eq, 'Wrong message data');
@@ -279,6 +287,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await render(hbs`
       {{query-container/pill-operator
         isActive=true
+        activePillTab=activePillTab
         meta=meta
         sendMessage=(action handleMessage)
       }}
@@ -562,32 +571,6 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', TAB_KEY);
 
     await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', TAB_KEY, modifiers);
-  });
-
-  test('it displays recent queries in operator component', async function(assert) {
-    assert.expect(1);
-    const recentQueriesArray = [
-      'medium = 32',
-      'medium = 32 || medium = 1',
-      'foo = bar'
-    ];
-    this.set('meta', meta);
-    this.set('recentQueries', recentQueriesArray);
-    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
-
-    await render(hbs`
-      {{query-container/pill-operator
-        isActive=true
-        meta=meta
-        recentQueries=recentQueries
-        activePillTab=activePillTab
-      }}
-    `);
-    await clickTrigger(PILL_SELECTORS.operator);
-
-    const selectorArray = findAll(PILL_SELECTORS.recentQueriesOptionsInOperator);
-    const optionsArray = selectorArray.map((el) => el.textContent);
-    assert.deepEqual(recentQueriesArray, optionsArray, 'Found the correct recent queries in the powerSelect');
   });
 
   test('it highlights proper Advanced Option if all EPS options filtered out', async function(assert) {

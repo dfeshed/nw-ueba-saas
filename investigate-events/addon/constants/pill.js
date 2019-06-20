@@ -15,3 +15,11 @@ export const SEARCH_TERM_MARKER = '\u02F8'; // RAISED COLON "˸"
 export const TEXT_FILTER = 'text';
 export const PILL_META_DATA_SOURCE = 'pill-meta';
 export const PILL_OPERATOR_DATA_SOURCE = 'pill-operator';
+export const PILL_VALUE_DATA_SOURCE = 'pill-value';
+
+// Selectors
+export const NO_RESULTS_MESSAGE_SELECTOR = '.investigate-query-dropdown .ember-power-select-option.ember-power-select-option--no-matches-message';
+export const LOADING_SPINNER_SELECTOR = '.investigate-query-dropdown .ember-power-select-options .ember-power-select-loading-options-spinner';
+export const POWER_SELECT_INPUT = '.ember-power-select-typeahead-input';
+export const POWER_SELECT_TRIGGER_INPUT = '.ember-power-select-trigger input';
+export const POWER_SELECT_OPTIONS = '.investigate-query-dropdown .ember-power-select-options';

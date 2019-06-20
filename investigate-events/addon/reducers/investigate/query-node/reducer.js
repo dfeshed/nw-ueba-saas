@@ -67,7 +67,8 @@ const _initialState = Immutable.from({
   // Holds queries from query history stack which match the provided
   // recentQueriesFilterText
   recentQueriesFilteredList: [],
-  recentQueriesFilterText: undefined
+  recentQueriesFilterText: undefined,
+  recentQueriesCallInProgress: false
 
 });
 
@@ -602,15 +603,28 @@ export default handleActions({
   },
   [ACTION_TYPES.SET_RECENT_QUERIES]: (state, action) => {
     return handle(state, action, {
+      start: (s) => {
+        return s.set('recentQueriesCallInProgress', true);
+      },
       success: (s) => {
         const filterText = action.meta.query;
+        const recentQueries = action.payload.data.map((queryObject) => {
+          return {
+            query: queryObject.query,
+            displayName: queryObject.displayName
+          };
+        });
         if (!isEmpty(filterText.trim())) {
           return s.merge({
-            recentQueriesFilteredList: action.payload.data,
-            recentQueriesFilterText: filterText
+            recentQueriesFilteredList: recentQueries,
+            recentQueriesFilterText: filterText,
+            recentQueriesCallInProgress: false
           });
         } else {
-          return s.set('recentQueriesUnfilteredList', action.payload.data);
+          return s.merge({
+            recentQueriesUnfilteredList: recentQueries,
+            recentQueriesCallInProgress: false
+          });
         }
       }
     });

@@ -2,7 +2,7 @@ import { module, skip, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, fillIn, findAll, find, triggerEvent, render, settled, triggerKeyEvent } from '@ember/test-helpers';
+import { click, fillIn, findAll, find, triggerEvent, render, settled, triggerKeyEvent, waitUntil, typeIn } from '@ember/test-helpers';
 import { clickTrigger, typeInSearch, selectChoose } from 'ember-power-select/test-support/helpers';
 import sinon from 'sinon';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -10,12 +10,15 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import guidedCreators from 'investigate-events/actions/guided-creators';
-import { createBasicPill, doubleClick, elementIsVisible, leaveNewPillTemplate } from '../pill-util';
+import { createBasicPill, doubleClick, elementIsVisible, leaveNewPillTemplate, toggleTab } from '../pill-util';
 import PILL_SELECTORS from '../pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
 import { throwSocket } from '../../../../helpers/patch-socket';
 import { invalidServerResponseText } from '../../../../unit/actions/data';
-import { AFTER_OPTION_TEXT_LABEL } from 'investigate-events/constants/pill';
+import {
+  AFTER_OPTION_TEXT_LABEL
+} from 'investigate-events/constants/pill';
+import initializationCreators from 'investigate-events/actions/initialization-creators';
 
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
@@ -23,6 +26,7 @@ const DELETE_KEY = KEY_MAP.delete.code;
 const BACKSPACE_KEY = KEY_MAP.backspace.code;
 const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
 const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
+const SPACE_KEY = KEY_MAP.space.code;
 const modifiers = { shiftKey: true };
 
 const newActionSpy = sinon.spy(guidedCreators, 'addGuidedPill');
@@ -34,11 +38,13 @@ const openGuidedPillForEditSpy = sinon.spy(guidedCreators, 'openGuidedPillForEdi
 const resetGuidedPillSpy = sinon.spy(guidedCreators, 'resetGuidedPill');
 const selectAllPillsTowardsDirectionSpy = sinon.spy(guidedCreators, 'selectAllPillsTowardsDirection');
 const deleteSelectedGuidedPillsSpy = sinon.spy(guidedCreators, 'deleteSelectedGuidedPills');
+const recentQueriesSpy = sinon.spy(initializationCreators, 'getRecentQueries');
 // const addFreeFormFilterSpy = sinon.spy(guidedCreators, 'addFreeFormFilterSpy');
 const spys = [
   newActionSpy, deleteActionSpy, editGuidedPillSpy, selectActionSpy,
   deselectActionSpy, openGuidedPillForEditSpy, resetGuidedPillSpy,
-  selectAllPillsTowardsDirectionSpy, deleteSelectedGuidedPillsSpy
+  selectAllPillsTowardsDirectionSpy, deleteSelectedGuidedPillsSpy,
+  recentQueriesSpy
 ];
 
 const allPillsAreClosed = (assert) => {
@@ -67,11 +73,11 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   hooks.beforeEach(function() {
-    this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       patchReducer(this, state);
     };
     initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
   hooks.afterEach(function() {
@@ -2158,6 +2164,8 @@ module('Integration | Component | Query Pills', function(hooks) {
       .language()
       .canQueryGuided()
       .pillsDataPopulated()
+      .recentQueriesUnfilteredList()
+      .recentQueriesFilteredList()
       .build();
 
     await render(hbs`
@@ -2243,6 +2251,8 @@ module('Integration | Component | Query Pills', function(hooks) {
       .language()
       .canQueryGuided()
       .pillsDataPopulated()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
       .build();
 
     await render(hbs`
@@ -2263,4 +2273,191 @@ module('Integration | Component | Query Pills', function(hooks) {
     // Should be able to see pill tabs with meta selected
     assertTabContents(assert, PILL_SELECTORS.metaTabSelected, PILL_SELECTORS.recentQueriesTab);
   });
+
+  test('Text typed in recent query tab calls its action creator', async function(assert) {
+
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .recentQueriesCallInProgress()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.recentQuerySelectInput, 's');
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', SPACE_KEY);
+    await settled();
+
+    assert.ok(recentQueriesSpy.calledOnce, 'The recent query creator was not called once');
+    assert.propEqual(recentQueriesSpy.args[0][0],
+      's',
+      'The recent query creator was returned the wrong arguments');
+
+  });
+
+  skip('Spinner, when recent query call is in progress,  and No results message will never be together', async function(assert) {
+
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .recentQueriesCallInProgress()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    assert.ok(find(PILL_SELECTORS.powerSelectNoMatch).textContent.trim().includes('recent'), 'Correct placeholder message');
+    assert.equal(findAll(PILL_SELECTORS.loadingSpinnerSelector).length, 0, 'Found power-select options loading spinner when we should not have');
+
+    await typeIn(PILL_SELECTORS.recentQuerySelectInput, 'xli');
+
+    await waitUntil(() => findAll(PILL_SELECTORS.loadingSpinnerSelector).length === 1 && find(PILL_SELECTORS.noResultsMessageSelector).textContent.trim() === '', { timeout: 5000 });
+    await waitUntil(() => find(PILL_SELECTORS.powerSelectNoMatch).textContent.trim().includes('recent') && find(PILL_SELECTORS.loadingSpinnerSelector).getAttribute('style') === 'display: none;', { timeout: 5000 });
+
+  });
+
+  skip('Should see a spinner in power-select options when recentQueriesCallInProgress is true', async function(assert) {
+
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .recentQueriesCallInProgress()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await typeIn(PILL_SELECTORS.recentQuerySelectInput, 'xli');
+    const state = this.owner.lookup('service:redux').getState();
+
+    const { investigate: { queryNode: { recentQueriesCallInProgress } } } = state;
+    assert.ok(recentQueriesCallInProgress, 'recentQueriesCallInProgress was not changed');
+    assert.equal(findAll(PILL_SELECTORS.loadingSpinnerSelector).length, 1, 'Did not find the power-select options loading spinner');
+  });
+
+  test('When text is present, filtered List is displayed in recent-query', async function(assert) {
+
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .recentQueriesCallInProgress()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.recentQuerySelectInput, 'medium');
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', SPACE_KEY);
+
+    await waitUntil(() => findAll(PILL_SELECTORS.loadingSpinnerSelector).length === 1);
+    await waitUntil(() => find(PILL_SELECTORS.loadingSpinnerSelector).getAttribute('style') === 'display: none;', { timeout: 5000 });
+
+    const selectorArray = findAll(PILL_SELECTORS.recentQueriesOptions);
+    const optionsArray = selectorArray.map((el) => el.textContent);
+    const state = this.owner.lookup('service:redux').getState();
+    const { investigate: { queryNode: { recentQueriesFilteredList } } } = state;
+    const filteredList = recentQueriesFilteredList.map((ob) => ob.query);
+    assert.deepEqual(filteredList, optionsArray, 'There is a mis-match in the options displayed');
+
+  });
+
+  test('Typing 1 char and backspacing should switch between filtered and unfiltered list', async function(assert) {
+    new ReduxDataHelper(setState)
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .language()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.recentQuerySelectInput, 'm');
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', SPACE_KEY);
+
+    await waitUntil(() => findAll(PILL_SELECTORS.loadingSpinnerSelector).length === 1);
+    await waitUntil(() => find(PILL_SELECTORS.loadingSpinnerSelector).getAttribute('style') === 'display: none;', { timeout: 5000 });
+
+    const state = this.owner.lookup('service:redux').getState();
+    const { investigate: { queryNode: { recentQueriesUnfilteredList, recentQueriesFilteredList } } } = state;
+    const selectorArray = findAll(PILL_SELECTORS.recentQueriesOptions);
+    const optionsArray = selectorArray.map((el) => el.textContent);
+    const filteredList = recentQueriesFilteredList.map((ob) => ob.query);
+    assert.deepEqual(filteredList, optionsArray, 'There is a mis-match in the options displayed');
+
+    // Enact a backspace
+    await fillIn(PILL_SELECTORS.recentQuerySelectInput, ' ');
+
+    const selectorArrayUnfiltered = findAll(PILL_SELECTORS.recentQueriesOptions);
+    const optionsArrayUnfiltered = selectorArrayUnfiltered.map((el) => el.textContent);
+    const unfilterdList = recentQueriesUnfilteredList.map((ob) => ob.query);
+    assert.deepEqual(unfilterdList, optionsArrayUnfiltered, 'There is a mis-match in the options displayed');
+  });
+
+  test('Closing power-select drop-down removes spinner from dom', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .recentQueriesCallInProgress()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await typeIn(PILL_SELECTORS.recentQuerySelectInput, 'xli');
+    await waitUntil(() => findAll(PILL_SELECTORS.loadingSpinnerSelector).length === 1);
+
+    await triggerKeyEvent(PILL_SELECTORS.recentQueryTrigger, 'keydown', ESCAPE_KEY);
+    assert.equal(findAll(PILL_SELECTORS.loadingSpinnerSelector).length, 0, 'Found loading spinner in dom when it should not have');
+
+  });
+
+
 });

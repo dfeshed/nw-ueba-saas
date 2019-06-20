@@ -1,0 +1,33 @@
+{{#power-select-typeahead
+  afterOptionsComponent=(
+    component optionsComponent
+    activePillTab=(readonly activePillTab)
+    hasTextPill=hasTextPill
+    options=(readonly _groomedAfterOptionsMenu.list)
+    sendMessage=(action 'handleMessage')
+  )
+  allowClear=false
+  dropdownClass='investigate-query-dropdown recent-query-tab'
+  calculatePosition=_calculatePostion
+  initiallyOpened=false
+  matchTriggerWidth=false
+  matcher=_matcher
+  noMatchesMessage=' '
+  options=options
+  optionsComponent=(
+    component 'query-container/power-select-options'
+    onmouseenter=(action 'onOptionMouseEnter')
+  )
+  placeholder=placeholder
+  onchange=(action 'onChange')
+  onfocus=(action 'onFocus')
+  onkeydown=(action 'onKeyDown')
+  oninput=(action 'onInput')
+  onclose=(action 'onClose')
+  preventScroll=true
+  triggerComponent='query-container/power-select-resizable-input'
+  as |recentQ|
+}}
+  <span class="recent-queries-option value">{{recentQ.query}}</span>
+  <span class="recent-queries-option description">{{recentQ.displayName}}</span>
+{{/power-select-typeahead}}

@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { cancel, later, next, scheduleOnce } from '@ember/runloop';
-import computed, { equal } from 'ember-computed-decorators';
+import computed from 'ember-computed-decorators';
 
 import * as MESSAGE_TYPES from '../message-types';
 import {
@@ -8,8 +8,7 @@ import {
   AFTER_OPTION_TEXT_LABEL,
   AFTER_OPTION_TEXT_DISABLED_LABEL,
   AFTER_OPTION_TEXT_UNAVAILABLE_LABEL,
-  AFTER_OPTION_TAB_META,
-  AFTER_OPTION_TAB_RECENT_QUERIES
+  POWER_SELECT_INPUT
 } from 'investigate-events/constants/pill';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
 import {
@@ -127,13 +126,6 @@ export default Component.extend({
   prepopulatedOperatorText: undefined,
 
   /**
-   * List of recent queries
-   * @type {Array}
-   * @public
-   */
-  recentQueries: null,
-
-  /**
    * The option that is currently selected
    * @type {Object}
    * @public
@@ -173,36 +165,6 @@ export default Component.extend({
   },
 
   /**
-   * Based on the current tab selected, we replace options
-   * for the power select component.
-   * Default are operatorOptions.
-   */
-  @computed('activePillTab', 'options', 'recentQueries')
-  selectableOptions(activePillTab, operatorOptions, recentQueries) {
-    return (activePillTab === AFTER_OPTION_TAB_RECENT_QUERIES) ? recentQueries : operatorOptions;
-  },
-
-  /**
-   * This indicates if the meta tab is active.
-   * Not related to pill-opertaor drop-down.
-   */
-  @equal('activePillTab', AFTER_OPTION_TAB_META)
-  isMetaTabActive: false,
-
-  /**
-   * Placeholder messages
-   */
-  @computed('isMetaTabActive', 'i18n.locale')
-  noMatchesMessage(isMetaTabActive) {
-    const i18n = this.get('i18n');
-    if (isMetaTabActive) {
-      return i18n.t('queryBuilder.operatorNoMatch');
-    } else {
-      return i18n.t('queryBuilder.recentQueriesNoMatch');
-    }
-  },
-
-  /**
    * We take away the ability to create FF in edit mode.
    * Therefore, no Advanced Options while editing.
    */
@@ -220,29 +182,21 @@ export default Component.extend({
       [MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT]: () => this._afterOptionsMenu.clearHighlight(),
       [MESSAGE_TYPES.AFTER_OPTIONS_TAB_CLICKED]: () => this._afterOptionsTabToggle()
     });
+    // _debugContainerKey is a private Ember property that returns the full
+    // component name (component:query-container/pill-operator).
+    const [ , source ] = this._debugContainerKey.split('/');
+    this.set('source', source);
   },
 
   didUpdateAttrs() {
     this._super(...arguments);
     if (this.get('isActive')) {
-      if (this.get('prepopulatedOperatorText')) {
-        // if some text was passed down through query-pill because tabs were
-        // toggled, paste it here and add explicit focus so it gets matched
-        // against possible options
-        next(() => {
-          const el = this.element.querySelector('.ember-power-select-typeahead-input');
-          const { value } = el;
-          if (value !== this.get('prepopulatedOperatorText')) {
-            el.value = this.get('prepopulatedOperatorText');
-            // add focus so that text is matched with options.
-            this._focusOnPowerSelectTrigger();
-          }
-        });
-      } else {
-        // We schedule this after render to give time for the power-select to
-        // be rendered before trying to focus on it.
-        scheduleOnce('afterRender', this, '_focusOnPowerSelectTrigger');
-      }
+
+      // If there is some prepopulated text coming in from recent-query tabs,
+      // the intent is to focus.
+      // onFocus function takes in that text, searches on it using the public
+      // API, which automatically sets the text in this component.
+      scheduleOnce('afterRender', this, '_focusOnPowerSelectTrigger');
     }
   },
 
@@ -310,10 +264,10 @@ export default Component.extend({
         } else {
           this.set('selection', null);
         }
-      } else if (targetValue && this.get('prepopulatedOperatorText')) {
+      } else if (this.get('prepopulatedOperatorText') !== undefined) {
         // Tab has been switched from recent queries to meta
         // Some text has been prepopulated and focused in to be searched.
-        powerSelectAPI.actions.search(targetValue);
+        powerSelectAPI.actions.search(this.get('prepopulatedOperatorText'));
       }
       powerSelectAPI.actions.open();
     },
@@ -453,10 +407,9 @@ export default Component.extend({
    * Active tab was toggled.
    */
   _afterOptionsTabToggle() {
-    const el = this.element.querySelector('.ember-power-select-typeahead-input');
+    const el = this.element.querySelector(POWER_SELECT_INPUT);
     const { value } = el;
-    const [ , source ] = this._debugContainerKey.split('/');
-    this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, { data: value, dataSource: source });
+    this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, { data: value, dataSource: this.get('source') });
   },
 
   /**
@@ -493,21 +446,18 @@ export default Component.extend({
 
   _createPillFromAdvancedOption(selection) {
     // get input text
-    const el = this.element.querySelector('.ember-power-select-typeahead-input');
+    const el = this.element.querySelector(POWER_SELECT_INPUT);
     assert('Power Select input was not found', el);
     const value = el.value.trim();
     // cleanup
     el.value = '';
     this._focusOnPowerSelectTrigger();
     this._afterOptionsMenu.clearHighlight();
-    // _debugContainerKey is a private Ember property that returns the full
-    // component name (component:query-container/pill-meta).
-    const [ , source ] = this._debugContainerKey.split('/');
     // send value up to create a complex pill
     if (selection === AFTER_OPTION_FREE_FORM_LABEL) {
-      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, source]);
+      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, this.get('source')]);
     } else if (selection === AFTER_OPTION_TEXT_LABEL) {
-      this._broadcast(MESSAGE_TYPES.CREATE_TEXT_PILL, [value, source]);
+      this._broadcast(MESSAGE_TYPES.CREATE_TEXT_PILL, [value, this.get('source')]);
     }
   },
 
@@ -524,6 +474,7 @@ export default Component.extend({
       }
     }
   },
+
 
   /**
    * Function that power-select uses to make an autosuggest match. This function

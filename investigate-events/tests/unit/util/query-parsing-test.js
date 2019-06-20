@@ -7,7 +7,8 @@ import {
   isSearchTerm,
   parsePillDataFromUri,
   transformTextToPillData,
-  uriEncodeMetaFilters
+  uriEncodeMetaFilters,
+  convertTextToPillData
 } from 'investigate-events/util/query-parsing';
 import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
 import {
@@ -257,5 +258,153 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.ok(hasComplexText('>'), 'Missed detecting ">"');
     assert.ok(hasComplexText('>='), 'Missed detecting ">="');
     assert.notOk(hasComplexText('='), 'Improperly detected "=" as complex');
+  });
+
+  test('convertTextToPillData parses half typed meta', function(assert) {
+    const text = 'med';
+    const result = convertTextToPillData({ queryText: text, availableMeta: DEFAULT_LANGUAGES });
+    assert.deepEqual(result, { meta: 'med' }, 'incorrect object returned');
+  });
+
+  test('convertTextToPillData treats an incorrect meta', function(assert) {
+    const text = 'mediu boo';
+    const result = convertTextToPillData({ queryText: text, availableMeta: DEFAULT_LANGUAGES });
+    assert.deepEqual(result, { meta: 'mediu boo' }, 'incorrect object returned');
+  });
+
+  test('convertTextToPillData ignores a space if correct meta is typed', function(assert) {
+    const text = ' medium';
+    const meta = {
+      count: 0,
+      displayName: 'Medium',
+      flags: -2147482541,
+      format: 'UInt8',
+      formattedName: 'medium (Medium)',
+      metaName: 'medium'
+    };
+    const result = convertTextToPillData({ queryText: text, availableMeta: DEFAULT_LANGUAGES });
+    assert.deepEqual(result, { meta, operator: '' }, 'incorrect object returned');
+  });
+
+  test('convertTextToPillData throws if just spaces are sent out', function(assert) {
+    const text = ' ';
+    const result = convertTextToPillData({ queryText: text, availableMeta: DEFAULT_LANGUAGES });
+    assert.deepEqual(result, { meta: ' ' }, 'incorrect object returned');
+  });
+
+  test('convertTextToPillData maps a correctly entered meta', function(assert) {
+    const text = 'medium';
+    const meta = {
+      count: 0,
+      displayName: 'Medium',
+      flags: -2147482541,
+      format: 'UInt8',
+      formattedName: 'medium (Medium)',
+      metaName: 'medium'
+    };
+    const result = convertTextToPillData({ queryText: text, availableMeta: DEFAULT_LANGUAGES });
+    assert.deepEqual(result, { meta, operator: '' }, 'incorrect object returned');
+  });
+
+  test('convertTextToPillData sends an empty operator string if no op is found', function(assert) {
+    const text = 'medium ';
+    const meta = {
+      count: 0,
+      displayName: 'Medium',
+      flags: -2147482541,
+      format: 'UInt8',
+      formattedName: 'medium (Medium)',
+      metaName: 'medium'
+    };
+    const result = convertTextToPillData({ queryText: text, availableMeta: DEFAULT_LANGUAGES });
+    assert.deepEqual(result, { meta, operator: '' }, 'incorrect object returned');
+  });
+
+  test('convertTextToPillData does not map operator string if operator has more than one space in front', function(assert) {
+    const text = 'medium  =';
+    const meta = {
+      count: 0,
+      displayName: 'Medium',
+      flags: -2147482541,
+      format: 'UInt8',
+      formattedName: 'medium (Medium)',
+      metaName: 'medium'
+    };
+    const result = convertTextToPillData({ queryText: text, availableMeta: DEFAULT_LANGUAGES });
+    assert.deepEqual(result, { meta, operator: ' =' }, 'incorrect object returned');
+  });
+
+  test('convertTextToPillData does not map operator string if operator is half typed', function(assert) {
+    const text = 'medium !exi';
+    const meta = {
+      count: 0,
+      displayName: 'Medium',
+      flags: -2147482541,
+      format: 'UInt8',
+      formattedName: 'medium (Medium)',
+      metaName: 'medium'
+    };
+    const result = convertTextToPillData({ queryText: text, availableMeta: DEFAULT_LANGUAGES });
+    assert.deepEqual(result, { meta, operator: '!exi' }, 'incorrect object returned');
+  });
+
+  test('convertTextToPillData maps to operator if correctly typed in', function(assert) {
+    const text = 'medium =';
+    const meta = {
+      count: 0,
+      displayName: 'Medium',
+      flags: -2147482541,
+      format: 'UInt8',
+      formattedName: 'medium (Medium)',
+      metaName: 'medium'
+    };
+    const operator = {
+      description: 'Equals',
+      displayName: '=',
+      hasValue: true,
+      isExpensive: false
+    };
+    const result = convertTextToPillData({ queryText: text, availableMeta: DEFAULT_LANGUAGES });
+    assert.deepEqual(result, { meta, operator }, 'incorrect object returned');
+  });
+
+  test('convertTextToPillData maps to value if operator is properly mapped', function(assert) {
+    const text = 'medium = 1';
+    const meta = {
+      count: 0,
+      displayName: 'Medium',
+      flags: -2147482541,
+      format: 'UInt8',
+      formattedName: 'medium (Medium)',
+      metaName: 'medium'
+    };
+    const operator = {
+      description: 'Equals',
+      displayName: '=',
+      hasValue: true,
+      isExpensive: false
+    };
+    const result = convertTextToPillData({ queryText: text, availableMeta: DEFAULT_LANGUAGES });
+    assert.deepEqual(result, { meta, operator, value: '1' }, 'incorrect object returned');
+  });
+
+  test('convertTextToPillData maps to value if operator is properly mapped and value has multiple spaces', function(assert) {
+    const text = 'medium =   1 ';
+    const meta = {
+      count: 0,
+      displayName: 'Medium',
+      flags: -2147482541,
+      format: 'UInt8',
+      formattedName: 'medium (Medium)',
+      metaName: 'medium'
+    };
+    const operator = {
+      description: 'Equals',
+      displayName: '=',
+      hasValue: true,
+      isExpensive: false
+    };
+    const result = convertTextToPillData({ queryText: text, availableMeta: DEFAULT_LANGUAGES });
+    assert.deepEqual(result, { meta, operator, value: '  1' }, 'incorrect object returned');
   });
 });

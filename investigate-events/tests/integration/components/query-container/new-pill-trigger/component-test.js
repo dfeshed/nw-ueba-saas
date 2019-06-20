@@ -2,12 +2,12 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
+import { click, find, findAll, render, triggerKeyEvent, fillIn } from '@ember/test-helpers';
 import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
 
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
-import { clickTextFilterOption, createBasicPill, isIgnoredInitialEvent } from '../pill-util';
+import { clickTextFilterOption, createBasicPill, isIgnoredInitialEvent, toggleTab } from '../pill-util';
 import PILL_SELECTORS from '../pill-selectors';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import KEY_MAP from 'investigate-events/util/keys';
@@ -23,6 +23,7 @@ const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
 const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
+const SPACE_KEY = KEY_MAP.space.code;
 
 module('Integration | Component | New Pill Trigger', function(hooks) {
   setupRenderingTest(hooks, {
@@ -281,5 +282,44 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     await clickTrigger(PILL_SELECTORS.meta);
     await typeInSearch('foobar');
     await clickTextFilterOption();
+  });
+
+  test('Typing in recent query tab should broadcast a message', async function(assert) {
+    const done = assert.async();
+    const recentQueriesUnfilteredList = [];
+    const recentQueriesFilteredList = [];
+
+    this.set('metaOptions', META_OPTIONS);
+    this.set('recentQueriesUnfilteredList', recentQueriesUnfilteredList);
+    this.set('recentQueriesFilteredList', recentQueriesFilteredList);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    this.set('handleMessage', (messageType, stringifiedPillText) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+      assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
+      assert.equal(stringifiedPillText, 'foo');
+      done();
+    });
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        metaOptions=metaOptions
+        recentQueriesUnfilteredList=recentQueriesUnfilteredList
+        recentQueriesFilteredList=recentQueriesFilteredList
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await click(PILL_SELECTORS.newPillTrigger);
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.recentQuerySelectInput, 'foo');
+    // This is just to make sure `foo` is actually recorded as typed in event
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', SPACE_KEY);
   });
 });

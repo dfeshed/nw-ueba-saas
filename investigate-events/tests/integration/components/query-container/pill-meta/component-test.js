@@ -13,8 +13,7 @@ import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
   AFTER_OPTION_TEXT_DISABLED_LABEL,
-  AFTER_OPTION_TAB_META,
-  AFTER_OPTION_TAB_RECENT_QUERIES
+  AFTER_OPTION_TAB_META
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -116,6 +115,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it broadcasts a message when the ARROW_RIGHT key is pressed and there is no selection', async function(assert) {
     assert.expect(1);
     this.set('metaOptions', META_OPTIONS);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type) => {
       if (type === MESSAGE_TYPES.META_ARROW_RIGHT_KEY_WITH_NO_SELECTION) {
         assert.ok('message dispatched');
@@ -124,6 +124,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
+        activePillTab=activePillTab
         sendMessage=(action handleMessage)
         metaOptions=metaOptions
       }}
@@ -135,6 +136,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it broadcasts a message when the ARROW_LEFT key is pressed and there is no selection', async function(assert) {
     assert.expect(1);
     this.set('metaOptions', META_OPTIONS);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type) => {
       if (type === MESSAGE_TYPES.META_ARROW_LEFT_KEY) {
         assert.ok('message dispatched');
@@ -143,6 +145,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
+        activePillTab=activePillTab
         sendMessage=(action handleMessage)
         metaOptions=metaOptions
       }}
@@ -155,6 +158,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     const done = assert.async();
     assert.expect(1);
     this.set('metaOptions', META_OPTIONS);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
         this.set('selection', data);
@@ -166,6 +170,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
+        activePillTab=activePillTab
         selection=selection
         sendMessage=(action handleMessage)
         metaOptions=metaOptions
@@ -292,6 +297,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     const done = assert.async();
     assert.expect(1);
     this.set('metaOptions', META_OPTIONS);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
         assert.deepEqual(data, DEFAULT_LANGUAGES[1], 'Wrong message data');
@@ -301,6 +307,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
+        activePillTab=activePillTab
         sendMessage=(action handleMessage)
         metaOptions=metaOptions
       }}
@@ -313,12 +320,14 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it does not selects meta if a trailing SPACE is entered and there is more than one option', async function(assert) {
     assert.expect(0);
     this.set('metaOptions', META_OPTIONS);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', () => {
       assert.notOk('message dispatched');
     });
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
+        activePillTab=activePillTab
         sendMessage=(action handleMessage)
         metaOptions=metaOptions
       }}
@@ -331,6 +340,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     const done = assert.async();
     assert.expect(1);
     this.set('metaOptions', META_OPTIONS);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
         assert.deepEqual(data, DEFAULT_LANGUAGES[2], 'Wrong message data');
@@ -340,6 +350,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
+        activePillTab=activePillTab
         sendMessage=(action handleMessage)
         metaOptions=metaOptions
       }}
@@ -623,32 +634,6 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', TAB_KEY);
 
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', TAB_KEY, modifiers);
-  });
-
-  test('it displays recent queries in meta component', async function(assert) {
-    assert.expect(1);
-    const recentQueriesArray = [
-      'medium = 32',
-      'medium = 32 || medium = 1',
-      'foo = bar'
-    ];
-    this.set('metaOptions', META_OPTIONS);
-    this.set('recentQueries', recentQueriesArray);
-    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
-
-    await render(hbs`
-      {{query-container/pill-meta
-        isActive=true
-        activePillTab=activePillTab
-        metaOptions=metaOptions
-        recentQueries=recentQueries
-      }}
-    `);
-    await clickTrigger(PILL_SELECTORS.meta);
-
-    const selectorArray = findAll(PILL_SELECTORS.recentQueriesOptionsInMeta);
-    const optionsArray = selectorArray.map((el) => el.textContent);
-    assert.deepEqual(recentQueriesArray, optionsArray, 'Found the correct recent queries in the powerSelect');
   });
 
   test('it highlights proper Advanced Option if all EPS options filtered out', async function(assert) {

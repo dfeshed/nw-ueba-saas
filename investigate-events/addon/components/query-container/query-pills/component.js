@@ -34,6 +34,7 @@ import {
   selectAllPillsTowardsDirection
 } from 'investigate-events/actions/guided-creators';
 import { hasMinimumCoreServicesVersionForTextSearch } from 'investigate-events/reducers/investigate/services/selectors';
+import { getRecentQueries } from 'investigate-events/actions/initialization-creators';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
 const { log } = console;// eslint-disable-line no-unused-vars
@@ -60,6 +61,7 @@ const dispatchToActions = {
   deselectAllGuidedPills,
   deselectGuidedPills,
   editGuidedPill,
+  getRecentQueries,
   openGuidedPillForEdit,
   removeGuidedPillFocus,
   resetGuidedPill,
@@ -117,10 +119,6 @@ const QueryPills = RsaContextMenu.extend({
 
   // Is a pill trigger open for add?
   isPillTriggerOpenForAdd: false,
-
-  // remove this constant array.
-  // Hook up an actual socket response.
-  recentQueries: [],
 
   contextMenu({ target }) {
     const currentClass = target.classList.contains('is-selected');
@@ -202,7 +200,8 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT]: (position) => this._pillsSelectAllToRight(position),
       [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT]: (position) => this._pillsSelectAllToLeft(position),
       [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: (data, position) => this._createFreeFormPill(data, position),
-      [MESSAGE_TYPES.CREATE_TEXT_PILL]: (data, position) => this._createTextPill(data, position)
+      [MESSAGE_TYPES.CREATE_TEXT_PILL]: (data, position) => this._createTextPill(data, position),
+      [MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT]: (data) => this._fetchRecentQueries(data)
     });
   },
 
@@ -259,6 +258,10 @@ const QueryPills = RsaContextMenu.extend({
   // ************************************************************************ //
   //                          PRIVATE FUNCTIONS                               //
   // ************************************************************************ //
+
+  _fetchRecentQueries(data) {
+    this.send('getRecentQueries', data);
+  },
 
   _pillEnteredForAppend() {
     this.setProperties({

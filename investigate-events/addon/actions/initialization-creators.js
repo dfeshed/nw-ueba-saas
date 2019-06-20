@@ -1,6 +1,8 @@
 import RSVP from 'rsvp';
 import { lookup } from 'ember-dependency-lookup';
 import { run } from '@ember/runloop';
+import { isEmpty } from '@ember/utils';
+
 import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
 import { getParamsForHashes, getHashForParams } from './fetch/query-hashes';
 import fetchRecentQueries from './fetch/recent-queries';
@@ -236,7 +238,7 @@ const _handleSearchParamsAndHashInQueryParams = (parsedQueryParams, hashNavigate
             // Ideally we should not need this call, we can build our own cache and remove this overhead
             // as we know what query is being executed.
             // But with Classic's ability to query, we can't just do that yet.
-            // dispatch(getRecentQueries());
+            dispatch(getRecentQueries());
 
             // pass the hash ids to the navigation callback
             // so that it can be included in the URL
@@ -292,7 +294,7 @@ const _handleSearchParamsInQueryParams = ({ pillData }, hashNavigateCallback, is
           onSuccess({ data }) {
 
             // fetch recent queries
-            // dispatch(getRecentQueries());
+            dispatch(getRecentQueries());
 
             const hashIds = data.map((d) => d.id);
             // pass the hash ids to the navigation callback
@@ -429,10 +431,10 @@ export const initializeInvestigate = function(
     // on investigate-events route.
     // Will retrieve them again only when a new query is executed with
     // some filters or some text is typed in the query bar.
-    /* const { investigate: { queryNode: { recentQueriesUnfilteredList } } } = getState();
+    const { investigate: { queryNode: { recentQueriesUnfilteredList } } } = getState();
     if (recentQueriesUnfilteredList.length === 0) {
       dispatch(getRecentQueries());
-    } */
+    }
 
     const hasService = !!parsedQueryParams.serviceId;
     if (hasService) {
@@ -661,13 +663,36 @@ export const getEventSettings = (resolve = noop, reject = noop) => {
   };
 };
 
-export const getRecentQueries = (query = '') => ({
-  type: ACTION_TYPES.SET_RECENT_QUERIES,
-  promise: fetchRecentQueries(query),
-  meta: {
-    query,
-    onFailure(error) {
-      handleInvestigateErrorCode(error, 'RECENT_QUERIES_RETRIEVAL_ERROR');
+export const getRecentQueries = (query = '') => {
+  return (dispatch, getState) => {
+
+    const { investigate: { queryNode: { recentQueriesFilterText } } } = getState();
+    let cancelPreviouslyExecuting = false;
+    if (!isEmpty(query.trim())) {
+      // If the query is not empty we process the query a little differently. A query not being empty
+      // means the request is being kicked off by the user for a specific query string. A query being
+      // empty means it is the UI, not the user, kicking off a request to load its recent query cache.
+
+      // Before making the call, we make sure we aren't
+      // looking for something we already have.
+      const canFetch = recentQueriesFilterText !== query;
+      if (!canFetch) {
+        return;
+      }
+      // If the query is user generated (and has unique text), then we want to cancel the previously executing
+      // user-generated query.
+      cancelPreviouslyExecuting = true;
     }
-  }
-});
+
+    dispatch({
+      type: ACTION_TYPES.SET_RECENT_QUERIES,
+      promise: fetchRecentQueries(query, cancelPreviouslyExecuting),
+      meta: {
+        query,
+        onFailure(error) {
+          handleInvestigateErrorCode(error, 'RECENT_QUERIES_RETRIEVAL_ERROR');
+        }
+      }
+    });
+  };
+};

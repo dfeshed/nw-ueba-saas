@@ -18,34 +18,31 @@
   activePillTab=(readonly activePillTab)
   metaOptions=metaOptions
   prepopulatedMetaText=(readonly prepopulatedMetaText)
-  recentQueries=recentQueries
   selection=(readonly selectedMeta)
   sendMessage=(action 'handleMessage')
 }}
 
 {{query-container/pill-operator
+  activePillTab=(readonly activePillTab)
   canPerformTextSearch=canPerformTextSearch
   hasTextPill=hasTextPill
   isActive=(readonly isOperatorActive)
   isEditing=(readonly isEditing)
   isExpanded=(readonly shouldOperatorExpand)
   isFocusAtBeginning=(readonly isOperatorFocusedAtBeginning)
-  activePillTab=(readonly activePillTab)
   meta=(readonly selectedMeta)
   prepopulatedOperatorText=(readonly prepopulatedOperatorText)
-  recentQueries=recentQueries
   selection=(readonly selectedOperator)
   sendMessage=(action 'handleMessage')
 }}
 
 {{query-container/pill-value
+  activePillTab=(readonly activePillTab)
   canPerformTextSearch=canPerformTextSearch
   hasTextPill=hasTextPill
   isActive=(readonly isValueActive)
   isEditing=(readonly isEditing)
   isFocusAtBeginning=(readonly isValueFocusedAtBeginning)
-  activePillTab=(readonly activePillTab)
-  recentQueries=recentQueries
   sendMessage=(action 'handleMessage')
   valueString=(readonly valueString)
 }}
@@ -58,6 +55,16 @@
 
 {{#if isFocused}}
   {{query-container/focus-holder
+    sendMessage=(action 'handleMessage')
+  }}
+{{/if}}
+
+{{#if (not isExistingPill)}}
+  {{query-container/recent-query
+    isActive=(readonly isRecentQueriesTabActive)
+    isFirstPill=(eq position 0)
+    hasTextPill=hasTextPill
+    prepopulatedRecentQueryText=(readonly prepopulatedRecentQueryText)
     sendMessage=(action 'handleMessage')
   }}
 {{/if}}

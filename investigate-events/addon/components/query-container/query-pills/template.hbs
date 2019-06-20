@@ -3,7 +3,6 @@
     canPerformTextSearch=canPerformTextSearch
     hasTextPill=hasTextPill
     metaOptions=metaOptions
-    recentQueries=recentQueries
     sendMessage=(action 'handleMessage')
     newPillPosition=index
     startTriggeredPosition=startTriggeredPosition
@@ -26,7 +25,6 @@
   {{else}}
     {{query-container/query-pill
       metaOptions=metaOptions
-      recentQueries=recentQueries
       pillData=(readonly pillData)
       sendMessage=(action 'handleMessage')
       position=index
@@ -43,7 +41,6 @@
   isMetaAutoFocused=takeFocus
   metaOptions=metaOptions
   position=newPillPosition
-  recentQueries=recentQueries
   sendMessage=(action 'handleMessage')
 }}
 

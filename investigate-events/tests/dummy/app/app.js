@@ -29,6 +29,10 @@ const App = Application.extend({
         }
       }
     }
+  },
+  customEvents: {
+    paste: 'paste',
+    cut: 'cut'
   }
 });
 

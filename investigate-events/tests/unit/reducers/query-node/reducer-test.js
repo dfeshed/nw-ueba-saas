@@ -899,21 +899,32 @@ test('SET_RECENT_QUERIES reducer stores queries when no text is sent', function(
   const initialState = Immutable.from({
     recentQueriesUnfilteredList: [],
     recentQueriesFilteredList: ['some', 'random', 'strings'],
-    recentQueriesFilterText: 'med'
+    recentQueriesFilterText: 'med',
+    recentQueriesCallInProgress: false
   });
+  const reponseObject = [{
+    query: 'foo',
+    displayName: 'foo'
+  }, {
+    query: 'foobar',
+    displayName: 'foobar'
+  }, {
+    query: 'bar-baz',
+    displayName: 'bar-bar'
+  }];
   const successAction = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.SET_RECENT_QUERIES,
     meta: {
       query: ''
     },
     payload: {
-      data: ['foo', 'foobar', 'bar-baz']
+      data: reponseObject
     }
   });
 
   const successState = {
     ...initialState,
-    recentQueriesUnfilteredList: ['foo', 'foobar', 'bar-baz']
+    recentQueriesUnfilteredList: reponseObject
   };
   const result = reducer(initialState, successAction);
 
@@ -925,24 +936,73 @@ test('SET_RECENT_QUERIES reducer stores queries when some text is sent', functio
   const initialState = Immutable.from({
     recentQueriesUnfilteredList: ['foo, bar', 'baz'],
     recentQueriesFilteredList: ['some', 'random', 'strings'],
-    recentQueriesFilterText: 'med'
+    recentQueriesFilterText: 'med',
+    recentQueriesCallInProgress: false
   });
+  const reponseObject = [{
+    query: 'action = foo',
+    displayName: 'action = foo'
+  }, {
+    query: 'action = bar',
+    displayName: 'action = bar'
+  }];
   const successAction = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.SET_RECENT_QUERIES,
     meta: {
       query: 'medi'
     },
     payload: {
-      data: ['action = foo', 'action = bar']
+      data: reponseObject
     }
   });
 
   const successState = {
     ...initialState,
-    recentQueriesFilteredList: ['action = foo', 'action = bar'],
+    recentQueriesFilteredList: reponseObject,
     recentQueriesFilterText: 'medi'
   };
   const result = reducer(initialState, successAction);
 
   assert.deepEqual(successState, result, 'Recent queries with text array should be modified');
+});
+
+test('SET_RECENT_QUERIES sets recentQueriesCallInProgress', function(assert) {
+
+  const initialState = Immutable.from({
+    recentQueriesCallInProgress: false
+  });
+  const startAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.SET_RECENT_QUERIES
+  });
+
+  const result = reducer(initialState, startAction);
+
+  assert.ok(result.recentQueriesCallInProgress, 'recentQueriesCallInProgress is not being set to true');
+
+  const initialStateSuccess = Immutable.from({
+    recentQueriesCallInProgress: true
+  });
+  // Check if success sets it back to false
+  const reponseObject = [{
+    query: 'action = foo',
+    displayName: 'action = foo'
+  }, {
+    query: 'action = bar',
+    displayName: 'action = bar'
+  }];
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.SET_RECENT_QUERIES,
+    meta: {
+      query: ''
+    },
+    payload: {
+      data: reponseObject
+    }
+  });
+
+  const resultAfterSuccess = reducer(initialStateSuccess, successAction);
+
+  assert.notOk(resultAfterSuccess.recentQueriesCallInProgress, 'recentQueriesCallInProgress is not being set to false');
+
+
 });

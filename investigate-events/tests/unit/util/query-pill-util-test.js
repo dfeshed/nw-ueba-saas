@@ -12,13 +12,18 @@ test('properties when meta string is passed in', function(assert) {
   const expectedPropeties = {
     prepopulatedMetaText: 'foo',
     isMetaAutoFocused: true,
-    isMetaActive: true
+    isMetaActive: true,
+    selectedMeta: null,
+    selectedOperator: null,
+    isOperatorActive: false,
+    valueString: null,
+    isValueActive: false
   };
   const pillData = {
     meta: 'foo'
   };
   const properties = determineNewComponentPropsFromPillData(pillData);
-  assert.deepEqual(properties, expectedPropeties, 'Meta should be active');
+  assert.deepEqual(properties, expectedPropeties, 'Did not find the correct properties');
 });
 
 test('properties when meta object is passed in', function(assert) {
@@ -41,7 +46,10 @@ test('properties when meta object and operator string is passed in', function(as
     isMetaActive: false,
     isMetaAutoFocused: true,
     prepopulatedOperatorText: 'foo',
-    isOperatorActive: true
+    isOperatorActive: true,
+    selectedOperator: null,
+    valueString: null,
+    isValueActive: false
   };
   const pillData = {
     meta: metaConfig,
@@ -58,7 +66,8 @@ test('properties when meta object and operator object are passed in', function(a
     isMetaAutoFocused: true,
     selectedOperator: eqOperator,
     isOperatorActive: false,
-    isValueActive: true
+    isValueActive: true,
+    valueString: ''
   };
   const pillData = {
     meta: metaConfig,

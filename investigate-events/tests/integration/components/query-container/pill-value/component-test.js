@@ -10,8 +10,7 @@ import {
   AFTER_OPTION_TEXT_LABEL,
   AFTER_OPTION_QUERY_LABEL,
   AFTER_OPTION_TEXT_DISABLED_LABEL,
-  AFTER_OPTION_TAB_META,
-  AFTER_OPTION_TAB_RECENT_QUERIES
+  AFTER_OPTION_TAB_META
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -85,6 +84,7 @@ module('Integration | Component | Pill Value', function(hooks) {
   test('it broadcasts a message when the ARROW_LEFT key pressed', async function(assert) {
     const done = assert.async();
     assert.expect(1);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type) => {
       if (type === MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY) {
         assert.ok('message dispatched');
@@ -94,6 +94,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     await render(hbs`
       {{query-container/pill-value
         isActive=true
+        activePillTab=activePillTab
         sendMessage=(action handleMessage)
       }}
     `);
@@ -122,7 +123,9 @@ module('Integration | Component | Pill Value', function(hooks) {
     // The handleMessage callback gets called twice because, in the  test env,
     // the onBlur get's called immediately after the onKeyDown. This causes two
     // `VALUE_SET` events dispatched back to back.
-    assert.expect(2);
+    // onBur is now guarded by a condition which checks if the text being sent out is already set as _searchString.
+    assert.expect(1);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type) => {
       if (type === MESSAGE_TYPES.VALUE_SET) {
         assert.ok(true, 'This should be called');
@@ -131,6 +134,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     await render(hbs`
       {{query-container/pill-value
         isActive=true
+        activePillTab=activePillTab
         sendMessage=(action handleMessage)
         valueString='x'
       }}
@@ -142,6 +146,7 @@ module('Integration | Component | Pill Value', function(hooks) {
   test('it broadcasts a message when the BACKSPACE key is pressed, and there are no characters', async function(assert) {
     const done = assert.async();
     assert.expect(1);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type) => {
       if (type === MESSAGE_TYPES.VALUE_BACKSPACE_KEY) {
         assert.ok('message dispatched');
@@ -151,6 +156,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     await render(hbs`
       {{query-container/pill-value
         isActive=true
+        activePillTab=activePillTab
         sendMessage=(action handleMessage)
       }}
     `);
@@ -273,6 +279,7 @@ module('Integration | Component | Pill Value', function(hooks) {
   test('if there is a quoted value, it trims off any space, before broadcasting a message', async function(assert) {
     const done = assert.async();
     assert.expect(1);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.VALUE_ENTER_KEY) {
         assert.equal(data, 'x', 'Wrong input string');
@@ -284,6 +291,7 @@ module('Integration | Component | Pill Value', function(hooks) {
         isActive=true
         sendMessage=(action handleMessage)
         valueString="'x  '"
+        activePillTab=activePillTab
       }}
     `);
     await focus(PILL_SELECTORS.valueTrigger);
@@ -292,9 +300,11 @@ module('Integration | Component | Pill Value', function(hooks) {
 
   test('it shows Advanced Options to create different types of pill', async function(assert) {
     const _hasOption = (arr, str) => arr.some((d) => d.innerText.includes(str));
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     await render(hbs`
       {{query-container/pill-value
         isActive=true
+        activePillTab=activePillTab
       }}
     `);
     await clickTrigger(PILL_SELECTORS.value);
@@ -466,8 +476,10 @@ module('Integration | Component | Pill Value', function(hooks) {
   });
 
   test('it selects Free-Form Filter via ↓', async function(assert) {
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
     await render(hbs`
       {{query-container/pill-value
+        activePillTab=activePillTab
         isActive=true
       }}
     `);
@@ -528,31 +540,6 @@ module('Integration | Component | Pill Value', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', TAB_KEY);
 
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', TAB_KEY, modifiers);
-  });
-
-  test('it displays recent queries in value component', async function(assert) {
-    assert.expect(1);
-    const recentQueriesArray = [
-      'medium = 32',
-      'medium = 32 || medium = 1',
-      'foo = bar'
-    ];
-    this.set('recentQueries', recentQueriesArray);
-    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
-
-    await render(hbs`
-      {{query-container/pill-value
-        isActive=true
-        meta=meta
-        recentQueries=recentQueries
-        activePillTab=activePillTab
-      }}
-    `);
-    await clickTrigger(PILL_SELECTORS.value);
-
-    const selectorArray = findAll(PILL_SELECTORS.recentQueriesOptionsInValue);
-    const optionsArray = selectorArray.map((el) => el.textContent);
-    assert.deepEqual(recentQueriesArray, optionsArray, 'Found the correct recent queries in the powerSelect');
   });
 
   test('it highlights proper EPS option depending upon text entered', async function(assert) {

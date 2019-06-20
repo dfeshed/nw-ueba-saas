@@ -164,6 +164,36 @@ const metaState = {
   metaPanelSize: 'default'
 };
 
+const getRecentQueryObjects = (array) => {
+  const obArray = array.map((st) => {
+    return {
+      id: 1,
+      query: st,
+      displayName: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+      createdOn: 'foo',
+      createdBy: 'bar'
+    };
+  });
+  return obArray;
+};
+
+const defaultRecentQueriesFilteredList = [
+  'medium = 32',
+  'medium = 32 || medium = 1',
+  '(ip.dst = 10.2.54.11 && ip.src = 1.1.1.1 || ip.dst = 10.2.54.1 && ip.src = 1.1.3.3) && medium = 32',
+  '(ip.dst = 10.2.54.11 && ip.src = 1.1.1.1 && medium != 32'
+];
+
+const defaultRecentQueriesUnfilteredList = [
+  'medium = 32',
+  'medium = 32 || medium = 1',
+  'action = \'get\'',
+  'action = \'get\' || action = \'put\'',
+  '(ip.dst = 10.2.54.11 && ip.src = 1.1.1.1 || ip.dst = 10.2.54.1 && ip.src = 1.1.3.3) && medium = 32',
+  'service = 80 || service = 90',
+  'foo = bar && bar = foo'
+];
+
 const _set = (obj, key, val) => {
   if (obj[key]) {
     obj[key] = val;
@@ -775,4 +805,29 @@ export default class DataHelper {
     return this;
   }
 
+  recentQueriesCallInProgress(flag) {
+    if (flag) {
+      _set(this.state, 'queryNode.recentQueriesCallInProgress', flag);
+    } else {
+      _set(this.state, 'queryNode.recentQueriesCallInProgress', false);
+    }
+    return this;
+  }
+
+  recentQueriesFilterText(text) {
+    _set(this.state, 'queryNode.recentQueriesFilterText', text);
+    return this;
+  }
+
+  recentQueriesFilteredList() {
+    const recentQueriesArray = getRecentQueryObjects(defaultRecentQueriesFilteredList);
+    _set(this.state, 'queryNode.recentQueriesFilteredList', recentQueriesArray);
+    return this;
+  }
+
+  recentQueriesUnfilteredList() {
+    const recentQueriesArray = getRecentQueryObjects(defaultRecentQueriesUnfilteredList);
+    _set(this.state, 'queryNode.recentQueriesUnfilteredList', recentQueriesArray);
+    return this;
+  }
 }

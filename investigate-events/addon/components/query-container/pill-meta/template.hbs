@@ -9,19 +9,19 @@
       sendMessage=(action 'handleMessage')
     )
     allowClear=false
-    dropdownClass='investigate-query-dropdown'
+    dropdownClass='investigate-query-dropdown meta-tab'
     calculatePosition=_calculatePosition
     defaultHighlighted=_highlighter
     extra=(hash labelPath='metaName')
     initiallyOpened=false
     matcher=_matcher
     matchTriggerWidth=false
-    noMatchesMessage=noMatchesMessage
+    noMatchesMessage=(t 'queryBuilder.metaNoMatch')
     onchange=(action 'onChange')
     onfocus=(action 'onFocus')
     oninput=(action 'onInput')
     onkeydown=(action 'onKeyDown')
-    options=selectableOptions
+    options=metaOptions
     optionsComponent=(
       component 'query-container/power-select-options'
       onmousedown=(action 'onOptionMouseDown')
@@ -33,12 +33,8 @@
     triggerComponent='query-container/power-select-resizable-input'
     as |meta|
   }}
-    {{#if isMetaTabActive}}
-      <span class="value">{{meta.metaName}}</span>
-      <span class="description" title="{{meta.displayName}}">{{meta.displayName}}</span>
-    {{else}}
-      <span class="recent-queries-option meta">{{meta}}</span>
-    {{/if}}
+    <span class="value">{{meta.metaName}}</span>
+    <span class="description" title="{{meta.displayName}}">{{meta.displayName}}</span>
   {{/power-select-typeahead}}
 {{else}}
   {{selection.metaName}}

@@ -10,11 +10,11 @@
       sendMessage=(action 'handleMessage')
     )
     allowClear=false
-    dropdownClass='investigate-query-dropdown'
+    dropdownClass='investigate-query-dropdown meta-tab'
     calculatePosition=_calculatePosition
     defaultHighlighted=QUERY_PILL
     initiallyOpened=true
-    noMatchesMessage=noMatchesMessage
+    noMatchesMessage=undefined
     matcher=_matcher
     matchTriggerWidth=false
     onblur=(action 'onBlur')
@@ -22,7 +22,7 @@
     onfocus=(action 'onFocus')
     oninput=(action 'onInput')
     onkeydown=(action 'onKeyDown')
-    options=selectableOptions
+    options=_dropDownOptions
     optionsComponent=(
       component 'query-container/power-select-options'
       onmousedown=(action 'onOptionMouseDown')
@@ -31,12 +31,8 @@
     triggerComponent='query-container/power-select-resizable-input'
     as |option|
   }}
-    {{#if isMetaTabActive}}
-      <span class="value">{{_searchString}}</span>
-      <span class="description">{{option}}</span>
-    {{else}}
-      <span class="recent-queries-option value">{{option}}</span>
-    {{/if}}
+    <span class="value">{{_searchString}}</span>
+    <span class="description">{{option}}</span>
   {{/power-select-typeahead}}
 {{else}}
   {{valueDisplay}}

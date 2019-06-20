@@ -1,14 +1,14 @@
 import Component from '@ember/component';
 import { cancel, later, next, scheduleOnce } from '@ember/runloop';
-import computed, { equal } from 'ember-computed-decorators';
+import computed from 'ember-computed-decorators';
 import * as MESSAGE_TYPES from '../message-types';
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
   AFTER_OPTION_TEXT_DISABLED_LABEL,
   AFTER_OPTION_TEXT_UNAVAILABLE_LABEL,
-  AFTER_OPTION_TAB_META,
-  AFTER_OPTION_TAB_RECENT_QUERIES
+  POWER_SELECT_INPUT,
+  POWER_SELECT_TRIGGER_INPUT
 } from 'investigate-events/constants/pill';
 import {
   isArrowDown,
@@ -122,6 +122,11 @@ export default Component.extend({
   selection: null,
 
   /**
+   * Will contain the name of the component
+   */
+  source: undefined,
+
+  /**
    * List of meta for selection
    * @type {Object}
    * @public
@@ -136,13 +141,6 @@ export default Component.extend({
    * @public
    */
   prepopulatedMetaText: undefined,
-
-  /**
-   * List of recent queries
-   * @type {Array}
-   * @public
-   */
-  recentQueries: null,
 
   /**
    * An action to call when sending messages and data to the parent component.
@@ -192,36 +190,6 @@ export default Component.extend({
   },
 
   /**
-   * Based on the current tab selected, we replace options
-   * for the power select component.
-   * Default are metaOptions.
-   */
-  @computed('activePillTab', 'metaOptions', 'recentQueries')
-  selectableOptions(activePillTab, metaOptions, recentQueries) {
-    return (activePillTab === AFTER_OPTION_TAB_RECENT_QUERIES) ? recentQueries : metaOptions;
-  },
-
-  /**
-   * This indicates if the meta tab is active.
-   * Not related to pill-meta drop-down.
-   */
-  @equal('activePillTab', AFTER_OPTION_TAB_META)
-  isMetaTabActive: false,
-
-  /**
-   * Placeholder messages
-   */
-  @computed('isMetaTabActive', 'i18n.locale')
-  noMatchesMessage(isMetaTabActive) {
-    const i18n = this.get('i18n');
-    if (isMetaTabActive) {
-      return i18n.t('queryBuilder.metaNoMatch');
-    } else {
-      return i18n.t('queryBuilder.recentQueriesNoMatch');
-    }
-  },
-
-  /**
    * We take away the ability to create FF in edit mode.
    * Therefore, no Advanced Options while editing.
    */
@@ -239,6 +207,10 @@ export default Component.extend({
       [MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT]: () => this._afterOptionsMenu.clearHighlight(),
       [MESSAGE_TYPES.AFTER_OPTIONS_TAB_CLICKED]: () => this._afterOptionsTabToggle()
     });
+    // _debugContainerKey is a private Ember property that returns the full
+    // component name (component:query-container/pill-meta).
+    const [ , source ] = this._debugContainerKey.split('/');
+    this.set('source', source);
   },
 
   didUpdateAttrs() {
@@ -247,18 +219,12 @@ export default Component.extend({
       if (this.get('isAutoFocused')) {
         // We schedule this after render to give time for the power-select to
         // be rendered before trying to focus on it.
+
+        // If there is some prepopulated text coming in from recent-query tabs,
+        // the intent is to focus.
+        // onFocus function takes in that text, searches on it using the public
+        // API, which automatically sets the text in this component.
         scheduleOnce('afterRender', this, '_focusOnPowerSelectTrigger');
-      }
-      // if some text has been forced down through query-pill because the
-      // tabs were toggled, we need to accomodate it and paste it here.
-      if (this.get('prepopulatedMetaText')) {
-        next(() => {
-          const el = this.element.querySelector('.ember-power-select-typeahead-input');
-          const { value } = el;
-          if (value !== this.get('prepopulatedMetaText')) {
-            el.value = this.get('prepopulatedMetaText');
-          }
-        });
       }
     }
   },
@@ -334,6 +300,10 @@ export default Component.extend({
         } else {
           this.set('selection', null);
         }
+      } else if (this.get('prepopulatedMetaText') !== undefined) {
+        // Tab has been switched from recent queries to meta
+        // Some text has been prepopulated and focused in to be searched.
+        powerSelectAPI.actions.search(this.get('prepopulatedMetaText'));
       }
       powerSelectAPI.actions.open();
     },
@@ -364,6 +334,11 @@ export default Component.extend({
       // if the key pressed is an escape, then bubble that out and
       // escape further processing
       if (isEscape(event)) {
+        // If there is some half formed meta typed in, clean-up, as
+        // just setting selectedMeta to null doesn't clear that out in pill-meta.
+        if (!this.get('selection')) {
+          this._cleanupInputField();
+        }
         // Close dropdown
         powerSelectAPI.actions.close();
         // If we have focus, drop it like it's hot, drop it like it's hot.
@@ -511,10 +486,9 @@ export default Component.extend({
    * Active tab was toggled.
    */
   _afterOptionsTabToggle() {
-    const el = this.element.querySelector('.ember-power-select-typeahead-input');
+    const el = this.element.querySelector(POWER_SELECT_INPUT);
     const { value } = el;
-    const [ , source ] = this._debugContainerKey.split('/');
-    this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, { data: value, dataSource: source });
+    this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, { data: value, dataSource: this.get('source') });
   },
 
   /**
@@ -531,7 +505,7 @@ export default Component.extend({
    * Used by power-select to position the dropdown.
    * @private
    */
-  _calculatePosition: (trigger, dropdown) => {
+  _calculatePosition(trigger, dropdown) {
     const { innerWidth } = window;
     const { offsetWidth } = dropdown;
     const pill = trigger.closest('.query-pill');
@@ -549,9 +523,21 @@ export default Component.extend({
     };
   },
 
+  /**
+   * In cases when Escape is pressed and there is some leftover text present,
+   * clean that up.
+   */
+  _cleanupInputField() {
+    const el = this.element.querySelector(POWER_SELECT_INPUT);
+    const { value } = el;
+    if (value) {
+      el.value = '';
+    }
+  },
+
   _createPillFromAdvancedOption(selection) {
     // get input text
-    const el = this.element.querySelector('.ember-power-select-typeahead-input');
+    const el = this.element.querySelector(POWER_SELECT_INPUT);
     assert('Power Select input was not found', el);
     const value = el.value.trim();
     // cleanup
@@ -560,19 +546,16 @@ export default Component.extend({
     this._afterOptionsMenu.clearHighlight();
     // send value up to create a complex pill
     if (value && value.length > 0) {
-      // _debugContainerKey is a private Ember property that returns the full
-      // component name (component:query-container/pill-meta).
-      const [ , source ] = this._debugContainerKey.split('/');
       if (selection === AFTER_OPTION_FREE_FORM_LABEL) {
-        this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, source]);
+        this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, this.get('source')]);
       } else if (selection === AFTER_OPTION_TEXT_LABEL) {
-        this._broadcast(MESSAGE_TYPES.CREATE_TEXT_PILL, [value, source]);
+        this._broadcast(MESSAGE_TYPES.CREATE_TEXT_PILL, [value, this.get('source')]);
       }
     }
   },
 
   _focusOnPowerSelectTrigger() {
-    const trigger = this.element.querySelector('.ember-power-select-trigger input');
+    const trigger = this.element.querySelector(POWER_SELECT_TRIGGER_INPUT);
     if (trigger) {
       trigger.focus();
     }

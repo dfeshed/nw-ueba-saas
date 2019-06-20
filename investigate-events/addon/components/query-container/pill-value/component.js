@@ -1,7 +1,8 @@
 import Component from '@ember/component';
 import { next, scheduleOnce } from '@ember/runloop';
 import { htmlSafe } from '@ember/string';
-import computed, { equal } from 'ember-computed-decorators';
+import computed from 'ember-computed-decorators';
+
 import {
   isArrowLeft,
   isBackspace,
@@ -19,8 +20,7 @@ import {
   AFTER_OPTION_TEXT_DISABLED_LABEL,
   AFTER_OPTION_TEXT_UNAVAILABLE_LABEL,
   AFTER_OPTION_QUERY_LABEL,
-  AFTER_OPTION_TAB_META,
-  AFTER_OPTION_TAB_RECENT_QUERIES
+  POWER_SELECT_INPUT
 } from 'investigate-events/constants/pill';
 import * as MESSAGE_TYPES from '../message-types';
 import Ember from 'ember';
@@ -119,13 +119,6 @@ export default Component.extend({
   _dropDownOptions: [AFTER_OPTION_QUERY_LABEL],
 
   /**
-   * List of recent queries
-   * @type {Array}
-   * @public
-   */
-  recentQueries: null,
-
-  /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public
@@ -133,43 +126,16 @@ export default Component.extend({
   sendMessage: () => {},
 
   /**
+   * Will contain the name of the component
+   */
+  source: undefined,
+
+  /**
    * The value to display.
    * @type {string}
    * @public
    */
   valueString: null,
-
-  /**
-   * Based on the current tab selected, we replace options
-   * for the power select component.
-   * Default is Query_Pill option.
-   */
-  @computed('activePillTab', 'recentQueries')
-  selectableOptions(activePillTab, recentQueries) {
-    const options = this.get('_dropDownOptions');
-    return (activePillTab === AFTER_OPTION_TAB_RECENT_QUERIES) ? recentQueries : options;
-  },
-
-  /**
-   * This indicates if the meta tab is active.
-   * Not related to pill-value drop-down.
-   */
-  @equal('activePillTab', AFTER_OPTION_TAB_META)
-  isMetaTabActive: false,
-
-  /**
-   * Placeholder messages
-   */
-  @computed('isMetaTabActive', 'i18n.locale')
-  noMatchesMessage(isMetaTabActive) {
-    const i18n = this.get('i18n');
-    if (!isMetaTabActive) {
-      return i18n.t('queryBuilder.recentQueriesNoMatch');
-    } else {
-      // Query Pill will always be highlighted for pill-value
-      return undefined;
-    }
-  },
 
   @computed('hasTextPill', 'canPerformTextSearch')
   _groomedAfterOptionsMenu(hasTextPill, canPerformTextSearch) {
@@ -182,7 +148,6 @@ export default Component.extend({
     }
     return this._afterOptionsMenu;
   },
-
 
   /**
    * We take away the ability to create FF in edit mode.
@@ -245,6 +210,10 @@ export default Component.extend({
       [MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT]: () => this._afterOptionsMenu.clearHighlight(),
       [MESSAGE_TYPES.AFTER_OPTIONS_TAB_CLICKED]: () => this._afterOptionsTabToggle()
     });
+    // _debugContainerKey is a private Ember property that returns the full
+    // component name (component:query-container/pill-value).
+    const [ , source ] = this._debugContainerKey.split('/');
+    this.set('source', source);
   },
 
   didUpdateAttrs() {
@@ -286,7 +255,7 @@ export default Component.extend({
       const { searchText } = powerSelectAPI;
       // If this component looses focus while there is a value, we need to save
       // it off so that the inactive state renders properly.
-      if (searchText !== null && searchText !== '') {
+      if (searchText !== null && searchText !== '' && searchText !== this.get('_searchString')) {
         this._broadcast(MESSAGE_TYPES.VALUE_SET, searchText);
         // force text back into view
         const el = this.element.querySelector('input');
@@ -456,7 +425,9 @@ export default Component.extend({
    * Active tab was toggled.
    */
   _afterOptionsTabToggle() {
-    this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, {});
+    const el = this.element.querySelector(POWER_SELECT_INPUT);
+    const { value } = el;
+    this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, { data: value, dataSource: this.get('source') });
   },
 
   /**
@@ -483,40 +454,6 @@ export default Component.extend({
     }
   },
 
-  _createPillFromAdvancedOption(selection) {
-    // get input text
-    const el = this.element.querySelector('.ember-power-select-typeahead-input');
-    const { value } = el;
-    // cleanup
-    el.value = '';
-    this._focusOnPowerSelectTrigger();
-    this._afterOptionsMenu.clearHighlight();
-    // send value up to create a complex pill
-    // _debugContainerKey is a private Ember property that returns the full
-    // component name (component:query-container/pill-meta).
-    const [ , source ] = this._debugContainerKey.split('/');
-    if (selection === AFTER_OPTION_FREE_FORM_LABEL) {
-      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, source]);
-    } else if (selection === AFTER_OPTION_TEXT_LABEL) {
-      this._broadcast(MESSAGE_TYPES.CREATE_TEXT_PILL, [value, source]);
-    }
-  },
-
-  _isInputEmpty: (input) => {
-    const trimmedInput = input.trim();
-    const isEmpty = trimmedInput.length === 0;
-    const hasEmptyQuotes = trimmedInput.match(/^['"]\s*['"]$/);
-    return isEmpty || (hasEmptyQuotes && hasEmptyQuotes.length > 0);
-  },
-
-  /**
-   * Function used by EPS to down-select options given what's typed into the
-   * search box. Since we don't want it to actually change, this function
-   * just returns `true`.
-   * @private
-   */
-  _matcher: () => true,
-
   /**
    * Used by power-select to position the dropdown.
    * @private
@@ -537,5 +474,36 @@ export default Component.extend({
       verticalPosition: 'auto',
       style
     };
-  }
+  },
+
+  _createPillFromAdvancedOption(selection) {
+    // get input text
+    const el = this.element.querySelector(POWER_SELECT_INPUT);
+    const { value } = el;
+    // cleanup
+    el.value = '';
+    this._focusOnPowerSelectTrigger();
+    this._afterOptionsMenu.clearHighlight();
+    // send value up to create a complex pill
+    if (selection === AFTER_OPTION_FREE_FORM_LABEL) {
+      this._broadcast(MESSAGE_TYPES.CREATE_FREE_FORM_PILL, [value, this.get('source')]);
+    } else if (selection === AFTER_OPTION_TEXT_LABEL) {
+      this._broadcast(MESSAGE_TYPES.CREATE_TEXT_PILL, [value, this.get('source')]);
+    }
+  },
+
+  _isInputEmpty: (input) => {
+    const trimmedInput = input.trim();
+    const isEmpty = trimmedInput.length === 0;
+    const hasEmptyQuotes = trimmedInput.match(/^['"]\s*['"]$/);
+    return isEmpty || (hasEmptyQuotes && hasEmptyQuotes.length > 0);
+  },
+
+  /**
+   * Function used by EPS to down-select options given what's typed into the
+   * search box. Since we don't want it to actually change, this function
+   * just returns `true`.
+   * @private
+   */
+  _matcher: () => true
 });

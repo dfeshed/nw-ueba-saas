@@ -291,7 +291,7 @@ const _possibleOperator = (textChunk, selectedMeta, pillData, originalText, chun
  * ex: Space between meta/operator/value is a must.
  * Maintains the string that has been typed in case of a bailout.
  */
-export const convertTextToPillData = ({ queryText, dataSource, availableMeta, selectedMeta }) => {
+export const convertTextToPillData = ({ queryText, availableMeta }) => {
   const originalText = queryText;
   let pillData = {};
 
@@ -299,68 +299,42 @@ export const convertTextToPillData = ({ queryText, dataSource, availableMeta, se
   queryText = queryText.trim();
   const chunks = queryText.split(' ');
 
-  switch (dataSource) {
-    // if coming from pill-operator, we don't need to worry about
-    // parsing meta as it is already selected.
-    case 'pill-operator': {
+  const [ meta, operator, ...values ] = chunks;
 
-      const [ operator, ...values] = chunks;
-
-      if (operator) {
-        const possibleOperators = _possibleOperator(
-          operator,
-          selectedMeta,
-          pillData,
-          originalText,
-          chunks
-        );
-        pillData = possibleOperators.pillData;
-        if (possibleOperators.hasInvalidOperator) {
-          return pillData;
-        }
-      }
-
-      if (values.length > 0) {
-        pillData.value = values.join(' ');
-      }
-
-      return pillData;
-
-    }
-    default: {
-
-      const [ meta, operator, ...values ] = chunks;
-
-      if (meta) {
-        const possibleMeta = _possibleMeta(meta, availableMeta, originalText, pillData);
-        pillData = possibleMeta.pillData;
-        if (possibleMeta.hasInvalidMeta) {
-          return pillData;
-        }
-      }
-
-      if (operator) {
-        // strip away meta from the original text as it has been proccessd
-        const unprocessedText = originalText.replace(`${meta}`, '');
-        const possibleOperator = _possibleOperator(
-          operator,
-          pillData.meta,
-          pillData,
-          unprocessedText,
-          chunks
-        );
-        pillData = possibleOperator.pillData;
-        if (possibleOperator.hasInvalidOperator) {
-          return pillData;
-        }
-      }
-
-      if (values.length > 0) {
-        pillData.value = values.join(' ');
-      }
-
+  if (meta) {
+    const possibleMeta = _possibleMeta(meta, availableMeta, originalText, pillData);
+    pillData = possibleMeta.pillData;
+    if (possibleMeta.hasInvalidMeta) {
       return pillData;
     }
+  } else {
+    pillData.meta = originalText;
+    return pillData;
   }
+
+  // strip away meta and a space from the original text as it has been proccessd
+  const unprocessedText = originalText.replace(`${meta}`, '').replace(/^[\s\uFEFF\xA0]/, '');
+  if (operator) {
+    const possibleOperator = _possibleOperator(
+      operator,
+      pillData.meta,
+      pillData,
+      unprocessedText,
+      chunks
+    );
+    pillData = possibleOperator.pillData;
+    if (possibleOperator.hasInvalidOperator) {
+      return pillData;
+    }
+  } else {
+    pillData.operator = unprocessedText;
+    return pillData;
+  }
+
+  if (values.length > 0) {
+    pillData.value = values.join(' ');
+  }
+
+  return pillData;
 
 };

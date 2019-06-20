@@ -98,7 +98,7 @@ const investigateConfigGen = function(env) {
     'recent-queries': {
       socketUrl,
       query: {
-        subscriptionDestination: '/user/queue/investigate/predicate/recent-queries',
+        subscriptionDestination: '/user/queue/investigate/predicate/get-recent-by-filter',
         requestDestination: '/ws/investigate/predicate/get-recent-by-filter'
       }
     },
