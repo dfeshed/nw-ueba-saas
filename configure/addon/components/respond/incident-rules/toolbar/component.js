@@ -77,7 +77,7 @@ const triggerUpload = (dispatch, csrfKey) => {
   input.accept = '.zip';
   input.addEventListener('change', () => {
     const formData = new FormData();
-    formData.append('import-file', input.files[0]);
+    formData.append('file', input.files[0]);
     fetch('/api/respond/rules/import', {
       mode: 'same-origin',
       method: 'POST',
