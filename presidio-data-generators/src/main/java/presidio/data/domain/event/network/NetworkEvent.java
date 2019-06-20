@@ -25,6 +25,7 @@ public class NetworkEvent extends Event implements Serializable {
     private String ja3s;
     private NETWORK_DIRECTION_TYPE direction;
     private int destinationPort;
+    private String dataSource;
 
     private Location srcLocation;
     private Location dstLocation;
@@ -41,7 +42,7 @@ public class NetworkEvent extends Event implements Serializable {
     public NetworkEvent(String eventId, Instant dateTime, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity,
                         String destinationOrganization, String destinationASN, long numOfBytesSent, long numOfBytesReceived,
                         String sourceNetname, String destinationNetname, String ja3, String ja3s,
-                        NETWORK_DIRECTION_TYPE direction, int destinationPort, Location srcLocation,
+                        NETWORK_DIRECTION_TYPE direction, int destinationPort, String dataSource, Location srcLocation,
                         Location dstLocation, String sslSubject, String sslCa, int sessionSplit, boolean isSelfSigned) {
         this.eventId = eventId;
         this.dateTime = dateTime;
@@ -57,6 +58,7 @@ public class NetworkEvent extends Event implements Serializable {
         this.ja3s = ja3s;
         this.direction = direction;
         this.destinationPort = destinationPort;
+        this.dataSource = dataSource;
         this.srcLocation = srcLocation;
         this.dstLocation = dstLocation;
         this.sslSubject = sslSubject;
@@ -177,6 +179,14 @@ public class NetworkEvent extends Event implements Serializable {
         this.destinationPort = destinationPort;
     }
 
+    public String getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
+    }
+
     public Location getSrcLocation() {
         return srcLocation;
     }
@@ -242,6 +252,7 @@ public class NetworkEvent extends Event implements Serializable {
                 ", ja3s='" + ja3s + '\'' +
                 ", direction=" + direction +
                 ", destinationPort=" + destinationPort +
+                ", dataSource='" + dataSource + '\'' +
                 ", srcLocation=" + srcLocation +
                 ", dstLocation=" + dstLocation +
                 ", sslSubject='" + sslSubject + '\'' +

@@ -28,6 +28,7 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
     private IBaseGenerator<String> sslCaGenerator = new RandomStringGenerator(3,5);
     private IBaseGenerator<String>  ja3Generator = new Md5RandomGenerator();
     private IBaseGenerator<String>  ja3sGenerator = new Md5RandomGenerator();
+    private IBaseGenerator<String>  dataSourceGenerator = new RandomStringGenerator(6,7);
     private IBaseGenerator<MachineEntity> srcMachineGenerator = new QuestADMachineGenerator();
     private IBaseGenerator<MachineEntity> dstMachineGenerator = srcMachineGenerator;
     private IBaseGenerator<String>  sourceNetnameGen = new SingleWordCyclicGenerator(0);
@@ -55,7 +56,7 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
         this.testMarker = testMarker;
     }
 
-    public NetworkBuilderHelper actions() {
+    public NetworkBuilderHelper fixedValueModifier() {
         return new NetworkBuilderHelper(this);
     }
 
@@ -75,6 +76,7 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
         String destinationNetname = destinationNetnameGen.getNext();
         String ja3 = ja3Generator.getNext();
         String ja3s = ja3sGenerator.getNext();
+        String dataSource = dataSourceGenerator.getNext();
         String sslSubject = sslSubjectGenerator.getNext();
         NETWORK_DIRECTION_TYPE network_direction_type = NETWORK_DIRECTION_TYPE.OUTBOUND;
         int destinationPort = destinationPortGenerator.getNext();
@@ -96,6 +98,7 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
         networkEvent.setDestinationNetname(destinationNetname);
         networkEvent.setJa3(ja3);
         networkEvent.setJa3s(ja3s);
+        networkEvent.setDataSource(dataSource);
         networkEvent.setDirection(network_direction_type);
         networkEvent.setDestinationPort(destinationPort);
         networkEvent.setSrcLocation(srcLocation);
@@ -158,6 +161,14 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
 
     public IBaseGenerator<MachineEntity> getSrcMachineGenerator() {
         return srcMachineGenerator;
+    }
+
+    public IBaseGenerator<String> getDataSourceGenerator() {
+        return dataSourceGenerator;
+    }
+
+    public void setDataSourceGenerator(IBaseGenerator<String> dataSourceGenerator) {
+        this.dataSourceGenerator = dataSourceGenerator;
     }
 
     public void setSrcMachineGenerator(IBaseGenerator<MachineEntity> srcMachineGenerator) {
