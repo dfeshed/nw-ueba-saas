@@ -29,7 +29,7 @@ public class IndicatorsForwarder extends Forwarder<Indicator> {
     public IndicatorsForwarder(AlertPersistencyService alertPersistencyService, ForwarderConfiguration forwarderStrategyConfiguration, ForwarderStrategyFactory forwarderStrategyFactory) {
         super(forwarderStrategyConfiguration, forwarderStrategyFactory);
         this.alertPersistencyService = alertPersistencyService;
-        if (!forwarderStrategyConfiguration.extendEntity(ForwarderStrategy.PAYLOAD_TYPE.INDICATOR)) {
+        if (!forwarderStrategyConfiguration.extendInstance(ForwarderStrategy.PAYLOAD_TYPE.INDICATOR)) {
             payloadBuilder = new JsonPayloadBuilder<Indicator>(Indicator.class, IndicatorJsonMixin.class);
         } else {
             payloadBuilder = new JsonPayloadBuilder<Indicator>(Indicator.class, ExtendedIndicatorJsonMixin.class);

@@ -65,7 +65,7 @@ public class ForwarderTest {
 
         forwarderConfiguration = Mockito.mock(ForwarderConfiguration.class);
         Mockito.when(forwarderConfiguration.getForwardingStrategy(Mockito.any(ForwarderStrategy.PAYLOAD_TYPE.class))).thenReturn(MemoryStrategy.MEMORY);
-        Mockito.when(forwarderConfiguration.isForwardEntity(Mockito.any(ForwarderStrategy.PAYLOAD_TYPE.class))).thenReturn(true);
+        Mockito.when(forwarderConfiguration.isForwardInstance(Mockito.any(ForwarderStrategy.PAYLOAD_TYPE.class))).thenReturn(true);
         Mockito.when(forwarderConfiguration.getForwardBulkSize(Mockito.any(ForwarderStrategy.PAYLOAD_TYPE.class))).thenReturn(1);
 
     }
@@ -123,7 +123,7 @@ public class ForwarderTest {
 
     @Test
     public void testNoForwardingFlag() {
-        Mockito.doReturn(false).when(forwarderConfiguration).isForwardEntity(Mockito.any(ForwarderStrategy.PAYLOAD_TYPE.class));
+        Mockito.doReturn(false).when(forwarderConfiguration).isForwardInstance(Mockito.any(ForwarderStrategy.PAYLOAD_TYPE.class));
         ConcreteForwarder forwarder = new ConcreteForwarder(forwarderConfiguration, forwarderStrategyFactory);
         try {
             forwarder.doForward(forwarder.getEntitiesToForward(), false);
