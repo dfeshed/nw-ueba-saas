@@ -7,7 +7,8 @@ import {
   deleteFilter,
   resetFilters
 } from 'investigate-shared/actions/data-creators/filter-creators';
-import { getFirstPageOfDownloads, deleteSelectedFiles } from 'investigate-hosts/actions/data-creators/downloads';
+import { saveLocalFileCopy } from 'investigate-shared/actions/data-creators/file-analysis-creators';
+import { getFirstPageOfDownloads, deleteSelectedFiles, saveLocalMFTCopy } from 'investigate-hosts/actions/data-creators/downloads';
 import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endpoint-filters/selectors';
 import { FILTER_TYPES } from './filter-types';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
@@ -28,7 +29,9 @@ const dispatchToActions = {
   deleteFilter,
   resetFilters,
   getFirstPageOfDownloads,
-  deleteSelectedFiles
+  deleteSelectedFiles,
+  saveLocalFileCopy,
+  saveLocalMFTCopy
 };
 
 const HostDownloads = Component.extend({
@@ -59,7 +62,17 @@ const HostDownloads = Component.extend({
     },
 
     onSaveLocalCopy() {
-      // placeholder
+      const callbacks = {
+        onFailure: (message) => failure(message, null, false)
+      };
+      const selectedFileList = this.get('selectedFileList') || [];
+      const [selectedFile] = selectedFileList;
+      const { serviceId, fileType } = selectedFile;
+      if (fileType === 'File') {
+        this.send('saveLocalFileCopy', selectedFile, callbacks, serviceId);
+      } else {
+        this.send('saveLocalMFTCopy', selectedFile, callbacks, serviceId);
+      }
     },
 
     showConfirmationModal() {

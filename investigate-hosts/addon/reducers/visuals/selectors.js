@@ -74,6 +74,11 @@ const HOST_DETAILS_TABS = [
     componentClass: 'host-detail/libraries'
   },
   {
+    label: 'investigateHosts.tabs.downloads',
+    name: 'DOWNLOADS',
+    componentClass: 'host-detail/downloads'
+  },
+  {
     label: 'investigateHosts.tabs.systemInformation',
     name: 'SYSTEM',
     componentClass: 'host-detail/system-information'
@@ -160,11 +165,6 @@ export const getHostDetailTabs = createSelector(
         label: 'investigateHosts.tabs.anomalies',
         name: 'ANOMALIES',
         componentClass: 'host-detail/anomalies'
-      },
-      {
-        label: 'investigateHosts.tabs.downloads',
-        name: 'DOWNLOADS',
-        componentClass: 'host-detail/downloads'
       }];
       HOST_DETAILS_TABS_CLONE.splice(6, 0, ...windowsSpecificTabs);
     }

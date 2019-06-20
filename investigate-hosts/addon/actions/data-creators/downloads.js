@@ -11,6 +11,7 @@
 
 import { debug } from '@ember/debug';
 import * as ACTION_TYPES from '../types';
+import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { Machines, HostDetails } from '../api';
 import { next } from '@ember/runloop';
 import { getFilter } from 'investigate-shared/actions/data-creators/filter-creators';
@@ -141,6 +142,23 @@ const deleteSelectedFiles = (selectedFiles, callback = callbacksDefault) => {
   };
 };
 
+const saveLocalMFTCopy = (selectedFile, callback, serverId) => {
+  const { id, fileName } = selectedFile;
+  return (dispatch) => {
+    HostDetails.saveLocalMFTCopy(serverId, id).then(({ data }) => {
+      if (data.id) {
+        const url = serverId ? `/rsa/endpoint/${serverId}/memory/download?id=${data.id}&filename=${fileName}.zip` : '';
+        dispatch({ type: SHARED_ACTION_TYPES.SET_DOWNLOAD_FILE_LINK, payload: url });
+      }
+    }).catch((response) => {
+      if (response && response.meta) {
+        const { meta: { message } } = response;
+        callback.onFailure(message);
+      }
+    });
+  };
+};
+
 export {
   getPageOfDownloads,
   sortBy,
@@ -150,5 +168,6 @@ export {
   getFirstPageOfDownloads,
   onFileSelection,
   setSelectedIndex,
-  deleteSelectedFiles
+  deleteSelectedFiles,
+  saveLocalMFTCopy
 };

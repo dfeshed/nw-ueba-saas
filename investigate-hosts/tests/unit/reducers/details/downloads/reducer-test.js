@@ -54,12 +54,12 @@ module('Unit | Reducers | downloads', function() {
 
   test('The SELECT_ALL_DOWNLOADED_FILES will selecte all files', function(assert) {
     const previous = Immutable.from({
-      files: { 1: { id: 1, checksumSha256: 1, filename: 'test', serviceId: 'wefew', size: 1234, status: 'Downloaded', fileType: 'file' } },
+      files: { 1: { id: 1, checksumSha256: 1, fileName: 'test', serviceId: 'wefew', size: 1234, status: 'Downloaded', fileType: 'file' } },
       selectedFileList: []
     });
     const result = reducer(previous, { type: ACTION_TYPES.SELECT_ALL_DOWNLOADED_FILES });
 
-    assert.deepEqual(result.selectedFileList, [{ id: 1, checksumSha256: 1, filename: 'test', serviceId: 'wefew', size: 1234, status: 'Downloaded', fileType: 'file' }]);
+    assert.deepEqual(result.selectedFileList, [{ id: 1, checksumSha256: 1, fileName: 'test', serviceId: 'wefew', size: 1234, status: 'Downloaded', fileType: 'file' }]);
   });
 
   test('The TOGGLE_SELECTED_DOWNLOADED_FILE will unselect all selected files', function(assert) {

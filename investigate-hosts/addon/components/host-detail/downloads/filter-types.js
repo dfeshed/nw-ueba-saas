@@ -10,7 +10,7 @@ const FILTER_TYPES = [
     ]
   },
   {
-    'name': 'filename',
+    'name': 'fileName',
     'label': 'investigateHosts.downloads.filters.fileName',
     'type': 'text',
     'validations': {

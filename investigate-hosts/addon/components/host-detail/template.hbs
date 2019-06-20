@@ -1,7 +1,7 @@
 {{host-detail/header}}
 {{#if selectedServiceData.isServiceOnline}}
   <box class="host-detail-wrapper {{if isFileAnalysisView 'is-show-file-analysis'}}">
-
+    <iframe src="{{downloadLink}}" class="save-files-iframe"></iframe>
     {{host-detail/utils/file-analysis-wrapper}}
     {{#if showSnapshotEmptyMessage}}
       {{rsa-panel-message message=(t 'investigateHosts.noSnapshotMessage')}}

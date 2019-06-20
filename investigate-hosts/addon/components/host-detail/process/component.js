@@ -12,7 +12,7 @@ import computed from 'ember-computed-decorators';
 import { toggleProcessView, setRowIndex } from 'investigate-hosts/actions/data-creators/process';
 import { setHostDetailPropertyTab } from 'investigate-hosts/actions/data-creators/details';
 import { getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
-import { getColumnsConfig, hostDetailPropertyTabs, downloadLink } from 'investigate-hosts/reducers/details/selectors';
+import { getColumnsConfig, hostDetailPropertyTabs } from 'investigate-hosts/reducers/details/selectors';
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
 
 import summaryItems from './summary-item-config';
@@ -41,7 +41,6 @@ const callBackOptions = (context) => ({
 });
 
 const stateToComputed = (state) => ({
-  downloadLink: downloadLink(state),
   isTreeView: state.endpoint.visuals.isTreeView,
   hostDetailPropertyTabs: hostDetailPropertyTabs(state),
   activeHostDetailPropertyTab: state.endpoint.detailsInput.activeHostDetailPropertyTab,

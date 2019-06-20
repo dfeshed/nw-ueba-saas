@@ -147,6 +147,20 @@ const deleteSelectedFiles = (socketUrlPostfix, ids = []) => {
   });
 };
 
+const saveLocalMFTCopy = (socketUrlPostfix, data) => {
+  const request = lookup('service:request');
+  const streamSelector = lookup('service:stream-selector');
+  const method = 'saveLocalMFTCopy';
+  const modelName = 'endpoint';
+
+  return request.promiseRequest({
+    method,
+    modelName,
+    query: { data },
+    streamOptions: streamSelector.streamOptionSelector({ modelName, method, customOptions: { socketUrlPostfix } })
+  });
+};
+
 export default {
   getAllSnapShots,
   getHostDetails,
@@ -156,5 +170,6 @@ export default {
   policyDetails,
   fetchRemediation,
   sendFileDownloadToServerRequest,
-  deleteSelectedFiles
+  deleteSelectedFiles,
+  saveLocalMFTCopy
 };

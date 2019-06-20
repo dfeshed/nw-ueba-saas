@@ -19,7 +19,7 @@ const initialState = Immutable.from({
 
 const _toggleSelectedFile = (state, payload) => {
   const { selectedFileList } = state;
-  const { id, filename, size, checksumSha256, fileType, status, serviceId } = payload;
+  const { id, fileName, size, checksumSha256, fileType, status, serviceId } = payload;
   let selectedList = [];
   // Previously selected file
 
@@ -27,7 +27,7 @@ const _toggleSelectedFile = (state, payload) => {
     selectedList = selectedFileList.filter((file) => file.id !== id);
   } else {
     selectedList = [...selectedFileList,
-      { id, filename, size, checksumSha256, fileType, status, serviceId }];
+      { id, fileName, size, checksumSha256, fileType, status, serviceId }];
   }
   return state.set('selectedFileList', selectedList);
 
@@ -86,8 +86,8 @@ const hostDownloads = reduxActions.handleActions({
   [ACTION_TYPES.TOGGLE_SELECTED_DOWNLOADED_FILE]: (state, { payload }) => _toggleSelectedFile(state, payload),
 
   [ACTION_TYPES.SELECT_ALL_DOWNLOADED_FILES]: (state) => {
-    const selectedList = Object.values(state.files).map(({ id, filename, size, checksumSha256, fileType, status, serviceId }) => ({
-      id, filename, size, checksumSha256, fileType, status, serviceId
+    const selectedList = Object.values(state.files).map(({ id, fileName, size, checksumSha256, fileType, status, serviceId }) => ({
+      id, fileName, size, checksumSha256, fileType, status, serviceId
     }));
     return state.set('selectedFileList', selectedList);
   },

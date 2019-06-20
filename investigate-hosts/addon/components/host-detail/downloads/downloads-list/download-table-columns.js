@@ -12,7 +12,7 @@ export default [
     dataType: 'string',
     width: '15vw',
     visible: true,
-    field: 'filename',
+    field: 'fileName',
     searchable: true,
     disableSort: true,
     title: 'investigateHosts.downloads.tableHeader.filename'

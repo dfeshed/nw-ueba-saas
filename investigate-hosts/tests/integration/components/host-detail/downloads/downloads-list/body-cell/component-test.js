@@ -39,18 +39,18 @@ module('Integration | Component | host-detail/downloads/downloads-list/body-cell
   });
 
   test('it should render filename', async function(assert) {
-    this.set('column', { field: 'filename' });
-    this.set('item', { id: '5cda8882c8811e511649e335', filename: 'testFile' });
+    this.set('column', { field: 'fileName' });
+    this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile' });
 
     await render(hbs`{{host-detail/downloads/downloads-list/body-cell column=column item=item}}`);
     assert.equal(findAll('.downloaded-file-name').length, 1, 'Renders file name');
-    assert.equal(find('.filename').textContent.trim(), 'testFile', 'Renders file name');
+    assert.equal(find('.fileName').textContent.trim(), 'testFile', 'Renders file name');
   });
 
   test('it should render the downloaded time', async function(assert) {
     const column = EmberObject.create({ field: 'downloadedTime' });
     this.set('column', column);
-    this.set('item', { id: '5cda8882c8811e511649e335', filename: 'testFile', downloadedTime: '2019-05-14T09:21:06.923+0000' });
+    this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile', downloadedTime: '2019-05-14T09:21:06.923+0000' });
 
     await render(hbs`{{host-detail/downloads/downloads-list/body-cell column=column item=item}}`);
     assert.equal(findAll('.downloadedTime').length, 1, 'Expected to render downloaded time');
@@ -58,7 +58,7 @@ module('Integration | Component | host-detail/downloads/downloads-list/body-cell
 
   test('it should render the downloaded status', async function(assert) {
     this.set('column', { field: 'status' });
-    this.set('item', { id: '5cda8882c8811e511649e335', filename: 'testFile', status: 'Downloaded' });
+    this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile', status: 'Downloaded' });
 
     await render(hbs`{{host-detail/downloads/downloads-list/body-cell column=column item=item}}`);
     assert.equal(findAll('.status').length, 1, 'Expected to render downloaded time');
@@ -66,7 +66,7 @@ module('Integration | Component | host-detail/downloads/downloads-list/body-cell
 
   test('it should render the checksum if present', async function(assert) {
     this.set('column', { field: 'checksumSha256' });
-    this.set('item', { id: '5cda8882c8811e511649e335', filename: 'testFile', checksumSha256: 'c34f34t3' });
+    this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile', checksumSha256: 'c34f34t3' });
 
     await render(hbs`{{host-detail/downloads/downloads-list/body-cell column=column item=item}}`);
     assert.equal(find('.checksumSha256').textContent.trim(), 'c34f34t3', 'Expected to render checksum');
@@ -74,7 +74,7 @@ module('Integration | Component | host-detail/downloads/downloads-list/body-cell
 
   test('it should render NA if checksum is not present', async function(assert) {
     this.set('column', { field: 'checksumSha256' });
-    this.set('item', { id: '5cda8882c8811e511649e335', filename: 'testFile' });
+    this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile' });
 
     await render(hbs`{{host-detail/downloads/downloads-list/body-cell column=column item=item}}`);
     assert.equal(find('.checksumSha256').textContent.trim(), 'NA', 'render NA if checksum is not present');

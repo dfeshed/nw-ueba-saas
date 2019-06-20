@@ -49,6 +49,10 @@ const hostsConfigGen = function(env) {
         subscriptionDestination: '/user/queue/endpoint/download/delete',
         requestDestination: '/ws/endpoint/download/delete'
       },
+      saveLocalMFTCopy: {
+        subscriptionDestination: '/user/queue/endpoint/memory/export',
+        requestDestination: '/ws/endpoint/memory/export'
+      },
       'machine-schema': {
         subscriptionDestination: '/user/queue/endpoint/machine/schema',
         requestDestination: '/ws/endpoint/machine/schema',

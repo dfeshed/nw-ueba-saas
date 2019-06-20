@@ -4,6 +4,7 @@ import { selectedTabComponent } from 'investigate-hosts/reducers/visuals/selecto
 import computed from 'ember-computed-decorators';
 import { isSnapshotsAvailable } from 'investigate-hosts/reducers/details/overview/selectors';
 import { selectedServiceWithStatus } from 'investigate-shared/selectors/endpoint-server/selectors';
+import { downloadLink } from 'investigate-hosts/reducers/details/selectors';
 
 const stateToComputed = (state) => ({
   selectedTabComponent: selectedTabComponent(state),
@@ -11,7 +12,8 @@ const stateToComputed = (state) => ({
   isSnapshotsLoading: state.endpoint.detailsInput.isSnapshotsLoading,
   isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView,
   selectedServiceData: selectedServiceWithStatus(state),
-  isFileAnalysisView: state.endpoint.fileAnalysis.isFileAnalysisView
+  isFileAnalysisView: state.endpoint.fileAnalysis.isFileAnalysisView,
+  downloadLink: downloadLink(state)
 });
 
 const DetailComponent = Component.extend({

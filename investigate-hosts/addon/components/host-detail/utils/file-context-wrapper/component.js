@@ -15,7 +15,7 @@ import {
   selectedFileList,
   isAnyFileFloatingOrMemoryDll
 } from 'investigate-hosts/reducers/details/file-context/selectors';
-import { hostDetailPropertyTabs, downloadLink } from 'investigate-hosts/reducers/details/selectors';
+import { hostDetailPropertyTabs } from 'investigate-hosts/reducers/details/selectors';
 import { hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { setHostDetailPropertyTab } from 'investigate-hosts/actions/data-creators/details';
 
@@ -41,7 +41,6 @@ const callBackOptions = (context) => ({
 });
 
 const stateToComputed = (state, { storeName }) => ({
-  downloadLink: downloadLink(state),
   selectedFileList: selectedFileList(state, storeName),
   fileProperty: fileContextFileProperty(state, storeName),
   hostDetailPropertyTabs: hostDetailPropertyTabs(state, storeName),

@@ -79,7 +79,7 @@ module('Integration | Component | downloads', function(hooks) {
         }
       </style>
       {{host-detail/downloads}}{{context-menu}}`);
-    triggerEvent(findAll('.filename')[1], 'contextmenu', e);
+    triggerEvent(findAll('.fileName')[1], 'contextmenu', e);
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
@@ -128,5 +128,45 @@ module('Integration | Component | downloads', function(hooks) {
     assert.equal(findAll('.delete-downloaded-files').length, 1, 'confirmation dialog box present after click');
 
     await click(findAll('.modal-footer-buttons .is-primary button')[0]);
+  });
+
+  test('saveLocalMFTCopy for downloaded MFT', async function(assert) {
+    const selectedFileList = [{
+      id: '5ce784209829f106f0ce60b3',
+      filename: 'mft-C-Shyam1809-x64-2019-05-24T05-41-51-200Z',
+      size: 293376,
+      fileType: 'Mft',
+      serviceId: '2cf81ac2-3d00-40f6-99fd-f5c3e9b254b4'
+    }];
+
+    new ReduxDataHelper(initState).hostDownloads(hostDownloads).downloadsSelectedFileList(selectedFileList).build();
+    await render(hbs `<div id='modalDestination'></div>
+      {{host-detail/downloads}}`);
+
+    patchSocket((method, modelName) => {
+      assert.equal(method, 'saveLocalMFTCopy');
+      assert.equal(modelName, 'endpoint');
+    });
+    await click(findAll('.downloads-action-bar .rsa-form-button')[1]);
+  });
+
+  test('saveLocalCopy for downloaded files', async function(assert) {
+    const selectedFileList = [{
+      id: '5ce784209829f106f0ce60b3',
+      filename: 'mft-C-Shyam1809-x64-2019-05-24T05-41-51-200Z',
+      size: 293376,
+      fileType: 'File',
+      serviceId: '2cf81ac2-3d00-40f6-99fd-f5c3e9b254b4'
+    }];
+
+    new ReduxDataHelper(initState).hostDownloads(hostDownloads).downloadsSelectedFileList(selectedFileList).build();
+    await render(hbs `<div id='modalDestination'></div>
+      {{host-detail/downloads}}`);
+
+    patchSocket((method, modelName) => {
+      assert.equal(method, 'saveLocalCopy');
+      assert.equal(modelName, 'endpoint');
+    });
+    await click(findAll('.downloads-action-bar .rsa-form-button')[1]);
   });
 });
