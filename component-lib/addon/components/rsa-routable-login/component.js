@@ -215,11 +215,11 @@ export default Component.extend({
 
   changePassword() {
     this.set('status', _STATUS.WAIT);
-    this.set('data', {
-      'userName': this.get('username'),
-      'currentPassword': this.get('password'),
-      'newPassword': this.get('newPassword')
-    });
+    this.set('data', new FormData());
+    this.get('data').set('userName', this.get('username'));
+    this.get('data').set('currentPassword', this.get('password'));
+    this.get('data').set('newPassword', this.get('newPassword'));
+
     if (this.get('newPassword') !== this.get('newPasswordConfirm')) {
       this.updateLoginProperties(_STATUS.INIT, 'login.passwordMismatch', true);
     } else if (this.get('newPassword') === this.get('password')) {
@@ -228,10 +228,7 @@ export default Component.extend({
       this.set('status', _STATUS.SUCCESS);
       fetch('/api/administration/security/user/updatePassword', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: Object.entries(this.get('data')).map(([key, value]) => `${key}=${value}`).join('&')// Body is expected as RequestParams
+        body: this.get('data')
       }).then((response) => {
         if (response.status === 200) {
           this.updateLoginProperties(_STATUS.SUCCESS);
