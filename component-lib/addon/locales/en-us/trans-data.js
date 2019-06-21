@@ -658,7 +658,7 @@ export default {
       allOnline: 'All services are online.',
       oneOffline: '1 service is offline.',
       someOffline: '{{offline}} services are offline.',
-      queried: 'Service queried:',
+      queried: 'Service Queried:',
       between: 'Time:',
       metaFilter: 'Meta Filter:',
       textFilter: 'Text Filter',
