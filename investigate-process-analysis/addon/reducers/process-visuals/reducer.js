@@ -5,7 +5,8 @@ import Immutable from 'seamless-immutable';
 const dataInitialState = Immutable.from({
   detailsTabSelected: '', // Possible values Properties or Events at this point.
   isEventPanelExpanded: false,
-  isProcessDetailsVisible: false
+  isProcessDetailsVisible: false,
+  isProcessInfoVisible: false
 });
 
 const processVisualsReducer = handleActions({
@@ -17,6 +18,11 @@ const processVisualsReducer = handleActions({
   [ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VISIBILITY]: (state, action) => {
     const visibility = action.payload !== 'undefined' ? action.payload : !state.isProcessDetailsVisible;
     return state.set('isProcessDetailsVisible', visibility);
+  },
+
+  [ACTION_TYPES.TOGGLE_PROCESS_INFO_VISIBILITY]: (state, action) => {
+    const visibility = action.payload !== 'undefined' ? action.payload : !state.isProcessDetailsVisible;
+    return state.set('isProcessInfoVisible', visibility);
   }
 }, dataInitialState);
 

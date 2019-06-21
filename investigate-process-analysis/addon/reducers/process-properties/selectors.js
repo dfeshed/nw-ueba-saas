@@ -19,7 +19,7 @@ const _propertyConfig = (state) => {
 };
 
 export const processExecutionConfig = () => {
-  return executionConfig;
+  return executionConfig[0].fields;
 };
 
 

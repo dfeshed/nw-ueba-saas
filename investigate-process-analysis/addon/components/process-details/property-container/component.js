@@ -22,9 +22,12 @@ const stateToComputed = (state) => ({
 
 const PropertyContainer = Component.extend({
 
-  tagName: 'vbox',
+  tagName: '',
 
-  classNames: 'property-container',
+
+  executionLabelPrefix: 'investigateProcessAnalysis.processExecutionDetails.',
+
+  fileLabelPrefix: 'investigateProcessAnalysis.property.file.',
 
   @computed('processDetails')
   hasProcessDetails(processDetails) {
@@ -33,7 +36,6 @@ const PropertyContainer = Component.extend({
     }
     return false;
   }
-
 });
 
 export default connect(stateToComputed)(PropertyContainer);

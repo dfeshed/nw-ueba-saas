@@ -6,7 +6,8 @@ import {
   osType,
   rootHash,
   hasProperties,
-  processDetails
+  processDetails,
+  processExecutionConfig
 } from 'investigate-process-analysis/reducers/process-properties/selectors';
 
 module('Unit | Selectors | process-properties', function() {
@@ -107,6 +108,37 @@ module('Unit | Selectors | process-properties', function() {
     result = processDetails(selectedProcess);
     assert.equal(result.paramDst, 'DST');
     assert.equal(result.directoryDst, 'd:/');
+  });
+
+
+  test('processExecutionConfig', function(assert) {
+    const expectedResult =
+      [
+        {
+          'field': 'eventTime',
+          'format': 'DATE'
+        },
+        {
+          'field': 'processName'
+        },
+        {
+          'field': 'directoryDst'
+        },
+        {
+          'field': 'checksum'
+        },
+        {
+          'field': 'sessionId'
+        },
+        {
+          'field': 'userAll'
+        },
+        {
+          'field': 'paramDst'
+        }
+      ];
+    const data = processExecutionConfig();
+    assert.deepEqual(data, expectedResult);
   });
 
 });

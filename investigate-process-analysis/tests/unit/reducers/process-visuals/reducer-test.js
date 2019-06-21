@@ -6,7 +6,8 @@ import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
 const initialState = Immutable.from({
   detailsTabSelected: '',
   isEventPanelExpanded: false,
-  isProcessDetailsVisible: false
+  isProcessDetailsVisible: false,
+  isProcessInfoVisible: false
 });
 
 module('Unit | Reducers | process-visuals', function() {
@@ -32,4 +33,12 @@ module('Unit | Reducers | process-visuals', function() {
     assert.equal(result1.isProcessDetailsVisible, false);
     assert.equal(result2.isProcessDetailsVisible, true);
   });
+
+  test('TOGGLE_PROCESS_INFO_VISIBILITY toggles, process property panel', function(assert) {
+    const result1 = reducer(initialState, { type: ACTION_TYPES.TOGGLE_PROCESS_INFO_VISIBILITY, payload: false });
+    const result2 = reducer(initialState, { type: ACTION_TYPES.TOGGLE_PROCESS_INFO_VISIBILITY, payload: true });
+    assert.equal(result1.isProcessInfoVisible, false);
+    assert.equal(result2.isProcessInfoVisible, true);
+  });
+
 });

@@ -1,9 +1,16 @@
 {{#if hasError}}
   {{rsa-panel-message title=(t 'investigateShared.endpoint.errorTitle') message=errorMessage}}
 {{else}}
-  {{query-container executeQuery=executeQuery}}
-  <hbox class="process-details-container">
-    {{process-tree queryInput=queryInput}}
-    {{process-details}}
-  </hbox>
+  <box>
+    {{query-container executeQuery=executeQuery}}
+    <hbox class="process-details-container">
+      {{process-tree queryInput=queryInput}}
+      {{process-details}}
+    </hbox>
+  </box>
+  {{#if isProcessInfoVisible}}
+    <div class="process-properties-container">
+      {{process-details/property-container}}
+    </div>
+  {{/if}}
 {{/if}}

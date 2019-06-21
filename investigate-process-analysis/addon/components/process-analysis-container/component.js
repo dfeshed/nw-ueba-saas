@@ -16,7 +16,8 @@ const stateToComputed = (state) => ({
   errorMessage: errorMessage(state),
   queryInput: queryInput(state),
   isEventPanelExpanded: state.processAnalysis.processVisuals.isEventPanelExpanded,
-  isProcessDetailsVisible: state.processAnalysis.processVisuals.isProcessDetailsVisible
+  isProcessDetailsVisible: state.processAnalysis.processVisuals.isProcessDetailsVisible,
+  isProcessInfoVisible: state.processAnalysis.processVisuals.isProcessInfoVisible
 });
 
 const WrapperComponent = Component.extend({

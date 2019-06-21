@@ -16,4 +16,6 @@ export const toggleProcessDetailsVisibility = (payload) => {
   };
 };
 
+export const isNodeSelected = (payload) => ({ type: ACTION_TYPES.TOGGLE_PROCESS_INFO_VISIBILITY, payload });
+
 

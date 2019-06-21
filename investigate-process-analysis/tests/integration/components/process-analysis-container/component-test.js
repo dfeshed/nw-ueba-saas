@@ -61,4 +61,18 @@ module('Integration | Component | process-analysis-container', function(hooks) {
     assert.equal(findAll('.process-analysis-container.hide-process-details').length, 1, 'details hidden');
   });
 
+  test('properties visible when a process is selected', async function(assert) {
+    setState({
+      processAnalysis: {
+        processVisuals: {
+          isProcessInfoVisible: true,
+          detailsTabSelected: {
+            name: 'events'
+          }
+        }
+      }
+    });
+    await render(hbs`{{process-analysis-container}}`);
+    assert.equal(findAll('.process-analysis-container').length, 1, 'properties panel appearing');
+  });
 });

@@ -32,7 +32,7 @@ import {
   children,
   selectedProcessPath
 } from 'investigate-process-analysis/reducers/process-tree/selectors';
-import { setDetailsTab, toggleProcessDetailsVisibility } from 'investigate-process-analysis/actions/creators/process-visuals';
+import { setDetailsTab, toggleProcessDetailsVisibility, isNodeSelected } from 'investigate-process-analysis/actions/creators/process-visuals';
 import { getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 
 import {
@@ -69,7 +69,8 @@ const dispatchToActions = {
   onEventNodeSelected,
   getHostContext,
   getRespondServerStatus,
-  getRiskScoreContext
+  getRiskScoreContext,
+  isNodeSelected
 };
 
 let freeIdCounter = 0;
@@ -494,9 +495,10 @@ const TreeComponent = Component.extend({
       .duration(CONST.DURATION)
       .call(this.get('zoomBehaviour').transform, transform);
 
-    const checksum = d.data.checksum ? d.data.checksum : d.data['checksum.dst'];
+    const checksum = d.data.checksum ? d.data.checksum : d.data.checksumDst;
     const hashes = [checksum];
     const isSelected = addSelectedClass(d.data.processId);
+    this.send('isNodeSelected', isSelected);
     if (isSelected) {
       const payload = { process: _.omit(d.data, 'children'), hashes, processId: d.data.processId };
       this.send('onEventNodeSelected', payload);

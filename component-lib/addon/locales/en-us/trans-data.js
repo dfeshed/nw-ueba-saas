@@ -2328,7 +2328,7 @@ export default {
       whatNextContentStep1: '1. Specify the password and download the Relay Server installer. The same installer can be used for multiple Relay server installation.',
       whatNextContentStep2: '2. Install the Relay Server on a CentOS 7 appliance (for example, a server in cloud/DMZ).',
       whatNextContentStep3: '3. Configure the Relay Server and ESH details.',
-      moreHelp: 'For more information on the agent installation, see NetWitness Endpoint Agent Installation Guide.'
+      moreHelp: 'For more information, see NetWitness Endpoint Configuration Guide.'
     }
   },
   investigateFiles: {
@@ -4088,6 +4088,7 @@ export default {
       }
     },
     processExecutionDetails: {
+      title: 'Execution Details',
       userAll: 'User Name',
       eventTime: 'Event Time',
       directoryDst: 'File Location',
