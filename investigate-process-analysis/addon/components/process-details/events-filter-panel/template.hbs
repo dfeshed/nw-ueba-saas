@@ -7,11 +7,13 @@
     {{rsa-icon name='close'}}
   {{/rsa-form-button}}
 </hbox>
-{{#each filterConfig as |filter|}}
-  {{#if filter.options.length}}
-    {{process-details/events-filter-panel/meta-filter filter=filter}}
-  {{/if}}
-{{/each}}
+<box class="filter-content">
+  {{#each filterConfig as |filter|}}
+    {{#if filter.options.length}}
+      {{process-details/events-filter-panel/meta-filter filter=filter}}
+    {{/if}}
+  {{/each}}
+</box>
 <div class='filter-footer'>
   {{#rsa-form-button class="reset-button" click=(action 'resetFilterValue' selectedProcessId)}}
     {{t 'dataFilters.reset'}}

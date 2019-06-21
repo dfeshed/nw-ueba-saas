@@ -1,51 +1,64 @@
 .eventsFilterPanel {
-  font-size: 12px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  color: text-color(primary, lighter);
-  .label {
-    text-align: left;
+  width: 0;
+  transition: width .5s;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  .filter-content {
+    font-size: 12px;
+    overflow-y: auto;
+    overflow-x: hidden;
     color: text-color(primary, lighter);
-    font-weight: 100;
-    font-size: 1.28rem;
-    letter-spacing: 0.05rem;
-  }
-  .resetFilter {
-    float: right;
-    cursor: pointer;
-  }
-  .meta-filter {
-    padding: rsa-whitespace();
-    .filterName {
-      margin: 8px 0;
-      text-transform: capitalize;
+    .label {
+      text-align: left;
+      color: text-color(primary, lighter);
+      font-weight: 100;
+      font-size: 1.28rem;
+      letter-spacing: 0.05rem;
     }
-    .filterItem {
-      display: inline-block;
-      border-radius: 5px;
-      border: 1px solid #fff;
-      padding: 2px 5px;
-      margin: 5px;
+    .resetFilter {
+      float: right;
       cursor: pointer;
-      max-width: 160px;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      &.is-selected {
-        background-color: border-color(secondary);
-        border: 1px solid border-color(secondary);
+    }
+
+    .filter-footer {
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+    }
+    .meta-filter {
+      padding: rsa-whitespace();
+      .filterName {
+        margin: 8px 0;
+        text-transform: capitalize;
+      }
+      .filterItem {
+        display: inline-block;
+        border-radius: 5px;
+        border: 1px solid #fff;
+        padding: 2px 5px;
+        margin: 5px;
+        cursor: pointer;
+        max-width: 160px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        &.is-selected {
+          background-color: border-color(secondary);
+          border: 1px solid border-color(secondary);
+        }
       }
     }
+    hr {
+      border-color: text-color(primary, light);
+    }
   }
-  hr {
-    border-color: text-color(primary, light);
-  }
-}
 
-.reset-button {
-  @include border-top(1px, solid, primary, dark, opaque);
-  padding: rsa-whitespace(less);
-  width: 100%;
-  button {
+  .reset-button {
+    @include border-top(1px, solid, primary, dark, opaque);
+    padding: rsa-whitespace(less);
     width: 100%;
+    button {
+      width: 100%;
+    }
   }
 }

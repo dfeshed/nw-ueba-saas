@@ -13,8 +13,7 @@ const dispatchToActions = {
 
 const eventsFilterPanel = Component.extend({
 
-  classNames: ['eventsFilterPanel'],
-  tagName: 'vbox'
+  classNames: ['eventsFilterPanel']
 
 });
 

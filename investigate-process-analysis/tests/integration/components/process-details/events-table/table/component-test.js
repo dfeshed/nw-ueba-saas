@@ -58,6 +58,7 @@ module('Integration | Component | process-details/events-table/table', function(
   });
 
   test('it renders the header', async function(assert) {
+
     const eventsData = [
       {
         sessionId: 45328,
@@ -85,4 +86,39 @@ module('Integration | Component | process-details/events-table/table', function(
     await render(hbs`{{process-details/events-table/table}}`);
     assert.equal(findAll('.rsa-data-table-header .js-move-handle').length, 12, 'Move handler exist for all the columns');
   });
+
+  test('clicking the header button will call the external action', async function(assert) {
+    assert.expect(2);
+    this.set('toggleFilterPanel', function() {
+      assert.ok(true);
+    });
+    const eventsData = [
+      {
+        sessionId: 45328,
+        time: 1525950159000,
+        id: 'event_3'
+      },
+      {
+        sessionId: 45337,
+        time: 1525950159000,
+        id: 'event_4'
+      }];
+
+    new ReduxDataHelper(setState)
+      .eventsData(eventsData)
+      .eventsFilteredCount(2)
+      .build();
+    const timezone = this.owner.lookup('service:timezone');
+    const timeFormat = this.owner.lookup('service:timeFormat');
+    const dateFormat = this.owner.lookup('service:dateFormat');
+
+    timezone.set('_selected', { zoneId: 'UTC' });
+    timeFormat.set('_selected', { format: 'hh:mm:ss' });
+    dateFormat.set('_selected', { format: 'YYYY-MM-DD' });
+
+    await render(hbs`{{process-details/events-table/table toggleFilterPanel=(action toggleFilterPanel)}}`);
+    assert.equal(findAll('.title-header').length, 1, 'Header section exists');
+    await click('.filter-button button');
+  });
+
 });

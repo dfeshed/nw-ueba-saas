@@ -1,5 +1,6 @@
 {{#if hasError}}
   {{rsa-panel-message title=(t 'investigateShared.endpoint.errorTitle') message=errorMessage}}
 {{else}}
+  {{process-details/events-filter-panel toggleFilterPanel=(action 'toggleFilterPanel')}}
   {{process-details/events-table/table toggleFilterPanel=(action 'toggleFilterPanel')}}
 {{/if}}

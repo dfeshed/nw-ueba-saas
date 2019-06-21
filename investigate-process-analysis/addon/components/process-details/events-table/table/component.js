@@ -19,7 +19,11 @@ const dispatchToActions = {
   setSortField
 };
 const processEventsTable = Component.extend({
+
   classNames: ['process-events-table'],
+
+  tagName: 'box',
+
   actions: {
     sort(column) {
       column.set('isDescending', !column.isDescending);
