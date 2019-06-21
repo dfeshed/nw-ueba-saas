@@ -118,11 +118,11 @@ export const fetchInvestigateData = () => {
       // Get event count
       dispatch(getEventCount());
 
-      if (canFetchMeta(getState())) {
-        dispatch(metaGet(true));
-      }
       if (_showFutureFeatures) {
         dispatch(getEventTimeline());
+        if (canFetchMeta(getState())) {
+          dispatch(metaGet(true));
+        }
       }
 
       // COMMENTING OUT USAGE OF EVENTS START NEWEST AS IT ASSUMES

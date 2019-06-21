@@ -33,12 +33,14 @@
     {{#if (or atLeastOneQueryIssued hasIncommingQueryParams)}}
       <section class="{{queryBodyClass}}">
         <section class="rsa-investigate-query__body-master">
-          <aside class="rsa-investigate-query__body-master-aside">
-            {{meta-view
-              metaPanelSize=metaPanelSize
-              executeQuery=executeQuery
-            }}
-          </aside>
+          {{#if showFutureFeatures}}
+            <aside class="rsa-investigate-query__body-master-aside">
+              {{meta-view
+                metaPanelSize=metaPanelSize
+                executeQuery=executeQuery
+              }}
+            </aside>
+          {{/if}}
           <section class="rsa-investigate-query__body-master-main">
             {{events-table-container
               selectEvent=selectEvent
