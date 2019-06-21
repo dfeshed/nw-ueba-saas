@@ -13,6 +13,10 @@ export const isNumeric = (x) => {
   return !Array.isArray(x) && (x - parseFloat(x) + 1) >= 0;
 };
 
+/**
+ * jQuery .height()
+ * @param {*} elem
+ */
 export const getHeight = (elem) => {
   const style = getComputedStyle(elem);
   const paddingY = getPaddingY(elem);
@@ -32,14 +36,17 @@ export const getHeight = (elem) => {
 
   // if style.height has px value (not 'auto'), use it
   // more precise than .offsetHeight which is rounded
-  const computedStyleHeight = style.getPropertyValue('height');
-  if (computedStyleHeight && computedStyleHeight.indexOf('px') > -1) {
-    height = +(computedStyleHeight.split('px')[0]);
+  const parseFloatHeight = parseFloat(style.getPropertyValue('height'));
+  if (!isNaN(parseFloatHeight)) {
+    height = parseFloatHeight;
   }
-
   return height;
 };
 
+/**
+ * jQuery .width()
+ * @param {*} elem
+ */
 export const getWidth = (elem) => {
   const style = getComputedStyle(elem);
   const paddingX = getPaddingX(elem);
@@ -59,11 +66,10 @@ export const getWidth = (elem) => {
 
   // if style.width has px value (not 'auto'), use it
   // more precise than .offsetWidth which is rounded
-  const computedStyleWidth = style.getPropertyValue('width');
-  if (computedStyleWidth && computedStyleWidth.indexOf('px') > -1) {
-    width = +(computedStyleWidth.split('px')[0]);
+  const parseFloatWidth = parseFloat(style.getPropertyValue('width'));
+  if (!isNaN(parseFloatWidth)) {
+    width = parseFloatWidth;
   }
-
   return width;
 };
 
@@ -95,6 +101,44 @@ export const getBorderY = (elem) => {
   return borderTop + borderBottom;
 };
 
+/**
+ * jQuery (':visible')
+ * @param {*} elements NodeList
+ */
+export const visible = function(elements) {
+  const found = [];
+  for (const el of elements) {
+    if (el.offsetWidth > 0 && el.offsetHeight > 0) {
+      found.push(el);
+    }
+  }
+  return found;
+};
+
+/**
+ * jQuery .text()
+ * get the combined text contents of each element in the set of matched elements including their descendants
+ * @param {*} elem
+ */
+export const text = function(elem) {
+  let node;
+  let ret = '';
+  let i = 0;
+
+  if (!elem.nodeType) {
+    // If no nodeType, this is expected to be an array
+    while ((node = elem[ i++ ])) {
+      ret += text(node);
+    }
+  } else if (elem.nodeType === 1 || elem.nodeType === 9 || elem.nodeType === 11) {
+    return elem.textContent;
+
+  } else if (elem.nodeType === 3 || elem.nodeType === 4) {
+    return elem.nodeValue;
+  }
+  return ret;
+};
+
 // Easy replacement docs
 
 //
@@ -124,6 +168,9 @@ export const getBorderY = (elem) => {
 // $('.some-elements').first()
 // document.querySelectorAll('.some-element').item(0)
 // findAll('.some-element').shift()
+
+// $(':visible')
+// visible(NodeList) - see above
 
 //
 // MANIPULATING ELEMENTS
@@ -222,6 +269,9 @@ export const getBorderY = (elem) => {
 
 // $.is('.some-class')
 // Element.classList.contains('some-class')
+
+// $('.some-element').text()
+// text(some-element) - see above
 
 //
 // ATTRIBUTES

@@ -2,7 +2,7 @@ import { render, settled, click } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import $ from 'jquery';
+import { visible, text } from 'component-lib/utils/jquery-replacement';
 
 const items = [
   {
@@ -63,7 +63,6 @@ module('Integration | Component | rsa data table/header', function(hooks) {
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
-
   test('it should show column chooser and filter', async function(assert) {
     this.set('items', items);
     this.set('columnsConfig', columnsConfigNoTranslate);
@@ -76,13 +75,20 @@ module('Integration | Component | rsa data table/header', function(hooks) {
       {{/rsa-data-table}}
     `);
 
-    assert.equal($('.ember-tether .rsa-data-table-column-selector-panel:visible').length, 0, 'Should show panel selector');
+    // substitute for $('.ember-tether .rsa-data-table-column-selector-panel:visible')
+    const elements = document.querySelectorAll('.ember-tether .rsa-data-table-column-selector-panel');
+    const found = visible(elements);
+    assert.equal(found.length, 0, 'Should show panel selector');
 
     await click('.rsa-data-table-header__column-selector');
+
     return settled().then(() => {
-      assert.equal($('.ember-tether .rsa-data-table-column-selector-panel:visible').length, 1, 'Should show panel selector');
-      assert.equal($('.search-text-field input').length, 1, 'Should show column filter');
-      assert.equal($('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 4, 'Displaying all available columns on column-selector');
+      // substitute for $('.ember-tether .rsa-data-table-column-selector-panel:visible')
+      const elements = document.querySelectorAll('.ember-tether .rsa-data-table-column-selector-panel');
+      const found = visible(elements);
+      assert.equal(found.length, 1, 'Should show panel selector');
+      assert.equal(document.querySelectorAll('.search-text-field input').length, 1, 'Should show column filter');
+      assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 4, 'Displaying all available columns on column-selector');
     });
 
   });
@@ -100,13 +106,19 @@ module('Integration | Component | rsa data table/header', function(hooks) {
       {{/rsa-data-table}}
     `);
 
-    assert.equal($('.ember-tether .rsa-data-table-column-selector-panel:visible').length, 0, 'Should show panel selector');
+    // substitute for $('.ember-tether .rsa-data-table-column-selector-panel:visible')
+    const elements = document.querySelectorAll('.ember-tether .rsa-data-table-column-selector-panel');
+    const found = visible(elements);
+    assert.equal(found.length, 0, 'Should show panel selector');
 
     await click('.rsa-data-table-header__column-selector');
     return settled().then(() => {
-      assert.equal($('.ember-tether .rsa-data-table-column-selector-panel:visible').length, 1, 'Should show panel selector');
-      assert.equal($('.search-text-field input').length, 0, 'Should not show column filter');
-      assert.equal($('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 4, 'Displaying all available columns on column-selector');
+      // substitute for $('.ember-tether .rsa-data-table-column-selector-panel:visible')
+      const elements = document.querySelectorAll('.ember-tether .rsa-data-table-column-selector-panel');
+      const found = visible(elements);
+      assert.equal(found.length, 1, 'Should show panel selector');
+      assert.equal(document.querySelectorAll('.search-text-field input').length, 0, 'Should not show column filter');
+      assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 4, 'Displaying all available columns on column-selector');
     });
 
   });
@@ -124,10 +136,13 @@ module('Integration | Component | rsa data table/header', function(hooks) {
     `);
     await click('.rsa-data-table-header__column-selector');
     return settled().then(() => {
-      assert.equal($('.ember-tether .rsa-data-table-column-selector-panel:visible').length, 1, 'Should show panel selector');
+      // substitute for $('.ember-tether .rsa-data-table-column-selector-panel:visible')
+      const elements = document.querySelectorAll('.ember-tether .rsa-data-table-column-selector-panel');
+      const found = visible(elements);
+      assert.equal(found.length, 1, 'Should show panel selector');
       return settled().then(() => {
         this.set('searchTerm', 'xy');
-        assert.equal($('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 4, 'Displaying all available columns on column-selector');
+        assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 4, 'Displaying all available columns on column-selector');
       });
     });
 
@@ -146,10 +161,10 @@ module('Integration | Component | rsa data table/header', function(hooks) {
     `);
     await click('.rsa-data-table-header__column-selector');
     return settled().then(() => {
-      assert.equal($('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 4, 'Displaying all available columns on column-selector');
+      assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 4, 'Displaying all available columns on column-selector');
       this.set('searchTerm', 'xyz');
       return settled().then(() => {
-        assert.equal($('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 2, 'Displaying all available columns on column-selector');
+        assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 2, 'Displaying all available columns on column-selector');
       });
     });
   });
@@ -168,10 +183,10 @@ module('Integration | Component | rsa data table/header', function(hooks) {
     `);
     await click('.rsa-data-table-header__column-selector');
     return settled().then(() => {
-      assert.equal($('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 4, 'Displaying all available columns on column-selector');
+      assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 4, 'Displaying all available columns on column-selector');
       this.set('searchTerm', 'file');
       return settled().then(() => {
-        assert.equal($('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 1, 'Displaying all available columns on column-selector');
+        assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 1, 'Displaying all available columns on column-selector');
       });
     });
   });
@@ -189,10 +204,10 @@ module('Integration | Component | rsa data table/header', function(hooks) {
     `);
     await click('.rsa-data-table-header__column-selector');
     return settled().then(() => {
-      assert.equal($('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 4, 'Displaying all available columns on column-selector');
+      assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 4, 'Displaying all available columns on column-selector');
       this.set('searchTerm', 'xyz');
       return settled().then(() => {
-        assert.equal($('.rsa-data-table-column-selector-panel .no-matching-columns').text().trim(), 'No matching columns', 'No matching columns message displayed');
+        assert.equal(text(document.querySelector('.rsa-data-table-column-selector-panel .no-matching-columns')).trim(), 'No matching columns', 'No matching columns message displayed');
       });
     });
   });
