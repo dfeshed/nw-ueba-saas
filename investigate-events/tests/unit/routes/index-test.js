@@ -16,9 +16,7 @@ let redux;
 
 const isBaseInvestigateIntializationComplete = () => {
   const { investigate } = redux.getState();
-
   const { dictionaries, queryNode, services, data } = investigate;
-
   const columnGroupsCameback = (data.columnGroups || []).length > 5;
   const preferencesCameBack = queryNode.queryTimeFormat === 'DB';
   const aliasesCameBack = Object.keys(dictionaries.aliases || {}).length === 9;
@@ -26,7 +24,7 @@ const isBaseInvestigateIntializationComplete = () => {
   const servicesCameBack = (services.serviceData || []).length === 4;
 
   // Useful, leaving for later
-  // console.log(columnGroupsCameback, preferencesCameBack, aliasesCameBack, languagesCameBack, servicesCameBack);
+  // console.log(columnGroupsCameback, preferencesCameBack, aliasesCameBack, languagesCameBack, servicesCameBack);// esline-disable-line
 
   return columnGroupsCameback && preferencesCameBack && aliasesCameBack && languagesCameBack && servicesCameBack;
 };
@@ -62,14 +60,11 @@ module('Unit | Route | investigate-events.index', function(hooks) {
     // setup reducer and route
     patchReducer(this, Immutable.from({}));
     const route = setupRoute.call(this);
-
     const params = { pdhash: undefined };
 
     // execute model hook
     await route.model(params);
-
     await settled();
-
     assert.equal(initializationCreatorsMock.callCount, 1, 'should call intializationCreators');
     assert.deepEqual(initializationCreatorsMock.args[0][0], params, 'params should be passed into initialize');
     assert.equal(initializationCreatorsMock.args[0][2], true, 'hardReset should be true when no populated values present');
@@ -84,27 +79,21 @@ module('Unit | Route | investigate-events.index', function(hooks) {
     // setup reducer and route
     patchReducer(this, Immutable.from({}));
     const route = setupRoute.call(this);
-    const params = { pdhash: undefined };
 
     // execute model hook
-    await route.model(params);
-
+    await route.model({});
     await settled();
-
     return waitUntil(() => {
-
       if (fetchInvestigateDataSpy.callCount > 0) {
         assert.ok(false, 'should not call into fetchInvestigateData');
         fetchInvestigateDataSpy.restore();
         return true;
       }
-
       if (isBaseInvestigateIntializationComplete()) {
         assert.ok(true, 'all the expected data was populated');
         fetchInvestigateDataSpy.restore();
         return true;
       }
-
       return false;
     }, { timeout: 15000 });
   });
@@ -120,20 +109,15 @@ module('Unit | Route | investigate-events.index', function(hooks) {
 
     // execute model hook
     await route.model(params);
-
     await settled();
-
     return waitUntil(() => {
-
       if (fetchInvestigateDataSpy.callCount > 0) {
         assert.ok(false, 'should not call into fetchInvestigateData');
         fetchInvestigateDataSpy.restore();
         return true;
       }
-
       if (isBaseInvestigateIntializationComplete()) {
         assert.ok(true, 'all the expected initial data was populated');
-
         const { investigate } = redux.getState();
         // when coming in with service, the times are set automatically and
         // the query is initialized not not executed
@@ -143,7 +127,6 @@ module('Unit | Route | investigate-events.index', function(hooks) {
           return true;
         }
       }
-
       return false;
     }, { timeout: 10000 });
   });
@@ -159,32 +142,24 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       sid: '555d9a6fe4b0d37c827d402e',
       et: '10000',
       st: '1',
-      pdhash: 'td5a,76ty,0o9i'
+      pdhash: ['d9ee', '934i', 's09e']
     };
 
     // execute model hook
     await route.model(params);
-
     await settled();
-
     return waitUntil(() => {
-
       const baseComplete = isBaseInvestigateIntializationComplete();
       const calledFetchData = fetchInvestigateDataSpy.callCount === 1;
-
       const { queryNode } = redux.getState().investigate;
-
       const hashes = queryNode.pillDataHashes || [];
-
-      const pillDataHashesPresent = hashes.length === 3 && hashes[0] === 'td5a';
+      const pillDataHashesPresent = hashes.length === 3 && hashes[0] === 'd9ee';
       const pillsDataPopulated = queryNode.pillsData.length === 3;
-
       if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated) {
         assert.ok(true, 'all the expected initial data was populated and query executed');
         fetchInvestigateDataSpy.restore();
         return true;
       }
-
       return false;
     }, { timeout: 10000 });
   });
@@ -211,15 +186,13 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       const { queryNode } = redux.getState().investigate;
       const hashes = queryNode.pillDataHashes || [];
       // The mocks for persisting params returns a 4-character string for each filter
-      const pillDataHashesPresent = hashes.length === 1 && hashes[0].length === 4;
+      const pillDataHashesPresent = hashes.length === 1 && hashes[0] === 's09e';
       const pillsDataPopulated = queryNode.pillsData.length === 1;
-
       if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated) {
         assert.ok(true, 'all the expected initial data was populated and query executed');
         fetchInvestigateDataSpy.restore();
         return true;
       }
-
       return false;
     }, { timeout: 10000 });
   });
@@ -236,7 +209,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       et: '10000',
       st: '1',
       mf: "action = 'foo'",
-      pdhash: 'r03j'
+      pdhash: 'd9ee'
     };
 
     await route.model(params);
@@ -246,16 +219,14 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       const calledFetchData = fetchInvestigateDataSpy.callCount === 1;
       const { queryNode } = redux.getState().investigate;
       const hashes = queryNode.pillDataHashes || [];
-      const pillDataHashesPresent = hashes.length === 2 && hashes.includes('r03j');
-      const arePillsInOrder = (hashes.indexOf('r03j') === 0);
+      const pillDataHashesPresent = hashes.length === 2 && hashes.includes('d9ee');
+      const arePillsInOrder = (hashes.indexOf('d9ee') === 0);
       const pillsDataPopulated = queryNode.pillsData.length === 2;
-
       if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated && arePillsInOrder) {
         assert.ok(true, 'all the expected initial data was populated and query executed');
         fetchInvestigateDataSpy.restore();
         return true;
       }
-
       return false;
     }, { timeout: 10000 });
   });

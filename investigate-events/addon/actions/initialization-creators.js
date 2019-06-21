@@ -344,9 +344,11 @@ const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, hashNavigateCall
   } else {
     return getParamsForHashes(pdHashesWithoutTextFilter)
       .then(({ data: paramsObjectArray }) => {
-        // pull the actual param values out of
-        // the returned params objects
+        // Pull the actual param values out of the returned params objects.
         const paramsArray = paramsObjectArray.map((pO) => pO.query);
+        // TODO - Each param object might have some top level logical operators.
+        // We need to split on those. We will use the parsing logic Austin
+        // created here when it's ready.
         const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
         // Transform server param strings into pill data objects
         // and dispatch those to state

@@ -1,5 +1,4 @@
 import { lookup } from 'ember-dependency-lookup';
-
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 
 const MODEL_NAME = 'query-hashes';
@@ -18,43 +17,33 @@ const getParamsForHashes = (hashes) => {
   });
 };
 
-// Takes query inputs and sends them off
-// to get a hash.
+const _generatePredicateRequest = (pillDataArray) => ({
+  query: encodeMetaFilterConditions(pillDataArray)
+});
 
+// Takes query inputs and sends them off to get a hash.
 const getHashForParams = (pillData) => {
   const request = lookup('service:request');
-
-  // fire and forget, we want to persist the ENTIRE
-  // query as one hash, but do not need to know the
-  // outcome. But we only need to send this if
-  // there is more than one pill, otherwise the
-  // request below does the work of sending the
-  // entire query
+  // Save off each individual pill if there's more than one. We do not need to
+  // wait for the return as we don't care about these individual pills.
   if (pillData.length > 1) {
-    const pillDataAsString = encodeMetaFilterConditions(pillData);
+    // const predicateRequests = pillData.map((pD) => _generatePredicateRequest(pD));
     request.promiseRequest({
       modelName: MODEL_NAME,
       method: 'persist',
       query: {
-        predicateRequests: [{
-          query: pillDataAsString
-        }]
+        predicateRequests: pillData.map((pD) => _generatePredicateRequest([pD]))
       }
     });
   }
-
-  const predicateRequests = pillData.map((pD) => {
-    const pillDataString = encodeMetaFilterConditions([pD]);
-    return {
-      query: pillDataString
-    };
-  });
-
+  // This is what we care about. This is all the pills stringified, and saved as
+  // one hash. We wait for this because this is the hash we put in the URL.
+  // const pillDataAsString = encodeMetaFilterConditions(pillData);
   return request.promiseRequest({
     modelName: MODEL_NAME,
     method: 'persist',
     query: {
-      predicateRequests
+      predicateRequests: [_generatePredicateRequest(pillData)]
     }
   });
 };

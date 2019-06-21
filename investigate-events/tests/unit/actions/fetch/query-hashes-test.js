@@ -14,14 +14,17 @@ module('Unit | API | query-hashes', function(hooks) {
 
   test('it creates the proper query for the getParamsForHashes API method', function(assert) {
     const done = assert.async();
-    const hashes = ['1', '67', '22'];
     assert.expect(3);
+
+    const hashes = ['1', '67', '22'];
+
     patchSocket((method, modelName, query) => {
       assert.equal(modelName, 'query-hashes');
       assert.equal(method, 'find');
       assert.deepEqual(query, { predicateIds: hashes });
       done();
     });
+
     getParamsForHashes(hashes);
   });
 
@@ -30,8 +33,6 @@ module('Unit | API | query-hashes', function(hooks) {
     assert.expect(3);
 
     const { investigate } = new ReduxDataHelper().language().pillsDataPopulated().build();
-
-    const { languages } = investigate.dictionaries;
     const { pillsData } = investigate.queryNode;
 
     patchSocket((method, modelName, query) => {
@@ -39,14 +40,14 @@ module('Unit | API | query-hashes', function(hooks) {
       assert.equal(method, 'persist');
       assert.deepEqual(query, {
         predicateRequests: [
-          {
-            query: "a = 'x' && b = 'y'"
-          }
+          { query: "a = 'x'" },
+          { query: "b = 'y'" }
         ]
       });
       done();
     });
-    getHashForParams(pillsData, languages);
+
+    getHashForParams(pillsData);
   });
 
 });

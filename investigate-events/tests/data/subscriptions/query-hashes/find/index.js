@@ -1,12 +1,12 @@
-const _generateDataFromHashes = (hashes) => {
-  return hashes.map((hash, i) => ({
-    id: `${i + 1}`,
-    query: `action = 'value ${i + 1}'`,
-    displayName: 'HTTP',
-    createdBy: 'Jay',
-    createdOn: 1,
-    lastUsed: 1
-  }));
+import { hashCache } from '..';
+
+/**
+ * Finds predicate objects in the hash by its Id.
+ * @param {object} hashIds[] Array of Ids to look for.
+ */
+const _getFromHash = (hashIds = []) => {
+  console.log(`FIND::_getFromHash(${hashIds}): hashCache =`, hashCache);// eslint-disable-line
+  return hashIds.map((hashId) => hashCache.find((d) => d.id === hashId));
 };
 
 export default {
@@ -18,7 +18,7 @@ export default {
       meta: {
         complete: false
       },
-      data: _generateDataFromHashes(predicateIds)
+      data: _getFromHash(predicateIds)
     };
   }
 };
