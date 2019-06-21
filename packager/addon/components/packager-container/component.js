@@ -26,7 +26,7 @@ const dispatchToActions = {
 const Container = Component.extend({
   layout,
   tagName: 'box',
-  classNames: 'packager-container rsa-application-layout-panel-content input-content',
+  classNames: ['packager-container', 'rsa-application-layout-panel-content', 'input-content'],
   serverId: null,
   helpText,
   // download link for packager

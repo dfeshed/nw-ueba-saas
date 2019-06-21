@@ -47,8 +47,7 @@ const getConfig = (servers, serverIdFromURL) => {
       promise: getPackagerConfig(),
       meta: {
         onSuccess: (response) => {
-          const serverId = response.data.serviceId || serverIdFromURL;
-          const selectedServer = servers.find((server) => server.id === serverId);
+          const selectedServer = servers.find((server) => server.id === serverIdFromURL);
           if (selectedServer) {
             dispatch(setSelectedServer(selectedServer));
           }
