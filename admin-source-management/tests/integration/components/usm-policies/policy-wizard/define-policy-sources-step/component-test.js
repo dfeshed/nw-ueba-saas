@@ -150,7 +150,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       .policyWizFileSources(sources)
       .build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    const value = 'filter-1, filter-2';
+    const value = 'filter-1\nfilter-2\nfilter-3';
     const [eventIdEl] = findAll('.exclusion-filters textarea');
     await fillIn(eventIdEl, value);
     await triggerEvent(eventIdEl, 'blur');

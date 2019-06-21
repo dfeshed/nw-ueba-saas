@@ -2,7 +2,6 @@ import layout from './template';
 import computed from 'ember-computed-decorators';
 import DataTableBody from '../component';
 import { enableOnAgentConfig, dataCollectionConfig, encodingOptions } from './settings';
-import { removeQuotes, arrToString } from 'admin-source-management/utils/string-util';
 
 export default DataTableBody.extend({
   layout,
@@ -15,7 +14,7 @@ export default DataTableBody.extend({
   exclusionFilters(filter) {
     // Since filter is stored as an array in state, convert to string and display it in the textarea.
     if (filter) {
-      return arrToString(filter);
+      return filter.join('\n');
     }
   },
 
@@ -28,14 +27,10 @@ export default DataTableBody.extend({
       // capture the value from the textarea
       const { value } = option.target;
       // convert the entered string into an array delimited by a new line and store in state
-      // abc\ndef becomes ["abc", "def"]
-      // 'abc'\n'def' -> ["abc", "def"]
-      // "abc"\n"def" -> ["abc", "def"]
-      // "abc"\n'def' -> ["abc", "def"]
-      // "abc*"\n"def-*" -> ["abc*", "def-*"]
       let arr = [];
       if (value.trim()) {
-        arr = value.trim().split('\n').map((entry) => removeQuotes(entry));
+        // filter to remove empty/null/whitespace entries from array
+        arr = value.trim().split('\n').filter((e) => Boolean(e.trim()));
       }
       this.set(`item.${column}`, arr);
       this.get('sourceUpdated')();
