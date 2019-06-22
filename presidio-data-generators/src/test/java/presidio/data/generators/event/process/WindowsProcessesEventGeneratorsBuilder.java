@@ -28,26 +28,14 @@ public class WindowsProcessesEventGeneratorsBuilder extends UseCaseEventGenerato
 
 
     //window processes. Normal behavior + abnormal time.
-    private final int WINDOWS_PROCESS_INJECTED_NUM_OF_NORMAL_USERS = 90000;
-    private final int WINDOWS_PROCESS_INJECTED_NUM_OF_NORMAL_USERS_DAILY = 70000;
-    private final double WINDOWS_PROCESS_INJECTED_PROBABILITY_NORMAL_USER = 0.1; //~5 events per hour per user
-    private final int WINDOWS_PROCESS_INJECTED_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_NORMAL_USERS = 120000; //120 seconds. (8*3600/60)*0.1 =~13 users
     private final int WINDOWS_PROCESS_INJECTED_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 5;
     private final int WINDOWS_PROCESS_INJECTED_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 50;
     private final int WINDOWS_PROCESS_INJECTED_MIN_NUM_OF_WINDOWS_PROCESS_PROCESSES_PER_NORMAL_USER = 1;
     private final int WINDOWS_PROCESS_INJECTED_MAX_NUM_OF_WINDOWS_PROCESS_PROCESSES_PER_NORMAL_USER = 10;
-    private final int WINDOWS_PROCESS_INJECTED_NUM_OF_ADMIN_USERS = 5000;
-    private final int WINDOWS_PROCESS_INJECTED_NUM_OF_ADMIN_USERS_DAILY = 4900;
-    private final double WINDOWS_PROCESS_INJECTED_PROBABILITY_ADMIN_USER = 0.136; // ~100 events per hour per user
-    private final int WINDOWS_PROCESS_INJECTED_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_ADMIN_USERS = 120000; //120 seconds. (2*3600/120)*0.136 = ~8 users
     private final int WINDOWS_PROCESS_INJECTED_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 5;
     private final int WINDOWS_PROCESS_INJECTED_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 100;
     private final int WINDOWS_PROCESS_INJECTED_MIN_NUM_OF_WINDOWS_PROCESS_PROCESSES_PER_ADMIN_USER = 1;
     private final int WINDOWS_PROCESS_INJECTED_MAX_NUM_OF_WINDOWS_PROCESS_PROCESSES_PER_ADMIN_USER = 10;
-    private final int WINDOWS_PROCESS_INJECTED_NUM_OF_SERVICE_ACCOUNT_USERS = 100;
-    private final int WINDOWS_PROCESS_INJECTED_NUM_OF_SERVICE_ACCOUNT_USERS_DAILY = 20;
-    private final double WINDOWS_PROCESS_INJECTED_PROBABILITY_SERVICE_ACCOUNT_USER = 0; // 0 events per day per user
-    private final int WINDOWS_PROCESS_INJECTED_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS = 60000; //Not really relevant since service accounts work all day.
     private final int WINDOWS_PROCESS_INJECTED_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 5;
     private final int WINDOWS_PROCESS_INJECTED_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 200;
     private final int WINDOWS_PROCESS_INJECTED_MIN_NUM_OF_WINDOWS_PROCESS_PROCESSES_PER_SERVICE_ACCOUNT_USER = 1;
@@ -60,8 +48,6 @@ public class WindowsProcessesEventGeneratorsBuilder extends UseCaseEventGenerato
     private final int ABNORMAL_WINDOWS_PROCESS_INJECTED_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 2;
     private final int ABNORMAL_WINDOWS_PROCESS_INJECTED_MIN_NUM_OF_WINDOWS_PROCESS_PROCESSES_PER_NORMAL_USER = 1000;//use all windows processes that you can
     private final int ABNORMAL_WINDOWS_PROCESS_INJECTED_MAX_NUM_OF_WINDOWS_PROCESS_PROCESSES_PER_NORMAL_USER = 2000;//use all window processes that you can
-    private final int ABNORMAL_WINDOWS_PROCESS_INJECTED_NUM_OF_ADMIN_USERS_DAILY = 2;
-    private final double ABNORMAL_WINDOWS_PROCESS_INJECTED_PROBABILITY_ADMIN_USER = 0.0001; // ~180 events per hour
     private final int ABNORMAL_WINDOWS_PROCESS_INJECTED_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 1;
     private final int ABNORMAL_WINDOWS_PROCESS_INJECTED_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 2;
     private final int ABNORMAL_WINDOWS_PROCESS_INJECTED_MIN_NUM_OF_WINDOWS_PROCESS_PROCESSES_PER_ADMIN_USER = 1000;//use all window processes that you can
@@ -74,25 +60,78 @@ public class WindowsProcessesEventGeneratorsBuilder extends UseCaseEventGenerato
     private final int ABNORMAL_WINDOWS_PROCESS_INJECTED_MAX_NUM_OF_WINDOWS_PROCESS_PROCESSES_PER_SERVICE_ACCOUNT_USER = 2000;//use all window processes that you can
 
 
-    @Override
-    protected int getNumOfNormalUsers() {
-        return WINDOWS_PROCESS_INJECTED_NUM_OF_NORMAL_USERS;
+    public double getBuilderAllNormalUsersMultiplier(){
+        return 1;
     }
 
     @Override
-    protected int getNumOfNormalUsersDaily() {
-        return WINDOWS_PROCESS_INJECTED_NUM_OF_NORMAL_USERS_DAILY;
+    protected double getPercentOfNormalUserPerDayOutOfTotalAmountOfUsers() {
+        return 0.75;
     }
 
     @Override
-    protected double getEventProbabilityForNormalUsers() {
-        return WINDOWS_PROCESS_INJECTED_PROBABILITY_NORMAL_USER;
+    protected double getNumOfEventsPerNormalUserPerHourOnAvg() {
+        return 5;
+    }
+
+    public double getBuilderAllAdminUsersMultiplier(){
+        return 1;
     }
 
     @Override
-    protected int getTimeIntervalForNonActiveRangeForNormalUsers() {
-        return WINDOWS_PROCESS_INJECTED_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_NORMAL_USERS;
+    protected double getPercentOfAdminUserPerDayOutOfTotalAmountOfUsers() {
+        return 0.98;
     }
+
+    @Override
+    protected double getNumOfEventsPerAdminUserPerHourOnAvg() {
+        return 100;
+    }
+
+    public double getBuilderAllServiceAccountUsersMultiplier(){
+        return 0.2;
+    }
+
+    @Override
+    protected double getPercentOfServiceAccountUserPerDayOutOfTotalAmountOfUsers() {
+        return 0.2;
+    }
+
+    @Override
+    protected double getNumOfEventsPerServiceAccountUserPerHourOnAvg() {
+        return 0;
+    }
+
+    @Override
+    protected double getPercentOfNormalUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return 0.0002;
+    }
+
+    @Override
+    protected double getNumOfEventsPerNormalUserWithAnomaliesPerHourOnAvg() {
+        return 25;
+    }
+
+    @Override
+    protected double getPercentOfAdminUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return 0.001;
+    }
+
+    @Override
+    protected double getNumOfEventsPerAdminUserWithAnomaliesPerHourOnAvg() {
+        return 300;
+    }
+
+    @Override
+    protected double getPercentOfServiceAccountUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return 0.001;
+    }
+
+    @Override
+    protected double getNumOfEventsPerServiceAccountUserWithAnomaliesPerHourOnAvg() {
+        return 22;
+    }
+
 
     @Override
     protected int getMinNumOfFilesPerNormalUserForSrcProcesses() {
@@ -114,25 +153,7 @@ public class WindowsProcessesEventGeneratorsBuilder extends UseCaseEventGenerato
         return WINDOWS_PROCESS_INJECTED_MAX_NUM_OF_WINDOWS_PROCESS_PROCESSES_PER_NORMAL_USER;
     }
 
-    @Override
-    protected int getNumOfAdminUsers() {
-        return WINDOWS_PROCESS_INJECTED_NUM_OF_ADMIN_USERS;
-    }
 
-    @Override
-    protected int getNumOfAdminUsersDaily() {
-        return WINDOWS_PROCESS_INJECTED_NUM_OF_ADMIN_USERS_DAILY;
-    }
-
-    @Override
-    protected double getEventProbabilityForAdminUsers() {
-        return WINDOWS_PROCESS_INJECTED_PROBABILITY_ADMIN_USER;
-    }
-
-    @Override
-    protected int getTimeIntervalForNonActiveRangeForAdminUsers() {
-        return WINDOWS_PROCESS_INJECTED_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_ADMIN_USERS;
-    }
 
     @Override
     protected int getMinNumOfFilesPerAdminUserForSrcProcesses() {
@@ -154,25 +175,7 @@ public class WindowsProcessesEventGeneratorsBuilder extends UseCaseEventGenerato
         return WINDOWS_PROCESS_INJECTED_MAX_NUM_OF_WINDOWS_PROCESS_PROCESSES_PER_ADMIN_USER;
     }
 
-    @Override
-    protected int getNumOfServiceAccountUsers() {
-        return WINDOWS_PROCESS_INJECTED_NUM_OF_SERVICE_ACCOUNT_USERS;
-    }
 
-    @Override
-    protected int getNumOfServiceAccountUsersDaily() {
-        return WINDOWS_PROCESS_INJECTED_NUM_OF_SERVICE_ACCOUNT_USERS_DAILY;
-    }
-
-    @Override
-    protected double getEventProbabilityForServiceAccountUsers() {
-        return WINDOWS_PROCESS_INJECTED_PROBABILITY_SERVICE_ACCOUNT_USER;
-    }
-
-    @Override
-    protected int getTimeIntervalForNonActiveRangeForServiceAccountUsers() {
-        return WINDOWS_PROCESS_INJECTED_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS;
-    }
 
     @Override
     protected int getMinNumOfFilesPerServiceAccountUserForSrcProcesses() {
@@ -195,15 +198,7 @@ public class WindowsProcessesEventGeneratorsBuilder extends UseCaseEventGenerato
     }
 
 
-    @Override
-    protected int getNumOfNormalUsersDailyForNonActiveWorkingHours() {
-        return ABNORMAL_WINDOWS_PROCESS_INJECTED_NUM_OF_NORMAL_USERS_DAILY;
-    }
 
-    @Override
-    protected double getEventProbabilityForNormalUsersForNonActiveWorkingHours() {
-        return ABNORMAL_WINDOWS_PROCESS_INJECTED_PROBABILITY_NORMAL_USER;
-    }
 
     @Override
     protected int getMinNumOfFilesPerNormalUserForSrcProcessesForAbnormalEvents() {
@@ -225,15 +220,7 @@ public class WindowsProcessesEventGeneratorsBuilder extends UseCaseEventGenerato
         return ABNORMAL_WINDOWS_PROCESS_INJECTED_MAX_NUM_OF_WINDOWS_PROCESS_PROCESSES_PER_NORMAL_USER;
     }
 
-    @Override
-    protected int getNumOfAdminUsersDailyForNonActiveWorkingHours() {
-        return ABNORMAL_WINDOWS_PROCESS_INJECTED_NUM_OF_ADMIN_USERS_DAILY;
-    }
 
-    @Override
-    protected double getEventProbabilityForAdminUsersForNonActiveWorkingHours() {
-        return ABNORMAL_WINDOWS_PROCESS_INJECTED_PROBABILITY_ADMIN_USER;
-    }
 
     @Override
     protected int getMinNumOfFilesPerAdminUserForSrcProcessesForAbnormalEvents() {
@@ -255,15 +242,7 @@ public class WindowsProcessesEventGeneratorsBuilder extends UseCaseEventGenerato
         return ABNORMAL_WINDOWS_PROCESS_INJECTED_MAX_NUM_OF_WINDOWS_PROCESS_PROCESSES_PER_ADMIN_USER;
     }
 
-    @Override
-    protected int getNumOfServiceAccountUsersDailyForAbnormalEvents() {
-        return ABNORMAL_WINDOWS_PROCESS_INJECTED_NUM_OF_SERVICE_ACCOUNT_USERS_DAILY;
-    }
 
-    @Override
-    protected double getEventProbabilityForServiceAccountUsersForAbnormalEvents() {
-        return ABNORMAL_WINDOWS_PROCESS_INJECTED_PROBABILITY_SERVICE_ACCOUNT_USER;
-    }
 
     @Override
     protected int getMinNumOfFilesPerServiceAccountUserForSrcProcessesForAbnormalEvents() {

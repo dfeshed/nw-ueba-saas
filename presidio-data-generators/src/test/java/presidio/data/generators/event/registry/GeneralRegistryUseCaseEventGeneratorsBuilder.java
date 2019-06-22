@@ -21,24 +21,66 @@ public class GeneralRegistryUseCaseEventGeneratorsBuilder extends RegistryUseCas
     }
 
     @Override
-    protected int getNumOfNormalUsers() {
-        return 94500;
+    protected double getPercentOfNormalUserPerDayOutOfTotalAmountOfUsers() {
+        return 0.75;
     }
 
     @Override
-    protected int getNumOfNormalUsersDaily() {
-        return 70000;
+    protected double getNumOfEventsPerNormalUserPerHourOnAvg() {
+        return 25;
     }
 
     @Override
-    protected double getEventProbabilityForNormalUsers() {
-        return 0.49;
+    protected double getPercentOfAdminUserPerDayOutOfTotalAmountOfUsers() {
+        return 0.99;
     }
 
     @Override
-    protected int getTimeIntervalForNonActiveRangeForNormalUsers() {
-        return 120000;
+    protected double getNumOfEventsPerAdminUserPerHourOnAvg() {
+        return 100;
     }
+
+    @Override
+    protected double getPercentOfServiceAccountUserPerDayOutOfTotalAmountOfUsers() {
+        return 1;
+    }
+
+    @Override
+    protected double getNumOfEventsPerServiceAccountUserPerHourOnAvg() {
+        return 500;
+    }
+
+    @Override
+    protected double getPercentOfNormalUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return 0.002d;
+    }
+
+    @Override
+    protected double getNumOfEventsPerNormalUserWithAnomaliesPerHourOnAvg() {
+        return 100;
+    }
+
+    @Override
+    protected double getPercentOfAdminUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return 0.002d;
+    }
+
+    @Override
+    protected double getNumOfEventsPerAdminUserWithAnomaliesPerHourOnAvg() {
+        return 400;
+    }
+
+    @Override
+    protected double getPercentOfServiceAccountUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return 0.002d;
+    }
+
+    @Override
+    protected double getNumOfEventsPerServiceAccountUserWithAnomaliesPerHourOnAvg() {
+        return 2000;
+    }
+
+
 
     @Override
     protected int getMinNumOfFilesPerNormalUserForProcesses() {
@@ -50,25 +92,7 @@ public class GeneralRegistryUseCaseEventGeneratorsBuilder extends RegistryUseCas
         return 200;
     }
 
-    @Override
-    protected int getNumOfAdminUsers() {
-        return 5000;
-    }
 
-    @Override
-    protected int getNumOfAdminUsersDaily() {
-        return 4900;
-    }
-
-    @Override
-    protected double getEventProbabilityForAdminUsers() {
-        return 0.3;
-    }
-
-    @Override
-    protected int getTimeIntervalForNonActiveRangeForAdminUsers() {
-        return 120000;
-    }
 
     @Override
     protected int getMinNumOfFilesPerAdminUserForProcesses() {
@@ -80,25 +104,7 @@ public class GeneralRegistryUseCaseEventGeneratorsBuilder extends RegistryUseCas
         return 1000;
     }
 
-    @Override
-    protected int getNumOfServiceAccountUsers() {
-        return 500;
-    }
 
-    @Override
-    protected int getNumOfServiceAccountUsersDaily() {
-        return 500;
-    }
-
-    @Override
-    protected double getEventProbabilityForServiceAccountUsers() {
-        return 0.0025;
-    }
-
-    @Override
-    protected int getTimeIntervalForNonActiveRangeForServiceAccountUsers() {
-        return 120000;
-    }
 
     @Override
     protected int getMinNumOfFilesPerServiceAccountUserForProcesses() {
@@ -136,15 +142,7 @@ public class GeneralRegistryUseCaseEventGeneratorsBuilder extends RegistryUseCas
         return "nonImportantToRegistryKeyGroup";
     }
 
-    @Override
-    protected int getNumOfNormalUsersDailyForNonActiveWorkingHours() {
-        return 180;
-    }
 
-    @Override
-    protected double getEventProbabilityForNormalUsersForNonActiveWorkingHours() {
-        return 0.00081;
-    }
 
     @Override
     protected int getMinNumOfFilesPerNormalUserForProcessesForAbnormalEvents() {
@@ -156,15 +154,7 @@ public class GeneralRegistryUseCaseEventGeneratorsBuilder extends RegistryUseCas
         return 200;
     }
 
-    @Override
-    protected int getNumOfAdminUsersDailyForNonActiveWorkingHours() {
-        return 10;
-    }
 
-    @Override
-    protected double getEventProbabilityForAdminUsersForNonActiveWorkingHours() {
-        return 0.001;
-    }
 
     @Override
     protected int getMinNumOfFilesPerAdminUserForProcessesForAbnormalEvents() {
@@ -176,15 +166,7 @@ public class GeneralRegistryUseCaseEventGeneratorsBuilder extends RegistryUseCas
         return 1000;
     }
 
-    @Override
-    protected int getNumOfServiceAccountUsersDailyForAbnormalEvents() {
-        return 2;
-    }
 
-    @Override
-    protected double getEventProbabilityForServiceAccountUsersForAbnormalEvents() {
-        return 0.0005;
-    }
 
     @Override
     protected int getMinNumOfFilesPerServiceAccountUserForProcessesForAbnormalEvents() {

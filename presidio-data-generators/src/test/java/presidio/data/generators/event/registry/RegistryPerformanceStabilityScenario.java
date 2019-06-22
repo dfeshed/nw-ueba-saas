@@ -58,7 +58,6 @@ public class RegistryPerformanceStabilityScenario extends EndPointPerformanceSta
 
         eventGeneratorsBuilders.add(generalRegistryUseCaseEventGeneratorsBuilder);
         eventGeneratorsBuilders.forEach(registryEventGeneratorsBuilder -> registryEventGeneratorsBuilder.setProbabilityMultiplier(probabilityMultiplier));
-        eventGeneratorsBuilders.forEach(registryEventGeneratorsBuilder -> ((EndpointEventGeneratorsBuilder)registryEventGeneratorsBuilder).setUsersMultiplier(usersMultiplier));
     }
 
 

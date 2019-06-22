@@ -148,7 +148,6 @@ public class ProcessPerformanceStabilityScenario extends EndPointPerformanceStab
                 );
         eventGeneratorsBuilders.add(windowsProcessesEventGeneratorsBuilder);
         eventGeneratorsBuilders.forEach(processEventGeneratorsBuilder -> processEventGeneratorsBuilder.setProbabilityMultiplier(probabilityMultiplier));
-        eventGeneratorsBuilders.forEach(processEventGeneratorsBuilder -> ((EndpointEventGeneratorsBuilder)processEventGeneratorsBuilder).setUsersMultiplier(usersMultiplier));
     }
 
 }

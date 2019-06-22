@@ -28,71 +28,107 @@ public class ScriptingEngineExecuteAndOpenEventGeneratorsBuilder extends UseCase
 
 
     //Scripting engine execute. Normal behavior + abnormal time.
-    private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_NORMAL_USERS = 10000;
-    private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_NORMAL_USERS_DAILY = 5000;
-    private final double SCRIPTING_ENGINE_EXECUTE_AND_OPEN_PROBABILITY_NORMAL_USER = 0.028; //~20 events per hour per user
-    private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_NORMAL_USERS = 60000; //60 seconds. (8*3600/60)*0.028 =~13 users
     private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 1;
     private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 50;
     private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MIN_NUM_OF_SCRIPTING_ENGINE_PROCESSES_PER_NORMAL_USER = 1;
     private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MAX_NUM_OF_SCRIPTING_ENGINE_PROCESSES_PER_NORMAL_USER = 10;
-    private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_ADMIN_USERS = 3000;
-    private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_ADMIN_USERS_DAILY = 2000;
-    private final double SCRIPTING_ENGINE_EXECUTE_AND_OPEN_PROBABILITY_ADMIN_USER = 0.06; // ~108 events per hour per user
-    private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_ADMIN_USERS = 50000; //50 seconds. (2*3600/60)*0.06 =~7 users
     private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 100;
     private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 1000;
     private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MIN_NUM_OF_SCRIPTING_ENGINE_PROCESSES_PER_ADMIN_USER = 1;
     private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MAX_NUM_OF_SCRIPTING_ENGINE_PROCESSES_PER_ADMIN_USER = 10;
-    private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_SERVICE_ACCOUNT_USERS = 100;
-    private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_SERVICE_ACCOUNT_USERS_DAILY = 20;
-    private final double SCRIPTING_ENGINE_EXECUTE_AND_OPEN_PROBABILITY_SERVICE_ACCOUNT_USER = 0; // 0 events per day per user
-    private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS = 60000; //Not really relevant since service accounts work all day.
     private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 5;
     private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 200;
     private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MIN_NUM_OF_SCRIPTING_ENGINE_PROCESSES_PER_SERVICE_ACCOUNT_USER = 1;
     private final int SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MAX_NUM_OF_SCRIPTING_ENGINE_PROCESSES_PER_SERVICE_ACCOUNT_USER = 2;
 
     //Scripting Engine abnormal behavior.
-    private final int ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_NORMAL_USERS_DAILY = 10;
-    private final double ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_PROBABILITY_NORMAL_USER = 0.00014; // ~50 events per hour per user
     private final int ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 1000;
     private final int ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 5000;
     private final int ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MIN_NUM_OF_SCRIPTING_ENGINE_PROCESSES_PER_NORMAL_USER = 1000;//use all scripting engine that you can
     private final int ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MAX_NUM_OF_SCRIPTING_ENGINE_PROCESSES_PER_NORMAL_USER = 2000;//use all scripting engine that you can
-    private final int ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_ADMIN_USERS_DAILY = 2;
-    private final double ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_PROBABILITY_ADMIN_USER = 0.0001; // ~180 events per hour
     private final int ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 100;
     private final int ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 1000;
     private final int ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MIN_NUM_OF_SCRIPTING_ENGINE_PROCESSES_PER_ADMIN_USER = 1000;//use all scripting engine that you can
     private final int ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MAX_NUM_OF_SCRIPTING_ENGINE_PROCESSES_PER_ADMIN_USER = 2000;//use all scripting engine that you can
-    private final int ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_SERVICE_ACCOUNT_USERS_DAILY = 1;
-    private final double ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_PROBABILITY_SERVICE_ACCOUNT_USER = 0.000006; // ~22 events per hour per user
     private final int ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 100;
     private final int ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 1000;
     private final int ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MIN_NUM_OF_SCRIPTING_ENGINE_PROCESSES_PER_SERVICE_ACCOUNT_USER = 1000;//use all scripting engine that you can
     private final int ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MAX_NUM_OF_SCRIPTING_ENGINE_PROCESSES_PER_SERVICE_ACCOUNT_USER = 2000;//use all scripting engine that you can
 
 
-    @Override
-    protected int getNumOfNormalUsers() {
-        return SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_NORMAL_USERS;
+
+    public double getBuilderAllNormalUsersMultiplier(){
+        return 0.1;
     }
 
     @Override
-    protected int getNumOfNormalUsersDaily() {
-        return SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_NORMAL_USERS_DAILY;
+    protected double getPercentOfNormalUserPerDayOutOfTotalAmountOfUsers() {
+        return 0.5;
     }
 
     @Override
-    protected double getEventProbabilityForNormalUsers() {
-        return SCRIPTING_ENGINE_EXECUTE_AND_OPEN_PROBABILITY_NORMAL_USER;
+    protected double getNumOfEventsPerNormalUserPerHourOnAvg() {
+        return 20;
+    }
+
+    public double getBuilderAllAdminUsersMultiplier(){
+        return 0.6;
     }
 
     @Override
-    protected int getTimeIntervalForNonActiveRangeForNormalUsers() {
-        return SCRIPTING_ENGINE_EXECUTE_AND_OPEN_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_NORMAL_USERS;
+    protected double getPercentOfAdminUserPerDayOutOfTotalAmountOfUsers() {
+        return 0.66;
     }
+
+    @Override
+    protected double getNumOfEventsPerAdminUserPerHourOnAvg() {
+        return 110;
+    }
+
+    public double getBuilderAllServiceAccountUsersMultiplier(){
+        return 0.2;
+    }
+
+    @Override
+    protected double getPercentOfServiceAccountUserPerDayOutOfTotalAmountOfUsers() {
+        return 0.2;
+    }
+
+    @Override
+    protected double getNumOfEventsPerServiceAccountUserPerHourOnAvg() {
+        return 0;
+    }
+
+    @Override
+    protected double getPercentOfNormalUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return 0.002;
+    }
+
+    @Override
+    protected double getNumOfEventsPerNormalUserWithAnomaliesPerHourOnAvg() {
+        return 50;
+    }
+
+    @Override
+    protected double getPercentOfAdminUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return 0.002;
+    }
+
+    @Override
+    protected double getNumOfEventsPerAdminUserWithAnomaliesPerHourOnAvg() {
+        return 330;
+    }
+
+    @Override
+    protected double getPercentOfServiceAccountUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return 0.002;
+    }
+
+    @Override
+    protected double getNumOfEventsPerServiceAccountUserWithAnomaliesPerHourOnAvg() {
+        return 22;
+    }
+
 
     @Override
     protected int getMinNumOfFilesPerNormalUserForDestProcesses() {
@@ -114,25 +150,7 @@ public class ScriptingEngineExecuteAndOpenEventGeneratorsBuilder extends UseCase
         return SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MAX_NUM_OF_SCRIPTING_ENGINE_PROCESSES_PER_NORMAL_USER;
     }
 
-    @Override
-    protected int getNumOfAdminUsers() {
-        return SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_ADMIN_USERS;
-    }
 
-    @Override
-    protected int getNumOfAdminUsersDaily() {
-        return SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_ADMIN_USERS_DAILY;
-    }
-
-    @Override
-    protected double getEventProbabilityForAdminUsers() {
-        return SCRIPTING_ENGINE_EXECUTE_AND_OPEN_PROBABILITY_ADMIN_USER;
-    }
-
-    @Override
-    protected int getTimeIntervalForNonActiveRangeForAdminUsers() {
-        return SCRIPTING_ENGINE_EXECUTE_AND_OPEN_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_ADMIN_USERS;
-    }
 
     @Override
     protected int getMinNumOfFilesPerAdminUserForDestProcesses() {
@@ -154,25 +172,7 @@ public class ScriptingEngineExecuteAndOpenEventGeneratorsBuilder extends UseCase
         return SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MAX_NUM_OF_SCRIPTING_ENGINE_PROCESSES_PER_ADMIN_USER;
     }
 
-    @Override
-    protected int getNumOfServiceAccountUsers() {
-        return SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_SERVICE_ACCOUNT_USERS;
-    }
 
-    @Override
-    protected int getNumOfServiceAccountUsersDaily() {
-        return SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_SERVICE_ACCOUNT_USERS_DAILY;
-    }
-
-    @Override
-    protected double getEventProbabilityForServiceAccountUsers() {
-        return SCRIPTING_ENGINE_EXECUTE_AND_OPEN_PROBABILITY_SERVICE_ACCOUNT_USER;
-    }
-
-    @Override
-    protected int getTimeIntervalForNonActiveRangeForServiceAccountUsers() {
-        return SCRIPTING_ENGINE_EXECUTE_AND_OPEN_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS;
-    }
 
     @Override
     protected int getMinNumOfFilesPerServiceAccountUserForDestProcesses() {
@@ -195,15 +195,7 @@ public class ScriptingEngineExecuteAndOpenEventGeneratorsBuilder extends UseCase
     }
 
 
-    @Override
-    protected int getNumOfNormalUsersDailyForNonActiveWorkingHours() {
-        return ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_NORMAL_USERS_DAILY;
-    }
 
-    @Override
-    protected double getEventProbabilityForNormalUsersForNonActiveWorkingHours() {
-        return ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_PROBABILITY_NORMAL_USER;
-    }
 
     @Override
     protected int getMinNumOfFilesPerNormalUserForDestProcessesForAbnormalEvents() {
@@ -225,15 +217,7 @@ public class ScriptingEngineExecuteAndOpenEventGeneratorsBuilder extends UseCase
         return ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MAX_NUM_OF_SCRIPTING_ENGINE_PROCESSES_PER_NORMAL_USER;
     }
 
-    @Override
-    protected int getNumOfAdminUsersDailyForNonActiveWorkingHours() {
-        return ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_ADMIN_USERS_DAILY;
-    }
 
-    @Override
-    protected double getEventProbabilityForAdminUsersForNonActiveWorkingHours() {
-        return ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_PROBABILITY_ADMIN_USER;
-    }
 
     @Override
     protected int getMinNumOfFilesPerAdminUserForDestProcessesForAbnormalEvents() {
@@ -255,15 +239,7 @@ public class ScriptingEngineExecuteAndOpenEventGeneratorsBuilder extends UseCase
         return ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_MAX_NUM_OF_SCRIPTING_ENGINE_PROCESSES_PER_ADMIN_USER;
     }
 
-    @Override
-    protected int getNumOfServiceAccountUsersDailyForAbnormalEvents() {
-        return ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_NUM_OF_SERVICE_ACCOUNT_USERS_DAILY;
-    }
 
-    @Override
-    protected double getEventProbabilityForServiceAccountUsersForAbnormalEvents() {
-        return ABNORMAL_SCRIPTING_ENGINE_EXECUTE_AND_OPEN_PROBABILITY_SERVICE_ACCOUNT_USER;
-    }
 
     @Override
     protected int getMinNumOfFilesPerServiceAccountUserForDestProcessesForAbnormalEvents() {

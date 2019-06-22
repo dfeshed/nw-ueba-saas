@@ -87,12 +87,12 @@ public class AuthenticationPerformanceStabilityTest {
     public void test() throws GeneratorException {
         stopWatch.start();
 
-        Instant startInstant    = Instant.parse("2010-01-01T06:00:00.00Z");
-        Instant endInstant      = Instant.parse("2010-01-01T06:31:00.00Z");
+        Instant startInstant    = Instant.parse("2010-01-01T09:00:00.00Z");
+        Instant endInstant      = Instant.parse("2010-01-01T09:31:00.00Z");
 
         AuthenticationPerformanceStabilityScenario scenario =
                 new AuthenticationPerformanceStabilityScenario(
-                        startInstant, endInstant, 1, 1,
+                        startInstant, endInstant, 1, 0.01,
                         createGlobalServerMachinePool(),
                         createLocalServerMachinePool(),
                         createAdminServerMachinePool());

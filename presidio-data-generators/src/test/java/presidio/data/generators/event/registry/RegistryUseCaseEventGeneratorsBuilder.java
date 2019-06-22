@@ -23,24 +23,12 @@ public abstract class RegistryUseCaseEventGeneratorsBuilder extends RegistryEven
 
 
     //Normal behavior + abnormal time.
-    protected abstract int getNumOfNormalUsers();
-    protected abstract int getNumOfNormalUsersDaily();
-    protected abstract double getEventProbabilityForNormalUsers();
-    protected abstract int getTimeIntervalForNonActiveRangeForNormalUsers();
     protected abstract int getMinNumOfFilesPerNormalUserForProcesses();
     protected abstract int getMaxNumOfFilesPerNormalUserForProcesses();
 
-    protected abstract int getNumOfAdminUsers();
-    protected abstract int getNumOfAdminUsersDaily();
-    protected abstract double getEventProbabilityForAdminUsers();
-    protected abstract int getTimeIntervalForNonActiveRangeForAdminUsers();
     protected abstract int getMinNumOfFilesPerAdminUserForProcesses();
     protected abstract int getMaxNumOfFilesPerAdminUserForProcesses();
 
-    protected abstract int getNumOfServiceAccountUsers();
-    protected abstract int getNumOfServiceAccountUsersDaily();
-    protected abstract double getEventProbabilityForServiceAccountUsers();
-    protected abstract int getTimeIntervalForNonActiveRangeForServiceAccountUsers();
     protected abstract int getMinNumOfFilesPerServiceAccountUserForProcesses();
     protected abstract int getMaxNumOfFilesPerServiceAccountUserForProcesses();
 
@@ -53,30 +41,17 @@ public abstract class RegistryUseCaseEventGeneratorsBuilder extends RegistryEven
     protected abstract String getUseCaseTestName();
 
     //abnormal behavior.
-    protected abstract int getNumOfNormalUsersDailyForNonActiveWorkingHours();
-    protected abstract double getEventProbabilityForNormalUsersForNonActiveWorkingHours();
     protected abstract int getMinNumOfFilesPerNormalUserForProcessesForAbnormalEvents();
     protected abstract int getMaxNumOfFilesPerNormalUserForProcessesForAbnormalEvents();
 
-    protected abstract int getNumOfAdminUsersDailyForNonActiveWorkingHours();
-    protected abstract double getEventProbabilityForAdminUsersForNonActiveWorkingHours();
     protected abstract int getMinNumOfFilesPerAdminUserForProcessesForAbnormalEvents();
     protected abstract int getMaxNumOfFilesPerAdminUserForProcessesForAbnormalEvents();
 
-    protected abstract int getNumOfServiceAccountUsersDailyForAbnormalEvents();
-    protected abstract double getEventProbabilityForServiceAccountUsersForAbnormalEvents();
     protected abstract int getMinNumOfFilesPerServiceAccountUserForProcessesForAbnormalEvents();
     protected abstract int getMaxNumOfFilesPerServiceAccountUserForProcessesForAbnormalEvents();
 
     protected abstract IStringListGenerator getProcessCategoriesGenerator(IFileEntityGenerator fileEntityGenerator);
     protected abstract IStringListGenerator getProcessDirectoryGroupsGenerator(IFileEntityGenerator fileEntityGenerator);
-
-
-
-    //users generators
-    private IUserGenerator allNormalUsers;
-    private IUserGenerator allAdminUsers;
-    private IUserGenerator allServiceAccountUsers;
 
 
     //Generator for Processes and normal users
@@ -121,11 +96,6 @@ public abstract class RegistryUseCaseEventGeneratorsBuilder extends RegistryEven
 
 
     private void createGenerators(){
-        //users generators
-        allNormalUsers = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfNormalUsers()*getUsersMultiplier())), normalUserGenerator);
-        allAdminUsers = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfAdminUsers()*getUsersMultiplier())), adminUserGenerator);
-        allServiceAccountUsers = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfServiceAccountUsers()*getUsersMultiplier())), serviceAccountUserGenerator);
-
         /** GENERATORS: PROCESS **/
 
 
@@ -199,93 +169,6 @@ public abstract class RegistryUseCaseEventGeneratorsBuilder extends RegistryEven
 
     }
 
-    //==================================================================================
-    // Creating Random Event Generators for all kind of users
-    //==================================================================================
-
-
-
-    protected RandomMultiEventGenerator createNormalUsersRandomEventGenerator(Instant startInstant,
-                                                                            Instant endInstant){
-        IUserGenerator normalUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfNormalUsersDaily()*getUsersMultiplier())), allNormalUsers);
-        normalUsersEventGenerator.setUserGenerator(normalUsersDailyGenerator);
-        return createRandomEventGenerator(normalUsersEventGenerator,
-                normalUserActivityRange,
-                getEventProbabilityForNormalUsers(),
-                getTimeIntervalForNonActiveRangeForNormalUsers(),
-                startInstant,
-                endInstant
-        );
-    }
-
-    protected RandomMultiEventGenerator createNormalUsersRandomAbnormalEventGenerator(Instant startInstant,
-                                                                                    Instant endInstant){
-        IUserGenerator normalUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfNormalUsersDailyForNonActiveWorkingHours()*getUsersMultiplier())), allNormalUsers);
-        normalUsersAbnormalEventGenerator.setUserGenerator(normalUsersDailyGenerator);
-        return createRandomEventGenerator(normalUsersAbnormalEventGenerator,
-                normalUserAbnormalActivityRange,
-                getEventProbabilityForNormalUsersForNonActiveWorkingHours(),
-                getTimeIntervalForNonActiveRangeForNormalUsers(),
-                startInstant,
-                endInstant
-        );
-    }
-
-    protected RandomMultiEventGenerator createAdminUsersEventGenerator(Instant startInstant,
-                                                                     Instant endInstant){
-        IUserGenerator adminUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfAdminUsersDaily()*getUsersMultiplier())), allAdminUsers);
-        adminUsersEventGenerator.setUserGenerator(adminUsersDailyGenerator);
-        return createRandomEventGenerator(adminUsersEventGenerator,
-                adminUserActivityRange,
-                getEventProbabilityForAdminUsers(),
-                getTimeIntervalForNonActiveRangeForAdminUsers(),
-                startInstant,
-                endInstant
-        );
-    }
-
-    protected RandomMultiEventGenerator createAdminUsersAbnormalEventGenerator(Instant startInstant,
-                                                                             Instant endInstant){
-        IUserGenerator adminUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfAdminUsersDailyForNonActiveWorkingHours()*getUsersMultiplier())), allAdminUsers);
-        adminUsersAbnormalEventGenerator.setUserGenerator(adminUsersDailyGenerator);
-        return createRandomEventGenerator(adminUsersAbnormalEventGenerator,
-                adminUserAbnormalActivityRange,
-                getEventProbabilityForAdminUsersForNonActiveWorkingHours(),
-                getTimeIntervalForNonActiveRangeForAdminUsers(),
-                startInstant,
-                endInstant
-        );
-    }
-
-    protected RandomMultiEventGenerator createServiceAccountUsersEventGenerator(Instant startInstant,
-                                                                              Instant endInstant){
-        IUserGenerator serviceAccountUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfServiceAccountUsersDaily()*getUsersMultiplier())), allServiceAccountUsers);
-        serviceAccountUsersEventGenerator.setUserGenerator(serviceAccountUsersDailyGenerator);
-        return createRandomEventGenerator(serviceAccountUsersEventGenerator,
-                serviceAcountUserActivityRange,
-                getEventProbabilityForServiceAccountUsers(),
-                getTimeIntervalForNonActiveRangeForServiceAccountUsers(),
-                startInstant,
-                endInstant
-        );
-    }
-
-    protected RandomMultiEventGenerator createServiceAccountUsersAbnormalEventGenerator(Instant startInstant,
-                                                                                      Instant endInstant){
-        IUserGenerator serviceAccountUsersDailyGenerator = new LimitNumOfUsersGenerator((int)(Math.ceil(getNumOfServiceAccountUsersDailyForAbnormalEvents()*getUsersMultiplier())), allServiceAccountUsers);
-        serviceAccountUsersAbnormalEventGenerator.setUserGenerator(serviceAccountUsersDailyGenerator);
-        return createRandomEventGenerator(serviceAccountUsersAbnormalEventGenerator,
-                serviceAcountUserActivityRange,
-                getEventProbabilityForServiceAccountUsersForAbnormalEvents(),
-                getTimeIntervalForNonActiveRangeForServiceAccountUsers(),
-                startInstant,
-                endInstant
-        );
-    }
-
-
-
-
 
     //==================================================================================
     // Creating Event Generators for all events for all type of users (normal, admin, service account)
@@ -328,4 +211,39 @@ public abstract class RegistryUseCaseEventGeneratorsBuilder extends RegistryEven
     }
 
 
+    @Override
+    protected AbstractEventGenerator<Event> getNormalUserEventGenerator(IUserGenerator normalUsersDailyGenerator){
+        normalUsersEventGenerator.setUserGenerator(normalUsersDailyGenerator);
+        return normalUsersEventGenerator;
+    }
+
+    @Override
+    protected AbstractEventGenerator<Event> getNormalUsersAbnormalEventGenerator(IUserGenerator normalUsersDailyGenerator){
+        normalUsersAbnormalEventGenerator.setUserGenerator(normalUsersDailyGenerator);
+        return normalUsersAbnormalEventGenerator;
+    }
+
+    @Override
+    protected AbstractEventGenerator<Event> getAdminUserEventGenerator(IUserGenerator adminUsersDailyGenerator){
+        adminUsersEventGenerator.setUserGenerator(adminUsersDailyGenerator);
+        return adminUsersEventGenerator;
+    }
+
+    @Override
+    protected AbstractEventGenerator<Event> getAdminUsersAbnormalEventGenerator(IUserGenerator adminUsersDailyGenerator){
+        adminUsersAbnormalEventGenerator.setUserGenerator(adminUsersDailyGenerator);
+        return adminUsersAbnormalEventGenerator;
+    }
+
+    @Override
+    protected AbstractEventGenerator<Event> getServiceAccountUserEventGenerator(IUserGenerator serviceAccountUsersDailyGenerator){
+        serviceAccountUsersEventGenerator.setUserGenerator(serviceAccountUsersDailyGenerator);
+        return serviceAccountUsersEventGenerator;
+    }
+
+    @Override
+    protected AbstractEventGenerator<Event> getServiceAccountUsersAbnormalEventGenerator(IUserGenerator serviceAccountUsersDailyGenerator){
+        serviceAccountUsersAbnormalEventGenerator.setUserGenerator(serviceAccountUsersDailyGenerator);
+        return serviceAccountUsersAbnormalEventGenerator;
+    }
 }

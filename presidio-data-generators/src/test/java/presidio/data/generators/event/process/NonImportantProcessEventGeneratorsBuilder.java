@@ -37,42 +37,77 @@ public class NonImportantProcessEventGeneratorsBuilder extends UseCaseEventGener
      * ####10 * 50000 * 10 / 36000000 = 0.1389
      * **/
 
-    private final double PROBABILITY_NORMAL_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT = 0.4921875;
-    private final int TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_NORMAL_USERS = 50000; //50 seconds. (8*3600/50)*0.49 =~280 users
     private final int MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 100;
     private final int MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 200;
 
-    private final double PROBABILITY_ADMIN_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT = 0.3189;
-    private final int TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_ADMIN_USERS = 50000; //50 seconds. (2*3600/50)*0.3189 =~45 users
     private final int MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 100;
     private final int MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 1000;
 
-    private final double PROBABILITY_SERVICE_ACCOUNT_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT = 0.06944;
-    private final int TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS = 1; //Not really relevant since service accounts work all day.
     private final int MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 5;
     private final int MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 200;
 
 
-
     @Override
-    protected int getNumOfNormalUsers() {
-        return 94500;
+    protected double getPercentOfNormalUserPerDayOutOfTotalAmountOfUsers() {
+        return 0.75;
     }
 
     @Override
-    protected int getNumOfNormalUsersDaily() {
-        return 70000;
+    protected double getNumOfEventsPerNormalUserPerHourOnAvg() {
+        return 50;
     }
 
     @Override
-    protected double getEventProbabilityForNormalUsers() {
-        return PROBABILITY_NORMAL_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT;
+    protected double getPercentOfAdminUserPerDayOutOfTotalAmountOfUsers() {
+        return 0.99;
     }
 
     @Override
-    protected int getTimeIntervalForNonActiveRangeForNormalUsers() {
-        return TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_NORMAL_USERS;
+    protected double getNumOfEventsPerAdminUserPerHourOnAvg() {
+        return 200;
     }
+
+    @Override
+    protected double getPercentOfServiceAccountUserPerDayOutOfTotalAmountOfUsers() {
+        return 1;
+    }
+
+    @Override
+    protected double getNumOfEventsPerServiceAccountUserPerHourOnAvg() {
+        return 500;
+    }
+
+    @Override
+    protected double getPercentOfNormalUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return 0.002d;
+    }
+
+    @Override
+    protected double getNumOfEventsPerNormalUserWithAnomaliesPerHourOnAvg() {
+        return 200;
+    }
+
+    @Override
+    protected double getPercentOfAdminUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return 0.002d;
+    }
+
+    @Override
+    protected double getNumOfEventsPerAdminUserWithAnomaliesPerHourOnAvg() {
+        return 800;
+    }
+
+    @Override
+    protected double getPercentOfServiceAccountUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return 0.002d;
+    }
+
+    @Override
+    protected double getNumOfEventsPerServiceAccountUserWithAnomaliesPerHourOnAvg() {
+        return 2000;
+    }
+
+
 
     @Override
     protected int getMinNumOfFilesPerNormalUserForSrcProcesses() {
@@ -94,25 +129,7 @@ public class NonImportantProcessEventGeneratorsBuilder extends UseCaseEventGener
         return MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER;
     }
 
-    @Override
-    protected int getNumOfAdminUsers() {
-        return 5000;
-    }
 
-    @Override
-    protected int getNumOfAdminUsersDaily() {
-        return 4900;
-    }
-
-    @Override
-    protected double getEventProbabilityForAdminUsers() {
-        return PROBABILITY_ADMIN_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT;
-    }
-
-    @Override
-    protected int getTimeIntervalForNonActiveRangeForAdminUsers() {
-        return TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_ADMIN_USERS;
-    }
 
     @Override
     protected int getMinNumOfFilesPerAdminUserForSrcProcesses() {
@@ -134,25 +151,7 @@ public class NonImportantProcessEventGeneratorsBuilder extends UseCaseEventGener
         return MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER;
     }
 
-    @Override
-    protected int getNumOfServiceAccountUsers() {
-        return 500;
-    }
 
-    @Override
-    protected int getNumOfServiceAccountUsersDaily() {
-        return 500;
-    }
-
-    @Override
-    protected double getEventProbabilityForServiceAccountUsers() {
-        return PROBABILITY_SERVICE_ACCOUNT_USER_WITH_NON_IMPORTANT_PROCESSES_PROCESS_EVENT;
-    }
-
-    @Override
-    protected int getTimeIntervalForNonActiveRangeForServiceAccountUsers() {
-        return TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS;
-    }
 
     @Override
     protected int getMinNumOfFilesPerServiceAccountUserForSrcProcesses() {
@@ -175,15 +174,7 @@ public class NonImportantProcessEventGeneratorsBuilder extends UseCaseEventGener
     }
 
 
-    @Override
-    protected int getNumOfNormalUsersDailyForNonActiveWorkingHours() {
-        return 180;
-    }
 
-    @Override
-    protected double getEventProbabilityForNormalUsersForNonActiveWorkingHours() {
-        return 0.00081;
-    }
 
     @Override
     protected int getMinNumOfFilesPerNormalUserForSrcProcessesForAbnormalEvents() {
@@ -205,15 +196,6 @@ public class NonImportantProcessEventGeneratorsBuilder extends UseCaseEventGener
         return MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER;
     }
 
-    @Override
-    protected int getNumOfAdminUsersDailyForNonActiveWorkingHours() {
-        return 13;
-    }
-
-    @Override
-    protected double getEventProbabilityForAdminUsersForNonActiveWorkingHours() {
-        return 0.001625;
-    }
 
     @Override
     protected int getMinNumOfFilesPerAdminUserForSrcProcessesForAbnormalEvents() {
@@ -235,15 +217,6 @@ public class NonImportantProcessEventGeneratorsBuilder extends UseCaseEventGener
         return MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER;
     }
 
-    @Override
-    protected int getNumOfServiceAccountUsersDailyForAbnormalEvents() {
-        return 2;
-    }
-
-    @Override
-    protected double getEventProbabilityForServiceAccountUsersForAbnormalEvents() {
-        return 0.0005;
-    }
 
     @Override
     protected int getMinNumOfFilesPerServiceAccountUserForSrcProcessesForAbnormalEvents() {

@@ -39,7 +39,7 @@ public class SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuil
         return PERCENT_OF_NORMAL_USER_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS;
     }
     @Override
-    protected int getNumOfEventsPerNormalUserPerHourOnAvg() {
+    protected double getNumOfEventsPerNormalUserPerHourOnAvg() {
         return NUM_OF_EVENTS_PER_NORMAL_USER_PER_HOUR_ON_AVG;
     }
     @Override
@@ -47,7 +47,7 @@ public class SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuil
         return PERCENT_OF_ADMIN_USER_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS;
     }
     @Override
-    protected int getNumOfEventsPerAdminUserPerHourOnAvg() {
+    protected double getNumOfEventsPerAdminUserPerHourOnAvg() {
         return NUM_OF_EVENTS_PER_ADMIN_USER_PER_HOUR_ON_AVG;
     }
     @Override
@@ -55,7 +55,7 @@ public class SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuil
         return PERCENT_OF_SERVICE_ACCOUNT_USER_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS;
     }
     @Override
-    protected int getNumOfEventsPerServiceAccountUserPerHourOnAvg() {
+    protected double getNumOfEventsPerServiceAccountUserPerHourOnAvg() {
         return NUM_OF_EVENTS_PER_SERVICE_ACCOUNT_USER_PER_HOUR_ON_AVG;
     }
     @Override
@@ -63,7 +63,7 @@ public class SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuil
         return PERCENT_OF_NORMAL_USER_WITH_ANOMALIES_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS;
     }
     @Override
-    protected int getNumOfEventsPerNormalUserWithAnomaliesPerHourOnAvg() {
+    protected double getNumOfEventsPerNormalUserWithAnomaliesPerHourOnAvg() {
         return NUM_OF_EVENTS_PER_NORMAL_USER_WITH_ANOMALIES_PER_HOUR_ON_AVG;
     }
     @Override
@@ -71,7 +71,7 @@ public class SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuil
         return PERCENT_OF_ADMIN_USER_WITH_ANOMALIES_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS;
     }
     @Override
-    protected int getNumOfEventsPerAdminUserWithAnomaliesPerHourOnAvg() {
+    protected double getNumOfEventsPerAdminUserWithAnomaliesPerHourOnAvg() {
         return NUM_OF_EVENTS_PER_ADMIN_USER_WITH_ANOMALIES_PER_HOUR_ON_AVG;
     }
     @Override
@@ -79,7 +79,7 @@ public class SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuil
         return PERCENT_OF_SERVICE_ACCOUNT_USER_WITH_ANOMALIES_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS;
     }
     @Override
-    protected int getNumOfEventsPerServiceAccountUserWithAnomaliesPerHourOnAvg() {
+    protected double getNumOfEventsPerServiceAccountUserWithAnomaliesPerHourOnAvg() {
         return NUM_OF_EVENTS_PER_SERVICE_ACCOUNT_USER_WITH_ANOMALIES_PER_HOUR_ON_AVG;
     }
 
