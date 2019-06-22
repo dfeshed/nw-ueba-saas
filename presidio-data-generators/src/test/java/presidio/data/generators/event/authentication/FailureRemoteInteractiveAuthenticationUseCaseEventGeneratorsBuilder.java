@@ -16,21 +16,22 @@ import presidio.data.generators.user.IUserGenerator;
 import java.util.Arrays;
 import java.util.List;
 
-public class SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuilder extends AuthenticationUseCaseEventGeneratorsBuilder{
+
+public class FailureRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuilder extends AuthenticationUseCaseEventGeneratorsBuilder{
     private static final double PERCENT_OF_NORMAL_USER_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS = 0.7d;
-    private static final int NUM_OF_EVENTS_PER_NORMAL_USER_PER_HOUR_ON_AVG = 2;
+    private static final double NUM_OF_EVENTS_PER_NORMAL_USER_PER_HOUR_ON_AVG = 0.1;
 
     private static final double PERCENT_OF_ADMIN_USER_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS = 0.99d;
-    private static final int NUM_OF_EVENTS_PER_ADMIN_USER_PER_HOUR_ON_AVG = 20;
+    private static final int NUM_OF_EVENTS_PER_ADMIN_USER_PER_HOUR_ON_AVG = 1;
 
     private static final double PERCENT_OF_SERVICE_ACCOUNT_USER_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS = 1d;
-    private static final int NUM_OF_EVENTS_PER_SERVICE_ACCOUNT_USER_PER_HOUR_ON_AVG = 5;
+    private static final double NUM_OF_EVENTS_PER_SERVICE_ACCOUNT_USER_PER_HOUR_ON_AVG = 0.01;
 
     private static final double PERCENT_OF_NORMAL_USER_WITH_ANOMALIES_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS = 0.002d;
     private static final int NUM_OF_EVENTS_PER_NORMAL_USER_WITH_ANOMALIES_PER_HOUR_ON_AVG = 8;
 
     private static final double PERCENT_OF_ADMIN_USER_WITH_ANOMALIES_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS = 0.002d;
-    private static final int NUM_OF_EVENTS_PER_ADMIN_USER_WITH_ANOMALIES_PER_HOUR_ON_AVG = 80;
+    private static final int NUM_OF_EVENTS_PER_ADMIN_USER_WITH_ANOMALIES_PER_HOUR_ON_AVG = 60;
 
     private static final double PERCENT_OF_SERVICE_ACCOUNT_USER_WITH_ANOMALIES_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS = 0.002d;
     private static final int NUM_OF_EVENTS_PER_SERVICE_ACCOUNT_USER_WITH_ANOMALIES_PER_HOUR_ON_AVG = 20;
@@ -87,7 +88,7 @@ public class SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuil
 
 
 
-    public SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuilder
+    public FailureRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuilder
             (IUserGenerator normalUserGenerator,
              List<MultiRangeTimeGenerator.ActivityRange> normalUserActivityRange,
              List<MultiRangeTimeGenerator.ActivityRange> normalUserAbnormalActivityRange,
@@ -126,7 +127,7 @@ public class SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuil
     }
 
     protected IStringGenerator getResultGenerator(){
-        return new CustomStringGenerator(OPERATION_RESULT.SUCCESS.value);
+        return new CustomStringGenerator(OPERATION_RESULT.FAILURE.value);
     }
 
 
@@ -135,6 +136,6 @@ public class SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuil
 
     @Override
     protected String getUseCaseTestName() {
-        return "successfulRemoteInteractiveAuthentication";
+        return "failedRemoteInteractiveAuthentication";
     }
 }

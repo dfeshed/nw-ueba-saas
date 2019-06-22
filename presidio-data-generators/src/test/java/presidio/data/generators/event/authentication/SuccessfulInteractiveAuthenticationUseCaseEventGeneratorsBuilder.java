@@ -16,7 +16,7 @@ import presidio.data.generators.user.IUserGenerator;
 import java.util.Arrays;
 import java.util.List;
 
-public class SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuilder extends AuthenticationUseCaseEventGeneratorsBuilder{
+public class SuccessfulInteractiveAuthenticationUseCaseEventGeneratorsBuilder extends AuthenticationUseCaseEventGeneratorsBuilder{
     private static final double PERCENT_OF_NORMAL_USER_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS = 0.7d;
     private static final int NUM_OF_EVENTS_PER_NORMAL_USER_PER_HOUR_ON_AVG = 2;
 
@@ -87,7 +87,7 @@ public class SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuil
 
 
 
-    public SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuilder
+    public SuccessfulInteractiveAuthenticationUseCaseEventGeneratorsBuilder
             (IUserGenerator normalUserGenerator,
              List<MultiRangeTimeGenerator.ActivityRange> normalUserActivityRange,
              List<MultiRangeTimeGenerator.ActivityRange> normalUserAbnormalActivityRange,
@@ -135,6 +135,6 @@ public class SuccessfulRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuil
 
     @Override
     protected String getUseCaseTestName() {
-        return "successfulRemoteInteractiveAuthentication";
+        return "successfulInteractiveAuthentication";
     }
 }

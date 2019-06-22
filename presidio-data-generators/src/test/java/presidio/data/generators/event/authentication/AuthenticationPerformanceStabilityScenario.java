@@ -59,6 +59,81 @@ public class AuthenticationPerformanceStabilityScenario extends UserOrientedPerf
                         createAbnormalMachineGeneratorForUser());
 
         eventGeneratorsBuilders.add(successfulRemoteInteractiveEventGeneratorsBuilder);
+
+        FailureRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuilder failureRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuilder =
+                new FailureRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuilder(
+                        normalUserGenerator,
+                        normalUserActivityRange,
+                        normalUserAbnormalActivityRange,
+                        adminUserGenerator,
+                        adminUserActivityRange,
+                        adminUserAbnormalActivityRange,
+                        serviceAccountUserGenerator,
+                        serviceAcountUserActivityRange,
+                        createSrcMachineGeneratorForNormalUser(),
+                        createAbnormalMachineGeneratorForUser(),
+                        createSrcMachineGeneratorForAdminUser(),
+                        createAbnormalMachineGeneratorForUser(),
+                        createSrcMachineGeneratorForServiceAccountUser(),
+                        createAbnormalMachineGeneratorForUser(),
+                        createDstMachineGeneratorForNormalUser(),
+                        createAbnormalMachineGeneratorForUser(),
+                        createDstMachineGeneratorForAdminUser(),
+                        createAbnormalMachineGeneratorForUser(),
+                        createDstMachineGeneratorForServiceAccountUser(),
+                        createAbnormalMachineGeneratorForUser());
+
+        eventGeneratorsBuilders.add(failureRemoteInteractiveAuthenticationUseCaseEventGeneratorsBuilder);
+
+        SuccessfulInteractiveAuthenticationUseCaseEventGeneratorsBuilder successfulInteractiveEventGeneratorsBuilder =
+                new SuccessfulInteractiveAuthenticationUseCaseEventGeneratorsBuilder(
+                        normalUserGenerator,
+                        normalUserActivityRange,
+                        normalUserAbnormalActivityRange,
+                        adminUserGenerator,
+                        adminUserActivityRange,
+                        adminUserAbnormalActivityRange,
+                        serviceAccountUserGenerator,
+                        serviceAcountUserActivityRange,
+                        createSrcMachineGeneratorForNormalUser(),
+                        createAbnormalMachineGeneratorForUser(),
+                        createSrcMachineGeneratorForAdminUser(),
+                        createAbnormalMachineGeneratorForUser(),
+                        createSrcMachineGeneratorForServiceAccountUser(),
+                        createAbnormalMachineGeneratorForUser(),
+                        createDstMachineGeneratorForNormalUser(),
+                        createAbnormalMachineGeneratorForUser(),
+                        createDstMachineGeneratorForAdminUser(),
+                        createAbnormalMachineGeneratorForUser(),
+                        createDstMachineGeneratorForServiceAccountUser(),
+                        createAbnormalMachineGeneratorForUser());
+
+        eventGeneratorsBuilders.add(successfulInteractiveEventGeneratorsBuilder);
+
+        FailureInteractiveAuthenticationUseCaseEventGeneratorsBuilder failureInteractiveAuthenticationUseCaseEventGeneratorsBuilder =
+                new FailureInteractiveAuthenticationUseCaseEventGeneratorsBuilder(
+                        normalUserGenerator,
+                        normalUserActivityRange,
+                        normalUserAbnormalActivityRange,
+                        adminUserGenerator,
+                        adminUserActivityRange,
+                        adminUserAbnormalActivityRange,
+                        serviceAccountUserGenerator,
+                        serviceAcountUserActivityRange,
+                        createSrcMachineGeneratorForNormalUser(),
+                        createAbnormalMachineGeneratorForUser(),
+                        createSrcMachineGeneratorForAdminUser(),
+                        createAbnormalMachineGeneratorForUser(),
+                        createSrcMachineGeneratorForServiceAccountUser(),
+                        createAbnormalMachineGeneratorForUser(),
+                        createDstMachineGeneratorForNormalUser(),
+                        createAbnormalMachineGeneratorForUser(),
+                        createDstMachineGeneratorForAdminUser(),
+                        createAbnormalMachineGeneratorForUser(),
+                        createDstMachineGeneratorForServiceAccountUser(),
+                        createAbnormalMachineGeneratorForUser());
+
+        eventGeneratorsBuilders.add(failureInteractiveAuthenticationUseCaseEventGeneratorsBuilder);
     }
 
 
