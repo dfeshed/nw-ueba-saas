@@ -1729,7 +1729,7 @@ indicators:
     type: hourly_aggregations
   classification: exfiltration
 
-- id: sslSubjectSrcNetnameOutboundToHighestScoreMapJa3TlsHourly
+- id: sumOfHighestSslSubjectSrcNetnameOutboundScoresJa3TlsHourly
   type: SCORE_AGGREGATION
   name: ja3_abnormal_ssl_subject_for_src_netname_outbound
   adeEventType: scored_enriched.tls.sslSubject.srcNetnameOutbound.tls.score
