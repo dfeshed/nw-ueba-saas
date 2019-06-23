@@ -27,7 +27,7 @@ public class OutputForwarderTestConfigBeans {
         public ForwarderConfiguration forwarderConfiguration() {
             ForwarderConfiguration forwarderConfiguration = Mockito.mock(ForwarderConfiguration.class);
             Mockito.when(forwarderConfiguration.getForwardingStrategy(Mockito.any(ForwarderStrategy.PAYLOAD_TYPE.class))).thenReturn(MemoryStrategy.MEMORY);
-            Mockito.when(forwarderConfiguration.isForwardEntity(Mockito.any(ForwarderStrategy.PAYLOAD_TYPE.class))).thenReturn(true);
+            Mockito.when(forwarderConfiguration.isForwardInstance(Mockito.any(ForwarderStrategy.PAYLOAD_TYPE.class))).thenReturn(true);
             Mockito.when(forwarderConfiguration.getForwardBulkSize(Mockito.any(ForwarderStrategy.PAYLOAD_TYPE.class))).thenReturn(1);
             return forwarderConfiguration;
         }

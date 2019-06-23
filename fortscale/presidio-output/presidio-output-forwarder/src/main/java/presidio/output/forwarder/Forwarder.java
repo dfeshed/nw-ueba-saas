@@ -8,7 +8,6 @@ import presidio.output.forwarder.strategy.ForwarderConfiguration;
 import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,21 +30,13 @@ public abstract class Forwarder<T>{
 
         ForwarderStrategy.PAYLOAD_TYPE payloadType = getPayloadType();
 
-        if (!forwarderConfiguration.isForwardEntity(payloadType)) {
-            return new ForwardedInstances(0, Collections.emptyList());
-        }
+        boolean skipForward = !forwarderConfiguration.isForwardInstance(payloadType);
 
-        // select forwarding strategy
-        String strategy = forwarderConfiguration.getForwardingStrategy(payloadType);
-        ForwarderStrategy forwarderStrategy = forwarderStrategyFactory.getStrategy(strategy);
-        if (forwarderStrategy == null) {
-            String errorMsg = String.format("Forwarding strategy %s doesn't exist in the system", forwarderStrategy);
-            logger.error(errorMsg);
-            throw new RuntimeException(errorMsg);
-        }
+        ForwarderStrategy forwarderStrategy = !skipForward ? getStrategy(payloadType) : null;
+
         int bulkSize = forwarderConfiguration.getForwardBulkSize(payloadType);
 
-        // doForward messages in a batch
+        // forward messages in a batch
         final AtomicInteger forwardedCount = new AtomicInteger();
         List<String> ids = new ArrayList<>();
         Iterators.partition(instances.iterator(), bulkSize).forEachRemaining(instancesBulk -> {
@@ -53,10 +44,13 @@ public abstract class Forwarder<T>{
                 if(needIds){
                     instancesBulk.forEach(instance -> ids.add(getId(instance)));
                 }
-                int success = forwardBatch(forwarderStrategy, payloadType, instancesBulk);
-                forwardedCount.addAndGet(success);
+                if(!skipForward){
+                    int success = forwardBatch(forwarderStrategy, payloadType, instancesBulk);
+                    forwardedCount.addAndGet(success);
+                }
+
             } catch (Exception ex) {
-                logger.error("failed to doForward bulk '{}'", instancesBulk);
+                logger.error("failed to forward bulk '{}'", instancesBulk);
                 Throwables.propagate(ex);
             }
         });
@@ -64,15 +58,27 @@ public abstract class Forwarder<T>{
         return new ForwardedInstances(forwardedCount.get(), ids);
     }
 
+    private ForwarderStrategy getStrategy(ForwarderStrategy.PAYLOAD_TYPE payloadType){
+        // select forwarding strategy
+        String strategy = forwarderConfiguration.getForwardingStrategy(payloadType);
+        ForwarderStrategy forwarderStrategy = forwarderStrategyFactory.getStrategy(strategy);
+        if (forwarderStrategy == null) {
+            String errorMsg = String.format("Forwarding strategy %s doesn't exist in the system", strategy);
+            logger.error(errorMsg);
+            throw new RuntimeException(errorMsg);
+        }
+        return forwarderStrategy;
+    }
 
-    private int forwardBatch(ForwarderStrategy forwarderStrategy, ForwarderStrategy.PAYLOAD_TYPE payloadType, List<T> entities) throws Exception{
+
+    private int forwardBatch(ForwarderStrategy forwarderStrategy, ForwarderStrategy.PAYLOAD_TYPE payloadType, List<T> instances) throws Exception{
         List<ForwardMassage> messages = new ArrayList<>();
-        entities.forEach(entity -> {
+        instances.forEach(instance -> {
                     try {
-                        ForwardMassage message = new ForwardMassage(getId(entity),buildPayload(entity), buildHeader(entity) );
+                        ForwardMassage message = new ForwardMassage(getId(instance),buildPayload(instance), buildHeader(instance) );
                         messages.add(message);
                     } catch (Exception ex) {
-                        logger.error("failed to build payload '{}': {}", payloadType, entity);
+                        logger.error("failed to build payload '{}': {}", payloadType, instance);
                         Throwables.propagate(ex);
                     }
                 });
@@ -80,11 +86,11 @@ public abstract class Forwarder<T>{
         return messages.size();
     };
 
-    abstract String getId(T entity);
+    abstract String getId(T instance);
 
-    abstract String buildPayload(T entity) throws Exception;
+    abstract String buildPayload(T instance) throws Exception;
 
-    abstract Map buildHeader(T entity) throws Exception;
+    abstract Map buildHeader(T instance) throws Exception;
 
     abstract ForwarderStrategy.PAYLOAD_TYPE getPayloadType();
 
