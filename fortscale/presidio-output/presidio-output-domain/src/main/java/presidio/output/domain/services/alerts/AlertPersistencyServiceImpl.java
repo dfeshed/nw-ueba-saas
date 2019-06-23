@@ -19,6 +19,7 @@ import presidio.output.domain.repositories.IndicatorRepository;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -99,8 +100,8 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public Alert findOne(String id) {
-        return alertRepository.findById(id).get();
+    public Optional<Alert> findOne(String id) {
+        return alertRepository.findById(id);
     }
 
     @Override

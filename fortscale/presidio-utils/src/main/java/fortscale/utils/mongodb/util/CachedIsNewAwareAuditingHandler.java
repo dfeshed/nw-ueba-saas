@@ -35,7 +35,7 @@ public class CachedIsNewAwareAuditingHandler extends IsNewAwareAuditingHandler {
     }
 
     @Override
-    public Object markAudited(Object object) {
+    public void markAudited(Object object) {
         Class<?> objectClass = object.getClass();
         Boolean isAuditable = this.isAuditableCache.get(objectClass);
 
@@ -46,7 +46,7 @@ public class CachedIsNewAwareAuditingHandler extends IsNewAwareAuditingHandler {
         }
 
         if (!isAuditable) {
-            return object;
+            return;
         }
 
         IsNewStrategy strategy = isNewStrategyFactory.getIsNewStrategy(objectClass);
@@ -62,7 +62,6 @@ public class CachedIsNewAwareAuditingHandler extends IsNewAwareAuditingHandler {
                 ReflectionUtils.setField(field, object, Instant.now());
             }
         }
-        return object;
     }
 
     private static Field computeClassField(Class<?> objectClass, Class<? extends Annotation> annotation) {

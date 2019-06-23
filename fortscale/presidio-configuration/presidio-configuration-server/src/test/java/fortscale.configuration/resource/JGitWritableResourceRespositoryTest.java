@@ -22,7 +22,7 @@ public class JGitWritableResourceRespositoryTest {
     @Before
     public void init() {
         this.context = new SpringApplicationBuilder(JGitWritableResourceRespositoryTest.class).web(WebApplicationType.NONE).run();
-        this.nativeRepository = new NativeEnvironmentRepository(this.context.getEnvironment());
+        this.nativeRepository = new NativeEnvironmentRepository(this.context.getEnvironment(), null);
         //this.repository = new GenericResourceWritableRespository(this.nativeRepository);
         //this.repository.setResourceLoader(this.context);
         this.context.close();

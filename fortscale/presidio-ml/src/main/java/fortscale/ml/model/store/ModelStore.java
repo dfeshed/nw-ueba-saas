@@ -250,11 +250,11 @@ public class ModelStore implements ModelReader, StoreManagerAware {
                     Aggregation.group(ModelDAO.CONTEXT_ID_FIELD),
                     Aggregation.project(ModelDAO.CONTEXT_ID_FIELD).and("_id").as(ModelDAO.CONTEXT_ID_FIELD).andExclude("_id")
             );
-            AggregationResults<DBObject> aggrResult = mongoTemplate.aggregate(agg, collectionName, DBObject.class);
+            AggregationResults<Document> aggrResult = mongoTemplate.aggregate(agg, collectionName, Document.class);
             removeContextIdsModels(collectionName, until, aggrResult);
 
         } catch (Exception ex) {
-            AggregationResults<DBObject> aggrResult;
+            AggregationResults<Document> aggrResult;
 
             long limit = modelAggregationPaginationSize;
             long skip = 0;
@@ -268,7 +268,7 @@ public class ModelStore implements ModelReader, StoreManagerAware {
                         Aggregation.limit(limit)
                 ).withOptions(Aggregation.newAggregationOptions().allowDiskUse(true).build());
                 skip = skip + modelAggregationPaginationSize;
-                aggrResult = mongoTemplate.aggregate(agg, collectionName, DBObject.class);
+                aggrResult = mongoTemplate.aggregate(agg, collectionName, Document.class);
                 removeContextIdsModels(collectionName, until, aggrResult);
             } while (!aggrResult.getMappedResults().isEmpty());
 
@@ -282,8 +282,8 @@ public class ModelStore implements ModelReader, StoreManagerAware {
      * @param until          until instant
      * @param aggrResult     context ids result
      */
-    private void removeContextIdsModels(String collectionName, Instant until, AggregationResults<DBObject> aggrResult) {
-        List<DBObject> results = aggrResult.getMappedResults();
+    private void removeContextIdsModels(String collectionName, Instant until, AggregationResults<Document> aggrResult) {
+        List<Document> results = aggrResult.getMappedResults();
 
         if (!results.isEmpty()) {
             List<String> contextIds = results.stream()

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.sdk.impl.repositories.DataSourceRepository;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
@@ -28,7 +29,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {MongodbTestConfig.class, PresidioInputPersistencyServiceConfig.class})
+@ContextConfiguration(classes = {MongodbTestConfig.class, PresidioInputPersistencyServiceConfig.class})
 @EnableMongoRepositories(basePackageClasses = DataSourceRepository.class)
 public class PresidioInputPersistencyServiceMongoImplTest {
 

@@ -22,7 +22,7 @@ public class GenericWritableResourceRespositoryTest {
     @Before
     public void init() {
         this.context = new SpringApplicationBuilder(GenericWritableResourceRespositoryTest.class).web(WebApplicationType.NONE).run();
-        this.nativeEnvironmentRepository = new NativeEnvironmentRepository(this.context.getEnvironment());
+        this.nativeEnvironmentRepository = new NativeEnvironmentRepository(this.context.getEnvironment(), null);
         this.repository = new GenericWritableResourceRepository(this.nativeEnvironmentRepository);
         this.repository.setResourceLoader(this.context);
         this.context.close();

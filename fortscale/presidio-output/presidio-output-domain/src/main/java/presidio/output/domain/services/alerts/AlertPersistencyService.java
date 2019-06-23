@@ -11,6 +11,7 @@ import presidio.output.domain.records.alerts.IndicatorSummary;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface AlertPersistencyService {
@@ -23,7 +24,7 @@ public interface AlertPersistencyService {
 
     void deleteAlertAndIndicators(Alert alert);
 
-    Alert findOne(String id);
+    Optional<Alert> findOne(String id);
 
     Iterable<Alert> findAll();
 

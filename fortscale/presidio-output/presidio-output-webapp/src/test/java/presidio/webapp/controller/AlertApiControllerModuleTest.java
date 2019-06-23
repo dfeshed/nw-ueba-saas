@@ -29,7 +29,7 @@ import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.entity.EntitySeverity;
-import presidio.output.domain.repositories.AlertRepository;
+import presidio.output.domain.repositories.stam.AlertRepository;
 import presidio.output.domain.repositories.EntityRepository;
 import presidio.output.domain.repositories.EntitySeveritiesRangeRepository;
 import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;

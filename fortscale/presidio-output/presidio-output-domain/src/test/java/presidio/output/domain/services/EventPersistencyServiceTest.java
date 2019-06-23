@@ -2,6 +2,7 @@ package presidio.output.domain.services;
 
 import com.mongodb.client.ListIndexesIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
@@ -77,8 +78,13 @@ public class EventPersistencyServiceTest {
         List<FileEnrichedEvent> insertedRecords = mongoTemplate.findAll(FileEnrichedEvent.class, collectionName);
         Assert.assertEquals("output enriched events exists", 1, insertedRecords.size());
         MongoCollection collection = mongoTemplate.getCollection(collectionName);
-        ListIndexesIterable<Document> indexInfo = collection.listIndexes();
+        MongoCursor<Document> indexIterator = collection.listIndexes().iterator();
+        int numIndices = 0;
+        while (indexIterator.hasNext()) {
+            indexIterator.next();
+            numIndices++;
+        }
         // 1 index is always created for _id_ field. because of that reason we need to check that are at least 2
-        Assert.assertTrue("more than one index created", indexInfo.spliterator().getExactSizeIfKnown() >= 2);
+        Assert.assertTrue("more than one index created", numIndices >= 2);
     }
 }

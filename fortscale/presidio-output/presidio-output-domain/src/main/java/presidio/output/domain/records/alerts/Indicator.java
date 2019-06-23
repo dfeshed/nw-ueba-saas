@@ -78,13 +78,11 @@ public class Indicator extends AbstractElasticDocument {
 
     @JsonIgnore
     @ToStringExclude
-    @OneToMany
     @JoinColumn(name = "id", referencedColumnName = "indicatorId")
     private transient List<IndicatorEvent> events;
 
     @JsonIgnore
     @ToStringExclude
-    @OneToOne
     @JoinColumn(name = "alertId", referencedColumnName = "id")
     private transient Alert alert;
 

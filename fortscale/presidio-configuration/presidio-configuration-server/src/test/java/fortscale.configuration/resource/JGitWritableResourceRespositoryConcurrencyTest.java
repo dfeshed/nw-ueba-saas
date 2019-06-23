@@ -20,7 +20,7 @@ public class JGitWritableResourceRespositoryConcurrencyTest {
     @Before
     public void init() {
         this.context = new SpringApplicationBuilder(JGitWritableResourceRespositoryConcurrencyTest.class).web(WebApplicationType.NONE).run();
-        this.nativeRepository = new NativeEnvironmentRepository(this.context.getEnvironment());
+        this.nativeRepository = new NativeEnvironmentRepository(this.context.getEnvironment(), null);
         //this.repository = new GenericResourceWritableRespository(this.nativeRepository);
         //this.repository.setResourceLoader(this.context);
         this.context.close();

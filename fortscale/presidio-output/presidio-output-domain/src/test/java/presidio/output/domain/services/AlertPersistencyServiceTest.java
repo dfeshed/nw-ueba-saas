@@ -7,7 +7,6 @@ import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.histogram.Histogram;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,14 +20,10 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.AbstractElasticDocument;
-import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.alerts.AlertEnums.AlertFeedback;
 import presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
-import presidio.output.domain.records.alerts.AlertQuery;
-import presidio.output.domain.records.alerts.Indicator;
-import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.entity.EntitySeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
@@ -40,20 +35,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
@@ -124,12 +110,12 @@ public class AlertPersistencyServiceTest {
 
         alertPersistencyService.save(alert);
 
-        Alert testAlert = alertPersistencyService.findOne(alert.getId());
+        Alert testAlert = alertPersistencyService.findOne(alert.getId()).get();
         Date updateAtDateFirstFind = testAlert.getUpdatedDate();
         Date createAtDateFirstFind = testAlert.getCreatedDate();
         testAlert.setEntityName("smartId1");
         alertPersistencyService.save(testAlert);
-        testAlert = alertPersistencyService.findOne(alert.getId());
+        testAlert = alertPersistencyService.findOne(alert.getId()).get();
         Date createAtDateSecondFind = testAlert.getCreatedDate();
         Date updateAtDateSecondFind = testAlert.getUpdatedDate();
 
@@ -143,7 +129,7 @@ public class AlertPersistencyServiceTest {
         assertEquals(testAlert.getEntityName(), "smartId1");
         testAlert.setIndicatorsNum(100);
         alertPersistencyService.save(testAlert);
-        Alert testAlert2 = alertPersistencyService.findOne(alert.getId());
+        Alert testAlert2 = alertPersistencyService.findOne(alert.getId()).get();
         assertEquals(testAlert2.getCreatedDate(), createAtDate);
         assertEquals(100, testAlert2.getIndicatorsNum());
     }
@@ -209,8 +195,8 @@ public class AlertPersistencyServiceTest {
         elasticsearchTemplate.refresh(Alert.class);
         elasticsearchTemplate.refresh(Indicator.class);
         elasticsearchTemplate.refresh(IndicatorEvent.class);
-        Alert testAlert = alertPersistencyService.findOne(alert.getId());
-        assertNull(testAlert);
+        Optional<Alert> testAlert = alertPersistencyService.findOne(alert.getId());
+        assert(!testAlert.isPresent());
         testIndicator = alertPersistencyService.findIndicatorsByAlertId(alert.getId(), new PageRequest(0, 1));
         assertEquals(0, testIndicator.getTotalElements());
     }
