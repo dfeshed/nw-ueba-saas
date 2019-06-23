@@ -1,5 +1,7 @@
 package presidio.output.commons.services.entity;
 
+import fortscale.common.general.Schema;
+
 import java.util.List;
 
 /**
@@ -7,12 +9,12 @@ import java.util.List;
  */
 public interface EntitySeverityService {
 
-    EntitySeverityServiceImpl.EntityScoreToSeverity getSeveritiesMap(boolean recalcEntityScorePercentiles);
+    EntitySeverityServiceImpl.EntityScoreToSeverity getSeveritiesMap(boolean recalcEntityScorePercentiles, String entityType);
 
     /**
      * Iterate all entities and re-calculate the severities percentiles - read entities from DB and update severities in DB
      */
-    void updateSeverities();
+    void updateSeverities(String entityType);
 
-    List<String> collectionNamesByOrderForEvents();
+    List<String> collectionNamesForSchemas(List<Schema> schemas);
 }

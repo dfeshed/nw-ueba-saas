@@ -44,11 +44,11 @@ public interface AlertPersistencyService {
 
     Page<IndicatorEvent> findIndicatorEventsByIndicatorId(String indicatorId, PageRequest pageRequest);
 
-    List<Alert> removeByTimeRange(Instant startDate, Instant endDate);
+    List<Alert> removeByTimeRangeAndEntityType(Instant startDate, Instant endDate, String entityType);
 
-    Stream<Alert> findAlertsByDate(Instant startDate, Instant endDate);
+    Stream<Alert> findAlertsByDateAndEntityType(Instant startDate, Instant endDate, String entityType);
 
-    Stream<Indicator> findIndicatorByDate(Instant startDate, Instant endDate);
+    Stream<Indicator> findIndicatorsByAlertIds(List<String> alertIds);
 
     long countAlerts();
 

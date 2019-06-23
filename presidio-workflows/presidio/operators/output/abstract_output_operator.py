@@ -15,7 +15,7 @@ class AbstractOutputOperator(FixedDurationJarOperator):
     __metaclass__ = ABCMeta
 
     @apply_defaults
-    def __init__(self, fixed_duration_strategy, command, smart_record_conf_name, task_id=None, *args, **kwargs):
+    def __init__(self, fixed_duration_strategy, command, smart_record_conf_name, java_args={}, java_retry_args={}, task_id=None, *args, **kwargs):
         """
         C'tor.
         :param fixed_duration_strategy: The duration covered by the aggregations (e.g. hourly or daily)
@@ -27,26 +27,27 @@ class AbstractOutputOperator(FixedDurationJarOperator):
         :param task_id: The task ID of this operator - If None, the ID is generated automatically
         :type task_id: string
         """
-        self.log.debug('input operator init kwargs=%s', str(kwargs))
-
+        self.log.debug('output operator init kwargs=%s', str(kwargs))
         self.fixed_duration_strategy = fixed_duration_strategy
         self.smart_record_conf_name = smart_record_conf_name
         self.task_id = task_id or self.get_task_name()
 
-        java_args = {
+        java_args_smart_record_conf_name = {
             'smart_record_conf_name': self.smart_record_conf_name,
         }
 
-        self.log.debug('agg operator. command=%s', command)
+        java_args.update(java_args_smart_record_conf_name)
+
+        self.log.debug('output operator. command=%s', command)
         super(AbstractOutputOperator, self).__init__(
             task_id=self.task_id,
             fixed_duration_strategy=self.fixed_duration_strategy,
             command=command,
             java_args=java_args,
+            java_retry_args=java_retry_args,
             *args,
             **kwargs
         )
-
 
     @abstractmethod
     def get_task_name(self):
@@ -54,4 +55,6 @@ class AbstractOutputOperator(FixedDurationJarOperator):
         :return: The task name
         """
         pass
+
+
 

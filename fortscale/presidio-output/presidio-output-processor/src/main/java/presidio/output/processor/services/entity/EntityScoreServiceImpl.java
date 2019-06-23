@@ -12,12 +12,7 @@ import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.entities.EntityPersistencyService;
 
 import java.time.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by shays on 27/08/2017.
@@ -55,10 +50,11 @@ public class EntityScoreServiceImpl implements EntityScoreService {
      * @param excludedEntitiesIds is the list of entities which should
      */
     @Override
-    public void clearEntityScoreForEntitiesThatShouldNotHaveScore(Set<String> excludedEntitiesIds) {
+    public void clearEntityScoreForEntitiesThatShouldNotHaveScore(Set<String> excludedEntitiesIds, String entityType) {
         log.debug("Check if there are entities without relevant alert and score higher then 0");
 
         EntityQuery.EntityQueryBuilder entityQueryBuilder = new EntityQuery.EntityQueryBuilder().minScore(1)
+                .filterByEntitiesTypes(Collections.singletonList(entityType))
                 .pageSize(defaultEntitiesBatchSize)
                 .pageNumber(0);
         Page<Entity> entitiesPage = entityPersistencyService.find(entityQueryBuilder.build());
@@ -88,7 +84,7 @@ public class EntityScoreServiceImpl implements EntityScoreService {
      * @return map of each entityId to an object that contains the new score and number of alerts
      */
     @Override
-    public Map<String, EntitiesAlertData> calculateEntityScores(int alertEffectiveDurationInDays, Instant endDate) {
+    public Map<String, EntitiesAlertData> calculateEntityScores(int alertEffectiveDurationInDays, Instant endDate, String entityType) {
 
         List<LocalDateTime> days = getListOfLastXdays(alertEffectiveDurationInDays, endDate);
 
@@ -107,6 +103,7 @@ public class EntityScoreServiceImpl implements EntityScoreService {
                 AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder()
                         .filterByStartDate(startTime)
                         .filterByEndDate(endTime)
+                        .filterByEntityType(entityType)
                         .sortField(Alert.START_DATE, true)
                         .setPageSize(this.defaultAlertsBatchSize)
                         .setPageNumber(0);

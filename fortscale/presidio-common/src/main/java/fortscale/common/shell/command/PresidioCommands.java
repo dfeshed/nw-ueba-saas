@@ -54,7 +54,7 @@ public class PresidioCommands implements CommandMarker {
     public int applyRetentionPolicy(
             @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, mandatory = true, help = "events schema") final Schema schema,
 
-            @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
+            @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime,
 

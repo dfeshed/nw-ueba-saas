@@ -1,0 +1,94 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "sumOfBytesSentToDstOrgScoresSumSslSubjectOutboundTlsHourly",
+      "type": "P",
+      "bucketConfName": "sumOfBytesSentToDstOrgScoresSumSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "sumOfBytesSentScoresSum"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToDstPortScoresSumSslSubjectOutboundTlsHourly",
+      "type": "P",
+      "bucketConfName": "sumOfBytesSentToDstPortScoresSumSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "sumOfBytesSentScoresSum"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToDomainScoresSumSslSubjectOutboundTlsHourly",
+      "type": "P",
+      "bucketConfName": "sumOfBytesSentToDomainScoresSumSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "sumOfBytesSentScoresSum"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDomainScoresSumSslSubjectOutboundTlsHourly",
+      "type": "P",
+      "bucketConfName": "maxSumOfBytesSentBySrcIpToDomainScoresSumSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "maxSumOfBytesSentBySrcIpToDomainScoresSum"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDstOrgScoresSumSslSubjectOutboundTlsHourly",
+      "type": "P",
+      "bucketConfName": "maxSumOfBytesSentBySrcIpToDstOrgScoresSumSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "maxSumOfBytesSentBySrcIpToDstOrgScoresSum"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDstPortScoresSumSslSubjectOutboundTlsHourly",
+      "type": "P",
+      "bucketConfName": "maxSumOfBytesSentBySrcIpToDstPortScoresSumSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "maxSumOfBytesSentBySrcIpToDstPortScoresSum"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    }
+  ]
+}

@@ -19,16 +19,15 @@ public class AlertsForwarder extends Forwarder<Alert> {
     AlertPersistencyService alertPersistencyService;
     JsonPayloadBuilder payloadBuilder;
 
-
     public AlertsForwarder(AlertPersistencyService alertPersistencyService, ForwarderConfiguration forwarderConfiguration, ForwarderStrategyFactory forwarderStrategyFactory) {
         super(forwarderConfiguration, forwarderStrategyFactory);
         this.alertPersistencyService = alertPersistencyService;
         payloadBuilder = new JsonPayloadBuilder<>(Alert.class, AlertJsonMixin.class);
     }
 
-    @Override
-    Stream<Alert> getEntitiesToForward(Instant startDate, Instant endDate) {
-        return alertPersistencyService.findAlertsByDate(startDate, endDate);
+    public ForwardedInstances forwardAlerts(Instant startDate, Instant endDate, String entityType){
+        Stream<Alert> alerts = alertPersistencyService.findAlertsByDateAndEntityType(startDate, endDate, entityType);
+        return doForward(alerts, true);
     }
 
     @Override
@@ -57,11 +56,11 @@ public class AlertsForwarder extends Forwarder<Alert> {
     @JsonPropertyOrder({ "id","startDate","endDate","UebaEntityId","entityDocumentId","score","severity","indicatorsNum","indicatorsNames","classifications","scoreContribution" })
     class AlertJsonMixin extends Alert {
 
-        @JsonProperty("UebaEtityId")
-        String userId;
+        @JsonProperty("UebaEntityId")
+        String entityId;
 
         @JsonProperty("entityVendorId")
-        String vendorUserId;
+        String vendorEntityId;
 
     }
 }

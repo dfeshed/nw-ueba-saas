@@ -12,9 +12,9 @@ public interface OutputExecutionService {
     Logger logger = Logger.getLogger(OutputExecutionService.class);
 
     void run(Instant startDate, Instant endDate, String configurationName) throws Exception;
-    void updateAllEntitiesData(Instant startDate, Instant endDate, String configurationName) throws Exception;
-    void clean(Instant startDate, Instant endDate) throws Exception;
-    void applyRetentionPolicy(Instant endDate) throws Exception;
+    void updateAllEntitiesData(Instant startDate, Instant endDate, String configurationName, String entityType) throws Exception;
+    void cleanAlertsByTimeRangeAndEntityType(Instant startDate, Instant endDate, String entityType) throws Exception;
+    void cleanAlertsForRetention(Instant endDate, String entityType)throws Exception;
     void cleanAll() throws Exception;
 
     default int doRun(Instant startDate, Instant endDate, String configurationName) throws Exception {
@@ -27,9 +27,9 @@ public interface OutputExecutionService {
         return 0;
     }
 
-    default int doUpdateAllEntitiesData(Instant startDate, Instant endDate, String configurationName) throws Exception {
+    default int doUpdateAllEntitiesData(Instant startDate, Instant endDate, String configurationName, String entityType) throws Exception {
         try {
-            updateAllEntitiesData(startDate, endDate, configurationName);
+            updateAllEntitiesData(startDate, endDate, configurationName, entityType);
         } catch (Exception e) {
             logger.error("Failed to update entities data as part of output daily job", e);
             return 1;
@@ -37,9 +37,9 @@ public interface OutputExecutionService {
         return 0;
     }
 
-    default int doClean(Instant startDate, Instant endDate) throws Exception {
+    default int doCleanAlertsByTimeRange(Instant startDate, Instant endDate, String entityType) throws Exception {
         try {
-            clean(startDate, endDate);
+            cleanAlertsByTimeRangeAndEntityType(startDate, endDate, entityType);
         }
         catch (Exception e) {
             return 1;
@@ -47,9 +47,9 @@ public interface OutputExecutionService {
         return 0;
     }
 
-    default int doApplyRetentionPolicy(Instant endDate) throws Exception {
+    default int doApplyRetentionPolicy(Instant endDate, String entityType) throws Exception {
         try {
-            applyRetentionPolicy(endDate);
+            cleanAlertsForRetention(endDate, entityType);
         }
         catch (Exception e) {
             return 1;

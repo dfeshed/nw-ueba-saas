@@ -38,6 +38,7 @@ public class EntityElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<E
             }
         }
 
+
         // filter by freeText
         if (StringUtils.isNotEmpty(entityQuery.getFilterByFreeText())) {
             BoolQueryBuilder freeTextQuery = new BoolQueryBuilder();

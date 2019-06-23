@@ -41,7 +41,7 @@ public class OutputShellCommands implements CommandMarker {
         return executionService.doRun(startTime, endTime, configurationName);
     }
 
-    @CliCommand(value = "recalculate-user-score", help = "run daily calculation for output")
+    @CliCommand(value = "recalculate-entity-score", help = "run daily calculation for output")
     public int runDaily(
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "alert with (logical) time greater than specified start time will be processed") final Instant startTime,
 
@@ -49,35 +49,39 @@ public class OutputShellCommands implements CommandMarker {
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration,
 
-            @CliOption(key = {CommonStrings.COMMAND_LINE_SMART_RECORD_CONF_NAME_FIELD_NAME}, help = "smart configuration name") final String configurationName
+            @CliOption(key = {CommonStrings.COMMAND_LINE_SMART_RECORD_CONF_NAME_FIELD_NAME}, mandatory = true, help = "smart configuration name") final String configurationName,
+
+            @CliOption(key = {CommonStrings.COMMAND_LINE_ENTITY_TYPE_FIELD_NAME}, mandatory = true, help = "the entity type that will be processed") final String entityType
+
 
     ) throws Exception {
         Thread.currentThread().setName(DAILY_OUTPUT_PROCESSOR_RUN + Instant.now().toString());
-        return executionService.doUpdateAllEntitiesData(startTime, endTime, configurationName);
+        return executionService.doUpdateAllEntitiesData(startTime, endTime, configurationName, entityType);
     }
 
-    @CliCommand(value = "cleanup", help = "clean application data for specified time range ")
-    public int cleanup(
-            @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
+    @CliCommand(value = "cleanup", help = "clean alerts for specified time range and entity type")
+    public int cleanAlerts(
+            @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "alerts with (logical) time greater than specified start time will be processed") final Instant startTime,
 
-            @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime,
+            @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "alerts with (logical) time smaller than specified end time will be processed") final Instant endTime,
 
-            @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration
+            @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration,
 
+            @CliOption(key = {CommonStrings.COMMAND_LINE_ENTITY_TYPE_FIELD_NAME}, mandatory = true, help = "the entity type that will be processed") final String entityType
 
     ) throws Exception {
-        return executionService.doClean(startTime, endTime);
+        return executionService.doCleanAlertsByTimeRange(startTime, endTime, entityType);
     }
 
-    @CliCommand(value = "applyRetentionPolicy", help = "clean application data from start of time to specified endTime minus configured time  ")
+    @CliCommand(value = "applyRetentionPolicy", help = "clean alerts up to specified date and entity type")
     public int applyRetentionPolicy(
-            @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
 
-            @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime,
-            //TODO: Remove the COMMAND_LINE_FIXED_DURATION_FIELD_NAME  when fixing the JarOpertaor (Currently this is mandatory in the JarOperator)
-            @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration
+            @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "alerts with (logical) time smaller than specified end time will be processed") final Instant endTime,
+
+            @CliOption(key = {CommonStrings.COMMAND_LINE_ENTITY_TYPE_FIELD_NAME}, mandatory = true, help = "the entity type that will be processed") final String entityType
+
     ) throws Exception {
-        return executionService.doApplyRetentionPolicy(endTime);
+        return executionService.doApplyRetentionPolicy(endTime, entityType);
     }
 
     @CliCommand(value = "cleanAll", help = "clean application data for specified data source")

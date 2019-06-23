@@ -86,8 +86,8 @@ public class EntityScoreServiceModuleTest {
     public void testSingleEntityScoreCalculation() {
         //Generate one entity with 2 critical alerts
         String entityDocumentId1 = "entityDocumentId1";
-        generateEntityAndAlerts("entityId1", entityDocumentId1, "entityName1", AlertEnums.AlertSeverity.CRITICAL, AlertEnums.AlertSeverity.CRITICAL);
-
+        String entityType = "entityType";
+        generateEntityAndAlerts("entityId1", entityDocumentId1, "entityName1", entityType, AlertEnums.AlertSeverity.CRITICAL, AlertEnums.AlertSeverity.CRITICAL);
 
         EntityQuery.EntityQueryBuilder queryBuilder = new EntityQuery.EntityQueryBuilder().pageNumber(0).pageSize(10).filterByEntitiesIds(Collections.singletonList("entityId1"));
         Page<Entity> entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
@@ -98,8 +98,8 @@ public class EntityScoreServiceModuleTest {
         Assert.assertEquals(0, entitiesPageResult.getContent().get(0).getScore(), 0.00001);
         Assert.assertNull(entitiesPageResult.getContent().get(0).getSeverity());
 
-        entityService.updateAllEntitiesAlertData(Instant.now());
-        entitySeverityService.updateSeverities();
+        entityService.updateAllEntitiesAlertData(Instant.now(), entityType);
+        entitySeverityService.updateSeverities(entityType);
 
         entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, entitiesPageResult.getContent().size());
@@ -111,9 +111,64 @@ public class EntityScoreServiceModuleTest {
     }
 
     @Test
+    public void testTwoEntityTypesScoreCalculation() {
+        //Generate 2 entities with 2 critical alerts
+        generateEntityAndAlerts("entityId", "entityDocumentId", "entityName", "entityType", AlertEnums.AlertSeverity.CRITICAL, AlertEnums.AlertSeverity.CRITICAL);
+        generateEntityAndAlerts("entityId1", "entityDocumentId1", "entityName1", "entityType1", AlertEnums.AlertSeverity.CRITICAL, AlertEnums.AlertSeverity.CRITICAL);
+
+
+        EntityQuery.EntityQueryBuilder queryBuilder = new EntityQuery.EntityQueryBuilder().pageNumber(0).pageSize(10).filterByEntitiesIds(Collections.singletonList("entityId")).filterByEntitiesTypes(Collections.singletonList("entityType"));
+        Page<Entity> entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(1, entitiesPageResult.getContent().size());
+        Assert.assertEquals("entityId", entitiesPageResult.getContent().get(0).getEntityId());
+        Assert.assertEquals("entityDocumentId", entitiesPageResult.getContent().get(0).getId());
+        Assert.assertEquals("entityName", entitiesPageResult.getContent().get(0).getEntityName());
+        Assert.assertEquals(0, entitiesPageResult.getContent().get(0).getScore(), 0.00001);
+        Assert.assertNull(entitiesPageResult.getContent().get(0).getSeverity());
+
+        EntityQuery.EntityQueryBuilder queryBuilder1 = new EntityQuery.EntityQueryBuilder().pageNumber(0).pageSize(10).filterByEntitiesIds(Collections.singletonList("entityId1")).filterByEntitiesTypes(Collections.singletonList("entityType1"));
+        entitiesPageResult = entityPersistencyService.find(queryBuilder1.build());
+        Assert.assertEquals(1, entitiesPageResult.getContent().size());
+        Assert.assertEquals("entityId1", entitiesPageResult.getContent().get(0).getEntityId());
+        Assert.assertEquals("entityDocumentId1", entitiesPageResult.getContent().get(0).getId());
+        Assert.assertEquals("entityName1", entitiesPageResult.getContent().get(0).getEntityName());
+        Assert.assertEquals(0, entitiesPageResult.getContent().get(0).getScore(), 0.00001);
+        Assert.assertNull(entitiesPageResult.getContent().get(0).getSeverity());
+
+        entityService.updateAllEntitiesAlertData(Instant.now(), "entityType");
+        entitySeverityService.updateSeverities("entityType");
+
+        entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(1, entitiesPageResult.getContent().size());
+        Assert.assertEquals("entityId", entitiesPageResult.getContent().get(0).getEntityId());
+        Assert.assertEquals("entityName", entitiesPageResult.getContent().get(0).getEntityName());
+        Assert.assertEquals(40, entitiesPageResult.getContent().get(0).getScore(), 0.00001);
+        Assert.assertEquals(EntitySeverity.LOW, entitiesPageResult.getContent().get(0).getSeverity());
+
+        entitiesPageResult = entityPersistencyService.find(queryBuilder1.build());
+        Assert.assertEquals(1, entitiesPageResult.getContent().size());
+        Assert.assertEquals("entityId1", entitiesPageResult.getContent().get(0).getEntityId());
+        Assert.assertEquals("entityDocumentId1", entitiesPageResult.getContent().get(0).getId());
+        Assert.assertEquals("entityName1", entitiesPageResult.getContent().get(0).getEntityName());
+        Assert.assertEquals(0, entitiesPageResult.getContent().get(0).getScore(), 0.00001);
+        Assert.assertNull(entitiesPageResult.getContent().get(0).getSeverity());
+
+        entityService.updateAllEntitiesAlertData(Instant.now(), "entityType1");
+        entitySeverityService.updateSeverities("entityType1");
+
+        entitiesPageResult = entityPersistencyService.find(queryBuilder1.build());
+        Assert.assertEquals(1, entitiesPageResult.getContent().size());
+        Assert.assertEquals("entityId1", entitiesPageResult.getContent().get(0).getEntityId());
+        Assert.assertEquals("entityName1", entitiesPageResult.getContent().get(0).getEntityName());
+        Assert.assertEquals(40, entitiesPageResult.getContent().get(0).getScore(), 0.00001);
+        Assert.assertEquals(EntitySeverity.LOW, entitiesPageResult.getContent().get(0).getSeverity());
+    }
+
+    @Test
     public void testSingleEntityScoreCalculationSomeMoreThen90Days() {
         //Generate one entity with 3 alerts
-        Entity entity1 = new Entity("entityId1", "entityName1", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
+        String entityType = "entityType";
+        Entity entity1 = new Entity("entityId1", "entityName1", 0d, null, null, null, EntitySeverity.CRITICAL, 0, entityType);
         entity1.setSeverity(null);
         Iterable<Entity> entityItr = entityPersistencyService.save(Collections.singletonList(entity1));
         Entity savedEntity = entityItr.iterator().next();
@@ -121,9 +176,9 @@ public class EntityScoreServiceModuleTest {
 
 
         List<Alert> alerts = new ArrayList<>();
-        alerts.add(new Alert(entityDocumentId, "smartId", null, "entityName1", "entityName1",getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 15D, "entityType"));
-        alerts.add(new Alert(entityDocumentId, "smartId", null, "entityName1", "entityName1",getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 5D, "entityType"));
-        alerts.add(new Alert(entityDocumentId, "smartId", null, "entityName1", "entityName1",getMinusDay(100), getMinusDay(99), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 5D, "entityType"));
+        alerts.add(new Alert(entityDocumentId, "smartId", null, "entityName1", "entityName1",getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 15D, entityType));
+        alerts.add(new Alert(entityDocumentId, "smartId", null, "entityName1", "entityName1",getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 5D, entityType));
+        alerts.add(new Alert(entityDocumentId, "smartId", null, "entityName1", "entityName1",getMinusDay(100), getMinusDay(99), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 5D, entityType));
         alertPersistencyService.save(alerts);
 
 
@@ -132,9 +187,9 @@ public class EntityScoreServiceModuleTest {
         severityToScoreRangeMap.put(EntitySeverity.MEDIUM, new PresidioRange<>(500d, 100d));
         severityToScoreRangeMap.put(EntitySeverity.HIGH, new PresidioRange<>(100d, 150d));
         severityToScoreRangeMap.put(EntitySeverity.CRITICAL, new PresidioRange<>(150d, 200d));
-        entitySeveritiesRangeRepository.save(new EntitySeveritiesRangeDocument(severityToScoreRangeMap));
-        entityService.updateAllEntitiesAlertData(Instant.now());
-        entitySeverityService.updateSeverities();
+        entitySeveritiesRangeRepository.save(new EntitySeveritiesRangeDocument(severityToScoreRangeMap, entityType));
+        entityService.updateAllEntitiesAlertData(Instant.now(), entityType);
+        entitySeverityService.updateSeverities(entityType);
 
         Entity updatedEntity = entityPersistencyService.findEntityByDocumentId(entityDocumentId);
         Assert.assertEquals("entityId1", updatedEntity.getEntityId());
@@ -142,7 +197,7 @@ public class EntityScoreServiceModuleTest {
         Assert.assertEquals(20, updatedEntity.getScore(), 0.00001);
         Assert.assertEquals(EntitySeverity.LOW, updatedEntity.getSeverity());
 
-        EntitySeveritiesRangeDocument entitySeveritiesRangeDocument = entitySeveritiesRangeRepository.findById(EntitySeveritiesRangeDocument.ENTITY_SEVERITIES_RANGE_DOC_ID).get();
+        EntitySeveritiesRangeDocument entitySeveritiesRangeDocument = entitySeveritiesRangeRepository.findOne(EntitySeveritiesRangeDocument.getEntitySeveritiesDocIdName(entityType));
         Assert.assertEquals(new Double(0), entitySeveritiesRangeDocument.getSeverityToScoreRangeMap().get(EntitySeverity.LOW).getLowerBound());
         Assert.assertEquals(new Double(20), entitySeveritiesRangeDocument.getSeverityToScoreRangeMap().get(EntitySeverity.LOW).getUpperBound());
         Assert.assertEquals(new Double(22), entitySeveritiesRangeDocument.getSeverityToScoreRangeMap().get(EntitySeverity.MEDIUM).getLowerBound());
@@ -156,12 +211,13 @@ public class EntityScoreServiceModuleTest {
     @Test
     public void testSingleEntityScoreCalculationAllAlertsMoreThen90Days() {
         //Generate one entity with 2 critical alerts
-        Entity entity1 = new Entity("entityId1", "entityName1", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
+        String entityType = "entityType";
+        Entity entity1 = new Entity("entityId1", "entityName1", 0d, null, null, null, EntitySeverity.CRITICAL, 0, entityType);
         entity1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
-        alerts.add(new Alert(entity1.getId(), "smartId", null, "entityName1","entityName" , getMinusDay(105), getMinusDay(104), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D, "entityType"));
-        alerts.add(new Alert(entity1.getId(), "smartId", null, "entityName1", "entityName" ,getMinusDay(100), getMinusDay(99), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 10D, "entityType"));
-        alerts.add(new Alert(entity1.getId(), "smartId", null, "entityName1", "entityName" ,getMinusDay(120), getMinusDay(119), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D, "entityType"));
+        alerts.add(new Alert(entity1.getId(), "smartId", null, "entityName1","entityName" , getMinusDay(105), getMinusDay(104), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D, entityType));
+        alerts.add(new Alert(entity1.getId(), "smartId", null, "entityName1", "entityName" ,getMinusDay(100), getMinusDay(99), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 10D, entityType));
+        alerts.add(new Alert(entity1.getId(), "smartId", null, "entityName1", "entityName" ,getMinusDay(120), getMinusDay(119), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D, entityType));
 
 
         List<Entity> entityList = new ArrayList<>();
@@ -169,7 +225,6 @@ public class EntityScoreServiceModuleTest {
 
         entityPersistencyService.save(entityList);
         alertPersistencyService.save(alerts);
-
 
         EntityQuery.EntityQueryBuilder queryBuilder = new EntityQuery.EntityQueryBuilder().pageNumber(0).pageSize(10).filterByEntitiesIds(Collections.singletonList("entityId1"));
         Page<Entity> entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
@@ -179,8 +234,8 @@ public class EntityScoreServiceModuleTest {
         Assert.assertEquals(0, entitiesPageResult.getContent().get(0).getScore(), 0.00001);
         Assert.assertNull(entitiesPageResult.getContent().get(0).getSeverity());
 
-        entityService.updateAllEntitiesAlertData(Instant.now());
-        entitySeverityService.updateSeverities();
+        entityService.updateAllEntitiesAlertData(Instant.now(), entityType);
+        entitySeverityService.updateSeverities(entityType);
 
         entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, entitiesPageResult.getContent().size());
@@ -191,13 +246,67 @@ public class EntityScoreServiceModuleTest {
     }
 
     @Test
+    public void testTwoEntityTypesScoreCalculationAllAlertsMoreThen90Days() {
+        //Generate one entity with 2 critical alerts
+        String entityType = "entityType1";
+        Entity entity1 = new Entity("entityId1", "entityName1", 0d, null, null, null, EntitySeverity.CRITICAL, 0, entityType);
+        entity1.setSeverity(null);
+        List<Alert> alerts = new ArrayList<>();
+        alerts.add(new Alert(entity1.getId(), "smartId", null, "entityName1","entityName" , getMinusDay(105), getMinusDay(104), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D, entityType));
+        alerts.add(new Alert(entity1.getId(), "smartId", null, "entityName1", "entityName" ,getMinusDay(100), getMinusDay(99), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 10D, entityType));
+        alerts.add(new Alert(entity1.getId(), "smartId", null, "entityName1", "entityName" ,getMinusDay(120), getMinusDay(119), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D, entityType));
+
+        Entity entity2 = new Entity("entityId2", "entityName2", 50d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType2");
+
+        List<Entity> entityList = new ArrayList<>();
+        entityList.add(entity1);
+        entityList.add(entity2);
+
+        entityPersistencyService.save(entityList);
+        alertPersistencyService.save(alerts);
+
+        EntityQuery.EntityQueryBuilder queryBuilder = new EntityQuery.EntityQueryBuilder().pageNumber(0).pageSize(10).filterByEntitiesTypes(Collections.singletonList(entityType));
+        Page<Entity> entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(1, entitiesPageResult.getContent().size());
+        Assert.assertEquals("entityId1", entitiesPageResult.getContent().get(0).getEntityId());
+        Assert.assertEquals("entityName1", entitiesPageResult.getContent().get(0).getEntityName());
+        Assert.assertEquals(0, entitiesPageResult.getContent().get(0).getScore(), 0.00001);
+        Assert.assertNull(entitiesPageResult.getContent().get(0).getSeverity());
+
+        EntityQuery.EntityQueryBuilder queryBuilder2 = new EntityQuery.EntityQueryBuilder().pageNumber(0).pageSize(10).filterByEntitiesTypes(Collections.singletonList("entityType2"));
+        entitiesPageResult = entityPersistencyService.find(queryBuilder2.build());
+        Assert.assertEquals(1, entitiesPageResult.getContent().size());
+        Assert.assertEquals("entityId2", entitiesPageResult.getContent().get(0).getEntityId());
+        Assert.assertEquals("entityName2", entitiesPageResult.getContent().get(0).getEntityName());
+        Assert.assertEquals(50, entitiesPageResult.getContent().get(0).getScore(), 0.00001);
+        Assert.assertEquals(EntitySeverity.CRITICAL, entitiesPageResult.getContent().get(0).getSeverity());
+
+        entityService.updateAllEntitiesAlertData(Instant.now(), entityType);
+        entitySeverityService.updateSeverities(entityType);
+
+        entitiesPageResult = entityPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(1, entitiesPageResult.getContent().size());
+        Assert.assertEquals("entityId1", entitiesPageResult.getContent().get(0).getEntityId());
+        Assert.assertEquals("entityName1", entitiesPageResult.getContent().get(0).getEntityName());
+        Assert.assertEquals(0, entitiesPageResult.getContent().get(0).getScore(), 0.00001);
+
+        entitiesPageResult = entityPersistencyService.find(queryBuilder2.build());
+        Assert.assertEquals(1, entitiesPageResult.getContent().size());
+        Assert.assertEquals("entityId2", entitiesPageResult.getContent().get(0).getEntityId());
+        Assert.assertEquals("entityName2", entitiesPageResult.getContent().get(0).getEntityName());
+        Assert.assertEquals(50, entitiesPageResult.getContent().get(0).getScore(), 0.00001);
+        Assert.assertEquals(EntitySeverity.CRITICAL, entitiesPageResult.getContent().get(0).getSeverity());
+    }
+
+    @Test
     public void testBulkEntityScore() {
+        String entityType = "entityType";
         for (int i = 0; i < 100; i++) {
             AlertEnums.AlertSeverity[] severities = new AlertEnums.AlertSeverity[i + 1];
             for (int j = 0; j <= i; j++) {
                 severities[j] = AlertEnums.AlertSeverity.HIGH;
             }
-            generateEntityAndAlerts("entityId" + i, "entityHash" + i, "entityname" + i, severities);
+            generateEntityAndAlerts("entityId" + i, "entityHash" + i, "entityname" + i, entityType, severities);
 
         }
 
@@ -206,9 +315,9 @@ public class EntityScoreServiceModuleTest {
         Page<Alert> alerts = alertPersistencyService.find(new AlertQuery.AlertQueryBuilder().setPageSize(1).setPageNumber(0).build());
         Assert.assertEquals(5050, alerts.getTotalElements());
 
-        entityService.updateAllEntitiesAlertData(Instant.now());
+        entityService.updateAllEntitiesAlertData(Instant.now(), entityType);
 
-        entitySeverityService.updateSeverities();
+        entitySeverityService.updateSeverities(entityType);
 
         Entity entity0 = getEntityById("entityId0");
         Assert.assertEquals(15D, entity0.getScore(), 0.00001); //one medium alert
@@ -231,11 +340,12 @@ public class EntityScoreServiceModuleTest {
 
         List<Entity> entityList = new ArrayList<>();
         List<LocalDateTime> dates = getListOfLastXdays(DAYS_COUNT);
+        String entityType = "entityType";
 
         //For each entity generate entity and list of alerts - 2 alerts per days
         List<Alert> alertsAllEntities = new ArrayList<>();
         for (int i = 0; i < ENTITIES_COUNT; i++) {
-            Entity entity1 = new Entity("entityId" + i, "entityname" + i, 0d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
+            Entity entity1 = new Entity("entityId" + i, "entityname" + i, 0d, null, null, null, EntitySeverity.CRITICAL, 0, entityType);
             entity1.setId("entityDocumentId" + i);
             entity1.setSeverity(null);
             //For each day generate to alerts
@@ -246,8 +356,8 @@ public class EntityScoreServiceModuleTest {
                 Date alert2StartTime = Date.from(day.plusHours(5).atZone(ZoneOffset.UTC).toInstant());
                 Date alert2EndTime = Date.from(day.plusHours(6).atZone(ZoneOffset.UTC).toInstant());
                 //Alerts per entity per day
-                alertsAllEntities.add(new Alert("entityDocumentId" + i, "smartId", null, "entityName" + i, "entityName" + i,alert1StartTime, alert1EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.CRITICAL, null, 30D, "entityType"));
-                alertsAllEntities.add(new Alert("entityDocumentId" + i, "smartId", null, "entityName" + i, "entityName" + i,alert2StartTime, alert2EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D, "entityType"));
+                alertsAllEntities.add(new Alert("entityDocumentId" + i, "smartId", null, "entityName" + i, "entityName" + i,alert1StartTime, alert1EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.CRITICAL, null, 30D, entityType));
+                alertsAllEntities.add(new Alert("entityDocumentId" + i, "smartId", null, "entityName" + i, "entityName" + i,alert2StartTime, alert2EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D, entityType));
             }
 
 
@@ -261,9 +371,9 @@ public class EntityScoreServiceModuleTest {
 
         System.out.println("Finish Inserting data " + Instant.now().toString());
         long timeBefore = System.currentTimeMillis();
-        entityService.updateAllEntitiesAlertData(Instant.now());
+        entityService.updateAllEntitiesAlertData(Instant.now(), entityType);
 
-        entitySeverityService.updateSeverities();
+        entitySeverityService.updateSeverities(entityType);
         long timeAfter = System.currentTimeMillis();
         long seconds = (timeAfter - timeBefore) / 1000;
         System.out.println("Total time in seconds: " + seconds);
@@ -274,7 +384,8 @@ public class EntityScoreServiceModuleTest {
     @Test
     public void calculateScorePercentilesTwice_shouldCreatePercentilesDocOnce() {
         //calculate percentiles with 0 entities (all entities should get low severity)
-        entitySeverityService.updateSeverities();
+        String entityType = "entityType";
+        entitySeverityService.updateSeverities(entityType);
         Iterable<EntitySeveritiesRangeDocument> all = entitySeveritiesRangeRepository.findAll();
         Assert.assertEquals(1, ((ScrolledPage<EntitySeveritiesRangeDocument>) all).getNumberOfElements());
 
@@ -284,13 +395,13 @@ public class EntityScoreServiceModuleTest {
             for (int j = 0; j <= i; j++) {
                 severities[j] = AlertEnums.AlertSeverity.HIGH;
             }
-            generateEntityAndAlerts("entityId" + i, "entityHash" + i, "entityname" + i, severities);
+            generateEntityAndAlerts("entityId" + i, "entityHash" + i, "entityname" + i, entityType, severities);
         }
 
         //re-calculate percentiles with new entities
-        entitySeverityService.updateSeverities();
+        entitySeverityService.updateSeverities(entityType);
 
-        EntitySeverityServiceImpl.EntityScoreToSeverity severitiesMap = entitySeverityService.getSeveritiesMap(false);
+        EntitySeverityServiceImpl.EntityScoreToSeverity severitiesMap = entitySeverityService.getSeveritiesMap(false, entityType);
         all = entitySeveritiesRangeRepository.findAll();
         Assert.assertEquals(1, ((ScrolledPage<EntitySeveritiesRangeDocument>) all).getNumberOfElements());
 
@@ -317,14 +428,14 @@ public class EntityScoreServiceModuleTest {
         return entity;
     }
 
-    private void generateEntityAndAlerts(String entityId, String entityDocumentId, String entityName, AlertEnums.AlertSeverity... severities) {
-        Entity entity1 = new Entity(entityId, entityName, 0d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
+    private void generateEntityAndAlerts(String entityId, String entityDocumentId, String entityName, String entityType, AlertEnums.AlertSeverity... severities) {
+        Entity entity1 = new Entity(entityId, entityName, 0d, null, null, null, EntitySeverity.CRITICAL, 0, entityType);
         entity1.setId(entityDocumentId);
         entity1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
 
         for (AlertEnums.AlertSeverity severity : severities) {
-            alerts.add(new Alert(entityDocumentId, "smartId", null, entityName, entityName, getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, severity, null, alertSeverityService.getEntityScoreContributionFromSeverity(severity), "entityType"));
+            alerts.add(new Alert(entityDocumentId, "smartId", null, entityName, entityName, getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, severity, null, alertSeverityService.getEntityScoreContributionFromSeverity(severity), entityType));
         }
 
         List<Entity> entityList = new ArrayList<>();

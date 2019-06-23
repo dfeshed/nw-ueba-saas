@@ -13,20 +13,19 @@ dags:
       schedule_interval: None
     model:
       schedule_interval: None
+    retention:
+      schedule_interval: None
     smart:
       schedule_interval: timedelta(hours=1)
       smart_confs:
        - smart_conf_name: userId_hourly
+         entity_type : userId
          depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
          enable_output_forwarder: ${outputForwarding.enableForwarding}
     smart_model:
       schedule_interval: None
       smart_confs:
        - smart_conf_name: userId_hourly
-    input_retention:
-      schedule_interval: None
-    output_retention:
-      schedule_interval: None
 
   pools_config:
     - slots: 7
@@ -147,7 +146,7 @@ dags:
         main_class: presidio.output.processor.FortscaleOutputProcessorApplication
         xmx: 4096
         xms: 4096
-    UserScoreOperator:
+    EntityScoreOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-output-processor.jar
         main_class: presidio.output.processor.FortscaleOutputProcessorApplication
@@ -166,11 +165,18 @@ dags:
         main_class: presidio.input.core.FortscaleInputCoreApplication
         xmx: 512
         xms: 512
-    OutputRetentionOperator:
+    AlertRetentionOperator:
       pool_name : retention_spring_boot_jar_pool
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-output-processor.jar
         main_class: presidio.output.processor.FortscaleOutputProcessorApplication
+        xmx: 512
+        xms: 512
+    OutputRetentionOperator:
+      pool_name: retention_spring_boot_jar_pool
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-output-manager.jar
+        main_class: presidio.output.manager.FortscaleOutputManagerApplication
         xmx: 512
         xms: 512
 components:
@@ -189,10 +195,6 @@ components:
         accumulate_interval_in_days: 1
         min_data_time_range_for_building_models_in_days: 14
 retention:
+  min_time_to_start_retention_in_days : 2
+  retention_interval_in_hours : 24
   command: applyRetentionPolicy
-  input:
-    min_time_to_start_retention_in_days: 2
-    retention_interval_in_hours: 24
-  output:
-    min_time_to_start_retention_in_days: 2
-    retention_interval_in_hours: 24

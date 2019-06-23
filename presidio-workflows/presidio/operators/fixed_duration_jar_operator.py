@@ -23,7 +23,7 @@ class FixedDurationJarOperator(SpringBootJarOperator):
     """
 
     @apply_defaults
-    def __init__(self, fixed_duration_strategy, command, java_args={}, *args, **kwargs):
+    def __init__(self, fixed_duration_strategy, command, java_args={}, java_retry_args={}, *args, **kwargs):
         self.interval = get_schedule_interval(kwargs.get('dag'))
         self.fixed_duration_strategy = fixed_duration_strategy
         self.add_fixed_duration_strategy(java_args)
@@ -31,7 +31,7 @@ class FixedDurationJarOperator(SpringBootJarOperator):
         retry_extra_params['fixed_duration_strategy'] = fixed_duration_strategy
         retry_extra_params['schedule_interval'] = self.interval
 
-        super(FixedDurationJarOperator, self).__init__(java_args=java_args, command=command, retry_extra_params=retry_extra_params,
+        super(FixedDurationJarOperator, self).__init__(java_args=java_args, java_retry_args=java_retry_args, command=command, retry_extra_params=retry_extra_params,
                                                        retry_java_args_method=FixedDurationJarOperator.add_java_args, *args, **kwargs)
 
     def add_fixed_duration_strategy(self, java_args):

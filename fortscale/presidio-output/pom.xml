@@ -22,7 +22,8 @@
 		<module>presidio-output-sdk-api</module>
 		<module>presidio-output-sdk-api-impl</module>
         <module>presidio-output-forwarder</module>
-    </modules>
+		<module>presidio-output-manager</module>
+	</modules>
 
 
 </project>

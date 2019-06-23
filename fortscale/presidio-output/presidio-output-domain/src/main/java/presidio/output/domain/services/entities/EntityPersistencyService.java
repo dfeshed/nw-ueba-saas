@@ -5,8 +5,10 @@ import org.springframework.data.domain.PageRequest;
 import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.entity.EntityQuery;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 public interface EntityPersistencyService {
     Entity save(Entity entity);
@@ -22,4 +24,6 @@ public interface EntityPersistencyService {
     Page<Entity> find(EntityQuery entityQuery);
 
     Page<Entity> findByIds(Collection<String> ids, PageRequest pageRequest);
+
+    Stream<Entity> findEntitiesByLastUpdateLogicalDateAndEntityType(Instant startDate, Instant endDate, String entityType);
 }

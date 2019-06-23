@@ -145,10 +145,10 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public List<Alert> removeByTimeRange(Instant startDate, Instant endDate) {
+    public List<Alert> removeByTimeRangeAndEntityType(Instant startDate, Instant endDate, String entityType) {
         logger.info("Going to delete alerts that were created from date {} until date {}", startDate, endDate);
         List<Alert> removedAlerts = new ArrayList<>();
-        try (Stream<Alert> alerts = findAlertsByDate(startDate, endDate)) {
+        try (Stream<Alert> alerts = findAlertsByDateAndEntityType(startDate, endDate, entityType)) {
             alerts.forEach(alert -> {
                 deleteAlertAndIndicators(alert);
                 removedAlerts.add(alert);
@@ -159,17 +159,17 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public Stream<Alert> findAlertsByDate(Instant startDate, Instant endDate) {
+    public Stream<Alert> findAlertsByDateAndEntityType(Instant startDate, Instant endDate, String entityType) {
         if (startDate.equals(Instant.EPOCH)) {
-            return alertRepository.findByEndDateLessThan(endDate.toEpochMilli());
+            return alertRepository.findByEndDateLessThanAndEntityType(endDate.toEpochMilli(), entityType);
         } else {
-            return alertRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqual(startDate.toEpochMilli(), endDate.toEpochMilli());
+            return alertRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndEntityType(startDate.toEpochMilli(), endDate.toEpochMilli(), entityType);
         }
     }
 
     @Override
-    public Stream<Indicator> findIndicatorByDate(Instant startDate, Instant endDate) {
-        return indicatorRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqual(startDate.toEpochMilli(), endDate.toEpochMilli());
+    public Stream<Indicator> findIndicatorsByAlertIds(List<String> alertIds) {
+        return alertIds.isEmpty() ? Stream.empty() : indicatorRepository.findByAlertIdIn(alertIds);
     }
 
     @Override

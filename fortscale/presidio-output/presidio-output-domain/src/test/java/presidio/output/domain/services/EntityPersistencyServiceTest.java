@@ -23,7 +23,10 @@ import presidio.output.domain.records.entity.EntitySeverity;
 import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.output.domain.spring.TestConfig;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -63,7 +66,7 @@ public class EntityPersistencyServiceTest{
 
     private Entity generateEntity(List<String> classifications, String entityName, String entityId, double score) {
         List<String> indicators = Arrays.asList(new String("indicator"));
-        return new Entity(entityId, entityName, score, classifications, indicators, null, EntitySeverity.CRITICAL, 0, "entity");
+        return new Entity(entityId, entityName, score, classifications, indicators, null, EntitySeverity.CRITICAL, 0, "entityType");
     }
 
     @Test
@@ -107,6 +110,21 @@ public class EntityPersistencyServiceTest{
         assertEquals(foundEntity.getAlertClassifications().size(), entity.getAlertClassifications().size());
         assertEquals(foundEntity.getIndicators().size(), entity.getIndicators().size());
 
+    }
+
+    @Test
+    public void testFindEntitiesByUpdatedDateAndEntityType() {
+        Entity entity = generateEntity(classifications1, "entity1", "entityId1", 50d);
+        Instant end = Instant.now();
+        Instant start = end.minus(1, ChronoUnit.HOURS);
+        entity.setLastUpdateLogicalStartDate(Date.from(start));
+        entity.setLastUpdateLogicalEndDate(Date.from(end));
+        entityPersistencyService.save(entity);
+
+        Stream<Entity> entities = entityPersistencyService.findEntitiesByLastUpdateLogicalDateAndEntityType(start, end, "entityType");
+
+        assertNotNull(entities);
+        assertEquals(1, entities.count());
     }
 
     @Test

@@ -8,7 +8,6 @@ import presidio.output.forwarder.strategy.ForwarderConfiguration;
 import presidio.output.forwarder.strategy.ForwarderStrategy;
 import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
 
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -24,8 +23,7 @@ public class ForwarderTest {
             super(forwarderStrategyConfiguration, forwarderStrategyFactory);
         }
 
-        @Override
-        Stream<String> getEntitiesToForward(Instant startDate, Instant endDate) {
+        Stream<String> getEntitiesToForward() {
             return Arrays.asList(NUMBERS).stream();
         }
 
@@ -67,15 +65,15 @@ public class ForwarderTest {
 
         forwarderConfiguration = Mockito.mock(ForwarderConfiguration.class);
         Mockito.when(forwarderConfiguration.getForwardingStrategy(Mockito.any(ForwarderStrategy.PAYLOAD_TYPE.class))).thenReturn(MemoryStrategy.MEMORY);
-        Mockito.when(forwarderConfiguration.isForwardEntity(Mockito.any(ForwarderStrategy.PAYLOAD_TYPE.class))).thenReturn(true);
+        Mockito.when(forwarderConfiguration.isForwardInstance(Mockito.any(ForwarderStrategy.PAYLOAD_TYPE.class))).thenReturn(true);
         Mockito.when(forwarderConfiguration.getForwardBulkSize(Mockito.any(ForwarderStrategy.PAYLOAD_TYPE.class))).thenReturn(1);
 
     }
 
     @Test
     public void testBatchSize1() {
-        Forwarder forwarder = new ConcreteForwarder(forwarderConfiguration, forwarderStrategyFactory);
-        forwarder.forward(Instant.now(), Instant.now());
+        ConcreteForwarder forwarder = new ConcreteForwarder(forwarderConfiguration, forwarderStrategyFactory);
+        forwarder.doForward(forwarder.getEntitiesToForward(), false);
         Assert.assertEquals(10, memoryStrategy.allMessages.size());
         Assert.assertArrayEquals(NUMBERS,memoryStrategy.allMessages.stream().map(message -> message.getPayload()).toArray());
         Assert.assertEquals(1, memoryStrategy.lastBatchMessages.size());
@@ -84,8 +82,8 @@ public class ForwarderTest {
     @Test
     public void testBatchSize10() {
         Mockito.doReturn(10).when(forwarderConfiguration).getForwardBulkSize(Mockito.any());
-        Forwarder forwarder = new ConcreteForwarder(forwarderConfiguration, forwarderStrategyFactory);
-        forwarder.forward(Instant.now(), Instant.now());
+        ConcreteForwarder forwarder = new ConcreteForwarder(forwarderConfiguration, forwarderStrategyFactory);
+        forwarder.doForward(forwarder.getEntitiesToForward(), false);
         Assert.assertEquals(10, memoryStrategy.allMessages.size());
         Assert.assertArrayEquals(NUMBERS,memoryStrategy.allMessages.stream().map(message -> message.getPayload()).toArray());
         Assert.assertEquals(10, memoryStrategy.lastBatchMessages.size());
@@ -94,8 +92,8 @@ public class ForwarderTest {
     @Test
     public void testBatchSize11() {
         Mockito.doReturn(11).when(forwarderConfiguration).getForwardBulkSize(Mockito.any());
-        Forwarder forwarder = new ConcreteForwarder(forwarderConfiguration, forwarderStrategyFactory);
-        forwarder.forward(Instant.now(), Instant.now());
+        ConcreteForwarder forwarder = new ConcreteForwarder(forwarderConfiguration, forwarderStrategyFactory);
+        forwarder.doForward(forwarder.getEntitiesToForward(), false);
         Assert.assertEquals(10, memoryStrategy.allMessages.size());
         Assert.assertArrayEquals(NUMBERS,memoryStrategy.allMessages.stream().map(message -> message.getPayload()).toArray());
         Assert.assertEquals(10, memoryStrategy.lastBatchMessages.size());
@@ -103,10 +101,10 @@ public class ForwarderTest {
 
     @Test
     public void testNoDataToStream() {
-        Forwarder forwarder = Mockito.spy(new ConcreteForwarder(forwarderConfiguration, forwarderStrategyFactory));
-        Mockito.doReturn(Arrays.asList().stream()).when(forwarder).getEntitiesToForward(Mockito.any(Instant.class),Mockito.any(Instant.class));
+        ConcreteForwarder forwarder = Mockito.spy(new ConcreteForwarder(forwarderConfiguration, forwarderStrategyFactory));
+        Mockito.doReturn(Arrays.asList().stream()).when(forwarder).getEntitiesToForward();
         try {
-            forwarder.forward(Instant.now(), Instant.now());
+            forwarder.doForward(forwarder.getEntitiesToForward(), false);
         } catch (Exception e){
             Assert.assertNull(e);
         }
@@ -115,9 +113,9 @@ public class ForwarderTest {
     @Test
     public void testNoStrategyPluginExist() {
         Mockito.doReturn(null).when(forwarderStrategyFactory).getStrategy(Mockito.anyString());
-        Forwarder forwarder = new ConcreteForwarder(forwarderConfiguration, forwarderStrategyFactory);
+        ConcreteForwarder forwarder = new ConcreteForwarder(forwarderConfiguration, forwarderStrategyFactory);
         try {
-            forwarder.forward(Instant.now(), Instant.now());
+            forwarder.doForward(forwarder.getEntitiesToForward(), false);
         } catch (Exception e) {
             Assert.assertNotNull(e);
         }
@@ -125,10 +123,10 @@ public class ForwarderTest {
 
     @Test
     public void testNoForwardingFlag() {
-        Mockito.doReturn(false).when(forwarderConfiguration).isForwardEntity(Mockito.any(ForwarderStrategy.PAYLOAD_TYPE.class));
-        Forwarder forwarder = new ConcreteForwarder(forwarderConfiguration, forwarderStrategyFactory);
+        Mockito.doReturn(false).when(forwarderConfiguration).isForwardInstance(Mockito.any(ForwarderStrategy.PAYLOAD_TYPE.class));
+        ConcreteForwarder forwarder = new ConcreteForwarder(forwarderConfiguration, forwarderStrategyFactory);
         try {
-            forwarder.forward(Instant.now(), Instant.now());
+            forwarder.doForward(forwarder.getEntitiesToForward(), false);
         } catch (Exception e){
             Assert.assertNull(e);
         }

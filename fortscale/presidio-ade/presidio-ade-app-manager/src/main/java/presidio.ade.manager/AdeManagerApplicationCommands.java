@@ -15,9 +15,9 @@ public class AdeManagerApplicationCommands implements CommandMarker {
 	@Autowired
 	private AdeManagerApplicationService adeManagerApplicationService;
 
-	@CliCommand(value = "enriched_ttl_cleanup", help = "ttl cleanup of enriched data")
+	@CliCommand(value = "applyRetentionPolicy", help = "ttl cleanup of enriched data")
 	public void enriched_ttl_cleanup(
-			@CliOption(key = {CommonStrings.COMMAND_LINE_UNTIL_DATE_FIELD_NAME}, mandatory = true, help = "until instant")
+			@CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "until instant")
 			final Instant until
 	) throws Exception {
 		adeManagerApplicationService.cleanupEnrichedData(until);

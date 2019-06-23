@@ -175,6 +175,51 @@ public class AlertPersistencyServiceTest {
         assertThat(byName2.getTotalElements(), is(1L));
     }
 
+    @Test
+    public void testFindIndicatorsAlertIds() {
+        List<String> alertIds = new ArrayList<>();
+        alertIds.add("0");
+        alertIds.add("1");
+
+        Indicator indicator = new Indicator();
+        indicator.setAlertId("0");
+        alertPersistencyService.save(indicator);
+
+        Indicator indicator1 = new Indicator();
+        indicator1.setAlertId("1");
+        alertPersistencyService.save(indicator1);
+
+        Indicator indicator2 = new Indicator();
+        indicator2.setAlertId("2");
+        alertPersistencyService.save(indicator2);
+
+        Stream<Indicator> indicators = alertPersistencyService.findIndicatorsByAlertIds(alertIds);
+
+        assertThat(indicators.count(), is(2L));
+    }
+
+    @Test
+    public void testFindAlertsByDateAndEntityType() {
+        Instant startDate = Instant.parse("2017-11-10T15:00:00.000Z");
+        Instant endDate = Instant.parse("2017-11-10T16:00:00.000Z");
+        Alert alert =
+                new Alert("entityId", "smartId", classifications1, "entity1","entity1", Date.from(startDate), Date.from(endDate), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D, "entityType");
+
+        Alert alert1 =
+                new Alert("entityId", "smartId", classifications1, "entity1","entity1", Date.from(startDate), Date.from(endDate), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D, "entityType1");
+
+        Alert alert2 =
+                new Alert("entityId", "smartId", classifications1, "entity1","entity1", Date.from(startDate.plus(1, ChronoUnit.DAYS)), Date.from(endDate.plus(1, ChronoUnit.DAYS)), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D, "entityType");
+
+
+        alertPersistencyService.save(alert);
+        alertPersistencyService.save(alert1);
+        alertPersistencyService.save(alert2);
+
+        Stream<Alert> alerts = alertPersistencyService.findAlertsByDateAndEntityType(startDate, endDate, "entityType");
+
+        assertThat(alerts.count(), is(1L));
+    }
 
     @Test
     public void testDelete() {
@@ -872,7 +917,7 @@ public class AlertPersistencyServiceTest {
     }
 
     @Test
-    public void testRemoveByTimeRange() {
+    public void removeByTimeRangeAndEntityType() {
 
         Instant startDate = Instant.parse("2017-11-10T15:00:00.000Z");
         Instant endDate = Instant.parse("2017-11-10T16:00:00.000Z");
@@ -883,7 +928,7 @@ public class AlertPersistencyServiceTest {
         alertPersistencyService.save(alert2);
 
         long count = alertPersistencyService.countAlerts();
-        alertPersistencyService.removeByTimeRange(startDate, endDate);
+        alertPersistencyService.removeByTimeRangeAndEntityType(startDate, endDate, "entityType");
         elasticsearchTemplate.refresh(Alert.class);
         AlertQuery alertQuery = new AlertQuery.AlertQueryBuilder().filterByStartDate(startDate.toEpochMilli()).filterByEndDate(endDate.toEpochMilli()).build();
         Assert.assertEquals(0, alertPersistencyService.find(alertQuery).getTotalElements());

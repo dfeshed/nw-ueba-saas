@@ -29,7 +29,6 @@ public class TestConfig {
         properties.put("monitoring.fixed.rate", 1000000000);
         properties.put("output.events.page.size", 10);
         properties.put("indicators.contribution.limit.to.classification.percent", 0.3);
-        properties.put("output.enriched.events.retention.in.days", 2);
         properties.put("output.data.retention.in.days", 90);
         properties.put("entity.severity.compute.data.critical.percentage.of.entities", 1);
         properties.put("entity.severity.compute.data.critical.minimum.delta.factor", 1.5);

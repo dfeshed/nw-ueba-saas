@@ -1,16 +1,20 @@
 package presidio.output.processor.services.entity;
 
+import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.recordreader.RecordReader;
+import fortscale.utils.recordreader.ReflectionRecordReader;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.IteratorUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import presidio.output.commons.services.entity.EntityMappingServiceImpl;
 import presidio.output.commons.services.entity.EntitySeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.entity.EntityQuery;
 import presidio.output.domain.records.entity.EntitySeverity;
-import presidio.output.domain.records.events.EnrichedUserEvent;
+import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.entities.EntityPersistencyService;
 import presidio.output.domain.services.event.EventPersistencyService;
@@ -32,6 +36,7 @@ public class EntityServiceImpl implements EntityService {
     private final EntityPersistencyService entityPersistencyService;
     private final EntityScoreService entityScoreService;
     private final EntitySeverityService entitySeverityService;
+    private final EntityMappingServiceImpl entityMappingServiceImpl;
     private final String TAG_ADMIN = "admin";
 
     private final int alertEffectiveDurationInDays;//How much days an alert can affect on the entity score
@@ -43,7 +48,8 @@ public class EntityServiceImpl implements EntityService {
                              EntityScoreService entityScoreService,
                              EntitySeverityService entitySeverityService,
                              int alertEffectiveDurationInDays,
-                             int defaultEntitiesBatchSize) {
+                             int defaultEntitiesBatchSize,
+                             EntityMappingServiceImpl entityMappingServiceImpl) {
         this.eventPersistencyService = eventPersistencyService;
         this.entityPersistencyService = entityPersistencyService;
         this.alertPersistencyService = alertPersistencyService;
@@ -51,6 +57,7 @@ public class EntityServiceImpl implements EntityService {
         this.entitySeverityService = entitySeverityService;
         this.alertEffectiveDurationInDays = alertEffectiveDurationInDays;
         this.defaultEntitiesBatchSize = defaultEntitiesBatchSize;
+        this.entityMappingServiceImpl = entityMappingServiceImpl;
     }
 
     public int getDefaultEntitiesBatchSize() {
@@ -78,15 +85,24 @@ public class EntityServiceImpl implements EntityService {
     }
 
     private EntityDetails getEntityDetails(String entityId, String entityType) {
-        List<String> collectionNames = entitySeverityService.collectionNamesByOrderForEvents();
-        EnrichedUserEvent event = eventPersistencyService.findLatestEventForEntity(entityId, collectionNames, entityType);
-        if (event == null) {
-            log.error("no events were found for entity {}", entityId);
-            return null;
+        String entityNameField = entityMappingServiceImpl.getEntityNameField(entityType);
+        String entityName;
+        if(entityNameField.equals(entityType)){
+            entityName = entityId;
         }
-        //We need to resolve the entityName getter according to the type
-        //For now - we chose to return the entityId instead.
-        String entityName = entityId;
+        else {
+            List <Schema> schemas = entityMappingServiceImpl.getSchemas(entityType);
+            List<String> collectionNames = entitySeverityService.collectionNamesForSchemas(schemas);
+            EnrichedEvent event = eventPersistencyService.findLatestEventForEntity(entityId, collectionNames, entityType);
+            if (event == null) {
+                log.error("no events were found for entity {}", entityId);
+                return null;
+            }
+
+            RecordReader recordReader = new ReflectionRecordReader(event);
+            entityName = recordReader.get(entityNameField, String.class);
+        }
+
         List<String> tags = new ArrayList<>();
         return new EntityDetails(entityName, entityId, tags, entityType);
     }
@@ -102,7 +118,7 @@ public class EntityServiceImpl implements EntityService {
         }
         entity.setAlertsCount(entitiesAlertData.getAlertsCount());
         entity.setScore(entitiesAlertData.getEntityScore());
-        EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false).getEntitySeverity(entity.getScore());
+        EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false, entity.getEntityType()).getEntitySeverity(entity.getScore());
         entity.setSeverity(newSeverity);
     }
 
@@ -124,23 +140,23 @@ public class EntityServiceImpl implements EntityService {
         entity.setIndicators(indicatorsUnion);
         entity.incrementAlertsCountByNumber(entitiesAlertData.getAlertsCount());
         entity.incrementEntityScoreByNumber(entitiesAlertData.getEntityScore());
-        EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false).getEntitySeverity(entity.getScore());
+        EntitySeverity newSeverity = entitySeverityService.getSeveritiesMap(false, entity.getEntityType()).getEntitySeverity(entity.getScore());
         entity.setSeverity(newSeverity);
     }
 
     @Override
-    public void updateEntityData(Instant endDate) {
+    public void updateEntityData(Instant endDate, String entityType) {
         log.debug("Starting Updating all entities alert data.");
-        updateAllEntitiesAlertData(endDate);
+        updateAllEntitiesAlertData(endDate, entityType);
         log.debug("finished updating all entities alert data.");
-        entitySeverityService.updateSeverities();
+        entitySeverityService.updateSeverities(entityType);
     }
 
     @Override
-    public boolean updateAllEntitiesAlertData(Instant endDate) {
+    public boolean updateAllEntitiesAlertData(Instant endDate, String entityType) {
 
         //Get map of entities ids to new score and alerts count
-        Map<String, EntitiesAlertData> aggregatedEntityScore = entityScoreService.calculateEntityScores(alertEffectiveDurationInDays, endDate);
+        Map<String, EntitiesAlertData> aggregatedEntityScore = entityScoreService.calculateEntityScores(alertEffectiveDurationInDays, endDate, entityType);
 
         //Get entities in batches and update the score only if it changed, and add to changesEntities
         Set<String> entitiesIDForBatch = new HashSet<>();
@@ -176,7 +192,7 @@ public class EntityServiceImpl implements EntityService {
         log.info(changedEntities.size() + " entities saved to database");
 
         //Clean entities which not have alert in the last 90 days, but still have score
-        entityScoreService.clearEntityScoreForEntitiesThatShouldNotHaveScore(aggregatedEntityScore.keySet());
+        entityScoreService.clearEntityScoreForEntitiesThatShouldNotHaveScore(aggregatedEntityScore.keySet(), entityType);
 
         return true;
     }
