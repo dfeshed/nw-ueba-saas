@@ -27,8 +27,9 @@ public class SessionSplitTransformer implements Transformer {
         // Read records with sessionSplit=0
         Map<String, Object> sessionSplitFilter = new HashMap<>();
         sessionSplitFilter.put(TlsRawEvent.SESSION_SPLIT_FIELD_NAME, ZERO_SESSION_SPLIT);
+        List<String> projectionFields = selectProjectionFields();
 
-        RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(endDate.minus(interval), endDate, inputPersistencyService, schema, pageSize, sessionSplitFilter);
+        RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(endDate.minus(interval), endDate, inputPersistencyService, schema, pageSize, sessionSplitFilter, projectionFields, TlsRawEvent.class);
         while (rawEventsPageIterator.hasNext()) {
             try {
                 List<TlsRawEvent> tlsRawEvents = rawEventsPageIterator.next();
@@ -36,20 +37,21 @@ public class SessionSplitTransformer implements Transformer {
 
                 for (TlsRawEvent tlsRawEvent : tlsRawEvents) {
                     SessionSplitTransformerKey key = new SessionSplitTransformerKey(tlsRawEvent.getSrcIp(), tlsRawEvent.getDstIp(), tlsRawEvent.getDstPort(), tlsRawEvent.getSrcPort());
-                    TreeSet<SessionSplitTransformerValue> treeSet = new TreeSet<>();
-                    if (splitTransformerMap.containsKey(key)) {
-                        treeSet = splitTransformerMap.get(key);
-                    }
-                    SessionSplitTransformerValue value = new SessionSplitTransformerValue(tlsRawEvent.getDateTime(), tlsRawEvent.getSessionSplit(), tlsRawEvent.getSslSubject(), tlsRawEvent.getSslCa(), tlsRawEvent.getJa3());
-                    treeSet.add(value);
-                    splitTransformerMap.put(key, treeSet);
+
+                    splitTransformerMap.compute(key, (k, treeSet) -> {
+                        if (treeSet == null) {
+                            treeSet = new TreeSet<>();
+                        }
+                        SessionSplitTransformerValue value = new SessionSplitTransformerValue(tlsRawEvent.getDateTime(), tlsRawEvent.getSessionSplit(), tlsRawEvent.getSslSubject(), tlsRawEvent.getSslCa(), tlsRawEvent.getJa3(), tlsRawEvent.getJa3s());
+                        treeSet.add(value);
+                        return treeSet;
+                    });
                 }
             } catch (IllegalArgumentException ex) {
                 logger.error("Error reading events from repository.", ex);
             }
         }
     }
-
 
     @Override
     public List<AbstractInputDocument> transform(List<AbstractInputDocument> documents) {
@@ -60,10 +62,8 @@ public class SessionSplitTransformer implements Transformer {
             if (tlsTransformedEvent.getSessionSplit() > ZERO_SESSION_SPLIT) {
                 SessionSplitTransformerKey key = new SessionSplitTransformerKey(tlsTransformedEvent.getSrcIp(), tlsTransformedEvent.getDstIp(), tlsTransformedEvent.getDstPort(), tlsTransformedEvent.getSrcPort());
 
-
-                if (splitTransformerMap.containsKey(key)) {
-
-                    TreeSet<SessionSplitTransformerValue> treeSet = splitTransformerMap.get(key);
+                TreeSet<SessionSplitTransformerValue> treeSet = splitTransformerMap.get(key);
+                if (treeSet != null) {
 
                     // loop on desc treeSet in order to find the right session by dateTime
                     for (SessionSplitTransformerValue value : treeSet) {
@@ -73,6 +73,7 @@ public class SessionSplitTransformer implements Transformer {
                                 tlsTransformedEvent.setSslSubject(value.getSslSubject());
                                 tlsTransformedEvent.setSslCa(value.getSslCa());
                                 tlsTransformedEvent.setJa3(value.getJa3());
+                                tlsTransformedEvent.setJa3s(value.getJa3s());
                                 value.setSessionSplit(tlsTransformedEvent.getSessionSplit());
                                 logger.debug("Enrich {} tls event with missed fields.", tlsTransformedEvent.getId());
                                 break;
@@ -90,4 +91,18 @@ public class SessionSplitTransformer implements Transformer {
         return documents;
     }
 
+    private List<String> selectProjectionFields() {
+        List<String> projectionFields = new ArrayList<>();
+        projectionFields.add(TlsRawEvent.SOURCE_IP_FIELD_NAME);
+        projectionFields.add(TlsRawEvent.DESTINATION_IP_FIELD_NAME);
+        projectionFields.add(TlsRawEvent.SOURCE_PORT_FIELD_NAME);
+        projectionFields.add(TlsRawEvent.DESTINATION_PORT_FIELD_NAME);
+        projectionFields.add(TlsRawEvent.JA3_FIELD_NAME);
+        projectionFields.add(TlsRawEvent.JA3S_FIELD_NAME);
+        projectionFields.add(TlsRawEvent.DATE_TIME_FIELD_NAME);
+        projectionFields.add(TlsRawEvent.SESSION_SPLIT_FIELD_NAME);
+        projectionFields.add(TlsRawEvent.SSL_SUBJECT_FIELD_NAME);
+        projectionFields.add(TlsRawEvent.SSL_CA_FIELD_NAME);
+        return projectionFields;
+    }
 }

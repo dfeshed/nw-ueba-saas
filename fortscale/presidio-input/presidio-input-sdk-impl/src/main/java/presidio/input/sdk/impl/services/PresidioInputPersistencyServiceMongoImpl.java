@@ -62,12 +62,22 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     }
 
     @Override
-    public <U extends AbstractInputDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter) {
-        return dataService.readRecords(schema, startDate, endDate, numOfItemsToSkip, pageSize, filter);
+    public <U extends AbstractInputDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter, List<String> projectionFields, Class clazz) {
+        return dataService.readRecords(schema, startDate, endDate, numOfItemsToSkip, pageSize, filter,  projectionFields, clazz);
     }
 
     @Override
-    public long count(Schema schema, Instant startDate, Instant endDate, Map<String, Object> filter) {
-        return dataService.count(schema, startDate, endDate, filter);
+    public long count(Schema schema, Instant startDate, Instant endDate, Map<String, Object> filter, List<String> projectionFields) {
+        return dataService.count(schema, startDate, endDate, filter, projectionFields);
+    }
+
+    @Override
+    public <U extends AbstractInputDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize) {
+        return dataService.readRecords(schema, startDate, endDate, numOfItemsToSkip, pageSize);
+    }
+
+    @Override
+    public long count(Schema schema, Instant startDate, Instant endDate) {
+        return dataService.count(schema, startDate, endDate);
     }
 }

@@ -18,7 +18,11 @@ public interface DataSourceRepository {
 
     void cleanCollection(String collectionName);
 
-    <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter);
+    <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize);
 
-    long count(String collectionName, Instant startDate, Instant endDate, Map<String, Object> filter);
+    <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter,  List<String> projectionFields, Class clazz);
+
+    long count(String collectionName, Instant startDate, Instant endDate);
+
+    long count(String collectionName, Instant startDate, Instant endDate, Map<String, Object> filter, List<String> projectionFields);
 }

@@ -54,21 +54,37 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
     }
 
     @Override
-    public <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter) {
+    public <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize) {
         Query query = getQuery(startDate, endDate, numOfItemsToSkip, pageSize);
-        query = createFilterCriteria(query, filter);
         query.with(new Sort(Sort.Direction.ASC, AbstractInputDocument.DATE_TIME_FIELD_NAME));
-
         List<U> recordList = mongoTemplate.find(query, (Class<U>) AbstractInputDocument.class, collectionName);
         return recordList;
 
     }
 
-    public long count(String collectionName, Instant startDate, Instant endDate, Map<String, Object> filter) {
-        Query query = new Query(createDateCriteria(startDate, endDate));
+    @Override
+    public <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter,  List<String> projectionFields, Class clazz) {
+        Query query = getQuery(startDate, endDate, numOfItemsToSkip, pageSize);
         query = createFilterCriteria(query, filter);
+        addFieldsProjection(projectionFields, query);
+        query.with(new Sort(Sort.Direction.ASC, AbstractInputDocument.DATE_TIME_FIELD_NAME));
+        List<U> recordList = mongoTemplate.find(query,(Class<U>) clazz, collectionName);
+        return recordList;
+
+    }
+
+    public long count(String collectionName, Instant startDate, Instant endDate) {
+        Query query = new Query(createDateCriteria(startDate, endDate));
         return mongoTemplate.count(query, collectionName);
     }
+
+    public long count(String collectionName, Instant startDate, Instant endDate, Map<String, Object> filter, List<String> projectionFields) {
+        Query query = new Query(createDateCriteria(startDate, endDate));
+        query = createFilterCriteria(query, filter);
+        addFieldsProjection(projectionFields, query);
+        return mongoTemplate.count(query, collectionName);
+    }
+
 
     private Query getQuery(Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize) {
         Criteria dateTimeCriteria = createDateCriteria(startDate, endDate);
@@ -87,5 +103,13 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
             });
         }
         return query;
+    }
+
+    private void addFieldsProjection(List<String> projectionFields, Query query) {
+        if(!projectionFields.isEmpty()){
+            for(String projectionField : projectionFields) {
+                query.fields().include(projectionField);
+            }
+        }
     }
 }

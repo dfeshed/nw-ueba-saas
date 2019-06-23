@@ -18,9 +18,9 @@ public class SessionSplitTransformerFactory extends AbstractServiceAutowiringFac
 
     @Autowired
     private PresidioInputPersistencyService inputPersistencyService;
-    @Value("#{T(java.time.Duration).parse('${split.transformer.intervel:P2D}')}")
+    @Value("#{T(java.time.Duration).parse('${split.transformer.intervel:PT12H}')}")
     private Duration interval;
-    @Value("${split.transformer.page.size:1000}")
+    @Value("${split.transformer.page.size:100000}")
     private Integer pageSize;
 
     @Override

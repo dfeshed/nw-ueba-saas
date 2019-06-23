@@ -21,7 +21,11 @@ public interface PresidioInputPersistencyService {
 
     void cleanAll(Schema schema) throws Exception;
 
-    <U extends AbstractInputDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter);
+    <U extends AbstractInputDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter, List<String> projectionFields, Class clazz);
 
-    long count(Schema schema, Instant startDate, Instant endDate, Map<String, Object> filter);
+    <U extends AbstractInputDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize);
+
+    long count(Schema schema, Instant startDate, Instant endDate, Map<String, Object> filter, List<String> projectionFields);
+
+    long count(Schema schema, Instant startDate, Instant endDate);
 }

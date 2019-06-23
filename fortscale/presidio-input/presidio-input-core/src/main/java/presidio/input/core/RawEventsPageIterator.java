@@ -6,6 +6,7 @@ import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -19,13 +20,31 @@ public class RawEventsPageIterator<U extends AbstractInputDocument> implements P
     private int totalAmountOfPages;
     private int pageSize;
     private Map<String, Object> filter;
+    private  List<String> projectionFields;
+    private Class clazz;
+    /**
+     *
+     * @param startDate startDate
+     * @param endDate endDate
+     * @param presidioInputPersistencyService presidioInputPersistencyService
+     * @param schema schema
+     * @param pageSize um of events in each page
+     */
+    public RawEventsPageIterator(Instant startDate, Instant endDate, PresidioInputPersistencyService presidioInputPersistencyService, Schema schema, int pageSize) {
+        this(startDate, endDate, presidioInputPersistencyService, schema, pageSize, Collections.emptyMap(),  Collections.emptyList(), null);
+    }
 
     /**
-     * @param presidioInputPersistencyService
-     * @param schema                          event type
-     * @param pageSize                        num of events in each page
+     *
+     * @param startDate startDate
+     * @param endDate endDate
+     * @param presidioInputPersistencyService presidioInputPersistencyService
+     * @param schema schema
+     * @param pageSize um of events in each page
+     * @param filter filter
      */
-    public RawEventsPageIterator(Instant startDate, Instant endDate, PresidioInputPersistencyService presidioInputPersistencyService, Schema schema, int pageSize, Map<String, Object> filter) {
+    public RawEventsPageIterator(Instant startDate, Instant endDate, PresidioInputPersistencyService presidioInputPersistencyService,
+                                 Schema schema, int pageSize, Map<String, Object> filter,  List<String> projectionFields, Class clazz) {
         this.presidioInputPersistencyService = presidioInputPersistencyService;
         this.currentPage = 0;
         this.schema = schema;
@@ -33,9 +52,14 @@ public class RawEventsPageIterator<U extends AbstractInputDocument> implements P
         this.startDate = startDate;
         this.endDate = endDate;
         this.filter = filter;
-        float totalNumberOfEvents = presidioInputPersistencyService.count(schema, startDate, endDate, filter);
+        this.projectionFields = projectionFields;
+        this.clazz = clazz;
+        float totalNumberOfEvents;
+        totalNumberOfEvents = presidioInputPersistencyService.count(schema, startDate, endDate, filter, projectionFields);
         this.totalAmountOfPages = (int) Math.ceil(totalNumberOfEvents / pageSize);
     }
+
+
 
     @Override
     public boolean hasNext() {
@@ -51,7 +75,14 @@ public class RawEventsPageIterator<U extends AbstractInputDocument> implements P
     public List<U> next() {
         int numOfItemsToSkip = this.currentPage * this.pageSize;
         this.currentPage++;
-        List<U> records = this.presidioInputPersistencyService.readRecords(this.schema, this.startDate, this.endDate, numOfItemsToSkip, this.pageSize, filter);
+        List<U> records;
+
+        if(!(filter.isEmpty() && projectionFields.isEmpty()) && clazz != null ) {
+            records = this.presidioInputPersistencyService.readRecords(this.schema, this.startDate, this.endDate, numOfItemsToSkip, this.pageSize, filter, projectionFields, clazz);
+        }
+        else{
+            records = this.presidioInputPersistencyService.readRecords(this.schema, this.startDate, this.endDate, numOfItemsToSkip, this.pageSize);
+        }
 
         return records;
     }

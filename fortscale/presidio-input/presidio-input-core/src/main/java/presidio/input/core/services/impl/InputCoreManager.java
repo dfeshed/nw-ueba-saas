@@ -62,7 +62,7 @@ public class InputCoreManager {
         if (pageSize == null) {
             pageSize = DEFAULT_PAGE_SIZE;
         }
-        RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(startDate, endDate, inputPersistencyService, schema, pageSize, Collections.emptyMap());
+        RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(startDate, endDate, inputPersistencyService, schema, pageSize);
         List transformedEvents = null;
         List nextEvents = null;
         Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap();
