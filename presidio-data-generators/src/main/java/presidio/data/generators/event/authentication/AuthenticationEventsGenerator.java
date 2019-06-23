@@ -184,11 +184,11 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
         this.applicationGenerator = applicationGenerator;
     }
 
-    private String getObjectDN(String userName, String domainDN) {
+    protected String getObjectDN(String userName, String domainDN) {
         return "CN=" + userName + ",CN=Users," + domainDN;
     }
 
-    private String getObjectCanonical(String domainFQDN, String userName) {
+    protected String getObjectCanonical(String domainFQDN, String userName) {
         return domainFQDN + "/Users/" + userName;
     }
 }

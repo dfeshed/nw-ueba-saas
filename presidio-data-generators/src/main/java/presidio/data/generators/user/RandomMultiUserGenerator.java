@@ -43,6 +43,11 @@ public class RandomMultiUserGenerator implements IUserGenerator{
         return ret;
     }
 
+    @Override
+    public Long getMaxNumOfDistinctUsers(){
+        throw new UnsupportedOperationException();
+    }
+
 
     public static class UserGeneratorProbability{
         private IUserGenerator userGenerator;

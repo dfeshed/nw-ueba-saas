@@ -23,9 +23,10 @@ public class UserProcessEventsGeneratorTest {
         stopWatch.start();
 
         Instant startInstant    = Instant.parse("2010-01-01T06:00:00.00Z");
-        Instant endInstant      = Instant.parse("2010-01-01T06:01:00.00Z");
+        Instant endInstant      = Instant.parse("2010-01-01T07:01:00.00Z");
 
-        PerformanceStabilityScenario scenario = new PerformanceStabilityScenario(startInstant, endInstant, 1, 0.01);
+        ProcessPerformanceStabilityScenario scenario = new ProcessPerformanceStabilityScenario(startInstant, endInstant, 1, 0.01);
+        scenario.init();
 
         List<Event> events;
         do {

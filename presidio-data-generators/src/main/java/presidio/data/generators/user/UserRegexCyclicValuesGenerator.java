@@ -38,4 +38,9 @@ public class UserRegexCyclicValuesGenerator extends CyclicValuesGenerator<User> 
         return users;
     }
 
+    @Override
+    public Long getMaxNumOfDistinctUsers(){
+        return Long.valueOf(getValues().length);
+    }
+
 }

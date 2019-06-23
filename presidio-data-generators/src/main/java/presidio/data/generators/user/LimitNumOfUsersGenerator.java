@@ -35,4 +35,9 @@ public class LimitNumOfUsersGenerator implements IUserGenerator{
         }
         return ret;
     }
+
+    @Override
+    public Long getMaxNumOfDistinctUsers(){
+        return Long.valueOf(numOfUsersLimit);
+    }
 }

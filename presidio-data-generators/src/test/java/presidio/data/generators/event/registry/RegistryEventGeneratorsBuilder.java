@@ -5,9 +5,7 @@ import presidio.data.domain.FileEntity;
 import presidio.data.domain.event.Event;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.MultiRangeTimeGenerator;
-import presidio.data.generators.event.AbstractEventGenerator;
-import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
-import presidio.data.generators.event.RandomMultiEventGenerator;
+import presidio.data.generators.event.*;
 import presidio.data.generators.event.process.CyclicOperationTypeGenerator;
 import presidio.data.generators.fileentity.ProcessFileEntityGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
@@ -23,31 +21,11 @@ import java.util.List;
 import java.util.Map;
 
 
-public abstract class RegistryEventGeneratorsBuilder {
-
-    /** USERS **/
-    protected IUserGenerator normalUserGenerator;
-    protected List<MultiRangeTimeGenerator.ActivityRange> normalUserActivityRange;
-    protected List<MultiRangeTimeGenerator.ActivityRange> normalUserAbnormalActivityRange;
-    protected IUserGenerator adminUserGenerator;
-    protected List<MultiRangeTimeGenerator.ActivityRange> adminUserActivityRange;
-    protected List<MultiRangeTimeGenerator.ActivityRange> adminUserAbnormalActivityRange;
-    protected IUserGenerator serviceAccountUserGenerator;
-    protected List<MultiRangeTimeGenerator.ActivityRange> serviceAcountUserActivityRange;
-
-    /** MACHINES **/
-    protected IMachineGenerator machineGenerator;
-
-    /** Processes **/
-    protected  List<FileEntity> nonImportantProcesses;
+public abstract class RegistryEventGeneratorsBuilder extends EndpointEventGeneratorsBuilder {
 
     /** registry keys **/
     protected Map<String, List<String>> registryKeyGroupToRegistryKey;
     protected Map<String, List<String>> registryKeyToValueNamesMap;
-
-    private double probabilityMultiplier;
-    private double usersMultiplier;
-
 
 
     public RegistryEventGeneratorsBuilder(IUserGenerator normalUserGenerator,
@@ -62,45 +40,18 @@ public abstract class RegistryEventGeneratorsBuilder {
                                          List<FileEntity> nonImportantProcesses,
                                           Map<String, List<String>> registryKeyGroupToRegistryKey,
                                           Map<String, List<String>> registryKeyToValueNamesMap){
-        this.normalUserGenerator = normalUserGenerator;
-        this.normalUserActivityRange = normalUserActivityRange;
-        this.normalUserAbnormalActivityRange = normalUserAbnormalActivityRange;
-        this.adminUserGenerator = adminUserGenerator;
-        this.adminUserActivityRange = adminUserActivityRange;
-        this.adminUserAbnormalActivityRange = adminUserAbnormalActivityRange;
-        this.serviceAccountUserGenerator = serviceAccountUserGenerator;
-        this.serviceAcountUserActivityRange = serviceAcountUserActivityRange;
-        this.machineGenerator = machineGenerator;
-        this.nonImportantProcesses = nonImportantProcesses;
+        super(normalUserGenerator,
+                normalUserActivityRange,
+                normalUserAbnormalActivityRange,
+                adminUserGenerator,
+                adminUserActivityRange,
+                adminUserAbnormalActivityRange,
+                serviceAccountUserGenerator,
+                serviceAcountUserActivityRange,
+                machineGenerator,
+                nonImportantProcesses);
         this.registryKeyGroupToRegistryKey = registryKeyGroupToRegistryKey;
         this.registryKeyToValueNamesMap = registryKeyToValueNamesMap;
-        this.probabilityMultiplier = 1;
-        this.usersMultiplier = 1;
-    }
-
-    public void setProbabilityMultiplier(double probabilityMultiplier) {
-        this.probabilityMultiplier = probabilityMultiplier;
-    }
-
-    public double getProbabilityMultiplier() {
-        return probabilityMultiplier;
-    }
-
-    public double getUsersMultiplier() {
-        return usersMultiplier;
-    }
-
-    public void setUsersMultiplier(double usersMultiplier) {
-        this.usersMultiplier = usersMultiplier;
-    }
-
-    protected List<FileEntity> getFileEnities(Pair[] dirAndFilePair){
-        List<FileEntity> ret = new ArrayList<>();
-        ProcessFileEntityGenerator fileGenerator = new ProcessFileEntityGenerator(dirAndFilePair);
-        for(int i = 0; i < dirAndFilePair.length; i++){
-            ret.add(fileGenerator.getNext());
-        }
-        return ret;
     }
 
     protected void fillRegistryEventsGeneratorWithDefaultGenerators(RegistryEventsGenerator registryEventsGenerator,
@@ -120,24 +71,4 @@ public abstract class RegistryEventGeneratorsBuilder {
         EntityEventIDFixedPrefixGenerator eventIdGen = new EntityEventIDFixedPrefixGenerator(testCase);
         registryEventsGenerator.setEventIdGenerator(eventIdGen);
     }
-
-    protected RandomMultiEventGenerator createRandomEventGenerator(RegistryEventsGenerator registryEventsGenerator,
-                                                                   List<MultiRangeTimeGenerator.ActivityRange> rangesList,
-                                                                   double eventProbability,
-                                                                   int timeIntervalForAbnormalTime,
-                                                                   Instant startInstant,
-                                                                   Instant endInstant) {
-        List< RandomMultiEventGenerator.EventGeneratorProbability > listOfProbabilities = new ArrayList<>();
-        RandomMultiEventGenerator.EventGeneratorProbability eventsProbabilityForNormalUsers =
-                new RandomMultiEventGenerator.EventGeneratorProbability(registryEventsGenerator, eventProbability*getProbabilityMultiplier());
-        listOfProbabilities.add(eventsProbabilityForNormalUsers);
-
-
-
-        RandomMultiEventGenerator randomEventsGenerator = new RandomMultiEventGenerator(listOfProbabilities,
-                startInstant, endInstant, rangesList, Duration.ofMillis((int) (timeIntervalForAbnormalTime) ));
-        return randomEventsGenerator;
-    }
-
-    public abstract List<AbstractEventGenerator<Event>> buildGenerators(Instant startInstant, Instant endInstant) throws GeneratorException;
 }

@@ -188,6 +188,14 @@ public class MultiRangeTimeGenerator implements ITimeGenerator {
             return instant.truncatedTo(ChronoUnit.DAYS).plus(endNanoOfADay,ChronoUnit.NANOS);
         }
 
+        public long getNumOfIterations(){
+            return (endNanoOfADay - startNanoOfADay) / duration.toNanos();
+        }
+
+        public Duration getDuration(){
+            return duration;
+        }
+
         @Override
         public String toString() {
             return ToStringBuilder.reflectionToString(this);

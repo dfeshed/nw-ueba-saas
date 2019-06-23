@@ -41,70 +41,107 @@ public class ReconToolGroupAEventGeneratorsBuilder extends UseCaseEventGenerator
 
 
     //Reconnaissance tools Group A. Normal behavior + abnormal time.
-    private final int RECON_TOOL_GROUP_A_NUM_OF_NORMAL_USERS = 65000;
-    private final int RECON_TOOL_GROUP_A_NUM_OF_NORMAL_USERS_DAILY = 40000;
-    private final double RECON_TOOL_GROUP_A_PROBABILITY_NORMAL_USER = 0.03; //~3 events per hour per user
-    private final int RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_NORMAL_USERS = 50000; //50 seconds. (8*3600/50)*0.03 =~17 users
     private final int RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 10;
     private final int RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 50;
     private final int RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_NORMAL_USER = 1;
     private final int RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_NORMAL_USER = 10;
-    private final int RECON_TOOL_GROUP_A_NUM_OF_ADMIN_USERS = 3000;
-    private final int RECON_TOOL_GROUP_A_NUM_OF_ADMIN_USERS_DAILY = 2000;
-    private final double RECON_TOOL_GROUP_A_PROBABILITY_ADMIN_USER = 0.1; // 180 events per hour per user
-    private final int RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_ADMIN_USERS = 50000; //50 seconds. (2*3600/50)*0.1 =~15 users
+
     private final int RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 100;
     private final int RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 1000;
     private final int RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_ADMIN_USER = 1;
     private final int RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_ADMIN_USER = 10;
-    private final int RECON_TOOL_GROUP_A_NUM_OF_SERVICE_ACCOUNT_USERS = 300;
-    private final int RECON_TOOL_GROUP_A_NUM_OF_SERVICE_ACCOUNT_USERS_DAILY = 200;
-    private final double RECON_TOOL_GROUP_A_PROBABILITY_SERVICE_ACCOUNT_USER = 0.02; // ~360 events per hour per user
-    private final int RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS = 1; //Not really relevant since service accounts work all day.
+
     private final int RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 5;
     private final int RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 200;
     private final int RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_SERVICE_ACCOUNT_USER = 1;
     private final int RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_SERVICE_ACCOUNT_USER = 10;
 
     //Reconnaissance tools Group A. abnormal behavior.
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_NUM_OF_NORMAL_USERS_DAILY = 180;
-    private final double ABNORMAL_RECON_TOOL_GROUP_A_PROBABILITY_NORMAL_USER = 0.00081; // ~16 events per hour per user
     private final int ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 1000;
     private final int ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER = 5000;
     private final int ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_NORMAL_USER = 1000;//use all recon tool that you can
     private final int ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_NORMAL_USER = 2000;//use all recon tool that you can
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_NUM_OF_ADMIN_USERS_DAILY = 13;
-    private final double ABNORMAL_RECON_TOOL_GROUP_A_PROBABILITY_ADMIN_USER = 0.001625; // ~450 events per hour
+
     private final int ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 100;
     private final int ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER = 1000;
     private final int ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_ADMIN_USER = 1000;//use all recon tool that you can
     private final int ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_ADMIN_USER = 2000;//use all recon tool that you can
-    private final int ABNORMAL_RECON_TOOL_GROUP_A_NUM_OF_SERVICE_ACCOUNT_USERS_DAILY = 2;
-    private final double ABNORMAL_RECON_TOOL_GROUP_A_PROBABILITY_SERVICE_ACCOUNT_USER = 0.0005; // ~900 events per hour per user
+
     private final int ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 100;
     private final int ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_NON_IMPORTANT_PROCESSES_PER_SERVICE_ACCOUNT_USER = 1000;
     private final int ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_RECON_TOOL_PROCESSES_PER_SERVICE_ACCOUNT_USER = 1000;//use all recon tool that you can
     private final int ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_SERVICE_ACCOUNT_USER = 2000;//use all recon tool that you can
 
-
-    @Override
-    protected int getNumOfNormalUsers() {
-        return RECON_TOOL_GROUP_A_NUM_OF_NORMAL_USERS;
+    public double getBuilderAllNormalUsersMultiplier(){
+        return 0.7;
     }
 
     @Override
-    protected int getNumOfNormalUsersDaily() {
-        return RECON_TOOL_GROUP_A_NUM_OF_NORMAL_USERS_DAILY;
+    protected double getPercentOfNormalUserPerDayOutOfTotalAmountOfUsers() {
+        return 0.6;
     }
 
     @Override
-    protected double getEventProbabilityForNormalUsers() {
-        return RECON_TOOL_GROUP_A_PROBABILITY_NORMAL_USER;
+    protected double getNumOfEventsPerNormalUserPerHourOnAvg() {
+        return 3;
+    }
+
+    public double getBuilderAllAdminUsersMultiplier(){
+        return 0.6;
     }
 
     @Override
-    protected int getTimeIntervalForNonActiveRangeForNormalUsers() {
-        return RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_NORMAL_USERS;
+    protected double getPercentOfAdminUserPerDayOutOfTotalAmountOfUsers() {
+        return 0.66;
+    }
+
+    @Override
+    protected double getNumOfEventsPerAdminUserPerHourOnAvg() {
+        return 180;
+    }
+
+    public double getBuilderAllServiceAccountUsersMultiplier(){
+        return 0.6;
+    }
+
+    @Override
+    protected double getPercentOfServiceAccountUserPerDayOutOfTotalAmountOfUsers() {
+        return 0.66;
+    }
+
+    @Override
+    protected double getNumOfEventsPerServiceAccountUserPerHourOnAvg() {
+        return 360;
+    }
+
+    @Override
+    protected double getPercentOfNormalUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return 0.002;
+    }
+
+    @Override
+    protected double getNumOfEventsPerNormalUserWithAnomaliesPerHourOnAvg() {
+        return 12;
+    }
+
+    @Override
+    protected double getPercentOfAdminUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return 0.002;
+    }
+
+    @Override
+    protected double getNumOfEventsPerAdminUserWithAnomaliesPerHourOnAvg() {
+        return 450;
+    }
+
+    @Override
+    protected double getPercentOfServiceAccountUserWithAnomaliesPerDayOutOfTotalAmountOfUsers() {
+        return 0.002;
+    }
+
+    @Override
+    protected double getNumOfEventsPerServiceAccountUserWithAnomaliesPerHourOnAvg() {
+        return 900;
     }
 
     @Override
@@ -128,26 +165,6 @@ public class ReconToolGroupAEventGeneratorsBuilder extends UseCaseEventGenerator
     }
 
     @Override
-    protected int getNumOfAdminUsers() {
-        return RECON_TOOL_GROUP_A_NUM_OF_ADMIN_USERS;
-    }
-
-    @Override
-    protected int getNumOfAdminUsersDaily() {
-        return RECON_TOOL_GROUP_A_NUM_OF_ADMIN_USERS_DAILY;
-    }
-
-    @Override
-    protected double getEventProbabilityForAdminUsers() {
-        return RECON_TOOL_GROUP_A_PROBABILITY_ADMIN_USER;
-    }
-
-    @Override
-    protected int getTimeIntervalForNonActiveRangeForAdminUsers() {
-        return RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_ADMIN_USERS;
-    }
-
-    @Override
     protected int getMinNumOfFilesPerAdminUserForSrcProcesses() {
         return RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER;
     }
@@ -165,26 +182,6 @@ public class ReconToolGroupAEventGeneratorsBuilder extends UseCaseEventGenerator
     @Override
     protected int getMaxNumOfFilesPerAdminUserForDestProcesses() {
         return RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_ADMIN_USER;
-    }
-
-    @Override
-    protected int getNumOfServiceAccountUsers() {
-        return RECON_TOOL_GROUP_A_NUM_OF_SERVICE_ACCOUNT_USERS;
-    }
-
-    @Override
-    protected int getNumOfServiceAccountUsersDaily() {
-        return RECON_TOOL_GROUP_A_NUM_OF_SERVICE_ACCOUNT_USERS_DAILY;
-    }
-
-    @Override
-    protected double getEventProbabilityForServiceAccountUsers() {
-        return RECON_TOOL_GROUP_A_PROBABILITY_SERVICE_ACCOUNT_USER;
-    }
-
-    @Override
-    protected int getTimeIntervalForNonActiveRangeForServiceAccountUsers() {
-        return RECON_TOOL_GROUP_A_TIME_INTERVAL_FOR_ABNORMAL_TIME_FOR_SERVICE_ACCOUNT_USERS;
     }
 
     @Override
@@ -209,16 +206,6 @@ public class ReconToolGroupAEventGeneratorsBuilder extends UseCaseEventGenerator
 
 
     @Override
-    protected int getNumOfNormalUsersDailyForNonActiveWorkingHours() {
-        return ABNORMAL_RECON_TOOL_GROUP_A_NUM_OF_NORMAL_USERS_DAILY;
-    }
-
-    @Override
-    protected double getEventProbabilityForNormalUsersForNonActiveWorkingHours() {
-        return ABNORMAL_RECON_TOOL_GROUP_A_PROBABILITY_NORMAL_USER;
-    }
-
-    @Override
     protected int getMinNumOfFilesPerNormalUserForSrcProcessesForAbnormalEvents() {
         return ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_NORMAL_USER;
     }
@@ -239,16 +226,6 @@ public class ReconToolGroupAEventGeneratorsBuilder extends UseCaseEventGenerator
     }
 
     @Override
-    protected int getNumOfAdminUsersDailyForNonActiveWorkingHours() {
-        return ABNORMAL_RECON_TOOL_GROUP_A_NUM_OF_ADMIN_USERS_DAILY;
-    }
-
-    @Override
-    protected double getEventProbabilityForAdminUsersForNonActiveWorkingHours() {
-        return ABNORMAL_RECON_TOOL_GROUP_A_PROBABILITY_ADMIN_USER;
-    }
-
-    @Override
     protected int getMinNumOfFilesPerAdminUserForSrcProcessesForAbnormalEvents() {
         return ABNORMAL_RECON_TOOL_GROUP_A_MIN_NUM_OF_NON_IMPORTANT_PROCESSES_PER_ADMIN_USER;
     }
@@ -266,16 +243,6 @@ public class ReconToolGroupAEventGeneratorsBuilder extends UseCaseEventGenerator
     @Override
     protected int getMaxNumOfFilesPerAdminUserForDestProcessesForAbnormalEvents() {
         return ABNORMAL_RECON_TOOL_GROUP_A_MAX_NUM_OF_RECON_TOOL_PROCESSES_PER_ADMIN_USER;
-    }
-
-    @Override
-    protected int getNumOfServiceAccountUsersDailyForAbnormalEvents() {
-        return ABNORMAL_RECON_TOOL_GROUP_A_NUM_OF_SERVICE_ACCOUNT_USERS_DAILY;
-    }
-
-    @Override
-    protected double getEventProbabilityForServiceAccountUsersForAbnormalEvents() {
-        return ABNORMAL_RECON_TOOL_GROUP_A_PROBABILITY_SERVICE_ACCOUNT_USER;
     }
 
     @Override

@@ -43,4 +43,9 @@ public class RandomAdminUserPercentageGenerator implements IUserGenerator {
     public void setIsAdminGenerator(IBooleanGenerator isAdminGenerator) {
         this.isAdminGenerator = isAdminGenerator;
     }
+
+    @Override
+    public Long getMaxNumOfDistinctUsers(){
+        throw new UnsupportedOperationException();
+    }
 }

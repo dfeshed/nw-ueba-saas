@@ -50,4 +50,9 @@ public class NumberedUserCyclicGenerator implements IUserGenerator {
 
         return user;
     }
+
+    @Override
+    public Long getMaxNumOfDistinctUsers(){
+        return Long.valueOf(totalUserNames*(userIdPerName-1));
+    }
 }

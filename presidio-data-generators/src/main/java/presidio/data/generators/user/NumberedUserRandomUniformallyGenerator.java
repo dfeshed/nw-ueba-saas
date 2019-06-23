@@ -80,4 +80,9 @@ public class NumberedUserRandomUniformallyGenerator implements IUserGenerator{
         }
         return builder.toString();
     }
+
+    @Override
+    public Long getMaxNumOfDistinctUsers(){
+        return Long.valueOf(numOfUsers);
+    }
 }
