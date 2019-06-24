@@ -199,7 +199,7 @@ export const onEventNodeSelected = (payload) => {
       const { hashes, process: { checksumDst } } = payload;
       dispatch({ type: ACTION_TYPES.SET_SELECTED_PROCESS, payload: payload.process });
       dispatch(getRespondServerStatus());
-      dispatch(resetRiskContext());
+      dispatch(resetRiskContext('FILE'));
       dispatch(fetchProcessDetails({ hashes }, selectedServerId));
       dispatch(getHostContext('alias.host', [{ value: `(checksum.all = '${checksumDst}')` }], 300000));
       dispatch(resetFilterValue(payload.processId));

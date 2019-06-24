@@ -40,11 +40,11 @@ const resetRiskScore = (selectedItems, riskType, callbacks = callbacksDefault) =
   };
 };
 
-const resetRiskContext = () => {
+const resetRiskContext = (type) => {
   return (dispatch, getState) => {
     dispatch({
       type: ACTION_TYPES.RESET_RISK_CONTEXT,
-      meta: { belongsTo: riskType(getState()) }
+      meta: { belongsTo: type || riskType(getState()) }
     });
   };
 };
@@ -208,15 +208,15 @@ const expandEvent = (id) => {
   };
 };
 
-const getRespondServerStatus = () => {
+const getRespondServerStatus = (type) => {
   return (dispatch, getState) => {
     const request = lookup('service:request');
     return request.ping('respond-server-ping')
       .then(() => {
-        dispatch({ type: ACTION_TYPES.GET_RESPOND_SERVER_STATUS, payload: false, meta: { belongsTo: riskType(getState()) } });
+        dispatch({ type: ACTION_TYPES.GET_RESPOND_SERVER_STATUS, payload: false, meta: { belongsTo: type || riskType(getState()) } });
       })
       .catch(() => {
-        dispatch({ type: ACTION_TYPES.GET_RESPOND_SERVER_STATUS, payload: true, meta: { belongsTo: riskType(getState()) } });
+        dispatch({ type: ACTION_TYPES.GET_RESPOND_SERVER_STATUS, payload: true, meta: { belongsTo: type || riskType(getState()) } });
       });
   };
 };
