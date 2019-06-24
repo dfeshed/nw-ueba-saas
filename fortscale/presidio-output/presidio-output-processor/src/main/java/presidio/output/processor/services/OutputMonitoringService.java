@@ -168,7 +168,7 @@ public class OutputMonitoringService {
 
     private void reportSmartsCountDaily(TimeRange timeRange, String metricName, MetricEnums.MetricValues amountOfScored, String smartsCountLastDayMetricName, String configurationName) {
         Map<String, String> tags = new HashMap<>();
-        tags.put(MetricEnums.MetricTagKeysEnum.SCORER.name(), String.format("smart.{0}.scorer", configurationName.replaceAll("_", ".")));
+        tags.put(MetricEnums.MetricTagKeysEnum.SCORER.name(), String.format("smart.%s.scorer", configurationNameToMetricNamePhrase(configurationName)));
         List<MetricDocument> scoringHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton(metricName), timeRange, tags);
         List<Number> smartsCountHourlyValues = scoringHourlyMetrics.stream().
                 map(metricDocument -> metricDocument.getValue().get(amountOfScored))
@@ -185,5 +185,9 @@ public class OutputMonitoringService {
         int distinctSmartEntities = adeManagerSdk.getNumOfDistinctSmartEntities(timeRange, configurationName);
         reportNumericMetric(metricName, distinctSmartEntities, timeRange.getStart());
         logger.info("active entities daily metric was successfully reported with value {}", distinctSmartEntities);
+    }
+
+    private String configurationNameToMetricNamePhrase(String configurationName){
+        return configurationName.replaceAll("_", ".");
     }
 }
