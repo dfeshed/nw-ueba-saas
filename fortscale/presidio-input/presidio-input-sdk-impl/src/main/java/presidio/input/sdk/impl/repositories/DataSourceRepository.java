@@ -20,7 +20,7 @@ public interface DataSourceRepository {
 
     <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize);
 
-    <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter,  List<String> projectionFields, Class clazz);
+    <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter,  List<String> projectionFields);
 
     long count(String collectionName, Instant startDate, Instant endDate);
 

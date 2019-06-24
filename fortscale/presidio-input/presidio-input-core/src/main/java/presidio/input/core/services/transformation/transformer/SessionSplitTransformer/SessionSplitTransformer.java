@@ -29,7 +29,7 @@ public class SessionSplitTransformer implements Transformer {
         sessionSplitFilter.put(TlsRawEvent.SESSION_SPLIT_FIELD_NAME, ZERO_SESSION_SPLIT);
         List<String> projectionFields = selectProjectionFields();
 
-        RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(endDate.minus(interval), endDate, inputPersistencyService, schema, pageSize, sessionSplitFilter, projectionFields, TlsRawEvent.class);
+        RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(endDate.minus(interval), endDate, inputPersistencyService, schema, pageSize, sessionSplitFilter, projectionFields);
         while (rawEventsPageIterator.hasNext()) {
             try {
                 List<TlsRawEvent> tlsRawEvents = rawEventsPageIterator.next();

@@ -63,12 +63,12 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
     }
 
     @Override
-    public <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter,  List<String> projectionFields, Class clazz) {
+    public <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter,  List<String> projectionFields) {
         Query query = getQuery(startDate, endDate, numOfItemsToSkip, pageSize);
         query = createFilterCriteria(query, filter);
         addFieldsProjection(projectionFields, query);
         query.with(new Sort(Sort.Direction.ASC, AbstractInputDocument.DATE_TIME_FIELD_NAME));
-        List<U> recordList = mongoTemplate.find(query,(Class<U>) clazz, collectionName);
+        List<U> recordList = mongoTemplate.find(query,(Class<U>)  AbstractInputDocument.class, collectionName);
         return recordList;
 
     }
@@ -107,6 +107,7 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
 
     private void addFieldsProjection(List<String> projectionFields, Query query) {
         if(!projectionFields.isEmpty()){
+            projectionFields.add("_class");
             for(String projectionField : projectionFields) {
                 query.fields().include(projectionField);
             }
