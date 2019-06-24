@@ -282,6 +282,7 @@ const isBroker = _isModule('broker');
 const isConcentrator = _isModule('concentrator');
 const isDecoder = _isModule('decoder');
 const isLogDecoder = _isModule('logdecoder');
+const isLogCollector = _isModule('logcollector');
 
 export {
   currentDirectoryContents,
@@ -310,5 +311,6 @@ export {
   isConcentrator,
   isDecoder,
   isLogDecoder,
+  isLogCollector,
   moduleName
 };

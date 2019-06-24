@@ -22,7 +22,6 @@ class MockServer {
         this.handleMessage(ws, message);
       });
     });
-
     this.wss = wss;
   }
 

@@ -71,11 +71,19 @@ The artifact for ng-core can be manually built from the `sa-ui/ngcoreui` directo
 
 (Replace version and build numbers as appropriate.)
 
-### Setting up the environment
-1. Run `../scripts/welcome.sh`.
-2. Open [`app/services/transport.js`](https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/ngcoreui/app/services/transport.js) and edit the *development* WebSocket URL to point to your core device.
-3. In the `ngcoreui` directory, run `ember serve`.
-4. Make your changes. The webpage will automatically reload.
+## Activating a proxy server to use the remote device server
+### ngcoreui-proxy-server
+Proxy to use a remote production server as your local server
+
+### Steps to use it:
+1. Open [`app/services/transport.js`](https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/ngcoreui/app/services/transport.js) and edit the *development* WebSocket port to point to 4200 (this is the default port of ember).
+2. Edit [`ngcoreui-proxy-server/index.js`](https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/ngcoreui/ngcoreui-proxy-server/index.js) to point to your remote address and port.
+3. Run `node index.js` from `ngcoreui-proxy-server` directory
+4. Run `ember serve --proxy=http://localhost:50102` from `ngcoreui` directory, pointing the port to the remote host's port.
+
+### How this works?
+1. It proxies from port 4200 to remote port
+2. It proxies from local-URL/remote-port to remote-URL/remote-port
 
 ### Testing
 `ngcoreui` uses its own simpler version of `mock-server` that lives in `ngcoreui/ngcoreui-mock-server`. To run tests locally, first navigate into that folder and run `node index.js`. Then, in a separate terminal, navigate back to the `ngcoreui` root folder and run `ember exam`.
@@ -86,3 +94,5 @@ The artifact for ng-core can be manually built from the `sa-ui/ngcoreui` directo
 - `{{tree-view-operation-parameter}}` passes data up through actions to its parent.
 
 There is one important service, [`app/services/transport.js`](https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/ngcoreui/app/services/transport.js) which controls all the WebSocket communication. It has two main methods, `send()` and `stream()`. To see usage examples, look at the action creators in [`app/actions/actions.js`](https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/ngcoreui/app/actions/actions.js) or the docs in [`app/services/transport/README.md`](https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/ngcoreui/app/services/transport/README.md)
+
+

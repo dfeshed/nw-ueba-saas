@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { isArchiver, isBroker, isConcentrator, isDecoder, isLogDecoder, moduleName } from 'ngcoreui/reducers/selectors';
+import { isArchiver, isBroker, isConcentrator, isDecoder, isLogDecoder, isLogCollector, moduleName } from 'ngcoreui/reducers/selectors';
 
 const stateToComputed = (state) => ({
   isArchiver: isArchiver(state),
@@ -8,6 +8,7 @@ const stateToComputed = (state) => ({
   isConcentrator: isConcentrator(state),
   isDecoder: isDecoder(state),
   isLogDecoder: isLogDecoder(state),
+  isLogCollector: isLogCollector(state),
   moduleName: moduleName(state)
 });
 

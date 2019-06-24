@@ -42,6 +42,12 @@ a {
   padding: rsa-whitespace() rsa-whitespace() 0px rsa-whitespace();
 }
 
+.border-panel-lc {
+  border: 1px solid text-color(primary, lightest);
+  margin-top: rsa-whitespace();
+  padding: rsa-whitespace() rsa-whitespace() 0px rsa-whitespace();
+}
+
 .bottom-margin {
   margin-bottom: rsa-whitespace();
 }
@@ -484,6 +490,19 @@ table {
   }
 }
 
+.card-lc {
+  width: 100%;
+  overflow: hidden;
+  height: 400px;
+  margin: rsa-whitespace(less);
+  h1 {
+    margin-bottom: 10px
+  }
+  .rsa-data-table {
+    height: 80%;
+    overflow: scroll;
+  }
+}
 
 .dashboard-banner {
   height: 400px;
