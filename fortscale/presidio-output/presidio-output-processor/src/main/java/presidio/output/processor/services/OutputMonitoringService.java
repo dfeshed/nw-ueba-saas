@@ -118,7 +118,7 @@ public class OutputMonitoringService {
         TimeRange timeRange = new TimeRange(startDate, endDate);
 
         reportActiveEntitiesDaily(timeRange, configurationName, entityType);
-        reportSmartsCountDaily(timeRange, "smart.scoring", MetricEnums.MetricValues.AMOUNT_OF_SCORED, SMARTS_COUNT_LAST_DAY_METRIC_NAME);
+        reportSmartsCountDaily(timeRange, "smart.scoring", MetricEnums.MetricValues.AMOUNT_OF_SCORED, SMARTS_COUNT_LAST_DAY_METRIC_NAME, configurationName);
         reportDailyMetric(timeRange, OUTPUT_METRIC_NAME_PREFIX, NUMBER_OF_ALERTS_METRIC_NAME, ALERTS_COUNT_LAST_DAY_METRIC_NAME);
 
         //----Report daily metric- indicators count (output)---
@@ -166,9 +166,9 @@ public class OutputMonitoringService {
         logger.info("{} was successfully reported with value {}", dailyMetricName, value);
     }
 
-    private void reportSmartsCountDaily(TimeRange timeRange, String metricName, MetricEnums.MetricValues amountOfScored, String smartsCountLastDayMetricName) {
+    private void reportSmartsCountDaily(TimeRange timeRange, String metricName, MetricEnums.MetricValues amountOfScored, String smartsCountLastDayMetricName, String configurationName) {
         Map<String, String> tags = new HashMap<>();
-        tags.put(MetricEnums.MetricTagKeysEnum.SCORER.name(), "smart.userId.hourly.scorer");
+        tags.put(MetricEnums.MetricTagKeysEnum.SCORER.name(), String.format("smart.%s.scorer", configurationNameToMetricNamePhrase(configurationName)));
         List<MetricDocument> scoringHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton(metricName), timeRange, tags);
         List<Number> smartsCountHourlyValues = scoringHourlyMetrics.stream().
                 map(metricDocument -> metricDocument.getValue().get(amountOfScored))
@@ -185,5 +185,9 @@ public class OutputMonitoringService {
         int distinctSmartEntities = adeManagerSdk.getNumOfDistinctSmartEntities(timeRange, configurationName);
         reportNumericMetric(metricName, distinctSmartEntities, timeRange.getStart());
         logger.info("active entities daily metric was successfully reported with value {}", distinctSmartEntities);
+    }
+
+    private String configurationNameToMetricNamePhrase(String configurationName){
+        return configurationName.replaceAll("_", ".");
     }
 }

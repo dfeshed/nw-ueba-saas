@@ -8,14 +8,13 @@
       "hits": 0,
       "columns": [
         "severity",
-        "userName",
-        "userDisplayName",
+        "entityName",
         "tags",
         "score",
         "alertsCount",
         "alertClassifications",
         "indicators",
-        "userId"
+        "entityId"
       ],
       "sort": [
         "score",
@@ -23,7 +22,7 @@
       ],
       "version": 1,
       "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"index\":\"presidio-output-user\",\"highlightAll\":true,\"version\":true,\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[{\"meta\":{\"negate\":true,\"index\":\"presidio-output-user\",\"key\":\"score\",\"value\":\"0\",\"disabled\":false,\"alias\":null},\"query\":{\"match\":{\"score\":{\"query\":0,\"type\":\"phrase\"}}},\"$state\":{\"store\":\"appState\"}}]}"
+        "searchSourceJSON": "{\"index\":\"presidio-output-entity\",\"highlightAll\":true,\"version\":true,\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[{\"meta\":{\"negate\":false,\"index\":\"presidio-output-entity\",\"key\":\"entityType\",\"value\":\"userId\",\"disabled\":false,\"alias\":null},\"query\":{\"match\":{\"entityType\":{\"query\":\"userId\",\"type\":\"phrase\"}}},\"$state\":{\"store\":\"appState\"}},{\"meta\":{\"negate\":true,\"index\":\"presidio-output-entity\",\"key\":\"score\",\"value\":\"0\",\"disabled\":false,\"alias\":null},\"query\":{\"match\":{\"score\":{\"query\":0,\"type\":\"phrase\"}}},\"$state\":{\"store\":\"appState\"}}]}"
       }
     }
   }

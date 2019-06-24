@@ -113,11 +113,11 @@ public class RestEntityServiceTest {
         EntityQuery entityQuery = new EntityQuery();
         entityQuery.setExpand(false);
         entityQuery.setIndicatorsName(Arrays.asList("indicator2"));
-        EntitiesWrapper usersWrapper = restEntityService.getEntities(entityQuery);
-        List<presidio.webapp.model.Entity> resultEntity = usersWrapper.getEntities();
+        EntitiesWrapper entitiesWrapper = restEntityService.getEntities(entityQuery);
+        List<presidio.webapp.model.Entity> resultEntity = entitiesWrapper.getEntities();
 
         assertEquals(1, resultEntity.size());
-        assertEquals(2, usersWrapper.getTotal().intValue());
+        assertEquals(2, entitiesWrapper.getTotal().intValue());
     }
 
 
@@ -134,19 +134,19 @@ public class RestEntityServiceTest {
         alert4.setEntityName(entity2.getEntityName());
         entity2.setAlertsCount(2);
 
-        Page<Entity> userPage = new PageImpl<>(new ArrayList<>(Arrays.asList(entity1, entity2, entity3)));
-        when(entityPersistencyService.find(notNull(presidio.output.domain.records.entity.EntityQuery.class))).thenReturn(userPage);
-        EntityQuery userQuery = new EntityQuery();
-        userQuery.setExpand(true);
+        Page<Entity> entityPage = new PageImpl<>(new ArrayList<>(Arrays.asList(entity1, entity2, entity3)));
+        when(entityPersistencyService.find(notNull(presidio.output.domain.records.entity.EntityQuery.class))).thenReturn(entityPage);
+        EntityQuery entityQuery = new EntityQuery();
+        entityQuery.setExpand(true);
         Page<Alert> firstPage = new PageImpl<>(new ArrayList<>(Arrays.asList(alert1)));
         Page<Alert> secondPage = new PageImpl<>(new ArrayList<>(Arrays.asList(alert4, alert2)));
         Page<Alert> thirdPage = new PageImpl<>(new ArrayList<>(Arrays.asList(alert3)));
         when(alertPersistencyService.findByEntityDocumentId(notNull(String.class), notNull(PageRequest.class))).thenReturn(firstPage, secondPage, thirdPage);
-        List<presidio.webapp.model.Entity> resultEntity = restEntityService.getEntities(userQuery).getEntities();
+        List<presidio.webapp.model.Entity> resultEntity = restEntityService.getEntities(entityQuery).getEntities();
         resultEntity.forEach(entity -> {
             if (entity.getId().equals(entity1.getId()) || entity.getId().equals(entity3.getId()))
                 Assert.assertEquals(1, entity.getAlerts().size());
-            if (entity.getId().equals("useruser1"))
+            if (entity.getId().equals("entityentity1"))
                 assertEquals(1, entity.getAlerts().size());
             else {
                 if (entity.getId().equals(entity2.getId())) {
@@ -249,7 +249,7 @@ public class RestEntityServiceTest {
 
     private Alert createAlert(int number) {
         List<String> classifications = new ArrayList<>(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
-        return new Alert("entityId" + number, "smartId", classifications, "user" + number, "entity" + number,
+        return new Alert("entityId" + number, "smartId", classifications, "entity" + number, "entity" + number,
                 Date.from(Instant.parse("2017-01-01T00:00:00Z")), Date.from(Instant.parse("2017-01-01T11:00:00Z")),
                 10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, null, 0D, "entityType");
     }

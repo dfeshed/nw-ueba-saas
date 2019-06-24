@@ -12,7 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.Indicator;
-import presidio.output.domain.records.users.User;
+import presidio.output.domain.records.entity.Entity;
 
 import java.util.Map;
 
@@ -26,8 +26,8 @@ public class RecordsMappingTest {
     private PresidioElasticsearchTemplate esTemplate;
 
     @Test
-    public void userTest() {
-        Map map = esTemplate.getMapping(User.class);
+    public void entityTest() {
+        Map map = esTemplate.getMapping(Entity.class);
         Map properties = (Map) map.get("properties");
         Assert.assertEquals(14, properties.size());
     }

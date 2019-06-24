@@ -70,7 +70,7 @@ public class RestAlertServiceTest {
     }
 
     @Test
-    public void getAlertsSuccess_filterByUsername() {
+    public void getAlertsSuccess_filterByEntityName() {
         Alert firstAlert = createAlert();
         List<Alert> resultList = new ArrayList<>();
         resultList.add(firstAlert);
@@ -92,7 +92,7 @@ public class RestAlertServiceTest {
         when(alertPersistencyService.find(anyObject())).thenReturn(page);
 
         AlertQuery alertQuery = new AlertQuery();
-        alertQuery.setEntityDocumentIds(new ArrayList<>(Collections.singletonList("someUserName")));
+        alertQuery.setEntityDocumentIds(new ArrayList<>(Collections.singletonList("someEntityName")));
         AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
         Assert.assertEquals(0, alertsWrapper.getAlerts().size());
     }
@@ -143,7 +143,7 @@ public class RestAlertServiceTest {
         AlertQuery alertQuery = new AlertQuery();
         alertQuery.setPageNumber(3);
         alertQuery.setPageSize(10);
-        alertQuery.setEntityDocumentIds(new ArrayList<>(Collections.singletonList("someUserName")));
+        alertQuery.setEntityDocumentIds(new ArrayList<>(Collections.singletonList("someEntityName")));
         AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
         Assert.assertEquals(0, alertsWrapper.getAlerts().size());
         Assert.assertEquals(Math.toIntExact(total), alertsWrapper.getTotal().intValue());
@@ -166,9 +166,8 @@ public class RestAlertServiceTest {
         features.put("id", "59fda03eb77dbd60bb1bef1a");
         features.put("eventDate", Instant.parse("2017-01-01T11:00:00Z"));
         features.put("eventId", "0x000000440001745200000220");
-        features.put("userId", "S-1-5-21-636461855-2365528612-2953867313-96946");
-        features.put("userName", "userName");
-        features.put("userDisplayName", "userDisplayName");
+        features.put("entityId", "S-1-5-21-636461855-2365528612-2953867313-96946");
+        features.put("entityName", "entityName");
         features.put("dataSource", "File System");
         features.put("operationType", "FOLDER_CREATED");
         features.put("operationTypeCategories", new String[] {"FILE_ACTION"});
@@ -179,7 +178,6 @@ public class RestAlertServiceTest {
         additionalInfo.put("originIPv4","10.154.12.165");
         additionalInfo.put("description", "New folder c:tmp created on PRODAAA.");
         additionalInfo.put("oSVersion", "Windows Server 2012 R2 Standard");
-        additionalInfo.put("isUserAdmin", "false");
         additionalInfo.put("operationType", "FOLDER_CREATED");
         features.put("additionalInfo", additionalInfo);
         event.setFeatures(features);

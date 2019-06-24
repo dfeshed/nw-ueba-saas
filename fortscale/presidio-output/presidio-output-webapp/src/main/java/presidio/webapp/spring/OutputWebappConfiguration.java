@@ -61,10 +61,10 @@ public class OutputWebappConfiguration {
         return new RestMetricServiceImpl(presidioMetricPersistencyService,metricConvertor());
     }
 
-    @Value("${default.page.size.for.rest.user}")
+    @Value("${default.page.size.for.rest.entity}")
     private int pageSizeEntity;
 
-    @Value("${default.page.number.for.rest.user}")
+    @Value("${default.page.number.for.rest.entity}")
     private int pageNumberEntity;
 
     @Value("${default.page.size.for.rest.alert}")

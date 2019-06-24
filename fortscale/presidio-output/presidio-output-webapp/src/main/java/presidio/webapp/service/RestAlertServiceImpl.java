@@ -248,9 +248,9 @@ public class RestAlertServiceImpl implements RestAlertService {
         return alertsByEntityIds;
     }
 
-    private List<Alert> convertToRestAlerts(Page<presidio.output.domain.records.alerts.Alert> alertsByUserId) {
+    private List<Alert> convertToRestAlerts(Page<presidio.output.domain.records.alerts.Alert> alertsByEntityId) {
         List<Alert> restAlerts = new ArrayList<>();
-        alertsByUserId.forEach(alert -> restAlerts.add(createRestAlert(alert)));
+        alertsByEntityId.forEach(alert -> restAlerts.add(createRestAlert(alert)));
         return restAlerts;
     }
 
