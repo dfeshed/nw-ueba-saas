@@ -11,6 +11,7 @@ import { htmlSafe } from '@ember/string';
 import { set } from '@ember/object';
 import Mixin from '@ember/object/mixin';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
+import { htmlStringToElement } from 'component-lib/utils/jquery-replacement';
 
 export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
   classNames: 'rsa-data-table-body-row',
@@ -182,12 +183,15 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
         });
 
         schedule('afterRender', () => {
-          this.$().append(`<div class="group-label">
+          const { element } = this;
+          const toAppend = `<div class="group-label">
             <div class="group-label-copy">
               <i class="rsa-icon rsa-icon-arrow-down-7-filled"></i>
               ${label}
             </div>
-          </div>`);
+          </div>`;
+          const elementToAppend = htmlStringToElement(toAppend);
+          element.append(elementToAppend);
         });
       }
     }

@@ -45,9 +45,11 @@ export default Mixin.create({
   // Attach a scroll listener, and call it manually the 1st time.
   _initScrollBindings() {
     const { element } = this;
+
     if (!element) {
       return;
     }
+
     const callback = (() => {
       run.throttle(this, function() {
         this.setProperties({
@@ -57,14 +59,15 @@ export default Mixin.create({
       }, 51);
     });
     this.set('_scrollBindingsCallback', callback);
-    this.$().on('scroll', callback);
+    element.addEventListener('scroll', callback);
     callback();
   },
 
   // Detach the last scroll listener.
   _teardownScrollBindings() {
-    if (this.get('_scrollBindingsCallback')) {
-      this.$().off('scroll', this.get('_scrollBindingsCallback'));
+    const { element } = this;
+    if (element && this.get('_scrollBindingsCallback')) {
+      element.removeEventListener('scroll', this.get('_scrollBindingsCallback'));
       this.set('_scrollBindingsCallback', null);
     }
   },

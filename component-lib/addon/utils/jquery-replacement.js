@@ -105,7 +105,7 @@ export const getBorderY = (elem) => {
  * jQuery (':visible')
  * @param {*} elements NodeList
  */
-export const visible = function(elements) {
+export const visible = (elements) => {
   const found = [];
   for (const el of elements) {
     if (el.offsetWidth > 0 && el.offsetHeight > 0) {
@@ -120,7 +120,7 @@ export const visible = function(elements) {
  * get the combined text contents of each element in the set of matched elements including their descendants
  * @param {*} elem
  */
-export const text = function(elem) {
+export const text = (elem) => {
   let node;
   let ret = '';
   let i = 0;
@@ -137,6 +137,18 @@ export const text = function(elem) {
     return elem.nodeValue;
   }
   return ret;
+};
+
+/**
+ * returns Element created from htmlString
+ * @param {*} htmlString
+ */
+export const htmlStringToElement = (htmlString) => {
+  if (htmlString) {
+    const template = document.createElement('template');
+    template.innerHTML = htmlString.trim();
+    return template.content.firstChild;
+  }
 };
 
 // Easy replacement docs
@@ -272,6 +284,9 @@ export const text = function(elem) {
 
 // $('.some-element').text()
 // text(some-element) - see above
+
+// $('.some-element').append(htmlString)
+// Element.append(htmlStringToElement(htmlString)) - see above
 
 //
 // ATTRIBUTES
