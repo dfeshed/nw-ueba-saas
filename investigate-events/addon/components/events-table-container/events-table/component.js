@@ -178,7 +178,7 @@ const EventsTableContextMenu = RsaContextMenu.extend({
       const labelClicked = className.includes('group-label') || className.includes('group-label-copy');
       if (!labelClicked) {
         if (notKeyboardControl && (checkboxClicked || checkboxWrapperClicked)) {
-          this.send('toggleEventSelection', event);
+          this.send('toggleEventSelection', event, index);
         } else {
           this.get('eventBus').trigger('rsa-content-tethered-panel-hide-tableSearchPanel');
           this.get('selectEvent')(event);

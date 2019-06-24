@@ -115,15 +115,15 @@ module('Unit | Actions | interaction creators', function(hooks) {
       return new ReduxDataHelper()
         .eventResults(eventResultsData)
         .selectedEventIds({
-          1: 1,
-          3: 3
+          0: 1,
+          2: 3
         })
         .build();
     };
 
     const dispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.SELECT_EVENTS, 'action has correct type');
-      assert.deepEqual(action.payload, { 1: 1, 2: 2, 3: 3 }, 'action selects all events');
+      assert.deepEqual(action.payload, { 0: 1, 1: 2, 2: 3 }, 'action selects all events');
     };
 
     const thunk = interactionCreators.toggleSelectAllEvents();
@@ -136,9 +136,9 @@ module('Unit | Actions | interaction creators', function(hooks) {
       return new ReduxDataHelper()
         .eventResults(eventResultsData)
         .selectedEventIds({
-          1: 1,
-          2: 2,
-          3: 3
+          0: 1,
+          1: 2,
+          2: 3
         })
         .build();
     };
@@ -158,8 +158,8 @@ module('Unit | Actions | interaction creators', function(hooks) {
       return new ReduxDataHelper()
         .eventResults(eventResultsData)
         .selectedEventIds({
-          1: 1,
-          3: 3
+          1: 2,
+          2: 3
         })
         .build();
     };
@@ -169,7 +169,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
       assert.equal(action.payload, 1, 'action has the correct payload');
     };
 
-    const thunk = interactionCreators.toggleEventSelection({ sessionId: 1 });
+    const thunk = interactionCreators.toggleEventSelection({ sessionId: 1 }, 1);
 
     thunk(dispatch, getState);
   });
@@ -179,17 +179,17 @@ module('Unit | Actions | interaction creators', function(hooks) {
       return new ReduxDataHelper()
         .eventResults(eventResultsData)
         .selectedEventIds({
-          3: 3
+          2: 3
         })
         .build();
     };
 
     const dispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.SELECT_EVENTS, 'action has the correct type');
-      assert.deepEqual(action.payload, { 2: 2, 3: 3 }, 'action has the correct payload');
+      assert.deepEqual(action.payload, { 0: 1, 2: 3 }, 'action has the correct payload');
     };
 
-    const thunk = interactionCreators.toggleEventSelection({ sessionId: 2 });
+    const thunk = interactionCreators.toggleEventSelection({ sessionId: 1 }, 0);
 
     thunk(dispatch, getState);
   });

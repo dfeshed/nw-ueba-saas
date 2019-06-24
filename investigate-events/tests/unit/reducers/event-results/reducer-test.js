@@ -13,7 +13,7 @@ const stateWithoutSelections = Immutable.from({
 });
 
 const stateWithSelections = Immutable.from({
-  selectedEventIds: { foo: 'foo', bar: 'bar' }
+  selectedEventIds: { 7: 442, 10: 165 }
 });
 
 test('Should update seach term', function(assert) {
@@ -58,24 +58,24 @@ test('Should update visible columns', function(assert) {
 test('ACTION_TYPES.SELECT_EVENTS reducer', function(assert) {
   const action = {
     type: ACTION_TYPES.SELECT_EVENTS,
-    payload: { foo: 'foo' }
+    payload: { 5: 300 }
   };
 
   const result = reducer(stateWithoutSelections, action);
 
   assert.equal(Object.keys(result.selectedEventIds).length, 1);
-  assert.deepEqual(result.selectedEventIds, { foo: 'foo' });
+  assert.deepEqual(result.selectedEventIds, { 5: 300 });
 });
 
 test('ACTION_TYPES.DESELECT_EVENT reducer', function(assert) {
   const action = {
     type: ACTION_TYPES.DESELECT_EVENT,
-    payload: 'foo'
+    payload: 10
   };
 
   const result = reducer(stateWithSelections, action);
 
-  assert.deepEqual(result.selectedEventIds, { bar: 'bar' });
+  assert.deepEqual(result.selectedEventIds, { 7: 442 });
 });
 
 test('ACTION_TYPES.SET_EVENTS_PAGE reducer will concatenate', function(assert) {

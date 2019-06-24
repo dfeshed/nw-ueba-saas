@@ -332,7 +332,7 @@ export const toggleSelectAllEvents = () => {
     const newIds = {};
     if (!areAllEventsSelected(getState())) {
       for (let i = 0; i < data.length; i++) {
-        newIds[data[i].sessionId] = data[i].sessionId;
+        newIds[i] = data[i].sessionId;
       }
     }
 
@@ -343,20 +343,19 @@ export const toggleSelectAllEvents = () => {
   };
 };
 
-export const toggleEventSelection = ({ sessionId }) => {
+export const toggleEventSelection = ({ sessionId }, index) => {
   return (dispatch, getState) => {
     const state = getState().investigate.eventResults;
     const { selectedEventIds } = state;
-
-    if (selectedEventIds[sessionId]) {
+    if (selectedEventIds[index]) {
       // if the event is already selected, deselect it
-      dispatch({ type: ACTION_TYPES.DESELECT_EVENT, payload: sessionId });
+      dispatch({ type: ACTION_TYPES.DESELECT_EVENT, payload: index });
     } else {
       // if the toggled event is not already selected, select the event
       const newIds = {
         ...selectedEventIds
       };
-      newIds[sessionId] = sessionId;
+      newIds[index] = sessionId;
       dispatch({ type: ACTION_TYPES.SELECT_EVENTS, payload: newIds });
     }
   };

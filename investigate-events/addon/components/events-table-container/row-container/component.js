@@ -36,9 +36,9 @@ export default Component.extend(RowMixin, HighlightsEntities, {
   },
 
   // Formatting configuration options. Passed to utils that generate cell DOM.
-  @computed('parentView.parentView.selectedItems', 'parentView.parentView.allItemsSelected', 'item.sessionId')
-  isChecked(selectedItems, allItemsSelected, sessionId) {
-    return allItemsSelected || (selectedItems && selectedItems[sessionId]);
+  @computed('parentView.parentView.selectedItems', 'parentView.parentView.allItemsSelected', 'item.sessionId', 'index')
+  isChecked(selectedItems, allItemsSelected, sessionId, index) {
+    return allItemsSelected || (selectedItems && selectedItems[index]);
   },
 
   // Formatting configuration options. Passed to utils that generate cell DOM.
