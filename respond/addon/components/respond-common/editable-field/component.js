@@ -102,7 +102,8 @@ export default Component.extend({
    */
   didRender() {
     this._super(...arguments);
-    this.$('input, textarea').focus();
+    const focusElement = this.element.querySelector('input, textarea');
+    focusElement && focusElement.focus();
   },
 
   reset() {

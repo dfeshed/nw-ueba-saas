@@ -4,7 +4,7 @@ import computed from 'ember-computed-decorators';
 import HasSizeAttr from 'respond/mixins/dom/has-size-attr';
 import HasScrollAttr from 'respond/mixins/dom/has-scroll-attr';
 import { htmlSafe } from '@ember/string';
-import $ from 'jquery';
+import { isNumeric } from 'component-lib/utils/jquery-replacement';
 
 /**
  * @class Group Table Body Component
@@ -68,13 +68,13 @@ export default Component.extend(HasSizeAttr, HasScrollAttr, {
 
   @computed('table.scrollerSize.innerWidth')
   stickyHeaderContainerStyle(width) {
-    const styleText = $.isNumeric(width) ? `width:${width}px;` : '';
+    const styleText = isNumeric(width) ? `width:${width}px;` : '';
     return htmlSafe(`${styleText}`);
   },
 
   @computed('table.{totalColumnsWidth,scrollerPos.left}')
   stickyHeaderScrollerStyle(width, scrollLeft) {
-    const px = $.isNumeric(scrollLeft) ? scrollLeft : 0;
+    const px = isNumeric(scrollLeft) ? scrollLeft : 0;
     return htmlSafe(`width:${width}; left: -${px}px`);
   },
 

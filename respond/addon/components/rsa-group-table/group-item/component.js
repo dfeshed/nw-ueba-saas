@@ -4,7 +4,7 @@ import Clickable from 'respond/mixins/dom/clickable';
 import computed, { alias } from 'ember-computed-decorators';
 import layout from './template';
 import { htmlSafe } from '@ember/string';
-import $ from 'jquery';
+import { isNumeric } from 'component-lib/utils/jquery-replacement';
 
 /**
  * @class GroupTable Row Component
@@ -87,7 +87,7 @@ export default Component.extend(HasSizeAttr, Clickable, {
   @computed('index', 'table.groupItemSize.outerHeight')
   style(index, itemHeight) {
     const top = index * itemHeight;
-    const styleText = $.isNumeric(top) ? `top: ${top}px` : '';
+    const styleText = isNumeric(top) ? `top: ${top}px` : '';
     return htmlSafe(`${styleText}`);
   },
 

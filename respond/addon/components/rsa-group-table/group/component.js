@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import layout from './template';
 import { htmlSafe } from '@ember/string';
-import $ from 'jquery';
+import { isNumeric } from 'component-lib/utils/jquery-replacement';
 
 /**
  * @class Group Table Group Component
@@ -58,7 +58,7 @@ export default Component.extend({
   // is required for lazy rendering of rows.
   @computed('top')
   style(top) {
-    const styleText = $.isNumeric(top) ? `top:${top}px` : '';
+    const styleText = isNumeric(top) ? `top:${top}px` : '';
     return htmlSafe(styleText);
   },
 
@@ -66,7 +66,7 @@ export default Component.extend({
   // Enables absolute positioning of the group header, which is required in order to support sticky headers.
   @computed('isSample', 'table.groupHeaderSize.outerHeight')
   headerContainerStyle(isSample, headerHeight) {
-    const styleText = (!isSample && $.isNumeric(headerHeight)) ? `min-height:${headerHeight}px` : '';
+    const styleText = (!isSample && isNumeric(headerHeight)) ? `min-height:${headerHeight}px` : '';
     return htmlSafe(styleText);
   },
 
@@ -75,7 +75,7 @@ export default Component.extend({
   // bottom of the group, which is required in order to support sticky headers.
   @computed('isSample', 'table.groupItemSize.outerHeight', 'group.items.length')
   itemsContainerStyle(isSample, itemHeight, itemCount) {
-    const styleText = (!isSample && $.isNumeric(itemHeight * itemCount)) ? `min-height:${itemHeight * itemCount}px` : '';
+    const styleText = (!isSample && isNumeric(itemHeight * itemCount)) ? `min-height:${itemHeight * itemCount}px` : '';
     return htmlSafe(styleText);
   },
 

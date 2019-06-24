@@ -53,21 +53,21 @@ const Incident = Component.extend({
 
   afterRender() {
     // Attach resize event listener to entities rectangle.
-    this._resizeElement = this.$('.js-entities-rectangle');
-    if (!this._resizeElement[0]) {
+    this._resizeElement = this.element.querySelector('.js-entities-rectangle');
+    if (!this._resizeElement) {
       return;
     }
     this._resizeCallback = () => {
       this._measureEntitiesRectangle();
     };
-    addResizeListener(this._resizeElement[0], this._resizeCallback);
+    addResizeListener(this._resizeElement, this._resizeCallback);
     this._resizeCallback();
   },
 
   willDestroyElement() {
     // Teardown resize event listener.
-    if (this._resizeElement[0]) {
-      removeResizeListener(this._resizeElement[0], this._resizeCallback);
+    if (this._resizeElement) {
+      removeResizeListener(this._resizeElement, this._resizeCallback);
       this._resizeElement = null;
     }
     this._super(...arguments);
@@ -76,10 +76,10 @@ const Incident = Component.extend({
   _measureEntitiesRectangle() {
     run.debounce(() => {
       this.set('entitiesRectangle', {
-        top: this._resizeElement[0].offsetTop,
-        left: this._resizeElement[0].offsetLeft,
-        width: this._resizeElement[0].clientWidth,
-        height: this._resizeElement[0].clientHeight
+        top: this._resizeElement.offsetTop,
+        left: this._resizeElement.offsetLeft,
+        width: this._resizeElement.clientWidth,
+        height: this._resizeElement.clientHeight
       });
     }, 100, true);
   }

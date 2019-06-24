@@ -18,7 +18,7 @@ import zoomed from './util/zoomed';
 import center from './util/center';
 import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
 import { run } from '@ember/runloop';
-import $ from 'jquery';
+import { isNumeric } from 'component-lib/utils/jquery-replacement';
 import { max } from 'd3-array';
 import { scaleLinear } from 'd3-scale';
 import { isEmpty } from '@ember/utils';
@@ -274,7 +274,7 @@ export default Component.extend({
    */
   @computed('linkMaxWidth')
   arrowWidth(linkMaxWidth) {
-    const width = $.isNumeric(linkMaxWidth) ? linkMaxWidth : 0;
+    const width = isNumeric(linkMaxWidth) ? linkMaxWidth : 0;
     return Math.max(10, width + 2);
   },
 
@@ -695,7 +695,7 @@ export default Component.extend({
     }
 
     // Define a force the centers the nodes around a given coordinate.
-    if ($.isNumeric(centerX) && $.isNumeric(centerY)) {
+    if (isNumeric(centerX) && isNumeric(centerY)) {
       const centerForce = forceCenter(centerX, centerY);
       simulation.force('center', centerForce);
     }

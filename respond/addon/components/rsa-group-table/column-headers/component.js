@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { htmlSafe } from '@ember/string';
-import $ from 'jquery';
+import { isNumeric } from 'component-lib/utils/jquery-replacement';
 
 /**
  * @class Group Table Column Headers Component
@@ -32,7 +32,7 @@ export default Component.extend({
   // Applies the scrollbox's width to the wrapper element to ensure horizontal alignment with scrollbox columns.
   @computed('table.scrollerSize.innerWidth')
   scrollerStyle(width) {
-    const styleText = $.isNumeric(width) ? `width: ${width}px` : '';
+    const styleText = isNumeric(width) ? `width: ${width}px` : '';
     return htmlSafe(styleText);
   },
 
@@ -45,7 +45,7 @@ export default Component.extend({
   // Computes a transform that will ensure the header cells stay horiz aligned with the table body's scrollLeft.
   @computed('table.scrollerPos.left')
   tableStyle(scrollLeft) {
-    const px = $.isNumeric(scrollLeft) ? scrollLeft : 0;
+    const px = isNumeric(scrollLeft) ? scrollLeft : 0;
     return htmlSafe(`left: -${px}px`);
   }
 });

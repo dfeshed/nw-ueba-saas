@@ -4,11 +4,11 @@ import computed from 'ember-computed-decorators';
 import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
 import { resizeAlertInspector } from 'respond/actions/creators/alert-creators';
-import $ from 'jquery';
+import { isNumeric } from 'component-lib/utils/jquery-replacement';
 
 const INSPECTOR_MIN_WIDTH = 300;
 
-const resolveWidth = (width) => Math.max(($.isNumeric(width) ? width : 0), INSPECTOR_MIN_WIDTH);
+const resolveWidth = (width) => Math.max((isNumeric(width) ? width : 0), INSPECTOR_MIN_WIDTH);
 
 const stateToComputed = ({ respond: { alert: { inspectorWidth } } }) => ({
   inspectorWidth: resolveWidth(inspectorWidth)

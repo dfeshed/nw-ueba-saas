@@ -2,8 +2,7 @@ import Component from '@ember/component';
 import layout from './template';
 import moment from 'moment';
 import computed from 'ember-computed-decorators';
-import $ from 'jquery';
-
+import { isNumeric } from 'component-lib/utils/jquery-replacement';
 // Lookup of key names that correspond to Long integer timestamps.
 const isTimestampKey = {
   timestamp: true,
@@ -35,12 +34,12 @@ export default Component.extend({
 
   // Indicates whether a given key-value pair is a Long integer that should be rendered as a formatted timestamp.
   @computed('key', 'value')
-  isTimestamp: (key, value) => ($.isNumeric(value) || validDate(value)) && !!isTimestampKey[key],
+  isTimestamp: (key, value) => (isNumeric(value) || validDate(value)) && !!isTimestampKey[key],
 
   // Converts `value` in a number of hours.
   @computed('value')
   valueAsHours(value) {
-    if (!$.isNumeric(value)) {
+    if (!isNumeric(value)) {
       return null;
     }
     return Math.floor(((value / 1000) / 60) / 60);
@@ -49,7 +48,7 @@ export default Component.extend({
   // Parses `value` into a POJO with `days`, `hours`, `minutes` & `seconds` properties.
   @computed('value')
   valueAsPeriod(value) {
-    if (!$.isNumeric(value)) {
+    if (!isNumeric(value)) {
       return null;
     }
     const totalSeconds = Math.round(value / 1000);

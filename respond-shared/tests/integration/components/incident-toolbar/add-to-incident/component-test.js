@@ -117,7 +117,7 @@ module('Integration | Component | incident-toolbar/add-to-incident', function(ho
     const actionSpy = sinon.spy(addToIncidentCreators, 'selectIncident');
     setState({ ...initialState, incidentSearchResults: exampleIncidentSearchResults });
     await render(hbs`{{incident-toolbar/add-to-incident}}`);
-    this.$('.rsa-data-table .rsa-data-table-body-row').first().click();
+    await click(find('.rsa-data-table .rsa-data-table-body-row'));
     return settled().then(() => {
       assert.ok(actionSpy.calledOnce, 'The selectIncident action was called once');
       assert.ok(actionSpy.calledWith(exampleIncidentSearchResults[0]));
@@ -178,7 +178,7 @@ module('Integration | Component | incident-toolbar/add-to-incident', function(ho
     const actionSpy = sinon.spy(addToIncidentCreators, 'updateSearchIncidentsSortBy');
     setState({ ...initialState });
     await render(hbs`{{incident-toolbar/add-to-incident}}`);
-    this.$('.rsa-data-table .header-title').first().click();
+    await click(find('.rsa-data-table .header-title'));
     return settled().then(() => {
       assert.ok(actionSpy.calledOnce, 'The updateSearchIncidentsSortBy action was called once');
       actionSpy.resetHistory();
