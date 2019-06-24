@@ -6,10 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.alerts.AlertEnums;
@@ -49,7 +46,7 @@ public class RestAlertServiceTest {
 
     @Test
     public void getAlertById_getNull() {
-        when(alertPersistencyService.findOne(anyString())).thenReturn(null);
+        when(alertPersistencyService.findOne(anyString())).thenReturn(Optional.empty());
         presidio.webapp.model.Alert alertById = restAlertService.getAlertById("id", false);
         Assert.assertNull(alertById);
     }
@@ -59,7 +56,47 @@ public class RestAlertServiceTest {
         Alert alert = createAlert();
         List<Alert> resultList = new ArrayList<>();
         resultList.add(alert);
-        Page<Alert> page = new PageImpl<>(resultList, null, 1);
+        Page<Alert> page = new PageImpl<>(resultList, new Pageable() {
+            @Override
+            public int getPageNumber() {
+                return 0;
+            }
+
+            @Override
+            public int getPageSize() {
+                return 0;
+            }
+
+            @Override
+            public long getOffset() {
+                return 0;
+            }
+
+            @Override
+            public Sort getSort() {
+                return null;
+            }
+
+            @Override
+            public Pageable next() {
+                return null;
+            }
+
+            @Override
+            public Pageable previousOrFirst() {
+                return null;
+            }
+
+            @Override
+            public Pageable first() {
+                return null;
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return false;
+            }
+        }, 1);
         when(alertPersistencyService.find(anyObject())).thenReturn(page);
 
         AlertQuery alertQuery = new AlertQuery();
