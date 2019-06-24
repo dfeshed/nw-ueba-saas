@@ -1,6 +1,5 @@
 import { run } from '@ember/runloop';
 import { observer } from '@ember/object';
-import $ from 'jquery';
 import DataTableBody from 'component-lib/components/rsa-data-table/body/component';
 import {
   isLogEvent,
@@ -28,7 +27,7 @@ const EventsTableBody = DataTableBody.extend({
   _fetchLogData() {
     const loader = this.get('table.loadLogsAction');
     const first = this.get('items.firstObject');
-    if (!first || !$.isFunction(loader)) {
+    if (!first || typeof loader !== 'function') {
       return;
     }
 

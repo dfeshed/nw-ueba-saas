@@ -8,6 +8,16 @@ export const offset = (elem) => {
     left: rect.left + win.pageXOffset
   };
 };
+/**
+ * Tests input to see if it's an empty object.
+ * @param {object} obj
+ */
+export const isEmptyObject = (obj) => {
+  for (const name in obj) {
+    return false;
+  }
+  return true;
+};
 
 export const isNumeric = (x) => {
   return !Array.isArray(x) && (x - parseFloat(x) + 1) >= 0;

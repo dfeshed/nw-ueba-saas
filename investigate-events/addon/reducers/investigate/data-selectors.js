@@ -1,7 +1,7 @@
 import reselect from 'reselect';
-import $ from 'jquery';
 import { lookup } from 'ember-dependency-lookup';
 import { isEmpty } from '@ember/utils';
+import { isEmptyObject } from 'component-lib/utils/jquery-replacement';
 
 import { isMixedMode } from 'investigate-events/reducers/investigate/query-stats/selectors';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
@@ -128,7 +128,7 @@ export const isReconFullSize = createSelector(
 
 export const isDataEmpty = createSelector(
   [_data, _status],
-  (data, status) => ($.isEmptyObject(data) && status === 'resolved')
+  (data, status) => (isEmptyObject(data) && status === 'resolved')
 );
 
 export const shouldShowStatus = createSelector(

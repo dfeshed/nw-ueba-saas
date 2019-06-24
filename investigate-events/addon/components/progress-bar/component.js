@@ -1,7 +1,7 @@
 import { computed } from '@ember/object';
 import { run } from '@ember/runloop';
 import Component from '@ember/component';
-import $ from 'jquery';
+import { isNumeric } from 'component-lib/utils/jquery-replacement';
 
 export default Component.extend({
   classNames: 'rsa-progress-bar',
@@ -29,7 +29,7 @@ export default Component.extend({
       return this._percent;
     },
     set(key, value) {
-      if (!$.isNumeric(value)) {
+      if (!isNumeric(value)) {
         value = 0;
       }
       this._percent = value = Math.round(Math.min(100, Math.max(0, value)));
