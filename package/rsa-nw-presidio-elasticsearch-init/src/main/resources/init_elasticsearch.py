@@ -45,7 +45,6 @@ EVENT_TIME = {"presidio-monitoring": "timestamp",
               "presidio-output-event": "eventTime",
               "presidio-output-indicator": "startDate",
               "presidio-output-logical": "logicTime",
-			  "presidio-output-user": "createdDate",
 			  "presidio-output-entity": "createdDate"}
 
 

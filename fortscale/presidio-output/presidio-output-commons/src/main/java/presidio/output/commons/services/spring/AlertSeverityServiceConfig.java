@@ -16,13 +16,13 @@ public class AlertSeverityServiceConfig {
     private double highScore;
     @Value("${severity.mid}")
     private double midScore;
-    @Value("${user.score.alert.contribution.low:5}")
+    @Value("${entity.score.alert.contribution.low:5}")
     double alertContributionLow;
-    @Value("${user.score.alert.contribution.medium:10}")
+    @Value("${entity.score.alert.contribution.medium:10}")
     double alertContributionMedium;
-    @Value("${user.score.alert.contribution.high:15}")
+    @Value("${entity.score.alert.contribution.high:15}")
     double alertContributionHigh;
-    @Value("${user.score.alert.contribution.critical:20}")
+    @Value("${entity.score.alert.contribution.critical:20}")
     double alertContributionCritical;
 
     @Bean

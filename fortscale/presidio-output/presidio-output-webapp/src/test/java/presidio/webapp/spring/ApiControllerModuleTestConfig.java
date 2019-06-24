@@ -19,8 +19,8 @@ public class ApiControllerModuleTestConfig {
     @Bean
     public static TestPropertiesPlaceholderConfigurer configurationApiControllerSpringTestPlaceholder() {
         Properties properties = new Properties();
-        properties.put("default.page.size.for.rest.user", "1000");
-        properties.put("default.page.number.for.rest.user", "1000");
+        properties.put("default.page.size.for.rest.entity", "1000");
+        properties.put("default.page.number.for.rest.entity", "1000");
         properties.put("default.page.size.for.rest.alert", "1000");
         properties.put("default.page.number.for.rest.alert", "1000");
         properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);

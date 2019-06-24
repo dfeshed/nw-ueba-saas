@@ -8,8 +8,9 @@
       "uiStateJSON": "{}",
       "description": "",
       "version": 1,
+      "savedSearchId": "03fb7f60-a132-11e7-be86-b15614422082",
       "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"index\":\"presidio-output-user\",\"query\":{\"query_string\":{\"query\":\"User severity stack\",\"analyze_wildcard\":true}},\"filter\":[]}"
+        "searchSourceJSON": "{\"index\":\"presidio-output-entity\",\"query\":{\"query_string\":{\"query\":\"User severity stack\",\"analyze_wildcard\":true}},\"filter\":[]}"
       }
     }
   }

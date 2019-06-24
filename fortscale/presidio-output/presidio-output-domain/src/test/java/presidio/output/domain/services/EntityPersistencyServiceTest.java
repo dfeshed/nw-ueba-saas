@@ -324,10 +324,10 @@ public class EntityPersistencyServiceTest{
     @Test
     public void testFindByListOfIds() {
 
-        Entity entity1 = new Entity("entityId1", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("entityId2", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity3 = new Entity("entityId3", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity4 = new Entity("entityId4", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity1 = new Entity("entityId1", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity2 = new Entity("entityId2", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity3 = new Entity("entityId3", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity4 = new Entity("entityId4", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
 
         List<Entity> entityList = new ArrayList<>();
         entityList.add(entity1);
@@ -348,9 +348,9 @@ public class EntityPersistencyServiceTest{
     @Test
     public void testFindByListOfTypes() {
 
-        Entity entity1 = new Entity("entityId1", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("entityId2", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity3 = new Entity("entityId3", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity1 = new Entity("entityId1", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity2 = new Entity("entityId2", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity3 = new Entity("entityId3", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
         Entity entity4 = new Entity("entityId4", "entityName", 0d, null, null, null, EntitySeverity.CRITICAL, 0, "ja3");
 
         List<Entity> entityList = new ArrayList<>();
@@ -375,10 +375,10 @@ public class EntityPersistencyServiceTest{
 
         List<String> classification = new ArrayList<>();
         classification.add("a");
-        Entity entity1 = new Entity("entityId1", "entityName", 5d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("entityId2", "entityName", 10d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity3 = new Entity("entityId3", "entityName", 20d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity4 = new Entity("entityId4", "entityName", 21d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity1 = new Entity("entityId1", "entityName", 5d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity2 = new Entity("entityId2", "entityName", 10d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity3 = new Entity("entityId3", "entityName", 20d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity4 = new Entity("entityId4", "entityName", 21d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
 
 
         List<Entity> entityList = new ArrayList<>();
@@ -396,9 +396,9 @@ public class EntityPersistencyServiceTest{
 
     @Test
     public void testFindByEntityId() {
-        Entity entity1 = new Entity("entityId1-1234-5678", "entityName", 5d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("entityId1@somecompany.com", "entityName", 20d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity3 = new Entity("entityId1", "entityName", 21d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity1 = new Entity("entityId1-1234-5678", "entityName", 5d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity2 = new Entity("entityId1@somecompany.com", "entityName", 20d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity3 = new Entity("entityId1", "entityName", 21d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
 
 
         List<Entity> entityList = new ArrayList<>();
@@ -465,10 +465,10 @@ public class EntityPersistencyServiceTest{
 
         List<String> classification = new ArrayList<>();
         classification.add("a");
-        Entity entity1 = new Entity("entityId1", "entityName", 5d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("entityId2", "entityName", 10d, null, null, null, EntitySeverity.MEDIUM, 0, "user");
-        Entity entity3 = new Entity("entityId3", "entityName", 20d, null, null, null, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity4 = new Entity("entityId4", "entityName", 21d, null, null, null, EntitySeverity.MEDIUM, 0, "user");
+        Entity entity1 = new Entity("entityId1", "entityName", 5d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity2 = new Entity("entityId2", "entityName", 10d, null, null, null, EntitySeverity.MEDIUM, 0, "entityType");
+        Entity entity3 = new Entity("entityId3", "entityName", 20d, null, null, null, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity4 = new Entity("entityId4", "entityName", 21d, null, null, null, EntitySeverity.MEDIUM, 0, "entityType");
 
 
         List<Entity> entityList = new ArrayList<>();
@@ -502,10 +502,10 @@ public class EntityPersistencyServiceTest{
         List<String> tags1 = new ArrayList<>(Arrays.asList("admin", "watch"));
         List<String> tags2 = new ArrayList<>(Arrays.asList("admin"));
 
-        Entity entity1 = new Entity("entityId1", "entityName", 5d, null, null, tags1, EntitySeverity.CRITICAL, 0 , "user");
-        Entity entity2 = new Entity("entityId2", "entityName", 10d, null, null, tags2, EntitySeverity.MEDIUM, 0, "user");
-        Entity entity3 = new Entity("entityId3", "entityName", 20d, null, null, tags1, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity4 = new Entity("entityId4", "entityName", 21d, null, null, null, EntitySeverity.MEDIUM, 0, "user");
+        Entity entity1 = new Entity("entityId1", "entityName", 5d, null, null, tags1, EntitySeverity.CRITICAL, 0 , "entityType");
+        Entity entity2 = new Entity("entityId2", "entityName", 10d, null, null, tags2, EntitySeverity.MEDIUM, 0, "entityType");
+        Entity entity3 = new Entity("entityId3", "entityName", 20d, null, null, tags1, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity4 = new Entity("entityId4", "entityName", 21d, null, null, null, EntitySeverity.MEDIUM, 0, "entityType");
 
 
         List<Entity> entityList = new ArrayList<>();
@@ -543,9 +543,9 @@ public class EntityPersistencyServiceTest{
         List<String> classificationA = Arrays.asList("a");
         List<String> classificationB = Arrays.asList("a", "b");
         List<String> classificationC = Arrays.asList("a", "b", "c");
-        Entity entity1 = new Entity("entityId1", "entityName", 5d, classificationA, null, tags1, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("entityId2", "entityName", 10d, classificationB, null, tags2, EntitySeverity.MEDIUM, 0, "user");
-        Entity entity3 = new Entity("entityId3", "entityName", 20d, classificationC, null, tags1, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity1 = new Entity("entityId1", "entityName", 5d, classificationA, null, tags1, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity2 = new Entity("entityId2", "entityName", 10d, classificationB, null, tags2, EntitySeverity.MEDIUM, 0, "entityType");
+        Entity entity3 = new Entity("entityId3", "entityName", 20d, classificationC, null, tags1, EntitySeverity.CRITICAL, 0, "entityType");
 
 
         List<Entity> entityList = Arrays.asList(entity1, entity2, entity3);
@@ -610,9 +610,9 @@ public class EntityPersistencyServiceTest{
         List<String> indicatorsA = Arrays.asList("a");
         List<String> indicatorsB = Arrays.asList("a", "b");
         List<String> indicatorsC = Arrays.asList("a", "b", "c");
-        Entity entity1 = new Entity("entityId1", "entityName", 5d, null, indicatorsA, tags1, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("entityId2", "entityName", 10d, null, indicatorsB, tags2, EntitySeverity.MEDIUM, 0, "user");
-        Entity entity3 = new Entity("entityId3", "entityName", 20d, null, indicatorsC, tags1, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity1 = new Entity("entityId1", "entityName", 5d, null, indicatorsA, tags1, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity2 = new Entity("entityId2", "entityName", 10d, null, indicatorsB, tags2, EntitySeverity.MEDIUM, 0, "entityType");
+        Entity entity3 = new Entity("entityId3", "entityName", 20d, null, indicatorsC, tags1, EntitySeverity.CRITICAL, 0, "entityType");
 
 
         List<Entity> entityList = Arrays.asList(entity1, entity2, entity3);
@@ -641,9 +641,9 @@ public class EntityPersistencyServiceTest{
 
         List<String> tags = Arrays.asList("admin");
         List<String> indicators = Arrays.asList("a");
-        Entity entity1 = new Entity("entityId1", "w_entityName", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("entityId2", "C_entityName", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 0, "user");
-        Entity entity3 = new Entity("entityId3", "b_entityName", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity1 = new Entity("entityId1", "w_entityName", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity2 = new Entity("entityId2", "C_entityName", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 0, "entityType");
+        Entity entity3 = new Entity("entityId3", "b_entityName", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "entityType");
 
 
         List<Entity> entityList = Arrays.asList(entity1, entity2, entity3);
@@ -669,9 +669,9 @@ public class EntityPersistencyServiceTest{
 
         List<String> tags = Arrays.asList("admin");
         List<String> indicators = Arrays.asList("a");
-        Entity entity1 = new Entity("entityId1", "W_entityName", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 1, "user");
-        Entity entity2 = new Entity("entityId2", "C_entityName", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 2, "user");
-        Entity entity3 = new Entity("entityId3", "B_entityName", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 3, "user");
+        Entity entity1 = new Entity("entityId1", "W_entityName", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 1, "entityType");
+        Entity entity2 = new Entity("entityId2", "C_entityName", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 2, "entityType");
+        Entity entity3 = new Entity("entityId3", "B_entityName", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 3, "entityType");
 
 
         List<Entity> entityList = Arrays.asList(entity1, entity2, entity3);
@@ -708,9 +708,9 @@ public class EntityPersistencyServiceTest{
 
         List<String> tags = Arrays.asList("admin");
         List<String> indicators = Arrays.asList("a");
-        Entity entity1 = new Entity("entityId1", "W_entityName", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("entityId2", "C_entityName", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 0, "user");
-        Entity entity3 = new Entity("entityId3", "B_entityName", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity1 = new Entity("entityId1", "W_entityName", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity2 = new Entity("entityId2", "C_entityName", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 0, "entityType");
+        Entity entity3 = new Entity("entityId3", "B_entityName", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "entityType");
 
 
         List<Entity> entityList = Arrays.asList(entity1, entity2, entity3);
@@ -733,9 +733,9 @@ public class EntityPersistencyServiceTest{
 
         List<String> tags = Arrays.asList("admin");
         List<String> indicators = Arrays.asList("a");
-        Entity entity1 = new Entity("entityId1", "Donald Duck", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
-        Entity entity2 = new Entity("entityId2", "Mini Mous", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 0, "user");
-        Entity entity3 = new Entity("entityId3", "Donkey", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "user");
+        Entity entity1 = new Entity("entityId1", "Donald Duck", 5d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "entityType");
+        Entity entity2 = new Entity("entityId2", "Mini Mous", 10d, null, indicators, tags, EntitySeverity.MEDIUM, 0, "entityType");
+        Entity entity3 = new Entity("entityId3", "Donkey", 20d, null, indicators, tags, EntitySeverity.CRITICAL, 0, "entityType");
 
 
         List<Entity> entityList = Arrays.asList(entity1, entity2, entity3);

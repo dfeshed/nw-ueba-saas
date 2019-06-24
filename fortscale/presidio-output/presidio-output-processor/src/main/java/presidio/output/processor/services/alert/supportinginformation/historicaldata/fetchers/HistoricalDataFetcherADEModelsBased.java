@@ -295,11 +295,11 @@ public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetche
 
 
     private PageIterator<EnrichedRecord> getEnrichedRecordPageIterator(String contextType, String contextValue, Schema schema, TimeRange inMemoryTimeRange) {
-        Set<String> user = new HashSet<String>(Arrays.asList(contextValue));
+        Set<String> entity = new HashSet<String>(Arrays.asList(contextValue));
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, 1000, 100, contextType);
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(schema.getName().toLowerCase(), inMemoryTimeRange.getStart(), inMemoryTimeRange.getEnd());
         int total = (int) enrichedDataStore.countRecords(enrichedRecordsMetadata, contextType, contextValue);
-        return enrichedRecordPaginationService.getPageIterator(schema.name().toLowerCase(), inMemoryTimeRange, user, total);
+        return enrichedRecordPaginationService.getPageIterator(schema.name().toLowerCase(), inMemoryTimeRange, entity, total);
     }
 
     private TimeRange getMissingTimeRange(TimeRange timeRange, List<?> list, Function<Object, Instant> mapToInstant) {
