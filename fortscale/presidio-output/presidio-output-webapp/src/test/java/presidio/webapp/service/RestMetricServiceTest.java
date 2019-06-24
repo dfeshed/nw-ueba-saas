@@ -74,7 +74,7 @@ public class RestMetricServiceTest {
 
 
         List<MetricDocument> metricDocuments  =Arrays.asList(metricDocument1,metricDocument2);
-        when(presidioMetricPersistencyService.getMetricsByNamesAndTime(Mockito.anyCollectionOf(String.class),Mockito.any(TimeRange.class), Mockito.any(HashMap.class))).thenReturn(metricDocuments);
+        when(presidioMetricPersistencyService.getMetricsByNamesAndTime(Mockito.anyCollection(),Mockito.any(TimeRange.class), Mockito.isNull())).thenReturn(metricDocuments);
 
         List<Metric> metrics = restMetricsService.getMetricsByNamesAndTime(Collections.EMPTY_LIST,new TimeRange());
 

@@ -157,16 +157,16 @@ public class EntitySeverityServiceImpl implements EntitySeverityService {
     }
 
     private EntityScoreToSeverity getExistingEntityScoreToSeverity(String entityType) {
-        EntitySeveritiesRangeDocument entitySeveritiesRangeDocument = entitySeveritiesRangeRepository.findOne(EntitySeveritiesRangeDocument.getEntitySeveritiesDocIdName(entityType));
+        Optional<EntitySeveritiesRangeDocument> optionalEntitySeveritiesRangeDocument = entitySeveritiesRangeRepository.findById(EntitySeveritiesRangeDocument.getEntitySeveritiesDocIdName(entityType));
 
-        if (entitySeveritiesRangeDocument == null) { //no existing percentiles were found
+        if (!optionalEntitySeveritiesRangeDocument.isPresent()) { //no existing percentiles were found
             logger.debug("No entity score percentile calculation results were found, setting scores thresholds to zero (all entities will get LOW severity (till next daily calculation)");
 
             Map<EntitySeverity, PresidioRange<Double>> severityToScoreRangeMap = createEmptyMap();
             return new EntityScoreToSeverity(severityToScoreRangeMap);
         }
 
-        return new EntityScoreToSeverity(entitySeveritiesRangeDocument.getSeverityToScoreRangeMap());
+        return new EntityScoreToSeverity(optionalEntitySeveritiesRangeDocument.get().getSeverityToScoreRangeMap());
     }
 
     private Map<EntitySeverity, PresidioRange<Double>> createEmptyMap() {

@@ -1,7 +1,5 @@
 package fortscale.utils.elasticsearch.annotations;
 
-import org.springframework.data.annotation.Reference;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

@@ -21,11 +21,7 @@ import presidio.webapp.model.*;
 import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -49,10 +45,10 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     @Override
     public presidio.webapp.model.Alert getAlertById(String id, boolean expand) {
-        presidio.output.domain.records.alerts.Alert alertData = alertPersistencyService.findOne(id);
+        Optional<presidio.output.domain.records.alerts.Alert> optionalAlertData = alertPersistencyService.findOne(id);
         presidio.webapp.model.Alert resultAlert = null;
-        if (alertData != null) {
-            resultAlert = createRestAlert(alertData);
+        if (optionalAlertData.isPresent()) {
+            resultAlert = createRestAlert(optionalAlertData.get());
             if (expand) {
                 List<Indicator> restIndicators = new ArrayList<>();
                 Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(id, new PageRequest(pageNumber, pageSize));

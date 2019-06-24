@@ -197,7 +197,7 @@ public class EntityScoreServiceModuleTest {
         Assert.assertEquals(20, updatedEntity.getScore(), 0.00001);
         Assert.assertEquals(EntitySeverity.LOW, updatedEntity.getSeverity());
 
-        EntitySeveritiesRangeDocument entitySeveritiesRangeDocument = entitySeveritiesRangeRepository.findOne(EntitySeveritiesRangeDocument.getEntitySeveritiesDocIdName(entityType));
+        EntitySeveritiesRangeDocument entitySeveritiesRangeDocument = entitySeveritiesRangeRepository.findById(EntitySeveritiesRangeDocument.getEntitySeveritiesDocIdName(entityType)).get();
         Assert.assertEquals(new Double(0), entitySeveritiesRangeDocument.getSeverityToScoreRangeMap().get(EntitySeverity.LOW).getLowerBound());
         Assert.assertEquals(new Double(20), entitySeveritiesRangeDocument.getSeverityToScoreRangeMap().get(EntitySeverity.LOW).getUpperBound());
         Assert.assertEquals(new Double(22), entitySeveritiesRangeDocument.getSeverityToScoreRangeMap().get(EntitySeverity.MEDIUM).getLowerBound());

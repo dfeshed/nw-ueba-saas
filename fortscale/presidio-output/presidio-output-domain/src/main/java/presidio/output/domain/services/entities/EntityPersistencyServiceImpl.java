@@ -7,9 +7,11 @@ import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.entity.EntityQuery;
 import presidio.output.domain.repositories.EntityRepository;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     @Autowired

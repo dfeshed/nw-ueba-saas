@@ -97,10 +97,9 @@ public class EntityScoreServiceImplTest {
             }
         });
 
-        Mockito.verify(Mockito.spy(EntitySeveritiesRangeRepository.class), Mockito.times(0)).findOne(EntitySeveritiesRangeDocument.getEntitySeveritiesDocIdName("entityType"));
+        Mockito.verify(Mockito.spy(EntitySeveritiesRangeRepository.class), Mockito.times(0)).findById(EntitySeveritiesRangeDocument.getEntitySeveritiesDocIdName("entityType"));
         EntitySeverityServiceImpl.EntityScoreToSeverity severityTreeMap = entitySeverityService.getSeveritiesMap(true, "entityType");
         Mockito.verify(Mockito.spy(EntitySeveritiesRangeRepository.class), Mockito.times(0)).findById(EntitySeveritiesRangeDocument.ENTITY_SEVERITIES_RANGE_DOC_ID);
-        EntitySeverityServiceImpl.EntityScoreToSeverity severityTreeMap = entitySeverityService.getSeveritiesMap(true);
         Assert.assertEquals(EntitySeverity.LOW, severityTreeMap.getEntitySeverity(55D));
         Assert.assertEquals(EntitySeverity.MEDIUM, severityTreeMap.getEntitySeverity(270D));
         Assert.assertEquals(EntitySeverity.HIGH, severityTreeMap.getEntitySeverity(350D));
@@ -138,9 +137,7 @@ public class EntityScoreServiceImplTest {
         map.put(EntitySeverity.HIGH, new PresidioRange<>(343.2d, 343.2d));
         map.put(EntitySeverity.CRITICAL, new PresidioRange<>(518.8d, 514.8d));
         entitySeveritiesRangeDocument.setSeverityToScoreRangeMap(map);
-        Mockito.when(entitySeveritiesRangeRepository.findById(EntitySeveritiesRangeDocument.ENTITY_SEVERITIES_RANGE_DOC_ID)).thenReturn(Optional.of(entitySeveritiesRangeDocument));
-        EntitySeverityServiceImpl.EntityScoreToSeverity severityTreeMap = entitySeverityService.getSeveritiesMap(false);
-        Mockito.when(entitySeveritiesRangeRepository.findOne(EntitySeveritiesRangeDocument.getEntitySeveritiesDocIdName(entityType))).thenReturn(entitySeveritiesRangeDocument);
+        Mockito.when(entitySeveritiesRangeRepository.findById(EntitySeveritiesRangeDocument.getEntitySeveritiesDocIdName(entityType))).thenReturn(Optional.of(entitySeveritiesRangeDocument));
         EntitySeverityServiceImpl.EntityScoreToSeverity severityTreeMap = entitySeverityService.getSeveritiesMap(false, entityType);
         Assert.assertEquals(EntitySeverity.LOW, severityTreeMap.getEntitySeverity(50D));
         Assert.assertEquals(EntitySeverity.LOW, severityTreeMap.getEntitySeverity(250D));

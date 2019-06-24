@@ -41,7 +41,7 @@ public class RestAlertServiceTest {
     public void getAlertByIdSuccess() {
         Alert alert = createAlert();
         alert.setId("id");
-        when(alertPersistencyService.findOne(eq(alert.getId()))).thenReturn(alert);
+        when(alertPersistencyService.findOne(eq(alert.getId()))).thenReturn(Optional.of(alert));
 
         presidio.webapp.model.Alert alertById = restAlertService.getAlertById("id", false);
         Assert.assertEquals(alert.getEntityName(), alertById.getEntityName());
