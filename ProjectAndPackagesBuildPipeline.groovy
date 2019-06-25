@@ -50,6 +50,9 @@ pipeline {
             when { expression { return env.RUN_PRESIDIO_UI_PACKAGES == 'true' } }
             steps { buildPackages("presidio-ui", "package/pom.xml", true, false) }
         }
+        stage('print ~/.m2/repository') {
+            steps { sh "find ~/.m2/repository -name \"*\" -print" }
+        }
     }
     post {
         always {
