@@ -15,7 +15,7 @@ export default (settings) => {
   /* Create axes */
   const categoryAxis = chart.xAxes.push(new Am4charts.CategoryAxis());
   categoryAxis.dataFields.category = 'category';
-  categoryAxis.renderer.minGridDistance = 40;
+  categoryAxis.renderer.minGridDistance = 100;
   categoryAxis.dateFormatter = new Am4core.DateFormatter();
   categoryAxis.renderer.labels.template.fill = '#FFFFFF';
   categoryAxis.dateFormatter.dateFormat = 'MM-dd';
@@ -39,7 +39,7 @@ export default (settings) => {
   columnSeries.columns.template.tooltipText = '[#fff font-size: 15px]{name} in {categoryX}:\n[/][#fff font-size: 20px]{valueY}[/] [#fff]{additional}[/]';
   columnSeries.columns.template.propertyFields.fill = 'color';
   columnSeries.columns.template.propertyFields.stroke = 'color';
-  columnSeries.columns.template.width = 15;
+  columnSeries.columns.template.width = 10;
 
   const scrollbarX = new Am4charts.XYChartScrollbar();
   scrollbarX.series.push(columnSeries);

@@ -31,6 +31,9 @@ const EventsGraphComponent = Component.extend({
 
   @computed('indicatorMapSettings', 'historicalData')
   historicalDataForGraph(indicatorMapSettings, historicalData) {
+    // Init will not be called when user jumps between indicators. So need to clear container div before drawing chart.
+    this.chart = null;
+    document.getElementById('chartComponentPlaceholder').innerHTML = '';
     if (!indicatorMapSettings || !historicalData) {
       return;
     }

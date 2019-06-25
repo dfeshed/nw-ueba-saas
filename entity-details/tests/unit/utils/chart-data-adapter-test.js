@@ -97,12 +97,21 @@ module('Unit | Utils | chart-data-adapter', (hooks) => {
           chartItem.color = '#CC3300';
         }
         return chartItem;
+      },
+      // This function will enrich data.
+      dataAggregator: (list) => {
+        return _.map(list, (value) => {
+          value.color = 'red';
+          return value;
+        });
       }
     };
     const data = chartDataAdapter(settings, chartData);
     assert.deepEqual(data.chartSettings.dataProvider[0], {
       category: 'C:\\Program Files\\DellTPad\\normal_process_4.exe',
       originalCategory: 'C:\\Program Files\\DellTPad\\normal_process_4.exe',
+      // Enriched data from dataAggregator function.
+      color: 'red',
       value: 50
     });
   });

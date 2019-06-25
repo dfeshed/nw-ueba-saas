@@ -167,6 +167,7 @@
           }
           &_pill {
             display: flex;
+            cursor: pointer;
             padding: rsa-whitespace(least) rsa-whitespace(least) rsa-whitespace(least) 3*rsa-whitespace();
 
             &_score-contibution {

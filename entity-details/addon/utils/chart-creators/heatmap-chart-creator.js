@@ -47,7 +47,7 @@ export default (settings) => {
   series.defaultState.transitionDuration = 3000;
   series.legendSettings.labelText = '[bold white]{value}[/]';
   series.columns.template.propertyFields.fill = 'color';
-  series.columns.template.propertyFields.stroke = 'color';
+  series.columns.template.propertyFields.stroke = 'strokeColor';
 
   const bgColor = new Am4core.InterfaceColorSet().getFor('background');
 
