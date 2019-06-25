@@ -14,6 +14,10 @@ pipeline {
                 configGlobalRsaUserNameAndEmail("${env.RSA_BUILD_CREDENTIALS_USR}")
             }
         }
+
+        stage('Before print ~/.m2/repository') {
+            steps { sh "find ~/.m2/repository -name \"*\" -print" }
+        }
         stage('Presidio Test Utils Project Build') {
             when { expression { return env.BUILD_PRESIDIO_TEST_UTILS == 'true' } }
             steps { buildProject("presidio-test-utils", "pom.xml", true, false) }
@@ -50,7 +54,7 @@ pipeline {
             when { expression { return env.RUN_PRESIDIO_UI_PACKAGES == 'true' } }
             steps { buildPackages("presidio-ui", "package/pom.xml", true, false) }
         }
-        stage('print ~/.m2/repository') {
+        stage('After print ~/.m2/repository') {
             steps { sh "find ~/.m2/repository -name \"*\" -print" }
         }
     }
