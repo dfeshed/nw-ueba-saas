@@ -140,5 +140,5 @@ def mvnCleanInstall(boolean deploy, String pomFile, boolean updateSnapshots, boo
 }
 
 def mvnCleanPackages(String deploy, String pomFile, String stability, String version, boolean updateSnapshots, boolean debug) {
-    sh "mvn -B -f ${pomFile} -Dbuild.stability=${stability} -Dbuild.version=${version} -Dpublish=${deploy} clean package ${updateSnapshots ?  "-U" : ""} -T 5 ${debug ? "-X" : ""} "
+    sh "mvn -B -f ${pomFile} -Dbuild.stability=${stability.charAt(0)} -Dbuild.version=${version} -Dpublish=${deploy} clean package ${updateSnapshots ?  "-U" : ""} -T 5 ${debug ? "-X" : ""} "
 }
