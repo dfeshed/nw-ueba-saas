@@ -141,7 +141,9 @@ def mvnCleanInstall(boolean deploy, String pomFile, boolean updateSnapshots, boo
 }
 
 def mvnCleanPackages(String deploy, String pomFile, String stability, String version, boolean updateSnapshots, boolean debug) {
-    sh "find .repository -name \"*\" -print"
+    if (fileExists(".repository")) {
+        sh "find .repository -name \"*\" -print"
+    }
     sh "mvn -B -f ${pomFile} -Dmaven.repo.local=.repository -Dbuild.stability=${stability.charAt(0)} -Dbuild.version=${version} -Dpublish=${deploy} clean package ${updateSnapshots ?  "-U" : ""} ${debug ? "-X" : ""} "
     sh "find .repository -name \"*\" -print"
 }
