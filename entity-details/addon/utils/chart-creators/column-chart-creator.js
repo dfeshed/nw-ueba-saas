@@ -16,9 +16,7 @@ export default (settings) => {
   const categoryAxis = chart.xAxes.push(new Am4charts.CategoryAxis());
   categoryAxis.dataFields.category = 'category';
   categoryAxis.renderer.minGridDistance = 100;
-  categoryAxis.dateFormatter = new Am4core.DateFormatter();
   categoryAxis.renderer.labels.template.fill = '#FFFFFF';
-  categoryAxis.dateFormatter.dateFormat = 'MM-dd';
 
   const title = chart.titles.create();
   title.text = `[bold white]${i18n.t(`investigateUsers.alerts.indicator.indicatorNames.${settings.title}.chartTitle`)}[/]`;
@@ -36,10 +34,10 @@ export default (settings) => {
   columnSeries.dataFields.valueY = 'value';
   columnSeries.dataFields.categoryX = 'category';
 
-  columnSeries.columns.template.tooltipText = '[#fff font-size: 15px]{name} in {categoryX}:\n[/][#fff font-size: 20px]{valueY}[/] [#fff]{additional}[/]';
+  columnSeries.columns.template.tooltipText = '[#fff font-size: 15px]{name} in {categoryX}: [/][#fff font-size: 20px]{valueY}[/] [#fff]{additional}[/]';
   columnSeries.columns.template.propertyFields.fill = 'color';
   columnSeries.columns.template.propertyFields.stroke = 'color';
-  columnSeries.columns.template.width = 10;
+  columnSeries.columns.template.width = 2;
 
   const scrollbarX = new Am4charts.XYChartScrollbar();
   scrollbarX.series.push(columnSeries);
