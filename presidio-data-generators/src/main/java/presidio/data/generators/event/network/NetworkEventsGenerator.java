@@ -1,8 +1,8 @@
 package presidio.data.generators.event.network;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.collect.Lists;
 import presidio.data.domain.Location;
-import presidio.data.domain.MachineEntity;
 import presidio.data.domain.event.network.NETWORK_DIRECTION_TYPE;
 import presidio.data.domain.event.network.NetworkEvent;
 import presidio.data.generators.FixedValueGenerator;
@@ -12,14 +12,19 @@ import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.dictionary.CompanyNameCyclicGenerator;
 import presidio.data.generators.common.dictionary.SingleWordCyclicGenerator;
 import presidio.data.generators.common.random.Md5RandomGenerator;
+import presidio.data.generators.common.random.RandomIpGenerator;
 import presidio.data.generators.common.random.RandomStringGenerator;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.event.AbstractEventGenerator;
-import presidio.data.generators.machine.QuestADMachineGenerator;
+import presidio.data.generators.hostname.HostnameGenerator;
 
 import java.time.Instant;
+import java.util.List;
 
-public class NetworkEventsGenerator extends AbstractEventGenerator {
+public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent> {
+    public static final int DEFAULT_REGULAR_PORT = 443;
+    public static final int DEFAULT_FQDN_START_INDEX = 0;
+    public static final int DEFAULT_FQDN_END_INDEX = 1500;
 
     // default generators:
     private IBaseGenerator<String> sslSubjectGenerator = new CompanyNameCyclicGenerator(0);
@@ -29,15 +34,16 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
     private IBaseGenerator<String>  ja3Generator = new Md5RandomGenerator();
     private IBaseGenerator<String>  ja3sGenerator = new Md5RandomGenerator();
     private IBaseGenerator<String>  dataSourceGenerator = new RandomStringGenerator(6,7);
-    private IBaseGenerator<MachineEntity> srcMachineGenerator = new QuestADMachineGenerator();
-    private IBaseGenerator<MachineEntity> dstMachineGenerator = srcMachineGenerator;
+    private IBaseGenerator<String> fqdnGenerator = new HostnameGenerator(DEFAULT_FQDN_START_INDEX,DEFAULT_FQDN_END_INDEX);
+    private IBaseGenerator<String> dstIpGenerator = new RandomIpGenerator();
+    private IBaseGenerator<String> sourceIpGenerator = new RandomIpGenerator();
     private IBaseGenerator<String>  sourceNetnameGen = new SingleWordCyclicGenerator(0);
     private IBaseGenerator<String>  destinationNetnameGen = new SingleWordCyclicGenerator(201);
     private IBaseGenerator<Location> locationGen = new AuthenticationLocationCyclicGenerator();
     private IBaseGenerator<String>  eventIdGenerator = new Md5RandomGenerator();
     private IBaseGenerator<Long>  numOfBytesSentGenerator =  new FixedValueGenerator<>(1024L);
     private IBaseGenerator<Long>  numOfBytesReceivedGenerator = new FixedValueGenerator<>(2048L);
-    private IBaseGenerator<Integer>  destinationPortGenerator = new FixedValueGenerator<>(443);
+    private IBaseGenerator<Integer>  destinationPortGenerator = new FixedValueGenerator<>(DEFAULT_REGULAR_PORT);
 
     private String testMarker;
 
@@ -56,7 +62,7 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
         this.testMarker = testMarker;
     }
 
-    public NetworkBuilderHelper fixedValueModifier() {
+    public NetworkBuilderHelper modify() {
         return new NetworkBuilderHelper(this);
     }
 
@@ -66,8 +72,9 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
 
         Instant time = getTimeGenerator().getNext();
         String eventId = eventIdGenerator.getNext();
-        MachineEntity srcMachine = srcMachineGenerator.getNext();
-        MachineEntity dstMachine = dstMachineGenerator.getNext();
+        List<String> fqdns = Lists.newArrayList(fqdnGenerator.getNext(), fqdnGenerator.getNext(), fqdnGenerator.getNext());
+        String sourceIp = sourceIpGenerator.getNext();
+        String dstIp = dstIpGenerator.getNext();
         String destinationOrganization = destinationOrganizationGenerator.getNext().toLowerCase().replaceAll("\\W"," ");
         String destinationASN = destinationAsnGenerator.getNext();
         long numOfBytesSent = numOfBytesSentGenerator.getNext();
@@ -88,8 +95,9 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
 
         NetworkEvent networkEvent = new NetworkEvent(time);
         networkEvent.setEventId(eventId);
-        networkEvent.setSrcMachineEntity(srcMachine);
-        networkEvent.setDstMachineEntity(dstMachine);
+        networkEvent.setFqdn(fqdns);
+        networkEvent.setDstIp(dstIp);
+        networkEvent.setSourceIp(sourceIp);
         networkEvent.setDestinationOrganization(destinationOrganization);
         networkEvent.setDestinationASN(destinationASN);
         networkEvent.setNumOfBytesSent(numOfBytesSent);
@@ -159,8 +167,8 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
         this.ja3sGenerator = ja3sGenerator;
     }
 
-    public IBaseGenerator<MachineEntity> getSrcMachineGenerator() {
-        return srcMachineGenerator;
+    public IBaseGenerator<String> getFqdnGenerator() {
+        return fqdnGenerator;
     }
 
     public IBaseGenerator<String> getDataSourceGenerator() {
@@ -171,16 +179,8 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
         this.dataSourceGenerator = dataSourceGenerator;
     }
 
-    public void setSrcMachineGenerator(IBaseGenerator<MachineEntity> srcMachineGenerator) {
-        this.srcMachineGenerator = srcMachineGenerator;
-    }
-
-    public IBaseGenerator<MachineEntity> getDstMachineGenerator() {
-        return dstMachineGenerator;
-    }
-
-    public void setDstMachineGenerator(IBaseGenerator<MachineEntity> dstMachineGenerator) {
-        this.dstMachineGenerator = dstMachineGenerator;
+    public void setFqdnGenerator(IBaseGenerator<String> fqdnGenerator) {
+        this.fqdnGenerator = fqdnGenerator;
     }
 
     public IBaseGenerator<String> getSourceNetnameGen() {
@@ -229,6 +229,22 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
 
     public void setNumOfBytesReceivedGenerator(IBaseGenerator<Long> numOfBytesReceivedGenerator) {
         this.numOfBytesReceivedGenerator = numOfBytesReceivedGenerator;
+    }
+
+    public IBaseGenerator<String> getDstIpGenerator() {
+        return dstIpGenerator;
+    }
+
+    public void setDstIpGenerator(IBaseGenerator<String> dstIpGenerator) {
+        this.dstIpGenerator = dstIpGenerator;
+    }
+
+    public IBaseGenerator<String> getSourceIpGenerator() {
+        return sourceIpGenerator;
+    }
+
+    public void setSourceIpGenerator(IBaseGenerator<String> sourceIpGenerator) {
+        this.sourceIpGenerator = sourceIpGenerator;
     }
 
     public IBaseGenerator<Integer> getDestinationPortGenerator() {

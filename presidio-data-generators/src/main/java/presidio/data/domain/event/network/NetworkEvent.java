@@ -1,18 +1,20 @@
 package presidio.data.domain.event.network;
 
 import presidio.data.domain.Location;
-import presidio.data.domain.MachineEntity;
 import presidio.data.domain.event.Event;
+
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 
 public class NetworkEvent extends Event implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String eventId;
     private Instant dateTime;
-    private MachineEntity srcMachineEntity;
-    private MachineEntity dstMachineEntity;
+    private List<String> fqdn;
+    private String sourceIp;
+    private String dstIp;
 
     private String destinationOrganization;
     private String destinationASN;
@@ -39,15 +41,16 @@ public class NetworkEvent extends Event implements Serializable {
         this.dateTime = dateTime;
     }
 
-    public NetworkEvent(String eventId, Instant dateTime, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity,
+    public NetworkEvent(String eventId, Instant dateTime, List<String> fqdn, String sourceIp, String dstIp,
                         String destinationOrganization, String destinationASN, long numOfBytesSent, long numOfBytesReceived,
                         String sourceNetname, String destinationNetname, String ja3, String ja3s,
                         NETWORK_DIRECTION_TYPE direction, int destinationPort, String dataSource, Location srcLocation,
                         Location dstLocation, String sslSubject, String sslCa, int sessionSplit, boolean isSelfSigned) {
         this.eventId = eventId;
         this.dateTime = dateTime;
-        this.srcMachineEntity = srcMachineEntity;
-        this.dstMachineEntity = dstMachineEntity;
+        this.fqdn = fqdn;
+        this.sourceIp = sourceIp;
+        this.dstIp = dstIp;
         this.destinationOrganization = destinationOrganization;
         this.destinationASN = destinationASN;
         this.numOfBytesSent = numOfBytesSent;
@@ -83,20 +86,12 @@ public class NetworkEvent extends Event implements Serializable {
         this.dateTime = dateTime;
     }
 
-    public MachineEntity getSrcMachineEntity() {
-        return srcMachineEntity;
+    public List<String> getFqdn() {
+        return fqdn;
     }
 
-    public void setSrcMachineEntity(MachineEntity srcMachineEntity) {
-        this.srcMachineEntity = srcMachineEntity;
-    }
-
-    public MachineEntity getDstMachineEntity() {
-        return dstMachineEntity;
-    }
-
-    public void setDstMachineEntity(MachineEntity dstMachineEntity) {
-        this.dstMachineEntity = dstMachineEntity;
+    public void setFqdn(List<String> fqdn) {
+        this.fqdn = fqdn;
     }
 
     public String getDestinationOrganization() {
@@ -235,15 +230,32 @@ public class NetworkEvent extends Event implements Serializable {
         this.isSelfSigned = isSelfSigned;
     }
 
+    public String getSourceIp() {
+        return sourceIp;
+    }
+
+    public void setSourceIp(String sourceIp) {
+        this.sourceIp = sourceIp;
+    }
+
+    public String getDstIp() {
+        return dstIp;
+    }
+
+    public void setDstIp(String dstIp) {
+        this.dstIp = dstIp;
+    }
+
     @Override
     public String toString() {
         return "NetworkEvent{" +
                 "eventId='" + eventId + '\'' +
                 ", dateTime=" + dateTime +
-                ", srcMachineEntity=" + srcMachineEntity +
-                ", dstMachineEntity=" + dstMachineEntity +
+                ", fqdn=" + fqdn +
+                ", sourceIp='" + sourceIp + '\'' +
+                ", dstIp='" + dstIp + '\'' +
                 ", destinationOrganization='" + destinationOrganization + '\'' +
-                ", destinationASN=" + destinationASN +
+                ", destinationASN='" + destinationASN + '\'' +
                 ", numOfBytesSent=" + numOfBytesSent +
                 ", numOfBytesReceived=" + numOfBytesReceived +
                 ", sourceNetname='" + sourceNetname + '\'' +
@@ -257,8 +269,8 @@ public class NetworkEvent extends Event implements Serializable {
                 ", dstLocation=" + dstLocation +
                 ", sslSubject='" + sslSubject + '\'' +
                 ", sslCa='" + sslCa + '\'' +
-                ", sessionSplit='" + sessionSplit + '\'' +
-                ", isSelfSigned='" + isSelfSigned + '\'' +
+                ", sessionSplit=" + sessionSplit +
+                ", isSelfSigned=" + isSelfSigned +
                 '}';
     }
 }
