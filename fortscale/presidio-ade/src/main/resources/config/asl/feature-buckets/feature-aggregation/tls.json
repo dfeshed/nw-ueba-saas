@@ -38,7 +38,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -68,7 +68,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -99,7 +99,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -129,7 +129,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -160,7 +160,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -190,7 +190,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -221,7 +221,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -251,7 +251,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -281,7 +281,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -314,7 +314,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -348,7 +348,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -381,7 +381,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -415,7 +415,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -448,7 +448,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -482,7 +482,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
