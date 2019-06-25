@@ -12,6 +12,7 @@ import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.dictionary.CompanyNameCyclicGenerator;
 import presidio.data.generators.common.dictionary.SingleWordCyclicGenerator;
 import presidio.data.generators.common.random.Md5RandomGenerator;
+import presidio.data.generators.common.random.RandomIntegerGenerator;
 import presidio.data.generators.common.random.RandomIpGenerator;
 import presidio.data.generators.common.random.RandomStringGenerator;
 import presidio.data.generators.common.time.ITimeGenerator;
@@ -22,7 +23,7 @@ import java.time.Instant;
 import java.util.List;
 
 public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent> {
-    public static final int DEFAULT_REGULAR_PORT = 443;
+    public static final int DEFAULT_REGULAR_PORT_BELOW = 9999;
     public static final int DEFAULT_FQDN_START_INDEX = 0;
     public static final int DEFAULT_FQDN_END_INDEX = 1500;
 
@@ -43,11 +44,12 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
     private IBaseGenerator<String>  eventIdGenerator = new Md5RandomGenerator();
     private IBaseGenerator<Long>  numOfBytesSentGenerator =  new FixedValueGenerator<>(1024L);
     private IBaseGenerator<Long>  numOfBytesReceivedGenerator = new FixedValueGenerator<>(2048L);
-    private IBaseGenerator<Integer>  destinationPortGenerator = new FixedValueGenerator<>(DEFAULT_REGULAR_PORT);
+    private IBaseGenerator<Integer>  sourcePortGenerator = new RandomIntegerGenerator(0, DEFAULT_REGULAR_PORT_BELOW);
+    private IBaseGenerator<Integer>  destinationPortGenerator = new RandomIntegerGenerator(0, DEFAULT_REGULAR_PORT_BELOW);
 
     private String testMarker;
 
-    public NetworkEventsGenerator() throws GeneratorException { }
+    public NetworkEventsGenerator() { }
 
     public NetworkEventsGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
         super(timeGenerator);
@@ -87,6 +89,7 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
         String sslSubject = sslSubjectGenerator.getNext();
         NETWORK_DIRECTION_TYPE network_direction_type = NETWORK_DIRECTION_TYPE.OUTBOUND;
         int destinationPort = destinationPortGenerator.getNext();
+        int sourcePort = sourcePortGenerator.getNext();
         Location srcLocation = locationGen.getNext();
         Location dstLocation = locationGen.getNext();
         String sslCa = sslCaGenerator.getNext();
@@ -109,6 +112,7 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
         networkEvent.setDataSource(dataSource);
         networkEvent.setDirection(network_direction_type);
         networkEvent.setDestinationPort(destinationPort);
+        networkEvent.setSourcePort(sourcePort);
         networkEvent.setSrcLocation(srcLocation);
         networkEvent.setDstLocation(dstLocation);
         networkEvent.setSslSubject(sslSubject);
@@ -253,6 +257,14 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
 
     public void setDestinationPortGenerator(IBaseGenerator<Integer> destinationPortGenerator) {
         this.destinationPortGenerator = destinationPortGenerator;
+    }
+
+    public IBaseGenerator<Integer> getSourcePortGenerator() {
+        return sourcePortGenerator;
+    }
+
+    public void setSourcePortGenerator(IBaseGenerator<Integer> sourcePortGenerator) {
+        this.sourcePortGenerator = sourcePortGenerator;
     }
 
     public String getTestMarker() {

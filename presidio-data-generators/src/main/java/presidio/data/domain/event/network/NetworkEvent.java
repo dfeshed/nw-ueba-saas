@@ -27,6 +27,7 @@ public class NetworkEvent extends Event implements Serializable {
     private String ja3s;
     private NETWORK_DIRECTION_TYPE direction;
     private int destinationPort;
+    private int sourcePort;
     private String dataSource;
 
     private Location srcLocation;
@@ -43,8 +44,8 @@ public class NetworkEvent extends Event implements Serializable {
 
     public NetworkEvent(String eventId, Instant dateTime, List<String> fqdn, String sourceIp, String dstIp,
                         String destinationOrganization, String destinationASN, long numOfBytesSent, long numOfBytesReceived,
-                        String sourceNetname, String destinationNetname, String ja3, String ja3s,
-                        NETWORK_DIRECTION_TYPE direction, int destinationPort, String dataSource, Location srcLocation,
+                        String sourceNetname, String destinationNetname, String ja3, String ja3s, NETWORK_DIRECTION_TYPE direction,
+                        int destinationPort, int sourcePort, String dataSource, Location srcLocation,
                         Location dstLocation, String sslSubject, String sslCa, int sessionSplit, boolean isSelfSigned) {
         this.eventId = eventId;
         this.dateTime = dateTime;
@@ -61,6 +62,7 @@ public class NetworkEvent extends Event implements Serializable {
         this.ja3s = ja3s;
         this.direction = direction;
         this.destinationPort = destinationPort;
+        this.sourcePort = sourcePort;
         this.dataSource = dataSource;
         this.srcLocation = srcLocation;
         this.dstLocation = dstLocation;
@@ -172,6 +174,14 @@ public class NetworkEvent extends Event implements Serializable {
 
     public void setDestinationPort(int destinationPort) {
         this.destinationPort = destinationPort;
+    }
+
+    public int getSourcePort() {
+        return sourcePort;
+    }
+
+    public void setSourcePort(int sourcePort) {
+        this.sourcePort = sourcePort;
     }
 
     public String getDataSource() {

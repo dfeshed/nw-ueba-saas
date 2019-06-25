@@ -14,13 +14,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import static presidio.data.generators.event.network.NetworkEventsGenerator.DEFAULT_FQDN_END_INDEX;
+import static presidio.data.generators.event.network.NetworkEventsGenerator.DEFAULT_REGULAR_PORT_BELOW;
 
 public class NetworkBuilderHelper {
     private NetworkEventsGenerator eventGen;
     private static Map<String, Long> stateHolder = new ConcurrentHashMap<>();
     private static Map<String, String> valuesHolder = new ConcurrentHashMap<>();
     private IBaseGenerator<String> fqdnUncommonGenerator = new HostnameGenerator(DEFAULT_FQDN_END_INDEX+1,1999);
-    private final long UNCOMMON_PORT_START_INDEX = 10000L;
+    private final long UNCOMMON_PORT_START_INDEX = (long) (DEFAULT_REGULAR_PORT_BELOW + 1);
 
     NetworkBuilderHelper(NetworkEventsGenerator eventGen){
         this.eventGen = eventGen;
