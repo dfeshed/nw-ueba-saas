@@ -11,6 +11,7 @@ import presidio.sdk.api.validation.ValidationResults;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPersistencyService {
     private final Logger logger = Logger.getLogger(PresidioInputPersistencyServiceMongoImpl.class);
@@ -58,6 +59,16 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     @Override
     public void cleanAll(Schema schema) throws Exception {
         dataService.cleanAll(schema);
+    }
+
+    @Override
+    public <U extends AbstractInputDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter, List<String> projectionFields) {
+        return dataService.readRecords(schema, startDate, endDate, numOfItemsToSkip, pageSize, filter,  projectionFields);
+    }
+
+    @Override
+    public long count(Schema schema, Instant startDate, Instant endDate, Map<String, Object> filter, List<String> projectionFields) {
+        return dataService.count(schema, startDate, endDate, filter, projectionFields);
     }
 
     @Override

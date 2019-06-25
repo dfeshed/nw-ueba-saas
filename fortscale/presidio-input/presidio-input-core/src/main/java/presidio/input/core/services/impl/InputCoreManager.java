@@ -20,6 +20,7 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +73,7 @@ public class InputCoreManager {
 
                 logger.debug("Processing {} events", nextEvents.size());
 
-                transformedEvents = transformationService.run(nextEvents, schema);
+                transformedEvents = transformationService.run(nextEvents, schema, endDate);
 
                 try {
                     storeToAde(schema, startDate, endDate, transformedEvents);

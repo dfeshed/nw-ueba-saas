@@ -23,11 +23,12 @@ import java.util.List;
 public class PrintTransformationServiceTest {
     @Autowired
     private TransformationService transformationService;
+    private Instant endDate = Instant.now();
 
     @Test
     public void testFilePathTransformation() {
         PrintRawEvent printEvent = createPrintEvent("/usr/someuser/somesubdir/1/File.jar", "", "", "", "");
-        List<AbstractInputDocument> transformedEvents = transformationService.run(Collections.singletonList(printEvent), Schema.PRINT);
+        List<AbstractInputDocument> transformedEvents = transformationService.run(Collections.singletonList(printEvent), Schema.PRINT, endDate);
         Assert.assertEquals(1, transformedEvents.size());
         Assert.assertEquals(".jar", ((PrintTransformedEvent)transformedEvents.get(0)).getSrcFileExtension());
         Assert.assertEquals("/usr/someuser/somesubdir/1/", ((PrintTransformedEvent)transformedEvents.get(0)).getSrcFolderPath());
@@ -37,7 +38,7 @@ public class PrintTransformationServiceTest {
     public void testRunSrcMachineTransformations_unresolvedMachineNameAndId() {
         PrintRawEvent printEvent = createPrintEvent("/usr/someuser/somesubdir/1/File.jar", "10.20.3.40", "1.34.56.255", "12.4.6.74", "10.65.20.88");
         List<AbstractInputDocument> events = Collections.singletonList(printEvent);
-        List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.PRINT);
+        List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.PRINT, endDate);
         Assert.assertEquals("", ((PrintTransformedEvent)transformedEvents.get(0)).getSrcMachineCluster());
         Assert.assertEquals("", ((PrintTransformedEvent)transformedEvents.get(0)).getSrcMachineId());
         Assert.assertEquals("", ((PrintTransformedEvent)transformedEvents.get(0)).getPrinterCluster());
@@ -48,7 +49,7 @@ public class PrintTransformationServiceTest {
     public void testRunSrcMachineTransformations_resolvedMachineNameAndId() {
         PrintRawEvent printEvent = createPrintEvent("/usr/someuser/somesubdir/1/File.jar", "nameSPBGDCW01.prod.quest.corp", "idSPBGDCW01.prod.quest.corp", "nameSPBGDCW02.prod.quest.corp", "idSPBGDCW02.prod.quest.corp");
         List<AbstractInputDocument> events = Collections.singletonList(printEvent);
-        List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.PRINT);
+        List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.PRINT, endDate);
         Assert.assertEquals("nameSPBGDCW.prod.quest.corp", ((PrintTransformedEvent)transformedEvents.get(0)).getSrcMachineCluster());
         Assert.assertEquals("idSPBGDCW01.prod.quest.corp", ((PrintTransformedEvent)transformedEvents.get(0)).getSrcMachineId());
         Assert.assertEquals("nameSPBGDCW.prod.quest.corp", ((PrintTransformedEvent)transformedEvents.get(0)).getPrinterCluster());
