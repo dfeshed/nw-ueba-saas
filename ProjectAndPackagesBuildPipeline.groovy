@@ -14,10 +14,6 @@ pipeline {
                 configGlobalRsaUserNameAndEmail("${env.RSA_BUILD_CREDENTIALS_USR}")
             }
         }
-
-        stage('Before print /repository') {
-            steps { sh "find $WORKSPACE/.repository -name \"*\" -print" }
-        }
         stage('Presidio Test Utils Project Build') {
             when { expression { return env.BUILD_PRESIDIO_TEST_UTILS == 'true' } }
             steps { buildProject("presidio-test-utils", "pom.xml", true, false) }
@@ -33,6 +29,9 @@ pipeline {
         stage('Presidio Flume Project Build') {
             when { expression { return env.BUILD_PRESIDIO_FLUME == 'true' } }
             steps { buildProject("presidio-flume", "pom.xml", true, false) }
+        }
+        stage('Before print /repository') {
+            steps { sh "find .repository -name \"*\" -print" }
         }
         stage('Presidio Flume Package Build') {
             when { expression { return env.RUN_FLUME_PACKAGES == 'true' } }
