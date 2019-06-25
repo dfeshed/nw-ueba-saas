@@ -244,6 +244,8 @@ const TreeComponent = Component.extend({
         this.send('fetchProcessDetails', { hashes }, this.get('selectedServerId'));
         this.send('getHostContext', 'alias.host', filter);
         this.send('getRiskScoreContext', checksum, 'FILE');
+        this.send('isNodeSelected', true);
+
       };
       this.send('getParentAndChildEvents', this.get('selectedProcessId'), { onComplete });
     }
