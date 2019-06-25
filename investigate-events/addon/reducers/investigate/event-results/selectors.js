@@ -429,8 +429,9 @@ const _getIdsForEventType = (eventDownloadType, selectedEventIdsArray, resultsDa
     return selectedEventIdsArray;
   }
   const ids = [];
+  let index = 0;
   resultsData.forEach((event) => {
-    if (selectedEventIds[event.sessionId] && (eventDownloadType === (event.medium === 32 ? EVENT_TYPES.LOG : EVENT_TYPES.NETWORK))) {
+    if (selectedEventIds[index++] && (eventDownloadType === (event.medium === 32 ? EVENT_TYPES.LOG : EVENT_TYPES.NETWORK))) {
       ids.push(event.sessionId);
     }
   });
