@@ -1,9 +1,8 @@
 import Component from '@ember/component';
-import { join } from '@ember/runloop';
 import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
-import { inject as service } from '@ember/service';
-import computed, { not, readOnly } from 'ember-computed-decorators';
+import computed from 'ember-computed-decorators';
+import InViewportMixin from 'ember-in-viewport';
 
 import layout from './template';
 
@@ -12,7 +11,7 @@ const stateToComputed = ({ recon: { packets } }) => ({
   hasStyledBytes: packets.hasStyledBytes
 });
 
-const SinglePacketComponent = Component.extend({
+const SinglePacketComponent = Component.extend(InViewportMixin, {
   classNames: ['rsa-packet'],
   classNameBindings: [
     'packet.side',
@@ -23,18 +22,13 @@ const SinglePacketComponent = Component.extend({
   layout,
   tagName: 'section',
 
-  viewport: service(),
-
   index: null,
   isPacketExpanded: true,
   packet: null,
   packetFields: null,
   selection: null,
   tooltipData: null,
-  viewportEntered: false,
-
-  @readOnly @not('viewportEntered')
-  viewportExited: null,
+  shouldRenderBytes: false,
 
   /**
    * Returns the calculated height of a packet body (offset and byte-tables).
@@ -71,32 +65,12 @@ const SinglePacketComponent = Component.extend({
    */
   onselect() {},
 
-  /**
-   * Observe the component's this.element intersecting with the root element
-   * @private
-   */
-  didInsertElement() {
-    this._super(...arguments);
-
-    const el = this.get('element');
-    const viewport = this.get('viewport');
-    const watcher = viewport.getWatcher();
-    watcher.watch(el, (e) => {
-      if (e === 'exposed' && !this.get('viewportEntered')) {
-        if (!this.get('isDestroying') && !this.get('isDestroyed')) {
-          join(() => {
-            this.set('viewportEntered', true);
-          });
-        }
+  didEnterViewport() {
+    if (!this.get('shouldRenderBytes')) {
+      if (!this.get('isDestroying') && !this.get('isDestroyed')) {
+        this.set('shouldRenderBytes', true);
       }
-    });
-  },
-
-  willDestroyElement() {
-    this._super(...arguments);
-    const el = this.get('element');
-    const watcher = this.get('watcher');
-    watcher && watcher.unwatch(el);
+    }
   },
 
   actions: {

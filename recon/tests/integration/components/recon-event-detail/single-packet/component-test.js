@@ -1,10 +1,12 @@
 import wait from 'ember-test-helpers/wait';
-import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { setupRenderingTest } from 'ember-qunit';
+import { module, test } from 'qunit';
 
 import { enhancePackets } from 'recon/reducers/packets/util';
 import { renderedPackets } from 'recon/reducers/packets/selectors';
 import DataHelper from '../../../../helpers/data-helper';
+import { find, findAll, render } from '@ember/test-helpers';
 
 const packetFields = [
   { length: 6, name: 'eth.dst', position: 0 },
@@ -35,129 +37,133 @@ const packets = [{
   timestamp: '1485792552870'
 }];
 
-moduleForComponent('recon-event-detail/single-packet', 'Integration | Component | recon event detail / single packet', {
-  integration: true,
-  beforeEach() {
-    this.inject.service('redux');
-  }
-});
+let redux;
+module('Integration | Component | recon event detail / single packet', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('single packet renders default', function(assert) {
-  assert.expect(3);
-
-  const processedPackets = renderedPackets({
-    visuals: {
-      isRequestShown: true,
-      isResponseShown: true,
-      isPayloadOnly: false
-    },
-    packets: {
-      packetFields,
-      packets: enhancePackets([packets[0]], 0, packetFields, 1),
-      renderIds: [packets[0].id]
-    }
+  hooks.beforeEach(function() {
+    redux = this.owner.lookup('service:redux');
   });
 
-  this.set('packetFields', packetFields);
-  this.set('index', 2);
-  const [ packet ] = processedPackets;
-  packet.isContinuation = false;
-  this.set('packet', packet);
+  test('single packet renders default', async function(assert) {
+    assert.expect(3);
 
-  // forcing viewportEntered becaues phantom gets confused with spaniel
-  this.render(hbs`{{recon-event-detail/single-packet
-    index=index
-    packet=packet
-    packetFields=packetFields
-    viewportEntered=true
-  }}`);
+    const processedPackets = renderedPackets({
+      visuals: {
+        isRequestShown: true,
+        isResponseShown: true,
+        isPayloadOnly: false
+      },
+      packets: {
+        packetFields,
+        packets: enhancePackets([packets[0]], 0, packetFields, 1),
+        renderIds: [packets[0].id]
+      }
+    });
 
-  return wait().then(() => {
-    assert.ok(this.$('.rsa-icon-arrow-circle-left-2-filled').length === 1, 'Response arrow shown');
-    assert.ok(this.$('.rsa-packet.is-continuation').length === 0, 'Response is not marked as a continuation of the previous');
-    assert.equal(this.$().text().trim().replace(/\s/g, '').substring(0, 200),
-      'responsepacket2InvaliddateID4804965123532SEQ102357698PAYLOAD0bytes000000000016000032000048000064f0f755ed59bfa44c11ef6201080045000034dc5c00003e06642136fbf8bb8945834a0050d7a90619dac26ff602e6801216d0f053');
-  });
-});
+    this.set('packetFields', packetFields);
+    this.set('index', 2);
+    const [ packet ] = processedPackets;
+    packet.isContinuation = false;
+    this.set('packet', packet);
 
-test('single packet renders with hidden header/footer bytes', function(assert) {
-  assert.expect(4);
+    // forcing shouldRenderBytes becaues phantom gets confused with viewport
+    await render(hbs`{{recon-event-detail/single-packet
+      index=index
+      packet=packet
+      packetFields=packetFields
+      shouldRenderBytes=true
+    }}`);
 
-  const processedPackets = renderedPackets({
-    visuals: {
-      isRequestShown: true,
-      isResponseShown: true,
-      isPayloadOnly: true
-    },
-    packets: {
-      packetFields,
-      packets: enhancePackets([packets[1]], packetFields),
-      renderIds: [packets[1].id]
-    }
-  });
-
-  // Toggle the isPayloadOnly redux property
-  new DataHelper(this.get('redux')).togglePayloadOnly();
-
-  this.set('packetFields', packetFields);
-  this.set('index', 4);
-  const [ packet ] = processedPackets;
-  packet.isContinuation = false;
-  this.set('packet', packet);
-
-  // forcing viewportEntered becaues phantom gets confused with spaniel
-  this.render(hbs`{{recon-event-detail/single-packet
-    index=index
-    packet=packet
-    packetFields=packetFields
-    viewportEntered=true
-  }}`);
-
-  return wait().then(() => {
-    assert.ok(this.$('.rsa-icon-arrow-circle-right-2-filled').length === 1, 'Request arrow shown');
-    assert.ok(this.$('.rsa-packet.is-continuation').length === 0, 'Request is not marked as a continuation of the previous');
-    assert.ok(this.$('.packet-details').length === 0, 'Packet details are not shown');
-    assert.equal(this.$().text().trim().replace(/\s/g, '').substring(0, 200), 'request000000000016000032000048000064000080000096000112000128000144000160000176000192000208000224000240000256000272000288000304000320000336000352000368a44c11ef6201f0f755ed59bf08004500044f3c1640007e068');
-  });
-});
-
-test('single (continuous) packet renders with hidden header/footer bytes', function(assert) {
-  assert.expect(4);
-
-  const processedPackets = renderedPackets({
-    visuals: {
-      isRequestShown: true,
-      isResponseShown: true,
-      isPayloadOnly: true
-    },
-    packets: {
-      packetFields,
-      packets: enhancePackets([packets[1]], packetFields),
-      renderIds: [packets[1].id]
-    }
+    return wait().then(() => {
+      assert.equal(findAll('.rsa-icon-arrow-circle-left-2-filled').length, 1, 'Response arrow shown');
+      assert.equal(findAll('.rsa-packet.is-continuation').length, 0, 'Response is not marked as a continuation of the previous');
+      assert.equal(find('.rsa-packet').textContent.trim().replace(/\s/g, '').substring(0, 200),
+        'responsepacket2InvaliddateID4804965123532SEQ102357698PAYLOAD0bytes000000000016000032000048000064f0f755ed59bfa44c11ef6201080045000034dc5c00003e06642136fbf8bb8945834a0050d7a90619dac26ff602e6801216d0f053');
+    });
   });
 
-  // Toggle the isPayloadOnly redux property
-  new DataHelper(this.get('redux')).togglePayloadOnly();
+  test('single packet renders with hidden header/footer bytes', async function(assert) {
+    assert.expect(4);
 
-  this.set('packetFields', packetFields);
-  this.set('index', 4);
-  const [ packet ] = processedPackets;
-  packet.isContinuation = true;
-  this.set('packet', packet);
+    const processedPackets = renderedPackets({
+      visuals: {
+        isRequestShown: true,
+        isResponseShown: true,
+        isPayloadOnly: true
+      },
+      packets: {
+        packetFields,
+        packets: enhancePackets([packets[1]], packetFields),
+        renderIds: [packets[1].id]
+      }
+    });
 
-  // forcing viewportEntered becaues phantom gets confused with spaniel
-  this.render(hbs`{{recon-event-detail/single-packet
-    index=index
-    packet=packet
-    packetFields=packetFields
-    viewportEntered=true
-  }}`);
+    // Toggle the isPayloadOnly redux property
+    new DataHelper(redux).togglePayloadOnly();
 
-  return wait().then(() => {
-    assert.ok(this.$('.rsa-icon-arrow-circle-right-2-filled').length === 1, 'Request arrow shown');
-    assert.ok(this.$('.rsa-packet.is-continuation').length === 1, 'Request is marked as a continuation of the previous');
-    assert.ok(this.$('.packet-details').length === 0, 'Packet details are not shown');
-    assert.equal(this.$().text().trim().replace(/\s/g, '').substring(0, 200), 'request000000000016000032000048000064000080000096000112000128000144000160000176000192000208000224000240000256000272000288000304000320000336000352000368a44c11ef6201f0f755ed59bf08004500044f3c1640007e068');
+    this.set('packetFields', packetFields);
+    this.set('index', 4);
+    const [ packet ] = processedPackets;
+    packet.isContinuation = false;
+    this.set('packet', packet);
+
+    // forcing shouldRenderBytes becaues phantom gets confused with viewport
+    await render(hbs`{{recon-event-detail/single-packet
+      index=index
+      packet=packet
+      packetFields=packetFields
+      shouldRenderBytes=true
+    }}`);
+
+    return wait().then(() => {
+      assert.equal(findAll('.rsa-icon-arrow-circle-right-2-filled').length, 1, 'Request arrow shown');
+      assert.equal(findAll('.rsa-packet.is-continuation').length, 0, 'Request is not marked as a continuation of the previous');
+      assert.equal(findAll('.packet-details').length, 0, 'Packet details are not shown');
+      assert.equal(find('.rsa-packet').textContent.trim().replace(/\s/g, '').substring(0, 200),
+        'request000000000016000032000048000064000080000096000112000128000144000160000176000192000208000224000240000256000272000288000304000320000336000352000368a44c11ef6201f0f755ed59bf08004500044f3c1640007e068');
+    });
+  });
+
+  test('single (continuous) packet renders with hidden header/footer bytes', async function(assert) {
+    assert.expect(4);
+
+    const processedPackets = renderedPackets({
+      visuals: {
+        isRequestShown: true,
+        isResponseShown: true,
+        isPayloadOnly: true
+      },
+      packets: {
+        packetFields,
+        packets: enhancePackets([packets[1]], packetFields),
+        renderIds: [packets[1].id]
+      }
+    });
+
+    // Toggle the isPayloadOnly redux property
+    new DataHelper(redux).togglePayloadOnly();
+
+    this.set('packetFields', packetFields);
+    this.set('index', 4);
+    const [ packet ] = processedPackets;
+    packet.isContinuation = true;
+    this.set('packet', packet);
+
+    // forcing shouldRenderBytes becaues phantom gets confused with viewport
+    await render(hbs`{{recon-event-detail/single-packet
+      index=index
+      packet=packet
+      packetFields=packetFields
+      shouldRenderBytes=true
+    }}`);
+
+    return wait().then(() => {
+      assert.equal(findAll('.rsa-icon-arrow-circle-right-2-filled').length, 1, 'Request arrow shown');
+      assert.equal(findAll('.rsa-packet.is-continuation').length, 1, 'Request is marked as a continuation of the previous');
+      assert.equal(findAll('.packet-details').length, 0, 'Packet details are not shown');
+      assert.equal(find('.rsa-packet').textContent.trim().replace(/\s/g, '').substring(0, 200),
+        'request000000000016000032000048000064000080000096000112000128000144000160000176000192000208000224000240000256000272000288000304000320000336000352000368a44c11ef6201f0f755ed59bf08004500044f3c1640007e068');
+    });
   });
 });

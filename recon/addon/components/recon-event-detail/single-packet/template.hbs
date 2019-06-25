@@ -6,7 +6,7 @@
 
 {{#if isPacketExpanded}}
   <section class="rsa-packet__body" style={{calculatedHeight}}>
-    {{#if viewportEntered}}
+    {{#if shouldRenderBytes}}
       {{recon-event-detail/single-packet/offset-table
         byteRows=packet.byteRows
       }}
