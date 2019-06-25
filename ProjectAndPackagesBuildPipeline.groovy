@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Presidio Core Package Build') {
             when { expression { return env.RUN_CORE_PACKAGES == 'true' } }
-            steps { buildPackages("presidio-core", "fortscale/pom.xml", true, false) }
+            steps { buildPackages("presidio-core", "package/pom.xml", true, false) }
         }
         stage('Presidio Flume Project Build') {
             when { expression { return env.BUILD_PRESIDIO_FLUME == 'true' } }
@@ -32,7 +32,7 @@ pipeline {
         }
         stage('Presidio Flume Package Build') {
             when { expression { return env.RUN_FLUME_PACKAGES == 'true' } }
-            steps { buildPackages("presidio-flume", "pom.xml", true, false) }
+            steps { buildPackages("presidio-flume", "package/pom.xml", true, false) }
         }
         stage('Presidio Netwitness Project Build') {
             when { expression { return env.BUILD_PRESIDIO_NETWITNESS == 'true' } }
@@ -40,7 +40,7 @@ pipeline {
         }
         stage('Presidio Netwitness Package Build') {
             when { expression { return env.RUN_NW_PACKAGES == 'true' } }
-            steps { buildPackages("presidio-netwitness", "presidio-core-extension/pom.xml", true, false) }
+            steps { buildPackages("presidio-netwitness", "package/pom.xml", true, false) }
         }
         stage('Presidio UI Project Build') {
             when { expression { return env.BUILD_PRESIDIO_UI == 'true' } }
@@ -48,7 +48,7 @@ pipeline {
         }
         stage('Presidio UI Package Build') {
             when { expression { return env.RUN_PRESIDIO_UI_PACKAGES == 'true' } }
-            steps { buildPackages("presidio-ui", "pom.xml", true, false) }
+            steps { buildPackages("presidio-ui", "package/pom.xml", true, false) }
         }
     }
     post {
