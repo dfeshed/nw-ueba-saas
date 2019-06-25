@@ -53,7 +53,7 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: '**/presidio-*.jar'
-            archiveArtifacts artifacts: '**/*presidio-*.rpm'
+            archiveArtifacts artifacts: '**/*.rpm'
             cleanWs()
         }
     }
