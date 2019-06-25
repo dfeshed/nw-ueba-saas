@@ -38,7 +38,7 @@ pipeline {
             steps { buildProject("presidio-netwitness", "presidio-core-extension/pom.xml", true, false) }
         }
         stage('Presidio Netwitness Package Build') {
-            when { expression { return env.RUN_NW_EXTENSION_PACKAGES == 'true' } }
+            when { expression { return env.RUN_NW_PACKAGES == 'true' } }
             steps { buildPackages("presidio-netwitness", "presidio-core-extension/pom.xml", true, false) }
         }
         stage('Presidio UI Project Build') {
