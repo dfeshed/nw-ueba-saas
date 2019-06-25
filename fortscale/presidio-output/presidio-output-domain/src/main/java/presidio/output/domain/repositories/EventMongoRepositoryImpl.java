@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.Pair;
 import presidio.output.domain.records.events.EnrichedEvent;
-import presidio.output.domain.records.events.EnrichedUserEvent;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -40,18 +39,18 @@ public class EventMongoRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public List<? extends EnrichedUserEvent> findEntityEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int limitEvents, String entityType) throws Exception {
+    public List<? extends EnrichedEvent> findEntityEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int limitEvents, String entityType) throws Exception {
         Query query = buildQuery(entityId, timeRange, features, entityType);
         query.limit(limitEvents);
 
-        return mongoTemplate.find(query, EnrichedUserEvent.class, collectionName);
+        return mongoTemplate.find(query, EnrichedEvent.class, collectionName);
     }
 
     private Query buildQuery(String entityId, TimeRange timeRange, List<Pair<String, Object>> features, String entityType) {
         Query query = new Query()
                 .addCriteria(Criteria.where(entityType)
                         .is(entityId))
-                .addCriteria(Criteria.where(EnrichedUserEvent.EVENT_DATE_FIELD_NAME)
+                .addCriteria(Criteria.where(EnrichedEvent.EVENT_DATE_FIELD_NAME)
                         .gte(timeRange.getStart())
                         .lt(timeRange.getEnd()));
 
@@ -66,23 +65,23 @@ public class EventMongoRepositoryImpl implements EventRepository {
         if (CollectionUtils.isNotEmpty(criterias)) {
             query.addCriteria(new Criteria().andOperator(criterias.toArray(new Criteria[criterias.size()])));
         }
-        query.with(new Sort(EnrichedUserEvent.EVENT_DATE_FIELD_NAME));
+        query.with(new Sort(EnrichedEvent.EVENT_DATE_FIELD_NAME));
         return query;
     }
 
     @Override
-    public List<? extends EnrichedUserEvent> findEntityEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize, String entityType) {
+    public List<? extends EnrichedEvent> findEntityEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize, String entityType) {
         Query query = buildQuery(entityId, timeRange, features, entityType);
         query.skip(numOfItemsToSkip).limit(pageSize);
 
-        return mongoTemplate.find(query, EnrichedUserEvent.class, collectionName);
+        return mongoTemplate.find(query, EnrichedEvent.class, collectionName);
     }
 
     @Override
     public long countEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, String entityType) {
         Query query = buildQuery(entityId, timeRange, features, entityType);
 
-        return mongoTemplate.count(query, EnrichedUserEvent.class, collectionName);
+        return mongoTemplate.count(query, EnrichedEvent.class, collectionName);
     }
 
     @Override
@@ -113,10 +112,10 @@ public class EventMongoRepositoryImpl implements EventRepository {
 
     private Query createDateRangeQuery(Instant startDate, Instant endDate) {
         if (startDate.equals(Instant.EPOCH)) {
-            return new Query().addCriteria(Criteria.where(EnrichedUserEvent.EVENT_DATE_FIELD_NAME)
+            return new Query().addCriteria(Criteria.where(EnrichedEvent.EVENT_DATE_FIELD_NAME)
                     .lt(endDate));
         } else {
-            return new Query().addCriteria(Criteria.where(EnrichedUserEvent.EVENT_DATE_FIELD_NAME)
+            return new Query().addCriteria(Criteria.where(EnrichedEvent.EVENT_DATE_FIELD_NAME)
                     .gte(startDate)
                     .lt(endDate));
         }

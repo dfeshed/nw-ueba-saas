@@ -7,7 +7,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.util.Pair;
 import org.springframework.util.ClassUtils;
 import presidio.output.domain.records.events.EnrichedEvent;
-import presidio.output.domain.records.events.EnrichedUserEvent;
 import presidio.output.domain.repositories.EventRepository;
 import presidio.output.domain.translator.OutputToClassNameTranslator;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
@@ -50,9 +49,9 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
     }
 
     @Override
-    public List<? extends EnrichedUserEvent> findEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit, String entityType) {
+    public List<? extends EnrichedEvent> findEvents(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit, String entityType) {
         String collectionName = toCollectionNameTranslator.toCollectionName(schema);
-        List<? extends EnrichedUserEvent> events;
+        List<? extends EnrichedEvent> events;
         try {
             events = eventRepository.findEntityEvents(collectionName, entityId, timeRange, features, eventsLimit, entityType);
         } catch (Exception e) {
@@ -64,9 +63,9 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
     }
 
     @Override
-    public List<? extends EnrichedUserEvent> readRecords(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize, String entityType) {
+    public List<? extends EnrichedEvent> readRecords(Schema schema, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize, String entityType) {
         String collectionName = toCollectionNameTranslator.toCollectionName(schema);
-        List<? extends EnrichedUserEvent> events;
+        List<? extends EnrichedEvent> events;
         try {
             events = eventRepository.findEntityEvents(collectionName, entityId, timeRange, features, numOfItemsToSkip, pageSize, entityType);
         } catch (Exception e) {
