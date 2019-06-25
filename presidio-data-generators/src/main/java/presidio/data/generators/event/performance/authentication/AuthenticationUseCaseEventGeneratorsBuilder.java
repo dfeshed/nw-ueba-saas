@@ -138,7 +138,7 @@ public abstract class AuthenticationUseCaseEventGeneratorsBuilder extends UserOr
 
 
 
-        //Abnormal events Generator for recon tool group A Processes and normal users
+        //Abnormal events Generator for  normal users
         normalUsersAbnormalEventGenerator =
                 createEventGenerator(
                         normalUserAbnormalSrcMachinesGenerator,
@@ -149,7 +149,7 @@ public abstract class AuthenticationUseCaseEventGeneratorsBuilder extends UserOr
 
 
 
-        //Abnormal events Generator for recon tool group A Processes and admin users
+        //Abnormal events Generator for admin users
         adminUsersAbnormalEventGenerator =
                 createEventGenerator(
                         adminUserAbnormalSrcMachinesGenerator,
@@ -158,7 +158,7 @@ public abstract class AuthenticationUseCaseEventGeneratorsBuilder extends UserOr
                 );
 
 
-        //Abnormal events Generator for recon tool group A Processes and service account users
+        //Abnormal events Generator for service account users
         serviceAccountUsersAbnormalEventGenerator =
                 createEventGenerator(
                         serviceAccountUserAbnormalSrcMachinesGenerator,

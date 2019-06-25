@@ -23,7 +23,7 @@ public class FileEntityGenerator implements IFileEntityGenerator {
     IBooleanGenerator isDriveSharedGenerator;
     IBooleanGenerator isDirectoryGenerator;
 
-    public FileEntityGenerator() throws GeneratorException {
+    public FileEntityGenerator(){
         fileNameGenerator = new FileNameDefaultExtGenerator();
         filePathGenerator = new SimplePathGenerator();
         fileSizeGenerator = new FileSizeIncrementalGenerator();
