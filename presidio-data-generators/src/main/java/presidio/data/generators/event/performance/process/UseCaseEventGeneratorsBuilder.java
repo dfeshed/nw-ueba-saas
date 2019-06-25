@@ -224,11 +224,11 @@ public abstract class UseCaseEventGeneratorsBuilder extends ProcessEventGenerato
 
     private ProcessEventsGenerator createEventGenerator(IMachineGenerator machineGenerator,
                                                         List<FileEntity> srcFileProcesses,
-                                                        int minNumOfFilesPerUserForNonImportantProcesses,
-                                                        int maxNumOfFilesPerUserForNonImportantProcesses,
+                                                        int minNumOfFilesPerUserForSrcProcesses,
+                                                        int maxNumOfFilesPerUserForSrcProcesses,
                                                         List<FileEntity> dstFileProcesses,
-                                                        int minNumOfFilesPerUserForReconTool,
-                                                        int maxNumOfFilesPerUserForReconTool,
+                                                        int minNumOfFilesPerUserForDstProcesses,
+                                                        int maxNumOfFilesPerUserForDstProcesses,
                                                         String generatorName) {
         UserProcessEventsGenerator processNormalUsrEventsGenerator = new UserProcessEventsGenerator();
         processNormalUsrEventsGenerator.setMachineEntityGenerator(machineGenerator);
@@ -236,7 +236,7 @@ public abstract class UseCaseEventGeneratorsBuilder extends ProcessEventGenerato
 
         ProcessEntityGenerator srcProcessEntityGenerator = new ProcessEntityGenerator();
         IFileEntityGenerator srcFileEntityGenerator = new UserFileEntityGenerator(srcFileProcesses,
-                minNumOfFilesPerUserForNonImportantProcesses, maxNumOfFilesPerUserForNonImportantProcesses);
+                minNumOfFilesPerUserForSrcProcesses, maxNumOfFilesPerUserForSrcProcesses);
         srcProcessEntityGenerator.setProcessFileGenerator(srcFileEntityGenerator);
         IStringListGenerator srcCategoriesGenerator = getSrcProcessCategoriesGenerator(srcFileEntityGenerator);
         srcProcessEntityGenerator.setProcessCategoriesGenerator(srcCategoriesGenerator);
@@ -245,7 +245,7 @@ public abstract class UseCaseEventGeneratorsBuilder extends ProcessEventGenerato
 
         ProcessEntityGenerator dstProcessEntityGenerator = new ProcessEntityGenerator();
         IFileEntityGenerator dstFileEntityGenerator = new UserFileEntityGenerator(dstFileProcesses,
-                minNumOfFilesPerUserForReconTool, maxNumOfFilesPerUserForReconTool);
+                minNumOfFilesPerUserForDstProcesses, maxNumOfFilesPerUserForDstProcesses);
         dstProcessEntityGenerator.setProcessFileGenerator(dstFileEntityGenerator);
 
         IStringListGenerator destCategoriesGenerator = getDstProcessCategoriesGenerator(dstFileEntityGenerator);
