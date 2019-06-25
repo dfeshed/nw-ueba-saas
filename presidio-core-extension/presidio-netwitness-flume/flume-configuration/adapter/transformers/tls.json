@@ -188,6 +188,24 @@
       "destinationKeys": [
         "dstPort"
       ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-tcp-srcport",
+      "sourceKey": "tcp_srcport",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "srcPort"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-session-split",
+      "sourceKey": "session_spit",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "sessionSplit"
+      ]
     }
   ]
 }
