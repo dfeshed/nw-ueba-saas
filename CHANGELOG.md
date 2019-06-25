@@ -1,3 +1,24 @@
+# [13.1.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v13.1.0)
+## Features
+* [ASOC-65138](https://bedfordjira.na.rsa.net/browse/ASOC-65138):&emsp;Text Search Backward Compatibility
+* [ASOC-66201](https://bedfordjira.na.rsa.net/browse/ASOC-66201):&emsp;Query Console Updates
+* [ASOC-66873](https://bedfordjira.na.rsa.net/browse/ASOC-66873):&emsp;Paste Entire Event Analysis Query - Parsing Engine
+* [ASOC-72553](https://bedfordjira.na.rsa.net/browse/ASOC-72553):&emsp;Nodal Graph support directionality for Filenames and Filehashes in Respond
+* [ASOC-73389](https://bedfordjira.na.rsa.net/browse/ASOC-73389):&emsp;Populate Recent Query Tab with Recent Queries
+* [ASOC-77074](https://bedfordjira.na.rsa.net/browse/ASOC-77074):&emsp;Normalize Download Messaging UX
+* [ASOC-77206](https://bedfordjira.na.rsa.net/browse/ASOC-77206):&emsp;View and set source related file policy settings: exclusion filters
+* [ASOC-77453](https://bedfordjira.na.rsa.net/browse/ASOC-77453):&emsp;Gray out file policy based on endpoint-server versions
+* [ASOC-77876](https://bedfordjira.na.rsa.net/browse/ASOC-77876):&emsp;Show the details for source settings on manage policy page
+* [ASOC-78274](https://bedfordjira.na.rsa.net/browse/ASOC-78274):&emsp;Implement delete action in MFT listing page in host details under Downloads tab
+* [ASOC-78303](https://bedfordjira.na.rsa.net/browse/ASOC-78303):&emsp;UX Cleanup
+* [ASOC-78304](https://bedfordjira.na.rsa.net/browse/ASOC-78304):&emsp;Move to Single Hash in URL
+* [ASOC-78392](https://bedfordjira.na.rsa.net/browse/ASOC-78392):&emsp;Add checksum fields & nodes for UEBA endpoint events
+* [ASOC-78916](https://bedfordjira.na.rsa.net/browse/ASOC-78916):&emsp;Sort Backward Compatibility
+* [ASOC-79063](https://bedfordjira.na.rsa.net/browse/ASOC-79063):&emsp;RBAC controls for MFT request and analysis
+* [ASOC-79276](https://bedfordjira.na.rsa.net/browse/ASOC-79276):&emsp;Make column that is actively sorting data is always present, not only on hover
+* [ASOC-79547](https://bedfordjira.na.rsa.net/browse/ASOC-79547):&emsp;Create static dashboard card for Log Collector
+
+
 # [12.5.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v12.5.0)
 ## Features
 * [ASOC-65137](https://bedfordjira.na.rsa.net/browse/ASOC-65137):&emsp;Pill Behavior for Text Pill
