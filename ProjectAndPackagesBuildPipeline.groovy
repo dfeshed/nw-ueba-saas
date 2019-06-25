@@ -15,8 +15,8 @@ pipeline {
             }
         }
 
-        stage('Before print ~/.m2/repository') {
-            steps { sh "find ~/.m2/repository -name \"*\" -print" }
+        stage('Before print /repository') {
+            steps { sh "find $WORKSPACE/.repository -name \"*\" -print" }
         }
         stage('Presidio Test Utils Project Build') {
             when { expression { return env.BUILD_PRESIDIO_TEST_UTILS == 'true' } }
@@ -54,8 +54,8 @@ pipeline {
             when { expression { return env.RUN_PRESIDIO_UI_PACKAGES == 'true' } }
             steps { buildPackages("presidio-ui", "package/pom.xml", true, false) }
         }
-        stage('After print ~/.m2/repository') {
-            steps { sh "find ~/.m2/repository -name \"*\" -print" }
+        stage('After print .repository') {
+            steps {sh "find $WORKSPACE/.repository -name \"*\" -print" }
         }
     }
     post {
@@ -148,5 +148,5 @@ def mvnCleanInstall(boolean deploy, String pomFile, boolean updateSnapshots, boo
 }
 
 def mvnCleanPackages(String deploy, String pomFile, String stability, String version, boolean updateSnapshots, boolean debug) {
-    sh "mvn -B -f ${pomFile} -Dbuild.stability=${stability.charAt(0)} -Dbuild.version=${version} -Dpublish=${deploy} clean package ${updateSnapshots ?  "-U" : ""} ${debug ? "-X" : ""} "
+    sh "mvn -B -f ${pomFile} -Dmaven.repo.local=.repository -Dbuild.stability=${stability.charAt(0)} -Dbuild.version=${version} -Dpublish=${deploy} clean package ${updateSnapshots ?  "-U" : ""} ${debug ? "-X" : ""} "
 }
