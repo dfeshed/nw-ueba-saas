@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'el7 && java8'
+        node {label 'el7 && java8'}
     }
     environment {
         // The credentials (name + password) associated with the RSA build user.
