@@ -30,9 +30,6 @@ pipeline {
             when { expression { return env.BUILD_PRESIDIO_FLUME == 'true' } }
             steps { buildProject("presidio-flume", "pom.xml", true, false) }
         }
-        stage('Before print /repository') {
-            steps { sh "find .repository -name \"*\" -print" }
-        }
         stage('Presidio Flume Package Build') {
             when { expression { return env.RUN_FLUME_PACKAGES == 'true' } }
             steps { buildPackages("presidio-flume", "package/pom.xml", true, false) }
@@ -52,9 +49,6 @@ pipeline {
         stage('Presidio UI Package Build') {
             when { expression { return env.RUN_PRESIDIO_UI_PACKAGES == 'true' } }
             steps { buildPackages("presidio-ui", "package/pom.xml", true, false) }
-        }
-        stage('After print .repository') {
-            steps {sh "find $WORKSPACE/.repository -name \"*\" -print" }
         }
     }
     post {
@@ -147,5 +141,7 @@ def mvnCleanInstall(boolean deploy, String pomFile, boolean updateSnapshots, boo
 }
 
 def mvnCleanPackages(String deploy, String pomFile, String stability, String version, boolean updateSnapshots, boolean debug) {
+    sh "find .repository -name \"*\" -print"
     sh "mvn -B -f ${pomFile} -Dmaven.repo.local=.repository -Dbuild.stability=${stability.charAt(0)} -Dbuild.version=${version} -Dpublish=${deploy} clean package ${updateSnapshots ?  "-U" : ""} ${debug ? "-X" : ""} "
+    sh "find .repository -name \"*\" -print"
 }
