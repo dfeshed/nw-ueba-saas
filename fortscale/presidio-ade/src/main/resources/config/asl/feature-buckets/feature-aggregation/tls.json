@@ -274,7 +274,7 @@
       ]
     },
     {
-      "name": "numOfBytesSentToSrcIpSummationSslSubjectOutboundTlsHourly",
+      "name": "numOfBytesSentBySrcIpSummationSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
         "sslSubject"
       ],
@@ -291,7 +291,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "numOfBytesSentToSrcIpSummation",
+          "name": "numOfBytesSentBySrcIpSummation",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
@@ -307,7 +307,7 @@
       ]
     },
     {
-      "name": "numOfBytesSentToSrcIpSummationDomainOutboundTlsHourly",
+      "name": "numOfBytesSentBySrcIpSummationDomainOutboundTlsHourly",
       "contextFieldNames": [
         "domain"
       ],
@@ -324,7 +324,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "numOfBytesSentToSrcIpSummation",
+          "name": "numOfBytesSentBySrcIpSummation",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
@@ -340,7 +340,7 @@
       ]
     },
     {
-      "name": "numOfBytesSentToSrcIpSummationDomainSslSubjectOutboundTlsHourly",
+      "name": "numOfBytesSentBySrcIpSummationDomainSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
         "domain",
         "sslSubject"
@@ -358,7 +358,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "numOfBytesSentToSrcIpSummation",
+          "name": "numOfBytesSentBySrcIpSummation",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
@@ -374,7 +374,7 @@
       ]
     },
     {
-      "name": "numOfBytesSentToSrcIpSummationDstOrgOutboundTlsHourly",
+      "name": "numOfBytesSentBySrcIpSummationDstOrgOutboundTlsHourly",
       "contextFieldNames": [
         "dstOrg"
       ],
@@ -391,7 +391,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "numOfBytesSentToSrcIpSummation",
+          "name": "numOfBytesSentBySrcIpSummation",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
@@ -407,7 +407,7 @@
       ]
     },
     {
-      "name": "numOfBytesSentToSrcIpSummationDstOrgSslSubjectOutboundTlsHourly",
+      "name": "numOfBytesSentBySrcIpSummationDstOrgSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
         "dstOrg",
         "sslSubject"
@@ -425,7 +425,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "numOfBytesSentToSrcIpSummation",
+          "name": "numOfBytesSentBySrcIpSummation",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
@@ -441,7 +441,7 @@
       ]
     },
     {
-      "name": "numOfBytesSentToSrcIpSummationDstPortOutboundTlsHourly",
+      "name": "numOfBytesSentBySrcIpSummationDstPortOutboundTlsHourly",
       "contextFieldNames": [
         "dstPort"
       ],
@@ -458,7 +458,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "numOfBytesSentToSrcIpSummation",
+          "name": "numOfBytesSentBySrcIpSummation",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
@@ -474,7 +474,7 @@
       ]
     },
     {
-      "name": "numOfBytesSentToSrcIpSummationDstPortSslSubjectOutboundTlsHourly",
+      "name": "numOfBytesSentBySrcIpSummationDstPortSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
         "dstPort",
         "sslSubject"
@@ -492,7 +492,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "numOfBytesSentToSrcIpSummation",
+          "name": "numOfBytesSentBySrcIpSummation",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
