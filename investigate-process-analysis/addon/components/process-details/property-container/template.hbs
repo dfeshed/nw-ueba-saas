@@ -1,59 +1,62 @@
-<ul class="list_items execution_details">
+<div>
   <h3 class="title">
     {{t 'investigateProcessAnalysis.processExecutionDetails.title'}}
   </h3>
-  {{#each executionConfig as |item|}}
-    <li>
-      <dt class="item-title">
-        {{t (concat executionLabelPrefix item.field)}}
-      </dt>
-      <dd class="item-value">
-        {{#rsa-text-with-tooltip format=item.format value=(get processDetails item.field) tipPosition='left'}}
-          {{#if (eq item.format 'DATE')}}
-            {{#if (get processDetails item.field)}}
-              {{rsa-content-datetime timestamp=(get processDetails item.field)}}
-            {{/if}}
-
-          {{else}}
-            {{get processDetails item.field}}
-          {{/if}}
-        {{/rsa-text-with-tooltip}}
-      </dd>
-    </li>
-
-  {{/each}}
-</ul>
-
-{{#each propertyConfig as |property|}}
-  <ul class="list_items file_properties">
-    <h3 class="title">
-      {{property.sectionName}}
-    </h3>
-    {{#each property.fields as |prop|}}
+  <ul class="list_items execution_details">
+    {{#each executionConfig as |item|}}
       <li>
         <dt class="item-title">
-          {{t (concat fileLabelPrefix prop.field)}}
+          {{t (concat executionLabelPrefix item.field)}}
         </dt>
-
         <dd class="item-value">
-          {{#rsa-text-with-tooltip format=prop.format value=(get propertyDetails prop.field) tipPosition='left'}}
-            {{#if (eq prop.format 'DATE')}}
-              {{#if (get propertyDetails prop.field)}}
-                {{rsa-content-datetime timestamp=(get propertyDetails prop.field)}}
+          {{#rsa-text-with-tooltip format=item.format value=(get processDetails item.field) tipPosition='left'}}
+            {{#if (eq item.format 'DATE')}}
+              {{#if (get processDetails item.field)}}
+                {{rsa-content-datetime timestamp=(get processDetails item.field)}}
               {{/if}}
 
-            {{else if (eq prop.format 'SIZE')}}
-              {{rsa-content-memsize size=(get propertyDetails prop.field)}}
-
-            {{else if (eq prop.format 'SIGNATURE')}}
-              {{signature-text (get propertyDetails prop.field)}}
-
             {{else}}
-              {{get propertyDetails prop.field}}
+              {{get processDetails item.field}}
             {{/if}}
           {{/rsa-text-with-tooltip}}
         </dd>
       </li>
     {{/each}}
   </ul>
+</div>
+
+{{#each propertyConfig as |property|}}
+  <div>
+    <h3 class="title">
+      {{property.sectionName}}
+    </h3>
+    <ul class="list_items file_properties">
+      {{#each property.fields as |prop|}}
+        <li>
+          <dt class="item-title">
+            {{t (concat fileLabelPrefix prop.field)}}
+          </dt>
+
+          <dd class="item-value">
+            {{#rsa-text-with-tooltip format=prop.format value=(get propertyDetails prop.field) tipPosition='left'}}
+              {{#if (eq prop.format 'DATE')}}
+                {{#if (get propertyDetails prop.field)}}
+                  {{rsa-content-datetime timestamp=(get propertyDetails prop.field)}}
+                {{/if}}
+
+              {{else if (eq prop.format 'SIZE')}}
+                {{rsa-content-memsize size=(get propertyDetails prop.field)}}
+
+              {{else if (eq prop.format 'SIGNATURE')}}
+                {{signature-text (get propertyDetails prop.field)}}
+
+              {{else}}
+                {{get propertyDetails prop.field}}
+              {{/if}}
+            {{/rsa-text-with-tooltip}}
+          </dd>
+        </li>
+      {{/each}}
+    </ul>
+  </div>
 {{/each}}

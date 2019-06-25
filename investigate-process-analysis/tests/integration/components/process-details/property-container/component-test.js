@@ -80,7 +80,7 @@ module('Integration | Component | process-details/process-property-panel', funct
       .queryInput(queryInput)
       .build();
     await render(hbs`{{process-details/property-container}}`);
-    assert.equal(find('.execution_details .title').textContent.trim(), 'Execution Details', 'Execution Details Title rendered.');
+    assert.equal(find('.title').textContent.trim(), 'Process Execution Details', 'Execution Details Title rendered.');
     assert.equal(findAll('.list_items li').length, 30, 'Expected details render');
   });
 

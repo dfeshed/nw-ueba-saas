@@ -1,36 +1,36 @@
 .process-properties-container {
-  height: 300px;
+  height: 280px;
   border-right: 1px solid border-color(primary);
   grid-auto-flow: column;
   display: grid;
   overflow: auto;
+  .title {
+    text-transform: uppercase;
+    padding: 0.5rem;
+    color: text-color(secondary);
+    font-weight: bold;
+  }
 }
 .property-container {
   grid-template-columns: repeat(auto-fill, 200px);
 
 }
 
-.title {
-  text-transform: uppercase;
-  padding: 0.5rem;
-  color: text-color(secondary);
-  font-weight: bold;
-}
-
 .list_items {
   display: grid;
   grid-auto-flow: column;
   grid-template-rows: repeat(5, 40px);
-  grid-gap: 20px;
+  grid-gap: 7px;
   border-right: 1px solid border-color(primary);
   padding-left: 5px;
   .tooltip-text {
-    line-height: 1rem;
+    line-height: 1.2rem;
     margin-top: 0px;
   }
   li {
     padding: 7px;
-    width: 300px;
+    width: fit-content;
+    max-width: 300px;
     overflow: hidden;
     text-overflow: ellipsis;
     .item-title {
@@ -43,6 +43,9 @@
     .item-value {
       color: text-color(primary, lightest);
       line-height: 1.2rem;
+      div {
+        outline: none;
+      }
     }
   }
 }

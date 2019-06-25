@@ -4088,7 +4088,7 @@ export default {
       }
     },
     processExecutionDetails: {
-      title: 'Execution Details',
+      title: 'Process Execution Details',
       userAll: 'User Name',
       eventTime: 'Event Time',
       directoryDst: 'File Location',
