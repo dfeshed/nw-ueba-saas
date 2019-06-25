@@ -3,6 +3,7 @@ package presidio.ade.domain.record;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.feature.Feature;
 import fortscale.utils.json.ObjectMapperProvider;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.recordreader.ReflectionRecordReader;
 import fortscale.utils.recordreader.transformation.Transformation;
 import net.minidev.json.JSONObject;
@@ -20,6 +21,7 @@ import java.util.Set;
  * Created by Lior Govrin on 19/06/2017.
  */
 public class AdeRecordReader extends ReflectionRecordReader {
+	private static final Logger logger = Logger.getLogger(AdeRecordReader.class);
 	private ObjectMapper objectMapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
 	private AdeRecord adeRecord;
 	private JSONObject adeRecordJson;
@@ -129,7 +131,16 @@ public class AdeRecordReader extends ReflectionRecordReader {
 	 * @return context value
 	 */
 	public String getContext(String contextFieldName){
-		return get(contextFieldName, String.class);
+		Object ret = get(contextFieldName, Object.class);
+		if(ret instanceof Number){
+			ret = ret.toString();
+		}else if ( !(ret instanceof String)) {
+			String format = "Extracted value {} is not an instance of {}. Record = {}, field path = {}.";
+			logger.error(format, ret, String.class.getName(), getAdeRecord(), contextFieldName);
+			return null;
+		}
+
+		return (String) ret;
 	}
 
 }
