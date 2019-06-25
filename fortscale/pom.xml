@@ -35,6 +35,10 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
+        <repository>
+            <id>asoc-build-repo</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -63,7 +67,6 @@
         <jsonassert.version>1.2.3</jsonassert.version>
         <spring-data-hadoop.version>2.2.0.RELEASE</spring-data-hadoop.version>
         <commons.math3.version>3.1.1</commons.math3.version>
-        <fongo.version>2.1.1</fongo.version>
         <quartz.version>2.2.1</quartz.version>
         <perf4j.version>0.9.16</perf4j.version>
         <jackson.dataformat.version>2.8.9</jackson.dataformat.version>
