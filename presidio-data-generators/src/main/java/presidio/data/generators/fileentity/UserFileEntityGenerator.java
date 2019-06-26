@@ -20,7 +20,7 @@ public class UserFileEntityGenerator implements IFileEntityGenerator {
         this.fileEntitiesPool = fileEntitiesPool;
         this.minNumOfFilesPerUser = minNumOfFilesPerUser;
         this.maxNumOfFilesPerUser = maxNumOfFilesPerUser;
-        random = new Random();
+        random = new Random(0);
     }
 
     @Override

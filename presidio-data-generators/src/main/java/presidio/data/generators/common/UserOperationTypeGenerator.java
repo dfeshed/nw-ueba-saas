@@ -1,12 +1,11 @@
-package presidio.data.generators.fileop;
+package presidio.data.generators.common;
 
 import presidio.data.domain.User;
 import presidio.data.domain.event.OperationType;
-import presidio.data.generators.common.IOperationTypeGenerator;
 
 import java.util.*;
 
-public class UserFileOperationTypeGenerator implements IOperationTypeGenerator {
+public class UserOperationTypeGenerator implements IOperationTypeGenerator {
 
     public static User user = null;
 
@@ -16,12 +15,12 @@ public class UserFileOperationTypeGenerator implements IOperationTypeGenerator {
     List<OperationType> operationTypesPool;
     Random random;
 
-    public UserFileOperationTypeGenerator(List<OperationType> operationTypesPool,
-                                   int minNumOfOperationTypesPerUser, int maxNumOfOperationTypesPerUser){
+    public UserOperationTypeGenerator(List<OperationType> operationTypesPool,
+                                      int minNumOfOperationTypesPerUser, int maxNumOfOperationTypesPerUser){
         this.operationTypesPool = operationTypesPool;
         this.minNumOfOperationTypesPerUser = minNumOfOperationTypesPerUser;
         this.maxNumOfOperationTypesPerUser = maxNumOfOperationTypesPerUser;
-        random = new Random();
+        random = new Random(0);
     }
 
     @Override

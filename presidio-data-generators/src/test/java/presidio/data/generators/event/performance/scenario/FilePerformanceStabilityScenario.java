@@ -288,7 +288,7 @@ public class FilePerformanceStabilityScenario extends UserOrientedPerformanceSta
     }
 
 
-    
+
     private int getMinNumOfLocalServersPerNormalUser(){
         return 1;
     }

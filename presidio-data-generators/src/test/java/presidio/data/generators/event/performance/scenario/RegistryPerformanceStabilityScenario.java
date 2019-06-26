@@ -67,7 +67,7 @@ public class RegistryPerformanceStabilityScenario extends EndPointPerformanceSta
     private void initRegistryKeys(){
         registryKeyGroupToRegistryKey = new HashMap<>();
         registryKeyToValuesMap = new HashMap<>();
-        Random random = new Random();
+        Random random = new Random(0);
         for(int i = 0; i <= 100000; i++){
             int groupIndex = random.nextInt(REGISTRY_KEY_GROUPS.length);
             String group = REGISTRY_KEY_GROUPS[groupIndex];

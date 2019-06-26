@@ -15,7 +15,7 @@ public class LimitNumOfUsersGenerator implements IUserGenerator{
     public LimitNumOfUsersGenerator(int numOfUsersLimit, IUserGenerator userGenerator){
         this.numOfUsersLimit = numOfUsersLimit;
         this.userGenerator = userGenerator;
-        rand = new Random();
+        rand = new Random(0);
     }
 
     @Override

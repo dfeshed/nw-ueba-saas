@@ -1,21 +1,19 @@
-package presidio.data.generators.event.performance.file;
+package presidio.data.generators.event.performance.active_directory;
 
 import presidio.data.domain.event.OperationType;
-import presidio.data.domain.event.file.FILE_OPERATION_TYPE_CATEGORIES;
 import presidio.data.generators.common.CustomStringGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IOperationTypeGenerator;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.time.MultiRangeTimeGenerator;
 import presidio.data.generators.event.OPERATION_RESULT;
-import presidio.data.generators.fileentity.IFileEntityGenerator;
 import presidio.data.generators.common.UserOperationTypeGenerator;
-import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 
 import java.util.List;
 
-public class FailureFileActionEventGeneratorsBuilder extends FileUseCaseEventGeneratorsBuilder{
+
+public class FailureActiveDirectoryUseCaseEventGeneratorsBuilder extends ActiveDirectoryUseCaseEventGeneratorsBuilder{
 
     private static final double PERCENT_OF_NORMAL_USER_PER_DAY_OUT_OF_TOTAL_AMOUNT_OF_USERS = 0.01d;
     private static final int NUM_OF_EVENTS_PER_NORMAL_USER_PER_HOUR_ON_AVG = 5;
@@ -37,55 +35,29 @@ public class FailureFileActionEventGeneratorsBuilder extends FileUseCaseEventGen
 
     private List<OperationType> operationTypesPool;
 
-    public FailureFileActionEventGeneratorsBuilder(IUserGenerator normalUserGenerator,
-                                                      List<MultiRangeTimeGenerator.ActivityRange> normalUserActivityRange,
-                                                      List<MultiRangeTimeGenerator.ActivityRange> normalUserAbnormalActivityRange,
-                                                      IUserGenerator adminUserGenerator,
-                                                      List<MultiRangeTimeGenerator.ActivityRange> adminUserActivityRange,
-                                                      List<MultiRangeTimeGenerator.ActivityRange> adminUserAbnormalActivityRange,
-                                                      IUserGenerator serviceAccountUserGenerator,
-                                                      List<MultiRangeTimeGenerator.ActivityRange> serviceAcountUserActivityRange,
-                                                      IMachineGenerator normalUserSrcMachinesGenerator,
-                                                      IMachineGenerator normalUserAbnormalSrcMachinesGenerator,
-                                                      IMachineGenerator adminUserSrcMachinesGenerator,
-                                                      IMachineGenerator adminUserAbnormalSrcMachinesGenerator,
-                                                      IMachineGenerator serviceAccountUserSrcMachinesGenerator,
-                                                      IMachineGenerator serviceAccountUserAbnormalSrcMachinesGenerator,
-                                                      IFileEntityGenerator normalUserSrcFileEntitiesGenerator,
-                                                      IFileEntityGenerator normalUserAbnormalSrcFileEntitiesGenerator,
-                                                      IFileEntityGenerator adminUserSrcFileEntitiesGenerator,
-                                                      IFileEntityGenerator adminUserAbnormalSrcFileEntitiesGenerator,
-                                                      IFileEntityGenerator serviceAccountUserSrcFileEntitiesGenerator,
-                                                      IFileEntityGenerator serviceAccountUserAbnormalSrcFileEntitiesGenerator,
-                                                      IFileEntityGenerator normalUserDstFileEntitiesGenerator,
-                                                      IFileEntityGenerator normalUserAbnormalDstFileEntitiesGenerator,
-                                                      IFileEntityGenerator adminUserDstFileEntitiesGenerator,
-                                                      IFileEntityGenerator adminUserAbnormalDstFileEntitiesGenerator,
-                                                      IFileEntityGenerator serviceAccountUserDstFileEntitiesGenerator,
-                                                      IFileEntityGenerator serviceAccountUserAbnormalDstFileEntitiesGenerator) throws GeneratorException {
+    public FailureActiveDirectoryUseCaseEventGeneratorsBuilder(IUserGenerator normalUserGenerator,
+                                                   List<MultiRangeTimeGenerator.ActivityRange> normalUserActivityRange,
+                                                   List<MultiRangeTimeGenerator.ActivityRange> normalUserAbnormalActivityRange,
+                                                   IUserGenerator adminUserGenerator,
+                                                   List<MultiRangeTimeGenerator.ActivityRange> adminUserActivityRange,
+                                                   List<MultiRangeTimeGenerator.ActivityRange> adminUserAbnormalActivityRange,
+                                                   IUserGenerator serviceAccountUserGenerator,
+                                                   List<MultiRangeTimeGenerator.ActivityRange> serviceAcountUserActivityRange) throws GeneratorException {
         super(normalUserGenerator, normalUserActivityRange, normalUserAbnormalActivityRange, adminUserGenerator,
                 adminUserActivityRange, adminUserAbnormalActivityRange, serviceAccountUserGenerator,
-                serviceAcountUserActivityRange, normalUserSrcMachinesGenerator, normalUserAbnormalSrcMachinesGenerator,
-                adminUserSrcMachinesGenerator, adminUserAbnormalSrcMachinesGenerator,
-                serviceAccountUserSrcMachinesGenerator, serviceAccountUserAbnormalSrcMachinesGenerator,
-                normalUserSrcFileEntitiesGenerator, normalUserAbnormalSrcFileEntitiesGenerator,
-                adminUserSrcFileEntitiesGenerator, adminUserAbnormalSrcFileEntitiesGenerator,
-                serviceAccountUserSrcFileEntitiesGenerator, serviceAccountUserAbnormalSrcFileEntitiesGenerator,
-                normalUserDstFileEntitiesGenerator, normalUserAbnormalDstFileEntitiesGenerator,
-                adminUserDstFileEntitiesGenerator, adminUserAbnormalDstFileEntitiesGenerator,
-                serviceAccountUserDstFileEntitiesGenerator, serviceAccountUserAbnormalDstFileEntitiesGenerator);
+                serviceAcountUserActivityRange);
     }
 
     private List<OperationType> getOperationTypesPool(){
         if(operationTypesPool == null){
-            operationTypesPool = getAllOperationTypes(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION);
+            operationTypesPool = getAllOperationTypes();
         }
         return operationTypesPool;
     }
 
     @Override
     protected String getUseCaseTestName() {
-        return "FailedFileActionEvent";
+        return "FailedActiveDirectoryEvent";
     }
 
     @Override

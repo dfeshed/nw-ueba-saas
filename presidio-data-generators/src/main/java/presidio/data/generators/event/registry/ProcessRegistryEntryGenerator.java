@@ -29,7 +29,7 @@ public class ProcessRegistryEntryGenerator implements IRegistryEntryGenerator {
         this.minRegistryGroupsToProcess = Math.min(minRegistryGroupsToProcess, maxRegestryGroupsToProcess);
 
         processToRegistryGroups = new HashMap<>();
-        random = new Random();
+        random = new Random(0);
     }
 
 

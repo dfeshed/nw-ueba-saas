@@ -22,7 +22,7 @@ public class RandomFileEntityGenerator implements IFileEntityGenerator{
         this.numOfFiles = numOfFiles;
         this.filePrefix = filePrefix;
         this.fileSuffix = fileSuffix;
-        random = new Random();
+        random = new Random(0);
     }
 
     @Override

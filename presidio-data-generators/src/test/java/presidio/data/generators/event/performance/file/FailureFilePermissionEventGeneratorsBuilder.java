@@ -9,7 +9,7 @@ import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.time.MultiRangeTimeGenerator;
 import presidio.data.generators.event.OPERATION_RESULT;
 import presidio.data.generators.fileentity.IFileEntityGenerator;
-import presidio.data.generators.fileop.UserFileOperationTypeGenerator;
+import presidio.data.generators.common.UserOperationTypeGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 
@@ -91,8 +91,8 @@ public class FailureFilePermissionEventGeneratorsBuilder extends FileUseCaseEven
 
     @Override
     protected IOperationTypeGenerator getOperationTypeGeneratorForNormalbehavior() {
-        UserFileOperationTypeGenerator generator =
-                new UserFileOperationTypeGenerator(
+        UserOperationTypeGenerator generator =
+                new UserOperationTypeGenerator(
                         getOperationTypesPool(),
                         getMinNumOfOperationTypesForNormalbehavior(),
                         getMaxNumOfOperationTypesForNormalbehavior());
@@ -109,8 +109,8 @@ public class FailureFilePermissionEventGeneratorsBuilder extends FileUseCaseEven
 
     @Override
     protected IOperationTypeGenerator getOperationTypeGeneratorForAbnormalBehavior() {
-        UserFileOperationTypeGenerator generator =
-                new UserFileOperationTypeGenerator(
+        UserOperationTypeGenerator generator =
+                new UserOperationTypeGenerator(
                         getOperationTypesPool(),
                         getMinNumOfOperationTypesForAbnormalbehavior(),
                         getMaxNumOfOperationTypesForAbnormalbehavior());

@@ -21,7 +21,7 @@ public class UserProcessEventsGenerator extends ProcessEventsGenerator {
 
     public UserProcessEventsGenerator(){
         super();
-        random = new Random();
+        random = new Random(0);
     }
 
     public UserProcessEventsGenerator(ITimeGenerator timeGenerator){

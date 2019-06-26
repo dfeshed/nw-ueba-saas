@@ -10,7 +10,8 @@ public enum AD_OPERATION_TYPE_2_CATEGORIES_MAP {
     }
 
     private static final Map<String,List<String>> operation2CategoryMap()
-    { final Map opMap = new HashMap<String,List<String>>();
+    {
+        final Map opMap = new HashMap<String,List<String>>();
 
         opMap.put(AD_OPERATION_TYPE.ATTEMPT_MADE_TO_SET_DIRECTORY_SERVICES_RESTORE_MODE_ADMINISTRATOR_PASSWORD.value, Arrays.asList(ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.OBJECT_MANAGEMENT.value));
         opMap.put(AD_OPERATION_TYPE.COMPUTER_ACCOUNT_CHANGED.value, Arrays.asList(ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.COMPUTER_MANAGEMENT.value));

@@ -8,7 +8,7 @@ import presidio.data.domain.event.file.FileOperation;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.fileentity.FileSystemEntityGenerator;
 import presidio.data.generators.fileentity.UserFileEntityGenerator;
-import presidio.data.generators.fileop.UserFileOperationTypeGenerator;
+import presidio.data.generators.common.UserOperationTypeGenerator;
 import presidio.data.generators.machine.UserDesktopGenerator;
 import presidio.data.generators.machine.UserServerGenerator;
 
@@ -37,7 +37,7 @@ public class UserFileEventsGenerator extends FileEventsGenerator{
         UserDesktopGenerator.user = user;
         UserServerGenerator.user = user;
         UserFileEntityGenerator.user = user;
-        UserFileOperationTypeGenerator.user = user;
+        UserOperationTypeGenerator.user = user;
 
         Instant eventTime = getTimeGenerator().getNext();
         String eventId = getEventIdGenerator().getNext();
