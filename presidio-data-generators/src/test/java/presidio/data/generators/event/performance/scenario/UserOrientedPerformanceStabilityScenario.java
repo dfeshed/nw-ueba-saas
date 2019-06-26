@@ -54,8 +54,7 @@ public abstract class UserOrientedPerformanceStabilityScenario extends Performan
     }
 
     private IUserGenerator createNormalUserGenerator(){
-        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator((int)(Math.ceil(numOfNormalUsers)),
-                1, "normal_user_", "UID", false, false);
+        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator(numOfNormalUsers,1, "normal_user_", "UID", false, false);
         return userGenerator;
     }
 
@@ -73,7 +72,7 @@ public abstract class UserOrientedPerformanceStabilityScenario extends Performan
     }
 
     private IUserGenerator createAdminUserGenerator(){
-        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator((int)(Math.ceil(numOfAdminUsers)), 1, "admin_user_", "UID", false, false);
+        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator(numOfAdminUsers, 1, "admin_user_", "UID", false, false);
         return userGenerator;
     }
 
@@ -91,7 +90,7 @@ public abstract class UserOrientedPerformanceStabilityScenario extends Performan
     }
 
     private IUserGenerator createServiceAccountUserGenerator(){
-        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator((int)(Math.ceil(numOfserviceAccountUsers)), 1, "sa_user_", "UID", false, false);
+        IUserGenerator userGenerator = new NumberedUserRandomUniformallyGenerator(numOfserviceAccountUsers, 1, "sa_user_", "UID", false, false);
         return userGenerator;
     }
 
