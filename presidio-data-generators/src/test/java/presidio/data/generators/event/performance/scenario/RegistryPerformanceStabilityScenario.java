@@ -27,9 +27,10 @@ public class RegistryPerformanceStabilityScenario extends EndPointPerformanceSta
     private Map<String, List<String>> registryKeyToValuesMap;
 
 
-    public RegistryPerformanceStabilityScenario(Instant startInstant, Instant endInstant, double probabilityMultiplier,
-                                                double usersMultiplier) {
-        super(startInstant, endInstant, probabilityMultiplier,usersMultiplier);
+    public RegistryPerformanceStabilityScenario(Instant startInstant, Instant endInstant,
+                                                int numOfNormalUsers, int numOfAdminUsers, int numOfserviceAccountUsers,
+                                                double probabilityMultiplier) {
+        super(startInstant, endInstant, numOfNormalUsers, numOfAdminUsers, numOfserviceAccountUsers, probabilityMultiplier);
     }
 
     public void init() throws GeneratorException {

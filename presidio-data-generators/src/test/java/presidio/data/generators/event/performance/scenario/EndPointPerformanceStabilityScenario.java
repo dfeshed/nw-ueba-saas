@@ -20,8 +20,9 @@ public abstract class EndPointPerformanceStabilityScenario extends UserOrientedP
     protected List<FileEntity> nonImportantProcesses;
 
     public EndPointPerformanceStabilityScenario(Instant startInstant, Instant endInstant,
-                                                double probabilityMultiplier, double usersMultiplier) {
-        super(startInstant, endInstant, probabilityMultiplier, usersMultiplier);
+                                                int numOfNormalUsers, int numOfAdminUsers, int numOfserviceAccountUsers,
+                                                double probabilityMultiplier) {
+        super(startInstant, endInstant, numOfNormalUsers, numOfAdminUsers, numOfserviceAccountUsers, probabilityMultiplier);
     }
 
     public void init() throws GeneratorException {

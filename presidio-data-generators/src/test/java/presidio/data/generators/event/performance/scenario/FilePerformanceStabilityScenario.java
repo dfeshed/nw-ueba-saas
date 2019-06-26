@@ -37,12 +37,12 @@ public class FilePerformanceStabilityScenario extends UserOrientedPerformanceSta
 
     public FilePerformanceStabilityScenario(Instant startInstant,
                                             Instant endInstant,
+                                            int numOfNormalUsers, int numOfAdminUsers, int numOfserviceAccountUsers,
                                             double probabilityMultiplier,
-                                            double usersMultiplier,
                                             List<MachineEntity> globalServersMachineEntitiesPool,
                                             List<MachineEntity> localServersMachineEntitiesPool,
                                             List<MachineEntity> adminServersMachineEntitiesPool) {
-        super(startInstant, endInstant, probabilityMultiplier, usersMultiplier);
+        super(startInstant, endInstant, numOfNormalUsers, numOfAdminUsers, numOfserviceAccountUsers, probabilityMultiplier);
         this.globalServersMachineEntitiesPool = globalServersMachineEntitiesPool;
         this.localServersMachineEntitiesPool = localServersMachineEntitiesPool;
         this.adminServersMachineEntitiesPool = adminServersMachineEntitiesPool;

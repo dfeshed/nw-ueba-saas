@@ -2,18 +2,16 @@ package presidio.data.generators.event.performance;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.junit.Test;
-import presidio.data.domain.MachineEntity;
 import presidio.data.domain.event.Event;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
-import presidio.data.domain.event.file.FileEvent;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.event.performance.scenario.ActiveDirectoryPerformanceStabilityScenario;
-import presidio.data.generators.event.performance.scenario.FilePerformanceStabilityScenario;
-import presidio.data.generators.machine.IMachineGenerator;
-import presidio.data.generators.machine.RandomMultiMachineEntityGenerator;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class ActiveDirectoryPerformanceStabilityTest {
@@ -28,11 +26,10 @@ public class ActiveDirectoryPerformanceStabilityTest {
         stopWatch.start();
 
         Instant startInstant    = Instant.parse("2010-01-01T09:00:00.00Z");
-        Instant endInstant      = Instant.parse("2010-01-02T09:31:00.00Z");
+        Instant endInstant      = Instant.parse("2010-01-01T09:31:00.00Z");
 
         ActiveDirectoryPerformanceStabilityScenario scenario =
-                new ActiveDirectoryPerformanceStabilityScenario(
-                        startInstant, endInstant, 1, 0.01);
+                new ActiveDirectoryPerformanceStabilityScenario(startInstant, endInstant, 1000, 50, 50, 1);
         scenario.init();
 
         List<Event> events;

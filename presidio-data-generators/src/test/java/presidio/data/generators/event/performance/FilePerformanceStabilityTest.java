@@ -4,11 +4,8 @@ import org.apache.commons.lang.time.StopWatch;
 import org.junit.Test;
 import presidio.data.domain.MachineEntity;
 import presidio.data.domain.event.Event;
-import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.domain.event.file.FileEvent;
-import presidio.data.domain.event.process.ProcessEvent;
 import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.event.performance.scenario.AuthenticationPerformanceStabilityScenario;
 import presidio.data.generators.event.performance.scenario.FilePerformanceStabilityScenario;
 import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.RandomMultiMachineEntityGenerator;
@@ -20,18 +17,18 @@ import java.util.*;
 public class FilePerformanceStabilityTest {
 
     private final int EVENTS_GENERATION_CHUNK = 1000000;
-    private final int NUM_OF_GLOBAL_SERVER_MACHINES = 10000;
-    private final int NUM_OF_GLOBAL_SERVER_MACHINES_CLUSTERS = 5000;
+    private final int NUM_OF_GLOBAL_SERVER_MACHINES = 100;
+    private final int NUM_OF_GLOBAL_SERVER_MACHINES_CLUSTERS = 50;
     private final String GLOBAL_SERVER_MACHINES_CLUSTER_PREFIX = "global_srv_";
-    private final int NUM_OF_GLOBAL_SERVER_MACHINES_PER_CLUSTER = 50;
-    private final int NUM_OF_ADMIN_SERVER_MACHINES = 20000;
-    private final int NUM_OF_ADMIN_SERVER_MACHINES_CLUSTERS = 10000;
+    private final int NUM_OF_GLOBAL_SERVER_MACHINES_PER_CLUSTER = 5;
+    private final int NUM_OF_ADMIN_SERVER_MACHINES = 200;
+    private final int NUM_OF_ADMIN_SERVER_MACHINES_CLUSTERS = 100;
     private final String ADMIN_SERVER_MACHINES_CLUSTER_PREFIX = "admin_srv_";
-    private final int NUM_OF_ADMIN_SERVER_MACHINES_PER_CLUSTER = 50;
-    private final int NUM_OF_LOCAL_SERVER_MACHINES = 400000;
-    private final int NUM_OF_LOCAL_SERVER_MACHINES_CLUSTERS = 100000;
+    private final int NUM_OF_ADMIN_SERVER_MACHINES_PER_CLUSTER = 5;
+    private final int NUM_OF_LOCAL_SERVER_MACHINES = 4000;
+    private final int NUM_OF_LOCAL_SERVER_MACHINES_CLUSTERS = 1000;
     private final String LOCAL_SERVER_MACHINES_CLUSTER_PREFIX = "local_srv_";
-    private final int NUM_OF_LOCAL_SERVER_MACHINES_PER_CLUSTER = 50;
+    private final int NUM_OF_LOCAL_SERVER_MACHINES_PER_CLUSTER = 5;
 
     private StopWatch stopWatch = new StopWatch();
 
@@ -87,7 +84,7 @@ public class FilePerformanceStabilityTest {
 
         FilePerformanceStabilityScenario scenario =
                 new FilePerformanceStabilityScenario(
-                        startInstant, endInstant, 1, 0.01,
+                        startInstant, endInstant,1000, 50, 50, 1,
                         createGlobalServerMachinePool(),
                         createLocalServerMachinePool(),
                         createAdminServerMachinePool());

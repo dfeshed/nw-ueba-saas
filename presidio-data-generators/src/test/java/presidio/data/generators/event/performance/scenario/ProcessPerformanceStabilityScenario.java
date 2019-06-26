@@ -9,8 +9,10 @@ public class ProcessPerformanceStabilityScenario extends EndPointPerformanceStab
 
 
 
-    public ProcessPerformanceStabilityScenario(Instant startInstant, Instant endInstant, double probabilityMultiplier, double usersMultiplier) {
-        super(startInstant, endInstant, probabilityMultiplier,usersMultiplier);
+    public ProcessPerformanceStabilityScenario(Instant startInstant, Instant endInstant,
+                                               int numOfNormalUsers, int numOfAdminUsers, int numOfserviceAccountUsers,
+                                               double probabilityMultiplier) {
+        super(startInstant, endInstant, numOfNormalUsers, numOfAdminUsers, numOfserviceAccountUsers,probabilityMultiplier);
     }
 
     protected void initBuilders(){

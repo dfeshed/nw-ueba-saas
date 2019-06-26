@@ -25,7 +25,7 @@ public class RegistryPerformanceStabilityTest {
         Instant startInstant    = Instant.parse("2010-01-01T06:00:00.00Z");
         Instant endInstant      = Instant.parse("2010-01-01T06:01:00.00Z");
 
-        RegistryPerformanceStabilityScenario scenario = new RegistryPerformanceStabilityScenario(startInstant, endInstant, 1, 0.01);
+        RegistryPerformanceStabilityScenario scenario = new RegistryPerformanceStabilityScenario(startInstant, endInstant,1000, 50, 50, 1);
         scenario.init();
 
         List<Event> events;

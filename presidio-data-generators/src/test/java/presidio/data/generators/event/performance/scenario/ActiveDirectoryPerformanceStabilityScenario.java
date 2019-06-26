@@ -15,10 +15,14 @@ public class ActiveDirectoryPerformanceStabilityScenario extends UserOrientedPer
 
 
     public ActiveDirectoryPerformanceStabilityScenario(Instant startInstant,
-                                            Instant endInstant,
-                                            double probabilityMultiplier,
-                                            double usersMultiplier) {
-        super(startInstant, endInstant, probabilityMultiplier, usersMultiplier);
+                                                       Instant endInstant,
+                                                       int numOfNormalUsers,
+                                                       int numOfAdminUsers,
+                                                       int numOfserviceAccountUsers,
+                                                       double probabilityMultiplier) {
+        super(startInstant, endInstant,
+                numOfNormalUsers, numOfAdminUsers, numOfserviceAccountUsers,
+                probabilityMultiplier);
     }
 
     @Override
