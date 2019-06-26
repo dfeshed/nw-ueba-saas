@@ -424,7 +424,7 @@ const TreeComponent = Component.extend({
           run.cancel(hideEvent);
           hideEvent = null;
         }
-        const checksum = d.data.checksum ? d.data.checksum : d.data['checksum.dst'];
+        const checksum = d.data.checksum ? d.data.checksum : d.data.checksumDst;
         const hashes = [checksum];
 
         const event = run.later(async() => {
