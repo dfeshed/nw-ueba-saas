@@ -1,5 +1,5 @@
 import moment from 'moment';
-import windowProxy from 'component-lib/utils/window-proxy';
+import { windowProxy } from 'component-lib/utils/window-proxy';
 import _ from 'lodash';
 
 const _prepareMetaFormatMap = (language) => {
@@ -63,6 +63,14 @@ export const buildHostsUrl = (selected, contextDetails) => {
 export const buildEventAnalysisUrl = (selected, queryOperator, contextDetails, refocus) => {
   const metaFormatMap = _prepareMetaFormatMap(contextDetails.language);
   const href = windowProxy.currentUri().split('?');
+
+  // If request to drill down is coming from an external engine (not investigate-events), we can't use
+  // url to extract information like service, startTime, endTime.
+  // Make use of contextDetails instead. Send out such params in this object so that
+  // they can be used to create a well formed investigate/events url.
+  if (!href[0].includes('investigate/events')) {
+    return _buildUrlFromQueryInputs(selected, queryOperator, contextDetails, metaFormatMap);
+  }
   const queryParam = (href.length > 1) ? href[1] : '';
   const queryParamArray = queryParam.split('&');
   const mf = queryParamArray.find((param) => _.startsWith(param, 'mf='));
@@ -134,5 +142,27 @@ const serializeQueryParams = (qp = []) => {
   return keys.map((d, i) => `${d}=${values[i]}`).join('&');
   // Once we drop IE11 we should be able to use Object.entries
   // return Object.entries(qp).map((d) => `${d[0]}=${d[1]}`).join('&');
+};
+
+/**
+ * Builds a investigate-events url for context menu options that are coming from an external
+ * engine/addon, like recon addon used in sa, respond.
+ */
+const _buildUrlFromQueryInputs = (selected, queryOperator, contextDetails, metaFormatMap) => {
+  const query = _buildQuery([{ meta: selected.metaName, value: selected.metaValue, operator: queryOperator }], metaFormatMap);
+  const investigateEventsUrl = '/investigate/events';
+  const { serviceId, startTime, endTime } = contextDetails;
+  const qp = {
+    et: endTime,
+    mf: encodeURI(encodeURIComponent(query)),
+    sid: serviceId,
+    st: startTime,
+    rs: 'min',
+    sortField: 'time',
+    sortDir: 'Ascending'
+  };
+  const serializedParams = serializeQueryParams(qp);
+  const path = `${investigateEventsUrl}?${serializedParams}`;
+  return path;
 };
 

@@ -38,6 +38,9 @@ export default Route.extend({
    *
    * If `replace` is set to `true`, then the browser's history will be
    * over-written when that query param changes.
+   *
+   * Might want to take a peek at component-lib/utils/build-url (right-click actions)
+   * while adding/removing params from here.
    * @public
    */
   queryParams: {
