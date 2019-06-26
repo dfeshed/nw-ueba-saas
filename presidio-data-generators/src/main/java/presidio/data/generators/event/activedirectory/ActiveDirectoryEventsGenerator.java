@@ -161,7 +161,7 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
         return "ca=" + objectName + ",CN=Users," + machineDomainDN;
     }
 
-    private String getObjectCanonical(String domainFQDN, String userName) {
+    protected String getObjectCanonical(String domainFQDN, String userName) {
         return domainFQDN + "/Users/" + userName;
     }
 

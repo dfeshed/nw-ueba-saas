@@ -38,7 +38,7 @@ public class RandomMultiMachineEntityGenerator implements IMachineGenerator {
         machineIPGenerator = new RandomIpGenerator();
         osVersionGenerator = new StringCyclicValuesGenerator(OS_VERSION);
 
-        random = new Random();
+        random = new Random(0);
         randomStringClusterGenerator = new RandomStringGenerator(20);
         machineNameGenerator = new RandomNumberedStringGenerator(numOfMachinesPerCluster, 0, machineNamePrefix);
     }

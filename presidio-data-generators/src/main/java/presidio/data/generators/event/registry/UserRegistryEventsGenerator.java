@@ -26,7 +26,7 @@ public class UserRegistryEventsGenerator extends RegistryEventsGenerator{
     public UserRegistryEventsGenerator(){
         super();
         isNextSystemUser = true;
-        random = new Random();
+        random = new Random(0);
     }
 
     public UserRegistryEventsGenerator(ITimeGenerator timeGenerator){

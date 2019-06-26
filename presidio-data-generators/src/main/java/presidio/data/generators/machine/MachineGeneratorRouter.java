@@ -16,7 +16,7 @@ public class MachineGeneratorRouter implements IMachineGenerator{
                 machineGenerators.add(machineGeneratorWeight.getMachineGenerator());
             }
         }
-        random = new Random();
+        random = new Random(0);
     }
 
     @Override
