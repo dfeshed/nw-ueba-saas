@@ -239,6 +239,9 @@ export const htmlStringToElement = (htmlString) => {
 // this.$('.some-element').css('cssProperty')
 // window.getComputedStyle(find('.some-element')).getPropertyValue('flex-grow')
 
+// this.$('.some-element').css('cssProperty', 'value')
+// document.querySelector('.some-element').style.cssProperty = value
+
 //
 // DIMENSIONS
 //

@@ -41,34 +41,53 @@ export default Component.extend(HasTableParent, {
     safeCallback
   },
 
+  scrollEventHandler() {
+    const { element } = this;
+    if (element) {
+      const tableBody = element.closest('.rsa-data-table-body');
+      run.debounce(() => {
+        const left = tableBody.scrollLeft;
+        element.style.left = left;
+        element.style.right = `-${left}px`;
+      }, 0);
+    }
+  },
+
   // Appends (moves) this component's DOM into the DOM of it's table's `body.rows`.
   didInsertElement() {
     this._super(...arguments);
+
     run.schedule('afterRender', () => {
+      const { element } = this;
       const rowsElement = this.get('table.body.rows.element');
       if (!rowsElement) {
         warn('Unable to insert load-more into data-table.body.rows; DOM was not found.', { id: 'component-lib.components.rsa-data-table.load-more.component' });
       } else {
-        this.$().appendTo(rowsElement);
+        if (element) {
+          rowsElement.append(element);
+        }
       }
 
-      const tableBody = this.$().closest('.rsa-data-table-body');
-      tableBody.on('scroll', () => {
-        run.debounce(() => {
-          const left = tableBody.scrollLeft();
-          this.$().css({
-            left,
-            right: `-${left}px`
-          });
-        }, 0);
-      });
+      if (element) {
+        this._scrollEventHandler = this.scrollEventHandler.bind(this);
+
+        const tableBody = element.closest('.rsa-data-table-body');
+        if (tableBody) {
+          tableBody.addEventListener('scroll', this._scrollEventHandler);
+        }
+      }
     });
   },
 
   willDestroyElement() {
     this._super(...arguments);
 
-    const tableBody = this.$().closest('.rsa-data-table-body');
-    tableBody.off('scroll');
+    const { element } = this;
+    if (element) {
+      const tableBody = element.closest('.rsa-data-table-body');
+      if (tableBody) {
+        tableBody.removeEventListener('scroll', this._scrollEventHandler);
+      }
+    }
   }
 });

@@ -233,5 +233,4 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
     // We only need to watch the component's size if lazy rendering is enabled.
     this.set('sizeBindingsEnabled', this.get('table.lazy'));
   }
-})
-;
+});

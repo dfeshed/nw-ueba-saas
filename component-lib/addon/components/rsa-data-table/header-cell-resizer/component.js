@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Component from '@ember/component';
 import { run, next } from '@ember/runloop';
 import { isNumeric } from 'component-lib/utils/jquery-replacement';
@@ -49,10 +48,10 @@ export default Component.extend(HasTableParent, {
     }
     this._dragStartPos = [ e.pageX, e.pageY ];
     this._measureMe();
-    $(document.body).on({
-      mousemove: this._mousemoveCallback,
-      mouseup: this._mouseupCallback
-    });
+
+    document.body.addEventListener('mousemove', this._mousemoveCallback);
+    document.body.addEventListener('mouseup', this._mouseupCallback);
+
     this.set('isDragging', true);
     return false; // disables native browser text selection/highlighting when dragging
   },
@@ -71,15 +70,13 @@ export default Component.extend(HasTableParent, {
 
     next(() => {
       const fn = this.get('columnsConfigDidChange');
-      if ($.isFunction(fn)) {
+      if (typeof fn === 'function') {
         fn('COLUMN_WIDTH');
       }
     });
 
-    $(document.body).off({
-      mousemove: this._mousemoveCallback,
-      mouseup: this._mouseupCallback
-    });
+    document.body.removeEventListener('mousemove', this._mousemoveCallback);
+    document.body.removeEventListener('mouseup', this._mouseupCallback);
   },
 
   /**

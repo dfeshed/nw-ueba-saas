@@ -7,7 +7,6 @@ import layout from './template';
 import { isNumeric } from 'component-lib/utils/jquery-replacement';
 import { next } from '@ember/runloop';
 
-
 export default Component.extend(HasTableParent, {
   layout,
   tagName: 'header',
@@ -49,10 +48,10 @@ export default Component.extend(HasTableParent, {
    * @private
    */
   _tableBodyScrollLeftDidChange: observer('table.body.scrollLeft', function() {
-    if (this._$row) {
+    if (this._row) {
       const left = this.get('table.body.scrollLeft');
       if (isNumeric(left)) {
-        this._$row.css('transform', `translate(-${left}px,0)`);
+        this._row.style.transform = `translate(-${left}px,0)`;
       }
     }
   }),
@@ -79,21 +78,20 @@ export default Component.extend(HasTableParent, {
 
   /**
    * Initialize this element's horizontal translation when it first renders.
-   * This ensures its aligns horizontally with the table body's scrollLeft initially, even if this component finishes r
-   * endering AFTER the table.body, which is not typical but nevertheless possible.
+   * This ensures its aligns horizontally with the table body's scrollLeft initially, even if this component finishes
+   * rendering AFTER the table.body, which is not typical but nevertheless possible.
    * @private
    */
   didInsertElement() {
     this._super(...arguments);
-    this._$row = this.$('.js-header-row');
+    this._row = document.querySelector('.js-header-row');
     this._tableBodyScrollLeftDidChange();
   },
 
   willDestroyElement() {
-    this._$row = null;
+    this._row = null;
     this._super(...arguments);
   },
-
 
   actions: {
     toggleColumn(col) {
