@@ -1,6 +1,6 @@
 import copyToClipboard from 'component-lib/utils/copy-to-clipboard';
 import { buildInvestigateUrl, buildEventAnalysisUrl } from 'component-lib/utils/build-url';
-import windowProxy from 'component-lib/utils/window-proxy';
+import { windowProxy } from 'component-lib/utils/window-proxy';
 
 /**
  * Non Url based OOTB actions List.

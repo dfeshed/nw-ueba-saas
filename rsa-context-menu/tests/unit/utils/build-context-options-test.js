@@ -1,7 +1,7 @@
 import { buildContextOptions } from 'rsa-context-menu/utils/build-context-options';
 import data from '../../helpers/actions-data';
 import { module, test } from 'qunit';
-import windowProxy from 'component-lib/utils/window-proxy';
+import { windowProxy } from 'component-lib/utils/window-proxy';
 import sinon from 'sinon';
 
 const selection = {

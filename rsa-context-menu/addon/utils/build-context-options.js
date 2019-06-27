@@ -4,7 +4,7 @@ import {
   nonUrlBasedActions,
   nonSupportedActionList
 } from 'rsa-context-menu/utils/non-url-actions-handler';
-import windowProxy from 'component-lib/utils/window-proxy';
+import { windowProxy } from 'component-lib/utils/window-proxy';
 
 /**
  * This function will remove all disabled functions.

@@ -1,6 +1,5 @@
 import { module, test } from 'qunit';
-import sinon from 'sinon';
-import windowProxy from 'component-lib/utils/window-proxy';
+import { urlUtil } from 'component-lib/utils/window-proxy';
 import { buildInvestigateUrl, buildHostsUrl, buildEventAnalysisUrl } from 'component-lib/utils/build-url';
 
 const selection = {
@@ -43,28 +42,43 @@ module('Unit | Utility | build-url', function() {
     assert.equal(hostUrl, '/investigate/hosts?query=ip.src%20%3D%2017.127.255.150', 'expected host url formed');
   });
 
-  test('it forms the Event Analysis Url', function(assert) {
+  test('it forms the Event Analysis Url with pdhash if its there in the url', function(assert) {
+    urlUtil.getWindowLocationHRef = function() {
+      return 'https://0.0.0.0/investigate/events?et=1561555598&pdhash=23vfg&sid=58ad1076-2eee-48b3-b53e-ef8e2ce5a668&st=1560950798&sortField=time&sortDir=Ascending';
+    };
     const eventEnalysisUrl = buildEventAnalysisUrl(selection, '=', contextDetails);
     assert.ok(eventEnalysisUrl.indexOf('pdhash') > 0, 'expected pdhash in url formed');
     assert.ok(eventEnalysisUrl.indexOf('&mf=ip.src%2520%253D%252017.127.255.150') > 0, 'expected host url formed');
   });
 
-  test('it forms the Event Analysis for refocus ', function(assert) {
+  test('it forms the Event Analysis Url with no pdhash if its not there in the url', function(assert) {
+    urlUtil.getWindowLocationHRef = function() {
+      return 'https://0.0.0.0/investigate/events?foo=bar';
+    };
+    const eventEnalysisUrl = buildEventAnalysisUrl(selection, '=', contextDetails);
+    assert.notOk(eventEnalysisUrl.indexOf('pdhash') > 0, 'expected pdhash in url formed');
+    assert.ok(eventEnalysisUrl.indexOf('&mf=ip.src%2520%253D%252017.127.255.150') > 0, 'expected host url formed');
+  });
+
+  test('it forms the Event Analysis for refocus, throws away pdhash', function(assert) {
+    urlUtil.getWindowLocationHRef = function() {
+      return 'https://0.0.0.0/investigate/events?et=1561555598&pdhash=23vfg&sid=58ad1076-2eee-48b3-b53e-ef8e2ce5a668&st=1560950798&sortField=time&sortDir=Ascending';
+    };
     selection.metaValue = '17.127.255.250';
     const eventEnalysisUrl = buildEventAnalysisUrl(selection, '=', contextDetails, true);
     assert.ok(eventEnalysisUrl.indexOf('mf=ip.src%2520%253D%252017.127.255.250') > 0, 'expected host url formed');
-    assert.notOk(eventEnalysisUrl.indexOf('pdhash') === -1, 'expected no pdhash url formed');
+    assert.ok(eventEnalysisUrl.indexOf('pdhash') === -1, 'expected no pdhash url formed');
     selection.metaValue = '17.127.255.150';
   });
 
   test('it forms the Event Analysis for Apply Drill with complex filter', function(assert) {
-    const currentUriStub = sinon.stub(windowProxy, 'currentUri')
-      .callsFake(() => 'www.google.com?mf=ip.src%2520%253D%252017.127.255.250');
+    urlUtil.getWindowLocationHRef = function() {
+      return 'https://0.0.0.0/investigate/events?mf=ip.src%2520%253D%252017.127.255.250';
+    };
     selection.metaValue = '17.127.255.150';
     const eventEnalysisUrl = buildEventAnalysisUrl(selection, '=', contextDetails, false);
     assert.ok(eventEnalysisUrl.indexOf('mf=ip.src%2520%253D%252017.127.255.250/ip.src%2520%253D%252017.127.255.150') > 0, 'expected host url formed');
     selection.metaValue = '17.127.255.150';
-    currentUriStub.restore();
   });
 
 });

@@ -2,7 +2,7 @@
 import { nonSupportedActionList, nonUrlBasedActions } from 'rsa-context-menu/utils/non-url-actions-handler';
 import { module, test } from 'qunit';
 import sinon from 'sinon';
-import windowProxy from 'component-lib/utils/window-proxy';
+import { windowProxy } from 'component-lib/utils/window-proxy';
 
 const selection = {
   'moduleName': 'EventAnalysisPanel',
