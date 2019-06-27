@@ -2,7 +2,7 @@ import datetime
 import logging
 import six
 from airflow.operators.dagrun_operator import TriggerDagRunOperator
-from psycopg2._psycopg import IntegrityError
+from sqlalchemy.exc import IntegrityError
 
 
 class ExpandedTriggerDagRunOperator(TriggerDagRunOperator):
