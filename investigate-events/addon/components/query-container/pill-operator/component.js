@@ -407,6 +407,7 @@ export default Component.extend({
    * Active tab was toggled.
    */
   _afterOptionsTabToggle() {
+    this._afterOptionsMenu.clearHighlight();
     const el = this.element.querySelector(POWER_SELECT_INPUT);
     const { value } = el;
     this._broadcast(MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, { data: value, dataSource: this.get('source') });

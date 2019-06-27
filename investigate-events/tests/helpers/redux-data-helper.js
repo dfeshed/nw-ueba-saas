@@ -543,6 +543,11 @@ export default class DataHelper {
     return this;
   }
 
+  pillsDataText(pD = TEXT_PILL_DATA) {
+    _set(this.state, 'queryNode.pillsData', pD);
+    return this;
+  }
+
   pillsDataVaried(pD) {
     if (!pD) {
       pD = [...DEFAULT_PILLS_DATA, ...COMPLEX_PILL_DATA, ...TEXT_PILL_DATA];

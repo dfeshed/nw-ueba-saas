@@ -292,6 +292,10 @@ const RecentQueryComponent = Component.extend({
       this.set('powerSelectAPI', powerSelectAPI);
       if (this.get('prepopulatedRecentQueryText') !== undefined) {
         powerSelectAPI.actions.search(this.get('prepopulatedRecentQueryText'));
+        if (powerSelectAPI.resultsCount === 0) {
+          const hasTextPill = this.get('hasTextPill');
+          this._afterOptionsMenu.highlightIndex = hasTextPill ? 0 : 1;
+        }
       }
       powerSelectAPI.actions.open();
       // If RQ tab is open and unfilteredList is empty, we need to add
@@ -393,6 +397,7 @@ const RecentQueryComponent = Component.extend({
    * Active tab was toggled.
    */
   _afterOptionsTabToggle() {
+    this._afterOptionsMenu.clearHighlight();
     const el = this.element.querySelector(POWER_SELECT_INPUT);
     const { value } = el;
     this._addNoResultsMessage(' ');

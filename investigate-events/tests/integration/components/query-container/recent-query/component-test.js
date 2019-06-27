@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, typeInSearch } from 'ember-power-select/test-support/helpers';
-import { click, find, findAll, render, triggerKeyEvent, typeIn, fillIn } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, render, triggerKeyEvent, typeIn } from '@ember/test-helpers';
 
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -12,8 +12,7 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
-  AFTER_OPTION_TEXT_DISABLED_LABEL,
-  AFTER_OPTION_TAB_RECENT_QUERIES
+  AFTER_OPTION_TEXT_DISABLED_LABEL
 } from 'investigate-events/constants/pill';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -56,12 +55,10 @@ module('Integration | Component | Recent Query', function(hooks) {
       .recentQueriesUnfilteredList()
       .recentQueriesCallInProgress()
       .build();
-    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
 
     await render(hbs`
       {{query-container/recent-query
         isActive=true
-        activePillTab=activePillTab
       }}
     `);
     await clickTrigger(PILL_SELECTORS.recentQuery);
@@ -94,14 +91,12 @@ module('Integration | Component | Recent Query', function(hooks) {
 
   test('it broadcasts a message to toggle tabs when tab or shift tab is pressed', async function(assert) {
     assert.expect(2);
-    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
     this.set('handleMessage', (type) => {
       assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'Correct message sent up');
     });
     await render(hbs`
       {{query-container/recent-query
         isActive=true
-        activePillTab=activePillTab
         sendMessage=(action handleMessage)
       }}
     `);
@@ -112,7 +107,6 @@ module('Integration | Component | Recent Query', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', TAB_KEY, modifiers);
   });
 
-
   test('it broadcasts a message when some text is typed in recent queries tab', async function(assert) {
     const done = assert.async();
     const X_CHAR = 88;
@@ -122,8 +116,6 @@ module('Integration | Component | Recent Query', function(hooks) {
       .recentQueriesUnfilteredList()
       .recentQueriesCallInProgress()
       .build();
-
-    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
 
     this.set('handleMessage', (type, { data, dataSource }) => {
       if (type === MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED) {
@@ -136,7 +128,6 @@ module('Integration | Component | Recent Query', function(hooks) {
     await render(hbs`
       {{query-container/recent-query
         isActive=true
-        activePillTab=activePillTab
         sendMessage=(action handleMessage)
       }}
     `);
@@ -176,11 +167,9 @@ module('Integration | Component | Recent Query', function(hooks) {
   test('it shows Advanced Options to create different types of pill in recent query tab', async function(assert) {
     const _hasOption = (arr, str) => arr.some((d) => d.innerText.includes(str));
 
-    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
     await render(hbs`
       {{query-container/recent-query
         isActive=true
-        activePillTab=activePillTab
       }}
     `);
     await clickTrigger(PILL_SELECTORS.recentQuery);
@@ -192,7 +181,6 @@ module('Integration | Component | Recent Query', function(hooks) {
 
   test('it broadcasts a message to create a free-form pill when the ENTER key is pressed from recent query tab', async function(assert) {
     const done = assert.async();
-    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.ok(Array.isArray(data), 'correct data type');
@@ -219,7 +207,6 @@ module('Integration | Component | Recent Query', function(hooks) {
       .recentQueriesCallInProgress()
       .build();
 
-    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
     await render(hbs`
       {{query-container/recent-query
         isActive=true
@@ -233,11 +220,9 @@ module('Integration | Component | Recent Query', function(hooks) {
 
   test('If no options are present, Text Filter is highlighted by default', async function(assert) {
 
-    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
     await render(hbs`
       {{query-container/recent-query
         isActive=true
-        activePillTab=activePillTab
       }}
     `);
     await clickTrigger(PILL_SELECTORS.recentQuery);
@@ -254,11 +239,9 @@ module('Integration | Component | Recent Query', function(hooks) {
       .recentQueriesCallInProgress()
       .build();
 
-    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
     await render(hbs`
       {{query-container/recent-query
         isActive=true
-        activePillTab=activePillTab
       }}
     `);
 
@@ -285,11 +268,9 @@ module('Integration | Component | Recent Query', function(hooks) {
       .recentQueriesUnfilteredList()
       .recentQueriesCallInProgress()
       .build();
-    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
     await render(hbs`
       {{query-container/recent-query
         isActive=true
-        activePillTab=activePillTab
       }}
     `);
     await clickTrigger(PILL_SELECTORS.recentQuery);
@@ -306,7 +287,6 @@ module('Integration | Component | Recent Query', function(hooks) {
 
   test('it broadcasts a message to create a text pill', async function(assert) {
     const done = assert.async();
-    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_TEXT_PILL) {
         assert.ok(Array.isArray(data), 'correct data type');
@@ -330,13 +310,10 @@ module('Integration | Component | Recent Query', function(hooks) {
   });
 
   test('it renders a disabled option for text filters when there is a text filter already in recent query tab', async function(assert) {
-
-    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
     await render(hbs`
       {{query-container/recent-query
         isActive=true
         hasTextPill=true
-        activePillTab=activePillTab
       }}
     `);
     await clickTrigger(PILL_SELECTORS.recentQuery);
@@ -349,11 +326,9 @@ module('Integration | Component | Recent Query', function(hooks) {
   test('it highlights proper Advanced Option if all EPS options filtered out in recent query tab', async function(assert) {
     let option;
 
-    this.set('activePillTab', AFTER_OPTION_TAB_RECENT_QUERIES);
     await render(hbs`
       {{query-container/recent-query
         isActive=true
-        activePillTab=activePillTab
       }}
     `);
     await clickTrigger(PILL_SELECTORS.recentQuery);
@@ -366,6 +341,31 @@ module('Integration | Component | Recent Query', function(hooks) {
     // Type in complex text
     await typeInSearch('(x)');
     option = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent;
+    assert.ok(option.includes(AFTER_OPTION_FREE_FORM_LABEL), 'Free-Form Filter was not highlighted');
+  });
+
+  test('it highlights Text Filter Advanced Option if pre-populated with query text that does not match any recent queries', async function(assert) {
+    await render(hbs`
+      {{query-container/recent-query
+        isActive=true
+        prepopulatedRecentQueryText='browser'
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.recentQuery);
+    const option = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent;
+    assert.ok(option.includes(AFTER_OPTION_TEXT_LABEL), 'Text Filter was not highlighted');
+  });
+
+  test('it highlights Free-Form Filter Advanced Option if pre-populated with query text that does not match any recent queries, and a text filter exists', async function(assert) {
+    await render(hbs`
+      {{query-container/recent-query
+        hasTextPill=true
+        isActive=true
+        prepopulatedRecentQueryText='browser'
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.recentQuery);
+    const option = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent;
     assert.ok(option.includes(AFTER_OPTION_FREE_FORM_LABEL), 'Free-Form Filter was not highlighted');
   });
 
