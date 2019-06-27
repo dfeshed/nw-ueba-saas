@@ -13,8 +13,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import static presidio.data.generators.event.network.NetworkEventsGenerator.DEFAULT_FQDN_END_INDEX;
-import static presidio.data.generators.event.network.NetworkEventsGenerator.DEFAULT_REGULAR_PORT_BELOW;
+
+import static presidio.data.generators.event.network.NetworkEventsGenerator.*;
 
 public class NetworkBuilderHelper {
     private NetworkEventsGenerator eventGen;
@@ -22,6 +22,7 @@ public class NetworkBuilderHelper {
     private static Map<String, String> valuesHolder = new ConcurrentHashMap<>();
     private IBaseGenerator<String> fqdnUncommonGenerator = new HostnameGenerator(DEFAULT_FQDN_END_INDEX+1,1999);
     private final long UNCOMMON_PORT_START_INDEX = (long) (DEFAULT_REGULAR_PORT_BELOW + 1);
+    private Function<Long, String> uncommonIP = index -> "10."+ index + "." + DEFAULT_IP_3D_BYTE+1 + ".200";
 
     NetworkBuilderHelper(NetworkEventsGenerator eventGen){
         this.eventGen = eventGen;
@@ -153,6 +154,21 @@ public class NetworkBuilderHelper {
     public List<NetworkEvent> generateAndAppendTo(List<NetworkEvent> eventsList) throws GeneratorException {
         eventsList.addAll(eventGen.generate());
         return eventsList;
+    }
+
+    public NetworkBuilderHelper currentUnusualSourceIp(){
+        String key = "SourceIp";
+        stateHolder.putIfAbsent(key,0L);
+        eventGen.setSourceIpGenerator(new FixedValueGenerator<>(uncommonIP.apply(stateHolder.get(key))));
+        return this;
+    }
+
+    public NetworkBuilderHelper nextUnusualSourceIp(){
+        String key = "SourceIp";
+        stateHolder.putIfAbsent(key,0L);
+        stateHolder.computeIfPresent(key,(k,v) -> v+1);
+        eventGen.setDestinationOrganizationGenerator(new FixedValueGenerator<>(uncommonIP.apply(stateHolder.get(key))));
+        return this;
     }
 
 

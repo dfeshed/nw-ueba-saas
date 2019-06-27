@@ -5,16 +5,12 @@ import com.google.common.collect.Lists;
 import presidio.data.domain.Location;
 import presidio.data.domain.event.network.NETWORK_DIRECTION_TYPE;
 import presidio.data.domain.event.network.NetworkEvent;
-import presidio.data.generators.FixedValueGenerator;
 import presidio.data.generators.IBaseGenerator;
 import presidio.data.generators.authenticationlocation.AuthenticationLocationCyclicGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.dictionary.CompanyNameCyclicGenerator;
 import presidio.data.generators.common.dictionary.SingleWordCyclicGenerator;
-import presidio.data.generators.common.random.Md5RandomGenerator;
-import presidio.data.generators.common.random.RandomIntegerGenerator;
-import presidio.data.generators.common.random.RandomIpGenerator;
-import presidio.data.generators.common.random.RandomStringGenerator;
+import presidio.data.generators.common.random.*;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.event.AbstractEventGenerator;
 import presidio.data.generators.hostname.HostnameGenerator;
@@ -26,6 +22,10 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
     public static final int DEFAULT_REGULAR_PORT_BELOW = 9999;
     public static final int DEFAULT_FQDN_START_INDEX = 0;
     public static final int DEFAULT_FQDN_END_INDEX = 1500;
+    public static final int DEFAULT_IP_3D_BYTE = 0;
+    public static final int DEFAULT_MIN_NUM_OF_BYTES = 256;
+    public static final int DEFAULT_MAX_NUM_OF_BYTES = 2560;
+
 
     // default generators:
     private IBaseGenerator<String> sslSubjectGenerator = new CompanyNameCyclicGenerator(0);
@@ -37,13 +37,13 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
     private IBaseGenerator<String>  dataSourceGenerator = new RandomStringGenerator(6,7);
     private IBaseGenerator<String> fqdnGenerator = new HostnameGenerator(DEFAULT_FQDN_START_INDEX,DEFAULT_FQDN_END_INDEX);
     private IBaseGenerator<String> dstIpGenerator = new RandomIpGenerator();
-    private IBaseGenerator<String> sourceIpGenerator = new RandomIpGenerator();
+    private IBaseGenerator<String> sourceIpGenerator = new RandomIpGenerator(null,null,Integer.toString(DEFAULT_IP_3D_BYTE),null);
     private IBaseGenerator<String>  sourceNetnameGen = new SingleWordCyclicGenerator(0);
     private IBaseGenerator<String>  destinationNetnameGen = new SingleWordCyclicGenerator(201);
     private IBaseGenerator<Location> locationGen = new AuthenticationLocationCyclicGenerator();
     private IBaseGenerator<String>  eventIdGenerator = new Md5RandomGenerator();
-    private IBaseGenerator<Long>  numOfBytesSentGenerator =  new FixedValueGenerator<>(1024L);
-    private IBaseGenerator<Long>  numOfBytesReceivedGenerator = new FixedValueGenerator<>(2048L);
+    private IBaseGenerator<Long>  numOfBytesSentGenerator =  new RandomLongGenerator(DEFAULT_MIN_NUM_OF_BYTES,DEFAULT_MAX_NUM_OF_BYTES);
+    private IBaseGenerator<Long>  numOfBytesReceivedGenerator = new RandomLongGenerator(DEFAULT_MIN_NUM_OF_BYTES,DEFAULT_MAX_NUM_OF_BYTES);
     private IBaseGenerator<Integer>  sourcePortGenerator = new RandomIntegerGenerator(0, DEFAULT_REGULAR_PORT_BELOW);
     private IBaseGenerator<Integer>  destinationPortGenerator = new RandomIntegerGenerator(0, DEFAULT_REGULAR_PORT_BELOW);
 
