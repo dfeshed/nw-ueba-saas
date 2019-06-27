@@ -20,12 +20,15 @@
   <span class="events-list-icon">Events List</span>
 {{/rsa-form-button}}
 
-{{#rsa-form-button
-  title=(t 'respond.incident.journalTasksRelated')
-  class="journal-and-tasks js-test-journal"
-  isActive=isShowingTasksAndJournal
-  isIconOnly=true
-  defaultAction=(action "toggleTasksAndJournalPanel")
-}}
-  {{rsa-icon name='layout-2' size='small'}}
-{{/rsa-form-button}}
+{{#unless isShowingTasksAndJournal}}
+  {{#rsa-form-button
+    title=(t 'respond.incident.journalTasksRelated')
+    class="journal-and-tasks js-test-journal"
+    isActive=isShowingTasksAndJournal
+    isStandard=true
+    defaultAction=(action "toggleTasksAndJournalPanel")
+  }}
+    {{rsa-icon name='checklist' size='small'}}
+    <span class="journal-tasks-icon">Journal & Tasks</span>
+  {{/rsa-form-button}}
+{{/unless}}

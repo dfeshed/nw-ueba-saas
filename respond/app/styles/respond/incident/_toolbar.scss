@@ -11,10 +11,14 @@
     .rsa-form-button {
       border-style: unset;
 
-      .nodal-graph-icon, .events-list-icon {
+      .nodal-graph-icon, .events-list-icon, .journal-tasks-icon {
         vertical-align: text-bottom;
         padding-left: 2px;
       }
+    }
+
+    &.journal-and-tasks .rsa-form-button {
+      border-style: solid;
     }
   }
 }

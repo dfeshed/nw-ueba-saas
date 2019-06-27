@@ -1,45 +1,38 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import wait from 'ember-test-helpers/wait';
-import DataHelper from '../../../../helpers/data-helper';
-import sinon from 'sinon';
-import UIStateActions from 'respond/actions/creators/incidents-creators';
+import { click, find, render } from '@ember/test-helpers';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { toggleTasksAndJournalPanel } from 'respond/actions/creators/incidents-creators';
 
-let dispatchSpy;
+let redux;
 
-moduleForComponent('rsa-incident-toolbar', 'Integration | Component | Incident Toolbar', {
-  integration: true,
-  resolver: engineResolverFor('respond'),
-  beforeEach() {
-    this.inject.service('redux');
-    const redux = this.get('redux');
-    dispatchSpy = sinon.spy(redux, 'dispatch');
-  },
-  afterEach() {
-    dispatchSpy.restore();
-  }
-});
-
-test('it renders', function(assert) {
-  this.render(hbs`{{rsa-incident/toolbar}}`);
-  return wait().then(() => {
-    const $el = this.$('.rsa-incident-toolbar');
-    assert.equal($el.length, 1, 'Expected to find toolbar root element in DOM.');
-
-    const $journal = $el.find('.js-test-journal');
-    assert.equal($journal.length, 1, 'Expected to find Journal toggle element in DOM.');
+module('Integration | Component | Incident Toolbar', function(hooks) {
+  setupRenderingTest(hooks, {
+    resolver: engineResolverFor('respond')
   });
-});
 
-test('clicking Journal button triggers action', function(assert) {
-  new DataHelper(this.get('redux')).fetchIncidentDetails();
-  this.render(hbs`{{rsa-incident/toolbar}}`);
-  return wait().then(() => {
-    const actionSpy = sinon.spy(UIStateActions, 'toggleTasksAndJournalPanel');
-    this.$('.js-test-journal button').click();
-    assert.ok(dispatchSpy.callCount);
-    assert.ok(actionSpy.calledOnce);
-    actionSpy.restore();
+  hooks.beforeEach(function() {
+    initialize(this.owner);
+    redux = this.owner.lookup('service:redux');
+    // make sure sidebar is closed
+    if (redux.getState().respond.incident.isShowingTasksAndJournal === true) {
+      redux.dispatch(toggleTasksAndJournalPanel());
+    }
+  });
+
+  test('it renders', async function(assert) {
+    await render(hbs`{{rsa-incident/toolbar}}`);
+    assert.ok(find('.rsa-incident-toolbar'), 'Toolbar is rendered');
+    assert.ok(find('.js-test-journal'), 'Journal & Tasks button is rendered');
+    assert.ok(find('.viz'), 'Nodal Graph button is rendered');
+    assert.ok(find('.datasheet'), 'Events List button is rendered');
+  });
+
+  test('clicking Journal button triggers toggle action', async function(assert) {
+    await render(hbs`{{rsa-incident/toolbar}}`);
+    await click(find('.js-test-journal .rsa-form-button'));
+    assert.notOk(find('.js-test-journal'), 'the journal button is now hidden');
   });
 });
