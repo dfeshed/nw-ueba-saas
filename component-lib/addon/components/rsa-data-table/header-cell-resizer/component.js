@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { run, next } from '@ember/runloop';
-import { isNumeric } from 'component-lib/utils/jquery-replacement';
+import { isNumeric, getInnerWidth } from 'component-lib/utils/jquery-replacement';
 import HasTableParent from '../mixins/has-table-parent';
 import layout from './template';
 
@@ -103,6 +103,7 @@ export default Component.extend(HasTableParent, {
     this._resizeColumn = target;
 
     if (target) {
+      const { element } = this;
       let w = target.get('width');
 
       // If the `width` is a numeric with either no units (e.g., '20') or `px` units (e.g., '20px'), coerce it into integer pixels.
@@ -110,8 +111,9 @@ export default Component.extend(HasTableParent, {
       if (isNumeric(w) || ((typeof w === 'string') && w.match(/px$/))) {
         w = parseInt(w, 10);
       } else {
-        // In case of % this.$() is returing resizer not the actual column. Due to that initial width is always 9px.
-        w = parseInt(this.$().parent().prev().innerWidth(), 10);
+        // In case of % elem is returing resizer not the actual column. Due to that initial width is always 9px.
+        const elem = element.parentElement.previousElementSibling;
+        w = parseInt(getInnerWidth(elem), 10);
       }
       this._initialWidth = w;
     }

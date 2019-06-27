@@ -1,6 +1,5 @@
 /* global addResizeListener */
 /* global removeResizeListener */
-import $ from 'jquery';
 import { assert } from '@ember/debug';
 import computed from 'ember-computed';
 import Component from '@ember/component';
@@ -8,6 +7,7 @@ import EmberObject, { get, set, observer } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import { run, once, schedule } from '@ember/runloop';
 import DomWatcher from 'component-lib/mixins/dom/watcher';
+import { getOuterHeight, getHeight, getWidth } from 'component-lib/utils/jquery-replacement';
 
 const DEFAULT_COLUMN_WIDTH = 100;
 const DEFAULT_COLUMN_VISIBILITY = true;
@@ -235,7 +235,12 @@ export default Component.extend(DomWatcher, {
     }
     // Complete table need to re-render in case column config is changing.
     // Ensuring table starts from left (Scrollbar needs to start from begining).
-    this.$('.rsa-data-table-body').scrollLeft(0);
+
+    const dataTableBody = document.querySelector('.rsa-data-table-body');
+    if (dataTableBody) {
+      dataTableBody.scroll(0, null);
+    }
+
     // Need to reset the flag for new column groups
     this.set('needNotAdjustWidth', false);
     if (!columnsConfig || !columnsConfig.map) {
@@ -377,7 +382,7 @@ export default Component.extend(DomWatcher, {
    * @public
    */
   _needToAdjust(adjust, column) {
-    const [ domElement ] = this.$('.rsa-data-table-body-row');
+    const domElement = document.querySelector('.rsa-data-table-body-row');
     if (adjust >= 0 && domElement && domElement.scrollWidth <= domElement.clientWidth) {
       const width = adjust + get(column, 'width');
       set(column, 'width', width);
@@ -405,7 +410,8 @@ export default Component.extend(DomWatcher, {
     const noOfColumns = hasCheckbox ? columns.length - 1 : columns.length;
     const resizedColumns = columns.filterBy('resizedOnce', true).length;
     // Get view port width.
-    const rowWidth = this.$().width();
+    const { element } = this;
+    const rowWidth = getWidth(element);
     const diff = rowWidth - sum;
     // Need to adjust width only if view port is more than total cell width.
     if (diff > 0) {
@@ -517,10 +523,20 @@ export default Component.extend(DomWatcher, {
         } else {
           selectedItemIndex = this.get('selectedIndex') + 1;
           selectedItem = items.objectAt(selectedItemIndex);
-          scrollTop = (selectedItemIndex * $('.rsa-data-table-body-row').outerHeight()) + this.get('prevGroupingLabelsHeight');
+          const dataTableBodyRow = document.querySelector('.rsa-data-table-body-row');
+          const outerHeight = getOuterHeight(dataTableBodyRow);
+          scrollTop = (selectedItemIndex * outerHeight) + this.get('prevGroupingLabelsHeight');
         }
 
-        $('.rsa-data-table-body').animate({ scrollTop }, 0);
+        const dataTableBody = document.querySelector('.rsa-data-table-body');
+
+        // do not 'smooth' if going from bottom of table to top
+        if (this.get('selectedIndex') === (items.get('length') - 1)) {
+          dataTableBody.scroll({ top: scrollTop });
+
+        } else {
+          dataTableBody.scroll({ top: scrollTop, behavior: 'smooth' });
+        }
         fn(selectedItem, selectedItemIndex, e, this);
       }
     }
@@ -547,14 +563,24 @@ export default Component.extend(DomWatcher, {
           selectedItem = this.get('items').objectAt(selectedItemIndex);
           // when vertical scroll is present, it will scroll to bottom,
           // which was not happening before.
-          scrollTop = $('.rsa-data-table-body')[0].scrollHeight;
+          scrollTop = document.querySelector('.rsa-data-table-body').scrollHeight;
+
         } else {
           selectedItemIndex = this.get('selectedIndex') - 1;
           selectedItem = this.get('items').objectAt(selectedItemIndex);
-          scrollTop = (selectedItemIndex * $('.rsa-data-table-body-row').outerHeight()) + this.get('prevGroupingLabelsHeight');
+          const dataTableBodyRow = document.querySelector('.rsa-data-table-body-row');
+          const outerHeight = getOuterHeight(dataTableBodyRow);
+          scrollTop = (selectedItemIndex * outerHeight) + this.get('prevGroupingLabelsHeight');
         }
 
-        $('.rsa-data-table-body').animate({ scrollTop }, 0);
+        const dataTableBody = document.querySelector('.rsa-data-table-body');
+
+        if (this.get('selectedIndex') < 1) {
+          dataTableBody.scroll({ top: scrollTop });
+
+        } else {
+          dataTableBody.scroll({ top: scrollTop, behavior: 'smooth' });
+        }
         fn(selectedItem, selectedItemIndex, e, this);
       }
     }
@@ -612,6 +638,7 @@ export default Component.extend(DomWatcher, {
    * @private
    */
   _scrollToInitial: function() {
+
     let _callCount = 0;
     return function(selectedIndex) {
       // Don't want to try forever, if this recurses too much, just stop
@@ -627,14 +654,14 @@ export default Component.extend(DomWatcher, {
           return;
         }
 
-        // First row needed to measure height of items so can calculate how far
-        // to scroll
-        const $firstRow = this.$('.rsa-data-table-body-row:first-child');
+        // First row needed to measure height of items to calculate how far to scroll
+        const firstRow = document.querySelectorAll('.rsa-data-table-body-row').item(0);
+
         // Check selected index is a valid number before attempting scrollTop.
         // This ensures we don't calculate howFarToScrollTable on a negative index.
-        if (selectedIndex >= 0 && !!$firstRow) {
-          const heightForAllTableRows = this.$('.rsa-data-table-body-rows').height();
-          let howFarToScrollTable = $firstRow.outerHeight() * selectedIndex;
+        if (selectedIndex >= 0 && !!firstRow) {
+          const heightForAllTableRows = getHeight(document.querySelector('.rsa-data-table-body-rows'));
+          let howFarToScrollTable = getOuterHeight(firstRow) * selectedIndex;
           // Data could be flowing in over time, so the number of rows in the
           // table may not immediately be enough to scroll to the selected row.
           // If the height of the container surpasses where the item should be,
@@ -645,7 +672,7 @@ export default Component.extend(DomWatcher, {
           }
 
           if (heightForAllTableRows >= howFarToScrollTable) {
-            this.$('.rsa-data-table-body').scrollTop(howFarToScrollTable);
+            document.querySelector('.rsa-data-table-body').scroll(null, howFarToScrollTable);
             return;
           }
         }
@@ -680,7 +707,7 @@ export default Component.extend(DomWatcher, {
 
     columnsConfigDidChange(changedConfig) {
       const fn = this.get('onColumnConfigChange');
-      if ($.isFunction(fn)) {
+      if (typeof fn === 'function') {
         const columns = this.get('columns').filterBy('selected', true);
         fn.apply(this, [changedConfig, columns]);
       }

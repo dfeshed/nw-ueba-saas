@@ -11,7 +11,7 @@ import { htmlSafe } from '@ember/string';
 import { set } from '@ember/object';
 import Mixin from '@ember/object/mixin';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
-import { htmlStringToElement } from 'component-lib/utils/jquery-replacement';
+import { htmlStringToElement, getOuterHeight } from 'component-lib/utils/jquery-replacement';
 
 export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
   classNames: 'rsa-data-table-body-row',
@@ -146,7 +146,8 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, {
   // When size bindings are enabled, this callback will be notified of changes in size.
   // Responsible for updating the table's `_rowHeight` property, which is used to layout rows via absolute positioning.
   sizeDidChange() {
-    set(this.get('table.body'), '_rowHeight', this.$().outerHeight(true));
+    const { element } = this;
+    set(this.get('table.body'), '_rowHeight', getOuterHeight(element, true));
   },
 
   // Enables size bindings only if this is a "size sample" row.

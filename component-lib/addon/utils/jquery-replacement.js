@@ -8,6 +8,7 @@ export const offset = (elem) => {
     left: rect.left + win.pageXOffset
   };
 };
+
 /**
  * Tests input to see if it's an empty object.
  * @param {object} obj
@@ -23,6 +24,37 @@ export const isNumeric = (x) => {
   return !Array.isArray(x) && (x - parseFloat(x) + 1) >= 0;
 };
 
+export const isWindow = (obj) => {
+  return obj != null && obj === obj.window;
+};
+
+/**
+ * jQuery .outerHeight()
+ */
+export const getOuterHeight = (elem, includeMargin = false) => {
+  if (isWindow(elem)) {
+    return elem.innerHeight;
+  }
+
+  // if Document node
+  if (elem.nodeType === 9) {
+    const doc = elem.documentElement;
+
+    return Math.max(elem.body.scrollHeight, doc.scrollHeight,
+      elem.body.offsetHeight, doc.offsetHeight, doc.clientHeight);
+  }
+
+  const paddingY = getPaddingY(elem);
+  const borderY = getBorderY(elem);
+  const marginY = getMarginY(elem);
+
+  if (includeMargin) {
+    return elem.getBoundingClientRect().height + paddingY + borderY + marginY;
+  } else {
+    return elem.getBoundingClientRect().height + paddingY + borderY;
+  }
+};
+
 /**
  * jQuery .height()
  * @param {*} elem
@@ -33,14 +65,13 @@ export const getHeight = (elem) => {
   const borderY = getBorderY(elem);
   let height;
 
-  // .offsetHeight includes padding and border
-  // jQuery .height() does not
-  if (elem.offsetHeight !== undefined) {
-    height = elem.offsetHeight - paddingY - borderY;
-
-  } else { // CSS border box
-    if (elem.getClientRects().length > 0) {
-      height = elem.getBoundingClientRect().height;
+  if (elem.getClientRects().length > 0) {
+    height = elem.getBoundingClientRect().height;
+  } else {
+    // .offsetHeight includes padding and border
+    // jQuery .height() does not
+    if (elem.offsetHeight !== undefined) {
+      height = elem.offsetHeight - paddingY - borderY;
     }
   }
 
@@ -54,6 +85,37 @@ export const getHeight = (elem) => {
 };
 
 /**
+ * jQuery .innerWidth()
+ * @param {*} elem
+ */
+export const getInnerWidth = (elem) => {
+  const paddingX = getPaddingX(elem);
+  let width;
+
+  if (isWindow(elem)) {
+    return elem.document.documentElement.clientWidth;
+  }
+
+  // if Document node
+  if (elem.nodeType === 9) {
+    const doc = elem.documentElement;
+
+    return Math.max(elem.body.scrollHeight, doc.scrollHeight,
+      elem.body.offsetHeight, doc.offsetHeight, doc.clientHeight);
+  }
+
+  if (elem.getClientRects().length > 0) {
+    width = elem.getBoundingClientRect().width + paddingX;
+  } else {
+    if (elem.clientWidth !== undefined) {
+      width = elem.clientWidth;
+    }
+  }
+
+  return width;
+};
+
+/**
  * jQuery .width()
  * @param {*} elem
  */
@@ -63,14 +125,13 @@ export const getWidth = (elem) => {
   const borderX = getBorderX(elem);
   let width;
 
-  // .offsetWidth includes padding and border
-  // jQuery .width() does not
-  if (elem.offsetWidth !== undefined) {
-    width = elem.offsetWidth - paddingX - borderX;
-
-  } else { // CSS border box
-    if (elem.getClientRects().length > 0) {
-      width = elem.getBoundingClientRect().width;
+  if (elem.getClientRects().length > 0) {
+    width = elem.getBoundingClientRect().width;
+  } else {
+    // .offsetWidth includes padding and border
+    // jQuery .width() does not
+    if (elem.offsetWidth !== undefined) {
+      width = elem.offsetWidth - paddingX - borderX;
     }
   }
 
@@ -85,30 +146,37 @@ export const getWidth = (elem) => {
 
 export const getPaddingX = (elem) => {
   const style = getComputedStyle(elem);
-  const paddingLeft = style.getPropertyValue('paddingLeft') ? +(style.getPropertyValue('paddingLeft').split('px')[0]) : 0;
-  const paddingRight = style.getPropertyValue('paddingRight') ? +(style.getPropertyValue('paddingRight').split('px')[0]) : 0;
+  const paddingLeft = style.getPropertyValue('paddingLeft') ? parseFloat(style.getPropertyValue('paddingLeft')) : 0;
+  const paddingRight = style.getPropertyValue('paddingRight') ? parseFloat(style.getPropertyValue('paddingRight')) : 0;
   return paddingLeft + paddingRight;
 };
 
 export const getPaddingY = (elem) => {
   const style = getComputedStyle(elem);
-  const paddingTop = style.getPropertyValue('paddingTop') ? +(style.getPropertyValue('paddingTop').split('px')[0]) : 0;
-  const paddingBottom = style.getPropertyValue('paddingBottom') ? +(style.getPropertyValue('paddingBottom').split('px')[0]) : 0;
+  const paddingTop = style.getPropertyValue('paddingTop') ? parseFloat(style.getPropertyValue('paddingTop')) : 0;
+  const paddingBottom = style.getPropertyValue('paddingBottom') ? parseFloat(style.getPropertyValue('paddingBottom')) : 0;
   return paddingTop + paddingBottom;
 };
 
 export const getBorderX = (elem) => {
   const style = getComputedStyle(elem);
-  const borderLeft = style.getPropertyValue('borderLeft') ? +(style.getPropertyValue('borderLeft').split('px')[0]) : 0;
-  const borderRight = style.getPropertyValue('borderRight') ? +(style.getPropertyValue('borderRight').split('px')[0]) : 0;
+  const borderLeft = style.getPropertyValue('borderLeft') ? parseFloat(style.getPropertyValue('borderLeft')) : 0;
+  const borderRight = style.getPropertyValue('borderRight') ? parseFloat(style.getPropertyValue('borderRight')) : 0;
   return borderLeft + borderRight;
 };
 
 export const getBorderY = (elem) => {
   const style = getComputedStyle(elem);
-  const borderTop = style.getPropertyValue('borderTop') ? +(style.getPropertyValue('borderTop').split('px')[0]) : 0;
-  const borderBottom = style.getPropertyValue('borderBottom') ? +(style.getPropertyValue('borderBottom').split('px')[0]) : 0;
+  const borderTop = style.getPropertyValue('borderTop') ? parseFloat(style.getPropertyValue('borderTop')) : 0;
+  const borderBottom = style.getPropertyValue('borderBottom') ? parseFloat(style.getPropertyValue('borderBottom')) : 0;
   return borderTop + borderBottom;
+};
+
+export const getMarginY = (elem) => {
+  const style = getComputedStyle(elem);
+  const marginTop = style.getPropertyValue('marginTop') ? parseFloat(style.getPropertyValue('marginTop')) : 0;
+  const marginBottom = style.getPropertyValue('marginBottom') ? parseFloat(style.getPropertyValue('marginBottom')) : 0;
+  return marginTop + marginBottom;
 };
 
 /**
@@ -191,6 +259,10 @@ export const htmlStringToElement = (htmlString) => {
 // document.querySelectorAll('.some-element').item(0)
 // findAll('.some-element').shift()
 
+// $('some.element').parent()
+// document.querySelector('.some-element').parentElement
+// document.querySelector('.some-element').parentNode
+
 // $(':visible')
 // visible(NodeList) - see above
 
@@ -214,6 +286,16 @@ export const htmlStringToElement = (htmlString) => {
 //    await focus('.some-element')
 //    this.element.querySelector('.some-element').blur()
 // }
+
+// $('.some-element').scrollTop(y)
+// document.querySelector('.some-element').scroll(0, y)
+
+// $('.some-element').scrollLeft(x)
+// document.querySelector('.some-element').scroll(x, 0)
+
+// $('.some-element').animate({ scrollTop }, 0)
+// document.querySelector('.some-element').scroll({ top: scrollTop })
+// document.querySelector('.some-element').scroll({ top: scrollTop, behavior: 'smooth' })
 
 //
 // STYLE

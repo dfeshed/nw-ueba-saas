@@ -5,6 +5,7 @@ import wait from 'ember-test-helpers/wait';
 import Service from '@ember/service';
 import Evented from '@ember/object/evented';
 import { moduleForComponent, test, skip } from 'ember-qunit';
+import { getOuterHeight } from 'component-lib/utils/jquery-replacement';
 
 const eventBusStub = Service.extend(Evented, {});
 const FIX_ELEMENT_ID = 'tether_fix_style_element';
@@ -209,7 +210,7 @@ test('it renders declaratively with the correct number of expected elements.', f
     {{/rsa-data-table}}
   `);
 
-  assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
+  assert.equal(document.querySelectorAll('.rsa-data-table').length, 1, 'data-table root dom element found.');
 
   const rows = this.$('.rsa-data-table-body-row');
   assert.equal(rows.length, mockCount, 'Correct number of body-row dom elements found.');
@@ -258,8 +259,8 @@ test('it renders imperatively (with a string config) the correct number of expec
   assert.equal(lastRow.find('.rsa-data-table-body-cell').first().text().trim(), `foo${mockCount - 1}`, 'Correct contents of body-cell found.');
   assert.equal(lastRow.find('.rsa-data-table-body-cell').slice(1, 2).text().trim(), `bar${mockCount - 1}`, 'Correct contents of body-cell found.');
 
-  assert.equal(this.$('.rsa-data-table-header-row').length, 1, 'Correct number of header-row dom elements found.');
-  assert.equal(this.$('.rsa-data-table-header-cell').length, 2, 'Correct number of body-cell dom elements found.');
+  assert.equal(document.querySelectorAll('.rsa-data-table-header-row').length, 1, 'Correct number of header-row dom elements found.');
+  assert.equal(document.querySelectorAll('.rsa-data-table-header-cell').length, 2, 'Correct number of body-cell dom elements found.');
 });
 
 test('it renders imperatively (with an array config) the correct number of expected elements.', function(assert) {
@@ -278,11 +279,11 @@ test('it renders imperatively (with an array config) the correct number of expec
     {{/rsa-data-table}}
   `);
 
-  assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
+  assert.equal(document.querySelectorAll('.rsa-data-table').length, 1, 'data-table root dom element found.');
 
   const rows = this.$('.rsa-data-table-body-row');
   assert.equal(rows.length, mockCount, 'Correct number of body-row dom elements found.');
-  assert.equal(this.$('.rsa-data-table-body-cell').length, mockCount * 2, 'Correct number of body-cell dom elements found.');
+  assert.equal(document.querySelectorAll('.rsa-data-table-body-cell').length, mockCount * 2, 'Correct number of body-cell dom elements found.');
 
   const firstRow = rows.first();
   assert.equal(firstRow.find('.rsa-data-table-body-cell').first().text().trim(), 'foo0', 'Correct contents of body-cell found.');
@@ -292,8 +293,8 @@ test('it renders imperatively (with an array config) the correct number of expec
   assert.equal(lastRow.find('.rsa-data-table-body-cell').first().text().trim(), `foo${mockCount - 1}`, 'Correct contents of body-cell found.');
   assert.equal(lastRow.find('.rsa-data-table-body-cell').slice(1, 2).text().trim(), `bar${mockCount - 1}`, 'Correct contents of body-cell found.');
 
-  assert.equal(this.$('.rsa-data-table-header-row').length, 1, 'Correct number of header-row dom elements found.');
-  assert.equal(this.$('.rsa-data-table-header-cell').length, 2, 'Correct number of body-cell dom elements found.');
+  assert.equal(document.querySelectorAll('.rsa-data-table-header-row').length, 1, 'Correct number of header-row dom elements found.');
+  assert.equal(document.querySelectorAll('.rsa-data-table-header-cell').length, 2, 'Correct number of body-cell dom elements found.');
 });
 
 skip('it renders only a subset of the data when lazy rendering is enabled', function(assert) {
@@ -346,7 +347,7 @@ test('Column selector displays available columns', function(assert) {
     {{/rsa-data-table}}
   `);
 
-  assert.equal(this.$('.rsa-data-table-header__column-selector').length, 1, 'Column selection is present');
+  assert.equal(document.querySelectorAll('.rsa-data-table-header__column-selector').length, 1, 'Column selection is present');
 
   this.get('eventBus').trigger('rsa-content-tethered-panel-display-columnSelectorpanel');
 
@@ -382,11 +383,11 @@ test('Column selection forces at least one column to remain visible', function(a
   this.get('eventBus').trigger('rsa-content-tethered-panel-display-columnSelectorpanel');
 
   return wait().then(() => {
-    assert.equal(this.$('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 1);
+    assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 1);
     this.$('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked input:last').click();
 
     return wait().then(() => {
-      assert.equal(this.$('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 1);
+      assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 1);
     });
   });
 });
@@ -613,7 +614,7 @@ test('it sets the minHeight of the table body rows when enableGrouping is false'
 
   assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
 
-  const rowHeight = this.$('.rsa-data-table-body-row').outerHeight();
+  const rowHeight = getOuterHeight(document.querySelector('.rsa-data-table-body-row'));
   const actualHeightAsInt = parseInt(this.$('.rsa-data-table-body-rows').css('min-height'), 10);
   const expectedHeightAsInt = rowHeight * this.get('items.length');
 
@@ -638,11 +639,11 @@ test('it sets the minHeight of the table body rows when enableGrouping is true a
 
   assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
 
-  const rowHeight = this.$('.rsa-data-table-body-row').outerHeight();
-  const actualHeightAsInt = parseInt(this.$('.rsa-data-table-body-rows').css('min-height'), 10);
+  const rowHeight = getOuterHeight(document.querySelector('.rsa-data-table-body-row'));
+  const dataTableBodyRows = document.querySelector('.rsa-data-table-body-rows');
+  const actualHeightAsInt = parseInt(dataTableBodyRows.style.minHeight, 10);
   const length = this.get('items.length');
   const expectedHeightAsInt = ((rowHeight * length) + (28 * (Math.floor(length / 20))));
-
   assert.equal(expectedHeightAsInt, actualHeightAsInt);
 });
 
@@ -662,10 +663,10 @@ test('it sets the minHeight of the table body rows when enableGrouping is true a
     {{/rsa-data-table}}
   `);
 
-  assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
+  assert.equal(document.querySelectorAll('.rsa-data-table').length, 1, 'data-table root dom element found.');
 
-  const rowHeight = this.$('.rsa-data-table-body-row').outerHeight();
-  const actualHeightAsInt = parseInt(this.$('.rsa-data-table-body-rows').css('min-height'), 10);
+  const rowHeight = getOuterHeight(document.querySelector('.rsa-data-table-body-row'));
+  const actualHeightAsInt = parseInt(document.querySelector('.rsa-data-table-body-rows').style.minHeight, 10);
   const length = this.get('items.length');
   const expectedHeightAsInt = (rowHeight * length);
 
@@ -697,11 +698,11 @@ test('it renders the group-label when enableGrouping is true', function(assert) 
     {{/rsa-data-table}}
   `);
 
-  assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
-  assert.equal(this.$('.group-label').length, 10, '.group-label dom element found.');
-  assert.equal(this.$('.group-label')[8].innerText.trim(), 'EVENTS 901 - 1,000', 'group label text');
-  assert.equal(this.$('.group-label')[9].innerText.trim(), 'EVENTS 1,001 - 1,100', 'group label text');
-  assert.equal(this.$('.enable-grouping').length, 1, '.enable-grouping dom element found.');
+  assert.equal(document.querySelectorAll('.rsa-data-table').length, 1, 'data-table root dom element found.');
+  assert.equal(document.querySelectorAll('.group-label').length, 10, '.group-label dom element found.');
+  assert.equal(document.querySelectorAll('.group-label').item(8).innerText.trim(), 'EVENTS 901 - 1,000', 'group label text');
+  assert.equal(document.querySelectorAll('.group-label').item(9).innerText.trim(), 'EVENTS 1,001 - 1,100', 'group label text');
+  assert.equal(document.querySelectorAll('.enable-grouping').length, 1, '.enable-grouping dom element found.');
 });
 
 test('it does not render the group-label when enableGrouping is false', function(assert) {
