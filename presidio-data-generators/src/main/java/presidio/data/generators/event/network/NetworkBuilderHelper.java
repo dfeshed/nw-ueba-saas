@@ -5,6 +5,7 @@ import presidio.data.domain.Location;
 import presidio.data.domain.event.network.NetworkEvent;
 import presidio.data.generators.FixedValueGenerator;
 import presidio.data.generators.IBaseGenerator;
+import presidio.data.generators.common.CyclicValuesGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.hostname.HostnameGenerator;
 
@@ -13,6 +14,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static presidio.data.generators.event.network.NetworkEventsGenerator.*;
 
@@ -23,6 +26,7 @@ public class NetworkBuilderHelper {
     private IBaseGenerator<String> fqdnUncommonGenerator = new HostnameGenerator(DEFAULT_FQDN_END_INDEX+1,1999);
     private final long UNCOMMON_PORT_START_INDEX = (long) (DEFAULT_REGULAR_PORT_BELOW + 1);
     private Function<Long, String> uncommonIP = index -> "10."+ index + "." + DEFAULT_IP_3D_BYTE+1 + ".200";
+    private Function<Integer, String> distinctIP = index -> "10."+ index + "." + DEFAULT_IP_3D_BYTE+2 + ".200";
 
     NetworkBuilderHelper(NetworkEventsGenerator eventGen){
         this.eventGen = eventGen;
@@ -172,6 +176,12 @@ public class NetworkBuilderHelper {
     }
 
 
+    public NetworkBuilderHelper setDistinctSrcIps(int start, int end){
+        List<Integer> list = IntStream.range(start, end).boxed().collect(Collectors.toList());
+        IBaseGenerator<String> normalDistinctIps = new CyclicValuesGenerator<>(list.stream().map(e -> distinctIP.apply(e)).toArray(String[]::new));
+        eventGen.setSourceIpGenerator(normalDistinctIps);
+        return this;
+    }
 
 
 

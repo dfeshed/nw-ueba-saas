@@ -1,11 +1,13 @@
 package presidio.data.generators.common;
 
+import presidio.data.generators.IBaseGenerator;
+
 import java.util.NoSuchElementException;
 
 /**
  * A generic generator that returns values of type T from a given array in a cyclic manner.
  */
-public class CyclicValuesGenerator<T> {
+public class CyclicValuesGenerator<T> implements IBaseGenerator<T> {
     private T[] values;
     private int currentIdx;
 
