@@ -29,6 +29,7 @@ module('Integration | Component | Free Form', function(hooks) {
     setState = (state) => {
       patchReducer(this, state);
     };
+    spys.forEach((s) => s.resetHistory());
   });
 
   hooks.afterEach(function() {

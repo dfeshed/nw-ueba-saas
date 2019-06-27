@@ -1,9 +1,12 @@
 import { isBlank } from '@ember/utils';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
+import * as LEXEMES from 'investigate-events/constants/lexemes';
+import * as GRAMMAR from 'investigate-events/constants/grammar';
+import Scanner from 'investigate-events/util/scanner';
+import Parser from 'investigate-events/util/parser';
 import {
   COMPLEX_FILTER,
   COMPLEX_OPERATORS,
-  OPERATORS,
   QUERY_FILTER,
   SEARCH_TERM_MARKER,
   TEXT_FILTER
@@ -129,90 +132,90 @@ export const parsePillDataFromUri = (uri, availableMeta) => {
  * @param {string} queryText Fragment to convert to an object
  * @param {object[]} availableMeta The language for the selected service.
  * @param {boolean} shouldForceComplex Should we force the creation of a complex
+ * @param {boolean} returnMany Should return an array of pills instead of just the first pill
  * pill.
  * @return {object} A pill object.
  */
-export const transformTextToPillData = (queryText, availableMeta, shouldForceComplex = false) => {
+export const transformTextToPillData = (queryText, availableMeta, shouldForceComplex = false, returnMany = false) => {
+  let result;
 
-  // Nuke any surrounding white space
-  queryText = queryText.trim();
-
-  // 1. Check if the text contains characters that mark it as a Text filter, and
-  // remove them if it does.
-  const hasSearchTerm = isSearchTerm(queryText);
-  if (hasSearchTerm) {
-    const term = queryText.slice(1, -1);
-    return _createTextQueryFilter(term);
+  // Create complex pill if asked to
+  if (shouldForceComplex) {
+    const pill = _createComplexQueryFilter(`(${queryText})`);
+    return returnMany ? [ pill ] : pill;
   }
 
-  // 2. Check if the text contains characters make the query complex
-  if (hasComplexText(queryText) || shouldForceComplex) {
-    if (!queryText.startsWith('(') && !queryText.endsWith(')')) {
-      queryText = `(${queryText})`;
-    }
-    return _createComplexQueryFilter(queryText);
+  // Scan queryText into tokens, and pass those to the parser
+  const s = new Scanner(queryText);
+  try {
+    const p = new Parser(s.scanTokens(), availableMeta);
+    result = p.parse();
+  } catch (err) {
+    // Scanning or parsing error, make complex pill
+    const pill = _createComplexQueryFilter(queryText);
+    return returnMany ? [ pill ] : pill;
   }
 
-  // 3. Then check to see if there IS an operator. No operator = complex
-  const operator = OPERATORS.find((option) => {
-    // This regex looks for the patterns <space><operator><space> or
-    // <space><operator><end of string>. If it finds that, it assumes that's
-    // the operator you're looking for.
-    const regex = new RegExp(`(\\s${option}(\\s|$))`);
-    return !!queryText.match(regex);
-  });
+  // pills holds criteria that have been definitively turned into pills
+  const pills = [];
+  // criteriaList holds criteria that may or may not be included in a complex
+  // pill, depending on whether or not they are next to an OR (`||`)
+  let criteriaList = [];
+  // We can only add one text pill, so don't allow more than the first we see
+  let textPillAdded = false;
+  // result.children holds criteria, and also ANDs and ORs
+  while (result.children.length > 0) {
+    const item = result.children.shift();
+    switch (item.type) {
+      case LEXEMES.TEXT_FILTER:
+        if (!textPillAdded) {
+          textPillAdded = true;
+          pills.push(_createTextQueryFilter(item.text));
+        }
+        break;
+      case GRAMMAR.GROUP:
+        // Look inside parentheses to check if what's inside is just a criteria
+        // If it is, pull it out
+        if (item.group.children.length === 1 && item.group.children[0].type === GRAMMAR.CRITERIA) {
+          const [ criteria ] = item.group.children;
+          criteriaList.push(criteria);
+        } else {
+          pills.push(_createComplexQueryFilter(Parser.transformToString(item)));
+        }
+        break;
+      default:
+        criteriaList.push(item);
+        break;
+    }
 
-  if (!operator) {
-    return _createComplexQueryFilter(queryText);
+    // If the next item is a logical AND, add the pill(s) we just saw and consume the AND
+    if ((result.children.length > 0 && result.children[0].type === LEXEMES.AND) || result.children.length === 0) {
+      result.children.shift();
+      // If there is only one criteria waiting to be made into a pill, do that
+      // This happens when the criteria before does not have an OR in front of it
+      if (criteriaList.length === 1) {
+        const criteria = criteriaList.shift();
+        pills.push(_createQueryFilter(
+          Parser.transformToString(criteria.meta),
+          Parser.transformToString(criteria.operator),
+          criteria.valueRanges ? Parser.transformToString(criteria.valueRanges[0]) : undefined
+        ));
+      // If there is more than one criteria waiting, they are a complex pill. Transform them all back to strings
+      // and join them together, then add as one complex pill. This happens when the criteria before has at least
+      // one OR and other criteria in front of it. The UI cannot handle this yet, so make it complex.
+      } else if (criteriaList.length > 1) {
+        pills.push(_createComplexQueryFilter(`(${criteriaList.map(Parser.transformToString).join('')})`));
+        criteriaList = [];
+      }
+    } else if (result.children.length > 0 && result.children[0].type === LEXEMES.OR) {
+      // Otherwise if it's an OR, add the OR to criteriaList to be added together in a bigger complex pill
+      // This will result in any criteria on the right or left of this OR and any before/after it all getting
+      // combined into a larger complex pill.
+      criteriaList.push(result.children.shift());
+    }
   }
 
-  // eliminate empty chunks
-  const chunks = queryText.split(operator).filter((s) => s !== '');
-
-  let [ meta ] = chunks;
-  meta = meta.trim();
-
-  if (availableMeta && availableMeta.length > 0) {
-    // 4. Check that the meta is a real meta.
-    // If we do not recognize the meta, complex.
-    const metaConfig = availableMeta.find((m) => m.metaName === meta);
-    if (!metaConfig) {
-      return _createComplexQueryFilter(queryText);
-    }
-
-    // 5. Check that the operator applies to the meta.
-    // If the operator isn't valid for the meta, complex.
-    const possibleOperators = relevantOperators(metaConfig);
-    const operatorConfig = possibleOperators.find((o) => o.displayName === operator);
-    if (!operatorConfig) {
-      return _createComplexQueryFilter(queryText);
-    }
-
-    // 6. If the operator requires value and doesn't have one, then complex
-    // chunks are split by operator. So, "medium = 1" would be two chunks.
-    if (chunks.length < 2 && operatorConfig.hasValue) {
-      return _createComplexQueryFilter(queryText);
-    }
-
-    // 7. if the operator does not have a value, but a value is include,
-    // then complex.
-    if (chunks.length >= 2 && !operatorConfig.hasValue) {
-      return _createComplexQueryFilter(queryText);
-    }
-  }
-
-  // NOT COMPLEX!
-  let value;
-  if (chunks.length > 2) {
-    [ , ...value ] = chunks;
-    value = value.join(operator).trim();
-  } else {
-    [ , value ] = chunks;
-    // empty means it isn't there
-    value = (!value || value.trim() === '') ? undefined : value.trim();
-  }
-
-  return _createQueryFilter(meta, operator, value);
+  return returnMany ? pills : pills[0];
 };
 
 /**

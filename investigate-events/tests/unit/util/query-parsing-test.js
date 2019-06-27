@@ -23,7 +23,7 @@ const { log } = console; // eslint-disable-line no-unused-vars
 const params = {
   et: 0,
   eid: 1,
-  mf: 'filename%20%3D%20reston%3D\'virginia.sys',
+  mf: 'filename%20%3D%20\'reston%3D%5C\'virginia.sys\'',
   mps: 'default',
   rs: 'max',
   sid: 2,
@@ -53,7 +53,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
   });
 
   test('transformTextToPillData treats bad meta as complex query', function(assert) {
-    const freeFormText = 'lakjsdlakjsd = yeah';
+    const freeFormText = 'lakjsdlakjsd = "yeah"';
     const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
     assert.equal(result.type, COMPLEX_FILTER, 'type should match');
     assert.equal(result.complexFilterText, freeFormText, 'complexFilterText should match');
@@ -116,13 +116,6 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result.value, undefined, 'value should match');
   });
 
-  test('transformTextToPillData treats operator that has extra text as complex query', function(assert) {
-    const freeFormText = 'medium =foo';
-    const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
-    assert.equal(result.type, COMPLEX_FILTER, 'type should match');
-    assert.equal(result.complexFilterText, freeFormText, 'complexFilterText should match');
-  });
-
   test('transformTextToPillData returns complex pill when forced to do so', function(assert) {
     const freeFormText = 'medium = foo';
     const shouldForceComplex = true;
@@ -145,22 +138,96 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result.searchTerm, '(text)', 'complexFilterText should match');
   });
 
+  test('transformTextToPillData returns multiple pills when flag is true', function(assert) {
+    const text = 'medium = 3 && b = \'google.com\'';
+    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    assert.strictEqual(result.length, 2);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '3', 'value should match');
+    assert.equal(result[1].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[1].meta, 'b', 'meta should match');
+    assert.equal(result[1].operator, '=', 'operator should match');
+    assert.equal(result[1].value, '\'google.com\'', 'value should match');
+  });
+
+  test('transformTextToPillData returns query pills and text pills', function(assert) {
+    const text = `medium = 3 && ${SEARCH_TERM_MARKER}text filter${SEARCH_TERM_MARKER}`;
+    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    assert.strictEqual(result.length, 2);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '3', 'value should match');
+    assert.equal(result[1].type, TEXT_FILTER, 'type should match');
+    assert.equal(result[1].searchTerm, 'text filter', 'complexFilterText should match');
+  });
+
+  test('transformTextToPillData will not return more than one text filter', function(assert) {
+    const text = `${SEARCH_TERM_MARKER}text${SEARCH_TERM_MARKER} && ${SEARCH_TERM_MARKER}text 2${SEARCH_TERM_MARKER}`;
+    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, TEXT_FILTER, 'type should match');
+    assert.equal(result[0].searchTerm, 'text', 'complexFilterText should match');
+  });
+
+  test('transformTextToPillData returns as little as a complex pill as possible when using OR (||)', function(assert) {
+    const text = 'b = \'google.com\' && medium = 2 || medium = 3';
+    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    assert.strictEqual(result.length, 2);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'b', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '\'google.com\'', 'value should match');
+    assert.equal(result[1].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result[1].complexFilterText, '(medium = 2 || medium = 3)', 'complexFilterText should match');
+  });
+
+  test('transformTextToPillData returns as little as a complex pill as possible when using OR (||) with normal pills after', function(assert) {
+    const text = 'b = \'google.com\' && medium = 2 || medium = 3 && referer exists';
+    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    assert.strictEqual(result.length, 3);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'b', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '\'google.com\'', 'value should match');
+    assert.equal(result[1].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result[1].complexFilterText, '(medium = 2 || medium = 3)', 'complexFilterText should match');
+    assert.equal(result[2].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[2].meta, 'referer', 'meta should match');
+    assert.equal(result[2].operator, 'exists', 'operator should match');
+    assert.notOk(result[2].value, 'value should not exist');
+  });
+
+  test('transformTextToPillData looks one deep into parenthesis, but not deeper', function(assert) {
+    const text = '(b = \'google.com\') && ((b = \'google.com\'))';
+    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    assert.strictEqual(result.length, 2);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'b', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '\'google.com\'', 'value should match');
+    assert.equal(result[1].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result[1].complexFilterText, '((b = \'google.com\'))', 'complexFilterText should match');
+  });
+
   test('parsePillDataFromUri correctly parses forward slashes and operators into pills', function(assert) {
     const result = parsePillDataFromUri(params.mf, DEFAULT_LANGUAGES);
     assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');
     assert.equal(result[0].operator, '=', 'forward slash was not parsed correctly');
-    assert.equal(result[0].value, 'reston=\'virginia.sys', 'forward slash was not parsed correctly');
+    assert.equal(result[0].value, '\'reston=\'virginia.sys\'', 'forward slash was not parsed correctly');
   });
 
   test('parsePillDataFromUri correctly parses multiple params', function(assert) {
-    const result = parsePillDataFromUri('filename%20%3D%20reston%3D\'virginia.sys/medium%20%3D%20foo', DEFAULT_LANGUAGES);
+    const result = parsePillDataFromUri('filename%20%3D%20\'reston%3D%5C\'virginia.sys\'/medium%20%3D%202', DEFAULT_LANGUAGES);
     assert.equal(result.length, 2, 'two pills came out');
     assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');
     assert.equal(result[0].operator, '=', 'forward slash was not parsed correctly');
-    assert.equal(result[0].value, 'reston=\'virginia.sys', 'forward slash was not parsed correctly');
+    assert.equal(result[0].value, '\'reston=\'virginia.sys\'', 'forward slash was not parsed correctly');
     assert.equal(result[1].meta, 'medium', 'forward slash was not parsed correctly');
     assert.equal(result[1].operator, '=', 'forward slash was not parsed correctly');
-    assert.equal(result[1].value, 'foo', 'forward slash was not parsed correctly');
+    assert.equal(result[1].value, '2', 'forward slash was not parsed correctly');
   });
 
   test('uriEncodeMetaFilters can convert a pill array to a string suitable for the metaFilter query param', function(assert) {

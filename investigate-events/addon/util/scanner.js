@@ -305,10 +305,11 @@ class Scanner {
 
     let string = this.source.substring(this.start + 1, this.current - 1);
     // Replace escaped delimiters with the non-escaped version
+    // 3 layers of escapes here...JS string escapes, regex escapes, and now our escapes
     string = string
-      .replace(new RegExp('\\\'', 'g'), '\'')
-      .replace(new RegExp('\\"', 'g'), '"')
-      .replace(new RegExp('\\\\', 'g'), '\\');
+      .replace(new RegExp('\\\\\'', 'g'), '\'')
+      .replace(new RegExp('\\\\"', 'g'), '"')
+      .replace(new RegExp('\\\\\\\\', 'g'), '\\');
 
     this._addToken(LEXEMES.STRING, string);
   }

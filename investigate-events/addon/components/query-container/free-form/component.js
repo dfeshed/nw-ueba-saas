@@ -49,12 +49,17 @@ const freeForm = Component.extend({
       // Don't do anything if the text is the same as it was
       // when the component was initially rendered
       if (this.get('initialFreeFormText') !== freeFormText) {
-        const pillData = transformTextToPillData(freeFormText);
-        this.send('addFreeFormFilter', {
-          pillData,
-          position: 0,
-          shouldAddFocusToNewPill: false,
-          fromFreeFormMode: true
+        const pills = transformTextToPillData(freeFormText, undefined, false, true);
+        pills.forEach((pillData, i) => {
+          this.send('addFreeFormFilter', {
+            pillData,
+            position: i,
+            shouldAddFocusToNewPill: false,
+            // Only the first pill should have `fromFreeFormMode` set because it
+            // causes all other pills to be deleted. Setting it on all of them
+            // means only the last pill actually gets added.
+            fromFreeFormMode: i === 0
+          });
         });
       }
     } else if (freeFormText.length === 0 && this.get('freeFormText').length !== 0) {

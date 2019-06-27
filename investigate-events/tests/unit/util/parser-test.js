@@ -1,5 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
+import Scanner from 'investigate-events/util/scanner';
 import Parser from 'investigate-events/util/parser';
 import LEXEMES from 'investigate-events/constants/lexemes';
 import GRAMMAR from 'investigate-events/constants/grammar';
@@ -13,7 +15,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.NUMBER, text: '3' }
     ];
-    const p = new Parser(tokens);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES);
     const result = p.parse();
     assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
     assert.deepEqual(result.children, [
@@ -41,7 +43,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.OPERATOR_NOT_EQ, text: '!=' },
       { type: LEXEMES.STRING, text: 'hyberfile.sys' }
     ];
-    const p = new Parser(tokens);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES);
     const result = p.parse();
     assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
     assert.deepEqual(result.children, [
@@ -79,7 +81,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.STRING, text: 'netwitness' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' }
     ];
-    const p = new Parser(tokens);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES);
     const result = p.parse();
     assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
     assert.deepEqual(result.children, [
@@ -114,7 +116,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.RIGHT_PAREN, text: ')' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' }
     ];
-    const p = new Parser(tokens);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES);
     assert.throws(() => {
       p.parse();
     }, new Error('Unexpected token: RIGHT_PAREN())'));
@@ -128,7 +130,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.AND, text: '&&' },
       { type: LEXEMES.META, text: 'medium' }
     ];
-    const p = new Parser(tokens);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES);
     assert.throws(() => {
       p.parse();
     }, new Error('Expected token of type OPERATOR but reached the end of the input'));
@@ -142,7 +144,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.META, text: 'medium' },
       { type: LEXEMES.OPERATOR_EQ, text: '=' }
     ];
-    const p = new Parser(tokens);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES);
     assert.throws(() => {
       p.parse();
     }, new Error('Unexpected tokens: META(medium) OPERATOR_EQ(=)'));
@@ -154,7 +156,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.META, text: 'medium' }
     ];
-    const p = new Parser(tokens);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES);
     assert.throws(() => {
       p.parse();
     }, new Error('Expected token of type NUMBER,STRING,IPV4_ADDRESS,IPV6_ADDRESS,MAC_ADDRESS but got type META'));
@@ -166,7 +168,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.META, text: 'b' }
     ];
-    const p = new Parser(tokens);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES);
     assert.throws(() => {
       p.parse();
     }, new Error('Expected token of type NUMBER,STRING,IPV4_ADDRESS,IPV6_ADDRESS,MAC_ADDRESS but got type META'));
@@ -178,7 +180,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.OPERATOR_EXISTS, text: 'exists' },
       { type: LEXEMES.NUMBER, text: '7' }
     ];
-    const p = new Parser(tokens);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES);
     assert.throws(() => {
       p.parse();
     }, new Error('Invalid value 7 after unary operator exists'));
@@ -189,7 +191,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.META, text: 'medium' },
       { type: LEXEMES.OPERATOR_EXISTS, text: 'exists' }
     ];
-    const p = new Parser(tokens);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES);
     const result = p.parse();
     assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA);
     assert.deepEqual(result.children, [
@@ -201,8 +203,32 @@ module('Unit | Util | Parser', function(hooks) {
     ]);
   });
 
+  test('throws an error for a bad meta', function(assert) {
+    const tokens = [
+      { type: LEXEMES.META, text: 'lakjsdlakjsd' },
+      { type: LEXEMES.OPERATOR_EQ, text: '=' },
+      { type: LEXEMES.NUMBER, text: '7' }
+    ];
+    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    assert.throws(() => {
+      p.parse();
+    }, new Error('Meta "lakjsdlakjsd" not recognized'));
+  });
+
+  test('throws an error for irrelevant operator', function(assert) {
+    const tokens = [
+      { type: LEXEMES.META, text: 'sessionid' },
+      { type: LEXEMES.OPERATOR_EQ, text: 'contains' },
+      { type: LEXEMES.NUMBER, text: '7' }
+    ];
+    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    assert.throws(() => {
+      p.parse();
+    }, new Error('Operator "contains" does not apply to meta "sessionid"'));
+  });
+
   test('correctly parses multiple complex filters', function(assert) {
-    // ((b = "text") || (medium != 44)) && (bytes.src >= 1)
+    // ((b = "text") || (medium != 44)) && (bytes.src = 1)
     const tokens = [
       { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.LEFT_PAREN, text: '(' },
@@ -220,11 +246,11 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.AND, text: '&&' },
       { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.META, text: 'bytes.src' },
-      { type: LEXEMES.OPERATOR_GTE, text: '>=' },
+      { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.NUMBER, text: '1' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' }
     ];
-    const p = new Parser(tokens);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES);
     const result = p.parse();
     assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA);
     assert.deepEqual(result.children, [
@@ -284,7 +310,7 @@ module('Unit | Util | Parser', function(hooks) {
             {
               type: GRAMMAR.CRITERIA,
               meta: { type: LEXEMES.META, text: 'bytes.src' },
-              operator: { type: LEXEMES.OPERATOR_GTE, text: '>=' },
+              operator: { type: LEXEMES.OPERATOR_EQ, text: '=' },
               valueRanges: [
                 {
                   type: GRAMMAR.META_VALUE,
@@ -296,5 +322,53 @@ module('Unit | Util | Parser', function(hooks) {
         }
       }
     ]);
+  });
+
+  test('transformToString turns a basic meta back into a string', function(assert) {
+    const source = 'medium = 3';
+    const s = new Scanner(source);
+    const p = new Parser(s.scanTokens(), DEFAULT_LANGUAGES);
+    const tree = p.parse();
+    assert.strictEqual(Parser.transformToString(tree), source);
+  });
+
+  test('transformToString handles groups', function(assert) {
+    const source = '(medium = 3)';
+    const s = new Scanner(source);
+    const p = new Parser(s.scanTokens(), DEFAULT_LANGUAGES);
+    const tree = p.parse();
+    assert.strictEqual(Parser.transformToString(tree), source);
+  });
+
+  test('transformToString handles unary operators', function(assert) {
+    const source = 'medium exists';
+    const s = new Scanner(source);
+    const p = new Parser(s.scanTokens(), DEFAULT_LANGUAGES);
+    const tree = p.parse();
+    assert.strictEqual(Parser.transformToString(tree), source);
+  });
+
+  test('transformToString handles strings', function(assert) {
+    const source = "b = 'a string'";
+    const s = new Scanner(source);
+    const p = new Parser(s.scanTokens(), DEFAULT_LANGUAGES);
+    const tree = p.parse();
+    assert.strictEqual(Parser.transformToString(tree), source);
+  });
+
+  test('transformToString handles logical operators', function(assert) {
+    const source = 'medium exists && medium = 3';
+    const s = new Scanner(source);
+    const p = new Parser(s.scanTokens(), DEFAULT_LANGUAGES);
+    const tree = p.parse();
+    assert.strictEqual(Parser.transformToString(tree), source);
+  });
+
+  test('transformToString handles logical operators and groups', function(assert) {
+    const source = 'medium exists || (alias.ip = 127.0.0.1) && medium = 3';
+    const s = new Scanner(source);
+    const p = new Parser(s.scanTokens(), DEFAULT_LANGUAGES);
+    const tree = p.parse();
+    assert.strictEqual(Parser.transformToString(tree), source);
   });
 });
