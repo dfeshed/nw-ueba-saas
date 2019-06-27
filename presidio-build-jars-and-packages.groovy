@@ -24,6 +24,7 @@ pipeline {
         }
         stage('Presidio Core Package Build') {
             when { expression { return env.RUN_CORE_PACKAGES == 'true' } }
+            sh "cp .pydistutils.cfg ~/.pydistutils.cfg"
             steps { buildPackages("presidio-core", "package/pom.xml", true, false) }
         }
         stage('Presidio Flume Project Build') {
@@ -40,6 +41,7 @@ pipeline {
         }
         stage('Presidio Netwitness Package Build') {
             when { expression { return env.RUN_NW_PACKAGES == 'true' } }
+            sh "cp .pydistutils.cfg ~/.pydistutils.cfg"
             steps { buildPackages("presidio-netwitness", "package/pom.xml", true, false) }
         }
         stage('Presidio UI Project Build') {
