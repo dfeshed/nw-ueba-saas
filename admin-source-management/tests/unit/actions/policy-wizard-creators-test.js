@@ -206,6 +206,27 @@ module('Unit | Actions | policy wizard creators', function(hooks) {
     thunk(dispatch);
   });
 
+  test('updatePolicyProperty sets default week selection as MONDAY when scan frequency is weeks', function(assert) {
+    assert.expect(2);
+    const expectedPayload = [
+      { field: 'policy.recurrenceUnit', value: 'WEEKS' },
+      { field: 'policy.recurrenceInterval', value: 1 },
+      { field: 'policy.runOnDaysOfWeek', value: ['MONDAY'] }
+    ];
+    const dispatch = (action) => {
+      switch (action.type) {
+        case ACTION_TYPES.UPDATE_POLICY_PROPERTY:
+          assert.equal(action.type, ACTION_TYPES.UPDATE_POLICY_PROPERTY, 'action has the correct type of UPDATE_POLICY_PROPERTY');
+          assert.deepEqual(action.payload, expectedPayload, 'action has the correct payload');
+          break;
+        default:
+          assert.equal(true, false, 'default case... action has the correct type');
+      }
+    };
+    const thunk = policyWizardCreators.updatePolicyProperty('recurrenceUnit', 'WEEKS');
+    thunk(dispatch);
+  });
+
   test('updatePolicyProperty action creator returns proper type and payload when field is primaryAddress', function(assert) {
     assert.expect(2);
     const expectedPayload = [
