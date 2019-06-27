@@ -1,0 +1,51 @@
+<box class="content-section">
+  <br>
+  <vbox class="rsa-application-layout-panel-content" xs="12" fit>
+    <div class="content-section__section-name ">{{t 'adminUsm.policyWizard.general'}}</div>
+    {{#each-in general as |prop value|}}
+      {{#if value}}
+        <hbox fit class="col-xs-12 content-section__property">
+          <hbox class="property-name col-xs-6 col-md-5">{{t (concat 'adminUsm.policyWizard.' prop)}}</hbox>
+          <hbox class="property-value col-xs-6 col-md-7">
+            {{#rsa-text-with-tooltip value=value tipPosition='left'}}
+              {{value}}
+            {{/rsa-text-with-tooltip}}
+          </hbox>
+        </hbox>
+      {{/if}}
+    {{else}}
+      {{#if errorMessage}}
+        {{rsa-panel-message message=errorMessage}}
+      {{else}}
+        {{rsa-panel-message message=(t 'investigateHosts.common.emptyMessage')}}
+      {{/if}}
+    {{/each-in}}
+    <hr class="divider">
+  </vbox>
+
+  {{#rsa-content-accordion
+  isCollapsed=true
+  label=(t 'adminUsm.policyWizard.agentEndpoint')
+  animate=true
+  class="blue agent-accordion"}}
+    {{property-panel-policy/edr-policy}}
+  {{/rsa-content-accordion}}
+
+  {{#rsa-content-accordion
+  isCollapsed=true
+  label=(t 'adminUsm.policyWizard.agentWindowsLogs')
+  animate=true
+  class="blue windows-accordion"}}
+    to do
+  {{/rsa-content-accordion}}
+
+  {{#rsa-content-accordion
+  isCollapsed=true
+  label=(t 'adminUsm.policyWizard.agentFileLogs')
+  animate=true
+  class="blue file-accordion"}}
+    to do
+  {{/rsa-content-accordion}}
+
+  <br>
+</box>

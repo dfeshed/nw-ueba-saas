@@ -17,7 +17,7 @@ export default {
       },
       agentMode: 'ADVANCED',
       scheduledScanConfig: {
-        enabled: false,
+        enabled: true,
         recurrentSchedule: {
           recurrence: {
             interval: 1,

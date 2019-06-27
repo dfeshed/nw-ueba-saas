@@ -31,12 +31,18 @@
         <vbox class="host-properties-box">
           {{#if domIsReady}}
             <box class='scroll-box'>
-              {{property-panel
-                hostName=hostName
-                data=propertyPanelData.propertyData
-                localeNameSpace=propertyPanelData.localeNameSpace
-                config=propertyPanelData.config
-                errorMessage=propertyPanelErrorMessage}}
+              {{#if (eq propertyPanelData.localeNameSpace 'adminUsm')}}
+                {{property-panel-policy
+                  hostName=hostName
+                  errorMessage=propertyPanelErrorMessage}}
+              {{else}}
+                {{property-panel
+                  hostName=hostName
+                  data=propertyPanelData.propertyData
+                  localeNameSpace=propertyPanelData.localeNameSpace
+                  config=propertyPanelData.config
+                  errorMessage=propertyPanelErrorMessage}}
+              {{/if}}
             </box>
           {{else}}
             <centered>

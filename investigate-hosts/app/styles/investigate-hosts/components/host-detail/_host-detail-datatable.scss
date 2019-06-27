@@ -1,4 +1,7 @@
 .host-detail-wrapper {
+  .right-zone .host-properties-box .blue.rsa-content-accordion h3 {
+    color: text-color(secondary);
+  }
   .rsa-data-table {
     height: $tableHeight;
     .rsa-form-checkbox-label .rsa-form-checkbox {

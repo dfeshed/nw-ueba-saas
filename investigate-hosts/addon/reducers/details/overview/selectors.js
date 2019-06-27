@@ -320,6 +320,53 @@ export const getPoliciesPropertyData = createSelector(
   }
 );
 
+// create Admin USM policy model and export it to policy-details selectors
+export const policyAdminUsm = createSelector(
+  [getPoliciesPropertyData],
+  (data) => {
+    if (data.edrPolicy) {
+      const inSeconds = data.edrPolicy.transportConfig.primary.httpsBeaconIntervalInSeconds;
+      const httpsBeaconIntervalInMinutes = inSeconds ? Math.trunc(inSeconds / 60) : '';
+      const runOnDaysOfWeekVal = data.edrPolicy.scheduledScanConfig.recurrentSchedule.runOnDaysOfWeek;
+      const week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const weekDay = runOnDaysOfWeekVal ? week[runOnDaysOfWeekVal[0]] : '';
+      const scanStartTime = data.edrPolicy.scheduledScanConfig.recurrentSchedule.runAtTime;
+      const runAtTime = scanStartTime.substring(0, scanStartTime.lastIndexOf(':'));
+
+      return {
+        general: {
+          policyStatus: data.policyStatus,
+          evaluatedTime: data.evaluatedTime,
+          errorDescription: data.message
+        },
+        edrPolicy: {
+          name: data.edrPolicy.name,
+          scanType: data.edrPolicy.scheduledScanConfig.enabled,
+          scanStartTime: runAtTime,
+          scanStartDate: data.edrPolicy.scheduledScanConfig.recurrentSchedule.scheduleStartDate,
+          recurrenceInterval: data.edrPolicy.scheduledScanConfig.recurrentSchedule.recurrence.interval,
+          recurrenceUnit: data.edrPolicy.scheduledScanConfig.recurrentSchedule.recurrence.unit,
+          runOnDaysOfWeek: [weekDay],
+          cpuMax: data.edrPolicy.scheduledScanConfig.scanOptions.cpuMax,
+          cpuMaxVm: data.edrPolicy.scheduledScanConfig.scanOptions.cpuMaxVm,
+          scanMbr: data.edrPolicy.scheduledScanConfig.scanOptions.scanMbr,
+          blockingEnabled: data.edrPolicy.blockingConfig.enabled,
+          requestScanOnRegistration: data.edrPolicy.serverConfig.requestScanOnRegistration,
+          primaryAddress: data.edrPolicy.transportConfig.primary.address,
+          primaryHttpsPort: data.edrPolicy.transportConfig.primary.httpsPort,
+          primaryHttpsBeaconInterval: httpsBeaconIntervalInMinutes,
+          primaryHttpsBeaconIntervalUnit: 'MINUTES',
+          primaryUdpPort: data.edrPolicy.transportConfig.primary.udpPort,
+          primaryUdpBeaconInterval: data.edrPolicy.transportConfig.primary.udpBeaconIntervalInSeconds,
+          primaryUdpBeaconIntervalUnit: 'SECONDS',
+          agentMode: data.edrPolicy.agentMode,
+          offlineDiskStorageSizeInMb: data.edrPolicy.storageConfig.diskCacheSizeInMb
+        }
+      };
+    }
+  }
+);
+
 export const selectedSnapshot = createSelector(
   [_scanTime, _snapShots],
   (scanTime, snapShots) => snapShots ? snapShots.find((snapshot) => snapshot.scanStartTime === scanTime) : null);
