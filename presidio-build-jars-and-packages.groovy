@@ -24,9 +24,7 @@ pipeline {
         }
         stage('Presidio Core Package Build') {
             when { expression { return env.RUN_CORE_PACKAGES == 'true' } }
-            steps {
-                sh "cp .pydistutils.cfg ~/.pydistutils.cfg"
-                buildPackages("presidio-core", "package/pom.xml", true, false) }
+            steps {buildPackages("presidio-core", "package/pom.xml", true, false, true) }
         }
         stage('Presidio Flume Project Build') {
             when { expression { return env.BUILD_PRESIDIO_FLUME == 'true' } }
@@ -34,7 +32,7 @@ pipeline {
         }
         stage('Presidio Flume Package Build') {
             when { expression { return env.RUN_FLUME_PACKAGES == 'true' } }
-            steps { buildPackages("presidio-flume", "package/pom.xml", true, false) }
+            steps { buildPackages("presidio-flume", "package/pom.xml", true, false, false) }
         }
         stage('Presidio Netwitness Project Build') {
             when { expression { return env.BUILD_PRESIDIO_NETWITNESS == 'true' } }
@@ -42,9 +40,7 @@ pipeline {
         }
         stage('Presidio Netwitness Package Build') {
             when { expression { return env.RUN_NW_PACKAGES == 'true' } }
-            steps {
-                sh "cp .pydistutils.cfg ~/.pydistutils.cfg"
-                buildPackages("presidio-netwitness", "package/pom.xml", true, false) }
+            steps {buildPackages("presidio-netwitness", "package/pom.xml", true, false, true) }
         }
         stage('Presidio UI Project Build') {
             when { expression { return env.BUILD_PRESIDIO_UI == 'true' } }
@@ -52,7 +48,7 @@ pipeline {
         }
         stage('Presidio UI Package Build') {
             when { expression { return env.RUN_PRESIDIO_UI_PACKAGES == 'true' } }
-            steps { buildPackages("presidio-ui", "package/pom.xml", true, false) }
+            steps { buildPackages("presidio-ui", "package/pom.xml", true, false, false) }
         }
     }
     post {
@@ -94,6 +90,7 @@ def buildPackages(
         String pomFile,
         boolean updateSnapshots,
         boolean debug,
+        boolean preStep,
 
         // Parameters with default values.
         String userName = env.RSA_BUILD_CREDENTIALS_USR,
@@ -109,7 +106,7 @@ def buildPackages(
 
     dir(repositoryName) {
         checkoutBranch(branchName)
-        mvnCleanPackages(deploy, pomFile, stability, version, updateSnapshots, debug)
+        mvnCleanPackages(deploy, pomFile, stability, version, updateSnapshots, debug, preStep)
     }
 }
 
@@ -144,6 +141,9 @@ def mvnCleanInstall(boolean deploy, String pomFile, boolean updateSnapshots, boo
     sh "mvn clean install ${deploy ? "deploy" : ""} -f ${pomFile} ${updateSnapshots ? "-U" : ""} ${debug ? "-X" : ""}"
 }
 
-def mvnCleanPackages(String deploy, String pomFile, String stability, String version, boolean updateSnapshots, boolean debug) {
+def mvnCleanPackages(String deploy, String pomFile, String stability, String version, boolean updateSnapshots, boolean debug, boolean preStep) {
+    if(preStep){
+        sh "cp .pydistutils.cfg ~/.pydistutils.cfg"
+    }
     sh "mvn -B -f ${pomFile} -Dbuild.stability=${stability.charAt(0)} -Dbuild.version=${version} -Dpublish=${deploy} clean package ${updateSnapshots ?  "-U" : ""} ${debug ? "-X" : ""} "
 }
