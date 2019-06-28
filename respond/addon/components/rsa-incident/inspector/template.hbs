@@ -19,25 +19,35 @@
     </h2>
   </box>
   <hbox fit justify="center" nowrap class="rsa-incident-inspector__toolbar">
-    <span
+    <div
       class="rsa-tab text-only {{if (eq viewMode 'overview') 'is-active' ''}}"
       test-id="incidentInspectorOverview"
-      {{action (action "setViewModeAction" "overview")}}>
+      {{action "setViewModeAction" "overview"}}>
       {{t 'respond.incident.overview'}}
-    </span>
-    <span
+    </div>
+    <div
       class="rsa-tab text-only {{if (eq viewMode 'storyline') 'is-active' ''}}"
       title="{{if isStorylineCutoff (t 'respond.incident.indicatorsCutoff' limit=storyPointCount expected=storyPointCountExpected)}}"
       test-id="incidentInspectorIndicators"
-      {{action (action "setViewModeAction" "storyline")}}>
+      {{action "setViewModeAction" "storyline"}}>
       {{t 'respond.incident.indicators'}} {{#with storyPointCount as |count|}}({{count}}{{if isStorylineCutoff '+'}}){{/with}}
-    </span>
+    </div>
+    {{#if riac.hasAlertsAccess}}
+      <div
+        class="rsa-tab text-only {{if (eq viewMode 'search') 'is-active' ''}}"
+        test-id="incidentInspectorSearch"
+        {{action "setViewModeAction" "search"}}>
+        {{t 'respond.incident.search.tab'}}
+      </div>
+    {{/if}}
   </hbox>
   <box fill class="rsa-incident-inspector__body">
-    {{#if (eq viewMode 'events')}}
-      {{rsa-incident/events-table}}
-    {{else if (eq viewMode 'storyline')}}
+    {{#if (eq viewMode 'storyline')}}
       {{rsa-incident/alerts-table}}
+    {{else if (eq viewMode 'search')}}
+      {{#if riac.hasAlertsAccess}}
+        {{rsa-incident/alerts-search}}
+      {{/if}}
     {{else}}
       {{rsa-incident/overview
         info=info

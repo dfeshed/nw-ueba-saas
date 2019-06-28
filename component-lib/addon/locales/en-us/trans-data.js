@@ -1318,7 +1318,7 @@ export default {
       },
       journalTasksRelated: 'Journal, Tasks, and Related',
       search: {
-        tab: 'Related',
+        tab: 'Find Related',
         title: 'Related Indicators',
         subtext: 'Enter a value below and click the Find button to look for other indicators related to that value.',
         partOfThisIncident: 'Part Of This Incident',

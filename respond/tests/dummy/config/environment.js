@@ -80,6 +80,7 @@ module.exports = function(environment) {
 
     ENV.APP.rootElement = '#ember-testing';
     ENV.roles = ['respond-server.*', 'investigate-server.*'];
+    ENV.authorities = ['Administrators'];
   }
 
   // if (environment === 'production') {

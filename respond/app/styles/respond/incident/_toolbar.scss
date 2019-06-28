@@ -17,8 +17,11 @@
       }
     }
 
-    &.journal-and-tasks .rsa-form-button {
-      border-style: solid;
+    &.journal-and-tasks {
+      margin-left: rsa-whitespace(base);
+      .rsa-form-button {
+        border-style: solid;
+      }
     }
   }
 }

@@ -1,28 +1,18 @@
 <hbox fit justify="center" nowrap class="rsa-journal-and-tasks__toolbar">
   <div class="rsa-tab text-only journal-tab {{if (eq tasksJournalMode 'journal') 'is-active' ''}}"
-    {{action (action "showTab" "journal")}}>
+    {{action "showTab" "journal"}}>
     {{t 'respond.journal.title'}} ({{journalEntryCount}})
   </div>
   <div class="rsa-tab text-only remediation-tab {{if (eq tasksJournalMode 'remediation') 'is-active' ''}}"
-    {{action (action "showTab" "remediation")}}>
+    {{action "showTab" "remediation"}}>
     {{t 'respond.entities.remediationTasks'}} ({{taskCount}})
   </div>
-  {{#tab-wrappers/alerts-tab-wrapper}}
-    <div class="rsa-tab text-only search-tab {{if (eq tasksJournalMode 'search') 'is-active' ''}}"
-      {{action (action "showTab" "search")}}>
-      {{t 'respond.incident.search.tab'}}
-    </div>
-  {{/tab-wrappers/alerts-tab-wrapper}}
 </hbox>
 {{#if (eq tasksJournalMode 'journal')}}
   {{#if accessControl.hasRespondJournalAccess}}
     {{rsa-incident/journal info=info}}
   {{else}}
     <centered>{{t 'respond.journal.noAccess'}}</centered>
-  {{/if}}
-{{else if (eq tasksJournalMode 'search')}}
-  {{#if accessControl.hasRespondAlertsAccess}}
-    {{rsa-incident/alerts-search}}
   {{/if}}
 {{else}}
   {{#liquid-bind isAddingNewTask use=(if isAddingNewTask "toLeft" "toRight") as |currentIsAddingNewTask|}}

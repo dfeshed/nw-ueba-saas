@@ -42,8 +42,8 @@ const IncidentInspectorHeader = Component.extend(Notifications, {
    */
   isSendToArcherAvailable: false,
 
-  @computed('info.status', 'info.sentToArcher', 'accessControl.respondCanManageIncidents')
-  isSendToArcherDisabled(status, sentToArcher, canManageIncidents) {
+  @computed('info.status', 'accessControl.respondCanManageIncidents')
+  isSendToArcherDisabled(status, canManageIncidents) {
     return isIncidentClosed(status) || canManageIncidents === false;
   },
   actions: {

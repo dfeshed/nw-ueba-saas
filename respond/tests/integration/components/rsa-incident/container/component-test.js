@@ -44,6 +44,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
       }
     }));
     this.owner.register('service:accessControl', Service.extend({
+      authorities: ['Administrators'],
       hasReconAccess: computed(function() {
         return hasPermission;
       })

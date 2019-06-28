@@ -23,7 +23,7 @@ module('Integration | Component | alerts-tab-wrapper', function(hooks) {
     return {
       data: {
         enabled: bool,
-        adminRoles: ['Administrators']
+        adminRoles: ['foo']
       }
     };
   };
@@ -54,6 +54,6 @@ module('Integration | Component | alerts-tab-wrapper', function(hooks) {
       {{/tab-wrappers/alerts-tab-wrapper}}
     `);
 
-    assert.equal(find('#foobar'), undefined);
+    assert.notOk(find('#foobar'), 'wrapped content is hidden');
   });
 });

@@ -24,19 +24,17 @@ import Notifications from 'component-lib/mixins/notifications';
 import $ from 'jquery';
 import { inject as service } from '@ember/service';
 
-const stateToComputed = (state) => {
-  return {
-    incidentId: getIncidentId(state),
-    info: getIncidentInfo(state),
-    infoStatus: getIncidentInfoStatus(state),
-    storylineStatus: getStorylineStatus(state),
-    viewMode: getViewMode(state),
-    width: getInspectorWidth(state),
-    storyPointCount: storyPointCount(state),
-    storyEventCount: storyEventCount(state),
-    isSendToArcherAvailable: isSendToArcherAvailable(state)
-  };
-};
+const stateToComputed = (state) => ({
+  incidentId: getIncidentId(state),
+  info: getIncidentInfo(state),
+  infoStatus: getIncidentInfoStatus(state),
+  storylineStatus: getStorylineStatus(state),
+  viewMode: getViewMode(state),
+  width: getInspectorWidth(state),
+  storyPointCount: storyPointCount(state),
+  storyEventCount: storyEventCount(state),
+  isSendToArcherAvailable: isSendToArcherAvailable(state)
+});
 
 const dispatchToActions = (dispatch) => ({
   setViewModeAction(viewMode) {
@@ -63,7 +61,7 @@ const IncidentInspector = Component.extend(Notifications, {
   tagName: 'article',
   classNames: ['rsa-incident-inspector'],
   classNameBindings: ['isResizing'],
-  accessControl: service(),
+  riac: service(),
   incidentId: null,
   info: null,
   infoStatus: null,

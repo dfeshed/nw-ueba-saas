@@ -130,7 +130,7 @@ module('Integration | Component | Respond Incidents Toolbar Controls', function(
       promise: Promise.resolve({
         data: {
           enabled: true,
-          adminRoles: ['Administrators']
+          adminRoles: ['foo']
         }
       })
     });

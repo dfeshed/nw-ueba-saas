@@ -19,7 +19,7 @@ let initialState = {
   // either 'wait', 'error' or 'completed'
   infoStatus: null,
 
-  // either 'overview', 'storyline' or 'events'
+  // either 'overview', 'storyline' or 'search'
   viewMode: 'overview',
 
   // width of the incident details inspector UI, in pixels
