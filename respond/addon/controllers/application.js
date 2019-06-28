@@ -3,7 +3,7 @@ import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
 
 export default Controller.extend({
-  accessControl: service(),
+  riac: service(),
   routing: service('-routing'),
 
   /**

@@ -9,7 +9,7 @@ const respondConfigGen = function(environment) {
   const socketUrl = common.determineSocketUrl(environment, '/respond/socket');
 
   return {
-    incidents: {
+    'incidents': {
       socketUrl,
       stream: {
         subscriptionDestination: '/user/queue/incidents',
@@ -50,7 +50,7 @@ const respondConfigGen = function(environment) {
         requestDestination: '/ws/respond/incidents/count'
       }
     },
-    storyline: {
+    'storyline': {
       socketUrl,
       queryRecord: {
         subscriptionDestination: '/user/queue/incident/storyline',
@@ -64,7 +64,7 @@ const respondConfigGen = function(environment) {
         requestDestination: '/ws/respond/categories'
       }
     },
-    alerts: {
+    'alerts': {
       socketUrl,
       stream: {
         subscriptionDestination: '/user/queue/alerts',
@@ -125,7 +125,7 @@ const respondConfigGen = function(environment) {
         requestDestination: '/ws/respond/journal/delete'
       }
     },
-    events: {
+    'events': {
       socketUrl,
       stream: {
         defaultStreamLimit: 1000,
@@ -133,7 +133,7 @@ const respondConfigGen = function(environment) {
         requestDestination: '/ws/respond/alert/events'
       }
     },
-    users: {
+    'users': {
       socketUrl,
       findAll: {
         defaultStreamLimit: 1000,

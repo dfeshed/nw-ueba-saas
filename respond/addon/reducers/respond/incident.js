@@ -20,7 +20,7 @@ let initialState = {
   infoStatus: null,
 
   // either 'overview', 'storyline' or 'search'
-  viewMode: 'overview',
+  viewMode: 'storyline',
 
   // width of the incident details inspector UI, in pixels
   inspectorWidth: 400,
@@ -39,7 +39,7 @@ let initialState = {
   // can be 'wait', 'complete', 'creating'
   tasksStatus: null,
 
-  isShowingTasksAndJournal: false,
+  isShowingTasksAndJournal: true,
 
   // 'journal', 'remediation' or 'search'
   tasksJournalMode: 'journal',

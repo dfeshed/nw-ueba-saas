@@ -6,21 +6,21 @@
       title=(t 'respond.errorPage.serviceDown')}}
   {{else}}
     <div class="rsa-nav-tab-group">
-      {{#if accessControl.hasRespondIncidentsAccess}}
+      {{#if riac.hasIncidentsAccess}}
         {{#rsa-nav-tab  align='left' isActive=(eq routePath 'incidents') click=(action 'navigateTo' 'incidents')}}
           <div class="label">{{t "respond.entities.incidents"}}</div>
         {{/rsa-nav-tab}}
       {{/if}}
-      {{#tab-wrappers/alerts-tab-wrapper}}
+      {{#if riac.hasAlertsAccess}}
         {{#rsa-nav-tab  align='left' isActive=(eq routePath 'alerts') click=(action 'navigateTo' 'alerts')}}
           <div class="label">{{t "respond.entities.alerts"}}</div>
         {{/rsa-nav-tab}}
-      {{/tab-wrappers/alerts-tab-wrapper}}
-      {{#tab-wrappers/tasks-tab-wrapper}}
+      {{/if}}
+      {{#if riac.hasTasksAccess}}
         {{#rsa-nav-tab  align='left' isActive=(eq routePath 'tasks') click=(action 'navigateTo' 'tasks')}}
           <div class="label">{{t "respond.entities.remediationTasks"}}</div>
         {{/rsa-nav-tab}}
-      {{/tab-wrappers/tasks-tab-wrapper}}
+      {{/if}}
     </div>
     {{license-banner}}
     {{outlet}}
