@@ -5,6 +5,7 @@ import computed from 'ember-computed-decorators';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 import { actualEventCount, SORT_ORDER } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { thousandFormat } from 'component-lib/utils/numberFormats';
+import { filterElements, getHeight } from 'component-lib/utils/jquery-replacement';
 
 import {
   hasWarning,
@@ -54,11 +55,12 @@ const DevicesStatus = Component.extend({
 
   updateHeight() {
     run.schedule('afterRender', () => {
-      const allItems = this.$('.device-hierarchy li:not(.device-hierarchy .device-hierarchy .device-hierarchy li)');
-      const fullHeight = allItems.height();
-      const lastItemHeight = allItems.last().height();
+      const { element } = this;
+      const unfilteredDeviceHierarchy = element.querySelectorAll('.device-hierarchy li');
+      const allItems = filterElements(unfilteredDeviceHierarchy, '.device-hierarchy .device-hierarchy .device-hierarchy li');
+      const fullHeight = getHeight(allItems[0]);
+      const lastItemHeight = getHeight(allItems[allItems.length - 1]);
       const whitespace = 5;
-
       this.set('height', (fullHeight - lastItemHeight) + whitespace);
     });
   },
@@ -72,7 +74,6 @@ const DevicesStatus = Component.extend({
     devicesExpanded() {
       this.updateHeight();
     }
-
   }
 });
 

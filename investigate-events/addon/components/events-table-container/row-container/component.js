@@ -214,10 +214,10 @@ export default Component.extend(RowMixin, HighlightsEntities, {
     if (!this.element) {
       return;
     }
-    const cells = this.$('.rsa-data-table-body-cell');
+    const cells = document.querySelectorAll('.rsa-data-table-body-cell');
     const opts = this.get('_opts');
     (this.get('table.visibleColumns') || []).forEach((column, index) => {
-      const $cell = select(cells[index]);
+      const $cell = select(cells.item(index));
       columnUtil.applyCellWidth($cell, column, opts);
     });
   }

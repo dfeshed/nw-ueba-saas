@@ -194,6 +194,31 @@ export const visible = (elements) => {
 };
 
 /**
+ * jQuery (':not')
+ * returns an array
+ * @param {*} elements NodeList
+ * @param {*} selectors
+ */
+export const filterElements = (elements, selectors) => {
+  if (elements && elements.length > 0) {
+    const toArray = Array.from(elements);
+    let toRemove = [];
+
+    // find elements to remove
+    toArray.forEach((el) => {
+      const test = el.querySelectorAll(selectors);
+      toRemove.push(Array.from(test));
+    });
+    toRemove = toRemove.flat();
+
+    // return array of elements filtered by selectors
+    return toArray.filter((el) => {
+      return toRemove.indexOf(el) < 0;
+    });
+  }
+};
+
+/**
  * jQuery .text()
  * get the combined text contents of each element in the set of matched elements including their descendants
  * @param {*} elem
@@ -205,7 +230,7 @@ export const text = (elem) => {
 
   if (!elem.nodeType) {
     // If no nodeType, this is expected to be an array
-    while ((node = elem[ i++ ])) {
+    while ((node = elem[i++])) {
       ret += text(node);
     }
   } else if (elem.nodeType === 1 || elem.nodeType === 9 || elem.nodeType === 11) {
@@ -265,6 +290,9 @@ export const htmlStringToElement = (htmlString) => {
 
 // $(':visible')
 // visible(NodeList) - see above
+
+// $(':not')
+// filterElements(NodeList) - see above
 
 //
 // MANIPULATING ELEMENTS

@@ -206,8 +206,9 @@ export default RsaContextMenu.extend({
    * @private
    */
   _renderMetaValues() {
-    const $el = this.element && this.$('.js-content');
-    if (!$el || !$el[0]) {
+    const el = this.element && this.element.querySelector('.js-content');
+
+    if (!el) {
       return;
     }
 
@@ -221,8 +222,7 @@ export default RsaContextMenu.extend({
     // Request a function that will test whether a given (raw) meta value is already selected in the current query.
     // We'll use this function to mark some values as selected & disable their clicks.
     const isValueSelected = this._getMetaValueTester();
-
-    const $root = select($el[0]);
+    const $root = select(el);
 
     // Remove the DOM from previous data set (if any).
     // Why? The data is ordered by backend, and the DOM must match that order. Alas, we can't re-order the DOM via CSS
