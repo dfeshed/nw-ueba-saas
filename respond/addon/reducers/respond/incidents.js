@@ -13,6 +13,7 @@ const initialState = load(explorerInitialState, localStorageKey);
 
 // default (initial) state for sendToArcher feature is false/off
 initialState.isSendToArcherAvailable = false;
+initialState.altRowSelection = true;
 
 // If there are no filters, add the baseline date range filter
 if (!initialState.itemsFilters) {
