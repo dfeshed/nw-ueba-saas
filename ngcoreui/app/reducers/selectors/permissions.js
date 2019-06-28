@@ -1,7 +1,14 @@
 import { createSelector } from 'reselect';
 
-const _availablePermissions = (state) => state.availablePermissions;
-const _deviceInfo = (state) => state.deviceInfo;
+// This is a workaround to point to the original state that existed before we started
+// breaking state into smaller pieces with combineReducers in app\reducers\index.js.
+// The original state's redux key is 'shared' as it is shared between Dashboard, Tree View, and Logs.
+const _shared = (state) => {
+  return state.shared;
+};
+
+const _availablePermissions = (state) => _shared(state).availablePermissions;
+const _deviceInfo = (state) => _shared(state).deviceInfo;
 
 /**
  * Tests if a user can start/stop aggregation. Only checks for the manage

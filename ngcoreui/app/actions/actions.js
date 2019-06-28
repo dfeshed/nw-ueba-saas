@@ -42,7 +42,7 @@ const changeDirectory = (path) => {
   return (dispatch, getState) => {
     dispatch(deselectOperation());
     dispatch(deselectNode());
-    transport.stopStream(getState().treeMonitorStreamTid);
+    transport.stopStream(getState().shared.treeMonitorStreamTid);
     const tid = transport.stream({
       path,
       message: {
@@ -79,9 +79,9 @@ const selectOperation = (operationName) => {
       type: ACTION_TYPES.TREE_SELECT_OPERATION,
       payload: operationName
     });
-    dispatch(_getOperationParamHelp(getState().treePath, operationName));
-    dispatch(_getOperationHelp(getState().treePath, operationName));
-    dispatch(_getOperationManual(getState().treePath, operationName));
+    dispatch(_getOperationParamHelp(getState().shared.treePath, operationName));
+    dispatch(_getOperationHelp(getState().shared.treePath, operationName));
+    dispatch(_getOperationManual(getState().shared.treePath, operationName));
   };
 };
 
@@ -112,10 +112,10 @@ const sendOperation = (operationMessageObject) => {
   const transport = lookup('service:transport');
   return (dispatch, getState) => {
     dispatch(cancelOperation());
-    if (getState().operationManualVisible) {
+    if (getState().shared.operationManualVisible) {
       dispatch(toggleOperationManualVisibility());
     }
-    const path = getState().treePath;
+    const path = getState().shared.treePath;
     const tid = transport.stream({
       path,
       message: operationMessageObject,
@@ -163,7 +163,7 @@ const toggleOperationManualVisibility = () => {
 const cancelOperation = () => {
   const transport = lookup('service:transport');
   return (dispatch, getState) => {
-    const { operationResponse } = getState();
+    const { operationResponse } = getState().shared;
     const requestId = operationResponse ? operationResponse.requestId : null;
     const complete = operationResponse ? operationResponse.complete : null;
     if (requestId && complete === false) {
@@ -179,7 +179,7 @@ const setConfigValue = (newValue) => {
   return (dispatch, getState) => {
     dispatch({
       type: ACTION_TYPES.TREE_SET_CONFIG_VALUE,
-      promise: transport.send(getState().selectedNode.path, {
+      promise: transport.send(getState().shared.selectedNode.path, {
         message: 'set',
         params: {
           value: newValue

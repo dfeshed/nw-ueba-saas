@@ -5,7 +5,8 @@ import computed from 'ember-computed-decorators';
 import { loadLogs, logsFilterChange, logsFilterChangeDone } from 'ngcoreui/actions/actions';
 
 const stateToComputed = (state) => ({
-  logsFilterChangePending: state.logsFilterChangePending
+  // TODO selectors?
+  logsFilterChangePending: state.shared.logsFilterChangePending
 });
 
 const dispatchToActions = {

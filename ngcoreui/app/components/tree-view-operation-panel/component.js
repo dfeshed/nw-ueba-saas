@@ -12,9 +12,10 @@ const stateToComputed = (state) => ({
   operationManual: selectedOperationManual(state),
   operationRoles: selectedOperationRoles(state),
   operationHasPermission: selectedOperationHasPermission(state),
-  params: state.treeOperationParams,
-  operationResponse: state.operationResponse,
-  operationManualVisible: state.operationManualVisible
+  // TODO selectors?
+  params: state.shared.treeOperationParams,
+  operationResponse: state.shared.operationResponse,
+  operationManualVisible: state.shared.operationManualVisible
 });
 
 const dispatchToActions = {

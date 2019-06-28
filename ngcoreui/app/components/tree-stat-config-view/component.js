@@ -6,7 +6,8 @@ import { deselectNode, setConfigValue } from 'ngcoreui/actions/actions';
 import { liveSelectedNode, selectedIsConfigNode, configSetResult, selectedNodeRequiresRestart, pathToUrlSegment } from 'ngcoreui/reducers/selectors';
 
 const stateToComputed = (state) => ({
-  selectedNode: state.selectedNode,
+  // TODO selectors?
+  selectedNode: state.shared.selectedNode,
   liveSelectedNode: liveSelectedNode(state),
   selectedIsConfigNode: selectedIsConfigNode(state),
   configSetResult: configSetResult(state),

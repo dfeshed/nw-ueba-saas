@@ -4,10 +4,11 @@ import { changeDirectory } from 'ngcoreui/actions/actions';
 import { description } from 'ngcoreui/reducers/selectors';
 
 const stateToComputed = (state) => ({
-  treePath: state.treePath,
+  // TODO selectors?
+  treePath: state.shared.treePath,
   description: description(state),
-  selectedNode: state.selectedNode,
-  responseExpanded: state.responseExpanded
+  selectedNode: state.shared.selectedNode,
+  responseExpanded: state.shared.responseExpanded
 });
 
 const dispatchToActions = {

@@ -17,7 +17,7 @@ export default Route.extend({
       path = '/';
     }
 
-    const state = redux.store.getState();
+    const state = redux.store.getState().shared;
     const currentURL = this.get('router').get('currentURL');
 
     if (path === '/') {

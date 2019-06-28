@@ -3,9 +3,10 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
-  availablePermissions: state.availablePermissions,
-  logs: state.logs,
-  logsLoading: state.logsLoading
+  // TODO selectors?
+  availablePermissions: state.shared.availablePermissions,
+  logs: state.shared.logs,
+  logsLoading: state.shared.logsLoading
 });
 
 const logList = Component.extend({

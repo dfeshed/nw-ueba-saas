@@ -31,7 +31,7 @@ module('Unit | Selectors | Tree', (hooks) => {
 
   test('currentDirectoryContents gives the contents of the appropriate directory', (assert) => {
     const state = new ReduxDataHelper().currentDirectoryContents().build();
-    assert.deepEqual(currentDirectoryContents(state), state.treePathContents.nodes,
+    assert.deepEqual(currentDirectoryContents(state), state.shared.treePathContents.nodes,
       'should give the root directory when set at root');
   });
 

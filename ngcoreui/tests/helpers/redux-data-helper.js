@@ -51,126 +51,126 @@ export default class DataHelper {
   }
 
   disconnected() {
-    _set(this.state, 'wsConnecting', false);
-    _set(this.state, 'wsConnected', false);
-    _set(this.state, 'wsErr', null);
-    _set(this.state, 'activeTab', null);
+    _set(this.state, 'shared.wsConnecting', false);
+    _set(this.state, 'shared.wsConnected', false);
+    _set(this.state, 'shared.wsErr', null);
+    _set(this.state, 'shared.activeTab', null);
     return this;
   }
 
   connecting() {
-    _set(this.state, 'wsConnecting', true);
-    _set(this.state, 'wsConnected', false);
-    _set(this.state, 'wsErr', null);
-    _set(this.state, 'activeTab', null);
+    _set(this.state, 'shared.wsConnecting', true);
+    _set(this.state, 'shared.wsConnected', false);
+    _set(this.state, 'shared.wsErr', null);
+    _set(this.state, 'shared.activeTab', null);
     return this;
   }
 
   connected() {
-    _set(this.state, 'wsConnecting', false);
-    _set(this.state, 'wsConnected', true);
-    _set(this.state, 'wsErr', null);
-    _set(this.state, 'treePath', '/');
-    _set(this.state, 'treeSelectedOperationIndex', -1);
-    _set(this.state, 'treeOperationParams', {});
-    _set(this.state, 'deviceInfo', {});
-    _set(this.state, 'username', null);
-    _set(this.state, 'availablePermissions', null);
-    _set(this.state, 'operationResponse', null);
-    _set(this.state, 'responseExpanded', false);
-    _set(this.state, 'operationManualVisible', true);
-    _set(this.state, 'activeTab', null);
-    _set(this.state, 'selectedNode', null);
-    _set(this.state, 'logs', null);
-    _set(this.state, 'logsFilterChangePending', false);
-    _set(this.state, 'logsLoading', false);
-    _set(this.state, 'logsLastLoaded', '0');
-    _set(this.state, 'logsIntervalHandle', null);
+    _set(this.state, 'shared.wsConnecting', false);
+    _set(this.state, 'shared.wsConnected', true);
+    _set(this.state, 'shared.wsErr', null);
+    _set(this.state, 'shared.treePath', '/');
+    _set(this.state, 'shared.treeSelectedOperationIndex', -1);
+    _set(this.state, 'shared.treeOperationParams', {});
+    _set(this.state, 'shared.deviceInfo', {});
+    _set(this.state, 'shared.username', null);
+    _set(this.state, 'shared.availablePermissions', null);
+    _set(this.state, 'shared.operationResponse', null);
+    _set(this.state, 'shared.responseExpanded', false);
+    _set(this.state, 'shared.operationManualVisible', true);
+    _set(this.state, 'shared.activeTab', null);
+    _set(this.state, 'shared.selectedNode', null);
+    _set(this.state, 'shared.logs', null);
+    _set(this.state, 'shared.logsFilterChangePending', false);
+    _set(this.state, 'shared.logsLoading', false);
+    _set(this.state, 'shared.logsLastLoaded', '0');
+    _set(this.state, 'shared.logsIntervalHandle', null);
     return this;
   }
 
   wsErr(err = 'WebSocket error') {
-    _set(this.state, 'wsErr', err);
+    _set(this.state, 'shared.wsErr', err);
     return this;
   }
 
   treePath(path) {
-    _set(this.state, 'treePath', path);
+    _set(this.state, 'shared.treePath', path);
     return this;
   }
 
   treePathContentsEmpty() {
-    _set(this.state, 'treePathContents', {});
+    _set(this.state, 'shared.treePathContents', {});
     return this;
   }
 
   treePathContentsStandard() {
-    _set(this.state, 'treePathContents', TREE_CONTENTS.STANDARD);
+    _set(this.state, 'shared.treePathContents', TREE_CONTENTS.STANDARD);
     return this;
   }
 
   treeSelectedOperationIndex(index) {
-    _set(this.state, 'treeSelectedOperationIndex', index);
+    _set(this.state, 'shared.treeSelectedOperationIndex', index);
     return this;
   }
 
   availablePermissions(permissions) {
-    _set(this.state, 'availablePermissions', permissions);
+    _set(this.state, 'shared.availablePermissions', permissions);
     return this;
   }
 
   operationResponse(response) {
-    _set(this.state, 'operationResponse', response);
+    _set(this.state, 'shared.operationResponse', response);
     return this;
   }
 
   responseExpanded(bool) {
-    _set(this.state, 'responseExpanded', bool);
+    _set(this.state, 'shared.responseExpanded', bool);
     return this;
   }
 
   operationManualVisible(bool) {
-    _set(this.state, 'operationManualVisible', bool);
+    _set(this.state, 'shared.operationManualVisible', bool);
     return this;
   }
 
   responseAsJson(bool) {
-    _set(this.state, 'responseAsJson', bool);
+    _set(this.state, 'shared.responseAsJson', bool);
     return this;
   }
 
   selectedNode(value) {
-    _set(this.state, 'selectedNode', value);
+    _set(this.state, 'shared.selectedNode', value);
     return this;
   }
 
   selectedNodeConfigSetResult(result) {
-    _set(this.state, 'selectedNode.configSetResult', result);
+    _set(this.state, 'shared.selectedNode.configSetResult', result);
     return this;
   }
 
   release(string) {
-    _set(this.state, 'deviceInfo.release', string);
+    _set(this.state, 'shared.deviceInfo.release', string);
     return this;
   }
 
   module(string) {
-    _set(this.state, 'deviceInfo.module', string);
+    _set(this.state, 'shared.deviceInfo.module', string);
     return this;
   }
 
   logs(arr) {
-    _set(this.state, 'logs', arr);
+    _set(this.state, 'shared.logs', arr);
     return this;
   }
 
   logsFilterChangePending(bool) {
-    _set(this.state, 'logsFilterChangePending', bool);
+    _set(this.state, 'shared.logsFilterChangePending', bool);
     return this;
   }
 
   logsLoading(bool) {
-    _set(this.state, 'logsLoading', bool);
+    _set(this.state, 'shared.logsLoading', bool);
     return this;
   }
 

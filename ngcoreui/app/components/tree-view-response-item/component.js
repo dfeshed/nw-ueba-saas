@@ -7,7 +7,8 @@ import { isFlag, FLAGS } from 'ngcoreui/services/transport/flag-helper';
 
 const stateToComputed = (state) => ({
   dataType: operationResponseDataType(state),
-  responseAsJson: state.responseAsJson
+  // TODO selectors?
+  responseAsJson: state.shared.responseAsJson
 });
 
 const treeViewResponseItem = Component.extend({

@@ -3,13 +3,20 @@ import pathParentHelper from './path-parent';
 import pathToUrlSegmentHelper from './path-to-url-segment';
 import { isFlag, FLAGS } from 'ngcoreui/services/transport/flag-helper';
 
-const _treePath = (state) => state.treePath;
-const _treePathContents = (state) => state.treePathContents;
-const _treeSelectedOperationIndex = (state) => state.treeSelectedOperationIndex;
-const _selectedNode = (state) => state.selectedNode;
-const _deviceInfo = (state) => state.deviceInfo;
-const _availablePermissions = (state) => state.availablePermissions;
-const _operationResponse = (state) => state.operationResponse;
+// This is a workaround to point to the original state that existed before we started
+// breaking state into smaller pieces with combineReducers in app\reducers\index.js.
+// The original state's redux key is 'shared' as it is shared between Dashboard, Tree View, and Logs.
+const _shared = (state) => {
+  return state.shared;
+};
+
+const _treePath = (state) => _shared(state).treePath;
+const _treePathContents = (state) => _shared(state).treePathContents;
+const _treeSelectedOperationIndex = (state) => _shared(state).treeSelectedOperationIndex;
+const _selectedNode = (state) => _shared(state).selectedNode;
+const _deviceInfo = (state) => _shared(state).deviceInfo;
+const _availablePermissions = (state) => _shared(state).availablePermissions;
+const _operationResponse = (state) => _shared(state).operationResponse;
 
 const filterOut = ['ls', 'mon', 'stopMon', 'count', 'help', 'info'];
 

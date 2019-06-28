@@ -1,6 +1,6 @@
 import { test, module } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import reducer from 'ngcoreui/reducers/index';
+import reducer from 'ngcoreui/reducers/shared-reducers';
 import * as ACTION_TYPES from 'ngcoreui/actions/types';
 import ReduxDataHelper from '../../helpers/redux-data-helper';
 
@@ -16,7 +16,7 @@ module('Unit | Reducers | Logs', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .logs(['foo', 'bar'])
-      .build();
+      .build().shared;
 
     const result = reducer(state, action);
 
@@ -32,7 +32,7 @@ module('Unit | Reducers | Logs', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .logsLoading(true)
-      .build();
+      .build().shared;
 
     const result = reducer(state, action);
 
@@ -45,7 +45,7 @@ module('Unit | Reducers | Logs', (hooks) => {
     };
     const state = new ReduxDataHelper()
       .connected()
-      .build();
+      .build().shared;
 
     assert.strictEqual(state.logsFilterChangePending, false);
 
@@ -61,7 +61,7 @@ module('Unit | Reducers | Logs', (hooks) => {
     const state = new ReduxDataHelper()
       .connected()
       .logsFilterChangePending(true)
-      .build();
+      .build().shared;
 
     assert.strictEqual(state.logsFilterChangePending, true);
 
@@ -77,7 +77,7 @@ module('Unit | Reducers | Logs', (hooks) => {
     const state = new ReduxDataHelper()
       .connected()
       .logsFilterChangePending(true)
-      .build();
+      .build().shared;
 
     assert.strictEqual(state.logsFilterChangePending, true);
 
@@ -98,7 +98,7 @@ module('Unit | Reducers | Logs', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .logs([])
-      .build();
+      .build().shared;
 
     const result1 = reducer(state, action1);
 
@@ -139,7 +139,7 @@ module('Unit | Reducers | Logs', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .logs([])
-      .build();
+      .build().shared;
 
     const result1 = reducer(state, action1);
 

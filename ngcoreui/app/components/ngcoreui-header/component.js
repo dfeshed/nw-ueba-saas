@@ -4,10 +4,11 @@ import { connect } from 'ember-redux';
 import { isDevelopmentBuild } from 'ngcoreui/reducers/selectors';
 
 const stateToComputed = (state) => ({
-  deviceInfo: state.deviceInfo,
-  wsConnected: state.wsConnected,
-  username: state.username,
-  availablePermissions: state.availablePermissions,
+  // TODO selectors?
+  deviceInfo: state.shared.deviceInfo,
+  wsConnected: state.shared.wsConnected,
+  username: state.shared.username,
+  availablePermissions: state.shared.availablePermissions,
   isDevelopmentBuild: isDevelopmentBuild(state)
 });
 

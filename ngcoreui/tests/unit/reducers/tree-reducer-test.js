@@ -1,6 +1,6 @@
 import { test, module } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import reducer from 'ngcoreui/reducers/index';
+import reducer from 'ngcoreui/reducers/shared-reducers';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../helpers/make-pack-action';
 import * as ACTION_TYPES from 'ngcoreui/actions/types';
@@ -34,7 +34,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       type: ACTION_TYPES.TREE_LIST_CONTENTS,
       payload: sysResponse
     });
-    const state = new ReduxDataHelper().connected().treePathContentsStandard().build();
+    const state = new ReduxDataHelper().connected().treePathContentsStandard().build().shared;
     const result = reducer(state, action);
 
     assert.strictEqual(result.treePath, '/'); // Default route, wasn't changed here
@@ -46,7 +46,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       type: ACTION_TYPES.TREE_GET_DEVICE_INFO,
       payload: sysStatsResponse
     });
-    const state = new ReduxDataHelper().connected().treePathContentsStandard().build();
+    const state = new ReduxDataHelper().connected().treePathContentsStandard().build().shared;
     const result = reducer(state, action);
 
     assert.strictEqual(result.treePath, '/');
@@ -79,7 +79,7 @@ module('Unit | Reducers | Tree', (hooks) => {
         tid: '3'
       }
     };
-    const state = new ReduxDataHelper().connected().treePathContentsStandard().build();
+    const state = new ReduxDataHelper().connected().treePathContentsStandard().build().shared;
     assert.notStrictEqual(state, action.payload);
 
     const result = reducer(state, action);
@@ -93,7 +93,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       type: ACTION_TYPES.TREE_GET_OPERATIONS,
       payload: operationsResponse
     });
-    const state = new ReduxDataHelper().connected().treePathContentsEmpty().build();
+    const state = new ReduxDataHelper().connected().treePathContentsEmpty().build().shared;
     const result = reducer(state, action);
 
     assert.strictEqual(result.treePath, '/');
@@ -104,7 +104,7 @@ module('Unit | Reducers | Tree', (hooks) => {
     const action = {
       type: ACTION_TYPES.TREE_CLEAR
     };
-    const state = new ReduxDataHelper().connected().treePathContentsStandard().build();
+    const state = new ReduxDataHelper().connected().treePathContentsStandard().build().shared;
     assert.notDeepEqual(state.treeContents, {});
 
     const result = reducer(state, action);
@@ -122,7 +122,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .operationResponse(dummyResponse)
-      .build();
+      .build().shared;
 
     const result = reducer(state, action);
 
@@ -140,7 +140,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       .treePathContentsStandard()
       .treeSelectedOperationIndex(2)
       .operationResponse(dummyResponse)
-      .build();
+      .build().shared;
 
     const result = reducer(state, action);
 
@@ -158,7 +158,7 @@ module('Unit | Reducers | Tree', (hooks) => {
     let state = new ReduxDataHelper()
       .connected()
       .treePathContentsStandard()
-      .build();
+      .build().shared;
 
     // required initialization of state
     state = reducer(state, {
@@ -181,7 +181,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .responseExpanded(false)
-      .build();
+      .build().shared;
 
     assert.strictEqual(state.responseExpanded, false);
 
@@ -199,7 +199,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .responseExpanded(true)
-      .build();
+      .build().shared;
 
     assert.strictEqual(state.responseExpanded, true);
 
@@ -217,7 +217,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .responseAsJson(false)
-      .build();
+      .build().shared;
 
     assert.strictEqual(state.responseAsJson, false);
 
@@ -235,7 +235,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .responseAsJson(true)
-      .build();
+      .build().shared;
 
     assert.strictEqual(state.responseAsJson, true);
 
@@ -253,7 +253,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .operationManualVisible(false)
-      .build();
+      .build().shared;
 
     assert.strictEqual(state.operationManualVisible, false);
 
@@ -271,7 +271,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .operationManualVisible(true)
-      .build();
+      .build().shared;
 
     assert.strictEqual(state.operationManualVisible, true);
 
@@ -291,7 +291,7 @@ module('Unit | Reducers | Tree', (hooks) => {
     const state = new ReduxDataHelper()
       .connected()
       .treePathContentsStandard()
-      .build();
+      .build().shared;
 
     assert.strictEqual(state.operationResponse, null);
 
@@ -314,7 +314,7 @@ module('Unit | Reducers | Tree', (hooks) => {
     const state = new ReduxDataHelper()
       .connected()
       .treePathContentsStandard()
-      .build();
+      .build().shared;
 
     // Points to the decoder node in our mock data
     assert.strictEqual(state.treePathContents.nodes[3].name, 'decoder');
@@ -334,7 +334,7 @@ module('Unit | Reducers | Tree', (hooks) => {
     const state = new ReduxDataHelper()
       .connected()
       .treePathContentsStandard()
-      .build();
+      .build().shared;
 
     assert.strictEqual(state.treePathContents.nodes.length, 4);
 
@@ -355,7 +355,7 @@ module('Unit | Reducers | Tree', (hooks) => {
     const state = new ReduxDataHelper()
       .connected()
       .treePathContentsStandard()
-      .build();
+      .build().shared;
 
     // The decoder node
     assert.ok(state.treePathContents.nodes[3]);
@@ -382,7 +382,7 @@ module('Unit | Reducers | Tree', (hooks) => {
     const state = new ReduxDataHelper()
       .connected()
       .treePathContentsStandard()
-      .build();
+      .build().shared;
 
     const result = reducer(state, action);
 
@@ -404,7 +404,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .treeSelectedOperationIndex(3)
-      .build();
+      .build().shared;
 
     const result = reducer(state, action);
 
@@ -431,7 +431,7 @@ module('Unit | Reducers | Tree', (hooks) => {
     const state = new ReduxDataHelper()
       .connected()
       .treePathContentsStandard()
-      .build();
+      .build().shared;
 
     assert.deepEqual(state.treeOperationParams, {});
 
@@ -462,7 +462,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .treeSelectedOperationIndex(2)
-      .build();
+      .build().shared;
 
     assert.strictEqual(state.treePathContents.operations[2].params.length, 0);
 
@@ -499,7 +499,7 @@ module('Unit | Reducers | Tree', (hooks) => {
     const state = new ReduxDataHelper()
       .connected()
       .treePathContentsStandard()
-      .build();
+      .build().shared;
 
     assert.notOk(state.selectedNode);
 
@@ -517,7 +517,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .selectedNode(stat)
-      .build();
+      .build().shared;
 
     assert.deepEqual(state.selectedNode, stat);
 
@@ -540,7 +540,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .selectedNode(stat)
-      .build();
+      .build().shared;
 
     assert.deepEqual(state.selectedNode, stat);
     assert.notOk(state.selectedNode.description);
@@ -562,7 +562,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .selectedNode(stat)
-      .build();
+      .build().shared;
 
     assert.deepEqual(state.selectedNode, stat);
     assert.notOk(state.selectedNode.configSetResult);
@@ -587,7 +587,7 @@ module('Unit | Reducers | Tree', (hooks) => {
       .connected()
       .treePathContentsStandard()
       .selectedNode(stat)
-      .build();
+      .build().shared;
 
     assert.deepEqual(state.selectedNode, stat);
     assert.notOk(state.selectedNode.configSetResult);

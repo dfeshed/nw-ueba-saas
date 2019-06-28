@@ -1,6 +1,6 @@
 import { test, module } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import reducer from 'ngcoreui/reducers/index';
+import reducer from 'ngcoreui/reducers/shared-reducers';
 import * as ACTION_TYPES from 'ngcoreui/actions/types';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../helpers/make-pack-action';
@@ -18,7 +18,7 @@ module('Unit | Reducers | App', (hooks) => {
     const state = new ReduxDataHelper()
       .connected()
       .treePathContentsStandard()
-      .build();
+      .build().shared;
 
     assert.notOk(state.activeTab);
 
@@ -34,7 +34,7 @@ module('Unit | Reducers | App', (hooks) => {
     };
     const state = new ReduxDataHelper()
       .connected()
-      .build();
+      .build().shared;
 
     assert.notOk(state.username);
 
@@ -50,7 +50,7 @@ module('Unit | Reducers | App', (hooks) => {
     });
     const state = new ReduxDataHelper()
       .connected()
-      .build();
+      .build().shared;
 
     assert.notOk(state.availablePermissions);
 

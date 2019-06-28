@@ -40,7 +40,7 @@ export default Service.extend({
     this.set('permissionsAvailable', false);
     this.set('pendingCallbacks', []);
     this.set('unsubscribe', this.get('redux').subscribe(() => {
-      const state = this.get('redux').getState();
+      const state = this.get('redux').getState().shared;
       if (state.availablePermissions) {
         this.set('permissionsAvailable', true);
         this.permissionsLoaded(state.availablePermissions);

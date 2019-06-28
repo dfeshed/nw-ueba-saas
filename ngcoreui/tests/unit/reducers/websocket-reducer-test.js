@@ -1,6 +1,6 @@
 import { test, module } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import reducer from 'ngcoreui/reducers/index';
+import reducer from 'ngcoreui/reducers/shared-reducers';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../helpers/make-pack-action';
 import * as ACTION_TYPES from 'ngcoreui/actions/types';
@@ -14,7 +14,7 @@ module('Unit | Reducers | WebSocket', (hooks) => {
     const action = {
       type: ACTION_TYPES.WS_CONNECT_START
     };
-    const state = new ReduxDataHelper().disconnected().build();
+    const state = new ReduxDataHelper().disconnected().build().shared;
     const result = reducer(state, action);
 
     assert.strictEqual(result.wsConnecting, true, 'wsConnecting is true');
@@ -26,7 +26,7 @@ module('Unit | Reducers | WebSocket', (hooks) => {
     const action = {
       type: ACTION_TYPES.WS_CONNECT_START
     };
-    const state = new ReduxDataHelper().wsErr().build();
+    const state = new ReduxDataHelper().wsErr().build().shared;
     const result = reducer(state, action);
 
     assert.strictEqual(result.wsConnecting, true, 'wsConnecting is true');
@@ -38,7 +38,7 @@ module('Unit | Reducers | WebSocket', (hooks) => {
     const action = {
       type: ACTION_TYPES.WS_CONNECT_FINISH
     };
-    const state = new ReduxDataHelper().connecting().build();
+    const state = new ReduxDataHelper().connecting().build().shared;
     const result = reducer(state, action);
 
     assert.strictEqual(result.wsConnecting, false, 'wsConnecting is false');
@@ -51,7 +51,7 @@ module('Unit | Reducers | WebSocket', (hooks) => {
       type: ACTION_TYPES.WS_ERROR,
       payload: 'WebSocket error'
     };
-    const state = new ReduxDataHelper().connecting().build();
+    const state = new ReduxDataHelper().connecting().build().shared;
     const result = reducer(state, action);
 
     assert.strictEqual(result.wsConnecting, false, 'wsConnecting is false');
@@ -64,7 +64,7 @@ module('Unit | Reducers | WebSocket', (hooks) => {
       type: ACTION_TYPES.WS_ERROR,
       payload: 'WebSocket error'
     };
-    const state = new ReduxDataHelper().connected().build();
+    const state = new ReduxDataHelper().connected().build().shared;
     const result = reducer(state, action);
 
     assert.strictEqual(result.wsConnecting, false, 'wsConnecting is false');
@@ -76,7 +76,7 @@ module('Unit | Reducers | WebSocket', (hooks) => {
     const action = makePackAction(LIFECYCLE.SUCCESS, {
       type: ACTION_TYPES.WS_DISCONNECT
     });
-    const state = new ReduxDataHelper().connecting().build();
+    const state = new ReduxDataHelper().connecting().build().shared;
     const result = reducer(state, action);
 
     assert.strictEqual(result.wsConnecting, false, 'wsConnecting is false');
@@ -88,7 +88,7 @@ module('Unit | Reducers | WebSocket', (hooks) => {
     const action = makePackAction(LIFECYCLE.SUCCESS, {
       type: ACTION_TYPES.WS_DISCONNECT
     });
-    const state = new ReduxDataHelper().connected().build();
+    const state = new ReduxDataHelper().connected().build().shared;
     const result = reducer(state, action);
 
     assert.strictEqual(result.wsConnecting, false, 'wsConnecting is false');
@@ -100,7 +100,7 @@ module('Unit | Reducers | WebSocket', (hooks) => {
     const action = makePackAction(LIFECYCLE.SUCCESS, {
       type: ACTION_TYPES.WS_DISCONNECT
     });
-    const state = new ReduxDataHelper().wsErr().build();
+    const state = new ReduxDataHelper().wsErr().build().shared;
     const result = reducer(state, action);
 
     assert.strictEqual(result.wsConnecting, false, 'wsConnecting is false');

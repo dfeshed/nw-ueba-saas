@@ -8,7 +8,8 @@ const stateToComputed = (state) => ({
   filteredOperationNames: filteredOperationNames(state),
   selectedOperation: selectedOperation(state),
   responses: responses(state),
-  folderManual: state.folderManual
+  // TODO selectors?
+  folderManual: state.shared.folderManual
 });
 
 const dispatchToActions = {

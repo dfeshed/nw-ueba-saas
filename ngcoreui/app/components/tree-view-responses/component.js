@@ -5,7 +5,8 @@ import { toggleOperationResponse, toggleResponseAsJson } from 'ngcoreui/actions/
 
 const stateToComputed = (state) => ({
   responses: responses(state),
-  responseExpanded: state.responseExpanded
+  // TODO selectors?
+  responseExpanded: state.shared.responseExpanded
 });
 
 const dispatchToActions = {
