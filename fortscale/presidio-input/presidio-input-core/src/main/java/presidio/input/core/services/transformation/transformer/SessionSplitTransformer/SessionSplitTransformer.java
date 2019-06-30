@@ -31,7 +31,7 @@ public class SessionSplitTransformer implements Transformer {
             TlsTransformedEvent tlsTransformedEvent = (TlsTransformedEvent) document;
 
             // enrich events with sessionSplit > 0
-            if (tlsTransformedEvent.getSessionSplit() > zeroSessionSplit) {
+            if (tlsTransformedEvent.getSessionSplit() != null && tlsTransformedEvent.getSessionSplit() > zeroSessionSplit) {
                 SessionSplitTransformerKey key = new SessionSplitTransformerKey(tlsTransformedEvent.getSrcIp(), tlsTransformedEvent.getDstIp(), tlsTransformedEvent.getDstPort(), tlsTransformedEvent.getSrcPort());
 
                 TreeSet<SessionSplitTransformerValue> treeSet = splitTransformerMap.get(key);
