@@ -43,4 +43,6 @@ def setBaseUrl(
         //sh "echo \$(hostname)"
         print('HI')
     }
+
 }
+return new UebaInstallationTasks();

@@ -11,8 +11,11 @@ pipeline {
     stages {
         stage('test') {
             steps {
-                uebaInstallationTasks = new UebaInstallationTasks()
+                //uebaInstallationTasks = new UebaInstallationTasks()
+                def uebaInstallationTasks = load 'UebaInstallationTasks.groovy'
                 uebaInstallationTasks.test()
+                //def thing = load 'Thing.groovy'
+                //echo thing.doStuff()
             }
         }
     }
