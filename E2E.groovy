@@ -1,3 +1,4 @@
+import UebaInstallationTasks
 pipeline {
     agent { label env.NODE }
     environment {
@@ -10,7 +11,6 @@ pipeline {
     stages {
         stage('test') {
             steps {
-                load "./UebaInstallationTasks.groovy"
                 uebaInstallationTasks = new UebaInstallationTasks()
                 uebaInstallationTasks.test()
             }
