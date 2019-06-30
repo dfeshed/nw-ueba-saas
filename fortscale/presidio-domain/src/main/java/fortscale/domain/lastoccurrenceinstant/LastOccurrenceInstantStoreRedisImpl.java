@@ -10,11 +10,11 @@ import java.time.Instant;
 import java.util.Map;
 
 /**
- * A Redis based implementation of {@link LastOccurrenceInstantStore}.
+ * A Redis based implementation of {@link LastOccurrenceInstantReader} and {@link LastOccurrenceInstantWriter}.
  *
  * @author Lior Govrin.
  */
-public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstantStore {
+public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstantReader, LastOccurrenceInstantWriter {
     private static final String COLLECTION_NAME_PREFIX = "last_occurrence_instant";
 
     private final HashOperations<String, String, Instant> hashOperations;

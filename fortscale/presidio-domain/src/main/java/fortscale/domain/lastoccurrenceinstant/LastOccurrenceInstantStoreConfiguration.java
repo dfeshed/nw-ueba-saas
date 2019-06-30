@@ -20,7 +20,7 @@ public class LastOccurrenceInstantStoreConfiguration {
     }
 
     @Bean
-    public LastOccurrenceInstantStore lastOccurrenceInstantStore() {
+    public LastOccurrenceInstantWriter lastOccurrenceInstantWriter() {
         return new LastOccurrenceInstantStoreRedisImpl(jedisConnectionFactory);
     }
 }

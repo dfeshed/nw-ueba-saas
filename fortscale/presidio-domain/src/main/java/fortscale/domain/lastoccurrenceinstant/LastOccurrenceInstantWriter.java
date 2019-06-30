@@ -4,7 +4,7 @@ import fortscale.common.general.Schema;
 
 import java.time.Instant;
 
-public interface LastOccurrenceInstantStore extends LastOccurrenceInstantReader {
+public interface LastOccurrenceInstantWriter {
     /**
      * Associate in the store the given entity with the given {@link Instant} of its last occurrence.
      *
