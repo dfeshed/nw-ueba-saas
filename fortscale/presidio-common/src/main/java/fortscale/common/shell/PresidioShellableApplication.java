@@ -51,7 +51,7 @@ public class PresidioShellableApplication implements Closeable {
      * @param configurationClass where the application's context is configured
      * @param args               the input arguments
      */
-    public void run(List<Class> configurationClass, String[] args) {
+    public void run(List<Class> configurationClass, String[] args) throws RuntimeException {
         if(logger.isDebugEnabled()) {
             String configurationClasses = configurationClass.stream().map(Class::getSimpleName).collect(Collectors.joining(","));
             logger.debug("Starting {} component ", configurationClasses);
@@ -66,7 +66,7 @@ public class PresidioShellableApplication implements Closeable {
         configurationClass.add(BootShimConfig.class);
         ExitShellRequest exitShellRequest = null;
         try {
-            context = SpringApplication.run((Class<?>[]) configurationClass.toArray(), args);
+            context = SpringApplication.run(configurationClass.toArray(new Class[]{}), args);
             context.registerShutdownHook();
             exitShellRequest = run();
             exitCode.set(exitShellRequest.getExitCode());
