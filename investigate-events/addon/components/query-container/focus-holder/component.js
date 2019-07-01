@@ -16,7 +16,8 @@ export default Component.extend({
   sendMessage: () => {},
 
   didRender() {
-    this.$('input').focus();
+    const { element } = this;
+    element.querySelector('input').focus();
   },
 
   throttleKeyDown({ e }) {

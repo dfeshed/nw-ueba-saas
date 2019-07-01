@@ -60,28 +60,30 @@ export const getOuterHeight = (elem, includeMargin = false) => {
  * @param {*} elem
  */
 export const getHeight = (elem) => {
-  const style = getComputedStyle(elem);
-  const paddingY = getPaddingY(elem);
-  const borderY = getBorderY(elem);
-  let height;
+  if (elem) {
+    const style = getComputedStyle(elem);
+    const paddingY = getPaddingY(elem);
+    const borderY = getBorderY(elem);
+    let height;
 
-  if (elem.getClientRects().length > 0) {
-    height = elem.getBoundingClientRect().height;
-  } else {
-    // .offsetHeight includes padding and border
-    // jQuery .height() does not
-    if (elem.offsetHeight !== undefined) {
-      height = elem.offsetHeight - paddingY - borderY;
+    if (elem.getClientRects().length > 0) {
+      height = elem.getBoundingClientRect().height;
+    } else {
+      // .offsetHeight includes padding and border
+      // jQuery .height() does not
+      if (elem.offsetHeight !== undefined) {
+        height = elem.offsetHeight - paddingY - borderY;
+      }
     }
-  }
 
-  // if style.height has px value (not 'auto'), use it
-  // more precise than .offsetHeight which is rounded
-  const parseFloatHeight = parseFloat(style.getPropertyValue('height'));
-  if (!isNaN(parseFloatHeight)) {
-    height = parseFloatHeight;
+    // if style.height has px value (not 'auto'), use it
+    // more precise than .offsetHeight which is rounded
+    const parseFloatHeight = parseFloat(style.getPropertyValue('height'));
+    if (!isNaN(parseFloatHeight)) {
+      height = parseFloatHeight;
+    }
+    return height;
   }
-  return height;
 };
 
 /**
@@ -180,6 +182,57 @@ export const getMarginY = (elem) => {
 };
 
 /**
+ * jQuery .find(selector)
+ * returns array of elements matching selector
+ * @param {NodeList | HTMLCollection | Array} elements
+ * @param {string} selector
+ */
+export const findBySelector = (elements, selector) => {
+  if (elements && elements.length > 0 && selector && typeof selector === 'string') {
+    const result = [];
+    elements.forEach((el) => {
+      if (el) {
+        const found = el.querySelectorAll(selector);
+        result.push(Array.from(found));
+      }
+    });
+    return _flattenDeep(result);
+
+  } else {
+    return [];
+  }
+};
+
+/**
+ * jQuery .find(element)
+ * returns array of elements matching elementToFind
+ * @param {*} elements
+ * @param {*} elementToFind
+ */
+export const findElement = (elements, elementToFind) => {
+  if (elements && elements.length > 0 && elementToFind) {
+    let result = [];
+    elements.forEach((el) => {
+      if (el) {
+        const temp = el.querySelectorAll('*');
+        result = result.concat(Array.from(temp));
+      }
+    });
+    return result.filter((el) => {
+      return el.nodeType === 1 && el === elementToFind;
+    });
+
+  } else {
+    return [];
+  }
+};
+
+const _flattenDeep = (arr1) => {
+  return arr1.reduce((acc, val) => Array.isArray(val) ?
+    acc.concat(_flattenDeep(val)) : acc.concat(val), []);
+};
+
+/**
  * jQuery (':visible')
  * @param {*} elements NodeList
  */
@@ -197,21 +250,21 @@ export const visible = (elements) => {
  * jQuery (':not')
  * returns an array
  * @param {*} elements NodeList
- * @param {*} selectors
+ * @param {*} selector
  */
-export const filterElements = (elements, selectors) => {
+export const filterElements = (elements, selector) => {
   if (elements && elements.length > 0) {
     const toArray = Array.from(elements);
     let toRemove = [];
 
     // find elements to remove
     toArray.forEach((el) => {
-      const test = el.querySelectorAll(selectors);
+      const test = el.querySelectorAll(selector);
       toRemove.push(Array.from(test));
     });
-    toRemove = toRemove.flat();
+    toRemove = _flattenDeep(toRemove);
 
-    // return array of elements filtered by selectors
+    // return array of elements filtered by selector
     return toArray.filter((el) => {
       return toRemove.indexOf(el) < 0;
     });
@@ -292,6 +345,9 @@ export const isHttpRequestSuccess = (response) => {
 // to get one element
 // .getElementsByClassName('some-class').item(0)
 
+// $('> .some-class')
+// document.querySelectorAll(parentElementSelector > '.some-class')
+
 // $('.some-element').length
 // document.querySelectorAll('.some-element').length
 
@@ -302,9 +358,15 @@ export const isHttpRequestSuccess = (response) => {
 // document.querySelectorAll('.some-element').item(0)
 // findAll('.some-element').shift()
 
-// $('some.element').parent()
+// $('.some.element').parent()
 // document.querySelector('.some-element').parentElement
 // document.querySelector('.some-element').parentNode
+
+// $('.some.element').find('some-selector')
+// findBySelector(elements, 'some-selector') - see above
+
+// $('.some.element').find(some-element)
+// findElement(elements, some-element) - see above
 
 // $(':visible')
 // visible(NodeList) - see above

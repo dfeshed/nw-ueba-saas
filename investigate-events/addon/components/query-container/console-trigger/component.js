@@ -2,7 +2,6 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { toggleQueryConsole } from 'investigate-events/actions/interaction-creators';
 import computed from 'ember-computed-decorators';
-
 import {
   isConsoleEmpty,
   hasError,
@@ -10,6 +9,7 @@ import {
   isQueryComplete,
   hasOfflineServices
 } from 'investigate-events/reducers/investigate/query-stats/selectors';
+import { findBySelector, findElement } from 'component-lib/utils/jquery-replacement';
 
 const dispatchToActions = {
   toggleQueryConsole
@@ -88,8 +88,11 @@ const ConsoleTrigger = Component.extend({
       parentClass = '';
     }
 
+    const { element } = this;
     const triggerClicked = parentClass && parentClass.includes('console-trigger');
-    const consoleClicked = this.$().closest('.query-bar-selection').find('.console-panel').find(clickedEl).length > 0;
+    const closestQueryBarSelection = element.closest('.query-bar-selection');
+    const findConsolePanel = findBySelector([closestQueryBarSelection], '.console-panel');
+    const consoleClicked = findElement(findConsolePanel, clickedEl).length > 0;
     const isOpen = this.get('isOpen');
 
     if (triggerClicked || (!triggerClicked && !consoleClicked && isOpen)) {
@@ -102,7 +105,6 @@ const ConsoleTrigger = Component.extend({
       this.send('toggleQueryConsole');
     }
   }
-
 });
 
 export default connect(stateToComputed, dispatchToActions)(ConsoleTrigger);

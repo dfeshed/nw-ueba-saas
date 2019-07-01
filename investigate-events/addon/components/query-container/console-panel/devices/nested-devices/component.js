@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { run } from '@ember/runloop';
+import { getHeight } from 'component-lib/utils/jquery-replacement';
 
 export default Component.extend({
   classNames: ['nested-devices'],
@@ -11,11 +12,13 @@ export default Component.extend({
 
   updateHeight() {
     run.schedule('afterRender', () => {
-      const hierarchy = this.$('> .device-hierarchy');
-      const lastNested = this.$('> .device-hierarchy > .nested-devices').last();
+      const { element } = this;
+      const hierarchy = element.querySelectorAll(`#${element.id} > .device-hierarchy`);
+      const deviceHierarchyNested = element.querySelectorAll(`#${element.id} > .device-hierarchy > .nested-devices`);
+      const lastNested = deviceHierarchyNested.item(deviceHierarchyNested.length - 1);
       const whitespace = 15;
 
-      this.set('height', (hierarchy.height() - lastNested.height()) + whitespace);
+      this.set('height', (getHeight(hierarchy.item(0)) - getHeight(lastNested)) + whitespace);
 
       if (this.devicesExpanded) {
         this.devicesExpanded();
