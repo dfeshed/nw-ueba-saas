@@ -38,7 +38,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -68,7 +68,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -99,7 +99,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -129,7 +129,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -160,7 +160,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -190,7 +190,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -221,7 +221,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -251,7 +251,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -274,14 +274,14 @@
       ]
     },
     {
-      "name": "numOfBytesSentToSrcIpSummationSslSubjectOutboundTlsHourly",
+      "name": "numOfBytesSentBySrcIpSummationSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
         "sslSubject"
       ],
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -291,7 +291,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "numOfBytesSentToSrcIpSummation",
+          "name": "numOfBytesSentBySrcIpSummation",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
@@ -307,14 +307,14 @@
       ]
     },
     {
-      "name": "numOfBytesSentToSrcIpSummationDomainOutboundTlsHourly",
+      "name": "numOfBytesSentBySrcIpSummationDomainOutboundTlsHourly",
       "contextFieldNames": [
         "domain"
       ],
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -324,7 +324,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "numOfBytesSentToSrcIpSummation",
+          "name": "numOfBytesSentBySrcIpSummation",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
@@ -340,7 +340,7 @@
       ]
     },
     {
-      "name": "numOfBytesSentToSrcIpSummationDomainSslSubjectOutboundTlsHourly",
+      "name": "numOfBytesSentBySrcIpSummationDomainSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
         "domain",
         "sslSubject"
@@ -348,7 +348,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -358,7 +358,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "numOfBytesSentToSrcIpSummation",
+          "name": "numOfBytesSentBySrcIpSummation",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
@@ -374,14 +374,14 @@
       ]
     },
     {
-      "name": "numOfBytesSentToSrcIpSummationDstOrgOutboundTlsHourly",
+      "name": "numOfBytesSentBySrcIpSummationDstOrgOutboundTlsHourly",
       "contextFieldNames": [
         "dstOrg"
       ],
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -391,7 +391,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "numOfBytesSentToSrcIpSummation",
+          "name": "numOfBytesSentBySrcIpSummation",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
@@ -407,7 +407,7 @@
       ]
     },
     {
-      "name": "numOfBytesSentToSrcIpSummationDstOrgSslSubjectOutboundTlsHourly",
+      "name": "numOfBytesSentBySrcIpSummationDstOrgSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
         "dstOrg",
         "sslSubject"
@@ -415,7 +415,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -425,7 +425,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "numOfBytesSentToSrcIpSummation",
+          "name": "numOfBytesSentBySrcIpSummation",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
@@ -441,14 +441,14 @@
       ]
     },
     {
-      "name": "numOfBytesSentToSrcIpSummationDstPortOutboundTlsHourly",
+      "name": "numOfBytesSentBySrcIpSummationDstPortOutboundTlsHourly",
       "contextFieldNames": [
         "dstPort"
       ],
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -458,7 +458,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "numOfBytesSentToSrcIpSummation",
+          "name": "numOfBytesSentBySrcIpSummation",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"
@@ -474,7 +474,7 @@
       ]
     },
     {
-      "name": "numOfBytesSentToSrcIpSummationDstPortSslSubjectOutboundTlsHourly",
+      "name": "numOfBytesSentBySrcIpSummationDstPortSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
         "dstPort",
         "sslSubject"
@@ -482,7 +482,7 @@
       "adeEventTypes": [
         "tls"
       ],
-      "strategyName": "fixed_duration_daily",
+      "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
           "type": "regex",
@@ -492,7 +492,7 @@
       ],
       "aggrFeatureConfs": [
         {
-          "name": "numOfBytesSentToSrcIpSummation",
+          "name": "numOfBytesSentBySrcIpSummation",
           "featureNamesMap": {
             "groupBy": [
               "srcIp"

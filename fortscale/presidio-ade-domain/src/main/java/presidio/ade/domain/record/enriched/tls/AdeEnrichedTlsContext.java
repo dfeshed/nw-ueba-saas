@@ -19,6 +19,7 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
     private String ja3s;
     private String direction;
     private Integer dstPort;
+    private Integer srcPort;
 
 
     public AdeEnrichedTlsContext() {
@@ -34,6 +35,7 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
         this.dstNetname = enrichedTlsRecord.getDstNetname();
         this.dstOrg = enrichedTlsRecord.getDstOrg();
         this.dstPort = enrichedTlsRecord.getDstPort();
+        this.srcPort = enrichedTlsRecord.getSrcPort();
         this.direction = enrichedTlsRecord.getDirection();
         this.ja3 = enrichedTlsRecord.getJa3();
         this.ja3s = enrichedTlsRecord.getJa3s();
@@ -153,5 +155,13 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
 
     public void setDstPort(Integer dstPort) {
         this.dstPort = dstPort;
+    }
+
+    public Integer getSrcPort() {
+        return srcPort;
+    }
+
+    public void setSrcPort(Integer srcPort) {
+        this.srcPort = srcPort;
     }
 }

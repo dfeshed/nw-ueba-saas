@@ -26,12 +26,13 @@ import java.util.List;
 public class AuthenticationTransformationServiceTest {
     @Autowired
     private TransformationService transformationService;
+    private Instant endDate = Instant.now();
 
     @Test
     public void testRunAuthenticationSchemaSrcMachineTransformations_unresolvedMachineNameAndId() {
         AuthenticationRawEvent authenticationRawEvent = createAuthenticationEvent(Instant.now(), "10.20.3.40", "1.34.56.255", "12.4.6.74", "10.65.20.88");
         List<AbstractInputDocument> events = Collections.singletonList(authenticationRawEvent);
-        List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.AUTHENTICATION);
+        List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.AUTHENTICATION, endDate);
         Assert.assertEquals("", ((AuthenticationTransformedEvent)transformedEvents.get(0)).getSrcMachineCluster());
         Assert.assertEquals("", ((AuthenticationTransformedEvent)transformedEvents.get(0)).getSrcMachineId());
         Assert.assertEquals("", ((AuthenticationTransformedEvent)transformedEvents.get(0)).getDstMachineCluster());
@@ -42,7 +43,7 @@ public class AuthenticationTransformationServiceTest {
     public void testRunAuthenticationSchemaSrcMachineTransformations_resolvedMachineNameAndId() {
         AuthenticationRawEvent authenticationRawEvent = createAuthenticationEvent(Instant.now(), "nameSPBGDCW01.prod.quest.corp", "idSPBGDCW01.prod.quest.corp", "nameSPBGDCW02.prod.quest.corp", "idSPBGDCW02.prod.quest.corp");
         List<AbstractInputDocument> events = Collections.singletonList(authenticationRawEvent);
-        List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.AUTHENTICATION);
+        List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.AUTHENTICATION, endDate);
         Assert.assertEquals("nameSPBGDCW.prod.quest.corp", ((AuthenticationTransformedEvent)transformedEvents.get(0)).getSrcMachineCluster());
         Assert.assertEquals("idSPBGDCW01.prod.quest.corp", ((AuthenticationTransformedEvent)transformedEvents.get(0)).getSrcMachineId());
         Assert.assertEquals("nameSPBGDCW.prod.quest.corp", ((AuthenticationTransformedEvent)transformedEvents.get(0)).getDstMachineCluster());

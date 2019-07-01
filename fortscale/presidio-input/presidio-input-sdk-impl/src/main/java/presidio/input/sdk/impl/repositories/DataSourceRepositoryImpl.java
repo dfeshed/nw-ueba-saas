@@ -11,6 +11,7 @@ import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 public class DataSourceRepositoryImpl implements DataSourceRepository {
 
@@ -55,10 +56,19 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
     @Override
     public <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize) {
         Query query = getQuery(startDate, endDate, numOfItemsToSkip, pageSize);
-
         query.with(new Sort(Sort.Direction.ASC, AbstractInputDocument.DATE_TIME_FIELD_NAME));
-
         List<U> recordList = mongoTemplate.find(query, (Class<U>) AbstractInputDocument.class, collectionName);
+        return recordList;
+
+    }
+
+    @Override
+    public <U extends AbstractInputDocument> List<U> readRecords(String collectionName, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize, Map<String, Object> filter,  List<String> projectionFields) {
+        Query query = getQuery(startDate, endDate, numOfItemsToSkip, pageSize);
+        query = createFilterCriteria(query, filter);
+        addFieldsProjection(projectionFields, query);
+        query.with(new Sort(Sort.Direction.ASC, AbstractInputDocument.DATE_TIME_FIELD_NAME));
+        List<U> recordList = mongoTemplate.find(query,(Class<U>)  AbstractInputDocument.class, collectionName);
         return recordList;
 
     }
@@ -68,6 +78,14 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
         return mongoTemplate.count(query, collectionName);
     }
 
+    public long count(String collectionName, Instant startDate, Instant endDate, Map<String, Object> filter, List<String> projectionFields) {
+        Query query = new Query(createDateCriteria(startDate, endDate));
+        query = createFilterCriteria(query, filter);
+        addFieldsProjection(projectionFields, query);
+        return mongoTemplate.count(query, collectionName);
+    }
+
+
     private Query getQuery(Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize) {
         Criteria dateTimeCriteria = createDateCriteria(startDate, endDate);
         return new Query(dateTimeCriteria).skip(numOfItemsToSkip).limit(pageSize);
@@ -75,5 +93,24 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
 
     private Criteria createDateCriteria(Instant startTime, Instant endTime) {
         return Criteria.where(AbstractAuditableDocument.DATE_TIME_FIELD_NAME).gte(startTime).lt(endTime);
+    }
+
+
+    private Query createFilterCriteria(Query query, Map<String, Object> filter) {
+        if(!filter.isEmpty()){
+            filter.forEach((key, value) -> {
+                query.addCriteria(Criteria.where(key).is(value));
+            });
+        }
+        return query;
+    }
+
+    private void addFieldsProjection(List<String> projectionFields, Query query) {
+        if(!projectionFields.isEmpty()){
+            projectionFields.add("_class");
+            for(String projectionField : projectionFields) {
+                query.fields().include(projectionField);
+            }
+        }
     }
 }

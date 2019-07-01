@@ -28,8 +28,10 @@ public class TlsRawEvent extends AbstractInputDocument {
     public static final String JA3S_FIELD_NAME = "ja3s";
     public static final String DIRECTION_FIELD_NAME = "direction";
     public static final String DESTINATION_PORT_FIELD_NAME = "dstPort";
+    public static final String SOURCE_PORT_FIELD_NAME = "srcPort";
     public static final String FQDN_FIELD_NAME = "fqdn";
     public static final String SSL_CA_FIELD_NAME = "sslCa";
+    public static final String SESSION_SPLIT_FIELD_NAME = "sessionSplit";
 
 
 
@@ -82,11 +84,17 @@ public class TlsRawEvent extends AbstractInputDocument {
     @Field(DESTINATION_PORT_FIELD_NAME)
     private Integer dstPort;
 
+    @Field(SOURCE_PORT_FIELD_NAME)
+    private Integer srcPort;
+
     @Field(FQDN_FIELD_NAME)
     private List<String> fqdn;
 
     @Field(SSL_CA_FIELD_NAME)
     private List<String> sslCa;
+
+    @Field(SESSION_SPLIT_FIELD_NAME)
+    private Integer sessionSplit;
 
 
 
@@ -110,16 +118,18 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.ja3s = other.ja3s;
         this.direction = other.direction;
         this.dstPort = other.dstPort;
+        this.srcPort = other.srcPort;
         this.fqdn = other.fqdn;
         this.sslCa = other.sslCa;
+        this.sessionSplit = other.sessionSplit;
     }
 
     public TlsRawEvent(Instant dateTime, String eventId, String dataSource, Map<String, String> additionalInfo,
-                       String srcIp, String dstIp, String srcCountry, String dstCountry, String sslSubject,
+                       String srcIp, String dstIp, Integer srcPort, String srcCountry, String dstCountry, String sslSubject,
                        String domain, String dstOrg,
                        String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
                        String dstNetname, String ja3, String ja3s, String direction, Integer dstPort, List<String> fqdn,
-                       List<String> sslCa) {
+                       List<String> sslCa, Integer sessionSplit) {
         super(dateTime, eventId, dataSource, additionalInfo);
         this.srcIp = srcIp;
         this.dstIp = dstIp;
@@ -137,8 +147,10 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.ja3s = ja3s;
         this.direction = direction;
         this.dstPort = dstPort;
+        this.srcPort = srcPort;
         this.fqdn = fqdn;
         this.sslCa = sslCa;
+        this.sessionSplit = sessionSplit;
     }
 
 
@@ -284,6 +296,22 @@ public class TlsRawEvent extends AbstractInputDocument {
 
     public void setSslCa(List<String> sslCa) {
         this.sslCa = sslCa;
+    }
+
+    public Integer getSessionSplit() {
+        return sessionSplit;
+    }
+
+    public void setSessionSplit(Integer sessionSplit) {
+        this.sessionSplit = sessionSplit;
+    }
+
+    public Integer getSrcPort() {
+        return srcPort;
+    }
+
+    public void setSrcPort(Integer srcPort) {
+        this.srcPort = srcPort;
     }
 
     @Override

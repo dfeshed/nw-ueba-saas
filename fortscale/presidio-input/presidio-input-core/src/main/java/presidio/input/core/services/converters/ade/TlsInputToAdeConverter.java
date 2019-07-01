@@ -20,6 +20,7 @@ public class TlsInputToAdeConverter implements InputAdeConverter {
         adeRecord.setDstNetname(tlsTransformedEvent.getDstNetname());
         adeRecord.setDstOrg(tlsTransformedEvent.getDstOrg());
         adeRecord.setDstPort(tlsTransformedEvent.getDstPort());
+        adeRecord.setSrcPort(tlsTransformedEvent.getSrcPort());
         adeRecord.setJa3(tlsTransformedEvent.getJa3());
         adeRecord.setJa3s(tlsTransformedEvent.getJa3s());
         adeRecord.setNumOfBytesReceived(tlsTransformedEvent.getNumOfBytesReceived());

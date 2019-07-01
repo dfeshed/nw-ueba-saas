@@ -123,12 +123,12 @@
     {
       "name": "maxSumOfBytesSentBySrcIpToSslSubjectOutboundTlsHourly",
       "type": "F",
-      "bucketConfName": "numOfBytesSentToSrcIpSummationSslSubjectOutboundTlsHourly",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationSslSubjectOutboundTlsHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "numOfBytesSentToSrcIpSummation"
+          "numOfBytesSentBySrcIpSummation"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -138,12 +138,12 @@
     {
       "name": "maxSumOfBytesSentBySrcIpToDomainOutboundTlsHourly",
       "type": "F",
-      "bucketConfName": "numOfBytesSentToSrcIpSummationDomainOutboundTlsHourly",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationDomainOutboundTlsHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "numOfBytesSentToSrcIpSummation"
+          "numOfBytesSentBySrcIpSummation"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -153,12 +153,12 @@
     {
       "name": "maxSumOfBytesSentBySrcIpToDomainSslSubjectOutboundTlsHourly",
       "type": "F",
-      "bucketConfName": "numOfBytesSentToSrcIpSummationDomainSslSubjectOutboundTlsHourly",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationDomainSslSubjectOutboundTlsHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "numOfBytesSentToSrcIpSummation"
+          "numOfBytesSentBySrcIpSummation"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -168,12 +168,12 @@
     {
       "name": "maxSumOfBytesSentBySrcIpToDstOrgOutboundTlsHourly",
       "type": "F",
-      "bucketConfName": "numOfBytesSentToSrcIpSummationDstOrgOutboundTlsHourly",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationDstOrgOutboundTlsHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "numOfBytesSentToSrcIpSummation"
+          "numOfBytesSentBySrcIpSummation"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -183,12 +183,12 @@
     {
       "name": "maxSumOfBytesSentBySrcIpToDstOrgSslSubjectOutboundTlsHourly",
       "type": "F",
-      "bucketConfName": "numOfBytesSentToSrcIpSummationDstOrgSslSubjectOutboundTlsHourly",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationDstOrgSslSubjectOutboundTlsHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "numOfBytesSentToSrcIpSummation"
+          "numOfBytesSentBySrcIpSummation"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -198,12 +198,12 @@
     {
       "name": "maxSumOfBytesSentBySrcIpToDstPortOutboundTlsHourly",
       "type": "F",
-      "bucketConfName": "numOfBytesSentToSrcIpSummationDstPortOutboundTlsHourly",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationDstPortOutboundTlsHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "numOfBytesSentToSrcIpSummation"
+          "numOfBytesSentBySrcIpSummation"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -213,12 +213,12 @@
     {
       "name": "maxSumOfBytesSentBySrcIpToDstPortSslSubjectOutboundTlsHourly",
       "type": "F",
-      "bucketConfName": "numOfBytesSentToSrcIpSummationDstPortSslSubjectOutboundTlsHourly",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationDstPortSslSubjectOutboundTlsHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "numOfBytesSentToSrcIpSummation"
+          "numOfBytesSentBySrcIpSummation"
         ]
       },
       "aggregatedFeatureEventFunction": {
