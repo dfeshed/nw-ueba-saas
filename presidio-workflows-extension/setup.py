@@ -64,7 +64,7 @@ setup(name='presidio-workflows-extension',
       packages=find_packages(),
       install_requires=[
           'sqlalchemy==1.1.18', 'psycopg2', 'nose', 'apache-airflow[devel,postgres,crypto,password]==1.10.2',
-          'python-dateutil', 'lxml>4.0', 'elasticsearch>=5.0.0,<6.0.0', 'tox==2.9.1', 'Sphinx==1.8.4', 'Jinja2==2.10.0',
+          'python-dateutil', 'lxml>4.0', 'elasticsearch>=5.0.0,<6.0.0', 'tox==2.9.1', 'Sphinx==1.8.4','numpy==1.16.4', 'Jinja2==2.10.0',
           'tzlocal==1.5.1', 'snakebite'
       ],
       cmdclass={'test': Tox},
