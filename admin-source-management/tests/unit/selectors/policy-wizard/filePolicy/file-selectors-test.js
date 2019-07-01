@@ -10,7 +10,8 @@ import {
 import {
   fileSources,
   fileSourcesList,
-  selectedFileSource
+  selectedFileSource,
+  selectedFileSourceDefaults
 } from 'admin-source-management/reducers/usm/policy-wizard/filePolicy/file-selectors';
 import {
   ENABLED_CONFIG,
@@ -92,9 +93,34 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
       .build();
     const fileTypeExpected = {
       'name': 'apache',
-      'prettyName': 'apache'
+      'prettyName': 'apache',
+      'paths': [
+        '/c/Program Files/Apache Group/Apache[2-9]/*.log',
+        '/c/Program Files/Apache Group/Apache[2-9]/logs/*.log'
+      ]
     };
     const fileTypeSelected = selectedFileSource(Immutable.from(fullState));
     assert.deepEqual(fileTypeSelected, fileTypeExpected, 'The returned value from the selectedFileSource selector is as expected');
+  });
+
+  test('selectedFileSourceDefaults selector', function(assert) {
+    const fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .build();
+    const defaultsExpected = {
+      'enabled': true,
+      'exclusionFilters': [],
+      'fileEncoding': 'UTF-8',
+      'startOfEvents': false,
+      'sourceName': '',
+      'fileType': 'apache',
+      'paths': [
+        '/c/Program Files/Apache Group/Apache[2-9]/*.log',
+        '/c/Program Files/Apache Group/Apache[2-9]/logs/*.log'
+      ]
+    };
+    const defaults = selectedFileSourceDefaults(Immutable.from(fullState));
+    assert.deepEqual(defaults, defaultsExpected, 'The returned defaults value from the selectedFileSourceDefaults selector is as expected');
   });
 });

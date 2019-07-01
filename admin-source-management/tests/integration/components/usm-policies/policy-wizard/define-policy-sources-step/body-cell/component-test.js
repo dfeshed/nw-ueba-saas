@@ -30,7 +30,8 @@ const item = {
   enabled: true,
   startOfEvents: false,
   sourceName: 'apache-server-1',
-  exclusionFilters: ['filter-1', 'filter-2']
+  exclusionFilters: ['filter-1', 'filter-2'],
+  paths: ['path1', 'path2']
 };
 
 module('Integration | Component | usm-policies/policy-wizard/define-policy-sources-step/body-cell', function(hooks) {
@@ -159,6 +160,50 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       }}
     `);
     assert.equal(findAll('.source-name').length, 1);
+  });
+
+  test('directory paths is displayed in the container', async function(assert) {
+    assert.expect(4);
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources(sources)
+      .build();
+
+    const column = {
+      field: 'paths',
+      title: 'adminUsm.policyWizard.filePolicy.logFilePath',
+      width: '100%',
+      displayType: 'paths'
+    };
+
+    this.setProperties({
+      column,
+      encodingOptions,
+      item
+    });
+
+    this.set('sourceUpdated', () => {
+      assert.ok(true, 'sourceUpdated should be called');
+    });
+
+    await render(hbs`
+      {{usm-policies/policy-wizard/define-policy-sources-step/body-cell
+        column=column
+        encodingOptions=encodingOptions
+        item=item
+        sourceUpdated=sourceUpdated
+      }}
+    `);
+    assert.equal(findAll('.paths').length, 1, 'Directory paths are rendered');
+    const value1 = findAll('.paths .directory-path input')[0].value;
+    const value2 = findAll('.paths .directory-path input')[1].value;
+    const value = 'path1';
+    const [eventIdEl] = findAll('.paths input');
+    await fillIn(eventIdEl, value);
+    await triggerEvent(eventIdEl, 'blur');
+    assert.equal(value1, 'path1', 'Default value for the first directory path is rendered correctly');
+    assert.equal(value2, 'path2', 'Default value for the second directory path is rendered correctly');
   });
 
   test('exclusion filter is displayed in the text area container', async function(assert) {

@@ -84,6 +84,35 @@
       }}
     </div>
 
+  {{else if (eq column.displayType 'paths') }}
+    <h4 class='subheading'>
+      {{t column.title}}
+    </h4>
+    {{#each item.paths as |path index|}}
+      <hbox>
+        <vbox class="directory-path">
+          {{rsa-form-input
+            value=path
+            focusOut=(action 'focusOut' index)
+          }}
+        </vbox>
+        <vbox class="delete-path">
+          {{#rsa-form-button isIconOnly=true defaultAction=(action 'deletePath' index) }}
+            {{rsa-icon name='bin-1' size='small' class='delete-button'}}
+          {{/rsa-form-button}}
+        </vbox>
+      </hbox>
+    {{/each}}
+    <div class="add-path">
+      {{#rsa-form-button
+        class='add-directory-path'
+        click=(action 'addPath')
+      }}
+        {{t 'adminUsm.policyWizard.filePolicy.addPath'}}
+      {{/rsa-form-button}}
+    </div>
+
+
   {{else if (eq column.displayType 'exclusionFilters') }}
     <h4 class='subheading'>
       {{t column.title}}

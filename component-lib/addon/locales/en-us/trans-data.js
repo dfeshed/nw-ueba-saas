@@ -4785,6 +4785,8 @@ effects the previewed source.',
         sourceName: 'Source Name',
         exclusionFilters: 'Exclusion Filters',
         paths: 'Paths',
+        logFilePath: 'Log File Path',
+        addPath: 'Add Path',
         fileSourceType: {
           add: 'Add Selected File Type',
           placeholder: 'Pick a Log File Type'

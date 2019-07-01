@@ -10,14 +10,16 @@ import {
   fileSources,
   sourceConfig,
   fileSourcesList,
-  selectedFileSource
+  selectedFileSource,
+  selectedFileSourceDefaults
 } from 'admin-source-management/reducers/usm/policy-wizard/filePolicy/file-selectors';
 
 const stateToComputed = (state) => ({
   sources: fileSources(state),
   columns: sourceConfig(),
   fileSourcesList: fileSourcesList(state),
-  selectedFileSource: selectedFileSource(state)
+  selectedFileSource: selectedFileSource(state),
+  selectedFileSourceDefaults: selectedFileSourceDefaults(state)
 });
 
 const dispatchToActions = {
@@ -48,8 +50,8 @@ const DefinePolicySourcesStep = Component.extend({
   actions: {
     // adding a container to the sources
     addRowFilter() {
-      const selectedFileSource = this.get('selectedFileSource').name;
-      this.get('fileSources').pushObject({ fileType: selectedFileSource, fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: '', exclusionFilters: [] });
+      const selectedFileSourceDefaults = this.get('selectedFileSourceDefaults');
+      this.get('fileSources').pushObject(selectedFileSourceDefaults);
       this._updateFileSources();
       scheduleOnce('afterRender', this, '_scrollToAddSelectedFileTypeBtn');
     },

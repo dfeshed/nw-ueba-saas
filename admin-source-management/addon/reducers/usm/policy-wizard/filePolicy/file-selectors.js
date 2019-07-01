@@ -25,7 +25,8 @@ export const fileSourcesList = createSelector(
     for (let i = 0; i < listOfFileSourceTypes.length; i++) {
       const fileType = {
         prettyName: listOfFileSourceTypes[i].prettyName,
-        name: listOfFileSourceTypes[i].name
+        name: listOfFileSourceTypes[i].name,
+        paths: listOfFileSourceTypes[i].sourceDefaults.filePaths
       };
       fileTypes.push(fileType);
     }
@@ -51,6 +52,29 @@ export const selectedFileSource = createSelector(
       }
     }
     return selected;
+  }
+);
+
+/**
+ * Returns the default settings for a selected file source
+ * @public
+ * @return  {obj} {fileType: "apache", fileEncoding: "UTF-8", ..., paths: ["/c/apache", "/c/apache/logs"]}
+ */
+export const selectedFileSourceDefaults = createSelector(
+  selectedFileSource,
+  (selectedFileSource) => {
+    if (selectedFileSource) {
+      const defaults = {
+        fileType: selectedFileSource.name,
+        fileEncoding: 'UTF-8',
+        enabled: true,
+        startOfEvents: false,
+        sourceName: '',
+        exclusionFilters: [],
+        paths: selectedFileSource.paths
+      };
+      return defaults;
+    }
   }
 );
 

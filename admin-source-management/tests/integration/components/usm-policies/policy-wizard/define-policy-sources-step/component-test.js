@@ -12,7 +12,7 @@ import sinon from 'sinon';
 
 let setState, updatePolicyPropertySpy;
 const spys = [];
-const sources = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['abc', 'def'] } ];
+const sources = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['abc', 'def'], paths: ['path1', 'path2'] } ];
 
 module('Integration | Component | usm-policies/policy-wizard/define-policy-sources-step', function(hooks) {
   setupRenderingTest(hooks, {
@@ -73,7 +73,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       .policyWizFileSources(sources)
       .build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    assert.equal(findAll('.child-source-container').length, 6, 'body cell child-source-containers are rendered correctly');
+    assert.equal(findAll('.child-source-container').length, 7, 'body cell child-source-containers are rendered correctly');
     assert.equal(findAll('.file-source-type').length, 1, 'file-source-type dropdown is rendered correctly');
     assert.equal(findAll('.add-row').length, 1, 'add-row button is rendered correctly');
   });
@@ -85,7 +85,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       .policyWizFileSources(emptyExF)
       .build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    assert.equal(findAll('.child-source-container').length, 6, 'body cell child-source-containers are rendered correctly');
+    assert.equal(findAll('.child-source-container').length, 7, 'body cell child-source-containers are rendered correctly');
     assert.equal(findAll('.file-source-type').length, 1, 'file-source-type dropdown is rendered correctly');
     assert.equal(findAll('.add-row').length, 1, 'add-row button is rendered correctly');
     assert.equal(findAll('.child-source-container .exclusionFilters').length, 1, 'Exclusion filters rendered correctly when null');
@@ -97,14 +97,15 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       .policyWizFileSources(sources)
       .build();
     await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
-    assert.equal(findAll('.child-source-container').length, 6, 'body cell child-source-containers are rendered correctly');
-    assert.equal(findAll('.subheading').length, 5, 'All the subheadings rendered correctly');
+    assert.equal(findAll('.child-source-container').length, 7, 'body cell child-source-containers are rendered correctly');
+    assert.equal(findAll('.subheading').length, 6, 'All the subheadings rendered correctly');
     assert.equal(findAll('.rsa-form-radio-group-label').length, 2, 'All the radio labels rendered correctly');
     assert.equal(findAll('.file-type').length, 1, 'file type dropdown rendered correctly');
     assert.equal(findAll('.child-source-container .enabled').length, 1, 'Enable on Agent radio rendered correctly');
     assert.equal(findAll('.child-source-container .startOfEvents').length, 1, 'Data Collection radio rendered correctly');
     assert.equal(findAll('.child-source-container .sourceName').length, 1, 'Source Name input rendered correctly');
     assert.equal(findAll('.child-source-container .exclusionFilters').length, 1, 'Source Name input rendered correctly');
+    assert.equal(findAll('.child-source-container .paths').length, 1, 'Directory paths rendered correctly');
   });
 
   test('It triggers the update policy action creator when the main fileType is changed', async function(assert) {
@@ -154,6 +155,30 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     const [eventIdEl] = findAll('.exclusion-filters textarea');
     await fillIn(eventIdEl, value);
     await triggerEvent(eventIdEl, 'blur');
+    assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
+  });
+
+  test('It triggers the update policy action creator when a new directory path is added', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources(sources)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
+    const addPath = document.querySelector('.paths .add-path .add-directory-path');
+    await click(addPath);
+    assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
+  });
+
+  test('It triggers the update policy action creator when an existing directory path is removed', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources(sources)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
+    const [, deletePath] = document.querySelectorAll('.paths .delete-button');
+    await click(deletePath);
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
   });
 

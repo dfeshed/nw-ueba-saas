@@ -34,6 +34,18 @@ export default DataTableBody.extend({
       }
       this.set(`item.${column}`, arr);
       this.get('sourceUpdated')();
+    },
+    focusOut(index, value) {
+      this.set(`item.paths.${index}`, value);
+      this.get('sourceUpdated')();
+    },
+    deletePath(index) {
+      this.get('item.paths').splice(index, 1);
+      this.get('sourceUpdated')();
+    },
+    addPath() {
+      this.get('item.paths').push('');
+      this.get('sourceUpdated')();
     }
   }
 });

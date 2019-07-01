@@ -121,16 +121,32 @@
     .rsa-data-table-body {
       overflow: hidden;
     }
+    .rsa-wizard-step {
+      padding-top: 0;
+    }
     padding-right: 0;
     .rsa-data-table-body-row {
       flex-direction: column;
       margin: 0;
       padding: 0;
+      top: 0 !important;
+      position: relative;
       width: 55%;
       margin-bottom: rsa-whitespace(most);
       background-color: background-color(primary, darker);
       &:hover {
           width: 55%;
+      }
+    }
+    .paths {
+      .add-path {
+        margin-top: rsa-whitespace(less);
+      }
+      .directory-path {
+        width: 32%;
+      }
+      .delete-path {
+        margin: rsa-whitespace() 0 0 rsa-whitespace();
       }
     }
   }
