@@ -22,10 +22,23 @@ dags:
          entity_type : userId
          depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
          enable_output_forwarder: ${outputForwarding.enableForwarding}
+       - smart_conf_name: ssl_subject
+         entity_type : sslSubject
+         depends_on_schemas: [TLS]
+         enable_output_forwarder: ${outputForwarding.enableForwarding}
+       - smart_conf_name: ja3
+         entity_type : ja3
+         depends_on_schemas: [TLS]
+         enable_output_forwarder: ${outputForwarding.enableForwarding}
     smart_model:
       schedule_interval: None
       smart_confs:
        - smart_conf_name: userId_hourly
+         depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
+       - smart_conf_name: ssl_subject
+         depends_on_schemas: [TLS]
+       - smart_conf_name: ja3
+         depends_on_schemas: [TLS]
 
   pools_config:
     - slots: 7

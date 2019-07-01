@@ -3,7 +3,6 @@ package presidio.output.domain.repositories;
 import fortscale.utils.time.TimeRange;
 import org.springframework.data.util.Pair;
 import presidio.output.domain.records.events.EnrichedEvent;
-import presidio.output.domain.records.events.EnrichedUserEvent;
 
 import java.time.Instant;
 import java.util.List;
@@ -22,11 +21,11 @@ public interface EventRepository {
      */
     void saveEvents(String collectionName, List<? extends EnrichedEvent> events) throws Exception;
 
-    List<? extends EnrichedUserEvent> findEntityEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int limitEvents, String entityType) throws Exception;
+    List<? extends EnrichedEvent> findEntityEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int limitEvents, String entityType) throws Exception;
 
     long countEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, String entityType);
 
-    List<? extends EnrichedUserEvent> findEntityEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize, String entityType);
+    List<? extends EnrichedEvent> findEntityEvents(String collectionName, String entityId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize, String entityType);
 
     EnrichedEvent findLatestEventForEntity(String entityId, List<String> collectionNames, String entityType);
 

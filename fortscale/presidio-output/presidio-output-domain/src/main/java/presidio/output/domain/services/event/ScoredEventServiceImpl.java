@@ -8,8 +8,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
-import presidio.output.domain.records.events.EnrichedUserEvent;
-import presidio.output.domain.records.events.ScoredEnrichedUserEvent;
+import presidio.output.domain.records.events.EnrichedEvent;
+import presidio.output.domain.records.events.ScoredEnrichedEvent;
 import presidio.output.domain.repositories.EventMongoPageIterator;
 
 import java.util.*;
@@ -30,14 +30,14 @@ public class ScoredEventServiceImpl implements ScoredEventService {
     }
 
     @Override
-    public Collection<ScoredEnrichedUserEvent> findDistinctScoredEnrichedUserEvent(Schema schema, String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, Set<String> distinctFieldNames, Double scoreThreshold, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize, String entityType) {
+    public Collection<ScoredEnrichedEvent> findDistinctScoredEnrichedEvent(Schema schema, String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, Set<String> distinctFieldNames, Double scoreThreshold, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize, String entityType) {
 
-        Map<Object, ScoredEnrichedUserEvent> scoredEnrichedEvent = new HashMap<Object, ScoredEnrichedUserEvent>();
+        Map<Object, ScoredEnrichedEvent> scoredEnrichedEvent = new HashMap<Object, ScoredEnrichedEvent>();
         int totalEvents = eventPersistencyService.countEvents(schema,  contextFieldAndValue.getSecond(), timeRange, featuresFilters, entityType).intValue();
         EventMongoPageIterator eventMongoPageIterator = new EventMongoPageIterator(eventPersistencyService, eventsPageSize, schema, contextFieldAndValue.getSecond(), timeRange, featuresFilters, totalEvents, entityType);
 
         while (eventMongoPageIterator.hasNext()) {
-            List<? extends EnrichedUserEvent> events = eventMongoPageIterator.next();
+            List<? extends EnrichedEvent> events = eventMongoPageIterator.next();
 
             // retrieve events score (change to join within mongo once the performance is stable)
             List<String> eventsIds = events.stream().map(e -> e.getEventId()).collect(Collectors.toList());
@@ -45,7 +45,7 @@ public class ScoredEventServiceImpl implements ScoredEventService {
             Map<String, Double> scoredEvents = adeScoredEnrichedRecords.stream().collect(Collectors.toMap(e -> e.getContext().getEventId(), e -> e.getScore(),  (p1, p2) -> p1));
 
             // get distinct scored enriched
-            for (EnrichedUserEvent e: events) {
+            for (EnrichedEvent e: events) {
 
                 if (!scoredEvents.containsKey(e.getEventId())) {// skip events with zero score
                     continue;
@@ -58,7 +58,7 @@ public class ScoredEventServiceImpl implements ScoredEventService {
                     continue;
                 }
 
-                scoredEnrichedEvent.put(features, new ScoredEnrichedUserEvent(e, scoredEvents.get(e.getEventId())));
+                scoredEnrichedEvent.put(features, new ScoredEnrichedEvent(e, scoredEvents.get(e.getEventId())));
             }
         }
 
@@ -66,14 +66,14 @@ public class ScoredEventServiceImpl implements ScoredEventService {
     }
 
 
-    public List<ScoredEnrichedUserEvent> findUserEventsAndScores(Schema schema, String adeEventType, String entityId, TimeRange timeRange, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize, String entityType) {
+    public List<ScoredEnrichedEvent> findEventsAndScores(Schema schema, String adeEventType, String entityId, TimeRange timeRange, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize, String entityType) {
 
-        List<ScoredEnrichedUserEvent> scoredEnrichedUserEvents = new ArrayList<>();
+        List<ScoredEnrichedEvent> scoredEnrichedEvents = new ArrayList<>();
         EventMongoPageIterator eventMongoPageIterator = new EventMongoPageIterator(eventPersistencyService, eventsPageSize, schema, entityId, timeRange, featuresFilters, eventsLimit, entityType);
 
         while (eventMongoPageIterator.hasNext()) {
             // get raw events from output_ collections
-            List<? extends EnrichedUserEvent> rawEvents = eventMongoPageIterator.next();
+            List<? extends EnrichedEvent> rawEvents = eventMongoPageIterator.next();
 
             if (CollectionUtils.isNotEmpty(rawEvents)) {
                 // get scored raw events from ade
@@ -81,18 +81,18 @@ public class ScoredEventServiceImpl implements ScoredEventService {
                 List<AdeScoredEnrichedRecord> adeScoredEnrichedRecords = adeManagerSdk.findScoredEnrichedRecords(eventsIds, adeEventType, 0d);
 
                 // create ScoredEnrichedEvents
-                for (EnrichedUserEvent rawEvent : rawEvents) {
+                for (EnrichedEvent rawEvent : rawEvents) {
 
                     Optional<Double> enrichedRecordScore = adeScoredEnrichedRecords.stream()
                             .filter(e -> e.getContext().getEventId().equals(rawEvent.getEventId()))
                             .findFirst()
                             .map(e -> e.getScore());
-                    ScoredEnrichedUserEvent scoredEnrichedUserEvent = new ScoredEnrichedUserEvent(rawEvent, enrichedRecordScore.orElse(0d));
-                    scoredEnrichedUserEvents.add(scoredEnrichedUserEvent);
+                    ScoredEnrichedEvent scoredEnrichedEvent = new ScoredEnrichedEvent(rawEvent, enrichedRecordScore.orElse(0d));
+                    scoredEnrichedEvents.add(scoredEnrichedEvent);
                 }
 
             }
         }
-        return scoredEnrichedUserEvents;
+        return scoredEnrichedEvents;
     }
 }

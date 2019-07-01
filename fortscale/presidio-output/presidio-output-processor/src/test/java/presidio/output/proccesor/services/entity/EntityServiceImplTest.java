@@ -15,7 +15,6 @@ import presidio.output.domain.records.PresidioRange;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.entity.Entity;
 import presidio.output.domain.records.entity.EntitySeverity;
-import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.EnrichedUserEvent;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;
