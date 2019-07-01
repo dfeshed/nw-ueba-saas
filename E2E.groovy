@@ -12,7 +12,7 @@ pipeline {
         stage('test') {
             steps {
                 println("Started")
-                prinln("NODE: " + env.NODE)
+                println("NODE: " + env.NODE)
                 setBaseUrl()
             }
         }
