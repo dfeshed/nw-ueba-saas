@@ -10,6 +10,7 @@ pipeline {
     stages {
         stage('presidio-integration-test Project Clone') {
             steps {
+                println("Running on node- " + env.NODE)
                 cleanWs()
                 buildIntegrationTestProject()
             }
