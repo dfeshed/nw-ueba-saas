@@ -158,6 +158,29 @@ module('Unit | Reducers | process-tree', function() {
     assert.equal(result.selectedServerId, 'abc-test-server');
   });
 
+  test('SET_EVENT_CATEGORY sets the events present', function(assert) {
+    const previous = Immutable.from({
+      rawData: [
+        {
+          sessionId: 45328,
+          time: 1525950159000,
+          checksumDst: '1234567890',
+          processId: '1'
+        },
+        {
+          sessionId: 45337,
+          time: 1525950159000,
+          checksumDst: '1234567891',
+          processId: '2'
+        }
+      ]
+    });
+    let result = reducer(previous, { type: ACTION_TYPES.SET_EVENT_CATEGORY, payload: { pid: '1', eventCategory: [[{ value: '0', count: 3 }], [], []] } });
+    assert.equal(result.rawData[0].eventCategory.hasNetwork, true, 'hasNetwork is set');
+    result = reducer(previous, { type: ACTION_TYPES.SET_EVENT_CATEGORY, payload: { pid: '2', eventCategory: [ {}, {}, {}] } });
+    assert.equal(result.rawData[1].eventCategory, null);
+  });
+
   test('SET_LOCAL_RISK_SCORE sets the score', function(assert) {
     const previous = Immutable.from({
       rawData: [

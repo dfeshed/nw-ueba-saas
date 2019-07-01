@@ -150,9 +150,10 @@ export const addNodeContent = (processNode, nodeEnter) => {
 
 
   appendIcon({ className: 'process-icon', node: nodeEnter, fontSize: '30px', text: '\ue944', dx: DISTANCE.ICON_X, dy: DISTANCE.ICON_Y }); // file icon
-  appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px', text: '\uea7b', dx: DISTANCE.PROCESS_TYPE_X, dy: DISTANCE.PROCESS_TYPE_Y }); // network
-  appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px', text: '\uea7a', dx: DISTANCE.PROCESS_TYPE_X + DISTANCE.ICON_WIDTH, dy: DISTANCE.PROCESS_TYPE_Y }); // file
-  appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px', text: '\uea79', dx: DISTANCE.PROCESS_TYPE_X + (DISTANCE.ICON_WIDTH * 2), dy: DISTANCE.PROCESS_TYPE_Y }); // registry
+  appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px', text: (d) => d.data.eventCategory && d.data.eventCategory.hasNetwork ? '\uea7b' : '', dx: DISTANCE.PROCESS_TYPE_X, dy: DISTANCE.PROCESS_TYPE_Y }); // network
+  appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px', text: (d) => d.data.eventCategory && d.data.eventCategory.hasFile ? '\uea7a' : '', dx: DISTANCE.PROCESS_TYPE_X + DISTANCE.ICON_WIDTH, dy: DISTANCE.PROCESS_TYPE_Y }); // file
+  appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px', text: (d) => d.data.eventCategory && d.data.eventCategory.hasRegistry ? '\uea79' : '', dx: DISTANCE.PROCESS_TYPE_X + (DISTANCE.ICON_WIDTH * 2), dy: DISTANCE.PROCESS_TYPE_Y }); // registry
+
 
   appendText({
     className: 'child-count',

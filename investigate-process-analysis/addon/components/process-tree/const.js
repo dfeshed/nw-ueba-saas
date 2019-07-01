@@ -8,7 +8,8 @@ const CONST = {
   LINK_HEIGHT: 250,
   LINK_WIDTH: 30,
   RADIUS: 10,
-  DURATION: 750
+  DURATION: 750,
+  FOCUS_OFFSET: 500
 };
 
 const ICON = {

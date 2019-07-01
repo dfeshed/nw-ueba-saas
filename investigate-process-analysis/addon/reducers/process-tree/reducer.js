@@ -84,6 +84,27 @@ export default reduxActions.handleActions({
     return state.set('rawData', newData);
   },
 
+  [ACTION_TYPES.SET_EVENT_CATEGORY]: (state, { payload }) => {
+    const { rawData } = state;
+    const [network, file, registry] = payload.eventCategory;
+    const networkLength = network.length;
+    const fileLength = file.length;
+    const registryLength = registry.length;
+    if (networkLength || fileLength || registryLength) {
+      const category = { pid: payload.pid, hasNetwork: networkLength, hasFile: fileLength, hasRegistry: registryLength };
+      const newData = rawData.map((node) => {
+        if (node.processId === payload.pid) {
+          return { ...node, eventCategory: category };
+        } else {
+          return node;
+        }
+      });
+      return state.set('rawData', newData);
+    } else {
+      return state;
+    }
+  },
+
   [ACTION_TYPES.SET_LOCAL_RISK_SCORE]: (state, { payload: { score } }) => {
     const { rawData } = state;
     const newData = rawData.map((data) => {

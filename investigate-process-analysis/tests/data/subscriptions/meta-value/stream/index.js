@@ -17,6 +17,15 @@ export default {
         value: '123456789',
         count: 2
       }];
+    } else if (metaName === 'process.vid.src') {
+      eventList = [{
+        value: '0',
+        count: 3
+      },
+      {
+        value: '2',
+        count: 1
+      }];
     }
     util.sendBatches({
       requestBody: bodyParsed,

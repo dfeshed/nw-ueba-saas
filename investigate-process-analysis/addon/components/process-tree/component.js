@@ -492,7 +492,7 @@ const TreeComponent = Component.extend({
     // recenter
     const transform = zoomIdentity
       .scale(1)
-      .translate(-d.y, -d.x);
+      .translate(-d.y + CONST.FOCUS_OFFSET, -d.x);
     this.parent.transition()
       .duration(CONST.DURATION)
       .call(this.get('zoomBehaviour').transform, transform);
