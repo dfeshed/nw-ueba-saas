@@ -11,8 +11,9 @@ pipeline {
     stages {
         stage('test') {
             steps {
-                setBaseUrl()
+                println("Started")
                 prinln("NODE: " + env.NODE)
+                setBaseUrl()
             }
         }
     }
@@ -23,6 +24,8 @@ def setBaseUrl(
         String rpmVeriosn = env.VERSION,
         String stability = env.STABILITY
 ) {
+
+    println(env.VERSION)
     String[] versionArray = env.VERSION.split('.')
     ThirdDir=env.VERSION
     FirstDir=versionArray[0] + versionArray[1] + "/"
