@@ -41,7 +41,7 @@ test('Should update the column widths if the right columns are present', functio
   assert.deepEqual(newEndState.columnGroups, EventColumnGroups);
 
   assert.equal(newEndState.columnGroups[0].columns[0].width, 135, 'time set to right value');
-  assert.equal(newEndState.columnGroups[0].columns[4].width, 1000, 'summary set to right value');
+  assert.equal(newEndState.columnGroups[0].columns[4].width, 2000, 'summary set to right value');
 });
 
 test('Should update global preferences', function(assert) {

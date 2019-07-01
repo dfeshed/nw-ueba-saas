@@ -97,8 +97,8 @@ export default handleActions({
           // columns exist
           columnGroups.forEach((cg) => {
             // meta-summary goes by a few names
-            _.merge(_.find(cg.columns, { field: 'custom.meta-summary' }), { width: 1000 });
-            _.merge(_.find(cg.columns, { field: 'custom.metasummary' }), { width: 1000 });
+            _.merge(_.find(cg.columns, { field: 'custom.meta-summary' }), { width: 2000 });
+            _.merge(_.find(cg.columns, { field: 'custom.metasummary' }), { width: 2000 });
             _.merge(_.find(cg.columns, { field: 'time' }), { width: 135 });
           });
 

@@ -69,11 +69,7 @@ function buildMetaSummaryContent($content, item, opts) {
     }
   }
   if (isLogEvent(item)) {
-    const keys = SUMMARY_COLUMN_KEYS.generic.concat(SUMMARY_COLUMN_KEYS.log);
     addMetaSummaryRow(buildLogContent(item));
-    addMetaSummaryRow(
-      buildMetaKeyValuePairs(keys, item, opts)
-    );
   } else {
     const keys = SUMMARY_COLUMN_KEYS.generic.concat(SUMMARY_COLUMN_KEYS.network);
     addMetaSummaryRow(

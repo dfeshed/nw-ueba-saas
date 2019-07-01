@@ -11,7 +11,7 @@ export default [
     columns: BASE_COLUMNS.concat([
       { field: 'custom.theme', title: 'Theme' },
       { field: 'size', title: 'Size' },
-      { field: 'custom.meta-summary', title: 'Summary', width: 1000 }
+      { field: 'custom.meta-summary', title: 'Summary', width: 2000 }
     ])
   }
 ];

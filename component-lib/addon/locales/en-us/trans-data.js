@@ -546,6 +546,7 @@ export default {
       eventCount: '{{current}}/{{total}} event matches',
       search: 'Find text in table',
       searchDisabled: 'Find is disabled while events load.',
+      searchDisabledWithSummary: 'Find is disabled when the summary column is included.',
       searchMin: '2 character minimum to find text.',
       noMatches: 'No matches were found.',
       searchPlaceholder: 'Enter text to be found.',

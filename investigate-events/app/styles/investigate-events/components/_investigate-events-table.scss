@@ -336,6 +336,18 @@
           margin-right: rsa-whitespace();
         }
       }
+      &[data-field="custom.meta-summary"] {
+        .content {
+          overflow: hidden;
+          height: 3rem;
+          white-space: normal;
+
+          .log-data {
+            height: 3rem;
+            white-space: normal;
+          }
+        }
+      }
       .has-context-data {
         text-decoration: underline;
         text-decoration-style: dashed;

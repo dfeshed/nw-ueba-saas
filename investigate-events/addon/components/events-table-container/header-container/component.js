@@ -6,7 +6,7 @@ import { connect } from 'ember-redux';
 import { later, debounce, schedule } from '@ember/runloop';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { setColumnGroup, searchForTerm, setSearchScroll } from 'investigate-events/actions/interaction-creators';
-import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
+import { getSelectedColumnGroup, isSummaryColumnVisible } from 'investigate-events/reducers/investigate/data-selectors';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 import {
   actualEventCount,
@@ -41,7 +41,8 @@ const stateToComputed = (state) => ({
   endTime: state.investigate.queryNode.endTime,
   areEventsStreaming: areEventsStreaming(state),
   eventTimeSortOrderPreferenceWhenQueried: state.investigate.eventResults.eventTimeSortOrderPreferenceWhenQueried,
-  canSort: hasMinimumCoreServicesVersionForColumnSorting(state)
+  canSort: hasMinimumCoreServicesVersionForColumnSorting(state),
+  isSummaryColumnVisible: isSummaryColumnVisible(state)
 });
 
 const dispatchToActions = {
@@ -70,9 +71,16 @@ const HeaderContainer = Component.extend({
     return investigateCanManageIncidents && respondCanManageIncidents;
   },
 
-  @computed('hasResults', 'areEventsStreaming')
-  isSearchDisabled(hasResults, areEventsStreaming) {
-    return (!hasResults || areEventsStreaming);
+
+  @computed('isSummaryColumnVisible')
+  searchDisabledMessage(isSummaryColumnVisible) {
+    const key = isSummaryColumnVisible ? 'searchDisabledWithSummary' : 'searchDisabled';
+    return this.get('i18n').t(`investigate.events.${key}`);
+  },
+
+  @computed('hasResults', 'areEventsStreaming', 'isSummaryColumnVisible')
+  isSearchDisabled(hasResults, areEventsStreaming, isSummaryColumnVisible) {
+    return (!hasResults || areEventsStreaming || isSummaryColumnVisible);
   },
 
   @computed('items')

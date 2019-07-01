@@ -80,9 +80,23 @@ module('Integration | Component | header-container', function(hooks) {
   });
 
   test('enables the search selector when loading is complete', async function(assert) {
-    new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').columnGroups(EventColumnGroups).eventCount(55).queryStatsIsComplete().build();
+    new ReduxDataHelper(setState).columnGroup('SUMMARY').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').columnGroups(EventColumnGroups).eventCount(55).queryStatsIsComplete().eventResultsStatus('complete').build();
     await render(hbs`{{events-table-container/header-container}}`);
-    assert.equal(findAll('.ember-power-select-trigger').length, 2, 'columnGroup, downloadEvents');
+    assert.ok(find('.rsa-data-table-header__search-selector'), 'rendered event header text search');
+  });
+
+  test('disables the search selector when custom.meta-summary is present', async function(assert) {
+    const columnGroups = [{
+      id: 'SUMMARY',
+      name: 'Summary',
+      columns: [{
+        field: 'custom.meta-summary',
+        title: 'Summary'
+      }]
+    }];
+
+    new ReduxDataHelper(setState).columnGroup('SUMMARY').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').columnGroups(columnGroups).eventCount(55).queryStatsIsComplete().eventResultsStatus('complete').visibleColumns([{ field: 'custom.meta-summary' }]).build();
+    await render(hbs`{{events-table-container/header-container}}`);
     assert.ok(find('.rsa-data-table-header__search-selector.disabled'), 'rendered event header text search');
   });
 

@@ -9,7 +9,8 @@ import {
   hasColumnGroups,
   getFlattenedColumnList,
   hasMetaSummaryColumn,
-  validEventSortColumns
+  validEventSortColumns,
+  isSummaryColumnVisible
 } from 'investigate-events/reducers/investigate/data-selectors';
 import EventColumnGroups from '../../data/subscriptions/investigate-columns/data';
 import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
@@ -50,6 +51,28 @@ test('get the current preferences to save', function(assert) {
   });
   const preferences = getCurrentPreferences(state);
   assert.deepEqual(preferences, response);
+});
+
+test('isSummaryColumnVisible', function(assert) {
+  assert.equal(isSummaryColumnVisible({
+    investigate: {
+      eventResults: {
+        visibleColumns: [{
+          field: 'custom.meta-summary'
+        }]
+      }
+    }
+  }), true);
+
+  assert.equal(isSummaryColumnVisible({
+    investigate: {
+      eventResults: {
+        visibleColumns: [{
+          field: 'foo'
+        }]
+      }
+    }
+  }), false);
 });
 
 test('data is not empty', function(assert) {

@@ -259,8 +259,8 @@ export default class DataHelper {
     return this;
   }
 
-  visibleColumns() {
-    _set(this.state, 'eventResults.visibleColumns', ['time', 'medium']);
+  visibleColumns(cols = [{ field: 'time' }, { field: 'medium' }]) {
+    _set(this.state, 'eventResults.visibleColumns', cols);
     return this;
   }
 
