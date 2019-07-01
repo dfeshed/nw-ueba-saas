@@ -1,133 +1,124 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import wait from 'ember-test-helpers/wait';
+import { render, findAll, find, click, settled } from '@ember/test-helpers';
 import EmberObject, { set } from '@ember/object';
-import $ from 'jquery';
 
-moduleForComponent('rsa-group-table-group-header', 'Integration | Component | rsa group table group header', {
-  integration: true,
-  resolver: engineResolverFor('respond')
-});
+module('Integration | Component | rsa group table group header', function(hooks) {
+  setupRenderingTest(hooks, {
+    integration: true,
+    resolver: engineResolverFor('respond')
+  });
 
-const group = {
-  id: 'id1',
-  title: 'foo',
-  items: (new Array(10)).fill({})
-};
 
-const index = 1;
+  const group = {
+    id: 'id1',
+    title: 'foo',
+    items: (new Array(10)).fill({})
+  };
 
-const table = EmberObject.create();
+  const index = 1;
 
-test('it renders the group value by default when no block is given', function(assert) {
+  const table = EmberObject.create();
 
-  set(group, 'isOpen', true);
-  this.setProperties({ group, index, table });
+  test('it renders the group value by default when no block is given', async function(assert) {
 
-  this.render(hbs`{{rsa-group-table/group-header
+    set(group, 'isOpen', true);
+    this.setProperties({ group, index, table });
+
+    await render(hbs`{{rsa-group-table/group-header
     group=group
     index=index
     table=table
-  }}`);
+     }}`);
 
-  return wait()
-    .then(() => {
-      const cell = this.$('.rsa-group-table-group-header');
-      assert.ok(cell.length, 'Expected to find root DOM node');
-      assert.equal(cell.text().trim(), group.title);
-      assert.ok(cell.hasClass('is-open'), 'Expected open group to have is-open css class');
 
-      set(group, 'isOpen', false);
-      return wait();
-    })
-    .then(() => {
-      const cell = this.$('.rsa-group-table-group-header');
-      assert.ok(cell.hasClass('is-not-open'), 'Expected closed group to have is-not-open css class');
+    const cell = findAll('.rsa-group-table-group-header');
+    assert.ok(cell.length, 'Expected to find root DOM node');
+    assert.equal(cell[0].textContent.trim(), group.title);
+    assert.ok(cell[0].classList.contains('is-open'), 'Expected open group to have is-open css class');
+
+    set(group, 'isOpen', false);
+
+    await settled().then(() => {
+      const cellModified = find('.rsa-group-table-group-header');
+      assert.ok(cellModified.classList.contains('is-not-open'), 'Expected closed group to have is-not-open css class');
     });
-});
 
-test('it yields the group & index when a block is given', function(assert) {
 
-  set(group, 'isOpen', true);
-  this.setProperties({ group, index, table });
+  });
 
-  this.render(hbs`{{#rsa-group-table/group-header
+  test('it yields the group & index when a block is given', async function(assert) {
+
+    set(group, 'isOpen', true);
+    this.setProperties({ group, index, table });
+
+    await render(hbs`{{#rsa-group-table/group-header
     group=group
     index=index
     table=table
     as |header|
-  }}
+    }}
     <span class="group-title">{{header.group.title}}</span>
     <span class="index">{{header.index}}</span>
     <span class="is-open">{{header.group.isOpen}}</span>
     <span class="toggle-action" {{action header.toggleAction}}>Toggle</span>
-  {{/rsa-group-table/group-header}}`);
+    {{/rsa-group-table/group-header}}`);
 
-  return wait()
-    .then(() => {
-      const el = this.$('.rsa-group-table-group-header');
+    const el = find('.rsa-group-table-group-header');
 
-      assert.equal(el.find('.index').text().trim(), index);
-      assert.equal(el.find('.group-title').text().trim(), group.title);
+    assert.equal(el.querySelector('.index').textContent.trim(), index);
+    assert.equal(el.querySelector('.group-title').textContent.trim(), group.title);
 
-      const elIsOpen = el.find('.is-open');
-      assert.ok(elIsOpen.length);
-      assert.equal(elIsOpen.text().trim(), 'true');
+    const elIsOpen = el.querySelectorAll('.is-open');
+    assert.ok(elIsOpen.length);
+    assert.equal(elIsOpen[0].textContent.trim(), 'true');
 
-      const elToggle = el.find('.toggle-action');
-      assert.ok(elToggle.length);
+    const elToggle = el.querySelectorAll('.toggle-action');
+    assert.ok(elToggle.length);
 
-      elToggle.trigger('click');
-      return wait();
-    })
-    .then(() => {
-      const elIsOpen2 = this.$('.rsa-group-table-group-header .is-open');
-      assert.equal(elIsOpen2.text().trim(), 'false');
-    });
-});
+    await click('.toggle-action');
 
-test('clicking on it fires the appropriate callback on the table parent', function(assert) {
-  let whichAction;
-  table.setProperties({
-    groupClickAction(payload) {
-      assert.equal(payload.group, group, 'Expected callback to receive the group data object as an input param');
-      whichAction = 'groupClickAction';
-    },
-    groupCtrlClickAction(payload) {
-      assert.equal(payload.group, group, 'Expected callback to receive the group data object as an input param');
-      whichAction = 'groupCtrlClickAction';
-    },
-    groupShiftClickAction(payload) {
-      assert.equal(payload.group, group, 'Expected callback to receive the group data object as an input param');
-      whichAction = 'groupShiftClickAction';
-    }
+    const elIsOpen2 = find('.rsa-group-table-group-header .is-open');
+    assert.equal(elIsOpen2.textContent.trim(), 'false');
+
   });
 
-  this.setProperties({ group, index, table });
+  test('clicking on it fires the appropriate callback on the table parent', async function(assert) {
+    let whichAction;
+    table.setProperties({
+      groupClickAction(payload) {
+        assert.equal(payload.group, group, 'Expected callback to receive the group data object as an input param');
+        whichAction = 'groupClickAction';
+      },
+      groupCtrlClickAction(payload) {
+        assert.equal(payload.group, group, 'Expected callback to receive the group data object as an input param');
+        whichAction = 'groupCtrlClickAction';
+      },
+      groupShiftClickAction(payload) {
+        assert.equal(payload.group, group, 'Expected callback to receive the group data object as an input param');
+        whichAction = 'groupShiftClickAction';
+      }
+    });
 
-  this.render(hbs`{{rsa-group-table/group-header
+    this.setProperties({ group, index, table });
+
+    await render(hbs`{{rsa-group-table/group-header
     group=group
     index=index
     table=table
-  }}`);
+    }}`);
 
-  return wait()
-    .then(() => {
-      const row = this.$('.rsa-group-table-group-header');
-      row.trigger('click');
-      assert.equal(whichAction, 'groupClickAction', 'Expected click handler to be invoked');
+    await click('.rsa-group-table-group-header');
+    assert.equal(whichAction, 'groupClickAction', 'Expected click handler to be invoked');
 
-      // eslint-disable-next-line new-cap
-      const shiftClick = $.Event('click');
-      shiftClick.shiftKey = true;
-      row.trigger(shiftClick);
-      assert.equal(whichAction, 'groupShiftClickAction', 'Expected SHIFT click handler to be invoked');
+    await click('.rsa-group-table-group-header', { shiftKey: true });
+    assert.equal(whichAction, 'groupShiftClickAction', 'Expected SHIFT click handler to be invoked');
 
-      // eslint-disable-next-line new-cap
-      const ctrlClick = $.Event('click');
-      ctrlClick.ctrlKey = true;
-      row.trigger(ctrlClick);
-      assert.equal(whichAction, 'groupCtrlClickAction', 'Expected CTRL click handler to be invoked');
-    });
+    // eslint-disable-next-line new-cap
+    await click('.rsa-group-table-group-header', { ctrlKey: true });
+    assert.equal(whichAction, 'groupCtrlClickAction', 'Expected CTRL click handler to be invoked');
+
+  });
 });

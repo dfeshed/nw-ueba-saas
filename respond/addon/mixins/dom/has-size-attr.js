@@ -64,7 +64,7 @@ export default Mixin.create({
    */
   getSizeElement() {
     const { element, sizeSelector } = this.getProperties('element', 'sizeSelector');
-    return isEmpty(sizeSelector) ? element : (element && this.$(sizeSelector)[0]);
+    return isEmpty(sizeSelector) ? element : (element && this.element.querySelector(sizeSelector));
   },
 
   /**

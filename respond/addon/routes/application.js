@@ -1,9 +1,10 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import $ from 'jquery';
 import config from 'ember-get-config';
 import { riac as riacApi } from 'respond/actions/api';
 import creators from 'respond/actions/creators';
+import fetch from 'fetch';
+import { isHttpRequestSuccess } from 'component-lib/utils/jquery-replacement';
 
 const { useMockServer, mockServerUrl, environment } = config;
 
@@ -38,11 +39,11 @@ export default Route.extend({
 
   beforeModel() {
     // Health check against the Respond service. If it returns an error, treat the service as offline
-    const healthCheck = $.ajax({ url: this._socketInfoUrl(), cache: false });
+    const healthCheck = fetch(this._socketInfoUrl(), { cache: 'no-store' });
     const controller = this.controllerFor('application');
 
     // don't transition to any sub-routes until the healthcheck[ and riac WS call ] completes.
-    return healthCheck.then(() => {
+    return healthCheck.then(isHttpRequestSuccess).then(() => {
       controller.set('respondServerOffline', false); // in case the server was previously offline but is now back online
       const promise = riacApi.fetchRiacValue();
       this.redux.dispatch(creators.riac.createRiacAction(promise));

@@ -21,7 +21,6 @@ import {
 import DragBehavior from 'respond/utils/behaviors/drag';
 import { htmlSafe } from '@ember/string';
 import Notifications from 'component-lib/mixins/notifications';
-import $ from 'jquery';
 import { inject as service } from '@ember/service';
 
 const stateToComputed = (state) => ({
@@ -72,6 +71,7 @@ const IncidentInspector = Component.extend(Notifications, {
   setViewModeAction: null,
   storyPointCount: null,
   storyEventCount: null,
+  mouseDownAction: null,
 
   // Same as `width`, but enforces minimum.
   @computed('width')
@@ -118,20 +118,26 @@ const IncidentInspector = Component.extend(Notifications, {
         dragend
       }
     });
-    $('.js-incident-inspector-resizer').on('mousedown', function(e) {
-      behavior.mouseDidDown(e);
-      e.preventDefault();
-      return false;
-    });
     this.set('dragBehavior', behavior);
+    this.mouseDownAction = this.createMouseDownAction(behavior);
+    document.querySelectorAll('.js-incident-inspector-resizer').forEach((domElement) => domElement.addEventListener('mousedown', this.mouseDownAction));
   },
 
   // Unwire the drag behavior that was wired up in didInsertElement.
   willDestroyElement() {
-    $('.js-incident-inspector-resizer').off('mousedown');
+    document.querySelectorAll('.js-incident-inspector-resizer').forEach((domElement) => domElement.removeEventListener('mousedown', this.mouseDownAction));
     const drag = this.get('dragBehavior');
     drag.teardown();
     this.set('dragBehavior', null);
+  },
+  createMouseDownAction(behavior) {
+
+    const eventAction = (e) => {
+      behavior.mouseDidDown(e);
+      e.preventDefault();
+      return false;
+    };
+    return eventAction;
   }
 });
 

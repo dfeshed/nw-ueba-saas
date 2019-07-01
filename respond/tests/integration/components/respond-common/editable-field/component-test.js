@@ -91,7 +91,7 @@ module('Integration | Component | Editable Field', function(hooks) {
     await click('.editable-field .editable-field__value');
     await fillIn('.editable-field input', 'Hadrian');
     await blur('.editable-field input');
-    this.$('.editable-field input').blur();
+    document.querySelector('.editable-field input').blur();
     return settled().then(() => {
       assert.equal(findAll('.editable-field input').length, 1, 'The editable field component does have an input (b/c it is still in edit mode)');
     });
@@ -104,7 +104,7 @@ module('Integration | Component | Editable Field', function(hooks) {
     await click('.editable-field .editable-field__value');
     await fillIn('.editable-field input', 'Hadrian');
     await blur('.editable-field input');
-    this.$('.editable-field input').blur();
+    document.querySelector('.editable-field input').blur();
     return settled().then(() => {
       assert.equal(findAll('.editable-field input').length, 1, 'The editable field component does have an input (b/c it is still in edit mode)');
     });

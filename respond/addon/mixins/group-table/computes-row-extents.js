@@ -2,7 +2,7 @@ import Mixin from '@ember/object/mixin';
 import HasGroupedRows from './has-grouped-rows';
 import computed from 'ember-computed-decorators';
 import { get } from '@ember/object';
-import $ from 'jquery';
+import { isNumeric } from 'component-lib/utils/jquery-replacement';
 
 /**
  * @class ComputesRowExtents Mixin
@@ -100,6 +100,6 @@ export default Mixin.create(HasGroupedRows, {
    */
   @computed('groupExtents.lastObject.bottom')
   totalRowsHeight(bottom) {
-    return $.isNumeric(bottom) ? `${bottom + 1}px` : '';
+    return isNumeric(bottom) ? `${bottom + 1}px` : '';
   }
 });

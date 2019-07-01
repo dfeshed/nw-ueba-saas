@@ -254,6 +254,24 @@ export const htmlStringToElement = (htmlString) => {
   }
 };
 
+/**
+ *  jquery ajax throws error for non 2** responses. but fetch doesnt.
+ *  fetch only throws error for issues like parsing error or connectivity etc but not for non 200 erros.
+ *  this method mimics that behavior.
+* returns response or throws error based on http response code
+* @param {*} response
+*/
+export const isHttpRequestSuccess = (response) => {
+  if (response.status == 200) {
+    return response;
+  } else {
+    const error = new Error(response.statusText);
+    error.response = response;
+    throw error;
+
+  }
+};
+
 // Easy replacement docs
 
 //

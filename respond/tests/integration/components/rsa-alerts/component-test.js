@@ -13,6 +13,7 @@ let i18n, redux, setState;
 
 module('Integration | Component | Respond Alerts', function(hooks) {
   setupRenderingTest(hooks, {
+    integration: true,
     resolver: engineResolverFor('respond')
   });
 
@@ -82,7 +83,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     await click(selectors.filterPanelToggleButton);
     assert.equal(findAll(`${selectors.explorer}.show-filters`).length, 0, 'The filter panel is not showing');
     await click(selectors.filterPanelToggleButton);
-    assert.equal(this.$(`${selectors.explorer}.show-filters`).length, 1, 'The filter panel is showing');
+    assert.equal(findAll(`${selectors.explorer}.show-filters`).length, 1, 'The filter panel is showing');
     await settled().then(() => done());
   });
 
@@ -92,12 +93,12 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     setState();
     await waitForReduxStateChange(redux, 'respond.alerts.items');
     // check to make sure we see the tasks appear in the data table
-    assert.ok(this.$(selectors.tableRow).length >= 1, 'At least one row of alerts appears in the data table');
+    assert.ok(findAll(selectors.tableRow).length >= 1, 'At least one row of alerts appears in the data table');
     assert.equal(findAll(`${selectors.explorer}.show-inspector`).length, 0, 'The inspector panel is not showing');
     await click(`${selectors.tableRow}:first-of-type ${selectors.tableCell}:nth-of-type(2)`);
     assert.equal(findAll(`${selectors.explorer}.show-inspector`).length, 1, 'The inspector panel is showing');
     await click(selectors.closeInspectorButton);
-    assert.equal(this.$(`${selectors.explorer}.show-inspector`).length, 0, 'After clicking the close inspector button the inspector panel is not showing');
+    assert.equal(findAll(`${selectors.explorer}.show-inspector`).length, 0, 'After clicking the close inspector button the inspector panel is not showing');
     await settled().then(() => done());
   });
 
@@ -166,7 +167,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     assert.equal(findAll(`${selectors.tableRow} ${selectors.tableCell}:first-of-type .rsa-form-checkbox.checked`).length, 0, 'There are no selected rows');
     await click(`${selectors.selectAllCheckbox} input`);
     assert.equal(findAll(`${selectors.selectAllCheckbox}.checked`).length, 1, 'The select all checkbox is checked');
-    assert.equal(findAll(`${selectors.tableRow} ${selectors.tableCell}:first-of-type .rsa-form-checkbox.checked`).length, this.$(selectors.tableRow).length, 'All of the rows are selected');
+    assert.equal(findAll(`${selectors.tableRow} ${selectors.tableCell}:first-of-type .rsa-form-checkbox.checked`).length, findAll(selectors.tableRow).length, 'All of the rows are selected');
     await settled().then(() => done());
   });
 

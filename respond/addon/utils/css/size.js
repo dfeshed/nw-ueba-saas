@@ -1,7 +1,7 @@
 import EmberObject from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
-import $ from 'jquery';
+import { isNumeric } from 'component-lib/utils/jquery-replacement';
 
 /**
  * @class Size utility
@@ -50,7 +50,7 @@ const Size = EmberObject.extend({
           units: '',
           number: null
         });
-      } else if ($.isNumeric(v)) {
+      } else if (isNumeric(v)) {
         this.setProperties({
           number: v,
           units: 'px',
@@ -61,7 +61,7 @@ const Size = EmberObject.extend({
         const number = match && Number(match[1]);
         const units = (match && match[2]) || 'px';
 
-        if ($.isNumeric(number)) {
+        if (isNumeric(number)) {
           this.setProperties({
             number,
             units,

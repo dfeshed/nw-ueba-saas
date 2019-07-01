@@ -95,7 +95,7 @@ export default Component.extend({
   // Determines if the placeholder <div> is within the scroll viewport (modulo the buffer).
   // If so, advances the `playhead` by `batch`, thus triggering the rendering of more items.
   _checkPlayhead() {
-    const [ scroller ] = this._$scroller;
+    const [ scroller ] = this.scroller;
     const { scrollTop, scrollHeight, clientHeight } = scroller;
     const buffer = this.get('buffer');
     if (scrollTop + clientHeight > scrollHeight - buffer) {
@@ -126,13 +126,13 @@ export default Component.extend({
   _initSizeBindings() {
     const callback = run.bind(this, this._checkPlayhead);
     this.set('_sizeBindingsCallback', callback);
-    addResizeListener(this._$scroller[0], callback);
+    addResizeListener(this.scroller[0], callback);
   },
 
   // Detach the last resize listener, if any.
   _teardownSizeBindings() {
     if (this.get('_sizeBindingsCallback')) {
-      removeResizeListener(this._$scroller[0], this.get('_sizeBindingsCallback'));
+      removeResizeListener(this.scroller[0], this.get('_sizeBindingsCallback'));
       this.set('_sizeBindingsCallback', null);
     }
   },
@@ -141,25 +141,25 @@ export default Component.extend({
   _initScrollBindings() {
     const callback = run.bind(this, this._checkPlayhead);
     this.set('_scrollBindingsCallback', callback);
-    this._$scroller.on('scroll', callback);
+    this.scroller.forEach((domElement) => domElement.addEventListener('scroll', callback));
   },
 
   // Detach the last scroll listener, if any.
   _teardownScrollBindings() {
     if (this.get('_scrollBindingsCallback')) {
-      this._$scroller.off('scroll', this.get('_scrollBindingsCallback'));
+      this.scroller.forEach((domElement) => domElement.removeEventListener('scroll', this.get('_scrollBindingsCallback')));
       this.set('_scrollBindingsCallback', null);
     }
   },
 
   // Obtains and caches a reference to the scrollable list DOM node.
   _initScroller() {
-    this._$scroller = this.$('.rsa-list');
+    this.scroller = this.element.querySelectorAll('.rsa-list');
   },
 
   // Releases handle to list DOM node.
   _teardownScroller() {
-    this._$scroller = null;
+    this.scroller = null;
   },
 
   // Wires up dom listeners; manually fires callback to initialize state.
