@@ -23,11 +23,12 @@ def setBaseUrl(
         String rpmVeriosn = env.VERSION,
         String stability = env.STABILITY
 ) {
-    String[] versionArray = env.VERSION.split("\\.")
+
     ThirdDir=env.VERSION
-    FirstDir=versionArray[0] + "." + versionArray[1] + "/"
-    SecondDir= FirstDir + "." + versionArray[2] + "/"
-    baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/" + FirstDir + SecondDir + ThirdDir  + "-" + stability + "/"
+    String[] versionArray = ThirdDir.split("\\.")
+    FirstDir=versionArray[0] + "." + versionArray[1]
+    SecondDir= FirstDir + "." + versionArray[2]
+    baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/" + FirstDir + "/" + SecondDir +  "/" + ThirdDir  + "-" + stability + "/"
     println(baseUrl)
     baseUrlValidation = baseUrl.drop(8)
     baseUrlresponsecode = sh(returnStdout: true, script: "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}").trim()
