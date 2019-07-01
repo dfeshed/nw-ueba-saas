@@ -26,8 +26,7 @@ def setBaseUrl(
 
     println(env.VERSION)
     String version = env.VERSION
-    String[4] versionArray
-    versionArray = version.split('.')
+    String[] versionArray = version.split("\\.")
     ThirdDir=env.VERSION
     FirstDir=versionArray[0] + versionArray[1] + "/"
     SecondDir= FirstDir + versionArray[2] + "/"
