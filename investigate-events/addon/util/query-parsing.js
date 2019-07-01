@@ -198,7 +198,7 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
         pills.push(_createQueryFilter(
           Parser.transformToString(criteria.meta),
           Parser.transformToString(criteria.operator),
-          criteria.valueRanges ? Parser.transformToString(criteria.valueRanges[0]) : undefined
+          criteria.valueRanges ? criteria.valueRanges.map(Parser.transformToString).join(',') : undefined
         ));
       // If there is more than one criteria waiting, they are a complex pill. Transform them all back to strings
       // and join them together, then add as one complex pill. This happens when the criteria before has at least

@@ -140,6 +140,12 @@ class Scanner {
         this._backtrack();
         this._string();
         break;
+      case '-':
+        this._addToken(LEXEMES.RANGE);
+        break;
+      case ',':
+        this._addToken(LEXEMES.VALUE_SEPARATOR);
+        break;
       case '&':
         if (this._peek() === '&') {
           this._advance();

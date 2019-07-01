@@ -363,6 +363,54 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_NOT_EXISTS, text: '!exists' });
   });
 
+  test('handles ranges (`-`)', function(assert) {
+    const source = 'medium = 3-7';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 5);
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' });
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' });
+    assert.deepEqual(result[2], { type: LEXEMES.NUMBER, text: '3' });
+    assert.deepEqual(result[3], { type: LEXEMES.RANGE, text: '-' });
+    assert.deepEqual(result[4], { type: LEXEMES.NUMBER, text: '7' });
+  });
+
+  test('handles value separators (`,`)', function(assert) {
+    const source = 'medium = 1,2,3,5,8,13';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 13);
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' });
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' });
+    assert.deepEqual(result[2], { type: LEXEMES.NUMBER, text: '1' });
+    assert.deepEqual(result[3], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
+    assert.deepEqual(result[4], { type: LEXEMES.NUMBER, text: '2' });
+    assert.deepEqual(result[5], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
+    assert.deepEqual(result[6], { type: LEXEMES.NUMBER, text: '3' });
+    assert.deepEqual(result[7], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
+    assert.deepEqual(result[8], { type: LEXEMES.NUMBER, text: '5' });
+    assert.deepEqual(result[9], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
+    assert.deepEqual(result[10], { type: LEXEMES.NUMBER, text: '8' });
+    assert.deepEqual(result[11], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
+    assert.deepEqual(result[12], { type: LEXEMES.NUMBER, text: '13' });
+  });
+
+  test('handles value separators and ranges', function(assert) {
+    const source = 'medium = 3,5-7,9';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 9);
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' });
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' });
+    assert.deepEqual(result[2], { type: LEXEMES.NUMBER, text: '3' });
+    assert.deepEqual(result[3], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
+    assert.deepEqual(result[4], { type: LEXEMES.NUMBER, text: '5' });
+    assert.deepEqual(result[5], { type: LEXEMES.RANGE, text: '-' });
+    assert.deepEqual(result[6], { type: LEXEMES.NUMBER, text: '7' });
+    assert.deepEqual(result[7], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
+    assert.deepEqual(result[8], { type: LEXEMES.NUMBER, text: '9' });
+  });
+
   test('handles nested parentheses and other tokens', function(assert) {
     const source = '((b = "text") || (medium != 44)) && (bytes.src exists)';
     const s = new Scanner(source);

@@ -73,6 +73,46 @@ module('Unit | Util | Parser', function(hooks) {
     ], 'children contains the expected two criteria with correct values, separated by a LEXEMES.AND');
   });
 
+  test('correctly parses multiple values/ranges', function(assert) {
+    // medium = 3,5-7,9
+    const tokens = [
+      { type: LEXEMES.META, text: 'medium' },
+      { type: LEXEMES.OPERATOR_EQ, text: '=' },
+      { type: LEXEMES.NUMBER, text: '3' },
+      { type: LEXEMES.VALUE_SEPARATOR, text: ',' },
+      { type: LEXEMES.NUMBER, text: '5' },
+      { type: LEXEMES.RANGE, text: '-' },
+      { type: LEXEMES.NUMBER, text: '7' },
+      { type: LEXEMES.VALUE_SEPARATOR, text: ',' },
+      { type: LEXEMES.NUMBER, text: '9' }
+    ];
+    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const result = p.parse();
+    assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
+    assert.deepEqual(result.children, [
+      {
+        type: GRAMMAR.CRITERIA,
+        meta: { type: LEXEMES.META, text: 'medium' },
+        operator: { type: LEXEMES.OPERATOR_EQ, text: '=' },
+        valueRanges: [
+          {
+            type: GRAMMAR.META_VALUE,
+            value: { type: LEXEMES.NUMBER, text: '3' }
+          },
+          {
+            type: GRAMMAR.META_VALUE_RANGE,
+            from: { type: LEXEMES.NUMBER, text: '5' },
+            to: { type: LEXEMES.NUMBER, text: '7' }
+          },
+          {
+            type: GRAMMAR.META_VALUE,
+            value: { type: LEXEMES.NUMBER, text: '9' }
+          }
+        ]
+      }
+    ], 'children contains the expected single criteria with correct values');
+  });
+
   test('correctly parses a group (parenthesis)', function(assert) {
     const tokens = [
       { type: LEXEMES.LEFT_PAREN, text: '(' },
@@ -358,6 +398,14 @@ module('Unit | Util | Parser', function(hooks) {
 
   test('transformToString handles logical operators', function(assert) {
     const source = 'medium exists && medium = 3';
+    const s = new Scanner(source);
+    const p = new Parser(s.scanTokens(), DEFAULT_LANGUAGES);
+    const tree = p.parse();
+    assert.strictEqual(Parser.transformToString(tree), source);
+  });
+
+  test('transformToString handles ranges and value separators', function(assert) {
+    const source = 'medium = 3,5-7,9';
     const s = new Scanner(source);
     const p = new Parser(s.scanTokens(), DEFAULT_LANGUAGES);
     const tree = p.parse();

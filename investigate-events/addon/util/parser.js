@@ -227,16 +227,16 @@ class Parser {
 
   /**
    * Parses everything following the operator in a criteria. Makes one call to
-   * `_metaValueRange` for everything separated by a comma (`LEXEMES.RANGE_SEPARATOR`).
+   * `_metaValueRange` for everything separated by a comma (`LEXEMES.VALUE_SEPARATOR`).
    * @private
    */
   _metaValueRanges() {
     const valueRanges = [ this._metaValueRange() ];
-    while (this._nextTokenIsOfType([ LEXEMES.RANGE_SEPARATOR ])) {
+    while (this._nextTokenIsOfType([ LEXEMES.VALUE_SEPARATOR ])) {
       // Consume the range separator
       this._advance();
       // Add the new range to the array
-      valueRanges.ranges.push(this._metaValueRange());
+      valueRanges.push(this._metaValueRange());
     }
     return valueRanges;
   }
@@ -250,6 +250,8 @@ class Parser {
   _metaValueRange() {
     const value = this._consume(VALUE_TYPES);
     if (this._nextTokenIsOfType([ LEXEMES.RANGE ])) {
+      // Consume the range token first
+      this._consume([ LEXEMES.RANGE ]);
       const to = this._consume([ value.type ]);
       return {
         type: GRAMMAR.META_VALUE_RANGE,
@@ -288,7 +290,7 @@ class Parser {
       case GRAMMAR.META_VALUE:
         return ts(tree.value);
       case GRAMMAR.META_VALUE_RANGE:
-        return `${ts(tree.from)}-${ts(tree.to)}}`;
+        return `${ts(tree.from)}-${ts(tree.to)}`;
       case LEXEMES.AND:
       case LEXEMES.OR:
         return ` ${tree.text} `;
