@@ -24,7 +24,7 @@ public abstract class AbstractElasticDocument {
     @Field(type = FieldType.Date, store = true)
     private Date updatedDate;
 
-    @Field(type = FieldType.Keyword)
+    @Field(type = FieldType.Text, store = true)
     private String updatedBy;
 
     public AbstractElasticDocument(String id, Date createdDate, Date updatedDate) {

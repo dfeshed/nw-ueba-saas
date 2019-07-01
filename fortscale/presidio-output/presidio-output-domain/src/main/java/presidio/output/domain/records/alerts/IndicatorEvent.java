@@ -17,7 +17,7 @@ public class IndicatorEvent extends AbstractElasticDocument {
     @Field(type = FieldType.Keyword, store = true)
     String indicatorId;
 
-    @Field(type = FieldType.Keyword, store = true)
+    @Field(type = FieldType.Text, store = true)
     Schema schema;
 
     @Field(type = FieldType.Date, store = true)

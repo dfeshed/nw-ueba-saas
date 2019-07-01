@@ -32,6 +32,7 @@ public class ElasticsearchConfig {
 
     @Bean
     public Client client() throws Exception {
+        System.setProperty("es.set.netty.runtime.available.processors", "false");
         Settings esSettings = Settings.builder().put("cluster.name", EsClusterName).build();
         return new PreBuiltTransportClient(esSettings).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(EsHost), EsPort));
     }
