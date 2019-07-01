@@ -37,20 +37,11 @@ def setBaseUrl(
     if (rpmBuildPath != '') {
         baseUrl = baseUrl + rpmBuildPath
         println(baseUrl)
-    } else if (rpmVeriosn == '11.2.1.0') {
-        baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.2/11.2.1/11.2.1.0-" + stability + "/"
-        println(baseUrl)
-    } else if (rpmVeriosn == '11.3.0.0') {
-        baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.3/11.3.0/11.3.0.0-" + stability + "/"
-        println(baseUrl)
-    } else if (rpmVeriosn == '11.3.0.1') {
-        baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.3/11.3.0/11.3.0.1-" + stability + "/"
-        println(baseUrl)
-    } else if (rpmVeriosn == '11.3.1.0') {
-        baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.3/11.3.1/11.3.1.0-" + stability + "/"
-        println(baseUrl)
-    } else if (rpmVeriosn == '11.4.0.0') {
-        baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.4/11.4.0/11.4.0.0-" + stability + "/"
+    } else {
+        String[] versionArray = rpmVeriosn.split("\\.")
+        FirstDir=versionArray[0] + "." + versionArray[1]
+        SecondDir= FirstDir + "." + versionArray[2]
+        baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/" + FirstDir + "/" + SecondDir +  "/" + rpmVeriosn  + "-" + stability + "/"
     }
     baseUrlValidation = baseUrl.drop(8)
     baseUrlresponsecode = sh(returnStdout: true, script: "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}").trim()
@@ -61,7 +52,7 @@ def setBaseUrl(
         sh "sudo yum clean all"
         sh "sudo rm -rf /var/cache/yum"
     } else {
-        error("RPM Location is Wrong- ${baseUrlValidation}")
+        error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
 }
 
