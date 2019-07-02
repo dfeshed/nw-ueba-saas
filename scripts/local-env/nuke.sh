@@ -41,6 +41,7 @@ nukeNode entity-details
 nukeNode investigate-users
 nukeNode investigate
 nukeNode respond-shared
+nukeNode rsa-list-manager
 nukeNode respond
 nukeNode configure
 nukeNode admin-source-management

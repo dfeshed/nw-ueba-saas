@@ -1,0 +1,5 @@
+{{#list-manager list=columnGroups as |manager|}}
+  {{#manager.itemList as |item|}}
+    {{events-table-container/header-container/column-groups/column-group-item columnGroup=item}}
+  {{/manager.itemList}}
+{{/list-manager}}

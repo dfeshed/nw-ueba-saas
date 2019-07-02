@@ -85,6 +85,7 @@ prepareApp investigate-users
 prepareApp investigate
 prepareApp entity-details
 prepareApp respond-shared
+prepareApp rsa-list-manager
 prepareApp respond
 prepareApp configure
 prepareApp admin-source-management

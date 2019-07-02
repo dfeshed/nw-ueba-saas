@@ -258,6 +258,7 @@ buildEmberApp investigate-files false true true
 buildEmberApp investigate-users false true true
 buildEmberApp investigate false true true
 buildEmberApp respond-shared false true true
+buildEmberApp rsa-list-manager false true true
 buildEmberApp respond false true true
 buildEmberApp configure false true true
 buildEmberApp investigate-process-analysis false true true

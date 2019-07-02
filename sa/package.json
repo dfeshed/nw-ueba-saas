@@ -91,6 +91,7 @@
       "../recon",
       "../respond",
       "../respond-shared",
+      "../rsa-list-manager",
       "../rsa-context-menu",
       "../investigate-users",
       "../entity-details",

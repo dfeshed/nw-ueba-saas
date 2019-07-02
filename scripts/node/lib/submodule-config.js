@@ -14,6 +14,7 @@ const ALL_SUBMODULES = [
   'investigate-users',
   'investigate',
   'respond-shared',
+  'rsa-list-manager',
   'respond',
   'configure',
   'admin',
@@ -49,6 +50,7 @@ const saModuleDependants = {
     'endpoint-rar',
     'rsa-dashboard',
     'respond-shared',
+    'rsa-list-manager',
     'respond',
     'configure',
     'admin',
@@ -81,6 +83,7 @@ const saModuleDependants = {
     'admin-source-management',
     'context',
     'investigate-process-analysis',
+    'rsa-list-manager',
     'rsa-context-menu'
   ],
   'investigate-shared': [
@@ -115,6 +118,10 @@ const saModuleDependants = {
     'respond',
     'sa'
   ],
+  'rsa-list-manager': [
+    'investigate-events',
+    'sa'
+  ],
   respond: ['sa'],
   configure: ['sa'],
   investigate: ['sa'],
@@ -147,6 +154,7 @@ const saModuleDependants = {
     'sa',
     'respond',
     'respond-shared',
+    'rsa-list-manager',
     'investigate',
     'investigate-events',
     'investigate-files',
