@@ -23,8 +23,8 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
     public static final int DEFAULT_FQDN_START_INDEX = 0;
     public static final int DEFAULT_FQDN_END_INDEX = 1500;
     public static final int DEFAULT_IP_3D_BYTE = 0;
-    public static final int DEFAULT_MIN_NUM_OF_BYTES = 256;
-    public static final int DEFAULT_MAX_NUM_OF_BYTES = 2560;
+    public static final double DEFAULT_MEAN_NUM_OF_BYTES = 500e3; // 5000K
+    public static final double DEFAULT_STD_NUM_OF_BYTES = 100e3;   // 100K
 
 
     // default generators:
@@ -42,8 +42,8 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
     private IBaseGenerator<String>  destinationNetnameGen = new SingleWordCyclicGenerator(201);
     private IBaseGenerator<Location> locationGen = new AuthenticationLocationCyclicGenerator();
     private IBaseGenerator<String>  eventIdGenerator = new Md5RandomGenerator();
-    private IBaseGenerator<Long>  numOfBytesSentGenerator =  new RandomLongGenerator(DEFAULT_MIN_NUM_OF_BYTES,DEFAULT_MAX_NUM_OF_BYTES);
-    private IBaseGenerator<Long>  numOfBytesReceivedGenerator = new RandomLongGenerator(DEFAULT_MIN_NUM_OF_BYTES,DEFAULT_MAX_NUM_OF_BYTES);
+    private IBaseGenerator<Long>  numOfBytesSentGenerator =  new GaussianLongGenerator(DEFAULT_MEAN_NUM_OF_BYTES, DEFAULT_STD_NUM_OF_BYTES);
+    private IBaseGenerator<Long>  numOfBytesReceivedGenerator = new GaussianLongGenerator(DEFAULT_MEAN_NUM_OF_BYTES, DEFAULT_STD_NUM_OF_BYTES);
     private IBaseGenerator<Integer>  sourcePortGenerator = new RandomIntegerGenerator(0, DEFAULT_REGULAR_PORT_BELOW);
     private IBaseGenerator<Integer>  destinationPortGenerator = new RandomIntegerGenerator(0, DEFAULT_REGULAR_PORT_BELOW);
 
