@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-import os
 import sys
 
 from setuptools import setup, find_packages
@@ -13,12 +12,8 @@ def readme():
 
 
 def read_requirements():
-    current_directory = os.path.dirname(__file__)
-    parent_directory = os.path.split(current_directory)[0]
-    file_path = os.path.join(parent_directory, 'package', 'rsa-nw-presidio-airflow', 'scripts', 'requirements.txt')
-
-    with open(file_path) as file:
-        requirements = [line.strip() for line in file]
+    with open('../package/rsa-nw-presidio-airflow/scripts/requirements.txt', 'r') as requirements_file:
+        requirements = [line.strip() for line in requirements_file]
         return requirements
 
 
