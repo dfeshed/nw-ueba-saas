@@ -54,8 +54,13 @@ pipeline {
     }
     post {
         always {
-            archiveArtifacts artifacts: '**/presidio-*.jar', allowEmptyArchive: true
-            archiveArtifacts artifacts: '**/*.rpm', allowEmptyArchive: true
+            sh "cd ${env.WORKSPACE}"
+            sh 'mkdir RPMs'
+            sh 'mkdir JARs'
+            sh 'find . -regex ".*/presidio-[^/]*.jar" -exec cp {} JARs \\;'
+            sh 'find . -regex ".*.rpm" -exec cp {} RPMs \\;'
+            archiveArtifacts artifacts: 'JARs/**', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'RPMs/**', allowEmptyArchive: true
             cleanWs()
         }
     }
