@@ -9,7 +9,7 @@ tox==2.9.1
 sqlalchemy==1.1.18
 pandas==0.24.2
 requests-oauthlib<=1.0.0
-pyjwt[signedtoken]==1.7.1
+pyjwt==1.7.1
 snakebite
 wheel
 apache-airflow[devel,postgres,password,async]==1.10.2
