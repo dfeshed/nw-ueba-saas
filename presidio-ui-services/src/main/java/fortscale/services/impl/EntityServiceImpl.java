@@ -127,7 +127,7 @@ public class EntityServiceImpl implements EntityService {
 		entityQuery.addAggregateByItem(EntityQuery.AggregateByEnum.ALERT_CLASSIFICATIONS);
 		try {
 			Map<String,Map<String,Long>> aggregationData = remoteEntityClientService.getConterollerApi().getEntities(entityQuery).getAggregationData();
-			Map<String,Integer> classificiations = aggregationConverterHelper.convertAggregation(aggregationData,UserQuery.AggregateByEnum.ALERT_CLASSIFICATIONS.name());
+			Map<String,Integer> classificiations = aggregationConverterHelper.convertAggregation(aggregationData,EntityQuery.AggregateByEnum.ALERT_CLASSIFICATIONS.name());
 			return classificiations;
 
 		} catch (ApiException e) {
@@ -477,7 +477,7 @@ public class EntityServiceImpl implements EntityService {
 
 		try {
 			Map<String, Map<String, Long>> aggregationData = remoteEntityClientService.getConterollerApi().getEntities(entityQuery).getAggregationData();
-			Map<String, Integer> aggregation = aggregationConverterHelper.convertAggregation(aggregationData, UserQuery.AggregateByEnum.INDICATORS.name());
+			Map<String, Integer> aggregation = aggregationConverterHelper.convertAggregation(aggregationData, EntityQuery.AggregateByEnum.INDICATORS.name());
 
 			return  aggregation;
 		} catch (ApiException e) {
@@ -498,7 +498,7 @@ public class EntityServiceImpl implements EntityService {
 
 		try {
 			EntitiesWrapper entitiesWrapper = remoteEntityClientService.getConterollerApi().getEntities(entityQuery);
-			Map<String,Long> counts = entitiesWrapper.getAggregationData().get(UserQuery.AggregateByEnum.SEVERITY.name());
+			Map<String,Long> counts = entitiesWrapper.getAggregationData().get(EntityQuery.AggregateByEnum.SEVERITY.name());
 
 
 			for (Severity severity : Severity.values()){

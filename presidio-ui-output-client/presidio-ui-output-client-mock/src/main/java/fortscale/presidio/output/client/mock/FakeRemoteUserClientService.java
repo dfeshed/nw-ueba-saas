@@ -56,10 +56,10 @@ public class FakeRemoteUserClientService implements EntitiesPresidioOutputClient
             alertsMap.put("Alert Type 2",5L);
 
             Map<String,Long> severityMap = new HashMap<>();
-            severityMap.put(UserQuery.SeverityEnum.CRITICAL.name(),5L);
-            severityMap.put(UserQuery.SeverityEnum.HIGH.name(),5L);
-            severityMap.put(UserQuery.SeverityEnum.MEDIUM.name(),5L);
-            severityMap.put(UserQuery.SeverityEnum.LOW.name(),5L);
+            severityMap.put(EntityQuery.SeverityEnum.CRITICAL.name(),5L);
+            severityMap.put(EntityQuery.SeverityEnum.HIGH.name(),5L);
+            severityMap.put(EntityQuery.SeverityEnum.MEDIUM.name(),5L);
+            severityMap.put(EntityQuery.SeverityEnum.LOW.name(),5L);
             severityMap.put("Alert Type 2",5L);
 
             Map<String,Long> tagMap = new HashMap<>();
@@ -71,10 +71,10 @@ public class FakeRemoteUserClientService implements EntitiesPresidioOutputClient
 
 
             Map<String,Map<String,Long>> aggregationData = new HashMap<>();
-            aggregationData.put(UserQuery.AggregateByEnum.INDICATORS.name(),indicatorsMap);
-            aggregationData.put(UserQuery.AggregateByEnum.ALERT_CLASSIFICATIONS.name(),alertsMap);
-            aggregationData.put(UserQuery.AggregateByEnum.SEVERITY.name(),severityMap);
-            aggregationData.put(UserQuery.AggregateByEnum.TAGS.name(),tagMap);
+            aggregationData.put(EntityQuery.AggregateByEnum.INDICATORS.name(),indicatorsMap);
+            aggregationData.put(EntityQuery.AggregateByEnum.ALERT_CLASSIFICATIONS.name(),alertsMap);
+            aggregationData.put(EntityQuery.AggregateByEnum.SEVERITY.name(),severityMap);
+            aggregationData.put(EntityQuery.AggregateByEnum.TAGS.name(),tagMap);
             entitiesWrapper.setAggregationData(aggregationData);
             return entitiesWrapper;
 
