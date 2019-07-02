@@ -308,8 +308,9 @@ module('Integration | Component | Pill Operator', function(hooks) {
         sendMessage=(action handleMessage)
       }}
     `);
-    this.$(PILL_SELECTORS.operatorSelectInput).val('e').trigger('input');
-    this.$(PILL_SELECTORS.operatorSelectInput).val(' ').trigger('input');
+
+    document.querySelector(PILL_SELECTORS.operatorSelectInput).setAttribute('value', 'e');
+    document.querySelector(PILL_SELECTORS.operatorSelectInput).setAttribute('value', ' ');
     return settled();
   });
 

@@ -6,7 +6,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import EventColumnGroups from '../../../../data/subscriptions/investigate-columns/data';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
-import { find, findAll, render, click } from '@ember/test-helpers';
+import { find, findAll, render, click, triggerEvent } from '@ember/test-helpers';
 
 let setState;
 
@@ -50,11 +50,7 @@ module('Integration | Component | events-table', function(hooks) {
     `);
     await find('.js-move-handle').setAttribute('metaname', 'ip.src');
     await find('.js-move-handle').setAttribute('metavalue', '1.1.1.1');
-    this.$('.js-move-handle:first').trigger({
-      type: 'contextmenu',
-      clientX: 100,
-      clientY: 100
-    });
+    await triggerEvent(find('.js-move-handle'), 'contextmenu', { clientX: 100, clientY: 100 });
 
     assert.equal(this.get('metaName'), 'ip.src', 'meta name extracted from event and set');
     assert.equal(this.get('metaValue'), '1.1.1.1', 'meta value extracted from event and set');
@@ -85,14 +81,10 @@ module('Integration | Component | events-table', function(hooks) {
 
     await find('.js-move-handle').setAttribute('metaname', 'ip.src');
     await find('.js-move-handle').setAttribute('metavalue', '1.1.1.1');
-    this.$('.js-move-handle:first').trigger({
-      type: 'contextmenu',
-      clientX: 100,
-      clientY: 100
-    });
+    await triggerEvent(find('.js-move-handle'), 'contextmenu', { clientX: 100, clientY: 100 });
 
     // rt-click elsewhere
-    this.$('.rsa-data-table-header').contextmenu();
+    await triggerEvent(find('.rsa-data-table-header'), 'contextmenu');
   });
 
   test('if events are streaming, a spinner is displayed with appropriate message', async function(assert) {

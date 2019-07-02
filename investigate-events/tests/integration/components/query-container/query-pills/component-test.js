@@ -370,7 +370,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await createBasicPill(false, 'TimeT');
     // component class updates when store is updated
     assert.equal(findAll(PILL_SELECTORS.invalidPill).length, 1, 'Class for invalid pill should be present');
-    assert.equal(this.$(PILL_SELECTORS.invalidPill).prop('title'), 'You entered \'x\'. You must enter a valid date.', 'Expected title with the error message');
+    assert.equal(find(PILL_SELECTORS.invalidPill).getAttribute('title'), 'You entered \'x\'. You must enter a valid date.', 'Expected title with the error message');
   });
 
   test('Creating a pill validates the pill (serverSide) and updates if necessary', async function(assert) {
@@ -386,7 +386,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await createBasicPill(false, 'Text');
     // component class updates when store is updated
     assert.equal(findAll(PILL_SELECTORS.invalidPill).length, 1, 'Class for invalid pill should be present');
-    assert.equal(this.$(PILL_SELECTORS.invalidPill).prop('title'), 'You entered \'\'x\'\'. Invalid server response', 'Expected title with the error message');
+    assert.equal(find(PILL_SELECTORS.invalidPill).getAttribute('title'), 'You entered \'\'x\'\'. Invalid server response', 'Expected title with the error message');
     done();
   });
 
@@ -749,7 +749,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     return settled().then(() => {
       // right click on a un-selected pill( the 2nd one), should not trigger contextMenu event
       triggerEvent(PILL_SELECTORS.expensivePill, 'contextmenu', e);
-      assert.equal(this.$('.content-context-menu').length, 1, 'one menu');
+      assert.equal(findAll('.content-context-menu').length, 1, 'one menu');
       assert.equal(count, 1, 'Should be called once');
       done();
     });
@@ -781,12 +781,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     const metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[0].id}`); // make it selected
-
-    this.$(PILL_SELECTORS.selectedPill).trigger({
-      type: 'contextmenu',
-      clientX: 100,
-      clientY: 100
-    });
+    await triggerEvent(find(PILL_SELECTORS.selectedPill), 'contextmenu', { clientX: 100, clientY: 100 });
 
     return settled().then(() => {
       const selector = '.context-menu';
@@ -1382,12 +1377,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     const metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[0].id}`); // make it selected
-
-    this.$(PILL_SELECTORS.selectedPill).trigger({
-      type: 'contextmenu',
-      clientX: 100,
-      clientY: 100
-    });
+    await triggerEvent(find(PILL_SELECTORS.selectedPill), 'contextmenu', { clientX: 100, clientY: 100 });
 
     return settled().then(async() => {
       const selector = '.context-menu';
@@ -1447,12 +1437,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     await click(`#${metas[0].id}`); // make it selected
     assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'One selected pill');
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Number of pills present');
-
-    this.$(PILL_SELECTORS.selectedPill).trigger({
-      type: 'contextmenu',
-      clientX: 100,
-      clientY: 100
-    });
+    await triggerEvent(find(PILL_SELECTORS.selectedPill), 'contextmenu', { clientX: 100, clientY: 100 });
 
     return settled().then(async() => {
       const selector = '.context-menu';
@@ -1485,12 +1470,8 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     const metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[0].id}`); // make it selected
+    await triggerEvent(find(PILL_SELECTORS.selectedPill), 'contextmenu', { clientX: 100, clientY: 100 });
 
-    this.$(PILL_SELECTORS.selectedPill).trigger({
-      type: 'contextmenu',
-      clientX: 100,
-      clientY: 100
-    });
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Number of pills present before deletion');
 
     return settled().then(async() => {
@@ -1771,12 +1752,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     const metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[0].id}`);
     assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
-
-    this.$('.outside').trigger('click', {
-      button: 2,
-      ctrlKey: true
-    });
-
+    await triggerEvent(find('.outside'), 'click', { button: 2, ctrlKey: true });
 
     return settled().then(() => {
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'should have no focused pill');
@@ -2016,7 +1992,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     //   { freeFormText: '(foobar)', position: 0, shouldAddFocusToNewPill: false, fromFreeFormMode: false, shouldForceComplex: true },
     //   'The action creator was called with the right arguments'
     // );
-    assert.equal(this.$(PILL_SELECTORS.complexPill).prop('title'), '(foobar)', 'Expected stringified pill');
+    assert.equal(find(PILL_SELECTORS.complexPill).getAttribute('title'), '(foobar)', 'Expected stringified pill');
   });
 
   test('Meta pill can create a text pill', async function(assert) {
@@ -2041,7 +2017,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     //   { searchTerm: 'foo-bar-baz', position: 0, shouldAddFocusToNewPill: false, fromFreeFormMode: false, shouldForceComplex: false },
     //   'The action creator was called with the right arguments'
     // );
-    assert.equal(this.$(PILL_SELECTORS.textPill).prop('title'), 'foo-bar-baz', 'Expected stringified pill');
+    assert.equal(find(PILL_SELECTORS.textPill).getAttribute('title'), 'foo-bar-baz', 'Expected stringified pill');
   });
 
   test('it should not have Advanced Options in the afterOptionsComponent if a pill is open for edit', async function(assert) {

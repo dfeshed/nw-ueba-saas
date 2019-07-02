@@ -374,6 +374,10 @@ export const isHttpRequestSuccess = (response) => {
 // $(':not')
 // filterElements(NodeList) - see above
 
+// $(':first')
+// $().filter(':first')
+// document.querySelector('some-selector')
+
 //
 // MANIPULATING ELEMENTS
 //
@@ -471,9 +475,14 @@ export const isHttpRequestSuccess = (response) => {
 
 // this.$('.some-element').trigger('some-event')
 // await triggerEvent(find('.some-element'), 'some-event')
+// await triggerEvent(find('.some-element'), 'some-event', { some-event-options })
 
 // this.$().find('.rsa-application-overlay').click()
 // await click(find('.rsa-application-overlay'))
+
+// $('.some-element').contextmenu()
+// await triggerEvent(find('.some-element'), 'contextmenu')
+// await triggerEvent(find('.some-element'), 'contextmenu', { event-options })
 
 //
 // UTILITY
@@ -490,6 +499,9 @@ export const isHttpRequestSuccess = (response) => {
 
 // $('.some-element').append(htmlString)
 // Element.append(htmlStringToElement(htmlString)) - see above
+
+// $('.some-element').val(some-value)
+// document.querySelector('.some-element').setAttribute('value', some-value)
 
 //
 // ATTRIBUTES
