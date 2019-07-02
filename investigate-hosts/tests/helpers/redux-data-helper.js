@@ -385,7 +385,6 @@ export default class DataHelper {
     _set(this.state, 'investigate.serviceId', id);
     return this;
   }
-
   timeRange(range) {
     _set(this.state, 'investigate.timeRange', range);
     return this;

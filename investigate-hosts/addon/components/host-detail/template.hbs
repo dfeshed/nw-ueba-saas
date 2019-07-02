@@ -13,9 +13,11 @@
       <box class="process-details-panel {{if isProcessDetailsView 'is-show-process-details'}}">
         {{host-detail/process/process-details}}
       </box>
+      <box class="mft-container-panel {{if isMFTView 'show'}}">
+        {{host-detail/downloads/mft-container}}
+      </box>
       {{component selectedTabComponent}}
     {{/if}}
-  
 
   </box>
 {{else}}

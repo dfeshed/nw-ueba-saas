@@ -44,7 +44,6 @@ module('Integration | Component | endpoint host-detail/process/process-suspiciou
   test('5 columns rendered in the suspicious threads table', async function(assert) {
     new ReduxDataHelper(initState).dllList(dllListData).selectedProcessId(1392).build();
     await render(hbs`{{host-detail/process/process-suspicious-threads}}`);
-
     assert.equal(findAll('.process-suspicious-threads-list .rsa-data-table-header-row > div').length, 5, '5 column rendered');
 
     assert.equal(find('.process-suspicious-threads-list .rsa-data-table-header-row > div:nth-child(1)').textContent.trim(), 'DLL Name', 'Header text in first column, DLL Name');

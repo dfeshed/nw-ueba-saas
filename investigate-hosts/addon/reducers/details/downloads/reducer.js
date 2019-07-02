@@ -14,7 +14,9 @@ const initialState = Immutable.from({
   isSortDescending: true,
   selectedFileList: [],
   selectedFile: {},
-  pageNumber: -1
+  pageNumber: -1,
+  isShowMFTView: false,
+  selectedMftFile: null
 });
 
 const _toggleSelectedFile = (state, payload) => {
@@ -98,6 +100,7 @@ const hostDownloads = reduxActions.handleActions({
     const { isSortDescending } = state;
     return state.merge({ ...initialState, isSortDescending });
   },
+  [ACTION_TYPES.TOGGLE_MFT_VIEW]: (state, { payload }) => (state.merge({ 'isShowMFTView': payload ? !!payload.length : false, 'selectedMftFile': payload })),
 
   [ACTION_TYPES.SET_SELECTED_DOWNLOADED_FILE_INDEX]: (state, { payload }) => state.set('selectedIndex', payload)
 }, initialState);

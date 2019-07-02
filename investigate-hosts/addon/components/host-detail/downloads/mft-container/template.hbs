@@ -1,0 +1,33 @@
+<box class="mft-content">
+  {{#rsa-page-layout showRightZone=false showLeftZone=false as |layout|}}
+    {{#layout.left as |leftPanel|}}
+      {{leftPanel.header iconName='filter-2' title=(t 'investigateHosts.downloads.filters.title')}}
+    {{/layout.left}}
+    {{#layout.center}}
+      <hbox>
+        <vbox class='mft-bar mft-tree'>
+          <box class='mft-action'>
+            {{host-detail/downloads/mft-container/filter-action-bar
+                        openFilterPanel=(action layout.open 'left')}}
+          </box>
+          <box class='mft-table'>
+            <div class='mft-header'>
+              <div class='mft-file-name' title="{{selectedMftFile}}">{{selectedMftFile}}</div>
+            </div>
+            <h1> MFT TREE TABLE</h1>
+          </box>
+        </vbox>
+        <vbox class='mft-bar '>
+          <box class='mft-action'>
+            {{host-detail/downloads/mft-container/mft-action-bar}}
+          </box>
+          <box class='mft-table'>
+            <div class='mft-header'></div>
+            <h1> MFT TABLE</h1>
+            {{host-detail/downloads/mft-container/mft-help}}
+          </box>
+        </vbox>
+      </hbox>
+    {{/layout.center}}
+  {{/rsa-page-layout}}
+</box>

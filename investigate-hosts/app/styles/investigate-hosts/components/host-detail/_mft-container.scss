@@ -1,0 +1,98 @@
+.mft-container-panel {
+  .mft-container {
+    min-height: 100%;
+    .mft-content {
+      min-height: 100%;
+      .left-zone {
+        .rsa-header {
+          min-height: 70px;
+          .title {
+            padding-top: 1.8rem;
+          }
+          .close-zone {
+            padding-top: 1.3rem;
+          }
+        }
+      }
+      .mft-action {
+        max-height: 70px;
+        background-color: text-color(primary, darkest);
+      }
+      .mft-table {
+        .mft-header {
+          .mft-file-name {
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 10px 20px 9px 13px;
+            font-size: 10px;
+            font-weight: bold;
+          }
+          height: 31px;
+          background-color: text-color(primary, darker);
+        }
+        background-color: text-color(primary, darkest);
+        border-right: 1px solid text-color(primary, dark);
+        .mft-help {
+          margin: auto;
+          margin: auto;
+          width: 325px;
+          font-size: 12px;
+          .line-one {
+            color: text-color(accentFour);
+            text-align: center;
+            padding-bottom: 13px;
+          }
+          ul {
+            color: text-color(primary, lightest);
+            background-color: text-color(primary, darker);
+            padding: 36px;
+            text-align: center;
+            li {
+              margin: auto;
+              width: 205px;
+            }
+          }
+        }
+      }
+      .mft-bar {
+        &.mft-tree{
+          max-width: 270px;
+        }
+
+      }
+    }
+    .mft-action-bar {
+      .close-action {
+        text-align: right;
+        padding-top: 0.9rem;
+        padding-right: 0.5rem;
+        i {
+          &.close-mft-view-button {
+            font-size: 0.8rem;
+            padding-right: 0.6rem;
+            color: text-color(primary, light)
+          }
+          &:hover {
+            color: text-color(primary, lightest)
+          }
+        }
+      }
+
+    }
+  .filter-action-bar {
+    .title-header {
+      .close-zone {
+        padding-left: 0.3rem;
+      }
+      margin-bottom: 5px;
+      padding-left: 1rem;
+      i {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  }
+}

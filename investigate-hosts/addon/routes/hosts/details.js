@@ -14,7 +14,8 @@ const HELP_ID_MAPPING = {
   'DRIVERS': 'contextualHelp.invHostsDrivers',
   'LIBRARIES': 'contextualHelp.invHostsLibraries',
   'SYSTEM': 'contextualHelp.invHostsSysInfo',
-  'DOWNLOADS': 'contextualHelp.invHostsDownloads'
+  'DOWNLOADS': 'contextualHelp.invHostsDownloads',
+  'DOWNLOADS-MFT': 'contextualHelp.invHostsDownloads'
 };
 
 export default Route.extend({
@@ -48,6 +49,9 @@ export default Route.extend({
       refreshModel: true
     },
     tabName: {
+      refreshModel: true
+    },
+    mftFile: {
       refreshModel: true
     }
   },

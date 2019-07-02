@@ -40,11 +40,39 @@ module('Integration | Component | host-detail/downloads/downloads-list/body-cell
 
   test('it should render filename', async function(assert) {
     this.set('column', { field: 'fileName' });
-    this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile' });
+    this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile', fileType: 'Mft' });
 
     await render(hbs`{{host-detail/downloads/downloads-list/body-cell column=column item=item}}`);
     assert.equal(findAll('.downloaded-file-name').length, 1, 'Renders file name');
     assert.equal(find('.fileName').textContent.trim(), 'testFile', 'Renders file name');
+  });
+  test('filename mft link test', async function(assert) {
+    this.set('column', { field: 'fileName' });
+    this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile', fileType: 'Mft' });
+    this.set('serverId', 'abcd');
+
+    await render(hbs`{{host-detail/downloads/downloads-list/body-cell column=column item=item serverId=serverId}}`);
+    const links = findAll('.downloaded-file-name a');
+    assert.equal(links.length, 1, 'downloaded-file-name mft is linked');
+  });
+
+  test('file file link test', async function(assert) {
+    this.set('column', { field: 'fileName' });
+    this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile', fileType: 'File' });
+    this.set('serverId', 'abcd');
+
+    await render(hbs`{{host-detail/downloads/downloads-list/body-cell column=column item=item serverId=serverId}}`);
+    const links = findAll('.downloaded-file-name a');
+    assert.equal(links.length, 1, 'downloaded-file-name file is linked');
+  });
+  test('file should not link if not file or mft test', async function(assert) {
+    this.set('column', { field: 'fileName' });
+    this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile', fileType: 'Different' });
+    this.set('serverId', 'abcd');
+
+    await render(hbs`{{host-detail/downloads/downloads-list/body-cell column=column item=item serverId=serverId}}`);
+    const links = findAll('.downloaded-file-name a');
+    assert.equal(links.length, 0, 'downloaded-file-name file is not linked');
   });
 
   test('it should render the downloaded time', async function(assert) {

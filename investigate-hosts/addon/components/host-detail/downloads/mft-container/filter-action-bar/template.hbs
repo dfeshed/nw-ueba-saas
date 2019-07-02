@@ -1,0 +1,12 @@
+<h2 class="title-header">
+  {{#link-to "hosts.details"  machineId (query-params mftFile='' sid=serverId subTabName='DOWNLOADS' pid=null query=null machineId=machineId tabName='DOWNLOADS')}}
+    {{#rsa-form-button class='back-to-downloads padding-right'}}
+      {{rsa-icon name='arrow-left-12'}}
+      {{t 'investigateHosts.downloads.backToDownloads'}}
+    {{/rsa-form-button}}
+  {{/link-to}}
+  {{#rsa-form-button class='close-zone open-filter-panel' click=openFilterPanel }}
+    {{rsa-icon name='filter-2' size='small'}}
+    <span>{{t 'investigateFiles.filter.filter'}}</span>
+  {{/rsa-form-button}}
+</h2>

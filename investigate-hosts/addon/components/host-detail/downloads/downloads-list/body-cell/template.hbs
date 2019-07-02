@@ -6,14 +6,22 @@
   {{rsa-content-memsize size=(get item column.field)}}
 {{else if (eq column.field 'fileName')}}
   <hbox class="downloaded-file-name">
-    {{get item column.field}}
+    {{#if (eq (get item 'fileType') 'Mft')}}
+      {{#link-to "hosts.details" focusedHost (query-params machineId=focusedHost tabName='DOWNLOADS-MFT' sid=serverId subTabName=null pid=null query=null mftFile=(get item 'id'))}}
+        {{get item column.field}}
+      {{/link-to}}
+    {{else if (eq (get item 'fileType') 'File')}}
+      <a class='file-name-link' href='/investigate/files/file?checksum={{get item 'checksumSha256'}}&sid={{serverId}}' target='_blank' rel='noopener noreferrer'>
+        {{get item column.field}}
+      </a>
+    {{/if}}
   </hbox>
 {{else if (eq column.field 'downloadedTime')}}
   <div title="{{get-field item column timezone dateFormat timeFormat i18n.locale}}">
     {{moment-from-now (get item column.field) locale=i18n.locale timeZone=timezone.selected.zoneId allow-empty=true}}
   </div>
 {{else if (eq column.field 'status')}}
-  {{endpoint/download-status downloadInfo=(get item 'status') checksum=item.id}}
+  {{endpoint/download-status downloadInfo=downloadInfo checksum=item.id}}
 {{else if (eq column.field 'checksumSha256')}}
   {{#if item.checksumSha256}}
     {{get item column.field}}

@@ -13,7 +13,8 @@ const stateToComputed = (state) => ({
   isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView,
   selectedServiceData: selectedServiceWithStatus(state),
   isFileAnalysisView: state.endpoint.fileAnalysis.isFileAnalysisView,
-  downloadLink: downloadLink(state)
+  downloadLink: downloadLink(state),
+  isMFTView: state.endpoint.hostDownloads.downloads.isShowMFTView
 });
 
 const DetailComponent = Component.extend({

@@ -10,6 +10,8 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import { patchSocket } from '../../../../helpers/patch-socket';
 import { hostDownloads } from '../../../components/state/downloads';
 import Immutable from 'seamless-immutable';
+import endpoint from '../../state/schema';
+import hostListState from '../../state/host.machines';
 
 const callback = () => {};
 const e = {
@@ -23,6 +25,93 @@ const e = {
   }
 };
 const wormhole = 'wormhole-context-menu';
+const endpointServer = {
+  serviceData: [
+    {
+      id: 'fef38f60-cf50-4d52-a4a9-7727c48f1a4b',
+      name: 'endpoint-server',
+      displayName: 'EPS1-server - Endpoint Server',
+      host: '10.40.15.210',
+      port: 7050,
+      useTls: true,
+      version: '11.3.0.0',
+      family: 'launch',
+      meta: {}
+    },
+    {
+      id: '364e8e9c-5893-4ad1-b107-3c6b8d87b088',
+      name: 'endpoint-broker-server',
+      displayName: 'EPS2-server - Endpoint Broker Server',
+      host: '10.40.15.199',
+      port: 7054,
+      useTls: true,
+      version: '11.3.0.0',
+      family: 'launch',
+      meta: {}
+    },
+    {
+      id: 'e82241fc-0681-4276-a930-dd6e5d00f152',
+      name: 'endpoint-server',
+      displayName: 'EPS2-server - Endpoint Server',
+      host: '10.40.15.199',
+      port: 7050,
+      useTls: true,
+      version: '11.3.0.0',
+      family: 'launch',
+      meta: {}
+    }
+  ],
+  isServicesLoading: false,
+  isServicesRetrieveError: false,
+  isSummaryRetrieveError: false
+};
+const config = [{
+  tableId: 'hosts',
+  columns: [
+    {
+      field: 'id'
+    },
+    {
+      field: 'machineIdentity.agentVersion'
+    },
+    {
+      field: 'machine.scanStartTime'
+    },
+    {
+      field: 'machineIdentity.machineOsType'
+    }
+  ]
+}];
+
+const endpointQuery = {
+  serverId: 'e82241fc-0681-4276-a930-dd6e5d00f152'
+};
+const endpointState =
+  {
+    endpoint:
+      {
+        schema: { schema: endpoint.schema },
+        machines: {
+          hostList: hostListState.machines.hostList, selectedHostList: [ { version: '11.3', managed: true, id: 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F', scanStatus: 'idle' }],
+          hostColumnSort: 'machineIdentity.machineName',
+          focusedHost: null
+        },
+        hostDownloads,
+        detailsInput: {
+          agentId: 'agent-id'
+        }
+      },
+    preferences: {
+      preferences: {
+        machinePreference: {
+          columnConfig: config
+        }
+      }
+    },
+    endpointServer,
+    endpointQuery
+  };
+
 
 let initState;
 
@@ -71,7 +160,8 @@ module('Integration | Component | downloads', function(hooks) {
 
   });
   test('On right clicking the row it renders the context menu', async function(assert) {
-    initState({ endpoint: { hostDownloads } });
+    initState(endpointState);
+    // new ReduxDataHelper(initState).hostDownloads(hostDownloads).endpointQuery({ serverId: '1', selectedMachineServerId: 'abc' }).build();
     await render(hbs`
       <style>
         box, section {
@@ -170,7 +260,6 @@ module('Integration | Component | downloads', function(hooks) {
 
     await render(hbs `<div id='modalDestination'></div>
       {{host-detail/downloads}}`);
-
     patchSocket((method, modelName) => {
       assert.equal(method, 'saveLocalCopy');
       assert.equal(modelName, 'endpoint');

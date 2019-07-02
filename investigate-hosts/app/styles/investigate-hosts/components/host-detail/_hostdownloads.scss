@@ -3,6 +3,9 @@
   .fileType {
     text-transform: uppercase;
   }
+  .downloaded-file-name a {
+    color: text-color(secondary, light);
+  }
 }
 
 .host-downloads{

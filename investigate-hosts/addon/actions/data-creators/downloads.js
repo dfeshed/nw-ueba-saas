@@ -158,6 +158,7 @@ const saveLocalMFTCopy = (selectedFile, callback, serverId) => {
     });
   };
 };
+const toggleMftView = (selectedFile) => ({ type: ACTION_TYPES.TOGGLE_MFT_VIEW, payload: selectedFile });
 
 export {
   getPageOfDownloads,
@@ -169,5 +170,6 @@ export {
   onFileSelection,
   setSelectedIndex,
   deleteSelectedFiles,
-  saveLocalMFTCopy
+  saveLocalMFTCopy,
+  toggleMftView
 };

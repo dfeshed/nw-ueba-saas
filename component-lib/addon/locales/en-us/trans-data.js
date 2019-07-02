@@ -2930,6 +2930,11 @@ export default {
         checksum: 'checksumSha256',
         downloadedTime: 'Downloaded Time'
       },
+      help: {
+        header: 'Select the drive or folder to view content.'
+      },
+      backToDownloads: 'Downloads',
+      backToDownloadsTitle: 'Back to downloads tab',
       errorMessages: {
         invalidFilterInputLength: 'Filter input longer than 256 characters',
         invalidCharsAlphaNumericOnly: 'Special characters are not allowed',

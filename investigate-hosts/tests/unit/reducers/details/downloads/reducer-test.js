@@ -14,7 +14,9 @@ const initialState = {
   isSortDescending: true,
   selectedFileList: [],
   selectedFile: {},
-  pageNumber: -1
+  pageNumber: -1,
+  isShowMFTView: false,
+  selectedMftFile: null
 };
 
 module('Unit | Reducers | downloads', function() {
@@ -150,5 +152,41 @@ module('Unit | Reducers | downloads', function() {
     const errorEndState = reducer(previous, errorAction);
 
     assert.equal(errorEndState.loadMoreStatus, 'error');
+  });
+
+  test('The TOGGLE_MFT_VIEW will fetch the download files', function(assert) {
+    let previous = Immutable.from({
+      files: {},
+      loadMoreStatus: 'completed',
+      selectedIndex: -1,
+      totalItems: 4,
+      sortField: 'downloadedTime',
+      isSortDescending: true,
+      selectedFileList: [],
+      selectedFile: {},
+      pageNumber: -1
+    });
+
+
+    let startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.TOGGLE_MFT_VIEW, payload: 'test-file' });
+    let startEndState = reducer(previous, startAction);
+    assert.equal(startEndState.isShowMFTView, true);
+    assert.equal(startEndState.selectedMftFile, 'test-file');
+    previous = Immutable.from({
+      files: {},
+      loadMoreStatus: 'completed',
+      selectedIndex: -1,
+      totalItems: 4,
+      sortField: 'downloadedTime',
+      isSortDescending: true,
+      selectedFileList: [],
+      selectedFile: {},
+      pageNumber: -1,
+      isShowMFTView: true
+    });
+    startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.TOGGLE_MFT_VIEW, payload: '' });
+    startEndState = reducer(previous, startAction);
+    assert.equal(startEndState.isShowMFTView, false);
+    assert.equal(startEndState.selectedMftFile, '');
   });
 });

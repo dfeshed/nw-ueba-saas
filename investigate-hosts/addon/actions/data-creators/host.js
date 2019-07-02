@@ -15,6 +15,7 @@ import { getServiceId } from 'investigate-shared/actions/data-creators/investiga
 import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
 import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { toggleProcessDetailsView } from 'investigate-hosts/actions/data-creators/process';
+import { toggleMftView, getFirstPageOfDownloads } from 'investigate-hosts/actions/data-creators/downloads';
 import { extractHostColumns } from 'investigate-hosts/reducers/schema/selectors';
 
 import { debug } from '@ember/debug';
@@ -42,9 +43,8 @@ const bootstrapInvestigateHosts = (query) => {
   };
 };
 
-const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTabName, pid }, isPageLoading) => {
+const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTabName, pid, mftFile }, isPageLoading) => {
   return async(dispatch, getState) => {
-
     if (isPageLoading) {
       const id = sid || getState().endpointQuery.serverId;
       await dispatch(changeEndpointServer({ id }));
@@ -63,6 +63,12 @@ const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTa
     next(() => {
       if (tabName === 'PROCESS' && subTabName === 'process-details') {
         dispatch(toggleProcessDetailsView({ pid: parseInt(pid, 10) }, true));
+      }
+      if (tabName === 'DOWNLOADS-MFT') {
+        dispatch(toggleMftView(mftFile));
+      } else if (tabName === 'DOWNLOADS') {
+        dispatch(toggleMftView(mftFile));
+        getFirstPageOfDownloads();
       }
     });
   };
