@@ -153,7 +153,6 @@ $configureNavigationHeight: 48px;
       tr {
         height: 40px;
         border-top: 1px solid border-color(primary, dark);
-        border-bottom: 1px solid border-color(primary, dark);
 
         &:first-of-type {
           border-top: 1px solid transparent;
@@ -167,20 +166,25 @@ $configureNavigationHeight: 48px;
           background-color: background-color(primary, darker);
         }
 
-        .rsa-form-radio-label::before {
-          font-size: 1.2rem;
-          color: text-color(primary, lighter);
-        }
-
         &.is-selected {
-          background-color: background-color(secondary, dark);
+          background-color: background-color(secondary, base, nearly-transparent);
+          border-top: 1px solid border-color(secondary, dark);
+          border-bottom: 1px solid border-color(secondary, dark);
+
           a {
-            color: text-color(primary, lighter);
+            color: text-color(secondary, light);
           }
-          .handle {
-            &::before {
-              background-image: radial-gradient($dragPadHighlightedColor 40%, transparent 40%);
-            }
+
+          .handle::before {
+            background-image: radial-gradient($dragPadHighlightedColor 40%, transparent 40%);
+          }
+
+          .rsa-form-checkbox-label.checked::before {
+            color: border-color(secondary, light);
+          }
+
+          &:hover {
+            background-color: background-color(secondary, lighter, nearly-transparent);
           }
         }
 
@@ -222,8 +226,12 @@ $configureNavigationHeight: 48px;
 
   .sortable-item.is-dragging {
     transition-duration: 0s;
-    background: background-color(primary, darkest);
+    background: background-color(secondary, dark) !important;
     z-index: 10;
+
+    a {
+      color: text-color(primary, lightest);
+    }
   }
 
   .move-column {

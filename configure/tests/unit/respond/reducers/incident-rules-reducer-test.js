@@ -118,6 +118,23 @@ test('With INCIDENT_RULES_SELECT_ALL_RULES, if all rules are selected then unsel
   assert.deepEqual(endState, expectedEndState);
 });
 
+test('INCIDENT_RULES_CLEAR_SELECTED_RULES, clears any selected rules', function(assert) {
+  const initialState = {
+    rules: [{ id: 'foo' }, { id: 'bar' } ],
+    selectedRules: ['foo']
+  };
+
+  const expectedEndState = {
+    ...initialState,
+    selectedRules: []
+  };
+
+  const endState = reducer(Immutable.from(initialState), {
+    type: ACTION_TYPES.INCIDENT_RULES_CLEAR_SELECTED_RULES
+  });
+  assert.deepEqual(endState, expectedEndState);
+});
+
 test('With INCIDENT_RULES_SELECT_ALL_RULES, if all rules are not selected then select all', function(assert) {
   const initialState = {
     rules: [{ id: 'foo' }, { id: 'bar' }],

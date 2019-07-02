@@ -47,6 +47,10 @@ const reducer = reduxActions.handleActions({
     }
   },
 
+  [ACTION_TYPES.INCIDENT_RULES_CLEAR_SELECTED_RULES]: (state) => {
+    return state.set('selectedRules', []);
+  },
+
   [ACTION_TYPES.INCIDENT_RULES_DELETE_STARTED]: (state) => state.set('isTransactionUnderway', true),
 
   [ACTION_TYPES.INCIDENT_RULES_DELETE_FAILED]: (state) => state.set('isTransactionUnderway', false),

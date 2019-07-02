@@ -231,6 +231,12 @@ const selectAllRules = () => {
   };
 };
 
+const clearSelectedRules = () => {
+  return {
+    type: ACTION_TYPES.INCIDENT_RULES_CLEAR_SELECTED_RULES
+  };
+};
+
 /**
  * Adds a new rule builder grouping, which can contain conditions. The following example illustrates this
  *
@@ -367,6 +373,7 @@ export {
   saveRule,
   selectRule,
   selectAllRules,
+  clearSelectedRules,
   updateCondition,
   updateGroup,
   updateRule

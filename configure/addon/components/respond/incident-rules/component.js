@@ -6,7 +6,7 @@ import {
   getSelectedIncidentRules,
   isAllSelected
 } from 'configure/reducers/respond/incident-rules/selectors';
-import { reorderRules, selectAllRules, selectRule } from 'configure/actions/creators/respond/incident-rule-creators';
+import { reorderRules, selectAllRules, selectRule, clearSelectedRules } from 'configure/actions/creators/respond/incident-rule-creators';
 import { connect } from 'ember-redux';
 import { inject } from '@ember/service';
 import _ from 'lodash';
@@ -22,7 +22,8 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   selectRule,
   reorderRules,
-  selectAllRules
+  selectAllRules,
+  clearSelectedRules
 };
 
 /**
@@ -45,7 +46,21 @@ const IncidentRules = Component.extend({
      * @private
      */
     handleRowClick(item) {
+      if (!this.get('selectedRules').includes(item.id)) {
+        this.send('clearSelectedRules');
+        this.send('selectRule', item.id);
+      }
+    },
+
+    /**
+     * Handler for a click on one of the row checkboxes. Used as one of the mechanisms for selecting the row.
+     * Here we only send the select action if the checkboxes itself is being clicked (and not the row ).
+     * @param item
+     * @private
+     */
+    handleCheckboxClick(item) {
       this.send('selectRule', item.id);
+      return false;
     },
 
     reorder(reorderedItems) {
