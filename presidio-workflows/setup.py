@@ -11,6 +11,12 @@ def readme():
         return f.read()
 
 
+def read_requirements():
+    with open('../package/rsa-nw-presidio-airflow/scripts/requirements.txt') as file:
+        requirements = [line.strip() for line in file]
+        return requirements
+
+
 class Tox(TestCommand):
     user_options = [('tox-args=', None, "Arguments to pass to tox")]
 
@@ -62,12 +68,7 @@ setup(name='presidio-workflows',
       author='fortscale',
       author_email='fsgit@fortscale.com',
       packages=find_packages(),
-      install_requires=[
-          # TODO: verify final version of each dependency
-          'sqlalchemy==1.1.18', 'psycopg2', 'nose', 'apache-airflow[devel,postgres,crypto,password]==1.10.2',
-          'python-dateutil', 'lxml>4.0', 'elasticsearch>=5.0.0,<6.0.0', 'tox==2.9.1', 'Jinja2==2.10.0','tzlocal==1.5.1',
-          'Sphinx==1.8.4','numpy==1.16.4', 'snakebite'
-      ],
+      install_requires=read_requirements(),
       cmdclass={'test': Tox},
       setup_requires=['pytest-runner', 'tox-setuptools', 'tox'],
       include_package_data=True,
