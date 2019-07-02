@@ -61,6 +61,13 @@ export const getOuterHeight = (elem, includeMargin = false) => {
  */
 export const getHeight = (elem) => {
   if (elem) {
+    // if Document node
+    if (elem.nodeType === 9) {
+      const doc = elem.documentElement;
+      return Math.max(elem.body.scrollHeight, doc.scrollHeight,
+        elem.body.offsetHeight, doc.offsetHeight, doc.clientHeight);
+    }
+
     const style = getComputedStyle(elem);
     const paddingY = getPaddingY(elem);
     const borderY = getBorderY(elem);
@@ -541,13 +548,16 @@ export const unwrap = (selector) => {
 // this.$('.some-element').prop('some-attribute')
 // document.querySelector('.some-element').getAttribute('some-attribute')
 
-// this.$('.some-element').attr('some-attribute)
+// this.$('.some-element').attr('some-attribute')
 // document.querySelector('.some-element').getAttribute('some-attribute')
-
-// this.$().removeAttr('some-attribute')
-// this.element.removeAttribute('some-attribute')
 
 // this.$('.some-element').attr('data-*-attribute')
 // use data attributes https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
 // $el.attr('data-entity-id')
 // el.dataset[entityId]
+
+// this.$('.some-element').attr('some-attribute', 'some-value')
+// document.querySelector('.some-element').setAttribute('some-attribute', 'some-value')
+
+// this.$().removeAttr('some-attribute')
+// this.element.removeAttribute('some-attribute')

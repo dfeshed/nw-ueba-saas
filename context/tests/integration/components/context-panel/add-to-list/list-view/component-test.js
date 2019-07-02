@@ -46,7 +46,7 @@ module('Integration | Component | context-panel/add-to-list/list-view', function
     await render(hbs`{{context-panel/add-to-list/list-view filterStr=filterStr}}`);
 
     assert.equal(findAll('.rsa-form-checkbox.checked').length, 3, 'Number of lists selected');
-    assert.equal(findAll('.rsa-form-checkbox ').length - this.$('.rsa-form-checkbox.checked').length, 1,
+    assert.equal(findAll('.rsa-form-checkbox ').length - findAll('.rsa-form-checkbox.checked').length, 1,
       'Number of lists unselected');
   });
 

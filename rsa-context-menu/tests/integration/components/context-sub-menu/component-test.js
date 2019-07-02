@@ -1,31 +1,35 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { moduleForComponent, test, setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { findAll } from '@ember/test-helpers';
 
-moduleForComponent('context-menu-item/sub-menu', 'Integration | Component | context sub menu', {
-  integration: true
-});
+moduleForComponent('context-menu-item/sub-menu', 'Integration | Component | context sub menu', function(hooks) {
 
-test('it renders', function(assert) {
-  this.render(hbs`{{context-menu-item/sub-menu}}`);
-  assert.equal(this.$('ul.context-menu--sub').length, 1);
-});
+  setupRenderingTest(hooks, {
+    integration: true
+  });
 
-test('calculates offset before rendering', function(assert) {
+  test('it renders', function(assert) {
+    this.render(hbs`{{context-menu-item/sub-menu}}`);
+    assert.equal(findAll('ul.context-menu--sub').length, 1);
+  });
 
-  const item = {
-    subActions: [
-      {
-        label: 'Item 1',
-        action() { }
-      },
-      {
-        label: 'Item 2',
-        action() { }
-      }
-    ]
-  };
-  this.set('item', item);
-  this.set('parentId', '123');
-  this.render(hbs`<div id="123" style="position: absolute; top: 100px">{{context-menu-item/sub-menu parentId=parentId item=item}}</div>`);
-  assert.ok(this.$('ul').attr('style'), 'Expected offset to be applied');
+  test('calculates offset before rendering', function(assert) {
+
+    const item = {
+      subActions: [
+        {
+          label: 'Item 1',
+          action() { }
+        },
+        {
+          label: 'Item 2',
+          action() { }
+        }
+      ]
+    };
+    this.set('item', item);
+    this.set('parentId', '123');
+    this.render(hbs`<div id="123" style="position: absolute; top: 100px">{{context-menu-item/sub-menu parentId=parentId item=item}}</div>`);
+    assert.ok(find('ul').getAttribute('style'), 'Expected offset to be applied');
+  });
 });

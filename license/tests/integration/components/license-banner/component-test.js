@@ -37,7 +37,7 @@ module('license-banner', 'Integration | Component | License Banner', function(ho
 
   test('License banner renders in error mode for EXPIRED compliance ', async function(assert) {
     await render(hbs `{{license-banner}}`);
-    assert.equal(this.$('.license-banner').length, 1, 'License banner rendered.');
+    assert.equal(findAll('.license-banner').length, 1, 'License banner rendered.');
     await waitUntil(() => find('.license-banner.shown'), { timeout: 3000 });
     assert.ok(!find('.dismiss-btn .rsa-form-button'), 'Error banner does not have dismiss button');
     assert.equal(find('.banner-msg').textContent.trim(), getExpectedMsg(this.owner, 'license.banner.expired'), 'Correct banner message should be shown');
@@ -51,7 +51,7 @@ module('license-banner', 'Integration | Component | License Banner', function(ho
   test('License banner renders in warning mode for NEARING_EXPIRY compliance', async function(assert) {
     const stub = mockService(this.owner, false, 'NEARING_EXPIRY');
     await render(hbs `{{license-banner}}`);
-    assert.equal(this.$('.license-banner').length, 1, 'Warning banner rendered.');
+    assert.equal(findAll('.license-banner').length, 1, 'Warning banner rendered.');
     await waitUntil(() => find('.license-banner.shown'), { timeout: 3000 });
     assert.equal(find('.banner-msg').textContent.trim(), getExpectedMsg(this.owner, 'license.banner.near-expiry'), 'Correct banner message should be shown');
     assert.equal(findAll('.dismiss-btn .rsa-form-button').length, 1, 'Warning banner must have dismiss button');
@@ -67,7 +67,7 @@ module('license-banner', 'Integration | Component | License Banner', function(ho
   test('License banner renders in warning mode for USAGE_LIMIT_NEARING compliance', async function(assert) {
     const stub = mockService(this.owner, false, 'USAGE_LIMIT_NEARING');
     await render(hbs `{{license-banner}}`);
-    assert.equal(this.$('.license-banner').length, 1, 'Warning banner rendered.');
+    assert.equal(findAll('.license-banner').length, 1, 'Warning banner rendered.');
     await waitUntil(() => find('.license-banner.shown'), { timeout: 3000 });
     assert.equal(find('.banner-msg').textContent.trim(), getExpectedMsg(this.owner, 'license.banner.near-usage-limit'), 'Correct banner message should be shown');
     assert.equal(findAll('.dismiss-btn .rsa-form-button').length, 1, 'Warning banner must have dismiss button');
@@ -103,7 +103,7 @@ module('license-banner', 'Integration | Component | License Banner', function(ho
   test('License banner renders in error mode for when License Server is down', async function(assert) {
     const stub = mockService(this.owner, false, 'LICENSE_SERVER_DOWN');
     await render(hbs `{{license-banner}}`);
-    assert.equal(this.$('.license-banner').length, 1, 'License banner rendered.');
+    assert.equal(findAll('.license-banner').length, 1, 'License banner rendered.');
     await waitUntil(() => find('.license-banner.shown'), { timeout: 3000 });
     assert.ok(!find('.dismiss-btn .rsa-form-button'), 'Error banner does not have dismiss button');
     assert.equal(find('.banner-msg').textContent.trim(), getExpectedMsg(this.owner, 'license.banner.serverDown'), 'Correct banner message should be shown');
@@ -120,7 +120,7 @@ module('license-banner', 'Integration | Component | License Banner', function(ho
 
     // Test if License Server down banner is shown
     await render(hbs `{{license-banner}}`);
-    assert.equal(this.$('.license-banner').length, 1, 'License banner rendered.');
+    assert.equal(findAll('.license-banner').length, 1, 'License banner rendered.');
     await waitUntil(() => find('.license-banner.shown'), { timeout: 3000 });
     assert.ok(!find('.dismiss-btn .rsa-form-button'), 'Error banner does not have dismiss button');
     assert.equal(find('.banner-msg').textContent.trim(), getExpectedMsg(this.owner, 'license.banner.serverDown'), 'Correct banner message should be shown');

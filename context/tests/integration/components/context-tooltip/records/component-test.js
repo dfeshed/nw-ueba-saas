@@ -20,7 +20,7 @@ module('Integration | Component | context tooltip records', function(hooks) {
     this.set('model', model);
     await render(hbs`{{context-tooltip/records model=model}}`);
 
-    assert.equal(this.$('.rsa-context-tooltip-records').length, 1);
+    assert.equal(findAll('.rsa-context-tooltip-records').length, 1);
     assert.ok(findAll('.rsa-context-tooltip-records__record').length, 'Expected to find one or more records in the DOM');
     assert.ok(find('.rsa-context-tooltip-records__record .value').textContent.trim(), 'Expected to find record value');
     assert.ok(find('.rsa-context-tooltip-records__record .text').textContent.trim(), 'Expected to find record name');

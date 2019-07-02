@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
@@ -151,7 +150,7 @@ const HeaderContainer = Component.extend({
 
   searchPanelDidOpen() {
     schedule('afterRender', () => {
-      $('.rsa-data-table-search-panel input').focus();
+      document.querySelector('.rsa-data-table-search-panel input').focus();
     });
   },
 
@@ -173,9 +172,9 @@ const HeaderContainer = Component.extend({
 
     attachTooltip() {
       later(() => {
-        const customGroup = $('.ember-power-select-group-name').first();
+        const customGroup = document.querySelector('.ember-power-select-group-name');
         if (customGroup) {
-          customGroup.attr('title', this.get('i18n').t('investigate.events.columnGroups.customTitle'));
+          customGroup.setAttribute('title', this.get('i18n').t('investigate.events.columnGroups.customTitle'));
         }
       }, 200);
     }
