@@ -325,6 +325,37 @@ export const isHttpRequestSuccess = (response) => {
   }
 };
 
+/**
+ * Removes the wrapping DOM of the elements for the given selector. This is the
+ * counterpoint to `wrap()`.
+ * @param {string} selector The selector for the element(s) you want to unwrap
+ */
+export const unwrap = (selector) => {
+  const elements = document.querySelectorAll(selector);
+  elements.forEach((el) => {
+    const { parentNode } = el;
+    if (parentNode !== document.body) {
+      if (el.hasChildNodes()) {
+        // childNodes is a nodeList that contains all the Text and DOM nodes
+        // within the parent. We create a document fragment, append those nodes
+        // into the fragment, then insert the fragment and remove the old parent.
+        // This helps reduce the browser work if we were to do this one node at
+        // a time (like in a forEach loop).
+        const { childNodes } = el;
+        const fragment = document.createDocumentFragment();
+        fragment.append(...childNodes);
+        parentNode.insertBefore(fragment, el);
+        parentNode.removeChild(el);
+      }
+    }
+    // const elParentNode = el.parentNode;
+    // if (elParentNode !== document.body) {
+    //   elParentNode.parentNode.insertBefore(el, elParentNode);
+    //   elParentNode.parentNode.removeChild(elParentNode);
+    // }
+  });
+};
+
 // Easy replacement docs
 
 //

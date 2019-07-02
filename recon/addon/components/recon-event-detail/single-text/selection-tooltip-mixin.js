@@ -1,8 +1,8 @@
 import Mixin from '@ember/object/mixin';
 import { inject as service } from '@ember/service';
 import { next, throttle } from '@ember/runloop';
-import $ from 'jquery';
 import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
+import { getHeight, getWidth, offset, unwrap } from 'component-lib/utils/jquery-replacement';
 
 const ELEMENT_NODE = 1;
 const TEXT_NODE = 3;
@@ -118,7 +118,7 @@ export default Mixin.create({
   // page before the closed body element. Find it and remove from the DOM
   // This ensures we don't have two tooltips at the same time
   ensureOnlyOneTether() {
-    const childEl = $('.ember-tether > .recon-tooltip').get(0);
+    const childEl = document.querySelector('.ember-tether > .recon-tooltip');
     if (childEl) {
       const parentEl = childEl.parentNode; // parentNode is the body element
       parentEl.removeChild(childEl);
@@ -141,7 +141,7 @@ export default Mixin.create({
       });
 
       // Delete the span tag that was introduced by mouseUp() without affecting the content
-      $(`.text-container > .${spanClass}`).contents().unwrap();
+      unwrap(`.text-container > .${spanClass}`);
       this.setProperties({ isActionClicked: false, spanEl: null });
     }
   },
@@ -156,17 +156,17 @@ export default Mixin.create({
   _handleWindowClick(e) {
     // using offsets to detect clicks outside recon component, click events within the boundaries
     // of recon are ignored
-    const $reconContainer = $('.recon-event-content');
-    const xstart = $reconContainer.offset().left;
-    const xend = xstart + $reconContainer.width();
-    const ystart = $reconContainer.offset().top;
-    const yend = ystart + $reconContainer.height();
+    const reconContainer = document.querySelector('.recon-event-content');
+    const xstart = offset(reconContainer).left;
+    const xend = xstart + getWidth(reconContainer);
+    const ystart = offset(reconContainer).top;
+    const yend = ystart + getHeight(reconContainer);
 
     // Consider the cases where the tooltip falls outside the recon boundaries and flag the clicks
     // within that as inside clicks
-    const $targetParent = $(e.target.parentElement);
+    const targetParent = e.target.parentElement;
     let isClickInsideTooltip = false;
-    if (!$targetParent.length || $targetParent.attr('class') === 'reconTooltip') {
+    if (!targetParent || targetParent.getAttribute('class') === 'reconTooltip') {
       isClickInsideTooltip = true;
     }
     // Get x and y coordinates of the click event
@@ -180,22 +180,29 @@ export default Mixin.create({
   },
 
   didInsertElement() {
+    const scrollBoxEl = document.querySelector('.recon-event-detail-text .scroll-box');
     // if is sticky, no content, so no tooltips
-    if (!this.get('isSticky')) {
-      const scrollFunct = this._handleScroll.bind(this);
-      const windowClickFunct = this._handleWindowClick.bind(this);
-      $('.recon-event-detail-text .scroll-box').scroll(scrollFunct);
-      $(window).click(windowClickFunct);
-      this.setProperties({ scrollFunct, windowClickFunct });
+    if (scrollBoxEl && !this.get('isSticky')) {
+      const scrollFn = this._handleScroll.bind(this);
+      const windowClickFn = this._handleWindowClick.bind(this);
+      // Add event listeners
+      window.addEventListener('click', windowClickFn);
+      scrollBoxEl.addEventListener('scroll', scrollFn);
+      // Save off so we can remove handlers
+      this.setProperties({ scrollBoxEl, scrollFn, windowClickFn });
     }
   },
 
   willDestroyElement() {
-    const { scrollFunct, windowClickFunct } = this.getProperties('scrollFunct', 'windowClickFunct');
+    const {
+      scrollBoxEl,
+      scrollFn,
+      windowClickFn
+    } = this.getProperties('scrollBoxEl', 'scrollFn', 'windowClickFn');
     // if one exists they both exist
-    if (scrollFunct) {
-      $('.recon-event-detail-text .scroll-box').off('scroll', scrollFunct);
-      $(window).off('click', windowClickFunct);
+    if (scrollFn) {
+      scrollBoxEl.removeEventListener('scroll', scrollFn);
+      window.removeEventListener('click', windowClickFn);
     }
   }
 });

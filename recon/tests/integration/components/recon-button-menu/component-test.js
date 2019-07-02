@@ -2,7 +2,6 @@ import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { render, triggerKeyEvent } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
-import $ from 'jquery';
 
 const ARROW_UP_KEY = 38;
 const ARROW_DOWN_KEY = 40;
@@ -42,17 +41,17 @@ module('Integration | Component | recon button menu', function(hooks) {
     const buttonMenuSelector = '.recon-button-menu';
 
     await triggerKeyEvent(buttonMenuSelector, 'keyup', ARROW_UP_KEY);
-    assert.ok($('.recon-button-menu li:nth-child(4)').is(':focus'), 'Last option focussed');
+    assert.ok(document.querySelector('.recon-button-menu li:nth-child(4):focus'), 'Last option focussed');
 
     await triggerKeyEvent(buttonMenuSelector, 'keyup', ARROW_DOWN_KEY);
-    assert.notOk($('.recon-button-menu li:nth-child(4)').is(':focus'), 'Last option not focussed anymore');
-    assert.ok($('.recon-button-menu li:nth-child(1)').is(':focus'), 'First option focussed');
+    assert.notOk(document.querySelector('.recon-button-menu li:nth-child(4):focus'), 'Last option not focussed anymore');
+    assert.ok(document.querySelector('.recon-button-menu li:nth-child(1):focus'), 'First option focussed');
 
     await triggerKeyEvent(buttonMenuSelector, 'keyup', ARROW_DOWN_KEY);
-    assert.ok($('.recon-button-menu li:nth-child(2)').is(':focus'), 'Second option focussed');
+    assert.ok(document.querySelector('.recon-button-menu li:nth-child(2):focus'), 'Second option focussed');
 
     await triggerKeyEvent(buttonMenuSelector, 'keyup', ARROW_UP_KEY);
-    assert.ok($('.recon-button-menu li:nth-child(1)').is(':focus'), 'First option focussed');
+    assert.ok(document.querySelector('.recon-button-menu li:nth-child(1):focus'), 'First option focussed');
 
   });
 
