@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import presidio.output.client.model.AlertQuery;
 import presidio.output.client.model.EntityQuery;
-import presidio.output.client.model.UserQuery;
 
 import java.util.List;
 

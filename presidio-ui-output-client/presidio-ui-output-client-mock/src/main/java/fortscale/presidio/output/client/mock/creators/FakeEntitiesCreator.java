@@ -2,8 +2,6 @@ package fortscale.presidio.output.client.mock.creators;
 
 import presidio.output.client.model.EntitiesWrapper;
 import presidio.output.client.model.Entity;
-import presidio.output.client.model.User;
-import presidio.output.client.model.UsersWrapper;
 
 public class FakeEntitiesCreator {
 
