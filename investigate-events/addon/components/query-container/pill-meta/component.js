@@ -10,13 +10,14 @@ import {
   POWER_SELECT_INPUT,
   POWER_SELECT_TRIGGER_INPUT
 } from 'investigate-events/constants/pill';
-import {
+import KEY_MAP, {
   isArrowDown,
   isArrowLeft,
   isArrowRight,
   isArrowUp,
   isEnter,
   isEscape,
+  isOpenParen,
   isShiftTab,
   isSpace,
   isTab
@@ -58,6 +59,8 @@ const _dropFocus = () => {
     el.blur();
   }
 };
+
+const _isFirstChar = (event) => event && event.target && event.target.value === '';
 
 const AFTER_OPTIONS_COMPONENT = 'query-container/power-select-after-options';
 
@@ -207,6 +210,17 @@ export default Component.extend({
       [MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT]: () => this._afterOptionsMenu.clearHighlight(),
       [MESSAGE_TYPES.AFTER_OPTIONS_TAB_CLICKED]: () => this._afterOptionsTabToggle()
     });
+    this.set('_keyDownHandlerMap', {
+      [KEY_MAP.arrowDown.key]: (powerSelectAPI, event) => this._navigationHandler(powerSelectAPI, event),
+      [KEY_MAP.arrowLeft.key]: (powerSelectAPI, event) => this._navigationHandler(powerSelectAPI, event),
+      [KEY_MAP.arrowRight.key]: (powerSelectAPI, event) => this._navigationHandler(powerSelectAPI, event),
+      [KEY_MAP.arrowUp.key]: (powerSelectAPI, event) => this._navigationHandler(powerSelectAPI, event),
+      [KEY_MAP.enter.key]: (powerSelectAPI, event) => this._commandHandler(powerSelectAPI, event),
+      [KEY_MAP.escape.key]: (powerSelectAPI, event) => this._commandHandler(powerSelectAPI, event),
+      [KEY_MAP.openParen.key]: (powerSelectAPI, event) => this._groupingHandler(powerSelectAPI, event),
+      [KEY_MAP.space.key]: (powerSelectAPI, event) => this._keyHandler(powerSelectAPI, event),
+      [KEY_MAP.tab.key]: (powerSelectAPI, event) => this._navigationHandler(powerSelectAPI, event)
+    });
     // _debugContainerKey is a private Ember property that returns the full
     // component name (component:query-container/pill-meta).
     const [ , source ] = this._debugContainerKey.split('/');
@@ -331,138 +345,8 @@ export default Component.extend({
      * @private
      */
     onKeyDown(powerSelectAPI, event) {
-      // if the key pressed is an escape, then bubble that out and
-      // escape further processing
-      if (isEscape(event)) {
-        // If there is some half formed meta typed in, clean-up, as
-        // just setting selectedMeta to null doesn't clear that out in pill-meta.
-        if (!this.get('selection')) {
-          this._cleanupInputField();
-        }
-        // Close dropdown
-        powerSelectAPI.actions.close();
-        // If we have focus, drop it like it's hot, drop it like it's hot.
-        _dropFocus();
-        // Let others know ECS was pressed
-        this._broadcast(MESSAGE_TYPES.META_ESCAPE_KEY);
-      } else if (isSpace(event)) {
-        const { results, resultsCount, searchText } = powerSelectAPI;
-        // These conditionals return false to prevent any further handling of
-        // the keypress that brought us here. Specifically, it prevents the
-        // pill-operator from having a space at the beginning.
-        if (resultsCount === 1) {
-          this._broadcast(MESSAGE_TYPES.META_SELECTED, results[0]);
-          return false;
-        } else if (resultsCount > 1) {
-          const match = this._hasExactMatch(searchText.trim(), results);
-          if (match) {
-            this._broadcast(MESSAGE_TYPES.META_SELECTED, match);
-            return false;
-          }
-        }
-      } else if (isEnter(event)) {
-        const { selected } = powerSelectAPI;
-        const selection = this.get('selection');
-        const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
-        if (afterOptionsMenuItem) {
-          // If the user presses ENTER while the "after option" is set, the
-          // assumption is that they want to create a free-form or text filter.
-          // We check this first because it's possible to have a `selection` and
-          // a `selected` that matches the `if` case below because this code
-          // runs before power-select reacts to the key press.
-          this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
-          powerSelectAPI.actions.search('');
-          next(this, () => powerSelectAPI.actions.open());
-        } else if (selection && selected && selection === selected) {
-          // If the user presses ENTER, selecting a meta that was already
-          // selected, power-select does nothing. We want the focus to move onto
-          // the pill operator.
-          this.set('metaSelectedTimer', later(this, this._broadcast, {
-            type: MESSAGE_TYPES.META_SELECTED,
-            data: selection
-          }, 50));
-        } else {
-          next(this, () => {
-            // We need to run this check in the next runloop so EPS has time to
-            // react to the ENTER press in the first place. For example, to
-            // make a selection.
-            const selection = this.get('selection');
-            const { value } = event.target;
-            if (selection === null && !value) {
-              powerSelectAPI.actions.close();
-              _dropFocus();
-              this._broadcast(MESSAGE_TYPES.META_ENTER_KEY);
-            }
-          });
-        }
-      } else if (isArrowRight(event)) {
-        const { selected } = powerSelectAPI;
-        // Check if cursor position (selectionStart) is at the end of the
-        // string. We use the selected metaName for comparision because we only
-        // want to move forward if there's a selection.
-        if (selected && event.target.selectionStart === selected.metaName.length) {
-          next(this, () => this._broadcast(MESSAGE_TYPES.META_ARROW_RIGHT_KEY));
-        } else if (event.target.selectionStart === 0) {
-          // If there is no selection, we use this event to propogate up to
-          // query-pills so that, if applicable, focus can be moved to the
-          // pill on the right
-          next(this, () => this._broadcast(MESSAGE_TYPES.META_ARROW_RIGHT_KEY_WITH_NO_SELECTION));
-        }
-      } else if (isArrowLeft(event) && event.target.selectionStart === 0) {
-        // Move to the left of this pill
-        next(this, () => {
-          this._broadcast(MESSAGE_TYPES.META_ARROW_LEFT_KEY);
-          // If you press ARROW_LEFT from the rightmost empty pill, we should close
-          // the dropdown
-          // If you press ARROW_LEFT from the leftmost empty pill, the dropdown should
-          // remain open
-          if (!this.get('isFirstPill')) {
-            powerSelectAPI.actions.close();
-          }
-        });
-      } else if (isArrowDown(event)) {
-        const { highlighted, results } = powerSelectAPI;
-        const lastItem = results[results.length - 1];
-        if (event.ctrlKey || event.metaKey || highlighted === lastItem) {
-          // CTRL/META was pressed or at bottom of meta list
-          // Jump to advanced options
-          powerSelectAPI.actions.highlight(null);
-          this._afterOptionsMenu.highlightNextIndex();
-          return false;
-        } else if (this._afterOptionsMenu.highlightedIndex !== -1) {
-          // In after options, move to next item
-          this._afterOptionsMenu.highlightNextIndex();
-          return false;
-        }
-      } else if (isArrowUp(event)) {
-        if (this._afterOptionsMenu.highlightedIndex > 0) {
-          // In after options, move to previous item
-          this._afterOptionsMenu.highlightPreviousIndex();
-          return false;
-        } else if (this._afterOptionsMenu.highlightedIndex === 0 && powerSelectAPI.resultsCount > 0) {
-          // At top of advanced options, move back to meta
-          const { actions, results } = powerSelectAPI;
-          const lastItem = results[results.length - 1];
-          this._afterOptionsMenu.clearHighlight();
-          actions.scrollTo(lastItem);
-          actions.highlight(lastItem);
-          return false;
-        } else if (this._afterOptionsMenu.highlightedIndex === 0 && powerSelectAPI.resultsCount === 0) {
-          // At top of after options, but there are no options to highlight in
-          // the meta list, so do nothing.
-          return false;
-        }
-      } else if (isTab(event) || isShiftTab(event)) {
-        // Won't toggle once a pill is created.
-        if (!this.get('isEditing')) {
-          event.preventDefault();
-          // For now we have just 2 options, so can toggle.
-          // Will need to make  a informed decision once more tabs
-          // are added.
-          this._afterOptionsTabToggle();
-          return false;
-        }
-      }
+      const fn = this._keyDownHandlerMap[event.key];
+      return fn ? fn(powerSelectAPI, event) : true;
     },
 
     onOptionMouseDown() {
@@ -482,6 +366,184 @@ export default Component.extend({
   // ************************************************************************ //
   //                          PRIVATE FUNCTIONS                               //
   // ************************************************************************ //
+  /**
+   * Handle keys that perform some sort of action like executing a query or
+   * canceling out of an edit.
+   * @return {boolean} Should further processing by EPS continue?
+   * @private
+   */
+  _commandHandler(powerSelectAPI, event) {
+    if (isEscape(event)) {
+      // If there is some half formed meta typed in, clean-up, as
+      // just setting selectedMeta to null doesn't clear that out in pill-meta.
+      if (!this.get('selection')) {
+        this._cleanupInputField();
+      }
+      // Close dropdown
+      powerSelectAPI.actions.close();
+      // If we have focus, drop it like it's hot, drop it like it's hot.
+      _dropFocus();
+      // Let others know ECS was pressed
+      this._broadcast(MESSAGE_TYPES.META_ESCAPE_KEY);
+    } else if (isEnter(event)) {
+      const { selected } = powerSelectAPI;
+      const selection = this.get('selection');
+      const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
+      if (afterOptionsMenuItem) {
+        // If the user presses ENTER while the "after option" is set, the
+        // assumption is that they want to create a free-form or text filter.
+        // We check this first because it's possible to have a `selection` and
+        // a `selected` that matches the `if` case below because this code
+        // runs before power-select reacts to the key press.
+        this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
+        powerSelectAPI.actions.search('');
+        next(this, () => powerSelectAPI.actions.open());
+      } else if (selection && selected && selection === selected) {
+        // If the user presses ENTER, selecting a meta that was already
+        // selected, power-select does nothing. We want the focus to move onto
+        // the pill operator.
+        this.set('metaSelectedTimer', later(this, this._broadcast, {
+          type: MESSAGE_TYPES.META_SELECTED,
+          data: selection
+        }, 50));
+      } else {
+        next(this, () => {
+          // We need to run this check in the next runloop so EPS has time to
+          // react to the ENTER press in the first place. For example, to
+          // make a selection.
+          const selection = this.get('selection');
+          const { value } = event.target;
+          if (selection === null && !value) {
+            powerSelectAPI.actions.close();
+            _dropFocus();
+            this._broadcast(MESSAGE_TYPES.META_ENTER_KEY);
+          }
+        });
+      }
+    }
+    return true;
+  },
+
+  /**
+   * Handle keys that need attention, but don't fall into a category that would
+   * be handled by one of the other "handler" functions.
+   * @return {boolean} Should further processing by EPS continue?
+   * @private
+   */
+  _keyHandler(powerSelectAPI, event) {
+    if (isSpace(event)) {
+      const { results, resultsCount, searchText } = powerSelectAPI;
+      // These conditionals return false to prevent any further handling of
+      // the keypress that brought us here. Specifically, it prevents the
+      // pill-operator from having a space at the beginning.
+      if (resultsCount === 1) {
+        this._broadcast(MESSAGE_TYPES.META_SELECTED, results[0]);
+        return false;
+      } else if (resultsCount > 1) {
+        if (_isFirstChar(event)) {
+          // ignore a leading space
+          return false;
+        }
+        const match = this._hasExactMatch(searchText.trim(), results);
+        if (match) {
+          this._broadcast(MESSAGE_TYPES.META_SELECTED, match);
+          return false;
+        }
+      }
+    }
+    return true;
+  },
+
+  /**
+   * Handle keys that would group things.
+   * @return {boolean} Should further processing by EPS continue?
+   * @private
+   */
+  _groupingHandler(powerSelectAPI, event) {
+    if (isOpenParen(event) && _isFirstChar(event)) {
+      // ignore for now
+      return false;
+    }
+    return true;
+  },
+
+  /**
+   * Handle keys that are used for moving focus around the application.
+   * @return {boolean} Should further processing by EPS continue?
+   * @private
+   */
+  _navigationHandler(powerSelectAPI, event) {
+    if (isArrowRight(event)) {
+      const { selected } = powerSelectAPI;
+      // Check if cursor position (selectionStart) is at the end of the
+      // string. We use the selected metaName for comparision because we only
+      // want to move forward if there's a selection.
+      if (selected && event.target.selectionStart === selected.metaName.length) {
+        next(this, () => this._broadcast(MESSAGE_TYPES.META_ARROW_RIGHT_KEY));
+      } else if (event.target.selectionStart === 0) {
+        // If there is no selection, we use this event to propogate up to
+        // query-pills so that, if applicable, focus can be moved to the
+        // pill on the right
+        next(this, () => this._broadcast(MESSAGE_TYPES.META_ARROW_RIGHT_KEY_WITH_NO_SELECTION));
+      }
+    } else if (isArrowLeft(event) && event.target.selectionStart === 0) {
+      // Move to the left of this pill
+      next(this, () => {
+        this._broadcast(MESSAGE_TYPES.META_ARROW_LEFT_KEY);
+        // If you press ARROW_LEFT from the rightmost empty pill, we should close
+        // the dropdown
+        // If you press ARROW_LEFT from the leftmost empty pill, the dropdown should
+        // remain open
+        if (!this.get('isFirstPill')) {
+          powerSelectAPI.actions.close();
+        }
+      });
+    } else if (isArrowDown(event)) {
+      const { highlighted, results } = powerSelectAPI;
+      const lastItem = results[results.length - 1];
+      if (event.ctrlKey || event.metaKey || highlighted === lastItem) {
+        // CTRL/META was pressed or at bottom of meta list
+        // Jump to advanced options
+        powerSelectAPI.actions.highlight(null);
+        this._afterOptionsMenu.highlightNextIndex();
+        return false;
+      } else if (this._afterOptionsMenu.highlightedIndex !== -1) {
+        // In after options, move to next item
+        this._afterOptionsMenu.highlightNextIndex();
+        return false;
+      }
+    } else if (isArrowUp(event)) {
+      if (this._afterOptionsMenu.highlightedIndex > 0) {
+        // In after options, move to previous item
+        this._afterOptionsMenu.highlightPreviousIndex();
+        return false;
+      } else if (this._afterOptionsMenu.highlightedIndex === 0 && powerSelectAPI.resultsCount > 0) {
+        // At top of advanced options, move back to meta
+        const { actions, results } = powerSelectAPI;
+        const lastItem = results[results.length - 1];
+        this._afterOptionsMenu.clearHighlight();
+        actions.scrollTo(lastItem);
+        actions.highlight(lastItem);
+        return false;
+      } else if (this._afterOptionsMenu.highlightedIndex === 0 && powerSelectAPI.resultsCount === 0) {
+        // At top of after options, but there are no options to highlight in
+        // the meta list, so do nothing.
+        return false;
+      }
+    } else if (isTab(event) || isShiftTab(event)) {
+      // Won't toggle once a pill is created.
+      if (!this.get('isEditing')) {
+        event.preventDefault();
+        // For now we have just 2 options, so can toggle.
+        // Will need to make  a informed decision once more tabs
+        // are added.
+        this._afterOptionsTabToggle();
+        return false;
+      }
+    }
+    return true;
+  },
+
   /**
    * Active tab was toggled.
    */

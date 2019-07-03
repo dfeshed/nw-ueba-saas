@@ -10,12 +10,13 @@ const keyMap = {
   arrowRight: { code: 39, key: 'ArrowRight' },
   arrowUp: { code: 38, key: 'ArrowUp' },
   backspace: { code: 8, key: 'Backspace' },
+  delete: { code: 46, key: 'Delete' },
   enter: { code: 13, key: 'Enter' },
   escape: { code: 27, key: 'Escape' },
+  openParen: { code: 57, key: '(' },
+  shift: { code: 16, key: 'Shift' },
   space: { code: 32, key: ' ' },
-  tab: { code: 9, key: 'Tab' },
-  delete: { code: 46, key: 'Delete' },
-  shift: { code: 16, key: 'Shift' }
+  tab: { code: 9, key: 'Tab' }
 };
 
 /**
@@ -44,6 +45,7 @@ const matchesSpace = _.partial(matches, keyMap.space);
 const matchesTab = _.partial(matches, keyMap.tab);
 const matchesDelete = _.partial(matches, keyMap.delete);
 const matchesShift = _.partial(matches, keyMap.shift);
+const matchesOpenParen = _.partial(matches, keyMap.openParen);
 
 /**
  * Is the event from a down arrow keyboard event?
@@ -129,5 +131,12 @@ export const isTab = (event) => matchesTab(event.keyCode);
  * @public
  */
 export const isShiftTab = (event) => matchesTab(event.keyCode) && event.shiftKey;
+/**
+ * Is the event from shit + 9?
+ * @param {Object} event A KeyboardEvent.
+ * @return A Boolean value.
+ * @public
+ */
+export const isOpenParen = (event) => matchesOpenParen(event.keyCode) && event.shiftKey;
 
 export default keyMap;
