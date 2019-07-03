@@ -1,7 +1,7 @@
 package presidio.input.pre.processing.application;
 
-import fortscale.domain.lastoccurrenceinstant.LastOccurrenceInstantStoreConfiguration;
 import fortscale.domain.lastoccurrenceinstant.LastOccurrenceInstantWriter;
+import fortscale.domain.lastoccurrenceinstant.LastOccurrenceInstantWriterConfiguration;
 import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +13,7 @@ import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 @Configuration
-@Import({PresidioInputPersistencyServiceConfig.class, LastOccurrenceInstantStoreConfiguration.class})
+@Import({PresidioInputPersistencyServiceConfig.class, LastOccurrenceInstantWriterConfiguration.class})
 public class LastOccurrenceInstantPreProcessorConfiguration {
     private final PresidioInputPersistencyService presidioInputPersistencyService;
     private final int rawEventsPageSize;

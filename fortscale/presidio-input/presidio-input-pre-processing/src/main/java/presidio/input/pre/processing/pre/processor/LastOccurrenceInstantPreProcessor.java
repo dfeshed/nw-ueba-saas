@@ -53,5 +53,7 @@ public class LastOccurrenceInstantPreProcessor extends PreProcessor<LastOccurren
                 }
             }
         }
+
+        lastOccurrenceInstantWriter.close();
     }
 }
