@@ -2,7 +2,7 @@ import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/compone
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
-
+import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 import { getColumns, validEventSortColumns } from 'investigate-events/reducers/investigate/data-selectors';
 import { hasMinimumCoreServicesVersionForColumnSorting } from 'investigate-events/reducers/investigate/services/selectors';
 import {
@@ -13,6 +13,7 @@ import {
   selectedIndex,
   dataCount,
   areAllEventsSelected,
+  clientSortedData,
   SORT_ORDER
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
@@ -26,7 +27,7 @@ import {
 import { setVisibleColumns } from 'investigate-events/actions/data-creators';
 
 const stateToComputed = (state) => {
-  const { columns, notIndexedAtValue, notSingleton, notValid } = validEventSortColumns(state);
+  const { columns = [], notIndexedAtValue, notSingleton, notValid } = validEventSortColumns(state);
   return {
     eventTableFormattingOpts: eventTableFormattingOpts(state),
     areEventsStreaming: areEventsStreaming(state),
@@ -36,7 +37,7 @@ const stateToComputed = (state) => {
     areAllEventsSelected: areAllEventsSelected(state),
     selectedEventIds: state.investigate.eventResults.selectedEventIds,
     selectedIndex: selectedIndex(state),
-    items: state.investigate.eventResults.data,
+    items: clientSortedData(state),
     itemsCount: dataCount(state),
     aliases: state.investigate.dictionaries.aliases,
     language: state.investigate.dictionaries.language,
@@ -55,8 +56,9 @@ const stateToComputed = (state) => {
     notIndexedAtValue,
     notSingleton,
     notValid,
-    canSort: hasMinimumCoreServicesVersionForColumnSorting(state),
-    hadTextPill: hadTextPill(state)
+    hasMinimumCoreServicesVersionForColumnSorting: hasMinimumCoreServicesVersionForColumnSorting(state),
+    hadTextPill: hadTextPill(state),
+    isAtThreshold: resultCountAtThreshold(state)
   };
 };
 

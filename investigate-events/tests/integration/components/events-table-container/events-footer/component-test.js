@@ -46,6 +46,18 @@ module('Integration | Component | events-footer', function(hooks) {
     );
   });
 
+  test('it renders sorting message when there are results', async function(assert) {
+    assert.expect(1);
+    new ReduxDataHelper(setState)
+      .querySorting()
+      .build();
+
+    await render(hbs`
+      {{events-table-container/events-footer}}
+    `);
+    assert.equal(findAll('.rsa-data-table-load-more .client-event-sorting').length, 1, 'event footer present');
+  });
+
   test('it does not render a canceled message when there are no results loaded', async function(assert) {
     assert.expect(2);
     new ReduxDataHelper(setState)

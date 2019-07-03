@@ -95,6 +95,7 @@
     "flexi": "2.0.1",
     "fs-extra": "4.0.2",
     "highlightjs": "9.8.0",
+    "ip-address": "5.9.2",
     "javascript-detect-element-resize": "file:javascript-detect-element-resize",
     "jquery": "3.1.1",
     "liquid-fire": "0.30.0",

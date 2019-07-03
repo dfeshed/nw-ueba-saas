@@ -239,13 +239,10 @@ export default Route.extend({
       const queryParams = {
         eid: sessionId,
         rs: reconSize,
-        mps: META_PANEL_SIZES.MIN
+        mps: META_PANEL_SIZES.MIN,
+        sortField,
+        sortDir: sortDirection
       };
-
-      if (hasMinimumCoreServicesVersionForColumnSorting(state)) {
-        queryParams.sortField = sortField;
-        queryParams.sortDir = sortDirection;
-      }
 
       this.transitionTo({ queryParams });
     },

@@ -14,6 +14,10 @@
   <span class="not-valid">
     {{t 'investigate.sortTooltips.notValid'}}
   </span>
+{{else if (eq status 'streaming')}}
+  <span class="is-streaming">
+    {{t 'investigate.sortTooltips.isStreaming'}}
+  </span>
 {{else}}
   <span class="composed">
     {{t 'investigate.sortTooltips.composed'}}

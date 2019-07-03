@@ -37,36 +37,34 @@
         </label>
       {{else}}
         <h2 class="title" title="{{if column.title column.title names.bothNames}}">
-          {{#if (and column.field sortableColumns canSort)}}
-            {{#if (contains column.field sortableColumns)}}
-              {{#if (eq sortField column.field)}}
-                {{#if (eq sortDirection 'Ascending')}}
-                  <span class="sort-indicator active" {{action 'toggleSort' column.field}}>
-                    {{rsa-icon name="arrow-up-7" size="small"}}
-                  </span>
-                {{else}}
-                  <span class="sort-indicator active" {{action 'toggleSort' column.field}}>
-                    {{rsa-icon name="arrow-down-7" size="small"}}
-                  </span>
-                {{/if}}
-              {{else}}
-                <span class="sort-indicator" {{action 'toggleSort' column.field}}>
-                  {{rsa-icon name="arrow-up-7" size="small"}}
-                </span>
-              {{/if}}
-              <span class="js-move-handle">
+          {{#if (or (eq status 'streaming') (eq column.field 'custom.meta-summary'))}}
+            {{#rsa-content-tethered-panel-trigger panel=(concat 'columnSortTooltip' column.displayIndex)}}
+              <span class="js-move-handle disabled-sort">
                 {{if column.title column.title names.displayName}}
               </span>
-            {{else}}
-              {{#rsa-content-tethered-panel-trigger panel=(concat 'columnSortTooltip' column.displayIndex)}}
-                <span class="js-move-handle">
-                  {{if column.title column.title names.displayName}}
+            {{/rsa-content-tethered-panel-trigger}}
+          {{else if (contains column.field sortableColumns)}}
+            {{#if (eq sortField column.field)}}
+              {{#if (eq sortDirection 'Ascending')}}
+                <span class="sort-indicator active" {{action 'toggleSort' column.field}}>
+                  {{rsa-icon name="arrow-up-7" size="small"}}
                 </span>
-              {{/rsa-content-tethered-panel-trigger}}
+              {{else}}
+                <span class="sort-indicator active" {{action 'toggleSort' column.field}}>
+                  {{rsa-icon name="arrow-down-7" size="small"}}
+                </span>
+              {{/if}}
+            {{else}}
+              <span class="sort-indicator" {{action 'toggleSort' column.field}}>
+                {{rsa-icon name="arrow-up-7" size="small"}}
+              </span>
             {{/if}}
+            <span class="js-move-handle">
+              {{if column.title column.title names.displayName}}
+            </span>
           {{else}}
             {{#rsa-content-tethered-panel-trigger panel=(concat 'columnSortTooltip' column.displayIndex)}}
-              <span class="js-move-handle">
+              <span class="js-move-handle disabled-sort">
                 {{if column.title column.title names.displayName}}
               </span>
             {{/rsa-content-tethered-panel-trigger}}
@@ -75,8 +73,9 @@
           {{#rsa-content-tethered-panel displayCloseButton=false position='top' panelId=(concat 'columnSortTooltip' column.displayIndex)}}
             <section>
               {{events-table-container/events-table/sort-tooltip
+                status=status
                 field=column.field
-                disableSort=(not canSort)
+                disableSort=(not hasMinimumCoreServicesVersionForColumnSorting)
                 notIndexedAtValue=notIndexedAtValue
                 notSingleton=notSingleton
                 notValid=notValid

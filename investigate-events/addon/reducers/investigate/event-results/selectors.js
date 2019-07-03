@@ -1,14 +1,18 @@
 import reselect from 'reselect';
 import { lookup } from 'ember-dependency-lookup';
+import Immutable from 'seamless-immutable';
 import { EVENT_TYPES } from 'component-lib/constants/event-types';
 import { EVENT_DOWNLOAD_TYPES, FILE_TYPES } from 'component-lib/constants/event-download-types';
+import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 import formatUtil from 'investigate-events/components/events-table-container/row-container/format-util';
-
+import sort from 'fast-sort';
+import { hasMinimumCoreServicesVersionForColumnSorting } from 'investigate-events/reducers/investigate/services/selectors';
 const { createSelector } = reselect;
 
 const DEFAULT_WIDTH = 100;
 
 // ACCESSOR FUNCTIONS
+const _languages = (state) => state.investigate.dictionaries.language;
 const _columnGroups = (state) => state.investigate.data.columnGroups;
 const _columnGroup = (state) => state.investigate.data.columnGroup;
 const _resultsData = (state) => state.investigate.eventResults.data;
@@ -27,6 +31,9 @@ const _timeZone = (state) => state.investigate.data.globalPreferences && state.i
 const _locale = (state) => state.investigate.data.globalPreferences && state.investigate.data.globalPreferences.locale;
 const _searchTerm = (state) => state.investigate.eventResults.searchTerm;
 const _searchScrollIndex = (state) => state.investigate.eventResults.searchScrollIndex;
+
+const _sortField = (state) => state.investigate.data.sortField;
+const _sortDirection = (state) => state.investigate.data.sortDirection;
 
 export const SORT_ORDER = {
   DESC: 'Descending',
@@ -437,3 +444,70 @@ const _getIdsForEventType = (eventDownloadType, selectedEventIdsArray, resultsDa
   });
   return ids;
 };
+
+export const requireServiceSorting = createSelector([
+  resultCountAtThreshold,
+  hasMinimumCoreServicesVersionForColumnSorting
+], (
+  resultCountAtThreshold,
+  hasMinimumCoreServicesVersionForColumnSorting
+) => {
+  return resultCountAtThreshold && hasMinimumCoreServicesVersionForColumnSorting;
+});
+
+export const clientSortedData = createSelector(
+  [
+    _resultsData,
+    _sortField,
+    _sortDirection,
+    _languages,
+    eventTableFormattingOpts,
+    requireServiceSorting
+  ],
+  (
+    data,
+    sortField,
+    sortDirection,
+    languages,
+    opts,
+    requireServiceSorting
+  ) => {
+    if (requireServiceSorting || !data) {
+      // client not responsible for sorting
+      // return data as is
+      return data;
+    } else {
+      const metaObj = languages.findBy('metaName', sortField);
+      let cachedData = data.map((event) => {
+        const eventCopy = { ...event };
+        let toSort;
+        if (metaObj && metaObj.format === 'IPv4') {
+          // convert ipv4 to 32bit integer
+          // small enough for js to handle
+          toSort = event[sortField].split('.').reduce((ipInt, octet) => (ipInt << 8) + parseInt(octet, 10), 0);
+        } else if (metaObj && metaObj.format === 'IPv6') {
+          // convert ipv6 to BigInteger
+          // to big for js to handle as standard int
+          const { Address6 } = window;
+          const ipv6Addy = new Address6(event[sortField]);
+          toSort = ipv6Addy.bigInteger();
+        } else if (sortField === 'medium' && event['nwe.callback_id']) {
+          // ensure we sort by displayed label for Endpoints
+          toSort = opts.i18n[sortField].endpoint.string;
+        } else if (sortField === 'time') {
+          // already an int, no need to translate
+          toSort = event[sortField];
+        } else {
+          // look up translated aliases
+          toSort = formatUtil.text(sortField, event[sortField], opts);
+        }
+
+        eventCopy.toSort = toSort;
+        return eventCopy;
+      });
+      cachedData = Immutable.asMutable(cachedData);
+      const sortMethod = sortDirection === 'Ascending' ? 'asc' : 'desc';
+      return sort(cachedData)[sortMethod]((e) => e.toSort);
+    }
+  }
+);

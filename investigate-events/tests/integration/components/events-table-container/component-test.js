@@ -196,6 +196,7 @@ module('Integration | Component | events-table-container', function(hooks) {
       .eventsPreferencesConfig()
       .eventTimeSortOrder()
       .selectedEventIds({})
+      .language()
       .eventResults([])
       .build();
 
@@ -212,6 +213,7 @@ module('Integration | Component | events-table-container', function(hooks) {
       .eventsPreferencesConfig()
       .eventTimeSortOrder()
       .selectedEventIds({})
+      .language()
       .eventResults(['something'])
       .build();
 
@@ -226,6 +228,7 @@ module('Integration | Component | events-table-container', function(hooks) {
       .getColumns('SUMMARY', EventColumnGroups)
       .isEventResultsError(false)
       .eventsPreferencesConfig()
+      .language()
       .defaultEventAnalysisPreferences()
       .eventResults(eventResultsData)
       .build();
@@ -246,6 +249,7 @@ module('Integration | Component | events-table-container', function(hooks) {
       .getColumns('SUMMARY', EventColumnGroups)
       .isEventResultsError(false)
       .eventsPreferencesConfig()
+      .language()
       .defaultEventAnalysisPreferences()
       .eventResults(eventResultsData)
       .build();
@@ -268,6 +272,7 @@ module('Integration | Component | events-table-container', function(hooks) {
       .eventsPreferencesConfig()
       .eventTimeSortOrder()
       .selectedEventIds({})
+      .language()
       .eventResultsStatus('streaming')
       .eventResults([])
       .build();
@@ -283,6 +288,7 @@ module('Integration | Component | events-table-container', function(hooks) {
       .eventsPreferencesConfig()
       .eventTimeSortOrder()
       .selectedEventIds({})
+      .language()
       .eventResultsStatus('complete')
       .eventResults([])
       .build();

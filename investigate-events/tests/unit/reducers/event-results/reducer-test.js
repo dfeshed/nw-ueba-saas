@@ -29,6 +29,38 @@ test('Should update seach term', function(assert) {
   assert.deepEqual(newEndState.searchTerm, 'foo');
 });
 
+test('Should handle SORT_IN_CLIENT_COMPLETE', function(assert) {
+  const previous = Immutable.from({
+    status: 'sorting',
+    data: [],
+    cachedData: [{}]
+  });
+
+  const action = {
+    type: ACTION_TYPES.SORT_IN_CLIENT_COMPLETE
+  };
+  const newEndState = reducer(previous, action);
+  assert.equal(newEndState.status, 'complete');
+  assert.equal(newEndState.data.length, 1);
+  assert.equal(newEndState.cachedData, null);
+});
+
+test('Should handle SORT_IN_CLIENT_BEGIN', function(assert) {
+  const previous = Immutable.from({
+    status: null,
+    data: [{}],
+    cachedData: null
+  });
+
+  const action = {
+    type: ACTION_TYPES.SORT_IN_CLIENT_BEGIN
+  };
+  const newEndState = reducer(previous, action);
+  assert.equal(newEndState.status, 'sorting');
+  assert.equal(newEndState.data.length, 0);
+  assert.equal(newEndState.cachedData.length, 1);
+});
+
 test('Should update searchScrollIndex', function(assert) {
   const previous = Immutable.from({
     searchScrollIndex: null

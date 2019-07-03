@@ -480,13 +480,15 @@ export default {
     },
     sortTooltips: {
       disableSort: 'Sorting is disabled because your environment requires an update to support sorting.',
-      notIndexedAtValue: 'This column is not sortable because it is not indexed by value.',
-      notSingleton: 'This column is not sortable because it has multiple values.',
-      notValid: 'This column is not sortable because it has multiple unindexed values.',
-      composed: 'This column is not sortable because it is composed of multiple fields.'
+      isStreaming: 'Sorting is disabled because results are still streaming in.',
+      notIndexedAtValue: 'This column is not sortable because the number of events loaded is at threshold, a call to the database must be made, and this data is not indexed by value.',
+      notSingleton: 'This column is not sortable because the number of events loaded is at threshold, a call to the database must be made, and this data has multiple values.',
+      notValid: 'This column is not sortable because the number of events loaded is at threshold, a call to the database must be made, and this data has multiple unindexed values.',
+      composed: 'This column is not sortable because this data is composed of multiple fields.'
     },
     title: 'Investigate',
     loading: 'Loading',
+    sorting: 'Events are being re-sorted.',
     reExecutingQuery: 'Query is being re-executed to fetch new data.',
     loadMore: 'Load More',
     allLoaded: 'All results for this query have been loaded',
@@ -546,7 +548,7 @@ export default {
       eventCount: '{{current}}/{{total}} event matches',
       search: 'Find text in table',
       searchDisabled: 'Find is disabled while events load.',
-      searchDisabledWithSummary: 'Find is disabled when the summary column is included.',
+      searchDisabledWithSummary: 'Find is disabled when the Summary column is included.',
       searchMin: '2 character minimum to find text.',
       noMatches: 'No matches were found.',
       searchPlaceholder: 'Enter text to be found.',

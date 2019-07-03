@@ -1,7 +1,9 @@
 import * as ACTION_TYPES from './types';
 import moment from 'moment';
 import { lookup } from 'ember-dependency-lookup';
+import { later } from '@ember/runloop';
 
+import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 import { fetchInvestigateData, getServiceSummary, updateSort } from './data-creators';
 import { getDictionaries, queryIsRunning } from './initialization-creators';
 import { cancelEventCountStream } from './event-count-creators';
@@ -279,30 +281,55 @@ export const setQueryTimeFormat = () => {
 
 // update sort state, perform ux cleanup, and fetch updated event data
 export const setSort = (sortField, sortDirection, isQueryExecutedBySort) => {
-  return (dispatch) => {
-    // Extracts (and merges) all the preferences from redux state and sends to the backend for persisting.
-    dispatch(updateSort(sortField, sortDirection, isQueryExecutedBySort));
+  return (dispatch, getState) => {
+    // deselect events on sort, otherwise could break download order
+    dispatch({ type: ACTION_TYPES.SELECT_EVENTS, payload: [] });
     dispatch(cancelQuery(false));
     dispatch(setReconClosed());
 
     // manually update url as router is not handling this interaction
-    if (window.location.search && sortField && sortDirection) {
+    if (sortField && sortDirection) {
+      if (window.location.search) {
+        const updateParameters = {
+          sortField,
+          sortDir: sortDirection
+        };
 
-      const updateParameters = {
-        sortField,
-        sortDir: sortDirection
-      };
+        const params = updateUrl(window.location.search, updateParameters);
 
-      const params = updateUrl(window.location.search, updateParameters);
+        history.pushState(
+          null,
+          document.querySelector('title').innerHTML,
+          `${window.location.pathname}?${params}`
+        );
+      }
 
-      history.pushState(
-        null,
-        document.querySelector('title').innerHTML,
-        `${window.location.pathname}?${params}`
-      );
+      const state = getState();
+      if (hasMinimumCoreServicesVersionForColumnSorting(state) && resultCountAtThreshold(state)) {
+        // there are more events that cannot be sorted in the client
+        // query for new events already sorted
+        dispatch(updateSort(sortField, sortDirection, isQueryExecutedBySort));
+        dispatch(fetchInvestigateData());
+      } else {
+        // we have everything and can sort in the client
+        // or sorting is not supported in core because of service version
+        dispatch({ type: ACTION_TYPES.SORT_IN_CLIENT_BEGIN });
+        dispatch(updateSort(sortField, sortDirection, isQueryExecutedBySort));
+        // data is eventually sorted via selector which doesn't offer us a callback or promise to resolve
+        // add static timer to facilitate toggling between sorting and complete states
+        // if dispatched before sort is complete, it will be held up while the browser is locked up sorting
+
+        later(() => {
+          dispatch({
+            type: ACTION_TYPES.SORT_IN_CLIENT_COMPLETE,
+            payload: {
+              sortField,
+              sortDir: sortDirection
+            }
+          });
+        }, 750);
+      }
     }
-
-    dispatch(fetchInvestigateData());
   };
 };
 

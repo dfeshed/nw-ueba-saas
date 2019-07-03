@@ -57,6 +57,29 @@ module('Integration | Component | sort-tooltip', function(hooks) {
     assert.equal(findAll('section.sort-tooltip .not-indexed-at-value').length, 1);
   });
 
+  test('it renders when status is streaming', async function(assert) {
+    this.setProperties({
+      field: 'foo',
+      disableSort: false,
+      notIndexedAtValue: [],
+      notSingleton: [],
+      notValid: [],
+      status: 'streaming'
+    });
+
+    await render(hbs`
+      {{events-table-container/events-table/sort-tooltip
+        field=field
+        disableSort=disableSort
+        notIndexedAtValue=notIndexedAtValue
+        notSingleton=notSingleton
+        notValid=notValid
+        status=status
+      }}
+    `);
+    assert.equal(findAll('section.sort-tooltip .is-streaming').length, 1);
+  });
+
   test('it renders when notSingleton', async function(assert) {
     this.setProperties({
       field: 'foo',

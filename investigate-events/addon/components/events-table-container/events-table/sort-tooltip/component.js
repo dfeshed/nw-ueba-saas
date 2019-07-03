@@ -11,7 +11,8 @@ const SortTooltip = Component.extend({
   disableSort: true,
   notIndexedAtValue: [],
   notSingleton: [],
-  notValid: []
+  notValid: [],
+  status: null
 });
 
 export default SortTooltip;

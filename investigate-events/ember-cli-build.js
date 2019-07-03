@@ -12,6 +12,9 @@ module.exports = function(defaults) {
     using: [{ transformation: 'amd', as: 'fast-sort' }]
   });
 
+  app.import('node_modules/ip-address/dist/ip-address-globals.js', {
+    using: [{ transformation: 'amd', as: 'ip-address' }]
+  });
+
   return app.toTree();
 };
-

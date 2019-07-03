@@ -433,6 +433,11 @@ export default class DataHelper {
     return this;
   }
 
+  withoutMinimumCoreServicesVersionForColumnSorting() {
+    _set(this.state, 'services.serviceData', [{ id: '1', displayName: 'concentrator', version: '11.3.0' }]);
+    return this;
+  }
+
   isServicesLoading(flag) {
     _set(this.state, 'services.isServicesLoading', flag);
     return this;
@@ -678,6 +683,13 @@ export default class DataHelper {
     _set(this.state, 'eventResults.data', ['foo']);
     _set(this.state, 'eventResults.streamLimit', 100);
     _set(this.state, 'eventCount.data', 100);
+    return this;
+  }
+
+  querySorting() {
+    _set(this.state, 'eventResults.data', [{}]);
+    _set(this.state, 'eventResults.status', 'sorting');
+    _set(this.state, 'eventResults.data', []);
     return this;
   }
 

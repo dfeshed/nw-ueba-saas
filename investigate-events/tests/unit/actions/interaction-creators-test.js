@@ -79,6 +79,85 @@ module('Unit | Actions | interaction creators', function(hooks) {
     actionsByType = {};
   });
 
+  test('setSort dispatches three times without sort args', function(assert) {
+    assert.expect(3);
+    const getState = () => {
+      return new ReduxDataHelper().hasSummaryData(true).eventCount(1).eventThreshold(1).build();
+    };
+    const myDispatch = () => assert.ok(true);
+    const thunk = interactionCreators.setSort();
+    thunk(myDispatch, getState);
+  });
+
+  test('setSort dispatches five times when hasMinimumCoreServicesVersionForColumnSorting and resultCountAtThreshold', function(assert) {
+    assert.expect(5);
+    const getState = () => {
+      return new ReduxDataHelper().hasSummaryData(true).eventCount(1).eventThreshold(1).build();
+    };
+    const myDispatch = (action) => {
+
+      if (action && action.type === 'INVESTIGATE_EVENTS::UPDATE_SORT' && action.sortField === 'time' && action.sortDirection === 'Ascending') {
+        return assert.ok(true);
+      } else if (action && action.type === 'INVESTIGATE_EVENTS::SELECT_EVENTS' && action.payload.length === 0) {
+        return assert.ok(true);
+      } else if (typeof action === 'function') {
+        return assert.ok(true);
+      } else {
+        return assert.ok(false);
+      }
+    };
+    const thunk = interactionCreators.setSort('time', 'Ascending');
+    thunk(myDispatch, getState);
+  });
+
+  test('setSort dispatches six times when not hasMinimumCoreServicesVersionForColumnSorting', function(assert) {
+    assert.expect(6);
+    const getState = () => {
+      return new ReduxDataHelper().hasSummaryData(true).withoutMinimumCoreServicesVersionForColumnSorting().eventCount(1).eventThreshold(1).build();
+    };
+    const myDispatch = (action) => {
+      if (action && action.type === 'INVESTIGATE_EVENTS::UPDATE_SORT' && action.sortField === 'time' && action.sortDirection === 'Ascending') {
+        return assert.ok(true);
+      } else if (action && action.type === 'INVESTIGATE_EVENTS::SELECT_EVENTS' && action.payload.length === 0) {
+        return assert.ok(true);
+      } else if (action.type === 'INVESTIGATE_EVENTS::SORT_IN_CLIENT_BEGIN') {
+        return assert.ok(true);
+      } else if (action.type === 'INVESTIGATE_EVENTS::SORT_IN_CLIENT_COMPLETE') {
+        return assert.ok(true);
+      } else if (typeof action === 'function') {
+        return assert.ok(true);
+      } else {
+        return assert.ok(false);
+      }
+    };
+    const thunk = interactionCreators.setSort('time', 'Ascending');
+    thunk(myDispatch, getState);
+  });
+
+  test('setSort dispatches six times when not resultCountAtThreshold', function(assert) {
+    assert.expect(6);
+    const getState = () => {
+      return new ReduxDataHelper().hasSummaryData(true).eventCount(1).eventThreshold(2).build();
+    };
+    const myDispatch = (action) => {
+      if (action && action.type === 'INVESTIGATE_EVENTS::UPDATE_SORT' && action.sortField === 'time' && action.sortDirection === 'Ascending') {
+        return assert.ok(true);
+      } else if (action && action.type === 'INVESTIGATE_EVENTS::SELECT_EVENTS' && action.payload.length === 0) {
+        return assert.ok(true);
+      } else if (action.type === 'INVESTIGATE_EVENTS::SORT_IN_CLIENT_BEGIN') {
+        return assert.ok(true);
+      } else if (action.type === 'INVESTIGATE_EVENTS::SORT_IN_CLIENT_COMPLETE') {
+        return assert.ok(true);
+      } else if (typeof action === 'function') {
+        return assert.ok(true);
+      } else {
+        return assert.ok(false);
+      }
+    };
+    const thunk = interactionCreators.setSort('time', 'Ascending');
+    thunk(myDispatch, getState);
+  });
+
   test('setQueryView action creator returns proper type and payload', function(assert) {
     const action = interactionCreators.setQueryView('foo');
     assert.equal(action.type, ACTION_TYPES.SET_QUERY_VIEW, 'action has the correct type');

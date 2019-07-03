@@ -12,6 +12,7 @@ const _initialState = Immutable.from({
   status: undefined,
 
   data: null,
+  cachedData: null,
   reason: undefined,
   streamLimit: MAX_EVENTS_ALLOWED, // default default. In case our event-settings api returns an error
   streamBatch: 1000,
@@ -35,6 +36,23 @@ const _initialState = Immutable.from({
 // }
 
 export default handleActions({
+  [ACTION_TYPES.SORT_IN_CLIENT_COMPLETE]: (state) => {
+    const newState = state.merge({
+      data: state.cachedData,
+      status: 'complete',
+      cachedData: null
+    });
+    return newState;
+  },
+
+  [ACTION_TYPES.SORT_IN_CLIENT_BEGIN]: (state) => {
+    return state.merge({
+      status: 'sorting',
+      data: [],
+      cachedData: state.data
+    });
+  },
+
   [ACTION_TYPES.SET_SEARCH_TERM]: (state, { searchTerm, searchScrollIndex }) => {
     return state.merge({
       searchTerm,
@@ -100,6 +118,7 @@ export default handleActions({
     }
 
     const newState = state.set('data', Immutable.from(newEvents));
+
     return newState;
   },
 

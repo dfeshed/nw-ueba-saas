@@ -13,6 +13,8 @@ import fetchCount from 'investigate-shared/actions/api/events/event-count';
 import * as ACTION_TYPES from './types';
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { getFlattenedColumnList, hasMetaSummaryColumn } from 'investigate-events/reducers/investigate/data-selectors';
+import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
+import { hasMinimumCoreServicesVersionForColumnSorting } from '../reducers/investigate/services/selectors';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import {
   calculateNewStartForNextBatch,
@@ -22,8 +24,10 @@ import {
 
 const INITIAL_TIME_WINDOW_IN_SECONDS = 5 * 60;
 
-const deriveSort = (field, sortDirection) => {
-  if (field && sortDirection) {
+export const _deriveSort = (field, sortDirection, state) => {
+  const hasRequiredVersion = hasMinimumCoreServicesVersionForColumnSorting(state);
+  const atThreshold = resultCountAtThreshold(state);
+  if (atThreshold && hasRequiredVersion && field && sortDirection) {
     return {
       field,
       descending: sortDirection.toLowerCase() === SORT_ORDER.DESC.toLowerCase()
@@ -627,7 +631,7 @@ const _getEventsBatch = (batchStartTime, batchEndTime) => {
         streamBatch,
         handlers,
         currentStreamState.flattenedColumnList,
-        deriveSort(sortField, sortDirection),
+        _deriveSort(sortField, sortDirection, allState),
         'investigate-events-event-stream'
       );
 
@@ -817,7 +821,7 @@ export const eventsStartOldest = () => {
       streamBatch,
       handlers,
       currentStreamState.flattenedColumnList,
-      deriveSort(sortField, sortDirection),
+      _deriveSort(sortField, sortDirection, state),
       'investigate-events-event-stream'
     );
   };

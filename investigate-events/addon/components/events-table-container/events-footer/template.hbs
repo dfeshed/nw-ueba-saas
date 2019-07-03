@@ -10,6 +10,8 @@
         {{rsa-loader size="large" label=(t 'investigate.loading')}}
       {{/if}}
     </div>
+  {{else if (is-equal status 'sorting')}}
+    <span class="client-event-sorting">{{rsa-loader size='large' label=(t 'investigate.sorting')}}</span>
   {{else if (is-equal status 'complete')}}
     {{#if (not allExpectedDataLoaded)}}
       {{!-- do not have all the data, say so --}}

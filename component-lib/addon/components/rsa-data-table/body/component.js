@@ -68,10 +68,11 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
       return false;
     }
 
-    // if status has been passed, but is streaming, don't show noResults message
-    if (status === 'streaming') {
+    // if status has been passed, but is streaming or sorting, don't show noResults message
+    if (status === 'streaming' || status === 'sorting') {
       return false;
     }
+
     return true;
   },
 

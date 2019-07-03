@@ -27,6 +27,8 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .eventsPreferencesConfig()
       .sortableColumns()
+      .language()
+      .getColumns('SUMMARY', EventColumnGroups)
       .build();
 
     await render(hbs`
@@ -40,6 +42,8 @@ module('Integration | Component | events-table', function(hooks) {
   test('it shows context menu on right click', async function(assert) {
     new ReduxDataHelper(setState)
       .eventsPreferencesConfig()
+      .language()
+      .getColumns('SUMMARY', EventColumnGroups)
       .build();
 
     await render(hbs`
@@ -69,6 +73,8 @@ module('Integration | Component | events-table', function(hooks) {
     this.set('contextMenuService', contextMenuService);
     new ReduxDataHelper(setState)
       .eventsPreferencesConfig()
+      .language()
+      .getColumns('SUMMARY', EventColumnGroups)
       .build();
 
     await render(hbs`
@@ -91,6 +97,8 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .eventResultsStatus('between-streams')
       .eventsPreferencesConfig()
+      .getColumns('SUMMARY', EventColumnGroups)
+      .language()
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
@@ -102,6 +110,8 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .isQueryExecutedByColumnGroup()
       .eventResultsStatus('between-streams')
+      .getColumns('SUMMARY', EventColumnGroups)
+      .language()
       .eventsPreferencesConfig()
       .build();
 
@@ -113,6 +123,8 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .isQueryExecutedBySort()
       .eventResultsStatus('between-streams')
+      .getColumns('SUMMARY', EventColumnGroups)
+      .language()
       .eventsPreferencesConfig()
       .build();
 
@@ -126,6 +138,8 @@ module('Integration | Component | events-table', function(hooks) {
       .eventCount(0)
       .streamLimit(100)
       .eventResults([])
+      .language()
+      .getColumns('SUMMARY', EventColumnGroups)
       .eventsPreferencesConfig()
       .build();
 
@@ -146,6 +160,7 @@ module('Integration | Component | events-table', function(hooks) {
       .eventCount(2)
       .streamLimit(100)
       .eventsPreferencesConfig()
+      .language()
       .eventResults([{ sessionId: 'foo', time: 123 }])
       .build();
 
@@ -174,6 +189,8 @@ module('Integration | Component | events-table', function(hooks) {
       .eventCount(2)
       .streamLimit(100)
       .eventsPreferencesConfig()
+      .getColumns('SUMMARY', EventColumnGroups)
+      .language()
       .eventResults([{ sessionId: 'foo', time: 123 }])
       .build();
 
@@ -197,6 +214,8 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .eventCount(1)
       .eventsPreferencesConfig()
+      .getColumns('SUMMARY', EventColumnGroups)
+      .language()
       .eventResults([{ sessionId: 'foo', time: 123 }])
       .build();
 
@@ -214,6 +233,8 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .eventCount(2)
       .eventsPreferencesConfig()
+      .getColumns('SUMMARY', EventColumnGroups)
+      .language()
       .eventResults([{ sessionId: 'foo', time: 123 }, { sessionId: 'bar', time: 123 }])
       .build();
 
@@ -260,7 +281,26 @@ module('Integration | Component | events-table', function(hooks) {
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
+    assert.ok(find('h2[title=\'Summary\'] .disabled-sort')); // Summary should always be disabled
     assert.ok(find('.rsa-data-table-header-row div > h2 .sort-indicator.active .rsa-icon-arrow-up-7-filled'));
+  });
+
+  test('event table header has sort disabled while streaming', async function(assert) {
+    new ReduxDataHelper(setState)
+      .columnGroup('SUMMARY')
+      .hasRequiredValuesToQuery(true)
+      .eventThreshold(100000)
+      .eventsPreferencesConfig()
+      .columnGroups(EventColumnGroups)
+      .sortableColumns()
+      .eventsQuerySort('time', 'Ascending')
+      .language([{ format: 'TimeT', metaName: 'time', flags: -2147482605 }])
+      .eventCount(100000)
+      .eventResultsStatus('streaming')
+      .build();
+
+    await render(hbs`{{events-table-container/events-table}}`);
+    assert.ok(find('h2[title=\'Collection Time\'] .disabled-sort'));
   });
 
   test('event table is displayed with expected descending sort controls', async function(assert) {
@@ -328,6 +368,7 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
       .eventResults([{ sessionId: 'foo', time: 123 }, { sessionId: 'bar', time: 123 }])
+      .language()
       .eventsPreferencesConfig()
       .build();
 
@@ -344,6 +385,7 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
       .eventResults([{ sessionId: 'foo', time: 123 }, { sessionId: 'bar', time: 123 }])
+      .language()
       .eventsPreferencesConfig()
       .build();
 
@@ -359,6 +401,7 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
       .eventResults([{ sessionId: 'foo', time: 123 }, { sessionId: 'bar', time: 123 }])
+      .language()
       .eventsPreferencesConfig()
       .build();
 
@@ -373,6 +416,7 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
       .eventResults([{ sessionId: 'foo', time: 123 }, { sessionId: 'bar', time: 123 }])
+      .language()
       .eventsPreferencesConfig()
       .build();
 
@@ -390,6 +434,7 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
       .eventResults([])
+      .language()
       .eventsPreferencesConfig()
       .build();
 
@@ -405,6 +450,7 @@ module('Integration | Component | events-table', function(hooks) {
     new ReduxDataHelper(setState)
       .getColumns('SUMMARY', EventColumnGroups)
       .eventsPreferencesConfig()
+      .language()
       .eventResults([{ sessionId: 'foo', time: 123 }, { sessionId: 'bar', time: 123 }])
       .build();
 
@@ -420,6 +466,7 @@ module('Integration | Component | events-table', function(hooks) {
       .getColumns('SUMMARY', EventColumnGroups)
       .eventsPreferencesConfig()
       .eventResultsStatus('between-streams')
+      .language()
       .eventResults([{ sessionId: 'foo', time: 123 }, { sessionId: 'bar', time: 123 }])
       .build();
 
@@ -434,9 +481,11 @@ module('Integration | Component | events-table', function(hooks) {
     const textFilter = { type: 'text', searchTerm: 'limited' };
     new ReduxDataHelper(setState)
       .withPreviousQuery([textFilter])
+      .getColumns('SUMMARY', EventColumnGroups)
       .eventCount(0)
       .streamLimit(100)
       .eventResults([])
+      .language()
       .eventsPreferencesConfig()
       .build();
 

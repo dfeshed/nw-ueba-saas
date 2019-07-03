@@ -3,7 +3,8 @@ import { setupTest } from 'ember-qunit';
 
 import {
   eventsStartNewest,
-  eventsStartOldest
+  eventsStartOldest,
+  _deriveSort
 } from 'investigate-events/actions/events-creators';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import ReduxDataHelper from '../../helpers/redux-data-helper';
@@ -31,6 +32,7 @@ const getState = () => {
     .pillsDataPopulated()
     .metaFilter()
     .eventResultsStatus(status)
+    .hasRequiredValuesToQuery(true)
     .eventResults(queryResults)
     .eventCount(undefined)
     .language()
@@ -148,6 +150,59 @@ module('Unit | Actions | event-creators', function(hooks) {
     actionsByType = {};
   });
 
+  test('_deriveSort', function(assert) {
+    assert.deepEqual(_deriveSort(
+      'time',
+      'Ascending',
+      {
+        investigate: {
+          services: {
+            serviceData: [{ version: 11.4 }]
+          },
+          eventCount: {
+            data: 5,
+            threshold: 5
+          }
+        }
+      }
+    ), {
+      field: 'time',
+      descending: false
+    });
+
+    assert.notOk(_deriveSort(
+      'time',
+      'Ascending',
+      {
+        investigate: {
+          services: {
+            serviceData: [{ version: 11.3 }]
+          },
+          eventCount: {
+            data: 5,
+            threshold: 5
+          }
+        }
+      }
+    ));
+
+    assert.notOk(_deriveSort(
+      'time',
+      'Ascending',
+      {
+        investigate: {
+          services: {
+            serviceData: [{ version: 11.4 }]
+          },
+          eventCount: {
+            data: 5,
+            threshold: 4
+          }
+        }
+      }
+    ));
+  });
+
   skip('Pages way through large query properly', function(assert) {
     assert.expect(10);
     const done = assert.async();
@@ -210,6 +265,7 @@ module('Unit | Actions | event-creators', function(hooks) {
         .pillsDataPopulated()
         .metaFilter()
         .eventResultsStatus(status)
+        .hasRequiredValuesToQuery(true)
         .eventResults(queryResults)
         .eventCount(500)
         .language()

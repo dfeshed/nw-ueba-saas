@@ -17,7 +17,9 @@ import {
   searchMatchesCount,
   eventTimeSortOrder,
   searchScrollDisplay,
-  dataCount
+  dataCount,
+  clientSortedData,
+  requireServiceSorting
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -912,4 +914,302 @@ module('Unit | Selectors | event-results', function(hooks) {
     actualCount = actualEventCount(state);
     assert.equal(actualCount, 3, 'This is the eventResults.data.length value when errored');
   });
+
+  test('requireServiceSorting', async function(assert) {
+    assert.deepEqual(requireServiceSorting({
+      investigate: {
+        eventCount: {
+          data: 5,
+          threshold: 5
+        },
+        services: {
+          serviceData: [{ version: 11.4 }]
+        }
+      }
+    }), true);
+
+    assert.deepEqual(requireServiceSorting({
+      investigate: {
+        eventCount: {
+          data: 5,
+          threshold: 4
+        },
+        services: {
+          serviceData: [{ version: 11.4 }]
+        }
+      }
+    }), false);
+
+    assert.deepEqual(requireServiceSorting({
+      investigate: {
+        eventCount: {
+          data: 5,
+          threshold: 5
+        },
+        services: {
+          serviceData: [{ version: 11.3 }]
+        }
+      }
+    }), false);
+  });
+
+  test('clientSortedData when no data', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: null
+        },
+        data: {
+          sortField: 'time',
+          sortDirection: null,
+          globalPreferences: {
+          }
+        },
+        eventCount: {},
+        dictionaries: {},
+        services: {}
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.deepEqual(result, state.investigate.eventResults.data);
+  });
+
+  test('clientSortedData when data, but wrong version', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [{ foo: 'foo' }]
+        },
+        data: {
+          sortField: 'time',
+          sortDirection: null,
+          globalPreferences: {
+          }
+        },
+        eventCount: {
+          threshold: 1,
+          data: 1
+        },
+        dictionaries: {},
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.deepEqual(result, state.investigate.eventResults.data);
+  });
+
+  test('clientSortedData when IPv4', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            { foo: '0.0.0.1' },
+            { foo: '0.0.0.2' },
+            { foo: '0.0.0.3' }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Descending',
+          globalPreferences: {
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [{
+            metaName: 'foo',
+            format: 'IPv4'
+          }]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.equal(result[0].foo, state.investigate.eventResults.data[2].foo);
+    assert.equal(result[1].foo, state.investigate.eventResults.data[1].foo);
+    assert.equal(result[2].foo, state.investigate.eventResults.data[0].foo);
+  });
+
+
+  test('clientSortedData when IPv6', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            { foo: '2001:0db8:85a3:0000:0000:8a2e:0370:7331' },
+            { foo: '2001:0db8:85a3:0000:0000:8a2e:0370:7332' },
+            { foo: '2001:0db8:85a3:0000:0000:8a2e:0370:7333' }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Descending',
+          globalPreferences: {
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [{
+            metaName: 'foo',
+            format: 'IPv6'
+          }]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.equal(result[0].foo, state.investigate.eventResults.data[2].foo);
+    assert.equal(result[1].foo, state.investigate.eventResults.data[1].foo);
+    assert.equal(result[2].foo, state.investigate.eventResults.data[0].foo);
+  });
+
+  test('clientSortedData when endpoint', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            { id: 1, medium: 32, 'nwe.callback_id': true }, // resolves to endpoint
+            { id: 2, medium: 32 }, // resolves to Log
+            { id: 3, medium: 32 } // resolves to Log
+          ]
+        },
+        data: {
+          sortField: 'medium',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [{
+            metaName: 'medium'
+          }]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.equal(result[2].id, state.investigate.eventResults.data[0].id);
+  });
+
+  test('clientSortedData when time', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            { time: 1 },
+            { time: 2 },
+            { time: 3 }
+          ]
+        },
+        data: {
+          sortField: 'time',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [{
+            metaName: 'time'
+          }]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.equal(result[0].time, state.investigate.eventResults.data[2].time);
+    assert.equal(result[1].time, state.investigate.eventResults.data[1].time);
+    assert.equal(result[2].time, state.investigate.eventResults.data[0].time);
+  });
+
+  test('clientSortedData when other', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            { size: 1 },
+            { size: 2 },
+            { size: 3 }
+          ]
+        },
+        data: {
+          sortField: 'size',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [{
+            metaName: 'size'
+          }]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.equal(result[0].size, state.investigate.eventResults.data[2].size);
+    assert.equal(result[1].size, state.investigate.eventResults.data[1].size);
+    assert.equal(result[2].size, state.investigate.eventResults.data[0].size);
+  });
+
 });
