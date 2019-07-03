@@ -1,6 +1,8 @@
 from __future__ import print_function
 
 import sys
+import os
+from os.path import dirname, abspath
 
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
@@ -12,7 +14,9 @@ def readme():
 
 
 def read_requirements():
-    with open('../package/rsa-nw-presidio-airflow/scripts/requirements.txt', 'r') as requirements_file:
+    file_path = os.path.join(dirname(dirname(abspath(__file__))), 'package', 'rsa-nw-presidio-airflow', 'scripts',
+                             'requirements.txt')
+    with open(file_path, 'r') as requirements_file:
         requirements = [line.strip() for line in requirements_file]
         return requirements
 
