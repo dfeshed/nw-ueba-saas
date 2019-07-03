@@ -7,6 +7,7 @@ from os.path import dirname, abspath
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
+print("workflow-extention setup.py: " + os.path.dirname(os.path.realpath(__file__)))
 
 def readme():
     with open('README.rst') as f:
@@ -57,9 +58,6 @@ def get_build_number():
                     return ".%s" % build_number
         i += 1
     return ""
-
-
-print(os.path.dirname(os.path.realpath(__file__)))
 
 
 setup(name='presidio-workflows-extension',
