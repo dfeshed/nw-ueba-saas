@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import Confirmable from 'component-lib/mixins/confirmable';
 import { deleteRule, cloneRule, enableRules, disableRules, getRules } from 'configure/actions/creators/respond/incident-rule-creators';
 import {
+  getIncidentRules,
   hasOneSelectedRule,
   getSelectedIncidentRules,
   isNoneSelected,
@@ -17,12 +18,12 @@ import { success, failure } from 'configure/sagas/flash-messages';
 import { later } from '@ember/runloop';
 
 let contentDisposition;
-const triggerDownload = (blob, isZip) => {
+const triggerDownload = (blob, downloadName) => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
   a.style.display = 'none';
-  a.download = isZip ? 'exported-rules.zip' : 'failure.json';
+  a.download = downloadName;
   document.body.appendChild(a);
   if (contentDisposition) {
     const props = contentDisposition.split(';');
@@ -38,11 +39,6 @@ const triggerDownload = (blob, isZip) => {
   later(null, () => {
     URL.revokeObjectURL(url);
   }, 10);
-  if (isZip) {
-    success('configure.incidentRules.actionMessages.exportSuccess');
-  } else {
-    failure('configure.incidentRules.actionMessages.exportFailure');
-  }
 };
 
 const fetchRules = (selRules, csrfKey) => {
@@ -60,13 +56,24 @@ const fetchRules = (selRules, csrfKey) => {
     } else {
       contentDisposition = '';
     }
-    return response.blob();
-  }).then((blob) => {
-    if (blob.type === 'application/zip') {
-      triggerDownload(blob, true);
-    } else {
-      triggerDownload(blob, false);
+    if (response.headers.get('Content-type').includes('application/zip')) {
+      return response.blob();
+    } else if (response.headers.get('Content-type').includes('application/json')) {
+      return response.json();
     }
+  }).then((data) => {
+    if (data instanceof Blob) {
+      success('configure.incidentRules.actionMessages.exportSuccess');
+      triggerDownload(data, 'exported-rules.zip');
+    } else {
+      failure('configure.incidentRules.actionMessages.exportFailure2', {
+        missing: data.missingIds.length,
+        advanced: data.advancedFilterEnabledIds.length
+      });
+      triggerDownload(new Blob([JSON.stringify(data, null, '  ')], { type: 'application/json' }), 'failure.json');
+    }
+  }, () => {
+    failure('configure.incidentRules.actionMessages.exportFailure');
   });
 };
 
@@ -97,6 +104,7 @@ const triggerUpload = (dispatch, csrfKey) => {
 };
 
 const stateToComputed = (state) => ({
+  rules: getIncidentRules(state),
   hasOneSelectedRule: hasOneSelectedRule(state),
   selectedRules: getSelectedIncidentRules(state),
   isNoneSelected: isNoneSelected(state),
@@ -124,9 +132,19 @@ const dispatchToActions = function(dispatch) {
     },
 
     export: () => {
-      const selRules = this.get('selectedRules');
       const csrfKey = this.get('csrfLocalstorageKey');
-      fetchRules(selRules, csrfKey);
+      const selRulesSet = new Set(this.get('selectedRules'));
+      const rules = this.get('rules');
+      const exportList = rules.reduce((exportRequest, rule) => {
+        if (selRulesSet.has(rule.id)) {
+          exportRequest.push({
+            id: rule.id,
+            name: rule.name
+          });
+        }
+        return exportRequest;
+      }, []);
+      fetchRules(exportList, csrfKey);
     },
 
     import: () => {

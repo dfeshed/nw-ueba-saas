@@ -4,11 +4,12 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import hbs from 'htmlbars-inline-precompile';
-import { waitUntil, click, find, render, findAll } from '@ember/test-helpers';
+import { click, find, findAll, render, waitUntil } from '@ember/test-helpers';
 import { patchSocket } from '../../../../../helpers/patch-socket';
 import { patchFlash } from '../../../../../helpers/patch-flash';
 import { patchFetch } from '../../../../../helpers/patch-fetch';
 import rules from '../../../../../data/subscriptions/incident-rules/findAll/data';
+import _ from 'lodash';
 
 const initialState = {
   rules,
@@ -125,6 +126,7 @@ module('Integration | Component | Respond Incident Rules Toolbar', function(hook
   });
 
   test('Clicking on export button downloads a file', async function(assert) {
+    assert.expect(3);
     setState({ ...initialState, selectedRules: ['59b92bbf4cb0f0092b6b6a8b'] });
     const patchedResponse = new Promise(function(resolve) {
       resolve({
@@ -138,7 +140,7 @@ module('Integration | Component | Respond Incident Rules Toolbar', function(hook
     patchFetch((url, opts) => {
       assert.equal(url, '/api/respond/rules/export');
       assert.equal(opts.method, 'POST');
-      assert.ok(opts.body.includes('59b92bbf4cb0f0092b6b6a8b'));
+      assert.ok(_.isEqual(JSON.parse(opts.body), [{ id: '59b92bbf4cb0f0092b6b6a8b', name: 'High Risk Alerts: Malware Analysis' }]));
       return patchedResponse;
     });
 

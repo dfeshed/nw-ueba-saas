@@ -964,6 +964,7 @@ export default {
         saveFailure: 'There was a problem saving the changes to the rule',
         exportSuccess: 'You successfully exported the selected rules',
         exportFailure: 'There was a problem exporting the selected rules',
+        exportFailure2: '{{missing}} rules are missing and {{advanced}} rules contain advanced filters. Please deselect these rules',
         importSuccess: 'You successfully imported the rules from the selected file',
         importFailure: 'There was a problem importing the rules from the selected file',
         duplicateNameFailure: 'There is already another rule with the same name. Please modify the rule name so that it is unique.'

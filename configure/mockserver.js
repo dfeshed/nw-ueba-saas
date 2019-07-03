@@ -9,7 +9,24 @@ require('mock-server').startServer({
       path: '/api/respond/rules/export',
       method: 'post',
       response: (req, res) => {
-        res.download('tests/data/routes/export/dummy-success.zip', 'foobar.zip');
+        let type = 3;
+        switch (type) {
+          case 1:
+            // INTERNAL SERVER ERROR
+            res.status(500).send();
+            break;
+          case 2:
+            // BAD REQUEST
+            res.status(200).json({
+              missingIds: ['missing-1', 'missing-2'],
+              advancedFilterEnabledIds: ['advanced-1', 'advanced-2', 'advanced-3']
+            });
+            break;
+          case 3:
+            // WORKS !
+            res.download('tests/data/routes/export/dummy-success.zip', 'foobar.zip');
+            break;
+        }
       }
     },
     {
