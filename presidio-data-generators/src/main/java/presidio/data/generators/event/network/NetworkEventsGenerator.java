@@ -1,25 +1,31 @@
 package presidio.data.generators.event.network;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.collect.Lists;
 import presidio.data.domain.Location;
-import presidio.data.domain.MachineEntity;
 import presidio.data.domain.event.network.NETWORK_DIRECTION_TYPE;
 import presidio.data.domain.event.network.NetworkEvent;
-import presidio.data.generators.FixedValueGenerator;
 import presidio.data.generators.IBaseGenerator;
 import presidio.data.generators.authenticationlocation.AuthenticationLocationCyclicGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.dictionary.CompanyNameCyclicGenerator;
 import presidio.data.generators.common.dictionary.SingleWordCyclicGenerator;
-import presidio.data.generators.common.random.Md5RandomGenerator;
-import presidio.data.generators.common.random.RandomStringGenerator;
+import presidio.data.generators.common.random.*;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.event.AbstractEventGenerator;
-import presidio.data.generators.machine.QuestADMachineGenerator;
+import presidio.data.generators.hostname.HostnameGenerator;
 
 import java.time.Instant;
+import java.util.List;
 
-public class NetworkEventsGenerator extends AbstractEventGenerator {
+public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent> {
+    public static final int DEFAULT_REGULAR_PORT_BELOW = 9999;
+    public static final int DEFAULT_FQDN_START_INDEX = 0;
+    public static final int DEFAULT_FQDN_END_INDEX = 1500;
+    public static final int DEFAULT_IP_3D_BYTE = 0;
+    public static final double DEFAULT_MEAN_NUM_OF_BYTES = 500e3; // 5000K
+    public static final double DEFAULT_STD_NUM_OF_BYTES = 100e3;   // 100K
+
 
     // default generators:
     private IBaseGenerator<String> sslSubjectGenerator = new CompanyNameCyclicGenerator(0);
@@ -29,19 +35,21 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
     private IBaseGenerator<String>  ja3Generator = new Md5RandomGenerator();
     private IBaseGenerator<String>  ja3sGenerator = new Md5RandomGenerator();
     private IBaseGenerator<String>  dataSourceGenerator = new RandomStringGenerator(6,7);
-    private IBaseGenerator<MachineEntity> srcMachineGenerator = new QuestADMachineGenerator();
-    private IBaseGenerator<MachineEntity> dstMachineGenerator = srcMachineGenerator;
+    private IBaseGenerator<String> fqdnGenerator = new HostnameGenerator(DEFAULT_FQDN_START_INDEX,DEFAULT_FQDN_END_INDEX);
+    private IBaseGenerator<String> dstIpGenerator = new RandomIpGenerator();
+    private IBaseGenerator<String> sourceIpGenerator = new RandomIpGenerator(null,null,Integer.toString(DEFAULT_IP_3D_BYTE),null);
     private IBaseGenerator<String>  sourceNetnameGen = new SingleWordCyclicGenerator(0);
     private IBaseGenerator<String>  destinationNetnameGen = new SingleWordCyclicGenerator(201);
     private IBaseGenerator<Location> locationGen = new AuthenticationLocationCyclicGenerator();
     private IBaseGenerator<String>  eventIdGenerator = new Md5RandomGenerator();
-    private IBaseGenerator<Long>  numOfBytesSentGenerator =  new FixedValueGenerator<>(1024L);
-    private IBaseGenerator<Long>  numOfBytesReceivedGenerator = new FixedValueGenerator<>(2048L);
-    private IBaseGenerator<Integer>  destinationPortGenerator = new FixedValueGenerator<>(443);
+    private IBaseGenerator<Long>  numOfBytesSentGenerator =  new GaussianLongGenerator(DEFAULT_MEAN_NUM_OF_BYTES, DEFAULT_STD_NUM_OF_BYTES);
+    private IBaseGenerator<Long>  numOfBytesReceivedGenerator = new GaussianLongGenerator(DEFAULT_MEAN_NUM_OF_BYTES, DEFAULT_STD_NUM_OF_BYTES);
+    private IBaseGenerator<Integer>  sourcePortGenerator = new RandomIntegerGenerator(0, DEFAULT_REGULAR_PORT_BELOW);
+    private IBaseGenerator<Integer>  destinationPortGenerator = new RandomIntegerGenerator(0, DEFAULT_REGULAR_PORT_BELOW);
 
     private String testMarker;
 
-    public NetworkEventsGenerator() throws GeneratorException { }
+    public NetworkEventsGenerator() { }
 
     public NetworkEventsGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
         super(timeGenerator);
@@ -56,7 +64,7 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
         this.testMarker = testMarker;
     }
 
-    public NetworkBuilderHelper fixedValueModifier() {
+    public NetworkBuilderHelper modify() {
         return new NetworkBuilderHelper(this);
     }
 
@@ -66,8 +74,9 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
 
         Instant time = getTimeGenerator().getNext();
         String eventId = eventIdGenerator.getNext();
-        MachineEntity srcMachine = srcMachineGenerator.getNext();
-        MachineEntity dstMachine = dstMachineGenerator.getNext();
+        List<String> fqdns = Lists.newArrayList(fqdnGenerator.getNext(), fqdnGenerator.getNext(), fqdnGenerator.getNext());
+        String sourceIp = sourceIpGenerator.getNext();
+        String dstIp = dstIpGenerator.getNext();
         String destinationOrganization = destinationOrganizationGenerator.getNext().toLowerCase().replaceAll("\\W"," ");
         String destinationASN = destinationAsnGenerator.getNext();
         long numOfBytesSent = numOfBytesSentGenerator.getNext();
@@ -80,6 +89,7 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
         String sslSubject = sslSubjectGenerator.getNext();
         NETWORK_DIRECTION_TYPE network_direction_type = NETWORK_DIRECTION_TYPE.OUTBOUND;
         int destinationPort = destinationPortGenerator.getNext();
+        int sourcePort = sourcePortGenerator.getNext();
         Location srcLocation = locationGen.getNext();
         Location dstLocation = locationGen.getNext();
         String sslCa = sslCaGenerator.getNext();
@@ -88,8 +98,9 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
 
         NetworkEvent networkEvent = new NetworkEvent(time);
         networkEvent.setEventId(eventId);
-        networkEvent.setSrcMachineEntity(srcMachine);
-        networkEvent.setDstMachineEntity(dstMachine);
+        networkEvent.setFqdn(fqdns);
+        networkEvent.setDstIp(dstIp);
+        networkEvent.setSourceIp(sourceIp);
         networkEvent.setDestinationOrganization(destinationOrganization);
         networkEvent.setDestinationASN(destinationASN);
         networkEvent.setNumOfBytesSent(numOfBytesSent);
@@ -101,6 +112,7 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
         networkEvent.setDataSource(dataSource);
         networkEvent.setDirection(network_direction_type);
         networkEvent.setDestinationPort(destinationPort);
+        networkEvent.setSourcePort(sourcePort);
         networkEvent.setSrcLocation(srcLocation);
         networkEvent.setDstLocation(dstLocation);
         networkEvent.setSslSubject(sslSubject);
@@ -159,8 +171,8 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
         this.ja3sGenerator = ja3sGenerator;
     }
 
-    public IBaseGenerator<MachineEntity> getSrcMachineGenerator() {
-        return srcMachineGenerator;
+    public IBaseGenerator<String> getFqdnGenerator() {
+        return fqdnGenerator;
     }
 
     public IBaseGenerator<String> getDataSourceGenerator() {
@@ -171,16 +183,8 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
         this.dataSourceGenerator = dataSourceGenerator;
     }
 
-    public void setSrcMachineGenerator(IBaseGenerator<MachineEntity> srcMachineGenerator) {
-        this.srcMachineGenerator = srcMachineGenerator;
-    }
-
-    public IBaseGenerator<MachineEntity> getDstMachineGenerator() {
-        return dstMachineGenerator;
-    }
-
-    public void setDstMachineGenerator(IBaseGenerator<MachineEntity> dstMachineGenerator) {
-        this.dstMachineGenerator = dstMachineGenerator;
+    public void setFqdnGenerator(IBaseGenerator<String> fqdnGenerator) {
+        this.fqdnGenerator = fqdnGenerator;
     }
 
     public IBaseGenerator<String> getSourceNetnameGen() {
@@ -231,12 +235,36 @@ public class NetworkEventsGenerator extends AbstractEventGenerator {
         this.numOfBytesReceivedGenerator = numOfBytesReceivedGenerator;
     }
 
+    public IBaseGenerator<String> getDstIpGenerator() {
+        return dstIpGenerator;
+    }
+
+    public void setDstIpGenerator(IBaseGenerator<String> dstIpGenerator) {
+        this.dstIpGenerator = dstIpGenerator;
+    }
+
+    public IBaseGenerator<String> getSourceIpGenerator() {
+        return sourceIpGenerator;
+    }
+
+    public void setSourceIpGenerator(IBaseGenerator<String> sourceIpGenerator) {
+        this.sourceIpGenerator = sourceIpGenerator;
+    }
+
     public IBaseGenerator<Integer> getDestinationPortGenerator() {
         return destinationPortGenerator;
     }
 
     public void setDestinationPortGenerator(IBaseGenerator<Integer> destinationPortGenerator) {
         this.destinationPortGenerator = destinationPortGenerator;
+    }
+
+    public IBaseGenerator<Integer> getSourcePortGenerator() {
+        return sourcePortGenerator;
+    }
+
+    public void setSourcePortGenerator(IBaseGenerator<Integer> sourcePortGenerator) {
+        this.sourcePortGenerator = sourcePortGenerator;
     }
 
     public String getTestMarker() {

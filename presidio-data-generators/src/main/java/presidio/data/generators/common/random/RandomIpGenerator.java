@@ -1,10 +1,11 @@
 package presidio.data.generators.common.random;
 
+import presidio.data.generators.IBaseGenerator;
 import presidio.data.generators.common.IStringGenerator;
 
 import java.util.Random;
 
-public class RandomIpGenerator implements IStringGenerator{
+public class RandomIpGenerator implements IStringGenerator, IBaseGenerator<String> {
     private String staticA = null;
     private String staticB = null;
     private String staticC = null;
@@ -29,7 +30,7 @@ public class RandomIpGenerator implements IStringGenerator{
        String B = getByte(staticB);
        String C = getByte(staticC);
        String D = getByte(staticD);
-       return A + "." + B + "." + C + "." + "D";
+       return A + "." + B + "." + C + "." + D;
     }
 
     public String getByte(String staticByte){
