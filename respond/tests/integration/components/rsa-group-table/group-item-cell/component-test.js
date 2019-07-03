@@ -1,60 +1,60 @@
 import EmberObject from '@ember/object';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import wait from 'ember-test-helpers/wait';
+import { render, findAll, find } from '@ember/test-helpers';
 
-moduleForComponent('rsa-group-table-group-item-cell', 'Integration | Component | rsa group table group item cell', {
-  integration: true,
-  resolver: engineResolverFor('respond')
-});
-
-const item = {
-  id: 'id1',
-  foo: 'bar'
-};
-
-const index = 2;
-
-const column = EmberObject.create({
-  field: 'foo'
-});
-
-const columnIndex = 3;
-
-test('it renders default content without a block', function(assert) {
-
-  this.setProperties({
-    item,
-    index,
-    column,
-    columnIndex
+module('Integration | Component | rsa group table group item cell', function(hooks) {
+  setupRenderingTest(hooks, {
+    integration: true,
+    resolver: engineResolverFor('respond')
   });
 
-  this.render(hbs`{{rsa-group-table/group-item-cell
+
+  const item = {
+    id: 'id1',
+    foo: 'bar'
+  };
+
+  const index = 2;
+
+  const column = EmberObject.create({
+    field: 'foo'
+  });
+
+  const columnIndex = 3;
+
+  test('it renders default content without a block', async function(assert) {
+
+    this.setProperties({
+      item,
+      index,
+      column,
+      columnIndex
+    });
+
+    await render(hbs`{{rsa-group-table/group-item-cell
     column=column
     item=item
     index=index
     columnIndex=columnIndex
   }}`);
 
-  return wait()
-    .then(() => {
-      const cell = this.$('.rsa-group-table-group-item-cell');
-      assert.ok(cell.length, 'Expected to find root DOM node');
-      assert.equal(cell.text().trim(), item[column.get('field')], 'Expected content to be driven by column field by default');
-    });
-});
-
-test('it yields the item, item index, column & column index when a block is given', function(assert) {
-  this.setProperties({
-    item,
-    index,
-    column,
-    columnIndex
+    const cells = findAll('.rsa-group-table-group-item-cell');
+    assert.ok(cells.length, 'Expected to find root DOM node');
+    assert.equal(cells[0].textContent.trim(), item[column.get('field')], 'Expected content to be driven by column field by default');
   });
 
-  this.render(hbs`{{#rsa-group-table/group-item-cell
+  test('it yields the item, item index, column & column index when a block is given', async function(assert) {
+    this.setProperties({
+      item,
+      index,
+      column,
+      columnIndex
+    });
+
+    await render(hbs`{{#rsa-group-table/group-item-cell
     column=column
     item=item
     index=index
@@ -67,12 +67,10 @@ test('it yields the item, item index, column & column index when a block is give
     <span class="column-index">{{cell.columnIndex}}</span>
   {{/rsa-group-table/group-item-cell}}`);
 
-  return wait()
-    .then(() => {
-      const cell = this.$('.rsa-group-table-group-item-cell');
-      assert.equal(cell.find('.item-id').text().trim(), item.id);
-      assert.equal(cell.find('.index').text().trim(), index);
-      assert.equal(cell.find('.column-index').text().trim(), columnIndex);
-      assert.equal(cell.find('.column-field').text().trim(), column.get('field'));
-    });
+    const cell = find('.rsa-group-table-group-item-cell');
+    assert.equal(cell.querySelector('.item-id').textContent.trim(), item.id);
+    assert.equal(cell.querySelector('.index').textContent.trim(), index);
+    assert.equal(cell.querySelector('.column-index').textContent.trim(), columnIndex);
+    assert.equal(cell.querySelector('.column-field').textContent.trim(), column.get('field'));
+  });
 });

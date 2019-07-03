@@ -2,7 +2,6 @@ import Mixin from '@ember/object/mixin';
 import { join, next, debounce } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
-import $ from 'jquery';
 
 /**
  * @class HasScrollAttr Mixin
@@ -49,7 +48,7 @@ export default Mixin.create({
    */
   @computed('element', 'scrollSelector')
   scrollElement(element, scrollSelector) {
-    return isEmpty(scrollSelector) ? element : (element && this.$(scrollSelector)[0]);
+    return isEmpty(scrollSelector) ? element : (element && this.element.querySelector(scrollSelector));
   },
 
   /**
@@ -89,7 +88,13 @@ export default Mixin.create({
     }
 
     // Attach callback.
-    $(scrollElement).on('scroll.has-scroll-attr', scrollCallback);
+    scrollElement.addEventListener('scroll', scrollCallback);
+
+    // caching the scrollback function and element used, as re-computing scrollElement would
+    // re-compute scrollCallback which results in a new function other than the one attached to eventLisitener
+    // which results in removeEventListener failing.
+    this.set('scrollCallbackCached', scrollCallback);
+    this.set('scrollElementCached', scrollElement);
 
     // Fire it once manually to initialize the `scroll*` properties.
     scrollCallback();
@@ -97,9 +102,9 @@ export default Mixin.create({
 
   // Detach the last scroll listener.
   teardownScrollAttr() {
-    const scrollElement = this.get('scrollElement');
+    const scrollElement = this.get('scrollElementCached');
     if (scrollElement) {
-      $(scrollElement).off('scroll.has-scroll-attr');
+      scrollElement.removeEventListener('scroll', this.get('scrollCallbackCached'));
     }
   },
 

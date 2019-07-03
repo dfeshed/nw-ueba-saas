@@ -44,8 +44,8 @@ module('Integration | Component | Incident Entities', function(hooks) {
     await render(hbs`{{rsa-incident/entities data=data}}`);
 
     return settled().then(() => {
-      let $el = findAll('.rsa-incident-entities');
-      assert.equal($el.length, 1, 'Expected to find rsa-incident-entities element in DOM.');
+      let elements = findAll('.rsa-incident-entities');
+      assert.equal(elements.length, 1, 'Expected to find rsa-incident-entities element in DOM.');
 
       // will destory the component but not until _dataDidChange & _filterDidChange has fired
       scheduleOnce('render', this, async function() {
@@ -61,8 +61,8 @@ module('Integration | Component | Incident Entities', function(hooks) {
       });
 
       return settled().then(() => {
-        $el = findAll('.rsa-incident-entities');
-        assert.equal($el.length, 0, 'Should not blow up because _dataDidChange was prevented from running while destroyed');
+        elements = findAll('.rsa-incident-entities');
+        assert.equal(elements.length, 0, 'Should not blow up because _dataDidChange was prevented from running while destroyed');
       });
     });
   });

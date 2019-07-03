@@ -38,8 +38,8 @@ module('Integration | Component | Journal New Entry', function(hooks) {
 
   test('The rsa-incident/journal/new-entry component renders to the DOM', async function(assert) {
     await render(hbs`{{rsa-incident/journal/new-entry}}`);
-    assert.equal(this.$('.rsa-incident-journal__new-entry').length, 1, 'The rsa-incident/journal/new-entry component should be found in the DOM');
-    assert.equal(this.$('.save-journal.is-disabled').length, 1, 'The save journal button is disabled by default (when there is no text)');
+    assert.equal(document.querySelectorAll('.rsa-incident-journal__new-entry').length, 1, 'The rsa-incident/journal/new-entry component should be found in the DOM');
+    assert.equal(document.querySelectorAll('.save-journal.is-disabled').length, 1, 'The save journal button is disabled by default (when there is no text)');
   });
 
   test('The createJournalEntry action is dispatched on save button click', async function(assert) {

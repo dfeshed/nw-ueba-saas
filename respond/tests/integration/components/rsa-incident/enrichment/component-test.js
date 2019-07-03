@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 
@@ -34,8 +34,8 @@ module('Integration | Component | Incident Enrichment', function(hooks) {
     });
 
     await render(hbs`{{rsa-incident/enrichment dataKey=dataKey data=data threshold=0 i18n=i18n}}`);
-    const $el = this.$('.rsa-enrichment');
-    assert.ok($el.length, 'Expected to find root element in DOM.');
+    const elements = findAll('.rsa-enrichment');
+    assert.ok(elements.length, 'Expected to find root element in DOM.');
   });
 
   test('it doesnt render enrichments that dont meet the threshold', async function(assert) {
@@ -47,7 +47,7 @@ module('Integration | Component | Incident Enrichment', function(hooks) {
     });
 
     await render(hbs`{{rsa-incident/enrichment dataKey=dataKey data=data threshold=threshold i18n=i18n}}`);
-    const $el = this.$('.rsa-enrichment');
-    assert.notOk($el.length, 'Expected root element to be missing from DOM.');
+    const elements = findAll('.rsa-enrichment');
+    assert.notOk(elements.length, 'Expected root element to be missing from DOM.');
   });
 });

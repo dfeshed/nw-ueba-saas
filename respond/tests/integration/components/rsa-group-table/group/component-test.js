@@ -1,86 +1,81 @@
 import EmberObject from '@ember/object';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import wait from 'ember-test-helpers/wait';
 import ComputesRowViewport from 'respond/mixins/group-table/computes-row-viewport';
 import ComputesColumnExtents from 'respond/mixins/group-table/computes-column-extents';
 import HasSelections from 'respond/mixins/group-table/has-selections';
+import { render, find, settled } from '@ember/test-helpers';
 
-moduleForComponent('rsa-group-table-group', 'Integration | Component | rsa group table group', {
-  integration: true,
-  resolver: engineResolverFor('respond')
-});
+module('Integration | Component | rsa group table group', function(hooks) {
 
-const group = {
-  id: 'id1',
-  value: 'foo',
-  items: [ 'a', 'b', 'c' ]
-};
+  setupRenderingTest(hooks, {
+    integration: true,
+    resolver: engineResolverFor('respond')
+  });
 
-const index = 1;
 
-const top = 100;
+  const group = {
+    id: 'id1',
+    value: 'foo',
+    items: [ 'a', 'b', 'c' ]
+  };
 
-const MockTableClass = EmberObject.extend(ComputesRowViewport, ComputesColumnExtents, HasSelections);
+  const index = 1;
 
-const table = MockTableClass.create();
+  const top = 100;
 
-const initialState = {
-  group,
-  index,
-  top,
-  table
-};
+  const MockTableClass = EmberObject.extend(ComputesRowViewport, ComputesColumnExtents, HasSelections);
 
-test('it renders and applies the correct top to its DOM node', function(assert) {
+  const table = MockTableClass.create();
 
-  this.setProperties(initialState);
+  const initialState = {
+    group,
+    index,
+    top,
+    table
+  };
 
-  this.render(hbs`{{rsa-group-table/group
+  test('it renders and applies the correct top to its DOM node', async function(assert) {
+
+    this.setProperties(initialState);
+
+    await render(hbs`{{rsa-group-table/group
     group=group
     index=index
     top=top
     table=table
   }}`);
 
-  return wait()
-    .then(() => {
-      const cell = this.$('.rsa-group-table-group');
-      assert.ok(cell.length, 'Expected to find root DOM node');
-      assert.equal(parseInt(cell.css('top'), 10), top, 'Expected initial top to be applied to DOM');
-
-      this.set('top', top * 2);
-      return wait();
-    })
-    .then(() => {
-      const cell = this.$('.rsa-group-table-group');
-      assert.equal(parseInt(cell.css('top'), 10), top * 2, 'Expected top to be updated in DOM');
+    const cell = find('.rsa-group-table-group');
+    assert.ok(cell, 'Expected to find root DOM node');
+    assert.equal(parseInt(cell.style.top, 10), top, 'Expected initial top to be applied to DOM');
+    this.set('top', top * 2);
+    await settled().then(() => {
+      const firstCell = find('.rsa-group-table-group');
+      assert.equal(parseInt(firstCell.style.top, 10), top * 2, 'Expected top to be updated in DOM');
     });
-});
+  });
 
-test('it applies the correct CSS class name when selected', function(assert) {
+  test('it applies the correct CSS class name when selected', async function(assert) {
 
-  table.set('selections', { areGroups: true, ids: [] });
-  this.setProperties(initialState);
+    table.set('selections', { areGroups: true, ids: [] });
+    this.setProperties(initialState);
 
-  this.render(hbs`{{rsa-group-table/group
+    await render(hbs`{{rsa-group-table/group
     group=group
     index=index
     top=top
     table=table
   }}`);
 
-  return wait()
-    .then(() => {
-      const row = this.$('.rsa-group-table-group');
-      assert.notOk(row.hasClass('is-selected'));
-      table.get('selections.ids').pushObject(group.id);
-
-      return wait();
-    }).then(() => {
-
-      const row = this.$('.rsa-group-table-group');
-      assert.ok(row.hasClass('is-selected'));
+    const row = find('.rsa-group-table-group');
+    assert.notOk(row.classList.contains('is-selected'));
+    table.get('selections.ids').pushObject(group.id);
+    await settled().then(() => {
+      const firstRow = find('.rsa-group-table-group');
+      assert.ok(firstRow.classList.contains('is-selected'));
     });
+  });
 });

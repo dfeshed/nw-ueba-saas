@@ -1,26 +1,32 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { findAll, render } from '@ember/test-helpers';
 
-moduleForComponent('rsa-lazy-list', 'Integration | Component | Lazy List', {
-  integration: true,
-  resolver: engineResolverFor('respond')
-});
+module('Integration | Component | Lazy List', function(hooks) {
 
-const items = [
-  { id: 'a' },
-  { id: 'b' },
-  { id: 'c' }
-];
+  setupRenderingTest(hooks, {
+    integration: true,
+    resolver: engineResolverFor('respond')
+  });
 
-test('it renders the correct number of list items in DOM', function(assert) {
 
-  this.set('items', items);
-  this.render(hbs`{{rsa-lazy-list items=items}}`);
+  const items = [
+    { id: 'a' },
+    { id: 'b' },
+    { id: 'c' }
+  ];
 
-  assert.equal(this.$('.rsa-lazy-list').length, 1, 'Expected to find the root component DOM element.');
-  assert.equal(this.$('.rsa-list').length, 1, 'Expected to find the root element of child rsa-list component.');
+  test('it renders the correct number of list items in DOM', async function(assert) {
 
-  const $items = this.$('.rsa-list-item');
-  assert.equal($items.length, items.length, 'Expected to find the list item DOM elements.');
+    this.set('items', items);
+    await render(hbs`{{rsa-lazy-list items=items}}`);
+
+    assert.equal(findAll('.rsa-lazy-list').length, 1, 'Expected to find the root component DOM element.');
+    assert.equal(findAll('.rsa-list').length, 1, 'Expected to find the root element of child rsa-list component.');
+
+    const itemsRendered = findAll('.rsa-list-item');
+    assert.equal(itemsRendered.length, items.length, 'Expected to find the list item DOM elements.');
+  });
 });
