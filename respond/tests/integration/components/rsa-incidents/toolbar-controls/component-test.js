@@ -98,6 +98,16 @@ module('Integration | Component | Respond Incidents Toolbar Controls', function(
     await selectChoose('.action-control.bulk-update-priority', '.ember-power-select-option', 0);
   });
 
+  test('Assignee options has logged-in user at the top', async function(assert) {
+    await setup();
+    const state = redux.getState();
+    const accessControl = this.owner.lookup('service:accessControl');
+    const component = this.owner.factoryFor('component:rsa-incidents/toolbar-controls').create();
+    component.set('users', getAssigneeOptions(state));
+    accessControl.set('username', '2');
+    assert.ok(component.get('assigneeOptions')[0].name.includes('Myself'));
+  });
+
   test('All of the assignee options appear in the dropdown button, and clicking one dispatches an action', async function(assert) {
     assert.expect(3);
     await setup();

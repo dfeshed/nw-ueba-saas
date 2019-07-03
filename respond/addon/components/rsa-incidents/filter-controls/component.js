@@ -21,10 +21,10 @@ import {
   getSentToArcherFilters,
   isSendToArcherAvailable
 } from 'respond/selectors/incidents';
-
+import { inject as service } from '@ember/service';
+import enhance from 'respond/utils/enhance-users';
 
 const stateToComputed = (state) => {
-  const enabledUsers = [].concat(getEnabledUsers(state));
   return {
     priorityFilters: getPriorityFilters(state),
     statusFilters: getStatusFilters(state),
@@ -37,7 +37,7 @@ const stateToComputed = (state) => {
     statusTypes: getStatusTypes(state),
     categoryFilters: getCategoryFilters(state),
     categoryTags: getTopLevelCategoryNames(state),
-    users: enabledUsers,
+    users: [].concat(getEnabledUsers(state)),
     isSendToArcherAvailable: isSendToArcherAvailable(state)
   };
 };
@@ -52,6 +52,7 @@ const IncidentFilters = Component.extend({
   tagName: '',
   sentToArcherTypes: [true, false],
   isIdFilterValid: true,
+  accessControl: service(),
 
   /**
    * The user objects that have been selected via the assignee picker
@@ -65,6 +66,9 @@ const IncidentFilters = Component.extend({
   selectedAssignees(users, assigneeFilters = []) {
     return users.filter((user) => (assigneeFilters.includes(user.id)));
   },
+
+  @computed('users', 'accessControl.username')
+  assigneeOptions: enhance,
 
   /**
    * Returns the list of selected category objects that are currently being used in the filter

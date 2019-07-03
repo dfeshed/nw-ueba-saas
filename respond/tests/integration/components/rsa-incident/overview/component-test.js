@@ -10,6 +10,7 @@ import { set } from '@ember/object';
 import { run } from '@ember/runloop';
 import Immutable from 'seamless-immutable';
 import { incidentDetails } from '../../../../data/data';
+import { getAllEnabledUsers } from 'respond-shared/actions/creators/create-incident-creators';
 
 let setState;
 const trim = (text) => text && text.replace(/\s\s+/g, ' ').trim() || undefined;
@@ -46,7 +47,16 @@ module('Integration | Component | Incident Overview', function(hooks) {
     });
   });
 
-  test('Selecting the (unassigned) option from the assigne dropdown properly calls updateItem with a null value', async function(assert) {
+  test('Assignee dropdown has current logged in user at the top', async function(assert) {
+    const redux = this.owner.lookup('service:redux');
+    await redux.dispatch(getAllEnabledUsers());
+    const accessControl = this.owner.lookup('service:accessControl');
+    const component = this.owner.factoryFor('component:rsa-incident/overview').create();
+    accessControl.set('username', '2');
+    assert.ok(component.get('assigneeOptions')[0].name.includes('Myself'));
+  });
+
+  test('Selecting the (unassigned) option from the assignee dropdown properly calls updateItem with a null value', async function(assert) {
     assert.expect(1);
     const exampleUser = { id: 'admin' };
     setState({
@@ -66,7 +76,7 @@ module('Integration | Component | Incident Overview', function(hooks) {
     await selectChoose('.assignee', '(Unassigned)');
   });
 
-  test('The unassigned option from the assigne dropdown properly updates when locale is changed', async function(assert) {
+  test('The unassigned option from the assignee dropdown properly updates when locale is changed', async function(assert) {
     assert.expect(2);
 
     await render(hbs`{{rsa-incident/overview info=info infoStatus='completed'}}`);

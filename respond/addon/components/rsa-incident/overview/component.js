@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { inject } from '@ember/service';
+import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { getStatusTypes } from 'respond/selectors/dictionaries';
@@ -8,6 +8,7 @@ import {
   getAssigneeOptions
 } from 'respond-shared/selectors/create-incident/selectors';
 import { isIncidentClosed } from 'respond/helpers/is-incident-closed';
+import enhance from 'respond/utils/enhance-users';
 
 const stateToComputed = (state) => {
   return {
@@ -18,9 +19,9 @@ const stateToComputed = (state) => {
 };
 
 const IncidentOverview = Component.extend({
-  riac: inject(),
-  accessControl: inject(),
-  i18n: inject(),
+  riac: service(),
+  accessControl: service(),
+  i18n: service(),
   classNames: ['rsa-incident-overview'],
 
   /**
@@ -59,6 +60,9 @@ const IncidentOverview = Component.extend({
     // if the user is null/undefined, return the unassign user option (first option), otherwise lookup by id
     return !assignee ? users[0] : users.findBy('id', assignee.id);
   },
+
+  @computed('users', 'accessControl.username')
+  assigneeOptions: enhance,
 
   actions: {
     /**

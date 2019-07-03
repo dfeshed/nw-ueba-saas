@@ -16,6 +16,7 @@ import config from '../config/environment';
 import { jwt_decode as jwtDecode } from 'ember-cli-jwt-decode';
 import $ from 'jquery';
 import { warn } from '@ember/debug';
+import computed from 'ember-computed-decorators';
 
 const {
   testing
@@ -158,11 +159,19 @@ export default Route.extend(AuthenticatedRouteMixin, {
   },
 
   // Resolves the user's roles/authorities from the token
-  getRoles() {
-    const token = this.get('session.persistedAccessToken');
-    if (token) {
-      const decodedToken = jwtDecode(token);
+  @computed('session.persistedAccessToken')
+  authorities(persistedAccessToken) {
+    if (persistedAccessToken) {
+      const decodedToken = jwtDecode(persistedAccessToken);
       return decodedToken.authorities;
+    }
+  },
+
+  @computed('session.persistedAccessToken')
+  username(persistedAccessToken) {
+    if (persistedAccessToken) {
+      const decodedToken = jwtDecode(persistedAccessToken);
+      return decodedToken.user_name;
     }
   },
 
@@ -224,12 +233,11 @@ export default Route.extend(AuthenticatedRouteMixin, {
     const timezonesPromise = this.getTimezones();
     const preferencesPromise = this.getPreferences();
 
-    // Resolve the user's roles/authorities from the JWT token and update accessControl
+    // Resolve the user's name, roles & authorities from the JWT token and update accessControl
     // These are used only for UEBA permission handling, since for the iframed UEBA app
     // no real permissions exist, only user roles.
-
-    const roles = this.getRoles();
-    this.set('accessControl.authorities', roles);
+    this.set('accessControl.authorities', this.get('authorities'));
+    this.set('accessControl.username', this.get('username'));
     return RSVP.all([
       preferencesPromise,
       timezonesPromise,

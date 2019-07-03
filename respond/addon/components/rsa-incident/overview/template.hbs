@@ -73,7 +73,7 @@
     {{#if accessControl.respondCanManageIncidents}}
       <div class="edit-button">
         {{#power-select
-          options=users
+          options=assigneeOptions
           selected=selectedUserOption
           matchTriggerWidth=false
           disabled=(not canChangeAssignee)

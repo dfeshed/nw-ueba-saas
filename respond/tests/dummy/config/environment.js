@@ -67,6 +67,7 @@ module.exports = function(environment) {
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
     ENV.roles = ['respond-server.*', 'investigate-server.*'];
     ENV.authorities = ['Administrators'];
+    ENV.username = 'local';
   }
 
   if (environment === 'test') {

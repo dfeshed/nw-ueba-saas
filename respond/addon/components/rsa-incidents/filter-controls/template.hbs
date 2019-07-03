@@ -46,13 +46,13 @@
 <section class="filter-option assignee-filter">
   <h2>{{ t 'respond.incident.assignee'}}</h2>
   {{#power-select-multiple
-    options=(readonly users)
+    options=(readonly assigneeOptions)
     matcher=assigneeMatcher
     selected=selectedAssignees
     searchField="name"
     disabled=isUnassignedFilter
-    onchange=(action "assigneeChanged") as |users|}}
-    {{or users.name users.id}}
+    onchange=(action "assigneeChanged") as |user|}}
+    {{or user.name user.id}}
   {{/power-select-multiple}}
   <label class="rsa-form-checkbox-label show-only-unassigned
     {{if (eq isUnassignedFilter true) 'checked'}}

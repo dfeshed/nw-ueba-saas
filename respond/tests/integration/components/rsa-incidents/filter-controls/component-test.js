@@ -76,6 +76,15 @@ module('Integration | Component | Respond Incident Filters', function(hooks) {
     await click('.filter-option.priority-filter .rsa-form-checkbox-label input.rsa-form-checkbox:first-of-type');
   });
 
+  test('Assignee dropdown has current logged in user at the top', async function(assert) {
+    setState({ });
+    await init;
+    const accessControl = this.owner.lookup('service:accessControl');
+    const component = this.owner.factoryFor('component:rsa-incidents/filter-controls').create();
+    accessControl.set('username', '2');
+    assert.ok(component.get('assigneeOptions')[0].name.includes('Myself'));
+  });
+
   test('All of the assignees appear in the dropdown, and selecting one calls dispatch', async function(assert) {
     assert.expect(3);
     setState({ });

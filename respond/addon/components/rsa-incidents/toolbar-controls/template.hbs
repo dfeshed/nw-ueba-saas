@@ -34,7 +34,7 @@
   </div>
   <div class="action-control bulk-update-assignee">
     {{#power-select
-      options=users
+      options=(readonly assigneeOptions)
       disabled=(not canChangeAssignee)
       matchTriggerWidth=false
       horizontalPosition='right'

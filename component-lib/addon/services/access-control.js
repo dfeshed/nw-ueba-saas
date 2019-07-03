@@ -3,6 +3,7 @@ import config from 'ember-get-config';
 import Service from '@ember/service';
 
 export default Service.extend({
+  username: config.username,
   roles: config.roles || [],
   authorities: config.authorities || [], // jwt decoded netwitness user "roles" (as opposed to permissions)
 

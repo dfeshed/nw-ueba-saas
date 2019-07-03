@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import computed, { empty, gt } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
+import enhance from 'respond/utils/enhance-users';
 
 /**
  * @class IncidentsControls
@@ -25,6 +26,9 @@ export default Component.extend({
   canChangeAssignee(canChangeAssignee, hasNoSelections, hasSelectedClosedIncidents) {
     return !hasNoSelections && !hasSelectedClosedIncidents && canChangeAssignee;
   },
+
+  @computed('users', 'accessControl.username')
+  assigneeOptions: enhance,
 
   updateConfirmationDialogId: 'bulk-update-entities',
   deleteConfirmationDialogId: 'delete-entities',
