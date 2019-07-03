@@ -59,6 +59,9 @@ def get_build_number():
     return ""
 
 
+print(os.path.dirname(os.path.realpath(__file__)))
+
+
 setup(name='presidio-workflows-extension',
       version='1.0' ,
       description='Industry\'s First Embedded User and Entity Behavioral Analytics Engine. - python packages',
