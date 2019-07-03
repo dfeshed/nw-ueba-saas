@@ -20,8 +20,10 @@ export default Component.extend({
     * Updates isCollapsed
     * @public
     */
-    toggleContent() {
-      this.toggleProperty('isCollapsed');
+    toggleContent(event) {
+      if (event.type === 'click' || event.keyCode === 13 || event.keyCode === 32) {
+        this.toggleProperty('isCollapsed');
+      }
     }
   }
 });
