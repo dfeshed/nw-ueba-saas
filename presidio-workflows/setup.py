@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
 
-print("workflow-extention setup.py: " + os.path.dirname(os.path.realpath(__file__)))
+print("workflow setup.py: " + os.path.dirname(os.path.realpath(__file__)))
 
 def readme():
     with open('README.rst') as f:
