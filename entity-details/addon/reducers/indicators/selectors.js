@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import { getSelectedAlertData } from 'entity-details/reducers/alerts/selectors';
+import { entityType } from 'entity-details/reducers/entity/selectors';
 import indicatorChartMap from 'entity-details/utils/indicator-chart-map';
 import _ from 'lodash';
 
@@ -85,6 +86,17 @@ export const getIncidentPositionAndNextIncidentId = createSelector(
         };
       } else {
         return { previousIndicatorId: null, currentPosition: 0, nextIndicatorId: incidentIdArray[0], indicatorLength };
+      }
+    }
+  });
+
+export const brokerId = createSelector(
+  [indicatorEvents, entityType],
+  (events, type) => {
+    if (events) {
+      const [event] = events;
+      if (type === 'user' && event) {
+        return event.user_link.match(/investigation\/(.*)\/events/i)[1];
       }
     }
   });

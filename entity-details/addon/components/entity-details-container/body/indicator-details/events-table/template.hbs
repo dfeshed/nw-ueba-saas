@@ -8,8 +8,8 @@
     {{#rsa-data-table/body-cell column=column}}
       {{#if (eq column.type 'DATE_TIME')}}
         {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
-      {{else if column.linkField}}
-        <a class='entity-details-container-body-indicator-details_events-table_href' href={{get item column.linkField}} target='_blank' rel='noopener'>{{get item column.field}}</a>  
+      {{else if (get item column.linkField)}}
+        <a class='entity-details-container-body-indicator-details_events-table_href' onclick={{action 'pivotToInvestigate' item column }} target='_blank' rel='noopener'>{{get item column.field}}</a>  
       {{else}}
         {{get item column.field}}
       {{/if}}  

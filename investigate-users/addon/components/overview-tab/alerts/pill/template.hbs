@@ -1,7 +1,7 @@
 <div class='user-overview-tab_upper_alerts_container_pill_rating' {{action 'initiateUser' (hash userId=alert.entityId alertId=alert.id)}}>
   <div class='user-overview-tab_upper_alerts_container_pill_rating_score {{alert.severity}}'>
   </div>
-  <div class='user-overview-tab_upper_alerts_container_pill_rating_text'>
+  <div class='user-overview-tab_upper_alerts_container_pill_rating_text' title='Score: {{alert.score}}'>
     {{alert.severity}}
   </div>
   <div class='user-overview-tab_upper_alerts_container_pill_details'>

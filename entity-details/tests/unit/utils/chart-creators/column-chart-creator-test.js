@@ -1,5 +1,4 @@
 import { module, test } from 'qunit';
-import $ from 'jquery';
 
 import { setupTest } from 'ember-qunit';
 import columnChartCreator from 'entity-details/utils/chart-creators/column-chart-creator';
@@ -17,12 +16,15 @@ module('Unit | Utils | column-chart-creator', (hooks) => {
   });
 
   test('it returns chart for column-chart-creator', (assert) => {
-    $('body').append('<div id="chartComponentPlaceholder"></div>');
+    const divObj = document.createElement('div');
+    divObj.id = 'chartComponentPlaceholder';
+    document.getElementsByTagName('body')[0].appendChild(divObj);
     assert.expect(1);
     const settings = activityTimeAnomalySettings('account_management_change_anomaly');
     const updatedSettings = chartDataAdapter(settings, chartData.data);
-    const chart = columnChartCreator(updatedSettings);
-    return waitUntil(() => $('svg').length === 2).then(() => {
+    const entityObj = { entityType: 'User', entityName: 'Name1', dataEntitiesIds: 'File' };
+    const chart = columnChartCreator(updatedSettings, entityObj, 'BrokerId');
+    return waitUntil(() => document.getElementsByTagName('svg').length === 2).then(() => {
       assert.ok(chart);
     });
   });

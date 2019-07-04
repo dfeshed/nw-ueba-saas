@@ -5,7 +5,9 @@ import computed from 'ember-computed-decorators';
 import * as am4core from '@amcharts/amcharts4/core';
 import {
   indicatorMapSettings,
+  getIncidentData,
   historicalData,
+  brokerId,
   indicatorGraphError
 } from 'entity-details/reducers/indicators/selectors';
 import pieChartCreator from 'entity-details/utils/chart-creators/pie-chart-creator';
@@ -17,6 +19,8 @@ am4core.useTheme(am4themesAnimated);
 
 const stateToComputed = (state) => ({
   indicatorMapSettings: indicatorMapSettings(state),
+  incidentDetails: getIncidentData(state),
+  brokerId: brokerId(state),
   historicalData: historicalData(state),
   indicatorGraphError: indicatorGraphError(state)
 });
@@ -41,13 +45,13 @@ const EventsGraphComponent = Component.extend({
     const settings = chartDataAdapter(indicatorMapSettings, historicalData);
     switch (chartType) {
       case 'pie':
-        this.chart = pieChartCreator(settings, historicalData);
+        this.chart = pieChartCreator(settings, this.get('incidentDetails'), this.get('brokerId'));
         break;
       case 'column':
-        this.chart = columnChartCreator(indicatorMapSettings, historicalData);
+        this.chart = columnChartCreator(indicatorMapSettings, this.get('incidentDetails'), this.get('brokerId'));
         break;
       case 'heatmap':
-        this.chart = heatmapChartCreator(indicatorMapSettings, historicalData);
+        this.chart = heatmapChartCreator(indicatorMapSettings, this.get('incidentDetails'), this.get('brokerId'));
         break;
     }
     return true;

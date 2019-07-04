@@ -20,7 +20,7 @@ const baseColumnConfigForEvents = [{
   width: '4.5vw',
   title: 'Normalized user name',
   visible: true,
-  linkField: 'user_sid_link',
+  linkField: 'user_link',
   disableSort: true
 }, {
   field: 'operationType',
@@ -40,6 +40,8 @@ const activeDirectoryColumns = [{
   field: 'objectId',
   width: '7.5vw',
   title: 'Object Name',
+  linkField: 'user_link',
+  additionalFilter: 'obj.name',
   visible: true,
   disableSort: true
 }, {
@@ -60,6 +62,8 @@ const authenticationColumns = [{
   field: 'srcMachineId',
   title: 'Source Host',
   visible: true,
+  linkField: 'user_link',
+  additionalFilter: 'srcMachineId',
   disableSort: true
 }, {
   field: 'additionalInfo.Logon_Type',
@@ -70,6 +74,8 @@ const authenticationColumns = [{
 }, {
   field: 'dstMachineId',
   width: '3.5vw',
+  linkField: 'user_link',
+  additionalFilter: 'dstMachineId',
   visible: true,
   title: 'Destination Device',
   disableSort: true
@@ -117,6 +123,8 @@ const fileColumns = [{
   width: '15vw',
   title: 'Source Folder Path',
   visible: true,
+  linkField: 'user_link',
+  additionalFilter: 'absoluteSrcFolderFilePath',
   disableSort: true
 }, {
   field: 'additionalInfo.absoluteDstFilePath',
@@ -128,6 +136,8 @@ const fileColumns = [{
   field: 'absoluteSrcFilePath',
   width: '10vw',
   title: 'Source File Path',
+  linkField: 'user_link',
+  additionalFilter: 'absoluteSrcFilePath',
   visible: true,
   disableSort: true
 }, {
@@ -142,6 +152,7 @@ const processColumns = [{
   field: 'machineName',
   width: '3.5vw',
   title: 'Machine Name',
+  linkField: 'machine_name_link',
   visible: true,
   disableSort: true
 }, {
@@ -149,12 +160,14 @@ const processColumns = [{
   width: '3.5vw',
   title: 'Source Process',
   visible: true,
+  linkField: 'src_process_link',
   disableSort: true
 }, {
   field: 'dstProcessFileName',
   width: '3.5vw',
   title: 'Destination Process',
   visible: true,
+  linkField: 'dst_process_link',
   disableSort: true
 }];
 
@@ -168,6 +181,7 @@ const registryColumns = [{
   field: 'machineName',
   width: '3.5vw',
   title: 'Machine Name',
+  linkField: 'machine_name_link',
   visible: true,
   disableSort: true
 }, {
@@ -187,6 +201,7 @@ const registryColumns = [{
   width: '3.5vw',
   title: 'Process File Name',
   visible: true,
+  linkField: 'process_name_link',
   disableSort: true
 }, {
   field: 'processDirectoryGroups',
@@ -241,11 +256,13 @@ const registryColumns = [{
   width: '3.5vw',
   title: 'User Name',
   visible: true,
+  linkField: 'user_sid_link',
   disableSort: true
 }, {
   field: 'userDisplayName',
   width: '3.5vw',
   title: ' User Display Name',
+  linkField: 'user_sid_link',
   visible: true,
   disableSort: true
 }];

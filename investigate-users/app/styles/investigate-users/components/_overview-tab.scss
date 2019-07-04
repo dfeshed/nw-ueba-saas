@@ -320,7 +320,7 @@
         padding: 0 rsa-whitespace() rsa-whitespace() 0;
 
         &_graph {
-          height: calc(100% - 35px);
+          height: calc(100% - 65px);
           padding: rsa-whitespace(least);
         }
 
@@ -360,8 +360,6 @@
   padding: rsa-whitespace(less);
   color: text-color(secondary, light);
   @include rsa-font(default, small);
-  top: -45px;
-
   > ul > li {
     padding: rsa-whitespace(least);
   }

@@ -2,15 +2,17 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { later } from '@ember/runloop';
 import getEventsTableColumnForGivenIndicator from 'entity-details/utils/column-config';
-import { getIndicatorEntity, indicatorEvents, areAllEventsReceived, indicatorEventError } from 'entity-details/reducers/indicators/selectors';
+import { getIndicatorEntity, indicatorEvents, areAllEventsReceived, indicatorEventError, getIncidentData } from 'entity-details/reducers/indicators/selectors';
 import computed from 'ember-computed-decorators';
 import { getEvents } from 'entity-details/actions/indicator-details';
+import { navigateToInvestigate } from 'entity-details/utils/pivot-utils';
 
 const stateToComputed = (state) => ({
   indicatorKey: getIndicatorEntity(state),
   events: indicatorEvents(state),
   areAllEventsReceived: areAllEventsReceived(state),
-  indicatorEventError: indicatorEventError(state)
+  indicatorEventError: indicatorEventError(state),
+  incidentDetails: getIncidentData(state)
 });
 
 const dispatchToActions = {
@@ -45,6 +47,13 @@ const EventsListComponent = Component.extend({
         }, 500);
       }
     });
+  },
+  actions: {
+    pivotToInvestigate(item, column) {
+      const { entityType, entityName, dataEntitiesIds } = this.get('incidentDetails');
+      const eventTime = item.eventDate.epochSecond;
+      navigateToInvestigate(entityType, entityName, dataEntitiesIds[0], eventTime, item, column);
+    }
   }
 });
 

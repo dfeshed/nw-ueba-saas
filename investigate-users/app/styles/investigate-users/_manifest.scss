@@ -1,11 +1,19 @@
 @import 'components/manifest';
 
+.license-banner.shown {
+  $container-height:130px; 
+}
 .users-container {
   background-color: background-color(primary, darker);
   @include rsa-col(justify,fill);
   height: calc(100vh - 90px);
 }
 
+.investigate-engine:has(.license-banner.shown) {
+  .users-container {
+    height: calc(100vh - 130px);
+  }
+}
 .center {
   position: relative;
   top: 50%;

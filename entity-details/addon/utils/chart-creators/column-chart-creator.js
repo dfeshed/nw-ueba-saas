@@ -6,8 +6,9 @@
 import * as Am4core from '@amcharts/amcharts4/core';
 import * as Am4charts from '@amcharts/amcharts4/charts';
 import { lookup } from 'ember-dependency-lookup';
+import { navigateToInvestigate } from 'entity-details/utils/pivot-utils';
 
-export default (settings) => {
+export default (settings, { entityType, entityName, dataEntitiesIds }, brokerId) => {
   const i18n = lookup('service:i18n');
 
   const chart = Am4core.create('chartComponentPlaceholder', Am4charts.XYChart);
@@ -33,6 +34,12 @@ export default (settings) => {
   columnSeries.name = 'Value';
   columnSeries.dataFields.valueY = 'value';
   columnSeries.dataFields.categoryX = 'category';
+  columnSeries.dataFields.categoryXValue = 'originalCategory';
+  columnSeries.columns.template.events.on('hit', (ev) => {
+    const eventTime = ev.target.dataItem.categoryXValue / 1000;
+    const column = { linkField: null, field: null, additionalFilter: null };
+    navigateToInvestigate(entityType, entityName, dataEntitiesIds[0], eventTime, null, column, brokerId);
+  });
 
   columnSeries.columns.template.tooltipText = '[#fff font-size: 15px]{name} in {categoryX}: [/][#fff font-size: 20px]{valueY}[/] [#fff]{additional}[/]';
   columnSeries.columns.template.propertyFields.fill = 'color';
