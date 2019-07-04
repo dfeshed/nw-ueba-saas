@@ -19,19 +19,46 @@ pipeline {
     stages {
         stage('presidio-integration-test Project Clone') {
             steps {
-                //buildIntegrationTestProject()
+                cleanWs()
+                buildIntegrationTestProject()
                 setBaseUrl()
             }
         }
-     }
+        stage('Reset UEBA DBs') {
+            when {
+                expression { return !params.RUN_ONLY_TESTS }
+            }
+            steps {
+                cleanUebaDBs()
+            }
+        }
+        stage('Install UEBA RPMs') {
+            when {
+                expression { return params.INSTALL_UEBA_RPMS }
+            }
+            steps {
+                uebaInstallRPMs()
+            }
+        }
+        stage('ProjectInitialization') {
+            steps {
+                mvnCleanInstall()
+            }
+        }
+        stage('Test Automation') {
+            steps {
+                runCoreTestAutomation()
+            }
+        }
+    }
 }
 /******************************
  *   UEBA RPMs Installation   *
  ******************************/
 def setBaseUrl(
         String rpmBuildPath = param.SPECIFIC_RPM_BUILD,
-        String rpmVeriosn = param.VERSION,
-        String stability = param.STABILITY
+        String rpmVeriosn = env.VERSION,
+        String stability = env.STABILITY
 ) {
     String baseUrl = "baseurl="
     if (rpmBuildPath != '') {
@@ -43,7 +70,7 @@ def setBaseUrl(
         SecondDir = FirstDir + "." + versionArray[2]
         baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/" + FirstDir + "/" + SecondDir + "/" + rpmVeriosn + "-" + stability + "/"
         osBaseUrl = 'baseurl=http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/latest/11.4.0.0/OS/'
-    }/**
+    }
     baseUrlValidation = baseUrl.drop(8)
     baseUrlresponsecode = sh(returnStdout: true, script: "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}").trim()
     if (baseUrlresponsecode == '200') {
@@ -56,7 +83,19 @@ def setBaseUrl(
     } else {
         error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
-    //oldUebaRpmsVresion = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()**/
+    oldUebaRpmsVresion = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
+}
+
+def cleanUebaDBs() {
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION ${oldUebaRpmsVresion}"
+    if (params.INSTALL_UEBA_RPMS == false) {
+        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION ${oldUebaRpmsVresion}"
+    }
+}
+
+def uebaInstallRPMs() {
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION ${oldUebaRpmsVresion}"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION ${oldUebaRpmsVresion}"
 }
 
 /**************************
@@ -71,5 +110,18 @@ def buildIntegrationTestProject(
     sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/presidio-integration-test.git"
     dir(env.REPOSITORY_NAME) {
         sh "git checkout ${branchName}"
+    }
+}
+
+def mvnCleanInstall() {
+    dir(env.REPOSITORY_NAME) {
+        sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
+    }
+}
+
+def runCoreTestAutomation() {
+    dir(env.REPOSITORY_NAME) {
+        println(env.REPOSITORY_NAME)
+        sh "mvn -B -f presidio-integration-output-component-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
     }
 }
