@@ -1,6 +1,7 @@
 pipeline {
     parameters {
-        choice(name: 'STABILITY', choices: ['dev','beta','alpha','rc','gold'], description: 'RPMs stability type')
+        //choice(name: 'STABILITY', choices: ['dev','beta','alpha','rc','gold'], description: 'RPMs stability type')
+        choice(name: 'STABILITY', choices: ["dev\nbeta\nalpha\nrc\ngold"], description: 'RPMs stability type')
     }
     agent { label env.NODE }
     environment {
