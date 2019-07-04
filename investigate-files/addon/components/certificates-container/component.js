@@ -49,7 +49,7 @@ const Certificate = Component.extend({
 
   tagName: 'vbox',
 
-  classNames: ['certificates-container', 'main-zone'],
+  classNames: ['rsa-investigate-files', 'certificates-container', 'main-zone'],
 
   filterTypes: FILTER_TYPES,
 
