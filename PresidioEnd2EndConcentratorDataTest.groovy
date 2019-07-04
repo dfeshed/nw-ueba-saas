@@ -47,7 +47,6 @@ pipeline {
         }
     }
 }
-old_UebaRpmsVresion = ""
 /******************************
  *   UEBA RPMs Installation   *
  ******************************/
@@ -83,21 +82,20 @@ def setBaseUrl(
 }
 
 def uebaInstallRPMs() {
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION $env.oldUebaRpmsVresion"
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION $env.oldUebaRpmsVresion"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION ${oldUebaRpmsVresion}"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION ${oldUebaRpmsVresion}"
 
 }
 
 def CleanEpHybridUebaDBs() {
     sh "echo 2 ${oldUebaRpmsVresion}"
-    sh "echo 3  $env.oldUebaRpmsVresion"
 
     sh "cp ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/reset_ld_and_concentrator_hybrid_dbs.sh /home/presidio/"
     sh "sudo bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
     sh "rm -f /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION $env.oldUebaRpmsVresion"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION ${oldUebaRpmsVresion}"
     if (params.INSTALL_UEBA_RPMS == false) {
-        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION $env.oldUebaRpmsVresion"
+        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION ${oldUebaRpmsVresion}"
     }
 }
 
