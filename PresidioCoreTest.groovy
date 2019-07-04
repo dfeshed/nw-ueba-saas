@@ -1,21 +1,26 @@
 pipeline {
     parameters {
-        string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '',description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
-        string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: 'origin/master',description: '')
-        booleanParam( name: 'RUN_ONLY_TESTS', defaultValue: true, description: '')
-        booleanParam( name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
+        string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '', description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
+        string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: 'origin/master', description: '')
+        booleanParam(name: 'RUN_ONLY_TESTS', defaultValue: true, description: '')
+        booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
         //choice(name: 'STABILITY', choices: ['dev','beta','alpha','rc','gold'], description: 'RPMs stability type')
         //choice(name: 'VERSION', choices: ['11.4.0.0','11.3.0.0','11.3.1.0','11.2.1.0'], description: 'RPMs version')
         //choice(name: 'NODE', choices: ['','','nw-hz-03-ueba','nw-hz-04-ueba','nw-hz-05-ueba','nw-hz-06-ueba','nw-hz-07-ueba'], description: '')
     }
-    agent { label env.NODE }
+    agent {
+        if (env.NODE == "") {
+            label env.NODE
+        } else {
+            label "presidio-node || presidio-test"
+        }
+    }
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
         // The credentials (name + password) associated with the RSA build user.
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         REPOSITORY_NAME = "presidio-integration-test"
     }
-
 
     stages {
         stage('presidio-integration-test Project Clone') {
@@ -65,5 +70,33 @@ def setBaseUrl(
     } else {
         error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
-    oldUebaRpmsVresion = sh (script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
+    oldUebaRpmsVresion = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
+}
+
+/**************************
+ * Project Build Pipeline *
+ **************************/
+def buildIntegrationTestProject(
+        String repositoryName = "presidio-integration-test",
+        String userName = env.RSA_BUILD_CREDENTIALS_USR,
+        String userPassword = env.RSA_BUILD_CREDENTIALS_PSW,
+        String branchName = env.INTEGRATION_TEST_BRANCH_NAME) {
+    sh "git config --global user.name \"${userName}\""
+    sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/presidio-integration-test.git"
+    dir(env.REPOSITORY_NAME) {
+        sh "git checkout ${branchName}"
+    }
+}
+
+def mvnCleanInstall() {
+    dir(env.REPOSITORY_NAME) {
+        sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
+    }
+}
+
+def runCoreTestAutomation() {
+    dir(env.REPOSITORY_NAME) {
+        println(env.REPOSITORY_NAME)
+        sh "mvn -B -f presidio-integration-output-component-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
+    }
 }
