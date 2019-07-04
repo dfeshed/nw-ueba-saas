@@ -1,9 +1,5 @@
 pipeline {
     parameters {
-        string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '',description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
-        booleanParam( name: 'RUN_ONLY_TESTS', defaultValue: true, description: '')
-        booleanParam( name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
-        choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
         choice(name: 'STABILITY', choices: ['dev','beta','alpha','rc','gold'], description: 'RPMs stability type')
     }
     agent { label env.NODE }
