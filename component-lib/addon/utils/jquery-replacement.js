@@ -392,6 +392,9 @@ export const unwrap = (selector) => {
 // $('.some-element').closest()
 // document.querySelector('.some-element').closest()
 
+// $('.some-element').closest('some-selector')
+// document.querySelector('.some-element').closest('some-selector')
+
 // $('.some-elements').first()
 // document.querySelectorAll('.some-element').item(0)
 // findAll('.some-element').shift()
@@ -415,6 +418,9 @@ export const unwrap = (selector) => {
 // $(':first')
 // $().filter(':first')
 // document.querySelector('some-selector')
+
+// $(':last')
+// document.querySelectorAll('some-selector').item(length - 1)
 
 //
 // MANIPULATING ELEMENTS
@@ -474,6 +480,9 @@ export const unwrap = (selector) => {
 // this.$('.some-element').css('cssProperty', 'value')
 // document.querySelector('.some-element').style.cssProperty = value
 
+// this.$('.some-element').width(123)
+// document.querySelector('.some-element').style.width = '123px'
+
 //
 // DIMENSIONS
 //
@@ -502,6 +511,9 @@ export const unwrap = (selector) => {
 // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener
 // $('.some-element').off('mouseleave', this._someHandlerFunction)
 // document.querySelectorAll('.some-element').removeEventListener('mouseleave', this._someHandlerFunction)
+
+// $('.some-element').one('some-event', some-handler)
+// document.querySelector('.some-element').addEventListener('some-event', some-handler, { once: true })
 
 //
 // TRIGGER EVENTS (using ember test helpers)
@@ -538,6 +550,9 @@ export const unwrap = (selector) => {
 // $('.some-element').append(htmlString)
 // Element.append(htmlStringToElement(htmlString)) - see above
 
+// parentElem.prepend(htmlString)
+// parentElem.insertBefore(htmlStringToElement(htmlString), parentElem.firstChild) - see above
+
 // $('.some-element').val(some-value)
 // document.querySelector('.some-element').setAttribute('value', some-value)
 
@@ -547,6 +562,9 @@ export const unwrap = (selector) => {
 
 // this.$('.some-element').prop('some-attribute')
 // document.querySelector('.some-element').getAttribute('some-attribute')
+
+// this.$('.some-element').prop('some-attribute', 'some-value')
+// document.querySelector('.some-element').setAttribute('some-attribute', 'some-value')
 
 // this.$('.some-element').attr('some-attribute')
 // document.querySelector('.some-element').getAttribute('some-attribute')
