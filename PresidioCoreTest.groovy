@@ -5,7 +5,7 @@ pipeline {
         booleanParam( name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
         choice(name: 'STABILITY', choices: ['dev','beta','alpha','rc','gold'], description: 'RPMs stability type', )
         choice(name: 'VERSION', choices: ['11.4.0.0','11.3.0.0','11.3.1.0','11.2.1.0'], description: 'RPMs version', )
-        choice(name: 'NODE', choices: ['nw-hz-06-ueba','','nw-hz-03-ueba','nw-hz-04-ueba','nw-hz-05-ueba','nw-hz-06-ueba','nw-hz-07-ueba'], description: '', )
+        choice(name: 'NODE', choices: ['','','nw-hz-03-ueba','nw-hz-04-ueba','nw-hz-05-ueba','nw-hz-06-ueba','nw-hz-07-ueba'], description: '', )
     }
     agent { label env.NODE }
     environment {
@@ -36,33 +36,20 @@ pipeline {
             }
             steps {
                 script {
-                    uebaInstallRPMs()
+                    //uebaInstallRPMs()
                 }
             }
         }
-        stage('presidio-integration-test Project Build Pipeline Initialization') {
-            steps {
-                script {
-                    mvnCleanInstall()
-                }
-            }
-        }
-        stage('End 2 End Test Automation') {
-            steps {
-                script {
-                    runEnd2EndTestAutomation()
-                }
-            }
-        }
+
     }
 }
 /******************************
  *   UEBA RPMs Installation   *
  ******************************/
 def setBaseUrl(
-        String rpmBuildPath = env.SPECIFIC_RPM_BUILD,
-        String rpmVeriosn = env.VERSION,
-        String stability = env.STABILITY
+        String rpmBuildPath = param.SPECIFIC_RPM_BUILD,
+        String rpmVeriosn = param.VERSION,
+        String stability = param.STABILITY
 ) {
     String baseUrl = "baseurl="
     if (rpmBuildPath != '') {
@@ -88,45 +75,4 @@ def setBaseUrl(
         error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
     oldUebaRpmsVresion = sh (script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
-}
-
-def uebaInstallRPMs() {
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION ${oldUebaRpmsVresion}"
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION ${oldUebaRpmsVresion}"
-
-}
-
-def cleanUebaDBs() {
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION ${oldUebaRpmsVresion}"
-    if (params.INSTALL_UEBA_RPMS == false) {
-        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION ${oldUebaRpmsVresion}"
-    }
-}
-
-/**************************
- * Project Build Pipeline *
- **************************/
-def buildIntegrationTestProject(
-        String repositoryName = "presidio-integration-test",
-        String userName = env.RSA_BUILD_CREDENTIALS_USR,
-        String userPassword = env.RSA_BUILD_CREDENTIALS_PSW,
-        String branchName = env.INTEGRATION_TEST_BRANCH_NAME) {
-    sh "git config --global user.name \"${userName}\""
-    sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/presidio-integration-test.git"
-    dir(env.REPOSITORY_NAME) {
-        sh "git checkout ${branchName}"
-    }
-}
-
-def mvnCleanInstall() {
-    dir(env.REPOSITORY_NAME) {
-        sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
-    }
-}
-
-def runEnd2EndTestAutomation() {
-    dir(env.REPOSITORY_NAME) {
-        println(env.REPOSITORY_NAME)
-        sh "mvn -B -f presidio-integration-e2e-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
-    }
 }
