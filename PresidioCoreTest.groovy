@@ -8,8 +8,7 @@ pipeline {
         //choice(name: 'VERSION', choices: ['11.4.0.0','11.3.0.0','11.3.1.0','11.2.1.0'], description: 'RPMs version')
         //choice(name: 'NODE', choices: ['','','nw-hz-03-ueba','nw-hz-04-ueba','nw-hz-05-ueba','nw-hz-06-ueba','nw-hz-07-ueba'], description: '')
     }
-    agent {
-        label "presidio-node || presidio-test"
+    agent { label "presidio-node || presidio-test"
         if (env.NODE != "")
             label env.NODE
     }
