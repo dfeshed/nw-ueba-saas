@@ -1,4 +1,3 @@
-oldUebaRpmsVresion
 pipeline {
     agent { label env.NODE }
     environment {
@@ -6,6 +5,9 @@ pipeline {
         // The credentials (name + password) associated with the RSA build user.
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         REPOSITORY_NAME = "presidio-integration-test"
+    }
+    parameters {
+        string(name: 'oldUebaRpmsVresion', defaultValue: '')
     }
 
     stages {
@@ -19,7 +21,7 @@ pipeline {
         }
         stage('Reset DBs LogHybrid and UEBA') {
             steps {
-                println(oldUebaRpmsVresion)
+                println(env.oldUebaRpmsVresion)
                 CleanEpHybridUebaDBs()
             }
         }
@@ -81,8 +83,8 @@ def setBaseUrl(
     } else {
         error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
-    oldUebaRpmsVresion = sh (script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
-    println("Old RPMs Version- " + oldUebaRpmsVresion)
+    oldVresion = sh (script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
+    env.oldUebaRpmsVresion = oldVresion
 
 }
 
