@@ -43,7 +43,7 @@ def setBaseUrl(
         SecondDir = FirstDir + "." + versionArray[2]
         baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/" + FirstDir + "/" + SecondDir + "/" + rpmVeriosn + "-" + stability + "/"
         osBaseUrl = 'baseurl=http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/latest/11.4.0.0/OS/'
-    }
+    }/**
     baseUrlValidation = baseUrl.drop(8)
     baseUrlresponsecode = sh(returnStdout: true, script: "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}").trim()
     if (baseUrlresponsecode == '200') {
@@ -56,7 +56,7 @@ def setBaseUrl(
     } else {
         error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
-    oldUebaRpmsVresion = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
+    //oldUebaRpmsVresion = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()**/
 }
 
 /**************************
