@@ -19,7 +19,6 @@ pipeline {
     stages {
         stage('presidio-integration-test Project Clone') {
             steps {
-                println("Running on node- " + env.NODE_LABLE)
                 cleanWs()
                 buildIntegrationTestProject()
                 setBaseUrl()
@@ -30,9 +29,7 @@ pipeline {
                 expression { return !params.RUN_ONLY_TESTS }
             }
             steps {
-                script {
-                    cleanUebaDBs()
-                }
+                cleanUebaDBs()
             }
         }
         stage('Install UEBA RPMs') {
@@ -40,23 +37,17 @@ pipeline {
                 expression { return params.INSTALL_UEBA_RPMS }
             }
             steps {
-                script {
-                    uebaInstallRPMs()
-                }
+                uebaInstallRPMs()
             }
         }
         stage('ProjectInitialization') {
             steps {
-                script {
-                    mvnCleanInstall()
-                }
+                mvnCleanInstall()
             }
         }
         stage('Test Automation') {
             steps {
-                script {
-                    runCoreTestAutomation()
-                }
+                runCoreTestAutomation()
             }
         }
     }
