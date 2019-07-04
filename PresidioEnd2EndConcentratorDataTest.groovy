@@ -6,9 +6,6 @@ pipeline {
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         REPOSITORY_NAME = "presidio-integration-test"
     }
-    parameters {
-        string(name: 'oldUebaRpmsVresion', defaultValue: '')
-    }
 
     stages {
         stage('presidio-integration-test Project Clone') {
@@ -21,7 +18,6 @@ pipeline {
         }
         stage('Reset DBs LogHybrid and UEBA') {
             steps {
-                println(old_UebaRpmsVresion)
                 CleanEpHybridUebaDBs()
             }
         }
@@ -83,9 +79,7 @@ def setBaseUrl(
     } else {
         error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
-    oldVresion = sh (script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
-    old_UebaRpmsVresion = oldVresion
-
+    oldUebaRpmsVresion = sh (script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
 }
 
 def uebaInstallRPMs() {
@@ -95,6 +89,8 @@ def uebaInstallRPMs() {
 }
 
 def CleanEpHybridUebaDBs() {
+    sh "echo3  $env.oldUebaRpmsVresion"
+    sh "echo 2 ${oldUebaRpmsVresion}"
     sh "cp ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/reset_ld_and_concentrator_hybrid_dbs.sh /home/presidio/"
     sh "sudo bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
     sh "rm -f /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
