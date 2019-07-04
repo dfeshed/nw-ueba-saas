@@ -30,16 +30,6 @@ pipeline {
                 cleanUebaDBs()
             }
         }
-        stage('UEBA - RPMs Upgrade') {
-            when {
-                expression { return params.INSTALL_UEBA_RPMS }
-            }
-            steps {
-                script {
-                    //uebaInstallRPMs()
-                }
-            }
-        }
 
     }
 }
