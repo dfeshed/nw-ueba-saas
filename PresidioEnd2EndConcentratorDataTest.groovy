@@ -80,7 +80,7 @@ def setBaseUrl(
     } else {
         error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
-    oldUebaRpmsVresion = sh 'rpm -qa \\| grep rsa-nw-presidio-core \\| cut -d\"-\" -f5'
+    oldUebaRpmsVresion = sh 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5'
     println("Old RPMs Version- " + ${oldUebaRpmsVresion})
 }
 
