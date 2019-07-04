@@ -86,17 +86,6 @@ def setBaseUrl(
     oldUebaRpmsVresion = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
 }
 
-def cleanUebaDBs() {
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION ${oldUebaRpmsVresion}"
-    if (params.INSTALL_UEBA_RPMS == false) {
-        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION ${oldUebaRpmsVresion}"
-    }
-}
-
-def uebaInstallRPMs() {
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION ${oldUebaRpmsVresion}"
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION ${oldUebaRpmsVresion}"
-}
 
 /**************************
  * Project Build Pipeline *
@@ -110,18 +99,5 @@ def buildIntegrationTestProject(
     sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/presidio-integration-test.git"
     dir(env.REPOSITORY_NAME) {
         sh "git checkout ${branchName}"
-    }
-}
-
-def mvnCleanInstall() {
-    dir(env.REPOSITORY_NAME) {
-        sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
-    }
-}
-
-def runCoreTestAutomation() {
-    dir(env.REPOSITORY_NAME) {
-        println(env.REPOSITORY_NAME)
-        sh "mvn -B -f presidio-integration-output-component-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
     }
 }
