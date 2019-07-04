@@ -1,11 +1,11 @@
 pipeline {
     agent { label env.NODE }
     environment {
-        BASEURL = "baseurl="
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
         // The credentials (name + password) associated with the RSA build user.
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         REPOSITORY_NAME = "presidio-integration-test"
+        OLD_UEBA_RPM_VERSION = ""
     }
 
     stages {
@@ -19,6 +19,7 @@ pipeline {
         }
         stage('Reset DBs LogHybrid and UEBA') {
             steps {
+                println($env.OLD_UEBA_RPM_VERSION)
                 CleanEpHybridUebaDBs()
             }
         }
@@ -80,15 +81,12 @@ def setBaseUrl(
     } else {
         error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
-     //sh "rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5 > oldUebaRpmsVresion"
-    oldUebaRpmsVresion = sh (script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
-    println("Old RPMs Version- " + oldUebaRpmsVresion)
-    echo "${oldUebaRpmsVresion}"
+    env.OLD_UEBA_RPM_VERSION = sh (script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
 }
 
 def uebaInstallRPMs() {
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION"
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION $env.OLD_UEBA_RPM_VERSION"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION $env.OLD_UEBA_RPM_VERSION"
 
 }
 
@@ -96,9 +94,9 @@ def CleanEpHybridUebaDBs() {
     sh "cp ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/reset_ld_and_concentrator_hybrid_dbs.sh /home/presidio/"
     sh "sudo bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
     sh "rm -f /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION $env.OLD_UEBA_RPM_VERSION"
     if (params.INSTALL_UEBA_RPMS == false) {
-        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION"
+        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION $env.OLD_UEBA_RPM_VERSION"
     }
 }
 
