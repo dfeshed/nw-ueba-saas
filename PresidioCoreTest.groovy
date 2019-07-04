@@ -55,7 +55,8 @@ pipeline {
  *   UEBA RPMs Installation   *
  ******************************/
 def setBaseUrl(
-        String rpmBuildPath = param.SPECIFIC_RPM_BUILD,
+        //String rpmBuildPath = param.SPECIFIC_RPM_BUILD,
+        String rpmBuildPath ="",
         String rpmVeriosn = env.VERSION,
         String stability = env.STABILITY
 ) {
