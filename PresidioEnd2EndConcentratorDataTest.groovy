@@ -82,7 +82,8 @@ def setBaseUrl(
     }
      //sh "rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5 > oldUebaRpmsVresion"
     oldUebaRpmsVresion = sh (script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
-    println("Old RPMs Version- " + ${oldUebaRpmsVresion})
+    println("Old RPMs Version- " + oldUebaRpmsVresion)
+    echo "${oldUebaRpmsVresion}"
 }
 
 def uebaInstallRPMs() {
