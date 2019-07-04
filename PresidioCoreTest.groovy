@@ -24,32 +24,6 @@ pipeline {
                 setBaseUrl()
             }
         }
-        stage('Reset UEBA DBs') {
-            when {
-                expression { return !params.RUN_ONLY_TESTS }
-            }
-            steps {
-                cleanUebaDBs()
-            }
-        }
-        stage('Install UEBA RPMs') {
-            when {
-                expression { return params.INSTALL_UEBA_RPMS }
-            }
-            steps {
-                uebaInstallRPMs()
-            }
-        }
-        stage('ProjectInitialization') {
-            steps {
-                mvnCleanInstall()
-            }
-        }
-        stage('Test Automation') {
-            steps {
-                runCoreTestAutomation()
-            }
-        }
     }
 }
 /******************************
