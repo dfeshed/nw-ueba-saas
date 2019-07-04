@@ -19,8 +19,8 @@ pipeline {
     stages {
         stage('presidio-integration-test Project Clone') {
             steps {
-                buildIntegrationTestProject()
-                //setBaseUrl()
+                //buildIntegrationTestProject()
+                setBaseUrl()
             }
         }
      }
