@@ -21,6 +21,7 @@ pipeline {
         }
         stage('Reset DBs LogHybrid and UEBA') {
             steps {
+                println(old_UebaRpmsVresion)
                 CleanEpHybridUebaDBs()
             }
         }
@@ -50,7 +51,7 @@ pipeline {
         }
     }
 }
-
+old_UebaRpmsVresion = ""
 /******************************
  *   UEBA RPMs Installation   *
  ******************************/
@@ -83,7 +84,7 @@ def setBaseUrl(
         error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
     oldVresion = sh (script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
-    env.oldUebaRpmsVresion = oldVresion
+    old_UebaRpmsVresion = oldVresion
 
 }
 
