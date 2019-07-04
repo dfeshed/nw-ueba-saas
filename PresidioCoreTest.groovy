@@ -9,11 +9,9 @@ pipeline {
         //choice(name: 'NODE', choices: ['','','nw-hz-03-ueba','nw-hz-04-ueba','nw-hz-05-ueba','nw-hz-06-ueba','nw-hz-07-ueba'], description: '')
     }
     agent {
-        if (env.NODE == "") {
+        label "presidio-node || presidio-test"
+        if (env.NODE != "")
             label env.NODE
-        } else {
-            label "presidio-node || presidio-test"
-        }
     }
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
