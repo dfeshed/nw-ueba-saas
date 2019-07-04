@@ -24,7 +24,7 @@ pipeline {
                 setBaseUrl()
             }
         }
-        stage('Reset UEBA DBs') {
+ /**       stage('Reset UEBA DBs') {
             when {
                 expression { return !params.RUN_ONLY_TESTS }
             }
@@ -49,7 +49,7 @@ pipeline {
             steps {
                 runCoreTestAutomation()
             }
-        }
+        }**/
     }
 }
 /******************************
