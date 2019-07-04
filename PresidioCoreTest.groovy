@@ -20,7 +20,6 @@ pipeline {
         stage('presidio-integration-test Project Clone') {
             steps {
                 cleanWs()
-                buildIntegrationTestProject()
                 setBaseUrl()
             }
         }
@@ -87,17 +86,3 @@ def setBaseUrl(
 }
 
 
-/**************************
- * Project Build Pipeline *
- **************************/
-def buildIntegrationTestProject(
-        String repositoryName = "presidio-integration-test",
-        String userName = env.RSA_BUILD_CREDENTIALS_USR,
-        String userPassword = env.RSA_BUILD_CREDENTIALS_PSW,
-        String branchName = env.INTEGRATION_TEST_BRANCH_NAME) {
-    sh "git config --global user.name \"${userName}\""
-    sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/presidio-integration-test.git"
-    dir(env.REPOSITORY_NAME) {
-        sh "git checkout ${branchName}"
-    }
-}
