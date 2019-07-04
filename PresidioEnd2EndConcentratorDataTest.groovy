@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Reset DBs LogHybrid and UEBA') {
             steps {
-                println($env.OLD_UEBA_RPM_VERSION)
+                println(env.OLD_UEBA_RPM_VERSION)
                 CleanEpHybridUebaDBs()
             }
         }
