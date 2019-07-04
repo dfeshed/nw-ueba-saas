@@ -7,6 +7,14 @@ pipeline {
         REPOSITORY_NAME = "presidio-integration-test"
     }
 
+    parameters {
+        string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '',description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
+        booleanParam( name: 'RUN_ONLY_TESTS', defaultValue: true, description: '')
+        booleanParam( name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
+        choice(name: 'STABILITY', choices: ['dev','beta','alpha','rc','gold'], description: 'RPMs stability type', )
+        choice(name: 'VERSION', choices: ['11.4.0.0','11.3.0.0','11.3.1.0','11.2.1.0'], description: 'RPMs version', )
+        choice(name: 'NODE', choices: ['nw-hz-06-ueba','','nw-hz-03-ueba','nw-hz-04-ueba','nw-hz-05-ueba','nw-hz-06-ueba','nw-hz-07-ueba'], description: '', )
+    }
     stages {
         stage('presidio-integration-test Project Clone') {
             steps {
@@ -16,9 +24,9 @@ pipeline {
                 setBaseUrl()
             }
         }
-        stage('Reset DBs LogHybrid and UEBA') {
+        stage('Reset UEBA DBs') {
             steps {
-                CleanEpHybridUebaDBs()
+                cleanUebaDBs()
             }
         }
         stage('UEBA - RPMs Upgrade') {
@@ -87,10 +95,7 @@ def uebaInstallRPMs() {
 
 }
 
-def CleanEpHybridUebaDBs() {
-    sh "cp ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/reset_ld_and_concentrator_hybrid_dbs.sh /home/presidio/"
-    sh "sudo bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
-    sh "rm -f /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
+def cleanUebaDBs() {
     sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION ${oldUebaRpmsVresion}"
     if (params.INSTALL_UEBA_RPMS == false) {
         sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION ${oldUebaRpmsVresion}"
