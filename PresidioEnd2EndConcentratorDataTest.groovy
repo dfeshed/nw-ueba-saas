@@ -81,7 +81,7 @@ def setBaseUrl(
         error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
     oldUebaRpmsVresion = sh "rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5"
-    println("Old RPMs Version- " + oldUebaRpmsVresion)
+    println("Old RPMs Version- " + $oldUebaRpmsVresion)
 }
 
 def uebaInstallRPMs() {
