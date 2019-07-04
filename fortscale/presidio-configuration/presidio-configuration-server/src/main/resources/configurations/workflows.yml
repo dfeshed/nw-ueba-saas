@@ -22,11 +22,11 @@ dags:
          entity_type : userId
          depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
          enable_output_forwarder: ${outputForwarding.enableForwarding}
-       - smart_conf_name: ssl_subject
+       - smart_conf_name: ssl_subject_hourly
          entity_type : sslSubject
          depends_on_schemas: [TLS]
          enable_output_forwarder: ${outputForwarding.enableForwarding}
-       - smart_conf_name: ja3
+       - smart_conf_name: ja3_hourly
          entity_type : ja3
          depends_on_schemas: [TLS]
          enable_output_forwarder: ${outputForwarding.enableForwarding}
@@ -35,9 +35,9 @@ dags:
       smart_confs:
        - smart_conf_name: userId_hourly
          depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
-       - smart_conf_name: ssl_subject
+       - smart_conf_name: ssl_subject_hourly
          depends_on_schemas: [TLS]
-       - smart_conf_name: ja3
+       - smart_conf_name: ja3_hourly
          depends_on_schemas: [TLS]
 
   pools_config:
