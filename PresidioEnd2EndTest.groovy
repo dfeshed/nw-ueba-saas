@@ -1,5 +1,14 @@
 pipeline {
-    agent { label env.NODE }
+    parameters {
+        string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '', description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
+        string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: 'origin/master', description: '')
+        booleanParam(name: 'RUN_ONLY_TESTS', defaultValue: true, description: '')
+        booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
+        //choice(name: 'STABILITY', choices: ['dev','beta','alpha','rc','gold'], description: 'RPMs stability type')
+        //choice(name: 'VERSION', choices: ['11.4.0.0','11.3.0.0','11.3.1.0','11.2.1.0'], description: 'RPMs version')
+        //choice(name: 'NODE_LABLE', choices: ['','','nw-hz-03-ueba','nw-hz-04-ueba','nw-hz-05-ueba','nw-hz-06-ueba','nw-hz-07-ueba'], description: '')
+    }
+    agent { label env.NODE_LABLE }
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
         // The credentials (name + password) associated with the RSA build user.
@@ -10,39 +19,35 @@ pipeline {
     stages {
         stage('presidio-integration-test Project Clone') {
             steps {
-                println("Running on node- " + env.NODE)
                 cleanWs()
                 buildIntegrationTestProject()
                 setBaseUrl()
             }
         }
-        stage('Reset DBs LogHybrid and UEBA') {
+        stage('Reset UEBA DBs') {
+            when {
+                expression { return !params.RUN_ONLY_TESTS }
+            }
             steps {
-                CleanEpHybridUebaDBs()
+                cleanUebaDBs()
             }
         }
-        stage('UEBA - RPMs Upgrade') {
+        stage('Install UEBA RPMs') {
             when {
                 expression { return params.INSTALL_UEBA_RPMS }
             }
             steps {
-                script {
-                    uebaInstallRPMs()
-                }
+                uebaInstallRPMs()
             }
         }
-        stage('presidio-integration-test Project Build Pipeline Initialization') {
+        stage('ProjectInitialization') {
             steps {
-                script {
-                    mvnCleanInstall()
-                }
+                mvnCleanInstall()
             }
         }
-        stage('End 2 End Test Automation') {
+        stage('Test Automation') {
             steps {
-                script {
-                    runEnd2EndTestAutomation()
-                }
+                runCoreTestAutomation()
             }
         }
     }
@@ -51,7 +56,7 @@ pipeline {
  *   UEBA RPMs Installation   *
  ******************************/
 def setBaseUrl(
-        String rpmBuildPath = env.SPECIFIC_RPM_BUILD,
+        String rpmBuildPath = param.SPECIFIC_RPM_BUILD,
         String rpmVeriosn = env.VERSION,
         String stability = env.STABILITY
 ) {
@@ -78,23 +83,19 @@ def setBaseUrl(
     } else {
         error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
-    oldUebaRpmsVresion = sh (script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
+    oldUebaRpmsVresion = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
+}
+
+def cleanUebaDBs() {
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION ${oldUebaRpmsVresion}"
+    if (params.INSTALL_UEBA_RPMS == false) {
+        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION ${oldUebaRpmsVresion}"
+    }
 }
 
 def uebaInstallRPMs() {
     sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION ${oldUebaRpmsVresion}"
     sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION ${oldUebaRpmsVresion}"
-
-}
-
-def CleanEpHybridUebaDBs() {
-    sh "cp ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/reset_ld_and_concentrator_hybrid_dbs.sh /home/presidio/"
-    sh "sudo bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
-    sh "rm -f /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION ${oldUebaRpmsVresion}"
-    if (params.INSTALL_UEBA_RPMS == false) {
-        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION ${oldUebaRpmsVresion}"
-    }
 }
 
 /**************************
@@ -118,9 +119,9 @@ def mvnCleanInstall() {
     }
 }
 
-def runEnd2EndTestAutomation() {
+def runCoreTestAutomation() {
     dir(env.REPOSITORY_NAME) {
         println(env.REPOSITORY_NAME)
-        sh "mvn -B -f presidio-integration-e2e-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
+        sh "mvn -B -f presidio-integration-output-component-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
     }
 }
