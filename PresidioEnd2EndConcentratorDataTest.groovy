@@ -89,8 +89,9 @@ def uebaInstallRPMs() {
 }
 
 def CleanEpHybridUebaDBs() {
-    sh "echo3  $env.oldUebaRpmsVresion"
     sh "echo 2 ${oldUebaRpmsVresion}"
+    sh "echo 3  $env.oldUebaRpmsVresion"
+
     sh "cp ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/reset_ld_and_concentrator_hybrid_dbs.sh /home/presidio/"
     sh "sudo bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
     sh "rm -f /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
