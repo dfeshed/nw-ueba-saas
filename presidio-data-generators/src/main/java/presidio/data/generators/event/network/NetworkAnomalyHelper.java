@@ -19,44 +19,50 @@ import java.util.stream.IntStream;
 
 import static presidio.data.generators.event.network.NetworkEventsGenerator.*;
 
-public class NetworkBuilderHelper {
+public class NetworkAnomalyHelper {
     private NetworkEventsGenerator eventGen;
     private static Map<String, Long> stateHolder = new ConcurrentHashMap<>();
     private static Map<String, String> valuesHolder = new ConcurrentHashMap<>();
-    private IBaseGenerator<String> fqdnUncommonGenerator = new HostnameGenerator(DEFAULT_FQDN_END_INDEX+1,1999);
+    private static IBaseGenerator<String> fqdnUncommonGenerator = new HostnameGenerator(DEFAULT_FQDN_END_INDEX+1,1999);
+
     private final long UNCOMMON_PORT_START_INDEX = (long) (DEFAULT_REGULAR_PORT_BELOW + 1);
     private Function<Long, String> uncommonIP = index -> "10."+ index + "." + DEFAULT_IP_3D_BYTE+1 + ".200";
     private Function<Integer, String> distinctIP = index -> "10."+ index + "." + DEFAULT_IP_3D_BYTE+2 + ".200";
 
-    NetworkBuilderHelper(NetworkEventsGenerator eventGen){
+    NetworkAnomalyHelper(NetworkEventsGenerator eventGen){
         this.eventGen = eventGen;
     }
 
-    public NetworkBuilderHelper setSSLSubjectEntityValue(String label) {
+  /** entity fields - must be set for validation */
+ public NetworkAnomalyHelper setSSLSubjectEntityValue(String label) {
         eventGen.setSslSubjectGenerator(new FixedValueGenerator<>(label));
         return this;
     }
 
-    public NetworkBuilderHelper setJa3EntityValue(String label) {
+    public NetworkAnomalyHelper setJa3EntityValue(String label) {
         eventGen.setJa3Generator(new FixedValueGenerator<>(label));
         return this;
     }
 
-    public NetworkBuilderHelper fixSslSubject(){
+    public NetworkAnomalyHelper fixSslSubject(){
         String key = valueKey.get();
         stateHolder.putIfAbsent(key,0L);
         eventGen.setSslSubjectGenerator(new FixedValueGenerator<>(generatorKeyString.apply(key)));
         return this;
     }
 
-    public NetworkBuilderHelper fixJa3(){
+    public NetworkAnomalyHelper fixJa3(){
         String key = valueKey.get();
         stateHolder.putIfAbsent(key,0L);
         eventGen.setJa3Generator(new FixedValueGenerator<>(generatorKeyString.apply(key)));
         return this;
     }
 
-    public NetworkBuilderHelper fixDestinationOrganization(){
+
+
+
+    /** constant String values - extracted from calling method name */
+    public NetworkAnomalyHelper fixDestinationOrganization(){
         String key = valueKey.get();
         stateHolder.putIfAbsent(key,0L);
         eventGen.setDestinationOrganizationGenerator(new FixedValueGenerator<>(generatorKeyString.apply(key)));
@@ -64,7 +70,7 @@ public class NetworkBuilderHelper {
     }
 
 
-    public NetworkBuilderHelper nextDestinationOrganization(){
+    public NetworkAnomalyHelper nextDestinationOrganization(){
         String key = valueKey.get();
         stateHolder.putIfAbsent(key,0L);
         stateHolder.computeIfPresent(key,(k,v) -> v+1);
@@ -73,38 +79,21 @@ public class NetworkBuilderHelper {
     }
 
 
-    public NetworkBuilderHelper fixJa3s(){
+    public NetworkAnomalyHelper fixJa3s(){
         String key = valueKey.get();
         stateHolder.putIfAbsent(key,0L);
         eventGen.setJa3sGenerator(new FixedValueGenerator<>(generatorKeyString.apply(key)));
         return this;
     }
 
-    public NetworkBuilderHelper fixFqdn(){
-        String key = valueKey.get();
-        valuesHolder.putIfAbsent(key,fqdnUncommonGenerator.getNext());
-        eventGen.setFqdnGenerator(new FixedValueGenerator<>(
-                generatorKeyString.apply(key).replaceAll("_","-").concat(valuesHolder.get(key))));
-        return this;
-    }
-
-    public NetworkBuilderHelper nextFqdn(){
-        String key = valueKey.get();
-        valuesHolder.putIfAbsent(key,fqdnUncommonGenerator.getNext());
-        valuesHolder.computeIfPresent(key,(k,v) -> fqdnUncommonGenerator.getNext());
-        eventGen.setFqdnGenerator(new FixedValueGenerator<>(
-                generatorKeyString.apply(key).replaceAll("_","-").concat(valuesHolder.get(key))));
-        return this;
-    }
-
-    public NetworkBuilderHelper fixSourceNetname(){
+    public NetworkAnomalyHelper fixSourceNetname(){
         String key = valueKey.get();
         stateHolder.putIfAbsent(key,0L);
         eventGen.setSourceNetnameGen(new FixedValueGenerator<>(generatorKeyString.apply(key)));
         return this;
     }
 
-    public NetworkBuilderHelper nextSourceNetname(){
+    public NetworkAnomalyHelper nextSourceNetname(){
         String key = valueKey.get();
         stateHolder.putIfAbsent(key,0L);
         stateHolder.computeIfPresent(key,(k,v) -> v+1);
@@ -112,14 +101,14 @@ public class NetworkBuilderHelper {
         return this;
     }
 
-    public NetworkBuilderHelper fixDestinationNetname(){
+    public NetworkAnomalyHelper fixDestinationNetname(){
         String key = valueKey.get();
         stateHolder.putIfAbsent(key,0L);
         eventGen.setDestinationNetnameGen(new FixedValueGenerator<>(generatorKeyString.apply(key)));
         return this;
     }
 
-    public NetworkBuilderHelper fixLocation(){
+    public NetworkAnomalyHelper fixLocation(){
         String key = valueKey.get();
         stateHolder.putIfAbsent(key,0L);
         eventGen.setLocationGen(new FixedValueGenerator<>(new Location(generatorKeyString.apply(key),
@@ -127,7 +116,7 @@ public class NetworkBuilderHelper {
         return this;
     }
 
-    public NetworkBuilderHelper nextLocation(){
+    public NetworkAnomalyHelper nextLocation(){
         String key = valueKey.get();
         stateHolder.putIfAbsent(key,0L);
         stateHolder.computeIfPresent(key,(k,v) -> v+1);
@@ -136,21 +125,78 @@ public class NetworkBuilderHelper {
         return this;
     }
 
-    public NetworkBuilderHelper fixDestPort(){
-        String key = valueKey.get();
-        stateHolder.putIfAbsent(key,UNCOMMON_PORT_START_INDEX);
-        eventGen.setDestinationPortGenerator(new FixedValueGenerator<>(stateHolder.get(key).intValue()));
+
+
+
+
+
+    /** index based constant values. the values taken from pre-defined abnormal list by running index*/
+    public NetworkAnomalyHelper fixDstPort(){
+        String callingMethodKey = valueKey.get();
+        String fieldKey = "destPort";
+        stateHolder.putIfAbsent(fieldKey,UNCOMMON_PORT_START_INDEX);
+        updateForNewMethodLeaveForExisting(callingMethodKey, fieldKey);
+        eventGen.setDestinationPortGenerator(new FixedValueGenerator<>(stateHolder.get(fieldKey).intValue()));
         return this;
     }
 
-    public NetworkBuilderHelper nextDestPort(){
-        String key = valueKey.get();
-        stateHolder.putIfAbsent(key,UNCOMMON_PORT_START_INDEX);
-        stateHolder.computeIfPresent(key,(k,v) -> v+1L);
-        eventGen.setDestinationPortGenerator(new FixedValueGenerator<>(stateHolder.get(key).intValue()));
+    public NetworkAnomalyHelper nextDstPort(){
+        String callingMethodKey = valueKey.get();
+        String fieldKey = "destPort";
+        stateHolder.putIfAbsent(callingMethodKey,0L);
+        stateHolder.putIfAbsent(fieldKey,UNCOMMON_PORT_START_INDEX);
+        stateHolder.computeIfPresent(fieldKey,(k,v) -> v+1);
+        eventGen.setDestinationPortGenerator(new FixedValueGenerator<>(stateHolder.get(fieldKey).intValue()));
         return this;
     }
 
+    public NetworkAnomalyHelper fixSourceIp(){
+        String callingMethodKey = valueKey.get();
+        String fieldKey = "SourceIp";
+        stateHolder.putIfAbsent(fieldKey,0L);
+        updateForNewMethodLeaveForExisting(callingMethodKey, fieldKey);
+        eventGen.setSourceIpGenerator(new FixedValueGenerator<>(uncommonIP.apply(stateHolder.get(fieldKey))));
+        return this;
+    }
+
+    public NetworkAnomalyHelper nextSourceIp(){
+        String callingMethodKey = valueKey.get();
+        String fieldKey = "SourceIp";
+        stateHolder.putIfAbsent(callingMethodKey,0L);
+        stateHolder.putIfAbsent(fieldKey,0L);
+        stateHolder.computeIfPresent(fieldKey,(k,v) -> v+1);
+        eventGen.setSourceIpGenerator(new FixedValueGenerator<>(uncommonIP.apply(stateHolder.get(callingMethodKey))));
+        return this;
+    }
+
+
+    /** string values from abnormal list by calling method name */
+    public NetworkAnomalyHelper fixFqdn(){
+        String callingMethodKey = valueKey.get();
+        valuesHolder.putIfAbsent(callingMethodKey,fqdnUncommonGenerator.getNext());
+        eventGen.setFqdnGenerator(new FixedValueGenerator<>(valuesHolder.get(callingMethodKey)));
+        return this;
+    }
+
+    public NetworkAnomalyHelper nextFqdn(){
+        String callingMethodKey = valueKey.get();
+        valuesHolder.putIfAbsent(callingMethodKey,fqdnUncommonGenerator.getNext());
+        valuesHolder.computeIfPresent(callingMethodKey,(k,v) -> fqdnUncommonGenerator.getNext());
+        eventGen.setFqdnGenerator(new FixedValueGenerator<>(valuesHolder.get(callingMethodKey)));
+        return this;
+    }
+
+
+
+    public NetworkAnomalyHelper setDistinctSrcIps(int start, int end){
+        List<Integer> list = IntStream.range(start, end).boxed().collect(Collectors.toList());
+        IBaseGenerator<String> normalDistinctIps = new CyclicValuesGenerator<>(list.stream().map(e -> distinctIP.apply(e)).toArray(String[]::new));
+        eventGen.setSourceIpGenerator(normalDistinctIps);
+        return this;
+    }
+
+
+    /** accessory methods */
     public List<NetworkEvent> generate() throws GeneratorException {
         return eventGen.generate();
     }
@@ -160,31 +206,12 @@ public class NetworkBuilderHelper {
         return eventsList;
     }
 
-    public NetworkBuilderHelper currentUnusualSourceIp(){
-        String key = "SourceIp";
-        stateHolder.putIfAbsent(key,0L);
-        eventGen.setSourceIpGenerator(new FixedValueGenerator<>(uncommonIP.apply(stateHolder.get(key))));
-        return this;
+    private void updateForNewMethodLeaveForExisting(String callingMethodKey, String fieldKey){
+        if (!stateHolder.containsKey(callingMethodKey)) {
+            stateHolder.putIfAbsent(callingMethodKey,0L);
+            stateHolder.computeIfPresent(fieldKey,(k,v) -> v+1L);
+        }
     }
-
-    public NetworkBuilderHelper nextUnusualSourceIp(){
-        String key = "SourceIp";
-        stateHolder.putIfAbsent(key,0L);
-        stateHolder.computeIfPresent(key,(k,v) -> v+1);
-        eventGen.setDestinationOrganizationGenerator(new FixedValueGenerator<>(uncommonIP.apply(stateHolder.get(key))));
-        return this;
-    }
-
-
-    public NetworkBuilderHelper setDistinctSrcIps(int start, int end){
-        List<Integer> list = IntStream.range(start, end).boxed().collect(Collectors.toList());
-        IBaseGenerator<String> normalDistinctIps = new CyclicValuesGenerator<>(list.stream().map(e -> distinctIP.apply(e)).toArray(String[]::new));
-        eventGen.setSourceIpGenerator(normalDistinctIps);
-        return this;
-    }
-
-
-
 
     private Function<String,String> prependTestMarker = e -> eventGen.getTestMarker()
             .concat("_")

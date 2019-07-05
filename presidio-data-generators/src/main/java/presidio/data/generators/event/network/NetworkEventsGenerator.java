@@ -64,8 +64,8 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
         this.testMarker = testMarker;
     }
 
-    public NetworkBuilderHelper modify() {
-        return new NetworkBuilderHelper(this);
+    public NetworkAnomalyHelper modify() {
+        return new NetworkAnomalyHelper(this);
     }
 
 
