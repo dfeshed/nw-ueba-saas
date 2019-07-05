@@ -81,9 +81,12 @@ module('Integration | Component | events-filter-panel', function(hooks) {
     filter: { ...filters }
   });
 
+  const hostDetails = [{
+    machineOsType: 'windows'
+  }];
 
   test('it renders the header and footer sections', async function(assert) {
-    new ReduxDataHelper(setState).selectedProcess().processFilter(processFilter).build();
+    new ReduxDataHelper(setState).selectedProcess().processFilter(processFilter).processProperties(hostDetails).build();
     await render(hbs`{{process-details/events-filter-panel}}`);
     assert.equal(findAll('.rsa-header').length, 1, 'Header section exists');
     assert.equal(findAll('.filter-footer').length, 1, 'Filter footer is exists');
@@ -91,7 +94,7 @@ module('Integration | Component | events-filter-panel', function(hooks) {
 
   test('Clicking on the close icon will call the external action', async function(assert) {
     assert.expect(1);
-    new ReduxDataHelper(setState).selectedProcess().processFilter(processFilter).build();
+    new ReduxDataHelper(setState).selectedProcess().processFilter(processFilter).processProperties(hostDetails).build();
     this.set('toggleFilterPanel', () => {
       assert.ok(true);
     });
@@ -101,7 +104,7 @@ module('Integration | Component | events-filter-panel', function(hooks) {
 
   test('Clicking on the reset will call the reset action', async function(assert) {
     assert.expect(1);
-    new ReduxDataHelper(setState).selectedProcess().processFilter(processFilter).build();
+    new ReduxDataHelper(setState).selectedProcess().processFilter(processFilter).processProperties(hostDetails).build();
     this.set('toggleFilterPanel', () => {
       assert.ok(true);
     });

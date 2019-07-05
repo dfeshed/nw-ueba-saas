@@ -75,9 +75,12 @@ module('Integration | Component | filter-items-wrapper', function(hooks) {
     filter: { ...filters }
   });
 
+  const hostDetails = [{
+    machineOsType: 'windows'
+  }];
 
   test('events-filter-panel/filter-items-wrapper container renders', async function(assert) {
-    new ReduxDataHelper(setState).selectedProcess().processFilter(processFilter).build();
+    new ReduxDataHelper(setState).selectedProcess().processFilter(processFilter).processProperties(hostDetails).build();
 
     await render(hbs`{{process-details/events-filter-panel/filter-items-wrapper filterName='action' option='readDocument'}}`);
     assert.equal(findAll('.filterItem').length, 1, 'filter-items-wrapper present');
@@ -85,7 +88,12 @@ module('Integration | Component | filter-items-wrapper', function(hooks) {
   });
 
   test('Selection of filter option on Click', async function(assert) {
-    new ReduxDataHelper(setState).selectedProcess().processFilter(processFilter).queryInput(queryInputs).build();
+    new ReduxDataHelper(setState)
+      .selectedProcess()
+      .processFilter(processFilter)
+      .queryInput(queryInputs)
+      .processProperties(hostDetails)
+      .build();
 
     await render(hbs`{{process-details/events-filter-panel/filter-items-wrapper filterName='action' option='readDocument'}}`);
     assert.equal(findAll('.is-selected').length, 0, 'is-selected class not present before click');

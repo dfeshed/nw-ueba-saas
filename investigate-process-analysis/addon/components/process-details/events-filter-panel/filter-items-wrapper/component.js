@@ -2,11 +2,12 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { updateFilterValue, updateActionFilterItems } from 'investigate-process-analysis/actions/creators/process-filter';
-import { selectedFilterItemsArray } from 'investigate-process-analysis/reducers/process-filter/selectors';
+import { selectedFilterItemsArray, isWindowsAgent } from 'investigate-process-analysis/reducers/process-filter/selectors';
 
 const stateToComputed = (state) => ({
   listOfFiltersSelected: selectedFilterItemsArray(state),
-  selectedProcess: state.processAnalysis.processTree.selectedProcess
+  selectedProcess: state.processAnalysis.processTree.selectedProcess,
+  isWindowsAgent: isWindowsAgent(state)
 });
 
 const dispatchToActions = {
@@ -30,7 +31,7 @@ const filterItemsWrapper = Component.extend({
       const isSelected = !this.get('isSelected');
       const selectedProcess = this.get('selectedProcess');
       if (filterName === 'category') {
-        this.send('updateActionFilterItems', { isSelected, optionSelected });
+        this.send('updateActionFilterItems', { isSelected, optionSelected, isWindowsAgent });
       }
       this.send('updateFilterValue', { filterName, optionSelected, isSelected, selectedProcess });
     }

@@ -6,7 +6,8 @@ import filterConfig from './process-filter-config';
 
 const filterInitialState = {
   action: [],
-  category: []
+  category: [],
+  context: []
 };
 const initialState = Immutable.from({
   schema: [...filterConfig],
@@ -76,4 +77,29 @@ module('Unit | Reducers | process-filter', function() {
     assert.equal(result.schema[1].options.length, 10, 'Action filter list is updated with relevent actions if only 1 Category is selected');
   });
 
+  test('UPDATE_ACTION_FILTER_ITEMS when category is Console Events, will populate sub filter only for windows agents', function(assert) {
+    const updatedState = Immutable.from({
+      schema: [...filterConfig],
+      filter: {
+        action: [],
+        category: [],
+        context: []
+      }
+    });
+    const result = reducer(updatedState, { type: ACTION_TYPES.UPDATE_ACTION_FILTER_ITEMS, payload: { isSelected: true, optionSelected: 'Console Event', isWindowsAgent: true } });
+    assert.equal(result.schema[1].options.length, 2, '2 sub filter for Console Events populated.');
+  });
+
+  test('UPDATE_ACTION_FILTER_ITEMS when category is Console Events, will not populate sub filter only for non windows agents', function(assert) {
+    const updatedState = Immutable.from({
+      schema: [...filterConfig],
+      filter: {
+        action: [],
+        category: [],
+        context: []
+      }
+    });
+    const result = reducer(updatedState, { type: ACTION_TYPES.UPDATE_ACTION_FILTER_ITEMS, payload: { isSelected: true, optionSelected: 'Console Event', isWindowsAgent: false } });
+    assert.equal(result.schema[1].options.length, 0, 'No sub filter for Console Events populated.');
+  });
 });

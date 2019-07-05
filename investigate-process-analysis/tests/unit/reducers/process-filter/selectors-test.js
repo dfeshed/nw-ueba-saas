@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
 
-import { constructFilterQueryString, selectedFilterItemsArray } from 'investigate-process-analysis/reducers/process-filter/selectors';
+import { constructFilterQueryString, selectedFilterItemsArray, isWindowsAgent } from 'investigate-process-analysis/reducers/process-filter/selectors';
 
 module('Unit | Selectors | process-filter', function() {
 
@@ -39,5 +39,20 @@ module('Unit | Selectors | process-filter', function() {
     const expectedResult = ['createProcess', 'openProcess', 'network', 'file'];
     const result = selectedFilterItemsArray(state);
     assert.deepEqual(result, expectedResult);
+  });
+
+  test('if the agent is window or not', function(assert) {
+    const state = Immutable.from({
+      processAnalysis: {
+        processProperties: {
+          hostDetails: [{
+            machineOsType: 'windows'
+          }
+          ]
+        }
+      }
+    });
+    const result = isWindowsAgent(state);
+    assert.deepEqual(result, true);
   });
 });

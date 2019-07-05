@@ -93,5 +93,12 @@ export default {
     }
   ],
   'Network Event': [],
-  'Console Event': []
+  'Console Event': [
+    {
+      name: 'console.local'
+    },
+    {
+      name: 'console.remote'
+    }
+  ]
 };

@@ -4,6 +4,16 @@ const { createSelector } = reselect;
 
 const _selectedFilterItems = (state) => state.processAnalysis.processFilter.filter;
 
+
+const _machineOsType = (state) => state.processAnalysis.processProperties.hostDetails[0].machineOsType;
+
+export const isWindowsAgent = createSelector(
+  [_machineOsType],
+  (machineOsType) => {
+    return machineOsType === 'windows';
+  });
+
+
 /* Formats the selected filters from state into an array of queries to filter the events table.*/
 /* Expected format
 [ { value: "action = 'createProcess' || action = 'openProcess'" },

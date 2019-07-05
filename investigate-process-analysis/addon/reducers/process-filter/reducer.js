@@ -8,7 +8,8 @@ import actionConfig from './action-config';
 
 const filterInitialState = {
   action: [],
-  category: []
+  category: [],
+  context: []
 };
 const processFilterInitialState = Immutable.from({
   schema: [...filterConfig],
@@ -18,7 +19,6 @@ const processFilterInitialState = Immutable.from({
 const processFilter = reduxActions.handleActions({
 
   [ACTION_TYPES.UPDATE_FILTER_ITEMS]: (state, { payload: { filterName, optionSelected, isSelected } }) => {
-
     let selectedItems;
     const { filter } = state;
 
@@ -30,7 +30,7 @@ const processFilter = reduxActions.handleActions({
     }
     // To remove actions from the filter when more than one category is selected or no categories are selected.
     if ((filterName === 'category') && (selectedItems.length !== 1)) {
-      const filter = { category: selectedItems, action: [] };
+      const filter = { category: selectedItems, action: [], context: [] };
       return state.set('filter', filter);
     }
 
@@ -43,11 +43,12 @@ const processFilter = reduxActions.handleActions({
 
   /* Updates the schema with relevent action config for the selected categories*/
 
-  [ACTION_TYPES.UPDATE_ACTION_FILTER_ITEMS]: (state, { payload: { isSelected, optionSelected } }) => {
+  [ACTION_TYPES.UPDATE_ACTION_FILTER_ITEMS]: (state, { payload: { isSelected, optionSelected, isWindowsAgent } }) => {
     const { category } = state.filter;
     let categoryListUpdated = [...category];
+    const subCategory = (optionSelected === 'Console Event' ? 'context' : 'action');
     const actionObj = {
-      name: 'action',
+      name: subCategory,
       options: []
     };
     if (isSelected) {
@@ -56,8 +57,16 @@ const processFilter = reduxActions.handleActions({
       _.pull(categoryListUpdated, optionSelected);
     }
 
-    if (categoryListUpdated.length === 1) {
-      actionObj.options.push(...actionConfig[categoryListUpdated[0]]);
+    if (optionSelected === 'Console Event') {
+      if (isWindowsAgent) {
+        if (categoryListUpdated.length === 1) {
+          actionObj.options.push(...actionConfig[categoryListUpdated[0]]);
+        }
+      }
+    } else {
+      if (categoryListUpdated.length === 1) {
+        actionObj.options.push(...actionConfig[categoryListUpdated[0]]);
+      }
     }
 
     return state.set('schema', [...filterConfig, actionObj]);

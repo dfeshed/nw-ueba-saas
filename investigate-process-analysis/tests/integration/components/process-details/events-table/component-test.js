@@ -23,6 +23,10 @@ module('Integration | Component | process-details/events-table', function(hooks)
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
+  const hostDetails = [{
+    machineOsType: 'windows'
+  }];
+
   test('process-events-table renders', async function(assert) {
     const eventsData = [
       {
@@ -34,7 +38,12 @@ module('Integration | Component | process-details/events-table', function(hooks)
         time: 1525950159000
       }];
 
-    new ReduxDataHelper(setState).selectedProcess().eventsData(eventsData).error(null).build();
+    new ReduxDataHelper(setState)
+      .selectedProcess()
+      .eventsData(eventsData)
+      .error(null)
+      .processProperties(hostDetails)
+      .build();
     const timezone = this.owner.lookup('service:timezone');
     const timeFormat = this.owner.lookup('service:timeFormat');
     const dateFormat = this.owner.lookup('service:dateFormat');
@@ -58,7 +67,12 @@ module('Integration | Component | process-details/events-table', function(hooks)
         time: 1525950159000
       }];
 
-    new ReduxDataHelper(setState).selectedProcess().eventsData(eventsData).error(null).build();
+    new ReduxDataHelper(setState)
+      .selectedProcess()
+      .eventsData(eventsData)
+      .error(null)
+      .processProperties(hostDetails)
+      .build();
     const timezone = this.owner.lookup('service:timezone');
     const timeFormat = this.owner.lookup('service:timeFormat');
     const dateFormat = this.owner.lookup('service:dateFormat');

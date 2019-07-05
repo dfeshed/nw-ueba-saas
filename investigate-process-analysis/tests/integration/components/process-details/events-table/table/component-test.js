@@ -23,6 +23,10 @@ module('Integration | Component | process-details/events-table/table', function(
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
+  const hostDetails = [{
+    machineOsType: 'windows'
+  }];
+
   test('process-events-table renders', async function(assert) {
     const eventsData = [
       {
@@ -39,6 +43,7 @@ module('Integration | Component | process-details/events-table/table', function(
     new ReduxDataHelper(setState)
       .eventsData(eventsData)
       .eventsFilteredCount(2)
+      .processProperties(hostDetails)
       .build();
     const timezone = this.owner.lookup('service:timezone');
     const timeFormat = this.owner.lookup('service:timeFormat');
