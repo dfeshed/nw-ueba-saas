@@ -2341,6 +2341,7 @@ export default {
     noManagePermissions: 'You do not have permissions to make edits to file(s) status',
     certificatePageTitle: 'Certificates',
     showNextRecords: 'Show next {{count}} {{label}}',
+    endpointServerOffline: 'Endpoint server is offline',
     certificate: {
       toolTipCertificateViewDisabled: 'Select a maximum of {{count}} files to view.',
       unsigned: {

@@ -414,7 +414,9 @@ test('isCertificateViewDisabled ', function(assert) {
       fileList: {
         selectedFileList: [{ signature: { features: ['signed'] } }]
       }
-    }
+    },
+    endpointServer: {},
+    endpointQuery: {}
   });
   const result1 = isCertificateViewDisabled(state);
   const result2 = isCertificateViewDisabled(Immutable.from({
@@ -422,7 +424,9 @@ test('isCertificateViewDisabled ', function(assert) {
       fileList: {
         selectedFileList: [{ signature: { features: ['unsigned'], thumbprint: 'test' } }, { signature: { features: ['unsigned'] } }]
       }
-    }
+    },
+    endpointServer: {},
+    endpointQuery: {}
   })
   );
   const result3 = isCertificateViewDisabled(Immutable.from({
@@ -430,7 +434,9 @@ test('isCertificateViewDisabled ', function(assert) {
       fileList: {
         selectedFileList: [{ signature: { features: ['unsigned'], thumbprint: 'test' } }, { signature: { features: ['unsigned'] } }]
       }
-    }
+    },
+    endpointServer: {},
+    endpointQuery: {}
   })
   );
   const selectedFileListData = [
@@ -451,7 +457,9 @@ test('isCertificateViewDisabled ', function(assert) {
       fileList: {
         selectedFileList: selectedFileListData
       }
-    }
+    },
+    endpointServer: {},
+    endpointQuery: {}
   }));
   assert.equal(result1, true);
   assert.equal(result2, true);
@@ -481,5 +489,33 @@ test('hostListCount should be 0 when hostlist is empty', function(assert) {
   });
   const result = hostListCount(state);
   assert.equal(result, 0);
+});
+
+test('isCertificateViewDisabled returns false when service is down', function(assert) {
+  const state = Immutable.from({
+    files: {
+      fileList: {
+        hostNameList: []
+      }
+    },
+    endpointQuery: {
+      serverId: 1
+    },
+    endpointServer: {
+      isSummaryRetrieveError: true,
+      serviceData: [
+        {
+          id: 2,
+          isServerOnline: true
+        },
+        {
+          id: 1,
+          isServerOnline: false
+        }
+      ]
+    }
+  });
+  const result = isCertificateViewDisabled(state);
+  assert.equal(result, true);
 });
 

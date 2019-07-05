@@ -158,6 +158,10 @@ export default class DataHelper {
     _set(this.state, 'endpointQuery', status);
     return this;
   }
+  setEndpointServiceId(endpointId) {
+    _set(this.state, 'endpointQuery.serviceId', endpointId);
+    return this;
+  }
   hostNameList(hosts) {
     _set(this.state, 'files.fileList.hostNameList', hosts);
     return this;

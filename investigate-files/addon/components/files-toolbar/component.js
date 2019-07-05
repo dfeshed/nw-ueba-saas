@@ -21,6 +21,7 @@ import { setEndpointServer } from 'investigate-shared/actions/data-creators/endp
 import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
+import { selectedServiceWithStatus } from 'investigate-shared/selectors/endpoint-server/selectors';
 
 const stateToComputed = (state) => ({
   // Total number of files in search result
@@ -41,7 +42,8 @@ const stateToComputed = (state) => ({
   isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state),
   fileDownloadButtonStatus: fileDownloadButtonStatus(state),
   isCertificateViewDisabled: isCertificateViewDisabled(state),
-  isCertificateView: state.certificate.list.isCertificateView
+  isCertificateView: state.certificate.list.isCertificateView,
+  selectedServiceWithStatus: selectedServiceWithStatus(state)
 });
 
 const dispatchToActions = {
@@ -82,10 +84,13 @@ const ToolBar = Component.extend({
     }
     return selectedThumb;
   },
-  @computed('itemList', 'isCertificateViewDisabled')
-  isCertificateViewDisabledTitle(selectedList, isCertificateViewDisabled) {
+  @computed('itemList', 'isCertificateViewDisabled', 'selectedServiceWithStatus')
+  isCertificateViewDisabledTitle(selectedList, isCertificateViewDisabled, selectedServiceWithStatus) {
     const i18n = this.get('i18n');
     if (isCertificateViewDisabled) {
+      if (!selectedServiceWithStatus.isServiceOnline) {
+        return i18n.t('investigateFiles.endpointServerOffline').toString();
+      }
       const MORE_THAN_TEN_FILES_SELECTED_TOOLTIP = i18n.t('investigateFiles.certificate.toolTipCertificateViewDisabled', { count: 1 }).toString();
       const FILES_ARE_NOT_SIGNED_TOOLTIP = i18n.t('investigateFiles.certificate.unsigned.toolTipCertificateViewDisabled').toString();
       return selectedList.length > 1 ? MORE_THAN_TEN_FILES_SELECTED_TOOLTIP : FILES_ARE_NOT_SIGNED_TOOLTIP;

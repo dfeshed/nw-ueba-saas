@@ -33,7 +33,7 @@ export const CERTIFICATE_DEFAULT_COLUMNS = [
   {
     field: 'radio',
     dataType: 'radio',
-    width: '2vw',
+    width: '1vw',
     class: 'rsa-form-row-radio',
     componentClass: 'rsa-form-radio',
     visible: true,

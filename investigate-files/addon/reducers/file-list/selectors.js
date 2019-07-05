@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
-import { isBrokerView } from 'investigate-shared/selectors/endpoint-server/selectors';
+import { isBrokerView, selectedServiceWithStatus } from 'investigate-shared/selectors/endpoint-server/selectors';
+
 const SUPPORTED_SERVICES = [ 'broker', 'concentrator', 'decoder', 'log-decoder', 'archiver' ];
 
 // Contains all the expression saved + newly added expression from the UI
@@ -192,9 +193,14 @@ export const downloadLink = createSelector(
   }
 );
 export const isCertificateViewDisabled = createSelector(
-  _selectedFileList, _areSelectedFilesHavingThumbprint,
-  (fileContextSelections, areSelectedFilesHavingThumbprint) => {
+  _selectedFileList, _areSelectedFilesHavingThumbprint, selectedServiceWithStatus,
+  (fileContextSelections, areSelectedFilesHavingThumbprint, selectedServiceWithStatus) => {
     const MAX_FILE_SELECTION_ALLOWED_FOR_CERTIFICATE_VIEW = 1;
+
+    if (!selectedServiceWithStatus.isServiceOnline) {
+      return true;
+    }
+
     if (fileContextSelections.length <= MAX_FILE_SELECTION_ALLOWED_FOR_CERTIFICATE_VIEW && areSelectedFilesHavingThumbprint) {
       return false;
     }

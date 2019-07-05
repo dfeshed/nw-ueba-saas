@@ -67,7 +67,7 @@ module('Integration | Component | Files toolbar', function(hooks) {
     const services = {
       serviceData: [{ id: '1', displayName: 'TEST', name: 'TEST', version: '11.1.0.0' }],
       summaryData: { startTime: 0 },
-      isServicesRetrieveError: false
+      isSummaryRetrieveError: false
     };
 
     new ReduxDataHelper(setState)
@@ -87,7 +87,7 @@ module('Integration | Component | Files toolbar', function(hooks) {
     const services = {
       serviceData: [{ id: '1', displayName: 'TEST', name: 'TEST', version: '11.1.0.0' }],
       summaryData: { startTime: 0 },
-      isServicesRetrieveError: false
+      isSummaryRetrieveError: false
     };
     const selectedFileList = new Array(11)
       .join().split(',')
@@ -110,7 +110,7 @@ module('Integration | Component | Files toolbar', function(hooks) {
     const services = {
       serviceData: [{ id: '1', displayName: 'TEST', name: 'TEST', version: '11.1.0.0' }],
       summaryData: { startTime: 0 },
-      isServicesRetrieveError: true
+      isSummaryRetrieveError: false
     };
     const selectedFileList = new Array(1)
       .join().split(',')
@@ -137,7 +137,7 @@ module('Integration | Component | Files toolbar', function(hooks) {
     const services = {
       serviceData: [{ id: '1', displayName: 'TEST', name: 'TEST', version: '11.1.0.0' }],
       summaryData: { startTime: 0 },
-      isServicesRetrieveError: false
+      isSummaryRetrieveError: false
     };
     new ReduxDataHelper(setState)
       .totalItems(3)
@@ -150,5 +150,26 @@ module('Integration | Component | Files toolbar', function(hooks) {
     await render(hbs`{{files-toolbar closeRiskPanel=closeRiskPanel}}`);
     assert.equal(find('.view-certificate-button').classList.contains('is-disabled'), true, 'View certificate button disabled');
     assert.equal(find('.view-certificate-button').title, 'No certificates available for the selected files.', 'tooltip added to disabled button');
+  });
+
+  test('Certificate view button is disabled when endpoint server is offline', async function(assert) {
+    const services = {
+      serviceData: [{ id: '1', displayName: 'TEST', name: 'TEST', version: '11.1.0.0' }],
+      summaryData: { startTime: 0 },
+      isSummaryRetrieveError: true
+    };
+    new ReduxDataHelper(setState)
+      .totalItems(3)
+      .services(services)
+      .setSelectedFileList([{ id: 0 }])
+      .setEndpointServiceId('1')
+      .build();
+
+    this.set('closeRiskPanel', function() {
+      assert.ok(true);
+    });
+    await render(hbs`{{files-toolbar closeRiskPanel=closeRiskPanel}}`);
+    assert.equal(find('.view-certificate-button').classList.contains('is-disabled'), true, 'View certificate button disabled');
+    assert.equal(find('.view-certificate-button').title, 'Endpoint server is offline');
   });
 });
