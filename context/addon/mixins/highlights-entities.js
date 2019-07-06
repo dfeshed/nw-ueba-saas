@@ -4,7 +4,6 @@ import computed from 'ember-computed-decorators';
 import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
 import { next } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
-import $ from 'jquery';
 import { log } from 'ember-debug';
 import rsvp from 'rsvp';
 import {
@@ -18,9 +17,11 @@ const CSS_CLASS_ENTITY_HAS_BEEN_VALIDATED = 'entity-has-been-validated';
 const CSS_CLASS_IS_CONTEXT_ENABLED = 'is-context-enabled';
 const CSS_CLASS_IS_NOT_CONTEXT_ENABLED = 'is-not-context-enabled';
 const CSS_CLASS_HAS_CONTEXT_DATA = 'has-context-data';
-const HTML_ATTR_ENTITY_TYPE = 'data-entity-type';
-const HTML_ATTR_ENTITY_ID = 'data-entity-id';
-const HTML_ATTR_META_KEY = 'data-meta-key';
+
+// Element dataset keys when accessing data-* attributes
+const HTML_DATASET_ENTITY_TYPE = 'entityType';
+const HTML_DATASET_ENTITY_ID = 'entityId';
+const HTML_DATASET_META_KEY = 'metaKey';
 
 let freeIdCounter = 0;
 
@@ -145,7 +146,7 @@ export default Mixin.create({
 
   /**
    * Configurable callback to be invoked whenever context data is found for an individual entity DOM node.
-   * When invoked, the callback will receive 4 arguments: `type`, `id`, `$element` and `records`.
+   * When invoked, the callback will receive 4 arguments: `type`, `id`, `element` and `records`.
    *
    * By default, this mixin will apply a CSS class ('.has-context-data') to the DOM node when its data is successfully
    * retrieved from context service.  The `onEntityContextFound` allows this Component to implement additional logic when
@@ -156,7 +157,7 @@ export default Mixin.create({
    * @type {Function}
    * @param {String} type The entity type (e.g., "IP").
    * @param {String} id The entity identifier (e.g., "10.20.30.40")
-   * @param {jQuery} $element The entity DOM node, wrapped in a jQuery object.
+   * @param {Element} element The entity DOM node
    * @param {Object[]} records The array of data records retrieved for the entity. @see context/services/context#summary
    * @public
    */
@@ -282,15 +283,17 @@ export default Mixin.create({
       this.get('_entityTypesAndMetasPromises').then(({ types, metas }) => {
         // If we waited too long and this component's DOM has been trashed, exit.
         // If contexthub-server is throwing error still _entityTypesPromise promise is getting resolved but this time there will not be any types. Due to that java script error will come. In this scenario we suppose to display some error to analyst. Currently preventing java script error later will be displaying proper error message to analyst.
-        if (!types || !this.$(entitySelector)) {
+        if (!types || !document.querySelector(entitySelector)) {
           return;
         }
         // Process all the DOM nodes that are entities, excluding any that we already processed.
         const found = [];
-        this.$(entitySelector).not(`.${CSS_CLASS_ENTITY_HAS_BEEN_VALIDATED}`).each((index, el) => {
-          const $el = $(el);
+        const entity = document.querySelectorAll(entitySelector);
+        // subsitute for jQuery .not()
+        const entityNotArray = Array.from(entity).filter((item) => item && !item.classList.contains(CSS_CLASS_ENTITY_HAS_BEEN_VALIDATED));
+        entityNotArray.forEach((el) => {
           // Highlight the node with appropriate CSS classes.
-          const isContextEnabled = this._highlightEntity($el, types, metas);
+          const isContextEnabled = this._highlightEntity(el, types, metas);
           if (isContextEnabled) {
 
             // Ensure the node has an id; auto-assign it one, if needed.
@@ -300,7 +303,7 @@ export default Mixin.create({
 
             // Wire the node up to context tooltip.
             const { type, id } = isContextEnabled;
-            this._wireEntityToTooltip($el, type, id);
+            this._wireEntityToTooltip(el, type, id);
             found.push({ entity: { type, id }, elementId: el.id });
           }
         });
@@ -320,12 +323,12 @@ export default Mixin.create({
    * is responsible for decorating the corresponding DOM node, so that the UI may visually indicate which DOM nodes
    * have data ready.
    *
-   * @param {{ type: String, id: String, $element: jQuery }[]} requests The entities for which to fetch data.
+   * @param {{ entity: { id: string, type: string}, elementId: string }[]} requests The entities for which to fetch data.
    * @private
    */
   _fetchEntitiesData(requests = []) {
     let onEntityContextFound = this.get('onEntityContextFound');
-    if (!$.isFunction(onEntityContextFound)) {
+    if (typeof onEntityContextFound !== 'function') {
       onEntityContextFound = null;
     }
 
@@ -348,14 +351,15 @@ export default Mixin.create({
           return (entity.type === type) && (entity.id === id);
         })
         .forEach(({ elementId }) => {
-          const $element = $(`#${elementId}`);
-
-          // Don't decorate DOM if records are empty (e.g., if data sources are not configured).
-          if (records && records.length) {
-            $element.addClass(CSS_CLASS_HAS_CONTEXT_DATA);
-          }
-          if (onEntityContextFound) {
-            onEntityContextFound(type, id, $element, status, records);
+          const element = document.querySelector(`#${elementId}`);
+          if (element) {
+            // Don't decorate DOM if records are empty (e.g., if data sources are not configured).
+            if (records && records.length) {
+              element.classList.add(CSS_CLASS_HAS_CONTEXT_DATA);
+            }
+            if (onEntityContextFound) {
+              onEntityContextFound(type, id, element, status, records);
+            }
           }
         });
     };
@@ -380,38 +384,40 @@ export default Mixin.create({
    * If the given DOM node is mapped to an enabled entity type and a non-null entity id, then this method returns
    * an object with the entity type & id (e.g.,`{ type, id }`). Otherwise, the method returns `null`.
    *
-   * @param {jQuery} $el The DOM node wrapped in a jQuery selection object.
+   * @param {Element} el The DOM node
    * @param {Object} types A hash that maps valid entity types to `true`.
    * @param {Object} metas A hash that maps each entity type to an array of meta keys.
    * @returns {null|{ type: String, id: String }} The type & id of the entity, if enabled; null otherwise.
    * @private
    */
-  _highlightEntity($el, types, metas = {}) {
-    // Read the entity type from the DOM node.
-    let type = $el.attr(HTML_ATTR_ENTITY_TYPE);
-    if (!type) {
-      // DOM doesn't say entity type. Try to compute entity type from meta key (if given).
-      const metaKey = $el.attr(HTML_ATTR_META_KEY);
-      type = Object.keys(metas).find((entity) => {
-        const metaKeyNames = metas[entity] || [];
-        return metaKeyNames.includes(metaKey);
-      });
-      $el.attr(HTML_ATTR_ENTITY_TYPE, type || '');
+  _highlightEntity(el, types, metas = {}) {
+    if (el) {
+      // Read the entity type from the DOM node.
+      let type = el.dataset[HTML_DATASET_ENTITY_TYPE];
+      if (!type) {
+        // DOM doesn't say entity type. Try to compute entity type from meta key (if given).
+        const metaKey = el.dataset[HTML_DATASET_META_KEY];
+        type = Object.keys(metas).find((entity) => {
+          const metaKeyNames = metas[entity] || [];
+          return metaKeyNames.includes(metaKey);
+        });
+        el.dataset[HTML_DATASET_ENTITY_TYPE] = type || '';
+      }
+
+      // Check if the type is context-enabled. If so, check for an entity id.
+      let isContextEnabled = !!(type && types[type]);
+      const id = isContextEnabled ? el.dataset[HTML_DATASET_ENTITY_ID] : null;
+      isContextEnabled = !!(isContextEnabled && id);
+
+      // Apply corresponding CSS classes.
+      el.classList.add(isContextEnabled ? CSS_CLASS_IS_CONTEXT_ENABLED : CSS_CLASS_IS_NOT_CONTEXT_ENABLED);
+      el.classList.add(CSS_CLASS_ENTITY_HAS_BEEN_VALIDATED);
+      return isContextEnabled ? { type, id } : null;
     }
-
-    // Check if the type is context-enabled. If so, check for an entity id.
-    let isContextEnabled = !!(type && types[type]);
-    const id = isContextEnabled ? $el.attr(HTML_ATTR_ENTITY_ID) : null;
-    isContextEnabled = !!(isContextEnabled && id);
-
-    // Apply corresponding CSS classes.
-    $el.addClass(isContextEnabled ? CSS_CLASS_IS_CONTEXT_ENABLED : CSS_CLASS_IS_NOT_CONTEXT_ENABLED);
-    $el.addClass(CSS_CLASS_ENTITY_HAS_BEEN_VALIDATED);
-    return isContextEnabled ? { type, id } : null;
   },
 
   // Wires up a given DOM node to the context tooltip.
-  _wireEntityToTooltip($el, type, id) {
+  _wireEntityToTooltip(el, type, id) {
     const {
       entityTooltipPanelId,
       eventBus,
@@ -423,7 +429,7 @@ export default Mixin.create({
     const wireFn = (triggerEvent === 'hover') ?
       wireTriggerToHover : wireTriggerToClick;
 
-    wireFn($el[0], entityTooltipPanelId, eventBus, {
+    wireFn(el, entityTooltipPanelId, eventBus, {
       model: { type, id },
       displayDelay,
       hideDelay,
@@ -433,11 +439,11 @@ export default Mixin.create({
   },
 
   // Unwires a given DOM node from the context tooltip.
-  _unwireEntityToTooltip($el) {
+  _unwireEntityToTooltip(el) {
     const unwireFn = (this.get('entityTooltipTriggerEvent') === 'hover') ?
       unwireTriggerToHover : unwireTriggerToClick;
 
-    unwireFn($el[0]);
+    unwireFn(el);
   },
 
   /**
@@ -454,9 +460,11 @@ export default Mixin.create({
   teardownEntities(dontUnwireTooltips = false) {
     if (dontUnwireTooltips !== true) {
       (this._requests || []).forEach(({ elementId }) => {
-        const $element = $(`#${elementId}`);
-        $element.removeClass(CSS_CLASS_ENTITY_HAS_BEEN_VALIDATED);
-        this._unwireEntityToTooltip($element);
+        const element = document.querySelector(`#${elementId}`);
+        if (element) {
+          element.classList.remove(CSS_CLASS_ENTITY_HAS_BEEN_VALIDATED);
+          this._unwireEntityToTooltip(element);
+        }
       });
     }
     this._requests = [];
