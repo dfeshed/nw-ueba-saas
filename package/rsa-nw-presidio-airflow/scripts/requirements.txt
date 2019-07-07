@@ -164,3 +164,8 @@ smmap2==2.0.5
 python-openid==2.2.5
 webencodings==0.5.1
 pyasn1==0.4.5
+gevent==1.5a1
+eventlet==0.25.0
+greenlet==0.4.15
+dnspython==1.16.0
+
