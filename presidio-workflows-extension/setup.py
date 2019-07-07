@@ -221,6 +221,6 @@ setup(name='presidio-workflows-extension',
 
       ],
       cmdclass={'test': Tox},
-      setup_requires=['pytest-runner', 'tox-setuptools', 'tox'],
+      setup_requires=['pytest-runner==5.1', 'tox-setuptools', 'tox'],
       include_package_data=True,
       zip_safe=False)
