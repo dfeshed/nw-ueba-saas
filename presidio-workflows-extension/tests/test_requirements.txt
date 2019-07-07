@@ -5,3 +5,4 @@ requests
 pytz
 mock
 apache-airflow[devel]==1.10.2
+configparser==3.5.3
