@@ -230,7 +230,9 @@ setup(name='presidio-workflows-extension',
           'webencodings==0.5.1',
           'pyasn1==0.4.5',
           'greenlet==0.4.15',
-          'dnspython==1.16.0'
+          'dnspython==1.16.0',
+          'gevent==1.5a1',
+          'eventlet==0.25.0'
 
       ],
       cmdclass={'test': Tox},
