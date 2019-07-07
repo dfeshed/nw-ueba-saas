@@ -228,7 +228,10 @@ setup(name='presidio-workflows-extension',
           'smmap2==2.0.5',
           'python-openid==2.2.5',
           'webencodings==0.5.1',
-          'pyasn1==0.4.5'
+          'pyasn1==0.4.5',
+          'greenlet==0.4.15',
+          'dnspython==1.16.0'
+
       ],
       cmdclass={'test': Tox},
       setup_requires=['pytest-runner', 'tox-setuptools', 'tox'],
