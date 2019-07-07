@@ -11,7 +11,7 @@ pandas==0.24.2
 requests-oauthlib==1.0.0
 pyjwt==1.7.1
 snakebite==2.11.0
-wheel
+wheel==0.33.4
 apache-airflow[devel,postgres,password,async]==1.10.2
 lxml==4.3.4
 python-dateutil==2.8.0
