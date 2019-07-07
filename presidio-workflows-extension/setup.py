@@ -20,7 +20,7 @@ def print_files(dir):
 
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
-print("workflow setup.py: " + os.path.dirname(current_dir))
+print("workflow-extention setup.py: " + os.path.dirname(current_dir))
 print(os.path.dirname(current_dir) + ":")
 print_files(os.path.dirname(current_dir))
 print("End " + os.path.dirname(current_dir) + " dir")
