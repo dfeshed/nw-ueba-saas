@@ -35,7 +35,7 @@ dags:
       smart_confs:
        - smart_conf_name: userId_hourly
          depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
-       - smart_conf_name: ssl_subject_hourly
+       - smart_conf_name: sslSubject_hourly
          depends_on_schemas: [TLS]
        - smart_conf_name: ja3_hourly
          depends_on_schemas: [TLS]
