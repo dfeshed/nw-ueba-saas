@@ -7,7 +7,27 @@ from os.path import dirname, abspath
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
-print("workflow-extention setup.py: " + os.path.dirname(os.path.realpath(__file__)))
+
+def print_files(dir):
+    files = []
+    # r=root, d=directories, f = files
+    for r, d, f in os.walk(dir):
+        for file in f:
+            files.append(os.path.join(r, file))
+
+    for f in files:
+        print(f)
+
+
+current_dir = os.path.dirname(os.path.realpath(__file__))
+print("workflow setup.py: " + os.path.dirname(current_dir))
+print(os.path.dirname(current_dir) + ":")
+print_files(os.path.dirname(current_dir))
+print("End " + os.path.dirname(current_dir) + " dir")
+
+print("/var/lib/netwitness/presidio:")
+print_files("/var/lib/netwitness/presidio")
+print("End /var/lib/netwitness/presidio dir")
 
 def readme():
     with open('README.rst') as f:
