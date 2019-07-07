@@ -154,3 +154,17 @@ gevent==1.5a1
 eventlet==0.25.0
 greenlet==0.4.15
 dnspython==1.16.0
+pytest-runner==5.1
+toml==0.10.0
+six==1.12.0
+py==1.8.0
+pluggy==0.12.0
+packaging==19.0
+importlib-metadata==0.18
+filelock==3.0.12
+pyparsing==2.4.0
+zipp==0.5.1
+pathlib2==2.3.4
+contextlib2==0.5.5
+configparser==3.5.3
+scandir==1.10.0
