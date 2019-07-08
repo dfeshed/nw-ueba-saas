@@ -1,5 +1,5 @@
 import { Promise, all } from 'rsvp';
-import { _private } from 'component-lib/services/fetch';
+import { _private } from 'component-lib/utils/fetch';
 
 export function patchFetch(callback) {
 

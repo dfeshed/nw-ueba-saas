@@ -7,7 +7,7 @@
 
 import { inject as service } from '@ember/service';
 
-import fetch from 'component-lib/services/fetch';
+import fetch from 'component-lib/utils/fetch';
 import { run } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
 import RSVP from 'rsvp';

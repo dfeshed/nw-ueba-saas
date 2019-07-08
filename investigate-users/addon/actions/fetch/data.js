@@ -1,5 +1,5 @@
 import endpoints from './endpoint-location';
-import fetch from 'component-lib/services/fetch';
+import fetch from 'component-lib/utils/fetch';
 import _ from 'lodash';
 
 const _downloadFile = (bodyBlob, fileName) => {

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import fetch from 'component-lib/services/fetch';
+import fetch from 'component-lib/utils/fetch';
 import { get } from '@ember/object';
 import computed from 'ember-computed-decorators';
 import Controller from '@ember/controller';

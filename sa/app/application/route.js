@@ -7,7 +7,7 @@ import * as ACTION_TYPES from 'sa/actions/types';
 import { get, computed } from '@ember/object';
 import { Promise } from 'rsvp';
 import { inject as service } from '@ember/service';
-import fetch from 'component-lib/services/fetch';
+import fetch from 'component-lib/utils/fetch';
 
 const {
   testing

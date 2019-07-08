@@ -1,5 +1,5 @@
 import Service from '@ember/service';
-import fetch from 'component-lib/services/fetch';
+import fetch from 'component-lib/utils/fetch';
 import { log } from 'ember-debug';
 import {
   mergeObjectArray,

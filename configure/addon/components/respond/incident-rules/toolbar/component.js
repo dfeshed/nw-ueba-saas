@@ -12,7 +12,7 @@ import {
 } from 'configure/reducers/respond/incident-rules/selectors';
 import { connect } from 'ember-redux';
 import { inject } from '@ember/service';
-import fetch from 'component-lib/services/fetch';
+import fetch from 'component-lib/utils/fetch';
 import csrfToken from 'component-lib/mixins/csrf-token';
 import { success, failure } from 'configure/sagas/flash-messages';
 import { later } from '@ember/runloop';

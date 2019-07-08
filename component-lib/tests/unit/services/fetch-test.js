@@ -1,7 +1,7 @@
 import { Promise } from 'rsvp';
 import { module, test } from 'qunit';
 import { patchFetch } from '../../helpers/patch-fetch';
-import fetch from 'component-lib/services/fetch';
+import fetch from 'component-lib/utils/fetch';
 
 module('Unit | Fetch', function() {
 
