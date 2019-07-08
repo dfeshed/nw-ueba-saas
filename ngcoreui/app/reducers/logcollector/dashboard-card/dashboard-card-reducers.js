@@ -1,22 +1,38 @@
 import Immutable from 'seamless-immutable';
 import reduxActions from 'redux-actions';
-// import { handle } from 'redux-pack';
+import { handle } from 'redux-pack';
+import * as ACTION_TYPES from 'ngcoreui/actions/types';
 
 const initialState = {
-  key1: 'value1',
-  key2: 'value2',
-  key3: 'value3'
+  protocols: '',
+  items: [],
+  itemsStatus: 'wait'
 };
 
 export default reduxActions.handleActions({
 
-  // [ACTION_TYPES.SOME_ACTION_TYPE]: (state /* , action */) => {
-  'SOME_ACTION_TYPE': (state /* , action */) => {
-    return state;
-  },
-
-  'ANOTHER_ACTION_TYPE': (state /* , action */) => {
-    return state;
-  }
+  [ACTION_TYPES.LOG_COLLECTOR_FETCH_PROTOCOLS]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.merge({
+          items: [],
+          itemsStatus: 'wait'
+        });
+      },
+      failure: (state) => {
+        return state.set('itemsStatus', 'error');
+      },
+      success: (state) => {
+        let arr = null;
+        if (action.payload != null && action.payload.nodes != null) {
+          arr = action.payload.nodes.map((x) => ({ protocol: x.name }));
+        }
+        return state.merge({
+          items: arr,
+          itemsStatus: 'complete'
+        });
+      }
+    })
+  )
 
 }, Immutable.from(initialState));

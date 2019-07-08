@@ -4,7 +4,7 @@ export const COLUMNS_CONFIG = [
     title: 'Protocol',
     dataType: 'string',
     width: '10vw'
-  },
+  } /* ,
   {
     field: 'eventRate',
     title: 'Event Rate',
@@ -40,5 +40,5 @@ export const COLUMNS_CONFIG = [
     title: 'Error Count',
     dataType: 'numeric',
     width: '10vw'
-  }
+  } */
 ];

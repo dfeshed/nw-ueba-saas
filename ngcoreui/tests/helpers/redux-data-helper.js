@@ -174,6 +174,20 @@ export default class DataHelper {
     return this;
   }
 
+  protocolLoadingStatus(string) {
+    _set(this.state, 'logcollector.dashboardCard.itemsStatus', string);
+    return this;
+  }
+
+  initialStateBeforeApiCall() {
+    this.protocolLoadingStatus('start');
+    return this;
+  }
+
+  protocolListItems(arr) {
+    _set(this.state, 'logcollector.dashboardCard.items', arr);
+    return this;
+  }
   // Selector functions
 
   _connectAndFillTree() {
@@ -279,4 +293,6 @@ export default class DataHelper {
   hasNoShutdownPermission() {
     return this._connectAndFillTree();
   }
+
+
 }

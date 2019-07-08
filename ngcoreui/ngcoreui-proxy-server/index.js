@@ -3,8 +3,8 @@ const http = require('http');
 const httpProxy = require('http-proxy');
 
 const prot = 'http';
-const addr = '10.101.216.73';
-const port = 50102;
+const addr = '10.101.216.84';
+const port = 50101;
 const host = `${addr}:${port}`;
 const origin = `${prot}://${addr}:${port}`;
 
