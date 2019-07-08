@@ -479,7 +479,6 @@ test('it does not render no-results message when status is passed in and is stre
   const rows = document.querySelectorAll('.rsa-data-table-body-row');
   assert.equal(rows.length, 0, 'Correct number of body-row dom elements found.');
   assert.equal(document.querySelectorAll('.rsa-panel-message .no-results-message').length, 0, 'status is streaming, so still loading');
-
 });
 
 test('it does not render no-results message when status is passed in and is sorting', function(assert) {
@@ -499,12 +498,11 @@ test('it does not render no-results message when status is passed in and is sort
     {{/rsa-data-table}}
   `);
 
-  assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
+  assert.equal(document.querySelectorAll('.rsa-data-table').length, 1, 'data-table root dom element found.');
 
-  const rows = this.$('.rsa-data-table-body-row');
+  const rows = document.querySelectorAll('.rsa-data-table-body-row');
   assert.equal(rows.length, 0, 'Correct number of body-row dom elements found.');
-  assert.equal(this.$('.rsa-panel-message .no-results-message').length, 0, 'status is sorting');
-
+  assert.equal(document.querySelectorAll('.rsa-panel-message .no-results-message').length, 0, 'status is sorting');
 });
 
 test('it renders no-results message when status is passed in and is not streaming', function(assert) {

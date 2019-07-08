@@ -7,6 +7,7 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchFetch } from '../../../../helpers/patch-fetch';
+import { contains } from 'component-lib/utils/jquery-replacement';
 
 let setState;
 
@@ -54,7 +55,10 @@ module('Integration | Component | alerts-tab/body', function(hooks) {
     window.URL.createObjectURL = () => {
       assert.ok(true, 'This function supposed to be called for altert export');
     };
-    await this.$("button:contains('Export')").click();
+    const exportButton = contains(document.querySelectorAll('button'), 'Export');
+    if (exportButton && exportButton.length > 0) {
+      await exportButton[0].click();
+    }
   });
 
   test('it should render alert tab body and should loader if data is not there', async function(assert) {
@@ -68,5 +72,4 @@ module('Integration | Component | alerts-tab/body', function(hooks) {
     assert.equal(findAll('.rsa-loader').length, 0);
     assert.equal(findAll('.center').length, 1);
   });
-
 });

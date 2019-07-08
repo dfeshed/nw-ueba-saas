@@ -1,5 +1,4 @@
 import Service, { inject as service } from '@ember/service';
-import $ from 'jquery';
 import computed, { alias, readOnly } from 'ember-computed-decorators';
 
 export default Service.extend({
@@ -58,7 +57,7 @@ export default Service.extend({
   urlBase: 'https://cms.netwitness.com/sadocs',
 
   buildURL(params) {
-    const queryStr = $.param(params);
+    const queryStr = new URLSearchParams(Object.entries(params)).toString();
     return encodeURI(`${this.get('urlBase')}?${queryStr}`);
   },
 
@@ -90,5 +89,4 @@ export default Service.extend({
   goToHelp(module, topic) {
     window.open(this.generateUrl(module, topic), '_blank').focus();
   }
-
 });

@@ -32,26 +32,28 @@ export const isWindow = (obj) => {
  * jQuery .outerHeight()
  */
 export const getOuterHeight = (elem, includeMargin = false) => {
-  if (isWindow(elem)) {
-    return elem.innerHeight;
-  }
+  if (elem) {
+    if (isWindow(elem)) {
+      return elem.innerHeight;
+    }
 
-  // if Document node
-  if (elem.nodeType === 9) {
-    const doc = elem.documentElement;
+    // if Document node
+    if (elem.nodeType === 9) {
+      const doc = elem.documentElement;
 
-    return Math.max(elem.body.scrollHeight, doc.scrollHeight,
-      elem.body.offsetHeight, doc.offsetHeight, doc.clientHeight);
-  }
+      return Math.max(elem.body.scrollHeight, doc.scrollHeight,
+        elem.body.offsetHeight, doc.offsetHeight, doc.clientHeight);
+    }
 
-  const paddingY = getPaddingY(elem);
-  const borderY = getBorderY(elem);
-  const marginY = getMarginY(elem);
+    const paddingY = getPaddingY(elem);
+    const borderY = getBorderY(elem);
+    const marginY = getMarginY(elem);
 
-  if (includeMargin) {
-    return elem.getBoundingClientRect().height + paddingY + borderY + marginY;
-  } else {
-    return elem.getBoundingClientRect().height + paddingY + borderY;
+    if (includeMargin) {
+      return elem.getBoundingClientRect().height + paddingY + borderY + marginY;
+    } else {
+      return elem.getBoundingClientRect().height + paddingY + borderY;
+    }
   }
 };
 
@@ -363,6 +365,92 @@ export const unwrap = (selector) => {
   });
 };
 
+
+/**
+  * jQuery variable whitespace
+  */
+const _whitespace = '[\\x20\\t\\r\\n\\f]';
+
+
+/**
+ * jQuery variable runescape - CSS escapes
+ * http://www.w3.org/TR/CSS21/syndata.html#escaped-characters
+ *
+ * regex to detect double backslash escaped text
+ */
+const _unescapeRegex = new RegExp(`\\\\([\\da-f]{1,6}${_whitespace}?|(${_whitespace})|.)`, 'ig');
+
+/**
+ * jQuery variable funescape - CSS escapes
+ * http://www.w3.org/TR/CSS21/syndata.html#escaped-characters
+ *
+ * converts dected double backslash escape sequence into native unicode
+ * @param {*} _
+ * @param {*} escaped
+ * @param {*} escapedWhitespace
+ */
+const _unescapeFunction = function(_, escaped, escapedWhitespace) {
+  const high = `0x${escaped}` - 0x10000;
+  // NaN means non-codepoint
+  // Support: Firefox<24
+  // Workaround erroneous numeric interpretation of +"0x"
+  if (high !== high || escapedWhitespace) {
+    return escaped;
+
+  } else {
+    return high < 0 ?
+      // BMP codepoint
+      String.fromCharCode(high + 0x10000) :
+      // Supplemental Plane codepoint (surrogate pair)
+      String.fromCharCode(high >> 10 | 0xD800, high & 0x3FF | 0xDC00);
+  }
+};
+
+/**
+ * jQuery getText()
+ * @param {*} elem
+ */
+const _getText = (elem) => {
+  let node;
+  let ret = '';
+  let i = 0;
+
+  if (!elem.nodeType) {
+    while ((node = elem[i++])) {
+      ret += _getText(node);
+    }
+  } else if (elem.nodeType === 1 || elem.nodeType === 9 || elem.nodeType === 11) {
+
+    if (typeof elem.textContent === 'string') {
+      return elem.textContent;
+    } else {
+      for (elem = elem.firstChild; elem; elem = elem.nextSibling) {
+        ret += _getText(elem);
+      }
+    }
+  } else if (elem.nodeType === 3 || elem.nodeType === 4) {
+    return elem.nodeValue;
+  }
+
+  return ret;
+};
+
+/**
+ * jQuery (:contains('some-text'))
+ * returns array
+ * @param {*} text
+ */
+export const contains = (elems, text) => {
+  if (elems) {
+    const toArray = Array.from(elems);
+    // when _unescapeRegex is detected, replace using the _unescapeFunction function
+    text = text.replace(_unescapeRegex, _unescapeFunction);
+    return toArray.filter((elem) => {
+      return (elem.textContent || elem.innerText || _getText(elem)).indexOf(text) > -1;
+    });
+  }
+};
+
 // Easy replacement docs
 
 //
@@ -421,6 +509,9 @@ export const unwrap = (selector) => {
 
 // $(':last')
 // document.querySelectorAll('some-selector').item(length - 1)
+
+// $(':contains('some-text')')
+// contains(elements, 'some-text') - see above
 
 //
 // MANIPULATING ELEMENTS
@@ -555,6 +646,9 @@ export const unwrap = (selector) => {
 
 // $('.some-element').val(some-value)
 // document.querySelector('.some-element').setAttribute('value', some-value)
+
+// $.param(params)
+// new URLSearchParams(Object.entries(params)).toString();
 
 //
 // ATTRIBUTES

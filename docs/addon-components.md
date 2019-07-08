@@ -86,7 +86,7 @@ test('clicking the button increments the count', function (assert) {
 
     assert.equal(component.get('count'), 0);
 
-    this.$().find('button').click();
+    document.querySelector('button').click();
 
     assert.equal(component.get('count'), 1);
 });

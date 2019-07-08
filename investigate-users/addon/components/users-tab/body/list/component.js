@@ -16,6 +16,21 @@ const dispatchToActions = {
   initiateUser
 };
 
+const scrollHandler = ({ target }) => {
+  // This logic to avoid multiple server calls when user is scrolling.
+  if (false === this.get('scrolling')) {
+    this.set('scrolling', true);
+    later(() => {
+      if (target.scrollHeight - (target.scrollTop + target.offsetHeight) < 30) {
+        if (!this.get('allUserReceived')) {
+          this.send('getUsersData');
+        }
+      }
+      this.set('scrolling', false);
+    }, 500);
+  }
+};
+
 const UsersTabBodyListComponent = Component.extend({
   scrolling: false,
   classNames: 'users-tab_body_list',
@@ -23,24 +38,13 @@ const UsersTabBodyListComponent = Component.extend({
   columnsData: columnConfigForUsers,
   didInsertElement() {
     this._super(...arguments);
-    this.$().on('scroll', ({ target }) => {
-      // This logic to avoid multiple server calls when user is scrolling.
-      if (false === this.get('scrolling')) {
-        this.set('scrolling', true);
-        later(() => {
-          if (target.scrollHeight - (target.scrollTop + target.offsetHeight) < 30) {
-            if (!this.get('allUserReceived')) {
-              this.send('getUsersData');
-            }
-          }
-          this.set('scrolling', false);
-        }, 500);
-      }
-    });
+    const { element } = this;
+    element.addEventListener('scroll', scrollHandler);
   },
   willDestroyElement() {
     this._super(...arguments);
-    this.$().off('scroll');
+    const { element } = this;
+    element.removeEventListener('scroll', scrollHandler);
   },
   actions: {
     selectUser({ id }) {

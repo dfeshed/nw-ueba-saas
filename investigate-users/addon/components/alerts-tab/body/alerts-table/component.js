@@ -15,6 +15,21 @@ const dispatchToActions = {
   initiateUser
 };
 
+const scrollHandler = ({ target }) => {
+  // This logic to avoid multiple server calls when user is scrolling.
+  if (false === this.get('scrolling')) {
+    this.set('scrolling', true);
+    later(() => {
+      if (target.scrollHeight - (target.scrollTop + target.offsetHeight) < 30) {
+        if (!this.get('allAlertsReceived')) {
+          this.send('getAlertsForGivenTimeInterval');
+        }
+      }
+      this.set('scrolling', false);
+    }, 500);
+  }
+};
+
 const AlertTabTableComponent = Component.extend({
   classNames: 'alerts-tab_body_body-table',
   scrolling: false,
@@ -23,24 +38,11 @@ const AlertTabTableComponent = Component.extend({
 
   didInsertElement() {
     this._super(...arguments);
-    this.$('.alerts-tab_body_body-table_body').on('scroll', ({ target }) => {
-      // This logic to avoid multiple server calls when user is scrolling.
-      if (false === this.get('scrolling')) {
-        this.set('scrolling', true);
-        later(() => {
-          if (target.scrollHeight - (target.scrollTop + target.offsetHeight) < 30) {
-            if (!this.get('allAlertsReceived')) {
-              this.send('getAlertsForGivenTimeInterval');
-            }
-          }
-          this.set('scrolling', false);
-        }, 500);
-      }
-    });
+    document.querySelector('.alerts-tab_body_body-table_body').addEventListener('scroll', scrollHandler);
   },
   willDestroyElement() {
     this._super(...arguments);
-    this.$('.alerts-tab_body_body-table_body').off('scroll');
+    document.querySelector('.alerts-tab_body_body-table_body').removeEventListener('scroll', scrollHandler);
   },
   actions: {
     expandAlert(alertId) {

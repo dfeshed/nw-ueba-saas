@@ -1,6 +1,7 @@
-import $ from 'jquery';
 import _ from 'lodash';
 import { set } from '@ember/object';
+import { getOuterHeight } from 'component-lib/utils/jquery-replacement';
+
 /**
  * Calculates Y-offset for context menu to avoid the it from going out of the screen
  * @public
@@ -8,7 +9,7 @@ import { set } from '@ember/object';
 const APPROX_MENU_ITEM_HEIGHT = 35;
 
 export function calculateContextMenuOffset(itemCount, screenHeight, yPos) {
-  let menuItemHeight = $('.context-menu__item').outerHeight(true);
+  let menuItemHeight = getOuterHeight(document.querySelector('.context-menu__item'), true);
   if (!menuItemHeight) {
     // fallback in the case of first-time when the element is not yet rendered
     menuItemHeight = APPROX_MENU_ITEM_HEIGHT;
@@ -17,7 +18,6 @@ export function calculateContextMenuOffset(itemCount, screenHeight, yPos) {
   const offset = screenHeight - (yPos + menuHeight);
   return offset < 0 ? offset : 0;
 }
-
 
 /**
  * This utility to merge two context menu groups..
