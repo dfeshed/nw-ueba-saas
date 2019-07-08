@@ -131,7 +131,12 @@ module('Integration | Component | mft-container/mft-action-bar', function(hooks)
     revertPatch();
     transitions = [];
   });
+  test('mft-action-bar has header title', async function(assert) {
+    initState(endpointState);
+    await render(hbs`{{host-detail/downloads/mft-container/mft-action-bar}}`);
+    assert.equal(findAll('.title').length, 1, 'close mft container button rendered');
 
+  });
   test('mft-action-bar has rendered', async function(assert) {
     initState(endpointState);
     await render(hbs`{{host-detail/downloads/mft-container/mft-action-bar}}`);

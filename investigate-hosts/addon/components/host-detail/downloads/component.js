@@ -44,9 +44,12 @@ const HostDownloads = Component.extend({
 
   @computed('selectedFileList')
   disableActions(selectedFileList) {
+    const downlodedFiles = selectedFileList.filter((item) => {
+      return item.status === 'Processing' || item.status === 'Error';
+    });
     return {
       deleteFile: !selectedFileList.length,
-      saveLocalCopy: selectedFileList.length !== 1
+      saveLocalCopy: selectedFileList.length !== 1 || !!downlodedFiles.length
     };
   },
 

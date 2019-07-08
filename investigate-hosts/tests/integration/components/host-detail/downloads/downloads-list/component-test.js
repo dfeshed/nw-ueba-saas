@@ -56,24 +56,6 @@ module('Integration | Component | downloads-list', function(hooks) {
     assert.equal(findAll('.rsa-data-table').length, 1, 'Downloads-list loaded');
   });
 
-  test('Downloads-list toggleSelectedRow', async function(assert) {
-    const selectedFileList = [{
-      id: '5ce784209829f106f0ce60b3',
-      fileName: 'mft-C-Shyam1809-x64-2019-05-24T05-41-51-200Z',
-      size: 293376,
-      fileType: 'Mft',
-      serviceId: '2cf81ac2-3d00-40f6-99fd-f5c3e9b254b4'
-    }];
-    new ReduxDataHelper(initState).hostDownloads(hostDownloads).downloadsSelectedFileList(selectedFileList).build();
-    await render(hbs`{{host-detail/downloads/downloads-list}}`);
-    await click(findAll('.fileName')[1]);
-    assert.equal(findAll('.rsa-data-table .is-selected').length, 1, 'Row is selected');
-    await click(findAll('.fileName')[2]);
-    assert.equal(findAll('.rsa-data-table .is-selected').length, 1, 'Row is selected index is moved to the newly selected row');
-    await click(findAll('.fileName')[2]);
-    assert.equal(findAll('.rsa-data-table .is-selected').length, 0, 'Row is un-selected index is set to -1');
-  });
-
   test('On right clicking the row it renders the context menu', async function(assert) {
     initState({ endpoint: { hostDownloads } });
     await render(hbs`

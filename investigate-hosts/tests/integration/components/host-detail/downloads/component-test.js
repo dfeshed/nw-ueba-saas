@@ -266,4 +266,82 @@ module('Integration | Component | downloads', function(hooks) {
     });
     await click(findAll('.downloads-action-bar .rsa-form-button')[1]);
   });
+
+  test('Disabled saveLocal copy for downloaded files when status is Error', async function(assert) {
+    const selectedFileList = [{
+      id: '5ce784209829f106f0ce60b3',
+      filename: 'mft-C-Shyam1809-x64-2019-05-24T05-41-51-200Z',
+      size: 293376,
+      fileType: 'File',
+      serviceId: '2cf81ac2-3d00-40f6-99fd-f5c3e9b254b4',
+      status: 'Error'
+    }];
+
+    new ReduxDataHelper(initState).hostDownloads(hostDownloads).downloadsSelectedFileList(selectedFileList).build();
+
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
+
+    await render(hbs `<div id='modalDestination'></div>
+      {{host-detail/downloads}}`);
+    assert.equal(findAll('.save-local-copy.is-disabled').length, 1, 'Button is Disabled');
+  });
+  test('Disabled saveLocal copy for downloaded files when more than one selectedFiles', async function(assert) {
+    const selectedFileList = [{
+      id: '5ce784209829f106f0ce60b3',
+      filename: 'mft-C-Shyam1809-x64-2019-05-24T05-41-51-200Z',
+      size: 293376,
+      fileType: 'File',
+      serviceId: '2cf81ac2-3d00-40f6-99fd-f5c3e9b254b4'
+    },
+    {
+      id: '5ce784209829f106f0ce60b3',
+      filename: 'mft-C-Shyam1809-x64-2019-05-24T05-41-51-200Z',
+      size: 293376,
+      fileType: 'File',
+      serviceId: '2cf81ac2-3d00-40f6-99fd-f5c3e9b254b4'
+    }];
+
+    new ReduxDataHelper(initState).hostDownloads(hostDownloads).downloadsSelectedFileList(selectedFileList).build();
+
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
+
+    await render(hbs `<div id='modalDestination'></div>
+      {{host-detail/downloads}}`);
+    assert.equal(findAll('.save-local-copy.is-disabled').length, 1, 'Button is disabled');
+  });
+  test('Disabled saveLocal copy for downloaded files when status is Processing', async function(assert) {
+    const selectedFileList = [{
+      id: '5ce784209829f106f0ce60b3',
+      filename: 'mft-C-Shyam1809-x64-2019-05-24T05-41-51-200Z',
+      size: 293376,
+      fileType: 'File',
+      serviceId: '2cf81ac2-3d00-40f6-99fd-f5c3e9b254b4',
+      status: 'Error'
+    }];
+
+    new ReduxDataHelper(initState).hostDownloads(hostDownloads).downloadsSelectedFileList(selectedFileList).build();
+
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
+
+    await render(hbs `<div id='modalDestination'></div>
+      {{host-detail/downloads}}`);
+    assert.equal(findAll('.save-local-copy.is-disabled').length, 1, 'Button is disabled');
+  });
+  test('Disabled delete and saveLocal copy for downloaded files when no file selected', async function(assert) {
+    const selectedFileList = [];
+
+    new ReduxDataHelper(initState).hostDownloads(hostDownloads).downloadsSelectedFileList(selectedFileList).build();
+
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
+
+    await render(hbs `<div id='modalDestination'></div>
+      {{host-detail/downloads}}`);
+    assert.equal(findAll('.save-local-copy.is-disabled').length, 1, 'Save local copy Button is disabled');
+    assert.equal(findAll('.delete-file.is-disabled').length, 1, 'Delete file Button is disabled');
+  });
+
 });

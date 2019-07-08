@@ -6,16 +6,33 @@
   .downloaded-file-name a {
     color: text-color(secondary, light);
   }
+  .download-status{
+    .rsa-loader {
+      margin: auto;
+      width: 87px;
+      height: 20px;
+      overflow: hidden;
+    }
+    i {
+      margin-top: 0.3rem;
+    }
+  }
+  .title {
+    font-size: 1.28rem;
+    font-weight: 100;
+    padding-right: 1rem;
+  }
 }
 
 .host-downloads{
   .downloads-action-bar {
-    padding: rsa-whitespace();
+    padding-left: 0.8rem;
+    padding: 1.4rem;
     > div {
       display: inline-block;
     }
     .title, .rsa-form-button-wrapper {
-      margin-right: rsa-whitespace();
+      margin-right: rsa-whitespace(less);
     }
   }
 
@@ -29,10 +46,14 @@
 
   .left-zone {
     .rsa-header {
-      padding-bottom: 1rem;
-      padding-right: 3px;
-      padding-left: 0;
-      padding-top: 0.7rem;
+      
+      height: 70px;
+      .title {
+        padding-top: 1.8rem;
+      }
+      .close-zone {
+        padding-top: 1.4rem;
+      }
     }
   }
 }

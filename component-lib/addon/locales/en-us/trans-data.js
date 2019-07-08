@@ -2939,6 +2939,7 @@ export default {
       },
       backToDownloads: 'Downloads',
       backToDownloadsTitle: 'Back to downloads tab',
+      mftHeaderTitle: 'MFT Analysis',
       errorMessages: {
         invalidFilterInputLength: 'Filter input longer than 256 characters',
         invalidCharsAlphaNumericOnly: 'Special characters are not allowed',
@@ -2970,7 +2971,8 @@ export default {
       mftDirectory: {
         deletedFiles: 'Deleted Files',
         allFiles: 'All Files'
-      }
+      },
+      processingMFT: 'Processing MFT'
     },
     tabs: {
       overview: 'Details',
