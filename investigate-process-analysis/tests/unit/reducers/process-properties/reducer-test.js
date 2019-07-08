@@ -1,6 +1,8 @@
 import Immutable from 'seamless-immutable';
 import { test, module } from 'qunit';
 import reducer from 'investigate-process-analysis/reducers/process-properties/reducer';
+import makePackAction from '../../../helpers/make-pack-action';
+import { LIFECYCLE } from 'redux-pack';
 import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
 
 const initialState = Immutable.from({
@@ -18,8 +20,23 @@ module('Unit | Reducers | process-properties', function() {
     const data = Immutable.from({
       propertiesData: null
     });
-    const result = reducer(data, { type: ACTION_TYPES.FETCH_PROCESS_PROPERTIES, payload: { data: 'xyz' } });
-    assert.equal(result.hostDetails, 'xyz', 'hostDetails is set to state');
+    const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.FETCH_PROCESS_PROPERTIES,
+      payload: { data: [ { hostDetails: [ { machineOsType: 'windows' }] }] }
+    });
+
+    const result =
+      [
+        {
+          'hostDetails': [
+            {
+              'machineOsType': 'windows'
+            }
+          ]
+        }
+      ];
+    const newEndState = reducer(data, successAction);
+    assert.deepEqual(newEndState.hostDetails, result);
   });
 
 });
