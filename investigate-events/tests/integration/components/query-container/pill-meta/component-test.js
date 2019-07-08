@@ -92,13 +92,14 @@ module('Integration | Component | Pill Meta', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1);
   });
 
-  test('it broadcasts a message when a Power Select option is choosen', async function(assert) {
+  test('it broadcasts a message when a Power Select option is chosen', async function(assert) {
     const done = assert.async();
     assert.expect(1);
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
-        assert.deepEqual(data, DEFAULT_LANGUAGES[1], 'Wrong message data');
+        const key = Object.keys(DEFAULT_LANGUAGES[1]).shift();
+        assert.equal(data[key], DEFAULT_LANGUAGES[1][key], 'Wrong message data');
         done();
       }
     });
@@ -300,7 +301,8 @@ module('Integration | Component | Pill Meta', function(hooks) {
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
-        assert.deepEqual(data, DEFAULT_LANGUAGES[1], 'Wrong message data');
+        const key = Object.keys(DEFAULT_LANGUAGES[1]).shift();
+        assert.equal(data[key], DEFAULT_LANGUAGES[1][key], 'Wrong message data');
         done();
       }
     });
@@ -343,7 +345,8 @@ module('Integration | Component | Pill Meta', function(hooks) {
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
-        assert.deepEqual(data, DEFAULT_LANGUAGES[2], 'Wrong message data');
+        const key = Object.keys(DEFAULT_LANGUAGES[2]).shift();
+        assert.equal(data[key], DEFAULT_LANGUAGES[2][key], 'Wrong message data');
         done();
       }
     });

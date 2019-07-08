@@ -2467,9 +2467,8 @@ module('Integration | Component | Query Pill', function(hooks) {
 
     const selectorArray = findAll(PILL_SELECTORS.recentQueriesOptions);
     const optionsArray = selectorArray.map((el) => el.textContent);
-    const unfilterdList = recentQueriesUnfilteredList.map((ob) => ob.query);
-    assert.deepEqual(unfilterdList, optionsArray, 'There is a mis-match in the options displayed');
-
+    const unfilteredList = recentQueriesUnfilteredList.map((ob) => ob.query);
+    assert.deepEqual(unfilteredList, optionsArray, 'There is a mis-match in the options displayed');
   });
 
   test('Pressing escape from pill-meta when there is some partially entered text cleans up the input', async function(assert) {

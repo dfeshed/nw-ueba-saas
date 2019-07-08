@@ -36,6 +36,29 @@ export const defaultMetaGroup = createSelector(
 );
 
 /**
+ * add three new boolean properties to meta
+ * isIndexedByNone
+ * isIndexedByValue
+ * isIndexedByKey
+ */
+const _enrichedLanguage = createSelector(
+  [_language],
+  (language = []) => {
+    return language.map((meta) => {
+      const { flags = 1 } = meta;
+      const index = (flags & '0xF') - 1;
+      const indexedBy = indices[index];
+      return {
+        ...meta,
+        isIndexedByNone: indexedBy === NONE,
+        isIndexedByKey: indexedBy === KEY,
+        isIndexedByValue: indexedBy === VALUE
+      };
+    });
+  }
+);
+
+/**
  * Given a language array with meta suggestions for Guided query bar, the
  * function filters out:
  * 1) Meta key `time` - as we already have a time range
@@ -45,15 +68,12 @@ export const defaultMetaGroup = createSelector(
  * @public
  */
 export const metaKeySuggestionsForQueryBuilder = createSelector(
-  [_language],
+  _enrichedLanguage,
   (language = []) => {
     return language
       .filter((m) => m.metaName !== 'time')
       .filter((meta) => {
-        const { flags = 1 } = meta;
-        const index = (flags & '0xF') - 1;
-        const indexedBy = indices[index];
-        if (indexedBy !== NONE || meta.metaName === 'sessionid') {
+        if (!meta.isIndexedByNone || meta.metaName === 'sessionid') {
           return true;
         }
         return false;
