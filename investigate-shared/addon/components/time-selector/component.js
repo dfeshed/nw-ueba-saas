@@ -50,6 +50,11 @@ const TimeSelector = Component.extend({
    */
   _previousEndTimeMilli: null,
 
+  @computed('timeRangeInvalid')
+  buttonStyle(timeRangeInvalid) {
+    return timeRangeInvalid ? null : 'standard';
+  },
+
   @computed()
   panelId() {
     return `queryTimerangeTooltip-${this.get('elementId')}`;

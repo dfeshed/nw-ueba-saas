@@ -211,15 +211,15 @@ export default Component.extend({
       [MESSAGE_TYPES.AFTER_OPTIONS_TAB_CLICKED]: () => this._afterOptionsTabToggle()
     });
     this.set('_keyDownHandlerMap', {
-      [KEY_MAP.arrowDown.key]: (powerSelectAPI, event) => this._navigationHandler(powerSelectAPI, event),
-      [KEY_MAP.arrowLeft.key]: (powerSelectAPI, event) => this._navigationHandler(powerSelectAPI, event),
-      [KEY_MAP.arrowRight.key]: (powerSelectAPI, event) => this._navigationHandler(powerSelectAPI, event),
-      [KEY_MAP.arrowUp.key]: (powerSelectAPI, event) => this._navigationHandler(powerSelectAPI, event),
-      [KEY_MAP.enter.key]: (powerSelectAPI, event) => this._commandHandler(powerSelectAPI, event),
-      [KEY_MAP.escape.key]: (powerSelectAPI, event) => this._commandHandler(powerSelectAPI, event),
-      [KEY_MAP.openParen.key]: (powerSelectAPI, event) => this._groupingHandler(powerSelectAPI, event),
-      [KEY_MAP.space.key]: (powerSelectAPI, event) => this._keyHandler(powerSelectAPI, event),
-      [KEY_MAP.tab.key]: (powerSelectAPI, event) => this._navigationHandler(powerSelectAPI, event)
+      [KEY_MAP.arrowDown.key]: this._navigationHandler.bind(this),
+      [KEY_MAP.arrowLeft.key]: this._navigationHandler.bind(this),
+      [KEY_MAP.arrowRight.key]: this._navigationHandler.bind(this),
+      [KEY_MAP.arrowUp.key]: this._navigationHandler.bind(this),
+      [KEY_MAP.enter.key]: this._commandHandler.bind(this),
+      [KEY_MAP.escape.key]: this._commandHandler.bind(this),
+      [KEY_MAP.openParen.key]: this._groupingHandler.bind(this),
+      [KEY_MAP.space.key]: this._keyHandler.bind(this),
+      [KEY_MAP.tab.key]: this._navigationHandler.bind(this)
     });
     // _debugContainerKey is a private Ember property that returns the full
     // component name (component:query-container/pill-meta).
@@ -402,9 +402,8 @@ export default Component.extend({
         // If the user presses ENTER, selecting a meta that was already
         // selected, power-select does nothing. We want the focus to move onto
         // the pill operator.
-        this.set('metaSelectedTimer', later(this, this._broadcast, {
-          type: MESSAGE_TYPES.META_SELECTED,
-          data: selection
+        this.set('metaSelectedTimer', later(this, () => {
+          this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
         }, 50));
       } else {
         next(this, () => {

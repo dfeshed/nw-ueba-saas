@@ -327,9 +327,8 @@ export default Component.extend({
           // This is called before the change event. We need to delay
           // performing this action to see if a change event occures. If it
           // does, we should ignore this event. See `onChange()`.
-          this.set('operationSelectedTimer', later(this, this._broadcast, {
-            type: MESSAGE_TYPES.OPERATOR_SELECTED,
-            data: selection
+          this.set('operationSelectedTimer', later(this, () => {
+            this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, selection);
           }, 50));
         }
       } else if (isBackspace(event) && event.target.value === '') {
@@ -475,7 +474,6 @@ export default Component.extend({
       }
     }
   },
-
 
   /**
    * Function that power-select uses to make an autosuggest match. This function

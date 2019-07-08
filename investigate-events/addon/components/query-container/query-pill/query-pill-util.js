@@ -97,7 +97,7 @@ export const determineNewComponentPropsFromPillData = (pillData) => {
     if (pillData.operator.hasValue) {
       propertyObject.isValueActive = true;
       propertyObject.valueString = '';
-    } else if (!pillData.operator.hasValue) {
+    } else {
       propertyObject.isOperatorActive = true;
     }
   }

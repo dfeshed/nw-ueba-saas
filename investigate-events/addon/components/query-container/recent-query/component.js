@@ -358,7 +358,7 @@ const RecentQueryComponent = Component.extend({
       } else if (isTab(event) || isShiftTab(event)) {
         event.preventDefault();
         // For now we have just 2 options, so can toggle.
-        // Will need to make  a informed decision once more tabs
+        // Will need to make an informed decision once more tabs
         // are added.
         this._afterOptionsTabToggle();
         return false;
