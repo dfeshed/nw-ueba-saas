@@ -16,8 +16,8 @@ module('Integration | Component | downloads/action-bar', function(hooks) {
     await render(hbs`{{host-detail/downloads/action-bar}}`);
     assert.equal(findAll('.downloads-action-bar .rsa-form-button').length, 3, 'Action bar has loaded with 3 buttons');
     assert.equal(findAll('.downloads-action-bar .rsa-form-button')[0].textContent.trim(), 'Filters', '1st Action bar button is Filter');
-    assert.equal(findAll('.downloads-action-bar .rsa-form-button')[1].textContent.trim(), 'Save local copy', '2nd Action bar button is Save local copy');
-    assert.equal(findAll('.downloads-action-bar .rsa-form-button')[2].textContent.trim(), 'Delete file', '3rd Action bar button is Delete file');
+    assert.equal(findAll('.downloads-action-bar .rsa-form-button')[1].textContent.trim().includes('Save'), true, '2nd Action bar button is Save a Local Copy');
+    assert.equal(findAll('.downloads-action-bar .rsa-form-button')[2].textContent.trim().includes('Delete'), true, '3rd Action bar button is Delete File');
   });
 
   test('Actions passed to the component called', async function(assert) {
@@ -51,6 +51,8 @@ module('Integration | Component | downloads/action-bar', function(hooks) {
     this.set('disableActions', { deleteFile: true, saveLocalCopy: true });
     await render(hbs`{{host-detail/downloads/action-bar disableActions=disableActions}}`);
     assert.equal(findAll('.downloads-action-bar .is-disabled .rsa-form-button').length, 2, 'save and delete buttons are disabled');
+    assert.equal(findAll('.save-local-copy')[0].title.trim().includes('successfully'), true, 'Save local copy Tooltip is displayed');
+    assert.equal(findAll('.delete-file')[0].title.trim().includes('delete'), true, 'delete file Tooltip is displayed');
   });
   test('Action bar save and delete buttons should not present if agent.manage permissions not there', async function(assert) {
     this.set('disableActions', { deleteFile: true, saveLocalCopy: true });

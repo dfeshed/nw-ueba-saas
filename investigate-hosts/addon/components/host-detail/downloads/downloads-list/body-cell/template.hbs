@@ -11,7 +11,7 @@
         {{get item column.field}}
       {{/link-to}}
     {{else if (eq (get item 'fileType') 'File')}}
-      <a class='file-name-link' href='/investigate/files/file?checksum={{get item 'checksumSha256'}}&sid={{serverId}}' target='_blank' rel='noopener noreferrer'>
+      <a class='file-name-link' href='/investigate/files/{{get item 'checksumSha256'}}?checksum={{get item 'checksumSha256'}}&sid={{serverId}}' target='_blank' rel='noopener noreferrer'>
         {{get item column.field}}
       </a>
     {{else}}

@@ -14,6 +14,7 @@
       class='save-local-copy'
       isDisabled=disableActions.saveLocalCopy
       defaultAction=saveLocalCopy
+      title=(if disableActions.saveLocalCopy (t 'investigateHosts.downloads.buttons.saveLocalCopyDisabledTooltip'))
     }}
       <span>{{t 'investigateHosts.downloads.buttons.saveLocalCopy'}}</span>
     {{/rsa-form-button}}
@@ -21,6 +22,7 @@
       class='delete-file'
       isDisabled=disableActions.deleteFile
       defaultAction=deleteFiles
+      title=(if disableActions.deleteFile (t 'investigateHosts.downloads.buttons.deleteDisabledTooltip'))
     }}
       <span>{{t 'investigateHosts.downloads.buttons.deleteFiles'}}</span>
     {{/rsa-form-button}}

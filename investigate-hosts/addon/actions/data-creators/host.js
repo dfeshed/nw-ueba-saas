@@ -73,6 +73,8 @@ const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTa
       } else if (tabName === 'DOWNLOADS') {
         dispatch(toggleMftView(mftFile));
         getFirstPageOfDownloads();
+      } else {
+        dispatch(toggleMftView(''));
       }
     });
   };

@@ -26,6 +26,7 @@ module('Integration | Component | mft-container/mft-help', function(hooks) {
     await render(hbs`{{host-detail/downloads/mft-container/mft-help}}`);
     assert.equal(findAll('.mft-help').length, 1, 'mft-help rendered');
     assert.equal(findAll('.line-one').length, 2, 'help texts rendered');
+    assert.equal(findAll('.line-one ul li').length, 2, 'help texts rendered');
   });
 
 

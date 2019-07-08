@@ -2935,11 +2935,12 @@ export default {
         downloadedTime: 'Downloaded Time'
       },
       help: {
-        header: 'Select the drive or folder to view content.'
+        header: 'Select the drive or folder to view content.',
+        line2: 'Click the row to view the folder details.'
       },
       backToDownloads: 'Downloads',
       backToDownloadsTitle: 'Back to downloads tab',
-      mftHeaderTitle: 'MFT Analysis',
+      mftHeaderTitle: 'MFT Viewer',
       errorMessages: {
         invalidFilterInputLength: 'Filter input longer than 256 characters',
         invalidCharsAlphaNumericOnly: 'Special characters are not allowed',
@@ -2955,8 +2956,10 @@ export default {
         hash: 'SHA256'
       },
       buttons: {
-        saveLocalCopy: 'Save local copy',
-        deleteFiles: 'Delete file'
+        saveLocalCopyDisabledTooltip: 'Select a file that is successfully downloaded.',
+        deleteDisabledTooltip: 'Select files to delete.',
+        saveLocalCopy: 'Save a Local Copy',
+        deleteFiles: 'Delete File'
       },
       deleteDownloadedFiles: {
         title: 'Downloads',

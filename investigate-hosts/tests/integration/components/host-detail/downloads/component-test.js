@@ -285,6 +285,8 @@ module('Integration | Component | downloads', function(hooks) {
     await render(hbs `<div id='modalDestination'></div>
       {{host-detail/downloads}}`);
     assert.equal(findAll('.save-local-copy.is-disabled').length, 1, 'Button is Disabled');
+    assert.equal(findAll('.save-local-copy')[0].title.trim().includes('successfully'), true, 'Save local copy Tooltip is displayed.');
+    assert.equal(findAll('.delete-file')[0].title.trim(), '', 'Delete file Tooltip is not added.');
   });
   test('Disabled saveLocal copy for downloaded files when more than one selectedFiles', async function(assert) {
     const selectedFileList = [{
@@ -310,6 +312,8 @@ module('Integration | Component | downloads', function(hooks) {
     await render(hbs `<div id='modalDestination'></div>
       {{host-detail/downloads}}`);
     assert.equal(findAll('.save-local-copy.is-disabled').length, 1, 'Button is disabled');
+    assert.equal(findAll('.save-local-copy')[0].title.trim().includes('successfully'), true, 'Save local copy Tooltip is displayed.');
+    assert.equal(findAll('.delete-file')[0].title.trim(), '', 'Delete file Tooltip is not added.');
   });
   test('Disabled saveLocal copy for downloaded files when status is Processing', async function(assert) {
     const selectedFileList = [{
@@ -342,6 +346,8 @@ module('Integration | Component | downloads', function(hooks) {
       {{host-detail/downloads}}`);
     assert.equal(findAll('.save-local-copy.is-disabled').length, 1, 'Save local copy Button is disabled');
     assert.equal(findAll('.delete-file.is-disabled').length, 1, 'Delete file Button is disabled');
+    assert.equal(findAll('.save-local-copy')[0].title.trim().includes('successfully'), true, 'Save local copy Tooltip is displayed');
+    assert.equal(findAll('.delete-file')[0].title.trim().includes('delete'), true, 'delete file Tooltip is displayed');
   });
 
 });
