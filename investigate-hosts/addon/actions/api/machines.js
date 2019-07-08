@@ -262,6 +262,30 @@ const downloadMFT = (data) => {
   });
 };
 
+/**
+ * Executes a websocket fetch call for all subfolders and returns a Promise.
+ * @returns Promise that will resolve with the server response.
+ * @public
+ */
+const getMFTSubfolders = (pageNumber, pageSize, key, descending, expressionList) => {
+  let data = {
+    pageNumber: pageNumber || 0,
+    pageSize: pageSize || 100,
+    sort: { keys: [key], descending }
+  };
+
+  data = addFilter(data, expressionList);
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'mftGetRecords',
+    modelName: 'endpoint',
+    query: {
+      data
+    }
+  });
+};
+
+
 export default {
   getAllServices,
   getAllFilters,
@@ -275,5 +299,6 @@ export default {
   deleteHosts,
   pollAgentStatus,
   getContext,
-  downloadMFT
+  downloadMFT,
+  getMFTSubfolders
 };

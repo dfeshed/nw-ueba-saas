@@ -2966,7 +2966,11 @@ export default {
         success: 'Selected downloaded files have been deleted from the server'
       },
       showNextRecords: 'Show next {{count}} {{label}}',
-      footer: 'Showing {{count}} out of {{total}} {{label}} | {{selectedItems}} selected'
+      footer: 'Showing {{count}} out of {{total}} {{label}} | {{selectedItems}} selected',
+      mftDirectory: {
+        deletedFiles: 'Deleted Files',
+        allFiles: 'All Files'
+      }
     },
     tabs: {
       overview: 'Details',

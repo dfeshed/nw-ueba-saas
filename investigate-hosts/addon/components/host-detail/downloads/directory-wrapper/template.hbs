@@ -1,0 +1,17 @@
+{{#each mftDirectory as |item|}}
+  {{host-detail/downloads/directory-wrapper/mft-directory data=item value=item.name}}
+{{/each}}
+
+<div class='deleted-files'>
+  <span class='mft-folder-icon'>
+    {{rsa-icon style='filled' name='folder-1'}}
+  </span>
+  <span>{{t 'investigateHosts.downloads.mftDirectory.deletedFiles'}}</span>
+</div>
+
+<div class='all-files'>
+  <span class='mft-folder-icon'>
+    {{rsa-icon style='filled' name='folder-1'}}
+  </span>
+  <span>{{t 'investigateHosts.downloads.mftDirectory.allFiles'}}</span>
+</div>

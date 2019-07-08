@@ -160,6 +160,76 @@ const saveLocalMFTCopy = (selectedFile, callback, serverId) => {
 };
 const toggleMftView = (selectedFile) => ({ type: ACTION_TYPES.TOGGLE_MFT_VIEW, payload: selectedFile });
 
+/**
+ * Action creator that dispatches a set of actions for fetching MFT directory (with or without filters) and sorted by one field.
+ * @method _fetchMFTDirectory
+ * @private
+ * @returns {function(*, *)}
+ */
+const _fetchMFTDirectory = (type, mftId, recordNumber, pageSize, isDirectories) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { sortField, isSortDescending, pageNumber } = state.endpoint.hostDownloads.mftDirectory;
+    const { expressionList } = state.endpoint.hostDownloads.mftDirectoryFilter;
+    // fetching subfolders based on mftId and recordNumber
+    const mftSubdirectoryFilter = [{
+      restrictionType: 'EQUAL',
+      propertyValues: [
+        {
+          value: mftId
+        }
+      ],
+      propertyName: 'mftId'
+    },
+    {
+      restrictionType: 'EQUAL',
+      propertyValues: [
+        {
+          value: recordNumber
+        }
+      ],
+      propertyName: 'parentDirectory'
+    },
+    {
+      restrictionType: 'EQUAL',
+      propertyValues: [
+        {
+          value: isDirectories
+        }
+      ],
+      propertyName: 'directory'
+    }];
+
+    const updatedExpressionList = [...expressionList, ...mftSubdirectoryFilter];
+
+    dispatch({
+      type,
+      promise: Machines.getMFTSubfolders(pageNumber, pageSize, sortField, isSortDescending, updatedExpressionList),
+      meta: {
+        onSuccess: (response) => {
+          const debugResponse = JSON.stringify(response);
+          debug(`onSuccess: ${type} ${debugResponse}`);
+        }
+      }
+    });
+  };
+};
+
+const getSubDirectories = (mftId, recordNumber, pageSize, isDirectories) => {
+  return (dispatch) => {
+    if (!recordNumber) {
+      dispatch(setSelectDirectoryForDetails(0));
+      dispatch(setSeletedParentDirectory({}));
+    }
+    dispatch(_fetchMFTDirectory(ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES, mftId, recordNumber, pageSize, isDirectories));
+  };
+};
+
+const setSeletedParentDirectory = (selectedDirectory) => ({ type: ACTION_TYPES.SET_SELECTED_MFT_PARENT_DIRECTORY, payload: selectedDirectory });
+
+const setSelectDirectoryForDetails = (selectedDirectoryForDetails) => ({ type: ACTION_TYPES.SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS, payload: selectedDirectoryForDetails });
+
+
 export {
   getPageOfDownloads,
   sortBy,
@@ -171,5 +241,8 @@ export {
   setSelectedIndex,
   deleteSelectedFiles,
   saveLocalMFTCopy,
-  toggleMftView
+  toggleMftView,
+  setSeletedParentDirectory,
+  getSubDirectories,
+  setSelectDirectoryForDetails
 };

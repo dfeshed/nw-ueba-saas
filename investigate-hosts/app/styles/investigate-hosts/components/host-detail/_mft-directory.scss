@@ -1,0 +1,53 @@
+.directory-wrapper {
+  overflow: auto;
+  height: 61vh;
+
+  .mft-directory {
+    .mft-folder {
+      padding: rsa-whitespace(less);
+      .mft-folder-icon {
+        margin-right: rsa-whitespace(less);
+      }
+      &.no-sub-folders {
+        margin-left: 1rem;
+      }
+    }
+    .mft-directory_arrow {
+      margin-right: 0.2rem;
+    }
+  }
+
+  .subdirectory-access {
+    display: inline-block;
+    float: left;
+    margin-top: 7px;
+  }
+
+  .subdirectory {
+    display: inline-block;
+    width: 93%;
+    &.hideSubdirectory {
+      > .mft-folder, > .mft-directory, > .subdirectory, > span {
+        display: none;
+      }
+      > .parent {
+        display: block;
+      }
+    }
+
+    .mft-directory_loader {
+      display: inline-block;
+      .rsa-loader {
+        max-width: 10px;
+      }
+    }
+  }
+  .selected-directory {
+    > .mft-folder:first-child, > .subdirectory > .mft-folder:first-child {
+      background-color: background-color(secondary, dark);
+    }
+  }
+  .deleted-files, .all-files {
+    margin: rsa-whitespace() 0;
+  }
+}

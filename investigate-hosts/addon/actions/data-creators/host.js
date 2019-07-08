@@ -15,7 +15,7 @@ import { getServiceId } from 'investigate-shared/actions/data-creators/investiga
 import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
 import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
 import { toggleProcessDetailsView } from 'investigate-hosts/actions/data-creators/process';
-import { toggleMftView, getFirstPageOfDownloads } from 'investigate-hosts/actions/data-creators/downloads';
+import { toggleMftView, getFirstPageOfDownloads, getSubDirectories } from './downloads';
 import { extractHostColumns } from 'investigate-hosts/reducers/schema/selectors';
 
 import { debug } from '@ember/debug';
@@ -66,6 +66,10 @@ const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTa
       }
       if (tabName === 'DOWNLOADS-MFT') {
         dispatch(toggleMftView(mftFile));
+        const isDirectories = true;
+        const pageSize = 65000;
+        dispatch(getSubDirectories(mftFile, 0, pageSize, isDirectories));
+
       } else if (tabName === 'DOWNLOADS') {
         dispatch(toggleMftView(mftFile));
         getFirstPageOfDownloads();

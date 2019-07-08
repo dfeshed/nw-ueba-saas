@@ -4,6 +4,7 @@ import machines from './hosts/reducer';
 import explore from './details/explore/reducer';
 import process from './details/process/reducer';
 import downloads from './details/downloads/reducer';
+import mftDirectory from './details/mft-directory/reducer';
 import detailsInput from './details/reducer';
 import overview from './details/overview/reducer';
 import schema from './schema/reducer';
@@ -50,7 +51,9 @@ export default combineReducers({
     risk: createFilteredReducer(risk, reducerPredicate('HOST')),
     hostDownloads: combineReducers({
       downloads,
-      filter: createFilteredReducer(filter, reducerPredicate('DOWNLOAD'))
+      filter: createFilteredReducer(filter, reducerPredicate('DOWNLOAD')),
+      mftDirectory,
+      mftDirectoryFilter: createFilteredReducer(filter, reducerPredicate('MFTDIRECTORY'))
     })
 
   }),

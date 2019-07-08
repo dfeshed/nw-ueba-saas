@@ -53,6 +53,10 @@ const hostsConfigGen = function(env) {
         subscriptionDestination: '/user/queue/endpoint/memory/export',
         requestDestination: '/ws/endpoint/memory/export'
       },
+      mftGetRecords: {
+        subscriptionDestination: '/user/queue/endpoint/mft/get-records',
+        requestDestination: '/ws/endpoint/mft/get-records'
+      },
       'machine-schema': {
         subscriptionDestination: '/user/queue/endpoint/machine/schema',
         requestDestination: '/ws/endpoint/machine/schema',
