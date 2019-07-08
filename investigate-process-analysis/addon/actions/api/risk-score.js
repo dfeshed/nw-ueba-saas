@@ -9,7 +9,7 @@ const getLocalRiskScore = (host, files) => {
       data: {
         host,
         files,
-        useCache: false
+        useCache: true
       }
     }
   });
