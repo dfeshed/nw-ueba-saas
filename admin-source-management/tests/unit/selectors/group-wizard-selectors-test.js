@@ -440,6 +440,15 @@ module('Unit | Selectors | Group Wizard Selectors', function(hooks) {
 
   const policyListPayload = [
     {
+      id: 'policy_003',
+      name: 'Policy 003',
+      policyType: 'windowsLogPolicy',
+      description: 'EMC Reston 012 of policy policy_012',
+      lastPublishedOn: 0,
+      dirty: true,
+      defaultPolicy: false
+    },
+    {
       id: '__default_edr_policy',
       name: 'Default EDR Policy',
       policyType: 'edrPolicy',
@@ -461,15 +470,6 @@ module('Unit | Selectors | Group Wizard Selectors', function(hooks) {
       id: 'policy_002',
       name: 'Policy 002',
       policyType: 'edrPolicy',
-      description: 'EMC Reston 012 of policy policy_012',
-      lastPublishedOn: 0,
-      dirty: true,
-      defaultPolicy: false
-    },
-    {
-      id: 'policy_003',
-      name: 'Policy 003',
-      policyType: 'windowsLogPolicy',
       description: 'EMC Reston 012 of policy policy_012',
       lastPublishedOn: 0,
       dirty: true,

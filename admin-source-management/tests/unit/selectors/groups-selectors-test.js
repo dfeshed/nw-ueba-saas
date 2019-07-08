@@ -1,4 +1,6 @@
 import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
 import ReduxDataHelper from '../../helpers/redux-data-helper';
 import {
@@ -14,7 +16,11 @@ import {
   filterTypesConfig
 } from 'admin-source-management/reducers/usm/groups-selectors';
 
-module('Unit | Selectors | Groups Selectors', function() {
+module('Unit | Selectors | Groups Selectors', function(hooks) {
+  setupTest(hooks);
+  hooks.beforeEach(function() {
+    initialize(this.owner);
+  });
 
   test('isGroupsLoading selector, when wait', function(assert) {
     const result = isGroupsLoading(Immutable.from({
@@ -186,24 +192,6 @@ module('Unit | Selectors | Groups Selectors', function() {
 
   const policyListPayload = [
     {
-      id: 'policy_001',
-      name: 'Policy 001',
-      policyType: 'edrPolicy',
-      description: 'EMC 001 of policy policy_001',
-      lastPublishedOn: 1527489158739,
-      dirty: true,
-      defaultPolicy: false
-    },
-    {
-      id: 'policy_002',
-      name: 'Policy 002',
-      policyType: 'edrPolicy',
-      description: 'EMC Reston 002 of policy policy_002',
-      lastPublishedOn: 0,
-      dirty: true,
-      defaultPolicy: false
-    },
-    {
       id: 'policy_003',
       name: 'Policy 003',
       policyType: 'windowsLogPolicy',
@@ -220,6 +208,24 @@ module('Unit | Selectors | Groups Selectors', function() {
       lastPublishedOn: 0,
       dirty: true,
       defaultPolicy: false
+    },
+    {
+      id: 'policy_001',
+      name: 'Policy 001',
+      policyType: 'edrPolicy',
+      description: 'EMC 001 of policy policy_001',
+      lastPublishedOn: 1527489158739,
+      dirty: true,
+      defaultPolicy: false
+    },
+    {
+      id: 'policy_002',
+      name: 'Policy 002',
+      policyType: 'edrPolicy',
+      description: 'EMC Reston 002 of policy policy_002',
+      lastPublishedOn: 0,
+      dirty: true,
+      defaultPolicy: false
     }
   ];
 
@@ -230,8 +236,8 @@ module('Unit | Selectors | Groups Selectors', function() {
         label: 'adminUsm.groups.filter.sourceType',
         listOptions: [
           { name: 'edrPolicy', label: 'adminUsm.policyTypes.edrPolicy' },
-          { name: 'windowsLogPolicy', label: 'adminUsm.policyTypes.windowsLogPolicy' },
-          { name: 'filePolicy', label: 'adminUsm.policyTypes.filePolicy' }
+          // { name: 'filePolicy', label: 'adminUsm.policyTypes.filePolicy' },
+          { name: 'windowsLogPolicy', label: 'adminUsm.policyTypes.windowsLogPolicy' }
         ],
         type: 'list'
       },
@@ -251,6 +257,7 @@ module('Unit | Selectors | Groups Selectors', function() {
       .build();
     const config = filterTypesConfig(Immutable.from(fullState));
     assert.equal(config.length, expectedConfig.length, '2 filters as expected');
+    assert.deepEqual(config, expectedConfig, 'filter config(s) generated as expected');
   });
 
 });

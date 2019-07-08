@@ -48,13 +48,20 @@ export const isPolicyFetchError = createSelector(
  * @public
  */
 export const sourceTypes = (state) => {
+  const i18n = lookup('service:i18n');
   const features = lookup('service:features');
   const isFilePolicyFeatureEnabled = features.isEnabled('rsa.usm.filePolicyFeature');
   const isAllowFilePoliciesEnabled = features.isEnabled('rsa.usm.allowFilePolicies');
   const allSourceTypes = _policyWizardState(state).sourceTypes;
+  // translate the policyType so we can sort by the translated string
+  const allSourceTypesWithTranslations = _.map(allSourceTypes, (sourceType) => {
+    return { ...sourceType, typeTranslation: i18n.t(sourceType.label) };
+  });
+  const sortedSourceTypes = _.sortBy(allSourceTypesWithTranslations, 'typeTranslation');
+  // we only want to return enabled types
   const enabledSourceTypes = [];
-  for (let s = 0; s < allSourceTypes.length; s++) {
-    const sourceType = allSourceTypes[s];
+  for (let s = 0; s < sortedSourceTypes.length; s++) {
+    const sourceType = sortedSourceTypes[s];
     if (sourceType.policyType === 'filePolicy' && isFilePolicyFeatureEnabled) {
       enabledSourceTypes.push({ ...sourceType, disabled: !isAllowFilePoliciesEnabled });
     } else if (sourceType.policyType !== 'filePolicy') {

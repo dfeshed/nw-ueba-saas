@@ -54,20 +54,27 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
   });
 
   test('sourceTypes selector', function(assert) {
+    const i18n = lookup('service:i18n');
     const features = lookup('service:features');
 
     // filePolicyFeature enabled so all types should be returned
     // & allowFilePolicies enabled so filePolicy type should be enabled
     features.setFeatureFlags({ 'rsa.usm.filePolicyFeature': true });
     features.setFeatureFlags({ 'rsa.usm.allowFilePolicies': true });
+    // keep these type/disabled expected vars in the same order as sourceTypesExpected var below
     let type0Expected = 'edrPolicy';
     const disabled0Expected = false;
-    let type1Expected = 'windowsLogPolicy';
-    const disabled1Expected = false;
-    const type2Expected = 'filePolicy';
-    let disabled2Expected = false;
+    let type1Expected = 'filePolicy';
+    let disabled1Expected = false;
+    const type2Expected = 'windowsLogPolicy';
+    const disabled2Expected = false;
     let fullState = new ReduxDataHelper().policyWiz().build();
-    let sourceTypesExpected = _.cloneDeep(fullState.usm.policyWizard.sourceTypes);
+    // copy/paste from the reducer's initial state, add a typeTranslation prop, and keep ordered by typeTranslation
+    const sourceTypesExpected = [ // _.cloneDeep(fullState.usm.policyWizard.sourceTypes);
+      { id: 'edrPolicy', policyType: 'edrPolicy', disabled: false, name: 'EndpointScan', label: 'adminUsm.policyWizard.edrSourceType', typeTranslation: i18n.t('adminUsm.policyWizard.edrSourceType') },
+      { id: 'filePolicy', policyType: 'filePolicy', disabled: false, name: 'EndpointFile', label: 'adminUsm.policyWizard.fileLogSourceType', typeTranslation: i18n.t('adminUsm.policyWizard.fileLogSourceType') },
+      { id: 'windowsLogPolicy', policyType: 'windowsLogPolicy', disabled: false, name: 'EndpointWL', label: 'adminUsm.policyWizard.windowsLogSourceType', typeTranslation: i18n.t('adminUsm.policyWizard.windowsLogSourceType') }
+    ];
     let sourceTypesSelected = sourceTypes(Immutable.from(fullState));
     assert.deepEqual(sourceTypesSelected.length, 3, 'All sourceTypes returned as expected');
     assert.deepEqual(sourceTypesSelected, sourceTypesExpected, 'The returned value from the sourceTypes selector is as expected');
@@ -81,13 +88,13 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
     // filePolicyFeature enabled so all types should be returned
     // & allowFilePolicies disabled so filePolicy type should be disabled
     features.setFeatureFlags({ 'rsa.usm.allowFilePolicies': false });
-    disabled2Expected = true;
+    disabled1Expected = true;
     fullState = new ReduxDataHelper().policyWiz().build();
-    sourceTypesExpected = _.cloneDeep(fullState.usm.policyWizard.sourceTypes);
-    sourceTypesExpected[2].disabled = true;
+    const sourceTypesExpectedClone1 = _.cloneDeep(sourceTypesExpected);
+    sourceTypesExpectedClone1[1].disabled = true;
     sourceTypesSelected = sourceTypes(Immutable.from(fullState));
     assert.deepEqual(sourceTypesSelected.length, 3, 'All sourceTypes returned as expected');
-    assert.deepEqual(sourceTypesSelected, sourceTypesExpected, 'The returned value from the sourceTypes selector is as expected');
+    assert.deepEqual(sourceTypesSelected, sourceTypesExpectedClone1, 'The returned value from the sourceTypes selector is as expected');
     assert.deepEqual(sourceTypesSelected[0].policyType, type0Expected, `sourceTypes[0].policyType is ${type0Expected}`);
     assert.deepEqual(sourceTypesSelected[0].disabled, disabled0Expected, `sourceTypes[0].disabled is ${disabled0Expected}`);
     assert.deepEqual(sourceTypesSelected[1].policyType, type1Expected, `sourceTypes[1].policyType is ${type1Expected}`);
@@ -100,22 +107,29 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
     type0Expected = 'edrPolicy';
     type1Expected = 'windowsLogPolicy';
     fullState = new ReduxDataHelper().policyWiz().build();
-    sourceTypesExpected = _.cloneDeep(fullState.usm.policyWizard.sourceTypes.filter((sourceType) => sourceType.policyType !== 'filePolicy'));
+    const sourceTypesExpectedClone2 = _.cloneDeep(sourceTypesExpected.filter((sourceType) => sourceType.policyType !== 'filePolicy'));
     sourceTypesSelected = sourceTypes(Immutable.from(fullState));
     assert.deepEqual(sourceTypesSelected.length, 2, 'filePolicy sourceType filtered so only two types are returned as expected');
-    assert.deepEqual(sourceTypesSelected, sourceTypesExpected, 'The returned value from the sourceTypes selector is as expected');
+    assert.deepEqual(sourceTypesSelected, sourceTypesExpectedClone2, 'The returned value from the sourceTypes selector is as expected');
     assert.deepEqual(sourceTypesSelected[0].policyType, type0Expected, `sourceTypes[0].policyType is ${type0Expected}`);
     assert.deepEqual(sourceTypesSelected[1].policyType, type1Expected, `sourceTypes[1].policyType is ${type1Expected}`);
   });
 
   test('selectedSourceType selector', function(assert) {
+    const i18n = lookup('service:i18n');
     const typeExpected = 'edrPolicy';
     const fullState = new ReduxDataHelper()
       .policyWiz()
       .policyWizSourceType(typeExpected) // type holds sourceType type only so use the first type
       .build();
-    // the selector looks up sourceType object by type, so use the first object
-    const sourceTypeExpected = _.cloneDeep(fullState.usm.policyWizard.sourceTypes[0]);
+    // copy/paste from the reducer's initial state, add a typeTranslation prop, and keep ordered by typeTranslation
+    const sourceTypesExpected = [ // _.cloneDeep(fullState.usm.policyWizard.sourceTypes);
+      { id: 'edrPolicy', policyType: 'edrPolicy', disabled: false, name: 'EndpointScan', label: 'adminUsm.policyWizard.edrSourceType', typeTranslation: i18n.t('adminUsm.policyWizard.edrSourceType') },
+      { id: 'filePolicy', policyType: 'filePolicy', disabled: false, name: 'EndpointFile', label: 'adminUsm.policyWizard.fileLogSourceType', typeTranslation: i18n.t('adminUsm.policyWizard.fileLogSourceType') },
+      { id: 'windowsLogPolicy', policyType: 'windowsLogPolicy', disabled: false, name: 'EndpointWL', label: 'adminUsm.policyWizard.windowsLogSourceType', typeTranslation: i18n.t('adminUsm.policyWizard.windowsLogSourceType') }
+    ];
+    // the selector looks up sourceType object by type, so use the expected edrPolicy type (which is currently the first object)
+    const [sourceTypeExpected] = sourceTypesExpected;
     const sourceTypeSelected = selectedSourceType(Immutable.from(fullState));
     assert.deepEqual(sourceTypeSelected, sourceTypeExpected, 'The returned value from the selectedSourceType selector is as expected');
   });

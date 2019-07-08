@@ -94,14 +94,16 @@ export const isLoadingGroupRanking = createSelector(
 export const availablePolicySourceTypes = createSelector(
   policyList,
   (policyList) => {
-    const list = [];
-    for (let index = 0; index < policyList.length; index++) {
-      const sourceType = policyList[index].policyType;
-      if (!list.includes(sourceType)) {
-        list.push(sourceType);
-      }
-    }
-    return list;
+    const i18n = lookup('service:i18n');
+    const uniqPolicyListByType = _.uniqBy(policyList, 'policyType');
+    // translate the policyType so we can sort by the translated string
+    const uniqTypesAndTranslations = _.map(uniqPolicyListByType, (policy) => {
+      return { policyType: policy.policyType, typeTranslation: i18n.t(`adminUsm.policyTypes.${policy.policyType}`) };
+    });
+    const sortedUniqTypesAndTranslations = _.sortBy(uniqTypesAndTranslations, 'typeTranslation');
+    // this usage of map() returns an array of policyType values
+    const sortedUniqTypes = _.map(sortedUniqTypesAndTranslations, 'policyType');
+    return sortedUniqTypes;
   }
 );
 
