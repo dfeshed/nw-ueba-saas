@@ -1,30 +1,33 @@
-import { moduleForComponent, skip } from 'ember-qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import wait from 'ember-test-helpers/wait';
+import { findAll, render } from '@ember/test-helpers';
 import DataHelper from '../../../../helpers/data-helper';
+import { patchReducer } from '../../../../helpers/vnext-patch';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import Immutable from 'seamless-immutable';
 
-moduleForComponent('rsa-incident-storyline', 'Integration | Component | Incident Storyline', {
-  integration: true,
-  resolver: engineResolverFor('respond'),
-  setup() {
-    this.inject.service('redux');
-  }
-});
+module('Integration | Component | Incident Storyline', function(hooks) {
+  setupRenderingTest(hooks, {
+    integration: true,
+    resolver: engineResolverFor('respond')
+  });
 
-// @workaround We skip this integration test for now because there is an issue in ember-engines with integration
-// tests for components that use a `{{link-to}}`.  The fix is in ember-engines 0.5.0-beta2 so we should be able to
-// stop skipping this test once we upgrade.
-// @see https://github.com/ember-engines/ember-engines/issues/294 regarding the issue and
-// https://github.com/ember-engines/ember-engines/pull/295 for the PR that fixes it
-skip('it renders - to test, please upgrade to ember-engines 0.5.0-beta2+', function(assert) {
-  new DataHelper(this.get('redux')).fetchIncidentStoryline();
-  this.render(hbs`{{rsa-incident/storyline}}`);
-  return wait().then(() => {
-    const $el = this.$('.rsa-list');
-    assert.equal($el.length, 1, 'Expected to find list root element in DOM.');
+  hooks.beforeEach(function() {
+    initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
+  });
 
-    const $rows = $el.find('.rsa-incident-storyline-item');
-    assert.ok($rows.length, 'Expected to find at least one storyline item element in DOM.');
+  test('it renders story line list', async function(assert) {
+    patchReducer(this, Immutable.from({}));
+    new DataHelper(this.owner.lookup('service:redux')).fetchIncidentStoryline();
+    await render(hbs`{{rsa-incident/storyline}}`);
+
+    const elements = findAll('.rsa-list');
+    assert.equal(elements.length, 1, 'Expected to find list root element in DOM.');
+
+    const rows = elements[0].querySelectorAll('.rsa-incident-storyline-item');
+    assert.ok(rows.length, 'Expected to find at least one storyline item element in DOM.');
   });
 });

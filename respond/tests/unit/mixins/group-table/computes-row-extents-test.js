@@ -1,7 +1,7 @@
 import EmberObject from '@ember/object';
 import ComputesRowExtentsMixin from 'respond/mixins/group-table/computes-row-extents';
 import { module, test } from 'qunit';
-import $ from 'jquery';
+import { isNumeric } from 'component-lib/utils/jquery-replacement';
 
 module('Unit | Mixin | group table/computes row sizes');
 
@@ -89,8 +89,8 @@ test('it computes groupExtents correctly', function(assert) {
   const extents = subject.get('groupExtents');
   extents.forEach(({ index, top, bottom }, i) => {
     assert.equal(i, index, 'Expected each extent to have a correct group index');
-    assert.ok($.isNumeric(top), 'Expected each extent to have a numeric top');
-    assert.ok($.isNumeric(bottom), 'Expected each extent to have a numeric bottom');
+    assert.ok(isNumeric(top), 'Expected each extent to have a numeric top');
+    assert.ok(isNumeric(bottom), 'Expected each extent to have a numeric bottom');
     const diff = bottom - top;
     const expectedDiff = groupHeaderSize.outerHeight + groups[index].get('items.length') * groupItemSize.outerHeight - 1;
     assert.equal(diff, expectedDiff, 'Expected each extent to be proportional to items.length');
