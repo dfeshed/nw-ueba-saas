@@ -4,7 +4,7 @@
  * @private
  */
 const baseColumnConfigForEvents = [{
-  field: 'eventDate.epochSecond',
+  field: 'time_detected',
   type: 'DATE_TIME',
   title: 'Time',
   visible: true,

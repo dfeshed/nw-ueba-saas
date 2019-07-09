@@ -29,7 +29,7 @@ const entityFilter = (entityType, entityValue) => {
 const buildTimeRange = (eventTime) => {
   return {
     endTime: moment(eventTime * 1000).endOf('minute').format('X'),
-    startTime: moment(eventTime * 1000).subtract(1, 'hours').add(1, 'minutes').startOf('minute').format('X')
+    startTime: moment(eventTime * 1000).subtract(1, 'hours').startOf('minute').format('X')
   };
 };
 /**

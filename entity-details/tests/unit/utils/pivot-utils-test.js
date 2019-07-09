@@ -153,10 +153,10 @@ module('Unit | Utils | pivot-utils', (hooks) => {
     const column = { linkField: 'user_link', field: 'username', additionalFilter: 'obj.name' };
     navigateToInvestigate('User', 'Name1', 'file', 1562192044531, item, column, null);
     return waitUntil(() => currentUrl !== null).then(() => {
-      assert.ok(decodeURIComponent(currentUrl).indexOf('&st=1562192040960&et=1562192044559') > 0);
+      assert.ok(decodeURIComponent(currentUrl).indexOf('&st=1562192040900&et=1562192044559') > 0);
       const [ , startTime] = decodeURIComponent(currentUrl).match(/&st=(.*)&et/i);
       const [ , endTime] = decodeURIComponent(currentUrl).match(/&et=(.*)&mps/i);
-      assert.ok(moment.unix(parseInt(endTime, 10) / 1000).diff(moment.unix(parseInt(startTime, 10) / 1000)) === 3599);
+      assert.equal(moment.unix(parseInt(endTime, 10) / 1000).diff(moment.unix(parseInt(startTime, 10) / 1000)), 3659);
       assert.ok(newTab);
     });
   });
