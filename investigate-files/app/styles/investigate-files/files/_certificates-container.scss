@@ -82,7 +82,7 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
   }
   .left-zone {
     .close-zone {
-      margin-right: -14px;
+      margin-right: -7px;
     }
   }
   .show-left-zone {
@@ -108,6 +108,7 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
       .rsa-data-table-body-row {
         width: fit-content;
         min-width: 98%;
+        line-height: 1.3rem;
       }
       .content-context-menu {
         display: inherit;
