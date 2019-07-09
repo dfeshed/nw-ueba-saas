@@ -703,4 +703,17 @@ module('Integration | Component | Pill Meta', function(hooks) {
     assert.equal(trim(advancedOptions[1].textContent), 'Text Filter is unavailable. All services must be 11.3 or greater.', 'incorrect label for Text Filter option');
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionDisabled).length, 1, 'incorrect number of disabled items');
   });
+
+  test('it removes leading open parens', async function(assert) {
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        metaOptions=metaOptions
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', '(');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, '', 'There should be no text in the EPS input');
+  });
 });
