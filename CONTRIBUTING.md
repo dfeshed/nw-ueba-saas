@@ -170,7 +170,7 @@ The following is a list of steps to perform to close out a sprint.
  - REPO: asoc/sa-ui
  - BRANCH: tags/v13.0.0
  - STABILITY: 5
-4. Update the sa-ui entry in the _Sprint Component List_ on the [WIKI](https://wiki.na.rsa.net/display/ENVNG/11.3+Sprint+RPMs).
+4. Update the `sa-ui` entry in the _Sprint Component List_ on the [WIKI](https://wiki.na.rsa.net/display/ENVNG/11.4+Sprint+RPMs).
 
 ## Points of Contact
 ### Context Hub
