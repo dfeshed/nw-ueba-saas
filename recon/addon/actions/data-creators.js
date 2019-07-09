@@ -39,6 +39,8 @@ import {
   fetchReconSummary,
   fetchTextData,
   batchTextData,
+  fetchEmailData,
+  batchEmailData,
   cursorFirst,
   cursorPrevious,
   cursorNext,
@@ -86,10 +88,6 @@ const _fetchTextData = function(dispatch, state) {
   );
 };
 
-const _fetchMailData = function(dispatch) {
-  dispatch({ type: ACTION_TYPES.MAIL_RENDER_NEXT });
-};
-
 /**
  * Generic handler for errors fetching recon view data.
  * @param {object} response - Promise response object.
@@ -109,12 +107,13 @@ const _handleContentError = (response) => {
   };
 };
 
-const _getTextAndPacketInputs = ({ recon: { data, packets, text } }) => ({
+const _getTextAndPacketInputs = ({ recon: { data, packets, text, emails } }) => ({
   endpointId: data.endpointId,
   eventId: data.eventId,
   packetsPageSize: packets.packetsPageSize,
   packetsRowIndex: (packets.pageNumber - 1) * packets.packetsPageSize,
-  decode: text.decode
+  decode: text.decode,
+  email: emails.isEmail
 });
 
 /**
@@ -166,7 +165,12 @@ const _handleFetchingNewData = (newViewCode) => {
         _fetchTextData(dispatch, state);
         break;
       case RECON_VIEW_TYPES_BY_NAME.MAIL.code:
-        _fetchMailData(dispatch, state);
+        fetchEmailData(
+          _getTextAndPacketInputs(state),
+          (payload) => dispatch({ type: ACTION_TYPES.EMAIL_RECEIVE_PAGE, payload: payload.data }),
+          (payload) => dispatch({ type: ACTION_TYPES.EMAIL_RENDER_NEXT, payload }),
+          (response) => dispatch(_handleContentError(response, 'email'))
+        );
         break;
     }
   };
@@ -195,7 +199,10 @@ const _handleRenderingStateData = (newViewCode) => {
         );
         break;
       case RECON_VIEW_TYPES_BY_NAME.MAIL.code:
-        dispatch({ type: ACTION_TYPES.MAIL_RENDER_NEXT });
+        batchEmailData(
+          getState().recon.emails.emails,
+          (payload) => dispatch({ type: ACTION_TYPES.EMAIL_RENDER_NEXT, payload }),
+        );
         break;
     }
   };

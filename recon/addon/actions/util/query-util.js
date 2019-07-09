@@ -80,6 +80,10 @@ const addStreaming = (_query, pageSize = 10000, batchSize = 10, limit = 100000, 
   return query;
 };
 
+const addEmail = (query, email) => {
+  return _addFilter(query, 'email', email);
+};
+
 const basicPromiseRequest = (endpointId, eventId, modelName, streamOptions = {}) => {
   const query = buildBaseQuery(endpointId, eventId);
   const request = lookup('service:request');
@@ -146,5 +150,6 @@ export {
   addStreaming,
   addSessionQueryFilter,
   basicPromiseRequest,
-  addDecode
+  addDecode,
+  addEmail
 };

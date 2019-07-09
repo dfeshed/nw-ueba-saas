@@ -42,7 +42,7 @@ const data = handleActions({
 
   [ACTION_TYPES.PACKETS_RENDER_NEXT]: dataReceivedDoneLoading,
 
-  [ACTION_TYPES.MAIL_RENDER_NEXT]: dataReceivedDoneLoading,
+  [ACTION_TYPES.EMAIL_RENDER_NEXT]: dataReceivedDoneLoading,
 
   [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: dataReceivedDoneLoading,
 

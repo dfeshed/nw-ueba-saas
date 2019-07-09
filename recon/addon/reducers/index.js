@@ -8,6 +8,7 @@ import notifications from './notifications/reducer';
 import packets from './packets/reducer';
 import text from './text/reducer';
 import visuals from './visuals/reducer';
+import emails from './emails/reducer';
 
 export default {
   recon: combineReducers({
@@ -19,6 +20,7 @@ export default {
     notifications,
     packets,
     text,
-    visuals
+    visuals,
+    emails
   })
 };

@@ -10,6 +10,7 @@ import {
   cursorNext,
   cursorLast
 } from './text';
+import { fetchEmailData, batchEmailData } from './emails';
 import { fetchLanguage, fetchAliases } from './dictionaries';
 import fetchExtractJobId from './file-extract';
 import fetchNotifications from './notifications';
@@ -20,6 +21,7 @@ export {
   fetchReconFiles,
   fetchPacketData,
   fetchTextData,
+  fetchEmailData,
   cursorFirst,
   cursorPrevious,
   cursorNext,
@@ -29,5 +31,6 @@ export {
   fetchNotifications,
   fetchExtractJobId,
   batchPacketData,
-  batchTextData
+  batchTextData,
+  batchEmailData
 };

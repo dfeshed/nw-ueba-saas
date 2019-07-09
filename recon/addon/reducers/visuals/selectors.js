@@ -32,6 +32,11 @@ export const isPacketView = createSelector(
   (code) => code === RECON_VIEW_TYPES_BY_NAME.PACKET.code
 );
 
+export const isEmailView = createSelector(
+  _typeCode,
+  (code) => code === RECON_VIEW_TYPES_BY_NAME.MAIL.code
+);
+
 export const lacksPackets = createSelector(
   isPacketView,
   isTextView,

@@ -1,0 +1,31 @@
+<div class="recon-email-header">
+  {{#each-in headerFields as |headerField headerValue|}}
+    <hbox class="recon-meta-content-item">
+      <box class="meta-name header-label">{{t (concat 'recon.emailView.' headerField)}}</box>
+      <box class="meta-value header-value">{{headerValue}}</box>
+    </hbox>
+  {{/each-in}}
+
+  <div class="recon-meta-content-item horizontal">
+    <span class="toggle-icon additional-header">
+      {{rsa-icon
+        name=(concat 'arrow-' collapseArrowDirection '-12')
+        click=(action 'toggleEmailExpansion')
+      }}
+      {{t 'recon.emailView.additionalHeaderDetails'}}
+    </span>
+  </div>
+
+  {{#if isEmailExpanded}}
+    {{#each-in additionalHeaderFields as |headerField headerValue|}}
+      <hbox class="recon-meta-content-item">
+        <box class="meta-name header-label">{{t (concat 'recon.emailView.' headerField)}}</box>
+        <box class="meta-value header-value">{{ headerValue }}</box>
+      </hbox>
+    {{/each-in}}
+    <hbox class="recon-meta-content-item">
+      <box class="meta-name header-label">{{t 'recon.emailView.attachment'}}</box>
+      <box class="meta-value header-value">"coming soon"</box>
+    </hbox>
+  {{/if}}
+</div>

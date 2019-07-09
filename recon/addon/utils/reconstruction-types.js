@@ -35,7 +35,7 @@ const RECON_VIEW_TYPES = [{
   id: 'mail',
   name: 'MAIL',
   component: 'recon-event-detail/emails',
-  dataKey: 'mails.mails'
+  dataKey: 'emails.emails'
 }, {
   code: 5,
   id: 'web',

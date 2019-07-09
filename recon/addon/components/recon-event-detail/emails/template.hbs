@@ -1,1 +1,11 @@
-<h1 class="large centered">Email Coming soon..</h1>
+{{#if hasRenderIds}}
+  <div class="scroll-box">
+    {{#each renderedEmails as |email|}}
+      {{recon-event-detail/single-email email=email}}
+    {{/each}}
+  </div>
+{{else}}
+  {{#if hasNoEmailContent}}
+    {{rsa-panel-message message=(t 'recon.emailView.noEmailData')}}
+  {{/if}}
+{{/if}}

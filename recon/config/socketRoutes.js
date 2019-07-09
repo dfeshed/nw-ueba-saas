@@ -55,6 +55,13 @@ const reconValueConfigGen = function(environment) {
         requestDestination: '/ws/investigate/reconstruct/session-text/stream'
       }
     },
+    'reconstruction-email-data': {
+      socketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/investigate/reconstruct/session-emails',
+        requestDestination: '/ws/investigate/reconstruct/session-emails/stream'
+      }
+    },
     'reconstruction-file-data': {
       socketUrl,
       query: {

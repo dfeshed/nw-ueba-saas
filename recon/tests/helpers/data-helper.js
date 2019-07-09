@@ -84,6 +84,11 @@ class DataHelper {
     return this;
   }
 
+  setViewToEmail() {
+    _setViewTo(this.redux, RECON_VIEW_TYPES_BY_NAME.MAIL);
+    return this;
+  }
+
   setDownloadFormatToXml() {
     preferences.eventAnalysisPreferences.defaultLogFormat = 'XML';
     this.redux.dispatch({ type: ACTION_TYPES.SET_PREFERENCES, payload: preferences });

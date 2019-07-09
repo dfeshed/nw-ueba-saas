@@ -6,6 +6,7 @@ import {
   isTextView,
   isFileView,
   isPacketView,
+  isEmailView,
   lacksPackets,
   allDataHidden
 } from 'recon/reducers/visuals/selectors';
@@ -35,6 +36,13 @@ const generateReconViewData = function(selector) {
         }
       }
     })),
+    emailView: selector(Immutable.from({
+      visuals: {
+        currentReconView: {
+          code: RECON_VIEW_TYPES_BY_NAME.MAIL.code
+        }
+      }
+    })),
     noView: selector(Immutable.from({
       visuals: {
         currentReconView: null
@@ -44,36 +52,51 @@ const generateReconViewData = function(selector) {
 };
 
 test('isTextView', function(assert) {
-  assert.expect(4);
+  assert.expect(5);
 
   const tests = generateReconViewData(isTextView);
 
   assert.equal(tests.textView, true, 'isTextView should return true when is text view');
   assert.equal(tests.fileView, false, 'isTextView should return false when is file view');
   assert.equal(tests.packetView, false, 'isTextView should return false when is packet view');
+  assert.equal(tests.emailView, false, 'isEmailView should return false when is email view');
+  assert.equal(tests.noView, false, 'isTextView should return false when there is no view selected');
+});
+
+test('isEmailView', function(assert) {
+  assert.expect(5);
+
+  const tests = generateReconViewData(isEmailView);
+
+  assert.equal(tests.emailView, true, 'isEmailView should return true when is email view');
+  assert.equal(tests.textView, false, 'isTextView should return false when is text view');
+  assert.equal(tests.fileView, false, 'isTextView should return false when is file view');
+  assert.equal(tests.packetView, false, 'isTextView should return false when is packet view');
   assert.equal(tests.noView, false, 'isTextView should return false when there is no view selected');
 });
 
 test('isFileView', function(assert) {
-  assert.expect(4);
+  assert.expect(5);
 
   const tests = generateReconViewData(isFileView);
 
   assert.equal(tests.textView, false, 'isFileView should return false when is text view');
   assert.equal(tests.fileView, true, 'isFileView should return true when is file view');
   assert.equal(tests.packetView, false, 'isFileView should return false when is packet view');
+  assert.equal(tests.emailView, false, 'isEmailView should return false when is email view');
   assert.equal(tests.noView, false, 'isFileView should return false when there is no view selected');
 
 });
 
 test('isPacketView', function(assert) {
-  assert.expect(4);
+  assert.expect(5);
 
   const tests = generateReconViewData(isPacketView);
 
   assert.equal(tests.textView, false, 'isPacketView should return false when is text view');
   assert.equal(tests.fileView, false, 'isPacketView should return false when is file view');
   assert.equal(tests.packetView, true, 'isPacketView should return true when is packet view');
+  assert.equal(tests.emailView, false, 'isEmailView should return false when is email view');
   assert.equal(tests.noView, false, 'isPacketView should return false when there is no view selected');
 });
 
