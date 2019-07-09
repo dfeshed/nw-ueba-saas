@@ -12,7 +12,14 @@ export default {
           httpsPort: 443,
           httpsBeaconIntervalInSeconds: 900,
           udpPort: 444,
-          udpBeaconIntervalInSeconds: 30
+          udpBeaconIntervalInSeconds: 30,
+          rar: {
+            servers: [{
+              address: '11.22.33.44',
+              httpsPort: '111',
+              httpsBeaconIntervalInSeconds: 999999
+            }]
+          }
         }
       },
       agentMode: 'ADVANCED',
@@ -41,6 +48,77 @@ export default {
       serverConfig: {
         requestScanOnRegistration: false
       }
+    },
+
+    windowsLogPolicy: {
+      name: 'Default Windows Log Policy',
+      enabled: true,
+      sendTestLog: false,
+      primaryDestination: '',
+      secondaryDestination: '',
+      protocol: 'TLS',
+      channelFilters: [
+        {
+          channel: 'Security',
+          eventId: '620,630,640',
+          filterType: 'EXCLUDE'
+        }
+      ]
+    },
+    filePolicy: {
+      name: 'Test File Policy',
+      enabled: false,
+      sendTestLog: false,
+      primaryDestination: '',
+      secondaryDestination: '',
+      protocol: 'TLS',
+      sources: [
+        {
+          fileType: 'apache',
+          enabled: false,
+          startOfEvents: true,
+          fileEncoding: 'utf-8',
+          paths: ['/*foo/bar*/*.txt'],
+          sourceName: 'testSource1',
+          exclusionFilters: ['exclude-string-1'],
+          typeSpec: {
+            parserId: 'file.apache',
+            processorType: 'generic',
+            dataStartLine: '1',
+            fieldDelim: '0x20'
+          }
+        },
+        {
+          fileType: 'apache',
+          enabled: false,
+          startOfEvents: true,
+          fileEncoding: 'utf-8',
+          paths: ['/*foo/bar*/*.txt'],
+          sourceName: 'testSource2',
+          exclusionFilters: ['exclude-string-1'],
+          typeSpec: {
+            parserId: 'file.apache',
+            processorType: 'generic',
+            dataStartLine: '1',
+            fieldDelim: '0x20'
+          }
+        },
+        {
+          fileType: 'exchange',
+          enabled: false,
+          startOfEvents: true,
+          fileEncoding: 'utf-8',
+          paths: ['/*foo/bar*/*.txt'],
+          sourceName: 'testSource3',
+          exclusionFilters: ['exclude-string-1'],
+          typeSpec: {
+            parserId: 'file.exchange',
+            processorType: 'generic',
+            dataStartLine: '1',
+            fieldDelim: '0x20'
+          }
+        }
+      ]
     }
   },
   policyStatus: 'Updated',

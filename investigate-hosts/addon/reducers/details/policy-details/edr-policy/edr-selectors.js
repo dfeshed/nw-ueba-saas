@@ -38,6 +38,7 @@ export const selectedEdrPolicy = createSelector(
     const endpointServersSettings = [];
     const agentSettings = [];
     const advancedConfigSettings = [];
+    const rarConfigSettings = [];
     const scheduledScan = focusedPolicy.scanType === 'Scheduled';
 
     if (focusedPolicy && focusedPolicy.defaultPolicy &&
@@ -63,6 +64,7 @@ export const selectedEdrPolicy = createSelector(
         const endpointSetting = _getEndpointServerSetting(prop, focusedPolicy);
         const agentSetting = _getAgentSetting(prop, focusedPolicy);
         const advancedConfigSetting = _getAdvancedConfigSetting(prop, focusedPolicy);
+        const rarPolicySetting = _getRarPolicySetting(prop, focusedPolicy);
 
         if (scanSetting) {
           scanScheduleSettings.push(scanSetting);
@@ -74,6 +76,8 @@ export const selectedEdrPolicy = createSelector(
           endpointServersSettings.push(endpointSetting);
         } else if (agentSetting) {
           agentSettings.push(agentSetting);
+        } else if (rarPolicySetting) {
+          rarConfigSettings.push(rarPolicySetting);
         } else if (advancedConfigSetting) {
           advancedConfigSettings.push(advancedConfigSetting);
         }
@@ -107,6 +111,12 @@ export const selectedEdrPolicy = createSelector(
       policyDetails.push({
         header: 'adminUsm.policyWizard.edrPolicy.endpointServerSettings',
         props: endpointServersSettings
+      });
+    }
+    if (rarConfigSettings.length > 0) {
+      policyDetails.push({
+        header: 'adminUsm.policyWizard.edrPolicy.relayServer',
+        props: rarConfigSettings
       });
     }
     if (advancedConfigSettings.length > 0) {
@@ -209,6 +219,24 @@ const _getInvasiveActionsSetting = (prop, focusedPolicy) => {
     }
   };
   return invasiveActionSettings[prop];
+};
+
+const _getRarPolicySetting = (prop, focusedPolicy) => {
+  const rarPolicySetting = {
+    rarPolicyServer: {
+      name: 'adminUsm.policyWizard.edrPolicy.rarPolicyServer',
+      value: focusedPolicy[prop]
+    },
+    rarPolicyPort: {
+      name: 'adminUsm.policyWizard.edrPolicy.rarPolicyPort',
+      value: focusedPolicy[prop]
+    },
+    rarPolicyBeaconInterval: {
+      name: 'adminUsm.policyWizard.edrPolicy.rarPolicyBeaconInterval',
+      value: focusedPolicy[prop]
+    }
+  };
+  return rarPolicySetting[prop];
 };
 
 const _getEndpointServerSetting = (prop, focusedPolicy) => {

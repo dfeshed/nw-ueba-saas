@@ -360,8 +360,12 @@ export const policyAdminUsm = createSelector(
           primaryUdpBeaconInterval: data.edrPolicy.transportConfig.primary.udpBeaconIntervalInSeconds,
           primaryUdpBeaconIntervalUnit: 'SECONDS',
           agentMode: data.edrPolicy.agentMode,
-          offlineDiskStorageSizeInMb: data.edrPolicy.storageConfig.diskCacheSizeInMb
-        }
+          offlineDiskStorageSizeInMb: data.edrPolicy.storageConfig.diskCacheSizeInMb,
+          rarPolicyServer: data.edrPolicy.transportConfig.primary.rar.config.address,
+          rarPolicyPort: data.edrPolicy.transportConfig.primary.rar.config.httpsPort,
+          rarPolicyBeaconInterval: data.edrPolicy.transportConfig.primary.rar.config.httpsBeaconInterval
+        },
+        windowsLogPolicy: data.windowsLogPolicy
       };
     }
   }
