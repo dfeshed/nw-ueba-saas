@@ -1,3 +1,16 @@
+# [13.2.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v13.2.0)
+## Features
+* [ASOC-66202](https://bedfordjira.na.rsa.net/browse/ASOC-66202):&emsp;Paste Entire Event Analysis Query - Parsing Rules
+* [ASOC-71809](https://bedfordjira.na.rsa.net/browse/ASOC-71809):&emsp;Respond - Overview Table - Usability Improvements
+* [ASOC-74226](https://bedfordjira.na.rsa.net/browse/ASOC-74226):&emsp;Automatically Remove Open Parens When Typed
+* [ASOC-75045](https://bedfordjira.na.rsa.net/browse/ASOC-75045):&emsp;Make journal label more visible
+* [ASOC-75046](https://bedfordjira.na.rsa.net/browse/ASOC-75046):&emsp;Move related indicators to be the left
+* [ASOC-75047](https://bedfordjira.na.rsa.net/browse/ASOC-75047):&emsp;Update the default tab of the storyline
+* [ASOC-78195](https://bedfordjira.na.rsa.net/browse/ASOC-000):&emsp;Option Highlighting issues related to Recent Queries
+* [ASOC-78567](https://bedfordjira.na.rsa.net/browse/ASOC-78567):&emsp;Clean up summary column for log events
+* [ASOC-78578](https://bedfordjira.na.rsa.net/browse/ASOC-000):&emsp;Upgrading t0 Ember 3.11.1
+
+
 # [13.1.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v13.1.0)
 ## Features
 * [ASOC-65138](https://bedfordjira.na.rsa.net/browse/ASOC-65138):&emsp;Text Search Backward Compatibility
