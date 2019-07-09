@@ -11,7 +11,7 @@ import {
   POWER_SELECT_INPUT
 } from 'investigate-events/constants/pill';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
-import {
+import KEY_MAP, {
   isArrowDown,
   isArrowLeft,
   isArrowRight,
@@ -182,6 +182,17 @@ export default Component.extend({
       [MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT]: () => this._afterOptionsMenu.clearHighlight(),
       [MESSAGE_TYPES.AFTER_OPTIONS_TAB_CLICKED]: () => this._afterOptionsTabToggle()
     });
+    this.set('_keyDownHandlerMap', {
+      [KEY_MAP.arrowDown.key]: this._navigationHandler.bind(this),
+      [KEY_MAP.arrowLeft.key]: this._navigationHandler.bind(this),
+      [KEY_MAP.arrowRight.key]: this._navigationHandler.bind(this),
+      [KEY_MAP.arrowUp.key]: this._navigationHandler.bind(this),
+      [KEY_MAP.backspace.key]: this._keyHandler.bind(this),
+      [KEY_MAP.enter.key]: this._commandHandler.bind(this),
+      [KEY_MAP.escape.key]: this._commandHandler.bind(this),
+      [KEY_MAP.space.key]: this._keyHandler.bind(this),
+      [KEY_MAP.tab.key]: this._navigationHandler.bind(this)
+    });
     // _debugContainerKey is a private Ember property that returns the full
     // component name (component:query-container/pill-operator).
     const [ , source ] = this._debugContainerKey.split('/');
@@ -299,86 +310,8 @@ export default Component.extend({
      * @private
      */
     onKeyDown(powerSelectAPI, event) {
-      if (isEscape(event)) {
-        this._broadcast(MESSAGE_TYPES.OPERATOR_ESCAPE_KEY);
-      } else if (isSpace(event)) {
-        const { options, results, searchText } = powerSelectAPI;
-        const operatorAcceptsValue = this._operatorAcceptsValue(options, searchText);
-        // These conditionals return false to prevent any further handling of
-        // the keypress that brought us here. Specifically, it prevents the
-        // pill-value from having a space at the beginning.
-        if (results.length === 1 && operatorAcceptsValue) {
-          this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, results[0]);
-          return false;
-        }
-      } else if (isEnter(event)) {
-        const { selected } = powerSelectAPI;
-        const selection = this.get('selection');
-        const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
-        if (afterOptionsMenuItem) {
-          // If the user presses ENTER while all the operators are filtered out,
-          // the assumption is that they want to create a free-form filter.
-          // Since we have access to the power-select API, we'll perform an
-          // empty search to restore all the options in the dropdown.
-          this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
-          powerSelectAPI.actions.search('');
-          next(this, () => powerSelectAPI.actions.open());
-        } else if (selection && selected && selection === selected) {
-          // This is called before the change event. We need to delay
-          // performing this action to see if a change event occures. If it
-          // does, we should ignore this event. See `onChange()`.
-          this.set('operationSelectedTimer', later(this, () => {
-            this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, selection);
-          }, 50));
-        }
-      } else if (isBackspace(event) && event.target.value === '') {
-        next(this, () => this._broadcast(MESSAGE_TYPES.OPERATOR_BACKSPACE_KEY));
-      } else if (isArrowLeft(event) && event.target.selectionStart === 0) {
-        next(this, () => this._broadcast(MESSAGE_TYPES.OPERATOR_ARROW_LEFT_KEY));
-      } else if (isArrowRight(event)) {
-        const { selected } = powerSelectAPI;
-        if (selected && event.target.selectionStart === selected.displayName.length) {
-          next(this, () => this._broadcast(MESSAGE_TYPES.OPERATOR_ARROW_RIGHT_KEY));
-        }
-      } else if (isArrowDown(event)) {
-        const { highlighted, results } = powerSelectAPI;
-        const lastItem = results[results.length - 1];
-        if (event.ctrlKey || event.metaKey || highlighted === lastItem) {
-          // CTRL/META was pressed or at bottom of meta list
-          // Jump to advanced options
-          powerSelectAPI.actions.highlight(null);
-          this._afterOptionsMenu.highlightNextIndex();
-          return false;
-        } else if (this._afterOptionsMenu.highlightedIndex !== -1) {
-          // In after options, move to next item
-          this._afterOptionsMenu.highlightNextIndex();
-          return false;
-        }
-      } else if (isArrowUp(event)) {
-        if (this._afterOptionsMenu.highlightedIndex > 0) {
-          // In after options, move to previous item
-          this._afterOptionsMenu.highlightPreviousIndex();
-          return false;
-        } else if (this._afterOptionsMenu.highlightedIndex === 0) {
-          // At top of advanced options, move back to meta
-          const { actions, results } = powerSelectAPI;
-          const lastItem = results[results.length - 1];
-          this._afterOptionsMenu.clearHighlight();
-          actions.scrollTo(lastItem);
-          actions.highlight(lastItem);
-          return false;
-        }
-      } else if (isTab(event) || isShiftTab(event)) {
-        // Won't toggle once a pill is created.
-        if (!this.get('isEditing')) {
-          event.preventDefault();
-          // For now we have just 2 options, so can toggle.
-          // Will need to make  a informed decision once more tabs
-          // are added.
-          this._afterOptionsTabToggle();
-          return false;
-        }
-      }
+      const fn = this._keyDownHandlerMap[event.key];
+      return fn ? fn(powerSelectAPI, event) : true;
     },
 
     onOptionMouseDown(e) {
@@ -402,6 +335,114 @@ export default Component.extend({
   // ************************************************************************ //
   //                          PRIVATE FUNCTIONS                               //
   // ************************************************************************ //
+  /**
+   * Handle keys that perform some sort of action like executing a query or
+   * canceling out of an edit.
+   * @return {boolean} Should further processing by EPS continue?
+   * @private
+   */
+  _commandHandler(powerSelectAPI, event) {
+    if (isEscape(event)) {
+      this._broadcast(MESSAGE_TYPES.OPERATOR_ESCAPE_KEY);
+    } else if (isEnter(event)) {
+      const { selected } = powerSelectAPI;
+      const selection = this.get('selection');
+      const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
+      if (afterOptionsMenuItem) {
+        // If the user presses ENTER while all the operators are filtered out,
+        // the assumption is that they want to create a free-form filter.
+        // Since we have access to the power-select API, we'll perform an
+        // empty search to restore all the options in the dropdown.
+        this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
+        powerSelectAPI.actions.search('');
+        next(this, () => powerSelectAPI.actions.open());
+      } else if (selection && selected && selection === selected) {
+        // This is called before the change event. We need to delay
+        // performing this action to see if a change event occures. If it
+        // does, we should ignore this event. See `onChange()`.
+        this.set('operationSelectedTimer', later(this, () => {
+          this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, selection);
+        }, 50));
+      }
+    }
+  },
+
+  /**
+   * Handle keys that need attention, but don't fall into a category that would
+   * be handled by one of the other "handler" functions.
+   * @return {boolean} Should further processing by EPS continue?
+   * @private
+   */
+  _keyHandler(powerSelectAPI, event) {
+    if (isSpace(event)) {
+      const { options, results, searchText } = powerSelectAPI;
+      const operatorAcceptsValue = this._operatorAcceptsValue(options, searchText);
+      // These conditionals return false to prevent any further handling of
+      // the keypress that brought us here. Specifically, it prevents the
+      // pill-value from having a space at the beginning.
+      if (results.length === 1 && operatorAcceptsValue) {
+        this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, results[0]);
+        return false;
+      }
+    } else if (isBackspace(event) && event.target.value === '') {
+      next(this, () => this._broadcast(MESSAGE_TYPES.OPERATOR_BACKSPACE_KEY));
+    }
+  },
+
+  /**
+   * Handle keys that are used for moving focus around the application.
+   * @return {boolean} Should further processing by EPS continue?
+   * @private
+   */
+  _navigationHandler(powerSelectAPI, event) {
+    if (isArrowLeft(event) && event.target.selectionStart === 0) {
+      next(this, () => this._broadcast(MESSAGE_TYPES.OPERATOR_ARROW_LEFT_KEY));
+    } else if (isArrowRight(event)) {
+      const { selected } = powerSelectAPI;
+      if (selected && event.target.selectionStart === selected.displayName.length) {
+        next(this, () => this._broadcast(MESSAGE_TYPES.OPERATOR_ARROW_RIGHT_KEY));
+      }
+    } else if (isArrowDown(event)) {
+      const { highlighted, results } = powerSelectAPI;
+      const lastItem = results[results.length - 1];
+      if (event.ctrlKey || event.metaKey || highlighted === lastItem) {
+        // CTRL/META was pressed or at bottom of meta list
+        // Jump to advanced options
+        powerSelectAPI.actions.highlight(null);
+        this._afterOptionsMenu.highlightNextIndex();
+        return false;
+      } else if (this._afterOptionsMenu.highlightedIndex !== -1) {
+        // In after options, move to next item
+        this._afterOptionsMenu.highlightNextIndex();
+        return false;
+      }
+    } else if (isArrowUp(event)) {
+      if (this._afterOptionsMenu.highlightedIndex > 0) {
+        // In after options, move to previous item
+        this._afterOptionsMenu.highlightPreviousIndex();
+        return false;
+      } else if (this._afterOptionsMenu.highlightedIndex === 0) {
+        // At top of advanced options, move back to meta
+        const { actions, results } = powerSelectAPI;
+        const lastItem = results[results.length - 1];
+        this._afterOptionsMenu.clearHighlight();
+        actions.scrollTo(lastItem);
+        actions.highlight(lastItem);
+        return false;
+      }
+    } else if (isTab(event) || isShiftTab(event)) {
+      // Won't toggle once a pill is created.
+      if (!this.get('isEditing')) {
+        event.preventDefault();
+        // For now we have just 2 options, so can toggle.
+        // Will need to make  a informed decision once more tabs
+        // are added.
+        this._afterOptionsTabToggle();
+        return false;
+      }
+    }
+  },
+
   /**
    * Active tab was toggled.
    */

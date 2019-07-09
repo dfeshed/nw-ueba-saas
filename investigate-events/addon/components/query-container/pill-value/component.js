@@ -2,8 +2,7 @@ import Component from '@ember/component';
 import { next, scheduleOnce } from '@ember/runloop';
 import { htmlSafe } from '@ember/string';
 import computed from 'ember-computed-decorators';
-
-import {
+import KEY_MAP, {
   isArrowLeft,
   isBackspace,
   isEscape,
@@ -210,6 +209,15 @@ export default Component.extend({
       [MESSAGE_TYPES.AFTER_OPTIONS_REMOVE_HIGHLIGHT]: () => this._afterOptionsMenu.clearHighlight(),
       [MESSAGE_TYPES.AFTER_OPTIONS_TAB_CLICKED]: () => this._afterOptionsTabToggle()
     });
+    this.set('_keyDownHandlerMap', {
+      [KEY_MAP.arrowDown.key]: this._navigationHandler.bind(this),
+      [KEY_MAP.arrowLeft.key]: this._navigationHandler.bind(this),
+      [KEY_MAP.arrowUp.key]: this._navigationHandler.bind(this),
+      [KEY_MAP.backspace.key]: this._keyHandler.bind(this),
+      [KEY_MAP.enter.key]: this._commandHandler.bind(this),
+      [KEY_MAP.escape.key]: this._commandHandler.bind(this),
+      [KEY_MAP.tab.key]: this._navigationHandler.bind(this)
+    });
     // _debugContainerKey is a private Ember property that returns the full
     // component name (component:query-container/pill-value).
     const [ , source ] = this._debugContainerKey.split('/');
@@ -319,73 +327,8 @@ export default Component.extend({
      * @private
      */
     onKeyDown(powerSelectAPI, event) {
-      if (isEscape(event)) {
-        this._broadcast(MESSAGE_TYPES.VALUE_ESCAPE_KEY);
-      } else if (isBackspace(event) && event.target.value === '') {
-        next(this, () => this._broadcast(MESSAGE_TYPES.VALUE_BACKSPACE_KEY));
-      } else if (isBackspace(event) && event.target.value.length === 1) {
-        // This handles the situation where you clear out the value, but don't
-        // press backspace to move back to operator. We reset `valueString` so
-        // that the cleared out value doesn't reappear when losing/gaining
-        // focus.
-        next(this, () => this._broadcast(MESSAGE_TYPES.VALUE_SET, ''));
-      } else if (isArrowLeft(event) && event.target.selectionStart === 0) {
-        const { value } = event.target;
-        next(this, () => this._broadcast(MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY, value));
-      } else if (isArrowDown(event)) {
-        const { highlighted, results } = powerSelectAPI;
-        const lastItem = results[results.length - 1];
-        if (event.ctrlKey || event.metaKey || highlighted === lastItem) {
-          // CTRL/META was pressed or at bottom of meta list
-          // Jump to advanced options
-          powerSelectAPI.actions.highlight(null);
-          this._afterOptionsMenu.highlightNextIndex();
-          return false;
-        } else if (this._afterOptionsMenu.highlightedIndex !== -1) {
-          // In after options, move to next item
-          this._afterOptionsMenu.highlightNextIndex();
-          return false;
-        }
-      } else if (isArrowUp(event)) {
-        if (this._afterOptionsMenu.highlightedIndex > 0) {
-          // In after options, move to previous item
-          this._afterOptionsMenu.highlightPreviousIndex();
-          return false;
-        } else if (this._afterOptionsMenu.highlightedIndex === 0) {
-          // At top of advanced options, move back to meta
-          const { actions, results } = powerSelectAPI;
-          const lastItem = results[results.length - 1];
-          this._afterOptionsMenu.clearHighlight();
-          actions.scrollTo(lastItem);
-          actions.highlight(lastItem);
-          return false;
-        }
-      } else if (isEnter(event)) {
-        const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
-        const { searchText } = powerSelectAPI;
-        if (searchText === '' && !afterOptionsMenuItem) {
-          // No text was entered and it's not a FF or text selection,
-          // so quick exit
-          return false;
-        }
-        // This is triggered when choosing afterOptions and we hit enter.
-        // Since Query Filter option will always be there, onChange will
-        // handle it's selection. Here we just take care of afterOptions.
-        if (afterOptionsMenuItem) {
-          this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
-          powerSelectAPI.actions.search('');
-        }
-      } else if (isTab(event) || isShiftTab(event)) {
-        // Won't toggle once a pill is created.
-        if (!this.get('isEditing')) {
-          event.preventDefault();
-          // For now we have just 2 options, so can toggle.
-          // Will need to make  a informed decision once more tabs
-          // are added.
-          this._afterOptionsTabToggle();
-          return false;
-        }
-      }
+      const fn = this._keyDownHandlerMap[event.key];
+      return fn ? fn(powerSelectAPI, event) : true;
     },
 
     /*
@@ -421,6 +364,101 @@ export default Component.extend({
   // ************************************************************************ //
   //                          PRIVATE FUNCTIONS                               //
   // ************************************************************************ //
+  /**
+   * Handle keys that perform some sort of action like executing a query or
+   * canceling out of an edit.
+   * @return {boolean} Should further processing by EPS continue?
+   * @private
+   */
+  _commandHandler(powerSelectAPI, event) {
+    if (isEscape(event)) {
+      this._broadcast(MESSAGE_TYPES.VALUE_ESCAPE_KEY);
+    } else if (isEnter(event)) {
+      const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
+      const { searchText } = powerSelectAPI;
+      if (searchText === '' && !afterOptionsMenuItem) {
+        // No text was entered and it's not a FF or text selection,
+        // so quick exit
+        return false;
+      }
+      // This is triggered when choosing afterOptions and we hit enter.
+      // Since Query Filter option will always be there, onChange will
+      // handle it's selection. Here we just take care of afterOptions.
+      if (afterOptionsMenuItem) {
+        this._createPillFromAdvancedOption(afterOptionsMenuItem.label);
+        powerSelectAPI.actions.search('');
+      }
+    }
+  },
+
+  /**
+   * Handle keys that need attention, but don't fall into a category that would
+   * be handled by one of the other "handler" functions.
+   * @return {boolean} Should further processing by EPS continue?
+   * @private
+   */
+  _keyHandler(powerSelectAPI, event) {
+    if (isBackspace(event) && event.target.value === '') {
+      next(this, () => this._broadcast(MESSAGE_TYPES.VALUE_BACKSPACE_KEY));
+    } else if (isBackspace(event) && event.target.value.length === 1) {
+      // This handles the situation where you clear out the value, but don't
+      // press backspace to move back to operator. We reset `valueString` so
+      // that the cleared out value doesn't reappear when losing/gaining
+      // focus.
+      next(this, () => this._broadcast(MESSAGE_TYPES.VALUE_SET, ''));
+    }
+  },
+
+  /**
+   * Handle keys that are used for moving focus around the application.
+   * @return {boolean} Should further processing by EPS continue?
+   * @private
+   */
+  _navigationHandler(powerSelectAPI, event) {
+    if (isArrowLeft(event) && event.target.selectionStart === 0) {
+      const { value } = event.target;
+      next(this, () => this._broadcast(MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY, value));
+    } else if (isArrowDown(event)) {
+      const { highlighted, results } = powerSelectAPI;
+      const lastItem = results[results.length - 1];
+      if (event.ctrlKey || event.metaKey || highlighted === lastItem) {
+        // CTRL/META was pressed or at bottom of meta list
+        // Jump to advanced options
+        powerSelectAPI.actions.highlight(null);
+        this._afterOptionsMenu.highlightNextIndex();
+        return false;
+      } else if (this._afterOptionsMenu.highlightedIndex !== -1) {
+        // In after options, move to next item
+        this._afterOptionsMenu.highlightNextIndex();
+        return false;
+      }
+    } else if (isArrowUp(event)) {
+      if (this._afterOptionsMenu.highlightedIndex > 0) {
+        // In after options, move to previous item
+        this._afterOptionsMenu.highlightPreviousIndex();
+        return false;
+      } else if (this._afterOptionsMenu.highlightedIndex === 0) {
+        // At top of advanced options, move back to meta
+        const { actions, results } = powerSelectAPI;
+        const lastItem = results[results.length - 1];
+        this._afterOptionsMenu.clearHighlight();
+        actions.scrollTo(lastItem);
+        actions.highlight(lastItem);
+        return false;
+      }
+    } else if (isTab(event) || isShiftTab(event)) {
+      // Won't toggle once a pill is created.
+      if (!this.get('isEditing')) {
+        event.preventDefault();
+        // For now we have just 2 options, so can toggle.
+        // Will need to make  a informed decision once more tabs
+        // are added.
+        this._afterOptionsTabToggle();
+        return false;
+      }
+    }
+  },
+
   /**
    * Active tab was toggled.
    */
