@@ -113,7 +113,7 @@ const scanScheduleId = 'scanType';
 // run for NEW_POLICY, FETCH_POLICY (edit), and UPDATE_POLICY_TYPE
 export const buildInitialState = (state, policyType, isUpdatePolicyType = false) => {
   // reset everything from common initialState & type specific initialState
-  let mergedInitialState = state.set('policy', {}).merge(
+  let mergedInitialState = state.set('policy', {}).set('policyOrig', {}).merge(
     [{ ...INITIAL_STATES.common }, { ...INITIAL_STATES[policyType] }],
     { deep: true }
   );
@@ -164,7 +164,7 @@ export default reduxActions.handleActions({
       success: (state) => {
         const fetchedPolicy = action.payload.data;
         // reset everything from common initialState & type specific initialState
-        const mergedInitialState = buildInitialState(state, fetchedPolicy.policyType);
+        let mergedInitialState = buildInitialState(state, fetchedPolicy.policyType);
         const newAvailableSettings = [];
         const newSelectedSettings = [];
         for (let i = 0; i < mergedInitialState.availableSettings.length; i++) {
@@ -181,13 +181,19 @@ export default reduxActions.handleActions({
             newAvailableSettings.push({ ...setting });
           }
         }
-        return mergedInitialState.merge({
-          policy: fetchedPolicy,
-          policyOrig: fetchedPolicy,
+        // first deep merge policy props from initialState.policy & fetchedPolicy
+        mergedInitialState = mergedInitialState.merge({
+          policy: { ...fetchedPolicy }
+        }, { deep: true });
+        // now merge the rest
+        const newState = state.merge({
+          ...mergedInitialState,
+          policyOrig: mergedInitialState.policy,
           availableSettings: newAvailableSettings,
           selectedSettings: newSelectedSettings,
           policyFetchStatus: 'complete'
         });
+        return newState;
       }
     })
   ),

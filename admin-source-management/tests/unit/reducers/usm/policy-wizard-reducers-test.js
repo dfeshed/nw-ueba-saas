@@ -128,10 +128,43 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
   test('on FETCH_POLICY success, policy & itemsStatus are properly set', function(assert) {
     const fetchPolicyPayload = {
       data: {
-        'id': 'policy_001',
-        'name': 'EMC 001',
-        'description': 'EMC 001 of policy policy_001',
-        'dirty': false
+        // common policy props
+        id: 'policy_001',
+        policyType: 'edrPolicy',
+        name: 'EMC 001',
+        description: 'EMC 001 of policy policy_001',
+        dirty: true,
+        lastPublishedCopy: null,
+        lastPublishedOn: 0,
+        defaultPolicy: false,
+        createdOn: 0,
+        // the rest should defaut to null if not set in the fetched policy
+        scanType: null,
+        // scheduleOptions
+        scanStartDate: null,
+        scanStartTime: null,
+        recurrenceInterval: null,
+        recurrenceUnit: null,
+        runOnDaysOfWeek: null,
+        // scanOptions
+        cpuMax: null,
+        cpuMaxVm: null,
+        // captureFloatingCode: null,
+        scanMbr: null,
+        // filterSignedHooks: null,
+        requestScanOnRegistration: null,
+        blockingEnabled: null,
+        primaryAddress: null,
+        primaryNwServiceId: null,
+        primaryAlias: null,
+        primaryHttpsPort: null,
+        primaryHttpsBeaconInterval: null,
+        primaryHttpsBeaconIntervalUnit: null,
+        primaryUdpPort: null,
+        primaryUdpBeaconInterval: null,
+        primaryUdpBeaconIntervalUnit: null,
+        agentMode: null,
+        customConfig: null
       }
     };
 
