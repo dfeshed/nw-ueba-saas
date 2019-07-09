@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Reset UEBA DBs') {
             when {
-                expression { return ! params.RUN_ONLY_TESTS }
+                expression { return !params.RUN_ONLY_TESTS }
             }
             steps {
                 cleanUebaDBs()
@@ -46,11 +46,7 @@ pipeline {
         }
         stage('Test Automation') {
             steps {
-                if ( params.RUN_ONLY_TESTS != true ) {
-                    runCoreTestAutomation()
-            } else {
-                runCoreTestAutomation_only_test()
-            }
+                runCoreTestAutomation()
             }
         }
     }
@@ -123,14 +119,12 @@ def mvnCleanInstall() {
 }
 
 def runCoreTestAutomation() {
+    println(env.REPOSITORY_NAME)
     dir(env.REPOSITORY_NAME) {
-        println(env.REPOSITORY_NAME)
-        sh "mvn -B -f presidio-integration-output-component-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
-    }
-}
-def runCoreTestAutomation_only_test() {
-    dir(env.REPOSITORY_NAME) {
-        println(env.REPOSITORY_NAME)
-        sh "mvn -B -f presidio-integration-output-test/pom.xml -DsuiteXmlFile=src/test/resources/TestPlans/Output_Tests.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
+        if (params.RUN_ONLY_TESTS == false) {
+            sh "mvn -B -f presidio-integration-output-component-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
+        } else {
+            sh "mvn -B -f presidio-integration-output-test/pom.xml -DsuiteXmlFile=src/test/resources/TestPlans/Output_Tests.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
+        }
     }
 }
