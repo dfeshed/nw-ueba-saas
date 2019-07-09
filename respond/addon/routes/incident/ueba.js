@@ -20,9 +20,10 @@ export default Route.extend({
       this.transitionTo('incident');
     }
   },
-  model({ selection, ueba }, { params }) {
-    const { incidentId } = params['protected.respond.incident'] || params['respond.incident'];
-    this.incidentId = incidentId;
+  model({ selection, ueba }, { routeInfos }) {
+    const routeInfo = routeInfos.find((route) =>
+      route.name === 'protected.respond.incident' || route.name === 'respond.incident');
+    this.incidentId = routeInfo.params;
 
     const redux = get(this, 'redux');
     next(() => {

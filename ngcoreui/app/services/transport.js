@@ -94,6 +94,7 @@ export default Service.extend(Evented, {
    * Sets up service variables
    */
   init() {
+    this._super(...arguments);
     // Set the websocket URL based on whether or not this is a production build
     const wsScheme = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     if (ENV.environment === 'production') {

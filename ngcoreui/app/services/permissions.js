@@ -37,6 +37,7 @@ export default Service.extend({
    * Listens for state changes up until the permissions are loaded
    */
   init() {
+    this._super(...arguments);
     this.set('permissionsAvailable', false);
     this.set('pendingCallbacks', []);
     this.set('unsubscribe', this.get('redux').subscribe(() => {

@@ -8,7 +8,7 @@ export default Component.extend({
   timezone: service(),
 
   @computed('timestamp')
-  alertDate(timestamp) {
+  alertDateString(timestamp) {
     const selectedDateFormat = this.get('dateFormat.selected.format');
     const timeZoneId = this.get('timezone.selected.zoneId') || 'UTC';
     const dateTimeFormat = selectedDateFormat ? selectedDateFormat : 'YYYY/MM/DD';

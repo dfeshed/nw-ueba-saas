@@ -27,13 +27,15 @@ module('Unit | Utility | tooltip trigger', function(hooks) {
     const eventType = 'eventType1';
     const eventName = `rsa-content-tethered-panel-${eventType}-${panelId}`;
 
-    eventBus.on(eventName, function(height, width, id, model) {
+    const onSendTetherEvent = function(height, width, id, model) {
       assert.equal(id, elId);
       assert.equal(model, model);
-    });
+    };
+    eventBus.on(eventName, onSendTetherEvent);
 
     sendTetherEvent(el, panelId, eventBus, eventType, model);
-    eventBus.off(eventName);
+
+    eventBus.off(eventName, onSendTetherEvent);
   });
 
   test('wireTriggerToClick attaches event handlers, unwireTriggerToClick detaches them', async function(assert) {
@@ -41,9 +43,10 @@ module('Unit | Utility | tooltip trigger', function(hooks) {
     const eventType = 'toggle';
     const eventName = `rsa-content-tethered-panel-${eventType}-${panelId}`;
 
-    eventBus.on(eventName, function() {
+    const onSendTetherEvent = function() {
       assert.ok('eventBus handler was triggered');
-    });
+    };
+    eventBus.on(eventName, onSendTetherEvent);
 
     wireTriggerToClick(el, panelId, eventBus);
     await triggerEvent(el, 'click');
@@ -51,7 +54,7 @@ module('Unit | Utility | tooltip trigger', function(hooks) {
     unwireTriggerToClick(el, panelId, eventBus);
     await triggerEvent(el, 'click'); // should not fire assert
 
-    eventBus.off(eventName);
+    eventBus.off(eventName, onSendTetherEvent);
   });
 
   test('wireTriggerToClick supports an option for triggering only for right clicks', async function(assert) {
@@ -60,10 +63,11 @@ module('Unit | Utility | tooltip trigger', function(hooks) {
     const eventName = `rsa-content-tethered-panel-${eventType}-${panelId}`;
     let spyCounter = 0;
 
-    eventBus.on(eventName, function() {
+    const onSendTetherEvent = function() {
       spyCounter++;
       assert.ok('eventBus handler was triggered');
-    });
+    };
+    eventBus.on(eventName, onSendTetherEvent);
 
     wireTriggerToClick(el, panelId, eventBus, { rightClick: true });
     // shouldn't fire an event to eventBus
@@ -80,7 +84,7 @@ module('Unit | Utility | tooltip trigger', function(hooks) {
     await triggerEvent(el, 'click');
     assert.equal(spyCounter, 1, 'Expected no eventBus trigger from click event');
 
-    eventBus.off(eventName);
+    eventBus.off(eventName, onSendTetherEvent);
   });
 
   test('wireTriggerToHover attaches event handlers, unwireTriggerToHover detaches them', async function(assert) {
@@ -88,13 +92,15 @@ module('Unit | Utility | tooltip trigger', function(hooks) {
     const mouseenterEventName = `rsa-content-tethered-panel-display-${panelId}`;
     const mouseleaveEventName = `rsa-content-tethered-panel-hide-${panelId}`;
 
+    const onMouseEnter = function() {
+      assert.ok('eventBus display handler was triggered');
+    };
+    const onMouseLeave = function() {
+      assert.ok('eventBus hide handler was triggered');
+    };
     eventBus
-      .on(mouseenterEventName, function() {
-        assert.ok('eventBus display handler was triggered');
-      })
-      .on(mouseleaveEventName, function() {
-        assert.ok('eventBus hide handler was triggered');
-      });
+      .on(mouseenterEventName, onMouseEnter)
+      .on(mouseleaveEventName, onMouseLeave);
 
     wireTriggerToHover(el, panelId, eventBus);
     await triggerEvent(el, 'mouseenter');
@@ -109,8 +115,8 @@ module('Unit | Utility | tooltip trigger', function(hooks) {
     await triggerEvent(el, 'mouseleave');
 
     eventBus
-      .off(mouseenterEventName)
-      .off(mouseleaveEventName);
+      .off(mouseenterEventName, onMouseEnter)
+      .off(mouseleaveEventName, onMouseLeave);
   });
 
   test('wireTriggerToHover supports delays', async function(assert) {
@@ -120,13 +126,15 @@ module('Unit | Utility | tooltip trigger', function(hooks) {
     const displayDelay = 10;
     const hideDelay = 10;
 
+    const onMouseEnter = function() {
+      assert.ok('eventBus display handler was triggered');
+    };
+    const onMouseLeave = function() {
+      assert.ok('eventBus hide handler was triggered');
+    };
     eventBus
-      .on(mouseenterEventName, function() {
-        assert.ok('eventBus display handler was triggered');
-      })
-      .on(mouseleaveEventName, function() {
-        assert.ok('eventBus hide handler was triggered');
-      });
+      .on(mouseenterEventName, onMouseEnter)
+      .on(mouseleaveEventName, onMouseLeave);
 
     wireTriggerToHover(el, panelId, eventBus, { displayDelay, hideDelay });
     await triggerEvent(el, 'mouseenter');
@@ -139,8 +147,8 @@ module('Unit | Utility | tooltip trigger', function(hooks) {
     await triggerEvent(el, 'mouseleave');
 
     eventBus
-      .off(mouseenterEventName)
-      .off(mouseleaveEventName);
+      .off(mouseenterEventName, onMouseEnter)
+      .off(mouseleaveEventName, onMouseLeave);
   });
 
   test('wireTriggerToHover aborts a pending hide event if interrupted by a display event on the same trigger element', async function(assert) {
@@ -152,13 +160,15 @@ module('Unit | Utility | tooltip trigger', function(hooks) {
     const mouseleaveEvent = new MouseEvent('mouseleave');
     const mouseenterEvent = new MouseEvent('mouseenter');
 
+    const onMouseEnter = function() {
+      assert.ok(true, 'eventBus display handler was triggered as expected');
+    };
+    const onMouseLeave = function() {
+      assert.notOk(true, 'eventBus hide handler was triggered but should not have been');
+    };
     eventBus
-      .on(mouseenterEventName, function() {
-        assert.ok(true, 'eventBus display handler was triggered as expected');
-      })
-      .on(mouseleaveEventName, function() {
-        assert.notOk(true, 'eventBus hide handler was triggered but should not have been');
-      });
+      .on(mouseenterEventName, onMouseEnter)
+      .on(mouseleaveEventName, onMouseLeave);
 
     wireTriggerToHover(el, panelId, eventBus, { displayDelay, hideDelay });
 
@@ -172,7 +182,7 @@ module('Unit | Utility | tooltip trigger', function(hooks) {
     unwireTriggerToHover(el, panelId, eventBus, { displayDelay, hideDelay });
 
     eventBus
-      .off(mouseenterEventName)
-      .off(mouseleaveEventName);
+      .off(mouseenterEventName, onMouseEnter)
+      .off(mouseleaveEventName, onMouseLeave);
   });
 });

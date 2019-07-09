@@ -1,7 +1,7 @@
 <box fit class="rsa-explorer-inspector__header">
   {{#if backToRouteName}}
     <vbox justify="center" class="back">
-      {{#link-to backToRouteName}}
+      {{#link-to (readonly backToRouteName)}}
         {{rsa-icon name="arrow-left-12" title=backToRouteText}}
       {{/link-to}}
     </vbox>

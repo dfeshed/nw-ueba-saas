@@ -26,8 +26,9 @@ export default Route.extend({
       this.transitionTo('incident');
     }
   },
-  model({ selection, endpointId }, { params }) {
-    const { incidentId } = params['protected.respond.incident'] || params['respond.incident'];
+  model({ selection, endpointId }, { routeInfos }) {
+    const routeInfo = routeInfos.find((route) => route.name === 'respond.incident' || route.name === 'protected.respond.incident');
+    const { incidentId } = routeInfo.params;
     this.incidentId = incidentId;
 
     const redux = get(this, 'redux');

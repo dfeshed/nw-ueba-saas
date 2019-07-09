@@ -17,11 +17,14 @@ const param = {
   selection
 };
 const options = {
-  params: {
-    'protected.respond.incident': {
-      incidentId: 'INC987'
+  routeInfos: [
+    {
+      name: 'protected.respond.incident',
+      params: {
+        incidentId: 'INC987'
+      }
     }
-  }
+  ]
 };
 
 module('Unit | Route | incident.ueba', function(hooks) {
@@ -64,11 +67,14 @@ module('Unit | Route | incident.ueba', function(hooks) {
     const route = setupRoute.call(this);
 
     const engineOptions = {
-      params: {
-        'respond.incident': {
-          incidentId: 'INC987'
+      routeInfos: [
+        {
+          name: 'respond.incident',
+          params: {
+            incidentId: 'INC987'
+          }
         }
-      }
+      ]
     };
 
     await route.model(param, engineOptions);
