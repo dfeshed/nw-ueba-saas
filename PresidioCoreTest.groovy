@@ -46,7 +46,7 @@ pipeline {
         }
         stage('Test Automation') {
             steps {
-                if ( ! params.RUN_ONLY_TESTS ) {
+                if ( params.RUN_ONLY_TESTS != true ) {
                     runCoreTestAutomation()
             } else {
                 runCoreTestAutomation_only_test()
