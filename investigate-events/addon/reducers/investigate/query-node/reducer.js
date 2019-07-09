@@ -467,6 +467,30 @@ export default handleActions({
     ]));
   },
 
+  [ACTION_TYPES.BATCH_ADD_PILLS]: (state, { payload }) => {
+    const { pillsData, initialPosition } = payload;
+    const newPillsData = pillsData.map((pillData, i) => {
+      return {
+        ..._initialPillState,
+        ...pillData,
+        // Put focus on the last pill that's being batch added
+        isFocused: i === (pillsData.length - 1),
+        id: _.uniqueId(ID_PREFIX)
+      };
+    });
+    // Create a new array of data only when there were no pills previously
+    if (state.pillsData.length === 0) {
+      return state.set('pillsData', Immutable.from(newPillsData));
+    }
+
+    // Otherwise, put the array in the middle of the current state
+    return state.set('pillsData', Immutable.from(
+      state.pillsData.slice(0, initialPosition)
+        .concat(newPillsData)
+        .concat(state.pillsData.slice(initialPosition))
+    ));
+  },
+
   [ACTION_TYPES.EDIT_GUIDED_PILL]: (state, { payload }) => {
     const newPillData = {
       ...payload.pillData,

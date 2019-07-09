@@ -7,6 +7,7 @@ import { run } from '@ember/runloop';
 import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
 import * as MESSAGE_TYPES from '../message-types';
 import { isEscape } from 'investigate-events/util/keys';
+import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 
 import {
   canQueryGuided,
@@ -22,6 +23,7 @@ import {
   addGuidedPill,
   addGuidedPillFocus,
   addTextFilter,
+  batchAddPills,
   deleteGuidedPill,
   deleteSelectedGuidedPills,
   deselectAllGuidedPills,
@@ -56,6 +58,7 @@ const dispatchToActions = {
   addGuidedPill,
   addGuidedPillFocus,
   addTextFilter,
+  batchAddPills,
   deleteGuidedPill,
   deleteSelectedGuidedPills,
   deselectAllGuidedPills,
@@ -194,6 +197,7 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT]: (position) => this._openNewPillTriggerRight(position),
       [MESSAGE_TYPES.PILL_INTENT_TO_QUERY]: () => this._submitQuery(),
       [MESSAGE_TYPES.PILL_OPEN_FOR_EDIT]: (pillData) => this._pillOpenForEdit(pillData),
+      [MESSAGE_TYPES.PILL_PASTE]: (text, position) => this._pillPaste(text, position),
       [MESSAGE_TYPES.PILL_SELECTED]: (data) => this._pillsSelected([data]),
       [MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_LEFT]: (position) => this._addFocusToLeftPill(position),
       [MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT]: (position) => this._addFocusToRightPill(position),
@@ -357,6 +361,22 @@ const QueryPills = RsaContextMenu.extend({
     }
 
     this.send('deleteGuidedPill', { pillData: [pillData] });
+  },
+
+  /**
+   * Called when text is pasted into the query bar. Parses the text and inserts
+   * pills into state.
+   * @param {String} text - The query text to parse
+   * @param {Number} position - The position of the first pill to paste
+   * @private
+   */
+  _pillPaste(text, position) {
+    // Parse the string into an array of pills
+    const pills = transformTextToPillData(text, this.get('metaOptions'), false, true);
+
+    this.send('batchAddPills', { pillsData: pills, initialPosition: position });
+
+    this._pillsExited();
   },
 
   /**

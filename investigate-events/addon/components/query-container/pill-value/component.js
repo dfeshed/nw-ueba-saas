@@ -241,6 +241,36 @@ export default Component.extend({
     }
   },
 
+  paste(event) {
+    // Don't do anything if this pill is being edited
+    if (this.get('isEditing')) {
+      return;
+    }
+
+    // Pull data from both the clipboard event and the element's value.
+    // Do this because we want to preventDefault so that the text does not
+    // blink in the UI and then turn into pills, but because we do that the
+    // text is not available in the value of the element. Also, we want to use
+    // any text already in the element typed before the paste, so we need to
+    // use both sources. Wait until the next runloop in case the user is typing
+    // *really* fast.
+    const pastedValue = event.originalEvent.clipboardData.getData('Text');
+    event.preventDefault();
+    next(this, () => {
+      const previousValue = event.target.value;
+      if (previousValue) {
+        event.target.value = '';
+      }
+      const value = previousValue + pastedValue;
+
+      if (!value) {
+        return;
+      }
+
+      this._broadcast(MESSAGE_TYPES.VALUE_PASTE, value);
+    });
+  },
+
   actions: {
     /**
      * Handler for all messages coming from afterOptionsComponent.

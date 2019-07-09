@@ -268,6 +268,101 @@ test('ADD_PILL replaces existing pills if from Free Form Mode', function(assert)
   assert.equal(result.pillsData[0].foo, 1234, 'pillsData item is in the right position');
 });
 
+test('BATCH_ADD_PILLS adds pills to empty list', function(assert) {
+  const emptyState = new ReduxDataHelper().pillsDataEmpty().build().investigate.queryNode;
+
+  const action = {
+    type: ACTION_TYPES.BATCH_ADD_PILLS,
+    payload: {
+      pillsData: [
+        { foo: 1 },
+        { bar: 2 },
+        { baz: 3 }
+      ],
+      initialPosition: 0
+    }
+  };
+  const result = reducer(emptyState, action);
+
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].foo, 1, 'pillsData item 1 is in the right position');
+  assert.equal(result.pillsData[0].isFocused, false, 'pillsData item 1 is not focused');
+  assert.equal(result.pillsData[1].bar, 2, 'pillsData item 2 is in the right position');
+  assert.equal(result.pillsData[1].isFocused, false, 'pillsData item 2 is not focused');
+  assert.equal(result.pillsData[2].baz, 3, 'pillsData item 3 is in the right position');
+  assert.equal(result.pillsData[2].isFocused, true, 'pillsData item 3 is focused');
+});
+
+test('BATCH_ADD_PILLS adds pill to beginning of list', function(assert) {
+  const action = {
+    type: ACTION_TYPES.BATCH_ADD_PILLS,
+    payload: {
+      pillsData: [
+        { foo: 1 },
+        { bar: 2 },
+        { baz: 3 }
+      ],
+      initialPosition: 0
+    }
+  };
+  const result = reducer(stateWithPills, action);
+
+  assert.equal(result.pillsData.length, 5, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].foo, 1, 'pillsData item 1 is in the right position');
+  assert.equal(result.pillsData[0].isFocused, false, 'pillsData item 1 is not focused');
+  assert.equal(result.pillsData[1].bar, 2, 'pillsData item 2 is in the right position');
+  assert.equal(result.pillsData[1].isFocused, false, 'pillsData item 2 is not focused');
+  assert.equal(result.pillsData[2].baz, 3, 'pillsData item 3 is in the right position');
+  assert.equal(result.pillsData[2].isFocused, true, 'pillsData item 3 is focused');
+});
+
+test('BATCH_ADD_PILLS adds pill to the middle of a list', function(assert) {
+  const action = {
+    type: ACTION_TYPES.BATCH_ADD_PILLS,
+    payload: {
+      pillsData: [
+        { foo: 1 },
+        { bar: 2 },
+        { baz: 3 }
+      ],
+      initialPosition: 1
+    }
+  };
+  const result = reducer(stateWithPills, action);
+
+  assert.equal(result.pillsData.length, 5, 'pillsData is the correct length');
+  assert.equal(result.pillsData[1].foo, 1, 'pillsData item 1 is in the right position');
+  assert.equal(result.pillsData[1].isFocused, false, 'pillsData item 1 is not focused');
+  assert.equal(result.pillsData[2].bar, 2, 'pillsData item 2 is in the right position');
+  assert.equal(result.pillsData[2].isFocused, false, 'pillsData item 2 is not focused');
+  assert.equal(result.pillsData[3].baz, 3, 'pillsData item 3 is in the right position');
+  assert.equal(result.pillsData[3].isFocused, true, 'pillsData item 3 is focused');
+});
+
+test('BATCH_ADD_PILLS adds pill to end of list', function(assert) {
+  const action = {
+    type: ACTION_TYPES.BATCH_ADD_PILLS,
+    payload: {
+      pillsData: [
+        { foo: 1 },
+        { bar: 2 },
+        { baz: 3 }
+      ],
+      initialPosition: 2
+    }
+  };
+  const result = reducer(stateWithPills, action);
+
+  assert.equal(result.pillsData.length, 5, 'pillsData is the correct length');
+  assert.equal(result.pillsData[2].foo, 1, 'pillsData item 1 is in the right position');
+  assert.equal(result.pillsData[2].isFocused, false, 'pillsData item 1 is not focused');
+  assert.equal(result.pillsData[3].bar, 2, 'pillsData item 2 is in the right position');
+  assert.equal(result.pillsData[3].isFocused, false, 'pillsData item 2 is not focused');
+  assert.equal(result.pillsData[4].baz, 3, 'pillsData item 3 is in the right position');
+  assert.equal(result.pillsData[4].isFocused, true, 'pillsData item 3 is focused');
+});
+
+
 test('DELETE_GUIDED_PILLS removes the pill provided', function(assert) {
   const action = {
     type: ACTION_TYPES.DELETE_GUIDED_PILLS,

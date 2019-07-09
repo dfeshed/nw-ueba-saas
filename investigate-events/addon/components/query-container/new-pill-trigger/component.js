@@ -96,6 +96,9 @@ export default Component.extend({
         case MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT:
           this._broadcast(type, data);
           break;
+        case MESSAGE_TYPES.PILL_PASTE:
+          this._broadcast(type, data);
+          break;
       }
     }
   },

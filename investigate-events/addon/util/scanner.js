@@ -227,7 +227,7 @@ class Scanner {
     // Start by advancing until the next logical stopping point for a token
     // and extracting it
     this._advanceWhileAlphaNumeric();
-    const alphaString = this.source.substring(this.start, this.current);
+    let alphaString = this.source.substring(this.start, this.current);
 
     // Next, check to see if it matches any of these data types, with the more
     // restrictive types coming first
@@ -254,30 +254,33 @@ class Scanner {
     }
 
     // If it's not any of those types, check to see if it matches any "keywords",
-    // namely the operators that are "words" instead of special characters
+    // namely the operators that are "words" instead of special characters. First
+    // convert the alphaString to lower case in case the user used any capital
+    // letters.
 
+    alphaString = alphaString.toLowerCase();
     switch (alphaString) {
       case 'exists':
-        this._addToken(LEXEMES.OPERATOR_EXISTS);
+        this._addToken(LEXEMES.OPERATOR_EXISTS, alphaString);
         break;
       case 'begins':
-        this._addToken(LEXEMES.OPERATOR_BEGINS);
+        this._addToken(LEXEMES.OPERATOR_BEGINS, alphaString);
         break;
       case 'ends':
-        this._addToken(LEXEMES.OPERATOR_ENDS);
+        this._addToken(LEXEMES.OPERATOR_ENDS, alphaString);
         break;
       case 'contains':
-        this._addToken(LEXEMES.OPERATOR_CONTAINS);
+        this._addToken(LEXEMES.OPERATOR_CONTAINS, alphaString);
         break;
       case 'regex':
-        this._addToken(LEXEMES.OPERATOR_REGEX);
+        this._addToken(LEXEMES.OPERATOR_REGEX, alphaString);
         break;
       case 'length':
-        this._addToken(LEXEMES.OPERATOR_LENGTH);
+        this._addToken(LEXEMES.OPERATOR_LENGTH, alphaString);
         break;
       // If it doesn't match any reserved words, add it as a meta key
       default:
-        this._addToken(LEXEMES.META);
+        this._addToken(LEXEMES.META, alphaString);
     }
   }
 

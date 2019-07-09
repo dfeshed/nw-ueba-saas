@@ -71,8 +71,7 @@ export default Component.extend({
   isActive: true,
 
   /**
-   * Whether or not we have a text pill across all pills,
-   * passed along to rendered components, not used
+   * Whether or not we have a text pill across all pills
    * @type {Object}
    * @public
    */
@@ -258,12 +257,14 @@ export default Component.extend({
       [MESSAGE_TYPES.META_CLICKED]: () => this._metaClicked(),
       [MESSAGE_TYPES.META_ENTER_KEY]: () => this._checkToSubmitQuery(),
       [MESSAGE_TYPES.META_ESCAPE_KEY]: () => this._cancelPill(),
+      [MESSAGE_TYPES.META_PASTE]: (value) => this._metaPaste(value),
       [MESSAGE_TYPES.META_SELECTED]: (data) => this._metaSelected(data),
       [MESSAGE_TYPES.OPERATOR_ARROW_LEFT_KEY]: () => this._operatorArrowLeft(),
       [MESSAGE_TYPES.OPERATOR_ARROW_RIGHT_KEY]: () => this._operatorArrowRight(),
       [MESSAGE_TYPES.OPERATOR_BACKSPACE_KEY]: () => this._operatorBackspace(),
       [MESSAGE_TYPES.OPERATOR_CLICKED]: () => this._operatorClicked(),
       [MESSAGE_TYPES.OPERATOR_ESCAPE_KEY]: () => this._cancelPill(),
+      [MESSAGE_TYPES.OPERATOR_PASTE]: (value) => this._operatorPaste(value),
       [MESSAGE_TYPES.OPERATOR_SELECTED]: (data) => this._operatorSelected(data),
       [MESSAGE_TYPES.DELETE_CLICKED]: () => this._deletePill(),
       [MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED]: () => this._focusedDeletePressed(),
@@ -284,6 +285,7 @@ export default Component.extend({
         }
       },
       [MESSAGE_TYPES.VALUE_ESCAPE_KEY]: () => this._cancelPill(),
+      [MESSAGE_TYPES.VALUE_PASTE]: (value) => this._valuePaste(value),
       [MESSAGE_TYPES.VALUE_SET]: (data) => this._valueSet(data),
       [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: ([data, dataSource]) => this._createFreeFormPill(data, dataSource),
       [MESSAGE_TYPES.CREATE_TEXT_PILL]: ([data, dataSource]) => this._createTextPill(data, dataSource),
@@ -417,6 +419,17 @@ export default Component.extend({
     this.setProperties({
       ...RESET_PROPS,
       activePillTab: AFTER_OPTION_TAB_META
+    });
+  },
+
+  _resetAfterPaste() {
+    this.setProperties({
+      selectedMeta: null,
+      selectedOperator: null,
+      isMetaActive: false,
+      isOperatorActive: false,
+      isOperatorFocusedAtBeginning: false,
+      isValueActive: false
     });
   },
 
@@ -575,6 +588,18 @@ export default Component.extend({
   },
 
   /**
+   * Handles a query being pasted into pill-meta. Parses the query and inserts
+   * the pills into state.
+   * @param {String} value The pasted string
+   * @private
+   */
+  _metaPaste(value) {
+    this._broadcast(MESSAGE_TYPES.PILL_PASTE, value);
+    // Reset everything and stop editing
+    this._resetAfterPaste();
+  },
+
+  /**
    * Handles selected pill meta. If no selected meta is supplied, reset meta
    * properties to an appropriate state.
    * @param {Object} selectedMeta The selected meta value
@@ -663,6 +688,20 @@ export default Component.extend({
   },
 
   /**
+   * Handles a query being pasted into pill-operator. Parses the query and inserts
+   * the pills into state. Prepends anything in the meta w/ a space to the query
+   * and resets the meta.
+   * @param {String} value The pasted string
+   * @private
+   */
+  _operatorPaste(value) {
+    value = `${this.get('selectedMeta').metaName} ${value}`;
+    // Reset the selected meta and stop editing
+    this._resetAfterPaste();
+    this._broadcast(MESSAGE_TYPES.PILL_PASTE, value);
+  },
+
+  /**
    * Handles selected pill operator.
    * @param {Object} selectedOperator The selected operator value
    * @private
@@ -730,6 +769,34 @@ export default Component.extend({
         isValueActive: true
       });
     }
+  },
+
+  /**
+   * Handles a query being pasted into pill-value. Parses the query and inserts
+   * the pills into state. Prepends anything in the meta & operator w/ a space to
+   * the query and resets the meta & operator. If the type of meta is text, and
+   * the operator is not unary, adds quotes around the pasted text.
+   * @param {String} value The pasted string
+   * @private
+   */
+  _valuePaste(value) {
+    // Auto-quote only if the format is text...
+    const shouldAutoQuote = this.get('selectedMeta').format === 'Text' &&
+      // ...and the operator is not unary, and...
+      this.get('selectedOperator').hasValue &&
+      // ...the value does not already have quotes.
+      value.length > 1 &&
+      !((value[0] === "'" && value[value.length - 1] === "'") ||
+      (value[0] === '"' && value[value.length - 1] === '"'));
+
+    if (shouldAutoQuote) {
+      // When we add quotes, make sure to escape any existing quotes
+      value = `'${value.replace(new RegExp('\'', 'g'), '\\\'')}'`;
+    }
+    value = `${this.get('selectedMeta').metaName} ${this.get('selectedOperator').displayName} ${value}`;
+    // Reset the selected meta & selected operator and stop editing
+    this._resetAfterPaste();
+    this._broadcast(MESSAGE_TYPES.PILL_PASTE, value);
   },
 
   /**

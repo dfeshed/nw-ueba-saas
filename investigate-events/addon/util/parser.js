@@ -233,10 +233,13 @@ class Parser {
   _metaValueRanges() {
     const valueRanges = [ this._metaValueRange() ];
     while (this._nextTokenIsOfType([ LEXEMES.VALUE_SEPARATOR ])) {
-      // Consume the range separator
-      this._advance();
-      // Add the new range to the array
-      valueRanges.push(this._metaValueRange());
+      // As long as the UI does not support shorthand, throw this error to get complex pills.
+      // Once support is included, uncommend the rest of this block.
+      throw new Error('Value shorthand is not yet supported');
+      // // Consume the range separator
+      // this._advance();
+      // // Add the new range to the array
+      // valueRanges.push(this._metaValueRange());
     }
     return valueRanges;
   }
@@ -250,14 +253,17 @@ class Parser {
   _metaValueRange() {
     const value = this._consume(VALUE_TYPES);
     if (this._nextTokenIsOfType([ LEXEMES.RANGE ])) {
-      // Consume the range token first
-      this._consume([ LEXEMES.RANGE ]);
-      const to = this._consume([ value.type ]);
-      return {
-        type: GRAMMAR.META_VALUE_RANGE,
-        from: value,
-        to
-      };
+      // As long as the UI does not support shorthand, throw this error to get complex pills.
+      // Once support is included, uncommend the rest of this block.
+      throw new Error('Value shorthand is not yet supported');
+      // // Consume the range token first
+      // this._consume([ LEXEMES.RANGE ]);
+      // const to = this._consume([ value.type ]);
+      // return {
+      //   type: GRAMMAR.META_VALUE_RANGE,
+      //   from: value,
+      //   to
+      // };
     } else {
       return {
         type: GRAMMAR.META_VALUE,

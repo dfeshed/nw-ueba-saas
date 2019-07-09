@@ -54,6 +54,54 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk(myDispatch);
   });
 
+  test('batchAddPills action creator returns proper type and payload', function(assert) {
+    assert.expect(7);
+    const done = assert.async(2);
+    const getState = () => {
+      return new ReduxDataHelper().language().invalidPillsDataPopulated().build();
+    };
+
+    const myDispatch = (action) => {
+      if (typeof action === 'function') {
+        action(validateDispatch, getState);
+      } else {
+        assert.equal(action.type, ACTION_TYPES.BATCH_ADD_PILLS, 'action has the correct type');
+        assert.deepEqual(action.payload.pillsData, [
+          { meta: 'ip.proto', operator: '=', value: '\'boom\'' },
+          { meta: 'starttime', operator: '=', value: '\'boom\'' }
+        ], 'action pillsData has the right value');
+        assert.equal(action.payload.initialPosition, 0, 'action initialPosition has the right value');
+      }
+    };
+
+    // Called twice
+    const validateDispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.VALIDATE_GUIDED_PILL, 'action has the correct type - validate');
+      action.promise.catch((error) => {
+        assert.ok(error.meta, 'Expected validaiton error');
+        done();
+      });
+    };
+
+    // this thunk will shoot out 3 actions - one to add and two to validate
+    const thunk = guidedCreators.batchAddPills({
+      pillsData: [
+        {
+          meta: 'ip.proto',
+          operator: '=',
+          value: '\'boom\''
+        },
+        {
+          meta: 'starttime',
+          operator: '=',
+          value: '\'boom\''
+        }
+      ],
+      initialPosition: 0
+    });
+    thunk(myDispatch);
+  });
+
   test('editGuidedPill action creator returns proper type and payload', function(assert) {
     assert.expect(4);
     const done = assert.async();

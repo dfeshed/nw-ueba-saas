@@ -82,6 +82,21 @@ export const addGuidedPill = ({ pillData, position, shouldAddFocusToNewPill }) =
   };
 };
 
+export const batchAddPills = ({ pillsData, initialPosition }) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.BATCH_ADD_PILLS,
+      payload: {
+        pillsData,
+        initialPosition
+      }
+    });
+    pillsData.forEach((pillData, i) => {
+      dispatch(_clientSideValidation(pillData, initialPosition + i));
+    });
+  };
+};
+
 export const editGuidedPill = ({ pillData, position }) => {
   return (dispatch) => {
     dispatch({
