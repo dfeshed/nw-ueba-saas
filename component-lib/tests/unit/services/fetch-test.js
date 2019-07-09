@@ -65,4 +65,23 @@ module('Unit | Fetch', function() {
     });
   });
 
+  test('fetch will pass through non-200 errors is passErrors is set', async function(assert) {
+    assert.expect(1);
+
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: null,
+          text() {
+          }
+        });
+      });
+    });
+
+    return fetch('/bar', undefined, true).then(() => {
+      assert.ok(true, '400 is passed through');
+    }).catch(() => {
+      assert.ok(false, 'fetch call should have succeeded');
+    });
+  });
 });

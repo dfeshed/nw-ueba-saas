@@ -17,23 +17,26 @@ import csrfToken from 'component-lib/mixins/csrf-token';
 import { success, failure } from 'configure/sagas/flash-messages';
 import { later } from '@ember/runloop';
 
-let contentDisposition;
-const triggerDownload = (blob, downloadName) => {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.style.display = 'none';
-  a.download = downloadName;
-  document.body.appendChild(a);
+const parseFilename = (contentDisposition) => {
   if (contentDisposition) {
     const props = contentDisposition.split(';');
     const [fileNameProp] = props.filter((str) => str.toLowerCase().includes('filename='));
     const [, fileName] = fileNameProp.split('=');
     if (fileName) {
       // remove double and single quotes from the file name
-      a.download = fileName.replace(/['"]+/g, '').trim();
+      return fileName.replace(/['"]+/g, '').trim();
     }
   }
+  return '';
+};
+
+const downloadFile = (blob, downloadName) => {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.style.display = 'none';
+  a.download = downloadName;
+  document.body.appendChild(a);
   a.click();
   a.remove();
   later(null, () => {
@@ -41,63 +44,65 @@ const triggerDownload = (blob, downloadName) => {
   }, 10);
 };
 
-const fetchRules = (selRules, csrfKey) => {
-  fetch('/api/respond/rules/export', {
-    mode: 'same-origin',
-    method: 'POST',
-    body: JSON.stringify(selRules),
-    headers: {
-      'X-CSRF-TOKEN': localStorage.getItem(csrfKey),
-      'Content-Type': 'application/json;charset=UTF-8'
-    }
-  }).then((response) => {
-    if (response.headers.has('Content-Disposition')) {
-      contentDisposition = response.headers.get('Content-Disposition');
-    } else {
-      contentDisposition = '';
-    }
-    if (response.headers.get('Content-type').includes('application/zip')) {
-      return response.blob();
-    } else if (response.headers.get('Content-type').includes('application/json')) {
-      return response.json();
-    }
-  }).then((data) => {
-    if (data instanceof Blob) {
+const exportRules = async(selRules, csrfKey) => {
+  try {
+    const response = await fetch('/api/respond/rules/export', {
+      mode: 'same-origin',
+      method: 'POST',
+      body: JSON.stringify(selRules),
+      headers: {
+        'X-CSRF-TOKEN': localStorage.getItem(csrfKey),
+        'Content-Type': 'application/json;charset=UTF-8'
+      }
+    });
+    const bodyPromise = response.headers.get('Content-type').includes('application/zip') ? response.blob() : response.json();
+    const [body, contentDisposition] = await Promise.all([bodyPromise, response.headers.get('Content-Disposition')]);
+    if (body instanceof Blob) {
       success('configure.incidentRules.actionMessages.exportSuccess');
-      triggerDownload(data, 'exported-rules.zip');
+      downloadFile(body, parseFilename(contentDisposition) || 'exported-rules.zip');
     } else {
       failure('configure.incidentRules.actionMessages.exportFailure2', {
-        missing: data.missingIds.length,
-        advanced: data.advancedFilterEnabledIds.length
+        missing: body.missingIds.length,
+        advanced: body.advancedFilterEnabledIds.length
       });
-      triggerDownload(new Blob([JSON.stringify(data, null, '  ')], { type: 'application/json' }), 'failure.json');
+      const jsonBlob = new Blob([JSON.stringify(body, null, '  ')], { type: 'application/json' });
+      downloadFile(jsonBlob, parseFilename(contentDisposition) || 'failure.json');
     }
-  }, () => {
+  } catch (e) {
     failure('configure.incidentRules.actionMessages.exportFailure');
-  });
+  }
 };
 
-const triggerUpload = (dispatch, csrfKey) => {
+const uploadRules = (dispatch, csrfKey) => {
   const input = document.createElement('input');
   input.style.display = 'none';
   input.type = 'file';
   input.accept = '.zip';
-  input.addEventListener('change', () => {
-    const formData = new FormData();
-    formData.append('file', input.files[0]);
-    fetch('/api/respond/rules/import', {
-      mode: 'same-origin',
-      method: 'POST',
-      body: formData,
-      headers: {
-        'X-CSRF-TOKEN': localStorage.getItem(csrfKey)
+  input.addEventListener('change', async() => {
+    try {
+      const formData = new FormData();
+      formData.append('file', input.files[0]);
+      const response = await fetch('/api/respond/rules/import', {
+        mode: 'same-origin',
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRF-TOKEN': localStorage.getItem(csrfKey)
+        }
+      }, true);
+      if (response.ok) {
+        dispatch(getRules());
+        success('configure.incidentRules.actionMessages.importSuccess');
+        return 'early-termination';
       }
-    }).then(() => {
-      dispatch(getRules());
-      success('configure.incidentRules.actionMessages.importSuccess');
-    }, () => {
+      const bodyPromise = response.headers.get('Content-type').includes('application/json') ? response.json() : response.text();
+      const body = await bodyPromise;
+      failure('configure.incidentRules.actionMessages.importFailure2');
+      const jsonBlob = new Blob([JSON.stringify(body, null, '  ')], { type: 'application/json' });
+      downloadFile(jsonBlob, 'failure.json');
+    } catch (e) {
       failure('configure.incidentRules.actionMessages.importFailure');
-    });
+    }
   });
   document.body.appendChild(input);
   input.click();
@@ -144,12 +149,12 @@ const dispatchToActions = function(dispatch) {
         }
         return exportRequest;
       }, []);
-      fetchRules(exportList, csrfKey);
+      exportRules(exportList, csrfKey);
     },
 
     import: () => {
       const csrfKey = this.get('csrfLocalstorageKey');
-      triggerUpload(dispatch, csrfKey);
+      uploadRules(dispatch, csrfKey);
     },
 
     enable: () => {

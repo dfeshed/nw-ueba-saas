@@ -13,7 +13,7 @@ require('mock-server').startServer({
         switch (type) {
           case 1:
             // INTERNAL SERVER ERROR
-            res.status(500).send();
+            res.status(500).end();
             break;
           case 2:
             // BAD REQUEST
@@ -33,7 +33,30 @@ require('mock-server').startServer({
       path: '/api/respond/rules/import',
       method: 'post',
       response: (req, res) => {
-        res.status(200).json(['rule-id1', 'rule-id2']);
+        let type = 3;
+        switch (type) {
+          case 1:
+            // jackson databind error ( syntax error in json )
+            res.status(400).send('FOO of alert-rule at index BAR is invalid');
+            break;
+          case 2:
+            // BAD REQUEST - validation failure
+            res.status(400).json([
+              {
+                name: 'alert-rule-1',
+                errors: ['name is empty', 'another validation error here']
+              },
+              {
+                name: 'alert-rule-2',
+                errors: ['deep validation - too many group by']
+              }
+            ]);
+            break;
+          case 3:
+            // WORKS !
+            res.status(200).end();
+            break;
+        }
       }
     }
   ]

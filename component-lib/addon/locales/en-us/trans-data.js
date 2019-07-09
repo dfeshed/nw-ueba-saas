@@ -997,6 +997,7 @@ export default {
         exportFailure2: '{{missing}} rules are missing and {{advanced}} rules contain advanced filters. Please deselect these rules',
         importSuccess: 'You successfully imported the rules from the selected file',
         importFailure: 'There was a problem importing the rules from the selected file',
+        importFailure2: 'Invalid rules. Please fix and try again.',
         duplicateNameFailure: 'There is already another rule with the same name. Please modify the rule name so that it is unique.'
       },
       missingRequiredInfo: 'There is required information missing from the incident rule'

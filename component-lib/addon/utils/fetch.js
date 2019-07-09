@@ -14,10 +14,10 @@ const _private = {
   }
 };
 
-export default function(path, options) {
+export default function(path, options, passErrors = false) {
   return new Promise((resolve, reject) => {
     return _private._fetch(path, options).then((response) => {
-      if (response.ok) {
+      if (response.ok || passErrors) {
         resolve(response);
       } else {
         throw new Error('invalid http response');
