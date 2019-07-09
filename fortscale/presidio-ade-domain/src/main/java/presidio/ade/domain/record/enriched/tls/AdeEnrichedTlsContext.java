@@ -18,8 +18,8 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
     private String ja3;
     private String ja3s;
     private String direction;
-    private Integer dstPort;
-    private Integer srcPort;
+    private String dstPort;
+    private String srcPort;
 
 
     public AdeEnrichedTlsContext() {
@@ -149,19 +149,19 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
         this.direction = direction;
     }
 
-    public Integer getDstPort() {
+    public String getDstPort() {
         return dstPort;
     }
 
-    public void setDstPort(Integer dstPort) {
+    public void setDstPort(String dstPort) {
         this.dstPort = dstPort;
     }
 
-    public Integer getSrcPort() {
+    public String getSrcPort() {
         return srcPort;
     }
 
-    public void setSrcPort(Integer srcPort) {
+    public void setSrcPort(String srcPort) {
         this.srcPort = srcPort;
     }
 }

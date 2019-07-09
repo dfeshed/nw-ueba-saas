@@ -82,10 +82,10 @@ public class TlsRawEvent extends AbstractInputDocument {
     private String direction;
 
     @Field(DESTINATION_PORT_FIELD_NAME)
-    private Integer dstPort;
+    private String dstPort;
 
     @Field(SOURCE_PORT_FIELD_NAME)
-    private Integer srcPort;
+    private String srcPort;
 
     @Field(FQDN_FIELD_NAME)
     private List<String> fqdn;
@@ -125,10 +125,10 @@ public class TlsRawEvent extends AbstractInputDocument {
     }
 
     public TlsRawEvent(Instant dateTime, String eventId, String dataSource, Map<String, String> additionalInfo,
-                       String srcIp, String dstIp, Integer srcPort, String srcCountry, String dstCountry, String sslSubject,
+                       String srcIp, String dstIp, String srcPort, String srcCountry, String dstCountry, String sslSubject,
                        String domain, String dstOrg,
                        String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
-                       String dstNetname, String ja3, String ja3s, String direction, Integer dstPort, List<String> fqdn,
+                       String dstNetname, String ja3, String ja3s, String direction, String dstPort, List<String> fqdn,
                        List<String> sslCa, Integer sessionSplit) {
         super(dateTime, eventId, dataSource, additionalInfo);
         this.srcIp = srcIp;
@@ -274,11 +274,11 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.direction = direction;
     }
 
-    public Integer getDstPort() {
+    public String getDstPort() {
         return dstPort;
     }
 
-    public void setDstPort(Integer dstPort) {
+    public void setDstPort(String dstPort) {
         this.dstPort = dstPort;
     }
 
@@ -306,11 +306,11 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.sessionSplit = sessionSplit;
     }
 
-    public Integer getSrcPort() {
+    public String getSrcPort() {
         return srcPort;
     }
 
-    public void setSrcPort(Integer srcPort) {
+    public void setSrcPort(String srcPort) {
         this.srcPort = srcPort;
     }
 
