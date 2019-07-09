@@ -11,7 +11,6 @@ pipeline {
     agent { label env.NODE_LABLE }
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
-        // The credentials (name + password) associated with the RSA build user.
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         REPOSITORY_NAME = "presidio-integration-test"
     }
@@ -21,12 +20,11 @@ pipeline {
             steps {
                 cleanWs()
                 buildIntegrationTestProject()
-                setBaseUrl()
             }
         }
         stage('Reset UEBA DBs') {
             when {
-                expression { return !params.RUN_ONLY_TESTS }
+                expression { return ! params.RUN_ONLY_TESTS }
             }
             steps {
                 cleanUebaDBs()
@@ -37,6 +35,7 @@ pipeline {
                 expression { return params.INSTALL_UEBA_RPMS }
             }
             steps {
+                setBaseUrl()
                 uebaInstallRPMs()
             }
         }
@@ -47,7 +46,11 @@ pipeline {
         }
         stage('Test Automation') {
             steps {
-                runCoreTestAutomation()
+                if ( ! params.RUN_ONLY_TESTS ) {
+                    runCoreTestAutomation()
+            } else {
+                runCoreTestAutomation_only_test()
+            }
             }
         }
     }
@@ -123,5 +126,11 @@ def runCoreTestAutomation() {
     dir(env.REPOSITORY_NAME) {
         println(env.REPOSITORY_NAME)
         sh "mvn -B -f presidio-integration-output-component-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
+    }
+}
+def runCoreTestAutomation_only_test() {
+    dir(env.REPOSITORY_NAME) {
+        println(env.REPOSITORY_NAME)
+        sh "mvn -B -f presidio-integration-output-test/pom.xml -DsuiteXmlFile=src/test/resources/TestPlans/Output_Tests.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
     }
 }
