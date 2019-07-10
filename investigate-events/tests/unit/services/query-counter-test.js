@@ -12,8 +12,9 @@ module('Unit | Service | query-counter', function(hooks) {
   test('it sets counts to defaults on init', function(assert) {
 
     const service = this.owner.lookup('service:queryCounter');
-    assert.equal(service.metaTabCount, 0, 'Not set to default?');
-    assert.equal(service.recentQueryTabCount, 0, 'Not set to default?');
+    assert.equal(service.metaTabCount, 0, 'metaTabCount not set to default?');
+    assert.equal(service.recentQueryTabCount, 0, 'recentQueryTabCount not set to default?');
+    assert.notOk(service.isExpectingResponse, 'isExpectingResponse not set to default?');
   });
 
   test('it sets metTabCount with the value being sent', function(assert) {
@@ -48,7 +49,15 @@ module('Unit | Service | query-counter', function(hooks) {
 
     const service = this.owner.lookup('service:queryCounter');
     service.resetAllTabCounts();
-    assert.equal(service.metaTabCount, 0, 'Not set to default?');
-    assert.equal(service.recentQueryTabCount, 0, 'Not set to default?');
+    assert.equal(service.metaTabCount, 0, 'metaTabCount not set to default?');
+    assert.equal(service.recentQueryTabCount, 0, 'recentQueryTabCount not set to default?');
+    assert.notOk(service.isExpectingResponse, 'isExpectingResponse not set to default?');
+  });
+
+  test('it sets isExpectingResponse flag', function(assert) {
+
+    const service = this.owner.lookup('service:queryCounter');
+    service.setResponseFlag(true);
+    assert.ok(service.isExpectingResponse, 'isExpectingResponse is not being reflected in the service');
   });
 });

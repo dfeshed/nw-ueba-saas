@@ -168,6 +168,7 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
     assert.expect(3);
     const done = assert.async();
     const queryCounter = this.owner.lookup('service:queryCounter');
+    queryCounter.setResponseFlag(true);
     const getState = () => {
       return new ReduxDataHelper()
         .hasRequiredValuesToQuery()
@@ -198,9 +199,40 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
     thunk(dispatchRecentQueries, getState);
   });
 
+  test('getRecentQueries - if QueryCounter service\'s isExpectingResponse flag is false, recentQueryTabCount is not updated', async function(assert) {
+    assert.expect(2);
+    const done = assert.async();
+    const queryCounter = this.owner.lookup('service:queryCounter');
+    queryCounter.setRecentQueryTabCount(0);
+    queryCounter.setResponseFlag(false);
+
+
+    const getState = () => {
+      return new ReduxDataHelper()
+        .hasRequiredValuesToQuery()
+        .recentQueriesFilteredList()
+        .build();
+    };
+    const query = 'med';
+
+    const dispatchRecentQueries = (action) => {
+      assert.equal(action.type, ACTION_TYPES.SET_RECENT_QUERIES, 'action has the correct type');
+      action.promise.then((resolve) => {
+        action.meta.onSuccess(resolve);
+        assert.equal(queryCounter.recentQueryTabCount, 0, 'Recent query not being set correctly in the service');
+        done();
+      });
+    };
+
+    const thunk = initializationCreators.getRecentQueries(query);
+    thunk(dispatchRecentQueries, getState);
+  });
+
   test('getRecentQueries - No call is made if query is non-empty string and we already have queries for that string, but will set the service', async function(assert) {
     assert.expect(1);
     const queryCounter = this.owner.lookup('service:queryCounter');
+    queryCounter.setResponseFlag(true);
+
     const getState = () => {
       return new ReduxDataHelper()
         .hasRequiredValuesToQuery()

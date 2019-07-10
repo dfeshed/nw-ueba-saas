@@ -627,7 +627,14 @@ export default Component.extend({
         selectedMeta: null,
         isMetaAutoFocused: false
       });
-      this._resetTabCounts();
+
+      // Adding a delay here for the cases where user long presses backspace.
+      // We want to reset once all the debounce actions from pill-meta are sent out.
+      // This sets the `isExpectingResponse` flag to false and whenever that earlier
+      // api request is completed, it will be dropped to the floor.
+      later(this, () => {
+        this._resetTabCounts();
+      }, 100);
     }
   },
 
@@ -1086,6 +1093,7 @@ export default Component.extend({
   _recentQueryTextEntered(data, dataSource) {
     const stringifiedPill = this._getStringifiedPill(data, dataSource);
     if (stringifiedPill && stringifiedPill.length > 0) {
+      this.queryCounter.setResponseFlag(true);
       this._broadcast(MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT, stringifiedPill);
 
       if (dataSource === PILL_META_DATA_SOURCE ||

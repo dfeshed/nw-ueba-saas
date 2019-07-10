@@ -678,9 +678,10 @@ export const getRecentQueries = (query = '') => {
       // Before making the call, we make sure we aren't
       // looking for something we already have.
       const canFetch = recentQueriesFilterText !== query;
-      if (!canFetch) {
+      if (!canFetch && queryCounterService.isExpectingResponse) {
         // reset its count in the service
         queryCounterService.setRecentQueryTabCount(recentQueriesFilteredList.length);
+        queryCounterService.setResponseFlag(false);
         return;
       }
       // If the query is user generated (and has unique text), then we want to cancel the previously executing
@@ -694,9 +695,10 @@ export const getRecentQueries = (query = '') => {
       meta: {
         query,
         onSuccess() {
-          if (!isEmpty(query.trim())) {
+          if (!isEmpty(query.trim()) && queryCounterService.isExpectingResponse) {
             const { investigate: { queryNode: { recentQueriesFilteredList } } } = getState();
             queryCounterService.setRecentQueryTabCount(recentQueriesFilteredList.length);
+            queryCounterService.setResponseFlag(false);
           }
         },
         onFailure(error) {
