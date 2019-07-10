@@ -39,7 +39,6 @@
  *
  * @public
  */
-import $ from 'jquery';
 
 import EmberObject from '@ember/object';
 import { run } from '@ember/runloop';
@@ -202,8 +201,11 @@ export default EmberObject.extend({
    * @private
    */
   attachBodyListeners(hash) {
-    $(document.body).on(hash);
-    this.set('bodyListeners', hash);
+    const listeners = Object.entries(hash);
+    listeners.forEach(([event, listener]) => {
+      document.body.addEventListener(event, listener);
+    });
+    this.set('bodyListeners', listeners);
   },
 
   /**
@@ -213,8 +215,10 @@ export default EmberObject.extend({
    * @private
    */
   detachBodyListeners() {
-    const hash = this.get('bodyListeners') || {};
-    $(document.body).off(hash);
+    const listeners = this.get('bodyListeners') || [];
+    listeners.forEach(([event, listener]) => {
+      document.body.removeEventListener(event, listener);
+    });
     this.set('bodyListeners', null);
   },
 
@@ -226,7 +230,7 @@ export default EmberObject.extend({
    */
   notify(type, e) {
     const callback = (this.get('callbacks') || {})[type];
-    if ($.isFunction(callback)) {
+    if (typeof callback === 'function') {
       callback(e, this);
     }
   },
