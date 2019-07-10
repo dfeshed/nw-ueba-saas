@@ -75,5 +75,7 @@ export default {
   recentQueriesOptions: '.recent-queries-option.value',
   powerSelectOptionValue: '.js-test-power-select-option .value',
   loadingSpinnerSelector: '.investigate-query-dropdown .ember-power-select-options .ember-power-select-loading-options-spinner',
-  noResultsMessageSelector: '.investigate-query-dropdown .ember-power-select-option.ember-power-select-option--no-matches-message'
+  noResultsMessageSelector: '.investigate-query-dropdown .ember-power-select-option.ember-power-select-option--no-matches-message',
+  recentQueryCount: '.recent-query-count',
+  metaCount: '.meta-count'
 };

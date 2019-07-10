@@ -666,8 +666,9 @@ export const getEventSettings = (resolve = noop, reject = noop) => {
 
 export const getRecentQueries = (query = '') => {
   return (dispatch, getState) => {
+    const queryCounterService = lookup('service:queryCounter');
 
-    const { investigate: { queryNode: { recentQueriesFilterText } } } = getState();
+    const { investigate: { queryNode: { recentQueriesFilterText, recentQueriesFilteredList } } } = getState();
     let cancelPreviouslyExecuting = false;
     if (!isEmpty(query.trim())) {
       // If the query is not empty we process the query a little differently. A query not being empty
@@ -678,6 +679,8 @@ export const getRecentQueries = (query = '') => {
       // looking for something we already have.
       const canFetch = recentQueriesFilterText !== query;
       if (!canFetch) {
+        // reset its count in the service
+        queryCounterService.setRecentQueryTabCount(recentQueriesFilteredList.length);
         return;
       }
       // If the query is user generated (and has unique text), then we want to cancel the previously executing
@@ -690,6 +693,12 @@ export const getRecentQueries = (query = '') => {
       promise: fetchRecentQueries(query, cancelPreviouslyExecuting),
       meta: {
         query,
+        onSuccess() {
+          if (!isEmpty(query.trim())) {
+            const { investigate: { queryNode: { recentQueriesFilteredList } } } = getState();
+            queryCounterService.setRecentQueryTabCount(recentQueriesFilteredList.length);
+          }
+        },
         onFailure(error) {
           handleInvestigateErrorCode(error, 'RECENT_QUERIES_RETRIEVAL_ERROR');
         }

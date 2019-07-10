@@ -18,7 +18,7 @@ import {
 import { isEmpty } from '@ember/utils';
 import * as MESSAGE_TYPES from '../message-types';
 import BoundedList from 'investigate-events/util/bounded-list';
-import { next, scheduleOnce, debounce } from '@ember/runloop';
+import { next, scheduleOnce, debounce, later } from '@ember/runloop';
 import {
   isArrowDown,
   isArrowUp,
@@ -284,6 +284,7 @@ const RecentQueryComponent = Component.extend({
       if (input.trim().length === 0) {
         powerSelectAPI.actions.search('');
         powerSelectAPI.actions.highlight(null);
+        this._broadcast(MESSAGE_TYPES.META_SELECTED, null);
         this.toggleProperty('triggerRecentQueryMaintenance');
       }
     },
@@ -300,7 +301,10 @@ const RecentQueryComponent = Component.extend({
       powerSelectAPI.actions.open();
       // If RQ tab is open and unfilteredList is empty, we need to add
       // No results message
-      this.toggleProperty('triggerRecentQueryMaintenance');
+      // It takes a moment for the text to actully appear in the power select input.
+      // We add a small delay so that options computed takes into consideration that there
+      // is some text in the input and so it should display it's filtered list.
+      later(() => this.toggleProperty('triggerRecentQueryMaintenance'), 100);
     },
 
     onKeyDown(powerSelectAPI) {

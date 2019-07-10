@@ -1,4 +1,5 @@
 
+const LEADING_SPACES = /^[\s\uFEFF\xA0]+/;
 /**
  * Static Object. Useful for assigning properties from query-pill.
  * Based on the what type of pill { meta, operator, value } is formed while toggling
@@ -103,4 +104,41 @@ export const determineNewComponentPropsFromPillData = (pillData) => {
   }
 
   return propertyObject;
+};
+
+/**
+   * Function that power-select uses to make an autosuggest match. This function
+   * looks at the meta's `metaName` and `displayName` properties for a match.
+   * If it finds a match anywhere within those two strings, it's considered a
+   * match.
+   * @param {Object} meta A meta object
+   * @param {string} input The search string
+   * @return {number} The index of the string match
+   * @private
+   */
+export const matcher = (meta, input) => {
+  const _input = input.toLowerCase().replace(LEADING_SPACES, '');
+  const _metaName = meta.metaName.toLowerCase();
+  const _displayName = meta.displayName.toLowerCase();
+  return _metaName.indexOf(_input) & _displayName.indexOf(_input);
+};
+
+/**
+ * Function that takes in a string and returns a count of possible matches
+ * from the metaOptions array.
+ * @param {Array} metaOptions Language
+ * @param {String} input String that was typed inside query-pill
+ */
+export const resultsCount = (metaOptions, input) => {
+  if (input.trim().length === 0) {
+    return 0;
+  }
+  const count = metaOptions.reduce((acc, meta) => {
+    const num = matcher(meta, input);
+    if (num >= 0) {
+      acc++;
+    }
+    return acc;
+  }, 0);
+  return count;
 };

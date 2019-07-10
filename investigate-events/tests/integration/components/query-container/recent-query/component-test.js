@@ -326,9 +326,11 @@ module('Integration | Component | Recent Query', function(hooks) {
   test('it highlights proper Advanced Option if all EPS options filtered out in recent query tab', async function(assert) {
     let option;
 
+    this.set('handleMessage', () => {});
     await render(hbs`
       {{query-container/recent-query
         isActive=true
+        sendMessage=(action handleMessage)
       }}
     `);
     await clickTrigger(PILL_SELECTORS.recentQuery);

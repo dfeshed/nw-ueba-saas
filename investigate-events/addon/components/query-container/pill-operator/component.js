@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { cancel, later, next, scheduleOnce } from '@ember/runloop';
+import { cancel, later, next, scheduleOnce, debounce } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 
 import * as MESSAGE_TYPES from '../message-types';
@@ -345,6 +345,7 @@ export default Component.extend({
         // power-select has time to render the full list of options.
         next(this, () => powerSelectAPI.actions.highlight(options[0]));
       }
+      debounce(this, this._broadcastRecentQuerySearch, input, 100);
     },
     /**
      * This function is called every time a key is pressed, and is invoked
@@ -505,6 +506,18 @@ export default Component.extend({
    */
   _broadcast(type, data) {
     this.get('sendMessage')(type, data);
+  },
+
+  /**
+   * Broadcasts a message to parent to make an API call.
+   */
+  _broadcastRecentQuerySearch(searchQueryText) {
+    if (!this.get('isEditing')) {
+      this._broadcast(
+        MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED,
+        { data: searchQueryText, dataSource: this.get('source') }
+      );
+    }
   },
 
   /**

@@ -341,6 +341,110 @@ module('Integration | Component | Query Pill', function(hooks) {
     await selectChoose(PILL_SELECTORS.operatorTrigger, 'exists'); // option exists
   });
 
+  test('selecting meta sends out a query suggestions message', async function(assert) {
+    const done = assert.async();
+    this.set('metaOptions', META_OPTIONS);
+
+    this.set('handleMessage', (messageType, data) => {
+      if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT, 'Message sent for recent query suggestions is not correct');
+      assert.equal(data, 'a', 'Message sent for recent query suggestions doesnt contain correct pill data');
+
+      done();
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+      }}
+    `);
+
+    // Choose the first meta option
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // option A
+  });
+
+  test('selecting meta and operator that does accept values sends out a query suggestions message', async function(assert) {
+    const done = assert.async();
+    let count = 0;
+    this.set('metaOptions', META_OPTIONS);
+
+    this.set('handleMessage', (messageType, data) => {
+      if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
+        return;
+      }
+
+      if (count === 0) {
+        assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT, 'Message sent for recent query suggestions is not correct');
+        assert.equal(data, 'a', 'Message sent for recent query suggestions doesnt contain correct pill data');
+        count++;
+      } else {
+        assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT, 'Message sent for recent query suggestions is not correct');
+        assert.equal(data, 'a =', 'Message sent for recent query suggestions doesnt contain correct pill data');
+        done();
+      }
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+      }}
+    `);
+
+    // Choose the first meta option
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // option A
+
+    await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
+
+    await selectChoose(PILL_SELECTORS.operatorTrigger, '=');
+  });
+
+  test('selecting an operator that does not accept values will not send a message to recent query api', async function(assert) {
+    const done = assert.async();
+    let count = 0;
+    this.set('metaOptions', META_OPTIONS);
+
+    this.set('handleMessage', (messageType, data) => {
+      if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
+        return;
+      }
+
+      if (count === 0) {
+        assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT, 'Message sent for recent query suggestions is not correct');
+        assert.equal(data, 'a', 'Message sent for recent query suggestions doesnt contain correct pill data');
+        count++;
+      } else {
+        assert.equal(messageType, MESSAGE_TYPES.PILL_CREATED, 'Message sent for pill create is not correct');
+        assert.propEqual(data, { meta: 'a', operator: 'exists', value: null, type: 'query' }, 'Message sent for pill create contains correct pill data');
+        done();
+      }
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+      }}
+    `);
+
+    // Choose the first meta option
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // option A
+
+    await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
+
+    await selectChoose(PILL_SELECTORS.operatorTrigger, 'exists');
+  });
+
   test('presents a delete icon when not active and pill created', async function(assert) {
     _setPillData(this);
     await render(hbs`{{query-container/query-pill isActive=false pillData=pillData}}`);
@@ -2158,7 +2262,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .build();
 
     this.set('handleMessage', (messageType, stringifiedPillText) => {
-      if (isIgnoredInitialEvent(messageType)) {
+      if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
         return;
       }
       assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
@@ -2193,7 +2297,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .build();
 
     this.set('handleMessage', (messageType) => {
-      if (isIgnoredInitialEvent(messageType)) {
+      if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
         return;
       }
       assert.ok(false, `Should not get here with ${messageType}`);
@@ -2224,7 +2328,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .build();
 
     this.set('handleMessage', (messageType, stringifiedPillText) => {
-      if (isIgnoredInitialEvent(messageType)) {
+      if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
         return;
       }
       assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
@@ -2259,7 +2363,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .build();
 
     this.set('handleMessage', (messageType, stringifiedPillText) => {
-      if (isIgnoredInitialEvent(messageType)) {
+      if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
         return;
       }
       assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
@@ -2286,6 +2390,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Typing in pill-operator and toggling to recent queries will send out a message', async function(assert) {
 
     const done = assert.async();
+    let count = 0;
 
     this.set('metaOptions', META_OPTIONS);
 
@@ -2295,12 +2400,21 @@ module('Integration | Component | Query Pill', function(hooks) {
       .build();
 
     this.set('handleMessage', (messageType, stringifiedPillText) => {
-      if (isIgnoredInitialEvent(messageType)) {
+      if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
         return;
       }
-      assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
-      assert.equal(stringifiedPillText, 'alert contai');
-      done();
+
+      // It will be triggered twice because we need a count to be updated everytime
+      // some text is entered or a selection is made.
+      if (count === 0) {
+        assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
+        assert.equal(stringifiedPillText, 'alert');
+        count++;
+      } else {
+        assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
+        assert.equal(stringifiedPillText, 'alert contai');
+        done();
+      }
     });
 
     await render(hbs`
@@ -2323,6 +2437,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('Typing in pill-value and toggling to recent queries tab will send out a message', async function(assert) {
     const done = assert.async();
+    let count = 0;
 
     this.set('metaOptions', META_OPTIONS);
 
@@ -2332,12 +2447,24 @@ module('Integration | Component | Query Pill', function(hooks) {
       .build();
 
     this.set('handleMessage', (messageType, stringifiedPillText) => {
-      if (isIgnoredInitialEvent(messageType)) {
+      if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
         return;
       }
-      assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
-      assert.equal(stringifiedPillText, 'alert contains foo');
-      done();
+      // This message is sent everytime some text is entered or a selection is made, as
+      // we need to keep the counts in sync.
+      if (count === 0) {
+        assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
+        assert.equal(stringifiedPillText, 'alert');
+        count++;
+      } else if (count === 1) {
+        assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
+        assert.equal(stringifiedPillText, 'alert contains');
+        count++;
+      } else {
+        assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
+        assert.equal(stringifiedPillText, 'alert contains foo');
+        done();
+      }
     });
 
     await render(hbs`
@@ -2406,7 +2533,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     await selectChoose(PILL_SELECTORS.metaTrigger, 'medium');
     await toggleTab(PILL_SELECTORS.operatorSelectInput);
 
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 3, 'Did not find some recent queries?');
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 4, 'Did not find some recent queries?');
     await fillIn(PILL_SELECTORS.recentQuerySelectInput, 'medium = 1');
 
     assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 1, 'Did not find some recent queries?');

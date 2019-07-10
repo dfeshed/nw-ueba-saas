@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { next, scheduleOnce } from '@ember/runloop';
+import { next, scheduleOnce, debounce } from '@ember/runloop';
 import { htmlSafe } from '@ember/string';
 import computed from 'ember-computed-decorators';
 import KEY_MAP, {
@@ -333,6 +333,8 @@ export default Component.extend({
         // power-select has time to render the full list of options.
         next(this, () => powerSelectAPI.actions.highlight(options[0]));
       }
+
+      debounce(this, this._broadcastRecentQuerySearch, input, 100);
       // Need to make a decision about highlight and marking it as complex
       // only for the first time while creating a pill.
       if (!this.get('isEditing')) {
@@ -507,6 +509,18 @@ export default Component.extend({
    */
   _broadcast(type, data) {
     this.get('sendMessage')(type, data);
+  },
+
+  /**
+   * Broadcasts a message to parent to make an API call.
+   */
+  _broadcastRecentQuerySearch(searchQueryText) {
+    if (!this.get('isEditing')) {
+      this._broadcast(
+        MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED,
+        { data: searchQueryText, dataSource: this.get('source') }
+      );
+    }
   },
 
   _focusOnPowerSelectTrigger() {

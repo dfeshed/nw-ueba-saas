@@ -189,10 +189,10 @@ module('Integration | Component | Pill Operator', function(hooks) {
   });
 
   test('it does not broadcasts a OPERATOR_BACKSPACE_KEY message when the BACKSPACE key is pressed mid string', async function(assert) {
-    assert.expect(0);
+    assert.expect(1);
     this.set('meta', meta);
-    this.set('handleMessage', () => {
-      assert.notOk('Should not dispatch this message');
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED);
     });
     await render(hbs`
       {{query-container/pill-operator
@@ -531,12 +531,16 @@ module('Integration | Component | Pill Operator', function(hooks) {
   });
 
   test('it broadcasts a message to toggle tabs via pill operator', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
     this.set('meta', meta);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type, data) => {
-      assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'Correct message sent up');
-      assert.deepEqual(data, { data: 'foobar', dataSource: 'pill-operator' }, 'Correct data sent up');
+      if (type === MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED) {
+        assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'Correct message sent up');
+        assert.deepEqual(data, { data: 'foobar', dataSource: 'pill-operator' }, 'Correct data sent up');
+      } else {
+        assert.equal(type, MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED);
+      }
     });
     await render(hbs`
       {{query-container/pill-operator
@@ -617,18 +621,24 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await toggleTab(PILL_SELECTORS.operatorSelectInput);
   });
 
-  test('it broadcasts a message when operator is backspaced length 0', async function(assert) {
-    assert.expect(4);
+  test('it broadcasts a message when operator is backspaced length 0, also ensures recent queries are fetched', async function(assert) {
+    assert.expect(6);
     this.set('meta', meta);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     let count = 0;
     this.set('handleMessage', (type, data) => {
-      assert.equal(type, MESSAGE_TYPES.OPERATOR_SELECTED, 'correct message sent up');
+
       if (count === 0) {
+        assert.equal(type, MESSAGE_TYPES.OPERATOR_SELECTED, 'correct message sent up');
         assert.deepEqual(data, eq, 'Wrong message data');
         count++;
-      } else {
+      } else if (count === 1) {
+        assert.equal(type, MESSAGE_TYPES.OPERATOR_SELECTED, 'correct message sent up');
         assert.equal(data, null, 'Should be no data being sent up');
+        count++;
+      } else {
+        assert.equal(type, MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED, 'correct message sent up');
+        assert.deepEqual(data, { data: '', dataSource: 'pill-operator' }, 'Correct data sent up');
       }
     });
     await render(hbs`

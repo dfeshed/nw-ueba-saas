@@ -38,7 +38,8 @@ export default {
       '(ip.dst = 10.2.54.11 && ip.src = 1.1.1.1 && medium = 32',
       'qwehqwkej = 80 || sdsad = 90',
       'bar = bar && baz = foo',
-      'zzzzzqqq'
+      'zzzzzqqq',
+      'alert contains foo'
     ];
 
     const filterItems = (query) => {

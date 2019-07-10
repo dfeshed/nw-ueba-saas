@@ -16,6 +16,7 @@ export const TEXT_FILTER = 'text';
 export const PILL_META_DATA_SOURCE = 'pill-meta';
 export const PILL_OPERATOR_DATA_SOURCE = 'pill-operator';
 export const PILL_VALUE_DATA_SOURCE = 'pill-value';
+export const PILL_RECENT_QUERY_DATA_SOURCE = 'recent-query';
 
 // Selectors
 export const NO_RESULTS_MESSAGE_SELECTOR = '.investigate-query-dropdown .ember-power-select-option.ember-power-select-option--no-matches-message';

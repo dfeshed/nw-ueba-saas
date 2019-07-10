@@ -8,13 +8,16 @@ import _ from 'lodash';
 import * as MESSAGE_TYPES from '../message-types';
 import quote from 'investigate-events/util/quote';
 import { createFilter, convertTextToPillData } from 'investigate-events/util/query-parsing';
-import { determineNewComponentPropsFromPillData } from './query-pill-util';
+import { determineNewComponentPropsFromPillData, resultsCount } from './query-pill-util';
 import {
   COMPLEX_FILTER,
   QUERY_FILTER,
   TEXT_FILTER,
   AFTER_OPTION_TAB_META,
-  AFTER_OPTION_TAB_RECENT_QUERIES
+  AFTER_OPTION_TAB_RECENT_QUERIES,
+  PILL_META_DATA_SOURCE,
+  PILL_OPERATOR_DATA_SOURCE,
+  PILL_RECENT_QUERY_DATA_SOURCE
 } from 'investigate-events/constants/pill';
 
 const { log } = console; // eslint-disable-line no-unused-vars
@@ -34,6 +37,8 @@ export default Component.extend({
   classNameBindings: ['isActive', 'isEditing', 'isInvalid', 'isSelected', 'isExpensive', 'isFocused', 'activeTab'],
   attributeBindings: ['title'],
   i18n: service(),
+
+  queryCounter: service(),
 
   /**
    * After options active tab
@@ -420,6 +425,7 @@ export default Component.extend({
       ...RESET_PROPS,
       activePillTab: AFTER_OPTION_TAB_META
     });
+    this._resetTabCounts();
   },
 
   _resetAfterPaste() {
@@ -614,11 +620,14 @@ export default Component.extend({
         isOperatorActive: true,
         isValueActive: false
       });
+      this.queryCounter.setMetaTabCount(1);
+      this._recentQueryTextEntered(selectedMeta.metaName, PILL_META_DATA_SOURCE);
     } else {
       this.setProperties({
         selectedMeta: null,
         isMetaAutoFocused: false
       });
+      this._resetTabCounts();
     }
   },
 
@@ -723,6 +732,10 @@ export default Component.extend({
         } else {
           this._createPill();
         }
+      } else {
+        // If there is a operator that does not accept values, no need to deal with recent queries.
+        // But if there is one that accepts values, send out the request.
+        this._recentQueryTextEntered(selectedOperator.displayName, PILL_OPERATOR_DATA_SOURCE);
       }
     } else {
       this.set('selectedOperator', null);
@@ -826,6 +839,7 @@ export default Component.extend({
     } else {
       this._cancelPillCreation();
     }
+    this._resetTabCounts();
   },
 
   // ************************ PILL FUNCTIONALITY **************************** //
@@ -1061,6 +1075,10 @@ export default Component.extend({
 
   // ************************ EPS TAB FUNCTIONALITY *************************  //
 
+  _resetTabCounts() {
+    this.queryCounter.resetAllTabCounts();
+  },
+
   /**
    * Regardless of where entered query text is coming from, need to form
    * full pill text from all the components
@@ -1069,7 +1087,29 @@ export default Component.extend({
     const stringifiedPill = this._getStringifiedPill(data, dataSource);
     if (stringifiedPill && stringifiedPill.length > 0) {
       this._broadcast(MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT, stringifiedPill);
+
+      if (dataSource === PILL_META_DATA_SOURCE ||
+          dataSource === PILL_RECENT_QUERY_DATA_SOURCE
+      ) {
+        const metaCount = this._retrieveCountForMetaText(stringifiedPill, dataSource);
+        this.queryCounter.setMetaTabCount(metaCount);
+      }
     }
+  },
+
+  _retrieveCountForMetaText(searchText, dataSource) {
+    if (dataSource === PILL_RECENT_QUERY_DATA_SOURCE) {
+      const pillData = convertTextToPillData({ queryText: searchText, availableMeta: this.get('metaOptions') });
+      const props = determineNewComponentPropsFromPillData(pillData);
+      // If we are able to construct a proper meta object with whatever has been typed in, we
+      // will no longer update the metaTabCount.
+      // Otherwise, we run the text against a matcher function.
+      if (props.selectedMeta !== null) {
+        return 1;
+      }
+    }
+    const metaCount = resultsCount(this.get('metaOptions'), searchText);
+    return metaCount;
   },
 
   /**
@@ -1089,12 +1129,8 @@ export default Component.extend({
       case AFTER_OPTION_TAB_META: {
         // First thing we do is to deactivate meta-tab's drop-downs
         this._deactivateMetaTab();
-        // If we have tabbed to recent queries, we potentially need to
-        // send a query to get the latest recent queries so they can be
-        // rendered
-        this._recentQueryTextEntered(data, dataSource);
-        const stringifiedPill = this._getStringifiedPill(data, dataSource);
 
+        const stringifiedPill = this._getStringifiedPill(data, dataSource);
         // Now we can set recent-query's input with the text coming in from meta-tab
         this.setProperties({
           activePillTab: AFTER_OPTION_TAB_RECENT_QUERIES,

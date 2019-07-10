@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { cancel, later, next, scheduleOnce } from '@ember/runloop';
+import { cancel, later, next, scheduleOnce, debounce } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 import * as MESSAGE_TYPES from '../message-types';
 import {
@@ -25,6 +25,7 @@ import KEY_MAP, {
 import BoundedList from 'investigate-events/util/bounded-list';
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
+import { matcher } from '../query-pill/query-pill-util';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -50,8 +51,6 @@ const AFTER_OPTIONS_MENU = [
   { label: AFTER_OPTION_FREE_FORM_LABEL, disabled: false, highlighted: false },
   ENABLED_TEXT_SEARCH
 ];
-
-const LEADING_SPACES = /^[\s\uFEFF\xA0]+/;
 
 const _dropFocus = () => {
   const el = document.querySelector('.pill-meta input');
@@ -128,6 +127,11 @@ export default Component.extend({
    * Will contain the name of the component
    */
   source: undefined,
+
+  /**
+   * Function that power-select uses to make an autosuggest match.
+   */
+  _matcher: matcher,
 
   /**
    * List of meta for selection
@@ -378,6 +382,12 @@ export default Component.extend({
         this.set('selection', null);
         this._broadcast(MESSAGE_TYPES.META_SELECTED, null);
         powerSelectAPI.actions.highlight(null);
+      } else {
+        const searchTerm = input;
+        if (input && input.trim().length > 0) {
+          // send the original text with possible spaces
+          debounce(this, this._broadcastRecentQuerySearch, searchTerm, 100);
+        }
       }
     },
 
@@ -410,6 +420,18 @@ export default Component.extend({
   // ************************************************************************ //
   //                          PRIVATE FUNCTIONS                               //
   // ************************************************************************ //
+  /**
+   * Broadcasts a message to parent to make an API call.
+   */
+  _broadcastRecentQuerySearch(searchQueryText) {
+    if (!this.get('isEditing')) {
+      this._broadcast(
+        MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED,
+        { data: searchQueryText, dataSource: this.get('source') }
+      );
+    }
+  },
+
   /**
    * Handle keys that perform some sort of action like executing a query or
    * canceling out of an edit.
@@ -685,22 +707,5 @@ export default Component.extend({
   _highlighter(powerSelectAPI) {
     const { options, results } = powerSelectAPI;
     return options.length !== results.length ? results[0] : null;
-  },
-
-  /**
-   * Function that power-select uses to make an autosuggest match. This function
-   * looks at the meta's `metaName` and `displayName` properties for a match.
-   * If it finds a match anywhere within those two strings, it's considered a
-   * match.
-   * @param {Object} meta A meta object
-   * @param {string} input The search string
-   * @return {number} The index of the string match
-   * @private
-   */
-  _matcher: (meta, input) => {
-    const _input = input.toLowerCase().replace(LEADING_SPACES, '');
-    const _metaName = meta.metaName.toLowerCase();
-    const _displayName = meta.displayName.toLowerCase();
-    return _metaName.indexOf(_input) & _displayName.indexOf(_input);
   }
 });

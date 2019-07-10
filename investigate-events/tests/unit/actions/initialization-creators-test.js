@@ -11,6 +11,7 @@ import { patchReducer } from '../../helpers/vnext-patch';
 module('Unit | Actions | Initialization-Creators', function(hooks) {
   setupTest(hooks);
   hooks.beforeEach(function() {
+    this.owner.inject('component', 'queryCounter', 'service:queryCounter');
     initialize(this.owner);
   });
 
@@ -164,10 +165,14 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
   });
 
   test('getRecentQueries - Should dispatch action with a appropriate response when some text is sent along', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
     const done = assert.async();
+    const queryCounter = this.owner.lookup('service:queryCounter');
     const getState = () => {
-      return new ReduxDataHelper().hasRequiredValuesToQuery().build();
+      return new ReduxDataHelper()
+        .hasRequiredValuesToQuery()
+        .recentQueriesFilteredList()
+        .build();
     };
     const recentQueries = [
       'medium = 32',
@@ -183,6 +188,8 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
 
         const responseQueryArray = resolve.data.map((ob) => ob.query);
         assert.deepEqual(recentQueries, responseQueryArray, 'Queries containing text should be returned');
+        action.meta.onSuccess(resolve);
+        assert.equal(queryCounter.recentQueryTabCount, 5, 'Recent query not being set correctly in the service');
         done();
       });
     };
@@ -191,10 +198,15 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
     thunk(dispatchRecentQueries, getState);
   });
 
-  test('getRecentQueries - No call is made if query is non-empty string and we already have queries for that string', async function(assert) {
-    assert.expect(0);
+  test('getRecentQueries - No call is made if query is non-empty string and we already have queries for that string, but will set the service', async function(assert) {
+    assert.expect(1);
+    const queryCounter = this.owner.lookup('service:queryCounter');
     const getState = () => {
-      return new ReduxDataHelper().hasRequiredValuesToQuery().recentQueriesFilterText('med').build();
+      return new ReduxDataHelper()
+        .hasRequiredValuesToQuery()
+        .recentQueriesFilterText('med')
+        .recentQueriesFilteredList()
+        .build();
     };
     const query = 'med';
 
@@ -204,5 +216,7 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
 
     const thunk = initializationCreators.getRecentQueries(query);
     thunk(dispatchRecentQueries, getState);
+
+    assert.equal(queryCounter.recentQueryTabCount, 5, 'Recent query count was not set correctly');
   });
 });

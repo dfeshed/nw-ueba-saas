@@ -2435,5 +2435,174 @@ module('Integration | Component | Query Pills', function(hooks) {
 
   });
 
+  test('Typing text in pill-meta will reflect a count change in tabs', async function(assert) {
+    const done = assert.async();
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .canQueryGuided()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await typeIn(PILL_SELECTORS.metaSelectInput, 'mediu');
+
+    await settled();
+
+
+    assert.equal(find(PILL_SELECTORS.metaCount).textContent, '(1)', 'Meta tab count is incorrect');
+    setTimeout(() => {
+      assert.equal(find(PILL_SELECTORS.recentQueryCount).textContent, '(4)', 'recent query tab count is incorrect');
+      done();
+    }, 10000);
+  });
+
+  test('Typing text in pill-operator will reflect a count change in tabs', async function(assert) {
+    const done = assert.async();
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .canQueryGuided()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await selectChoose(PILL_SELECTORS.meta, 'alert');
+
+    await typeIn(PILL_SELECTORS.operatorSelectInput, 'contai');
+
+    await settled();
+
+
+    assert.equal(find(PILL_SELECTORS.metaCount).textContent, '(1)', 'Meta tab count is incorrect');
+    setTimeout(() => {
+      assert.equal(find(PILL_SELECTORS.recentQueryCount).textContent, '(1)', 'recent query tab count is incorrect');
+      done();
+    }, 5000);
+  });
+
+  test('Typing text in pill-value will reflect a count change in tabs', async function(assert) {
+    const done = assert.async();
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .canQueryGuided()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await selectChoose(PILL_SELECTORS.meta, 'medium');
+
+    await selectChoose(PILL_SELECTORS.operator, '=');
+
+    await typeIn(PILL_SELECTORS.valueSelectInput, '32 || med');
+
+    await settled();
+
+
+    assert.equal(find(PILL_SELECTORS.metaCount).textContent, '(1)', 'Meta tab count is incorrect');
+    setTimeout(() => {
+      assert.equal(find(PILL_SELECTORS.recentQueryCount).textContent, '(1)', 'recent query tab count is incorrect');
+      done();
+    }, 5000);
+  });
+
+  test('Typing text in recent-query will reflect a count change in tabs', async function(assert) {
+    const done = assert.async();
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .canQueryGuided()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await typeIn(PILL_SELECTORS.recentQuerySelectInput, 'alert contains foo');
+
+    await settled();
+
+
+    assert.equal(find(PILL_SELECTORS.metaCount).textContent, '(1)', 'Meta tab count is incorrect');
+    setTimeout(() => {
+      assert.equal(find(PILL_SELECTORS.recentQueryCount).textContent, '(1)', 'recent query tab count is incorrect');
+      done();
+    }, 5000);
+  });
+
+  test('Backspacing all the way to the end will reset the tab counts', async function(assert) {
+    const done = assert.async();
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .canQueryGuided()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await typeIn(PILL_SELECTORS.recentQuerySelectInput, 'alert contains foo');
+
+    await settled();
+
+
+    assert.equal(find(PILL_SELECTORS.metaCount).textContent, '(1)', 'Meta tab count is incorrect');
+    setTimeout(async() => {
+      assert.equal(find(PILL_SELECTORS.recentQueryCount).textContent, '(1)', 'recent query tab count is incorrect');
+      await fillIn(PILL_SELECTORS.recentQuerySelectInput, ' ');
+      setTimeout(() => {
+        assert.equal(find(PILL_SELECTORS.metaCount).textContent, '(0)', 'Meta tab count is incorrect');
+        assert.equal(find(PILL_SELECTORS.recentQueryCount).textContent, '(0)', 'recent query tab count is incorrect');
+        done();
+      }, 5000);
+    }, 5000);
+  });
 
 });

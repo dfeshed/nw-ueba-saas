@@ -320,11 +320,11 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   test('it does not selects meta if a trailing SPACE is entered and there is more than one option', async function(assert) {
-    assert.expect(0);
+    assert.expect(3);
     this.set('metaOptions', META_OPTIONS);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
-    this.set('handleMessage', () => {
-      assert.notOk('message dispatched');
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED); // Will be called as many times as chars are typed in
     });
     await render(hbs`
       {{query-container/pill-meta
@@ -596,12 +596,16 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   test('it broadcasts a message to toggle tabs via pill meta', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
     this.set('metaOptions', META_OPTIONS);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type, data) => {
-      assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'Correct message sent up');
-      assert.deepEqual(data, { data: 'foobar', dataSource: 'pill-meta' }, 'Correct data sent up');
+      if (type === MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED) {
+        assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'Correct message sent up');
+        assert.deepEqual(data, { data: 'foobar', dataSource: 'pill-meta' }, 'Correct data sent up');
+      } else {
+        assert.equal(type, MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED);
+      }
     });
     await render(hbs`
       {{query-container/pill-meta

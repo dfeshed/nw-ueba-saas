@@ -206,9 +206,12 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
   });
 
   test('it broadcasts a message when creating a free-form pill from meta', async function(assert) {
-    const done = assert.async(4);
+    const done = assert.async();
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data, position) => {
+      if (isIgnoredInitialEvent(type)) {
+        return;
+      }
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.propEqual(data, {
           type: 'complex',
@@ -235,6 +238,9 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     const done = assert.async();
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data, position) => {
+      if (isIgnoredInitialEvent(type)) {
+        return;
+      }
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.propEqual(data, {
           type: 'complex',
@@ -259,9 +265,12 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
   });
 
   test('it broadcasts a message when creating a text pill from meta', async function(assert) {
-    const done = assert.async(4);
+    const done = assert.async();
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data, position) => {
+      if (isIgnoredInitialEvent(type)) {
+        return;
+      }
       if (type === MESSAGE_TYPES.CREATE_TEXT_PILL) {
         assert.propEqual(data, {
           type: 'text',
@@ -299,7 +308,9 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
       .build();
 
     this.set('handleMessage', (messageType, stringifiedPillText) => {
-      if (isIgnoredInitialEvent(messageType)) {
+      if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW ||
+          messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW
+      ) {
         return;
       }
       assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);

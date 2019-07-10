@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
-import { determineNewComponentPropsFromPillData } from 'investigate-events/components/query-container/query-pill/query-pill-util';
+import { determineNewComponentPropsFromPillData, resultsCount, matcher } from 'investigate-events/components/query-container/query-pill/query-pill-util';
+import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
 
 module('Unit | Util | query-pill-util');
 
@@ -110,4 +111,29 @@ test('properties when meta and operator object with value are passed in', functi
   };
   const properties = determineNewComponentPropsFromPillData(pillData);
   assert.deepEqual(properties, expectedPropeties, 'Meta and operator are set, value is active with a string');
+});
+
+test('provides a correct count for text passed in', function(assert) {
+
+  const count = resultsCount(DEFAULT_LANGUAGES, 'al');
+  assert.equal(count, 4, 'Matcher function not returning a correct count');
+});
+
+test('provides a count 0 when no text is passed in', function(assert) {
+
+  const count = resultsCount(DEFAULT_LANGUAGES, ' ');
+  assert.equal(count, 0, 'Matcher function not returning a correct count');
+});
+
+test('matcher function should find an index if text is present', function(assert) {
+
+  const m1 = { displayName: 'foo', metaName: 'bar' };
+  const m2 = { displayName: 'bar', metaName: 'baz' };
+  const m3 = { displayName: 'bar', metaName: 'baz' };
+
+  assert.equal(matcher(m1, 'foo'), 0, 'Did not find item in "displayName"');
+  assert.equal(matcher(m1, 'baz'), -1, 'Found item but should not have');
+  assert.equal(matcher(m2, 'foo'), -1, 'Found item but should not have');
+  assert.equal(matcher(m2, 'baz'), 0, 'Did not find item in "metaName"');
+  assert.equal(matcher(m3, '   baz'), 0, 'Did not ignore leading spaces');
 });
