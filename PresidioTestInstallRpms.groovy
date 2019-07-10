@@ -35,6 +35,7 @@ def setBaseUrl(
         String stability = env.STABILITY
 ) {
     String baseUrl = "baseurl="
+    String osBaseUrl = 'baseurl=http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/latest/11.4.0.0/OS/'
     if (rpmBuildPath != '') {
         baseUrl = baseUrl + rpmBuildPath
         println(baseUrl)
@@ -43,7 +44,6 @@ def setBaseUrl(
         FirstDir=versionArray[0] + "." + versionArray[1]
         SecondDir= FirstDir + "." + versionArray[2]
         baseUrl = baseUrl + "http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/" + FirstDir + "/" + SecondDir +  "/" + rpmVeriosn  + "-" + stability + "/"
-        osBaseUrl = 'baseurl=http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/latest/11.4.0.0/OS/'
     }
     baseUrlValidation = baseUrl.drop(8)
     baseUrlresponsecode = sh(returnStdout: true, script: "curl -o /dev/null -s -w \"%{http_code}\\n\" ${baseUrlValidation}").trim()
