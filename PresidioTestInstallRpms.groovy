@@ -5,6 +5,7 @@ pipeline {
         // The credentials (name + password) associated with the RSA build user.
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         OWB_ALLOW_NON_FIPS = "on"
+        OLD_UEBA_RPMS = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
     }
 
     stages {
@@ -64,10 +65,10 @@ def uebaPreparingEnv (){
     runCleanup = env.RUN_CLEANUP
     schedulerActivity = sh(returnStdout: true, script: 'systemctl is-active airflow-scheduler || exit 0').trim()
     if (runCleanup == 'true'){
-        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION ${oldUebaRpmsVresion}"
+        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION $OLD_UEBA_RPMS"
     }
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION ${oldUebaRpmsVresion}"
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION ${oldUebaRpmsVresion}"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION $OLD_UEBA_RPMS"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION $OLD_UEBA_RPMS"
     if (runCleanup == 'false' && schedulerActivity == 'active' ){
        sleep 30
        sh "sudo systemctl start airflow-scheduler"
@@ -81,7 +82,6 @@ def uebaPreparingEnv (){
  * Project Build Pipeline *
  **************************/
 def buildIntegrationTestProject(
-        String oldUebaRpmsVresion = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
         String userName = env.RSA_BUILD_CREDENTIALS_USR,
         String userPassword = env.RSA_BUILD_CREDENTIALS_PSW
         ) {
