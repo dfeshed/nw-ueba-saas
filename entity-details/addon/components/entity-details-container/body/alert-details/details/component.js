@@ -1,9 +1,10 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { alertSources, userScoreContribution } from 'entity-details/reducers/alerts/selectors';
+import { alertSources, userScoreContribution, getSelectedAlertData } from 'entity-details/reducers/alerts/selectors';
 
 const stateToComputed = (state) => ({
   alertSources: alertSources(state),
+  alertDetails: getSelectedAlertData(state),
   userScoreContribution: userScoreContribution(state)
 });
 

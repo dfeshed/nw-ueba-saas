@@ -63,7 +63,8 @@
     flex-direction: row;
     padding: rsa-whitespace(less) 0;
     border-bottom: 2px solid background-color(primary);
-    height: 100px;
+    overflow: hidden;
+    height: 150px;
 
     &_params {
       width: 40%;

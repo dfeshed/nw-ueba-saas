@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll } from '@ember/test-helpers';
+import { render, findAll, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { patchReducer } from '../../../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -29,6 +29,6 @@ module('Integration | Component | entity-details-container/body/alert-details/de
     assert.equal(findAll('.entity-details-container-body-alert-details_details').length, 1);
     assert.equal(findAll('.entity-details-container-body-alert-details_details_params').length, 1);
     assert.equal(findAll('.entity-details-container-body-alert-details_details_desc').length, 1);
-
+    assert.equal(find('.entity-details-container-body-alert-details_details_desc').innerText.indexOf('Missing Translation'), -1);
   });
 });

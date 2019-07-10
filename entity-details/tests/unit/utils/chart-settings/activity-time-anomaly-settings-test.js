@@ -21,7 +21,7 @@ module('Unit | Utils | activity-time-anomaly-settings', (hooks) => {
     const changedData = _.map(indicatorEvents.data, settings.dataAdapter);
     assert.equal(changedData.length, 262);
     assert.deepEqual(changedData[0], {
-      category: '12 Nov 20:30',
+      category: '12 Nov 17:00',
       color: '#CC3300',
       originalCategory: '1542034800000',
       value: 2

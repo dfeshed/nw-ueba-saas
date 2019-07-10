@@ -21,5 +21,8 @@
     .ember-power-select-status-icon {
       display: none;
     }
+    .ember-power-select-placeholder {
+      color: text-color(primary);
+    }
   }
 }

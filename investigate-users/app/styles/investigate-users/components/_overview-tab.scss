@@ -24,7 +24,7 @@
         }
 
         &_rows {
-          height: calc(100% - 45px);
+          height: calc(100% - 120px);
           overflow-y: auto;
           padding: rsa-whitespace()+rsa-whitespace(less);
         }
@@ -33,6 +33,7 @@
           padding: rsa-whitespace(less) 0;
           height: 60px;
           text-align: center;
+          cursor: pointer;
           display: flex;
           flex-direction: row;
           justify-content: space-between;
@@ -90,7 +91,7 @@
 
         &_container {
           color: text-color(primary, lightest);
-          height: calc(100% - 45px);
+          height: calc(100% - 120px);
           overflow-y: auto;
           padding-top: rsa-whitespace();
 
@@ -115,6 +116,7 @@
             height: 75px;
             float: left;
             display: flex;
+            cursor: pointer;
             flex-direction: row;
             justify-content: space-between;
             border-bottom: 1px SOLID background-color(primary, dark);
