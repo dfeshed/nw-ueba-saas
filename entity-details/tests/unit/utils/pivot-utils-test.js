@@ -148,15 +148,16 @@ module('Unit | Utils | pivot-utils', (hooks) => {
     });
   });
 
-  test('it should be able to pivot investigate event with one  hour window', (assert) => {
+  test('it should be able to pivot investigate event with three  hour window and event filter applied', (assert) => {
     const item = { user_link: 'https://localhost:4200/investigation/007f93ca-bf34-4aeb-805a-d039934842ae/events/somedata', username: 'TestUser' };
     const column = { linkField: 'user_link', field: 'username', additionalFilter: 'obj.name' };
     navigateToInvestigate('User', 'Name1', 'file', 1562192044531, item, column, null);
     return waitUntil(() => currentUrl !== null).then(() => {
-      assert.ok(decodeURIComponent(currentUrl).indexOf('&st=1562192040900&et=1562192044559') > 0);
+      assert.ok(decodeURIComponent(currentUrl).indexOf('&st=1562192037300&et=1562192048131') > 0);
       const [ , startTime] = decodeURIComponent(currentUrl).match(/&st=(.*)&et/i);
       const [ , endTime] = decodeURIComponent(currentUrl).match(/&et=(.*)&mps/i);
-      assert.equal(moment.unix(parseInt(endTime, 10) / 1000).diff(moment.unix(parseInt(startTime, 10) / 1000)), 3659);
+      assert.equal(moment.unix(parseInt(endTime, 10) / 1000).diff(moment.unix(parseInt(startTime, 10) / 1000)), 10831);
+      assert.ok(decodeURIComponent(currentUrl).indexOf('event.time = 1562192047800 - 1562192044200') > 0);
       assert.ok(newTab);
     });
   });

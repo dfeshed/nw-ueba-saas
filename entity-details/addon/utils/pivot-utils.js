@@ -28,8 +28,9 @@ const entityFilter = (entityType, entityValue) => {
  */
 const buildTimeRange = (eventTime) => {
   return {
-    endTime: moment(eventTime * 1000).endOf('minute').format('X'),
-    startTime: moment(eventTime * 1000).subtract(1, 'hours').startOf('minute').format('X')
+    endTime: moment(eventTime * 1000).add(1, 'hours').format('X'),
+    startTime: moment(eventTime * 1000).subtract(2, 'hours').startOf('minute').format('X'),
+    eventTimeWindow: ` && (event.time = ${moment(eventTime * 1000).add(1, 'hour').startOf('hour').format('X')} - ${moment(eventTime * 1000).startOf('hour').format('X')})`
   };
 };
 /**
@@ -47,10 +48,10 @@ const serializeQueryParams = (qp = {}) => {
  * @private
  */
 const navigateToInvestigateEventsAnalysis = (entityType, entityValue, indicatorSchema, eventTime, serviceId, additionalFilter) => {
-  const { startTime, endTime } = buildTimeRange(eventTime);
+  const { startTime, endTime, eventTimeWindow } = buildTimeRange(eventTime);
   const queryParams = {
     sid: serviceId, // Service Id
-    mf: encodeURIComponent(`${SCHEMA_FILTER[indicatorSchema]} && (${entityFilter(entityType, entityValue)})${additionalFilter}`), // Meta filter
+    mf: encodeURIComponent(`${SCHEMA_FILTER[indicatorSchema]} && (${entityFilter(entityType, entityValue)})${additionalFilter}${eventTimeWindow}`), // Meta filter
     st: startTime, // Stat time
     et: endTime, // End time
     mps: 'default', // Meta panel size
