@@ -95,7 +95,7 @@ module('Unit | Selectors | Policy Details | windows-log-policy | windows-log-sel
     assert.equal(policyDetails.length, 2, '2 sections returned as expected');
     assert.equal(policyDetails[0].header, 'adminUsm.policies.detail.windowsLogSettings', 'first section is as expected');
     assert.equal(policyDetails[0].props.length, 3, 'first section has 3 properties');
-    assert.equal(policyDetails[0].props[2].value, 'TLS', 'protocol correct');
+    assert.equal(policyDetails[0].props[2].value, 'Enabled', 'Enabled correct');
     assert.equal(policyDetails[1].header, 'adminUsm.policies.detail.channelFilterSettings', 'second section  is as expected');
     assert.equal(policyDetails[1].channels.length, 1, 'second section has 1 channel');
     assert.equal(policyDetails[1].channels[0].value, '620,630,640', 'eventId value shows');

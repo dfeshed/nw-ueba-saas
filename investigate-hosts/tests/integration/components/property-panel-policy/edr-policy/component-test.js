@@ -65,6 +65,21 @@ module('Integration | Component | property-panel-policy/edr-policy', function(ho
         serverConfig: {
           requestScanOnRegistration: false
         }
+      },
+      windowsLogPolicy: {
+        name: 'Default Windows Log Policy',
+        enabled: true,
+        sendTestLog: false,
+        primaryDestination: '',
+        secondaryDestination: '',
+        protocol: 'TLS',
+        channelFilters: [
+          {
+            channel: 'Security',
+            eventId: '620,630,640',
+            filterType: 'EXCLUDE'
+          }
+        ]
       }
     },
     policyStatus: 'Updated',

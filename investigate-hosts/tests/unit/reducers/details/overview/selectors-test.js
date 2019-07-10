@@ -331,6 +331,14 @@ module('Unit | Selectors | overview', function(hooks) {
           serverConfig: {
             requestScanOnRegistration: false
           }
+        },
+        windowsLogPolicy: {
+          enabled: true,
+          primaryDestination: 'foo',
+          secondaryDestination: 'Moo',
+          protocol: '123',
+          sendTestLog: true,
+          channelFilters: [{ asd: 'asd' }]
         }
       },
       policyStatus: 'Testing',
@@ -366,6 +374,18 @@ module('Unit | Selectors | overview', function(hooks) {
       'scanStartDate': '2019-03-22',
       'scanStartTime': '09:00',
       'scanType': 'Scheduled'
+    });
+    assert.deepEqual(resultPolicyAdminUsm.windowsLogPolicy, {
+      'channelFilters': [
+        {
+          'asd': 'asd'
+        }
+      ],
+      'enabled': 'Enabled',
+      'primaryDestination': 'foo',
+      'protocol': '123',
+      'secondaryDestination': 'Moo',
+      'sendTestLog': 'Enabled'
     });
   });
 

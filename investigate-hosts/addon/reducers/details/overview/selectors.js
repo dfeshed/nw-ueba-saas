@@ -365,7 +365,14 @@ export const policyAdminUsm = createSelector(
           rarPolicyPort: data.edrPolicy.transportConfig.primary.rar.config.httpsPort,
           rarPolicyBeaconInterval: data.edrPolicy.transportConfig.primary.rar.config.httpsBeaconInterval
         },
-        windowsLogPolicy: data.windowsLogPolicy
+        windowsLogPolicy: { // windowsLogPolicy props must mantain same order as in USM model
+          enabled: data.windowsLogPolicy.enabled,
+          primaryDestination: data.windowsLogPolicy.primaryDestination,
+          secondaryDestination: data.windowsLogPolicy.secondaryDestination,
+          protocol: data.windowsLogPolicy.protocol,
+          sendTestLog: data.windowsLogPolicy.sendTestLog,
+          channelFilters: data.windowsLogPolicy.channelFilters
+        }
       };
     }
   }

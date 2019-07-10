@@ -113,10 +113,10 @@ module('Integration | Component | property-panel-policy/windows-log-policy', fun
     assert.equal(document.querySelectorAll('.win-value .tooltip-text')[0].textContent.trim(), 'Enabled', 'Enabled value is showing');
     assert.equal(document.querySelectorAll('.content-section__section-name')[1].textContent.trim(), 'Channel Filter Settings', 'Channel Filter Settings section shows');
 
-    assert.equal(document.querySelectorAll('.property-name')[1].textContent.trim(), 'Send Test Log', 'Send Test Log lable shows');
+    assert.equal(document.querySelectorAll('.property-name')[1].textContent.trim(), 'Protocol', 'Protocol lable shows');
 
-    assert.equal(document.querySelectorAll('.win-value .tooltip-text')[1].textContent.trim(), 'Enabled', 'Enabled value shows');
-    assert.equal(document.querySelectorAll('.win-value .tooltip-text')[2].textContent.trim(), 'TLS', 'TLS value  shows');
+    assert.equal(document.querySelectorAll('.win-value .tooltip-text')[1].textContent.trim(), 'TLS', 'TLS value shows');
+    assert.equal(document.querySelectorAll('.win-value .tooltip-text')[2].textContent.trim(), 'Enabled', 'Enabled value  shows');
 
 
   });
