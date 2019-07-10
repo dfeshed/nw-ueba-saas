@@ -13,6 +13,7 @@ pipeline {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         REPOSITORY_NAME = "presidio-integration-test"
+        OLD_UEBA_RPMS = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
     }
 
     stages {
@@ -85,22 +86,21 @@ def setBaseUrl(
 }
 
 def cleanUebaDBs() {
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION ${oldUebaRpmsVresion}"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION $env.OLD_UEBA_RPMS"
     if (params.INSTALL_UEBA_RPMS == false) {
-        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION ${oldUebaRpmsVresion}"
+        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION $env.OLD_UEBA_RPMS"
     }
 }
 
 def uebaInstallRPMs() {
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION ${oldUebaRpmsVresion}"
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION ${oldUebaRpmsVresion}"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION $env.OLD_UEBA_RPMS"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION $env.OLD_UEBA_RPMS"
 }
 
 /**************************
  * Project Build Pipeline *
  **************************/
 def buildIntegrationTestProject(
-        String oldUebaRpmsVresion = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
         String repositoryName = "presidio-integration-test",
         String userName = env.RSA_BUILD_CREDENTIALS_USR,
         String userPassword = env.RSA_BUILD_CREDENTIALS_PSW,
