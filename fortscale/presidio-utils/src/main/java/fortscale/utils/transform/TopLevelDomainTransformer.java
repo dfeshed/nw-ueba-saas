@@ -23,6 +23,7 @@ import static org.apache.commons.lang3.Validate.notBlank;
 public class TopLevelDomainTransformer extends AbstractJsonObjectTransformer{
     private static final Logger logger = Logger.getLogger(TopLevelDomainTransformer.class);
 
+    
     public static final String TYPE = "top_level_domain";
     private static final boolean IS_REMOVE_SOURCE_KEY_DEFAULT = false;
 
