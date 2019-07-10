@@ -214,7 +214,8 @@ export default Component.extend(RowMixin, HighlightsEntities, {
     if (!this.element) {
       return;
     }
-    const cells = document.querySelectorAll('.rsa-data-table-body-cell');
+    const { element } = this;
+    const cells = element.querySelectorAll('.rsa-data-table-body-cell');
     const opts = this.get('_opts');
     (this.get('table.visibleColumns') || []).forEach((column, index) => {
       const $cell = select(cells.item(index));
