@@ -4,16 +4,11 @@ import { run } from '@ember/runloop';
 import { computed } from '@ember/object';
 import { A, makeArray } from '@ember/array';
 import { warn } from '@ember/debug';
-import {
-  keys as emberKeys,
-  merge,
-  assign as emberAssign
-} from '@ember/polyfills';
+import { keys as emberKeys, assign } from '@ember/polyfills';
 import Ember from 'ember';
 import BaseAuthenticator from './base';
 import fetch from 'fetch';
 
-const assign = emberAssign || merge;
 const keys = Object.keys || emberKeys; // Ember.keys deprecated in 1.13
 
 /**
@@ -348,7 +343,7 @@ export default BaseAuthenticator.extend({
 
     const clientIdHeader = this.get('_clientIdHeader');
     if (!isEmpty(clientIdHeader)) {
-      merge(options.headers, clientIdHeader);
+      assign(options.headers, clientIdHeader);
     }
 
     return new RSVP.Promise((resolve, reject) => {
