@@ -12,9 +12,10 @@
 // service. If the translation service is ever introduced to ngcoreui, rsa-content-memsize
 // can be subbed back in for this component.
 
-import $ from 'jquery';
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
+
+import { isNumeric } from 'component-lib/utils/jquery-replacement';
 
 const byteSizing = {
   label: 'B',
@@ -49,7 +50,7 @@ export default Component.extend({
 
   @computed('size')
   parsedSize: (size) => {
-    if ($.isNumeric(size)) {
+    if (isNumeric(size)) {
       return sizing.find(({ bytes }) => size >= bytes);
     }
     return byteSizing;
@@ -65,6 +66,6 @@ export default Component.extend({
    */
   @computed('size')
   title(size) {
-    return $.isNumeric(size) ? `${size} B` : '';
+    return isNumeric(size) ? `${size} B` : '';
   }
 });

@@ -10,9 +10,10 @@
 // This is based on `ngcoreui-memsize`, see that component for note
 // regarding translations
 
-import $ from 'jquery';
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
+
+import { isNumeric } from 'component-lib/utils/jquery-replacement';
 
 const zero = {
   label: '',
@@ -47,7 +48,7 @@ export default Component.extend({
 
   @computed('size')
   parsedSize: (size) => {
-    if ($.isNumeric(size)) {
+    if (isNumeric(size)) {
       return sizing.find(({ values }) => Math.abs(size) >= values);
     }
     return zero;
