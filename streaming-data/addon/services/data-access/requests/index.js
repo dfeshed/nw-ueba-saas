@@ -4,9 +4,9 @@ import RSVP from 'rsvp';
 import { run } from '@ember/runloop';
 import { StreamCache } from '../streams';
 import Socket from '../sockets';
-import $ from 'jquery';
 import config from 'ember-get-config';
 import { buildBaseUrl } from '../utils/util';
+import fetch from 'fetch';
 
 /*
   * Base set of asserts for calls into promiseRequest and streamRequest
@@ -355,16 +355,20 @@ const ping = (modelName, streamOptions = {}) => {
 
   const url = _findPingUrl(modelName, (streamOptions ? streamOptions.socketUrlPostfix : ''), (streamOptions ? streamOptions.requiredSocketUrl : ''));
   return new RSVP.Promise((resolve, reject) => {
-    $.ajax({ url, cache: false })
-      .done((response) => {
-        // If socket url mapping not configured in nignx, then nginx is serving the html file. So need to reject
-        if (Object.prototype.toString.call(response) === '[object String]' && response.indexOf('!DOCTYPE html') > 0) {
-          reject();
+    fetch(url)
+      .then((response) => {
+        if (response.ok) {
+          // If socket url mapping not configured in nignx, then nginx is serving the html file. So need to reject
+          if (Object.prototype.toString.call(response) === '[object String]' && response.indexOf('!DOCTYPE html') > 0) {
+            reject();
+          } else {
+            resolve();
+          }
         } else {
-          resolve();
+          reject();
         }
       })
-      .fail(() => {
+      .catch(() => {
         reject();
       });
   });
