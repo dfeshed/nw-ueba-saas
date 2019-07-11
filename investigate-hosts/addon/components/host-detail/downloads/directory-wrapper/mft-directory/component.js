@@ -15,6 +15,11 @@ const MFTDirectory = Component.extend({
   classNames: ['mft-directory'],
   classNameBindings: ['selectedDirectory'],
 
+  @computed('data')
+  isMainDrive({ parentDirectory }) {
+    return parentDirectory === 0;
+  },
+
   @computed('selectedDirectoryForDetails', 'data')
   selectedDirectory(selectedDirectoryForDetails, { recordNumber }) {
     return recordNumber === selectedDirectoryForDetails;

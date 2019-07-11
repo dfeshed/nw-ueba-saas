@@ -16,7 +16,8 @@ const initialState = {
   selectedFile: {},
   pageNumber: -1,
   isShowMFTView: false,
-  selectedMftFile: null
+  selectedMftFile: null,
+  selectedMftName: null
 };
 
 module('Unit | Reducers | downloads', function() {
@@ -164,14 +165,17 @@ module('Unit | Reducers | downloads', function() {
       isSortDescending: true,
       selectedFileList: [],
       selectedFile: {},
-      pageNumber: -1
+      pageNumber: -1,
+      selectedMftFile: null,
+      selectedMftName: null
     });
 
 
-    let startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.TOGGLE_MFT_VIEW, payload: 'test-file' });
+    let startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.TOGGLE_MFT_VIEW, payload: { mftFile: 'test-file', mftName: 'test-name' } });
     let startEndState = reducer(previous, startAction);
     assert.equal(startEndState.isShowMFTView, true);
     assert.equal(startEndState.selectedMftFile, 'test-file');
+    assert.equal(startEndState.selectedMftName, 'test-name');
     previous = Immutable.from({
       files: {},
       loadMoreStatus: 'completed',
@@ -184,9 +188,10 @@ module('Unit | Reducers | downloads', function() {
       pageNumber: -1,
       isShowMFTView: true
     });
-    startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.TOGGLE_MFT_VIEW, payload: '' });
+    startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.TOGGLE_MFT_VIEW, payload: { mftFile: '', mftName: '' } });
     startEndState = reducer(previous, startAction);
     assert.equal(startEndState.isShowMFTView, false);
     assert.equal(startEndState.selectedMftFile, '');
+    assert.equal(startEndState.selectedMftName, '');
   });
 });

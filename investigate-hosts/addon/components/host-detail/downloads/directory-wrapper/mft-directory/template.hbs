@@ -2,11 +2,18 @@
 
   {{#host-detail/downloads/directory-wrapper/subdirectory-access data=data}}
 
-    <div class='mft-folder parent'>
-      <span class='mft-folder-icon' {{action 'fetchSubdirectoriesAndFiles' data}}>
-        {{rsa-icon style='filled' name='folder-1'}}
-      </span>
-      <span class='file'>{{value}}</span>
+    <div class='mft-folder parent' {{action 'fetchSubdirectoriesAndFiles' data}}>
+      {{#if isMainDrive}}
+        <span class='mft-folder-icon'>
+          {{rsa-icon style='lined' name='folder-1'}}
+        </span>
+        <span class='file main-drive'>{{value}}</span>
+      {{else}}
+        <span class='mft-folder-icon'>
+          {{rsa-icon style='filled' name='folder-2'}}
+        </span>
+        <span class='file'>{{value}}</span>
+      {{/if}}
     </div>
 
     {{#each data.children as |item|}}
@@ -17,9 +24,9 @@
 
 {{else}}
 
-  <div class='mft-folder no-sub-folders'>
-    <span class='mft-folder-icon' {{action 'fetchSubdirectoriesAndFiles' data}}>
-      {{rsa-icon style='filled' name='folder-1'}}
+  <div class='mft-folder no-sub-folders' {{action 'fetchSubdirectoriesAndFiles' data}}>
+    <span class='mft-folder-icon'>
+      {{rsa-icon style='filled' name='folder-2'}}
     </span>
     <span class='file'>{{value}}</span>
   </div>

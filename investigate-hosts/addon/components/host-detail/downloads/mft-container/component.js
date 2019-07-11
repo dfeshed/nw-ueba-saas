@@ -4,7 +4,8 @@ import { connect } from 'ember-redux';
 
 
 const stateToComputed = (state) => ({
-  selectedMftFile: state.endpoint.hostDownloads.downloads.selectedMftFile
+  selectedMftName: state.endpoint.hostDownloads.downloads.selectedMftName,
+  isShowMFTView: state.endpoint.hostDownloads.downloads.isShowMFTView
 });
 const mftContainer = Component.extend({
   tagName: 'box',

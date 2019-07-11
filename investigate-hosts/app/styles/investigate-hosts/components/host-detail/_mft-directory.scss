@@ -1,15 +1,32 @@
 .directory-wrapper {
   overflow: auto;
-  height: 61vh;
-
+  height: 100vh;
+  padding: rsa-whitespace();
+  .mft-directory-wrapper_loader {
+    margin: 0 rsa-whitespace() rsa-whitespace(less) rsa-whitespace();
+    display: inline-block;
+  }
   .mft-directory {
     .mft-folder {
+      cursor: pointer;
       padding: rsa-whitespace(less);
+      @include rsa-font(default, small);
+      &:hover {
+        background-color: background-color(primary, darker);
+      }
       .mft-folder-icon {
-        margin-right: rsa-whitespace(less);
+        margin-right: 0.5rem;
+        float: left;
       }
       &.no-sub-folders {
         margin-left: 1rem;
+      }
+      .main-drive {
+        @include rsa-font(navigation);
+      }
+      .file {
+        display: inline-block;
+        max-width: 92%;
       }
     }
     .mft-directory_arrow {
@@ -20,7 +37,9 @@
   .subdirectory-access {
     display: inline-block;
     float: left;
-    margin-top: 7px;
+    margin-top: 8px;
+    cursor: pointer;
+    font-size: 10px;
   }
 
   .subdirectory {
@@ -38,7 +57,7 @@
     .mft-directory_loader {
       display: inline-block;
       .rsa-loader {
-        max-width: 10px;
+        max-width: 6px;
       }
     }
   }
@@ -48,6 +67,18 @@
     }
   }
   .deleted-files, .all-files {
-    margin: rsa-whitespace() 0;
+    padding: rsa-whitespace() rsa-whitespace(less);
+    @include rsa-font(navigation);
+    border-top: 1px solid text-color(primary, dark);
+    cursor: pointer;
+    &:hover {
+      background-color: background-color(primary, darker);
+    }
+  }
+  .deleted-files {
+    margin-top: rsa-whitespace(less);
+  }
+  .all-files {
+    border-bottom: 1px solid text-color(primary, dark);
   }
 }

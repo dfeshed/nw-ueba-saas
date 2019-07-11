@@ -147,7 +147,8 @@ module('Integration | Component | mft-container/mft-action-bar', function(hooks)
       name: 'hosts.details',
       queryParams: {
         machineId: 'agent-id',
-        mftFile: '',
+        mftFile: null,
+        mftName: null,
         pid: null,
         query: null,
         sid: 'e82241fc-0681-4276-a930-dd6e5d00f152',

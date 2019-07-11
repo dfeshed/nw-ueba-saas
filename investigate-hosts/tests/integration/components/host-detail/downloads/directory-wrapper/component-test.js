@@ -34,6 +34,7 @@ module('Integration | Component | directory-wrapper', function(hooks) {
 
     await render(hbs`{{host-detail/downloads/directory-wrapper}}`);
     assert.equal(findAll('.directory-wrapper').length, 1, 'directory-wrapper has loaded');
+    assert.equal(findAll('.rsa-loader').length, 1, 'Loader present as there is no date');
   });
 
   test('directory-wrapper directory structure has rendered', async function(assert) {

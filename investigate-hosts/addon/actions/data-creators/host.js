@@ -43,7 +43,7 @@ const bootstrapInvestigateHosts = (query) => {
   };
 };
 
-const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTabName, pid, mftFile }, isPageLoading) => {
+const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTabName, pid, mftFile, mftName }, isPageLoading) => {
   return async(dispatch, getState) => {
     if (isPageLoading) {
       const id = sid || getState().endpointQuery.serverId;
@@ -69,13 +69,13 @@ const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTa
         dispatch(toggleProcessDetailsView({ pid: parseInt(pid, 10) }, true));
       }
       if (tabName === 'DOWNLOADS-MFT') {
-        dispatch(toggleMftView(mftFile));
+        dispatch(toggleMftView({ mftFile, mftName }));
         const isDirectories = true;
         const pageSize = 65000;
         dispatch(getSubDirectories(mftFile, 0, pageSize, isDirectories));
 
       } else if (tabName === 'DOWNLOADS') {
-        dispatch(toggleMftView(mftFile));
+        dispatch(toggleMftView({ mftFile: '', mftName: '' }));
         getFirstPageOfDownloads();
       } else {
         dispatch(toggleMftView(''));

@@ -169,6 +169,7 @@ module('Integration | Component | host-detail/downloads/downloads-list/body-cell
       queryParams: {
         machineId: 'agent-id',
         mftFile: '5cda8882c8811e511649e335',
+        mftName: 'testFile',
         pid: null,
         query: null,
         sid: 'abcd',

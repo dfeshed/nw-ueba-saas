@@ -84,7 +84,8 @@ export const hostDownloads = {
     pageNumber: 0,
     areFilesLoading: 'completed',
     selectedDetailFile: null,
-    hasNext: false
+    hasNext: false,
+    isShowMFTView: true
   },
   filter: {
     selectedFilter: null,
