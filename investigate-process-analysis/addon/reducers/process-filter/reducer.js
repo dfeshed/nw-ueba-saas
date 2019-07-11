@@ -46,9 +46,7 @@ const processFilter = reduxActions.handleActions({
   [ACTION_TYPES.UPDATE_ACTION_FILTER_ITEMS]: (state, { payload: { isSelected, optionSelected, isWindowsAgent } }) => {
     const { category } = state.filter;
     let categoryListUpdated = [...category];
-    const subCategory = (optionSelected === 'Console Event' ? 'context' : 'action');
     const actionObj = {
-      name: subCategory,
       options: []
     };
     if (isSelected) {
@@ -68,7 +66,7 @@ const processFilter = reduxActions.handleActions({
         actionObj.options.push(...actionConfig[categoryListUpdated[0]]);
       }
     }
-
+    actionObj.name = (categoryListUpdated[0] === 'Console Event') ? 'context' : 'action';
     return state.set('schema', [...filterConfig, actionObj]);
   }
 

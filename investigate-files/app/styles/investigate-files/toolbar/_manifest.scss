@@ -7,8 +7,8 @@
 }
 .rsa-files-toolbar {
   .files-toolbar {
+    padding: 0 rsa-whitespace(less);
     min-height: 70px;
-    padding: 1rem;
     .rsa-form-button-wrapper .rsa-form-button i {
       margin-right: 0px;
     }
@@ -32,7 +32,7 @@
     align-items: center;
   }
   color: text-color(primary, lightest);
-  padding: 0 rsa-whitespace(less);
+
 
    .file-actionbar {
      padding: 0;

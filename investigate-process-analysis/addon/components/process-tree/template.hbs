@@ -39,10 +39,13 @@
       <hbox class='process-hover-key col-xs-6'>{{t (concat 'investigateHosts.process.processData.' key)}}</hbox>
       {{#if (eq key 'paramDst')}}
         <hbox class='process-hover-value col-xs-6 {{key}}'>{{value}}</hbox>
-        <hbox class='copy-icon'>
-          {{rsa-icon name="copy-1" click=(action 'copyLaunchArgument' value)}}
-          <span> {{t 'investigateHosts.process.processData.copyLaunchArguments'}} </span>
-        </hbox>
+        {{#if processData.paramDst}}
+          <hbox class='copy-icon'>
+            {{rsa-icon name="copy-1" click=(action 'copyLaunchArgument' value)}}
+            <span> {{t 'investigateHosts.process.processData.copyLaunchArguments'}} </span>
+          </hbox>
+        {{/if}}
+
       {{else}}
         <hbox class='process-hover-value col-xs-6 {{key}}'>{{value}}</hbox>
       {{/if}}

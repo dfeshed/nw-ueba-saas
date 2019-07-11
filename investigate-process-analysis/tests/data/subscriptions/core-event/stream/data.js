@@ -43,6 +43,10 @@ export default function() {
         [
           'agent.id',
           'BE8115E4-358B-497B-FBAD-90BEE28A89FC'
+        ],
+        [
+          'paramDst',
+          'scp file.exe .'
         ]
       ]
     },
