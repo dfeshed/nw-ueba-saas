@@ -57,7 +57,11 @@ const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTa
     if (isPageLoading) {
       dispatch(initializeAgentDetails({ agentId: machineId }, true, true, tabName));
     } else {
-      dispatch(setNewTabView(tabName));
+      if (tabName === 'DOWNLOADS-MFT') {
+        dispatch(setNewTabView('DOWNLOADS'));
+      } else {
+        dispatch(setNewTabView(tabName));
+      }
     }
     // To redirect to the Process details panel in the process tab
     next(() => {
