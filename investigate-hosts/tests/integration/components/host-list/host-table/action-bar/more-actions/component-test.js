@@ -145,6 +145,20 @@ module('Integration | Component | host table action bar more actions', function(
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 2, '2 list options should render as download MFT option should not render if more thatn one host is selected.');
   });
+
+  test('More menu is not visible on clicking the disable button', async function(assert) {
+    this.set('showRiskScoreModal', () => {
+      assert.ok(true);
+    });
+    this.set('deleteAction', () => {
+      assert.ok(true);
+    });
+    this.set('noHostsSelected', true);
+    await render(hbs`{{host-list/host-table/action-bar/more-actions showRiskScoreModal=showRiskScoreModal deleteAction=deleteAction noHostsSelected=noHostsSelected}}`);
+    assert.equal(document.querySelector('.host_more_actions button').textContent.trim(), 'More', 'action bar More button label');
+    await click('.host_more_actions button');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 0, 'no list options should render.');
+  });
 });
 
 
