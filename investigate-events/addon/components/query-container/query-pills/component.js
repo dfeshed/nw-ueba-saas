@@ -205,7 +205,8 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT]: (position) => this._pillsSelectAllToLeft(position),
       [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: (data, position) => this._createFreeFormPill(data, position),
       [MESSAGE_TYPES.CREATE_TEXT_PILL]: (data, position) => this._createTextPill(data, position),
-      [MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT]: (data) => this._fetchRecentQueries(data)
+      [MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT]: (data) => this._fetchRecentQueries(data),
+      [MESSAGE_TYPES.RECENT_QUERY_PILL_CREATED]: (data, position) => this._recentQueryPillCreated(data, position)
     });
   },
 
@@ -574,6 +575,13 @@ const QueryPills = RsaContextMenu.extend({
       position,
       shouldAddFocusToNewPill
     });
+  },
+
+  _recentQueryPillCreated(data, position) {
+
+    const pills = transformTextToPillData(data, this.get('metaOptions'), false, true);
+    this.send('batchAddPills', { pillsData: pills, initialPosition: position });
+    this._pillsExited();
   }
 });
 

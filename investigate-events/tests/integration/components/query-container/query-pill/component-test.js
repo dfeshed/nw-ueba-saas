@@ -2707,4 +2707,71 @@ module('Integration | Component | Query Pill', function(hooks) {
 
     assert.equal(find(PILL_SELECTORS.meta).textContent.trim(), '', 'incorrect data in pill-meta');
   });
+
+  test('selecting a recent query broadcasts a message', async function(assert) {
+    const done = assert.async();
+    this.set('handleMessage', (messageType, data) => {
+      if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
+        return;
+      }
+      assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERY_PILL_CREATED, 'Incorrect message being sent up');
+      assert.equal(data, 'medium = 32', 'Incorrect data for recent query being sent up');
+      done();
+    });
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .build();
+    this.set('metaOptions', META_OPTIONS);
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await selectChoose(PILL_SELECTORS.recentQuery, 'medium = 32');
+  });
+
+  test('selecting a recent query through keyboard broadcasts a message', async function(assert) {
+    const done = assert.async();
+    this.set('handleMessage', (messageType, data) => {
+      if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
+        return;
+      }
+      assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERY_PILL_CREATED, 'Incorrect message being sent up');
+      assert.equal(data, 'medium = 32 || medium = 1', 'Incorrect data for recent query being sent up');
+      done();
+    });
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .build();
+    this.set('metaOptions', META_OPTIONS);
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', ARROW_DOWN_KEY);
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', ENTER_KEY);
+  });
 });

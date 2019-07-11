@@ -39,12 +39,13 @@ const resetGuidedPillSpy = sinon.spy(guidedCreators, 'resetGuidedPill');
 const selectAllPillsTowardsDirectionSpy = sinon.spy(guidedCreators, 'selectAllPillsTowardsDirection');
 const deleteSelectedGuidedPillsSpy = sinon.spy(guidedCreators, 'deleteSelectedGuidedPills');
 const recentQueriesSpy = sinon.spy(initializationCreators, 'getRecentQueries');
+const batchAddQueriesSpy = sinon.spy(guidedCreators, 'batchAddPills');
 // const addFreeFormFilterSpy = sinon.spy(guidedCreators, 'addFreeFormFilterSpy');
 const spys = [
   newActionSpy, deleteActionSpy, editGuidedPillSpy, selectActionSpy,
   deselectActionSpy, openGuidedPillForEditSpy, resetGuidedPillSpy,
   selectAllPillsTowardsDirectionSpy, deleteSelectedGuidedPillsSpy,
-  recentQueriesSpy
+  recentQueriesSpy, batchAddQueriesSpy
 ];
 
 const allPillsAreClosed = (assert) => {
@@ -2603,6 +2604,47 @@ module('Integration | Component | Query Pills', function(hooks) {
         done();
       }, 5000);
     }, 5000);
+  });
+
+  test('Selecting a pill from recent query dropdown broadcasts a message with correct args', async function(assert) {
+    const done = assert.async();
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .canQueryGuided()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await selectChoose(PILL_SELECTORS.recentQuery, 'medium = 32');
+
+    assert.ok(batchAddQueriesSpy.calledOnce, 'Batch pills creator was not called once');
+    assert.propEqual(batchAddQueriesSpy.args[0][0],
+      {
+        'initialPosition': 0,
+        pillsData: [
+          {
+            meta: 'medium',
+            operator: '=',
+            type: 'query',
+            value: '32'
+          }
+        ]
+      },
+      'The creator was called with the wrong arguments');
+    done();
+
   });
 
 });

@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
-import { clickTrigger, typeInSearch } from 'ember-power-select/test-support/helpers';
+import { clickTrigger, typeInSearch, selectChoose } from 'ember-power-select/test-support/helpers';
 import { click, fillIn, find, findAll, render, triggerKeyEvent, typeIn } from '@ember/test-helpers';
 
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
@@ -369,6 +369,73 @@ module('Integration | Component | Recent Query', function(hooks) {
     await clickTrigger(PILL_SELECTORS.recentQuery);
     const option = find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent;
     assert.ok(option.includes(AFTER_OPTION_FREE_FORM_LABEL), 'Free-Form Filter was not highlighted');
+  });
+
+  test('selecting a query from the dropdown broadcasts a message', async function(assert) {
+
+    const done = assert.async();
+    new ReduxDataHelper(setState)
+      .language()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .build();
+    this.set('handleMessage', (type, data) => {
+      assert.equal(type, MESSAGE_TYPES.RECENT_QUERY_SELECTED);
+      assert.equal(data, 'medium = 32', 'recent query broadcasted has incorrect data');
+      done();
+    });
+    await render(hbs`
+      {{query-container/recent-query
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await selectChoose(PILL_SELECTORS.recentQuery, 'medium = 32');
+  });
+
+  test('selecting a query using the arrow keys and hitting enter should broadcast a message', async function(assert) {
+
+    const done = assert.async();
+    new ReduxDataHelper(setState)
+      .language()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .build();
+    this.set('handleMessage', (type, data) => {
+      assert.equal(type, MESSAGE_TYPES.RECENT_QUERY_SELECTED);
+      assert.equal(data, 'medium = 32 || medium = 1', 'recent query broadcasted has incorrect data');
+      done();
+    });
+    await render(hbs`
+      {{query-container/recent-query
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', ARROW_DOWN);
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', ENTER_KEY);
+  });
+
+  test('no selection will not broadcast a message', async function(assert) {
+    assert.expect(0);
+    new ReduxDataHelper(setState)
+      .language()
+      .recentQueriesFilteredList()
+      .recentQueriesUnfilteredList()
+      .build();
+    this.set('handleMessage', () => {
+      assert.ok(false, 'This should not be triggered');
+    });
+    await render(hbs`
+      {{query-container/recent-query
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', ARROW_DOWN);
   });
 
 });

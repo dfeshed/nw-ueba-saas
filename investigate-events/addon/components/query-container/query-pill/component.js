@@ -296,7 +296,8 @@ export default Component.extend({
       [MESSAGE_TYPES.CREATE_TEXT_PILL]: ([data, dataSource]) => this._createTextPill(data, dataSource),
       [MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED]: ({ data, dataSource }) => this._toggleActiveTab(data, dataSource),
       [MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED]: ({ data, dataSource }) => this._recentQueryTextEntered(data, dataSource),
-      [MESSAGE_TYPES.RECENT_QUERIES_ESCAPE_KEY]: () => this._cancelPill()
+      [MESSAGE_TYPES.RECENT_QUERIES_ESCAPE_KEY]: () => this._cancelPill(),
+      [MESSAGE_TYPES.RECENT_QUERY_SELECTED]: (data) => this._recentQuerySelected(data)
     });
 
     if (this.get('isExistingPill')) {
@@ -437,6 +438,7 @@ export default Component.extend({
       isOperatorFocusedAtBeginning: false,
       isValueActive: false
     });
+    this._resetTabCounts();
   },
 
   /**
@@ -1082,13 +1084,28 @@ export default Component.extend({
 
   // ************************ EPS TAB FUNCTIONALITY *************************  //
 
+  /**
+   * Set all meta-tab triggers to false
+   */
+  _deactivateMetaTab() {
+    this.setProperties({
+      isMetaActive: false,
+      isOperatorActive: false,
+      isValueActive: false
+    });
+  },
+
+  /**
+   * Resets all the tab counts in the service.
+   */
   _resetTabCounts() {
     this.queryCounter.resetAllTabCounts();
   },
 
   /**
-   * Regardless of where entered query text is coming from, need to form
-   * full pill text from all the components
+   * Regardless of where entered query text is coming from, we'll need a query count.
+   * If source is pill-meta or recent-query, we'd also need a meta count. Pill-operator
+   * and pill-value will always maintain a meta count 1.
    */
   _recentQueryTextEntered(data, dataSource) {
     const stringifiedPill = this._getStringifiedPill(data, dataSource);
@@ -1120,15 +1137,10 @@ export default Component.extend({
     return metaCount;
   },
 
-  /**
-   * Set all meta-tab triggers to false
-   */
-  _deactivateMetaTab() {
-    this.setProperties({
-      isMetaActive: false,
-      isOperatorActive: false,
-      isValueActive: false
-    });
+  _recentQuerySelected(data) {
+    this._broadcast(MESSAGE_TYPES.RECENT_QUERY_PILL_CREATED, data);
+    this._reset();
+
   },
 
   _toggleActiveTab(data, dataSource) {

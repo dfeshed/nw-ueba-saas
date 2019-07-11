@@ -264,9 +264,11 @@ const RecentQueryComponent = Component.extend({
       }
     },
 
-    // This is mandatory for EPS. So keeping an empty one for now.
-    // Will flesh it out once we start selecting stuff from recent queries.
-    onChange() {
+    onChange(selection) {
+      if (selection !== null) {
+        this._broadcast(MESSAGE_TYPES.RECENT_QUERY_SELECTED, selection.query);
+        this._afterOptionsMenu.clearHighlight();
+      }
     },
 
     onClose() {

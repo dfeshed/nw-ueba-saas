@@ -4,11 +4,12 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, fillIn, find, findAll, render, settled, waitFor } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import SELECTORS from '../selectors';
 import PILL_SELECTORS from '../pill-selectors';
-import { createBasicPill } from '../pill-util';
+import { createBasicPill, toggleTab } from '../pill-util';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 
 let setState;
@@ -376,6 +377,38 @@ module('Integration | Component | Query Bar', function(hooks) {
 
     // no pills in state
     assert.equal(pillsData.length, 0, 'no pills in state');
+
+  });
+
+  test('Selecting a complex recent query creates multiple pill', async function(assert) {
+    const done = assert.async();
+    new ReduxDataHelper(setState)
+      .language()
+      .queryStats()
+      .pillsDataEmpty(true)
+      .hasRequiredValuesToQuery(true)
+      .recentQueriesUnfilteredList()
+      .build();
+
+    this.set('executeQuery', () => {});
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-bar executeQuery=executeQuery}}
+      </div>
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await settled();
+
+    await selectChoose(PILL_SELECTORS.recentQuery, 'sessionid = 1 && sessionid = 80');
+
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, '2 created pills plus a template is not present');
+    assert.equal(findAll(PILL_SELECTORS.queryPill)[0].textContent.replace(/\s/g, ''), 'sessionid=1', 'pill text is in-correct');
+    assert.equal(findAll(PILL_SELECTORS.queryPill)[1].textContent.replace(/\s/g, ''), 'sessionid=80', 'pill text is in-correct');
+    done();
 
   });
 });

@@ -99,6 +99,9 @@ export default Component.extend({
         case MESSAGE_TYPES.PILL_PASTE:
           this._broadcast(type, data);
           break;
+        case MESSAGE_TYPES.RECENT_QUERY_PILL_CREATED:
+          this._broadcast(type, data);
+          this.set('isAddNewPill', false);
       }
     }
   },

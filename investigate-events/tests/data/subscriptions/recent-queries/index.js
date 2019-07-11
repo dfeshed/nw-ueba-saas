@@ -23,7 +23,7 @@ export default {
     const recentQueries = [
       'medium = 32',
       'medium = 32 || medium = 1',
-      'action = \'get\'',
+      'sessionid = 1 && sessionid = 80',
       'action = \'get\' || action = \'put\'',
       '(ip.dst = 10.2.54.11 && ip.src = 1.1.1.1 || ip.dst = 10.2.54.1 && ip.src = 1.1.3.3) && medium = 32',
       'service = 80 || service = 90',
