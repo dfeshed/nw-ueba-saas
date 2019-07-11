@@ -88,7 +88,7 @@
     <h4 class='subheading'>
       {{t column.title}}
     </h4>
-    {{#each item.paths as |path index|}}
+    {{#each item.paths key="@index" as |path index|}}
       <hbox>
         <vbox class="directory-path">
           {{rsa-form-input
