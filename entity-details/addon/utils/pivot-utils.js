@@ -5,7 +5,7 @@ const processOrLinkFields = ['process_name_link', 'machine_name_link', 'dst_proc
 
 const SCHEMA_FILTER = {
   active_directory: "(reference.id = '4741','4742','4733','4734','4740','4794','5376','5377','5136','4764','4743','4739','4727','4728','4754','4756','4757','4758','4720','4722','4723','4724','4725','4726','4738','4767','4717','4729','4730','4731','4732')",
-  authentication: "((reference.id = '4624','4625','4769','4648') || (device.type = 'rsaacesrv' && ec.activity = 'Logon') || ((action = '/usr/sbin/sshd' || action='/usr/bin/login') && device.type = 'rhlinux'))",
+  authentication: "((reference.id = '4624','4625','4769','4648') || (device.type = 'rsaacesrv' && ec.activity = 'Logon') || device.type = 'rhlinux')",
   file: "(reference.id = '4663','4660','4670','5145')",
   process: "(category='Process Event' AND device.type='nwendpoint')",
   registry: "(category='Registry Event' AND device.type='nwendpoint')"
@@ -30,7 +30,7 @@ const buildTimeRange = (eventTime) => {
   return {
     endTime: moment(eventTime * 1000).add(1, 'hours').format('X'),
     startTime: moment(eventTime * 1000).subtract(2, 'hours').startOf('minute').format('X'),
-    eventTimeWindow: ` && (event.time = ${moment(eventTime * 1000).add(1, 'hour').startOf('hour').format('X')} - ${moment(eventTime * 1000).startOf('hour').format('X')})`
+    eventTimeWindow: ` && (event.time=${moment(eventTime * 1000).startOf('hour').format('X')}-${moment(eventTime * 1000).add(1, 'hour').startOf('hour').format('X')})`
   };
 };
 /**
