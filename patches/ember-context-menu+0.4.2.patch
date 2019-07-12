@@ -1,0 +1,54 @@
+diff --git a/node_modules/ember-context-menu/addon/components/context-menu.js b/node_modules/ember-context-menu/addon/components/context-menu.js
+index 1025ea9..a447257 100644
+--- a/node_modules/ember-context-menu/addon/components/context-menu.js
++++ b/node_modules/ember-context-menu/addon/components/context-menu.js
+@@ -7,7 +7,6 @@ import service   from 'ember-service/inject';
+ import { htmlSafe } from 'ember-string';
+ import computed, { reads } from 'ember-computed';
+ import get from 'ember-metal/get';
+-import $ from 'jquery';
+ 
+ export default Component.extend({
+   layout,
+@@ -32,9 +31,9 @@ export default Component.extend({
+ 
+   setWormholeTarget() {
+     let id = 'wormhole-context-menu';
+-    let $target = $(`#${id}`);
+-    if ($target.length === 0) {
+-      $('body').append(`<div id="${id}"></div>`);
++    let target = document.querySelectorAll(`#${id}`);
++    if (target.length === 0) {
++      document.body.append(`<div id="${id}"></div>`);
+     }
+   },
+ 
+diff --git a/node_modules/ember-context-menu/addon/services/context-menu.js b/node_modules/ember-context-menu/addon/services/context-menu.js
+index 62a4d3e..b58492e 100644
+--- a/node_modules/ember-context-menu/addon/services/context-menu.js
++++ b/node_modules/ember-context-menu/addon/services/context-menu.js
+@@ -3,7 +3,6 @@ import { assert } from 'ember-metal/utils';
+ 
+ import get from 'ember-metal/get';
+ import set from 'ember-metal/set';
+-import $   from 'jquery';
+ 
+ const itemHeight    = 32;
+ const safetyMarginX = 400;
+@@ -68,7 +67,7 @@ export default Service.extend({
+     let deactivate = get(this, 'deactivate');
+ 
+     if (deactivate != null) {
+-      $(document.body).off('click', deactivate);
++      document.body.removeEventListener('click', deactivate);
+       set(this, 'deactivate', null);
+     }
+   },
+@@ -77,6 +76,6 @@ export default Service.extend({
+     let deactivate = () => set(this, 'isActive', false);
+     set(this, 'deactivate', deactivate);
+ 
+-    $(document.body).one('click', deactivate);
++    document.body.addEventListener('click', deactivate, { once: true });
+   }
+ });
