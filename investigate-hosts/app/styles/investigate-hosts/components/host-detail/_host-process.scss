@@ -57,6 +57,7 @@
     position: relative;
     .rsa-data-table {
       height: 100%;
+      width: 100%;
       min-height: 100%;
       .rsa-data-table-body-row {
         .process-name {
@@ -127,7 +128,18 @@
     position: absolute;
     max-width: 100%;
     .value hbox {
-      max-width: 80%
+      max-width: 80%;
+    }
+    .rsa-content-definition .value {
+      font-size: 1rem;
+    }
+
+    .file-name-link {
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
     }
   }
 
@@ -148,6 +160,7 @@
     margin-bottom: rsa-whitespace(more);
     display: block;
     flex: initial;
+
     .rsa-data-table {
       min-height: 130px;
       height: auto;
@@ -167,6 +180,9 @@
         &.is-selected {
           background-color: background-color(secondary, dark);
           padding-left: rsa-whitespace();
+          .fileName a {
+            color: text-color(secondary,lightest);
+          }
         }
       }
     }

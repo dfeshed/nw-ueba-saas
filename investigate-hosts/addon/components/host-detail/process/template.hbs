@@ -25,12 +25,14 @@
             <span class="process-tab-label">
               <label>{{t (concat 'investigateHosts.tabs.' tabName)}}</label>
             </span>
-            {{host-detail/process/pivot-to-process-analysis
-              item=selectedProcessList
-              serviceList=serviceList
-              agentId=agentId
-              osType=osType
-              hostName=hostName}}
+            {{#if (not-eq osType 'linux')}}
+              {{host-detail/process/pivot-to-process-analysis
+                item=selectedProcessList
+                serviceList=serviceList
+                agentId=agentId
+                osType=osType
+                hostName=hostName}}
+            {{/if}}
           </div>
           {{endpoint/file-actionbar
             onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums selectedProcessList)

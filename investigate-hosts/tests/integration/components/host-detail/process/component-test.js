@@ -518,4 +518,27 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       assert.equal(findAll('.alert-error-message').length, 1, 'info message is present for insight agent');
     });
   });
+
+  test('process analysis button hidden for linux os type', async function(assert) {
+    new ReduxDataHelper(setState)
+      .serviceId('123456')
+      .timeRange({ value: 7, unit: 'days' })
+      .processList(processList)
+      .processTree(processTree)
+      .selectedProcessList([{
+        ...selectedProcessItemInfo,
+        vpid: 123123
+      }])
+      .processDetails(processDetails)
+      .isTreeView(true)
+      .machineOSType('linux')
+      .machineIdentity(machineIdentity)
+      .sortField('name')
+      .isDescOrder(true)
+      .searchResultProcessList([])
+      .build();
+    await render(hbs`{{host-detail/process}}`);
+    assert.equal(findAll('.process-list-actions .pivot-to-process-analysis .rsa-form-button').length, 0);
+  });
+
 });
