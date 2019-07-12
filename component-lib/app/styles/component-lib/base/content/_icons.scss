@@ -1022,9 +1022,19 @@
     content: $rsa-icon-subtract-circle-bold-alternate;
   }
 }
-.rsa-icon-cloud-wifi {
+.rsa-icon-cloud-wifi-lined {
   &:before {
-    content: $rsa-icon-cloud-wifi;
+    content: $rsa-icon-cloud-wifi-lined;
+  }
+}
+.rsa-icon-computer-disk-drive-1-filled {
+  &:before {
+    content: $rsa-icon-computer-disk-drive-1-filled;
+  }
+}
+.rsa-icon-cog-2-filled {
+  &:before {
+    content: $rsa-icon-cog-2-filled;
   }
 }
 .rsa-icon-account-circle-1-lined {
@@ -1955,6 +1965,11 @@
 .rsa-icon-check-shield-lined {
   &:before {
     content: $rsa-icon-check-shield-lined;
+  }
+}
+.rsa-icon-computer-disk-drive-1-lined {
+  &:before {
+    content: $rsa-icon-computer-disk-drive-1-lined;
   }
 }
 
