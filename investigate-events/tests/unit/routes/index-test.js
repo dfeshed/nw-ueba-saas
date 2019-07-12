@@ -164,6 +164,72 @@ module('Unit | Route | investigate-events.index', function(hooks) {
     }, { timeout: 10000 });
   });
 
+  test('base route visit required query input and pill data hash will retrieve one input with multiple filters and execute query', async function(assert) {
+    assert.expect(1);
+    const fetchInvestigateDataSpy = sinon.stub(dataCreators, 'fetchInvestigateData');
+
+    // setup reducer and route
+    patchReducer(this, Immutable.from({}));
+    const route = setupRoute.call(this);
+    const params = {
+      sid: '555d9a6fe4b0d37c827d402e',
+      et: '10000',
+      st: '1',
+      pdhash: ['e880']
+    };
+
+    // execute model hook
+    await route.model(params);
+    await settled();
+    return waitUntil(() => {
+      const baseComplete = isBaseInvestigateIntializationComplete();
+      const calledFetchData = fetchInvestigateDataSpy.callCount === 1;
+      const { queryNode } = redux.getState().investigate;
+      const hashes = queryNode.pillDataHashes || [];
+      const pillDataHashesPresent = hashes.length === 1 && hashes[0] === 'e880';
+      const pillsDataPopulated = queryNode.pillsData.length === 2;
+      if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated) {
+        assert.ok(true, 'all the expected initial data was populated and query executed');
+        fetchInvestigateDataSpy.restore();
+        return true;
+      }
+      return false;
+    }, { timeout: 10000 });
+  });
+
+  test('base route visit required query input and pill data hash will retrieve mixed length inputs and execute query', async function(assert) {
+    assert.expect(1);
+    const fetchInvestigateDataSpy = sinon.stub(dataCreators, 'fetchInvestigateData');
+
+    // setup reducer and route
+    patchReducer(this, Immutable.from({}));
+    const route = setupRoute.call(this);
+    const params = {
+      sid: '555d9a6fe4b0d37c827d402e',
+      et: '10000',
+      st: '1',
+      pdhash: ['d9ee', 'e880', '934i', 's09e']
+    };
+
+    // execute model hook
+    await route.model(params);
+    await settled();
+    return waitUntil(() => {
+      const baseComplete = isBaseInvestigateIntializationComplete();
+      const calledFetchData = fetchInvestigateDataSpy.callCount === 1;
+      const { queryNode } = redux.getState().investigate;
+      const hashes = queryNode.pillDataHashes || [];
+      const pillDataHashesPresent = hashes.length === 4 && hashes[0] === 'd9ee';
+      const pillsDataPopulated = queryNode.pillsData.length === 5;
+      if (baseComplete && calledFetchData && pillDataHashesPresent && pillsDataPopulated) {
+        assert.ok(true, 'all the expected initial data was populated and query executed');
+        fetchInvestigateDataSpy.restore();
+        return true;
+      }
+      return false;
+    }, { timeout: 10000 });
+  });
+
   test('base route visit with required query input and pill data in URL will execute query and retrieve hash for pill data', async function(assert) {
     assert.expect(1);
     const fetchInvestigateDataSpy = sinon.stub(dataCreators, 'fetchInvestigateData');

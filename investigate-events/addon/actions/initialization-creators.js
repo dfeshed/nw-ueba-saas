@@ -345,15 +345,14 @@ const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, hashNavigateCall
       .then(({ data: paramsObjectArray }) => {
         // Pull the actual param values out of the returned params objects.
         const paramsArray = paramsObjectArray.map((pO) => pO.query);
-        // TODO - Each param object might have some top level logical operators.
-        // We need to split on those. We will use the parsing logic Austin
-        // created here when it's ready.
         const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
-        // Transform server param strings into pill data objects
-        // and dispatch those to state
-        const newPillData = paramsArray.map((singleParams) => {
-          return transformTextToPillData(singleParams, metaKeys);
+        // Transform server param strings into arrays of pill data objects
+        // and dispatch those to state. transformTextToPillData now returns
+        // an array of pills so flatten after mapping.
+        const newPillData = paramsArray.flatMap((singleParams) => {
+          return transformTextToPillData(singleParams, metaKeys, false, true);
         });
+
         // Was there a text search string?
         if (searchTextString) {
           // Create a textSearch pill and insert it into the correct index
