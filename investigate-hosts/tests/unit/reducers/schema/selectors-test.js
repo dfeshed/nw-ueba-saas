@@ -38,7 +38,7 @@ const SCHEMA = Immutable.from({
 test('getHostTableColumns', function(assert) {
   const result = getHostTableColumns(SCHEMA);
   // length = total size + 1 checkbox column
-  assert.equal(result.length, 61, 'should return 61 columns including checkbox column');
+  assert.equal(result.length, 59, 'should return 59 columns including checkbox column');
   // 0th field is a checkbox.
   assert.equal(result[3].field, 'agentStatus.lastSeenTime', 'Machine OS Type field is visible');
   assert.equal(result[3].visible, false, 'Machine OS Type field is visible');
@@ -49,7 +49,7 @@ test('getHostTableColumns', function(assert) {
 test('getHostTableColumns returns the default columns', function(assert) {
   const result = getHostTableColumns({ preferences: { preferences: {} } });
   // length = total size + 1 checkbox column
-  assert.equal(result.length, 61, 'should return 61 columns including checkbox column');
+  assert.equal(result.length, 59, 'should return 59 columns including checkbox column');
   // 0th field is a checkbox.
   assert.equal(result[3].field, 'agentStatus.lastSeenTime', 'Machine OS Type field is visible');
   assert.equal(result[3].visible, true, 'Machine OS Type field is visible');
@@ -67,7 +67,7 @@ test('displayIndex for non-visible columns being set', function(assert) {
 
 test('prepareSchema', function(assert) {
   const result = prepareSchema(SCHEMA);
-  assert.equal(result.length, 58, 'should return 58 columns ');
+  assert.equal(result.length, 56, 'should return 56 columns ');
   assert.equal(result[0].title, 'investigateHosts.hosts.column.agentStatus.lastSeenTime', 'should return the added title property');
 });
 

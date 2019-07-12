@@ -68,14 +68,6 @@ const FILE_LIST_COLUMNS_CONFIG = [
     dataType: 'STRING'
   },
   {
-    name: 'firstFileName',
-    dataType: 'STRING'
-  },
-  {
-    name: 'score',
-    dataType: 'STRING'
-  },
-  {
     name: 'signature.signer',
     dataType: 'STRING'
   },

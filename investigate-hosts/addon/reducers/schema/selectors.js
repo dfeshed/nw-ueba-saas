@@ -46,6 +46,7 @@ const DEFAULT_COLUMN = Immutable.from([
     dataType: 'string',
     width: '15vw',
     visible: true,
+    isFixed: true,
     field: 'machineIdentity.machineName',
     searchable: true,
     title: 'investigateHosts.hosts.column.machineIdentity.machineName',
@@ -56,6 +57,7 @@ const DEFAULT_COLUMN = Immutable.from([
     visible: true,
     field: 'score',
     searchable: false,
+    isFixed: true,
     title: 'investigateHosts.hosts.column.score',
     preferredDisplayIndex: 2
   }
@@ -133,18 +135,16 @@ export const getHostTableColumns = createSelector(
           if (column.dataType === 'checkbox') {
             updatedSchema.unshift(column);
           } else {
-            const [item] = columns.filter((col) => {
+            const [item = {}] = columns.filter((col) => {
               return column.field === col.field;
             });
-            if (!item) {
-              updatedSchema.unshift(column);
-            }
+            updatedSchema.unshift({ ...column, ...item });
           }
 
         });
         const visibleList = updatedSchema.filter((column) => column.visible);
         if (visibleList) {
-          return updatedSchema;
+          return updatedSchema.uniq();
         }
       }
       return [];

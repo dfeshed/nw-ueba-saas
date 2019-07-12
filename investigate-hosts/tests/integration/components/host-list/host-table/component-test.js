@@ -73,16 +73,6 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     assert.equal(find('.rsa-data-table-header-cell:nth-child(6)').textContent.trim(), 'Operating System', 'Sixth column should be Operating system');
   });
 
-  test('column chooser do not have default fields', async function(assert) {
-    new ReduxDataHelper(initState)
-      .columns(endpoint.schema)
-      .build();
-    await render(hbs`{{host-list/host-table}}`);
-    await click('.rsa-icon-cog-filled');
-    assert.equal(endpoint.schema.length, 6, '6 columns are passed to the table');
-    assert.equal(findAll('.rsa-data-table-column-selector-panel section ul li').length, 60, '60 fields present in columns chooser (excluding score and machine name)');
-  });
-
   test('Right clicking already selected row, will keep row highlighted', async function(assert) {
     this.set('closeProperties', () => {});
     this.set('openProperties', () => {});
@@ -447,6 +437,36 @@ module('Integration | Component | host-list/host-table', function(hooks) {
 
     return waitUntil(() => done, { timeout: 6000 }).then(() => {
       assert.ok(true);
+    });
+  });
+
+  test('it does not allow to deselect the default columns', async function(assert) {
+
+    this.set('closeProperties', function() {
+      assert.ok('close property panel is called.');
+    });
+    this.set('openProperties', () => {});
+    new ReduxDataHelper(initState)
+      .columns(endpoint.schema)
+      .hostList(hostList)
+      .hostSortField('machineIdentity.machineName')
+      .selectedHostList([])
+      .build();
+    await render(hbs`
+    <style>
+      box, section {
+        min-height: 1000px
+      }
+    </style>
+    {{host-list/host-table closeProperties=closeProperties openProperties=openProperties}}`);
+    await click('.rsa-icon-cog-filled');
+
+    return settled().then(() => {
+      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 6, 'initial visible column count is 6');
+      findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[0].click(); // status
+      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 6, 'visibility not changed (6 columns visible)');
+      findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[1].click(); // friendly name
+      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 6, 'visibility not changed (6 columns visible)');
     });
   });
 });

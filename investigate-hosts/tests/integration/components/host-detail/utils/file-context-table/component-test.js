@@ -744,4 +744,34 @@ module('Integration | Component | host-detail/utils/file-context-table', functio
       assert.ok(true);
     });
   });
+
+  test('Not allowed to unselect default column', async function(assert) {
+    initState({
+      endpoint: {
+        drivers: {
+          fileContext,
+          fileContextSelections: [],
+          contextLoadingStatus: 'completed'
+        }
+      }
+    });
+    await render(hbs`
+      <div id='modalDestination'></div>
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-detail/utils/file-context-table showResetScoreModal=true isPaginated=isPaginated storeName=storeName tabName=tabName columnsConfig=columnConfig}}
+    `);
+    await click('.rsa-icon-cog-filled');
+    return settled().then(() => {
+      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'initial visible column count is 5');
+      findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[0].click(); // file name
+      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'visibility not changed (5 columns visible)');
+      findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[2].click();
+      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 4, 'visibility changed 4 columns visible');
+    });
+  });
+
 });

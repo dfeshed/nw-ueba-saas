@@ -9,9 +9,9 @@
     selectedIndex=selectedRowIndex
     onColumnConfigChange=(action 'onColumnConfigChange')
     onRowClick=(action 'onRowClick')}}
-    {{#rsa-data-table/header
+    {{#host-detail/utils/file-context-table/header
       enableColumnFilter=true
-      onToggleColumn=(action 'onToggleColumn')
+      onToggleColumn=(action 'onToggleColumn' 'display')
       enableColumnSelector=true as |column|}}
       {{#if (eq column.dataType "checkbox")}}
         <label class="rsa-form-checkbox-label  {{if isAllSelected 'checked'}}">
@@ -28,7 +28,7 @@
           name=(if column.isDescending "arrow-down-7" "arrow-up-7")
           class="sort"}}
       {{/unless}}
-    {{/rsa-data-table/header}}
+    {{/host-detail/utils/file-context-table/header}}
     {{#if isDataLoading}}
       <centered>
         {{rsa-loader size="larger"}}

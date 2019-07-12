@@ -1,21 +1,5 @@
 const CERTIFICATE_COLUMNS_CONFIG = [
   {
-    field: 'friendlyName',
-    title: 'configure.endpoint.certificates.columns.friendlyName',
-    label: 'Friendly Name',
-    width: '35vw',
-    disableSort: false,
-    visible: true
-  },
-  {
-    field: 'certificateStatus',
-    title: 'configure.endpoint.certificates.columns.certificateStatus',
-    label: 'Status',
-    width: '10vw',
-    disableSort: true,
-    visible: true
-  },
-  {
     field: 'issuer',
     title: 'configure.endpoint.certificates.columns.issuer',
     label: 'Issuer',

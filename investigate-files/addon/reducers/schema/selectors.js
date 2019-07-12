@@ -146,18 +146,16 @@ export const columns = createSelector(
           if (column.dataType === 'checkbox') {
             updatedSchema.unshift(column);
           } else {
-            const [item] = columns.filter((col) => {
+            const [item = {}] = columns.filter((col) => {
               return column.field === col.field;
             });
-            if (!item) {
-              updatedSchema.unshift(column);
-            }
+            updatedSchema.unshift({ ...column, ...item });
           }
         });
         const visibleList = updatedSchema.filter((column) => column.visible);
         if (visibleList) {
           // Making it as mutable as schema is passed down to data-table component and data-table component expecting simple array/ember array
-          return updatedSchema;
+          return updatedSchema.uniq();
         }
       }
       return [];

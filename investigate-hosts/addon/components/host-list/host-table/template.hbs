@@ -8,10 +8,10 @@
     onColumnConfigChange=(action 'onColumnConfigChange')
     onReorderColumns=(action 'onReorderColumns')
     onRowClick=(action 'toggleSelectedRow')}}
-    {{#rsa-data-table/header
+    {{#host-list/host-table/header
       closeProperties=closeProperties
       translateTitles=true
-      onToggleColumn=(action 'onToggleColumn')
+      onToggleColumn=(action 'onToggleColumn' 'display')
       enableColumnSelector=true as |column|}}
       {{#if (eq column.dataType "checkbox")}}
         <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if isAllHostSelected 'checked'}}">
@@ -31,7 +31,7 @@
           isSortDescending=isSortDescending
           sortBy=(action 'sort')}}
       {{/unless}}
-    {{/rsa-data-table/header}}
+    {{/host-list/host-table/header}}
 
     {{#if (eq hostFetchStatus 'wait')}}
       <centered>

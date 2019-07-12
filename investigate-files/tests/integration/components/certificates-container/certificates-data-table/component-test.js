@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { findAll, render, settled, find, click, triggerEvent, waitUntil } from '@ember/test-helpers';
+import { findAll, render, settled, click, triggerEvent, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import Immutable from 'seamless-immutable';
@@ -194,7 +194,7 @@ module('Integration | Component | certificates-container/certificates-data-table
         }
       </style>
       {{certificates-container/certificates-data-table}}`);
-    find('.rsa-icon-cog-filled').click();
+    await click('.rsa-icon-cog-filled');
 
     return settled().then(() => {
       assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 10, 'initial visible column count is 1');
@@ -303,4 +303,35 @@ module('Integration | Component | certificates-container/certificates-data-table
       assert.ok(true);
     });
   });
+
+  test('It should not allow to unselect the status and certificate name', async function(assert) {
+    new ReduxDataHelper(initState)
+      .certificatesItems(items)
+      .loadMoreCertificateStatus('stopped')
+      .selectedCertificatesList([])
+      .certificateStatusData({})
+      .isCertificateView(true)
+      .build();
+
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{certificates-container/certificates-data-table}}`);
+    await click('.rsa-icon-cog-filled');
+
+    return settled().then(() => {
+      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 10, 'initial visible column count is 10');
+      findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[0].click(); // status
+      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 10, 'visibility not changed (10 columns visible)');
+      findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[1].click(); // friendly name
+      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 10, 'visibility not changed (10 columns visible)');
+      findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[2].click();
+      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 9, 'visibility changed 9 columns visible');
+    });
+  });
+
+
 });

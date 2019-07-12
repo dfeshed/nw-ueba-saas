@@ -469,7 +469,7 @@ module('Integration | Component | file list', function(hooks) {
         }
       </style>
       {{file-list}}`);
-    find('.rsa-icon-cog-filled').click();
+    await click('.rsa-icon-cog-filled');
 
     await settled();
 
