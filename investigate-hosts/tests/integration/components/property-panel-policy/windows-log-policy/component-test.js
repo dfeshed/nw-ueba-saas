@@ -98,6 +98,17 @@ module('Integration | Component | property-panel-policy/windows-log-policy', fun
     }
   };
 
+  const windowsLogPolicyNoChannels = {
+    ...policyData,
+    policy: {
+      ...policy,
+      windowsLogPolicy: {
+        ...windowsLogPolicy,
+        channelFilters: []
+      }
+    }
+  };
+
   test('it renders', async function(assert) {
     new ReduxDataHelper(setState).policy(policyData).build();
     await render(hbs`{{property-panel-policy/windows-log-policy}}`);
@@ -124,7 +135,13 @@ module('Integration | Component | property-panel-policy/windows-log-policy', fun
   test('Content data windowsLogPolicyDisabled', async function(assert) {
     new ReduxDataHelper(setState).policy(windowsLogPolicyDisabled).build();
     await render(hbs`{{property-panel-policy/windows-log-policy}}`);
-    assert.equal(document.querySelectorAll('.win-value').length, 2, 'All values are showing minus fields below Disabled');
+    assert.equal(document.querySelectorAll('.win-value').length, 1, 'One value is showing, Channel fields are not showing');
     assert.equal(document.querySelectorAll('.win-value .tooltip-text')[0].textContent.trim(), 'Disabled', 'Disabled value is showing');
+  });
+
+  test('Content data windowsLogPolicyNoChannels', async function(assert) {
+    new ReduxDataHelper(setState).policy(windowsLogPolicyNoChannels).build();
+    await render(hbs`{{property-panel-policy/windows-log-policy}}`);
+    assert.equal(document.querySelectorAll('.win-value .tooltip-text')[3].textContent.trim(), 'No channels set for collection', 'No channels value is showing');
   });
 });

@@ -28,11 +28,15 @@ export const selectedWindowsLogPolicy = createSelector(
     const channelFilters = [];
     const basicSettings = [];
     const windowsLogPolicyEnabled = focusedPolicy ? focusedPolicy.enabled : '';
-
+    const _i18n = lookup('service:i18n');
     for (const prop in focusedPolicy) {
       if (prop === 'channelFilters') {
-        for (let i = 0; i < focusedPolicy.channelFilters.length; ++i) {
-          channelFilters.push(_getChannelFilterSetting(focusedPolicy.channelFilters[i], prop));
+        if (focusedPolicy.channelFilters.length === 0) {
+          channelFilters.push({ name: '', value: _i18n.t('adminUsm.policies.detail.noChannels') });
+        } else {
+          for (let i = 0; i < focusedPolicy.channelFilters.length; ++i) {
+            channelFilters.push(_getChannelFilterSetting(focusedPolicy.channelFilters[i], prop));
+          }
         }
       } else {
         if (!isBlank(focusedPolicy[prop])) {
@@ -49,7 +53,7 @@ export const selectedWindowsLogPolicy = createSelector(
         props: basicSettings
       });
     }
-    if (channelFilters.length > 0) {
+    if (channelFilters.length > 0 && windowsLogPolicyEnabled === 'Enabled') {
       policyDetails.push({
         header: 'adminUsm.policies.detail.channelFilterSettings',
         channels: channelFilters
@@ -62,7 +66,7 @@ export const selectedWindowsLogPolicy = createSelector(
 const _getBasicSetting = (prop, focusedPolicy, _listOfLogServers, windowsLogPolicyEnabled) => {
   const _i18n = lookup('service:i18n');
   let basicSettings = {};
-  if (windowsLogPolicyEnabled === 'Enabled' && windowsLogPolicyEnabled != '') {
+  if (windowsLogPolicyEnabled === 'Enabled') {
     basicSettings = {
       enabled: {
         name: 'adminUsm.policies.detail.windowsLogPolicyEnabled',

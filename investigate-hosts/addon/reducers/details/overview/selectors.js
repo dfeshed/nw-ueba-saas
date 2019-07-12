@@ -371,7 +371,7 @@ export const policyAdminUsm = createSelector(
           secondaryDestination: data.windowsLogPolicy.secondaryDestination,
           protocol: data.windowsLogPolicy.protocol,
           sendTestLog: data.windowsLogPolicy.sendTestLog,
-          channelFilters: data.windowsLogPolicy.channelFilters
+          channelFilters: data.windowsLogPolicy.channelFilters ? data.windowsLogPolicy.channelFilters : []
         }
       };
     }

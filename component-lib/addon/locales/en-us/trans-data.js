@@ -4352,7 +4352,8 @@ export default {
         disabled: 'Disabled',
         fileSettings: 'File Settings',
         filePolicyEnabled: 'Status',
-        sourceSettings: 'Source Settings ({{fileType}})'
+        sourceSettings: 'Source Settings ({{fileType}})',
+        noChannels: 'No channels set for collection'
       },
       modals: {
         deletePolicies: {
