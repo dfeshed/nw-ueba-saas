@@ -12,7 +12,7 @@ import sinon from 'sinon';
 
 let setState, updatePolicyPropertySpy;
 const spys = [];
-const sources = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['abc', 'def'], paths: ['path1', 'path2'] } ];
+const sources = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: true, sourceName: 'apache-server-1', exclusionFilters: ['abc', 'def'], paths: ['path1', 'path2'] } ];
 
 module('Integration | Component | usm-policies/policy-wizard/define-policy-sources-step', function(hooks) {
   setupRenderingTest(hooks, {

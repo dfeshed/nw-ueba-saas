@@ -112,7 +112,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
       'enabled': true,
       'exclusionFilters': [],
       'fileEncoding': 'UTF-8',
-      'startOfEvents': false,
+      'startOfEvents': true,
       'sourceName': '',
       'fileType': 'apache',
       'paths': [

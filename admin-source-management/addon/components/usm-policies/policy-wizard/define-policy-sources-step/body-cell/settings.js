@@ -18,11 +18,11 @@ const DATA_COLLECTION = {
   type: 'radioGroup',
   items: [
     {
-      name: true,
+      name: false,
       label: 'adminUsm.policyWizard.filePolicy.collectNew'
     },
     {
-      name: false,
+      name: true,
       label: 'adminUsm.policyWizard.filePolicy.collectAll'
     }
   ]

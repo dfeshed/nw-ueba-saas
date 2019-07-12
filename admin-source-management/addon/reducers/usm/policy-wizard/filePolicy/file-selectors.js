@@ -68,7 +68,7 @@ export const selectedFileSourceDefaults = createSelector(
         fileType: selectedFileSource.name,
         fileEncoding: 'UTF-8',
         enabled: true,
-        startOfEvents: false,
+        startOfEvents: true,
         sourceName: '',
         exclusionFilters: [],
         paths: selectedFileSource.paths
