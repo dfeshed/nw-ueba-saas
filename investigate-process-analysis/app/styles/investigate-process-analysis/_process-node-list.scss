@@ -13,6 +13,14 @@
     .rsa-data-table-body-row {
       left: 0;
       right: 0;
+      .event-category {
+        color: text-color(primary, lighter);
+        padding-left: 1rem;
+        line-height: 2.3;
+        .has-events {
+          color: text-color(primary, lightest);
+        }
+      }
     }
     .rsa-data-table-header-cell:first-child {
       padding-left: 0.5rem;

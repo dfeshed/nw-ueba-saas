@@ -4023,7 +4023,8 @@ export default {
       processName: 'Process Name',
       riskScore: 'Risk Score',
       hostCount: 'Active On',
-      launchArguments: 'Launch Arguments'
+      launchArguments: 'Launch Arguments',
+      eventTypes: 'Event Types'
     },
     property: {
       title: 'File Properties',

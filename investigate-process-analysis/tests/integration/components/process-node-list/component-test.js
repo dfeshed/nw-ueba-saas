@@ -11,7 +11,12 @@ const data = [
       processName: 'malware.exe',
       localScore: 90,
       machineCount: 10,
-      selected: false
+      selected: false,
+      eventCategory: {
+        hasFile: 0,
+        hasNetwork: 1,
+        hasRegistry: 0
+      }
     }
   },
   {
@@ -19,7 +24,12 @@ const data = [
       processName: 'chrome.exe',
       localScore: 70,
       machineCount: 1,
-      selected: false
+      selected: false,
+      eventCategory: {
+        hasFile: 1,
+        hasNetwork: 1,
+        hasRegistry: 0
+      }
     }
   },
   {
@@ -27,7 +37,12 @@ const data = [
       processName: 'virus.exe',
       localScore: 100,
       machineCount: 3,
-      selected: false
+      selected: false,
+      eventCategory: {
+        hasFile: 0,
+        hasNetwork: 0,
+        hasRegistry: 1
+      }
     }
   }
 ];
@@ -57,9 +72,16 @@ module('Integration | Component | process-node-list', function(hooks) {
     this.set('nodeList', testData);
     await render(hbs`{{process-node-list nodeList=nodeList}}`);
     assert.strictEqual(document.querySelectorAll('.rsa-data-table').length, 1, 'Process node list table rendered');
-    assert.strictEqual(document.querySelectorAll('.rsa-data-table-header-cell').length, 5, '5 columns are rendered');
+    assert.strictEqual(document.querySelectorAll('.rsa-data-table-header-cell').length, 6, '6 columns are rendered');
     assert.strictEqual(document.querySelectorAll('.rsa-data-table-body-row').length, 3, '3 rows are rendered');
     assert.strictEqual(document.querySelectorAll('.rsa-risk-score')[0].textContent.trim(), '100');
+  });
+  test('it renders event category icons', async function(assert) {
+    this.set('nodeList', testData);
+    await render(hbs`{{process-node-list nodeList=nodeList}}`);
+    assert.strictEqual(document.querySelectorAll('.rsa-data-table').length, 1, 'Process node list table rendered');
+    assert.strictEqual(document.querySelectorAll('.rsa-data-table-header-cell').length, 6, '6 columns are rendered');
+    assert.strictEqual(document.querySelectorAll('.rsa-data-table-body-row .rsa-icon').length, 9, 'category events icons are rendered');
   });
 
   test('clicking on the header checkbox selects all the row', async function(assert) {

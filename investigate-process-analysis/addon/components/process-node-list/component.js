@@ -33,6 +33,11 @@ const COLUMNS = [
     width: '8vw',
     field: 'data.paramDst',
     title: 'investigateProcessAnalysis.nodeList.launchArguments'
+  },
+  {
+    width: '5vw',
+    field: 'data.eventTypes',
+    title: 'investigateProcessAnalysis.nodeList.eventTypes'
   }
 ];
 export default Component.extend({
