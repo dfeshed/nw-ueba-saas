@@ -21,6 +21,6 @@ import presidio.webapp.spring.OutputWebappProductionConfiguration;
 public class FortscaleOutputWebApplication{
 
     public static void main(String[] args) {
-        SpringApplication.run(new Object[]{FortscaleOutputWebApplication.class, OutputWebappProductionConfiguration.class}, args);
+        SpringApplication.run(new Class[]{FortscaleOutputWebApplication.class, OutputWebappProductionConfiguration.class}, args);
     }
 }

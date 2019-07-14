@@ -1,7 +1,7 @@
 package fortscale.utils.elasticsearch.mapping;
 
-import org.mockito.cglib.proxy.Enhancer;
-import org.mockito.cglib.proxy.LazyLoader;
+import org.springframework.cglib.proxy.Enhancer;
+import org.springframework.cglib.proxy.LazyLoader;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.query.Criteria;

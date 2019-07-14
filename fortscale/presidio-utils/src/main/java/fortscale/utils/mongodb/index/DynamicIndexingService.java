@@ -2,10 +2,10 @@ package fortscale.utils.mongodb.index;
 
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.IndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexInfo;
+import org.springframework.data.mongodb.core.index.IndexOperations;
 import org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver;
 import org.springframework.data.mongodb.core.mapping.BasicMongoPersistentEntity;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
@@ -13,9 +13,7 @@ import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static fortscale.utils.mongodb.index.DynamicIndexingConverters.convertCompoundIndexToIndexDefinition;
-import static fortscale.utils.mongodb.index.DynamicIndexingConverters.convertIndexDefinitionToIndexInfo;
-import static fortscale.utils.mongodb.index.DynamicIndexingConverters.convertToNamelessIndexInfo;
+import static fortscale.utils.mongodb.index.DynamicIndexingConverters.*;
 
 /**
  * This service is responsible for creating indexes dynamically in Mongo DB

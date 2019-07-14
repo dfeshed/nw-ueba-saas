@@ -6,7 +6,6 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -489,7 +488,7 @@ public class EntityPersistencyServiceTest{
         Page<Entity> result = entityPersistencyService.find(entityQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Entity>) result).getAggregations().asMap();
         StringTerms severityAgg = (StringTerms) stringAggregationMap.get(Entity.SEVERITY_FIELD_NAME);
-        List<Terms.Bucket> buckets = severityAgg.getBuckets();
+        List<StringTerms.Bucket> buckets = severityAgg.getBuckets();
 
         assertEquals(buckets.size(), 2L); //two buckets- HIGH and MEDIUM
         assertEquals(severityAgg.getBucketByKey("CRITICAL").getDocCount(), 2L);
@@ -526,7 +525,7 @@ public class EntityPersistencyServiceTest{
         Page<Entity> result = entityPersistencyService.find(entityQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Entity>) result).getAggregations().asMap();
         StringTerms severityAgg = (StringTerms) stringAggregationMap.get(Entity.TAGS_FIELD_NAME);
-        List<Terms.Bucket> buckets = severityAgg.getBuckets();
+        List<StringTerms.Bucket> buckets = severityAgg.getBuckets();
 
         assertEquals(buckets.size(), 2L); //two buckets- admin and watch
         assertEquals(severityAgg.getBucketByKey("admin").getDocCount(), 3L);
@@ -561,7 +560,7 @@ public class EntityPersistencyServiceTest{
         Page<Entity> result = entityPersistencyService.find(entityQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Entity>) result).getAggregations().asMap();
         StringTerms severityAgg = (StringTerms) stringAggregationMap.get(Entity.ALERT_CLASSIFICATIONS_FIELD_NAME);
-        List<Terms.Bucket> buckets = severityAgg.getBuckets();
+        List<StringTerms.Bucket> buckets = severityAgg.getBuckets();
 
         assertEquals(buckets.size(), 3L); //two buckets- admin and watch
         assertEquals(severityAgg.getBucketByKey("a").getDocCount(), 3L);
@@ -594,7 +593,7 @@ public class EntityPersistencyServiceTest{
 
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Entity>) foundEntities).getAggregations().asMap();
         StringTerms severityAgg = (StringTerms) stringAggregationMap.get(Entity.SEVERITY_FIELD_NAME);
-        List<Terms.Bucket> buckets = severityAgg.getBuckets();
+        List<StringTerms.Bucket> buckets = severityAgg.getBuckets();
 
         assertEquals(buckets.size(), 1L); //one bucket- CRITICAL
         assertEquals(3L, severityAgg.getBucketByKey("CRITICAL").getDocCount());
@@ -628,7 +627,7 @@ public class EntityPersistencyServiceTest{
         Page<Entity> result = entityPersistencyService.find(entityQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Entity>) result).getAggregations().asMap();
         StringTerms severityAgg = (StringTerms) stringAggregationMap.get(Entity.INDICATORS_FIELD_NAME);
-        List<Terms.Bucket> buckets = severityAgg.getBuckets();
+        List<StringTerms.Bucket> buckets = severityAgg.getBuckets();
 
         assertEquals(buckets.size(), 3L); //two buckets- admin and watch
         assertEquals(severityAgg.getBucketByKey("a").getDocCount(), 3L);
