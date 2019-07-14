@@ -80,10 +80,10 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     private String direction;
 
     @Field(DESTINATION_PORT_FIELD_NAME)
-    private Integer dstPort;
+    private String dstPort;
 
     @Field(SOURCE_PORT_FIELD_NAME)
-    private Integer srcPort;
+    private String srcPort;
 
     @Field(FQDN_FIELD_NAME)
     private List<String> fqdn;
@@ -100,8 +100,8 @@ public class TlsEnrichedEvent extends EnrichedEvent {
                             String srcIp, String dstIp, String srcCountry, String dstCountry, String sslSubject,
                             String domain, String dstOrg,
                             String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
-                            String dstNetname, String ja3, String ja3s, String direction, Integer dstPort,
-                            Integer srcPort, List<String> fqdn, List<String> sslCa) {
+                            String dstNetname, String ja3, String ja3s, String direction, String dstPort,
+                            String srcPort, List<String> fqdn, List<String> sslCa) {
         super(createdDate, eventDate, eventId, schema, dataSource, additionalInfo);
         this.srcIp = srcIp;
         this.dstIp = dstIp;
@@ -246,11 +246,11 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.direction = direction;
     }
 
-    public Integer getDstPort() {
+    public String getDstPort() {
         return dstPort;
     }
 
-    public void setDstPort(Integer dstPort) {
+    public void setDstPort(String dstPort) {
         this.dstPort = dstPort;
     }
 
@@ -270,11 +270,11 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.sslCa = sslCa;
     }
 
-    public Integer getSrcPort() {
+    public String getSrcPort() {
         return srcPort;
     }
 
-    public void setSrcPort(Integer srcPort) {
+    public void setSrcPort(String srcPort) {
         this.srcPort = srcPort;
     }
 }
