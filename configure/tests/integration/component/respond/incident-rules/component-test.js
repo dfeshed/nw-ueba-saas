@@ -10,7 +10,6 @@ import Immutable from 'seamless-immutable';
 import rules from '../../../../data/subscriptions/incident-rules/findAll/data';
 import { Promise } from 'rsvp';
 import Service from '@ember/service';
-import $ from 'jquery';
 
 const initialState = {
   rules,
@@ -69,12 +68,30 @@ module('Integration | Component | Respond Incident Rules', function(hooks) {
   test('The row cells have the expected data', async function(assert) {
     await setState({ ...initialState });
     await render(hbs`{{respond/incident-rules}}`);
-    const $firstRowCells = this.$('tbody tr').first().find('td');
-    assert.equal($($firstRowCells[0]).find('.handle').length, 1, 'The first cell in the row has a drag handle for reordering results');
-    assert.equal($($firstRowCells[1]).find('input[type=checkbox]').length, 1, 'The second cell in the row has a selection checkbox');
-    assert.equal($($firstRowCells[3]).find('.enabled-rule').length, 1, 'The fourth cell in the row has an enabled-rule class');
-    assert.equal($($firstRowCells[4]).find('a').length, 1, 'The fifth cell in the row has a link');
-    assert.equal($($firstRowCells[6]).find('.rsa-content-datetime').length, 1, 'The seventh cell in the row has a converted date');
+    const rows = findAll('tbody tr');
+    assert.equal(rows.length, 20, 'We have 20 rows');
+
+    // All date values are present satisfying the if conditions.
+    const firstRowCells = rows[0].querySelectorAll('td');
+    assert.equal(firstRowCells.length, 11, 'The row must have 11 cells');
+    assert.equal(firstRowCells[0].querySelectorAll('.handle').length, 1, 'The first cell in the row has a drag handle for reordering results');
+    assert.equal(firstRowCells[1].querySelectorAll('input[type=checkbox]').length, 1, 'The second cell in the row has a selection checkbox');
+    assert.equal(firstRowCells[3].querySelectorAll('.enabled-rule').length, 1, 'The fourth cell in the row has an enabled-rule class');
+    assert.equal(firstRowCells[4].querySelectorAll('a').length, 1, 'The fifth cell in the row has a link');
+    assert.equal(firstRowCells[6].querySelectorAll('.rsa-content-datetime').length, 1, 'The seventh cell in the row has a converted date');
+    assert.equal(firstRowCells[9].querySelectorAll('.rsa-content-datetime').length, 1, 'The tenth cell in the row has a converted date');
+    assert.equal(firstRowCells[10].querySelectorAll('.rsa-content-datetime').length, 1, 'The eleventh cell in the row has a converted date');
+
+    // The date values not present.
+    const secondRowCells = rows[1].querySelectorAll('td');
+    assert.equal(secondRowCells.length, 11, 'The row must have 11 cells');
+    assert.equal(secondRowCells[0].querySelectorAll('.handle').length, 1, 'The first cell in the row has a drag handle for reordering results');
+    assert.equal(secondRowCells[1].querySelectorAll('input[type=checkbox]').length, 1, 'The second cell in the row has a selection checkbox');
+    assert.equal(secondRowCells[3].querySelectorAll('.disabled-rule').length, 1, 'The fourth cell in the row has an enabled-rule class');
+    assert.equal(secondRowCells[4].querySelectorAll('a').length, 1, 'The fifth cell in the row has a link');
+    assert.equal(secondRowCells[6].querySelectorAll('.rsa-content-datetime').length, 0, 'The seventh cell in the row has a converted date');
+    assert.equal(secondRowCells[9].querySelectorAll('.rsa-content-datetime').length, 0, 'The tenth cell in the row has a converted date');
+    assert.equal(secondRowCells[10].querySelectorAll('.rsa-content-datetime').length, 0, 'The eleventh cell in the row has a converted date');
   });
 
   test('it shows the selected row with the proper class name', async function(assert) {

@@ -23,7 +23,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': 1508303855976,
   'alertsMatchedCount': 180872,
-  'incidentsCreatedCount': 38801
+  'incidentsCreatedCount': 38801,
+  'createdDate': 1508303855976,
+  'lastUpdatedDate': 1508303855976
 }, {
   'id': '59b92bbf4cb0f0092b6b6a8b',
   'order': 2,
@@ -49,7 +51,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6a8c',
   'order': 3,
@@ -75,7 +79,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': 1508303855976,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6a8d',
   'order': 4,
@@ -101,7 +107,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': 1508255285823,
   'alertsMatchedCount': 307,
-  'incidentsCreatedCount': 6
+  'incidentsCreatedCount': 6,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6a8e',
   'order': 5,
@@ -127,7 +135,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': 1508254008703,
   'alertsMatchedCount': 17756,
-  'incidentsCreatedCount': 9
+  'incidentsCreatedCount': 9,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6a8f',
   'order': 6,
@@ -148,7 +158,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6a90',
   'order': 7,
@@ -169,7 +181,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6a91',
   'order': 8,
@@ -190,7 +204,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6a92',
   'order': 9,
@@ -211,7 +227,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6a93',
   'order': 10,
@@ -232,7 +250,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6a94',
   'order': 11,
@@ -258,7 +278,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6z11',
   'order': 12,
@@ -279,7 +301,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6z12',
   'order': 13,
@@ -300,7 +324,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6z13',
   'order': 14,
@@ -326,7 +352,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6z14',
   'order': 15,
@@ -352,7 +380,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6z15',
   'order': 16,
@@ -378,7 +408,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6z16',
   'order': 17,
@@ -404,7 +436,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6z17',
   'order': 18,
@@ -430,7 +464,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6z18',
   'order': 19,
@@ -456,7 +492,9 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }, {
   'id': '59b92bbf4cb0f0092b6b6z19',
   'order': 20,
@@ -482,5 +520,7 @@ export default [{
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
-  'incidentsCreatedCount': 0
+  'incidentsCreatedCount': 0,
+  'createdDate': null,
+  'lastUpdatedDate': null
 }];

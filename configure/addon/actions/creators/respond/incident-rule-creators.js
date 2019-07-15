@@ -21,7 +21,9 @@ const EXCLUDED_RULE_PROPERTIES_ON_UPDATE = [
   'lastMatched',
   'alertsMatchedCount',
   'incidentsCreatedCount',
-  'deleted'
+  'deleted',
+  'createdDate',
+  'lastUpdatedDate'
 ];
 
 /**

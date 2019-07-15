@@ -53,6 +53,12 @@
             <th class="incidents-created" title="{{t 'configure.incidentRules.incidentsCreatedCount'}}">
               {{t 'configure.incidentRules.incidentsCreatedCount'}}
             </th>
+            <th class="rule-created" title="{{t 'configure.incidentRules.ruleCreated'}}">
+              {{t 'configure.incidentRules.ruleCreated'}}
+            </th>
+            <th class="rule-last-updated" title="{{t 'configure.incidentRules.ruleLastUpdated'}}">
+              {{t 'configure.incidentRules.ruleLastUpdated'}}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -100,10 +106,24 @@
                 </div>
               </td>
               <td>
-                <div>{{rule.alertsMatchedCount}}</div>
+                <div title="{{rule.alertsMatchedCount}}">{{rule.alertsMatchedCount}}</div>
+              </td>
+              <td >
+                <div >{{rule.incidentsCreatedCount}}</div>
               </td>
               <td>
-                <div>{{rule.incidentsCreatedCount}}</div>
+                <div>
+                  {{#if rule.createdDate}}
+                    {{rsa-content-datetime timestamp=rule.createdDate displayTime=true displayMilliseconds=false}}
+                  {{/if}}
+                </div>
+              </td>
+              <td>
+                <div>
+                  {{#if rule.lastUpdatedDate}}
+                    {{rsa-content-datetime timestamp=rule.lastUpdatedDate displayTime=true displayMilliseconds=false}}
+                  {{/if}}
+                </div>
               </td>
             {{/respond/incident-rules/row}}
           {{/each}}

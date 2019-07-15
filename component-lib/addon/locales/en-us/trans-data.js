@@ -903,6 +903,8 @@ export default {
       descriptionPlaceholder: 'Provide a description of the rule',
       lastMatched: 'Last Matched',
       alertsMatchedCount: 'Matched Alerts',
+      ruleCreated: 'Rule Created',
+      ruleLastUpdated: 'Rule Last Updated',
       incidentsCreatedCount: 'Incidents',
       matchConditions: 'Match Conditions',
       queryMode: 'Query Mode',

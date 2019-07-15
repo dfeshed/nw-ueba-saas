@@ -89,12 +89,12 @@ $configureNavigationHeight: 48px;
           font-size: 1.5rem;
         }
         &.select, &.order {
-          width: 5%;
+          width: 3%;
           text-overflow: ellipsis;
           overflow: hidden;
         }
         &.enabled {
-          width: 6%;
+          width: 4%;
           text-overflow: ellipsis;
           overflow: hidden;
         }
@@ -105,17 +105,27 @@ $configureNavigationHeight: 48px;
           width: auto;
         }
         &.last-matched {
-          width: 15%;
+          width: 9%;
           text-overflow: ellipsis;
           overflow: hidden;
         }
         &.alerts-matched {
-          width: 12%;
+          width: 7%;
           text-overflow: ellipsis;
           overflow: hidden;
         }
         &.incidents-created {
-          width: 10%;
+          width: 5%;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+        &.rule-created {
+          width: 9%;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+        &.rule-last-updated {
+          width: 9%;
           text-overflow: ellipsis;
           overflow: hidden;
         }
