@@ -1,12 +1,11 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render, find, click, settled } from '@ember/test-helpers';
+import { render, find, click, settled, findAll, fillIn } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../../helpers/vnext-patch';
-import $ from 'jquery';
 
 let setState;
 
@@ -60,13 +59,9 @@ module('Integration | Component | delete-rules', function(hooks) {
       {{content/log-parser-rules/parser-rules-list/buttons-container}}
     `);
     assert.ok(find('.buttons-container .add-new-parser-rule .modal-trigger'), 'Add New button is not showing');
-    click('.buttons-container .add-new-parser-rule .modal-trigger');
-    return settled().then(() => {
-      assert.equal($('#modalDestination .add-new-parser-rule button').length, 1, 'Modal is not showing');
-      $('#modalDestination .add-new-parser-rule .ember-text-field.ember-view').val('123');
-      return settled().then(() => {
-        assert.equal($('#modalDestination .add-new-parser-rule input').val(), '123', 'Name of rule is 123');
-      });
-    });
+    await click('.buttons-container .add-new-parser-rule .modal-trigger');
+    assert.equal(findAll('#modalDestination .add-new-parser-rule button').length, 1, 'Modal is not showing');
+    await fillIn('#modalDestination .add-new-parser-rule .ember-text-field.ember-view', '123');
+    assert.equal(find('#modalDestination .add-new-parser-rule input').value, '123', 'Name of rule is 123');
   });
 });

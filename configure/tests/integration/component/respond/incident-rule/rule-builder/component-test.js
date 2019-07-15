@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled } from '@ember/test-helpers';
+import { render, click, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../../helpers/patch-reducer';
@@ -46,7 +46,7 @@ module('Integration | Component | Respond Incident Rule Builder', function(hooks
   test('The component appears in the DOM', async function(assert) {
     setState({ ...initialState });
     await render(hbs`{{respond/incident-rule/rule-builder}}`);
-    assert.equal(this.$('.rsa-rule-builder').length, 1, 'The component appears in the DOM');
+    assert.equal(findAll('.rsa-rule-builder').length, 1, 'The component appears in the DOM');
   });
 
   test('Clicking the Add Group button dispatches the addGroup action creator', async function(assert) {
@@ -55,9 +55,7 @@ module('Integration | Component | Respond Incident Rule Builder', function(hooks
       ...initialState
     });
     await render(hbs`{{respond/incident-rule/rule-builder}}`);
-    this.$('.rule-builder-toolbar button').click();
-    return settled().then(() => {
-      assert.ok(actionSpy.calledOnce, 'The addGroup action was called once');
-    });
+    await click('.rule-builder-toolbar button');
+    assert.ok(actionSpy.calledOnce, 'The addGroup action was called once');
   });
 });
