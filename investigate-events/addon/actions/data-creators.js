@@ -134,7 +134,19 @@ export const fetchInvestigateData = () => {
       // Get first batch of results either at top or bottom of
       // date range
       // if (shouldStartAtOldest(getState())) {
-      dispatch(eventsStartOldest());
+      const fetch = () => {
+        if (parseInt(getState().investigate.eventCount.data, 10) > -1) {
+          dispatch(eventsStartOldest());
+        } else {
+          setTimeout(() => {
+            fetch();
+          }, 100);
+        }
+      };
+      // recursive method that ensures eventCount has updated
+      // eventCount is required to eval if events are at threshold
+      // resultCountAtThreshold is used to determine whether to pass sort params to query
+      fetch();
       // } else {
       //   dispatch(eventsStartNewest());
       // }
