@@ -3,7 +3,7 @@
     {{#if hasBlock}}
       {{yield tab}}
     {{else}}
-      <div class="label">{{t tab.label}}</div>
+      <div class="label" tabindex=0 onkeyup={{action 'activate' tab.name}}>{{t tab.label}}</div>
     {{/if}}
   {{/rsa-nav-tab}}
 {{/each}}

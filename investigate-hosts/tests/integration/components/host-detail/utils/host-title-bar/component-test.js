@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, click } from '@ember/test-helpers';
+import { render, findAll, click, triggerKeyEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 
@@ -135,4 +135,29 @@ module('Integration | Component | Host Title Bar', function(hooks) {
     assert.equal(result.substr(0, 8), 'OVERVIEW', 'Tab name is rendered');
     assert.equal(result.substr(8), 'investigateHosts.tabs.overview', 'Tab label is rendered');
   });
+
+  test('Tab name and label are rendered when focus and enter key is pressed', async function(assert) {
+    const PROPERTY_PANEL_TABS = [
+      {
+        label: 'investigateHosts.tabs.hostDetails',
+        name: 'HOST_DETAILS',
+        selected: true
+      },
+      {
+        label: 'investigateHosts.tabs.policyDetails',
+        name: 'POLICY_DETAILS',
+        selected: false
+      }
+    ];
+
+    assert.expect(1);
+    this.set('hostTabs', PROPERTY_PANEL_TABS);
+    this.set('activate', (tabName) => {
+      assert.equal('POLICY_DETAILS', tabName, 'Correct tab name is rendered on clicking it');
+    });
+    await render(hbs`{{host-detail/utils/host-title-bar tabs=hostTabs defaultAction=(action activate)}}`);
+    const [, policyDetailsTab] = findAll('.rsa-nav-tab div.label');
+    await triggerKeyEvent(policyDetailsTab, 'keyup', 13);
+  });
+
 });
