@@ -106,7 +106,7 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
     assert.equal(policyDetails[1].props.length, 6, 'apache source section has 6 properties');
     // test the specific values for props that get translated
     assert.equal(policyDetails[1].props[0].value, 'Disabled', 'enabled property has expected value');
-    assert.equal(policyDetails[1].props[1].value, 'Collect historical and new data', 'startOfEvents has expected value');
+    assert.equal(policyDetails[1].props[1].value, 'Collect new data only', 'startOfEvents has expected value');
 
     // exchange source section
     assert.equal(policyDetails[2].header, 'adminUsm.policies.detail.sourceSettings', 'exchange source section header is as expected');
@@ -114,7 +114,7 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
     assert.equal(policyDetails[2].props.length, 6, 'exchange source section has 6 properties');
     // test the specific values for props that get translated
     assert.equal(policyDetails[2].props[0].value, 'Enabled', 'enabled property has expected value');
-    assert.equal(policyDetails[2].props[1].value, 'Collect new data only', 'startOfEvents has expected value');
+    assert.equal(policyDetails[2].props[1].value, 'Collect historical and new data', 'startOfEvents has expected value');
   });
 
   test('selectedFilePolicy: basic settings - ignores blank values', function(assert) {

@@ -86,9 +86,9 @@ module('Integration | Component | Policy Inspector | File Policy', function(hook
     assert.equal(findAll('.value').length, 17, '17 value elements are shown');
     // test the specific values for props that get translated
     assert.equal(findAll('.value')[5].innerText, 'Disabled', 'apache source enabled: Disabled');
-    assert.equal(findAll('.value')[6].innerText, 'Collect historical and new data', 'apache source startOfEvents: Collect historical and new data');
+    assert.equal(findAll('.value')[6].innerText, 'Collect new data only', 'apache source startOfEvents: Collect new data only');
     assert.equal(findAll('.value')[11].innerText, 'Enabled', 'exchange source enabled: Enabled');
-    assert.equal(findAll('.value')[12].innerText, 'Collect new data only', 'exchange source startOfEvents: Collect new data only');
+    assert.equal(findAll('.value')[12].innerText, 'Collect historical and new data', 'exchange source startOfEvents: Collect historical and new data');
   });
 
   test('It does NOT show blank properties', async function(assert) {
