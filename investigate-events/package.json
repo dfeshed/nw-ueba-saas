@@ -79,7 +79,7 @@
     "seamless-immutable": "7.1.2"
   },
   "engines": {
-    "node": ">= 4"
+    "node": "10.16.0"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config",
