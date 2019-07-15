@@ -1010,8 +1010,8 @@ module('Unit | Selectors | event-results', function(hooks) {
         eventResults: {
           data: [
             { foo: '0.0.0.1' },
-            { foo: '0.0.0.2' },
-            { foo: '0.0.0.3' }
+            { foo: '50.0.0.2' },
+            { foo: '128.0.0.3' }
           ]
         },
         data: {
@@ -1050,9 +1050,9 @@ module('Unit | Selectors | event-results', function(hooks) {
       investigate: {
         eventResults: {
           data: [
-            { foo: '2001:0db8:85a3:0000:0000:8a2e:0370:7331' },
-            { foo: '2001:0db8:85a3:0000:0000:8a2e:0370:7332' },
-            { foo: '2001:0db8:85a3:0000:0000:8a2e:0370:7333' }
+            { foo: '2000:0db8:85a3:0000:0000:8a2e:0370:7331' },
+            { foo: '2101:0db8:85a3:0000:0000:8a2e:0370:7332' },
+            { foo: '3001:0db8:85a3:0000:0000:8a2e:0370:7333' }
           ]
         },
         data: {
@@ -1111,7 +1111,8 @@ module('Unit | Selectors | event-results', function(hooks) {
         },
         dictionaries: {
           language: [{
-            metaName: 'medium'
+            metaName: 'medium',
+            format: 'UInt8'
           }]
         },
         services: {
@@ -1169,6 +1170,94 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].time, state.investigate.eventResults.data[0].time);
   });
 
+  test('clientSortedData when Float', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            { size: .100 },
+            { size: .20 },
+            { size: .3 }
+          ]
+        },
+        data: {
+          sortField: 'size',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [{
+            metaName: 'size',
+            format: 'Float'
+          }]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.equal(result[0].size, state.investigate.eventResults.data[2].size);
+    assert.equal(result[1].size, state.investigate.eventResults.data[1].size);
+    assert.equal(result[2].size, state.investigate.eventResults.data[0].size);
+  });
+
+  test('clientSortedData when Int', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            { size: 3 },
+            { size: 10 },
+            { size: 200 }
+          ]
+        },
+        data: {
+          sortField: 'size',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [{
+            metaName: 'size',
+            format: 'Int'
+          }]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.equal(result[0].size, state.investigate.eventResults.data[2].size);
+    assert.equal(result[1].size, state.investigate.eventResults.data[1].size);
+    assert.equal(result[2].size, state.investigate.eventResults.data[0].size);
+  });
+
   test('clientSortedData when other', async function(assert) {
     const state = {
       investigate: {
@@ -1195,7 +1284,8 @@ module('Unit | Selectors | event-results', function(hooks) {
         },
         dictionaries: {
           language: [{
-            metaName: 'size'
+            metaName: 'size',
+            format: 'UInt8'
           }]
         },
         services: {

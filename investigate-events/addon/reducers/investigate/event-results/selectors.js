@@ -484,13 +484,22 @@ export const clientSortedData = createSelector(
         if (metaObj && metaObj.format === 'IPv4') {
           // convert ipv4 to 32bit integer
           // small enough for js to handle
-          toSort = event[sortField].split('.').reduce((ipInt, octet) => (ipInt << 8) + parseInt(octet, 10), 0);
+          const ip = event[sortField];
+          if (ip) {
+            const segments = ip.split('.');
+            if (segments) {
+              toSort = segments.reduce((ipInt, octet) => (ipInt << 8) + parseInt(octet, 10), 0) >>> 0;
+            }
+          }
         } else if (metaObj && metaObj.format === 'IPv6') {
           // convert ipv6 to BigInteger
           // to big for js to handle as standard int
           const { Address6 } = window;
-          const ipv6Addy = new Address6(event[sortField]);
-          toSort = ipv6Addy.bigInteger();
+          const ip = event[sortField];
+          if (ip) {
+            const ipv6Addy = new Address6(ip);
+            toSort = ipv6Addy.bigInteger();
+          }
         } else if (sortField === 'medium' && event['nwe.callback_id']) {
           // ensure we sort by displayed label for Endpoints
           toSort = opts.i18n[sortField].endpoint.string;
@@ -500,9 +509,11 @@ export const clientSortedData = createSelector(
         } else {
           // look up translated aliases
           toSort = formatUtil.text(sortField, event[sortField], opts);
+          toSort = toSort.string || toSort;
         }
 
-        eventCopy.toSort = toSort;
+        const parsedNumber = parseFloat(toSort, 10);
+        eventCopy.toSort = (parsedNumber - parsedNumber === 0) ? parsedNumber : toSort;
         return eventCopy;
       });
       cachedData = Immutable.asMutable(cachedData);
