@@ -1,4 +1,5 @@
 $toolbarHeight: 40px;
+$headerHeight: 40px;
 $dragPadColor: background-color(primary);
 $dragPadHighlightedColor: background-color(primary, lighter);
 $licenseBannerHeight: 36px;
@@ -21,44 +22,81 @@ $configureNavigationHeight: 48px;
 }
 
 .rsa-incident-rules {
-   height: calc(100vh - #{$appNavigationHeaderHeight} - calc(2 * #{$configureNavigationHeight}) - calc(2 * #{$licenseBannerHeight}));
+  height: calc(100vh - #{$appNavigationHeaderHeight} - calc(2 * #{$configureNavigationHeight}) - calc(2 * #{$licenseBannerHeight}));
 
-  .incident-rule-list {
-    overflow: auto;
-    height: calc(100% - #{$toolbarHeight});
-    padding: 0 rsa-whitespace();
-    position: absolute;
-    top: $toolbarHeight;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    > div, centered {
-      height: 100%;
-    }
-
-    .rules-error {
-      color: text-color(primary, lighter);
-    }
-
-    th.select {
-      cursor: pointer;
-    }
+  > div, centered {
+    height: 100%;
+  }
+  .rules-error {
+    color: text-color(primary, lighter);
   }
   table {
     table-layout: fixed;
     width: 100%;
     white-space: nowrap;
     min-width: 800px;
-
+    
     td, th {
       vertical-align: middle;
       line-height: 20px;
       box-sizing: border-box;
       padding-left: rsa-whitespace(less);
       padding-right: rsa-whitespace(less);
+      
+      > div {
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      &.reorder {
+        width: 30px;
+        font-size: 1.5rem;
+      }
+      &.select, &.order {
+        width: 3%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      &.enabled {
+        width: 4%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      &.name {
+        width: 25%;
+      }
+      &.description {
+        width: auto;
+      }
+      &.last-matched {
+        width: 9%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      &.alerts-matched {
+        width: 7%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      &.incidents-created {
+        width: 5%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      &.rule-created {
+        width: 9%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      &.rule-last-updated {
+        width: 9%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
     }
-
+    th.select {
+      cursor: pointer;
+    }
     thead {
       text-align: left;
 
@@ -73,61 +111,11 @@ $configureNavigationHeight: 48px;
         border-right: 1px solid border-color(primary, dark);
         border-left: 1px solid border-color(primary, dark);
 
-        > div {
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
         &:first-of-type {
           border-left: none;
         }
         &:last-of-type {
           border-right: none;
-        }
-
-        &.reorder {
-          width: 30px;
-          font-size: 1.5rem;
-        }
-        &.select, &.order {
-          width: 3%;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-        &.enabled {
-          width: 4%;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-        &.name {
-          width: 25%;
-        }
-        &.description {
-          width: auto;
-        }
-        &.last-matched {
-          width: 9%;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-        &.alerts-matched {
-          width: 7%;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-        &.incidents-created {
-          width: 5%;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-        &.rule-created {
-          width: 9%;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-        &.rule-last-updated {
-          width: 9%;
-          text-overflow: ellipsis;
-          overflow: hidden;
         }
       }
     }
@@ -197,14 +185,6 @@ $configureNavigationHeight: 48px;
             background-color: background-color(secondary, lighter, nearly-transparent);
           }
         }
-
-        td {
-          > div {
-            width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-        }
       }
     }
 
@@ -213,8 +193,26 @@ $configureNavigationHeight: 48px;
         visibility: hidden;
       }
     }
-  }
+  } 
+  .incident-rule-list {
+    overflow: auto;
+    height: calc(100% - #{$toolbarHeight} - #{$headerHeight});
+    padding: 1.5*rsa-whitespace()  rsa-whitespace() 0 rsa-whitespace();
+    position: absolute;
+    top: calc(#{$toolbarHeight} + #{$headerHeight});
+    left: 0;
+    right: 0;
+    bottom: 0;
 
+  }
+  .incident-rule-header {
+    height: $headerHeight;
+    padding: rsa-whitespace() 2*rsa-whitespace() 0 rsa-whitespace();
+    top: $toolbarHeight;
+    left: 0;
+    right: 0;
+    bottom: rsa-whitespace();
+  }
   // Green triangle
   .enabled-rule {
     width: 0;
