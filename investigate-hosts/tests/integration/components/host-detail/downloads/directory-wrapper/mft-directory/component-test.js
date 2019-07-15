@@ -16,6 +16,6 @@ module('Integration | Component | mft-directory', function(hooks) {
     assert.equal(findAll('.mft-directory').length, 12, 'mft-directory has loaded');
     assert.equal(findAll('.mft-directory_arrow').length, 11, 'sub directories present');
     assert.equal(findAll('.no-sub-folders').length, 1, 'Folder without subdirectories present');
+    assert.equal(findAll('.mft-folder-icon.main-drive').length, 1, 'Main Drive icon is present');
   });
-
 });
