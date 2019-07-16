@@ -14,7 +14,6 @@ import { updateLocaleByKey } from 'sa/actions/creators/preferences';
 import * as ACTION_TYPES from 'sa/actions/types';
 import config from '../config/environment';
 import { jwt_decode as jwtDecode } from 'ember-cli-jwt-decode';
-import $ from 'jquery';
 import { warn } from '@ember/debug';
 import computed from 'ember-computed-decorators';
 
@@ -221,9 +220,9 @@ export default Route.extend(AuthenticatedRouteMixin, {
   model({ iframedIntoClassic }) {
     // If packager route is from the classic SA then hide the application navigation as this route is mounted in iframe
     if (iframedIntoClassic) {
-      $('body').addClass('iframed-into-classic');
+      document.body.classList.add('iframed-into-classic');
     } else {
-      $('body').removeClass('iframed-into-classic');
+      document.body.classList.remove('iframed-into-classic');
     }
 
     // Set feature flags

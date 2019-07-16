@@ -5569,7 +5569,7 @@ ember-i18n@5.2.0:
     ember-cli-version-checker "^2.1.0"
     ember-getowner-polyfill "^2.2.0"
 
-ember-in-viewport@^3.5.8:
+ember-in-viewport@3.5.8:
   version "3.5.8"
   resolved "https://registry.npmjs.org/ember-in-viewport/-/ember-in-viewport-3.5.8.tgz#da03f5e69c5e5e6cbd048f0db8de0b05c2e3e68f"
   integrity sha512-2GBK5KbNYiGADy433tN3yHnxZ77wSnVyMezx23cr3qs2gwac+5ta2FkOTiKibNkGmWE/Mk/c7zcF7sDk1jy5DA==

@@ -24,31 +24,6 @@ module('Unit | Controller | application', function(hooks) {
     return localStorageClear();
   });
 
-  test('generates prod theme url when link with fingerprint found', async function(assert) {
-    const fingerprint = 'assets/sa-cfd46dd672a31535e0e47662f6dcb59f.css';
-    $('head').append(`<link rel="stylesheet" type="text/css" href="${fingerprint}">`);
-    const controller = this.owner.lookup('controller:application');
-    const result = controller._generateFileName('dark');
-    assert.equal(result, '/assets/dark-cfd46dd672a31535e0e47662f6dcb59f.css');
-
-    const selector = `link[rel=stylesheet][href~="${fingerprint}"]`;
-    $(selector).remove();
-
-    await waitUntil(() => document.querySelectorAll(selector).length === 0, { timeout: 8000 });
-  });
-
-  test('generates non prod theme url when link with fingerprint not found', async function(assert) {
-    const lightCss = '/assets/light.css';
-    const controller = this.owner.lookup('controller:application');
-    const result = controller._generateFileName('light');
-    assert.equal(result, lightCss);
-
-    const selector = `link[rel=stylesheet][href~="${lightCss}"]`;
-    $(selector).remove();
-
-    await waitUntil(() => document.querySelectorAll(selector).length === 0, { timeout: 8000 });
-  });
-
   test('will NOT alter the body class when theme is undefined (string)', async function(assert) {
     $('body').addClass('our-application');
 

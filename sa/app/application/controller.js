@@ -1,13 +1,9 @@
-import $ from 'jquery';
 import fetch from 'component-lib/utils/fetch';
 import { get } from '@ember/object';
 import computed from 'ember-computed-decorators';
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import { getLocale, getTheme } from 'sa/reducers/global/preferences/selectors';
-
-const cssVariablesSupported = window.CSS &&
-    window.CSS.supports && window.CSS.supports('--a', 0);
 
 export default Controller.extend({
   moment: service(),
@@ -42,42 +38,14 @@ export default Controller.extend({
   },
 
   _updateBodyClass(themeName) {
-    $('body').removeClass((index, bodyClasses) => {
-      const names = bodyClasses || '';
-      const classNames = names.split(' ');
-      return classNames.find((name) => {
-        const match = name.match(/.*-theme/);
-        return match && match[0];
-      });
+    // remove class having theme on it
+    const className = [...document.body.classList].find((name) => {
+      return /.*-theme/.test(name);
     });
-    $('body').addClass(`${themeName}-theme`);
-  },
+    document.body.classList.remove(className);
 
-  _generateFileName(themeName) {
-    const stylesheets = $('link[rel=stylesheet]').filter(function(i, style) {
-      return style.href.indexOf('assets/sa-') > -1;
-    });
-    if (stylesheets && stylesheets[0] && stylesheets[0].href) {
-      const [ stylesheet ] = stylesheets;
-      const { href } = stylesheet;
-      const pattern = new RegExp('/assets/sa-(.*).css');
-      const fingerprint = pattern.exec(href);
-      if (fingerprint && fingerprint[1]) {
-        return `/assets/${themeName}-${fingerprint[1]}.css`;
-      }
-    }
-    return `/assets/${themeName}.css`;
-  },
-
-  _fetchStylesheet(themeName) {
-    if (!cssVariablesSupported) {
-      const themeUrl = this._generateFileName(themeName);
-      const themeLink = document.createElement('link');
-      themeLink.href = themeUrl;
-      themeLink.rel = 'stylesheet';
-      themeLink.type = 'text/css';
-      document.body.appendChild(themeLink);
-    }
+    // add new theme
+    document.body.classList.add(`${themeName}-theme`);
   },
 
   // add/set the theme into a cookie for use by integrated apps (e.g., UEBA)
@@ -139,7 +107,6 @@ export default Controller.extend({
       if (themeName !== activeTheme) {
         activeTheme = themeName;
         this._updateBodyClass(themeName);
-        this._fetchStylesheet(themeName);
         this._updateThemeCookie(themeName);
       }
 
