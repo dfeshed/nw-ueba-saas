@@ -41,6 +41,21 @@ module('Integration | Component | host table action bar more actions', function(
     assert.equal(findAll('.rsa-dropdown-action-list li')[1].textContent.trim(), 'Delete', 'Delete option is rendered.');
   });
 
+  test('Clicking more button, should not show options if hosts not selected', async function(assert) {
+    this.set('showRiskScoreModal', () => {
+      assert.ok(true);
+    });
+    this.set('deleteAction', () => {
+      assert.ok(true);
+    });
+    this.set('noHostsSelected', true);
+    await render(hbs`{{host-list/host-table/action-bar/more-actions showRiskScoreModal=showRiskScoreModal deleteAction=deleteAction noHostsSelected=noHostsSelected}}`);
+    assert.equal(document.querySelector('.host_more_actions button').textContent.trim(), 'More', 'action bar More button label');
+    await click('.host_more_actions button');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 0, 'no list options should render.');
+  });
+
+
   test('Clicking Delete options will call passed down action', async function(assert) {
     new ReduxDataHelper(setState).scanCount(2).build();
     this.set('showRiskScoreModal', () => {

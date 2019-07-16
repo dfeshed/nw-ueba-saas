@@ -26,7 +26,7 @@
 }}
   <ul class="rsa-dropdown-action-list" {{action hideTooltip}}>
     {{#each serviceData as |service|}}
-      <li {{action onServiceSelection service}}>{{service.displayName}}</li>
+      <li class="{{if (eq service.id serviceId) 'selected' ''}}" {{action onServiceSelection service}}>{{service.displayName}}</li>
     {{/each}}
   </ul>
 {{/rsa-content-tethered-panel}}

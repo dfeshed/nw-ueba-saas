@@ -16,24 +16,24 @@
   {{/rsa-form-button}}
 {{/rsa-content-tethered-panel-trigger}}
 
-{{#rsa-content-tethered-panel
-  panelClass="host-more-actions"
-  displayCloseButton=false
-  isPopover=true
-  panelId='host-more-actions'
-  position='bottom-right'
-}}
-  <ul class="rsa-dropdown-action-list">
-    {{#each moreOptions as |moreOption|}}
-      {{#if (eq moreOption.buttonId 'delete-button')}}
-        <li {{action deleteAction}}>{{t moreOption.name}}</li>
-      {{else if (eq moreOption.buttonId 'reset-button')}}
-        <li {{action showRiskScoreModal}}>{{t moreOption.name}}</li>
-      {{else if (eq moreOption.buttonId 'downloadMFT-button')}}
-        <li class={{if moreOption.divider 'divider'}} {{action requestMFTDownload}}>{{t moreOption.name}}</li>
-      {{/if}}
-    {{/each}}
-  </ul>
-{{/rsa-content-tethered-panel}}
-
-
+{{#if (not noHostsSelected)}}
+  {{#rsa-content-tethered-panel
+    panelClass="host-more-actions"
+    displayCloseButton=false
+    isPopover=true
+    panelId='host-more-actions'
+    position='bottom-right'
+  }}
+    <ul class="rsa-dropdown-action-list">
+      {{#each moreOptions as |moreOption|}}
+        {{#if (eq moreOption.buttonId 'delete-button')}}
+          <li {{action deleteAction}}>{{t moreOption.name}}</li>
+        {{else if (eq moreOption.buttonId 'reset-button')}}
+          <li {{action showRiskScoreModal}}>{{t moreOption.name}}</li>
+        {{else if (eq moreOption.buttonId 'downloadMFT-button')}}
+          <li class={{if moreOption.divider 'divider'}} {{action requestMFTDownload}}>{{t moreOption.name}}</li>
+        {{/if}}
+      {{/each}}
+    </ul>
+  {{/rsa-content-tethered-panel}}
+{{/if}}

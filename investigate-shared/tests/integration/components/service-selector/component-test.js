@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { findAll, find, render } from '@ember/test-helpers';
+import { findAll, find, render, click, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
@@ -56,6 +56,26 @@ module('Integration | Component | Service Selector', function(hooks) {
     assert.equal(findAll('.disclaimer').length, 1, 'expected disclaimer CSS class');
     assert.equal(find('.js-test-service').textContent.trim(), selectedService, 'incorrect label');
     assert.equal(find('.rsa-form-button-wrapper.service-selector').title, NO_DATA, 'incorrect tooltip');
+  });
+
+  test('to validate, selected class on service selected', async function(assert) {
+    const selectedService = 'svs1';
+    const services = {
+      serviceData: [{ id: selectedService, displayName: selectedService, name: selectedService, version: '11.1.0.0' }],
+      summaryData: { startTime: 0 },
+      isServicesRetrieveError: false
+    };
+    const onServiceSelection = () => {};
+    this.set('onServiceSelection', onServiceSelection);
+    this.set('serviceId', selectedService);
+    this.set('services', services);
+    const selectedServiceName = services.serviceData[0].displayName;
+    await render(hbs`{{service-selector serviceId=serviceId services=services onServiceSelection=onServiceSelection}}`);
+    await click('.rsa-investigate-query-container__service-selector button');
+    return settled().then(async() => {
+      assert.equal(find('.rsa-dropdown-action-list li.selected').textContent.trim(), selectedServiceName, 'selected service has a class /"selected"');
+    });
+
   });
 
   test('it indicates when retrieving summary data', async function(assert) {

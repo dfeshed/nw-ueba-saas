@@ -3159,7 +3159,7 @@ export default {
         hash: 'Hash: ',
         search: {
           minimumtext: {
-            required: 'For filename or path, enter minimum 3 characters. For hash, enter entire SHA-256 hash string'
+            required: 'Search by filename, path with minimum 3 characters, or full SHA-256 hash string'
           }
         },
         truncatedNote: 'Maximum of 100 results are displayed for a snapshot'

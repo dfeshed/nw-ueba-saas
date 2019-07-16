@@ -76,6 +76,37 @@ module('Integration | Component | host-detail/system-information', function(hook
     assert.equal(hostFileEntriesResults, 3, 'Number of resultant rows for Host File Entries');
   });
 
+  // No results message in the table
+  test('No Host File Entries, shows empty data table with no results message', async function(assert) {
+    const win = {
+      overview: {
+        hostOverview: {
+          id: 'CA527998-8E16-B1D4-5E3E-2140F6AD1DF6',
+          machine: {
+            machineAgentId: 'CA527998-8E16-B1D4-5E3E-2140F6AD1DF6',
+            scanStartTime: 1515150192676
+          },
+          machineIdentity: {
+            id: 'CA527998-8E16-B1D4-5E3E-2140F6AD1DF6',
+            group: 'default',
+            machineName: 'INENKUMARP10L8C',
+            machineOsType: 'windows',
+            agentVersion: '11.1.0.0'
+          }
+        },
+        hostDetails: {},
+        downloadId: null,
+        exportJSONStatus: 'completed',
+        arrangeSecurityConfigsBy: 'alphabetical',
+        loadingStatus: 'completed'
+      }
+    };
+    setState(win);
+    await render(hbs`{{host-detail/system-information}}`);
+    const noResultsPanel = findAll('.rsa-panel-message.no-results-message').length;
+    assert.equal(noResultsPanel, 1, 'No host entries, hence no results panel appears.');
+  });
+
   // Network Shares
   test('Network Shares rendered', async function(assert) {
     setState(windows);

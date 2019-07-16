@@ -60,7 +60,7 @@ const SystemInformation = Component.extend({
   @computed('systemInformationData', 'isBashHistorySelected', 'selectedUser', 'isSelectedTabSecurityConfig')
   tableData(systemInformationData, isBashHistorySelected, selectedUser, isSelectedTabSecurityConfig) {
     if (!isSelectedTabSecurityConfig) {
-      const { columns, data } = { ...systemInformationData };
+      const { columns, data = [] } = { ...systemInformationData };
       if (isBashHistorySelected) {
         const filteredData = selectedUser === 'ALL' ? data : data.filterBy('userName', selectedUser);
         return { columns, data: filteredData };
