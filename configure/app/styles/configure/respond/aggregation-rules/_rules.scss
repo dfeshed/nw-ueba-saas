@@ -198,7 +198,6 @@ $configureNavigationHeight: 48px;
     overflow: auto;
     height: calc(100% - #{$toolbarHeight} - #{$headerHeight});
     padding: 1.5*rsa-whitespace()  rsa-whitespace() 0 rsa-whitespace();
-    position: absolute;
     top: calc(#{$toolbarHeight} + #{$headerHeight});
     left: 0;
     right: 0;
