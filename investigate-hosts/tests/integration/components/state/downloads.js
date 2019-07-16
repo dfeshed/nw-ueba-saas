@@ -612,6 +612,7 @@ export const hostDownloads = {
     selectedFileList: [],
     selectedFile: {},
     pageNumber: 0,
+    fileSource: '',
     selectedParentDirectory: {
       recordNumber: 5,
       ancestors: [],

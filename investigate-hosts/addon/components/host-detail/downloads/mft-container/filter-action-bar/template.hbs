@@ -5,7 +5,7 @@
       {{t 'investigateHosts.downloads.backToDownloads'}}
     {{/rsa-form-button}}
   {{/link-to}}
-  {{#rsa-form-button class='close-zone open-filter-panel' click=openFilterPanel }}
+  {{#rsa-form-button class='close-zone open-filter-panel' defaultAction=openFilterPanel isDisabled=disableFilter}}
     {{rsa-icon name='filter-2' size='small'}}
     <span>{{t 'investigateFiles.filter.filter'}}</span>
   {{/rsa-form-button}}

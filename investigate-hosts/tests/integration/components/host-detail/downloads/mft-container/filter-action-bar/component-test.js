@@ -11,6 +11,7 @@ import hostListState from '../../../../state/host.machines';
 import { hostDownloads } from '../../../../state/downloads';
 import { patchReducer } from '../../../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
+import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
 
 const transitions = [];
 const endpointServer = {
@@ -130,7 +131,7 @@ module('Integration | Component | mft-container/filter-action-bar', function(hoo
   });
 
   test('filter-action-bar has rendered', async function(assert) {
-
+    new ReduxDataHelper(initState).hostDownloads(hostDownloads).fileSource('drive').build();
     await render(hbs`{{host-detail/downloads/mft-container/filter-action-bar}}`);
     assert.equal(findAll('.back-to-downloads').length, 1, 'back to downloads button rendered');
     assert.equal(findAll('.open-filter-panel').length, 1, 'open filter panel button rendered');

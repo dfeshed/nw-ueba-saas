@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { findAll, render, click } from '@ember/test-helpers';
+import { findAll, find, render, click } from '@ember/test-helpers';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -54,15 +54,57 @@ module('Integration | Component | directory-wrapper', function(hooks) {
     assert.equal(findAll('.rsa-loader').length, 1, 'Loader present on click');
   });
 
-  test('WS call on click', async function(assert) {
+  test('WS call on clicking the arrow', async function(assert) {
     new ReduxDataHelper(initState).hostDownloads(hostDownloads).build();
     await render(hbs`{{host-detail/downloads/directory-wrapper}}`);
 
-    patchSocket((method, modelName) => {
+    patchSocket((method, modelName, query) => {
       assert.equal(method, 'mftGetRecords');
       assert.equal(modelName, 'endpoint');
+      assert.equal(query.data.criteria.criteriaList[0].expressionList.length, 3);
     });
 
     await click(findAll('.mft-directory_arrow')[1]);
+  });
+
+  test('WS call on clicking the subdirectory', async function(assert) {
+    new ReduxDataHelper(initState).hostDownloads(hostDownloads).build();
+    await render(hbs`{{host-detail/downloads/directory-wrapper}}`);
+
+    patchSocket((method, modelName, query) => {
+      assert.equal(method, 'mftGetRecords');
+      assert.equal(modelName, 'endpoint');
+      assert.equal(query.data.criteria.criteriaList[0].expressionList.length, 2);
+    });
+
+    await click(findAll('.mft-folder')[3]);
+  });
+
+  test('WS call on clicking All files', async function(assert) {
+    new ReduxDataHelper(initState).hostDownloads(hostDownloads).build();
+    await render(hbs`{{host-detail/downloads/directory-wrapper}}`);
+
+    patchSocket((method, modelName, query) => {
+      assert.equal(method, 'mftGetRecords');
+      assert.equal(modelName, 'endpoint');
+      assert.equal(query.data.criteria.criteriaList[0].expressionList.length, 1);
+    });
+    assert.equal(findAll('.all-files.selected').length, 0);
+    await click(find('.all-files'));
+    assert.equal(findAll('.all-files.selected').length, 1);
+  });
+
+  test('WS call on clicking Deleted files', async function(assert) {
+    new ReduxDataHelper(initState).hostDownloads(hostDownloads).build();
+    await render(hbs`{{host-detail/downloads/directory-wrapper}}`);
+
+    patchSocket((method, modelName, query) => {
+      assert.equal(method, 'mftGetRecords');
+      assert.equal(modelName, 'endpoint');
+      assert.equal(query.data.criteria.criteriaList[0].expressionList.length, 2);
+    });
+    assert.equal(findAll('.deleted-files.selected').length, 0);
+    await click(find('.deleted-files'));
+    assert.equal(findAll('.deleted-files.selected').length, 1);
   });
 });

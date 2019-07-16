@@ -1,14 +1,15 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import { setSelectDirectoryForDetails } from 'investigate-hosts/actions/data-creators/downloads';
+import { setSelectDirectoryForDetails, getSubDirectories } from 'investigate-hosts/actions/data-creators/downloads';
 
 const stateToComputed = (state) => ({
   selectedDirectoryForDetails: state.endpoint.hostDownloads.mftDirectory.selectedDirectoryForDetails
 });
 
 const dispatchToActions = {
-  setSelectDirectoryForDetails
+  setSelectDirectoryForDetails,
+  getSubDirectories
 };
 
 const MFTDirectory = Component.extend({
@@ -27,9 +28,11 @@ const MFTDirectory = Component.extend({
 
   actions: {
     fetchSubdirectoriesAndFiles(data) {
-      // placeholder, needs to also make a backend call
-      const { recordNumber } = data;
-      this.send('setSelectDirectoryForDetails', recordNumber);
+      const { recordNumber, mftId } = data;
+      const isDirectories = false;
+      const pageSize = 100;
+      this.send('setSelectDirectoryForDetails', recordNumber, 'drive');
+      this.send('getSubDirectories', mftId, recordNumber, pageSize, isDirectories);
     }
   }
 });

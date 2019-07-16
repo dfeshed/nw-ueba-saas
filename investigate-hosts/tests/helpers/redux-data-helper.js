@@ -419,6 +419,11 @@ export default class DataHelper {
     return this;
   }
 
+  fileSource(value) {
+    _set(this.state, 'hostDownloads.mftDirectory.fileSource', value);
+    return this;
+  }
+
   downloadsSelectedFileList(value) {
     _set(this.state, 'hostDownloads.downloads.selectedFileList', value);
     return this;

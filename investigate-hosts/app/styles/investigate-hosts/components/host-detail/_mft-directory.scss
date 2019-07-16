@@ -74,6 +74,9 @@
     &:hover {
       background-color: background-color(primary, darker);
     }
+    &.selected {
+      background-color: background-color(secondary, dark);
+    }
   }
   .deleted-files {
     margin-top: rsa-whitespace(less);

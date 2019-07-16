@@ -139,4 +139,55 @@ module('Unit | Reducers | downloads', function() {
     }, 'Selected parent and other properties reset');
   });
 
+  test('SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS will set the selected directory or file fetching option', function(assert) {
+    const previous = Immutable.from({
+      subDirectories: [{
+        mftId: '5d19c6c7c8811e3057c68fd8',
+        recordNumber: 5,
+        allocatedSize: 0,
+        directoryCount: 14,
+        directory: true,
+        name: 'C',
+        fullPathName: 'C',
+        parentDirectory: 0,
+        ancestors: []
+      }],
+      selectedParentDirectory: { recordNumber: 5, ancestors: [] },
+      openDirectories: [],
+      selectedDirectoryForDetails: 0,
+      fileSource: ''
+    });
+
+    const endState1 = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS, payload: { selectedDirectoryForDetails: 16, fileSource: 'drive' } });
+    assert.equal(endState1.selectedDirectoryForDetails, 16);
+    assert.equal(endState1.fileSource, 'drive');
+  });
+
+  test('FETCH_MFT_SUBDIRECTORIES_AND_FILES fetches files and subdirectories for ', function(assert) {
+    const previous = Immutable.from({
+      files: {},
+      subDirectories: [],
+      selectedParentDirectory: {}
+    });
+    const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES_AND_FILES });
+    const startEndState = reducer(previous, startAction);
+    assert.equal(startEndState.loading, 'wait');
+
+    const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES_AND_FILES, payload: { data: { items: [{
+      mftId: '5d19c6c7c8811e3057c68fd8',
+      recordNumber: 5,
+      allocatedSize: 0,
+      directoryCount: 14,
+      directory: true,
+      name: 'C',
+      fullPathName: 'C',
+      parentDirectory: 0,
+      ancestors: []
+    }] } } });
+    const endState = reducer(previous, action);
+    assert.equal(endState.totalItems, 1);
+    assert.equal(Object.keys(endState.files).length, 1);
+    assert.equal(endState.loading, 'completed');
+  });
+
 });

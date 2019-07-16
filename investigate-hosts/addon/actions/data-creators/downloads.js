@@ -166,12 +166,13 @@ const toggleMftView = (selectedFile) => ({ type: ACTION_TYPES.TOGGLE_MFT_VIEW, p
  * @private
  * @returns {function(*, *)}
  */
-const _fetchMFTDirectory = (type, mftId, recordNumber, pageSize, isDirectories) => {
+const _fetchMFTDirectory = (type, mftId, recordNumber, pageSize, isDirectories, inUse) => {
   return (dispatch, getState) => {
     const state = getState();
     const { sortField, isSortDescending, pageNumber } = state.endpoint.hostDownloads.mftDirectory;
     const { expressionList } = state.endpoint.hostDownloads.mftDirectoryFilter;
-    // fetching subfolders based on mftId and recordNumber
+
+    // fetching subfolders based on mftId
     const mftSubdirectoryFilter = [{
       restrictionType: 'EQUAL',
       propertyValues: [
@@ -180,25 +181,44 @@ const _fetchMFTDirectory = (type, mftId, recordNumber, pageSize, isDirectories) 
         }
       ],
       propertyName: 'mftId'
-    },
-    {
-      restrictionType: 'EQUAL',
-      propertyValues: [
-        {
-          value: recordNumber
-        }
-      ],
-      propertyName: 'parentDirectory'
-    },
-    {
-      restrictionType: 'EQUAL',
-      propertyValues: [
-        {
-          value: isDirectories
-        }
-      ],
-      propertyName: 'directory'
     }];
+    // if only directories have to be fetched
+    if (isDirectories) {
+      mftSubdirectoryFilter.push({
+        restrictionType: 'EQUAL',
+        propertyValues: [
+          {
+            value: isDirectories
+          }
+        ],
+        propertyName: 'directory'
+      });
+    }
+    // if data has to be fetched based on parent directory
+    if (recordNumber >= 0) {
+      mftSubdirectoryFilter.push({
+        restrictionType: 'EQUAL',
+        propertyValues: [
+          {
+            value: recordNumber
+          }
+        ],
+        propertyName: 'parentDirectory'
+      });
+    }
+
+    // if deleted data has to be fetched.
+    if (!inUse) {
+      mftSubdirectoryFilter.push({
+        restrictionType: 'EQUAL',
+        propertyValues: [
+          {
+            value: false
+          }
+        ],
+        propertyName: 'inUse'
+      });
+    }
 
     const updatedExpressionList = [...expressionList, ...mftSubdirectoryFilter];
 
@@ -215,19 +235,23 @@ const _fetchMFTDirectory = (type, mftId, recordNumber, pageSize, isDirectories) 
   };
 };
 
-const getSubDirectories = (mftId, recordNumber, pageSize, isDirectories) => {
+const getSubDirectories = (mftId, recordNumber, pageSize, isDirectories, inUse = true) => {
   return (dispatch) => {
     if (!recordNumber) {
       dispatch(setSelectDirectoryForDetails(0));
       dispatch(setSeletedParentDirectory({}));
     }
-    dispatch(_fetchMFTDirectory(ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES, mftId, recordNumber, pageSize, isDirectories));
+    if (isDirectories) {
+      dispatch(_fetchMFTDirectory(ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES, mftId, recordNumber, pageSize, isDirectories, inUse));
+    } else {
+      dispatch(_fetchMFTDirectory(ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES_AND_FILES, mftId, recordNumber, pageSize, isDirectories, inUse));
+    }
   };
 };
 
 const setSeletedParentDirectory = (selectedDirectory) => ({ type: ACTION_TYPES.SET_SELECTED_MFT_PARENT_DIRECTORY, payload: selectedDirectory });
 
-const setSelectDirectoryForDetails = (selectedDirectoryForDetails) => ({ type: ACTION_TYPES.SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS, payload: selectedDirectoryForDetails });
+const setSelectDirectoryForDetails = (selectedDirectoryForDetails, fileSource = '') => ({ type: ACTION_TYPES.SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS, payload: { selectedDirectoryForDetails, fileSource } });
 
 
 export {

@@ -39,8 +39,9 @@ module('Integration | Component | mft-container', function(hooks) {
     new ReduxDataHelper(setState).hostDownloads(hostDownloads).build();
     await render(hbs`{{host-detail/downloads/mft-container}}`);
     assert.equal(findAll('.mft-container').length, 1, 'mft-container rendered');
-    assert.equal(findAll('.mft-bar').length, 2, 'mft-container should rendered tree nad table panels');
+    assert.equal(findAll('.mft-bar').length, 2, 'mft-container should rendered tree and table panels');
     assert.equal(findAll('.mft-action').length, 2, 'mft-container should have two action bars');
+    assert.equal(findAll('.open-filter-panel.is-disabled').length, 1);
   });
 
   test('Mft-container filter panel opens on click of filter button', async function(assert) {

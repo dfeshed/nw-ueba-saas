@@ -6,11 +6,10 @@
   <span class='mft-directory-wrapper_loader'>{{rsa-loader size='small'}}</span>
 {{/if}}
 
-
-<div class='deleted-files'>
+<div class="deleted-files {{if (eq fileSource 'deletedFiles') 'selected'}}" {{action 'fetchFiles' 'deletedFiles'}}>
   <span>{{t 'investigateHosts.downloads.mftDirectory.deletedFiles'}}</span>
 </div>
 
-<div class='all-files'>
+<div class="all-files {{if (eq fileSource 'allFiles') 'selected'}}" {{action 'fetchFiles' 'allFiles'}}>
   <span>{{t 'investigateHosts.downloads.mftDirectory.allFiles'}}</span>
 </div>
