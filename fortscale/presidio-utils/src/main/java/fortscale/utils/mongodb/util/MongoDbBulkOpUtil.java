@@ -1,7 +1,5 @@
 package fortscale.utils.mongodb.util;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import com.mongodb.async.SingleResultCallback;
 import com.mongodb.async.client.MongoDatabase;
 import com.mongodb.bulk.BulkWriteResult;
@@ -67,9 +65,8 @@ public class MongoDbBulkOpUtil {
         // map to mongo objects -- need to be converted to spring data code if possible
         List<InsertOneModel<Document>> documents = new ArrayList<InsertOneModel<Document>>();
         for (Object record :records) {
-            DBObject sink = new BasicDBObject();
-            mongoTemplate.getConverter().write(record, sink);
-            Document document = new Document(sink.toMap());
+            Document document = new Document();
+            mongoTemplate.getConverter().write(record, document);
             if (document.get(ID_FIELD_NAME) == null) {
                 document.put(ID_FIELD_NAME, new ObjectId());
             }

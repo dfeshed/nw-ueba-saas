@@ -3,10 +3,10 @@ package fortscale.aggregation.feature.bucket;
 import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
-import fortscale.utils.store.record.StoreMetadataProperties;
-import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
+import fortscale.utils.store.record.StoreMetadataProperties;
+import fortscale.utils.time.TimeRange;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -56,15 +56,14 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 
 		Date startDate = Date.from(timeRange.getStart());
 		Date endDate = Date.from(timeRange.getEnd());
-		Set<String> distinctContexts;
+		Set<String> distinctContexts = new HashSet<>();
 		try {
 			Query query = new Query(Criteria.where(FeatureBucket.START_TIME_FIELD)
 					.gte(startDate)
 					.lt(endDate));
-			List<?> distinctContextIds = mongoTemplate
-					.getCollection(collectionName)
-					.distinct(FeatureBucket.CONTEXT_ID_FIELD, query.getQueryObject());
-			distinctContexts = distinctContextIds.stream().map(Object::toString).collect(Collectors.toSet());
+			mongoTemplate.getCollection(collectionName)
+					     .distinct(FeatureBucket.CONTEXT_ID_FIELD, query.getQueryObject(), String.class)
+					     .into(distinctContexts);
 		} catch (Exception e) {
 			long nextPageIndex = 0;
 			Set<String> subList;
@@ -90,7 +89,8 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 				.gte(startDate)
 				.lt(endDate));
 
-		List<String> distinctContextIds = mongoTemplate.getCollection(collectionName).distinct(FeatureBucket.CONTEXT_ID_FIELD, query.getQueryObject());
+		List<String> distinctContextIds = new ArrayList<>();
+		mongoTemplate.getCollection(collectionName).distinct(FeatureBucket.CONTEXT_ID_FIELD, query.getQueryObject(), String.class).into(distinctContextIds);
 		return distinctContextIds.size();
 	}
 

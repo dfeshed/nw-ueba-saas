@@ -31,11 +31,11 @@ public class PresidioMetricPersistencyServiceImpl implements PresidioMetricPersi
     }
 
 
-    public Iterable<MetricDocument> save(List<MetricDocument> metricDocument) {
+    public Iterable<MetricDocument> save(List<MetricDocument> metricDocuments) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Exporting metrics to elastic, number of metrics {}", metricDocument.size());
+            logger.debug("Exporting metrics to elastic, number of metrics {}", metricDocuments.size());
         }
-        return metricRepository.save(metricDocument);
+        return metricRepository.saveAll(metricDocuments);
     }
 
     @Override

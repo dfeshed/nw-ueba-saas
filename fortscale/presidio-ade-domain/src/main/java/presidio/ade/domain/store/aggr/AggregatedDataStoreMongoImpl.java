@@ -1,6 +1,6 @@
 package presidio.ade.domain.store.aggr;
 
-import com.mongodb.DBCollection;
+import com.mongodb.client.MongoCollection;
 import fortscale.common.feature.MultiKeyFeature;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.PageIterator;
@@ -116,8 +116,8 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
             Query query = new Query(Criteria.where(AdeAggregationRecord.START_INSTANT_FIELD).gte(from).lt(to));
             query = updateThresholdCriteriaInQuery(threshold, aggregatedDataPaginationParam.getAggregatedFeatureType(), query);
             AggrRecordsMetadata metadata = getAggrRecordsMetadata(aggregatedDataPaginationParam);
-            DBCollection collection = mongoTemplate.getCollection(translator.toCollectionName(metadata));
-            distinctContextIds.addAll(collection.distinct(AdeAggregationRecord.CONTEXT_ID_FIELD, query.getQueryObject()));
+            MongoCollection collection = mongoTemplate.getCollection(translator.toCollectionName(metadata));
+            collection.distinct(AdeAggregationRecord.CONTEXT_ID_FIELD, query.getQueryObject(), String.class).into(distinctContextIds);
         });
 
         return distinctContextIds;
