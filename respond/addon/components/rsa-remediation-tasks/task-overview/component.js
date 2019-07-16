@@ -2,19 +2,19 @@ import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
+import { getPriorityTypes } from 'respond-shared/selectors/create-incident/selectors';
+import { getRemediationStatusTypes } from 'respond/selectors/dictionaries';
 
 const closedStatuses = ['REMEDIATED', 'RISK_ACCEPTED', 'NOT_APPLICABLE'];
 
-const stateToComputed = ({ respond: { dictionaries } }) => {
-  return {
-    priorityTypes: dictionaries.priorityTypes,
-    remediationStatusTypes: dictionaries.remediationStatusTypes,
-    remediationTypes: dictionaries.remediationTypes
-  };
-};
+const stateToComputed = (state) => ({
+  priorityTypes: getPriorityTypes(state),
+  remediationStatusTypes: getRemediationStatusTypes(state)
+});
+
 /**
  * @class RemediationTaskOverview
- * Represents the Overview view in the Inspector to display the metadata properties of a Remdiation Task
+ * Represents the Overview view in the Inspector to display the metadata properties of a Remediation Task
  *
  * @public
  */
@@ -33,24 +33,6 @@ const RemediationTaskOverview = Component.extend({
   @computed('info.status')
   isOpen(status) {
     return !closedStatuses.includes(status);
-  },
-
-  /**
-   * Using the target queue as the lookup, retrieves the array of remediation type options available for the
-   * selected target queue.
-   *
-   * @private
-   * @property remediationTypeOptions
-   * @param targetQueue
-   * @param remediationTypes
-   * @returns {String[]}
-   */
-  @computed('info.targetQueue', 'remediationTypes')
-  remediationTypeOptions(targetQueue, remediationTypes) {
-    if (!targetQueue || !remediationTypes || !remediationTypes[targetQueue]) {
-      return [];
-    }
-    return remediationTypes[targetQueue];
   },
 
   actions: {
@@ -75,4 +57,4 @@ const RemediationTaskOverview = Component.extend({
   }
 });
 
-export default connect(stateToComputed, undefined)(RemediationTaskOverview);
+export default connect(stateToComputed)(RemediationTaskOverview);

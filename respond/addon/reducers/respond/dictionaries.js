@@ -6,7 +6,6 @@ import { handle } from 'redux-pack';
 const initialState = {
   statusTypes: [],
   remediationStatusTypes: [],
-  remediationTypes: null,
   alertTypes: [],
   alertSources: [],
   alertNames: [],
