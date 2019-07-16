@@ -474,4 +474,56 @@ module('Unit | Util | Query Parsing', function(hooks) {
     const result = convertTextToPillData({ queryText: text, availableMeta: DEFAULT_LANGUAGES });
     assert.deepEqual(result, { meta, operator, value: '  1' }, 'incorrect object returned');
   });
+
+  test('_possibleMeta filters out isIndexedByNone meta', function(assert) {
+    const randomNumber = Date.now();
+    const text = `mediumtest${randomNumber} = 1`;
+    const meta1 = {
+      count: 0,
+      displayName: 'Medium Test',
+      flags: -2147483631,
+      format: 'UInt8',
+      formattedName: 'medium (Medium)',
+      metaName: `mediumtest${randomNumber}`,
+      isIndexedByKey: false,
+      isIndexedByNone: true,
+      isIndexedByValue: false
+    };
+    const DEFAULT_LANGUAGES2 = [
+      ...DEFAULT_LANGUAGES,
+      meta1
+    ];
+    const result = convertTextToPillData({ queryText: text, availableMeta: DEFAULT_LANGUAGES2 });
+    assert.deepEqual(result, { meta: text }, 'incorrect object returned');
+  });
+
+  test('_possibleMeta does not filter out metaName sessionid', function(assert) {
+    const randomStr = `${Date.now()}abc`;
+    const text = `sessionid = ${randomStr}`;
+    const meta = {
+      count: 0,
+      displayName: 'TEST',
+      flags: -2147483631,
+      format: 'UInt8',
+      formattedName: 'TEST',
+      metaName: 'sessionid',
+      isIndexedByKey: false,
+      isIndexedByNone: true,
+      isIndexedByValue: false
+    };
+    const DEFAULT_LANGUAGES2 = [
+      // remove all other meta options where metaName === 'sessionid'
+      // to get correct output
+      ...DEFAULT_LANGUAGES.filter((item) => item.metaName !== 'sessionid'),
+      meta
+    ];
+    const operator = {
+      description: 'Equals',
+      displayName: '=',
+      hasValue: true,
+      isExpensive: false
+    };
+    const result = convertTextToPillData({ queryText: text, availableMeta: DEFAULT_LANGUAGES2 });
+    assert.deepEqual(result, { meta, operator, value: randomStr }, 'incorrect object returned');
+  });
 });

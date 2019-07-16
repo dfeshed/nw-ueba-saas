@@ -1,3 +1,4 @@
+import { filterValidMeta } from 'investigate-events/util/meta';
 
 const LEADING_SPACES = /^[\s\uFEFF\xA0]+/;
 /**
@@ -125,6 +126,7 @@ export const matcher = (meta, input) => {
 
 /**
  * Function that takes in a string and returns a count of possible matches
+ * excluding meta that are `isIndexedByNone` or metaName is `sessionid`
  * from the metaOptions array.
  * @param {Array} metaOptions Language
  * @param {String} input String that was typed inside query-pill
@@ -133,8 +135,9 @@ export const resultsCount = (metaOptions, input) => {
   if (input.trim().length === 0) {
     return 0;
   }
-  const count = metaOptions.reduce((acc, meta) => {
+  const count = metaOptions.filter(filterValidMeta).reduce((acc, meta) => {
     const num = matcher(meta, input);
+    // do not include isIndexedByNone in count
     if (num >= 0) {
       acc++;
     }

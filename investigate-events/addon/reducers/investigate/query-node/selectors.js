@@ -6,7 +6,7 @@ import { selectedService, hasSummaryData } from 'investigate-events/reducers/inv
 import { createQueryHash } from 'investigate-events/util/query-hash';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
-import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { validMetaKeySuggestions } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
 const { createSelector } = reselect;
 
@@ -138,7 +138,7 @@ export const hasInvalidPill = createSelector(
 // This transforms the meta/operator from state, which are just strings,
 // into the full operator/meta objects used by the components
 export const enrichedPillsData = createSelector(
-  [metaKeySuggestionsForQueryBuilder, _pillsData],
+  [validMetaKeySuggestions, _pillsData],
   (metaKeys, pillsData) => {
     return pillsData.map((pillData) => {
       const meta = metaKeys.find((mK) => mK.metaName === pillData.meta);

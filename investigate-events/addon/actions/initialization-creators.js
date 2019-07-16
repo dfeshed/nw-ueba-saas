@@ -17,7 +17,7 @@ import CONFIG from 'investigate-events/reducers/investigate/config';
 import { fetchServices } from 'investigate-shared/actions/api/services';
 import { fetchAdminEventSettings } from 'investigate-shared/actions/api/events/event-settings';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
-import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { validMetaKeySuggestions } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { TextFilter } from 'investigate-events/util/filter-types';
 import * as ACTION_TYPES from './types';
 
@@ -197,7 +197,7 @@ const _handleInitializationError = (dispatch) => {
 
 const _handleSearchParamsAndHashInQueryParams = (parsedQueryParams, hashNavigateCallback, dispatch, getState) => {
   return new RSVP.Promise(function(resolve, reject) {
-    const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
+    const metaKeys = validMetaKeySuggestions(getState());
     const parsedPillData = parsePillDataFromUri(parsedQueryParams.pillData, metaKeys);
 
     // If there is a Text filter, remove it because it's not a valid hash. We
@@ -219,7 +219,7 @@ const _handleSearchParamsAndHashInQueryParams = (parsedQueryParams, hashNavigate
           // this will return params for what was in pdhash and mf in the url
           getParamsForHashes(allHashIds).then(({ data: paramsObjectArray }) => {
             const paramsArray = paramsObjectArray.map((pO) => pO.query);
-            const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
+            const metaKeys = validMetaKeySuggestions(getState());
             const newPillData = paramsArray.map((singleParams) => {
               return transformTextToPillData(singleParams, metaKeys);
             });
@@ -259,7 +259,7 @@ const _handleSearchParamsAndHashInQueryParams = (parsedQueryParams, hashNavigate
 
 const _handleSearchParamsInQueryParams = ({ pillData }, hashNavigateCallback, isInternalQuery) => {
   return (dispatch, getState) => {
-    const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
+    const metaKeys = validMetaKeySuggestions(getState());
     const parsedPillData = parsePillDataFromUri(pillData, metaKeys);
 
     // If this is an internal query, then the pills are already
@@ -345,7 +345,7 @@ const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, hashNavigateCall
       .then(({ data: paramsObjectArray }) => {
         // Pull the actual param values out of the returned params objects.
         const paramsArray = paramsObjectArray.map((pO) => pO.query);
-        const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
+        const metaKeys = validMetaKeySuggestions(getState());
         // Transform server param strings into arrays of pill data objects
         // and dispatch those to state. transformTextToPillData now returns
         // an array of pills so flatten after mapping.

@@ -314,17 +314,35 @@ module('Integration | Component | Pill Meta', function(hooks) {
         metaOptions=metaOptions
       }}
     `);
+    // there are 'b' and 'bytes.src' in `META_OPTIONS`
     await typeIn(PILL_SELECTORS.metaSelectInput, 'b ');
     // await fillIn('input', 'b');
     // await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', SPACE_KEY);
   });
 
-  test('it does not selects meta if a trailing SPACE is entered and there is more than one option', async function(assert) {
-    assert.expect(3);
-    this.set('metaOptions', META_OPTIONS);
+  test('it selects meta if a trailing SPACE is entered and there is one valid option', async function(assert) {
+    const done = assert.async();
+    assert.expect(1);
+
+    // there are 'c.1' and 'c.2' in `META_OPTIONS`
+    // 'c.1' at index 3, 'c.2' at index 4
+    // make 'c.1' meta invalid by setting isIndexedByNone true
+    // so 'c.2' would be the only valid option when searchText is 'c.'
+    const META_OPTIONS2 = [...META_OPTIONS];
+    META_OPTIONS2[3] = {
+      ...META_OPTIONS2[3],
+      isIndexedByNone: true,
+      disabled: true,
+      isIndexedByKey: false,
+      isIndexedByValue: false
+    };
+    this.set('metaOptions', META_OPTIONS2);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
-    this.set('handleMessage', (type) => {
-      assert.equal(type, MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED); // Will be called as many times as chars are typed in
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.META_SELECTED) {
+        assert.equal(data.metaName, DEFAULT_LANGUAGES[4].metaName, 'Wrong message data');
+        done();
+      }
     });
     await render(hbs`
       {{query-container/pill-meta
@@ -334,9 +352,28 @@ module('Integration | Component | Pill Meta', function(hooks) {
         metaOptions=metaOptions
       }}
     `);
-    await typeIn(PILL_SELECTORS.metaSelectInput, 'c. ');// Will match 2 items (c.a and c.b)
-    // return settled();
+    await typeIn(PILL_SELECTORS.metaSelectInput, 'c. ');
   });
+
+  test('it does not select meta if a trailing SPACE is entered and there is more than one option',
+    async function(assert) {
+      assert.expect(3);
+      this.set('metaOptions', META_OPTIONS);
+      this.set('activePillTab', AFTER_OPTION_TAB_META);
+      this.set('handleMessage', (type) => {
+        assert.equal(type, MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED); // Will be called as many times as chars are typed in
+      });
+      await render(hbs`
+        {{query-container/pill-meta
+          isActive=true
+          activePillTab=activePillTab
+          sendMessage=(action handleMessage)
+          metaOptions=metaOptions
+        }}
+      `);
+      await typeIn(PILL_SELECTORS.metaSelectInput, 'c. ');// Will match 2 items (c.a and c.b)
+      // return settled();
+    });
 
   test('it selects meta if a trailing SPACE is entered and there is an exact match', async function(assert) {
     const done = assert.async();

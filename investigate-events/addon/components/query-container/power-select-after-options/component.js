@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import * as MESSAGE_TYPES from '../message-types';
 import { next } from '@ember/runloop';
 import { hasComplexText } from 'investigate-events/util/query-parsing';
+import { filterValidMeta } from 'investigate-events/util/meta';
 
 const { log } = console; // eslint-disable-line no-unused-vars
 
@@ -68,7 +69,13 @@ export default Component.extend({
 
   didUpdateAttrs() {
     this._super(...arguments);
-    const { resultsCount, searchText } = this.get('select');
+    const { results, searchText } = this.get('select');
+    // Need to factor in isIndexedByNone when trying to understand how many results
+    // are available for selection, because if there are 2, but both are indexNone, then
+    // we need to act like there 0 (and put focus in the advanced options)
+    const resultsFilteredByIsIndexedByNone = results.filter(filterValidMeta);
+    const filteredResultsCount = resultsFilteredByIsIndexedByNone.length;
+
     // Since this is a power-select scoped component, the API that's passed to
     // power-select sub-components (named `select` in this case), get's a new
     // API every time power-select updates itself. For our concerns, this
@@ -93,7 +100,7 @@ export default Component.extend({
       // Text Filter. If all options were filtered out, make a smart guess about
       // which Advanced Option to highlight.
       if (this._prevSearchText !== searchText) {
-        if (resultsCount === 0) {
+        if (filteredResultsCount === 0) {
           // All options filterd out. If text is complex or a text filter was
           // previously created, choose free-form, otherwise default to text.
           if (hasComplexText(searchText) || !this.get('canPerformTextSearch') || this.get('hasTextPill')) {

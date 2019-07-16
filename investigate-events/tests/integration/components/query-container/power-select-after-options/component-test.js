@@ -182,6 +182,51 @@ module('Integration | Component | Power Select After Options', function(hooks) {
     assert.ok(hasHighlight2, 'an item should be highlighted');
   });
 
+  test('Text Filter item is automatically highlighted if EPS search result has no valid items', async function(assert) {
+    const isIndexedByNoneMeta =
+    {
+      disabled: true,
+      displayName: 'Action Event',
+      format: 'Text',
+      formattedName: 'action (Action Event)',
+      isIndexedByKey: false,
+      isIndexedByNone: true,
+      isIndexedByValue: false,
+      metaName: 'action'
+    };
+    const apiWithInvalidResults = {
+      ...EPS_API,
+      results: [isIndexedByNoneMeta],
+      resultsCount: 1
+    };
+    const MENU_OPTIONS_WITH_ISINDEXEDBYNONE = [...MENU_OPTIONS, isIndexedByNoneMeta];
+    this.set('options', MENU_OPTIONS_WITH_ISINDEXEDBYNONE);
+    this.set('select', EPS_API);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.AFTER_OPTIONS_HIGHLIGHT) {
+        assert.equal(data, 1, 'correct data');
+        this.set('options', MENU_OPTIONS_WITH_HIGHLIGHT);
+      }
+    });
+    await render(hbs`
+      {{query-container/power-select-after-options
+        _previouslyHighlightedIndex=null
+        options=(readonly options)
+        select=(readonly select)
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    const _options = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const hasHighlight = _options.some((d) => d.getAttribute('aria-current') === 'true');
+    assert.notOk(hasHighlight, 'no item should be highlighted');
+    this.set('select', apiWithInvalidResults);
+    await settled();
+
+    const _options2 = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const hasHighlight2 = _options2.some((d) => d.getAttribute('aria-current') === 'true');
+    assert.ok(hasHighlight2, 'an item should be highlighted');
+  });
+
   test('Clicking on a deselected tab will send out a message', async function(assert) {
     assert.expect(1);
     this.set('activePillTab', AFTER_OPTION_TAB_META);

@@ -61,13 +61,33 @@ const _enrichedLanguage = createSelector(
 /**
  * Given a language array with meta suggestions for Guided query bar, the
  * function filters out:
+ *   Meta key `time` - as we already have a time range
+ * and defines `disabled` for meta dropdown based on the property `isIndexedByNone`
+ *
+ * @public
+ */
+export const metaKeySuggestionsForQueryBuilder = createSelector(
+  _enrichedLanguage,
+  (language = []) => {
+    return language
+      .filter((meta) => meta.metaName !== 'time')
+      .map((meta) => ({
+        ...meta,
+        disabled: meta.isIndexedByNone && meta.metaName !== 'sessionid'
+      }));
+  }
+);
+
+/**
+ * Given a language array with meta suggestions for Guided query bar, the
+ * function filters out:
  * 1) Meta key `time` - as we already have a time range
  * 2) All meta keys which are indexed none. Exception to this rule is
  * sessionid, which we'd want to show.
  *
  * @public
  */
-export const metaKeySuggestionsForQueryBuilder = createSelector(
+export const validMetaKeySuggestions = createSelector(
   _enrichedLanguage,
   (language = []) => {
     return language

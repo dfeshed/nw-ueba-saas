@@ -4,7 +4,7 @@ import { selectedPills, focusedPill } from 'investigate-events/reducers/investig
 import validateQueryFragment from './fetch/query-validation';
 import { selectPillsFromPosition } from 'investigate-events/actions/utils';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
-import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { validMetaKeySuggestions } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { TEXT_FILTER } from 'investigate-events/constants/pill';
 
 const { log } = console; // eslint-disable-line no-unused-vars
@@ -249,7 +249,7 @@ export const addTextFilter = ({ pillData, position = 0, shouldAddFocusToNewPill 
 export const updatedFreeFormText = (freeFormText) => {
   return (dispatch, getState) => {
     const pillData = transformTextToPillData(
-      freeFormText, metaKeySuggestionsForQueryBuilder(getState())
+      freeFormText, validMetaKeySuggestions(getState())
     );
     dispatch({
       type: ACTION_TYPES.UPDATE_FREE_FORM_TEXT,

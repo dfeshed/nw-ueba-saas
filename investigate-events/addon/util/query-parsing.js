@@ -16,6 +16,7 @@ import {
   QueryFilter,
   TextFilter
 } from './filter-types';
+import { filterValidMeta } from 'investigate-events/util/meta';
 
 const { log } = console; // eslint-disable-line
 
@@ -245,7 +246,8 @@ export const uriEncodeMetaFilters = (filters = []) => {
 const _possibleMeta = (textChunk, availableMeta, originalText, pillData) => {
   let hasInvalidMeta = false;
 
-  const metaConfig = availableMeta.find((m) => m.metaName === textChunk);
+  const metaConfig = availableMeta.filter(filterValidMeta).find((m) => m.metaName === textChunk);
+
   if (!metaConfig) {
     pillData.meta = originalText;
     hasInvalidMeta = true;
@@ -339,5 +341,4 @@ export const convertTextToPillData = ({ queryText, availableMeta }) => {
   }
 
   return pillData;
-
 };

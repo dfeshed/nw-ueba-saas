@@ -1,10 +1,12 @@
 import { module, test } from 'qunit';
 import { determineNewComponentPropsFromPillData, resultsCount, matcher } from 'investigate-events/components/query-container/query-pill/query-pill-util';
 import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
+import { metaIsIndexedByNoneUInt16 as metaConfigIsIndexedByNone,
+  metaIsIndexedByValueText as metaConfigIsIndexedByValue
+} from '../../helpers/meta-data-helper';
 
 module('Unit | Util | query-pill-util');
 
-const metaConfig = { format: 'Text', metaName: 'alert', flags: -2147483133, displayName: 'Alerts', indexedBy: 'value' };
 const eqOperator = { displayName: '=', description: 'Equals', isExpensive: false, hasValue: true };
 const existsOperator = { displayName: 'exists', description: 'Exists', isExpensive: false, hasValue: false };
 
@@ -29,13 +31,13 @@ test('properties when meta string is passed in', function(assert) {
 
 test('properties when meta object is passed in', function(assert) {
   const expectedPropeties = {
-    selectedMeta: metaConfig,
+    selectedMeta: metaConfigIsIndexedByValue,
     isMetaActive: false,
     isMetaAutoFocused: true,
     isOperatorActive: true
   };
   const pillData = {
-    meta: metaConfig
+    meta: metaConfigIsIndexedByValue
   };
   const properties = determineNewComponentPropsFromPillData(pillData);
   assert.deepEqual(properties, expectedPropeties, 'Meta is set, operator is active');
@@ -43,7 +45,7 @@ test('properties when meta object is passed in', function(assert) {
 
 test('properties when meta object and operator string is passed in', function(assert) {
   const expectedPropeties = {
-    selectedMeta: metaConfig,
+    selectedMeta: metaConfigIsIndexedByValue,
     isMetaActive: false,
     isMetaAutoFocused: true,
     prepopulatedOperatorText: 'foo',
@@ -53,7 +55,7 @@ test('properties when meta object and operator string is passed in', function(as
     isValueActive: false
   };
   const pillData = {
-    meta: metaConfig,
+    meta: metaConfigIsIndexedByValue,
     operator: 'foo'
   };
   const properties = determineNewComponentPropsFromPillData(pillData);
@@ -62,7 +64,7 @@ test('properties when meta object and operator string is passed in', function(as
 
 test('properties when meta object and operator object are passed in', function(assert) {
   const expectedPropeties = {
-    selectedMeta: metaConfig,
+    selectedMeta: metaConfigIsIndexedByValue,
     isMetaActive: false,
     isMetaAutoFocused: true,
     selectedOperator: eqOperator,
@@ -71,7 +73,7 @@ test('properties when meta object and operator object are passed in', function(a
     valueString: ''
   };
   const pillData = {
-    meta: metaConfig,
+    meta: metaConfigIsIndexedByValue,
     operator: eqOperator
   };
   const properties = determineNewComponentPropsFromPillData(pillData);
@@ -80,14 +82,14 @@ test('properties when meta object and operator object are passed in', function(a
 
 test('properties when meta object and operator object which does not accept values are passed in', function(assert) {
   const expectedPropeties = {
-    selectedMeta: metaConfig,
+    selectedMeta: metaConfigIsIndexedByValue,
     isMetaActive: false,
     isMetaAutoFocused: true,
     selectedOperator: existsOperator,
     isOperatorActive: true
   };
   const pillData = {
-    meta: metaConfig,
+    meta: metaConfigIsIndexedByValue,
     operator: existsOperator
   };
   const properties = determineNewComponentPropsFromPillData(pillData);
@@ -96,7 +98,7 @@ test('properties when meta object and operator object which does not accept valu
 
 test('properties when meta and operator object with value are passed in', function(assert) {
   const expectedPropeties = {
-    selectedMeta: metaConfig,
+    selectedMeta: metaConfigIsIndexedByValue,
     isMetaActive: false,
     isMetaAutoFocused: true,
     selectedOperator: eqOperator,
@@ -105,7 +107,7 @@ test('properties when meta and operator object with value are passed in', functi
     isValueActive: true
   };
   const pillData = {
-    meta: metaConfig,
+    meta: metaConfigIsIndexedByValue,
     operator: eqOperator,
     value: 'boo'
   };
@@ -119,9 +121,36 @@ test('provides a correct count for text passed in', function(assert) {
   assert.equal(count, 4, 'Matcher function not returning a correct count');
 });
 
+test('provides a correct valid meta count for text passed in', function(assert) {
+  const DEFAULT_LANGUAGES2 = [
+    ...DEFAULT_LANGUAGES,
+    {
+      ...metaConfigIsIndexedByNone,
+      metaName: 'alert.xyz',
+      displayName: 'Alert XYZ',
+      formattedName: 'Alert XYZ'
+    }
+  ];
+  const count = resultsCount(DEFAULT_LANGUAGES2, 'al');
+  assert.equal(count, 4, 'Matcher function not returning a correct count');
+});
+
 test('provides a count 0 when no text is passed in', function(assert) {
 
   const count = resultsCount(DEFAULT_LANGUAGES, ' ');
+  assert.equal(count, 0, 'Matcher function not returning a correct count');
+});
+
+test('provides a count 0 when there is no valid meta', function(assert) {
+
+  const randomMetaName = `random-meta-${Date.now()}`;
+  const metaConfigIsIndexedByNone1 = {
+    ...metaConfigIsIndexedByNone,
+    metaName: randomMetaName,
+    displayName: 'TEST'
+  };
+  const languagesWithIndexedByNone = [...DEFAULT_LANGUAGES, metaConfigIsIndexedByNone1];
+  const count = resultsCount(languagesWithIndexedByNone, randomMetaName);
   assert.equal(count, 0, 'Matcher function not returning a correct count');
 });
 

@@ -26,6 +26,7 @@ import BoundedList from 'investigate-events/util/bounded-list';
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 import { matcher } from '../query-pill/query-pill-util';
+import { filterValidMeta } from 'investigate-events/util/meta';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -343,6 +344,7 @@ export default Component.extend({
     onFocus(powerSelectAPI, event) {
       const selection = this.get('selection');
       const targetValue = event.target.value;
+
       // If we gain focus and `lastSearchText` exists, power-select will use
       // that to down-select the list of metaOptions. This can happen if the
       // user enters some text, focuses away, then comes back. What they
@@ -449,7 +451,7 @@ export default Component.extend({
       powerSelectAPI.actions.close();
       // If we have focus, drop it like it's hot, drop it like it's hot.
       _dropFocus();
-      // Let others know ECS was pressed
+      // Let others know ESC was pressed
       this._broadcast(MESSAGE_TYPES.META_ESCAPE_KEY);
     } else if (isEnter(event)) {
       const { selected } = powerSelectAPI;
@@ -497,14 +499,18 @@ export default Component.extend({
    */
   _keyHandler(powerSelectAPI, event) {
     if (isSpace(event)) {
-      const { results, resultsCount, searchText } = powerSelectAPI;
+      const { results, searchText } = powerSelectAPI;
+      // if isIndexedByNone then need to filter out from results
+      const resultsFilteredByIsIndexedByNone = results.filter(filterValidMeta);
+      const filteredResultsCount = resultsFilteredByIsIndexedByNone.length;
+
       // These conditionals return false to prevent any further handling of
       // the keypress that brought us here. Specifically, it prevents the
       // pill-operator from having a space at the beginning.
-      if (resultsCount === 1) {
-        this._broadcast(MESSAGE_TYPES.META_SELECTED, results[0]);
+      if (filteredResultsCount === 1) {
+        this._broadcast(MESSAGE_TYPES.META_SELECTED, resultsFilteredByIsIndexedByNone[0]);
         return false;
-      } else if (resultsCount > 1) {
+      } else if (filteredResultsCount > 1) {
         if (_isFirstChar(event)) {
           // ignore a leading space
           return false;
@@ -696,7 +702,7 @@ export default Component.extend({
    * @return {Object|undefined} The matching object or undefined
    * @private
    */
-  _hasExactMatch: (text, metas = []) => metas.find((m) => m.metaName === text),
+  _hasExactMatch: (text, metas = []) => metas.filter(filterValidMeta).find((m) => m.metaName === text),
 
   /**
    * Function that power-select uses to determine which item in the list of
@@ -706,6 +712,14 @@ export default Component.extend({
    */
   _highlighter(powerSelectAPI) {
     const { options, results } = powerSelectAPI;
-    return options.length !== results.length ? results[0] : null;
+    if (options.length !== results.length) {
+      const indexOfFirstValidMeta = results.findIndex(filterValidMeta);
+      // if there is a valid meta option (isIndexedByNone === false), return it
+      // if not, return undefined
+      return indexOfFirstValidMeta > -1 ? results[indexOfFirstValidMeta] : undefined;
+
+    } else {
+      return null;
+    }
   }
 });
