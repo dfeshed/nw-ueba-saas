@@ -1,6 +1,8 @@
 import { handleActions } from 'redux-actions';
 import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from '../actions/types';
+import { handle } from 'redux-pack';
+import moment from 'moment';
 
 const dataInitialState = Immutable.from({
   // Recon inputs
@@ -52,7 +54,39 @@ const data = handleActions({
 
   [ACTION_TYPES.SET_FATAL_API_ERROR_FLAG]: (state, { payload }) => {
     return state.set('apiFatalErrorCode', payload);
+  },
+
+  [ACTION_TYPES.META_RETRIEVE]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        // If in standalone mode, we will use the event's collection
+        // time (passed in as meta) and set our queryInputs used for
+        // context menu actions as -
+        // 1. startTime as collectionTime - 15 minutes
+        // 2. endTime as collectionTime + 15 minutes
+        // Otherwise, we will use the inputs passed down by inv-events.
+        if (s.isStandalone) {
+          const meta = action.payload;
+          const timeT = meta.find((arr) => arr[0] === 'time');
+          const collectionTimeStart = moment(timeT[1]);
+          const collectionTimeEnd = collectionTimeStart.clone();
+
+          const startTime = collectionTimeStart.subtract(15, 'minutes').unix();
+          const endTime = collectionTimeEnd.add(15, 'minutes').unix();
+
+          const { queryInputs } = s;
+          const newInputs = {
+            ...queryInputs,
+            startTime,
+            endTime
+          };
+          s = s.set('queryInputs', newInputs);
+        }
+        return s;
+      }
+    });
   }
+
 }, dataInitialState);
 
 export default data;

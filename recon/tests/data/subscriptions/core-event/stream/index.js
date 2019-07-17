@@ -36,7 +36,8 @@ export default {
           [ 'action', 'get' ],
           [ 'directory', faker.system.directoryPath() ],
           [ 'filename', fileName ],
-          [ 'extension', fileName.split('.').pop() ]
+          [ 'extension', fileName.split('.').pop() ],
+          [ 'time', new Date() ]
         ]
       }]
     };

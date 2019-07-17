@@ -1,6 +1,5 @@
 import Component from '@ember/component';
 import layout from './template';
-import $ from 'jquery';
 
 export default Component.extend({
   layout,
@@ -53,7 +52,8 @@ export default Component.extend({
     if (this.get('isExpanded')) {
       const el = e.target.closest('.recon-button-menu li');
       if (el) {
-        this.set('currentIndex', $(el).index());
+        const selectorAll = this.element.querySelectorAll('.recon-button-menu li');
+        this.set('currentIndex', Array.from(selectorAll).indexOf(el));
         el.focus();
       }
     }
@@ -76,7 +76,7 @@ export default Component.extend({
     }
     this.set('currentIndex', selectedItemIndex);
 
-    $(`.recon-button-menu li:nth-of-type(${selectedItemIndex + 1})`).focus();
+    this.element.querySelector(`.recon-button-menu li:nth-of-type(${selectedItemIndex + 1})`).focus();
   },
 
   /**
@@ -96,7 +96,7 @@ export default Component.extend({
     }
     this.set('currentIndex', selectedItemIndex);
 
-    $(`.recon-button-menu li:nth-of-type(${selectedItemIndex + 1})`).focus();
+    this.element.querySelector(`.recon-button-menu li:nth-of-type(${selectedItemIndex + 1})`).focus();
   }
 
 });

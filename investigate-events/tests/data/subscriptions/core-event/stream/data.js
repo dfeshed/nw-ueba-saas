@@ -25,7 +25,8 @@ const logAndNetworkMetas = function() {
     [ 'tcp.srcport', faker.random.arrayElement(TCP_SRC_PORTS) ],
     [ 'ip.dst', faker.internet.ip() ],
     [ 'tcp.dstport', faker.random.arrayElement(TCP_DST_PORTS) ],
-    [ 'medium', medium ]
+    [ 'medium', medium ],
+    [ 'time', new Date() ]
   ];
   if (medium === 32) {
     metas.push(['device.type', faker.random.arrayElement(DEVICE_TYPES)]);
@@ -41,7 +42,8 @@ const endpointMetas = [
   [ 'param.dst', faker.internet.userAgent() ],
   [ 'param.src', faker.internet.userAgent() ],
   [ 'nwe.callback_id', randInt(15, 2000) ],
-  [ 'category', faker.random.arrayElement(CATEGORY) ]
+  [ 'category', faker.random.arrayElement(CATEGORY) ],
+  [ 'time', new Date() ]
 ];
 
 const oneDayAgo = (now) => {

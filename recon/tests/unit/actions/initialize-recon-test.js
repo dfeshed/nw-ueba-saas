@@ -126,7 +126,7 @@ module('Unit | Actions | initializeRecon', function(hooks) {
 
     await waitUntil(() => {
       const { meta } = redux.getState().recon.meta;
-      return Array.isArray(meta) && meta.length === 20;
+      return Array.isArray(meta) && meta.length === 21;
     }, { timeout: 10000 });
 
     const { meta } = redux.getState().recon.meta;
