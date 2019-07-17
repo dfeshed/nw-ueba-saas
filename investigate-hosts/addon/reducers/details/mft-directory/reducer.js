@@ -17,9 +17,13 @@ const initialState = Immutable.from({
   selectedFileList: [],
   selectedFile: {},
   pageNumber: 0,
-  selectedParentDirectory: {},
+  selectedParentDirectory: { recordNumber: 0 },
   openDirectories: [],
-  selectedDirectoryForDetails: 0
+  selectedDirectoryForDetails: 0,
+  isDirectories: true,
+  inUse: true,
+  pageSize: 65000,
+  fileSource: ''
 });
 
 const _addSubdirectoriesToParent = (directories, selectedParentDirectory, subDirectories, ancestors, recordNumber, subDirectoriesLevel) => {
@@ -57,6 +61,7 @@ const _handleAppendFiles = (action) => {
 };
 
 const mftDirectory = reduxActions.handleActions({
+  [ACTION_TYPES.RESET_MFT_FILE_DATA]: (state) => state.merge(initialState),
 
   [ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES]: (state, action) => {
     return handle(state, action, {
@@ -81,33 +86,35 @@ const mftDirectory = reduxActions.handleActions({
   },
 
   [ACTION_TYPES.SET_SELECTED_MFT_PARENT_DIRECTORY]: (state, { payload }) => {
-    if (Object.keys(payload).length) {
-
-      const { ancestors, recordNumber, close } = payload;
-      const { openDirectories } = state;
-      const updatedAncestors = [...ancestors, recordNumber];
-      let copyOfOpenDirectories = [...openDirectories];
-      if (close) {
-        copyOfOpenDirectories = copyOfOpenDirectories.filter((item) => item !== recordNumber);
-      } else {
-        updatedAncestors.forEach((item) => {
-          if (!copyOfOpenDirectories.includes(item)) {
-            copyOfOpenDirectories.push(item);
-          }
-        });
-      }
-      return state.merge({ selectedParentDirectory: payload, openDirectories: copyOfOpenDirectories });
-
+    const { selectedParentDirectory, pageSize, isDirectories, inUse } = payload;
+    const { ancestors, recordNumber, close } = selectedParentDirectory;
+    const { openDirectories } = state;
+    const updatedAncestors = [...ancestors, recordNumber];
+    let copyOfOpenDirectories = [...openDirectories];
+    if (close) {
+      copyOfOpenDirectories = copyOfOpenDirectories.filter((item) => item !== recordNumber);
     } else {
-
-      return state.merge({ subDirectories: [], selectedParentDirectory: payload, openDirectories: [] });
-
+      updatedAncestors.forEach((item) => {
+        if (!copyOfOpenDirectories.includes(item)) {
+          copyOfOpenDirectories.push(item);
+        }
+      });
     }
+    return state.merge({ selectedParentDirectory, openDirectories: copyOfOpenDirectories, pageSize, isDirectories, inUse });
   },
 
-  [ACTION_TYPES.SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS]: (state, { payload: { selectedDirectoryForDetails, fileSource } }) => state.merge({
+  [ACTION_TYPES.SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS]: (state, { payload: { selectedDirectoryForDetails, fileSource, pageSize, isDirectories, inUse } }) => state.merge({
     selectedDirectoryForDetails,
-    fileSource
+    fileSource,
+    pageSize,
+    isDirectories,
+    inUse
+  }),
+
+  [ACTION_TYPES.SET_FETCH_DIRECTORY_DETAILS]: (state, { payload: { pageSize, isDirectories, inUse } }) => state.merge({
+    pageSize,
+    isDirectories,
+    inUse
   })
 
 }, initialState);

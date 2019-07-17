@@ -166,10 +166,11 @@ const toggleMftView = (selectedFile) => ({ type: ACTION_TYPES.TOGGLE_MFT_VIEW, p
  * @private
  * @returns {function(*, *)}
  */
-const _fetchMFTDirectory = (type, mftId, recordNumber, pageSize, isDirectories, inUse) => {
+const _fetchMFTDirectory = (type, recordNumber) => {
   return (dispatch, getState) => {
     const state = getState();
-    const { sortField, isSortDescending, pageNumber } = state.endpoint.hostDownloads.mftDirectory;
+    const { selectedMftFile } = state.endpoint.hostDownloads.downloads;
+    const { sortField, isSortDescending, pageNumber, pageSize, isDirectories, inUse } = state.endpoint.hostDownloads.mftDirectory;
     const { expressionList } = state.endpoint.hostDownloads.mftDirectoryFilter;
 
     // fetching subfolders based on mftId
@@ -177,7 +178,7 @@ const _fetchMFTDirectory = (type, mftId, recordNumber, pageSize, isDirectories, 
       restrictionType: 'EQUAL',
       propertyValues: [
         {
-          value: mftId
+          value: selectedMftFile
         }
       ],
       propertyName: 'mftId'
@@ -235,23 +236,23 @@ const _fetchMFTDirectory = (type, mftId, recordNumber, pageSize, isDirectories, 
   };
 };
 
-const getSubDirectories = (mftId, recordNumber, pageSize, isDirectories, inUse = true) => {
-  return (dispatch) => {
-    if (!recordNumber) {
-      dispatch(setSelectDirectoryForDetails(0));
-      dispatch(setSeletedParentDirectory({}));
-    }
-    if (isDirectories) {
-      dispatch(_fetchMFTDirectory(ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES, mftId, recordNumber, pageSize, isDirectories, inUse));
-    } else {
-      dispatch(_fetchMFTDirectory(ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES_AND_FILES, mftId, recordNumber, pageSize, isDirectories, inUse));
-    }
+const getSubDirectories = () => {
+  return (dispatch, getState) => {
+    next(() => {
+      const state = getState();
+      const { isDirectories, selectedDirectoryForDetails, selectedParentDirectory } = state.endpoint.hostDownloads.mftDirectory;
+      if (isDirectories) {
+        dispatch(_fetchMFTDirectory(ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES, selectedParentDirectory.recordNumber));
+      } else {
+        dispatch(_fetchMFTDirectory(ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES_AND_FILES, selectedDirectoryForDetails));
+      }
+    });
   };
 };
 
 const setSeletedParentDirectory = (selectedDirectory) => ({ type: ACTION_TYPES.SET_SELECTED_MFT_PARENT_DIRECTORY, payload: selectedDirectory });
 
-const setSelectDirectoryForDetails = (selectedDirectoryForDetails, fileSource = '') => ({ type: ACTION_TYPES.SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS, payload: { selectedDirectoryForDetails, fileSource } });
+const setSelectDirectoryForDetails = (selectedDirectoryForDetails) => ({ type: ACTION_TYPES.SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS, payload: selectedDirectoryForDetails });
 
 
 export {

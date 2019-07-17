@@ -70,9 +70,8 @@ const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTa
       }
       if (tabName === 'DOWNLOADS-MFT') {
         dispatch(toggleMftView({ mftFile, mftName }));
-        const isDirectories = true;
-        const pageSize = 65000;
-        dispatch(getSubDirectories(mftFile, 0, pageSize, isDirectories));
+        dispatch({ type: ACTION_TYPES.RESET_MFT_FILE_DATA });
+        dispatch(getSubDirectories());
 
       } else if (tabName === 'DOWNLOADS') {
         dispatch(toggleMftView({ mftFile: '', mftName: '' }));

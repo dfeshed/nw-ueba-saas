@@ -16,12 +16,16 @@ const initialState = {
   selectedFileList: [],
   selectedFile: {},
   pageNumber: 0,
-  selectedParentDirectory: {},
+  selectedParentDirectory: { recordNumber: 0 },
   openDirectories: [],
-  selectedDirectoryForDetails: 0
+  selectedDirectoryForDetails: 0,
+  isDirectories: true,
+  inUse: true,
+  pageSize: 65000,
+  fileSource: ''
 };
 
-module('Unit | Reducers | downloads', function() {
+module('Unit | Reducers | mft-directory', function() {
 
   test('should return the initial state', function(assert) {
     const result = reducer(undefined, {});
@@ -94,7 +98,12 @@ module('Unit | Reducers | downloads', function() {
 
     assert.equal(endState1.subDirectories[0].children.length, 2, 'Directories added to level 1');
 
-    const selectedParentUpdated = reducer(endState1, { type: ACTION_TYPES.SET_SELECTED_MFT_PARENT_DIRECTORY, payload: { recordNumber: 16, ancestors: [5], close: false } });
+    const selectedParentUpdated = reducer(endState1, { type: ACTION_TYPES.SET_SELECTED_MFT_PARENT_DIRECTORY, payload: {
+      selectedParentDirectory: { recordNumber: 16, ancestors: [5], close: false },
+      pageSize: 6500,
+      isDirectories: true,
+      inUse: true
+    } });
 
     const action2 = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES, payload: { data: { items: [{
       mftId: '5d19c6c7c8811e3057c68fd8',
@@ -129,14 +138,13 @@ module('Unit | Reducers | downloads', function() {
       selectedParentDirectory: { recordNumber: 5, ancestors: [] },
       openDirectories: []
     });
-    const endState1 = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_MFT_PARENT_DIRECTORY, payload: { recordNumber: 16, ancestors: [5], close: false } });
+    const endState1 = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_MFT_PARENT_DIRECTORY, payload: {
+      selectedParentDirectory: { recordNumber: 16, ancestors: [5], close: false },
+      pageSize: 6500,
+      isDirectories: true,
+      inUse: true
+    } });
     assert.deepEqual(endState1.selectedParentDirectory, { recordNumber: 16, ancestors: [5], close: false }, 'New selected parent set');
-    const endState2 = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_MFT_PARENT_DIRECTORY, payload: {} });
-    assert.deepEqual(endState2, {
-      'openDirectories': [],
-      'selectedParentDirectory': {},
-      'subDirectories': []
-    }, 'Selected parent and other properties reset');
   });
 
   test('SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS will set the selected directory or file fetching option', function(assert) {
@@ -161,6 +169,31 @@ module('Unit | Reducers | downloads', function() {
     const endState1 = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS, payload: { selectedDirectoryForDetails: 16, fileSource: 'drive' } });
     assert.equal(endState1.selectedDirectoryForDetails, 16);
     assert.equal(endState1.fileSource, 'drive');
+  });
+
+  test('RESET_MFT_FILE_DATA will reset the state', function(assert) {
+    const previous = Immutable.from({
+      subDirectories: [{
+        mftId: '5d19c6c7c8811e3057c68fd8',
+        recordNumber: 5,
+        allocatedSize: 0,
+        directoryCount: 14,
+        directory: true,
+        name: 'C',
+        fullPathName: 'C',
+        parentDirectory: 0,
+        ancestors: []
+      }],
+      selectedParentDirectory: { recordNumber: 5, ancestors: [] },
+      openDirectories: [],
+      selectedDirectoryForDetails: 16,
+      fileSource: ''
+    });
+
+    const endState1 = reducer(previous, { type: ACTION_TYPES.RESET_MFT_FILE_DATA });
+    assert.equal(endState1.selectedDirectoryForDetails, 0);
+    assert.equal(endState1.fileSource, '');
+    assert.deepEqual(endState1.subDirectories, []);
   });
 
   test('FETCH_MFT_SUBDIRECTORIES_AND_FILES fetches files and subdirectories for ', function(assert) {

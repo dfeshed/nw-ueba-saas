@@ -19,18 +19,16 @@ const DirectoryWrapper = Component.extend({
 
   actions: {
     fetchFiles(selectedAction) {
-      const mftId = this.get('selectedMftFile');
       const isDirectories = false;
       const pageSize = 100;
+      const selectedDirectoryForDetails = -1;
 
       if (selectedAction === 'allFiles') {
-        this.send('setSelectDirectoryForDetails', 0, 'allFiles');
-        this.send('getSubDirectories', mftId, -1, pageSize, isDirectories);
+        this.send('setSelectDirectoryForDetails', { selectedDirectoryForDetails, fileSource: 'allFiles', pageSize, isDirectories, inUse: true });
       } else {
-        this.send('setSelectDirectoryForDetails', 0, 'deletedFiles');
-        const inUse = false;
-        this.send('getSubDirectories', mftId, -1, pageSize, isDirectories, inUse);
+        this.send('setSelectDirectoryForDetails', { selectedDirectoryForDetails, fileSource: 'deletedFiles', pageSize, isDirectories, inUse: false });
       }
+      this.send('getSubDirectories');
     }
   }
 });

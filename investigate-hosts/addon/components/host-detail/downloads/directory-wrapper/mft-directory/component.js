@@ -28,11 +28,14 @@ const MFTDirectory = Component.extend({
 
   actions: {
     fetchSubdirectoriesAndFiles(data) {
-      const { recordNumber, mftId } = data;
-      const isDirectories = false;
-      const pageSize = 100;
-      this.send('setSelectDirectoryForDetails', recordNumber, 'drive');
-      this.send('getSubDirectories', mftId, recordNumber, pageSize, isDirectories);
+      const { recordNumber } = data;
+      this.send('setSelectDirectoryForDetails', {
+        selectedDirectoryForDetails: recordNumber,
+        fileSource: 'drive',
+        pageSize: 100,
+        isDirectories: false,
+        inUse: true });
+      this.send('getSubDirectories');
     }
   }
 });

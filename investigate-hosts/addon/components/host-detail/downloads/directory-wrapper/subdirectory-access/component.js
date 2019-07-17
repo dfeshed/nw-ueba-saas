@@ -33,19 +33,20 @@ const SubdirectoryAccess = Component.extend({
   },
   actions: {
     toggleSubdirectories() {
-      const { ancestors, recordNumber, children, mftId } = this.get('data');
+      const { ancestors, recordNumber, children } = this.get('data');
+      // max number of folders is 65000 and fetch only directories is true
       const isDirectories = true;
       const pageSize = 65000;
+      const inUse = true;
       if (this.get('close')) {
+        this.send('setSeletedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors, close: false }, pageSize, isDirectories, inUse });
         if (!children) {
           this.set('isLoading', true);
-          // max number of folders is 65000 and fetch only directories is true
-          this.send('getSubDirectories', mftId, recordNumber, pageSize, isDirectories);
+          this.send('getSubDirectories');
         }
 
-        this.send('setSeletedParentDirectory', { recordNumber, ancestors, close: false });
       } else {
-        this.send('setSeletedParentDirectory', { recordNumber, ancestors: [], close: true });
+        this.send('setSeletedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors: [], close: true } });
       }
       this.toggleProperty('close');
     }
