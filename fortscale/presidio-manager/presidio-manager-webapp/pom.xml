@@ -128,16 +128,6 @@
             </plugin>
 
 
-
-
-
-
-
-
-
-
-
-
             <plugin>
                 <groupId>com.github.kongchen</groupId>
                 <artifactId>swagger-maven-plugin</artifactId>
@@ -258,20 +248,39 @@
                         <!--<goals>-->
                             <!--<goal>execute</goal>-->
                         <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<scripts>-->
+                                <!--<script>-->
+                                    <!--pathname = String.format("%s/../../resources/groovy/utils/Maven.groovy", project.basedir)-->
+                                    <!--command = String.format("%s clean install -f %s/target/generated-sources/swagger", project.properties.get('maven.command'), project.basedir)-->
+                                    <!--new GroovyShell().parse(new File(pathname)).with {-->
+                                    <!--executeMavenCommand(command, project.properties.get('java.home'), project.properties.get('maven.home'))-->
+                                    <!--}-->
+                                <!--</script>-->
+
+                            <!--</scripts>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                    <!--<execution>-->
+                        <!--<id>deploy-client</id>-->
+                        <!--<phase>deploy</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>execute</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<scripts>-->
+                                <!--<script>-->
+                                    <!--pathname = String.format("%s/../../resources/groovy/utils/Maven.groovy", project.basedir)-->
+                                    <!--repositoryId = project.version.endsWith("SNAPSHOT") ? "asoc-snapshots" : "asoc-releases"-->
+                                    <!--command = String.format("%s deploy:deploy-file -f %s/target/generated-sources/swagger -DpomFile=pom.xml -Dfile=target/presidio-manager-generated-client-%s.jar -DrepositoryId=%s -Durl=https://repo1.rsa.lab.emc.com:8443/artifactory/%s", project.properties.get('maven.command'), project.basedir, project.version, repositoryId, repositoryId)-->
+                                    <!--new GroovyShell().parse(new File(pathname)).with {-->
+                                    <!--executeMavenCommand(command, project.properties.get('java.home'), project.properties.get('maven.home'))-->
+                                    <!--}-->
+                                <!--</script>-->
+                            <!--</scripts>-->
+                        <!--</configuration>-->
                     <!--</execution>-->
                 <!--</executions>-->
-                <!--<configuration>-->
-                    <!--<scripts>-->
-                        <!--<script>-->
-                            <!--pathname = String.format("%s/../../resources/groovy/utils/Maven.groovy", project.basedir)-->
-                            <!--command = String.format("%s clean install -f %s/target/generated-sources/swagger", project.properties.get('maven.command'), project.basedir)-->
-                            <!--new GroovyShell().parse(new File(pathname)).with {-->
-                            <!--executeMavenCommand(command, project.properties.get('java.home'), project.properties.get('maven.home'))-->
-                            <!--}-->
-                        <!--</script>-->
-
-                    <!--</scripts>-->
-                <!--</configuration>-->
                 <!--<dependencies>-->
                     <!--<dependency>-->
                         <!--<groupId>org.codehaus.groovy</groupId>-->
@@ -283,93 +292,6 @@
                     <!--</dependency>-->
                 <!--</dependencies>-->
             <!--</plugin>-->
-
-
-            <!--<plugin>-->
-                <!--<groupId>org.codehaus.gmavenplus</groupId>-->
-                <!--<artifactId>gmavenplus-plugin</artifactId>-->
-                <!--<version>1.7.1</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>deploy-client</id>-->
-                        <!--<phase>deploy</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>execute</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-                <!--<configuration>-->
-                    <!--<scripts>-->
-                        <!--<script>-->
-                            <!--pathname = String.format("%s/../../resources/groovy/utils/Maven.groovy", project.basedir)-->
-                            <!--repositoryId = project.version.endsWith("SNAPSHOT") ? "asoc-snapshots" : "asoc-releases"-->
-                            <!--command = String.format("%s deploy:deploy-file -f %s/target/generated-sources/swagger -DpomFile=pom.xml -Dfile=target/presidio-manager-generated-client-%s.jar -DrepositoryId=%s -Durl=https://repo1.rsa.lab.emc.com:8443/artifactory/%s", project.properties.get('maven.command'), project.basedir, project.version, repositoryId, repositoryId)-->
-                            <!--new GroovyShell().parse(new File(pathname)).with {-->
-                            <!--executeMavenCommand(command, project.properties.get('java.home'), project.properties.get('maven.home'))-->
-                            <!--}-->
-                        <!--</script>-->
-                    <!--</scripts>-->
-                <!--</configuration>-->
-                <!--<dependencies>-->
-                    <!--<dependency>-->
-                        <!--<groupId>org.codehaus.groovy</groupId>-->
-                        <!--<artifactId>groovy-all</artifactId>-->
-                        <!--&lt;!&ndash; any version of Groovy \>= 1.5.0 should work here &ndash;&gt;-->
-                        <!--<version>2.5.7</version>-->
-                        <!--<type>pom</type>-->
-                        <!--<scope>runtime</scope>-->
-                    <!--</dependency>-->
-                <!--</dependencies>-->
-            <!--</plugin>-->
-
-
-
-            <!--<plugin>-->
-                <!--<groupId>org.codehaus.groovy.maven</groupId>-->
-                <!--<artifactId>gmaven-plugin</artifactId>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>compile-client</id>-->
-                        <!--<phase>install</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>execute</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<source>-->
-                                <!--pathname = String.format("%s/../../resources/groovy/utils/Maven.groovy", project.basedir)-->
-                                <!--command = String.format("%s clean install -f %s/target/generated-sources/swagger", project.properties.get('maven.command'), project.basedir)-->
-                                <!--new GroovyShell().parse(new File(pathname)).with {-->
-                                    <!--executeMavenCommand(command, project.properties.get('java.home'), project.properties.get('maven.home'))-->
-                                <!--}-->
-                            <!--</source>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                    <!--<execution>-->
-                        <!--<id>deploy-client</id>-->
-                        <!--<phase>deploy</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>execute</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<source>-->
-                                <!--pathname = String.format("%s/../../resources/groovy/utils/Maven.groovy", project.basedir)-->
-                                <!--repositoryId = project.version.endsWith("SNAPSHOT") ? "asoc-snapshots" : "asoc-releases"-->
-                                <!--command = String.format("%s deploy:deploy-file -f %s/target/generated-sources/swagger -DpomFile=pom.xml -Dfile=target/presidio-manager-generated-client-%s.jar -DrepositoryId=%s -Durl=https://repo1.rsa.lab.emc.com:8443/artifactory/%s", project.properties.get('maven.command'), project.basedir, project.version, repositoryId, repositoryId)-->
-                                <!--new GroovyShell().parse(new File(pathname)).with {-->
-                                    <!--executeMavenCommand(command, project.properties.get('java.home'), project.properties.get('maven.home'))-->
-                                <!--}-->
-                            <!--</source>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
-
-
-
-
-
-
-
 
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
