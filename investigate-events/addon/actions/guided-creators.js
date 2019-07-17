@@ -92,7 +92,9 @@ export const batchAddPills = ({ pillsData, initialPosition }) => {
       }
     });
     pillsData.forEach((pillData, i) => {
-      dispatch(_clientSideValidation(pillData, initialPosition + i));
+      if (pillData.type !== 'text') {
+        dispatch(_clientSideValidation(pillData, initialPosition + i));
+      }
     });
   };
 };

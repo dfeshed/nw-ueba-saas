@@ -362,6 +362,61 @@ test('BATCH_ADD_PILLS adds pill to end of list', function(assert) {
   assert.equal(result.pillsData[4].isFocused, true, 'pillsData item 3 is focused');
 });
 
+test('BATCH_ADD_PILLS does not add a text pill when one is already in state', function(assert) {
+  const action = {
+    type: ACTION_TYPES.BATCH_ADD_PILLS,
+    payload: {
+      pillsData: [
+        { foo: 1 },
+        { bar: 2 },
+        { baz: 3, type: 'text' }
+      ],
+      initialPosition: 1
+    }
+  };
+  const state = new ReduxDataHelper()
+    .pillsDataText()
+    .build()
+    .investigate
+    .queryNode;
+  const result = reducer(state, action);
+
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].searchTerm, 'blahblahblah', 'The original text pill has not moved');
+  assert.equal(result.pillsData[0].isFocused, false, 'The original text pill is not focused');
+  assert.equal(result.pillsData[1].foo, 1, 'pillsData item 1 is in the right position');
+  assert.equal(result.pillsData[1].isFocused, false, 'pillsData item 1 is not focused');
+  assert.equal(result.pillsData[2].bar, 2, 'pillsData item 2 is in the right position');
+  assert.equal(result.pillsData[2].isFocused, true, 'pillsData item 2 is focused');
+});
+
+test('BATCH_ADD_PILLS does not add a text pill when one is already in state even when pasting before it', function(assert) {
+  const action = {
+    type: ACTION_TYPES.BATCH_ADD_PILLS,
+    payload: {
+      pillsData: [
+        { foo: 1 },
+        { bar: 2 },
+        { baz: 3, type: 'text' }
+      ],
+      initialPosition: 0
+    }
+  };
+  const state = new ReduxDataHelper()
+    .pillsDataText()
+    .build()
+    .investigate
+    .queryNode;
+  const result = reducer(state, action);
+
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].foo, 1, 'pillsData item 1 is in the right position');
+  assert.equal(result.pillsData[0].isFocused, false, 'pillsData item 1 is not focused');
+  assert.equal(result.pillsData[1].bar, 2, 'pillsData item 2 is in the right position');
+  assert.equal(result.pillsData[1].isFocused, true, 'pillsData item 2 is focused');
+  assert.equal(result.pillsData[2].searchTerm, 'blahblahblah', 'The original text pill has not been removed');
+  assert.equal(result.pillsData[2].isFocused, false, 'The original text pill is not focused');
+});
 
 test('DELETE_GUIDED_PILLS removes the pill provided', function(assert) {
   const action = {

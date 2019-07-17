@@ -469,21 +469,45 @@ export default handleActions({
 
   [ACTION_TYPES.BATCH_ADD_PILLS]: (state, { payload }) => {
     const { pillsData, initialPosition } = payload;
-    const newPillsData = pillsData.map((pillData, i) => {
+    let newPillsData = pillsData.map((pillData) => {
       return {
         ..._initialPillState,
         ...pillData,
-        // Put focus on the last pill that's being batch added
-        isFocused: i === (pillsData.length - 1),
+        isFocused: false,
         id: _.uniqueId(ID_PREFIX)
       };
     });
+
+    // Remove any text pills after the first, with the exception that if
+    // a text pill is already in state, prefer that one.
+    let seenFirstTextPill = state.pillsData.some((pill) => {
+      return pill.type === 'text';
+    });
+    newPillsData = newPillsData.filter((pill) => {
+      if (pill.type === 'text') {
+        if (!seenFirstTextPill) {
+          seenFirstTextPill = true;
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    });
+
+    // Focus the last pill being added
+    if (newPillsData.length > 0) {
+      newPillsData[newPillsData.length - 1].isFocused = true;
+    }
+
     // Create a new array of data only when there were no pills previously
     if (state.pillsData.length === 0) {
       return state.set('pillsData', Immutable.from(newPillsData));
     }
 
-    // Otherwise, put the array in the middle of the current state
+    // If there are pills in state already, put the array in the middle of
+    // the current state
     return state.set('pillsData', Immutable.from(
       state.pillsData.slice(0, initialPosition)
         .concat(newPillsData)
