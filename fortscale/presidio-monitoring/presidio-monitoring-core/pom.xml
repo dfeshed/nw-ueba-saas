@@ -59,10 +59,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-elasticsearch</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.elasticsearch</groupId>
@@ -83,11 +79,18 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <!--todo: fix after aspectj-maven-plugin will adding support for JDK 11-->
+                <!--todo: https://github.com/mojohaus/aspectj-maven-plugin/pull/45-->
+                <!--<groupId>org.codehaus.mojo</groupId>-->
+                <!--<artifactId>aspectj-maven-plugin</artifactId>-->
+                <!--<version>${aspectj-maven-plugin.version}</version>-->
+                <groupId>com.nickwongdev</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.10</version>
+                <version>${nickwongdev-aspectj-maven-plugin.version}</version>
                 <configuration>
-                    <complianceLevel>1.8</complianceLevel>
+                    <source>${java-lang-config.version}</source>
+                    <target>${java-lang-config.version}</target>
+                    <complianceLevel>${java-lang-config.version}</complianceLevel>
                     <includes>
                         <include>**/*.java</include>
                         <include>**/*.aj</include>

@@ -45,7 +45,7 @@
     </pluginRepositories>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- RPM version -->
@@ -74,18 +74,28 @@
         <guava.version>27.0-jre</guava.version>
         <!-- Maven plugin versions -->
         <maven-download-plugin.version>1.1.0</maven-download-plugin.version>
-        <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
-        <maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
-        <aspectj-maven-plugin.complianceLevel>1.8</aspectj-maven-plugin.complianceLevel>
-        <aspectj-maven-plugin.version>1.10</aspectj-maven-plugin.version>
-        <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
-        <mavanagaiata.version>0.7.0</mavanagaiata.version>
-        <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+
+
+        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+        <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
+
+
+
+        <aspectj-maven-plugin.complianceLevel>11</aspectj-maven-plugin.complianceLevel>
+        <aspectj-maven-plugin.version>1.11</aspectj-maven-plugin.version>
+        <nickwongdev-aspectj-maven-plugin.version>1.12.1</nickwongdev-aspectj-maven-plugin.version>
+
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <mavanagaiata.version>0.9.4</mavanagaiata.version>
+
+
+        <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
+
         <maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
-        <maven-source-plugin.version>2.1.1</maven-source-plugin.version>
+        <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
         <maven-failsafe-plugin.version>2.16</maven-failsafe-plugin.version>
         <servlet-api.version>3.1.0</servlet-api.version>
-        <java-lang-config.version>1.8</java-lang-config.version>
+        <java-lang-config.version>11</java-lang-config.version>
         <springretry.version>1.2.2.RELEASE</springretry.version>
         <hive.version>1.1.0-cdh5.4.8</hive.version>
         <pigunit.version>0.12.0-cdh5.4.8</pigunit.version>
@@ -108,11 +118,11 @@
         <joda-time.version>2.3</joda-time.version>
         <syslog-java-client.version>1.0.6</syslog-java-client.version>
         <commons-validator.version>1.4.1</commons-validator.version>
-        <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
-        <podam.version>7.0.5.RELEASE</podam.version>
+        <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
+        <podam.version>7.2.3.RELEASE</podam.version>
         <spring-cloud.version>Dalston.SR1</spring-cloud.version>
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
-        <org.aspectj-version>1.8.7</org.aspectj-version>
+        <org.aspectj-version>1.9.4</org.aspectj-version>
         <spring-cloud-task-starter.version>1.1.0.M1</spring-cloud-task-starter.version>
         <elasticsearch.version>5.4.0</elasticsearch.version>
         <spring-data-elasticsearch.version>2.1.4.RELEASE</spring-data-elasticsearch.version>
@@ -128,7 +138,7 @@
         <jackson-coreutils.version>1.8</jackson-coreutils.version>
         <commons-io.version>2.4</commons-io.version>
         <presidio-data-generators.version>2.0.0-SNAPSHOT</presidio-data-generators.version>
-        <auto-service.version>1.0-rc3</auto-service.version>
+        <auto-service.version>1.0-rc5</auto-service.version>
         <spring-context-support.version>${spring.version}</spring-context-support.version>
         <spring-test.version>4.3.20.RELEASE</spring-test.version>
         <jackson.version>2.9.8</jackson.version>
@@ -162,13 +172,14 @@
                 <version>${jsonassert.version}</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>jdk.tools</groupId>
-                <artifactId>jdk.tools</artifactId>
-                <version>${jav-lang-config.version}</version>
-                <scope>system</scope>
-                <systemPath>${java.home}/../lib/tools.jar</systemPath>
-            </dependency>
+            <!--<dependency>-->
+            <!--<groupId>jdk.tools</groupId>-->
+            <!--<artifactId>jdk.tools</artifactId>-->
+            <!--<version>${java-lang-config.version}</version>-->
+            <!--<scope>system</scope>-->
+            <!--<systemPath>${maven-jar-plugin}/../lib/tools.jar</systemPath>-->
+            <!--&lt;!&ndash;<systemPath>${java.class.path}/../lib/tools.jar</systemPath>&ndash;&gt;-->
+            <!--</dependency>-->
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
@@ -491,8 +502,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>${java-lang-config.version}</source>
-                    <target>${java-lang-config.version}</target>
+                    <release>${java-lang-config.version}</release>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
