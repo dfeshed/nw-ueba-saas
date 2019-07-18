@@ -37,7 +37,7 @@
         </label>
       {{else}}
         <h2 class="title" title="{{if column.title column.title names.bothNames}}">
-          {{#if (or (eq status 'streaming') (eq column.field 'custom.meta-summary'))}}
+          {{#if (or (eq status 'streaming') (eq column.field 'custom.meta-summary') (eq column.field 'custom.metasummary') (eq column.field 'custom.theme'))}}
             {{#rsa-content-tethered-panel-trigger panel=(concat 'columnSortTooltip' column.displayIndex)}}
               <span class="js-move-handle disabled-sort">
                 {{if column.title column.title names.displayName}}

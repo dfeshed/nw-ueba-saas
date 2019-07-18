@@ -126,7 +126,11 @@ function buildThemeContent($content, field, item, opts) {
   let value;
   if (isLogEvent(item)) {
     // Use category for an endpoint event and device.type for a log event
-    value = opts.isEndpoint ? item.category : item['device.type'];
+    if (opts.isEndpoint) {
+      value = item.category;
+    } else {
+      value = item['device.type'];
+    }
   } else {
     // Use service for any event that is not log based
     value = item.service;

@@ -57,6 +57,18 @@ test('Should update global preferences', function(assert) {
   assert.deepEqual(newEndState.globalPreferences, 'foo');
 });
 
+test('Should set isQueryExecutedBySort', function(assert) {
+  const previous = Immutable.from({
+    isQueryExecutedBySort: true
+  });
+
+  const action = {
+    type: ACTION_TYPES.SORT_IN_CLIENT_COMPLETE
+  };
+  const newEndState = reducer(previous, action);
+  assert.deepEqual(newEndState.isQueryExecutedBySort, false);
+});
+
 test('Should update sort without isQueryExecutedBySort', function(assert) {
   const previous = Immutable.from({
     sortField: null,

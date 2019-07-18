@@ -68,6 +68,16 @@ test('isSummaryColumnVisible', function(assert) {
     investigate: {
       eventResults: {
         visibleColumns: [{
+          field: 'custom.metasummary'
+        }]
+      }
+    }
+  }), true);
+
+  assert.equal(isSummaryColumnVisible({
+    investigate: {
+      eventResults: {
+        visibleColumns: [{
           field: 'foo'
         }]
       }
@@ -93,7 +103,7 @@ test('validEventSortColumns returns as expected when sortable', function(assert)
   const state = {
     investigate: {
       services: {
-        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator' }]
+        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator', version: 11.4 }]
       },
       queryStats: {
         devices: [{
@@ -104,6 +114,10 @@ test('validEventSortColumns returns as expected when sortable', function(assert)
       },
       dictionaries: {
         language: [{ format: 'Text', metaName: 'foo', flags: -2147482605 }]
+      },
+      eventCount: {
+        data: 5,
+        threshold: 5
       }
     }
   };
@@ -125,7 +139,7 @@ test('validEventSortColumns returns as expected when notSingleton', function(ass
   const state = {
     investigate: {
       services: {
-        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator' }]
+        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator', version: 11.4 }]
       },
       queryStats: {
         devices: [{
@@ -136,6 +150,10 @@ test('validEventSortColumns returns as expected when notSingleton', function(ass
       },
       dictionaries: {
         language: [{ format: 'Text', metaName: 'foo', flags: -2147482621 }]
+      },
+      eventCount: {
+        data: 5,
+        threshold: 5
       }
     }
   };
@@ -157,7 +175,7 @@ test('validEventSortColumns returns as expected when notIndexedAtValue', functio
   const state = {
     investigate: {
       services: {
-        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator' }]
+        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator', version: 11.4 }]
       },
       queryStats: {
         devices: [{
@@ -168,6 +186,10 @@ test('validEventSortColumns returns as expected when notIndexedAtValue', functio
       },
       dictionaries: {
         language: [{ format: 'Text', metaName: 'foo', flags: -2147483375 }]
+      },
+      eventCount: {
+        data: 5,
+        threshold: 5
       }
     }
   };
@@ -189,7 +211,7 @@ test('validEventSortColumns returns as expected when notIndexedAtValue and notSi
   const state = {
     investigate: {
       services: {
-        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator' }]
+        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator', version: 11.4 }]
       },
       queryStats: {
         devices: [{
@@ -200,6 +222,10 @@ test('validEventSortColumns returns as expected when notIndexedAtValue and notSi
       },
       dictionaries: {
         language: [{ format: 'Text', metaName: 'foo', flags: -2147483391 }]
+      },
+      eventCount: {
+        data: 5,
+        threshold: 5
       }
     }
   };
@@ -221,7 +247,7 @@ test('validEventSortColumns returns as expected with time', function(assert) {
   const state = {
     investigate: {
       services: {
-        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator' }]
+        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator', version: 11.4 }]
       },
       queryStats: {
         devices: [{
@@ -232,6 +258,10 @@ test('validEventSortColumns returns as expected with time', function(assert) {
       },
       dictionaries: {
         language: [{ format: 'Time', metaName: 'time', flags: -2147482605 }]
+      },
+      eventCount: {
+        data: 5,
+        threshold: 5
       }
     }
   };
@@ -253,7 +283,7 @@ test('validEventSortColumns returns as expected when missing languages', functio
   const state = {
     investigate: {
       services: {
-        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator' }]
+        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator', version: 11.4 }]
       },
       queryStats: {
         devices: [{
@@ -264,6 +294,10 @@ test('validEventSortColumns returns as expected when missing languages', functio
       },
       dictionaries: {
         language: undefined
+      },
+      eventCount: {
+        data: 5,
+        threshold: 5
       }
     }
   };
@@ -275,16 +309,16 @@ test('validEventSortColumns returns as expected when missing languages', functio
   } = validEventSortColumns(state);
 
   assert.equal(columns.length, 0);
-  assert.notOk(notIndexedAtValue);
-  assert.notOk(notSingleton);
-  assert.notOk(notValid);
+  assert.equal(notIndexedAtValue.length, 0);
+  assert.equal(notSingleton.length, 0);
+  assert.equal(notValid.length, 0);
 });
 
-test('validEventSortColumns returns as expected when in mixed mode', function(assert) {
+test('validEventSortColumns returns as expected when not requireServiceSorting for not meeting threshold', function(assert) {
   const state = {
     investigate: {
       services: {
-        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator' }]
+        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator', version: 11.4 }]
       },
       queryStats: {
         devices: [{
@@ -295,6 +329,10 @@ test('validEventSortColumns returns as expected when in mixed mode', function(as
       },
       dictionaries: {
         language: [{ format: 'Time', metaName: 'time', flags: -2147482605 }]
+      },
+      eventCount: {
+        data: 4,
+        threshold: 5
       }
     }
   };
@@ -305,10 +343,45 @@ test('validEventSortColumns returns as expected when in mixed mode', function(as
     notValid
   } = validEventSortColumns(state);
 
-  assert.equal(columns.length, 0);
-  assert.notOk(notIndexedAtValue);
-  assert.notOk(notSingleton);
-  assert.notOk(notValid);
+  assert.equal(columns.length, 1);
+  assert.equal(notIndexedAtValue.length, 0);
+  assert.equal(notSingleton.length, 0);
+  assert.equal(notValid.length, 0);
+});
+
+test('validEventSortColumns returns as expected when not requireServiceSorting for not meeting version', function(assert) {
+  const state = {
+    investigate: {
+      services: {
+        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator', version: 11.3 }]
+      },
+      queryStats: {
+        devices: [{
+          serviceId: 'doesNotExist',
+          on: true,
+          elapsedTime: 2
+        }]
+      },
+      dictionaries: {
+        language: [{ format: 'Time', metaName: 'time', flags: -2147482605 }]
+      },
+      eventCount: {
+        data: 5,
+        threshold: 5
+      }
+    }
+  };
+  const {
+    columns,
+    notIndexedAtValue,
+    notSingleton,
+    notValid
+  } = validEventSortColumns(state);
+
+  assert.equal(columns.length, 1);
+  assert.equal(notIndexedAtValue.length, 0);
+  assert.equal(notSingleton.length, 0);
+  assert.equal(notValid.length, 0);
 });
 
 test('data is empty and status is resolved', function(assert) {

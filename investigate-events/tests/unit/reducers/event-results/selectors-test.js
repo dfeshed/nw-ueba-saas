@@ -965,6 +965,33 @@ module('Unit | Selectors | event-results', function(hooks) {
           globalPreferences: {
           }
         },
+        dictionaries: {
+          language: [{
+            metaName: 'foo',
+            format: 'IPv4'
+          }]
+        },
+        eventCount: {},
+        services: {}
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.deepEqual(result, state.investigate.eventResults.data);
+  });
+
+  test('clientSortedData when no languages', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [{ foo: 'foo' }]
+        },
+        data: {
+          sortField: 'time',
+          sortDirection: null,
+          globalPreferences: {
+          }
+        },
         eventCount: {},
         dictionaries: {},
         services: {}
@@ -987,11 +1014,16 @@ module('Unit | Selectors | event-results', function(hooks) {
           globalPreferences: {
           }
         },
+        dictionaries: {
+          language: [{
+            metaName: 'foo',
+            format: 'IPv4'
+          }]
+        },
         eventCount: {
           threshold: 1,
           data: 1
         },
-        dictionaries: {},
         services: {
           serviceData: [{
             version: '11.4'
@@ -1153,7 +1185,8 @@ module('Unit | Selectors | event-results', function(hooks) {
         },
         dictionaries: {
           language: [{
-            metaName: 'time'
+            metaName: 'time',
+            format: 'TimeT'
           }]
         },
         services: {
@@ -1300,6 +1333,94 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[0].size, state.investigate.eventResults.data[2].size);
     assert.equal(result[1].size, state.investigate.eventResults.data[1].size);
     assert.equal(result[2].size, state.investigate.eventResults.data[0].size);
+  });
+
+  test('clientSortedData when nulls are mixed in', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            { size: 1 },
+            { size: null },
+            { size: 3 }
+          ]
+        },
+        data: {
+          sortField: 'size',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [{
+            metaName: 'size',
+            format: 'UInt8'
+          }]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.equal(result[0].size, state.investigate.eventResults.data[2].size);
+    assert.equal(result[1].size, state.investigate.eventResults.data[0].size);
+    assert.equal(result[2].size, state.investigate.eventResults.data[1].size);
+  });
+
+  test('clientSortedData when nulls are mixed in', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            { size: 1 },
+            { size: null },
+            { size: 3 }
+          ]
+        },
+        data: {
+          sortField: 'size',
+          sortDirection: 'Ascending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [{
+            metaName: 'size',
+            format: 'UInt8'
+          }]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.equal(result[0].size, state.investigate.eventResults.data[1].size);
+    assert.equal(result[1].size, state.investigate.eventResults.data[0].size);
+    assert.equal(result[2].size, state.investigate.eventResults.data[2].size);
   });
 
 });

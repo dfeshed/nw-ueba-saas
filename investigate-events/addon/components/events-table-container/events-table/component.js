@@ -1,9 +1,11 @@
 import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
+import { observer } from '@ember/object';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 import { getColumns, validEventSortColumns } from 'investigate-events/reducers/investigate/data-selectors';
+import { scheduleOnce } from '@ember/runloop';
 import { hasMinimumCoreServicesVersionForColumnSorting } from 'investigate-events/reducers/investigate/services/selectors';
 import {
   areEventsStreaming,
@@ -29,6 +31,7 @@ import { setVisibleColumns } from 'investigate-events/actions/data-creators';
 const stateToComputed = (state) => {
   const { columns = [], notIndexedAtValue, notSingleton, notValid } = validEventSortColumns(state);
   return {
+    isReconOpen: state.investigate.data.isReconOpen,
     eventTableFormattingOpts: eventTableFormattingOpts(state),
     areEventsStreaming: areEventsStreaming(state),
     status: state.investigate.eventResults.status,
@@ -97,6 +100,18 @@ const EventsTableContextMenu = RsaContextMenu.extend({
   eventBus: service(),
   i18n: service(),
   groupingSize: 100,
+
+  // closing recon with a horizontally scrolled table results in a slow scroll to x: 0
+  // this is a default browser scroll that occurs because of the element size change
+  // circumvent that by manually scrolling immediately
+  scrollTableLeft: observer('isReconOpen', function() {
+    if (!this.get('isReconOpen')) {
+      scheduleOnce('afterRender', () => {
+        const table = document.querySelector('.rsa-data-table-body');
+        table.scroll(0, table.scrollTop);
+      });
+    }
+  }),
 
   @computed('items')
   hasResults(results) {

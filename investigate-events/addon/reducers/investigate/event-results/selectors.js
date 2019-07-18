@@ -472,7 +472,7 @@ export const clientSortedData = createSelector(
     opts,
     requireServiceSorting
   ) => {
-    if (requireServiceSorting || !data) {
+    if (!languages || requireServiceSorting || !data) {
       // client not responsible for sorting
       // return data as is
       return data;
@@ -480,7 +480,6 @@ export const clientSortedData = createSelector(
       const metaObj = languages.findBy('metaName', sortField);
       let cachedData = data.map((event) => {
         const eventCopy = { ...event };
-        let toSort;
         if (metaObj && metaObj.format === 'IPv4') {
           // convert ipv4 to 32bit integer
           // small enough for js to handle
@@ -488,7 +487,7 @@ export const clientSortedData = createSelector(
           if (ip) {
             const segments = ip.split('.');
             if (segments) {
-              toSort = segments.reduce((ipInt, octet) => (ipInt << 8) + parseInt(octet, 10), 0) >>> 0;
+              eventCopy.toSort = segments.reduce((ipInt, octet) => (ipInt << 8) + parseInt(octet, 10), 0) >>> 0;
             }
           }
         } else if (metaObj && metaObj.format === 'IPv6') {
@@ -498,27 +497,43 @@ export const clientSortedData = createSelector(
           const ip = event[sortField];
           if (ip) {
             const ipv6Addy = new Address6(ip);
-            toSort = ipv6Addy.bigInteger();
+            eventCopy.toSort = ipv6Addy.bigInteger();
           }
         } else if (sortField === 'medium' && event['nwe.callback_id']) {
           // ensure we sort by displayed label for Endpoints
-          toSort = opts.i18n[sortField].endpoint.string;
-        } else if (sortField === 'time') {
+          eventCopy.toSort = opts.i18n[sortField].endpoint.string;
+        } else if (metaObj && metaObj.format === 'TimeT') {
           // already an int, no need to translate
-          toSort = event[sortField];
+          eventCopy.toSort = event[sortField];
         } else {
           // look up translated aliases
-          toSort = formatUtil.text(sortField, event[sortField], opts);
+          let toSort = formatUtil.text(sortField, event[sortField], opts);
           toSort = toSort.string || toSort;
+
+          const parsedNumber = parseFloat(toSort, 10);
+          eventCopy.toSort = (parsedNumber - parsedNumber === 0) ? parsedNumber : toSort.toLowerCase();
         }
 
-        const parsedNumber = parseFloat(toSort, 10);
-        eventCopy.toSort = (parsedNumber - parsedNumber === 0) ? parsedNumber : toSort;
         return eventCopy;
       });
+
       cachedData = Immutable.asMutable(cachedData);
-      const sortMethod = sortDirection === 'Ascending' ? 'asc' : 'desc';
-      return sort(cachedData)[sortMethod]((e) => e.toSort);
+      // fast sort puts empty values at the bottom in both directions
+      // this does not match the way core sorts
+      // override with sort to properly order empty values
+      const sortAdjustedForNull = (e, val) => {
+        if (!e.toSort) {
+          return val;
+        } else {
+          return e.toSort;
+        }
+      };
+
+      if (sortDirection === 'Ascending') {
+        return sort(cachedData).asc((e) => sortAdjustedForNull(e, -1));
+      } else {
+        return sort(cachedData).desc((e) => sortAdjustedForNull(e, 1));
+      }
     }
   }
 );

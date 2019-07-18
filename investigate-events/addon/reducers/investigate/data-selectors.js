@@ -2,8 +2,7 @@ import reselect from 'reselect';
 import { lookup } from 'ember-dependency-lookup';
 import { isEmpty } from '@ember/utils';
 import { isEmptyObject } from 'component-lib/utils/jquery-replacement';
-
-import { isMixedMode } from 'investigate-events/reducers/investigate/query-stats/selectors';
+import { requireServiceSorting } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import {
   LANGUAGE_KEY_INDEX_MASK,
@@ -79,16 +78,26 @@ export const queryBodyClass = createSelector(
 export const isSummaryColumnVisible = createSelector(
   [_visibleColumns],
   (visibleColumns) => {
-    return visibleColumns && visibleColumns.any((col) => col.field === 'custom.meta-summary');
+    return visibleColumns && visibleColumns.any((col) => col.field === 'custom.meta-summary' || col.field === 'custom.metasummary');
   }
 );
 
 export const validEventSortColumns = createSelector(
-  [_languages, isMixedMode],
-  (languages, isMixedMode) => {
-    if (isMixedMode || !languages) {
+  [_languages, requireServiceSorting],
+  (languages, requireServiceSorting) => {
+    if (!languages) {
       return {
-        columns: []
+        columns: [],
+        notIndexedAtValue: [],
+        notSingleton: [],
+        notValid: []
+      };
+    } else if (!requireServiceSorting) {
+      return {
+        columns: languages.map((col) => col.metaName),
+        notIndexedAtValue: [],
+        notSingleton: [],
+        notValid: []
       };
     } else {
       const notIndexedAtValue = [];

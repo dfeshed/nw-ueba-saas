@@ -51,6 +51,10 @@ export default handleActions({
     });
   },
 
+  [ACTION_TYPES.SORT_IN_CLIENT_COMPLETE]: (state) => {
+    return state.set('isQueryExecutedBySort', false);
+  },
+
   [ACTION_TYPES.SET_EVENTS_PAGE_STATUS]: (state) => {
     return state.set('isQueryExecutedBySort', false);
   },
