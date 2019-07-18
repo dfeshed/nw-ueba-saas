@@ -74,9 +74,15 @@ export default Component.extend({
   },
 
   @computed('filteredList')
-  allItemsChecked(filteredList) {
-    const selections = filteredList.filter((node) => node.selected);
-    return filteredList.length ? selections.length === filteredList.length : false;
+  allItemsChecked: {
+    get() {
+      const filteredList = this.get('filteredList');
+      const selections = filteredList.filter((node) => node.selected);
+      return filteredList.length ? selections.length === filteredList.length : false;
+    },
+    set(value) {
+      return value;
+    }
   },
 
   _toggleSelection(item) {

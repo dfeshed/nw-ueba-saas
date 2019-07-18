@@ -10,6 +10,10 @@
     @include border-bottom(1px, solid, secondary);
     .rsa-nav-tab-group {
       padding: 0 rsa-whitespace();
+      .event-tab-disabled {
+        opacity: 0.5;
+        pointer-events: none;
+      }
     }
     &__label {
       padding: 0 rsa-whitespace(less);

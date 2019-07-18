@@ -1,7 +1,9 @@
 <hbox class='process-filter-popup__header'>
   <box class='rsa-nav-tab-group'>
     {{#each tabs as |tab|}}
-      {{#rsa-nav-tab align='center' align='left' compact=true isActive=tab.selected click=(action 'activate' tab.name)}}
+      {{#rsa-nav-tab class=(unless tab.count 'event-tab-disabled')
+        align='center' align='left' compact=true isActive=tab.selected
+        click=(action 'activate' tab.name)}}
         <div class="process-filter-popup__header__label">
           {{#if tab.label}}
             <span class="tab-text">{{t tab.label}} ({{tab.count}})</span>
