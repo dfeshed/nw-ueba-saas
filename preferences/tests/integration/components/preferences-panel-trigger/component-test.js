@@ -1,10 +1,10 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import preferencesConfig from '../../../data/config';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import { waitFor, render } from '@ember/test-helpers';
-import wait from 'ember-test-helpers/wait';
+import { click, findAll, render, waitFor } from '@ember/test-helpers';
+
+import preferencesConfig from '../../../data/config';
 
 const contentToRender = hbs `
   {{#rsa-application-content}}
@@ -43,7 +43,7 @@ module('Integration | Component | Preferences Panel Trigger', function(hooks) {
       {{preferences-panel-trigger
         preferencesConfig=preferencesConfig}}
     `);
-    assert.equal(this.$('.rsa-preferences-panel-trigger').length, 1, 'Preference trigger component rendered.');
+    assert.equal(findAll('.rsa-preferences-panel-trigger').length, 1, 'Preference trigger component rendered.');
   });
 
   test('preferences trigger does not publish preferences on open', async function(assert) {
@@ -54,9 +54,9 @@ module('Integration | Component | Preferences Panel Trigger', function(hooks) {
     await render(contentToRender);
 
     await waitFor('.rsa-preferences-panel-trigger');
-    this.$('.rsa-icon-settings-1-filled').trigger('click');
+    await click('.rsa-icon-settings-1-filled');
     await waitFor('.ember-power-select-selected-item', { count: 4 });
-    assert.equal(this.$('.is-expanded').length, 1, 'preference panel opened without publishing preferences');
+    assert.equal(findAll('.is-expanded').length, 1, 'preference panel opened without publishing preferences');
   });
 
   test('preferences trigger publishes updates to preferences', async function(assert) {
@@ -67,11 +67,10 @@ module('Integration | Component | Preferences Panel Trigger', function(hooks) {
     });
 
     await render(contentToRender);
-
     await waitFor('.rsa-preferences-panel-trigger');
-    this.$('.rsa-icon-settings-1-filled').trigger('click');
+    await click('.rsa-icon-settings-1-filled');
     await waitFor('.rsa-form-radio-group-label');
-    this.$('.rsa-form-radio-label.WALL').click();
+    await click('.rsa-form-radio-label.WALL');
   });
 
   test('preferences trigger publishes only updated preferences', async function(assert) {
@@ -86,9 +85,9 @@ module('Integration | Component | Preferences Panel Trigger', function(hooks) {
     await render(contentToRender);
 
     await waitFor('.rsa-preferences-panel-trigger');
-    this.$('.rsa-icon-settings-1-filled').trigger('click');
+    await click('.rsa-icon-settings-1-filled');
     await waitFor('.rsa-form-radio-group-label');
-    this.$('.rsa-form-radio-label.WALL').click();
+    await click('.rsa-form-radio-label.WALL');
   });
 
   test('preferences trigger does not publish preferences on close', async function(assert) {
@@ -99,10 +98,9 @@ module('Integration | Component | Preferences Panel Trigger', function(hooks) {
     await render(contentToRender);
 
     await waitFor('.rsa-preferences-panel-trigger');
-    this.$('.rsa-icon-settings-1-filled').trigger('click');
+    await click('.rsa-icon-settings-1-filled');
     await waitFor('.rsa-form-radio-group-label');
-    this.$('.rsa-icon-settings-1-filled').trigger('click');
-    await wait();
-    assert.equal(this.$('.is-expanded').length, 0, 'preference panel closed without publishing preferences');
+    await click('.rsa-icon-settings-1-filled');
+    assert.equal(findAll('.is-expanded').length, 0, 'preference panel closed without publishing preferences');
   });
 });
