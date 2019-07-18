@@ -113,8 +113,11 @@ def buildPackages(
     dir(repositoryName) {
         checkoutBranch(branchName)
         if(env.EXTRACT_STABILITY_AND_VERSIOM_FROM_POM == 'true' ){
+            sh "echo Extracting version and stability from ${pomFile}"
             version = extractPomVersion(pomFile)
             stability = getStabilityFromPomVersion(version)
+            sh "echo Version: ${version}"
+            sh "echo Stability: ${stability}"
         }
         mvnCleanPackages(deploy, pomFile, stability, version, updateSnapshots, debug, preStep)
     }
