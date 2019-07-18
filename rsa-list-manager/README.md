@@ -1,3 +1,25 @@
 # RSA List Manager
 
-Common code for list toolbar
+The list manager can be used in your template as follows:
+```
+{{#list-manager
+  listName=name
+  list=list
+  selectedItem=selectedItem
+  itemSelection=handleSelection
+  as |manager|}}
+  {{#manager.itemList as |list|}}
+    {{#list.item as |item|}}
+      {{!--render the item in desired format --}}
+    {{/list.item}}
+  {{/manager.itemList}}
+{{/list-manager}}
+```
+
+## Inputs
+* `listName`, *String ending with s(plural)*, __required__, Caption for List.
+* `list`, *Array of objects with name(required), id(required), ootb(boolean, optional) parameters*, __required__, The list to be rendered.
+* `selectedItem`, *Object*,__optional__, The option that needs to be displayed with listName for the caption and highlighed as selected in the list
+
+## Actions
+* `itemSelection`, *Action*, An action to execute when an item is selected.

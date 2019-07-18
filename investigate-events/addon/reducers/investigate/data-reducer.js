@@ -2,6 +2,7 @@ import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
 import _ from 'lodash';
+import sort from 'fast-sort';
 import { isEmpty } from '@ember/utils';
 
 import EventColumnGroups from 'investigate-events/constants/OOTBColumnGroups';
@@ -92,6 +93,7 @@ export default handleActions({
   },
 
   [ACTION_TYPES.COLUMNS_RETRIEVE]: (state, action) => {
+    sort(EventColumnGroups).by([{ asc: 'name' }]);
     return handle(state, action, {
       failure: (s) => s.merge({ columnGroups: EventColumnGroups }),
       success: (s) => {
@@ -105,6 +107,8 @@ export default handleActions({
             _.merge(_.find(cg.columns, { field: 'custom.metasummary' }), { width: 2000 });
             _.merge(_.find(cg.columns, { field: 'time' }), { width: 135 });
           });
+
+          sort(columnGroups).by([{ asc: 'name' }]);
 
           return s.merge({ columnGroups });
         }

@@ -6,7 +6,6 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { patchReducer } from '../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { click, find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
-import { selectChoose, clickTrigger } from 'ember-power-select/test-support/helpers';
 import EventColumnGroups from '../../../data/subscriptions/investigate-columns/data';
 import KEY_MAP from 'investigate-events/util/keys';
 
@@ -14,14 +13,18 @@ let setState;
 
 const ARROW_DOWN_KEY = KEY_MAP.arrowDown.code;
 
-const columnGroupSelector = '.rsa-investigate-events-table__header__columnGroup';
-const PS_TRIGGER = '.rsa-investigate-events-table__header__columnGroup .ember-power-select-trigger';
-const PS_SELECTED_ITEM = '.rsa-investigate-events-table__header__columnGroup .ember-power-select-selected-item';
+const columnGroupSelector = '.rsa-investigate-events-table__header__columnGroups';
+const columnGroupDropDownButton = `${columnGroupSelector} .rsa-button-group button`;
+const columnGroupItemList = `${columnGroupSelector} ul.rsa-item-list > li`;
 
 const assertForInvestigateColumnAndColumnSelector = async function(assert, headerCount, count, selectedOption, isNotEmptyRow) {
-  await selectChoose(PS_TRIGGER, selectedOption);
+  assert.ok(find(columnGroupDropDownButton));
+  await click(columnGroupDropDownButton);
+  const optionToChoose = findAll(`${columnGroupItemList} a`).find((d) => d.textContent.trim() == selectedOption);
+  await click(optionToChoose);
+
   assert.equal(findAll('.rsa-data-table-header-cell').length, headerCount * (isNotEmptyRow ? 1 : 2), `Should show columns for ${selectedOption}.`);
-  assert.equal(find(PS_SELECTED_ITEM).textContent.trim(), selectedOption, `Selected column group should be ${selectedOption}.`);
+  assert.equal(find(`${columnGroupItemList}.is-selected`).textContent.trim(), selectedOption, `Selected column group should be ${selectedOption}.`);
   await click('.rsa-icon-cog-filled');
   assert.equal(findAll('li .rsa-form-checkbox-label').length, count, `Should show all columns for column selector for ${selectedOption}.`);
 };
@@ -260,8 +263,8 @@ module('Integration | Component | events-table-container', function(hooks) {
     });
 
     await render(hbs` {{events-table-container selectEvent=handleSelectEvent}}`);
-    await clickTrigger(columnGroupSelector);
-    await triggerKeyEvent(PS_TRIGGER, 'keyup', ARROW_DOWN_KEY);
+    await click(columnGroupDropDownButton);
+    await triggerKeyEvent(columnGroupSelector, 'keyup', ARROW_DOWN_KEY);
     assert.notOk(eventSelected, 'Keystroke does not trigger event selection when dropdown in view');
   });
 

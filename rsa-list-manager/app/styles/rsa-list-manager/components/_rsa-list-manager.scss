@@ -1,0 +1,31 @@
+.list-manager {
+  .rsa-button-menu {
+    ul {
+      max-height: 11rem;
+      overflow-y: auto;
+      padding-top: rsa-whitespace(less);
+      padding-bottom: rsa-whitespace(less);
+      li {
+        line-height: 2em;
+        font-size: 11px;
+        font-weight: lighter;
+        color: text-color(primary, lightest);
+        &:hover {
+          background: background-color(secondary, darker);
+          outline: none;
+          cursor: pointer;
+        }
+        &.is-selected {
+          background: background-color(secondary, dark);
+        }
+        a {
+          padding: 0;
+        }
+        i {
+          padding-left: rsa-whitespace(less);
+          padding-right: rsa-whitespace(less);
+        }
+      }
+    }
+  }
+}

@@ -2,10 +2,10 @@ import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
-import { later, debounce, schedule } from '@ember/runloop';
+import { debounce, schedule } from '@ember/runloop';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { setColumnGroup, searchForTerm, setSearchScroll } from 'investigate-events/actions/interaction-creators';
-import { getSelectedColumnGroup, isSummaryColumnVisible } from 'investigate-events/reducers/investigate/data-selectors';
+import { isSummaryColumnVisible } from 'investigate-events/reducers/investigate/data-selectors';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
 import {
   actualEventCount,
@@ -23,10 +23,8 @@ const stateToComputed = (state) => ({
   reconSize: state.investigate.data.reconSize,
   isReconOpen: state.investigate.data.isReconOpen,
   eventTimeSortOrder: eventTimeSortOrder(state),
-  columnGroups: state.investigate.data.columnGroups,
   searchTerm: state.investigate.eventResults.searchTerm,
   searchScrollDisplay: searchScrollDisplay(state),
-  selectedColumnGroup: getSelectedColumnGroup(state),
   count: thousandFormat(state.investigate.eventCount.data),
   isAtThreshold: resultCountAtThreshold(state),
   actualEventCount: thousandFormat(actualEventCount(state)),
@@ -114,16 +112,6 @@ const HeaderContainer = Component.extend({
     }
   },
 
-  @computed('columnGroups', 'i18n.locale')
-  localizedColumnGroups(columnGroups) {
-    if (columnGroups) {
-      return [
-        { groupName: this.get('i18n').t('investigate.events.columnGroups.custom'), options: columnGroups.filter((column) => !column.ootb) },
-        { groupName: this.get('i18n').t('investigate.events.columnGroups.default'), options: columnGroups.filter((column) => column.ootb) }
-      ];
-    }
-  },
-
   @computed('reconSize')
   toggleEvents(size) {
     const isSizeNotMax = size !== RECON_PANEL_SIZES.MAX;
@@ -155,10 +143,6 @@ const HeaderContainer = Component.extend({
   },
 
   actions: {
-    decoratedSetColumnGroup() {
-      this.get('eventBus').trigger('rsa-content-tethered-panel-hide-tableSearchPanel');
-      this.send('setColumnGroup', ...arguments);
-    },
 
     debouncedSearchForTerm(term, event) {
       if (event.key === 'Enter') {
@@ -168,16 +152,8 @@ const HeaderContainer = Component.extend({
       } else {
         debounce(this, 'searchForTerm', 500);
       }
-    },
-
-    attachTooltip() {
-      later(() => {
-        const customGroup = document.querySelector('.ember-power-select-group-name');
-        if (customGroup) {
-          customGroup.setAttribute('title', this.get('i18n').t('investigate.events.columnGroups.customTitle'));
-        }
-      }, 200);
     }
+
   }
 });
 

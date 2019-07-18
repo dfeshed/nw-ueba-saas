@@ -1,7 +1,9 @@
 import Component from '@ember/component';
 
 export default Component.extend({
-  classNames: ['rsa-investigate-events-table__header__columnGroupItem'],
+  tagName: 'span',
+  classNames: ['option-name'],
   columnGroup: null
+
 });
 

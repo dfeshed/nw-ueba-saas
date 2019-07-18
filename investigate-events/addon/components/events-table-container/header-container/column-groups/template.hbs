@@ -1,5 +1,14 @@
-{{#list-manager list=columnGroups as |manager|}}
-  {{#manager.itemList as |item|}}
-    {{events-table-container/header-container/column-groups/column-group-item columnGroup=item}}
+{{#list-manager
+  listName="Column Groups"
+  selectedItem=selectedColumnGroup
+  list=columnGroups
+  itemSelection=(action 'selectColumnGroup')
+  as |manager|
+}}
+  {{#manager.itemList as |itemList|}}
+
+    {{#itemList.item as |item|}}
+      {{events-table-container/header-container/column-groups/column-group-item columnGroup=item}}
+    {{/itemList.item}}
   {{/manager.itemList}}
 {{/list-manager}}

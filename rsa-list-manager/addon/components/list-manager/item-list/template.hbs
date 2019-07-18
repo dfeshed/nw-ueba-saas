@@ -1,1 +1,12 @@
-{{yield}}
+{{#each list as |item|}}
+  {{yield (hash
+      item=(component 'list-manager/item-list/item'
+        item=item
+        selectedItem=selectedItem
+        itemSelection=(action itemSelection item)
+        isExpanded=isExpanded
+        hasOOTBIndicators=hasOOTBIndicators
+      )
+     )
+  }}
+{{/each}}

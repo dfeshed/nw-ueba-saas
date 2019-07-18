@@ -1,6 +1,29 @@
-{{yield (hash
-  itemList=(component 'list-manager/item-list'
-    list=list
-  )
- )
-}}
+{{#click-outside action=(action 'collapseMenu')}}
+  <div class='rsa-button-group'>
+    {{#rsa-form-button
+      class="list-caption"
+      defaultAction=(action 'toggleExpand')
+      title=titleTooltip
+    }}
+      {{caption}}
+    {{/rsa-form-button}}
+    {{#rsa-form-button
+      class="rsa-split-dropdown"
+      defaultAction=(action 'toggleExpand')
+    }}
+      {{rsa-icon name="arrow-down-12"}}
+    {{/rsa-form-button}}
+  </div>
+  {{#rsa-button-menu isExpanded=isExpanded style=offsetsStyle}}
+
+    {{yield (hash
+      itemList=(component 'list-manager/item-list'
+        list=list
+        selectedItem=selectedItem
+        itemSelection=itemSelection
+        isExpanded=isExpanded
+      )
+     )
+    }}
+  {{/rsa-button-menu}}
+{{/click-outside}}

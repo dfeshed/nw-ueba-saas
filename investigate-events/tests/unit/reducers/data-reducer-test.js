@@ -131,6 +131,28 @@ test('Should show default column list in case of failure', function(assert) {
   assert.deepEqual(newEndState.columnGroups, EventColumnGroups);
 });
 
+test('Should sort column groups alphabetically', function(assert) {
+  const previous = Immutable.from({
+    columnGroups: null
+  });
+
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.COLUMNS_RETRIEVE,
+    payload: { data:
+      [
+        { id: 1, name: 'beta' },
+        { id: 2, name: 'alpha' }
+      ]
+    }
+  });
+  const newEndState = reducer(previous, successAction);
+  const expectedResult = [
+    { id: 2, name: 'alpha' },
+    { id: 1, name: 'beta' }
+  ];
+  assert.deepEqual(newEndState.columnGroups, expectedResult);
+});
+
 test('REHYDRATE', function(assert) {
   const previous = Immutable.from({
     reconSize: RECON_PANEL_SIZES.MAX
