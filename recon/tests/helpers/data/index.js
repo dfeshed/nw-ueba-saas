@@ -2,7 +2,7 @@ import packetData from '../../data/subscriptions/reconstruction-packet-data/stre
 import emailData from '../../data/subscriptions/reconstruction-email-data/stream/data';
 import encodedTextData from '../../data/subscriptions/reconstruction-text-data/stream/encodedData';
 import decodedTextData from '../../data/subscriptions/reconstruction-text-data/stream/decodedData';
-import summaryDataInput from '../../data/subscriptions/reconstruction-summary/query/data';
+import { withPayloads, noPayloads, noPackets } from '../../data/subscriptions/reconstruction-summary/query/data';
 import files from '../../data/subscriptions/reconstruction-file-data/query/data';
 import { augmentResult } from 'recon/reducers/util';
 
@@ -23,17 +23,17 @@ const slicedEmailData = emailData.slice(0, 2);
 const packetDataWithoutPayload = packetDataWithSide.filter((d) => d.payloadSize === 0);
 
 const summaryData = {
-  headerItems: _generateHeaderItems(summaryDataInput.withPayloads.summaryAttributes),
-  packetFields: summaryDataInput.withPayloads.packetFields
+  headerItems: _generateHeaderItems(withPayloads.summaryAttributes),
+  packetFields: withPayloads.packetFields
 };
 
 const summaryDataWithoutPayload = {
-  headerItems: _generateHeaderItems(summaryDataInput.noPayloads.summaryAttributes),
-  packetFields: summaryDataInput.noPayloads.packetFields
+  headerItems: _generateHeaderItems(noPayloads.summaryAttributes),
+  packetFields: noPayloads.packetFields
 };
 
 const summaryDataWithoutPackets = {
-  headerItems: _generateHeaderItems(summaryDataInput.noPackets.summaryAttributes),
+  headerItems: _generateHeaderItems(noPackets.summaryAttributes),
   packetFields: []
 };
 

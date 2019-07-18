@@ -1,4 +1,4 @@
-import data from './data';
+import { withPayloads } from './data';
 
 export default {
   subscriptionDestination: '/user/queue/investigate/reconstruct/session-summary',
@@ -8,7 +8,7 @@ export default {
       meta: {
         complete: true
       },
-      data
+      data: { ...withPayloads }
     };
   }
 };

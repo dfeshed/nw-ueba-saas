@@ -249,7 +249,7 @@ const noPackets = {
   'summaryAttributes': [...basicSummaryAttributes, ...summaryAttributesNoPackets]
 };
 
-export default {
+export {
   withPayloads,
   noPayloads,
   noPackets
