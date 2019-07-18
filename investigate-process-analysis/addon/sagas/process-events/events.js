@@ -86,13 +86,13 @@ const getEventCategory = (pid, query) => {
 };
 
 const _hasCategory = (query, category, pid) => {
-  const { serviceId, startTime, endTime } = query;
+  const { serviceId, startTime, endTime, agentId } = query;
   return getMetaValues({
     serviceId,
     startTime,
     endTime,
     metaName: 'process.vid.src',
-    filter: [{ value: `(category = '${category}' && process.vid.src = '${pid}')` }]
+    filter: [{ value: `(agent.id = '${agentId}' && category = '${category}' && process.vid.src = '${pid}')` }]
   });
 };
 

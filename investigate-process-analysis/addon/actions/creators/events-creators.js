@@ -186,7 +186,7 @@ const _getNode = (item) => {
 const isExecuting = (meta, payLoadLength) => {
   const description = meta ? meta.description : null;
   const percent = meta ? meta.percent : 0;
-  return description === 'Queued' || (description === 'Executing' && percent < 100 && payLoadLength === 0);
+  return !meta.complete || description === 'Queued' || (description === 'Executing' && percent < 100 && payLoadLength === 0);
 };
 
 
