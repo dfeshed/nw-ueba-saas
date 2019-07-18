@@ -216,7 +216,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     const result = parsePillDataFromUri(params.mf, DEFAULT_LANGUAGES);
     assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');
     assert.equal(result[0].operator, '=', 'forward slash was not parsed correctly');
-    assert.equal(result[0].value, '\'reston=\'virginia.sys\'', 'forward slash was not parsed correctly');
+    assert.equal(result[0].value, '\'reston=\\\'virginia.sys\'', 'forward slash was not parsed correctly');
   });
 
   test('parsePillDataFromUri correctly parses multiple params', function(assert) {
@@ -224,7 +224,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result.length, 2, 'two pills came out');
     assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');
     assert.equal(result[0].operator, '=', 'forward slash was not parsed correctly');
-    assert.equal(result[0].value, '\'reston=\'virginia.sys\'', 'forward slash was not parsed correctly');
+    assert.equal(result[0].value, '\'reston=\\\'virginia.sys\'', 'forward slash was not parsed correctly');
     assert.equal(result[1].meta, 'medium', 'forward slash was not parsed correctly');
     assert.equal(result[1].operator, '=', 'forward slash was not parsed correctly');
     assert.equal(result[1].value, '2', 'forward slash was not parsed correctly');

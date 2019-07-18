@@ -105,6 +105,38 @@ module('Unit | Util | Scanner', function(hooks) {
     }, new Error('Unterminated string: \'unterminated string"'));
   });
 
+  test('handles escaped quotes appropriately', function(assert) {
+    //              b = 'quotes mustn\'t not be escaped'
+    const source = 'b = \'quotes mustn\\\'t not be escaped\'';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 3, 'should produce 3 tokens');
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'b' }, '1. META "b"');
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '2. OPERATOR_EQ "="');
+    assert.deepEqual(result[2], { type: LEXEMES.STRING, text: 'quotes mustn\\\'t not be escaped' }, '3. STRING "quotes mustn\\\'t not be escaped"');
+  });
+
+  test('does not need escapes for quotes not used as delimiter (double)', function(assert) {
+    const source = 'b = \'They said "I like quotes"\'';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 3, 'should produce 3 tokens');
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'b' }, '1. META "b"');
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '2. OPERATOR_EQ "="');
+    assert.deepEqual(result[2], { type: LEXEMES.STRING, text: 'They said "I like quotes"' }, '3. STRING "They said "I like quotes""');
+  });
+
+  test('does not need escapes for quotes not used as delimiter (single)', function(assert) {
+    // JS string escapes. No backslashes in the actual string.
+    const source = 'b = "They said \'I like quotes\'"';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 3, 'should produce 3 tokens');
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'b' }, '1. META "b"');
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '2. OPERATOR_EQ "="');
+    assert.deepEqual(result[2], { type: LEXEMES.STRING, text: 'They said \'I like quotes\'' }, '3. STRING "They said \'I like quotes\'"');
+  });
+
   test('handles both text queries and strings together', function(assert) {
     const source = `${SEARCH_TERM_MARKER}search term${SEARCH_TERM_MARKER} && b = "some stringy stuff"`;
     const s = new Scanner(source);
