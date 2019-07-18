@@ -5,11 +5,12 @@ import { render, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import EmberObject from '@ember/object';
 
+let emailData;
+
 module('Integration | Component | recon-event-detail/single-email/email-body-content', function(hooks) {
   setupRenderingTest(hooks);
-
-  test('renders single email body content, if data present', async function(assert) {
-    this.set('email', EmberObject.create({
+  hooks.beforeEach(function() {
+    emailData = {
       'messageId': '6eea4274b865446289540926194068e9',
       'messageKind': 'SMTP',
       'from': 'eddard.stark@verizon.net',
@@ -34,12 +35,28 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
         { 'name': 'Delivered-To', 'value': 'sansa.stark@verizon.net' }],
       'bodyContentType': 'PlainText',
       'bodyContent': 'email message text1 ...'
-    }));
+    };
+  });
+
+  test('renders single email body content, if data present', async function(assert) {
+    this.set('email', EmberObject.create(emailData));
     await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
     return wait().then(() => {
       assert.ok(find('.email-body-text'), 'show single email message content');
       const str = find('.email-body-text').textContent.trim().replace(/\s/g, '').substring(0, 200);
       assert.equal(str, 'emailmessagetext1...');
+    });
+  });
+
+  test('renders single email html body content, if data present', async function(assert) {
+    emailData = EmberObject.create(emailData);
+    emailData.bodyContent = '&lt;BODY&gt;&lt;P&gt;email message text content&lt;/P&gt;&lt;/BODY&gt;';
+    this.set('email', EmberObject.create(emailData));
+    await render(hbs`{{recon-event-detail/single-email/email-body-content email=email}}`);
+    return wait().then(() => {
+      assert.ok(find('.email-body-text'), 'show single email message content');
+      const str = find('.email-body-text').textContent.trim().replace(/\s/g, '').substring(0, 200);
+      assert.equal(str, 'emailmessagetextcontent');
     });
   });
 

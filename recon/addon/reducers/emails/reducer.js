@@ -10,6 +10,12 @@ const emailsInitialState = Immutable.from({
 
 const emailsReducer = handleActions({
 
+  [ACTION_TYPES.INITIALIZE]: (state) => {
+    return emailsInitialState.merge({
+      isEmail: state.isEmail
+    });
+  },
+
   [ACTION_TYPES.EMAIL_RENDER_NEXT]: (state, { payload }) => {
     const ids = payload.map((e) => e.messageId);
     return state.set('renderIds', state.renderIds ? state.renderIds.concat(ids) : ids);

@@ -12,7 +12,7 @@ const stateToComputed = ({ recon, recon: { data, emails } }) => ({
   renderIds: data,
   hasRenderIds: hasRenderIds(recon),
   renderedEmails: renderedEmails(recon),
-  hasNoEmailContent: hasNoEmailContent(emails)
+  hasNoEmailContent: hasNoEmailContent(recon)
 });
 
 const dispatchToActions = {

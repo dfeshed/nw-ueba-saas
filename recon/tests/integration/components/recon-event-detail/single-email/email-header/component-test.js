@@ -53,12 +53,11 @@ module('Integration | Component | recon-event-detail/single-email/email-header',
     await click(findAll('.rsa-icon-arrow-right-12-filled')[0]);
     assert.equal(findAll('.rsa-icon-arrow-down-12-filled').length, 1, 'Additional Header is expanded');
     const str = find('.recon-email-header').textContent.trim().replace(/\s/g, '').substring(0, 200);
-    assert.equal(str, 'fromeddard.stark@verizon.nettosansa.stark@verizon.net,arya.stark@verizon.net,robb.stark@verizon.netbccjon.snow@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?AdditionalHeaderDetailsreceivedfr');
+    assert.equal(str, 'fromeddard.stark@verizon.nettosansa.stark@verizon.net,arya.stark@verizon.net,robb.stark@verizon.netbccjon.snow@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?AdditionalHeaderDetailsReceivedfr');
     await click(findAll('.rsa-icon-arrow-down-12-filled')[0]);
     assert.equal(findAll('.rsa-icon-arrow-right-12-filled').length, 1, 'Additional Header is collapsed again');
     const strValue = find('.recon-email-header').textContent.trim().replace(/\s/g, '').substring(0, 200);
     assert.equal(strValue, 'fromeddard.stark@verizon.nettosansa.stark@verizon.net,arya.stark@verizon.net,robb.stark@verizon.netbccjon.snow@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?AdditionalHeaderDetails');
-
   });
 
 });

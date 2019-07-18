@@ -19,7 +19,7 @@
   {{#if isEmailExpanded}}
     {{#each-in additionalHeaderFields as |headerField headerValue|}}
       <hbox class="recon-meta-content-item">
-        <box class="meta-name header-label">{{t (concat 'recon.emailView.' headerField)}}</box>
+        <box class="meta-name header-label">{{ headerField }}</box>
         <box class="meta-value header-value">{{ headerValue }}</box>
       </hbox>
     {{/each-in}}

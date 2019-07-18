@@ -7,8 +7,19 @@ import { slicedEmailData } from '../../../helpers/data/index';
 module('Unit | Reducers | Emails | Recon');
 
 const initialState = Immutable.from({
+  isEmail: false,
   emails: null,
   renderIds: null
+});
+
+test('test email INITIALIZE action handler', function(assert) {
+  const currentState = initialState.merge({ isEmail: true });
+  const result = reducer(currentState, {
+    type: ACTION_TYPES.INITIALIZE
+  });
+  assert.equal(result.isEmail, true, 'initialize isEmail field in recon email');
+  assert.equal(result.emails, null, 'initialize emails field in recon email');
+  assert.equal(result.renderIds, null, 'initialize renderIds field in recon email');
 });
 
 test('test EMAIL_RECEIVE_PAGE action handler', function(assert) {

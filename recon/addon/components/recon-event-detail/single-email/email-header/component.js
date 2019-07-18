@@ -18,8 +18,7 @@ export default Component.extend({
     const createdHeaders = {};
     headers.forEach(function(header) {
       if (!_.isEmpty(header.value)) {
-        const convertedField = header.name.toLowerCase().replace(/[-]([a-z0-9])/g, (g) => g[1].toUpperCase());
-        createdHeaders[convertedField] = header.value;
+        createdHeaders[header.name] = header.value;
       }
     });
     return createdHeaders;
