@@ -73,15 +73,16 @@
               group=(if accessControl.respondCanManageAlertRules group null)
               selectedRules=selectedRules
               onRowClick=(action 'handleRowClick' rule)
+              onDragStart=(action 'handleDragStarted' rule)
             }}
               <td class="reorder reorder-rule-cell ">
                 <centered>
                   <span class="handle"></span>
                 </centered>
               </td>
-              <td class="select">
+              <td class="select" {{action 'handleCheckboxClick' rule bubbles=false}}>
                 <centered>
-                  <label class="rsa-form-checkbox-label {{if (contains rule.id selectedRules) 'checked'}}" {{action 'handleCheckboxClick' rule bubbles=false}}>
+                  <label class="rsa-form-checkbox-label {{if (contains rule.id selectedRules) 'checked'}}">
                     {{rsa-form-checkbox
                       checked=(contains rule.id selectedRules)
                     }}

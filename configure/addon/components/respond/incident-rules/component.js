@@ -69,6 +69,20 @@ const IncidentRules = Component.extend({
         const reorderedIds = reorderedItems.map((item) => item.id);
         this.send('reorderRules', reorderedIds);
       }
+    },
+
+    /**
+     * Handler for the drag action on the rows. Used as one of the mechanisms for selecting the row.
+     * Here we only send the select action if the row is dragged.
+     * @param item
+     * @private
+     */
+
+    handleDragStarted(item) {
+      if (!this.get('selectedRules').includes(item.id)) {
+        this.send('clearSelectedRules');
+        this.send('selectRule', item.id);
+      }
     }
   }
 });

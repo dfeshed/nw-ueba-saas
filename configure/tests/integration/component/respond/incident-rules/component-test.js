@@ -5,7 +5,7 @@ import { next } from '@ember/runloop';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import Component from '@ember/component';
 import { patchReducer } from '../../../../helpers/vnext-patch';
-import { waitUntil, click, find, findAll, render } from '@ember/test-helpers';
+import { waitUntil, click, find, findAll, render, triggerEvent } from '@ember/test-helpers';
 import Immutable from 'seamless-immutable';
 import rules from '../../../../data/subscriptions/incident-rules/findAll/data';
 import { Promise } from 'rsvp';
@@ -159,6 +159,55 @@ module('Integration | Component | Respond Incident Rules', function(hooks) {
 
     await waitUntil(() => transitions.length > 0, { timeout });
     assert.deepEqual(transitions, ['respond.incident-rule']);
+
+  });
+
+  test('Check if dragging a row selects the row', async function(assert) {
+    assert.expect(3);
+
+    await setState({ ...initialState });
+    await render(hbs`{{respond/incident-rules}}`);
+    const rows = findAll('tbody tr');
+    assert.equal(rows.length, 20, 'We have 20 rows');
+
+    // verifiying the drag Event of the row
+    const [first, second] = rows;
+
+    await triggerEvent(second, 'mousedown', { clientX: second.offsetLeft, clientY: second.offsetTop, which: 1 });
+    await triggerEvent(second, 'mousemove', { clientX: second.offsetLeft, clientY: second.offsetTop, which: 1 });
+    await triggerEvent(second, 'mousemove', { clientX: second.offsetLeft, clientY: second.offsetTop + 30, which: 1 });
+
+    assert.equal(findAll('tbody tr.is-selected').length, 1, 'There is one row selected');
+
+    await triggerEvent(first, 'mousedown', { clientX: first.offsetLeft, clientY: first.offsetTop, which: 1 });
+    await triggerEvent(first, 'mousemove', { clientX: first.offsetLeft, clientY: first.offsetTop, which: 1 });
+    await triggerEvent(first, 'mousemove', { clientX: first.offsetLeft, clientY: first.offsetTop + 30, which: 1 });
+
+    assert.equal(findAll('tbody tr.is-selected').length, 1, 'There is one row selected');
+  });
+
+  test('row should be selected and previous selections retained when the cell containing check box is clicked', async function(assert) {
+    assert.expect(5);
+
+    await setState({ ...initialState });
+    await render(hbs`{{respond/incident-rules}}`);
+    const rows = findAll('tbody tr');
+    assert.equal(rows.length, 20, 'We have 20 rows');
+
+    const firstRowCells = rows[0].querySelectorAll('td');
+    assert.equal(firstRowCells.length, 11, 'The row must have 11 cells');
+
+    const secondRowCells = rows[1].querySelectorAll('td');
+    assert.equal(secondRowCells.length, 11, 'The row must have 11 cells');
+
+    // verifiying clicking on the cell is same as clicking on the checkbox,
+    // the row should be selected and all previously selection of rows shoudl be retained.
+    await click(firstRowCells[1]);
+    assert.equal(findAll('tbody tr.is-selected').length, 1, 'There is one row selected');
+
+    await click(secondRowCells[1]);
+    assert.equal(findAll('tbody tr.is-selected').length, 2, 'There are two rows selected');
+
   });
 
   test('clicking on the select-all checkbox toggles the selected rules', async function(assert) {
@@ -173,4 +222,5 @@ module('Integration | Component | Respond Incident Rules', function(hooks) {
     assert.equal(findAll('tbody tr:not(.is-selected)').length, 20, 'Select-All unselects the 20 rules');
     assert.ok(find('.select input.rsa-form-checkbox:not(.checked)'), 'the select-all checkbox is unchecked');
   });
+
 });
