@@ -162,8 +162,8 @@ def mvnCleanPackages(String deploy, String pomFile, String stability, String ver
 }
 
 String extractPomVersion(String pomPath){
-    matcher = readFile(pomPath) =~ '<version>(.+?)</version>'
-    version = matcher ? matcher[0][1] : null
+    def matcher = readFile(pomPath) =~ '<version>(.+?)</version>'
+    def version = matcher ? matcher[0][1] : null
     return version
 }
 
