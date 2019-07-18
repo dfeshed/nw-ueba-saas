@@ -121,9 +121,9 @@ export const parsePillDataFromUri = (uri, availableMeta) => {
   }
   return uri.split('/')
     .filter((segment) => !!segment)
-    .map((queryString) => {
+    .flatMap((queryString) => {
       const decodedQuery = decodeURIComponent(queryString);
-      return transformTextToPillData(decodedQuery, availableMeta);
+      return transformTextToPillData(decodedQuery, availableMeta, false, true);
     });
 };
 
