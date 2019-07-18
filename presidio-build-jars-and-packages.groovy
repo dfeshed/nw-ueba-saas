@@ -112,7 +112,7 @@ def buildPackages(
 
     dir(repositoryName) {
         checkoutBranch(branchName)
-        if(env.TAKE_STABILITY_AND_VERSIOM_FROM_POM == 'true' ){
+        if(env.EXTRACT_STABILITY_AND_VERSIOM_FROM_POM == 'true' ){
             version = extractPomVersion(pomFile)
             stability = getStabilityFromPomVersion(version)
         }
