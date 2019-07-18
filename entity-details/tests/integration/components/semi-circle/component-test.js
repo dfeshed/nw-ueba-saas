@@ -13,9 +13,9 @@ module('Integration | Component | semi-circle', function(hooks) {
     await render(hbs`
       {{semi-circle percentage="10"}}
     `);
-    return waitUntil(() => this.$('svg').length === 1).then(() => {
+    return waitUntil(() => this.element.querySelectorAll('svg').length === 1).then(() => {
       assert.equal(this.element.textContent.trim(), '10%');
-      assert.equal(this.$('.rsa-semi-circle_value')[0].outerHTML, '<circle class="rsa-semi-circle_value" cx="25" cy="25" r="20" stroke-width="5" style="stroke-dasharray: 125.664px; stroke-dashoffset: 113.097px;"></circle>');
+      assert.equal(document.querySelectorAll('.rsa-semi-circle_value')[0].outerHTML, '<circle class="rsa-semi-circle_value" cx="25" cy="25" r="20" stroke-width="5" style="stroke-dasharray: 125.664px; stroke-dashoffset: 113.097px;"></circle>');
     });
   });
 
@@ -23,9 +23,9 @@ module('Integration | Component | semi-circle', function(hooks) {
     await render(hbs`
       {{semi-circle percentage="20"}}
     `);
-    return waitUntil(() => this.$('svg').length === 1).then(() => {
+    return waitUntil(() => this.element.querySelectorAll('svg').length === 1).then(() => {
       assert.equal(this.element.textContent.trim(), '20%');
-      assert.equal(this.$('.rsa-semi-circle_value')[0].outerHTML, '<circle class="rsa-semi-circle_value" cx="25" cy="25" r="20" stroke-width="5" style="stroke-dasharray: 125.664px; stroke-dashoffset: 100.531px;"></circle>');
+      assert.equal(document.querySelectorAll('.rsa-semi-circle_value')[0].outerHTML, '<circle class="rsa-semi-circle_value" cx="25" cy="25" r="20" stroke-width="5" style="stroke-dasharray: 125.664px; stroke-dashoffset: 100.531px;"></circle>');
     });
   });
 });

@@ -59,7 +59,7 @@ module('Integration | Component | entity-details-container/body/alerts-container
     new ReduxDataHelper(setState).build();
 
     await render(hbs`{{entity-details-container/body/alerts-container}}`);
-    return waitUntil(() => this.$('.entity-details-container-body_alerts_list_content_alert_details_pill').length > 1, { timeout }).then(async() => {
+    return waitUntil(() => document.querySelectorAll('.entity-details-container-body_alerts_list_content_alert_details_pill').length > 1, { timeout }).then(async() => {
       await clickTrigger('.entity-details-container-body_alerts_list_header_sort');
       assert.equal(findAll('.ember-power-select-option').length, 2);
       await selectChoose('.ember-power-select-trigger', 'Date');

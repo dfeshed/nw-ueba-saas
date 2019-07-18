@@ -71,7 +71,9 @@ module('Integration | Component | users-tab/filter/favorites', function(hooks) {
         });
       });
     });
-    await this.$('.rsa-icon-bin-1-filled:first').click();
+
+    // get first filled icon
+    await click(findAll('.rsa-icon-bin-1-filled').shift());
     later(() => {
       assert.equal(findAll('.users-tab_filter_favorites_filter_close').length, 0);
       done();
