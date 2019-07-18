@@ -23,7 +23,10 @@ const commonHandlers = function(dispatch, callbacks) {
       dispatch({ type: ACTION_TYPES.INIT_EVENTS_STREAMING });
     },
     onError(response = {}) {
-      const errorObj = handleInvestigateErrorCode(response);
+      const errorObj = handleInvestigateErrorCode(response) || {};
+      if (!errorObj.serverMessage) {
+        errorObj.serverMessage = response;
+      }
       dispatch({
         type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
         payload: { error: errorObj.serverMessage, streaming: false }

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click } from '@ember/test-helpers';
+import { render, click, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import _ from 'lodash';
@@ -72,15 +72,34 @@ module('Integration | Component | process-node-list', function(hooks) {
     this.set('nodeList', testData);
     await render(hbs`{{process-node-list nodeList=nodeList}}`);
     assert.strictEqual(document.querySelectorAll('.rsa-data-table').length, 1, 'Process node list table rendered');
-    assert.strictEqual(document.querySelectorAll('.rsa-data-table-header-cell').length, 6, '6 columns are rendered');
+    assert.strictEqual(document.querySelectorAll('.rsa-data-table-header-cell').length, 5, '5 columns are rendered');
     assert.strictEqual(document.querySelectorAll('.rsa-data-table-body-row').length, 3, '3 rows are rendered');
     assert.strictEqual(document.querySelectorAll('.rsa-risk-score')[0].textContent.trim(), '100');
   });
+
+  test('it renders the network process list table', async function(assert) {
+    this.set('nodeList', testData);
+    this.set('activeTab', 'network');
+    await render(hbs`{{process-node-list nodeList=nodeList activeTab=activeTab}}`);
+    assert.strictEqual(findAll('.rsa-data-table-body-row').length, 2, '2 rows are rendered');
+    await click(findAll('.rsa-data-table-body-row .rsa-form-checkbox')[0]);
+    assert.equal(findAll('.rsa-data-table-header-cell .rsa-form-checkbox.checked').length, 0, 'select all is not checked');
+  });
+
+  test('it renders the file process list table', async function(assert) {
+    this.set('nodeList', testData);
+    this.set('activeTab', 'file');
+    await render(hbs`{{process-node-list nodeList=nodeList activeTab=activeTab}}`);
+    assert.strictEqual(findAll('.rsa-data-table-body-row').length, 1, '1 row is rendered');
+    await click(findAll('.rsa-data-table-body-row .rsa-form-checkbox')[0]);
+    assert.equal(findAll('.rsa-data-table-header-cell .rsa-form-checkbox.checked').length, 1, 'select all is checked');
+  });
+
   test('it renders event category icons', async function(assert) {
     this.set('nodeList', testData);
     await render(hbs`{{process-node-list nodeList=nodeList}}`);
     assert.strictEqual(document.querySelectorAll('.rsa-data-table').length, 1, 'Process node list table rendered');
-    assert.strictEqual(document.querySelectorAll('.rsa-data-table-header-cell').length, 6, '6 columns are rendered');
+    assert.strictEqual(document.querySelectorAll('.rsa-data-table-header-cell').length, 5, '5 columns are rendered');
     assert.strictEqual(document.querySelectorAll('.rsa-data-table-body-row .rsa-icon').length, 9, 'category events icons are rendered');
   });
 

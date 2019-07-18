@@ -2,12 +2,13 @@ import Component from '@ember/component';
 import { set } from '@ember/object';
 import computed from 'ember-computed-decorators';
 import _ from 'lodash';
+import { TAB_FILTER } from '../const';
 
 const COLUMNS = [
   {
     title: '',
     class: 'rsa-form-row-checkbox',
-    width: '1.5vw',
+    width: '3%',
     dataType: 'checkbox',
     componentClass: 'rsa-form-checkbox',
     visible: true,
@@ -15,28 +16,24 @@ const COLUMNS = [
     headerComponentClass: 'rsa-form-checkbox'
   },
   {
-    width: '8vw',
+    width: '25%',
     field: 'data.processName',
     title: 'investigateProcessAnalysis.nodeList.processName'
   },
   {
-    width: '5vw',
+    width: '11%',
     field: 'data.localScore',
     title: 'investigateProcessAnalysis.nodeList.riskScore'
   },
   {
-    width: '5vw',
-    field: 'data.hostCount',
-    title: 'investigateProcessAnalysis.nodeList.hostCount'
-  },
-  {
-    width: '8vw',
+    width: '40%',
     field: 'data.paramDst',
     title: 'investigateProcessAnalysis.nodeList.launchArguments'
   },
   {
-    width: '5vw',
+    width: '15%',
     field: 'data.eventTypes',
+    disableSort: true,
     title: 'investigateProcessAnalysis.nodeList.eventTypes'
   }
 ];
@@ -62,18 +59,32 @@ export default Component.extend({
     return _.cloneDeep(nodeList).sort((node1, node2) => node2.data.localScore - node1.data.localScore);
   },
 
-  @computed('nodeListCopy')
-  allItemsChecked(nodeList) {
-    const selections = nodeList.filter((node) => node.selected);
-    return selections.length === nodeList.length;
+  @computed('nodeListCopy', 'activeTab')
+  filteredList(nodes, tab) {
+    let filteredNodes = nodes;
+    const filter = TAB_FILTER[tab];
+    if (filter) {
+      filteredNodes = nodes.filter((node) => {
+        if (node.data.eventCategory) {
+          return node.data.eventCategory[filter];
+        }
+      });
+    }
+    return filteredNodes;
+  },
+
+  @computed('filteredList')
+  allItemsChecked(filteredList) {
+    const selections = filteredList.filter((node) => node.selected);
+    return filteredList.length ? selections.length === filteredList.length : false;
   },
 
   _toggleSelection(item) {
     set(item, 'selected', !item.selected);
     const nodeList = this.get('nodeListCopy');
-    const selections = this.get('nodeListCopy').filter((node) => node.selected);
-
-    this.set('allItemsChecked', selections.length === nodeList.length);
+    const filteredList = this.get('filteredList');
+    const selections = filteredList.filter((node) => node.selected);
+    this.set('allItemsChecked', selections.length === filteredList.length);
 
     if (this.onRowSelection) {
       this.onRowSelection(nodeList);
@@ -93,6 +104,7 @@ export default Component.extend({
     },
 
     toggleAllSelection(items) {
+      const nodeList = this.get('nodeListCopy');
       if (this.get('allItemsChecked')) {
         items.setEach('selected', false);
       } else {
@@ -102,7 +114,7 @@ export default Component.extend({
       this.toggleProperty('allItemsChecked');
 
       if (this.onRowSelection) {
-        this.onRowSelection(items);
+        this.onRowSelection(nodeList);
       }
 
     },

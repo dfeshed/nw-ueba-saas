@@ -25,12 +25,11 @@ const _getRiskScoreClass = (riskScore) => {
 export const addSelectedClass = (id) => {
 
   // To toggle the existing selection
-  const previousSelection = select(`*[data-id='${id}']`).select('.machine-count').classed('selected');
+  const previousSelection = select(`*[data-id='${id}']`).select('.process-name').classed('selected');
   // Update the node style. First unselect previously selected nodes
   selectAll('circle.process').classed('selected', false);
   selectAll('.process-icon').classed('selected', false);
   selectAll('.process-name').classed('selected', false);
-  selectAll('.machine-count').classed('selected', false);
   selectAll('.process-type').classed('selected', false);
   selectAll('.score-text').classed('selected', false);
   selectAll('rect').classed('selected', false);
@@ -39,7 +38,6 @@ export const addSelectedClass = (id) => {
   select(`*[data-id='${id}']`).selectAll('.process-type').classed('selected', !previousSelection);
   select(`*[data-id='${id}']`).select('.process-name').classed('selected', !previousSelection);
   select(`*[data-id='${id}']`).select('.score-text').classed('selected', !previousSelection);
-  select(`*[data-id='${id}']`).select('.machine-count').classed('selected', !previousSelection);
   select(`*[data-id='${id}']`).select('rect').classed('selected', !previousSelection);
   return !previousSelection;
 };
@@ -125,14 +123,6 @@ export const addNodeContent = (processNode, nodeEnter) => {
     opacity: 0,
     text: (d) => truncateText(d.data.processName)
   });
-  appendText({
-    className: 'machine-count',
-    node: nodeEnter,
-    dx: 0,
-    dy: DISTANCE.MACHINE_COUNT_Y,
-    opacity: 1,
-    text: () => truncateText('on (0) hosts')
-  });
 
   // draw risk score
   processNode.append('circle')
@@ -205,7 +195,6 @@ export const onNodeUpdate = (node, nodeEnter) => {
     .attr('transform', (d) => `translate(${ d.y },${ d.x })`);
 
   updateText({ className: 'process-name', node: nodeUpdate, dx: 0, dy: '1em', opacity: 1 });
-  updateText({ className: 'machine-count', node: nodeUpdate, dx: 0, dy: '2em', opacity: 1 });
 };
 
 export const onNodeExit = (node, source) => {

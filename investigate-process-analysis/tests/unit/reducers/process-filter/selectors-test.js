@@ -55,4 +55,14 @@ module('Unit | Selectors | process-filter', function() {
     const result = isWindowsAgent(state);
     assert.deepEqual(result, true);
   });
+
+  test('isWindowsAgent when host details is absent', function(assert) {
+    const state = Immutable.from({
+      processAnalysis: {
+        processProperties: { }
+      }
+    });
+    const result = isWindowsAgent(state);
+    assert.deepEqual(result, false);
+  });
 });

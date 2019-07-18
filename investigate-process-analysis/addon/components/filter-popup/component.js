@@ -3,10 +3,11 @@ import { connect } from 'ember-redux';
 import { setActiveFilterTab } from 'investigate-process-analysis/actions/creators/filter-popup';
 import { getFilterTabs } from 'investigate-process-analysis/reducers/filter-popup/selectors';
 import computed from 'ember-computed-decorators';
+import { TAB_FILTER } from '../const';
 
 const stateToComputed = (state) => ({
   activeTab: state.processAnalysis.filterPopup.activeFilterTab,
-  tabs: getFilterTabs(state)
+  tabsDetails: getFilterTabs(state)
 });
 
 const dispatchToActions = {
@@ -16,6 +17,20 @@ const dispatchToActions = {
 const PopupFilter = Component.extend({
   classNames: ['process-filter-popup'],
   selectedProcess: [],
+
+  @computed('model.children', 'tabsDetails')
+  tabs(nodes, tabsDetails) {
+    return tabsDetails.map((tab) => ({
+      ...tab,
+      count: nodes.filter((node) => {
+        if (tab.name === 'all') {
+          return nodes;
+        } else if (node.data.eventCategory) {
+          return node.data.eventCategory[TAB_FILTER[tab.name]];
+        }
+      }).length
+    }));
+  },
 
   @computed('selectedProcess.@each.selected', 'model.children')
   selectedProcessCount(selectedChildren, children) {
@@ -40,7 +55,8 @@ const PopupFilter = Component.extend({
         selectedChildren = this.model.children;
       }
       d.children.forEach((child) => {
-        child.selected = selectedChildren.find((node) => node.data.processId === child.data.processId).selected;
+        const selectedChild = selectedChildren.find((node) => node.data.processId === child.data.processId);
+        child.selected = selectedChild ? selectedChild.selected : false;
       });
       this.onViewSelected(d);
       hidePanelAction();

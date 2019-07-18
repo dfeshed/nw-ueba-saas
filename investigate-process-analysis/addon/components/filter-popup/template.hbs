@@ -2,11 +2,12 @@
   <box class='rsa-nav-tab-group'>
     {{#each tabs as |tab|}}
       {{#rsa-nav-tab align='center' align='left' compact=true isActive=tab.selected click=(action 'activate' tab.name)}}
-        <div class="label">
+        <div class="process-filter-popup__header__label">
           {{#if tab.label}}
-            <span class="tab-text">{{t tab.label}}</span>
+            <span class="tab-text">{{t tab.label}} ({{tab.count}})</span>
           {{else}}
             {{rsa-icon class=tab.icon}}
+            <span class='icon-count'>({{tab.count}})</span>
           {{/if}}
         </div>
       {{/rsa-nav-tab}}
@@ -18,6 +19,7 @@
 <box class='process-filter-popup__content'>
   {{process-node-list
     nodeList=model.children
+    activeTab=activeTab
     onRowSelection=(action 'getSelectedItems')
   }}
 </box>

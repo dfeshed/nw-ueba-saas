@@ -11,6 +11,12 @@
     .rsa-nav-tab-group {
       padding: 0 rsa-whitespace();
     }
+    &__label {
+      padding: 0 rsa-whitespace(less);
+      .icon-count {
+        margin-left: 1px;
+      }
+    }
   }
   &__content {
     padding-top: rsa-whitespace(less);
