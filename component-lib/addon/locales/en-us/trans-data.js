@@ -494,10 +494,10 @@ export default {
     sortTooltips: {
       disableSort: 'Sorting is disabled because your environment requires an update to support sorting.',
       isStreaming: 'Sorting is disabled because results are still streaming in.',
-      notIndexedAtValue: 'This column is not sortable because the number of events loaded is at threshold, a call to the database must be made, and this data is not indexed by value.',
-      notSingleton: 'This column is not sortable because the number of events loaded is at threshold, a call to the database must be made, and this data has multiple values.',
-      notValid: 'This column is not sortable because the number of events loaded is at threshold, a call to the database must be made, and this data has multiple unindexed values.',
-      composed: 'This column is not sortable because this data is composed of multiple fields.'
+      notIndexedAtValue: 'This column is not sortable because it is not indexed by value.',
+      notSingleton: 'This column is not sortable because the meta key has multiple unindexed values.',
+      notValid: 'This column is not sortable because it is not indexed by value or because the meta key has multiple unindexed values.',
+      composed: 'This column is not sortable because the data is composed of multiple fields.'
     },
     title: 'Investigate',
     loading: 'Loading',
