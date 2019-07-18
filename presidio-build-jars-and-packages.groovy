@@ -112,6 +112,10 @@ def buildPackages(
 
     dir(repositoryName) {
         checkoutBranch(branchName)
+        if(env.TAKE_STABILITY_AND_VERSIOM_FROM_POM == 'true' ){
+            version = extractPomVersion(pomFile)
+            stability = getStabilityFromPomVersion(version)
+        }
         mvnCleanPackages(deploy, pomFile, stability, version, updateSnapshots, debug, preStep)
     }
 }
@@ -152,4 +156,17 @@ def mvnCleanPackages(String deploy, String pomFile, String stability, String ver
         sh "cp .pydistutils.cfg ~/.pydistutils.cfg"
     }
     sh "mvn -B -f ${pomFile} -Dbuild.stability=${stability.charAt(0)} -Dbuild.version=${version} -Dpublish=${deploy} clean package ${updateSnapshots ?  "-U" : ""} ${debug ? "-X" : ""} "
+}
+
+String extractPomVersion(String pomPath){
+    matcher = readFile(pomPath) =~ '<version>(.+?)</version>'
+    version = matcher ? matcher[0][1] : null
+    return version
+}
+
+String getStabilityFromPomVersion(String pomVersion){
+    if(pomVersion != null)
+        return pomVersion.toLowerCase().endsWith("snapshot")? "dev": "gold"
+    else
+        error 'Couldnt extract pom version'
 }
