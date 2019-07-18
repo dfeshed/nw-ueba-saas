@@ -9,7 +9,7 @@ const stateToComputed = (state) => ({
   serverId: state.endpointQuery.serverId,
   focusedHost: state.endpoint.detailsInput.agentId,
   isMFTView: state.endpoint.hostDownloads.downloads.isShowMFTView,
-  fileSource: state.endpoint.hostDownloads.mftDirectory.fileSource
+  fileSource: state.endpoint.hostDownloads.mft.mftDirectory.fileSource
 });
 
 const dispatchToActions = {

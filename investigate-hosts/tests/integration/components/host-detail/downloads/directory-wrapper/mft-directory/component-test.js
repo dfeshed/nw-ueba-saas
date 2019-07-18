@@ -11,7 +11,7 @@ module('Integration | Component | mft-directory', function(hooks) {
   });
 
   test('mft-directory has loaded', async function(assert) {
-    this.set('item', hostDownloads.mftDirectory.subDirectories[0]);
+    this.set('item', hostDownloads.mft.mftDirectory.subDirectories[0]);
     await render(hbs`{{host-detail/downloads/directory-wrapper/mft-directory data=item value=item.name}}`);
     assert.equal(findAll('.mft-directory').length, 12, 'mft-directory has loaded');
     assert.equal(findAll('.mft-directory_arrow').length, 11, 'sub directories present');

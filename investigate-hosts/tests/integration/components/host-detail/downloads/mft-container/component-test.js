@@ -41,7 +41,7 @@ module('Integration | Component | mft-container', function(hooks) {
     assert.equal(findAll('.mft-container').length, 1, 'mft-container rendered');
     assert.equal(findAll('.mft-bar').length, 2, 'mft-container should rendered tree and table panels');
     assert.equal(findAll('.mft-action').length, 2, 'mft-container should have two action bars');
-    assert.equal(findAll('.open-filter-panel.is-disabled').length, 1);
+    assert.equal(findAll('.open-filter-panel.is-disabled').length, 1, 'Filter button is disabled on load');
   });
 
   test('Mft-container filter panel opens on click of filter button', async function(assert) {
@@ -53,6 +53,8 @@ module('Integration | Component | mft-container', function(hooks) {
     assert.equal(findAll('.mft-action').length, 2, 'mft-container should have two action bars');
     await click(find('.open-filter-panel'));
     assert.equal(findAll('.left-zone').length, 1, 'mft-container filter panel opens');
+    assert.equal(findAll('.mft-container .filter-wrapper').length, 1, 'Filter is present');
+    assert.equal(findAll('.mft-container .filter-wrapper .filter-controls').length, 9, '9 Filters present');
   });
 
 });

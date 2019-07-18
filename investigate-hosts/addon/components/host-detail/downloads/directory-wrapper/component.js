@@ -3,8 +3,8 @@ import { connect } from 'ember-redux';
 import { getSubDirectories, setSelectDirectoryForDetails } from 'investigate-hosts/actions/data-creators/downloads';
 
 const stateToComputed = (state) => ({
-  mftDirectory: state.endpoint.hostDownloads.mftDirectory.subDirectories,
-  fileSource: state.endpoint.hostDownloads.mftDirectory.fileSource,
+  mftDirectory: state.endpoint.hostDownloads.mft.mftDirectory.subDirectories,
+  fileSource: state.endpoint.hostDownloads.mft.mftDirectory.fileSource,
   selectedMftFile: state.endpoint.hostDownloads.downloads.selectedMftFile
 });
 

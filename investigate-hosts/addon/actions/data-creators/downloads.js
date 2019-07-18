@@ -170,8 +170,8 @@ const _fetchMFTDirectory = (type, recordNumber) => {
   return (dispatch, getState) => {
     const state = getState();
     const { selectedMftFile } = state.endpoint.hostDownloads.downloads;
-    const { sortField, isSortDescending, pageNumber, pageSize, isDirectories, inUse } = state.endpoint.hostDownloads.mftDirectory;
-    const { expressionList } = state.endpoint.hostDownloads.mftDirectoryFilter;
+    const { sortField, isSortDescending, pageNumber, pageSize, isDirectories, inUse } = state.endpoint.hostDownloads.mft.mftDirectory;
+    const { expressionList } = state.endpoint.hostDownloads.mft.filter;
 
     // fetching subfolders based on mftId
     const mftSubdirectoryFilter = [{
@@ -240,7 +240,7 @@ const getSubDirectories = () => {
   return (dispatch, getState) => {
     next(() => {
       const state = getState();
-      const { isDirectories, selectedDirectoryForDetails, selectedParentDirectory } = state.endpoint.hostDownloads.mftDirectory;
+      const { isDirectories, selectedDirectoryForDetails, selectedParentDirectory } = state.endpoint.hostDownloads.mft.mftDirectory;
       if (isDirectories) {
         dispatch(_fetchMFTDirectory(ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES, selectedParentDirectory.recordNumber));
       } else {

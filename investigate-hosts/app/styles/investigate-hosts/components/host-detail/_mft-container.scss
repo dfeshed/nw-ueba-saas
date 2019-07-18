@@ -64,6 +64,12 @@
         }
 
       }
+      .filter-wrapper {
+        height: calc(100vh - 330px);
+        [test-id$="Si"] {
+          margin-bottom: rsa-whitespace(more);
+        }
+      }
     }
     .mft-action-bar {
       .close-action {

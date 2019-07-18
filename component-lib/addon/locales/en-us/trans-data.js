@@ -2948,7 +2948,15 @@ export default {
         memoryDump: 'Memory Dump',
         fileName: 'File Name',
         checksum: 'checksumSha256',
-        downloadedTime: 'Downloaded Time'
+        downloadedTime: 'Downloaded Time',
+        alteredTimeFn: 'Altered Time ($FN)',
+        alteredTimeSi: 'Altered Time ($SI)',
+        creationTimeFn: 'Creation time ($FN)',
+        creationTimeSi: 'Creation time ($SI)',
+        fileReadTimeFn: 'Access Time ($FN)',
+        fileReadTimeSi: 'Access Time ($SI)',
+        mftChangedTimeFn: 'Update Time ($FN)',
+        mftChangedTimeSi: 'Update Time ($SI)'
       },
       help: {
         header: 'Select the drive or folder to view content.',

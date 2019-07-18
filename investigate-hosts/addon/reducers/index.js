@@ -52,8 +52,10 @@ export default combineReducers({
     hostDownloads: combineReducers({
       downloads,
       filter: createFilteredReducer(filter, reducerPredicate('DOWNLOAD')),
-      mftDirectory,
-      mftDirectoryFilter: createFilteredReducer(filter, reducerPredicate('MFTDIRECTORY'))
+      mft: combineReducers({
+        mftDirectory,
+        filter: createFilteredReducer(filter, reducerPredicate('MFTDIRECTORY'))
+      })
     })
 
   }),

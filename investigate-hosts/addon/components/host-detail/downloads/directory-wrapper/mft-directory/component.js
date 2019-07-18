@@ -4,7 +4,7 @@ import computed from 'ember-computed-decorators';
 import { setSelectDirectoryForDetails, getSubDirectories } from 'investigate-hosts/actions/data-creators/downloads';
 
 const stateToComputed = (state) => ({
-  selectedDirectoryForDetails: state.endpoint.hostDownloads.mftDirectory.selectedDirectoryForDetails
+  selectedDirectoryForDetails: state.endpoint.hostDownloads.mft.mftDirectory.selectedDirectoryForDetails
 });
 
 const dispatchToActions = {

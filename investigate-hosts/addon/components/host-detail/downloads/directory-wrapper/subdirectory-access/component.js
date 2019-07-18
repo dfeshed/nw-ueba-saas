@@ -4,7 +4,7 @@ import { connect } from 'ember-redux';
 import { setSeletedParentDirectory, getSubDirectories } from 'investigate-hosts/actions/data-creators/downloads';
 
 const stateToComputed = (state) => ({
-  openDirectories: state.endpoint.hostDownloads.mftDirectory.openDirectories
+  openDirectories: state.endpoint.hostDownloads.mft.mftDirectory.openDirectories
 });
 
 const dispatchToActions = {
