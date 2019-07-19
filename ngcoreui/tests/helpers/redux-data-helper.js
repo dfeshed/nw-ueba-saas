@@ -185,7 +185,27 @@ export default class DataHelper {
   }
 
   protocolListItems(arr) {
-    _set(this.state, 'logcollector.dashboardCard.items', arr);
+    _set(this.state, 'logcollector.dashboardCard.itemKeys', arr);
+    return this;
+  }
+
+  protocolSameRowData() {
+    _set(this.state, 'logcollector.dashboardCard.itemValueEventRate', { file: '10' });
+    _set(this.state, 'logcollector.dashboardCard.itemValueByteRate', { file: '11' });
+    _set(this.state, 'logcollector.dashboardCard.itemValueErrorRate', { file: '12' });
+    _set(this.state, 'logcollector.dashboardCard.itemValueNumEvents', { file: '13' });
+    _set(this.state, 'logcollector.dashboardCard.itemValueNumBytes', { file: '14' });
+    _set(this.state, 'logcollector.dashboardCard.itemValueNumErrors', { file: '15' });
+    return this;
+  }
+
+  protocolDifferentRowData() {
+    _set(this.state, 'logcollector.dashboardCard.itemValueEventRate', { file: '10' });
+    _set(this.state, 'logcollector.dashboardCard.itemValueByteRate', { cmd: '11' });
+    _set(this.state, 'logcollector.dashboardCard.itemValueErrorRate', { file: '12' });
+    _set(this.state, 'logcollector.dashboardCard.itemValueNumEvents', { odbc: '13' });
+    _set(this.state, 'logcollector.dashboardCard.itemValueNumBytes', { file: '14' });
+    _set(this.state, 'logcollector.dashboardCard.itemValueNumErrors', { file: '15' });
     return this;
   }
   // Selector functions

@@ -2,19 +2,32 @@ import Component from '@ember/component';
 import { COLUMNS_CONFIG } from './columnsConfig';
 import { connect } from 'ember-redux';
 import { inject } from '@ember/service';
-import { protocolArray } from 'ngcoreui/reducers/logcollector/dashboard-card/dashboard-card-selectors';
-import { initializeProtocols } from 'ngcoreui/actions/creators/logcollector/dashboard-card-creators';
+import * as dashboardCardSelectors from 'ngcoreui/reducers/logcollector/dashboard-card/dashboard-card-selectors';
+import * as dashboardCardCreators from 'ngcoreui/actions/creators/logcollector/dashboard-card-creators';
 
-const stateToComputed = (state) => ({
-  protocolList: protocolArray(state)
-});
+const stateToComputed = (state) => {
+  let protocolRowValues = [];
+  if (dashboardCardSelectors.allProtocolColumnDataLoadingSuccess(state)) {
+    protocolRowValues = dashboardCardSelectors.buildProtocolRow(state);
+  }
+  return {
+    protocolDataList: protocolRowValues
+  };
+};
 
 const cardLC = Component.extend({
   redux: inject(),
 
   didInsertElement() {
     this._super(...arguments);
-    this.get('redux').dispatch(initializeProtocols());
+    this.get('redux').dispatch(dashboardCardCreators.initializeProtocols());
+    this.refreshIntervalId = setInterval(() => this.get('redux').dispatch(dashboardCardCreators.initializeProtocols()),
+      10000);
+  },
+
+  willDestroyElement() {
+    clearInterval(this.refreshIntervalId);
+    this._super(...arguments);
   },
 
   classNames: ['card-lc', 'border-panel-lc'],

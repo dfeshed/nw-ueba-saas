@@ -1,8 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import { initializeProtocols } from 'ngcoreui/actions/creators/logcollector/dashboard-card-creators';
-
+import * as dashboardCardCreators from 'ngcoreui/actions/creators/logcollector/dashboard-card-creators';
 import ACTION_TYPES from 'ngcoreui/actions/types';
 
 module('Unit | Actions | dashboardCard creators', function(hooks) {
@@ -11,40 +10,51 @@ module('Unit | Actions | dashboardCard creators', function(hooks) {
     initialize(this.owner);
   });
 
-  test('initializeProtocols action creator returns proper type(s), payload(s), and/or promise(s)', function(assert) {
-    assert.expect(2);
-    const dispatch = (action) => {
-      const actionType = action.type || typeof action;
-      switch (actionType) {
-        case 'function':
-          action(innerDispatch, innerGetState);
-          break;
-        case ACTION_TYPES.LOG_COLLECTOR_FETCH_PROTOCOLS:
-          assert.equal(action.type, ACTION_TYPES.LOG_COLLECTOR_FETCH_PROTOCOLS, 'action has the correct type');
-          assert.ok(action.promise, 'action has a fetchProtocolList promise');
-          break;
-        default:
-          assert.ok(false, 'default inner case... action has the correct type');
-      }
-    };
+  test('fetchProtocols method returns proper type(s), payload(s), and/or promise(s)', function(assert) {
+    const result = dashboardCardCreators.fetchProtocols();
+    assert.equal(result.type, ACTION_TYPES.LOG_COLLECTOR_FETCH_PROTOCOLS, 'action has the correct type');
+    assert.ok(result.promise, 'action has a fetchProtocolList promise');
+  });
 
-    const innerDispatch = (action) => {
-      switch (action.type) {
-        case ACTION_TYPES.LOG_COLLECTOR_FETCH_PROTOCOLS:
-          assert.equal(action.type, ACTION_TYPES.LOG_COLLECTOR_FETCH_PROTOCOLS, 'action has the correct type');
-          assert.ok(action.promise, 'action has a fetchProtocolList promise');
-          break;
-        default:
-          assert.ok(false, 'default inner case... action has the correct type');
-      }
-    };
+  test('fetchEventRate method returns proper type(s), payload(s), and/or promise(s)', function(assert) {
+    const obj = [];
+    const result = dashboardCardCreators.fetchEventRate(obj);
+    assert.equal(result.type, ACTION_TYPES.LOG_COLLECTOR_FETCH_EVENT_RATE, 'action has the correct type');
+    assert.ok(result.promise, 'action has a fetchEventRate promise');
+  });
 
-    const innerGetState = () => {
-      return {
-      };
-    };
+  test('fetchBytesRate method returns proper type(s), payload(s), and/or promise(s)', function(assert) {
+    const obj = [];
+    const result = dashboardCardCreators.fetchBytesRate(obj);
+    assert.equal(result.type, ACTION_TYPES.LOG_COLLECTOR_FETCH_BYTE_RATE, 'action has the correct type');
+    assert.ok(result.promise, 'action has a fetchBytesRate promise');
+  });
 
-    const thunk = initializeProtocols();
-    thunk(dispatch);
+  test('fetchErrorsRate method returns proper type(s), payload(s), and/or promise(s)', function(assert) {
+    const obj = [];
+    const result = dashboardCardCreators.fetchErrorsRate(obj);
+    assert.equal(result.type, ACTION_TYPES.LOG_COLLECTOR_FETCH_ERROR_RATE, 'action has the correct type');
+    assert.ok(result.promise, 'action has a fetchErrorsRate promise');
+  });
+
+  test('fetchTotalEvents method returns proper type(s), payload(s), and/or promise(s)', function(assert) {
+    const obj = [];
+    const result = dashboardCardCreators.fetchTotalEvents(obj);
+    assert.equal(result.type, ACTION_TYPES.LOG_COLLECTOR_FETCH_TOTAL_EVENTS, 'action has the correct type');
+    assert.ok(result.promise, 'action has a fetchTotalEvents promise');
+  });
+
+  test('fetchTotalBytes method returns proper type(s), payload(s), and/or promise(s)', function(assert) {
+    const obj = [];
+    const result = dashboardCardCreators.fetchTotalBytes(obj);
+    assert.equal(result.type, ACTION_TYPES.LOG_COLLECTOR_FETCH_TOTAL_BYTES, 'action has the correct type');
+    assert.ok(result.promise, 'action has a fetchTotalBytes promise');
+  });
+
+  test('fetchTotalErrors method returns proper type(s), payload(s), and/or promise(s)', function(assert) {
+    const obj = [];
+    const result = dashboardCardCreators.fetchTotalErrors(obj);
+    assert.equal(result.type, ACTION_TYPES.LOG_COLLECTOR_FETCH_TOTAL_ERRORS, 'action has the correct type');
+    assert.ok(result.promise, 'action has a fetchTotalErrors promise');
   });
 });
