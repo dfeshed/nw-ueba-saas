@@ -26,7 +26,7 @@ import BoundedList from 'investigate-events/util/bounded-list';
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 import { matcher } from '../query-pill/query-pill-util';
-import { filterValidMeta } from 'investigate-events/util/meta';
+import { filterValidMeta, lastValidMeta } from 'investigate-events/util/meta';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -544,8 +544,14 @@ export default Component.extend({
    * @private
    */
   _navigationHandler(powerSelectAPI, event) {
+    const { selected, highlighted, results, actions } = powerSelectAPI;
+    // filter out isIndexedByNone meta options
+    const filteredResults = results.filter(filterValidMeta);
+    // lastValidItem will be undefined if it does not exist
+    const lastValidItem = lastValidMeta(results);
+    const lastItemIsValid = results[results.length - 1] && !results[results.length - 1].disabled;
+
     if (isArrowRight(event)) {
-      const { selected } = powerSelectAPI;
       // Check if cursor position (selectionStart) is at the end of the
       // string. We use the selected metaName for comparision because we only
       // want to move forward if there's a selection.
@@ -570,10 +576,11 @@ export default Component.extend({
         }
       });
     } else if (isArrowDown(event)) {
-      const { highlighted, results } = powerSelectAPI;
       const lastItem = results[results.length - 1];
-      if (event.ctrlKey || event.metaKey || highlighted === lastItem) {
+      if (event.ctrlKey || event.metaKey || highlighted === lastItem ||
+        (lastValidItem && highlighted === lastValidItem && !lastItemIsValid)) {
         // CTRL/META was pressed or at bottom of meta list
+        // or at the last valid enabled option
         // Jump to advanced options
         powerSelectAPI.actions.highlight(null);
         this._afterOptionsMenu.highlightNextIndex();
@@ -589,16 +596,21 @@ export default Component.extend({
         this._afterOptionsMenu.highlightPreviousIndex();
         return false;
       } else if (this._afterOptionsMenu.highlightedIndex === 0 && powerSelectAPI.resultsCount > 0) {
-        // At top of advanced options, move back to meta
-        const { actions, results } = powerSelectAPI;
-        const lastItem = results[results.length - 1];
-        this._afterOptionsMenu.clearHighlight();
-        actions.scrollTo(lastItem);
-        actions.highlight(lastItem);
-        return false;
-      } else if (this._afterOptionsMenu.highlightedIndex === 0 && powerSelectAPI.resultsCount === 0) {
-        // At top of after options, but there are no options to highlight in
-        // the meta list, so do nothing.
+        if (lastValidItem) {
+          // At top of advanced options, move back to last valid meta
+          this._afterOptionsMenu.clearHighlight();
+          actions.scrollTo(lastValidItem);
+          actions.highlight(lastValidItem);
+          return false;
+        } else {
+          // At top of advanced options, but there are no options to highlight in
+          // the meta list, so do nothing.
+          return false;
+        }
+      } else if (highlighted && results[0] !== filteredResults[0] &&
+          highlighted === filteredResults[0]) {
+        // At the first valid enabled option
+        // do nothing
         return false;
       }
     } else if (isTab(event) || isShiftTab(event)) {
