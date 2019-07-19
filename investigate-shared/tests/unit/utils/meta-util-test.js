@@ -143,3 +143,14 @@ test('set the filename', function(assert) {
   result = transform(event);
   assert.equal(result.data[0].filename, 'malware.exe', 'filename is used');
 });
+
+test('When hostname is missing do not show investigate domain link', function(assert) {
+  const event = {
+    metas: [['sessionid', 116414],
+      ['time', '2018-12-07T05:19:22.000+0000'],
+      ['checksum', '822e401c0d0612810c4398838fd5cf2bdec21cd35f2f24295a331b61e92bc5ef'],
+      ['filename.src', 'malware.exe']
+    ] };
+  const result = transform(event);
+  assert.equal(result.related_links.length, 1, 'investigate domain link not present when hostname is missing');
+});

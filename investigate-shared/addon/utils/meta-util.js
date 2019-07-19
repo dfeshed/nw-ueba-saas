@@ -44,9 +44,11 @@ const _prepareQueryString = (newEvent) => {
   relatedLinks[0] = {
     type: 'investigate_original_event',
     url: `/investigation/host/${newEvent.event_source}/navigate/event/AUTO/${newEvent.event_source_id}` };
-  relatedLinks[1] = {
-    type: 'investigate_destination_domain',
-    url: `/investigation/${newEvent.event_source}/navigate/query/alias.host%3D'${newEvent.hostname}'%2Fdate%2F${startTime}%2F${endTime}` };
+  if (newEvent.hostname) {
+    relatedLinks[1] = {
+      type: 'investigate_destination_domain',
+      url: `/investigation/${newEvent.event_source}/navigate/query/alias.host%3D'${newEvent.hostname}'%2Fdate%2F${startTime}%2F${endTime}` };
+  }
   return relatedLinks;
 };
 
