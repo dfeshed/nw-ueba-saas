@@ -333,5 +333,54 @@ module('Integration | Component | certificates-container/certificates-data-table
     });
   });
 
+  test('Sort icon present when column has disableSort', async function(assert) {
+    new ReduxDataHelper(initState)
+      .certificatesItems(items)
+      .loadMoreCertificateStatus('stopped')
+      .selectedCertificatesList([])
+      .certificateStatusData({})
+      .isCertificateView(true)
+      .isSortDescending(true)
+      .sortField('certificateStatus')
+      .build();
+
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{certificates-container/certificates-data-table}}`);
+    assert.equal(findAll('.rsa-data-table-header-cell:nth-of-type(3 ) .rsa-icon').length, 1, 'sort icon present for friendlyName column');
+    assert.equal(findAll('.rsa-data-table-header-cell:nth-of-type(4 ) .rsa-icon').length, 0, 'sort icon is not present for thumbPrint column');
+  });
+
+
+  test('Sort should work on friendlyName column', async function(assert) {
+    new ReduxDataHelper(initState)
+      .certificatesItems(items)
+      .loadMoreCertificateStatus('stopped')
+      .selectedCertificatesList([])
+      .certificateStatusData({})
+      .isCertificateView(true)
+      .isSortDescending(true)
+      .sortField('certificateStatus')
+      .build();
+
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{certificates-container/certificates-data-table}}`);
+    const initialState = this.owner.lookup('service:redux').getState().certificate.list.isSortDescending;
+    assert.deepEqual(initialState, true, 'before clicking sort icon, sorting state isSortDescending is true');
+    await click('.rsa-data-table-header-cell:nth-of-type(3 ) .rsa-icon');
+    const updatedState = this.owner.lookup('service:redux').getState().certificate.list;
+    assert.deepEqual(updatedState.sortField, 'friendlyName', 'friendlyName column is clicked, sortField state is set to friendlyName.');
+    assert.deepEqual(updatedState.isSortDescending, false, 'after sort icon is clicked, isSortDescending is toggled.');
+  });
+
 
 });

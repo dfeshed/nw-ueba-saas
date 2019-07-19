@@ -19,12 +19,14 @@ const DEFAULT_CERTIFICATE_PREFERENCES = {
         {
           field: 'issuer',
           width: '15vw',
-          displayIndex: 4
+          displayIndex: 4,
+          disableSort: true
         },
         {
           field: 'thumbprint',
           width: '15vw',
-          displayIndex: 5
+          displayIndex: 5,
+          disableSort: true
         },
         {
           field: 'notValidBeforeUtcDate',
@@ -39,22 +41,26 @@ const DEFAULT_CERTIFICATE_PREFERENCES = {
         {
           field: 'subject',
           width: '15vw',
-          displayIndex: 8
+          displayIndex: 8,
+          disableSort: true
         },
         {
           field: 'subjectKey',
           width: '15vw',
-          displayIndex: 9
+          displayIndex: 9,
+          disableSort: true
         },
         {
           field: 'serial',
           width: '15vw',
-          displayIndex: 10
+          displayIndex: 10,
+          disableSort: true
         },
         {
           field: 'authorityKey',
           width: '15vw',
-          displayIndex: 11
+          displayIndex: 11,
+          disableSort: true
         }
       ]
     }],

@@ -236,4 +236,12 @@ export default class DataHelper {
     _set(this.state, 'files.risk', risk);
     return this;
   }
+  isSortDescending(sort) {
+    _set(this.state, 'certificate.list.isSortDescending', sort);
+    return this;
+  }
+  sortField(field) {
+    _set(this.state, 'certificate.list.sortField', field);
+    return this;
+  }
 }

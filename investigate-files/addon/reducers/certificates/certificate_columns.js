@@ -4,7 +4,7 @@ const CERTIFICATE_COLUMNS_CONFIG = [
     title: 'configure.endpoint.certificates.columns.issuer',
     label: 'Issuer',
     width: '35vw',
-    disableSort: false,
+    disableSort: true,
     visible: true
   },
   {
@@ -12,7 +12,7 @@ const CERTIFICATE_COLUMNS_CONFIG = [
     title: 'configure.endpoint.certificates.columns.thumbprint',
     label: 'Thumb Print',
     width: '35vw',
-    disableSort: false,
+    disableSort: true,
     visible: true
   },
   {
@@ -36,7 +36,7 @@ const CERTIFICATE_COLUMNS_CONFIG = [
     title: 'configure.endpoint.certificates.columns.subject',
     label: 'Subject',
     width: '35vw',
-    disableSort: false,
+    disableSort: true,
     visible: true
   },
   {
@@ -44,7 +44,7 @@ const CERTIFICATE_COLUMNS_CONFIG = [
     title: 'configure.endpoint.certificates.columns.subjectKey',
     label: 'Subject Key',
     width: '35vw',
-    disableSort: false,
+    disableSort: true,
     visible: true
   },
   {
@@ -52,7 +52,7 @@ const CERTIFICATE_COLUMNS_CONFIG = [
     title: 'configure.endpoint.certificates.columns.serial',
     label: 'Serial',
     width: '35vw',
-    disableSort: false,
+    disableSort: true,
     visible: true
   },
   {
@@ -60,7 +60,7 @@ const CERTIFICATE_COLUMNS_CONFIG = [
     title: 'configure.endpoint.certificates.columns.authorityKey',
     label: 'Authority Key',
     width: '35vw',
-    disableSort: false,
+    disableSort: true,
     visible: true
   }
 ];

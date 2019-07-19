@@ -113,6 +113,11 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
       .content-context-menu {
         display: inherit;
       }
+      .rsa-data-table-header {
+        .sort.rsa-icon {
+          cursor: pointer;
+        }
+      }
     }
   }
   @include rsa-vendor-prefix(transition-property, width);

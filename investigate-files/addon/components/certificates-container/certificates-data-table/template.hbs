@@ -13,6 +13,13 @@
         {{t column.title}}
       </span>
     {{/if}}
+    {{#unless column.disableSort}}
+      {{rsa-icon
+        size='small'
+        click=(action 'sort' column)
+        name=(if column.isDescending "arrow-down-7" "arrow-up-7")
+        class="sort"}}
+    {{/unless}}
   {{/certificates-container/certificates-data-table/header}}
 
   {{#if areCertificatesLoading}}

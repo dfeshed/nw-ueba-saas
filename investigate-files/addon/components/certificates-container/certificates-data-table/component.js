@@ -6,7 +6,8 @@ import {
   getPageOfCertificates,
   toggleCertificateSelection,
   saveCertificateStatus,
-  getSavedCertificateStatus
+  getSavedCertificateStatus,
+  sortBy
 } from 'investigate-files/actions/certificate-data-creators';
 import { saveColumnConfig } from 'investigate-files/actions/data-creators';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
@@ -20,7 +21,9 @@ const stateToComputed = (state) => ({
   certificatesColumns: columns(state),
   serviceId: serviceId(state),
   timeRange: timeRange(state),
-  nextLoadCount: nextLoadCount(state)
+  nextLoadCount: nextLoadCount(state),
+  sortField: state.certificate.list.sortField,
+  isSortDescending: state.certificate.list.isSortDescending
 });
 
 const dispatchToActions = {
@@ -28,7 +31,8 @@ const dispatchToActions = {
   toggleCertificateSelection,
   saveCertificateStatus,
   getSavedCertificateStatus,
-  saveColumnConfig
+  saveColumnConfig,
+  sortBy
 };
 
 const Certificates = Component.extend({
@@ -91,6 +95,13 @@ const Certificates = Component.extend({
 
     onColumnConfigChange(changedProperty, changedColumns) {
       this.send('saveColumnConfig', changedProperty, changedColumns, 'files-certificates');
+    },
+
+    sort(column) {
+      const isDesc = this.get('isSortDescending');
+      const { field: sortField } = column;
+      this.send('sortBy', sortField, !isDesc);
+      column.set('isDescending', !isDesc);
     }
   }
 });

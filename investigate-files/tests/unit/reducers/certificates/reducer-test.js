@@ -22,7 +22,7 @@ module('Unit | Reducers | investigate-files | certificates', function(hooks) {
     assert.deepEqual(result, {
       certificatesList: [],
       sortField: 'friendlyName',
-      isSortDescending: true,
+      isSortDescending: false,
       pageNumber: 0,
       loadMoreStatus: 'stopped',
       hasMore: false,
@@ -240,5 +240,15 @@ module('Unit | Reducers | investigate-files | certificates', function(hooks) {
     });
     const result = reducer(previous, { type: ACTION_TYPES.CLOSE_CERTIFICATE_VIEW });
     assert.equal(result.isCertificateView, false, 'isCertificateView should false');
+  });
+
+  test('SET_CERTIFICATES_SORT_BY', function(assert) {
+    const previous = Immutable.from({
+      sortField: 'firstFileName',
+      isSortDescending: true
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_CERTIFICATES_SORT_BY, payload: { sortField: 'certificateStatus', isSortDescending: false } });
+    assert.equal(result.sortField, 'certificateStatus', 'sort field is changed.');
+    assert.equal(result.isSortDescending, false, 'sort order is changed.');
   });
 });

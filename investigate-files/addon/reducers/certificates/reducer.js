@@ -16,7 +16,7 @@ const certificateState = Immutable.from({
   isCertificateView: false,
   certificatesList: [],
   sortField: 'friendlyName',
-  isSortDescending: true,
+  isSortDescending: false,
   pageNumber: 0,
   loadMoreStatus: 'stopped',
   hasMore: false,
@@ -120,6 +120,10 @@ const certificatesReducer = handleActions({
       const newColumns = visibleColumns.filter((column) => column !== field);
       return state.setIn(['certificateVisibleColumns'], newColumns);
     }
+  },
+
+  [ACTION_TYPES.SET_CERTIFICATES_SORT_BY]: (state, { payload: { sortField, isSortDescending } }) => {
+    return state.merge({ sortField, isSortDescending });
   }
 
 }, certificateState);

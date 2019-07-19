@@ -154,6 +154,16 @@ const updateCertificateColumnVisibility = (column) => ({ type: ACTION_TYPES.UPDA
 
 const closeCertificateVIew = () => ({ type: ACTION_TYPES.CLOSE_CERTIFICATE_VIEW });
 
+/**
+ * Action Creator to sorting the certificates.
+ */
+const sortBy = (sortField, isSortDescending) => {
+  return (dispatch) => {
+    dispatch({ type: ACTION_TYPES.SET_CERTIFICATES_SORT_BY, payload: { sortField, isSortDescending } });
+    dispatch(getFirstPageOfCertificates());
+  };
+};
+
 export {
   initializeCertificateView,
   getCertificates,
@@ -164,5 +174,6 @@ export {
   toggleCertificateSelection,
   updateCertificateColumnVisibility,
   closeCertificateVIew,
-  bootstrapInvestigateCertificates
+  bootstrapInvestigateCertificates,
+  sortBy
 };

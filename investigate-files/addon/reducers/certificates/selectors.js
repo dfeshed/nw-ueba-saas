@@ -26,7 +26,7 @@ export const CERTIFICATE_DEFAULT_COLUMNS = [
     title: 'configure.endpoint.certificates.columns.certificateStatus',
     label: 'Status',
     width: '10vw',
-    disableSort: true,
+    disableSort: false,
     visible: true,
     preferredDisplayIndex: 3
   },
@@ -81,7 +81,7 @@ export const columns = createSelector(
       let counter = columns.length + 3;
       if (schema && schema.length) {
         const updatedSchema = schema.map((item) => {
-          const { dataType, field, searchable, values } = item;
+          const { dataType, field, searchable, values, disableSort } = item;
           let { width } = item;
           const currentColumn = columns.filter((column) => {
             return column.field === field;
@@ -108,7 +108,7 @@ export const columns = createSelector(
             preferredDisplayIndex: displayIndex,
             title: `configure.endpoint.certificates.columns.${field}`,
             width: width || '4vw',
-            disableSort: false
+            disableSort
           };
         });
 
