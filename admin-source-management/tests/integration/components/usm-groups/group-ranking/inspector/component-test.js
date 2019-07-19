@@ -8,7 +8,9 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import edrTestPolicy from '../../../../../data/subscriptions/groups/fetchRankingView/data';
 import windowsTestPolicy from '../../../../../data/subscriptions/groups/fetchRankingView/dataWindow';
-import fileTestPolicy from '../../../../../data/subscriptions/groups/fetchRankingView/dataFile';
+import dataFile from '../../../../../data/subscriptions/groups/fetchRankingView/dataFile';
+
+const [fileTestPolicy] = dataFile; // first (default) file policy
 
 let setState;
 
@@ -60,7 +62,7 @@ module('Integration | Component | group-ranking/inspector | Policy Inspector', f
       .build();
     await render(hbs`{{usm-groups/group-ranking/inspector}}`);
     assert.equal(findAll('.usm-ranking-inspector .heading').length, 1, 'expected headings are shown');
-    assert.equal(findAll('.usm-ranking-inspector .title').length, 6, 'expected property names are shown');
-    assert.equal(findAll('.usm-ranking-inspector .value').length, 14, 'expected value elements are shown');
+    assert.equal(findAll('.usm-ranking-inspector .title').length, 4, 'expected property names are shown');
+    assert.equal(findAll('.usm-ranking-inspector .value').length, 10, 'expected value elements are shown');
   });
 });

@@ -42,7 +42,8 @@ export const selectedFilePolicy = createSelector(
     for (const prop in focusedPolicy) {
       if (prop === 'sources') {
         for (let i = 0; i < focusedPolicy.sources.length; i++) {
-          sourceSections.push(_getSourceSection(focusedPolicy.sources[i], _listOfFileSourceTypes));
+          const source = focusedPolicy.sources[i];
+          sourceSections.push(_getSourceSection(source, _listOfFileSourceTypes, _focusedPolicyOrigin, emptyOrigin, `sources.${source.fileType}`));
         }
       } else {
         if (!isBlank(focusedPolicy[prop])) {
@@ -117,11 +118,11 @@ const _getDisplayName = (prop, destAddress, listOfLogServers) => {
   return focusedPolicyDestinationName;
 };
 
-const _getSourceSection = (source, _listOfFileSourceTypes) => {
+const _getSourceSection = (source, _listOfFileSourceTypes, _focusedPolicyOrigin, emptyOrigin, originProp) => {
   const sourceSettings = [];
   for (const prop in source) {
     if (!isBlank(source[prop])) {
-      const sourceSetting = _getSourceSetting(prop, source);
+      const sourceSetting = _getSourceSetting(prop, source, _focusedPolicyOrigin, emptyOrigin, originProp);
       if (sourceSetting) {
         sourceSettings.push(sourceSetting);
       }
@@ -135,32 +136,38 @@ const _getSourceSection = (source, _listOfFileSourceTypes) => {
   return sourceSection;
 };
 
-const _getSourceSetting = (prop, source) => {
+const _getSourceSetting = (prop, source, _focusedPolicyOrigin, emptyOrigin, originProp) => {
   const _i18n = lookup('service:i18n');
   const sourceSettings = {
     enabled: {
       name: 'adminUsm.policyWizard.filePolicy.enableOnAgent',
-      value: (source[prop] === true) ? _i18n.t('adminUsm.policies.detail.enabled') : _i18n.t('adminUsm.policies.detail.disabled')
+      value: (source[prop] === true) ? _i18n.t('adminUsm.policies.detail.enabled') : _i18n.t('adminUsm.policies.detail.disabled'),
+      origin: _focusedPolicyOrigin && _focusedPolicyOrigin[originProp] ? _focusedPolicyOrigin[originProp] : emptyOrigin
     },
     startOfEvents: {
       name: 'adminUsm.policyWizard.filePolicy.dataCollection',
-      value: (source[prop] === true) ? _i18n.t('adminUsm.policyWizard.filePolicy.collectAll') : _i18n.t('adminUsm.policyWizard.filePolicy.collectNew')
+      value: (source[prop] === true) ? _i18n.t('adminUsm.policyWizard.filePolicy.collectAll') : _i18n.t('adminUsm.policyWizard.filePolicy.collectNew'),
+      origin: _focusedPolicyOrigin && _focusedPolicyOrigin[originProp] ? _focusedPolicyOrigin[originProp] : emptyOrigin
     },
     fileEncoding: {
       name: 'adminUsm.policyWizard.filePolicy.fileEncoding',
-      value: source[prop]
+      value: source[prop],
+      origin: _focusedPolicyOrigin && _focusedPolicyOrigin[originProp] ? _focusedPolicyOrigin[originProp] : emptyOrigin
     },
     paths: {
       name: 'adminUsm.policyWizard.filePolicy.paths',
-      value: source[prop] && source[prop].join ? source[prop].join(', ') : ''
+      value: source[prop] && source[prop].join ? source[prop].join(', ') : '',
+      origin: _focusedPolicyOrigin && _focusedPolicyOrigin[originProp] ? _focusedPolicyOrigin[originProp] : emptyOrigin
     },
     sourceName: {
       name: 'adminUsm.policyWizard.filePolicy.sourceName',
-      value: source[prop]
+      value: source[prop],
+      origin: _focusedPolicyOrigin && _focusedPolicyOrigin[originProp] ? _focusedPolicyOrigin[originProp] : emptyOrigin
     },
     exclusionFilters: {
       name: 'adminUsm.policyWizard.filePolicy.exclusionFilters',
-      value: source[prop] && source[prop].join ? source[prop].join(', ') : ''
+      value: source[prop] && source[prop].join ? source[prop].join(', ') : '',
+      origin: _focusedPolicyOrigin && _focusedPolicyOrigin[originProp] ? _focusedPolicyOrigin[originProp] : emptyOrigin
     }
   };
   return sourceSettings[prop];

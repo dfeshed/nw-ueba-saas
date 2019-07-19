@@ -8,11 +8,12 @@ export default {
   message(frame) {
     const body = JSON.parse(frame.body);
     let data = dataEdr;
-    const sourceType = body.data.policyType;
-    if (sourceType == 'windowsLogPolicy') {
+    const { policyType, groupIds } = body.data;
+    if (policyType == 'windowsLogPolicy') {
       data = dataWindow;
-    } else if (sourceType == 'filePolicy') {
-      data = dataFile;
+    } else if (policyType == 'filePolicy') {
+      // no groupIds returns default file policy - else return file policy with all settings
+      data = (groupIds.length === 0) ? dataFile[0] : dataFile[1];
     }
     return {
       code: 0,
