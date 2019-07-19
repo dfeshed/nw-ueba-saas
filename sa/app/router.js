@@ -18,6 +18,7 @@ const Router = EmberRouter.extend({
 Router.map(function() {
   this.route('login');
   this.route('internal-error');
+  this.route('sso-error');
 
   this.route('protected', { path: '/' }, function() {
     this.route('monitor');

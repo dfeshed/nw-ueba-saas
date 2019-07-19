@@ -13,6 +13,10 @@ export default {
   config: {
     title: 'Configure'
   },
+  ssoMessages: {
+    failureTitle: 'Single Sign-On Failed',
+    failureMessage: 'Could not perform Single Sign-On. You may retry signing in <a href="/saml/login?force=true" target="_blank">here</a>, or contact your administrator'
+  },
   errorPages: {
     errorLabel: 'Error Description',
     back: 'Back',
