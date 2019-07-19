@@ -86,7 +86,7 @@ const _getBasicSetting = (prop, focusedPolicy, _listOfLogServers, windowsLogPoli
       },
       sendTestLog: {
         name: 'adminUsm.policies.detail.sendTestLog',
-        value: _i18n.t('adminUsm.policies.detail.enabled')
+        value: focusedPolicy[prop] === 'Enabled' ? _i18n.t('adminUsm.policies.detail.enabled') : _i18n.t('adminUsm.policies.detail.disabled')
       }
     };
   } else {

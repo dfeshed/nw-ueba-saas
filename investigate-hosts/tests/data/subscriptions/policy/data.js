@@ -67,7 +67,7 @@ export default {
     },
     filePolicy: {
       name: 'Test File Policy',
-      enabled: false,
+      enabled: true,
       sendTestLog: false,
       primaryDestination: '',
       secondaryDestination: '',

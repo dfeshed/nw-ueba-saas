@@ -9,7 +9,7 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 
 let setState;
 
-module('Integration | Component | property-panel-policy/windows-log-policy', function(hooks) {
+module('Integration | Component | property-panel-policy/file-policy', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-hosts')
   });
@@ -83,7 +83,7 @@ module('Integration | Component | property-panel-policy/windows-log-policy', fun
       },
       filePolicy: {
         name: 'Test File Policy',
-        enabled: false,
+        enabled: true,
         sendTestLog: false,
         primaryDestination: '',
         secondaryDestination: '',
@@ -95,60 +95,44 @@ module('Integration | Component | property-panel-policy/windows-log-policy', fun
     evaluatedTime: '2019-05-07T05:25:41.109+0000'
   };
   const { policy } = policyData;
-  const { windowsLogPolicy } = policyData.policy;
-  const windowsLogPolicyDisabled = {
+  const { filePolicy } = policyData.policy;
+  const filePolicyyDisabled = {
     ...policyData,
     policy: {
       ...policy,
-      windowsLogPolicy: {
-        ...windowsLogPolicy,
+      filePolicy: {
+        ...filePolicy,
         enabled: false
-      }
-    }
-  };
-
-  const windowsLogPolicyNoChannels = {
-    ...policyData,
-    policy: {
-      ...policy,
-      windowsLogPolicy: {
-        ...windowsLogPolicy,
-        channelFilters: []
       }
     }
   };
 
   test('it renders', async function(assert) {
     new ReduxDataHelper(setState).policy(policyData).build();
-    await render(hbs`{{property-panel-policy/windows-log-policy}}`);
-    assert.equal(findAll('.windows-log-policy').length, 1, 'should rend the component');
+    await render(hbs`{{property-panel-policy/file-policy}}`);
+    assert.equal(findAll('.file-policies').length, 1, 'should rend the component');
   });
 
   test('Content data', async function(assert) {
     new ReduxDataHelper(setState).policy(policyData).build();
-    await render(hbs`{{property-panel-policy/windows-log-policy}}`);
-    assert.equal(document.querySelectorAll('.win-value').length, 4, 'All values are showing');
-    assert.equal(document.querySelectorAll('.content-section__section-name')[0].textContent.trim(), 'Windows Log Settings', 'Windows Log Settings section shows');
+    await render(hbs`{{property-panel-policy/file-policy}}`);
+    assert.equal(document.querySelectorAll('.file-value').length, 3, 'All values are showing');
+    assert.equal(document.querySelectorAll('.content-section__section-name')[0].textContent.trim(), 'File Settings', 'Windows Log Settings section shows');
     assert.equal(document.querySelectorAll('.property-name')[0].textContent.trim(), 'Status', 'Status lable shows');
-    assert.equal(document.querySelectorAll('.win-value .tooltip-text')[0].textContent.trim(), 'Enabled', 'Enabled value is showing');
-    assert.equal(document.querySelectorAll('.content-section__section-name')[1].textContent.trim(), 'Channel Filter Settings', 'Channel Filter Settings section shows');
+    assert.equal(document.querySelectorAll('.file-value .tooltip-text')[0].textContent.trim(), 'Enabled', 'Enabled value is showing');
 
     assert.equal(document.querySelectorAll('.property-name')[1].textContent.trim(), 'Protocol', 'Protocol lable shows');
 
-    assert.equal(document.querySelectorAll('.win-value .tooltip-text')[1].textContent.trim(), 'TLS', 'TLS value shows');
-    assert.equal(document.querySelectorAll('.win-value .tooltip-text')[2].textContent.trim(), 'Disabled', 'Disabled value  shows');
+    assert.equal(document.querySelectorAll('.file-value .tooltip-text')[1].textContent.trim(), 'TLS', 'TLS value shows');
+    assert.equal(document.querySelectorAll('.file-value .tooltip-text')[2].textContent.trim(), 'Disabled', 'Disabled value  shows');
+
+
   });
 
-  test('Content data windowsLogPolicyDisabled', async function(assert) {
-    new ReduxDataHelper(setState).policy(windowsLogPolicyDisabled).build();
-    await render(hbs`{{property-panel-policy/windows-log-policy}}`);
-    assert.equal(document.querySelectorAll('.win-value').length, 1, 'One value is showing, Channel fields are not showing');
-    assert.equal(document.querySelectorAll('.win-value .tooltip-text')[0].textContent.trim(), 'Disabled', 'Disabled value is showing');
-  });
-
-  test('Content data windowsLogPolicyNoChannels', async function(assert) {
-    new ReduxDataHelper(setState).policy(windowsLogPolicyNoChannels).build();
-    await render(hbs`{{property-panel-policy/windows-log-policy}}`);
-    assert.equal(document.querySelectorAll('.win-value .tooltip-text')[3].textContent.trim(), 'No channels set for collection', 'No channels value is showing');
+  test('Content data filePolicyyDisabled', async function(assert) {
+    new ReduxDataHelper(setState).policy(filePolicyyDisabled).build();
+    await render(hbs`{{property-panel-policy/file-policy}}`);
+    assert.equal(document.querySelectorAll('.file-value').length, 1, 'All values are showing minus fields below Disabled');
+    assert.equal(document.querySelectorAll('.file-value .tooltip-text')[0].textContent.trim(), 'Disabled', 'Disabled value is showing');
   });
 });

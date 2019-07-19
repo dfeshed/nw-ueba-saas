@@ -339,6 +339,15 @@ module('Unit | Selectors | overview', function(hooks) {
           protocol: '123',
           sendTestLog: true,
           channelFilters: [{ asd: 'asd' }]
+        },
+        filePolicy: {
+          name: 'Test File Policy',
+          enabled: false,
+          sendTestLog: true,
+          primaryDestination: '111',
+          secondaryDestination: '222',
+          protocol: 'TLS',
+          sources: []
         }
       },
       policyStatus: 'Testing',
@@ -386,6 +395,14 @@ module('Unit | Selectors | overview', function(hooks) {
       'protocol': '123',
       'secondaryDestination': 'Moo',
       'sendTestLog': 'Enabled'
+    });
+    assert.deepEqual(resultPolicyAdminUsm.filePolicy, {
+      'sources': [],
+      'enabled': false,
+      'primaryDestination': '111',
+      'protocol': 'TLS',
+      'secondaryDestination': '222',
+      'sendTestLog': true
     });
   });
 

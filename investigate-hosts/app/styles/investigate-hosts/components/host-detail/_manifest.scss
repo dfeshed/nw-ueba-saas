@@ -104,6 +104,15 @@
   .agent-version {
     padding-right: 0.75rem;
   }
+  .blue.rsa-content-accordion {
+    h3 {
+      padding-left: 0px;
+    }
+    .content-section__section-name {
+      padding-top: rsa-whitespace(less);
+      padding-left: rsa-whitespace();
+    }
+  }
 }
 .machine-zone, .host-container-detail {
   .rsa-data-table-header-cell:last-child {

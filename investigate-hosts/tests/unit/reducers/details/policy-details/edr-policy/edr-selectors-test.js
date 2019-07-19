@@ -91,6 +91,15 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
             filterType: 'EXCLUDE'
           }
         ]
+      },
+      filePolicy: {
+        name: 'Test File Policy',
+        enabled: false,
+        sendTestLog: false,
+        primaryDestination: '',
+        secondaryDestination: '',
+        protocol: 'TLS',
+        sources: []
       }
     },
     policyStatus: 'Testing',

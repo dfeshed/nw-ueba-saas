@@ -7,12 +7,12 @@ import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { revertPatch } from '../../../../../helpers/patch-reducer';
 
 import {
-  selectedWindowsLogPolicy
-} from 'investigate-hosts/reducers/details/policy-details/windows-log-policy/windows-log-selectors';
+  selectedFilePolicy
+} from 'investigate-hosts/reducers/details/policy-details/file-policy/file-selectors';
 
 let setState;
 
-module('Unit | Selectors | Policy Details | windows-log-policy | windows-log-selectors', function(hooks) {
+module('Unit | Selectors | Policy Details | file-policy | file-selectors', function(hooks) {
   setupTest(hooks);
   hooks.beforeEach(function() {
     setState = (state) => {
@@ -86,7 +86,7 @@ module('Unit | Selectors | Policy Details | windows-log-policy | windows-log-sel
       },
       filePolicy: {
         name: 'Test File Policy',
-        enabled: false,
+        enabled: true,
         sendTestLog: false,
         primaryDestination: '',
         secondaryDestination: '',
@@ -98,35 +98,34 @@ module('Unit | Selectors | Policy Details | windows-log-policy | windows-log-sel
     evaluatedTime: '2019-05-07T05:25:41.109+0000'
   };
 
-  test('selectedWindowsLogPolicy selector', function(assert) {
+  test('selectedFilePolicy selector', function(assert) {
     const state = new ReduxDataHelper(setState).policy(policyData).build();
-    const policyDetails = selectedWindowsLogPolicy(Immutable.from(state));
-    assert.equal(policyDetails.length, 2, '2 sections returned as expected');
-    assert.equal(policyDetails[0].header, 'adminUsm.policies.detail.windowsLogSettings', 'first section is as expected');
+    const policyDetails = selectedFilePolicy(Immutable.from(state));
+    assert.equal(policyDetails.length, 1, '1 sections returned as expected');
+    assert.equal(policyDetails[0].header, 'adminUsm.policies.detail.fileSettings', 'first section is as expected');
     assert.equal(policyDetails[0].props.length, 3, 'first section has 3 properties');
+    assert.equal(policyDetails[0].props[0].value, 'Enabled', 'Enabled filePolicy correct');
     assert.equal(policyDetails[0].props[2].value, 'Disabled', 'Disabled sendTestLog correct');
-    assert.equal(policyDetails[1].header, 'adminUsm.policies.detail.channelFilterSettings', 'second section  is as expected');
-    assert.equal(policyDetails[1].channels.length, 1, 'second section has 1 channel');
-    assert.equal(policyDetails[1].channels[0].value, '620,630,640', 'eventId value shows');
+
   });
 
   const { policy } = policyData;
-  const { windowsLogPolicy } = policyData.policy;
-  const runOnDaysOfWeekData = {
+  const { filePolicy } = policyData.policy;
+  const filePolicyDidabled = {
     ...policyData,
     policy: {
       ...policy,
-      windowsLogPolicy: {
-        ...windowsLogPolicy,
+      filePolicy: {
+        ...filePolicy,
         enabled: false
       }
     }
   };
 
-  test('selectedWindowsLogPolicy selector with data Disabled', function(assert) {
-    const state = new ReduxDataHelper(setState).policy(runOnDaysOfWeekData).build();
-    const policyDetails = selectedWindowsLogPolicy(Immutable.from(state));
+  test('selectedFilePolicy selector with data Disabled', function(assert) {
+    const state = new ReduxDataHelper(setState).policy(filePolicyDidabled).build();
+    const policyDetails = selectedFilePolicy(Immutable.from(state));
     assert.equal(policyDetails[0].props.length, 1, 'first section has 1 properties');
-    assert.equal(policyDetails[0].props[0].value, 'Disabled', 'Disabled correct');
+    assert.equal(policyDetails[0].props[0].value, 'Disabled', 'Disabled filePolicy correct');
   });
 });
