@@ -51,18 +51,24 @@ const PacketReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin
   didInsertElement() {
     this._super(...arguments);
     // We have to clear tooltip data on scroll
-    this.$().find('.scroll-box').on('scroll', () => {
-      debounce(this, this.hideTooltip, 100, true);
-    });
+    if (document.querySelector('.scroll-box') !== null) {
+      document.querySelector('.scroll-box').addEventListener('scroll', this._handleScroll());
+    }
   },
 
   willDestroyElement() {
     this._super(...arguments);
-    this.$().find('.scroll-box').off('scroll');
+    if (document.querySelector('.scroll-box') !== null) {
+      document.querySelector('.scroll-box').removeEventListener('scroll', this._handleScroll());
+    }
   },
 
   hideTooltip() {
     this.send('hidePacketTooltip');
+  },
+
+  _handleScroll() {
+    debounce(this, this.hideTooltip, 100, true);
   }
 });
 

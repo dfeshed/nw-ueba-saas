@@ -2,13 +2,13 @@ import Component from '@ember/component';
 import { observer } from '@ember/object';
 import { schedule } from '@ember/runloop';
 import { inject as service } from '@ember/service';
-import $ from 'jquery';
 import { connect } from 'ember-redux';
 import computed, { alias, notEmpty, equal } from 'ember-computed-decorators';
 
 import intToHex from 'recon/utils/int-to-hex';
 import hexToInt from 'recon/utils/hex-to-int';
 import layout from './template';
+import { getWidth } from 'component-lib/utils/jquery-replacement';
 
 // Default data types for known fields in packet headers.
 const DEFAULT_TYPE_OF_FIELD = {
@@ -185,7 +185,7 @@ const ByteTooltipComponent = Component.extend({
 
   // clean up DOM
   willDestroyElement() {
-    $(this.element).remove();
+    this.element.parentNode.removeChild(this.element);
   },
 
   _tunnel() {
@@ -195,7 +195,7 @@ const ByteTooltipComponent = Component.extend({
   _move() {
     const position = this.get('position');
     if (position) {
-      this.element.style.left = `${position.x - ($(this.element).width() / 2) - 7}px`;
+      this.element.style.left = `${position.x - (getWidth(this.element) / 2) - 7}px`;
       this.element.style.top = `${position.y - 63}px`;
     }
   }

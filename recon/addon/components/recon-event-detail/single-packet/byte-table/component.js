@@ -1,7 +1,6 @@
 import Component from '@ember/component';
 import { observer } from '@ember/object';
 import { schedule } from '@ember/runloop';
-import $ from 'jquery';
 import { connect } from 'ember-redux';
 import { scaleQuantize } from 'd3-scale';
 import { event, select } from 'd3-selection';
@@ -11,6 +10,7 @@ import {
   showPacketTooltip,
   hidePacketTooltip
 } from 'recon/actions/interaction-creators';
+import { offset } from 'component-lib/utils/jquery-replacement';
 
 // A quantize scale will map a continuous domain to a discrete range
 const scale = scaleQuantize()
@@ -165,14 +165,14 @@ const ByteTableComponent = Component.extend({
       tooltipData = !packetField ? null : {
         field: packetField.field,
         values: packetField.values,
-        position: { x: event.pageX, y: $(event.target).offset().top },
+        position: { x: event.pageX, y: offset(event.target).top },
         packetId: this.get('packet.id')
       };
     } else if (hasSignaturesHighlighted && byte.isKnown) {
       tooltipData = {
         field: { name: 'signature', type: 'sig' },
         values: byte.isKnown.type,
-        position: { x: event.pageX, y: $(event.target).offset().top },
+        position: { x: event.pageX, y: offset(event.target).top },
         packetId: this.get('packet.id')
       };
     }
@@ -198,11 +198,11 @@ const ByteTableComponent = Component.extend({
 
   attachDomListeners() {
     this._mousedownCallback = this._clearSelection.bind(this);
-    $(document).on('mousedown', this._mousedownCallback);
+    this.element.addEventListener('mousedown', this._mousedownCallback);
   },
 
   detachDomListeners() {
-    $(document).off('mousedown', this._mousedownCallback);
+    this.element.removeEventListener('mousedown', this._mousedownCallback);
     this._mousedownCallback = null;
   },
 
@@ -212,7 +212,7 @@ const ByteTableComponent = Component.extend({
    */
   tooltipDataDidChange: observer('tooltipData', function() {
     const { packet: { id: packetId }, tooltipData, headerCellClass } = this.getProperties('packet', 'tooltipData', 'headerCellClass');
-    const tds = this.$(`.${headerCellClass}`);
+    const tds = this.element.querySelector(`.${headerCellClass}`);
     const toggleHover = function(isHover, position, length) {
       [].slice.apply(tds, [position, position + length])
         .forEach((td) => {
@@ -321,7 +321,7 @@ const ByteTableComponent = Component.extend({
    * @private
    */
   selectionDidChange: observer('selection', function() {
-    const tds = this.$(`.${this.get('cellClass')}`);
+    const tds = this.element.querySelector(`.${this.get('cellClass')}`);
     const toggleSelected = function(isSelected, start, end) {
       [].slice.apply(tds, [start, end + 1]).forEach((td) => {
         td.setAttribute('data-is-selected', isSelected);

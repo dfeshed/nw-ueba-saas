@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { findAll } from '@ember/test-helpers';
+import { find, findAll } from '@ember/test-helpers';
 
 module('Integration | Component | recon-event-header-item', function(hooks) {
   setupRenderingTest(hooks);
@@ -10,8 +10,9 @@ module('Integration | Component | recon-event-header-item', function(hooks) {
     this.set('name', 'nwService');
     this.set('value', 'concentrator');
     await this.render(hbs `{{recon-event-header-item name=name value=value}}`);
-    assert.equal(this.$('.name').first().text().trim(), 'NW Service');
-    assert.equal(this.$('.value').first().text().trim(), 'concentrator');
+
+    assert.equal(find('.name').textContent.trim(), 'NW Service');
+    assert.equal(find('.value').textContent.trim(), 'concentrator');
   });
 
   test('Context menu trigger renders for ordinary value', async function(assert) {
