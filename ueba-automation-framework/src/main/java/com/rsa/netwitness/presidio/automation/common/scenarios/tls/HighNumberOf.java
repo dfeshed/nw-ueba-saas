@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.common.scenarios.network;
+package com.rsa.netwitness.presidio.automation.common.scenarios.tls;
 
 import presidio.data.domain.event.network.NetworkEvent;
 import presidio.data.generators.IBaseGenerator;

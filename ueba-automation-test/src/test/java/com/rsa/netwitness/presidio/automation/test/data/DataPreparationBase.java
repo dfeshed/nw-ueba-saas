@@ -2,7 +2,6 @@ package com.rsa.netwitness.presidio.automation.test.data;
 
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
-import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import com.rsa.netwitness.presidio.automation.utils.adapter.log_player.conveters.PresidioEventConverter;
 import com.rsa.netwitness.presidio.automation.utils.adapter.log_player.events.ConverterEventBase;
@@ -13,13 +12,13 @@ import fortscale.utils.mongodb.config.MongoConfig;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import presidio.data.domain.event.Event;
 import presidio.data.generators.common.GeneratorException;
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,13 +26,11 @@ import java.util.stream.Stream;
 
 import static com.rsa.netwitness.presidio.automation.utils.adapter.log_player.utils.TestContextSupplier.GENERATOR_FORMAT.valueOf;
 
+@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public abstract class DataPreparationBase extends AbstractTestNGSpringContextTests {
     private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
             LoggerFactory.getLogger(DataPreparationBase.class.getName());
-
-    @Autowired
-    protected AdapterTestManager adapterTestManager;
 
     @Autowired
     private NetwitnessEventStore netwitnessEventStore;

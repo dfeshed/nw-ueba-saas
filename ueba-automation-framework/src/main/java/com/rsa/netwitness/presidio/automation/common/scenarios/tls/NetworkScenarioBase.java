@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.common.scenarios.network;
+package com.rsa.netwitness.presidio.automation.common.scenarios.tls;
 
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.ITimeGenerator;

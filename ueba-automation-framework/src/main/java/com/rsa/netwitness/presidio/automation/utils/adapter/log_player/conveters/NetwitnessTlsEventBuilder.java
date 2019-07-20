@@ -20,8 +20,8 @@ class NetwitnessTlsEventBuilder extends NetwitnessEvent {
         cefProduct = "Netwitness";
         cefEventType = "Network";
         cefEventDesc = "TLS";
-        device = "network";
-        group = "network";
+        device = "tls";
+        group = "tls";
 
 
         ip_src = networkEvent.getSourceIp();

@@ -1,8 +1,8 @@
 package com.rsa.netwitness.presidio.automation.test.data;
 
-import com.rsa.netwitness.presidio.automation.common.scenarios.network.HighNumberOf;
-import com.rsa.netwitness.presidio.automation.common.scenarios.network.UncommonValuesAlerts;
-import com.rsa.netwitness.presidio.automation.common.scenarios.network.UnusualTrafficVolumeAlerts;
+import com.rsa.netwitness.presidio.automation.common.scenarios.tls.HighNumberOf;
+import com.rsa.netwitness.presidio.automation.common.scenarios.tls.UncommonValuesAlerts;
+import com.rsa.netwitness.presidio.automation.common.scenarios.tls.UnusualTrafficVolumeAlerts;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
