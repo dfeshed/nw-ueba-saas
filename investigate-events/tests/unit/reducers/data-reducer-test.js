@@ -131,7 +131,7 @@ test('Should show default column list in case of failure', function(assert) {
   assert.deepEqual(newEndState.columnGroups, EventColumnGroups);
 });
 
-test('Should sort column groups alphabetically', function(assert) {
+test('Should sort column groups alphabetically irrespective of case', function(assert) {
   const previous = Immutable.from({
     columnGroups: null
   });
@@ -140,7 +140,7 @@ test('Should sort column groups alphabetically', function(assert) {
     type: ACTION_TYPES.COLUMNS_RETRIEVE,
     payload: { data:
       [
-        { id: 1, name: 'beta' },
+        { id: 1, name: 'Beta' },
         { id: 2, name: 'alpha' }
       ]
     }
@@ -148,7 +148,7 @@ test('Should sort column groups alphabetically', function(assert) {
   const newEndState = reducer(previous, successAction);
   const expectedResult = [
     { id: 2, name: 'alpha' },
-    { id: 1, name: 'beta' }
+    { id: 1, name: 'Beta' }
   ];
   assert.deepEqual(newEndState.columnGroups, expectedResult);
 });

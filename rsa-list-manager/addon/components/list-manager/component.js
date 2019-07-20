@@ -19,7 +19,10 @@ export default Component.extend({
   listName: null,
   selectedItem: null,
   list: null,
+
+  // style for the recon-button-menu derived from the buttonGroup style
   offsetsStyle: null,
+
   isExpanded: false,
 
   @computed('listName', 'selectedItem')

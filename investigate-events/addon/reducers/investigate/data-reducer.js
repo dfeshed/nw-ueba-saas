@@ -93,7 +93,7 @@ export default handleActions({
   },
 
   [ACTION_TYPES.COLUMNS_RETRIEVE]: (state, action) => {
-    sort(EventColumnGroups).by([{ asc: 'name' }]);
+    sort(EventColumnGroups).by([{ asc: (group) => group.name.toUpperCase() }]);
     return handle(state, action, {
       failure: (s) => s.merge({ columnGroups: EventColumnGroups }),
       success: (s) => {
@@ -108,7 +108,7 @@ export default handleActions({
             _.merge(_.find(cg.columns, { field: 'time' }), { width: 135 });
           });
 
-          sort(columnGroups).by([{ asc: 'name' }]);
+          sort(columnGroups).by([{ asc: (group) => group.name.toUpperCase() }]);
 
           return s.merge({ columnGroups });
         }
