@@ -108,7 +108,7 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
     if (!testing) {
       // After configured idle timeout period, logout
       this.get('userIdle').on('idleChanged', (isIdle) => {
-        if (isIdle && this.get('session.isAuthenticated')) {
+        if (isIdle && this.get('session.persistedAccessToken')) {
           this._logout('Session Expired');
         }
       });
