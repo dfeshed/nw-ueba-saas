@@ -1,4 +1,4 @@
-import { module, test, skip } from 'ember-qunit';
+import { module, test } from 'ember-qunit';
 import ContextMenuService from 'rsa-context-menu/services/context-menu';
 import { triggerEvent } from '@ember/test-helpers';
 import { htmlStringToElement } from 'component-lib/utils/jquery-replacement';
@@ -10,13 +10,8 @@ module('Unit | Service | context menu', {
     contextMenuService = ContextMenuService.create();
   },
   afterEach() {
-    // [ {element, 'event': {eventType, handler, options}}, {}, {}, ]
-    const existingEventHandlers = contextMenuService.getEventHandlerStorageArray();
-    existingEventHandlers.forEach((item) => {
-      if (item.element === document.body) {
-        document.body.removeEventListener(item.event.eventType, item.event.handler, item.event.options);
-      }
-    });
+    // remove event handlers that were attached
+    contextMenuService.resetEventHandlerStorageArray();
   }
 });
 
@@ -44,7 +39,6 @@ test('test removeDeactivateHandler', async function(assert) {
 });
 
 test('test addDeactivateHandler', async function(assert) {
-
   contextMenuService.set('isActive', true);
   contextMenuService.addDeactivateHandler();
   // [ {element, 'event': {eventType, handler, options}}, {}, {}, ]
@@ -54,15 +48,12 @@ test('test addDeactivateHandler', async function(assert) {
     existingEventHandlers[0].event.eventType === 'contextmenu';
 
   assert.equal(oneHandlerExists && eventTypeIsContextmenu, true, 'event handler should be registered');
-
   document.body.dispatchEvent(new MouseEvent('contextmenu'));
-
   await triggerEvent(document.body, 'contextmenu');
   assert.notOk(contextMenuService.get('isActive'), 'deactivate must be called');
 });
 
-// Caroline, please take a look?
-skip('test that deactivate is not called when right-clicked in a content-context-menu classed span', async function(assert) {
+test('test that deactivate is not called when right-clicked in a content-context-menu classed span', async function(assert) {
   contextMenuService.set('isActive', true);
   contextMenuService.addDeactivateHandler();
   // [ {element, 'event': {eventType, handler, options}}, {}, {}, ]

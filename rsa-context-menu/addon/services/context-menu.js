@@ -38,7 +38,6 @@ const removeFromEventHandlerStorageArray = function(element, eventType, handler,
 };
 
 export default EmberContextMenuService.extend({
-
   removeDeactivateHandler() {
     const deactivate = this.get('deactivate');
     const eventHandlerOption = { once: true };
@@ -76,5 +75,12 @@ export default EmberContextMenuService.extend({
    */
   getEventHandlerStorageArray() {
     return eventHandlerStorageArray;
+  },
+
+  /**
+   * remove all items from eventHandlerStorageArray
+   */
+  resetEventHandlerStorageArray() {
+    eventHandlerStorageArray.splice(0, eventHandlerStorageArray.length);
   }
 });
