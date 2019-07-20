@@ -5,6 +5,24 @@
       <box class="meta-value header-value">{{headerValue}}</box>
     </hbox>
   {{/each-in}}
+  {{#if hasEmailAttachments}}
+    <hbox class="recon-meta-content-item">
+      <box class="meta-name header-label">{{t 'recon.emailView.attachment'}}</box>
+      <box>
+        <hbox>
+          {{#each email.attachments as |attachment index|}}
+            <span class="attachment-meta">
+              <a href={{ attachment.url }} target="_blank" rel="noopener noreferrer">{{ attachment.filename }}</a>
+            </span>
+            {{#if (not-eq (add index 1) email.attachments.length)}}
+              <span>,&nbsp;</span>
+            {{/if}}
+          {{/each}}
+        </hbox>
+      </box>
+    </hbox>
+  {{/if}}
+
 
   <div class="recon-meta-content-item horizontal">
     <span class="toggle-icon additional-header">
@@ -23,9 +41,5 @@
         <box class="meta-value header-value">{{ headerValue }}</box>
       </hbox>
     {{/each-in}}
-    <hbox class="recon-meta-content-item">
-      <box class="meta-name header-label">{{t 'recon.emailView.attachment'}}</box>
-      <box class="meta-value header-value">"coming soon"</box>
-    </hbox>
   {{/if}}
 </div>

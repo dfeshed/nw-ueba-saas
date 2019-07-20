@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
-import { renderedEmails, hasNoEmailContent, hasRenderIds } from 'recon/reducers/emails/selectors';
+import { renderedEmails, hasNoEmailContent, hasRenderIds, hasEmailAttachments } from 'recon/reducers/emails/selectors';
 import { slicedEmailData } from '../../../helpers/data';
 
 module('Unit | selector | emails');
@@ -102,6 +102,35 @@ test('hasRenderIds', function(assert) {
   assert.equal(tests.renderIdsNull, false, 'hasRenderIds should return false, when renderIds missing');
   assert.equal(tests.renderIdsEmpty, false, 'hasRenderIds should return false, when renderIds null');
   assert.equal(tests.hasRenderIds, true, 'hasRenderIds should return true, when renderIds present');
+});
+
+test('hasEmailAttachments', function(assert) {
+  assert.expect(4);
+
+  const tests = {
+    noEmailContent: hasEmailAttachments(Immutable.from({
+      emails: {}
+    })),
+    attachmentsNull: hasEmailAttachments(Immutable.from({
+      emails: {
+        attachments: null
+      }
+    })),
+    attachmentsEmpty: hasEmailAttachments(Immutable.from({
+      emails: {
+        attachments: []
+      }
+    })),
+    hasAttachments: hasEmailAttachments(Immutable.from({
+      emails: {
+        emails: slicedEmailData
+      }
+    }))
+  };
+  assert.equal(tests.noEmailContent, false, 'hasEmailAttachments should return false, when no email content');
+  assert.equal(tests.attachmentsNull, false, 'hasEmailAttachments should return false, when attachments missing');
+  assert.equal(tests.attachmentsEmpty, false, 'hasEmailAttachments should return false, when attachments null');
+  assert.equal(tests.hasAttachments, true, 'hasEmailAttachments should return true, when attachments present');
 });
 
 

@@ -4,7 +4,8 @@ import layout from './template';
 import {
   hasRenderIds,
   renderedEmails,
-  hasNoEmailContent
+  hasNoEmailContent,
+  hasEmailAttachments
 } from 'recon/reducers/emails/selectors';
 
 const stateToComputed = ({ recon, recon: { data, emails } }) => ({
@@ -12,7 +13,8 @@ const stateToComputed = ({ recon, recon: { data, emails } }) => ({
   renderIds: data,
   hasRenderIds: hasRenderIds(recon),
   renderedEmails: renderedEmails(recon),
-  hasNoEmailContent: hasNoEmailContent(recon)
+  hasNoEmailContent: hasNoEmailContent(recon),
+  hasEmailAttachments: hasEmailAttachments(recon)
 });
 
 const dispatchToActions = {
@@ -20,7 +22,9 @@ const dispatchToActions = {
 };
 
 const EmailReconComponent = Component.extend({
-  layout
+  layout,
+  classNames: ['recon-email-view'],
+  classNameBindings: ['hasEmailAttachments:warning']
 });
 
 export default connect(stateToComputed, dispatchToActions)(EmailReconComponent);

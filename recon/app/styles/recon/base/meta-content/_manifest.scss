@@ -39,6 +39,10 @@
     color: text-color(primary, lighter);
     padding-right: rsa-whitespace();
   }
+  .attachment-meta {
+    @include rsa-font(body, small);
+    color: #0288D1;
+  }
   .meta-value {
     @include rsa-font(body, small);
   }

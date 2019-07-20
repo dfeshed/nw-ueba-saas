@@ -54,6 +54,18 @@
     bottom: rsa-whitespace(more);
   }
 
+  .email-scroll-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+      overflow-x: auto;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+  }
+
   .rendering-more {
     margin: rsa-whitespace(more);
   }

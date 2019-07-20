@@ -24,3 +24,10 @@ export const renderedEmails = createSelector(
     return emails.slice(0, 2);
   }
 );
+
+export const hasEmailAttachments = createSelector(
+  [emails],
+  (emails) => {
+    return !!emails.find((e) => e.attachments && e.attachments.length);
+  }
+);

@@ -1,11 +1,14 @@
 {{#if hasRenderIds}}
-  <div class="scroll-box">
+  <div class="email-scroll-box">
     {{#each renderedEmails as |email|}}
-      {{recon-event-detail/single-email email=email}}
+      {{recon-event-detail/single-email email=email hasEmailAttachments=hasEmailAttachments}}
     {{/each}}
   </div>
 {{else}}
   {{#if hasNoEmailContent}}
     {{rsa-panel-message message=(t 'recon.emailView.noEmailData')}}
   {{/if}}
+{{/if}}
+{{#if hasEmailAttachments}}
+  <section class="attachment-download-warning">{{t 'recon.emailView.attachmentWarningMessage'}}</section>
 {{/if}}

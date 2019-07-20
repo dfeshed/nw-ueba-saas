@@ -60,4 +60,27 @@ module('Integration | Component | recon-event-detail/single-email/email-header',
     assert.equal(strValue, 'fromeddard.stark@verizon.nettosansa.stark@verizon.net,arya.stark@verizon.net,robb.stark@verizon.netbccjon.snow@verizon.netsubjectWinteriscoming.Didanyonepaytheplowguy?AdditionalHeaderDetails');
   });
 
+  test('renders attachment header & content, if attachment present', async function(assert) {
+    this.set('email', EmberObject.create(emailData));
+    await render(hbs`{{recon-event-detail/single-email/email-header email=email}}`);
+    assert.equal(findAll('span.attachment-meta').length, 0);
+  });
+
+  test('renders attachment header & content, if attachment present', async function(assert) {
+    emailData.attachments = [
+      {
+        'attachmentId': '15337f91add74662a7ae1fbf7e9c2084',
+        'filename': 'windsofwinter.docx',
+        'contentType': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'hash': 'fe0489f04e2f34164f07af8a3fcc7ec297508d81526c204755b84aac105b1560',
+        'url': 'http://...'
+      }
+    ];
+    this.set('email', EmberObject.create(emailData));
+    await render(hbs`{{recon-event-detail/single-email/email-header email=email hasEmailAttachments=true}}`);
+    assert.equal(findAll('span.attachment-meta').length, 1);
+    assert.equal(findAll('span.attachment-meta')[0].children[0].getAttribute('href'), 'http://...');
+    assert.equal(findAll('span.attachment-meta')[0].innerText, 'windsofwinter.docx');
+  });
+
 });

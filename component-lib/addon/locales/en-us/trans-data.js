@@ -283,7 +283,8 @@ export default {
       bcc: 'bcc',
       replyTo: 'replyTo',
       sent: 'sent',
-      additionalHeaderDetails: 'Additional Header Details'
+      additionalHeaderDetails: 'Additional Header Details',
+      attachmentWarningMessage: 'Warning: Email attachments contain the original raw unsecured content. Use caution when opening or downloading files; they may contain malicious data.'
     },
     textView: {
       compressToggleLabel: 'Display Compressed Payloads',

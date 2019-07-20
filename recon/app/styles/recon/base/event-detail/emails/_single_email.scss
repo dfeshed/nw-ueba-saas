@@ -3,4 +3,22 @@
   border-color: #424242;
   border-width: 2px;
   border-style: solid;
+    &.warning {
+      .email-scroll-box{
+        bottom: 4rem;
+      }
+      .attachment-download-warning {
+        display: block;
+      }
+    }
+}
+
+.attachment-download-warning {
+  background-color: background-color(accentThree, dark);
+  color: text-color(neutral);
+  padding: rsa-whitespace();
+  margin-top: 0.7rem;
+  display: block;
+  position: absolute;
+  bottom: 0;
 }
