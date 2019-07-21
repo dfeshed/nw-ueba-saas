@@ -73,6 +73,7 @@ public class AlertsNamingServiceTest {
                 "high_number_of_successful_file_rename_operations",
                 "high_number_of_distinct_src_computer_clusters"));
 
+        
         List<String> names = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicators);
         assertEquals("mass_changes_to_critical_enterprise_groups", names.get(0));
         assertEquals(5, names.size());
