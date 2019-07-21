@@ -18,7 +18,7 @@ public class TerminalCommands {
      * This file is for sysout redirection - need to consume the process output because of limited pipe for it in linux.
      */
     static File outPutProcessdump;
-    public static final String outPutfile ="/tmp/datadump.txt";
+    public static final String outPutfile ="C:\\Users\\feshed\\datadump.txt";
 
     /**
      * @param args List of the paramters that the command needs

@@ -1,0 +1,99 @@
+package com.rsa.netwitness.presidio.automation.test.data.processing;
+
+import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
+import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
+import com.rsa.netwitness.presidio.automation.domain.repository.*;
+import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
+import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
+import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
+import org.testng.annotations.Test;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
+@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
+@SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
+public class AdapterProcessData extends AbstractTestNGSpringContextTests {
+    @Autowired
+    private AdapterTestManager adapterTestManager;
+    @Autowired
+    private AdapterActiveDirectoryStoredDataRepository activeDirectoryRepository;
+    @Autowired
+    private AdapterAuthenticationStoredDataRepository authenticationRepository;
+    @Autowired
+    private AdapterFileStoredDataRepository fileRepository;
+    @Autowired
+    private AdapterProcessStoredDataRepository processRepository;
+    @Autowired
+    private AdapterRegistryStoredDataRepository registryRepository;
+    @Autowired
+    private AdapterTlsStoredDataRepository tlsRepository;
+    @Autowired
+    private NetwitnessEventStore netwitnessEventStore;
+
+    private Instant startDate = Instant.now();
+    private Instant endDate = Instant.now();
+
+
+    @Parameters({"historical_days_back", "anomaly_day"})
+    @BeforeClass
+    public void setup(@Optional("10") int historicalDaysBack, @Optional("1") int anomalyDay){
+        endDate     = Instant.now().truncatedTo(ChronoUnit.DAYS);
+        startDate   = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
+    }
+
+    @Test
+    public void adapterFileTest(){
+        adapterTestManager.process(startDate, endDate, "hourly", "FILE");
+
+        long actualEventsCount = fileRepository.count();
+        Assert.assertTrue(actualEventsCount > 0, "No data in input_file_raw_events");
+    }
+
+    @Test
+    public void adapterAuthenticationTest(){
+        adapterTestManager.process(startDate, endDate, "hourly", "AUTHENTICATION");
+
+        long actualEventsCount = authenticationRepository.count();
+        Assert.assertTrue(actualEventsCount > 0, "No data in input_authentication_raw_events");
+    }
+
+    @Test
+    public void adapterActiveDirectoryTest(){
+        adapterTestManager.process(startDate, endDate, "hourly", "ACTIVE_DIRECTORY");
+
+        long actualEventsCount = activeDirectoryRepository.count();
+        Assert.assertTrue(actualEventsCount > 0, "No data in input_active_directory_raw_events");
+    }
+
+    @Test
+    public void adapterProcessTest(){
+        adapterTestManager.process(startDate, endDate, "hourly", "PROCESS");
+
+        long actualEventsCount = processRepository.count();
+        Assert.assertTrue(actualEventsCount > 0, "No data in input_process_raw_events");
+    }
+
+    @Test
+    public void adapterRegistryTest(){
+        adapterTestManager.process(startDate, endDate, "hourly", "REGISTRY");
+
+        long actualEventsCount = registryRepository.count();
+        Assert.assertTrue(actualEventsCount > 0, "No data in input_registry_raw_events");
+    }
+
+    @Test
+    public void adapterTlsTest(){
+        adapterTestManager.process(startDate, endDate, "hourly", "TLS");
+        long actualEventsCount = tlsRepository.count();
+        Assert.assertTrue(actualEventsCount > 0, "No data in input_tls_raw_events");
+    }
+}

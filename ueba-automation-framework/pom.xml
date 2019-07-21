@@ -80,6 +80,11 @@
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-sdk</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
     </dependencies>
 

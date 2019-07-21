@@ -1,8 +1,7 @@
-package com.rsa.netwitness.presidio.automation.test.data;
+package com.rsa.netwitness.presidio.automation.test.data.generation;
 
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
-import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import com.rsa.netwitness.presidio.automation.utils.adapter.log_player.conveters.PresidioEventConverter;
 import com.rsa.netwitness.presidio.automation.utils.adapter.log_player.events.ConverterEventBase;
 import com.rsa.netwitness.presidio.automation.utils.adapter.log_player.producers.NetwitnessEventsProducer;
@@ -19,6 +18,7 @@ import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import presidio.data.domain.event.Event;
 import presidio.data.generators.common.GeneratorException;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 import static com.rsa.netwitness.presidio.automation.utils.adapter.log_player.utils.TestContextSupplier.GENERATOR_FORMAT.valueOf;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
-@SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
+@SpringBootTest(classes = {MongoConfig.class, NetwitnessEventStoreConfig.class})
 public abstract class DataPreparationBase extends AbstractTestNGSpringContextTests {
     private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
             LoggerFactory.getLogger(DataPreparationBase.class.getName());

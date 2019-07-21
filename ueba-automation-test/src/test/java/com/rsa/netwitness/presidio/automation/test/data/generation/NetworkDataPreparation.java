@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.test.data;
+package com.rsa.netwitness.presidio.automation.test.data.generation;
 
 import com.rsa.netwitness.presidio.automation.common.scenarios.tls.HighNumberOf;
 import com.rsa.netwitness.presidio.automation.common.scenarios.tls.UncommonValuesAlerts;

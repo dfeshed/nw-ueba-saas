@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Output_ALL">
+    <test name="Output_ALL">
+        <classes>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.RestUserTests"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.AlertsRestCorrectnessTest"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.AlertsIndicatorsTests"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.UserSeverityTests"/>
+        </classes>
+
+    </test>
+</suite>

@@ -1,0 +1,18 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="e2e test">
+    <parameter name="historical_days_back" value="14" />
+    <parameter name="anomaly_day" value="1" />
+    <parameter name="generator_format" value="CEF_DAILY" />
+    <test name="e2e">
+        <classes>
+            <class name="com.rsa.netwitness.presidio.automation.test.data.generation.NetworkDataPreparation"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.data.generation.AlertsScenarioDataPreparation"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.config.ConfigurationsAfterDataInjection"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.config.MonitorE2EDataFlow"/>
+            <!--<class name="presidio.integration.ade.test.LogsErrors_Test"/>-->
+        </classes>
+    </test>
+</suite>
+
+

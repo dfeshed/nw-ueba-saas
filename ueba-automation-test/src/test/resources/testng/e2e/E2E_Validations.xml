@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="E2E_Tests" preserve-order="true">
+    <test name="E2E_Additional_Tests" preserve-order="true">
+        <classes>
+            <!-- Output_Tests.xml -->
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.RestUserTests"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.AlertsRestCorrectnessTest"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.AlertsIndicatorsTests"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.UserSeverityTests"/>
+            <!-- E2E only -->
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.E2EMongoRestValidation"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.E2EStatisticalInformation"/>
+        </classes>
+    </test>
+</suite>
