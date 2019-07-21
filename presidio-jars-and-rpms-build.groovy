@@ -9,58 +9,52 @@ pipeline {
         SLUGIFY_USES_TEXT_UNIDECODE = 'yes'
     }
     stages {
-        stage('Project Build Pipeline Initialization') {
+        stage('Presidio JARs and RPMs Build Pipeline Initialization') {
             steps {
                 cleanWs()
                 configGlobalRsaUserNameAndEmail("${env.RSA_BUILD_CREDENTIALS_USR}")
             }
         }
-        stage('Presidio Test Utils Project Build') {
+        stage('Presidio Test Utils JARs Build') {
             when { expression { return env.BUILD_PRESIDIO_TEST_UTILS == 'true' } }
             steps { buildProject("presidio-test-utils", "pom.xml", true, false) }
         }
-        stage('Presidio Core Project Build') {
+        stage('Presidio Core JARs Build') {
             when { expression { return env.BUILD_PRESIDIO_CORE == 'true' } }
             steps { buildProject("presidio-core", "fortscale/pom.xml", true, false) }
         }
-        stage('Presidio Core Package Build') {
+        stage('Presidio Core RPMs Build') {
             when { expression { return env.RUN_CORE_PACKAGES == 'true' } }
             steps {buildPackages("presidio-core", "package/pom.xml", true, false, true) }
         }
-        stage('Presidio Flume Project Build') {
+        stage('Presidio Flume JARs Build') {
             when { expression { return env.BUILD_PRESIDIO_FLUME == 'true' } }
             steps { buildProject("presidio-flume", "pom.xml", true, false) }
         }
-        stage('Presidio Flume Package Build') {
+        stage('Presidio Flume RPMs Build') {
             when { expression { return env.RUN_FLUME_PACKAGES == 'true' } }
             steps { buildPackages("presidio-flume", "package/pom.xml", true, false, false) }
         }
-        stage('Presidio Netwitness Project Build') {
+        stage('Presidio Netwitness JARs Build') {
             when { expression { return env.BUILD_PRESIDIO_NETWITNESS == 'true' } }
             steps { buildProject("presidio-netwitness", "presidio-core-extension/pom.xml", true, false) }
         }
-        stage('Presidio Netwitness Package Build') {
+        stage('Presidio Netwitness RPMs Build') {
             when { expression { return env.RUN_NW_PACKAGES == 'true' } }
             steps {buildPackages("presidio-netwitness", "package/pom.xml", true, false, true) }
         }
-        stage('Presidio UI Project Build') {
+        stage('Presidio UI JARs Build') {
             when { expression { return env.BUILD_PRESIDIO_UI == 'true' } }
             steps { buildProject("presidio-ui", "pom.xml", true, false) }
         }
-        stage('Presidio UI Package Build') {
+        stage('Presidio UI RPMs Build') {
             when { expression { return env.RUN_PRESIDIO_UI_PACKAGES == 'true' } }
             steps { buildPackages("presidio-ui", "package/pom.xml", true, false, false) }
         }
     }
     post {
         always {
-            sh "cd ${env.WORKSPACE}"
-            sh 'mkdir RPMs'
-            sh 'mkdir JARs'
-            sh 'find . -regex ".*/presidio-[^/]*.jar" -exec cp {} JARs \\;'
-            sh 'find . -regex ".*.rpm" -exec cp {} RPMs \\;'
-            archiveArtifacts artifacts: 'JARs/**', allowEmptyArchive: true
-            archiveArtifacts artifacts: 'RPMs/**', allowEmptyArchive: true
+            archivingJARsAndRPMs()
             cleanWs()
         }
     }
@@ -115,11 +109,11 @@ def buildPackages(
         if(env.EXTRACT_STABILITY_AND_VERSIOM_FROM_POM == 'true' ){
             sh "echo Extracting version and stability from ${pomFile}"
             version = extractPomVersion(pomFile)
-            stability = getStabilityFromPomVersion(version)
+            stability = extractStability(version)
             sh "echo Version: ${version}"
             sh "echo Stability: ${stability}"
         }
-        mvnCleanPackages(deploy, pomFile, stability, version, updateSnapshots, debug, preStep)
+        mvnCleanPackage(deploy, pomFile, stability, version, updateSnapshots, debug, preStep)
     }
 }
 
@@ -154,7 +148,7 @@ def mvnCleanInstall(boolean deploy, String pomFile, boolean updateSnapshots, boo
     sh "mvn clean install ${deploy ? "deploy" : ""} -f ${pomFile} ${updateSnapshots ? "-U" : ""} ${debug ? "-X" : ""}"
 }
 
-def mvnCleanPackages(String deploy, String pomFile, String stability, String version, boolean updateSnapshots, boolean debug, boolean preStep) {
+def mvnCleanPackage(String deploy, String pomFile, String stability, String version, boolean updateSnapshots, boolean debug, boolean preStep) {
     if(preStep){
         sh "cp .pydistutils.cfg ~/.pydistutils.cfg"
     }
@@ -164,12 +158,22 @@ def mvnCleanPackages(String deploy, String pomFile, String stability, String ver
 String extractPomVersion(String pomPath){
     def matcher = readFile(pomPath) =~ '<version>(.+?)</version>'
     def version = matcher ? matcher[0][1] : null
+    if(version == null){
+        error 'Couldn\'t extract pom version'
+    }
     return version
 }
 
-String getStabilityFromPomVersion(String pomVersion){
-    if(pomVersion != null)
-        return pomVersion.toLowerCase().endsWith("snapshot")? "dev": "gold"
-    else
-        error 'Couldnt extract pom version'
+String extractStability(String pomVersion){
+    return pomVersion.toLowerCase().endsWith("snapshot")? "dev": "gold"
+}
+
+def archivingJARsAndRPMs(){
+    sh "cd ${env.WORKSPACE}"
+    sh 'mkdir RPMs'
+    sh 'mkdir JARs'
+    sh 'find . -regex ".*/presidio-[^/]*.jar" -exec cp {} JARs \\;'
+    sh 'find . -regex ".*-presidio-.*.rpm" -exec cp {} RPMs \\;'
+    archiveArtifacts artifacts: 'JARs/**', allowEmptyArchive: true
+    archiveArtifacts artifacts: 'RPMs/**', allowEmptyArchive: true
 }
