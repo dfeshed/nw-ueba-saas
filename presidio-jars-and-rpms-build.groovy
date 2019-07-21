@@ -165,7 +165,7 @@ String extractPomVersion(String pomPath){
 }
 
 String extractStability(String pomVersion){
-    return pomVersion.toLowerCase().endsWith("snapshot")? "dev": "gold"
+    return pomVersion.toLowerCase().endsWith("snapshot")? "1 - dev": "5 - gold"
 }
 
 def archivingJARsAndRPMs(){
