@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.test.data.generation;
+package com.rsa.netwitness.presidio.automation.test.data.preparation;
 
 import com.rsa.netwitness.presidio.automation.common.scenarios.alerts.AlertsScenario;
 import org.slf4j.LoggerFactory;

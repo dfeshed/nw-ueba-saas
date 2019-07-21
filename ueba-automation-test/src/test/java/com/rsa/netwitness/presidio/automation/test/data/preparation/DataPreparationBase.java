@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.test.data.generation;
+package com.rsa.netwitness.presidio.automation.test.data.preparation;
 
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;

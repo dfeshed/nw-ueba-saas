@@ -1,6 +1,11 @@
 package com.rsa.netwitness.presidio.automation.utils.ade;
 
 
+import com.rsa.netwitness.presidio.automation.common.helpers.DateTimeHelperUtils;
+import com.rsa.netwitness.presidio.automation.domain.config.Consts;
+import com.rsa.netwitness.presidio.automation.utils.ade.inserter.AdeInserter;
+import com.rsa.netwitness.presidio.automation.utils.ade.inserter.AdeInserterFactory;
+import com.rsa.netwitness.presidio.automation.utils.common.TerminalCommands;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -15,17 +20,12 @@ import presidio.ade.sdk.common.RunId;
 import presidio.ade.sdk.common.RunStatus;
 import presidio.data.domain.event.Event;
 import presidio.data.generators.common.GeneratorException;
-import com.rsa.netwitness.presidio.automation.utils.ade.inserter.AdeInserter;
-import com.rsa.netwitness.presidio.automation.utils.ade.inserter.AdeInserterFactory;
-import presidio.integration.common.helpers.DateTimeHelperUtils;
-import presidio.integration.domain.config.Consts;
-import presidio.integration.test.utils.common.TerminalCommands;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import static presidio.integration.common.helpers.RunCmdUtils.printLogFile;
+import static com.rsa.netwitness.presidio.automation.common.helpers.RunCmdUtils.printLogFile;
 
 /**
  * ADETestManager - stores, processes and monitors ADE component using ADE SDK

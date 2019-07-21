@@ -6,8 +6,8 @@
     <parameter name="generator_format" value="CEF_DAILY" />
     <test name="e2e">
         <classes>
-            <class name="com.rsa.netwitness.presidio.automation.test.data.generation.NetworkDataPreparation"/>
-            <class name="com.rsa.netwitness.presidio.automation.test.data.generation.AlertsScenarioDataPreparation"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.data.preparation.NetworkDataPreparation"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.data.preparation.AlertsScenarioDataPreparation"/>
             <class name="com.rsa.netwitness.presidio.automation.test.config.ConfigurationsAfterDataInjection"/>
             <class name="com.rsa.netwitness.presidio.automation.test.config.MonitorE2EDataFlow"/>
             <!--<class name="presidio.integration.ade.test.LogsErrors_Test"/>-->
