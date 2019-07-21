@@ -17,23 +17,10 @@
  */
 package org.apache.flume.source.jms;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
-
+import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 import junit.framework.Assert;
-
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerPlugin;
 import org.apache.activemq.broker.BrokerService;
@@ -46,13 +33,18 @@ import org.apache.flume.PollableSource.Status;
 import org.apache.flume.channel.ChannelProcessor;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.google.common.base.Charsets;
-import com.google.common.collect.Lists;
-import com.google.common.io.Files;
+import javax.jms.*;
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 
 public class TestIntegrationActiveMQ {
 

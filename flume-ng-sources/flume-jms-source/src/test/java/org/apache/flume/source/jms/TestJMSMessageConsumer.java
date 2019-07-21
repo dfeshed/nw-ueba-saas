@@ -17,22 +17,20 @@
  */
 package org.apache.flume.source.jms;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import java.util.List;
+import com.google.common.base.Optional;
+import org.apache.flume.Event;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
+import java.util.List;
 
-import org.apache.flume.Event;
-import org.apache.flume.FlumeException;
-import org.junit.Test;
-
-import com.google.common.base.Optional;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class TestJMSMessageConsumer extends JMSMessageConsumerTestBase {
 

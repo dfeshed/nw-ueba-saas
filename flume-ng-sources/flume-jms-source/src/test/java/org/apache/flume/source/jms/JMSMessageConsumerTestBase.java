@@ -18,7 +18,9 @@
 package org.apache.flume.source.jms;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
 
 import java.util.Enumeration;

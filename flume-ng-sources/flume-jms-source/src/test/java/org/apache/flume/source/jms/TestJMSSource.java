@@ -17,38 +17,33 @@
  */
 package org.apache.flume.source.jms;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import java.io.File;
-import java.util.List;
-import java.util.Properties;
-import java.util.UUID;
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+import com.google.common.io.Files;
+import junit.framework.Assert;
+import org.apache.commons.io.FileUtils;
+import org.apache.flume.*;
+import org.apache.flume.PollableSource.Status;
+import org.apache.flume.channel.ChannelProcessor;
+import org.apache.flume.conf.Configurable;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import java.io.File;
+import java.util.List;
+import java.util.Properties;
+import java.util.UUID;
 
-import junit.framework.Assert;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.flume.ChannelException;
-import org.apache.flume.Context;
-import org.apache.flume.Event;
-import org.apache.flume.EventDeliveryException;
-import org.apache.flume.FlumeException;
-import org.apache.flume.PollableSource.Status;
-import org.apache.flume.channel.ChannelProcessor;
-import org.apache.flume.conf.Configurable;
-import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-import com.google.common.io.Files;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class TestJMSSource extends JMSMessageConsumerTestBase {
 
