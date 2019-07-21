@@ -172,10 +172,6 @@ String findVersionInPom(String pomPath){
     return version
 }
 
-String extractStability(String pomVersion){
-    return pomVersion.toLowerCase().endsWith("snapshot")? "1 - dev": "5 - gold"
-}
-
 def archivingJARsAndRPMs(){
     sh "cd ${env.WORKSPACE}"
     sh 'mkdir RPMs'
