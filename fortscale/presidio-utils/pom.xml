@@ -225,7 +225,8 @@
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <encoding>${project.build.sourceEncoding}</encoding>
-                    <release>${java-lang-config.version}</release>
+                    <source>${java-lang-config.version}</source>
+                    <target>${java-lang-config.version}</target>
                 </configuration>
             </plugin>
             <plugin>

@@ -502,7 +502,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <release>${java-lang-config.version}</release>
+                    <source>${java-lang-config.version}</source>
+                    <target>${java-lang-config.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
