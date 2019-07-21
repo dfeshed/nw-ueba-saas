@@ -107,11 +107,7 @@ def buildPackages(
     dir(repositoryName) {
         checkoutBranch(branchName)
         if(env.EXTRACT_STABILITY_AND_VERSIOM_FROM_POM == 'true' ){
-            sh "echo Extracting version and stability from ${pomFile}"
-            version = extractPomVersion(pomFile)
-            stability = extractStability(version)
-            sh "echo Version: ${version}"
-            sh "echo Stability: ${stability}"
+            (version, stability) = extractVersionAndStabilityFromPom(pomFile)
         }
         mvnCleanPackage(deploy, pomFile, stability, version, updateSnapshots, debug, preStep)
     }
@@ -155,7 +151,19 @@ def mvnCleanPackage(String deploy, String pomFile, String stability, String vers
     sh "mvn -B -f ${pomFile} -Dbuild.stability=${stability.charAt(0)} -Dbuild.version=${version} -Dpublish=${deploy} clean package ${updateSnapshots ?  "-U" : ""} ${debug ? "-X" : ""} "
 }
 
-String extractPomVersion(String pomPath){
+def extractVersionAndStabilityFromPom(pomFile){
+    sh "echo Extracting version and stability from ${pomFile}"
+    String version = findVersionInPom(pomFile)
+    def versionSplitted = version.split(/\.|-/)
+    version = versionSplitted[0] + "." + versionSplitted[1] + "." + versionSplitted[2] + "." + versionSplitted[3]
+    String stability = versionSplitted.last().toLowerCase() == "snapshot" ? "1 - dev": "5 - gold"
+    sh "echo Version: ${version}"
+    sh "echo Stability: ${stability}"
+
+    return [version, stability]
+}
+
+String findVersionInPom(String pomPath){
     def matcher = readFile(pomPath) =~ '<version>(.+?)</version>'
     def version = matcher ? matcher[0][1] : null
     if(version == null){
