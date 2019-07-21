@@ -195,9 +195,9 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
                 .count();
 
         if (distinctSeveritySize <= 1) {
-            LOGGER.error(url + "\nAll alerts are in the same severity");
-            skipTest("");
+            skipTest("All alerts are in the same severity. Filter result wouldn't make sense");
         }
+
 
         String severityExpected = alerts.get(alerts.size()/2).getSeverity();
 
@@ -335,8 +335,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
                 .collect(Collectors.toList());
 
         if (distinctScoresSorted.size() < 3) {
-            LOGGER.error(url + "\nInsufficient amount of distinct score samples");
-            skipTest("");
+            skipTest("Insufficient amount of distinct score samples");
         }
 
         assertThat(distinctScoresSorted)

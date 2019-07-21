@@ -10,6 +10,7 @@ import com.rsa.netwitness.presidio.automation.common.rest.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.helpers.rest.ParametersUrlBuilder;
 import com.rsa.netwitness.presidio.automation.helpers.rest.RestHelper;
+import com.rsa.netwitness.presidio.automation.static_content.IndicatorSchemaDictionary;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +30,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.rsa.netwitness.presidio.automation.static_content.AlertsMandatoryIndicators.ALERTS_TEST_MANDATORY_INDICATOR_NAMES;
+import static com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils.skipTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
@@ -56,7 +58,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     private Map<String, String[]> scoreAggregationMap = new HashMap<>();
     private Map<String, String[]> featureAggregationMap = new HashMap<>();
     private Map<String, String[]> distinctFeatureAggregationMap = new HashMap<>();
-    private Map<String, String[]> indicatorsTypeAndNameSamples = new HashMap<>();
+    private Map<String, String[]> allIndicatorsTypeNameSamples = new HashMap<>();
 
     @BeforeClass
     public void preconditionCheckAndPrepare() {
@@ -208,21 +210,22 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
     @Test(dataProvider = "allIndicatorsDataProvider")
     public void anomaly_true_indicator_count_should_be_correct_in_historical_data(String indicator){
-        String alertId = indicatorsTypeAndNameSamples.get(indicator)[0];
-        String indicatorId = indicatorsTypeAndNameSamples.get(indicator)[1];
+        String alertId = allIndicatorsTypeNameSamples.get(indicator)[0];
+        String indicatorId = allIndicatorsTypeNameSamples.get(indicator)[1];
         ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
 
         try{
-            List<Boolean> results = getAnomalyValuesResult(url);
-            String anomalyType = getAnomalyType(url);
+            IndicatorResult actualIndicator = getIndicatorWithHisoricalData(alertId, indicatorId);
+            List<HistoricalDataBucket> anomalyBuckets = getAnomalyHistoricalDataBuckets(actualIndicator);
+            List<Boolean> anomalyFlags = anomalyBuckets.stream().map(e -> e.anomaly).collect(Collectors.toList());
 
-            if (anomalyType.equals("TimeAggregation")) {
-                assertThat(results)
+            if (actualIndicator.historicalDataType.equals("TimeAggregation")) {
+                assertThat(anomalyFlags)
                         .describedAs(url.toString())
                         .hasSizeGreaterThanOrEqualTo(1)
                         .containsOnly(true);
             } else {
-                assertThat(results)
+                assertThat(anomalyFlags)
                         .describedAs(url.toString())
                         .hasSize(1)
                         .containsOnly(true);
@@ -232,8 +235,91 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         }
     }
 
+    @Test(dataProvider = "indicatorTypeFeatureAggregation")
+    public void feature_aggregation_anomaly_value_should_match_historical_data_and_events_num(String indicator) {
+        String alertId = featureAggregationMap.get(indicator)[0];
+        String indicatorId = featureAggregationMap.get(indicator)[1];
+        ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
+
+        IndicatorResult actualIndicator = getIndicatorWithHisoricalData(alertId, indicatorId);
+        List<HistoricalDataBucket> anomalyBuckets = getAnomalyHistoricalDataBuckets(actualIndicator);
+
+        List<String> historicalDataAnomalyValues = anomalyBuckets.stream().map(e -> e.value).collect(Collectors.toList());
+        assertThat(historicalDataAnomalyValues).as(url + "\nhistoricalData anomaly value is missing").isNotEmpty();
+
+        boolean notInExclusionList = !(indicator.equals("high_number_of_file_move_operations_from_shared_drive")
+                || actualIndicator.schema.equals("TLS"));
+
+        Function<String, Long> toLong = st -> Double.valueOf(st).longValue();
+
+
+        if (actualIndicator.name.startsWith("high_number_of_") && notInExclusionList) {
+            if (actualIndicator.eventsNum == 10000) {
+                assertThat(toLong.apply(actualIndicator.anomalyValue))
+                        .as(url + "anomalyValue should be >= 10000")
+                        .isGreaterThanOrEqualTo(actualIndicator.eventsNum);
+            } else {
+                assertThat(toLong.apply(actualIndicator.anomalyValue))
+                        .as(url + "\nIndicatorName = " + actualIndicator.name + "\nExpected: anomalyValue == historicalData.anomalyValue == eventsNum")
+                        .isEqualTo(toLong.apply(historicalDataAnomalyValues.get(0)))
+                        .isEqualTo(actualIndicator.eventsNum);
+            }
+
+        } else {
+            assertThat(actualIndicator.anomalyValue)
+                    .as(url + "\nIndicatorName = " + actualIndicator.name + "\nExpected: anomalyValue == historicalData.anomalyValue")
+                    .isEqualTo(historicalDataAnomalyValues.get(0));
+        }
+    }
+
+
+    @Test (dataProvider = "allIndicatorsDataProvider")
+    public void successful_and_failure_indicator_names_should_match_all_result_values_in_related_events(String indicatorName){
+        Boolean success = null;
+        if(indicatorName.contains("successful")){
+            success = true;
+        } else if(indicatorName.contains("failure")) {
+            success = false;
+        }
+
+        if(success != null) {
+            String alertId = allIndicatorsTypeNameSamples.get(indicatorName)[0];
+            String indicatorId = allIndicatorsTypeNameSamples.get(indicatorName)[1];
+            JSONArray events = getEvents(alertId,indicatorId);
+            ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId)
+                    .events().url().withMaxSizeParameters();
+
+            for (int i = 0; i < events.length(); i++) {
+                String result = events.getJSONObject(i).getString("result");
+                if(success) {
+                    assertThat(result)
+                            .as(url+"\nIndicator with name " + indicatorName + "has events with `result` other than `SUCCESS`.\nResult = " + result)
+                            .isEqualTo("SUCCESS");
+                } else {
+                    assertThat(result)
+                            .as(url+"\nIndicator with name " + indicatorName + "has events with `result` other than `FAILURE`.\nResult = " + result)
+                            .isEqualTo("FAILURE");
+                }
+            }
+        }
+    }
+
+    @Test (dataProvider = "allIndicatorsDataProvider")
+    public void indicator_schema_name_should_match_static_map(String indicatorName) {
+        String alertId = allIndicatorsTypeNameSamples.get(indicatorName)[0];
+        String indicatorId = allIndicatorsTypeNameSamples.get(indicatorName)[1];
+        ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
+        IndicatorResult indicator = getIndicator(alertId, indicatorId);
+        String expectedSchema = IndicatorSchemaDictionary.getIndicatorSchema(indicatorName);
+        assertThat(indicator.schema)
+                .as(url+"\nIndicator schema name mismatch.\nIndicator name = "+indicatorName)
+                .isEqualTo(expectedSchema);
+    }
+
+
+
     @Test (dataProvider = "indicatorTypeStaticIndicator")
-    public void validateEventCountOfStaticIndicator(String indicator) {
+    public void event_count_of_static_indicator_should_match_indicator_events_response(String indicator) {
         String alertId = staticIndicatorMap.get(indicator)[0];
         String indicatorId = staticIndicatorMap.get(indicator)[1];
         ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
@@ -244,7 +330,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
         try {
             String indicatorName = indicatorData.getString("name");
-            int eventNum = indicatorData.getInt("eventsNum");
+            int selectedIndicatorEventsNum = indicatorData.getInt("eventsNum");
 
             url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).events().url().withMaxSizeParameters();
             response = restHelper.alerts().request().getRestApiResponse(url);
@@ -253,7 +339,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
             JSONArray eventsList = indicatorsEvents.getJSONArray("events");
             assertThat(response).as(url+"\nnull response").isNotNull();
 
-            assertThat(eventNum)
+            assertThat(selectedIndicatorEventsNum)
                     .as(url+"\nAlerts page indicators count is different from the events page. indicatorName = " +indicatorName)
                     .isEqualTo(eventsList.length())
                     .isGreaterThan(0);
@@ -275,66 +361,262 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     }
 
 
+    @Test
+    public void static_indicator_name_should_appear_only_once_in_alert() {
+        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
+        for (AlertsStoredRecord alert : alerts) {
+            List<AlertsStoredRecord.Indicator> indicators = alert.getIndicatorsList();
+            List<String> staticIndicatorNames = indicators.stream()
+                    .filter(indicator -> indicator.getType().equals("STATIC_INDICATOR"))
+                    .map(indicator -> indicator.getName())
+                    .collect(Collectors.toList());
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private String getAnomalyType(ParametersUrlBuilder url) {
-         return getAnomalyHistoricalData(url).get("type").getAsString();
-    }
-
-    private List<Boolean> getAnomalyValuesResult(ParametersUrlBuilder url) {
-        JsonArray buckets = getAnomalyHistoricalData(url).get("buckets").getAsJsonArray();
-        List<Boolean> result = Lists.newArrayList();
-
-        /** array value is pie chart **/
-        boolean valueIsArray = buckets.getAsJsonArray().get(0).getAsJsonObject().get("value").isJsonArray();
-        if (valueIsArray) {
-            buckets.forEach(
-                    bucket -> bucket.getAsJsonObject().get("value").getAsJsonArray().
-                            forEach(
-                                    value -> result.add(getAnomalyValue.apply(value.getAsJsonObject()).orElse(false))));
-        } else {
-            buckets.forEach(e -> result.add(getAnomalyValue.apply(e.getAsJsonObject()).orElse(false)));
+            assertThat(staticIndicatorNames)
+                    .as(url + "\nStatic indicator name appears twice for the same alert." +
+                            "\nUserId = " + alert.getEntityDocumentId() +
+                            "\nAlertId = " + alert.getId())
+                    .doesNotHaveDuplicates();
         }
-        return result.stream().filter(e -> e.equals(true)).collect(Collectors.toList());
     }
 
-    private Function<JsonObject, Optional<Boolean>> getAnomalyValue = obj -> {
+
+
+
+
+
+
+
+
+
+    // todo: ask Yuval
+    @Test
+    public void highNumberOfDistinctFilesOpenedAttemptsTest() throws JSONException {
+        String indicator = "high_number_of_distinct_files_opened_attempts";
+
+        if (!distinctFeatureAggregationMap.containsKey(indicator)) {
+            skipTest("Required indicator not found: " + indicator);
+        }
+
+        String alertId = featureAggregationMap.get(indicator)[0];
+        String indicatorId = featureAggregationMap.get(indicator)[1];
+
+        IndicatorResult actualIndicator = getIndicator(alertId, indicatorId);
+        JSONArray events = getEvents(alertId,indicatorId);
+
+        List<String> filePaths = new ArrayList<>();
+        for(int i=0 ; i<events.length() ; i++){
+            String path = events.getJSONObject(i).getString("absoluteSrcFilePath");
+
+            if(!filePaths.contains(path) && !path.equals("null")){
+                filePaths.add(path);
+            }
+        }
+        int anomalyValueAsInteger = Integer.parseInt(actualIndicator.anomalyValue.split("\\.")[0]);
+        assertThat(anomalyValueAsInteger)
+                .as("anomaly value is not matched to the event's distinct paths")
+                .isEqualByComparingTo(filePaths.size());
+    }
+//    //@Test - indicator not supported in 11.2
+//    public void highNumberOfDistinctFoldersOpenedTest() throws JSONException {
+//        List<String> filePaths = new ArrayList<>();
+//        String indicator = "high_number_of_distinct_folders_opened_attempts";
+//
+//        Assert.assertTrue(distinctFeatureAggregationMap.containsKey(indicator), "indicator '" + indicator + "' is not exist.");
+//
+//        String url = "/" + distinctFeatureAggregationMap.get(indicator)[0] + "/indicators/" + distinctFeatureAggregationMap.get(indicator)[1];
+//        String eventsUrl = url + "/events?pageSize=" + eventLimitSize +"&pageNumber=0";
+//        JSONObject indicatorJson = testManager.sendGetAlertsURL(url, printRequest);
+//        JSONObject indicatorsEvents = testManager.sendGetAlertsURL(eventsUrl, printRequest);
+//        JSONArray events = indicatorsEvents.getJSONArray("events");
+//        System.out.println("event count --> " + events.length());
+//        for(int i=0 ; i<events.length() ; i++){
+//            String operationType = events.getJSONObject(i).getString("operationType");
+//            if(operationType.equals("FOLDER_OPENED")){
+//                String path = events.getJSONObject(i).getString("absoluteSrcFolderFilePath");
+//                if(!filePaths.contains(path)){
+//                    filePaths.add(path);
+//                }
+//            }
+//        }
+//
+//        String anom = indicatorJson.getString("anomalyValue").split("\\.")[0];
+//        int anomalyValue = Integer.parseInt(anom);
+//
+//        if(filePaths.size() < anomalyValue) {
+//            if(events.length() == eventLimitSize){
+//                Assert.fail("Event count is reached the event limit. cannot verify the distinct folder open paths count.");
+//            }
+//        }
+//        Assert.assertEquals(filePaths.size(), anomalyValue, "anomalyValue do not match to event's distinct folders open");
+//    }
+//
+//    //@Test - indicator not supported in Netwitness UEBA 11.2
+//    public void highNumberOfDistinctSitesTest() {
+//        List<String> sitesNames = new ArrayList<>();
+//        String indicator = "high_number_of_distinct_sites";
+//        Assert.assertTrue(distinctFeatureAggregationMap.containsKey(indicator), "indicator '" + indicator + "' is not exist.");
+//
+//        String url = "/" + distinctFeatureAggregationMap.get(indicator)[0] + "/indicators/" + distinctFeatureAggregationMap.get(indicator)[1];
+//        String eventsUrl = url + "/events?pageSize=" + eventLimitSize + "&pageNumber=0";
+//        JSONObject indicatorJson = testManager.sendGetAlertsURL(url, printRequest);
+//        JSONObject indicatorsEvents = testManager.sendGetAlertsURL(eventsUrl, printRequest);
+//        JSONArray events = null;
+//        String eventId = null;
+//        String site = null;
+//        String anomalyValue = null;
+//
+//        try {
+//            events = indicatorsEvents.getJSONArray("events");
+//            anomalyValue = indicatorJson.getString("anomalyValue");
+//
+//            for(int i=0 ; i < events.length() ; i++) {
+//                eventId = events.getJSONObject(i).getString("id");
+//                site = events.getJSONObject(i).getString("site");
+//
+//                if(!sitesNames.contains(site)){
+//                    sitesNames.add(site);
+//                }
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//
+//            if(events == null) {
+//                Assert.fail("Cannot get the indicator's events.");
+//            }
+//            else if(eventId == null) {
+//                Assert.fail("Cannot get the event Id.");
+//            }
+//            else if(site == null){
+//                Assert.fail("Cannot get indicator's site. event url : " + url + "/events/" + eventId);
+//            }
+//
+//        }
+//
+//        Assert.assertEquals((int)Double.parseDouble(anomalyValue), sitesNames.size(),"Anomaly value is not equals to the amount of the distinct sites.");
+//    }
+
+
+    // TODO: need to correct for case of multicontext indicators: compare context and indicator name
+    @Test
+    public void singleAppearanceOfScoreAggregationIndicatorInTheSameAlert(){
+        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
+        for(AlertsStoredRecord alert : alerts) {
+            List<AlertsStoredRecord.Indicator> indicators = alert.getIndicatorsList();
+            Map<String,String> anomalyValuesOfScoredAggregation = new HashMap<>();
+            for(AlertsStoredRecord.Indicator indicator : indicators) {
+                if(indicator.getType().equals("SCORE_AGGREGATION")) {
+                    if (!anomalyValuesOfScoredAggregation.containsKey(indicator.getName())) {
+                        anomalyValuesOfScoredAggregation.put(indicator.getName(), indicator.getAnomalyValue());
+                    } else if (anomalyValuesOfScoredAggregation.get(indicator.getName()).equals(indicator.getAnomalyValue()) /* and context */) {
+                        Assert.fail(url+"\nSCORE_AGGREGATION indicator '" + indicator.getName() + "'\n" +
+                                "Appears twice with the same anomaly value for the same alert.\n" +
+                                "AlertId = " + alert.getId() + "\n" +
+                                "UserId = " + alert.getEntityDocumentId() + "\n");
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+    class HistoricalDataBucket{
+        String key;
+        String value;
+        boolean anomaly;
+    }
+
+    class IndicatorResult {
+        final JsonElement json;
+        final String type, schema, anomalyValue, name, historicalDataType;
+        final long eventsNum;
+        IndicatorResult(JsonElement json) {
+            this.json = json;
+            type = json.getAsJsonObject().get("type").getAsString();
+            schema = json.getAsJsonObject().get("schema").getAsString();
+            anomalyValue = json.getAsJsonObject().get("anomalyValue").getAsString();
+            name = json.getAsJsonObject().get("name").getAsString();
+            if (json.getAsJsonObject().has("historicalData")) {
+                historicalDataType = json.getAsJsonObject().get("historicalData").getAsJsonObject().get("type").getAsString();
+            } else {
+                historicalDataType = null;
+            }
+            eventsNum = json.getAsJsonObject().get("eventsNum").getAsLong();
+        }
+    }
+
+    private JSONArray getEvents(String alertId, String indicatorId) {
+        ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId)
+                .events().url().withMaxSizeParameters();
+
+        RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
+        JSONObject indicatorsEvents =  new JSONObject(response.getResultBody());
+        JSONArray eventsList = indicatorsEvents.getJSONArray("events");
+        assertThat(response).as(url+"\nnull response").isNotNull();
+        return eventsList;
+    }
+
+    private IndicatorResult getIndicator(String alertId, String indicatorId) {
+        ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
+        RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
+        assertThat(response).as(url+"\nnull response").isNotNull();
+        return new IndicatorResult(new Gson().fromJson(response.getResultBody(), JsonElement.class));
+    }
+
+    private IndicatorResult getIndicatorWithHisoricalData(String alertId, String indicatorId) {
+        ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
+        RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
+        assertThat(response).as(url+"\nnull response").isNotNull();
+        return new IndicatorResult(new Gson().fromJson(response.getResultBody(), JsonElement.class));
+    }
+
+    private List<HistoricalDataBucket> getAnomalyHistoricalDataBuckets(IndicatorResult indicator) {
+        JsonObject historicalData = indicator.json.getAsJsonObject().get("historicalData").getAsJsonObject();
+        JsonArray buckets = historicalData.get("buckets").getAsJsonArray();
+
+        boolean isValueArray = buckets.getAsJsonArray().get(0).getAsJsonObject().get("value").isJsonArray();
+        List<HistoricalDataBucket> historicalDataBuckets = Lists.newArrayList();
+
+        if (isValueArray) {
+            buckets.forEach(
+                    bucket -> bucket.getAsJsonObject().get("value").getAsJsonArray()
+                            .forEach(
+                                    value -> getAllAnomalyBuckets.apply(value.getAsJsonObject()).ifPresent(historicalDataBuckets::add)));
+        } else {
+            buckets.forEach(
+                    bucket -> getAllAnomalyBuckets.apply(bucket.getAsJsonObject()).ifPresent(historicalDataBuckets::add));
+        }
+        return historicalDataBuckets;
+    }
+
+    private Function<JsonObject, Optional<HistoricalDataBucket>> getAllAnomalyBuckets = obj -> {
         if (obj.has("anomaly")) {
-            return Optional.of(obj.get("anomaly").getAsBoolean());
+            HistoricalDataBucket bucket = new HistoricalDataBucket();
+            bucket.key = obj.get("key").getAsString();
+            bucket.value = obj.get("value").getAsString();
+            bucket.anomaly = obj.get("anomaly").getAsBoolean();
+            return Optional.of(bucket);
         } else {
             return Optional.empty();
         }
     };
 
-    private JsonObject getAnomalyHistoricalData(ParametersUrlBuilder url) {
-        RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
-        assertThat(response).as(url+"\nnull response").isNotNull();
+    private Function<JsonObject, Optional<String>> getAnomalyValue = obj -> {
+        if (obj.has("anomaly")) {
+            return Optional.of(obj.get("value").getAsString());
+        } else {
+            return Optional.empty();
+        }
+    };
 
-        JsonElement json = new Gson().fromJson(response.getResultBody(), JsonElement.class);
-        return json.getAsJsonObject().get("historicalData").getAsJsonObject();
-    }
 
 
 
@@ -439,7 +721,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                     else if(indicatorType.equals("FEATURE_AGGREGATION") && !indicator.getName().contains("distinct")){
                         featureAggregationMap.putIfAbsent(indicator.getName(), new String[] {alert.getId(), indicator.getId()});
                     }
-                    else if(indicatorType.equals("FEATURE_AGGREGATION") && !distinctFeatureAggregationIndicatorNames.contains(indicator.getName()) && indicator.getName().contains("distinct")){
+                    else if(indicatorType.equals("FEATURE_AGGREGATION") && indicator.getName().contains("distinct")){
                         distinctFeatureAggregationMap.putIfAbsent(indicator.getName(), new String[] {alert.getId(), indicator.getId()});
                     } else {
                         throw new RuntimeException("Missing type: " + indicatorType);
@@ -458,10 +740,10 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         allActualIndicatorNames.addAll(featureAggregationIndicatorNames);
         allActualIndicatorNames.addAll(distinctFeatureAggregationIndicatorNames);
 
-        indicatorsTypeAndNameSamples.putAll(scoreAggregationMap);
-        indicatorsTypeAndNameSamples.putAll(staticIndicatorMap);
-        indicatorsTypeAndNameSamples.putAll(featureAggregationMap);
-        indicatorsTypeAndNameSamples.putAll(distinctFeatureAggregationMap);
+        allIndicatorsTypeNameSamples.putAll(scoreAggregationMap);
+        allIndicatorsTypeNameSamples.putAll(staticIndicatorMap);
+        allIndicatorsTypeNameSamples.putAll(featureAggregationMap);
+        allIndicatorsTypeNameSamples.putAll(distinctFeatureAggregationMap);
     }
 
 }

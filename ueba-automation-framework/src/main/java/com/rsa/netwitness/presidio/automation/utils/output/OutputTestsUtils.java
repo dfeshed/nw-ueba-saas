@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
+import org.slf4j.LoggerFactory;
 import org.testng.SkipException;
 import org.testng.collections.Maps;
 
@@ -26,11 +27,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class OutputTestsUtils {
+    private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
+            LoggerFactory.getLogger(OutputTestsUtils.class.getName());
 
     public static void skipTest(String message) {
+        LOGGER.error("TEST SKIPPED. Reason: " + message);
         throw new SkipException(message);
     }
-
     public static List<SmartUserIdStoredRecored> sortByStartTime(List<SmartUserIdStoredRecored> records) {
         List<SmartUserIdStoredRecored> sorted = new ArrayList<>();
         while (records.size() > 0) {
