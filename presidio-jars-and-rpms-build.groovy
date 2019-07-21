@@ -7,6 +7,11 @@ pipeline {
         // The credentials (name + password) associated with the RSA build user.
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
         SLUGIFY_USES_TEXT_UNIDECODE = 'yes'
+        SASS_BINARY_PATH='/mnt/libhq-SA/tools/node-sass/v4.9.0/linux-x64-46_binding.node'
+        HTTP_PROXY='http://emc-proxy1:82'
+        HTTPS_PROXY='http://emc-proxy1:82'
+        NODE_TLS_REJECT_UNAUTHORIZED=0
+        NO_PROXY="localhost,127.0.0.1,.emc.com"
     }
     stages {
         stage('Presidio JARs and RPMs Build Pipeline Initialization') {
