@@ -25,7 +25,27 @@ pipeline {
         }
         stage('Presidio Core RPMs Build') {
             when { expression { return env.RUN_CORE_PACKAGES == 'true' } }
-            steps {buildPackages("presidio-core", "package/pom.xml", true, false, true) }
+            steps { buildPackages("presidio-core", "package/pom.xml", true, false, true) }
+        }
+        stage('Trigger presidio-integration-test-ADE-master, presidio-integration-test-adapter-master, presidio-integration-test-input-master') {
+            when { expression { return env.RUN_CORE_PACKAGES == 'true' && (env.BRANCH_NAME == "origin/master" || env.BRANCH_NAME.contains("/release/")) } }
+            steps {
+                build job: 'presidio-integration-test-ADE-master', parameters: [
+                        [$class: 'StringParameterValue', name: 'STABILITY', value: env.STABILITY],
+                        [$class: 'StringParameterValue', name: 'VERSION', value: env.VERSION],
+                        [$class: 'StringParameterValue', name: 'BUILD_BRANCH', value: env.BRANCH_NAME]
+                ], wait: false
+                build job: 'presidio-integration-test-adapter-master', parameters: [
+                        [$class: 'StringParameterValue', name: 'STABILITY', value: env.STABILITY],
+                        [$class: 'StringParameterValue', name: 'VERSION', value: env.VERSION],
+                        [$class: 'StringParameterValue', name: 'BUILD_BRANCH', value: env.BRANCH_NAME]
+                ], wait: false
+                build job: 'presidio-integration-test-input-master', parameters: [
+                        [$class: 'StringParameterValue', name: 'STABILITY', value: env.STABILITY],
+                        [$class: 'StringParameterValue', name: 'VERSION', value: env.VERSION],
+                        [$class: 'StringParameterValue', name: 'BUILD_BRANCH', value: env.BRANCH_NAME]
+                ] , wait: false
+            }
         }
         stage('Presidio Flume JARs Build') {
             when { expression { return env.BUILD_PRESIDIO_FLUME == 'true' } }
