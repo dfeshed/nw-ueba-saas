@@ -1,3 +1,25 @@
+def environments = [
+        presidio_core_trigger: [BUILD_PRESIDIO_TEST_UTILS: false, BUILD_PRESIDIO_CORE: true, BUILD_PRESIDIO_FLUME: true,
+                                BUILD_PRESIDIO_NETWITNESS: true, BUILD_PRESIDIO_UI: true, DEPLOY_JARS: true, RUN_CORE_PACKAGES: true,
+                                RUN_FLUME_PACKAGES: true, RUN_NW_PACKAGES:true, RUN_PRESIDIO_UI_PACKAGES: true, DEPLOY_PACKAGES: true],
+        presidio_flume_trigger: [BUILD_PRESIDIO_TEST_UTILS: false, BUILD_PRESIDIO_CORE: false, BUILD_PRESIDIO_FLUME: true,
+                                BUILD_PRESIDIO_NETWITNESS: true, BUILD_PRESIDIO_UI: false, DEPLOY_JARS:true, RUN_CORE_PACKAGES: false,
+                                RUN_FLUME_PACKAGES: true, RUN_NW_PACKAGES:true, RUN_PRESIDIO_UI_PACKAGES: false, DEPLOY_PACKAGES: true],
+        presidio_nw_extention_trigger: [BUILD_PRESIDIO_TEST_UTILS: false, BUILD_PRESIDIO_CORE: false, BUILD_PRESIDIO_FLUME: false,
+                                 BUILD_PRESIDIO_NETWITNESS: true, BUILD_PRESIDIO_UI: false, DEPLOY_JARS: true, RUN_CORE_PACKAGES: false,
+                                 RUN_FLUME_PACKAGES: false, RUN_NW_PACKAGES:true, RUN_PRESIDIO_UI_PACKAGES: false, DEPLOY_PACKAGES: true],
+        presidio_ui_trigger: [BUILD_PRESIDIO_TEST_UTILS: false, BUILD_PRESIDIO_CORE: false, BUILD_PRESIDIO_FLUME: false,
+                                        BUILD_PRESIDIO_NETWITNESS: false, BUILD_PRESIDIO_UI: true, DEPLOY_JARS: true, RUN_CORE_PACKAGES: false,
+                                        RUN_FLUME_PACKAGES: false, RUN_NW_PACKAGES:false, RUN_PRESIDIO_UI_PACKAGES: true, DEPLOY_PACKAGES: true],
+        presidio_test_utils_trigger: [BUILD_PRESIDIO_TEST_UTILS: true, BUILD_PRESIDIO_CORE: true, BUILD_PRESIDIO_FLUME: true,
+                              BUILD_PRESIDIO_NETWITNESS: true, BUILD_PRESIDIO_UI: true, DEPLOY_JARS: true, RUN_CORE_PACKAGES:true,
+                              RUN_FLUME_PACKAGES: true, RUN_NW_PACKAGES:true, RUN_PRESIDIO_UI_PACKAGES: true, DEPLOY_PACKAGES: true],
+        manual: [BUILD_PRESIDIO_TEST_UTILS: env.BUILD_PRESIDIO_TEST_UTILS, BUILD_PRESIDIO_CORE: env.BUILD_PRESIDIO_CORE, BUILD_PRESIDIO_FLUME: env.BUILD_PRESIDIO_FLUME,
+                 BUILD_PRESIDIO_NETWITNESS: env.BUILD_PRESIDIO_NETWITNESS, BUILD_PRESIDIO_UI: env.BUILD_PRESIDIO_UI, DEPLOY_JARS: env.DEPLOY_JARS, RUN_CORE_PACKAGES: env.RUN_CORE_PACKAGES,
+                 RUN_FLUME_PACKAGES: env.RUN_FLUME_PACKAGES, RUN_NW_PACKAGES: env.RUN_NW_PACKAGES, RUN_PRESIDIO_UI_PACKAGES: env.RUN_PRESIDIO_UI_PACKAGES, DEPLOY_PACKAGES: env.DEPLOY_PACKAGES]
+]
+
+
 pipeline {
     agent {
         node {label 'el7 && java8'}
@@ -12,6 +34,17 @@ pipeline {
         HTTPS_PROXY='http://emc-proxy1:82'
         NODE_TLS_REJECT_UNAUTHORIZED=0
         NO_PROXY="localhost,127.0.0.1,.emc.com"
+        BUILD_PRESIDIO_TEST_UTILS="${environments[env.BUILD_CAUSE].get('BUILD_PRESIDIO_TEST_UTILS')}"
+        BUILD_PRESIDIO_CORE="${environments[env.BUILD_CAUSE].get('BUILD_PRESIDIO_CORE')}"
+        BUILD_PRESIDIO_FLUME="${environments[env.BUILD_CAUSE].get('BUILD_PRESIDIO_FLUME')}"
+        BUILD_PRESIDIO_NETWITNESS="${environments[env.BUILD_CAUSE].get('BUILD_PRESIDIO_NETWITNESS')}"
+        BUILD_PRESIDIO_UI="${environments[env.BUILD_CAUSE].get('BUILD_PRESIDIO_UI')}"
+        DEPLOY_JARS="${environments[env.BUILD_CAUSE].get('DEPLOY_JARS')}"
+        RUN_CORE_PACKAGES="${environments[env.BUILD_CAUSE].get('RUN_CORE_PACKAGES')}"
+        RUN_FLUME_PACKAGES="${environments[env.BUILD_CAUSE].get('RUN_FLUME_PACKAGES')}"
+        RUN_NW_PACKAGES="${environments[env.BUILD_CAUSE].get('RUN_NW_PACKAGES')}"
+        RUN_PRESIDIO_UI_PACKAGES="${environments[env.BUILD_CAUSE].get('RUN_PRESIDIO_UI_PACKAGES')}"
+        DEPLOY_PACKAGES="${environments[env.BUILD_CAUSE].get('DEPLOY_PACKAGES')}"
     }
     stages {
         stage('Presidio JARs and RPMs Build Pipeline Initialization') {
@@ -131,7 +164,7 @@ def buildPackages(
 
     dir(repositoryName) {
         checkoutBranch(branchName)
-        if(env.EXTRACT_STABILITY_AND_VERSIOM_FROM_POM == 'true' ){
+        if(env.BUILD_CAUSE != 'manual'){
             (version, stability) = extractVersionAndStabilityFromPom(pomFile)
         }
         mvnCleanPackage(deploy, pomFile, stability, version, updateSnapshots, debug, preStep)
