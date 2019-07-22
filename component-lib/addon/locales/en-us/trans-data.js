@@ -3881,7 +3881,7 @@ export default {
       startAddress: 'Start Address',
       process: 'Process',
       tid: 'Thread ID',
-      teb: 'Thread Environment Block',
+      teb: 'Thread Environment Block'
     }
   },
   investigateShared: {
@@ -5796,11 +5796,6 @@ effects the previewed source.',
           abnormal_ssl_subject_for_src_netname_outbound: {
             name: 'Abnormal Ssl Subject for Src Netname Outbound',
             desc: 'Abnormal {{entityName}} for Src Netname Outbound',
-            timeline: ''
-          },
-          ja3_abnormal_ssl_subject_for_src_netname_outbound: {
-            name: 'Ja3 Abnormal Ssl Subject for Src Netname Outbound',
-            desc: 'Ja3 Abnormal {{entityName}} for Src Netname Outbound',
             timeline: ''
           },
           ja3_abnormal_ssl_subject_for_src_netname_outbound: {
