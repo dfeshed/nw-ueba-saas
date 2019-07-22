@@ -42,7 +42,7 @@ function* fetchEventsCountAsync(action) {
     // If pending query exceeded the limit then SDK is throwing the error, to overcome the error, splitting the
     // children into chunks
     const childrenChunks = _.chunk(children, MAX_PENDING_QUERIES);
-    yield fork(fetchLocalRiskScore, agentId, children);
+    const riskScore = yield fork(fetchLocalRiskScore, agentId, children);
     const getCategory = yield fork(fetchEventCategory, children, queryNode);
     for (let i = 0; i < childrenChunks.length; i++) {
       const result = yield all(getAPICalls(serviceId, startTime, endTime, agentId, childrenChunks[i]));
@@ -50,7 +50,7 @@ function* fetchEventsCountAsync(action) {
     }
 
     yield put({ type: ACTION_TYPES.SET_EVENTS_COUNT, payload });
-    yield join(getCategory);
+    yield join(getCategory, riskScore);
     // Event loading is complete
     yield put({ type: ACTION_TYPES.COMPLETED_EVENTS_STREAMING });
 
@@ -62,6 +62,10 @@ function* fetchEventsCountAsync(action) {
 }
 
 function* fetchLocalRiskScore(agentId, children) {
+  // If children are empty don't make the api call
+  if (!children || !children.length) {
+    return;
+  }
   try {
     const { data } = yield call(getLocalRiskScore, agentId, _getCheckSums(children));
     yield put({ type: ACTION_TYPES.SET_LOCAL_RISK_SCORE, payload: { score: data } });
