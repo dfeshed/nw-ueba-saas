@@ -22,7 +22,7 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
-*.Logs
+Logs/
 *.log
 *.event
 *.zip
