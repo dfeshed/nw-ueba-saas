@@ -24,6 +24,7 @@ export default Component.extend({
 
   defaults: {
     showCustomDate: true,
+    includeTimezone: true, // By default, local timezone is applied to the datetime value
 
     filterValue: {
       value: [null, null],
@@ -81,14 +82,24 @@ export default Component.extend({
 
   @computed('filterValue.value', 'timezone.selected.zoneId', 'dateFormat.selected.format', 'timeFormat.selected.format')
   customDateRangeStart(timestamp = []) {
-    return this._toLocalTime(timestamp[0]);
+    const includeTimezone = this.get('options.includeTimezone');
+    return includeTimezone ? this._toLocalTime(timestamp[0]) : this._withoutTimeZone(timestamp[0]);
   },
 
   @computed('filterValue.value', 'timezone.selected.zoneId', 'dateFormat.selected.format', 'timeFormat.selected.format')
   customDateRangeEnd(timestamp) {
-    return this._toLocalTime(timestamp[1]);
+    const includeTimezone = this.get('options.includeTimezone');
+    return includeTimezone ? this._toLocalTime(timestamp[1]) : this._withoutTimeZone(timestamp[1]);
   },
 
+
+  _withoutTimeZone(timestamp) {
+    if (typeOf(timestamp) === 'number') {
+      return moment(timestamp).format(`${this._getDateFormat()} ${this._getTimeFormat()}`);
+    } else {
+      return null;
+    }
+  },
 
   _toLocalTime(timestamp) {
     if (typeOf(timestamp) === 'number') {
@@ -114,8 +125,9 @@ export default Component.extend({
 
 
   _toUTCTimestamp(date) {
+    const includeTimezone = this.get('options.includeTimezone');
     const dateParts = [date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()];
-    return moment.tz(dateParts, this._getTimezone()).valueOf();
+    return includeTimezone ? moment.tz(dateParts, this._getTimezone()).valueOf() : moment(dateParts).valueOf();
   },
 
 

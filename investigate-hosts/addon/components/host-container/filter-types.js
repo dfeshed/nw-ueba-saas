@@ -91,7 +91,7 @@ const FILTER_TYPES = [
     name: 'agentStatus.lastSeenTime',
     label: 'investigateHosts.hosts.column.agentStatus.lastSeenTime',
     type: 'date',
-    showCustomDate: false,
+    includeTimezone: false,
     timeframes: [
       { name: 'LAST_ONE_HOUR', selected: true, value: 1, unit: 'Hours' },
       { name: 'LAST_THREE_HOURS', value: 3, unit: 'Hours' },
