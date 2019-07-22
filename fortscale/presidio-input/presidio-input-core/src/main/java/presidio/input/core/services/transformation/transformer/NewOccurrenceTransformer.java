@@ -1,7 +1,7 @@
 package presidio.input.core.services.transformation.transformer;
 
 import fortscale.common.general.Schema;
-import fortscale.domain.lastoccurrenceinstant.LastOccurrenceInstantReader;
+import fortscale.domain.lastoccurrenceinstant.reader.LastOccurrenceInstantReader;
 import org.apache.commons.lang3.Validate;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.utils.ReflectionUtils;
@@ -76,6 +76,6 @@ public class NewOccurrenceTransformer implements Transformer {
 
     private boolean isLastOccurrenceInstantExpired(Instant lastOccurrenceInstant, Instant logicalInstant) {
         Instant expirationInstant = logicalInstant.minus(expirationDelta);
-        return lastOccurrenceInstant.isBefore(expirationInstant) || lastOccurrenceInstant.equals(expirationInstant);
+        return lastOccurrenceInstant.compareTo(expirationInstant) <= 0;
     }
 }

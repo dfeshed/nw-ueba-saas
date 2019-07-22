@@ -1,4 +1,4 @@
-package fortscale.domain.lastoccurrenceinstant;
+package fortscale.domain.lastoccurrenceinstant.reader;
 
 import fortscale.common.general.Schema;
 

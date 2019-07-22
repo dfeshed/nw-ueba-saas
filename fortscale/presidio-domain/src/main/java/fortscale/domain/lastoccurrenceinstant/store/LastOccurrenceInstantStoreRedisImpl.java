@@ -1,8 +1,7 @@
-package fortscale.domain.lastoccurrenceinstant;
+package fortscale.domain.lastoccurrenceinstant.store;
 
 import fortscale.common.general.Schema;
 import org.apache.commons.lang3.Validate;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -15,20 +14,17 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
 /**
- * A Redis based implementation of {@link LastOccurrenceInstantReader} and {@link LastOccurrenceInstantWriter}.
+ * A Redis based implementation of {@link LastOccurrenceInstantStore}.
  *
  * @author Lior Govrin.
  */
-public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstantReader, LastOccurrenceInstantWriter {
+public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstantStore {
     private static final String COLLECTION_NAME_PREFIX = "last_occurrence_instant";
 
     private final HashOperations<String, String, Instant> hashOperations;
 
-    public LastOccurrenceInstantStoreRedisImpl(JedisConnectionFactory jedisConnectionFactory) {
-        Validate.notNull(jedisConnectionFactory, "jedisConnectionFactory cannot be null.");
-        RedisTemplate<String, Map<String, Instant>> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(jedisConnectionFactory);
-        hashOperations = redisTemplate.opsForHash();
+    public LastOccurrenceInstantStoreRedisImpl(RedisTemplate<String, Map<String, Instant>> redisTemplate) {
+        hashOperations = Validate.notNull(redisTemplate, "redisTemplate cannot be null.").opsForHash();
     }
 
     @Override

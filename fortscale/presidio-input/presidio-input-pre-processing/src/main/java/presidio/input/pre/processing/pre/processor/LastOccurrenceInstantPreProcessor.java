@@ -1,7 +1,7 @@
 package presidio.input.pre.processing.pre.processor;
 
 import fortscale.common.general.Schema;
-import fortscale.domain.lastoccurrenceinstant.LastOccurrenceInstantWriter;
+import fortscale.domain.lastoccurrenceinstant.writer.LastOccurrenceInstantWriter;
 import org.apache.commons.lang3.Validate;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.RawEventsPageIterator;
@@ -34,7 +34,6 @@ public class LastOccurrenceInstantPreProcessor extends PreProcessor<LastOccurren
     @Override
     void preProcess(LastOccurrenceInstantPreProcessorArguments arguments) {
         Schema schema = arguments.getSchema();
-        String instantFieldName = arguments.getInstantFieldName();
         List<String> entityTypes = arguments.getEntityTypes();
         RawEventsPageIterator<AbstractInputDocument> rawEventsPageIterator = new RawEventsPageIterator<>(
                 arguments.getStartInstant(),
@@ -45,7 +44,7 @@ public class LastOccurrenceInstantPreProcessor extends PreProcessor<LastOccurren
 
         while (rawEventsPageIterator.hasNext()) {
             for (AbstractInputDocument rawEvent : rawEventsPageIterator.next()) {
-                Instant instant = (Instant)ReflectionUtils.getFieldValue(rawEvent, instantFieldName);
+                Instant instant = rawEvent.getDateTime();
 
                 for (String entityType : entityTypes) {
                     String entityId = (String)ReflectionUtils.getFieldValue(rawEvent, entityType);

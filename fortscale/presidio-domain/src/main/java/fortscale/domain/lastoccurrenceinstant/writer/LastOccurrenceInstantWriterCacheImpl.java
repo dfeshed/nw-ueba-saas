@@ -1,4 +1,4 @@
-package fortscale.domain.lastoccurrenceinstant;
+package fortscale.domain.lastoccurrenceinstant.writer;
 
 import fortscale.common.general.Schema;
 import fortscale.utils.data.LfuCache;
@@ -41,7 +41,8 @@ public class LastOccurrenceInstantWriterCacheImpl implements LastOccurrenceInsta
     @Override
     public void write(Schema schema, String entityType, String entityId, Instant lastOccurrenceInstant) {
         Triple<Schema, String, String> key = Triple.of(schema, entityType, entityId);
-        if (!lfuCache.containsKey(key) && lfuCache.isFull()) flush(entriesToRemovePercentage);
+        if (lfuCache.isFull() && !lfuCache.containsKey(key))
+            flush(lfuCache.removeLfuEntries(entriesToRemovePercentage));
         lfuCache.put(key, lastOccurrenceInstant);
     }
 
@@ -54,12 +55,12 @@ public class LastOccurrenceInstantWriterCacheImpl implements LastOccurrenceInsta
 
     @Override
     public void close() {
-        flush(100.0);
+        flush(lfuCache.removeAllLfuEntries());
     }
 
-    private void flush(double percentage) {
+    private void flush(Map<Triple<Schema, String, String>, Instant> removedLfuEntries) {
         // The removed LFU entries are of type {schema, entityType, entityId} -> lastOccurrenceInstant.
-        lfuCache.removeLfuEntries(percentage).entrySet().stream()
+        removedLfuEntries.entrySet().stream()
                 // Create for each {schema, entityType} pair a map from entityId to lastOccurrenceInstant.
                 .collect(groupingBy(
                         entry -> Pair.of(entry.getKey().getLeft(), entry.getKey().getMiddle()),

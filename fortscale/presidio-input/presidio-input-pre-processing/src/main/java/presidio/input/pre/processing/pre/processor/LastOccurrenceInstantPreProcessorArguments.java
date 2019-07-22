@@ -20,21 +20,18 @@ public class LastOccurrenceInstantPreProcessorArguments {
     private final Instant startInstant;
     private final Instant endInstant;
     private final Schema schema;
-    private final String instantFieldName;
     private final List<String> entityTypes;
 
     @JsonCreator
     public LastOccurrenceInstantPreProcessorArguments(
-            @JsonProperty("startInstant") Instant startInstant,
-            @JsonProperty("endInstant") Instant endInstant,
+            @JsonProperty("startInstant") String startInstant,
+            @JsonProperty("endInstant") String endInstant,
             @JsonProperty("schema") Schema schema,
-            @JsonProperty("instantFieldName") String instantFieldName,
             @JsonProperty("entityTypes") List<String> entityTypes) {
 
-        this.startInstant = Validate.notNull(startInstant, "startInstant cannot be null.");
-        this.endInstant = Validate.notNull(endInstant, "endInstant cannot be null.");
+        this.startInstant = Instant.parse(Validate.notBlank(startInstant, "startInstant cannot be blank."));
+        this.endInstant = Instant.parse(Validate.notBlank(endInstant, "endInstant cannot be blank."));
         this.schema = Validate.notNull(schema, "schema cannot be null.");
-        this.instantFieldName = Validate.notBlank(instantFieldName, "instantFieldName cannot be blank.");
         this.entityTypes = Validate.notEmpty(entityTypes, "entityTypes cannot be empty.");
         entityTypes.forEach(entityType -> Validate.notBlank(entityType, "entityTypes cannot contain blank elements."));
     }
@@ -49,10 +46,6 @@ public class LastOccurrenceInstantPreProcessorArguments {
 
     public Schema getSchema() {
         return schema;
-    }
-
-    public String getInstantFieldName() {
-        return instantFieldName;
     }
 
     public List<String> getEntityTypes() {

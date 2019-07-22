@@ -115,6 +115,15 @@ public class LfuCache<K, V> {
     }
 
     /**
+     * This method is equivalent to {@link #removeLfuEntries(double)}, where percentage is equal to 100.0.
+     *
+     * @see #removeLfuEntries(double).
+     */
+    public Map<K, V> removeAllLfuEntries() {
+        return removeLfuEntries(100.0);
+    }
+
+    /**
      * Checks whether the maximum size of this {@link LfuCache} was reached.
      *
      * @return True if the cache is full, false otherwise.
