@@ -49,6 +49,10 @@ pipeline {
     stages {
         stage('Presidio JARs and RPMs Build Pipeline Initialization') {
             steps {
+                script {
+                    currentBuild.displayName = "#${BUILD_NUMBER} ${BUILD_CAUSE}"
+                    currentBuild.description = "Branch Name: ${BRANCH_NAME}"
+                }
                 cleanWs()
                 configGlobalRsaUserNameAndEmail("${env.RSA_BUILD_CREDENTIALS_USR}")
             }
