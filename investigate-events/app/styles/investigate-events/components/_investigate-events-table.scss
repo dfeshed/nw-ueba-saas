@@ -114,6 +114,14 @@
         }
 
      }
+     span.option-name {
+        width: 160px;
+        vertical-align: middle;
+        overflow-x: hidden;
+        white-space: nowrap;
+        display: inline-block;
+        text-overflow: ellipsis;
+      }
     }
 
     &__manageIncident {

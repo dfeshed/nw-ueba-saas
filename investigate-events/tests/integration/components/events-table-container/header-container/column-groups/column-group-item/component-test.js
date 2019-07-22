@@ -29,28 +29,4 @@ module('Integration | Component | Column Group Item', function(hooks) {
 
   });
 
-  test('columnGroup name if longer than 32 characters must be truncated with ellipsis', async function(assert) {
-
-    const columnGroup = {
-      id: 'LONGCOLUMNGROUP',
-      name: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean',
-      ootb: true,
-      columns: [
-        { field: 'custom.theme', title: 'Theme' },
-        { field: 'size', title: 'Size' },
-        { field: 'custom.meta-summary', title: 'Summary', width: null }
-      ]
-    };
-
-    this.set('item', columnGroup);
-    await render(hbs`{{events-table-container/header-container/column-groups/column-group-item columnGroup=item}}`);
-
-    const columnGroupItemSelector = '.option-name';
-
-    assert.ok(find(columnGroupItemSelector), 'Column Group list item present');
-
-    assert.equal(find(`${columnGroupItemSelector}`).textContent.trim(), 'Lorem ipsum dolor sit amet, c...');
-
-  });
-
 });
