@@ -28,6 +28,7 @@ public class EntityFilter extends RestFilter {
 	private Severity severity;
 	private Double minScore;
 	private Double maxScore;
+	private String entityType;
 	private List<String> positions;
 	private List<String> departments;
 	private boolean prefix;
@@ -190,6 +191,14 @@ public class EntityFilter extends RestFilter {
 
 	public void setDepartments(List<String> departments) {
 		this.departments = departments;
+	}
+
+	public String getEntityType() {
+		return entityType;
+	}
+
+	public void setEntityType(String entityType) {
+		this.entityType = entityType;
 	}
 
 

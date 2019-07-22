@@ -85,6 +85,7 @@ public class EntityConverterHelper {
         entityQuery.setPageSize(pageConverter.convertUiFilterToQueryDtoPageSize(pageRequest));
         entityQuery.setSortFieldNames(pageConverter.convertUiFilterToQueryDtoUserSortFields(pageRequest));
         entityQuery.setSortDirection(pageConverter.convertUiFilterToQueryDtoSortDirectionForUser(pageRequest));
+        entityQuery.setEntityType(userRestFilter.getEntityType());
         entityQuery.setExpand(expand);
 
         if (userRestFilter!=null) {
