@@ -50,7 +50,7 @@ pipeline {
         stage('Presidio JARs and RPMs Build Pipeline Initialization') {
             steps {
                 script {
-                    currentBuild.displayName = "#${BUILD_NUMBER} ${BUILD_CAUSE}"
+                    currentBuild.displayName = "#${BUILD_NUMBER} ${BUILD_CAUSE.replaceAll("_", "-")}"
                     currentBuild.description = "Branch Name: ${BRANCH_NAME}"
                 }
                 cleanWs()
