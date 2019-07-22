@@ -9,7 +9,7 @@ import { ALL_RADIO_OPTIONS as windowsLogPolicyRadioOptions } from './windowsLogP
 import { ALL_RADIO_OPTIONS as filePolicyRadioOptions } from './filePolicy/file-settings';
 import { edrPolicyValidatorFnMap } from './edrPolicy/edr-selectors';
 import { windowsLogPolicyValidatorFnMap } from './windowsLogPolicy/windowsLog-selectors';
-import { filePolicyValidatorFnMap } from './filePolicy/file-selectors';
+import { filePolicyValidatorFnMap, sourceNameValidator } from './filePolicy/file-selectors';
 
 const { createSelector } = reselect;
 
@@ -111,6 +111,15 @@ export const definePolicyStepShowErrors = createSelector(
   steps,
   (steps) => {
     return steps[1].showErrors;
+  }
+);
+
+export const definePolicySourcesStepShowErrors = createSelector(
+  steps,
+  (steps) => {
+    if (steps[2]) {
+      return steps[2].showErrors;
+    }
   }
 );
 
@@ -287,9 +296,20 @@ export const isDefinePolicyStepValid = createSelector(
   }
 );
 
+/**
+ * checks each definePolicySourcesStep validator to determine if the whole step is valid
+ * @public
+ */
+export const isDefinePolicySourcesStepValid = createSelector(
+  sourceNameValidator,
+  (sourceNameValidator) => {
+    return sourceNameValidator.isError === false;
+  }
+);
+
 export const isWizardValid = createSelector(
-  isIdentifyPolicyStepValid, isDefinePolicyStepValid,
-  (isIdentifyPolicyStepValid, isDefinePolicyStepValid) => {
-    return isIdentifyPolicyStepValid && isDefinePolicyStepValid;
+  isIdentifyPolicyStepValid, isDefinePolicyStepValid, isDefinePolicySourcesStepValid,
+  (isIdentifyPolicyStepValid, isDefinePolicyStepValid, isDefinePolicySourcesStepValid) => {
+    return isIdentifyPolicyStepValid && isDefinePolicyStepValid && isDefinePolicySourcesStepValid;
   }
 );

@@ -13,6 +13,8 @@ import {
   identifyPolicyStepShowErrors,
   isDefinePolicyStepValid,
   definePolicyStepShowErrors,
+  isDefinePolicySourcesStepValid,
+  definePolicySourcesStepShowErrors,
   isWizardValid
 } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 
@@ -31,6 +33,8 @@ const stateToComputed = (state) => ({
   identifyPolicyStepShowErrors: identifyPolicyStepShowErrors(state),
   isDefinePolicyStepValid: isDefinePolicyStepValid(state),
   definePolicyStepShowErrors: definePolicyStepShowErrors(state),
+  isDefinePolicySourcesStepValid: isDefinePolicySourcesStepValid(state),
+  definePolicySourcesStepShowErrors: definePolicySourcesStepShowErrors(state),
   isWizardValid: isWizardValid(state)
 });
 
@@ -58,11 +62,13 @@ const PolicyWizardToolbar = Component.extend(Notifications, {
     'isIdentifyPolicyStepValid',
     'identifyPolicyStepShowErrors',
     'isDefinePolicyStepValid',
-    'definePolicyStepShowErrors'
+    'definePolicyStepShowErrors',
+    'isDefinePolicySourcesStepValid',
+    'definePolicySourcesStepShowErrors'
   )
   isStepValid(step,
     isIdentifyPolicyStepValid, identifyPolicyStepShowErrors,
-    isDefinePolicyStepValid, definePolicyStepShowErrors) {
+    isDefinePolicyStepValid, definePolicyStepShowErrors, isDefinePolicySourcesStepValid, definePolicySourcesStepShowErrors) {
     switch (this.step.id) {
       case 'identifyPolicyStep':
         if (isIdentifyPolicyStepValid && identifyPolicyStepShowErrors) {
@@ -80,6 +86,13 @@ const PolicyWizardToolbar = Component.extend(Notifications, {
         }
         return isDefinePolicyStepValid;
 
+      case 'definePolicySourcesStep':
+        if (isDefinePolicySourcesStepValid && definePolicySourcesStepShowErrors) {
+          run.next(() => {
+            this.setShowErrors(false);
+          });
+        }
+        return isDefinePolicySourcesStepValid;
       default:
         return false;
     }
@@ -92,6 +105,9 @@ const PolicyWizardToolbar = Component.extend(Notifications, {
         break;
       case 'definePolicyStep':
         this.send('updatePolicyStep', 'steps.1.showErrors', show);
+        break;
+      case 'definePolicySourcesStep':
+        this.send('updatePolicyStep', 'steps.2.showErrors', show);
         break;
       default:
         break;

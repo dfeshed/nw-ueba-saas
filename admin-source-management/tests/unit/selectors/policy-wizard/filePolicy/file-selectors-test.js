@@ -11,7 +11,9 @@ import {
   fileSources,
   fileSourcesList,
   selectedFileSource,
-  selectedFileSourceDefaults
+  selectedFileSourceDefaults,
+  sources,
+  sourceNameValidator
 } from 'admin-source-management/reducers/usm/policy-wizard/filePolicy/file-selectors';
 import {
   ENABLED_CONFIG,
@@ -122,5 +124,86 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
     };
     const defaults = selectedFileSourceDefaults(Immutable.from(fullState));
     assert.deepEqual(defaults, defaultsExpected, 'The returned defaults value from the selectedFileSourceDefaults selector is as expected');
+  });
+
+  test('sources', function(assert) {
+    const expectedValue = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'] } ];
+    const fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(expectedValue)
+      .build();
+    const result = sources(Immutable.from(fullState));
+    assert.deepEqual(result, expectedValue, `should return sources with value ${expectedValue}`);
+  });
+
+  test('sourceNameValidator selector with invalid source name', function(assert) {
+    let newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'foo$', exclusionFilters: ['filter-1', 'filter-2'] } ];
+    // let newFilters = [ { channel: 'System', filterType: 'INCLUDE', eventId: 'foo$' }];
+    const visited = ['policy.sources'];
+    let fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(newSource)
+      .policyWizVisited(visited)
+      .build();
+    let validExpected = {
+      isError: true,
+      invalidTableItem: 'foo$',
+      errorMessage: 'adminUsm.policyWizard.filePolicy.invalidSourceName'
+    };
+    let validActual = sourceNameValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
+
+    // valid value
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'] } ];
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(newSource)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: false, invalidTableItem: 'invalid', errorMessage: '' };
+    validActual = sourceNameValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
+
+
+    // invalid ipv4 address for source name
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: '10:42.42.42', exclusionFilters: ['filter-1', 'filter-2'] } ];
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(newSource)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = {
+      isError: true,
+      invalidTableItem: '10:42.42.42',
+      errorMessage: 'adminUsm.policyWizard.filePolicy.invalidSourceName'
+    };
+    validActual = sourceNameValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
+
+    // invalid ipv6 address for source name
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: '1200::AB00:1234::2552:7777:1313', exclusionFilters: ['filter-1', 'filter-2'] } ];
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(newSource)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = {
+      isError: true,
+      invalidTableItem: '1200::AB00:1234::2552:7777:1313',
+      errorMessage: 'adminUsm.policyWizard.filePolicy.invalidSourceName'
+    };
+    validActual = sourceNameValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
+
+    // valid ipv6 address
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: '1200:0000:AB00:1234:0000:2552:7777:1313', exclusionFilters: ['filter-1', 'filter-2'] } ];
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(newSource)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: false, invalidTableItem: 'invalid', errorMessage: '' };
+    validActual = sourceNameValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
   });
 });

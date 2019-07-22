@@ -80,6 +80,8 @@
     <div class="source-name">
       {{rsa-form-input
         value=item.sourceName
+        isError=(eq (get item column.field) invalidTableItem)
+        errorMessage=(t errorMessage)
         focusOut=sourceUpdated
       }}
     </div>

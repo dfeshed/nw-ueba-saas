@@ -232,6 +232,9 @@ export default class DataHelper {
       case 'defineyPolicyStep':
         _set(this.state, 'usm.policyWizard.steps.1.showErrors', showErrors);
         break;
+      case 'definePolicySourcesStep':
+        _set(this.state, 'usm.policyWizard.steps.2.showErrors', showErrors);
+        break;
       default:
         break;
     }

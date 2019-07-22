@@ -183,5 +183,7 @@ export {
   groupExpressionValidator,
   descriptionsForDisplay,
   sortBy,
-  VALID_HOSTNAME_REGEX
+  VALID_HOSTNAME_REGEX,
+  VALID_IPV4_REGEX,
+  VALID_IPV6_REGEX
 };

@@ -1,4 +1,10 @@
 import reselect from 'reselect';
+import { isBlank } from '@ember/utils';
+import {
+  VALID_HOSTNAME_REGEX,
+  VALID_IPV4_REGEX,
+  VALID_IPV6_REGEX
+} from '../../util/selector-helpers';
 import {
   SOURCE_CONFIG
 } from './file-settings';
@@ -79,6 +85,46 @@ export const selectedFileSourceDefaults = createSelector(
 );
 
 export const sourceConfig = () => SOURCE_CONFIG;
+
+export const sources = createSelector(
+  policy,
+  (policy) => policy.sources
+);
+
+/**
+ * validates the array elments in the sources array.
+ * Sources is an array of objects
+ * [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'name', exclusionFilters:
+ * ['filter-1', 'filter-2'] },  { fileType: 'exchange', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName:
+ * 'name', exclusionFilters: ['filter-1', 'filter-2'] }];
+ * @public
+ */
+export const sourceNameValidator = (state) => {
+  let error = false;
+  let message = '';
+  let invalidEntry = 'invalid';
+  const value = sources(state);
+
+  if (value) {
+    // sources is an array of objects, loop through each obj and validate the sourceName within
+    value.every((obj) => {
+      const { sourceName } = obj;
+      // sourceName cannot be an invalid hostname or IPv4 or IPv6, it can be blank since it is optional
+      if (!isBlank(sourceName) && !(VALID_HOSTNAME_REGEX.test(sourceName) || VALID_IPV4_REGEX.test(sourceName) || VALID_IPV6_REGEX.test(sourceName))) {
+        error = true;
+        invalidEntry = sourceName;
+        message = 'adminUsm.policyWizard.filePolicy.invalidSourceName';
+        return false;
+      }
+      return true;
+    });
+  }
+  return {
+    isError: error,
+    errorMessage: message,
+    invalidTableItem: invalidEntry
+  };
+};
 
 /**
  * Map to hold all File Policy validator functions for settings

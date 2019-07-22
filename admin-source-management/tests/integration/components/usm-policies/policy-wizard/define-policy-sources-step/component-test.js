@@ -144,6 +144,32 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
   });
 
+  test('It shows the correct error message when the source name is invalid', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    const expectedMessage = translation.t('adminUsm.policyWizard.filePolicy.invalidSourceName');
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources(sources)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
+    let value = 'invalidsourceName$';
+    const [eventIdEl] = findAll('.source-name input');
+    await fillIn(eventIdEl, value);
+    await triggerEvent(eventIdEl, 'blur');
+    const isErrorClass = findAll('.source-name .is-error');
+    assert.equal(isErrorClass.length, 1, 'is-error class is rendered');
+    // await pauseTest();
+    assert.equal(findAll('.source-name .input-error')[0].innerText, expectedMessage, `Correct error message is showing: ${expectedMessage}`);
+
+    // valid source name
+    value = 'validsourcename';
+    await fillIn(eventIdEl, value);
+    await triggerEvent(eventIdEl, 'blur');
+    assert.equal(document.querySelectorAll('.source-name .is-error').length, 0, 'Error is not showing for valid source name');
+    assert.equal(document.querySelectorAll('.source-name .input-error').length, 0, 'Error message is not showing for valid source name');
+  });
+
   test('It triggers the update policy action creator when the exclusion filter is changed', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz('filePolicy')

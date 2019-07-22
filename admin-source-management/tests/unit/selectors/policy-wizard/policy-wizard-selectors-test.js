@@ -18,6 +18,8 @@ import {
   steps,
   isIdentifyPolicyStepValid,
   isDefinePolicyStepValid,
+  isDefinePolicySourcesStepValid,
+  definePolicySourcesStepShowErrors,
   isWizardValid,
   isPolicyLoading,
   isPolicyFetchError,
@@ -508,6 +510,41 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
     isDefinePolicyStepValidExpected = false;
     isDefinePolicyStepValidSelected = isDefinePolicyStepValid(fullState);
     assert.deepEqual(isDefinePolicyStepValidSelected, isDefinePolicyStepValidExpected, 'https beacon interval is invalid');
+  });
+
+  test('isDefinePolicySourcesStepValid selector', function(assert) {
+    let newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'foo$', exclusionFilters: ['filter-1', 'filter-2'] } ];
+    const visited = ['policy.sources'];
+    let fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(newSource)
+      .policyWizVisited(visited)
+      .build();
+
+    let resultExpected = false;
+    let result = isDefinePolicySourcesStepValid(fullState);
+    assert.deepEqual(result, resultExpected, 'isDefinePolicySourcesStepValid retunrs false since sourceName is invalid');
+
+    // valid source
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'validsource', exclusionFilters: ['filter-1', 'filter-2'] } ];
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(newSource)
+      .policyWizVisited(visited)
+      .build();
+    resultExpected = true;
+    result = isDefinePolicySourcesStepValid(fullState);
+    assert.deepEqual(result, resultExpected, 'isDefinePolicySourcesStepValid retunrs false since sourceName is invalid');
+  });
+
+  test('definePolicySourcesStepShowErrors selector', function(assert) {
+    const visited = ['policy.sources'];
+    const fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizVisited(visited)
+      .build();
+    const result = definePolicySourcesStepShowErrors(fullState);
+    assert.deepEqual(result, false, 'definePolicySourcesStepShowErrors returns correctly');
   });
 
   test('isWizardValid selector', function(assert) {
