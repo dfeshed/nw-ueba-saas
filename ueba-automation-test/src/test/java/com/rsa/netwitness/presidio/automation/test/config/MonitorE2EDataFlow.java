@@ -8,7 +8,7 @@ import com.rsa.netwitness.presidio.automation.domain.repository.AdapterFileStore
 import com.rsa.netwitness.presidio.automation.domain.repository.AdapterRegistryStoredDataRepository;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
-import com.rsa.netwitness.presidio.automation.utils.adapter.log_player.utils.MongoCollectionsMonitor;
+import com.rsa.netwitness.presidio.automation.log_player.MongoCollectionsMonitor;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

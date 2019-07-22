@@ -1,9 +1,9 @@
 package com.rsa.netwitness.presidio.automation.test.rest;
 
-import com.rsa.netwitness.presidio.automation.common.rest.RestApiResponse;
+import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
-import com.rsa.netwitness.presidio.automation.helpers.rest.ParametersUrlBuilder;
-import com.rsa.netwitness.presidio.automation.helpers.rest.RestHelper;
+import com.rsa.netwitness.presidio.automation.rest.helper.ParametersUrlBuilder;
+import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.static_content.AlertClassificationIndicatorDictionary;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils;
 import org.json.JSONException;

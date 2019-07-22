@@ -1,10 +1,10 @@
 package com.rsa.netwitness.presidio.automation.test.rest;
 
 import com.google.gson.Gson;
-import com.rsa.netwitness.presidio.automation.common.rest.RestApiResponse;
+import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
-import com.rsa.netwitness.presidio.automation.helpers.rest.ParametersUrlBuilder;
-import com.rsa.netwitness.presidio.automation.helpers.rest.RestHelper;
+import com.rsa.netwitness.presidio.automation.rest.helper.ParametersUrlBuilder;
+import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import org.assertj.core.api.Fail;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;

@@ -2,10 +2,10 @@ package com.rsa.netwitness.presidio.automation.test.data.preparation;
 
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
-import com.rsa.netwitness.presidio.automation.utils.adapter.log_player.conveters.PresidioEventConverter;
-import com.rsa.netwitness.presidio.automation.utils.adapter.log_player.events.ConverterEventBase;
-import com.rsa.netwitness.presidio.automation.utils.adapter.log_player.producers.NetwitnessEventsProducer;
-import com.rsa.netwitness.presidio.automation.utils.adapter.log_player.utils.TestContextSupplier;
+import com.rsa.netwitness.presidio.automation.converter.conveters.PresidioEventConverter;
+import com.rsa.netwitness.presidio.automation.converter.events.ConverterEventBase;
+import com.rsa.netwitness.presidio.automation.converter.producers.NetwitnessEventsProducer;
+import com.rsa.netwitness.presidio.automation.converter.TestContextSupplier;
 import fortscale.common.general.Schema;
 import fortscale.utils.mongodb.config.MongoConfig;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.rsa.netwitness.presidio.automation.utils.adapter.log_player.utils.TestContextSupplier.GENERATOR_FORMAT.valueOf;
+import static com.rsa.netwitness.presidio.automation.converter.TestContextSupplier.GENERATOR_FORMAT.valueOf;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = {MongoConfig.class, NetwitnessEventStoreConfig.class})

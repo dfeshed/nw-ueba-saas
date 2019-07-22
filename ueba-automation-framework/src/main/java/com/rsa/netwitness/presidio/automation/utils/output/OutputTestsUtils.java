@@ -1,7 +1,7 @@
 package com.rsa.netwitness.presidio.automation.utils.output;
 
-import com.rsa.netwitness.presidio.automation.common.rest.RestAPI;
-import com.rsa.netwitness.presidio.automation.common.rest.RestApiResponse;
+import com.rsa.netwitness.presidio.automation.rest.client.RestAPI;
+import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.domain.activedirectory.OutputActiveDirectoryEnrichedStoredData;
 import com.rsa.netwitness.presidio.automation.domain.authentication.OutputAuthenticationEnrichStoredData;
 import com.rsa.netwitness.presidio.automation.domain.config.HostConf;

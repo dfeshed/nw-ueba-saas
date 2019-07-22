@@ -6,6 +6,7 @@
         <artifactId>ueba-automation-projects</artifactId>
         <groupId>com.rsa.netwitness.presidio.automation</groupId>
         <version>11.4.0-0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -23,11 +24,11 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-common</artifactId>
-            <version>11.4.0-0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -37,6 +38,15 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>

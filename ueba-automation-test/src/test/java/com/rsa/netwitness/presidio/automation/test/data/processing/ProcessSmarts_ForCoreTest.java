@@ -14,7 +14,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import presidio.data.generators.common.GeneratorException;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = {MongoConfig.class, ADETestManagerConfig.class})
@@ -27,7 +26,7 @@ public class ProcessSmarts_ForCoreTest extends AbstractTestNGSpringContextTests 
 
     @Parameters({"historical_days_back", "anomaly_day_back"})
     @BeforeClass
-    public void prepare(@Optional("10") int historicalDaysBack, @Optional("1") int anomalyDay) throws GeneratorException {
+    public void prepare(@Optional("10") int historicalDaysBack, @Optional("1") int anomalyDay) {
         boolean testFile = true;
         boolean testAuthentication = true;
         boolean testActiveDirectory = true;
