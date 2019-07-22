@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="e2e test">
+<suite name="e2e test"  preserve-order="true">
     <parameter name="outputProcessingStartDaysBack" value="14" />
     <parameter name="outputProcessingEndDaysBack" value="1" />
     <suite-files>

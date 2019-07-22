@@ -11,6 +11,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>ueba-automation-test</artifactId>
+
+    <properties>
+        <suiteXmlFile>PrepareNetwork_Data.xml</suiteXmlFile>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.rsa.netwitness.presidio.automation</groupId>
@@ -44,6 +49,20 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                    </suiteXmlFiles>
+                </configuration>
             </plugin>
         </plugins>
     </build>
