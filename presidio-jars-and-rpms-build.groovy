@@ -69,7 +69,7 @@ pipeline {
             when { expression { return env.RUN_CORE_PACKAGES == 'true' } }
             steps { buildPackages("presidio-core", "package/pom.xml", true, false, true) }
         }
-        stage('Trigger presidio-integration-test-ADE-master, presidio-integration-test-adapter-master, presidio-integration-test-input-master') {
+        stage('Trigger integration test') {
             when { expression { return env.RUN_CORE_PACKAGES == 'true' && (env.BRANCH_NAME == "origin/master" || env.BRANCH_NAME.contains("/release/")) } }
             steps {
                 build job: 'presidio-integration-test-ADE-master', parameters: [
