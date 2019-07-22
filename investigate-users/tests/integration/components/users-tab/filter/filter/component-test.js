@@ -7,7 +7,7 @@ import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import existAnomalyTypes from '../../../../../data/presidio/exist_anomaly_types';
 import existAlertTypes from '../../../../../data/presidio/exist_alert_types';
-import { clickTrigger, selectChoose } from '../../../../../helpers/ember-power-select';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchFetch } from '../../../../../helpers/patch-fetch';
 import dataIndex from '../../../../../data/presidio';

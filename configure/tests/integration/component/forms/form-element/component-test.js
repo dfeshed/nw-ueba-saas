@@ -101,18 +101,18 @@ module('Integration | Component | Form Element', function(hooks) {
     assert.equal(legend.textContent.trim(), 'legenndd');
     assert.equal(labelOne.textContent.trim(), 'enabled');
     assert.equal(radioOne.value, 'true');
-    assert.equal(radioOne.getAttribute('aria-checked'), null);
+    assert.equal(radioOne.getAttribute('aria-checked'), 'false');
     assert.equal(radioShapeOne.getAttribute('focusable'), 'false');
 
     assert.equal(labelTwo.textContent.trim(), 'disabled');
     assert.equal(radioTwo.value, 'false');
-    assert.equal(radioTwo.getAttribute('aria-checked'), '');
+    assert.equal(radioTwo.getAttribute('aria-checked'), 'true');
     assert.equal(radioShapeTwo.getAttribute('focusable'), 'false');
 
     await click(radioOne);
 
-    assert.equal(radioOne.getAttribute('aria-checked'), '');
-    assert.equal(radioTwo.getAttribute('aria-checked'), null);
+    assert.equal(radioOne.getAttribute('aria-checked'), 'true');
+    assert.equal(radioTwo.getAttribute('aria-checked'), 'false');
   });
 
   test('form provided save and reset buttons update when locale is changed', async function(assert) {
@@ -357,9 +357,9 @@ module('Integration | Component | Form Element', function(hooks) {
 
     ({ radioOne, radioTwo } = fieldsetSync(1));
     assert.equal(radioOne.value, 'true');
-    assert.equal(radioOne.getAttribute('aria-checked'), '');
+    assert.equal(radioOne.getAttribute('aria-checked'), 'true');
     assert.equal(radioTwo.value, 'false');
-    assert.equal(radioTwo.getAttribute('aria-checked'), null);
+    assert.equal(radioTwo.getAttribute('aria-checked'), 'false');
   });
 
   test('form group will set label input and validation ids and aria attributes', async function(assert) {

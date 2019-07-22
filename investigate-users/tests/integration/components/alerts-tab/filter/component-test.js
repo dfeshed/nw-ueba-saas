@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import { clickTrigger, selectChoose } from '../../../../helpers/ember-power-select';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchFetch } from '../../../../helpers/patch-fetch';
 import { Promise } from 'rsvp';

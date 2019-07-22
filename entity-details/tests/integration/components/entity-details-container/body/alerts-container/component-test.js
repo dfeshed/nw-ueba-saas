@@ -6,7 +6,7 @@ import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { clickTrigger, selectChoose } from '../../../../../helpers/ember-power-select';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 
 let setState;
 const timeout = 10000;

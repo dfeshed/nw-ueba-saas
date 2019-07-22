@@ -5,7 +5,7 @@ import { patchFetch } from '../helpers/patch-fetch';
 import { patchFlash } from '../helpers/patch-flash';
 import { Promise } from 'rsvp';
 import dataIndex from '../data/presidio';
-import { clickTrigger } from '../helpers/ember-power-select';
+import { clickTrigger } from 'ember-power-select/test-support/helpers';
 
 module('Acceptance | investigate-users', function(hooks) {
   setupApplicationTest(hooks);

@@ -39,10 +39,10 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
     assert.equal(legend.textContent.trim(), labels(this, 'fileThresholdEnabled'));
     assert.equal(labelOne.textContent.trim(), labels(this, 'enabled'));
     assert.equal(radioOne.value, 'true');
-    assert.equal(radioOne.getAttribute('aria-checked'), '');
+    assert.equal(radioOne.getAttribute('aria-checked'), 'true');
     assert.equal(labelTwo.textContent.trim(), labels(this, 'disabled'));
     assert.equal(radioTwo.value, 'false');
-    assert.equal(radioTwo.getAttribute('aria-checked'), null);
+    assert.equal(radioTwo.getAttribute('aria-checked'), 'false');
 
     ({ label, input } = await formGroup(1));
     assert.equal(label.textContent.trim(), labels(this, 'fileThreshold'));
@@ -65,10 +65,10 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
     assert.equal(legend.textContent.trim(), labels(this, 'hostThresholdEnabled'));
     assert.equal(labelOne.textContent.trim(), labels(this, 'enabled'));
     assert.equal(radioOne.value, 'true');
-    assert.equal(radioOne.getAttribute('aria-checked'), '');
+    assert.equal(radioOne.getAttribute('aria-checked'), 'true');
     assert.equal(labelTwo.textContent.trim(), labels(this, 'disabled'));
     assert.equal(radioTwo.value, 'false');
-    assert.equal(radioTwo.getAttribute('aria-checked'), null);
+    assert.equal(radioTwo.getAttribute('aria-checked'), 'false');
 
     ({ label, input } = await formGroup(4));
     assert.equal(label.textContent.trim(), labels(this, 'hostThreshold'));
@@ -305,8 +305,8 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
     await render(hbs`{{respond/risk-scoring}}`);
 
     ({ radioOne, radioTwo } = fieldsetSync(1));
-    assert.equal(radioOne.getAttribute('aria-checked'), '');
-    assert.equal(radioTwo.getAttribute('aria-checked'), null);
+    assert.equal(radioOne.getAttribute('aria-checked'), 'true');
+    assert.equal(radioTwo.getAttribute('aria-checked'), 'false');
 
     ({ label, input } = await formGroup(1));
     assert.equal(label.textContent.trim(), labels(this, 'fileThreshold'));
@@ -342,8 +342,8 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
     assert.equal(formGroupExists(6), false);
 
     ({ radioOne, radioTwo } = fieldsetSync(1));
-    assert.equal(radioOne.getAttribute('aria-checked'), null);
-    assert.equal(radioTwo.getAttribute('aria-checked'), '');
+    assert.equal(radioOne.getAttribute('aria-checked'), 'false');
+    assert.equal(radioTwo.getAttribute('aria-checked'), 'true');
 
     assert.equal(find(selectors.saveButton).disabled, false);
     assert.equal(find(selectors.resetButton).disabled, false);
@@ -370,8 +370,8 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
     assert.equal(find(selectors.resetButton).disabled, true);
 
     ({ radioOne, radioTwo } = fieldsetSync(1));
-    assert.equal(radioOne.getAttribute('aria-checked'), '');
-    assert.equal(radioTwo.getAttribute('aria-checked'), null);
+    assert.equal(radioOne.getAttribute('aria-checked'), 'true');
+    assert.equal(radioTwo.getAttribute('aria-checked'), 'false');
   });
 
   test('onclick the reset button will undo host threshold & time window visibility', async function(assert) {
@@ -380,8 +380,8 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
     await render(hbs`{{respond/risk-scoring}}`);
 
     ({ radioOne, radioTwo } = fieldsetSync(2));
-    assert.equal(radioOne.getAttribute('aria-checked'), '');
-    assert.equal(radioTwo.getAttribute('aria-checked'), null);
+    assert.equal(radioOne.getAttribute('aria-checked'), 'true');
+    assert.equal(radioTwo.getAttribute('aria-checked'), 'false');
 
     ({ label, input } = await formGroup(4));
     assert.equal(label.textContent.trim(), labels(this, 'hostThreshold'));
@@ -414,8 +414,8 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
     assert.equal(formGroupExists(6), false);
 
     ({ radioOne, radioTwo } = fieldsetSync(2));
-    assert.equal(radioOne.getAttribute('aria-checked'), null);
-    assert.equal(radioTwo.getAttribute('aria-checked'), '');
+    assert.equal(radioOne.getAttribute('aria-checked'), 'false');
+    assert.equal(radioTwo.getAttribute('aria-checked'), 'true');
 
     assert.equal(find(selectors.saveButton).disabled, false);
     assert.equal(find(selectors.resetButton).disabled, false);
@@ -438,8 +438,8 @@ module('Integration | Component | Respond Risk Scoring', function(hooks) {
     assert.equal(find(selectors.resetButton).disabled, true);
 
     ({ radioOne, radioTwo } = fieldsetSync(2));
-    assert.equal(radioOne.getAttribute('aria-checked'), '');
-    assert.equal(radioTwo.getAttribute('aria-checked'), null);
+    assert.equal(radioOne.getAttribute('aria-checked'), 'true');
+    assert.equal(radioTwo.getAttribute('aria-checked'), 'false');
   });
 
   test('clicking radio to disable form fields will not immediately wipe out any wip values', async function(assert) {
