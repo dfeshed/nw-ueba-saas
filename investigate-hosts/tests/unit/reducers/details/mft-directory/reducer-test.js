@@ -11,9 +11,10 @@ const initialState = {
   loadMoreStatus: 'completed',
   selectedIndex: -1,
   totalItems: 4,
+  totalMftItems: 0,
   sortField: 'creationTime',
   isSortDescending: true,
-  selectedFileList: [],
+  selectedMftFileList: [],
   selectedFile: {},
   pageNumber: 0,
   selectedParentDirectory: { recordNumber: 0 },
@@ -22,7 +23,11 @@ const initialState = {
   isDirectories: true,
   inUse: true,
   pageSize: 65000,
-  fileSource: ''
+  fileSource: '',
+  areFilesLoading: false,
+  hasMftNext: false,
+  loading: 'wait',
+  showFilter: false
 };
 
 module('Unit | Reducers | mft-directory', function() {
@@ -223,4 +228,149 @@ module('Unit | Reducers | mft-directory', function() {
     assert.equal(endState.loading, 'completed');
   });
 
+  test('SET_MFT_FILES_SORT_BY ', function(assert) {
+    const previous = Immutable.from({
+      subDirectories: [],
+      selectedParentDirectory: { recordNumber: 5, ancestors: [] },
+      openDirectories: [],
+      selectedDirectoryForDetails: 0,
+      fileSource: ''
+    });
+
+    const endState = reducer(previous, { type: ACTION_TYPES.SET_MFT_FILES_SORT_BY, payload: { sortField: 'creationTIme', isSortDescending: true } });
+    assert.equal(endState.sortField, 'creationTIme');
+    assert.equal(endState.isSortDescending, true);
+  });
+
+  test('The SELECT_ALL_DOWNLOADED_MFT_FILES will selects all files and folders', function(assert) {
+    const previous = Immutable.from({
+      files: { 1: { id: 1, checksumSha256: 1, name: 'test1', serviceId: 'wefew', size: 1234, directory: false, status: 'completed' },
+        2: { id: 2, checksumSha256: 1, name: 'test', serviceId: 'wefew', size: 2345, directory: true, status: 'completed' }
+      },
+      selectedMftFileList: []
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SELECT_ALL_DOWNLOADED_MFT_FILES });
+
+    assert.deepEqual(result.selectedMftFileList, [{ id: 1, checksumSha256: 1, name: 'test1', serviceId: 'wefew', size: 1234, directory: false, status: 'completed' },
+      { id: 2, checksumSha256: 1, name: 'test', serviceId: 'wefew', size: 2345, directory: true, status: 'completed' } ]);
+  });
+  test('The DESELECT_ALL_DOWNLOADED_MFT_FILES will remove selects mft', function(assert) {
+    const previous = Immutable.from({
+      files: { 1: { id: 1, checksumSha256: 1, name: 'test1', serviceId: 'wefew', size: 1234, directory: false, status: 'completed' },
+        2: { id: 2, checksumSha256: 1, name: 'test', serviceId: 'wefew', size: 2345, directory: true, status: 'completed' }
+      },
+      selectedMftFileList: [[{ id: 1, checksumSha256: 1, name: 'test1', serviceId: 'wefew', size: 1234, directory: false, status: 'completed' },
+        { id: 2, checksumSha256: 1, name: 'test', serviceId: 'wefew', size: 2345, directory: true, status: 'completed' } ]]
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.DESELECT_ALL_DOWNLOADED_MFT_FILES });
+
+    assert.deepEqual(result.selectedMftFileList, []);
+  });
+
+  test('The TOGGLE_SELECTED_MFT_FILE will unselect all selected files', function(assert) {
+    const previous = Immutable.from({
+      selectedMftFileList: [{ id: 1, checksumSha256: 1 }, { id: 2, checksumSha256: 2 }, { id: 3, checksumSha256: 3 }]
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_SELECTED_MFT_FILE, payload: { id: 1, checksumSha256: 1, filename: 'test', serviceId: 'wefew', size: 1234, status: 'Downloaded', type: 'file' } });
+
+    assert.deepEqual(result.selectedMftFileList, [{ id: 2, checksumSha256: 2 }, { id: 3, checksumSha256: 3 }]);
+  });
+  test('The TOGGLE_SELECTED_MFT_FILE select if Not directory', function(assert) {
+    const previous = Immutable.from({
+      selectedMftFileList: []
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_SELECTED_MFT_FILE, payload: { id: 1, checksumSha256: 1, name: 'test', serviceId: 'wefew', size: 1234, status: 'Downloaded', fileType: 'file', directory: false } });
+
+    assert.deepEqual(result.selectedMftFileList, [{
+      checksumSha256: 1,
+      directory: false,
+      fileType: 'file',
+      id: 1,
+      name: 'test',
+      serviceId: 'wefew',
+      size: 1234,
+      status: 'Downloaded'
+    }]);
+  });
+  test('The TOGGLE_SELECTED_MFT_FILE not select if Not directory', function(assert) {
+    const previous = Immutable.from({
+      selectedMftFileList: []
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_SELECTED_MFT_FILE, payload: { id: 1, checksumSha256: 1, name: 'test', serviceId: 'wefew', size: 1234, status: 'Downloaded', fileType: 'file', directory: true } });
+
+    assert.deepEqual(result.selectedMftFileList, []);
+  });
+  test('The INCREMENT_DOWNLOADED_MFT_FILES_PAGE_NUMBER will incriment the page count', function(assert) {
+    const previous = Immutable.from({
+      pageNumber: 2
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.INCREMENT_DOWNLOADED_MFT_FILES_PAGE_NUMBER });
+
+    assert.equal(result.pageNumber, 3);
+  });
+  /* test('The FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES will fetch the next set of downloaded mft files', function(assert) {
+    const previous = Immutable.from({
+      files: {},
+      loadMoreStatus: 'completed',
+      selectedIndex: -1,
+      totalItems: 4,
+      sortField: 'downloadedTime',
+      isSortDescending: true,
+      selectedFileList: [],
+      selectedFile: {},
+      pageNumber: -1
+    });
+
+
+    const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES });
+    const startEndState = reducer(previous, startAction);
+
+    assert.equal(startEndState.loading, 'wait');
+
+    const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES, payload: { data: { items: [{ name: 'fileName' }] } } });
+    const endState = reducer(startEndState, action);
+    assert.equal(endState.loading, 'completed');
+    const data = endState.files;
+    const testFile = data.files_1;
+    assert.equal(testFile.name, 'fileName');
+
+    const errorAction = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES });
+    const errorEndState = reducer(previous, errorAction);
+
+    assert.equal(errorEndState.loading, 'error');
+  });
+*/
+  test('FETCH_FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES fetches files and subdirectories for ', function(assert) {
+    const previous = Immutable.from({
+      files: {},
+      subDirectories: [],
+      selectedParentDirectory: {}
+    });
+    const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES });
+    const startEndState = reducer(previous, startAction);
+    assert.equal(startEndState.loading, 'wait');
+
+    const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES, payload: { data: { items: [{
+      mftId: '5d19c6c7c8811e3057c68fd8',
+      recordNumber: 5,
+      allocatedSize: 0,
+      directoryCount: 14,
+      directory: true,
+      name: 'C',
+      fullPathName: 'C',
+      parentDirectory: 0,
+      ancestors: []
+    }] } } });
+    const endState = reducer(previous, action);
+    assert.equal(endState.totalItems, 1);
+    assert.equal(Object.keys(endState.files).length, 1);
+    assert.equal(endState.loading, 'completed');
+  });
+  test('The TOGGLE_MFT_FILTER_PANEL test', function(assert) {
+    const previous = Immutable.from({
+      showFilter: true
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_MFT_FILTER_PANEL, payload: false });
+    assert.equal(result.showFilter, false);
+  });
 });

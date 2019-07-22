@@ -10,7 +10,7 @@ import {
 } from 'investigate-hosts/reducers/details/downloads/selectors';
 
 
-module('Unit | Selectors | File Context', function() {
+module('Unit | Selectors | downloads', function() {
 
   test('nextLoadCount more than 100', function(assert) {
     const files = {};

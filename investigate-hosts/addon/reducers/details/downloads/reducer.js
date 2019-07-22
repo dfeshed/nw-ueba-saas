@@ -9,6 +9,7 @@ const initialState = Immutable.from({
   files: {},
   loadMoreStatus: 'completed',
   selectedIndex: -1,
+  selectedMftIndex: -1,
   totalItems: 4,
   sortField: 'downloadedTime',
   isSortDescending: true,
@@ -17,7 +18,8 @@ const initialState = Immutable.from({
   pageNumber: -1,
   isShowMFTView: false,
   selectedMftFile: null,
-  selectedMftName: null
+  selectedMftName: null,
+  hasNext: false
 });
 
 const _toggleSelectedFile = (state, payload) => {
@@ -107,7 +109,10 @@ const hostDownloads = reduxActions.handleActions({
     'selectedMftName': mftName
   })),
 
-  [ACTION_TYPES.SET_SELECTED_DOWNLOADED_FILE_INDEX]: (state, { payload }) => state.set('selectedIndex', payload)
+  [ACTION_TYPES.SET_SELECTED_DOWNLOADED_FILE_INDEX]: (state, { payload }) => state.set('selectedIndex', payload),
+
+  [ACTION_TYPES.SET_SELECTED_DOWNLOADED_MFT_FILE_INDEX]: (state, { payload }) => state.set('selectedMftIndex', payload)
+
 }, initialState);
 
 export default hostDownloads;

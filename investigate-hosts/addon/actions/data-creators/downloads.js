@@ -236,6 +236,22 @@ const _fetchMFTDirectory = (type, recordNumber) => {
   };
 };
 
+/**
+ * Action Creator for fetching the first page of data. Before sending the request resets the state
+ * @returns {function(*)}
+ * @private
+ */
+const getPageOfMftFiles = () => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { selectedDirectoryForDetails } = state.endpoint.hostDownloads.mft.mftDirectory;
+    dispatch({ type: ACTION_TYPES.INCREMENT_DOWNLOADED_MFT_FILES_PAGE_NUMBER });
+    next(() => {
+      dispatch(_fetchMFTDirectory(ACTION_TYPES.FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES, selectedDirectoryForDetails));
+    });
+  };
+};
+
 const getSubDirectories = () => {
   return (dispatch, getState) => {
     next(() => {
@@ -254,6 +270,27 @@ const setSeletedParentDirectory = (selectedDirectory) => ({ type: ACTION_TYPES.S
 
 const setSelectDirectoryForDetails = (selectedDirectoryForDetails) => ({ type: ACTION_TYPES.SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS, payload: selectedDirectoryForDetails });
 
+const toggleMftFileSelection = (selectedFile) => ({ type: ACTION_TYPES.TOGGLE_SELECTED_MFT_FILE, payload: selectedFile });
+
+const setSelectedMftIndex = (index) => ({ type: ACTION_TYPES.SET_SELECTED_DOWNLOADED_MFT_FILE_INDEX, payload: index });
+
+const selectAllMftFiles = () => ({ type: ACTION_TYPES.SELECT_ALL_DOWNLOADED_MFT_FILES });
+
+const deSelectAllMftFiles = () => ({ type: ACTION_TYPES.DESELECT_ALL_DOWNLOADED_MFT_FILES });
+
+const mftFilterVisible = (visibility) => ({ type: ACTION_TYPES.TOGGLE_MFT_FILTER_PANEL, payload: visibility });
+
+/**
+ * Action Creator to sort the files.
+ * @return {function} redux-thunk
+ * @public
+ */
+const sortMftBy = (sortField, isSortDescending) => {
+  return (dispatch) => {
+    dispatch({ type: ACTION_TYPES.SET_MFT_FILES_SORT_BY, payload: { sortField, isSortDescending } });
+    dispatch(getPageOfMftFiles());
+  };
+};
 
 export {
   getPageOfDownloads,
@@ -269,5 +306,12 @@ export {
   toggleMftView,
   setSeletedParentDirectory,
   getSubDirectories,
-  setSelectDirectoryForDetails
+  setSelectDirectoryForDetails,
+  toggleMftFileSelection,
+  setSelectedMftIndex,
+  selectAllMftFiles,
+  deSelectAllMftFiles,
+  getPageOfMftFiles,
+  mftFilterVisible,
+  sortMftBy
 };

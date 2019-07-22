@@ -9,6 +9,7 @@ const initialState = {
   files: {},
   loadMoreStatus: 'completed',
   selectedIndex: -1,
+  selectedMftIndex: -1,
   totalItems: 4,
   sortField: 'downloadedTime',
   isSortDescending: true,
@@ -17,7 +18,8 @@ const initialState = {
   pageNumber: -1,
   isShowMFTView: false,
   selectedMftFile: null,
-  selectedMftName: null
+  selectedMftName: null,
+  hasNext: false
 };
 
 module('Unit | Reducers | downloads', function() {
@@ -194,4 +196,13 @@ module('Unit | Reducers | downloads', function() {
     assert.equal(startEndState.selectedMftFile, '');
     assert.equal(startEndState.selectedMftName, '');
   });
+  test('The SET_SELECTED_DOWNLOADED_MFT_FILE_INDEX will reset the index', function(assert) {
+    const previous = Immutable.from({
+      selectedMftIndex: 1
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_DOWNLOADED_MFT_FILE_INDEX, payload: 3 });
+
+    assert.equal(result.selectedMftIndex, 3);
+  });
+
 });

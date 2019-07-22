@@ -12,9 +12,10 @@ const initialState = Immutable.from({
   loadMoreStatus: 'completed',
   selectedIndex: -1,
   totalItems: 4,
+  totalMftItems: 0,
   sortField: 'creationTime',
   isSortDescending: true,
-  selectedFileList: [],
+  selectedMftFileList: [],
   selectedFile: {},
   pageNumber: 0,
   selectedParentDirectory: { recordNumber: 0 },
@@ -23,7 +24,11 @@ const initialState = Immutable.from({
   isDirectories: true,
   inUse: true,
   pageSize: 65000,
-  fileSource: ''
+  fileSource: '',
+  areFilesLoading: false,
+  hasMftNext: false,
+  loading: 'wait',
+  showFilter: false
 });
 
 const _addSubdirectoriesToParent = (directories, selectedParentDirectory, subDirectories, ancestors, recordNumber, subDirectoriesLevel) => {
@@ -60,6 +65,21 @@ const _handleAppendFiles = (action) => {
   };
 };
 
+const _toggleSelectedMftFile = (state, payload) => {
+  const { selectedMftFileList } = state;
+  const { id, name, size, checksumSha256, fileType, status, serviceId, directory } = payload;
+  let selectedList = [];
+  // Previously selected file
+  if (selectedMftFileList.some((file) => file.id === id)) {
+    selectedList = selectedMftFileList.filter((file) => file.id !== id);
+  } else if (!directory) {
+    selectedList = [...selectedMftFileList,
+      { id, name, size, checksumSha256, fileType, status, serviceId, directory }];
+  }
+  return state.set('selectedMftFileList', selectedList);
+
+};
+
 const mftDirectory = reduxActions.handleActions({
   [ACTION_TYPES.RESET_MFT_FILE_DATA]: (state) => state.merge(initialState),
 
@@ -68,7 +88,11 @@ const mftDirectory = reduxActions.handleActions({
       success: _handleAppendFiles(action)
     });
   },
-
+  [ACTION_TYPES.SET_MFT_FILES_SORT_BY]: (state, { payload: { sortField, isSortDescending } }) => state.merge({
+    sortField,
+    isSortDescending
+  }),
+  [ACTION_TYPES.INCREMENT_DOWNLOADED_MFT_FILES_PAGE_NUMBER]: (state) => state.set('pageNumber', state.pageNumber + 1),
   [ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES_AND_FILES]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.set('loading', 'wait'),
@@ -76,14 +100,40 @@ const mftDirectory = reduxActions.handleActions({
         const normalizedData = normalize(action.payload.data.items, fileListSchema);
         const { files = {} } = normalizedData.entities;
         const totalItems = files ? _.values(files).length : 0;
+        const { totalItems: totalMftItems, hasNext: hasMftNext } = action.payload.data;
         return s.merge({
           totalItems,
           files,
+          totalMftItems,
+          hasMftNext,
           loading: 'completed'
         });
       }
     });
   },
+  [ACTION_TYPES.FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => s.set('loading', 'wait'),
+      failure: (s) => s.set('loading', 'error'),
+      success: (s) => {
+        const { files: file } = state;
+        const normalizedData = normalize(action.payload.data.items, fileListSchema);
+        const { files = {} } = normalizedData.entities;
+        const totalItems = files ? _.values(files).length : 0;
+        const { totalItems: totalMftItems, hasNext: hasMftNext } = action.payload.data;
+        if (action.payload.data.items) {
+          return s.merge({
+            totalItems,
+            files: { ...file, ...files },
+            totalMftItems,
+            hasMftNext,
+            loading: 'completed'
+          });
+        }
+      }
+    });
+  },
+
 
   [ACTION_TYPES.SET_SELECTED_MFT_PARENT_DIRECTORY]: (state, { payload }) => {
     const { selectedParentDirectory, pageSize, isDirectories, inUse } = payload;
@@ -115,7 +165,20 @@ const mftDirectory = reduxActions.handleActions({
     pageSize,
     isDirectories,
     inUse
-  })
+  }),
+
+  [ACTION_TYPES.SELECT_ALL_DOWNLOADED_MFT_FILES]: (state) => {
+    const selectedList = Object.values(state.files).map(({ id, name, size, checksumSha256, status, serviceId, directory }) => ({
+      id, name, size, checksumSha256, status, serviceId, directory
+    }));
+    return state.set('selectedMftFileList', selectedList);
+  },
+
+  [ACTION_TYPES.DESELECT_ALL_DOWNLOADED_MFT_FILES]: (state) => state.set('selectedMftFileList', []),
+
+  [ACTION_TYPES.TOGGLE_SELECTED_MFT_FILE]: (state, { payload }) => _toggleSelectedMftFile(state, payload),
+
+  [ACTION_TYPES.TOGGLE_MFT_FILTER_PANEL]: (state, { payload }) => state.set('showFilter', payload)
 
 }, initialState);
 
