@@ -5304,6 +5304,16 @@ effects the previewed source.',
           name: 'Non-Standard Hours',
           desc: 'All authentication activity, malicious or not, appears as normal logons. Therefore, administrators should monitor unexpected authorized activity. The key is that attackers use these stolen credentials for unauthorized access, which may provide an opportunity for detection. When an account is being used for unusual activities, e.g. authenticating an unusual number of times, then the account may have been compromised. Use the indication of an abnormal activity time to determine if the account has been taken over by an external actor. This activity can be associated with the Abnormal File Access Time, Abnormal Active Directory Change Time, and Abnormal Logon Time indicators.',
           related: 'Related Threats: Logon Scripts - Windows allows logon scripts to be run whenever a specific user or group of users log into a system. If Attackers can access these scripts, they may insert additional code into the logon script to execute their tools when a user logs in. This code can allow them to maintain persistence on a single system, if it is a local script, or to move laterally within a network, if the script is stored on a central server and pushed to many systems. Depending on the access configuration of the logon scripts, either local credentials or an administrator account may be necessary.'
+        },
+        exfiltration: {
+          name: 'Exfiltration',
+          desc: 'Data exfiltration is the unauthorized copying, transfer, or retrieval of data from a computer or server. Data exfiltration is a malicious activity performed through various techniques, typically by cybercriminals over the Internet or other network. This activity can be associated with the <b>Excessive Number of File Delete Events, Excessive Number of Files Moved.</b>',
+          related: 'Data exfiltration is the unauthorized copying, transfer, or retrieval of data from a computer or server. Data exfiltration is a malicious activity performed through various techniques, typically by cybercriminals over the Internet or other network. This activity can be associated with the <b>Excessive Number of File Delete Events, Excessive Number of Files Moved.'
+        },
+        phishing: {
+          name: 'Phishing',
+          desc: 'Phishing is a form of fraud in which an attacker masquerades as a reputable entity or person in email or other communication channels. The attacker uses phishing emails to distribute malicious links or attachments that can perform a variety of functions, including the extraction of login credentials or account information from victims.',
+          related: 'Phishing is a form of fraud in which an attacker masquerades as a reputable entity or person in email or other communication channels. The attacker uses phishing emails to distribute malicious links or attachments that can perform a variety of functions, including the extraction of login credentials or account information from victims.'
         }
       },
       indicator: {
@@ -5742,6 +5752,186 @@ effects the previewed source.',
             name: 'normalized_src_machine.name',
             desc: 'normalized_src_machine.desc',
             timeline: 'normalized_src_machine.timeline'
+          },
+          high_number_of_bytes_sent_by_src_ip_to_ssl_subject_outbound: {
+            name: 'High Number of Bytes Sent By Src IP To Ssl Subject Outbound',
+            desc: 'High Number of Bytes Sent By Src IP To {{entityName}} Outbound',
+            timeline: ''
+          },
+          high_number_of_bytes_sent_by_src_ip_to_dst_port_ssl_subject_outbound: {
+            name: 'High Number of Bytes Sent by Src IP to Dst Port Ssl Subject Outbound',
+            desc: 'High Number of Bytes Sent by Src IP to Dst Port {{entityName}} Outboun',
+            timeline: ''
+          },
+          high_number_of_bytes_sent_to_ssl_subject_outbound: {
+            name: 'High Number of Bytes Sent to Ssl Subject Outbound',
+            desc: 'High Number of Bytes Sent to {{entityName}} Outbound',
+            timeline: ''
+          },
+          high_number_of_bytes_sent_to_domain_ssl_subject_outbound: {
+            name: 'High Number of Bytes Sent to Domain Ssl Subject Outbound',
+            desc: 'High Number of Bytes Sent to Domain {{entityName}} Outbound',
+            timeline: ''
+          },
+          high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound: {
+            name: 'High Number of Bytes Sent to Dst Port Ssl Subject Outbound',
+            desc: 'High Number of Bytes Sent to Dst Port {{entityName}} Outbound',
+            timeline: ''
+          },
+          high_number_of_bytes_sent_to_dst_org_ssl_subject_outbound: {
+            name: 'High Number of Bytes Sent to dst org Ssl Subject Outbound',
+            desc: 'High Number of Bytes Sent to dst org {{entityName}} Outbound',
+            timeline: ''
+          },
+          high_number_of_bytes_sent_by_ja3_outbound: {
+            name: 'High Number of Bytes Sent by Ja3 Outbound',
+            desc: 'High Number of Bytes Sent by {{entityName}} Outbound',
+            timeline: ''
+          },
+          high_number_of_distinct_src_ip_for_ja3_outbound: {
+            name: 'High Number of Distinct Src Ip for Ja3 Outbound',
+            desc: 'High Number of Distinct Src Ip for {{entityName}} Outbound',
+            timeline: ''
+          },
+          abnormal_ssl_subject_for_src_netname_outbound: {
+            name: 'Abnormal Ssl Subject for Src Netname Outbound',
+            desc: 'Abnormal {{entityName}} for Src Netname Outbound',
+            timeline: ''
+          },
+          ja3_abnormal_ssl_subject_for_src_netname_outbound: {
+            name: 'Ja3 Abnormal Ssl Subject for Src Netname Outbound',
+            desc: 'Ja3 Abnormal {{entityName}} for Src Netname Outbound',
+            timeline: ''
+          },
+          ja3_abnormal_ssl_subject_for_src_netname_outbound: {
+            name: 'Ja3 Abnormal Ssl Subject for Src Netname Outbound',
+            desc: 'Ja3 Abnormal {{entityName}} for Src Netname Outbound',
+            timeline: ''
+          },
+          ja3_abnormal_domain_for_src_netname_outbound: {
+            name: 'Ja3 Abnormal Domain for Src Netname Outbound',
+            desc: '{{entityName}} Abnormal Domain for Src Netname Outbound',
+            timeline: ''
+          },
+          ssl_subject_abnormal_dst_port_for_src_netname_outbound: {
+            name: 'Ssl Subject Abnormal Dst Port for Src Netname Outbound',
+            desc: '{{entityName}} Abnormal Dst Port for Src Netname Outbound',
+            timeline: ''
+          },
+          ja3_abnormal_dst_port_for_src_netname_outbound: {
+            name: 'Ssl Subject Abnormal Dst Port for Src Netname Outbound',
+            desc: '{{entityName}} Abnormal Dst Port for Src Netname Outbound',
+            timeline: ''
+          },
+          ssl_subject_abnormal_dst_org_for_src_netname_outbound: {
+            name: 'Ssl Subject Abnormal Dst Org for Src Netname Outbound',
+            desc: '{{entityName}} Abnormal Dst Org for Src Netname Outbound',
+            timeline: ''
+          },
+          ja3_abnormal_dst_org_for_src_netname_outbound: {
+            name: 'Ja3 Abnormal Dst Org for Src Netname Outbound',
+            desc: '{{entityName}} Abnormal Dst Org for Src Netname Outbound',
+            timeline: ''
+          },
+          ssl_subject_abnormal_country_for_ssl_subject_outbound: {
+            name: 'Ssl Subject Abnormal Country for Ssl Subject Outbound',
+            desc: '{{entityName}} Abnormal Country for Ssl Subject Outbound',
+            timeline: ''
+          },
+          ja3_abnormal_country_for_ssl_subject_outbound: {
+            name: 'Ja3 Abnormal Country for Ssl Subject Outbound',
+            desc: '{{entityName}} Abnormal Country for Ssl Subject Outbound',
+            timeline: ''
+          },
+          ssl_subject_abnormal_dst_port_for_ssl_subject_outbound: {
+            name: 'Ssl Subject Abnormal Dst Port for Ssl Subject Outbound',
+            desc: '{{entityName}} Abnormal Dst Port for Ssl Subject Outbound',
+            timeline: ''
+          },
+          ja3_abnormal_dst_port_for_ssl_subject_outbound: {
+            name: 'Ja3 Abnormal Dst Port for Ssl Subject Outbound',
+            desc: '{{entityName}} Abnormal Dst Port for Ssl Subject Outbound',
+            timeline: ''
+          },
+          ssl_subject_abnormal_ssl_subject_day_time: {
+            name: 'Ssl Subject Abnormal Ssl Subject Day Time',
+            desc: '{{entityName}} Abnormal Ssl Subject Day Time',
+            timeline: ''
+          },
+          ja3_abnormal_ssl_subject_day_time: {
+            name: 'Ja3 Abnormal Ssl Subject Day Time',
+            desc: '{{entityName}} Abnormal Ssl Subject Day Time',
+            timeline: ''
+          },
+          ssl_subject_abnormal_dst_port_for_domain_outbound: {
+            name: 'Ssl Subject Abnormal Dst Port for Domain Outbound',
+            desc: '{{entityName}} Abnormal Dst Port for Domain Outbound',
+            timeline: ''
+          },
+          ja3_abnormal_dst_port_for_domain_outbound: {
+            name: 'Ja3 Abnormal Dst Port for Domain Outbound',
+            desc: '{{entityName}} Abnormal Dst Port for Domain Outbound',
+            timeline: ''
+          },
+          ssl_subject_abnormal_dst_port_for_dst_org_outbound: {
+            name: 'Ssl Subject Abnormal Dst Port for Dst Org Outbound',
+            desc: '{{entityName}} Abnormal Dst Port for Dst Org Outbound',
+            timeline: ''
+          },
+          ja3_abnormal_dst_port_for_dst_org_outbound: {
+            name: 'Ja3 Abnormal Dst Port for Dst Org Outbound',
+            desc: '{{entityName}} Abnormal Dst Port for Dst Org Outbound',
+            timeline: ''
+          },
+          ssl_subject_abnormal_ja3_day_time: {
+            name: 'Ssl Subject Abnormal Ja3 Day Time',
+            desc: '{{entityName}} Abnormal Ja3 Day Time',
+            timeline: ''
+          },
+          abnormal_ja3_day_time: {
+            name: 'Abnormal Ja3 Day Time',
+            desc: 'Abnormal {{entityName}} Day Time',
+            timeline: ''
+          },
+          ssl_subject_abnormal_ja3_for_source_netname_outbound: {
+            name: 'Ssl Subject Abnormal Ja3 for Source Netname Outbound',
+            desc: '{{entityName}} Abnormal Ja3 for Source Netname Outbound',
+            timeline: ''
+          },
+          abnormal_ja3_for_source_netname_outbound: {
+            name: 'Abnormal Ja3 for Source Netname Outbound',
+            desc: 'Abnormal {{entityName}} for Source Netname Outbound',
+            timeline: ''
+          },
+          ssl_subject_abnormal_ssl_subject_for_ja3_outbound: {
+            name: 'Ssl Subject Abnormal Ssl Subject for Ja3 Outbound',
+            desc: '{{entityName}} Abnormal Ssl Subject for Ja3 Outbound',
+            timeline: ''
+          },
+          ja3_abnormal_ssl_subject_for_ja3_outbound: {
+            name: 'Ja3 Abnormal Ssl Subject for Ja3 Outbound',
+            desc: '{{entityName}} Abnormal Ssl Subject for Ja3 Outbound',
+            timeline: ''
+          },
+          ssl_subjectabnormal_domain_for_ja3_outbound: {
+            name: 'Ssl Subject Abnormal Domain for Ja3 Outbound',
+            desc: '{{entityName}} Abnormal Domain for Ja3 Outbound',
+            timeline: ''
+          },
+          abnormal_domain_for_ja3_outbound: {
+            name: 'Abnormal Domain for Ja3 Outbound',
+            desc: 'Abnormal Domain for {{entityName}} Outbound',
+            timeline: ''
+          },
+          ssl_subject_abnormal_dst_port_for_ja3_outbound: {
+            name: 'Ssl Subject Abnormal Dst Port for Ja3 Outbound',
+            desc: 'Ssl Subject Abnormal Dst Port for {{entityName}} Outbound',
+            timeline: ''
+          },
+          abnormal_dst_port_for_ja3_outbound: {
+            name: 'Abnormal Dst Port for Ja3 Outbound',
+            desc: 'Abnormal Dst Port for {{entityName}} Outbound',
+            timeline: ''
           }
         }
       },
