@@ -212,6 +212,26 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[1].complexFilterText, '((b = \'google.com\'))', 'complexFilterText should match');
   });
 
+  test('transformTextToPillData does not break order of operations when combining OR into one complex pill', function(assert) {
+    const text = "(filename = 'firefox-33.1.1.complete.mar' || (sessionid = 80 && medium exists)) || b exists";
+    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result[0].complexFilterText, "((filename = 'firefox-33.1.1.complete.mar' || (sessionid = 80 && medium exists)) || b exists)", 'complexFilterText should match');
+  });
+
+  test('transformTextToPillData does not break order of operations when combining OR into one complex pill and tries to turn normal criteria into pills', function(assert) {
+    const text = 'sessionid = 80 && b exists || (medium = 1)';
+    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    assert.strictEqual(result.length, 2);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'sessionid', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '80', 'value should match');
+    assert.equal(result[1].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result[1].complexFilterText, '(b exists || (medium = 1))', 'complexFilterText should match');
+  });
+
   test('parsePillDataFromUri correctly parses forward slashes and operators into pills', function(assert) {
     const result = parsePillDataFromUri(params.mf, DEFAULT_LANGUAGES);
     assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');

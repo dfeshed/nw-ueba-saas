@@ -159,60 +159,66 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
 
   // pills holds criteria that have been definitively turned into pills
   const pills = [];
-  // criteriaList holds criteria that may or may not be included in a complex
+  // itemList holds parsed items that may or may not be included in a complex
   // pill, depending on whether or not they are next to an OR (`||`)
-  let criteriaList = [];
+  let itemList = [];
   // We can only add one text pill, so don't allow more than the first we see
   let textPillAdded = false;
-  // result.children holds criteria, and also ANDs and ORs
+  // result.children holds parsed items (groups, criteria, AND, OR)
   while (result.children.length > 0) {
     const item = result.children.shift();
-    switch (item.type) {
-      case LEXEMES.TEXT_FILTER:
-        if (!textPillAdded) {
-          textPillAdded = true;
-          pills.push(_createTextQueryFilter(item.text));
-        }
-        break;
-      case GRAMMAR.GROUP:
-        // Look inside parentheses to check if what's inside is just a criteria
-        // If it is, pull it out
-        if (item.group.children.length === 1 && item.group.children[0].type === GRAMMAR.CRITERIA) {
-          const [ criteria ] = item.group.children;
-          criteriaList.push(criteria);
-        } else {
-          pills.push(_createComplexQueryFilter(Parser.transformToString(item)));
-        }
-        break;
-      default:
-        criteriaList.push(item);
-        break;
+    if (item.type === LEXEMES.TEXT_FILTER) {
+      if (!textPillAdded) {
+        textPillAdded = true;
+        pills.push(_createTextQueryFilter(item.text));
+      }
+    } else {
+      itemList.push(item);
     }
 
     // If the next item is a logical AND, add the pill(s) we just saw and consume the AND
     if ((result.children.length > 0 && result.children[0].type === LEXEMES.AND) || result.children.length === 0) {
+      // Consume the AND
       result.children.shift();
-      // If there is only one criteria waiting to be made into a pill, do that
-      // This happens when the criteria before does not have an OR in front of it
-      if (criteriaList.length === 1) {
-        const criteria = criteriaList.shift();
-        pills.push(_createQueryFilter(
-          Parser.transformToString(criteria.meta),
-          Parser.transformToString(criteria.operator),
-          criteria.valueRanges ? criteria.valueRanges.map(Parser.transformToString).join(',') : undefined
-        ));
+      // If there is only one item waiting to be made into a pill, do that
+      // This happens when the item before does not have an OR in front of it
+      if (itemList.length === 1) {
+        const item = itemList.shift();
+        // If that one item is a normal criteria, turn it into a pill
+        if (item.type === GRAMMAR.CRITERIA) {
+          pills.push(_createQueryFilter(
+            Parser.transformToString(item.meta),
+            Parser.transformToString(item.operator),
+            item.valueRanges ? item.valueRanges.map(Parser.transformToString).join(',') : undefined
+          ));
+        // If that one item is a group, add it as a pill IF it only has a single
+        // child which is a criteria. Otherwise, add it as a complex pill.
+        } else if (item.type === GRAMMAR.GROUP) {
+          if (item.group.children.length === 1 && item.group.children[0].type === GRAMMAR.CRITERIA) {
+            const [ criteria ] = item.group.children;
+            pills.push(_createQueryFilter(
+              Parser.transformToString(criteria.meta),
+              Parser.transformToString(criteria.operator),
+              criteria.valueRanges ? criteria.valueRanges.map(Parser.transformToString).join(',') : undefined
+            ));
+          } else {
+            pills.push(_createComplexQueryFilter(`${Parser.transformToString(item)}`));
+          }
+        } else {
+          pills.push(_createComplexQueryFilter(`(${Parser.transformToString(item)})`));
+        }
       // If there is more than one criteria waiting, they are a complex pill. Transform them all back to strings
       // and join them together, then add as one complex pill. This happens when the criteria before has at least
       // one OR and other criteria in front of it. The UI cannot handle this yet, so make it complex.
-      } else if (criteriaList.length > 1) {
-        pills.push(_createComplexQueryFilter(`(${criteriaList.map(Parser.transformToString).join('')})`));
-        criteriaList = [];
+      } else if (itemList.length > 1) {
+        pills.push(_createComplexQueryFilter(`(${itemList.map(Parser.transformToString).join('')})`));
+        itemList = [];
       }
     } else if (result.children.length > 0 && result.children[0].type === LEXEMES.OR) {
-      // Otherwise if it's an OR, add the OR to criteriaList to be added together in a bigger complex pill
+      // Otherwise if it's an OR, add the OR to itemList to be added together in a bigger complex pill
       // This will result in any criteria on the right or left of this OR and any before/after it all getting
       // combined into a larger complex pill.
-      criteriaList.push(result.children.shift());
+      itemList.push(result.children.shift());
     }
   }
 
