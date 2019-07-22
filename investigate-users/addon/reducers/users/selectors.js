@@ -30,6 +30,8 @@ export const getUsers = (state) => state.users.users;
 
 export const severityFilter = ['Low', 'Medium', 'High', 'Critical'];
 
+export const entityFilter = ['user', 'ja3', 'sslSubject'];
+
 export const getUserFilter = (state) => state.users.filter;
 
 export const hasTopRiskyUsers = createSelector(
@@ -42,6 +44,12 @@ export const hasUsers = createSelector(
   [getUsers],
   (users) => {
     return users !== null && users.length > 0;
+  });
+
+export const selectedEntityType = createSelector(
+  [getUserFilter],
+  (filter) => {
+    return filter.entityType;
   });
 
 export const getFavorites = createSelector(

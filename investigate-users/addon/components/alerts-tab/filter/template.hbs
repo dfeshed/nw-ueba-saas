@@ -38,6 +38,18 @@
       <span title='{{option.displayLabel}}'>{{option.displayLabel}}</span>
     {{/power-select-multiple}}
   </label>
+  <label class="rsa-form-label power-select users-tab_filter_filter_select">
+    <div class="label-text">
+      {{t 'investigateUsers.alerts.filters.entityType'}}
+    </div>
+    {{#power-select-multiple
+      options=entityFilter
+      selected=selectedEntities
+      searchEnabled=false
+      onchange=(action 'updateEntityTypes') as |option|}}
+      <span title='{{option}}'>{{t (concat 'investigateUsers.entityTypes.' option)}}</span>
+    {{/power-select-multiple}}
+  </label>
   <div>
     <div class="label-text">
       {{t 'investigateUsers.alerts.filters.dateRange'}}

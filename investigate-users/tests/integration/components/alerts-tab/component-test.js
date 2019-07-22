@@ -27,6 +27,6 @@ module('Integration | Component | alerts-tab', function(hooks) {
     // Handle any actions with this.set('myAction', function(val) { ... });
     new ReduxDataHelper(setState).build();
     await render(hbs`{{alerts-tab}}`);
-    assert.equal(findAll('.alerts-tab_body_body-table_body_row').length, 2);
+    assert.equal(findAll('.alerts-tab_body_body-table_body_row').length, 1);
   });
 });

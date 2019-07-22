@@ -20,6 +20,7 @@ export const initialFilterState = Immutable.from({
   indicatorTypes: null,
   isWatched: false,
   locations: null,
+  entityType: 'user',
   minScore: null,
   severity: null,
   sortDirection: 'DESC',

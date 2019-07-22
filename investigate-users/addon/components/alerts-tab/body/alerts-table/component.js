@@ -1,13 +1,13 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { later } from '@ember/runloop';
-import { getAlertsGroupedHourly, allAlertsReceived } from 'investigate-users/reducers/alerts/selectors';
+import { getAlertsGroupedDaily, allAlertsReceived } from 'investigate-users/reducers/alerts/selectors';
 import { getAlertsForGivenTimeInterval } from 'investigate-users/actions/alert-details';
 import { columnsDataForIndicatorTable } from 'investigate-users/utils/column-config';
 import { initiateUser } from 'investigate-users/actions/user-details';
 
 const stateToComputed = (state) => ({
-  groupedAlerts: getAlertsGroupedHourly(state),
+  groupedAlerts: getAlertsGroupedDaily(state),
   allAlertsReceived: allAlertsReceived(state)
 });
 const dispatchToActions = {
@@ -15,38 +15,43 @@ const dispatchToActions = {
   initiateUser
 };
 
-const scrollHandler = ({ target }) => {
-  // This logic to avoid multiple server calls when user is scrolling.
-  if (false === this.get('scrolling')) {
-    this.set('scrolling', true);
-    later(() => {
-      if (target.scrollHeight - (target.scrollTop + target.offsetHeight) < 30) {
-        if (!this.get('allAlertsReceived')) {
-          this.send('getAlertsForGivenTimeInterval');
-        }
-      }
-      this.set('scrolling', false);
-    }, 500);
-  }
-};
-
 const AlertTabTableComponent = Component.extend({
   classNames: 'alerts-tab_body_body-table',
   scrolling: false,
   alertClicked: null,
   columnsData: columnsDataForIndicatorTable,
+  _scrollHandler({ target }) {
+    // This logic to avoid multiple server calls when user is scrolling.
+    if (false === this.get('scrolling')) {
+      this.set('scrolling', true);
+      later(() => {
+        if (target.scrollHeight - (target.scrollTop + target.offsetHeight) < 30) {
+          if (!this.get('allAlertsReceived')) {
+            this.send('getAlertsForGivenTimeInterval');
+          }
+        }
+        this.set('scrolling', false);
+      }, 500);
+    }
+  },
 
   didInsertElement() {
     this._super(...arguments);
+    const scrollHandler = this._scrollHandler.bind(this);
     document.querySelector('.alerts-tab_body_body-table_body').addEventListener('scroll', scrollHandler);
   },
   willDestroyElement() {
     this._super(...arguments);
+    const scrollHandler = this._scrollHandler;
     document.querySelector('.alerts-tab_body_body-table_body').removeEventListener('scroll', scrollHandler);
   },
   actions: {
     expandAlert(alertId) {
-      this.set('alertClicked', alertId);
+      if (this.get('alertClicked') === alertId) {
+        this.set('alertClicked', null);
+      } else {
+        this.set('alertClicked', alertId);
+      }
     },
     selectUser(alertDetails, { id }) {
       this.send('initiateUser', { ...alertDetails, indicatorId: id });

@@ -22,7 +22,7 @@
   {{#each-in groupedAlerts as |timestamp alertList|}}
     <div class='alerts-tab_body_body-table_body_row'>
       <div class='alerts-tab_body_body-table_body_row_date'>
-        {{t 'investigateUsers.alerts.startFrom'}} &nbsp; {{alert-date timestamp=timestamp}}
+        {{t 'investigateUsers.alerts.startFrom'}} &nbsp; {{timestamp}}
       </div>
       <div class='alerts-tab_body_body-table_body_row_alerts'>
         {{#each alertList as |alert|}}

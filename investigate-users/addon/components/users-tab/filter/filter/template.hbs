@@ -46,4 +46,16 @@
       </span>
     {{/power-select-multiple}}
   </label>
+  <label class="rsa-form-label power-select users-tab_filter_filter_select">
+    <div class="label-text">
+      {{t 'investigateUsers.users.filters.entityType'}}
+    </div>
+    {{#power-select
+      options=entityFilter
+      selected=entityType
+      searchEnabled=false
+      onchange=(action 'updateFilterForEntityType') as |option|}}
+      <span title='{{option}}'>{{t (concat 'investigateUsers.entityTypes.' option)}}</span>
+    {{/power-select}}
+  </label>
 </div>

@@ -34,6 +34,7 @@ const state = Immutable.from({
       indicatorTypes: ['abnormal_file_action_operation_type'],
       isWatched: false,
       allWatched: true,
+      entityType: 'user',
       locations: null,
       minScore: 0,
       severity: ['high'],
@@ -152,6 +153,14 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
 
   test('test AllWatched Users', (assert) => {
     assert.equal(Users.allWatched(state), true);
+  });
+
+  test('test entityFilter', (assert) => {
+    assert.deepEqual(Users.entityFilter, ['user', 'ja3', 'sslSubject']);
+  });
+
+  test('test selectedEntityType', (assert) => {
+    assert.equal(Users.selectedEntityType(state), 'user');
   });
 
   test('test users Severity', (assert) => {

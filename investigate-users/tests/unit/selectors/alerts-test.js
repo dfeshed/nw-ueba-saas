@@ -12,7 +12,7 @@ const state = Immutable.from({
   alerts: {
     topAlerts: alertOverview.data,
     topAlertsError: null,
-    alertList: alertsList,
+    alertList: alertsList.data,
     alertListError: null,
     alertsForTimeline: alertByDayAndSeverity,
     alertsForTimelineError: null,
@@ -25,6 +25,7 @@ const state = Immutable.from({
       sort_field: 'startDate',
       total_severity_count: true,
       severity: ['high'],
+      entityTypes: null,
       feedback: 'none',
       alert_start_range: null,
       showCustomDate: false,
@@ -135,8 +136,20 @@ module('Unit | Selectors | Alerts Selectors', (hooks) => {
     assert.equal(Alerts.getAlertsSeverity(newState), null);
   });
 
-  test('test Alerts Grouped Hourly', function(assert) {
-    assert.equal(Alerts.getAlertsGroupedHourly(state).undefined.length, 5);
+  test('test Alerts Grouped Daily', function(assert) {
+    assert.equal(Object.values(Alerts.getAlertsGroupedDaily(state))[0].length, 3);
+  });
+
+  test('test Alerts Selected Entity', function(assert) {
+    assert.deepEqual(Alerts.selectedEntities(state), undefined);
+    const newState = Immutable.from({
+      alerts: {
+        filter: {
+          entityTypes: ['user', 'ja3']
+        }
+      }
+    });
+    assert.deepEqual(Alerts.selectedEntities(newState), ['user', 'ja3']);
   });
 
   test('test Exist Anomaly Types', function(assert) {

@@ -37,7 +37,7 @@ module('Integration | Component | alerts-tab/filter', function(hooks) {
 
   test('it should render alert tab filter', async function(assert) {
     await render(hbs`{{alerts-tab/filter}}`);
-    assert.equal(find('.alerts-tab_filter').textContent.replace(/\s/g, ''), 'FiltersSeverityFeedbackIndicatorsDateRangeCustomDateMorethan3Monthago×ResetFilters');
+    assert.equal(findAll('.users-tab_filter_filter_select').length, 4);
   });
 
   test('it should render alert tab filter for update filters', async function(assert) {
@@ -76,6 +76,22 @@ module('Integration | Component | alerts-tab/filter', function(hooks) {
     await clickTrigger('.users-tab_filter_filter_select:nth-child(3)');
     assert.equal(findAll('.ember-power-select-option').length, 2);
     await selectChoose('.users-tab_filter_filter_select:nth-child(3)', 'None');
+    return settled();
+  });
+
+  test('it should render alert tab filter for update filters for entity type', async function(assert) {
+    assert.expect(3);
+    new ReduxDataHelper(setState).existAnomalyTypesForFilter({
+      abnormal_file_action_operation_type: 45,
+      abnormal_logon_day_time: 25,
+      user_password_reset: 52
+    }).build();
+    await render(hbs`{{alerts-tab/filter}}`);
+    await clickTrigger('.users-tab_filter_filter_select:nth-child(5)');
+    assert.equal(findAll('.ember-power-select-option').length, 3);
+    await selectChoose('.users-tab_filter_filter_select:nth-child(5)', 'JA3');
+    assert.equal(findAll('.ember-power-select-multiple-option').length, 1);
+    assert.equal(find('.ember-power-select-multiple-option').innerText, '× JA3');
     return settled();
   });
 

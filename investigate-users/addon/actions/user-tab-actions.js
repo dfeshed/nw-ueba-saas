@@ -49,7 +49,7 @@ const getExistAnomalyTypes = () => {
   return (dispatch) => {
     fetchData('existAnomalyTypes').then((data) => {
       if (data === 'error') {
-        flashErrorMessage('investigateUsers.errorMessages.unableToGETExistAnomalyTypes');
+        flashErrorMessage('investigateUsers.errorMessages.unableToGetExistAnomalyTypes');
         return;
       }
       dispatch({

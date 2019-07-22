@@ -12,6 +12,7 @@ export const initialFilterState = Immutable.from({
   locations: null,
   minScore: null,
   severity: null,
+  entityType: 'user',
   sortDirection: 'DESC',
   sortField: 'score',
   fromPage: 1,

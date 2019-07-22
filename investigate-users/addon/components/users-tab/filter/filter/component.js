@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { getExistAlertTypes, getExistAnomalyTypes, getSelectedAlertTypes, getSelectedAnomalyTypes, getUserFilter, getSelectedSeverity, severityFilter } from 'investigate-users/reducers/users/selectors';
+import { getExistAlertTypes, getExistAnomalyTypes, getSelectedAlertTypes, getSelectedAnomalyTypes, getUserFilter, getSelectedSeverity, severityFilter, entityFilter, selectedEntityType } from 'investigate-users/reducers/users/selectors';
 import { updateFilter } from 'investigate-users/actions/user-tab-actions';
 import _ from 'lodash';
 
@@ -11,7 +11,9 @@ const stateToComputed = (state) => ({
   selectedAnomalyTypes: getSelectedAnomalyTypes(state),
   filter: getUserFilter(state),
   selectedSeverity: getSelectedSeverity(state),
-  severityFilter
+  entityType: selectedEntityType(state),
+  severityFilter,
+  entityFilter
 });
 
 const dispatchToActions = {
@@ -31,6 +33,10 @@ const UsersTabFilterFilterComponent = Component.extend({
     },
     updateFilterForAlertTypes(selections) {
       const filter = this.get('filter').merge({ alertTypes: _.map(selections, 'id') });
+      this.send('updateFilter', filter);
+    },
+    updateFilterForEntityType(selections) {
+      const filter = this.get('filter').merge({ entityType: selections });
       this.send('updateFilter', filter);
     }
   }

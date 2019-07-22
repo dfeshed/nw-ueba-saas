@@ -1,7 +1,8 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import _ from 'lodash';
-import { getFilter, getExistAnomalyTypes, getSelectedFeedBack, getSelectedAnomalyTypes, getSelectedSeverity, severityFilter, feedbackFilter, dateTimeFilterOptionsForAlerts } from 'investigate-users/reducers/alerts/selectors';
+import { getFilter, getExistAnomalyTypes, getSelectedFeedBack, getSelectedAnomalyTypes, getSelectedSeverity, severityFilter, feedbackFilter, dateTimeFilterOptionsForAlerts, selectedEntities } from 'investigate-users/reducers/alerts/selectors';
+import { entityFilter } from 'investigate-users/reducers/users/selectors';
 import { updateFilter, updateDateRangeFilter } from 'investigate-users/actions/alert-details';
 
 const stateToComputed = (state) => ({
@@ -11,8 +12,10 @@ const stateToComputed = (state) => ({
   selectedSeverity: getSelectedSeverity(state),
   filter: getFilter(state),
   dateTimeFilterOptionsForAlerts: dateTimeFilterOptionsForAlerts(state),
+  selectedEntities: selectedEntities(state),
   feedbackFilter,
-  severityFilter
+  severityFilter,
+  entityFilter
 });
 
 const dispatchToActions = {
@@ -34,6 +37,10 @@ const AlertTabFilterComponent = Component.extend({
     },
     updateSeverityFilter(selection) {
       const filter = this.get('filter').merge({ severity: selection });
+      this.send('updateFilter', filter);
+    },
+    updateEntityTypes(selection) {
+      const filter = this.get('filter').merge({ entityTypes: selection });
       this.send('updateFilter', filter);
     }
   }

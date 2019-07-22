@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll, settled } from '@ember/test-helpers';
+import { render, findAll, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
@@ -41,7 +41,7 @@ module('Integration | Component | users-tab/filter/filter', function(hooks) {
 
   test('it renders', async function(assert) {
     await render(hbs`{{users-tab/filter/filter}}`);
-    assert.equal(find('.users-tab_filter_filter').textContent.replace(/\s/g, ''), 'FiltersSeverityAlertsIndicators');
+    assert.equal(findAll('.users-tab_filter_filter_select').length, 4);
   });
 
   test('it renders with selected filter', async function(assert) {
@@ -71,6 +71,20 @@ module('Integration | Component | users-tab/filter/filter', function(hooks) {
     return select.then(() => {
       const state = redux.getState();
       assert.equal(state.users.filter.severity[0], 'High');
+    });
+  });
+
+  test('it should filter entity type', async function(assert) {
+    assert.expect(2);
+    const redux = this.owner.lookup('service:redux');
+    await render(hbs`{{users-tab/filter/filter}}`);
+    await clickTrigger('.users-tab_filter_filter_select:nth-child(4)');
+    assert.equal(findAll('.ember-power-select-option').length, 3);
+    selectChoose('.users-tab_filter_filter_select:nth-child(4)', 'JA3');
+    const select = waitForReduxStateChange(redux, ('users.filter.entityType'));
+    return select.then(() => {
+      const state = redux.getState();
+      assert.equal(state.users.filter.entityType, 'ja3');
     });
   });
 });

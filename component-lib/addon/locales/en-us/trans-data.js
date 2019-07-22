@@ -5100,6 +5100,11 @@ effects the previewed source.',
       score: 'Risk Score',
       alertsCount: 'Alerts'
     },
+    entityTypes: {
+      user: 'USER',
+      ja3: 'JA3',
+      sslSubject: 'SSL Subject'
+    },
     resetFilters: 'Reset Filters',
     addToFavorites: 'Add To Favorites',
     filterName: 'Filter Name :',
@@ -5160,7 +5165,8 @@ effects the previewed source.',
         indicators: 'Indicators',
         riskyUsers: 'Risky Users',
         watchlistUsers: 'Watchlist Users',
-        adminUsers: 'Admin Users'
+        adminUsers: 'Admin Users',
+        entityType: 'Entity Type'
       }
     },
     alerts: {
@@ -5936,7 +5942,8 @@ effects the previewed source.',
         severity: 'Severity',
         feedback: 'Feedback',
         indicators: 'Indicators',
-        dateRange: 'Date Range'
+        dateRange: 'Date Range',
+        entityType: 'Entity Type'
       }
     }
   },

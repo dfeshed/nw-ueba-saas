@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import _ from 'lodash';
+import moment from 'moment';
 import { lookup } from 'ember-dependency-lookup';
 
 const _timeframesForDateTimeFilter = [
@@ -75,6 +76,14 @@ export const getSelectedSeverity = createSelector(
     return filter.severity ? filter.severity.asMutable() : null;
   });
 
+export const selectedEntities = createSelector(
+  [getFilter],
+  (filter) => {
+    if (filter.entityTypes) {
+      return filter.entityTypes.asMutable();
+    }
+  });
+
 export const getAlertsSeverity = createSelector(
   [_alertsSeverity],
   (alertsSeverity) => {
@@ -83,14 +92,15 @@ export const getAlertsSeverity = createSelector(
     }
   });
 
-export const getAlertsGroupedHourly = createSelector(
+export const getAlertsGroupedDaily = createSelector(
   [_alertList],
   (alertList) => {
-    return _.groupBy(alertList, 'startDate');
+    const mappedAlertList = _.map(alertList, (alert) => ({ ...alert, alertDay: moment(alert.startDate).calendar() }));
+    return _.groupBy(mappedAlertList, 'alertDay');
   });
 
 export const hasAlerts = createSelector(
-  [getAlertsGroupedHourly],
+  [getAlertsGroupedDaily],
   (alerts) => {
     return _.keys(alerts).length > 0;
   });

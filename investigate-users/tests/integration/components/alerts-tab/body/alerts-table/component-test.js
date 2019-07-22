@@ -43,20 +43,17 @@ module('Integration | Component | alerts-tab/body/alerts-table', function(hooks)
   test('it should render alert tab body with data', async function(assert) {
     redux.dispatch(getAlertsForGivenTimeInterval());
     await render(hbs`{{alerts-tab/body/alerts-table}}`);
-    assert.equal(findAll('.alerts-tab_body_body-table_body_row_date').length, 7);
+    assert.equal(findAll('.alerts-tab_body_body-table_body_row_date').length, 2);
   });
 
   test('it should render alert tab body should show alerts', async function(assert) {
+    assert.expect(2);
     redux.dispatch(getAlertsForGivenTimeInterval());
     await render(hbs`{{alerts-tab/body/alerts-table}}`);
-    click('.alertName > span');
-    const select = waitForReduxStateChange(redux, 'user.alertId');
-    return select.then(() => {
-      const state = redux.getState();
-      assert.equal(state.user.userId, 'a0979b0c-7214-4a53-8114-c1552aa0952c');
-      assert.equal(state.user.alertId, '5090a7fc-1218-4b74-b05a-6b197601d18d');
-      assert.equal(state.user.indicatorId, null);
-    });
+    await click('.alertName > span');
+    assert.equal(findAll('.indicator-table.visible').length, 1);
+    await click('.alertName > span');
+    assert.equal(findAll('.indicator-table.visible').length, 0);
   });
 
   test('it should render alert tab body should show indicators inside alerts', async function(assert) {
