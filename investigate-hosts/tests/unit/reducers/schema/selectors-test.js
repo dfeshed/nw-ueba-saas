@@ -40,6 +40,8 @@ test('getHostTableColumns', function(assert) {
   // length = total size + 1 checkbox column
   assert.equal(result.length, 59, 'should return 59 columns including checkbox column');
   // 0th field is a checkbox.
+  assert.equal(result[1].field, 'machineIdentity.machineName');
+  assert.equal(result[2].field, 'score');
   assert.equal(result[3].field, 'agentStatus.lastSeenTime', 'Machine OS Type field is visible');
   assert.equal(result[3].visible, false, 'Machine OS Type field is visible');
   assert.equal(result[12].field, 'machineIdentity.agent.driverErrorCode', 'Agent version is 12th child in the config');
@@ -51,6 +53,8 @@ test('getHostTableColumns returns the default columns', function(assert) {
   // length = total size + 1 checkbox column
   assert.equal(result.length, 59, 'should return 59 columns including checkbox column');
   // 0th field is a checkbox.
+  assert.equal(result[1].field, 'machineIdentity.machineName');
+  assert.equal(result[2].field, 'score');
   assert.equal(result[3].field, 'agentStatus.lastSeenTime', 'Machine OS Type field is visible');
   assert.equal(result[3].visible, true, 'Machine OS Type field is visible');
   assert.equal(result[12].field, 'machineIdentity.agent.driverErrorCode', 'Agent version is 12th child in the config');

@@ -469,4 +469,31 @@ module('Integration | Component | host-list/host-table', function(hooks) {
       assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 6, 'visibility not changed (6 columns visible)');
     });
   });
+
+  test('default column order is proper ( machineName, riskScore)', async function(assert) {
+
+    this.set('closeProperties', function() {
+      assert.ok('close property panel is called.');
+    });
+    this.set('openProperties', () => {});
+    new ReduxDataHelper(initState)
+      .columns(endpoint.schema)
+      .hostList(hostList)
+      .hostSortField('machineIdentity.machineName')
+      .selectedHostList([])
+      .build();
+    await render(hbs`
+    <style>
+      box, section {
+        min-height: 1000px
+      }
+    </style>
+    {{host-list/host-table closeProperties=closeProperties openProperties=openProperties}}`);
+    await click('.rsa-icon-cog-filled');
+
+    return settled().then(() => {
+      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[0].textContent.trim(), 'Hostname');
+      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[1].textContent.trim(), 'Risk Score');
+    });
+  });
 });

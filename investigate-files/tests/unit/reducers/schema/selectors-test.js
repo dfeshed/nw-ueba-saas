@@ -100,6 +100,8 @@ test('columns will return the updated config with saved config', function(assert
     }
   });
   assert.equal(result.length, 50, '50 visible columns.');
+  assert.equal(result[1].field, 'firstFileName');
+  assert.equal(result[2].field, 'score');
   assert.equal(result[3].preferredDisplayIndex, 6);
 });
 
@@ -114,4 +116,6 @@ test('columns will return the default config', function(assert) {
     }
   });
   assert.equal(result.length, 50, '50 visible columns.');
+  assert.equal(result[1].field, 'firstFileName');
+  assert.equal(result[2].field, 'score');
 });

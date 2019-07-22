@@ -1077,4 +1077,27 @@ module('Integration | Component | file list', function(hooks) {
       assert.ok(true);
     });
   });
+
+  test('default column order is proper in column chooser (File Name, Risk Score)', async function(assert) {
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .schema(config)
+      .preferences({ filePreference })
+      .setSelectedFileList([])
+      .build();
+
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{file-list}}`);
+    await click('.rsa-icon-cog-filled');
+
+    await settled();
+    assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[0].textContent.trim(), 'File Name');
+    assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[1].textContent.trim(), 'Risk Score');
+  });
+
 });

@@ -142,14 +142,14 @@ export const columns = createSelector(
         });
 
         // Set the default columns, if not present in stored configuration
-        DEFAULT_COLUMN.forEach((column) => {
+        DEFAULT_COLUMN.forEach((column, index) => {
           if (column.dataType === 'checkbox') {
-            updatedSchema.unshift(column);
+            updatedSchema.insertAt(index, column);
           } else {
             const [item = {}] = columns.filter((col) => {
               return column.field === col.field;
             });
-            updatedSchema.unshift({ ...column, ...item });
+            updatedSchema.insertAt(index, { ...column, ...item });
           }
         });
         const visibleList = updatedSchema.filter((column) => column.visible);

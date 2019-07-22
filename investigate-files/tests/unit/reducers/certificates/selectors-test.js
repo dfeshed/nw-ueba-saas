@@ -161,7 +161,9 @@ module('Unit | Selectors | investigate-files | certificates', function(hooks) {
     });
     result = columns(stateNew);
     assert.equal(result[3].field, 'issuer', 'issuer');
-    assert.equal(result[2].preferredDisplayIndex, 2);
+    assert.equal(result[2].preferredDisplayIndex, 1);
+    assert.equal(result[0].field, 'friendlyName');
+    assert.equal(result[1].field, 'certificateStatus');
   });
 
   test('nextLoadCount', function(assert) {

@@ -113,14 +113,14 @@ export const columns = createSelector(
         });
 
         // Set the default columns, if not present in stored configuration
-        CERTIFICATE_DEFAULT_COLUMNS.forEach((column) => {
+        CERTIFICATE_DEFAULT_COLUMNS.forEach((column, index) => {
           if (column.dataType === 'radio') {
-            updatedSchema.unshift(column);
+            updatedSchema.insertAt(index, column);
           } else {
             const [item = {}] = columns.filter((col) => {
               return column.field === col.field;
             });
-            updatedSchema.unshift({ ...column, ...item });
+            updatedSchema.insertAt(index, { ...column, ...item });
           }
         });
         const visibleList = updatedSchema.filter((column) => column.visible);
