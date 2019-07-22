@@ -13,59 +13,59 @@ const defaultColumns = [
   },
   {
     field: 'processContext',
-    title: 'PROCESS CONTEXT',
+    title: 'investigateHosts.detailsColumns.processContext',
     width: '8vw'
   },
   {
     field: 'fileName',
-    title: 'FILENAME',
+    title: 'investigateHosts.detailsColumns.fileName',
     format: 'FILENAME'
   },
   {
     field: 'machineFileScore',
-    title: 'Local Risk Score',
+    title: 'investigateHosts.detailsColumns.machineFileScore',
     width: '8vw'
   },
   {
     field: 'fileProperties.score',
-    title: 'Global Risk Score',
+    title: 'investigateHosts.detailsColumns.globalScore',
     width: '8vw'
   },
   {
     field: 'machineCount',
-    title: 'Active On',
+    title: 'investigateHosts.detailsColumns.machineCount',
     width: '4vw',
     disableSort: true,
     visible: false
   },
   {
     field: 'fileProperties.reputationStatus',
-    title: 'Reputation'
+    title: 'investigateHosts.detailsColumns.reputationStatus'
   },
   {
     field: 'fileProperties.fileStatus',
-    title: 'File Status'
+    title: 'investigateHosts.detailsColumns.fileStatus'
   },
   {
     field: 'signature',
-    title: 'SIGNATURE',
+    title: 'investigateHosts.detailsColumns.signature',
     format: 'SIGNATURE'
   },
   {
     field: 'fileProperties.downloadInfo',
-    title: 'downloaded',
+    title: 'investigateHosts.detailsColumns.downloadInfo',
     label: 'investigateHosts.files.fields.downloaded',
     format: 'DOWNLOADSTATUS',
     width: 100
   },
   {
     field: 'path',
-    title: 'FILE PATH',
+    title: 'investigateHosts.detailsColumns.filePath',
     width: '19vw'
   },
   {
     field: 'checksumSha256',
-    title: 'HASH',
+    title: 'investigateHosts.detailsColumns.hash',
     width: 500
   }
 ];
@@ -73,7 +73,7 @@ let columnsConfig = {
   mac: [
     {
       field: 'timeCreated',
-      title: 'FILE CREATION TIME',
+      title: 'investigateHosts.detailsColumns.timeCreated',
       format: 'DATE',
       width: '12vw'
     }
@@ -81,7 +81,7 @@ let columnsConfig = {
   windows: [
     {
       field: 'timeCreated',
-      title: 'FILE CREATION TIME',
+      title: 'investigateHosts.detailsColumns.timeCreated',
       format: 'DATE',
       width: '12vw'
     }
@@ -89,7 +89,7 @@ let columnsConfig = {
   linux: [
     {
       field: 'timeModified',
-      title: 'LAST MODIFIED TIME',
+      title: 'investigateHosts.detailsColumns.timeModified',
       format: 'DATE',
       width: '12vw'
     }

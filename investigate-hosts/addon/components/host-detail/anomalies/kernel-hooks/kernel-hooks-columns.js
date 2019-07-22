@@ -13,56 +13,56 @@ export default {
   },
   {
     field: 'type',
-    title: 'type',
+    title: 'investigateHosts.detailsColumns.type',
     width: 200
   },
   {
     field: 'driverFileName',
-    title: 'driverFileName',
+    title: 'investigateHosts.detailsColumns.fileName',
     format: 'FILENAME',
     width: 300
   },
   {
     field: 'machineFileScore',
-    title: 'localRiskScore',
+    title: 'investigateHosts.detailsColumns.machineFileScore',
     width: '8vw'
   },
   {
     field: 'fileProperties.score',
-    title: 'globalRiskScore',
+    title: 'investigateHosts.detailsColumns.globalScore',
     width: '8vw'
   },
   {
     field: 'machineCount',
-    title: 'machineCount',
+    title: 'investigateHosts.detailsColumns.machineCount',
     width: '6vw',
     disableSort: true,
     visible: false
   },
   {
     field: 'fileProperties.reputationStatus',
-    title: 'reputationStatus'
+    title: 'investigateHosts.detailsColumns.reputationStatus'
   },
   {
     field: 'signature',
-    title: 'signature',
+    title: 'investigateHosts.detailsColumns.signature',
     format: 'SIGNATURE',
     width: '8vw'
   },
   {
     field: 'fileProperties.downloadInfo',
-    title: 'downloaded',
+    title: 'investigateHosts.detailsColumns.downloadInfo',
     format: 'DOWNLOADSTATUS',
     width: 100
   },
   {
     field: 'objectFunction',
-    title: 'objectFunction',
+    title: 'investigateHosts.detailsColumns.objectFunction',
     width: '25vw'
   },
   {
     field: 'hookedFileName',
-    title: 'hookedFileName',
+    title: 'investigateHosts.detailsColumns.hookedFileName',
     width: 300
   }]
 };

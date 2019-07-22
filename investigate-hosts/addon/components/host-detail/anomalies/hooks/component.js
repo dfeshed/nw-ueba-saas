@@ -22,19 +22,6 @@ const Hooks = Component.extend({
   @computed('machineOsType')
   propertyConfig(machineOsType) {
     return [...defaultPropertyConfig, ...hooksPropertyConfig[machineOsType]];
-  },
-
-  @computed('columnsConfig')
-  columnsConfigWithTitle(columnsConfig) {
-    const textTranslatePath = 'investigateHosts.anomalies.imageHooks.';
-
-    return columnsConfig.map((item) => {
-      const title = (this.get('i18n').t(`${textTranslatePath}${item.title}`)).string;
-      return {
-        ...item,
-        title
-      };
-    });
   }
 
 });

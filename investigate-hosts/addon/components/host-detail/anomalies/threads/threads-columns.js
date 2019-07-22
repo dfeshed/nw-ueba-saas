@@ -13,59 +13,59 @@ export default {
   },
   {
     field: 'startAddress',
-    title: 'startAddress',
+    title: 'investigateHosts.detailsColumns.startAddress',
     width: '10vw'
   },
   {
     field: 'fileName',
-    title: 'dllFileName',
+    title: 'investigateHosts.detailsColumns.fileName',
     format: 'FILENAME',
     width: 500
   },
   {
     field: 'machineFileScore',
-    title: 'localRiskScore',
+    title: 'investigateHosts.detailsColumns.machineFileScore',
     width: '8vw'
   },
   {
     field: 'fileProperties.score',
-    title: 'globalRiskScore',
+    title: 'investigateHosts.detailsColumns.globalScore',
     width: '8vw'
   },
   {
     field: 'machineCount',
-    title: 'machineCount',
+    title: 'investigateHosts.detailsColumns.machineCount',
     width: '6vw',
     disableSort: true,
     visible: false
   },
   {
     field: 'fileProperties.reputationStatus',
-    title: 'reputationStatus'
+    title: 'investigateHosts.detailsColumns.reputationStatus'
   },
   {
     field: 'process',
-    title: 'process',
+    title: 'investigateHosts.detailsColumns.process',
     width: '10vw'
   },
   {
     field: 'fileProperties.downloadInfo',
-    title: 'downloaded',
+    title: 'investigateHosts.detailsColumns.downloadInfo',
     format: 'DOWNLOADSTATUS',
     width: 100
   },
   {
     field: 'signature',
-    title: 'signature',
+    title: 'investigateHosts.detailsColumns.signature',
     format: 'SIGNATURE'
   },
   {
     field: 'tid',
-    title: 'tid'
+    title: 'investigateHosts.detailsColumns.tid'
   },
   {
     field: 'teb',
-    title: 'teb',
+    title: 'investigateHosts.detailsColumns.teb',
     width: '20vw'
   }]
 };

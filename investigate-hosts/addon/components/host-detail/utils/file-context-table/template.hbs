@@ -10,6 +10,7 @@
     onColumnConfigChange=(action 'onColumnConfigChange')
     onRowClick=(action 'onRowClick')}}
     {{#host-detail/utils/file-context-table/header
+      translateTitles=true
       enableColumnFilter=true
       onToggleColumn=(action 'onToggleColumn' 'display')
       enableColumnSelector=true as |column|}}
@@ -19,7 +20,7 @@
         </label>
       {{else}}
         <span class='js-move-handle'>
-          {{column.title}}
+          {{t column.title}}
         </span>
       {{/if}}
       {{#unless column.disableSort}}

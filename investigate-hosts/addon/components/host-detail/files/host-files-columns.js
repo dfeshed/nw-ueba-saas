@@ -4,13 +4,13 @@ let columnsConfig = {
   linux: [
     {
       field: 'derivedOwner.username',
-      title: 'User Name',
+      title: 'investigateHosts.files.fields.owner.userName',
       label: 'investigateHosts.files.fields.owner.userName',
       disableSort: true
     },
     {
       field: 'derivedOwner.groupname',
-      title: 'Group Name',
+      title: 'investigateHosts.files.fields.owner.groupName',
       label: 'investigateHosts.files.fields.owner.groupName',
       disableSort: true,
       width: '370px'
@@ -19,14 +19,14 @@ let columnsConfig = {
   windows: [
     {
       'field': 'fileProperties.signature.features',
-      'title': 'Signature',
+      'title': 'investigateHosts.files.fields.signature.features',
       'label': 'investigateHosts.files.fields.signature.features',
       'format': 'SIGNATURE',
       'disableSort': true
     },
     {
       'field': 'timeCreated',
-      'title': 'Created',
+      'title': 'investigateHosts.files.fields.timeCreated',
       'label': 'investigateHosts.files.fields.timeCreated',
       'format': 'DATE',
       width: '12vw'
@@ -35,14 +35,14 @@ let columnsConfig = {
   mac: [
     {
       'field': 'fileProperties.signature.features',
-      'title': 'Signature',
+      'title': 'investigateHosts.files.fields.signature.features',
       'label': 'investigateHosts.files.fields.signature.features',
       'format': 'SIGNATURE',
       'disableSort': true
     },
     {
       'field': 'timeCreated',
-      'title': 'Created',
+      'title': 'investigateHosts.files.fields.timeCreated',
       'label': 'investigateHosts.files.fields.timeCreated',
       'format': 'DATE',
       width: '12vw'
@@ -63,58 +63,58 @@ const defaultColumns = [
   {
     'field': 'fileName',
     'label': 'investigateHosts.files.fields.fileName',
-    'title': 'Filename',
+    'title': 'investigateHosts.files.fields.fileName',
     'format': 'FILENAME',
     'width': 150
   },
   {
     'field': 'machineFileScore',
-    'label': 'investigateHosts.files.fields.score',
-    'title': 'Local Risk Score',
+    'label': 'investigateHosts.detailsColumns.machineFileScore',
+    'title': 'investigateHosts.detailsColumns.machineFileScore',
     'width': '8vw'
   },
   {
     'field': 'fileProperties.score',
-    'title': 'Global Risk Score',
-    'label': 'investigateHosts.files.fields.score',
+    'title': 'investigateHosts.detailsColumns.globalScore',
+    'label': 'investigateHosts.detailsColumns.globalScore',
     'width': '8vw'
   },
   {
     'field': 'machineCount',
-    'title': 'Active On',
+    'title': 'investigateHosts.detailsColumns.machineCount',
     'width': '6vw',
     disableSort: true,
     visible: false
   },
   {
     'field': 'fileProperties.fileStatus',
-    'title': 'File Status',
-    'label': 'investigateHosts.files.fields.fileStatus',
+    'title': 'investigateHosts.detailsColumns.fileStatus',
+    'label': 'investigateHosts.detailsColumns.fileStatus',
     'disableSort': true,
     'width': 100
   },
   {
     'field': 'fileProperties.reputationStatus',
-    'title': 'Reputation',
-    'label': 'investigateHosts.files.fields.reputationStatus',
+    'title': 'investigateHosts.detailsColumns.reputationStatus',
+    'label': 'investigateHosts.detailsColumns.reputationStatus',
     'width': 100
   },
   {
     'field': 'fileProperties.downloadInfo',
-    'title': 'downloaded',
-    'label': 'investigateHosts.files.fields.downloaded',
+    'title': 'investigateHosts.detailsColumns.downloadInfo',
+    'label': 'investigateHosts.detailsColumns.downloadInfo',
     'format': 'DOWNLOADSTATUS',
     'width': 200
   },
   {
     'field': 'path',
-    'title': 'Path',
+    'title': 'investigateHosts.files.fields.path',
     'label': 'investigateHosts.files.fields.path',
     'width': '18vw'
   },
   {
     'field': 'fileProperties.size',
-    'title': 'Size',
+    'title': 'investigateHosts.files.fields.size',
     'label': 'investigateHosts.files.fields.size',
     'disableSort': false,
     'format': 'SIZE',
@@ -122,7 +122,7 @@ const defaultColumns = [
   },
   {
     'field': 'fileProperties.entropy',
-    'title': 'Entropy',
+    'title': 'investigateHosts.files.fields.entropy',
     'label': 'investigateHosts.files.fields.entropy',
     'disableSort': true,
     'format': 'DECIMAL',

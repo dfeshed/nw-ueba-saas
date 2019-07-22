@@ -11,26 +11,26 @@ const defaultColumns = [
   },
   {
     field: 'fileName',
-    title: 'NAME',
+    title: 'investigateHosts.detailsColumns.fileName',
     format: 'FILENAME',
     order: 1,
     width: '10vw'
   },
   {
     field: 'machineFileScore',
-    title: 'Local Risk Score',
+    title: 'investigateHosts.detailsColumns.machineFileScore',
     order: 4,
     width: '8vw'
   },
   {
     field: 'fileProperties.score',
-    title: 'Global Risk Score',
+    title: 'investigateHosts.detailsColumns.globalScore',
     order: 5,
     width: '8vw'
   },
   {
     field: 'machineCount',
-    title: 'Active On',
+    title: 'investigateHosts.detailsColumns.machineCount',
     width: '6vw',
     disableSort: true,
     order: 7,
@@ -38,32 +38,32 @@ const defaultColumns = [
   },
   {
     field: 'fileProperties.reputationStatus',
-    title: 'Reputation',
+    title: 'investigateHosts.detailsColumns.reputationStatus',
     order: 10
   },
   {
     field: 'fileProperties.fileStatus',
-    title: 'File Status',
+    title: 'investigateHosts.detailsColumns.fileStatus',
     width: '8vw',
     order: 11
   },
   {
     field: 'signature',
-    title: 'SIGNATURE',
+    title: 'investigateHosts.detailsColumns.signature',
     format: 'SIGNATURE',
     order: 3,
     width: '10vw'
   },
   {
     field: 'checksumSha256',
-    title: 'HASH',
+    title: 'investigateHosts.detailsColumns.hash',
     order: 12,
     width: '22vw'
   },
   {
     field: 'fileProperties.downloadInfo',
-    title: 'downloaded',
-    label: 'investigateHosts.files.fields.downloaded',
+    title: 'investigateHosts.detailsColumns.downloadInfo',
+    label: 'investigateHosts.detailsColumns.downloadInfo',
     format: 'DOWNLOADSTATUS',
     width: 100,
     order: 13
@@ -73,7 +73,7 @@ let columnsConfig = {
   mac: [
     {
       field: 'triggerString',
-      title: 'TRIGGER',
+      title: 'investigateHosts.detailsColumns.triggerString',
       order: 15,
       width: '18vw'
     }
@@ -81,36 +81,36 @@ let columnsConfig = {
   windows: [
     {
       field: 'triggerString',
-      title: 'TRIGGER',
+      title: 'investigateHosts.detailsColumns.triggerString',
       order: 15,
       width: '18vw'
     },
     {
       field: 'creatorUser',
-      title: 'CREATOR USER',
+      title: 'investigateHosts.detailsColumns.creatorUser',
       order: 8,
       width: '15vw'
     },
     {
       field: 'executeUser',
-      title: 'EXECUTE USER',
+      title: 'investigateHosts.detailsColumns.executeUser',
       order: 9
     },
     {
       field: 'name',
-      title: 'TASK NAME',
+      title: 'investigateHosts.detailsColumns.taskName',
       order: 2,
       width: '20vw'
     },
     {
       field: 'launchArguments',
-      title: 'LAUNCH ARGUMENTS',
+      title: 'investigateHosts.detailsColumns.launchArguments',
       order: 6,
       width: '18vw'
     },
     {
       field: 'status',
-      title: 'STATUS',
+      title: 'investigateHosts.detailsColumns.status',
       order: 14,
       width: '14vw'
     }
@@ -118,7 +118,7 @@ let columnsConfig = {
   linux: [
     {
       field: 'triggerString',
-      title: 'TRIGGER',
+      title: 'investigateHosts.detailsColumns.triggerString',
       order: 15,
       width: '18vw'
     }

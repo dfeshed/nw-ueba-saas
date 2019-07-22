@@ -13,61 +13,61 @@ export default {
   },
   {
     field: 'type',
-    title: 'type',
+    title: 'investigateHosts.detailsColumns.type',
     width: 100
   },
   {
     field: 'dllFileName',
-    title: 'dllFileName',
+    title: 'investigateHosts.detailsColumns.fileName',
     format: 'FILENAME'
   },
   {
     field: 'machineFileScore',
-    title: 'localRiskScore',
+    title: 'investigateHosts.detailsColumns.machineFileScore',
     width: '8vw'
   },
   {
     field: 'fileProperties.score',
-    title: 'globalRiskScore',
+    title: 'investigateHosts.detailsColumns.globalScore',
     width: '8vw'
   },
   {
     field: 'machineCount',
-    title: 'machineCount',
+    title: 'investigateHosts.detailsColumns.machineCount',
     width: '6vw',
     disableSort: true,
     visible: false
   },
   {
     field: 'fileProperties.reputationStatus',
-    title: 'reputationStatus',
+    title: 'investigateHosts.detailsColumns.reputationStatus',
     width: '15vw'
   },
   {
     field: 'signature',
-    title: 'signature',
+    title: 'investigateHosts.detailsColumns.signature',
     format: 'SIGNATURE',
     width: '8vw'
   },
   {
     field: 'fileProperties.downloadInfo',
-    title: 'downloaded',
+    title: 'investigateHosts.detailsColumns.downloadInfo',
     format: 'DOWNLOADSTATUS',
     width: 100
   },
   {
     field: 'hookedProcess',
-    title: 'hookedProcess',
+    title: 'investigateHosts.detailsColumns.hookedProcess',
     width: '15vw'
   },
   {
     field: 'hookedFileName',
-    title: 'hookFileName',
+    title: 'investigateHosts.detailsColumns.hookedFileName',
     width: '20vw'
   },
   {
     field: 'symbol',
-    title: 'hookedSymbol',
+    title: 'investigateHosts.detailsColumns.hookedSymbol',
     width: '15vw'
   }]
 };

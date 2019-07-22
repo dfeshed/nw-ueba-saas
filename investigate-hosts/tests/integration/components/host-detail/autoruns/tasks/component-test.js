@@ -43,6 +43,6 @@ module('Integration | Component | host-detail/autoruns/tasks', function(hooks) {
       </style>
     {{host-detail/autoruns/tasks}}`);
     assert.equal(findAll('.rsa-data-table-header-row .rsa-data-table-header-cell span')[1].textContent.trim(), 'Local Risk Score', 'Local Risk Score being, sorted at second place as it has order 2 in the config');
-    assert.equal(findAll('.rsa-data-table-header-row .rsa-data-table-header-cell span')[6].textContent.trim(), 'NAME', 'NAME being sorted based on order.');
+    assert.equal(findAll('.rsa-data-table-header-row .rsa-data-table-header-cell span')[6].textContent.trim(), 'Filename', 'Filename being sorted based on order.');
   });
 });

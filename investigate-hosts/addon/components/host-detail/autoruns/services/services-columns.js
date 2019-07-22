@@ -11,26 +11,26 @@ const defaultColumns = [
   },
   {
     field: 'fileName',
-    title: 'NAME',
+    title: 'investigateHosts.detailsColumns.fileName',
     format: 'FILENAME',
     order: 1,
     width: '12vw'
   },
   {
     field: 'machineFileScore',
-    title: 'Local Risk Score',
+    title: 'investigateHosts.detailsColumns.machineFileScore',
     order: 5,
     width: '8vw'
   },
   {
     field: 'fileProperties.score',
-    title: 'Global Risk Score',
+    title: 'investigateHosts.detailsColumns.globalScore',
     order: 6,
     width: '8vw'
   },
   {
     field: 'machineCount',
-    title: 'Active On',
+    title: 'investigateHosts.detailsColumns.machineCount',
     width: '6vw',
     disableSort: true,
     order: 7,
@@ -38,38 +38,38 @@ const defaultColumns = [
   },
   {
     field: 'fileProperties.reputationStatus',
-    title: 'Reputation',
+    title: 'investigateHosts.detailsColumns.reputationStatus',
     order: 8
   },
   {
     field: 'fileProperties.fileStatus',
-    title: 'File Status',
+    title: 'investigateHosts.detailsColumns.fileStatus',
     order: 9
   },
   {
     field: 'signature',
-    title: 'SIGNATURE',
+    title: 'investigateHosts.detailsColumns.signature',
     format: 'SIGNATURE',
     order: 4,
     width: '10vw'
   },
   {
     field: 'fileProperties.downloadInfo',
-    title: 'downloaded',
-    label: 'investigateHosts.files.fields.downloaded',
+    title: 'investigateHosts.detailsColumns.downloadInfo',
+    label: 'investigateHosts.detailsColumns.downloadInfo',
     format: 'DOWNLOADSTATUS',
     width: 100,
     order: 10
   },
   {
     field: 'path',
-    title: 'FILE PATH',
+    title: 'investigateHosts.detailsColumns.filePath',
     width: '20vw',
     order: 9
   },
   {
     field: 'displayName',
-    title: 'DISPLAY NAME',
+    title: 'investigateHosts.detailsColumns.displayName',
     width: '20vw',
     order: 2
   }
@@ -78,13 +78,13 @@ let columnsConfig = {
   mac: [
     {
       field: 'name',
-      title: 'SERVICE NAME',
+      title: 'investigateHosts.detailsColumns.serviceName',
       width: '10vw',
       order: 3
     },
     {
       field: 'timeCreated',
-      title: 'FILE CREATION TIME',
+      title: 'investigateHosts.detailsColumns.timeCreated',
       format: 'DATE',
       width: '10vw',
       order: 12
@@ -93,19 +93,19 @@ let columnsConfig = {
   windows: [
     {
       field: 'serviceName',
-      title: 'SERVICE NAME',
+      title: 'investigateHosts.detailsColumns.serviceName',
       width: '10vw',
       order: 3
     },
     {
       field: 'state',
-      title: 'RUNNING STATUS',
+      title: 'investigateHosts.detailsColumns.state',
       width: '15vw',
       order: 11
     },
     {
       field: 'timeCreated',
-      title: 'FILE CREATION TIME',
+      title: 'investigateHosts.detailsColumns.timeCreated',
       format: 'DATE',
       width: '10vw',
       order: 12
@@ -114,25 +114,25 @@ let columnsConfig = {
   linux: [
     {
       field: 'fileName',
-      title: 'SERVICE NAME',
+      title: 'investigateHosts.detailsColumns.serviceName',
       width: '10vw',
       order: 3
     },
     {
       field: 'status',
-      title: 'RUNNING STATUS',
+      title: 'investigateHosts.detailsColumns.state',
       width: '10vw',
       order: 11
     },
     {
       field: 'timeModified',
-      title: 'LAST MODIFIED TIME',
+      title: 'investigateHosts.detailsColumns.timeModified',
       width: '15vw',
       order: 12
     },
     {
       field: 'type',
-      title: 'Type',
+      title: 'investigateHosts.detailsColumns.type',
       width: '10vw',
       order: 13
     }
