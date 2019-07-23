@@ -76,6 +76,7 @@ pipeline {
     post {
         always {
             archiveArtifacts "**/target/**"
+            junit '**/ueba-automation-test/target/surefire-reports/junitreports/*.xml'
         }
     }
 }
