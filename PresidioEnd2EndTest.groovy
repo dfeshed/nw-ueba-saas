@@ -1,4 +1,9 @@
 pipeline {
+    parameters {
+        string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '', description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
+        string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: 'origin/master', description: '')
+        booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
+    }
     agent { label env.NODE }
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
@@ -52,7 +57,7 @@ pipeline {
  *   UEBA RPMs Installation   *
  ******************************/
 def setBaseUrl(
-        String rpmBuildPath = env.SPECIFIC_RPM_BUILD,
+        String rpmBuildPath = params.SPECIFIC_RPM_BUILD,
         String rpmVeriosn = env.VERSION,
         String stability = env.STABILITY
 ) {
@@ -61,6 +66,7 @@ def setBaseUrl(
     if (rpmBuildPath != '') {
         baseUrl = baseUrl + rpmBuildPath
         println(baseUrl)
+        VERSION = "0"
     } else {
         String[] versionArray = rpmVeriosn.split("\\.")
         FirstDir = versionArray[0] + "." + versionArray[1]
@@ -82,8 +88,8 @@ def setBaseUrl(
 }
 
 def uebaInstallRPMs() {
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION $OLD_UEBA_RPMS"
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION $OLD_UEBA_RPMS"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $VERSION $OLD_UEBA_RPMS"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $VERSION $OLD_UEBA_RPMS"
 
 }
 
@@ -91,9 +97,9 @@ def CleanEpHybridUebaDBs() {
     sh "cp ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/reset_ld_and_concentrator_hybrid_dbs.sh /home/presidio/"
     sh "sudo bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
     sh "rm -f /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh"
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION $OLD_UEBA_RPMS"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $VERSION $OLD_UEBA_RPMS"
     if (params.INSTALL_UEBA_RPMS == false) {
-        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION $OLD_UEBA_RPMS"
+        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $VERSION $OLD_UEBA_RPMS"
     }
 }
 
@@ -104,7 +110,7 @@ def buildIntegrationTestProject(
         String repositoryName = "presidio-integration-test",
         String userName = env.RSA_BUILD_CREDENTIALS_USR,
         String userPassword = env.RSA_BUILD_CREDENTIALS_PSW,
-        String branchName = env.INTEGRATION_TEST_BRANCH_NAME) {
+        String branchName = params.INTEGRATION_TEST_BRANCH_NAME) {
     sh "git config --global user.name \"${userName}\""
     sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/presidio-integration-test.git"
     dir(env.REPOSITORY_NAME) {
