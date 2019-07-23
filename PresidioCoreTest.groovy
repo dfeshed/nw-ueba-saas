@@ -87,15 +87,15 @@ def setBaseUrl(
 }
 
 def cleanUebaDBs() {
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION $env.OLD_UEBA_RPMS"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $VERSION $env.OLD_UEBA_RPMS"
     if (params.INSTALL_UEBA_RPMS == false) {
-        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION $env.OLD_UEBA_RPMS"
+        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $VERSION $env.OLD_UEBA_RPMS"
     }
 }
 
 def uebaInstallRPMs() {
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION $env.OLD_UEBA_RPMS"
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION $env.OLD_UEBA_RPMS"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $VERSION $env.OLD_UEBA_RPMS"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $VERSION $env.OLD_UEBA_RPMS"
 }
 
 /**************************
