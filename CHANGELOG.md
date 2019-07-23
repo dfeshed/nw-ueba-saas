@@ -1,3 +1,23 @@
+# [13.3.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v13.3.0)
+## Features
+* [ASOC-73390](https://bedfordjira.na.rsa.net/browse/ASOC-73390):&emsp;Add Counts to Pill Creation Tabs
+* [ASOC-73391](https://bedfordjira.na.rsa.net/browse/ASOC-73391):&emsp;Create/Edit Pill Using Recent Query
+* [ASOC-73650](https://bedfordjira.na.rsa.net/browse/ASOC-73650):&emsp;Serve email attachment content for SMTP and POP3 email messages
+* [ASOC-73882](https://bedfordjira.na.rsa.net/browse/ASOC-73882):&emsp;See effective file policy on conflict resolution - all settings
+* [ASOC-74092](https://bedfordjira.na.rsa.net/browse/ASOC-74092):&emsp;Show details in right side of panel after clicking on left side of panel folder in MFT viewer
+* [ASOC-74093](https://bedfordjira.na.rsa.net/browse/ASOC-74093):&emsp;Show deleted files and all files in mft viewer
+* [ASOC-74606](https://bedfordjira.na.rsa.net/browse/ASOC-74606):&emsp;Sort in client on header click when results less than threshold
+* [ASOC-74986](https://bedfordjira.na.rsa.net/browse/ASOC-74986):&emsp;Add columns to the alert rule list
+* [ASOC-76607](https://bedfordjira.na.rsa.net/browse/ASOC-76607):&emsp;Add indexNone Meta to Meta Dropdown
+* [ASOC-77205](https://bedfordjira.na.rsa.net/browse/ASOC-77205):&emsp;View and set source related file policy settings: directory path
+* [ASOC-78131](https://bedfordjira.na.rsa.net/browse/ASOC-78131):&emsp;Filename inside downloads tab should show filename insteaad of checksum
+* [ASOC-78700](https://bedfordjira.na.rsa.net/browse/ASOC-78700):&emsp;Expand Column Group UX
+* [ASOC-79375](https://bedfordjira.na.rsa.net/browse/ASOC-79375):&emsp;Validation - Remove deprecated code in context addon (hover)
+* [ASOC-79549](https://bedfordjira.na.rsa.net/browse/ASOC-79549):&emsp;Add dynamic stats to dashboard card for Log Collector
+* [ASOC-80406](https://bedfordjira.na.rsa.net/browse/ASOC-80406):&emsp;Validate source name
+* [ASOC-80589](https://bedfordjira.na.rsa.net/browse/ASOC-80589):&emsp;Make the Incident Rules header sticky and also make the rows selected on dragging
+
+
 # [13.2.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v13.2.0)
 ## Features
 * [ASOC-66202](https://bedfordjira.na.rsa.net/browse/ASOC-66202):&emsp;Paste Entire Event Analysis Query - Parsing Rules
@@ -8,7 +28,7 @@
 * [ASOC-75047](https://bedfordjira.na.rsa.net/browse/ASOC-75047):&emsp;Update the default tab of the storyline
 * [ASOC-78195](https://bedfordjira.na.rsa.net/browse/ASOC-000):&emsp;Option Highlighting issues related to Recent Queries
 * [ASOC-78567](https://bedfordjira.na.rsa.net/browse/ASOC-78567):&emsp;Clean up summary column for log events
-* [ASOC-78578](https://bedfordjira.na.rsa.net/browse/ASOC-000):&emsp;Upgrading t0 Ember 3.11.1
+* [ASOC-78578](https://bedfordjira.na.rsa.net/browse/ASOC-000):&emsp;Upgraded to Ember 3.11.1
 
 
 # [13.1.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v13.1.0)
