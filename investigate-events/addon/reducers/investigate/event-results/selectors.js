@@ -16,6 +16,7 @@ const _languages = (state) => state.investigate.dictionaries.language;
 const _columnGroups = (state) => state.investigate.data.columnGroups;
 const _columnGroup = (state) => state.investigate.data.columnGroup;
 const _resultsData = (state) => state.investigate.eventResults.data;
+const _resultsDataCount = (state) => state.investigate.eventResults.data && state.investigate.eventResults.data.length;
 const _eventResultCount = (state) => state.investigate.eventCount.data;
 const _status = (state) => state.investigate.eventResults.status;
 const _visibleColumns = (state) => state.investigate.eventResults.visibleColumns;
@@ -462,7 +463,8 @@ export const clientSortedData = createSelector(
     _sortDirection,
     _languages,
     eventTableFormattingOpts,
-    requireServiceSorting
+    requireServiceSorting,
+    _resultsDataCount
   ],
   (
     data,
@@ -508,32 +510,27 @@ export const clientSortedData = createSelector(
         } else {
           // look up translated aliases
           let toSort = formatUtil.text(sortField, event[sortField], opts);
-          toSort = toSort.string || toSort;
 
-          const parsedNumber = parseFloat(toSort, 10);
-          eventCopy.toSort = (parsedNumber - parsedNumber === 0) ? parsedNumber : toSort.toLowerCase();
+          // fast sort puts empty values at the bottom in both directions
+          // this does not match the way core sorts
+          // override toSort with static value to be sorted
+          if (event[sortField] === null || event[sortField] === undefined || event[sortField] === '') {
+            if (metaObj && metaObj.format === 'Text') {
+              eventCopy.toSort = 'a';
+            } else {
+              eventCopy.toSort = Number.MIN_SAFE_INTEGER;
+            }
+          } else {
+            toSort = toSort.string || toSort;
+            const parsedNumber = parseFloat(toSort, 10);
+            eventCopy.toSort = (parsedNumber - parsedNumber === 0) ? parsedNumber : toSort.toLowerCase();
+          }
         }
-
         return eventCopy;
       });
 
       cachedData = Immutable.asMutable(cachedData);
-      // fast sort puts empty values at the bottom in both directions
-      // this does not match the way core sorts
-      // override with sort to properly order empty values
-      const sortAdjustedForNull = (e, val) => {
-        if (!e.toSort) {
-          return val;
-        } else {
-          return e.toSort;
-        }
-      };
-
-      if (sortDirection === 'Ascending') {
-        return sort(cachedData).asc((e) => sortAdjustedForNull(e, -1));
-      } else {
-        return sort(cachedData).desc((e) => sortAdjustedForNull(e, 1));
-      }
+      return sort(cachedData)[(sortDirection === 'Ascending' ? 'asc' : 'desc')]((e) => e.toSort);
     }
   }
 );

@@ -135,42 +135,6 @@ test('validEventSortColumns returns as expected when sortable', function(assert)
   assert.equal(notValid.length, 0);
 });
 
-test('validEventSortColumns returns as expected when notSingleton', function(assert) {
-  const state = {
-    investigate: {
-      services: {
-        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator', version: 11.4 }]
-      },
-      queryStats: {
-        devices: [{
-          serviceId: 'concentrator',
-          on: true,
-          elapsedTime: 2
-        }]
-      },
-      dictionaries: {
-        language: [{ format: 'Text', metaName: 'foo', flags: -2147482621 }]
-      },
-      eventCount: {
-        data: 5,
-        threshold: 5
-      }
-    }
-  };
-  const {
-    columns,
-    notIndexedAtValue,
-    notSingleton,
-    notValid
-  } = validEventSortColumns(state);
-
-  assert.equal(columns.length, 0);
-  assert.equal(notIndexedAtValue.length, 0);
-  assert.equal(notSingleton.length, 1);
-  assert.equal(notSingleton[0], 'foo');
-  assert.equal(notValid.length, 0);
-});
-
 test('validEventSortColumns returns as expected when notIndexedAtValue', function(assert) {
   const state = {
     investigate: {
@@ -314,7 +278,7 @@ test('validEventSortColumns returns as expected when missing languages', functio
   assert.equal(notValid.length, 0);
 });
 
-test('validEventSortColumns returns as expected when not requireServiceSorting for not meeting threshold', function(assert) {
+test('validEventSortColumns returns as expected when the column is multivalued', function(assert) {
   const state = {
     investigate: {
       services: {
@@ -328,7 +292,7 @@ test('validEventSortColumns returns as expected when not requireServiceSorting f
         }]
       },
       dictionaries: {
-        language: [{ format: 'Time', metaName: 'time', flags: -2147482605 }]
+        language: [{ format: 'TextT', metaName: 'foo', flags: -2147482621 }]
       },
       eventCount: {
         data: 4,
@@ -343,44 +307,9 @@ test('validEventSortColumns returns as expected when not requireServiceSorting f
     notValid
   } = validEventSortColumns(state);
 
-  assert.equal(columns.length, 1);
+  assert.equal(columns.length, 0);
   assert.equal(notIndexedAtValue.length, 0);
-  assert.equal(notSingleton.length, 0);
-  assert.equal(notValid.length, 0);
-});
-
-test('validEventSortColumns returns as expected when not requireServiceSorting for not meeting version', function(assert) {
-  const state = {
-    investigate: {
-      services: {
-        serviceData: [{ id: 'concentrator', displayName: 'concentrator', serviceName: 'concentrator', version: 11.3 }]
-      },
-      queryStats: {
-        devices: [{
-          serviceId: 'doesNotExist',
-          on: true,
-          elapsedTime: 2
-        }]
-      },
-      dictionaries: {
-        language: [{ format: 'Time', metaName: 'time', flags: -2147482605 }]
-      },
-      eventCount: {
-        data: 5,
-        threshold: 5
-      }
-    }
-  };
-  const {
-    columns,
-    notIndexedAtValue,
-    notSingleton,
-    notValid
-  } = validEventSortColumns(state);
-
-  assert.equal(columns.length, 1);
-  assert.equal(notIndexedAtValue.length, 0);
-  assert.equal(notSingleton.length, 0);
+  assert.equal(notSingleton.length, 1);
   assert.equal(notValid.length, 0);
 });
 

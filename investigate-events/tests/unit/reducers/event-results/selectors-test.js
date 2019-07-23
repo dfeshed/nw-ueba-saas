@@ -1335,7 +1335,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].size, state.investigate.eventResults.data[0].size);
   });
 
-  test('clientSortedData when nulls are mixed in', async function(assert) {
+  test('clientSortedData when nulls are mixed in with Ints', async function(assert) {
     const state = {
       investigate: {
         eventResults: {
@@ -1379,7 +1379,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].size, state.investigate.eventResults.data[1].size);
   });
 
-  test('clientSortedData when nulls are mixed in', async function(assert) {
+  test('clientSortedData when nulls are mixed in with Ints', async function(assert) {
     const state = {
       investigate: {
         eventResults: {
@@ -1423,4 +1423,91 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].size, state.investigate.eventResults.data[2].size);
   });
 
+  test('clientSortedData when nulls are mixed in with Text sorted Ascending', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            { foo: 'b' },
+            { foo: null },
+            { foo: 'c' }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Ascending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [{
+            metaName: 'foo',
+            format: 'Text'
+          }]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.equal(result[0].foo, state.investigate.eventResults.data[1].foo);
+    assert.equal(result[1].foo, state.investigate.eventResults.data[0].foo);
+    assert.equal(result[2].foo, state.investigate.eventResults.data[2].foo);
+  });
+
+  test('clientSortedData when nulls are mixed in with Text sorted Descending', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            { foo: 'b' },
+            { foo: null },
+            { foo: 'c' }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [{
+            metaName: 'foo',
+            format: 'Text'
+          }]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.equal(result[0].foo, state.investigate.eventResults.data[2].foo);
+    assert.equal(result[1].foo, state.investigate.eventResults.data[0].foo);
+    assert.equal(result[2].foo, state.investigate.eventResults.data[1].foo);
+  });
 });

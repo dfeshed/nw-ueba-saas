@@ -2,7 +2,6 @@ import reselect from 'reselect';
 import { lookup } from 'ember-dependency-lookup';
 import { isEmpty } from '@ember/utils';
 import { isEmptyObject } from 'component-lib/utils/jquery-replacement';
-import { requireServiceSorting } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import {
   LANGUAGE_KEY_INDEX_MASK,
@@ -83,18 +82,11 @@ export const isSummaryColumnVisible = createSelector(
 );
 
 export const validEventSortColumns = createSelector(
-  [_languages, requireServiceSorting],
-  (languages, requireServiceSorting) => {
+  [_languages],
+  (languages) => {
     if (!languages) {
       return {
         columns: [],
-        notIndexedAtValue: [],
-        notSingleton: [],
-        notValid: []
-      };
-    } else if (!requireServiceSorting) {
-      return {
-        columns: languages.map((col) => col.metaName),
         notIndexedAtValue: [],
         notSingleton: [],
         notValid: []
