@@ -132,7 +132,7 @@ export const getSelectedAnomalyTypes = createSelector(
 export const getUsersSeverity = createSelector(
   [_usersSeverity],
   ([usersSeverity]) => {
-    if (usersSeverity) {
+    if (usersSeverity && usersSeverity.Critical) {
       return {
         critical: usersSeverity.Critical.userCount,
         high: usersSeverity.High.userCount,
@@ -140,4 +140,10 @@ export const getUsersSeverity = createSelector(
         low: usersSeverity.Low.userCount
       };
     }
+    return {
+      critical: 0,
+      high: 0,
+      medium: 0,
+      low: 0
+    };
   });

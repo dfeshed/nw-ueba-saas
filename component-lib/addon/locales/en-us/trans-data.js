@@ -5814,6 +5814,16 @@ effects the previewed source.',
             desc: 'High Number of Bytes Sent to Domain {{entityName}} Outbound',
             timeline: ''
           },
+          high_number_of_bytes_sent_by_src_ip_to_domain_ssl_subject_outbound: {
+            name: 'High Number of Bytes Sent by Src Ip to Domain Ssl Subject Outbound',
+            desc: 'High Number of Bytes Sent by Src Ip to Domain {{entityName}} Outbound',
+            timeline: ''
+          },
+          high_number_of_bytes_sent_by_src_ip_to_dst_org_ssl_subject_outbound: {
+            name: 'High Number Of Bytes Sent By Src Ip to Dst Org Ssl Subject Outbound',
+            desc: 'High Number Of Bytes Sent By Src Ip to Dst Org {{entityName}} Outbound',
+            timeline: ''
+          },
           high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound: {
             name: 'High Number of Bytes Sent to Dst Port Ssl Subject Outbound',
             desc: 'High Number of Bytes Sent to Dst Port {{entityName}} Outbound',

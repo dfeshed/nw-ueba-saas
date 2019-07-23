@@ -171,7 +171,20 @@ module('Unit | Selectors | Users Selectors', (hooks) => {
       medium: 0
     });
 
-    const newState = { users: { usersSeverity: [] } };
-    assert.equal(Users.getUsersSeverity(newState), null);
+    let newState = { users: { usersSeverity: [] } };
+    assert.deepEqual(Users.getUsersSeverity(newState), {
+      critical: 0,
+      high: 0,
+      low: 0,
+      medium: 0
+    });
+
+    newState = { users: { usersSeverity: [{ Critical: null }] } };
+    assert.deepEqual(Users.getUsersSeverity(newState), {
+      critical: 0,
+      high: 0,
+      low: 0,
+      medium: 0
+    });
   });
 });
