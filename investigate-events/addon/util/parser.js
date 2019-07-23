@@ -193,6 +193,9 @@ class Parser {
       });
       if (!metaConfig) {
         throw new Error(`Meta "${Parser.transformToString(meta)}" not recognized`);
+      } else if (metaConfig.isIndexedByNone && metaConfig.metaName !== 'sessionid') {
+        // sessionid is a special meta key that should be used even though it is indexed by none
+        throw new Error(`Meta "${Parser.transformToString(meta)}" not indexed`);
       } else {
         // Check that the operator applies to the meta
         const possibleOperators = relevantOperators(metaConfig);

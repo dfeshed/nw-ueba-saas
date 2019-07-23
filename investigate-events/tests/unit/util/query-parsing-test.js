@@ -232,6 +232,14 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[1].complexFilterText, '(b exists || (medium = 1))', 'complexFilterText should match');
   });
 
+  test('transformTextToPillData returns complex pill for non-indexed meta key', function(assert) {
+    const text = 'ip.addr exists';
+    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result[0].complexFilterText, 'ip.addr exists', 'complexFilterText should match');
+  });
+
   test('parsePillDataFromUri correctly parses forward slashes and operators into pills', function(assert) {
     const result = parsePillDataFromUri(params.mf, DEFAULT_LANGUAGES);
     assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');
