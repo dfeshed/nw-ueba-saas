@@ -247,9 +247,14 @@ class Scanner {
       return;
     }
 
-    const isNumber = !isNaN(parseFloat(alphaString, 10));
+    const num = parseFloat(alphaString, 10);
+    const isNumber = !isNaN(num);
     if (isNumber) {
-      this._addToken(LEXEMES.NUMBER);
+      if (num % 1 === 0) {
+        this._addToken(LEXEMES.INTEGER);
+      } else {
+        this._addToken(LEXEMES.FLOAT);
+      }
       return;
     }
 

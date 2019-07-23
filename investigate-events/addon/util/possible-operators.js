@@ -2,6 +2,10 @@ import { isEmpty } from '@ember/utils';
 
 const eq = { displayName: '=', description: 'Equals', isExpensive: false, hasValue: true };
 const notEq = { displayName: '!=', description: 'Does Not Equal', isExpensive: false, hasValue: true };
+const lt = { displayName: '<', description: 'Less Than', isExpensive: false, hasValue: true };
+const lte = { displayName: '<=', description: 'Less Than or Equal To', isExpensive: false, hasValue: true };
+const gt = { displayName: '>', description: 'Greater Than', isExpensive: false, hasValue: true };
+const gte = { displayName: '>=', description: 'Greater Than or Equal To', isExpensive: false, hasValue: true };
 const exists = { displayName: 'exists', description: 'Exists', isExpensive: false, hasValue: false };
 const notExists = { displayName: '!exists', description: 'Does Not Exist', isExpensive: false, hasValue: false };
 const begins = { displayName: 'begins', description: 'Begins', isExpensive: false, hasValue: true };
@@ -10,12 +14,24 @@ const ends = { displayName: 'ends', description: 'Ends', isExpensive: true, hasV
 
 const makeOperatorExpensive = (obj) => ({ ...obj, isExpensive: true });
 
+const comparators = [eq, notEq, lt, lte, gt, gte];
+const expensiveComparators = [
+  makeOperatorExpensive(eq),
+  makeOperatorExpensive(notEq),
+  makeOperatorExpensive(lt),
+  makeOperatorExpensive(lte),
+  makeOperatorExpensive(gt),
+  makeOperatorExpensive(gte)
+];
+
 const operatorsForMetaIndexedByKey = [exists, notExists, makeOperatorExpensive(eq), makeOperatorExpensive(notEq)];
-const operatorsForMetaIndexedByKeyWithTextFormat = [exists, notExists, makeOperatorExpensive(eq), makeOperatorExpensive(notEq), makeOperatorExpensive(begins), ends, contains];
+const operatorsForMetaIndexedByKeyWithTextFormat = [exists, notExists, ...expensiveComparators, makeOperatorExpensive(begins), ends, contains];
+const operatorsForMetaIndexedByKeyWithNumberFormat = [exists, notExists, ...expensiveComparators];
 const operatorsForMetaIndexedByValue = [exists, notExists, eq, notEq ];
-const operatorsForMetaIndexedByValueWithTextFormat = [exists, notExists, eq, notEq, begins, ends, contains];
+const operatorsForMetaIndexedByValueWithTextFormat = [exists, notExists, ...comparators, begins, ends, contains];
+const operatorsForMetaIndexedByValueWithNumberFormat = [exists, notExists, ...comparators];
 const operatorsForSessionId = [exists, notExists, eq, notEq];
-const defaultOperators = [eq, notEq, exists, notExists, contains, begins, ends];
+const defaultOperators = [...comparators, exists, notExists, contains, begins, ends];
 
 const NONE = 'none';
 const KEY = 'key';
@@ -29,13 +45,47 @@ const relevantOperators = (meta) => {
     const index = (flags & '0xF') - 1;
     const indexedBy = indices[index];
     if (indexedBy === KEY) {
-      options = (format === 'Text') ?
-        operatorsForMetaIndexedByKeyWithTextFormat :
-        operatorsForMetaIndexedByKey;
+      switch (format) {
+        case 'Text':
+          options = operatorsForMetaIndexedByKeyWithTextFormat;
+          break;
+        case 'UInt8':
+        case 'UInt16':
+        case 'UInt32':
+        case 'UInt64':
+        case 'UInt128':
+        case 'Int8':
+        case 'Int16':
+        case 'Int32':
+        case 'Int64':
+        case 'Float32':
+        case 'Float64':
+          options = operatorsForMetaIndexedByKeyWithNumberFormat;
+          break;
+        default:
+          options = operatorsForMetaIndexedByKey;
+      }
     } else if (indexedBy === VALUE) {
-      options = (format === 'Text') ?
-        operatorsForMetaIndexedByValueWithTextFormat :
-        operatorsForMetaIndexedByValue;
+      switch (format) {
+        case 'Text':
+          options = operatorsForMetaIndexedByValueWithTextFormat;
+          break;
+        case 'UInt8':
+        case 'UInt16':
+        case 'UInt32':
+        case 'UInt64':
+        case 'UInt128':
+        case 'Int8':
+        case 'Int16':
+        case 'Int32':
+        case 'Int64':
+        case 'Float32':
+        case 'Float64':
+          options = operatorsForMetaIndexedByValueWithNumberFormat;
+          break;
+        default:
+          options = operatorsForMetaIndexedByValue;
+      }
     } else if (metaName === 'sessionid') {
       // sessionid is a special case in the sense that it is the only
       // non-indexed key that has these 4 options because it's a primary key.

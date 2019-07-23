@@ -13,7 +13,7 @@ module('Unit | Util | Parser', function(hooks) {
     const tokens = [
       { type: LEXEMES.META, text: 'medium' },
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
-      { type: LEXEMES.NUMBER, text: '3' }
+      { type: LEXEMES.INTEGER, text: '3' }
     ];
     const p = new Parser(tokens, DEFAULT_LANGUAGES);
     const result = p.parse();
@@ -26,7 +26,7 @@ module('Unit | Util | Parser', function(hooks) {
         valueRanges: [
           {
             type: GRAMMAR.META_VALUE,
-            value: { type: LEXEMES.NUMBER, text: '3' }
+            value: { type: LEXEMES.INTEGER, text: '3' }
           }
         ]
       }
@@ -37,7 +37,7 @@ module('Unit | Util | Parser', function(hooks) {
     const tokens = [
       { type: LEXEMES.META, text: 'medium' },
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
-      { type: LEXEMES.NUMBER, text: '3' },
+      { type: LEXEMES.INTEGER, text: '3' },
       { type: LEXEMES.AND, text: '&&' },
       { type: LEXEMES.META, text: 'filename' },
       { type: LEXEMES.OPERATOR_NOT_EQ, text: '!=' },
@@ -54,7 +54,7 @@ module('Unit | Util | Parser', function(hooks) {
         valueRanges: [
           {
             type: GRAMMAR.META_VALUE,
-            value: { type: LEXEMES.NUMBER, text: '3' }
+            value: { type: LEXEMES.INTEGER, text: '3' }
           }
         ]
       },
@@ -80,13 +80,13 @@ module('Unit | Util | Parser', function(hooks) {
     const tokens = [
       { type: LEXEMES.META, text: 'medium' },
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
-      { type: LEXEMES.NUMBER, text: '3' },
+      { type: LEXEMES.INTEGER, text: '3' },
       { type: LEXEMES.VALUE_SEPARATOR, text: ',' },
-      { type: LEXEMES.NUMBER, text: '5' },
+      { type: LEXEMES.INTEGER, text: '5' },
       { type: LEXEMES.RANGE, text: '-' },
-      { type: LEXEMES.NUMBER, text: '7' },
+      { type: LEXEMES.INTEGER, text: '7' },
       { type: LEXEMES.VALUE_SEPARATOR, text: ',' },
-      { type: LEXEMES.NUMBER, text: '9' }
+      { type: LEXEMES.INTEGER, text: '9' }
     ];
     const p = new Parser(tokens, DEFAULT_LANGUAGES);
     const result = p.parse();
@@ -99,16 +99,16 @@ module('Unit | Util | Parser', function(hooks) {
         valueRanges: [
           {
             type: GRAMMAR.META_VALUE,
-            value: { type: LEXEMES.NUMBER, text: '3' }
+            value: { type: LEXEMES.INTEGER, text: '3' }
           },
           {
             type: GRAMMAR.META_VALUE_RANGE,
-            from: { type: LEXEMES.NUMBER, text: '5' },
-            to: { type: LEXEMES.NUMBER, text: '7' }
+            from: { type: LEXEMES.INTEGER, text: '5' },
+            to: { type: LEXEMES.INTEGER, text: '7' }
           },
           {
             type: GRAMMAR.META_VALUE,
-            value: { type: LEXEMES.NUMBER, text: '9' }
+            value: { type: LEXEMES.INTEGER, text: '9' }
           }
         ]
       }
@@ -154,7 +154,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.META, text: 'medium' },
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
-      { type: LEXEMES.NUMBER, text: '3' },
+      { type: LEXEMES.INTEGER, text: '3' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' }
     ];
@@ -224,7 +224,7 @@ module('Unit | Util | Parser', function(hooks) {
     const tokens = [
       { type: LEXEMES.META, text: 'medium' },
       { type: LEXEMES.OPERATOR_EXISTS, text: 'exists' },
-      { type: LEXEMES.NUMBER, text: '7' }
+      { type: LEXEMES.INTEGER, text: '7' }
     ];
     const p = new Parser(tokens, DEFAULT_LANGUAGES);
     assert.throws(() => {
@@ -253,7 +253,7 @@ module('Unit | Util | Parser', function(hooks) {
     const tokens = [
       { type: LEXEMES.META, text: 'lakjsdlakjsd' },
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
-      { type: LEXEMES.NUMBER, text: '7' }
+      { type: LEXEMES.INTEGER, text: '7' }
     ];
     const p = new Parser(tokens, DEFAULT_LANGUAGES);
     assert.throws(() => {
@@ -265,7 +265,7 @@ module('Unit | Util | Parser', function(hooks) {
     const tokens = [
       { type: LEXEMES.META, text: 'sessionid' },
       { type: LEXEMES.OPERATOR_EQ, text: 'contains' },
-      { type: LEXEMES.NUMBER, text: '7' }
+      { type: LEXEMES.INTEGER, text: '7' }
     ];
     const p = new Parser(tokens, DEFAULT_LANGUAGES);
     assert.throws(() => {
@@ -286,14 +286,14 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.META, text: 'medium' },
       { type: LEXEMES.OPERATOR_NOT_EQ, text: '!=' },
-      { type: LEXEMES.NUMBER, text: '44' },
+      { type: LEXEMES.INTEGER, text: '44' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' },
       { type: LEXEMES.AND, text: '&&' },
       { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.META, text: 'bytes.src' },
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
-      { type: LEXEMES.NUMBER, text: '1' },
+      { type: LEXEMES.INTEGER, text: '1' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' }
     ];
     const p = new Parser(tokens, DEFAULT_LANGUAGES);
@@ -337,7 +337,7 @@ module('Unit | Util | Parser', function(hooks) {
                     valueRanges: [
                       {
                         type: GRAMMAR.META_VALUE,
-                        value: { type: LEXEMES.NUMBER, text: '44' }
+                        value: { type: LEXEMES.INTEGER, text: '44' }
                       }
                     ]
                   }
@@ -360,7 +360,7 @@ module('Unit | Util | Parser', function(hooks) {
               valueRanges: [
                 {
                   type: GRAMMAR.META_VALUE,
-                  value: { type: LEXEMES.NUMBER, text: '1' }
+                  value: { type: LEXEMES.INTEGER, text: '1' }
                 }
               ]
             }

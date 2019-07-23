@@ -14,7 +14,16 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.strictEqual(result.length, 3, 'should produce 3 tokens');
     assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' }, '1. META "medium"');
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '2. OPERATOR_EQ "="');
-    assert.deepEqual(result[2], { type: LEXEMES.NUMBER, text: '1' }, '3. NUMBER "1"');
+    assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '1' }, '3. INTEGER "1"');
+  });
+  test('returns correct tokens for a float', function(assert) {
+    const source = 'file.entropy = 55.75';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 3, 'should produce 3 tokens');
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'file.entropy' }, '1. META "file.entropy"');
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '2. OPERATOR_EQ "="');
+    assert.deepEqual(result[2], { type: LEXEMES.FLOAT, text: '55.75' }, '3. FLOAT "55.75"');
   });
 
   test('returns correct tokens for basic meta inside parens', function(assert) {
@@ -25,7 +34,7 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.deepEqual(result[0], { type: LEXEMES.LEFT_PAREN, text: '(' }, '1. LEFT_PAREN "("');
     assert.deepEqual(result[1], { type: LEXEMES.META, text: 'medium' }, '2. META "medium"');
     assert.deepEqual(result[2], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '3. OPERATOR_EQ "="');
-    assert.deepEqual(result[3], { type: LEXEMES.NUMBER, text: '1' }, '4. NUMBER "1"');
+    assert.deepEqual(result[3], { type: LEXEMES.INTEGER, text: '1' }, '4. INTEGER "1"');
     assert.deepEqual(result[4], { type: LEXEMES.RIGHT_PAREN, text: ')' }, '5. RIGHT_PAREN ")"');
   });
 
@@ -48,7 +57,7 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.deepEqual(result[2], { type: LEXEMES.AND, text: '&&' }, '3. AND "&&"');
     assert.deepEqual(result[3], { type: LEXEMES.META, text: 'medium' }, '4. META "medium"');
     assert.deepEqual(result[4], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '5. OPERATOR_EQ "="');
-    assert.deepEqual(result[5], { type: LEXEMES.NUMBER, text: '1' }, '6. NUMBER "1"');
+    assert.deepEqual(result[5], { type: LEXEMES.INTEGER, text: '1' }, '6. INTEGER "1"');
   });
 
   test('handles operators inside strings', function(assert) {
@@ -212,7 +221,7 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.strictEqual(result.length, 5);
     assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' });
-    assert.deepEqual(result[2], { type: LEXEMES.NUMBER, text: '3' });
+    assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '3' });
     assert.deepEqual(result[3], { type: LEXEMES.AND, text: '&&' });
     assert.deepEqual(result[4], { type: LEXEMES.TEXT_FILTER, text: 'this is a text filter' });
   });
@@ -226,7 +235,7 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.deepEqual(result[1], { type: LEXEMES.AND, text: '&&' });
     assert.deepEqual(result[2], { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result[3], { type: LEXEMES.OPERATOR_EQ, text: '=' });
-    assert.deepEqual(result[4], { type: LEXEMES.NUMBER, text: '3' });
+    assert.deepEqual(result[4], { type: LEXEMES.INTEGER, text: '3' });
   });
 
   test('does not confuse operators and values with the same name', function(assert) {
@@ -246,7 +255,7 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.strictEqual(result.length, 3);
     assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' }, '1. META "medium"');
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '2. OPERATOR_EQ "="');
-    assert.deepEqual(result[2], { type: LEXEMES.NUMBER, text: '3' }, '3. NUMBER "3"');
+    assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '3' }, '3. INTEGER "3"');
   });
 
   test('handles extra spaces between meta, operator, and value', function(assert) {
@@ -308,22 +317,22 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.strictEqual(result1.length, 3);
     assert.deepEqual(result1[0], { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result1[1], { type: LEXEMES.OPERATOR_LT, text: '<' });
-    assert.deepEqual(result1[2], { type: LEXEMES.NUMBER, text: '5' });
+    assert.deepEqual(result1[2], { type: LEXEMES.INTEGER, text: '5' });
 
     assert.strictEqual(result2.length, 3);
     assert.deepEqual(result2[0], { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result2[1], { type: LEXEMES.OPERATOR_LTE, text: '<=' });
-    assert.deepEqual(result2[2], { type: LEXEMES.NUMBER, text: '5' });
+    assert.deepEqual(result2[2], { type: LEXEMES.INTEGER, text: '5' });
 
     assert.strictEqual(result3.length, 3);
     assert.deepEqual(result3[0], { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result3[1], { type: LEXEMES.OPERATOR_LT, text: '<' });
-    assert.deepEqual(result3[2], { type: LEXEMES.NUMBER, text: '5' });
+    assert.deepEqual(result3[2], { type: LEXEMES.INTEGER, text: '5' });
 
     assert.strictEqual(result4.length, 3);
     assert.deepEqual(result4[0], { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result4[1], { type: LEXEMES.OPERATOR_LTE, text: '<=' });
-    assert.deepEqual(result4[2], { type: LEXEMES.NUMBER, text: '5' });
+    assert.deepEqual(result4[2], { type: LEXEMES.INTEGER, text: '5' });
   });
 
   test('handles greater than (>) and greater than or equal to (>=), with or without surrounding whitespace', function(assert) {
@@ -343,22 +352,92 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.strictEqual(result1.length, 3);
     assert.deepEqual(result1[0], { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result1[1], { type: LEXEMES.OPERATOR_GT, text: '>' });
-    assert.deepEqual(result1[2], { type: LEXEMES.NUMBER, text: '5' });
+    assert.deepEqual(result1[2], { type: LEXEMES.INTEGER, text: '5' });
 
     assert.strictEqual(result2.length, 3);
     assert.deepEqual(result2[0], { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result2[1], { type: LEXEMES.OPERATOR_GTE, text: '>=' });
-    assert.deepEqual(result2[2], { type: LEXEMES.NUMBER, text: '5' });
+    assert.deepEqual(result2[2], { type: LEXEMES.INTEGER, text: '5' });
 
     assert.strictEqual(result3.length, 3);
     assert.deepEqual(result3[0], { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result3[1], { type: LEXEMES.OPERATOR_GT, text: '>' });
-    assert.deepEqual(result3[2], { type: LEXEMES.NUMBER, text: '5' });
+    assert.deepEqual(result3[2], { type: LEXEMES.INTEGER, text: '5' });
 
     assert.strictEqual(result4.length, 3);
     assert.deepEqual(result4[0], { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result4[1], { type: LEXEMES.OPERATOR_GTE, text: '>=' });
-    assert.deepEqual(result4[2], { type: LEXEMES.NUMBER, text: '5' });
+    assert.deepEqual(result4[2], { type: LEXEMES.INTEGER, text: '5' });
+  });
+
+  test('handles less than (<) and less than or equal to (<=), with or without surrounding whitespace with floats', function(assert) {
+    const source1 = 'file.entropy<12.583';
+    const source2 = 'file.entropy<=12.583';
+    const source3 = 'file.entropy < 12.583';
+    const source4 = 'file.entropy <= 12.583';
+    const s1 = new Scanner(source1);
+    const s2 = new Scanner(source2);
+    const s3 = new Scanner(source3);
+    const s4 = new Scanner(source4);
+    const result1 = s1.scanTokens();
+    const result2 = s2.scanTokens();
+    const result3 = s3.scanTokens();
+    const result4 = s4.scanTokens();
+
+    assert.strictEqual(result1.length, 3);
+    assert.deepEqual(result1[0], { type: LEXEMES.META, text: 'file.entropy' });
+    assert.deepEqual(result1[1], { type: LEXEMES.OPERATOR_LT, text: '<' });
+    assert.deepEqual(result1[2], { type: LEXEMES.FLOAT, text: '12.583' });
+
+    assert.strictEqual(result2.length, 3);
+    assert.deepEqual(result2[0], { type: LEXEMES.META, text: 'file.entropy' });
+    assert.deepEqual(result2[1], { type: LEXEMES.OPERATOR_LTE, text: '<=' });
+    assert.deepEqual(result2[2], { type: LEXEMES.FLOAT, text: '12.583' });
+
+    assert.strictEqual(result3.length, 3);
+    assert.deepEqual(result3[0], { type: LEXEMES.META, text: 'file.entropy' });
+    assert.deepEqual(result3[1], { type: LEXEMES.OPERATOR_LT, text: '<' });
+    assert.deepEqual(result3[2], { type: LEXEMES.FLOAT, text: '12.583' });
+
+    assert.strictEqual(result4.length, 3);
+    assert.deepEqual(result4[0], { type: LEXEMES.META, text: 'file.entropy' });
+    assert.deepEqual(result4[1], { type: LEXEMES.OPERATOR_LTE, text: '<=' });
+    assert.deepEqual(result4[2], { type: LEXEMES.FLOAT, text: '12.583' });
+  });
+
+  test('handles greater than (>) and greater than or equal to (>=), with or without surrounding whitespace with floats', function(assert) {
+    const source1 = 'file.entropy>12.583';
+    const source2 = 'file.entropy>=12.583';
+    const source3 = 'file.entropy > 12.583';
+    const source4 = 'file.entropy >= 12.583';
+    const s1 = new Scanner(source1);
+    const s2 = new Scanner(source2);
+    const s3 = new Scanner(source3);
+    const s4 = new Scanner(source4);
+    const result1 = s1.scanTokens();
+    const result2 = s2.scanTokens();
+    const result3 = s3.scanTokens();
+    const result4 = s4.scanTokens();
+
+    assert.strictEqual(result1.length, 3);
+    assert.deepEqual(result1[0], { type: LEXEMES.META, text: 'file.entropy' });
+    assert.deepEqual(result1[1], { type: LEXEMES.OPERATOR_GT, text: '>' });
+    assert.deepEqual(result1[2], { type: LEXEMES.FLOAT, text: '12.583' });
+
+    assert.strictEqual(result2.length, 3);
+    assert.deepEqual(result2[0], { type: LEXEMES.META, text: 'file.entropy' });
+    assert.deepEqual(result2[1], { type: LEXEMES.OPERATOR_GTE, text: '>=' });
+    assert.deepEqual(result2[2], { type: LEXEMES.FLOAT, text: '12.583' });
+
+    assert.strictEqual(result3.length, 3);
+    assert.deepEqual(result3[0], { type: LEXEMES.META, text: 'file.entropy' });
+    assert.deepEqual(result3[1], { type: LEXEMES.OPERATOR_GT, text: '>' });
+    assert.deepEqual(result3[2], { type: LEXEMES.FLOAT, text: '12.583' });
+
+    assert.strictEqual(result4.length, 3);
+    assert.deepEqual(result4[0], { type: LEXEMES.META, text: 'file.entropy' });
+    assert.deepEqual(result4[1], { type: LEXEMES.OPERATOR_GTE, text: '>=' });
+    assert.deepEqual(result4[2], { type: LEXEMES.FLOAT, text: '12.583' });
   });
 
   test('throws error from single |', function(assert) {
@@ -402,9 +481,9 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.strictEqual(result.length, 5);
     assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' });
-    assert.deepEqual(result[2], { type: LEXEMES.NUMBER, text: '3' });
+    assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '3' });
     assert.deepEqual(result[3], { type: LEXEMES.RANGE, text: '-' });
-    assert.deepEqual(result[4], { type: LEXEMES.NUMBER, text: '7' });
+    assert.deepEqual(result[4], { type: LEXEMES.INTEGER, text: '7' });
   });
 
   test('handles value separators (`,`)', function(assert) {
@@ -414,17 +493,17 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.strictEqual(result.length, 13);
     assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' });
-    assert.deepEqual(result[2], { type: LEXEMES.NUMBER, text: '1' });
+    assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '1' });
     assert.deepEqual(result[3], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
-    assert.deepEqual(result[4], { type: LEXEMES.NUMBER, text: '2' });
+    assert.deepEqual(result[4], { type: LEXEMES.INTEGER, text: '2' });
     assert.deepEqual(result[5], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
-    assert.deepEqual(result[6], { type: LEXEMES.NUMBER, text: '3' });
+    assert.deepEqual(result[6], { type: LEXEMES.INTEGER, text: '3' });
     assert.deepEqual(result[7], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
-    assert.deepEqual(result[8], { type: LEXEMES.NUMBER, text: '5' });
+    assert.deepEqual(result[8], { type: LEXEMES.INTEGER, text: '5' });
     assert.deepEqual(result[9], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
-    assert.deepEqual(result[10], { type: LEXEMES.NUMBER, text: '8' });
+    assert.deepEqual(result[10], { type: LEXEMES.INTEGER, text: '8' });
     assert.deepEqual(result[11], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
-    assert.deepEqual(result[12], { type: LEXEMES.NUMBER, text: '13' });
+    assert.deepEqual(result[12], { type: LEXEMES.INTEGER, text: '13' });
   });
 
   test('handles value separators and ranges', function(assert) {
@@ -434,13 +513,13 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.strictEqual(result.length, 9);
     assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' });
-    assert.deepEqual(result[2], { type: LEXEMES.NUMBER, text: '3' });
+    assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '3' });
     assert.deepEqual(result[3], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
-    assert.deepEqual(result[4], { type: LEXEMES.NUMBER, text: '5' });
+    assert.deepEqual(result[4], { type: LEXEMES.INTEGER, text: '5' });
     assert.deepEqual(result[5], { type: LEXEMES.RANGE, text: '-' });
-    assert.deepEqual(result[6], { type: LEXEMES.NUMBER, text: '7' });
+    assert.deepEqual(result[6], { type: LEXEMES.INTEGER, text: '7' });
     assert.deepEqual(result[7], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
-    assert.deepEqual(result[8], { type: LEXEMES.NUMBER, text: '9' });
+    assert.deepEqual(result[8], { type: LEXEMES.INTEGER, text: '9' });
   });
 
   test('handles nested parentheses and other tokens', function(assert) {
@@ -458,7 +537,7 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.deepEqual(result[7], { type: LEXEMES.LEFT_PAREN, text: '(' }, '8. LEFT_PAREN "("');
     assert.deepEqual(result[8], { type: LEXEMES.META, text: 'medium' }, '9. META "medium"');
     assert.deepEqual(result[9], { type: LEXEMES.OPERATOR_NOT_EQ, text: '!=' }, '10. OPERATOR_NOT_EQ "!="');
-    assert.deepEqual(result[10], { type: LEXEMES.NUMBER, text: '44' }, '11. NUMBER "44"');
+    assert.deepEqual(result[10], { type: LEXEMES.INTEGER, text: '44' }, '11. INTEGER "44"');
     assert.deepEqual(result[11], { type: LEXEMES.RIGHT_PAREN, text: ')' }, '12. RIGHT_PAREN ")"');
     assert.deepEqual(result[12], { type: LEXEMES.RIGHT_PAREN, text: ')' }, '13. RIGHT_PAREN ")"');
     assert.deepEqual(result[13], { type: LEXEMES.AND, text: '&&' }, '14. AND "&&"');

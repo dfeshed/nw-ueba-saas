@@ -91,14 +91,18 @@ module('Integration | Component | Pill Operator', function(hooks) {
     `);
     await focus(PILL_SELECTORS.operatorTrigger);
     const options = findAll(PILL_SELECTORS.powerSelectOption);
-    assert.equal(options.length, 7);
+    assert.equal(options.length, 11);
     assert.equal(trim(options[0].textContent), '= Equals');
     assert.equal(trim(options[1].textContent), '!= Does Not Equal');
-    assert.equal(trim(options[2].textContent), 'exists Exists');
-    assert.equal(trim(options[3].textContent), '!exists Does Not Exist');
-    assert.equal(trim(options[4].textContent), 'contains Contains');
-    assert.equal(trim(options[5].textContent), 'begins Begins');
-    assert.equal(trim(options[6].textContent), 'ends Ends');
+    assert.equal(trim(options[2].textContent), '< Less Than');
+    assert.equal(trim(options[3].textContent), '<= Less Than or Equal To');
+    assert.equal(trim(options[4].textContent), '> Greater Than');
+    assert.equal(trim(options[5].textContent), '>= Greater Than or Equal To');
+    assert.equal(trim(options[6].textContent), 'exists Exists');
+    assert.equal(trim(options[7].textContent), '!exists Does Not Exist');
+    assert.equal(trim(options[8].textContent), 'contains Contains');
+    assert.equal(trim(options[9].textContent), 'begins Begins');
+    assert.equal(trim(options[10].textContent), 'ends Ends');
   });
 
   test('it broadcasts a message when a Power Select option is choosen', async function(assert) {
@@ -324,7 +328,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     `);
     await focus(PILL_SELECTORS.operatorTrigger);
     // assert number of options
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 7);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 11);
     // perform a search that down-selects the list of options
     await typeInSearch('e');
     assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 2); // exists and ends
@@ -333,7 +337,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 0);
     // focus and assert number of options
     await focus(PILL_SELECTORS.operatorTrigger);
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 7);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 11);
   });
 
   test('it allows you to reselect an operator after it was previously selected', async function(assert) {
