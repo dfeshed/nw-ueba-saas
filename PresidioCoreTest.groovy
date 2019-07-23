@@ -76,14 +76,6 @@ pipeline {
     post {
         always {
             junit '**/ueba-automation-test/target/surefire-reports/junitreports/*.xml'
-            publishHTML target: [
-                    allowMissing         : false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll              : true,
-                    reportDir            : 'ueba-automation-projects/ueba-automation-test/target/surefire-reports',
-                    reportFiles          : 'index.html',
-                    reportName           : 'HTML Report'
-            ]
         }
     }
 }
