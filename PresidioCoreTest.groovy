@@ -87,7 +87,7 @@ def setBaseUrl(
 }
 
 def cleanUebaDBs() {
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $VERSION $env.OLD_UEBA_RPMS"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION $env.OLD_UEBA_RPMS"
     if (params.INSTALL_UEBA_RPMS == false) {
         sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION $env.OLD_UEBA_RPMS"
     }
