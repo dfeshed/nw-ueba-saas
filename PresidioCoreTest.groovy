@@ -2,8 +2,13 @@ pipeline {
     parameters {
         string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '', description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
         string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: 'origin/master', description: '')
+        string(name: 'MVN_TEST_OPTIONS', defaultValue: '-U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
         booleanParam(name: 'RUN_ONLY_TESTS', defaultValue: false, description: '')
+        booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
+        booleanParam(name: 'DATA_INJECTION', defaultValue: true, description: '')
+        booleanParam(name: 'DATA_PROCESSING', defaultValue: true, description: '')
+        booleanParam(name: 'TEST_AUTOMATION', defaultValue: true, description: '')
         //choice(name: 'STABILITY', choices: ['dev (default)','beta','alpha','rc','gold'], description: 'RPMs stability type')
         //choice(name: 'VERSION', choices: ['11.4.0.0','11.3.0.0','11.3.1.0','11.2.1.0'], description: 'RPMs version')
         //choice(name: 'NODE_LABLE', choices: ['','','nw-hz-03-ueba','nw-hz-04-ueba','nw-hz-05-ueba','nw-hz-06-ueba','nw-hz-07-ueba'], description: '')
@@ -11,8 +16,9 @@ pipeline {
     agent { label env.NODE_LABLE }
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
+        SCRIPTS_DIR = '/ueba-automation-projects/ueba-automation-framework/src/main/resources/scripts/'
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
-        REPOSITORY_NAME = "presidio-integration-test"
+        REPOSITORY_NAME = "ueba-automation-projects"
         OLD_UEBA_RPMS = sh(script: 'rpm -qa | grep rsa-nw-presidio-core | cut -d\"-\" -f5', returnStdout: true).trim()
     }
 
@@ -25,7 +31,7 @@ pipeline {
         }
         stage('Reset UEBA DBs') {
             when {
-                expression { return !params.RUN_ONLY_TESTS }
+                expression { return params.RESET_UEBA_DBS }
             }
             steps {
                 cleanUebaDBs()
@@ -40,14 +46,33 @@ pipeline {
                 uebaInstallRPMs()
             }
         }
-        stage('Project Initialization') {
+//        stage('Project Initialization') {
+//            steps {
+//                mvnCleanInstall()
+//            }
+//        }
+
+        stage('Data Injection') {
+            expression { return params.DATA_INJECTION }
+
             steps {
-                mvnCleanInstall()
+                runSuiteXmlFile('core/CoreDataInjection.xml')
             }
         }
-        stage('Test Automation') {
+
+        stage('Data Processing') {
+            expression { return params.DATA_PROCESSING }
+
             steps {
-                runCoreTestAutomation()
+                runSuiteXmlFile('core/CoreDataProcessing.xml')
+            }
+        }
+
+        stage('Test automation') {
+            expression { return params.TEST_AUTOMATION }
+
+            steps {
+                runSuiteXmlFile('core/CoreTests.xml')
             }
         }
     }
@@ -86,27 +111,27 @@ def setBaseUrl(
 }
 
 def cleanUebaDBs() {
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION $env.OLD_UEBA_RPMS"
+    sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/cleanup.sh $env.VERSION $env.OLD_UEBA_RPMS"
     if (params.INSTALL_UEBA_RPMS == false) {
-        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION $env.OLD_UEBA_RPMS"
+        sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/Initiate-presidio-services.sh $env.VERSION $env.OLD_UEBA_RPMS"
     }
 }
 
 def uebaInstallRPMs() {
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION $env.OLD_UEBA_RPMS"
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION $env.OLD_UEBA_RPMS"
+    sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/install_upgrade_rpms.sh $env.VERSION $env.OLD_UEBA_RPMS"
+    sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/Initiate-presidio-services.sh $env.VERSION $env.OLD_UEBA_RPMS"
 }
 
 /**************************
- * Project Build Pipeline *
+ * Project Build Pipeline *  https://github.rsa.lab.emc.com/feshed/ueba-automation-projects.git
  **************************/
 def buildIntegrationTestProject(
-        String repositoryName = "presidio-integration-test",
+        String repositoryName = "ueba-automation-projects",
         String userName = env.RSA_BUILD_CREDENTIALS_USR,
         String userPassword = env.RSA_BUILD_CREDENTIALS_PSW,
         String branchName = env.INTEGRATION_TEST_BRANCH_NAME) {
     sh "git config --global user.name \"${userName}\""
-    sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/asoc/presidio-integration-test.git"
+    sh "git clone https://${userName}:${userPassword}@github.rsa.lab.emc.com/feshed/ueba-automation-projects.git"
     dir(env.REPOSITORY_NAME) {
         sh "git checkout ${branchName}"
     }
@@ -114,17 +139,13 @@ def buildIntegrationTestProject(
 
 def mvnCleanInstall() {
     dir(env.REPOSITORY_NAME) {
-        sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=presidio-integration-test -DskipTests -Duser.timezone=UTC -U clean install"
+        sh "mvn --fail-at-end -Dmaven.multiModuleProjectDirectory=${env.REPOSITORY_NAME} -DskipTests -Duser.timezone=UTC -U clean install"
     }
 }
 
-def runCoreTestAutomation() {
+def runSuiteXmlFile(String suiteXmlFile) {
     println(env.REPOSITORY_NAME)
     dir(env.REPOSITORY_NAME) {
-        if (params.RUN_ONLY_TESTS == false) {
-            sh "mvn -B -f presidio-integration-output-component-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
-        } else {
-            sh "mvn -B -f presidio-integration-output-test/pom.xml -DsuiteXmlFile=src/test/resources/TestPlans/Output_Tests.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
-        }
+        sh "mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS}"
     }
 }
