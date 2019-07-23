@@ -384,13 +384,13 @@ public class ApiEntityController extends BaseController {
 	public DataBean<Map<String, Map<String, Integer>>> getSeverityBarInfo(EntityRestFilter entityRestFilter){
 		DataBean<Map<String, Map<String, Integer>>> dataBean = new DataBean<>();
 
+		Map<String,Map<String,Integer>> severityScoremap = entityService.getSeverityScoreMap(entityRestFilter);
 
-		dataBean.setData(entityService.getSeverityScoreMap(entityRestFilter));
-
-
-		dataBean.setTotal(entityService.countEntitiesByFilter(entityRestFilter,null));
+		if(severityScoremap != null) {
+			dataBean.setData(severityScoremap);
+			dataBean.setTotal(entityService.countEntitiesByFilter(entityRestFilter,null));
+		}
 		return dataBean;
-
 
 	}
 

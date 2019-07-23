@@ -498,6 +498,9 @@ public class EntityServiceImpl implements EntityService {
 
 		try {
 			EntitiesWrapper entitiesWrapper = remoteEntityClientService.getConterollerApi().getEntities(entityQuery);
+			if (entitiesWrapper.getAggregationData() == null) {
+				return MapUtils.EMPTY_MAP;
+			}
 			Map<String,Long> counts = entitiesWrapper.getAggregationData().get(EntityQuery.AggregateByEnum.SEVERITY.name());
 
 
