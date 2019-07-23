@@ -808,6 +808,11 @@
 
   .text-pill {
     background-color: transparent;
+    .text-wrapper {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     &.is-active {
       label {
         width: 100%;
@@ -870,6 +875,7 @@
   .ember-power-select-options {
     border-right: 1px solid text-color(primary);
     border-left: 1px solid text-color(primary);
+    border-bottom: 1px solid text-color(primary);
     background: background-color(primary, darkest);
     height: 15rem;
   }
@@ -938,7 +944,7 @@
       transition: background-color 50ms;
     }
     .value {
-      flex: 1 0 auto;
+      flex: 1 1 auto;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
@@ -963,7 +969,9 @@
     }
 
     .border-advanced-options-separater-box {
-      @include border(1px, solid, primary);
+      border-left: 1px solid text-color(primary);
+      border-right: 1px solid text-color(primary);
+      border-bottom: 1px solid text-color(primary);
       background: background-color(primary, darkest);
     }
   }

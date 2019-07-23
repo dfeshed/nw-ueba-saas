@@ -90,9 +90,9 @@ const _validateUntilOperator = (assert, meta, operator) => {
 
 // metaString, no operator ob, no value
 const _validateUntilInvalidMeta = (assert, metaString) => {
-  assert.equal(
-    find(PILL_SELECTORS.powerSelectNoMatch).textContent.trim(),
-    'All meta filtered out',
+  const text = find(PILL_SELECTORS.powerSelectNoMatch).textContent.trim();
+  assert.ok(
+    text.includes('meta') && text.includes('filtered'),
     'no relevant meta present'
   );
   assert.equal(find(PILL_SELECTORS.metaInput).value.trim(), metaString, 'With the correct text pasted in');

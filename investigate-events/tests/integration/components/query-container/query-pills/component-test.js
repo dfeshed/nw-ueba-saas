@@ -2497,7 +2497,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     setTimeout(() => {
       assert.equal(find(PILL_SELECTORS.recentQueryCount).textContent, '(1)', 'recent query tab count is incorrect');
       done();
-    }, 5000);
+    }, 10000);
   });
 
   test('Typing text in pill-value will reflect a count change in tabs', async function(assert) {
@@ -2532,7 +2532,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     setTimeout(() => {
       assert.equal(find(PILL_SELECTORS.recentQueryCount).textContent, '(1)', 'recent query tab count is incorrect');
       done();
-    }, 5000);
+    }, 10000);
   });
 
   test('Typing text in recent-query will reflect a count change in tabs', async function(assert) {
