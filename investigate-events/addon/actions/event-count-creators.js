@@ -42,6 +42,15 @@ export default function getEventCount() {
           payload: response.code
         });
         dispatch({
+          type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
+          payload: {
+            status: 'error',
+            reason: response.code,
+            message: response.meta.message,
+            data: []
+          }
+        });
+        dispatch({
           type: ACTION_TYPES.QUERY_STATS,
           payload: response.meta,
           code: response.code,
