@@ -65,7 +65,7 @@ def setBaseUrl(
     if (rpmBuildPath != '') {
         baseUrl = baseUrl + rpmBuildPath
         println(baseUrl)
-        $env.VERSION = "0"
+        env.VERSION = "0"
     } else {
         String[] versionArray = rpmVeriosn.split("\\.")
         FirstDir = versionArray[0] + "." + versionArray[1]
