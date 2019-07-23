@@ -306,7 +306,7 @@ module('Integration | Component | Query Bar', function(hooks) {
     `);
     await click(SELECTORS.queryFormatFreeFormToggle);
     await click(PILL_SELECTORS.freeFormInput);
-    await fillIn(PILL_SELECTORS.freeFormInput, 'medium = 32 || service = xxx');
+    await fillIn(PILL_SELECTORS.freeFormInput, 'medium = foo');
     await click(SELECTORS.queryFormatGuidedToggle);
     // We need to wait for the server call to come back, so this could take a bit
     await waitFor(PILL_SELECTORS.invalidPill, { timeout: 4000 });

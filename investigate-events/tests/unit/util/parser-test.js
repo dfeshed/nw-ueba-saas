@@ -199,9 +199,11 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.META, text: 'medium' }
     ];
     const p = new Parser(tokens, DEFAULT_LANGUAGES);
-    assert.throws(() => {
-      p.parse();
-    }, new Error('Expected token of type NUMBER,STRING,IPV4_ADDRESS,IPV6_ADDRESS,MAC_ADDRESS but got type META'));
+    const result = p.parse();
+    assert.ok(result.children[0].isInvalid);
+    assert.strictEqual(result.children[0].validationError.string, 'Strings must be quoted with "');
+    assert.deepEqual(result.children[0].meta, { type: LEXEMES.META, text: 'b' });
+    assert.deepEqual(result.children[0].operator, { type: LEXEMES.OPERATOR_EQ, text: '=' });
   });
 
   test('throws an error for a meta without value when operator requires one (number)', function(assert) {
@@ -211,9 +213,11 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.META, text: 'b' }
     ];
     const p = new Parser(tokens, DEFAULT_LANGUAGES);
-    assert.throws(() => {
-      p.parse();
-    }, new Error('Expected token of type NUMBER,STRING,IPV4_ADDRESS,IPV6_ADDRESS,MAC_ADDRESS but got type META'));
+    const result = p.parse();
+    assert.ok(result.children[0].isInvalid);
+    assert.strictEqual(result.children[0].validationError.string, 'You must enter an 8-bit Integer.');
+    assert.deepEqual(result.children[0].meta, { type: LEXEMES.META, text: 'medium' });
+    assert.deepEqual(result.children[0].operator, { type: LEXEMES.OPERATOR_EQ, text: '=' });
   });
 
   test('throws an error for a meta with value but having a unary operator', function(assert) {

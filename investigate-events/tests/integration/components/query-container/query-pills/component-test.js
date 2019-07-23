@@ -366,12 +366,12 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
 
-    // creates a pill with TimeT format with a text value 'x'
+    // creates a pill with MAC format with a text value 'x'
     // will create an invalid pill once redux updates the store
-    await createBasicPill(false, 'TimeT');
+    await createBasicPill(false, 'MAC');
     // component class updates when store is updated
     assert.equal(findAll(PILL_SELECTORS.invalidPill).length, 1, 'Class for invalid pill should be present');
-    assert.equal(find(PILL_SELECTORS.invalidPill).getAttribute('title'), 'You entered \'x\'. You must enter a valid date.', 'Expected title with the error message');
+    assert.equal(find(PILL_SELECTORS.invalidPill).getAttribute('title'), 'You entered \'x\'. You must enter a MAC address.', 'Expected title with the error message');
   });
 
   test('Creating a pill validates the pill (serverSide) and updates if necessary', async function(assert) {

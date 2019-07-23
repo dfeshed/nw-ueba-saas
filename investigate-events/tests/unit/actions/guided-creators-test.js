@@ -55,15 +55,14 @@ module('Unit | Actions | Guided Creators', function(hooks) {
   });
 
   test('batchAddPills action creator returns proper type and payload', function(assert) {
-    assert.expect(7);
-    const done = assert.async(2);
+    assert.expect(9);
     const getState = () => {
       return new ReduxDataHelper().language().invalidPillsDataPopulated().build();
     };
 
     const myDispatch = (action) => {
       if (typeof action === 'function') {
-        action(validateDispatch, getState);
+        action(validateClientSideDispatch, getState);
       } else {
         assert.equal(action.type, ACTION_TYPES.BATCH_ADD_PILLS, 'action has the correct type');
         assert.deepEqual(action.payload.pillsData, [
@@ -74,13 +73,16 @@ module('Unit | Actions | Guided Creators', function(hooks) {
       }
     };
 
-    // Called twice
-    const validateDispatch = (action) => {
+    // Called twice. This is the dispatch passed to _clientSideValidation
+    const validateClientSideDispatch = (action) => {
+      assert.equal(typeof action, 'function', '_clientSideValidation returns another function');
+      action(validateServerSideDispatch, getState);
+    };
+
+    // Called twice. This is the dispatch passed to _serverSideValidation
+    const validateServerSideDispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.VALIDATE_GUIDED_PILL, 'action has the correct type - validate');
-      action.promise.catch((error) => {
-        assert.ok(error.meta, 'Expected validaiton error');
-        done();
-      });
+      assert.ok(action.meta.isServerSide, 'server side validation happens');
     };
 
     // this thunk will shoot out 3 actions - one to add and two to validate
@@ -392,7 +394,7 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     });
 
     const getState = () => {
-      return new ReduxDataHelper().language().build();
+      return new ReduxDataHelper().language().hasRequiredValuesToQuery().build();
     };
 
     const dispatch = (action) => {
@@ -410,6 +412,9 @@ module('Unit | Actions | Guided Creators', function(hooks) {
       }
     };
     const secondDispatch = (action) => {
+      action(thirdDispatch, getState);
+    };
+    const thirdDispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.VALIDATE_GUIDED_PILL, 'action has the correct type - validate');
     };
 

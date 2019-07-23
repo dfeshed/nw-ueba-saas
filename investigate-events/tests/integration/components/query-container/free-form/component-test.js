@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { click, fillIn, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
 import sinon from 'sinon';
 
@@ -26,10 +27,12 @@ module('Integration | Component | Free Form', function(hooks) {
   });
 
   hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       patchReducer(this, state);
     };
     spys.forEach((s) => s.resetHistory());
+    initialize(this.owner);
   });
 
   hooks.afterEach(function() {

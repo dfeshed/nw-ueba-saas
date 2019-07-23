@@ -1,6 +1,6 @@
 import * as LEXEMES from 'investigate-events/constants/lexemes';
 import { SEARCH_TERM_MARKER } from 'investigate-events/constants/pill';
-import { isDigit, isAlphaNumeric, isIPv4Address, isIPv6Address, isMACAddress } from 'investigate-events/util/scanning-helpers';
+import { isAlphaNumeric, isIPv4Address, isIPv6Address, isMACAddress } from 'investigate-events/util/scanning-helpers';
 
 /**
  * The Scanner class takes an source string and transforms it into a set of tokens
@@ -315,29 +315,6 @@ class Scanner {
     const string = this.source.substring(this.start + 1, this.current - 1);
 
     this._addToken(LEXEMES.STRING, string);
-  }
-
-  /**
-   * Scans in a number token.
-   * @private
-   */
-  _number() {
-    // Advance `current` until we reach a non-number character
-    while (isDigit(this._peek())) {
-      this._advance();
-    }
-
-    // Check for a decimal point and following number
-    if (this._peek() === '.' && isDigit(this._peekNext())) {
-      // Consume the decimal point
-      this._advance();
-      // Advance until the end of the fractional part
-      while (isDigit(this._peek())) {
-        this._advance();
-      }
-    }
-
-    this._addToken(LEXEMES.NUMBER);
   }
 
   /**

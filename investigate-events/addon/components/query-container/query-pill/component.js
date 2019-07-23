@@ -988,11 +988,13 @@ export default Component.extend({
     // because an edited pill is a replacement of the previous pill.
     // We are just making everything inactive in case that takes a
     // few millis.
-    this.setProperties({
-      isMetaActive: false,
-      isOperatorActive: false,
-      isValueActive: false
-    });
+    if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+      this.setProperties({
+        isMetaActive: false,
+        isOperatorActive: false,
+        isValueActive: false
+      });
+    }
   },
 
   /**

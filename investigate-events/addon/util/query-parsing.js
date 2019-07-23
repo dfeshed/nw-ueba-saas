@@ -186,21 +186,13 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
         const item = itemList.shift();
         // If that one item is a normal criteria, turn it into a pill
         if (item.type === GRAMMAR.CRITERIA) {
-          pills.push(_createQueryFilter(
-            Parser.transformToString(item.meta),
-            Parser.transformToString(item.operator),
-            item.valueRanges ? item.valueRanges.map(Parser.transformToString).join(',') : undefined
-          ));
+          pills.push(_criteriaToPill(item));
         // If that one item is a group, add it as a pill IF it only has a single
         // child which is a criteria. Otherwise, add it as a complex pill.
         } else if (item.type === GRAMMAR.GROUP) {
           if (item.group.children.length === 1 && item.group.children[0].type === GRAMMAR.CRITERIA) {
             const [ criteria ] = item.group.children;
-            pills.push(_createQueryFilter(
-              Parser.transformToString(criteria.meta),
-              Parser.transformToString(criteria.operator),
-              criteria.valueRanges ? criteria.valueRanges.map(Parser.transformToString).join(',') : undefined
-            ));
+            pills.push(_criteriaToPill(criteria));
           } else {
             pills.push(_createComplexQueryFilter(`${Parser.transformToString(item)}`));
           }
@@ -223,6 +215,19 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
   }
 
   return returnMany ? pills : pills[0];
+};
+
+const _criteriaToPill = (criteria) => {
+  const pill = _createQueryFilter(
+    Parser.transformToString(criteria.meta),
+    Parser.transformToString(criteria.operator),
+    criteria.valueRanges ? criteria.valueRanges.map(Parser.transformToString).join(',') : undefined
+  );
+  if (criteria.isInvalid) {
+    pill.isInvalid = true;
+    pill.validationError = criteria.validationError;
+  }
+  return pill;
 };
 
 /**

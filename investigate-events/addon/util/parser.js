@@ -1,3 +1,4 @@
+import { lookup } from 'ember-dependency-lookup';
 import * as LEXEMES from 'investigate-events/constants/lexemes';
 import * as GRAMMAR from 'investigate-events/constants/grammar';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
@@ -9,6 +10,18 @@ const VALUE_TYPES = [
   LEXEMES.IPV6_ADDRESS,
   LEXEMES.MAC_ADDRESS
 ];
+
+const VALUE_TYPE_MAP = {
+  UInt8: LEXEMES.NUMBER,
+  UInt16: LEXEMES.NUMBER,
+  UInt32: LEXEMES.NUMBER,
+  UInt64: LEXEMES.NUMBER,
+  Float32: LEXEMES.NUMBER,
+  Text: LEXEMES.STRING,
+  IPv4: LEXEMES.IPV4_ADDRESS,
+  IPv6: LEXEMES.IPV6_ADDRESS,
+  MAC: LEXEMES.MAC_ADDRESS
+};
 
 /**
  * The Parser takes a list of tokens produced by the scanner and uses that
@@ -186,9 +199,10 @@ class Parser {
   _criteria() {
     const meta = this._consume([ LEXEMES.META ]);
     const operator = this._consume(LEXEMES.OPERATOR_TYPES);
+    let metaConfig;
     // Check that this is a valid meta key
     if (this.availableMeta && this.availableMeta.length > 0) {
-      const metaConfig = this.availableMeta.find((m) => {
+      metaConfig = this.availableMeta.find((m) => {
         return m.metaName === Parser.transformToString(meta);
       });
       if (!metaConfig) {
@@ -219,12 +233,37 @@ class Parser {
       };
     } else {
       const metaValueRanges = this._metaValueRanges();
-      return {
-        type: GRAMMAR.CRITERIA,
-        meta,
-        operator,
-        valueRanges: metaValueRanges
-      };
+      // Check to make sure all the values have the correct type
+      const expectedType = VALUE_TYPE_MAP[metaConfig.format];
+      const invalidRange = metaValueRanges.find((range) => {
+        if (!metaConfig) {
+          return false;
+        }
+        if (range.value) {
+          return expectedType !== range.value.type;
+        } else {
+          return expectedType !== range.from.type || expectedType !== range.to.type;
+        }
+      });
+      if (invalidRange) {
+        const i18n = lookup('service:i18n');
+        const validationError = i18n.t(`queryBuilder.validationMessages.${metaConfig.format.toLowerCase()}`);
+        return {
+          type: GRAMMAR.CRITERIA,
+          meta,
+          operator,
+          valueRanges: metaValueRanges,
+          isInvalid: true,
+          validationError
+        };
+      } else {
+        return {
+          type: GRAMMAR.CRITERIA,
+          meta,
+          operator,
+          valueRanges: metaValueRanges
+        };
+      }
     }
   }
 
@@ -254,7 +293,7 @@ class Parser {
    * @private
    */
   _metaValueRange() {
-    const value = this._consume(VALUE_TYPES);
+    const value = this._advance();
     if (this._nextTokenIsOfType([ LEXEMES.RANGE ])) {
       // As long as the UI does not support shorthand, throw this error to get complex pills.
       // Once support is included, uncommend the rest of this block.

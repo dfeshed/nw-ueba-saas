@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { setupTest } from 'ember-qunit';
 import {
@@ -238,6 +238,48 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.strictEqual(result.length, 1);
     assert.equal(result[0].type, COMPLEX_FILTER, 'type should match');
     assert.equal(result[0].complexFilterText, 'ip.addr exists', 'complexFilterText should match');
+  });
+
+  test('transformTextToPillData returns an invalid pill for a mismatched type', function(assert) {
+    const text = 'medium = \'foo\'';
+    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '\'foo\'', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.equal(result[0].validationError.string, 'You must enter an 8-bit Integer.', 'validation error should be correct');
+  });
+
+  // Leaving here to remind me to implement this soon
+  skip('transformTextToPillData returns an invalid pill for an out-of-range integer value', function(assert) {
+    // bytes.src is UInt64, that number is 2^65
+    const text = 'bytes.src = 36893488147419103000';
+
+    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'bytes.src', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '36893488147419103000', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.equal(result[0].validationError.string, 'You must enter a 64-bit Integer.', 'validation error should be correct');
+  });
+
+  test('transformTextToPillData returns invalid pills alongside valid pills', function(assert) {
+    const text = 'alias.ip = 8080 && medium = 3';
+    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    assert.strictEqual(result.length, 2);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'alias.ip', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '8080', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.equal(result[0].validationError.string, 'You must enter an IPv4 address.', 'validation error should be correct');
+    assert.equal(result[1].meta, 'medium', 'forward slash was not parsed correctly');
+    assert.equal(result[1].operator, '=', 'forward slash was not parsed correctly');
+    assert.equal(result[1].value, '3', 'forward slash was not parsed correctly');
   });
 
   test('parsePillDataFromUri correctly parses forward slashes and operators into pills', function(assert) {
