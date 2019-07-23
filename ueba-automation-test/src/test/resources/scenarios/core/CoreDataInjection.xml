@@ -1,13 +1,13 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="output test">
+<suite name="Core Test Data Injection">
     <parameter name="outputProcessingStartDaysBack" value="5" />
     <parameter name="outputProcessingEndDaysBack" value="1" />
     <parameter name="historical_days_back" value="35" />
     <parameter name="anomaly_day" value="2" />
     <parameter name="generator_format" value="MONGO_ADAPTER" />
 
-    <test name="data preparation">
+    <test name="Data Injection">
         <classes>
             <class name="com.rsa.netwitness.presidio.automation.test.data.preparation.NetworkDataPreparation"/>
             <class name="com.rsa.netwitness.presidio.automation.test.data.preparation.AlertsScenarioDataPreparation"/>

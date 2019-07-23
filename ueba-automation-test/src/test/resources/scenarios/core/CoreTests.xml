@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="output test">
+<suite name="UEBA Core Test">
     <parameter name="outputProcessingStartDaysBack" value="5" />
     <parameter name="outputProcessingEndDaysBack" value="1" />
     <parameter name="historical_days_back" value="35" />
