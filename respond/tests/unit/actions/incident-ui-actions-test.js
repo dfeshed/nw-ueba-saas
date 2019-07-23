@@ -72,6 +72,47 @@ module('Unit | Utility | Incident UI Actions - Reducers', function() {
     assert.deepEqual(endState3, expectedEndState3);
   });
 
+  test('The FORCE_SET_INCIDENT_SELECTION action property modifies the app state', function(assert) {
+    // Set the selection to some non-empty value.
+    const type1 = 'foo';
+    const id1 = 'id1';
+    const expectedEndState = {
+      ...initialState,
+      selection: { type: type1, ids: [ id1 ] }
+    };
+    const endState = incidentReducer(initialState, {
+      type: ACTION_TYPES.FORCE_SET_INCIDENT_SELECTION,
+      payload: { type: type1, id: id1 }
+    });
+    assert.deepEqual(endState, expectedEndState);
+
+    // Now try setting it to another value and see if it gets updated.
+    const type2 = 'bar';
+    const id2 = 'id2';
+    const expectedEndState2 = {
+      ...endState,
+      selection: { type: type2, ids: [ id2 ] }
+    };
+    const endState2 = incidentReducer(endState, {
+      type: ACTION_TYPES.FORCE_SET_INCIDENT_SELECTION,
+      payload: { type: type2, id: id2 }
+    });
+    assert.deepEqual(endState2, expectedEndState2);
+
+    // Now try setting it to the previous value again, and see if it is still set.
+    const expectedEndState3 = {
+      ...endState,
+      selection: { type: type2, ids: [ id2 ] }
+    };
+
+    const endState3 = incidentReducer(endState2, {
+      type: ACTION_TYPES.FORCE_SET_INCIDENT_SELECTION,
+      payload: { type: type2, id: id2 }
+    });
+
+    assert.deepEqual(endState3, expectedEndState3);
+  });
+
   test('The TOGGLE_INCIDENT_SELECTION action properly modifies the app state', function(assert) {
     const type = 'foo';
     const id1 = 'id1';

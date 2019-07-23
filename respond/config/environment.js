@@ -30,8 +30,6 @@ module.exports = function(environment) {
       defaultLocale: 'en-us',
       defaultFallback: true,
       includedLocales: ['en-us']
-    },
-    APP: {
     }
   };
 

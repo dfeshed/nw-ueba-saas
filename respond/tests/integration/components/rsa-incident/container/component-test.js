@@ -62,33 +62,33 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     await render(hbs`{{rsa-incident/container}}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEnrichmentsSelector}`).length, 1);
-    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).classList.contains('active'));
+    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).classList.contains('active'), 'events toggle is not active');
     assert.ok(find(`${alertsSelector}:nth-of-type(2) ${toggleEnrichmentsSelector}`).classList.contains('active'));
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${groupsSelector}`).length, 1);
-    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'));
+    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'), 'group is not selected');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is open');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1, 'alert has a toggle events button');
     assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'));
+    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'), 'toggle events is active');
     assert.notOk(find(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).classList.contains('active'));
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 1, 'alerts has a group visible');
+    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'), 'group is selected');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is open');
 
     await click(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEnrichmentsSelector}`).length, 1);
@@ -96,25 +96,25 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
     assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${toggleEnrichmentsSelector}`).classList.contains('active'));
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${groupsSelector}`).length, 1);
-    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'));
+    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'), 'group is not selected');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is open');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1, 'alert has a toggle events button');
     assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'));
+    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'), 'toggle events is active');
     assert.notOk(find(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).classList.contains('active'));
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 1, 'alerts has a group visible');
+    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'), 'group is selected');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is open');
 
     await click(`${alertsSelector}:nth-of-type(2) ${reconLinkSelector}:nth-of-type(1) .recon-link-to`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEnrichmentsSelector}`).length, 1);
@@ -122,21 +122,21 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
     assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${toggleEnrichmentsSelector}`).classList.contains('active'));
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${groupsSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'));
+    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'), 'alert is not selected');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is open');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1, 'alert has a toggle events button');
     assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'));
+    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'), 'toggle events is active');
     assert.notOk(find(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).classList.contains('active'));
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 1);
-    assert.notOk(find(`${alertsSelector}:nth-of-type(3) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 1, 'alerts has a group visible');
+    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'), 'group is selected');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is open');
   });
 
   test('storyline with only events will pre select event when incident selection type event', async function(assert) {
@@ -150,74 +150,74 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     await render(hbs`{{rsa-incident/container}}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEnrichmentsSelector}`).length, 0);
-    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).classList.contains('active'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1, 'alert has a toggle events button');
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEnrichmentsSelector}`).length, 0, 'alerts has no toggle enrichments button');
+    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).classList.contains('active'), 'events toggle is not active');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${groupsSelector}`).length, 0);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${groupsSelector}`).length, 0, 'events are not visible');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is not open');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1);
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 0);
-    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1, 'alert has a toggle events button');
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 0, 'alert has no toggle enrichments button');
+    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'), 'toggle events is active');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 1, 'alerts has a group visible');
+    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'), 'group is selected');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is not open');
 
     await click(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEnrichmentsSelector}`).length, 0);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1, 'alert has a toggle events button');
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEnrichmentsSelector}`).length, 0, 'alerts has no toggle enrichments button');
     assert.ok(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).classList.contains('active'));
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${groupsSelector}`).length, 1);
-    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'));
+    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'), 'group is not selected');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is open');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1);
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 0);
-    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1, 'alert has a toggle events button');
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 0, 'alert has no toggle enrichments button');
+    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'), 'toggle events is active');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 1, 'alerts has a group visible');
+    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'), 'group is selected');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is open');
 
     await click(`${alertsSelector}:nth-of-type(2) ${reconLinkSelector}:nth-of-type(1) .recon-link-to`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEnrichmentsSelector}`).length, 0);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1, 'alert has a toggle events button');
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEnrichmentsSelector}`).length, 0, 'alerts has no toggle enrichments button');
     assert.ok(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).classList.contains('active'));
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${groupsSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'));
+    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'), 'group is not selected');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is open');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1);
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 0);
-    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1, 'alert has a toggle events button');
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 0, 'alert has no toggle enrichments button');
+    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'), 'toggle events is active');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 1);
-    assert.notOk(find(`${alertsSelector}:nth-of-type(3) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 1, 'alerts has a group visible');
+    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'), 'group is selected');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is open');
   });
 
   test('storyline with only events will not pre select event when no incident selected', async function(assert) {
@@ -231,96 +231,96 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     await render(hbs`{{rsa-incident/container}}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEnrichmentsSelector}`).length, 0);
-    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).classList.contains('active'));
+    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).classList.contains('active'), 'events toggle is not active');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${groupsSelector}`).length, 0);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${groupsSelector}`).length, 0, 'events are not visible');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is not open');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1);
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 0);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1, 'alert has a toggle events button');
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 0, 'alert has no toggle enrichments button');
     assert.notOk(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'));
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 0);
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is not open');
 
     await click(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEnrichmentsSelector}`).length, 0);
     assert.ok(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).classList.contains('active'));
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${groupsSelector}`).length, 1);
-    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'));
+    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'), 'group is not selected');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is open');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1);
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 0);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1, 'alert has a toggle events button');
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 0, 'alert has no toggle enrichments button');
     assert.notOk(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'));
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 0);
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is open');
 
     await click(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEnrichmentsSelector}`).length, 0);
     assert.ok(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).classList.contains('active'));
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${groupsSelector}`).length, 1);
-    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'));
+    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'), 'group is not selected');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is open');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1);
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 0);
-    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1, 'alert has a toggle events button');
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 0, 'alert has no toggle enrichments button');
+    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'), 'toggle events is active');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 1, 'alerts has a group visible');
     assert.notOk(find(`${alertsSelector}:nth-of-type(3) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'));
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is open');
 
     await click(`${alertsSelector}:nth-of-type(3) ${reconLinkSelector}:nth-of-type(1) .recon-link-to`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEnrichmentsSelector}`).length, 0);
     assert.ok(find(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).classList.contains('active'));
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${groupsSelector}`).length, 1);
-    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'));
+    assert.notOk(find(`${alertsSelector}:nth-of-type(2) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'), 'group is not selected');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is open');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1);
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 0);
-    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1, 'alert has a toggle events button');
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEnrichmentsSelector}`).length, 0, 'alert has no toggle enrichments button');
+    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).classList.contains('active'), 'toggle events is active');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(3) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${groupsSelector}`).length, 1, 'alerts has a group visible');
+    assert.notOk(find(`${alertsSelector}:nth-of-type(3) ${groupsSelector}:nth-of-type(1)`).classList.contains('is-selected'), 'group is not selected');
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
-    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1, 'alert has a header');
+    assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'), 'alert is open');
   });
 
   test('storyline will explicitly mark alerts that support event analysis', async function(assert) {
@@ -334,12 +334,12 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     await render(hbs`{{rsa-incident/container}}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);
 
-    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1, 'alert has a toggle events button');
     assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector}`).length, 1);
@@ -359,7 +359,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     await render(hbs`{{rsa-incident/container}}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
@@ -379,7 +379,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     await render(hbs`{{rsa-incident/container}}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
@@ -403,7 +403,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     await render(hbs`{{rsa-incident/container}}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
@@ -423,7 +423,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     await render(hbs`{{rsa-incident/container}}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);
@@ -443,7 +443,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     await render(hbs`{{rsa-incident/container}}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);
@@ -463,7 +463,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     await render(hbs`{{rsa-incident/container}}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);
@@ -483,7 +483,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     await render(hbs`{{rsa-incident/container}}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
@@ -510,7 +510,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     await render(hbs`{{rsa-incident/container}}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
@@ -523,7 +523,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     await getServices();
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);
@@ -562,7 +562,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     await render(hbs`{{rsa-incident/container}}`);
 
-    assert.equal(findAll(alertsSelector).length, 8);
+    assert.equal(findAll(alertsSelector).length, 8, 'incident has 7 alerts');
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);

@@ -43,7 +43,7 @@
   </hbox>
   <box fill class="rsa-incident-inspector__body">
     {{#if (eq viewMode 'storyline')}}
-      {{rsa-incident/alerts-table}}
+      {{rsa-incident/alerts-table closeOverlay=closeOverlay}}
     {{else if (eq viewMode 'search')}}
       {{#if riac.hasAlertsAccess}}
         {{rsa-incident/alerts-search}}

@@ -148,6 +148,10 @@ const incident = reduxActions.handleActions({
     return state.set('selection', { type: '', ids: [] });
   },
 
+  [ACTION_TYPES.FORCE_SET_INCIDENT_SELECTION]: (state, { payload: { type, id } }) => {
+    return state.set('selection', { type, ids: id ? [id] : [] });
+  },
+
   [ACTION_TYPES.SET_INCIDENT_SELECTION]: (state, { payload: { type, id } }) => {
     const { selection: { type: wasType, ids: wasIds } } = state;
     let newSelection;

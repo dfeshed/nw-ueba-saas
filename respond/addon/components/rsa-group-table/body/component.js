@@ -18,6 +18,12 @@ export default Component.extend(HasSizeAttr, HasScrollAttr, {
   classNames: ['rsa-group-table-body'],
 
   /**
+   * A stub for an action passed down from the controller, to close any open UEBA/RECON page, by transitioning back
+   * to the parent incident/<incident-id> route.
+   * */
+  closeOverlay: null,
+
+  /**
    * Configurable name of the Ember Component to be used for rendering the table's header rows.
    * Each instance of this component will automatically receive `group`, `index`, `table` & `top` attrs at run-time.
    * @type {String}
@@ -85,5 +91,14 @@ export default Component.extend(HasSizeAttr, HasScrollAttr, {
     groups = groups || [];
     const found = groups.findBy('items.length');
     return found || groups[0];
+  },
+
+  /**
+   * A click on a non-link storypoint or event cell closes any open open recon/ueba overlay.
+   */
+  click() {
+    if (this.get('closeOverlay')) {
+      this.get('closeOverlay')();
+    }
   }
 });

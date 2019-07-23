@@ -19,7 +19,7 @@ function* fetchLanguagesAndAliasesAsync(action) {
   try {
     const { endpointId, selection } = action;
     yield call(fetchFromCacheOrWebSocket, endpointId);
-    yield put({ type: ACTION_TYPES.SET_INCIDENT_SELECTION, payload: { type: 'event', id: selection } });
+    yield put({ type: ACTION_TYPES.FORCE_SET_INCIDENT_SELECTION, payload: { type: 'event', id: selection } });
   } finally {
     yield put({ type: ACTION_TYPES.ALIASES_AND_LANGUAGE_RETRIEVE, payload: { loading: false } });
   }

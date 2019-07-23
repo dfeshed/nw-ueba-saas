@@ -2,7 +2,7 @@ import Route from '@ember/routing/route';
 import { next } from '@ember/runloop';
 import { get, set } from '@ember/object';
 import { inject as service } from '@ember/service';
-import * as ACTION_TYPES from 'respond/actions/types';
+import { forceSetSelection } from 'respond/actions/creators/incidents-creators';
 
 export default Route.extend({
   redux: service(),
@@ -12,7 +12,7 @@ export default Route.extend({
       refreshModel: false
     },
     selection: {
-      refreshModel: false
+      refreshModel: true
     }
   },
   beforeModel() {
@@ -27,20 +27,15 @@ export default Route.extend({
 
     const redux = get(this, 'redux');
     next(() => {
-      redux.dispatch({
-        type: ACTION_TYPES.SET_INCIDENT_SELECTION,
-        payload: {
-          id: selection,
-          type: 'storyPoint'
-        }
-      });
+      redux.dispatch(forceSetSelection('storyPoint', selection));
     });
-
     return ueba;
   },
+
   setupController(controller, ueba) {
     set(controller, 'ueba', ueba);
   },
+
   actions: {
     uebaClose() {
       const { incidentId } = this || this.context;

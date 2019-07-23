@@ -17,7 +17,7 @@ export default Route.extend({
       refreshModel: false
     },
     selection: {
-      refreshModel: false
+      refreshModel: true
     }
   },
   beforeModel() {

@@ -483,6 +483,7 @@ const getIncidentsSettings = () => {
 const setHideViz = (hideViz) => ({ type: ACTION_TYPES.SET_HIDE_VIZ, payload: hideViz });
 const setViewMode = (viewMode) => ({ type: ACTION_TYPES.SET_VIEW_MODE, payload: viewMode });
 const resizeIncidentInspector = (width) => ({ type: ACTION_TYPES.RESIZE_INCIDENT_INSPECTOR, payload: width });
+const forceSetSelection = (type, id) => ({ type: ACTION_TYPES.FORCE_SET_INCIDENT_SELECTION, payload: { type, id } });
 const singleSelectStoryPoint = (id) => ({ type: ACTION_TYPES.SET_INCIDENT_SELECTION, payload: { type: 'storyPoint', id } });
 const toggleSelectStoryPoint = (id) => ({ type: ACTION_TYPES.TOGGLE_INCIDENT_SELECTION, payload: { type: 'storyPoint', id } });
 const singleSelectEvent = (id) => ({ type: ACTION_TYPES.SET_INCIDENT_SELECTION, payload: { type: 'event', id } });
@@ -522,6 +523,7 @@ export {
   singleSelectStoryPoint,
   toggleSelectStoryPoint,
   singleSelectEvent,
+  forceSetSelection,
   toggleSelectEvent,
   singleSelectLink,
   toggleSelectLink,
