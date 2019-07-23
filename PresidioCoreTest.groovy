@@ -3,12 +3,11 @@ pipeline {
         string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '', description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
         string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: 'origin/master', description: '')
         string(name: 'MVN_TEST_OPTIONS', defaultValue: '-U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
-        booleanParam(name: 'RUN_ONLY_TESTS', defaultValue: false, description: '')
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
         booleanParam(name: 'DATA_INJECTION', defaultValue: true, description: '')
         booleanParam(name: 'DATA_PROCESSING', defaultValue: true, description: '')
-        booleanParam(name: 'TEST_AUTOMATION', defaultValue: true, description: '')
+        booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
         //choice(name: 'STABILITY', choices: ['dev (default)','beta','alpha','rc','gold'], description: 'RPMs stability type')
         //choice(name: 'VERSION', choices: ['11.4.0.0','11.3.0.0','11.3.1.0','11.2.1.0'], description: 'RPMs version')
         //choice(name: 'NODE_LABLE', choices: ['','','nw-hz-03-ueba','nw-hz-04-ueba','nw-hz-05-ueba','nw-hz-06-ueba','nw-hz-07-ueba'], description: '')
@@ -46,11 +45,6 @@ pipeline {
                 uebaInstallRPMs()
             }
         }
-//        stage('Project Initialization') {
-//            steps {
-//                mvnCleanInstall()
-//            }
-//        }
 
         stage('Data Injection') {
             when {
@@ -70,9 +64,9 @@ pipeline {
             }
         }
 
-        stage('Test automation') {
+        stage('Tests') {
             when {
-                expression { return params.TEST_AUTOMATION }
+                expression { return params.RUN_TESTS }
             }
             steps {
                 runSuiteXmlFile('core/CoreTests.xml')
