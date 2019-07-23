@@ -104,8 +104,8 @@ const start = function({ subscriptionLocations, routes }, cb, { urlPattern, cust
   // eslint-disable-next-line new-cap
   const authRoute = express.Router();
   authRoute.post('/', function(req, res) {
-    const validUserNames = ['admin', 'local'];
-    const validPasswords = ['netwitness', 'changeMe'];
+    const validUserNames = ['admin', 'local', 'saml'];
+    const validPasswords = ['netwitness', 'changeMe', 'saml'];
 
     // any combo of the above common usernames/passwords will return successful authentication token
     if (validUserNames.includes(req.body.username) && validPasswords.includes(req.body.password)) {

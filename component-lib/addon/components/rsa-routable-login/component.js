@@ -180,7 +180,8 @@ export default Component.extend({
 
       localStorage.removeItem('rsa-x-csrf-token');
       // Authenticate based on Credential and Pki Status
-      session.authenticate(auth, this.get('username'), this.get('password'), this.get('userPkiEnabled')).then(
+      const grantType = this.get('userPkiEnabled') ? 'pki' : 'password';
+      session.authenticate(auth, this.get('username'), this.get('password'), grantType).then(
         // Auth succeeded
         () => {
           this.updateLoginProperties(_STATUS.SUCCESS);

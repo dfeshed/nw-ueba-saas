@@ -79,11 +79,10 @@ export default OAuth2PasswordGrant.extend(csrfToken, {
    * to Token Server will be handled by NginX transparently by NginX and it does not require any code changes other than
    * simple making a XHR call to [ OAuth Token ] URL with parameter {@code grant_type} as 'pki'
    */
-  authenticate(identification, password, userpkistatus, scope = []) {
+  authenticate(identification, password, grantType = 'password', scope = []) {
     return new RSVP.Promise((resolve, reject) => {
       // This is crucial that we send grant_type as PKI in case PKI is enabled on Server
       // No other value would be accepted otherwise
-      const grantType = (userpkistatus === true) ? 'pki' : 'password';
       const data = { 'grant_type': grantType, username: identification, password };
       const serverTokenEndpoint = useMockServer ? `${mockServerUrl}${this.get('serverTokenEndpoint')}` : this.get('serverTokenEndpoint');
       const scopesString = makeArray(scope).join(' ');
