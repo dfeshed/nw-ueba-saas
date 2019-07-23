@@ -1,5 +1,14 @@
 <div class='close-action'>
   <div class='title'>{{t 'investigateHosts.downloads.mftHeaderTitle'}}</div>
+
+  {{#rsa-form-button
+     class='download-to-server'
+     defaultAction=(action 'onDownloadFilesToServer')
+     isDisabled=isDownloadToServerDisabled
+     title=(if isDownloadToServerDisabled (t 'investigateHosts.downloads.downloadFileToServerToolTip'))
+   }}
+    <span>{{t 'investigateHosts.downloads.mftActionBar.downloadFileToServer'}}</span>
+  {{/rsa-form-button}}
   {{#link-to "hosts.details"  machineId (query-params mftFile=null mftName=null sid=serverId subTabName='DOWNLOADS' pid=null query=null machineId=machineId tabName='DOWNLOADS')}}
     {{rsa-icon class='close-mft-view-button' title=(t 'investigateHosts.downloads.backToDownloadsTitle') name='close'}}
   {{/link-to}}

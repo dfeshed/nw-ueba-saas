@@ -56,5 +56,22 @@ module('Integration | Component | mft-container', function(hooks) {
     assert.equal(findAll('.mft-container .filter-wrapper').length, 1, 'Filter is present');
     assert.equal(findAll('.mft-container .filter-wrapper .filter-controls').length, 9, '9 Filters present');
   });
+  test('Mft-container with mft-table rendered on selection of directory', async function(assert) {
+
+    new ReduxDataHelper(setState).hostDownloads(hostDownloads).selectedMftFileList([{}]).selectedDirectoryForDetails(true).build();
+    await render(hbs`{{host-detail/downloads/mft-container}}`);
+    assert.equal(findAll('.mft-container').length, 1, 'mft-container rendered');
+    assert.equal(findAll('.mft-bar').length, 2, 'mft-container should rendered tree nad table panels');
+    assert.equal(findAll('.mft-table-list').length, 1, 'mft-table list should redered');
+    assert.equal(findAll('.download-to-server').length, 1, 'download to server button should present');
+  });
+  test('Mft-container with mft-help ', async function(assert) {
+
+    new ReduxDataHelper(setState).hostDownloads(hostDownloads).selectedMftFileList([{}]).selectedDirectoryForDetails(false).build();
+    await render(hbs`{{host-detail/downloads/mft-container}}`);
+    assert.equal(findAll('.mft-help').length, 1, 'mft-help rendered');
+    assert.equal(findAll('.line-one').length, 2, 'help texts rendered');
+    assert.equal(findAll('.line-one ul li').length, 2, 'help texts rendered');
+  });
 
 });

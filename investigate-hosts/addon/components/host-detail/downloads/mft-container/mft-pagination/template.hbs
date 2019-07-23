@@ -1,0 +1,7 @@
+{{#if (and fileIndex fileTotal)}}
+  <div class="file-info lighter right">
+    {{t 'investigateHosts.downloads.footer' label='items' count=fileIndex total=fileTotal
+        selectedItems=selectedMftFiles.length}}
+  </div>
+{{/if}}
+

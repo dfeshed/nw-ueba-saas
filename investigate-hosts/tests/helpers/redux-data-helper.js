@@ -420,7 +420,23 @@ export default class DataHelper {
   }
 
   fileSource(value) {
-    _set(this.state, 'hostDownloads.mftDirectory.fileSource', value);
+    _set(this.state, 'hostDownloads.mft.mftDirectory.fileSource', value);
+    return this;
+  }
+  selectedDirectoryForDetails(value) {
+    _set(this.state, 'hostDownloads.mft.mftDirectory.selectedDirectoryForDetails', value);
+    return this;
+  }
+  mftFiles(data) {
+    _set(this.state, 'hostDownloads.mft.mftDirectory.files', data);
+    return this;
+  }
+  selectedMftFileList(list) {
+    _set(this.state, 'hostDownloads.mft.mftDirectory.selectedMftFileList', list);
+    return this;
+  }
+  mftHasNext(value) {
+    _set(this.state, 'hostDownloads.mft.mftDirectory.hasNext', value);
     return this;
   }
 
@@ -441,6 +457,10 @@ export default class DataHelper {
 
   areFilesLoading(areFilesLoading) {
     _set(this.state, 'hostDownloads.downloads.areFilesLoading', areFilesLoading);
+    return this;
+  }
+  areMftFilesLoading(loading) {
+    _set(this.state, 'hostDownloads.mft.mftDirectory.loading', loading);
     return this;
   }
 }

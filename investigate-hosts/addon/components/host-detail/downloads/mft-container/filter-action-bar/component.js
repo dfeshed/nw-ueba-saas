@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
-import { toggleMftView } from 'investigate-hosts/actions/data-creators/downloads';
+import { toggleMftView, mftFilterVisible } from 'investigate-hosts/actions/data-creators/downloads';
 import computed, { alias } from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 
@@ -9,11 +9,13 @@ const stateToComputed = (state) => ({
   serverId: state.endpointQuery.serverId,
   focusedHost: state.endpoint.detailsInput.agentId,
   isMFTView: state.endpoint.hostDownloads.downloads.isShowMFTView,
-  fileSource: state.endpoint.hostDownloads.mft.mftDirectory.fileSource
+  fileSource: state.endpoint.hostDownloads.mft.mftDirectory.fileSource,
+  isOpenFilter: state.endpoint.hostDownloads.mft.mftDirectory.showFilter
 });
 
 const dispatchToActions = {
-  toggleMftView
+  toggleMftView,
+  mftFilterVisible
 };
 
 const filterActionBar = Component.extend({
@@ -26,7 +28,13 @@ const filterActionBar = Component.extend({
   @computed('fileSource')
   disableFilter(fileSource) {
     return !fileSource.length;
-  }
+  },
+  actions: {
+    filterAction() {
+      this.send('mftFilterVisible', true);
+      this.openFilterPanel();
+    }
 
+  }
 });
 export default connect(stateToComputed, dispatchToActions)(filterActionBar);

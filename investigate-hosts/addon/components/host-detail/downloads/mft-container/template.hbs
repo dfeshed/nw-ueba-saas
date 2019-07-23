@@ -1,6 +1,6 @@
 {{#if isShowMFTView}}
   <box class="mft-content">
-    {{#rsa-page-layout showRightZone=false showLeftZone=false as |layout|}}
+    {{#rsa-page-layout showRightZone=false onClose=(action 'onOpen') showLeftZone=false as |layout|}}
       {{#layout.left as |leftPanel|}}
         {{leftPanel.header iconName='filter-2' title=(t 'investigateHosts.downloads.filters.title')}}
         {{endpoint/filters-wrapper
@@ -22,7 +22,7 @@
           <vbox class='mft-bar mft-tree'>
             <box class='mft-action'>
               {{host-detail/downloads/mft-container/filter-action-bar
-                openFilterPanel=(action layout.open 'left')}}
+                      openFilterPanel=(action layout.open 'left')}}
             </box>
             <box class='mft-table'>
               <div class='mft-header'>
@@ -31,14 +31,18 @@
               {{host-detail/downloads/directory-wrapper}}
             </box>
           </vbox>
-          <vbox class='mft-bar'>
+          <vbox class='mft-bar mft-list'>
             <box class='mft-action'>
               {{host-detail/downloads/mft-container/mft-action-bar}}
             </box>
-            <box class='mft-table'>
-              <div class='mft-header'></div>
-              <h1> MFT TABLE</h1>
-              {{host-detail/downloads/mft-container/mft-help}}
+            <box class='mft-table mft-table-list'>
+              {{#if isShowMftHelp}}
+                <div class='mft-header'></div>
+                {{host-detail/downloads/mft-container/mft-help}}
+              {{else}}
+                {{host-detail/downloads/mft-container/mft-list}}
+                {{host-detail/downloads/mft-container/mft-pagination}}
+              {{/if}}
             </box>
           </vbox>
         </hbox>

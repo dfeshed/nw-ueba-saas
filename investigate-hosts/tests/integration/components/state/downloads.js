@@ -622,7 +622,8 @@ export const hostDownloads = {
       openDirectories: [
         5
       ],
-      selectedDirectoryForDetails: 0
+      selectedDirectoryForDetails: 0,
+      selectedMftFileList: []
     },
     filter: {
       selectedFilter: null,

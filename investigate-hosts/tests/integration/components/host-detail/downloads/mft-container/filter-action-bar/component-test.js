@@ -155,5 +155,18 @@ module('Integration | Component | mft-container/filter-action-bar', function(hoo
       }
     }]);
   });
+  test('Filter isOpenFilter button test', async function(assert) {
+    initState(endpointState);
+    this.set('openPanel', function() {
+      assert.ok(true, 'open panel is called');
+    });
+    await render(hbs`{{host-detail/downloads/mft-container/filter-action-bar isOpenFilter=false openFilterPanel=openPanel}}`);
+    assert.equal(findAll('.open-filter-panel').length, 1, 'filter button rendered');
+    await click('.open-filter-panel');
+    const state = this.owner.lookup('service:redux').getState();
+    const { showFilter } = state.endpoint.hostDownloads.mft.mftDirectory;
+    assert.equal(showFilter, true, 'Filter should show');
+    assert.equal(findAll('.open-filter-panel').length, 0, 'filter button hidden');
+  });
 
 });

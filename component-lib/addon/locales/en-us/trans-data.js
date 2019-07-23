@@ -2268,7 +2268,7 @@ export default {
     placeholder: 'Make a selection',
     searchPlaceholder: 'Enter the filter option',
     emptyName: 'Configuration name is empty',
-    channelFilter: 'Channel Filters🛈',
+    channelFilter: 'Channel Filters',
     specialCharacter: 'Configuration name contains special character.',
     fullAgent: 'Full Agent',
     channel: {
@@ -2963,9 +2963,38 @@ export default {
         mftChangedTimeFn: 'Update Time ($FN)',
         mftChangedTimeSi: 'Update Time ($SI)'
       },
+      mftTable: {
+        headers: {
+          name: 'Name',
+          fileSize: 'Size',
+          creationTime$FN: 'Creation Time ($FN)',
+          creationTime$SI: 'Creation Time ($SI)',
+          modificationTime$SI: 'Modification Time ($SI)',
+          modificationTime$FN: 'Modification Time ($FN)',
+          accessTime$FN: 'Access time ($FN)',
+          accessTime$SI: 'Access time ($SI)',
+          updateTime$FN: 'Update time ($FN)',
+          updateTime$SI: 'Update time ($FN)',
+          fullPath: 'Full Path',
+          allocatedSize: 'Allocated size ',
+          archive: 'archive',
+          compressed: 'Compressed',
+          encrypted: 'Encrypted',
+          hidden: 'Hidden',
+          properties: 'Properties'
+        },
+        bodyCell: {
+          noValue: '--',
+          dateStomp: 'Date stomp'
+        }
+      },
       help: {
         header: 'Select the drive or folder to view content.',
         line2: 'Click the row to view the folder details.'
+      },
+      mftActionBar: {
+        downloadFileToServer: 'Download File to Server',
+        downloadFileToServerToolTip: 'Select only one file to download'
       },
       backToDownloads: 'Downloads',
       backToDownloadsTitle: 'Back to downloads tab',

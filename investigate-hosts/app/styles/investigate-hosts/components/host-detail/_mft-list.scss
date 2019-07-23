@@ -1,0 +1,32 @@
+.mft-list {
+  .mft-table-list {
+    .name {
+      i {
+        width: 2rem;
+        padding-top: 0.5rem;
+      }
+      .file-name-link {
+        width: 13vw;
+      }
+      a {
+        color: text-color(secondary, light);
+      }
+    }
+    .date-stomp {
+      color: text-color(accentFour);
+      i {
+        color: text-color(accentFour,light);
+      }
+    }
+  }
+
+}
+.date-stomp-content-teathredpanel {
+  border-color: text-color(accentFour)!important;
+  section {
+    color: text-color(accentFour);
+    max-width: fit-content;
+    min-width: fit-content;
+  }
+
+}
