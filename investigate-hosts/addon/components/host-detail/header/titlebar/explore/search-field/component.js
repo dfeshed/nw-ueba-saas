@@ -16,9 +16,11 @@ const dispatchToActions = {
 
 const SearchField = Component.extend({
 
-  tagName: '',
-
   i18n: service(),
+
+  classNames: ['search-field'],
+
+  classNameBindings: ['isError'],
 
   /**
    * Used for search text box validation error message
@@ -52,10 +54,9 @@ const SearchField = Component.extend({
         this.send('getFileSearchResults', text);
       }
     },
-    submitSearch(e) {
-      if (e.key == 'Enter') {
-        this.send('defaultAction');
-        return false;
+    onKeyUp(value) {
+      if (isEmpty(value)) {
+        this.set('isError', false);
       }
     }
   }

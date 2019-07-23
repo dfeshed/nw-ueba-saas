@@ -1,8 +1,15 @@
-{{rsa-form-input isError=isError
-                 errorMessage=errMsg
-                 value=searchText
-                 placeholder=(t 'investigateHosts.hosts.explore.input.placeholder')
-                 keyPress=(action 'submitSearch')}}
+{{#rsa-content-tethered-panel-trigger panel='panel6'}}
+  {{rsa-form-input isError=isError
+    value=searchText
+    onEnter=(action 'defaultAction')
+    placeholder=(t 'investigateHosts.hosts.explore.input.placeholder')
+    onKeyUp=(action 'onKeyUp')}}
+{{/rsa-content-tethered-panel-trigger}}
+{{#if isError}}
+  {{#rsa-content-tethered-panel style="error" position='top' panelId='panel6'}}
+    <section>{{t 'investigateHosts.hosts.explore.search.minimumtext.required'}}</section>
+  {{/rsa-content-tethered-panel}}
+{{/if}}
 {{#if searchResultLoading}}
   {{rsa-loader class="host-explore__loader"}}
 {{else}}

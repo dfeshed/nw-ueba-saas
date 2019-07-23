@@ -6,7 +6,13 @@ $result-text-color: text-color(primary, light);
 
 
 .host-explore {
-  @include border(1px, solid, primary, dark);
+  .search-field {
+    width: 100%;
+    @include border(1px, solid, primary, dark);
+    &.is-error {
+      border-color: text-color(accentOne);
+    }
+  }
   min-width: $host-explore-min-width;
   max-width: 30%;
   margin-left: auto;
@@ -65,6 +71,10 @@ $result-text-color: text-color(primary, light);
   &__no-results {
     color: text-color(primary, lightest);
     font-weight: bold;
+  }
+
+  .rsa-content-tethered-panel-trigger {
+    width: 90%;
   }
 
   .rsa-form-input {

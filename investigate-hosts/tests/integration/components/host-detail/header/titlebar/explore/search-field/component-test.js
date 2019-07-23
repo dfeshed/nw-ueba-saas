@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../../../../helpers/redux-data-helper';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../../../../helpers/vnext-patch';
-import { click, find, render } from '@ember/test-helpers';
+import { click, find, render, triggerEvent } from '@ember/test-helpers';
 
 let setState;
 
@@ -27,8 +27,8 @@ module('Integration | Component | endpoint host titlebar explore search field', 
     this.set('errMsg', 'error message');
     await render(hbs`{{host-detail/header/titlebar/explore/search-field isError=isError errMsg=errMsg }}`);
     assert.ok(find('.rsa-form-input'), 'Searchfield rendered');
-    assert.ok(find('.rsa-form-input.is-error'), 'search-field Error validated');
-
+    await triggerEvent('.rsa-form-input', 'mouseover');
+    assert.ok(find('.search-field .is-error'), true, 'tethererd panel appears and search-field Error validated');
   });
 
   test('Should render Search field with loader', async function(assert) {
