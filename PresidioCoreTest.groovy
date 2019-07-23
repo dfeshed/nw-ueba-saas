@@ -72,11 +72,11 @@ pipeline {
                 runSuiteXmlFile('core/CoreTests.xml')
             }
         }
-    }
 
-    post {
-        always {
-            junit allowEmptyResults: true, testResults: '**/target/surefire-reports/junitreports/*.xml'
+        post {
+            always {
+                junit allowEmptyResults: true, testResults: '**/target/surefire-reports/junitreports/*.xml'
+            }
         }
     }
 }
