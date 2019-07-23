@@ -19,7 +19,7 @@ import org.testng.annotations.Test;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
+@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     @Autowired

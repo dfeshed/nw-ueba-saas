@@ -24,7 +24,7 @@ import java.util.List;
 
 @Configuration
 @PropertySource("classpath:mongo_caweb.properties")
-@EnableMongoRepositories(basePackages = {"presidio/integration/domain/repository"})
+@EnableMongoRepositories(basePackages = {"com.rsa.netwitness.presidio.automation.domain.repository"})
 @EnableMongoAuditing
 public class CaWebMongoConfig extends AbstractMongoConfiguration {
 

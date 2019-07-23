@@ -28,7 +28,7 @@ import java.util.List;
 @EnableMongoAuditing
 @Import({MongoPropertiesReaderConfig.class})
 @SpringBootConfiguration
-@EnableMongoRepositories(basePackages = {"presidio.integration.domain.repository"})
+@EnableMongoRepositories(basePackages = {"com.rsa.netwitness.presidio.automation.domain.repository"})
 public class MongoConfig extends AbstractMongoConfiguration {
 
     private String mongoHostName;
