@@ -13,7 +13,7 @@
     <artifactId>ueba-automation-test</artifactId>
 
     <properties>
-        <suiteXmlFile>PrepareNetwork_Data.xml</suiteXmlFile>
+        <suiteXmlFile>core/Output_Tests.xml</suiteXmlFile>
     </properties>
 
     <dependencies>
@@ -41,10 +41,15 @@
             <artifactId>spring-boot-test</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -58,9 +63,8 @@
                     </execution>
                 </executions>
                 <configuration>
-
                     <suiteXmlFiles>
-                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                        <suiteXmlFile>${project.build.testOutputDirectory}/scenarios/${suiteXmlFile}</suiteXmlFile>
                     </suiteXmlFiles>
                 </configuration>
             </plugin>
