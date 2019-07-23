@@ -134,7 +134,7 @@
         <json-patch.version>1.9</json-patch.version>
         <javax.el-version>3.0.0</javax.el-version>
         <mongodb-driver-async.version>3.4.2</mongodb-driver-async.version>
-        <swagger-maven-plugin.version>3.1.5</swagger-maven-plugin.version>
+        <swagger-maven-plugin.version>3.1.8</swagger-maven-plugin.version>
         <jackson-coreutils.version>1.8</jackson-coreutils.version>
         <commons-io.version>2.4</commons-io.version>
         <presidio-data-generators.version>2.0.0-SNAPSHOT</presidio-data-generators.version>
