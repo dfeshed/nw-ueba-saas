@@ -14,7 +14,7 @@ export default [
     visible: true,
     field: 'name',
     searchable: true,
-    disableSort: true,
+    disableSort: false,
     title: 'investigateHosts.downloads.mftTable.headers.name'
   },
   {
@@ -22,7 +22,7 @@ export default [
     visible: true,
     field: 'realSize',
     searchable: false,
-    disableSort: true,
+    disableSort: false,
     title: 'investigateHosts.downloads.mftTable.headers.fileSize'
   },
   {
@@ -40,7 +40,7 @@ export default [
     visible: true,
     field: 'creationTimeSi',
     searchable: false,
-    disableSort: true,
+    disableSort: false,
     title: 'investigateHosts.downloads.mftTable.headers.creationTime$SI'
   },
   {
@@ -49,7 +49,7 @@ export default [
     visible: true,
     field: 'mftChangedTime',
     searchable: false,
-    disableSort: true,
+    disableSort: false,
     title: 'investigateHosts.downloads.mftTable.headers.modificationTime$FN'
   },
   {
@@ -58,7 +58,7 @@ export default [
     visible: true,
     field: 'mftChangedTimeSi',
     searchable: false,
-    disableSort: true,
+    disableSort: false,
     title: 'investigateHosts.downloads.mftTable.headers.modificationTime$SI'
   },
   {
@@ -67,7 +67,7 @@ export default [
     visible: true,
     field: 'fileReadTime',
     searchable: false,
-    disableSort: true,
+    disableSort: false,
     title: 'investigateHosts.downloads.mftTable.headers.accessTime$FN'
   },
   {
@@ -76,7 +76,7 @@ export default [
     visible: true,
     field: 'fileReadTimeSi',
     searchable: false,
-    disableSort: true,
+    disableSort: false,
     title: 'investigateHosts.downloads.mftTable.headers.accessTime$SI'
   },
   {
@@ -85,7 +85,7 @@ export default [
     visible: true,
     field: 'alteredTime',
     searchable: false,
-    disableSort: true,
+    disableSort: false,
     title: 'investigateHosts.downloads.mftTable.headers.updateTime$FN'
   },
   {
@@ -94,7 +94,7 @@ export default [
     visible: true,
     field: 'alteredTimeSi',
     searchable: false,
-    disableSort: true,
+    disableSort: false,
     title: 'investigateHosts.downloads.mftTable.headers.updateTime$SI'
   },
   {
@@ -103,7 +103,7 @@ export default [
     visible: true,
     field: 'fullPathName',
     searchable: false,
-    disableSort: true,
+    disableSort: false,
     title: 'investigateHosts.downloads.mftTable.headers.fullPath'
   },
   {
@@ -112,7 +112,7 @@ export default [
     visible: true,
     field: 'allocatedSize',
     searchable: false,
-    disableSort: true,
+    disableSort: false,
     title: 'investigateHosts.downloads.mftTable.headers.allocatedSize'
   },
   {
@@ -155,9 +155,18 @@ export default [
     dataType: 'string',
     width: 170,
     visible: true,
-    field: 'properties',
+    field: 'directory',
     searchable: false,
     disableSort: true,
-    title: 'investigateHosts.downloads.mftTable.headers.properties'
+    title: 'investigateHosts.downloads.mftTable.headers.directory'
+  },
+  {
+    dataType: 'string',
+    width: 170,
+    visible: true,
+    field: 'extension',
+    searchable: false,
+    disableSort: false,
+    title: 'investigateHosts.downloads.mftTable.headers.extension'
   }
 ];

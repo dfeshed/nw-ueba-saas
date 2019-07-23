@@ -308,48 +308,13 @@ module('Unit | Reducers | mft-directory', function() {
 
     assert.equal(result.pageNumber, 3);
   });
-  /* test('The FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES will fetch the next set of downloaded mft files', function(assert) {
-    const previous = Immutable.from({
-      files: {},
-      loadMoreStatus: 'completed',
-      selectedIndex: -1,
-      totalItems: 4,
-      sortField: 'downloadedTime',
-      isSortDescending: true,
-      selectedFileList: [],
-      selectedFile: {},
-      pageNumber: -1
-    });
 
-
-    const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES });
-    const startEndState = reducer(previous, startAction);
-
-    assert.equal(startEndState.loading, 'wait');
-
-    const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES, payload: { data: { items: [{ name: 'fileName' }] } } });
-    const endState = reducer(startEndState, action);
-    assert.equal(endState.loading, 'completed');
-    const data = endState.files;
-    const testFile = data.files_1;
-    assert.equal(testFile.name, 'fileName');
-
-    const errorAction = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES });
-    const errorEndState = reducer(previous, errorAction);
-
-    assert.equal(errorEndState.loading, 'error');
-  });
-*/
   test('FETCH_FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES fetches files and subdirectories for ', function(assert) {
     const previous = Immutable.from({
       files: {},
       subDirectories: [],
       selectedParentDirectory: {}
     });
-    const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES });
-    const startEndState = reducer(previous, startAction);
-    assert.equal(startEndState.loading, 'wait');
-
     const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES, payload: { data: { items: [{
       mftId: '5d19c6c7c8811e3057c68fd8',
       recordNumber: 5,
@@ -364,7 +329,6 @@ module('Unit | Reducers | mft-directory', function() {
     const endState = reducer(previous, action);
     assert.equal(endState.totalItems, 1);
     assert.equal(Object.keys(endState.files).length, 1);
-    assert.equal(endState.loading, 'completed');
   });
   test('The TOGGLE_MFT_FILTER_PANEL test', function(assert) {
     const previous = Immutable.from({

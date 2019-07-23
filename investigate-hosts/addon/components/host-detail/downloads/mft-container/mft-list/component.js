@@ -27,7 +27,7 @@ import FIXED_COLUMNS from './mft-table-columns';
 
 const stateToComputed = (state) => ({
   areFilesLoading: areMftFilesLoading(state),
-  loadMoreStatus: state.endpoint.hostDownloads.mft.mftDirectory.loading,
+  loadMoreStatus: state.endpoint.hostDownloads.mft.mftDirectory.loadMoreStatus,
   files: listOfMftFiles(state),
   totalItems: state.endpoint.hostDownloads.mft.mftDirectory.totalMftItems,
   sortField: state.endpoint.hostDownloads.mft.mftDirectory.sortField, // Currently applied sort on file list

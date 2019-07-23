@@ -113,8 +113,8 @@ const mftDirectory = reduxActions.handleActions({
   },
   [ACTION_TYPES.FETCH_NEXT_MFT_SUBDIRECTORIES_AND_FILES]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.set('loading', 'wait'),
-      failure: (s) => s.set('loading', 'error'),
+      start: (s) => s.set('loadMoreStatus', 'wait'),
+      failure: (s) => s.set('loadMoreStatus', 'error'),
       success: (s) => {
         const { files: file } = state;
         const normalizedData = normalize(action.payload.data.items, fileListSchema);
@@ -127,7 +127,7 @@ const mftDirectory = reduxActions.handleActions({
             files: { ...file, ...files },
             totalMftItems,
             hasMftNext,
-            loading: 'completed'
+            loadMoreStatus: 'completed'
           });
         }
       }

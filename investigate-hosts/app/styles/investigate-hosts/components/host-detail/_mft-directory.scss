@@ -17,12 +17,16 @@
       .mft-folder-icon {
         margin-right: 0.5rem;
         float: left;
+        color: text-color(accentFour, light);
       }
       &.no-sub-folders {
         margin-left: 1rem;
       }
       .main-drive {
         @include rsa-font(navigation);
+        i {
+          color: text-color(neutral);
+        }
       }
       .file {
         display: inline-block;

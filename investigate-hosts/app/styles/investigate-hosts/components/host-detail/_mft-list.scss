@@ -4,6 +4,9 @@
       i {
         width: 2rem;
         padding-top: 0.5rem;
+        &.rsa-icon-folder-2-filled {
+          color: text-color(accentFour, light);
+        }
       }
       .file-name-link {
         width: 13vw;
@@ -13,18 +16,17 @@
       }
     }
     .date-stomp {
-      color: text-color(accentFour);
       i {
-        color: text-color(accentFour,light);
+        color: text-color(accentOne);
+        font-size: 1rem;
+        padding-left: 0.5rem;
       }
     }
   }
 
 }
-.date-stomp-content-teathredpanel {
-  border-color: text-color(accentFour)!important;
+.date-stomp-content-teathredpanel {;
   section {
-    color: text-color(accentFour);
     max-width: fit-content;
     min-width: fit-content;
   }

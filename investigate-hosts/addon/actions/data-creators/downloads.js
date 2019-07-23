@@ -288,7 +288,7 @@ const mftFilterVisible = (visibility) => ({ type: ACTION_TYPES.TOGGLE_MFT_FILTER
 const sortMftBy = (sortField, isSortDescending) => {
   return (dispatch) => {
     dispatch({ type: ACTION_TYPES.SET_MFT_FILES_SORT_BY, payload: { sortField, isSortDescending } });
-    dispatch(getPageOfMftFiles());
+    dispatch(getSubDirectories());
   };
 };
 

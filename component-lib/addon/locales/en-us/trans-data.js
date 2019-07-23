@@ -2981,11 +2981,14 @@ export default {
           compressed: 'Compressed',
           encrypted: 'Encrypted',
           hidden: 'Hidden',
-          properties: 'Properties'
+          properties: 'Properties',
+          directory: 'Directory',
+          extension: 'Extension'
+
         },
         bodyCell: {
           noValue: '--',
-          dateStomp: 'Date stomp'
+          dateStomp: 'Timestomping'
         }
       },
       help: {
@@ -3002,7 +3005,8 @@ export default {
       errorMessages: {
         invalidFilterInputLength: 'Filter input longer than 256 characters',
         invalidCharsAlphaNumericOnly: 'Special characters are not allowed',
-        noResultsMessage: 'No downloads found'
+        noResultsMessage: 'No downloads found',
+        noMftResultsMessage: 'No files found'
       },
       tableHeader: {
         filename: 'File name',
@@ -3869,7 +3873,8 @@ export default {
       iconTitle: 'Analyze Events'
     },
     flash: {
-      fileDownloadRequestSent: 'Files are set for download. Check the "Downloaded" column for status.'
+      fileDownloadRequestSent: 'Files are set for download. Check the "Downloaded" column for status.',
+      mftFileDownloadRequestSent: 'Files are set for download. Check the "Downloads" tab for status.'
     },
     detailsColumns: {
       fileName: 'Filename',
