@@ -53,24 +53,27 @@ pipeline {
 //        }
 
         stage('Data Injection') {
-            expression { return params.DATA_INJECTION }
-
+            when {
+                expression { return params.DATA_INJECTION }
+            }
             steps {
                 runSuiteXmlFile('core/CoreDataInjection.xml')
             }
         }
 
         stage('Data Processing') {
-            expression { return params.DATA_PROCESSING }
-
+            when {
+                expression { return params.DATA_PROCESSING }
+            }
             steps {
                 runSuiteXmlFile('core/CoreDataProcessing.xml')
             }
         }
 
         stage('Test automation') {
-            expression { return params.TEST_AUTOMATION }
-
+            when {
+                expression { return params.TEST_AUTOMATION }
+            }
             steps {
                 runSuiteXmlFile('core/CoreTests.xml')
             }
