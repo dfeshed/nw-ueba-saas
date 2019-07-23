@@ -10,6 +10,9 @@ const popupFilter = reduxActions.handleActions({
 
   [ACTION_TYPES.SET_ACTIVE_EVENT_FILTER_TAB]: (state, { payload: { tabName } }) => {
     return state.set('activeFilterTab', tabName);
+  },
+  [ACTION_TYPES.RESET_ACTIVE_EVENT_FILTER_TAB]: (state) => {
+    return state.set('activeFilterTab', 'all');
   }
 }, filterPopupInitialState);
 

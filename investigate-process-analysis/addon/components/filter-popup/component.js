@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { setActiveFilterTab } from 'investigate-process-analysis/actions/creators/filter-popup';
+import { setActiveFilterTab, resetActiveFilterTab } from 'investigate-process-analysis/actions/creators/filter-popup';
 import { getFilterTabs } from 'investigate-process-analysis/reducers/filter-popup/selectors';
 import computed from 'ember-computed-decorators';
 import { TAB_FILTER } from '../const';
@@ -11,7 +11,8 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  setActiveFilterTab
+  setActiveFilterTab,
+  resetActiveFilterTab
 };
 
 const PopupFilter = Component.extend({
@@ -40,6 +41,11 @@ const PopupFilter = Component.extend({
   isViewSelectedDisabled(selectedProcessCount) {
     return !selectedProcessCount;
   },
+  didReceiveAttrs() {
+    this._super(...arguments);
+    this.send('resetActiveFilterTab');
+  },
+
   actions: {
     activate(tabName) {
       this.send('setActiveFilterTab', tabName);

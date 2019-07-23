@@ -32,7 +32,7 @@ import {
   children,
   selectedProcessPath
 } from 'investigate-process-analysis/reducers/process-tree/selectors';
-import { setDetailsTab, toggleProcessDetailsVisibility, isNodeSelected } from 'investigate-process-analysis/actions/creators/process-visuals';
+import { toggleProcessDetailsVisibility, isNodeSelected } from 'investigate-process-analysis/actions/creators/process-visuals';
 import { getRiskScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 
 import {
@@ -64,7 +64,6 @@ const dispatchToActions = {
   selectedProcessEvents,
   resetFilterValue,
   getFileProperty,
-  setDetailsTab,
   toggleProcessDetailsVisibility,
   onEventNodeSelected,
   getHostContext,

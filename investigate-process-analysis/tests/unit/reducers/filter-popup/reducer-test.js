@@ -19,4 +19,9 @@ module('Unit | Reducers | filter-popup', function() {
     const result = reducer(initialState, { type: ACTION_TYPES.SET_ACTIVE_EVENT_FILTER_TAB, payload: { tabName: 'registry' } });
     assert.equal(result.activeFilterTab, 'registry', 'Selected tab is set');
   });
+
+  test('RESET_ACTIVE_EVENT_FILTER_TAB sets active tab', function(assert) {
+    const result = reducer(initialState, { type: ACTION_TYPES.RESET_ACTIVE_EVENT_FILTER_TAB, payload: { tabName: 'registry' } });
+    assert.equal(result.activeFilterTab, 'all', 'Default tab is set');
+  });
 });

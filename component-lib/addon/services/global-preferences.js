@@ -1,7 +1,7 @@
 import { observer } from '@ember/object';
 import Service, { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
-import Evented from '@ember/object/evented';
+import Evented, { on } from '@ember/object/evented';
 
 export default Service.extend(Evented, {
   eventBus: service(),
@@ -25,7 +25,7 @@ export default Service.extend(Evented, {
     };
   },
 
-  preferencesDidChange: observer(
+  preferencesDidChange: on('init', observer(
     'timeFormat.selected.format',
     'dateFormat.selected.format',
     'timezone.selected.zoneId',
@@ -33,6 +33,6 @@ export default Service.extend(Evented, {
     function() {
       this.trigger('rsa-application-user-preferences-did-change', this.preferences);
     }
-  ).on('init')
+  ))
 
 });

@@ -12,6 +12,7 @@ import sinon from 'sinon';
 
 let setState;
 const selectors = {
+  selectedTab: '.process-filter-popup .rsa-nav-tab.is-active',
   viewAll: '[test-id=view-all]',
   viewSelected: '[test-id=view-selected]',
   cancelPopup: '[test-id=cancel-popup]',
@@ -116,10 +117,12 @@ module('Integration | Component | process-tree', function(hooks) {
       assert.equal(findAll('.filter-popup').length, 1, 'Expected to render tether panel');
       assert.equal(findAll(selectors.processList).length, 2, '2 child is present for first node');
       assert.equal(findAll(selectors.checkAll).length, 1, 'Select all checkbox (2)');
+      await click(findAll('.process-filter-popup .rsa-nav-tab')[2], 'click registry tab');
       await selectAll('g.process .button-wrapper#expand-4').dispatch('click');
       await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
       return settled().then(async() => {
         assert.equal(findAll(selectors.processList).length, 4, '4 child is present for fourth node');
+        assert.equal(find(selectors.selectedTab).textContent.trim(), 'All (4)', 'Default tab is selected when popup is opened again');
         await click(selectors.viewAll);
         assert.equal(findAll('rect.process').length, 8, 'Expected to render 8 nodes after view all is clicked');
       });
