@@ -28,6 +28,7 @@ const ARROW_UP_KEY = KEY_MAP.arrowUp.code;
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const X_KEY = 88;
+const THREE_KEY = 51;
 const DELETE_KEY = KEY_MAP.delete.code;
 const BACKSPACE_KEY = KEY_MAP.backspace.code;
 const TAB_KEY = KEY_MAP.tab.code;
@@ -342,6 +343,46 @@ module('Integration | Component | Query Pill', function(hooks) {
 
     // Choose the third operator option which does not require a value
     await selectChoose(PILL_SELECTORS.operatorTrigger, 'exists'); // option exists
+  });
+
+  test('A pill when supplied with meta, operator (length), and value will not wrap the value in quotes', async function(assert) {
+    const done = assert.async();
+    this.set('metaOptions', metaOptions);
+
+    this.set('handleMessage', (messageType, data, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.PILL_CREATED, 'Message sent for pill create is not correct');
+      assert.propEqual(data, { meta: 'c', operator: 'length', value: '3', type: 'query' }, 'Message sent for pill create contains correct pill data');
+      assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
+
+      done();
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        position=0
+        isActive=true
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+      }}
+    `);
+
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 2); // option C
+
+    await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
+
+    await selectChoose(PILL_SELECTORS.operatorTrigger, 'length');
+
+    await waitUntil(() => find(PILL_SELECTORS.valueTrigger));
+
+    await fillIn(PILL_SELECTORS.valueSelectInput, '3');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', THREE_KEY); // 3
+
+    // Create pill
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
   });
 
   test('selecting meta sends out a query suggestions message', async function(assert) {

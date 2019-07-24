@@ -943,7 +943,7 @@ export default Component.extend({
    * @private
    */
   _createPillData(value = null) {
-    const selectedMeta = this.get('selectedMeta');
+    const { selectedMeta, selectedOperator } = this.getProperties('selectedMeta', 'selectedOperator');
     const meta = selectedMeta ? selectedMeta.metaName : null;
     const operator = this.get('selectedOperator.displayName');
 
@@ -955,8 +955,9 @@ export default Component.extend({
       pillData.isSelected = this.get('pillData.isSelected');
       pillData.isFocused = this.get('pillData.isFocused');
     }
-    // Check what type of meta this is. If it's a string value, add quotes
-    if (selectedMeta && selectedMeta.format === 'Text' && value) {
+    // Check what type of meta this is. If it's a string value, add quotes unless
+    // the operator is length (which has a numeric value).
+    if (selectedMeta && selectedMeta.format === 'Text' && selectedOperator && selectedOperator.displayName !== 'length' && value) {
       pillData.value = quote(value);
     } else {
       pillData.value = value;
