@@ -267,6 +267,45 @@ const registryColumns = [{
   disableSort: true
 }];
 
+const networkColumns = [{
+  field: 'eventDate.epochSecond',
+  type: 'DATE_TIME',
+  title: 'Time',
+  visible: true,
+  disableSort: true
+}, {
+  field: 'sslSubject',
+  title: 'SSL Subject',
+  width: '10vw',
+  visible: true,
+  disableSort: true
+}, {
+  field: 'ja3',
+  width: '10vw',
+  title: 'JA3 Certificate',
+  visible: true,
+  linkField: 'user_link',
+  disableSort: true
+}, {
+  field: 'srcNetname',
+  width: '10vw',
+  title: 'Source Net Name',
+  visible: true,
+  disableSort: true
+}, {
+  field: 'numOfBytesSent',
+  width: '10vw',
+  title: 'Number of Byte Sent',
+  visible: true,
+  disableSort: true
+}, {
+  field: 'numOfBytesReceived',
+  width: '10vw',
+  title: 'Number of Byte Received',
+  visible: true,
+  disableSort: true
+}];
+
 const indicatorColumnMap = {
   active_directory: activeDirectoryColumns,
   authentication: authenticationColumns,
@@ -276,5 +315,8 @@ const indicatorColumnMap = {
 };
 
 export default (indicatorName) => {
+  if (indicatorName === 'tls') {
+    return networkColumns;
+  }
   return baseColumnConfigForEvents.concat(indicatorColumnMap[indicatorName] ? indicatorColumnMap[indicatorName] : []);
 };

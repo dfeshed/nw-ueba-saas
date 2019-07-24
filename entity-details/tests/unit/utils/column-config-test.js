@@ -30,6 +30,11 @@ module('Unit | Utils | column-config', (hooks) => {
     assert.equal(columnArray.length, 20, 'should return registry column along with base columns');
   });
 
+  test('it returns events table column for network schema', (assert) => {
+    const columnArray = columnConfig('tls');
+    assert.equal(columnArray.length, 6, 'should return netowrk columns no base columns for network schema');
+  });
+
   test('it returns base columns for any other schema', (assert) => {
     const columnArray = columnConfig('test');
     assert.equal(columnArray.length, 5, 'should return base columns for any other schema');

@@ -1,7 +1,7 @@
 {{#rsa-data-table lazy=true items=events columnsConfig=columnConfig}}
   {{#rsa-data-table/header enableColumnSelector=true as |column|}}
-    <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title={{column.field}}>
-      {{column.field}}
+    <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title={{column.title}}>
+      {{column.title}}
     </span>
   {{/rsa-data-table/header}}
   {{#rsa-data-table/body as |item index column|}}
