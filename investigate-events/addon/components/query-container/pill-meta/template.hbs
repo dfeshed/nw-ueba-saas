@@ -33,6 +33,11 @@
     triggerComponent='query-container/power-select-resizable-input'
     as |meta|
   }}
+    {{rsa-icon
+      name=meta.iconName
+      class=meta.iconClass
+      title=meta.iconTitle
+    }}
     <span class="value">{{meta.metaName}}</span>
     <span class="description" title="{{meta.displayName}}">{{meta.displayName}}</span>
   {{/power-select-typeahead}}

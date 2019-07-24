@@ -4,6 +4,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, typeInSearch, selectChoose } from 'ember-power-select/test-support/helpers';
 import { click, fillIn, find, findAll, render, triggerKeyEvent, typeIn } from '@ember/test-helpers';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -18,13 +19,8 @@ import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
 
 let setState;
-
-const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
-  new ReduxDataHelper(setState).language().pillsDataEmpty().build()
-);
-
+let metaOptions = [];
 const { log } = console;// eslint-disable-line no-unused-vars
-
 const ARROW_DOWN = KEY_MAP.arrowDown.code;
 const ARROW_UP = KEY_MAP.arrowUp.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
@@ -41,6 +37,12 @@ module('Integration | Component | Recent Query', function(hooks) {
   });
 
   hooks.beforeEach(function() {
+    initialize(this.owner);
+    if (metaOptions.length < 1) {
+      metaOptions = metaKeySuggestionsForQueryBuilder(
+        new ReduxDataHelper(setState).language().pillsDataEmpty().build()
+      );
+    }
     this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       patchReducer(this, state);
@@ -141,7 +143,7 @@ module('Integration | Component | Recent Query', function(hooks) {
   test('Pressing escape from recent-query when there is some partially entered text cleans up the input and broadcasts a message', async function(assert) {
     assert.expect(2);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', () => {});
 
     await render(hbs`

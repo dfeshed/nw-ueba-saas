@@ -23,4 +23,3 @@ export default {
   guidedQueryBar: '.query-bar-selection.guided',
   guidedQueryBarFocusedInput: '.new-pill-template .pill-meta.is-expanded'
 };
-

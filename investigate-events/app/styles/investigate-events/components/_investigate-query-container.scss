@@ -34,6 +34,7 @@
     color: text-color(primary, lightest);
   }
 }
+
 .rsa-investigate-query-container {
   display: flex;
 
@@ -955,6 +956,13 @@
       padding-left: rsa-whitespace();
       overflow-x: hidden;
       text-overflow: ellipsis;
+    }
+    // icon for meta indexed by value
+    .rsa-icon[class*="-index-indicator"] {
+      display: inline-flex;
+      align-self: center;
+      margin-right: rsa-whitespace(less);
+      color: text-color(primary, lightest);
     }
   }
   // power select after options

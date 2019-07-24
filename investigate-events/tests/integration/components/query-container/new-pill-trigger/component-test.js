@@ -4,6 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, find, findAll, render, triggerKeyEvent, fillIn } from '@ember/test-helpers';
 import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -14,11 +15,7 @@ import KEY_MAP from 'investigate-events/util/keys';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
 let setState;
-
-const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
-  new ReduxDataHelper(setState).language().pillsDataEmpty().build()
-);
-
+let metaOptions = [];
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
@@ -31,6 +28,12 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
   });
 
   hooks.beforeEach(function() {
+    initialize(this.owner);
+    if (metaOptions.length < 1) {
+      metaOptions = metaKeySuggestionsForQueryBuilder(
+        new ReduxDataHelper(setState).language().pillsDataEmpty().build()
+      );
+    }
     this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       patchReducer(this, state);
@@ -43,7 +46,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
   });
 
   test('shows new pill entry when trigger is triggered', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/new-pill-trigger
         metaOptions=metaOptions
@@ -54,7 +57,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
   });
 
   test('shows new pill entry when trigger position and new pill position match', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/new-pill-trigger
         startTriggeredPosition=56
@@ -66,7 +69,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
   });
 
   test('does not show new pill entry when trigger position and new pill position do not match', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/new-pill-trigger
         startTriggeredPosition=57
@@ -78,7 +81,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
   });
 
   test('ESC key returns user to trigger', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/new-pill-trigger
         metaOptions=metaOptions
@@ -92,7 +95,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
   });
 
   test('Entering the new pill broadcasts a message', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     assert.expect(3);
     this.set('handleMessage', (messageType, data, position) => {
       assert.equal(messageType, MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW, 'Wrong message type');
@@ -111,7 +114,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
   });
 
   test('ESC broadcasts a cancel message', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     assert.expect(3);
     this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
@@ -136,7 +139,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
   });
 
   test('it broadcasts a message when a pill is created', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     assert.expect(3);
     this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
@@ -164,7 +167,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
   });
 
   test('if no meta/operator/value is selected and ARROW_LEFT is pressed, a message is sent up', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (messageType, position) => {
       if (isIgnoredInitialEvent(messageType)) {
         return;
@@ -185,7 +188,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
   });
 
   test('if no meta/operator/value is selected and ARROW_RIGHT is pressed, a message is sent up', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (messageType, position) => {
       if (isIgnoredInitialEvent(messageType)) {
         return;
@@ -207,7 +210,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
 
   test('it broadcasts a message when creating a free-form pill from meta', async function(assert) {
     const done = assert.async();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type, data, position) => {
       if (isIgnoredInitialEvent(type)) {
         return;
@@ -236,7 +239,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
 
   test('it broadcasts a message when creating a free-form pill from operator', async function(assert) {
     const done = assert.async();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type, data, position) => {
       if (isIgnoredInitialEvent(type)) {
         return;
@@ -266,7 +269,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
 
   test('it broadcasts a message when creating a text pill from meta', async function(assert) {
     const done = assert.async();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type, data, position) => {
       if (isIgnoredInitialEvent(type)) {
         return;
@@ -298,7 +301,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     const recentQueriesUnfilteredList = [];
     const recentQueriesFilteredList = [];
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('recentQueriesUnfilteredList', recentQueriesUnfilteredList);
     this.set('recentQueriesFilteredList', recentQueriesFilteredList);
 
@@ -350,7 +353,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
       .recentQueriesFilteredList()
       .recentQueriesUnfilteredList()
       .build();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     await render(hbs`
       {{query-container/query-pill

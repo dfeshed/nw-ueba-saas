@@ -4,6 +4,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
 import { blur, click, fillIn, find, findAll, focus, render, settled, triggerKeyEvent, typeIn } from '@ember/test-helpers';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -21,13 +22,8 @@ import { toggleTab } from '../pill-util';
 import { filterValidMeta } from 'investigate-events/util/meta';
 
 let setState;
-
-const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
-  new ReduxDataHelper(setState).language().pillsDataEmpty().build()
-);
-
+let metaOptions = [];
 const { log } = console;// eslint-disable-line no-unused-vars
-
 const ARROW_DOWN = KEY_MAP.arrowDown.code;
 const ARROW_LEFT = KEY_MAP.arrowLeft.code;
 const ARROW_RIGHT = KEY_MAP.arrowRight.code;
@@ -46,6 +42,12 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   hooks.beforeEach(function() {
+    initialize(this.owner);
+    if (metaOptions.length < 1) {
+      metaOptions = metaKeySuggestionsForQueryBuilder(
+        new ReduxDataHelper(setState).language().pillsDataEmpty().build()
+      );
+    }
     this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       patchReducer(this, state);
@@ -83,7 +85,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   test('it shows a Power Select if active and has options', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
@@ -96,7 +98,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it broadcasts a message when a Power Select option is chosen', async function(assert) {
     const done = assert.async();
     assert.expect(1);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
         const key = Object.keys(DEFAULT_LANGUAGES[1]).shift();
@@ -116,7 +118,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it broadcasts a message when the ARROW_RIGHT key is pressed and there is no selection', async function(assert) {
     assert.expect(1);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type) => {
       if (type === MESSAGE_TYPES.META_ARROW_RIGHT_KEY_WITH_NO_SELECTION) {
@@ -137,7 +139,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it broadcasts a message when the ARROW_LEFT key is pressed and there is no selection', async function(assert) {
     assert.expect(1);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type) => {
       if (type === MESSAGE_TYPES.META_ARROW_LEFT_KEY) {
@@ -159,7 +161,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it broadcasts a message when the ARROW_RIGHT key is pressed and there is a selection', async function(assert) {
     const done = assert.async();
     assert.expect(1);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
@@ -185,7 +187,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it broadcasts a message when the ESCAPE key is pressed', async function(assert) {
     const done = assert.async();
     assert.expect(1);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type) => {
       if (type === MESSAGE_TYPES.META_ESCAPE_KEY) {
         assert.ok('message dispatched');
@@ -205,7 +207,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it broadcasts a message when the ENTER key is pressed and a selection has not been made', async function(assert) {
     const done = assert.async();
     assert.expect(1);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type) => {
       if (type === MESSAGE_TYPES.META_ENTER_KEY) {
         assert.ok('message dispatched');
@@ -225,7 +227,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it does not broadcast a message when the ENTER key is pressed and a selection has been made', async function(assert) {
     const done = assert.async(2);
     assert.expect(0);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
         // This will be called first to set the selection, so the logic to
@@ -251,7 +253,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it does not broadcast a message when the ENTER key is pressed and text has been entered into input', async function(assert) {
     assert.expect(0);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type) => {
       if (type === MESSAGE_TYPES.META_ENTER_KEY) {
         assert.notOk('message should not be dispatched');
@@ -272,7 +274,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     const done = assert.async();
     let iteration = 1;
     assert.expect(1);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
         this.set('selection', data);
@@ -298,7 +300,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it selects meta if a trailing SPACE is entered and there is one option', async function(assert) {
     const done = assert.async();
     assert.expect(1);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
@@ -315,7 +317,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
         metaOptions=metaOptions
       }}
     `);
-    // there are 'b' and 'bytes.src' in `META_OPTIONS`
+    // there are 'b' and 'bytes.src' in `metaOptions`
     await typeIn(PILL_SELECTORS.metaSelectInput, 'b ');
     // await fillIn('input', 'b');
     // await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', SPACE_KEY);
@@ -325,11 +327,11 @@ module('Integration | Component | Pill Meta', function(hooks) {
     const done = assert.async();
     assert.expect(1);
 
-    // there are 'c.1' and 'c.2' in `META_OPTIONS`
+    // there are 'c.1' and 'c.2' in `metaOptions`
     // 'c.1' at index 3, 'c.2' at index 4
     // make 'c.1' meta invalid by setting isIndexedByNone true
     // so 'c.2' would be the only valid option when searchText is 'c.'
-    const META_OPTIONS2 = [...META_OPTIONS];
+    const META_OPTIONS2 = [...metaOptions];
     META_OPTIONS2[3] = {
       ...META_OPTIONS2[3],
       isIndexedByNone: true,
@@ -359,7 +361,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it does not select meta if a trailing SPACE is entered and there is more than one option',
     async function(assert) {
       assert.expect(3);
-      this.set('metaOptions', META_OPTIONS);
+      this.set('metaOptions', metaOptions);
       this.set('activePillTab', AFTER_OPTION_TAB_META);
       this.set('handleMessage', (type) => {
         assert.equal(type, MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED); // Will be called as many times as chars are typed in
@@ -379,7 +381,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it selects meta if a trailing SPACE is entered and there is an exact match', async function(assert) {
     const done = assert.async();
     assert.expect(1);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
@@ -399,8 +401,8 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await typeIn(PILL_SELECTORS.metaSelectInput, 'c ');
   });
 
-  test('it clears out last search if Power Select looses, then gains focus', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+  test('it clears out last search if Power Select loses, then gains focus', async function(assert) {
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
@@ -423,7 +425,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   test('if meta is selected (not just half entered) and you click away, leave the meta there', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
         this.set('selection', data);
@@ -444,7 +446,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it shows Advanced Options to create different types of pill', async function(assert) {
     const _hasOption = (arr, str) => arr.some((d) => d.innerText.includes(str));
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
@@ -460,7 +462,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it broadcasts a message to create a free-form pill when the ENTER key is pressed', async function(assert) {
     const done = assert.async();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.ok(Array.isArray(data), 'correct data type');
@@ -483,7 +485,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it does NOT broadcasts a message to create a free-form pill if no value is entered', async function(assert) {
     assert.expect(0);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.notOk('should not get here');
@@ -501,7 +503,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   test('it shows a placeholder if it is the first pill', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
@@ -514,7 +516,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   test('it does not show a placeholder if it is not the first pill', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
@@ -527,7 +529,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   test('it selects Free-Form Filter via CTRL + ↓', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
@@ -545,7 +547,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   test('Highlight will move from operator list to Advanced Options list and back', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
@@ -573,7 +575,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('Highlight will move from meta options list to Advanced Options list and back when when the first option in power select is invalid',
     async function(assert) {
       // make one option invalid
-      const META_OPTIONS2 = [...META_OPTIONS];
+      const META_OPTIONS2 = [...metaOptions];
       // option 'c.1'
       META_OPTIONS2[3] = {
         ...META_OPTIONS2[3],
@@ -617,7 +619,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('Highlight will move from meta options list to Advanced Options list and back when the last option in power select is invalid',
     async function(assert) {
       // make one option invalid
-      const META_OPTIONS2 = [...META_OPTIONS];
+      const META_OPTIONS2 = [...metaOptions];
       // option 'c.2'
       META_OPTIONS2[4] = {
         ...META_OPTIONS2[4],
@@ -661,8 +663,8 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('Highlight will move from meta options list to Advanced Options and back when power select contains valid and invalid options',
     async function(assert) {
       // random length for meta options array
-      const randomLength = Math.floor(Math.random() * (META_OPTIONS.length / 2)) + 3;
-      const META_OPTIONS2 = [...META_OPTIONS].slice(0, randomLength);
+      const randomLength = Math.floor(Math.random() * (metaOptions.length / 2)) + 3;
+      const META_OPTIONS2 = [...metaOptions].slice(0, randomLength);
       // make a random number of options invalid
       const randomNumber = Math.floor(Math.random() * (META_OPTIONS2.length / 2)) + 1;
       for (let i = 0; i < randomNumber; i++) {
@@ -717,7 +719,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('Highlight will move to Advanced Options list when power select contains invalid meta options only',
     async function(assert) {
       // make options invalid
-      const META_OPTIONS2 = [...META_OPTIONS];
+      const META_OPTIONS2 = [...metaOptions];
       // option 'alias.ip'
       META_OPTIONS2[9] = {
         ...META_OPTIONS2[9],
@@ -783,7 +785,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     });
 
   test('Highlight will NOT move from Advanced Options to main list if all options have been filtered out', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
@@ -806,7 +808,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it broadcasts a message to create a text pill', async function(assert) {
     const done = assert.async();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_TEXT_PILL) {
         assert.ok(Array.isArray(data), 'correct data type');
@@ -832,7 +834,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   test('it renders a disabled option for text filters when there is a text filter already', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', () => {});
     await render(hbs`
       {{query-container/pill-meta
@@ -850,7 +852,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it broadcasts a message to toggle tabs via pill meta', async function(assert) {
     assert.expect(3);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED) {
@@ -876,7 +878,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it broadcasts a message to toggle tabs when tab or shift tab is pressed via pill meta', async function(assert) {
     assert.expect(2);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type) => {
       assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'Correct message sent up');
@@ -898,7 +900,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it highlights proper Advanced Option if all EPS options filtered out', async function(assert) {
     let option;
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
@@ -920,7 +922,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it does not broadcast a message to toggle when a pill is opened in edit mode', async function(assert) {
     assert.expect(0);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('activePillTab', AFTER_OPTION_TAB_META);
     this.set('handleMessage', (type) => {
       assert.equal(type, MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED, 'This should not have triggered');
@@ -940,7 +942,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   test('it disables Text Filter if not supported by core services', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/pill-meta
         canPerformTextSearch=false
@@ -964,7 +966,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   test('it removes leading open parens', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/pill-meta
         isActive=true

@@ -4,6 +4,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
 import { blur, click, fillIn, find, findAll, focus, render, triggerKeyEvent, waitUntil, settled } from '@ember/test-helpers';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
@@ -16,14 +17,10 @@ import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL
 } from 'investigate-events/constants/pill';
-let setState;
-
-const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
-  new ReduxDataHelper(setState).language().pillsDataEmpty().build()
-);
-
 import PILL_SELECTORS from '../pill-selectors';
 
+let setState;
+let metaOptions = [];
 const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
 const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
 const ARROW_DOWN_KEY = KEY_MAP.arrowDown.code;
@@ -40,7 +37,7 @@ const modifiers = { shiftKey: true };
 const trim = (text) => text.replace(/\s+/g, '').trim();
 
 const _getEnrichedPill = (component) => {
-  component.set('metaOptions', META_OPTIONS);
+  component.set('metaOptions', metaOptions);
   const pillState = new ReduxDataHelper(setState).pillsDataPopulated().language().build();
   const [ enrichedPill ] = enrichedPillsData(pillState);
   return enrichedPill;
@@ -123,6 +120,12 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   hooks.beforeEach(function() {
+    initialize(this.owner);
+    if (metaOptions.length < 1) {
+      metaOptions = metaKeySuggestionsForQueryBuilder(
+        new ReduxDataHelper(setState).language().pillsDataEmpty().build()
+      );
+    }
     this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       patchReducer(this, state);
@@ -201,7 +204,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('it activates pill-meta if active upon initialization', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
@@ -212,7 +215,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('it allows you to select a meta value', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
@@ -225,7 +228,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('it allows you to select an operator after a meta value was selected', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
@@ -240,7 +243,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('it sets pill-value active after selecting an operator', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
@@ -255,7 +258,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('it allows you to edit the meta after it was selected', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
@@ -282,7 +285,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('A pill when supplied with meta, operator, and value will send a message to create', async function(assert) {
     const done = assert.async();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
@@ -310,7 +313,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('A pill when supplied with meta and operator that does not accept a value will send a message to create', async function(assert) {
     const done = assert.async();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
@@ -343,7 +346,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('selecting meta sends out a query suggestions message', async function(assert) {
     const done = assert.async();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     this.set('handleMessage', (messageType, data) => {
       if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
@@ -372,7 +375,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('selecting meta and operator that does accept values sends out a query suggestions message', async function(assert) {
     const done = assert.async();
     let count = 0;
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     this.set('handleMessage', (messageType, data) => {
       if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
@@ -410,7 +413,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('selecting an operator that does not accept values will not send a message to recent query api', async function(assert) {
     const done = assert.async();
     let count = 0;
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     this.set('handleMessage', (messageType, data) => {
       if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
@@ -453,7 +456,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('does not present a delete icon when not a created pill', async function(assert) {
     this.set('pillData', null);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/query-pill
         isActive=false
@@ -520,7 +523,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       done();
     });
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
@@ -554,7 +557,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     const done = assert.async(2);
     assert.expect(3);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     this.set('handleMessage', (messageType) => {
       if (isIgnoredInitialEvent(messageType)) {
@@ -582,7 +585,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('A pill when focused will send ENTERED event', async function(assert) {
     const done = assert.async();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     this.set('handleMessage', (messageType, data, position) => {
       if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
@@ -617,7 +620,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       done();
     });
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
@@ -641,7 +644,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       assert.ok(false, `Should not get here with ${messageType}`);
     });
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
@@ -668,7 +671,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       assert.notEqual(messageType, MESSAGE_TYPES.PILL_ADD_CANCELLED, 'No cancel should be sent');
     });
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
@@ -682,7 +685,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('If in value and user clicks away, the pill remains in creation state where no data entered is changed or removed', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
@@ -713,7 +716,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
       assert.ok(false, `Should not get here with ${messageType}`);
     });
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     await render(hbs`
       {{query-container/query-pill
@@ -861,7 +864,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('it quotes pill value when meta is type "Text"', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (messageType, data) => {
       if (messageType === MESSAGE_TYPES.PILL_CREATED) {
         assert.equal(data.value, '\'foo\'', 'value not single quoted');
@@ -882,7 +885,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('it does not quote the pill value when meta is type "UInt"', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (messageType, data) => {
       if (messageType === MESSAGE_TYPES.PILL_CREATED) {
         assert.equal(data.value, '80', 'value was quoted');
@@ -919,7 +922,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('replace double quotes with single quotes', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (messageType, data) => {
       if (messageType === MESSAGE_TYPES.PILL_CREATED) {
         assert.equal(data.value, '\'foo\'', 'value not quoted properly');
@@ -1228,7 +1231,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     const [ enrichedPill ] = enrichedPillsData(pillState);
 
     this.set('pillData', enrichedPill);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (messageType, data, position) => {
       if (messageType === MESSAGE_TYPES.PILL_EDITED) {
         assert.deepEqual(data, { id: '1', isSelected: false, isFocused: false, meta: 'a', operator: 'exists', value: null }, 'Message sent for pill create contains correct pill data');
@@ -1264,7 +1267,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .build();
 
     this.set('pillData', []);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     this.set('handleMessage', (messageType, position) => {
       if (isIgnoredInitialEvent(messageType)) {
@@ -1293,7 +1296,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .build();
 
     this.set('pillData', []);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     this.set('handleMessage', (messageType, position) => {
       if (isIgnoredInitialEvent(messageType)) {
@@ -1382,7 +1385,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .pillsDataEmpty()
       .language()
       .build();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.propEqual(data, {
@@ -1412,7 +1415,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .pillsDataEmpty()
       .language()
       .build();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.propEqual(data, {
@@ -1450,7 +1453,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .pillsDataEmpty()
       .language()
       .build();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.CREATE_FREE_FORM_PILL) {
         assert.propEqual(data, {
@@ -1480,7 +1483,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('clicking away pill when meta tab is selected, then clicking back in - meta tab is selected', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     const assertTabContents = (assert, metaTab, recentQueriesTab) => {
       assert.ok(find(PILL_SELECTORS.pillTabs), 'Should be able to see tabs in current component');
@@ -1515,7 +1518,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('Pressing tab toggles between meta and recent queries tab', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     const assertTabContents = (assert, metaTab, recentQueriesTab) => {
       assert.ok(find(PILL_SELECTORS.pillTabs), 'Should be able to see tabs in current component');
@@ -1549,7 +1552,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('If no recent queries, tabbing to recentQueries tab will show a placeholder message', async function(assert) {
     assert.expect(6);
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     const assertTabContents = (assert, metaTab, recentQueriesTab) => {
       assert.ok(find(PILL_SELECTORS.pillTabs), 'Should be able to see tabs in current component');
@@ -1597,7 +1600,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('Recent Queries are available as power-select options if not empty', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     const state = new ReduxDataHelper(setState)
       .pillsDataEmpty()
       .language()
@@ -1634,7 +1637,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Tabbing to meta component with prepopulated meta string with many matches will filter meta options', async function(assert) {
     assert.expect(3);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     // options for typed in `al`
     const optionsSet = [
@@ -1674,7 +1677,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Tabbing to meta component with string that maps to a meta object and leaves focus in pill-operator', async function(assert) {
     assert.expect(5);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -1710,7 +1713,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Tabbing to meta component with prepopulated meta string that does\'t match with any options', async function(assert) {
     assert.expect(4);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -1744,7 +1747,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Tabbing to meta component with prepopulated meta string with spaces that does\'t match with any options', async function(assert) {
     assert.expect(4);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -1780,7 +1783,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     assert.expect(3);
     const operatorOptions = ['exists', 'ends'];
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -1814,7 +1817,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Tabbing to meta comp with a string that maps to meta & operaror object will place focus in pill-value', async function(assert) {
     assert.expect(5);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -1848,7 +1851,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('hitting backspace in a recent queries tab and toggling the view keeps the text intact', async function(assert) {
     assert.expect(6);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -1899,7 +1902,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Tabbing to meta comp with prepopulated operator string with no matches leaves all options filtered out', async function(assert) {
     assert.expect(5);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -1933,7 +1936,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Tabbing to meta comp with prepopulated operator with spaces string with no matches leaves all options filtered out', async function(assert) {
     assert.expect(5);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -1968,7 +1971,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Tabbing to meta comp with a operator string that does not accept a value, but is provided one will leave all options filtered out', async function(assert) {
     assert.expect(5);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2003,7 +2006,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Tabbing to meta comp with spaces between prepopulated operator string will give no results', async function(assert) {
     assert.expect(5);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2039,7 +2042,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Tabbing to meta comp with a string that sets meta, operator and value components', async function(assert) {
     assert.expect(6);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2080,7 +2083,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     assert.expect(3);
     const operatorOptions = ['exists', 'ends'];
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2114,7 +2117,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Tabbing to meta comp with prepopulated operator that maps to op object will leave the focus on pill-value', async function(assert) {
     assert.expect(5);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2148,7 +2151,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Tabbing to meta comp with prepopulated string that does not match with anything leaves all options filtered out', async function(assert) {
     assert.expect(5);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2182,7 +2185,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Tabbing to meta comp with prepopulated operator string with spaces in between leaves all options filtered out', async function(assert) {
     assert.expect(5);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2218,7 +2221,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Tabbing to meta comp with prepopulated operator string that maps to operator, sets text in pill-value with focus', async function(assert) {
     assert.expect(6);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2254,7 +2257,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Typing in recent query tab should broadcast a message', async function(assert) {
     const done = assert.async();
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2289,7 +2292,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Typing in recent query tab will not broadcast a message if just spaces are typed in', async function(assert) {
     assert.expect(0);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2320,7 +2323,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Typing spaces when some text is present in recent query tab will broadcast a message', async function(assert) {
     const done = assert.async();
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2355,7 +2358,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Typing in pill-meta tab and toggling to recent queries will send out a message', async function(assert) {
     const done = assert.async();
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2392,7 +2395,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     const done = assert.async();
     let count = 0;
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2439,7 +2442,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     const done = assert.async();
     let count = 0;
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2494,7 +2497,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .recentQueriesFilteredList()
       .recentQueriesUnfilteredList()
       .build();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     await render(hbs`
       {{query-container/query-pill
@@ -2520,7 +2523,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .recentQueriesFilteredList()
       .recentQueriesUnfilteredList()
       .build();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
@@ -2546,7 +2549,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .recentQueriesFilteredList()
       .recentQueriesUnfilteredList()
       .build();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
@@ -2578,7 +2581,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .recentQueriesFilteredList()
       .recentQueriesUnfilteredList()
       .build();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
     const { investigate: { queryNode: { recentQueriesUnfilteredList } } } = state;
 
     await render(hbs`
@@ -2601,7 +2604,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Pressing escape from pill-meta when there is some partially entered text cleans up the input', async function(assert) {
     assert.expect(1);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2626,7 +2629,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Pressing escape from pill-operator when there is some partially entered text cleans up the input', async function(assert) {
     assert.expect(1);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2654,7 +2657,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('Pressing escape from pill-value when there is some partially entered text cleans up the input', async function(assert) {
     assert.expect(1);
 
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2681,7 +2684,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('selecting a meta in meta tab, switching over to recent and deleting, toggling back to meta deletes the selected meta', async function(assert) {
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2724,7 +2727,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .recentQueriesFilteredList()
       .recentQueriesUnfilteredList()
       .build();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     await render(hbs`
       {{query-container/query-pill
@@ -2757,7 +2760,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       .recentQueriesFilteredList()
       .recentQueriesUnfilteredList()
       .build();
-    this.set('metaOptions', META_OPTIONS);
+    this.set('metaOptions', metaOptions);
 
     await render(hbs`
       {{query-container/query-pill

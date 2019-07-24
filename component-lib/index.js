@@ -134,10 +134,10 @@ module.exports = {
     this._super.included.apply(this, arguments);
 
     // Assets that are referenced by CSS must go in the consuming app's /assets/ subdir.
-    this.import('vendor/fonts/nw-icon-library-all-v11.eot', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/nw-icon-library-all-v11.svg', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/nw-icon-library-all-v11.ttf', { destDir: 'assets/fonts/' });
-    this.import('vendor/fonts/nw-icon-library-all-v11.woff', { destDir: 'assets/fonts/' });
+    this.import('vendor/fonts/RSA-NW-Icons-v12.eot', { destDir: 'assets/fonts/' });
+    this.import('vendor/fonts/RSA-NW-Icons-v12.svg', { destDir: 'assets/fonts/' });
+    this.import('vendor/fonts/RSA-NW-Icons-v12.ttf', { destDir: 'assets/fonts/' });
+    this.import('vendor/fonts/RSA-NW-Icons-v12.woff', { destDir: 'assets/fonts/' });
 
     this.import('vendor/fonts/open-sans-v13-latin-regular.eot', { destDir: 'assets/fonts/' });
     this.import('vendor/fonts/open-sans-v13-latin-regular.svg', { destDir: 'assets/fonts/' });

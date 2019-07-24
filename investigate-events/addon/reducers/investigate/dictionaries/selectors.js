@@ -1,5 +1,6 @@
 import reselect from 'reselect';
 import { isOpen, isHidden } from './utils';
+import { lookup } from 'ember-dependency-lookup';
 
 const { createSelector } = reselect;
 
@@ -63,18 +64,40 @@ const _enrichedLanguage = createSelector(
  * function filters out:
  *   Meta key `time` - as we already have a time range
  * and defines `disabled` for meta dropdown based on the property `isIndexedByNone`
+ * and defines icon related properties based on indexed by key, value, none
  *
  * @public
  */
 export const metaKeySuggestionsForQueryBuilder = createSelector(
   _enrichedLanguage,
   (language = []) => {
+    const i18n = lookup('service:i18n');
     return language
       .filter((meta) => meta.metaName !== 'time')
-      .map((meta) => ({
-        ...meta,
-        disabled: meta.isIndexedByNone && meta.metaName !== 'sessionid'
-      }));
+      .map((meta) => {
+        // set values for icon to display
+        // based on indexed by none, value, key
+        const iconProperties = { iconClass: null, iconTitle: null, iconName: null };
+        if (meta.isIndexedByValue) {
+          iconProperties.iconClass = 'is-indexed-by-value value-index-indicator';
+          iconProperties.iconName = 'search';
+          iconProperties.iconTitle = i18n.t('queryBuilder.indexedByValue').toString();
+        } else if (meta.isIndexedByKey) {
+          iconProperties.iconClass = 'is-indexed-by-key key-index-indicator';
+          iconProperties.iconName = 'login-key';
+          iconProperties.iconTitle = i18n.t('queryBuilder.indexedByKey').toString();
+        } else if (meta.isIndexedByNone) {
+          iconProperties.iconClass = 'is-indexed-by-none none-index-indicator';
+          iconProperties.iconName = 'search-remove';
+          iconProperties.iconTitle = i18n.t('queryBuilder.indexedByNone').toString();
+        }
+
+        return {
+          ...meta,
+          disabled: meta.isIndexedByNone && meta.metaName !== 'sessionid',
+          ...iconProperties
+        };
+      });
   }
 );
 
