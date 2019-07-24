@@ -85,6 +85,8 @@ public class IndicatorSchemaDictionary {
         dictionary.put("high_number_of_bytes_sent_to_dst_org_ssl_subject_outbound", tls);
         dictionary.put("high_number_of_bytes_sent_to_ssl_subject_outbound", tls);
         dictionary.put("high_number_of_distinct_src_ip_for_ja3_outbound", tls);
+        dictionary.put("high_number_of_bytes_sent_by_src_ip_to_dst_port_ssl_subject_outbound", tls);
+        dictionary.put("high_number_of_bytes_sent_to_dst_port_ssl_subject_outbound", tls);
         dictionary.put("ja3_abnormal_country_for_ssl_subject_outbound", tls);
         dictionary.put("ja3_abnormal_domain_for_ja3_outbound", tls);
         dictionary.put("ja3_abnormal_domain_for_src_netname_outbound", tls);
@@ -94,6 +96,10 @@ public class IndicatorSchemaDictionary {
         dictionary.put("ja3_abnormal_ssl_subject_day_time", tls);
         dictionary.put("ja3_abnormal_ssl_subject_for_ja3_outbound", tls);
         dictionary.put("ja3_abnormal_ssl_subject_for_src_netname_outbound", tls);
+        dictionary.put("ja3_abnormal_dst_port_for_domain_outbound", tls);
+        dictionary.put("ja3_abnormal_dst_port_for_dst_org_outbound", tls);
+        dictionary.put("ja3_abnormal_dst_port_for_ja3_outbound", tls);
+        dictionary.put("ja3_abnormal_dst_port_for_ssl_subject_outbound", tls);
         dictionary.put("ssl_subject_abnormal_country_for_ssl_subject_outbound", tls);
         dictionary.put("ssl_subject_abnormal_domain_for_ja3_outbound", tls);
         dictionary.put("ssl_subject_abnormal_domain_for_src_netname_outbound", tls);
@@ -103,6 +109,10 @@ public class IndicatorSchemaDictionary {
         dictionary.put("ssl_subject_abnormal_ssl_subject_day_time", tls);
         dictionary.put("ssl_subject_abnormal_ssl_subject_for_ja3_outbound", tls);
         dictionary.put("ssl_subject_abnormal_ssl_subject_for_src_netname_outbound", tls);
+        dictionary.put("ssl_subject_abnormal_dst_port_for_ssl_subject_outbound", tls);
+        dictionary.put("ssl_subject_abnormal_dst_port_for_src_netname_outbound", tls);
+        dictionary.put("ssl_subject_abnormal_dst_port_for_ja3_outbound", tls);
+        dictionary.put("ssl_subject_abnormal_dst_port_for_dst_org_outbound", tls);
     }
 
     public static String getIndicatorSchema(String indicator) { return dictionary.get(indicator); }
