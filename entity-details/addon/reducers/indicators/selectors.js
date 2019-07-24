@@ -96,7 +96,7 @@ export const brokerId = createSelector(
     if (events) {
       const [event] = events;
       if (type === 'user' && event) {
-        return event.user_link.match(/investigation\/(.*)\/events/i)[1];
+        return event.user_link.match(/investigation\/(.*)\/events/i) ? event.user_link.match(/investigation\/(.*)\/events/i)[1] : '';
       }
     }
   });
