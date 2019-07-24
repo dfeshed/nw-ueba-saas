@@ -8,9 +8,11 @@ const gt = { displayName: '>', description: 'Greater Than', isExpensive: false, 
 const gte = { displayName: '>=', description: 'Greater Than or Equal To', isExpensive: false, hasValue: true };
 const exists = { displayName: 'exists', description: 'Exists', isExpensive: false, hasValue: false };
 const notExists = { displayName: '!exists', description: 'Does Not Exist', isExpensive: false, hasValue: false };
+const length = { displayName: 'length', description: 'Length', isExpensive: false, hasValue: true };
 const begins = { displayName: 'begins', description: 'Begins', isExpensive: false, hasValue: true };
 const contains = { displayName: 'contains', description: 'Contains', isExpensive: true, hasValue: true };
 const ends = { displayName: 'ends', description: 'Ends', isExpensive: true, hasValue: true };
+const regex = { displayName: 'regex', description: 'Regex', isExpensive: false, hasValue: true };
 
 const makeOperatorExpensive = (obj) => ({ ...obj, isExpensive: true });
 
@@ -28,7 +30,7 @@ const operatorsForMetaIndexedByKey = [exists, notExists, makeOperatorExpensive(e
 const operatorsForMetaIndexedByKeyWithTextFormat = [exists, notExists, ...expensiveComparators, makeOperatorExpensive(begins), ends, contains];
 const operatorsForMetaIndexedByKeyWithNumberFormat = [exists, notExists, ...expensiveComparators];
 const operatorsForMetaIndexedByValue = [exists, notExists, eq, notEq ];
-const operatorsForMetaIndexedByValueWithTextFormat = [exists, notExists, ...comparators, begins, ends, contains];
+const operatorsForMetaIndexedByValueWithTextFormat = [exists, notExists, ...comparators, begins, ends, contains, makeOperatorExpensive(regex), makeOperatorExpensive(length)];
 const operatorsForMetaIndexedByValueWithNumberFormat = [exists, notExists, ...comparators];
 const operatorsForSessionId = [exists, notExists, eq, notEq];
 const defaultOperators = [...comparators, exists, notExists, contains, begins, ends];

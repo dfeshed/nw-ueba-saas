@@ -206,7 +206,7 @@ class Parser {
   _criteria() {
     const meta = this._consume([ LEXEMES.META ]);
     const operator = this._consume(LEXEMES.OPERATOR_TYPES);
-    let metaConfig;
+    let metaConfig, operatorConfig;
     // Check that this is a valid meta key
     if (this.availableMeta && this.availableMeta.length > 0) {
       metaConfig = this.availableMeta.find((m) => {
@@ -221,7 +221,7 @@ class Parser {
         // Check that the operator applies to the meta
         const possibleOperators = relevantOperators(metaConfig);
         const operatorString = Parser.transformToString(operator);
-        const operatorConfig = possibleOperators.find((o) => o.displayName === operatorString);
+        operatorConfig = possibleOperators.find((o) => o.displayName === operatorString);
         if (!operatorConfig) {
           throw new Error(`Operator "${operatorString}" does not apply to meta "${Parser.transformToString(meta)}"`);
         }
@@ -241,9 +241,20 @@ class Parser {
     } else {
       const metaValueRanges = this._metaValueRanges();
       // Check to make sure all the values have the correct type
-      const expectedType = VALUE_TYPE_MAP[metaConfig.format];
-      const invalidRange = metaValueRanges.find((range) => {
-        if (!metaConfig) {
+      let expectedType, validationError;
+      if (metaConfig) {
+        expectedType = VALUE_TYPE_MAP[metaConfig.format];
+      }
+      // The length operator is the only operator that requires a value of a type
+      // different than what is associated with the meta key
+      let isLengthOperator = false;
+      if (operatorConfig && operatorConfig.displayName === 'length') {
+        isLengthOperator = true;
+        expectedType = LEXEMES.INTEGER;
+      }
+      // Find any value that is the incorrect type
+      const hasInvalidValue = metaValueRanges.some((range) => {
+        if (!expectedType) {
           return false;
         }
         if (range.value) {
@@ -252,9 +263,15 @@ class Parser {
           return expectedType !== range.from.type || expectedType !== range.to.type;
         }
       });
-      if (invalidRange) {
-        const i18n = lookup('service:i18n');
-        const validationError = i18n.t(`queryBuilder.validationMessages.${metaConfig.format.toLowerCase()}`);
+      const i18n = lookup('service:i18n');
+      if (isLengthOperator && hasInvalidValue) {
+        // If the operator is `length` and we saw an invalid value, it was because
+        // we did not see an integer, but the normal validation message would say it
+        // was expecting a string, so change that.
+        validationError = i18n.t('queryBuilder.validationMessages.length');
+      }
+      if (hasInvalidValue) {
+        validationError = validationError || i18n.t(`queryBuilder.validationMessages.${metaConfig.format.toLowerCase()}`);
         return {
           type: GRAMMAR.CRITERIA,
           meta,

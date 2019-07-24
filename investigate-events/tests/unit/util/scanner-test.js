@@ -16,6 +16,7 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '2. OPERATOR_EQ "="');
     assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '1' }, '3. INTEGER "1"');
   });
+
   test('returns correct tokens for a float', function(assert) {
     const source = 'file.entropy = 55.75';
     const s = new Scanner(source);
@@ -24,6 +25,26 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.deepEqual(result[0], { type: LEXEMES.META, text: 'file.entropy' }, '1. META "file.entropy"');
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '2. OPERATOR_EQ "="');
     assert.deepEqual(result[2], { type: LEXEMES.FLOAT, text: '55.75' }, '3. FLOAT "55.75"');
+  });
+
+  test('returns correct tokens for length', function(assert) {
+    const source = 'action length 3';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 3, 'should produce 3 tokens');
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'action' }, '1. META "action"');
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_LENGTH, text: 'length' }, '2. OPERATOR_LENGTH "length"');
+    assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '3' }, '3. INTEGER "3"');
+  });
+
+  test('returns correct tokens for regex', function(assert) {
+    const source = 'action regex \'(get|post)\'';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 3, 'should produce 3 tokens');
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'action' }, '1. META "action"');
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_REGEX, text: 'regex' }, '2. OPERATOR_REGEX "regex"');
+    assert.deepEqual(result[2], { type: LEXEMES.STRING, text: '(get|post)' }, '3. STRING "(get|post)"');
   });
 
   test('returns correct tokens for basic meta inside parens', function(assert) {

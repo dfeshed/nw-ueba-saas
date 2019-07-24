@@ -229,7 +229,8 @@ export default {
       uint32: 'You must enter a 32-bit Integer.',
       uint64: 'You must enter a 64-bit Integer.',
       float32: 'You must enter a 32-bit Float.',
-      mac: 'You must enter a MAC address.'
+      mac: 'You must enter a MAC address.',
+      length: 'You must enter a non-negative Integer'
     }
   },
   ipConnections: {
