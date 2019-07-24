@@ -21,14 +21,15 @@ const { log } = console; // eslint-disable-line no-unused-vars
  */
 const _clientSideValidation = ({ pillData, position, isFromParser = false }) => {
   return (dispatch, getState) => {
-    if (!isFromParser) {
+    const { type } = pillData;
+    if (!isFromParser && type !== COMPLEX_FILTER) {
       // If not from parser, no validation has been performed yet. Re-get pillData
       // by putting through parser to do client side validation.
       const { investigate: { dictionaries: { language } } } = getState();
       pillData = transformTextToPillData(`${pillData.meta} ${pillData.operator} ${pillData.value}`.trim(), language);
     }
 
-    const { type, isInvalid } = pillData;
+    const { isInvalid } = pillData;
     if (isInvalid && !isFromParser) {
       // If the pill is marked invalid but was not from the parser, dispatch an action now to mark it invalid.
       // Otherwise, it was already marked invalid.
