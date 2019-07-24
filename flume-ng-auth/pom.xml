@@ -64,9 +64,13 @@ limitations under the License.
             <optional>true</optional>
             <exclusions>
                 <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                </exclusion>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>jdk.tools</groupId>
+                <artifactId>jdk.tools</artifactId>
+            </exclusion>
             </exclusions>
         </dependency>
 
