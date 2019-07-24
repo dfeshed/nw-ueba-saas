@@ -4,25 +4,27 @@ $respondNavigationHeight: 48px;
 $incidentsToolbarHeight: 40px;
 $licenseBannerHeight: 36px;
 
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: text-color(primary, light);
+}
+
 .rsa-protected {
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
 
-  ::-webkit-scrollbar-corner {
-    background-color: transparent;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 10px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: text-color(primary, light);
-  }
 
   &__outlet {
     z-index: 1;
