@@ -78,7 +78,7 @@ export const nonUrlBasedActions = {
     windowProxy.openInCurrentTab(buildEventAnalysisUrl(selection, '!=', contextDetails, true));
   },
   InvestigationEventRefocusContains: ([selection], contextDetails) => {
-    windowProxy.openInCurrentTab(buildEventAnalysisUrl([selection], 'contains', contextDetails, true));
+    windowProxy.openInCurrentTab(buildEventAnalysisUrl(selection, 'contains', contextDetails, true));
   },
   InvestigationEventRefocusNewTabEquals: ([selection], contextDetails) => {
     windowProxy.openInNewTab(buildEventAnalysisUrl(selection, '=', contextDetails, true));

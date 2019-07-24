@@ -108,8 +108,7 @@ module('Unit | Utility | non-url-actions-handler', function(hooks) {
   });
 
   test('test nonUrlBasedActions for InvestigationEventRefocusContains', function(assert) {
-    // Need to check why this is undefined.
-    const url = 'mf=undefined%2520contains%2520undefined';
+    const url = 'mf=ip.src%2520contains%252017.127.255.150';
     nonUrlBasedActions.InvestigationEventRefocusContains([selection], contextDetails);
     assert.ok(currentUrl.indexOf(url) > -1);
     assert.notOk(newTab);
