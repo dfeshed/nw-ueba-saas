@@ -36,7 +36,7 @@ module('Integration | Component | rsa-form-button', function(hooks) {
   });
 
   test('it includes the proper classes when isDanger', async function(assert) {
-    await render(hbs `{{#rsa-form-button isDanger=true}}Label{{/rsa-form-button}}`);
+    await render(hbs `{{#rsa-form-button style='danger'}}Label{{/rsa-form-button}}`);
     const button = find('.rsa-form-button-wrapper');
     assert.ok(button.classList.contains('is-danger'));
   });

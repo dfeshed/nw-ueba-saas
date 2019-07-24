@@ -9,8 +9,15 @@ export default Component.extend({
   classNameBindings: ['hasFocus'],
   hasFocus: false,
 
-  @computed('timezone', 'timestamp')
-  value(timezone, timestamp) {
+  // used internally to track specific user action
+  // that may override the initial value
+  valueOverride: null,
+
+  @computed('timezone', 'timestamp', 'valueOverride')
+  value(timezone, timestamp, valueOverride) {
+    if (valueOverride) {
+      return valueOverride;
+    }
     return moment.tz(timestamp, timezone).hour() >= 12 ? 'pm' : 'am';
   },
 
@@ -31,7 +38,7 @@ export default Component.extend({
 
   toggle() {
     const value = this.get('value');
-    const updatedValue = this.set('value', value === 'pm' ? 'am' : 'pm');
+    const updatedValue = this.set('valueOverride', value === 'pm' ? 'am' : 'pm');
     this.get('onChange')(updatedValue);
   },
 

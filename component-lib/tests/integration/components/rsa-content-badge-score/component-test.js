@@ -31,7 +31,7 @@ module('Integration | Component | rsa-content-badge-score', function(hooks) {
   });
 
   test('it includes the proper classes when isDanger is true', async function(assert) {
-    await render(hbs `{{rsa-content-badge-score isDanger=true}}`);
+    await render(hbs `{{rsa-content-badge-score style='danger'}}`);
     const badge = find('.rsa-content-badge-score');
     assert.ok(badge.classList.contains('is-danger'));
   });
