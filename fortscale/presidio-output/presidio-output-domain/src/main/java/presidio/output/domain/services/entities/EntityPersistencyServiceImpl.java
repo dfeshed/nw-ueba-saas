@@ -27,15 +27,15 @@ public class EntityPersistencyServiceImpl implements EntityPersistencyService {
     public Iterable<Entity> save(List<Entity> entities) {
         if (entities != null && entities.size() > 0) {
             entities.forEach(Entity::updateFieldsBeforeSave);
-            return entityRepository.save(entities);
+            return entityRepository.saveAll(entities);
         } else {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 
     @Override
     public Entity findEntityByDocumentId(String documentId) {
-        return entityRepository.findOne(documentId);
+        return entityRepository.findById(documentId).get();
     }
 
     @Override

@@ -80,10 +80,10 @@ public class EnrichedTlsRecord extends EnrichedRecord {
     private String direction;
 
     @Field(DESTINATION_PORT_FIELD_NAME)
-    private Integer dstPort;
+    private String dstPort;
 
     @Field(SOURCE_PORT_FIELD_NAME)
-    private Integer srcPort;
+    private String srcPort;
 
 
 
@@ -223,19 +223,19 @@ public class EnrichedTlsRecord extends EnrichedRecord {
         this.direction = direction;
     }
 
-    public Integer getDstPort() {
+    public String getDstPort() {
         return dstPort;
     }
 
-    public void setDstPort(Integer dstPort) {
+    public void setDstPort(String dstPort) {
         this.dstPort = dstPort;
     }
 
-    public Integer getSrcPort() {
+    public String getSrcPort() {
         return srcPort;
     }
 
-    public void setSrcPort(Integer srcPort) {
+    public void setSrcPort(String srcPort) {
         this.srcPort = srcPort;
     }
 }

@@ -103,10 +103,6 @@
                     <artifactId>transport</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.apache.lucene</groupId>
-                    <artifactId>lucene-queryparser</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.mongodb</groupId>
                     <artifactId>mongodb-driver</artifactId>
                 </exclusion>

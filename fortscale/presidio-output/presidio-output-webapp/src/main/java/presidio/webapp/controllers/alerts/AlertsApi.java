@@ -49,8 +49,7 @@ public interface AlertsApi {
             produces = "application/json",
             method = RequestMethod.GET)
     ResponseEntity<EventsWrapper> getIndicatorEventsByAlert(@ApiParam(value = "The ID of the indicator to return",required=true ) @PathVariable("indicatorId") String indicatorId,
-                                                                    @ApiParam(value = "The ID of the alert to return",required=true ) @PathVariable("alertId") String alertId,
-                                                                    @ApiParam(value = "object that hold all the parameters for getting events"  ) @RequestBody EventQuery body);
+                                                                    @ApiParam(value = "The ID of the alert to return",required=true ) @PathVariable("alertId") String alertId);
 
     @ApiOperation(value = "An endpoint to get all the indicators of the specific alert", notes = "Return list of indicators", response = IndicatorsWrapper.class, tags={ "alerts", })
     @ApiResponses(value = {
@@ -58,8 +57,7 @@ public interface AlertsApi {
     @RequestMapping(value = "/alerts/{alertId}/indicators",
             produces = "application/json",
             method = RequestMethod.GET)
-    ResponseEntity<IndicatorsWrapper> getIndicatorsByAlert(@ApiParam(value = "The ID of the alert to return",required=true ) @PathVariable("alertId") String alertId,
-                                                                   @ApiParam(value = "object that hold all the parameters for getting indicators"  ) @RequestBody IndicatorQuery body);
+    ResponseEntity<IndicatorsWrapper> getIndicatorsByAlert(@ApiParam(value = "The ID of the alert to return",required=true ) @PathVariable("alertId") String alertId);
 
     @ApiOperation(value = "Use this method to update feedback for bulk of alerts", notes = "", tags={"alerts"})
     @ApiResponses(value = {

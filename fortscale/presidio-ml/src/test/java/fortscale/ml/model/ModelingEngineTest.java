@@ -164,7 +164,7 @@ public class ModelingEngineTest {
 			when(builder.build(eq(modelBuilderData.getData()))).thenReturn(model);
 
 			if (!success) {
-				doThrow(Exception.class)
+				doThrow(RuntimeException.class)
 						.when(store)
 						.save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(contextId), eq(model),
 								eq(modelTimeRange), any(StoreMetadataProperties.class), (Map<String, String>) isNull());

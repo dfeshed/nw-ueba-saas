@@ -1,12 +1,11 @@
 package presidio.ade.domain.store.enriched;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.record.StoreMetadataProperties;
+import org.bson.Document;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -200,7 +199,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
         String collectionName = translator.toCollectionName(adeEventType);
 
         // Used by the readRecords method (no sorting)
-        DBObject indexOptions = new BasicDBObject(); // Keeps entries ordered
+        Document indexOptions = new Document(); // Keeps entries ordered
         indexOptions.put(fieldName, 1); // Ascending
         indexOptions.put(EnrichedRecord.START_INSTANT_FIELD, 1); // Ascending
         CompoundIndexDefinition indexDefinition = new CompoundIndexDefinition(indexOptions);
@@ -208,7 +207,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
         mongoTemplate.indexOps(collectionName).ensureIndex(indexDefinition);
 
         // Used by the readSortedRecords method (sorting by startInstant)
-        indexOptions = new BasicDBObject(); // Keeps entries ordered
+        indexOptions = new Document(); // Keeps entries ordered
         indexOptions.put(EnrichedRecord.START_INSTANT_FIELD, 1); // Ascending
         indexOptions.put(fieldName, 1); // Ascending
         indexDefinition = new CompoundIndexDefinition(indexOptions);

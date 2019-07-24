@@ -5,11 +5,11 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 public class SessionSplitTransformerKey {
     private String srcIp;
     private String dstIp;
-    private Integer dstPort;
-    private Integer srcPort;
+    private String dstPort;
+    private String srcPort;
 
 
-    public SessionSplitTransformerKey(String srcIp, String dstIp, Integer dstPort, Integer srcPort) {
+    public SessionSplitTransformerKey(String srcIp, String dstIp, String dstPort, String srcPort) {
         this.srcIp = srcIp;
         this.dstIp = dstIp;
         this.dstPort = dstPort;
@@ -24,11 +24,11 @@ public class SessionSplitTransformerKey {
         return dstIp;
     }
 
-    public Integer getDstPort() {
+    public String getDstPort() {
         return dstPort;
     }
 
-    public Integer getSrcPort() {
+    public String getSrcPort() {
         return srcPort;
     }
 
