@@ -77,23 +77,14 @@
         <guava.version>27.0-jre</guava.version>
         <!-- Maven plugin versions -->
         <maven-download-plugin.version>1.1.0</maven-download-plugin.version>
-
-
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
-
-
-
         <aspectj-maven-plugin.complianceLevel>11</aspectj-maven-plugin.complianceLevel>
         <aspectj-maven-plugin.version>1.11</aspectj-maven-plugin.version>
         <nickwongdev-aspectj-maven-plugin.version>1.12.1</nickwongdev-aspectj-maven-plugin.version>
-
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <mavanagaiata.version>0.9.4</mavanagaiata.version>
-
-
         <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
-
         <maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
         <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
         <maven-failsafe-plugin.version>2.16</maven-failsafe-plugin.version>

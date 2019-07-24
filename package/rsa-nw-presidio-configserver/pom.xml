@@ -132,7 +132,7 @@
                         </mapping>
                     </mappings>
                     <requires>
-                        <require>java &gt; 1.8</require>
+                        <require>java &gt; 11</require>
                     </requires>
                     <description>
                         Presidio(UEBA) core configuration server
