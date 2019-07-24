@@ -76,7 +76,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     public void all_mandatory_indicators_from_static_list_are_present() {
         ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         assertThat(allActualIndicatorNames)
-                .as(url + "Indicators are missing in alerts")
+                .as(url + "\nIndicators are missing in alerts")
                 .doesNotHaveDuplicates()
                 .containsExactlyInAnyOrderElementsOf(ALERTS_TEST_MANDATORY_INDICATOR_NAMES);
     }
