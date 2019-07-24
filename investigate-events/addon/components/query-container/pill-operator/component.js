@@ -425,7 +425,9 @@ export default Component.extend({
       // These conditionals return false to prevent any further handling of
       // the keypress that brought us here. Specifically, it prevents the
       // pill-value from having a space at the beginning.
-      if (results.length === 1 && operatorAcceptsValue) {
+      if ((results.length === 1 || results[0].displayName === searchText) && operatorAcceptsValue) {
+        // For < and >, they will never be the only match because of <= and >=
+        // so go ahead and broadcast if the searchText is an exact match as well.
         this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, results[0]);
         return false;
       }

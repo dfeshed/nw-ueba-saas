@@ -26,7 +26,8 @@ const _clientSideValidation = ({ pillData, position, isFromParser = false }) => 
       // If not from parser, no validation has been performed yet. Re-get pillData
       // by putting through parser to do client side validation.
       const { investigate: { dictionaries: { language } } } = getState();
-      pillData = transformTextToPillData(`${pillData.meta} ${pillData.operator} ${pillData.value}`.trim(), language);
+      const { meta, operator, value } = pillData;
+      pillData = transformTextToPillData(`${meta || ''} ${operator || ''} ${value || ''}`.trim(), language);
     }
 
     const { isInvalid } = pillData;

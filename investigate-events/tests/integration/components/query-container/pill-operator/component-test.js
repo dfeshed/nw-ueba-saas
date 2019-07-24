@@ -30,6 +30,7 @@ const modifiers = { shiftKey: true };
 
 const meta = { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A' };
 const eq = { displayName: '=', description: 'Equals', isExpensive: false, hasValue: true };
+const lt = { displayName: '<', description: 'Less Than', isExpensive: false, hasValue: true };
 
 // This trim also removes extra spaces inbetween words
 const trim = (text) => text.replace(/\s+/g, ' ').trim();
@@ -299,7 +300,29 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await typeIn(PILL_SELECTORS.operatorSelectInput, '= ');
   });
 
-  test('it does not select an operator if a trailing SPACE is entered and there is more than one option', async function(assert) {
+  test('it selects an operator if a trailing SPACE is entered and there are multiple options but the entered text is exactly equal to the first', async function(assert) {
+    const done = assert.async();
+    assert.expect(1);
+    this.set('meta', meta);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.OPERATOR_SELECTED) {
+        assert.deepEqual(data, lt, 'Wrong message data');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        activePillTab=activePillTab
+        meta=meta
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await typeIn(PILL_SELECTORS.operatorSelectInput, '< ');
+  });
+
+  test('it does not select an operator if a trailing SPACE is entered and there is more than one option and that option is not exactly the text entered', async function(assert) {
     assert.expect(0);
     this.set('meta', meta);
     this.set('handleMessage', () => {
