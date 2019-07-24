@@ -63,7 +63,7 @@ setup(name='presidio-workflows',
       author_email='fsgit@fortscale.com',
       packages=find_packages(),
       install_requires=[
-          'docutils==0.14',
+          'docutils!=0.15.post1',
           'urllib3==1.25.3',
           'elasticsearch==5.5.3',
           'Sphinx==1.8.4',
