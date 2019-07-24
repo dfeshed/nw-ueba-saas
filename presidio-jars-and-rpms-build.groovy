@@ -1,24 +1,82 @@
 def environments = [
-        presidio_core_trigger: [BUILD_PRESIDIO_TEST_UTILS: false, BUILD_PRESIDIO_CORE: true, BUILD_PRESIDIO_FLUME: true,
-                                BUILD_PRESIDIO_NETWITNESS: true, BUILD_PRESIDIO_UI: true, DEPLOY_JARS: true, RUN_CORE_PACKAGES: true,
-                                RUN_FLUME_PACKAGES: true, RUN_NW_PACKAGES:true, RUN_PRESIDIO_UI_PACKAGES: true, DEPLOY_PACKAGES: true],
-        presidio_flume_trigger: [BUILD_PRESIDIO_TEST_UTILS: false, BUILD_PRESIDIO_CORE: false, BUILD_PRESIDIO_FLUME: true,
-                                BUILD_PRESIDIO_NETWITNESS: true, BUILD_PRESIDIO_UI: false, DEPLOY_JARS:true, RUN_CORE_PACKAGES: false,
-                                RUN_FLUME_PACKAGES: true, RUN_NW_PACKAGES:true, RUN_PRESIDIO_UI_PACKAGES: false, DEPLOY_PACKAGES: true],
-        presidio_nw_extention_trigger: [BUILD_PRESIDIO_TEST_UTILS: false, BUILD_PRESIDIO_CORE: false, BUILD_PRESIDIO_FLUME: false,
-                                 BUILD_PRESIDIO_NETWITNESS: true, BUILD_PRESIDIO_UI: false, DEPLOY_JARS: true, RUN_CORE_PACKAGES: false,
-                                 RUN_FLUME_PACKAGES: false, RUN_NW_PACKAGES:true, RUN_PRESIDIO_UI_PACKAGES: false, DEPLOY_PACKAGES: true],
-        presidio_ui_trigger: [BUILD_PRESIDIO_TEST_UTILS: false, BUILD_PRESIDIO_CORE: false, BUILD_PRESIDIO_FLUME: false,
-                                        BUILD_PRESIDIO_NETWITNESS: false, BUILD_PRESIDIO_UI: true, DEPLOY_JARS: true, RUN_CORE_PACKAGES: false,
-                                        RUN_FLUME_PACKAGES: false, RUN_NW_PACKAGES:false, RUN_PRESIDIO_UI_PACKAGES: true, DEPLOY_PACKAGES: true],
-        presidio_test_utils_trigger: [BUILD_PRESIDIO_TEST_UTILS: true, BUILD_PRESIDIO_CORE: true, BUILD_PRESIDIO_FLUME: true,
-                              BUILD_PRESIDIO_NETWITNESS: true, BUILD_PRESIDIO_UI: true, DEPLOY_JARS: true, RUN_CORE_PACKAGES:true,
-                              RUN_FLUME_PACKAGES: true, RUN_NW_PACKAGES:true, RUN_PRESIDIO_UI_PACKAGES: true, DEPLOY_PACKAGES: true],
-        manual: [BUILD_PRESIDIO_TEST_UTILS: env.BUILD_PRESIDIO_TEST_UTILS, BUILD_PRESIDIO_CORE: env.BUILD_PRESIDIO_CORE, BUILD_PRESIDIO_FLUME: env.BUILD_PRESIDIO_FLUME,
-                 BUILD_PRESIDIO_NETWITNESS: env.BUILD_PRESIDIO_NETWITNESS, BUILD_PRESIDIO_UI: env.BUILD_PRESIDIO_UI, DEPLOY_JARS: env.DEPLOY_JARS, RUN_CORE_PACKAGES: env.RUN_CORE_PACKAGES,
-                 RUN_FLUME_PACKAGES: env.RUN_FLUME_PACKAGES, RUN_NW_PACKAGES: env.RUN_NW_PACKAGES, RUN_PRESIDIO_UI_PACKAGES: env.RUN_PRESIDIO_UI_PACKAGES, DEPLOY_PACKAGES: env.DEPLOY_PACKAGES]
-]
+        presidio_core_trigger: [
+                BUILD_PRESIDIO_TEST_UTILS: false,
+                BUILD_PRESIDIO_CORE: true,
+                BUILD_PRESIDIO_FLUME: true,
+                BUILD_PRESIDIO_NETWITNESS: true,
+                BUILD_PRESIDIO_UI: true,
+                DEPLOY_JARS: true,
+                RUN_CORE_PACKAGES: true,
+                RUN_FLUME_PACKAGES: true,
+                RUN_NW_PACKAGES:true,
+                RUN_PRESIDIO_UI_PACKAGES: true,
+                DEPLOY_PACKAGES: true],
 
+        presidio_flume_trigger: [
+                BUILD_PRESIDIO_TEST_UTILS: false,
+                BUILD_PRESIDIO_CORE: false,
+                BUILD_PRESIDIO_FLUME: true,
+                BUILD_PRESIDIO_NETWITNESS: true,
+                BUILD_PRESIDIO_UI: false,
+                DEPLOY_JARS:true,
+                RUN_CORE_PACKAGES: false,
+                RUN_FLUME_PACKAGES: true,
+                RUN_NW_PACKAGES:true,
+                RUN_PRESIDIO_UI_PACKAGES: false,
+                DEPLOY_PACKAGES: true],
+
+        presidio_nw_extention_trigger: [
+                BUILD_PRESIDIO_TEST_UTILS: false,
+                BUILD_PRESIDIO_CORE: false,
+                BUILD_PRESIDIO_FLUME: false,
+                BUILD_PRESIDIO_NETWITNESS: true,
+                BUILD_PRESIDIO_UI: false,
+                DEPLOY_JARS: true,
+                RUN_CORE_PACKAGES: false,
+                RUN_FLUME_PACKAGES: false,
+                RUN_NW_PACKAGES:true,
+                RUN_PRESIDIO_UI_PACKAGES: false,
+                DEPLOY_PACKAGES: true],
+
+        presidio_ui_trigger: [
+                BUILD_PRESIDIO_TEST_UTILS: false,
+                BUILD_PRESIDIO_CORE: false,
+                BUILD_PRESIDIO_FLUME: false,
+                BUILD_PRESIDIO_NETWITNESS: false,
+                BUILD_PRESIDIO_UI: true,
+                DEPLOY_JARS: true,
+                RUN_CORE_PACKAGES: false,
+                RUN_FLUME_PACKAGES: false,
+                RUN_NW_PACKAGES:false,
+                RUN_PRESIDIO_UI_PACKAGES: true,
+                DEPLOY_PACKAGES: true],
+
+        presidio_test_utils_trigger: [
+                BUILD_PRESIDIO_TEST_UTILS: true,
+                BUILD_PRESIDIO_CORE: true,
+                BUILD_PRESIDIO_FLUME: true,
+                BUILD_PRESIDIO_NETWITNESS: true,
+                BUILD_PRESIDIO_UI: true,
+                DEPLOY_JARS: true,
+                RUN_CORE_PACKAGES:true,
+                RUN_FLUME_PACKAGES: true,
+                RUN_NW_PACKAGES:true,
+                RUN_PRESIDIO_UI_PACKAGES: true,
+                DEPLOY_PACKAGES: true],
+
+        manual: [
+                BUILD_PRESIDIO_TEST_UTILS: env.BUILD_PRESIDIO_TEST_UTILS,
+                BUILD_PRESIDIO_CORE: env.BUILD_PRESIDIO_CORE,
+                BUILD_PRESIDIO_FLUME: env.BUILD_PRESIDIO_FLUME,
+                BUILD_PRESIDIO_NETWITNESS: env.BUILD_PRESIDIO_NETWITNESS,
+                BUILD_PRESIDIO_UI: env.BUILD_PRESIDIO_UI,
+                DEPLOY_JARS: env.DEPLOY_JARS,
+                RUN_CORE_PACKAGES: env.RUN_CORE_PACKAGES,
+                RUN_FLUME_PACKAGES: env.RUN_FLUME_PACKAGES,
+                RUN_NW_PACKAGES: env.RUN_NW_PACKAGES,
+                RUN_PRESIDIO_UI_PACKAGES: env.RUN_PRESIDIO_UI_PACKAGES,
+                DEPLOY_PACKAGES: env.DEPLOY_PACKAGES]
+]
 
 pipeline {
     agent {
@@ -70,7 +128,7 @@ pipeline {
             steps { buildPackages("presidio-core", "package/pom.xml", true, false, true) }
         }
         stage('Trigger Integration Test') {
-            when { expression { return env.RUN_CORE_PACKAGES == 'true' && (env.BRANCH_NAME == "origin/master" || env.BRANCH_NAME.contains("/release/")) } }
+            when { expression { return env.RUN_CORE_PACKAGES == 'true' && (env.BRANCH_NAME == "origin/master" || env.BRANCH_NAME.startsWith("origin/release/")) } }
             steps {
                 build job: 'presidio-integration-test-ADE-master', parameters: [
                         [$class: 'StringParameterValue', name: 'STABILITY', value: env.STABILITY],
