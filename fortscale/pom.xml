@@ -176,14 +176,6 @@
                 <version>${jsonassert.version}</version>
                 <scope>test</scope>
             </dependency>
-            <!--<dependency>-->
-            <!--<groupId>jdk.tools</groupId>-->
-            <!--<artifactId>jdk.tools</artifactId>-->
-            <!--<version>${java-lang-config.version}</version>-->
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${maven-jar-plugin}/../lib/tools.jar</systemPath>-->
-            <!--&lt;!&ndash;<systemPath>${java.class.path}/../lib/tools.jar</systemPath>&ndash;&gt;-->
-            <!--</dependency>-->
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
