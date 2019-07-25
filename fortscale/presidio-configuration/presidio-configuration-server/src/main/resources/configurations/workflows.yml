@@ -15,6 +15,8 @@ dags:
       schedule_interval: None
     retention:
       schedule_interval: None
+    input_pre_processing:
+      schedule_interval: timedelta(days=1)
     smart:
       schedule_interval: timedelta(hours=1)
       smart_confs:
@@ -192,6 +194,13 @@ dags:
         main_class: presidio.output.manager.FortscaleOutputManagerApplication
         xmx: 512
         xms: 512
+    InputPreProcessor:
+      pool_name: spring_boot_jar_pool
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-input-core.jar
+        main_class: presidio.input.pre.processing.application.PresidioInputPreProcessingApplication
+        xmx: 512
+        xms: 512
 components:
   ade:
     models:
@@ -211,3 +220,12 @@ retention:
   min_time_to_start_retention_in_days : 2
   retention_interval_in_hours : 24
   command: applyRetentionPolicy
+
+input_pre_processing:
+  name : last_occurrence_instant
+  arguments:
+    - schema: TLS
+      entityTypes: [domain]
+      startInstant: true
+      endtInstant: true
+
