@@ -8,7 +8,6 @@ $ember-power-select-line-height: 2rem;
 
 @import "ember-power-select";
 
-
 .power-select {
   .label-text {
     vertical-align: bottom;
@@ -53,6 +52,9 @@ $ember-power-select-line-height: 2rem;
       &[aria-current="false"] {
         color: text-color(primary, lightest);
       }
+    }
+    &[aria-disabled="true"] {
+      color: text-color(primary);
     }
   }
 

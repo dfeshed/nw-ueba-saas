@@ -1,5 +1,4 @@
 .windows-log-destinations {
-
   .windows-log-destinations__list {
     padding-right: 1rem;
     max-width: 80%;
@@ -16,14 +15,5 @@
     color: $formInputErrorTypeColor;
     background-color: $formInputErrorBackgroundColor;
     border-color: $formInputErrorBorderColor;
-  }
-
-}
-
-// When the log server version is older than 11.4, this colors the disabled state
-// in the dropdown.
-.ember-power-select-option {
-  &[aria-disabled=true] {
-    color: text-color(primary, dark);
   }
 }
