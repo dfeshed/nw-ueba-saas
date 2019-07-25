@@ -7,9 +7,11 @@ import * as dashboardCardCreators from 'ngcoreui/actions/creators/logcollector/d
 
 const stateToComputed = (state) => {
   let protocolRowValues = [];
-  if (dashboardCardSelectors.allProtocolColumnDataLoadingSuccess(state)) {
-    protocolRowValues = dashboardCardSelectors.buildProtocolRow(state);
+  if (dashboardCardSelectors.isProtocolDataLoadingSuccess(state)) {
+    protocolRowValues = dashboardCardSelectors.getProtocolData(state);
   }
+  protocolRowValues = dashboardCardSelectors.addHeaderRow(protocolRowValues);
+
   return {
     protocolDataList: protocolRowValues
   };

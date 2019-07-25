@@ -1,4 +1,4 @@
-export const PROTOCOL_PAYLOAD =
+export const PROTOCOL_LIST_PAYLOAD =
   {
     flags: 1074135041,
     nodes: [

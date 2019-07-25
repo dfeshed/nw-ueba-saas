@@ -2,7 +2,7 @@ import { test, module } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import * as dashboardCardSelectors from 'ngcoreui/reducers/logcollector/dashboard-card/dashboard-card-selectors';
 import ReduxDataHelper from 'ngcoreui/tests/helpers/redux-data-helper';
-import { PROTOCOL_DATA_ROWS } from './protocol-data-row-extracted';
+import { PROTOCOL_DATA_EXTRACTED, PROTOCOL_ROW_VALUES, PROTOCOL_ROW_VALUES_EXPECTED } from './protocol-data-extracted';
 
 module('Unit | Selectors | dashboardCard', (hooks) => {
   setupTest(hooks);
@@ -36,20 +36,26 @@ module('Unit | Selectors | dashboardCard', (hooks) => {
     assert.deepEqual(dashboardCardSelectors.protocolArray(state), arr);
   });
 
-  test('buildProtocolRow returning the correct set of items on similar data', (assert) => {
+  test('isProtocolDataLoadingSuccess picking up complete status', (assert) => {
     const state = new ReduxDataHelper()
-      .protocolSameRowData()
+      .protocolDataLoadingStatus('complete')
       .build();
-    const expectedObj = [{ protocol: 'file', eventRate: '10', byteRate: '11', errorRate: '12',
-      numOfEvents: '13', numOfBytes: '14', errorCount: '15' }];
-    assert.deepEqual(dashboardCardSelectors.buildProtocolRow(state), expectedObj);
+    assert.deepEqual(dashboardCardSelectors.isProtocolDataLoadingSuccess(state), true);
   });
 
-  test('buildProtocolRow returning the correct set of items on dissimilar data', (assert) => {
+  test('getProtocolData picking up correct items', (assert) => {
+    const dict = {};
+    dict.odbc = PROTOCOL_DATA_EXTRACTED;
     const state = new ReduxDataHelper()
-      .protocolDifferentRowData()
+      .protocolData(dict)
       .build();
-    const expectedObjs = PROTOCOL_DATA_ROWS;
-    assert.deepEqual(dashboardCardSelectors.buildProtocolRow(state), expectedObjs);
+    assert.deepEqual(dashboardCardSelectors.getProtocolData(state), [dict.odbc]);
+  });
+
+  test('addHeaderRow returning an extra header row', (assert) => {
+    const protocolRowValues = PROTOCOL_ROW_VALUES;
+    const expectedValues = PROTOCOL_ROW_VALUES_EXPECTED;
+    assert.deepEqual(dashboardCardSelectors.addHeaderRow(protocolRowValues), expectedValues,
+      'Correct calculation is done while calculating headers');
   });
 });

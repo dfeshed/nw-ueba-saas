@@ -6,23 +6,10 @@ import * as ACTION_TYPES from 'ngcoreui/actions/types';
 const initialState = {
   protocols: '',
   itemKeys: [],
-  itemsStatus: 'wait',
+  itemKeysStatus: 'wait',
 
-  itemEventRateStatus: 'wait',
-  itemByteRateStatus: 'wait',
-  itemErrorRateStatus: 'wait',
-
-  itemTotalEventsStatus: 'wait',
-  itemTotalBytesStatus: 'wait',
-  itemTotalErrorsStatus: 'wait',
-
-  itemValueEventRate: {},
-  itemValueByteRate: {},
-  itemValueErrorRate: {},
-
-  itemValueNumEvents: {},
-  itemValueNumBytes: {},
-  itemValueNumErrors: {}
+  itemProtocolData: [],
+  itemProtocolDataStatus: 'wait'
 };
 
 export default reduxActions.handleActions({
@@ -32,11 +19,11 @@ export default reduxActions.handleActions({
       start: (state) => {
         return state.merge({
           itemKeys: [],
-          itemsStatus: 'wait'
+          itemKeysStatus: 'wait'
         });
       },
       failure: (state) => {
-        return state.set('itemsStatus', 'error');
+        return state.set('itemKeysStatus', 'error');
       },
       success: (state) => {
         let arr = null;
@@ -45,194 +32,71 @@ export default reduxActions.handleActions({
         }
         return state.merge({
           itemKeys: arr,
-          itemsStatus: 'complete'
+          itemKeysStatus: 'complete'
         });
       }
     })
   ),
 
-  [ACTION_TYPES.LOG_COLLECTOR_FETCH_EVENT_RATE]: (state, action) => (
+  [ACTION_TYPES.LOG_COLLECTOR_FETCH_PROTOCOL_DATA]: (state, action) => (
     handle(state, action, {
       start: (state) => {
         return state.merge({
-          itemEventRateStatus: 'wait',
-          itemValueEventRate: []
+          itemProtocolDataStatus: 'wait'
         });
       },
       failure: (state) => {
-        return state.set('itemEventRateStatus', 'error');
+        return state.set('itemProtocolDataStatus', 'error');
       },
       success: (state) => {
-        let value = '';
-        let node = null;
-        if (action.payload != null) {
-          value = action.payload.string;
-          if (action.payload.path != null) {
-            node = action.payload.path.split('/');
-          }
+        const allNodes = [];
+        action.payload.nodes.forEach((x) => allNodes.push(x));
+
+        const mergedObj = {};
+        let protocolName = '';
+        if (allNodes.length > 0 && allNodes[0].path != null) {
+          protocolName = allNodes[0].path.split('/')[2];
         }
-        const protocol = (node != null) ? node[2] : null;
-        const mergedObj = { ...state.itemValueEventRate };
-        mergedObj[protocol] = parseInt(value, 10);
+        mergedObj.protocol = protocolName;
+        mergedObj.eventRate = '0';
+        mergedObj.byteRate = '0';
+        mergedObj.errorRate = '0';
+        mergedObj.numOfEvents = '0';
+        mergedObj.numOfBytes = '0';
+        mergedObj.errorCount = '0';
+
+        allNodes.forEach((x) => {
+          const property = x.name;
+          switch (property) {
+            case 'total_events':
+              mergedObj.numOfEvents = parseInt(x.value, 10).toLocaleString();
+              break;
+            case 'total_bytes':
+              mergedObj.numOfBytes = parseInt(x.value, 10).toLocaleString();
+              break;
+            case 'total_errors':
+              mergedObj.errorCount = parseInt(x.value, 10).toLocaleString();
+              break;
+            case 'total_events_rate':
+              mergedObj.eventRate = parseInt(x.value, 10).toLocaleString();
+              break;
+            case 'total_bytes_rate':
+              mergedObj.byteRate = parseInt(x.value, 10).toLocaleString();
+              break;
+            case 'total_errors_rate':
+              mergedObj.errorRate = parseInt(x.value, 10).toLocaleString();
+          }
+        });
+
+        let mergedObjDict = {};
+        if (state.itemProtocolData != null) {
+          mergedObjDict = { ...state.itemProtocolData };
+        }
+        mergedObjDict[protocolName] = mergedObj;
 
         return state.merge({
-          itemValueEventRate: mergedObj,
-          itemEventRateStatus: 'complete'
-        });
-      }
-    })
-  ),
-
-  [ACTION_TYPES.LOG_COLLECTOR_FETCH_BYTE_RATE]: (state, action) => (
-    handle(state, action, {
-      start: (state) => {
-        return state.merge({
-          itemByteRateStatus: 'wait',
-          itemValueByteRate: {}
-        });
-      },
-      failure: (state) => {
-        return state.set('itemByteRateStatus', 'error');
-      },
-      success: (state) => {
-        let value = '';
-        let node = null;
-        if (action.payload != null) {
-          value = action.payload.string;
-          if (action.payload.path != null) {
-            node = action.payload.path.split('/');
-          }
-        }
-        const protocol = (node != null) ? node[2] : null;
-        const mergedObj = { ...state.itemValueByteRate };
-        mergedObj[protocol] = parseInt(value, 10);
-        return state.merge({
-          itemValueByteRate: mergedObj,
-          itemByteRateStatus: 'complete'
-        });
-      }
-    })
-  ),
-
-  [ACTION_TYPES.LOG_COLLECTOR_FETCH_ERROR_RATE]: (state, action) => (
-    handle(state, action, {
-      start: (state) => {
-        return state.merge({
-          itemErrorRateStatus: 'wait',
-          itemValueErrorRate: {}
-        });
-      },
-      failure: (state) => {
-        return state.set('itemErrorRateStatus', 'error');
-      },
-      success: (state) => {
-        let value = '';
-        let node = null;
-        if (action.payload != null) {
-          value = action.payload.string;
-          if (action.payload.path != null) {
-            node = action.payload.path.split('/');
-          }
-        }
-        const protocol = (node != null) ? node[2] : null;
-        const mergedObj = { ...state.itemValueErrorRate };
-        mergedObj[protocol] = parseInt(value, 10);
-        return state.merge({
-          itemValueErrorRate: mergedObj,
-          itemErrorRateStatus: 'complete'
-        });
-      }
-    })
-  ),
-
-  [ACTION_TYPES.LOG_COLLECTOR_FETCH_TOTAL_EVENTS]: (state, action) => (
-    handle(state, action, {
-      start: (state) => {
-        return state.merge({
-          itemTotalEventsStatus: 'wait',
-          itemValueNumEvents: {}
-        });
-      },
-      failure: (state) => {
-        return state.set('itemTotalEventsStatus', 'error');
-      },
-      success: (state) => {
-        let value = '';
-        let node = null;
-        if (action.payload != null) {
-          value = action.payload.string;
-          if (action.payload.path != null) {
-            node = action.payload.path.split('/');
-          }
-        }
-        const protocol = (node != null) ? node[2] : null;
-        const mergedObj = { ...state.itemValueNumEvents };
-        mergedObj[protocol] = parseInt(value, 10);
-        return state.merge({
-          itemValueNumEvents: mergedObj,
-          itemTotalEventsStatus: 'complete'
-        });
-      }
-    })
-  ),
-
-  [ACTION_TYPES.LOG_COLLECTOR_FETCH_TOTAL_BYTES]: (state, action) => (
-    handle(state, action, {
-      start: (state) => {
-        return state.merge({
-          itemTotalBytesStatus: 'wait',
-          itemValueNumBytes: {}
-        });
-      },
-      failure: (state) => {
-        return state.set('itemTotalBytesStatus', 'error');
-      },
-      success: (state) => {
-        let value = '';
-        let node = null;
-        if (action.payload != null) {
-          value = action.payload.string;
-          if (action.payload.path != null) {
-            node = action.payload.path.split('/');
-          }
-        }
-        const protocol = (node != null) ? node[2] : null;
-        const mergedObj = { ...state.itemValueNumBytes };
-        mergedObj[protocol] = parseInt(value, 10);
-        return state.merge({
-          itemValueNumBytes: mergedObj,
-          itemTotalBytesStatus: 'complete'
-        });
-      }
-    })
-  ),
-
-  [ACTION_TYPES.LOG_COLLECTOR_FETCH_TOTAL_ERRORS]: (state, action) => (
-    handle(state, action, {
-      start: (state) => {
-        return state.merge({
-          itemTotalErrorsStatus: 'wait',
-          itemValueNumErrors: {}
-        });
-      },
-      failure: (state) => {
-        return state.set('itemTotalErrorsStatus', 'error');
-      },
-      success: (state) => {
-        let value = '';
-        let node = null;
-        if (action.payload != null) {
-          value = action.payload.string;
-          if (action.payload.path != null) {
-            node = action.payload.path.split('/');
-          }
-        }
-        const protocol = (node != null) ? node[2] : null;
-        const mergedObj = { ...state.itemValueNumErrors };
-        mergedObj[protocol] = parseInt(value, 10);
-        return state.merge({
-          itemValueNumErrors: mergedObj,
-          itemTotalErrorsStatus: 'complete'
+          itemProtocolData: mergedObjDict,
+          itemProtocolDataStatus: 'complete'
         });
       }
     })

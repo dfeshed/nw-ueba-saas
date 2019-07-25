@@ -1,120 +1,61 @@
 import reselect from 'reselect';
+import _ from 'lodash';
 
 const _protocolsState = (state) => state.logcollector.dashboardCard;
 const { createSelector } = reselect;
 
 export const areProtocolsLoading = createSelector(
   _protocolsState,
-  (_protocolsState) => _protocolsState.itemsStatus === 'wait'
+  (_protocolsState) => _protocolsState.itemKeysStatus === 'wait'
 );
 
-export const isProtocolEventRateLoadingFailed = createSelector(
+export const isProtocolDataLoadingSuccess = createSelector(
   _protocolsState,
-  (_protocolsState) => _protocolsState.itemEventRateStatus === 'error'
+  (_protocolsState) => _protocolsState.itemProtocolDataStatus === 'complete'
 );
-
-export const isProtocolEventRateLoading = createSelector(
-  _protocolsState,
-  (_protocolsState) => _protocolsState.itemEventRateStatus === 'wait'
-);
-
-export const isProtocolByteRateLoading = createSelector(
-  _protocolsState,
-  (_protocolsState) => _protocolsState.itemByteRateStatus === 'wait'
-);
-
-export const isProtocolErrorRateLoading = createSelector(
-  _protocolsState,
-  (_protocolsState) => _protocolsState.itemErrorRateStatus === 'wait'
-);
-
-export const isProtocolNumEventsLoading = createSelector(
-  _protocolsState,
-  (_protocolsState) => _protocolsState.itemTotalEventsStatus === 'wait'
-);
-
-export const isProtocolNumBytesLoading = createSelector(
-  _protocolsState,
-  (_protocolsState) => _protocolsState.itemTotalBytesStatus === 'wait'
-);
-
-export const isProtocolNumErrorsLoading = createSelector(
-  _protocolsState,
-  (_protocolsState) => _protocolsState.itemTotalErrorsStatus === 'wait'
-);
-
-export const allProtocolColumnDataLoadingSuccess = (state) => {
-  return !isProtocolEventRateLoading(state) &&
-    !isProtocolEventRateLoadingFailed(state) &&
-    !isProtocolByteRateLoading(state) &&
-    !isProtocolErrorRateLoading(state) &&
-    !isProtocolNumEventsLoading(state) &&
-    !isProtocolNumBytesLoading(state) &&
-    !isProtocolNumErrorsLoading(state);
-};
-
-export const buildProtocolRow = (state) => {
-  const eventRateDict = eventRate(state);
-  const byteRateDict = byteRate(state);
-  const errorsRateDict = errorRate(state);
-  const numEventsDict = numOfEvents(state);
-  const numBytesDict = numOfBytes(state);
-  const numErrorsDict = numOfErrors(state);
-
-  let allProtocols = [];
-  allProtocols.push(...Object.keys(eventRateDict), ...Object.keys(byteRateDict),
-    ...Object.keys(errorsRateDict), ...Object.keys(numEventsDict), ...Object.keys(numBytesDict),
-    ...Object.keys(numErrorsDict));
-  allProtocols = [...new Set(allProtocols)];
-
-  const items = [];
-  for (let i = 0; i < allProtocols.length; i++) {
-    const item = {};
-    const key = allProtocols[i];
-    item.protocol = key;
-    item.eventRate = eventRateDict[key] != null ? eventRateDict[key].toLocaleString() : '0';
-    item.byteRate = byteRateDict[key] != null ? byteRateDict[key].toLocaleString() : '0';
-    item.errorRate = errorsRateDict[key] != null ? errorsRateDict[key].toLocaleString() : '0';
-    item.numOfEvents = numEventsDict[key] != null ? numEventsDict[key].toLocaleString() : '0';
-    item.numOfBytes = numBytesDict[key] != null ? numBytesDict[key].toLocaleString() : '0';
-    item.errorCount = numErrorsDict[key] != null ? numErrorsDict[key].toLocaleString() : '0';
-    items.push(item);
-  }
-
-  return items;
-};
 
 export const protocolArray = createSelector(
   _protocolsState,
   (_protocolsState) => _protocolsState.itemKeys
 );
 
-export const eventRate = createSelector(
+export const getProtocolData = createSelector(
   _protocolsState,
-  (_protocolsState) => _protocolsState.itemValueEventRate
+  (_protocolsState) => _.values(_protocolsState.itemProtocolData)
 );
 
-export const byteRate = createSelector(
-  _protocolsState,
-  (_protocolsState) => _protocolsState.itemValueByteRate
-);
+const getNumberFromLocaleNumberString = (number) => {
+  return parseInt(number.replace(/,/g, ''), 10);
+};
 
-export const errorRate = createSelector(
-  _protocolsState,
-  (_protocolsState) => _protocolsState.itemValueErrorRate
-);
+export const addHeaderRow = (protocolRowValues) => {
+  if (protocolRowValues.length === 0) {
+    return protocolRowValues;
+  }
+  const headerRow = {};
+  headerRow.protocol = 'TOTAL';
+  headerRow.eventRate = 0;
+  headerRow.byteRate = 0;
+  headerRow.errorRate = 0;
+  headerRow.numOfEvents = 0;
+  headerRow.numOfBytes = 0;
+  headerRow.errorCount = 0;
 
-export const numOfEvents = createSelector(
-  _protocolsState,
-  (_protocolsState) => _protocolsState.itemValueNumEvents
-);
+  protocolRowValues.forEach((item) => {
+    headerRow.eventRate += getNumberFromLocaleNumberString(item.eventRate);
+    headerRow.byteRate += getNumberFromLocaleNumberString(item.byteRate);
+    headerRow.errorRate += getNumberFromLocaleNumberString(item.errorRate);
+    headerRow.numOfEvents += getNumberFromLocaleNumberString(item.numOfEvents);
+    headerRow.numOfBytes += getNumberFromLocaleNumberString(item.numOfBytes);
+    headerRow.errorCount += getNumberFromLocaleNumberString(item.errorCount);
+  });
 
-export const numOfBytes = createSelector(
-  _protocolsState,
-  (_protocolsState) => _protocolsState.itemValueNumBytes
-);
+  for (const key in headerRow) {
+    if ((typeof headerRow[key]) === 'number') {
+      headerRow[key] = headerRow[key].toLocaleString();
+    }
+  }
 
-export const numOfErrors = createSelector(
-  _protocolsState,
-  (_protocolsState) => _protocolsState.itemValueNumErrors
-);
+  protocolRowValues.unshift(headerRow);
+  return protocolRowValues;
+};
