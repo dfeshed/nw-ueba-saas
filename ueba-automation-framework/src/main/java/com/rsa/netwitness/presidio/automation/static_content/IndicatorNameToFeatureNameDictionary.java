@@ -2,6 +2,7 @@ package com.rsa.netwitness.presidio.automation.static_content;
 
 import java.util.HashMap;
 
+@Deprecated
 public class IndicatorNameToFeatureNameDictionary {
 
     private static HashMap<String, String> dictionary;

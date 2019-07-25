@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Deprecated
 public class IndicatorSchemaDictionary {
 
     private static HashMap<String, String> dictionary;

@@ -1,10 +1,11 @@
 package com.rsa.netwitness.presidio.automation.test.rest;
 
-import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
+import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.rest.helper.ParametersUrlBuilder;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.static_content.AlertClassificationIndicatorDictionary;
+import com.rsa.netwitness.presidio.automation.static_content.IndicatorsInfo;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static com.rsa.netwitness.presidio.automation.static_content.AlertClassificationIndicatorDictionary.getClassificationListByPrioritizedOrder;
 import static java.util.Comparator.reverseOrder;
 import static java.util.concurrent.TimeUnit.HOURS;
 import static java.util.stream.Collectors.*;
@@ -157,7 +157,6 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
     }
 
 
-    // https://github.rsa.lab.emc.com/asoc/presidio-core/blob/master/fortscale/presidio-output/presidio-output-processor/src/main/resources/supporting_information_config.yml
     @Test
     public void no_missing_classifications_and_right_order() {
         ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
@@ -206,11 +205,12 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
                     .map(AlertClassificationIndicatorDictionary::getIndicatorClassification)
                     .collect(toList());
 
-            List<String> expectedClassificationsOrdered = getClassificationListByPrioritizedOrder()
+            List<String> expectedClassificationsOrdered = IndicatorsInfo.getClassificationsByPrioritiesAsc()
                     .stream().sequential()
                     .filter(expectedClassifications::contains)
                     .collect(toList());
 
+            // todo: duplicates in classifications?
             assertThat(actualClassifications)
                     .as(url + "\nAlertId = " + alert.getId() + "\nMissing classification or wrong order.")
                     .hasSameSizeAs(expectedClassificationsOrdered)

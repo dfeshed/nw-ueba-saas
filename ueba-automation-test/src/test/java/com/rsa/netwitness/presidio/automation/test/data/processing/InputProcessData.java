@@ -117,7 +117,7 @@ public class InputProcessData extends AbstractTestNGSpringContextTests {
 
     @Test
     public void inputTlsTest(){
-        clearCollections("TLS");
+        // clearCollections("TLS");
         inputTestManager.process(startDate, endDate, "TLS");
         long rawRegistryEventsCount = tlsInputRawRepository.count();
         long enrichedRegistryEventsCount = tlsEnrichStoredDataRepository.count();

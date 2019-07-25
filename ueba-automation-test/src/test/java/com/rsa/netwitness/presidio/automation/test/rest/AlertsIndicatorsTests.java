@@ -6,11 +6,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
+import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.rest.helper.ParametersUrlBuilder;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
-import com.rsa.netwitness.presidio.automation.static_content.IndicatorSchemaDictionary;
+import com.rsa.netwitness.presidio.automation.static_content.IndicatorsInfo;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +29,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.rsa.netwitness.presidio.automation.static_content.AlertsMandatoryIndicators.ALERTS_TEST_MANDATORY_INDICATOR_NAMES;
+import static com.rsa.netwitness.presidio.automation.static_content.IndicatorsInfo.ALL_MANDATORY_INDICATORS;
 import static com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils.skipTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -78,7 +78,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         assertThat(allActualIndicatorNames)
                 .as(url + "\nIndicators are missing in alerts")
                 .doesNotHaveDuplicates()
-                .containsExactlyInAnyOrderElementsOf(ALERTS_TEST_MANDATORY_INDICATOR_NAMES);
+                .containsExactlyInAnyOrderElementsOf(ALL_MANDATORY_INDICATORS);
     }
 
     @Test
@@ -310,7 +310,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         String indicatorId = allIndicatorsTypeNameSamples.get(indicatorName)[1];
         ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
         IndicatorResult indicator = getIndicator(alertId, indicatorId);
-        String expectedSchema = IndicatorSchemaDictionary.getIndicatorSchema(indicatorName);
+        String expectedSchema = IndicatorsInfo.getSchemaNameByIndicator(indicatorName);
         assertThat(indicator.schema)
                 .as(url+"\nIndicator schema name mismatch.\nIndicator name = "+indicatorName)
                 .isEqualTo(expectedSchema);

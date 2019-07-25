@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Deprecated
 public class AlertClassificationIndicatorDictionary {
 
     private static HashMap<String, String> dictionary;
