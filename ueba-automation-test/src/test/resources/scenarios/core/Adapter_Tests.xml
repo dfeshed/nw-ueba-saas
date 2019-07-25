@@ -7,17 +7,17 @@
 
    <test name="Active_Directory_Mapping_Test">
         <classes>
-            <class name="presidio.integration.adapter.test.mapping.ActiveDircetoryMappingTest"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.adapter.mapping.ActiveDircetoryMappingTest"/>
         </classes>
     </test>
     <test name="Authentication_Mapping_Test">
         <classes>
-            <class name="presidio.integration.adapter.test.mapping.AuthenticationMappingTest"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.adapter.mapping.AuthenticationMappingTest"/>
         </classes>
     </test>
     <test name="File_Mapping_Test">
         <classes>
-            <class name="presidio.integration.adapter.test.mapping.FileMappingTest"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.adapter.mapping.FileMappingTest"/>
         </classes>
     </test>
 </suite>

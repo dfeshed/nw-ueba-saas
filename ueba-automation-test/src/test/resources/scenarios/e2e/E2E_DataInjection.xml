@@ -5,7 +5,7 @@
     <parameter name="anomaly_day" value="1" />
     <parameter name="generator_format" value="CEF_DAILY" />
 
-    <test name="E2E Data Injection"  preserve-order="true">
+    <test name="E2E Data Injection">
         <classes>
             <class name="com.rsa.netwitness.presidio.automation.test.data.preparation.NetworkDataPreparation"/>
             <class name="com.rsa.netwitness.presidio.automation.test.data.preparation.AlertsScenarioDataPreparation"/>
@@ -13,5 +13,3 @@
     </test>
 
 </suite>
-
-

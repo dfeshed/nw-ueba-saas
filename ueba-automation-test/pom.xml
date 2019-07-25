@@ -12,10 +12,6 @@
 
     <artifactId>ueba-automation-test</artifactId>
 
-    <properties>
-        <suiteXmlFile>core/Output_Tests.xml</suiteXmlFile>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.rsa.netwitness.presidio.automation</groupId>
