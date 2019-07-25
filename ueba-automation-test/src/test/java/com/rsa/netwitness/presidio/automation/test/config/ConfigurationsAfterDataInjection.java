@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
+import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -26,13 +27,14 @@ import java.time.temporal.ChronoUnit;
 
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
-@SpringBootTest(classes = {MongoConfig.class, NetwitnessEventStoreConfig.class})
+@SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class ConfigurationsAfterDataInjection extends AbstractTestNGSpringContextTests {
     private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
             LoggerFactory.getLogger(ConfigurationsAfterDataInjection.class.getName());
 
     @Autowired
     private AdapterTestManager adapterTestManager;
+
     private Instant startDate = Instant.now();
     private Instant endDate = Instant.now();
 

@@ -7,8 +7,9 @@ import com.rsa.netwitness.presidio.automation.domain.repository.AdapterAuthentic
 import com.rsa.netwitness.presidio.automation.domain.repository.AdapterFileStoredDataRepository;
 import com.rsa.netwitness.presidio.automation.domain.repository.AdapterRegistryStoredDataRepository;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
-import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.log_player.MongoCollectionsMonitor;
+import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
+import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,7 +43,7 @@ import java.util.List;
  *
  * **/
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
-@SpringBootTest(classes = {MongoConfig.class, NetwitnessEventStoreConfig.class})
+@SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class MonitorE2EDataFlow extends AbstractTestNGSpringContextTests {
     @Autowired
     private MongoTemplate mongoTemplate;
