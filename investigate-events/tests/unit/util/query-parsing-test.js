@@ -252,6 +252,18 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].validationError.string, 'You must enter an 8-bit Integer.', 'validation error should be correct');
   });
 
+  test('transformTextToPillData returns an invalid pill when length is used with a negative number', function(assert) {
+    const text = 'c length -3';
+    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'c', 'meta should match');
+    assert.equal(result[0].operator, 'length', 'operator should match');
+    assert.equal(result[0].value, '-3', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.equal(result[0].validationError.string, 'You must enter a non-negative Integer.', 'validation error should be correct');
+  });
+
   // Leaving here to remind me to implement this soon
   skip('transformTextToPillData returns an invalid pill for an out-of-range integer value', function(assert) {
     // bytes.src is UInt64, that number is 2^65

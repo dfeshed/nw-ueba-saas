@@ -495,6 +495,17 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_NOT_EXISTS, text: '!exists' });
   });
 
+  test('handles negative numbers', function(assert) {
+    const source = 'medium > -5';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 4);
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' });
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_GT, text: '>' });
+    assert.deepEqual(result[2], { type: LEXEMES.HYPHEN, text: '-' });
+    assert.deepEqual(result[3], { type: LEXEMES.INTEGER, text: '5' });
+  });
+
   test('handles ranges (`-`)', function(assert) {
     const source = 'medium = 3-7';
     const s = new Scanner(source);
@@ -503,7 +514,7 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' });
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' });
     assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '3' });
-    assert.deepEqual(result[3], { type: LEXEMES.RANGE, text: '-' });
+    assert.deepEqual(result[3], { type: LEXEMES.HYPHEN, text: '-' });
     assert.deepEqual(result[4], { type: LEXEMES.INTEGER, text: '7' });
   });
 
@@ -537,7 +548,7 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '3' });
     assert.deepEqual(result[3], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
     assert.deepEqual(result[4], { type: LEXEMES.INTEGER, text: '5' });
-    assert.deepEqual(result[5], { type: LEXEMES.RANGE, text: '-' });
+    assert.deepEqual(result[5], { type: LEXEMES.HYPHEN, text: '-' });
     assert.deepEqual(result[6], { type: LEXEMES.INTEGER, text: '7' });
     assert.deepEqual(result[7], { type: LEXEMES.VALUE_SEPARATOR, text: ',' });
     assert.deepEqual(result[8], { type: LEXEMES.INTEGER, text: '9' });

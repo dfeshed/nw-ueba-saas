@@ -141,7 +141,7 @@ class Scanner {
         this._string();
         break;
       case '-':
-        this._addToken(LEXEMES.RANGE);
+        this._addToken(LEXEMES.HYPHEN);
         break;
       case ',':
         this._addToken(LEXEMES.VALUE_SEPARATOR);

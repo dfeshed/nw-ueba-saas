@@ -33,6 +33,31 @@ module('Unit | Util | Parser', function(hooks) {
     ], 'children contains the expected single criteria with correct values');
   });
 
+  test('correctly parses a negative number', function(assert) {
+    const tokens = [
+      { type: LEXEMES.META, text: 'medium' },
+      { type: LEXEMES.OPERATOR_EQ, text: '=' },
+      { type: LEXEMES.HYPHEN, text: '-' },
+      { type: LEXEMES.INTEGER, text: '3' }
+    ];
+    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const result = p.parse();
+    assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
+    assert.deepEqual(result.children, [
+      {
+        type: GRAMMAR.CRITERIA,
+        meta: { type: LEXEMES.META, text: 'medium' },
+        operator: { type: LEXEMES.OPERATOR_EQ, text: '=' },
+        valueRanges: [
+          {
+            type: GRAMMAR.META_VALUE,
+            value: { type: LEXEMES.INTEGER, text: '-3' }
+          }
+        ]
+      }
+    ], 'children contains the expected single criteria with correct values');
+  });
+
   test('correctly parses two meta and &&', function(assert) {
     const tokens = [
       { type: LEXEMES.META, text: 'medium' },
@@ -75,6 +100,39 @@ module('Unit | Util | Parser', function(hooks) {
 
   // Support for this is currently commented out in the parser until UI support is added.
   // This test can be used once those blocks are un-commented and UI support exists.
+  skip('correctly parses negative numbers w/ ranges', function(assert) {
+    // medium = -3 - -5
+    // "medium is between negative 3 and negative 5"
+    const tokens = [
+      { type: LEXEMES.META, text: 'medium' },
+      { type: LEXEMES.OPERATOR_EQ, text: '=' },
+      { type: LEXEMES.HYPHEN, text: '-' },
+      { type: LEXEMES.INTEGER, text: '3' },
+      { type: LEXEMES.HYPHEN, text: '-' },
+      { type: LEXEMES.HYPHEN, text: '-' },
+      { type: LEXEMES.INTEGER, text: '5' }
+    ];
+    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const result = p.parse();
+    assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
+    assert.deepEqual(result.children, [
+      {
+        type: GRAMMAR.CRITERIA,
+        meta: { type: LEXEMES.META, text: 'medium' },
+        operator: { type: LEXEMES.OPERATOR_EQ, text: '=' },
+        valueRanges: [
+          {
+            type: GRAMMAR.META_VALUE_RANGE,
+            from: { type: LEXEMES.INTEGER, text: '-3' },
+            to: { type: LEXEMES.INTEGER, text: '-5' }
+          }
+        ]
+      }
+    ], 'children contains the expected single criteria with correct values');
+  });
+
+  // Support for this is currently commented out in the parser until UI support is added.
+  // This test can be used once those blocks are un-commented and UI support exists.
   skip('correctly parses multiple values/ranges', function(assert) {
     // medium = 3,5-7,9
     const tokens = [
@@ -83,7 +141,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.INTEGER, text: '3' },
       { type: LEXEMES.VALUE_SEPARATOR, text: ',' },
       { type: LEXEMES.INTEGER, text: '5' },
-      { type: LEXEMES.RANGE, text: '-' },
+      { type: LEXEMES.HYPHEN, text: '-' },
       { type: LEXEMES.INTEGER, text: '7' },
       { type: LEXEMES.VALUE_SEPARATOR, text: ',' },
       { type: LEXEMES.INTEGER, text: '9' }

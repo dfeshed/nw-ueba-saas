@@ -24,7 +24,7 @@ export const IPV6_ADDRESS = 'IPV6_ADDRESS';
 export const MAC_ADDRESS = 'MAC_ADDRESS';
 export const STRING = 'STRING';
 export const TEXT_FILTER = 'TEXT_FILTER';
-export const RANGE = 'RANGE'; // A hyphen `-`
+export const HYPHEN = 'HYPHEN';
 export const VALUE_SEPARATOR = 'VALUE_SEPARATOR'; // A comma `,`
 
 export const OPERATOR_TYPES = [

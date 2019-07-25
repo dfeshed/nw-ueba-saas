@@ -106,6 +106,31 @@ class Parser {
     return this.current >= this.tokens.length;
   }
 
+  _validateMetaAndOperator(meta, operator) {
+    if (this.availableMeta && this.availableMeta.length > 0) {
+      const metaConfig = this.availableMeta.find((m) => {
+        return m.metaName === Parser.transformToString(meta);
+      });
+      if (!metaConfig) {
+        throw new Error(`Meta "${Parser.transformToString(meta)}" not recognized`);
+      } else if (metaConfig.isIndexedByNone && metaConfig.metaName !== 'sessionid') {
+        // sessionid is a special meta key that should be used even though it is indexed by none
+        throw new Error(`Meta "${Parser.transformToString(meta)}" not indexed`);
+      } else {
+        // Check that the operator applies to the meta
+        const possibleOperators = relevantOperators(metaConfig);
+        const operatorString = Parser.transformToString(operator);
+        const operatorConfig = possibleOperators.find((o) => o.displayName === operatorString);
+        if (!operatorConfig) {
+          throw new Error(`Operator "${operatorString}" does not apply to meta "${Parser.transformToString(meta)}"`);
+        }
+        return { metaConfig, operatorConfig };
+      }
+    }
+    // If no availableMeta, return empty object
+    return {};
+  }
+
   /**
    * Parses the list of tokens into a syntax tree.
    * @public
@@ -206,42 +231,22 @@ class Parser {
   _criteria() {
     const meta = this._consume([ LEXEMES.META ]);
     const operator = this._consume(LEXEMES.OPERATOR_TYPES);
-    let metaConfig, operatorConfig;
-    // Check that this is a valid meta key
-    if (this.availableMeta && this.availableMeta.length > 0) {
-      metaConfig = this.availableMeta.find((m) => {
-        return m.metaName === Parser.transformToString(meta);
-      });
-      if (!metaConfig) {
-        throw new Error(`Meta "${Parser.transformToString(meta)}" not recognized`);
-      } else if (metaConfig.isIndexedByNone && metaConfig.metaName !== 'sessionid') {
-        // sessionid is a special meta key that should be used even though it is indexed by none
-        throw new Error(`Meta "${Parser.transformToString(meta)}" not indexed`);
-      } else {
-        // Check that the operator applies to the meta
-        const possibleOperators = relevantOperators(metaConfig);
-        const operatorString = Parser.transformToString(operator);
-        operatorConfig = possibleOperators.find((o) => o.displayName === operatorString);
-        if (!operatorConfig) {
-          throw new Error(`Operator "${operatorString}" does not apply to meta "${Parser.transformToString(meta)}"`);
-        }
-      }
-    }
+    // Check that this is a valid meta key & operator
+    const { metaConfig, operatorConfig } = this._validateMetaAndOperator(meta, operator);
+
     // Unary operators (exists & !exists) do not have values, so push them
     // without a `valueRanges` property
     if (operator.text === 'exists' || operator.text === '!exists') {
       if (this._nextTokenIsOfType(VALUE_TYPES)) {
         throw new Error(`Invalid value ${this._advance().text} after unary operator ${operator.text}`);
       }
-      return {
-        type: GRAMMAR.CRITERIA,
-        meta,
-        operator
-      };
+      return { type: GRAMMAR.CRITERIA, meta, operator };
     } else {
       const metaValueRanges = this._metaValueRanges();
+      const { valueRanges } = metaValueRanges;
+      let { validationError } = metaValueRanges;
       // Check to make sure all the values have the correct type
-      let expectedType, validationError;
+      let expectedType;
       if (metaConfig) {
         expectedType = VALUE_TYPE_MAP[metaConfig.format];
       }
@@ -253,15 +258,21 @@ class Parser {
         expectedType = LEXEMES.INTEGER;
       }
       // Find any value that is the incorrect type
-      const hasInvalidValue = metaValueRanges.some((range) => {
+      const hasInvalidValue = valueRanges.some((range) => {
         if (!expectedType) {
           return false;
         }
+        let result = false;
         if (range.value) {
-          return expectedType !== range.value.type;
+          result = expectedType !== range.value.type;
         } else {
-          return expectedType !== range.from.type || expectedType !== range.to.type;
+          result = expectedType !== range.from.type || expectedType !== range.to.type;
         }
+        // If using length & types were valid, check for negative
+        if (isLengthOperator && !result) {
+          result = range.value ? range.value.text[0] === '-' : range.from.text[0] === '-' || range.to.text[0] === '-';
+        }
+        return result;
       });
       const i18n = lookup('service:i18n');
       if (isLengthOperator && hasInvalidValue) {
@@ -276,7 +287,7 @@ class Parser {
           type: GRAMMAR.CRITERIA,
           meta,
           operator,
-          valueRanges: metaValueRanges,
+          valueRanges,
           isInvalid: true,
           validationError
         };
@@ -285,7 +296,7 @@ class Parser {
           type: GRAMMAR.CRITERIA,
           meta,
           operator,
-          valueRanges: metaValueRanges
+          valueRanges
         };
       }
     }
@@ -297,45 +308,86 @@ class Parser {
    * @private
    */
   _metaValueRanges() {
-    const valueRanges = [ this._metaValueRange() ];
+    const valueRanges = [];
+    const metaValueRange = this._metaValueRange();
+    const { range, validationError } = metaValueRange;
+    valueRanges.push(range);
     while (this._nextTokenIsOfType([ LEXEMES.VALUE_SEPARATOR ])) {
       // As long as the UI does not support shorthand, throw this error to get complex pills.
-      // Once support is included, uncommend the rest of this block.
+      // Once support is included, uncomment the rest of this block.
       throw new Error('Value shorthand is not yet supported');
       // // Consume the range separator
       // this._advance();
       // // Add the new range to the array
-      // valueRanges.push(this._metaValueRange());
+      // const { nextRange, nextValidationError } = this._metaValueRange();
+      // validationError = validationError || nextValidationError;
+      // valueRanges.push(nextRange);
     }
-    return valueRanges;
+    return {
+      valueRanges,
+      validationError
+    };
   }
 
   /**
-   * Parses a single value or a single range. If a `-` is present (`LEXEMES.RANGE`),
+   * Parses a single value or a single range. If a `-` is present (`LEXEMES.HYPHEN`),
    * return a GRAMMAR.META_VALUE_RANGE with a `from` and `to` field. Otherwise, return
    * a GRAMMAR.META_VALUE with a `value` field.
    * @private
    */
   _metaValueRange() {
-    const value = this._advance();
-    if (this._nextTokenIsOfType([ LEXEMES.RANGE ])) {
+    const { value, validationError } = this._metaValue();
+    if (this._nextTokenIsOfType([ LEXEMES.HYPHEN ])) {
       // As long as the UI does not support shorthand, throw this error to get complex pills.
       // Once support is included, uncommend the rest of this block.
       throw new Error('Value shorthand is not yet supported');
       // // Consume the range token first
-      // this._consume([ LEXEMES.RANGE ]);
-      // const to = this._consume([ value.type ]);
+      // this._consume([ LEXEMES.HYPHEN ]);
+      // const { to, validationError2 } = this._metaValue();
       // return {
-      //   type: GRAMMAR.META_VALUE_RANGE,
-      //   from: value,
-      //   to
+      //   range: {
+      //     type: GRAMMAR.META_VALUE_RANGE,
+      //     from: value,
+      //     to
+      //   },
+      //   validationError: validationError || validationError2
       // };
     } else {
       return {
-        type: GRAMMAR.META_VALUE,
-        value
+        range: {
+          type: GRAMMAR.META_VALUE,
+          value
+        },
+        validationError
       };
     }
+  }
+
+  /**
+   * Parses a single value. Can combine a HYPHEN with an INTEGER or FLOAT to
+   * produce a negative number.
+   * @private
+   */
+  _metaValue() {
+    let validationError = null;
+    let value;
+    if (this._nextTokenIsOfType([ LEXEMES.HYPHEN ])) {
+      // Hyphen before value is a negative number. Make sure a number is next.
+      // Consume hyphen
+      this._advance();
+      if (!this._nextTokenIsOfType([ LEXEMES.INTEGER, LEXEMES.FLOAT ])) {
+        const i18n = lookup('service:i18n');
+        validationError = i18n.t('queryBuilder.validationMessages.negative');
+      } else {
+        // Capture value
+        value = this._advance();
+        // Make value negative
+        value.text = `-${value.text}`;
+      }
+    } else {
+      value = this._advance();
+    }
+    return { value, validationError };
   }
 
   /**
