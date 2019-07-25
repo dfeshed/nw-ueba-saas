@@ -19,7 +19,6 @@ import com.rsa.netwitness.presidio.automation.domain.repository.AdapterFileStore
 import com.rsa.netwitness.presidio.automation.domain.repository.AdapterProcessStoredDataRepository;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
-import com.rsa.netwitness.presidio.automation.utils.adapter.ReferenceIdGeneratorFactory;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import fortscale.common.general.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +56,6 @@ public class AdapterFilteringTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private NetwitnessEventStore netwitnessEventStore;
 
-    Map<String, String> config = new HashMap<>();
     private Instant startDate = Instant.now();
     private Instant endDate = Instant.now();
     private int historicalDaysBack;
@@ -75,7 +73,7 @@ public class AdapterFilteringTest extends AbstractTestNGSpringContextTests {
     private static final String HISTORICAL_DAYS_BACK_CONFIG_KEY = "historicalDaysBack";
     private static final String ANOMALY_DAY_CONFIG_KEY = "anomalyDay";
 
-    private NetwitnessEventsProducer producer = new MongoInputProducerImpl(netwitnessEventStore);
+    private NetwitnessEventsProducer producer;
 
     @Parameters({"historical_days_back", "anomaly_day"})
     @BeforeClass
@@ -86,11 +84,7 @@ public class AdapterFilteringTest extends AbstractTestNGSpringContextTests {
         this.anomalyDay = anomalyDay;
 
         adapterTestManager.clearAllCollections();
-
-        config.put(HISTORICAL_DAYS_BACK_CONFIG_KEY, String.valueOf(historicalDaysBack));
-        config.put(ANOMALY_DAY_CONFIG_KEY, String.valueOf(anomalyDay));
-        config.put(ReferenceIdGeneratorFactory.REFERENCE_ID_GENERATOR_TYPE_CONFIG_KEY, "cyclic");
-
+        producer = new MongoInputProducerImpl(netwitnessEventStore);
     }
 
     private static final Map<String, Object> validADEvent4741;
