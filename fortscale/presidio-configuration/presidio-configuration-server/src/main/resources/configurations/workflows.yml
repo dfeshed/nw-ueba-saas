@@ -20,35 +20,35 @@ dags:
     smart:
       schedule_interval: timedelta(hours=1)
       smart_confs:
-       - smart_conf_name: userId_hourly
-         entity_type : userId
-         depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
-         enable_output_forwarder: ${outputForwarding.enableForwarding}
-       - smart_conf_name: sslSubject_hourly
-         entity_type : sslSubject
-         depends_on_schemas: [TLS]
-         enable_output_forwarder: ${outputForwarding.enableForwarding}
-       - smart_conf_name: ja3_hourly
-         entity_type : ja3
-         depends_on_schemas: [TLS]
-         enable_output_forwarder: ${outputForwarding.enableForwarding}
+        - smart_conf_name: userId_hourly
+          entity_type: userId
+          depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
+          enable_output_forwarder: ${outputForwarding.enableForwarding}
+        - smart_conf_name: sslSubject_hourly
+          entity_type: sslSubject
+          depends_on_schemas: [TLS]
+          enable_output_forwarder: ${outputForwarding.enableForwarding}
+        - smart_conf_name: ja3_hourly
+          entity_type: ja3
+          depends_on_schemas: [TLS]
+          enable_output_forwarder: ${outputForwarding.enableForwarding}
     smart_model:
       schedule_interval: None
       smart_confs:
-       - smart_conf_name: userId_hourly
-         depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
-       - smart_conf_name: sslSubject_hourly
-         depends_on_schemas: [TLS]
-       - smart_conf_name: ja3_hourly
-         depends_on_schemas: [TLS]
+        - smart_conf_name: userId_hourly
+          depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
+        - smart_conf_name: sslSubject_hourly
+          depends_on_schemas: [TLS]
+        - smart_conf_name: ja3_hourly
+          depends_on_schemas: [TLS]
 
   pools_config:
     - slots: 7
       name: spring_boot_jar_pool
       description: A pool for the spring boot jars with 2G xmx that belong to the dag
-    - slots : 8
-      name : retention_spring_boot_jar_pool
-      description : A pool for the retention spring boot jars
+    - slots: 8
+      name: retention_spring_boot_jar_pool
+      description: A pool for the retention spring boot jars
   tasks_instances:
     hourly_DLPFILE_feature_aggregations:
       jvm_args:
@@ -138,7 +138,7 @@ dags:
         xms: 4096
         extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
     AdeManagerOperator:
-      pool_name : retention_spring_boot_jar_pool
+      pool_name: retention_spring_boot_jar_pool
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-manager.jar
         main_class: presidio.ade.manager.AdeManagerApplication
@@ -146,15 +146,15 @@ dags:
         xms: 512
     AdapterOperator:
       jvm_args:
-          jar_path: ${general.deployment.bins.base_path}/presidio-adapter.jar
-          main_class: presidio.adapter.FortscaleAdapterApplication
+        jar_path: ${general.deployment.bins.base_path}/presidio-adapter.jar
+        main_class: presidio.adapter.FortscaleAdapterApplication
       execution_timeout_in_seconds: 7200
     InputOperator:
       jvm_args:
-            jar_path: ${general.deployment.bins.base_path}/presidio-input-core.jar
-            main_class: presidio.input.core.FortscaleInputCoreApplication
-            xmx: 2048
-            xms: 2048
+        jar_path: ${general.deployment.bins.base_path}/presidio-input-core.jar
+        main_class: presidio.input.core.FortscaleInputCoreApplication
+        xmx: 2048
+        xms: 2048
     OutputOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-output-processor.jar
@@ -174,14 +174,14 @@ dags:
         xmx: 2048
         xms: 2048
     InputRetentionOperator:
-      pool_name : retention_spring_boot_jar_pool
+      pool_name: retention_spring_boot_jar_pool
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-input-core.jar
         main_class: presidio.input.core.FortscaleInputCoreApplication
         xmx: 512
         xms: 512
     AlertRetentionOperator:
-      pool_name : retention_spring_boot_jar_pool
+      pool_name: retention_spring_boot_jar_pool
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-output-processor.jar
         main_class: presidio.output.processor.FortscaleOutputProcessorApplication
@@ -217,15 +217,14 @@ components:
         accumulate_interval_in_days: 1
         min_data_time_range_for_building_models_in_days: 14
 retention:
-  min_time_to_start_retention_in_days : 2
-  retention_interval_in_hours : 24
+  min_time_to_start_retention_in_days: 2
+  retention_interval_in_hours: 24
   command: applyRetentionPolicy
 
 input_pre_processing:
-  name : last_occurrence_instant
-  arguments:
-    - schema: TLS
+  - name: last_occurrence_instant
+    static_argument:
+      schema: TLS
       entityTypes: [domain]
-      startInstant: true
-      endtInstant: true
+    dynamic_arguments: [startInstant, endInstant]
 
