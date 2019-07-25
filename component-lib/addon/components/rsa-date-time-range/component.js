@@ -264,19 +264,6 @@ export default Component.extend({
     }
   },
 
-  /**
-   * Initialization handler to ensure that empty start/end values are initialized with the currrent date/time
-   * @method onInit
-   * @private
-   */
-  onInit: function() {
-    this.setProperties({
-      start: this.get('start') || moment().valueOf(),
-      end: this.get('end') || moment().valueOf(),
-      startErrors: [],
-      endErrors: []
-    });
-  }.on('init'),
 
   /**
    * Invoked whenever the start or end date/time changes and is valid
@@ -291,6 +278,22 @@ export default Component.extend({
    * @public
    */
   onError: () => {},
+
+  /**
+   * Initialization handler to ensure that empty start/end values are initialized with the currrent date/time
+   * @method onInit
+   * @private
+   */
+  init() {
+    this._super(...arguments);
+    this.setProperties({
+      start: this.get('start') || moment().valueOf(),
+      end: this.get('end') || moment().valueOf(),
+      startErrors: [],
+      endErrors: []
+    });
+  },
+
 
   actions: {
     // capture invalid start and end times to persist in state, so that error notification is justified

@@ -16,7 +16,7 @@ module('Integration | Component | rsa data table/load-more', function(hooks) {
     this.set('nextPayloadSize', 13);
     this.set('status', 'stopped');
     await render(hbs`
-        {{rsa-data-table/load-more status=status nextPayloadSize=nextPayloadSize}}
+      {{rsa-data-table/load-more status=status nextPayloadSize=nextPayloadSize}}
     `);
     assert.equal(find(buttonSelector).textContent.trim(), 'Show Next 13 Events', 'Show Next X Events button is present');
   });
@@ -25,7 +25,7 @@ module('Integration | Component | rsa data table/load-more', function(hooks) {
     this.set('nextPayloadSize', 0);
     this.set('status', 'stopped');
     await render(hbs`
-        {{rsa-data-table/load-more status=status nextPayloadSize=nextPayloadSize}}
+      {{rsa-data-table/load-more status=status nextPayloadSize=nextPayloadSize}}
     `);
     assert.equal(findAll(buttonSelector).length, 0, 'No button is present');
   });
@@ -33,7 +33,7 @@ module('Integration | Component | rsa data table/load-more', function(hooks) {
   test('Load More button should render if status is stopped but nextPayloadSize is not present', async function(assert) {
     this.set('status', 'stopped');
     await render(hbs`
-        {{rsa-data-table/load-more status=status nextPayloadSize=nextPayloadSize}}
+      {{rsa-data-table/load-more status=status nextPayloadSize=nextPayloadSize}}
     `);
     assert.equal(find(buttonSelector).textContent.trim(), 'Load More', 'Load More  button is present');
   });
@@ -42,7 +42,7 @@ module('Integration | Component | rsa data table/load-more', function(hooks) {
     this.set('showMessage', true);
     this.set('message', 'hello world');
     await render(hbs`
-        {{rsa-data-table/load-more showMessage=showMessage message=message}}
+      {{rsa-data-table/load-more showMessage=showMessage message=message}}
     `);
     assert.equal(find('.rsa-data-table-load-more').textContent.trim(), 'hello world', 'message is rendered');
   });
@@ -51,7 +51,7 @@ module('Integration | Component | rsa data table/load-more', function(hooks) {
     this.set('showMessage', false);
     this.set('message', 'hello world');
     await render(hbs`
-        {{rsa-data-table/load-more showMessage=showMessage message=message}}
+      {{rsa-data-table/load-more showMessage=showMessage message=message}}
     `);
     assert.equal(find('.rsa-data-table-load-more').textContent.trim(), '', 'message is not rendered');
   });
@@ -59,14 +59,14 @@ module('Integration | Component | rsa data table/load-more', function(hooks) {
     this.set('status', 'stopped');
     this.set('title', 'test title');
     await render(hbs`
-        {{rsa-data-table/load-more title=title status=status showMessage=showMessage message=message}}
+      {{rsa-data-table/load-more title=title status=status showMessage=showMessage message=message}}
     `);
     assert.equal(find('.rsa-data-table-load-more').textContent.trim(), 'test title', 'title message is rendered');
   });
   test('Load More button should render message if title not exists', async function(assert) {
     this.set('status', 'stopped');
     await render(hbs`
-        {{rsa-data-table/load-more title=title status=status showMessage=showMessage message=message}}
+      {{rsa-data-table/load-more title=title status=status showMessage=showMessage message=message}}
     `);
     assert.equal(find('.rsa-data-table-load-more').textContent.trim(), 'Load More', 'load more message is rendered');
   });

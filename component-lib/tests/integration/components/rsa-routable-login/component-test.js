@@ -87,7 +87,7 @@ module('Integration | Component | rsa-routable-login', function(hooks) {
 
   test('the has-error class is added to .login-wrapper when hasError is true', async function(assert) {
     assert.expect(1);
-    await render(hbs `{{rsa-routable-login hasError=true}}`);
+    await render(hbs `{{rsa-routable-login errorMessage='foo'}}`);
     assert.equal(document.querySelector('.login-wrapper').classList.contains('has-error'), true);
   });
 

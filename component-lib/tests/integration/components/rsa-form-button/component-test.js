@@ -30,7 +30,7 @@ module('Integration | Component | rsa-form-button', function(hooks) {
   });
 
   test('it includes the proper classes when isPrimary', async function(assert) {
-    await render(hbs `{{#rsa-form-button isPrimary=true}}Label{{/rsa-form-button}}`);
+    await render(hbs `{{#rsa-form-button style='primary'}}Label{{/rsa-form-button}}`);
     const button = find('.rsa-form-button-wrapper');
     assert.ok(button.classList.contains('is-primary'));
   });

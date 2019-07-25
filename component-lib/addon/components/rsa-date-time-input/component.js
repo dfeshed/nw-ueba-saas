@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import moment from 'moment';
 import computed, { notEmpty } from 'ember-computed-decorators';
+
 import {
   getTimestamp,
   getDateParts,
@@ -180,17 +181,6 @@ export default Component.extend({
   },
 
   /**
-   * If no timestamp is declared on the component, set the timestamp to be the current timestamp on init
-   * @private
-   */
-  onInit: function() {
-    const timestamp = this.get('timestamp');
-    if (timestamp === null) {
-      this.set('timestamp', moment().valueOf()); // set the timestamp as the current unix timestamp in milliseconds
-    }
-  }.on('init'),
-
-  /**
    * The function called when the date changes (and is valid). An invalid change to the date will not trigger the
    * onChange, but instead the onError function. The consumer of the component will pass in a closure action function
    * to replace this stubbed default.
@@ -207,6 +197,18 @@ export default Component.extend({
    * @public
    */
   onError: () => {},
+
+  /**
+   * If no timestamp is declared on the component, set the timestamp to be the current timestamp on init
+   * @private
+   */
+  init() {
+    this._super(...arguments);
+    const timestamp = this.get('timestamp');
+    if (timestamp === null) {
+      this.set('timestamp', moment().valueOf()); // set the timestamp as the current unix timestamp in milliseconds
+    }
+  },
 
   actions: {
     handleChange(type, value) {

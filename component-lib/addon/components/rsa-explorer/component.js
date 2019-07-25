@@ -133,14 +133,6 @@ const Explorer = Component.extend(Notifications, Confirmable, {
 
   creators: null,
 
-  onInit: function() {
-    const columns = this.get('columns');
-    const creators = this.get('creators');
-    assert('A "columns" attribute referencing an array must be passed to the Explorer to define the columns in the ' +
-      'Explorer list', columns && isArray(columns));
-    assert('A "creators" attribute must be provided that contains all of the explorer interface functions', creators);
-  }.on('init'),
-
   /**
    * The number of (filtered) items delivered to the explorer view. This should be distinguished from "itemsTotal" which
    * represents the total item count that meets the filter criteria but not all of which is shown in the page.
@@ -170,7 +162,16 @@ const Explorer = Component.extend(Notifications, Confirmable, {
    * @property selectionCount
    */
   @alias('itemsSelected.length')
-  selectionCount: null
+  selectionCount: null,
+
+  init() {
+    this._super(...arguments);
+    const columns = this.get('columns');
+    const creators = this.get('creators');
+    assert('A "columns" attribute referencing an array must be passed to the Explorer to define the columns in the ' +
+      'Explorer list', columns && isArray(columns));
+    assert('A "creators" attribute must be provided that contains all of the explorer interface functions', creators);
+  }
 });
 
 export default connect(stateToComputed, dispatchToActions)(Explorer);
