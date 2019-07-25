@@ -164,6 +164,12 @@ export const hasherizeEventMeta = (event) => {
         if (_hasSha256(meta[1])) {
           event.checksumSrc = meta[1];
         }
+      } else if (meta[0] === 'filename.src') {
+        if (event.filenameSrc) {
+          event.filenameSrc.push(meta[1]);
+        } else {
+          event.filenameSrc = [meta[1]];
+        }
       } else {
         event[camelize(meta[0])] = meta[1];
       }

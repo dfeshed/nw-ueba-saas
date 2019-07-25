@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { getSrcFilename } from 'component-lib/utils/meta-util';
 
 const META_MAP = {
   'device.type': 'device_type',
@@ -93,9 +94,6 @@ export const transform = (event) => {
         case 'directory.dst':
           destination.path = metaValue;
           break;
-        case 'filename.src':
-          source.filename = metaValue;
-          break;
         case 'filename.dst':
           destination.filename = metaValue;
           break;
@@ -115,6 +113,7 @@ export const transform = (event) => {
     newEvent.type = 'Endpoint';
     newEvent.domain = newEvent.hostname;
     newEvent.event_source = `${forwardIp}:50005`;
+    source.filename = getSrcFilename(metas);
     source.user = srcUser;
     newEvent.source = source;
     newEvent.destination = destination;

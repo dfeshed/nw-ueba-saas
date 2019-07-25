@@ -17,6 +17,10 @@ export default function() {
           'Root'
         ],
         [
+          'filename.src',
+          'cmd.exe'
+        ],
+        [
           'checksum.src',
           '64a49ca7b214ae8905345b785b13a3c6'
         ],
