@@ -2,7 +2,13 @@ pipeline {
     parameters {
         string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '', description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
         string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: 'origin/master', description: '')
+        string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
+
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
+        booleanParam(name: 'ENV_CLEANUP', defaultValue: true, description: '')
+        booleanParam(name: 'DATA_INJECTION', defaultValue: true, description: '')
+        booleanParam(name: 'DATA_PROCESSING', defaultValue: true, description: '')
+        booleanParam(name: 'RUN_TESTS', defaultValue: true, description: '')
     }
     agent { label env.NODE }
     environment {
@@ -23,6 +29,9 @@ pipeline {
             }
         }
         stage('Reset DBs LogHybrid and UEBA') {
+            when {
+                expression { return params.ENV_CLEANUP }
+            }
             steps {
                 CleanEpHybridUebaDBs()
             }
@@ -37,22 +46,46 @@ pipeline {
                 }
             }
         }
-        stage('presidio-integration-test Project Build Pipeline Initialization') {
+
+        stage('Data Injection') {
+            when {
+                expression { return params.DATA_INJECTION }
+            }
             steps {
-                script {
-                    mvnCleanInstall()
-                }
+                runSuiteXmlFile('e2e/E2E_DataInjection.xml')
             }
         }
-        stage('End 2 End Test Automation') {
+
+        stage('Configurations and Processing') {
+            when {
+                expression { return params.DATA_PROCESSING }
+            }
             steps {
-                script {
-                    runEnd2EndTestAutomation()
-                }
+                runSuiteXmlFile('e2e/E2E_ConfigAndDataProcessing.xml')
+            }
+        }
+
+        stage('Run E2E Tests') {
+            when {
+                expression { return params.RUN_TESTS }
+            }
+            steps {
+                runSuiteXmlFile('e2e/E2E_Tests.xml')
             }
         }
     }
+
+    post {
+        always {
+            junit '**/ueba-automation-test/target/surefire-reports/junitreports/*.xml'
+        }
+    }
 }
+
+
+
+
+
 /******************************
  *   UEBA RPMs Installation   *
  ******************************/
@@ -128,5 +161,13 @@ def runEnd2EndTestAutomation() {
     dir(env.REPOSITORY_NAME) {
         println(env.REPOSITORY_NAME)
         sh "mvn -B -f presidio-integration-e2e-test/pom.xml -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC test"
+    }
+}
+
+
+def runSuiteXmlFile(String suiteXmlFile) {
+    println(env.REPOSITORY_NAME)
+    dir(env.REPOSITORY_NAME) {
+        sh "mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS}"
     }
 }

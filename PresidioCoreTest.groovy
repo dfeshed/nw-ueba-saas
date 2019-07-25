@@ -2,7 +2,7 @@ pipeline {
     parameters {
         string(name: 'SPECIFIC_RPM_BUILD', defaultValue: '', description: 'specify the link to the RPMs e.q: http://asoc-platform.rsa.lab.emc.com/buildStorage/ci/master/promoted/11978/11.4.0.0/RSA/')
         string(name: 'INTEGRATION_TEST_BRANCH_NAME', defaultValue: 'origin/master', description: '')
-        string(name: 'MVN_TEST_OPTIONS', defaultValue: '-U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC -q', description: '')
+        string(name: 'MVN_TEST_OPTIONS', defaultValue: '-q -U -Dmaven.test.failure.ignore=false -Duser.timezone=UTC', description: '')
         booleanParam(name: 'RESET_UEBA_DBS', defaultValue: true, description: '')
         booleanParam(name: 'INSTALL_UEBA_RPMS', defaultValue: true, description: '')
         booleanParam(name: 'DATA_INJECTION', defaultValue: true, description: '')
