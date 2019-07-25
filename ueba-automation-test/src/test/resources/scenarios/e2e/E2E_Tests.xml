@@ -1,16 +1,34 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="E2E_Tests" preserve-order="true">
-    <test name="E2E_Additional_Tests" preserve-order="true">
+<suite name="e2e test">
+    <parameter name="historical_days_back" value="14" />
+    <parameter name="anomaly_day" value="1" />
+    <parameter name="generator_format" value="CEF_DAILY" />
+    <parameter name="outputProcessingStartDaysBack" value="14" />
+    <parameter name="outputProcessingEndDaysBack" value="1" />
+
+    <test name="E2E Tests REST"  preserve-order="true">
         <classes>
-            <!-- Output_Tests.xml -->
             <class name="com.rsa.netwitness.presidio.automation.test.rest.RestUserTests"/>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.AlertsRestCorrectnessTest"/>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.AlertsIndicatorsTests"/>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.UserSeverityTests"/>
-            <!-- E2E only -->
+        </classes>
+    </test>
+
+    <test name="E2E Tests Mongo REST"  preserve-order="true">
+        <classes>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.E2EMongoRestValidation"/>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.E2EStatisticalInformation"/>
         </classes>
     </test>
+
+    <test name="E2E Tests Log"  preserve-order="true">
+        <classes>
+            <!--<class name="presidio.integration.ade.test.LogsErrors_Test"/>-->
+        </classes>
+    </test>
+
 </suite>
+
+

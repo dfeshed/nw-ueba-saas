@@ -1,0 +1,15 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="E2E Test Data Processing">
+    <parameter name="historical_days_back" value="14" />
+    <parameter name="anomaly_day" value="1" />
+
+    <test name="Data Processing" preserve-order="true">
+        <classes>
+            <class name="com.rsa.netwitness.presidio.automation.test.config.ConfigurationsAfterDataInjection"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.config.MonitorE2EDataFlow"/>
+        </classes>
+    </test>
+</suite>
+
+
