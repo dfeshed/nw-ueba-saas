@@ -329,7 +329,7 @@ export const policyAdminUsm = createSelector(
       const httpsBeaconIntervalInMinutes = inSeconds ? Math.trunc(inSeconds / 60) : '';
       const runOnDaysOfWeekVal = data.edrPolicy.scheduledScanConfig.recurrentSchedule.runOnDaysOfWeek;
       const week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const weekDay = runOnDaysOfWeekVal ? week[runOnDaysOfWeekVal[0]] : '';
+      const weekDay = runOnDaysOfWeekVal ? [week[runOnDaysOfWeekVal[0]]] : '';
       const scanStartTime = data.edrPolicy.scheduledScanConfig.recurrentSchedule.runAtTime;
       const runAtTime = scanStartTime.substring(0, scanStartTime.lastIndexOf(':'));
 
@@ -339,6 +339,10 @@ export const policyAdminUsm = createSelector(
           evaluatedTime: data.evaluatedTime,
           errorDescription: data.message
         },
+        sources: {
+          hasWindowsLogPolicy: data.windowsLogPolicy != undefined,
+          hasFilePolicy: data.filePolicy != undefined
+        },
         edrPolicy: {
           name: data.edrPolicy.name,
           scanType: data.edrPolicy.scheduledScanConfig.enabled,
@@ -346,7 +350,7 @@ export const policyAdminUsm = createSelector(
           scanStartDate: data.edrPolicy.scheduledScanConfig.recurrentSchedule.scheduleStartDate,
           recurrenceInterval: data.edrPolicy.scheduledScanConfig.recurrentSchedule.recurrence.interval,
           recurrenceUnit: data.edrPolicy.scheduledScanConfig.recurrentSchedule.recurrence.unit,
-          runOnDaysOfWeek: [weekDay],
+          runOnDaysOfWeek: weekDay,
           cpuMax: data.edrPolicy.scheduledScanConfig.scanOptions.cpuMax,
           cpuMaxVm: data.edrPolicy.scheduledScanConfig.scanOptions.cpuMaxVm,
           scanMbr: data.edrPolicy.scheduledScanConfig.scanOptions.scanMbr,
@@ -365,22 +369,22 @@ export const policyAdminUsm = createSelector(
           rarPolicyPort: data.edrPolicy.transportConfig.primary.rar.config.httpsPort,
           rarPolicyBeaconInterval: data.edrPolicy.transportConfig.primary.rar.config.httpsBeaconInterval
         },
-        windowsLogPolicy: { // windowsLogPolicy props must mantain same order as in USM model
+        windowsLogPolicy: data.windowsLogPolicy ? { // windowsLogPolicy props must mantain same order as in USM model
           enabled: data.windowsLogPolicy.enabled,
           primaryDestination: data.windowsLogPolicy.primaryDestination,
           secondaryDestination: data.windowsLogPolicy.secondaryDestination,
           protocol: data.windowsLogPolicy.protocol,
           sendTestLog: data.windowsLogPolicy.sendTestLog,
-          channelFilters: data.windowsLogPolicy.channelFilters
-        },
-        filePolicy: {
+          channelFilters: data.windowsLogPolicy.channelFilters ? data.windowsLogPolicy.channelFilters : []
+        } : {},
+        filePolicy: data.filePolicy ? {
           enabled: data.filePolicy.enabled,
           primaryDestination: data.filePolicy.primaryDestination,
           secondaryDestination: data.filePolicy.secondaryDestination,
           protocol: data.filePolicy.protocol,
           sendTestLog: data.filePolicy.sendTestLog,
           sources: []
-        }
+        } : {}
       };
     }
   }

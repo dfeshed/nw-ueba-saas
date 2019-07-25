@@ -31,21 +31,24 @@
     {{property-panel-policy/edr-policy}}
   {{/rsa-content-accordion}}
 
-  {{#rsa-content-accordion
-  isCollapsed=true
-  label=(t 'adminUsm.policyWizard.agentWindowsLogs')
-  animate=true
-  class="blue windows-accordion"}}
-    {{property-panel-policy/windows-log-policy}}
-  {{/rsa-content-accordion}}
-
-  {{#rsa-content-accordion
-  isCollapsed=true
-  label=(t 'adminUsm.policyWizard.agentFileLogs')
-  animate=true
-  class="blue file-accordion"}}
-    {{property-panel-policy/file-policy}}
-  {{/rsa-content-accordion}}
-
+  {{#if sources.hasWindowsLogPolicy}}
+    {{#rsa-content-accordion
+    isCollapsed=true
+    label=(t 'adminUsm.policyWizard.agentWindowsLogs')
+    animate=true
+    class="blue windows-accordion"}}
+      {{property-panel-policy/windows-log-policy}}
+    {{/rsa-content-accordion}}
+  {{/if}}
+  
+  {{#if sources.hasFilePolicy}}
+    {{#rsa-content-accordion
+    isCollapsed=true
+    label=(t 'adminUsm.policyWizard.agentFileLogs')
+    animate=true
+    class="blue file-accordion"}}
+      {{property-panel-policy/file-policy}}
+    {{/rsa-content-accordion}}
+  {{/if}}
   <br>
 </box>

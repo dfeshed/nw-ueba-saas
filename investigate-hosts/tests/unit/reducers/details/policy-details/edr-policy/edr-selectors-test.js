@@ -8,6 +8,7 @@ import { revertPatch } from '../../../../../helpers/patch-reducer';
 
 import {
   general,
+  sources,
   selectedEdrPolicy
 } from 'investigate-hosts/reducers/details/policy-details/edr-policy/edr-selectors';
 
@@ -161,5 +162,11 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     const state = new ReduxDataHelper(setState).policy(policyData).build();
     const policyDetails = general(Immutable.from(state));
     assert.equal(policyDetails.evaluatedTime, '2019-05-07T05:25:41.109+0000', 'evaluatedTime time correct');
+  });
+  test('sources selector', function(assert) {
+    const state = new ReduxDataHelper(setState).policy(policyData).build();
+    const policyDetails = sources(Immutable.from(state));
+    assert.equal(policyDetails.hasWindowsLogPolicy, true, 'hasWindowsLogPolicy correct');
+    assert.equal(policyDetails.hasFilePolicy, true, 'hasFilePolicy correct');
   });
 });

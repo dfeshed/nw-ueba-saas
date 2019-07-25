@@ -22,12 +22,6 @@ module('Integration | Component | property panel policy', function(hooks) {
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
-  test('it renders', async function(assert) {
-    await render(hbs`{{property-panel-policy}}`);
-    assert.equal(findAll('.host-property-panel').length, 1, 'should rend the component');
-    assert.equal(findAll('.blue').length, 3, 'All three acordions are rendering');
-  });
-
   const policyData = {
     serviceId: '63de7bb3-fcd3-415a-97bf-7639958cd5e6',
     serviceName: 'Node-X - Endpoint Server',
@@ -100,6 +94,68 @@ module('Integration | Component | property panel policy', function(hooks) {
     policyStatus: 'Updated',
     evaluatedTime: '2019-05-07T05:25:41.109+0000'
   };
+
+  test('it renders', async function(assert) {
+    new ReduxDataHelper(setState).policy(policyData).build();
+    await render(hbs`{{property-panel-policy}}`);
+    assert.equal(findAll('.host-property-panel').length, 1, 'should rend the component');
+    assert.equal(findAll('.blue').length, 3, 'All three acordions are rendering');
+    assert.equal(findAll('.blue.windows-accordion').length, 1, '.windows-accordion acordion is rendering');
+    assert.equal(findAll('.blue.file-accordion').length, 1, 'file-accordion acordion is rendering');
+  });
+
+  const { policy } = policyData;
+  const noWindowsLogPolicy = {
+    ...policyData,
+    policy: {
+      ...policy,
+      windowsLogPolicy: undefined
+    }
+  };
+
+  const noFilePolicies = {
+    ...policyData,
+    policy: {
+      ...policy,
+      filePolicy: undefined
+    }
+  };
+
+  const noWindowsLogAndFilePolicies = {
+    ...policyData,
+    policy: {
+      ...policy,
+      windowsLogPolicy: undefined,
+      filePolicy: undefined
+    }
+  };
+
+  test('noWindowsLogPolicy renders', async function(assert) {
+    new ReduxDataHelper(setState).policy(noWindowsLogPolicy).build();
+    await render(hbs`{{property-panel-policy}}`);
+    assert.equal(findAll('.host-property-panel').length, 1, 'should rend the component');
+    assert.equal(findAll('.blue').length, 2, 'two acordions are rendering');
+    assert.equal(findAll('.blue.windows-accordion').length, 0, 'windows-accordion acordion is not rendering');
+    assert.equal(findAll('.blue.file-accordion').length, 1, 'file-accordion acordion is rendering');
+  });
+
+  test('noFilePolicies renders', async function(assert) {
+    new ReduxDataHelper(setState).policy(noFilePolicies).build();
+    await render(hbs`{{property-panel-policy}}`);
+    assert.equal(findAll('.host-property-panel').length, 1, 'should rend the component');
+    assert.equal(findAll('.blue').length, 2, 'two acordions are rendering');
+    assert.equal(findAll('.blue.windows-accordion').length, 1, 'windows-accordion acordion is rendering');
+    assert.equal(findAll('.blue.file-accordion').length, 0, 'file-accordion acordion is not rendering');
+  });
+
+  test('noWindowsLogAndFilePolicies renders', async function(assert) {
+    new ReduxDataHelper(setState).policy(noWindowsLogAndFilePolicies).build();
+    await render(hbs`{{property-panel-policy}}`);
+    assert.equal(findAll('.host-property-panel').length, 1, 'should rend the component');
+    assert.equal(findAll('.blue').length, 1, 'one acordion is rendering');
+    assert.equal(findAll('.blue.windows-accordion').length, 0, 'windows-accordion acordion is not rendering');
+    assert.equal(findAll('.blue.file-accordion').length, 0, 'file-accordion acordion is not rendering');
+  });
 
   test('General data', async function(assert) {
     new ReduxDataHelper(setState).policy(policyData).build();

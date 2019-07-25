@@ -1,13 +1,14 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { general } from 'investigate-hosts/reducers/details/policy-details/edr-policy/edr-selectors';
+import { general, sources } from 'investigate-hosts/reducers/details/policy-details/edr-policy/edr-selectors';
 
 // placeholder for future actions
 const dispatchToActions = () => {
 };
 
 const stateToComputed = (state) => ({
-  general: general(state)
+  general: general(state),
+  sources: sources(state)
 });
 
 const PropertyPanelPolicy = Component.extend({

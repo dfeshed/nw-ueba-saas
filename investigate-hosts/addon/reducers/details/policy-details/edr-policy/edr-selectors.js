@@ -26,6 +26,15 @@ export const general = createSelector(
   }
 );
 
+export const sources = createSelector(
+  policyAdminUsm,
+  (policyAdminUsm) => {
+    if (policyAdminUsm) {
+      return policyAdminUsm.sources;
+    }
+  }
+);
+
 export const selectedEdrPolicy = createSelector(
   policyAdminUsm,
   (policyAdminUsm) => {

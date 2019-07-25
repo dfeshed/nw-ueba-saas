@@ -404,6 +404,10 @@ module('Unit | Selectors | overview', function(hooks) {
       'secondaryDestination': '222',
       'sendTestLog': true
     });
+    assert.deepEqual(resultPolicyAdminUsm.sources, {
+      'hasWindowsLogPolicy': true,
+      'hasFilePolicy': true
+    });
   });
 
   test('getPoliciesPropertyData', function(assert) {
