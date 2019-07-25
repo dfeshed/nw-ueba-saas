@@ -22,7 +22,21 @@ const CATEGORY_NAME = {
   thread: 'THREADS'
 };
 
+const TAB_MAPPING = {
+  task: 'AUTORUNS',
+  service: 'AUTORUNS',
+  autorun: 'AUTORUNS',
+  imagehooks: 'ANOMALIES',
+  kernelhooks: 'ANOMALIES',
+  thread: 'ANOMALIES',
+  driver: 'DRIVERS',
+  process: 'PROCESS',
+  library: 'LIBRARIES'
+};
+
+
 export {
   CATEGORIES,
-  CATEGORY_NAME
+  CATEGORY_NAME,
+  TAB_MAPPING
 };

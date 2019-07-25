@@ -46,42 +46,50 @@ const HOST_DETAILS_TABS = [
   {
     label: 'investigateHosts.tabs.overview',
     name: 'OVERVIEW',
-    componentClass: 'host-detail/overview'
+    componentClass: 'host-detail/overview',
+    subTabName: null
   },
   {
     label: 'investigateHosts.tabs.process',
     name: 'PROCESS',
-    componentClass: 'host-detail/process'
+    componentClass: 'host-detail/process',
+    subTabName: null
   },
   {
     label: 'investigateHosts.tabs.autoruns',
     name: 'AUTORUNS',
-    componentClass: 'host-detail/autoruns'
+    componentClass: 'host-detail/autoruns',
+    subTabName: 'AUTORUNS'
   },
   {
     label: 'investigateHosts.tabs.files',
     name: 'FILES',
-    componentClass: 'host-detail/files'
+    componentClass: 'host-detail/files',
+    subTabName: null
   },
   {
     label: 'investigateHosts.tabs.drivers',
     name: 'DRIVERS',
-    componentClass: 'host-detail/drivers'
+    componentClass: 'host-detail/drivers',
+    subTabName: null
   },
   {
     label: 'investigateHosts.tabs.libraries',
     name: 'LIBRARIES',
-    componentClass: 'host-detail/libraries'
+    componentClass: 'host-detail/libraries',
+    subTabName: null
   },
   {
     label: 'investigateHosts.tabs.downloads',
     name: 'DOWNLOADS',
-    componentClass: 'host-detail/downloads'
+    componentClass: 'host-detail/downloads',
+    subTabName: null
   },
   {
     label: 'investigateHosts.tabs.systemInformation',
     name: 'SYSTEM',
-    componentClass: 'host-detail/system-information'
+    componentClass: 'host-detail/system-information',
+    subTabName: null
   }
 ];
 
@@ -164,7 +172,8 @@ export const getHostDetailTabs = createSelector(
       const windowsSpecificTabs = [{
         label: 'investigateHosts.tabs.anomalies',
         name: 'ANOMALIES',
-        componentClass: 'host-detail/anomalies'
+        componentClass: 'host-detail/anomalies',
+        subTabName: 'IMAGEHOOKS'
       }];
       HOST_DETAILS_TABS_CLONE.splice(6, 0, ...windowsSpecificTabs);
     }

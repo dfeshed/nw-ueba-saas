@@ -76,7 +76,7 @@ const _getHostDetails = (forceRefresh, serviceId) => {
         meta: {
           onSuccess: (response) => {
             dispatch({ type: ACTION_TYPES.RESET_HOST_DETAILS });
-            dispatch(_fetchDataForSelectedTab());
+            dispatch(fetchDataForSelectedTab());
             const debugResponse = JSON.stringify(response);
             debug(`onSuccess: ${ACTION_TYPES.FETCH_HOST_DETAILS} ${debugResponse}`);
           },
@@ -84,12 +84,12 @@ const _getHostDetails = (forceRefresh, serviceId) => {
         }
       });
     } else {
-      dispatch(_fetchDataForSelectedTab());
+      dispatch(fetchDataForSelectedTab());
     }
   };
 };
 
-const _fetchDataForSelectedTab = () => {
+const fetchDataForSelectedTab = () => {
   return (dispatch, getState) => {
     const { endpoint: { drivers, autoruns, libraries, visuals, detailsInput: { agentId } } } = getState();
     const { activeHostDetailTab, activeAutorunTab, activeAnomaliesTab } = visuals;
@@ -185,14 +185,14 @@ const setDataSourceTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_DATASOURCE_TA
 const setAutorunsTabView = (tabName) => {
   return (dispatch) => {
     dispatch({ type: ACTION_TYPES.CHANGE_AUTORUNS_TAB, payload: { tabName } });
-    dispatch(_fetchDataForSelectedTab());
+    dispatch(fetchDataForSelectedTab());
   };
 };
 
 const setAnomaliesTabView = (tabName) => {
   return (dispatch) => {
     dispatch({ type: ACTION_TYPES.CHANGE_ANOMALIES_TAB, payload: { tabName } });
-    dispatch(_fetchDataForSelectedTab());
+    dispatch(fetchDataForSelectedTab());
   };
 };
 
@@ -317,5 +317,6 @@ export {
   setHostDetailsDataTableSortConfig,
   setAlertTab,
   setPropertyPanelTabView,
-  setHostDetailPropertyTab
+  setHostDetailPropertyTab,
+  fetchDataForSelectedTab
 };

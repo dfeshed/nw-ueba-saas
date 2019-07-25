@@ -36,10 +36,15 @@ const getAllSnapShots = (data) => {
  */
 const getHostDetails = (data) => {
   const request = lookup('service:request');
+  const streamSelector = lookup('service:stream-selector');
+  const modelName = 'endpoint';
+  const method = 'getHostDetails';
+
   return request.promiseRequest({
-    method: 'getHostDetails',
-    modelName: 'endpoint',
-    query: { data }
+    method,
+    modelName,
+    query: { data },
+    streamOptions: streamSelector.streamOptionSelector({ modelName, method })
   });
 };
 

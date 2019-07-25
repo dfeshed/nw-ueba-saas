@@ -33,6 +33,15 @@ const PROCESS_DEFAULT_COLUMN = [
   }
 ];
 
+
+const _filterList = (data, selectedTab, tabName) => {
+  let filteredData = data;
+  if (selectedTab && selectedTab.tabName === tabName) {
+    filteredData = data.filter((val) => (selectedTab.checksum === val.checksumSha256));
+  }
+  return filteredData;
+};
+
 const _getTree = (selectedTab, tabName, data) => {
   if (selectedTab && selectedTab.tabName === tabName) {
     return data.map((d) => {
@@ -115,7 +124,7 @@ const _getProcessList = createSelector(
     const tabName = 'PROCESS';
     const tree = _getTree(selectedTab, tabName, treeData.asMutable());
     return {
-      list: listData,
+      list: _filterList(listData, selectedTab, tabName),
       tree
     };
   }
