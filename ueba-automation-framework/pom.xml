@@ -13,6 +13,7 @@
     <artifactId>ueba-automation-framework</artifactId>
 
     <properties>
+        <!-- To enable tests on this module run:  `mvn test -DskipTests=false` -->
         <skipTests>true</skipTests>
     </properties>
 
