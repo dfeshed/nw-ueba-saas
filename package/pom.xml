@@ -185,7 +185,7 @@
                         </mapping>
                     </mappings>
                     <requires>
-                        <require>java &gt; 1.8</require>
+                        <require>java &gt; 11</require>
                     </requires>
                     <description>
                         Presidio(UEBA) netwitness extension: adapter app and python workflow extension
