@@ -24,6 +24,12 @@ public class IndicatorsInfoSupplierTest {
     }
 
     @Test
+    public void indicatorToFeatureNamesTest() {
+        Map<String, String> result = IndicatorsInfoSupplier.indicatorToFeatureNames.get();
+        assertThat(result).isNotNull().isNotEmpty();
+    }
+
+    @Test
     public void classificationsByPrioritiesDescTest() {
         List<String> resultDesc = IndicatorsInfoSupplier.classificationsByPrioritiesDesc.get();
         List<String> resultAsc = IndicatorsInfoSupplier.classificationsByPrioritiesAsc.get();

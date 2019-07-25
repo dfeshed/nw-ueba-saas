@@ -4,7 +4,6 @@ import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.rest.helper.ParametersUrlBuilder;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
-import com.rsa.netwitness.presidio.automation.static_content.AlertClassificationIndicatorDictionary;
 import com.rsa.netwitness.presidio.automation.static_content.IndicatorsInfo;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils;
 import org.json.JSONException;
@@ -197,12 +196,12 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
                     .isNotNull()
                     .isNotEmpty();
 
-            assertThat(AlertClassificationIndicatorDictionary.getAll().keySet())
+            assertThat(IndicatorsInfo.getIndicatorsToClassificationMap().keySet())
                     .as(url + "\nAlertId = " + alert.getId() + "\nUndefined indicators. Missing from classifications map.")
                     .containsAll(expectedClassificationsContributors);
 
             List<String> expectedClassifications = expectedClassificationsContributors.stream()
-                    .map(AlertClassificationIndicatorDictionary::getIndicatorClassification)
+                    .map(e -> IndicatorsInfo.getClassificationByIndicator(e))
                     .collect(toList());
 
             List<String> expectedClassificationsOrdered = IndicatorsInfo.getClassificationsByPrioritiesAsc()

@@ -45,4 +45,8 @@ public class IndicatorsInfo {
     public static List<String> getClassificationsByPrioritiesAsc() {
         return IndicatorsInfoSupplier.classificationsByPrioritiesAsc.get();
     }
+
+    public static String getFeatureNameByIndicator(String indicator) {
+        return IndicatorsInfoSupplier.indicatorToFeatureNames.get().get(indicator);
+    }
 }

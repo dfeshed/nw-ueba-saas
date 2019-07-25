@@ -3,12 +3,11 @@ package com.rsa.netwitness.presidio.automation.utils.output;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.rsa.netwitness.presidio.automation.rest.client.RestAPI;
-import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.domain.config.Consts;
 import com.rsa.netwitness.presidio.automation.domain.config.HostConf;
 import com.rsa.netwitness.presidio.automation.domain.output.*;
-import com.rsa.netwitness.presidio.automation.static_content.AlertClassificationIndicatorDictionary;
+import com.rsa.netwitness.presidio.automation.rest.client.RestAPI;
+import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.utils.common.TerminalCommands;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -42,7 +41,6 @@ public class OutputTestManager {
 
     private ExportDataFromMongoToJson exportToJSON;
     private ScoredEntityNormalizedUsernameConverter converter = new ScoredEntityNormalizedUsernameConverter();
-    private AlertClassificationIndicatorDictionary indicatorDictionary = new AlertClassificationIndicatorDictionary();
 
     public List<ScoredEntityEventNormalizedUsernameStoredRecored> convertToStoredRecordsDaily(List<ScoredEntityEventNormalizedUsernameDailyStoredData> entities){
         return converter.convertDaily(entities);

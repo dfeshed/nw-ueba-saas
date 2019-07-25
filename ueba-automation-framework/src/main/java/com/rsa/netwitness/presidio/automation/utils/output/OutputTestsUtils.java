@@ -1,7 +1,5 @@
 package com.rsa.netwitness.presidio.automation.utils.output;
 
-import com.rsa.netwitness.presidio.automation.rest.client.RestAPI;
-import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.domain.activedirectory.OutputActiveDirectoryEnrichedStoredData;
 import com.rsa.netwitness.presidio.automation.domain.authentication.OutputAuthenticationEnrichStoredData;
 import com.rsa.netwitness.presidio.automation.domain.config.HostConf;
@@ -12,7 +10,9 @@ import com.rsa.netwitness.presidio.automation.domain.output.SmartUserIdStoredRec
 import com.rsa.netwitness.presidio.automation.domain.process.OutputProcessEnrichedStoredData;
 import com.rsa.netwitness.presidio.automation.domain.registry.OutputRegistryEnrichedStoredData;
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
-import com.rsa.netwitness.presidio.automation.static_content.IndicatorNameToFeatureNameDictionary;
+import com.rsa.netwitness.presidio.automation.rest.client.RestAPI;
+import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
+import com.rsa.netwitness.presidio.automation.static_content.IndicatorsInfo;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -105,7 +105,7 @@ public class OutputTestsUtils {
         List<String> featureList = new ArrayList<>();
 
         for (String indicator : indicators) {
-            featureList.add(IndicatorNameToFeatureNameDictionary.getFeatureName(indicator));
+            featureList.add(IndicatorsInfo.getFeatureNameByIndicator(indicator));
         }
 
         return featureList;

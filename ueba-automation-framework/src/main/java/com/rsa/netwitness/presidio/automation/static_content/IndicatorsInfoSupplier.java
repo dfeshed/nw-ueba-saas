@@ -55,6 +55,11 @@ import static java.util.stream.Collectors.toMap;
 
     static Supplier<List<String>> classificationsByPrioritiesDesc = () -> toDesc.apply(classificationsByPrioritiesAsc.get());
 
+    static Supplier<Map<String, String>> indicatorToFeatureNames = () ->
+            getInstance().indicators.stream()
+                    .collect(toMap(e -> e.get("name").toString(), e -> e.get("id").toString()));
+
+
 
     private IndicatorsInfoSupplier() {
         Yaml yaml = new Yaml();
