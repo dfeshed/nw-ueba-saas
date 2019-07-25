@@ -120,11 +120,25 @@ module('Unit | Util | Scanning Helpers', function(hooks) {
     assert.ok(isIPv4Address('172.18.201.53'));
   });
 
+  test('isIPv4Address returns true for IPv4 addresses w/ CIDR notation', function(assert) {
+    assert.ok(isIPv4Address('127.0.0.1/32'));
+    assert.ok(isIPv4Address('192.168.0.1/24'));
+    assert.ok(isIPv4Address('10.0.0.70/8'));
+    assert.ok(isIPv4Address('172.18.201.53/16'));
+  });
+
   test('isIPv4Address returns false for invalid addresses', function(assert) {
     assert.notOk(isIPv4Address('127.0.0.0.1'));
     assert.notOk(isIPv4Address('127.0.o.1'));
     assert.notOk(isIPv4Address('10.10.256.1'));
     assert.notOk(isIPv4Address('172.16.-30.1'));
+  });
+
+  test('isIPv4Address returns false for IPv4 addresses w/ invalid CIDR notation', function(assert) {
+    assert.notOk(isIPv4Address('127.0.0.1/33'));
+    assert.notOk(isIPv4Address('192.168.0.1/64'));
+    assert.notOk(isIPv4Address('10.0.0.70/a'));
+    assert.notOk(isIPv4Address('172.18.201.53/-1'));
   });
 
   test('isIPv4Address returns false for IPv6 addresses', function(assert) {
@@ -139,6 +153,12 @@ module('Unit | Util | Scanning Helpers', function(hooks) {
     assert.ok(isIPv6Address('::1'));
   });
 
+  test('isIPv6Address returns true for IPv6 addresses w/ CIDR notation', function(assert) {
+    assert.ok(isIPv6Address('3ffe:1900:4545:3:200:f8ff:fe21:67cf/64'));
+    assert.ok(isIPv6Address('fe80::200:f8ff:fe21:67cf/0'));
+    assert.ok(isIPv6Address('::1/128'));
+  });
+
   test('isIPv6Address returns false for invalid addresses', function(assert) {
     // Extra 2 bytes                                                VVVV
     assert.notOk(isIPv6Address('3ffe:1900:4545:3:200:f8ff:fe21:67cf:1111'));
@@ -146,6 +166,12 @@ module('Unit | Util | Scanning Helpers', function(hooks) {
     assert.notOk(isIPv6Address('fe80::200:f8ff::fe21:67cf'));
     // Non-hex character                  V
     assert.notOk(isIPv6Address('fe80::200:gfff::fe21:67cf'));
+  });
+
+  test('isIPv6Address returns false for IPv6 addresses w/ invalid CIDR notation', function(assert) {
+    assert.notOk(isIPv6Address('3ffe:1900:4545:3:200:f8ff:fe21:67cf/129'));
+    assert.notOk(isIPv6Address('fe80::200:f8ff:fe21:67cf/a'));
+    assert.notOk(isIPv6Address('::1/-1'));
   });
 
   test('isIPv6Address returns false for IPv4 addresses', function(assert) {
