@@ -20,6 +20,7 @@
 
     <modules>
         <module>presidio-input-core</module>
+        <module>presidio-input-pre-processing</module>
         <module>presidio-input-sdk-api</module>
         <module>presidio-input-sdk-impl</module>
     </modules>
