@@ -5,15 +5,15 @@
       {{radio-button
         value="id"
         groupValue=selectionType
-        changed="typeChanged"}}
+        changed=(action "typeChanged")}}
         ID
     </label>
-  
+
     <label class="rsa-form-radio-label {{if (eq 'time' selectionType) 'checked'}}">
       {{radio-button
         value="time"
         groupValue=selectionType
-        changed="typeChanged"}}
+        changed=(action "typeChanged")}}
         Time
     </label>
   </div>

@@ -76,7 +76,7 @@
                 {{radio-button
                   value='GROUP_INTO_INCIDENT'
                   groupValue=(readonly ruleInfo.action)
-                  changed='handleActionChange'}}
+                  changed=(action 'handleActionChange')}}
                 {{t 'configure.incidentRules.groupAction'}}
               </label>
 
@@ -84,7 +84,7 @@
                 {{radio-button
                   value='SUPPRESS_ALERT'
                   groupValue=(readonly ruleInfo.action)
-                  changed='handleActionChange'}}
+                  changed=(action 'handleActionChange')}}
                 {{t 'configure.incidentRules.suppressAction'}}
               </label>
             </div>

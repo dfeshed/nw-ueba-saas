@@ -3,13 +3,13 @@
   {{radio-button
     value="DARK"
     groupValue=(readonly theme)
-    changed="updateTheme"}}
+    changed=(action "updateTheme")}}
   {{t "userPreferences.theme.dark"}}
 </label>
 <label class="rsa-form-radio-label {{if (eq theme 'LIGHT') 'checked'}}">
   {{radio-button
     value="LIGHT"
     groupValue=(readonly theme)
-    changed="updateTheme"}}
+    changed=(action "updateTheme")}}
   {{t "userPreferences.theme.light"}}
 </label>

@@ -41,14 +41,14 @@
             {{radio-button
               value="UTC"
               groupValue=timezone
-              changed="handleTimezoneChange"
+              changed=(action "handleTimezoneChange")
             }} UTC
           </label>
           <label class="rsa-form-radio-label {{if (eq 'America/Los_Angeles' timezone) 'checked'}}">
             {{radio-button
               value="America/Los_Angeles"
               groupValue=timezone
-              changed="handleTimezoneChange"
+              changed=(action "handleTimezoneChange")
             }} America/Los_Angeles
           </label>
         </div>
@@ -72,21 +72,21 @@
             {{radio-button
               value="MM/DD/YYYY"
               groupValue=dateFormat
-              changed="handleDateFormatChanged"}}
+              changed=(action "handleDateFormatChanged")}}
             mm/dd/yyyy
           </label>
           <label class="rsa-form-radio-label {{if (eq 'DD/MM/YYYY' dateFormat) 'checked'}}">
             {{radio-button
               value="DD/MM/YYYY"
               groupValue=dateFormat
-              changed="handleDateFormatChanged"}}
+              changed=(action "handleDateFormatChanged")}}
             dd/mm/yyyy
           </label>
           <label class="rsa-form-radio-label {{if (eq 'YYYY/MM/DD' dateFormat) 'checked'}}">
             {{radio-button
               value="YYYY/MM/DD"
               groupValue=dateFormat
-              changed="handleDateFormatChanged"}}
+              changed=(action "handleDateFormatChanged")}}
             yyyy/mm/dd
           </label>
         </div>

@@ -62,7 +62,7 @@
             {{radio-button
               value=option
               groupValue=timeFormat.selected
-              changed="setTimeFormat"}}
+              changed=(action "setTimeFormat")}}
             {{t option.label}}
           </label>
         {{/each}}

@@ -37,7 +37,7 @@
           {{radio-button
             value=resolution
             groupValue=activeResolution
-            changed="setResolution"}}
+            changed=(action "setResolution")}}
             {{resolution.width}}x{{resolution.height}}
         </label>
       {{/each}}

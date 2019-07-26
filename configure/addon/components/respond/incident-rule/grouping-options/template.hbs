@@ -142,14 +142,14 @@
                     {{radio-button
                       value='average'
                       groupValue=(readonly incidentScoringOptions.type)
-                      changed='handlePriorityScoringChange'}}
+                      changed=(action 'handlePriorityScoringChange')}}
                     {{t 'configure.incidentRules.incidentPriorityAverage'}}
                   </label>
                   <label class="highest-score rsa-form-radio-label {{if (eq incidentScoringOptions.type 'high') 'checked'}}">
                     {{radio-button
                       value='high'
                       groupValue=(readonly incidentScoringOptions.type)
-                      changed='handlePriorityScoringChange'}}
+                      changed=(action 'handlePriorityScoringChange')}}
                     {{t 'configure.incidentRules.incidentPriorityHighestScore'}}
                   </label>
 
@@ -157,7 +157,7 @@
                     {{radio-button
                       value='count'
                       groupValue=(readonly incidentScoringOptions.type)
-                      changed='handlePriorityScoringChange'}}
+                      changed=(action 'handlePriorityScoringChange')}}
                     {{t 'configure.incidentRules.incidentPriorityAlertCount'}}
                   </label>
                 </div>
