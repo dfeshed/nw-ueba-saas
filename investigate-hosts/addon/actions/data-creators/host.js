@@ -71,6 +71,7 @@ const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTa
       if (tabName === 'DOWNLOADS-MFT') {
         dispatch(toggleMftView({ mftFile, mftName }));
         dispatch({ type: ACTION_TYPES.RESET_MFT_FILE_DATA });
+        dispatch(getFilter(() => {}, 'MFTDIRECTORY'));
         dispatch(getSubDirectories());
 
       } else if (tabName === 'DOWNLOADS') {

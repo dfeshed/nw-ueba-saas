@@ -31,7 +31,7 @@ const stateToComputed = (state) => ({
   isAllSelected: isAllSelected(state),
   selections: state.endpoint.hostDownloads.downloads.selectedFileList,
   selectedIndex: state.endpoint.hostDownloads.downloads.selectedIndex,
-  serverId: state.endpointQuery.serverId,
+  serverId: state.endpointQuery.selectedMachineServerId,
   nextLoadCount: nextLoadCount(state)
 });
 

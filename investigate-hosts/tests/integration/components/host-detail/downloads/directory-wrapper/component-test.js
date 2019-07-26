@@ -87,7 +87,7 @@ module('Integration | Component | directory-wrapper', function(hooks) {
     patchSocket((method, modelName, query) => {
       assert.equal(method, 'mftGetRecords');
       assert.equal(modelName, 'endpoint');
-      assert.equal(query.data.criteria.criteriaList[0].expressionList.length, 1);
+      assert.equal(query.data.criteria.criteriaList[0].expressionList.length, 2);
     });
     assert.equal(findAll('.all-files.selected').length, 0);
     await click(find('.all-files'));
@@ -101,7 +101,7 @@ module('Integration | Component | directory-wrapper', function(hooks) {
     patchSocket((method, modelName, query) => {
       assert.equal(method, 'mftGetRecords');
       assert.equal(modelName, 'endpoint');
-      assert.equal(query.data.criteria.criteriaList[0].expressionList.length, 2);
+      assert.equal(query.data.criteria.criteriaList[0].expressionList.length, 3);
     });
     assert.equal(findAll('.deleted-files.selected').length, 0);
     await click(find('.deleted-files'));

@@ -162,8 +162,8 @@ module('Integration | Component | directory-wrapper', function(hooks) {
     await click(find('.mft-directory_arrow .rsa-icon-arrow-down-12-filled'));
     assert.equal(findAll('.mft-directory_arrow .rsa-icon-arrow-right-12-filled').length, 1, 'Close Arrow has loaded on click');
 
-    assert.equal(findAll('.mft-directory_arrow .rsa-icon-arrow-down-12-filled').length, 0, 'Open Arrow has not loaded');
+    assert.equal(findAll('.mft-directory_loader .rsa-loader').length, 0, 'loader has not loaded');
     await click(find('.mft-directory_arrow .rsa-icon-arrow-right-12-filled'));
-    assert.equal(findAll('.mft-directory_arrow .rsa-icon-arrow-down-12-filled').length, 1, 'Open Arrow has loaded on click');
+    assert.equal(findAll('.mft-directory_loader .rsa-loader').length, 1, 'loader has loaded on click');
   });
 });

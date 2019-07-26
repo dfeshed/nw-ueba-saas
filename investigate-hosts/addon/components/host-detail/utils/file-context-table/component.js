@@ -54,7 +54,7 @@ const stateToComputed = (state, { storeName, tabName }) => ({
   serviceId: serviceId(state),
   timeRange: timeRange(state),
   restrictedFileList: state.fileStatus.restrictedFileList,
-  sid: state.endpointQuery.serverId,
+  sid: state.endpointQuery.selectedMachineServerId,
   agentCountMapping: state.endpoint[storeName].agentCountMapping,
   sortConfig: state.endpoint[storeName].sortConfig,
   selectedRowIndex: state.endpoint[storeName].selectedRowIndex,

@@ -33,17 +33,15 @@ const SubdirectoryAccess = Component.extend({
   },
   actions: {
     toggleSubdirectories() {
-      const { ancestors, recordNumber, children } = this.get('data');
+      const { ancestors, recordNumber } = this.get('data');
       // max number of folders is 65000 and fetch only directories is true
       const isDirectories = true;
       const pageSize = 65000;
       const inUse = true;
       if (this.get('close')) {
         this.send('setSeletedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors, close: false }, pageSize, isDirectories, inUse });
-        if (!children) {
-          this.set('isLoading', true);
-          this.send('getSubDirectories');
-        }
+        this.set('isLoading', true);
+        this.send('getSubDirectories');
 
       } else {
         this.send('setSeletedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors: [], close: true } });
