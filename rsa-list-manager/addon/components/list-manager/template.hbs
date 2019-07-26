@@ -1,5 +1,5 @@
-{{#click-outside action=(action 'collapseMenu')}}
-  <div class='rsa-button-group'>
+<hbox class='rsa-button-group'>
+  {{#click-outside action=(action 'collapseMenu')}}
     {{#rsa-form-button
       class="list-caption"
       defaultAction=(action 'toggleExpand')
@@ -13,17 +13,17 @@
     }}
       {{rsa-icon name="arrow-down-12"}}
     {{/rsa-form-button}}
-  </div>
-  {{#rsa-button-menu isExpanded=isExpanded style=offsetsStyle}}
+    {{#rsa-button-menu isExpanded=isExpanded style=offsetsStyle}}
 
-    {{yield (hash
-      itemList=(component 'list-manager/item-list'
-        list=list
-        selectedItem=selectedItem
-        itemSelection=itemSelection
-        isExpanded=isExpanded
-      )
-     )
-    }}
-  {{/rsa-button-menu}}
-{{/click-outside}}
+      {{yield (hash
+        itemList=(component 'list-manager/item-list'
+          list=list
+          selectedItem=selectedItem
+          itemSelection=itemSelection
+          isExpanded=isExpanded
+        )
+       )
+      }}
+    {{/rsa-button-menu}}
+  {{/click-outside}}
+</hbox>

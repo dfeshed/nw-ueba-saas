@@ -14,7 +14,6 @@ const menuOffsetsStyle = (el) => {
 
 export default Component.extend({
   layout,
-  tagName: 'hbox',
   classNames: ['list-manager'],
   listName: null,
   selectedItem: null,
