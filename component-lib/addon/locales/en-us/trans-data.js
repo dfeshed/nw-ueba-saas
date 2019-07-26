@@ -5140,7 +5140,7 @@ effects the previewed source.',
       alertsCount: 'Alerts'
     },
     entityTypes: {
-      user: 'USER',
+      userId: 'USER',
       ja3: 'JA3',
       sslSubject: 'SSL Subject'
     },

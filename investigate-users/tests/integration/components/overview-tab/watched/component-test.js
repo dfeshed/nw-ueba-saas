@@ -16,7 +16,7 @@ const initialFilterState = Immutable.from({
   addAllWatched: true,
   alertTypes: null,
   departments: null,
-  entityType: 'user',
+  entityType: 'userId',
   indicatorTypes: null,
   isWatched: false,
   locations: null,

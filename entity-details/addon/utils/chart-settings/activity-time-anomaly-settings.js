@@ -16,10 +16,11 @@ export default (anomalyTypeFieldName) => {
     sortData: (data) => {
       return _.orderBy(data, ['originalCategory'], ['asc']);
     },
-    dataAdapter: (dataItem) => {
+    dataAdapter: (dataItem, zoneId) => {
+      const timezoneDate = moment.tz(parseInt(dataItem.keys[0], 10), zoneId).unix() * 1000;
       const chartItem = {
-        category: moment(parseInt(dataItem.keys[0], 10)).format('DD MMM HH:mm'),
-        originalCategory: dataItem.keys[0],
+        category: moment(timezoneDate).format('DD MMM HH:mm'),
+        originalCategory: timezoneDate,
         value: dataItem.value
       };
 

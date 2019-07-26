@@ -3,6 +3,7 @@ import { connect } from 'ember-redux';
 import am4themesAnimated from '@amcharts/amcharts4/themes/animated';
 import computed from 'ember-computed-decorators';
 import * as am4core from '@amcharts/amcharts4/core';
+import { inject as service } from '@ember/service';
 import {
   indicatorMapSettings,
   getIncidentData,
@@ -27,14 +28,17 @@ const stateToComputed = (state) => ({
 
 const EventsGraphComponent = Component.extend({
   classNames: ['entity-details-container-body-indicator-details_graph'],
+  timezone: service(),
+  timeZoneId: null,
 
   init() {
     this._super(...arguments);
     this.chart = null;
+    this.timeZoneId = this.get('timezone.selected.zoneId') || 'UTC';
   },
 
-  @computed('indicatorMapSettings', 'historicalData')
-  historicalDataForGraph(indicatorMapSettings, historicalData) {
+  @computed('indicatorMapSettings', 'historicalData', 'timeZoneId')
+  historicalDataForGraph(indicatorMapSettings, historicalData, timeZoneId) {
     // Init will not be called when user jumps between indicators. So need to clear container div before drawing chart.
     this.chart = null;
     document.getElementById('chartComponentPlaceholder').innerHTML = '';
@@ -42,7 +46,7 @@ const EventsGraphComponent = Component.extend({
       return;
     }
     const chartType = indicatorMapSettings.chartSettings.type;
-    const settings = chartDataAdapter(indicatorMapSettings, historicalData);
+    const settings = chartDataAdapter(indicatorMapSettings, historicalData, timeZoneId);
     switch (chartType) {
       case 'pie':
         this.chart = pieChartCreator(settings, this.get('incidentDetails'), this.get('brokerId'));

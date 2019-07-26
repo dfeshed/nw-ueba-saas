@@ -30,7 +30,7 @@ export const getUsers = (state) => state.users.users;
 
 export const severityFilter = ['Low', 'Medium', 'High', 'Critical'];
 
-export const entityFilter = ['user', 'ja3', 'sslSubject'];
+export const entityFilter = ['userId', 'ja3', 'sslSubject'];
 
 export const getUserFilter = (state) => state.users.filter;
 

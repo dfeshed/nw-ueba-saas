@@ -66,7 +66,7 @@ export const navigateToInvestigate = (entityType, entityValue, indicatorSchema, 
   if (processOrLinkFields.includes(linkField)) {
     windowProxy.openInNewTab(item[linkField]);
   } else {
-    const extraQueryParam = additionalFilter ? ` && ${additionalFilter} = ${item[field]}` : '';
+    const extraQueryParam = additionalFilter ? ` && ${additionalFilter} = '${encodeURIComponent(item[field])}'` : '';
     const serviceId = brokerId || item[linkField].match(/investigation\/(.*)\/events/i)[1];
     navigateToInvestigateEventsAnalysis(entityType, entityValue, indicatorSchema, eventTime, serviceId, extraQueryParam);
   }

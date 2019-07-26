@@ -18,7 +18,7 @@ module('Unit | Utils | activity-time-anomaly-settings', (hooks) => {
 
   test('it dataAggregator function aggregates data', (assert) => {
     const settings = activityTimeAnomalySettings('high_number_of_successful_object_change_operations');
-    const changedData = _.map(indicatorEvents.data, settings.dataAdapter);
+    const changedData = _.map(indicatorEvents.data, (data) => settings.dataAdapter(data, 'UTC'));
     assert.equal(changedData.length, 262);
 
     // Vishwas, fix me!
@@ -27,7 +27,7 @@ module('Unit | Utils | activity-time-anomaly-settings', (hooks) => {
     assert.deepEqual(changedData[0], {
       // category: '12 Nov 17:00',
       color: '#CC3300',
-      originalCategory: '1542034800000',
+      originalCategory: 1542034800000,
       value: 2
     });
   });

@@ -133,7 +133,7 @@ module('Unit | Utils | pivot-utils', (hooks) => {
       // Assert Broker id should be link one
       assert.ok(decodeURIComponent(currentUrl).indexOf('sid=007f93ca-bf34-4aeb-805a-d039934842ae') > 0);
       // Assert additional filter along with schema filter
-      assert.ok(decodeURIComponent(currentUrl).indexOf('&& obj.name = TestUser') > 0);
+      assert.ok(decodeURIComponent(currentUrl).indexOf('&& obj.name = \'TestUser\'') > 0);
       assert.ok(newTab);
     });
   });
