@@ -35,19 +35,6 @@ module('Unit | Reducers | process', function() {
     assert.deepEqual(result, initialState);
   });
 
-  test('The RESET_HOST_DETAILS will reset the state', function(assert) {
-    const previous = Immutable.from({
-      processList: [{ name: 'test' }],
-      sortField: 'pid',
-      isDescOrder: true,
-      processTree: [ { parent: { child: [] } }],
-      processDetails: {}
-    });
-    const result = reducer(previous, { type: ACTION_TYPES.RESET_HOST_DETAILS });
-
-    assert.deepEqual(result, initialState);
-  });
-
   test('The SET_SORT_BY will reset the state', function(assert) {
     const previous = Immutable.from({
       sortField: 'pid',

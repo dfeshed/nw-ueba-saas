@@ -157,45 +157,17 @@ module('Unit | Reducers | downloads', function() {
     assert.equal(errorEndState.loadMoreStatus, 'error');
   });
 
-  test('The TOGGLE_MFT_VIEW will fetch the download files', function(assert) {
-    let previous = Immutable.from({
-      files: {},
-      loadMoreStatus: 'completed',
-      selectedIndex: -1,
-      totalItems: 4,
-      sortField: 'downloadedTime',
-      isSortDescending: true,
-      selectedFileList: [],
-      selectedFile: {},
-      pageNumber: -1,
+  test('The INIT_MFT_DATA will fetch the download files', function(assert) {
+    const previous = Immutable.from({
       selectedMftFile: null,
       selectedMftName: null
     });
 
-
-    let startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.TOGGLE_MFT_VIEW, payload: { mftFile: 'test-file', mftName: 'test-name' } });
-    let startEndState = reducer(previous, startAction);
-    assert.equal(startEndState.isShowMFTView, true);
-    assert.equal(startEndState.selectedMftFile, 'test-file');
-    assert.equal(startEndState.selectedMftName, 'test-name');
-    previous = Immutable.from({
-      files: {},
-      loadMoreStatus: 'completed',
-      selectedIndex: -1,
-      totalItems: 4,
-      sortField: 'downloadedTime',
-      isSortDescending: true,
-      selectedFileList: [],
-      selectedFile: {},
-      pageNumber: -1,
-      isShowMFTView: true
-    });
-    startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.TOGGLE_MFT_VIEW, payload: { mftFile: '', mftName: '' } });
-    startEndState = reducer(previous, startAction);
-    assert.equal(startEndState.isShowMFTView, false);
-    assert.equal(startEndState.selectedMftFile, '');
-    assert.equal(startEndState.selectedMftName, '');
+    const startAction = reducer(previous, { type: ACTION_TYPES.INIT_MFT_DATA, payload: { mftFile: 'test-file', mftName: 'test-name' } });
+    assert.equal(startAction.selectedMftFile, 'test-file');
+    assert.equal(startAction.selectedMftName, 'test-name');
   });
+
   test('The SET_SELECTED_DOWNLOADED_MFT_FILE_INDEX will reset the index', function(assert) {
     const previous = Immutable.from({
       selectedMftIndex: 1

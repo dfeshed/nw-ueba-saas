@@ -31,8 +31,8 @@ module('Integration | Component | endpoint host titlebar explore search label', 
       .searchStatus('wait')
       .searchValue('0anacron')
       .build();
-
-    await render(hbs`{{host-detail/header/titlebar/explore/search-label }}`);
+    this.set('navigateToTab', () => {});
+    await render(hbs`{{host-detail/header/titlebar/explore/search-label navigateToTab=navigateToTab}}`);
     const searchFieldLoader = document.querySelectorAll('.host-explore__loader');
     assert.equal(searchFieldLoader.length, 1, 'search-label loader validated');
 
@@ -43,7 +43,8 @@ module('Integration | Component | endpoint host titlebar explore search label', 
       .searchStatus('complete')
       .searchValue('0anacron')
       .build();
-    await render(hbs`{{host-detail/header/titlebar/explore/search-label }}`);
+    this.set('navigateToTab', () => {});
+    await render(hbs`{{host-detail/header/titlebar/explore/search-label navigateToTab=navigateToTab}}`);
     const closingButton = document.querySelectorAll('.rsa-form-button');
     assert.equal(closingButton.length, 1, 'search-label loader clase button');
 

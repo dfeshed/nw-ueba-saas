@@ -1,9 +1,8 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, waitUntil } from '@ember/test-helpers';
+import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { patchSocket } from '../../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 module('Integration | Component | host detail explore file found categories', function(hooks) {
@@ -28,24 +27,17 @@ module('Integration | Component | host detail explore file found categories', fu
   };
 
 
-  test('file found categories should render', async function(assert) {
-
-    let patchSuccess = false;
+  test('it should call external function on clicking the category', async function(assert) {
     assert.expect(4);
+    this.set('navigateToTab', ({ subTabName, tabName }) => {
+      assert.ok(true);
+      assert.equal(subTabName, 'AUTORUNS');
+      assert.equal(tabName, 'AUTORUNS');
+    });
     this.set('file', file);
     this.set('scanTime', file.scanStartTime);
-    await render(hbs`{{host-detail/explore/file-found-categories file=file scanTime=scanStartTime}}`);
+    await render(hbs`{{host-detail/explore/file-found-categories navigateToTab=navigateToTab file=file scanTime=scanStartTime}}`);
     assert.equal(document.querySelectorAll('.file-found-categories').length, 1, 'should render file found categories');
-
-    patchSocket((method, modelName) => {
-      assert.equal(method, 'getFileContextList');
-      assert.equal(modelName, 'endpoint');
-      patchSuccess = true;
-    });
-
     await click('.file-found-categories__list');
-    await waitUntil(() => patchSuccess === true, { timeout: Infinity });
-    const state = this.get('redux').getState();
-    assert.equal(state.endpoint.explore.selectedTab.tabName, 'AUTORUNS', 'Selected tab validated');
   });
 });

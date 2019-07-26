@@ -1,4 +1,3 @@
-{{host-detail/header}}
 {{#if selectedServiceData.isServiceOnline}}
   <box class="host-detail-wrapper {{if isFileAnalysisView 'is-show-file-analysis'}}">
     <iframe src="{{downloadLink}}" class="save-files-iframe"></iframe>
@@ -10,12 +9,6 @@
         {{rsa-loader size='larger'}}
       </centered>
     {{else}}
-      <box class="process-details-panel {{if isProcessDetailsView 'is-show-process-details'}}">
-        {{host-detail/process/process-details}}
-      </box>
-      <box class="mft-container-panel {{if isMFTView 'show'}}">
-        {{host-detail/downloads/mft-container}}
-      </box>
       {{component selectedTabComponent}}
     {{/if}}
 

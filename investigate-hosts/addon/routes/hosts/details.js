@@ -1,22 +1,10 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { initializeHostDetailsPage } from 'investigate-hosts/actions/data-creators/host';
+import { initializeHostDetailsPage } from 'investigate-hosts/actions/data-creators/host-details';
 import { resetDetailsInputAndContent } from 'investigate-hosts/actions/ui-state-creators';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { getOwner } from '@ember/application';
 
-const HELP_ID_MAPPING = {
-  'OVERVIEW': 'contextualHelp.invHostsOverview',
-  'PROCESS': 'contextualHelp.invHostsProcess',
-  'ANOMALIES': 'contextualHelp.invHostsAnomalies',
-  'AUTORUNS': 'contextualHelp.invHostsAutoruns',
-  'FILES': 'contextualHelp.invHostsFiles',
-  'DRIVERS': 'contextualHelp.invHostsDrivers',
-  'LIBRARIES': 'contextualHelp.invHostsLibraries',
-  'SYSTEM': 'contextualHelp.invHostsSysInfo',
-  'DOWNLOADS': 'contextualHelp.invHostsDownloads',
-  'DOWNLOADS-MFT': 'contextualHelp.invHostsDownloads'
-};
 
 export default Route.extend({
 
@@ -26,32 +14,12 @@ export default Route.extend({
 
   accessControl: service(),
 
-  contextualHelp: service(),
-
   listLoaded: false,
 
   isPageLoading: true,
 
   queryParams: {
-    machineId: {
-      refreshModel: true
-    },
-    filterId: {
-      refreshModel: true
-    },
-    subTabName: {
-      refreshModel: true
-    },
-    pid: {
-      refreshModel: true
-    },
     sid: {
-      refreshModel: true
-    },
-    tabName: {
-      refreshModel: true
-    },
-    mftFile: {
       refreshModel: true
     }
   },
@@ -69,11 +37,15 @@ export default Route.extend({
   model(params) {
     const redux = this.get('redux');
     const isPageReload = this.get('isPageLoading');
-    const { sid, machineId, tabName } = params;
-    if (sid && machineId) {
-      this.set('contextualHelp.topic', this.get(HELP_ID_MAPPING[tabName]));
-      return redux.dispatch(initializeHostDetailsPage(params, isPageReload));
+    const { sid, id } = params;
+    if (sid && id) {
+      return redux.dispatch(initializeHostDetailsPage(params, isPageReload)).then(() => {
+        return params;
+      }).catch(() => {
+        return {};
+      });
     }
+    return params;
   },
 
   resetController(controller, isExiting) {
@@ -89,5 +61,16 @@ export default Route.extend({
     const redux = this.get('redux');
     this.set('isPageLoading', true); // Reset the flag
     redux.dispatch(resetDetailsInputAndContent()); // Clear the details input
+  },
+
+  actions: {
+    navigateToTab(params) {
+      if (params) {
+        const { subTabName, tabName, scanTime, checksum } = params;
+        this.transitionTo('hosts.details.tab', tabName, { queryParams: { subTabName, scanTime, checksum } });
+      } else {
+        this.transitionTo({ queryParams: { subTabName: null, scanTime: null, checksum: null } });
+      }
+    }
   }
 });

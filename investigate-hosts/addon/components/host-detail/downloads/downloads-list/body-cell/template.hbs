@@ -7,7 +7,7 @@
 {{else if (eq column.field 'fileName')}}
   <hbox class="downloaded-file-name">
     {{#if (and (eq (get item 'fileType') 'Mft') (not-eq (get item 'status') 'Processing') (not-eq (get item 'status') 'Error')  )}}
-      {{#link-to "hosts.details" focusedHost (query-params machineId=focusedHost tabName='DOWNLOADS-MFT' sid=serverId subTabName=null pid=null query=null mftFile=(get item 'id') mftName=(get item 'fileName'))}}
+      {{#link-to "hosts.details.tab.mft" (get item 'fileName') (get item 'id') }}
         {{get item column.field}}
       {{/link-to}}
     {{else if (eq (get item 'fileType') 'File')}}

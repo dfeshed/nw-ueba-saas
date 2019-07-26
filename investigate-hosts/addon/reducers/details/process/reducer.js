@@ -40,8 +40,6 @@ const LOADING_STATUS = 'loading';
 
 const processReducer = handleActions({
 
-  [ACTION_TYPES.RESET_HOST_DETAILS]: (state) => state.merge(initialState),
-
   [ACTION_TYPES.SET_PROCESS_DLL_ROW_ID]: (state, action) => state.set('selectedDllRowIndex', action.payload),
 
   [ACTION_TYPES.RESET_PROCESS_LIST]: (state) => state.set('processList', null),
@@ -54,14 +52,14 @@ const processReducer = handleActions({
 
   [ACTION_TYPES.GET_PROCESS_LIST]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.merge({ processDetails: null, isProcessTreeLoading: true, selectedProcessList: [] }),
+      start: (s) => s.merge({ isProcessTreeLoading: true, selectedProcessList: [] }),
       success: (s) => s.merge({ processList: action.payload.data, isProcessTreeLoading: false })
     });
   },
 
   [ACTION_TYPES.GET_PROCESS_TREE]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.merge({ processDetails: null, selectedProcessList: [] }),
+      start: (s) => s.merge({ selectedProcessList: [] }),
       success: (s) => s.merge({ processTree: action.payload.data })
     });
   },

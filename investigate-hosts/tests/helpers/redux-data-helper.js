@@ -463,4 +463,8 @@ export default class DataHelper {
     _set(this.state, 'hostDownloads.mft.mftDirectory.loading', loading);
     return this;
   }
+  selectedAnomaliesTab(tab) {
+    _set(this.state, 'visuals.activeAnomaliesTab', tab);
+    return this;
+  }
 }

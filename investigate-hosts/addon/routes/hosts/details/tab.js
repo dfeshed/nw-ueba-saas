@@ -51,6 +51,7 @@ export default Route.extend({
       }
       redux.dispatch(setDataForHostTab(id, tabName, subTabName));
     }
+    return params;
   },
 
   resetController(controller, isExiting) {

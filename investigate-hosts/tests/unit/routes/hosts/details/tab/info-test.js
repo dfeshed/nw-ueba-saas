@@ -31,7 +31,7 @@ module('Unit | Route | Hosts | Details | Tab | info', function(hooks) {
       }),
 
       modelFor() {
-        return { sid: 1, id: 2 };
+        return { sid: 1, rowId: 2 };
       }
     });
     return PatchedRoute.create();
@@ -45,7 +45,7 @@ module('Unit | Route | Hosts | Details | Tab | info', function(hooks) {
     patchReducer(this, Immutable.from({}));
     const route = setupRoute.call(this);
 
-    await route.model({ id: '1234' });
+    await route.model({ rowId: '1234' });
 
     await settled();
 

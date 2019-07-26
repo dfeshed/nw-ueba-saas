@@ -165,17 +165,8 @@ module('Integration | Component | host-detail/downloads/downloads-list/body-cell
     assert.equal(links.length, 1, 'downloaded-file-name mft is linked');
     await click('.downloaded-file-name a');
     assert.deepEqual(transitions, [{
-      name: 'hosts.details',
-      queryParams: {
-        machineId: 'agent-id',
-        mftFile: '5cda8882c8811e511649e335',
-        mftName: 'testFile',
-        pid: null,
-        query: null,
-        sid: 'abcd',
-        subTabName: null,
-        tabName: 'DOWNLOADS-MFT'
-      }
+      name: 'hosts.details.tab.mft',
+      queryParams: {}
     }]);
   });
 

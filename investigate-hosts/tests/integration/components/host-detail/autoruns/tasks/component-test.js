@@ -26,6 +26,9 @@ module('Integration | Component | host-detail/autoruns/tasks', function(hooks) {
   test('Columns rendered in services are sorted based on the order in config', async function(assert) {
     initState({
       endpoint: {
+        visuals: {
+          activeAutorunTab: 'TASKS'
+        },
         overview: {
           hostOverview: {
             machineIdentity: {

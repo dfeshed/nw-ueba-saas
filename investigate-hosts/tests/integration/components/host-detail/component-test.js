@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, find, click } from '@ember/test-helpers';
+import { render, findAll, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
@@ -71,7 +71,6 @@ module('Integration | Component | host-detail', function(hooks) {
 
     await render(hbs`{{host-detail}}`);
 
-    assert.equal(findAll('.host-header').length, 1, 'header rendered');
     assert.equal(findAll('.host-detail-wrapper').length, 1, 'details rendered');
 
   });
@@ -130,7 +129,6 @@ module('Integration | Component | host-detail', function(hooks) {
       .endpointQuery(endpointQuery)
       .build();
     await render(hbs`{{host-detail}}`);
-    assert.equal(findAll('.host-header').length, 1, 'host header is not rendered');
     assert.equal(findAll('.error-page').length, 1, 'endpoint server is offline');
     assert.equal(findAll('.host-detail-wrapper').length, 0, 'host detail is rendered');
   });
@@ -147,60 +145,7 @@ module('Integration | Component | host-detail', function(hooks) {
     await render(hbs`{{host-detail}}`);
 
     assert.equal(findAll('.error-page').length, 0, 'endpoint server is online');
-    assert.equal(findAll('.host-header').length, 1, 'host header is rendered');
     assert.equal(findAll('.host-detail-wrapper').length, 1, 'host detail is rendered');
-  });
-
-  test('on selecting Show/Hide right panel button, details right panel is open', async function(assert) {
-    setState({ activePropertyPanelTab: 'HOST_DETAILS' });
-    const endpointServerClone = { ...endpointServer };
-    endpointServerClone.isSummaryRetrieveError = false;
-    const host = {
-      id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
-      'machine': {
-        'machineAgentId': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B'
-      },
-      'machineIdentity': {
-        'agentVersion': '11.1'
-      }
-    };
-    new ReduxDataHelper(setState)
-      .isSnapshotsLoading(false)
-      .isSnapshotsAvailable(false)
-      .selectedTabComponent('OVERVIEW')
-      .endpointServer(endpointServerClone)
-      .endpointQuery(endpointQuery)
-      .host(host)
-      .isDetailRightPanelVisible(true)
-      .isProcessDetailsView(false)
-      .machineOSType('windows')
-      .build();
-    await render(hbs`{{host-detail}}`);
-    assert.equal(findAll('.host-header').length, 1, 'header rendered');
-    assert.equal(findAll('.host-detail-wrapper').length, 1, 'details rendered');
-    assert.equal(findAll('.right-zone').length, 1, 'Host property panel is displayed');
-    await click(find('.open-properties .rsa-form-button'));
-    assert.equal(findAll('.right-zone').length, 0, 'Host property panel is closed');
-  });
-
-  test('Process details from host details', async function(assert) {
-    const endpointServerClone = { ...endpointServer };
-    endpointServerClone.isSummaryRetrieveError = false;
-
-    new ReduxDataHelper(setState)
-      .isSnapshotsLoading(false)
-      .isSnapshotsAvailable(true)
-      .selectedTabComponent('PROCESS')
-      .machineIdentity({ agentMode: 'Advanced' })
-      .endpointServer(endpointServerClone)
-      .isProcessDetailsView(true)
-      .endpointQuery(endpointQuery)
-      .processList([])
-      .processTree([])
-      .machineOSType('windows')
-      .build();
-    await render(hbs`{{host-detail}}`);
-    assert.equal(findAll('.host-process-details').length, 1, 'host process detail is rendered');
   });
 
   test('file analysis view hidden on load', async function(assert) {
@@ -289,17 +234,5 @@ module('Integration | Component | host-detail', function(hooks) {
       .build();
     await render(hbs`{{host-detail}}`);
     assert.equal(findAll('.host-detail-wrapper').length, 1, 'details rendered');
-  });
-  test('show right panel button is not present for process tab', async function(assert) {
-    const state = {
-      endpoint: { detailsInput: { agentId: 'agentId' } }
-    };
-    setState(state);
-    this.set('closeProperties', () => {});
-    this.set('openProperties', () => {});
-    await render(hbs`{{host-detail}}`);
-    assert.equal(findAll('.open-properties').length, 1, 'Right panel button is visible');
-    await click(findAll('.rsa-nav-tab')[1]);
-    assert.equal(findAll('.open-properties').length, 0, 'Right panel button is hidden');
   });
 });

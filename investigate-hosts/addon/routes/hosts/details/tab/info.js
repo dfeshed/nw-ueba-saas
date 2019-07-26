@@ -9,9 +9,9 @@ export default Route.extend({
   model(params) {
     const redux = this.get('redux');
     const parentParam = this.modelFor('hosts.details.tab');
-    const { id } = params;
-    if (id) {
-      redux.dispatch(getProcessDetails(id));
+    const { rowId } = params;
+    if (rowId) {
+      redux.dispatch(getProcessDetails(rowId));
     }
     return { ...params, ...parentParam };
   }

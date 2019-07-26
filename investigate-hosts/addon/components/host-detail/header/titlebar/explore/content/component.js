@@ -3,6 +3,7 @@ import { connect } from 'ember-redux';
 import { searchResultNotFound } from 'investigate-hosts/reducers/details/explore/selectors';
 import { setSelectedTabData } from 'investigate-hosts/actions/data-creators/explore';
 import { loadDetailsWithExploreInput } from 'investigate-hosts/actions/data-creators/details';
+import { toggleExploreSearchResults } from 'investigate-hosts/actions/ui-state-creators';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import moment from 'moment';
@@ -15,7 +16,8 @@ const stateToComputed = (state) => ({
 
 const dispatchToActions = {
   setSelectedTabData,
-  loadDetailsWithExploreInput
+  loadDetailsWithExploreInput,
+  toggleExploreSearchResults
 };
 
 const ExploreContent = Component.extend({
@@ -48,9 +50,8 @@ const ExploreContent = Component.extend({
   actions: {
     navigateToFile(checksum, scanTime) {
       const tabName = 'FILES';
-      const option = { tabName, checksum };
-      this.send('setSelectedTabData', option);
-      this.send('loadDetailsWithExploreInput', scanTime, tabName);
+      this.send('toggleExploreSearchResults', false);
+      this.navigateToTab({ tabName, scanTime, checksum });
     }
   }
 

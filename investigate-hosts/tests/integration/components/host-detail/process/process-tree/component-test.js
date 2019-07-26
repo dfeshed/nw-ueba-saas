@@ -526,42 +526,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
       assert.equal(find('.file-info').textContent.trim().includes('Showing 7 out of 7 processes'), true, 'Shows footer message');
     });
   });
-  test('clicking on the process name get process-details view', async function(assert) {
-    new ReduxDataHelper(setState)
-      .agentId(1)
-      .scanTime(123456789)
-      .processList(processData.processList)
-      .processTree(processData.processTree)
-      .isTreeView(true)
-      .sortField('score')
-      .isDescOrder(true)
-      .searchResultProcessList([])
-      .selectedTab(null).build();
-    await render(hbs`
-     <style>
-        box, section {
-          min-height: 1000px
-        }
-      </style>
-    {{host-detail/process/process-tree}}
-    `);
-    await click(findAll('.process-name a')[1]);
-
-    return settled().then(async() => {
-      const redux = this.owner.lookup('service:redux');
-      await waitUntil(() => {
-        return redux.getState().endpoint.detailsInput.animation !== 'default';
-      }, { timeout: 6000 });
-      assert.deepEqual(transitions, [{
-        name: 'hosts.details',
-        queryParams: {
-          pid: 517,
-          subTabName: 'process-details',
-          tabName: 'PROCESS'
-        }
-      }]);
-    });
-  });
 
   test('it opens the service list modal', async function(assert) {
     new ReduxDataHelper(setState)

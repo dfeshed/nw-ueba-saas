@@ -50,22 +50,6 @@ module('Integration | Component | endpoint host-detail/process/process-details',
   hooks.afterEach(function() {
     revertPatch();
   });
-  test('process-details component should not rendered if isProcessDetailsView is false', async function(assert) {
-    new ReduxDataHelper(initState)
-      .agentId(1)
-      .dllList(dllListData)
-      .scanTime(123456789)
-      .processList(processData.processList)
-      .processTree(processData.processTree)
-      .selectedTab(null)
-      .machineOSType('windows')
-      .processDetails(data)
-      .isProcessDetailsView(false)
-      .build();
-
-    await render(hbs`{{host-detail/process/process-details}}`);
-    assert.equal(findAll('.host-process-details .rsa-page-layout').length, 0, 'process details page should not rendered');
-  });
 
   test('process-details component rendered', async function(assert) {
     new ReduxDataHelper(initState)
@@ -172,7 +156,7 @@ module('Integration | Component | endpoint host-detail/process/process-details',
     await render(hbs`{{host-detail/process/process-details}}`);
     await click(findAll('.action-bar a')[0]);
     assert.deepEqual(transitions, [{
-      name: 'hosts.details',
+      name: 'hosts.details.tab',
       queryParams: {
         pid: null,
         subTabName: null

@@ -2,21 +2,15 @@ import Controller from '@ember/controller';
 
 export default Controller.extend({
   // Query Params
-  queryParams: ['machineId', 'filterId', 'tabName', 'sid', 'subTabName', 'pid', 'mftFile', 'mftName'],
-
-  machineId: null,
-
-  filterId: null,
-
-  tabName: null,
+  queryParams: ['sid'],
 
   sid: null,
 
-  pid: null,
+  actions: {
+    controllerNavigateToTab(category) {
+      this.send('navigateToTab', category);
+    }
+  }
 
-  subTabName: null,
 
-  mftFile: null,
-
-  mftName: null
 });

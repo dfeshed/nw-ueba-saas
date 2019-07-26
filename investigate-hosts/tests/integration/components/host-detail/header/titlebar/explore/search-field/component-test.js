@@ -20,12 +20,13 @@ module('Integration | Component | endpoint host titlebar explore search field', 
     setState = (state) => {
       patchReducer(this, state);
     };
+    this.set('navigateToTab', () => {});
   });
 
   test('Search field should render', async function(assert) {
     this.set('isError', true);
     this.set('errMsg', 'error message');
-    await render(hbs`{{host-detail/header/titlebar/explore/search-field isError=isError errMsg=errMsg }}`);
+    await render(hbs`{{host-detail/header/titlebar/explore/search-field isError=isError errMsg=errMsg navigateToTab=navigateToTab}}`);
     assert.ok(find('.rsa-form-input'), 'Searchfield rendered');
     await triggerEvent('.rsa-form-input', 'mouseover');
     assert.ok(find('.search-field .is-error'), true, 'tethererd panel appears and search-field Error validated');
@@ -33,7 +34,7 @@ module('Integration | Component | endpoint host titlebar explore search field', 
 
   test('Should render Search field with loader', async function(assert) {
     new ReduxDataHelper(setState).searchStatus('wait').build();
-    await render(hbs`{{host-detail/header/titlebar/explore/search-field }}`);
+    await render(hbs`{{host-detail/header/titlebar/explore/search-field navigateToTab=navigateToTab}}`);
     assert.ok(find('.host-explore__loader'), 'search-field loader validated');
   });
 
@@ -41,7 +42,7 @@ module('Integration | Component | endpoint host titlebar explore search field', 
     new ReduxDataHelper(setState).searchStatus('complete').build();
     const redux = this.owner.lookup('service:redux');
     this.set('searchText', 'sys');
-    await render(hbs`{{host-detail/header/titlebar/explore/search-field searchText=searchText}}`);
+    await render(hbs`{{host-detail/header/titlebar/explore/search-field searchText=searchText navigateToTab=navigateToTab}}`);
     assert.ok(find('.rsa-icon-search-filled'), 'search-field search icon validated');
     await click('.rsa-form-button');
     const state = redux.getState();

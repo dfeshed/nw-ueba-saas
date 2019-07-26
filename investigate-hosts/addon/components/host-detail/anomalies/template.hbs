@@ -1,2 +1,4 @@
-{{host-detail/utils/host-title-bar tabs=anomaliesTabs defaultAction=(action 'setAnomaliesTabView')}}
+{{#host-detail/utils/host-title-bar tabs=anomaliesTabs as |tab|}}
+  {{#link-to (query-params subTabName=tab.name)}}{{t tab.label}}{{/link-to}}
+{{/host-detail/utils/host-title-bar}}
 {{component selectedAnomaliesTab.componentClass}}

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, render, click } from '@ember/test-helpers';
+import { find, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -31,9 +31,12 @@ module('Integration | Component | Anomalies/Registry Discrepancies', function(ho
   });
 
   test('Registry Discrepancies column names', async function(assert) {
-    new ReduxDataHelper(initState).machineIdentity(machineIdentity).registryDiscrepancies(anomaliesRegistryDiscrepancies).build();
+    new ReduxDataHelper(initState)
+      .machineIdentity(machineIdentity)
+      .registryDiscrepancies(anomaliesRegistryDiscrepancies)
+      .selectedAnomaliesTab('REGISTRYDISCREPANCY').build();
+
     await render(hbs`{{host-detail/anomalies}}`);
-    await click('.rsa-nav-tab:nth-child(4)');
 
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(1)').textContent.trim(), 'Hive', 'Column 1 is Hive');
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(2)').textContent.trim(), 'Reason', 'Column 2 is Reason');

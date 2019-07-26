@@ -31,8 +31,8 @@ module('Integration | Component | mft-container', function(hooks) {
 
     await render(hbs`{{host-detail/downloads/mft-container}}`);
     assert.equal(findAll('.mft-container').length, 1, 'mft-container rendered');
-    assert.equal(findAll('.mft-bar').length, 0, 'mft-bar does not render');
-    assert.equal(findAll('.mft-action').length, 0, 'mft-action does not render');
+    assert.equal(findAll('.mft-bar').length, 2, 'mft-bar does not render');
+    assert.equal(findAll('.mft-action').length, 2, 'mft-action does not render');
   });
 
   test('mft-container has rendered', async function(assert) {

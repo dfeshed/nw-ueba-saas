@@ -103,11 +103,10 @@ const hostDownloads = reduxActions.handleActions({
     const { isSortDescending } = state;
     return state.merge({ ...initialState, isSortDescending });
   },
-  [ACTION_TYPES.TOGGLE_MFT_VIEW]: (state, { payload: { mftFile, mftName } }) => (state.merge({
-    'isShowMFTView': mftFile ? !!mftFile.length : false,
+  [ACTION_TYPES.INIT_MFT_DATA]: (state, { payload: { mftFile, mftName } }) => state.merge({
     'selectedMftFile': mftFile,
     'selectedMftName': mftName
-  })),
+  }),
 
   [ACTION_TYPES.SET_SELECTED_DOWNLOADED_FILE_INDEX]: (state, { payload }) => state.set('selectedIndex', payload),
 

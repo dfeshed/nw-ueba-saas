@@ -13,6 +13,15 @@ const visualsInitialState = Immutable.from({
   isProcessDetailsView: false
 });
 
+const getStateKey = (tabName, subTabName) => {
+  if (tabName === 'AUTORUNS') {
+    return { activeAutorunTab: subTabName };
+  } else {
+    return { activeAnomaliesTab: subTabName };
+  }
+};
+
+
 const visuals = handleActions({
   [ACTION_TYPES.RESET_INPUT_DATA]: (state) => state.merge(visualsInitialState),
 
@@ -24,11 +33,17 @@ const visuals = handleActions({
 
   [ACTION_TYPES.CLOSE_PROCESS_DETAILS]: (state) => state.set('isProcessDetailsView', false),
 
-  [ACTION_TYPES.CHANGE_AUTORUNS_TAB]: (state, { payload: { tabName } }) => state.set('activeAutorunTab', tabName),
+  [ACTION_TYPES.CHANGE_AUTORUNS_TAB]: (state, { payload: { tabName } }) => {
+    return state.set('activeAutorunTab', tabName);
+  },
 
   [ACTION_TYPES.CHANGE_ANOMALIES_TAB]: (state, { payload: { tabName } }) => state.set('activeAnomaliesTab', tabName),
 
-  [ACTION_TYPES.CHANGE_DETAIL_TAB]: (state, { payload: { tabName } }) => {
+  [ACTION_TYPES.CHANGE_DETAIL_TAB]: (state, { payload: { tabName, subTabName } }) => {
+    if (subTabName) {
+      const key = getStateKey(tabName, subTabName);
+      return state.merge({ activeHostDetailTab: tabName, ...key });
+    }
     return state.set('activeHostDetailTab', tabName);
   },
 

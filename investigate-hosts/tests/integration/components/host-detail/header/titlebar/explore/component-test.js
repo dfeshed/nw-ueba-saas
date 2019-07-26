@@ -23,6 +23,7 @@ module('Integration | Component | endpoint host titlebar explore', function(hook
     });
     applyPatch(setState);
     this.redux = this.owner.lookup('service:redux');
+    this.set('navigateToTab', () => {});
   });
 
   hooks.afterEach(function() {
@@ -31,7 +32,7 @@ module('Integration | Component | endpoint host titlebar explore', function(hook
 
   test('Should render the explore', async function(assert) {
     this.get('timezone').set('_selected', { zoneId: 'Kwajalein' });
-    await render(hbs`{{host-detail/header/titlebar/explore}}`);
+    await render(hbs`{{host-detail/header/titlebar/explore navigateToTab=navigateToTab}}`);
     const explore = document.querySelectorAll('.host-explore');
     assert.equal(explore.length, 1, 'Rendered the explore text box');
   });
@@ -39,7 +40,7 @@ module('Integration | Component | endpoint host titlebar explore', function(hook
   test('Application click should toggle the visibility of Explore content', async function(assert) {
     assert.expect(2);
     this.get('timezone').set('_selected', { zoneId: 'Kwajalein' });
-    await render(hbs`{{host-detail/header/titlebar/explore}}`);
+    await render(hbs`{{host-detail/header/titlebar/explore navigateToTab=navigateToTab}}`);
     this.get('eventBus').trigger('rsa-application-click');
     return settled().then(async() => {
       assert.equal(document.querySelectorAll('.host-explore__content__header').length, 0, 'host-explore content hidden on application click');

@@ -54,14 +54,7 @@ module('Integration | Component | host-detail/process/process-tree/process-name'
     this.set('index', 0);
     await render(hbs`{{host-detail/process/process-tree/process-name item=item index=index}}`);
     await click(findAll('.process-name label')[0]);
-    assert.deepEqual(transitions, [{
-      name: 'hosts.details',
-      queryParams: {
-        pid: 1,
-        subTabName: 'process-details',
-        tabName: 'PROCESS'
-      }
-    }]);
+    assert.deepEqual(transitions, [{ name: 'hosts.details.tab.info', queryParams: {} }]);
 
   });
 });

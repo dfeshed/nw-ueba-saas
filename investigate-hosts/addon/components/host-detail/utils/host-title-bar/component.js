@@ -15,7 +15,9 @@ export default Component.extend({
   actions: {
     activate(tabName) {
       if (event.type === 'click' || event.keyCode === 13) {
-        this.defaultAction(tabName);
+        if (this.defaultAction) {
+          this.defaultAction(tabName);
+        }
       }
     }
   }

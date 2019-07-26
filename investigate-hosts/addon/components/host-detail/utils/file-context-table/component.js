@@ -121,9 +121,11 @@ const FileContextTable = Component.extend({
   }),
 
   closePanel() {
-    if (this.closePropertyPanel) {
-      this.send('deSelectAllSelection');
-      this.closePropertyPanel();
+    if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+      if (this.closePropertyPanel) {
+        this.send('deSelectAllSelection');
+        this.closePropertyPanel();
+      }
     }
   },
 

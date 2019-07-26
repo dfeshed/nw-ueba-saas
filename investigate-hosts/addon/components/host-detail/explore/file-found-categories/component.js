@@ -2,13 +2,15 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
-import { CATEGORIES, CATEGORY_NAME } from './categories-map';
+import { CATEGORIES, TAB_MAPPING, CATEGORY_NAME } from './categories-map';
 import { setSelectedTabData } from 'investigate-hosts/actions/data-creators/explore';
 import { loadDetailsWithExploreInput } from 'investigate-hosts/actions/data-creators/details';
+import { toggleExploreSearchResults } from 'investigate-hosts/actions/ui-state-creators';
 
 const dispatchToActions = {
   setSelectedTabData,
-  loadDetailsWithExploreInput
+  loadDetailsWithExploreInput,
+  toggleExploreSearchResults
 };
 
 const FileFound = Component.extend({
@@ -32,30 +34,17 @@ const FileFound = Component.extend({
   },
 
   actions: {
-    navigateToTab(category) {
-      // Removing blank spaces from the string and mapping against category name.
-      let tabName = CATEGORY_NAME[category.string.toLowerCase().replace(/\s/g, '')];
-      let secondaryTab = null;
-
-      const childTabs = {
-        AUTORUNS: ['AUTORUNS', 'SERVICES', 'TASKS'],
-        ANOMALIES: ['IMAGEHOOKS', 'THREADS', 'KERNELHOOKS']
-      };
-      const childTabsKeys = Object.keys(childTabs);
-
+    onNavigateToTab(catString) {
+      let subTabName = null;
+      const category = catString.string.toLowerCase().replace(/\s/g, '');
       const scanTime = this.get('scanTime');
       const checksum = this.get('file').checksumSha256;
-      const option = { tabName, checksum };
-      this.send('setSelectedTabData', option);
-
-      childTabsKeys.forEach((childTabsKey) => {
-        if (childTabs[childTabsKey].some((t) => (t === tabName))) {
-          secondaryTab = tabName;
-          tabName = childTabsKey;
-        }
-      });
-
-      this.send('loadDetailsWithExploreInput', scanTime, tabName, secondaryTab);
+      const tabName = TAB_MAPPING[category];
+      if (['AUTORUNS', 'ANOMALIES'].includes(tabName)) {
+        subTabName = CATEGORY_NAME[category];
+      }
+      this.send('toggleExploreSearchResults', false);
+      this.navigateToTab({ tabName, subTabName, scanTime, checksum });
     }
   }
 });
