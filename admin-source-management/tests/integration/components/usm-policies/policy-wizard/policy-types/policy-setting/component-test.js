@@ -158,6 +158,64 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/policy
     assert.equal(findAll('.header .remove-setting.is-greyed-out').length, 1, 'expected to have remove-circle icon enabled for a non-default policy');
   });
 
+  test('primaryHttpsBeaconInterval should have the right class for remove-circle', async function(assert) {
+    const httpsInterval = 15;
+    const intervalUnit = 'MINUTES';
+    assert.expect(1);
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizPrimaryHttpsBeaconInterval(httpsInterval)
+      .policyWizPrimaryHttpsBeaconIntervalUnit(intervalUnit)
+      .build();
+
+    this.set('removeFromSelectedSettings', () => {});
+    this.set('selectedSettingId', 'primaryHttpsBeaconInterval');
+    this.set('policyType', 'edrPolicy');
+    this.set('isDefaultPolicy', true);
+
+    // isDefaultPolicy === true
+    // greyOutSetting === true for primaryHttpsBeaconInterval
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/policy-setting
+      removeFromSelectedSettings=(action removeFromSelectedSettings)
+      settingComponent=settingComponent
+      selectedSettingId=selectedSettingId
+      policyType=policyType
+      isDefaultPolicy=isDefaultPolicy
+      label=label
+      tooltip=tooltip}}`
+    );
+    assert.equal(findAll('.header .remove-setting.is-greyed-out').length, 1, 'expected to have remove-circle icon greyed out for a default policy setting for primaryHttpsBeaconInterval');
+  });
+
+  test('primaryUdpBeaconInterval should have the right class for remove-circle', async function(assert) {
+    const udpInterval = 30;
+    const intervalUnit = 'SECONDS';
+    assert.expect(1);
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizPrimaryUdpBeaconInterval(udpInterval)
+      .policyWizPrimaryUdpBeaconIntervalUnit(intervalUnit)
+      .build();
+
+    this.set('removeFromSelectedSettings', () => {});
+    this.set('selectedSettingId', 'primaryUdpBeaconInterval');
+    this.set('policyType', 'edrPolicy');
+    this.set('isDefaultPolicy', true);
+
+    // isDefaultPolicy === true
+    // greyOutSetting === true for primaryUdpBeaconInterval
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/policy-setting
+      removeFromSelectedSettings=(action removeFromSelectedSettings)
+      settingComponent=settingComponent
+      selectedSettingId=selectedSettingId
+      policyType=policyType
+      isDefaultPolicy=isDefaultPolicy
+      label=label
+      tooltip=tooltip}}`
+    );
+    assert.equal(findAll('.header .remove-setting.is-greyed-out').length, 1, 'expected to have remove-circle icon greyed out for a default policy setting for primaryUdpBeaconInterval');
+  });
+
   test('It triggers the removeFromSelectedSettings policy action creator when the minus icon is clicked', async function(assert) {
     assert.expect(1);
     new ReduxDataHelper(setState)
