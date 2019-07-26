@@ -47,3 +47,5 @@ style-guide/public/visual-evolution/images
 style-guide/public/visual-evolution/storage.json
 
 yarn-error.log
+
+scripts/node/application-deprecation-report.json

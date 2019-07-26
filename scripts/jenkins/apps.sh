@@ -16,6 +16,14 @@ function doTestApp {
   then
     _need="true"
   fi
+
+  # Check if we just want to test everything regardless
+  # of what the build determined should be tested
+  if [ "${TEST_EVERYTHING}" == "true" ]
+  then
+    _need="true"
+  fi
+
   echo $_need
 }
 
@@ -268,5 +276,14 @@ buildEmberApp admin-source-management false true true
 buildEmberApp admin false true true
 buildEmberApp sa true true true
 
-success "All apps built"
+success "All apps built successfully"
+
+info "*** generating deprecation report"
+
+cd scripts/node
+node deprecation-report.js $BUILD_URL -w
+info "*** end deprecation report"
+
+cd $CWD
+
 info "***********************"

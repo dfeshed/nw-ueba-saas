@@ -47,7 +47,6 @@ scriptDir="$(dirname "$0")"
 . $scriptDir/../_util.sh
 . $scriptDir/_settings.sh
 
-
 export IS_MASTER_BUILD
 echo "Is this a master build ${IS_MASTER_BUILD}"
 # Should we try building Docker images and run e2e test?
