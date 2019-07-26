@@ -7,7 +7,7 @@
     <span class="header-added">{{label}}</span>
   {{/rsa-text-with-tooltip}}
 
-  <span class="remove-setting {{if isDefaultPolicy 'is-greyed-out' 'not-greyed-out'}}"
+  <span class="remove-setting {{if (and isDefaultPolicy greyOutSetting) 'is-greyed-out' 'not-greyed-out'}}"
     {{action removeFromSelectedSettings selectedSettingId}}>
     {{rsa-icon name="remove-circle-1" style="lined"}}
   </span>

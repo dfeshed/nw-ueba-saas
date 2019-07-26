@@ -10,6 +10,19 @@ const PolicySetting = Component.extend({
     return `${this.selectedSettingId}-setting`;
   }),
 
+  greyOutSetting: computed('selectedSettingId', function() {
+    // These four settings should not be greyed out for a default edr policy
+    switch (this.selectedSettingId) {
+      case 'primaryAddress':
+      case 'primaryHttpsBeaconInterval':
+      case 'primaryUdpBeaconInterval':
+      case 'customConfig':
+        return false;
+      default:
+        return true;
+    }
+  }),
+
   // closure action expected to be passed in
   removeFromSelectedSettings: null,
   // setting component name expected to be passed in

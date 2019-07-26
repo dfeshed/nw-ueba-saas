@@ -117,6 +117,47 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/policy
     assert.equal(findAll('.header .remove-setting.not-greyed-out').length, 1, 'expected to have remove-circle icon enabled for a non-default policy');
   });
 
+  test('customConfig should have the right class for remove-circle', async function(assert) {
+    const customConfigExpected = '"trackingConfig": {"uniqueFilterSeconds": 28800,"beaconStdDev": 2.0}';
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizCustomConfig(customConfigExpected)
+      .build();
+
+    this.set('removeFromSelectedSettings', () => {});
+    this.set('selectedSettingId', 'customConfig');
+    this.set('policyType', 'edrPolicy');
+    this.set('isDefaultPolicy', true);
+
+    // isDefaultPolicy === true
+    // greyOutSetting === false for customConfig
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/policy-setting
+      removeFromSelectedSettings=(action removeFromSelectedSettings)
+      settingComponent=settingComponent
+      selectedSettingId=selectedSettingId
+      policyType=policyType
+      isDefaultPolicy=isDefaultPolicy
+      label=label
+      tooltip=tooltip}}`
+    );
+    assert.equal(findAll('.header .remove-setting.not-greyed-out').length, 1, 'expected to have remove-circle icon greyed out for a default policy');
+
+    // greyOutSetting === true
+    this.set('greyOutSetting', true);
+    await render(hbs`{{usm-policies/policy-wizard/policy-types/policy-setting
+      removeFromSelectedSettings=(action removeFromSelectedSettings)
+      settingComponent=settingComponent
+      selectedSettingId=selectedSettingId
+      greyOutSetting=greyOutSetting
+      policyType=policyType
+      isDefaultPolicy=isDefaultPolicy
+      label=label
+      tooltip=tooltip}}`
+    );
+    assert.equal(findAll('.header .remove-setting.is-greyed-out').length, 1, 'expected to have remove-circle icon enabled for a non-default policy');
+  });
+
   test('It triggers the removeFromSelectedSettings policy action creator when the minus icon is clicked', async function(assert) {
     assert.expect(1);
     new ReduxDataHelper(setState)

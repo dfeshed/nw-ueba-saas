@@ -30,6 +30,7 @@ const edrDefaultPolicy = (state) => {
       case 'scanType':
       case 'scanStartDate':
       case 'recurrenceInterval':
+      case 'runOnDaysOfWeek':
       case 'scanStartTime':
       case 'cpuMax':
       case 'cpuMaxVm':
@@ -46,7 +47,8 @@ const edrDefaultPolicy = (state) => {
         const elDefaults = setting.defaults || [];
         for (let i = 0; i < elDefaults.length; i++) {
           // set default values only for fields that are null
-          if (policy[elDefaults[i].field] === null) {
+          // runOnDaysOfWeek can remain null since recurrenceUnit is DAYS for defaultEDR
+          if (policy[elDefaults[i].field] === null && elDefaults[i].field !== 'runOnDaysOfWeek') {
             policyValues[elDefaults[i].field] = elDefaults[i].value;
           }
         }
