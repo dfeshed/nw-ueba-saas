@@ -237,12 +237,12 @@ export default Service.extend({
 
   @computed('roles.[]')
   hasEndpointRarPermission(roles) {
-    return this._hasPermission(roles, 'endpoint-server.rar.manage');
+    return this._hasPermission(roles, 'endpoint-server.relay.manage');
   },
 
   @computed('roles.[]')
   hasEndpointRarReadPermission(roles) {
-    return this._hasPermission(roles, 'endpoint-server.rar.read');
+    return this._hasPermission(roles, 'endpoint-server.relay.read');
   },
   // Begin Configure Permissions
 
