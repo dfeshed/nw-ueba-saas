@@ -130,7 +130,6 @@ module('Integration | Component | Respond Alerts', function(hooks) {
   });
 
   test('Selecting and deselecting a filter reflects the selection/deselection in the UI', async function(assert) {
-    const done = assert.async();
     await render(hbs`{{rsa-alerts}}`);
     setState();
     await waitForReduxStateChange(redux, 'respond.alerts.items');
@@ -140,7 +139,6 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     assert.equal(find(`${selectors.alertTypeFilters} .rsa-form-checkbox-label:first-of-type`).classList.contains('checked'), true, 'The filter is selected');
     await click(`${selectors.alertTypeFilters} .rsa-form-checkbox-label:first-of-type`);
     assert.equal(find(`${selectors.alertTypeFilters} .rsa-form-checkbox-label:first-of-type`).classList.contains('checked'), false, 'The filter is not selected');
-    await settled().then(() => done());
   });
 
   skip('The reset filters button returns the filters to the original state', async function(assert) {
@@ -174,7 +172,6 @@ module('Integration | Component | Respond Alerts', function(hooks) {
   test('Clicking on the delete button deletes the item after confirming via dialog', async function(assert) {
     assert.expect(3);
     let flashSuccess = false;
-    const done = assert.async();
     const noResultsMessage = i18n.t('rsaExplorer.noResults');
     patchFlash((flash) => {
       const expectedMessage = i18n.t('rsaExplorer.flash.updateSuccess');
@@ -199,7 +196,6 @@ module('Integration | Component | Respond Alerts', function(hooks) {
       return noResultsMessageFound && noResultsMessageFound.textContent && noResultsMessageFound.textContent.trim() === noResultsMessage.string;
     }, { timeout: 8000 });
     assert.equal(find(selectors.noResultsMessage).textContent.trim(), noResultsMessage, 'There are no more results and the no results message displays');
-    await settled().then(() => done());
   });
 
   skip('Clicking on a table header cell toggles the sort', async function(assert) {

@@ -11,6 +11,7 @@ import { findElement } from '../../../../helpers/find-element';
 import { getItems } from 'respond/actions/creators/alert-creators';
 import { getAllCategories } from 'respond-shared/actions/creators/create-incident-creators';
 import waitForReduxStateChange from '../../../../helpers/redux-async-helpers';
+import { clickTrigger } from 'ember-power-select/test-support/helpers';
 
 module('Integration | Component | Respond Alerts Filters Socket', function(hooks) {
   setupRenderingTest(hooks, {
@@ -31,14 +32,16 @@ module('Integration | Component | Respond Alerts Filters Socket', function(hooks
 
     await render(hbs`{{rsa-alerts}}`);
 
-    const selector = '.alert-name-filter .rsa-form-checkbox-label';
-    await waitUntil(() => findElement(selector, 'Toran Alert').length === 1, { timeout: 5000 });
-    assert.equal(findAll(selector).length, 3, 'There should be 3 alert names to filter by');
+    const optionSelector = '.ember-power-select-dropdown .ember-power-select-options .ember-power-select-option';
+    await clickTrigger('.alert-name-filter');
+    await waitUntil(() => findElement(optionSelector, 'Toran Alert').length === 1, { timeout: 5000 });
+
+    assert.equal(findAll(optionSelector).length, 3, 'There should be 3 alert names to filter by');
 
     redux.dispatch(getItems());
     await settled();
 
-    await waitUntil(() => findAll(selector).length === 30, { timeout: 5000 });
-    assert.equal(findAll(selector).length, 30, 'There should be 30 alert names to filter by');
+    await waitUntil(() => findAll(optionSelector).length === 30, { timeout: 5000 });
+    assert.equal(findAll(optionSelector).length, 30, 'There should be 30 alert names to filter by');
   });
 });

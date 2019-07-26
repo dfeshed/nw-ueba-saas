@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import computed from 'ember-computed-decorators';
 import {
   getAlertNames,
   getAlertTypeFilters,
@@ -41,6 +42,11 @@ const AlertFilters = Component.extend({
     width: '100%'
   }],
 
+  @computed('alertNameFilters')
+  selectedNames(alertNameFilters) {
+    return [...alertNameFilters];
+  },
+
   actions: {
     toggleTypeFilter(type) {
       const alertTypeFilters = this.get('alertTypeFilters');
@@ -54,10 +60,9 @@ const AlertFilters = Component.extend({
         'alert.source': alertSourceFilters.includes(source) ? alertSourceFilters.without(source) : [...alertSourceFilters, source]
       });
     },
-    toggleAlertNameFilter(alertName) {
-      const alertNameFilters = this.get('alertNameFilters');
+    toggleAlertNameFilter(selectedNames) {
       this.get('updateFilter')({
-        'alert.name': alertNameFilters.includes(alertName) ? alertNameFilters.without(alertName) : [...alertNameFilters, alertName]
+        'alert.name': selectedNames
       });
     },
     toggleIsPartOfIncidentFilter(partOfIncident) {

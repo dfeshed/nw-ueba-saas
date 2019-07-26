@@ -7,10 +7,15 @@ import Immutable from 'seamless-immutable';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { selectors } from '../../../../integration/components/events-list/selectors';
 import { storyLineEvents, storylineEventsWithStatus, storylineEventsWithSelection } from './data';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 module('Integration | Component | events-list', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('respond')
+  });
+
+  hooks.beforeEach(function() {
+    initialize(this.owner);
   });
 
   test('renders both generic and endpoint row templates', async function(assert) {

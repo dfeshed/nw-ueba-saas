@@ -1,4 +1,4 @@
-import { waitUntil, click, findAll, render } from '@ember/test-helpers';
+import { waitUntil, click, findAll, find, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { run } from '@ember/runloop';
 import { setupRenderingTest } from 'ember-qunit';
@@ -17,6 +17,7 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import { findElement } from '../../../../helpers/find-element';
 import { alertFilterData } from './data';
 import waitForReduxStateChange from '../../../../helpers/redux-async-helpers';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 
 let setState;
 
@@ -104,8 +105,8 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
     assert.equal(findAll(selector)[1].textContent.trim(), '100', 'The right end slider value should be 100');
   });
 
-  test('All of the alert name filters appear as checkboxes, and clicking one dispatches an action', async function(assert) {
-    assert.expect(2);
+  test('The alert name filter appears as a power-select-multiple, and selecting an option dispatches an action', async function(assert) {
+    assert.expect(3);
 
     await setState();
 
@@ -115,10 +116,12 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
 
     await render(hbs`{{rsa-alerts/filter-controls updateFilter=(action updateFilter)}}`);
 
-    const selector = '.filter-option.alert-name-filter .rsa-form-checkbox-label';
+    const optionSelector = '.ember-power-select-dropdown .ember-power-select-options .ember-power-select-option';
     // lazy rendering of the list means we cannot assert that the full set of alert names are present
-    assert.ok(findAll(selector).length >= 1, 'There should be at least one alert name filter options');
-    await click('.filter-option.alert-name-filter .rsa-form-checkbox-label input.rsa-form-checkbox:first-of-type');
+    await clickTrigger('.alert-name-filter');
+    assert.ok(find('.ember-basic-dropdown-content-wormhole-origin'), 'alert name filter dropdown open');
+    assert.ok(findAll(optionSelector).length >= 1, 'There should be at least one alert name filter options');
+    await selectChoose('.alert-name-filter', '.ember-power-select-option', 0);
   });
 
   test('Delete and uncheck the filter after all alerts are removed', async function(assert) {
@@ -133,13 +136,12 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
       {{rsa-alerts}}
     `);
 
-    const selector = '.alert-name-filter .rsa-form-checkbox-label';
-
-    await waitUntil(() => findElement(selector, 'Toran Alert').length === 1, { timeout: 5000 });
-    assert.equal(findAll(selector).length, 3, 'There should be 3 alert type filter options to start');
-    assert.equal(findElement(selector, 'Nehal alert').length, 1);
-    assert.equal(findElement(selector, 'test').length, 1);
-    assert.equal(findElement(selector, 'Toran Alert').length, 1);
+    const optionSelector = '.ember-power-select-dropdown .ember-power-select-options .ember-power-select-option';
+    await clickTrigger('.alert-name-filter');
+    assert.equal(findAll(optionSelector).length, 3, 'There should be 3 alert type filter options to start');
+    assert.equal(findElement(optionSelector, 'Nehal alert').length, 1);
+    assert.equal(findElement(optionSelector, 'test').length, 1);
+    assert.equal(findElement(optionSelector, 'Toran Alert').length, 1);
 
     const bodySelector = '.rsa-data-table-body-cell';
     const rowSelector = '.rsa-explorer-table .rsa-data-table-body-row';
@@ -200,10 +202,10 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
       request.streamRequest = streamRequest;
     });
 
-    await waitUntil(() => findElement(selector, 'Toran Alert').length === 0, { timeout: 5000 });
-    assert.equal(findAll(selector).length, 2, 'There should be 2 alert type filter options left');
-    assert.equal(findElement(selector, 'Nehal alert').length, 1);
-    assert.equal(findElement(selector, 'test').length, 1);
+    await clickTrigger('.alert-name-filter');
+    assert.equal(findAll(optionSelector).length, 2, 'There should be 2 alert type filter options left');
+    assert.equal(findElement(optionSelector, 'Nehal alert').length, 1);
+    assert.equal(findElement(optionSelector, 'test').length, 1);
 
     assert.equal(document.querySelectorAll('#modalDestination').length, 1);
     assert.equal(document.querySelector('#modalDestination').classList.contains('active'), false, 'the modal is now inactive');

@@ -46,26 +46,12 @@
 </section>
 <section class="filter-option alert-name-filter">
   <h2>{{ t 'respond.alerts.alertNames'}}</h2>
-  <hbox fit class="alert-names-filter-table">
-    {{#rsa-data-table
-      class="rsa-alert-name-filters"
-      items=alertNames
-      fitToWidth=false
-      lazy=true
-      columnsConfig=alertNamesTableColumns
-      selectedIndex=selectedIndex
-    }}
-      {{#rsa-data-table/body as |item index column|}}
-        {{#rsa-data-table/body-cell item=item column=column}}
-          <label title={{item}} class="rsa-form-checkbox-label {{if (contains item alertNameFilters) 'checked'}}">
-            {{rsa-form-checkbox
-              checked=(contains item alertNameFilters)
-              change=(action 'toggleAlertNameFilter' item)}}
-            <span class="alert-name">{{item}}</span>
-          </label>
-        {{/rsa-data-table/body-cell}}
-      {{/rsa-data-table/body}}
-    {{/rsa-data-table}}
-  </hbox>
-
+  {{#power-select-multiple
+    selected=selectedNames
+    options=(readonly alertNames)
+    onchange=(action 'toggleAlertNameFilter')
+    as |name|
+  }}
+    {{name}}
+  {{/power-select-multiple}}
 </section>
