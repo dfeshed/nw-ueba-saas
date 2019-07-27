@@ -82,6 +82,20 @@ $header-height: 40px;
     }
   }
 
+  .filter-option.id-filter {
+    span.id-prefix-wrapper {
+      input {
+        padding-left: 0;
+      }
+      .id-prefix {
+        color: text-color(primary, light);
+        line-height: 1.45;
+        padding: 0.5rem 0;
+      }
+      display: flex;
+    }
+  }
+
   h2 {
     @include rsa-font(header, small);
     padding: rsa-whitespace() 0 rsa-whitespace(less) 0;

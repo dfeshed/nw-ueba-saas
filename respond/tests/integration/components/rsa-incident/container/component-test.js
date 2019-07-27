@@ -9,7 +9,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { recon } from 'respond/actions/api';
 import { bindActionCreators } from 'redux';
 import { patchReducer } from '../../../../helpers/vnext-patch';
-import { click, render, findAll, find } from '@ember/test-helpers';
+import { click, render, findAll, find, settled } from '@ember/test-helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { t } from './helper';
 
@@ -410,6 +410,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
+    await settled();
   });
 
   test('storyline will mark alerts for event analysis even without selection or enrichments', async function(assert) {

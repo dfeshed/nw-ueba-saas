@@ -51,7 +51,6 @@ const stateToComputed = (state) => {
 const IncidentFilters = Component.extend({
   tagName: '',
   sentToArcherTypes: [true, false],
-  isIdFilterValid: true,
   accessControl: service(),
 
   /**
@@ -87,13 +86,9 @@ const IncidentFilters = Component.extend({
   },
 
   actions: {
-    idFilterChanged(value = '') {
-      const isValid = !value ? true : (/^INC-\d+$/i).test(value);
-      this.set('isIdFilterValid', isValid);
-      if (isValid) {
-        const id = value.toUpperCase();
-        debounce(this, this.get('updateFilter'), { id }, 1000);
-      }
+    idFilterChanged(value) {
+      const id = value ? `INC-${value}` : '';
+      debounce(this, this.get('updateFilter'), { id }, 1000);
     },
 
     toggleStatusFilter(status) {

@@ -1,20 +1,12 @@
 <section class="filter-option id-filter">
-  <label class="rsa-form-input {{unless isIdFilterValid 'is-error'}}">
+  <label class="rsa-form-input">
     <span class="rsa-form-label">
       {{ t 'respond.incidents.filters.incidentId'}}
     </span>
-
-    {{input
-      type="text"
-      value=(readonly idFilter)
-      placeholder=(t 'respond.incidents.filters.idFilterPlaceholder')
-      key-up=(action 'idFilterChanged')}}
-
-    {{#unless isIdFilterValid}}
-      <div class="input-error">
-        {{t 'respond.incidents.filters.idFilterError'}}
-      </div>
-    {{/unless}}
+    <span class="id-prefix-wrapper">
+      <span class="id-prefix">INC-</span>
+      {{input type="number" placeholder=(t 'respond.incidents.filters.idFilterPlaceholder') input=(action 'idFilterChanged'value='target.value') min="1" step="1"}}
+    </span>
   </label>
 </section>
 <section class="filter-option priority-filter">

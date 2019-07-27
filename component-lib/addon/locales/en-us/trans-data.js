@@ -1141,7 +1141,7 @@ export default {
       },
       filters: {
         taskId: 'Task ID',
-        idFilterPlaceholder: 'e.g., REM-123',
+        idFilterPlaceholder: 'e.g. 123',
         idFilterError: 'The ID must match the format: REM-###'
       },
       list: {
@@ -1224,8 +1224,8 @@ export default {
       },
       filters: {
         incidentId: 'Incident ID',
-        idFilterPlaceholder: 'e.g., INC-123',
-        idFilterError: 'The ID must match the format: INC-###',
+        idFilterPlaceholder: '###',
+        idFilterError: 'ID must be a number',
         showOnlyUnassigned: 'Show only unassigned incidents'
       },
       label: 'Incidents',

@@ -4,7 +4,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import hbs from 'htmlbars-inline-precompile';
-import { click, fillIn, find, findAll, render, settled, triggerKeyEvent } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, render, settled } from '@ember/test-helpers';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import Immutable from 'seamless-immutable';
 import {
@@ -126,35 +126,19 @@ module('Integration | Component | Respond Incident Filters', function(hooks) {
     assert.equal(findAll('.filter-option.id-filter input').length, 1, 'The ID filter input appears in the DOM');
   });
 
-  test('If the incident id filter does not match the INC-# format, an error message is shown and no update is made', async function(assert) {
-    setState({ });
-    await init;
-    this.set('updateFilter', function() {
-      assert.ok(false);
-    });
-    await render(hbs`{{rsa-incidents/filter-controls updateFilter=(action updateFilter)}}`);
-    const $input = find('.filter-option.id-filter input');
-    await fillIn($input, 'blah blah');
-    await triggerKeyEvent($input, 'keyup', 13);
-    await settled().then(() => {
-      assert.equal(find('label').classList.contains('is-error'), true, 'The id filter control has an error class');
-    });
-  });
-
   test('If the incident id filter is provided a valid input, the updateFilter function is called', async function(assert) {
-    assert.expect(2);
+    const done = assert.async();
+    assert.expect(1);
     setState({ });
     await init;
     this.set('updateFilter', function() {
-      assert.ok(true);
+      assert.ok(true, 'update filter called');
+      done();
     });
     await render(hbs`{{rsa-incidents/filter-controls updateFilter=(action updateFilter)}}`);
-    const $input = find('.filter-option.id-filter input');
-    await fillIn($input, 'inc-123');
-    await triggerKeyEvent($input, 'keyup', 13);
-    await settled().then(() => {
-      assert.equal(find('label').classList.contains('is-error'), false, 'The id filter control has no error class');
-    });
+    const inputElem = find('.filter-option.id-filter input');
+    await fillIn(inputElem, '123');
+    await settled();
   });
 
   test('The Show-only-unassigned-incidents filter appears in the filter panel', async function(assert) {
