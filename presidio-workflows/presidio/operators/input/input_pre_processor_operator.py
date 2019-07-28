@@ -6,7 +6,7 @@ from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBoot
 class InputPreProcessor(SpringBootJarOperator):
 
     @apply_defaults
-    def __init__(self, name, arguments , command, task_id=None, *args, **kwargs):
+    def __init__(self, name, arguments, command, task_id=None, *args, **kwargs):
         self.task_id = task_id or 'input_pre_processor{}'.format(self.name)
 
         java_args = {
@@ -16,4 +16,11 @@ class InputPreProcessor(SpringBootJarOperator):
 
         super(InputPreProcessor, self).__init__(command=command,
                                                 java_args=java_args, task_id=self.task_id(), *args, **kwargs)
+
+    @staticmethod
+    def handle_retry(context):
+        """
+        The input pre processor application does not need clean before retries.
+        """
+        pass
 

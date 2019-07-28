@@ -16,7 +16,7 @@ dags:
     retention:
       schedule_interval: None
     input_pre_processing:
-      schedule_interval: timedelta(days=1)
+      schedule_interval: timedelta(hours=1)
     smart:
       schedule_interval: timedelta(hours=1)
       smart_confs:
@@ -223,7 +223,7 @@ retention:
 
 input_pre_processing:
   - name: last_occurrence_instant
-    static_argument:
+    static_arguments:
       schema: TLS
       entityTypes: [domain]
     dynamic_arguments: [startInstant, endInstant]
