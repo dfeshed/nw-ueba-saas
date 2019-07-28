@@ -17,6 +17,13 @@ dags:
       schedule_interval: None
     input_pre_processing:
       schedule_interval: timedelta(hours=1)
+      schemas:
+      - schema_name : TLS
+        params:
+          - name: last_occurrence_instant
+            static_arguments:
+              entityTypes: [domain]
+            dynamic_arguments: [startInstant, endInstant]
     smart:
       schedule_interval: timedelta(hours=1)
       smart_confs:
@@ -221,10 +228,4 @@ retention:
   retention_interval_in_hours: 24
   command: applyRetentionPolicy
 
-input_pre_processing:
-  - name: last_occurrence_instant
-    static_arguments:
-      schema: TLS
-      entityTypes: [domain]
-    dynamic_arguments: [startInstant, endInstant]
 
