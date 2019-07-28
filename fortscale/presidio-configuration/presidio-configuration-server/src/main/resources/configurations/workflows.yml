@@ -19,7 +19,7 @@ dags:
       schedule_interval: timedelta(hours=1)
       schemas:
       - schema_name : TLS
-        params:
+        params_list:
           - name: last_occurrence_instant
             static_arguments:
               entityTypes: [domain]
@@ -201,7 +201,7 @@ dags:
         main_class: presidio.output.manager.FortscaleOutputManagerApplication
         xmx: 512
         xms: 512
-    InputPreProcessor:
+    InputPreProcessorOperator:
       pool_name: spring_boot_jar_pool
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-input-core.jar
