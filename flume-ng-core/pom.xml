@@ -520,6 +520,10 @@ limitations under the License.
                     <groupId>org.springframework.cloud</groupId>
                     <artifactId>spring-cloud-starter-config</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.elasticsearch.plugin</groupId>
+                    <artifactId>transport-netty4-client</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
