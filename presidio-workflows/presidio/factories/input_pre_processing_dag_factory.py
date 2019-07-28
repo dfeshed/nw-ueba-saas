@@ -24,11 +24,11 @@ class InputPreProcessorDagFactory(AbstractDagFactory):
             self._get_dag_params(dag_config, dags_configs)
 
         dags = []
-        schemas = [item.strip() for item in dags_configs.get("schemas").split(',')]
+        schemas = dag_config.get("schemas")
         for schema in schemas:
             new_dag_id = self.get_dag_id(schema.get("schema_name"))
             new_dag = DAG(dag_id=new_dag_id, start_date=start_date, schedule_interval=interval,
-                          default_args={"schema": schema},
+                          default_args=schema,
                           end_date=end_date, full_filepath=full_filepath, description=description,
                           template_searchpath=template_searchpath, params=params, dagrun_timeout=dagrun_timeout)
             logging.debug("dag_id=%s successful initiated", new_dag_id)
