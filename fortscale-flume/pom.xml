@@ -17,7 +17,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <mongo.java.driver.version>3.4.2</mongo.java.driver.version>
+        <mongo.java.driver.version>3.10.2</mongo.java.driver.version>
         <aws.s3.sdk.version>1.11.269</aws.s3.sdk.version>
         <open.csv.version>4.1</open.csv.version>
     </properties>
