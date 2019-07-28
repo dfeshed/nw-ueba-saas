@@ -23,17 +23,21 @@ class InputPreProcessorDagFactory(AbstractDagFactory):
         dagrun_timeout, description, end_date, full_filepath, interval, params, start_date, template_searchpath = \
             self._get_dag_params(dag_config, dags_configs)
 
-        new_dag_id = self.get_dag_id()
+        dags = []
+        schemas = [item.strip() for item in dags_configs.get("schemas").split(',')]
+        for schema in schemas:
+            new_dag_id = self.get_dag_id(schema.get("schema_name"))
+            new_dag = DAG(dag_id=new_dag_id, start_date=start_date, schedule_interval=interval,
+                          default_args={"schema": schema},
+                          end_date=end_date, full_filepath=full_filepath, description=description,
+                          template_searchpath=template_searchpath, params=params, dagrun_timeout=dagrun_timeout)
+            logging.debug("dag_id=%s successful initiated", new_dag_id)
+            dags.append(new_dag)
 
-        new_dag = DAG(dag_id=new_dag_id, start_date=start_date, schedule_interval=interval,
-                      end_date=end_date, full_filepath=full_filepath, description=description,
-                      template_searchpath=template_searchpath, params=params, dagrun_timeout=dagrun_timeout)
-        logging.debug("dag_id=%s successful initiated", new_dag_id)
-
-        return [new_dag]
+        return dags
 
     @staticmethod
     @ueba_flow_decorator_wrapper
-    def get_dag_id():
-        return "input_pre_processing"
+    def get_dag_id(schema):
+        return "input_pre_processing_{0}".format(schema)
 
