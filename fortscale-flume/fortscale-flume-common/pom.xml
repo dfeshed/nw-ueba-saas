@@ -91,7 +91,7 @@
                 </exclusion>
                 <exclusion>
                     <groupId>org.elasticsearch.plugin</groupId>
-                    <artifactId>transport-netty4-client</artifactId>
+                    <artifactId>transport-netty3-client</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
