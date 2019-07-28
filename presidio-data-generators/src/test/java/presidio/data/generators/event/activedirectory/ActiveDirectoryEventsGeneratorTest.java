@@ -135,7 +135,7 @@ public class ActiveDirectoryEventsGeneratorTest {
         ActiveDirectoryOperationGenerator opGenerator = new ActiveDirectoryOperationGenerator();
         List<OperationType> operationTypes = Arrays.asList(new OperationType("custom_type_x"), new OperationType("custom_type_y"));
 
-        ActiveDirOperationTypeCyclicGenerator opTypeGenerator = new ActiveDirOperationTypeCyclicGenerator((OperationType[]) operationTypes.toArray());
+        ActiveDirOperationTypeCyclicGenerator opTypeGenerator = new ActiveDirOperationTypeCyclicGenerator(operationTypes.toArray(new OperationType[0]));
         opGenerator.setOperationTypeGenerator(opTypeGenerator);
 
         generator.setActiveDirOperationGenerator(opGenerator);
