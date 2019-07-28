@@ -86,6 +86,13 @@ public class NetworkAnomalyHelper {
         return this;
     }
 
+    public NetworkAnomalyHelper fixSslCa(){
+        String key = valueKey.get();
+        stateHolder.putIfAbsent(key,0L);
+        eventGen.setSslCaGenerator(new FixedValueGenerator<>(generatorKeyString.apply(key)));
+        return this;
+    }
+
     public NetworkAnomalyHelper fixSourceNetname(){
         String key = valueKey.get();
         stateHolder.putIfAbsent(key,0L);

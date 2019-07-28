@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import presidio.data.domain.Location;
 import presidio.data.domain.event.network.NETWORK_DIRECTION_TYPE;
 import presidio.data.domain.event.network.NetworkEvent;
+import presidio.data.generators.FixedValueGenerator;
 import presidio.data.generators.IBaseGenerator;
 import presidio.data.generators.authenticationlocation.AuthenticationLocationCyclicGenerator;
 import presidio.data.generators.common.GeneratorException;
@@ -46,6 +47,8 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
     private IBaseGenerator<Long>  numOfBytesReceivedGenerator = new GaussianLongGenerator(DEFAULT_MEAN_NUM_OF_BYTES, DEFAULT_STD_NUM_OF_BYTES);
     private IBaseGenerator<Integer>  sourcePortGenerator = new RandomIntegerGenerator(0, DEFAULT_REGULAR_PORT_BELOW);
     private IBaseGenerator<Integer>  destinationPortGenerator = new RandomIntegerGenerator(0, DEFAULT_REGULAR_PORT_BELOW);
+    private IBaseGenerator<Integer>  sessionSplitGenerator = new FixedValueGenerator<>(0);
+
 
     private String testMarker;
 
@@ -90,10 +93,10 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
         NETWORK_DIRECTION_TYPE network_direction_type = NETWORK_DIRECTION_TYPE.OUTBOUND;
         int destinationPort = destinationPortGenerator.getNext();
         int sourcePort = sourcePortGenerator.getNext();
+        int sessionSplit = sessionSplitGenerator.getNext();
         Location srcLocation = locationGen.getNext();
         Location dstLocation = locationGen.getNext();
         String sslCa = sslCaGenerator.getNext();
-        int sessionSplit = 0;
         boolean isSelfSigned = false;
 
         NetworkEvent networkEvent = new NetworkEvent(time);
@@ -265,6 +268,14 @@ public class NetworkEventsGenerator extends AbstractEventGenerator<NetworkEvent>
 
     public void setSourcePortGenerator(IBaseGenerator<Integer> sourcePortGenerator) {
         this.sourcePortGenerator = sourcePortGenerator;
+    }
+
+    public IBaseGenerator<Integer> getSessionSplitGenerator() {
+        return sessionSplitGenerator;
+    }
+
+    public void setSessionSplitGenerator(IBaseGenerator<Integer> sessionSplitGenerator) {
+        this.sessionSplitGenerator = sessionSplitGenerator;
     }
 
     public String getTestMarker() {
