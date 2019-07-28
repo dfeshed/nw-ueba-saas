@@ -30,6 +30,7 @@ public abstract class MongoTlsEvent implements ConverterEventBase {
     protected String ja3;
     protected String direction;
     protected int tcp_dstport;
+    protected int tcp_srcport;
     protected String ja3s;
     protected String network;
     protected String ip_dst;
