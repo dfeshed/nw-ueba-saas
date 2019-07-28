@@ -1,0 +1,27 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Adapter_Process_Data">
+    <parameter name="historical_days_back" value="35" />
+    <parameter name="anomaly_day" value="2" />
+    <test name="Adapter_Process_Data">
+        <classes>
+            <!--class name="presidio.integration.adapter.test.NetworkDataPreparation"/-->
+            <class name="com.rsa.netwitness.presidio.automation.test.data.processing.AdapterProcessData"/>
+        </classes>
+    </test>
+   <test name="Active_Directory_Mapping_Test">
+        <classes>
+            <class name="com.rsa.netwitness.presidio.automation.test.adapter.mapping.ActiveDircetoryMappingTest"/>
+        </classes>
+    </test>
+    <test name="Authentication_Mapping_Test">
+        <classes>
+            <class name="com.rsa.netwitness.presidio.automation.test.adapter.mapping.AuthenticationMappingTest"/>
+        </classes>
+    </test>
+    <test name="File_Mapping_Test">
+        <classes>
+            <class name="com.rsa.netwitness.presidio.automation.test.adapter.mapping.FileMappingTest"/>
+        </classes>
+    </test>
+</suite>

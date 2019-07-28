@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Adapter_ALL">
+    <suite-files>
+        <suite-file path="PrepareAdapterData.xml"/>
+        <suite-file path="Adapter_Filter_Data.xml"/>
+        <suite-file path="Adapter_Process_Data.xml"/>
+        <suite-file path="CreateEventsDataFiles.xml"/>
+    </suite-files>
+</suite>

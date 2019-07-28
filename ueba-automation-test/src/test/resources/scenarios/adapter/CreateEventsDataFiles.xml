@@ -1,14 +1,13 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="e2e test">
+<suite name="Adapter_Process_Data">
     <parameter name="historical_days_back" value="30" />
     <parameter name="anomaly_day" value="1" />
-    <parameter name="generator_format" value="CEF_DAILY_NOT_SEND" />
-
-    <test name="network_data">
+    <parameter name="generator_format" value="CEF_DAILY" />
+    <test name="Create_Events_Data_Files">
         <classes>
             <class name="com.rsa.netwitness.presidio.automation.test.data.preparation.NetworkDataPreparation"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.data.preparation.AlertsScenarioDataPreparation"/>
         </classes>
     </test>
 </suite>
-

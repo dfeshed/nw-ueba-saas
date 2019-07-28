@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="adapter test">
+    <parameter name="historical_days_back" value="30" />
+    <parameter name="anomaly_day" value="1" />
+    <parameter name="generator_format" value="MONGO_ADAPTER" />
+
+    <test name="adapter_data">
+        <classes>
+            <class name="com.rsa.netwitness.presidio.automation.test.data.preparation.AlertsScenarioDataPreparation"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.config.ConfigurationsAfterDataInjection"/>
+        </classes>
+    </test>
+</suite>
+
+
