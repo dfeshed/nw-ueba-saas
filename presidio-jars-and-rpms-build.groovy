@@ -148,6 +148,11 @@ pipeline {
                         [$class: 'StringParameterValue', name: 'VERSION', value: global_version],
                         [$class: 'StringParameterValue', name: 'BUILD_BRANCH', value: env.BRANCH_NAME]
                 ] , wait: false
+                build job: 'presidio-integration-test-core', parameters: [
+                        [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability],
+                        [$class: 'StringParameterValue', name: 'VERSION', value: global_version],
+                        [$class: 'StringParameterValue', name: 'INTEGRATION_TEST_BRANCH_NAME', value: env.BRANCH_NAME]
+                ] , wait: false
             }
         }
         stage('Presidio Flume JARs Build') {
