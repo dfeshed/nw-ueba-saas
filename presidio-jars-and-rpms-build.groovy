@@ -78,6 +78,9 @@ def environments = [
                 DEPLOY_PACKAGES: env.DEPLOY_PACKAGES]
 ]
 
+global_version = ""
+global_stability = ""
+
 pipeline {
     agent {
         node {label 'el7 && java8'}
@@ -131,18 +134,18 @@ pipeline {
             when { expression { return env.RUN_CORE_PACKAGES == 'true' && (env.BRANCH_NAME == "origin/master" || env.BRANCH_NAME.startsWith("origin/release/")) } }
             steps {
                 build job: 'presidio-integration-test-ADE-master', parameters: [
-                        [$class: 'StringParameterValue', name: 'STABILITY', value: env.STABILITY],
-                        [$class: 'StringParameterValue', name: 'VERSION', value: env.VERSION],
+                        [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability],
+                        [$class: 'StringParameterValue', name: 'VERSION', value: global_version],
                         [$class: 'StringParameterValue', name: 'BUILD_BRANCH', value: env.BRANCH_NAME]
                 ], wait: false
                 build job: 'presidio-integration-test-adapter-master', parameters: [
-                        [$class: 'StringParameterValue', name: 'STABILITY', value: env.STABILITY],
-                        [$class: 'StringParameterValue', name: 'VERSION', value: env.VERSION],
+                        [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability],
+                        [$class: 'StringParameterValue', name: 'VERSION', value: global_version],
                         [$class: 'StringParameterValue', name: 'BUILD_BRANCH', value: env.BRANCH_NAME]
                 ], wait: false
                 build job: 'presidio-integration-test-input-master', parameters: [
-                        [$class: 'StringParameterValue', name: 'STABILITY', value: env.STABILITY],
-                        [$class: 'StringParameterValue', name: 'VERSION', value: env.VERSION],
+                        [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability],
+                        [$class: 'StringParameterValue', name: 'VERSION', value: global_version],
                         [$class: 'StringParameterValue', name: 'BUILD_BRANCH', value: env.BRANCH_NAME]
                 ] , wait: false
             }
@@ -229,6 +232,8 @@ def buildPackages(
         if(env.BUILD_CAUSE != 'manual'){
             (version, stability) = extractVersionAndStabilityFromPom(pomFile)
         }
+        global_stability = stability
+        global_version = version
         mvnCleanPackage(deploy, pomFile, stability, version, updateSnapshots, debug, preStep)
     }
 }
