@@ -281,7 +281,9 @@ export default Service.extend({
           entry = { field: type, values: [] };
           filter.pushObject(entry);
         }
-        entry.values.push(id);
+        if (!entry.values.includes(id)) {
+          entry.values.push(id);
+        }
       }
     });
     if (filter.length === 0) {

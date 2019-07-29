@@ -8,7 +8,7 @@
 <div class='rsa-context-panel__body_layout'>
   {{#context-panel/header as |header|}}
     {{header.title}}
-    {{header.icons closePanel=closePanel}}
+    {{header.icons closePanel=(action 'closePanel')}}
   {{/context-panel/header}}
   {{#if isReady}}
     {{#if errorMessage}}

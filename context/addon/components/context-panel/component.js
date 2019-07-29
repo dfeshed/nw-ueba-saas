@@ -216,6 +216,13 @@ const ContextComponent = Component.extend({
 
   click() {
     this.send('updatePanelClicked', true);
+  },
+
+  actions: {
+    closePanel() {
+      const _closePanel = this.get('_closeContextPanel').bind(this);
+      _closePanel();
+    }
   }
 
 });
