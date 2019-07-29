@@ -204,7 +204,7 @@ dags:
     InputPreProcessorOperator:
       pool_name: spring_boot_jar_pool
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/presidio-input-core.jar
+        jar_path: ${general.deployment.bins.base_path}/presidio-input-pre-processing.jar
         main_class: presidio.input.pre.processing.application.PresidioInputPreProcessingApplication
         xmx: 512
         xms: 512
