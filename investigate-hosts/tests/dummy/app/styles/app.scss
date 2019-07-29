@@ -11,6 +11,10 @@
 
 @import 'investigate-shared/manifest';
 
+@import 'rsa-data-filters/manifest';
+
+@import 'respond-shared/manifest';
+
 // Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
 body.engine-dummy {
   color: text-color(primary, light);

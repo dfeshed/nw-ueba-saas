@@ -188,6 +188,7 @@ module.exports = {
     'id': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
     'group': 'default',
     'machineName': 'HarpServer',
+    'machineOsType': 'windows',
     'agent': {
       'installTime': '2017-06-20T07:09:01.000Z',
       'serviceStartTime': '2017-06-28T04:19:45.000Z',

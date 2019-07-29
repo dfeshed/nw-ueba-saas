@@ -31,7 +31,7 @@ export default {
       'agentVersion': '5.0.0.0',
       'machineOsType': 'mac',
       'machineName': 'inenmathua3m3.corp.emc.com',
-      'agentMode': 'insights',
+      'agentMode': 'advanced',
       'networkInterfaces': [
         {
           'name': 'lo0',
@@ -187,7 +187,7 @@ export default {
       'agentVersion': '5.0.0.0',
       'machineOsType': 'mac',
       'machineName': 'server.local',
-      'agentMode': 'insights',
+      'agentMode': 'advanced',
       'networkInterfaces': [
         {
           'name': 'lo0',
