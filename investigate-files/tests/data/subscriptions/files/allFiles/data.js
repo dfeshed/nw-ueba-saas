@@ -2,6 +2,8 @@
 export default {
   'items': [
     {
+      'serviceId': '427b9a7e-51a1-4905-9620-19513c242de9',
+      'serviceName': 'endpointloghybrid2 - Endpoint Server',
       'id': '6cd1505286a119d0dfde50ad926d2edf',
       'checksumMd5': '6cd1505286a119d0dfde50ad926d2edf',
       'checksumSha1': '180c43e4dc1f217c6001a7bb607931b25247e321',
@@ -24,9 +26,13 @@ export default {
         '.note.gnu.build-id',
         '.text'
       ],
-      'size': 8653
+      'size': 8653,
+      'fileStatus': 'Neutral',
+      'remediationAction': 'Unblock'
     },
     {
+      'serviceId': '427b9a7e-51a1-4905-9620-19513c242de9',
+      'serviceName': 'endpointloghybrid2 - Endpoint Server',
       'id': 'adec3a8ab0cb9f9ecc4af2f7d2f16ff8',
       'checksumSha1': 'cda45fce131ca6c8bbe44168eaa83f4f7c8fb2c2',
       'checksumSha256': '001b882a2f78e677c07d6daa861af4dc7f5a83bb546c67f216f962bdfd5155b9',
@@ -51,9 +57,13 @@ export default {
         '.gnu_debuglink',
         '.shstrtab'
       ],
-      'size': 1427941
+      'size': 1427941,
+      'fileStatus': 'Blacklist',
+      'remediationAction': 'Unblock'
     },
     {
+      'serviceId': '427b9a7e-51a1-4905-9620-19513c242de9',
+      'serviceName': 'endpointloghybrid2 - Endpoint Server',
       'id': '1c95ef8c4febe61f10bc16bae40a16da',
       'checksumSha1': '81d6e47ca5bdccdf24db572f3c4f6d9a90aef345',
       'checksumSha256': '760f76e99b7d5ea73048c83a6cd1e4fb87eff4a2d260fe7f645a22c222b830c1',
@@ -75,9 +85,13 @@ export default {
       'sectionNames': [
         '.shstrtab'
       ],
-      'size': 76869
+      'size': 76869,
+      'fileStatus': 'Graylist',
+      'remediationAction': 'Unblock'
     },
     {
+      'serviceId': '427b9a7e-51a1-4905-9620-19513c242de9',
+      'serviceName': 'endpointloghybrid2 - Endpoint Server',
       'id': '42a5fba2c3d1ca5b478c93181da95ae4',
       'checksumSha1': '93b0512f7129b5107d826907b912d7b8e4c27d8d',
       'checksumSha256': '44da748f45e3a4211cc64ab49f5399017c850121eb6c9bb45412cf9609c3cd2c',
@@ -104,9 +118,13 @@ export default {
         '.gnu_debuglink',
         '.shstrtab'
       ],
-      'size': 306717
+      'size': 306717,
+      'fileStatus': 'Blacklist',
+      'remediationAction': 'Unblock'
     },
     {
+      'serviceId': '427b9a7e-51a1-4905-9620-19513c242de9',
+      'serviceName': 'endpointloghybrid2 - Endpoint Server',
       'id': 'e2f3995d9218f16df453e0c6043f07c3',
       'checksumSha1': 'c40274b2775e775c25bd07d9dd90fc62efeb9351',
       'checksumSha256': '4040cf29a55fd8eaa7ef2a40f8508988b10bacedc49e589aa1d1eb2cd7f02eed',
@@ -133,9 +151,13 @@ export default {
         'libc.so.6',
         'ld-linux-x86-64.so.2'
       ],
-      'size': 10224
+      'size': 10224,
+      'fileStatus': 'Neutral',
+      'remediationAction': 'Unblock'
     },
     {
+      'serviceId': '427b9a7e-51a1-4905-9620-19513c242de9',
+      'serviceName': 'endpointloghybrid2 - Endpoint Server',
       'id': 'deaa436f418934d6b14381446c3d7cce',
       'checksumSha1': '706144eaeb5f9a986bed30fc57186679e00e5e15',
       'checksumSha256': 'b9e2c4736e2c049761d0e7dc0c585b35279533c19069123970afa179e301f4aa',
@@ -144,9 +166,13 @@ export default {
       'score': '50',
       'reputationStatus': 'Known Good',
       'format': 'Script',
-      'size': 595
+      'size': 595,
+      'fileStatus': 'Neutral',
+      'remediationAction': 'Unblock'
     },
     {
+      'serviceId': '427b9a7e-51a1-4905-9620-19513c242de9',
+      'serviceName': 'endpointloghybrid2 - Endpoint Server',
       'id': '0837ef75ac44a6654bd00b59faa29c25',
       'checksumSha1': 'd4c130fea6bf56596ce7c70a6c8bd103a40cc4bc',
       'checksumSha256': '85c3ac6e4c93b4231cf33c2d7ccdd9fbae348e072eda1afcaaa7609fa75583ce',
@@ -155,9 +181,13 @@ export default {
       'score': '35',
       'reputationStatus': 'Known Good',
       'format': 'Script',
-      'size': 39849
+      'size': 39849,
+      'fileStatus': 'Neutral',
+      'remediationAction': 'Unblock'
     },
     {
+      'serviceId': '427b9a7e-51a1-4905-9620-19513c242de9',
+      'serviceName': 'endpointloghybrid2 - Endpoint Server',
       'id': 'e09b361e9c1bdb4a6960cff4cab8e76e',
       'checksumSha1': '93b6905d21e13b7165ed7b1c2e2a57b0625b10c8',
       'checksumSha256': 'df3449389a31363a716270f35b0bc7effd7494d7184a4f266c03ef862ced987e',
@@ -220,9 +250,13 @@ export default {
         '.gnu_debuglink',
         '.shstrtab'
       ],
-      'size': 113653
+      'size': 113653,
+      'fileStatus': 'Neutral',
+      'remediationAction': 'Unblock'
     },
     {
+      'serviceId': '427b9a7e-51a1-4905-9620-19513c242de9',
+      'serviceName': 'endpointloghybrid2 - Endpoint Server',
       'id': '26bce440b20aeaeb8a3dc2d101e7f8c8',
       'checksumSha1': 'e83eb594d5542456e452285df728e70208d1b927',
       'checksumSha256': 'cc415440547222c77b1be41c31cb3e8f860c66662c5fcc53de87f91ba1f0ddcb',
@@ -245,9 +279,13 @@ export default {
         '.gnu_debuglink',
         '.shstrtab'
       ],
-      'size': 17437
+      'size': 17437,
+      'fileStatus': 'Neutral',
+      'remediationAction': 'Unblock'
     },
     {
+      'serviceId': '427b9a7e-51a1-4905-9620-19513c242de9',
+      'serviceName': 'endpointloghybrid2 - Endpoint Server',
       'checksumMd5': '64523cafb2b396b0f3864c510321d395',
       'checksumSha1': '70303963213e4a85bbab908207882d89f92320cc',
       'checksumSha256': '582bcee53c1e9ca75f3097d3b455e0d94f16063e7928e080da06711f16195004',
@@ -279,9 +317,13 @@ export default {
         'libc.so.6',
         'ld-linux-x86-64.so.2'
       ],
-      'size': 719568
+      'size': 719568,
+      'fileStatus': 'Neutral',
+      'remediationAction': 'Unblock'
     },
     {
+      'serviceId': '427b9a7e-51a1-4905-9620-19513c242de9',
+      'serviceName': 'endpointloghybrid2 - Endpoint Server',
       'id': '64523cafb2b396b0f3864c510321d396',
       'checksumSha1': '70303963213e4a85bbab908207882d89f92320cd',
       'checksumSha256': '582bcee53c1e9ca75f3097d3b455e0d94f16063e7928e080da06711f16195005',
@@ -313,7 +355,9 @@ export default {
         'libc.so.6',
         'ld-linux-x86-64.so.2'
       ],
-      'size': 719568
+      'size': 719568,
+      'fileStatus': 'Neutral',
+      'remediationAction': 'Unblock'
     }
   ],
   'pageNumber': 0,
