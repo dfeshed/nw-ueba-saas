@@ -1,6 +1,6 @@
-package com.rsa.netwitness.presidio.automation.rest.helper;
+package com.rsa.netwitness.presidio.automation.rest.helper.builders.url;
 
-public class AlertsWithIdUrlBuilder extends RestBase {
+public class AlertsWithIdUrlBuilder extends UrlBase {
 
     AlertsWithIdUrlBuilder(String url) {
         this.URL = url;

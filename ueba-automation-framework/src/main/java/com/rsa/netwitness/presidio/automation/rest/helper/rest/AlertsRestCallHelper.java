@@ -1,8 +1,9 @@
-package com.rsa.netwitness.presidio.automation.rest.helper;
+package com.rsa.netwitness.presidio.automation.rest.helper.rest;
 
+import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.client.RestAPI;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
-import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,13 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class RestCallHelper extends RestBase {
+public class AlertsRestCallHelper implements IRestCallHelper{
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(RestCallHelper.class.getName());
-
-    RestCallHelper(String url) {
-        this.URL = url;
-    }
+            LoggerFactory.getLogger(AlertsRestCallHelper.class.getName());
 
     public List<AlertsStoredRecord> getAlerts(ParametersUrlBuilder alertsParametersUrlBuilder) {
         String URL = alertsParametersUrlBuilder.toString();
@@ -103,12 +100,4 @@ public class RestCallHelper extends RestBase {
 
         return alertsStoredRecords;
     }
-
-
-    public RestApiResponse getRestApiResponse(ParametersUrlBuilder alertsParametersUrlBuilder) {
-        String URL = alertsParametersUrlBuilder.toString();
-        LOGGER.debug("Sending request: " + URL);
-        return RestAPI.sendGet(URL);
-    }
-
 }

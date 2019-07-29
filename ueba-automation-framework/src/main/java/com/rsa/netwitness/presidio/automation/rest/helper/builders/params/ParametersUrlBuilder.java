@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.rest.helper;
+package com.rsa.netwitness.presidio.automation.rest.helper.builders.params;
 
 import org.junit.Assert;
 

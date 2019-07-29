@@ -1,13 +1,14 @@
-package com.rsa.netwitness.presidio.automation.rest.helper;
+package com.rsa.netwitness.presidio.automation.rest.helper.builders.params;
 
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.url.UrlBase;
 import org.slf4j.LoggerFactory;
 
 
-public class ParametersUrlHelper extends RestBase {
+public class ParametersUrlHelper extends UrlBase {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
             LoggerFactory.getLogger(ParametersUrlHelper.class.getName());
 
-    ParametersUrlHelper(String url) {
+    public ParametersUrlHelper(String url) {
         this.URL = url;
     }
 
@@ -39,6 +40,13 @@ public class ParametersUrlHelper extends RestBase {
                 .setPageSize(10000)
                 .setPageNumber(0)
                 .setExpand(true)
+                .build();
+    }
+
+    public ParametersUrlBuilder withSortedParameters(String sortDirection, String sortFieldNames) {
+        return new ParametersUrlBuilder.Builder(URL)
+                .setSortDirection(sortDirection)
+                .setSortFieldNames(sortFieldNames)
                 .build();
     }
 

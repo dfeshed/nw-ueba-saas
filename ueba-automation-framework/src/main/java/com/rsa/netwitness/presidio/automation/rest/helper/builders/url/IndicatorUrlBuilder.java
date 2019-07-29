@@ -1,6 +1,6 @@
-package com.rsa.netwitness.presidio.automation.rest.helper;
+package com.rsa.netwitness.presidio.automation.rest.helper.builders.url;
 
-public class IndicatorUrlBuilder extends RestBase {
+public class IndicatorUrlBuilder extends UrlBase {
     IndicatorUrlBuilder(String url) {
         this.URL = url;
     }

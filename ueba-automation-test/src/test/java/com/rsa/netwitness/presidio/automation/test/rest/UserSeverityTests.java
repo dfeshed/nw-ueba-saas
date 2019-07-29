@@ -2,6 +2,8 @@ package com.rsa.netwitness.presidio.automation.test.rest;
 
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
+import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestManager;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,19 +39,23 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
     private double mediumPercent = 10.0;
     private double lowPercent = 85.0;
 
+    private RestHelper restHelper = new RestHelper();
     private Map<String, Integer> severityMap;
+    List<EntitiesStoredRecord> allEntities;
 
     @BeforeClass
     public void prepareData() throws JSONException {
         severityMap = getSeverityMap();
         getSeveritiesBoundariesIndexes();
-
+        ParametersUrlBuilder url = restHelper.entities().url().withMaxSizeAndSortedParameters("ASC", "SCORE");
+        allEntities = restHelper.entities().request().getEntities(url);
     }
-
 
     @Test
     public void checkPecentageDividing() {
-        JSONObject users = testManager.sendGetEntitiesURL("?sortDirection=ASC&sortFieldNames=SCORE",printRequest);
+        ParametersUrlBuilder url = restHelper.entities().url().withSortedParameters("ASC", "SCORE");
+        JSONObject users = restHelper.entities().request().getRestApiResponseAsJsonObj(url);
+
         int total = 0;
         double criticalPercent = 1;
         double highPercent = 4;
@@ -93,7 +99,7 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void checkCriticalGroupSeverityByScore() {
-        List<EntitiesStoredRecord> users = testManager.getEntities("pageSize=10000&pageNumber=0&sortDirection=ASC&sortFieldNames=SCORE", printRequest);
+        List<EntitiesStoredRecord> users = allEntities;
 
         Map<String, Integer> severitiesCount = getSeverityMap();
         if(severitiesCount.containsKey("CRITICAL")){
@@ -121,7 +127,7 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void checkHighGroupSeverityByScore() {
-        List<EntitiesStoredRecord> users = testManager.getEntities("pageSize=10000&pageNumber=0&sortDirection=ASC&sortFieldNames=SCORE", printRequest);
+        List<EntitiesStoredRecord> users = allEntities;
 
         if(severityMap.containsKey("HIGH")){
             if(severityMap.get("HIGH") > 0){
@@ -146,7 +152,7 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void checkMediumGroupSeverityByScore() {
-        List<EntitiesStoredRecord> users = testManager.getEntities("pageSize=10000&pageNumber=0&sortDirection=ASC&sortFieldNames=SCORE", printRequest);
+        List<EntitiesStoredRecord> users = allEntities;
 
         if(severityMap.containsKey("MEDIUM")){
             if(severityMap.get("MEDIUM") > 0){
@@ -170,7 +176,8 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
 
     private Map<String, Integer> getSeverityMap() {
         Map<String, Integer> severities = new HashMap<>();
-        JSONObject agg = testManager.getAggregationData("SEVERITY", "entities", printRequest);
+        ParametersUrlBuilder url = restHelper.entities().url().withAggregatedFieldParameter("SEVERITY");
+        JSONObject agg = restHelper.entities().request().getRestApiResponseAsJsonObj(url);
 
         try {
             JSONObject severity = agg.getJSONObject("SEVERITY");
@@ -190,7 +197,7 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
     }
 
     private void getSeveritiesBoundariesIndexes() {
-        List<EntitiesStoredRecord> users = testManager.getEntities("pageSize=10000&pageNumber=0&sortDirection=ASC&sortFieldNames=SCORE", printRequest);
+        List<EntitiesStoredRecord> users = allEntities;
 
         for(int i=0 ; i < users.size() ; i++) {
             if(mediumInd == -1 && users.get(i).getSeverity().equals("MEDIUM")) {

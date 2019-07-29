@@ -3,7 +3,7 @@ package com.rsa.netwitness.presidio.automation.test.rest;
 import com.google.gson.Gson;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
-import com.rsa.netwitness.presidio.automation.rest.helper.ParametersUrlBuilder;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import org.assertj.core.api.Fail;
 import org.json.JSONObject;
@@ -244,18 +244,8 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
 
         url = restHelper.alerts().url().withAggregatedFieldParameter("SEVERITY");
 
-        RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
-
-        assertThat(response)
-                .as(url.toString())
-                .isNotNull();
-
-        assertThat(response.getResponseCode())
-                .as(url.toString())
-                .isEqualTo(200);
-
         try {
-            JSONObject json = new JSONObject(response.getResultBody())
+            JSONObject json =  restHelper.alerts().request().getRestApiResponseAsJsonObj(url)
                     .getJSONObject("aggregationData")
                     .getJSONObject("SEVERITY");
 
@@ -288,14 +278,8 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
 
         url = restHelper.alerts().url().withAggregatedFieldParameter("FEEDBACK");
 
-        RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
-
-        assertThat(response)
-                .as(url + "\nnull response")
-                .isNotNull();
-
         try {
-            JSONObject json = new JSONObject(response.getResultBody())
+            JSONObject json = restHelper.alerts().request().getRestApiResponseAsJsonObj(url)
                     .getJSONObject("aggregationData")
                     .getJSONObject("FEEDBACK");
 

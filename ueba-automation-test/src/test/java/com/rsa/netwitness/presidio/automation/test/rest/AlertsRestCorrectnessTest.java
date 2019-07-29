@@ -1,9 +1,8 @@
 package com.rsa.netwitness.presidio.automation.test.rest;
 
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
-import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
-import com.rsa.netwitness.presidio.automation.rest.helper.ParametersUrlBuilder;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
 import com.rsa.netwitness.presidio.automation.static_content.IndicatorsInfo;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils;
 import org.json.JSONException;
@@ -84,8 +83,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
         List<AlertsStoredRecord> alerts =  restHelper.alerts().request().getAlerts(url);
         int totalAlertsSize = alerts.size();
 
-        RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
-        JSONObject json = new JSONObject(response.getResultBody());
+        JSONObject json = restHelper.alerts().request().getRestApiResponseAsJsonObj(url);
         int total = json.getInt("total");
 
         assertThat(totalAlertsSize)

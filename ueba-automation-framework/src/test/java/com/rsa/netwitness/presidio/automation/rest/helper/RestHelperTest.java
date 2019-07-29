@@ -1,5 +1,6 @@
 package com.rsa.netwitness.presidio.automation.rest.helper;
 
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

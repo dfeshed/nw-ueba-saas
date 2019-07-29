@@ -8,7 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
-import com.rsa.netwitness.presidio.automation.rest.helper.ParametersUrlBuilder;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.static_content.IndicatorsInfo;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils;
@@ -121,11 +121,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                         .indicators().withId(singleIndicator.getId())
                         .events().url().withMaxSizeParameters();
 
-                RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
-                assertThat(response)
-                        .as(url+"\nnull response")
-                        .isNotNull();
-                JSONObject indicatorEvents =  new JSONObject(response.getResultBody());
+                JSONObject indicatorEvents = restHelper.alerts().request().getRestApiResponseAsJsonObj(url);
 
                 try {
                     JSONArray indicatorsEventsList = indicatorEvents.getJSONArray("events");
@@ -170,18 +166,8 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                         .withMaxSizeParameters();
 
                 if(!singleIndicator.getName().startsWith("high_number")){
-                    RestApiResponse indicatorResponse = restHelper.alerts().request().getRestApiResponse(indicatorUrl);
-                    assertThat(indicatorResponse)
-                            .as(indicatorUrl+"\nnull response")
-                            .isNotNull();
-
-                    RestApiResponse indicatorEventsResponse = restHelper.alerts().request().getRestApiResponse(indicatorEventsUrl);
-                    assertThat(indicatorResponse)
-                            .as(indicatorEventsUrl+"\nnull response")
-                            .isNotNull();
-
-                    JSONObject indicator =  new JSONObject(indicatorResponse.getResultBody());
-                    JSONObject indicatorEvents =  new JSONObject(indicatorEventsResponse.getResultBody());
+                    JSONObject indicator =  restHelper.alerts().request().getRestApiResponseAsJsonObj(indicatorUrl);
+                    JSONObject indicatorEvents =  restHelper.alerts().request().getRestApiResponseAsJsonObj(indicatorEventsUrl);
 
                     try {
                         long startTime = indicator.getLong("startDate");
@@ -323,21 +309,15 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         String alertId = staticIndicatorMap.get(indicator)[0];
         String indicatorId = staticIndicatorMap.get(indicator)[1];
         ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
-        RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
-
-        assertThat(response).as(url+"\nnull response").isNotNull();
-        JSONObject indicatorData =  new JSONObject(response.getResultBody());
+        JSONObject indicatorData =  restHelper.alerts().request().getRestApiResponseAsJsonObj(url);
 
         try {
             String indicatorName = indicatorData.getString("name");
             int selectedIndicatorEventsNum = indicatorData.getInt("eventsNum");
 
             url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).events().url().withMaxSizeParameters();
-            response = restHelper.alerts().request().getRestApiResponse(url);
-            JSONObject indicatorsEvents =  new JSONObject(response.getResultBody());
-
+            JSONObject indicatorsEvents =  restHelper.alerts().request().getRestApiResponseAsJsonObj(url);
             JSONArray eventsList = indicatorsEvents.getJSONArray("events");
-            assertThat(response).as(url+"\nnull response").isNotNull();
 
             assertThat(selectedIndicatorEventsNum)
                     .as(url+"\nAlerts page indicators count is different from the events page. indicatorName = " +indicatorName)
@@ -557,10 +537,8 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId)
                 .events().url().withMaxSizeParameters();
 
-        RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
-        JSONObject indicatorsEvents =  new JSONObject(response.getResultBody());
+        JSONObject indicatorsEvents = restHelper.alerts().request().getRestApiResponseAsJsonObj(url);
         JSONArray eventsList = indicatorsEvents.getJSONArray("events");
-        assertThat(response).as(url+"\nnull response").isNotNull();
         return eventsList;
     }
 
