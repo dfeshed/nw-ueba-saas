@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { lookup } from 'ember-dependency-lookup';
 import {
   allExpectedDataLoaded,
@@ -19,7 +19,9 @@ import {
   searchScrollDisplay,
   dataCount,
   clientSortedData,
-  requireServiceSorting
+  requireServiceSorting,
+  groupForSortAscending,
+  groupForSortDescending
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -953,6 +955,16 @@ module('Unit | Selectors | event-results', function(hooks) {
     }), false);
   });
 
+  test('groupForSortAscending', async function(assert) {
+    assert.equal(groupForSortAscending({ toSort: 2 }), 1);
+    assert.equal(groupForSortAscending({ toSort: 'a' }), -1);
+  });
+
+  test('groupForSortDescending', async function(assert) {
+    assert.equal(groupForSortDescending({ toSort: 2 }), -1);
+    assert.equal(groupForSortDescending({ toSort: 'a' }), 1);
+  });
+
   test('clientSortedData when no data', async function(assert) {
     const state = {
       investigate: {
@@ -1291,14 +1303,14 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].size, state.investigate.eventResults.data[0].size);
   });
 
-  test('clientSortedData when other', async function(assert) {
+  test('clientSortedData when MAC', async function(assert) {
     const state = {
       investigate: {
         eventResults: {
           data: [
-            { size: 1 },
-            { size: 2 },
-            { size: 3 }
+            { foo: '00:00:00:00:00:01' },
+            { foo: '00:00:00:02:00:00' },
+            { foo: '00:03:00:00:00:00' }
           ]
         },
         data: {
@@ -1317,8 +1329,8 @@ module('Unit | Selectors | event-results', function(hooks) {
         },
         dictionaries: {
           language: [{
-            metaName: 'size',
-            format: 'UInt8'
+            metaName: 'foo',
+            format: 'MAC'
           }]
         },
         services: {
@@ -1335,7 +1347,53 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].size, state.investigate.eventResults.data[0].size);
   });
 
-  test('clientSortedData when nulls are mixed in with Ints', async function(assert) {
+  skip('clientSortedData when other', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            { foo: 1 },
+            { foo: null },
+            { foo: 'b' },
+            { foo: 3 }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Descending',
+          globalPreferences: {
+            dateFormat: true,
+            timeFormat: true,
+            timeZone: true,
+            locale: true
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [{
+            metaName: 'foo',
+            format: 'UInt8'
+          }]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.equal(result[0].foo, state.investigate.eventResults.data[3].foo);
+    assert.equal(result[1].foo, state.investigate.eventResults.data[0].foo);
+    assert.equal(result[2].foo, state.investigate.eventResults.data[2].foo);
+    assert.equal(result[3].foo, state.investigate.eventResults.data[1].foo);
+  });
+
+  test('clientSortedData when nulls are mixed in with Ints and Descending', async function(assert) {
     const state = {
       investigate: {
         eventResults: {
@@ -1379,7 +1437,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].size, state.investigate.eventResults.data[1].size);
   });
 
-  test('clientSortedData when nulls are mixed in with Ints', async function(assert) {
+  skip('clientSortedData when nulls are mixed in with Ints and Ascending', async function(assert) {
     const state = {
       investigate: {
         eventResults: {

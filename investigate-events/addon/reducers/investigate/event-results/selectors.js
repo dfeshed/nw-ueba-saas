@@ -456,6 +456,22 @@ export const requireServiceSorting = createSelector([
   return resultCountAtThreshold && hasMinimumCoreServicesVersionForColumnSorting;
 });
 
+export const groupForSortDescending = (e) => {
+  if ((e.toSort - e.toSort) === 0 || (parseInt(e.toSort, 10) - parseInt(e.toSort, 10)) === 0) {
+    return -1;
+  } else {
+    return 1;
+  }
+};
+
+export const groupForSortAscending = (e) => {
+  if ((e.toSort - e.toSort) === 0 || (parseInt(e.toSort, 10) - parseInt(e.toSort, 10)) === 0) {
+    return 1;
+  } else {
+    return -1;
+  }
+};
+
 export const clientSortedData = createSelector(
   [
     _resultsData,
@@ -482,54 +498,72 @@ export const clientSortedData = createSelector(
       const metaObj = languages.findBy('metaName', sortField);
       let cachedData = data.map((event) => {
         const eventCopy = { ...event };
-        if (metaObj && metaObj.format === 'IPv4') {
-          // convert ipv4 to 32bit integer
-          // small enough for js to handle
-          const ip = event[sortField];
-          if (ip) {
-            const segments = ip.split('.');
-            if (segments) {
-              eventCopy.toSort = segments.reduce((ipInt, octet) => (ipInt << 8) + parseInt(octet, 10), 0) >>> 0;
-            }
-          }
-        } else if (metaObj && metaObj.format === 'IPv6') {
-          // convert ipv6 to BigInteger
-          // to big for js to handle as standard int
-          const { Address6 } = window;
-          const ip = event[sortField];
-          if (ip) {
-            const ipv6Addy = new Address6(ip);
-            eventCopy.toSort = ipv6Addy.bigInteger();
-          }
-        } else if (sortField === 'medium' && event['nwe.callback_id']) {
-          // ensure we sort by displayed label for Endpoints
-          eventCopy.toSort = opts.i18n[sortField].endpoint.string;
-        } else if (metaObj && metaObj.format === 'TimeT') {
-          // already an int, no need to translate
-          eventCopy.toSort = event[sortField];
-        } else {
-          // look up translated aliases
-          let toSort = formatUtil.text(sortField, event[sortField], opts);
 
-          // fast sort puts empty values at the bottom in both directions
-          // this does not match the way core sorts
-          // override toSort with static value to be sorted
-          if (event[sortField] === null || event[sortField] === undefined || event[sortField] === '') {
-            if (metaObj && metaObj.format === 'Text') {
-              eventCopy.toSort = 'a';
-            } else {
-              eventCopy.toSort = Number.MIN_SAFE_INTEGER;
+        if (event[sortField] === null || event[sortField] === undefined || event[sortField] === '') {
+          if (sortDirection === 'Ascending') {
+            eventCopy.toSort = 'a';
+          }
+        } else {
+          if (metaObj && metaObj.format === 'MAC') {
+            const ip = event[sortField];
+            if (ip) {
+              const segments = ip.split(':');
+              if (segments) {
+                eventCopy.toSort = parseInt(segments.map((segment) => {
+                  const padded = `00${parseInt(segment, 16)}`;
+                  return padded.slice(-3);
+                }).join(''), 10);
+              }
             }
+          } else if (metaObj && (metaObj.format === 'IPv4')) {
+            // convert ipv4 to 32bit integer
+            // small enough for js to handle
+            const ip = event[sortField];
+            if (ip) {
+              const segments = ip.split('.');
+              if (segments) {
+                eventCopy.toSort = segments.reduce((ipInt, octet) => (ipInt << 8) + parseInt(octet, 10), 0) >>> 0;
+              }
+            }
+          } else if (metaObj && metaObj.format === 'IPv6') {
+            // convert ipv6 to BigInteger
+            // to big for js to handle as standard int
+            const { Address6 } = window;
+            const ip = event[sortField];
+            if (ip) {
+              const ipv6Addy = new Address6(ip);
+              eventCopy.toSort = ipv6Addy.bigInteger();
+            }
+          } else if (sortField === 'medium' && event['nwe.callback_id']) {
+            // ensure we sort by displayed label for Endpoints
+            eventCopy.toSort = opts.i18n[sortField].endpoint.string;
+          } else if (metaObj && metaObj.format === 'TimeT') {
+            // already an int, no need to translate
+            eventCopy.toSort = event[sortField];
           } else {
-            toSort = toSort.string || toSort;
-            const parsedNumber = parseFloat(toSort, 10);
-            eventCopy.toSort = (parsedNumber - parsedNumber === 0) ? parsedNumber : toSort.toLowerCase();
+            // fast sort puts empty values at the bottom in both directions
+            // this does not match the way core sorts
+            // override toSort with static value to be sorted
+            if (event[sortField] != null && event[sortField] != undefined && event[sortField] != '') {
+              // look up translated aliases
+              let toSort = formatUtil.text(sortField, event[sortField], opts);
+              toSort = toSort.string || toSort;
+              const parsedNumber = parseFloat(toSort, 10);
+              eventCopy.toSort = (parsedNumber - parsedNumber === 0) ? parsedNumber : toSort.toLowerCase();
+            }
           }
         }
+
         return eventCopy;
       });
 
       cachedData = Immutable.asMutable(cachedData);
+      if (sortDirection === 'Ascending') {
+        cachedData = sort(cachedData).asc(groupForSortAscending);
+      } else {
+        cachedData = sort(cachedData).desc(groupForSortDescending);
+      }
+
       return sort(cachedData)[(sortDirection === 'Ascending' ? 'asc' : 'desc')]((e) => e.toSort);
     }
   }
