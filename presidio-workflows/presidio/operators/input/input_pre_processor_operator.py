@@ -29,11 +29,11 @@ class InputPreProcessorOperator(SpringBootJarOperator):
         """
 
         arguments = self.add_dynamic_arguments(context)
-        arguments.update({'schema' : self.schema_name})
+        arguments.update({'schema': self.schema_name})
 
         java_args = {
             'name': self.name,
-            'arguments': json.dumps(arguments)
+            'arguments': ("\\\"" + json.dumps(arguments).replace("\"", "\\\\\\\"") + "\\\"")
         }
 
         super(InputPreProcessorOperator, self).update_java_args(java_args)
