@@ -233,8 +233,11 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         List<String> historicalDataAnomalyValues = anomalyBuckets.stream().map(e -> e.value).collect(Collectors.toList());
         assertThat(historicalDataAnomalyValues).as(url + "\nhistoricalData anomaly value is missing").isNotEmpty();
 
-        boolean notInExclusionList = !(indicator.equals("high_number_of_file_move_operations_from_shared_drive")
-                || actualIndicator.schema.equals("TLS"));
+        boolean notInExclusionList = !(
+                indicator.equals("high_number_of_file_move_operations_from_shared_drive")
+                        || indicator.equals("high_number_of_successful_file_action_operations")
+                        || actualIndicator.schema.equals("TLS")
+        );
 
         Function<String, Long> toLong = st -> Double.valueOf(st).longValue();
 
