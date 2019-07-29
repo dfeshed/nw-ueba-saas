@@ -142,7 +142,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
         ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndSortedAscAndMaxScoreParameters(maxScore);
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
-        assertThat(parseInt(alerts.get(0).getScore()))
+        assertThat(parseInt(alerts.get(alerts.size()-1).getScore()))
                 .as(url + "\nRequested maxScore doesn't match the actual result")
                 .isEqualTo(maxScore);
     }
@@ -205,7 +205,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
         alerts = restHelper.alerts().request().getAlerts(url);
 
         List<String> severitiesActual = alerts.stream()
-                .map(AlertsStoredRecord::getEntityName)
+                .map(AlertsStoredRecord::getSeverity)
                 .distinct()
                 .collect(Collectors.toList());
 
