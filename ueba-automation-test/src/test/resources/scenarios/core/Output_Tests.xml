@@ -3,9 +3,10 @@
 <suite name="Output_ALL">
     <test name="Output_ALL">
         <classes>
-            <class name="com.rsa.netwitness.presidio.automation.test.rest.RestUserTests"/>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.AlertsRestCorrectnessTest"/>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.AlertsIndicatorsTests"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.AlertsRestQueriesTest"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.RestUserTests"/>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.UserSeverityTests"/>
         </classes>
 
