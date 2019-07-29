@@ -16,7 +16,7 @@ dags:
     retention:
       schedule_interval: None
     input_pre_processing:
-      schedule_interval: timedelta(hours=1)
+      schedule_interval: None
       schemas:
       - schema_name : TLS
         params_list:
