@@ -26,8 +26,8 @@
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <org-json.version>20140107</org-json.version>
         <!-- maven plugins -->
-        <maven-source-plugin.version>2.1.1</maven-source-plugin.version>
-        <java-lang-config.version>1.8</java-lang-config.version>
+        <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
+        <java-lang-config.version>11</java-lang-config.version>
         <activation.version>1.1.1</activation.version>
 
     </properties>
@@ -190,9 +190,9 @@
 
             <!-- Use aspectj compile load weaver to inject spring bean into non managed beans -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>com.nickwongdev</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
-                <version>${aspectj-maven-plugin.version}</version>
+                <version>${nickwongdev-aspectj-maven-plugin.version}</version>
                 <configuration>
                     <source>${java-lang-config.version}</source>
                     <target>${java-lang-config.version}</target>
