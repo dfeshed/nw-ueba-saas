@@ -1,13 +1,13 @@
 package com.rsa.netwitness.presidio.automation.domain.output;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.testng.collections.Maps;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class AlertsStoredRecord {
     @Expose
@@ -184,7 +184,7 @@ public class AlertsStoredRecord {
                 indicator.setStartDate(obj.get("startDate").toString());
                 indicator.setEndDate(obj.get("endDate").toString());
                 indicator.setScoreContribution(obj.getDouble("scoreContribution"));
-                // TODO: add context
+                indicator.setContexts(obj);
 
                 indicatorsList.add(indicator);
             } catch (JSONException e) {
@@ -244,6 +244,7 @@ public class AlertsStoredRecord {
         private String startDate;
         private String endDate;
         private Double scoreContribution;
+        private Map<String, Object> contexts = Maps.newHashMap();
 
         public String getId() {
             return id;
@@ -325,6 +326,17 @@ public class AlertsStoredRecord {
             this.scoreContribution = scoreContribution;
         }
 
+        public Map<String, Object> getContexts() {
+            return contexts;
+        }
+
+        public void setContexts(JSONObject obj) {
+            if (obj.has("contexts")) {
+                JSONObject contexts = obj.getJSONObject("contexts");
+                this.contexts = new Gson().fromJson(contexts.toString(), HashMap.class);
+            }
+        }
+
         @Override
         public String toString() {
             return "Indicator{" +
@@ -337,7 +349,8 @@ public class AlertsStoredRecord {
                     ", eventNum='" + eventNum + '\'' +
                     ", startDate='" + startDate + '\'' +
                     ", endDate='" + endDate + '\'' +
-                    ", scoreContribution=" + scoreContribution +
+                    ", scoreContribution=" + scoreContribution + '\'' +
+                    ", contexts=[" + contexts + ']' +
                     '}';
         }
     }

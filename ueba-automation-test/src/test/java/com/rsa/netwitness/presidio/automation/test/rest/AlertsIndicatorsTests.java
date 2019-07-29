@@ -8,8 +8,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
-import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
 import com.rsa.netwitness.presidio.automation.static_content.IndicatorsInfo;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils;
 import org.json.JSONArray;
@@ -27,14 +27,16 @@ import org.testng.collections.Sets;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
 import static com.rsa.netwitness.presidio.automation.static_content.IndicatorsInfo.ALL_MANDATORY_INDICATORS;
 import static com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils.skipTest;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
-    private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
+    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
             LoggerFactory.getLogger(AlertsIndicatorsTests.class.getName());
 
     private RestHelper restHelper = new RestHelper();
@@ -83,39 +85,38 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void alerts_count_result_filtered_by_indicator_name_is_correct() {
-        for (String indicatorName: indicatorsDistinctNames) {
+        for (String indicatorName : indicatorsDistinctNames) {
             ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndIndicatorNameParameters(indicatorName);
             List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
             // alertIds from getAllAlerts REST call.
             long countOfAllAlertsHaveGivenIndicatorName = allAlerts.stream()
-                    .map(e -> Arrays.stream(e.getIndicatorsName()).collect(Collectors.toList()))
+                    .map(e -> Arrays.stream(e.getIndicatorsName()).collect(toList()))
                     .filter(e -> e.contains(indicatorName))
                     .count();
 
             long countOfAlertsFilteredByIndicatorHaveGivenIndicatorName = alerts.stream()
-                    .map(e -> Arrays.stream(e.getIndicatorsName()).collect(Collectors.toList()))
+                    .map(e -> Arrays.stream(e.getIndicatorsName()).collect(toList()))
                     .filter(e -> e.contains(indicatorName))
                     .count();
 
             assertThat(alerts.size())
-                    .as(url+"\nAlerts count mismatch")
+                    .as(url + "\nAlerts count mismatch")
                     .isEqualTo(countOfAllAlertsHaveGivenIndicatorName)
                     .isEqualTo(countOfAlertsFilteredByIndicatorHaveGivenIndicatorName);
         }
     }
 
 
-
     @Test
     public void alert_indicators_event_time_range_is_within_the_alert_time_range() {
-        for(AlertsStoredRecord alert : allAlerts){
+        for (AlertsStoredRecord alert : allAlerts) {
             List<AlertsStoredRecord.Indicator> indicators = alert.getIndicatorsList();
 
             long alertStartDate = Long.parseLong(alert.getStartDate()) / 1000;
             long alertEndDate = Long.parseLong(alert.getEndDate()) / 1000;
 
-            for(AlertsStoredRecord.Indicator singleIndicator : indicators) {
+            for (AlertsStoredRecord.Indicator singleIndicator : indicators) {
 
                 ParametersUrlBuilder url = restHelper.alerts().withId(alert.getId())
                         .indicators().withId(singleIndicator.getId())
@@ -126,11 +127,11 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                 try {
                     JSONArray indicatorsEventsList = indicatorEvents.getJSONArray("events");
                     assertThat(indicatorsEventsList.length())
-                            .as(url+"\nEmpty response body")
+                            .as(url + "\nEmpty response body")
                             .isGreaterThan(0);
 
 
-                    for(int i=0 ; i<indicatorsEventsList.length() ; i++){
+                    for (int i = 0; i < indicatorsEventsList.length(); i++) {
                         long time = Long.parseLong(indicatorsEventsList.getJSONObject(i).getJSONObject("eventDate").get("epochSecond").toString());
                         String msg = url +
                                 "\nindicator's event time is not within the alert time range.\n" +
@@ -150,7 +151,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void indicator_start_date_and_the_first_indicator_event_date_should_be_equal() {
-        for(AlertsStoredRecord alert : allAlerts) {
+        for (AlertsStoredRecord alert : allAlerts) {
             List<AlertsStoredRecord.Indicator> indicators = alert.getIndicatorsList();
 
             for (AlertsStoredRecord.Indicator singleIndicator : indicators) {
@@ -165,9 +166,9 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                         .url()
                         .withMaxSizeParameters();
 
-                if(!singleIndicator.getName().startsWith("high_number")){
-                    JSONObject indicator =  restHelper.alerts().request().getRestApiResponseAsJsonObj(indicatorUrl);
-                    JSONObject indicatorEvents =  restHelper.alerts().request().getRestApiResponseAsJsonObj(indicatorEventsUrl);
+                if (!singleIndicator.getName().startsWith("high_number")) {
+                    JSONObject indicator = restHelper.alerts().request().getRestApiResponseAsJsonObj(indicatorUrl);
+                    JSONObject indicatorEvents = restHelper.alerts().request().getRestApiResponseAsJsonObj(indicatorEventsUrl);
 
                     try {
                         long startTime = indicator.getLong("startDate");
@@ -193,17 +194,16 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     }
 
 
-
     @Test(dataProvider = "allIndicatorsDataProvider")
-    public void anomaly_true_indicator_count_should_be_correct_in_historical_data(String indicator){
+    public void anomaly_true_indicator_count_should_be_correct_in_historical_data(String indicator) {
         String alertId = allIndicatorsTypeNameSamples.get(indicator)[0];
         String indicatorId = allIndicatorsTypeNameSamples.get(indicator)[1];
         ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
 
-        try{
+        try {
             IndicatorResult actualIndicator = getIndicatorWithHisoricalData(alertId, indicatorId);
             List<HistoricalDataBucket> anomalyBuckets = getAnomalyHistoricalDataBuckets(actualIndicator);
-            List<Boolean> anomalyFlags = anomalyBuckets.stream().map(e -> e.anomaly).collect(Collectors.toList());
+            List<Boolean> anomalyFlags = anomalyBuckets.stream().map(e -> e.anomaly).collect(toList());
 
             if (actualIndicator.historicalDataType.equals("TimeAggregation")) {
                 assertThat(anomalyFlags)
@@ -217,7 +217,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                         .containsOnly(true);
             }
         } catch (JSONException e) {
-            Assert.fail(url+ "\nCannot get the requested information from json object. \n" + e.getMessage());
+            Assert.fail(url + "\nCannot get the requested information from json object. \n" + e.getMessage());
         }
     }
 
@@ -230,7 +230,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         IndicatorResult actualIndicator = getIndicatorWithHisoricalData(alertId, indicatorId);
         List<HistoricalDataBucket> anomalyBuckets = getAnomalyHistoricalDataBuckets(actualIndicator);
 
-        List<String> historicalDataAnomalyValues = anomalyBuckets.stream().map(e -> e.value).collect(Collectors.toList());
+        List<String> historicalDataAnomalyValues = anomalyBuckets.stream().map(e -> e.value).collect(toList());
         assertThat(historicalDataAnomalyValues).as(url + "\nhistoricalData anomaly value is missing").isNotEmpty();
 
         boolean notInExclusionList = !(
@@ -262,38 +262,38 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     }
 
 
-    @Test (dataProvider = "allIndicatorsDataProvider")
-    public void successful_and_failure_indicator_names_should_match_all_result_values_in_related_events(String indicatorName){
+    @Test(dataProvider = "allIndicatorsDataProvider")
+    public void successful_and_failure_indicator_names_should_match_all_result_values_in_related_events(String indicatorName) {
         Boolean success = null;
-        if(indicatorName.contains("successful")){
+        if (indicatorName.contains("successful")) {
             success = true;
-        } else if(indicatorName.contains("failure")) {
+        } else if (indicatorName.contains("failure")) {
             success = false;
         }
 
-        if(success != null) {
+        if (success != null) {
             String alertId = allIndicatorsTypeNameSamples.get(indicatorName)[0];
             String indicatorId = allIndicatorsTypeNameSamples.get(indicatorName)[1];
-            JSONArray events = getEvents(alertId,indicatorId);
+            JSONArray events = getEvents(alertId, indicatorId);
             ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId)
                     .events().url().withMaxSizeParameters();
 
             for (int i = 0; i < events.length(); i++) {
                 String result = events.getJSONObject(i).getString("result");
-                if(success) {
+                if (success) {
                     assertThat(result)
-                            .as(url+"\nIndicator with name " + indicatorName + "has events with `result` other than `SUCCESS`.\nResult = " + result)
+                            .as(url + "\nIndicator with name " + indicatorName + "has events with `result` other than `SUCCESS`.\nResult = " + result)
                             .isEqualTo("SUCCESS");
                 } else {
                     assertThat(result)
-                            .as(url+"\nIndicator with name " + indicatorName + "has events with `result` other than `FAILURE`.\nResult = " + result)
+                            .as(url + "\nIndicator with name " + indicatorName + "has events with `result` other than `FAILURE`.\nResult = " + result)
                             .isEqualTo("FAILURE");
                 }
             }
         }
     }
 
-    @Test (dataProvider = "allIndicatorsDataProvider")
+    @Test(dataProvider = "allIndicatorsDataProvider")
     public void indicator_schema_name_should_match_static_map(String indicatorName) {
         String alertId = allIndicatorsTypeNameSamples.get(indicatorName)[0];
         String indicatorId = allIndicatorsTypeNameSamples.get(indicatorName)[1];
@@ -301,35 +301,34 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         IndicatorResult indicator = getIndicator(alertId, indicatorId);
         String expectedSchema = IndicatorsInfo.getSchemaNameByIndicator(indicatorName).toUpperCase();
         assertThat(indicator.schema)
-                .as(url+"\nIndicator schema name mismatch.\nIndicator name = "+indicatorName)
+                .as(url + "\nIndicator schema name mismatch.\nIndicator name = " + indicatorName)
                 .isEqualTo(expectedSchema);
     }
 
 
-
-    @Test (dataProvider = "indicatorTypeStaticIndicator")
+    @Test(dataProvider = "indicatorTypeStaticIndicator")
     public void event_count_of_static_indicator_should_match_indicator_events_response(String indicator) {
         String alertId = staticIndicatorMap.get(indicator)[0];
         String indicatorId = staticIndicatorMap.get(indicator)[1];
         ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
-        JSONObject indicatorData =  restHelper.alerts().request().getRestApiResponseAsJsonObj(url);
+        JSONObject indicatorData = restHelper.alerts().request().getRestApiResponseAsJsonObj(url);
 
         try {
             String indicatorName = indicatorData.getString("name");
             int selectedIndicatorEventsNum = indicatorData.getInt("eventsNum");
 
             url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).events().url().withMaxSizeParameters();
-            JSONObject indicatorsEvents =  restHelper.alerts().request().getRestApiResponseAsJsonObj(url);
+            JSONObject indicatorsEvents = restHelper.alerts().request().getRestApiResponseAsJsonObj(url);
             JSONArray eventsList = indicatorsEvents.getJSONArray("events");
 
             assertThat(selectedIndicatorEventsNum)
-                    .as(url+"\nAlerts page indicators count is different from the events page. indicatorName = " +indicatorName)
+                    .as(url + "\nAlerts page indicators count is different from the events page. indicatorName = " + indicatorName)
                     .isEqualTo(eventsList.length())
                     .isGreaterThan(0);
 
             // TODO: Split this part to another different test.
-            for(int i=0 ; i<eventsList.length() ; i++){
-                if(indicator.equals("admin_changed_his_own_password")){
+            for (int i = 0; i < eventsList.length(); i++) {
+                if (indicator.equals("admin_changed_his_own_password")) {
                     Assert.assertTrue(eventsList.getJSONObject(i).getBoolean("isUserAdmin"), "User should be Admin for indicator '" + indicator);
                     Assert.assertEquals("user_password_changed", eventsList.getJSONObject(i).getString("operationType").toLowerCase(), "eventType not matched to indicator name. indicator: " + indicatorName);
                 } else {
@@ -339,7 +338,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
             }
 
         } catch (JSONException e) {
-            Assert.fail(url+"\n"+e.getMessage());
+            Assert.fail(url + "\n" + e.getMessage());
         }
     }
 
@@ -353,7 +352,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
             List<String> staticIndicatorNames = indicators.stream()
                     .filter(indicator -> indicator.getType().equals("STATIC_INDICATOR"))
                     .map(indicator -> indicator.getName())
-                    .collect(Collectors.toList());
+                    .collect(toList());
 
             assertThat(staticIndicatorNames)
                     .as(url + "\nStatic indicator name appears twice for the same alert." +
@@ -362,14 +361,6 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                     .doesNotHaveDuplicates();
         }
     }
-
-
-
-
-
-
-
-
 
 
     // todo: ask Yuval
@@ -385,13 +376,13 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         String indicatorId = distinctFeatureAggregationMap.get(indicator)[1];
 
         IndicatorResult actualIndicator = getIndicator(alertId, indicatorId);
-        JSONArray events = getEvents(alertId,indicatorId);
+        JSONArray events = getEvents(alertId, indicatorId);
 
         List<String> filePaths = new ArrayList<>();
-        for(int i=0 ; i<events.length() ; i++){
+        for (int i = 0; i < events.length(); i++) {
             String path = events.getJSONObject(i).getString("absoluteSrcFilePath");
 
-            if(!filePaths.contains(path) && !path.equals("null")){
+            if (!filePaths.contains(path) && !path.equals("null")) {
                 filePaths.add(path);
             }
         }
@@ -400,118 +391,62 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                 .as("anomaly value is not matched to the event's distinct paths")
                 .isEqualByComparingTo(filePaths.size());
     }
-//    //@Test - indicator not supported in 11.2
-//    public void highNumberOfDistinctFoldersOpenedTest() throws JSONException {
-//        List<String> filePaths = new ArrayList<>();
-//        String indicator = "high_number_of_distinct_folders_opened_attempts";
-//
-//        Assert.assertTrue(distinctFeatureAggregationMap.containsKey(indicator), "indicator '" + indicator + "' is not exist.");
-//
-//        String url = "/" + distinctFeatureAggregationMap.get(indicator)[0] + "/indicators/" + distinctFeatureAggregationMap.get(indicator)[1];
-//        String eventsUrl = url + "/events?pageSize=" + eventLimitSize +"&pageNumber=0";
-//        JSONObject indicatorJson = testManager.sendGetAlertsURL(url, printRequest);
-//        JSONObject indicatorsEvents = testManager.sendGetAlertsURL(eventsUrl, printRequest);
-//        JSONArray events = indicatorsEvents.getJSONArray("events");
-//        System.out.println("event count --> " + events.length());
-//        for(int i=0 ; i<events.length() ; i++){
-//            String operationType = events.getJSONObject(i).getString("operationType");
-//            if(operationType.equals("FOLDER_OPENED")){
-//                String path = events.getJSONObject(i).getString("absoluteSrcFolderFilePath");
-//                if(!filePaths.contains(path)){
-//                    filePaths.add(path);
-//                }
-//            }
-//        }
-//
-//        String anom = indicatorJson.getString("anomalyValue").split("\\.")[0];
-//        int anomalyValue = Integer.parseInt(anom);
-//
-//        if(filePaths.size() < anomalyValue) {
-//            if(events.length() == eventLimitSize){
-//                Assert.fail("Event count is reached the event limit. cannot verify the distinct folder open paths count.");
-//            }
-//        }
-//        Assert.assertEquals(filePaths.size(), anomalyValue, "anomalyValue do not match to event's distinct folders open");
-//    }
-//
-//    //@Test - indicator not supported in Netwitness UEBA 11.2
-//    public void highNumberOfDistinctSitesTest() {
-//        List<String> sitesNames = new ArrayList<>();
-//        String indicator = "high_number_of_distinct_sites";
-//        Assert.assertTrue(distinctFeatureAggregationMap.containsKey(indicator), "indicator '" + indicator + "' is not exist.");
-//
-//        String url = "/" + distinctFeatureAggregationMap.get(indicator)[0] + "/indicators/" + distinctFeatureAggregationMap.get(indicator)[1];
-//        String eventsUrl = url + "/events?pageSize=" + eventLimitSize + "&pageNumber=0";
-//        JSONObject indicatorJson = testManager.sendGetAlertsURL(url, printRequest);
-//        JSONObject indicatorsEvents = testManager.sendGetAlertsURL(eventsUrl, printRequest);
-//        JSONArray events = null;
-//        String eventId = null;
-//        String site = null;
-//        String anomalyValue = null;
-//
-//        try {
-//            events = indicatorsEvents.getJSONArray("events");
-//            anomalyValue = indicatorJson.getString("anomalyValue");
-//
-//            for(int i=0 ; i < events.length() ; i++) {
-//                eventId = events.getJSONObject(i).getString("id");
-//                site = events.getJSONObject(i).getString("site");
-//
-//                if(!sitesNames.contains(site)){
-//                    sitesNames.add(site);
-//                }
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//
-//            if(events == null) {
-//                Assert.fail("Cannot get the indicator's events.");
-//            }
-//            else if(eventId == null) {
-//                Assert.fail("Cannot get the event Id.");
-//            }
-//            else if(site == null){
-//                Assert.fail("Cannot get indicator's site. event url : " + url + "/events/" + eventId);
-//            }
-//
-//        }
-//
-//        Assert.assertEquals((int)Double.parseDouble(anomalyValue), sitesNames.size(),"Anomaly value is not equals to the amount of the distinct sites.");
-//    }
 
 
-    // TODO: need to correct for case of multicontext indicators: compare context and indicator name
     @Test
-    public void singleAppearanceOfScoreAggregationIndicatorInTheSameAlert(){
+    public void score_aggregation_indicator_is_unique_by_alertId_name_anomalyValue_and_context() {
         ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
-        for(AlertsStoredRecord alert : alerts) {
+        for (AlertsStoredRecord alert : alerts) {
             List<AlertsStoredRecord.Indicator> indicators = alert.getIndicatorsList();
-            Map<String,String> anomalyValuesOfScoredAggregation = new HashMap<>();
-            for(AlertsStoredRecord.Indicator indicator : indicators) {
-                if(indicator.getType().equals("SCORE_AGGREGATION")) {
-                    if (!anomalyValuesOfScoredAggregation.containsKey(indicator.getName())) {
-                        anomalyValuesOfScoredAggregation.put(indicator.getName(), indicator.getAnomalyValue());
-                    } else if (anomalyValuesOfScoredAggregation.get(indicator.getName()).equals(indicator.getAnomalyValue()) /* and context */) {
-                        Assert.fail(url+"\nSCORE_AGGREGATION indicator '" + indicator.getName() + "'\n" +
-                                "Appears twice with the same anomaly value for the same alert.\n" +
-                                "AlertId = " + alert.getId() + "\n" +
-                                "UserId = " + alert.getEntityDocumentId() + "\n");
-                    }
-                }
-            }
+
+            List<AlertsStoredRecord.Indicator> scoreAggIndicators = indicators.parallelStream()
+                    .filter(indicator -> indicator.getType().equals("SCORE_AGGREGATION"))
+                    .collect(toList());
+
+
+            Function<AlertsStoredRecord.Indicator, String> relevantContextValue =
+                    indicator -> {
+                        if (indicator.getContexts().containsKey("srcProcessFileName")) {
+                            return indicator.getContexts().get("srcProcessFileName").toString()
+                                    + "_" + indicator.getContexts().get("dstProcessFileName").toString();
+                        } else if (indicator.getContexts().containsKey("processFileName")) {
+                            return indicator.getContexts().get("processFileName").toString()
+                                    + "_" + indicator.getContexts().get("registryKeyGroup").toString();
+                        } else return "NONE";
+                    };
+
+            Predicate<List<AlertsStoredRecord.Indicator>> notSingleElementLists = e -> e.size() != 1;
+
+            // AlertsStoredRecords grouped by Indicator Name, Anomaly Value and Relevant Context Value
+            Map<String, Map<String, Map<String, List<AlertsStoredRecord.Indicator>>>> indicatorsByNameAndAnomalyValueAndContext =
+                    scoreAggIndicators.parallelStream()
+                            .collect(groupingBy(relevantContextValue,
+                                    groupingBy(AlertsStoredRecord.Indicator::getAnomalyValue,
+                                            groupingBy(AlertsStoredRecord.Indicator::getName))));
+
+            // taking these groups for validation.
+            List<List<AlertsStoredRecord.Indicator>> collectIndicatorGroups =
+                    indicatorsByNameAndAnomalyValueAndContext.values().stream()
+                            .flatMap(e -> e.values().stream())
+                            .flatMap(e -> e.values().stream())
+                            .collect(toList());
+
+            // there  must be unique indicator record per Indicator Name, Anomaly Value and Relevant Context Value,
+            // so getting the record groups that have many records.
+            List<List<AlertsStoredRecord.Indicator>> groupsWithMultipleIndicators =
+                    collectIndicatorGroups.stream()
+                            .filter(notSingleElementLists)
+                            .collect(toList());
+
+            assertThat(groupsWithMultipleIndicators)
+                    .as(url + "\nAlertId = " + alert.getId() + "\nAlert indicators with same name, anomaly_value and context:\n" + groupsWithMultipleIndicators)
+                    .isEmpty();
         }
     }
 
 
-
-
-
-
-
-
-
-    class HistoricalDataBucket{
+    class HistoricalDataBucket {
         String key;
         String value;
         boolean anomaly;
@@ -521,6 +456,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         final JsonElement json;
         final String type, schema, anomalyValue, name, historicalDataType;
         final long eventsNum;
+
         IndicatorResult(JsonElement json) {
             this.json = json;
             type = json.getAsJsonObject().get("type").getAsString();
@@ -548,14 +484,14 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     private IndicatorResult getIndicator(String alertId, String indicatorId) {
         ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
         RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
-        assertThat(response).as(url+"\nnull response").isNotNull();
+        assertThat(response).as(url + "\nnull response").isNotNull();
         return new IndicatorResult(new Gson().fromJson(response.getResultBody(), JsonElement.class));
     }
 
     private IndicatorResult getIndicatorWithHisoricalData(String alertId, String indicatorId) {
         ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
         RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
-        assertThat(response).as(url+"\nnull response").isNotNull();
+        assertThat(response).as(url + "\nnull response").isNotNull();
         return new IndicatorResult(new Gson().fromJson(response.getResultBody(), JsonElement.class));
     }
 
@@ -599,25 +535,11 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @DataProvider(name = "indicatorTypeScoreAggregation")
     public Object[][] getScoreAggregationType() {
         scoreAggregation = new Object[scoreAggregationIndicatorNames.size()][];
         List<String> asList = Lists.newArrayList(scoreAggregationIndicatorNames);
-        for(int i = 0; i < asList.size() ; i++) {
+        for (int i = 0; i < asList.size(); i++) {
             String[] arr = {asList.get(i)};
             scoreAggregation[i] = arr;
         }
@@ -629,7 +551,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     public Object[][] getStaticIndicatorType() {
         staticIndicator = new Object[staticIndicatorIndicatorNames.size()][];
         List<String> asList = Lists.newArrayList(staticIndicatorIndicatorNames);
-        for(int i = 0 ; i < asList.size() ; i++) {
+        for (int i = 0; i < asList.size(); i++) {
             String[] arr = {asList.get(i)};
             staticIndicator[i] = arr;
         }
@@ -641,7 +563,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     public Object[][] getFeatureAggregationType() {
         featureAggregation = new Object[featureAggregationIndicatorNames.size()][];
         List<String> asList = Lists.newArrayList(featureAggregationIndicatorNames);
-        for(int i = 0; i < asList.size() ; i++) {
+        for (int i = 0; i < asList.size(); i++) {
             String[] arr = {asList.get(i)};
             featureAggregation[i] = arr;
         }
@@ -653,7 +575,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     public Object[][] getDistictFeatureAggregationType() {
         distinctFeatureAggregation = new Object[distinctFeatureAggregationIndicatorNames.size()][];
         List<String> asList = Lists.newArrayList(distinctFeatureAggregationIndicatorNames);
-        for(int i = 0; i < asList.size() ; i++) {
+        for (int i = 0; i < asList.size(); i++) {
             String[] arr = {asList.get(i)};
             distinctFeatureAggregation[i] = arr;
         }
@@ -664,7 +586,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     @DataProvider(name = "allIndicatorsDataProvider")
     public Object[][] getAllActualIndicators() {
         allExistingIndicatorsObj = new Object[allActualIndicatorNames.size()][];
-        for(int i = 0; i < allActualIndicatorNames.size() ; i++){
+        for (int i = 0; i < allActualIndicatorNames.size(); i++) {
             String[] arr = {allActualIndicatorNames.get(i)};
             allExistingIndicatorsObj[i] = arr;
         }
@@ -679,31 +601,25 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     }
 
 
-
-
-
     private void initTestingData() {
         indicatorsDistinctNames = allAlerts.stream()
                 .flatMap(e -> Arrays.stream(e.getIndicatorsName()))
                 .distinct()
-                .collect(Collectors.toList());
+                .collect(toList());
 
-        for(AlertsStoredRecord alert : allAlerts){
+        for (AlertsStoredRecord alert : allAlerts) {
             List<AlertsStoredRecord.Indicator> indicatorsList = alert.getIndicatorsList();
-            if(indicatorsList != null && indicatorsList.size() > 0){
-                for(AlertsStoredRecord.Indicator indicator : indicatorsList){
+            if (indicatorsList != null && indicatorsList.size() > 0) {
+                for (AlertsStoredRecord.Indicator indicator : indicatorsList) {
                     String indicatorType = indicator.getType();
-                    if(indicatorType.equals("SCORE_AGGREGATION")){
-                        scoreAggregationMap.putIfAbsent(indicator.getName(), new String[] {alert.getId(), indicator.getId()});
-                    }
-                    else if(indicatorType.equals("STATIC_INDICATOR")){
-                        staticIndicatorMap.putIfAbsent(indicator.getName(), new String[] {alert.getId(), indicator.getId()});
-                    }
-                    else if(indicatorType.equals("FEATURE_AGGREGATION") && !indicator.getName().contains("distinct")){
-                        featureAggregationMap.putIfAbsent(indicator.getName(), new String[] {alert.getId(), indicator.getId()});
-                    }
-                    else if(indicatorType.equals("FEATURE_AGGREGATION") && indicator.getName().contains("distinct")){
-                        distinctFeatureAggregationMap.putIfAbsent(indicator.getName(), new String[] {alert.getId(), indicator.getId()});
+                    if (indicatorType.equals("SCORE_AGGREGATION")) {
+                        scoreAggregationMap.putIfAbsent(indicator.getName(), new String[]{alert.getId(), indicator.getId()});
+                    } else if (indicatorType.equals("STATIC_INDICATOR")) {
+                        staticIndicatorMap.putIfAbsent(indicator.getName(), new String[]{alert.getId(), indicator.getId()});
+                    } else if (indicatorType.equals("FEATURE_AGGREGATION") && !indicator.getName().contains("distinct")) {
+                        featureAggregationMap.putIfAbsent(indicator.getName(), new String[]{alert.getId(), indicator.getId()});
+                    } else if (indicatorType.equals("FEATURE_AGGREGATION") && indicator.getName().contains("distinct")) {
+                        distinctFeatureAggregationMap.putIfAbsent(indicator.getName(), new String[]{alert.getId(), indicator.getId()});
                     } else {
                         throw new RuntimeException("Missing type: " + indicatorType);
                     }
