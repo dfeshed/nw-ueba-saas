@@ -358,25 +358,24 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await typeIn(PILL_SELECTORS.metaSelectInput, 'c. ');
   });
 
-  test('it does not select meta if a trailing SPACE is entered and there is more than one option',
-    async function(assert) {
-      assert.expect(3);
-      this.set('metaOptions', metaOptions);
-      this.set('activePillTab', AFTER_OPTION_TAB_META);
-      this.set('handleMessage', (type) => {
-        assert.equal(type, MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED); // Will be called as many times as chars are typed in
-      });
-      await render(hbs`
-        {{query-container/pill-meta
-          isActive=true
-          activePillTab=activePillTab
-          sendMessage=(action handleMessage)
-          metaOptions=metaOptions
-        }}
-      `);
-      await typeIn(PILL_SELECTORS.metaSelectInput, 'c. ');// Will match 2 items (c.a and c.b)
-      // return settled();
+  test('it does not select meta if a trailing SPACE is entered and there is more than one option', async function(assert) {
+    assert.expect(3);
+    this.set('metaOptions', metaOptions);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED); // Will be called as many times as chars are typed in
     });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+      }}
+    `);
+    await typeIn(PILL_SELECTORS.metaSelectInput, 'c. ');// Will match 2 items (c.a and c.b)
+    // return settled();
+  });
 
   test('it selects meta if a trailing SPACE is entered and there is an exact match', async function(assert) {
     const done = assert.async();
@@ -572,217 +571,213 @@ module('Integration | Component | Pill Meta', function(hooks) {
     assert.ok(find(PILL_SELECTORS.powerSelectOption), 'meta option should be highlighted');
   });
 
-  test('Highlight will move from meta options list to Advanced Options list and back when when the first option in power select is invalid',
-    async function(assert) {
-      // make one option invalid
-      const META_OPTIONS2 = [...metaOptions];
-      // option 'c.1'
-      META_OPTIONS2[3] = {
-        ...META_OPTIONS2[3],
+  test('Highlight will move from meta options list to Advanced Options list and back when when the first option in power select is invalid', async function(assert) {
+    // make one option invalid
+    const META_OPTIONS2 = [...metaOptions];
+    // option 'c.1'
+    META_OPTIONS2[3] = {
+      ...META_OPTIONS2[3],
+      isIndexedByNone: true,
+      disabled: true,
+      isIndexedByKey: false,
+      isIndexedByValue: false
+    };
+
+    this.set('metaOptions', META_OPTIONS2);
+
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        isFirstPill=false
+        metaOptions=metaOptions
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    // Reduce options by typing
+    // there should be two options, 'c.1' and 'c.2'
+    // with one of them disabled
+    await typeInSearch('c.');
+
+    // Arrow down through the one valid option
+    // should go to Advanced Options
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_DOWN);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'Only one option shall be highlighted');
+    assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_FREE_FORM_LABEL,
+      'Free-Form Filter Advanced Option was not highlighted');
+
+    // Arrow up
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
+
+    // Should be back in meta options list
+    assert.notOk(find(PILL_SELECTORS.powerSelectAfterOptionHighlight), 'No Advanced Options shall be highlighted');
+    assert.ok(find(PILL_SELECTORS.powerSelectOption), 'Meta option shall be highlighted');
+  });
+
+  test('Highlight will move from meta options list to Advanced Options list and back when the last option in power select is invalid', async function(assert) {
+    // make one option invalid
+    const META_OPTIONS2 = [...metaOptions];
+    // option 'c.2'
+    META_OPTIONS2[4] = {
+      ...META_OPTIONS2[4],
+      isIndexedByNone: true,
+      disabled: true,
+      isIndexedByKey: false,
+      isIndexedByValue: false
+    };
+
+    this.set('metaOptions', META_OPTIONS2);
+
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        isFirstPill=false
+        metaOptions=metaOptions
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    // Reduce options by typing
+    // there should be two options, 'c.1' and 'c.2'
+    // with one of them disabled
+    await typeInSearch('c.');
+
+    // Arrow down through the one valid option
+    // should go to Advanced Options
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_DOWN);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'Only one option shall be highlighted');
+    assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_FREE_FORM_LABEL,
+      'Free-Form Filter Advanced Option was not highlighted');
+
+    // Arrow up
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
+
+    // Should be back in meta options list
+    assert.notOk(find(PILL_SELECTORS.powerSelectAfterOptionHighlight), 'No Advanced Options shall be highlighted');
+    assert.ok(find(PILL_SELECTORS.powerSelectOption), 'Meta option shall be highlighted');
+  });
+
+  test('Highlight will move from meta options list to Advanced Options and back when power select contains valid and invalid options', async function(assert) {
+    // random length for meta options array
+    const randomLength = Math.floor(Math.random() * (metaOptions.length / 2)) + 3;
+    const META_OPTIONS2 = [...metaOptions].slice(0, randomLength);
+    // make a random number of options invalid
+    const randomNumber = Math.floor(Math.random() * (META_OPTIONS2.length / 2)) + 1;
+    for (let i = 0; i < randomNumber; i++) {
+      META_OPTIONS2[i] = {
+        ...META_OPTIONS2[i],
         isIndexedByNone: true,
         disabled: true,
         isIndexedByKey: false,
         isIndexedByValue: false
       };
+    }
 
-      this.set('metaOptions', META_OPTIONS2);
+    // make at least one option valid
+    META_OPTIONS2[randomNumber + 1] = {
+      ...META_OPTIONS2[randomNumber + 1],
+      isIndexedByNone: false,
+      disabled: false,
+      isIndexedByKey: true,
+      isIndexedByValue: false
+    };
 
-      await render(hbs`
-        {{query-container/pill-meta
-          isActive=true
-          isFirstPill=false
-          metaOptions=metaOptions
-        }}
-      `);
-      await clickTrigger(PILL_SELECTORS.meta);
-      // Reduce options by typing
-      // there should be two options, 'c.1' and 'c.2'
-      // with one of them disabled
-      await typeInSearch('c.');
+    const validMetaCount = META_OPTIONS2.filter(filterValidMeta).length;
+    this.set('metaOptions', META_OPTIONS2);
 
-      // Arrow down through the one valid option
-      // should go to Advanced Options
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        isFirstPill=false
+        metaOptions=metaOptions
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    // Arrow down through the valid options
+    // should go to Advanced Options and highlight Free-Form Filter
+    for (let i = 0; i <= validMetaCount; i++) {
       await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_DOWN);
-      assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'Only one option shall be highlighted');
-      assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_FREE_FORM_LABEL,
-        'Free-Form Filter Advanced Option was not highlighted');
+    }
+    assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_FREE_FORM_LABEL,
+      'Free-Form Filter Advanced Option was not highlighted');
 
-      // Arrow up
-      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
-      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
+    // Arrow up
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
 
-      // Should be back in meta options list
-      assert.notOk(find(PILL_SELECTORS.powerSelectAfterOptionHighlight), 'No Advanced Options shall be highlighted');
-      assert.ok(find(PILL_SELECTORS.powerSelectOption), 'Meta option shall be highlighted');
-    });
+    // Should be back in meta options list
+    assert.notOk(find(PILL_SELECTORS.powerSelectAfterOptionHighlight), 'No Advanced Options shall be highlighted');
+    assert.ok(find(PILL_SELECTORS.powerSelectOption), 'Meta option shall be highlighted');
+  });
 
-  test('Highlight will move from meta options list to Advanced Options list and back when the last option in power select is invalid',
-    async function(assert) {
-      // make one option invalid
-      const META_OPTIONS2 = [...metaOptions];
-      // option 'c.2'
-      META_OPTIONS2[4] = {
-        ...META_OPTIONS2[4],
-        isIndexedByNone: true,
-        disabled: true,
-        isIndexedByKey: false,
-        isIndexedByValue: false
-      };
+  test('Highlight will move to Advanced Options list when power select contains invalid meta options only', async function(assert) {
+    // make options invalid
+    const META_OPTIONS2 = [...metaOptions];
+    // option 'alias.ip'
+    META_OPTIONS2[9] = {
+      ...META_OPTIONS2[9],
+      isIndexedByNone: true,
+      disabled: true,
+      isIndexedByKey: false,
+      isIndexedByValue: false
+    };
+    // option 'alias.ipv6'
+    META_OPTIONS2[10] = {
+      ...META_OPTIONS2[10],
+      isIndexedByNone: true,
+      disabled: true,
+      isIndexedByKey: false,
+      isIndexedByValue: false
+    };
+    // option 'alias.mac'
+    META_OPTIONS2[11] = {
+      ...META_OPTIONS2[11],
+      isIndexedByNone: true,
+      disabled: true,
+      isIndexedByKey: false,
+      isIndexedByValue: false
+    };
 
-      this.set('metaOptions', META_OPTIONS2);
+    this.set('metaOptions', META_OPTIONS2);
 
-      await render(hbs`
-        {{query-container/pill-meta
-          isActive=true
-          isFirstPill=false
-          metaOptions=metaOptions
-        }}
-      `);
-      await clickTrigger(PILL_SELECTORS.meta);
-      // Reduce options by typing
-      // there should be two options, 'c.1' and 'c.2'
-      // with one of them disabled
-      await typeInSearch('c.');
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        isFirstPill=false
+        metaOptions=metaOptions
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    // Reduce options by typing
+    // there should be three options
+    // 'alias.ip', 'alias.ipv6', 'alias.mac'
+    // with all of them disabled
+    await typeInSearch('alias.');
 
-      // Arrow down through the one valid option
-      // should go to Advanced Options
-      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_DOWN);
-      assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'Only one option shall be highlighted');
-      assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_FREE_FORM_LABEL,
-        'Free-Form Filter Advanced Option was not highlighted');
+    // should go to Advanced Options
+    assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_TEXT_LABEL,
+      'Text Filter Advanced Option shall be highlighted');
 
-      // Arrow up
-      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
-      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
+    // Arrow up
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
+    // Should be back in meta options list
+    assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_FREE_FORM_LABEL,
+      'Free-Form Filter Advanced Option shall be highlighted');
 
-      // Should be back in meta options list
-      assert.notOk(find(PILL_SELECTORS.powerSelectAfterOptionHighlight), 'No Advanced Options shall be highlighted');
-      assert.ok(find(PILL_SELECTORS.powerSelectOption), 'Meta option shall be highlighted');
-    });
+    // Arrow up again
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
+    // should stay in Advanced Options
+    assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_FREE_FORM_LABEL,
+      'Free-Form Filter Advanced Option shall be highlighted');
 
-  test('Highlight will move from meta options list to Advanced Options and back when power select contains valid and invalid options',
-    async function(assert) {
-      // random length for meta options array
-      const randomLength = Math.floor(Math.random() * (metaOptions.length / 2)) + 3;
-      const META_OPTIONS2 = [...metaOptions].slice(0, randomLength);
-      // make a random number of options invalid
-      const randomNumber = Math.floor(Math.random() * (META_OPTIONS2.length / 2)) + 1;
-      for (let i = 0; i < randomNumber; i++) {
-        META_OPTIONS2[i] = {
-          ...META_OPTIONS2[i],
-          isIndexedByNone: true,
-          disabled: true,
-          isIndexedByKey: false,
-          isIndexedByValue: false
-        };
-      }
-
-      // make at least one option valid
-      META_OPTIONS2[randomNumber + 1] = {
-        ...META_OPTIONS2[randomNumber + 1],
-        isIndexedByNone: false,
-        disabled: false,
-        isIndexedByKey: true,
-        isIndexedByValue: false
-      };
-
-      const validMetaCount = META_OPTIONS2.filter(filterValidMeta).length;
-      this.set('metaOptions', META_OPTIONS2);
-
-      await render(hbs`
-        {{query-container/pill-meta
-          isActive=true
-          isFirstPill=false
-          metaOptions=metaOptions
-        }}
-      `);
-
-      await clickTrigger(PILL_SELECTORS.meta);
-
-      // Arrow down through the valid options
-      // should go to Advanced Options and highlight Free-Form Filter
-      for (let i = 0; i <= validMetaCount; i++) {
-        await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_DOWN);
-      }
-      assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_FREE_FORM_LABEL,
-        'Free-Form Filter Advanced Option was not highlighted');
-
-      // Arrow up
-      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
-      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
-
-      // Should be back in meta options list
-      assert.notOk(find(PILL_SELECTORS.powerSelectAfterOptionHighlight), 'No Advanced Options shall be highlighted');
-      assert.ok(find(PILL_SELECTORS.powerSelectOption), 'Meta option shall be highlighted');
-    });
-
-  test('Highlight will move to Advanced Options list when power select contains invalid meta options only',
-    async function(assert) {
-      // make options invalid
-      const META_OPTIONS2 = [...metaOptions];
-      // option 'alias.ip'
-      META_OPTIONS2[9] = {
-        ...META_OPTIONS2[9],
-        isIndexedByNone: true,
-        disabled: true,
-        isIndexedByKey: false,
-        isIndexedByValue: false
-      };
-      // option 'alias.ipv6'
-      META_OPTIONS2[10] = {
-        ...META_OPTIONS2[10],
-        isIndexedByNone: true,
-        disabled: true,
-        isIndexedByKey: false,
-        isIndexedByValue: false
-      };
-      // option 'alias.mac'
-      META_OPTIONS2[11] = {
-        ...META_OPTIONS2[11],
-        isIndexedByNone: true,
-        disabled: true,
-        isIndexedByKey: false,
-        isIndexedByValue: false
-      };
-
-      this.set('metaOptions', META_OPTIONS2);
-
-      await render(hbs`
-        {{query-container/pill-meta
-          isActive=true
-          isFirstPill=false
-          metaOptions=metaOptions
-        }}
-      `);
-      await clickTrigger(PILL_SELECTORS.meta);
-      // Reduce options by typing
-      // there should be three options
-      // 'alias.ip', 'alias.ipv6', 'alias.mac'
-      // with all of them disabled
-      await typeInSearch('alias.');
-
-      // should go to Advanced Options
-      assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_TEXT_LABEL,
-        'Text Filter Advanced Option shall be highlighted');
-
-      // Arrow up
-      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
-      // Should be back in meta options list
-      assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_FREE_FORM_LABEL,
-        'Free-Form Filter Advanced Option shall be highlighted');
-
-      // Arrow up again
-      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
-      // should stay in Advanced Options
-      assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_FREE_FORM_LABEL,
-        'Free-Form Filter Advanced Option shall be highlighted');
-
-      // Arrow up again
-      await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
-      // should stay in Advanced Options
-      assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_FREE_FORM_LABEL,
-        'Free-Form Filter Advanced Option shall be highlighted');
-    });
+    // Arrow up again
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_UP);
+    // should stay in Advanced Options
+    assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_FREE_FORM_LABEL,
+      'Free-Form Filter Advanced Option shall be highlighted');
+  });
 
   test('Highlight will NOT move from Advanced Options to main list if all options have been filtered out', async function(assert) {
     this.set('metaOptions', metaOptions);
@@ -965,12 +960,18 @@ module('Integration | Component | Pill Meta', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionDisabled).length, 1, 'incorrect number of disabled items');
   });
 
-  test('it removes leading open parens', async function(assert) {
+  test('it broadcasts a message to insert parens', async function(assert) {
+    const done = assert.async();
     this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (type) => {
+      assert.equal(type, MESSAGE_TYPES.PILL_OPEN_PAREN, 'Correct message sent up');
+      done();
+    });
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
         metaOptions=metaOptions
+        sendMessage=(action handleMessage)
       }}
     `);
     await clickTrigger(PILL_SELECTORS.meta);

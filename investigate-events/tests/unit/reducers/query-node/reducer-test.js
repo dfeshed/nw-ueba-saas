@@ -1,6 +1,6 @@
 import { test, module } from 'qunit';
 import Immutable from 'seamless-immutable';
-
+import { CLOSE_PAREN, OPEN_PAREN, QUERY_FILTER } from 'investigate-events/constants/pill';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import reducer from 'investigate-events/reducers/investigate/query-node/reducer';
@@ -1155,4 +1155,108 @@ test('SET_RECENT_QUERIES sets recentQueriesCallInProgress', function(assert) {
   assert.notOk(resultAfterSuccess.recentQueriesCallInProgress, 'recentQueriesCallInProgress is not being set to false');
 
 
+});
+
+test('INSERT_PARENS adds parens if there are no existing pills', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataEmpty()
+    .build()
+    .investigate
+    .queryNode;
+  const action = {
+    type: ACTION_TYPES.INSERT_PARENS,
+    payload: {
+      position: 0
+    }
+  };
+  const result = reducer(state, action);
+
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].type, OPEN_PAREN, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[1].type, CLOSE_PAREN, 'pillsData item is in the right position');
+});
+
+test('INSERT_PARENS adds parens before existing pills', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataPopulated()// 2 existing pills
+    .build()
+    .investigate
+    .queryNode;
+  const action = {
+    type: ACTION_TYPES.INSERT_PARENS,
+    payload: {
+      position: 0
+    }
+  };
+  const result = reducer(state, action);
+
+  assert.equal(result.pillsData.length, 4, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].type, OPEN_PAREN, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[1].type, CLOSE_PAREN, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[2].type, QUERY_FILTER, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[3].type, QUERY_FILTER, 'pillsData item is in the right position');
+});
+
+test('INSERT_PARENS adds parens in between existing pills', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataPopulated()// 2 existing pills
+    .build()
+    .investigate
+    .queryNode;
+  const action = {
+    type: ACTION_TYPES.INSERT_PARENS,
+    payload: {
+      position: 1
+    }
+  };
+  const result = reducer(state, action);
+
+  assert.equal(result.pillsData.length, 4, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].type, QUERY_FILTER, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[1].type, OPEN_PAREN, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[2].type, CLOSE_PAREN, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[3].type, QUERY_FILTER, 'pillsData item is in the right position');
+});
+
+test('INSERT_PARENS adds parens at the end of existing pills', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataPopulated()// 2 existing pills
+    .build()
+    .investigate
+    .queryNode;
+  const action = {
+    type: ACTION_TYPES.INSERT_PARENS,
+    payload: {
+      position: 2
+    }
+  };
+  const result = reducer(state, action);
+
+  assert.equal(result.pillsData.length, 4, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].type, QUERY_FILTER, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[1].type, QUERY_FILTER, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[2].type, OPEN_PAREN, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[3].type, CLOSE_PAREN, 'pillsData item is in the right position');
+});
+
+test('INSERT_PARENS adds parens into an edited, existing pill', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataPopulated()// 2 existing pills
+    .markEditing(['2'])// the last item is being edited
+    .build()
+    .investigate
+    .queryNode;
+  const action = {
+    type: ACTION_TYPES.INSERT_PARENS,
+    payload: {
+      position: 1
+    }
+  };
+  const result = reducer(state, action);
+
+  assert.equal(result.pillsData.length, 4, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].type, QUERY_FILTER, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[1].type, OPEN_PAREN, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[2].type, QUERY_FILTER, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[3].type, CLOSE_PAREN, 'pillsData item is in the right position');
 });

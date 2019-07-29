@@ -297,7 +297,8 @@ export default Component.extend({
       [MESSAGE_TYPES.AFTER_OPTIONS_TAB_TOGGLED]: ({ data, dataSource }) => this._toggleActiveTab(data, dataSource),
       [MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED]: ({ data, dataSource }) => this._recentQueryTextEntered(data, dataSource),
       [MESSAGE_TYPES.RECENT_QUERIES_ESCAPE_KEY]: () => this._cancelPill(),
-      [MESSAGE_TYPES.RECENT_QUERY_SELECTED]: (data) => this._recentQuerySelected(data)
+      [MESSAGE_TYPES.RECENT_QUERY_SELECTED]: (data) => this._recentQuerySelected(data),
+      [MESSAGE_TYPES.PILL_OPEN_PAREN]: () => this._insertParens()
     });
 
     if (this.get('isExistingPill')) {
@@ -1088,6 +1089,13 @@ export default Component.extend({
    */
   _getStringFromSource(sources) {
     return (key) => sources.hasOwnProperty(key) ? sources[key] : null;
+  },
+
+  /**
+   * Broadcast desire to insert parens wrapping current position.
+   */
+  _insertParens() {
+    this._broadcast(MESSAGE_TYPES.PILL_OPEN_PAREN);
   },
 
   // ************************ EPS TAB FUNCTIONALITY *************************  //

@@ -832,6 +832,24 @@
     border: none;
     background-color: transparent;
   }
+
+  .open-paren,
+  .close-paren {
+    font-size: 2rem;
+    font-weight: 100;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
+    height: 30px;
+    line-height: 0.8;
+    box-sizing: border-box;
+    cursor: default;
+    // TODO - Hover style temporary. Mainly to test out possible styles
+    // for highlighting the pair of parens
+    &:hover {
+      border-color: transparent transparent yellow transparent;
+    }
+  }
 }
 
 // *********************** ember-power-select styles ************************ //

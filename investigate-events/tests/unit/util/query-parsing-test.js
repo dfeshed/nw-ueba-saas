@@ -3,6 +3,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { setupTest } from 'ember-qunit';
 import {
   createFilter,
+  createParens,
   hasComplexText,
   isSearchTerm,
   parsePillDataFromUri,
@@ -12,7 +13,9 @@ import {
 } from 'investigate-events/util/query-parsing';
 import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
 import {
+  CLOSE_PAREN,
   COMPLEX_FILTER,
+  OPEN_PAREN,
   QUERY_FILTER,
   SEARCH_TERM_MARKER,
   TEXT_FILTER
@@ -607,5 +610,14 @@ module('Unit | Util | Query Parsing', function(hooks) {
     };
     const result = convertTextToPillData({ queryText: text, availableMeta: DEFAULT_LANGUAGES2 });
     assert.deepEqual(result, { meta, operator, value: randomStr }, 'incorrect object returned');
+  });
+
+  test('createParens creates an open and a close paren', function(assert) {
+    const result = createParens();
+    assert.ok(Array.isArray(result), 'should be an array');
+    assert.equal(result.length, 2, 'should have 2 elements in the array');
+    const [open, close] = result;
+    assert.equal(open.type, OPEN_PAREN, 'wrong type, should be open paren');
+    assert.equal(close.type, CLOSE_PAREN, 'wrong type, should be close paren');
   });
 });

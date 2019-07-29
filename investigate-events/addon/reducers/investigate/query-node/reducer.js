@@ -6,6 +6,7 @@ import { isEmpty } from '@ember/utils';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { createQueryHash } from 'investigate-events/util/query-hash';
+import { createParens } from 'investigate-events/util/query-parsing';
 import { pillBeingEdited, focusedPill } from './selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 
@@ -649,6 +650,7 @@ export default handleActions({
       }
     });
   },
+
   [ACTION_TYPES.SET_RECENT_QUERIES]: (state, action) => {
     return handle(state, action, {
       start: (s) => {
@@ -676,6 +678,47 @@ export default handleActions({
         }
       }
     });
-  }
+  },
 
+  [ACTION_TYPES.INSERT_PARENS]: (state, { payload }) => {
+    let pd;
+    const { position } = payload;
+    const [open, close] = createParens();
+    // assign ids to the new parens
+    open.id = _.uniqueId(ID_PREFIX);
+    close.id = _.uniqueId(ID_PREFIX);
+    // match-up inserted parens
+    // open.twinId = close.id;
+    // close.twinId = open.id;
+
+    if (state.pillsData.length === 0) {
+      // no other pills, insert open and close parens into pillsData
+      pd = [
+        open,
+        close
+      ];
+    } else {
+      if (state.pillsData[position] && state.pillsData[position].isEditing) {
+        // we are editing a pill that we now want to convert to open/close
+        // parens. Insert open and close parens into pillsData, wrapping the
+        // pill that was being edited
+        pd = [
+          ...state.pillsData.slice(0, position),
+          open,
+          state.pillsData[position],
+          close,
+          ...state.pillsData.slice(position + 1)
+        ];
+      } else {
+        pd = [
+          // insert open and close parens into pillsData at the desired position
+          ...state.pillsData.slice(0, position),
+          open,
+          close,
+          ...state.pillsData.slice(position)
+        ];
+      }
+    }
+    return state.set('pillsData', Immutable.from(pd));
+  }
 }, _initialState);

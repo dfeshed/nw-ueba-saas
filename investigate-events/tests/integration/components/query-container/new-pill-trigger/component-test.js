@@ -21,6 +21,7 @@ const ESCAPE_KEY = KEY_MAP.escape.code;
 const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
 const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
 const SPACE_KEY = KEY_MAP.space.code;
+const OPEN_PAREN = KEY_MAP.openParen.key;
 
 module('Integration | Component | New Pill Trigger', function(hooks) {
   setupRenderingTest(hooks, {
@@ -368,5 +369,27 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     await toggleTab(PILL_SELECTORS.metaSelectInput);
 
     await selectChoose(PILL_SELECTORS.recentQuery, 'medium = 32');
+  });
+
+  test('it broadcasts a message when an open paren is typed', async function(assert) {
+    const done = assert.async();
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (messageType, data, position) => {
+      if (messageType === MESSAGE_TYPES.PILL_OPEN_PAREN) {
+        assert.deepEqual(data, undefined, 'should not include pill data');
+        assert.equal(position, 1, 'correct position number');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        metaOptions=metaOptions
+        newPillPosition=1
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await click(PILL_SELECTORS.newPillTrigger);
+    await focus(PILL_SELECTORS.metaTrigger);
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', OPEN_PAREN);
   });
 });

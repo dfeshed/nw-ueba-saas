@@ -278,3 +278,10 @@ export const resetGuidedPill = (pillData) => ({
     pillData
   }
 });
+
+export const addParens = ({ position }) => ({
+  type: ACTION_TYPES.INSERT_PARENS,
+  payload: {
+    position
+  }
+});

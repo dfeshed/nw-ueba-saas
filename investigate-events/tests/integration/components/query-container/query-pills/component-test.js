@@ -64,6 +64,9 @@ const e = {
     }
   }
 };
+
+const trim = (text) => text.replace(/\s+/g, '').trim();
+
 const wormhole = 'wormhole-context-menu';
 
 let setState, contextEventListenerCallback;
@@ -2647,4 +2650,45 @@ module('Integration | Component | Query Pills', function(hooks) {
 
   });
 
+  test('Entering an open paren will insert a pair of parens', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .build();
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', '(');
+    assert.ok(find(PILL_SELECTORS.openParen), 'Missing open paren');
+    assert.ok(find(PILL_SELECTORS.closeParen), 'Missing close paren');
+  });
+
+  test('Can create a new pill inside a pair of parens', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .build();
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', '(');
+    assert.ok(find(PILL_SELECTORS.metaInput), 'Missing active/open meta');
+    // Create a pill
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);
+    await selectChoose(PILL_SELECTORS.operatorTrigger, '=');
+    await typeIn(PILL_SELECTORS.valueSelectInput, 'b');
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+    // Test that new pill is in between open and close parens, and is focused.
+    const items = document.querySelectorAll('.query-pills > div');
+    // NPT, OP, NPT, Pill, NPT, CP, NPT
+    assert.equal(items.length, 7, 'Incorrect number of query items');
+    assert.equal(trim(items[1].textContent), '(', 'Should be an open paren');
+    assert.equal(trim(items[3].textContent), 'a=\'b\'', 'Should be correct pill text');
+    assert.ok(items[3].getAttribute('class').includes('is-focused'), 'Should be focused');
+    assert.equal(trim(items[5].textContent), ')', 'Should be a close paren');
+  });
 });

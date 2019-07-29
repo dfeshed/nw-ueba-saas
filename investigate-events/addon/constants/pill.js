@@ -5,10 +5,12 @@ export const AFTER_OPTION_TEXT_UNAVAILABLE_LABEL = 'Text Filter is unavailable. 
 export const AFTER_OPTION_QUERY_LABEL = 'Query Filter';
 export const AFTER_OPTION_TAB_META = 'meta';
 export const AFTER_OPTION_TAB_RECENT_QUERIES = 'recent queries';
+export const CLOSE_PAREN = 'close-paren';
 // TODO: Removing "!" for now as it's causing issues with "!=" being flagged as
 // complex.
 export const COMPLEX_OPERATORS = ['<=', '<', '>=', '>', '&&', '||', '(', ')', ',', '-', 'AND', 'NOT', 'OR', 'length', 'regex'];
 export const COMPLEX_FILTER = 'complex';
+export const OPEN_PAREN = 'open-paren';
 export const OPERATORS = ['!exists', 'exists', 'contains', 'begins', 'ends', '!=', '='];
 export const QUERY_FILTER = 'query';
 export const SEARCH_TERM_MARKER = '\u02F8'; // RAISED COLON "˸"

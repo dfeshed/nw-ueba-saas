@@ -8,20 +8,28 @@
     startTriggeredPosition=startTriggeredPosition
   }}
 
-  {{#if pillData.complexFilterText}}
+  {{#if (eq pillData.type COMPLEX_FILTER)}}
     {{query-container/complex-pill
       pillData=(readonly pillData)
       sendMessage=(action 'handleMessage')
       position=index
       isActive=pillData.isEditing
     }}
-  {{else if pillData.searchTerm}}
+
+  {{else if (eq pillData.type TEXT_FILTER)}}
     {{query-container/text-pill
       isActive=pillData.isEditing
       pillData=(readonly pillData)
       position=index
       sendMessage=(action 'handleMessage')
     }}
+
+  {{else if (eq pillData.type CLOSE_PAREN)}}
+    {{query-container/close-paren}}
+
+  {{else if (eq pillData.type OPEN_PAREN)}}
+    {{query-container/open-paren}}
+
   {{else}}
     {{query-container/query-pill
       metaOptions=metaOptions

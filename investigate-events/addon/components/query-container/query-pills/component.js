@@ -22,6 +22,7 @@ import {
   addFreeFormFilter,
   addGuidedPill,
   addGuidedPillFocus,
+  addParens,
   addTextFilter,
   batchAddPills,
   deleteGuidedPill,
@@ -38,6 +39,12 @@ import {
 import { hasMinimumCoreServicesVersionForTextSearch } from 'investigate-events/reducers/investigate/services/selectors';
 import { getRecentQueries } from 'investigate-events/actions/initialization-creators';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import {
+  CLOSE_PAREN,
+  COMPLEX_FILTER,
+  OPEN_PAREN,
+  TEXT_FILTER
+} from 'investigate-events/constants/pill';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -57,6 +64,7 @@ const dispatchToActions = {
   addFreeFormFilter,
   addGuidedPill,
   addGuidedPillFocus,
+  addParens,
   addTextFilter,
   batchAddPills,
   deleteGuidedPill,
@@ -181,7 +189,7 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   init() {
-    this._super(arguments);
+    this._super(...arguments);
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL]: (data) => this._deletePressedOnFocusedPill(data),
       [MESSAGE_TYPES.ENTER_PRESSED_ON_FOCUSED_PILL]: (pillData) => this._enterPressedOnFocusedPill(pillData),
@@ -206,7 +214,14 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.CREATE_FREE_FORM_PILL]: (data, position) => this._createFreeFormPill(data, position),
       [MESSAGE_TYPES.CREATE_TEXT_PILL]: (data, position) => this._createTextPill(data, position),
       [MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT]: (data) => this._fetchRecentQueries(data),
-      [MESSAGE_TYPES.RECENT_QUERY_PILL_CREATED]: (data, position) => this._recentQueryPillCreated(data, position)
+      [MESSAGE_TYPES.RECENT_QUERY_PILL_CREATED]: (data, position) => this._recentQueryPillCreated(data, position),
+      [MESSAGE_TYPES.PILL_OPEN_PAREN]: (data, position) => this._insertParens(position)
+    });
+    this.setProperties({
+      CLOSE_PAREN,
+      COMPLEX_FILTER,
+      OPEN_PAREN,
+      TEXT_FILTER
     });
   },
 
@@ -582,6 +597,13 @@ const QueryPills = RsaContextMenu.extend({
     const pills = transformTextToPillData(data, this.get('metaOptions'), false, true);
     this.send('batchAddPills', { pillsData: pills, initialPosition: position });
     this._pillsExited();
+  },
+
+  _insertParens(position) {
+    // inserting parens will move the current pill one position to the right
+    const newPosition = position + 1;
+    this.set('startTriggeredPosition', newPosition);
+    this.send('addParens', { position });
   }
 });
 

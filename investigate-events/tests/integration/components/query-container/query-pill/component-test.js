@@ -34,6 +34,7 @@ const BACKSPACE_KEY = KEY_MAP.backspace.code;
 const TAB_KEY = KEY_MAP.tab.code;
 const SPACE_KEY = KEY_MAP.space.code;
 const modifiers = { shiftKey: true };
+const OPEN_PAREN = KEY_MAP.openParen.key;
 
 const trim = (text) => text.replace(/\s+/g, '').trim();
 
@@ -2817,5 +2818,30 @@ module('Integration | Component | Query Pill', function(hooks) {
 
     await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', ARROW_DOWN_KEY);
     await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', ENTER_KEY);
+  });
+
+  test('it dispatched the correct event when an open paren is typed', async function(assert) {
+    const done = assert.async();
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (messageType, data) => {
+      if (messageType === MESSAGE_TYPES.PILL_OPEN_PAREN) {
+        assert.deepEqual(data, undefined, 'should not include pill data');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        metaOptions=metaOptions
+        position=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', OPEN_PAREN);
   });
 });

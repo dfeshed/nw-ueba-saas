@@ -137,6 +137,10 @@ export const isShiftTab = (event) => matchesTab(event.keyCode) && event.shiftKey
  * @return A Boolean value.
  * @public
  */
-export const isOpenParen = (event) => matchesOpenParen(event.keyCode) && event.shiftKey;
+export const isOpenParen = (event) => {
+  // In the test env, `event.keyCode` is NaN, so let's key off of `event.key`
+  // as all modern browsers support `key`.
+  return matchesOpenParen(event.key);
+};
 
 export default keyMap;

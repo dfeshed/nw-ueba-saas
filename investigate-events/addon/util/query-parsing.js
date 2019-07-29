@@ -17,6 +17,10 @@ import {
   TextFilter
 } from './filter-types';
 import { filterValidMeta } from 'investigate-events/util/meta';
+import {
+  CloseParen,
+  OpenParen
+} from './grammar-types';
 
 const { log } = console; // eslint-disable-line
 
@@ -62,6 +66,16 @@ const _createQueryFilter = (meta, operator, value) => QueryFilter.create({ meta,
 const _createTextQueryFilter = (searchTerm) => TextFilter.create({ searchTerm });
 
 /**
+ * Creates an open parenthesis grammar structure.
+ */
+const _createOpenParen = () => OpenParen.create();
+
+/**
+ * Creates a close parenthesis grammar structure.
+ */
+const _createCloseParen = () => CloseParen.create();
+
+/**
  * Creates a filter for a given type.
  * @param {string} type The type of filter to create
  * @param  {...any} args Arguments for filter creation
@@ -82,6 +96,16 @@ export const createFilter = (type, ...args) => {
     throw new Error(`Unknown filter type: "${type}"`);
   }
   return filter;
+};
+
+/**
+ * Creates a pair of parentheses,
+ * @return {object[]} A pair of parentheses
+ */
+export const createParens = () => {
+  const open = _createOpenParen();
+  const close = _createCloseParen();
+  return [open, close];
 };
 
 export const hasComplexText = (str) => {

@@ -532,7 +532,8 @@ export default Component.extend({
    */
   _groupingHandler(powerSelectAPI, event) {
     if (isOpenParen(event) && _isFirstChar(event)) {
-      // ignore for now
+      powerSelectAPI.actions.close();
+      this._broadcast(MESSAGE_TYPES.PILL_OPEN_PAREN);
       return false;
     }
     return true;
