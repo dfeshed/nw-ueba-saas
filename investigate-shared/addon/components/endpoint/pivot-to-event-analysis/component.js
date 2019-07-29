@@ -46,6 +46,8 @@ export default Component.extend({
 
   isExpanded: false,
 
+  isIconOnly: false,
+
   offsetsStyle: null,
 
   categories: CATEGORIES,

@@ -14,14 +14,14 @@
   isRemediationAllowed=isRemediationAllowed
   isFloatingOrMemoryDll=isFloatingOrMemoryDll}}
 
-{{endpoint/pivot-to-event-analysis label='file' selections=itemList pivotToInvestigate=(action 'pivotToInvestigate')}}
+{{endpoint/pivot-to-event-analysis label='file' selections=itemList isIconOnly=showOnlyIcons pivotToInvestigate=(action 'pivotToInvestigate')}}
 
 {{#rsa-content-tethered-panel-trigger
   panel=(if isEditStatusButtonDisabled 'file-status-more-actions disabled' 'file-status-more-actions')
   triggerEvent='click'
 }}
   {{#rsa-form-button
-    isIconOnly=false
+    isIconOnly=showOnlyIcons
     title=(t 'investigateShared.endpoint.fileActions.moreActions')
     withDropdown=true
     isDisabled=isEditStatusButtonDisabled

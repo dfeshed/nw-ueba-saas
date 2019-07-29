@@ -15,6 +15,11 @@ const INVESTIGATE_META_MAPPING = {
 
 const SKIP_QUOTES = [ 'ip.src', 'ip.dst', 'ipv6.src', 'ipv6.dst', 'device.ip', 'device.ipv6', 'alias.ipv6', 'alias.ip' ];
 
+// whether selected item has fileName as 'fileName' or 'firstFileName', meta vakue is fetched
+const getFileName = (item) => {
+  return get(item, 'fileName') || get(item, 'firstFileName');
+};
+
 const _escapeBackslash = (value) => {
   return value.replace(/\\\\?(?!')/g, '\\\\');
 };
@@ -31,7 +36,7 @@ const _buildFilter = (metaName, metaValue, itemList) => {
   if (Array.isArray(investigateMeta)) {
     const query = investigateMeta.map((meta) => {
       if (meta === 'filename.all') {
-        return _getQuery(meta, get(itemList[0], 'fileName'));
+        return _getQuery(meta, getFileName(itemList[0]));
       }
       return _getQuery(meta, value);
     });

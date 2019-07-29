@@ -47,9 +47,7 @@ module('Integration | Component | file-details/header/summary', function(hooks) 
     patchReducer(this, Immutable.from(state));
 
     await render(hbs`{{file-details/header/summary}}`);
-    assert.equal(findAll(selectors.summary).length, 1, 'summary is present');
-    assert.equal(findAll(selectors.scoreField).length, 1, 'score is present');
-    assert.equal(findAll(selectors.summaryFields).length, 5, '5 summary fields present');
+    assert.equal(findAll(selectors.summaryFields).length, 4, '4 summary fields present');
 
     // if signature field is not available, should show as 'unsigned'.
     assert.equal(findAll('.rsa-content-definition .value')[1].textContent.trim(), 'unsigned');

@@ -89,4 +89,12 @@ module('Integration | Component | endpoint/pivot-to-event-analysis', function(ho
     const selector = '.event-analysis button';
     await click(selector);
   });
+
+  test('Pivot to investigate as icon only', async function(assert) {
+    assert.expect(2);
+    this.set('selections', new Array(1));
+    await render(hbs`{{endpoint/pivot-to-event-analysis pivotToInvestigate=pivotToInvestigate selections=selections isExpanded=true isIconOnly=true}}`);
+    assert.equal(find('.event-analysis .rsa-form-button:nth-of-type(1)').innerText, '', 'there is no button title, appears as an icon only');
+    assert.equal(findAll('.event-analysis .rsa-split-dropdown').length, 0, 'there is no split dropdown');
+  });
 });

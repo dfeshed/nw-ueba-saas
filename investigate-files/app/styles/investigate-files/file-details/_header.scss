@@ -1,17 +1,19 @@
 .file-header {
-  padding: rsa-whitespace(less);
+  padding: rsa-whitespace() rsa-whitespace(less) 0 rsa-whitespace();
   border-bottom: 1px solid text-color(primary, dark);
+  background-color: text-color(primary, darker);
   .title-bar {
     line-height: 3px;
 
     &__file-title {
-      padding-right: rsa-whitespace();
       @include rsa-font(header, larger);
-      text-transform: capitalize;
       border-bottom-width: 3px;
       line-height: 2.25rem;
       .divider {
-        height: 1.75rem;
+        height: 45px;
+        @include border-left(1px, solid, primary, dark);
+        margin: rsa-whitespace(least) rsa-whitespace();
+        //margin-left: rsa-whitespace();
       }
     }
 
@@ -23,10 +25,52 @@
     .open-properties {
       bottom: 4px;
     }
+    .rsa-risk-score {
+      padding-right: 0.75rem;
+    }
+    .header-top-right-elements {
+      position: absolute;
+      right: 0;
+    }
+    .file-header-actions {
+      .edit-file-status {
+        display: none
+      }
+      .file-actionbar {
+        padding-top: 0;
+        .pivot-to-event-analysis {
+            margin-right: 0;
+          .rsa-icon {
+            font-size: 21px;
+          }
+        }
+        .rsa-form-button-wrapper.is-icon-only {
+          padding-left: 0;
+        }
+      }
+      .file-status-more-actions {
+        margin-top: -5px;
+        .rsa-icon-arrow-down-12-filled {
+          display: none;
+        }
+      }
+    }
+    .file-title-os-wrapper {
+      max-width: 300px;
+      .title-bar__file-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 195px;
+      }
+      .osType {
+        text-transform: none;
+        font-size: 1rem;
+        margin-top: -5px;
+      }
+    }
   }
 
   .file-summary {
-    margin: rsa-whitespace(less) 0;
     svg {
       padding-right: rsa-whitespace(more);
     }
@@ -37,7 +81,7 @@
       .label {
         @include rsa-font(header, small);
         color: text-color(primary, light);;
-        margin-bottom: rsa-whitespace(less);
+        margin-bottom: rsa-whitespace();
       }
       .value {
         color: text-color(primary, lightest);
@@ -46,10 +90,11 @@
     }
   }
 
-  .divider {
-    @include border-left(1px, solid, primary);
-    height: 1.5rem;
-    margin: rsa-whitespace(least);
-    margin-left: rsa-whitespace();
+  .file-details-tabs {
+    .label {
+      text-transform: uppercase;
+      @include rsa-font(navigation);
+    }
   }
+
 }

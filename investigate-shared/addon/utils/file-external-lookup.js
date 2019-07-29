@@ -13,7 +13,7 @@ export function externalLookup(action, selectedList) {
   selectedList.map((selectedItem) => {
     switch (action.name) {
       case 'fileName':
-        _lookup(url, selectedItem.fileName);
+        _lookup(url, selectedItem.fileName || selectedItem.firstFileName);
         break;
       case 'md5':
         _lookup(url, selectedItem.checksumMd5);

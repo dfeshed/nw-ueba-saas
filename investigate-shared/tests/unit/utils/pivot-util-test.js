@@ -75,6 +75,18 @@ module('Unit | Utils | pivot to investigate', function() {
     actionSpy.restore();
   });
 
+
+  test('navigateToInvestigateNavigate when, fileName is present as firstFileName', function(assert) {
+    const actionSpy = sinon.spy(window, 'open');
+    navigateToInvestigateEventsAnalysis({ metaName: 'checksumSha256', itemList: [{ firstFileName: 'test_file.exe', checksumSha256: 'test' }], additionalFilter: 'category="network event"' }, '12345', { unit: 'days', value: 2 }, 'UTC');
+    assert.ok(actionSpy.calledOnce);
+    assert.ok(actionSpy.args[0][0].includes('test_file.exe'));
+    assert.ok(actionSpy.args[0][0].includes('filename.all'));
+    assert.ok(actionSpy.args[0][0].includes('/investigate/events'));
+    actionSpy.resetHistory();
+    actionSpy.restore();
+  });
+
   test('if timeRange is not supplied it takes startTime and endTime', function(assert) {
     const actionSpy = sinon.spy(window, 'open');
     navigateToInvestigateNavigate({

@@ -12,6 +12,6 @@ module('Integration | Component | file-details/header', function(hooks) {
 
   test('renders tabs', async function(assert) {
     await render(hbs`{{file-details/header}}`);
-    assert.equal(findAll('.file-header .rsa-nav-tab').length, 2, 'Two tabs are rendered');
+    assert.equal(findAll('.file-header .file-details-tabs  .rsa-nav-tab').length, 2, 'Two tabs are rendered');
   });
 });

@@ -5,13 +5,17 @@ import { setNewFileTab, toggleFilePropertyPanel } from 'investigate-files/action
 import { fileSummary } from 'investigate-files/reducers/file-detail/selectors';
 import { getFileAnalysisData } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 import { componentSelectionForFileType } from 'investigate-shared/utils/file-analysis-view-util';
+import { serviceList } from 'investigate-files/reducers/file-list/selectors';
+import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   fileDetailTabs: getFileDetailTabs(state),
   summary: fileSummary(state),
   isFilePropertyPanelVisible: state.files.visuals.isFilePropertyPanelVisible,
   selectedDetailFile: state.files.fileList.selectedDetailFile,
-  displayCloseRightPanel: displayCloseRightPanel(state)
+  displayCloseRightPanel: displayCloseRightPanel(state),
+  serviceList: serviceList(state)
+
 });
 
 const dispatchToActions = {
@@ -24,6 +28,12 @@ const TitleBar = Component.extend({
   tagName: 'hbox',
   classNames: ['title-bar'],
 
+
+  @computed('selectedDetailFile')
+  selectedItemList(selectedDetailFile) {
+    return [selectedDetailFile];
+  },
+
   actions: {
     setFileTabAndFetchData(tabName) {
 
@@ -31,6 +41,10 @@ const TitleBar = Component.extend({
       const { format } = this.get('selectedDetailFile');
       const fileFormat = componentSelectionForFileType(format).format || '';
       this.get('switchToSelectedFileDetailsTab')(tabName, fileFormat);
+    },
+
+    resetRiskScoreAction() {
+      // TODO
     }
   }
 });
