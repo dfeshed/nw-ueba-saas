@@ -41,14 +41,14 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
 
     private RestHelper restHelper = new RestHelper();
     private Map<String, Integer> severityMap;
-    List<EntitiesStoredRecord> allEntities;
+    private List<EntitiesStoredRecord> allEntities;
 
     @BeforeClass
     public void prepareData() throws JSONException {
-        severityMap = getSeverityMap();
-        getSeveritiesBoundariesIndexes();
         ParametersUrlBuilder url = restHelper.entities().url().withMaxSizeAndSortedParameters("ASC", "SCORE");
         allEntities = restHelper.entities().request().getEntities(url);
+        severityMap = getSeverityMap();
+        getSeveritiesBoundariesIndexes();
     }
 
     @Test
@@ -180,7 +180,7 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
         JSONObject agg = restHelper.entities().request().getRestApiResponseAsJsonObj(url);
 
         try {
-            JSONObject severity = agg.getJSONObject("SEVERITY");
+            JSONObject severity = agg.getJSONObject("aggregationData").getJSONObject("SEVERITY");
             Assert.assertNotNull(severity, "severity keys are null");
 
             Iterator<String> keysItr = severity.keys();
@@ -191,7 +191,7 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
                 severities.put(key, (int)(value));
             }
         } catch(Exception e) {
-            Assert.fail(e.getMessage() + " " + e.getStackTrace());
+            Assert.fail(url + "\n" + e.getMessage() + "\n" + e.getStackTrace());
         }
         return severities;
     }
