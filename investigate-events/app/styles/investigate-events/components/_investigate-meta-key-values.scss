@@ -67,6 +67,11 @@ $investigateMetaKeyToggleWidth: 1rem;
       cursor: pointer;
     }
 
+    &.disabled {
+      color: text-color(primary);
+      cursor: default;
+    }
+
     &-metric {
       @include rsa-font(light, small);
       margin-left: rsa-whitespace(less);

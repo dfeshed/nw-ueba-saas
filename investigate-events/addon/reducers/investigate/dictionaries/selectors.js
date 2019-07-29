@@ -13,6 +13,11 @@ const indices = [NONE, KEY, VALUE];
 const _language = (state) => state.investigate.dictionaries.language;
 
 // UTILS
+/**
+ * removes indexed by none
+ * @param {*} acc
+ * @param {*} obj
+ */
 const _removeHiddenKeys = (acc, obj) => {
   if (!isHidden(obj)) {
     acc.push(obj);
@@ -22,7 +27,8 @@ const _removeHiddenKeys = (acc, obj) => {
 
 const _createMetaGroup = (obj) => ({
   name: obj.metaName,
-  isOpen: isOpen(obj)
+  isOpen: isOpen(obj),
+  disabled: obj.isIndexedByNone && obj.metaName !== 'sessionid'
 });
 
 // SELECTOR FUNCTIONS
@@ -56,6 +62,17 @@ const _enrichedLanguage = createSelector(
         isIndexedByValue: indexedBy === VALUE
       };
     });
+  }
+);
+
+/**
+ * a copy of defaultMetaGroup selector above without _removeHiddenKeys
+ * to keep indexNone meta
+ */
+export const defaultMetaGroupEnriched = createSelector(
+  _enrichedLanguage,
+  (language = []) => {
+    return { keys: language.map(_createMetaGroup) };
   }
 );
 

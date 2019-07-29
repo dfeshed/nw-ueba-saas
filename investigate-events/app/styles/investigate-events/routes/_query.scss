@@ -295,7 +295,7 @@ $investigateReconFullWidth: 100%;
         @include border(1px, solid, neutral, dark);
         border-radius: 2px;
         &.selected,
-        &:hover {
+        &:hover:not(.disabled) {
           background-color: background-color(secondary);
           border-color: border-color(secondary);
         }

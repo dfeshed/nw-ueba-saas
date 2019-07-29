@@ -1,16 +1,15 @@
 import Component from '@ember/component';
 import { run } from '@ember/runloop';
-
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import { defaultMetaGroup } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { defaultMetaGroupEnriched } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { emptyMetaKeys } from 'investigate-events/reducers/investigate/meta/selectors';
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { META_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { createPillOnMetaDrill, toggleMetaGroupOpen } from 'investigate-events/actions/meta-creators';
 
 const stateToComputed = (state) => ({
-  group: defaultMetaGroup(state),
+  group: defaultMetaGroupEnriched(state),
   emptyMetaKeys: emptyMetaKeys(state),
   queryNode: getActiveQueryNode(state),
   size: state.investigate.meta.metaPanelSize,

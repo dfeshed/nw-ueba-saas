@@ -141,14 +141,15 @@ export default RsaContextMenu.extend({
    * Maps the meta values data array to an array of info used to
    * render those values (e.g., tooltips, URLs, etc).
    */
-  @computed('values.data', 'groupKey.name', 'textOptions', 'tooltipOptions')
-  _resolvedData(data = [], groupKeyName, textOptions, tooltipOptions) {
+  @computed('values.data', 'groupKey', 'textOptions', 'tooltipOptions')
+  _resolvedData(data = [], groupKey, textOptions, tooltipOptions) {
     return data.map(({ count, value }) => {
       return {
         value,
-        text: metaValueAlias([ groupKeyName, value, textOptions ]),
-        tooltip: metaValueAlias([ groupKeyName, value, tooltipOptions ]),
-        count
+        text: metaValueAlias([ groupKey.name, value, textOptions ]),
+        tooltip: metaValueAlias([ groupKey.name, value, tooltipOptions ]),
+        count,
+        disabled: groupKey.disabled
       };
     });
   },
@@ -236,15 +237,24 @@ export default RsaContextMenu.extend({
       .attr('class', (d) => {
         // selected values get an extra "selected" CSS class name
         const selected = isValueSelected(d.value);
-        return `rsa-investigate-meta-key-values__value ${selected ? 'selected' : ''}`;
+        if (selected) {
+          return 'rsa-investigate-meta-key-values__value selected';
+        } else {
+          // disabled values get "disabled" class
+          if (d.disabled) {
+            return 'rsa-investigate-meta-key-values__value disabled';
+          }
+          return 'rsa-investigate-meta-key-values__value';
+        }
       })
       .attr('title', function(d) {
         return d.tooltip;
       })
       .on('click', (d) => {
+        // clicking on disabled meta should do nothing
         // clicking on non-selected values will added them to the query filter (i.e., a "drill").
         // selected values aren't clickable, because they are already in the query filter.
-        if (!isValueSelected(d.value)) {
+        if (!d.disabled && !isValueSelected(d.value)) {
           this.send('safeCallback', clickValueAction, groupKeyName, d.value);
         }
       });

@@ -1,10 +1,14 @@
 /* eslint-env node */
 module.exports = {
   // used to manage future features
-  future(environment, flagValue) {
+  // future(environment, flagValue) {
+  future() {
+    return true;
     // if environment is test, then we want 'future' on
     // as we do not want to have to deal with changing
     // tests for short period
+
+    /*
     if (environment === 'test') {
       return true;
     }
@@ -18,5 +22,6 @@ module.exports = {
 
     // otherwise return the flagValue
     return flagValue;
+    */
   }
 };

@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { metaKeySuggestionsForQueryBuilder,
-  validMetaKeySuggestions } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+  validMetaKeySuggestions,
+  defaultMetaGroupEnriched } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -37,6 +38,16 @@ module('Unit | Selectors | dictionaries', function(hooks) {
   setupTest(hooks);
   hooks.beforeEach(function() {
     initialize(this.owner);
+  });
+
+  test('defaultMetaGroupEnriched selector correctly sets the disabled property', function(assert) {
+    const language1 = [
+      lifetimeLanguageObjectIndexedByNone,
+      fileNameLanguageMetaIndexedByKey
+    ];
+    const state = new ReduxDataHelper().language([language1]).build();
+    const defaultMetaGroup = defaultMetaGroupEnriched(state);
+    assert.ok(defaultMetaGroup.keys[0].disabled, 'the disabled property shall be true');
   });
 
   test('metaKeySuggestionsForQueryBuilder selector filters out IndexedBy None meta keys, except sessionid',
