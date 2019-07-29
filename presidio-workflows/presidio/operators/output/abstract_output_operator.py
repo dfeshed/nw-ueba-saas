@@ -36,14 +36,16 @@ class AbstractOutputOperator(FixedDurationJarOperator):
             'smart_record_conf_name': self.smart_record_conf_name,
         }
 
-        java_args.update(java_args_smart_record_conf_name)
+        new_java_args = {}
+        new_java_args.update(java_args)
+        new_java_args.update(java_args_smart_record_conf_name)
 
         self.log.debug('output operator. command=%s', command)
         super(AbstractOutputOperator, self).__init__(
             task_id=self.task_id,
             fixed_duration_strategy=self.fixed_duration_strategy,
             command=command,
-            java_args=java_args,
+            java_args=new_java_args,
             java_retry_args=java_retry_args,
             *args,
             **kwargs
