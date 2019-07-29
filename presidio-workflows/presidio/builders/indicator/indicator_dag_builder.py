@@ -3,14 +3,17 @@ from datetime import timedelta
 from presidio.builders.indicator.adapter_operator_builder import AdapterOperatorBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.builders.smart_model.smart_model_accumulate_operator_builder import SmartModelAccumulateOperatorBuilder
+from presidio.factories.input_pre_processing_dag_factory import InputPreProcessorDagFactory
 from presidio.factories.model_dag_factory import ModelDagFactory
 from presidio.operators.aggregation.feature_aggregations_operator import FeatureAggregationsOperator
 from presidio.operators.aggregation.score_aggregations_operator import ScoreAggregationsOperator
 from presidio.operators.input.input_operator import InputOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 from presidio.utils.airflow.schedule_interval_utils import get_schedule_interval, set_schedule_interval
+from presidio.utils.configuration.config_server_configuration_reader_singleton import \
+    ConfigServerConfigurationReaderSingleton
 from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid, FIX_DURATION_STRATEGY_DAILY, \
-    FIX_DURATION_STRATEGY_HOURLY
+    FIX_DURATION_STRATEGY_HOURLY, is_execution_date_valid_first_interval
 
 
 class IndicatorDagBuilder(PresidioDagBuilder):
@@ -72,6 +75,10 @@ class IndicatorDagBuilder(PresidioDagBuilder):
                                                      dag))
         )
 
+        if InputPreProcessorDagFactory.get_dag_id(schema) in self.get_list_schemas_for_input_pre_processing():
+            input_pre_processor_trigger = self._build_input_pre_processing_trigger(dag, schema)
+            input_operator >> input_pre_processor_trigger
+
         adapter_operator >> input_operator >> hourly_short_circuit_operator
         scoring_task_sensor_service.add_task_short_circuit(feature_aggregations_operator, hourly_short_circuit_operator)
         scoring_task_sensor_service.add_task_short_circuit(score_aggregations_operator, hourly_short_circuit_operator)
@@ -93,4 +100,20 @@ class IndicatorDagBuilder(PresidioDagBuilder):
 
         set_schedule_interval(model_dag_id, FIX_DURATION_STRATEGY_DAILY)
         return model_trigger
+
+    def _build_input_pre_processing_trigger(self, dag, schema):
+        input_pre_processing_dag_id = InputPreProcessorDagFactory.get_dag_id(schema)
+
+        python_callable = lambda context, dag_run_obj: dag_run_obj if is_execution_date_valid(context['execution_date'],
+                                                                                              FIX_DURATION_STRATEGY_DAILY,
+                                                                                              get_schedule_interval(
+                                                                                                  dag)) else None
+        input_pre_processor_trigger = self._create_expanded_trigger_dag_run_operator("{0}_input_pre_processor_trigger_dagrun".format(schema),
+                                                                                     input_pre_processing_dag_id, dag,python_callable)
+
+        return input_pre_processor_trigger
+
+    @staticmethod
+    def get_list_schemas_for_input_pre_processing():
+        return InputPreProcessorDagFactory.get_registered_dag_ids()
 
