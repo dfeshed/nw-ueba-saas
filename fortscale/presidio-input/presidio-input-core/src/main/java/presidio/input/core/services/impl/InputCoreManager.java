@@ -6,7 +6,6 @@ import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import presidio.input.core.RawEventsPageIterator;
 import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.transformation.TransformationService;
@@ -16,6 +15,7 @@ import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.sdk.api.domain.AbstractInputDocument;
+import presidio.sdk.api.domain.RawEventsPageIterator;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;

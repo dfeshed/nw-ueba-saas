@@ -18,27 +18,27 @@ public class JsonPropertySourceLoaderTest {
     @Test
     public void load() throws Exception {
         ByteArrayResource resource = new ByteArrayResource("{\"foo\": \"bar\"}".getBytes());
-        PropertySource<?> source = this.loader.load("resource", resource, null);
-        assertThat(source).isNotNull();
-        assertThat(source.getProperty("foo")).isEqualTo("bar");
+        List<PropertySource<?>> sources = this.loader.load("resource", resource);
+        assertThat(sources).isNotNull();
+        assertThat(sources.get(0).getProperty("foo")).isEqualTo("bar");
     }
 
     @Test
     public void nestedItems() throws Exception {
         ByteArrayResource resource = new ByteArrayResource("{\"foo\": { \"bar\": \"spam\" }}".getBytes());
-        PropertySource<?> source = this.loader.load("resource", resource, null);
-        assertThat(source).isNotNull();
-        assertThat(source.getProperty("foo.bar")).isEqualTo("spam");
+        List<PropertySource<?>>  sources = this.loader.load("resource", resource);
+        assertThat(sources).isNotNull();
+        assertThat(sources.get(0).getProperty("foo.bar")).isEqualTo("spam");
     }
 
     @Test
     public void arrayItems() throws Exception {
         ByteArrayResource resource = new ByteArrayResource("{\"foo\": [\"bar\",\"baz\"]}".getBytes());
-        PropertySource<?> source = this.loader.load("resource", resource, null);
-        assertThat(source).isNotNull();
-        System.out.println(source.getProperty("foo"));
+        List<PropertySource<?>> sources = this.loader.load("resource", resource);
+        assertThat(sources).isNotNull();
+        System.out.println(sources.get(0).getProperty("foo"));
         ArrayList<String> expected = new ArrayList<String>(Arrays.asList( new String[] {"bar","baz"}));
-        assertThat(source.getProperty("foo")).isEqualTo(expected);
+        assertThat(sources.get(0).getProperty("foo")).isEqualTo(expected);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class JsonPropertySourceLoaderTest {
         }
         json.append("}");
         ByteArrayResource resource = new ByteArrayResource(json.toString().getBytes());
-        EnumerablePropertySource<?> source = (EnumerablePropertySource<?>) this.loader.load("resource", resource, null);
+        EnumerablePropertySource<?> source = (EnumerablePropertySource<?>) this.loader.load("resource", resource).get(0);
         assertThat(source).isNotNull();
         assertThat(source.getPropertyNames()).isEqualTo(expected.toArray(new String[] {}));
     }
@@ -64,7 +64,7 @@ public class JsonPropertySourceLoaderTest {
     @Test(expected = IllegalArgumentException.class)
     public void invalidJson() throws Exception {
         ByteArrayResource resource = new ByteArrayResource("{\"foo\": \"bar\"".getBytes());
-        PropertySource<?> source = this.loader.load("resource", resource, null);
+        this.loader.load("resource", resource);
     }
 
 }

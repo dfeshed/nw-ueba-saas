@@ -5,8 +5,8 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
-import org.springframework.data.domain.Sort;
 import fortscale.utils.store.record.StoreMetadataProperties;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
@@ -95,13 +95,13 @@ public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDat
 
         Date startDate = Date.from(startInstant);
         Date endDate = Date.from(endInstant);
-        Set<String> distinctContexts;
+        Set<String> distinctContexts = new HashSet<>();
         try {
             Query query = new Query();
             query.addCriteria(where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate));
-            distinctContexts = (Set<String>) mongoTemplate.getCollection(collectionName)
-                    .distinct(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD, query.getQueryObject())
-                    .stream().collect(Collectors.toSet());
+            mongoTemplate.getCollection(collectionName)
+                    .distinct(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD, query.getQueryObject(), String.class)
+                    .into(distinctContexts);
         } catch (Exception e) {
             long nextPageIndex = 0;
             Set<String> subList;

@@ -66,7 +66,7 @@ public class EntityApiControllerModuleTest {
         entity1 = generateEntity(Collections.singletonList("a"), "entity1", "entityId1", 50d, Collections.singletonList("indicator1"), "userId");
         entity2 = generateEntity(Collections.singletonList("b"), "entity2", "entityId2", 60d, Arrays.asList("indicator1", "indicator2"), "ja3");
         List<presidio.output.domain.records.entity.Entity> entityList = Arrays.asList(entity1, entity2);
-        entityRepository.save(entityList);
+        entityRepository.saveAll(entityList);
     }
 
     @After

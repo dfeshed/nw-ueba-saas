@@ -8,9 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.alerts.Alert;
@@ -51,6 +49,50 @@ public class RestEntityServiceTest {
     @Autowired
     RestEntityService restEntityService;
 
+    private Pageable createPageable() {
+        return new Pageable() {
+            @Override
+            public int getPageNumber() {
+                return 0;
+            }
+
+            @Override
+            public int getPageSize() {
+                return 0;
+            }
+
+            @Override
+            public long getOffset() {
+                return 0;
+            }
+
+            @Override
+            public Sort getSort() {
+                return null;
+            }
+
+            @Override
+            public Pageable next() {
+                return null;
+            }
+
+            @Override
+            public Pageable previousOrFirst() {
+                return null;
+            }
+
+            @Override
+            public Pageable first() {
+                return null;
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return false;
+            }
+        };
+    }
+
     @Test
     public void testReturnEntityWithoutExpand() {
         Entity entity = createEntity(1);
@@ -86,7 +128,7 @@ public class RestEntityServiceTest {
         entity4.setScore(90);
         Entity entity5 = createEntity(5);
         entity5.setScore(90);
-        Page<Entity> page = new PageImpl<Entity>(new ArrayList<>(Arrays.asList(entity3, entity4, entity5)), null, 5);
+        Page<Entity> page = new PageImpl<Entity>(new ArrayList<>(Arrays.asList(entity3, entity4, entity5)), createPageable(), 5);
         when(entityPersistencyService.find(notNull(presidio.output.domain.records.entity.EntityQuery.class))).thenReturn(page);
         EntityQuery entityQuery = new EntityQuery();
         entityQuery.setExpand(false);
@@ -106,7 +148,7 @@ public class RestEntityServiceTest {
         Entity entity2 = createEntity(2);
         entity2.setIndicators(Arrays.asList("indicator1", "indicator2"));
 
-        Page<Entity> page = new PageImpl<Entity>(new ArrayList<>(Arrays.asList(entity2)), null, 2);
+        Page<Entity> page = new PageImpl<Entity>(new ArrayList<>(Arrays.asList(entity2)), createPageable(), 2);
         presidio.output.domain.records.entity.EntityQuery domainQuery = new presidio.output.domain.records.entity.EntityQuery.EntityQueryBuilder()
                 .filterByIndicators(Arrays.asList("indicator2")).build();
         when(entityPersistencyService.find(domainQuery)).thenReturn(page);

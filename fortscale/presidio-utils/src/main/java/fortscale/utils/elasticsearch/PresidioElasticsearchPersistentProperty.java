@@ -10,6 +10,7 @@ import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersiste
 import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchPersistentProperty;
 import org.springframework.data.mapping.Association;
 import org.springframework.data.mapping.PersistentEntity;
+import org.springframework.data.mapping.model.Property;
 import org.springframework.data.mapping.model.SimpleTypeHolder;
 
 import java.beans.PropertyDescriptor;
@@ -17,8 +18,8 @@ import java.lang.reflect.Field;
 
 public class PresidioElasticsearchPersistentProperty extends SimpleElasticsearchPersistentProperty {
 
-    public PresidioElasticsearchPersistentProperty(Field field, PropertyDescriptor propertyDescriptor, PersistentEntity<?, ElasticsearchPersistentProperty> owner, SimpleTypeHolder simpleTypeHolder) {
-        super(field, propertyDescriptor, owner, simpleTypeHolder);
+    public PresidioElasticsearchPersistentProperty(Property property, PersistentEntity<?, ElasticsearchPersistentProperty> owner, SimpleTypeHolder simpleTypeHolder) {
+        super(property, owner, simpleTypeHolder);
     }
 
     @Override

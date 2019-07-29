@@ -4,8 +4,8 @@ import fortscale.utils.mongodb.config.MongoConfig;
 import fortscale.utils.rest.HttpMethodOverrideHeaderFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.servlet.server.AbstractServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -94,8 +94,8 @@ public class OutputWebappConfiguration {
     }
 
     @Bean
-    public EmbeddedServletContainerFactory servletContainer() {
-        return new TomcatEmbeddedServletContainerFactory();
+    public AbstractServletWebServerFactory servletContainer() {
+        return new TomcatServletWebServerFactory();
     }
 
     @Bean
