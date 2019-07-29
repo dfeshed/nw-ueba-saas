@@ -296,7 +296,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         String indicatorId = allIndicatorsTypeNameSamples.get(indicatorName)[1];
         ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
         IndicatorResult indicator = getIndicator(alertId, indicatorId);
-        String expectedSchema = IndicatorsInfo.getSchemaNameByIndicator(indicatorName);
+        String expectedSchema = IndicatorsInfo.getSchemaNameByIndicator(indicatorName).toUpperCase();
         assertThat(indicator.schema)
                 .as(url+"\nIndicator schema name mismatch.\nIndicator name = "+indicatorName)
                 .isEqualTo(expectedSchema);
@@ -378,8 +378,8 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
             skipTest("Required indicator not found: " + indicator);
         }
 
-        String alertId = featureAggregationMap.get(indicator)[0];
-        String indicatorId = featureAggregationMap.get(indicator)[1];
+        String alertId = distinctFeatureAggregationMap.get(indicator)[0];
+        String indicatorId = distinctFeatureAggregationMap.get(indicator)[1];
 
         IndicatorResult actualIndicator = getIndicator(alertId, indicatorId);
         JSONArray events = getEvents(alertId,indicatorId);

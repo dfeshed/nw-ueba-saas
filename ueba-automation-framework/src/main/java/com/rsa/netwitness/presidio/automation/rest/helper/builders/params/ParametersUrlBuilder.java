@@ -27,7 +27,7 @@ public class ParametersUrlBuilder {
         private final String EXPAND = "expand";
         private final String SORT_DIRECTION = "sortDirection";
         private final String SORT_FIELD_NAMES = "sortFieldNames";
-        private final String MIN_SCORE = "maxScore";
+        private final String MIN_SCORE = "minScore";
         private final String MAX_SCORE = "maxScore";
         private final String ENTITY_NAMES = "entityNames";
         private final String INDICATOR_NAME = "indicatorsName";
