@@ -256,7 +256,7 @@
                             </inputSpec>
                             <language>java</language>
                             <library>jersey2</library>
-                            <templateDirectory>${project.basedir}/../../presidio-utils/src/main/java/fortscale/utils/codegen-templates</templateDirectory>
+                            <templateDirectory>${project.basedir}/src/main/java/codegen-templates</templateDirectory>
                             <modelPackage>presidio.output.client.model</modelPackage>
                             <apiPackage>presidio.output.client.api</apiPackage>
                             <invokerPackage>presidio.output.client.client</invokerPackage>
