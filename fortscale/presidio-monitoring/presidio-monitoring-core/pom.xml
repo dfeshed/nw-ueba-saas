@@ -85,7 +85,7 @@
                 <configuration>
                     <source>${java-lang-config.version}</source>
                     <target>${java-lang-config.version}</target>
-                    <complianceLevel>${java-lang-config.version}</complianceLevel>
+                    <complianceLevel>${aspectj-maven-plugin.complianceLevel}</complianceLevel>
                     <includes>
                         <include>**/*.java</include>
                         <include>**/*.aj</include>
