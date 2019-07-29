@@ -11,6 +11,8 @@
 /* Import respond-shared styles from addon */
 @import 'respond-shared/manifest';
 
+@import 'rsa-data-filters/manifest';
+
 // Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
 body.rsa-investigate-files-dummy {
   color: text-color(primary, light);

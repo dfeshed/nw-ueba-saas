@@ -6,9 +6,14 @@
 /* Pulling in local investigate-process-analysis styles */
 @import "investigate-process-analysis/manifest";
 
+@import 'investigate-shared/manifest';
+
 
 // Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
 body.investigate-process-analysis-engine-dummy {
+  .process-analysis-container {
+    height: 100vh;
+  }
   color: text-color(primary, light);
   .engine-splash-page {
     .rsa-logo {
