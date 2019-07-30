@@ -11,6 +11,7 @@ const indices = [NONE, KEY, VALUE];
 
 // ACCESSOR FUNCTIONS
 const _language = (state) => state.investigate.dictionaries.language;
+const _aliases = (state) => state.investigate.dictionaries.aliases;
 
 // UTILS
 /**
@@ -139,4 +140,18 @@ export const validMetaKeySuggestions = createSelector(
         return false;
       });
   }
+);
+
+/**
+ * Returns the language dictionary with only time filtered out, along with
+ * the aliases dictionary.
+ *
+ * @public
+ */
+export const languageAndAliasesForParser = createSelector(
+  [ _enrichedLanguage, _aliases ],
+  (language = [], aliases = []) => ({
+    language: language.filter((m) => m.metaName !== 'time'),
+    aliases
+  })
 );

@@ -1,9 +1,9 @@
 import * as ACTION_TYPES from './types';
 import { selectedPills, focusedPill } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import validateQueryFragment from './fetch/query-validation';
 import { selectPillsFromPosition } from 'investigate-events/actions/utils';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
-import { validMetaKeySuggestions } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { COMPLEX_FILTER, TEXT_FILTER } from 'investigate-events/constants/pill';
 import RSVP from 'rsvp';
 
@@ -25,9 +25,9 @@ const _clientSideValidation = ({ pillData, position, isFromParser = false }) => 
     if (!isFromParser && type !== COMPLEX_FILTER) {
       // If not from parser, no validation has been performed yet. Re-get pillData
       // by putting through parser to do client side validation.
-      const { investigate: { dictionaries: { language } } } = getState();
+      const { language, aliases } = languageAndAliasesForParser(getState());
       const { meta, operator, value } = pillData;
-      pillData = transformTextToPillData(`${meta || ''} ${operator || ''} ${value || ''}`.trim(), language);
+      pillData = transformTextToPillData(`${meta || ''} ${operator || ''} ${value || ''}`.trim(), { language, aliases });
     }
 
     const { isInvalid } = pillData;
@@ -260,9 +260,8 @@ export const addTextFilter = ({ pillData, position = 0, shouldAddFocusToNewPill 
 // Transform the text to what it would look like in pill form
 export const updatedFreeFormText = (freeFormText) => {
   return (dispatch, getState) => {
-    const pillData = transformTextToPillData(
-      freeFormText, validMetaKeySuggestions(getState())
-    );
+    const { language, aliases } = languageAndAliasesForParser(getState());
+    const pillData = transformTextToPillData(freeFormText, { language, aliases });
     dispatch({
       type: ACTION_TYPES.UPDATE_FREE_FORM_TEXT,
       payload: {

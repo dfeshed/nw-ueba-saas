@@ -11,7 +11,7 @@ import {
   uriEncodeMetaFilters,
   convertTextToPillData
 } from 'investigate-events/util/query-parsing';
-import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
+import { DEFAULT_LANGUAGES, DEFAULT_ALIASES } from '../../helpers/redux-data-helper';
 import {
   CLOSE_PAREN,
   COMPLEX_FILTER,
@@ -43,49 +43,49 @@ module('Unit | Util | Query Parsing', function(hooks) {
 
   test('transformTextToPillData returns complex filter object because of ||', function(assert) {
     const freeFormText = 'medium = 1 || medium = 32';
-    const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
+    const result = transformTextToPillData(freeFormText, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES });
     assert.equal(result.type, COMPLEX_FILTER, 'type should match');
     assert.equal(result.complexFilterText, `(${freeFormText})`, 'complexFilterText should match');
   });
 
   test('transformTextToPillData treats lack of operator as a complex query', function(assert) {
     const freeFormText = 'medium';
-    const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
+    const result = transformTextToPillData(freeFormText, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES });
     assert.equal(result.type, COMPLEX_FILTER, 'type should match');
     assert.equal(result.complexFilterText, freeFormText, 'complexFilterText should match');
   });
 
   test('transformTextToPillData treats bad meta as complex query', function(assert) {
     const freeFormText = 'lakjsdlakjsd = "yeah"';
-    const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
+    const result = transformTextToPillData(freeFormText, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES });
     assert.equal(result.type, COMPLEX_FILTER, 'type should match');
     assert.equal(result.complexFilterText, freeFormText, 'complexFilterText should match');
   });
 
   test('transformTextToPillData treats operator that does not belong to meta as complex query', function(assert) {
     const freeFormText = 'sessionid contains 123';
-    const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
+    const result = transformTextToPillData(freeFormText, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES });
     assert.equal(result.type, COMPLEX_FILTER, 'type should match');
     assert.equal(result.complexFilterText, freeFormText, 'complexFilterText should match');
   });
 
   test('transformTextToPillData treats operator that requires value but does not have one as complex query', function(assert) {
     const freeFormText = 'medium =';
-    const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
+    const result = transformTextToPillData(freeFormText, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES });
     assert.equal(result.type, COMPLEX_FILTER, 'type should match');
     assert.equal(result.complexFilterText, freeFormText, 'complexFilterText should match');
   });
 
   test('transformTextToPillData treats operator that require no value but has one as complex query', function(assert) {
     const freeFormText = 'medium exists 10';
-    const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
+    const result = transformTextToPillData(freeFormText, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES });
     assert.equal(result.type, COMPLEX_FILTER, 'type should match');
     assert.equal(result.complexFilterText, freeFormText, 'complexFilterText should match');
   });
 
   test('transformTextToPillData handles when just meta and operator', function(assert) {
     const freeFormText = 'medium exists';
-    const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
+    const result = transformTextToPillData(freeFormText, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES });
     assert.equal(result.type, QUERY_FILTER, 'type should match');
     assert.equal(result.meta, 'medium', 'meta should match');
     assert.equal(result.operator, 'exists', 'operator should match');
@@ -94,7 +94,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
 
   test('transformTextToPillData returns pill data object', function(assert) {
     const freeFormText = 'medium = 1';
-    const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
+    const result = transformTextToPillData(freeFormText, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES });
     assert.equal(result.type, QUERY_FILTER, 'type should match');
     assert.equal(result.meta, 'medium', 'meta should match');
     assert.equal(result.operator, '=', 'operator should match');
@@ -103,7 +103,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
 
   test('transformTextToPillData returns populated pill object even if operator embedded in value', function(assert) {
     const freeFormText = 'user.dst = \'1=2\'';
-    const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
+    const result = transformTextToPillData(freeFormText, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES });
     assert.equal(result.type, QUERY_FILTER, 'type should match');
     assert.equal(result.meta, 'user.dst', 'meta should match');
     assert.equal(result.operator, '=', 'operator should match');
@@ -112,7 +112,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
 
   test('transformTextToPillData handles surrounding white space', function(assert) {
     const freeFormText = ' medium exists ';
-    const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
+    const result = transformTextToPillData(freeFormText, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES });
     assert.equal(result.type, QUERY_FILTER, 'type should match');
     assert.equal(result.meta, 'medium', 'meta should match');
     assert.equal(result.operator, 'exists', 'operator should match');
@@ -121,29 +121,28 @@ module('Unit | Util | Query Parsing', function(hooks) {
 
   test('transformTextToPillData returns complex pill when forced to do so', function(assert) {
     const freeFormText = 'medium = foo';
-    const shouldForceComplex = true;
-    const result = transformTextToPillData(freeFormText, DEFAULT_LANGUAGES, shouldForceComplex);
+    const result = transformTextToPillData(freeFormText, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, shouldForceComplex: true });
     assert.equal(result.type, COMPLEX_FILTER, 'type should match');
     assert.equal(result.complexFilterText, `(${freeFormText})`, 'complexFilterText should match');
   });
 
   test('transformTextToPillData returns text filter object because of Text filter marker', function(assert) {
     const text = `${SEARCH_TERM_MARKER}text${SEARCH_TERM_MARKER}`;
-    const result = transformTextToPillData(text, DEFAULT_LANGUAGES);
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES });
     assert.equal(result.type, TEXT_FILTER, 'type should match');
     assert.equal(result.searchTerm, 'text', 'complexFilterText should match');
   });
 
   test('transformTextToPillData returns text filter even if it contains complex characters', function(assert) {
     const text = `${SEARCH_TERM_MARKER}(text)${SEARCH_TERM_MARKER}`;
-    const result = transformTextToPillData(text, DEFAULT_LANGUAGES);
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES });
     assert.equal(result.type, TEXT_FILTER, 'type should match');
     assert.equal(result.searchTerm, '(text)', 'complexFilterText should match');
   });
 
   test('transformTextToPillData returns multiple pills when flag is true', function(assert) {
     const text = 'medium = 3 && b = \'google.com\'';
-    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
     assert.strictEqual(result.length, 2);
     assert.equal(result[0].type, QUERY_FILTER, 'type should match');
     assert.equal(result[0].meta, 'medium', 'meta should match');
@@ -157,7 +156,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
 
   test('transformTextToPillData returns query pills and text pills', function(assert) {
     const text = `medium = 3 && ${SEARCH_TERM_MARKER}text filter${SEARCH_TERM_MARKER}`;
-    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
     assert.strictEqual(result.length, 2);
     assert.equal(result[0].type, QUERY_FILTER, 'type should match');
     assert.equal(result[0].meta, 'medium', 'meta should match');
@@ -169,7 +168,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
 
   test('transformTextToPillData will not return more than one text filter', function(assert) {
     const text = `${SEARCH_TERM_MARKER}text${SEARCH_TERM_MARKER} && ${SEARCH_TERM_MARKER}text 2${SEARCH_TERM_MARKER}`;
-    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
     assert.strictEqual(result.length, 1);
     assert.equal(result[0].type, TEXT_FILTER, 'type should match');
     assert.equal(result[0].searchTerm, 'text', 'complexFilterText should match');
@@ -177,7 +176,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
 
   test('transformTextToPillData returns as little as a complex pill as possible when using OR (||)', function(assert) {
     const text = 'b = \'google.com\' && medium = 2 || medium = 3';
-    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
     assert.strictEqual(result.length, 2);
     assert.equal(result[0].type, QUERY_FILTER, 'type should match');
     assert.equal(result[0].meta, 'b', 'meta should match');
@@ -189,7 +188,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
 
   test('transformTextToPillData returns as little as a complex pill as possible when using OR (||) with normal pills after', function(assert) {
     const text = 'b = \'google.com\' && medium = 2 || medium = 3 && referer exists';
-    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
     assert.strictEqual(result.length, 3);
     assert.equal(result[0].type, QUERY_FILTER, 'type should match');
     assert.equal(result[0].meta, 'b', 'meta should match');
@@ -205,7 +204,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
 
   test('transformTextToPillData looks one deep into parenthesis, but not deeper', function(assert) {
     const text = '(b = \'google.com\') && ((b = \'google.com\'))';
-    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
     assert.strictEqual(result.length, 2);
     assert.equal(result[0].type, QUERY_FILTER, 'type should match');
     assert.equal(result[0].meta, 'b', 'meta should match');
@@ -217,7 +216,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
 
   test('transformTextToPillData does not break order of operations when combining OR into one complex pill', function(assert) {
     const text = "(filename = 'firefox-33.1.1.complete.mar' || (sessionid = 80 && medium exists)) || b exists";
-    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
     assert.strictEqual(result.length, 1);
     assert.equal(result[0].type, COMPLEX_FILTER, 'type should match');
     assert.equal(result[0].complexFilterText, "((filename = 'firefox-33.1.1.complete.mar' || (sessionid = 80 && medium exists)) || b exists)", 'complexFilterText should match');
@@ -225,7 +224,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
 
   test('transformTextToPillData does not break order of operations when combining OR into one complex pill and tries to turn normal criteria into pills', function(assert) {
     const text = 'sessionid = 80 && b exists || (medium = 1)';
-    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
     assert.strictEqual(result.length, 2);
     assert.equal(result[0].type, QUERY_FILTER, 'type should match');
     assert.equal(result[0].meta, 'sessionid', 'meta should match');
@@ -237,7 +236,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
 
   test('transformTextToPillData returns complex pill for non-indexed meta key', function(assert) {
     const text = 'ip.addr exists';
-    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
     assert.strictEqual(result.length, 1);
     assert.equal(result[0].type, COMPLEX_FILTER, 'type should match');
     assert.equal(result[0].complexFilterText, 'ip.addr exists', 'complexFilterText should match');
@@ -245,7 +244,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
 
   test('transformTextToPillData returns an invalid pill for a mismatched type', function(assert) {
     const text = 'medium = \'foo\'';
-    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
     assert.strictEqual(result.length, 1);
     assert.equal(result[0].type, QUERY_FILTER, 'type should match');
     assert.equal(result[0].meta, 'medium', 'meta should match');
@@ -257,7 +256,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
 
   test('transformTextToPillData returns an invalid pill when length is used with a negative number', function(assert) {
     const text = 'c length -3';
-    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
     assert.strictEqual(result.length, 1);
     assert.equal(result[0].type, QUERY_FILTER, 'type should match');
     assert.equal(result[0].meta, 'c', 'meta should match');
@@ -272,7 +271,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     // bytes.src is UInt64, that number is 2^65
     const text = 'bytes.src = 36893488147419103000';
 
-    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
     assert.strictEqual(result.length, 1);
     assert.equal(result[0].type, QUERY_FILTER, 'type should match');
     assert.equal(result[0].meta, 'bytes.src', 'meta should match');
@@ -282,9 +281,33 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].validationError.string, 'You must enter a 64-bit Integer.', 'validation error should be correct');
   });
 
+  test('transformTextToPillData returns an valid pill when an alias is used correctly', function(assert) {
+    const text = 'medium = \'Ethernet\'';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '\'Ethernet\'', 'value should match');
+    assert.notOk(result[0].isInvalid, 'pill should not be invalid');
+    assert.notOk(result[0].validationError, 'validation error should not exist');
+  });
+
+  test('transformTextToPillData returns an invalid pill for an invalid alias', function(assert) {
+    const text = 'medium = \'IEEEthernet\'';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '\'IEEEthernet\'', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.equal(result[0].validationError.string, 'You must enter an 8-bit Integer.', 'validation error should be correct');
+  });
+
   test('transformTextToPillData returns invalid pills alongside valid pills', function(assert) {
     const text = 'alias.ip = 8080 && medium = 3';
-    const result = transformTextToPillData(text, DEFAULT_LANGUAGES, false, true);
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
     assert.strictEqual(result.length, 2);
     assert.equal(result[0].type, QUERY_FILTER, 'type should match');
     assert.equal(result[0].meta, 'alias.ip', 'meta should match');

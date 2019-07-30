@@ -3,6 +3,7 @@
     canPerformTextSearch=canPerformTextSearch
     hasTextPill=hasTextPill
     metaOptions=metaOptions
+    languageAndAliasesForParser=languageAndAliasesForParser
     sendMessage=(action 'handleMessage')
     newPillPosition=index
     startTriggeredPosition=startTriggeredPosition
@@ -33,6 +34,7 @@
   {{else}}
     {{query-container/query-pill
       metaOptions=metaOptions
+      languageAndAliasesForParser=languageAndAliasesForParser
       pillData=(readonly pillData)
       sendMessage=(action 'handleMessage')
       position=index
@@ -48,6 +50,7 @@
   hasTextPill=hasTextPill
   isMetaAutoFocused=takeFocus
   metaOptions=metaOptions
+  languageAndAliasesForParser=languageAndAliasesForParser
   position=newPillPosition
   sendMessage=(action 'handleMessage')
 }}

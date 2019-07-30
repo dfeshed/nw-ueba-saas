@@ -25,6 +25,37 @@ export const DEFAULT_LANGUAGES = [
   { count: 0, format: 'UInt64', metaName: 'sessionid', flags: -2147483631, displayName: 'Session ID', formattedName: 'sessionid (Session ID)' }
 ];
 
+export const DEFAULT_ALIASES = {
+  medium: {
+    '1': 'Ethernet',
+    '2': 'Tokenring',
+    '3': 'FDDI',
+    '4': 'HDLC',
+    '5': 'NetWitness',
+    '6': '802.11',
+    '7': '802.11 Radio',
+    '8': '802.11 AVS',
+    '9': '802.11 PPI',
+    '10': '802.11 PRISM',
+    '11': '802.11 Management',
+    '12': '802.11 Control',
+    '13': 'DLT Raw',
+    '32': 'Logs',
+    '33': 'Correlation'
+  },
+  'ip.proto': {
+    '1': 'ICMP',
+    '6': 'TCP',
+    '17': 'UDP',
+    '27': 'RDP',
+    '41': 'IPv6',
+    '58': 'IPv6-ICMP',
+    '92': 'MTP',
+    '115': 'L2TP',
+    '255': 'Reserved'
+  }
+};
+
 const DEFAULT_PILLS_DATA = [{
   id: '1',
   meta: 'a',
@@ -508,6 +539,11 @@ export default class DataHelper {
 
   language(language = DEFAULT_LANGUAGES) {
     _set(this.state, 'dictionaries.language', language);
+    return this;
+  }
+
+  aliases(aliases = DEFAULT_ALIASES) {
+    _set(this.state, 'dictionaries.aliases', aliases);
     return this;
   }
 

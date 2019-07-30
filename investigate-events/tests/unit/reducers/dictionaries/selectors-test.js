@@ -1,7 +1,10 @@
 import { module, test } from 'qunit';
-import { metaKeySuggestionsForQueryBuilder,
+import {
+  metaKeySuggestionsForQueryBuilder,
   validMetaKeySuggestions,
-  defaultMetaGroupEnriched } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+  languageAndAliasesForParser,
+  defaultMetaGroupEnriched
+} from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -32,6 +35,16 @@ const fileNameLanguageMetaIndexedByValue = {
   format: 'UInt16',
   formattedName: 'tcp.dstport (TCP Destination Port)',
   metaName: 'tcp.dstport'
+};
+
+// time
+const timeMeta = {
+  count: 0,
+  format: 'TimeT',
+  metaName: 'time',
+  flags: -2147482605,
+  displayName: 'Time',
+  formattedName: 'time (Time)'
 };
 
 module('Unit | Selectors | dictionaries', function(hooks) {
@@ -176,4 +189,24 @@ module('Unit | Selectors | dictionaries', function(hooks) {
       const metaKeySuggestions = validMetaKeySuggestions(state);
       assert.equal(metaKeySuggestions.length, 1, 'isIndexedByNone meta shall not be filtered out if metaName is sessionid');
     });
+
+  test('languageAndAliasesForParser selector filters out only time, and also returns aliases',
+    function(assert) {
+
+      const state = new ReduxDataHelper().language([timeMeta]).aliases().build();
+      const { language, aliases } = languageAndAliasesForParser(state);
+      assert.ok(language && language.length === 0, 'time has been filtered out');
+      assert.ok(aliases && aliases.medium['1'] === 'Ethernet', 'aliases have been included');
+    }
+  );
+
+  test('languageAndAliasesForParser selector does not filter out regular meta, and also returns aliases',
+    function(assert) {
+
+      const state = new ReduxDataHelper().language().aliases().build();
+      const { language, aliases } = languageAndAliasesForParser(state);
+      assert.ok(language && language.length !== 0, 'regular meta are not filtered out');
+      assert.ok(aliases && aliases.medium['1'] === 'Ethernet', 'aliases have been included');
+    }
+  );
 });

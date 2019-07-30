@@ -91,6 +91,11 @@ export default Component.extend({
   metaOptions: null,
 
   /**
+   * Object with keys `language` and `aliases`
+   */
+  languageAndAliasesForParser: null,
+
+  /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public
@@ -957,8 +962,15 @@ export default Component.extend({
       pillData.isFocused = this.get('pillData.isFocused');
     }
     // Check what type of meta this is. If it's a string value, add quotes unless
-    // the operator is length (which has a numeric value).
-    if (selectedMeta && selectedMeta.format === 'Text' && selectedOperator && selectedOperator.displayName !== 'length' && value) {
+    // the operator is length (which has a numeric value). Also add quotes even
+    // if the type is not text but if an alias was entered.
+    const languageAndAliasesForParser = this.get('languageAndAliasesForParser');
+    const aliases = languageAndAliasesForParser ? languageAndAliasesForParser.aliases : {};
+    const isValueValidAlias = !!aliases[meta] && Object.values(aliases[meta]).some((alias) => alias === value);
+    if ((selectedMeta && selectedMeta.format === 'Text' &&
+      selectedOperator && selectedOperator.displayName !== 'length' &&
+      value) ||
+      isValueValidAlias) {
       pillData.value = quote(value);
     } else {
       pillData.value = value;

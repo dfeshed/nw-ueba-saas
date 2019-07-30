@@ -155,13 +155,15 @@ export const parsePillDataFromUri = (uri, availableMeta) => {
  * Attempts to convert a string to a pill object. If unsuccesful for any reason,
  * returns a complex pill.
  * @param {string} queryText Fragment to convert to an object
- * @param {object[]} availableMeta The language for the selected service.
- * @param {boolean} shouldForceComplex Should we force the creation of a complex
- * @param {boolean} returnMany Should return an array of pills instead of just the first pill
+ * @param {Object} options Options hash
+ * @param {Object[]} options.availableMeta The language for the selected service.
+ * @param {Object} options.aliases The alias mappings for the current language set
+ * @param {boolean} options.shouldForceComplex Should we force the creation of a complex
+ * @param {boolean} options.returnMany Should return an array of pills instead of just the first pill
  * pill.
  * @return {object} A pill object.
  */
-export const transformTextToPillData = (queryText, availableMeta, shouldForceComplex = false, returnMany = false) => {
+export const transformTextToPillData = (queryText, { language, aliases, shouldForceComplex = false, returnMany = false }) => {
   let result;
 
   // Create complex pill if asked to
@@ -173,7 +175,7 @@ export const transformTextToPillData = (queryText, availableMeta, shouldForceCom
   // Scan queryText into tokens, and pass those to the parser
   const s = new Scanner(queryText);
   try {
-    const p = new Parser(s.scanTokens(), availableMeta);
+    const p = new Parser(s.scanTokens(), language, aliases);
     result = p.parse();
   } catch (err) {
     // Scanning or parsing error, make complex pill

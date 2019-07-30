@@ -3,12 +3,13 @@ import { connect } from 'ember-redux';
 import { debounce, scheduleOnce, throttle } from '@ember/runloop';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { freeFormText, hasRequiredValuesToQuery } from 'investigate-events/reducers/investigate/query-node/selectors';
-import { validMetaKeySuggestions } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { validMetaKeySuggestions, languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { addFreeFormFilter, deleteAllGuidedPills, updatedFreeFormText } from 'investigate-events/actions/guided-creators';
 
 const stateToComputed = (state) => ({
   freeFormText: freeFormText(state),
   validMetaKeySuggestions: validMetaKeySuggestions(state),
+  languageAndAliasesForParser: languageAndAliasesForParser(state),
   hasRequiredValuesToQuery: hasRequiredValuesToQuery(state)
 });
 
@@ -51,7 +52,8 @@ const freeForm = Component.extend({
       // Don't do anything if the text is the same as it was
       // when the component was initially rendered
       if (this.get('initialFreeFormText') !== freeFormText) {
-        const pills = transformTextToPillData(freeFormText, this.get('validMetaKeySuggestions'), false, true);
+        const { language, aliases } = this.get('languageAndAliasesForParser');
+        const pills = transformTextToPillData(freeFormText, { language, aliases, returnMany: true });
         pills.forEach((pillData, i) => {
           this.send('addFreeFormFilter', {
             pillData,

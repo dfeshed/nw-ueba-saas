@@ -17,7 +17,7 @@ import CONFIG from 'investigate-events/reducers/investigate/config';
 import { fetchServices } from 'investigate-shared/actions/api/services';
 import { fetchAdminEventSettings } from 'investigate-shared/actions/api/events/event-settings';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
-import { validMetaKeySuggestions } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { validMetaKeySuggestions, languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { TextFilter } from 'investigate-events/util/filter-types';
 import * as ACTION_TYPES from './types';
 
@@ -219,9 +219,9 @@ const _handleSearchParamsAndHashInQueryParams = (parsedQueryParams, hashNavigate
           // this will return params for what was in pdhash and mf in the url
           getParamsForHashes(allHashIds).then(({ data: paramsObjectArray }) => {
             const paramsArray = paramsObjectArray.map((pO) => pO.query);
-            const metaKeys = validMetaKeySuggestions(getState());
+            const { language, aliases } = languageAndAliasesForParser(getState());
             const newPillData = paramsArray.map((singleParams) => {
-              return transformTextToPillData(singleParams, metaKeys);
+              return transformTextToPillData(singleParams, { language, aliases });
             });
 
             // update pills with combined params of pdhash and mf returned by getParamsForHashes
@@ -345,12 +345,12 @@ const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, hashNavigateCall
       .then(({ data: paramsObjectArray }) => {
         // Pull the actual param values out of the returned params objects.
         const paramsArray = paramsObjectArray.map((pO) => pO.query);
-        const metaKeys = validMetaKeySuggestions(getState());
+        const { language, aliases } = languageAndAliasesForParser(getState());
         // Transform server param strings into arrays of pill data objects
         // and dispatch those to state. transformTextToPillData now returns
         // an array of pills so flatten after mapping.
         const newPillData = paramsArray.flatMap((singleParams) => {
-          return transformTextToPillData(singleParams, metaKeys, false, true);
+          return transformTextToPillData(singleParams, { language, aliases, returnMany: true });
         });
 
         // Was there a text search string?

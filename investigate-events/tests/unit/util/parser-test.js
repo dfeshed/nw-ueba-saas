@@ -1,6 +1,6 @@
 import { module, test, skip } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { DEFAULT_LANGUAGES } from '../../helpers/redux-data-helper';
+import { DEFAULT_LANGUAGES, DEFAULT_ALIASES } from '../../helpers/redux-data-helper';
 import Scanner from 'investigate-events/util/scanner';
 import Parser from 'investigate-events/util/parser';
 import LEXEMES from 'investigate-events/constants/lexemes';
@@ -15,7 +15,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.INTEGER, text: '3' }
     ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     const result = p.parse();
     assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
     assert.deepEqual(result.children, [
@@ -40,7 +40,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.HYPHEN, text: '-' },
       { type: LEXEMES.INTEGER, text: '3' }
     ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     const result = p.parse();
     assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
     assert.deepEqual(result.children, [
@@ -68,7 +68,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.OPERATOR_NOT_EQ, text: '!=' },
       { type: LEXEMES.STRING, text: 'hyberfile.sys' }
     ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     const result = p.parse();
     assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
     assert.deepEqual(result.children, [
@@ -112,7 +112,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.HYPHEN, text: '-' },
       { type: LEXEMES.INTEGER, text: '5' }
     ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     const result = p.parse();
     assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
     assert.deepEqual(result.children, [
@@ -146,7 +146,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.VALUE_SEPARATOR, text: ',' },
       { type: LEXEMES.INTEGER, text: '9' }
     ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     const result = p.parse();
     assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
     assert.deepEqual(result.children, [
@@ -181,7 +181,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.STRING, text: 'netwitness' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' }
     ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     const result = p.parse();
     assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
     assert.deepEqual(result.children, [
@@ -216,7 +216,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.RIGHT_PAREN, text: ')' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' }
     ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     assert.throws(() => {
       p.parse();
     }, new Error('Unexpected token: RIGHT_PAREN())'));
@@ -230,7 +230,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.AND, text: '&&' },
       { type: LEXEMES.META, text: 'medium' }
     ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     assert.throws(() => {
       p.parse();
     }, new Error('Expected token of type OPERATOR but reached the end of the input'));
@@ -244,7 +244,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.META, text: 'medium' },
       { type: LEXEMES.OPERATOR_EQ, text: '=' }
     ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     assert.throws(() => {
       p.parse();
     }, new Error('Unexpected tokens: META(medium) OPERATOR_EQ(=)'));
@@ -256,7 +256,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.META, text: 'medium' }
     ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     const result = p.parse();
     assert.ok(result.children[0].isInvalid);
     assert.strictEqual(result.children[0].validationError.string, 'Strings must be quoted with "');
@@ -270,7 +270,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.META, text: 'b' }
     ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     const result = p.parse();
     assert.ok(result.children[0].isInvalid);
     assert.strictEqual(result.children[0].validationError.string, 'You must enter an 8-bit Integer.');
@@ -284,7 +284,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.OPERATOR_EXISTS, text: 'exists' },
       { type: LEXEMES.INTEGER, text: '7' }
     ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     assert.throws(() => {
       p.parse();
     }, new Error('Invalid value 7 after unary operator exists'));
@@ -295,7 +295,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.META, text: 'medium' },
       { type: LEXEMES.OPERATOR_EXISTS, text: 'exists' }
     ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     const result = p.parse();
     assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA);
     assert.deepEqual(result.children, [
@@ -313,7 +313,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.INTEGER, text: '7' }
     ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     assert.throws(() => {
       p.parse();
     }, new Error('Meta "lakjsdlakjsd" not recognized'));
@@ -325,7 +325,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.OPERATOR_EQ, text: 'contains' },
       { type: LEXEMES.INTEGER, text: '7' }
     ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     assert.throws(() => {
       p.parse();
     }, new Error('Operator "contains" does not apply to meta "sessionid"'));
@@ -354,7 +354,7 @@ module('Unit | Util | Parser', function(hooks) {
       { type: LEXEMES.INTEGER, text: '1' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' }
     ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES);
+    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     const result = p.parse();
     assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA);
     assert.deepEqual(result.children, [

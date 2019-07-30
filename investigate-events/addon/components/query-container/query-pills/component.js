@@ -38,7 +38,7 @@ import {
 } from 'investigate-events/actions/guided-creators';
 import { hasMinimumCoreServicesVersionForTextSearch } from 'investigate-events/reducers/investigate/services/selectors';
 import { getRecentQueries } from 'investigate-events/actions/initialization-creators';
-import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { metaKeySuggestionsForQueryBuilder, languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import {
   CLOSE_PAREN,
   COMPLEX_FILTER,
@@ -55,6 +55,7 @@ const stateToComputed = (state) => ({
   hasTextPill: hasTextPill(state),
   isPillValidationInProgress: isPillValidationInProgress(state),
   metaOptions: metaKeySuggestionsForQueryBuilder(state),
+  languageAndAliasesForParser: languageAndAliasesForParser(state),
   pillsData: enrichedPillsData(state),
   selectedPills: selectedPills(state),
   canPerformTextSearch: hasMinimumCoreServicesVersionForTextSearch(state)
@@ -388,7 +389,8 @@ const QueryPills = RsaContextMenu.extend({
    */
   _pillPaste(text, position) {
     // Parse the string into an array of pills
-    const pills = transformTextToPillData(text, this.get('metaOptions'), false, true);
+    const { language, aliases } = this.get('languageAndAliasesForParser');
+    const pills = transformTextToPillData(text, { language, aliases, returnMany: true });
 
     this.send('batchAddPills', { pillsData: pills, initialPosition: position });
 
@@ -593,8 +595,8 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   _recentQueryPillCreated(data, position) {
-
-    const pills = transformTextToPillData(data, this.get('metaOptions'), false, true);
+    const { language, aliases } = this.get('languageAndAliasesForParser');
+    const pills = transformTextToPillData(data, { language, aliases, returnMany: true });
     this.send('batchAddPills', { pillsData: pills, initialPosition: position });
     this._pillsExited();
   },

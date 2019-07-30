@@ -12,7 +12,7 @@ import { enrichedPillsData } from 'investigate-events/reducers/investigate/query
 import { createBasicPill, doubleClick, isIgnoredInitialEvent, toggleTab } from '../pill-util';
 import KEY_MAP from 'investigate-events/util/keys';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
-import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { metaKeySuggestionsForQueryBuilder, languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL
@@ -21,6 +21,7 @@ import PILL_SELECTORS from '../pill-selectors';
 
 let setState;
 let metaOptions = [];
+let languageAndAliases = {};
 const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
 const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
 const ARROW_DOWN_KEY = KEY_MAP.arrowDown.code;
@@ -123,10 +124,10 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   hooks.beforeEach(function() {
     initialize(this.owner);
-    if (metaOptions.length < 1) {
-      metaOptions = metaKeySuggestionsForQueryBuilder(
-        new ReduxDataHelper(setState).language().pillsDataEmpty().build()
-      );
+    if (metaOptions.length < 1 || Object.keys(languageAndAliases).length < 1) {
+      const state = new ReduxDataHelper(setState).aliases().language().pillsDataEmpty().build();
+      metaOptions = metaKeySuggestionsForQueryBuilder(state);
+      languageAndAliases = languageAndAliasesForParser(state);
     }
     this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
@@ -381,6 +382,89 @@ module('Integration | Component | Query Pill', function(hooks) {
 
     await fillIn(PILL_SELECTORS.valueSelectInput, '3');
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', THREE_KEY); // 3
+
+    // Create pill
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+  });
+
+  test('A pill without type Text will still wrap a value in quotes if it is a valid alias', async function(assert) {
+    const done = assert.async();
+    this.set('metaOptions', metaOptions);
+    this.set('languageAndAliasesForParser', languageAndAliases);
+
+    this.set('handleMessage', (messageType, data, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.PILL_CREATED, 'Message sent for pill create is not correct');
+      assert.propEqual(data, { meta: 'ip.proto', operator: '=', value: '\'TCP\'', type: 'query' }, 'Message sent for pill create contains correct pill data');
+      assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
+
+      done();
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        position=0
+        isActive=true
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+        languageAndAliasesForParser=languageAndAliasesForParser
+      }}
+    `);
+
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 14); // ip.proto
+
+    await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
+
+    await selectChoose(PILL_SELECTORS.operatorTrigger, '=');
+
+    await waitUntil(() => find(PILL_SELECTORS.valueTrigger));
+
+    await fillIn(PILL_SELECTORS.valueSelectInput, 'TCP');
+
+    // Create pill
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+  });
+
+  test('A pill without type Text will not wrap a text value in quotes if it is not a valid alias', async function(assert) {
+    const done = assert.async();
+    this.set('metaOptions', metaOptions);
+    this.set('languageAndAliasesForParser', languageAndAliases);
+
+    this.set('handleMessage', (messageType, data, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.PILL_CREATED, 'Message sent for pill create is not correct');
+      // Note the lack of quotes around TCCP in the line below
+      assert.propEqual(data, { meta: 'ip.proto', operator: '=', value: 'TCCP', type: 'query' }, 'Message sent for pill create contains correct pill data');
+      assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
+
+      done();
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        position=0
+        isActive=true
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+        languageAndAliasesForParser=languageAndAliasesForParser
+      }}
+    `);
+
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 14); // ip.proto
+
+    await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
+
+    await selectChoose(PILL_SELECTORS.operatorTrigger, '=');
+
+    await waitUntil(() => find(PILL_SELECTORS.valueTrigger));
+
+    await fillIn(PILL_SELECTORS.valueSelectInput, 'TCCP');
 
     // Create pill
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);

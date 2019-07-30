@@ -41,11 +41,13 @@ class Parser {
    * @param {Array} availableMeta - The language array defining available meta
    * @public
    */
-  constructor(tokens, availableMeta) {
+  constructor(tokens, availableMeta, aliases) {
     // The array of tokens we parse into a structure
     this.tokens = tokens;
     // The list of available meta
     this.availableMeta = availableMeta;
+    // The list of aliases which would otherwise break type enforcement
+    this.aliases = aliases;
     // Indicates the next token to examine
     this.current = 0;
   }
@@ -106,6 +108,14 @@ class Parser {
     return this.current >= this.tokens.length;
   }
 
+  /**
+   * Returns an object that contains the meta and the operator, if they pass
+   * validation. Otherwise, throws an error giving the reason why one of the
+   * two is invalid.
+   * @param {Object} meta The meta config object
+   * @param {Object} operator The operator object
+   * @private
+   */
   _validateMetaAndOperator(meta, operator) {
     if (this.availableMeta && this.availableMeta.length > 0) {
       const metaConfig = this.availableMeta.find((m) => {
@@ -129,6 +139,36 @@ class Parser {
     }
     // If no availableMeta, return empty object
     return {};
+  }
+
+  /**
+   * Returns true if the meta value(s) is/are valid, false otherwise. Does a
+   * check of the aliases dictionary to see if the cause of an invalid type is
+   * use of an alias.
+   * @param {GRAMMAR.META_VALUE_RANGE} range The value range object
+   * @param {String} expectedType The expected type of the value range
+   * @private
+   */
+  _isValueTypeInvalid(range, expectedType, meta) {
+    const { aliases } = this;
+    const valuesToCheck = range.value ? [ range.value ] : [ range.from, range.to ];
+    return valuesToCheck.some((value) => {
+      if (value.type !== expectedType) {
+        if (aliases[meta.text]) {
+          // The call to Object.values().some() returns true if the text given is a
+          // valid alias. Return the negation of that, because this function
+          // returns true if invalid.
+          return !Object.values(aliases[meta.text]).some((text) => {
+            return value.text === text;
+          });
+        } else {
+          // Type mismatch but no aliases, invalid
+          return true;
+        }
+      }
+      // No type mismatch, valid
+      return false;
+    });
   }
 
   /**
@@ -262,12 +302,7 @@ class Parser {
         if (!expectedType) {
           return false;
         }
-        let result = false;
-        if (range.value) {
-          result = expectedType !== range.value.type;
-        } else {
-          result = expectedType !== range.from.type || expectedType !== range.to.type;
-        }
+        let result = this._isValueTypeInvalid(range, expectedType, meta);
         // If using length & types were valid, check for negative
         if (isLengthOperator && !result) {
           result = range.value ? range.value.text[0] === '-' : range.from.text[0] === '-' || range.to.text[0] === '-';

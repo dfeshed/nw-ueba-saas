@@ -36,6 +36,11 @@ export default Component.extend({
   metaOptions: null,
 
   /**
+   * Object with keys `language` and `aliases`
+   */
+  languageAndAliasesForParser: null,
+
+  /**
    * Whether or not we have a text pill across all pills,
    * passed along to rendered components, not used
    * @type {Object}
