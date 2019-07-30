@@ -2997,15 +2997,19 @@ export default {
         }
       },
       help: {
-        header: 'Select the drive or folder to view content.',
+        headerLine: 'Select the drive or folder to view content.',
+        header: ' MFT VIEWER INTERACTIONS',
         line2: 'Click the row to view the folder details.'
       },
       mftActionBar: {
         downloadFileToServer: 'Download File to Server',
-        downloadFileToServerToolTip: 'Select only one file to download'
+        downloadFileToServerToolTip: 'Select a file to download.'
+      },
+      filterActionBar: {
+        filterPanelDisabled: 'No directory selected'
       },
       backToDownloads: 'Downloads',
-      backToDownloadsTitle: 'Back to downloads tab',
+      backToDownloadsTitle: 'Close MFT Viewer.',
       mftHeaderTitle: 'MFT Viewer',
       errorMessages: {
         invalidFilterInputLength: 'Filter input longer than 256 characters',

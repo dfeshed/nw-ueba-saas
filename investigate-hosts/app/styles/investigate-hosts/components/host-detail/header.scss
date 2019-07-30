@@ -20,6 +20,13 @@
   }
   .host-header_status-actionbar-wrapper {
     margin-bottom: rsa-whitespace();
+    .titlebar {
+      .rsa-nav-tab-group {
+
+      }
+    }
+
+
   }
 }
 
@@ -38,6 +45,11 @@
     line-height: 2.25rem;
     .divider {
       height: 1.75rem;
+    }
+    .rsa-nav-tab {
+      &.is-active {
+        padding-bottom: 1.5rem;
+      }
     }
   }
   .host-title-icon {
@@ -185,7 +197,7 @@
   .divider {
     margin: 0.75rem 0 0 0;
   }
-  .downloadMFT-button { 
+  .downloadMFT-button {
     padding: rsa-whitespace(less) rsa-whitespace();
   }
   .host-start-scan-button .scan-modal {

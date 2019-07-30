@@ -33,5 +33,13 @@
   }
   .mft-container-panel {
     background-color: background-color(primary, darker);
+    @include rsa-vendor-prefix(transition-property, left);
+    @include rsa-vendor-prefix(transition-duration, 0.4s);
+    position: absolute;
+    z-index: 150;
+    min-height: 100%;
+    width: 100%;
+    background-color: background-color(primary, darker);
+    left: 0;
   }
 }

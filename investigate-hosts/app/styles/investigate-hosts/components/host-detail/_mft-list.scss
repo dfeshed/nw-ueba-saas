@@ -22,6 +22,12 @@
         padding-left: 0.5rem;
       }
     }
+    .rsa-data-table-header-cell.is-sorted {
+      i.sort {
+        color: text-color(neutral);
+      }
+
+    }
   }
 
 }

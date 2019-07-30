@@ -9,7 +9,6 @@ const _mftFiles = (state) => state.endpoint.hostDownloads.mft.mftDirectory.files
 const _fileMftTotal = (state) => state.endpoint.hostDownloads.mft.mftDirectory.totalMftItems || 0;
 const _areFilesLoading = (state) => state.endpoint.hostDownloads.mft.mftDirectory.loading;
 const _hasMftNext = (state) => state.endpoint.hostDownloads.mft.mftDirectory.hasMftNext;
-const _mftExpressionList = (state) => state.endpoint.hostDownloads.mft.filter.expressionList || [];
 const _selectedMftFileList = (state) => state.endpoint.hostDownloads.mft.mftDirectory.selectedMftFileList || [];
 
 export const areMftFilesLoading = createSelector(
@@ -80,12 +79,10 @@ export const mftSelectedFiles = createSelector(
 );
 
 export const fileTotalLabel = createSelector(
-  [_fileMftTotal, _mftExpressionList, _hasMftNext],
-  (total, expressionList, hasNext) => {
-    if (total >= 1000) {
-      if (expressionList && expressionList.length && hasNext) {
-        return '1000+';
-      }
+  [_fileMftTotal, _hasMftNext],
+  (total, hasNext) => {
+    if (hasNext && total >= 1000) {
+      return '1000+';
     }
     return `${total}`;
   }

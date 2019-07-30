@@ -16,7 +16,8 @@ const stateToComputed = (state) => ({
   focusedHost: state.endpoint.detailsInput.agentId,
   serverId: state.endpointQuery.serverId,
   selections: state.endpoint.hostDownloads.mft.mftDirectory.selectedMftFileList,
-  agentId: state.endpoint.detailsInput.agentId
+  agentId: state.endpoint.detailsInput.agentId,
+  isShowActions: state.endpoint.hostDownloads.mft.mftDirectory.selectedDirectoryForDetails
 });
 
 const dispatchToActions = {
@@ -38,7 +39,7 @@ const mftActionBar = Component.extend({
 
   @computed('selections')
   isDownloadToServerDisabled(selections) {
-    return selections.length !== 1;
+    return !selections.length;
   },
   actions: {
     onDownloadFilesToServer() {

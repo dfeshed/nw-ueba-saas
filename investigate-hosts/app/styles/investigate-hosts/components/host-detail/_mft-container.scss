@@ -41,19 +41,33 @@
           width: 325px;
           font-size: 1rem;
           .line-one {
+            &.content {
+              padding: 2rem 1rem 2rem 2rem;
+              background: text-color(primary, darker);
+              height: 72px;
+
+            }
             color: text-color(accentFour);
             text-align: center;
             padding-bottom: 13px;
+            .header {
+              background: text-color(primary, darker);
+              text-align: left;
+              color: text-color(primary, lightest);
+            }
           }
           ul {
             color: text-color(primary, lightest);
             background-color: text-color(primary, darker);
-            padding: 36px;
-            text-align: center;
+            text-align: left;
+            padding: 12px;
+            list-style-type: disc;
             li {
               margin: auto;
               width: 254px;
-              padding: 1rem;
+              padding: 0.5rem;
+              font-size: 0.8rem;
+              float: left;
             }
           }
         }
@@ -95,6 +109,7 @@
           padding-left: 0;
           font-weight: 100;
           text-align: left;
+          margin-right: 1.5rem;
           padding: 0.6rem;
           width: fit-content;
           float: left;
@@ -109,9 +124,11 @@
     .title-header {
       .close-zone {
         padding-left: 0.3rem;
+        padding-top: 0;
       }
       margin-bottom: 5px;
       padding-left: 1rem;
+      padding-top: 1rem;
       i {
         font-size: 1rem;
       }

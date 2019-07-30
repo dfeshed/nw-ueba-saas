@@ -20,7 +20,7 @@ import {
 } from 'investigate-hosts/actions/data-creators/file-context';
 
 const callBackOptions = (context) => ({
-  onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
+  onSuccess: () => success('investigateHosts.flash.mftFileDownloadRequestSent'),
   onFailure: (message) => context.get('flashMessage').showErrorMessage(message)
 });
 import FIXED_COLUMNS from './mft-table-columns';

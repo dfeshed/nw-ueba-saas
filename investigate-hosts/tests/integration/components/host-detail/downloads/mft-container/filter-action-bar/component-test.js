@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { findAll, render, click } from '@ember/test-helpers';
+import { findAll, render, click, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -135,6 +135,7 @@ module('Integration | Component | mft-container/filter-action-bar', function(hoo
     await render(hbs`{{host-detail/downloads/mft-container/filter-action-bar}}`);
     assert.equal(findAll('.back-to-downloads').length, 1, 'back to downloads button rendered');
     assert.equal(findAll('.open-filter-panel').length, 1, 'open filter panel button rendered');
+    assert.equal(findAll('.open-filter-panel')[0].title.length, 0, 'filter button disabled title not added');
   });
   test('back to downloads link to action test', async function(assert) {
     initState(endpointState);
@@ -142,16 +143,9 @@ module('Integration | Component | mft-container/filter-action-bar', function(hoo
     assert.equal(findAll('.back-to-downloads').length, 1, 'back to downloads button rendered');
     await click('.back-to-downloads');
     assert.deepEqual(transitions, [{
-      name: 'hosts.details',
+      name: 'hosts.details.tab',
       queryParams: {
-        machineId: 'agent-id',
-        mftFile: null,
-        mftName: null,
-        pid: null,
-        query: null,
-        sid: 'e82241fc-0681-4276-a930-dd6e5d00f152',
-        subTabName: 'DOWNLOADS',
-        tabName: 'DOWNLOADS'
+        subTabName: null
       }
     }]);
   });
@@ -167,6 +161,16 @@ module('Integration | Component | mft-container/filter-action-bar', function(hoo
     const { showFilter } = state.endpoint.hostDownloads.mft.mftDirectory;
     assert.equal(showFilter, true, 'Filter should show');
     assert.equal(findAll('.open-filter-panel').length, 0, 'filter button hidden');
+  });
+  test('Filter button disabeld test', async function(assert) {
+    new ReduxDataHelper(initState).hostDownloads(hostDownloads).build();
+    this.set('openPanel', function() {
+      assert.ok(true, 'open panel is called');
+    });
+    await render(hbs`{{host-detail/downloads/mft-container/filter-action-bar disableFilter=true isOpenFilter=false openFilterPanel=openPanel}}`);
+    return settled().then(() => {
+      assert.equal(findAll('.open-filter-panel')[0].title.trim().includes('directory'), true, 'filter button disabled title');
+    });
   });
 
 });

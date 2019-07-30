@@ -345,4 +345,13 @@ module('Integration | Component | host-detail/downloads/mft-container/mft-list/b
     await render(hbs`{{host-detail/downloads/mft-container/mft-list/body-cell column=column item=item}}`);
     assert.equal(find('.checksumSha256').textContent.trim(), 'NA', 'render NA if checksum is not present');
   });
+
+  test('It should render text with tooltip should add to fullFilePath column', async function(assert) {
+    const column = EmberObject.create({ field: 'fullPathName' });
+    this.set('item', { id: '5cda8882c8811e511649e335', fullPathName: 'C:\\Windows\\SoftwareDistribution\\EventCache.v2\\{1B65688F-122A-4951-A95D-15F75325D3B8}.bin' });
+    this.set('column', column);
+    await render(hbs`{{host-detail/downloads/mft-container/mft-list/body-cell column=column item=item}}`);
+    assert.equal(find('.fullPathName').textContent.trim(), 'C:\\Windows\\SoftwareDistribution\\EventCache.v2\\{1B65688F-122A-4951-A95D-15F75325D3B8}.bin', 'render fullpath present');
+    assert.equal(findAll('.tooltip-text').length, 1, 'tooltip added');
+  });
 });

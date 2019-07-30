@@ -117,7 +117,7 @@ export default [
   },
   {
     dataType: 'string',
-    width: 170,
+    width: 100,
     visible: true,
     field: 'archive',
     searchable: false,
@@ -126,7 +126,7 @@ export default [
   },
   {
     dataType: 'string',
-    width: 170,
+    width: 100,
     visible: true,
     field: 'compressed',
     searchable: false,
@@ -135,7 +135,7 @@ export default [
   },
   {
     dataType: 'string',
-    width: 170,
+    width: 100,
     visible: true,
     field: 'encrypted',
     searchable: false,
@@ -144,7 +144,7 @@ export default [
   },
   {
     dataType: 'string',
-    width: 170,
+    width: 100,
     visible: true,
     field: 'hidden',
     searchable: false,
@@ -153,7 +153,7 @@ export default [
   },
   {
     dataType: 'string',
-    width: 170,
+    width: 100,
     visible: true,
     field: 'directory',
     searchable: false,
@@ -162,7 +162,7 @@ export default [
   },
   {
     dataType: 'string',
-    width: 170,
+    width: 100,
     visible: true,
     field: 'extension',
     searchable: false,
