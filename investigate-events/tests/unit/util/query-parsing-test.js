@@ -202,16 +202,24 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.notOk(result[2].value, 'value should not exist');
   });
 
-  test('transformTextToPillData looks one deep into parenthesis, but not deeper', function(assert) {
+  test('transformTextToPillData looks inside parenthesis', function(assert) {
     const text = '(b = \'google.com\') && ((b = \'google.com\'))';
     const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
-    assert.strictEqual(result.length, 2);
-    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
-    assert.equal(result[0].meta, 'b', 'meta should match');
-    assert.equal(result[0].operator, '=', 'operator should match');
-    assert.equal(result[0].value, '\'google.com\'', 'value should match');
-    assert.equal(result[1].type, COMPLEX_FILTER, 'type should match');
-    assert.equal(result[1].complexFilterText, '((b = \'google.com\'))', 'complexFilterText should match');
+    assert.strictEqual(result.length, 8);
+    assert.equal(result[0].type, OPEN_PAREN, 'pill should be paren');
+    assert.equal(result[1].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[1].meta, 'b', 'meta should match');
+    assert.equal(result[1].operator, '=', 'operator should match');
+    assert.equal(result[1].value, '\'google.com\'', 'value should match');
+    assert.equal(result[2].type, CLOSE_PAREN, 'pill should be paren');
+    assert.equal(result[3].type, OPEN_PAREN, 'pill should be paren');
+    assert.equal(result[4].type, OPEN_PAREN, 'pill should be paren');
+    assert.equal(result[5].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[5].meta, 'b', 'meta should match');
+    assert.equal(result[5].operator, '=', 'operator should match');
+    assert.equal(result[5].value, '\'google.com\'', 'value should match');
+    assert.equal(result[6].type, CLOSE_PAREN, 'pill should be paren');
+    assert.equal(result[7].type, CLOSE_PAREN, 'pill should be paren');
   });
 
   test('transformTextToPillData does not break order of operations when combining OR into one complex pill', function(assert) {
