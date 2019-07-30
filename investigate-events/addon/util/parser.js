@@ -159,7 +159,7 @@ class Parser {
           // valid alias. Return the negation of that, because this function
           // returns true if invalid.
           return !Object.values(aliases[meta.text]).some((text) => {
-            return value.text === text;
+            return value.text.toLowerCase() === text.toLowerCase();
           });
         } else {
           // Type mismatch but no aliases, invalid

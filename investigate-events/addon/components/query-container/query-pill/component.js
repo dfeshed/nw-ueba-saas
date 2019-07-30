@@ -966,7 +966,7 @@ export default Component.extend({
     // if the type is not text but if an alias was entered.
     const languageAndAliasesForParser = this.get('languageAndAliasesForParser');
     const aliases = languageAndAliasesForParser ? languageAndAliasesForParser.aliases : {};
-    const isValueValidAlias = !!aliases[meta] && Object.values(aliases[meta]).some((alias) => alias === value);
+    const isValueValidAlias = value && aliases[meta] && Object.values(aliases[meta]).some((alias) => alias.toLowerCase() === value.toLowerCase());
     if ((selectedMeta && selectedMeta.format === 'Text' &&
       selectedOperator && selectedOperator.displayName !== 'length' &&
       value) ||
