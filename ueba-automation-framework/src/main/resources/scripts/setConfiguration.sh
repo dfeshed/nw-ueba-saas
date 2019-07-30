@@ -29,7 +29,7 @@ else
 fi
 
 # disable ADE retention
-if [ grep -q 'presidio.execute.ttl.cleanup' /etc/netwitness/presidio/configserver/configurations/application.properties ];
+if [ $( grep -q 'presidio.execute.ttl.cleanup' /etc/netwitness/presidio/configserver/configurations/application.properties ) ];
 then
     sed -i 's!presidio.execute.ttl.cleanup=*!presidio.execute.ttl.cleanup=false!g' /etc/netwitness/presidio/configserver/configurations/application.properties
 else
