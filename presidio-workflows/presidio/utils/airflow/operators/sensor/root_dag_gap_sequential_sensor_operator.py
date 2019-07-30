@@ -4,6 +4,8 @@ from airflow.utils.db import provide_session
 from airflow.utils.state import State
 from datetime import timedelta
 
+from presidio.utils.services.time_service import floor_time
+
 
 class RootDagGapSequentialSensorOperator(BaseSensorOperator):
     """
@@ -20,6 +22,9 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
     def __init__(
             self,
             dag_ids,
+            interval=None,
+            start_date=None,
+            fixed_duration_strategy=None,
             *args, **kwargs):
         super(RootDagGapSequentialSensorOperator, self).__init__(
             retries=99999,
@@ -30,6 +35,9 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
             **kwargs
         )
         self._dag_ids = dag_ids
+        self.start_date = start_date
+        self.interval = interval
+        self.fixed_duration_strategy = fixed_duration_strategy
 
     def poke(self, context):
         '''
@@ -47,6 +55,17 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
 
     @provide_session
     def _is_finished_wait_for_gapped_dag(self, execution_date, session=None):
+
+        self.log.info('execution_date class: {}'.format(execution_date.__class__.__name__))
+
+        if self.interval:
+            execution_date = floor_time(execution_date, time_delta=self.fixed_duration_strategy)
+            execution_date = execution_date - self.interval
+            if execution_date < self.start_date:
+                return True
+
+        self.log.info('execution_date class: {}'.format(execution_date.__class__.__name__))
+        self.log.info('execution_date value: {}'.format(execution_date))
 
         for dag_id in self._dag_ids:
             gapped_root_dag_run = session.query(DagRun).filter(
