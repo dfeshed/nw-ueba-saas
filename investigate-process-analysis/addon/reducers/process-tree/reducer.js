@@ -59,7 +59,10 @@ export default reduxActions.handleActions({
   },
 
   [ACTION_TYPES.SET_PROCESS_ANALYSIS_INPUT]: (state, { payload }) => {
-    return state.set('queryInput', payload);
+    return state.merge({
+      queryInput: payload,
+      selectedServerId: payload.serverId
+    });
   },
 
   [ACTION_TYPES.SET_SELECTED_PROCESS]: (state, { payload }) => {

@@ -1,4 +1,5 @@
 .file-header {
+  height: 122px;
   padding: rsa-whitespace() rsa-whitespace(less) 0 rsa-whitespace();
   border-bottom: 1px solid text-color(primary, dark);
   background-color: text-color(primary, darker);
@@ -12,8 +13,7 @@
       .divider {
         height: 45px;
         @include border-left(1px, solid, primary, dark);
-        margin: rsa-whitespace(least) rsa-whitespace();
-        //margin-left: rsa-whitespace();
+        margin: rsa-whitespace(least) rsa-whitespace(less);
       }
     }
 
@@ -38,18 +38,24 @@
       }
       .file-actionbar {
         padding-top: 0;
+        .rsa-form-button i{
+          @include border-bottom(2px, solid, primary, base, transparent);
+          padding-bottom: rsa-whitespace(less);
+          border-color: transparent;
+          &:hover{
+            border-color: border-color(secondary);
+          }
+        }
         .pivot-to-event-analysis {
             margin-right: 0;
-          .rsa-icon {
-            font-size: 21px;
-          }
         }
         .rsa-form-button-wrapper.is-icon-only {
           padding-left: 0;
         }
       }
       .file-status-more-actions {
-        margin-top: -5px;
+        margin-left: -0.5rem;
+        margin-top: -3px;
         .rsa-icon-arrow-down-12-filled {
           display: none;
         }
@@ -57,6 +63,7 @@
     }
     .file-title-os-wrapper {
       max-width: 300px;
+      padding-right: 0.5rem;
       .title-bar__file-name {
         overflow: hidden;
         text-overflow: ellipsis;
@@ -71,6 +78,7 @@
   }
 
   .file-summary {
+    padding-left: rsa-whitespace(less);
     svg {
       padding-right: rsa-whitespace(more);
     }
@@ -85,7 +93,6 @@
       }
       .value {
         color: text-color(primary, lightest);
-        font-weight: bold;
       }
     }
   }
@@ -94,6 +101,7 @@
     .label {
       text-transform: uppercase;
       @include rsa-font(navigation);
+      padding-bottom: 0.5rem;
     }
   }
 

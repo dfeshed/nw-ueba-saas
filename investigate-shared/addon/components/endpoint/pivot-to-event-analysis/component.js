@@ -54,6 +54,8 @@ export default Component.extend({
 
   eventBus: service(),
 
+  iconSize: 'small',
+
   @computed('selections')
   isDisabled(selections = []) {
     return selections.length !== 1;

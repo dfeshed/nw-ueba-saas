@@ -5,7 +5,7 @@
 {{/if}}
 <hbox class="title-bar__file-title" fit>
   <div class="file-title-os-wrapper">
-    <div class="title-bar__file-name">{{summary.filename}}</div>
+    <div class="title-bar__file-name" title={{summary.filename}}>{{summary.filename}}</div>
     <div class="osType"> {{summary.machineOsType}} </div>
   </div>
   <div class="file-header-actions">
@@ -17,6 +17,7 @@
       metaName='checksumSha256'
       itemList=selectedItemList
       selectedFileCount=selectedDetailFile.length
+      pivotIconSize='medium'
       downloadDisabledTooltip=(t 'investigateShared.endpoint.fileActions.tooltips.files.downloadToServer')}}
     {{host-detail/header/more-actions}}
   </div>

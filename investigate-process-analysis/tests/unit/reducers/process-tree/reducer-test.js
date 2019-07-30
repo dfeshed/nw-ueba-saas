@@ -73,10 +73,12 @@ module('Unit | Reducers | process-tree', function() {
 
   test('SET_PROCESS_ANALYSIS_INPUT query input to state', function(assert) {
     const previous = Immutable.from({
-      queryInput: null
+      queryInput: null,
+      selectedServerId: null
     });
-    const result = reducer(previous, { type: ACTION_TYPES.SET_PROCESS_ANALYSIS_INPUT, payload: { pn: 'test', aid: 1 } });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_PROCESS_ANALYSIS_INPUT, payload: { pn: 'test', aid: 1, serverId: 123456 } });
     assert.equal(result.queryInput.pn, 'test');
+    assert.equal(result.selectedServerId, 123456);
   });
 
   test('COMPLETED_EVENTS_STREAMING will sets streaming', function(assert) {
