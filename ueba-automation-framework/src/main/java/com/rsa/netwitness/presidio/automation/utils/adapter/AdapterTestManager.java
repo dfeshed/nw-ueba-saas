@@ -12,11 +12,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.io.File;
 import java.net.InetAddress;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static com.rsa.netwitness.presidio.automation.common.helpers.RunCmdUtils.printLogFile;
 
@@ -206,14 +208,20 @@ public class AdapterTestManager {
     }
 
     public void setTestAutomationConfigParameters() {
-        File file = new File("src/main/resources/scripts/setConfiguration.sh");
+        URL url = this.getClass().getClassLoader()
+                .getResource("scripts/setConfiguration.sh");
+
+        File file = new File(Objects.requireNonNull(url).getFile());
         String command = "sh " + file.getAbsolutePath();
         Process p = TerminalCommands.runCommand(command, true, "");
         System.out.println("Command exited with code: " + p.exitValue());
     }
 
     public void setBrokerConfiguration() {
-        File file = new File("src/main/resources/scripts/setBrokerInputConfiguration.sh");
+        URL url = this.getClass().getClassLoader()
+                .getResource("scripts/setBrokerInputConfiguration.sh");
+
+        File file = new File(Objects.requireNonNull(url).getFile());
         String command = "sh " + file.getAbsolutePath();
         Process p = TerminalCommands.runCommand(command, true, "");
         System.out.println("Command exited with code: " + p.exitValue());
