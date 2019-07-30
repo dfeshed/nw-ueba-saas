@@ -44,6 +44,7 @@ public class ConfigurationsAfterDataInjection extends AbstractTestNGSpringContex
         LOGGER.info(" ####### ConfigurationsAfterDataInjection()");
         endDate     = Instant.now().truncatedTo(ChronoUnit.DAYS);
         startDate   = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
+        LOGGER.info("historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay + " setBrokerConfiguration=" + setBrokerConfiguration);
 
         adapterTestManager.sendConfiguration(startDate);
         adapterTestManager.setTestAutomationConfigParameters();
