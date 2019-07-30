@@ -206,9 +206,14 @@ public class AdapterTestManager {
     }
 
     public void setTestAutomationConfigParameters() {
+        File file = new File("src/main/resources/scripts/setConfiguration.sh");
+        String command = "sh " + file.getAbsolutePath();
+        Process p = TerminalCommands.runCommand(command, true, "");
+        System.out.println("Command exited with code: " + p.exitValue());
+    }
 
-        File file = new File("src/test/resources/scripts/setConfiguration.sh");
-
+    public void setBrokerConfiguration() {
+        File file = new File("src/main/resources/scripts/setBrokerInputConfiguration.sh");
         String command = "sh " + file.getAbsolutePath();
         Process p = TerminalCommands.runCommand(command, true, "");
         System.out.println("Command exited with code: " + p.exitValue());

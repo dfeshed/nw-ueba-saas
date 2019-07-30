@@ -38,15 +38,19 @@ public class ConfigurationsAfterDataInjection extends AbstractTestNGSpringContex
     private Instant startDate = Instant.now();
     private Instant endDate = Instant.now();
 
-    @Parameters({"historical_days_back", "anomaly_day"})
+    @Parameters({"historical_days_back", "anomaly_day","set_broker_configuration"})
     @BeforeClass
-    public void setup(@Optional("14") int historicalDaysBack, @Optional("1") int anomalyDay){
+    public void setup(@Optional("14") int historicalDaysBack, @Optional("1") int anomalyDay, @Optional("false") boolean setBrokerConfiguration){
         LOGGER.info(" ####### ConfigurationsAfterDataInjection()");
         endDate     = Instant.now().truncatedTo(ChronoUnit.DAYS);
         startDate   = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
 
         adapterTestManager.sendConfiguration(startDate);
         adapterTestManager.setTestAutomationConfigParameters();
+        if (setBrokerConfiguration) {
+            LOGGER.debug("Going to execute: setBrokerConfiguration.sh");
+            adapterTestManager.setBrokerConfiguration();
+        }
         setBuildingModelsRange(7,2,2);
     }
 
