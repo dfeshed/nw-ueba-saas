@@ -3,6 +3,7 @@ from airflow.operators.sensors import BaseSensorOperator
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
 from datetime import timedelta
+import pendulum
 
 from presidio.utils.services.time_service import floor_time
 
@@ -23,7 +24,7 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
             self,
             dag_ids,
             interval=None,
-            start_date=None,
+            start_time=None,
             fixed_duration_strategy=None,
             *args, **kwargs):
         super(RootDagGapSequentialSensorOperator, self).__init__(
@@ -34,8 +35,9 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
             *args,
             **kwargs
         )
+
         self._dag_ids = dag_ids
-        self.start_date = start_date
+        self.start_time = start_time
         self.interval = interval
         self.fixed_duration_strategy = fixed_duration_strategy
 
@@ -61,8 +63,11 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
         if self.interval:
             execution_date = floor_time(execution_date, time_delta=self.fixed_duration_strategy)
             execution_date = execution_date - self.interval
-            if execution_date < self.start_date:
+            self.log.info('start_time: {}'.format(self.start_time))
+            self.log.info('execution_date: {}'.format(execution_date))
+            if execution_date < self.start_time:
                 return True
+            execution_date = pendulum.instance(execution_date)
 
         self.log.info('execution_date class: {}'.format(execution_date.__class__.__name__))
         self.log.info('execution_date value: {}'.format(execution_date))

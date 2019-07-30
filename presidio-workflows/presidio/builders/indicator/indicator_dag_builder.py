@@ -85,7 +85,7 @@ class IndicatorDagBuilder(PresidioDagBuilder):
                                                                                 task_id='input_pre_processor_gap_sensor_{0}'.format(schema),
                                                                                 dag_ids=InputPreProcessorDagFactory.get_dag_id(schema),
                                                                                 interval=timedelta(hours=1),
-                                                                                start_date=dag.start_date,
+                                                                                start_time=dag.start_date,
                                                                                 fixed_duration_strategy=FIX_DURATION_STRATEGY_DAILY,
                                                                                 poke_interval=5)
 
