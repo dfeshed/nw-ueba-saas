@@ -826,6 +826,12 @@
         padding: 0;
       }
     }
+    // icon to indicate text pill
+    .rsa-icon.is-text-pill {
+      display: inline-flex;
+      align-self: center;
+      margin-right: rsa-whitespace(less);
+    }
   }
 
   .new-pill-template {

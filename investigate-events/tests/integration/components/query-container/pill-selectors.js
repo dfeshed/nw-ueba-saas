@@ -60,6 +60,7 @@ export default {
   textPillActive: '.text-pill.is-active',
   textPillInput: '.text-pill input',
   textPillInputFocus: '.text-pill input:focus',
+  textPillIcon: '.is-text-pill.rsa-icon',
   triggerMetaPowerSelect,
   triggerOperatorPowerSelect,
   triggerValuePowerSelect,

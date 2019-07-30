@@ -5,10 +5,14 @@
     onKeyDown=(action 'onKeyDown')
   }}
 {{else}}
+  {{rsa-icon
+    name='search'
+    class='is-text-pill'
+    title='Text Filter'
+  }}
   <span class='text-wrapper'>
     {{pillData.searchTerm}}
   </span>
-
   {{query-container/delete-pill
     sendMessage=(action 'handleMessage')
   }}

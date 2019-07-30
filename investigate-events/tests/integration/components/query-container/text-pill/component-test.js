@@ -34,6 +34,16 @@ module('Integration | Component | query-container/text-pill', function(hooks) {
     assert.ok(find(PILL_SELECTORS.deletePill), 'delete icon missing');
   });
 
+  test('it has icon to indicate text pill', async function(assert) {
+    this.set('pillData', { searchTerm: 'foo bar' });
+    await render(hbs`
+      {{query-container/text-pill
+        pillData=pillData
+      }}
+    `);
+    assert.ok(find(PILL_SELECTORS.textPillIcon), 'icon was not found');
+  });
+
   test('it renders as input when active and has focus', async function(assert) {
     this.set('pillData', { searchTerm: 'foo bar' });
     await render(hbs`
