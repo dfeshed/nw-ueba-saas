@@ -73,7 +73,7 @@ class CefFilesPrinter {
                     .collect(toList());
 
             Path result = Files.write(path, stringStream, StandardOpenOption.APPEND);
-            LOGGER.info("Created:  [" + result.toAbsolutePath() + "]");
+            LOGGER.debug("Created:  [" + result.toAbsolutePath() + "]");
         } catch (IOException e) {
             e.printStackTrace();
         }
