@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.rsa.netwitness.presidio.automation.common.helpers.RunCmdUtils.printLogFile;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AdapterTestManager {
     @Autowired
@@ -203,8 +204,7 @@ public class AdapterTestManager {
         // sh /opt/rsa/saTools/bin/ueba-server-config -u admin -p netwitness -h 10.4.61.136 -o broker -t 2018-07-18T00:00:00Z -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY'  -v
         String command = "sudo /opt/rsa/saTools/bin/ueba-server-config -u admin -p netwitness -h " + node_zero_ip + " -o broker -t " + startTime.toString() + " -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY PROCESS REGISTRY TLS'  -v -e ";
         Process p = TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
-        System.out.println("Command exited with code: " + p.exitValue());
-
+        assertThat(p.exitValue()).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
     public void setTestAutomationConfigParameters() {
@@ -214,7 +214,7 @@ public class AdapterTestManager {
         File file = new File(Objects.requireNonNull(url).getFile());
         String command = "sh " + file.getAbsolutePath();
         Process p = TerminalCommands.runCommand(command, true, "");
-        System.out.println("Command exited with code: " + p.exitValue());
+        assertThat(p.exitValue()).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
     public void setBrokerConfiguration() {
@@ -224,7 +224,7 @@ public class AdapterTestManager {
         File file = new File(Objects.requireNonNull(url).getFile());
         String command = "sh " + file.getAbsolutePath();
         Process p = TerminalCommands.runCommand(command, true, "");
-        System.out.println("Command exited with code: " + p.exitValue());
+        assertThat(p.exitValue()).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
     public String getNodeZeroIP() {
