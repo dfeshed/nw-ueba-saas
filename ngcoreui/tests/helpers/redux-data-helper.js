@@ -198,6 +198,26 @@ export default class DataHelper {
     _set(this.state, 'logcollector.dashboardCard.itemProtocolData', dict);
     return this;
   }
+
+  esProtocolList(arr) {
+    _set(this.state, 'logcollector.dashboardCard.esStatsKeys', arr);
+    return this;
+  }
+
+  esProtocolLoadingStatus(string) {
+    _set(this.state, 'logcollector.dashboardCard.esStatsKeysStatus', string);
+    return this;
+  }
+
+  esStatsDataLoadingStatus(string) {
+    _set(this.state, 'logcollector.dashboardCard.esStatsDataStatus', string);
+    return this;
+  }
+
+  esStatsData(dict) {
+    _set(this.state, 'logcollector.dashboardCard.esStatsData', dict);
+    return this;
+  }
   // Selector functions
 
   _connectAndFillTree() {

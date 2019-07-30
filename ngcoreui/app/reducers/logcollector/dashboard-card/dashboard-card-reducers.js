@@ -9,11 +9,13 @@ const initialState = {
   itemKeysStatus: 'wait',
 
   itemProtocolData: [],
-  itemProtocolDataStatus: 'wait'
+  itemProtocolDataStatus: 'wait',
+
+  esStatsData: [],
+  esStatsDataStatus: 'wait'
 };
 
 export default reduxActions.handleActions({
-
   [ACTION_TYPES.LOG_COLLECTOR_FETCH_PROTOCOLS]: (state, action) => (
     handle(state, action, {
       start: (state) => {
@@ -97,6 +99,47 @@ export default reduxActions.handleActions({
         return state.merge({
           itemProtocolData: mergedObjDict,
           itemProtocolDataStatus: 'complete'
+        });
+      }
+    })
+  ),
+
+  [ACTION_TYPES.LOG_COLLECTOR_EVENT_SOURCES_STATS_DATA]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.merge({
+          esStatsData: [],
+          esStatsDataStatus: 'wait'
+        });
+      },
+      failure: (state) => {
+        return state.set('esStatsDataStatus', 'error');
+      },
+      success: (state) => {
+        let mergedObjDict = {};
+        if (state.esStatsData != null) {
+          mergedObjDict = { ...state.esStatsData };
+        }
+        if (action.payload != null && action.payload.nodes != null) {
+          const { nodes: allNodes } = action.payload;
+          const protocolSize = 25;
+          const totalEventsInd = 19;
+          const totalBytesInd = 18;
+          const eventRateInd = 8;
+          const errorsCountInd = 4;
+          for (let i = 0; i < allNodes.length; i += protocolSize) {
+            const mergedObj = {};
+            mergedObj.protocol = allNodes[i].name;
+            mergedObj.numOfEvents = allNodes[i + totalEventsInd].value;
+            mergedObj.eventRate = allNodes[i + eventRateInd].value;
+            mergedObj.numOfBytes = allNodes[i + totalBytesInd].value;
+            mergedObj.errorCount = allNodes[i + errorsCountInd].value;
+            mergedObjDict[mergedObj.protocol] = mergedObj;
+          }
+        }
+        return state.merge({
+          esStatsData: mergedObjDict,
+          esStatsDataStatus: 'complete'
         });
       }
     })

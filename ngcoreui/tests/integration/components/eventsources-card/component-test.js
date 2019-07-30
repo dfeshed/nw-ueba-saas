@@ -3,14 +3,12 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | card-lc', function(hooks) {
+module('Integration | Component | eventsources-card', function(hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders', async function(assert) {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.set('myAction', function(val) { ... });
+  test('eventsources-card renders', async function(assert) {
 
-    await render(hbs`{{card-lc}}`);
+    await render(hbs`{{eventsources-card}}`);
     assert.equal(this.element.querySelectorAll('.rsa-data-table').length, 1);
 
     const headers = this.element.querySelectorAll('.rsa-data-table .rsa-data-table-header-cell');
@@ -19,12 +17,11 @@ module('Integration | Component | card-lc', function(hooks) {
     headersActual = headersActual.filter(function(el) {
       return el != '';
     });
-    const headersExpected = ['Protocol', 'Event Rate', 'Total Events', 'Byte Rate', 'Total Bytes',
-      'Error Rate', 'Error Count'];
+    const headersExpected = ['Protocol', 'Total Events', 'Event Rate', 'Total Bytes', 'Error Count'];
     assert.deepEqual(headersExpected, headersActual);
 
     const noEventSourcesMsg = this.element.querySelectorAll('.rsa-data-table .no-results-message').length;
     assert.equal(noEventSourcesMsg, 1);
   });
-
 });
+

@@ -1,7 +1,7 @@
 import { lookup } from 'ember-dependency-lookup';
 
 /**
- * Fetches a list of protocol objects.
+ * Fetches a list of protocol objects for log-collector card.
  * @public
  */
 function fetchProtocolList() {
@@ -12,7 +12,7 @@ function fetchProtocolList() {
 }
 
 /**
- * Fetches the information of the required protocol.
+ * Fetches the information of the required protocol for log-collector card.
  * @public
  */
 function fetchProtocolData(protocolName) {
@@ -22,8 +22,22 @@ function fetchProtocolData(protocolName) {
   });
 }
 
+/**
+ * Fetches the information of the protocols for event sources card.
+ * @public
+ */
+function fetchEventSourcesProtocolData() {
+  const transport = lookup('service:transport');
+  return transport.send('/event-processors/logdecoder/stats/eventsources/queue', {
+    message: 'ls',
+    params: {
+      depth: '2'
+    }
+  });
+}
 export default
 {
   fetchProtocolList,
-  fetchProtocolData
+  fetchProtocolData,
+  fetchEventSourcesProtocolData
 };
