@@ -64,7 +64,6 @@ public class AdapterTestManager {
 
     public AdapterTestManager(MongoPropertiesReader mongoPropertiesReader) {
         this.mongoPropertiesReader = mongoPropertiesReader;
-        setMongoPropertiesToMongoSource();
     }
 
     /***
