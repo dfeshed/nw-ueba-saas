@@ -6,6 +6,7 @@
     <parameter name="historical_days_back" value="35" />
     <parameter name="anomaly_day" value="2" />
     <parameter name="generator_format" value="MONGO_ADAPTER" />
+    <parameter name="set_data_input_source" value="MONGO" />
 
     <test name="Data Processing">
         <classes>

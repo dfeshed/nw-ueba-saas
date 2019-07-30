@@ -6,6 +6,7 @@ import com.rsa.netwitness.presidio.automation.converter.conveters.PresidioEventC
 import com.rsa.netwitness.presidio.automation.converter.events.ConverterEventBase;
 import com.rsa.netwitness.presidio.automation.converter.producers.NetwitnessEventsProducer;
 import com.rsa.netwitness.presidio.automation.converter.TestContextSupplier;
+import com.rsa.netwitness.presidio.automation.enums.GeneratorFormat;
 import fortscale.common.general.Schema;
 import fortscale.utils.mongodb.config.MongoConfig;
 import org.slf4j.LoggerFactory;
@@ -24,9 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.rsa.netwitness.presidio.automation.converter.TestContextSupplier.GENERATOR_FORMAT.valueOf;
-
-@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
+@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, NetwitnessEventStoreConfig.class})
 public abstract class DataPreparationBase extends AbstractTestNGSpringContextTests {
     private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
@@ -38,7 +37,7 @@ public abstract class DataPreparationBase extends AbstractTestNGSpringContextTes
 
     protected int historicalDaysBack;
     protected int anomalyDay;
-    protected String generatorFormat;
+    protected GeneratorFormat generatorFormat;
     protected Map<Schema, Long> generatorResultCount;
 
     protected abstract List<? extends Event> generate() throws GeneratorException;
@@ -48,7 +47,7 @@ public abstract class DataPreparationBase extends AbstractTestNGSpringContextTes
     @BeforeClass
     public void setup(@Optional("30") int historicalDaysBack,
                       @Optional("1") int anomalyDay,
-                      @Optional("MONGO_ADAPTER") String generatorFormat) throws GeneratorException {
+                      @Optional("MONGO_ADAPTER") GeneratorFormat generatorFormat) throws GeneratorException {
 
         setParams(historicalDaysBack, anomalyDay, generatorFormat);
         LOGGER.info(" #######   Generate and send");
@@ -61,11 +60,11 @@ public abstract class DataPreparationBase extends AbstractTestNGSpringContextTes
     }
 
     private PresidioEventConverter getConverter() {
-        return new TestContextSupplier(netwitnessEventStore).getConverter(valueOf(generatorFormat));
+        return new TestContextSupplier(netwitnessEventStore).getConverter(generatorFormat);
     }
 
     private NetwitnessEventsProducer getProducer() {
-        return new TestContextSupplier(netwitnessEventStore).getDispatcher(valueOf(generatorFormat));
+        return new TestContextSupplier(netwitnessEventStore).getDispatcher(generatorFormat);
     }
 
 
@@ -78,7 +77,7 @@ public abstract class DataPreparationBase extends AbstractTestNGSpringContextTes
         return getProducer().send(collect);
     }
 
-    private void setParams(int historicalDaysBack, int anomalyDay, String generatorFormat){
+    private void setParams(int historicalDaysBack, int anomalyDay, GeneratorFormat generatorFormat){
         this.historicalDaysBack = historicalDaysBack;
         this.anomalyDay = anomalyDay;
         this.generatorFormat = generatorFormat;

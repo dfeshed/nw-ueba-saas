@@ -4,6 +4,7 @@ import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
+import com.rsa.netwitness.presidio.automation.enums.DataInputSource;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import org.testng.annotations.Test;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+
+import static com.rsa.netwitness.presidio.automation.enums.DataInputSource.MONGO;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
@@ -43,11 +46,18 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     private Instant endDate = Instant.now();
 
 
-    @Parameters({"historical_days_back", "anomaly_day"})
+    @Parameters({"historical_days_back", "anomaly_day", "set_data_input_source"})
     @BeforeClass
-    public void setup(@Optional("10") int historicalDaysBack, @Optional("1") int anomalyDay){
+    public void setup(@Optional("10") int historicalDaysBack,
+                      @Optional("1") int anomalyDay,
+                      @Optional("MONGO") DataInputSource setDataInputSource){
         endDate     = Instant.now().truncatedTo(ChronoUnit.DAYS);
         startDate   = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
+
+        if (setDataInputSource.equals(MONGO)) {
+            adapterTestManager.setMongoPropertiesToMongoSource();
+            adapterTestManager.setTestMode();
+        }
     }
 
     @Test

@@ -7,15 +7,13 @@
     <parameter name="anomaly_day" value="2" />
     <parameter name="generator_format" value="MONGO_ADAPTER" />
 
-
-    <suite-files>
-        <!--suite-file path="Adapter_Tests.xml"/-->
-        <suite-file path="Output_Tests.xml"/>
-    </suite-files>
-
     <test name="presidio.data.generators.output.Verifications">
         <classes>
-            <class name="com.rsa.netwitness.presidio.automation.common.validator.LogErrorsTestData"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.AlertsRestCorrectnessTest"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.AlertsIndicatorsTests"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.AlertsRestQueriesTest"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.RestUserTests"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.rest.UserSeverityTests"/>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.E2EMongoRestValidation"/>
         </classes>
     </test>

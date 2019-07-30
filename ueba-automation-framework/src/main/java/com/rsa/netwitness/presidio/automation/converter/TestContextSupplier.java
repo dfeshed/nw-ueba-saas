@@ -5,20 +5,17 @@ import com.rsa.netwitness.presidio.automation.converter.conveters.PresidioMongoR
 import com.rsa.netwitness.presidio.automation.converter.conveters.PresidioToNetwitnessEventConverterImpl;
 import com.rsa.netwitness.presidio.automation.converter.producers.*;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
+import com.rsa.netwitness.presidio.automation.enums.GeneratorFormat;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.rsa.netwitness.presidio.automation.converter.TestContextSupplier.GENERATOR_FORMAT.*;
+import static com.rsa.netwitness.presidio.automation.enums.GeneratorFormat.*;
 
 public class TestContextSupplier {
 
-    public enum GENERATOR_FORMAT {
-        CEF_DAILY, CEF_HOURLY, MONGO_ADAPTER, CEF_DAILY_NOT_SEND
-    }
-
-    private Map<GENERATOR_FORMAT, PresidioEventConverter> converters = new HashMap<>();
-    private Map<GENERATOR_FORMAT, NetwitnessEventsProducer> producers = new HashMap<>();
+    private Map<GeneratorFormat, PresidioEventConverter> converters = new HashMap<>();
+    private Map<GeneratorFormat, NetwitnessEventsProducer> producers = new HashMap<>();
 
     public TestContextSupplier(NetwitnessEventStore netwitnessEventStore) {
 
@@ -35,13 +32,13 @@ public class TestContextSupplier {
     }
 
 
-    public PresidioEventConverter getConverter(GENERATOR_FORMAT generatorFormat) {
+    public PresidioEventConverter getConverter(GeneratorFormat generatorFormat) {
         if (converters.containsKey(generatorFormat))
             return converters.get(generatorFormat);
         else throw new RuntimeException("Missing converter for: " + generatorFormat);
     }
 
-    public NetwitnessEventsProducer getDispatcher(GENERATOR_FORMAT generatorFormat) {
+    public NetwitnessEventsProducer getDispatcher(GeneratorFormat generatorFormat) {
         if (producers.containsKey(generatorFormat))
             return producers.get(generatorFormat);
         else throw new RuntimeException("Missing generator for: " + generatorFormat);

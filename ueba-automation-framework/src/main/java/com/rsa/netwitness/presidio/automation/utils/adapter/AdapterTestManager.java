@@ -91,7 +91,6 @@ public class AdapterTestManager {
 
     public void process(Instant start, Instant end, String timeFrame, String schema) {
         //Replace sdkSource flume properties to mongoSource flume properties
-        setTestMode();
         String flumeHome = "export FLUME_HOME=/var/netwitness/presidio/flume/ ; ";
         String logPath = "/tmp/presidio-adapter_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
 
