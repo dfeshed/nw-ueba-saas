@@ -1,6 +1,6 @@
 import Route from '@ember/routing/route';
 import { setDataForHostTab } from 'investigate-hosts/actions/data-creators/host-details';
-import { setSelectedTabData, resetExploreSearch } from 'investigate-hosts/actions/data-creators/explore';
+import { setSelectedTabData, getFileSearchResults } from 'investigate-hosts/actions/data-creators/explore';
 import { inject as service } from '@ember/service';
 
 const HELP_ID_MAPPING = {
@@ -22,7 +22,7 @@ export default Route.extend({
 
   contextualHelp: service(),
 
-  isPageLoading: true,
+  isPageReload: true,
 
   queryParams: {
     subTabName: {
@@ -40,18 +40,29 @@ export default Route.extend({
 
   model(params) {
     const redux = this.get('redux');
-    const { tabName, subTabName, checksum, scanTime } = params;
+    const { tabName, subTabName, checksum, scanTime, searchKey } = params;
+    const isPageReload = this.get('isPageReload');
     const { sid, id } = this.modelFor('hosts.details');
     if (sid && id) {
       this.set('contextualHelp.topic', this.get(HELP_ID_MAPPING[tabName]));
       if (scanTime && checksum) {
-        redux.dispatch(setSelectedTabData({ tabName, subTabName, scanTime, checksum }));
-      } else {
-        redux.dispatch(resetExploreSearch());
+        redux.dispatch(setSelectedTabData({ tabName, subTabName, scanTime, checksum, searchKey }));
+      }
+      // If it's a page reload the if there is a search key reload the search result
+      if (isPageReload && searchKey) {
+        redux.dispatch(getFileSearchResults(searchKey, true));
       }
       redux.dispatch(setDataForHostTab(id, tabName, subTabName));
     }
     return params;
+  },
+
+  activate() {
+    this.set('isPageReload', false);
+  },
+
+  deactivate() {
+    this.set('isPageReload', true);
   },
 
   resetController(controller, isExiting) {

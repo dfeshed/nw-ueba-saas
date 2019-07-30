@@ -66,10 +66,10 @@ export default Route.extend({
   actions: {
     navigateToTab(params) {
       if (params) {
-        const { subTabName, tabName, scanTime, checksum } = params;
-        this.transitionTo('hosts.details.tab', tabName, { queryParams: { subTabName, scanTime, checksum } });
+        const { subTabName, tabName, scanTime, checksum, searchKey } = params;
+        this.transitionTo('hosts.details.tab', tabName, { queryParams: { subTabName, scanTime, checksum, searchKey } });
       } else {
-        this.transitionTo({ queryParams: { subTabName: null, scanTime: null, checksum: null } });
+        this.transitionTo({ queryParams: { subTabName: null, scanTime: null, checksum: null, searchKey: null } });
       }
     }
   }

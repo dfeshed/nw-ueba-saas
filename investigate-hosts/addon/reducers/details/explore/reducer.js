@@ -31,12 +31,10 @@ const _handleFileSearchPage = (state, { payload: { data, meta = {}, request } })
       searchStatus: meta.complete ? 'complete' : 'wait',
       fileSearchResults: [...newFileSearchResults],
       searchValue: searchKeyword,
-      componentName: newComponentName,
-      showSearchResults: true
+      componentName: newComponentName
     });
   } else {
     return state.merge({
-      showSearchResults: true,
       componentName: newComponentName,
       searchValue: searchKeyword,
       searchStatus: 'wait'

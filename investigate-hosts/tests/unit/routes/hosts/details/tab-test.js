@@ -56,22 +56,6 @@ module('Unit | Route | Hosts | Details | tab', function(hooks) {
     assert.ok(mock.callCount === 1, 'setSelectedTabData method is called');
   });
 
-
-  test('model hook should call resetExploreSearch if scanTime and checksum are null', async function(assert) {
-    assert.expect(1);
-
-    const mock = sinon.stub(ExploreCreators, 'resetExploreSearch');
-
-    patchReducer(this, Immutable.from({}));
-    const route = setupRoute.call(this);
-
-    await route.model({ tabName: 'AUTORUNS', scanTime: null, checksum: null });
-
-    await settled();
-
-    assert.ok(mock.callCount === 1, 'setSelectedTabData method is called');
-  });
-
   test('model hook should call HostDetails', async function(assert) {
     assert.expect(1);
 

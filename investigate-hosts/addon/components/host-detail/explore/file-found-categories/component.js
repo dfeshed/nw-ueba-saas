@@ -13,6 +13,10 @@ const dispatchToActions = {
   toggleExploreSearchResults
 };
 
+const stateToComputed = (state) => ({
+  searchKey: state.endpoint.explore.searchValue
+});
+
 const FileFound = Component.extend({
 
   tagName: 'box',
@@ -39,14 +43,15 @@ const FileFound = Component.extend({
       const category = catString.string.toLowerCase().replace(/\s/g, '');
       const scanTime = this.get('scanTime');
       const checksum = this.get('file').checksumSha256;
+      const searchKey = this.get('searchKey');
       const tabName = TAB_MAPPING[category];
       if (['AUTORUNS', 'ANOMALIES'].includes(tabName)) {
         subTabName = CATEGORY_NAME[category];
       }
       this.send('toggleExploreSearchResults', false);
-      this.navigateToTab({ tabName, subTabName, scanTime, checksum });
+      this.navigateToTab({ tabName, subTabName, scanTime, checksum, searchKey }, true);
     }
   }
 });
 
-export default connect(undefined, dispatchToActions)(FileFound);
+export default connect(stateToComputed, dispatchToActions)(FileFound);

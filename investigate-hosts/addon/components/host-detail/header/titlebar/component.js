@@ -9,6 +9,7 @@ const stateToComputed = (state) => ({
   hostDetailTabs: getHostDetailTabs(state),
   hostName: hostName(state),
   activeHostDetailTab: state.endpoint.visuals.activeHostDetailTab,
+  selectedTab: state.endpoint.explore.selectedTab,
   showRightPanelButton: isOnOverviewTab(state),
   hideSnapshotAndExploreSearch: isActiveTabDownloads(state)
 });

@@ -11,7 +11,8 @@ import moment from 'moment';
 const stateToComputed = (state) => ({
   fileSearchResults: state.endpoint.explore.fileSearchResults,
   isDataTruncated: state.endpoint.explore.isDataTruncated,
-  searchResultNotFound: searchResultNotFound(state)
+  searchResultNotFound: searchResultNotFound(state),
+  searchKey: state.endpoint.explore.searchValue
 });
 
 const dispatchToActions = {
@@ -48,10 +49,10 @@ const ExploreContent = Component.extend({
   },
 
   actions: {
-    navigateToFile(checksum, scanTime) {
+    navigateToFile(checksum, scanTime, searchKey) {
       const tabName = 'FILES';
       this.send('toggleExploreSearchResults', false);
-      this.navigateToTab({ tabName, scanTime, checksum });
+      this.navigateToTab({ tabName, scanTime, checksum, searchKey }, true);
     }
   }
 
