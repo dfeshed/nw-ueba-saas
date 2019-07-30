@@ -90,8 +90,7 @@ module('Unit | Selectors | Policy Details | file-policy | file-selectors', funct
         sendTestLog: false,
         primaryDestination: '',
         secondaryDestination: '',
-        protocol: 'TLS',
-        sources: []
+        protocol: 'TLS'
       }
     },
     policyStatus: 'Updated',
@@ -101,7 +100,7 @@ module('Unit | Selectors | Policy Details | file-policy | file-selectors', funct
   test('selectedFilePolicy selector', function(assert) {
     const state = new ReduxDataHelper(setState).policy(policyData).build();
     const policyDetails = selectedFilePolicy(Immutable.from(state));
-    assert.equal(policyDetails.length, 1, '1 sections returned as expected');
+    assert.equal(policyDetails.length, 2, '2 sections returned as expected');
     assert.equal(policyDetails[0].header, 'adminUsm.policies.detail.fileSettings', 'first section is as expected');
     assert.equal(policyDetails[0].props.length, 3, 'first section has 3 properties');
     assert.equal(policyDetails[0].props[0].value, 'Enabled', 'Enabled filePolicy correct');
@@ -125,7 +124,69 @@ module('Unit | Selectors | Policy Details | file-policy | file-selectors', funct
   test('selectedFilePolicy selector with data Disabled', function(assert) {
     const state = new ReduxDataHelper(setState).policy(filePolicyDidabled).build();
     const policyDetails = selectedFilePolicy(Immutable.from(state));
-    assert.equal(policyDetails[0].props.length, 1, 'first section has 1 properties');
+    assert.equal(policyDetails.length, 1, '1 section returned as expected when filePolicy is disabled');
+    assert.equal(policyDetails[0].props.length, 1, 'first and only section has 1 property');
     assert.equal(policyDetails[0].props[0].value, 'Disabled', 'Disabled filePolicy correct');
   });
+
+  const filePolicySources = {
+    ...policyData,
+    policy: {
+      ...policy,
+      filePolicy: {
+        ...filePolicy,
+        sources: [
+          {
+            fileType: 'exchange',
+            enabled: false,
+            startOfEvents: true,
+            fileEncoding: 'utf-8',
+            paths: ['/*foo/bar*/*.txt'],
+            sourceName: 'testSource3',
+            exclusionFilters: ['exclude-string-1'],
+            typeSpec: {
+              parserId: 'file.exchange',
+              processorType: 'generic',
+              dataStartLine: '1',
+              fieldDelim: '0x20'
+            }
+          },
+          {
+            fileType: 'apache',
+            enabled: true,
+            startOfEvents: true,
+            fileEncoding: 'utf-8',
+            paths: ['/*foo/bar*/*.txt'],
+            sourceName: 'testSource2',
+            exclusionFilters: ['exclude-string-1'],
+            typeSpec: {
+              parserId: 'file.apache',
+              processorType: 'generic',
+              dataStartLine: '1',
+              fieldDelim: '0x20'
+            }
+          }
+        ]
+      }
+    }
+  };
+
+  test('filePolicySources selector', function(assert) {
+    const state = new ReduxDataHelper(setState).policy(filePolicySources).build();
+    const policyDetails = selectedFilePolicy(Immutable.from(state));
+    assert.equal(policyDetails.length, 3, '3 sections returned as expected');
+    assert.equal(policyDetails[2].header, 'adminUsm.policies.detail.sourceSettings', 'sourceSettings section is as expected');
+    assert.equal(policyDetails[2].props.length, 6, 'sourceSettings section has 6 properties when enabled');
+    assert.equal(policyDetails[2].props[0].value, 'Enabled', 'Enabled apache fileType correct');
+    assert.equal(policyDetails[2].props[1].value, 'Collect new data only', 'startOfEvents valus correct');
+    assert.equal(policyDetails[2].props[2].value, 'utf-8', 'fileEncoding value is correct');
+    assert.equal(policyDetails[2].props[3].value, '/*foo/bar*/*.txt', 'path value is correct');
+    assert.equal(policyDetails[2].props[4].value, 'testSource2', 'sourceName value is correct');
+    assert.equal(policyDetails[2].props[5].value, 'exclude-string-1', 'exclusionFilters value is correct');
+
+    assert.equal(policyDetails[1].props.length, 1, 'sourceSettings section has 1 property when disabled');
+    assert.equal(policyDetails[1].props[0].value, 'Disabled', 'exchange fileType is disabled');
+  });
+
 });
+

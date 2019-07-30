@@ -90,7 +90,7 @@ export default {
         },
         {
           fileType: 'apache',
-          enabled: false,
+          enabled: true,
           startOfEvents: true,
           fileEncoding: 'utf-8',
           paths: ['/*foo/bar*/*.txt'],

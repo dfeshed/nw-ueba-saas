@@ -346,8 +346,8 @@ export const policyAdminUsm = createSelector(
         edrPolicy: {
           name: data.edrPolicy.name,
           scanType: data.edrPolicy.scheduledScanConfig.enabled,
-          scanStartTime: runAtTime,
           scanStartDate: data.edrPolicy.scheduledScanConfig.recurrentSchedule.scheduleStartDate,
+          scanStartTime: runAtTime,
           recurrenceInterval: data.edrPolicy.scheduledScanConfig.recurrentSchedule.recurrence.interval,
           recurrenceUnit: data.edrPolicy.scheduledScanConfig.recurrentSchedule.recurrence.unit,
           runOnDaysOfWeek: weekDay,
@@ -383,7 +383,7 @@ export const policyAdminUsm = createSelector(
           secondaryDestination: data.filePolicy.secondaryDestination,
           protocol: data.filePolicy.protocol,
           sendTestLog: data.filePolicy.sendTestLog,
-          sources: []
+          sources: data.filePolicy.sources ? data.filePolicy.sources : []
         } : {}
       };
     }

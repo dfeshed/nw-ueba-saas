@@ -114,7 +114,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     assert.equal(policyDetails.length, 6, '6 sections returned as expected');
     assert.equal(policyDetails[0].header, 'adminUsm.policyWizard.edrPolicy.scanSchedule', 'first section is as expected');
     assert.equal(policyDetails[0].props.length, 6, 'first section has 6 properties');
-    assert.equal(policyDetails[0].props[1].value, '09:00', 'Scan time correct');
+    assert.equal(policyDetails[0].props[2].value, '09:00', 'Scan time correct');
     assert.equal(policyDetails[1].header, 'adminUsm.policyWizard.edrPolicy.agentSettings', 'second section  is as expected');
     assert.equal(policyDetails[1].props.length, 1, 'second section has 1 property');
     assert.equal(policyDetails[2].header, 'adminUsm.policyWizard.edrPolicy.advScanSettings', 'third section  is as expected');
@@ -154,7 +154,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
   test('selectedEdrPolicy selector with new runOnDaysOfWeekData', function(assert) {
     const state = new ReduxDataHelper(setState).policy(runOnDaysOfWeekData).build();
     const policyDetails = selectedEdrPolicy(Immutable.from(state));
-    assert.equal(policyDetails[0].props[1].value, '10:00', 'Scan time correct');
+    assert.equal(policyDetails[0].props[2].value, '10:00', 'Scan time correct');
     assert.equal(policyDetails[0].props[3].value, 'Every 1 day(s) on Friday', 'Every 1 day(s) on Friday value is shows');
   });
 

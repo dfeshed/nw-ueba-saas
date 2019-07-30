@@ -4438,7 +4438,8 @@ export default {
         fileSettings: 'File Settings',
         filePolicyEnabled: 'Status',
         sourceSettings: 'Source Settings ({{fileType}})',
-        noChannels: 'No channels set for collection'
+        noChannels: 'No channels set for collection',
+        noSources: 'No sources set for collection'
       },
       modals: {
         deletePolicies: {

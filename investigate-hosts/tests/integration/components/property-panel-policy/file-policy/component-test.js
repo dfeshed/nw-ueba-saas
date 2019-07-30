@@ -87,8 +87,7 @@ module('Integration | Component | property-panel-policy/file-policy', function(h
         sendTestLog: false,
         primaryDestination: '',
         secondaryDestination: '',
-        protocol: 'TLS',
-        sources: []
+        protocol: 'TLS'
       }
     },
     policyStatus: 'Updated',
@@ -113,11 +112,13 @@ module('Integration | Component | property-panel-policy/file-policy', function(h
     assert.equal(findAll('.file-policies').length, 1, 'should rend the component');
   });
 
-  test('Content data', async function(assert) {
+  test('Content data with no filePolicy sources', async function(assert) {
     new ReduxDataHelper(setState).policy(policyData).build();
     await render(hbs`{{property-panel-policy/file-policy}}`);
     assert.equal(document.querySelectorAll('.file-value').length, 3, 'All values are showing');
-    assert.equal(document.querySelectorAll('.content-section__section-name')[0].textContent.trim(), 'File Settings', 'Windows Log Settings section shows');
+    assert.equal(document.querySelectorAll('.content-section__section-name')[0].textContent.trim(), 'File Settings', 'File Log Settings section shows');
+
+    assert.equal(document.querySelectorAll('.content-section__section-name')[1].textContent.trim(), 'Source Settings (No sources set for collection)', 'No sources set for collection shows');
     assert.equal(document.querySelectorAll('.property-name')[0].textContent.trim(), 'Status', 'Status lable shows');
     assert.equal(document.querySelectorAll('.file-value .tooltip-text')[0].textContent.trim(), 'Enabled', 'Enabled value is showing');
 
@@ -125,8 +126,6 @@ module('Integration | Component | property-panel-policy/file-policy', function(h
 
     assert.equal(document.querySelectorAll('.file-value .tooltip-text')[1].textContent.trim(), 'TLS', 'TLS value shows');
     assert.equal(document.querySelectorAll('.file-value .tooltip-text')[2].textContent.trim(), 'Disabled', 'Disabled value  shows');
-
-
   });
 
   test('Content data filePolicyyDisabled', async function(assert) {
@@ -135,4 +134,61 @@ module('Integration | Component | property-panel-policy/file-policy', function(h
     assert.equal(document.querySelectorAll('.file-value').length, 1, 'All values are showing minus fields below Disabled');
     assert.equal(document.querySelectorAll('.file-value .tooltip-text')[0].textContent.trim(), 'Disabled', 'Disabled value is showing');
   });
+
+  const filePolicySources = {
+    ...policyData,
+    policy: {
+      ...policy,
+      filePolicy: {
+        ...filePolicy,
+        sources: [
+          {
+            fileType: 'exchange',
+            enabled: false,
+            startOfEvents: true,
+            fileEncoding: 'utf-8',
+            paths: ['/*foo/bar*/*.txt'],
+            sourceName: 'testSource3',
+            exclusionFilters: ['exclude-string-1'],
+            typeSpec: {
+              parserId: 'file.exchange',
+              processorType: 'generic',
+              dataStartLine: '1',
+              fieldDelim: '0x20'
+            }
+          },
+          {
+            fileType: 'apache',
+            enabled: true,
+            startOfEvents: true,
+            fileEncoding: 'utf-8',
+            paths: ['/*foo/bar*/*.txt'],
+            sourceName: 'testSource2',
+            exclusionFilters: ['exclude-string-1'],
+            typeSpec: {
+              parserId: 'file.apache',
+              processorType: 'generic',
+              dataStartLine: '1',
+              fieldDelim: '0x20'
+            }
+          }
+        ]
+      }
+    }
+  };
+
+  test('Content data with filePolicy sources', async function(assert) {
+    new ReduxDataHelper(setState).policy(filePolicySources).build();
+    await render(hbs`{{property-panel-policy/file-policy}}`);
+    assert.equal(document.querySelectorAll('.file-value').length, 10, 'All 10 values are showing');
+    assert.equal(document.querySelectorAll('.content-section__section-name')[0].textContent.trim(), 'File Settings', 'File Log Settings section shows');
+    assert.equal(document.querySelectorAll('.content-section__section-name')[1].textContent.trim(), 'Source Settings (exchange)', 'exchange source shows');
+    assert.equal(document.querySelectorAll('.content-section__section-name')[2].textContent.trim(), 'Source Settings (apache)', 'apache source shows');
+    assert.equal(document.querySelectorAll('.property-name')[4].textContent.trim(), 'Log File Collection on Agent', 'Log File Collection on Agent lable shows');
+    assert.equal(document.querySelectorAll('.file-value .tooltip-text')[3].textContent.trim(), 'Disabled', 'Disabled value is showing');
+    assert.equal(document.querySelectorAll('.property-name')[5].textContent.trim(), 'Data Collection', 'Data Collection lable shows');
+    assert.equal(document.querySelectorAll('.file-value .tooltip-text')[4].textContent.trim(), 'Enabled', 'Enabled value shows');
+    assert.equal(document.querySelectorAll('.file-value .tooltip-text')[5].textContent.trim(), 'Collect new data only', 'Collect new data only value shows');
+  });
+
 });

@@ -149,14 +149,14 @@ module('Integration | Component | property-panel-policy/edr-policy', function(ho
     assert.equal(document.querySelectorAll('.content-section__section-name')[3].textContent.trim(), 'Response Action Settings', 'Response Action Settings section shows');
     assert.equal(document.querySelectorAll('.content-section__section-name')[4].textContent.trim(), 'Endpoint Server Settings', 'Endpoint Server Settings section shows');
 
-    assert.equal(document.querySelectorAll('.property-name')[1].textContent.trim(), 'Start Time', 'Start Time lable shows');
-    assert.equal(document.querySelectorAll('.property-name')[2].textContent.trim(), 'Effective Date', 'Effective Date lable shows');
+    assert.equal(document.querySelectorAll('.property-name')[2].textContent.trim(), 'Start Time', 'Start Time lable shows');
+    assert.equal(document.querySelectorAll('.property-name')[1].textContent.trim(), 'Effective Date', 'Effective Date lable shows');
     assert.equal(document.querySelectorAll('.property-name')[3].textContent.trim(), 'Scan Frequency', 'Scan Frequency lable shows');
     assert.equal(document.querySelectorAll('.property-name')[4].textContent.trim(), 'CPU Maximum', 'CPU Maximum lable shows');
     assert.equal(document.querySelectorAll('.property-name')[5].textContent.trim(), 'Virtual Machine Maximum', 'Virtual Machine Maximum lable shows');
 
-    assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[1].textContent.trim(), '09:00', '09:00:00 value is shows');
-    assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[2].textContent.trim(), '2019-03-22', '2019-03-22 value is shows');
+    assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[2].textContent.trim(), '09:00', '09:00:00 value is shows');
+    assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[1].textContent.trim(), '2019-03-22', '2019-03-22 value is shows');
     assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[3].textContent.trim(), 'Every 1 day(s) on Monday', 'Every 1 day(s) on Monday value is shows');
     assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[4].textContent.trim(), '25 %', '25 % value is shows');
     assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[5].textContent.trim(), '10 %', '10 % value is shows');
@@ -174,8 +174,8 @@ module('Integration | Component | property-panel-policy/edr-policy', function(ho
     new ReduxDataHelper(setState).policy(runOnDaysOfWeekData).build();
     await render(hbs`{{property-panel-policy/edr-policy}}`);
     assert.equal(document.querySelectorAll('.edr-value').length, 15, 'All values are showing');
-    assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[1].textContent.trim(), '10:00', '10:00:00 value is shows');
-    assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[2].textContent.trim(), '2020-03-22', '2020-03-22 value is shows');
+    assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[2].textContent.trim(), '10:00', '10:00:00 value is shows');
+    assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[1].textContent.trim(), '2020-03-22', '2020-03-22 value is shows');
     assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[3].textContent.trim(), 'Every 1 day(s) on Tuesday', 'Every 1 day(s) on Tuesday value is shows');
     assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[4].textContent.trim(), '25 %', '25 % value is shows');
     assert.equal(document.querySelectorAll('.edr-value .tooltip-text')[5].textContent.trim(), '10 %', '10 % value is shows');
