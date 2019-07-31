@@ -31,7 +31,7 @@ const _clientSideValidation = ({ pillData, position, isFromParser = false }) => 
     }
 
     const { isInvalid } = pillData;
-    if (isInvalid && !isFromParser) {
+    if (isInvalid && !isFromParser && type !== COMPLEX_FILTER) {
       // If the pill is marked invalid but was not from the parser, dispatch an action now to mark it invalid.
       // Otherwise, it was already marked invalid.
       dispatch({

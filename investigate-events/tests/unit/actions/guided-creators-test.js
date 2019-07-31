@@ -140,6 +140,42 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk(myDispatch);
   });
 
+  test('editGuidedPill action creator returns proper type and payload for complex filter', function(assert) {
+    assert.expect(3);
+    const getState = () => {
+      return new ReduxDataHelper().language().invalidPillsDataPopulated().build();
+    };
+
+    // Dispatch inside editGuidedPill
+    const myDispatch = (action) => {
+      if (typeof action === 'function') {
+        action(validateDispatch, getState);
+      } else {
+        assert.equal(action.type, ACTION_TYPES.EDIT_GUIDED_PILL, 'action has the correct type');
+        assert.deepEqual(action.payload.pillData, { complexFilterText: 'foobarfoobarFOObaz ==== foooOOOOOOooo' }, 'action pillData has the right value');
+      }
+    };
+
+    // Dispatch inside _clientSideValidation
+    const validateDispatch = (action) => {
+      action(validateDispatch2, getState);
+    };
+
+    // Dispatch inside _serverSideValidation
+    const validateDispatch2 = (action) => {
+      assert.equal(action.type, ACTION_TYPES.VALIDATE_GUIDED_PILL, 'action has the correct type - validate');
+    };
+
+    // this thunk will shoot out 2 actions - one to edit and one to validate
+    const thunk = guidedCreators.editGuidedPill({
+      pillData: {
+        complexFilterText: 'foobarfoobarFOObaz ==== foooOOOOOOooo'
+      },
+      position: 0
+    });
+    thunk(myDispatch);
+  });
+
   test('editGuidedPill action creator returns proper type and payload for Text filter', function(assert) {
     assert.expect(2);
     const done = assert.async();
