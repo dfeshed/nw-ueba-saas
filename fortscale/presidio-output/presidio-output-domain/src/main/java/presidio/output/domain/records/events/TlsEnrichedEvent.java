@@ -2,6 +2,7 @@ package presidio.output.domain.records.events;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import presidio.sdk.api.domain.rawevents.Domain;
 
 import java.time.Instant;
 import java.util.List;
@@ -50,7 +51,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     private String sslSubject;
 
     @Field(DOMAIN_FIELD_NAME)
-    private String domain;
+    private Domain domain;
 
     @Field(DESTINATION_ORGANIZATION_FIELD_NAME)
     private String dstOrg;
@@ -98,7 +99,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     public TlsEnrichedEvent(Instant createdDate, Instant eventDate, String eventId, String schema, String dataSource,
                             Map<String, String> additionalInfo,
                             String srcIp, String dstIp, String srcCountry, String dstCountry, String sslSubject,
-                            String domain, String dstOrg,
+                            Domain domain, String dstOrg,
                             String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
                             String dstNetname, String ja3, String ja3s, String direction, String dstPort,
                             String srcPort, List<String> fqdn, List<String> sslCa) {
@@ -166,11 +167,11 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.sslSubject = sslSubject;
     }
 
-    public String getDomain() {
+    public Domain getDomain() {
         return domain;
     }
 
-    public void setDomain(String domain) {
+    public void setDomain(Domain domain) {
         this.domain = domain;
     }
 

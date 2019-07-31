@@ -52,7 +52,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     private String sslSubject;
 
     @Field(DOMAIN_FIELD_NAME)
-    private String domain;
+    private Domain domain;
 
     @Field(DESTINATION_ORGANIZATION_FIELD_NAME)
     private String dstOrg;
@@ -126,7 +126,7 @@ public class TlsRawEvent extends AbstractInputDocument {
 
     public TlsRawEvent(Instant dateTime, String eventId, String dataSource, Map<String, String> additionalInfo,
                        String srcIp, String dstIp, String srcPort, String srcCountry, String dstCountry, String sslSubject,
-                       String domain, String dstOrg,
+                       Domain domain, String dstOrg,
                        String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
                        String dstNetname, String ja3, String ja3s, String direction, String dstPort, List<String> fqdn,
                        List<String> sslCa, Integer sessionSplit) {
@@ -194,11 +194,11 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.sslSubject = sslSubject;
     }
 
-    public String getDomain() {
+    public Domain getDomain() {
         return domain;
     }
 
-    public void setDomain(String domain) {
+    public void setDomain(Domain domain) {
         this.domain = domain;
     }
 
