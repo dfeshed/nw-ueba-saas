@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.test.adapter.mapping;
+package com.rsa.netwitness.presidio.automation.test.mapping;
 
 import com.rsa.netwitness.presidio.automation.domain.authentication.AdapterAuthenticationStoredData;
 import org.testng.annotations.DataProvider;

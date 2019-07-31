@@ -39,7 +39,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
         ParametersUrlBuilder url = restHelper.alerts().url().withNoParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         assertThat(alerts)
-                .as(url + "\nAlerts list is empty or unable to get response from the output.")
+                .as(url + "\nAlerts list is empty or unable to getOperationTypeToCategoryMap response from the output.")
                 .isNotNull()
                 .isNotEmpty();
 

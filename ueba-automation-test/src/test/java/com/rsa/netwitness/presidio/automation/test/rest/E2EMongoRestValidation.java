@@ -79,7 +79,7 @@ public class E2EMongoRestValidation  extends AbstractTestNGSpringContextTests {
     //@Test  TODO: FIX if feasible  AND ENABLE
     public void verifyAlertsCountIsEqualsToSmartsCount() {
         String threshold = testManager.getSmartThresholdScore();
-        Assert.assertNotNull(threshold, "Could not get the thresholdScore.");
+        Assert.assertNotNull(threshold, "Could not getOperationTypeToCategoryMap the thresholdScore.");
 
         Double thresholdScore = Double.parseDouble(threshold);
         List<SmartUserIdStoredRecored> smarts = smartRepository.findAllBiggerThanRequestedScore(thresholdScore);
@@ -145,7 +145,7 @@ public class E2EMongoRestValidation  extends AbstractTestNGSpringContextTests {
         // TODO - this test stops on first Assert, need to rewrite with data provider to allow verification of all users.
 
         String threshold = testManager.getSmartThresholdScore();
-        Assert.assertNotNull(threshold, "Could not get the thresholdScore.");
+        Assert.assertNotNull(threshold, "Could not getOperationTypeToCategoryMap the thresholdScore.");
         Double thresholdScore = Double.parseDouble(threshold);
 
         List<SmartUserIdStoredRecored> allSmarts = smartRepository.findAllBiggerThanRequestedScore(thresholdScore);
@@ -226,25 +226,25 @@ public class E2EMongoRestValidation  extends AbstractTestNGSpringContextTests {
         // only users that have a record in smart_userId_hourly collection will appear in rest - limiting selection from output collection by startInstant in smarts
         // in addition, since this test runs also after output component test, limiting time range to output processing times
 
-        // get Instant time of first smart
+        // getOperationTypeToCategoryMap Instant time of first smart
         Query queryFirstDate = new Query();
         queryFirstDate.with(new Sort(Sort.Direction.ASC, "startInstant"));
         queryFirstDate.limit(1);
         SmartUserIdStoredRecored firstSmart = mongoTemplate.findOne(queryFirstDate, SmartUserIdStoredRecored.class);
         Instant firstSmartInstant = firstSmart.getStartInstant();
 
-        // get Instant time of last smart
+        // getOperationTypeToCategoryMap Instant time of last smart
         Query queryLastDate = new Query();
         queryLastDate.with(new Sort(Sort.Direction.DESC, "startInstant"));
         queryLastDate.limit(1);
         SmartUserIdStoredRecored lastSmart = mongoTemplate.findOne(queryLastDate, SmartUserIdStoredRecored.class);
         Instant lastSmartInstant = lastSmart.getStartInstant();
 
-        // get effective start and end Instant for comparison with Rest - smallest range by output and smart collections,
+        // getOperationTypeToCategoryMap effective start and end Instant for comparison with Rest - smallest range by output and smart collections,
         // in the time range that outputProcessor runs
         Instant firstInstant = (firstSmartInstant.isBefore(outputProcessorStartInstant))?outputProcessorStartInstant:firstSmartInstant;
         Instant lastInstant = (lastSmartInstant.isAfter(outputProcessorEndInstant))?outputProcessorEndInstant:lastSmartInstant;
-        // get set of distinct user names from all output collections
+        // getOperationTypeToCategoryMap set of distinct user names from all output collections
         Query usersQuery = new Query();
         usersQuery.addCriteria(Criteria.where("eventDate").lte(Date.from(lastInstant)).gte(Date.from(firstInstant)));
         Set<String> outputUserNames = new HashSet<>();
@@ -316,7 +316,7 @@ public class E2EMongoRestValidation  extends AbstractTestNGSpringContextTests {
     //@Test TODO: rewrite and enable if feasible
     public void verifySmartScoreVsRestAlertScoreTest() {
         String threshold = testManager.getSmartThresholdScore();
-        Assert.assertNotNull(threshold, "Could not get the thresholdScore.");
+        Assert.assertNotNull(threshold, "Could not getOperationTypeToCategoryMap the thresholdScore.");
         Double thresholdScore = Double.parseDouble(threshold);
 
         List<SmartUserIdStoredRecored> allSmarts = smartRepository.findAllBiggerThanRequestedScore(thresholdScore);

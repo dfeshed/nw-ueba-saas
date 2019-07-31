@@ -3,7 +3,7 @@ package com.rsa.netwitness.presidio.automation.test.rest;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
-import com.rsa.netwitness.presidio.automation.static_content.IndicatorsInfo;
+import com.rsa.netwitness.presidio.automation.mapping.indicators.IndicatorsInfo;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,7 +36,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
         ParametersUrlBuilder url = restHelper.alerts().url().withNoParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         assertThat(alerts)
-                .as(url + "\nAlerts list is empty or unable to get response from the output.")
+                .as(url + "\nAlerts list is empty or unable to getOperationTypeToCategoryMap response from the output.")
                 .isNotNull()
                 .isNotEmpty();
 

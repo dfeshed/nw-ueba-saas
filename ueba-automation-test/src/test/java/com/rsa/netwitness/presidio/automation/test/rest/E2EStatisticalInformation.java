@@ -87,7 +87,7 @@ public class E2EStatisticalInformation extends AbstractTestNGSpringContextTests 
 
     private void CountIndicatorsEachType() {
         List<AlertsStoredRecord> alerts = testManager.getAlerts("pageSize=10000&pageNumber=0&expand=true", false);
-        Assert.assertTrue(alerts.size() > 0, "Unable commit the alert tests. Alerts list is empty or unable to get response from the output.");
+        Assert.assertTrue(alerts.size() > 0, "Unable commit the alert tests. Alerts list is empty or unable to getOperationTypeToCategoryMap response from the output.");
 
         scoreAggregationList = new ArrayList<>();
         staticIndicatorList = new ArrayList<>();

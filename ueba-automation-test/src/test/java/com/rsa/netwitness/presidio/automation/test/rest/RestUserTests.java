@@ -224,9 +224,9 @@ public class RestUserTests extends AbstractTestNGSpringContextTests {
         String userId = testUser.getId();
 
         List<EntitiesStoredRecord> user = testManager.getEntities("entityName=" + URLEncoder.encode(entityName, "UTF-8"));
-        Assert.assertTrue(entities.size() > 0,"Users list is empty. unable to get entityName=" + entityName);
+        Assert.assertTrue(entities.size() > 0,"Users list is empty. unable to getOperationTypeToCategoryMap entityName=" + entityName);
 
-        Assert.assertEquals(userId, user.get(0).getId(), "Failed to get the specific entityName with ignore case.\nrequested user: " + entityName.toUpperCase() +
+        Assert.assertEquals(userId, user.get(0).getId(), "Failed to getOperationTypeToCategoryMap the specific entityName with ignore case.\nrequested user: " + entityName.toUpperCase() +
             "\nuserId: " + userId + "\nThe result is userId: " + user.get(0).getId() + "\nWith the entityName: " + user.get(0).getEntityName());
 
     }
@@ -235,7 +235,7 @@ public class RestUserTests extends AbstractTestNGSpringContextTests {
     public void searchUserUsingContainsSearch(){
         List<EntitiesStoredRecord> entities = testManager.getEntities("pageSize=10000&pageNumber=0");
         if(entities == null || entities.size() == 0){
-            Assert.fail("Cannot commit the test. Can't get the user list.");
+            Assert.fail("Cannot commit the test. Can't getOperationTypeToCategoryMap the user list.");
         }
         String entityName = null;
         String userId = "";
@@ -255,7 +255,7 @@ public class RestUserTests extends AbstractTestNGSpringContextTests {
 
         try{
             entities = testManager.getEntities("entityName=" + URLEncoder.encode(entityName, "UTF-8"));
-            Assert.assertTrue(entities.size() > 0, "fail to get entities by contains search. requested entityName = " + entityName);
+            Assert.assertTrue(entities.size() > 0, "fail to getOperationTypeToCategoryMap entities by contains search. requested entityName = " + entityName);
             boolean exist = false;
             for(EntitiesStoredRecord usr : entities) {
                 if(usr.getId().equals(userId)){

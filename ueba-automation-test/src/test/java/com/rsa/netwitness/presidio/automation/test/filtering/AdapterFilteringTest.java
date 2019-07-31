@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.test.adapter.filtering;
+package com.rsa.netwitness.presidio.automation.test.filtering;
 
 import com.rsa.netwitness.presidio.automation.common.validator.VerificationUtils;
 import com.rsa.netwitness.presidio.automation.converter.events.ConverterEventBase;

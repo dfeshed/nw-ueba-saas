@@ -10,7 +10,7 @@ import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
-import com.rsa.netwitness.presidio.automation.static_content.IndicatorsInfo;
+import com.rsa.netwitness.presidio.automation.mapping.indicators.IndicatorsInfo;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +29,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.rsa.netwitness.presidio.automation.static_content.IndicatorsInfo.ALL_MANDATORY_INDICATORS;
+import static com.rsa.netwitness.presidio.automation.mapping.indicators.IndicatorsInfo.ALL_MANDATORY_INDICATORS;
 import static com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils.skipTest;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -67,7 +67,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         allAlerts = restHelper.alerts().request().getAlerts(url);
         assertThat(allAlerts)
-                .as(url + "\nAlerts list is empty or unable to get response from the output.")
+                .as(url + "\nAlerts list is empty or unable to getOperationTypeToCategoryMap response from the output.")
                 .isNotNull()
                 .isNotEmpty();
 
@@ -217,7 +217,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                         .containsOnly(true);
             }
         } catch (JSONException e) {
-            Assert.fail(url + "\nCannot get the requested information from json object. \n" + e.getMessage());
+            Assert.fail(url + "\nCannot getOperationTypeToCategoryMap the requested information from json object. \n" + e.getMessage());
         }
     }
 
