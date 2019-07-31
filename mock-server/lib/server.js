@@ -54,6 +54,10 @@ const start = function({ subscriptionLocations, routes }, cb, { urlPattern, cust
     res.send('off');
   });
 
+  app.use('/saml/sso/is-enabled', function(req, res) {
+    res.send('false');
+  });
+
   app.use('/display/security/securitybanner/get', function(req, res) {
     res.json({ 'data': [
       {
