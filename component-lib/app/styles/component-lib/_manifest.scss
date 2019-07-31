@@ -194,7 +194,7 @@ $rsa-icon-cell-border-bottom: "\ea79";
 $rsa-icon-common-file-empty: "\ea7a";
 $rsa-icon-network: "\ea7b";
 $rsa-icon-subtract-circle-bold-alternate: "\ea7c";
-$rsa-icon-cloud-wifi-lined: "\ea7d";
+$rsa-icon-cloud-wifi: "\ea7d";
 $rsa-icon-computer-disk-drive-1-filled: "\ea7e";
 $rsa-icon-cog-2-filled: "\ea7f";
 $rsa-icon-account-circle-1-lined: "\e9b8";
@@ -384,6 +384,7 @@ $rsa-icon-zoom-out-lined: "\ea6f";
 $rsa-icon-close-shield-lined: "\ea75";
 $rsa-icon-check-shield-lined: "\ea76";
 $rsa-icon-computer-disk-drive-1-lined: "\ea80";
+$rsa-icon-lock-1-filled: "\ea81";
 $rsa-icon-computer-bug-search: "\ef00";
 $rsa-icon-database-search: "\ef01";
 $rsa-icon-design-tool-quill-1: "\ef02";
@@ -401,11 +402,11 @@ $rsa-icon-single-neutral-search: "\ef0d";
 
 @font-face {
   font-family: 'nw-icon-library-all-1';
-  src:  url('#{$icomoon-font-path}/RSA-NW-Icons-v12.eot');
-  src:  url('#{$icomoon-font-path}/RSA-NW-Icons-v12.eot#iefix') format('embedded-opentype'),
-    url('#{$icomoon-font-path}/RSA-NW-Icons-v12.ttf') format('truetype'),
-    url('#{$icomoon-font-path}/RSA-NW-Icons-v12.woff') format('woff'),
-    url('#{$icomoon-font-path}/RSA-NW-Icons-v12.svg#RSA-NW-Icons-v12') format('svg');
+  src:  url('#{$icomoon-font-path}/nw-icon-library-all-v12.eot');
+  src:  url('#{$icomoon-font-path}/nw-icon-library-all-v12.eot#iefix') format('embedded-opentype'),
+    url('#{$icomoon-font-path}/nw-icon-library-all-v12.ttf') format('truetype'),
+    url('#{$icomoon-font-path}/nw-icon-library-all-v12.woff') format('woff'),
+    url('#{$icomoon-font-path}/nw-icon-library-all-v12.svg#nw-icon-library-all-v12') format('svg');
   font-weight: normal;
   font-style: normal;
 }

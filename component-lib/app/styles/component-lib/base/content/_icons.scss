@@ -46,6 +46,7 @@
     font-size: 5em;
   }
 }
+
 .rsa-icon-account-circle-1-filled {
   &:before {
     content: $rsa-icon-account-circle-1-filled;
@@ -1021,9 +1022,9 @@
     content: $rsa-icon-subtract-circle-bold-alternate;
   }
 }
-.rsa-icon-cloud-wifi-lined {
+.rsa-icon-cloud-wifi {
   &:before {
-    content: $rsa-icon-cloud-wifi-lined;
+    content: $rsa-icon-cloud-wifi;
   }
 }
 .rsa-icon-computer-disk-drive-1-filled {
@@ -1971,45 +1972,73 @@
     content: $rsa-icon-computer-disk-drive-1-lined;
   }
 }
-.rsa-icon-computer-bug-search-filled:before {
-  content: "\ef00";
+.rsa-icon-computer-bug-search-filled {
+  &:before {
+    content: $rsa-icon-computer-bug-search;
+  }
 }
-.rsa-icon-database-search-filled:before {
-  content: "\ef01";
+.rsa-icon-database-search-filled {
+  &:before {
+    content: $rsa-icon-database-search ;
+  }
 }
-.rsa-icon-design-tool-quill-1-filled:before {
-  content: "\ef02";
+.rsa-icon-design-tool-quill-1-filled {
+  &:before {
+    content: $rsa-icon-design-tool-quill-1;
+  }
 }
-.rsa-icon-file-code-search-1-filled:before {
-  content: "\ef03";
+.rsa-icon-file-code-search-1-filled {
+  &:before {
+    content: $rsa-icon-file-code-search-1;
+  }
 }
-.rsa-icon-file-code-search-filled:before {
-  content: "\ef04";
+.rsa-icon-file-code-search-filled {
+  &:before {
+    content: $rsa-icon-file-code-search;
+  }
 }
-.rsa-icon-file-search-filled:before {
-  content: "\ef05";
+.rsa-icon-file-code-search-filled {
+  &:before {
+    content: $rsa-icon-file-search;
+  }
 }
-.rsa-icon-iris-scan-search-filled:before {
-  content: "\ef06";
+.rsa-icon-iris-scan-search-filled {
+  &:before {
+    content: $rsa-icon-iris-scan-search;
+  }
 }
-.rsa-icon-login-key-filled:before {
-  content: "\ef07";
+.rsa-icon-login-key-filled {
+  &:before {
+    content: $rsa-icon-login-key;
+  }
 }
-.rsa-icon-monitor-find-filled:before {
-  content: "\ef08";
+.rsa-icon-monitor-find-filled {
+  &:before {
+    content: $rsa-icon-monitor-find;
+  }
 }
-.rsa-icon-monitor-heart-beat-search-filled:before {
-  content: "\ef09";
+.rsa-icon-monitor-heart-beat-search-filled {
+  &:before {
+    content: $rsa-icon-monitor-heart-beat-search;
+  }
 }
-.rsa-icon-network-search-filled:before {
-  content: "\ef0a";
+.rsa-icon-network-search-filled {
+  &:before {
+    content: $rsa-icon-network-search;
+  }
 }
-.rsa-icon-search-remove-filled:before {
-  content: "\ef0b";
+.rsa-icon-search-remove-filled {
+  &:before {
+    content: $rsa-icon-search-remove;
+  }
 }
-.rsa-icon-search-text-filled:before {
-  content: "\ef0c";
+.rsa-icon-search-text-filled {
+  &:before {
+    content: $rsa-icon-search-text;
+  }
 }
-.rsa-icon-single-neutral-search-filled:before {
-  content: "\ef0d";
+.rsa-icon-single-neutral-search-filled {
+  &:before {
+    content: $rsa-icon-single-neutral-search;
+  }
 }
