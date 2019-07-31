@@ -1,10 +1,9 @@
+import pytz
 from airflow.models import DagRun
 from airflow.operators.sensors import BaseSensorOperator
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
 from datetime import timedelta
-import pendulum
-
 from presidio.utils.services.time_service import floor_time
 
 
@@ -58,19 +57,12 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
     @provide_session
     def _is_finished_wait_for_gapped_dag(self, execution_date, session=None):
 
-        self.log.info('execution_date class: {}'.format(execution_date.__class__.__name__))
-
         if self.interval:
             execution_date = floor_time(execution_date, time_delta=self.fixed_duration_strategy)
             execution_date = execution_date - self.interval
-            self.log.info('start_time: {}'.format(self.start_time))
-            self.log.info('execution_date: {}'.format(execution_date))
             if execution_date < self.start_time:
                 return True
-            execution_date = pendulum.instance(execution_date)
-
-        self.log.info('execution_date class: {}'.format(execution_date.__class__.__name__))
-        self.log.info('execution_date value: {}'.format(execution_date))
+            execution_date = execution_date.replace(tzinfo=pytz.utc)
 
         for dag_id in self._dag_ids:
             gapped_root_dag_run = session.query(DagRun).filter(
