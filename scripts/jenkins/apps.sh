@@ -278,11 +278,20 @@ buildEmberApp sa true true true
 
 success "All apps built successfully"
 
-info "*** generating deprecation report"
+if [ "${SKIP_DEPRECATION_CHECK}" == "true" ]
+then
+  info "skipping deprecation checking"
+else
+  info "*** generating deprecation report"
+  cd scripts/node
+  node deprecation-report.js $BUILD_URL -w
+  info "*** end deprecation report"
 
-cd scripts/node
-node deprecation-report.js $BUILD_URL -w
-info "*** end deprecation report"
+  info "*** performing deprecation check"
+  node deprecation-check.js
+  checkError "New deprecations have been added, bad developer"
+fi
+
 
 cd $CWD
 
