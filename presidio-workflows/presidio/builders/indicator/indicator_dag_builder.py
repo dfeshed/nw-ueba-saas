@@ -78,19 +78,18 @@ class IndicatorDagBuilder(PresidioDagBuilder):
         )
 
         if InputPreProcessorDagFactory.get_dag_id(schema) in self.get_list_schemas_for_input_pre_processing():
-            input_pre_processor_trigger = self._build_input_pre_processing_trigger(dag, schema)
+            input_pre_processor_trigger = self._build_input_pre_processing_trigger_operator(dag, schema)
             input_operator >> input_pre_processor_trigger
 
             input_pre_processor_gap_sensor = RootDagGapSequentialSensorOperator(dag=dag,
                                                                                 task_id='input_pre_processor_gap_sensor_{0}'.format(schema),
-                                                                                dag_ids=InputPreProcessorDagFactory.get_dag_id(schema),
+                                                                                dag_ids=[InputPreProcessorDagFactory.get_dag_id(schema)],
                                                                                 interval=timedelta(hours=1),
                                                                                 start_time=dag.start_date,
                                                                                 fixed_duration_strategy=FIX_DURATION_STRATEGY_DAILY,
                                                                                 poke_interval=5)
 
             input_pre_processor_gap_sensor >> input_operator
-
 
         adapter_operator >> input_operator >> hourly_short_circuit_operator
         scoring_task_sensor_service.add_task_short_circuit(feature_aggregations_operator, hourly_short_circuit_operator)
@@ -114,7 +113,7 @@ class IndicatorDagBuilder(PresidioDagBuilder):
         set_schedule_interval(model_dag_id, FIX_DURATION_STRATEGY_DAILY)
         return model_trigger
 
-    def _build_input_pre_processing_trigger(self, dag, schema):
+    def _build_input_pre_processing_trigger_operator(self, dag, schema):
         input_pre_processing_dag_id = InputPreProcessorDagFactory.get_dag_id(schema)
 
         python_callable = lambda context, dag_run_obj: dag_run_obj if is_execution_date_valid(context['execution_date'],
@@ -122,7 +121,7 @@ class IndicatorDagBuilder(PresidioDagBuilder):
                                                                                               get_schedule_interval(
                                                                                                   dag)) else None
         input_pre_processor_trigger = self._create_expanded_trigger_dag_run_operator("{0}_input_pre_processor_trigger_dagrun".format(schema),
-                                                                                     input_pre_processing_dag_id, dag,python_callable)
+                                                                                     input_pre_processing_dag_id, dag, python_callable)
 
         return input_pre_processor_trigger
 

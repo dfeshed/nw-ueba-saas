@@ -23,7 +23,7 @@ class InputPreProcessorDagBuilder(PresidioDagBuilder):
                                   static_arguments=static_arguments,
                                   dynamic_arguments=dynamic_arguments,
                                   command=PresidioDagBuilder.presidio_command,
-                                  run_clean_command_before_retry=False, )
+                                  run_clean_command_before_retry=False)
 
 
 
