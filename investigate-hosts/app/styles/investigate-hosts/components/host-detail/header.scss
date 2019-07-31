@@ -11,6 +11,7 @@
 }
 
 .host-header {
+  height: 122px;
   background-color: background-color(primary, darker, nearly-opaque);
   @include border-bottom(1px, solid, primary, lightest, nearly-transparent);
 

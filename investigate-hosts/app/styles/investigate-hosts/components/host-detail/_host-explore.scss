@@ -8,9 +8,8 @@ $result-text-color: text-color(primary, light);
 .host-explore {
   .search-field {
     width: 100%;
-    @include border(1px, solid, primary, dark);
     &.is-error {
-      border-color: text-color(accentOne);
+      border-color: 1px solid text-color(accentOne);
     }
   }
   min-width: $host-explore-min-width;
@@ -19,6 +18,11 @@ $result-text-color: text-color(primary, light);
   background: $background-color;
   height: 2.5rem;
   margin-bottom: rsa-whitespace(less);
+  position: absolute;
+  left: 69%;
+  top: -22%;
+  width: 100%;
+  border: 1px solid rgba(var(--border-color-primary-dark),var(--opacity-opaque));
 
   &__loader {
     height: 0;
@@ -74,7 +78,7 @@ $result-text-color: text-color(primary, light);
   }
 
   .rsa-content-tethered-panel-trigger {
-    width: 90%;
+    width: 94%;
   }
 
   .rsa-form-input {
