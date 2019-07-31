@@ -1032,9 +1032,9 @@ test('RETRIEVE_HASH_FOR_QUERY_PARAMS reducer stores hashes', function(assert) {
   assert.deepEqual(result.pillDataHashes, ['foo', 'bar'], 'pillDataHashes is the correct value');
 });
 
-test('ADD_FOCUS_GUIDED_PILL adds focus to a pill at the provided position', function(assert) {
+test('ADD_PILL_FOCUS adds focus to a pill at the provided position', function(assert) {
   const action = {
-    type: ACTION_TYPES.ADD_FOCUS_GUIDED_PILL,
+    type: ACTION_TYPES.ADD_PILL_FOCUS,
     payload: {
       position: 1
     }

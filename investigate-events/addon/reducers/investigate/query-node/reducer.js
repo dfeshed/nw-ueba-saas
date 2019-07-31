@@ -566,7 +566,7 @@ export default handleActions({
     return _removeFocus(deletedPillsState);
   },
 
-  [ACTION_TYPES.ADD_FOCUS_GUIDED_PILL]: (state, { payload }) => {
+  [ACTION_TYPES.ADD_PILL_FOCUS]: (state, { payload }) => {
     const { position } = payload;
     const { pillsData } = state;
     const pill = pillsData[position];

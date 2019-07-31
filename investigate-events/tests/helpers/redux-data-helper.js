@@ -128,6 +128,26 @@ const INVALID_PILL_DATA = [{
   complexFilterText: undefined
 }];
 
+const PILLS_WITH_PARENS = [{
+  type: 'open-paren',
+  id: 'guidedPill_1'
+}, {
+  id: 'guidedPill_4',
+  isEditing: false,
+  isFocused: true,
+  isInvalid: false,
+  isSelected: false,
+  isValidationInProgress: false,
+  meta: 'action',
+  operator: '=',
+  value: '\'foo\'',
+  type: 'query'
+}, {
+  type: 'close-paren',
+  id: 'guidedPill_2'
+}];
+
+
 const _optionsInitialState = {
   size: 20,
   threshold: 25000,
@@ -586,6 +606,11 @@ export default class DataHelper {
   }
 
   pillsDataText(pD = TEXT_PILL_DATA) {
+    _set(this.state, 'queryNode.pillsData', pD);
+    return this;
+  }
+
+  pillsDataWithParens(pD = PILLS_WITH_PARENS) {
     _set(this.state, 'queryNode.pillsData', pD);
     return this;
   }

@@ -26,10 +26,18 @@
     }}
 
   {{else if (eq pillData.type CLOSE_PAREN)}}
-    {{query-container/close-paren}}
+    {{query-container/close-paren
+      pillData=(readonly pillData)
+      position=index
+      sendMessage=(action 'handleMessage')
+    }}
 
   {{else if (eq pillData.type OPEN_PAREN)}}
-    {{query-container/open-paren}}
+    {{query-container/open-paren
+      pillData=(readonly pillData)
+      position=index
+      sendMessage=(action 'handleMessage')
+    }}
 
   {{else}}
     {{query-container/query-pill

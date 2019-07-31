@@ -21,7 +21,7 @@ import {
 import {
   addFreeFormFilter,
   addGuidedPill,
-  addGuidedPillFocus,
+  addPillFocus,
   addParens,
   addTextFilter,
   batchAddPills,
@@ -31,7 +31,7 @@ import {
   deselectGuidedPills,
   editGuidedPill,
   openGuidedPillForEdit,
-  removeGuidedPillFocus,
+  removePillFocus,
   resetGuidedPill,
   selectGuidedPills,
   selectAllPillsTowardsDirection
@@ -64,7 +64,7 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   addFreeFormFilter,
   addGuidedPill,
-  addGuidedPillFocus,
+  addPillFocus,
   addParens,
   addTextFilter,
   batchAddPills,
@@ -75,7 +75,7 @@ const dispatchToActions = {
   editGuidedPill,
   getRecentQueries,
   openGuidedPillForEdit,
-  removeGuidedPillFocus,
+  removePillFocus,
   resetGuidedPill,
   selectAllPillsTowardsDirection,
   selectGuidedPills
@@ -177,7 +177,7 @@ const QueryPills = RsaContextMenu.extend({
         _this.get('executeQuery')(true);
         // deselect all the pills and remove focus. Can't trigger this first, as
         // route action picks up selected pills from state to executeQ
-        _this.send('removeGuidedPillFocus');
+        _this.send('removePillFocus');
         _this.send('deselectAllGuidedPills');
       }
     },
@@ -342,7 +342,7 @@ const QueryPills = RsaContextMenu.extend({
    * @private
    */
   _pillEntered() {
-    this.send('removeGuidedPillFocus');
+    this.send('removePillFocus');
     this.send('deselectAllGuidedPills');
   },
 
@@ -462,7 +462,7 @@ const QueryPills = RsaContextMenu.extend({
 
   _addFocusToLeftPill(position) {
     if (position !== 0) {
-      this.send('addGuidedPillFocus', position - 1);
+      this.send('addPillFocus', position - 1);
       this._pillAddCancelled();
     }
   },
@@ -470,7 +470,7 @@ const QueryPills = RsaContextMenu.extend({
   _addFocusToRightPill(position) {
     const pillsData = this.get('pillsData');
     if (position < pillsData.length) {
-      this.send('addGuidedPillFocus', position);
+      this.send('addPillFocus', position);
       this._pillAddCancelled();
     }
   },
@@ -552,14 +552,14 @@ const QueryPills = RsaContextMenu.extend({
         this.send('deselectAllGuidedPills');
         this.set('isComplexPillEditCancelled', false);
       } else {
-        this.send('removeGuidedPillFocus');
+        this.send('removePillFocus');
       }
     }
   },
 
   _clickListener(e) {
     if (!isEventFiredFromQueryPill(e)) {
-      this.send('removeGuidedPillFocus');
+      this.send('removePillFocus');
     }
   },
 
@@ -567,7 +567,7 @@ const QueryPills = RsaContextMenu.extend({
   // focus from a pill
   _rightClickListener(e) {
     if (!isEventFiredFromQueryPill(e)) {
-      this.send('removeGuidedPillFocus');
+      this.send('removePillFocus');
     }
   },
 

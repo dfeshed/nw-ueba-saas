@@ -2691,4 +2691,77 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.ok(items[3].getAttribute('class').includes('is-focused'), 'Should be focused');
     assert.equal(trim(items[5].textContent), ')', 'Should be a close paren');
   });
+
+  test('new pill triggers render appropriately when including parens', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    assert.equal(findAll(PILL_SELECTORS.newPillTriggerContainer).length, 3, 'There should three new pill triggers.');
+    assert.ok(findAll(PILL_SELECTORS.metaInputFocused), 1, 'found 1 new pill template focused');
+  });
+
+  test('Focus traverses guided pills and parens', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+
+    // the last (4th) NPT should be focused to start
+    assert.ok(findAll(PILL_SELECTORS.metaInputFocused), 1, 'found 1 new pill template focused');
+    assert.ok(findAll(PILL_SELECTORS.closeParenFocused), 0, 'close paren should not be focused');
+    assert.ok(findAll(PILL_SELECTORS.focusedQueryPill), 0, 'guided pill should not be focused');
+    assert.ok(findAll(PILL_SELECTORS.openParenFocused), 0, 'open paren should not be focused');
+
+    // now the close paren should be focused
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ARROW_LEFT_KEY);
+    assert.ok(findAll(PILL_SELECTORS.metaInputFocused), 0, 'no pill templates focused');
+    assert.ok(findAll(PILL_SELECTORS.closeParenFocused), 1, 'close paren should be focused');
+    assert.ok(findAll(PILL_SELECTORS.focusedQueryPill), 0, 'guided pill should not be focused');
+    assert.ok(findAll(PILL_SELECTORS.openParenFocused), 0, 'open paren should not be focused');
+
+    // now the 3rd NPT should be focused
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ARROW_LEFT_KEY);
+    assert.ok(findAll(PILL_SELECTORS.metaInputFocused), 1, 'found 1 new pill template focused');
+    assert.ok(findAll(PILL_SELECTORS.closeParenFocused), 0, 'close paren should not be focused');
+    assert.ok(findAll(PILL_SELECTORS.focusedQueryPill), 0, 'guided pill should not focused');
+    assert.ok(findAll(PILL_SELECTORS.openParenFocused), 0, 'open paren should not be focused');
+
+    // now the guided pill should be focused
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ARROW_LEFT_KEY);
+    assert.ok(findAll(PILL_SELECTORS.metaInputFocused), 0, 'no new pill template focused');
+    assert.ok(findAll(PILL_SELECTORS.closeParenFocused), 0, 'close paren should not be focused');
+    assert.ok(findAll(PILL_SELECTORS.focusedQueryPill), 1, 'guided pill should be focused');
+    assert.ok(findAll(PILL_SELECTORS.openParenFocused), 0, 'open paren should not be focused');
+
+    // now the 2nd NPT should be focused
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ARROW_LEFT_KEY);
+    assert.ok(findAll(PILL_SELECTORS.metaInputFocused), 1, 'found 1 new pill template focused');
+    assert.ok(findAll(PILL_SELECTORS.closeParenFocused), 0, 'close paren should not be focused');
+    assert.ok(findAll(PILL_SELECTORS.focusedQueryPill), 0, 'guided pill should not focused');
+    assert.ok(findAll(PILL_SELECTORS.openParenFocused), 0, 'open paren should not be focused');
+
+    // now the open paren should be focused
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ARROW_LEFT_KEY);
+    assert.ok(findAll(PILL_SELECTORS.metaInputFocused), 0, 'no pill templates focused');
+    assert.ok(findAll(PILL_SELECTORS.closeParenFocused), 0, 'close paren should not be focused');
+    assert.ok(findAll(PILL_SELECTORS.focusedQueryPill), 0, 'guided pill should not be focused');
+    assert.ok(findAll(PILL_SELECTORS.openParenFocused), 1, 'open paren should be focused');
+
+    // now the 1st NPT  should be focused
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ARROW_LEFT_KEY);
+    assert.ok(findAll(PILL_SELECTORS.metaInputFocused), 1, 'found 1 new pill template focused');
+    assert.ok(findAll(PILL_SELECTORS.closeParenFocused), 0, 'close paren should not be focused');
+    assert.ok(findAll(PILL_SELECTORS.focusedQueryPill), 0, 'guided pill should not focused');
+    assert.ok(findAll(PILL_SELECTORS.openParenFocused), 0, 'open paren should not be focused');
+  });
+
 });

@@ -850,10 +850,9 @@
     line-height: 0.8;
     box-sizing: border-box;
     cursor: default;
-    // TODO - Hover style temporary. Mainly to test out possible styles
-    // for highlighting the pair of parens
-    &:hover {
-      border-color: transparent transparent yellow transparent;
+
+    &.is-focused {
+      border-color: border-color(accentTwo);
     }
   }
 }

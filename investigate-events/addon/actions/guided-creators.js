@@ -167,17 +167,17 @@ export const deleteSelectedGuidedPills = (pillData) => {
   };
 };
 
-export const addGuidedPillFocus = (position) => {
+export const addPillFocus = (position) => {
   return (dispatch) => {
-    dispatch(removeGuidedPillFocus());
+    dispatch(removePillFocus());
     dispatch({
-      type: ACTION_TYPES.ADD_FOCUS_GUIDED_PILL,
+      type: ACTION_TYPES.ADD_PILL_FOCUS,
       payload: { position }
     });
   };
 };
 
-export const removeGuidedPillFocus = () => {
+export const removePillFocus = () => {
   return (dispatch, getState) => {
     const pillData = focusedPill(getState());
     if (pillData) {
