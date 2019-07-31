@@ -34,9 +34,9 @@ import static java.util.stream.Collectors.toMap;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = {MongoConfig.class})
-public class OperationTypesAndCategoriesTest extends AbstractTestNGSpringContextTests {
+public class OperationTypeMappingTest extends AbstractTestNGSpringContextTests {
     private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(OperationTypesAndCategoriesTest.class.getName());
+            LoggerFactory.getLogger(OperationTypeMappingTest.class.getName());
 
     @Autowired
     private ActiveDirectoryEnrichStoredDataRepository enrichActiveDirectoryRepo;
