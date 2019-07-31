@@ -6,10 +6,12 @@ import _ from 'lodash';
 import { select, event, selectAll } from 'd3-selection';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { tree, hierarchy } from 'd3-hierarchy';
-import { set } from '@ember/object';
+import { set, observer } from '@ember/object';
 import {
   addNodeContent,
   addSelectedClass,
+  getSelectedProcess,
+  getProcessTreeBoundary,
   addLinks,
   appendExpandCollapseIcon,
   getNewNodes,
@@ -132,6 +134,13 @@ const TreeComponent = Component.extend({
 
   process: null,
 
+  selectedProcess: null,
+
+  _processDetailsVisible: observer('isProcessDetailsVisible', function() {
+    if (this.get('isProcessDetailsVisible')) {
+      this._reCenterOnSideTabOpen(getSelectedProcess());
+    }
+  }),
   @computed('nodeSize', 'nodeSeparation')
   treeInstance(nodeSize, nodeSeparation) {
     const treeInstance = tree()
@@ -405,7 +414,7 @@ const TreeComponent = Component.extend({
       .attr('transform', () => {
         return `translate(${ source.y0 + CONST.NODE_WIDTH / 2 },${ source.x0 })`;
       })
-      .on('click', run.bind(this, 'processProperties'))
+      .on('click', run.bind(this, '_onNodeClick'))
       .on('mousedown', function() {
         event.stopImmediatePropagation();
       });
@@ -433,7 +442,7 @@ const TreeComponent = Component.extend({
           self.set('process', d.data);
           await self.send('getFileProperty', { hashes }, self.get('selectedServerId'));
           sendTetherEvent(element, 'panel1', eventBus, 'display', processDetails(d.data));
-        }, 200);
+        }, 1000);
         displayEvent = event;
       })
       .on('mouseleave', function(d) {
@@ -487,14 +496,28 @@ const TreeComponent = Component.extend({
     this._buildChart(node);
   },
 
-  processProperties(d) {
-    // recenter
+  _reCenterOnSideTabOpen(d) {
+    const boundary = getProcessTreeBoundary();
+    const [ { matrix } ] = d.transform.animVal;
     const transform = zoomIdentity
       .scale(1)
-      .translate(-d.y + CONST.FOCUS_OFFSET, -d.x);
+      .translate(-matrix.e + (boundary.width / 2 - CONST.FOCUS_OFFSET), -matrix.f);
     this.parent.transition()
       .duration(CONST.DURATION)
       .call(this.get('zoomBehaviour').transform, transform);
+  },
+
+  _recenter(d) {
+    const boundary = getProcessTreeBoundary();
+    const transform = zoomIdentity
+      .scale(1)
+      .translate(-d.y + (boundary.width / 2 - CONST.FOCUS_OFFSET_250), -d.x);
+    this.parent.transition()
+      .duration(CONST.DURATION)
+      .call(this.get('zoomBehaviour').transform, transform);
+  },
+  _onNodeClick(d) {
+    this._recenter(d);
 
     const checksum = d.data.checksum ? d.data.checksum : d.data.checksumDst;
     const hashes = [checksum];
@@ -539,6 +562,7 @@ const TreeComponent = Component.extend({
     copyLaunchArgument(launchArguments) {
       copyToClipboard(launchArguments);
     },
+
     appendNodes({ node, children }) {
       node.data.expanded = true;
       if (node.data.childCount) {

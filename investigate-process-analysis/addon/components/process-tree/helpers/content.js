@@ -42,6 +42,16 @@ export const addSelectedClass = (id) => {
   return !previousSelection;
 };
 
+export const getSelectedProcess = () => {
+  const selectedNode = select('.process-name.selected');
+  return select(selectedNode.node().parentElement).node();
+};
+
+export const getProcessTreeBoundary = () => {
+  const tree = select('.process-tree');
+  return select(tree.node()).node().getBoundingClientRect();
+};
+
 /**
  * Creates the tree type data from the flat array, based on processId and parentId
  * @param eventsData
