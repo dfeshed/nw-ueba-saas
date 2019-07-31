@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, settled, click } from '@ember/test-helpers';
+import { render, find, findAll, waitUntil, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import users from '../../../../../../data/presidio/user-list';
@@ -23,8 +23,8 @@ module('Integration | Component | users-tab/body/list/alerts', function(hooks) {
     this.set('userId', 'a0979b0c-7214-4a53-8114-c1552aa0952c');
     this.set('alerts', users.data[0].alerts);
     await render(hbs `{{users-tab/body/list/alerts userId=userId alerts=alerts}}`);
-    await this.$().find('.rsa-content-tethered-panel-trigger').mouseenter();
-    return settled().then(() => {
+    await triggerEvent('.users-tab_body_list_alerts', 'mouseover');
+    return waitUntil(() => findAll('.users-tab_body_list_alerts_panel').length === 1, { timeout: 1000000 }).then(() => {
       click('.link');
       const select = waitForReduxStateChange(redux, 'user.userId');
       return select.then(() => {

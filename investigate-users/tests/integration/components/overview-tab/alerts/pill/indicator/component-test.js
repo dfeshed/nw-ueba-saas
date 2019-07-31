@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, settled, click } from '@ember/test-helpers';
+import { render, find, settled, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import alertOverview from '../../../../../../data/presidio/alert_overview';
@@ -29,7 +29,7 @@ module('Integration | Component | overview-tab/alerts/pill/indicator', function(
       <div id='modalDestination'></div>
       {{overview-tab/alerts/pill/indicator userId=userId alertId=alertId indicators=indicators}}
     `);
-    await this.$().find('.rsa-content-tethered-panel-trigger').mouseenter();
+    await triggerEvent('.rsa-content-tethered-panel-trigger', 'mouseover');
     return settled().then(() => {
       assert.ok(find('.user_alert_indicator_panel').textContent.replace(/\s/g, '').indexOf('MultipleActiveDirectory') === 0);
       click('.user_alert_indicator_panel > ul > li');

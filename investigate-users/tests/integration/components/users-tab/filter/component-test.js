@@ -40,11 +40,11 @@ module('Integration | Component | users-tab/filter', function(hooks) {
       <div id='modalDestination'></div>
       {{users-tab/filter}}
     `);
-    await this.$("button:contains('Add')").click();
-    return waitUntil(() => this.$('.rsa-application-modal.is-open').length === 1).then(() => {
+    await find('.users-tab_filter_controls button').click();
+    return waitUntil(() => findAll('.rsa-application-modal.is-open').length === 1).then(() => {
       assert.equal(find('.users-tab_filter_controls_save-as-favorites_name_label').textContent.replace(/\s/g, ''), 'FilterName:');
-      this.$("button:contains('Cancel')").click();
-      return waitUntil(() => this.$('.rsa-application-modal.is-open').length === 0).then(() => {
+      find('.users-tab_filter_controls_save-as-favorites_save button').click();
+      return waitUntil(() => findAll('.rsa-application-modal.is-open').length === 0).then(() => {
         done();
       });
     });
@@ -57,13 +57,13 @@ module('Integration | Component | users-tab/filter', function(hooks) {
       <div id='modalDestination'></div>
       {{users-tab/filter}}
     `);
-    await this.$("button:contains('Add')").click();
-    return waitUntil(() => this.$('.rsa-application-modal.is-open').length === 1).then(() => {
+    await find("button:contains('Add')").click();
+    return waitUntil(() => find('.rsa-application-modal.is-open').length === 1).then(() => {
       assert.equal(find('.users-tab_filter_controls_save-as-favorites_name_label').textContent.replace(/\s/g, ''), 'FilterName:');
       fillIn('.ember-text-field', 'TestFilter');
       return settled().then(() => {
-        this.$("button:contains('Save')").click();
-        return waitUntil(() => this.$('.rsa-application-modal.is-open').length === 0).then(() => {
+        find("button:contains('Save')").click();
+        return waitUntil(() => find('.rsa-application-modal.is-open').length === 0).then(() => {
           done();
         });
       });

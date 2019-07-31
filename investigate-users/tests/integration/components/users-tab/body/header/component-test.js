@@ -74,7 +74,7 @@ module('Integration | Component | users-tab/body/header', function(hooks) {
     window.URL.createObjectURL = () => {
       assert.ok(true, 'This function supposed to be called for alert export');
     };
-    await this.$("button:contains('Export')").click();
+    await find('.users-tab_body_header_bar_control button').click();
   });
 
   skip('it should Follow User', async function(assert) {
@@ -93,17 +93,18 @@ module('Integration | Component | users-tab/body/header', function(hooks) {
     await waitForReduxStateChange(redux, 'users.totalUsers');
     await render(hbs `{{users-tab/body/header}}`);
     assert.equal(redux.store.getState().users.totalUsers, 184);
-    this.$("button:contains('Add')").click();
+    await find('.users-tab_body_header_bar_control > div:nth-child(2) button').click();
     await waitForReduxStateChange(redux, 'users.totalUsers');
     assert.ok(true, 'Need to assert only state changed');
   });
 
   test('it should Unfollow User', async function(assert) {
-    assert.expect(1);
+    assert.expect(2);
     new ReduxDataHelper(setState).allWatched(true).build();
     await render(hbs `{{users-tab/body/header}}`);
-    await this.$("button:contains('Remove')").click();
-    assert.equal(find('.severity-bar').textContent.replace(/\s/g, ''), 'CriticalHighMediumLow');
+    await find('.users-tab_body_header_bar_control > div:nth-child(2) button').click();
+    assert.ok(find('.severity-bar').textContent.indexOf('Critical') > -1);
+    assert.ok(find('.severity-bar').textContent.indexOf('High') > -1);
     // Removed Spy as same was failing need to add correct assertion.
     return settled();
   });

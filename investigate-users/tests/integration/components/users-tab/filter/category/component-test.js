@@ -50,7 +50,7 @@ module('Integration | Component | users-tab/filter/category', function(hooks) {
     new ReduxDataHelper(setState).usersCount(10, 20).usersFilter({ ...initialFilterState, isWatched: true, minScore: 0, userTags: ['risky'] }).build();
     await render(hbs`{{users-tab/filter/category}}`);
     assert.equal(findAll('.rsa-form-button-clicked').length, 2);
-    await this.$("button:contains('Risky')").click();
+    await find('.users-tab_filter_user_row button').click();
     return settled();
   });
 
@@ -58,7 +58,7 @@ module('Integration | Component | users-tab/filter/category', function(hooks) {
     new ReduxDataHelper(setState).usersCount(10, 20).usersFilter({ ...initialFilterState, isWatched: true, minScore: 0, userTags: ['watched'] }).build();
     await render(hbs`{{users-tab/filter/category}}`);
     assert.equal(findAll('.rsa-form-button-clicked').length, 2);
-    await this.$("button:contains('Watchlist')").click();
+    await find('.users-tab_filter_user_row:nth-child(2) button').click();
     return settled();
   });
 });
