@@ -12,6 +12,9 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
     Ensure that dag instance are running sequentially after all the specified dag_ids instances finished running.
     The sensor checks every poked interval if all the previous dag_ids instances ran already
     (reached to one of the following states: success, failed).
+    Optional: if interval + start_time + fixed_duration_strategy was given, the sensor will check if all the
+    previous dag_ids instances ran already in specific time. (The calculation: floor execution_date according
+    to fixed_duration_strategy and subtract the interval.
 
     :param dag_ids: The dag_ids that you want to wait for
     :type dag_ids: list
@@ -60,9 +63,9 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
         if self.interval:
             execution_date = floor_time(execution_date, time_delta=self.fixed_duration_strategy)
             execution_date = execution_date - self.interval
+            execution_date = execution_date.replace(tzinfo=pytz.utc)
             if execution_date < self.start_time:
                 return True
-            execution_date = execution_date.replace(tzinfo=pytz.utc)
 
         for dag_id in self._dag_ids:
             gapped_root_dag_run = session.query(DagRun).filter(
