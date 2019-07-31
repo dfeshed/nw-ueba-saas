@@ -29,7 +29,7 @@ const HostListContainer = Component.extend({
         this.send('fetchAgentId', machineName, ([data]) => {
           if (!this.get('isDestroyed') && !this.get('isDestroying')) {
             const serverId = this.get('serverId');
-            window.open(`${window.location.origin}/investigate/hosts/${data.value.toUpperCase()}?machineId=${data.value.toUpperCase()}&tabName=OVERVIEW&sid=${serverId}`);
+            window.open(`${window.location.origin}/investigate/hosts/${data.value.toUpperCase()}/OVERVIEW?sid=${serverId}`);
           }
         });
       } else if ('PIVOT_ICON' === target) {
