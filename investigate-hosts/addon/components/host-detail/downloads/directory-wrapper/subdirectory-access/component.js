@@ -1,14 +1,14 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-import { setSeletedParentDirectory, getSubDirectories } from 'investigate-hosts/actions/data-creators/downloads';
+import { setSelectedParentDirectory, getSubDirectories } from 'investigate-hosts/actions/data-creators/downloads';
 
 const stateToComputed = (state) => ({
   openDirectories: state.endpoint.hostDownloads.mft.mftDirectory.openDirectories
 });
 
 const dispatchToActions = {
-  setSeletedParentDirectory,
+  setSelectedParentDirectory,
   getSubDirectories
 };
 
@@ -33,18 +33,19 @@ const SubdirectoryAccess = Component.extend({
   },
   actions: {
     toggleSubdirectories() {
-      const { ancestors, recordNumber } = this.get('data');
-      // max number of folders is 65000 and fetch only directories is true
-      const isDirectories = true;
-      const pageSize = 65000;
+      const { ancestors, recordNumber, children } = this.get('data');
+      // max number of folders is 65000 and fetch only directories is true for a fresh subdirectory fetch.
+      let isDirectories = false;
       const inUse = true;
       if (this.get('close')) {
-        this.send('setSeletedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors, close: false }, pageSize, isDirectories, inUse });
-        this.set('isLoading', true);
-        this.send('getSubDirectories');
-
+        if (!children) {
+          this.set('isLoading', true);
+          this.send('getSubDirectories');
+          isDirectories = true;
+        }
+        this.send('setSelectedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors, close: false }, pageSize: 65000, isDirectories, inUse });
       } else {
-        this.send('setSeletedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors: [], close: true } });
+        this.send('setSelectedParentDirectory', { selectedParentDirectory: { recordNumber, ancestors: [], close: true }, pageSize: 100, isDirectories, inUse });
       }
       this.toggleProperty('close');
     }

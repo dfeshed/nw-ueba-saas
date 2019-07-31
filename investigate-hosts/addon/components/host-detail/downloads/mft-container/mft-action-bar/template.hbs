@@ -10,7 +10,7 @@
       <span>{{t 'investigateHosts.downloads.mftActionBar.downloadFileToServer'}}</span>
     {{/rsa-form-button}}
   {{/if}}
-  {{#link-to "hosts.details"  machineId (query-params mftFile=null mftName=null sid=serverId subTabName='DOWNLOADS' pid=null query=null machineId=machineId tabName='DOWNLOADS')}}
+  {{#link-to 'hosts.details.tab' machineId 'DOWNLOADS' (query-params subTabName=null)}}
     {{rsa-icon class='close-mft-view-button' title=(t 'investigateHosts.downloads.backToDownloadsTitle') name='close'}}
   {{/link-to}}
 </div>

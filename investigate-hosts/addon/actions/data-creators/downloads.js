@@ -166,12 +166,15 @@ const toggleMftView = (selectedFile) => ({ type: ACTION_TYPES.TOGGLE_MFT_VIEW, p
  * @private
  * @returns {function(*, *)}
  */
-const _fetchMFTDirectory = (type, recordNumber) => {
+const _fetchMFTDirectory = (type, recordNumber, isApplyfilter = true, pageNumberReset = false) => {
   return (dispatch, getState) => {
     const state = getState();
     const { selectedMftFile } = state.endpoint.hostDownloads.downloads;
     const { sortField, isSortDescending, pageNumber, pageSize, isDirectories, inUse, fileSource } = state.endpoint.hostDownloads.mft.mftDirectory;
-    const { expressionList } = state.endpoint.hostDownloads.mft.filter;
+    // Filter needs to be used only for the table structure
+    const expressionList = isApplyfilter ? state.endpoint.hostDownloads.mft.filter.expressionList : [];
+    // Incremented pageNumber needs to be used only for the table structure when triggered through show more.
+    const pageNumberUpdated = pageNumberReset ? 0 : pageNumber;
 
     // fetching sub-folders based on mftId
     const mftSubdirectoryFilter = [{
@@ -225,7 +228,7 @@ const _fetchMFTDirectory = (type, recordNumber) => {
 
     dispatch({
       type,
-      promise: Machines.getMFTSubfolders(pageNumber, pageSize, sortField, isSortDescending, updatedExpressionList),
+      promise: Machines.getMFTSubfolders(pageNumberUpdated, pageSize, sortField, isSortDescending, updatedExpressionList),
       meta: {
         onSuccess: (response) => {
           const debugResponse = JSON.stringify(response);
@@ -257,16 +260,17 @@ const getSubDirectories = () => {
     next(() => {
       const state = getState();
       const { isDirectories, selectedDirectoryForDetails, selectedParentDirectory } = state.endpoint.hostDownloads.mft.mftDirectory;
+      const pageNumberReset = true;
       if (isDirectories) {
-        dispatch(_fetchMFTDirectory(ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES, selectedParentDirectory.recordNumber));
+        dispatch(_fetchMFTDirectory(ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES, selectedParentDirectory.recordNumber, false, pageNumberReset));
       } else {
-        dispatch(_fetchMFTDirectory(ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES_AND_FILES, selectedDirectoryForDetails));
+        dispatch(_fetchMFTDirectory(ACTION_TYPES.FETCH_MFT_SUBDIRECTORIES_AND_FILES, selectedDirectoryForDetails, true, pageNumberReset));
       }
     });
   };
 };
 
-const setSeletedParentDirectory = (selectedDirectory) => ({ type: ACTION_TYPES.SET_SELECTED_MFT_PARENT_DIRECTORY, payload: selectedDirectory });
+const setSelectedParentDirectory = (selectedDirectory) => ({ type: ACTION_TYPES.SET_SELECTED_MFT_PARENT_DIRECTORY, payload: selectedDirectory });
 
 const setSelectDirectoryForDetails = (selectedDirectoryForDetails) => ({ type: ACTION_TYPES.SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS, payload: selectedDirectoryForDetails });
 
@@ -304,7 +308,7 @@ export {
   deleteSelectedFiles,
   saveLocalMFTCopy,
   toggleMftView,
-  setSeletedParentDirectory,
+  setSelectedParentDirectory,
   getSubDirectories,
   setSelectDirectoryForDetails,
   toggleMftFileSelection,

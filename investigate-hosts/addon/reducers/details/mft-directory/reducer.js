@@ -60,7 +60,9 @@ const _handleAppendFiles = (action) => {
 
     return state.merge({
       subDirectories: [updatedDirectories],
-      pageNumber: data.pageNumber
+      pageNumber: data.pageNumber,
+      pageSize: 100,
+      isDirectories: false
     });
   };
 };

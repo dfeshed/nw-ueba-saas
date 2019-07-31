@@ -145,16 +145,9 @@ module('Integration | Component | mft-container/mft-action-bar', function(hooks)
     assert.equal(findAll('.close-mft-view-button').length, 1, 'close mft container button rendered');
     await click('.close-action a');
     assert.deepEqual(transitions, [{
-      name: 'hosts.details',
+      name: 'hosts.details.tab',
       queryParams: {
-        machineId: 'agent-id',
-        mftFile: null,
-        mftName: null,
-        pid: null,
-        query: null,
-        sid: 'e82241fc-0681-4276-a930-dd6e5d00f152',
-        subTabName: 'DOWNLOADS',
-        tabName: 'DOWNLOADS'
+        subTabName: null
       }
     }]);
 

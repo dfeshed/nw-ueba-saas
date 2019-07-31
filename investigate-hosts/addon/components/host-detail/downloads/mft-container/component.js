@@ -13,7 +13,6 @@ import { selectedFilterId, savedFilter } from 'investigate-shared/selectors/endp
 import { FILTER_TYPES } from './filter-types';
 
 import { listOfMftFiles } from 'investigate-hosts/reducers/details/mft-directory/selectors';
-import { next } from '@ember/runloop';
 
 const stateToComputed = (state) => ({
   selectedMftName: state.endpoint.hostDownloads.downloads.selectedMftName,
@@ -45,33 +44,17 @@ const mftContainer = Component.extend({
   classNames: ['mft-container'],
   accessControl: service(),
   filterTypes: FILTER_TYPES,
+
+  init() {
+    this._super(...arguments);
+    this.send('resetFilters', 'MFTDIRECTORY');
+  },
+
   actions: {
     onOpen(side) {
       if (side === 'left') {
         this.send('mftFilterVisible', false);
       }
-    },
-    onResetFilters(filterData) {
-      const { fileSource, selectedDirectoryForDetails, inUse } = this.getProperties('fileSource', 'selectedDirectoryForDetails', 'inUse', 'isDirectories');
-
-      this.send('setSelectDirectoryForDetails', {
-        selectedDirectoryForDetails,
-        fileSource,
-        pageSize: 65000,
-        isDirectories: true,
-        inUse: true
-      });
-      this.send('resetFilters', filterData);
-      next(() => {
-        this.send('setSelectDirectoryForDetails', {
-          selectedDirectoryForDetails,
-          fileSource,
-          pageSize: 100,
-          isDirectories: false,
-          inUse
-        });
-        this.send('getSubDirectories');
-      });
     }
   }
 });

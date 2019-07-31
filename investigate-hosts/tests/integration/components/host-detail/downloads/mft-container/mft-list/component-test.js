@@ -8,6 +8,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { revertPatch } from '../../../../../../helpers/patch-reducer';
 import { patchReducer } from '../../../../../../helpers/vnext-patch';
 import { hostDownloads } from '../../../../../components/state/downloads';
+import { patchSocket } from '../../../../../../helpers/patch-socket';
 import Immutable from 'seamless-immutable';
 
 const e = {
@@ -26,7 +27,7 @@ const mftData = [{
   '_id': '5d19c5f5c8811e3057c5a215',
   'valid': true,
   'mftId': '5d19c5f3c8811e3057c5a214',
-  'recordNumber': '0',
+  'recordNumber': 0,
   'allocatedSize': '16384',
   'alteredTimeSi': '2017-06-03T01:46:51.047Z',
   'alteredTime': '2017-06-03T01:46:51.047Z',
@@ -52,13 +53,13 @@ const mftData = [{
   'notContentIndexed': false,
   'normal': false,
   'offline': false,
-  'parentDirectory': '5',
+  'parentDirectory': 5,
   'realSize': '16384',
   'system': true,
   'reparsePoint': false,
   'temporary': false,
   'ancestors': [
-    '5'
+    5
   ],
   'updated': true,
   '_class': 'com.rsa.netwitness.endpoint.mft.MftRecordEntity'
@@ -67,7 +68,7 @@ const mftData = [{
   '_id': '5d19c5f5c8811e3057c5a2151',
   'valid': true,
   'mftId': '5d19c5f3c8811e3057c5a214',
-  'recordNumber': '0',
+  'recordNumber': 0,
   'allocatedSize': '16384',
   'alteredTimeSi': '2017-06-03T01:46:51.047Z',
   'alteredTime': '2017-06-03T01:46:51.047Z',
@@ -93,13 +94,13 @@ const mftData = [{
   'notContentIndexed': false,
   'normal': false,
   'offline': false,
-  'parentDirectory': '5',
+  'parentDirectory': 5,
   'realSize': '16384',
   'system': true,
   'reparsePoint': false,
   'temporary': false,
   'ancestors': [
-    '5'
+    5
   ],
   'updated': true,
   '_class': 'com.rsa.netwitness.endpoint.mft.MftRecordEntity'
@@ -278,5 +279,29 @@ module('Integration | Component | mft-list', function(hooks) {
     return settled().then(() => {
       assert.equal(findAll('.is-row-checked').length, 2, 'Row is selected');
     });
+  });
+  test('WS call on clicking directory in the table', async function(assert) {
+    assert.expect(2);
+    new ReduxDataHelper(initState)
+      .hostDownloads(hostDownloads)
+      .selectedDirectoryForDetails(true)
+      .selectedMftFileList(mftData)
+      .mftFiles(mftData)
+      .build();
+    await render(hbs`
+      <div id="modalDestination"></div>
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-detail/downloads/mft-container/mft-list}}{{context-menu}}`);
+
+    patchSocket((method, modelName) => {
+      assert.equal(method, 'mftGetRecords');
+      assert.equal(modelName, 'endpoint');
+    });
+
+    await click(findAll('.downloaded-file-name a')[0]);
   });
 });

@@ -162,7 +162,7 @@ module('Integration | Component | mft-container/filter-action-bar', function(hoo
     assert.equal(showFilter, true, 'Filter should show');
     assert.equal(findAll('.open-filter-panel').length, 0, 'filter button hidden');
   });
-  test('Filter button disabeld test', async function(assert) {
+  test('Filter button disabled test', async function(assert) {
     new ReduxDataHelper(initState).hostDownloads(hostDownloads).build();
     this.set('openPanel', function() {
       assert.ok(true, 'open panel is called');

@@ -13,7 +13,7 @@
     {{#if (get item 'directory')}}
       <span>
         {{rsa-icon style='filled' name='folder-2'}}
-        <a href="#">{{get item column.field}}</a>
+        <a href="#" {{action "onFetchSubdirectories" item}}>{{get item column.field}}</a>
       </span>
     {{else}}
       <span>{{rsa-icon style='filled' name='file-new-1'}}{{get item column.field}}</span>
