@@ -5,7 +5,7 @@
     <parameter name="anomaly_day" value="1" />
     <test name="Adapter_Filter_Data">
         <classes>
-            <class name="com.rsa.netwitness.presidio.automation.test.adapter.filtering.AdapterFilteringTest"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.filtering.AdapterFilteringTest"/>
         </classes>
     </test>
 </suite>

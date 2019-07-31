@@ -11,17 +11,17 @@
     </test>
    <test name="Active_Directory_Mapping_Test">
         <classes>
-            <class name="com.rsa.netwitness.presidio.automation.test.adapter.mapping.ActiveDircetoryMappingTest"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.mapping.ActiveDircetoryMappingTest"/>
         </classes>
     </test>
     <test name="Authentication_Mapping_Test">
         <classes>
-            <class name="com.rsa.netwitness.presidio.automation.test.adapter.mapping.AuthenticationMappingTest"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.mapping.AuthenticationMappingTest"/>
         </classes>
     </test>
     <test name="File_Mapping_Test">
         <classes>
-            <class name="com.rsa.netwitness.presidio.automation.test.adapter.mapping.FileMappingTest"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.mapping.FileMappingTest"/>
         </classes>
     </test>
 </suite>
