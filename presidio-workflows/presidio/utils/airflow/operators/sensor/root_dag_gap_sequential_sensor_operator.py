@@ -60,7 +60,7 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
     @provide_session
     def _is_finished_wait_for_gapped_dag(self, execution_date, session=None):
 
-        if self.interval:
+        if self.interval and self.fixed_duration_strategy and self.start_time:
             execution_date = floor_time(execution_date, time_delta=self.fixed_duration_strategy)
             execution_date = execution_date - self.interval
             execution_date = execution_date.replace(tzinfo=pytz.utc)
