@@ -28,8 +28,7 @@ class InputPreProcessorOperator(SpringBootJarOperator):
         Add java args from the static and dynamic arguments
         """
 
-        arguments = self.add_dynamic_arguments(context)
-        arguments.update({'schema': self.schema_name})
+        arguments = self._get_input_pre_processing_arguments(context)
 
         java_args = {
             'name': self.name,
@@ -39,21 +38,24 @@ class InputPreProcessorOperator(SpringBootJarOperator):
         super(InputPreProcessorOperator, self).update_java_args(java_args)
         super(InputPreProcessorOperator, self).execute(context)
 
-    def add_dynamic_arguments(self, context):
+    def _get_input_pre_processing_arguments(self, context):
         context_wrapper = ContextWrapper(context)
         execution_date = context_wrapper.get_execution_date()
+        arguments = self.static_arguments.copy()
 
         if 'startInstant' in self.dynamic_arguments:
             start_date = floor_time(execution_date, time_delta=FIX_DURATION_STRATEGY_DAILY)
             utc_start_date = convert_to_utc(start_date)
-            self.static_arguments.update({'startInstant': utc_start_date})
+            arguments.update({'startInstant': utc_start_date})
         if 'endInstant' in self.dynamic_arguments:
             end_date = floor_time(execution_date + timedelta(days=1),
                                   time_delta=FIX_DURATION_STRATEGY_DAILY)
             utc_end_date = convert_to_utc(end_date)
-            self.static_arguments.update({'endInstant': utc_end_date})
+            arguments.update({'endInstant': utc_end_date})
 
-        return self.static_arguments
+        arguments.update({'schema': self.schema_name})
+
+        return arguments
 
     @staticmethod
     def handle_retry(context):

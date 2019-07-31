@@ -14,10 +14,6 @@ class InputPreProcessorDagBuilder(PresidioDagBuilder):
             self._build_input_pre_processing_operator(dag, name, schema_name, static_arguments, dynamic_arguments)
         return dag
 
-    @staticmethod
-    def get_input_pre_processing(conf_reader):
-        return conf_reader.read(conf_key='input_pre_processing')
-
     def _build_input_pre_processing_operator(self, dag, name, schema_name, static_arguments, dynamic_arguments):
         InputPreProcessorOperator(dag=dag, name=name, schema_name=schema_name,
                                   static_arguments=static_arguments,
