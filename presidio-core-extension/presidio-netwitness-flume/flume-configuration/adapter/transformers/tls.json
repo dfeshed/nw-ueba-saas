@@ -101,7 +101,7 @@
       "name": "alias-host-to-top-level-domain",
       "sourceKey": "alias_host[0]",
       "isRemoveSourceKey": false,
-      "targetKey": "domain"
+      "targetKey": "domain.domainName"
     },
     {
       "type": "copy_value",
