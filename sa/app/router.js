@@ -20,6 +20,7 @@ Router.map(function() {
   this.route('internal-error');
   this.route('sso-oauth');
   this.route('sso-error');
+  this.route('sso-logout');
 
   this.route('protected', { path: '/' }, function() {
     this.route('monitor');
