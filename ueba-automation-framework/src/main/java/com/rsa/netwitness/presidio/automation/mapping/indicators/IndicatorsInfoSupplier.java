@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.static_content;
+package com.rsa.netwitness.presidio.automation.mapping.indicators;
 
 import fortscale.common.general.Schema;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.static_content;
+package com.rsa.netwitness.presidio.automation.mapping.indicators;
 
 import com.google.common.collect.Lists;
 

@@ -12,7 +12,7 @@ import com.rsa.netwitness.presidio.automation.domain.registry.OutputRegistryEnri
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
 import com.rsa.netwitness.presidio.automation.rest.client.RestAPI;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
-import com.rsa.netwitness.presidio.automation.static_content.IndicatorsInfo;
+import com.rsa.netwitness.presidio.automation.mapping.indicators.IndicatorsInfo;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
