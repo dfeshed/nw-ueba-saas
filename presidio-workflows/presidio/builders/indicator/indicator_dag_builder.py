@@ -12,10 +12,8 @@ from presidio.utils.airflow.operators.sensor.root_dag_gap_sequential_sensor_oper
     RootDagGapSequentialSensorOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 from presidio.utils.airflow.schedule_interval_utils import get_schedule_interval, set_schedule_interval
-from presidio.utils.configuration.config_server_configuration_reader_singleton import \
-    ConfigServerConfigurationReaderSingleton
 from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid, FIX_DURATION_STRATEGY_DAILY, \
-    FIX_DURATION_STRATEGY_HOURLY, is_execution_date_valid_first_interval
+    FIX_DURATION_STRATEGY_HOURLY
 
 
 class IndicatorDagBuilder(PresidioDagBuilder):
