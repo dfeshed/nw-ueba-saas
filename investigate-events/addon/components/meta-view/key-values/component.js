@@ -219,7 +219,6 @@ export default RsaContextMenu.extend({
       clickValueAction,
       _resolvedData: data
     } = this.getProperties('groupKey.name', 'clickValueAction', '_resolvedData');
-
     // Request a function that will test whether a given (raw) meta value is already selected in the current query.
     // We'll use this function to mark some values as selected & disable their clicks.
     const isValueSelected = this._getMetaValueTester();

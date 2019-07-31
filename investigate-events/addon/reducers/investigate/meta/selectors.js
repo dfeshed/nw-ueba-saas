@@ -1,7 +1,5 @@
 import reselect from 'reselect';
-
-import { defaultMetaGroup } from 'investigate-events/reducers/investigate/dictionaries/selectors';
-
+import { defaultMetaGroupEnriched } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
 const { createSelector } = reselect;
 
@@ -32,7 +30,7 @@ export const canFetchMeta = createSelector(
 );
 
 export const initMetaKeyStates = createSelector(
-  [_language, defaultMetaGroup],
+  [_language, defaultMetaGroupEnriched],
   (language, group) => {
     return language.map((l) => {
       const key = group.keys.find((g) => g.name === l.metaName);

@@ -1,5 +1,5 @@
 import reselect from 'reselect';
-import { isOpen, isHidden } from './utils';
+import { isOpen } from './utils';
 import { lookup } from 'ember-dependency-lookup';
 
 const { createSelector } = reselect;
@@ -14,17 +14,6 @@ const _language = (state) => state.investigate.dictionaries.language;
 const _aliases = (state) => state.investigate.dictionaries.aliases;
 
 // UTILS
-/**
- * removes indexed by none
- * @param {*} acc
- * @param {*} obj
- */
-const _removeHiddenKeys = (acc, obj) => {
-  if (!isHidden(obj)) {
-    acc.push(obj);
-  }
-  return acc;
-};
 
 const _createMetaGroup = (obj) => ({
   name: obj.metaName,
@@ -33,15 +22,6 @@ const _createMetaGroup = (obj) => ({
 });
 
 // SELECTOR FUNCTIONS
-
-// Need something like activeLanguageGroup, like we activeQueryGroup
-// Something that doesn't change unless you hit queryEvents button.
-export const defaultMetaGroup = createSelector(
-  [_language],
-  (language = []) => ({
-    keys: language.reduce(_removeHiddenKeys, []).map(_createMetaGroup)
-  })
-);
 
 /**
  * add three new boolean properties to meta
@@ -66,10 +46,6 @@ const _enrichedLanguage = createSelector(
   }
 );
 
-/**
- * a copy of defaultMetaGroup selector above without _removeHiddenKeys
- * to keep indexNone meta
- */
 export const defaultMetaGroupEnriched = createSelector(
   _enrichedLanguage,
   (language = []) => {
