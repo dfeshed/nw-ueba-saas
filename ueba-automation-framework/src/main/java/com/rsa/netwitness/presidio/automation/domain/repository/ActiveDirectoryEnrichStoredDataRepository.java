@@ -19,4 +19,9 @@ public interface ActiveDirectoryEnrichStoredDataRepository extends MongoReposito
     @Query("{ userId: ?0, operationType: ?1 }")
     List<ActiveDirectoryEnrichStoredData> findByUserAndOperationType(String userId, String operationType);
 
+    @Query("{ operationType: ?0 }")
+    List<ActiveDirectoryEnrichStoredData> findByOperationType(String operationType);
+
+    @Query("{ dataSource: ?0 }")
+    List<ActiveDirectoryEnrichStoredData> findByDataSource(String dataSource);
 }

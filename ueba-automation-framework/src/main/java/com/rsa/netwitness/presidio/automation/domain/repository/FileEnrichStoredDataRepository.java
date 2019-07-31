@@ -1,5 +1,6 @@
 package com.rsa.netwitness.presidio.automation.domain.repository;
 
+import com.rsa.netwitness.presidio.automation.domain.activedirectory.ActiveDirectoryEnrichStoredData;
 import com.rsa.netwitness.presidio.automation.domain.file.FileEnrichStoredData;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -19,4 +20,9 @@ public interface FileEnrichStoredDataRepository extends MongoRepository<FileEnri
     @Query("{ userId: ?0, operationType: ?1 }")
     List<FileEnrichStoredData> findByUserAndOperationType(String userId, String operationType);
 
+    @Query("{ operationType: ?0 }")
+    List<ActiveDirectoryEnrichStoredData> findByOperationType(String operationType);
+
+    @Query("{ dataSource: ?0 }")
+    List<ActiveDirectoryEnrichStoredData> findByDataSource(String dataSource);
 }
