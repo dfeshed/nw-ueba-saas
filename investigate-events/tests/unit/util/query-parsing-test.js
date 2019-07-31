@@ -271,7 +271,19 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, 'length', 'operator should match');
     assert.equal(result[0].value, '-3', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'You must enter a non-negative Integer.', 'validation error should be correct');
+    assert.equal(result[0].validationError.string, 'You must enter an integer greater than or equal to 1.', 'validation error should be correct');
+  });
+
+  test('transformTextToPillData returns an invalid pill when length is used with zero', function(assert) {
+    const text = 'c length 0';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'c', 'meta should match');
+    assert.equal(result[0].operator, 'length', 'operator should match');
+    assert.equal(result[0].value, '0', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.equal(result[0].validationError.string, 'You must enter an integer greater than or equal to 1.', 'validation error should be correct');
   });
 
   // Leaving here to remind me to implement this soon

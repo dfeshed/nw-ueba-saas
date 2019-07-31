@@ -172,6 +172,19 @@ class Parser {
   }
 
   /**
+   * Returns true if the singular value or both ends of a range are >= 1
+   * @param {GRAMMAR.META_VALUE_RANGE} range The value range object
+   */
+  _isValuePositive(range) {
+    if (range.value) {
+      return range.value.text[0] !== '-' && parseInt(range.value.text, 10) > 0;
+    } else {
+      return range.from.text[0] !== '-' || range.to.text[0] !== '-' &&
+        parseInt(range.from.text, 10) > 0 && parseInt(range.to.text, 10) > 0;
+    }
+  }
+
+  /**
    * Parses the list of tokens into a syntax tree.
    * @public
    */
@@ -303,9 +316,9 @@ class Parser {
           return false;
         }
         let result = this._isValueTypeInvalid(range, expectedType, meta);
-        // If using length & types were valid, check for negative
+        // If using length & types were valid, check for negative or zero
         if (isLengthOperator && !result) {
-          result = range.value ? range.value.text[0] === '-' : range.from.text[0] === '-' || range.to.text[0] === '-';
+          result = !this._isValuePositive(range);
         }
         return result;
       });
