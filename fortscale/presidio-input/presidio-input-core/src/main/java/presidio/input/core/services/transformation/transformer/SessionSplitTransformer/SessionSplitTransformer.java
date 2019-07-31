@@ -1,17 +1,13 @@
 package presidio.input.core.services.transformation.transformer.SessionSplitTransformer;
 
-import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
-import presidio.input.core.RawEventsPageIterator;
 import presidio.input.core.services.transformation.transformer.Transformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
-import presidio.sdk.api.domain.rawevents.TlsRawEvent;
 import presidio.sdk.api.domain.transformedevents.TlsTransformedEvent;
-import presidio.sdk.api.services.PresidioInputPersistencyService;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 public class SessionSplitTransformer implements Transformer {
 

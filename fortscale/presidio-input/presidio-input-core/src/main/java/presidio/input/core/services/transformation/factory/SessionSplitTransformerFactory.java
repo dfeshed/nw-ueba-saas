@@ -8,11 +8,11 @@ import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import presidio.input.core.RawEventsPageIterator;
 import presidio.input.core.services.transformation.transformer.SessionSplitTransformer.SessionSplitTransformer;
 import presidio.input.core.services.transformation.transformer.SessionSplitTransformer.SessionSplitTransformerKey;
 import presidio.input.core.services.transformation.transformer.SessionSplitTransformer.SessionSplitTransformerValue;
 import presidio.input.core.services.transformation.transformer.Transformer;
+import presidio.sdk.api.domain.RawEventsPageIterator;
 import presidio.sdk.api.domain.rawevents.TlsRawEvent;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
