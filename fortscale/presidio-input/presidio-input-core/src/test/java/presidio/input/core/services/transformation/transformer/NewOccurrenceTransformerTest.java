@@ -31,8 +31,8 @@ public class NewOccurrenceTransformerTest {
         ArrayList<AbstractInputDocument> documents = new ArrayList<>();
         documents.add(tlsRawEvent);
 
-        Assert.assertFalse(tlsRawEvent.getDomain().isNewOccurrence());
+        Assert.assertFalse(tlsRawEvent.getDomain().getIsNewOccurrence());
         occurrenceTransformer.transform(documents);
-        Assert.assertTrue(tlsRawEvent.getDomain().isNewOccurrence());
+        Assert.assertTrue(tlsRawEvent.getDomain().getIsNewOccurrence());
     }
 }

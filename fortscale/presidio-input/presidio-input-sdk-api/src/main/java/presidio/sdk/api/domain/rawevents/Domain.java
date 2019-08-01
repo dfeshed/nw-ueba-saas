@@ -1,27 +1,47 @@
 package presidio.sdk.api.domain.rawevents;
 
-import org.springframework.data.mongodb.core.mapping.Field;
+import java.util.Objects;
 
-import java.io.Serializable;
+public class Domain {
 
-public class Domain implements Serializable {
-
-    private static final String DOMAIN_FIELD_NAME = "domainName";
-    private static final String NEW_OCCURRENCE_FIELD_NAME = "isNewOccurrence";
-
-    @Field(DOMAIN_FIELD_NAME)
     private String domainName;
-
-    @Field(NEW_OCCURRENCE_FIELD_NAME)
     private boolean isNewOccurrence;
-
-
-    public boolean isNewOccurrence() {
-        return isNewOccurrence;
-    }
 
     public Domain(String domainName, boolean isNewOccurrence) {
         this.domainName = domainName;
         this.isNewOccurrence = isNewOccurrence;
+    }
+
+    // Dummy constructor required for jackson deserialization
+    public Domain() {}
+
+    public String getDomainName() {
+        return domainName;
+    }
+
+    public boolean getIsNewOccurrence() {
+        return isNewOccurrence;
+    }
+
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
+    }
+
+    public void setIsNewOccurrence(boolean newOccurrence) {
+        isNewOccurrence = newOccurrence;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Domain domain = (Domain) o;
+        return isNewOccurrence == domain.isNewOccurrence &&
+                Objects.equals(domainName, domain.domainName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(domainName, isNewOccurrence);
     }
 }
