@@ -1129,48 +1129,6 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].foo, state.investigate.eventResults.data[0].foo);
   });
 
-  test('clientSortedData when endpoint', async function(assert) {
-    const state = {
-      investigate: {
-        eventResults: {
-          data: [
-            { id: 1, medium: 32, 'nwe.callback_id': true }, // resolves to endpoint
-            { id: 2, medium: 32 }, // resolves to Log
-            { id: 3, medium: 32 } // resolves to Log
-          ]
-        },
-        data: {
-          sortField: 'medium',
-          sortDirection: 'Descending',
-          globalPreferences: {
-            dateFormat: true,
-            timeFormat: true,
-            timeZone: true,
-            locale: true
-          }
-        },
-        eventCount: {
-          threshold: 1000,
-          data: 3
-        },
-        dictionaries: {
-          language: [{
-            metaName: 'medium',
-            format: 'UInt8'
-          }]
-        },
-        services: {
-          serviceData: [{
-            version: '11.4'
-          }]
-        }
-      }
-    };
-
-    const result = clientSortedData(state);
-    assert.equal(result[2].id, state.investigate.eventResults.data[0].id);
-  });
-
   test('clientSortedData when time', async function(assert) {
     const state = {
       investigate: {

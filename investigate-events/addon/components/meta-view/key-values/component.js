@@ -1,5 +1,4 @@
 // import Component from '@ember/component';
-import { assign } from 'ember-platform';
 import computed from 'ember-computed-decorators';
 import safeCallback from 'component-lib/utils/safe-callback';
 import { metaValueAlias } from 'investigate-events/helpers/meta-value-alias';
@@ -62,13 +61,6 @@ export default RsaContextMenu.extend({
    */
   @computed('aliases')
   textOptions: ((aliases) => aliases ? { aliases } : {}),
-
-  /**
-   * Options for meta value tooltip formatter utility.
-   * Copy of `textOptions` but shows raw + alias values together.
-   */
-  @computed('textOptions')
-  tooltipOptions: ((textOptions) => assign({ appendRawValue: true }, textOptions)),
 
   /**
    * Toggle meta groups
@@ -141,13 +133,13 @@ export default RsaContextMenu.extend({
    * Maps the meta values data array to an array of info used to
    * render those values (e.g., tooltips, URLs, etc).
    */
-  @computed('values.data', 'groupKey', 'textOptions', 'tooltipOptions')
-  _resolvedData(data = [], groupKey, textOptions, tooltipOptions) {
+  @computed('values.data', 'groupKey', 'textOptions')
+  _resolvedData(data = [], groupKey, textOptions) {
     return data.map(({ count, value }) => {
       return {
         value,
         text: metaValueAlias([ groupKey.name, value, textOptions ]),
-        tooltip: metaValueAlias([ groupKey.name, value, tooltipOptions ]),
+        tooltip: metaValueAlias([ groupKey.name, value ]),
         count,
         disabled: groupKey.disabled
       };

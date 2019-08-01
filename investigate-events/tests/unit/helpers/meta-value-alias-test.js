@@ -12,5 +12,5 @@ test('it works', function(assert) {
   };
   opts.aliases[key] = {};
   opts.aliases[key][raw] = rawAlias;
-  assert.equal(metaValueAlias([ key, raw, opts ]), rawAlias);
+  assert.equal(metaValueAlias([ key, raw, opts ]), `${raw} [${rawAlias}]`);
 });

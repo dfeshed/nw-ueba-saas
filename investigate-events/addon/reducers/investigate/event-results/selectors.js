@@ -501,10 +501,13 @@ export const clientSortedData = createSelector(
 
         if (event[sortField] === null || event[sortField] === undefined || event[sortField] === '') {
           if (sortDirection === 'Ascending') {
-            eventCopy.toSort = 'a';
+            // force null to something more friendly to fast-sort
+            // otherwise nulls are always at the bottom, for asc and desc
+            eventCopy.toSort = metaObj && metaObj.format === 'Text' ? 'a' : Number.MIN_SAFE_INTEGER;
           }
         } else {
           if (metaObj && metaObj.format === 'MAC') {
+            // convert to int
             const ip = event[sortField];
             if (ip) {
               const segments = ip.split(':');
@@ -534,23 +537,8 @@ export const clientSortedData = createSelector(
               const ipv6Addy = new Address6(ip);
               eventCopy.toSort = ipv6Addy.bigInteger();
             }
-          } else if (sortField === 'medium' && event['nwe.callback_id']) {
-            // ensure we sort by displayed label for Endpoints
-            eventCopy.toSort = opts.i18n[sortField].endpoint.string;
-          } else if (metaObj && metaObj.format === 'TimeT') {
-            // already an int, no need to translate
-            eventCopy.toSort = event[sortField];
           } else {
-            // fast sort puts empty values at the bottom in both directions
-            // this does not match the way core sorts
-            // override toSort with static value to be sorted
-            if (event[sortField] != null && event[sortField] != undefined && event[sortField] != '') {
-              // look up translated aliases
-              let toSort = formatUtil.text(sortField, event[sortField], opts);
-              toSort = toSort.string || toSort;
-              const parsedNumber = parseFloat(toSort, 10);
-              eventCopy.toSort = (parsedNumber - parsedNumber === 0) ? parsedNumber : toSort.toLowerCase();
-            }
+            eventCopy.toSort = event[sortField];
           }
         }
 
@@ -558,12 +546,6 @@ export const clientSortedData = createSelector(
       });
 
       cachedData = Immutable.asMutable(cachedData);
-      if (sortDirection === 'Ascending') {
-        cachedData = sort(cachedData).asc(groupForSortAscending);
-      } else {
-        cachedData = sort(cachedData).desc(groupForSortDescending);
-      }
-
       return sort(cachedData)[(sortDirection === 'Ascending' ? 'asc' : 'desc')]((e) => e.toSort);
     }
   }

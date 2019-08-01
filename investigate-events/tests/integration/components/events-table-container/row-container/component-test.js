@@ -123,7 +123,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
     const aliasSelector = `${rowSelector} .rsa-data-table-body-cell[data-field="has.alias"]`;
     const alias = find(aliasSelector).textContent;
     const values = String(aliases['has.alias'][item['has.alias']]).trim();
-    assert.equal(alias, values, 'Expected value\'s alias in cell DOM');
+    assert.equal(alias, `raw-value [${values}]`, 'Expected value\'s alias in cell DOM');
 
     // Check that raw value is rendered when alias is missing.
     const rawSelector = `${rowSelector} .rsa-data-table-body-cell[data-field="foo"]`;
@@ -198,13 +198,13 @@ module('Integration | Component | Events Table Row', function(hooks) {
 
     const mediumSelector = `${rowSelector} .rsa-data-table-body-cell[data-field="medium"]`;
     const englishMedium = find(mediumSelector).textContent;
-    assert.equal(englishMedium, englishNetwork, 'Expected medium to be default value when locale is en-us');
+    assert.equal(englishMedium, `1 [${englishNetwork}]`, 'Expected medium to be default value when locale is en-us');
 
     set(i18n, 'locale', 'ja-jp');
 
     return settled().then(async() => {
       const japaneseMedium = find(mediumSelector).textContent;
-      assert.equal(japaneseMedium, japaneseNetwork, 'Expected medium to be translated given the locale is ja-jp');
+      assert.equal(japaneseMedium, `1 [${japaneseNetwork}]`, 'Expected medium to be translated given the locale is ja-jp');
     });
   });
 });

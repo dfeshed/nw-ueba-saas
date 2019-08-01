@@ -95,10 +95,8 @@ function _alias(field, value, opts = {}) {
 
   if (valueLookup === undefined) {
     return (value === undefined) ? '' : String(value);
-  } else if (opts.appendRawValue) {
-    return `${valueLookup} [${value}]`;
   } else {
-    return valueLookup;
+    return `${value} [${valueLookup}]`;
   }
 }
 
@@ -121,7 +119,7 @@ function tooltip(field, value, opts = {}) {
   if (field === 'size') {
     return _size(value, opts, true);
   } else {
-    return text(field, value, { ...opts, appendRawValue: true });
+    return text(field, value, opts);
   }
 }
 
