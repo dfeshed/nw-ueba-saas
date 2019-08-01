@@ -2,7 +2,7 @@ from __future__ import generators
 from airflow import DAG
 import logging
 
-from presidio.builders.input.Input_pre_processor_dag_builder import InputPreProcessorDagBuilder
+from presidio.builders.input.input_pre_processor_dag_builder import InputPreProcessorDagBuilder
 from presidio.factories.abstract_dag_factory import AbstractDagFactory
 from presidio.utils.decorators.ueba_flow_decorator import ueba_flow_decorator_wrapper
 
