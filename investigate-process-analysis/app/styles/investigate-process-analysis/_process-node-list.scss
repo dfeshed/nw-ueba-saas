@@ -6,8 +6,8 @@
     .rsa-data-table-body {
       overflow-x: hidden;
     }
-    height: 100%;
-    .rsa-data-table-body-cell {
+    height: calc(100% - 2rem);
+    .rsa-data-table-body-cell.local-score {
       padding: 3px 7px 0 7px;
     }
     .rsa-data-table-body-row {

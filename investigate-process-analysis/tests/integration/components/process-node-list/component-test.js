@@ -75,6 +75,7 @@ module('Integration | Component | process-node-list', function(hooks) {
     assert.strictEqual(document.querySelectorAll('.rsa-data-table-header-cell').length, 5, '5 columns are rendered');
     assert.strictEqual(document.querySelectorAll('.rsa-data-table-body-row').length, 3, '3 rows are rendered');
     assert.strictEqual(document.querySelectorAll('.rsa-risk-score')[0].textContent.trim(), '100');
+    assert.strictEqual(document.querySelectorAll('.table-footer').length, 1);
   });
 
   test('it renders the network process list table', async function(assert) {
@@ -150,6 +151,7 @@ module('Integration | Component | process-node-list', function(hooks) {
     this.set('onRowSelection', (selections) => {
       assert.strictEqual(selections.length, 3);
     });
+
     await render(hbs`{{process-node-list nodeList=nodeList}}`);
     await click(document.querySelectorAll('.rsa-data-table-body-row .rsa-form-checkbox')[2]);
     assert.strictEqual(document.querySelectorAll('.rsa-form-checkbox-label.checked').length, 1, '1 row selected');

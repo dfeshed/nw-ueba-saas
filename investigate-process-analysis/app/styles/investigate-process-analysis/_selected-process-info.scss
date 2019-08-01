@@ -1,6 +1,9 @@
 .process-properties-container {
+  @include border-right(1px, solid, primary, dark);
+  @include border-left(1px, solid, primary, dark);
+  @include border-bottom(1px, solid, primary, dark);
   height: 280px;
-  border-right: 1px solid border-color(primary);
+  border-right: 1px solid ;
   grid-auto-flow: column;
   display: grid;
   overflow: auto;

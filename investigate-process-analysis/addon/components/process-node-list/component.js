@@ -85,6 +85,11 @@ export default Component.extend({
     }
   },
 
+  @computed('filteredList.@each.selected')
+  selections(filteredList) {
+    return filteredList.filter((node) => node.selected).length;
+  },
+
   _toggleSelection(item) {
     set(item, 'selected', !item.selected);
     const nodeList = this.get('nodeListCopy');

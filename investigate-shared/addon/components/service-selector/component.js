@@ -44,6 +44,8 @@ const ServiceSelector = Component.extend({
 
   isSummaryRetrieveError: false,
 
+  isDisabled: false,
+
   didReceiveAttrs() {
     this._super(...arguments);
     const services = this.get('services');

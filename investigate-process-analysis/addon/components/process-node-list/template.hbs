@@ -26,7 +26,7 @@
         </label>
       {{/rsa-data-table/body-cell}}
     {{else if (eq column.field 'data.localScore')}}
-      {{#rsa-data-table/body-cell item=item column=column}}
+      {{#rsa-data-table/body-cell class='local-score' item=item column=column}}
         <centered>
           {{#if (get item column.field)}}
             {{rsa-risk-score score=(get item column.field) size='small'}}
@@ -46,3 +46,4 @@
     {{/if}}
   {{/rsa-data-table/body}}
 {{/rsa-data-table}}
+{{table-footer index=filteredList.length total=nodeList.length selectedItems=selections}}

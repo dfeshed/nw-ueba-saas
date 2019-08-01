@@ -1,5 +1,6 @@
 .process-analysis-container {
-
+  height: 100vh;
+  
   .process-details-container {
     @include border(1px, solid, primary, dark);
   }
@@ -57,6 +58,29 @@
   .process-property-container {
     height: 300px;
     border: 1px solid;
+  }
+
+  .table-footer {
+    @include rsa-font(body, small);
+    border-top: 1px solid border-color(primary, dark);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    max-height: 2rem;
+    background-color: background-color(primary, darker, somewhat-opaque);
+    color: text-color(primary, lightest);
+    height: rsa-whitespace(more);
+    .lighter {
+      color: text-color(primary, lighter);
+    }
+  }
+
+  .footer-info {
+    position: absolute;
+    top: rsa-whitespace(less);
+    left: rsa-whitespace();
+    text-align: center;
+    width:97%;
   }
 }
 
