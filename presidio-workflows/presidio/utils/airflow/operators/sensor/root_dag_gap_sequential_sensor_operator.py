@@ -10,12 +10,12 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
     Ensure that dag instance are running sequentially after all the specified dag_ids instances finished running.
     The sensor checks every poked interval if all the previous dag_ids instances ran already
     (reached to one of the following states: success, failed).
-    Optional: if interval + start_time + fixed_duration_strategy was given, the sensor will check if all the
-    previous dag_ids instances ran already in specific time. (The calculation: floor execution_date according
-    to fixed_duration_strategy and subtract the interval.
+    In case the execution_date can be before the machine start_time, we need to pass the machine start_time.
 
     :param dag_ids: The dag_ids that you want to wait for
     :type dag_ids: list
+    :param start_time: The machine start_time
+    :type start_time: datetime
     """
     ui_color = '#19647e'
     ui_fgcolor = '#fff'
