@@ -251,4 +251,56 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
 
     assert.equal(queryCounter.recentQueryTabCount, 5, 'Recent query count was not set correctly');
   });
+
+  test('valueSuggestions will fetch suggested objects', async function(assert) {
+    assert.expect(2);
+    const done = assert.async();
+
+    const getState = () => {
+      return new ReduxDataHelper()
+        .hasRequiredValuesToQuery()
+        .build();
+    };
+    const prefixText = 'test';
+    const metaName = 'action';
+
+    const expectedSuggestionsForTest = ['foo', 'bar', 'baz', 'foobar'];
+
+    const dispatchValueSuggestions = (action) => {
+      assert.equal(action.type, ACTION_TYPES.SET_VALUE_SUGGESTIONS, 'action has the correct type');
+      action.promise.then((resolve) => {
+        const responseSuggestions = resolve.data;
+        assert.deepEqual(expectedSuggestionsForTest, responseSuggestions, 'values containing text should be returned');
+        done();
+      });
+    };
+
+    const thunk = initializationCreators.valueSuggestions(metaName, prefixText);
+    thunk(dispatchValueSuggestions, getState);
+  });
+
+  test('valueSuggestions will fetch suggested objects even if there is no filterText', async function(assert) {
+    assert.expect(2);
+    const done = assert.async();
+
+    const getState = () => {
+      return new ReduxDataHelper()
+        .hasRequiredValuesToQuery()
+        .build();
+    };
+    const prefixText = '';
+    const metaName = 'action';
+
+    const dispatchValueSuggestions = (action) => {
+      assert.equal(action.type, ACTION_TYPES.SET_VALUE_SUGGESTIONS, 'action has the correct type');
+      action.promise.then((resolve) => {
+        const responseSuggestions = resolve.data;
+        assert.ok(responseSuggestions.length > 0, 'values containing text should be returned');
+        done();
+      });
+    };
+
+    const thunk = initializationCreators.valueSuggestions(metaName, prefixText);
+    thunk(dispatchValueSuggestions, getState);
+  });
 });

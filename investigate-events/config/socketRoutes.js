@@ -102,6 +102,13 @@ const investigateConfigGen = function(env) {
         requestDestination: '/ws/investigate/predicate/get-recent-by-filter'
       }
     },
+    'value-suggestions': {
+      socketUrl,
+      query: {
+        subscriptionDestination: '/user/queue/investigate/meta/values/suggestions',
+        requestDestination: '/ws/investigate/meta/values/suggestions'
+      }
+    },
     'investigate-columns': {
       socketUrl,
       findAll: {

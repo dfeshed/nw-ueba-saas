@@ -69,7 +69,10 @@ const _initialState = Immutable.from({
   // recentQueriesFilterText
   recentQueriesFilteredList: [],
   recentQueriesFilterText: undefined,
-  recentQueriesCallInProgress: false
+  recentQueriesCallInProgress: false,
+
+  valueSuggestions: [],
+  valueSuggestionsCallInProgress: false
 
 });
 
@@ -677,6 +680,20 @@ export default handleActions({
           });
         }
       }
+    });
+  },
+
+  [ACTION_TYPES.SET_VALUE_SUGGESTIONS]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => s.set('valueSuggestionsCallInProgress', true),
+      success: (s) => {
+        const { data } = action.payload;
+        return s.merge({
+          valueSuggestions: data,
+          valueSuggestionsCallInProgress: false
+        });
+      },
+      failure: (s) => s.set('valueSuggestionsCallInProgress', false)
     });
   },
 

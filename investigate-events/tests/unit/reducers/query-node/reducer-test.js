@@ -1260,3 +1260,53 @@ test('INSERT_PARENS adds parens into an edited, existing pill', function(assert)
   assert.equal(result.pillsData[2].type, QUERY_FILTER, 'pillsData item is in the right position');
   assert.equal(result.pillsData[3].type, CLOSE_PAREN, 'pillsData item is in the right position');
 });
+
+test('SET_VALUE_SUGGESTIONS init marks callInProgress as true', function(assert) {
+
+  const initialState = Immutable.from({
+    valueSuggestionsCallInProgress: false
+  });
+
+  const successAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.SET_VALUE_SUGGESTIONS
+  });
+
+  const result = reducer(initialState, successAction);
+  assert.ok(result.valueSuggestionsCallInProgress, 'Call should be in progress');
+});
+
+test('SET_VALUE_SUGGESTIONS success saves value suggestions and marks callInProgress as false', function(assert) {
+
+  const initialState = Immutable.from({
+    valueSuggestions: [],
+    valueSuggestionsCallInProgress: true
+  });
+
+  const data = ['foo', 'bar', 'baz'];
+
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.SET_VALUE_SUGGESTIONS,
+    payload: {
+      data
+    }
+  });
+
+  const result = reducer(initialState, successAction);
+
+  assert.deepEqual(result.valueSuggestions, data, 'expected value suggestions were not found');
+  assert.notOk(result.valueSuggestionCallInProgress, 'Call should not be in progess');
+});
+
+test('SET_VALUE_SUGGESTIONS failure marks callInProgress as false', function(assert) {
+
+  const initialState = Immutable.from({
+    valueSuggestionsCallInProgress: true
+  });
+
+  const successAction = makePackAction(LIFECYCLE.FAILURE, {
+    type: ACTION_TYPES.SET_VALUE_SUGGESTIONS
+  });
+
+  const result = reducer(initialState, successAction);
+  assert.notOk(result.valueSuggestionCallInProgress, 'Call should not be in progress');
+});

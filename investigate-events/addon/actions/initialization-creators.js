@@ -6,6 +6,7 @@ import { isEmpty } from '@ember/utils';
 import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
 import { getParamsForHashes, getHashForParams } from './fetch/query-hashes';
 import fetchRecentQueries from './fetch/recent-queries';
+import fetchValueSuggestions from './fetch/value-suggestions';
 import { parseBasicQueryParams } from 'investigate-events/actions/utils';
 import { isSearchTerm, parsePillDataFromUri, transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { extractSearchTermFromFilters } from 'investigate-shared/actions/api/events/utils';
@@ -702,6 +703,21 @@ export const getRecentQueries = (query = '') => {
         },
         onFailure(error) {
           handleInvestigateErrorCode(error, 'RECENT_QUERIES_RETRIEVAL_ERROR');
+        }
+      }
+    });
+  };
+};
+
+export const valueSuggestions = (metaName, filter = '') => {
+  return (dispatch, getState) => {
+    const { investigate: { queryNode: { serviceId } } } = getState();
+    dispatch({
+      type: ACTION_TYPES.SET_VALUE_SUGGESTIONS,
+      promise: fetchValueSuggestions(serviceId, metaName, filter),
+      meta: {
+        onFailure(error) {
+          handleInvestigateErrorCode(error, 'SET_VALUE_SUGGESTIONS_ERROR');
         }
       }
     });
