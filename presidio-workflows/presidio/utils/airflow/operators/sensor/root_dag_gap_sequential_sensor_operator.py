@@ -1,10 +1,8 @@
-import pytz
 from airflow.models import DagRun
 from airflow.operators.sensors import BaseSensorOperator
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
 from datetime import timedelta
-from presidio.utils.services.time_service import floor_time
 
 
 class RootDagGapSequentialSensorOperator(BaseSensorOperator):
@@ -25,9 +23,7 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
     def __init__(
             self,
             dag_ids,
-            interval=None,
             start_time=None,
-            fixed_duration_strategy=None,
             *args, **kwargs):
         super(RootDagGapSequentialSensorOperator, self).__init__(
             retries=99999,
@@ -38,10 +34,8 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
             **kwargs
         )
 
-        self._dag_ids = dag_ids
         self.start_time = start_time
-        self.interval = interval
-        self.fixed_duration_strategy = fixed_duration_strategy
+        self._dag_ids = dag_ids
 
     def poke(self, context):
         '''
@@ -60,9 +54,7 @@ class RootDagGapSequentialSensorOperator(BaseSensorOperator):
     @provide_session
     def _is_finished_wait_for_gapped_dag(self, execution_date, session=None):
 
-        if self.interval and self.fixed_duration_strategy and self.start_time:
-            execution_date = floor_time(execution_date, time_delta=self.fixed_duration_strategy) - self.interval
-            execution_date = execution_date.replace(tzinfo=pytz.utc)
+        if self.start_time:
             if execution_date < self.start_time:
                 return True
 

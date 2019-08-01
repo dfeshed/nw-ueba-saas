@@ -8,8 +8,8 @@ from presidio.factories.model_dag_factory import ModelDagFactory
 from presidio.operators.aggregation.feature_aggregations_operator import FeatureAggregationsOperator
 from presidio.operators.aggregation.score_aggregations_operator import ScoreAggregationsOperator
 from presidio.operators.input.input_operator import InputOperator
-from presidio.utils.airflow.operators.sensor.root_dag_gap_sequential_sensor_operator import \
-    RootDagGapSequentialSensorOperator
+from presidio.utils.airflow.operators.sensor.dag_interval_gap_sequential_sensor_operator import \
+    DagIntervalGapSequentialSensorOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 from presidio.utils.airflow.schedule_interval_utils import get_schedule_interval, set_schedule_interval
 from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid, FIX_DURATION_STRATEGY_DAILY, \
@@ -77,9 +77,8 @@ class IndicatorDagBuilder(PresidioDagBuilder):
 
         if InputPreProcessorDagFactory.get_dag_id(schema) in self.get_list_schemas_for_input_pre_processing():
             input_pre_processor_trigger = self._build_input_pre_processing_trigger_operator(dag, schema)
-            input_operator >> input_pre_processor_trigger
 
-            input_pre_processor_gap_sensor = RootDagGapSequentialSensorOperator(dag=dag,
+            input_pre_processor_gap_sensor = DagIntervalGapSequentialSensorOperator(dag=dag,
                                                                                 task_id='input_pre_processor_gap_sensor_{0}'.format(schema),
                                                                                 dag_ids=[InputPreProcessorDagFactory.get_dag_id(schema)],
                                                                                 interval=timedelta(hours=1),
@@ -87,7 +86,7 @@ class IndicatorDagBuilder(PresidioDagBuilder):
                                                                                 fixed_duration_strategy=FIX_DURATION_STRATEGY_DAILY,
                                                                                 poke_interval=5)
 
-            input_pre_processor_gap_sensor >> input_operator
+            input_pre_processor_gap_sensor >> input_operator >> input_pre_processor_trigger
 
         adapter_operator >> input_operator >> hourly_short_circuit_operator
         scoring_task_sensor_service.add_task_short_circuit(feature_aggregations_operator, hourly_short_circuit_operator)

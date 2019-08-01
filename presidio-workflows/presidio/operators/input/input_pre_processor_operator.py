@@ -11,6 +11,13 @@ from presidio.utils.services.time_service import floor_time, convert_to_utc
 
 class InputPreProcessorOperator(SpringBootJarOperator):
 
+    """
+    Runs an input pre processor task (a JAR file) using a bash command.
+    The c'tor accepts the task arguments that are constant throughout the
+    operator runs (e.g. name , schema_name and the static_arguments).
+    Other arguments, such as the dynamic_arguments are evaluated before every run.
+    """
+
     @apply_defaults
     def __init__(self, name, schema_name, static_arguments, dynamic_arguments,
                  command, task_id=None, *args, **kwargs):
