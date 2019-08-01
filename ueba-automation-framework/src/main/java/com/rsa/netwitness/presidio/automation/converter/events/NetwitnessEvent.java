@@ -18,7 +18,7 @@ public abstract class NetwitnessEvent implements ConverterEventBase {
         return this;
     }
 
-    protected DateTimeFormatter eventTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss").withLocale( Locale.getDefault() ).withZone( ZoneId.of("UTC"));
+    protected DateTimeFormatter eventTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withLocale( Locale.getDefault() ).withZone( ZoneId.of("UTC"));
     protected Instant eventTimeEpoch;
     protected Schema schema;
 

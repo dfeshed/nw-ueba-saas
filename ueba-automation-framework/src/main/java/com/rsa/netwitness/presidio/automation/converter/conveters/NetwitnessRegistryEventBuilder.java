@@ -20,7 +20,7 @@ class NetwitnessRegistryEventBuilder extends NetwitnessEvent {
         schema = Schema.REGISTRY;
         eventTimeEpoch = event.getDateTime();
 
-        event_time = event.getDateTime().toString().replace("T"," ").replace("Z","");
+        event_time = eventTimeFormatter.format(event.getDateTime());
         category= "Registry Event";
         device_type = "nwendpoint";
         event_source_id = event.getEventId();
