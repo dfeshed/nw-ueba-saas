@@ -32,7 +32,6 @@ class DagIntervalGapSequentialSensorOperator(RootDagGapSequentialSensorOperator)
             **kwargs
         )
 
-        self._dag_ids = dag_ids
         self.interval = interval
         self.fixed_duration_strategy = fixed_duration_strategy
 
