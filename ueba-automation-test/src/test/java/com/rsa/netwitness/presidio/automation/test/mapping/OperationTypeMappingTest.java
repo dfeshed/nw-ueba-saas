@@ -4,7 +4,6 @@ import com.rsa.netwitness.presidio.automation.domain.activedirectory.ActiveDirec
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.repository.ActiveDirectoryEnrichStoredDataRepository;
 import com.rsa.netwitness.presidio.automation.domain.repository.FileEnrichStoredDataRepository;
-import com.rsa.netwitness.presidio.automation.mapping.operation_type.ActiveDirectoryOperationTypeMapping;
 import com.rsa.netwitness.presidio.automation.mapping.operation_type.OperationTypeToCategories;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.util.Lists;
@@ -21,21 +20,21 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static com.rsa.netwitness.presidio.automation.mapping.operation_type.ActiveDirectoryOperationTypeMapping.getInstance;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 /**
  * This is test of processing from "input_<schema>_raw" to "enriched_<schema>" collections.
  * Verifying that operation type category assigned correctly for relevant operations.
- *
+ * <p>
  * This test is relevant (categories exist) only for Active Directory and File schema.
- *
- * **/
+ **/
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = {MongoConfig.class})
 public class OperationTypeMappingTest extends AbstractTestNGSpringContextTests {
-    private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
+    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
             LoggerFactory.getLogger(OperationTypeMappingTest.class.getName());
 
     @Autowired
@@ -43,12 +42,9 @@ public class OperationTypeMappingTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private FileEnrichStoredDataRepository enrichFileRepo;
 
-    private Map<String, List<String>> operationTypeToCategoriesActiveDir =
-            ActiveDirectoryOperationTypeMapping.getInstance().getOperationTypeToCategoryMap();
-
-    private Map<String, Integer> operationTypeToEventCodeMap =
-            ActiveDirectoryOperationTypeMapping.getInstance().getOperationTypeToEventCodeMap();
-            // OperationTypeToCategories.getInstance().getForActiveDirectory();
+    private Map<String, List<String>> operationTypeToCategoriesActiveDir = getInstance().getOperationTypeToCategoryMap();
+    private Map<String, Integer> operationTypeToEventCodeMap = getInstance().getOperationTypeToEventCodeMap();
+    // OperationTypeToCategories.getInstance().getForActiveDirectory();
 
     private Map<String, List<String>> operationTypeToCategoriesFile =
             OperationTypeToCategories.getInstance().getForFile();
@@ -84,7 +80,7 @@ public class OperationTypeMappingTest extends AbstractTestNGSpringContextTests {
                     enrichActiveDirectoryRepo.findByOperationType(element.getKey());
 
             softly.assertThat(actualEvents)
-                    .as(element.getKey() + " operation type is missing from enriched_active_directory")
+                    .withFailMessage(element.getKey() + " operation type is missing from enriched_active_directory")
                     .isNotEmpty();
 
             if (actualEvents.size() > 0) {
@@ -97,7 +93,7 @@ public class OperationTypeMappingTest extends AbstractTestNGSpringContextTests {
                         .collect(toList());
 
                 softly.assertThat(distinctOperationTypeCategories)
-                        .as("OperationType = " + element.getKey())
+                        .withFailMessage("OperationType = " + element.getKey())
                         .containsAll(element.getValue());
 
                 LOGGER.debug(element.getKey());
@@ -114,7 +110,7 @@ public class OperationTypeMappingTest extends AbstractTestNGSpringContextTests {
                     enrichActiveDirectoryRepo.findByOperationType(element.getKey());
 
             softly.assertThat(actualEvents)
-                    .as(element.getKey() + " operation type is missing from enriched_active_directory")
+                    .withFailMessage(element.getKey() + " operation type is missing from enriched_active_directory")
                     .isNotEmpty();
 
             if (actualEvents.size() > 0) {
@@ -127,7 +123,7 @@ public class OperationTypeMappingTest extends AbstractTestNGSpringContextTests {
                         .collect(toList());
 
                 softly.assertThat(distinctEventCode)
-                        .as("OperationType = " + element.getKey())
+                        .withFailMessage("OperationType = " + element.getKey())
                         .containsExactly(element.getValue());
 
                 LOGGER.debug(element.getKey());
@@ -144,7 +140,7 @@ public class OperationTypeMappingTest extends AbstractTestNGSpringContextTests {
                     enrichFileRepo.findByOperationType(opType);
 
             softly.assertThat(actualEvents)
-                    .as(opType + " operation type is missing from enriched_file")
+                    .withFailMessage(opType + " operation type is missing from enriched_file")
                     .isNotEmpty();
 
             if (actualEvents.size() > 0) {
@@ -164,11 +160,6 @@ public class OperationTypeMappingTest extends AbstractTestNGSpringContextTests {
         }
         softly.assertAll();
     }
-
-
-
-
-
 
 
 }
