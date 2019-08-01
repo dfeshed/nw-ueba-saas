@@ -48,7 +48,7 @@ abstract class NetworkScenarioBase {
 
     protected ITimeGenerator getTimeGen(int startHourOfDay, int endHourOfDay, int daysBackFrom, int daysBackTo, int intervalMinutes) {
         try {
-            return new SingleTimeGeneratorFactory(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, intervalMinutes)
+            return new SingleTimeGeneratorFactory(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo-1, intervalMinutes)
                     .createTimeGenerator();
         } catch (GeneratorException e) {
             e.printStackTrace();

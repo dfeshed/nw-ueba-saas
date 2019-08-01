@@ -69,7 +69,7 @@ public class MongoCollectionsMonitor {
                     .reduce(false, (agg,e) -> agg | e);
 
             stillWaitingForTheLastDayData = !tasks.stream()
-                    .map(e -> e.dataFromTheLastDayArrived(1, ChronoUnit.DAYS))
+                    .map(e -> e.dataFromTheLastDayArrived(0, ChronoUnit.DAYS))
                     .reduce(false, (agg,e) -> agg & e);
         }
 

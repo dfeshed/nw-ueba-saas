@@ -26,7 +26,7 @@ public class MongoProgressTask implements Runnable {
     private String collectionName;
     private MongoRepository obj;
     private Instant start;
-    private Instant end;
+    private final Instant end;
     private Instant lastEventTime;
     private LinkedList<Instant> eventTimeHistory = new LinkedList<>();
 
@@ -70,17 +70,24 @@ public class MongoProgressTask implements Runnable {
             boolean currentBiggerThenPrevious = iterator.next().isAfter(nextIterator.next());
             result |= currentBiggerThenPrevious;
         }
-        LOGGER.debug("[" +collectionName + "] result " + result);
+
+        if (result) {
+            LOGGER.debug("[" +collectionName + "]: result " + result);
+        } else {
+            LOGGER.warn("[" +collectionName + "]: no updates for the last " + (bucketsToCheck-1) + " checks.");
+        }
         return result;
     }
 
     boolean dataFromTheLastDayArrived(long amountToSubtract, ChronoUnit units) {
-        Instant stopTime = Instant.now().minus(amountToSubtract, units).truncatedTo(units);
-        boolean result = stopTime.equals(lastEventTime);
+        Instant stopTime = end.minus(amountToSubtract, units).truncatedTo(units);
+        boolean result = lastEventTime.isAfter(stopTime);
 
         if (result) {
             LOGGER.info(" *** Collection [" + collectionName + "]: processing reached the final day=" + stopTime);
-        } else LOGGER.debug("["+collectionName+"]:"+ " stopTime="+stopTime+" lastEventTime="+ lastEventTime);
+        } else {
+            LOGGER.info("["+collectionName+"]:"+ " data processing still in progress. stopTime="+stopTime+" lastEventTime="+ lastEventTime);
+        }
         return result;
     }
 
