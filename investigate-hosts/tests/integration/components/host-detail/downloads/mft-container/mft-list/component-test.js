@@ -257,7 +257,7 @@ module('Integration | Component | mft-list', function(hooks) {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
       assert.equal(items.length, 1, 'Context menu rendered with 1 items');
-      assert.equal(findAll('.is-row-checked').length, 2, 'Row is selected');
+      assert.equal(findAll('.is-row-checked').length, 1, 'Row is selected');
     });
   });
   test('mft row on click', async function(assert) {
@@ -277,7 +277,7 @@ module('Integration | Component | mft-list', function(hooks) {
       {{host-detail/downloads/mft-container/mft-list}}{{context-menu}}`);
     await click(findAll('.realSize')[1]);
     return settled().then(() => {
-      assert.equal(findAll('.is-row-checked').length, 2, 'Row is selected');
+      assert.equal(findAll('.is-row-checked').length, 1, 'Row is selected');
     });
   });
   test('WS call on clicking directory in the table', async function(assert) {

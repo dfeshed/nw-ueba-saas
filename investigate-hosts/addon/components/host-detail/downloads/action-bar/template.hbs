@@ -18,13 +18,15 @@
     }}
       <span>{{t 'investigateHosts.downloads.buttons.saveLocalCopy'}}</span>
     {{/rsa-form-button}}
-    {{#rsa-form-button
-      class='delete-file'
-      isDisabled=disableActions.deleteFile
-      defaultAction=deleteFiles
-      title=(if disableActions.deleteFile (t 'investigateHosts.downloads.buttons.deleteDisabledTooltip'))
-    }}
-      <span>{{t 'investigateHosts.downloads.buttons.deleteFiles'}}</span>
-    {{/rsa-form-button}}
+    {{#if disableActions.isShowDeleteAction}}
+      {{#rsa-form-button
+        class='delete-file'
+        isDisabled=disableActions.deleteFile
+        defaultAction=deleteFiles
+        title=(if disableActions.deleteFile (t 'investigateHosts.downloads.buttons.deleteDisabledTooltip'))
+      }}
+        <span>{{t 'investigateHosts.downloads.buttons.deleteFiles'}}</span>
+      {{/rsa-form-button}}
+    {{/if}}
   </div>
 {{/if}}

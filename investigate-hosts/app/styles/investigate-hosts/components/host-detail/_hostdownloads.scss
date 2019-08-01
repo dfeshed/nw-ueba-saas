@@ -27,7 +27,7 @@
 .host-downloads{
   .downloads-action-bar {
     padding-left: 0.8rem;
-    padding: 1.4rem;
+    padding: 1.5rem;
     > div {
       display: inline-block;
     }
@@ -42,11 +42,17 @@
 
   .rsa-data-table {
     height: calc(100% - 86px);
+    .rsa-data-table-header-cell.is-sorted {
+      i.sort {
+        color: text-color(neutral);
+      }
+
+    }
   }
 
   .left-zone {
     .rsa-header {
-      
+
       height: 70px;
       .title {
         padding-top: 1.8rem;

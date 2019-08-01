@@ -12,7 +12,7 @@ export default DataTableBodyRow.extend({
   @computed('item', 'selections')
   isRowChecked(item, selections = []) {
     const isSelected = selections.findBy('id', item.id);
-    return !!isSelected;
+    return !!isSelected && !item.directory;
   },
 
   @computed('item')

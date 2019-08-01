@@ -2959,7 +2959,7 @@ export default {
         files: 'File',
         memoryDump: 'Memory Dump',
         fileName: 'File Name',
-        checksum: 'checksumSha256',
+        checksum: 'Sha256',
         downloadedTime: 'Downloaded Time',
         alteredTimeFn: 'Altered Time ($FN)',
         alteredTimeSi: 'Altered Time ($SI)',
@@ -4028,7 +4028,7 @@ export default {
         consoleEvents: 'Console Events',
         viewCertificate: 'View Certificates',
         analyzeUser: 'Analyze User',
-        downloadMFT: 'Request MFT download',
+        downloadMFT: 'Download MFT',
         tooltips: {
           downloadToServer: '',
           saveLocalCopy: 'Download the file to server to save a local copy.',

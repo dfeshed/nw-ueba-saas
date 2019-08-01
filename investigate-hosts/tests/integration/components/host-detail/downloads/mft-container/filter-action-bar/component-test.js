@@ -164,9 +164,6 @@ module('Integration | Component | mft-container/filter-action-bar', function(hoo
   });
   test('Filter button disabled test', async function(assert) {
     new ReduxDataHelper(initState).hostDownloads(hostDownloads).build();
-    this.set('openPanel', function() {
-      assert.ok(true, 'open panel is called');
-    });
     await render(hbs`{{host-detail/downloads/mft-container/filter-action-bar disableFilter=true isOpenFilter=false openFilterPanel=openPanel}}`);
     return settled().then(() => {
       assert.equal(findAll('.open-filter-panel')[0].title.trim().includes('directory'), true, 'filter button disabled title');

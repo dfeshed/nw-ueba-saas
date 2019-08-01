@@ -172,7 +172,8 @@ module('Integration | Component | host-detail/downloads/downloads-list/body-cell
 
   test('file file link test', async function(assert) {
     initState(endpointState);
-    this.set('column', { field: 'fileName' });
+    const column = EmberObject.create({ field: 'fileName' });
+    this.set('column', column);
     this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile', fileType: 'File' });
     this.set('serverId', 'abcd');
 
@@ -184,7 +185,8 @@ module('Integration | Component | host-detail/downloads/downloads-list/body-cell
     await waitUntil(() => document.querySelectorAll(selector).length === 0, { timeout: 8000 });
   });
   test('file should not link if not file or mft test', async function(assert) {
-    this.set('column', { field: 'fileName' });
+    const column = EmberObject.create({ field: 'fileName' });
+    this.set('column', column);
     this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile', fileType: 'Different' });
     this.set('serverId', 'abcd');
 
@@ -193,7 +195,8 @@ module('Integration | Component | host-detail/downloads/downloads-list/body-cell
     assert.equal(links.length, 0, 'downloaded-file-name file is not linked');
   });
   test('file should not link if it has Error status', async function(assert) {
-    this.set('column', { field: 'fileName' });
+    const column = EmberObject.create({ field: 'fileName' });
+    this.set('column', column);
     this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile', fileType: 'Mft', status: 'Error' });
     this.set('serverId', 'abcd');
 
@@ -202,7 +205,8 @@ module('Integration | Component | host-detail/downloads/downloads-list/body-cell
     assert.equal(links.length, 0, 'downloaded-file-name file is not linked');
   });
   test('file should not link if it has Processing status', async function(assert) {
-    this.set('column', { field: 'fileName' });
+    const column = EmberObject.create({ field: 'fileName' });
+    this.set('column', column);
     this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile', fileType: 'Mft', status: 'Processing' });
     this.set('serverId', 'abcd');
 

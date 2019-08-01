@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import { inject as service } from '@ember/service';
 import {
   applyFilters,
   createCustomSearch,
@@ -42,12 +43,16 @@ const HostDownloads = Component.extend({
 
   showConfirmationModal: false,
 
+  accessControl: service(),
+
   @computed('selectedFileList')
   disableActions(selectedFileList) {
     const isErrorFiles = selectedFileList.some((item) => {
       return item.status === 'Processing' || item.status === 'Error';
     });
+    const isShowDeleteAction = this.get('accessControl.endpointCanManageFiles');
     return {
+      isShowDeleteAction,
       deleteFile: !selectedFileList.length,
       saveLocalCopy: selectedFileList.length !== 1 || !!isErrorFiles
     };

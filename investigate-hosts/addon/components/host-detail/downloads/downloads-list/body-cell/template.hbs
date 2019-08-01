@@ -15,7 +15,9 @@
         {{get item column.field}}
       </a>
     {{else}}
-      {{get item column.field}}
+      <div title="{{get-field item column timezone dateFormat timeFormat i18n.locale}}">
+        {{get-field item column timezone dateFormat timeFormat i18n.locale}}
+      </div>
     {{/if}}
   </hbox>
 {{else if (eq column.field 'downloadedTime')}}

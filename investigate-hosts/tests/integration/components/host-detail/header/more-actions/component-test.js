@@ -52,7 +52,7 @@ module('Integration | Component | host detail more-actions', function(hooks) {
     assert.ok(find('.host-start-scan-button'), 'scan-command renders giving the start scan button');
     assert.equal(findAll('.rsa-icon-check-shield-lined').length, 0, 'Start scan icon not present');
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(2)').textContent.trim(), 'Export Host details', 'Export Host details button renders');
-    assert.equal(find('.host-details_dropdown-action-list li:nth-child(3)').textContent.trim(), 'Request MFT download', 'Request MFT downloads button renders');
+    assert.equal(find('.host-details_dropdown-action-list li:nth-child(3)').textContent.trim(), 'Download MFT', 'Download MFT button renders');
   });
   test('test for More Actions with no manage permission', async function(assert) {
     new ReduxDataHelper(setState)

@@ -157,15 +157,12 @@ module('Integration | Component | mft-container/mft-action-bar', function(hooks)
     await render(hbs`{{host-detail/downloads/mft-container/mft-action-bar}}`);
     assert.equal(findAll('.mft-action-bar').length, 1, 'mft-action-bar rendered');
     assert.equal(findAll('.download-to-server').length, 0, 'download to server button not rendered');
-    await click('.close-action a');
-
   });
   test('mft-action-bar has render download to server if showActions true', async function(assert) {
     new ReduxDataHelper(initState).hostDownloads(hostDownloads).selectedDirectoryForDetails(true).build();
     await render(hbs`{{host-detail/downloads/mft-container/mft-action-bar}}`);
     assert.equal(findAll('.mft-action-bar').length, 1, 'mft-action-bar rendered');
     assert.equal(findAll('.download-to-server').length, 1, 'download to server button rendered');
-    await click('.close-action a');
 
   });
 

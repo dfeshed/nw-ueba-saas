@@ -13,18 +13,29 @@ module('Integration | Component | downloads/action-bar', function(hooks) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('roles', ['endpoint-server.agent.manage']);
 
-    await render(hbs`{{host-detail/downloads/action-bar}}`);
+    this.set('disableActions', { deleteFile: false, saveLocalCopy: false, isShowDeleteAction: true });
+
+    await render(hbs`{{host-detail/downloads/action-bar disableActions=disableActions }}`);
     assert.equal(findAll('.downloads-action-bar .rsa-form-button').length, 3, 'Action bar has loaded with 3 buttons');
     assert.equal(findAll('.downloads-action-bar .rsa-form-button')[0].textContent.trim(), 'Filters', '1st Action bar button is Filter');
     assert.equal(findAll('.downloads-action-bar .rsa-form-button')[1].textContent.trim().includes('Save'), true, '2nd Action bar button is Save a Local Copy');
     assert.equal(findAll('.downloads-action-bar .rsa-form-button')[2].textContent.trim().includes('Delete'), true, '3rd Action bar button is Delete File');
+  });
+  test('Action bar has loaded with no deletebutton', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
+
+    this.set('disableActions', { deleteFile: false, saveLocalCopy: false, isShowDeleteAction: false });
+
+    await render(hbs`{{host-detail/downloads/action-bar disableActions=disableActions }}`);
+    assert.equal(findAll('.downloads-action-bar .rsa-form-button').length, 2, 'Action bar has loaded with 3 buttons');
   });
 
   test('Actions passed to the component called', async function(assert) {
     assert.expect(3);
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('roles', ['endpoint-server.agent.manage']);
-    this.set('disableActions', false);
+    this.set('disableActions', { deleteFile: false, saveLocalCopy: false, isShowDeleteAction: true });
     this.set('openFilterPanel', function() {
       assert.ok(true);
     });
@@ -48,7 +59,7 @@ module('Integration | Component | downloads/action-bar', function(hooks) {
   test('Action bar save and delete buttons have been disabled', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('roles', ['endpoint-server.agent.manage']);
-    this.set('disableActions', { deleteFile: true, saveLocalCopy: true });
+    this.set('disableActions', { deleteFile: true, saveLocalCopy: true, isShowDeleteAction: true });
     await render(hbs`{{host-detail/downloads/action-bar disableActions=disableActions}}`);
     assert.equal(findAll('.downloads-action-bar .is-disabled .rsa-form-button').length, 2, 'save and delete buttons are disabled');
     assert.equal(findAll('.save-local-copy')[0].title.trim().includes('successfully'), true, 'Save local copy Tooltip is displayed');
