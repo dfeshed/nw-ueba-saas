@@ -14,6 +14,13 @@ class DagIntervalGapSequentialSensorOperator(RootDagGapSequentialSensorOperator)
 
     :param dag_ids: The dag_ids that you want to wait for
     :type dag_ids: list
+    :param interval: The period of time you want to subtract from execution_date
+    :type interval: timedelta
+    :param start_time: The machine start_time
+    :type start_time: datetime
+    :param fixed_duration_strategy: duration (e.g. hourly or daily)
+    :type fixed_duration_strategy: timedelta
+
     """
     ui_color = '#19647e'
     ui_fgcolor = '#fff'
