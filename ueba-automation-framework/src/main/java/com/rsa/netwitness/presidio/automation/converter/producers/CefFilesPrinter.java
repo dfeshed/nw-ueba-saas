@@ -22,6 +22,7 @@ import java.util.function.Function;
 import static com.rsa.netwitness.presidio.automation.log_player.Context.LOG_GEN_PATH;
 import static com.rsa.netwitness.presidio.automation.log_player.LogPlayerResultUtils.runLogPlayerAndGetRecordsCountResult;
 import static java.util.stream.Collectors.*;
+
 class CefFilesPrinter {
 
     private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
@@ -104,16 +105,21 @@ class CefFilesPrinter {
     }
 
     private Path eventFilePath(NetwitnessEvent event, ChronoUnit truncatedTo) {
-        String eventFolder = eventFilePath.apply(event);
+        String eventFolder = eventFilePath.apply(event).toString();
         logPlayerFolders.putIfAbsent(event.mongoSchema(), eventFolder);
-        String fileName = event.mongoSchema() + "_" + getEventTime(event, truncatedTo);
-        return Paths.get(eventFolder + fileName);
+        String fileName = event.mongoSchema() + "_" + instantToString(getEventTime(event, truncatedTo));
+        return Paths.get(eventFolder,fileName.concat(".cef"));
     }
 
-    private Function<NetwitnessEvent, String> eventFilePath = event -> LOG_GEN_PATH.toAbsolutePath().toString()
-            .concat("/")
-            .concat(event.mongoSchema().getName())
-            .concat("_")
-            .concat(String.valueOf(GEN_START_TIME))
-            .concat("/");
+    private String instantToString(Instant instant){
+        return instant.toString().replaceAll(":","_");
+    }
+
+    private Function<NetwitnessEvent, String> eventFolderName = event ->
+            event.mongoSchema().getName().concat("_").concat(instantToString(Instant.ofEpochMilli(GEN_START_TIME)));
+
+    private Function<NetwitnessEvent, Path> eventFilePath = event ->
+            Paths.get(LOG_GEN_PATH.toAbsolutePath().toString(), eventFolderName.apply(event)).toAbsolutePath();
 }
+
+
