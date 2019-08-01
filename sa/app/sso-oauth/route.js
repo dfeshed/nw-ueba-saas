@@ -5,21 +5,18 @@ import getOwner from 'ember-owner/get';
 /**
  * This route is responsible for initiating OAuth token authentication. The user will be redirected to this route after
  * SSO authentication is successful in admin-server
- * Redirection URL looks like - /sso-oauth?authkey={}&relay=/respond
+ * Redirection URL looks like - /sso-oauth?authkey={}
  * authkey - unique randomly generated authentication key used to map this SSO authenticated user in the server
- * relay - URL to redirect after successful auth
  */
 export default Route.extend({
   session: service(),
 
   queryParams: {
     authkey: { refreshModel: false },
-    relay: { refreshModel: false },
     user: { refreshModel: false }
   },
 
-  model({ user, authkey, relay = '' }) {
-    localStorage.setItem('rsa-post-auth-redirect', relay);
+  model({ user, authkey }) {
     this.authenticate(user, authkey);
   },
 
@@ -34,7 +31,7 @@ export default Route.extend({
     session.authenticate(auth, user, authkey, 'saml').then(
       // Auth success
       () => {
-        // nothing
+        this.transitionTo('protected');
       },
 
       // Auth failed

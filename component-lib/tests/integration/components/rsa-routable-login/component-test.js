@@ -1,211 +1,57 @@
 import { Promise } from 'rsvp';
 import { module, test } from 'qunit';
-import Service from '@ember/service';
-import { later } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
-import { findAll, render, waitUntil } from '@ember/test-helpers';
-import { waitForRaf } from '../../../helpers/wait-for-raf';
-import { securitybanner, securitybannerdisabled } from './data';
+import { findAll, render } from '@ember/test-helpers';
+import { patchFetch } from '../../../helpers/patch-fetch';
 
 module('Integration | Component | rsa-routable-login', function(hooks) {
   setupRenderingTest(hooks);
 
   test('it renders', async function(assert) {
     assert.expect(1);
-    await render(hbs `{{rsa-routable-login}}`);
+    await render(hbs`{{rsa-routable-login}}`);
     assert.equal(findAll('.rsa-login').length, 1);
   });
 
   test('the submit is disabled by default', async function(assert) {
     assert.expect(1);
-    await render(hbs `{{rsa-routable-login displayEula=false}}`);
+    await render(hbs`{{rsa-routable-login}}`);
     assert.equal(document.querySelector('button[type=submit]').disabled, true);
   });
 
   test('the submit is enabled after entering values', async function(assert) {
     assert.expect(1);
-    await render(hbs `{{rsa-routable-login displayEula=false username='foo' password='bar'}}`);
+    await render(hbs`{{rsa-routable-login username='foo' password='bar'}}`);
     assert.equal(document.querySelector('button[type=submit]').disabled, false);
-  });
-
-  test('eula can be displayed', async function(assert) {
-    assert.expect(1);
-    await render(hbs `{{rsa-routable-login displayEula=true}}`);
-    assert.equal(findAll('.eula-content').length, 1);
-  });
-
-  test('eula button disabled when eulaContent not available (enabled after xhr done)', async function(assert) {
-    assert.expect(3);
-
-    this.owner.register('service:ajax', Service.extend({
-      request: () => {
-        return new Promise(function(resolve) {
-          later(() => {
-            resolve('<h1>eula</h1>');
-          }, 1);
-        });
-      }
-    }));
-
-    const selector = '[test-id=btnAcceptEula] button';
-    await render(hbs `{{rsa-routable-login displayEula=true}}`);
-    assert.equal(findAll('.eula-content').length, 1);
-    assert.equal(document.querySelector(selector).disabled, true);
-
-    await waitForRaf();
-    await waitUntil(() => document.querySelector(selector).disabled !== true, { timeout: 2000 });
-    assert.equal(document.querySelector(selector).disabled, false);
-  });
-
-  test('eula button disabled when eulaContent not available (even after xhr fail)', async function(assert) {
-    assert.expect(3);
-
-    this.owner.register('service:ajax', Service.extend({
-      request: () => {
-        return new Promise(function(resolve, reject) {
-          later(() => {
-            reject('boom!');
-          }, 1);
-        });
-      }
-    }));
-
-    await render(hbs `{{rsa-routable-login displayEula=true}}`);
-    assert.equal(findAll('.eula-content').length, 1);
-    assert.equal(document.querySelector('[test-id=btnAcceptEula] button').disabled, true);
-
-    await waitForRaf();
-    assert.equal(document.querySelector('[test-id=btnAcceptEula] button').disabled, true);
-  });
-
-  test('eula can be bypassed', async function(assert) {
-    assert.expect(1);
-    await render(hbs `{{rsa-routable-login displayEula=false}}`);
-    assert.equal(findAll('.eula-content').length, 0);
   });
 
   test('the has-error class is added to .login-wrapper when hasError is true', async function(assert) {
     assert.expect(1);
-    await render(hbs `{{rsa-routable-login errorMessage='foo'}}`);
+    await render(hbs`{{rsa-routable-login errorMessage='foo'}}`);
     assert.equal(document.querySelector('.login-wrapper').classList.contains('has-error'), true);
-  });
-
-  test('eula html will be sanitized before html is rendered', async function(assert) {
-    assert.expect(2);
-
-    this.owner.register('service:ajax', Service.extend({
-      request: () => {
-        return new Promise(function(resolve) {
-          later(() => {
-            resolve('<p><img src="#" onerror=alert(1) />foo</p>');
-          }, 1);
-        });
-      }
-    }));
-
-    await render(hbs `{{rsa-routable-login displayEula=true}}`);
-    assert.equal(findAll('.eula-content').length, 1);
-    assert.equal(document.querySelector('.eula-content').innerHTML.trim(), '<p><img src="#">foo</p>');
-  });
-
-  test('security header title and text will be sanitized before html is rendered', async function(assert) {
-    assert.expect(4);
-
-    let fetchResolved = false;
-    this.owner.register('service:ajax', Service.extend({
-      request: (url) => {
-        if (url == '/display/security/securitybanner/get') {
-          return new Promise(function(resolve) {
-            later(() => {
-              resolve(securitybanner);
-              fetchResolved = true;
-            }, 1);
-          });
-        } else if (url == '/userpkistatus') {
-          return new Promise(function(resolve) {
-            later(() => {
-              resolve('off');
-            }, 1);
-          });
-        }
-      }
-    }));
-
-    await render(hbs `{{rsa-routable-login displayEula=false displaySecurityBanner=true}}`);
-
-    await waitUntil(() => fetchResolved === true);
-
-    assert.equal(findAll('[test-id=securityBannerTitle]').length, 1);
-    assert.equal(document.querySelector('[test-id=securityBannerTitle]').innerHTML.trim(), 'Terms and Conditions <img src="a">');
-
-    assert.equal(findAll('[test-id=securityBannerText]').length, 1);
-    assert.equal(document.querySelector('[test-id=securityBannerText]').innerHTML.trim(), 'banner text example <img src="a">');
   });
 
   test('if pki is enabled, the Input Fields are hidden automatically', async function(assert) {
 
-    // We are going to assert only THRICE!
-    assert.expect(4);
+    assert.expect(2);
 
-    // Mark this Variable as Marker for Auto Call
-    let fetchResolved = false;
-
-    // Register Mock Responses for Each Call
-    this.owner.register('service:ajax', Service.extend({
-      request: (url) => {
-
-        if (url == '/display/security/securitybanner/get') {
-          // Mark first Assert
-          assert.equal(1, 1);
-          // In case of Security Banner Setting, mark it as Disabled
-          return new Promise(function(resolve) {
-            later(() => {
-              resolve(securitybannerdisabled);
-              // We are done here!
-              fetchResolved = true;
-            }, 1);
-          });
-        } else if (url == '/userpkistatus') {
-          // Make Second Assert
-          assert.equal(2, 2);
-          // Send the PKI Status as ON
-          return new Promise(function(resolve) {
-            later(() => {
-              resolve('on');
-            }, 1);
-          });
-        }
-      }
-    }));
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          json() {
+            return 'on';
+          }
+        });
+      });
+    });
 
     // Render UI
-    await render(hbs `{{rsa-routable-login displayEula=false displaySecurityBanner=false}}`);
-
-    // Wait till we get the Token Call
-    await waitUntil(() => fetchResolved === true);
+    await render(hbs`{{rsa-routable-login}}`);
 
     // Assert that username and password are hidden
     assert.equal(document.querySelector('[test-id=loginPassword]').style.display, 'none');
     assert.equal(document.querySelector('[test-id=loginUsername]').style.display, 'none');
-  });
-
-  test('security header title will render login eula title when displayEula truthy and displaySecurityBanner falsy', async function(assert) {
-    assert.expect(2);
-
-    this.owner.register('service:ajax', Service.extend({
-      request: () => {
-        return new Promise(function(resolve) {
-          later(() => {
-            resolve('<p><img src="#" onerror=alert(1) />foo</p>');
-          }, 1);
-        });
-      }
-    }));
-
-    await render(hbs `{{rsa-routable-login displayEula=true}}`);
-
-    assert.equal(findAll('[test-id=securityBannerTitle]').length, 1);
-    assert.equal(document.querySelector('[test-id=securityBannerTitle]').innerHTML.trim(), 'End User License Agreement');
   });
 });

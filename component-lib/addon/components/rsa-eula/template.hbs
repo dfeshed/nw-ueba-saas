@@ -1,0 +1,47 @@
+{{#if (or displayEula displaySecurityBanner)}}
+  <div class="login-wrapper">
+    <header>
+      {{rsa-logo title=(t 'appTitle') displayEula=displayEula legacyRsaLogo=false}}
+
+      {{#if displayEula}}
+        <h3 title={{t 'login.eula.title'}} test-id="securityBannerTitle">{{t 'login.eula.title'}}</h3>
+      {{else if displaySecurityBanner}}
+        <h3 title={{securityBannerTitle}} test-id="securityBannerTitle">{{securityBannerTitle}}</h3>
+      {{/if}}
+    </header>
+
+    {{#if displayEula}}
+      <form class="eula" {{action "acceptEula" on="submit"}}>
+        <div class="eula-content">
+          {{eulaContent}}
+        </div>
+
+        {{#rsa-form-button
+          type="submit"
+          style="primary"
+          isFullWidth=true
+          testId="btnAcceptEula"
+          isDisabled=eulaContentPending}}
+          {{t 'login.eula.agree'}}
+        {{/rsa-form-button}}
+      </form>
+    {{else if displaySecurityBanner}}
+      <form class="eula" {{action "acceptSecurityBanner" on="submit"}}>
+        <div class="banner-content" test-id="securityBannerText">
+          {{securityBannerText}}
+        </div>
+
+        {{#rsa-form-button
+          type="submit"
+          style="primary"
+          isFullWidth=true}}
+          {{t 'login.eula.agree'}}
+        {{/rsa-form-button}}
+      </form>
+    {{/if}}
+  </div>
+{{/if}}
+
+{{#if showLoginPage}}
+  {{rsa-routable-login}}
+{{/if}}

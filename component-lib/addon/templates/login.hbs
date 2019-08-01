@@ -1,7 +1,1 @@
-{{#if model.checkingSso}}
-  <centered>
-    {{rsa-loader size="largest"}}
-  </centered>
-{{else}}
-  {{rsa-routable-login}}
-{{/if}}
+{{rsa-eula isSsoEnabled=model.isSsoEnabled}}

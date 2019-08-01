@@ -8,7 +8,7 @@ import Component from '@ember/component';
 import Ember from 'ember';
 import getOwner from 'ember-owner/get';
 import { isEmpty, typeOf } from '@ember/utils';
-import { run, later } from '@ember/runloop';
+import { run } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import layout from './template';
 import computed, {
@@ -18,21 +18,12 @@ import computed, {
   equal
 } from 'ember-computed-decorators';
 import config from 'ember-get-config';
-import { set } from '@ember/object';
-import RSVP from 'rsvp';
 import { warn } from '@ember/debug';
-import { sanitizeHtml } from 'component-lib/utils/sanitize';
-
-const { Promise } = RSVP;
+import fetch from 'component-lib/utils/fetch';
 
 const {
   testing
 } = Ember;
-
-const endpoint = function(path) {
-  const { useMockServer, mockServerUrl } = config;
-  return useMockServer ? `${mockServerUrl}${path}` : path;
-};
 
 /**
  * Enumeration of authentication status.
@@ -60,23 +51,22 @@ const setPostAuthRedirect = () => {
 };
 
 export default Component.extend({
+
+  layout,
+
   ajax: service(),
+
   appVersion: service(),
+
   request: service(),
+
   session: service(),
 
   classNames: ['rsa-login'],
 
   errorMessage: null,
 
-  eulaContent: null,
-  eulaContentDelay: null,
-
-  eulaKey: 'rsa::netWitness::eulaAccepted',
-
   displayPolicies: false,
-
-  layout,
 
   newPassword: null,
 
@@ -108,34 +98,7 @@ export default Component.extend({
 
   passwordPolicyCannotIncludeId: null,
 
-  securityBannerTitle: null,
-
-  securityBannerText: null,
-
-  displaySecurityBanner: null,
-
   userPkiEnabled: null,
-
-  @computed('eulaKey')
-  displayEula: {
-    get(eulaKey) {
-      return isEmpty(localStorage.getItem(eulaKey));
-    },
-    set(value, eulaKey) {
-      localStorage.setItem(eulaKey, true);
-      return value;
-    }
-  },
-
-  @computed('eulaContent', 'eulaContentDelay')
-  eulaContentPending: {
-    get(eulaContent, eulaContentDelay) {
-      if (!eulaContentDelay) {
-        return true;
-      }
-      return eulaContent === null;
-    }
-  },
 
   @notEmpty('errorMessage')
   hasError: false,
@@ -278,80 +241,20 @@ export default Component.extend({
 
   didInsertElement() {
     run.scheduleOnce('afterRender', () => {
-      if (this.get('displayEula')) {
-        const { requestEula } = getOwner(this).resolveRegistration('config:environment');
-
-        if (requestEula) {
-          this.get('ajax').request('/eula/rsa', {
-            dataType: 'html'
-          }).then((response) => {
-            const html = sanitizeHtml(response);
-            this.set('eulaContent', html);
-
-            return new Promise((resolve) => {
-              later(() => {
-                resolve();
-              });
-            }).then(() => {
-              window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
-                if (this.get('isDestroying') || this.get('isDestroyed')) {
-                  return;
-                }
-                set(this, 'eulaContentDelay', true);
-              }));
-            });
-
-          }).catch((error) => {
-            warn(error, { id: 'component-lib.components.rsa-routable-login.component' });
-          });
-        }
-      }
 
       // Find out if the PKI Status is `on` or `off`!
       // Make a REST Call
-      const pkiUrl = endpoint('/userpkistatus');
-      const promisePki = this.get('ajax').request(pkiUrl, {
+      fetch('/userpkistatus', {
         dataType: 'html' // Capture the Response body!
-      });
-
-      // Get banner for Security Banner
-      // Make REST call
-      const eulaUrl = endpoint('/display/security/securitybanner/get');
-      const promiseSecurityBanner = this.get('ajax').request(eulaUrl);
-
-      // Wait for both Promise to return
-      // Once both complete, resolve it
-      Promise.all([promisePki, promiseSecurityBanner]).then((values) => {
+      }).then((fetched) => fetched.json()).then((response) => {
 
         // Get and Set the Pki Status. In case of error as well consider PKi as
         // False because this is likely to be a Misconfigured NginX
-        this.set('userPkiEnabled', values[0] === 'on');
+        this.set('userPkiEnabled', response === 'on');
 
-        // Get the Security Banner Configuration
-        const [config] = values[1].data;
-
-        // Is Security Banner is supposed to be shown on UI?
-        if (config.securityBannerEnabled) {
-
-          // If Enabled, get the UI Text
-          const bannerTitleHtml = sanitizeHtml(config.securityBannerTitle);
-          const bannerTextHtml = sanitizeHtml(config.securityBannerText);
-
-          // Set the Properties as needed
-          this.setProperties({
-            securityBannerTitle: bannerTitleHtml,
-            securityBannerText: bannerTextHtml,
-            displaySecurityBanner: true
-          });
-
-        } else {
-          // If Not Enabled, we simply need to Put Focus on Username Input
-          this.element.querySelector('.js-test-login-username-input').focus();
-
-          // If Pki is Enabled, we would like to auto Login
-          // Let the handler figure it out, as we already know if pki is Enabled
-          this.handlePkiEnabledLogin();
-        }
+        // If Pki is Enabled, we would like to auto Login
+        // Let the handler figure it out, as we already know if pki is Enabled
+        this.handlePkiEnabledLogin();
       }).catch((error) => {
         // Highlight UI
         warn(error, { id: 'component-lib.components.rsa-routable-login.component' });
@@ -393,15 +296,6 @@ export default Component.extend({
   },
 
   actions: {
-    acceptEula() {
-      this.set('displayEula', false);
-    },
-
-    acceptSecurityBanner() {
-      this.set('displaySecurityBanner', false);
-      this.handlePkiEnabledLogin();
-    },
-
     authenticate() {
       this.authenticate();
     },
