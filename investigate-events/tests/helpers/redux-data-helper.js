@@ -134,7 +134,7 @@ const PILLS_WITH_PARENS = [{
 }, {
   id: 'guidedPill_4',
   isEditing: false,
-  isFocused: true,
+  isFocused: false,
   isInvalid: false,
   isSelected: false,
   isValidationInProgress: false,

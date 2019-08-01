@@ -2764,4 +2764,29 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.ok(findAll(PILL_SELECTORS.openParenFocused), 0, 'open paren should not be focused');
   });
 
+  test('Can select multiple parens', async function(assert) {
+    // const done = assert.async();
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+
+    await leaveNewPillTemplate();
+
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'found 0 new pill template selected');
+
+    await click(PILL_SELECTORS.closeParen);
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'found 1 paren selected');
+
+    // Soon no need to click open paren too as
+    // clicking close will also click open
+    await click(PILL_SELECTORS.openParen);
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 2, 'found 2 parens selected');
+  });
+
 });

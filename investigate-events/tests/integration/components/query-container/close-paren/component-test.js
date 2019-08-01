@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
-import { find, render, triggerKeyEvent } from '@ember/test-helpers';
+import { click, find, render, triggerKeyEvent } from '@ember/test-helpers';
 
 import PILL_SELECTORS from '../pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
@@ -102,5 +102,47 @@ module('Integration | Component | Close Paren', function(hooks) {
 
     assert.notOk(find(PILL_SELECTORS.focusedPill), 'the pill is not focused');
     assert.notOk(find(PILL_SELECTORS.focusHolderInput), 'should be no focus holder to accept keystrokes');
+  });
+
+  test('clicking a close paren sends message to select/deselect', async function(assert) {
+    assert.expect(4);
+
+    let selected = false;
+
+    this.set('sendMessage', (messageType) => {
+      if (selected) {
+        assert.equal(
+          messageType,
+          MESSAGE_TYPES.PILL_DESELECTED,
+          'the correct message type is sent when close paren clicked'
+        );
+        assert.ok(find(PILL_SELECTORS.selectedPill), 'the pill is selected');
+        selected = true;
+      } else {
+        assert.equal(
+          messageType,
+          MESSAGE_TYPES.PILL_SELECTED,
+          'the correct message type is sent when close paren clicked'
+        );
+        assert.notOk(find(PILL_SELECTORS.selectedPill), 'the pill is not selected');
+      }
+    });
+
+    this.set('position', 7);
+    this.set('pillData', {
+      isFocused: false
+    });
+
+    await render(hbs`
+      {{query-container/close-paren
+        sendMessage=sendMessage
+        pillData=pillData
+        position=position
+      }}
+    `);
+
+    await click(PILL_SELECTORS.closeParen);
+
+    await click(PILL_SELECTORS.closeParen);
   });
 });

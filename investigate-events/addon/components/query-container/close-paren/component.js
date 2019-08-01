@@ -5,7 +5,7 @@ import * as MESSAGE_TYPES from '../message-types';
 
 export default Component.extend({
   classNames: ['close-paren'],
-  classNameBindings: ['isFocused'],
+  classNameBindings: ['isFocused', 'isSelected'],
 
   /**
    * The position of this pill relative to other pills.
@@ -30,12 +30,29 @@ export default Component.extend({
   @alias('pillData.isFocused')
   isFocused: false,
 
+  /**
+   *
+   * Is the pill selected?
+   * @public
+   */
+  @alias('pillData.isSelected')
+  isSelected: false,
+
   init() {
     this._super(...arguments);
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.FOCUSED_PILL_LEFT_ARROW_PRESSED]: () => this._focusedLeftArrowPressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_RIGHT_ARROW_PRESSED]: () => this._focusedRightArrowPressed()
     });
+  },
+
+  click() {
+    const pillData = this.get('pillData');
+    if (pillData.isSelected) {
+      this.get('sendMessage')(MESSAGE_TYPES.PILL_DESELECTED, pillData, this.get('position'));
+    } else {
+      this.get('sendMessage')(MESSAGE_TYPES.PILL_SELECTED, pillData, this.get('position'));
+    }
   },
 
   /**

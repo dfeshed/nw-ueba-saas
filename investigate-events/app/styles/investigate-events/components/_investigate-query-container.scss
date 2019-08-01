@@ -661,16 +661,15 @@
   .new-pill-trigger {
     @include rsa-layer(controls);
     background-color: opacity-value(transparent);
-    border-radius: rsa-whitespace(most);
     position: absolute;
-    margin-left: -1.13rem;
-    margin-top: .15rem;
-    width: 1.85rem;
-    height: 1.85rem;
+    margin-left: -.30rem;
+    margin-top: -.05rem;
+    width: .3rem;
+    height: 2.3rem;
 
     &:hover {
       cursor: text;
-      background-color: background-color(accentTwo, base, translucent);
+      background-color: background-color(accentTwo, lightest, translucent);
       position: fixed; // force a flow break so it renders above query-bar
     }
   }
@@ -854,6 +853,19 @@
     &.is-focused {
       border-color: border-color(accentTwo);
     }
+
+    &.is-selected {
+      background-color: background-color(secondary);
+      border-color: border-color(secondary);
+    }
+  }
+
+  .open-paren {
+    margin-right: 4px;
+  }
+
+  .close-paren {
+    margin-right: 4px;
   }
 }
 
