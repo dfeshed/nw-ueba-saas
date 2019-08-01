@@ -7,8 +7,12 @@ import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
 import com.rsa.netwitness.presidio.automation.domain.output.SmartUserIdStoredRecored;
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
+import com.rsa.netwitness.presidio.automation.mongo.SmartEntitiesHelper;
+import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestManager;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils;
+import org.assertj.core.api.SoftAssertions;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +33,9 @@ import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.time.Instant;
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 @TestPropertySource(properties = { "spring.main.allow-bean-definition-overriding=true", })
@@ -58,9 +65,12 @@ public class E2EMongoRestValidation  extends AbstractTestNGSpringContextTests {
 
     private String testName;
     private final boolean printRequest = false;
+    private SoftAssertions softly = new SoftAssertions();
+
 
     Instant outputProcessorStartInstant;
     Instant outputProcessorEndInstant;
+    private RestHelper restHelper = new RestHelper();
 
     @Parameters({"outputProcessingStartDaysBack", "outputProcessingEndDaysBack"})
     @BeforeClass
@@ -75,6 +85,150 @@ public class E2EMongoRestValidation  extends AbstractTestNGSpringContextTests {
         testName = method.getName();
         System.out.println("Start running test: " + testName);
     }
+
+    @Test
+    public void verifyUserNamesOutputCollectionsVsRestUserNames() {
+        // Compare rest user names and mongo output collections user names, case insensitive
+
+        ParametersUrlBuilder url = restHelper.entities().url().withMaxSizeParameters();
+        List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
+        Set<String> restUsers = entities.parallelStream().map(EntitiesStoredRecord::getEntityName).collect(Collectors.toSet());
+
+        SmartEntitiesHelper entitiesHelper = new SmartEntitiesHelper(mongoTemplate);
+
+        // mongo output tables:
+        Set<String> activeDirectoryUsers = entitiesHelper.getActiveDirectoryUsers();
+        Set<String> authenticationUsers = entitiesHelper.getAuthenticationUsers();
+        Set<String> fileUsers = entitiesHelper.getFileUsers();
+        Set<String> processUsers = entitiesHelper.getProcessUsers();
+        Set<String> registryUsers = entitiesHelper.getRegistryUsers();
+        Set<String> tlsJa3 = entitiesHelper.getTlsJa3();
+        Set<String> tlsSslSubject = entitiesHelper.getTlsSslSubject();
+        Set<String> allEntities = entitiesHelper.getAllEntities();
+
+        activeDirectoryUsers.removeAll(restUsers);
+        authenticationUsers.removeAll(restUsers);
+        fileUsers.removeAll(restUsers);
+        registryUsers.removeAll(restUsers);
+        processUsers.removeAll(restUsers);
+        tlsJa3.removeAll(restUsers);
+        tlsSslSubject.removeAll(restUsers);
+        restUsers.removeAll(allEntities);
+
+        BiFunction<String, Set<String>, String> errorMessage = (label,gap) ->
+                url + "\n # " + gap.size() + " " + label.toUpperCase() + " output entities are missing from REST result."
+                + "\nSubset of missing elements: " + String.join("\n", gap.stream().limit(10).collect(Collectors.toSet()));
+
+        Function<Set<String>, String> errorMessage1 = gap ->
+                url + "\n # " + gap.size() + " REST output entities are missing from output tables."
+                        + "\nSubset of missing elements: " + String.join("\n", gap.stream().limit(10).collect(Collectors.toSet()));
+
+        softly.assertThat(activeDirectoryUsers).overridingErrorMessage(errorMessage.apply("Active Directory", activeDirectoryUsers)).isEmpty();
+        softly.assertThat(authenticationUsers).overridingErrorMessage(errorMessage.apply("authentication", authenticationUsers)).isEmpty();
+        softly.assertThat(fileUsers).overridingErrorMessage(errorMessage.apply("file", fileUsers)).isEmpty();
+        softly.assertThat(registryUsers).overridingErrorMessage(errorMessage.apply("registry", registryUsers)).isEmpty();
+        softly.assertThat(processUsers).overridingErrorMessage(errorMessage.apply("process", processUsers)).isEmpty();
+        softly.assertThat(tlsJa3).overridingErrorMessage(errorMessage.apply("tls Ja3", tlsJa3)).isEmpty();
+        softly.assertThat(tlsSslSubject).overridingErrorMessage(errorMessage.apply("tls SslSubject", tlsSslSubject)).isEmpty();
+
+        softly.assertThat(restUsers).overridingErrorMessage(errorMessage1.apply(restUsers)).isEmpty();
+
+        softly.assertAll();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private Set<String> getDistinctUserNamesFromOutputCollections() {
+        // user names converted to lower case for comparison
+        // only users that have a record in smart_userId_hourly collection will appear in rest - limiting selection from output collection by startInstant in smarts
+        // in addition, since this test runs also after output component test, limiting time range to output processing times
+
+        // getOperationTypeToCategoryMap Instant time of first smart
+        Query queryFirstDate = new Query();
+        queryFirstDate.with(new Sort(Sort.Direction.ASC, "startInstant"));
+        queryFirstDate.limit(1);
+        SmartUserIdStoredRecored firstSmart = mongoTemplate.findOne(queryFirstDate, SmartUserIdStoredRecored.class);
+        Instant firstSmartInstant = firstSmart.getStartInstant();
+
+        // getOperationTypeToCategoryMap Instant time of last smart
+        Query queryLastDate = new Query();
+        queryLastDate.with(new Sort(Sort.Direction.DESC, "startInstant"));
+        queryLastDate.limit(1);
+        SmartUserIdStoredRecored lastSmart = mongoTemplate.findOne(queryLastDate, SmartUserIdStoredRecored.class);
+        Instant lastSmartInstant = lastSmart.getStartInstant();
+
+        // getOperationTypeToCategoryMap effective start and end Instant for comparison with Rest - smallest range by output and smart collections,
+        // in the time range that outputProcessor runs
+        Instant firstInstant = (firstSmartInstant.isBefore(outputProcessorStartInstant))?outputProcessorStartInstant:firstSmartInstant;
+        Instant lastInstant = (lastSmartInstant.isAfter(outputProcessorEndInstant))?outputProcessorEndInstant:lastSmartInstant;
+        // getOperationTypeToCategoryMap set of distinct user names from all output collections
+        Query usersQuery = new Query();
+        usersQuery.addCriteria(Criteria.where("eventDate").lte(Date.from(lastInstant)).gte(Date.from(firstInstant)));
+        Set<String> outputUserNames = new HashSet<>();
+
+        outputUserNames.addAll(convertToLowerCase( getDistinctUserNames("output_active_directory_enriched_events")));
+        outputUserNames.addAll(convertToLowerCase( getDistinctUserNames("output_authentication_enriched_events")));
+        outputUserNames.addAll(convertToLowerCase( getDistinctUserNames("output_file_enriched_events")));
+        outputUserNames.addAll(convertToLowerCase( getDistinctUserNames("output_process_enriched_events")));
+        outputUserNames.addAll(convertToLowerCase( getDistinctUserNames("output_registry_enriched_events")));
+        return outputUserNames;
+    }
+
+
+
+
+
+
+    private List<String>  getDistinctUserNames(String collectionName){
+        List<String> DistinctUserNamesList = new ArrayList<>();
+        DistinctIterable<String> distinctNames = mongoTemplate.getCollection(collectionName).distinct("userName", String.class);
+        MongoCursor cursor = distinctNames.iterator();
+        while (cursor.hasNext()) {
+            String category = (String)cursor.next();
+            DistinctUserNamesList.add(category);
+        }
+        return DistinctUserNamesList ;
+    }
+    private Set<String> convertToLowerCase(List<String> namesList) {
+        Set<String> names = new HashSet<>();
+        for (int i = 0; i < namesList.size(); i++ ) names.add(namesList.get(i).toLowerCase());
+        return names;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //@Test  TODO: FIX if feasible  AND ENABLE
     public void verifyAlertsCountIsEqualsToSmartsCount() {
@@ -208,70 +362,6 @@ public class E2EMongoRestValidation  extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(userIdList.size(), userList.size(), "users list size from mongo and from rest does not match.");
     }
 
-    @Test
-    public void verifyUserNamesOutputCollectionsVsRestUserNames() {
-        // Compare rest user names and mongo output collections user names, case insensitive
-        Set<String> restUsers = convertToLowerCase(OutputTestsUtils.extractUsernameListsFromUserList(testManager.getEntities("pageSize=10000&pageNumber=0")));
-        Set<String> outputUserNames = getDistinctUserNamesFromOutputCollections();
-        outputUserNames.removeAll(restUsers);
-
-        String missingInRest = "";
-        int missingCount = 0;
-        for (String s : outputUserNames) {missingInRest += s + "\n"; missingCount++; }
-        Assert.assertTrue(outputUserNames.isEmpty(), String.format("Output users missing in Rest (total: %d): \n%s", missingCount, missingInRest));
-    }
-
-    private Set<String> getDistinctUserNamesFromOutputCollections() {
-        // user names converted to lower case for comparison
-        // only users that have a record in smart_userId_hourly collection will appear in rest - limiting selection from output collection by startInstant in smarts
-        // in addition, since this test runs also after output component test, limiting time range to output processing times
-
-        // getOperationTypeToCategoryMap Instant time of first smart
-        Query queryFirstDate = new Query();
-        queryFirstDate.with(new Sort(Sort.Direction.ASC, "startInstant"));
-        queryFirstDate.limit(1);
-        SmartUserIdStoredRecored firstSmart = mongoTemplate.findOne(queryFirstDate, SmartUserIdStoredRecored.class);
-        Instant firstSmartInstant = firstSmart.getStartInstant();
-
-        // getOperationTypeToCategoryMap Instant time of last smart
-        Query queryLastDate = new Query();
-        queryLastDate.with(new Sort(Sort.Direction.DESC, "startInstant"));
-        queryLastDate.limit(1);
-        SmartUserIdStoredRecored lastSmart = mongoTemplate.findOne(queryLastDate, SmartUserIdStoredRecored.class);
-        Instant lastSmartInstant = lastSmart.getStartInstant();
-
-        // getOperationTypeToCategoryMap effective start and end Instant for comparison with Rest - smallest range by output and smart collections,
-        // in the time range that outputProcessor runs
-        Instant firstInstant = (firstSmartInstant.isBefore(outputProcessorStartInstant))?outputProcessorStartInstant:firstSmartInstant;
-        Instant lastInstant = (lastSmartInstant.isAfter(outputProcessorEndInstant))?outputProcessorEndInstant:lastSmartInstant;
-        // getOperationTypeToCategoryMap set of distinct user names from all output collections
-        Query usersQuery = new Query();
-        usersQuery.addCriteria(Criteria.where("eventDate").lte(Date.from(lastInstant)).gte(Date.from(firstInstant)));
-        Set<String> outputUserNames = new HashSet<>();
-
-        outputUserNames.addAll(convertToLowerCase( getDistinctUserNames("output_active_directory_enriched_events")));
-        outputUserNames.addAll(convertToLowerCase( getDistinctUserNames("output_authentication_enriched_events")));
-        outputUserNames.addAll(convertToLowerCase( getDistinctUserNames("output_file_enriched_events")));
-        outputUserNames.addAll(convertToLowerCase( getDistinctUserNames("output_process_enriched_events")));
-        outputUserNames.addAll(convertToLowerCase( getDistinctUserNames("output_registry_enriched_events")));
-        return outputUserNames;
-    }
-
-    private List<String>  getDistinctUserNames(String collectionName){
-        List<String> DistinctUserNamesList = new ArrayList<>();
-        DistinctIterable<String> distinctNames = mongoTemplate.getCollection(collectionName).distinct("userName", String.class);
-        MongoCursor cursor = distinctNames.iterator();
-        while (cursor.hasNext()) {
-            String category = (String)cursor.next();
-            DistinctUserNamesList.add(category);
-        }
-        return DistinctUserNamesList ;
-    }
-    private Set<String> convertToLowerCase(List<String> namesList) {
-        Set<String> names = new HashSet<>();
-        for (int i = 0; i < namesList.size(); i++ ) names.add(namesList.get(i).toLowerCase());
-        return names;
-    }
 
 // TODO: rewrite this test to take into account:
 //  - comparisons should be case insensitive
