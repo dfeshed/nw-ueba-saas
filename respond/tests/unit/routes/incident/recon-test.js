@@ -130,7 +130,7 @@ module('Unit | Route | incident.recon', function(hooks) {
     await waitUntil(() => {
       const { respond: { recon: { aliases, language } } } = redux.getState();
       const aliasesAreSetup = aliases && Object.keys(aliases).length === 9;
-      const languagesAreSetup = language && language.length === 94;
+      const languagesAreSetup = language && language.length === 95;
       if (aliasesAreSetup && languagesAreSetup) {
         assert.ok(true, 'aliases and language were correctly set during the model hook');
       }
@@ -139,7 +139,7 @@ module('Unit | Route | incident.recon', function(hooks) {
 
     const { respond: { recon: { aliasesCache, languageCache } } } = redux.getState();
     assert.equal(Object.keys(aliasesCache[endpointId]).length, 9);
-    assert.equal(languageCache[endpointId].length, 94);
+    assert.equal(languageCache[endpointId].length, 95);
     assert.equal(aliasesCache[endpointId]['eth.type'][0], '802.3');
     assert.equal(languageCache[endpointId][0].metaName, 'time');
   });

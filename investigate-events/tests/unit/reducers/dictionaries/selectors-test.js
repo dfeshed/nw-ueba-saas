@@ -19,6 +19,15 @@ const lifetimeLanguageObjectIndexedByNone = {
   formattedName: 'lifetime (Session Lifetime)'
 };
 
+// sessionid meta
+const sessionidLanguageObject = {
+  format: 'UInt16',
+  metaName: 'sessionid',
+  flags: -2147483631,
+  displayName: 'Session Id',
+  formattedName: 'Session Id'
+};
+
 // isIndexedByKey meta
 const fileNameLanguageMetaIndexedByKey = {
   format: 'UInt64',
@@ -133,6 +142,18 @@ module('Unit | Selectors | dictionaries', function(hooks) {
     assert.equal(metaKeysForGuidedMode.length, 1, 'Indexed by none meta was not filtered out');
     assert.equal(metaKeysForGuidedMode[0].disabled, true, 'Indexed by none meta is not disabled');
   });
+
+  test('metaKeySuggestionsForQueryBuilder selector correctly sets properties for icon for sessionid meta',
+    function(assert) {
+      const i18n = lookup('service:i18n');
+      const state = new ReduxDataHelper().language([sessionidLanguageObject]).build();
+      const metaKeysForGuidedMode = metaKeySuggestionsForQueryBuilder(state);
+
+      assert.equal(metaKeysForGuidedMode[0].iconClass, 'is-sessionid sessionid-indicator',
+        'Incorrect value for iconClass when metaName is sessionid');
+      assert.equal(metaKeysForGuidedMode[0].iconTitle, i18n.t('queryBuilder.sessionid'),
+        'Incorrect value for iconTitle when metaName is sessionid');
+    });
 
   test('metaKeySuggestionsForQueryBuilder selector correctly sets properties for icon for indexed by value meta',
     function(assert) {

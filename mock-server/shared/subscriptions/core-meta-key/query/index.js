@@ -106,6 +106,7 @@ const data = [
   { count: 0, format: 'IPv4', metaName: 'tunnel.ip.src', flags: -2147483647, displayName: 'Tunnel Source IP Address' },
   { count: 0, format: 'IPv4', metaName: 'tunnel.ip.dst', flags: -2147483647, displayName: 'Tunnel Destination IP Address' },
   { count: 0, format: 'IPv6', metaName: 'tunnel.ipv6.src', flags: -2147483647, displayName: 'Tunnel Source IPv6 Address' },
-  { count: 0, format: 'IPv6', metaName: 'tunnel.ipv6.dst', flags: -2147483647, displayName: 'Tunnel Destination IPv6 Address' }
+  { count: 0, format: 'IPv6', metaName: 'tunnel.ipv6.dst', flags: -2147483647, displayName: 'Tunnel Destination IPv6 Address' },
+  { count: 0, format: 'Text', metaName: 'sessionid', flags: -2147483647, displayName: 'Session Id' }
 ];
 

@@ -72,7 +72,11 @@ export const metaKeySuggestionsForQueryBuilder = createSelector(
         // set values for icon to display
         // based on indexed by none, value, key
         const iconProperties = { iconClass: null, iconTitle: null, iconName: null };
-        if (meta.isIndexedByValue) {
+        if (meta.metaName === 'sessionid') {
+          iconProperties.iconClass = 'is-sessionid sessionid-indicator';
+          iconProperties.iconName = 'login-key';
+          iconProperties.iconTitle = i18n.t('queryBuilder.sessionid').toString();
+        } else if (meta.isIndexedByValue) {
           iconProperties.iconClass = 'is-indexed-by-value value-index-indicator';
           iconProperties.iconName = 'search';
           iconProperties.iconTitle = i18n.t('queryBuilder.indexedByValue').toString();

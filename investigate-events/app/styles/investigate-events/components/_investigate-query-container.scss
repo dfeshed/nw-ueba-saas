@@ -995,8 +995,9 @@
     &:not([aria-disabled=true]) .description {
       color: rsa-color(grey, light);
     }
-    // icon for meta indexed by value, key, none
-    .rsa-icon[class*="-index-indicator"] {
+    // icons for meta indexed by value, key, none
+    // key icon for sessionid
+    .rsa-icon[class*="-indicator"]{
       display: inline-flex;
       align-self: center;
       margin-right: rsa-whitespace(less);
