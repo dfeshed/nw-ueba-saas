@@ -109,9 +109,21 @@ class Parser {
   }
 
   /**
+   * Used to pass text that should become complex pills from the parser
+   * to outside where the data is turned to pills.
+   * @param {string} text The complex filter text
+   * @private
+   */
+  _createComplexString(text) {
+    return {
+      type: GRAMMAR.COMPLEX_FILTER,
+      text
+    };
+  }
+
+  /**
    * Returns an object that contains the meta and the operator, if they pass
-   * validation. Otherwise, throws an error giving the reason why one of the
-   * two is invalid.
+   * validation. Otherwise, return null.
    * @param {Object} meta The meta config object
    * @param {Object} operator The operator object
    * @private
@@ -122,17 +134,20 @@ class Parser {
         return m.metaName === Parser.transformToString(meta);
       });
       if (!metaConfig) {
-        throw new Error(`Meta "${Parser.transformToString(meta)}" not recognized`);
+        // Meta not recognized
+        return null;
+      // sessionid is a special meta key that should be used even though it is indexed by none
       } else if (metaConfig.isIndexedByNone && metaConfig.metaName !== 'sessionid') {
-        // sessionid is a special meta key that should be used even though it is indexed by none
-        throw new Error(`Meta "${Parser.transformToString(meta)}" not indexed`);
+        // Meta not indexed
+        return null;
       } else {
         // Check that the operator applies to the meta
         const possibleOperators = relevantOperators(metaConfig);
         const operatorString = Parser.transformToString(operator);
         const operatorConfig = possibleOperators.find((o) => o.displayName === operatorString);
         if (!operatorConfig) {
-          throw new Error(`Operator "${operatorString}" does not apply to meta "${Parser.transformToString(meta)}"`);
+          // Operator does not apply to meta
+          return null;
         }
         return { metaConfig, operatorConfig };
       }
@@ -203,12 +218,12 @@ class Parser {
     if (!this._isAtEnd()) {
       // If we come out of whereCriteria and more tokens are still left, they
       // should not be there.
-      const hasMultipleUnexpectedTokens = this.current < this.tokens.length - 1;
       const unexpectedTokensString = this.tokens
         .slice(this.current)
-        .map((t) => `${t.type}(${t.text})`)
+        .map((t) => t.text)
         .join(' ');
-      throw new Error(`Unexpected token${hasMultipleUnexpectedTokens ? 's' : ''}: ${unexpectedTokensString}`);
+      // Remaining tokens become one complex pill
+      result.children.push({ type: LEXEMES.AND, text: '&&' }, this._createComplexString(unexpectedTokensString));
     }
     return result;
   }
@@ -282,18 +297,37 @@ class Parser {
    * @private
    */
   _criteria() {
+    let returnComplex = false;
     const meta = this._consume([ LEXEMES.META ]);
     const operator = this._consume(LEXEMES.OPERATOR_TYPES);
     // Check that this is a valid meta key & operator
-    const { metaConfig, operatorConfig } = this._validateMetaAndOperator(meta, operator);
+    const configs = this._validateMetaAndOperator(meta, operator);
+    if (configs === null) {
+      // Error somewhere in validation, make complex, but wait until we know
+      // what kind of value we'll be returning.
+      returnComplex = true;
+    }
+    const { metaConfig, operatorConfig } = configs || {};
 
     // Unary operators (exists & !exists) do not have values, so push them
     // without a `valueRanges` property
     if (operator.text === 'exists' || operator.text === '!exists') {
       if (this._nextTokenIsOfType(VALUE_TYPES)) {
-        throw new Error(`Invalid value ${this._advance().text} after unary operator ${operator.text}`);
+        // Can't have values after unary operators. Pull them out of the queue
+        // and put them in a complex pill
+        const metaValueRanges = this._metaValueRanges();
+        const { valueRanges } = metaValueRanges;
+        const criteria = {
+          type: GRAMMAR.CRITERIA,
+          meta,
+          operator,
+          valueRanges
+        };
+        return this._createComplexString(Parser.transformToString(criteria));
       }
-      return { type: GRAMMAR.CRITERIA, meta, operator };
+      const criteria = { type: GRAMMAR.CRITERIA, meta, operator };
+      // If we need to return a complex pill, take what we read in and transform it back to a string.
+      return returnComplex ? this._createComplexString(Parser.transformToString(criteria)) : criteria;
     } else {
       const metaValueRanges = this._metaValueRanges();
       const { valueRanges } = metaValueRanges;
@@ -331,7 +365,7 @@ class Parser {
       }
       if (hasInvalidValue) {
         validationError = validationError || i18n.t(`queryBuilder.validationMessages.${metaConfig.format.toLowerCase()}`);
-        return {
+        const criteria = {
           type: GRAMMAR.CRITERIA,
           meta,
           operator,
@@ -339,13 +373,15 @@ class Parser {
           isInvalid: true,
           validationError
         };
+        return returnComplex ? this._createComplexString(Parser.transformToString(criteria)) : criteria;
       } else {
-        return {
+        const criteria = {
           type: GRAMMAR.CRITERIA,
           meta,
           operator,
           valueRanges
         };
+        return returnComplex ? this._createComplexString(Parser.transformToString(criteria)) : criteria;
       }
     }
   }

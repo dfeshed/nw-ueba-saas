@@ -56,7 +56,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
   });
 
   test('transformTextToPillData treats bad meta as complex query', function(assert) {
-    const freeFormText = 'lakjsdlakjsd = "yeah"';
+    const freeFormText = "lakjsdlakjsd = 'yeah'";
     const result = transformTextToPillData(freeFormText, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES });
     assert.equal(result.type, COMPLEX_FILTER, 'type should match');
     assert.equal(result.complexFilterText, freeFormText, 'complexFilterText should match');
@@ -338,6 +338,143 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[1].meta, 'medium', 'forward slash was not parsed correctly');
     assert.equal(result[1].operator, '=', 'forward slash was not parsed correctly');
     assert.equal(result[1].value, '3', 'forward slash was not parsed correctly');
+  });
+
+  test('transformTextToPillData returns complex and normal pill for invalid meta key', function(assert) {
+    // Test both the "bad" thing first, then the "good" thing first. Both should work as expected.
+    const bad = "asdfasdfasdf = 'foobar'";
+    const good = 'medium = 3';
+    const badThenGood = `${bad} && ${good}`;
+    const goodThenBad = `${good} && ${bad}`;
+
+    const result1 = transformTextToPillData(badThenGood, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result1.length, 2);
+    assert.equal(result1[0].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result1[0].complexFilterText, bad, 'complexFilterText should match');
+    assert.equal(result1[1].type, QUERY_FILTER, 'type should match');
+    assert.equal(result1[1].meta, 'medium', 'meta should match');
+    assert.equal(result1[1].operator, '=', 'operator should match');
+    assert.equal(result1[1].value, '3', 'value should match');
+    assert.notOk(result1[1].isInvalid, 'should not be invalid');
+
+    const result2 = transformTextToPillData(goodThenBad, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result2.length, 2);
+    assert.equal(result2[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result2[0].meta, 'medium', 'meta should match');
+    assert.equal(result2[0].operator, '=', 'operator should match');
+    assert.equal(result2[0].value, '3', 'value should match');
+    assert.notOk(result2[0].isInvalid, 'should not be invalid');
+    assert.equal(result2[1].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result2[1].complexFilterText, bad, 'complexFilterText should match');
+  });
+
+  test('transformTextToPillData returns complex and normal pill for invalid operator for meta', function(assert) {
+    // Test both the "bad" thing first, then the "good" thing first. Both should work as expected.
+    const bad = 'medium contains 3';
+    const good = "b = 'get'";
+    const badThenGood = `${bad} && ${good}`;
+    const goodThenBad = `${good} && ${bad}`;
+
+    const result1 = transformTextToPillData(badThenGood, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result1.length, 2);
+    assert.equal(result1[0].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result1[0].complexFilterText, bad, 'complexFilterText should match');
+    assert.equal(result1[1].type, QUERY_FILTER, 'type should match');
+    assert.equal(result1[1].meta, 'b', 'meta should match');
+    assert.equal(result1[1].operator, '=', 'operator should match');
+    assert.equal(result1[1].value, '\'get\'', 'value should match');
+    assert.notOk(result1[1].isInvalid, 'should not be invalid');
+
+    const result2 = transformTextToPillData(goodThenBad, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result2.length, 2);
+    assert.equal(result2[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result2[0].meta, 'b', 'meta should match');
+    assert.equal(result2[0].operator, '=', 'operator should match');
+    assert.equal(result2[0].value, '\'get\'', 'value should match');
+    assert.notOk(result2[0].isInvalid, 'should not be invalid');
+    assert.equal(result2[1].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result2[1].complexFilterText, bad, 'complexFilterText should match');
+  });
+
+  test('transformTextToPillData returns complex and normal pill for invalid meta key w/ unary op', function(assert) {
+    // Test both the "bad" thing first, then the "good" thing first. Both should work as expected.
+    const bad = 'foobar exists';
+    const good = 'medium = 3';
+    const badThenGood = `${bad} && ${good}`;
+    const goodThenBad = `${good} && ${bad}`;
+
+    const result1 = transformTextToPillData(badThenGood, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result1.length, 2);
+    assert.equal(result1[0].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result1[0].complexFilterText, bad, 'complexFilterText should match');
+    assert.equal(result1[1].type, QUERY_FILTER, 'type should match');
+    assert.equal(result1[1].meta, 'medium', 'meta should match');
+    assert.equal(result1[1].operator, '=', 'operator should match');
+    assert.equal(result1[1].value, '3', 'value should match');
+    assert.notOk(result1[1].isInvalid, 'should not be invalid');
+
+    const result2 = transformTextToPillData(goodThenBad, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result2.length, 2);
+    assert.equal(result2[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result2[0].meta, 'medium', 'meta should match');
+    assert.equal(result2[0].operator, '=', 'operator should match');
+    assert.equal(result2[0].value, '3', 'value should match');
+    assert.notOk(result2[0].isInvalid, 'should not be invalid');
+    assert.equal(result2[1].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result2[1].complexFilterText, bad, 'complexFilterText should match');
+  });
+
+  test('transformTextToPillData returns complex and normal pill for unary op w/ value', function(assert) {
+    // Test both the "bad" thing first, then the "good" thing first. Both should work as expected.
+    const bad = "b exists 'get'";
+    const good = 'medium = 3';
+    const badThenGood = `${bad} && ${good}`;
+    const goodThenBad = `${good} && ${bad}`;
+
+    const result1 = transformTextToPillData(badThenGood, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result1.length, 2);
+    assert.equal(result1[0].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result1[0].complexFilterText, bad, 'complexFilterText should match');
+    assert.equal(result1[1].type, QUERY_FILTER, 'type should match');
+    assert.equal(result1[1].meta, 'medium', 'meta should match');
+    assert.equal(result1[1].operator, '=', 'operator should match');
+    assert.equal(result1[1].value, '3', 'value should match');
+    assert.notOk(result1[1].isInvalid, 'should not be invalid');
+
+    const result2 = transformTextToPillData(goodThenBad, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result2.length, 2);
+    assert.equal(result2[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result2[0].meta, 'medium', 'meta should match');
+    assert.equal(result2[0].operator, '=', 'operator should match');
+    assert.equal(result2[0].value, '3', 'value should match');
+    assert.notOk(result2[0].isInvalid, 'should not be invalid');
+    assert.equal(result2[1].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result2[1].complexFilterText, bad, 'complexFilterText should match');
+  });
+
+  test('transformTextToPillData returns complex and normal pill for unexpected tokens at end of clause after unary op', function(assert) {
+    const text = 'b exists foobar 333';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 2);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'b', 'meta should match');
+    assert.equal(result[0].operator, 'exists', 'operator should match');
+    assert.notOk(result[0].isInvalid, 'should not be invalid');
+    assert.equal(result[1].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result[1].complexFilterText, 'foobar 333', 'complexFilterText should match');
+  });
+
+  test('transformTextToPillData returns complex and normal pill for unexpected tokens at end of clause', function(assert) {
+    const text = "b = 'get' medium = 3";
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 2);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'b', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '\'get\'', 'operator should match');
+    assert.notOk(result[0].isInvalid, 'should not be invalid');
+    assert.equal(result[1].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result[1].complexFilterText, 'medium = 3', 'complexFilterText should match');
   });
 
   test('parsePillDataFromUri correctly parses forward slashes and operators into pills', function(assert) {

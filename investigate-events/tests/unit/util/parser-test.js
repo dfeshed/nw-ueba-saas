@@ -210,16 +210,16 @@ module('Unit | Util | Parser', function(hooks) {
   test('throws error for mismatched parentheses', function(assert) {
     const tokens = [
       { type: LEXEMES.LEFT_PAREN, text: '(' },
+      { type: LEXEMES.LEFT_PAREN, text: '(' },
       { type: LEXEMES.META, text: 'medium' },
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
       { type: LEXEMES.INTEGER, text: '3' },
-      { type: LEXEMES.RIGHT_PAREN, text: ')' },
       { type: LEXEMES.RIGHT_PAREN, text: ')' }
     ];
     const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     assert.throws(() => {
       p.parse();
-    }, new Error('Unexpected token: RIGHT_PAREN())'));
+    }, new Error('Expected token of type RIGHT_PAREN but reached the end of the input'));
   });
 
   test('throws an error for a meta without operator', function(assert) {
@@ -234,20 +234,6 @@ module('Unit | Util | Parser', function(hooks) {
     assert.throws(() => {
       p.parse();
     }, new Error('Expected token of type OPERATOR but reached the end of the input'));
-  });
-
-  test('throws an error for unexpected tokens', function(assert) {
-    const tokens = [
-      { type: LEXEMES.META, text: 'b' },
-      { type: LEXEMES.OPERATOR_EQ, text: '=' },
-      { type: LEXEMES.STRING, text: 'netwitness' },
-      { type: LEXEMES.META, text: 'medium' },
-      { type: LEXEMES.OPERATOR_EQ, text: '=' }
-    ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
-    assert.throws(() => {
-      p.parse();
-    }, new Error('Unexpected tokens: META(medium) OPERATOR_EQ(=)'));
   });
 
   test('throws an error for a meta without value when operator requires one (string)', function(assert) {
@@ -278,18 +264,6 @@ module('Unit | Util | Parser', function(hooks) {
     assert.deepEqual(result.children[0].operator, { type: LEXEMES.OPERATOR_EQ, text: '=' });
   });
 
-  test('throws an error for a meta with value but having a unary operator', function(assert) {
-    const tokens = [
-      { type: LEXEMES.META, text: 'medium' },
-      { type: LEXEMES.OPERATOR_EXISTS, text: 'exists' },
-      { type: LEXEMES.INTEGER, text: '7' }
-    ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
-    assert.throws(() => {
-      p.parse();
-    }, new Error('Invalid value 7 after unary operator exists'));
-  });
-
   test('does not throw an error for a unary operator without a value', function(assert) {
     const tokens = [
       { type: LEXEMES.META, text: 'medium' },
@@ -305,30 +279,6 @@ module('Unit | Util | Parser', function(hooks) {
         operator: { type: LEXEMES.OPERATOR_EXISTS, text: 'exists' }
       }
     ]);
-  });
-
-  test('throws an error for a bad meta', function(assert) {
-    const tokens = [
-      { type: LEXEMES.META, text: 'lakjsdlakjsd' },
-      { type: LEXEMES.OPERATOR_EQ, text: '=' },
-      { type: LEXEMES.INTEGER, text: '7' }
-    ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
-    assert.throws(() => {
-      p.parse();
-    }, new Error('Meta "lakjsdlakjsd" not recognized'));
-  });
-
-  test('throws an error for irrelevant operator', function(assert) {
-    const tokens = [
-      { type: LEXEMES.META, text: 'sessionid' },
-      { type: LEXEMES.OPERATOR_EQ, text: 'contains' },
-      { type: LEXEMES.INTEGER, text: '7' }
-    ];
-    const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
-    assert.throws(() => {
-      p.parse();
-    }, new Error('Operator "contains" does not apply to meta "sessionid"'));
   });
 
   test('correctly parses multiple complex filters', function(assert) {
