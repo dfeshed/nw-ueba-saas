@@ -146,19 +146,19 @@ section {
 
 .process-hover-key {
   display: block;
-  text-align: right;
-  min-height: 1.7rem;
+  min-height: 1.2rem;
   padding-right: rsa-whitespace();
   color: text-color(primary, light);
 }
 .process-hover-value {
   padding-right: 10px;
   display: block;
-  text-align: left;
   min-height: 1.7rem;
-  margin-top: 0.2rem;
-  word-break: break-word;
+  padding-bottom: 1rem;
   line-height: 1.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
 }
 
 .process-hover-value.paramDst {
@@ -176,14 +176,25 @@ section {
 }
 
 .process-tool-tip {
-  width: 350px;
+  max-width: 250px;
   padding: rsa-whitespace(more);
 }
 
 .process-title {
+  font-weight: bold;
+  font-size: 14px;
+  color: text-color(secondary);
   display: inline-block;
   width: 270px;
   text-overflow: ellipsis;
   overflow: hidden;
   min-height: 1.7rem;
+}
+
+.panel-content {
+  .process-hover-item {
+    .copy-icon .rsa-icon {
+      padding-right: 10px;
+    }
+  }
 }

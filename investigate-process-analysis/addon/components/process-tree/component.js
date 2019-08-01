@@ -159,7 +159,6 @@ const TreeComponent = Component.extend({
       if (prop === 'signature') {
         const { signature } = fileProperty;
         displayProperties.signature = signature && signature.signer ? 'Signed' : 'Unsigned';
-        displayProperties.signer = signature && signature.signer ? signature.signer : '';
       } else {
         displayProperties[prop] = fileProperty[prop] || '';
       }

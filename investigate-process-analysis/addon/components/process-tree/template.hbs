@@ -35,22 +35,34 @@
 {{#rsa-content-tethered-panel style="primary" panelClass='process-tool-tip' displayCloseButton=false position='top' panelId='panel1'}}
   <span class='process-title'> {{process.processName}}</span>
   {{#each-in processData as |key value|}}
-    <hbox fit class='process-hover-content align-center col-xs-12'>
-      <hbox class='process-hover-key col-xs-6'>{{t (concat 'investigateHosts.process.processData.' key)}}</hbox>
+    <div class='process-hover-item'>
       {{#if (eq key 'paramDst')}}
-        <hbox class='process-hover-value col-xs-6 {{key}}'>{{value}}</hbox>
+        <div class='process-hover-key'>{{t (concat 'investigateHosts.process.processData.' key)}}</div>
+        <div class='process-hover-value {{key}}'>
+          {{#if value}}
+            {{value}}
+          {{else}}
+            --
+          {{/if}}
+        </div>
         {{#if processData.paramDst}}
           <hbox class='copy-icon'>
             {{rsa-icon name="copy-1" click=(action 'copyLaunchArgument' value)}}
-            <span> {{t 'investigateHosts.process.processData.copyLaunchArguments'}} </span>
+            <div {{action 'copyLaunchArgument' value}}> {{t 'investigateHosts.process.processData.copyLaunchArguments'}} </div>
           </hbox>
         {{/if}}
 
       {{else}}
-        <hbox class='process-hover-value col-xs-6 {{key}}'>{{value}}</hbox>
+        <div class='process-hover-key'>{{t (concat 'investigateHosts.process.processData.' key)}}</div>
+        <div class='process-hover-value {{key}}'>
+          {{#if value}}
+            {{value}}
+          {{else}}
+            --
+          {{/if}}
+        </div>
       {{/if}}
-
-    </hbox>
+    </div>
   {{/each-in}}
 
 {{/rsa-content-tethered-panel}}

@@ -103,6 +103,9 @@
       @include rsa-font(navigation);
       padding-bottom: 0.5rem;
     }
+    .rsa-nav-tab {
+      cursor: pointer;
+    }
   }
 
 }
