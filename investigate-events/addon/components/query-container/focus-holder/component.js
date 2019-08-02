@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { throttle } from '@ember/runloop';
 
 import * as MESSAGE_TYPES from '../message-types';
-import { isBackspace, isDelete, isEnter, isArrowDown, isArrowUp, isArrowRight, isArrowLeft, isShift } from 'investigate-events/util/keys';
+import { isBackspace, isDelete, isEnter, isArrowRight, isArrowLeft, isShift } from 'investigate-events/util/keys';
 
 export default Component.extend({
   classNames: ['focus-holder'],
@@ -26,10 +26,10 @@ export default Component.extend({
       this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED);
     } else if (isEnter(evtobj)) {
       this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_ENTER_PRESSED);
-    } else if ((isArrowDown(evtobj) || isArrowRight(evtobj)) && evtobj.shiftKey) {
-      this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_SHIFT_DOWN_RIGHT_ARROW_PRESSED);
-    } else if ((isArrowUp(evtobj) || isArrowLeft(evtobj)) && evtobj.shiftKey) {
-      this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_SHIFT_UP_LEFT_ARROW_PRESSED);
+    } else if (isArrowRight(evtobj) && evtobj.shiftKey) {
+      this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_SHIFT_RIGHT_ARROW_PRESSED);
+    } else if (isArrowLeft(evtobj) && evtobj.shiftKey) {
+      this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_SHIFT_LEFT_ARROW_PRESSED);
     } else if (isArrowLeft(evtobj)) {
       this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_LEFT_ARROW_PRESSED);
     } else if (isArrowRight(evtobj)) {

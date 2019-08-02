@@ -15,8 +15,6 @@ const BACKSPACE_KEY = KEY_MAP.backspace.code;
 const ENTER_KEY = KEY_MAP.enter.code;
 const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
 const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
-const ARROW_DOWN_KEY = KEY_MAP.arrowDown.code;
-const ARROW_UP_KEY = KEY_MAP.arrowUp.code;
 const modifiers = { shiftKey: true };
 
 
@@ -367,30 +365,6 @@ module('Integration | Component | complex-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ENTER_KEY);
   });
 
-  test('sends SELECT_ALL_PILLS_TO_LEFT message up when focused and shift and up arrow is pressed', async function(assert) {
-    assert.expect(3);
-
-    const pillData = { complexFilterText: 'FOOOOOOOO', isFocused: true };
-    this.set('pillData', pillData);
-
-    this.set('handleMessage', (messageType, position) => {
-      assert.ok(messageType === MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT, 'should send out correct message up');
-      assert.equal(position, 0, 'should send out correct pill position');
-    });
-
-    await render(hbs`
-      {{query-container/complex-pill
-        position=0
-        isActive=false
-        pillData=pillData
-        sendMessage=(action handleMessage)
-      }}
-    `);
-
-    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'proper class present');
-    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_UP_KEY, modifiers);
-  });
-
   test('sends SELECT_ALL_PILLS_TO_LEFT message up when focused and shift and left arrow is pressed', async function(assert) {
     assert.expect(3);
 
@@ -415,29 +389,6 @@ module('Integration | Component | complex-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT_KEY, modifiers);
   });
 
-  test('sends SELECT_ALL_PILLS_TO_RIGHT message up when focused and shift and down arrow is pressed', async function(assert) {
-    assert.expect(3);
-
-    const pillData = { complexFilterText: 'FOOOOOOOO', isFocused: true };
-    this.set('pillData', pillData);
-
-    this.set('handleMessage', (messageType, position) => {
-      assert.ok(messageType === MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT, 'should send out correct message up');
-      assert.equal(position, 0, 'should send out correct pill position');
-    });
-
-    await render(hbs`
-      {{query-container/complex-pill
-        position=0
-        isActive=false
-        pillData=pillData
-        sendMessage=(action handleMessage)
-      }}
-    `);
-
-    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'proper class present');
-    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_DOWN_KEY, modifiers);
-  });
 
   test('sends SELECT_ALL_PILLS_TO_RIGHT message up when focused and shift and right arrow is pressed', async function(assert) {
     assert.expect(3);

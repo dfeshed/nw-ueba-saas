@@ -281,8 +281,8 @@ export default Component.extend({
       [MESSAGE_TYPES.FOCUSED_PILL_ENTER_PRESSED]: () => this._focusedEnterPressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_LEFT_ARROW_PRESSED]: () => this._focusedLeftArrowPressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_RIGHT_ARROW_PRESSED]: () => this._focusedRightArrowPressed(),
-      [MESSAGE_TYPES.FOCUSED_PILL_SHIFT_DOWN_RIGHT_ARROW_PRESSED]: () => this._focusedShiftDownRightArrowPressed(),
-      [MESSAGE_TYPES.FOCUSED_PILL_SHIFT_UP_LEFT_ARROW_PRESSED]: () => this._focusedShiftUpLeftArrowPressed(),
+      [MESSAGE_TYPES.FOCUSED_PILL_SHIFT_RIGHT_ARROW_PRESSED]: () => this._focusedShiftRightArrowPressed(),
+      [MESSAGE_TYPES.FOCUSED_PILL_SHIFT_LEFT_ARROW_PRESSED]: () => this._focusedShiftLeftArrowPressed(),
       [MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY]: (data) => this._valueArrowLeft(data),
       [MESSAGE_TYPES.VALUE_ARROW_RIGHT_KEY]: (data) => this._rightArrowKeyPressed(data),
       [MESSAGE_TYPES.VALUE_BACKSPACE_KEY]: () => this._valueBackspace(),
@@ -1046,13 +1046,13 @@ export default Component.extend({
     }
   },
 
-  _focusedShiftDownRightArrowPressed() {
+  _focusedShiftRightArrowPressed() {
     if (!this.get('isActive')) {
       this.get('sendMessage')(MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT, this.get('position'));
     }
   },
 
-  _focusedShiftUpLeftArrowPressed() {
+  _focusedShiftLeftArrowPressed() {
     if (!this.get('isActive')) {
       this.get('sendMessage')(MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT, this.get('position'));
     }
