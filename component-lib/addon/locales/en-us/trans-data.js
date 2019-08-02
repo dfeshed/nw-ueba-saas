@@ -213,7 +213,7 @@ export default {
     indexedByKey: 'Meta keys indexed',
     indexedByNone: 'Not indexed',
     indexedByValue: 'Meta values indexed',
-    sessionid: 'Indexed Properly',
+    sessionid: 'Indexed properly (cannot be configured)',
     insertFilter: 'Insert new filter',
     noMatches: 'No matches found',
     open: 'Open in a new tab',
