@@ -14,7 +14,7 @@ module('Integration | Component | overview-tab/alerts/pill', function(hooks) {
   test('it renders', async function(assert) {
     this.set('alert', alertOverview.data[0]);
     await render(hbs `{{overview-tab/alerts/pill alert=alert}}`);
-    assert.ok(find('.user-overview-tab_upper_alerts_container_pill').textContent.replace(/\s/g, '').indexOf('HighAbnormalADChanges|Hourlymixed') === 0);
+    assert.ok(find('.user-overview-tab_alerts_alerts_container_pill').textContent.replace(/\s/g, '').indexOf('HighAbnormalADChanges|Hourlymixed') === 0);
   });
 
   test('it should open entity details', async function(assert) {
@@ -22,7 +22,7 @@ module('Integration | Component | overview-tab/alerts/pill', function(hooks) {
     const redux = this.owner.lookup('service:redux');
     this.set('alert', alertOverview.data[0]);
     await render(hbs `{{overview-tab/alerts/pill alert=alert}}`);
-    click('.user-overview-tab_upper_alerts_container_pill_rating');
+    click('.user-overview-tab_alerts_alerts_container_pill_rating');
     const select = waitForReduxStateChange(redux, 'user.alertId');
     return select.then(() => {
       const state = redux.getState();

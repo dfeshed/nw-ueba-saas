@@ -20,7 +20,7 @@ const urlMap = [{
   url: 'presidio/api/entity?page=1&size=10&sort_field=displayName&search_field_contains',
   data: userSearch
 }, {
-  url: 'presidio/api/entity?min_score=0&size=5',
+  url: 'presidio/api/entity?min_score=0&size=10',
   data: usrOverview
 }, {
   url: 'presidio/data/controls/user_types',

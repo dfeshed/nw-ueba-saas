@@ -37,13 +37,15 @@ module('Integration | Component | users-tab/filter/category', function(hooks) {
 
   test('it renders', async function(assert) {
     await render(hbs`{{users-tab/filter/category}}`);
-    assert.equal(find('.users-tab_filter_user').textContent.replace(/\s/g, ''), 'RiskyUsers(0)WatchlistUsers(0)');
+    assert.equal(findAll('.risky').length, 1);
+    assert.equal(findAll('.watched').length, 1);
   });
 
   test('it renders with counts for risky admin and watched', async function(assert) {
     new ReduxDataHelper(setState).usersCount(10, 20).build();
     await render(hbs`{{users-tab/filter/category}}`);
-    assert.equal(find('.users-tab_filter_user').textContent.replace(/\s/g, ''), 'RiskyUsers(10)WatchlistUsers(20)');
+    assert.ok(find('.risky').parentElement.innerText.indexOf('10') > 0);
+    assert.ok(find('.watched').parentElement.innerText.indexOf('20') > 0);
   });
 
   test('it renders with selected filter', async function(assert) {

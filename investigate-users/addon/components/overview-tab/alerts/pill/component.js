@@ -8,7 +8,7 @@ const dispatchToActions = {
 
 const OverviewAlertComponent = Component.extend({
   alert: null,
-  classNames: 'user-overview-tab_upper_alerts_container_pill'
+  classNames: 'user-overview-tab_alerts_alerts_container_pill'
 });
 
 export default connect(null, dispatchToActions)(OverviewAlertComponent);

@@ -1,10 +1,12 @@
 import * as ACTION_TYPES from './types';
 import { fetchData } from './fetch/data';
 import { flashErrorMessage } from 'investigate-users/utils/flash-message';
+import { updateFilter } from 'investigate-users/actions/user-tab-actions';
+import { getUserFilter } from 'investigate-users/reducers/users/selectors';
 
-const getRiskyUserCount = () => {
+const getRiskyUserCount = (entityType = 'userId') => {
   return (dispatch) => {
-    fetchData('riskyUserCount').then((result) => {
+    fetchData('riskyUserCount', { entityType }).then((result) => {
       if (result === 'error') {
         flashErrorMessage('investigateUsers.errorMessages.unableToGetRiskyUserCount');
         return;
@@ -16,9 +18,9 @@ const getRiskyUserCount = () => {
     });
   };
 };
-const getWatchedUserCount = () => {
+const getWatchedUserCount = (entityType = 'userId') => {
   return (dispatch) => {
-    fetchData('watchedUserCount').then((result) => {
+    fetchData('watchedUserCount', { entityType }).then((result) => {
       if (result === 'error') {
         flashErrorMessage('investigateUsers.errorMessages.unableToGetWatchedUserCount');
         return;
@@ -30,9 +32,9 @@ const getWatchedUserCount = () => {
     });
   };
 };
-const getUserOverview = () => {
+const getUserOverview = (entityType = 'userId') => {
   return (dispatch) => {
-    fetchData('userOverview').then((result) => {
+    fetchData('userOverview', { entityType }).then((result) => {
       if (result === 'error' || result.data.length === 0) {
         dispatch({
           type: ACTION_TYPES.TOP_USERS_ERROR,
@@ -49,6 +51,16 @@ const getUserOverview = () => {
   };
 };
 
+const updateEntityType = (entityType) => {
+  return (dispatch, getState) => {
+    const filter = getUserFilter(getState()).merge({ entityType });
+    dispatch(updateFilter(filter, true));
+    dispatch(getRiskyUserCount(entityType));
+    dispatch(getWatchedUserCount(entityType));
+    dispatch(getUserOverview(entityType));
+  };
+};
+
 const resetUser = () => ({ type: ACTION_TYPES.RESET_USER });
 
 const initiateUser = (payload) => ({ type: ACTION_TYPES.INITIATE_USER, payload });
@@ -58,5 +70,6 @@ export {
   getWatchedUserCount,
   getUserOverview,
   resetUser,
+  updateEntityType,
   initiateUser
 };

@@ -23,7 +23,7 @@ export default Route.extend({
     },
     applyUserFilter(filterFor) {
       this.get('redux').dispatch(updateFilter(filterFor, true));
-      this.transitionTo('users');
+      this.transitionTo('entities');
     },
     applyAlertsFilter(filterFor) {
       this.get('redux').dispatch(updateAlertsFilter(Immutable.from(filterFor), true));

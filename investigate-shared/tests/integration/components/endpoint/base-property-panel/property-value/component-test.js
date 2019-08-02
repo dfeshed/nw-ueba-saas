@@ -136,7 +136,7 @@ module('Integration | Component | endpoint/base-property-panel/property-value', 
     await click('.userLink');
     return settled().then(async() => {
       assert.ok(actionSpy.calledOnce, 'Window.open is called');
-      assert.ok(actionSpy.args[0][0].includes('investigate/users?ueba=/username/raghs'), 'valid link');
+      assert.ok(actionSpy.args[0][0].includes('investigate/entities?ueba=/username/raghs'), 'valid link');
       actionSpy.restore();
     });
   });

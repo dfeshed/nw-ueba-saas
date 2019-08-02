@@ -25,9 +25,8 @@ module('Integration | Component | overview-tab', function(hooks) {
   test('it renders', async function(assert) {
     new ReduxDataHelper(setState).build();
     await render(hbs`{{overview-tab}}`);
-    assert.equal(findAll('.user-overview-tab_upper_users').length, 1);
-    assert.equal(findAll('.user-overview-tab_upper_alerts').length, 1);
-    assert.equal(findAll('.user-overview-tab_lower_users').length, 1);
-    assert.equal(findAll('.user-overview-tab_lower_alerts').length, 1);
+    assert.equal(findAll('.user-overview-tab_users').length, 1);
+    assert.equal(findAll('.user-overview-tab_alerts_alerts').length, 1);
+    assert.equal(findAll('.user-overview-tab_alerts_timeline').length, 1);
   });
 });

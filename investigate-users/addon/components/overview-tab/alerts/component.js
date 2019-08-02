@@ -9,6 +9,7 @@ const stateToComputed = (state) => ({
 });
 
 const OverviewAlertComponent = Component.extend({
+  classNames: 'user-overview-tab_alerts_alerts'
 });
 
 export default connect(stateToComputed)(OverviewAlertComponent);

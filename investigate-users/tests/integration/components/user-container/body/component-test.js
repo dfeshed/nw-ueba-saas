@@ -25,8 +25,8 @@ module('Integration | Component | user-container/body', function(hooks) {
   test('it should render user-container/body for overview', async function(assert) {
     new ReduxDataHelper(setState).build();
     await render(hbs`{{user-container/body}}`);
-    assert.equal(findAll('.user-overview-tab_upper_users').length, 1);
-    assert.equal(findAll('.user-overview-tab_upper_alerts').length, 1);
+    assert.equal(findAll('.user-overview-tab_users').length, 1);
+    assert.equal(findAll('.user-overview-tab_alerts').length, 1);
   });
 
   test('it should render user-container/body for users', async function(assert) {

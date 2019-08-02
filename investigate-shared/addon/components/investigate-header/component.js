@@ -31,8 +31,8 @@ const TABS = [
   },
   {
     name: 'investigate.investigate-users',
-    url: '/investigate/users',
-    label: 'Users'
+    url: '/investigate/entities',
+    label: 'Entities'
   },
   {
     isClassic: true,

@@ -1,17 +1,29 @@
-<div class='user-overview-tab_title'>
-  {{t 'investigateUsers.users.highRisk'}}
+<div class='user-overview-tab_users_entities'>
+  {{#rsa-form-button isFullWidth=true style='primary' class=(if (eq entityType 'userId') 'selected') click=(action 'updateEntityType' 'userId')}} 
+    {{t 'investigateUsers.entityTypes.userId'}}
+  {{/rsa-form-button}}
+  {{#rsa-form-button isFullWidth=true style='primary' class=(if (eq entityType 'sslSubject') 'selected') click=(action 'updateEntityType' 'sslSubject')}} 
+    {{t 'investigateUsers.entityTypes.sslSubject'}}
+  {{/rsa-form-button}}
+  {{#rsa-form-button isFullWidth=true style='primary' class=(if (eq entityType 'ja3') 'selected') click=(action 'updateEntityType' 'ja3')}} 
+    {{t 'investigateUsers.entityTypes.ja3'}}
+  {{/rsa-form-button}}
 </div>
-<div class='user-overview-tab_upper_users_rows'>
+<div class='user-overview-tab_title'>
+  {{t 'investigateUsers.users.highRisk'}} {{t (concat 'investigateUsers.entityTypes.' entityType)}} 
+</div>
+{{overview-tab/watched applyUserFilter=applyUserFilter}} 
+<div class='user-overview-tab_users_rows'>
   {{#if hasTopRiskyUsers}}
     {{#each topUsers as |user|}}
-      <div class='user-overview-tab_upper_users_row'  {{action 'initiateUser' (hash userId=user.id)}}>
-        <div class='user-overview-tab_upper_users_row_score'>
+      <div class='user-overview-tab_users_row'  {{action 'initiateUser' (hash userId=user.id)}}>
+        <div class='user-overview-tab_users_row_score'>
           {{rsa-content-badge-score score=user.score size='small' style=(get severityMap user.scoreSeverity) invertColor=true}}
         </div>
-        <div class='user-overview-tab_upper_users_row_name'>
+        <div class='user-overview-tab_users_row_name'>
           {{user.displayName}}
         </div>
-        <div class='user-overview-tab_upper_users_row_icon' title='Watched Entity'>
+        <div class='user-overview-tab_users_row_icon' title='Watched Entity'>
           {{#if (eq user.followed true)}}
             {{rsa-icon size='large' style='filled' name='view-1'}}
           {{/if}}

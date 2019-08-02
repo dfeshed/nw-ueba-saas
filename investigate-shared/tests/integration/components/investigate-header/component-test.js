@@ -12,7 +12,7 @@ module('Integration | Component | investigate-header', function(hooks) {
   });
 
   const tabsWithoutUsers = ['Navigate', 'Events', 'Event Analysis', 'Hosts', 'Files', 'Malware Analysis'];
-  const tabsWithUsers = ['Navigate', 'Events', 'Event Analysis', 'Hosts', 'Files', 'Users', 'Malware Analysis'];
+  const tabsWithUsers = ['Navigate', 'Events', 'Event Analysis', 'Hosts', 'Files', 'Entities', 'Malware Analysis'];
 
   test('The header shows all of the tabs except Users', async function(assert) {
     assert.expect(6);

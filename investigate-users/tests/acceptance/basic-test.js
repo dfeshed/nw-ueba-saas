@@ -24,16 +24,16 @@ module('Acceptance | investigate-users', function(hooks) {
   });
 
   test('visiting /investigate-users', async function(assert) {
-    await visit('/investigate/users');
-    assert.equal(currentURL(), '/investigate/users');
+    await visit('/investigate/entities');
+    assert.equal(currentURL(), '/investigate/entities');
     assert.equal(find('.user-header_tab > .rsa-nav-tab:nth-child(2)').className, 'rsa-nav-tab is-left-aligned-secondary ember-view');
     assert.equal(find('.user-header_tab > .rsa-nav-tab:nth-child(3)').className, 'rsa-nav-tab is-left-aligned-secondary ember-view');
     assert.equal(find('.user-header_tab > .rsa-nav-tab:nth-child(1)').className, 'rsa-nav-tab is-active is-left-aligned-secondary ember-view');
     assert.equal(findAll('.user-header_search').length, 1);
   });
 
-  test('visiting /investigate-users/users', async function(assert) {
-    await visit('/investigate/users/users');
+  test('visiting /investigate-users/entities', async function(assert) {
+    await visit('/investigate/entities/entities');
     assert.equal(find('.user-header_tab > .rsa-nav-tab:nth-child(2)').className, 'rsa-nav-tab is-active is-left-aligned-secondary ember-view');
     assert.equal(find('.user-header_tab > .rsa-nav-tab:nth-child(3)').className, 'rsa-nav-tab is-left-aligned-secondary ember-view');
     assert.equal(find('.user-header_tab > .rsa-nav-tab:nth-child(1)').className, 'rsa-nav-tab is-left-aligned-secondary ember-view');
@@ -41,7 +41,7 @@ module('Acceptance | investigate-users', function(hooks) {
   });
 
   test('visiting /investigate-users/alerts', async function(assert) {
-    await visit('/investigate/users/alerts');
+    await visit('/investigate/entities/alerts');
     assert.equal(find('.user-header_tab > .rsa-nav-tab:nth-child(2)').className, 'rsa-nav-tab is-left-aligned-secondary ember-view');
     assert.equal(find('.user-header_tab > .rsa-nav-tab:nth-child(3)').className, 'rsa-nav-tab is-active is-left-aligned-secondary ember-view');
     assert.equal(find('.user-header_tab > .rsa-nav-tab:nth-child(1)').className, 'rsa-nav-tab is-left-aligned-secondary ember-view');
@@ -50,7 +50,7 @@ module('Acceptance | investigate-users', function(hooks) {
 
   test('test search for user', async function(assert) {
     const done = assert.async();
-    await visit('/investigate/users');
+    await visit('/investigate/entities');
     await clickTrigger('.user-header_search:nth-child(2)');
     assert.equal(findAll('.ember-power-select-option').length, 1);
     // Element identification is failing in jenkins due to unknown reason. Asserting fetch call to ensure options are pulled everytime user search.
@@ -63,7 +63,7 @@ module('Acceptance | investigate-users', function(hooks) {
 
   test('test search for user on failure condition', async function(assert) {
     const done = assert.async();
-    await visit('/investigate/users');
+    await visit('/investigate/entities');
     await clickTrigger('.user-header_search:nth-child(2)');
     assert.equal(findAll('.ember-power-select-option').length, 1);
     patchFetch(() => {

@@ -91,7 +91,7 @@ module('Integration | Component | alerts-tab/filter', function(hooks) {
     assert.equal(findAll('.ember-power-select-option').length, 3);
     await selectChoose('.users-tab_filter_filter_select:nth-child(5)', 'JA3');
     assert.equal(findAll('.ember-power-select-multiple-option').length, 1);
-    assert.equal(find('.ember-power-select-multiple-option').innerText, '× JA3');
+    assert.equal(find('.ember-power-select-multiple-option').innerText, '× JA3 Certificates');
     return settled();
   });
 

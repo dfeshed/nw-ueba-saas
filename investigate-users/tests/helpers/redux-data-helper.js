@@ -63,6 +63,7 @@ export default class DataHelper {
           alertTypes: null,
           departments: null,
           indicatorTypes: null,
+          entityType: 'userId',
           isWatched: false,
           locations: null,
           minScore: null,

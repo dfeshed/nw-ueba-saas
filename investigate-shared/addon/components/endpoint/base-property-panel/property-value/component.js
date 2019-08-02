@@ -95,7 +95,7 @@ export default Component.extend({
       if (user.includes('\\')) {
         user = user.split('\\')[1];
       }
-      const path = `${window.location.origin}/investigate/users?ueba=/username/${user}`;
+      const path = `${window.location.origin}/investigate/entities?ueba=/username/${user}`;
       window.open(path);
 
     }

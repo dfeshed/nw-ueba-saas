@@ -66,6 +66,8 @@ const dispatchToActions = {
 
 const OverviewAlertTimelineComponent = Component.extend({
 
+  classNames: 'user-overview-tab_alerts_timeline',
+
   _renderAlertsTimeLine(data) {
     const _that = this;
     const svg = select('#alertTimeline');

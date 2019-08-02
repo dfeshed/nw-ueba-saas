@@ -31,7 +31,7 @@ module('Integration | Component | overview-tab/alerts', function(hooks) {
   test('it should show proper count for alerts', async function(assert) {
     new ReduxDataHelper(setState).topAlerts(alertOverview.data).build();
     await render(hbs `{{overview-tab/alerts}}`);
-    assert.equal(findAll('.user-overview-tab_upper_alerts_container_pill').length, 10);
+    assert.equal(findAll('.user-overview-tab_alerts_alerts_container_pill').length, 10);
   });
   test('it should show loader till data is not there', async function(assert) {
     new ReduxDataHelper(setState).topAlerts([]).build();

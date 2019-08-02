@@ -38,14 +38,14 @@ module('Integration | Component | overview-tab/user', function(hooks) {
 
   test('it renders', async function(assert) {
     await render(hbs `{{overview-tab/user}}`);
-    assert.equal(find('.user-overview-tab_title').textContent.trim(), 'High Risk Users');
+    assert.equal(find('.user-overview-tab_title').textContent.trim(), 'High Risk USERS');
   });
 
   test('it should show proper count', async function(assert) {
     new ReduxDataHelper(setState).build();
     await render(hbs `{{overview-tab/user}}`);
-    assert.equal(findAll('.user-overview-tab_upper_users_row').length, 5);
-    assert.equal(findAll('.rsa-icon-view-1-filled').length, 1);
+    assert.equal(findAll('.user-overview-tab_users_row').length, 5);
+    assert.equal(findAll('.rsa-icon-view-1-filled').length, 2);
   });
 
   test('it should show loader till data is not there', async function(assert) {
@@ -66,7 +66,7 @@ module('Integration | Component | overview-tab/user', function(hooks) {
     const redux = this.owner.lookup('service:redux');
     redux.dispatch(getUserOverview());
     await render(hbs `{{overview-tab/user}}`);
-    click('.user-overview-tab_upper_users_row');
+    click('.user-overview-tab_users_row');
     const select = waitForReduxStateChange(redux, 'user.userId');
     return select.then(() => {
       const state = redux.getState();

@@ -5140,6 +5140,7 @@ effects the previewed source.',
     }
   },
   investigateUsers: {
+    entities: 'Entities',
     export: 'Export',
     sortBy: 'Sort By',
     sortOptions: {
@@ -5148,9 +5149,9 @@ effects the previewed source.',
       alertsCount: 'Alerts'
     },
     entityTypes: {
-      userId: 'USER',
-      ja3: 'JA3',
-      sslSubject: 'SSL Subject'
+      userId: 'USERS',
+      ja3: 'JA3 Certificates',
+      sslSubject: 'SSL Subjects'
     },
     resetFilters: 'Reset Filters',
     addToFavorites: 'Add To Favorites',
@@ -5200,9 +5201,9 @@ effects the previewed source.',
       title: 'Users',
       addAllToWatchedList: 'Add All To WatchList',
       removeAllFromWatchedList: 'Remove All From WatchedList',
-      highRisk: 'High Risk Users',
+      highRisk: 'High Risk',
       all: 'All Users',
-      risky: 'Risky Users',
+      risky: 'Risky',
       watched: 'Watched',
       admin: 'Admin',
       filters: {
@@ -5210,9 +5211,8 @@ effects the previewed source.',
         title: 'Filters',
         allTypes: 'All Types',
         indicators: 'Indicators',
-        riskyUsers: 'Risky Users',
-        watchlistUsers: 'Watchlist Users',
-        adminUsers: 'Admin Users',
+        riskyUsers: 'Risky',
+        watchlistUsers: 'Watchlist',
         entityType: 'Entity Type'
       }
     },

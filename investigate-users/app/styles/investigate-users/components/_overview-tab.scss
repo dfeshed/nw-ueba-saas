@@ -2,115 +2,146 @@
   .user-overview-tab {
     height: calc(100% - 45px);
 
+    display: flex;
     &_title {
       color: text-color(primary, light);
       @include rsa-font(header);
-      padding: 2*rsa-whitespace() rsa-whitespace()+rsa-whitespace(less);
+      padding: rsa-whitespace() rsa-whitespace() + rsa-whitespace(less);
       border-bottom: 2px SOLID background-color(primary, darker);
     }
 
-    &_upper {
-      height: 70%;
+    &_users {
+      width: 30%;
       flex-direction: row;
       display: flex;
+      padding: 0 rsa-whitespace();
 
-      &_users {
-        width: 30%;
-        padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
-
-        > div {
-          background-color: background-color(primary, darker);
-          height: 100%;
-        }
-
-        &_rows {
-          height: calc(100% - 120px);
-          overflow-y: auto;
-          padding: rsa-whitespace()+rsa-whitespace(less);
-        }
-
-        &_row {
-          padding: rsa-whitespace(less) 0;
-          height: 60px;
-          text-align: center;
-          cursor: pointer;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-          border-bottom: 1px SOLID background-color(primary, dark);
-
-          &_score {
-            width: 60px;
-            .rsa-content-badge-score {
-              padding: 0.25rem;
-              .score {
-                @include rsa-font(bold, large);
-              }
-            }
-            .rsa-content-badge-score  > svg > circle {
-              stroke-width: 3px;
-            }
-          }
-
-          &_name {
-            align-items: center;
-            display: flex;
-            color: text-color(secondary, light);
-            width: calc(100% - 120px);
-            @include rsa-font(bold);
-            color: text-color(secondary, light);
-            padding: rsa-whitespace(less) rsa-whitespace();
-          }
-
-          &_icon {
-            align-items: center;
-            display: flex;
-            padding: rsa-whitespace(less);
-            width: 30px;
-            .rsa-icon.is-large {
-              font-size: 1.75em;
-              color: text-color(primary, lighter);
-            }
-          }
-        }
-
-        &_row:hover {
-          background-color: background-color(primary, darkest);
-        }
-
+      > div {
+        background-color: background-color(primary, darker);
+        width: 100%;
       }
 
-      &_alerts {
-        width: 70%;
-        padding: rsa-whitespace();
-
+      &_entities {
+        display: flex;
+        justify-content: space-between;
+        padding: rsa-whitespace(less) rsa-whitespace(less);
+        border-bottom: 2px SOLID background-color(primary, darker);
         > div {
-          background-color: background-color(primary, darker);
-          height: 100%;
+          flex-basis: 100%;
+          padding: rsa-whitespace(less);
+        }
+        .selected > button{
+          background-color: background-color(secondary, darkest) !important;
+        }
+      }
+
+      &_watched {
+        display: flex;
+        padding: 0 rsa-whitespace();
+        height: 30px;
+        &_risk {
+          > button {
+            border: none;
+          }
+          .rsa-icon {
+            color: text-color(accentFour, light);
+          }
+        }
+        &_watched {
+          > button {
+            border: none;
+          }
+          .rsa-icon {
+            color: text-color(accentThree, light);
+          }
+        }
+      }
+
+      &_rows {
+        height: calc(100% - 180px);
+        overflow-y: auto;
+        padding: rsa-whitespace() + rsa-whitespace(less);
+      }
+
+      &_row {
+        padding: rsa-whitespace(less) 0;
+        height: 60px;
+        text-align: center;
+        cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        border-bottom: 1px SOLID background-color(primary, dark);
+
+        &_score {
+          width: 60px;
+          .rsa-content-badge-score {
+            padding: 0.25rem;
+            .score {
+              @include rsa-font(bold, large);
+            }
+          }
+          .rsa-content-badge-score > svg > circle {
+            stroke-width: 3px;
+          }
         }
 
+        &_name {
+          align-items: center;
+          display: flex;
+          color: text-color(secondary, light);
+          width: calc(100% - 120px);
+          @include rsa-font(bold);
+          color: text-color(secondary, light);
+          padding: rsa-whitespace(less) rsa-whitespace();
+        }
+
+        &_icon {
+          align-items: center;
+          display: flex;
+          padding: rsa-whitespace(less);
+          width: 30px;
+          .rsa-icon.is-large {
+            font-size: 1.75em;
+            color: text-color(primary, lighter);
+          }
+        }
+      }
+
+      &_row:hover {
+        background-color: background-color(primary, darkest);
+      }
+    }
+
+    &_alerts {
+      width: 70%;
+      padding: 0 rsa-whitespace() rsa-whitespace() 0;
+
+      &_alerts {
+        height: 70%;
+        background-color: background-color(primary, darker);
+        margin-bottom: 1rem;
         &_container {
           color: text-color(primary, lightest);
           height: calc(100% - 120px);
           overflow-y: auto;
-          padding-top: rsa-whitespace();
-
+  
           .Critical {
             background-color: text-color(accentOne, dark);
           }
-
+  
           .High {
             background-color: text-color(accentThree, dark);
           }
-
+  
           .Medium {
             background-color: text-color(accentFour, dark);
           }
-
+  
           .Low {
             background-color: text-color(accentTwo, dark);
           }
-
+  
           &_pill {
             width: calc(50% - 20px);
             height: 75px;
@@ -121,32 +152,32 @@
             justify-content: space-between;
             border-bottom: 1px SOLID background-color(primary, dark);
             margin: 0 rsa-whitespace(less);
-
+  
             &_rating {
               display: flex;
               padding: rsa-whitespace(less);
               width: 80%;
               align-items: center;
-
+  
               &_score {
                 height: 18px;
                 border-radius: 6px;
                 width: 6px;
               }
-
+  
               &_text {
                 @include rsa-font(header);
                 color: text-color(primary, light);
                 padding: rsa-whitespace(less);
               }
             }
-
+  
             &_details {
               display: flex;
               flex-direction: column;
               padding: 0 rsa-whitespace();
               width: calc(100% - 80px);
-
+  
               &_name {
                 white-space: nowrap;
                 overflow: hidden;
@@ -154,14 +185,14 @@
                 padding: 0 .35rem;
                 color: text-color(secondary, light);
                 @include rsa-font(default);
-
+  
                 &_text {
                   white-space: nowrap;
                   overflow: hidden;
                   text-overflow: ellipsis;
                   padding-right: rsa-whitespace(less);
                 }
-
+  
                 &_time {
                   white-space: nowrap;
                   overflow: hidden;
@@ -169,14 +200,14 @@
                   color: text-color(primary);
                 }
               }
-
+  
               &_time {
                 white-space: nowrap;
                 overflow: hidden;
                 display: inline-flex;
                 padding: rsa-whitespace(least) rsa-whitespace(least) 0 rsa-whitespace(least);
                 @include rsa-font(default, small);
-
+  
                 &_name {
                   white-space: nowrap;
                   overflow: hidden;
@@ -184,7 +215,7 @@
                   color: text-color(primary, lighter);
                   padding: rsa-whitespace(least);
                 }
-
+  
                 &_time {
                   white-space: nowrap;
                   overflow: hidden;
@@ -194,141 +225,46 @@
                 }
               }
             }
-
+  
             &_indicator {
               display: flex;
               width: 20%;
               flex-direction: column;
               justify-content: center;
               align-items: center;
-
+  
               &_count {
                 @include rsa-font(header, larger);
                 display: flex;
                 justify-content: center;
                 color: text-color(primary, lightest);
               }
-
+  
               &_text {
                 color: text-color(primary);
                 padding-top: rsa-whitespace(least);
                 @include rsa-font(default, small);
               }
-
+  
               &_list {
                 color: text-color(secondary, dark);
               }
             }
           }
-
+  
           &_pill:hover {
             background-color: background-color(primary, darkest);
           }
         }
       }
-    }
 
-    &_lower {
-      height: 30%;
-      min-height: 150px;
-      flex-direction: row;
-      display: flex;
-
-      &_users {
-        width: 30%;
-        padding: 0 rsa-whitespace() rsa-whitespace();
-
-        > div {
-          background-color: background-color(primary, darker);
-          height: 100%;
-        }
-
-        &_watched {
-          display: flex;
-          flex-direction: row;
-          justify-content: space-evenly;
-          text-align: center;
-          padding: rsa-whitespace(less);
-          height: 115px;
-
-          > div {
-            padding: rsa-whitespace(less);
-          }
-
-          .rsa-form-button {
-            height: 100%;
-            justify-content: space-between;
-            min-width: 100px;
-            min-height: 120px;
-            text-align: -webkit-center;
-            border: none;
-            display: flex !important;
-            flex-direction: column;
-            padding: rsa-whitespace() rsa-whitespace() 2*rsa-whitespace() rsa-whitespace(); 
-
-            > div {
-              align-self: center;
-              margin: 0;
-
-              > i {
-                margin-left: rsa-whitespace(less) !important;
-              }
-            }
-          }
-
-          .rsa-form-button:hover {
-            background-color: background-color(primary, darkest);
-          }
-
-          .count {
-            @include rsa-font(bold, large);
-            color: text-color(secondary, light);
-            padding-top: rsa-whitespace(less);
-          }
-
-          .text {
-            @include rsa-font(default);
-          }
-
-          &_risk {
-            height: 100%;
-
-            > button > div > i {
-              color: text-color(accentThree);
-            }
-          }
-
-          &_watched {
-            height: 100%;
-
-            > button > div > i {
-              color: text-color(accentOne);
-            }
-          }
-
-          &_admin {
-            height: 100%;
-
-            > button > div > i {
-              color: text-color(primary);
-            }
-          }
-
-        }
-      }
-
-      &_alerts {
-        width: 70%;
-        padding: 0 rsa-whitespace() rsa-whitespace() 0;
+      &_timeline {
+        background-color: background-color(primary, darker);
+        height: 30%;
 
         &_graph {
-          height: calc(100% - 65px);
+          height: calc(100% - 80px);
           padding: rsa-whitespace(least);
-        }
-
-        > div {
-          background-color: background-color(primary, darker);
-          height: 100%;
         }
       }
     }
@@ -355,7 +291,6 @@
     @include rsa-font(default, smaller);
     fill: text-color(primary, light);
   }
-
 }
 
 .user_alert_indicator_panel {
