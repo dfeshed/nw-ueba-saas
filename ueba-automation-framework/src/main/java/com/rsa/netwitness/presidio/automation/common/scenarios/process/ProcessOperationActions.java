@@ -21,6 +21,7 @@ import presidio.data.generators.user.SingleUserGenerator;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntFunction;
 
 import static com.rsa.netwitness.presidio.automation.common.helpers.UserNamesList.USER_NAMES;
 import static java.util.Arrays.asList;
@@ -376,8 +377,8 @@ public class ProcessOperationActions {
         opGenerator.setOperationTypeGenerator(opTypeGenerator);
 
         WindowsProcessEntityGenerator destProcessEntryGenerator = new WindowsProcessEntityGenerator();
-
-        StringListCyclicGenerator categoriesGenerator = new StringListCyclicGenerator((List<String>[]) appCategoriesList.toArray());
+        List<String>[] appCategoriesListConverted = appCategoriesList.stream().toArray((IntFunction<List<String>[]>) List[]::new);
+        StringListCyclicGenerator categoriesGenerator = new StringListCyclicGenerator(appCategoriesListConverted);
         destProcessEntryGenerator.setProcessCategoriesGenerator(categoriesGenerator);
 
         ProcessFileEntityGenerator processFileGenerator = new ProcessFileEntityGenerator(DST_PROCESS_FILES);

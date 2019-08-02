@@ -15,15 +15,13 @@ public class AlertsScenarioDataPreparation extends DataPreparationBase {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
             LoggerFactory.getLogger(AlertsScenarioDataPreparation.class.getName());
 
-    private AlertsScenario alertsScenario;
-
     @Override
     protected List<? extends Event> generate() throws GeneratorException {
         LOGGER.info("Going to generate events for Alert scenarios");
 
-        alertsScenario = new AlertsScenario(historicalDaysBack, anomalyDay);
+        AlertsScenario alertsScenario = new AlertsScenario(historicalDaysBack, anomalyDay);
 
-        List<? extends Event> resultingList = Stream.of(
+        return Stream.of(
                 alertsScenario.getSortedAuthenticationEvents().stream(),
                 alertsScenario.getSortedActiveDirectoryEvents().stream(),
                 alertsScenario.getSortedFileEvents().stream(),
@@ -31,8 +29,6 @@ public class AlertsScenarioDataPreparation extends DataPreparationBase {
                 alertsScenario.getSortedRegistryEvents().stream()
 
         ).flatMap(i -> i).collect(Collectors.toList());
-
-        return resultingList;
     }
 
     @Test
