@@ -2,7 +2,7 @@ import { warn } from '@ember/debug';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
-import { run } from '@ember/runloop';
+import { next, run } from '@ember/runloop';
 
 import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
 import * as MESSAGE_TYPES from '../message-types';
@@ -93,6 +93,8 @@ const isEventFiredFromQueryPill = (event) => {
   return includesQueryPillClass;
 };
 
+const _hasCloseParenToRight = (pd, i) => pd[i] && pd[i].type === CLOSE_PAREN;
+
 const QueryPills = RsaContextMenu.extend({
   tagName: null,
 
@@ -148,7 +150,7 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   @computed('pillsData')
-  newPillPosition: (pillsData) => pillsData.length,
+  lastIndex: (pillsData) => pillsData.length,
 
   @computed
   contextItems() {
@@ -216,7 +218,8 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.CREATE_TEXT_PILL]: (data, position) => this._createTextPill(data, position),
       [MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT]: (data) => this._fetchRecentQueries(data),
       [MESSAGE_TYPES.RECENT_QUERY_PILL_CREATED]: (data, position) => this._recentQueryPillCreated(data, position),
-      [MESSAGE_TYPES.PILL_OPEN_PAREN]: (data, position) => this._insertParens(position)
+      [MESSAGE_TYPES.PILL_OPEN_PAREN]: (data, position) => this._insertParens(position),
+      [MESSAGE_TYPES.PILL_CLOSE_PAREN]: (data, position) => this._moveToRightFrom(position)
     });
     this.setProperties({
       CLOSE_PAREN,
@@ -606,6 +609,30 @@ const QueryPills = RsaContextMenu.extend({
     const newPosition = position + 1;
     this.set('startTriggeredPosition', newPosition);
     this.send('addParens', { position });
+  },
+
+  /**
+   * Move cursor one position to the right.
+   * @paren {number} position The position to move from.
+   */
+  _moveToRightFrom(position) {
+    let input;
+    const pillsData = this.get('pillsData');
+    const hasCloseParenToRight = _hasCloseParenToRight(pillsData, position);
+    const trigger = document.querySelectorAll('.new-pill-trigger-container')[position];
+    if (trigger) {
+      input = trigger.querySelector('input');
+    }
+    // Look to see if there is a close paren directly to the right. If there is,
+    // move focus to the NPT to the right of the close paren
+    if (hasCloseParenToRight && input) {
+      input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      // Allow time for the simulated ESC key to do it's thing before moving
+      // to the new NPT
+      next(this, this._openNewPillTriggerRight, position);
+    } else if (input) {
+      input.focus();
+    }
   }
 });
 

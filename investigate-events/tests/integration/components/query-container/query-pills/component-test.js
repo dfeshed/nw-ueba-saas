@@ -20,13 +20,14 @@ import {
 } from 'investigate-events/constants/pill';
 import initializationCreators from 'investigate-events/actions/initialization-creators';
 
-const ENTER_KEY = KEY_MAP.enter.code;
-const ESCAPE_KEY = KEY_MAP.escape.code;
-const DELETE_KEY = KEY_MAP.delete.code;
-const BACKSPACE_KEY = KEY_MAP.backspace.code;
-const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
-const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
-const SPACE_KEY = KEY_MAP.space.code;
+const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.key;
+const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.key;
+const BACKSPACE_KEY = KEY_MAP.backspace.key;
+const CLOSE_PAREN_KEY = KEY_MAP.closeParen.key;
+const DELETE_KEY = KEY_MAP.delete.key;
+const ENTER_KEY = KEY_MAP.enter.key;
+const ESCAPE_KEY = KEY_MAP.escape.key;
+const SPACE_KEY = KEY_MAP.space.key;
 const modifiers = { shiftKey: true };
 
 const newActionSpy = sinon.spy(guidedCreators, 'addGuidedPill');
@@ -2787,6 +2788,51 @@ module('Integration | Component | Query Pills', function(hooks) {
     // clicking close will also click open
     await click(PILL_SELECTORS.openParen);
     assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 2, 'found 2 parens selected');
+  });
+
+  test('Typing ")" when there is a close paren to the right will move focus to right', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+    await leaveNewPillTemplate();
+
+    // NPT, (, NPT, pill, NPT, ), new pill template
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+    assert.equal(triggers.length, 3, 'should be three triggers');
+    // focus on NPT to the right of the pill
+    triggers[2].click();
+
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', CLOSE_PAREN_KEY);
+    assert.notOk(findAll('.new-pill-trigger input').length, 'The no new-pill-triggers are open for input');
+    assert.equal(find('.new-pill-template input').value, '', 'The new-pill-template does not have a close paren in it');
+  });
+
+  test('Typing ")" when there is NOT a close paren to the right will do nothing', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+    await leaveNewPillTemplate();
+
+    // NPT, (, NPT, pill, NPT, ), new pill template
+    const triggers = findAll(PILL_SELECTORS.newPillTriggerContainer);
+    assert.equal(triggers.length, 3, 'should be three triggers');
+
+    // focus on NPT to the right of the open paren and type a ")"
+    await click(triggers[1]);
+    await typeIn(PILL_SELECTORS.metaInput, ')');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, ')', 'The new-pill-template still has a close paren in it');
   });
 
 });

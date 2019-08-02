@@ -12,8 +12,8 @@ import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
 import guidedCreators from 'investigate-events/actions/guided-creators';
 
-const ENTER_KEY = KEY_MAP.enter.code;
-const X_KEY = 88;
+const ENTER_KEY = KEY_MAP.enter.key;
+const X_KEY = 'KeyX';
 
 const addFreeFormFilterSpy = sinon.spy(guidedCreators, 'addFreeFormFilter');
 const updatedFreeFormTextSpy = sinon.spy(guidedCreators, 'updatedFreeFormText');

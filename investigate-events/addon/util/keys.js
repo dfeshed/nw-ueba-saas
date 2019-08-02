@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 /**
- * Map of `keyCode` and `key` values that would come from a `keyboardEvent`.
+ * Map of `code` and `key` values that would come from a `keyboardEvent`.
  * @private
  */
 const keyMap = {
@@ -10,6 +10,7 @@ const keyMap = {
   arrowRight: { code: 39, key: 'ArrowRight' },
   arrowUp: { code: 38, key: 'ArrowUp' },
   backspace: { code: 8, key: 'Backspace' },
+  closeParen: { code: 48, key: ')' },
   delete: { code: 46, key: 'Delete' },
   enter: { code: 13, key: 'Enter' },
   escape: { code: 27, key: 'Escape' },
@@ -27,7 +28,7 @@ const keyMap = {
  * @return Boolean
  * @private
  */
-const matches = ({ code, key }, value) => code === value || key === value;
+const matches = ({ code, key }, value) => key === value || code === value;
 
 // The following are function partials. They take in a function, and a value to
 // supply that function as a parameter. In this case we're passing in an object
@@ -39,13 +40,14 @@ const matchesArrowLeft = _.partial(matches, keyMap.arrowLeft);
 const matchesArrowRight = _.partial(matches, keyMap.arrowRight);
 const matchesArrowUp = _.partial(matches, keyMap.arrowUp);
 const matchesBackspace = _.partial(matches, keyMap.backspace);
+const matchesCloseParen = _.partial(matches, keyMap.closeParen);
+const matchesDelete = _.partial(matches, keyMap.delete);
 const matchesEnter = _.partial(matches, keyMap.enter);
 const matchesEscape = _.partial(matches, keyMap.escape);
+const matchesOpenParen = _.partial(matches, keyMap.openParen);
+const matchesShift = _.partial(matches, keyMap.shift);
 const matchesSpace = _.partial(matches, keyMap.space);
 const matchesTab = _.partial(matches, keyMap.tab);
-const matchesDelete = _.partial(matches, keyMap.delete);
-const matchesShift = _.partial(matches, keyMap.shift);
-const matchesOpenParen = _.partial(matches, keyMap.openParen);
 
 /**
  * Is the event from a down arrow keyboard event?
@@ -53,94 +55,97 @@ const matchesOpenParen = _.partial(matches, keyMap.openParen);
  * @return A Boolean value.
  * @public
  */
-export const isArrowDown = (event) => matchesArrowDown(event.keyCode);
+export const isArrowDown = (event) => matchesArrowDown(event.key);
 /**
  * Is the event from a left arrow keyboard event?
  * @param {Object} event A KeyboardEvent.
  * @return A Boolean value.
  * @public
  */
-export const isArrowLeft = (event) => matchesArrowLeft(event.keyCode);
+export const isArrowLeft = (event) => matchesArrowLeft(event.key);
 /**
  * Is the event from a right arrow keyboard event?
  * @param {Object} event A KeyboardEvent.
  * @return A Boolean value.
  * @public
  */
-export const isArrowRight = (event) => matchesArrowRight(event.keyCode);
+export const isArrowRight = (event) => matchesArrowRight(event.key);
 /**
  * Is the event from an up arrow keyboard event?
  * @param {Object} event A KeyboardEvent.
  * @return A Boolean value.
  * @public
  */
-export const isArrowUp = (event) => matchesArrowUp(event.keyCode);
+export const isArrowUp = (event) => matchesArrowUp(event.key);
 /**
  * Is the event from the backspace keyboard event?
  * @param {Object} event A KeyboardEvent.
  * @return A Boolean value.
  * @public
  */
-export const isBackspace = (event) => matchesBackspace(event.keyCode);
+export const isBackspace = (event) => matchesBackspace(event.key);
 /**
- * Is the event from an enter keyboard event?
+ * Is the event from shit + 0?
  * @param {Object} event A KeyboardEvent.
  * @return A Boolean value.
  * @public
  */
-export const isEnter = (event) => matchesEnter(event.keyCode);
+export const isCloseParen = (event) => matchesCloseParen(event.key);
 /**
  * Is the event from an delete keyboard event?
  * @param {Object} event A KeyboardEvent.
  * @return A Boolean value.
  * @public
  */
-export const isDelete = (event) => matchesDelete(event.keyCode);
+export const isDelete = (event) => matchesDelete(event.key);
+/**
+ * Is the event from an enter keyboard event?
+ * @param {Object} event A KeyboardEvent.
+ * @return A Boolean value.
+ * @public
+ */
+export const isEnter = (event) => matchesEnter(event.key);
 /**
  * Is the event from an escape keyboard event?
  * @param {Object} event A KeyboardEvent.
  * @return A Boolean value.
  * @public
  */
-export const isEscape = (event) => matchesEscape(event.keyCode);
-/**
- * Is the event from a shift keyboard event?
- * @param {Object} event A KeyboardEvent.
- * @return A Boolean value.
- * @public
- */
-export const isShift = (event) => matchesShift(event.keyCode);
-/**
- * Is the event from a space keyboard event?
- * @param {Object} event A KeyboardEvent.
- * @return A Boolean value.
- * @public
- */
-export const isSpace = (event) => matchesSpace(event.keyCode);
-/**
- * Is the event from a tab keyboard event?
- * @param {Object} event A KeyboardEvent.
- * @return A Boolean value.
- * @public
- */
-export const isTab = (event) => matchesTab(event.keyCode);
-/**
- * Is the event from shit + tab?
- * @param {Object} event A KeyboardEvent.
- * @return A Boolean value.
- * @public
- */
-export const isShiftTab = (event) => matchesTab(event.keyCode) && event.shiftKey;
+export const isEscape = (event) => matchesEscape(event.key);
 /**
  * Is the event from shit + 9?
  * @param {Object} event A KeyboardEvent.
  * @return A Boolean value.
  * @public
  */
-export const isOpenParen = (event) => {
-  // In the test env, `event.keyCode` is NaN, so let's key off of `event.key`
-  // as all modern browsers support `key`.
-  return matchesOpenParen(event.key);
-};
+export const isOpenParen = (event) => matchesOpenParen(event.key);
+/**
+ * Is the event from a shift keyboard event?
+ * @param {Object} event A KeyboardEvent.
+ * @return A Boolean value.
+ * @public
+ */
+export const isShift = (event) => matchesShift(event.key);
+/**
+ * Is the event from shit + tab?
+ * @param {Object} event A KeyboardEvent.
+ * @return A Boolean value.
+ * @public
+ */
+export const isShiftTab = (event) => matchesTab(event.key) && event.shiftKey;
+/**
+ * Is the event from a space keyboard event?
+ * @param {Object} event A KeyboardEvent.
+ * @return A Boolean value.
+ * @public
+ */
+export const isSpace = (event) => matchesSpace(event.key);
+/**
+ * Is the event from a tab keyboard event?
+ * @param {Object} event A KeyboardEvent.
+ * @return A Boolean value.
+ * @public
+ */
+export const isTab = (event) => matchesTab(event.key);
 
 export default keyMap;

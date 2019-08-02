@@ -110,6 +110,9 @@ export default Component.extend({
           break;
         case MESSAGE_TYPES.PILL_OPEN_PAREN:
           this._broadcast(type, data);
+          break;
+        case MESSAGE_TYPES.PILL_CLOSE_PAREN:
+          this._broadcast(type, data);
       }
     }
   },

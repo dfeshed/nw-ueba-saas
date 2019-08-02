@@ -15,6 +15,7 @@ import KEY_MAP, {
   isArrowLeft,
   isArrowRight,
   isArrowUp,
+  isCloseParen,
   isEnter,
   isEscape,
   isOpenParen,
@@ -220,6 +221,7 @@ export default Component.extend({
       [KEY_MAP.arrowLeft.key]: this._navigationHandler.bind(this),
       [KEY_MAP.arrowRight.key]: this._navigationHandler.bind(this),
       [KEY_MAP.arrowUp.key]: this._navigationHandler.bind(this),
+      [KEY_MAP.closeParen.key]: this._groupingHandler.bind(this),
       [KEY_MAP.enter.key]: this._commandHandler.bind(this),
       [KEY_MAP.escape.key]: this._commandHandler.bind(this),
       [KEY_MAP.openParen.key]: this._groupingHandler.bind(this),
@@ -535,6 +537,8 @@ export default Component.extend({
       powerSelectAPI.actions.close();
       this._broadcast(MESSAGE_TYPES.PILL_OPEN_PAREN);
       return false;
+    } else if (isCloseParen(event) && _isFirstChar(event)) {
+      this._broadcast(MESSAGE_TYPES.PILL_CLOSE_PAREN);
     }
     return true;
   },

@@ -303,7 +303,8 @@ export default Component.extend({
       [MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED]: ({ data, dataSource }) => this._recentQueryTextEntered(data, dataSource),
       [MESSAGE_TYPES.RECENT_QUERIES_ESCAPE_KEY]: () => this._cancelPill(),
       [MESSAGE_TYPES.RECENT_QUERY_SELECTED]: (data) => this._recentQuerySelected(data),
-      [MESSAGE_TYPES.PILL_OPEN_PAREN]: () => this._insertParens()
+      [MESSAGE_TYPES.PILL_OPEN_PAREN]: () => this._openParen(),
+      [MESSAGE_TYPES.PILL_CLOSE_PAREN]: () => this._closeParen()
     });
 
     if (this.get('isExistingPill')) {
@@ -1104,10 +1105,17 @@ export default Component.extend({
   },
 
   /**
-   * Broadcast desire to insert parens wrapping current position.
+   * Broadcast that an open paren was pressed.
    */
-  _insertParens() {
+  _openParen() {
     this._broadcast(MESSAGE_TYPES.PILL_OPEN_PAREN);
+  },
+
+  /**
+   * Broadcast that a close paren was pressed.
+   */
+  _closeParen() {
+    this._broadcast(MESSAGE_TYPES.PILL_CLOSE_PAREN);
   },
 
   // ************************ EPS TAB FUNCTIONALITY *************************  //

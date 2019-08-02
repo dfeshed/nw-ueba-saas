@@ -8,12 +8,12 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import PILL_SELECTORS from '../pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
 
-const DeleteKey = KEY_MAP.delete.code;
-const Backspace = KEY_MAP.backspace.code;
-const Enter = KEY_MAP.enter.code;
-const LeftArrowKey = KEY_MAP.arrowLeft.code;
-const RightArrowKey = KEY_MAP.arrowRight.code;
-const XKey = 88;
+const LeftArrowKey = KEY_MAP.arrowLeft.key;
+const RightArrowKey = KEY_MAP.arrowRight.key;
+const Backspace = KEY_MAP.backspace.key;
+const DeleteKey = KEY_MAP.delete.key;
+const Enter = KEY_MAP.enter.key;
+const XKey = 'KeyX';
 
 module('Integration | Component | focus-holder', function(hooks) {
   setupRenderingTest(hooks, {

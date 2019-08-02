@@ -16,12 +16,12 @@ import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
 import { toggleTab } from '../pill-util';
 
-const BACKSPACE_KEY = KEY_MAP.backspace.code;
-const ENTER_KEY = KEY_MAP.enter.code;
-const ESCAPE_KEY = KEY_MAP.escape.code;
-const LEFT_ARROW_KEY = KEY_MAP.arrowLeft.code;
-const ARROW_DOWN = KEY_MAP.arrowDown.code;
-const TAB_KEY = KEY_MAP.tab.code;
+const BACKSPACE_KEY = KEY_MAP.backspace.key;
+const ENTER_KEY = KEY_MAP.enter.key;
+const ESCAPE_KEY = KEY_MAP.escape.key;
+const LEFT_ARROW_KEY = KEY_MAP.arrowLeft.key;
+const ARROW_DOWN = KEY_MAP.arrowDown.key;
+const TAB_KEY = KEY_MAP.tab.key;
 const modifiers = { shiftKey: true };
 
 const { log } = console;// eslint-disable-line no-unused-vars

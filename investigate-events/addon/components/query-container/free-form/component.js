@@ -5,6 +5,7 @@ import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { freeFormText, hasRequiredValuesToQuery } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { validMetaKeySuggestions, languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { addFreeFormFilter, deleteAllGuidedPills, updatedFreeFormText } from 'investigate-events/actions/guided-creators';
+import { isEnter } from 'investigate-events/util/keys';
 
 const stateToComputed = (state) => ({
   freeFormText: freeFormText(state),
@@ -80,7 +81,7 @@ const freeForm = Component.extend({
 
   actions: {
     keyDown(value, e) {
-      if (e.keyCode === 13 && this.get('hasRequiredValuesToQuery')) {
+      if (isEnter(e) && this.get('hasRequiredValuesToQuery')) {
         e.target.blur();
         this.throttledFocusOut(e);
         this.executeQuery();

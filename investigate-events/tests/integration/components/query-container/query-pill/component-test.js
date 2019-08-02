@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
-import { blur, click, fillIn, find, findAll, focus, render, triggerKeyEvent, waitUntil, settled } from '@ember/test-helpers';
+import { blur, click, fillIn, find, findAll, focus, render, triggerKeyEvent, typeIn, waitUntil, settled } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -22,19 +22,18 @@ import PILL_SELECTORS from '../pill-selectors';
 let setState;
 let metaOptions = [];
 let languageAndAliases = {};
-const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
-const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
-const ARROW_DOWN_KEY = KEY_MAP.arrowDown.code;
-const ENTER_KEY = KEY_MAP.enter.code;
-const ESCAPE_KEY = KEY_MAP.escape.code;
-const X_KEY = 88;
-const THREE_KEY = 51;
-const DELETE_KEY = KEY_MAP.delete.code;
-const BACKSPACE_KEY = KEY_MAP.backspace.code;
-const TAB_KEY = KEY_MAP.tab.code;
-const SPACE_KEY = KEY_MAP.space.code;
+const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.key;
+const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.key;
+const ARROW_DOWN_KEY = KEY_MAP.arrowDown.key;
+const BACKSPACE_KEY = KEY_MAP.backspace.key;
+const DELETE_KEY = KEY_MAP.delete.key;
+const ENTER_KEY = KEY_MAP.enter.key;
+const ESCAPE_KEY = KEY_MAP.escape.key;
+const SPACE_KEY = KEY_MAP.space.key;
+const TAB_KEY = KEY_MAP.tab.key;
+const THREE_KEY = '3';
+const X_KEY = 'KeyX';
 const modifiers = { shiftKey: true };
-const OPEN_PAREN = KEY_MAP.openParen.key;
 
 const trim = (text) => text.replace(/\s+/g, '').trim();
 
@@ -2838,7 +2837,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', ENTER_KEY);
   });
 
-  test('it dispatched the correct event when an open paren is typed', async function(assert) {
+  test('it dispatched the correct event when a "(" is typed', async function(assert) {
     const done = assert.async();
     new ReduxDataHelper(setState)
       .pillsDataEmpty()
@@ -2860,6 +2859,31 @@ module('Integration | Component | Query Pill', function(hooks) {
       }}
     `);
     await clickTrigger(PILL_SELECTORS.meta);
-    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', OPEN_PAREN);
+    await typeIn(PILL_SELECTORS.metaInput, '(');
+  });
+
+  test('it dispatched the correct event when a ")" is typed', async function(assert) {
+    const done = assert.async();
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (messageType, data) => {
+      if (messageType === MESSAGE_TYPES.PILL_CLOSE_PAREN) {
+        assert.deepEqual(data, undefined, 'should not include pill data');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        metaOptions=metaOptions
+        position=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeIn(PILL_SELECTORS.metaInput, ')');
   });
 });

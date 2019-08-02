@@ -18,14 +18,14 @@ import { toggleTab } from '../pill-util';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
-const ARROW_DOWN = KEY_MAP.arrowDown.code;
-const ARROW_LEFT = KEY_MAP.arrowLeft.code;
-const ARROW_RIGHT = KEY_MAP.arrowRight.code;
-const ARROW_UP = KEY_MAP.arrowUp.code;
-const BACKSPACE_KEY = KEY_MAP.backspace.code;
-const ENTER_KEY = KEY_MAP.enter.code;
-const ESCAPE_KEY = KEY_MAP.escape.code;
-const TAB_KEY = KEY_MAP.tab.code;
+const ARROW_DOWN = KEY_MAP.arrowDown.key;
+const ARROW_LEFT = KEY_MAP.arrowLeft.key;
+const ARROW_RIGHT = KEY_MAP.arrowRight.key;
+const ARROW_UP = KEY_MAP.arrowUp.key;
+const BACKSPACE_KEY = KEY_MAP.backspace.key;
+const ENTER_KEY = KEY_MAP.enter.key;
+const ESCAPE_KEY = KEY_MAP.escape.key;
+const TAB_KEY = KEY_MAP.tab.key;
 const modifiers = { shiftKey: true };
 
 const meta = { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A' };

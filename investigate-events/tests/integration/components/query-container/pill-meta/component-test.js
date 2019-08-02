@@ -24,13 +24,14 @@ import { filterValidMeta } from 'investigate-events/util/meta';
 let setState;
 let metaOptions = [];
 const { log } = console;// eslint-disable-line no-unused-vars
-const ARROW_DOWN = KEY_MAP.arrowDown.code;
-const ARROW_LEFT = KEY_MAP.arrowLeft.code;
-const ARROW_RIGHT = KEY_MAP.arrowRight.code;
-const ARROW_UP = KEY_MAP.arrowUp.code;
-const ENTER_KEY = KEY_MAP.enter.code;
-const ESCAPE_KEY = KEY_MAP.escape.code;
-const TAB_KEY = KEY_MAP.tab.code;
+const ARROW_DOWN = KEY_MAP.arrowDown.key;
+const ARROW_LEFT = KEY_MAP.arrowLeft.key;
+const ARROW_RIGHT = KEY_MAP.arrowRight.key;
+const ARROW_UP = KEY_MAP.arrowUp.key;
+const ENTER_KEY = KEY_MAP.enter.key;
+const ESCAPE_KEY = KEY_MAP.escape.key;
+const OPEN_PAREN = KEY_MAP.openParen.key;
+const TAB_KEY = KEY_MAP.tab.key;
 const modifiers = { shiftKey: true };
 
 // This trim also removes extra spaces inbetween words
@@ -960,12 +961,13 @@ module('Integration | Component | Pill Meta', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionDisabled).length, 1, 'incorrect number of disabled items');
   });
 
-  test('it broadcasts a message to insert parens', async function(assert) {
-    const done = assert.async();
+  test('it broadcasts a message that a "(" was pressed and is the only character', async function(assert) {
+    assert.expect(2);
     this.set('metaOptions', metaOptions);
     this.set('handleMessage', (type) => {
-      assert.equal(type, MESSAGE_TYPES.PILL_OPEN_PAREN, 'Correct message sent up');
-      done();
+      if (type === MESSAGE_TYPES.PILL_OPEN_PAREN) {
+        assert.ok(true, 'received proper message');
+      }
     });
     await render(hbs`
       {{query-container/pill-meta
@@ -975,7 +977,71 @@ module('Integration | Component | Pill Meta', function(hooks) {
       }}
     `);
     await clickTrigger(PILL_SELECTORS.meta);
-    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', '(');
+    // The other paren tests use typeIn, but we'll use triggerKeyEvent for this
+    // test because typeIn runs through all the key press events regardless if
+    // we stop it in our code. This will result in an open paren in the EPS
+    // input when there shouldn't be one.
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', OPEN_PAREN);
     assert.equal(find(PILL_SELECTORS.metaInput).value, '', 'There should be no text in the EPS input');
+  });
+
+  test('it does NOT broadcasts a message that a "(" was pressed if there are other character', async function(assert) {
+    assert.expect(1);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.PILL_OPEN_PAREN) {
+        assert.notOk(true, 'should not broadcast PILL_OPEN_PAREN message');
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        metaOptions=metaOptions
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeIn(PILL_SELECTORS.metaInput, 'foo(');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, 'foo(', 'There should be text in the EPS input');
+  });
+
+  test('it broadcasts a message that a ")" was pressed and is the only character', async function(assert) {
+    assert.expect(2);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.PILL_CLOSE_PAREN) {
+        assert.ok(true, 'received proper message');
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        metaOptions=metaOptions
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeIn(PILL_SELECTORS.metaInput, ')');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, ')', 'There should be text in the EPS input');
+  });
+
+  test('it does NOT broadcasts a message that a ")" was pressed if there are other character', async function(assert) {
+    assert.expect(1);
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.PILL_CLOSE_PAREN) {
+        assert.notOk(true, 'should not broadcast PILL_OPEN_PAREN message');
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        metaOptions=metaOptions
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeIn(PILL_SELECTORS.metaInput, 'foo)');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, 'foo)', 'There should be text in the EPS input');
   });
 });

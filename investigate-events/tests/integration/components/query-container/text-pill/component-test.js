@@ -8,12 +8,12 @@ import PILL_SELECTORS from '../pill-selectors';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import KEY_MAP from 'investigate-events/util/keys';
 
-const ESCAPE_KEY = KEY_MAP.escape.code;
-const DELETE_KEY = KEY_MAP.delete.code;
-const BACKSPACE_KEY = KEY_MAP.backspace.code;
-const ENTER_KEY = KEY_MAP.enter.code;
-const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
-const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
+const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.key;
+const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.key;
+const BACKSPACE_KEY = KEY_MAP.backspace.key;
+const DELETE_KEY = KEY_MAP.delete.key;
+const ENTER_KEY = KEY_MAP.enter.key;
+const ESCAPE_KEY = KEY_MAP.escape.key;
 const modifiers = { shiftKey: true };
 
 module('Integration | Component | query-container/text-pill', function(hooks) {

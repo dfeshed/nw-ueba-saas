@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, find, findAll, render, triggerKeyEvent, fillIn } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, render, triggerKeyEvent, typeIn } from '@ember/test-helpers';
 import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
@@ -16,12 +16,11 @@ import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/i
 
 let setState;
 let metaOptions = [];
-const ENTER_KEY = KEY_MAP.enter.code;
-const ESCAPE_KEY = KEY_MAP.escape.code;
-const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
-const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
-const SPACE_KEY = KEY_MAP.space.code;
-const OPEN_PAREN = KEY_MAP.openParen.key;
+const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.key;
+const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.key;
+const ENTER_KEY = KEY_MAP.enter.key;
+const ESCAPE_KEY = KEY_MAP.escape.key;
+const SPACE_KEY = KEY_MAP.space.key;
 
 module('Integration | Component | New Pill Trigger', function(hooks) {
   setupRenderingTest(hooks, {
@@ -371,7 +370,7 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     await selectChoose(PILL_SELECTORS.recentQuery, 'medium = 32');
   });
 
-  test('it broadcasts a message when an open paren is typed', async function(assert) {
+  test('it broadcasts a message when a "(" is typed', async function(assert) {
     const done = assert.async();
     this.set('metaOptions', metaOptions);
     this.set('handleMessage', (messageType, data, position) => {
@@ -390,6 +389,28 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     `);
     await click(PILL_SELECTORS.newPillTrigger);
     await focus(PILL_SELECTORS.metaTrigger);
-    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', OPEN_PAREN);
+    await typeIn(PILL_SELECTORS.metaInput, '(');
+  });
+
+  test('it broadcasts a message when a ")" is typed', async function(assert) {
+    const done = assert.async();
+    this.set('metaOptions', metaOptions);
+    this.set('handleMessage', (messageType, data, position) => {
+      if (messageType === MESSAGE_TYPES.PILL_CLOSE_PAREN) {
+        assert.deepEqual(data, undefined, 'should not include pill data');
+        assert.equal(position, 1, 'correct position number');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        metaOptions=metaOptions
+        newPillPosition=1
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await click(PILL_SELECTORS.newPillTrigger);
+    await focus(PILL_SELECTORS.metaTrigger);
+    await typeIn(PILL_SELECTORS.metaInput, ')');
   });
 });

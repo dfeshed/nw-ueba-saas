@@ -21,11 +21,11 @@ import PILL_SELECTORS from '../pill-selectors';
 let setState;
 let metaOptions = [];
 const { log } = console;// eslint-disable-line no-unused-vars
-const ARROW_DOWN = KEY_MAP.arrowDown.code;
-const ARROW_UP = KEY_MAP.arrowUp.code;
-const ESCAPE_KEY = KEY_MAP.escape.code;
-const TAB_KEY = KEY_MAP.tab.code;
-const ENTER_KEY = KEY_MAP.enter.code;
+const ARROW_DOWN = KEY_MAP.arrowDown.key;
+const ARROW_UP = KEY_MAP.arrowUp.key;
+const ENTER_KEY = KEY_MAP.enter.key;
+const ESCAPE_KEY = KEY_MAP.escape.key;
+const TAB_KEY = KEY_MAP.tab.key;
 const modifiers = { shiftKey: true };
 
 // This trim also removes extra spaces inbetween words

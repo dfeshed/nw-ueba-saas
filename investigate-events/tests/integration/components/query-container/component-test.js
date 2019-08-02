@@ -12,7 +12,7 @@ import PILL_SELECTORS from './pill-selectors';
 import SELECTORS from './selectors';
 import KEY_MAP from 'investigate-events/util/keys';
 
-const ENTER_KEY = KEY_MAP.enter.code;
+const ENTER_KEY = KEY_MAP.enter.key;
 
 let setState;
 
