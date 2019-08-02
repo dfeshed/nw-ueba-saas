@@ -103,7 +103,7 @@ module('Unit | Actions | Alert Details', (hooks) => {
     const dispatch = ({ type, payload }) => {
       if (type && payload) {
         assert.ok(actions.includes(type));
-        assert.equal(payload.sort_field, 'startDate');
+        assert.equal(payload.filter.sort_field, 'startDate');
         done();
       }
     };
@@ -116,7 +116,7 @@ module('Unit | Actions | Alert Details', (hooks) => {
     const dispatch = ({ type, payload }) => {
       if (type && payload) {
         assert.ok(actions.includes(type));
-        assert.equal(payload.sort_field, 'startDate');
+        assert.equal(payload.filter.sort_field, 'startDate');
       }
       assert.notOk('INVESTIGATE_USER::GET_ALERTS' === type);
     };
@@ -211,17 +211,28 @@ module('Unit | Actions | Alert Details', (hooks) => {
   });
 
   test('it can getAlertsForGivenTimeInterval', (assert) => {
-    assert.expect(2);
     const done = assert.async();
+    assert.expect(6);
     const dispatch = ({ type, payload }) => {
       if (type === 'INVESTIGATE_USER::GET_ALERTS') {
         assert.equal(type, 'INVESTIGATE_USER::GET_ALERTS');
-        assert.equal(payload.data.length, 3);
+        // Jenkins moment is giving one day older. This to take care of build failure in jenkins
+        const dateValue = Object.keys(payload.data)[0] === 'Aug 13 2018' ? 'Aug 13 2018' : 'Aug 12 2018';
+
+        assert.equal(payload.data[dateValue].length, 4);
+        // Irrespective of data order first array will be array of all critical alerts for that day.
+        assert.equal(payload.data[dateValue][0][0].severity, 'Critical');
+        // Irrespective of data order second array will be array of all high alerts for that day.
+        assert.equal(payload.data[dateValue][1][0].severity, 'High');
+        // Irrespective of data order second array will be array of all medium alerts for that day.
+        assert.equal(payload.data[dateValue][2].length, 0);
+        // Irrespective of data order fourth array will be array of all Low alerts for that day.
+        assert.equal(payload.data[dateValue][3][0].severity, 'Low');
         done();
       }
     };
     const getState = () => {
-      return { alerts: { filter: initialFilterState } };
+      return Immutable.from({ alerts: { filter: initialFilterState, alertList: {} } });
     };
     getAlertsForGivenTimeInterval()(dispatch, getState);
   });
@@ -295,7 +306,7 @@ module('Unit | Actions | Alert Details', (hooks) => {
     const dispatch = (fn) => {
       fn(({ type, payload }) => {
         if (type && payload) {
-          const alertDateRange = payload.alert_start_range.split(',');
+          const alertDateRange = payload.filter.alert_start_range.split(',');
           assert.equal('INVESTIGATE_USER::UPDATE_FILTER_FOR_ALERTS', type);
           const months = new Date(alertDateRange[1] - alertDateRange[0]).getMonth();
 
@@ -332,7 +343,7 @@ module('Unit | Actions | Alert Details', (hooks) => {
       fn(({ type, payload }) => {
         if (type && payload) {
           assert.equal('INVESTIGATE_USER::UPDATE_FILTER_FOR_ALERTS', type);
-          assert.equal(payload.showCustomDate, false);
+          assert.equal(payload.filter.showCustomDate, false);
           done();
         }
       });
@@ -402,7 +413,7 @@ module('Unit | Actions | Alert Details', (hooks) => {
       fn(({ type, payload }) => {
         if (type && payload) {
           assert.equal('INVESTIGATE_USER::UPDATE_FILTER_FOR_ALERTS', type);
-          assert.equal(payload.alert_start_range, '1540381627100,1540481527100');
+          assert.equal(payload.filter.alert_start_range, '1540381627100,1540481527100');
           done();
         }
       });

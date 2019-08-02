@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 import _ from 'lodash';
-import moment from 'moment';
 import { lookup } from 'ember-dependency-lookup';
 
 const _timeframesForDateTimeFilter = [
@@ -31,8 +30,6 @@ const _timeframesForDateTimeFilter = [
   }
 ];
 
-const _alertList = (state) => state.alerts.alertList;
-
 const _totalAlerts = (state) => state.alerts.totalAlerts;
 
 const _alertsSeverity = (state) => state.alerts.alertsSeverity;
@@ -40,6 +37,8 @@ const _alertsSeverity = (state) => state.alerts.alertsSeverity;
 const _existAnomalyTypes = (state) => state.alerts.existAnomalyTypes;
 
 const _alertsForTimeline = (state) => state.alerts.alertsForTimeline;
+
+const _relativeDateFilter = (state) => state.alerts.relativeDateFilter;
 
 export const severityFilter = ['low', 'medium', 'high', 'critical'];
 
@@ -57,10 +56,14 @@ export const alertsForTimelineError = (state) => state.alerts.alertsForTimelineE
 
 export const getSelectedFeedBack = (state) => state.alerts.filter.feedback;
 
+export const currentAlertsCount = (state) => state.alerts.currentAlertsCount;
+
+export const alertsGroupedDaily = (state) => state.alerts.alertList.asMutable();
+
 export const allAlertsReceived = createSelector(
-  [_alertList, _totalAlerts],
-  (alertList, totalAlerts) => {
-    return totalAlerts && totalAlerts <= alertList.length;
+  [currentAlertsCount, _totalAlerts],
+  (currentCount, totalAlerts) => {
+    return totalAlerts === currentCount;
   });
 
 
@@ -92,15 +95,8 @@ export const getAlertsSeverity = createSelector(
     }
   });
 
-export const getAlertsGroupedDaily = createSelector(
-  [_alertList],
-  (alertList) => {
-    const mappedAlertList = _.map(alertList, (alert) => ({ ...alert, alertDay: moment(alert.startDate).calendar() }));
-    return _.groupBy(mappedAlertList, 'alertDay');
-  });
-
 export const hasAlerts = createSelector(
-  [getAlertsGroupedDaily],
+  [alertsGroupedDaily],
   (alerts) => {
     return _.keys(alerts).length > 0;
   });
@@ -123,15 +119,12 @@ export const getSelectedAnomalyTypes = createSelector(
   });
 
 export const dateTimeFilterOptionsForAlerts = createSelector(
-  [getFilter],
-  (filter) => {
+  [getFilter, _relativeDateFilter],
+  (filter, relativeDateFilter) => {
     const filterOptions = {
       name: 'alertTimeRange',
       timeframes: _timeframesForDateTimeFilter,
-      filterValue: {
-        value: [ 3 ],
-        unit: 'Months'
-      }
+      filterValue: relativeDateFilter
     };
     if (filter.showCustomDate === true) {
       const [startDate, endDate] = filter.alert_start_range.split(',');

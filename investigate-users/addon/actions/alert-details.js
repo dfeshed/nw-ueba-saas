@@ -1,8 +1,49 @@
 import * as ACTION_TYPES from './types';
 import { fetchData, exportData } from './fetch/data';
-import { getFilter } from 'investigate-users/reducers/alerts/selectors';
+import _ from 'lodash';
+import { getFilter, alertsGroupedDaily, currentAlertsCount } from 'investigate-users/reducers/alerts/selectors';
 import moment from 'moment';
 import { flashErrorMessage } from 'investigate-users/utils/flash-message';
+
+// Severity order, alerts should be grouped in same order.
+const _severityIndex = { Critical: 0, High: 1, Medium: 2, Low: 3 };
+
+/**
+ * This function will iterate over alertList fetched from server and will grouped on daily basis.
+ * If this is first alert for given day. Then new object entry will be created with that day as key. Value is always four array.
+ * First array will have critical alerts, second for High, third for Medium and last one for Low. Alert will be added at end of respective severity array.
+ *
+ * Ex: Intial alertList = {};
+ *  After first alert --> { 'Jul12 2019' : [[], [], [], []]};
+ * { 'Jul12 2019' : [[], [], [{First Medium Alert}], []]};
+ *
+ * After alert of different severity-->
+ * { 'Jul12 2019' : [[], [{ First High Alert}], [{First Medium Alert}], []]};
+ *
+ * After second alert of same severity-->
+ * { 'Jul12 2019' : [[], [{ First High Alert}], [{First Medium Alert}, {Second Medium Alert}], []]};
+ *
+ * After alert from different day-->
+ * { 'Jul12 2019' : [[], [{ First High Alert}], [{First Medium Alert}, {Second Medium Alert}], []]},
+ * { 'Jul13 2019' : [[], [{ First High Alert}], [], []]};
+ * @private
+ *  */
+const _getAlertsGroupedDaily = (currentGroupedAlerts, alertsList) => {
+  _.forEach(alertsList, (alert) => {
+    const alertDay = moment(alert.startDate).format('MMM DD YYYY');
+    const alertsForDay = currentGroupedAlerts[alertDay];
+    const severityIndex = _severityIndex[alert.severity];
+    if (alertsForDay) {
+      // Using custom sorting instead of java script function to avoid multiple loops and improving performance.
+      currentGroupedAlerts[alertDay] = currentGroupedAlerts[alertDay].asMutable ? currentGroupedAlerts[alertDay].asMutable() : currentGroupedAlerts[alertDay];
+      currentGroupedAlerts[alertDay][severityIndex] = currentGroupedAlerts[alertDay].get(severityIndex).concat([alert]);
+    } else {
+      currentGroupedAlerts[alertDay] = [[], [], [], []];
+      currentGroupedAlerts[alertDay][severityIndex] = [alert];
+    }
+  });
+  return currentGroupedAlerts;
+};
 
 const getTopTenAlerts = () => {
   return (dispatch) => {
@@ -25,18 +66,22 @@ const getTopTenAlerts = () => {
 const getAlertsForGivenTimeInterval = () => {
   return (dispatch, getState) => {
     const filter = getFilter(getState());
+
     fetchData('alertList', filter).then((result) => {
       const { data, info, total } = result;
-      if (result === 'error' || (data && data.length === 0)) {
+      if (result === 'error' || !data || data.length === 0) {
         dispatch({
           type: ACTION_TYPES.ALERT_LIST_ERROR,
           payload: result === 'error' ? 'alertListError' : 'noAlerts'
         });
         return;
       }
+      const currentGroupedAlerts = alertsGroupedDaily(getState());
+      const currentCount = currentAlertsCount(getState()) + data.length;
+      const _groupedAlerts = _getAlertsGroupedDaily(currentGroupedAlerts, data);
       dispatch({
         type: ACTION_TYPES.GET_ALERTS,
-        payload: { data, info, total }
+        payload: { data: _groupedAlerts, info, total, currentCount }
       });
     });
   };
@@ -85,7 +130,7 @@ const exportAlerts = () => {
   };
 };
 
-const updateFilter = (filter, needNotToPullAlerts) => {
+const updateFilter = (filter, needNotToPullAlerts, relativeDateFilter) => {
   return (dispatch) => {
     dispatch(resetAlerts());
     if (filter) {
@@ -93,7 +138,7 @@ const updateFilter = (filter, needNotToPullAlerts) => {
     }
     dispatch({
       type: ACTION_TYPES.UPDATE_FILTER_FOR_ALERTS,
-      payload: filter
+      payload: { filter, relativeDateFilter }
     });
     if (true !== needNotToPullAlerts) {
       dispatch(getAlertsForGivenTimeInterval(filter));
@@ -106,16 +151,17 @@ const updateDateRangeFilter = (filterOption) => {
     let filter = getFilter(getState());
     if (filterOption.operator === 'LESS_THAN') {
       filter = filter.setIn(['showCustomDate'], false);
-    }
-    if (filterOption.operator === 'GREATER_THAN') {
+      filter = filter.setIn(['alert_start_range'], `${moment().subtract(filterOption.unit.toLowerCase(), filterOption.value[0]).unix() * 1000},${moment().unix() * 1000}`);
+    } else if (filterOption.operator === 'GREATER_THAN') {
       filter = filter.setIn(['alert_start_range'], `${moment().subtract(filterOption.unit, filterOption.value[0]).unix() * 1000}, ${moment().unix() * 1000}`);
     } else {
       if (!filterOption.value[0] || filterOption.value[0] > filterOption.value[1]) {
         return;
       }
+      filter = filter.setIn(['showCustomDate'], true);
       filter = filter.setIn(['alert_start_range'], filterOption.value.join(','));
     }
-    dispatch(updateFilter(filter));
+    dispatch(updateFilter(filter, false, filterOption.operator === 'LESS_THAN' ? filterOption : null));
   };
 };
 

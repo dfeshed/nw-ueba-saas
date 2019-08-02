@@ -4,7 +4,6 @@ import * as Alerts from 'investigate-users/reducers/alerts/selectors';
 import alertOverview from '../../data/presidio/alert_overview';
 import existAnomalyTypesAlerts from '../../data/presidio/exist_anomaly_types_alerts';
 import alertByDayAndSeverity from '../../data/presidio/alert-by-day-and-severity';
-import alertsList from '../../data/presidio/alerts-list';
 import Immutable from 'seamless-immutable';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
@@ -12,12 +11,19 @@ const state = Immutable.from({
   alerts: {
     topAlerts: alertOverview.data,
     topAlertsError: null,
-    alertList: alertsList.data,
+    alertList: { 'jul 12 2019': [[{ name: 'CriticalALert' }], [{ name: 'HighALert' }], [], [{ name: 'LowAlert' }]] },
     alertListError: null,
     alertsForTimeline: alertByDayAndSeverity,
     alertsForTimelineError: null,
+    currentAlertsCount: 10,
     totalAlerts: 50,
     alertsSeverity: { total_severity_count: { Critical: 50, High: 10, Medium: 30, Low: 12 } },
+    relativeDateFilter: {
+      name: 'alertTimeRange',
+      operator: 'LESS_THAN',
+      unit: 'Months',
+      value: [ 3 ]
+    },
     existAnomalyTypes: existAnomalyTypesAlerts,
     filter: {
       indicator_types: ['high_number_of_successful_file_permission_change'],
@@ -64,6 +70,10 @@ module('Unit | Selectors | Alerts Selectors', (hooks) => {
     assert.equal(Alerts.getSelectedSeverity(state)[0], 'high');
   });
 
+  test('test for currentAlertsCount', function(assert) {
+    assert.equal(Alerts.currentAlertsCount(state), 10);
+  });
+
   test('test top alerts error', function(assert) {
     assert.equal(Alerts.topAlertsError(state), null);
     const newState = state.setIn(['alerts', 'topAlertsError'], 'error');
@@ -72,7 +82,7 @@ module('Unit | Selectors | Alerts Selectors', (hooks) => {
 
   test('test alert state for alerts are present or not', function(assert) {
     assert.equal(Alerts.hasAlerts(state), true);
-    const newState = state.setIn(['alerts', 'alertList'], null);
+    const newState = state.setIn(['alerts', 'alertList'], {});
     assert.equal(Alerts.hasAlerts(newState), false);
   });
 
@@ -101,6 +111,8 @@ module('Unit | Selectors | Alerts Selectors', (hooks) => {
 
   test('test dateTimeFilterOptionsForAlerts', function(assert) {
     assert.deepEqual(Alerts.dateTimeFilterOptionsForAlerts(state).filterValue, {
+      name: 'alertTimeRange',
+      operator: 'LESS_THAN',
       unit: 'Months',
       value: [3]
     });
@@ -137,7 +149,7 @@ module('Unit | Selectors | Alerts Selectors', (hooks) => {
   });
 
   test('test Alerts Grouped Daily', function(assert) {
-    assert.equal(Object.values(Alerts.getAlertsGroupedDaily(state))[0].length, 3);
+    assert.deepEqual(Alerts.alertsGroupedDaily(state), { 'jul 12 2019': [[{ name: 'CriticalALert' }], [{ name: 'HighALert' }], [], [{ name: 'LowAlert' }]] });
   });
 
   test('test Alerts Selected Entity', function(assert) {

@@ -19,70 +19,74 @@
 </div>
 
 <div class='alerts-tab_body_body-table_body'>
-  {{#each-in groupedAlerts as |timestamp alertList|}}
+  {{#each-in groupedAlertsByDay as |timestamp alerts|}}
     <div class='alerts-tab_body_body-table_body_row'>
       <div class='alerts-tab_body_body-table_body_row_date'>
         {{t 'investigateUsers.alerts.startFrom'}} &nbsp; {{timestamp}}
       </div>
       <div class='alerts-tab_body_body-table_body_row_alerts'>
-        {{#each alertList as |alert|}}
-          <div class='alerts-tab_body_body-table_body_row_alerts_alert' {{action 'expandAlert' alert.id}}>
-            <div class='severity' title='{{t 'investigateUsers.alerts.score'}}: {{alert.score}}'>
-              <span class='alerts-tab_body_body-table_body_row_date_icon'>
-                {{#if (eq alertClicked  alert.id)}}
-                  {{rsa-icon size='small' style='lined' name='arrow-down-12'}}
-                {{else}}
-                  {{rsa-icon size='small' style='lined' name='arrow-right-12'}}
-                {{/if}}  
-              </span>
-              <div class={{alert.severity}}>
+        {{#each alerts as |alertList|}}
+          {{#each alertList as |alert|}}
+            <div class='alerts-tab_body_body-table_body_row_alerts_alert' {{action 'expandAlert' alert.id}}>
+              <div class='severity' title='{{t 'investigateUsers.alerts.score'}}: {{alert.score}}'>
+                <span class='alerts-tab_body_body-table_body_row_date_icon'>
+                  {{#if (eq alertClicked  alert.id)}}
+                    {{rsa-icon size='small' style='lined' name='arrow-down-12'}}
+                  {{else}}
+                    {{rsa-icon size='small' style='lined' name='arrow-right-12'}}
+                  {{/if}}  
+                </span>
+                <div class={{alert.severity}}>
+                </div>
+                {{alert.severity}}
               </div>
-              {{alert.severity}}
+              <div class='alertName'>
+                <span {{action 'initiateUser' (hash userId=alert.entityId alertId=alert.id)}}>
+                  {{t (concat 'investigateUsers.alerts.alertNames.' alert.name '.name')}}
+                </span>
+                <span class='lighter'> | {{alert.timeframe}} </span>
+              </div>
+              <div class='entityName'>
+                {{alert.entityName}}
+              </div>
+              <div class='startTime'>
+                {{rsa-content-datetime timestamp=alert.startDate displayMilliseconds=false}}
+              </div>
+              <div class='indicatorCount'>
+                {{alert.evidenceSize}}
+              </div>
+              <div class='status'>
+                {{if (eq alert.status 'Open') (t 'investigateUsers.feedback.none') (t 'investigateUsers.feedback.rejected')}}
+              </div>
             </div>
-            <div class='alertName'>
-              <span {{action 'initiateUser' (hash userId=alert.entityId alertId=alert.id)}}>
-                {{t (concat 'investigateUsers.alerts.alertNames.' alert.name '.name')}}
-              </span>
-              <span class='lighter'> | {{alert.timeframe}} </span>
-            </div>
-            <div class='entityName'>
-              {{alert.entityName}}
-            </div>
-            <div class='startTime'>
-              {{rsa-content-datetime timestamp=alert.startDate displayMilliseconds=false}}
-            </div>
-            <div class='indicatorCount'>
-              {{alert.evidenceSize}}
-            </div>
-            <div class='status'>
-              {{if (eq alert.status 'Open') (t 'investigateUsers.feedback.none') (t 'investigateUsers.feedback.rejected')}}
-            </div>
-          </div>
-          <div class='indicator-table {{if (eq alertClicked  alert.id) 'visible'}}'>
-            <div class='alerts-tab_body_body-table_body_row_alerts_alert_indicators'>
-              {{#rsa-data-table 
-                lazy=true 
-                items=alert.evidences 
-                columnsConfig=columnsData 
-                onRowClick=(action "selectUser" (hash alertId=alert.id userId=alert.entityId))
-              }} 
-                {{#rsa-data-table/header as |column|}}
-                  <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title={{t column.field}}>
-                    {{t (concat 'investigateUsers.alerts.indicator.' column.field)}}
-                  </span>
-                {{/rsa-data-table/header}}
-                {{#rsa-data-table/body as |item index column|}} 
-                  {{#rsa-data-table/body-cell item=item index=index column=column}}
-                    {{#if (eq column.field 'startDate')}}
-                      {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
-                    {{else}}
-                      {{get item column.field}}
-                    {{/if}}
-                  {{/rsa-data-table/body-cell}}
-                {{/rsa-data-table/body}}
-              {{/rsa-data-table}}
-            </div>
-          </div>
+            {{#if (eq alertClicked  alert.id)}}
+              <div class='alerts-tab_body_body-table_body_row_alerts_alert_indicator-table'>
+                <div class='alerts-tab_body_body-table_body_row_alerts_alert_indicators'>
+                  {{#rsa-data-table 
+                    lazy=true 
+                    items=alert.evidences 
+                    columnsConfig=columnsData 
+                    onRowClick=(action "selectUser" (hash alertId=alert.id userId=alert.entityId))
+                  }} 
+                    {{#rsa-data-table/header as |column|}}
+                      <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title={{t column.field}}>
+                        {{t (concat 'investigateUsers.alerts.indicator.' column.field)}}
+                      </span>
+                    {{/rsa-data-table/header}}
+                    {{#rsa-data-table/body as |item index column|}} 
+                      {{#rsa-data-table/body-cell item=item index=index column=column}}
+                        {{#if (eq column.field 'startDate')}}
+                          {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
+                        {{else}}
+                          {{get item column.field}}
+                        {{/if}}
+                      {{/rsa-data-table/body-cell}}
+                    {{/rsa-data-table/body}}
+                  {{/rsa-data-table}}
+                </div>
+              </div>
+            {{/if}}
+          {{/each}}
         {{/each}}
       </div>
     </div>

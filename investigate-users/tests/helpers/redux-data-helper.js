@@ -1,7 +1,6 @@
 import Immutable from 'seamless-immutable';
 import userList from '../data/presidio/user-list';
 import UserOverview from '../data/presidio/usr_overview';
-import alertsList from '../data/presidio/alerts-list';
 import alertOverview from '../data/presidio/alert_overview';
 import alertByDayAndSeverity from '../data/presidio/alert-by-day-and-severity';
 import moment from 'moment';
@@ -77,9 +76,16 @@ export default class DataHelper {
       },
       alerts: {
         topAlerts: alertOverview.data,
-        alertList: alertsList.data,
+        alertList: { 'jul 12 2019': [[{ name: 'CriticalALert' }], [{ name: 'HighALert' }], [], [{ name: 'LowAlert' }]] },
         existAnomalyTypes: null,
         alertsForTimeline: alertByDayAndSeverity,
+        relativeDateFilter: {
+          name: 'alertTimeRange',
+          operator: 'LESS_THAN',
+          unit: 'Months',
+          value: [ 3 ]
+        },
+        currentAlertsCount: 0,
         alertsSeverity: {
           total_severity_count: {
             Critical: null,

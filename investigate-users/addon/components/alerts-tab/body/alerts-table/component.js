@@ -1,13 +1,14 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { later } from '@ember/runloop';
-import { getAlertsGroupedDaily, allAlertsReceived } from 'investigate-users/reducers/alerts/selectors';
+import { alertsGroupedDaily, allAlertsReceived } from 'investigate-users/reducers/alerts/selectors';
 import { getAlertsForGivenTimeInterval } from 'investigate-users/actions/alert-details';
 import { columnsDataForIndicatorTable } from 'investigate-users/utils/column-config';
 import { initiateUser } from 'investigate-users/actions/user-details';
+import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
-  groupedAlerts: getAlertsGroupedDaily(state),
+  groupedAlerts: alertsGroupedDaily(state),
   allAlertsReceived: allAlertsReceived(state)
 });
 const dispatchToActions = {
@@ -27,10 +28,12 @@ const AlertTabTableComponent = Component.extend({
       later(() => {
         if (target.scrollHeight - (target.scrollTop + target.offsetHeight) < 30) {
           if (!this.get('allAlertsReceived')) {
+            this.set('scrolling', true);
             this.send('getAlertsForGivenTimeInterval');
           }
+        } else {
+          this.set('scrolling', false);
         }
-        this.set('scrolling', false);
       }, 500);
     }
   },
@@ -44,6 +47,12 @@ const AlertTabTableComponent = Component.extend({
     this._super(...arguments);
     const scrollHandler = this._scrollHandler;
     document.querySelector('.alerts-tab_body_body-table_body').removeEventListener('scroll', scrollHandler);
+  },
+  @computed('groupedAlerts')
+  groupedAlertsByDay(groupedAlerts) {
+    document.querySelector('.alerts-tab_body_body-table_body').scrollTop = document.querySelector('.alerts-tab_body_body-table_body').scrollTop - 120;
+    this.set('scrolling', false);
+    return groupedAlerts;
   },
   actions: {
     expandAlert(alertId) {

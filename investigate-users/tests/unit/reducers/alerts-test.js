@@ -11,11 +11,18 @@ import alertsList from '../../data/presidio/alerts-list';
 const resetState = Immutable.from({
   topAlerts: [],
   topAlertsError: null,
-  alertList: [],
+  alertList: {},
   alertListError: null,
   existAnomalyTypes: null,
   alertsForTimeline: null,
   alertsForTimelineError: null,
+  currentAlertsCount: 0,
+  relativeDateFilter: {
+    name: 'alertTimeRange',
+    operator: 'LESS_THAN',
+    unit: 'Months',
+    value: [ 3 ]
+  },
   alertsSeverity: {
     total_severity_count: {
       Critical: null,
@@ -117,21 +124,33 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
 
     const result = reducer(Immutable.from({ filter: resetState.filter }), {
       type: ACTION_TYPES.UPDATE_FILTER_FOR_ALERTS,
-      payload: { feedback: 'none', showCustomDate: true }
+      payload: { filter: { feedback: 'none', showCustomDate: true }, relativeDateFilter: {
+        name: 'alertTimeRange',
+        operator: 'LESS_THAN',
+        unit: 'Months',
+        value: [ 1 ]
+      } }
     });
 
     assert.equal(result.filter.feedback, 'none');
     assert.equal(result.filter.showCustomDate, true);
+    assert.deepEqual(result.relativeDateFilter, {
+      name: 'alertTimeRange',
+      operator: 'LESS_THAN',
+      unit: 'Months',
+      value: [ 1 ]
+    });
   });
 
   test('test alerts', (assert) => {
 
     let result = reducer(Immutable.from({ alertList: [] }), {
       type: ACTION_TYPES.GET_ALERTS,
-      payload: { data: alertsList.data, info: alertsList.info, total: 30 }
+      payload: { data: { 'jul 12 2019': [[{ name: 'CriticalALert' }], [{ name: 'HighALert' }], [], [{ name: 'LowAlert' }]] }, info: alertsList.info, total: 30, currentCount: 10 }
     });
-    assert.equal(result.alertList.length, 3);
+    assert.equal(result.alertList['jul 12 2019'].length, 4);
     assert.equal(result.totalAlerts, 30);
+    assert.equal(result.currentAlertsCount, 10);
 
     assert.deepEqual(result.alertsSeverity, {
       total_severity_count: {
@@ -145,10 +164,11 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
     result = reducer(result, {
       type: ACTION_TYPES.RESET_ALERTS
     });
-    assert.equal(result.alertList.length, 0);
+    assert.deepEqual(result.alertList, {});
     assert.equal(result.alertListError, null);
     assert.equal(result.alertListError, null);
     assert.equal(result.topAlertsError, null);
+    assert.equal(result.currentAlertsCount, 0);
     assert.equal(result.alertsForTimelineError, null);
   });
 

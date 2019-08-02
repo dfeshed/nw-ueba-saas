@@ -246,7 +246,10 @@
                   padding: rsa-whitespace(less);
                   color: text-color(primary, lighter);
                 }
-
+                &_indicator-table {
+                  max-height: 100vh;
+                  overflow: hidden;
+                }
                 &_indicators {
                   margin: rsa-whitespace(less) rsa-whitespace() rsa-whitespace(less) 3*rsa-whitespace();
                   border: 1px solid text-color(primary, dark);
@@ -269,17 +272,6 @@
 
               &_alert:hover {
                 background-color: background-color(primary, darkest);
-              }
-
-              .indicator-table {
-                max-height: 0;
-                transition: max-height 1s ease-out;
-                overflow: hidden;
-              }
-
-              .indicator-table.visible {
-                max-height: 100vh;
-                transition: max-height 1s ease-in;
               }
             }
           }
