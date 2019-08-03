@@ -85,6 +85,9 @@ pipeline {
     agent {
         node {label 'el7 && java8'}
     }
+    tools {
+            jdk env.JDK
+    }
     options { timestamps () }
     environment {
         // The credentials (name + password) associated with the RSA build user.
