@@ -172,7 +172,7 @@
           "featureNamesMap": {
             "groupBy": [
               "context.srcNetname",
-              "context.domain"
+              "context.domain.name"
             ],
             "maximize": [
               "score"
@@ -199,7 +199,7 @@
           "featureNamesMap": {
             "groupBy": [
               "context.srcNetname",
-              "context.domain"
+              "context.domain.name"
             ],
             "maximize": [
               "score"
@@ -439,7 +439,7 @@
           "name": "dstPortDomainOutboundToHighestScoreMap",
           "featureNamesMap": {
             "groupBy": [
-              "context.domain",
+              "context.domain.name",
               "context.dstPort"
             ],
             "maximize": [
@@ -466,7 +466,7 @@
           "name": "dstPortDomainOutboundToHighestScoreMap",
           "featureNamesMap": {
             "groupBy": [
-              "context.domain",
+              "context.domain.name",
               "context.dstPort"
             ],
             "maximize": [
@@ -652,7 +652,7 @@
           "name": "domainToHighestScoreMap",
           "featureNamesMap": {
             "groupBy": [
-              "context.domain"
+              "context.domain.name"
             ],
             "maximize": [
               "score"
@@ -679,7 +679,7 @@
           "featureNamesMap": {
             "groupBy": [
               "context.ja3",
-              "context.domain"
+              "context.domain.name"
             ],
             "maximize": [
               "score"

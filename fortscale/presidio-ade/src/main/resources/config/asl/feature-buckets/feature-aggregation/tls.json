@@ -185,7 +185,7 @@
     {
       "name": "numOfBytesSentSummationDomainOutboundTlsHourly",
       "contextFieldNames": [
-        "domain"
+        "domain.name"
       ],
       "adeEventTypes": [
         "tls"
@@ -215,7 +215,7 @@
     {
       "name": "numOfBytesSentSummationDomainSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
-        "domain",
+        "domain.name",
         "sslSubject"
       ],
       "adeEventTypes": [
@@ -309,7 +309,7 @@
     {
       "name": "numOfBytesSentBySrcIpSummationDomainOutboundTlsHourly",
       "contextFieldNames": [
-        "domain"
+        "domain.name"
       ],
       "adeEventTypes": [
         "tls"
@@ -342,7 +342,7 @@
     {
       "name": "numOfBytesSentBySrcIpSummationDomainSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
-        "domain",
+        "domain.name",
         "sslSubject"
       ],
       "adeEventTypes": [

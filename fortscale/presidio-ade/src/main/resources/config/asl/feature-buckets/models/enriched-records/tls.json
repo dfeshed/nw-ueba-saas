@@ -111,7 +111,7 @@
           "name": "domainHistogram",
           "featureNamesMap": {
             "groupBy": [
-              "domain"
+              "domain.name"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -303,7 +303,7 @@
     {
       "name": "dstPortHistogramDomainOutboundTlsDaily",
       "contextFieldNames": [
-        "domain"
+        "domain.name"
       ],
       "adeEventTypes": [
         "tls"
@@ -351,7 +351,7 @@
           "name": "domainHistogram",
           "featureNamesMap": {
             "groupBy": [
-              "domain"
+              "domain.name"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -531,7 +531,7 @@
           "name": "domainHistogram",
           "featureNamesMap": {
             "groupBy": [
-              "domain"
+              "domain.name"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -543,7 +543,7 @@
     {
       "name": "ja3HistogramDomainOutboundTlsDaily",
       "contextFieldNames": [
-        "domain"
+        "domain.name"
       ],
       "adeEventTypes": [
         "tls"
