@@ -5,10 +5,8 @@ import com.rsa.netwitness.presidio.automation.domain.activedirectory.AdapterActi
 import com.rsa.netwitness.presidio.automation.domain.authentication.AdapterAuthenticationStoredData;
 import com.rsa.netwitness.presidio.automation.domain.file.AdapterFileStoredData;
 import com.rsa.netwitness.presidio.automation.domain.process.AdapterRegistryStoredData;
-import com.rsa.netwitness.presidio.automation.domain.repository.AdapterActiveDirectoryStoredDataRepository;
-import com.rsa.netwitness.presidio.automation.domain.repository.AdapterAuthenticationStoredDataRepository;
-import com.rsa.netwitness.presidio.automation.domain.repository.AdapterFileStoredDataRepository;
-import com.rsa.netwitness.presidio.automation.domain.repository.AdapterRegistryStoredDataRepository;
+import com.rsa.netwitness.presidio.automation.domain.repository.*;
+import com.rsa.netwitness.presidio.automation.domain.tls.AdapterTlsStoredData;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -122,7 +120,15 @@ public class MongoProgressTask implements Runnable {
             if (result == null) return Optional.empty();
                 else return Optional.of(result.getDateTime());
         }
+        if (obj instanceof TlsRegistryStoredDataRepository){
+            collectionName = "TlsRegistry";
+            LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
+            AdapterTlsStoredData result = ((TlsRegistryStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
+            if (result == null) return Optional.empty();
+            else return Optional.of(result.getDateTime());
+        }
 
+        LOGGER.error("No collection name mapping found for AdapterRepository class: " + obj.getClass().getTypeName());
         throw new RuntimeException("No such AdapterRepository " + obj.getClass().getTypeName());
     }
 }
