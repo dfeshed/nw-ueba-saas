@@ -129,6 +129,6 @@ public class MongoProgressTask implements Runnable {
         }
 
         LOGGER.error("No collection name mapping found for AdapterRepository class: " + obj.getClass().getTypeName());
-        throw new RuntimeException("No such AdapterRepository " + obj.getClass().getTypeName());
+        return Optional.empty();
     }
 }
