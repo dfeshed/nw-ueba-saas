@@ -1,6 +1,5 @@
 package com.rsa.netwitness.presidio.automation.domain.repository;
 
-import com.rsa.netwitness.presidio.automation.domain.process.AdapterRegistryStoredData;
 import com.rsa.netwitness.presidio.automation.domain.tls.AdapterTlsStoredData;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.CountQuery;
@@ -12,9 +11,9 @@ public interface AdapterTlsStoredDataRepository extends MongoRepository<AdapterT
     @CountQuery("{ 'dateTime': { $gte: ?0 }, $and: [ { 'dateTime': { $lt: ?1 } } ] }")
     long findByTime(Instant start, Instant end);
 
-    AdapterRegistryStoredData findByEventId(String eventId);
+    AdapterTlsStoredData findByEventId(String eventId);
 
     Long countByDataSource(String dataSource);
 
-    AdapterRegistryStoredData findTopByDateTimeBetween(Instant from, Instant to, Sort sort);
+    AdapterTlsStoredData findTopByDateTimeBetween(Instant from, Instant to, Sort sort);
 }

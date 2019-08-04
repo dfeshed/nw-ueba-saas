@@ -120,10 +120,10 @@ public class MongoProgressTask implements Runnable {
             if (result == null) return Optional.empty();
                 else return Optional.of(result.getDateTime());
         }
-        if (obj instanceof TlsRegistryStoredDataRepository){
+        if (obj instanceof AdapterTlsStoredDataRepository){
             collectionName = "TlsRegistry";
             LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
-            AdapterTlsStoredData result = ((TlsRegistryStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
+            AdapterTlsStoredData result = ((AdapterTlsStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
             if (result == null) return Optional.empty();
             else return Optional.of(result.getDateTime());
         }
