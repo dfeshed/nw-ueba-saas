@@ -31,8 +31,8 @@
       </label>
     </td>
     <td class="remove-cell">
-      <span class="remove-source-type" {{action 'handleSourceTypeRemove' selectedSourceType}}>
-        {{rsa-icon size='large' name="remove-circle-1" style="lined"}}
+      <span class="remove-source-type" onclick={{action 'handleSourceTypeRemove' selectedSourceType}} onkeyup={{action 'handleSourceTypeRemove' selectedSourceType}}>
+        {{rsa-icon size='large' displayOnTab=true name="remove-circle-1" style="lined"}}
       </span>
     </td>
   </tr>
@@ -44,7 +44,7 @@
           {{#rsa-text-with-tooltip value=(t 'adminUsm.groupWizard.applyPolicy.availableTooltip')
             style="standard"
             alwaysShow=true}}
-            {{rsa-icon size='large' name="information-circle" style='lined'}}
+            {{rsa-icon size='large' displayOnTab=true name="information-circle" style='lined'}}
           {{/rsa-text-with-tooltip}}
         </div>
       </div>
@@ -73,7 +73,7 @@
                   isIconOnly=true 
                   isDisabled=hasSelectedPolicy
                   defaultAction=(action 'handlePolicyAssignment' item)}}
-                  {{rsa-icon name="add-circle-1" style="lined"}}
+                  {{rsa-icon name="add-circle-1" displayOnTab=(not hasSelectedPolicy) style="lined"}}
                 {{/rsa-form-button}}
               </td>
             </tr>
@@ -88,7 +88,7 @@
           {{#rsa-text-with-tooltip value=(t 'adminUsm.groupWizard.applyPolicy.selectedTooltip')
             style="standard"
             alwaysShow=true}}
-            {{rsa-icon size='large' name="information-circle" style='lined'}}
+            {{rsa-icon size='large' displayOnTab=true name="information-circle" style='lined'}}
           {{/rsa-text-with-tooltip}}
         </div>
       </div>
@@ -116,7 +116,7 @@
                 isIconOnly=true 
                 isDisabled=false
                 defaultAction=(action 'handlePolicyRemove' selectedPolicy)}}
-                {{rsa-icon name="remove-circle-1" style="lined"}}
+                {{rsa-icon name="remove-circle-1" displayOnTab=true style="lined"}}
               {{/rsa-form-button}}
             </td>
           </tr>

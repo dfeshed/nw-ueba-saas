@@ -43,8 +43,8 @@
                     validation=operator.[2]
                     criteriaPath=(concat criteriaPath ',' index)}}
                 </span>
-                <span class="remove-criteria" {{action 'removeCriteria' (concat criteriaPath ',' index)}}>
-                  {{rsa-icon size='large' name="remove-circle-1" style="lined"}}
+                <span class="remove-criteria" onclick={{action 'handleRemoveCriteria' (concat criteriaPath ',' index)}} onkeyup={{action 'handleRemoveCriteria' (concat criteriaPath ',' index)}}>
+                  {{rsa-icon size='large' name="remove-circle-1" displayOnTab=true style="lined"}}
                 </span>
               </hbox>
             {{/if}}

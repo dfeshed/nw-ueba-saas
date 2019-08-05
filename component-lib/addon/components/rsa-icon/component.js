@@ -6,7 +6,9 @@ export default Component.extend({
 
   classNames: ['rsa-icon'],
 
-  attributeBindings: ['title', 'testId:test-id'],
+  attributeBindings: ['title', 'testId:test-id', 'tabindex'],
+
+  tabindex: '-1',
 
   classNameBindings: [
     'active',
@@ -24,6 +26,7 @@ export default Component.extend({
   name: null,
   size: null, // ['smaller', 'small', 'large', 'larger', 'largest']
   style: 'filled', // ['filled', 'lined']
+  displayOnTab: null,
 
   @equal('style', 'lined') isLined: null,
   @equal('size', 'small') isSmall: null,
@@ -35,5 +38,12 @@ export default Component.extend({
   @computed('name', 'style')
   iconClass(name, style) {
     return `rsa-icon-${name}-${style}`;
+  },
+
+  init() {
+    this._super(...arguments);
+    if (this.get('displayOnTab')) {
+      this.set('tabindex', 0);
+    }
   }
 });

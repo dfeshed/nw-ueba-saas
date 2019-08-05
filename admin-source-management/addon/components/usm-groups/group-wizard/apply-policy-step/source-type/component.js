@@ -100,9 +100,12 @@ const ApplyPolicySourceType = Component.extend(Notifications, {
       this.send('placeholderPrep', pathGroupAssignedPolicies + value.policyType, null, 'remove');
     },
     handleSourceTypeRemove(value) {
-      const newAssignments = { ...this.get('assignedPolicies') };
-      delete newAssignments[value];
-      this.send('editGroup', 'group.assignedPolicies', newAssignments);
+      // action will work on click, Enter key or Spacebar
+      if (event.type === 'click' || event.key === 'Enter' || event.key === ' ') {
+        const newAssignments = { ...this.get('assignedPolicies') };
+        delete newAssignments[value];
+        this.send('editGroup', 'group.assignedPolicies', newAssignments);
+      }
     }
   }
 });

@@ -1,7 +1,7 @@
 import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { findAll, render, click } from '@ember/test-helpers';
+import { findAll, render, click, triggerKeyEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
@@ -398,4 +398,45 @@ module('Integration | Component | usm-groups/group-wizard/apply-policy-step/sour
     assert.equal(findAll('.available .policy-name').length, 1, 'One row appears in available list');
   });
 
+  test('Remove windowsLogPolicy using Enter source type', async function(assert) {
+    const groupPayload = {
+      'id': 'group_001',
+      'name': 'Group 001',
+      'assignedPolicies': {
+        'edrPolicy': {
+          'referenceId': 'policy_001',
+          'name': 'Policy 001'
+        },
+        'windowsLogPolicy': {
+          'referenceId': 'policy_003',
+          'name': 'Policy 003'
+        }
+      }
+    };
+    new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupWizGroup(groupPayload)
+      .groupWizPolicyList(policyListPayload)
+      .build();
+
+    const expectedAssignmentsAfterRemovel = {
+      'edrPolicy': {
+        'referenceId': 'policy_001',
+        'name': 'Policy 001'
+      }
+    };
+    const selectedPolicy = { 'policyType': 'windowsLogPolicy' };
+    this.set('selectedPolicy', selectedPolicy);
+
+    const selectedSourceType = 'windowsLogPolicy';
+    this.set('selectedSourceType', selectedSourceType);
+
+    await render(hbs`{{usm-groups/group-wizard/apply-policy-step/source-type  selectedSourceType=selectedSourceType selectedPolicy=selectedPolicy}}`);
+    assert.equal(findAll('.remove-source-type').length, 1, 'Control to remove source type windowsLogPolicy appears in the DOM');
+    const state = this.owner.lookup('service:redux').getState();
+    assert.notEqual(state.usm.groupWizard.group.assignedPolicies, expectedAssignmentsAfterRemovel, 'Source type windowsLogPolicy was not removed');
+    await triggerKeyEvent('.remove-source-type', 'keyup', 13);
+    const afterRemoveState = this.owner.lookup('service:redux').getState();
+    assert.deepEqual(afterRemoveState.usm.groupWizard.group.assignedPolicies, expectedAssignmentsAfterRemovel, 'Source type windowsLogPolicy was removed on Enter');
+  });
 });

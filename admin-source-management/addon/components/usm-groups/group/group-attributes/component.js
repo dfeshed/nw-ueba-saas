@@ -45,6 +45,12 @@ const GroupAttributes = Component.extend({
     },
     handleOperatorChange(criteriaPath, oprt) {
       this.send('updateGroupCriteria', criteriaPath, oprt[0], 1);
+    },
+    handleRemoveCriteria(criteriaPath) {
+      // action will work on click, Enter(keyCode = 13) or Space(keycode = 32)
+      if (event.type === 'click' || event.keyCode === 13 || event.keyCode === 32) {
+        this.send('removeCriteria', criteriaPath);
+      }
     }
   },
   init() {

@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, findAll, render } from '@ember/test-helpers';
+import { click, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
@@ -192,6 +192,55 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-step'
     assert.equal(findAll('.selected-settings .heading').length, 1, 'Scan schedule main label is added to the selectedSettings');
     assert.equal(findAll('.selected-settings .selected-setting').length, 1, 'All components in selected-settings rendered correctly');
     assert.equal(findAll('.selected-settings .rsa-icon-remove-circle-1-lined').length, 1, 'The minus icon next to the components in selected-settings is rendered correctly');
+  });
+
+  test('Scan Schedule label should be present if scanScheduleId is added using the Enter Key to the selected settings', async function(assert) {
+    new ReduxDataHelper(setState).policyWiz().build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    // simulate an Enter on the plus icon next to scan schedule.
+    await triggerKeyEvent('.scanType span .rsa-icon', 'keyup', 13);
+    assert.equal(findAll('.selected-settings .heading').length, 1, 'Scan schedule main label is added to the selectedSettings');
+    assert.equal(findAll('.selected-settings .selected-setting').length, 1, 'All components in selected-settings rendered correctly');
+    assert.equal(findAll('.selected-settings .rsa-icon-remove-circle-1-lined').length, 1, 'The minus icon next to the components in selected-settings is rendered correctly');
+  });
+
+  test('Scan Schedule label should be present if scanScheduleId is added using the Space bar to the selected settings', async function(assert) {
+    new ReduxDataHelper(setState).policyWiz().build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    // simulate a Space bar on the plus icon next to scan schedule.
+    await triggerKeyEvent('.scanType span .rsa-icon', 'keyup', 32);
+    assert.equal(findAll('.selected-settings .heading').length, 1, 'Scan schedule main label is added to the selectedSettings');
+    assert.equal(findAll('.selected-settings .selected-setting').length, 1, 'All components in selected-settings rendered correctly');
+    assert.equal(findAll('.selected-settings .rsa-icon-remove-circle-1-lined').length, 1, 'The minus icon next to the components in selected-settings is rendered correctly');
+  });
+
+
+  test('Remove Selected settings on Enter Key', async function(assert) {
+    const newSelectedSettings = [
+      { index: 0, id: 'scanType', label: 'Run Scheduled Scan', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/shared/usm-radios' },
+      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/effective-date' }
+    ];
+    const initialState = new ReduxDataHelper(/* setState */).policyWiz().build().usm.policyWizard;
+    setStateOldSchool({ ...initialState, selectedSettings: newSelectedSettings });
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    assert.equal(findAll('.selected-settings .selected-setting').length, 2, 'All selected settings rendered on the UI');
+    // simulate an Enter on the minus icon next to scan schedule.
+    await triggerKeyEvent('.scanType-setting span .rsa-icon-remove-circle-1-lined', 'keyup', 13);
+    assert.equal(findAll('.selected-settings .selected-setting').length, 0, 'No other selected settings are rendered when scanSchedule is not rendered');
+  });
+
+  test('Remove Selected settings on Space bar', async function(assert) {
+    const newSelectedSettings = [
+      { index: 0, id: 'scanType', label: 'Run Scheduled Scan', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy-wizard/policy-types/shared/usm-radios' },
+      { index: 1, id: 'scanStartDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, parentId: 'scanType', component: 'usm-policies/policy-wizard/policy-types/edr/effective-date' }
+    ];
+    const initialState = new ReduxDataHelper(/* setState */).policyWiz().build().usm.policyWizard;
+    setStateOldSchool({ ...initialState, selectedSettings: newSelectedSettings });
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-step}}`);
+    assert.equal(findAll('.selected-settings .selected-setting').length, 2, 'All selected settings rendered on the UI');
+    // simulate an Enter on the minus icon next to scan schedule.
+    await triggerKeyEvent('.scanType-setting span .rsa-icon-remove-circle-1-lined', 'keyup', 32);
+    assert.equal(findAll('.selected-settings .selected-setting').length, 0, 'No other selected settings are rendered when scanSchedule is not rendered');
   });
 
   test('When policy is Windows Log policy, primary destination is shown in the available settings', async function(assert) {

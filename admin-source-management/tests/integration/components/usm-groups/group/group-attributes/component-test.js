@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render, findAll, click } from '@ember/test-helpers';
+import { render, findAll, click, triggerKeyEvent } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -94,6 +94,17 @@ module('Integration | Component | group-attributes', function(hooks) {
     assert.equal(findAll('.remove-criteria').length, 1, 'A remove-criteria button appears in the DOM');
     assert.equal(state.usm.groupWizard.group.groupCriteria.criteria.length, 1, 'A single criteria is present');
     await click('.remove-criteria');
+    state = this.owner.lookup('service:redux').getState();
+    assert.equal(state.usm.groupWizard.group.groupCriteria.criteria.length, 0, 'No criteria are present');
+  });
+
+  test('Remove Criteria using Enter Key', async function(assert) {
+    new ReduxDataHelper(setState).groupWiz().build();
+    let state = this.owner.lookup('service:redux').getState();
+    await render(hbs`{{usm-groups/group/group-attributes}}`);
+    assert.equal(findAll('.remove-criteria').length, 1, 'A remove-criteria button appears in the DOM');
+    assert.equal(state.usm.groupWizard.group.groupCriteria.criteria.length, 1, 'A single criteria is present');
+    await triggerKeyEvent('.remove-criteria', 'keyup', 13);
     state = this.owner.lookup('service:redux').getState();
     assert.equal(state.usm.groupWizard.group.groupCriteria.criteria.length, 0, 'No criteria are present');
   });

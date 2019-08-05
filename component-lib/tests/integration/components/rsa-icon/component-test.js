@@ -41,4 +41,13 @@ module('Integration | Component | rsa-icon', function(hooks) {
     const title = find('.rsa-icon').getAttribute('title');
     assert.equal(title, 'Foo');
   });
+
+  test('Help icon is accessible via tab key when displayOnTab is true', async function(assert) {
+    await render(hbs `{{rsa-icon style='lined' name='help-circle'}}`);
+    const helpIcon = find('.rsa-icon.is-lined.rsa-icon-help-circle-lined').getAttribute('tabindex');
+    assert.equal(helpIcon, -1, 'Tabindex is -1 as default');
+    await render(hbs `{{rsa-icon style='lined' displayOnTab=true name='help-circle'}}`);
+    const helpIconwithTab = find('.rsa-icon.is-lined.rsa-icon-help-circle-lined').getAttribute('tabindex');
+    assert.equal(helpIconwithTab, 0, 'Display on true tabindex is set as 0');
+  });
 });

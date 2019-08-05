@@ -40,9 +40,19 @@ const DefinePolicyStep = Component.extend({
 
   actions: {
     handleAddToSelectedSettings(id) {
-      this.set('scrollToSelectedSetting', id);
-      this.send('addToSelectedSettings', id);
-      scheduleOnce('afterRender', this, '_scrollToSelectedSetting');
+      // action will work on click, Enter or Space
+      if (event.type === 'click' || event.key === 'Enter' || event.key === ' ') {
+        this.set('scrollToSelectedSetting', id);
+        this.send('addToSelectedSettings', id);
+        scheduleOnce('afterRender', this, '_scrollToSelectedSetting');
+      }
+    },
+    handleRemoveFromSelectedSettings(id) {
+      // action will work on click, Enter or Space
+      if (event.type === 'click' || event.key === 'Enter' || event.key === ' ') {
+        this.get('scrollToSelectedSetting', id);
+        this.send('removeFromSelectedSettings', id);
+      }
     }
   }
 });

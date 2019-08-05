@@ -4,9 +4,10 @@
       <div class="label">
         {{t 'adminUsm.policyWizard.availableSettings'}}
         {{#rsa-text-with-tooltip value=(t 'adminUsm.policyWizard.availableTooltip')
+          displayOnTab=false
           style="standard"
           alwaysShow=true}}
-          {{rsa-icon size='large' name="information-circle" style='lined'}}
+          {{rsa-icon size='large' displayOnTab=true name="information-circle" style='lined'}}
         {{/rsa-text-with-tooltip}}
       </div>
       {{#each enabledAvailableSettings as |enabledAvailableSetting|}}
@@ -22,10 +23,10 @@
             {{#rsa-text-with-tooltip value=(t (concat enabledAvailableSetting.label 'Tooltip' ))
               style="standard"
               alwaysShow=true}}
-              {{rsa-icon size='large' name="information-circle" style='lined'}}
+              {{rsa-icon size='large' name="information-circle" displayOnTab=true style='lined'}}
             {{/rsa-text-with-tooltip}}
-            <span {{action 'handleAddToSelectedSettings' enabledAvailableSetting.id}}>
-              {{rsa-icon name="add-circle-1" style="lined"}}
+            <span onclick={{action 'handleAddToSelectedSettings' enabledAvailableSetting.id}} onkeyup={{action 'handleAddToSelectedSettings' enabledAvailableSetting.id}}>
+              {{rsa-icon name="add-circle-1" displayOnTab=(not enabledAvailableSetting.isGreyedOut) style="lined"}}
             </span>
           </div>
         {{/if}}
@@ -37,9 +38,10 @@
       <div class="label">
         {{t 'adminUsm.policyWizard.selectedSettings'}}
         {{#rsa-text-with-tooltip value=(t 'adminUsm.policyWizard.selectedTooltip')
+          displayOnTab=false
           style="standard"
           alwaysShow=true}}
-          {{rsa-icon size='large' name="information-circle" style='lined'}}
+          {{rsa-icon size='large' name="information-circle" displayOnTab=true style='lined'}}
         {{/rsa-text-with-tooltip}}
       </div>
       {{#each sortedSelectedSettings as |sortedSelectedSetting|}}
@@ -47,7 +49,7 @@
           <div class="heading">{{t sortedSelectedSetting.label}}</div>
         {{else}}
           {{usm-policies/policy-wizard/policy-types/policy-setting
-            removeFromSelectedSettings=(action 'removeFromSelectedSettings')
+            removeFromSelectedSettings=(action 'handleRemoveFromSelectedSettings')
             settingComponent=sortedSelectedSetting.component
             selectedSettingId=sortedSelectedSetting.id
             policyType=policyType

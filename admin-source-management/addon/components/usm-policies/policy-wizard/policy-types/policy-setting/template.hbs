@@ -8,8 +8,8 @@
   {{/rsa-text-with-tooltip}}
 
   <span class="remove-setting {{if (and isDefaultPolicy greyOutSetting) 'is-greyed-out' 'not-greyed-out'}}"
-    {{action removeFromSelectedSettings selectedSettingId}}>
-    {{rsa-icon name="remove-circle-1" style="lined"}}
+    onkeyup={{action removeFromSelectedSettings selectedSettingId}} onclick={{action removeFromSelectedSettings selectedSettingId}}>
+    {{rsa-icon name="remove-circle-1" displayOnTab=true style="lined"}}
   </span>
 </h4>
 
