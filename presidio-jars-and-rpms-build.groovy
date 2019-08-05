@@ -274,14 +274,14 @@ def checkoutBranch(String branchName) {
  * Maven Utilities *
  *******************/
 def mvnCleanInstall(boolean deploy, String pomFile, boolean updateSnapshots, boolean debug) {
-    sh "mvn clean install ${deploy ? "deploy" : ""} -f ${pomFile} ${updateSnapshots ? "-U" : ""} ${debug ? "-X" : ""}"
+    sh "mvn clean install ${deploy ? "deploy" : ""} -f ${pomFile} ${updateSnapshots ? "-U" : ""} ${debug ? "-X" : ""} ${env.MVN_PARAMS}"
 }
 
 def mvnCleanPackage(String deploy, String pomFile, String stability, String version, boolean updateSnapshots, boolean debug, boolean preStep) {
     if(preStep){
         sh "cp .pydistutils.cfg ~/.pydistutils.cfg"
     }
-    sh "mvn -B -f ${pomFile} -Dbuild.stability=${stability.charAt(0)} -Dbuild.version=${version} -Dpublish=${deploy} clean package ${updateSnapshots ?  "-U" : ""} ${debug ? "-X" : ""} "
+    sh "mvn -B -f ${pomFile} -Dbuild.stability=${stability.charAt(0)} -Dbuild.version=${version} -Dpublish=${deploy} clean package ${updateSnapshots ?  "-U" : ""} ${debug ? "-X" : ""} ${env.MVN_PARAMS}"
 }
 
 def extractVersionAndStabilityFromPom(pomFile){
