@@ -61,7 +61,24 @@ public class CopyValueTransformerTest extends TransformerTest{
 
     @Test
     public void copyToMultiDestinationsAndRemoveSourceKey() throws Exception {
-        String destinationKey = "dest";
         copyToDestinations(true, Arrays.asList("dest1","dest2","dest3"));
+    }
+
+    @Test
+    public void testHierarchyCreatedForTarget() throws Exception {
+        String destinationKey = "sslSubject.name";
+        String sourceKey = "orig";
+
+        String sourceValue = "svalue";
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(sourceKey, sourceValue);
+
+        IJsonObjectTransformer transformer = buildTransformer(sourceKey, true,
+                Collections.singletonList(destinationKey));
+        JSONObject retJsonObject = transform(transformer, jsonObject);
+        Object actualObj = retJsonObject.get("sslSubject");
+        JSONObject expectedObj = new JSONObject().put("name", sourceValue);
+        Assert.assertEquals(expectedObj.toString(), actualObj.toString());
     }
 }
