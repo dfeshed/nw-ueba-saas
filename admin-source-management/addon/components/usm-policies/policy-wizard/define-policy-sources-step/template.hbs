@@ -27,7 +27,13 @@
   </div>
 
   <h4 class='subheading'>
-    {{t 'adminUsm.policyWizard.filePolicy.logFileType'}}
+    {{#rsa-text-with-tooltip
+      value=(t 'adminUsm.policyWizard.filePolicy.logFileTypeTooltip')
+      style="standard"
+      alwaysShow=true
+    }}
+      {{t 'adminUsm.policyWizard.filePolicy.logFileType'}}
+    {{/rsa-text-with-tooltip}}
   </h4>
   <hbox class="file-source-type__list">
     <div class="file-source-type">
