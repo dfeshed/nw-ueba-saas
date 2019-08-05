@@ -11,13 +11,15 @@
 }
 
 .host-header {
-  height: 122px;
   background-color: background-color(primary, darker, nearly-opaque);
   @include border-bottom(1px, solid, primary, lightest, nearly-transparent);
 
   .divider {
     border-left: 1px solid border-color(primary, dark);
     margin: rsa-whitespace(least) rsa-whitespace();
+  }
+  .host-title-bar {
+    height: 31px;
   }
   .host-header_status-actionbar-wrapper {
     margin-bottom: rsa-whitespace();
