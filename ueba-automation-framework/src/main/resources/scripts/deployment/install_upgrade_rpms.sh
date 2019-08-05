@@ -56,10 +56,10 @@ else
     RPN_NUM=12
 fi
 
-if [ "$PRESIDIO_JARS_AMOUNT" != "$RPN_NUM" ];then
-    echo "/var/netwitness/presidio/batch/ directory does not contain the number of expected jar files"
-    exit 1
-fi
+#if [ "$PRESIDIO_JARS_AMOUNT" != "$RPN_NUM" ];then
+#    echo "/var/netwitness/presidio/batch/ directory does not contain the number of expected jar files"
+#    exit 1
+#fi
 
 sudo  systemctl daemon-reload
 echo "######################################## install_upgrade_rpms.sh Script Started #######################################"
