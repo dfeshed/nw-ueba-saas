@@ -84,7 +84,7 @@
       "sourceKey": "ssl_subject",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "sslSubject"
+        "sslSubject.name"
       ]
     },
     {
