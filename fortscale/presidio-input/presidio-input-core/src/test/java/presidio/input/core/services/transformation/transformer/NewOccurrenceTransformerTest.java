@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import presidio.sdk.api.domain.AbstractInputDocument;
-import presidio.sdk.api.domain.rawevents.Domain;
+import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
 import presidio.sdk.api.domain.rawevents.TlsRawEvent;
 
 import java.time.Duration;

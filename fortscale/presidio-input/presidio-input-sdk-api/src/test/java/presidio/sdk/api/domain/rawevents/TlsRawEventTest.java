@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Test;
+import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
 
 import java.io.IOException;
 import java.time.Instant;

@@ -1,7 +1,7 @@
 package presidio.ade.domain.record.enriched.tls;
 
 import presidio.ade.domain.record.enriched.BaseEnrichedContext;
-import presidio.sdk.api.domain.rawevents.Domain;
+import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
 
 public class AdeEnrichedTlsContext extends BaseEnrichedContext {
 

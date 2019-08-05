@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.sdk.api.domain.AbstractInputDocument;
+import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
 
 import java.time.Instant;
 import java.util.List;

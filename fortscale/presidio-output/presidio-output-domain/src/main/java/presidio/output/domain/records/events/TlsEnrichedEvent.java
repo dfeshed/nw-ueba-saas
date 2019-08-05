@@ -2,7 +2,7 @@ package presidio.output.domain.records.events;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import presidio.sdk.api.domain.rawevents.Domain;
+import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
 
 import java.time.Instant;
 import java.util.List;
