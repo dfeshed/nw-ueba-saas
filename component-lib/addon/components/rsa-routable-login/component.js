@@ -37,12 +37,14 @@ const _STATUS = {
   SUCCESS: 'success'
 };
 
+const permittedURLList = ['/respond', '/investigate', '/unified', '/reporting', '/live', '/configure', '/alerting', '/admin', '/profile'];
+
 const setPostAuthRedirect = () => {
   if (!testing && !isEmpty(window.location.search)) {
     const redirectionURL = window.location.search.substring(6);
-    /* redirectionURL is constrained to start with '/' which implies internal redirection always and no external redirection.
-    External redirections will never start with '/' */
-    if (redirectionURL.startsWith('/')) {
+    /* redirectionURL is constrained to start with an approved list of internal paths */
+    const isPresentInPermittedURLList = permittedURLList.some((subMatch) => subMatch.includes(redirectionURL.substring(0, 5)));
+    if (isPresentInPermittedURLList && !(redirectionURL.includes('.') || redirectionURL.toLowerCase().includes('%2e'))) {
       localStorage.setItem('rsa-post-auth-redirect', redirectionURL);
     } else {
       localStorage.setItem('rsa-post-auth-redirect', '');
