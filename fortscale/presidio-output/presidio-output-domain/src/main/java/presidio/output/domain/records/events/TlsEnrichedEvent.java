@@ -3,6 +3,7 @@ package presidio.output.domain.records.events;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
+import presidio.sdk.api.domain.newoccurrencewrappers.SslSubject;
 
 import java.time.Instant;
 import java.util.List;
@@ -48,7 +49,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     private String dstCountry;
 
     @Field(SSL_SUBJECT_FIELD_NAME)
-    private String sslSubject;
+    private SslSubject sslSubject;
 
     @Field(DOMAIN_FIELD_NAME)
     private Domain domain;
@@ -98,7 +99,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
 
     public TlsEnrichedEvent(Instant createdDate, Instant eventDate, String eventId, String schema, String dataSource,
                             Map<String, String> additionalInfo,
-                            String srcIp, String dstIp, String srcCountry, String dstCountry, String sslSubject,
+                            String srcIp, String dstIp, String srcCountry, String dstCountry, SslSubject sslSubject,
                             Domain domain, String dstOrg,
                             String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
                             String dstNetname, String ja3, String ja3s, String direction, String dstPort,
@@ -159,11 +160,11 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.dstCountry = dstCountry;
     }
 
-    public String getSslSubject() {
+    public SslSubject getSslSubject() {
         return sslSubject;
     }
 
-    public void setSslSubject(String sslSubject) {
+    public void setSslSubject(SslSubject sslSubject) {
         this.sslSubject = sslSubject;
     }
 

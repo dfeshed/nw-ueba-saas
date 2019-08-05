@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
+import presidio.sdk.api.domain.newoccurrencewrappers.SslSubject;
 
 import java.time.Instant;
 import java.util.List;
@@ -50,7 +51,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     private String dstCountry;
 
     @Field(SSL_SUBJECT_FIELD_NAME)
-    private String sslSubject;
+    private SslSubject sslSubject;
 
     @Field(DOMAIN_FIELD_NAME)
     private Domain domain;
@@ -126,7 +127,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     }
 
     public TlsRawEvent(Instant dateTime, String eventId, String dataSource, Map<String, String> additionalInfo,
-                       String srcIp, String dstIp, String srcPort, String srcCountry, String dstCountry, String sslSubject,
+                       String srcIp, String dstIp, String srcPort, String srcCountry, String dstCountry, SslSubject sslSubject,
                        Domain domain, String dstOrg,
                        String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
                        String dstNetname, String ja3, String ja3s, String direction, String dstPort, List<String> fqdn,
@@ -187,11 +188,11 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.dstCountry = dstCountry;
     }
 
-    public String getSslSubject() {
+    public SslSubject getSslSubject() {
         return sslSubject;
     }
 
-    public void setSslSubject(String sslSubject) {
+    public void setSslSubject(SslSubject sslSubject) {
         this.sslSubject = sslSubject;
     }
 

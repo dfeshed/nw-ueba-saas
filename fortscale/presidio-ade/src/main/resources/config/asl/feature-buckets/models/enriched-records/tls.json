@@ -3,7 +3,7 @@
     {
       "name": "startInstantHistogramSslSubjectOutboundTlsDaily",
       "contextFieldNames": [
-        "sslSubject"
+        "sslSubject.name"
       ],
       "adeEventTypes": [
         "tls"
@@ -81,7 +81,7 @@
           "name": "sslSubjectHistogram",
           "featureNamesMap": {
             "groupBy": [
-              "sslSubject"
+              "sslSubject.name"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -183,7 +183,7 @@
     {
       "name": "countryHistogramSslSubjectOutboundTlsDaily",
       "contextFieldNames": [
-        "sslSubject"
+        "sslSubject.name"
       ],
       "adeEventTypes": [
         "tls"
@@ -231,7 +231,7 @@
           "name": "sslSubjectHistogram",
           "featureNamesMap": {
             "groupBy": [
-              "sslSubject"
+              "sslSubject.name"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -243,7 +243,7 @@
     {
       "name": "dstPortHistogramSslSubjectOutboundTlsDaily",
       "contextFieldNames": [
-        "sslSubject"
+        "sslSubject.name"
       ],
       "adeEventTypes": [
         "tls"
@@ -291,7 +291,7 @@
           "name": "sslSubjectHistogram",
           "featureNamesMap": {
             "groupBy": [
-              "sslSubject"
+              "sslSubject.name"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -471,7 +471,7 @@
           "name": "sslSubjectHistogram",
           "featureNamesMap": {
             "groupBy": [
-              "sslSubject"
+              "sslSubject.name"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -483,7 +483,7 @@
     {
       "name": "ja3HistogramSslSubjectOutboundTlsDaily",
       "contextFieldNames": [
-        "sslSubject"
+        "sslSubject.name"
       ],
       "adeEventTypes": [
         "tls"

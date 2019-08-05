@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Test;
 import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
+import presidio.sdk.api.domain.newoccurrencewrappers.SslSubject;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -23,6 +24,7 @@ public class TlsRawEventTest {
             String rawEventStr = objectMapper.writeValueAsString(tlsRawEvent);
             TlsRawEvent rawEventDeserialized = objectMapper.readValue(rawEventStr, tlsRawEvent.getClass());
             assertEquals(tlsRawEvent.getDomain(), rawEventDeserialized.getDomain());
+            assertEquals(tlsRawEvent.getSslSubject(), rawEventDeserialized.getSslSubject());
         } catch (IOException e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -38,6 +40,7 @@ public class TlsRawEventTest {
                     .replace(",\"isNewOccurrence\":true", "");
             TlsRawEvent rawEventDeserialized = objectMapper.readValue(missingOccurrenceStr, tlsRawEvent.getClass());
             assertEquals(tlsRawEvent.getDomain(), rawEventDeserialized.getDomain());
+            assertEquals(tlsRawEvent.getSslSubject(), rawEventDeserialized.getSslSubject());
         } catch (IOException e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -54,7 +57,7 @@ public class TlsRawEventTest {
 
     private TlsRawEvent createTlsRawEvent(boolean isNewOccurrence) {
         return new TlsRawEvent(Instant.now(), "TLS", "dataSource", null, "", "", "", "", "",
-                "", new Domain("google.com", isNewOccurrence), "", "", 0L, 0L, "", "", "", "", "",
+                new SslSubject("ssl", isNewOccurrence), new Domain("google.com", isNewOccurrence), "", "", 0L, 0L, "", "", "", "", "",
                 "", null, null, null);
 
     }

@@ -2,6 +2,7 @@ package presidio.ade.domain.record.enriched.tls;
 
 import presidio.ade.domain.record.enriched.BaseEnrichedContext;
 import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
+import presidio.sdk.api.domain.newoccurrencewrappers.SslSubject;
 
 public class AdeEnrichedTlsContext extends BaseEnrichedContext {
 
@@ -10,7 +11,7 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
     private String dstIp;
     private String srcCountry;
     private String dstCountry;
-    private String sslSubject;
+    private SslSubject sslSubject;
     private Domain domain;
     private String dstOrg;
     private String dstAsn;
@@ -78,11 +79,11 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
         this.dstCountry = dstCountry;
     }
 
-    public String getSslSubject() {
+    public SslSubject getSslSubject() {
         return sslSubject;
     }
 
-    public void setSslSubject(String sslSubject) {
+    public void setSslSubject(SslSubject sslSubject) {
         this.sslSubject = sslSubject;
     }
 

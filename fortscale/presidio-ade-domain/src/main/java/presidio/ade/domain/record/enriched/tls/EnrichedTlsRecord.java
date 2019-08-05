@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.util.AdeRecordMetadata;
 import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
+import presidio.sdk.api.domain.newoccurrencewrappers.SslSubject;
 
 import java.time.Instant;
 
@@ -48,7 +49,7 @@ public class EnrichedTlsRecord extends EnrichedRecord {
     private String dstCountry;
 
     @Field(SSL_SUBJECT_FIELD_NAME)
-    private String sslSubject;
+    private SslSubject sslSubject;
 
     @Field(DOMAIN_FIELD_NAME)
     private Domain domain;
@@ -136,11 +137,11 @@ public class EnrichedTlsRecord extends EnrichedRecord {
         this.dstCountry = dstCountry;
     }
 
-    public String getSslSubject() {
+    public SslSubject getSslSubject() {
         return sslSubject;
     }
 
-    public void setSslSubject(String sslSubject) {
+    public void setSslSubject(SslSubject sslSubject) {
         this.sslSubject = sslSubject;
     }
 

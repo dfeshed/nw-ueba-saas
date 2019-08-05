@@ -12,6 +12,7 @@ import presidio.monitoring.flush.MetricContainerFlusher;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Given a group name, this service creates the corresponding {@link ModelConfService}, that contains all the

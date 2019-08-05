@@ -195,7 +195,7 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
                      * This returns a generator that creates x values for the context
                      * field. This affects the number of models created per model conf.
                      */
-                    return new StringRegexCyclicValuesGenerator(String.format(contextFormat, contextFieldName));
+                    return new StringRegexCyclicValuesGenerator(String.format(contextFormat, contextFieldName.replace(".", "_")));
                 })
                 .collect(Collectors.toList());
         RegexStringListGenerator contextFieldValuesGenerator = new RegexStringListGenerator(stringRegexCyclicValuesGenerators);
