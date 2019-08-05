@@ -63,12 +63,17 @@ def setBaseUrl(
 
 def uebaPreparingEnv (){
     runCleanup = env.RUN_CLEANUP
+    String oldVersion = ${OLD_UEBA_RPMS}
     schedulerActivity = sh(returnStdout: true, script: 'systemctl is-active airflow-scheduler || exit 0').trim()
-    if (runCleanup == 'true'){
-        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION $OLD_UEBA_RPMS"
+    if ( oldVersion == "" ){
+    oldVersion = "0"
     }
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION $OLD_UEBA_RPMS"
-    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION $OLD_UEBA_RPMS"
+        
+    if (runCleanup == 'true'){
+        sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/cleanup.sh $env.VERSION $oldVersion"
+    }
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/install_upgrade_rpms.sh $env.VERSION $oldVersion"
+    sh "bash ${env.WORKSPACE}/presidio-integration-test/presidio-integration-common/src/main/resources/Initiate-presidio-services.sh $env.VERSION $oldVersion"
     if (runCleanup == 'false' && schedulerActivity == 'active' ){
        sleep 30
        sh "sudo systemctl start airflow-scheduler"
