@@ -87,5 +87,83 @@ public class OutputTlsEnrichStoredData {
     @Field("dataSource")
     private String dataSource;
 
+    public String getId() {
+        return id;
+    }
 
+    public Instant getStartInstant() {
+        return startInstant;
+    }
+
+    public String getSrcIp() {
+        return srcIp;
+    }
+
+    public String getDstIp() {
+        return dstIp;
+    }
+
+    public String getSrcCountry() {
+        return srcCountry;
+    }
+
+    public String getDstCountry() {
+        return dstCountry;
+    }
+
+    public String getSslSubject() {
+        return sslSubject;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public String getDstOrg() {
+        return dstOrg;
+    }
+
+    public String getDstAsn() {
+        return dstAsn;
+    }
+
+    public long getNumOfBytesSent() {
+        return numOfBytesSent;
+    }
+
+    public long getNumOfBytesReceived() {
+        return numOfBytesReceived;
+    }
+
+    public String getSrcNetname() {
+        return srcNetname;
+    }
+
+    public String getDstNetname() {
+        return dstNetname;
+    }
+
+    public String getJa3() {
+        return ja3;
+    }
+
+    public String getJa3s() {
+        return ja3s;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public int getDstPort() {
+        return dstPort;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public String getDataSource() {
+        return dataSource;
+    }
 }

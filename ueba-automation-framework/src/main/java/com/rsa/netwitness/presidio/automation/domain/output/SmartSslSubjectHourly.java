@@ -130,20 +130,16 @@ public class SmartSslSubjectHourly {
 
     public class Context{
 
-        private String userId;
+        private String sslSubject;
 
-        public String getUserId() {
-            return userId;
-        }
-
-        public void setUserId(String userId) {
-            this.userId = userId;
+        public String getSslSubject() {
+            return sslSubject;
         }
 
         @Override
         public String toString() {
             return "Context{" +
-                    "userId='" + userId + '\'' +
+                    "sslSubject='" + sslSubject + '\'' +
                     '}';
         }
     }

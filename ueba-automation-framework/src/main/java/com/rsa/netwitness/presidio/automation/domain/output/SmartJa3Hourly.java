@@ -130,20 +130,16 @@ public class SmartJa3Hourly {
 
     public class Context{
 
-        private String userId;
+        private String ja3;
 
-        public String getUserId() {
-            return userId;
-        }
-
-        public void setUserId(String userId) {
-            this.userId = userId;
+        public String getJa3() {
+            return ja3;
         }
 
         @Override
         public String toString() {
             return "Context{" +
-                    "userId='" + userId + '\'' +
+                    "ja3='" + ja3 + '\'' +
                     '}';
         }
     }
