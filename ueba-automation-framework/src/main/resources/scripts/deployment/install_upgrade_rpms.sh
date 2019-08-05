@@ -49,9 +49,17 @@ if [[ NW_LOG_PLAYER -eq 0 ]]; then
 fi
 
 PRESIDIO_JARS_AMOUNT=$(ls /var/netwitness/presidio/batch/*jar | wc -l)
-if [ $PRESIDIO_JARS_AMOUNT -ne 13  ];then
+
+if [ NEW_RPM_VERSION == "11.4.0.0" ];then
+    RPN_NUM=13
+else
+    RPN_NUM=12
+fi
+
+if [ "$PRESIDIO_JARS_AMOUNT" != "$RPN_NUM" ];then
     echo "/var/netwitness/presidio/batch/ directory does not contain the number of expected jar files"
     exit 1
 fi
+
 sudo  systemctl daemon-reload
 echo "######################################## install_upgrade_rpms.sh Script Started #######################################"
