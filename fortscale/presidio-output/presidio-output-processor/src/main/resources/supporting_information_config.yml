@@ -1335,7 +1335,7 @@ indicators:
   schema: TLS
   adeEventType: tls
   modelContextFields:
-    - sslSubject
+    - sslSubject.name
   anomalyDescriptior:
     anomalyFilters:
     - fieldName: direction
@@ -1404,7 +1404,7 @@ indicators:
   schema: TLS
   adeEventType: tls
   modelContextFields:
-    - sslSubject
+    - sslSubject.name
   anomalyDescriptior:
     anomalyFilters:
     - fieldName: direction
@@ -1421,7 +1421,7 @@ indicators:
     - srcNetname
   schema: TLS
   anomalyDescriptior:
-    anomalyField: sslSubject
+    anomalyField: sslSubject.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
@@ -1501,7 +1501,7 @@ indicators:
   name: ssl_subject_abnormal_country_for_ssl_subject_outbound
   adeEventType: scored_enriched.tls.country.sslSubjectOutbound.tls.score
   modelContextFields:
-    - sslSubject
+    - sslSubject.name
   schema: TLS
   anomalyDescriptior:
     anomalyField: dstCountry
@@ -1521,7 +1521,7 @@ indicators:
   name: ssl_subject_abnormal_dst_port_for_ssl_subject_outbound
   adeEventType: scored_enriched.tls.dstPort.sslSubjectOutbound.tls.score
   modelContextFields:
-    - sslSubject
+    - sslSubject.name
   schema: TLS
   anomalyDescriptior:
     anomalyField: dstPort
@@ -1541,7 +1541,7 @@ indicators:
   name: ssl_subject_abnormal_ssl_subject_day_time
   adeEventType: scored_enriched.tls.startInstant.sslSubjectOutbound.tls.score
   modelContextFields:
-    - sslSubject
+    - sslSubject.name
   schema: TLS
   anomalyDescriptior:
     anomalyField: eventDate
@@ -1641,7 +1641,7 @@ indicators:
     - ja3
   schema: TLS
   anomalyDescriptior:
-    anomalyField: sslSubject
+    anomalyField: sslSubject.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
@@ -1737,13 +1737,13 @@ indicators:
     - srcNetname
   schema: TLS
   anomalyDescriptior:
-    anomalyField: sslSubject
+    anomalyField: sslSubject.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
     - srcNetname
-    - sslSubject
+    - sslSubject.name
   historicalData:
     type: count_aggregations
     featureBucketConfName: sslSubjectHistogramSrcNetnameOutboundTlsDaily
@@ -1819,7 +1819,7 @@ indicators:
   name: ja3_abnormal_country_for_ssl_subject_outbound
   adeEventType: scored_enriched.tls.country.sslSubjectOutbound.tls.score
   modelContextFields:
-    - sslSubject
+    - sslSubject.name
   schema: TLS
   anomalyDescriptior:
     anomalyField: dstCountry
@@ -1828,7 +1828,7 @@ indicators:
         fieldValue: OUTBOUND
   splitFields:
     - dstCountry
-    - sslSubject
+    - sslSubject.name
   historicalData:
     type: count_aggregations
     featureBucketConfName: countryHistogramSslSubjectOutboundTlsDaily
@@ -1840,7 +1840,7 @@ indicators:
   name: ja3_abnormal_dst_port_for_ssl_subject_outbound
   adeEventType: scored_enriched.tls.dstPort.sslSubjectOutbound.tls.score
   modelContextFields:
-    - sslSubject
+    - sslSubject.name
   schema: TLS
   anomalyDescriptior:
     anomalyField: dstPort
@@ -1849,7 +1849,7 @@ indicators:
         fieldValue: OUTBOUND
   splitFields:
     - dstPort
-    - sslSubject
+    - sslSubject.name
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramSslSubjectOutboundTlsDaily
@@ -1861,12 +1861,12 @@ indicators:
   name: ja3_abnormal_ssl_subject_day_time
   adeEventType: scored_enriched.tls.startInstant.sslSubjectOutbound.tls.score
   modelContextFields:
-    - sslSubject
+    - sslSubject.name
   schema: TLS
   anomalyDescriptior:
     anomalyField: eventDate
   splitFields:
-    - sslSubject
+    - sslSubject.name
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramSslSubjectOutboundTlsDaily
@@ -1960,12 +1960,12 @@ indicators:
     - ja3
   schema: TLS
   anomalyDescriptior:
-    anomalyField: sslSubject
+    anomalyField: sslSubject.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
-    - sslSubject
+    - sslSubject.name
   historicalData:
     type: count_aggregations
     featureBucketConfName: sslSubjectHistogramJa3OutboundTlsDaily
