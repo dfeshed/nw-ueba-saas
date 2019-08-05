@@ -20,7 +20,7 @@ pipeline {
             steps {
                 script {
                     setBaseUrl ()
-                    if (!someString?.trim()) {
+                    if ($OLD_UEBA_RPMS == "" ) {
                         $OLD_UEBA_RPMS = "0"
                     }
                     uebaPreparingEnv()
