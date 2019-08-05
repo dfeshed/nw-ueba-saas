@@ -50,7 +50,7 @@ fi
 
 PRESIDIO_JARS_AMOUNT=$(ls /var/netwitness/presidio/batch/*jar | wc -l)
 
-if [ NEW_RPM_VERSION == "11.4.0.0" ];then
+if [ "$NEW_RPM_VERSION" == "11.4.0.0" ];then
     RPN_NUM=13
 else
     RPN_NUM=12
