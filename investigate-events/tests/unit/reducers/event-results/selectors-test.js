@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { lookup } from 'ember-dependency-lookup';
 import {
   allExpectedDataLoaded,
@@ -1305,52 +1305,6 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].size, state.investigate.eventResults.data[0].size);
   });
 
-  skip('clientSortedData when other', async function(assert) {
-    const state = {
-      investigate: {
-        eventResults: {
-          data: [
-            { foo: 1 },
-            { foo: null },
-            { foo: 'b' },
-            { foo: 3 }
-          ]
-        },
-        data: {
-          sortField: 'foo',
-          sortDirection: 'Descending',
-          globalPreferences: {
-            dateFormat: true,
-            timeFormat: true,
-            timeZone: true,
-            locale: true
-          }
-        },
-        eventCount: {
-          threshold: 1000,
-          data: 3
-        },
-        dictionaries: {
-          language: [{
-            metaName: 'foo',
-            format: 'UInt8'
-          }]
-        },
-        services: {
-          serviceData: [{
-            version: '11.4'
-          }]
-        }
-      }
-    };
-
-    const result = clientSortedData(state);
-    assert.equal(result[0].foo, state.investigate.eventResults.data[3].foo);
-    assert.equal(result[1].foo, state.investigate.eventResults.data[0].foo);
-    assert.equal(result[2].foo, state.investigate.eventResults.data[2].foo);
-    assert.equal(result[3].foo, state.investigate.eventResults.data[1].foo);
-  });
-
   test('clientSortedData when nulls are mixed in with Ints and Descending', async function(assert) {
     const state = {
       investigate: {
@@ -1395,7 +1349,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result[2].size, state.investigate.eventResults.data[1].size);
   });
 
-  skip('clientSortedData when nulls are mixed in with Ints and Ascending', async function(assert) {
+  test('clientSortedData when nulls are mixed in with Ints and Ascending', async function(assert) {
     const state = {
       investigate: {
         eventResults: {
@@ -1444,7 +1398,7 @@ module('Unit | Selectors | event-results', function(hooks) {
       investigate: {
         eventResults: {
           data: [
-            { foo: 'b' },
+            { foo: 'B' },
             { foo: null },
             { foo: 'c' }
           ]
@@ -1490,7 +1444,7 @@ module('Unit | Selectors | event-results', function(hooks) {
           data: [
             { foo: 'b' },
             { foo: null },
-            { foo: 'c' }
+            { foo: 'C' }
           ]
         },
         data: {

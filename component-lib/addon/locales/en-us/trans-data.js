@@ -190,7 +190,8 @@ export default {
       dashboard: 'Monitor',
       live: 'Configure',
       respond: 'Respond',
-      admin: 'Admin'
+      admin: 'Admin',
+      entities: 'Entities'
     },
     defaultInvestigatePage: {
       label: 'Default Investigate View',
@@ -200,7 +201,8 @@ export default {
       navigate: 'Navigate',
       hosts: 'Hosts',
       files: 'Files',
-      users: 'Users'
+      users: 'Users',
+      entities: 'Entities'
     }
   },
   queryBuilder: {

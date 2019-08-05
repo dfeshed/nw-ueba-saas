@@ -503,7 +503,7 @@ export const clientSortedData = createSelector(
           if (sortDirection === 'Ascending') {
             // force null to something more friendly to fast-sort
             // otherwise nulls are always at the bottom, for asc and desc
-            eventCopy.toSort = metaObj && metaObj.format === 'Text' ? 'a' : Number.MIN_SAFE_INTEGER;
+            eventCopy.toSort = metaObj && metaObj.format === 'Text' ? 'A' : Number.MIN_SAFE_INTEGER;
           }
         } else {
           if (metaObj && metaObj.format === 'MAC') {
@@ -538,7 +538,9 @@ export const clientSortedData = createSelector(
               eventCopy.toSort = ipv6Addy.bigInteger();
             }
           } else {
-            eventCopy.toSort = event[sortField];
+            if (event[sortField] !== null && event[sortField] !== undefined && event[sortField] !== '') {
+              eventCopy.toSort = metaObj && metaObj.format === 'Text' ? event[sortField].toLowerCase() : event[sortField];
+            }
           }
         }
 

@@ -7,36 +7,43 @@ import { inject as service } from '@ember/service';
 const TABS = [
   {
     isClassic: true,
+    localeKey: 'userPreferences.defaultInvestigatePage.navigate',
     url: '/investigation',
     label: 'Navigate'
   },
   {
     isClassic: true,
     url: '/investigation/events',
+    localeKey: 'userPreferences.defaultInvestigatePage.events',
     label: 'Events'
   },
   {
     name: 'investigate.investigate-events',
     url: '/investigate/events',
+    localeKey: 'userPreferences.defaultInvestigatePage.eventAnalysis',
     label: 'Event Analysis'
   },
   {
     name: 'investigate.investigate-hosts',
+    localeKey: 'userPreferences.defaultInvestigatePage.hosts',
     label: 'Hosts'
   },
   {
     name: 'investigate.investigate-files',
     url: '/investigate/files',
+    localeKey: 'userPreferences.defaultInvestigatePage.files',
     label: 'Files'
   },
   {
     name: 'investigate.investigate-users',
     url: '/investigate/entities',
+    localeKey: 'userPreferences.defaultInvestigatePage.entities',
     label: 'Entities'
   },
   {
     isClassic: true,
     url: '/investigation/malware',
+    localeKey: 'userPreferences.defaultInvestigatePage.malware',
     label: 'Malware Analysis'
   }
 ];
