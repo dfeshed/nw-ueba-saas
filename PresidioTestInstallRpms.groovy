@@ -58,6 +58,9 @@ def setBaseUrl(
     } else {
         error("RPM Repository is Invalid - ${baseUrlValidation}")
     }
+    if ($OLD_UEBA_RPMS == "" ) {
+        $OLD_UEBA_RPMS = "0"
+    }
 }
 
 
