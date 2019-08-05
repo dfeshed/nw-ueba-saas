@@ -63,7 +63,7 @@ def setBaseUrl(
 
 def uebaPreparingEnv (){
     runCleanup = env.RUN_CLEANUP
-    String oldVersion = ${OLD_UEBA_RPMS}
+    String oldVersion = env.OLD_UEBA_RPMS
     schedulerActivity = sh(returnStdout: true, script: 'systemctl is-active airflow-scheduler || exit 0').trim()
     if ( oldVersion == "" ){
     oldVersion = "0"
