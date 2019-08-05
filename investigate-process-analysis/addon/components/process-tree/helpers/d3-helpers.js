@@ -30,6 +30,29 @@ export const transitionElbow = function(d) {
   return `M${ d.source.y },${ d.source.x }H${ d.source.y }V${ d.source.x }H${ d.source.y }`;
 };
 
+export const appendIconEvent = function({ node, fontSize, className, opacity = 1, text, dx = 0, dy = 0, parentContext, idCounter, callback }) {
+  return node.append('text')
+    .attr('id', function() {
+      idCounter.id++;
+      return `process-icon-${idCounter.id}`;
+    })
+    .attr('class', className)
+    .style('fill-opacity', opacity)
+    .attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'central')
+    .attr('dx', dx)
+    .attr('dy', dy)
+    .attr('font-family', 'nw-icon-library-all-1')
+    .attr('font-size', fontSize)
+    .text(text)
+    .on('mouseover', function(d) {
+      callback.mouseOver(d, this, parentContext);
+    })
+    .on('mouseleave', function(d) {
+      callback.mouseLeave(d, this, parentContext);
+    });
+};
+
 export const appendIcon = function({ node, fontSize, className, opacity = 1, text, dx = 0, dy = 0 }) {
   return node.append('text')
     .attr('class', className)

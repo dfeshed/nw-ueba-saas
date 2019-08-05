@@ -368,7 +368,7 @@ module('Integration | Component | process-tree', function(hooks) {
     new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInputs).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    document.getElementById('endpoint-process-2').dispatchEvent(new MouseEvent('mouseover'));
+    document.getElementById('process-icon-2').dispatchEvent(new MouseEvent('mouseover'));
     return settled().then(() => {
       assert.equal(findAll('.panel-content').length, 1, 'Expected to render tether panel');
       assert.equal(findAll('.process-hover-key').length, 6, '6 fields are displayed on hovering over a process.');
@@ -391,10 +391,10 @@ module('Integration | Component | process-tree', function(hooks) {
     new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInputs).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    document.getElementById('endpoint-process-2').dispatchEvent(new MouseEvent('mouseover'));
+    document.getElementById('process-icon-2').dispatchEvent(new MouseEvent('mouseover'));
     return settled().then(() => {
       assert.equal(findAll('.panel-content').length, 1, 'Expected to render tether panel');
-      document.getElementById('endpoint-process-2').dispatchEvent(new MouseEvent('mouseleave'));
+      document.getElementById('process-icon-2').dispatchEvent(new MouseEvent('mouseleave'));
       return settled().then(() => {
         assert.equal(findAll('.panel-content').length, 0, 'Expected to hide tether panel');
       });
@@ -418,7 +418,7 @@ module('Integration | Component | process-tree', function(hooks) {
     new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInputs).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    document.getElementById('endpoint-process-2').dispatchEvent(new MouseEvent('mouseover'));
+    document.getElementById('process-icon-2').dispatchEvent(new MouseEvent('mouseover'));
     return settled().then(async() => {
       assert.equal(findAll('.panel-content').length, 1, 'Expected to render tether panel');
       await click('.copy-icon .rsa-icon');
@@ -443,7 +443,7 @@ module('Integration | Component | process-tree', function(hooks) {
     new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInputs).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    document.getElementById('endpoint-process-3').dispatchEvent(new MouseEvent('mouseover'));
+    document.getElementById('process-icon-3').dispatchEvent(new MouseEvent('mouseover'));
     return settled().then(async() => {
       assert.equal(findAll('.panel-content').length, 1, 'Expected to render tether panel');
       assert.equal(findAll('.copy-icon .rsa-icon').length, 0, 'There is no copy launch arguments icon present.');

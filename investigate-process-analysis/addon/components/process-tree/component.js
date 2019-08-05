@@ -76,6 +76,7 @@ const dispatchToActions = {
 
 let freeIdCounter = 0;
 let nodeIdCounter = 0;
+const idCounter = { id: 0 };
 let hideEvent = null;
 let displayEvent = null;
 
@@ -398,9 +399,46 @@ const TreeComponent = Component.extend({
     appendExpandCollapseIcon(expandWrapper, collapseWrapper);
   },
 
+  _onMouseOver(d, element, self) {
+    const eventBus = self.get('eventBus');
+    const className = element.classList;
+    if (!className.contains('panel1')) {
+      element.classList.add('panel1');
+    }
+    if (hideEvent) {
+      run.cancel(hideEvent);
+      hideEvent = null;
+    }
+    const checksum = d.data.checksum ? d.data.checksum : d.data.checksumDst;
+    const hashes = [checksum];
+
+    const event = run.later(async() => {
+      if (!element) {
+        return;
+      }
+      self.set('process', d.data);
+      await self.send('getFileProperty', { hashes }, self.get('selectedServerId'));
+      sendTetherEvent(element, 'panel1', eventBus, 'display', processDetails(d.data));
+    }, 1000);
+    displayEvent = event;
+  },
+
+  _onMouseLeave(d, element, self) {
+    const eventBus = self.get('eventBus');
+    if (displayEvent) {
+      run.cancel(displayEvent);
+      displayEvent = null;
+    }
+    const event = run.later(() => {
+      if (element) {
+        sendTetherEvent(element, 'panel1', eventBus, 'hide', d);
+      }
+    }, 200);
+    hideEvent = event;
+  },
+
   _onNodeEnter(node, source) {
     const self = this;
-    const eventBus = this.get('eventBus');
     const nodeEnter = node.enter().append('g')
       .attr('class', 'process')
       .attr('test-id', function() {
@@ -423,43 +461,11 @@ const TreeComponent = Component.extend({
       .attr('id', function() {
         freeIdCounter++;
         return `endpoint-process-${freeIdCounter}`;
-      })
-      .on('mouseover', function(d) {
-        const element = this;
-        element.setAttribute('class', 'panel1');
-        if (hideEvent) {
-          run.cancel(hideEvent);
-          hideEvent = null;
-        }
-        const checksum = d.data.checksum ? d.data.checksum : d.data.checksumDst;
-        const hashes = [checksum];
-
-        const event = run.later(async() => {
-          if (!element) {
-            return;
-          }
-          self.set('process', d.data);
-          await self.send('getFileProperty', { hashes }, self.get('selectedServerId'));
-          sendTetherEvent(element, 'panel1', eventBus, 'display', processDetails(d.data));
-        }, 1000);
-        displayEvent = event;
-      })
-      .on('mouseleave', function(d) {
-        const element = this;
-        element.setAttribute('class', 'panel1');
-        if (displayEvent) {
-          run.cancel(displayEvent);
-          displayEvent = null;
-        }
-        const event = run.later(() => {
-          if (element) {
-            sendTetherEvent(element, 'panel1', eventBus, 'hide', d);
-          }
-        }, 200);
-        hideEvent = event;
-
       });
-    return addNodeContent(processNode, nodeEnter);
+
+    const completeNode = addNodeContent(processNode, nodeEnter, self, idCounter, { mouseOver: self._onMouseOver, mouseLeave: self._onMouseLeave });
+
+    return completeNode;
   },
 
   _getChildProcess(d, element) {
@@ -496,14 +502,16 @@ const TreeComponent = Component.extend({
   },
 
   _reCenterOnSideTabOpen(d) {
-    const boundary = getProcessTreeBoundary();
-    const [ { matrix } ] = d.transform.animVal;
-    const transform = zoomIdentity
-      .scale(1)
-      .translate(-matrix.e + (boundary.width / 2 - CONST.FOCUS_OFFSET), -matrix.f);
-    this.parent.transition()
-      .duration(CONST.DURATION)
-      .call(this.get('zoomBehaviour').transform, transform);
+    if (d.transform.animVal[0]) {
+      const boundary = getProcessTreeBoundary();
+      const [ { matrix } ] = d.transform.animVal;
+      const transform = zoomIdentity
+        .scale(1)
+        .translate(-matrix.e + (boundary.width / 2 - CONST.FOCUS_OFFSET), -matrix.f);
+      this.parent.transition()
+        .duration(CONST.DURATION)
+        .call(this.get('zoomBehaviour').transform, transform);
+    }
   },
 
   _recenter(d) {
@@ -555,6 +563,7 @@ const TreeComponent = Component.extend({
   willDestroyElement() {
     freeIdCounter = 0;
     nodeIdCounter = 0;
+    idCounter.id = 0;
   },
 
   actions: {

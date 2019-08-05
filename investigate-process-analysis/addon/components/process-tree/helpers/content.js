@@ -1,5 +1,5 @@
 import { CONST, DISTANCE, ICON } from '../const';
-import { appendIcon, appendText, elbow, transitionElbow, updateText } from './d3-helpers';
+import { appendIcon, appendIconEvent, appendText, elbow, transitionElbow, updateText } from './d3-helpers';
 import { truncateText } from '../util/data';
 import { hierarchy } from 'd3-hierarchy';
 import { select, selectAll } from 'd3-selection';
@@ -116,7 +116,7 @@ export const addLinks = (svg, links, source) => {
 };
 
 
-export const addNodeContent = (processNode, nodeEnter) => {
+export const addNodeContent = (processNode, nodeEnter, parentContext, idCounter, callback) => {
   processNode.append('rect')
     .attr('width', CONST.NODE_WIDTH)
     .attr('height', CONST.NODE_HEIGHT)
@@ -149,7 +149,7 @@ export const addNodeContent = (processNode, nodeEnter) => {
     .attr('class', 'score-text');
 
 
-  appendIcon({ className: 'process-icon', node: nodeEnter, fontSize: '30px', text: '\ue944', dx: DISTANCE.ICON_X, dy: DISTANCE.ICON_Y }); // file icon
+  appendIconEvent({ className: 'process-icon', node: nodeEnter, fontSize: '30px', text: '\ue944', dx: DISTANCE.ICON_X, dy: DISTANCE.ICON_Y, parentContext, idCounter, callback }); // file icon
   appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px', text: (d) => d.data.eventCategory && d.data.eventCategory.hasNetwork ? '\uea7b' : '', dx: DISTANCE.PROCESS_TYPE_X, dy: DISTANCE.PROCESS_TYPE_Y }); // network
   appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px', text: (d) => d.data.eventCategory && d.data.eventCategory.hasFile ? '\uea7a' : '', dx: DISTANCE.PROCESS_TYPE_X + DISTANCE.ICON_WIDTH, dy: DISTANCE.PROCESS_TYPE_Y }); // file
   appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px', text: (d) => d.data.eventCategory && d.data.eventCategory.hasRegistry ? '\uea79' : '', dx: DISTANCE.PROCESS_TYPE_X + (DISTANCE.ICON_WIDTH * 2), dy: DISTANCE.PROCESS_TYPE_Y }); // registry
