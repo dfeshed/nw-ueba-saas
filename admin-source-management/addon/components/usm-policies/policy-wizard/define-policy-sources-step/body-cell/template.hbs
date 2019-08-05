@@ -94,8 +94,10 @@
       <hbox>
         <vbox class="directory-path">
           {{rsa-form-input
-            value=path
+            value=(readonly path)
             focusOut=(action 'focusOut' index)
+            isError=(eq (get item.paths (concat index)) invalidPath)
+            errorMessage=(t errorMessage)
           }}
         </vbox>
         <vbox class="delete-path">
@@ -105,9 +107,16 @@
         </vbox>
       </hbox>
     {{/each}}
+    <vbox class="no-path">
+      {{#if (eq item.paths.length dirPathLength)}}
+        {{t dirPathEmptyMsg}}
+      {{/if}}
+    </vbox>
+
     <div class="add-path">
       {{#rsa-form-button
         class='add-directory-path'
+        isDisabled=(eq item.paths.length 16)
         click=(action 'addPath')
       }}
         {{t 'adminUsm.policyWizard.filePolicy.addPath'}}

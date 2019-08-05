@@ -148,6 +148,9 @@
       .delete-path {
         margin: rsa-whitespace() 0 0 rsa-whitespace();
       }
+      .no-path {
+        color: text-color(accentFour, base);
+      }
     }
   }
 }

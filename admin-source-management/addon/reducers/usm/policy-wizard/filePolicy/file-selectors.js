@@ -104,11 +104,14 @@ export const sourceNameValidator = (state) => {
   let message = '';
   let invalidEntry = 'invalid';
   const value = sources(state);
+  let invalidDirPath = 'invalid';
+  let dirPathEmptyMsg = '';
+  let dirPathLength = '';
 
   if (value) {
     // sources is an array of objects, loop through each obj and validate the sourceName within
     value.every((obj) => {
-      const { sourceName } = obj;
+      const { sourceName, paths } = obj;
       // sourceName cannot be an invalid hostname or IPv4 or IPv6, it can be blank since it is optional
       if (!isBlank(sourceName) && !(VALID_HOSTNAME_REGEX.test(sourceName) || VALID_IPV4_REGEX.test(sourceName) || VALID_IPV6_REGEX.test(sourceName))) {
         error = true;
@@ -116,13 +119,34 @@ export const sourceNameValidator = (state) => {
         message = 'adminUsm.policyWizard.filePolicy.invalidSourceName';
         return false;
       }
+      // If paths is an empty array, show an error
+      if (paths && paths.length === 0) {
+        error = true;
+        dirPathEmptyMsg = 'adminUsm.policyWizard.filePolicy.dirPathEmpty';
+        dirPathLength = 0;
+        return false;
+      }
+      if (paths) {
+        for (let s = 0; s < paths.length; s++) {
+          const path = paths[s];
+          if (isBlank(path)) {
+            error = true;
+            invalidDirPath = path;
+            message = 'adminUsm.policyWizard.filePolicy.invalidDirPath';
+            return false;
+          }
+        }
+      }
       return true;
     });
   }
   return {
     isError: error,
     errorMessage: message,
-    invalidTableItem: invalidEntry
+    invalidTableItem: invalidEntry,
+    invalidPath: invalidDirPath,
+    dirPathEmptyMsg,
+    dirPathLength
   };
 };
 

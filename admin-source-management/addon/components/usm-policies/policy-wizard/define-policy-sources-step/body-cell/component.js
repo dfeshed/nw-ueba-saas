@@ -40,7 +40,9 @@ export default DataTableBody.extend({
       this.get('sourceUpdated')();
     },
     deletePath(index) {
-      this.get('item.paths').splice(index, 1);
+      // delete the path at the index
+      const paths = this.get('item.paths').filter((e, i) => i !== index);
+      this.set('item.paths', paths);
       this.get('sourceUpdated')();
     },
     addPath() {

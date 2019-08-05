@@ -170,6 +170,44 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     assert.equal(document.querySelectorAll('.source-name .input-error').length, 0, 'Error message is not showing for valid source name');
   });
 
+  test('It shows the correct error message when the directory path is invalid', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    const expectedMessage = translation.t('adminUsm.policyWizard.filePolicy.invalidDirPath');
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources(sources)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
+    let value = '';
+    const [eventIdEl] = findAll('.directory-path input');
+    await fillIn(eventIdEl, value);
+    await triggerEvent(eventIdEl, 'blur');
+    const isErrorClass = findAll('.directory-path .is-error');
+    assert.equal(isErrorClass.length, 1, 'is-error class is rendered');
+    assert.equal(findAll('.directory-path .input-error')[0].innerText, expectedMessage, `Correct error message is showing: ${expectedMessage}`);
+
+    // valid source name
+    value = 'path1';
+    await fillIn(eventIdEl, value);
+    await triggerEvent(eventIdEl, 'blur');
+    assert.equal(document.querySelectorAll('.directory-path .is-error').length, 0, 'Error is not showing for valid source name');
+    assert.equal(document.querySelectorAll('.directory-path .input-error').length, 0, 'Error message is not showing for valid source name');
+  });
+
+  test('It shows the correct error message when the directory path array does not have atleast one path', async function(assert) {
+    const newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: true, sourceName: 'apache-server-1', exclusionFilters: ['abc', 'def'], paths: [] } ];
+    const translation = this.owner.lookup('service:i18n');
+    const expectedMessage = translation.t('adminUsm.policyWizard.filePolicy.dirPathEmpty');
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources(newSource)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
+    assert.equal(findAll('.paths .no-path')[0].innerText, expectedMessage, `Correct error message is showing: ${expectedMessage}`);
+  });
+
   test('It triggers the update policy action creator when the exclusion filter is changed', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz('filePolicy')

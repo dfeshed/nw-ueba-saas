@@ -4931,6 +4931,8 @@ effects the previewed source.',
         logFilePath: 'Log File Path',
         addPath: 'Add Path',
         invalidSourceName: 'Source Name is invalid',
+        invalidDirPath: 'Path cannot be empty',
+        dirPathEmpty: 'Provide at least one valid path',
         fileSourceType: {
           add: 'Add Selected File Type',
           placeholder: 'Pick a Log File Type'
