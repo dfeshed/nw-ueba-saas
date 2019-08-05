@@ -43,9 +43,6 @@ public class MongoProgressTask implements Runnable {
         result.ifPresent(e -> lastEventTime = e);
     }
 
-    public Instant getLastEventTime() {
-        return lastEventTime;
-    }
 
     boolean dataExistAtLeastInOneBucket(int bucketsToCheck) {
         LOGGER.info("---> [" +collectionName + "] eventTimeHistory array: " + eventTimeHistory);
@@ -79,6 +76,8 @@ public class MongoProgressTask implements Runnable {
 
     boolean dataFromTheLastDayArrived(long amountToSubtract, ChronoUnit units) {
         Instant stopTime = end.minus(amountToSubtract, units).truncatedTo(units);
+        if (lastEventTime == null) return false;
+
         boolean result = lastEventTime.isAfter(stopTime);
 
         if (result) {
