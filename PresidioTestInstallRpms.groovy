@@ -20,9 +20,6 @@ pipeline {
             steps {
                 script {
                     setBaseUrl ()
-                    if ($OLD_UEBA_RPMS == "" ) {
-                        $OLD_UEBA_RPMS = "0"
-                    }
                     uebaPreparingEnv()
                 }
             }
@@ -60,6 +57,9 @@ def setBaseUrl(
         sh "sudo rm -rf /var/cache/yum"
     } else {
         error("RPM Repository is Invalid - ${baseUrlValidation}")
+    }
+    if ($OLD_UEBA_RPMS == "" ) {
+        $OLD_UEBA_RPMS = "0"
     }
 }
 
