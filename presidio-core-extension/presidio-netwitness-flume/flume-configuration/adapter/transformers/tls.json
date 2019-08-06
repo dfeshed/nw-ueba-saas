@@ -89,6 +89,15 @@
     },
     {
       "type": "copy_value",
+      "name": "rename-ja3",
+      "sourceKey": "ja3",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "ja3.name"
+      ]
+    },
+    {
+      "type": "copy_value",
       "name": "rename-ssl-ca",
       "sourceKey": "ssl_ca",
       "isRemoveSourceKey": true,
