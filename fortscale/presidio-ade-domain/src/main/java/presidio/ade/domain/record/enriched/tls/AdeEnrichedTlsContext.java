@@ -2,6 +2,7 @@ package presidio.ade.domain.record.enriched.tls;
 
 import presidio.ade.domain.record.enriched.BaseEnrichedContext;
 import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
+import presidio.sdk.api.domain.newoccurrencewrappers.Ja3;
 import presidio.sdk.api.domain.newoccurrencewrappers.SslSubject;
 
 public class AdeEnrichedTlsContext extends BaseEnrichedContext {
@@ -17,7 +18,7 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
     private String dstAsn;
     private String srcNetname;
     private String dstNetname;
-    private String ja3;
+    private Ja3 ja3;
     private String ja3s;
     private String direction;
     private String dstPort;
@@ -127,11 +128,11 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
         this.dstNetname = dstNetname;
     }
 
-    public String getJa3() {
+    public Ja3 getJa3() {
         return ja3;
     }
 
-    public void setJa3(String ja3) {
+    public void setJa3(Ja3 ja3) {
         this.ja3 = ja3;
     }
 

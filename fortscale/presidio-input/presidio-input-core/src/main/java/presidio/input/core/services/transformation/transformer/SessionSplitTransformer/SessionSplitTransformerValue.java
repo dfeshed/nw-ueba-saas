@@ -2,6 +2,7 @@ package presidio.input.core.services.transformation.transformer.SessionSplitTran
 
 
 
+import presidio.sdk.api.domain.newoccurrencewrappers.Ja3;
 import presidio.sdk.api.domain.newoccurrencewrappers.SslSubject;
 
 import java.time.Instant;
@@ -13,10 +14,10 @@ public class SessionSplitTransformerValue implements Comparable<SessionSplitTran
     private int sessionSplit;
     private SslSubject sslSubject;
     private List<String> sslCa;
-    private String ja3;
+    private Ja3 ja3;
     private String ja3s;
 
-    public SessionSplitTransformerValue(Instant dateTime, int sessionSplit, SslSubject sslSubject, List<String> sslCa, String ja3, String ja3s) {
+    public SessionSplitTransformerValue(Instant dateTime, int sessionSplit, SslSubject sslSubject, List<String> sslCa, Ja3 ja3, String ja3s) {
         this.sslSubject = sslSubject;
         this.sslCa = sslCa;
         this.ja3 = ja3;
@@ -38,7 +39,7 @@ public class SessionSplitTransformerValue implements Comparable<SessionSplitTran
         return sslCa;
     }
 
-    public String getJa3() {
+    public Ja3 getJa3() {
         return ja3;
     }
 

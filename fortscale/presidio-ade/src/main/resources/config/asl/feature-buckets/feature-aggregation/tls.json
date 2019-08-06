@@ -3,7 +3,7 @@
     {
       "name": "srcIpHistogramJa3OutboundTlsHourly",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "tls"
@@ -33,7 +33,7 @@
     {
       "name": "numOfBytesSentSummationJa3OutboundTlsHourly",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "tls"

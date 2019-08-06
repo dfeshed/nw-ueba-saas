@@ -29,7 +29,7 @@
     {
       "name": "highestStartInstantSslSubjectOutboundScoresJa3TlsHourly",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.startInstant.sslSubjectOutbound.tls.score"
@@ -55,7 +55,7 @@
     {
       "name": "highestStartInstantScoreJa3OutboundTlsHourly",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.startInstant.ja3Outbound.tls.score"
@@ -133,7 +133,7 @@
     {
       "name": "sslSubjectSrcNetnameOutboundToHighestScoreMapJa3TlsHourly",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.sslSubject.srcNetnameOutbound.tls.score"
@@ -187,7 +187,7 @@
     {
       "name": "domainSrcNetnameOutboundToHighestScoreMapJa3TlsHourly",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.domain.srcNetnameOutbound.tls.score"
@@ -241,7 +241,7 @@
     {
       "name": "dstPortSrcNetnameOutboundToHighestScoreMapJa3TlsHourly",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.dstPort.srcNetnameOutbound.tls.score"
@@ -295,7 +295,7 @@
     {
       "name": "dstOrgSrcNetnameOutboundToHighestScoreMapJa3TlsHourly",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.dstOrg.srcNetnameOutbound.tls.score"
@@ -348,7 +348,7 @@
     {
       "name": "countrySslSubjectOutboundToHighestScoreMapJa3TlsHourly",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.country.sslSubjectOutbound.tls.score"
@@ -401,7 +401,7 @@
     {
       "name": "dstPortSslSubjectOutboundToHighestScoreMapJa3TlsHourly",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.dstPort.sslSubjectOutbound.tls.score"
@@ -455,7 +455,7 @@
     {
       "name": "dstPortDomainOutboundToHighestScoreMapJa3TlsHourly",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.dstPort.domainOutbound.tls.score"
@@ -509,7 +509,7 @@
     {
       "name": "dstPortDstOrgOutboundToHighestScoreMapJa3TlsHourly",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.dstPort.dstOrgOutbound.tls.score"
@@ -563,7 +563,7 @@
     {
       "name": "ja3SrcNetnameOutboundToHighestScoreMapJa3TlsHourly",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.ja3.srcNetnameOutbound.tls.score"
@@ -589,7 +589,7 @@
     {
       "name": "sslSubjectToHighestScoreMapJa3OutboundTlsHourly",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.sslSubject.ja3Outbound.tls.score"
@@ -641,7 +641,7 @@
     {
       "name": "domainToHighestScoreMapJa3OutboundTlsHourly",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.domain.ja3Outbound.tls.score"
@@ -694,7 +694,7 @@
     {
       "name": "dstPortToHighestScoreMapJa3OutboundTlsHourly",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "scored_enriched.tls.dstPort.ja3Outbound.tls.score"

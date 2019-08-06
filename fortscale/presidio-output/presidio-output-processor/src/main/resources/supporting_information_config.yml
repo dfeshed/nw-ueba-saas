@@ -1600,12 +1600,12 @@ indicators:
   name: ssl_subject_abnormal_ja3_day_time
   adeEventType: scored_enriched.tls.startInstant.ja3Outbound.tls.score
   modelContextFields:
-    - ja3
+    - ja3.name
   schema: TLS
   anomalyDescriptior:
     anomalyField: eventDate
   splitFields:
-    - ja3
+    - ja3.name
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramJa3OutboundTlsDaily
@@ -1620,12 +1620,12 @@ indicators:
     - srcNetname
   schema: TLS
   anomalyDescriptior:
-    anomalyField: ja3
+    anomalyField: ja3.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
-    - ja3
+    - ja3.name
     - srcNetname
   historicalData:
     type: count_aggregations
@@ -1638,7 +1638,7 @@ indicators:
   name: ssl_subject_abnormal_ssl_subject_for_ja3_outbound
   adeEventType: scored_enriched.tls.sslSubject.ja3Outbound.tls.score
   modelContextFields:
-    - ja3
+    - ja3.name
   schema: TLS
   anomalyDescriptior:
     anomalyField: sslSubject.name
@@ -1646,7 +1646,7 @@ indicators:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
-    - ja3
+    - ja3.name
   historicalData:
     type: count_aggregations
     featureBucketConfName: sslSubjectHistogramJa3OutboundTlsDaily
@@ -1658,7 +1658,7 @@ indicators:
   name: ssl_subject_abnormal_domain_for_ja3_outbound
   adeEventType: scored_enriched.tls.domain.ja3Outbound.tls.score
   modelContextFields:
-    - ja3
+    - ja3.name
   schema: TLS
   anomalyDescriptior:
     anomalyField: domain.name
@@ -1666,7 +1666,7 @@ indicators:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
-    - ja3
+    - ja3.name
     - domain.name
   historicalData:
     type: count_aggregations
@@ -1679,7 +1679,7 @@ indicators:
   name: ssl_subject_abnormal_dst_port_for_ja3_outbound
   adeEventType: scored_enriched.tls.domain.ja3Outbound.tls.score
   modelContextFields:
-    - ja3
+    - ja3.name
   schema: TLS
   anomalyDescriptior:
     anomalyField: dstPort
@@ -1688,7 +1688,7 @@ indicators:
         fieldValue: OUTBOUND
   splitFields:
     - dstPort
-    - ja3
+    - ja3.name
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramJa3OutboundTlsDaily
@@ -1705,7 +1705,7 @@ indicators:
   schema: TLS
   adeEventType: tls
   modelContextFields:
-    - ja3
+    - ja3.name
   anomalyDescriptior:
     anomalyFilters:
       - fieldName: direction
@@ -1720,7 +1720,7 @@ indicators:
   schema: TLS
   adeEventType: tls
   modelContextFields:
-    - ja3
+    - ja3.name
   anomalyDescriptior:
     anomalyFilters:
     - fieldName: direction
@@ -1920,7 +1920,7 @@ indicators:
   name: ja3_abnormal_ja3_day_time
   adeEventType: scored_enriched.tls.startInstant.ja3Outbound.tls.score
   modelContextFields:
-    - ja3
+    - ja3.name
   schema: TLS
   anomalyDescriptior:
     anomalyField: eventDate
@@ -1940,7 +1940,7 @@ indicators:
     - srcNetname
   schema: TLS
   anomalyDescriptior:
-    anomalyField: ja3
+    anomalyField: ja3.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
@@ -1957,7 +1957,7 @@ indicators:
   name: ja3_abnormal_ssl_subject_for_ja3_outbound
   adeEventType: scored_enriched.tls.sslSubject.ja3Outbound.tls.score
   modelContextFields:
-    - ja3
+    - ja3.name
   schema: TLS
   anomalyDescriptior:
     anomalyField: sslSubject.name
@@ -1977,7 +1977,7 @@ indicators:
   name: ja3_abnormal_domain_for_ja3_outbound
   adeEventType: scored_enriched.tls.domain.ja3Outbound.tls.score
   modelContextFields:
-    - ja3
+    - ja3.name
   schema: TLS
   anomalyDescriptior:
     anomalyField: domain.name
@@ -1997,7 +1997,7 @@ indicators:
   name: ja3_abnormal_dst_port_for_ja3_outbound
   adeEventType: scored_enriched.tls.domain.ja3Outbound.tls.score
   modelContextFields:
-    - ja3
+    - ja3.name
   schema: TLS
   anomalyDescriptior:
     anomalyField: dstPort

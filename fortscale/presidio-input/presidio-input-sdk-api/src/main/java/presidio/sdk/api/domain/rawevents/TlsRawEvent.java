@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
+import presidio.sdk.api.domain.newoccurrencewrappers.Ja3;
 import presidio.sdk.api.domain.newoccurrencewrappers.SslSubject;
 
 import java.time.Instant;
@@ -75,7 +76,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     private String dstNetname;
 
     @Field(JA3_FIELD_NAME)
-    private String ja3;
+    private Ja3 ja3;
 
     @Field(JA3S_FIELD_NAME)
     private String ja3s;
@@ -130,7 +131,7 @@ public class TlsRawEvent extends AbstractInputDocument {
                        String srcIp, String dstIp, String srcPort, String srcCountry, String dstCountry, SslSubject sslSubject,
                        Domain domain, String dstOrg,
                        String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
-                       String dstNetname, String ja3, String ja3s, String direction, String dstPort, List<String> fqdn,
+                       String dstNetname, Ja3 ja3, String ja3s, String direction, String dstPort, List<String> fqdn,
                        List<String> sslCa, Integer sessionSplit) {
         super(dateTime, eventId, dataSource, additionalInfo);
         this.srcIp = srcIp;
@@ -252,11 +253,11 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.dstNetname = dstNetname;
     }
 
-    public String getJa3() {
+    public Ja3 getJa3() {
         return ja3;
     }
 
-    public void setJa3(String ja3) {
+    public void setJa3(Ja3 ja3) {
         this.ja3 = ja3;
     }
 

@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
+import presidio.sdk.api.domain.newoccurrencewrappers.Ja3;
 import presidio.sdk.api.domain.newoccurrencewrappers.NewOccurrenceWrapper;
 import presidio.sdk.api.domain.newoccurrencewrappers.SslSubject;
 import presidio.sdk.api.domain.rawevents.TlsRawEvent;
@@ -20,26 +21,36 @@ public class NewOccurrenceTransformerTest {
     @Test
     public void testHierarchyDomainTransformation() {
         TlsRawEvent tlsRawEvent = generateTlsRawEvent();
-        NewOccurrenceTransformer occurrenceTransformer = generateNewOccurrenceTransformer("domain.isNewOccurrence");
-        Assert.assertFalse(tlsRawEvent.getDomain().getIsNewOccurrence());
-        occurrenceTransformer.transform(createSingletonList(tlsRawEvent));
-        Assert.assertTrue(tlsRawEvent.getDomain().getIsNewOccurrence());
+        assertNewOccurrenceTransformation(tlsRawEvent, tlsRawEvent.getDomain(), "domain.isNewOccurrence");
     }
 
     @Test
     public void testHierarchySslSubjectTransformation() {
         TlsRawEvent tlsRawEvent = generateTlsRawEvent();
-        NewOccurrenceTransformer occurrenceTransformer = generateNewOccurrenceTransformer("sslSubject.isNewOccurrence");
-        Assert.assertFalse(tlsRawEvent.getSslSubject().getIsNewOccurrence());
+        assertNewOccurrenceTransformation(tlsRawEvent ,tlsRawEvent.getSslSubject(), "sslSubject.isNewOccurrence");
+    }
+
+    @Test
+    public void testHierarchyJa3Transformation() {
+        TlsRawEvent tlsRawEvent = generateTlsRawEvent();
+        assertNewOccurrenceTransformation(tlsRawEvent, tlsRawEvent.getJa3(), "ja3.isNewOccurrence");
+    }
+
+    private void assertNewOccurrenceTransformation(TlsRawEvent tlsRawEvent,
+                                                   NewOccurrenceWrapper newOccurrenceWrapper,
+                                                   String transformFieldName) {
+        NewOccurrenceTransformer occurrenceTransformer = generateNewOccurrenceTransformer(transformFieldName);
+        Assert.assertFalse(newOccurrenceWrapper.getIsNewOccurrence());
         occurrenceTransformer.transform(createSingletonList(tlsRawEvent));
-        Assert.assertTrue(tlsRawEvent.getSslSubject().getIsNewOccurrence());
+        Assert.assertTrue(newOccurrenceWrapper.getIsNewOccurrence());
     }
 
     private TlsRawEvent generateTlsRawEvent() {
         Instant firstInstant = Instant.now();
         Instant laterInstant = firstInstant.plusSeconds(10000L);
         return new TlsRawEvent(laterInstant, "TLS", "dataSource", null, "", "", "", "", "",
-                new SslSubject("ssl", false), new Domain("google.com", false), "", "", 0L, 0L, "", "", "", "", "",
+                new SslSubject("ssl", false), new Domain("google.com", false), "", "", 0L, 0L, "", "",
+                new Ja3("ja3", false), "", "",
                 "", null, null, null);
     }
 

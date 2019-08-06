@@ -33,7 +33,7 @@
     {
       "name": "startInstantHistogramJa3OutboundTlsDaily",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "tls"
@@ -441,7 +441,7 @@
           "name": "ja3Histogram",
           "featureNamesMap": {
             "groupBy": [
-              "ja3"
+              "ja3.name"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -453,7 +453,7 @@
     {
       "name": "sslSubjectHistogramJa3OutboundTlsDaily",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "tls"
@@ -501,7 +501,7 @@
           "name": "ja3Histogram",
           "featureNamesMap": {
             "groupBy": [
-              "ja3"
+              "ja3.name"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -513,7 +513,7 @@
     {
       "name": "domainHistogramJa3OutboundTlsDaily",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "tls"
@@ -561,7 +561,7 @@
           "name": "ja3Histogram",
           "featureNamesMap": {
             "groupBy": [
-              "ja3"
+              "ja3.name"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -573,7 +573,7 @@
     {
       "name": "dstPortHistogramJa3OutboundTlsDaily",
       "contextFieldNames": [
-        "ja3"
+        "ja3.name"
       ],
       "adeEventTypes": [
         "tls"
@@ -621,7 +621,7 @@
           "name": "ja3Histogram",
           "featureNamesMap": {
             "groupBy": [
-              "ja3"
+              "ja3.name"
             ]
           },
           "aggrFeatureFuncJson": {
