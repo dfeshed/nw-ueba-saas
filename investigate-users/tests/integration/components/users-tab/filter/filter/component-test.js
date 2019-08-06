@@ -65,12 +65,12 @@ module('Integration | Component | users-tab/filter/filter', function(hooks) {
     const redux = this.owner.lookup('service:redux');
     await render(hbs`{{users-tab/filter/filter}}`);
     await clickTrigger('.users-tab_filter_filter_select:nth-child(1)');
-    assert.equal(findAll('.ember-power-select-option').length, 4);
+    assert.equal(findAll('.ember-power-select-option').length, 5);
     selectChoose('.users-tab_filter_filter_select:nth-child(1)', 'High');
     const select = waitForReduxStateChange(redux, ('users.filter.severity'));
     return select.then(() => {
       const state = redux.getState();
-      assert.equal(state.users.filter.severity[0], 'High');
+      assert.equal(state.users.filter.severity, 'High');
     });
   });
 

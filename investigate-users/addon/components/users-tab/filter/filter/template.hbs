@@ -6,15 +6,19 @@
     <div class="label-text">
       {{t 'investigateUsers.alerts.filters.severity'}}
     </div>
-    {{#power-select-multiple
+    {{#power-select
       options=severityFilter
       selected=selectedSeverity
       searchEnabled=false
       onchange=(action 'updateSeverityFilter') as |option|}}
-      <span title='{{t (concat 'investigateUsers.severity.' option)}}'>
-        {{t (concat 'investigateUsers.severity.' option)}}
-      </span>
-    {{/power-select-multiple}}
+      {{#if option}}
+        <span title='{{t (concat 'investigateUsers.severity.' option)}}'>
+          {{t (concat 'investigateUsers.severity.' option)}}
+        </span>
+      {{else}}
+        &nbsp;
+      {{/if}}
+    {{/power-select}}
   </label>
   <label class="rsa-form-label power-select users-tab_filter_filter_select">
     <div class="label-text">

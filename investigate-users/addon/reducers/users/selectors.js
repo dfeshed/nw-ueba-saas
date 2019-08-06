@@ -28,7 +28,7 @@ export const allWatched = (state) => state.users.allWatched;
 
 export const getUsers = (state) => state.users.users;
 
-export const severityFilter = ['Low', 'Medium', 'High', 'Critical'];
+export const severityFilter = ['', 'Low', 'Medium', 'High', 'Critical'];
 
 export const entityFilter = ['userId', 'ja3', 'sslSubject'];
 
@@ -80,7 +80,7 @@ export const isRisky = createSelector(
 export const getSelectedSeverity = createSelector(
   [getUserFilter],
   (filter) => {
-    return filter.severity ? filter.severity.asMutable() : null;
+    return filter.severity;
   });
 
 export const isAdmin = createSelector(
