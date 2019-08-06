@@ -1089,14 +1089,16 @@ module('Unit | Selectors | event-results', function(hooks) {
   });
 
 
-  test('clientSortedData when IPv6', async function(assert) {
+  test('clientSortedData when IPv6 when Descending', async function(assert) {
     const state = {
       investigate: {
         eventResults: {
           data: [
             { foo: '2000:0db8:85a3:0000:0000:8a2e:0370:7331' },
-            { foo: '2101:0db8:85a3:0000:0000:8a2e:0370:7332' },
-            { foo: '3001:0db8:85a3:0000:0000:8a2e:0370:7333' }
+            { foo: null },
+            { foo: '3001:0db8:85a3:0000:0000:8a2e:0370:7333' },
+            { foo: '1001:0db8:85a3:0000:0000:8a2e:0370:7337' },
+            { foo: '5001:0db8:85a3:0000:0000:8a2e:0370:0' }
           ]
         },
         data: {
@@ -1124,9 +1126,55 @@ module('Unit | Selectors | event-results', function(hooks) {
     };
 
     const result = clientSortedData(state);
-    assert.equal(result[0].foo, state.investigate.eventResults.data[2].foo);
-    assert.equal(result[1].foo, state.investigate.eventResults.data[1].foo);
+    assert.equal(result[0].foo, state.investigate.eventResults.data[4].foo);
+    assert.equal(result[1].foo, state.investigate.eventResults.data[2].foo);
     assert.equal(result[2].foo, state.investigate.eventResults.data[0].foo);
+    assert.equal(result[3].foo, state.investigate.eventResults.data[3].foo);
+    assert.equal(result[4].foo, state.investigate.eventResults.data[1].foo);
+  });
+
+  test('clientSortedData when IPv6 when Ascending', async function(assert) {
+    const state = {
+      investigate: {
+        eventResults: {
+          data: [
+            { foo: '2000:0db8:85a3:0000:0000:8a2e:0370:7331' },
+            { foo: null },
+            { foo: '3001:0db8:85a3:0000:0000:8a2e:0370:7333' },
+            { foo: '1001:0db8:85a3:0000:0000:8a2e:0370:7337' },
+            { foo: '5001:0db8:85a3:0000:0000:8a2e:0370:0' }
+          ]
+        },
+        data: {
+          sortField: 'foo',
+          sortDirection: 'Ascending',
+          globalPreferences: {
+          }
+        },
+        eventCount: {
+          threshold: 1000,
+          data: 3
+        },
+        dictionaries: {
+          language: [{
+            metaName: 'foo',
+            format: 'IPv6'
+          }]
+        },
+        services: {
+          serviceData: [{
+            version: '11.4'
+          }]
+        }
+      }
+    };
+
+    const result = clientSortedData(state);
+    assert.equal(result[0].foo, state.investigate.eventResults.data[1].foo);
+    assert.equal(result[1].foo, state.investigate.eventResults.data[3].foo);
+    assert.equal(result[2].foo, state.investigate.eventResults.data[0].foo);
+    assert.equal(result[3].foo, state.investigate.eventResults.data[2].foo);
+    assert.equal(result[4].foo, state.investigate.eventResults.data[4].foo);
   });
 
   test('clientSortedData when time', async function(assert) {
@@ -1398,7 +1446,7 @@ module('Unit | Selectors | event-results', function(hooks) {
       investigate: {
         eventResults: {
           data: [
-            { foo: 'B' },
+            { foo: '-B' },
             { foo: null },
             { foo: 'c' }
           ]
@@ -1442,7 +1490,7 @@ module('Unit | Selectors | event-results', function(hooks) {
       investigate: {
         eventResults: {
           data: [
-            { foo: 'b' },
+            { foo: '-b' },
             { foo: null },
             { foo: 'C' }
           ]

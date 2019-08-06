@@ -496,14 +496,18 @@ export const clientSortedData = createSelector(
       return data;
     } else {
       const metaObj = languages.findBy('metaName', sortField);
+      const { Address6 } = window;
+
       let cachedData = data.map((event) => {
         const eventCopy = { ...event };
 
-        if (event[sortField] === null || event[sortField] === undefined || event[sortField] === '') {
-          if (sortDirection === 'Ascending') {
+        if (metaObj && metaObj.format !== 'IPv6' && (event[sortField] === null || event[sortField] === undefined || event[sortField] === '')) {
+          if (sortDirection === 'Ascending' && metaObj.format === 'Text') {
             // force null to something more friendly to fast-sort
             // otherwise nulls are always at the bottom, for asc and desc
-            eventCopy.toSort = metaObj && metaObj.format === 'Text' ? 'A' : Number.MIN_SAFE_INTEGER;
+            eventCopy.toSort = 'A';
+          } else if (sortDirection === 'Ascending') {
+            eventCopy.toSort = Number.MIN_SAFE_INTEGER;
           }
         } else {
           if (metaObj && metaObj.format === 'MAC') {
@@ -531,15 +535,17 @@ export const clientSortedData = createSelector(
           } else if (metaObj && metaObj.format === 'IPv6') {
             // convert ipv6 to BigInteger
             // to big for js to handle as standard int
-            const { Address6 } = window;
             const ip = event[sortField];
             if (ip) {
               const ipv6Addy = new Address6(ip);
               eventCopy.toSort = ipv6Addy.bigInteger();
             }
           } else {
-            if (event[sortField] !== null && event[sortField] !== undefined && event[sortField] !== '') {
-              eventCopy.toSort = metaObj && metaObj.format === 'Text' ? event[sortField].toLowerCase() : event[sortField];
+            if (metaObj && metaObj.format === 'Text') {
+              const lowerCased = event[sortField] && event[sortField].toLowerCase();
+              eventCopy.toSort = lowerCased && lowerCased.replace(/[^A-Z0-9]/ig, 'AAA');
+            } else {
+              eventCopy.toSort = event[sortField];
             }
           }
         }
@@ -548,7 +554,24 @@ export const clientSortedData = createSelector(
       });
 
       cachedData = Immutable.asMutable(cachedData);
-      return sort(cachedData)[(sortDirection === 'Ascending' ? 'asc' : 'desc')]((e) => e.toSort);
+
+      if (metaObj && metaObj.format === 'IPv6') {
+        if (sortDirection === 'Ascending') {
+          return cachedData.sort((a, b) => {
+            const ipv6A = new Address6(a[sortField] || '0:0:0:0:0:0:0:0').bigInteger();
+            const ipv6B = new Address6(b[sortField] || '0:0:0:0:0:0:0:0').bigInteger();
+            return ipv6A.compareTo(ipv6B);
+          });
+        } else {
+          return cachedData.sort((a, b) => {
+            const ipv6A = new Address6(a[sortField] || '0:0:0:0:0:0:0:0').bigInteger();
+            const ipv6B = new Address6(b[sortField] || '0:0:0:0:0:0:0:0').bigInteger();
+            return ipv6B.compareTo(ipv6A);
+          });
+        }
+      } else {
+        return sort(cachedData)[(sortDirection === 'Ascending' ? 'asc' : 'desc')]((e) => e.toSort);
+      }
     }
   }
 );
