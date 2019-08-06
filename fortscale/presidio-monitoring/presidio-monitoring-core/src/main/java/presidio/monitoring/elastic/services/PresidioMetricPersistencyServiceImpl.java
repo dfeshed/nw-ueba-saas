@@ -8,6 +8,7 @@ import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.records.MetricDocument;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,11 @@ public class PresidioMetricPersistencyServiceImpl implements PresidioMetricPersi
         if (logger.isDebugEnabled()) {
             logger.debug("Exporting metrics to elastic, number of metrics {}", metricDocuments.size());
         }
+
+        if(metricDocuments.size() == 0){
+            return Collections.emptyList();
+        }
+
         return metricRepository.saveAll(metricDocuments);
     }
 
