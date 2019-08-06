@@ -63,7 +63,7 @@
     {
       "name": "numOfBytesSentSummationDstOrgOutboundTlsHourly",
       "contextFieldNames": [
-        "dstOrg"
+        "dstOrg.name"
       ],
       "adeEventTypes": [
         "tls"
@@ -93,7 +93,7 @@
     {
       "name": "numOfBytesSentSummationDstOrgSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
-        "dstOrg",
+        "dstOrg.name",
         "sslSubject.name"
       ],
       "adeEventTypes": [
@@ -376,7 +376,7 @@
     {
       "name": "numOfBytesSentBySrcIpSummationDstOrgOutboundTlsHourly",
       "contextFieldNames": [
-        "dstOrg"
+        "dstOrg.name"
       ],
       "adeEventTypes": [
         "tls"
@@ -409,7 +409,7 @@
     {
       "name": "numOfBytesSentBySrcIpSummationDstOrgSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
-        "dstOrg",
+        "dstOrg.name",
         "sslSubject.name"
       ],
       "adeEventTypes": [

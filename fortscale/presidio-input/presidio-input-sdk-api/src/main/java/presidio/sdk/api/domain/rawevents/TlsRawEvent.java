@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.sdk.api.domain.AbstractInputDocument;
+import presidio.sdk.api.domain.newoccurrencewrappers.DestinationOrganization;
 import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
 import presidio.sdk.api.domain.newoccurrencewrappers.Ja3;
 import presidio.sdk.api.domain.newoccurrencewrappers.SslSubject;
@@ -58,7 +59,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     private Domain domain;
 
     @Field(DESTINATION_ORGANIZATION_FIELD_NAME)
-    private String dstOrg;
+    private DestinationOrganization dstOrg;
 
     @Field(DESTINATION_ASN_FIELD_NAME)
     private String dstAsn;
@@ -129,7 +130,7 @@ public class TlsRawEvent extends AbstractInputDocument {
 
     public TlsRawEvent(Instant dateTime, String eventId, String dataSource, Map<String, String> additionalInfo,
                        String srcIp, String dstIp, String srcPort, String srcCountry, String dstCountry, SslSubject sslSubject,
-                       Domain domain, String dstOrg,
+                       Domain domain, DestinationOrganization dstOrg,
                        String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
                        String dstNetname, Ja3 ja3, String ja3s, String direction, String dstPort, List<String> fqdn,
                        List<String> sslCa, Integer sessionSplit) {
@@ -205,11 +206,11 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.domain = domain;
     }
 
-    public String getDstOrg() {
+    public DestinationOrganization getDstOrg() {
         return dstOrg;
     }
 
-    public void setDstOrg(String dstOrg) {
+    public void setDstOrg(DestinationOrganization dstOrg) {
         this.dstOrg = dstOrg;
     }
 

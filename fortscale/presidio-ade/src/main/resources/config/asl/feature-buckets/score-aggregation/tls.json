@@ -280,7 +280,7 @@
           "featureNamesMap": {
             "groupBy": [
               "context.srcNetname",
-              "context.dstOrg"
+              "context.dstOrg.name"
             ],
             "maximize": [
               "score"
@@ -307,7 +307,7 @@
           "featureNamesMap": {
             "groupBy": [
               "context.srcNetname",
-              "context.dstOrg"
+              "context.dstOrg.name"
             ],
             "maximize": [
               "score"
@@ -493,7 +493,7 @@
           "name": "dstPortDstOrgOutboundToHighestScoreMap",
           "featureNamesMap": {
             "groupBy": [
-              "context.dstOrg",
+              "context.dstOrg.name",
               "context.dstPort"
             ],
             "maximize": [
@@ -520,7 +520,7 @@
           "name": "dstPortDstOrgOutboundToHighestScoreMap",
           "featureNamesMap": {
             "groupBy": [
-              "context.dstOrg",
+              "context.dstOrg.name",
               "context.dstPort"
             ],
             "maximize": [

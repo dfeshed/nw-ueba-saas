@@ -2,6 +2,7 @@ package presidio.output.domain.records.events;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import presidio.sdk.api.domain.newoccurrencewrappers.DestinationOrganization;
 import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
 import presidio.sdk.api.domain.newoccurrencewrappers.Ja3;
 import presidio.sdk.api.domain.newoccurrencewrappers.SslSubject;
@@ -56,7 +57,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     private Domain domain;
 
     @Field(DESTINATION_ORGANIZATION_FIELD_NAME)
-    private String dstOrg;
+    private DestinationOrganization dstOrg;
 
     @Field(DESTINATION_ASN_FIELD_NAME)
     private String dstAsn;
@@ -101,7 +102,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     public TlsEnrichedEvent(Instant createdDate, Instant eventDate, String eventId, String schema, String dataSource,
                             Map<String, String> additionalInfo,
                             String srcIp, String dstIp, String srcCountry, String dstCountry, SslSubject sslSubject,
-                            Domain domain, String dstOrg,
+                            Domain domain, DestinationOrganization dstOrg,
                             String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
                             String dstNetname, Ja3 ja3, String ja3s, String direction, String dstPort,
                             String srcPort, List<String> fqdn, List<String> sslCa) {
@@ -177,11 +178,11 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.domain = domain;
     }
 
-    public String getDstOrg() {
+    public DestinationOrganization getDstOrg() {
         return dstOrg;
     }
 
-    public void setDstOrg(String dstOrg) {
+    public void setDstOrg(DestinationOrganization dstOrg) {
         this.dstOrg = dstOrg;
     }
 

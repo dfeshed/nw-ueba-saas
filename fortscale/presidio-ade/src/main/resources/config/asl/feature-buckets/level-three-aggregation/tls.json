@@ -14,7 +14,7 @@
           "name": "sumOfBytesSentScoresSum",
           "featureNamesMap": {
             "groupBy": [
-              "context.dstOrg"
+              "context.dstOrg.name"
             ],
             "maximize": [
               "score"
@@ -118,7 +118,7 @@
           "name": "maxSumOfBytesSentBySrcIpToDstOrgScoresSum",
           "featureNamesMap": {
             "groupBy": [
-              "context.dstOrg"
+              "context.dstOrg.name"
             ],
             "maximize": [
               "score"

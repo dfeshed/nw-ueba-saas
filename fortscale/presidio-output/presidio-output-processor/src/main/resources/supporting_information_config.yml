@@ -1281,13 +1281,13 @@ indicators:
   schema: TLS
   adeEventType: tls
   modelContextFields:
-    - dstOrg
+    - dstOrg.name
   anomalyDescriptior:
     anomalyFilters:
     - fieldName: direction
       fieldValue: OUTBOUND
   splitFields:
-    - dstOrg
+    - dstOrg.name
   historicalData:
     type: hourly_aggregations
     featureName: sumOfBytesSentToDstOrgOutboundTlsHourly
@@ -1368,13 +1368,13 @@ indicators:
   schema: TLS
   adeEventType: tls
   modelContextFields:
-    - dstOrg
+    - dstOrg.name
   anomalyDescriptior:
     anomalyFilters:
     - fieldName: direction
       fieldValue: OUTBOUND
   splitFields:
-    - dstOrg
+    - dstOrg.name
   historicalData:
     type: hourly_aggregations
     featureName: maxSumOfBytesSentBySrcIpToDstOrgOutboundTlsHourly
@@ -1483,13 +1483,13 @@ indicators:
     - srcNetname
   schema: TLS
   anomalyDescriptior:
-    anomalyField: dstOrg
+    anomalyField: dstOrg.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
     - srcNetname
-    - dstOrg
+    - dstOrg.name
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstOrgHistogramSrcNetnameOutboundTlsDaily
@@ -1579,7 +1579,7 @@ indicators:
   name: ssl_subject_abnormal_dst_port_for_dst_org_outbound
   adeEventType: scored_enriched.tls.dstPort.dstOrgOutbound.tls.score
   modelContextFields:
-    - dstOrg
+    - dstOrg.name
   schema: TLS
   anomalyDescriptior:
     anomalyField: dstPort
@@ -1587,7 +1587,7 @@ indicators:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
-    - dstOrg
+    - dstOrg.name
     - dstPort
   historicalData:
     type: count_aggregations
@@ -1801,13 +1801,13 @@ indicators:
     - srcNetname
   schema: TLS
   anomalyDescriptior:
-    anomalyField: dstOrg
+    anomalyField: dstOrg.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
     - srcNetname
-    - dstOrg
+    - dstOrg.name
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstOrgHistogramSrcNetnameOutboundTlsDaily
@@ -1899,7 +1899,7 @@ indicators:
   name: ja3_abnormal_dst_port_for_dst_org_outbound
   adeEventType: scored_enriched.tls.dstPort.dstOrgOutbound.tls.score
   modelContextFields:
-    - dstOrg
+    - dstOrg.name
   schema: TLS
   anomalyDescriptior:
     anomalyField: dstPort
@@ -1907,7 +1907,7 @@ indicators:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
-    - dstOrg
+    - dstOrg.name
     - dstPort
   historicalData:
     type: count_aggregations

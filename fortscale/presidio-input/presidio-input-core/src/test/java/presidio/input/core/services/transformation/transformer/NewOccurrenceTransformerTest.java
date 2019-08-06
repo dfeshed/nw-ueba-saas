@@ -6,10 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import presidio.sdk.api.domain.AbstractInputDocument;
-import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
-import presidio.sdk.api.domain.newoccurrencewrappers.Ja3;
-import presidio.sdk.api.domain.newoccurrencewrappers.NewOccurrenceWrapper;
-import presidio.sdk.api.domain.newoccurrencewrappers.SslSubject;
+import presidio.sdk.api.domain.newoccurrencewrappers.*;
 import presidio.sdk.api.domain.rawevents.TlsRawEvent;
 
 import java.time.Duration;
@@ -36,6 +33,12 @@ public class NewOccurrenceTransformerTest {
         assertNewOccurrenceTransformation(tlsRawEvent, tlsRawEvent.getJa3(), "ja3.isNewOccurrence");
     }
 
+    @Test
+    public void testHierarchyDestinationOrganizationTransformation() {
+        TlsRawEvent tlsRawEvent = generateTlsRawEvent();
+        assertNewOccurrenceTransformation(tlsRawEvent, tlsRawEvent.getDstOrg(), "dstOrg.isNewOccurrence");
+    }
+
     private void assertNewOccurrenceTransformation(TlsRawEvent tlsRawEvent,
                                                    NewOccurrenceWrapper newOccurrenceWrapper,
                                                    String transformFieldName) {
@@ -49,7 +52,8 @@ public class NewOccurrenceTransformerTest {
         Instant firstInstant = Instant.now();
         Instant laterInstant = firstInstant.plusSeconds(10000L);
         return new TlsRawEvent(laterInstant, "TLS", "dataSource", null, "", "", "", "", "",
-                new SslSubject("ssl", false), new Domain("google.com", false), "", "", 0L, 0L, "", "",
+                new SslSubject("ssl", false), new Domain("google.com", false),
+                new DestinationOrganization("dstOrg", false),"", 0L, 0L, "", "",
                 new Ja3("ja3", false), "", "",
                 "", null, null, null);
     }
