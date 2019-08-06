@@ -201,7 +201,7 @@
     {
       "type": "copy_value",
       "name": "rename-session-split",
-      "sourceKey": "session_spit",
+      "sourceKey": "session_split",
       "isRemoveSourceKey": true,
       "destinationKeys": [
         "sessionSplit"
