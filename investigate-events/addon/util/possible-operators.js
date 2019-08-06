@@ -16,24 +16,28 @@ const regex = { displayName: 'regex', description: 'Regex', isExpensive: false, 
 
 const makeOperatorExpensive = (obj) => ({ ...obj, isExpensive: true });
 
-const comparators = [eq, notEq, lt, lte, gt, gte];
-const expensiveComparators = [
+const equalities = [eq, notEq];
+const comparators = [...equalities, lt, lte, gt, gte];
+const expensiveEqualities = [
   makeOperatorExpensive(eq),
-  makeOperatorExpensive(notEq),
+  makeOperatorExpensive(notEq)
+];
+const expensiveComparators = [
+  ...expensiveEqualities,
   makeOperatorExpensive(lt),
   makeOperatorExpensive(lte),
   makeOperatorExpensive(gt),
   makeOperatorExpensive(gte)
 ];
 
-const operatorsForMetaIndexedByKey = [exists, notExists, makeOperatorExpensive(eq), makeOperatorExpensive(notEq)];
-const operatorsForMetaIndexedByKeyWithTextFormat = [exists, notExists, ...expensiveComparators, makeOperatorExpensive(begins), ends, contains];
+const operatorsForMetaIndexedByKey = [exists, notExists, ...expensiveEqualities];
+const operatorsForMetaIndexedByKeyWithTextFormat = [exists, notExists, ...expensiveEqualities, makeOperatorExpensive(begins), contains, ends];
 const operatorsForMetaIndexedByKeyWithNumberFormat = [exists, notExists, ...expensiveComparators];
 const operatorsForMetaIndexedByValue = [exists, notExists, eq, notEq ];
-const operatorsForMetaIndexedByValueWithTextFormat = [exists, notExists, ...comparators, begins, ends, contains, makeOperatorExpensive(regex), makeOperatorExpensive(length)];
+const operatorsForMetaIndexedByValueWithTextFormat = [exists, notExists, ...equalities, begins, contains, ends, makeOperatorExpensive(length), makeOperatorExpensive(regex)];
 const operatorsForMetaIndexedByValueWithNumberFormat = [exists, notExists, ...comparators];
 const operatorsForSessionId = [exists, notExists, eq, notEq];
-const defaultOperators = [...comparators, exists, notExists, contains, begins, ends];
+const defaultOperators = [...comparators, exists, notExists, begins, contains, ends];
 
 const NONE = 'none';
 const KEY = 'key';

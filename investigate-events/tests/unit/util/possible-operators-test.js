@@ -33,17 +33,13 @@ test('Dispays expensive operators- indexed by value and format is numeric', func
 test('Dispays expensive operators- indexed by value and format is text', function(assert) {
   const meta = { format: 'Text', metaName: 'alert', count: 7, flags: -2147483133, displayName: 'Alerts', indexedBy: 'value', expensiveCount: 2 };
   const options = relevantOperators(meta);
-  assert.equal(options.length, 13, 'Correct number of operator options');
+  assert.equal(options.length, 9, 'Correct number of operator options');
   assert.ok(options.findBy('displayName', 'contains').isExpensive, 'Expected contains to be expensive');
   assert.ok(options.findBy('displayName', 'ends').isExpensive, 'Expected ends to be expensive');
   assert.ok(options.findBy('displayName', 'regex').isExpensive, 'Expected regex to be expensive');
   assert.ok(options.findBy('displayName', 'length').isExpensive, 'Expected length to be expensive');
   assert.notOk(options.findBy('displayName', '=').isExpensive, 'Expected = to not be expensive');
   assert.notOk(options.findBy('displayName', '!=').isExpensive, 'Expected != to not be expensive');
-  assert.notOk(options.findBy('displayName', '<').isExpensive, 'Expected < to not be expensive');
-  assert.notOk(options.findBy('displayName', '<=').isExpensive, 'Expected <= to not be expensive');
-  assert.notOk(options.findBy('displayName', '>').isExpensive, 'Expected > to not be expensive');
-  assert.notOk(options.findBy('displayName', '>=').isExpensive, 'Expected >= to not be expensive');
   assert.notOk(options.findBy('displayName', 'begins').isExpensive, 'Expected begins to not be expensive');
   assert.notOk(options.findBy('displayName', 'exists').isExpensive, 'Expected exists to not be expensive');
   assert.notOk(options.findBy('displayName', '!exists').isExpensive, 'Expected !exists to not be expensive');
@@ -53,15 +49,11 @@ test('Dispays expensive operators- indexed by value and format is text', functio
 test('Dispays expensive operators - indexed by key and format is text', function(assert) {
   const meta = { format: 'Text', metaName: 'referer', count: 7, flags: -2147482878, displayName: 'Referer', indexedBy: 'key', expensiveCount: 9 };
   const options = relevantOperators(meta);
-  assert.equal(options.length, 11, 'Correct number of operator options');
+  assert.equal(options.length, 7, 'Correct number of operator options');
   assert.ok(options.findBy('displayName', 'contains').isExpensive, 'Expected contains to be expensive');
   assert.ok(options.findBy('displayName', 'ends').isExpensive, 'Expected ends to be expensive');
   assert.ok(options.findBy('displayName', '=').isExpensive, 'Expected = to be expensive');
   assert.ok(options.findBy('displayName', '!=').isExpensive, 'Expected != to be expensive');
-  assert.ok(options.findBy('displayName', '<').isExpensive, 'Expected < to be expensive');
-  assert.ok(options.findBy('displayName', '<=').isExpensive, 'Expected <= to be expensive');
-  assert.ok(options.findBy('displayName', '>').isExpensive, 'Expected > to be expensive');
-  assert.ok(options.findBy('displayName', '>=').isExpensive, 'Expected >= to be expensive');
   assert.ok(options.findBy('displayName', 'begins').isExpensive, 'Expected begins to be expensive');
   assert.notOk(options.findBy('displayName', 'exists').isExpensive, 'Expected exists to not be expensive');
   assert.notOk(options.findBy('displayName', '!exists').isExpensive, 'Expected !exists to not be expensive');
