@@ -5,7 +5,8 @@ import getOwner from 'ember-owner/get';
 /**
  * This route is responsible for initiating OAuth token authentication. The user will be redirected to this route after
  * SSO authentication is successful in admin-server
- * Redirection URL looks like - /sso-oauth?authkey={}
+ * Redirection URL looks like - /sso-oauth?user={}&authkey={}
+ * user - user to be authenticated
  * authkey - unique randomly generated authentication key used to map this SSO authenticated user in the server
  */
 export default Route.extend({
@@ -17,7 +18,7 @@ export default Route.extend({
   },
 
   model({ user, authkey }) {
-    this.authenticate(user, authkey);
+    return this.authenticate(user, authkey);
   },
 
   authenticate(user, authkey) {
@@ -28,18 +29,17 @@ export default Route.extend({
     const auth = config['ember-simple-auth'].authenticate;
 
     // Authenticate SAML user
-    session.authenticate(auth, user, authkey, 'saml').then(
-      // Auth success
-      () => {
-        this.transitionTo('protected');
-      },
+    return session.authenticate(auth, user, authkey, 'saml');
+  },
 
-      // Auth failed
-      () => {
-        this.transitionTo('sso-error');
-      }
-    ).catch(() => {
+  afterModel(model, transition) {
+    transition.abort();
+    this.transitionTo('protected');
+  },
+
+  actions: {
+    error() {
       this.transitionTo('sso-error');
-    });
+    }
   }
 });

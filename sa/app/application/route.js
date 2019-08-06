@@ -37,9 +37,11 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   beforeModel(transition) {
     if (
       !this.get('session.isAuthenticated') &&
+      transition.targetName &&
       transition.targetName !== 'login' &&
       transition.targetName !== 'protected' &&
-      transition.targetName !== 'protected.index'
+      transition.targetName !== 'protected.index' &&
+      !transition.targetName.startsWith('sso')
     ) {
       localStorage.setItem('rsa-post-auth-redirect', window.location.href);
     }
