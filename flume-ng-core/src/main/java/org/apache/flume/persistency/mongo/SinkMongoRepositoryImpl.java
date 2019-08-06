@@ -1,6 +1,6 @@
 package org.apache.flume.persistency.mongo;
 
-import com.mongodb.BulkWriteResult;
+import com.mongodb.bulk.BulkWriteResult;
 import com.mongodb.DBObject;
 import fortscale.domain.core.AbstractDocument;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -34,7 +34,7 @@ public class SinkMongoRepositoryImpl<T extends AbstractDocument> implements Sink
             BulkWriteResult bulkOpResult = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, collectionName)
                     .insert(events).execute();
             final int insertedCount = bulkOpResult.getInsertedCount();
-            if (bulkOpResult.isAcknowledged()) {
+            if (bulkOpResult.wasAcknowledged()) {
                 logger.debug("inserted={} documents into collection={} in bulk insert", insertedCount, collectionName);
             } else {
                 logger.error("bulk insert into collection={} wasn't acknowledged", collectionName);

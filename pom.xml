@@ -43,7 +43,7 @@
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
         <presidio.core.version>11.4.0-0-SNAPSHOT</presidio.core.version>
         <jackson.version>2.9.8</jackson.version>
-        <spring-data-mongodb.version>1.10.18.RELEASE</spring-data-mongodb.version>
+        <spring-data-mongodb.version>2.0.14.RELEASE</spring-data-mongodb.version>
     </properties>
 
     <modules>
@@ -391,19 +391,6 @@
                         <artifactId>maven-bundle-plugin</artifactId>
                         <inherited>true</inherited>
                         <extensions>true</extensions>
-                    </plugin>
-
-                    <plugin>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>javadoc-jar</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>aggregate-jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
                     </plugin>
 
                     <plugin>
@@ -774,6 +761,12 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
                 <version>1.7.25</version>
+            </dependency>
+
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.1.11</version>
             </dependency>
 
             <dependency>
