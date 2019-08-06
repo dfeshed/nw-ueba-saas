@@ -86,8 +86,9 @@ public class E2EMongoRestValidation  extends AbstractTestNGSpringContextTests {
     private BiFunction<String, Set<String>, String> errorMessage = (label,gap) ->
             allEntitiesUrl +
                     "\nMongo query:" +         entitiesHelper.getQuery() +
-                    " \nMessage: " + gap.size() + " " + label.toUpperCase() + " restEntities are missing from REST result."
-                    + "\nSubset of missing elements: " + join("\n", gap.stream().limit(10).collect(toSet()));
+                    " \nMessage: " + gap.size() + " " + label + " Mongo entities are missing from REST result."
+                    + "\nSubset of missing elements:\n "
+                    + join("\n", gap.stream().limit(10).collect(toSet()));
 
     private Function<String, Set<String>> getRestEntitiesByType = type ->
             restEntities.parallelStream()
