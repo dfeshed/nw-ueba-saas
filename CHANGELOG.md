@@ -1,3 +1,20 @@
+# [13.4.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v13.4.0)
+## Features
+* [ASOC-72339](https://bedfordjira.na.rsa.net/browse/ASOC-72339):&emsp;RESPOND UI :Alert-names filter too verbose in respond page
+* [ASOC-73392](https://bedfordjira.na.rsa.net/browse/ASOC-73392):&emsp;Recent Query UX
+* [ASOC-73649](https://bedfordjira.na.rsa.net/browse/ASOC-73649):&emsp;Extract and cache email content from POP3 network sessions
+* [ASOC-76192](https://bedfordjira.na.rsa.net/browse/ASOC-76192):&emsp;Auto-Complete Support for <, >, <=, >= Operators
+* [ASOC-76201](https://bedfordjira.na.rsa.net/browse/ASOC-76201):&emsp;Auto-Complete Support for regex Operator
+* [ASOC-76215](https://bedfordjira.na.rsa.net/browse/ASOC-76215):&emsp;Auto-Complete Support for length Operator
+* [ASOC-76616](https://bedfordjira.na.rsa.net/browse/ASOC-76616):&emsp;Update EA Navigate Panel to Display indexNone Meta
+* [ASOC-76625](https://bedfordjira.na.rsa.net/browse/ASOC-76625):&emsp;Meta Dropdown Iconography
+* [ASOC-78677](https://bedfordjira.na.rsa.net/browse/ASOC-78677):&emsp;Create Column Group CRUD APIs
+* [ASOC-78691](https://bedfordjira.na.rsa.net/browse/ASOC-78691):&emsp;Create Out of the Box Column Group Migration
+* [ASOC-78998](https://bedfordjira.na.rsa.net/browse/ASOC-78998):&emsp;Redirect to ADFS for authentication bypassing SA-UI login
+* [ASOC-79312](https://bedfordjira.na.rsa.net/browse/ASOC-79312):&emsp;Adjust Restrict Access To Incidents UI for clarification
+* [ASOC-81057](https://bedfordjira.na.rsa.net/browse/ASOC-81057):&emsp;Unbind Shift Up+Down
+
+
 # [13.3.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v13.3.0)
 ## Features
 * [ASOC-73390](https://bedfordjira.na.rsa.net/browse/ASOC-73390):&emsp;Add Counts to Pill Creation Tabs
