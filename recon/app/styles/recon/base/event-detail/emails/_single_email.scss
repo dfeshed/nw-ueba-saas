@@ -4,11 +4,16 @@
   border-width: 2px;
   border-style: solid;
     &.warning {
-      .email-scroll-box{
-        bottom: 4rem;
-      }
       .attachment-download-warning {
         display: block;
+      }
+    }
+
+    .email-scroll-box{
+      bottom: 4rem;
+      .email-separator {
+        border: 1px dashed #424242;
+        width: 97%;
       }
     }
 }

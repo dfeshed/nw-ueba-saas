@@ -2,6 +2,7 @@
   <div class="email-scroll-box">
     {{#each renderedEmails as |email|}}
       {{recon-event-detail/single-email email=email hasEmailAttachments=hasEmailAttachments}}
+      <hr class="email-separator">
     {{/each}}
   </div>
 {{else}}

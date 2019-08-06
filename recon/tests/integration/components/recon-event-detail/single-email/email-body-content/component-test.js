@@ -56,7 +56,7 @@ module('Integration | Component | recon-event-detail/single-email/email-body-con
     return wait().then(() => {
       assert.ok(find('.email-body-text'), 'show single email message content');
       const str = find('.email-body-text').textContent.trim().replace(/\s/g, '').substring(0, 200);
-      assert.equal(str, 'emailmessagetextcontent');
+      assert.equal(str, '&lt;BODY&gt;&lt;P&gt;emailmessagetextcontent&lt;/P&gt;&lt;/BODY&gt;');
     });
   });
 
