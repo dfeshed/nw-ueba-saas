@@ -241,7 +241,7 @@
             <plugin>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
-                <version>2.4.7</version>
+                <version>2.2.3</version>
                 <executions>
                     <execution>
                         <id>auto-generate-REST-client</id>
