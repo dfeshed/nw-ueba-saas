@@ -65,6 +65,10 @@ public class SmartHourlyEntitiesHelper {
                 .collect(toSet());
     }
 
+    public String getQuery(){
+        return QUERY.toString();
+    }
+
     private Query emptyQuery() {
         return new Query();
     }

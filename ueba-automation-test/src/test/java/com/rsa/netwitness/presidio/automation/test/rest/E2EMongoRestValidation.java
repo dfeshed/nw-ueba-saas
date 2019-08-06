@@ -72,7 +72,7 @@ public class E2EMongoRestValidation  extends AbstractTestNGSpringContextTests {
         this.outputProcessingStartDaysBack = outputProcessingStartDaysBack;
         this.outputProcessingEndDaysBack = outputProcessingEndDaysBack;
         this.historicalDaysBack = historicalDaysBack;
-        this.entitiesHelper = new SmartHourlyEntitiesHelper(mongoTemplate, historicalDaysBack, 0);
+        this.entitiesHelper = new SmartHourlyEntitiesHelper(mongoTemplate, historicalDaysBack, 1);
         this.restEntities = restHelper.entities().request().getEntities(allEntitiesUrl);
         assertThat(restEntities).withFailMessage(allEntitiesUrl+"\nIs null or empty").isNotNull().isNotEmpty();
     }
@@ -84,7 +84,9 @@ public class E2EMongoRestValidation  extends AbstractTestNGSpringContextTests {
     }
 
     private BiFunction<String, Set<String>, String> errorMessage = (label,gap) ->
-            allEntitiesUrl + "\n # " + gap.size() + " " + label.toUpperCase() + " restEntities are missing from REST result."
+            allEntitiesUrl +
+                    "\nMongo query:" +         entitiesHelper.getQuery() +
+                    " \nMessage: " + gap.size() + " " + label.toUpperCase() + " restEntities are missing from REST result."
                     + "\nSubset of missing elements: " + join("\n", gap.stream().limit(10).collect(toSet()));
 
     private Function<String, Set<String>> getRestEntitiesByType = type ->
