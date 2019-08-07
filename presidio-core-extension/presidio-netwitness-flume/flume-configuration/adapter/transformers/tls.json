@@ -136,7 +136,7 @@
       "sourceKey": "asn_dst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "dstAsn"
+        "dstAsn.name"
       ]
     },
     {
