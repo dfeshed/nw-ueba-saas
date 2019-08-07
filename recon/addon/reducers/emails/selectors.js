@@ -21,7 +21,7 @@ export const renderedEmails = createSelector(
     if (hasNoEmailContent || !hasRenderIds) {
       return [];
     }
-    return emails.slice(0, 2);
+    return emails;
   }
 );
 

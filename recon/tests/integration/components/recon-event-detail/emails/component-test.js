@@ -2,7 +2,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
-import { slicedEmailData } from '../../../../helpers/data/index';
+import emailData from '../../../../data/subscriptions/reconstruction-email-data/stream/data';
 import { render, find, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -13,7 +13,7 @@ module('Integration | Component | recon-event-detail/emails', function(hooks) {
     const state = {
       recon: {
         emails: {
-          emails: slicedEmailData,
+          emails: emailData,
           renderIds: ['6eea4274b86544628954f0926194068e9', '6eea4274b865446289540926194068e8']
         }
       }
@@ -44,7 +44,7 @@ module('Integration | Component | recon-event-detail/emails', function(hooks) {
     const state = {
       recon: {
         emails: {
-          emails: slicedEmailData,
+          emails: emailData,
           renderIds: ['6eea4274b865446289540926194068e9', '6eea4274b865446289540926194068e8']
         }
       }

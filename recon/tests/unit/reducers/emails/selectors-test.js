@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
 import { renderedEmails, hasNoEmailContent, hasRenderIds, hasEmailAttachments } from 'recon/reducers/emails/selectors';
-import { slicedEmailData } from '../../../helpers/data';
+import emailData from '../../../data/subscriptions/reconstruction-email-data/stream/data';
 
 module('Unit | selector | emails');
 
@@ -16,7 +16,7 @@ const renderedEmailContentTests = (selector) => {
     })),
     hasEmailNoRenderIds: selector(Immutable.from({
       emails: {
-        emails: slicedEmailData,
+        emails: emailData,
         renderIds: []
       }
     })),
@@ -28,7 +28,7 @@ const renderedEmailContentTests = (selector) => {
     })),
     hasEmailHasRenderIds: selector(Immutable.from({
       emails: {
-        emails: slicedEmailData,
+        emails: emailData,
         renderIds: ['6eea4274b865446289540926194068e9', '6eea4274b865446289540926194068e8']
       }
     }))
@@ -42,7 +42,7 @@ test('renderedEmails', function(assert) {
   assert.equal(tests.noEmailNoRenderIds.length, 0, 'renderedEmail should return empty array, when emails/render IDs missing');
   assert.equal(tests.hasEmailNoRenderIds.length, 0, 'renderedEmail should return empty array, when has render IDs');
   assert.equal(tests.noEmailHasRenderIds.length, 0, 'renderedEmail should return empty array, when no emails');
-  assert.equal(tests.hasEmailHasRenderIds.length, 2, 'renderedEmail should not return empty array, when emails/render Ids exists');
+  assert.equal(tests.hasEmailHasRenderIds.length, 3, 'renderedEmail should not return empty array, when emails/render Ids exists');
 
 });
 
@@ -65,7 +65,7 @@ test('hasNoEmailContent', function(assert) {
     })),
     hasEmailContent: hasNoEmailContent(Immutable.from({
       emails: {
-        emails: slicedEmailData
+        emails: emailData
       }
     }))
   };
@@ -123,7 +123,7 @@ test('hasEmailAttachments', function(assert) {
     })),
     hasAttachments: hasEmailAttachments(Immutable.from({
       emails: {
-        emails: slicedEmailData
+        emails: emailData
       }
     }))
   };

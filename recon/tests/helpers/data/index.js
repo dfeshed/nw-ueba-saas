@@ -1,5 +1,4 @@
 import packetData from '../../data/subscriptions/reconstruction-packet-data/stream/data';
-import emailData from '../../data/subscriptions/reconstruction-email-data/stream/data';
 import encodedTextData from '../../data/subscriptions/reconstruction-text-data/stream/encodedData';
 import decodedTextData from '../../data/subscriptions/reconstruction-text-data/stream/decodedData';
 import { withPayloads, noPayloads, noPackets } from '../../data/subscriptions/reconstruction-summary/query/data';
@@ -19,7 +18,6 @@ const _generateHeaderItems = (items) => (
 const augmentedTextData = augmentResult(decodedTextData);
 
 const packetDataWithSide = augmentResult(packetData.slice(0, 10));
-const slicedEmailData = emailData.slice(0, 2);
 const packetDataWithoutPayload = packetDataWithSide.filter((d) => d.payloadSize === 0);
 
 const summaryData = {
@@ -60,7 +58,6 @@ export {
   encodedTextData,
   files,
   packetDataWithSide,
-  slicedEmailData,
   packetDataWithoutPayload,
   summaryData,
   summaryDataWithoutPayload,
