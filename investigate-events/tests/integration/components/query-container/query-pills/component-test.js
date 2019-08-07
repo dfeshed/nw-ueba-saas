@@ -2782,12 +2782,10 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'found 0 new pill template selected');
 
     await click(PILL_SELECTORS.closeParen);
-    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'found 1 paren selected');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 2, 'found 2 paren selected, including the twin of the one clicked');
 
-    // Soon no need to click open paren too as
-    // clicking close will also click open
-    await click(PILL_SELECTORS.openParen);
-    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 2, 'found 2 parens selected');
+    await click(PILL_SELECTORS.closeParen);
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'found 0 paren selected, which means the twin was deslected as well');
   });
 
   test('Typing ")" when there is a close paren to the right will move focus to right', async function(assert) {

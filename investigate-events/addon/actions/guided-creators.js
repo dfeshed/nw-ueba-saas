@@ -1,5 +1,5 @@
 import * as ACTION_TYPES from './types';
-import { selectedPills, focusedPill } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { selectedPills, focusedPill, pillsData } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import validateQueryFragment from './fetch/query-validation';
 import { selectPillsFromPosition } from 'investigate-events/actions/utils';
@@ -198,21 +198,72 @@ export const deselectAllGuidedPills = () => {
   };
 };
 
-export const deselectGuidedPills = ({ pillData }, shouldIgnoreFocus = false) => ({
-  type: ACTION_TYPES.DESELECT_GUIDED_PILLS,
-  payload: {
-    pillData,
-    shouldIgnoreFocus
-  }
-});
+// Check if a given set a pills contains any orphaned
+// twins. If it does, return the matching twins from state
+const _findMissingTwins = (pills, pillsFromState) => {
+  // filter to those that are missing twins in the input
+  const twins = pills.filter((pD) => {
+    if (pD.twinId) {
+      const twinPresent = pills
+        // filter out the pill being processed as it'll
+        // obviously have a matching twin id
+        .filter((p) => p.id !== pD.id)
+        // find twin
+        .some((potentialTwinPill) => {
+          return pD.twinId === potentialTwinPill.twinId;
+        });
+      return !twinPresent;
+    }
+    return false;
+  }).map((twinsie) => {
+    // now find the twins
+    return pillsFromState.find((pill) => {
+      // want a matching twin id, but not the exact same pill
+      return pill.twinId === twinsie.twinId && pill.id !== twinsie.id;
+    });
+  });
 
-export const selectGuidedPills = ({ pillData }, shouldIgnoreFocus = false) => ({
-  type: ACTION_TYPES.SELECT_GUIDED_PILLS,
-  payload: {
-    pillData,
-    shouldIgnoreFocus
-  }
-});
+  return twins;
+};
+
+const _pillSelectDeselect = (actionType, pillData, shouldIgnoreFocus = false) => {
+  return (dispatch, getState) => {
+
+    // now locate potential twins
+    const missingTwins = _findMissingTwins(pillData, pillsData(getState()));
+    if (missingTwins.length > 0) {
+      dispatch({
+        type: actionType,
+        payload: {
+          pillData: missingTwins,
+          // twins don't get focus, not yet at least
+          shouldIgnoreFocus: true
+        }
+      });
+    }
+
+    // handle the ones being passed in
+    dispatch({
+      type: actionType,
+      payload: {
+        pillData,
+        shouldIgnoreFocus
+      }
+    });
+  };
+};
+
+export const deselectGuidedPills = ({ pillData }, shouldIgnoreFocus = false) => {
+  return (dispatch) => {
+    dispatch(_pillSelectDeselect(ACTION_TYPES.DESELECT_GUIDED_PILLS, pillData, shouldIgnoreFocus));
+  };
+};
+
+export const selectGuidedPills = ({ pillData }, shouldIgnoreFocus = false) => {
+  return (dispatch) => {
+    dispatch(_pillSelectDeselect(ACTION_TYPES.SELECT_GUIDED_PILLS, pillData, shouldIgnoreFocus));
+  };
+};
 
 export const selectAllPillsTowardsDirection = (position, direction) => {
   return (dispatch, getState) => {

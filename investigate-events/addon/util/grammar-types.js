@@ -29,7 +29,7 @@ const CloseParen = Filter.extend({
    * Id of the matching open parenthesis within the query.
    * @type {string}
    */
-  // twinId: undefined,
+  twinId: undefined,
 
   init() {
     this.set('type', CLOSE_PAREN);
@@ -46,7 +46,7 @@ const OpenParen = Filter.extend({
    * Id of the matching close parenthesis within the query.
    * @type {string}
    */
-  // twinId: undefined,
+  twinId: undefined,
 
   init() {
     this.set('type', OPEN_PAREN);

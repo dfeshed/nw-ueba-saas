@@ -130,9 +130,10 @@ const INVALID_PILL_DATA = [{
 
 const PILLS_WITH_PARENS = [{
   type: 'open-paren',
-  id: 'guidedPill_1'
+  id: '1',
+  twinId: 'twinning!'
 }, {
-  id: 'guidedPill_4',
+  id: '2',
   isEditing: false,
   isFocused: false,
   isInvalid: false,
@@ -144,7 +145,8 @@ const PILLS_WITH_PARENS = [{
   type: 'query'
 }, {
   type: 'close-paren',
-  id: 'guidedPill_2'
+  id: '3',
+  twinId: 'twinning!'
 }];
 
 

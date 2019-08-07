@@ -213,17 +213,25 @@ module('Unit | Actions | Guided Creators', function(hooks) {
       .markSelected(['1', '2'])
       .build();
 
-    const secondDispatch = (action) => {
+    const fourthDispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, 'action has the correct type');
       assert.deepEqual(action.payload.pillData, state.investigate.queryNode.pillsData, 'action pillData has the right value');
       done();
     };
 
     const firstDispatch = (action) => {
-      // if is function, is _deselectAllGuidedPills thunk
+      // if is function, is deselectAllGuidedPills thunk, which has chain of thunks to
+      // get through
       if (typeof action === 'function') {
-        const thunk2 = action;
         const getState = () => state;
+
+        const thirdDispatch = (thunk4) => {
+          thunk4(fourthDispatch, getState);
+        };
+        const secondDispatch = (thunk3) => {
+          thunk3(thirdDispatch, getState);
+        };
+        const thunk2 = action;
         thunk2(secondDispatch, getState);
       } else {
         assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, 'action has the correct type');
@@ -247,9 +255,14 @@ module('Unit | Actions | Guided Creators', function(hooks) {
       .markFocused(['1'])
       .build();
 
-    // beacuse there is no pill selected, deselectAllGuidedPills will not be triggered
-    const secondDispatch = (action) => {
+    const getState = () => state;
+
+    const secondDispatch = async(action) => {
       if (typeof action === 'function') {
+        const thunk3 = action;
+        // does not get invoked
+        const thirdDispatch = () => {};
+        await thunk3(thirdDispatch, getState);
         done();
       } else {
         assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, 'action has the correct type');
@@ -258,9 +271,7 @@ module('Unit | Actions | Guided Creators', function(hooks) {
       }
     };
 
-    const firstDispatch = (action) => {
-      const thunk2 = action;
-      const getState = () => state;
+    const firstDispatch = (thunk2) => {
       thunk2(secondDispatch, getState);
     };
 
@@ -280,20 +291,28 @@ module('Unit | Actions | Guided Creators', function(hooks) {
       .markSelected(['1', '2'])
       .markFocused(['1'])
       .build();
+    const getState = () => state;
 
-    // There should be still one pill present which is selected
-    // DeselectAll should catch that pill after focused pill is deleted
-    const thirdDispatch = (action) => {
+    const fifthDispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, 'action has the correct type');
       assert.deepEqual(action.payload.pillData, state.investigate.queryNode.pillsData, 'action pillData has the right value');
       done();
+    };
+
+    const fourthDispatch = (thunk5) => {
+      thunk5(fifthDispatch, getState);
+    };
+
+    // There should be still one pill present which is selected
+    // DeselectAll should catch that pill after focused pill is deleted
+    const thirdDispatch = (thunk4) => {
+      thunk4(fourthDispatch, getState);
     };
 
     // beacuse there is no pill selected, deselectAllGuidedPills will not be triggered
     const secondDispatch = (action) => {
       if (typeof action === 'function') {
         const thunk3 = action;
-        const getState = () => state;
         thunk3(thirdDispatch, getState);
       } else {
         assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, 'action has the correct type');
@@ -304,7 +323,6 @@ module('Unit | Actions | Guided Creators', function(hooks) {
 
     const firstDispatch = (action) => {
       const thunk2 = action;
-      const getState = () => state;
       thunk2(secondDispatch, getState);
     };
 
@@ -315,20 +333,64 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk1(firstDispatch);
   });
 
-
   test('deselectGuidedPills action creator returns proper type and payload', function(assert) {
-    const { pillsData } = new ReduxDataHelper()
+    const done = assert.async();
+    const state = new ReduxDataHelper()
       .pillsDataPopulated()
-      .build()
-      .investigate
-      .queryNode;
+      .build();
+    const { pillsData } = state.investigate.queryNode;
+    const getState = () => state;
 
-    const action = guidedCreators.deselectGuidedPills({
+    const secondDispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, 'action has the correct type');
+      assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
+      done();
+    };
+    const firstDispatch = (thunk2) => {
+      thunk2(secondDispatch, getState);
+    };
+    const thunk1 = guidedCreators.deselectGuidedPills({
       pillData: pillsData
     });
+    thunk1(firstDispatch, getState);
+  });
 
-    assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, 'action has the correct type');
-    assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
+  test('deselectGuidedPills action creator will collect missing twins and send for deselect', function(assert) {
+    assert.expect(5);
+    const done = assert.async();
+    const state = new ReduxDataHelper()
+      .pillsDataWithParens()
+      .markSelected(['1', '3'])
+      .build();
+
+    const { pillsData } = state.investigate.queryNode;
+    const getState = () => state;
+
+
+    let calledOnce = false;
+    const secondDispatch = (action) => {
+      // 2nd call sends the pill
+      if (calledOnce) {
+        assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, 'action has the correct type');
+        assert.deepEqual(action.payload.pillData, [pillsData[2]], 'action pillData has the right value');
+        done();
+      } else {
+        // 1st call sends the twin of the pill
+        calledOnce = true;
+        assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, 'action has the correct type');
+        assert.deepEqual(action.payload.pillData, [pillsData[0]], 'action pillData has the right value');
+        assert.deepEqual(action.payload.shouldIgnoreFocus, true, 'should be ignoring focus on twin dispatch');
+      }
+    };
+    const firstDispatch = (thunk2) => {
+      thunk2(secondDispatch, getState);
+    };
+    const thunk1 = guidedCreators.deselectGuidedPills({
+      // just pull out the selected 2nd twin and send it alone
+      // would expect two dispatches, one to collect the missing twin
+      pillData: [pillsData[2]]
+    });
+    thunk1(firstDispatch, getState);
   });
 
   test('deselectAllGuidedPills action creator returns proper type and payload', function(assert) {
@@ -339,31 +401,79 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     };
     const { pillsData } = getState().investigate.queryNode;
 
-    const thunk = guidedCreators.deselectAllGuidedPills();
-
-    const dispatch = (action) => {
+    const thirdDispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, 'action has the correct type');
       assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
       done();
     };
+    const secondDispatch = (thunk3) => {
+      thunk3(thirdDispatch, getState);
+    };
+    const firstDispatch = (thunk2) => {
+      thunk2(secondDispatch, getState);
+    };
 
-    thunk(dispatch, getState);
+    const thunk1 = guidedCreators.deselectAllGuidedPills();
+    thunk1(firstDispatch, getState);
   });
 
   test('selectGuidedPills action creator returns proper type and payload', function(assert) {
-    const { pillsData } = new ReduxDataHelper()
-      .pillsDataPopulated()
-      .build()
-      .investigate
-      .queryNode;
+    const done = assert.async();
+    const state = new ReduxDataHelper().pillsDataPopulated().build();
+    const { pillsData } = state.investigate.queryNode;
+    const getState = () => state;
 
-    const action = guidedCreators.selectGuidedPills({
+    const secondDispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.SELECT_GUIDED_PILLS, 'action has the correct type');
+      assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
+      done();
+    };
+    const firstDispatch = (thunk2) => {
+      thunk2(secondDispatch, getState);
+    };
+
+    const thunk1 = guidedCreators.selectGuidedPills({
       pillData: pillsData
     });
-
-    assert.equal(action.type, ACTION_TYPES.SELECT_GUIDED_PILLS, 'action has the correct type');
-    assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
+    thunk1(firstDispatch, getState);
   });
+
+  test('selectGuidedPills action creator will collect missing twins and send for deselect', function(assert) {
+    assert.expect(5);
+    const done = assert.async();
+    const state = new ReduxDataHelper()
+      .pillsDataWithParens()
+      .build();
+
+    const { pillsData } = state.investigate.queryNode;
+    const getState = () => state;
+
+    let calledOnce = false;
+    const secondDispatch = (action) => {
+      // 2nd call sends the pill
+      if (calledOnce) {
+        assert.equal(action.type, ACTION_TYPES.SELECT_GUIDED_PILLS, 'action has the correct type');
+        assert.deepEqual(action.payload.pillData, [pillsData[2]], 'action pillData has the right value');
+        done();
+      } else {
+        // 1st call sends the twin of the pill
+        calledOnce = true;
+        assert.equal(action.type, ACTION_TYPES.SELECT_GUIDED_PILLS, 'action has the correct type');
+        assert.deepEqual(action.payload.pillData, [pillsData[0]], 'action pillData has the right value');
+        assert.deepEqual(action.payload.shouldIgnoreFocus, true, 'should be ignoring focus on twin dispatch');
+      }
+    };
+    const firstDispatch = (thunk2) => {
+      thunk2(secondDispatch, getState);
+    };
+    const thunk1 = guidedCreators.selectGuidedPills({
+      // just pull out the  2nd twin and send it alone
+      // would expect two dispatches, one to collect the missing twin
+      pillData: [pillsData[2]]
+    });
+    thunk1(firstDispatch, getState);
+  });
+
 
   test('_serverSideValidation will flag isInvalid and add a validation error in state from the response returned from web socket', async function(assert) {
     assert.expect(2);
@@ -535,14 +645,20 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     };
     const { investigate: { queryNode: { pillsData } } } = getState();
 
-    const myDispatch = (action) => {
+    const thirdDispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.SELECT_GUIDED_PILLS, 'action has the correct type');
       assert.deepEqual(action.payload.pillData, pillsData, 'action pillData will contain the pills that will need to be selected');
       done();
     };
+    const secondDispatch = (thunk3) => {
+      thunk3(thirdDispatch, getState);
+    };
+    const firstDispatch = (thunk2) => {
+      thunk2(secondDispatch, getState);
+    };
 
-    const thunk = guidedCreators.selectAllPillsTowardsDirection(position, direction);
-    thunk(myDispatch, getState);
+    const thunk1 = guidedCreators.selectAllPillsTowardsDirection(position, direction);
+    thunk1(firstDispatch, getState);
   });
 
   test('selectAllPillsTowardsDirection -> left dispatches the proper events', function(assert) {
@@ -562,14 +678,21 @@ module('Unit | Actions | Guided Creators', function(hooks) {
 
     const { investigate: { queryNode: { pillsData } } } = getState();
 
-    const myDispatch = (action) => {
+    const thirdDispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.SELECT_GUIDED_PILLS, 'action has the correct type');
       assert.deepEqual(action.payload.pillData, pillsData, 'action pillData will contain the pills that will need to be selected');
       done();
     };
 
-    const thunk = guidedCreators.selectAllPillsTowardsDirection(position, direction);
-    thunk(myDispatch, getState);
+    const secondDispatch = (thunk3) => {
+      thunk3(thirdDispatch, getState);
+    };
+    const firstDispatch = (thunk2) => {
+      thunk2(secondDispatch, getState);
+    };
+
+    const thunk1 = guidedCreators.selectAllPillsTowardsDirection(position, direction);
+    thunk1(firstDispatch, getState);
   });
 
   test('deleteAllGuidedPills dispatches action to deleteGuidedPill', function(assert) {

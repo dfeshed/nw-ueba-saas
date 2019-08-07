@@ -21,14 +21,16 @@ const _startTime = (state) => state.investigate.queryNode.startTime;
 const _isTimeRangeInvalid = (state) => state.investigate.queryNode.timeRangeInvalid;
 const _queryView = (state) => state.investigate.queryNode.queryView;
 const _currentQueryHash = (state) => state.investigate.queryNode.currentQueryHash;
-const _pillsData = (state) => state.investigate.queryNode.pillsData;
 const _updatedFreeFormTextPill = (state) => state.investigate.queryNode.updatedFreeFormTextPill;
+
+export const pillsData = (state) => state.investigate.queryNode.pillsData;
+
 
 // SELECTOR FUNCTIONS
 export const freeFormText = createSelector(
-  [_pillsData],
-  (pillsData) => {
-    return encodeMetaFilterConditions(pillsData).trim();
+  [pillsData],
+  (_pillsData) => {
+    return encodeMetaFilterConditions(_pillsData).trim();
   }
 );
 
@@ -44,12 +46,12 @@ const _isFreeFormTextUpdated = createSelector(
 );
 
 export const isPillBeingEdited = createSelector(
-  [_pillsData],
+  [pillsData],
   (pills) => pills.some((d) => d.isEditing)
 );
 
 const _isDirty = createSelector(
-  [_currentQueryHash, _serviceId, _startTime, _endTime, _pillsData, _isFreeFormTextUpdated, isPillBeingEdited],
+  [_currentQueryHash, _serviceId, _startTime, _endTime, pillsData, _isFreeFormTextUpdated, isPillBeingEdited],
   (currentQueryHash, serviceId, startTime, endTime, pills, isFreeFormTextUpdated, isPillBeingEdited) => {
     // We check to see if a pill is being edited because the _pillData is
     // updated when entering edit mode, causing this selector to re-evaluate.
@@ -131,16 +133,16 @@ export const getActiveQueryNode = createSelector(
 );
 
 export const hasInvalidPill = createSelector(
-  [_pillsData, isOnGuided],
-  (pillsData, isOnGuided) => isOnGuided && pillsData.isAny('isInvalid')
+  [pillsData, isOnGuided],
+  (_pillsData, isOnGuided) => isOnGuided && _pillsData.isAny('isInvalid')
 );
 
 // This transforms the meta/operator from state, which are just strings,
 // into the full operator/meta objects used by the components
 export const enrichedPillsData = createSelector(
-  [validMetaKeySuggestions, _pillsData],
-  (metaKeys, pillsData) => {
-    return pillsData.map((pillData) => {
+  [validMetaKeySuggestions, pillsData],
+  (metaKeys, _pillsData) => {
+    return _pillsData.map((pillData) => {
       const meta = metaKeys.find((mK) => mK.metaName === pillData.meta);
       const operator = relevantOperators(meta, pillData.operator).find((possOp) => possOp.displayName === pillData.operator);
       return {
@@ -160,21 +162,21 @@ export const canQueryGuided = createSelector(
 );
 
 export const selectedPills = createSelector(
-  [_pillsData],
-  (pillsData) => {
-    return pillsData.filter((pD) => pD.isSelected === true);
+  [pillsData],
+  (_pillsData) => {
+    return _pillsData.filter((pD) => pD.isSelected === true);
   }
 );
 
 export const focusedPill = createSelector(
-  [_pillsData],
-  (pillsData) => pillsData.find((pD) => pD.isFocused)
+  [pillsData],
+  (_pillsData) => _pillsData.find((pD) => pD.isFocused)
 );
 
 export const deselectedPills = createSelector(
-  [_pillsData],
-  (pillsData) => {
-    return pillsData.filter((pD) => pD.isSelected === false);
+  [pillsData],
+  (_pillsData) => {
+    return _pillsData.filter((pD) => pD.isSelected === false);
   }
 );
 
@@ -184,9 +186,9 @@ export const hasInvalidSelectedPill = createSelector(
 );
 
 export const pillBeingEdited = createSelector(
-  [_pillsData],
-  (pillsData) => {
-    const pillsBeingEdited = pillsData.filter((pD) => pD.isEditing === true);
+  [pillsData],
+  (_pillsData) => {
+    const pillsBeingEdited = _pillsData.filter((pD) => pD.isEditing === true);
 
     // If there is one, return it, can only edit one at a time
     if (pillsBeingEdited.length > 0) {
@@ -196,16 +198,16 @@ export const pillBeingEdited = createSelector(
 );
 
 export const isPillValidationInProgress = createSelector(
-  [_pillsData],
-  (pillsData) => pillsData.isAny('isValidationInProgress')
+  [pillsData],
+  (_pillsData) => _pillsData.isAny('isValidationInProgress')
 );
 
 /**
  * Does the current query have a Text Filter?
  */
 export const hasTextPill = createSelector(
-  [_pillsData],
-  (pillsData) => pillsData.some((pD) => pD.type === TEXT_FILTER)
+  [pillsData],
+  (_pillsData) => _pillsData.some((pD) => pD.type === TEXT_FILTER)
 );
 
 /**
