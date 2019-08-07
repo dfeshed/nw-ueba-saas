@@ -195,7 +195,7 @@
       "sourceKey": "tcp_dstport",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "dstPort"
+        "dstPort.name"
       ]
     },
     {
