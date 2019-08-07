@@ -17,7 +17,35 @@ const FILTER_TYPES = [
         message: 'investigateHosts.downloads.filters.errorMessages.invalidCharsAlphaNumericOnly'
       }
     },
-    'placeholder': 'e.g., Filename.dll'
+    'placeholder': 'e.g. Filename.dll'
+  },
+  {
+    'name': 'extension',
+    'label': 'investigateHosts.downloads.filters.fileType',
+    'type': 'text',
+    'validations': {
+      length: {
+        validator: (value) => {
+          return value.length > 256;
+        },
+        message: 'investigateHosts.downloads.filters.errorMessages.invalidFilterInputLength'
+      },
+      format: {
+        validator: (value) => {
+          return /[<>:"'/|\\?]+/.test(value);
+        },
+        message: 'investigateHosts.downloads.filters.errorMessages.invalidCharsAlphaNumericOnly'
+      }
+    },
+    'placeholder': 'e.g. dll, txt, pdf'
+  },
+  {
+    name: 'timeStomping',
+    label: 'investigateHosts.downloads.filters.timeStomping',
+    type: 'list',
+    listOptions: [
+      { name: true, label: 'investigateHosts.downloads.filters.timeStomping' }
+    ]
   },
   {
     name: 'creationTime',

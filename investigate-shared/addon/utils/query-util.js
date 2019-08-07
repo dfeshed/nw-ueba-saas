@@ -8,6 +8,9 @@ const ENDPOINT_MAC_NAME_MAPPING = 'machineIdentity.networkInterfaces.macAddress'
 const ENDPOINT_HOST_MAPPING = 'machineIdentity.machineName';
 const ENDPOINT_FILE_NAME_MAPPING = 'firstFileName';
 const ENDPOINT_FILE_HASH_MAPPING = 'checksumSha256';
+const TIME_STOMPING = ['creationTimeStomped', 'alteredTimeStomped', 'fileReadTimeStomped', 'mftChangedTimeStomped'];
+const MULTI_FIELD_QUERY = ['file', 'mft'];
+const EXCLUSION_LIST = ['timeStomping', 'fileHash', 'score', 'downloadInfo.status', 'machineIdentity.agentVersion'];
 
 const INVESTIGATE_ENDPOINT_META_MAPPING = {
   'alias.host': ENDPOINT_HOST_MAPPING,
@@ -88,10 +91,10 @@ const addSortBy = (query, key, descending = false) => {
  * @returns {*}
  * @private
  */
-const _splitHash = (expressions) => {
-  const [expression] = expressions.filterBy('propertyName', 'fileHash');
+const _multiFieldQuery = (expressions, filterByItem, arrayOfProperties) => {
+  const [expression] = expressions.filterBy('propertyName', filterByItem);
   if (expression) {
-    const expressionList = HASH_COLUMNS.map((column) => {
+    const expressionList = arrayOfProperties.map((column) => {
       return {
         restrictionType: expression.restrictionType,
         propertyValues: expression.propertyValues,
@@ -190,8 +193,7 @@ const _getCriteriaList = (list, type) => {
   const fileDownloadStatus = _modifiedDownloadStatusExpression(list);
   const agentVersionExpression = _modifiedAgentVersionExpression(list);
   const newList = list.filter((property) => {
-    return property.propertyName !== 'fileHash' && property.propertyName !== 'score' &&
-      property.propertyName !== 'downloadInfo.status' && property.propertyName !== 'machineIdentity.agentVersion';
+    return !EXCLUSION_LIST.includes(property.propertyName);
   });
   if (newList.length) {
     result.push({
@@ -201,12 +203,17 @@ const _getCriteriaList = (list, type) => {
   }
 
   // calculate filehash related expression only if type is specified as 'file'
-  if (type === 'file') {
-    const hashes = _splitHash(list);
+  if (MULTI_FIELD_QUERY.includes(type)) {
+    let expressionList = [];
+    if (type === 'file') {
+      expressionList = _multiFieldQuery(list, 'fileHash', HASH_COLUMNS);
+    } else if (type === 'mft') {
+      expressionList = _multiFieldQuery(list, 'timeStomping', TIME_STOMPING);
+    }
 
-    if (hashes.length) {
+    if (expressionList.length) {
       result.push({
-        expressionList: hashes,
+        expressionList,
         predicateType: 'OR'
       });
     }

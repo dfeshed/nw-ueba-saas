@@ -2971,7 +2971,8 @@ export default {
         fileReadTimeFn: 'Access Time ($FN)',
         fileReadTimeSi: 'Access Time ($SI)',
         mftChangedTimeFn: 'Update Time ($FN)',
-        mftChangedTimeSi: 'Update Time ($SI)'
+        mftChangedTimeSi: 'Update Time ($SI)',
+        timeStomping: 'Time Stomping'
       },
       mftTable: {
         headers: {

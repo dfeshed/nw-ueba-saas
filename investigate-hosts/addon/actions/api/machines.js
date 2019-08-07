@@ -274,7 +274,7 @@ const getMFTSubfolders = (pageNumber, pageSize, key, descending, expressionList)
     sort: { keys: [key], descending }
   };
 
-  data = addFilter(data, expressionList);
+  data = addFilter(data, expressionList, 'mft');
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'mftGetRecords',

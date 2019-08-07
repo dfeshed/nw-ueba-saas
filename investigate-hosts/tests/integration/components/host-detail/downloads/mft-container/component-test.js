@@ -54,7 +54,7 @@ module('Integration | Component | mft-container', function(hooks) {
     await click(find('.open-filter-panel'));
     assert.equal(findAll('.left-zone').length, 1, 'mft-container filter panel opens');
     assert.equal(findAll('.mft-container .filter-wrapper').length, 1, 'Filter is present');
-    assert.equal(findAll('.mft-container .filter-wrapper .filter-controls').length, 9, '9 Filters present');
+    assert.equal(findAll('.mft-container .filter-wrapper .filter-controls').length, 11, '11 Filters present');
   });
   test('Mft-container with mft-table rendered on selection of directory', async function(assert) {
 
