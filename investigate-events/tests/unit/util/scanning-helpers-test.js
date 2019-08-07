@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { isDigit, isAlpha, isAlphaNumeric, isBetween, isIPv4Address, isIPv6Address, isMACAddress } from 'investigate-events/util/scanning-helpers';
+import { isDigit, isAlpha, isAlphaNumeric, isBetween, isIPv4Address, ipv4AddressToken, isIPv6Address, isMACAddress } from 'investigate-events/util/scanning-helpers';
+import * as LEXEMES from 'investigate-events/constants/lexemes';
 
 module('Unit | Util | Scanning Helpers', function(hooks) {
   setupTest(hooks);
@@ -35,8 +36,8 @@ module('Unit | Util | Scanning Helpers', function(hooks) {
   });
 
   test('isAlpha correctly identifies all alpha characters (includes .)', function(assert) {
-    assert.expect(26 * 2 + 2);
-    const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.:'.split('');
+    assert.expect(26 * 2 + 3);
+    const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.:/'.split('');
     letters.forEach((letter) => {
       assert.ok(isAlpha(letter));
     });
@@ -73,12 +74,11 @@ module('Unit | Util | Scanning Helpers', function(hooks) {
   });
 
   test('isAlphaNumeric does not think characters near letters and numbers on the ASCII table are alphanumeric', function(assert) {
-    assert.expect(6);
+    assert.expect(5);
     assert.notOk(isAlphaNumeric('@'));
     assert.notOk(isAlphaNumeric('['));
     assert.notOk(isAlphaNumeric('`'));
     assert.notOk(isAlphaNumeric('{'));
-    assert.notOk(isAlphaNumeric('/'));
     assert.notOk(isAlphaNumeric(';'));
   });
 
@@ -134,17 +134,41 @@ module('Unit | Util | Scanning Helpers', function(hooks) {
     assert.notOk(isIPv4Address('172.16.-30.1'));
   });
 
-  test('isIPv4Address returns false for IPv4 addresses w/ invalid CIDR notation', function(assert) {
-    assert.notOk(isIPv4Address('127.0.0.1/33'));
-    assert.notOk(isIPv4Address('192.168.0.1/64'));
-    assert.notOk(isIPv4Address('10.0.0.70/a'));
-    assert.notOk(isIPv4Address('172.18.201.53/-1'));
-  });
-
   test('isIPv4Address returns false for IPv6 addresses', function(assert) {
     assert.notOk(isIPv4Address('3ffe:1900:4545:3:200:f8ff:fe21:67cf'));
     assert.notOk(isIPv4Address('fe80::200:f8ff:fe21:67cf'));
     assert.notOk(isIPv4Address('::1'));
+  });
+
+  test('ipv4AddressToken returns a special token for normal IPv4 addresses', function(assert) {
+    assert.deepEqual(ipv4AddressToken('127.0.0.1'), {
+      type: LEXEMES.IPV4_ADDRESS,
+      text: '127.0.0.1',
+      cidr: null
+    });
+  });
+
+  test('ipv4AddressToken returns a special token for IPv4 addresses w/ masks', function(assert) {
+    assert.deepEqual(ipv4AddressToken('127.0.0.1/24'), {
+      type: LEXEMES.IPV4_ADDRESS,
+      text: '127.0.0.1/24',
+      cidr: 24
+    });
+  });
+
+  test('ipv4AddressToken returns a special token for IPv4 addresses w/ bad format', function(assert) {
+    assert.deepEqual(ipv4AddressToken('127.0.0.1/'), {
+      type: LEXEMES.IPV4_ADDRESS,
+      text: '127.0.0.1/',
+      cidr: 'empty'
+    });
+  });
+
+  test('ipv4AddressToken returns a special token for IPv4 addresses w/ alpha in their mask', function(assert) {
+    const result = ipv4AddressToken('127.0.0.1/abc');
+    assert.strictEqual(result.type, LEXEMES.IPV4_ADDRESS);
+    assert.strictEqual(result.text, '127.0.0.1/abc');
+    assert.ok(isNaN(result.cidr));
   });
 
   test('isIPv6Address returns true for typical IPv6 addresses', function(assert) {

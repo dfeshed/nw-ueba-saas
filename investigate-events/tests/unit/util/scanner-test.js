@@ -186,7 +186,39 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.strictEqual(result.length, 3);
     assert.deepEqual(result[0], { type: LEXEMES.META, text: 'alias.ip' }, '1. META "alias.ip"');
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '2. OPERATOR "="');
-    assert.deepEqual(result[2], { type: LEXEMES.IPV4_ADDRESS, text: '127.0.0.1' }, '3. IPV4_ADDRESS "127.0.0.1');
+    assert.deepEqual(result[2], { type: LEXEMES.IPV4_ADDRESS, text: '127.0.0.1', cidr: null }, '3. IPV4_ADDRESS "127.0.0.1');
+  });
+
+  test('deals with IPv4 addresses w/ bad slash', function(assert) {
+    const source = 'alias.ip = 127.0.0.1/';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 3);
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'alias.ip' }, '1. META "alias.ip"');
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '2. OPERATOR "="');
+    assert.deepEqual(result[2], { type: LEXEMES.IPV4_ADDRESS, text: '127.0.0.1/', cidr: 'empty' }, '3. IPV4_ADDRESS "127.0.0.1');
+  });
+
+  test('deals with IPv4 addresses w/ alpha mask', function(assert) {
+    const source = 'alias.ip = 127.0.0.1/abc';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 3);
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'alias.ip' }, '1. META "alias.ip"');
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '2. OPERATOR "="');
+    assert.strictEqual(result[2].type, LEXEMES.IPV4_ADDRESS);
+    assert.strictEqual(result[2].text, '127.0.0.1/abc');
+    assert.ok(isNaN(result[2].cidr));
+  });
+
+  test('deals with IPv4 addresses w/ number', function(assert) {
+    const source = 'alias.ip = 127.0.0.1/32';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 3);
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'alias.ip' }, '1. META "alias.ip"');
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '2. OPERATOR "="');
+    assert.deepEqual(result[2], { type: LEXEMES.IPV4_ADDRESS, text: '127.0.0.1/32', cidr: 32 }, '3. IPV4_ADDRESS "127.0.0.1');
   });
 
   test('deals with IPv6 addresses', function(assert) {
@@ -287,7 +319,7 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.deepEqual(result[0], { type: LEXEMES.LEFT_PAREN, text: '(' });
     assert.deepEqual(result[1], { type: LEXEMES.META, text: 'alias.ip' });
     assert.deepEqual(result[2], { type: LEXEMES.OPERATOR_EQ, text: '=' });
-    assert.deepEqual(result[3], { type: LEXEMES.IPV4_ADDRESS, text: '127.0.0.1' });
+    assert.deepEqual(result[3], { type: LEXEMES.IPV4_ADDRESS, text: '127.0.0.1', cidr: null });
     assert.deepEqual(result[4], { type: LEXEMES.RIGHT_PAREN, text: ')' });
   });
 
@@ -298,7 +330,7 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.strictEqual(result.length, 3);
     assert.deepEqual(result[0], { type: LEXEMES.META, text: 'alias.ip' }, '1. META "alias.ip"');
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_NOT_EQ, text: '!=' }, '2. OPERATOR_NOT_EQ "!="');
-    assert.deepEqual(result[2], { type: LEXEMES.IPV4_ADDRESS, text: '3.3.3.100' }, '3. IPV4_ADDRESS "3.3.3.100"');
+    assert.deepEqual(result[2], { type: LEXEMES.IPV4_ADDRESS, text: '3.3.3.100', cidr: null }, '3. IPV4_ADDRESS "3.3.3.100"');
   });
 
   test('handles no spaces between meta, operator, and value with an IPv6 address', function(assert) {

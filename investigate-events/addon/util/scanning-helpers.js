@@ -1,3 +1,5 @@
+import * as LEXEMES from 'investigate-events/constants/lexemes';
+
 /**
  * Returns true if `char` is a digit character, false otherwise
  * @param {String} char - A single character
@@ -13,7 +15,7 @@ const isDigit = (char) => {
 
 /**
  * Returns true if `char` is an "alpha" character, false otherwise.
- * Alpha is defined as `a-z`, `A-Z`, `.`, and `:`.
+ * Alpha is defined as `a-z`, `A-Z`, `.`, `:`, and `/`.
  * @param {String} char - A single character
  * @private
  */
@@ -21,7 +23,7 @@ const isAlpha = (char) => {
   const codePoint = char.codePointAt(0);
   return (codePoint >= 65 && codePoint <= 90) ||
     (codePoint >= 97 && codePoint <= 122) ||
-    char === '.' || char === ':';
+    char === '.' || char === ':' || char === '/';
 };
 
 /**
@@ -51,15 +53,7 @@ const isBetween = (num, low, high) => {
  * @param {String} candidate - A string that is possibly an IPv4 address
  */
 const isIPv4Address = (candidate) => {
-  let cidr;
-  [ candidate, cidr ] = candidate.split('/');
-  if (cidr) {
-    const num = parseInt(cidr, 10);
-    const valid = !isNaN(num) && isBetween(num, 0, 32);
-    if (!valid) {
-      return false;
-    }
-  }
+  [ candidate ] = candidate.split('/');
   candidate = candidate.split('.');
   if (candidate.length !== 4) {
     return false;
@@ -68,6 +62,22 @@ const isIPv4Address = (candidate) => {
     const num = parseInt(octet, 10);
     return !isNaN(num) && isBetween(num, 0, 255);
   });
+};
+
+const ipv4AddressToken = (text) => {
+  let [, cidr ] = text.split('/');
+  if (cidr === undefined) {
+    cidr = null;
+  } else if (cidr === '') {
+    cidr = 'empty';
+  } else {
+    cidr = parseInt(cidr, 10);
+  }
+  return {
+    type: LEXEMES.IPV4_ADDRESS,
+    text,
+    cidr
+  };
 };
 
 // This monolithic regex checks if a string is a valid IPv6 address
@@ -94,6 +104,7 @@ export {
   isAlphaNumeric,
   isBetween,
   isIPv4Address,
+  ipv4AddressToken,
   isIPv6Address,
   isMACAddress
 };

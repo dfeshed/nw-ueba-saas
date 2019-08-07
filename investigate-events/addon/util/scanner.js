@@ -1,6 +1,6 @@
 import * as LEXEMES from 'investigate-events/constants/lexemes';
 import { SEARCH_TERM_MARKER } from 'investigate-events/constants/pill';
-import { isAlphaNumeric, isIPv4Address, isIPv6Address, isMACAddress } from 'investigate-events/util/scanning-helpers';
+import { isAlphaNumeric, isIPv4Address, ipv4AddressToken, isIPv6Address, isMACAddress } from 'investigate-events/util/scanning-helpers';
 
 /**
  * The Scanner class takes an source string and transforms it into a set of tokens
@@ -57,15 +57,20 @@ class Scanner {
 
   /**
    * Takes the given token object and adds it to the token list
-   * @param {Object} type - The type of the token
+   * @param {String|Object} type - The type of the token OR the entire token object
    * @param {String} [value] - Optionally override the default value
    * @private
    */
   _addToken(type, value) {
-    this.tokens.push({
-      type,
-      text: value || this.source.substring(this.start, this.current)
-    });
+    if (typeof type === 'object') {
+      // In this case, type is not the type but the entire token pre-created
+      this.tokens.push(type);
+    } else {
+      this.tokens.push({
+        type,
+        text: value || this.source.substring(this.start, this.current)
+      });
+    }
   }
 
   /**
@@ -233,7 +238,7 @@ class Scanner {
     // restrictive types coming first
 
     if (isIPv4Address(alphaString)) {
-      this._addToken(LEXEMES.IPV4_ADDRESS);
+      this._addToken(ipv4AddressToken(alphaString));
       return;
     }
 

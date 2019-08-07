@@ -93,6 +93,14 @@ class Parser {
   }
 
   /**
+   * Returns the next *next* token without advancing `current`.
+   * @private
+   */
+  _peekNext() {
+    return this.tokens[this.current + 1];
+  }
+
+  /**
    * Returns the next token and advances `current`.
    * @private
    */
@@ -157,17 +165,19 @@ class Parser {
   }
 
   /**
-   * Returns true if the meta value(s) is/are valid, false otherwise. Does a
-   * check of the aliases dictionary to see if the cause of an invalid type is
-   * use of an alias.
+   * Returns true if the meta value(s) is/are valid, false otherwise. Can also
+   * return a validationError object. Does a check of the aliases dictionary to
+   * see if the cause of an invalid type is use of an alias.
    * @param {GRAMMAR.META_VALUE_RANGE} range The value range object
    * @param {String} expectedType The expected type of the value range
    * @private
    */
   _isValueTypeInvalid(range, expectedType, meta) {
+    const i18n = lookup('service:i18n');
     const { aliases } = this;
     const valuesToCheck = range.value ? [ range.value ] : [ range.from, range.to ];
-    return valuesToCheck.some((value) => {
+    let result = null;
+    const isInvalid = valuesToCheck.some((value) => {
       if (value.type !== expectedType) {
         if (aliases[meta.text]) {
           // The call to Object.values().some() returns true if the text given is a
@@ -181,9 +191,22 @@ class Parser {
           return true;
         }
       }
-      // No type mismatch, valid
+      // No type mismatch
+      if (expectedType === LEXEMES.IPV4_ADDRESS) {
+        if (value.cidr === 'empty') {
+          result = i18n.t('queryBuilder.validationMessages.cidrBad');
+          return true;
+        } else if (isNaN(value.cidr)) {
+          result = i18n.t('queryBuilder.validationMessages.cidrBad');
+          return true;
+        } else if (value.cidr < 0 || value.cidr > 32) {
+          result = i18n.t('queryBuilder.validationMessages.cidrIpv4OutOfRange');
+          return true;
+        }
+      }
       return false;
     });
+    return result || isInvalid;
   }
 
   /**
@@ -349,12 +372,18 @@ class Parser {
         if (!expectedType) {
           return false;
         }
-        let result = this._isValueTypeInvalid(range, expectedType, meta);
-        // If using length & types were valid, check for negative or zero
-        if (isLengthOperator && !result) {
-          result = !this._isValuePositive(range);
+        let isInvalid = this._isValueTypeInvalid(range, expectedType, meta);
+        if (typeof isInvalid !== 'boolean') {
+          // isValueTypeInvalid will return a validation error if the value is
+          // invalid, save it and set isInvalid to true.
+          validationError = isInvalid;
+          isInvalid = true;
         }
-        return result;
+        // If using length & types were valid, check for negative or zero
+        if (isLengthOperator && !isInvalid) {
+          isInvalid = !this._isValuePositive(range);
+        }
+        return isInvalid;
       });
       const i18n = lookup('service:i18n');
       if (isLengthOperator && hasInvalidValue) {
@@ -467,6 +496,15 @@ class Parser {
         value = this._advance();
         // Make value negative
         value.text = `-${value.text}`;
+      }
+    } else if (this._nextTokenIsOfType([ LEXEMES.IPV4_ADDRESS ])) {
+      value = this._advance();
+      // Negative number, amend the token
+      if (this._nextTokenIsOfType([ LEXEMES.HYPHEN ]) && this._peekNext() && this._peekNext().type === LEXEMES.INTEGER) {
+        this._advance(); // Consume hyphen
+        const num = this._advance();
+        value.cidr = parseInt(`-${num.text}`, 10);
+        value.text += `${value.cidr}`;
       }
     } else {
       value = this._advance();
