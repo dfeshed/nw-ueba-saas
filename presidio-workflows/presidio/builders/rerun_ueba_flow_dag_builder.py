@@ -40,7 +40,7 @@ class RerunUebaFlowDagBuilder(object):
         logging.debug("populating the rerun full flow dag")
         config_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
-        dags = get_dags()
+        dags = get_dags("full_flow", "ueba_flow")
         dag_ids_to_clean = map(lambda x: x.dag_id, dags)
 
         pause_dags_operator = build_pause_dags_operator(dag, dags)
@@ -75,29 +75,30 @@ class RerunUebaFlowDagBuilder(object):
         return dag
 
 
-@provide_session
-def load_dags(dag_ids, session=None):
-    DM = DagModel
-    qry = session.query(DM)
-    qry = qry.filter(DM.dag_id.in_(dag_ids))
-    try:
-        return qry.all()
-    except Exception:
-        logging.error("got error while executing {} query".format(qry))
-        return None
-
-
-def get_dags():
+def get_dags(dag_id_prefix, dag_id_suffix):
     """
 
-    :return: dict of DAGs (can be found in DAG's folder) and has dag_id by prefix given
+    :return: dict of DAGs that are not a sub DAG (can be found in DAG's folder) and has dag_id by prefix or suffix given
     :rtype: dict[str,DAG]
     """
-    dags = []
-    dag_ids = AbstractDagFactory.get_registered_dag_ids()
-    if dag_ids:
-        dags = load_dags(dag_ids)
-    return dags
+    dag_models = find_non_subdag_dags()
+
+    dag_models_filtered = [x for x in dag_models if x.dag_id.startswith(dag_id_prefix)
+                           or x.dag_id.endswith(dag_id_suffix)]
+
+    return dag_models_filtered
+
+
+@provide_session
+def find_non_subdag_dags(session=None):
+    DM = DagModel
+
+    qry = session.query(DM)
+    qry = qry.filter(DM.is_subdag is False)
+    try:
+        return qry.all()
+    except:
+        return None
 
 
 def pause_dag(dag_id):
