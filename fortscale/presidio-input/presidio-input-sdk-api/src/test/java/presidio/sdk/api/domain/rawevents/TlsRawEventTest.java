@@ -22,12 +22,7 @@ public class TlsRawEventTest {
         try {
             String rawEventStr = objectMapper.writeValueAsString(tlsRawEvent);
             TlsRawEvent rawEventDeserialized = objectMapper.readValue(rawEventStr, tlsRawEvent.getClass());
-            assertEquals(tlsRawEvent.getDomain(), rawEventDeserialized.getDomain());
-            assertEquals(tlsRawEvent.getSslSubject(), rawEventDeserialized.getSslSubject());
-            assertEquals(tlsRawEvent.getJa3(), rawEventDeserialized.getJa3());
-            assertEquals(tlsRawEvent.getDstOrg(), rawEventDeserialized.getDstOrg());
-            assertEquals(tlsRawEvent.getDstCountry(), rawEventDeserialized.getDstCountry());
-            assertEquals(tlsRawEvent.getDstPort(), rawEventDeserialized.getDstPort());
+            assertPojosAreEqual(tlsRawEvent, rawEventDeserialized);
         } catch (IOException e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -42,16 +37,21 @@ public class TlsRawEventTest {
                     .writeValueAsString(tlsRawEvent)
                     .replace(",\"isNewOccurrence\":true", "");
             TlsRawEvent rawEventDeserialized = objectMapper.readValue(missingOccurrenceStr, tlsRawEvent.getClass());
-            assertEquals(tlsRawEvent.getDomain(), rawEventDeserialized.getDomain());
-            assertEquals(tlsRawEvent.getSslSubject(), rawEventDeserialized.getSslSubject());
-            assertEquals(tlsRawEvent.getJa3(), rawEventDeserialized.getJa3());
-            assertEquals(tlsRawEvent.getDstOrg(), rawEventDeserialized.getDstOrg());
-            assertEquals(tlsRawEvent.getDstCountry(), rawEventDeserialized.getDstCountry());
-            assertEquals(tlsRawEvent.getDstPort(), rawEventDeserialized.getDstPort());
+            assertPojosAreEqual(tlsRawEvent, rawEventDeserialized);
         } catch (IOException e) {
             e.printStackTrace();
             fail(e.getMessage());
         }
+    }
+
+    private void assertPojosAreEqual(TlsRawEvent tlsRawEvent, TlsRawEvent rawEventDeserialized) {
+        assertEquals(tlsRawEvent.getDomain(), rawEventDeserialized.getDomain());
+        assertEquals(tlsRawEvent.getSslSubject(), rawEventDeserialized.getSslSubject());
+        assertEquals(tlsRawEvent.getJa3(), rawEventDeserialized.getJa3());
+        assertEquals(tlsRawEvent.getDstOrg(), rawEventDeserialized.getDstOrg());
+        assertEquals(tlsRawEvent.getDstCountry(), rawEventDeserialized.getDstCountry());
+        assertEquals(tlsRawEvent.getDstPort(), rawEventDeserialized.getDstPort());
+        assertEquals(tlsRawEvent.getDstAsn(), rawEventDeserialized.getDstAsn());
     }
 
     private ObjectMapper createObjectMapper() {
@@ -66,7 +66,7 @@ public class TlsRawEventTest {
         return new TlsRawEvent(Instant.now(), "TLS", "dataSource", null, "", "", "", "",
                 new DestinationCountry("dstCountry", isNewOccurrence),
                 new SslSubject("ssl", isNewOccurrence), new Domain("google.com", isNewOccurrence),
-                new DestinationOrganization("dstOrg", isNewOccurrence), "", 0L, 0L, "", "",
+                new DestinationOrganization("dstOrg", isNewOccurrence), new DestinationAutonomousSystemNumber("dstAsn", isNewOccurrence), 0L, 0L, "", "",
                 new Ja3("ja3", isNewOccurrence), "", "",
                 new DestinationPort("dstPort", isNewOccurrence), null, null, null);
 

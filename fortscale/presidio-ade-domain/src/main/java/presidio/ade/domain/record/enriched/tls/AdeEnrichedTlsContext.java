@@ -13,7 +13,7 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
     private SslSubject sslSubject;
     private Domain domain;
     private DestinationOrganization dstOrg;
-    private String dstAsn;
+    private DestinationAutonomousSystemNumber dstAsn;
     private String srcNetname;
     private String dstNetname;
     private Ja3 ja3;
@@ -102,11 +102,11 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
         this.dstOrg = dstOrg;
     }
 
-    public String getDstAsn() {
+    public DestinationAutonomousSystemNumber getDstAsn() {
         return dstAsn;
     }
 
-    public void setDstAsn(String dstAsn) {
+    public void setDstAsn(DestinationAutonomousSystemNumber dstAsn) {
         this.dstAsn = dstAsn;
     }
 

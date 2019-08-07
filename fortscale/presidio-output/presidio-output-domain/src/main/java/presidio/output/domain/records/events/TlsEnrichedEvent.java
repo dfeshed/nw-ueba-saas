@@ -57,7 +57,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     private DestinationOrganization dstOrg;
 
     @Field(DESTINATION_ASN_FIELD_NAME)
-    private String dstAsn;
+    private DestinationAutonomousSystemNumber dstAsn;
 
     @Field(NUM_OF_BYTES_SENT_FIELD_NAME)
     private Long numOfBytesSent;
@@ -100,7 +100,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
                             Map<String, String> additionalInfo,
                             String srcIp, String dstIp, String srcCountry, DestinationCountry dstCountry, SslSubject sslSubject,
                             Domain domain, DestinationOrganization dstOrg,
-                            String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
+                            DestinationAutonomousSystemNumber dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
                             String dstNetname, Ja3 ja3, String ja3s, String direction, DestinationPort dstPort,
                             String srcPort, List<String> fqdn, List<String> sslCa) {
         super(createdDate, eventDate, eventId, schema, dataSource, additionalInfo);
@@ -183,11 +183,11 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.dstOrg = dstOrg;
     }
 
-    public String getDstAsn() {
+    public DestinationAutonomousSystemNumber getDstAsn() {
         return dstAsn;
     }
 
-    public void setDstAsn(String dstAsn) {
+    public void setDstAsn(DestinationAutonomousSystemNumber dstAsn) {
         this.dstAsn = dstAsn;
     }
 
