@@ -5,10 +5,13 @@
   itemSelection=(action 'selectColumnGroup')
   as |manager|
 }}
-  {{#manager.itemList as |itemList|}}
 
+  {{manager.filter}}
+
+  {{#manager.itemList as |itemList|}}
     {{#itemList.item as |item|}}
       {{events-table-container/header-container/column-groups/column-group-item columnGroup=item}}
     {{/itemList.item}}
   {{/manager.itemList}}
+
 {{/list-manager}}

@@ -7,9 +7,11 @@ import { patchReducer } from '../../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import EventColumnGroups from '../../../../../data/subscriptions/investigate-columns/data';
 import { find, findAll, render, click } from '@ember/test-helpers';
+import { typeInSearch } from 'ember-power-select/test-support/helpers';
 
 const columnGroupManagerSelector = '.rsa-investigate-events-table__header__columnGroups';
 const dropdownSelector = `${columnGroupManagerSelector} .rsa-split-dropdown button`;
+const columnGroupItem = `${columnGroupManagerSelector} ul.rsa-item-list > li.rsa-list-item`;
 
 let setState;
 
@@ -50,14 +52,14 @@ module('Integration | Component | Column Groups', function(hooks) {
 
     assert.ok(find(`${columnGroupManagerSelector} .rsa-item-list`), 'Column group list found');
 
-    const options = findAll(`${columnGroupManagerSelector} ul.rsa-item-list > li`).map((d) => d.textContent.trim());
+    const options = findAll(columnGroupItem).map((d) => d.textContent.trim());
     assert.equal(options.join('').replace(/\s+/g, ''), 'Custom1Custom2SummaryListSummaryListSummaryListSummaryListEmailAnalysisMalwareAnalysisThreatAnalysisWebAnalysisEndpointAnalysis');
 
     const ootbIcon = 'rsa-icon-lock-close-1-lined';
     const nonOotbIcon = 'rsa-icon-settings-1-lined';
 
-    assert.ok(findAll(`${columnGroupManagerSelector} ul.rsa-item-list > li i`)[0].classList.contains(nonOotbIcon), 'Custom1 is a custom column group');
-    assert.ok(findAll(`${columnGroupManagerSelector} ul.rsa-item-list > li i`)[6].classList.contains(ootbIcon), 'Email Analysis is an OOTB column group');
+    assert.ok(findAll(`${columnGroupItem} i`)[0].classList.contains(nonOotbIcon), 'Custom1 is a custom column group');
+    assert.ok(findAll(`${columnGroupItem} i`)[6].classList.contains(ootbIcon), 'Email Analysis is an OOTB column group');
   });
 
   test('persisted column group is preselected in the drop down and highlighted in the options', async function(assert) {
@@ -70,7 +72,7 @@ module('Integration | Component | Column Groups', function(hooks) {
     assert.ok(find(dropdownSelector), 'dropdown buttons present');
     await click(dropdownSelector);
 
-    const selectedOptions = findAll(`${columnGroupManagerSelector} ul.rsa-item-list > li.is-selected`);
+    const selectedOptions = findAll(`${columnGroupItem}.is-selected`);
     assert.equal(selectedOptions.length, 1, '1 option selected');
     assert.equal(selectedOptions[0].textContent.trim(), 'Malware Analysis');
 
@@ -88,7 +90,7 @@ module('Integration | Component | Column Groups', function(hooks) {
 
     assert.ok(find(`${columnGroupManagerSelector} .rsa-button-menu.expanded`), 'Column Group Menu expanded');
 
-    const optionsToSelect = findAll(`${columnGroupManagerSelector} ul.rsa-item-list li a`);
+    const optionsToSelect = findAll(`${columnGroupItem} a`);
     assert.equal(optionsToSelect.length, 11);
 
     // Prefer testing with top few options as they are already scrolled into view.
@@ -111,6 +113,36 @@ module('Integration | Component | Column Groups', function(hooks) {
 
     await click('.other-div');
     assert.ok(find(`${columnGroupManagerSelector} .rsa-button-menu.collapsed`), 'Column Group Menu expanded');
+  });
+
+  test('column groups can be filtered by name', async function(assert) {
+
+    new ReduxDataHelper(setState).columnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().build();
+    await render(hbs`<div class = 'other-div'></div>{{events-table-container/header-container/column-groups}}`);
+
+    await click(dropdownSelector);
+    assert.ok(find(`${columnGroupManagerSelector} .list-filter`), 'filter component present');
+    assert.ok(find(`${columnGroupManagerSelector} .list-filter .rsa-icon-filter-2-filled`), 'filter icon present');
+    assert.equal(find(`${columnGroupManagerSelector} .list-filter input`).getAttribute('placeholder'), 'Filter column groups');
+    assert.notOk(find('.clear-filter'), 'clear button not available');
+    assert.equal(findAll(columnGroupItem).length, 11);
+
+    await click(find(`${columnGroupManagerSelector} .list-filter input`));
+    await typeInSearch('ma');
+    assert.equal(findAll(columnGroupItem).length, 6);
+    assert.ok(find('.clear-filter'), 'clear button now available');
+
+    await click(find('.clear-filter button'));
+    assert.equal(findAll(columnGroupItem).length, 11, 'filter is reset');
+
+    await typeInSearch('mat');
+    assert.equal(findAll(columnGroupItem).length, 0, 'all items filtered out');
+    assert.equal(find('.no-results').textContent.trim(), 'All column groups have been excluded by the current filter');
+
+    await click('.other-div');
+    await click(dropdownSelector);
+    assert.equal(findAll(columnGroupItem).length, 11, 'filter is reset when dropdown is closed and reopened');
+
   });
 
 });

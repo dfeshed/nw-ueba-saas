@@ -24,6 +24,8 @@ const assertForInvestigateColumnAndColumnSelector = async function(assert, heade
   await click(optionToChoose);
 
   assert.equal(findAll('.rsa-data-table-header-cell').length, headerCount * (isNotEmptyRow ? 1 : 2), `Should show columns for ${selectedOption}.`);
+
+  await click(columnGroupDropDownButton);
   assert.equal(find(`${columnGroupItemList}.is-selected`).textContent.trim(), selectedOption, `Selected column group should be ${selectedOption}.`);
   await click('.rsa-icon-cog-filled');
   assert.equal(findAll('li .rsa-form-checkbox-label').length, count, `Should show all columns for column selector for ${selectedOption}.`);

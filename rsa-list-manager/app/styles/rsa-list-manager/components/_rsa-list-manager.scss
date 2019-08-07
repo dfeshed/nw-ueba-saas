@@ -1,13 +1,48 @@
 .list-manager {
   display: inline-flex;
 
+  .list-filter {
+    padding-left: rsa-whitespace(less);
+    padding-right: rsa-whitespace(less);
+    .filter-group {
+      display: inline-flex;
+      width: 100%;
+      border-bottom: 1px solid border-color(primary,light);
+      padding-bottom: rsa-whitespace(less);
+      padding-top: rsa-whitespace(less);
+      i {
+        font-size: .65rem;
+      }
+      .ember-power-select-search-input {
+        border: none;
+        font-size: 11px;
+      }
+      button.rsa-form-button {
+        border: none;
+        padding: 0;
+        color: text-color(primary, light);
+        &:hover {
+          color: $formButtonIconHoverColor;
+        }
+      }
+    }
+  }
+
   .rsa-button-menu {
     ul {
       max-height: 11rem;
       overflow-y: auto;
       padding-top: rsa-whitespace(less);
       padding-bottom: rsa-whitespace(less);
-      li {
+      li.no-results {
+        padding: rsa-whitespace(less);
+        font-size: 10px;
+        font-weight: lightest;
+        font-style: italic;
+        text-align: center;
+        color: text-color(primary, lighter);
+      }
+      li.rsa-list-item {
         line-height: 2em;
         font-size: 11px;
         font-weight: lighter;

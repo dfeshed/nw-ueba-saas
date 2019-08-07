@@ -18,11 +18,16 @@ export default Component.extend({
   listName: null,
   selectedItem: null,
   list: null,
+  filteredList: null,
 
   // style for the recon-button-menu derived from the buttonGroup style
   offsetsStyle: null,
 
   isExpanded: false,
+
+  didInsertElement() {
+    this.set('filteredList', this.get('list'));
+  },
 
   @computed('listName', 'selectedItem')
   caption(listName, selectedItem) {
@@ -52,6 +57,10 @@ export default Component.extend({
     toggleExpand() {
       this.set('offsetsStyle', menuOffsetsStyle(this.get('element')));
       this.toggleProperty('isExpanded');
+    },
+
+    updateFilteredList(newList) {
+      this.set('filteredList', newList);
     }
 
   }

@@ -1,0 +1,15 @@
+<div class='filter-group'>
+  <centered>
+    {{rsa-icon name='filter-2' style='filled'}}
+  </centered>
+  <input
+    autocomplete="off"
+    class="ember-power-select-search-input"
+    oninput={{action "handleInput"}}
+    placeholder={{filterPlaceholder}}
+    type="text"
+    value={{filterText}}>
+  {{#if filterText.length}}
+    {{#rsa-form-button class="clear-filter" defaultAction=(action "resetFilter")}}{{rsa-icon name='close'}}{{/rsa-form-button}}
+  {{/if}}
+</div>

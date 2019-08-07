@@ -8,6 +8,11 @@ The list manager can be used in your template as follows:
   selectedItem=selectedItem
   itemSelection=handleSelection
   as |manager|}}
+
+  {{!--renders the filter component--}}
+  {{manager.filter filterAction=customFilterAction}}
+
+  {{!--renders the main list--}}
   {{#manager.itemList as |list|}}
     {{#list.item as |item|}}
       {{!--render the item in desired format --}}
@@ -22,4 +27,8 @@ The list manager can be used in your template as follows:
 * `selectedItem`, *Object*,__optional__, The option that needs to be displayed with listName for the caption and highlighed as selected in the list
 
 ## Actions
-* `itemSelection`, *Action*, An action to execute when an item is selected.
+* `itemSelection`, *Action*, __required__,  An action to execute when an item is selected.
+* `filterAction`, *Action*, __optional__,
+  * Custom action to filter the list when input is given to the filter component.
+  * If provided, the custom action must return the filtered list.
+  * If not provided, default filtering of the manager will be used.

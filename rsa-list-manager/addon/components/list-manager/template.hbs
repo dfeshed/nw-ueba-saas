@@ -1,29 +1,48 @@
-<hbox class='rsa-button-group'>
+<hbox>
   {{#click-outside action=(action 'collapseMenu')}}
-    {{#rsa-form-button
-      class="list-caption"
-      defaultAction=(action 'toggleExpand')
-      title=titleTooltip
-    }}
-      {{caption}}
-    {{/rsa-form-button}}
-    {{#rsa-form-button
-      class="rsa-split-dropdown"
-      defaultAction=(action 'toggleExpand')
-    }}
-      {{rsa-icon name="arrow-down-12"}}
-    {{/rsa-form-button}}
+
+    <div class='rsa-button-group'>
+      {{#rsa-form-button
+        class="list-caption"
+        defaultAction=(action 'toggleExpand')
+        title=titleTooltip
+      }}
+        {{caption}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button
+        class="rsa-split-dropdown"
+        defaultAction=(action 'toggleExpand')
+      }}
+        {{rsa-icon name="arrow-down-12"}}
+      {{/rsa-form-button}}
+    </div>
+
     {{#rsa-button-menu isExpanded=isExpanded style=offsetsStyle}}
 
-      {{yield (hash
-        itemList=(component 'list-manager/item-list'
-          list=list
-          selectedItem=selectedItem
-          itemSelection=itemSelection
-          isExpanded=isExpanded
-        )
-       )
-      }}
+      {{#if isExpanded}}
+
+        {{yield (hash
+          filter=(component 'list-manager/list-filter'
+            listName=listName
+            originalList=list
+            updateFilteredList=(action 'updateFilteredList')
+          )
+         )
+        }}
+
+        {{yield (hash
+          itemList=(component 'list-manager/item-list'
+            listName=listName
+            list=filteredList
+            selectedItem=selectedItem
+            itemSelection=itemSelection
+            isExpanded=isExpanded
+          )
+         )
+        }}
+
+      {{/if}}
+
     {{/rsa-button-menu}}
   {{/click-outside}}
 </hbox>
