@@ -225,12 +225,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
      * @return field name
      */
     private String getFieldName(Class pojoClass, String name) {
-        Field field = ReflectionUtils.findField(pojoClass, name);
-        String fieldName = field.getName();
-        if (field.isAnnotationPresent(org.springframework.data.mongodb.core.mapping.Field.class)) {
-            fieldName = field.getAnnotation(org.springframework.data.mongodb.core.mapping.Field.class).value();
-        }
-        return fieldName;
+        return presidio.sdk.api.utils.ReflectionUtils.findFieldNameRecursively(pojoClass, name);
     }
 
     @Override
