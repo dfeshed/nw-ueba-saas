@@ -75,7 +75,7 @@
       "sourceKey": "country_dst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "dstCountry"
+        "dstCountry.name"
       ]
     },
     {
