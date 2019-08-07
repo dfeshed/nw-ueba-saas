@@ -2,10 +2,7 @@ package presidio.output.domain.records.events;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import presidio.sdk.api.domain.newoccurrencewrappers.DestinationOrganization;
-import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
-import presidio.sdk.api.domain.newoccurrencewrappers.Ja3;
-import presidio.sdk.api.domain.newoccurrencewrappers.SslSubject;
+import presidio.sdk.api.domain.newoccurrencewrappers.*;
 
 import java.time.Instant;
 import java.util.List;
@@ -48,7 +45,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     private String srcCountry;
 
     @Field(DESTINATION_COUNTRY_FIELD_NAME)
-    private String dstCountry;
+    private DestinationCountry dstCountry;
 
     @Field(SSL_SUBJECT_FIELD_NAME)
     private SslSubject sslSubject;
@@ -101,7 +98,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
 
     public TlsEnrichedEvent(Instant createdDate, Instant eventDate, String eventId, String schema, String dataSource,
                             Map<String, String> additionalInfo,
-                            String srcIp, String dstIp, String srcCountry, String dstCountry, SslSubject sslSubject,
+                            String srcIp, String dstIp, String srcCountry, DestinationCountry dstCountry, SslSubject sslSubject,
                             Domain domain, DestinationOrganization dstOrg,
                             String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
                             String dstNetname, Ja3 ja3, String ja3s, String direction, String dstPort,
@@ -154,11 +151,11 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.srcCountry = srcCountry;
     }
 
-    public String getDstCountry() {
+    public DestinationCountry getDstCountry() {
         return dstCountry;
     }
 
-    public void setDstCountry(String dstCountry) {
+    public void setDstCountry(DestinationCountry dstCountry) {
         this.dstCountry = dstCountry;
     }
 

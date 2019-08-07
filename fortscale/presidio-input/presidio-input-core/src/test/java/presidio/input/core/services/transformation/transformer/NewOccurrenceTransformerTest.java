@@ -39,6 +39,12 @@ public class NewOccurrenceTransformerTest {
         assertNewOccurrenceTransformation(tlsRawEvent, tlsRawEvent.getDstOrg(), "dstOrg.isNewOccurrence");
     }
 
+    @Test
+    public void testHierarchyDestinationCountryTransformation() {
+        TlsRawEvent tlsRawEvent = generateTlsRawEvent();
+        assertNewOccurrenceTransformation(tlsRawEvent, tlsRawEvent.getDstCountry(), "dstCountry.isNewOccurrence");
+    }
+
     private void assertNewOccurrenceTransformation(TlsRawEvent tlsRawEvent,
                                                    NewOccurrenceWrapper newOccurrenceWrapper,
                                                    String transformFieldName) {
@@ -51,7 +57,8 @@ public class NewOccurrenceTransformerTest {
     private TlsRawEvent generateTlsRawEvent() {
         Instant firstInstant = Instant.now();
         Instant laterInstant = firstInstant.plusSeconds(10000L);
-        return new TlsRawEvent(laterInstant, "TLS", "dataSource", null, "", "", "", "", "",
+        return new TlsRawEvent(laterInstant, "TLS", "dataSource", null, "", "", "", "",
+                new DestinationCountry("dstCountry", false),
                 new SslSubject("ssl", false), new Domain("google.com", false),
                 new DestinationOrganization("dstOrg", false),"", 0L, 0L, "", "",
                 new Ja3("ja3", false), "", "",

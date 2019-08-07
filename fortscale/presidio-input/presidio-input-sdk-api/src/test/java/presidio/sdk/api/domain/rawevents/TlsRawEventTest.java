@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Test;
-import presidio.sdk.api.domain.newoccurrencewrappers.DestinationOrganization;
-import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
-import presidio.sdk.api.domain.newoccurrencewrappers.Ja3;
-import presidio.sdk.api.domain.newoccurrencewrappers.SslSubject;
+import presidio.sdk.api.domain.newoccurrencewrappers.*;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -29,6 +26,7 @@ public class TlsRawEventTest {
             assertEquals(tlsRawEvent.getSslSubject(), rawEventDeserialized.getSslSubject());
             assertEquals(tlsRawEvent.getJa3(), rawEventDeserialized.getJa3());
             assertEquals(tlsRawEvent.getDstOrg(), rawEventDeserialized.getDstOrg());
+            assertEquals(tlsRawEvent.getDstCountry(), rawEventDeserialized.getDstCountry());
         } catch (IOException e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -47,6 +45,7 @@ public class TlsRawEventTest {
             assertEquals(tlsRawEvent.getSslSubject(), rawEventDeserialized.getSslSubject());
             assertEquals(tlsRawEvent.getJa3(), rawEventDeserialized.getJa3());
             assertEquals(tlsRawEvent.getDstOrg(), rawEventDeserialized.getDstOrg());
+            assertEquals(tlsRawEvent.getDstCountry(), rawEventDeserialized.getDstCountry());
         } catch (IOException e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -62,7 +61,8 @@ public class TlsRawEventTest {
     }
 
     private TlsRawEvent createTlsRawEvent(boolean isNewOccurrence) {
-        return new TlsRawEvent(Instant.now(), "TLS", "dataSource", null, "", "", "", "", "",
+        return new TlsRawEvent(Instant.now(), "TLS", "dataSource", null, "", "", "", "",
+                new DestinationCountry("dstCountry", isNewOccurrence),
                 new SslSubject("ssl", isNewOccurrence), new Domain("google.com", isNewOccurrence),
                 new DestinationOrganization("dstOrg", isNewOccurrence), "", 0L, 0L, "", "",
                 new Ja3("ja3", isNewOccurrence), "", "",

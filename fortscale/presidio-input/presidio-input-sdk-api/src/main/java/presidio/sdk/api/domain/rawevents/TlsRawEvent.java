@@ -5,10 +5,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.sdk.api.domain.AbstractInputDocument;
-import presidio.sdk.api.domain.newoccurrencewrappers.DestinationOrganization;
-import presidio.sdk.api.domain.newoccurrencewrappers.Domain;
-import presidio.sdk.api.domain.newoccurrencewrappers.Ja3;
-import presidio.sdk.api.domain.newoccurrencewrappers.SslSubject;
+import presidio.sdk.api.domain.newoccurrencewrappers.*;
 
 import java.time.Instant;
 import java.util.List;
@@ -50,7 +47,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     private String srcCountry;
 
     @Field(DESTINATION_COUNTRY_FIELD_NAME)
-    private String dstCountry;
+    private DestinationCountry dstCountry;
 
     @Field(SSL_SUBJECT_FIELD_NAME)
     private SslSubject sslSubject;
@@ -129,7 +126,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     }
 
     public TlsRawEvent(Instant dateTime, String eventId, String dataSource, Map<String, String> additionalInfo,
-                       String srcIp, String dstIp, String srcPort, String srcCountry, String dstCountry, SslSubject sslSubject,
+                       String srcIp, String dstIp, String srcPort, String srcCountry, DestinationCountry dstCountry, SslSubject sslSubject,
                        Domain domain, DestinationOrganization dstOrg,
                        String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
                        String dstNetname, Ja3 ja3, String ja3s, String direction, String dstPort, List<String> fqdn,
@@ -182,11 +179,11 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.dstIp = dstIp;
     }
 
-    public String getDstCountry() {
+    public DestinationCountry getDstCountry() {
         return dstCountry;
     }
 
-    public void setDstCountry(String dstCountry) {
+    public void setDstCountry(DestinationCountry dstCountry) {
         this.dstCountry = dstCountry;
     }
 
