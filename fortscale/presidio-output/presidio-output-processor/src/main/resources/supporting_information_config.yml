@@ -1299,13 +1299,13 @@ indicators:
   schema: TLS
   adeEventType: tls
   modelContextFields:
-    - dstPort
+    - dstPort.name
   anomalyDescriptior:
     anomalyFilters:
     - fieldName: direction
       fieldValue: OUTBOUND
   splitFields:
-    - dstPort
+    - dstPort.name
   historicalData:
     type: hourly_aggregations
     featureName: sumOfBytesSentToDstPortOutboundTlsHourly
@@ -1350,13 +1350,13 @@ indicators:
   schema: TLS
   adeEventType: tls
   modelContextFields:
-    - dstPort
+    - dstPort.name
   anomalyDescriptior:
     anomalyFilters:
     - fieldName: direction
       fieldValue: OUTBOUND
   splitFields:
-    - dstPort
+    - dstPort.name
   historicalData:
     type: hourly_aggregations
     featureName: maxSumOfBytesSentBySrcIpToDstPortOutboundTlsHourly
@@ -1462,13 +1462,13 @@ indicators:
     - srcNetname
   schema: TLS
   anomalyDescriptior:
-    anomalyField: dstPort
+    anomalyField: dstPort.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
     - srcNetname
-    - dstPort
+    - dstPort.name
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramSrcNetnameOutboundTlsDaily
@@ -1524,12 +1524,12 @@ indicators:
     - sslSubject.name
   schema: TLS
   anomalyDescriptior:
-    anomalyField: dstPort
+    anomalyField: dstPort.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
-    - dstPort
+    - dstPort.name
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramSslSubjectOutboundTlsDaily
@@ -1561,13 +1561,13 @@ indicators:
     - domain.name
   schema: TLS
   anomalyDescriptior:
-    anomalyField: dstPort
+    anomalyField: dstPort.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
     - domain.name
-    - dstPort
+    - dstPort.name
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramDomainOutboundTlsDaily
@@ -1582,13 +1582,13 @@ indicators:
     - dstOrg.name
   schema: TLS
   anomalyDescriptior:
-    anomalyField: dstPort
+    anomalyField: dstPort.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
     - dstOrg.name
-    - dstPort
+    - dstPort.name
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramDstOrgOutboundTlsDaily
@@ -1682,12 +1682,12 @@ indicators:
     - ja3.name
   schema: TLS
   anomalyDescriptior:
-    anomalyField: dstPort
+    anomalyField: dstPort.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
-    - dstPort
+    - dstPort.name
     - ja3.name
   historicalData:
     type: count_aggregations
@@ -1780,13 +1780,13 @@ indicators:
     - srcNetname
   schema: TLS
   anomalyDescriptior:
-    anomalyField: dstPort
+    anomalyField: dstPort.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
     - srcNetname
-    - dstPort
+    - dstPort.name
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramSrcNetnameOutboundTlsDaily
@@ -1843,12 +1843,12 @@ indicators:
     - sslSubject.name
   schema: TLS
   anomalyDescriptior:
-    anomalyField: dstPort
+    anomalyField: dstPort.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
-    - dstPort
+    - dstPort.name
     - sslSubject.name
   historicalData:
     type: count_aggregations
@@ -1881,13 +1881,13 @@ indicators:
     - domain.name
   schema: TLS
   anomalyDescriptior:
-    anomalyField: dstPort
+    anomalyField: dstPort.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
     - domain.name
-    - dstPort
+    - dstPort.name
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramDomainOutboundTlsDaily
@@ -1902,13 +1902,13 @@ indicators:
     - dstOrg.name
   schema: TLS
   anomalyDescriptior:
-    anomalyField: dstPort
+    anomalyField: dstPort.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
     - dstOrg.name
-    - dstPort
+    - dstPort.name
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramDstOrgOutboundTlsDaily
@@ -2000,12 +2000,12 @@ indicators:
     - ja3.name
   schema: TLS
   anomalyDescriptior:
-    anomalyField: dstPort
+    anomalyField: dstPort.name
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
   splitFields:
-    - dstPort
+    - dstPort.name
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramJa3OutboundTlsDaily

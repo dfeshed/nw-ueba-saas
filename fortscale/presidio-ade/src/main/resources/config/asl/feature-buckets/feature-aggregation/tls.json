@@ -124,7 +124,7 @@
     {
       "name": "numOfBytesSentSummationDstPortOutboundTlsHourly",
       "contextFieldNames": [
-        "dstPort"
+        "dstPort.name"
       ],
       "adeEventTypes": [
         "tls"
@@ -154,7 +154,7 @@
     {
       "name": "numOfBytesSentSummationDstPortSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
-        "dstPort",
+        "dstPort.name",
         "sslSubject.name"
       ],
       "adeEventTypes": [
@@ -443,7 +443,7 @@
     {
       "name": "numOfBytesSentBySrcIpSummationDstPortOutboundTlsHourly",
       "contextFieldNames": [
-        "dstPort"
+        "dstPort.name"
       ],
       "adeEventTypes": [
         "tls"
@@ -476,7 +476,7 @@
     {
       "name": "numOfBytesSentBySrcIpSummationDstPortSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
-        "dstPort",
+        "dstPort.name",
         "sslSubject.name"
       ],
       "adeEventTypes": [

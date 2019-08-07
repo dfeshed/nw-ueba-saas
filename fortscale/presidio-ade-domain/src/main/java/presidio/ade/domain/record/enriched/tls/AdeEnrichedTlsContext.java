@@ -19,7 +19,7 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
     private Ja3 ja3;
     private String ja3s;
     private String direction;
-    private String dstPort;
+    private DestinationPort dstPort;
     private String srcPort;
 
 
@@ -150,11 +150,11 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
         this.direction = direction;
     }
 
-    public String getDstPort() {
+    public DestinationPort getDstPort() {
         return dstPort;
     }
 
-    public void setDstPort(String dstPort) {
+    public void setDstPort(DestinationPort dstPort) {
         this.dstPort = dstPort;
     }
 

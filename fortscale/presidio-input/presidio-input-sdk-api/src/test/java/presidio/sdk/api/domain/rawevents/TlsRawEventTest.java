@@ -27,6 +27,7 @@ public class TlsRawEventTest {
             assertEquals(tlsRawEvent.getJa3(), rawEventDeserialized.getJa3());
             assertEquals(tlsRawEvent.getDstOrg(), rawEventDeserialized.getDstOrg());
             assertEquals(tlsRawEvent.getDstCountry(), rawEventDeserialized.getDstCountry());
+            assertEquals(tlsRawEvent.getDstPort(), rawEventDeserialized.getDstPort());
         } catch (IOException e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -46,6 +47,7 @@ public class TlsRawEventTest {
             assertEquals(tlsRawEvent.getJa3(), rawEventDeserialized.getJa3());
             assertEquals(tlsRawEvent.getDstOrg(), rawEventDeserialized.getDstOrg());
             assertEquals(tlsRawEvent.getDstCountry(), rawEventDeserialized.getDstCountry());
+            assertEquals(tlsRawEvent.getDstPort(), rawEventDeserialized.getDstPort());
         } catch (IOException e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -66,7 +68,7 @@ public class TlsRawEventTest {
                 new SslSubject("ssl", isNewOccurrence), new Domain("google.com", isNewOccurrence),
                 new DestinationOrganization("dstOrg", isNewOccurrence), "", 0L, 0L, "", "",
                 new Ja3("ja3", isNewOccurrence), "", "",
-                "", null, null, null);
+                new DestinationPort("dstPort", isNewOccurrence), null, null, null);
 
     }
 }

@@ -83,7 +83,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     private String direction;
 
     @Field(DESTINATION_PORT_FIELD_NAME)
-    private String dstPort;
+    private DestinationPort dstPort;
 
     @Field(SOURCE_PORT_FIELD_NAME)
     private String srcPort;
@@ -129,7 +129,7 @@ public class TlsRawEvent extends AbstractInputDocument {
                        String srcIp, String dstIp, String srcPort, String srcCountry, DestinationCountry dstCountry, SslSubject sslSubject,
                        Domain domain, DestinationOrganization dstOrg,
                        String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
-                       String dstNetname, Ja3 ja3, String ja3s, String direction, String dstPort, List<String> fqdn,
+                       String dstNetname, Ja3 ja3, String ja3s, String direction, DestinationPort dstPort, List<String> fqdn,
                        List<String> sslCa, Integer sessionSplit) {
         super(dateTime, eventId, dataSource, additionalInfo);
         this.srcIp = srcIp;
@@ -275,11 +275,11 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.direction = direction;
     }
 
-    public String getDstPort() {
+    public DestinationPort getDstPort() {
         return dstPort;
     }
 
-    public void setDstPort(String dstPort) {
+    public void setDstPort(DestinationPort dstPort) {
         this.dstPort = dstPort;
     }
 
