@@ -8,6 +8,7 @@ import { get, computed } from '@ember/object';
 import { Promise } from 'rsvp';
 import { inject as service } from '@ember/service';
 import fetch from 'component-lib/utils/fetch';
+import { windowProxy } from 'component-lib/utils/window-proxy';
 
 const {
   testing
@@ -21,6 +22,8 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   userIdle: service(),
 
   persistStateOnLogout: true,
+
+  ssoEnabled: false,
 
   title() {
     return this.get('i18n').t('appTitle');
@@ -59,7 +62,16 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   },
 
   model() {
+    this.checkSso();
     return this.getLocales();
+  },
+
+  checkSso() {
+    return fetch('/saml/sso/is-enabled').then((response) => response.json()).then((result) => {
+      this.set('ssoEnabled', result);
+    }).catch(() => {
+      this.set('ssoEnabled', false);
+    });
   },
 
   actions: {
@@ -81,6 +93,12 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
    * @private
    */
   _logout(reason) {
+
+    if (this.get('ssoEnabled')) {
+      windowProxy.openInCurrentTab('/saml/logout');
+      return;
+    }
+
     return new Promise((resolve) => {
       const csrfKey = this.get('csrfLocalstorageKey');
       $.ajax({
@@ -127,11 +145,14 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
         localStorage.setItem('rsa-post-auth-redirect', window.location.href);
       }
     }
-    // Need set the parent location if page is inserted in iframe
-    if (isInIframe) {
-      window.parent.location.replace('/login');
-    } else {
-      window.location.replace('/login');
+
+    if (!this.get('ssoEnabled')) { // do not change location if SSO is enabled
+      // Need set the parent location if page is inserted in iframe
+      if (isInIframe) {
+        window.parent.location.replace('/login');
+      } else {
+        window.location.replace('/login');
+      }
     }
   },
 

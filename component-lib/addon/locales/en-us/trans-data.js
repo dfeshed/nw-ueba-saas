@@ -15,9 +15,9 @@ export default {
   },
   ssoMessages: {
     logoutTitle: 'You have been logged out',
-    logoutMessage: 'You may login again <a href="/saml/login" target="_blank">here</a>',
+    logoutMessage: 'You may login again <a href="/saml/login">here</a>',
     failureTitle: 'Single Sign-On Failed',
-    failureMessage: 'Could not perform Single Sign-On. You may retry signing in <a href="/saml/login?force=true" target="_blank">here</a>, or contact your administrator'
+    failureMessage: 'Could not perform Single Sign-On. You may retry signing in <a href="/saml/login?force=true">here</a>, or contact your administrator'
   },
   errorPages: {
     errorLabel: 'Error Description',
