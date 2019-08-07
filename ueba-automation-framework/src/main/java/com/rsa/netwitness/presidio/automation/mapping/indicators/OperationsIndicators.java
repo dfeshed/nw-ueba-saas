@@ -27,7 +27,14 @@ class OperationsIndicators {
 //                "high_number_of_senesitive_group_membership_events",  /** AD, Multiple Group Changes **/
 //                "high_number_of_successful_user_change_security_sensitive_operations", /** AD, Multiple User Changes **/
 //                "abnormal_group_membership_sensitive_operation",       /** AD, Abnormal Group Changes**/
-            "abnormal_object_change_operation"                   /** AD, Abnormal Object Change **/
+            "abnormal_object_change_operation",                   /** AD, Abnormal Object Change **/
+            "user_account_disabled",
+            "user_password_reset",
+            "user_account_locked",
+            "user_account_enabled",
+            "user_account_unlocked",
+            "high_number_of_successful_object_change_operations",
+            "high_number_of_successful_user_change_security_sensitive_operations"
     );
 
 
@@ -40,7 +47,9 @@ class OperationsIndicators {
             "high_number_of_failed_file_permission_change_attempts", /** File, 	Multiple Failed File Access Permission Changes**/
             "high_number_of_successful_file_action_operations",   /**File, Multiple Access Events  **/
             "high_number_of_failed_file_action_attempts",         /** File, Multiple Failed File Access Events**/
-            "high_number_of_distinct_files_opened_attempts"      /** File, 	Multiple Open Events **/
+            "high_number_of_distinct_files_opened_attempts",      /** File, 	Multiple Open Events **/
+            "abnormal_file_action_operation_type",
+            "abnormal_file_permision_change_operation_type"
     );
 
     static final List<String> PROCESS_MANDATORY_INDICATORS = Lists.newArrayList(
