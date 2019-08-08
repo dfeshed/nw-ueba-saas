@@ -15,6 +15,7 @@
             <class name="com.rsa.netwitness.presidio.automation.test.rest.RestUserTests"/>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.UserSeverityTests"/>
             <class name="com.rsa.netwitness.presidio.automation.test.rest.E2EMongoRestValidation"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.enrichment.TlsSessionSplitTest"/>
         </classes>
     </test>
 

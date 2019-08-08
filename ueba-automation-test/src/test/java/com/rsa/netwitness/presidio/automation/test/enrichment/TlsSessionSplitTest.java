@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.test.enreachment;
+package com.rsa.netwitness.presidio.automation.test.enrichment;
 
 
 import com.rsa.netwitness.presidio.automation.common.scenarios.tls.SessionSplitEnrichmentData;

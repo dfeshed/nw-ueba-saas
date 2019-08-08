@@ -9,6 +9,7 @@
         <classes>
             <class name="com.rsa.netwitness.presidio.automation.test.data.preparation.NetworkDataPreparation"/>
             <class name="com.rsa.netwitness.presidio.automation.test.data.preparation.AlertsScenarioDataPreparation"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.data.preparation.NetworkEnrichmentDataPreparation"/>
         </classes>
     </test>
 
