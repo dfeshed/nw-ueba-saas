@@ -241,7 +241,8 @@ export default {
       length: 'You must enter an integer greater than or equal to 1.',
       negative: 'Only numbers can be negative.',
       cidrBad: 'You must enter a valid number following the forward slash.',
-      cidrIpv4OutOfRange: 'The CIDR mask must be between 0 and 32.'
+      cidrIpv4OutOfRange: 'The CIDR mask must be between 0 and 32.',
+      cidrIpv6OutOfRange: 'The CIDR mask must be between 0 and 128.'
     }
   },
   ipConnections: {

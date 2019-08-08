@@ -192,15 +192,18 @@ class Parser {
         }
       }
       // No type mismatch
-      if (expectedType === LEXEMES.IPV4_ADDRESS) {
+      if (expectedType === LEXEMES.IPV4_ADDRESS || expectedType === LEXEMES.IPV6_ADDRESS) {
         if (value.cidr === 'empty') {
           result = i18n.t('queryBuilder.validationMessages.cidrBad');
           return true;
         } else if (isNaN(value.cidr)) {
           result = i18n.t('queryBuilder.validationMessages.cidrBad');
           return true;
-        } else if (value.cidr < 0 || value.cidr > 32) {
+        } else if (expectedType === LEXEMES.IPV4_ADDRESS && (value.cidr < 0 || value.cidr > 32)) {
           result = i18n.t('queryBuilder.validationMessages.cidrIpv4OutOfRange');
+          return true;
+        } else if (expectedType === LEXEMES.IPV6_ADDRESS && (value.cidr < 0 || value.cidr > 128)) {
+          result = i18n.t('queryBuilder.validationMessages.cidrIpv6OutOfRange');
           return true;
         }
       }
@@ -497,7 +500,7 @@ class Parser {
         // Make value negative
         value.text = `-${value.text}`;
       }
-    } else if (this._nextTokenIsOfType([ LEXEMES.IPV4_ADDRESS ])) {
+    } else if (this._nextTokenIsOfType([ LEXEMES.IPV4_ADDRESS, LEXEMES.IPV6_ADDRESS ])) {
       value = this._advance();
       // Negative number, amend the token
       if (this._nextTokenIsOfType([ LEXEMES.HYPHEN ]) && this._peekNext() && this._peekNext().type === LEXEMES.INTEGER) {

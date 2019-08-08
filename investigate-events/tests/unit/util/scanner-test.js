@@ -228,7 +228,7 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.strictEqual(result.length, 3);
     assert.deepEqual(result[0], { type: LEXEMES.META, text: 'alias.ipv6' }, '1. META "alias.ipv6"');
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '2. OPERATOR_EQ "="');
-    assert.deepEqual(result[2], { type: LEXEMES.IPV6_ADDRESS, text: '2001:44:a5:3d:4122::ad' }, '3. IPV6_ADDRESS "2001:44:a5:3d:4122::ad"');
+    assert.deepEqual(result[2], { type: LEXEMES.IPV6_ADDRESS, text: '2001:44:a5:3d:4122::ad', cidr: null }, '3. IPV6_ADDRESS "2001:44:a5:3d:4122::ad"');
   });
 
   test('deals with small IPv6 addresses', function(assert) {
@@ -238,7 +238,7 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.strictEqual(result.length, 3);
     assert.deepEqual(result[0], { type: LEXEMES.META, text: 'alias.ipv6' }, '1. META "alias.ipv6"');
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '2. OPERATOR_EQ "="');
-    assert.deepEqual(result[2], { type: LEXEMES.IPV6_ADDRESS, text: 'ffee::1' }, '3. IPV6_ADDRESS "ffee::1"');
+    assert.deepEqual(result[2], { type: LEXEMES.IPV6_ADDRESS, text: 'ffee::1', cidr: null }, '3. IPV6_ADDRESS "ffee::1"');
   });
 
   test('handles MAC addresses', function(assert) {
@@ -340,7 +340,7 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.strictEqual(result.length, 3);
     assert.deepEqual(result[0], { type: LEXEMES.META, text: 'alias.ipv6' }, '1. META "alias.ipv6"');
     assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' }, '2. OPERATOR_EQ "="');
-    assert.deepEqual(result[2], { type: LEXEMES.IPV6_ADDRESS, text: 'fe80::7700:1111:ffee' }, '3. IPV6_ADDRESS "fe80::7700:1111:ffee"');
+    assert.deepEqual(result[2], { type: LEXEMES.IPV6_ADDRESS, text: 'fe80::7700:1111:ffee', cidr: null }, '3. IPV6_ADDRESS "fe80::7700:1111:ffee"');
   });
 
   test('handles no spaces between meta, operator, and value with a MAC address', function(assert) {

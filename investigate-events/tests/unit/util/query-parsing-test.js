@@ -385,6 +385,66 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].validationError.string, 'The CIDR mask must be between 0 and 32.', 'validation error should be correct');
   });
 
+  test('transformTextToPillData returns a normal pill for an IPv6 address in CIDR notation', function(assert) {
+    const text = 'alias.ipv6 = 3ffe:1900:4545:3:200:f8ff:fe21:67cf/64';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'alias.ipv6', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '3ffe:1900:4545:3:200:f8ff:fe21:67cf/64', 'value should match');
+    assert.notOk(result[0].isInvalid, 'pill should not be invalid');
+    assert.notOk(result[0].validationError, 'pill should not have a validation error');
+  });
+
+  test('transformTextToPillData returns an invalid pill for an IPv6 with a slash but no mask', function(assert) {
+    const text = 'alias.ipv6 = 3ffe:1900:4545:3:200:f8ff:fe21:67cf/';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'alias.ipv6', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '3ffe:1900:4545:3:200:f8ff:fe21:67cf/', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.equal(result[0].validationError.string, 'You must enter a valid number following the forward slash.', 'validation error should be correct');
+  });
+
+  test('transformTextToPillData returns an invalid pill for an IPv6 with a slash but with alphanumeric mask', function(assert) {
+    const text = 'alias.ipv6 = 3ffe:1900:4545:3:200:f8ff:fe21:67cf/abc';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'alias.ipv6', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '3ffe:1900:4545:3:200:f8ff:fe21:67cf/abc', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.equal(result[0].validationError.string, 'You must enter a valid number following the forward slash.', 'validation error should be correct');
+  });
+
+  test('transformTextToPillData returns an invalid pill for an IPv6 with an out-of-range mask', function(assert) {
+    const text = 'alias.ipv6 = 3ffe:1900:4545:3:200:f8ff:fe21:67cf/167';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'alias.ipv6', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '3ffe:1900:4545:3:200:f8ff:fe21:67cf/167', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.equal(result[0].validationError.string, 'The CIDR mask must be between 0 and 128.', 'validation error should be correct');
+  });
+
+  test('transformTextToPillData returns an invalid pill for an IPv6 with a negative out-of-range mask', function(assert) {
+    const text = 'alias.ipv6 = 3ffe:1900:4545:3:200:f8ff:fe21:67cf/-5';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'alias.ipv6', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '3ffe:1900:4545:3:200:f8ff:fe21:67cf/-5', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.equal(result[0].validationError.string, 'The CIDR mask must be between 0 and 128.', 'validation error should be correct');
+  });
+
   test('transformTextToPillData returns invalid pills alongside valid pills', function(assert) {
     const text = 'alias.ip = 8080 && medium = 3';
     const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });

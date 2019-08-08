@@ -1,6 +1,6 @@
 import * as LEXEMES from 'investigate-events/constants/lexemes';
 import { SEARCH_TERM_MARKER } from 'investigate-events/constants/pill';
-import { isAlphaNumeric, isIPv4Address, ipv4AddressToken, isIPv6Address, isMACAddress } from 'investigate-events/util/scanning-helpers';
+import { isAlphaNumeric, isIPv4Address, ipv4AddressToken, isIPv6Address, ipv6AddressToken, isMACAddress } from 'investigate-events/util/scanning-helpers';
 
 /**
  * The Scanner class takes an source string and transforms it into a set of tokens
@@ -243,7 +243,7 @@ class Scanner {
     }
 
     if (isIPv6Address(alphaString)) {
-      this._addToken(LEXEMES.IPV6_ADDRESS);
+      this._addToken(ipv6AddressToken(alphaString));
       return;
     }
 

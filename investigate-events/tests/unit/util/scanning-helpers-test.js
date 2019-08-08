@@ -192,12 +192,6 @@ module('Unit | Util | Scanning Helpers', function(hooks) {
     assert.notOk(isIPv6Address('fe80::200:gfff::fe21:67cf'));
   });
 
-  test('isIPv6Address returns false for IPv6 addresses w/ invalid CIDR notation', function(assert) {
-    assert.notOk(isIPv6Address('3ffe:1900:4545:3:200:f8ff:fe21:67cf/129'));
-    assert.notOk(isIPv6Address('fe80::200:f8ff:fe21:67cf/a'));
-    assert.notOk(isIPv6Address('::1/-1'));
-  });
-
   test('isIPv6Address returns false for IPv4 addresses', function(assert) {
     assert.notOk(isIPv6Address('127.0.0.1'));
     assert.notOk(isIPv6Address('192.168.0.1'));
