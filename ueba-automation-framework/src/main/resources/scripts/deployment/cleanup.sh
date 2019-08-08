@@ -39,10 +39,10 @@ echo "%%%%%%%%%%%% clean elasticsearch includes indexes %%%%%%%%%%%%"
 curl -X DELETE http://localhost:9200/_all
 ####### Workaround to solve issue when replacing between master and hourly-output branches
 ####### presidio-output-entity added to 11.4 not exist on 11.3
-if [[ "$NEW_RPM_VERSION" -lt 11400 ]]&&[[  "$OLD_RPM_VERSION" -ge 11400 ]]&&[[ "$( ls -a /var/lib/netwitness/presidio/elasticsearch/init/data/indexes/presidio-output*)" ]]; then
+#if [[ "$NEW_RPM_VERSION" -lt 11400 ]]&&[[  "$OLD_RPM_VERSION" -ge 11400 ]]&&[[ "$( ls -a /var/lib/netwitness/presidio/elasticsearch/init/data/indexes/presidio-output*)" ]]; then
 #echo "Cleanning Elastic indexes - presidio-output*"
-sudo rm -rf /var/lib/netwitness/presidio/elasticsearch/init/data/indexes/presidio-output*
-fi
+#sudo rm -rf /var/lib/netwitness/presidio/elasticsearch/init/data/indexes/presidio-output*
+#fi
 }
 
 cleanningFlumePropetrieFiles(){
