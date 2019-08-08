@@ -24,7 +24,7 @@ public class MongoCollectionsMonitor {
     private int corePoolSize = 2;
     private long DELAY_BETWEEN_TASKS = 1;
     private long TASK_FREQUENCY_MINUTES = 15;
-    private long ADDITIONAL_DELAY_BEFORE_FIRST_TIME_STATUS_CHECK = 5;
+    private long ADDITIONAL_DELAY_BEFORE_FIRST_TIME_STATUS_CHECK = 10;
     private long TASK_STATUS_CHECK_FREQUENCY = TASK_FREQUENCY_MINUTES;
     private long DELAY_BEFORE_FIRST_TASK_STARTED = TASK_FREQUENCY_MINUTES + ADDITIONAL_DELAY_BEFORE_FIRST_TIME_STATUS_CHECK - 1;
     private final TimeUnit TIME_UNITS = TimeUnit.MINUTES;
