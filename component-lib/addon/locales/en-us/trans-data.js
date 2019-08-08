@@ -239,10 +239,12 @@ export default {
       float32: 'You must enter a 32-bit Float.',
       mac: 'You must enter a MAC address.',
       length: 'You must enter an integer greater than or equal to 1.',
-      negative: 'Only numbers can be negative.',
+      negative: 'Negative values are not allowed.',
       cidrBad: 'You must enter a valid number following the forward slash.',
       cidrIpv4OutOfRange: 'The CIDR mask must be between 0 and 32.',
-      cidrIpv6OutOfRange: 'The CIDR mask must be between 0 and 128.'
+      cidrIpv6OutOfRange: 'The CIDR mask must be between 0 and 128.',
+      badRange: 'The second number in the range must be greater than the first.',
+      nonNumericRange: 'Ranges can only be used with numeric values.'
     }
   },
   ipConnections: {

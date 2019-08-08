@@ -43,19 +43,16 @@ module('Unit | Util | Parser', function(hooks) {
     const p = new Parser(tokens, DEFAULT_LANGUAGES, DEFAULT_ALIASES);
     const result = p.parse();
     assert.strictEqual(result.type, GRAMMAR.WHERE_CRITERIA, 'Top level is where criteria');
-    assert.deepEqual(result.children, [
-      {
-        type: GRAMMAR.CRITERIA,
-        meta: { type: LEXEMES.META, text: 'medium' },
-        operator: { type: LEXEMES.OPERATOR_EQ, text: '=' },
-        valueRanges: [
-          {
-            type: GRAMMAR.META_VALUE,
-            value: { type: LEXEMES.INTEGER, text: '-3' }
-          }
-        ]
-      }
-    ], 'children contains the expected single criteria with correct values');
+    const [ criteria ] = result.children;
+    assert.strictEqual(criteria.isInvalid, true, 'should be invalid');
+    assert.strictEqual(criteria.validationError.string, 'Negative values are not allowed.', 'validation error should be correct');
+    assert.strictEqual(criteria.type, GRAMMAR.CRITERIA, 'type should be correct');
+    assert.deepEqual(criteria.meta, { type: LEXEMES.META, text: 'medium' });
+    assert.deepEqual(criteria.operator, { type: LEXEMES.OPERATOR_EQ, text: '=' });
+    assert.deepEqual(criteria.valueRanges, [{
+      type: GRAMMAR.META_VALUE,
+      value: { type: LEXEMES.INTEGER, text: '-3' }
+    }]);
   });
 
   test('correctly parses two meta and &&', function(assert) {
@@ -98,17 +95,12 @@ module('Unit | Util | Parser', function(hooks) {
     ], 'children contains the expected two criteria with correct values, separated by a LEXEMES.AND');
   });
 
-  // Support for this is currently commented out in the parser until UI support is added.
-  // This test can be used once those blocks are un-commented and UI support exists.
-  skip('correctly parses negative numbers w/ ranges', function(assert) {
-    // medium = -3 - -5
-    // "medium is between negative 3 and negative 5"
+  test('correctly parses ranges', function(assert) {
+    // medium = 3 - 5
     const tokens = [
       { type: LEXEMES.META, text: 'medium' },
       { type: LEXEMES.OPERATOR_EQ, text: '=' },
-      { type: LEXEMES.HYPHEN, text: '-' },
       { type: LEXEMES.INTEGER, text: '3' },
-      { type: LEXEMES.HYPHEN, text: '-' },
       { type: LEXEMES.HYPHEN, text: '-' },
       { type: LEXEMES.INTEGER, text: '5' }
     ];
@@ -123,8 +115,8 @@ module('Unit | Util | Parser', function(hooks) {
         valueRanges: [
           {
             type: GRAMMAR.META_VALUE_RANGE,
-            from: { type: LEXEMES.INTEGER, text: '-3' },
-            to: { type: LEXEMES.INTEGER, text: '-5' }
+            from: { type: LEXEMES.INTEGER, text: '3' },
+            to: { type: LEXEMES.INTEGER, text: '5' }
           }
         ]
       }

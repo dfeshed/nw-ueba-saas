@@ -177,7 +177,7 @@ class Parser {
     const { aliases } = this;
     const valuesToCheck = range.value ? [ range.value ] : [ range.from, range.to ];
     let result = null;
-    const isInvalid = valuesToCheck.some((value) => {
+    const isInvalid = valuesToCheck.some((value, index) => {
       if (value.type !== expectedType) {
         if (aliases[meta.text]) {
           // The call to Object.values().some() returns true if the text given is a
@@ -186,6 +186,9 @@ class Parser {
           return !Object.values(aliases[meta.text]).some((text) => {
             return value.text.toLowerCase() === text.toLowerCase();
           });
+        } else if (expectedType === LEXEMES.FLOAT && value.type === LEXEMES.INTEGER) {
+          // Numbers without decimal points are still valid floats
+          return false;
         } else {
           // Type mismatch but no aliases, invalid
           return true;
@@ -205,6 +208,17 @@ class Parser {
         } else if (expectedType === LEXEMES.IPV6_ADDRESS && (value.cidr < 0 || value.cidr > 128)) {
           result = i18n.t('queryBuilder.validationMessages.cidrIpv6OutOfRange');
           return true;
+        }
+      } else if (expectedType === LEXEMES.INTEGER || expectedType === LEXEMES.FLOAT) {
+        if (valuesToCheck.length === 2 && index === 1) {
+          // This is a range, as opposed to a single value. spaces around
+          // characters are handled by the Scanner, negative numbers are
+          // handled by _metaValue, this checks that the first number is less
+          // than the second.
+          if (parseFloat(valuesToCheck[0].text, 10) >= parseFloat(value.text, 10)) {
+            result = i18n.t('queryBuilder.validationMessages.badRange');
+            return true;
+          }
         }
       }
       return false;
@@ -355,11 +369,22 @@ class Parser {
       // If we need to return a complex pill, take what we read in and transform it back to a string.
       return returnComplex ? this._createComplexString(Parser.transformToString(criteria)) : criteria;
     } else {
+      let expectedType;
+      let hasInvalidValue = false;
       const metaValueRanges = this._metaValueRanges();
+      if (metaValueRanges.type && metaValueRanges.type === GRAMMAR.COMPLEX_FILTER) {
+        // If this is a complex filter, something went wrong, pass it up.
+        // First, append the text of the meta and operator.
+        metaValueRanges.text = `${Parser.transformToString(meta)} ${Parser.transformToString(operator)} ${metaValueRanges.text}`;
+        return metaValueRanges;
+      }
       const { valueRanges } = metaValueRanges;
       let { validationError } = metaValueRanges;
+      if (validationError) {
+        hasInvalidValue = true;
+      }
+      // If one of the values was invalid, set isInvalid
       // Check to make sure all the values have the correct type
-      let expectedType;
       if (metaConfig) {
         expectedType = VALUE_TYPE_MAP[metaConfig.format];
       }
@@ -371,7 +396,7 @@ class Parser {
         expectedType = LEXEMES.INTEGER;
       }
       // Find any value that is the incorrect type
-      const hasInvalidValue = valueRanges.some((range) => {
+      hasInvalidValue = hasInvalidValue || valueRanges.some((range) => {
         if (!expectedType) {
           return false;
         }
@@ -379,7 +404,7 @@ class Parser {
         if (typeof isInvalid !== 'boolean') {
           // isValueTypeInvalid will return a validation error if the value is
           // invalid, save it and set isInvalid to true.
-          validationError = isInvalid;
+          validationError = validationError || isInvalid;
           isInvalid = true;
         }
         // If using length & types were valid, check for negative or zero
@@ -426,6 +451,10 @@ class Parser {
   _metaValueRanges() {
     const valueRanges = [];
     const metaValueRange = this._metaValueRange();
+    if (metaValueRange.type && metaValueRange.type === GRAMMAR.COMPLEX_FILTER) {
+      // If this is a complex filter, something went wrong, pass it up.
+      return metaValueRange;
+    }
     const { range, validationError } = metaValueRange;
     valueRanges.push(range);
     while (this._nextTokenIsOfType([ LEXEMES.VALUE_SEPARATOR ])) {
@@ -452,22 +481,38 @@ class Parser {
    * @private
    */
   _metaValueRange() {
-    const { value, validationError } = this._metaValue();
+    const metaValue = this._metaValue();
+    const { value } = metaValue;
+    let { validationError } = metaValue;
     if (this._nextTokenIsOfType([ LEXEMES.HYPHEN ])) {
-      // As long as the UI does not support shorthand, throw this error to get complex pills.
-      // Once support is included, uncommend the rest of this block.
-      throw new Error('Value shorthand is not yet supported');
-      // // Consume the range token first
-      // this._consume([ LEXEMES.HYPHEN ]);
-      // const { to, validationError2 } = this._metaValue();
-      // return {
-      //   range: {
-      //     type: GRAMMAR.META_VALUE_RANGE,
-      //     from: value,
-      //     to
-      //   },
-      //   validationError: validationError || validationError2
-      // };
+      // Consume the range token first
+      this._consume([ LEXEMES.HYPHEN ]);
+      if (!this._nextTokenIsOfType(VALUE_TYPES)) {
+        // If there is not a value token next, abort
+        if (this._peekNext() && this._peekNext().type === LEXEMES.AND || this._peekNext().type === LEXEMES.OR) {
+          // If the bad token has an operator after it, include the bad token
+          // in the complex pill. Otherwise, leave it out.
+          const badToken = this._advance();
+          return this._createComplexString(`${Parser.transformToString(value)}-${badToken.text}`);
+        } else {
+          return this._createComplexString(`${Parser.transformToString(value)}-`);
+        }
+      }
+      const { value: to, validationError: validationError2 } = this._metaValue();
+      if ((value.type !== LEXEMES.INTEGER && value.type !== LEXEMES.FLOAT) ||
+        (to.type !== LEXEMES.INTEGER && to.type !== LEXEMES.FLOAT)) {
+        // If either side of the range is not a number...
+        const i18n = lookup('service:i18n');
+        validationError = i18n.t('queryBuilder.validationMessages.nonNumericRange');
+      }
+      return {
+        range: {
+          type: GRAMMAR.META_VALUE_RANGE,
+          from: value,
+          to
+        },
+        validationError: validationError || validationError2
+      };
     } else {
       return {
         range: {
@@ -488,23 +533,23 @@ class Parser {
     let validationError = null;
     let value;
     if (this._nextTokenIsOfType([ LEXEMES.HYPHEN ])) {
-      // Hyphen before value is a negative number. Make sure a number is next.
-      // Consume hyphen
+      // Hyphen before value is a negative number. Consume hyphen.
       this._advance();
-      if (!this._nextTokenIsOfType([ LEXEMES.INTEGER, LEXEMES.FLOAT ])) {
-        const i18n = lookup('service:i18n');
-        validationError = i18n.t('queryBuilder.validationMessages.negative');
-      } else {
-        // Capture value
-        value = this._advance();
-        // Make value negative
-        value.text = `-${value.text}`;
-      }
+      // Negative numbers not allowed
+      const i18n = lookup('service:i18n');
+      validationError = i18n.t('queryBuilder.validationMessages.negative');
+      // Capture value
+      value = this._advance();
+      // Make value negative
+      value.text = `-${value.text}`;
     } else if (this._nextTokenIsOfType([ LEXEMES.IPV4_ADDRESS, LEXEMES.IPV6_ADDRESS ])) {
       value = this._advance();
       // Negative number, amend the token
       if (this._nextTokenIsOfType([ LEXEMES.HYPHEN ]) && this._peekNext() && this._peekNext().type === LEXEMES.INTEGER) {
         this._advance(); // Consume hyphen
+        // Negative numbers not allowed
+        const i18n = lookup('service:i18n');
+        validationError = i18n.t('queryBuilder.validationMessages.negative');
         const num = this._advance();
         value.cidr = parseInt(`-${num.text}`, 10);
         value.text += `${value.cidr}`;

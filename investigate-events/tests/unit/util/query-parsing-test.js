@@ -382,7 +382,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '192.168.0.1/-5', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'The CIDR mask must be between 0 and 32.', 'validation error should be correct');
+    assert.equal(result[0].validationError.string, 'Negative values are not allowed.', 'validation error should be correct');
   });
 
   test('transformTextToPillData returns a normal pill for an IPv6 address in CIDR notation', function(assert) {
@@ -442,7 +442,63 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].operator, '=', 'operator should match');
     assert.equal(result[0].value, '3ffe:1900:4545:3:200:f8ff:fe21:67cf/-5', 'value should match');
     assert.ok(result[0].isInvalid, 'pill should be invalid');
-    assert.equal(result[0].validationError.string, 'The CIDR mask must be between 0 and 128.', 'validation error should be correct');
+    assert.equal(result[0].validationError.string, 'Negative values are not allowed.', 'validation error should be correct');
+  });
+
+  test('transformTextToPillData returns an invalid pill for ranges with text keys', function(assert) {
+    const text = 'a = \'foo\'-\'bar\'';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'a', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '\'foo\'-\'bar\'', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.equal(result[0].validationError.string, 'Ranges can only be used with numeric values.', 'validation error should be correct');
+  });
+
+  test('transformTextToPillData returns an invalid pill for ranges with non-numbers', function(assert) {
+    const text = 'medium = 3-\'4\'';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '3-\'4\'', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.equal(result[0].validationError.string, 'Ranges can only be used with numeric values.', 'validation error should be correct');
+  });
+
+  test('transformTextToPillData returns an invalid pill for negative numbers', function(assert) {
+    const text = 'medium = -3';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '-3', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.equal(result[0].validationError.string, 'Negative values are not allowed.', 'validation error should be correct');
+  });
+
+  test('transformTextToPillData returns an invalid pill for upside-down ranges', function(assert) {
+    const text = 'medium = 5-1';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '5-1', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.equal(result[0].validationError.string, 'The second number in the range must be greater than the first.', 'validation error should be correct');
+  });
+
+  test('transformTextToPillData returns a complex pill for a range without a second number', function(assert) {
+    const text = 'medium = 3-';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result[0].complexFilterText, 'medium = 3-', 'complexFilterText should match');
   });
 
   test('transformTextToPillData returns invalid pills alongside valid pills', function(assert) {
