@@ -97,6 +97,10 @@ public class TlsEnrichStoredData {
         return id;
     }
 
+    public Instant getStartInstant() {
+        return startInstant;
+    }
+
     public void setId(String id) {
         this.id = id;
     }

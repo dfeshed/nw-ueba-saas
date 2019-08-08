@@ -1,6 +1,5 @@
 package com.rsa.netwitness.presidio.automation.domain.repository;
 
-import com.rsa.netwitness.presidio.automation.domain.file.FileEnrichStoredData;
 import com.rsa.netwitness.presidio.automation.domain.tls.TlsEnrichStoredData;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -12,6 +11,9 @@ import java.util.List;
 public interface TlsEnrichStoredDataRepository extends MongoRepository<TlsEnrichStoredData, String> {
 
     @Query ("{ 'startInstant': { $gte: ?0 }, $and: [ { 'startInstant': { $lt: ?1 } } ] }")
-    List<FileEnrichStoredData> findByTime(Instant start, Instant end);
+    List<TlsEnrichStoredData> findByTime(Instant start, Instant end);
+
+    @Query("{'eventId': {$regex: ?0 }})")
+    List<TlsEnrichStoredData> findByIdContains(String substring);
 
 }
