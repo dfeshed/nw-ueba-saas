@@ -1,12 +1,19 @@
 import { isBlank } from '@ember/utils';
+import {
+  mergeFilterStrings,
+  removeEmptyFilters,
+  removeEmptyParens
+} from 'investigate-shared/actions/api/events/utils';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
 import * as LEXEMES from 'investigate-events/constants/lexemes';
 import * as GRAMMAR from 'investigate-events/constants/grammar';
 import Scanner from 'investigate-events/util/scanner';
 import Parser from 'investigate-events/util/parser';
 import {
+  CLOSE_PAREN,
   COMPLEX_FILTER,
   COMPLEX_OPERATORS,
+  OPEN_PAREN,
   QUERY_FILTER,
   SEARCH_TERM_MARKER,
   TEXT_FILTER
@@ -41,6 +48,10 @@ const _asString = (filter) => {
   } else if (filter.type === TEXT_FILTER) {
     const text = filter.searchTerm ? filter.searchTerm.trim() : null;
     ret = text ? `${SEARCH_TERM_MARKER}${text}${SEARCH_TERM_MARKER}` : '';
+  } else if (filter.type === OPEN_PAREN) {
+    ret = '(';
+  } else if (filter.type === CLOSE_PAREN) {
+    ret = ')';
   }
   return ret;
 };
@@ -137,18 +148,14 @@ export const isSearchTerm = (str) => {
  * (i) `key` is a meta key identifier (e.g., "ip.src", not a display name); and
  * (ii) value` is a meta key value (raw, not alias).
  */
-export const parsePillDataFromUri = (uri, availableMeta) => {
+export const parsePillDataFromUri = (uri, language = [], aliases = []) => {
   if (isBlank(uri)) {
     // When uri is empty, return empty array. Alas, ''.split() returns a non-empty array; it's a 1-item array with
     // an empty string in it, which is not what we want.  So we check for '' and return [] explicitly here.
     return [];
   }
-  return uri.split('/')
-    .filter((segment) => !!segment)
-    .flatMap((queryString) => {
-      const decodedQuery = decodeURIComponent(queryString);
-      return transformTextToPillData(decodedQuery, availableMeta, false, true);
-    });
+  const decodedQuery = decodeURIComponent(uri);
+  return transformTextToPillData(decodedQuery, { language, aliases, returnMany: true });
 };
 
 /**
@@ -281,7 +288,8 @@ const _criteriaToPill = (criteria) => {
  * @returns {string}
  */
 export const uriEncodeMetaFilters = (filters = []) => {
-  const encodedFilters = filters
+  filters = removeEmptyParens(filters);
+  const filtersAsString = filters
     .map((d) => {
       const str = _asString(d);
       if (str.length > 0) {
@@ -291,10 +299,9 @@ export const uriEncodeMetaFilters = (filters = []) => {
         return undefined;
       }
     })
-    .filter((d) => !!d)
-    .join('/');
-
-  return encodedFilters || undefined;
+    .filter(removeEmptyFilters)
+    .reduce(mergeFilterStrings, '');
+  return filtersAsString === '' ? undefined : filtersAsString;
 };
 
 const _possibleMeta = (textChunk, availableMeta, originalText, pillData) => {

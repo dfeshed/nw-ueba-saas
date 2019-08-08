@@ -7,6 +7,60 @@
 import { lookup } from 'ember-dependency-lookup';
 
 const SEARCH_TERM_MARKER = '\u02F8'; // RAISED COLON "˸"
+const OPEN_PAREN = 'open-paren';
+const CLOSE_PAREN = 'close-paren';
+
+export const removeEmptyFilters = (d) => !!d;
+
+/**
+ * This function looks for empty parentheses, `( )`, and removed them from the
+ * array of filters. This is a recursive function that can remove nested empty
+ * parens, `((( )))`. This assumes that the `filters` have a `type` property.
+ * @param {object[]} filters An array of query pills
+ */
+export const removeEmptyParens = (filters) => {
+  const _filters = filters.filter((filter, i, arr) => {
+    if (filter.type === OPEN_PAREN && arr[i + 1] && arr[i + 1].type === CLOSE_PAREN ||
+      filter.type === CLOSE_PAREN && arr[i - 1] && arr[i - 1].type === OPEN_PAREN) {
+      return false;
+    } else {
+      return true;
+    }
+  });
+  // If the filtered `_filters` does not match the original `filters`, then
+  // we've removed some parens. Run through this again to see if there were
+  // nested empty parens.
+  if (_filters.length !== filters.length) {
+    return removeEmptyParens(_filters);
+  } else {
+    return _filters;
+  }
+};
+
+/**
+ * Reduce function to convert an array of strings into one long string
+ * @private
+ */
+export const mergeFilterStrings = (() => {
+  let _hideSeparator = false;
+  return (acc, cur, idx) => {
+    if (cur === '(') {
+      _hideSeparator = true;
+      return `${acc}${cur}`;
+    } else if (cur === ')') {
+      return `${acc}${cur}`;
+    } else {
+      let separator = ' && ';
+      // If we're intentionally hiding the separator, or if this is the first
+      // item, then we don't need the separator.
+      if (_hideSeparator || idx === 0) {
+        separator = '';
+        _hideSeparator = false;
+      }
+      return `${acc}${separator}${cur}`;
+    }
+  };
+})();
 
 /**
  * Creates a metaFilter conditions filter
@@ -173,19 +227,6 @@ export const streamingRequest = (modelName, query = {}, handlers = {}, streamOpt
   });
 };
 
-// In order to avoid empty condition objects contributing to
-// an extra `&&` being appended to the string we filter out
-// objects which have none of the attributes - meta, operator,
-// value or complexFilterText defined. If none of the values
-// are present - do not bother proceeding to map and encode them
-export const _isValidQueryFilter = (condition) => {
-  return !!condition.meta ||
-    !!condition.operator ||
-    !!condition.value ||
-    !!condition.complexFilterText ||
-    !!condition.searchTerm;
-};
-
 /**
  * Encodes a given list of meta conditions into a "where clause" string that can
  * be used by NetWitness Core.
@@ -197,19 +238,25 @@ export const _isValidQueryFilter = (condition) => {
  * @public
  */
 export const encodeMetaFilterConditions = (conditions = []) => {
-  return conditions
-    .filter((condition) => _isValidQueryFilter(condition))
+  conditions = removeEmptyParens(conditions);
+  const conditionsAsString = conditions
     .map((condition) => {
-      const { meta, operator, value, complexFilterText, searchTerm } = condition;
-      if (complexFilterText) {
+      const { meta, operator, value, complexFilterText, searchTerm, type } = condition;
+      if (type === 'open-paren') {
+        return '(';
+      } else if (type === 'close-paren') {
+        return ')';
+      } else if (complexFilterText) {
         return complexFilterText;
       } else if (searchTerm) {
         return `${SEARCH_TERM_MARKER}${searchTerm}${SEARCH_TERM_MARKER}`;
       } else {
-        return `${(meta) ? meta.trim() : ''} ${(operator) ? operator.trim() : ''} ${(value) ? value.trim() : ''}`;
+        return `${(meta) ? meta.trim() : ''} ${(operator) ? operator.trim() : ''} ${(value) ? value.trim() : ''}`.trim();
       }
     })
-    .join(' && ');
+    .filter(removeEmptyFilters)
+    .reduce(mergeFilterStrings, '');
+  return conditionsAsString;
 };
 
 /**

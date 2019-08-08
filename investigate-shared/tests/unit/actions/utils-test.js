@@ -1,7 +1,6 @@
 import { module, test } from 'qunit';
 
 import {
-  _isValidQueryFilter,
   createFilename,
   encodeMetaFilterConditions,
   extractSearchTermFromFilters
@@ -39,7 +38,7 @@ test('encodeMetaFilterConditions correctly encodes conditions', function(assert)
   assert.expect(1);
   const result = encodeMetaFilterConditions(conditions);
 
-  assert.equal(result, 'foo = bar && foo exists  && foo begins \'//\'');
+  assert.equal(result, 'foo = bar && foo exists && foo begins \'//\'');
 });
 
 test('encodeMetaFilterConditions correctly encodes complex filters', function(assert) {
@@ -53,7 +52,7 @@ test('encodeMetaFilterConditions returns values which exist', function(assert) {
   assert.expect(1);
   const result = encodeMetaFilterConditions(filters);
 
-  assert.equal(result, 'foo  ');
+  assert.equal(result, 'foo');
 });
 
 test('encodeMetaFilterConditions returns empty string when properties are undefined', function(assert) {
@@ -85,31 +84,6 @@ test('encodeMetaFilterConditions returns relevant string based on valid objects'
   const result = encodeMetaFilterConditions(filters);
 
   assert.equal(result, 'foo = bar && medium = 1 || medium = 32 && foo  exists');
-});
-
-test('_isValidQueryFilter returns true for a valid filter attribute', function(assert) {
-  assert.expect(1);
-  const filters = { meta: 'foo' };
-  const result = _isValidQueryFilter(filters);
-
-  assert.ok(result, 'Expected Filter');
-});
-
-test('_isValidQueryFilter returns true for a valid complex filter', function(assert) {
-  assert.expect(1);
-  const filters = { complexFilterText: 'medium = 1 || medium =32' };
-  const result = _isValidQueryFilter(filters);
-
-  assert.ok(result, 'Expected Filter');
-});
-
-
-test('_isValidQueryFilter returns false for a invalid filter', function(assert) {
-  assert.expect(1);
-  const filters = {};
-  const result = _isValidQueryFilter(filters);
-
-  assert.notOk(result, 'Discarded Filter');
 });
 
 test('createFilename returns proper fileName when selectAll is true', function(assert) {

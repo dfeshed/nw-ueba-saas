@@ -1,5 +1,10 @@
 import { lookup } from 'ember-dependency-lookup';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
+import {
+  COMPLEX_FILTER,
+  QUERY_FILTER,
+  TEXT_FILTER
+} from 'investigate-events/constants/pill';
 
 const MODEL_NAME = 'query-hashes';
 
@@ -27,13 +32,17 @@ const getHashForParams = (pillData) => {
   // Save off each individual pill if there's more than one. We do not need to
   // wait for the return as we don't care about these individual pills.
   if (pillData.length > 1) {
-    // const predicateRequests = pillData.map((pD) => _generatePredicateRequest(pD));
+    // filter out non-filter items
+    const predicateRequests = pillData.reduce((acc, cur) => {
+      if (cur.type === COMPLEX_FILTER || cur.type === QUERY_FILTER || cur.type === TEXT_FILTER) {
+        acc.push(_generatePredicateRequest([cur]));
+      }
+      return acc;
+    }, []);
     request.promiseRequest({
       modelName: MODEL_NAME,
       method: 'persist',
-      query: {
-        predicateRequests: pillData.map((pD) => _generatePredicateRequest([pD]))
-      }
+      query: { predicateRequests }
     });
   }
   // This is what we care about. This is all the pills stringified, and saved as

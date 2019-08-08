@@ -125,8 +125,10 @@ export default Route.extend({
 
     if (params.mf) {
       // Look to the metaFilters for a Text filter and save off index so we can
-      // insert it into the correct location in the pdhash below.
-      textFilter = params.mf.split('/').find((d, i) => {
+      // insert it into the correct location in the pdhash below. We're splitting
+      // on all the things that can be used to separate pills. " && ", " AND ",
+      // " || ", and " OR ".
+      textFilter = params.mf.split(/ &{2} | AND | \|{2} | OR /).find((d, i) => {
         textFilterIdx = i;
         return isSearchTerm(d);
       });

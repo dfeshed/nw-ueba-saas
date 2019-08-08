@@ -17,30 +17,33 @@ const _generateId = () => {
  * @param {string} predicateRequests The predicates to persist
  */
 const _getPredicate = (predicateRequests) => {
-  // There should only be one predicate in the request
-  if (predicateRequests.length === 1) {
-    const queryString = predicateRequests[0].query;
+  const hashObjects = [];
+  predicateRequests.forEach((predicate) => {
+    const { query } = predicate;
     // See if we've seen this query before
-    const hashObj = hashCache.find((d) => d.query === queryString);
+    const hashObj = hashCache.find((d) => d.query === query);
     if (hashObj) {
       // We found something in the cache, return it
-      console.log(`PERSIST::_getPredicate(): found ${hashObj.id} in hashCache`);// eslint-disable-line
-      return [hashObj];
+      console.log(`PERSIST::_getPredicate(): found hash ${hashObj.id} in hashCache: ${hashObj.query} `);// eslint-disable-line
+      hashObjects.push(hashObj);
     } else {
       // Nothing in the cache create a new one
       const predicate = {
         id: _generateId(),
-        query: queryString,
-        displayName: queryString,
+        query,
+        displayName: query,
         createdBy: 'local',
         createdOn: new Date().toISOString()
       };
       hashCache.push(predicate);
       console.log(`PERSIST::_getPredicate(): predicate not in hashCache, created ${predicate.id} and pushed to hashCache`, hashCache);// eslint-disable-line
-      return [predicate];
+      hashObjects.push(predicate);
     }
-  } else {
-    console.log('PERSIST::_getPredicate(): OH NO!! Too many predicates in your request!'); // eslint-disable-line
+  });
+  // Only return the request for the full query, which is in response to a
+  // predicate request length of one.
+  if (predicateRequests.length === 1) {
+    return hashObjects;
   }
 };
 
