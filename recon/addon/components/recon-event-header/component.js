@@ -6,6 +6,7 @@ import {
   RECON_DISPLAYED_HEADER,
   HAS_TOOLTIP
 } from 'recon/utils/recon-event-header';
+import { isLoading } from 'recon/reducers/data-selectors';
 import { headerErrorMessage } from 'recon/reducers/header/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
 import HighlightsEntities from 'context/mixins/highlights-entities';
@@ -13,6 +14,7 @@ import layout from './template';
 import { next } from '@ember/runloop';
 
 const stateToComputed = ({ recon }) => ({
+  isLoading: isLoading(recon),
   headerErrorMessage: headerErrorMessage(recon),
   isHeaderOpen: recon.visuals.isHeaderOpen,
   headerItems: recon.header.headerItems,

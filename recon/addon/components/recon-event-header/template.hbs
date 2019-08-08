@@ -2,7 +2,7 @@
   {{recon-event-titlebar}}
   {{recon-event-actionbar}}
 
-  {{#if headerError}}
+  {{#if (and headerError (not isLoading))}}
     {{rsa-panel-message message=headerErrorMessage}}
   {{else}}
     {{#if isHeaderOpen}}
