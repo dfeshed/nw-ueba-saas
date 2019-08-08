@@ -74,7 +74,7 @@ module('Unit | Selectors | Policy Details | EDR Policy | EDR Selectors', functio
     assert.equal(policyDetails.length, 5, '5 sections returned as expected');
     assert.equal(policyDetails[0].header, 'adminUsm.policyWizard.edrPolicy.scanSchedule', 'first section is as expected');
     assert.equal(policyDetails[0].props.length, 4, 'first section has 4 properties');
-    assert.equal(policyDetails[0].props[1].value, 'Every 1 week(s) on WEDNESDAY,THURSDAY', `Scan Frequency property has ${policyDetails[0].props[1].value} value`);
+    assert.equal(policyDetails[0].props[1].value, 'Every 1 week(s) on Wednesday, Thursday', `Scan Frequency property has ${policyDetails[0].props[1].value} value`);
     assert.equal(policyDetails[1].header, 'adminUsm.policyWizard.edrPolicy.agentSettings', 'second section  is as expected');
     assert.equal(policyDetails[1].props.length, 1, 'second section has 1 property');
     assert.equal(policyDetails[2].header, 'adminUsm.policyWizard.edrPolicy.advScanSettings', 'third section  is as expected');

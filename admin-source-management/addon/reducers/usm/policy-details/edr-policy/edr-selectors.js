@@ -140,9 +140,9 @@ const _getScanSetting = (prop, focusedPolicy, _focusedPolicyOrigin, emptyOrigin)
 
   let days = '';
   if (focusedPolicy.runOnDaysOfWeek) {
-    days = `${_i18n.t('adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.on')} ${focusedPolicy.runOnDaysOfWeek.join(',')}`;
+    const daysLocale = focusedPolicy.runOnDaysOfWeek.map((day) => _i18n.t(`adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.weekDay.${day}`).string).join(', ');
+    days = `${_i18n.t('adminUsm.policyWizard.edrPolicy.recurrenceIntervalOptions.on')} ${daysLocale}`;
   }
-
   const recurValue = `${_i18n.t('adminUsm.policies.detail.recurrenceEvery')} ${focusedPolicy.recurrenceInterval} ${unit} ${days}`;
 
   const scanSettings = {

@@ -377,7 +377,7 @@ module('Unit | Selectors | overview', function(hooks) {
       'recurrenceUnit': 'DAYS',
       'requestScanOnRegistration': 'Disabled',
       'runOnDaysOfWeek': [
-        'Monday'
+        'MONDAY'
       ],
       'scanMbr': 'Disabled',
       'scanStartDate': '2019-03-22',

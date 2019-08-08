@@ -4803,6 +4803,15 @@ effects the previewed source.',
             FRIDAY: 'F',
             SATURDAY: 'S',
             SUNDAY: 'S'
+          },
+          weekDay: {
+            MONDAY: 'Monday',
+            TUESDAY: 'Tuesday',
+            WEDNESDAY: 'Wednesday',
+            THURSDAY: 'Thursday',
+            FRIDAY: 'Friday',
+            SATURDAY: 'Saturday',
+            SUNDAY: 'Sunday'
           }
         },
         scanStartTime: 'Start Time',

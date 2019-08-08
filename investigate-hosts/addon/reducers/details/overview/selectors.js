@@ -328,11 +328,10 @@ export const policyAdminUsm = createSelector(
       const inSeconds = data.edrPolicy.transportConfig.primary.httpsBeaconIntervalInSeconds;
       const httpsBeaconIntervalInMinutes = inSeconds ? Math.trunc(inSeconds / 60) : '';
       const runOnDaysOfWeekVal = data.edrPolicy.scheduledScanConfig.recurrentSchedule.runOnDaysOfWeek;
-      const week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const weekDay = runOnDaysOfWeekVal ? [week[runOnDaysOfWeekVal[0]]] : '';
+      const week = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+      const weekDay = runOnDaysOfWeekVal ? runOnDaysOfWeekVal.map((day) => week[day]) : [];
       const scanStartTime = data.edrPolicy.scheduledScanConfig.recurrentSchedule.runAtTime;
       const runAtTime = scanStartTime.substring(0, scanStartTime.lastIndexOf(':'));
-
       return {
         general: {
           policyStatus: data.policyStatus,
