@@ -2,7 +2,6 @@ package com.rsa.netwitness.presidio.automation.log_player;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.testng.Assert;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -13,6 +12,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MongoCollectionsMonitor {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
@@ -83,7 +84,10 @@ public class MongoCollectionsMonitor {
                     .reduce(false, (agg, e) -> agg & e);
         }
 
-        Assert.assertFalse(allCollectionsAreEmptyAfterInitiateWait, "No data reached any collection after initial wait");
+        assertThat(allCollectionsAreEmptyAfterInitiateWait)
+                .overridingErrorMessage("Not a single event reached any input collection after " +
+                        DELAY_BEFORE_FIRST_TASK_STARTED + " minutes wait.\nAborting the job.\n")
+                .isFalse();
 
         if (dataProcessingStillBeInProgress) {
             LOGGER.warn("Collections data processing still in progress");
