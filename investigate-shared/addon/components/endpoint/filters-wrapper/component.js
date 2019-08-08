@@ -9,7 +9,15 @@ import { inject as service } from '@ember/service';
 const DATE_COLUMNS = [
   'agentStatus.lastSeenTime',
   'machine.scanStartTime',
-  'downloadedTime'
+  'downloadedTime',
+  'creationTime',
+  'creationTimeSi',
+  'fileReadTime',
+  'fileReadTimeSi',
+  'mftChangedTime',
+  'mftChangedTimeSi',
+  'alteredTime',
+  'alteredTimeSi'
 ];
 
 

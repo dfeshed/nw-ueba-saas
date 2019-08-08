@@ -8,13 +8,13 @@ const FILTER_TYPES = [
         validator: (value) => {
           return value.length > 256;
         },
-        message: 'investigateHosts.downloads.filters.errorMessages.invalidFilterInputLength'
+        message: 'investigateHosts.downloads.errorMessages.invalidFilterInputLength'
       },
       format: {
         validator: (value) => {
           return /[<>:"'/|\\?]+/.test(value);
         },
-        message: 'investigateHosts.downloads.filters.errorMessages.invalidCharsAlphaNumericOnly'
+        message: 'investigateHosts.downloads.errorMessages.invalidCharsAlphaNumericOnly'
       }
     },
     'placeholder': 'e.g. Filename.dll'
@@ -28,16 +28,16 @@ const FILTER_TYPES = [
         validator: (value) => {
           return value.length > 256;
         },
-        message: 'investigateHosts.downloads.filters.errorMessages.invalidFilterInputLength'
+        message: 'investigateHosts.downloads.errorMessages.invalidFilterInputLength'
       },
       format: {
         validator: (value) => {
           return /[<>:"'/|\\?]+/.test(value);
         },
-        message: 'investigateHosts.downloads.filters.errorMessages.invalidCharsAlphaNumericOnly'
+        message: 'investigateHosts.downloads.errorMessages.invalidCharsAlphaNumericOnly'
       }
     },
-    'placeholder': 'e.g. dll, txt, pdf'
+    'placeholder': 'e.g. dll'
   },
   {
     name: 'timeStomping',
