@@ -1,12 +1,11 @@
 package com.rsa.netwitness.presidio.automation.test.data.preparation;
 
-import com.rsa.netwitness.presidio.automation.common.scenarios.tls.EnrichmentForSplittedEvents;
+import com.rsa.netwitness.presidio.automation.common.scenarios.tls.SessionSplitEnrichmentData;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import presidio.data.domain.event.Event;
 import presidio.data.domain.event.network.NetworkEvent;
-import presidio.data.generators.common.GeneratorException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,11 +16,10 @@ public class NetworkEnrichmentDataPreparation extends DataPreparationBase {
     private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(NetworkEnrichmentDataPreparation.class.getName());
 
     @Override
-    public List<? extends Event> generate() throws GeneratorException {
-        EnrichmentForSplittedEvents simpleTest = new EnrichmentForSplittedEvents(historicalDaysBack, anomalyDay);
-
+    public List<? extends Event> generate() {
         Stream<NetworkEvent> resultingStream = Stream.of(
-                simpleTest.simpleEnreachment()
+                new SessionSplitEnrichmentData().generateAll()
+
         ).flatMap(i->i);
 
         return resultingStream.collect(Collectors.toList());
