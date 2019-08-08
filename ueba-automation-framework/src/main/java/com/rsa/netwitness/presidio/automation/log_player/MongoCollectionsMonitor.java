@@ -22,10 +22,10 @@ public class MongoCollectionsMonitor {
     private ScheduledExecutorService scheduler;
     private int corePoolSize = 2;
     private long DELAY_BETWEEN_TASKS = 1;
-    private long DELAY_BEFORE_FIRST_TASK_STARTED = 15;
     private long TASK_FREQUENCY_MINUTES = 15;
     private long ADDITIONAL_DELAY_BEFORE_FIRST_TIME_STATUS_CHECK = 5;
     private long TASK_STATUS_CHECK_FREQUENCY = TASK_FREQUENCY_MINUTES;
+    private long DELAY_BEFORE_FIRST_TASK_STARTED = TASK_FREQUENCY_MINUTES + ADDITIONAL_DELAY_BEFORE_FIRST_TIME_STATUS_CHECK - 1;
     private final TimeUnit TIME_UNITS = TimeUnit.MINUTES;
     private List<MongoProgressTask> tasks;
     private int TIME_BUCKETES_TO_CHECK = 6;
