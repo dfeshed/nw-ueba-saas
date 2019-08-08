@@ -59,7 +59,6 @@ public class MonitorE2EDataFlow extends AbstractTestNGSpringContextTests {
     private NetwitnessEventStore netwitnessEventStore;
 
     // Will wait until reach hour 23:00 on "days back" 1. (all anomalies happen until DB 1 end of day, stopping at hour 23 - to avoid heavy run of modeling at this hour)
-    private final static Instant PROCESSING_FINISH_TIME = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1, ChronoUnit.HOURS);
 
     private Instant startDate = Instant.now();
     private Instant endDate = Instant.now();
@@ -94,6 +93,6 @@ public class MonitorE2EDataFlow extends AbstractTestNGSpringContextTests {
         monitor.execute();
         boolean result = monitor.waitForResult();
         monitor.shutdown();
-        Assert.assertTrue(result, "There is no data from all collections in the last_day-1");
+        Assert.assertTrue(result, "Data processing has not reached the last day.");
     }
 }

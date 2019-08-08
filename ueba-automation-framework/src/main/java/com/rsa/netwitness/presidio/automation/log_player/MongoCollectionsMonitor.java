@@ -1,6 +1,8 @@
 package com.rsa.netwitness.presidio.automation.log_player;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.testng.Assert;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -13,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class MongoCollectionsMonitor {
+    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
+            LoggerFactory.getLogger(MongoCollectionsMonitor.class.getName());
 
     private List<MongoRepository> collectiontToMonitor = new LinkedList<>();
     private ScheduledExecutorService scheduler;
@@ -45,7 +49,7 @@ public class MongoCollectionsMonitor {
 
     public List<ScheduledFuture> execute() {
         return tasks.stream()
-                .map(e ->  scheduler.scheduleAtFixedRate(e, DELAY_BEFORE_FIRST_TASK_STARTED, TASK_FREQUENCY_MINUTES, TIME_UNITS))
+                .map(e -> scheduler.scheduleAtFixedRate(e, DELAY_BEFORE_FIRST_TASK_STARTED, TASK_FREQUENCY_MINUTES, TIME_UNITS))
                 .collect(Collectors.toList());
     }
 
@@ -56,21 +60,35 @@ public class MongoCollectionsMonitor {
 
     public boolean waitForResult() throws InterruptedException {
 
+        boolean allCollectionsAreEmptyAfterInitiateWait = true;
         boolean stillWaitingForTheLastDayData = true;
-        boolean dataExistAtLeastInOneBucket = true;
+        boolean dataProcessingStillBeInProgress = true;
+
         TIME_UNITS.sleep(ADDITIONAL_DELAY_BEFORE_FIRST_TIME_STATUS_CHECK);
 
-        while (dataExistAtLeastInOneBucket && stillWaitingForTheLastDayData) {
+        while (allCollectionsAreEmptyAfterInitiateWait && dataProcessingStillBeInProgress && stillWaitingForTheLastDayData) {
 
             TIME_UNITS.sleep(TASK_STATUS_CHECK_FREQUENCY);
 
-            dataExistAtLeastInOneBucket = tasks.stream()
-                    .map(e -> e.dataExistAtLeastInOneBucket(TIME_BUCKETES_TO_CHECK))
-                    .reduce(false, (agg,e) -> agg | e);
+            allCollectionsAreEmptyAfterInitiateWait = tasks.stream()
+                    .map(MongoProgressTask::isEventTimeHistoryQueueEmpty)
+                    .reduce(true, (agg, e) -> agg & e);
+
+            dataProcessingStillBeInProgress = tasks.stream()
+                    .map(e -> e.shouldWaitingForNewSample(TIME_BUCKETES_TO_CHECK))
+                    .reduce(false, (agg, e) -> agg | e);
 
             stillWaitingForTheLastDayData = !tasks.stream()
-                    .map(e -> e.dataFromTheLastDayArrived(0, ChronoUnit.DAYS))
-                    .reduce(false, (agg,e) -> agg & e);
+                    .map(e -> e.hasDataProcessingReachedTheFinalDay(0, ChronoUnit.DAYS))
+                    .reduce(false, (agg, e) -> agg & e);
+        }
+
+        Assert.assertFalse(allCollectionsAreEmptyAfterInitiateWait, "No data reached any collection after initial wait");
+
+        if (dataProcessingStillBeInProgress) {
+            LOGGER.warn("Collections data processing still in progress");
+        } else{
+            LOGGER.info("Collections data processing has finished");
         }
 
         return !stillWaitingForTheLastDayData;

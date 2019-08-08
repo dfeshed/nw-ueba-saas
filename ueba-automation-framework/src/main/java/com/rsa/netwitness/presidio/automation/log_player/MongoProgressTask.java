@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.Optional;
 
 public class MongoProgressTask implements Runnable {
-    private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
+    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
             LoggerFactory.getLogger(MongoProgressTask.class.getName());
 
     private String collectionName;
@@ -34,9 +34,10 @@ public class MongoProgressTask implements Runnable {
         this.start = start;
         this.end = end;
     }
+
     public void run() {
-        Optional<Instant> result = findByTimeAppliedOnObj(obj,start,end);
-        LOGGER.info("#### Query result for ["+ collectionName + "] == " + result);
+        Optional<Instant> result = findByTimeAppliedOnObj(obj, start, end);
+        LOGGER.info("#### Query result for [" + collectionName + "] == " + result);
 
         if (result.isPresent() && result.get().isAfter(start)) start = result.get().minusSeconds(10);
         result.ifPresent(e -> eventTimeHistory.push(e));
@@ -44,18 +45,22 @@ public class MongoProgressTask implements Runnable {
     }
 
 
-    boolean dataExistAtLeastInOneBucket(int bucketsToCheck) {
-        LOGGER.info("---> [" +collectionName + "] eventTimeHistory array: " + eventTimeHistory);
-
-        if (eventTimeHistory.isEmpty()) {
-            LOGGER.error("[" +collectionName + "] Collection is empty after initial wait");
-            return false;
+    boolean isEventTimeHistoryQueueEmpty() {
+        boolean result = eventTimeHistory.isEmpty();
+        if (result) {
+            LOGGER.warn("[" + collectionName + "] There is no any data in the collection after initial wait.");
         }
+        return result;
+    }
 
-        if (eventTimeHistory.size() <  bucketsToCheck) return true;
+
+    boolean shouldWaitingForNewSample(int bucketsToCheck) {
+        LOGGER.info("---> [" + collectionName + "] eventTimeHistory array: " + eventTimeHistory);
+
+        if (eventTimeHistory.isEmpty()) return false;
+        if (eventTimeHistory.size() < bucketsToCheck) return true;
 
         eventTimeHistory = new LinkedList<>(eventTimeHistory.subList(0, bucketsToCheck));
-
         boolean result = false;
         Iterator<Instant> iterator = eventTimeHistory.iterator();
         Iterator<Instant> nextIterator = eventTimeHistory.iterator();
@@ -67,14 +72,14 @@ public class MongoProgressTask implements Runnable {
         }
 
         if (result) {
-            LOGGER.debug("[" +collectionName + "]: result " + result);
+            LOGGER.debug("[" + collectionName + "]: result is TRUE");
         } else {
-            LOGGER.warn("[" +collectionName + "]: no updates for the last " + (bucketsToCheck-1) + " checks.");
+            LOGGER.warn("[" + collectionName + "]: no updates for the last " + (bucketsToCheck - 1) + " checks.");
         }
         return result;
     }
 
-    boolean dataFromTheLastDayArrived(long amountToSubtract, ChronoUnit units) {
+    boolean hasDataProcessingReachedTheFinalDay(long amountToSubtract, ChronoUnit units) {
         Instant stopTime = end.minus(amountToSubtract, units).truncatedTo(units);
         if (lastEventTime == null) return false;
 
@@ -83,10 +88,11 @@ public class MongoProgressTask implements Runnable {
         if (result) {
             LOGGER.info(" *** Collection [" + collectionName + "]: processing reached the final day=" + stopTime);
         } else {
-            LOGGER.info("["+collectionName+"]:"+ " data processing still in progress. stopTime="+stopTime+" lastEventTime="+ lastEventTime);
+            LOGGER.info("[" + collectionName + "]:" + " data processing still in progress. stopTime=" + stopTime + " lastEventTime=" + lastEventTime);
         }
         return result;
     }
+
 
     private Optional<Instant> findByTimeAppliedOnObj(MongoRepository obj, Instant start, Instant end) {
         Sort sort = new Sort(Sort.Direction.DESC, "dateTime");
@@ -96,30 +102,30 @@ public class MongoProgressTask implements Runnable {
             LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
             AdapterActiveDirectoryStoredData result = ((AdapterActiveDirectoryStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
             if (result == null) return Optional.empty();
-                else return Optional.of(result.getDateTime());
+            else return Optional.of(result.getDateTime());
         }
         if (obj instanceof AdapterAuthenticationStoredDataRepository) {
             collectionName = "AdapterAuthentication";
             LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
             AdapterAuthenticationStoredData result = ((AdapterAuthenticationStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
             if (result == null) return Optional.empty();
-                else return Optional.of(result.getDateTime());
+            else return Optional.of(result.getDateTime());
         }
         if (obj instanceof AdapterFileStoredDataRepository) {
             collectionName = "AdapterFile";
             LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
             AdapterFileStoredData result = ((AdapterFileStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
             if (result == null) return Optional.empty();
-                else return Optional.of(result.getDateTime());
+            else return Optional.of(result.getDateTime());
         }
-        if (obj instanceof AdapterRegistryStoredDataRepository){
+        if (obj instanceof AdapterRegistryStoredDataRepository) {
             collectionName = "AdapterRegistry";
             LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
             AdapterRegistryStoredData result = ((AdapterRegistryStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
             if (result == null) return Optional.empty();
-                else return Optional.of(result.getDateTime());
+            else return Optional.of(result.getDateTime());
         }
-        if (obj instanceof AdapterTlsStoredDataRepository){
+        if (obj instanceof AdapterTlsStoredDataRepository) {
             collectionName = "TlsRegistry";
             LOGGER.debug("[" + collectionName + "] - Going to execute query: start = " + start + " end = " + end);
             AdapterTlsStoredData result = ((AdapterTlsStoredDataRepository) obj).findTopByDateTimeBetween(start, end, sort);
