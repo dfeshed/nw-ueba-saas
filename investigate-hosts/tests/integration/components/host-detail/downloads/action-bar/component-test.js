@@ -66,6 +66,8 @@ module('Integration | Component | downloads/action-bar', function(hooks) {
     assert.equal(findAll('.delete-file')[0].title.trim().includes('delete'), true, 'delete file Tooltip is displayed');
   });
   test('Action bar save and delete buttons should not present if agent.manage permissions not there', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', []);
     this.set('disableActions', { deleteFile: true, saveLocalCopy: true });
     await render(hbs`{{host-detail/downloads/action-bar disableActions=disableActions}}`);
     assert.equal(findAll('.downloads-action-bar .is-disabled .rsa-form-button').length, 0, 'save and delete buttons are not present');

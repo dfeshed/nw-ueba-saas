@@ -9,7 +9,7 @@ $result-text-color: text-color(primary, light);
   .search-field {
     width: 100%;
     &.is-error {
-      border: 1px solid text-color(accentOne);
+      @include border(1px, solid, accentOne);
     }
   }
   min-width: $host-explore-min-width;
@@ -22,7 +22,7 @@ $result-text-color: text-color(primary, light);
   left: 69%;
   top: -22%;
   width: 100%;
-  border: 1px solid rgba(var(--border-color-primary-dark),var(--opacity-opaque));
+  @include border(1px, solid, primary, dark, nearly-opaque);
 
   &__loader {
     height: 0;

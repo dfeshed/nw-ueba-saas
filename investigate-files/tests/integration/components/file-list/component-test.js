@@ -759,7 +759,7 @@ module('Integration | Component | file list', function(hooks) {
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 6, 'Context menu not rendered');
+      assert.equal(items.length, 9, 'Context menu not rendered');
     });
   });
   test('Select view certificate from context menu ', async function(assert) {

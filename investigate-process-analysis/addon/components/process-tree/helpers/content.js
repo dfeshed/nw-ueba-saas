@@ -204,7 +204,7 @@ export const onNodeUpdate = (node, nodeEnter) => {
     .duration(CONST.DURATION)
     .attr('transform', (d) => `translate(${ d.y },${ d.x })`);
 
-  updateText({ className: 'process-name', node: nodeUpdate, dx: 0, dy: '1em', opacity: 1 });
+  updateText({ className: 'process-name', node: nodeUpdate, dx: 0, dy: '1.5em', opacity: 1 });
 };
 
 export const onNodeExit = (node, source) => {

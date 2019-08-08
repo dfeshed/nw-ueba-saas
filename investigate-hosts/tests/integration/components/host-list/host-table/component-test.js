@@ -319,6 +319,8 @@ module('Integration | Component | host-list/host-table', function(hooks) {
   });
   test('Download MFT option not rendered when permissions are not there', async function(assert) {
 
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', []);
     new ReduxDataHelper(initState)
       .columns(endpoint.schema)
       .hostList(hostList)

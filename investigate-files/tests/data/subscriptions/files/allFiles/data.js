@@ -168,6 +168,7 @@ export default {
       'format': 'Script',
       'size': 595,
       'fileStatus': 'Neutral',
+      'machineOsType': 'windows',
       'remediationAction': 'Unblock'
     },
     {
@@ -183,6 +184,7 @@ export default {
       'format': 'Script',
       'size': 39849,
       'fileStatus': 'Neutral',
+      'machineOsType': 'windows',
       'remediationAction': 'Unblock'
     },
     {
