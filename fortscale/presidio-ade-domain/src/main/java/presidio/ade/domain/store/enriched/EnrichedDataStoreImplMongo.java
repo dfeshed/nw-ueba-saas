@@ -225,7 +225,11 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
      * @return field name
      */
     private String getFieldName(Class pojoClass, String name) {
-        return presidio.sdk.api.utils.ReflectionUtils.findFieldNameRecursively(pojoClass, name);
+        try {
+            return presidio.sdk.api.utils.ReflectionUtils.findFieldNameRecursively(pojoClass, name);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(String.format("Exception while getting the field name of %s from %s.", name, pojoClass), e);
+        }
     }
 
     @Override
