@@ -128,8 +128,8 @@ module('Integration | Component | property-panel-policy/windows-log-policy', fun
     new ReduxDataHelper(setState).policy(policyData).build();
     await render(hbs`{{property-panel-policy/windows-log-policy}}`);
     assert.equal(document.querySelectorAll('.win-value').length, 4, 'All values are showing');
-    assert.equal(document.querySelectorAll('.content-section__section-name')[0].textContent.trim(), 'Windows Log Settings', 'Windows Log Settings section shows');
-    assert.equal(document.querySelectorAll('.property-name')[0].textContent.trim(), 'Status', 'Status lable shows');
+    assert.equal(document.querySelectorAll('.content-section__section-name')[0].textContent.trim(), 'Connection Settings', 'Connection Settings section shows');
+    assert.equal(document.querySelectorAll('.property-name')[0].textContent.trim(), 'Collect Windows Logs', 'Collect Windows Logs lable shows');
     assert.equal(document.querySelectorAll('.win-value .tooltip-text')[0].textContent.trim(), 'Enabled', 'Enabled value is showing');
     assert.equal(document.querySelectorAll('.content-section__section-name')[1].textContent.trim(), 'Channel Filter Settings', 'Channel Filter Settings section shows');
 

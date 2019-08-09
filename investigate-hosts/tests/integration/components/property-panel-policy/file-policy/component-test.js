@@ -116,10 +116,10 @@ module('Integration | Component | property-panel-policy/file-policy', function(h
     new ReduxDataHelper(setState).policy(policyData).build();
     await render(hbs`{{property-panel-policy/file-policy}}`);
     assert.equal(document.querySelectorAll('.file-value').length, 3, 'All values are showing');
-    assert.equal(document.querySelectorAll('.content-section__section-name')[0].textContent.trim(), 'File Settings', 'File Log Settings section shows');
+    assert.equal(document.querySelectorAll('.content-section__section-name')[0].textContent.trim(), 'Connection Settings', 'Connection Settings section shows');
 
     assert.equal(document.querySelectorAll('.content-section__section-name')[1].textContent.trim(), 'Source Settings (No sources set for collection)', 'No sources set for collection shows');
-    assert.equal(document.querySelectorAll('.property-name')[0].textContent.trim(), 'Status', 'Status lable shows');
+    assert.equal(document.querySelectorAll('.property-name')[0].textContent.trim(), 'Collect File Logs', 'Collect File Logs lable shows');
     assert.equal(document.querySelectorAll('.file-value .tooltip-text')[0].textContent.trim(), 'Enabled', 'Enabled value is showing');
 
     assert.equal(document.querySelectorAll('.property-name')[1].textContent.trim(), 'Protocol', 'Protocol lable shows');
@@ -181,7 +181,7 @@ module('Integration | Component | property-panel-policy/file-policy', function(h
     new ReduxDataHelper(setState).policy(filePolicySources).build();
     await render(hbs`{{property-panel-policy/file-policy}}`);
     assert.equal(document.querySelectorAll('.file-value').length, 10, 'All 10 values are showing');
-    assert.equal(document.querySelectorAll('.content-section__section-name')[0].textContent.trim(), 'File Settings', 'File Log Settings section shows');
+    assert.equal(document.querySelectorAll('.content-section__section-name')[0].textContent.trim(), 'Connection Settings', 'Connection Settings section shows');
     assert.equal(document.querySelectorAll('.content-section__section-name')[1].textContent.trim(), 'Source Settings (exchange)', 'exchange source shows');
     assert.equal(document.querySelectorAll('.content-section__section-name')[2].textContent.trim(), 'Source Settings (apache)', 'apache source shows');
     assert.equal(document.querySelectorAll('.property-name')[4].textContent.trim(), 'Log File Collection on Agent', 'Log File Collection on Agent lable shows');

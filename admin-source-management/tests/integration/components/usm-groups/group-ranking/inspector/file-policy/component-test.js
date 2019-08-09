@@ -36,16 +36,16 @@ module('Integration | Component | group-ranking/inspector | file-policy', functi
       .focusedPolicy(fileTestPolicyWithSources)
       .build();
     await render(hbs`{{usm-groups/group-ranking/inspector/file-policy}}`);
-    // should be 1 File Settings heading + 2 Source Settings headings for apache & exchange
-    assert.equal(findAll('.heading').length, 3, '1 File Settings heading + 2 Source Settings headings are shown');
-    assert.equal(findAll('.heading .col-md-7')[0].innerText, 'File Settings', 'File Settings heading is as expected');
-    assert.equal(findAll('.heading .col-md-5')[0].innerText, '', 'File Settings heading second part is as expected');
+    // should be 1 Connection Settings heading + 2 Source Settings headings for apache & exchange
+    assert.equal(findAll('.heading').length, 3, '1 Connection Settings heading + 2 Source Settings headings are shown');
+    assert.equal(findAll('.heading .col-md-7')[0].innerText, 'Connection Settings', 'Connection Settings heading is as expected');
+    assert.equal(findAll('.heading .col-md-5')[0].innerText, '', 'Connection Settings heading second part is as expected');
     assert.equal(findAll('.heading .col-md-7')[1].innerText, 'Source Settings (apache)', 'apache source heading is as expected');
     assert.equal(findAll('.heading .col-md-7')[2].innerText, 'Source Settings (exchange)', 'exchange source heading is as expected');
     // check total number of setting names & values
     assert.equal(findAll('.title').length, 16, '16 property names are shown');
     assert.equal(findAll('.value').length, 38, '38 value elements are shown');
-    // File Settings (connection settings) values
+    // Connection Settings (connection settings) values
     assert.equal(findAll('.value')[2].innerText.trim(), 'Enabled', 'Status is Enabled as expected');
     assert.equal(findAll('.value')[3].innerText.trim(), 'test - test', 'Origin policy & group of Status are as expected');
     assert.equal(findAll('.value')[4].innerText.trim(), 'Disabled', 'Send Test Log is Disabled as expected');

@@ -74,7 +74,7 @@ module('Integration | Component | Policy Inspector | Windows Log Policy', functi
 
     await render(hbs`{{usm-policies/policies/inspector/windows-log-policy}}`);
     assert.equal(findAll('.heading').length, 2, '2 headings are shown');
-    assert.equal(findAll('.heading')[0].innerText, 'Windows Log Settings', 'first heading is as expected');
+    assert.equal(findAll('.heading')[0].innerText, 'Connection Settings', 'first heading is as expected');
     assert.equal(findAll('.heading')[1].innerText, 'Channel Filter Settings', 'second heading is as expected');
     assert.equal(findAll('.title').length, 8, '8 property names are shown');
     assert.equal(findAll('.value').length, 8, '8 value elements are shown');
@@ -90,7 +90,7 @@ module('Integration | Component | Policy Inspector | Windows Log Policy', functi
 
     await render(hbs`{{usm-policies/policies/inspector/windows-log-policy}}`);
     assert.equal(findAll('.heading').length, 1, '1 heading is shown');
-    assert.equal(findAll('.heading')[0].innerText, 'Windows Log Settings', 'first heading is as expected');
+    assert.equal(findAll('.heading')[0].innerText, 'Connection Settings', 'first heading is as expected');
     assert.equal(findAll('.title').length, 5, '5 property names are shown');
     assert.equal(findAll('.value').length, 5, '5 value elements are shown');
   });
