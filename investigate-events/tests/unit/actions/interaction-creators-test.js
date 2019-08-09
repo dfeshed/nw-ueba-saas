@@ -189,20 +189,23 @@ module('Unit | Actions | interaction creators', function(hooks) {
     assert.equal(type, ACTION_TYPES.SET_SEARCH_TERM, 'action has the correct type');
   });
 
-  test('toggleSelectAllEvents has the correct payload when all events were not selected before toggling', function(assert) {
+  test('toggleSelectAllEvents has the correctly sorted payload when all events were not selected before toggling', function(assert) {
     const getState = () => {
       return new ReduxDataHelper()
+        .eventThreshold(100000)
         .eventResults(eventResultsData)
+        .withoutMinimumCoreServicesVersionForColumnSorting()
+        .language()
+        .eventsQuerySort('medium', 'Descending')
         .selectedEventIds({
           0: 1,
           2: 3
         })
         .build();
     };
-
     const dispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.SELECT_EVENTS, 'action has correct type');
-      assert.deepEqual(action.payload, { 0: 1, 1: 2, 2: 3 }, 'action selects all events');
+      assert.deepEqual(action.payload, { 0: 3, 1: 1, 2: 2 }, 'action selects all events in descending order by medium');
     };
 
     const thunk = interactionCreators.toggleSelectAllEvents();

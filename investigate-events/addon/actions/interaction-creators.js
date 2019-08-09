@@ -15,7 +15,7 @@ import {
   getDefaultPreferences
 } from 'investigate-events/reducers/investigate/data-selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
-import { SORT_ORDER, areAllEventsSelected } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { SORT_ORDER, areAllEventsSelected, clientSortedData } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { isConsoleEmpty } from 'investigate-events/reducers/investigate/query-stats/selectors';
 
 /**
@@ -350,16 +350,15 @@ export const toggleQueryConsole = () => {
   };
 };
 
+// selectAll would need items from events table as opposed to data from state as they could be sorted in client
 export const toggleSelectAllEvents = () => {
   return (dispatch, getState) => {
 
-    const state = getState().investigate.eventResults;
-    const { data } = state;
-
     const newIds = {};
     if (!areAllEventsSelected(getState())) {
-      for (let i = 0; i < data.length; i++) {
-        newIds[i] = data[i].sessionId;
+      const items = clientSortedData(getState());
+      for (let i = 0; i < items.length; i++) {
+        newIds[i] = items[i].sessionId;
       }
     }
 
