@@ -10,9 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -30,26 +28,27 @@ public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
 
     private String testName;
 
+    @Parameters("historical_days_back")
     @BeforeClass
-    public void beforeClass() throws JSONException {
+    public void beforeClass(@Optional("10") int historicalDaysBack) throws JSONException {
         System.out.println("Starting OutputRunPrepareData beforeClass...");
 
-        testManager.process(parse(calcDaysBack(30) + "T00:00:00.00Z"), parse(calcDaysBack(2) + "T13:00:00.00Z"),"userId_hourly");
-        testManager.process(parse(calcDaysBack(30) + "T00:00:00.00Z"), parse(calcDaysBack(2) + "T13:00:00.00Z"),"sslSubject_hourly");
-        testManager.process(parse(calcDaysBack(30) + "T00:00:00.00Z"), parse(calcDaysBack(2) + "T13:00:00.00Z"),"ja3_hourly");
+        testManager.process(parse(calcDaysBack(historicalDaysBack) + "T00:00:00.00Z"), parse(calcDaysBack(2) + "T13:00:00.00Z"),"userId_hourly");
+        testManager.process(parse(calcDaysBack(historicalDaysBack) + "T00:00:00.00Z"), parse(calcDaysBack(2) + "T13:00:00.00Z"),"sslSubject_hourly");
+        testManager.process(parse(calcDaysBack(historicalDaysBack) + "T00:00:00.00Z"), parse(calcDaysBack(2) + "T13:00:00.00Z"),"ja3_hourly");
         System.out.println("Done processing output.");
-        testManager.recalculate_user_score(parse(calcDaysBack(30) + "T00:00:00.00Z"), parse(calcDaysBack(2) + "T13:00:00.00Z"), "userId");
-        testManager.recalculate_user_score(parse(calcDaysBack(30) + "T00:00:00.00Z"), parse(calcDaysBack(2) + "T13:00:00.00Z"), "ja3");
-        testManager.recalculate_user_score(parse(calcDaysBack(30) + "T00:00:00.00Z"), parse(calcDaysBack(2) + "T13:00:00.00Z"), "sslSubject");
+        testManager.recalculate_user_score(parse(calcDaysBack(historicalDaysBack) + "T00:00:00.00Z"), parse(calcDaysBack(2) + "T13:00:00.00Z"), "userId");
+        testManager.recalculate_user_score(parse(calcDaysBack(historicalDaysBack) + "T00:00:00.00Z"), parse(calcDaysBack(2) + "T13:00:00.00Z"), "ja3");
+        testManager.recalculate_user_score(parse(calcDaysBack(historicalDaysBack) + "T00:00:00.00Z"), parse(calcDaysBack(2) + "T13:00:00.00Z"), "sslSubject");
 //        firstCalculateResult = calcUsersScoreSeverity();
         System.out.println("presidio-output-processor have been finished to run");
-        testManager.process(parse(calcDaysBack(2) + "T13:00:00.00Z"), parse(calcDaysBack(1) + "T23:59:59.00Z"),"userId_hourly");
-        testManager.process(parse(calcDaysBack(2) + "T13:00:00.00Z"), parse(calcDaysBack(1) + "T23:59:59.00Z"),"sslSubject_hourly");
-        testManager.process(parse(calcDaysBack(2) + "T13:00:00.00Z"), parse(calcDaysBack(1) + "T23:59:59.00Z"),"ja3_hourly");
+        testManager.process(parse(calcDaysBack(2) + "T13:00:00.00Z"), parse(calcDaysBack(0) + "T00:00:00.00Z"),"userId_hourly");
+        testManager.process(parse(calcDaysBack(2) + "T13:00:00.00Z"), parse(calcDaysBack(0) + "T00:00:00.00Z"),"sslSubject_hourly");
+        testManager.process(parse(calcDaysBack(2) + "T13:00:00.00Z"), parse(calcDaysBack(0) + "T00:00:00.00Z"),"ja3_hourly");
         System.out.println("Done Processing output.");
-        testManager.recalculate_user_score(parse(calcDaysBack(30) + "T00:00:00.00Z"), parse(calcDaysBack(1) + "T23:59:59.00Z"), "userId");
-        testManager.recalculate_user_score(parse(calcDaysBack(30) + "T00:00:00.00Z"), parse(calcDaysBack(1) + "T23:59:59.00Z"), "ja3");
-        testManager.recalculate_user_score(parse(calcDaysBack(30) + "T00:00:00.00Z"), parse(calcDaysBack(1) + "T23:59:59.00Z"), "sslSubject");
+        testManager.recalculate_user_score(parse(calcDaysBack(historicalDaysBack) + "T00:00:00.00Z"), parse(calcDaysBack(0) + "T00:00:00.00Z"), "userId");
+        testManager.recalculate_user_score(parse(calcDaysBack(historicalDaysBack) + "T00:00:00.00Z"), parse(calcDaysBack(0) + "T00:00:00.00Z"), "ja3");
+        testManager.recalculate_user_score(parse(calcDaysBack(historicalDaysBack) + "T00:00:00.00Z"), parse(calcDaysBack(0) + "T00:00:00.00Z"), "sslSubject");
         System.out.println("presidio-output-processor have been finished to run");
 //        secondCalculateResult = calcUsersScoreSeverity();
     }

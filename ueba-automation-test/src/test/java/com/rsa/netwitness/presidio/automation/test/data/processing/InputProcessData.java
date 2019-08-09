@@ -11,6 +11,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
@@ -66,10 +67,10 @@ public class InputProcessData extends AbstractTestNGSpringContextTests {
 
     @Parameters("historical_days_back")
     @BeforeClass
-    public void prepareTestData(int historicalDaysBack){
-        // set start and end dates so that all input data will be covered
-        endDate     = Instant.now().truncatedTo(ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS);
-        startDate   = endDate.minus(historicalDaysBack + 1, ChronoUnit.DAYS);
+    public void prepareTestData(@Optional("10") int historicalDaysBack){
+        // set start and end dates so that all input data will be
+        endDate     = Instant.now().truncatedTo(ChronoUnit.DAYS);
+        startDate   = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
     }
 
     @Test
