@@ -4,12 +4,10 @@ import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { CATEGORIES, TAB_MAPPING, CATEGORY_NAME } from './categories-map';
 import { setSelectedTabData } from 'investigate-hosts/actions/data-creators/explore';
-import { loadDetailsWithExploreInput } from 'investigate-hosts/actions/data-creators/details';
 import { toggleExploreSearchResults } from 'investigate-hosts/actions/ui-state-creators';
 
 const dispatchToActions = {
   setSelectedTabData,
-  loadDetailsWithExploreInput,
   toggleExploreSearchResults
 };
 

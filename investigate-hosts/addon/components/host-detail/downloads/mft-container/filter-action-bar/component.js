@@ -8,7 +8,6 @@ const stateToComputed = (state) => ({
   selectedMftFile: state.endpoint.hostDownloads.downloads.selectedMftFile,
   serverId: state.endpointQuery.serverId,
   focusedHost: state.endpoint.detailsInput.agentId,
-  isMFTView: state.endpoint.hostDownloads.downloads.isShowMFTView,
   fileSource: state.endpoint.hostDownloads.mft.mftDirectory.fileSource,
   isOpenFilter: state.endpoint.hostDownloads.mft.mftDirectory.showFilter
 });

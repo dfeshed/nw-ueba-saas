@@ -8,8 +8,7 @@ import { next } from '@ember/runloop';
 
 const stateToComputed = (state) => ({
   selectedMftFile: state.endpoint.hostDownloads.downloads.selectedMftFile,
-  focusedHost: state.endpoint.detailsInput.agentId,
-  isMFTView: state.endpoint.hostDownloads.downloads.isShowMFTView
+  focusedHost: state.endpoint.detailsInput.agentId
 });
 
 const dispatchToActions = {

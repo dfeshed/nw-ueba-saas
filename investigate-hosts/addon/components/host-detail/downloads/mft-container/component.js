@@ -16,7 +16,6 @@ import { listOfMftFiles } from 'investigate-hosts/reducers/details/mft-directory
 
 const stateToComputed = (state) => ({
   selectedMftName: state.endpoint.hostDownloads.downloads.selectedMftName,
-  isShowMFTView: state.endpoint.hostDownloads.downloads.isShowMFTView,
   filter: state.endpoint.hostDownloads.mft.filter,
   selectedFilterId: selectedFilterId(state.endpoint.hostDownloads.mft),
   savedFilter: savedFilter(state.endpoint.hostDownloads.mft),

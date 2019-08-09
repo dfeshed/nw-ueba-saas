@@ -27,8 +27,7 @@ const stateToComputed = (state) => ({
   isMachineWindows: isMachineWindows(state),
   dllList: enrichedDllData(state),
   hookList: imageHooksData(state),
-  threadList: suspiciousThreadsData(state),
-  isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView
+  threadList: suspiciousThreadsData(state)
 });
 
 const ProcessDetails = Component.extend({

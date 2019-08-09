@@ -16,16 +16,6 @@ const toggleProcessView = () => {
   };
 };
 
-const toggleProcessDetailsView = (item, isOpen = false) => {
-  return (dispatch) => {
-    dispatch(deSelectAllProcess());
-    if (item) {
-      const { pid } = item;
-      dispatch(getProcessDetails(pid));
-    }
-    dispatch({ type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VIEW, payload: { isOpen } });
-  };
-};
 
 const toggleSelectedProcessDllRow = (item) => ({ type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_ROW, payload: item });
 
@@ -135,7 +125,6 @@ export {
   selectAllProcess,
   deSelectAllProcess,
   setRowIndex,
-  toggleProcessDetailsView,
   toggleSelectedProcessDllRow,
   setDllRowSelectedId,
   getProcessDetails

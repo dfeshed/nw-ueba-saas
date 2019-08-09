@@ -4,7 +4,6 @@ import * as ACTION_TYPES from '../types';
 import { handleError } from '../creator-utils';
 import { isEmpty } from '@ember/utils';
 import { resetHostDownloadLink } from 'investigate-hosts/actions/ui-state-creators';
-import { initializeAgentDetails, setNewTabView } from 'investigate-hosts/actions/data-creators/details';
 import { setupEndpointServer, changeEndpointServer } from 'investigate-shared/actions/data-creators/endpoint-server-creators';
 import { parseQueryString } from 'investigate-shared/utils/query-util';
 import _ from 'lodash';
@@ -14,8 +13,6 @@ import { resetRiskContext, getRiskScoreContext, getRespondServerStatus } from 'i
 import { getServiceId } from 'investigate-shared/actions/data-creators/investigate-creators';
 import { getRestrictedFileList } from 'investigate-shared/actions/data-creators/file-status-creators';
 import * as SHARED_ACTION_TYPES from 'investigate-shared/actions/types';
-import { toggleProcessDetailsView } from 'investigate-hosts/actions/data-creators/process';
-import { toggleMftView, getFirstPageOfDownloads, getSubDirectories } from './downloads';
 import { extractHostColumns } from 'investigate-hosts/reducers/schema/selectors';
 
 import { debug } from '@ember/debug';
@@ -42,47 +39,6 @@ const bootstrapInvestigateHosts = (query) => {
     }
   };
 };
-
-const initializeHostDetailsPage = ({ sid, machineId, tabName = 'OVERVIEW', subTabName, pid, mftFile, mftName }, isPageLoading) => {
-  return async(dispatch, getState) => {
-    if (isPageLoading) {
-      const id = sid || getState().endpointQuery.serverId;
-      await dispatch(changeEndpointServer({ id }));
-      // Wait for user preference to load
-      await dispatch(initializeHostsPreferences());
-    }
-
-    dispatch(resetHostDownloadLink());
-
-    if (isPageLoading) {
-      dispatch(initializeAgentDetails({ agentId: machineId }, true, true, tabName));
-    } else {
-      if (tabName === 'DOWNLOADS-MFT') {
-        dispatch(setNewTabView('DOWNLOADS'));
-      } else {
-        dispatch(setNewTabView(tabName));
-      }
-    }
-    // To redirect to the Process details panel in the process tab
-    next(() => {
-      if (tabName === 'PROCESS' && subTabName === 'process-details') {
-        dispatch(toggleProcessDetailsView({ pid: parseInt(pid, 10) }, true));
-      }
-      if (tabName === 'DOWNLOADS-MFT') {
-        dispatch(toggleMftView({ mftFile, mftName }));
-        dispatch({ type: ACTION_TYPES.RESET_MFT_FILE_DATA });
-        dispatch(getSubDirectories());
-
-      } else if (tabName === 'DOWNLOADS') {
-        dispatch(toggleMftView({ mftFile: '', mftName: '' }));
-        getFirstPageOfDownloads();
-      } else {
-        dispatch(toggleMftView(''));
-      }
-    });
-  };
-};
-
 
 const changeEndpointServerSelection = (server) => {
   return async(dispatch) => {
@@ -425,7 +381,6 @@ export {
   setFocusedHost,
   bootstrapInvestigateHosts,
   changeEndpointServerSelection,
-  initializeHostDetailsPage,
   downloadMFT,
   saveColumnConfig
 };

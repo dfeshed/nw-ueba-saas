@@ -10,11 +10,9 @@ const stateToComputed = (state) => ({
   selectedTabComponent: selectedTabComponent(state),
   isSnapshotsAvailable: isSnapshotsAvailable(state),
   isSnapshotsLoading: state.endpoint.detailsInput.isSnapshotsLoading,
-  isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView,
   selectedServiceData: selectedServiceWithStatus(state),
   isFileAnalysisView: state.endpoint.fileAnalysis.isFileAnalysisView,
-  downloadLink: downloadLink(state),
-  isMFTView: state.endpoint.hostDownloads.downloads.isShowMFTView
+  downloadLink: downloadLink(state)
 });
 
 const DetailComponent = Component.extend({

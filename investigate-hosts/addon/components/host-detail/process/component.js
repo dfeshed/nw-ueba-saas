@@ -61,7 +61,6 @@ const stateToComputed = (state) => ({
   isRemediationAllowed: isRemediationAllowed(state, 'processes'),
   serviceId: serviceId(state),
   timeRange: timeRange(state),
-  isProcessDetailsView: state.endpoint.visuals.isProcessDetailsView,
   risk: riskState(state),
   fileDownloadButtonStatus: fileDownloadButtonStatus(state, 'process'),
   isFloatingOrMemoryDll: isAnyFileFloatingOrMemoryDll(state, 'process'),

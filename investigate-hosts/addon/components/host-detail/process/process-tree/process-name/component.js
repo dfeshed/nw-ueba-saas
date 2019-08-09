@@ -2,12 +2,7 @@ import Component from '@ember/component';
 import { get, set } from '@ember/object';
 import computed, { alias } from 'ember-computed-decorators';
 import { htmlSafe } from '@ember/string';
-import { toggleProcessDetailsView } from 'investigate-hosts/actions/data-creators/process';
-import { connect } from 'ember-redux';
 
-const dispatchToActions = {
-  toggleProcessDetailsView
-};
 const BASE_PADDING = 30;
 
 const ProcessName = Component.extend({
@@ -42,4 +37,4 @@ const ProcessName = Component.extend({
     }
   }
 });
-export default connect(undefined, dispatchToActions)(ProcessName);
+export default ProcessName;

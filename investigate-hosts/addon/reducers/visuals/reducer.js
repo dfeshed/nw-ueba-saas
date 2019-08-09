@@ -21,17 +21,10 @@ const getStateKey = (tabName, subTabName) => {
   }
 };
 
-
 const visuals = handleActions({
   [ACTION_TYPES.RESET_INPUT_DATA]: (state) => state.merge(visualsInitialState),
 
   [ACTION_TYPES.TOGGLE_PROCESS_VIEW]: (state) => state.set('isTreeView', !state.isTreeView),
-
-  [ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VIEW]: (state, { payload: { isOpen } }) => state.set('isProcessDetailsView', isOpen),
-
-  [ACTION_TYPES.OPEN_PROCESS_DETAILS]: (state) => state.set('isProcessDetailsView', true),
-
-  [ACTION_TYPES.CLOSE_PROCESS_DETAILS]: (state) => state.set('isProcessDetailsView', false),
 
   [ACTION_TYPES.CHANGE_AUTORUNS_TAB]: (state, { payload: { tabName } }) => {
     return state.set('activeAutorunTab', tabName);

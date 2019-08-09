@@ -89,20 +89,6 @@ test('The TOGGLE_DELETE_HOSTS_MODAL toggles the delete hosts modal state', funct
   assert.deepEqual(result, expectedEndState);
 });
 
-test('The TOGGLE_PROCESS_VIEW action toggles the tree view state', function(assert) {
-  const previous = Immutable.from({
-    isTreeView: true
-  });
-
-  const expectedEndState = {
-    isTreeView: false
-  };
-
-  const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_PROCESS_VIEW });
-
-  assert.deepEqual(result, expectedEndState);
-});
-
 test('The SET_SYSTEM_INFORMATION_TAB action sets the system information tab', function(assert) {
   const previous = Immutable.from({
     activeSystemInformationTab: 'HOST_ENTRIES'
@@ -127,26 +113,6 @@ test('The SET_PROPERTY_PANEL_TAB action sets the property panel tab', function(a
   };
 
   const result = reducer(previous, { type: ACTION_TYPES.SET_PROPERTY_PANEL_TAB, payload: { tabName: 'POLICIES' } });
-
-  assert.deepEqual(result, expectedEndState);
-});
-test('The TOGGLE_PROCESS_DETAILS_VIEW ', function(assert) {
-  const previous = Immutable.from({
-    isProcessDetailsView: false
-  });
-  const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VIEW, payload: { isOpen: true } });
-  assert.deepEqual(result.isProcessDetailsView, true);
-});
-test('The CLOSE_PROCESS_DETAILS ', function(assert) {
-  const previous = Immutable.from({
-    isProcessDetailsView: true
-  });
-
-  const expectedEndState = {
-    isProcessDetailsView: false
-  };
-
-  const result = reducer(previous, { type: ACTION_TYPES.CLOSE_PROCESS_DETAILS });
 
   assert.deepEqual(result, expectedEndState);
 });

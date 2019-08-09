@@ -131,8 +131,6 @@ const initializeHostDetailsPage = ({ sid, id: agentId }) => {
     await dispatch(getRequiredHostInformation(agentId));
 
     dispatch(resetHostDownloadLink());
-
-
   };
 };
 

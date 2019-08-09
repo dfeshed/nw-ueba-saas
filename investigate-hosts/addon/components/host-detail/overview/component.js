@@ -13,14 +13,12 @@ import { getPropertyData,
 import hostDetailsConfig from 'investigate-hosts/components/property-panel/overview-property-config';
 import { getPoliciesPropertyConfig } from 'investigate-hosts/components/property-panel/policies-property-config';
 import {
-  setAlertTab,
   setPropertyPanelTabView
 } from 'investigate-hosts/actions/data-creators/details';
 import { toggleDetailRightPanel } from 'investigate-hosts/actions/ui-state-creators';
 import { isInsightsAgent } from 'investigate-hosts/reducers/hosts/selectors';
 
 const dispatchToActions = {
-  setAlertTab,
   getUpdatedRiskScoreContext,
   setSelectedAlert,
   setPropertyPanelTabView,

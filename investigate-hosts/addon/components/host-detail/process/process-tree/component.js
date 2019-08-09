@@ -64,7 +64,6 @@ const stateToComputed = (state) => ({
   agentId: state.endpoint.detailsInput.agentId,
   selectedProcessList: state.endpoint.process.selectedProcessList,
   selectedProcessId: state.endpoint.process.selectedProcessId,
-  isProcessDetailsView: state.endpoint.process.isProcessDetailsView,
   restrictedFileList: state.fileStatus.restrictedFileList,
   processList: processList(state),
   serviceList: serviceList(state),

@@ -1,4 +1,4 @@
-{{#host-detail/utils/host-title-bar tabs=hostDetailTabs defaultAction=(action 'setNewTabView') as |tab|}}
+{{#host-detail/utils/host-title-bar tabs=hostDetailTabs as |tab|}}
   {{#link-to 'hosts.details.tab' agentId tab.name (query-params searchKey=selectedTab.searchKey checksum=selectedTab.checksum scanTime=selectedTab.scanTime subTabName=tab.subTabName)}}
     <div class="label">{{t tab.label}}</div>
   {{/link-to}}

@@ -1,6 +1,5 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { setNewTabView } from 'investigate-hosts/actions/data-creators/details';
 import { getHostDetailTabs, isOnOverviewTab, isActiveTabDownloads } from 'investigate-hosts/reducers/visuals/selectors';
 import { hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 
@@ -14,10 +13,6 @@ const stateToComputed = (state) => ({
   hideSnapshotAndExploreSearch: isActiveTabDownloads(state)
 });
 
-const dispatchToActions = {
-  setNewTabView
-};
-
 const TitleBarComponent = Component.extend({
 
   tagName: 'hbox',
@@ -26,4 +21,4 @@ const TitleBarComponent = Component.extend({
 
 });
 
-export default connect(stateToComputed, dispatchToActions)(TitleBarComponent);
+export default connect(stateToComputed)(TitleBarComponent);
