@@ -5,6 +5,7 @@ import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestManager;
 import org.json.JSONException;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -22,6 +23,8 @@ import static presidio.data.generators.utils.TimeUtils.calcDaysBack;
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = { OutputTestManager.class, MongoConfig.class})
 public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
+    static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
+            LoggerFactory.getLogger(OutputRunPrepareData.class.getName());
 
     @Autowired
     private OutputTestManager testManager;
@@ -31,7 +34,7 @@ public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
     @Parameters("historical_days_back")
     @BeforeClass
     public void beforeClass(@Optional("10") int historicalDaysBack) throws JSONException {
-        System.out.println("Starting OutputRunPrepareData beforeClass...");
+        LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack);
 
         testManager.process(parse(calcDaysBack(historicalDaysBack) + "T00:00:00.00Z"), parse(calcDaysBack(2) + "T13:00:00.00Z"),"userId_hourly");
         testManager.process(parse(calcDaysBack(historicalDaysBack) + "T00:00:00.00Z"), parse(calcDaysBack(2) + "T13:00:00.00Z"),"sslSubject_hourly");
