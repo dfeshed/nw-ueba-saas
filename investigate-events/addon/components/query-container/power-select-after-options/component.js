@@ -137,6 +137,9 @@ export default Component.extend({
     onMouseUp(e) {
       this._chooseByElement(e.currentTarget);
     },
+    stopPropagation() {
+      return false;
+    },
     // Not creating a message handler just yet as there is only one
     // type of message coming in.
     handleMessage(type) {
