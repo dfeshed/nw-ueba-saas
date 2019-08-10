@@ -22,7 +22,7 @@ public class ASCIIArtGenerator {
     public static final int ART_SIZE_LARGE = 18;
     public static final int ART_SIZE_HUGE = 24;
 
-    private static final String DEFAULT_ART_SYMBOL = "+";
+    private static final String DEFAULT_ART_SYMBOL = "o";
 
     public enum ASCIIArtFont {
         ART_FONT_DIALOG("Dialog"), ART_FONT_DIALOG_INPUT("DialogInput"),
@@ -72,7 +72,7 @@ public class ASCIIArtGenerator {
         System.out.println();
     }
     public void printTextArt(String artText) {
-        printTextArt(artText, ART_SIZE_SMALL, ASCIIArtFont.ART_FONT_DIALOG, DEFAULT_ART_SYMBOL);
+        printTextArt(artText, ART_SIZE_SMALL, ASCIIArtFont.ART_FONT_MONO, DEFAULT_ART_SYMBOL);
     }
 
     /**
