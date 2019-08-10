@@ -7,6 +7,7 @@ import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
 import com.rsa.netwitness.presidio.automation.enums.DataInputSource;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
+import com.rsa.netwitness.presidio.automation.utils.common.ASCIIArtGenerator;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,8 +27,8 @@ import static com.rsa.netwitness.presidio.automation.enums.DataInputSource.MONGO
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class AdapterProcessData extends AbstractTestNGSpringContextTests {
-    static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(AdapterProcessData.class.getName());
+    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(AdapterProcessData.class.getName());
+    private static ASCIIArtGenerator ART_GEN = new ASCIIArtGenerator();
 
     @Autowired
     private AdapterTestManager adapterTestManager;
@@ -56,6 +57,7 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
                       @Optional("1") int anomalyDay,
                       @Optional("MONGO") DataInputSource setDataInputSource) {
 
+        ART_GEN.printTextArt(getClass().getSimpleName());
         LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay + " setDataInputSource=" + setDataInputSource);
         endDate = Instant.now().truncatedTo(ChronoUnit.DAYS);
         startDate = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);

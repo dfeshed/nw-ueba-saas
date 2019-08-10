@@ -1,6 +1,7 @@
 package com.rsa.netwitness.presidio.automation.test.data.processing;
 
 import com.rsa.netwitness.presidio.automation.utils.ade.AdeDataProcessingHelper;
+import com.rsa.netwitness.presidio.automation.utils.common.ASCIIArtGenerator;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
@@ -23,8 +24,8 @@ import static org.testng.collections.Lists.newArrayList;
 
 
 public class ProcessSmartsData extends AbstractTestNGSpringContextTests {
-    static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(ProcessSmartsData.class.getName());
+    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ProcessSmartsData.class.getName());
+    private static ASCIIArtGenerator ART_GEN = new ASCIIArtGenerator();
 
     private AdeDataProcessingHelper adeTestManagerPar = new AdeDataProcessingHelper();
     private List<String> SCHEMAS_TO_PROCESS = newArrayList("file", "active_directory", "authentication", "process", "registry", "tls");
@@ -34,6 +35,7 @@ public class ProcessSmartsData extends AbstractTestNGSpringContextTests {
     @Parameters({"historical_days_back", "anomaly_day_back"})
     @BeforeClass
     public void prepare(@Optional("10") int historicalDaysBack, @Optional("1") int anomalyDay) throws InterruptedException {
+        ART_GEN.printTextArt(getClass().getSimpleName());
         LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay);
 
         List<List<? extends Callable<Integer>>> parallelTasksToExecute = Stream.of(

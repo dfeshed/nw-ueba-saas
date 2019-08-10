@@ -2,6 +2,7 @@ package com.rsa.netwitness.presidio.automation.test.data.processing;
 
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
+import com.rsa.netwitness.presidio.automation.utils.common.ASCIIArtGenerator;
 import com.rsa.netwitness.presidio.automation.utils.input.InputTestManager;
 import com.rsa.netwitness.presidio.automation.utils.input.config.InputTestManagerConfig;
 import org.slf4j.LoggerFactory;
@@ -28,8 +29,8 @@ import java.time.temporal.ChronoUnit;
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = {MongoConfig.class, InputTestManagerConfig.class})
 public class InputProcessData extends AbstractTestNGSpringContextTests {
-    static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(InputProcessData.class.getName());
+    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(InputProcessData.class.getName());
+    private static ASCIIArtGenerator ART_GEN = new ASCIIArtGenerator();
 
     @Autowired
     private InputTestManager inputTestManager;
@@ -72,6 +73,7 @@ public class InputProcessData extends AbstractTestNGSpringContextTests {
     @Parameters("historical_days_back")
     @BeforeClass
     public void prepareTestData(@Optional("10") int historicalDaysBack){
+        ART_GEN.printTextArt(getClass().getSimpleName());
         LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack);
         endDate     = Instant.now().truncatedTo(ChronoUnit.DAYS);
         startDate   = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
