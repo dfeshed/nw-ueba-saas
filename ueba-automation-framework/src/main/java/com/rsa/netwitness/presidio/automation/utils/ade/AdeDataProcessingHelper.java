@@ -68,7 +68,7 @@ public class AdeDataProcessingHelper {
 
         @Override
         public Integer call() {
-            LOGGER.info("ProcessScoreAggr started for " + schema);
+            LOGGER.info("ProcessScoreAggr started for " + schema.toUpperCase());
 
             String logPath = "/tmp/" + PRESIDIO_ADE_APP_SCORE_AGGR + "_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
 
@@ -78,7 +78,7 @@ public class AdeDataProcessingHelper {
                             + " > " + logPath);
             printLogFile(logPath);
             Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue() + "\nLog: " + logPath);
-            LOGGER.info("ProcessScoreAggr finished for " + schema);
+            LOGGER.info("ProcessScoreAggr["+ schema.toUpperCase()+"] completed successfully.");
             return p4.exitValue();
         }
     }
@@ -96,7 +96,7 @@ public class AdeDataProcessingHelper {
 
         @Override
         public Integer call() {
-            LOGGER.info("ProcessModelFeatureBuckets started for " + schema);
+            LOGGER.info("ProcessModelFeatureBuckets started for " + schema.toUpperCase());
 
             String logPath = "/tmp/" + PRESIDIO_ADE_APP_MODEL_FEATURE_BUCKETS + "_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
             // builds the histograms (aggr_<feature>Histogram<context+dataSource>Daily)
@@ -105,7 +105,7 @@ public class AdeDataProcessingHelper {
                     "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
                             + " > " + logPath);
             printLogFile(logPath);
-            LOGGER.info("ProcessModelFeatureBuckets finished for " + schema);
+            LOGGER.info("ProcessModelFeatureBuckets["+ schema.toUpperCase()+"] completed successfully.");
             return p4.exitValue();
         }
     }
@@ -123,7 +123,8 @@ public class AdeDataProcessingHelper {
 
         @Override
         public Integer call() {
-            LOGGER.info("ProcessSmart started for " + entity);
+            LOGGER.info("ProcessSmart started for " + entity.toUpperCase());
+
             String logPath = "/tmp/" + PRESIDIO_ADE_APP_SMART + "_process_" + entity + "_" + start.toString() + "_" + end.toString() + ".log";
 
             Process p4 = TerminalCommands.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_SMART + ".jar", true, Consts.PRESIDIO_DIR, "process", "--smart_record_conf_name " + entity,
@@ -132,7 +133,7 @@ public class AdeDataProcessingHelper {
 
             printLogFile(logPath);
             Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue() + "\nLog: " + logPath);
-            LOGGER.info("ProcessSmart finished for " + entity);
+            LOGGER.info("ProcessSmart["+ entity.toUpperCase()+"] completed successfully.");
             return p4.exitValue();
         }
     }
@@ -149,7 +150,8 @@ public class AdeDataProcessingHelper {
 
         @Override
         public Integer call() {
-            LOGGER.info("ProcessAccumulateSmart started for " + entity);
+            LOGGER.info("ProcessAccumulateSmart started for " + entity.toUpperCase());
+
             // builds F features
             String logPath = "/tmp/" + PRESIDIO_ADE_APP_ACCUMULATE_SMART + "_run_" + entity + "_" + start.toString() + "_" + end.toString() + ".log";
             Process p4 = TerminalCommands.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_ACCUMULATE_SMART + ".jar", true, Consts.PRESIDIO_DIR, "run", "--smart_record_conf_name " + entity,
@@ -158,7 +160,7 @@ public class AdeDataProcessingHelper {
 
             printLogFile(logPath);
             Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue() + "\nLog: " + logPath);
-            LOGGER.info("ProcessAccumulateSmart finished for " + entity);
+            LOGGER.info("ProcessAccumulateSmart["+ entity.toUpperCase()+"] completed successfully.");
             return p4.exitValue();
         }
     }
@@ -176,7 +178,8 @@ public class AdeDataProcessingHelper {
 
         @Override
         public Integer call() {
-            LOGGER.info("ProcessModeling started for " + group_name);
+            LOGGER.info("ProcessModeling started for " + group_name.toUpperCase());
+
             // Builds models according to the group_name:
             // group_name :  [enriched-record-models or feature-aggregation-record-models(F) or smart-record-models ]
             String logPath = "/tmp/" + PRESIDIO_ADE_APP_MODELING + "_process_" + group_name + "_" + session_id + "_" + end.toString() + ".log";
@@ -187,7 +190,7 @@ public class AdeDataProcessingHelper {
 
             printLogFile(logPath);
             Assert.assertEquals(0, p3.exitValue(), "Shell command failed. exit value: " + p3.exitValue() + "\nLog: " + logPath);
-            LOGGER.info("ProcessModeling finished for " + group_name);
+            LOGGER.info("ProcessModeling["+ group_name.toUpperCase()+"] completed successfully.");
             return p3.exitValue();
         }
     }
@@ -206,7 +209,7 @@ public class AdeDataProcessingHelper {
 
         @Override
         public Integer call() {
-            LOGGER.info("ProcessAccumulateAggr started for " + schema);
+            LOGGER.info("ProcessAccumulateAggr started for " + schema.toUpperCase());
 
             String logPath = "/tmp/" + PRESIDIO_ADE_APP_ACCUMULATE_AGGR + "_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
             // builds F features
@@ -216,7 +219,7 @@ public class AdeDataProcessingHelper {
                             + " > " + logPath);
             printLogFile(logPath);
             Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue() + "\nLog: " + logPath);
-            LOGGER.info("ProcessAccumulateAggr finished for " + schema);
+            LOGGER.info("ProcessAccumulateAggr["+ schema.toUpperCase()+"] completed successfully.");
             return p4.exitValue();
         }
     }
@@ -238,7 +241,7 @@ public class AdeDataProcessingHelper {
 
         @Override
         public Integer call() {
-            LOGGER.info("ProcessFeatureAggr started for " + schema);
+            LOGGER.info("ProcessFeatureAggr started for " + schema.toUpperCase());
 
             String logPath = "/tmp/" + PRESIDIO_ADE_APP_FEATURE_AGGR + "_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
 
@@ -248,7 +251,7 @@ public class AdeDataProcessingHelper {
                             + " > " + logPath);
             printLogFile(logPath);
             Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue() + "\nLog: " + logPath);
-            LOGGER.info("ProcessFeatureAggr finished for " + schema);
+            LOGGER.info("ProcessFeatureAggr["+ schema.toUpperCase()+"] completed successfully.");
             return p4.exitValue();
         }
     }
