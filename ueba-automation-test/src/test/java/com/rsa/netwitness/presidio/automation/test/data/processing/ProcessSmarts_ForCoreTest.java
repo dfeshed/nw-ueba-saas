@@ -15,6 +15,7 @@ import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
+@Deprecated
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = {MongoConfig.class, ADETestManagerConfig.class})
 public class ProcessSmarts_ForCoreTest extends AbstractTestNGSpringContextTests {
@@ -37,113 +38,113 @@ public class ProcessSmarts_ForCoreTest extends AbstractTestNGSpringContextTests 
         /** Static Ps scenario on day back 5**/
         //Ps for normal 35-5
         if (testFile)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay + 3), "hourly", "file");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), "hourly", "file");
         if (testActiveDirectory)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay + 3), "hourly", "active_directory");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), "hourly", "active_directory");
         if (testAuthentication)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay + 3), "hourly", "authentication");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), "hourly", "authentication");
         if (testProcess)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay + 3), "hourly", "process");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), "hourly", "process");
         if (testRegistry)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay + 3), "hourly", "registry");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), "hourly", "registry");
         if (testTls)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay + 3), "hourly", "tls");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), "hourly", "tls");
 
         //SMART
-        adeTestManager.processSmart(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay + 3));
-        adeTestManager.processSmart(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay + 3), "sslSubject_hourly");
-        adeTestManager.processSmart(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay + 3), "ja3_hourly");
-        adeTestManager.processAccumulateSmart(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay + 3));
-        adeTestManager.processAccumulateSmart(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay + 3), "sslSubject_hourly");
-        adeTestManager.processAccumulateSmart(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay + 3), "ja3_hourly");
-        adeTestManager.processModeling("smart-record-models", "test-run", DateTimeHelperUtils.getDate(anomalyDay + 3));
+        adeTestManager.processSmart(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3));
+        adeTestManager.processSmart(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), "sslSubject_hourly");
+        adeTestManager.processSmart(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), "ja3_hourly");
+        adeTestManager.processAccumulateSmart(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3));
+        adeTestManager.processAccumulateSmart(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), "sslSubject_hourly");
+        adeTestManager.processAccumulateSmart(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), "ja3_hourly");
+        adeTestManager.processModeling("smart-record-models", "test-run", DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3));
 
         // new Ps again, 5-4 db
         if (testFile)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(anomalyDay + 3), DateTimeHelperUtils.getDate(anomalyDay + 2), "hourly", "file");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 2), "hourly", "file");
         if (testActiveDirectory)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(anomalyDay + 3), DateTimeHelperUtils.getDate(anomalyDay + 2), "hourly", "active_directory");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 2), "hourly", "active_directory");
         if (testAuthentication)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(anomalyDay + 3), DateTimeHelperUtils.getDate(anomalyDay + 2), "hourly", "authentication");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 2), "hourly", "authentication");
         if (testProcess)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(anomalyDay + 3), DateTimeHelperUtils.getDate(anomalyDay + 2), "hourly", "process");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 2), "hourly", "process");
         if (testRegistry)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(anomalyDay + 3), DateTimeHelperUtils.getDate(anomalyDay + 2), "hourly", "registry");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 2), "hourly", "registry");
         if (testTls)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(anomalyDay + 3), DateTimeHelperUtils.getDate(anomalyDay + 2), "hourly", "tls");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 2), "hourly", "tls");
 
         // New Smarts
-        adeTestManager.processSmart(DateTimeHelperUtils.getDate(anomalyDay + 3),  DateTimeHelperUtils.getDate(anomalyDay + 2));
-        adeTestManager.processSmart(DateTimeHelperUtils.getDate(anomalyDay + 3), DateTimeHelperUtils.getDate(anomalyDay + 2), "sslSubject_hourly");
-        adeTestManager.processSmart(DateTimeHelperUtils.getDate(anomalyDay + 3), DateTimeHelperUtils.getDate(anomalyDay + 2), "ja3_hourly");
+        adeTestManager.processSmart(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3),  DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 2));
+        adeTestManager.processSmart(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 2), "sslSubject_hourly");
+        adeTestManager.processSmart(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 2), "ja3_hourly");
         /** Static Ps and Fs scenario on anomaly day **/
 
         //Ps
         if (testFile)
-            adeTestManager.processModelFeatureBuckets(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay), "hourly", "file");
+            adeTestManager.processModelFeatureBuckets(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), "hourly", "file");
         if (testActiveDirectory)
-            adeTestManager.processModelFeatureBuckets(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay), "hourly", "active_directory");
+            adeTestManager.processModelFeatureBuckets(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), "hourly", "active_directory");
         if (testAuthentication)
-            adeTestManager.processModelFeatureBuckets(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay), "hourly", "authentication");
+            adeTestManager.processModelFeatureBuckets(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), "hourly", "authentication");
         if (testProcess)
-            adeTestManager.processModelFeatureBuckets(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay), "hourly", "process");
+            adeTestManager.processModelFeatureBuckets(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), "hourly", "process");
         if (testRegistry)
-            adeTestManager.processModelFeatureBuckets(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay), "hourly", "registry");
+            adeTestManager.processModelFeatureBuckets(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), "hourly", "registry");
         if (testTls)
-            adeTestManager.processModelFeatureBuckets(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay), "hourly", "tls");
+            adeTestManager.processModelFeatureBuckets(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), "hourly", "tls");
 
-        adeTestManager.processModeling("enriched-record-models", "test-run", DateTimeHelperUtils.getDate(anomalyDay));
+        adeTestManager.processModeling("enriched-record-models", "test-run", DateTimeHelperUtils.truncateAndMinusDays(anomalyDay));
 
         if (testFile)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(anomalyDay), DateTimeHelperUtils.getDate(anomalyDay - 1), "hourly", "file");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay - 1), "hourly", "file");
         if (testActiveDirectory)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(anomalyDay), DateTimeHelperUtils.getDate(anomalyDay - 1), "hourly", "active_directory");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay - 1), "hourly", "active_directory");
         if (testAuthentication)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(anomalyDay), DateTimeHelperUtils.getDate(anomalyDay - 1), "hourly", "authentication");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay - 1), "hourly", "authentication");
         if (testProcess)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(anomalyDay), DateTimeHelperUtils.getDate(anomalyDay - 1), "hourly", "process");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay - 1), "hourly", "process");
         if (testRegistry)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(anomalyDay), DateTimeHelperUtils.getDate(anomalyDay - 1), "hourly", "registry");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay - 1), "hourly", "registry");
         if (testTls)
-            adeTestManager.processScoreAggr(DateTimeHelperUtils.getDate(anomalyDay), DateTimeHelperUtils.getDate(anomalyDay - 1), "hourly", "tls");
+            adeTestManager.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay - 1), "hourly", "tls");
 
         //Fs
         if (testFile)
-            adeTestManager.processAccumulateAggr(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay), "file");
+            adeTestManager.processAccumulateAggr(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), "file");
         if (testActiveDirectory)
-            adeTestManager.processAccumulateAggr(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay), "active_directory");
+            adeTestManager.processAccumulateAggr(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), "active_directory");
         if (testAuthentication)
-            adeTestManager.processAccumulateAggr(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay), "authentication");
+            adeTestManager.processAccumulateAggr(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), "authentication");
         if (testProcess)
-            adeTestManager.processAccumulateAggr(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay), "process");
+            adeTestManager.processAccumulateAggr(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), "process");
         if (testRegistry)
-            adeTestManager.processAccumulateAggr(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay), "registry");
+            adeTestManager.processAccumulateAggr(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), "registry");
         if (testTls)
-            adeTestManager.processAccumulateAggr(DateTimeHelperUtils.getDate(historicalDaysBack), DateTimeHelperUtils.getDate(anomalyDay), "tls");
+            adeTestManager.processAccumulateAggr(DateTimeHelperUtils.truncateAndMinusDays(historicalDaysBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), "tls");
 
-        adeTestManager.processModeling("feature-aggregation-record-models", "test-run", DateTimeHelperUtils.getDate(anomalyDay));
+        adeTestManager.processModeling("feature-aggregation-record-models", "test-run", DateTimeHelperUtils.truncateAndMinusDays(anomalyDay));
 
         if (testFile)
-            adeTestManager.processFeatureAggr(DateTimeHelperUtils.getDate(anomalyDay), DateTimeHelperUtils.getDate(anomalyDay - 1), "hourly", "file");
+            adeTestManager.processFeatureAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay - 1), "hourly", "file");
         if (testActiveDirectory)
-            adeTestManager.processFeatureAggr(DateTimeHelperUtils.getDate(anomalyDay), DateTimeHelperUtils.getDate(anomalyDay - 1), "hourly", "active_directory");
+            adeTestManager.processFeatureAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay - 1), "hourly", "active_directory");
         if (testAuthentication)
-            adeTestManager.processFeatureAggr(DateTimeHelperUtils.getDate(anomalyDay), DateTimeHelperUtils.getDate(anomalyDay - 1), "hourly", "authentication");
+            adeTestManager.processFeatureAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay - 1), "hourly", "authentication");
         if (testProcess)
-            adeTestManager.processFeatureAggr(DateTimeHelperUtils.getDate(anomalyDay), DateTimeHelperUtils.getDate(anomalyDay - 1), "hourly", "process");
+            adeTestManager.processFeatureAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay - 1), "hourly", "process");
         if (testRegistry)
-            adeTestManager.processFeatureAggr(DateTimeHelperUtils.getDate(anomalyDay), DateTimeHelperUtils.getDate(anomalyDay - 1), "hourly", "registry");
+            adeTestManager.processFeatureAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay - 1), "hourly", "registry");
         if (testTls)
-            adeTestManager.processFeatureAggr(DateTimeHelperUtils.getDate(anomalyDay), DateTimeHelperUtils.getDate(anomalyDay - 1), "hourly", "tls");
+            adeTestManager.processFeatureAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay - 1), "hourly", "tls");
 
         /** New SMART models **/
-        adeTestManager.processAccumulateSmart(DateTimeHelperUtils.getDate(anomalyDay + 3), DateTimeHelperUtils.getDate(anomalyDay));
-        adeTestManager.processAccumulateSmart(DateTimeHelperUtils.getDate(anomalyDay + 3), DateTimeHelperUtils.getDate(anomalyDay), "sslSubject_hourly");
-        adeTestManager.processAccumulateSmart(DateTimeHelperUtils.getDate(anomalyDay + 3), DateTimeHelperUtils.getDate(anomalyDay), "ja3_hourly");
-        adeTestManager.processModeling("smart-record-models", "test-run", DateTimeHelperUtils.getDate(anomalyDay));
-        adeTestManager.processSmart(DateTimeHelperUtils.getDate(anomalyDay),  DateTimeHelperUtils.getDate(anomalyDay - 1));
-        adeTestManager.processSmart(DateTimeHelperUtils.getDate(anomalyDay), DateTimeHelperUtils.getDate(anomalyDay - 1), "sslSubject_hourly");
-        adeTestManager.processSmart(DateTimeHelperUtils.getDate(anomalyDay), DateTimeHelperUtils.getDate(anomalyDay - 1), "ja3_hourly");
+        adeTestManager.processAccumulateSmart(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay));
+        adeTestManager.processAccumulateSmart(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), "sslSubject_hourly");
+        adeTestManager.processAccumulateSmart(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay + 3), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), "ja3_hourly");
+        adeTestManager.processModeling("smart-record-models", "test-run", DateTimeHelperUtils.truncateAndMinusDays(anomalyDay));
+        adeTestManager.processSmart(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay),  DateTimeHelperUtils.truncateAndMinusDays(anomalyDay - 1));
+        adeTestManager.processSmart(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay - 1), "sslSubject_hourly");
+        adeTestManager.processSmart(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay - 1), "ja3_hourly");
     }
 
     @Test

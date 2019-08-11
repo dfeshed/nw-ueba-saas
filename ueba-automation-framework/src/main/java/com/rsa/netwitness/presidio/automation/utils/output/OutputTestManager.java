@@ -69,7 +69,7 @@ public class OutputTestManager {
     }
 
     //java -cp /home/presidio/presidio-core/bin/presidio-output-processor-1.0.0-SNAPSHOT.jar -Dloader.main=presidio.output.processor.FortscaleOutputProcessorApplication org.springframework.boot.loader.PropertiesLauncher run --schema FILE --fixed_duration_strategy 3600.0 --start_date 2017-05-01T11:00:00Z --end_date 2017-07-31T12:00:00Z
-
+    @Deprecated
     public void process(Instant startDate, Instant endDate, String smart_record_conf_name) {
         // store the data in the collections for data source
         String logFile = "/tmp/presidio-output-processor_run_" + smart_record_conf_name + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
@@ -82,6 +82,7 @@ public class OutputTestManager {
         Assert.assertEquals(0,p.exitValue(), "Shell command failed. exit value: " + p.exitValue());
     }
 
+    @Deprecated
     public void recalculate_user_score(Instant startDate, Instant endDate, String entity) {
         // store the data in the collections for data source
         String logFile = "/tmp/presidio-output_recalc_user_score_" + entity + "_" + startDate.toString() + "_" + endDate.toString() + ".log";

@@ -34,7 +34,7 @@ public class DateTimeHelperUtils {
         return time;
     }
 
-    public static Instant getDate(int daysBack){
+    public static Instant truncateAndMinusDays(int daysBack){
         Instant date = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(daysBack, ChronoUnit.DAYS);
         return date;
     }

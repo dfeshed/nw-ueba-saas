@@ -260,9 +260,9 @@ public class ADETestManager {
     }
 
     public void processEnriched2Scored(Instant firstHistoricalEventTime, int anomalyDayBack, String schema) {
-        this.processModelFeatureBuckets(firstHistoricalEventTime, DateTimeHelperUtils.getDate(anomalyDayBack), "hourly", schema);
-        this.processModeling("enriched-record-models", "test-run", DateTimeHelperUtils.getDate(anomalyDayBack));
-        this.processScoreAggr(DateTimeHelperUtils.getDate(anomalyDayBack), DateTimeHelperUtils.getDate(anomalyDayBack - 1), "hourly", schema);
+        this.processModelFeatureBuckets(firstHistoricalEventTime, DateTimeHelperUtils.truncateAndMinusDays(anomalyDayBack), "hourly", schema);
+        this.processModeling("enriched-record-models", "test-run", DateTimeHelperUtils.truncateAndMinusDays(anomalyDayBack));
+        this.processScoreAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDayBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDayBack - 1), "hourly", schema);
     }
 
     public void processEnriched2F(Instant firstHistoricalEventTime, String schema) {
@@ -270,16 +270,16 @@ public class ADETestManager {
     }
 
     public void processEnriched2F(Instant firstHistoricalEventTime, int anomalyDayBack, String schema) {
-        this.processAccumulateAggr(firstHistoricalEventTime, DateTimeHelperUtils.getDate(anomalyDayBack), schema);
-        this.processModeling("feature-aggregation-record-models", "test-run", DateTimeHelperUtils.getDate(anomalyDayBack));
-        this.processFeatureAggr(DateTimeHelperUtils.getDate(anomalyDayBack), DateTimeHelperUtils.getDate(anomalyDayBack - 1), "hourly", schema);
+        this.processAccumulateAggr(firstHistoricalEventTime, DateTimeHelperUtils.truncateAndMinusDays(anomalyDayBack), schema);
+        this.processModeling("feature-aggregation-record-models", "test-run", DateTimeHelperUtils.truncateAndMinusDays(anomalyDayBack));
+        this.processFeatureAggr(DateTimeHelperUtils.truncateAndMinusDays(anomalyDayBack), DateTimeHelperUtils.truncateAndMinusDays(anomalyDayBack - 1), "hourly", schema);
     }
 
     public void processSmart(Instant firstHistoricalEventTime, int anomalyDay) {
-//            this.processSmart(firstHistoricalEventTime, DateTimeHelperUtils.getDate(anomalyDay));
-        this.processAccumulateSmart(firstHistoricalEventTime, DateTimeHelperUtils.getDate(anomalyDay));
-        this.processModeling("smart-record-models", "test-run", DateTimeHelperUtils.getDate(anomalyDay));
-        this.processSmart(DateTimeHelperUtils.getDate(anomalyDay), DateTimeHelperUtils.getDate(anomalyDay - 1));
+//            this.processSmart(firstHistoricalEventTime, DateTimeHelperUtils.truncateAndMinusDays(anomalyDay));
+        this.processAccumulateSmart(firstHistoricalEventTime, DateTimeHelperUtils.truncateAndMinusDays(anomalyDay));
+        this.processModeling("smart-record-models", "test-run", DateTimeHelperUtils.truncateAndMinusDays(anomalyDay));
+        this.processSmart(DateTimeHelperUtils.truncateAndMinusDays(anomalyDay), DateTimeHelperUtils.truncateAndMinusDays(anomalyDay - 1));
     }
 
     public long getNumberOfScoredEnrichedDocuments(String username, int lowestScores, int highestScores, String collectionName) {
@@ -310,9 +310,9 @@ public class ADETestManager {
 
     public void processSmartsFromFs(int normalStartDayBack, int abnormalStartDayBack, int abnormalEndDaysBack) throws GeneratorException {
         /** Process events by running ADE applications*/
-        Instant normalPeriodStart = DateTimeHelperUtils.getDate(normalStartDayBack);
-        Instant abnormalPeriodStart = DateTimeHelperUtils.getDate(abnormalStartDayBack);
-        Instant abnormalPeriodEnd = DateTimeHelperUtils.getDate(abnormalEndDaysBack);
+        Instant normalPeriodStart = DateTimeHelperUtils.truncateAndMinusDays(normalStartDayBack);
+        Instant abnormalPeriodStart = DateTimeHelperUtils.truncateAndMinusDays(abnormalStartDayBack);
+        Instant abnormalPeriodEnd = DateTimeHelperUtils.truncateAndMinusDays(abnormalEndDaysBack);
 
         //Fs for normal
         processAccumulateAggr(normalPeriodStart, abnormalPeriodStart, "file");
@@ -339,9 +339,9 @@ public class ADETestManager {
 
     public void processSmartsFromPsAndFs(int normalStartDayBack, int abnormalStartDayBack, int abnormalEndDaysBack) throws GeneratorException {
         /** Process events by running ADE applications*/
-        Instant normalPeriodStart = DateTimeHelperUtils.getDate(normalStartDayBack);
-        Instant abnormalPeriodStart = DateTimeHelperUtils.getDate(abnormalStartDayBack);
-        Instant abnormalPeriodEnd = DateTimeHelperUtils.getDate(abnormalEndDaysBack);
+        Instant normalPeriodStart = DateTimeHelperUtils.truncateAndMinusDays(normalStartDayBack);
+        Instant abnormalPeriodStart = DateTimeHelperUtils.truncateAndMinusDays(abnormalStartDayBack);
+        Instant abnormalPeriodEnd = DateTimeHelperUtils.truncateAndMinusDays(abnormalEndDaysBack);
 
         //Ps for normal
         processModelFeatureBuckets(normalPeriodStart, abnormalPeriodStart, "hourly", "file");
@@ -382,10 +382,10 @@ public class ADETestManager {
 
     public void processSmartsTemp() throws GeneratorException {
         /** Process events by running ADE applications*/
-        Instant normalPeriodStart = DateTimeHelperUtils.getDate(20);
-        Instant abnormalPeriod1 = DateTimeHelperUtils.getDate(5);
-        Instant abnormalPeriod2 = DateTimeHelperUtils.getDate(3);
-        Instant abnormalPeriodEnd = DateTimeHelperUtils.getDate(1);
+        Instant normalPeriodStart = DateTimeHelperUtils.truncateAndMinusDays(20);
+        Instant abnormalPeriod1 = DateTimeHelperUtils.truncateAndMinusDays(5);
+        Instant abnormalPeriod2 = DateTimeHelperUtils.truncateAndMinusDays(3);
+        Instant abnormalPeriodEnd = DateTimeHelperUtils.truncateAndMinusDays(1);
 
         //Ps for normal
         processModelFeatureBuckets(normalPeriodStart, abnormalPeriod1, "hourly", "file");

@@ -59,6 +59,16 @@ public class ParametersUrlHelper extends UrlBase {
                 .build();
     }
 
+    public ParametersUrlBuilder withMaxSizeAndSortedAndExpendedParameters(String sortDirection, String sortFieldNames) {
+        return new ParametersUrlBuilder.Builder(URL)
+                .setPageSize(10000)
+                .setPageNumber(0)
+                .setExpand(true)
+                .setSortDirection(sortDirection)
+                .setSortFieldNames(sortFieldNames)
+                .build();
+    }
+
     public ParametersUrlBuilder withMaxSizeAndSortedAscAndMinMaxScoreParameters(long minScore, long maxScore) {
         return new ParametersUrlBuilder.Builder(URL)
                 .setPageSize(10000)

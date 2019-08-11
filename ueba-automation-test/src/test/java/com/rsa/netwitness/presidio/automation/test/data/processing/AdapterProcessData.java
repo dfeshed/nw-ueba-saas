@@ -7,6 +7,8 @@ import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
 import com.rsa.netwitness.presidio.automation.enums.DataInputSource;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
+import com.rsa.netwitness.presidio.automation.utils.common.ASCIIArtGenerator;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -25,6 +27,9 @@ import static com.rsa.netwitness.presidio.automation.enums.DataInputSource.MONGO
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class AdapterProcessData extends AbstractTestNGSpringContextTests {
+    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(AdapterProcessData.class.getName());
+    private static ASCIIArtGenerator ART_GEN = new ASCIIArtGenerator();
+
     @Autowired
     private AdapterTestManager adapterTestManager;
     @Autowired
@@ -50,9 +55,13 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     @BeforeClass
     public void setup(@Optional("10") int historicalDaysBack,
                       @Optional("1") int anomalyDay,
-                      @Optional("MONGO") DataInputSource setDataInputSource){
-        endDate     = Instant.now().truncatedTo(ChronoUnit.DAYS);
-        startDate   = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
+                      @Optional("MONGO") DataInputSource setDataInputSource) {
+
+        ART_GEN.printTextArt(getClass().getSimpleName());
+        LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay + " setDataInputSource=" + setDataInputSource);
+        endDate = Instant.now().truncatedTo(ChronoUnit.DAYS);
+        startDate = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
+        LOGGER.info("startDate=" + startDate + " endDate=" + endDate);
 
         if (setDataInputSource.equals(MONGO)) {
             adapterTestManager.setMongoPropertiesToMongoSource();
@@ -61,7 +70,7 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void adapterFileTest(){
+    public void adapterFileTest() {
         adapterTestManager.process(startDate, endDate, "hourly", "FILE");
 
         long actualEventsCount = fileRepository.count();
@@ -69,7 +78,7 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void adapterAuthenticationTest(){
+    public void adapterAuthenticationTest() {
         adapterTestManager.process(startDate, endDate, "hourly", "AUTHENTICATION");
 
         long actualEventsCount = authenticationRepository.count();
@@ -77,7 +86,7 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void adapterActiveDirectoryTest(){
+    public void adapterActiveDirectoryTest() {
         adapterTestManager.process(startDate, endDate, "hourly", "ACTIVE_DIRECTORY");
 
         long actualEventsCount = activeDirectoryRepository.count();
@@ -85,7 +94,7 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void adapterProcessTest(){
+    public void adapterProcessTest() {
         adapterTestManager.process(startDate, endDate, "hourly", "PROCESS");
 
         long actualEventsCount = processRepository.count();
@@ -93,7 +102,7 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void adapterRegistryTest(){
+    public void adapterRegistryTest() {
         adapterTestManager.process(startDate, endDate, "hourly", "REGISTRY");
 
         long actualEventsCount = registryRepository.count();
@@ -101,7 +110,7 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void adapterTlsTest(){
+    public void adapterTlsTest() {
         adapterTestManager.process(startDate, endDate, "hourly", "TLS");
         long actualEventsCount = tlsRepository.count();
         Assert.assertTrue(actualEventsCount > 0, "No data in input_tls_raw_events");
