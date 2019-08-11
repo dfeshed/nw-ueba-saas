@@ -1,5 +1,6 @@
 package fortscale.utils.transform;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -66,18 +67,22 @@ public class CopyValueTransformerTest extends TransformerTest{
 
     @Test
     public void testHierarchyCreatedForTarget() throws Exception {
-        String destinationKey = "sslSubject.name";
-        String sourceKey = "orig";
+        assertHierarchy("sslSubject.name", "sourceKey", "sourceValue", "sslSubject");
+    }
 
-        String sourceValue = "svalue";
+    @Test
+    public void testHierarchyCreatedForTargetOnExistingSource() throws Exception {
+        assertHierarchy("ja3.name", "ja3", "sourceValue", "ja3");
+    }
 
+    private void assertHierarchy(String destinationKey, String sourceKey, String sourceValue, String nestedObjectName) throws JsonProcessingException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(sourceKey, sourceValue);
 
         IJsonObjectTransformer transformer = buildTransformer(sourceKey, true,
                 Collections.singletonList(destinationKey));
         JSONObject retJsonObject = transform(transformer, jsonObject);
-        Object actualObj = retJsonObject.get("sslSubject");
+        Object actualObj = retJsonObject.get(nestedObjectName);
         JSONObject expectedObj = new JSONObject().put("name", sourceValue);
         Assert.assertEquals(expectedObj.toString(), actualObj.toString());
     }
