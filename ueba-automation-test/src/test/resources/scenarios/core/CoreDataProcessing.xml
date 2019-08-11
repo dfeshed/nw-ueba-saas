@@ -10,7 +10,7 @@
 
     <test name="Data Processing">
         <classes>
-            <class name="com.rsa.netwitness.presidio.automation.test.config.ConfigurationsAfterDataInjection"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.config.PreProcessingConfigurationUpdate"/>
             <class name="com.rsa.netwitness.presidio.automation.test.data.processing.AdapterProcessData"/>
             <class name="com.rsa.netwitness.presidio.automation.test.data.processing.InputProcessData"/>
             <class name="com.rsa.netwitness.presidio.automation.test.data.processing.ProcessSmartsData"/>

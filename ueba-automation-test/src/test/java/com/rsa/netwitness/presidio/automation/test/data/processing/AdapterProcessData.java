@@ -22,8 +22,6 @@ import org.testng.annotations.Test;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import static com.rsa.netwitness.presidio.automation.enums.DataInputSource.MONGO;
-
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class AdapterProcessData extends AbstractTestNGSpringContextTests {
@@ -62,11 +60,6 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
         endDate = Instant.now().truncatedTo(ChronoUnit.DAYS);
         startDate = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
         LOGGER.info("startDate=" + startDate + " endDate=" + endDate);
-
-        if (setDataInputSource.equals(MONGO)) {
-            adapterTestManager.setMongoPropertiesToMongoSource();
-            adapterTestManager.setTestMode();
-        }
     }
 
     @Test

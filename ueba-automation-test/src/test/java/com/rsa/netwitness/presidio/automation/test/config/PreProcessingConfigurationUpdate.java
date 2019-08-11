@@ -24,41 +24,47 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 import static com.rsa.netwitness.presidio.automation.enums.DataInputSource.BROKER;
+import static com.rsa.netwitness.presidio.automation.enums.DataInputSource.MONGO;
 
-@Deprecated
+
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
-public class ConfigurationsAfterDataInjection extends AbstractTestNGSpringContextTests {
-    private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(ConfigurationsAfterDataInjection.class.getName());
+public class PreProcessingConfigurationUpdate extends AbstractTestNGSpringContextTests {
+
+    private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(PreProcessingConfigurationUpdate.class.getName());
 
     @Autowired
     private AdapterTestManager adapterTestManager;
 
     private Instant startDate = Instant.now();
-    private Instant endDate = Instant.now();
 
     @Parameters({"historical_days_back", "anomaly_day","set_data_input_source"})
     @BeforeClass
     public void setup(@Optional("14") int historicalDaysBack, @Optional("1") int anomalyDay,
                       @Optional("MONGO") DataInputSource setDataInputSource){
 
-        LOGGER.info(" ####### ConfigurationsAfterDataInjection()");
-        endDate     = Instant.now().truncatedTo(ChronoUnit.DAYS);
-        startDate   = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
-        LOGGER.info("historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay + " setTlsTimeFieldToEventTime=" + setDataInputSource);
+        LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay + " setDataInputSource=" + setDataInputSource);
+        LOGGER.info(setDataInputSource + " configuration will be set.");
 
-        adapterTestManager.submitBrokerConfigurationOnUebaServer(startDate);
-        adapterTestManager.setEngineConfigurationParametersToTestingValues();
         if (setDataInputSource.equals(BROKER)) {
-            LOGGER.debug("Going to execute: setTlsTimeFieldToEventTime.sh");
+            adapterTestManager.setAdapterConfigurationPropertiesToProductionMode();
+            adapterTestManager.submitBrokerConfigurationOnUebaServer(startDate);
+            adapterTestManager.setEngineConfigurationParametersToTestingValues();
             adapterTestManager.setTlsTimeFieldToEventTime();
+            setBuildingModelsRange(7,2,2);
         }
-        setBuildingModelsRange(7,2,2);
+
+        if (setDataInputSource.equals(MONGO)) {
+            adapterTestManager.setAdapterConfigurationPropertiesToTestMode();
+            adapterTestManager.submitMongoDbDetailsIntoAdapterConfigurationProperties();
+            setBuildingModelsRange(7,2,2);
+        }
+
     }
+
+
 
     public void  setBuildingModelsRange(int enriched_records_days  ,int feature_aggregation_records_days , int smart_records_days )  {
        String workflows_default_file ="/etc/netwitness/presidio/configserver/configurations/airflow/workflows-default.json" ;

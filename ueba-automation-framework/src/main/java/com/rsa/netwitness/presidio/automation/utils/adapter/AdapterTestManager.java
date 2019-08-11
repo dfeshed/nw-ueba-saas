@@ -104,7 +104,6 @@ public class AdapterTestManager {
 
         //Replace mongoSource flume properties to sdkSource flume properties
         printLogFile(logPath);
-        setProdMode();
     }
 
     public void processEventsInIntervals(Instant startDate, Instant endDate, ChronoUnit interval, String schema) {
@@ -133,7 +132,7 @@ public class AdapterTestManager {
     /**
      * fetch mongo properties and set to mongoSource files
      */
-    public void setMongoPropertiesToMongoSource() {
+    public void submitMongoDbDetailsIntoAdapterConfigurationProperties() {
         String mongoHostName = mongoPropertiesReader.getMongoHostName();
         int mongoHostPort = mongoPropertiesReader.getMongoHostPort();
         String mongoDBName = mongoPropertiesReader.getMongoDBName();
@@ -159,7 +158,7 @@ public class AdapterTestManager {
     }
 
 
-    public void setTestMode() {
+    public void setAdapterConfigurationPropertiesToTestMode() {
         String command = "cp -f " + TEST_AUTHENTICATION_CONFIGURATION + " " + AUTHENTICATION_CONFIGURATION + ";"
                 + "cp -f " + TEST_ACTIVE_DIRECTORY_CONFIGURATION + " " + ACTIVE_DIRECTORY_CONFIGURATION + ";"
                 + "cp -f " + TEST_FILE_CONFIGURATION + " " + FILE_CONFIGURATION + ";"
@@ -171,7 +170,7 @@ public class AdapterTestManager {
         TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
     }
 
-    public void setProdMode() {
+    public void setAdapterConfigurationPropertiesToProductionMode() {
         String command = "cp -f " + PROD_AUTHENTICATION_CONFIGURATION + " " + AUTHENTICATION_CONFIGURATION + ";"
                 + "cp -f " + PROD_ACTIVE_DIRECTORY_CONFIGURATION + " " + ACTIVE_DIRECTORY_CONFIGURATION + ";"
                 + "cp -f " + PROD_FILE_CONFIGURATION + " " + FILE_CONFIGURATION + ";"
@@ -196,7 +195,7 @@ public class AdapterTestManager {
         TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
     }
 
-    public void sendConfiguration(Instant startTime) {
+    public void submitBrokerConfigurationOnUebaServer(Instant startTime) {
         String node_zero_ip = getNodeZeroIP();
 
         // sh /opt/rsa/saTools/bin/ueba-server-config -u admin -p netwitness -h 10.4.61.136 -o broker -t 2018-07-18T00:00:00Z -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY'  -v
@@ -205,7 +204,7 @@ public class AdapterTestManager {
         assertThat(p.exitValue()).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
-    public void setTestAutomationConfigParameters() {
+    public void setEngineConfigurationParametersToTestingValues() {
         URL url = this.getClass().getClassLoader()
                 .getResource("scripts/setConfiguration.sh");
 
@@ -215,7 +214,7 @@ public class AdapterTestManager {
         assertThat(p.exitValue()).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
-    public void setBrokerConfiguration() {
+    public void setTlsTimeFieldToEventTime() {
         URL url = this.getClass().getClassLoader()
                 .getResource("scripts/setBrokerInputConfiguration.sh");
 
