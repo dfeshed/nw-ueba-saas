@@ -91,7 +91,7 @@
       "type": "copy_value",
       "name": "rename-ja3",
       "sourceKey": "ja3",
-      "isRemoveSourceKey": true,
+      "isRemoveSourceKey": false,
       "destinationKeys": [
         "ja3.name"
       ]
