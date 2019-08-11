@@ -60,6 +60,7 @@ public class PreProcessingConfigurationUpdate extends AbstractTestNGSpringContex
         if (setDataInputSource.equals(MONGO)) {
             adapterTestManager.setAdapterConfigurationPropertiesToTestMode();
             adapterTestManager.submitMongoDbDetailsIntoAdapterConfigurationProperties();
+            adapterTestManager.submitBrokerConfigurationOnUebaServer(startDate);
             setBuildingModelsRange(7,2,2);
             RunCmdUtils.runCmd("sudo systemctl stop airflow-scheduler");
             RunCmdUtils.runCmd("sudo systemctl stop airflow-webserver");
