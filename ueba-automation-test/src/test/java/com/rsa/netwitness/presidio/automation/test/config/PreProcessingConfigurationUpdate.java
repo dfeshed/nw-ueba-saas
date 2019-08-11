@@ -1,6 +1,7 @@
 package com.rsa.netwitness.presidio.automation.test.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rsa.netwitness.presidio.automation.common.helpers.RunCmdUtils;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.enums.DataInputSource;
@@ -60,10 +61,11 @@ public class PreProcessingConfigurationUpdate extends AbstractTestNGSpringContex
             adapterTestManager.setAdapterConfigurationPropertiesToTestMode();
             adapterTestManager.submitMongoDbDetailsIntoAdapterConfigurationProperties();
             setBuildingModelsRange(7,2,2);
+            RunCmdUtils.runCmd("sudo systemctl stop airflow-scheduler");
+            RunCmdUtils.runCmd("sudo systemctl stop airflow-webserver");
         }
 
     }
-
 
 
     public void  setBuildingModelsRange(int enriched_records_days  ,int feature_aggregation_records_days , int smart_records_days )  {
