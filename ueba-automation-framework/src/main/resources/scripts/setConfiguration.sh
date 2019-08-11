@@ -36,5 +36,6 @@ else
     echo "" >>  /etc/netwitness/presidio/configserver/configurations/application.properties
     echo "presidio.execute.ttl.cleanup=false" >>  /etc/netwitness/presidio/configserver/configurations/application.properties
 fi
+sed -i 's!"sourceKey": "event_time"!"sourceKey": "time"!g' /var/netwitness/presidio/flume/conf/adapter/transformers/tls.json
 sudo systemctl start airflow-scheduler
 sudo systemctl start airflow-webserver
