@@ -146,7 +146,7 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
     const bodySelector = '.rsa-data-table-body-cell';
     const rowSelector = '.rsa-explorer-table .rsa-data-table-body-row';
     const nameSelector = `${rowSelector}:nth-of-type(4) ${bodySelector}:nth-of-type(4) .alert-name`;
-    const labelSelector = `${rowSelector}:nth-of-type(4) ${bodySelector}:first-of-type .rsa-form-checkbox-label`;
+    const labelSelector = `${rowSelector}:nth-of-type(4) ${bodySelector}:first-of-type .rsa-form-checkbox-wrapper`;
     const inputSelector = `${labelSelector} input`;
     await waitUntil(() => findAll(rowSelector).length === 4, { timeout: 5000 });
     assert.equal(document.querySelector(nameSelector).textContent.trim(), 'Toran Alert', 'Alert Element selected to delete should have the AlertName `Toran Alert`');

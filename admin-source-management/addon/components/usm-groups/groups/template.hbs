@@ -16,8 +16,9 @@
     {{#row.cell as |item index column|}}
       <span class={{concat 'usm-groups-column-' column.field}}>
         {{#if (eq column.dataType 'checkbox') }}
-          <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
+          <label class="rsa-form-checkbox-wrapper">
             {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
+            <span></span>
           </label>
         {{else if (eq column.field "name")}}
           {{#rsa-text-with-tooltip value=(get item column.field) style="standard"}}

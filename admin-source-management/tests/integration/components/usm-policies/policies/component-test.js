@@ -90,7 +90,7 @@ module('Integration | Component | usm-policies/policies', function(hooks) {
     const getItems = waitForReduxStateChange(redux, 'usm.policies.items');
     await render(hbs`{{usm-policies/policies}}`);
     await getItems;
-    assert.equal(findAll('.usm-default-policy-row > .rsa-form-checkbox-label').length, 1, 'EDR default policy has the checkbox');
+    assert.equal(findAll('.usm-default-policy-row > .rsa-form-checkbox-wrapper').length, 1, 'EDR default policy has the checkbox');
   });
 
   test('Show policy list with sort=name ascending', async function(assert) {

@@ -74,6 +74,12 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       margin-right: 0;
     }
   }
+  
+  .rsa-form-checkbox-wrapper {
+    position: absolute;
+    right: 4px;
+    padding: 4px;
+  }
 
   &-header {
     @include rsa-vendor-prefix(flex-shrink, 0); /* can't shrink beyond min size */

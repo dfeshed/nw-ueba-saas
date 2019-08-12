@@ -9,11 +9,12 @@
 
   {{#rsa-data-table/header translateTitles=true as |column|}}
     {{#if (eq column.dataType 'checkbox')}}
-      <label class="rsa-form-checkbox-label {{if isSelectAll 'checked'}}">
+      <label class="rsa-form-checkbox-wrapper {{if isSelectAll 'checked'}}">
         {{rsa-form-checkbox
           checked=isSelectAll
           change=(action toggleSelectAll)
         }}
+        <span></span>
       </label>
     {{else}}
       <div {{action 'sort' column isSortDescending}} class="header-title {{if (not column.disableSort) 'sortable'}}" title="{{t column.title}}">

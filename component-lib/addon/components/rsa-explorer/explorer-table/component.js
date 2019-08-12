@@ -27,7 +27,7 @@ export default Component.extend({
       const eventTarget = event.target;
 
       // Do not send the action if the checkbox is being selected
-      if (!eventTarget.classList.contains('rsa-form-checkbox') && !eventTarget.classList.contains('rsa-form-checkbox-label')) {
+      if (!eventTarget.classList.contains('rsa-form-checkbox') && !eventTarget.classList.contains('rsa-form-checkbox-wrapper')) {
         this.focus(item);
       }
       return false;

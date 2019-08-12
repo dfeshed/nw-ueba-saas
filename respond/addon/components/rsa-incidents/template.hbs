@@ -25,8 +25,9 @@
         <div class="number-type">{{get item column.field}}</div>
 
       {{else if (eq column.dataType 'checkbox') }}
-        <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
+        <label class="rsa-form-checkbox-wrapper {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
           {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
+          <span></span>
         </label>
       {{else if (eq column.field "name")}}
         <div class="incident-name">

@@ -1,3 +1,8 @@
+/**
+ * original CSS for the {{rsa-form-checkbox}}
+ * - NOT accessible
+ * - to be deprecated
+ */
 .rsa-form-checkbox-label {
   overflow: hidden;
   color: $formCheckboxLabelColor;
@@ -49,4 +54,103 @@
 
 li > .rsa-form-checkbox-label {
   display: flex;
+}
+
+/**
+ * new CSS for the {{rsa-form-checkbox}}
+ * - IS accessible
+ */
+.rsa-form-checkbox-wrapper { /* outer <label> */
+  position: relative;
+  overflow: hidden;
+  color: $formCheckboxLabelColor;
+
+  input[type=checkbox] {
+    position: absolute;
+    opacity: 0;
+    z-index: 1; /* fixes weirdness when nested in the data table */
+    max-width: 200%; /* fixes more weirdness in the data table */
+    /*
+      even though the native input is invisible, it is still clickable,
+      so the left/top/width/height settings are all to make the input
+      clickable area bigger & centered'ish over the ::before checkbox icon
+    */
+    left: -.35rem;
+    top: -.35rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    cursor: pointer;
+  }
+
+  /* inner <span> is really the label text */
+  /*span {
+    position: relative;
+    display: inline-block;
+  }*/
+
+  /* custom unchecked checkbox */
+  input[type=checkbox]+span::before {
+    display: inline-block;
+    width: 1rem; /*.97rem;*/
+    height: 1rem; /*.97rem;*/
+    margin-right: rsa-whitespace(least);
+    @include rsa-font(body);
+    line-height: 1rem; /* fixes more weirdness in the data table */
+    font-family: 'nw-icon-library-all-1';
+    content: $rsa-icon-check-box-unchecked-1-filled;
+  }
+
+  /* custom checked checkbox */
+  input[type=checkbox]:checked+span::before {
+    content: $rsa-icon-check-box-1-filled;
+    color: text-color(secondary);
+  }
+
+  /* custom focused checkbox */
+  input[type=checkbox]:focus+span::before {
+    outline: 0;
+    /*outline: 2px solid text-color(secondary);*/
+    box-shadow: -1px 1px 2px 1px text-color(secondary), 0 0 4px 2px text-color(secondary) inset;
+  }
+
+  /* hovered text & custom hovered checkbox */
+  &:hover:not(.disabled),
+  input[type=checkbox]:not(:disabled):hover+span::before {
+    cursor: pointer;
+    color: text-color(secondary);
+  }
+
+  /* disabled text & custom disabled checkbox */
+  &.disabled,
+  input[type=checkbox]:disabled+span::before {
+    color: text-color(primary);
+  }
+
+  /* error text & custom error checkbox */
+  &.error {
+    color: text-color(accentOne);;
+
+    &:hover {
+      color: text-color(accentOne);;
+    }
+        
+    input[type=checkbox]+span::before {
+      color: text-color(accentOne);
+    }
+
+    input[type=checkbox]:checked+span::before {
+      color: text-color(accentOne);
+    }
+
+    input[type=checkbox]:focus+span::before {
+      outline: 0;
+      /*outline: 2px solid text-color(accentOne);*/
+      box-shadow: -1px 1px 2px 1px text-color(accentOne), 0 0 4px 2px text-color(accentOne) inset;
+    }
+
+    input[type=checkbox]:hover+span::before {
+      color: text-color(accentOne);
+    }
+  }
+
 }
