@@ -2889,4 +2889,67 @@ module('Integration | Component | Query Pills', function(hooks) {
 
   });
 
+  test('Typing DELETE when an open paren is focused will delete both the open and closed paren', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+    await leaveNewPillTemplate();
+
+    await click(PILL_SELECTORS.openParen);
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
+    assert.notOk(find(PILL_SELECTORS.openParen), 'Missing open paren');
+    assert.notOk(find(PILL_SELECTORS.closeParen), 'Missing close paren');
+  });
+
+  test('Typing DELETE when an close paren is focused will delete both the open and closed paren', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+    await leaveNewPillTemplate();
+
+    await click(PILL_SELECTORS.closeParen);
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
+    assert.notOk(find(PILL_SELECTORS.openParen), 'open paren is present');
+    assert.notOk(find(PILL_SELECTORS.closeParen), 'close paren is present');
+  });
+
+  test('Typing DELETE when an close paren is focused will delete both the open and closed paren and any other selected pills', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataWithParens()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+    await leaveNewPillTemplate();
+
+    assert.equal(findAll(PILL_SELECTORS.meta).length, 2, '1 pill 1 open template');
+
+    await click(PILL_SELECTORS.meta); // make the pill selected
+    await click(PILL_SELECTORS.closeParen);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
+
+    assert.notOk(find(PILL_SELECTORS.openParen), 'open paren is present');
+    assert.notOk(find(PILL_SELECTORS.closeParen), 'close paren is present');
+    assert.equal(findAll(PILL_SELECTORS.meta).length, 1, '1 pill deleted so just the template remains');
+  });
+
 });

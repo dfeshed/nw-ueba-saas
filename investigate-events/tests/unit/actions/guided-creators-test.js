@@ -212,6 +212,7 @@ module('Unit | Actions | Guided Creators', function(hooks) {
       .pillsDataPopulated()
       .markSelected(['1', '2'])
       .build();
+    const getState = () => state;
 
     const fourthDispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, 'action has the correct type');
@@ -223,7 +224,6 @@ module('Unit | Actions | Guided Creators', function(hooks) {
       // if is function, is deselectAllGuidedPills thunk, which has chain of thunks to
       // get through
       if (typeof action === 'function') {
-        const getState = () => state;
 
         const thirdDispatch = (thunk4) => {
           thunk4(fourthDispatch, getState);
@@ -235,16 +235,46 @@ module('Unit | Actions | Guided Creators', function(hooks) {
         thunk2(secondDispatch, getState);
       } else {
         assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, 'action has the correct type');
-        assert.deepEqual(action.payload.pillData, 'foo', 'action pillData has the right value');
+        assert.deepEqual(action.payload.pillData, ['foo'], 'action pillData has the right value');
         done();
       }
     };
 
     const thunk1 = guidedCreators.deleteGuidedPill({
-      pillData: 'foo'
+      pillData: ['foo']
     });
 
-    thunk1(firstDispatch);
+    thunk1(firstDispatch, getState);
+  });
+
+  test('deleteGuidedPill action creator includes missins twins', function(assert) {
+    const done = assert.async(2);
+    const state = new ReduxDataHelper()
+      .language()
+      .pillsDataWithParens()
+      .markFocused(['3'])
+      .build();
+    const getState = () => state;
+
+    const firstDispatch = (action) => {
+      // if is function, is deselectAllGuidedPills thunk, which has chain of thunks to
+      // get through
+      if (typeof action === 'function') {
+        done();
+      } else {
+        assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, 'action has the correct type');
+        assert.equal(action.payload.pillData.length, 2, 'action pillData has the right number of pills');
+        assert.equal(action.payload.pillData[0].id, '3', 'action pillData includes focused pill');
+        assert.equal(action.payload.pillData[1].id, '1', 'action pillData includes focused pills twin');
+        done();
+      }
+    };
+
+    const thunk1 = guidedCreators.deleteGuidedPill({
+      pillData: [state.investigate.queryNode.pillsData[2]]
+    });
+
+    thunk1(firstDispatch, getState);
   });
 
   test('deleteSelectedGuidedPills action creator returns proper types/payloads when a focused pill is passed in which is not selected', function(assert) {

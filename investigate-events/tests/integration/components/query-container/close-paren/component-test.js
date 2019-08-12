@@ -10,6 +10,7 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
+const DeleteKey = KEY_MAP.delete.key;
 const LeftArrowKey = KEY_MAP.arrowLeft.key;
 const RightArrowKey = KEY_MAP.arrowRight.key;
 
@@ -160,4 +161,35 @@ module('Integration | Component | Close Paren', function(hooks) {
 
     await click(PILL_SELECTORS.closeParen);
   });
+
+  test('it sends a message when delete is pressed', async function(assert) {
+    assert.expect(3);
+
+    this.set('sendMessage', (messageType, pillData) => {
+      assert.equal(
+        messageType,
+        MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL,
+        'the correct message type is sent when delete is pressed'
+      );
+      assert.equal(pillData.id, 12345, 'pill data is passed');
+    });
+    this.set('position', 7);
+    this.set('pillData', {
+      id: 12345,
+      isFocused: true
+    });
+
+    await render(hbs`
+      {{query-container/close-paren
+        sendMessage=sendMessage
+        pillData=pillData
+        position=position
+      }}
+    `);
+
+    assert.ok(find(PILL_SELECTORS.focusedPill), 'the pill is focused');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DeleteKey);
+  });
+
 });

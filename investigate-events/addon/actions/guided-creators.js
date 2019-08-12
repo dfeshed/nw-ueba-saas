@@ -9,6 +9,34 @@ import RSVP from 'rsvp';
 
 const { log } = console; // eslint-disable-line no-unused-vars
 
+// Check if a given set a pills contains any orphaned
+// twins. If it does, return the matching twins from state
+const _findMissingTwins = (pills, pillsFromState) => {
+  // filter to those that are missing twins in the input
+  const twins = pills.filter((pD) => {
+    if (pD.twinId) {
+      const twinPresent = pills
+        // filter out the pill being processed as it'll
+        // obviously have a matching twin id
+        .filter((p) => p.id !== pD.id)
+        // find twin
+        .some((potentialTwinPill) => {
+          return pD.twinId === potentialTwinPill.twinId;
+        });
+      return !twinPresent;
+    }
+    return false;
+  }).map((twinsie) => {
+    // now find the twins
+    return pillsFromState.find((pill) => {
+      // want a matching twin id, but not the exact same pill
+      return pill.twinId === twinsie.twinId && pill.id !== twinsie.id;
+    });
+  });
+
+  return twins;
+};
+
 /**
  * Client side validation. Parser handles most validation, but if the pill has
  * not been through the parser already, do so.
@@ -125,7 +153,13 @@ export const editGuidedPill = ({ pillData, position }) => {
 };
 
 export const deleteGuidedPill = ({ pillData }) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const missingTwins = _findMissingTwins(pillData, pillsData(getState()));
+
+    if (missingTwins.length > 0) {
+      pillData = [...pillData, ...missingTwins];
+    }
+
     dispatch({
       type: ACTION_TYPES.DELETE_GUIDED_PILLS,
       payload: {
@@ -196,34 +230,6 @@ export const deselectAllGuidedPills = () => {
       dispatch(deselectGuidedPills({ pillData }, true));
     }
   };
-};
-
-// Check if a given set a pills contains any orphaned
-// twins. If it does, return the matching twins from state
-const _findMissingTwins = (pills, pillsFromState) => {
-  // filter to those that are missing twins in the input
-  const twins = pills.filter((pD) => {
-    if (pD.twinId) {
-      const twinPresent = pills
-        // filter out the pill being processed as it'll
-        // obviously have a matching twin id
-        .filter((p) => p.id !== pD.id)
-        // find twin
-        .some((potentialTwinPill) => {
-          return pD.twinId === potentialTwinPill.twinId;
-        });
-      return !twinPresent;
-    }
-    return false;
-  }).map((twinsie) => {
-    // now find the twins
-    return pillsFromState.find((pill) => {
-      // want a matching twin id, but not the exact same pill
-      return pill.twinId === twinsie.twinId && pill.id !== twinsie.id;
-    });
-  });
-
-  return twins;
 };
 
 const _pillSelectDeselect = (actionType, pillData, shouldIgnoreFocus = false) => {

@@ -50,6 +50,7 @@ export default Component.extend({
   init() {
     this._super(...arguments);
     this.set('_messageHandlerMap', {
+      [MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED]: () => this._focusedDeletePressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_LEFT_ARROW_PRESSED]: () => this._focusedLeftArrowPressed(),
       [MESSAGE_TYPES.FOCUSED_PILL_RIGHT_ARROW_PRESSED]: () => this._focusedRightArrowPressed()
     });
@@ -80,6 +81,10 @@ export default Component.extend({
 
   _focusedRightArrowPressed() {
     this._broadcast(MESSAGE_TYPES.PILL_FOCUS_EXIT_TO_RIGHT);
+  },
+
+  _focusedDeletePressed() {
+    this.get('sendMessage')(MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, this.get('pillData'));
   },
 
   actions: {
