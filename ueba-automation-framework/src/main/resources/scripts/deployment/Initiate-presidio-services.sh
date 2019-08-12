@@ -3,7 +3,7 @@ set -e
 
 NEW_RPM_VERSION=$1
 OLD_RPM_VERSION=$2
-SCHEDULER_STATUS=`systemctl is-active airflow-scheduler`
+SCHEDULER_STATUS=$(systemctl is-active airflow-scheduler)
 echo "######################################## Running Initiate-presidio-services.sh ########################################" 
 echo "####################################### Starting UEBA Services: #######################################"
 sudo systemctl restart presidio-configserver
