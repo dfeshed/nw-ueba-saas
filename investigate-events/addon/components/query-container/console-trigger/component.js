@@ -92,10 +92,11 @@ const ConsoleTrigger = Component.extend({
     const triggerClicked = parentClass && parentClass.includes('console-trigger');
     const closestQueryBarSelection = element.closest('.query-bar-selection');
     const findConsolePanel = findBySelector([closestQueryBarSelection], '.console-panel');
+    const hierarchyClicked = clickedEl.className.includes('circle');
     const consoleClicked = findElement(findConsolePanel, clickedEl).length > 0;
     const isOpen = this.get('isOpen');
 
-    if (triggerClicked || (!triggerClicked && !consoleClicked && isOpen)) {
+    if (triggerClicked || (!triggerClicked && !consoleClicked && !hierarchyClicked && isOpen)) {
       this.send('toggleQueryConsole');
     }
   },
