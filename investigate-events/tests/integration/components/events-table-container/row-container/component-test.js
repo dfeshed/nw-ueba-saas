@@ -45,7 +45,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
   }
 
   test('it renders a row of cells correctly', async function(assert) {
-    assert.expect(7 + 4 * visibleColumns.length);
+    assert.expect(8 + 4 * visibleColumns.length);
 
     this.setProperties({
       item,
@@ -69,7 +69,9 @@ module('Integration | Component | Events Table Row', function(hooks) {
 
     // Check row is there.
     const rowSelector = '.rsa-investigate-events-table-row';
+    const childRowSelector = '.rsa-investigate-events-table-row.is-child';
     assert.equal(findAll(rowSelector).length, 1, 'Expected root DOM node with class name');
+    assert.equal(findAll(childRowSelector).length, 0, 'Expected no root DOM node with is-child class name');
 
     // Check cells are there.
     const cellsSelector = `${rowSelector} .rsa-data-table-body-cell`;
@@ -135,6 +137,17 @@ module('Integration | Component | Events Table Row', function(hooks) {
     await click(rowSelector);
 
     return settled();
+  });
+
+  test('will set is-child', async function(assert) {
+    this.setProperties({
+      item: {
+        split: true
+      }
+    });
+
+    await render(hbs`{{events-table-container/row-container item=item}}`);
+    assert.equal(findAll('.is-child').length, 1, 'Expected .is-child to be present');
   });
 
   test('will receive and issue row click action', async function(assert) {

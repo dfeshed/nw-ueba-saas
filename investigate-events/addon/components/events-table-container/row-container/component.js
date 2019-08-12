@@ -3,7 +3,7 @@ import { next, once, schedule } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { get, observer } from '@ember/object';
 import RowMixin from 'component-lib/components/rsa-data-table/mixins/is-row';
-import computed from 'ember-computed-decorators';
+import computed, { alias } from 'ember-computed-decorators';
 import HighlightsEntities from 'context/mixins/highlights-entities';
 import columnUtil from './column-util';
 import { select } from 'd3-selection';
@@ -19,6 +19,8 @@ export default Component.extend(RowMixin, HighlightsEntities, {
   timezone: service(),
   entityEndpointId: 'CORE',
   autoHighlightEntities: true,
+
+  @alias('item.split') isChild: false,
 
   @computed('item.sessionId', 'table.searchScrollIndex', 'table.searchMatches')
   isScrollMatch(id, searchScrollIndex = -1, matches = []) {

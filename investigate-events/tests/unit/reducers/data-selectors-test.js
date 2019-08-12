@@ -474,7 +474,7 @@ test('columns should exclude meta not included in language dictionary', function
           name: 'Summary List',
           ootb: true,
           columns: [
-            { field: 'time', title: 'Collection Time', width: 135 },
+            { field: 'time', title: 'Collection Time', width: 165 },
             { field: 'medium', title: 'Type' }
           ]
         }]

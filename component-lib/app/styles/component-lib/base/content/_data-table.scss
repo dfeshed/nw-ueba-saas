@@ -236,8 +236,17 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
         color: text-color(primary, lightest);
       }
     }
-  }
 
+    &.is-child {
+      background: background-color(neutral, dark);
+
+      .rsa-data-table-body-cell:nth-child(2) {
+        .content {
+          padding-left: rsa-whitespace(more);
+        }
+      }
+    }
+  }
 
   &.fit-to-width {
     .rsa-data-table {

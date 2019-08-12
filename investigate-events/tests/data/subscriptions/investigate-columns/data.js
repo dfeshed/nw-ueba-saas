@@ -1,5 +1,5 @@
 export const BASE_COLUMNS = [
-  { field: 'time', title: 'Collection Time', width: 135 },
+  { field: 'time', title: 'Collection Time', width: 165 },
   { field: 'medium', title: 'Type' }
 ];
 
