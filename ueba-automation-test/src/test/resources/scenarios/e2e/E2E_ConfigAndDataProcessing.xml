@@ -7,7 +7,7 @@
 
     <test name="Data Processing">
         <classes>
-            <class name="com.rsa.netwitness.presidio.automation.test.config.PreProcessingConfigurationScenarios"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.config.PreProcessingConfiguration"/>
             <class name="com.rsa.netwitness.presidio.automation.test.data.processing.MonitorBrokerAdapterDataProcessing"/>
         </classes>
     </test>

@@ -22,9 +22,9 @@ import java.time.Instant;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
-public class PreProcessingConfigurationScenarios extends AbstractTestNGSpringContextTests {
+public class PreProcessingConfiguration extends AbstractTestNGSpringContextTests {
 
-    private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(PreProcessingConfigurationScenarios.class.getName());
+    private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(PreProcessingConfiguration.class.getName());
 
     @Autowired
     private AdapterTestManager adapterTestManager;
