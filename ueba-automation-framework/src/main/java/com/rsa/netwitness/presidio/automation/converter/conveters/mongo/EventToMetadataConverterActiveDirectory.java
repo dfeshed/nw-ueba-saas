@@ -1,40 +1,30 @@
 package com.rsa.netwitness.presidio.automation.converter.conveters.mongo;
 
-import presidio.data.domain.event.Event;
 import presidio.data.domain.event.activedirectory.AD_OPERATION_TYPE;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.StringCyclicValuesGenerator;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class EventToMetadataConverterActiveDirectory implements EventToMetadataConverter {
+public class EventToMetadataConverterActiveDirectory implements EventToMetadataConverter<ActiveDirectoryEvent> {
     private static final String[] referenceIds = new String[]{"4741", "4742", "4733", "4734", "4740", "4794", "5376", "5377", "5136", "4764", "4670", "4743", "4739", "4727", "4728", "4754", "4756", "4757", "4758", "4720", "4722", "4723", "4724", "4725", "4726", "4738", "4767", "4717", "4729", "4730", "4731", "4732"};
     private static IStringGenerator referenceIdGenerator =  new StringCyclicValuesGenerator(referenceIds);
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List<Map<String, Object>> convert(Map<String, String> config, List<? extends Event> events) {
-        List<Map<String, Object>> metadataList = new ArrayList<>(events.size());
-
-        for (ActiveDirectoryEvent event : (List<ActiveDirectoryEvent>)events) {
-            Map<String, Object> metadata = new HashMap<>();
-            metadata.put("event_source_id", event.getEventId());
-            metadata.put("event_time", String.valueOf(event.getDateTime().toEpochMilli()));
-            metadata.put("mongo_source_event_time", event.getDateTime());
-            metadata.put("user_dst", event.getUser().getUserId());
-            metadata.put("reference_id", chooseReferenceId(event, referenceIdGenerator.getNext()));
-            metadata.put("event_type", (event.getOperation().getOperationResult().equalsIgnoreCase("SUCCESS")?"SUCCESS":"FAILURE"));
-            putObjectId(event, metadata);
-            putSecondaryObjectId(event, metadata);
-            metadata.put("device_type", "winevent_nic");
-            metadataList.add(metadata);
-        }
-
-        return metadataList;
+    public Map<String, Object> convert(ActiveDirectoryEvent event) {
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put("event_source_id", event.getEventId());
+        metadata.put("event_time", String.valueOf(event.getDateTime().toEpochMilli()));
+        metadata.put("mongo_source_event_time", event.getDateTime());
+        metadata.put("user_dst", event.getUser().getUserId());
+        metadata.put("reference_id", chooseReferenceId(event, referenceIdGenerator.getNext()));
+        metadata.put("event_type", (event.getOperation().getOperationResult().equalsIgnoreCase("SUCCESS")?"SUCCESS":"FAILURE"));
+        putObjectId(event, metadata);
+        putSecondaryObjectId(event, metadata);
+        metadata.put("device_type", "winevent_nic");
+        return metadata;
     }
 
     public static String chooseReferenceId(ActiveDirectoryEvent event, String customReferenceId) {

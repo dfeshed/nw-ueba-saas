@@ -1,13 +1,14 @@
 package com.rsa.netwitness.presidio.automation.converter.conveters.mongo;
 
-import presidio.data.domain.event.Event;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.StringCyclicValuesGenerator;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-public class EventToMetadataConverterAuthentication implements EventToMetadataConverter {
+public class EventToMetadataConverterAuthentication implements EventToMetadataConverter<AuthenticationEvent> {
     /** NOTE: it is decided at the moment not to include events 4776 **/
     private static final String[] successReferenceIds = new String[]{"4769", "4624", "4648","rsaacesrv"};
     private static final String[] failureReferenceIds = new String[]{"4769", "4625", "4648","rsaacesrv"};
@@ -15,60 +16,53 @@ public class EventToMetadataConverterAuthentication implements EventToMetadataCo
     private static IStringGenerator failureReferenceIdGenerator =  new StringCyclicValuesGenerator(failureReferenceIds);
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List<Map<String, Object>> convert(Map<String, String> config, List<? extends Event> events) {
+    public Map<String, Object> convert(AuthenticationEvent event) {
         String referenceId;
-        List<Map<String, Object>> metadataList = new ArrayList<>(events.size());
 
-        for (AuthenticationEvent event : (List<AuthenticationEvent>)events) {
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put("event_time", String.valueOf(event.getDateTime().toEpochMilli()));
+        metadata.put("mongo_source_event_time", event.getDateTime());
+        metadata.put("user_dst", event.getUser().getUserId());
+        metadata.put("result_code", event.getResultCode());
 
-            Map<String, Object> metadata = new HashMap<>();
-            metadata.put("event_time", String.valueOf(event.getDateTime().toEpochMilli()));
-            metadata.put("mongo_source_event_time", event.getDateTime());
-            metadata.put("user_dst", event.getUser().getUserId());
-            metadata.put("result_code", event.getResultCode());
+        // reference id does not exist for rhlinux events - device.type = 'rhlinux'
+        if (event.getSrcMachineEntity() != null &&
+                event.getSrcMachineEntity().getOsVersion() != null &&
+                event.getSrcMachineEntity().getOsVersion().equalsIgnoreCase("rhlinux")) {
+            // used in query, with action
+            metadata.put("device_type", "rhlinux");
 
-            // reference id does not exist for rhlinux events - device.type = 'rhlinux'
-            if (event.getSrcMachineEntity() != null &&
-                    event.getSrcMachineEntity().getOsVersion() != null &&
-                    event.getSrcMachineEntity().getOsVersion().equalsIgnoreCase("rhlinux")) {
-                // used in query, with action
-                metadata.put("device_type", "rhlinux");
-
-                metadata.put("sessionid", event.getEventId()); //eventId, e.g. "780521460486"
-                metadata.put("action", event.getDataSource());  // dataSource, e.g. "/usr/sbin/sshd"
-                metadata.put("user_src", event.getUser().getUserId());         // userId, userName, userDisplayName
-                metadata.put("event_type", event.getAuthenticationOperation().getOperationType().getName());   // operationType, filter:cred_acq,user_auth,user_login
-                metadata.put("result", event.getResult());         // result, resultCode
-                metadata.put("host_src", event.getSrcMachineEntity().getMachineId()); // srcMachineId, srcMachineName
+            metadata.put("sessionid", event.getEventId()); //eventId, e.g. "780521460486"
+            metadata.put("action", event.getDataSource());  // dataSource, e.g. "/usr/sbin/sshd"
+            metadata.put("user_src", event.getUser().getUserId());         // userId, userName, userDisplayName
+            metadata.put("event_type", event.getAuthenticationOperation().getOperationType().getName());   // operationType, filter:cred_acq,user_auth,user_login
+            metadata.put("result", event.getResult());         // result, resultCode
+            metadata.put("host_src", event.getSrcMachineEntity().getMachineId()); // srcMachineId, srcMachineName
+        }
+        else {
+            if(event.getResult().equalsIgnoreCase("success")){
+                referenceId = successReferenceIdGenerator.getNext();
+            } else{
+                referenceId = failureReferenceIdGenerator.getNext();
             }
-            else {
-                if(event.getResult().equalsIgnoreCase("success")){
-                    referenceId = successReferenceIdGenerator.getNext();
-                } else{
-                    referenceId = failureReferenceIdGenerator.getNext();
-                }
-                // not rhlinux events - referenceId defines the field mapping
-                metadata.put("reference_id", referenceId);
-                if (referenceId.equalsIgnoreCase("4769")){
-                    metadata.put("service_name", "service$");
-                }
-                if (referenceId.equalsIgnoreCase("4648"))
-                    metadata.put("host_dst", event.getDstMachineEntity().getMachineId());
-                if (referenceId.equalsIgnoreCase("4624") || referenceId.equalsIgnoreCase("4625"))
-                    putLogonType(event, metadata);
-                metadata.put("device_type", referenceId.equalsIgnoreCase("rsaacesrv") ? "rsaacesrv" : "winevent_nic");
-                if (referenceId.equalsIgnoreCase("rsaacesrv")) metadata.put("sessionid", event.getEventId());
-                else metadata.put("event_source_id", event.getEventId());
-                if (referenceId.equalsIgnoreCase("rsaacesrv")) metadata.put("ec_outcome", event.getResult());
-                else metadata.put("event_type", event.getResult());
-                putSrcMachineId(event, metadata);
+            // not rhlinux events - referenceId defines the field mapping
+            metadata.put("reference_id", referenceId);
+            if (referenceId.equalsIgnoreCase("4769")){
+                metadata.put("service_name", "service$");
             }
-
-            metadataList.add(metadata);
+            if (referenceId.equalsIgnoreCase("4648"))
+                metadata.put("host_dst", event.getDstMachineEntity().getMachineId());
+            if (referenceId.equalsIgnoreCase("4624") || referenceId.equalsIgnoreCase("4625"))
+                putLogonType(event, metadata);
+            metadata.put("device_type", referenceId.equalsIgnoreCase("rsaacesrv") ? "rsaacesrv" : "winevent_nic");
+            if (referenceId.equalsIgnoreCase("rsaacesrv")) metadata.put("sessionid", event.getEventId());
+            else metadata.put("event_source_id", event.getEventId());
+            if (referenceId.equalsIgnoreCase("rsaacesrv")) metadata.put("ec_outcome", event.getResult());
+            else metadata.put("event_type", event.getResult());
+            putSrcMachineId(event, metadata);
         }
 
-        return metadataList;
+        return metadata;
     }
 
     private static void putLogonType(AuthenticationEvent event, Map<String, Object> metadata) {

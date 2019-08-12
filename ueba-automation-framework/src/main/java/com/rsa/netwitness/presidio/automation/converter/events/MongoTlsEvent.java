@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public abstract class MongoTlsEvent implements ConverterEventBase {
+public abstract class  MongoTlsEvent implements ConverterEventBase {
 
     // Network:
     protected Instant dateTime;

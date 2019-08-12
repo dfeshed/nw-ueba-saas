@@ -1,41 +1,33 @@
 package com.rsa.netwitness.presidio.automation.converter.conveters.mongo;
 
-import presidio.data.domain.event.Event;
 import presidio.data.domain.event.file.FileEvent;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.StringCyclicValuesGenerator;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class EventToMetadataConverterFile implements EventToMetadataConverter {
+public class EventToMetadataConverterFile implements EventToMetadataConverter<FileEvent> {
     private static final String[] fileOpenedReferenceIds = new String[]{"4663", "5145"};
     private static IStringGenerator fileOpenedReferenceIdGenerator = new StringCyclicValuesGenerator(fileOpenedReferenceIds);
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Map<String, Object>> convert(Map<String, String> config, List<? extends Event> events) {
-        List<Map<String, Object>> metadataList = new ArrayList<>(events.size());
+    public Map<String, Object> convert(FileEvent event) {
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put("event_time", String.valueOf(event.getDateTime().toEpochMilli()));
+        metadata.put("mongo_source_event_time", event.getDateTime());
+        metadata.put("user_dst", event.getUser().getUserId());
+        handleOperationType(event, metadata);
+        putCategory(metadata);
+        putObjType(metadata);
+        putSrcFilePath(event, metadata);
+        metadata.put("event_type", (event.getFileOperation().getOperationResult().equalsIgnoreCase("SUCCESS")?"SUCCESS":"FAILURE"));
+        metadata.put("result_code", event.getFileOperation().getOperationResultCode());
+        metadata.put("event_source_id", event.getEventId());
+        metadata.put("device_type", "winevent_snare");
 
-        for (FileEvent event : (List<FileEvent>)events) {
-            Map<String, Object> metadata = new HashMap<>();
-            metadata.put("event_time", String.valueOf(event.getDateTime().toEpochMilli()));
-            metadata.put("mongo_source_event_time", event.getDateTime());
-            metadata.put("user_dst", event.getUser().getUserId());
-            handleOperationType(event, metadata);
-            putCategory(metadata);
-            putObjType(metadata);
-            putSrcFilePath(event, metadata);
-            metadata.put("event_type", (event.getFileOperation().getOperationResult().equalsIgnoreCase("SUCCESS")?"SUCCESS":"FAILURE"));
-            metadata.put("result_code", event.getFileOperation().getOperationResultCode());
-            metadata.put("event_source_id", event.getEventId());
-            metadata.put("device_type", "winevent_snare");
-            metadataList.add(metadata);
-        }
-
-        return metadataList;
+        return metadata;
     }
 
     private void handleOperationType(FileEvent event, Map<String, Object> metadata) {
