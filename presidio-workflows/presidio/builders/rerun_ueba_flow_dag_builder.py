@@ -75,7 +75,7 @@ class RerunUebaFlowDagBuilder(object):
         return dag
 
 
-def get_dags(dag_id_prefix):
+def get_dags():
     """
     :return: dict of DAGs (can be found in DAG's folder) and has dag_id by prefix given
     or registered by AbstractDagFactory
@@ -85,8 +85,6 @@ def get_dags(dag_id_prefix):
     dag_ids = AbstractDagFactory.get_registered_dag_ids()
     if dag_ids:
         dags = load_dags(dag_ids)
-
-    dags.extend(get_dags_by_prefix(dag_id_prefix))
 
     return dags
 
@@ -101,31 +99,6 @@ def load_dags(dag_ids, session=None):
     except Exception:
         logging.error("got error while executing {} query".format(qry))
         return None
-
-
-def get_dags_by_prefix(dag_id_prefix):
-    """
-    :return: dict of DAGs that are not a sub DAG (can be found in DAG's folder) and has dag_id by prefix given
-    :rtype: dict[str,DAG]
-    """
-    dag_models = find_non_subdag_dags()
-
-    dag_models_by_prefix = [x for x in dag_models if x.dag_id.startswith(dag_id_prefix)]
-
-    return dag_models_by_prefix
-
-
-@provide_session
-def find_non_subdag_dags(session=None):
-    DM = DagModel
-
-    qry = session.query(DM)
-    qry = qry.filter(DM.is_subdag is False)
-    try:
-        return qry.all()
-    except:
-        return None
-
 
 def pause_dag(dag_id):
     """
@@ -210,12 +183,18 @@ def build_pause_dags_operator(cleanup_dag, dag_models):
     return pause_dags_operator
 
 
-def build_clean_logs_operator(cleanup_dag, dag_ids):
+def get_airflow_log_folder(dag_ids):
     airflow_base_log_folder = str(configuration.get('core', 'BASE_LOG_FOLDER'))
 
     airflow_log_folder = "{}/scheduler/".format(airflow_base_log_folder)
     for dag_id in dag_ids:
         airflow_log_folder = "{} {}/{}".format(airflow_log_folder, airflow_base_log_folder, dag_id)
+
+    return airflow_log_folder
+
+
+def build_clean_logs_operator(cleanup_dag, dag_ids):
+    airflow_log_folder = get_airflow_log_folder(dag_ids)
 
     clean_logs_operator = BashOperator(task_id='clean_logs',
                                        bash_command="rm -rf {}".format(
