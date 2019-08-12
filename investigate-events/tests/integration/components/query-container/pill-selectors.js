@@ -51,6 +51,7 @@ export default {
   pillTriggerOpenForAdd: '.pill-trigger-open-for-add',
   populatedItem: '.is-populated',
   powerSelectAfterOption: '.ember-power-select-after-option',
+  powerSelectOptionHighlight: '.ember-power-select-option[aria-current="true"]',
   powerSelectAfterOptionHighlight: '.ember-power-select-after-option[aria-current="true"]',
   powerSelectAfterOptionDisabled: '.ember-power-select-after-option[aria-disabled="true"]',
   powerSelectAfterOptions: '.ember-power-select-after-options',

@@ -28,6 +28,8 @@ import Ember from 'ember';
 import BoundedList from 'investigate-events/util/bounded-list';
 import { hasComplexText } from 'investigate-events/util/query-parsing';
 
+const LEADING_SPACES = /^[\s\uFEFF\xA0]+/;
+
 const { log } = console;// eslint-disable-line no-unused-vars
 
 const DISABLED_TEXT_SEARCH = {
@@ -612,10 +614,30 @@ export default Component.extend({
   },
 
   /**
+   * Function used by EPS to highlight its options.
+   * If there is some text in the input, we'll highlight the first option.
+   * Otherwise, nothing at all.
+   */
+  _highlighter(powerSelectAPI) {
+    const { searchText } = powerSelectAPI;
+    if (searchText && searchText.trim().length > 0) {
+      const { results } = powerSelectAPI;
+      return results[0];
+    }
+  },
+
+  /**
    * Function used by EPS to down-select options given what's typed into the
-   * search box. Since we don't want it to actually change, this function
-   * just returns `true`.
+   * search box.
+   * Query_Filter option will always match by default.
    * @private
    */
-  _matcher: () => true
+  _matcher(value, input) {
+    const _input = input.toLowerCase().replace(LEADING_SPACES, '');
+    if (value.description === POWER_SELECT_OPTIONS_QUERY_LABEL) {
+      return 0;
+    }
+    const _displayName = value.displayName.toLowerCase();
+    return _displayName.indexOf(_input);
+  }
 });

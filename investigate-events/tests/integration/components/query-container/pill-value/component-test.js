@@ -20,6 +20,7 @@ const BACKSPACE_KEY = KEY_MAP.backspace.key;
 const ENTER_KEY = KEY_MAP.enter.key;
 const ESCAPE_KEY = KEY_MAP.escape.key;
 const LEFT_ARROW_KEY = KEY_MAP.arrowLeft.key;
+const ARROW_UP = KEY_MAP.arrowUp.key;
 const ARROW_DOWN = KEY_MAP.arrowDown.key;
 const TAB_KEY = KEY_MAP.tab.key;
 const modifiers = { shiftKey: true };
@@ -485,6 +486,9 @@ module('Integration | Component | Pill Value', function(hooks) {
     `);
     await clickTrigger(PILL_SELECTORS.value);
     assert.notOk(find(PILL_SELECTORS.powerSelectAfterOptionHighlight), 'No Advanced Options should be highlighted');
+    // Query Filter will no longer be highlighted by default.
+    // One arrowDown to select QF and then further arrowDowns to navigate through options
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN);
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN);
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
     assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), AFTER_OPTION_FREE_FORM_LABEL, 'first Advanced Option was not highlighted');
@@ -498,8 +502,11 @@ module('Integration | Component | Pill Value', function(hooks) {
     `);
     await clickTrigger(PILL_SELECTORS.value);
     assert.notOk(find(PILL_SELECTORS.powerSelectAfterOptionHighlight), 'No Advanced Options should be highlighted');
-    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN);
-    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN);
+    // Query Filter will no longer be highlighted by default.
+    // One arrowDown to select QF and then further arrowDowns to navigate through options
+    for (let i = 0; i < 3; i++) {
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN);
+    }
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
     assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), AFTER_OPTION_TEXT_LABEL, 'second Advanced Option was not highlighted');
   });
@@ -617,11 +624,11 @@ module('Integration | Component | Pill Value', function(hooks) {
   test('value suggestions will display default options plus suggestions', async function(assert) {
     const suggestions = [
       {
-        displayName: 'foo',
+        displayName: 'fooboom',
         description: 'Suggestions'
       },
       {
-        displayName: 'bar',
+        displayName: 'barboom',
         description: 'Suggestions'
       }
     ];
@@ -639,7 +646,7 @@ module('Integration | Component | Pill Value', function(hooks) {
 
     const values = findAll('.value').map((v) => v.textContent.trim()).filter((t) => !!t);
 
-    assert.deepEqual(values, ['boom', 'foo', 'bar'], 'Incorrect options being displayed');
+    assert.deepEqual(values, ['boom', 'fooboom', 'barboom'], 'Incorrect options being displayed');
   });
 
   test('Description for options will only ever be for Query Filter, and not for suggestions', async function(assert) {
@@ -666,6 +673,90 @@ module('Integration | Component | Pill Value', function(hooks) {
     const descriptions = findAll('.description');
 
     assert.ok(!descriptions.includes('Suggestions'), 'Suggestions description should not show up');
+
+  });
+
+  test('If no text is present, nothing will be highlighted', async function(assert) {
+    const suggestions = [
+      {
+        displayName: 'fooboom',
+        description: 'Suggestions'
+      },
+      {
+        displayName: 'barboom',
+        description: 'Suggestions'
+      }
+    ];
+    this.set('valueSuggestions', suggestions);
+
+    await render(hbs`
+      {{query-container/pill-value
+        valueSuggestions=valueSuggestions
+        isActive=true
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.value);
+    assert.ok(findAll(PILL_SELECTORS.powerSelectOptionHighlight).length === 0, 'Found a highlighted option when it shouldnt');
+  });
+
+  test('If text is present, first option will be highlighted', async function(assert) {
+    const suggestions = [
+      {
+        displayName: 'fooboom',
+        description: 'Suggestions'
+      },
+      {
+        displayName: 'barboom',
+        description: 'Suggestions'
+      }
+    ];
+    this.set('valueSuggestions', suggestions);
+
+    await render(hbs`
+      {{query-container/pill-value
+        valueSuggestions=valueSuggestions
+        isActive=true
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.value);
+    await typeInSearch('boom');
+    assert.ok(find(PILL_SELECTORS.powerSelectOptionHighlight).textContent.trim().includes('boom'), 'Did not find the proper text highlighted');
+  });
+
+  test('Can naviagte from value options to Advanced and vice-versa', async function(assert) {
+    const suggestions = [
+      {
+        displayName: 'foo',
+        description: 'Suggestions'
+      },
+      {
+        displayName: 'foobar',
+        description: 'Suggestions'
+      }
+    ];
+    this.set('valueSuggestions', suggestions);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    await render(hbs`
+      {{query-container/pill-value
+        activePillTab=activePillTab
+        valueSuggestions=valueSuggestions
+        isActive=true
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+    assert.notOk(find(PILL_SELECTORS.powerSelectOptionHighlight), 'No Options should be highlighted');
+    // Query Filter will no longer be highlighted by default.
+    // One arrowDown to select QF and then further arrowDowns to navigate through options
+    for (let i = 0; i < 4; i++) {
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN);
+    }
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
+    assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), AFTER_OPTION_FREE_FORM_LABEL, 'first Advanced Option was not highlighted');
+
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_UP);
+    assert.ok(find(PILL_SELECTORS.powerSelectOptionHighlight).textContent.trim().includes('foobar'), 'Did not highlight last option in values drop-down');
 
   });
 });

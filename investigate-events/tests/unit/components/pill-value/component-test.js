@@ -29,4 +29,33 @@ module('Unit | Component | Pill Value', function(hooks) {
     assert.notOk(comp._isInputEmpty('foo"bar'), 'Text with inner double quote should not be empty');
     assert.notOk(comp._isInputEmpty('foo\'bar\'baz'), 'Text with inner single quotes should not be empty');
   });
+
+  test('PowerSelect filter function filters properly', function(assert) {
+    const comp = this.owner.lookup('component:query-container/pill-value');
+    const m1 = { displayName: 'foo', description: 'Query Filter' };
+    const m2 = { displayName: 'bar' };
+    const m3 = { displayName: 'barfoo' };
+
+    assert.equal(comp._matcher(m1, 'foo'), 0, 'Did not match the default option');
+    assert.equal(comp._matcher(m2, 'barr'), -1, 'Found item but should not have');
+    assert.equal(comp._matcher(m3, 'barfoo'), 0, 'Did not find item');
+  });
+
+  test('_highlighter returns nothing if no text is present in the input', function(assert) {
+    const comp = this.owner.lookup('component:query-container/pill-value');
+    const powerSelectAPI = {
+      searchText: '',
+      results: ['foo']
+    };
+    assert.notOk(comp._highlighter(powerSelectAPI), 'Should have highlighted nothing');
+  });
+
+  test('_highlighter returns the first result if text is present in the input', function(assert) {
+    const comp = this.owner.lookup('component:query-container/pill-value');
+    const powerSelectAPI = {
+      searchText: 'fo',
+      results: ['foo']
+    };
+    assert.equal(comp._highlighter(powerSelectAPI), powerSelectAPI.results[0], 'Should have highlighted the first option');
+  });
 });
