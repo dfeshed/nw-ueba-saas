@@ -3,7 +3,7 @@ package com.rsa.netwitness.presidio.automation.test.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
-import com.rsa.netwitness.presidio.automation.enums.DataInputSource;
+import com.rsa.netwitness.presidio.automation.enums.PRE_PROCESSING_CONFIGURATION_SCENARIO;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.json.simple.JSONObject;
@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import static com.rsa.netwitness.presidio.automation.enums.DataInputSource.BROKER;
+import static com.rsa.netwitness.presidio.automation.enums.PRE_PROCESSING_CONFIGURATION_SCENARIO.E2E_BROKER;
 
 @Deprecated
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
@@ -41,19 +41,19 @@ public class ConfigurationsAfterDataInjection extends AbstractTestNGSpringContex
     private Instant startDate = Instant.now();
     private Instant endDate = Instant.now();
 
-    @Parameters({"historical_days_back", "anomaly_day","set_data_input_source"})
+    @Parameters({"historical_days_back", "anomaly_day","pre_processing_configuration_scenario"})
     @BeforeClass
     public void setup(@Optional("14") int historicalDaysBack, @Optional("1") int anomalyDay,
-                      @Optional("MONGO") DataInputSource setDataInputSource){
+                      @Optional("MONGO") PRE_PROCESSING_CONFIGURATION_SCENARIO preProcessingConfigurationScenario){
 
         LOGGER.info(" ####### ConfigurationsAfterDataInjection()");
         endDate     = Instant.now().truncatedTo(ChronoUnit.DAYS);
         startDate   = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
-        LOGGER.info("historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay + " setTlsTimeFieldToEventTime=" + setDataInputSource);
+        LOGGER.info("historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay + " preProcessingConfigurationScenario=" + preProcessingConfigurationScenario);
 
-        adapterTestManager.submitBrokerConfigurationOnUebaServer(startDate);
+        adapterTestManager.runUebaServerConfigScript(startDate);
         adapterTestManager.setEngineConfigurationParametersToTestingValues();
-        if (setDataInputSource.equals(BROKER)) {
+        if (preProcessingConfigurationScenario.equals(E2E_BROKER)) {
             LOGGER.debug("Going to execute: setTlsTimeFieldToEventTime.sh");
             adapterTestManager.setTlsTimeFieldToEventTime();
         }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rsa.netwitness.presidio.automation.common.helpers.RunCmdUtils;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
-import com.rsa.netwitness.presidio.automation.enums.DataInputSource;
+import com.rsa.netwitness.presidio.automation.enums.PRE_PROCESSING_CONFIGURATION_SCENARIO;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.json.simple.JSONObject;
@@ -26,44 +26,42 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.Instant;
 
-import static com.rsa.netwitness.presidio.automation.enums.DataInputSource.BROKER;
-import static com.rsa.netwitness.presidio.automation.enums.DataInputSource.MONGO;
+import static com.rsa.netwitness.presidio.automation.enums.PRE_PROCESSING_CONFIGURATION_SCENARIO.*;
 
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
-public class PreProcessingConfigurationUpdate extends AbstractTestNGSpringContextTests {
+public class PreProcessingConfigurationScenarios extends AbstractTestNGSpringContextTests {
 
-    private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(PreProcessingConfigurationUpdate.class.getName());
+    private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(PreProcessingConfigurationScenarios.class.getName());
 
     @Autowired
     private AdapterTestManager adapterTestManager;
 
     private Instant startDate = Instant.now();
 
-    @Parameters({"historical_days_back", "anomaly_day","set_data_input_source"})
+    @Parameters({"historical_days_back", "anomaly_day","pre_processing_configuration_scenario"})
     @BeforeClass
     public void setup(@Optional("14") int historicalDaysBack, @Optional("1") int anomalyDay,
-                      @Optional("MONGO") DataInputSource setDataInputSource){
+                      @Optional("CORE_MONGO") PRE_PROCESSING_CONFIGURATION_SCENARIO preProcessingConfigurationScenario){
 
-        LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay + " setDataInputSource=" + setDataInputSource);
-        LOGGER.info(setDataInputSource + " configuration will be set.");
+        LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay + " preProcessingConfigurationScenario=" + preProcessingConfigurationScenario);
+        LOGGER.info(preProcessingConfigurationScenario + " configuration will be executed.");
 
-        if (setDataInputSource.equals(BROKER)) {
+        if (preProcessingConfigurationScenario.equals(E2E_BROKER)) {
             adapterTestManager.setAdapterConfigurationPropertiesToProductionMode();
-            adapterTestManager.submitBrokerConfigurationOnUebaServer(startDate);
+            adapterTestManager.runUebaServerConfigScript(startDate);
             adapterTestManager.setEngineConfigurationParametersToTestingValues();
             adapterTestManager.setTlsTimeFieldToEventTime();
             setBuildingModelsRange(7,2,2);
+            RunCmdUtils.runCmd("sudo systemctl start airflow-scheduler");
         }
 
-        if (setDataInputSource.equals(MONGO)) {
+        if (preProcessingConfigurationScenario.equals(CORE_MONGO)) {
             adapterTestManager.setAdapterConfigurationPropertiesToTestMode();
             adapterTestManager.submitMongoDbDetailsIntoAdapterConfigurationProperties();
-            adapterTestManager.submitBrokerConfigurationOnUebaServer(startDate);
-            setBuildingModelsRange(7,2,2);
-            RunCmdUtils.runCmd("sudo systemctl stop airflow-scheduler");
-            RunCmdUtils.runCmd("sudo systemctl stop airflow-webserver");
+            adapterTestManager.runUebaServerConfigScript(startDate);
+            adapterTestManager.setEngineConfigurationParametersToTestingValues();
         }
 
     }

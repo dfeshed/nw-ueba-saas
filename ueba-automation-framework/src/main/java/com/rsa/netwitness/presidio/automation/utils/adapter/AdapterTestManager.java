@@ -195,7 +195,7 @@ public class AdapterTestManager {
         TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
     }
 
-    public void submitBrokerConfigurationOnUebaServer(Instant startTime) {
+    public void runUebaServerConfigScript(Instant startTime) {
         String node_zero_ip = getNodeZeroIP();
 
         // sh /opt/rsa/saTools/bin/ueba-server-config -u admin -p netwitness -h 10.4.61.136 -o broker -t 2018-07-18T00:00:00Z -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY'  -v

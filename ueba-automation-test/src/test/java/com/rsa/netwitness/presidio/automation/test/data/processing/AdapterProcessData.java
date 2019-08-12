@@ -4,7 +4,7 @@ import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
-import com.rsa.netwitness.presidio.automation.enums.DataInputSource;
+import com.rsa.netwitness.presidio.automation.enums.PRE_PROCESSING_CONFIGURATION_SCENARIO;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import com.rsa.netwitness.presidio.automation.utils.common.ASCIIArtGenerator;
@@ -53,10 +53,10 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     @BeforeClass
     public void setup(@Optional("10") int historicalDaysBack,
                       @Optional("1") int anomalyDay,
-                      @Optional("MONGO") DataInputSource setDataInputSource) {
+                      @Optional("MONGO") PRE_PROCESSING_CONFIGURATION_SCENARIO setSCENARIOCONFIGURATIONBEFOREDATAPROCESSING) {
 
         ART_GEN.printTextArt(getClass().getSimpleName());
-        LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay + " setDataInputSource=" + setDataInputSource);
+        LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay + " setSCENARIOCONFIGURATIONBEFOREDATAPROCESSING=" + setSCENARIOCONFIGURATIONBEFOREDATAPROCESSING);
         endDate = Instant.now().truncatedTo(ChronoUnit.DAYS);
         startDate = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
         LOGGER.info("startDate=" + startDate + " endDate=" + endDate);
