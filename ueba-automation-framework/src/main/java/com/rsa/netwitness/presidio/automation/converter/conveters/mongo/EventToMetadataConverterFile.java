@@ -1,9 +1,9 @@
 package com.rsa.netwitness.presidio.automation.converter.conveters.mongo;
 
-import com.rsa.netwitness.presidio.automation.utils.adapter.ReferenceIdGeneratorFactory;
 import presidio.data.domain.event.Event;
 import presidio.data.domain.event.file.FileEvent;
 import presidio.data.generators.common.IStringGenerator;
+import presidio.data.generators.common.StringCyclicValuesGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,16 +12,11 @@ import java.util.Map;
 
 public class EventToMetadataConverterFile implements EventToMetadataConverter {
     private static final String[] fileOpenedReferenceIds = new String[]{"4663", "5145"};
-    //private static final String[] fileDeletedReferenceIds = new String[]{"4663", "4660"};
-
-    private IStringGenerator fileOpenedReferenceIdGenerator;
-
-    // sourceMachineId, dest...
+    private static IStringGenerator fileOpenedReferenceIdGenerator = new StringCyclicValuesGenerator(fileOpenedReferenceIds);
 
     @Override
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> convert(Map<String, String> config, List<? extends Event> events) {
-        fileOpenedReferenceIdGenerator = ReferenceIdGeneratorFactory.create(config, fileOpenedReferenceIds);
         List<Map<String, Object>> metadataList = new ArrayList<>(events.size());
 
         for (FileEvent event : (List<FileEvent>)events) {

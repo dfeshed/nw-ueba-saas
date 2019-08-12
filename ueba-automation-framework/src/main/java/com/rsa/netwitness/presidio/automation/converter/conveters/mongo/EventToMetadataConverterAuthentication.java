@@ -1,9 +1,9 @@
 package com.rsa.netwitness.presidio.automation.converter.conveters.mongo;
 
-import com.rsa.netwitness.presidio.automation.utils.adapter.ReferenceIdGeneratorFactory;
 import presidio.data.domain.event.Event;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.common.IStringGenerator;
+import presidio.data.generators.common.StringCyclicValuesGenerator;
 
 import java.util.*;
 
@@ -11,15 +11,13 @@ public class EventToMetadataConverterAuthentication implements EventToMetadataCo
     /** NOTE: it is decided at the moment not to include events 4776 **/
     private static final String[] successReferenceIds = new String[]{"4769", "4624", "4648","rsaacesrv"};
     private static final String[] failureReferenceIds = new String[]{"4769", "4625", "4648","rsaacesrv"};
-
+    private static IStringGenerator successReferenceIdGenerator = new StringCyclicValuesGenerator(successReferenceIds);
+    private static IStringGenerator failureReferenceIdGenerator =  new StringCyclicValuesGenerator(failureReferenceIds);
 
     @Override
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> convert(Map<String, String> config, List<? extends Event> events) {
-        IStringGenerator successReferenceIdGenerator = ReferenceIdGeneratorFactory.create(config, successReferenceIds);
-        IStringGenerator failureReferenceIdGenerator = ReferenceIdGeneratorFactory.create(config, failureReferenceIds);
-        String referenceId = null;
-
+        String referenceId;
         List<Map<String, Object>> metadataList = new ArrayList<>(events.size());
 
         for (AuthenticationEvent event : (List<AuthenticationEvent>)events) {

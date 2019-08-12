@@ -1,10 +1,10 @@
 package com.rsa.netwitness.presidio.automation.converter.conveters.mongo;
 
-import com.rsa.netwitness.presidio.automation.utils.adapter.ReferenceIdGeneratorFactory;
 import presidio.data.domain.event.Event;
 import presidio.data.domain.event.activedirectory.AD_OPERATION_TYPE;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.common.IStringGenerator;
+import presidio.data.generators.common.StringCyclicValuesGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,11 +13,11 @@ import java.util.Map;
 
 public class EventToMetadataConverterActiveDirectory implements EventToMetadataConverter {
     private static final String[] referenceIds = new String[]{"4741", "4742", "4733", "4734", "4740", "4794", "5376", "5377", "5136", "4764", "4670", "4743", "4739", "4727", "4728", "4754", "4756", "4757", "4758", "4720", "4722", "4723", "4724", "4725", "4726", "4738", "4767", "4717", "4729", "4730", "4731", "4732"};
+    private static IStringGenerator referenceIdGenerator =  new StringCyclicValuesGenerator(referenceIds);
 
     @Override
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> convert(Map<String, String> config, List<? extends Event> events) {
-        IStringGenerator referenceIdGenerator = ReferenceIdGeneratorFactory.create(config, referenceIds);
         List<Map<String, Object>> metadataList = new ArrayList<>(events.size());
 
         for (ActiveDirectoryEvent event : (List<ActiveDirectoryEvent>)events) {
