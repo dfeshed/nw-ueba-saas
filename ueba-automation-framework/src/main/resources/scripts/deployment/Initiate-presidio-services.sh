@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -e
 
 NEW_RPM_VERSION=$1
 OLD_RPM_VERSION=$2
