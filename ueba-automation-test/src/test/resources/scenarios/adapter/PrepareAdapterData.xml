@@ -8,7 +8,6 @@
     <test name="adapter_data">
         <classes>
             <class name="com.rsa.netwitness.presidio.automation.test.data.preparation.AlertsScenarioDataPreparation"/>
-            <class name="com.rsa.netwitness.presidio.automation.test.config.ConfigurationsAfterDataInjection"/>
         </classes>
     </test>
 </suite>

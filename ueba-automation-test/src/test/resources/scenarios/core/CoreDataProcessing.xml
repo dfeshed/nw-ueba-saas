@@ -6,11 +6,11 @@
     <parameter name="historical_days_back" value="35" />
     <parameter name="anomaly_day" value="2" />
     <parameter name="generator_format" value="MONGO_ADAPTER" />
-    <parameter name="set_data_input_source" value="MONGO" />
+    <parameter name="pre_processing_configuration_scenario" value="CORE_MONGO" />
 
     <test name="Data Processing">
         <classes>
-            <class name="com.rsa.netwitness.presidio.automation.test.config.ConfigurationsAfterDataInjection"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.config.PreProcessingConfiguration"/>
             <class name="com.rsa.netwitness.presidio.automation.test.data.processing.AdapterProcessData"/>
             <class name="com.rsa.netwitness.presidio.automation.test.data.processing.InputProcessData"/>
             <class name="com.rsa.netwitness.presidio.automation.test.data.processing.ProcessSmartsData"/>

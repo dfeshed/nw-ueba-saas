@@ -1,16 +1,22 @@
 package com.rsa.netwitness.presidio.automation.utils.adapter;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rsa.netwitness.presidio.automation.domain.config.Consts;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoPropertiesReader;
 import com.rsa.netwitness.presidio.automation.utils.common.SedUtil;
 import com.rsa.netwitness.presidio.automation.utils.common.TerminalCommands;
 import fortscale.common.general.Schema;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -104,7 +110,6 @@ public class AdapterTestManager {
 
         //Replace mongoSource flume properties to sdkSource flume properties
         printLogFile(logPath);
-        setProdMode();
     }
 
     public void processEventsInIntervals(Instant startDate, Instant endDate, ChronoUnit interval, String schema) {
@@ -133,7 +138,7 @@ public class AdapterTestManager {
     /**
      * fetch mongo properties and set to mongoSource files
      */
-    public void setMongoPropertiesToMongoSource() {
+    public void submitMongoDbDetailsIntoAdapterConfigurationProperties() {
         String mongoHostName = mongoPropertiesReader.getMongoHostName();
         int mongoHostPort = mongoPropertiesReader.getMongoHostPort();
         String mongoDBName = mongoPropertiesReader.getMongoDBName();
@@ -159,20 +164,37 @@ public class AdapterTestManager {
     }
 
 
-    public void setTestMode() {
-        String command = "cp -f " + TEST_AUTHENTICATION_CONFIGURATION + " " + AUTHENTICATION_CONFIGURATION + ";"
+    public void backupProductionAdapterConfigurationProperties() {
+        String command =
+                  "cp -n " + AUTHENTICATION_CONFIGURATION + " " + PROD_AUTHENTICATION_CONFIGURATION + ";"
+                + "cp -n " + ACTIVE_DIRECTORY_CONFIGURATION + " " + PROD_ACTIVE_DIRECTORY_CONFIGURATION + ";"
+                + "cp -n " + FILE_CONFIGURATION + " " + PROD_FILE_CONFIGURATION + ";"
+                + "cp -n " + REGISTRY_CONFIGURATION + " " + PROD_REGISTRY_CONFIGURATION + ";"
+                + "cp -n " + PROCESS_CONFIGURATION + " " + PROD_PROCESS_CONFIGURATION + ";"
+                + "cp -n " + TLS_CONFIGURATION + " " + PROD_TLS_CONFIGURATION;
+
+        TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
+    }
+
+    public void setAdapterConfigurationPropertiesToTestMode() {
+        backupProductionAdapterConfigurationProperties();
+
+        String command =
+                  "cp -f " + TEST_AUTHENTICATION_CONFIGURATION + " " + AUTHENTICATION_CONFIGURATION + ";"
                 + "cp -f " + TEST_ACTIVE_DIRECTORY_CONFIGURATION + " " + ACTIVE_DIRECTORY_CONFIGURATION + ";"
                 + "cp -f " + TEST_FILE_CONFIGURATION + " " + FILE_CONFIGURATION + ";"
                 + "cp -f " + TEST_REGISTRY_CONFIGURATION + " " + REGISTRY_CONFIGURATION + ";"
-                + "cp -f " + TEST_PROCESS_CONFIGURATION + " " + PROCESS_CONFIGURATION + ";"
                 + "cp -f " + TEST_PROCESS_CONFIGURATION + " " + PROCESS_CONFIGURATION + ";"
                 + "cp -f " + TEST_TLS_CONFIGURATION + " " + TLS_CONFIGURATION;
 
         TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
     }
 
-    public void setProdMode() {
-        String command = "cp -f " + PROD_AUTHENTICATION_CONFIGURATION + " " + AUTHENTICATION_CONFIGURATION + ";"
+    public void setAdapterConfigurationPropertiesToProductionMode() {
+        backupProductionAdapterConfigurationProperties();
+
+        String command =
+                  "cp -f " + PROD_AUTHENTICATION_CONFIGURATION + " " + AUTHENTICATION_CONFIGURATION + ";"
                 + "cp -f " + PROD_ACTIVE_DIRECTORY_CONFIGURATION + " " + ACTIVE_DIRECTORY_CONFIGURATION + ";"
                 + "cp -f " + PROD_FILE_CONFIGURATION + " " + FILE_CONFIGURATION + ";"
                 + "cp -f " + PROD_REGISTRY_CONFIGURATION + " " + REGISTRY_CONFIGURATION + ";"
@@ -196,7 +218,7 @@ public class AdapterTestManager {
         TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
     }
 
-    public void sendConfiguration(Instant startTime) {
+    public void runUebaServerConfigScript(Instant startTime) {
         String node_zero_ip = getNodeZeroIP();
 
         // sh /opt/rsa/saTools/bin/ueba-server-config -u admin -p netwitness -h 10.4.61.136 -o broker -t 2018-07-18T00:00:00Z -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY'  -v
@@ -205,7 +227,7 @@ public class AdapterTestManager {
         assertThat(p.exitValue()).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
-    public void setTestAutomationConfigParameters() {
+    public void setEngineConfigurationParametersToTestingValues() {
         URL url = this.getClass().getClassLoader()
                 .getResource("scripts/setConfiguration.sh");
 
@@ -215,7 +237,7 @@ public class AdapterTestManager {
         assertThat(p.exitValue()).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
-    public void setBrokerConfiguration() {
+    public void setTlsTimeFieldToEventTime() {
         URL url = this.getClass().getClassLoader()
                 .getResource("scripts/setBrokerInputConfiguration.sh");
 
@@ -234,5 +256,43 @@ public class AdapterTestManager {
         }
         System.out.println(address.getHostAddress());
         return  address.getHostAddress();
+    }
+
+
+    public void  setBuildingModelsRange(int enriched_records_days  ,int feature_aggregation_records_days , int smart_records_days )  {
+        String workflows_default_file ="/etc/netwitness/presidio/configserver/configurations/airflow/workflows-default.json" ;
+        ObjectMapper mapper = new ObjectMapper();
+        JSONParser parser = new JSONParser();
+        Object obj = null;
+        try {
+            obj = parser.parse(new FileReader(workflows_default_file));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        JSONObject workflows =  (JSONObject) obj;
+        JSONObject components =  (JSONObject) workflows.get("components");
+        JSONObject ade =  (JSONObject) components.get("ade");
+        JSONObject models =  (JSONObject) ade.get("models");
+
+        JSONObject enriched_records = (JSONObject) models.get("enriched_records");
+        JSONObject feature_aggregation_records = (JSONObject) models.get("feature_aggregation_records");
+        JSONObject smart_records = (JSONObject) models.get("smart_records");
+        enriched_records.put ("min_data_time_range_for_building_models_in_days",feature_aggregation_records_days);
+        feature_aggregation_records.put ("min_data_time_range_for_building_models_in_days",enriched_records_days);
+        smart_records.put ("min_data_time_range_for_building_models_in_days",smart_records_days);
+
+        models.put("enriched_records",enriched_records);
+        models.put("feature_aggregation_records",feature_aggregation_records);
+        models.put("smart_records",smart_records);
+        ade.put("models",models);
+        components.put("ade",ade);
+        workflows.put("components",components);
+        try {
+            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(workflows_default_file), workflows);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

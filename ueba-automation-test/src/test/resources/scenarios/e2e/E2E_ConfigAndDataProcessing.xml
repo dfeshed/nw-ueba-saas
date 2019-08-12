@@ -3,12 +3,12 @@
 <suite name="E2E Test Data Processing">
     <parameter name="historical_days_back" value="14" />
     <parameter name="anomaly_day" value="1" />
-    <parameter name="set_data_input_source" value="BROKER" />
+    <parameter name="pre_processing_configuration_scenario" value="E2E_BROKER" />
 
     <test name="Data Processing">
         <classes>
-            <class name="com.rsa.netwitness.presidio.automation.test.config.ConfigurationsAfterDataInjection"/>
-            <class name="com.rsa.netwitness.presidio.automation.test.config.MonitorE2EDataFlow"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.config.PreProcessingConfiguration"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.data.processing.MonitorBrokerAdapterDataProcessing"/>
         </classes>
     </test>
 </suite>

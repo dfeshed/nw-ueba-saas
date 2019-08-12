@@ -4,7 +4,7 @@ import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
-import com.rsa.netwitness.presidio.automation.enums.DataInputSource;
+import com.rsa.netwitness.presidio.automation.enums.CONFIGURATION_SCENARIO;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import com.rsa.netwitness.presidio.automation.utils.common.ASCIIArtGenerator;
@@ -21,8 +21,6 @@ import org.testng.annotations.Test;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-
-import static com.rsa.netwitness.presidio.automation.enums.DataInputSource.MONGO;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
@@ -51,22 +49,17 @@ public class AdapterProcessData extends AbstractTestNGSpringContextTests {
     private Instant endDate = Instant.now();
 
 
-    @Parameters({"historical_days_back", "anomaly_day", "set_data_input_source"})
+    @Parameters({"historical_days_back", "anomaly_day", "pre_processing_configuration_scenario"})
     @BeforeClass
     public void setup(@Optional("10") int historicalDaysBack,
                       @Optional("1") int anomalyDay,
-                      @Optional("MONGO") DataInputSource setDataInputSource) {
+                      @Optional("MONGO") CONFIGURATION_SCENARIO preProcessingConfigurationScenario) {
 
         ART_GEN.printTextArt(getClass().getSimpleName());
-        LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay + " setDataInputSource=" + setDataInputSource);
+        LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay + " preProcessingConfigurationScenario=" + preProcessingConfigurationScenario);
         endDate = Instant.now().truncatedTo(ChronoUnit.DAYS);
         startDate = endDate.minus(historicalDaysBack, ChronoUnit.DAYS);
         LOGGER.info("startDate=" + startDate + " endDate=" + endDate);
-
-        if (setDataInputSource.equals(MONGO)) {
-            adapterTestManager.setMongoPropertiesToMongoSource();
-            adapterTestManager.setTestMode();
-        }
     }
 
     @Test

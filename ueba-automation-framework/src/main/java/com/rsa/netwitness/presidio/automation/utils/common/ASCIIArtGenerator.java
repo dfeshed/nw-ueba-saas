@@ -22,7 +22,7 @@ public class ASCIIArtGenerator {
     public static final int ART_SIZE_LARGE = 18;
     public static final int ART_SIZE_HUGE = 24;
 
-    private static final String DEFAULT_ART_SYMBOL = "o";
+    private static final String DEFAULT_ART_SYMBOL = "+";
 
     public enum ASCIIArtFont {
         ART_FONT_DIALOG("Dialog"), ART_FONT_DIALOG_INPUT("DialogInput"),

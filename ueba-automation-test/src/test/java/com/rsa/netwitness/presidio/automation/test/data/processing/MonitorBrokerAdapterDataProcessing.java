@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.test.config;
+package com.rsa.netwitness.presidio.automation.test.data.processing;
 
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
@@ -40,7 +40,7 @@ import java.util.List;
  **/
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
-public class MonitorE2EDataFlow extends AbstractTestNGSpringContextTests {
+public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringContextTests {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
@@ -64,7 +64,7 @@ public class MonitorE2EDataFlow extends AbstractTestNGSpringContextTests {
     private Instant endDate = Instant.now();
 
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(MonitorE2EDataFlow.class.getName());
+            LoggerFactory.getLogger(MonitorBrokerAdapterDataProcessing.class.getName());
 
     @Parameters({"historical_days_back", "anomaly_day"})
     @BeforeClass
