@@ -1,11 +1,11 @@
 package com.rsa.netwitness.presidio.automation.scripts.pre_processing;
 
-import com.rsa.netwitness.presidio.automation.enums.CONFIGURATION_SCENARIO;
+import com.rsa.netwitness.presidio.automation.enums.ConfigurationScenario;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
 
 import java.time.Instant;
 
-import static com.rsa.netwitness.presidio.automation.enums.CONFIGURATION_SCENARIO.*;
+import static com.rsa.netwitness.presidio.automation.enums.ConfigurationScenario.*;
 
 public class PreProcessingConfigScenarioFactory {
     private AdapterTestManager adapterTestManager;
@@ -16,7 +16,7 @@ public class PreProcessingConfigScenarioFactory {
         this.startDate = startDate;
     }
 
-    public PreProcessingConfigScenario get(CONFIGURATION_SCENARIO label) {
+    public PreProcessingConfigScenario get(ConfigurationScenario label) {
         if (label.equals(E2E_BROKER)) {
             return new E2eBrokerConfigScenario(adapterTestManager, startDate);
         }

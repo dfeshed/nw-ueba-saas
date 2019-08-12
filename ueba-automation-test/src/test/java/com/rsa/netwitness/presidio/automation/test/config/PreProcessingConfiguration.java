@@ -2,7 +2,7 @@ package com.rsa.netwitness.presidio.automation.test.config;
 
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
-import com.rsa.netwitness.presidio.automation.enums.CONFIGURATION_SCENARIO;
+import com.rsa.netwitness.presidio.automation.enums.ConfigurationScenario;
 import com.rsa.netwitness.presidio.automation.scripts.pre_processing.PreProcessingConfigScenarioFactory;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
@@ -34,7 +34,7 @@ public class PreProcessingConfiguration extends AbstractTestNGSpringContextTests
     @Parameters({"historical_days_back", "anomaly_day","pre_processing_configuration_scenario"})
     @BeforeClass
     public void setup(@Optional("14") int historicalDaysBack, @Optional("1") int anomalyDay,
-                      @Optional("CORE_MONGO") CONFIGURATION_SCENARIO preProcessingConfigurationScenario){
+                      @Optional("CORE_MONGO") ConfigurationScenario preProcessingConfigurationScenario){
 
         LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay + " preProcessingConfigurationScenario=" + preProcessingConfigurationScenario);
         LOGGER.info(preProcessingConfigurationScenario + " configuration will be executed.");
