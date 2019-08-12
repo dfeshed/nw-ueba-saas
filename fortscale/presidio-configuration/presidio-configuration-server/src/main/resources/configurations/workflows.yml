@@ -18,11 +18,12 @@ dags:
     input_pre_processing:
       schedule_interval: None
       schemas:
-      - schema_name : TLS
-        params_list:
+      - name : TLS
+        pre_processors:
           - name: last_occurrence_instant
             static_arguments:
               entityTypes: [domain]
+              schema: TLS
             dynamic_arguments: [startInstant, endInstant]
     smart:
       schedule_interval: timedelta(hours=1)

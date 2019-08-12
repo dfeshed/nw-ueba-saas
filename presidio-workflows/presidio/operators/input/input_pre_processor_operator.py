@@ -8,6 +8,11 @@ from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBoot
 from presidio.utils.services.fixed_duration_strategy import FIX_DURATION_STRATEGY_DAILY
 from presidio.utils.services.time_service import floor_time, convert_to_utc
 
+START_INSTANCE_DYNAMIC_ARGUMENT = 'startInstant'
+END_INSTANCE_DYNAMIC_ARGUMENT = 'endInstant'
+JAVA_ARGS_NAME_KEY = 'name'
+JAVA_ARGS_ARGUMENTS_KEY = 'arguments'
+
 
 class InputPreProcessorOperator(SpringBootJarOperator):
 
@@ -35,32 +40,30 @@ class InputPreProcessorOperator(SpringBootJarOperator):
         Add java args from the static and dynamic arguments
         """
 
-        arguments = self._get_input_pre_processing_arguments(context)
+        arguments = self._get_input_pre_processor_arguments(context)
 
         java_args = {
-            'name': self.name,
-            'arguments': ("\\\"" + json.dumps(arguments).replace("\"", "\\\\\\\"") + "\\\"")
+            JAVA_ARGS_NAME_KEY: self.name,
+            JAVA_ARGS_ARGUMENTS_KEY: ("\\\"" + json.dumps(arguments).replace("\"", "\\\\\\\"") + "\\\"")
         }
 
         super(InputPreProcessorOperator, self).update_java_args(java_args)
         super(InputPreProcessorOperator, self).execute(context)
 
-    def _get_input_pre_processing_arguments(self, context):
+    def _get_input_pre_processor_arguments(self, context):
         context_wrapper = ContextWrapper(context)
         execution_date = context_wrapper.get_execution_date()
         arguments = self.static_arguments.copy()
 
-        if 'startInstant' in self.dynamic_arguments:
+        if START_INSTANCE_DYNAMIC_ARGUMENT in self.dynamic_arguments:
             start_date = floor_time(execution_date, time_delta=FIX_DURATION_STRATEGY_DAILY)
             utc_start_date = convert_to_utc(start_date)
-            arguments.update({'startInstant': utc_start_date})
-        if 'endInstant' in self.dynamic_arguments:
+            arguments.update({START_INSTANCE_DYNAMIC_ARGUMENT: utc_start_date})
+        if END_INSTANCE_DYNAMIC_ARGUMENT in self.dynamic_arguments:
             end_date = floor_time(execution_date + timedelta(days=1),
                                   time_delta=FIX_DURATION_STRATEGY_DAILY)
             utc_end_date = convert_to_utc(end_date)
-            arguments.update({'endInstant': utc_end_date})
-
-        arguments.update({'schema': self.schema_name})
+            arguments.update({END_INSTANCE_DYNAMIC_ARGUMENT: utc_end_date})
 
         return arguments
 

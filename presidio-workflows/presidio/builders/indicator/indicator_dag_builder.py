@@ -3,7 +3,7 @@ from datetime import timedelta
 from presidio.builders.indicator.adapter_operator_builder import AdapterOperatorBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.builders.smart_model.smart_model_accumulate_operator_builder import SmartModelAccumulateOperatorBuilder
-from presidio.factories.input_pre_processing_dag_factory import InputPreProcessorDagFactory
+from presidio.factories.input_pre_processing_dag_factory import InputPreProcessingDagFactory
 from presidio.factories.model_dag_factory import ModelDagFactory
 from presidio.operators.aggregation.feature_aggregations_operator import FeatureAggregationsOperator
 from presidio.operators.aggregation.score_aggregations_operator import ScoreAggregationsOperator
@@ -75,18 +75,18 @@ class IndicatorDagBuilder(PresidioDagBuilder):
                                                      dag))
         )
 
-        if InputPreProcessorDagFactory.get_dag_id(schema) in self.get_list_schemas_for_input_pre_processing():
-            input_pre_processor_trigger = self._build_input_pre_processing_trigger_operator(dag, schema)
+        if schema in InputPreProcessingDagFactory.get_registered_schemas():
+            input_pre_processing_trigger = self._build_input_pre_processing_trigger_operator(dag, schema)
 
-            input_pre_processor_gap_sensor = DagIntervalGapSequentialSensorOperator(dag=dag,
-                                                                                task_id='input_pre_processor_gap_sensor_{0}'.format(schema),
-                                                                                dag_ids=[InputPreProcessorDagFactory.get_dag_id(schema)],
-                                                                                interval=timedelta(hours=1),
-                                                                                start_time=dag.start_date,
-                                                                                fixed_duration_strategy=FIX_DURATION_STRATEGY_DAILY,
-                                                                                poke_interval=5)
+            input_pre_processing_gap_sensor = DagIntervalGapSequentialSensorOperator(dag=dag,
+                                                                                     task_id='input_pre_processing_gap_sensor_{0}'.format(schema),
+                                                                                     dag_ids=[InputPreProcessingDagFactory.get_dag_id(schema)],
+                                                                                     interval=timedelta(hours=1),
+                                                                                     start_time=dag.start_date,
+                                                                                     fixed_duration_strategy=FIX_DURATION_STRATEGY_DAILY,
+                                                                                     poke_interval=5)
 
-            input_pre_processor_gap_sensor >> input_operator >> input_pre_processor_trigger
+            input_pre_processing_gap_sensor >> input_operator >> input_pre_processing_trigger
 
         adapter_operator >> input_operator >> hourly_short_circuit_operator
         scoring_task_sensor_service.add_task_short_circuit(feature_aggregations_operator, hourly_short_circuit_operator)
@@ -111,18 +111,13 @@ class IndicatorDagBuilder(PresidioDagBuilder):
         return model_trigger
 
     def _build_input_pre_processing_trigger_operator(self, dag, schema):
-        input_pre_processing_dag_id = InputPreProcessorDagFactory.get_dag_id(schema)
+        input_pre_processing_dag_id = InputPreProcessingDagFactory.get_dag_id(schema)
 
         python_callable = lambda context, dag_run_obj: dag_run_obj if is_execution_date_valid(context['execution_date'],
                                                                                               FIX_DURATION_STRATEGY_DAILY,
-                                                                                              get_schedule_interval(
-                                                                                                  dag)) else None
-        input_pre_processor_trigger = self._create_expanded_trigger_dag_run_operator("{0}_input_pre_processor_trigger_dagrun".format(schema),
+                                                                                              get_schedule_interval(dag)) else None
+        input_pre_processing_trigger = self._create_expanded_trigger_dag_run_operator("{0}_input_pre_processing_trigger_dag_run".format(schema),
                                                                                      input_pre_processing_dag_id, dag, python_callable)
 
-        return input_pre_processor_trigger
-
-    @staticmethod
-    def get_list_schemas_for_input_pre_processing():
-        return InputPreProcessorDagFactory.get_registered_dag_ids()
+        return input_pre_processing_trigger
 
