@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
-import { click, find, render, triggerKeyEvent } from '@ember/test-helpers';
+import { click, find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
 
 import PILL_SELECTORS from '../pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
@@ -23,6 +23,20 @@ module('Integration | Component | Open Paren', function(hooks) {
       {{query-container/open-paren}}
     `);
     assert.equal(find(PILL_SELECTORS.openParen).textContent.trim(), '(');
+  });
+
+  test('contains proper class when twin is focused', async function(assert) {
+    this.set('pillData', {
+      isTwinFocused: true
+    });
+    await render(hbs`
+      {{query-container/open-paren
+        pillData=pillData
+      }}
+    `);
+
+    const twinFocused = findAll(PILL_SELECTORS.openParenTwinFocused);
+    assert.equal(twinFocused.length, 1, 'twin focused not present');
   });
 
   test('it sends a message when focused and left arrow is pressed', async function(assert) {

@@ -371,6 +371,17 @@ test('enrichedPillsData is false when status is not error', function(assert) {
   assert.equal(pD[0].value, '\'x\'', 'transforms value correctly');
 });
 
+test('enrichedPillsData contains proper twin focused details', function(assert) {
+  const state = new ReduxDataHelper()
+    .language()
+    .pillsDataWithParens()
+    .markFocused(['3'])
+    .build();
+  const pD = enrichedPillsData(state);
+  assert.equal(pD[0].isTwinFocused, true, 'does not indicate twin is focused');
+  assert.equal(pD[2].isTwinFocused, undefined, 'indicates twin is focused when IT is focused');
+});
+
 test('selectedPills returns only those pills that are selected', function(assert) {
   const state = new ReduxDataHelper()
     .language()

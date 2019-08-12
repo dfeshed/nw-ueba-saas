@@ -137,20 +137,48 @@ export const hasInvalidPill = createSelector(
   (_pillsData, isOnGuided) => isOnGuided && _pillsData.isAny('isInvalid')
 );
 
-// This transforms the meta/operator from state, which are just strings,
-// into the full operator/meta objects used by the components
+const _twinProcessedPills = createSelector(
+  [pillsData],
+  (_pillsData) => {
+    // See if a twin-able pill is focused
+    const twin = _pillsData.find((pD) => !!pD.twinId && pD.isFocused);
+
+    // no twin? done here, no work to do
+    if (!twin) {
+      return _pillsData;
+    }
+
+    // Finds twin of focused pill and flags for
+    // twin focusing
+    return _pillsData.map((pD) => {
+      if (pD.twinId == twin.twinId && !pD.isFocused) {
+        return {
+          ...pD,
+          isTwinFocused: true
+        };
+      }
+      return pD;
+    });
+  }
+);
+
 export const enrichedPillsData = createSelector(
-  [validMetaKeySuggestions, pillsData],
+  [validMetaKeySuggestions, _twinProcessedPills],
   (metaKeys, _pillsData) => {
-    return _pillsData.map((pillData) => {
+    // This transforms the meta/operator from state, which are just strings,
+    // into the full operator/meta objects used by the components
+    const newPillsData = _pillsData.map((pillData) => {
       const meta = metaKeys.find((mK) => mK.metaName === pillData.meta);
       const operator = relevantOperators(meta, pillData.operator).find((possOp) => possOp.displayName === pillData.operator);
+
       return {
         ...pillData,
         operator,
         meta
       };
     });
+
+    return newPillsData;
   }
 );
 

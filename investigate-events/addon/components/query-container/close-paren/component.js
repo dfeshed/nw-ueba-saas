@@ -5,7 +5,7 @@ import * as MESSAGE_TYPES from '../message-types';
 
 export default Component.extend({
   classNames: ['close-paren'],
-  classNameBindings: ['isFocused', 'isSelected'],
+  classNameBindings: ['isFocused', 'isSelected', 'isTwinFocused'],
 
   /**
    * The position of this pill relative to other pills.
@@ -37,6 +37,15 @@ export default Component.extend({
    */
   @alias('pillData.isSelected')
   isSelected: false,
+
+  /**
+   *
+   * Is the the open paren that is the twin to this close
+   * focused so that this needs to show style for that?
+   * @public
+   */
+  @alias('pillData.isTwinFocused')
+  isTwinFocused: false,
 
   init() {
     this._super(...arguments);

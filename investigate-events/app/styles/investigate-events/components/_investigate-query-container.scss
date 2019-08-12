@@ -858,6 +858,10 @@
       background-color: background-color(secondary);
       border-color: border-color(secondary);
     }
+
+    &.is-twin-focused {
+      border-bottom: 1px solid border-color(accentTwo);
+    }
   }
 
   .open-paren {
