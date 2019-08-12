@@ -468,19 +468,18 @@ module('Integration | Component | Query Pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
   });
 
-  test('selecting meta sends out a query suggestions message', async function(assert) {
-    const done = assert.async();
+  test('selecting meta sends out correct messages', async function(assert) {
+    assert.expect(2);
     this.set('metaOptions', metaOptions);
 
     this.set('handleMessage', (messageType, data) => {
       if (messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW) {
         return;
+      } else if (messageType === MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT) {
+        assert.equal(data, 'a', 'Message sent for recent query suggestions doesnt contain correct pill data');
+      } else if (messageType === MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS) {
+        assert.equal(data.metaName, 'a', 'Message sent for value suggestions does not contain correct meta');
       }
-
-      assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT, 'Message sent for recent query suggestions is not correct');
-      assert.equal(data, 'a', 'Message sent for recent query suggestions doesnt contain correct pill data');
-
-      done();
     });
 
     await render(hbs`
@@ -509,6 +508,11 @@ module('Integration | Component | Query Pill', function(hooks) {
       if (count === 0) {
         assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT, 'Message sent for recent query suggestions is not correct');
         assert.equal(data, 'a', 'Message sent for recent query suggestions doesnt contain correct pill data');
+        count++;
+      } else if (count === 1) {
+        // Will send out a call to fetch pill values whenever a meta is selected.
+        assert.equal(messageType, MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS, 'Message sent for pill value suggestions is not correct');
+        assert.equal(data.metaName, 'a', 'Message sent for pill value suggestions doesnt contain correct pill data');
         count++;
       } else {
         assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT, 'Message sent for recent query suggestions is not correct');
@@ -547,6 +551,11 @@ module('Integration | Component | Query Pill', function(hooks) {
       if (count === 0) {
         assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT, 'Message sent for recent query suggestions is not correct');
         assert.equal(data, 'a', 'Message sent for recent query suggestions doesnt contain correct pill data');
+        count++;
+      } else if (count === 1) {
+        // Will send out a call to fetch pill values whenever a meta is selected.
+        assert.equal(messageType, MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS, 'Message sent for pill value suggestions is not correct');
+        assert.equal(data.metaName, 'a', 'Message sent for pill value suggestions doesnt contain correct pill data');
         count++;
       } else {
         assert.equal(messageType, MESSAGE_TYPES.PILL_CREATED, 'Message sent for pill create is not correct');
@@ -2472,6 +2481,11 @@ module('Integration | Component | Query Pill', function(hooks) {
         assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
         assert.equal(stringifiedPillText, 'alert');
         count++;
+      } else if (count === 1) {
+        // Will send out a call to fetch pill values whenever a meta is selected.
+        assert.equal(messageType, MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS, 'Message sent for pill value suggestions is not correct');
+        assert.equal(stringifiedPillText.metaName, 'alert', 'Message sent for pill value suggestions doesnt contain correct pill data');
+        count++;
       } else {
         assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
         assert.equal(stringifiedPillText, 'alert contai');
@@ -2519,12 +2533,22 @@ module('Integration | Component | Query Pill', function(hooks) {
         assert.equal(stringifiedPillText, 'alert');
         count++;
       } else if (count === 1) {
+        // Will send out a call to fetch pill values whenever a meta is selected.
+        assert.equal(messageType, MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS, 'Message sent for pill value suggestions is not correct');
+        assert.equal(stringifiedPillText.metaName, 'alert', 'Message sent for pill value suggestions doesnt contain correct pill data');
+        count++;
+      } else if (count === 2) {
         assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
         assert.equal(stringifiedPillText, 'alert contains');
         count++;
-      } else {
+      } else if (count === 3) {
         assert.equal(messageType, MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT);
         assert.equal(stringifiedPillText, 'alert contains foo');
+        count++;
+      } else if (count === 4) {
+        // Will send out a call to fetch pill values whenever a meta is selected or text is typed in pill-value
+        assert.equal(messageType, MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS, 'Message sent for pill value suggestions is not correct');
+        assert.equal(stringifiedPillText.filter, 'foo', 'Message sent for pill value suggestions doesnt contain correct pill data');
         done();
       }
     });
@@ -2885,5 +2909,43 @@ module('Integration | Component | Query Pill', function(hooks) {
     `);
     await clickTrigger(PILL_SELECTORS.meta);
     await typeIn(PILL_SELECTORS.metaInput, ')');
+  });
+
+  test('Toggling from recent query with meta selected will send out a message', async function(assert) {
+    const done = assert.async();
+
+    this.set('metaOptions', metaOptions);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .language()
+      .build();
+
+    this.set('handleMessage', (messageType, data) => {
+      if (
+        messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW ||
+        messageType === MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT
+      ) {
+        return;
+      }
+      assert.equal(messageType, MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS);
+      assert.equal(data.metaName, 'alert');
+      assert.equal(data.filter, 'bar');
+      done();
+    });
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        metaOptions=metaOptions
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await toggleTab(PILL_SELECTORS.metaSelectInput);
+
+    await fillIn(PILL_SELECTORS.recentQuerySelectInput, 'alert = bar');
+    await toggleTab(PILL_SELECTORS.recentQuerySelectInput);
   });
 });

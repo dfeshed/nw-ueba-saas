@@ -248,6 +248,21 @@ const defaultRecentQueriesUnfilteredList = [
   'foo = bar && bar = foo'
 ];
 
+const DEFAULT_VALUE_SUGGESTIONS = [
+  {
+    displayName: 'foo',
+    description: 'Suggestions'
+  },
+  {
+    displayName: 'bar',
+    description: 'Suggestions'
+  },
+  {
+    displayName: 'foobar',
+    description: 'Suggestions'
+  }
+];
+
 const _set = (obj, key, val) => {
   if (obj[key]) {
     obj[key] = val;
@@ -909,6 +924,11 @@ export default class DataHelper {
   recentQueriesUnfilteredList() {
     const recentQueriesArray = getRecentQueryObjects(defaultRecentQueriesUnfilteredList);
     _set(this.state, 'queryNode.recentQueriesUnfilteredList', recentQueriesArray);
+    return this;
+  }
+
+  populateValueSuggestions(list = DEFAULT_VALUE_SUGGESTIONS) {
+    _set(this.state, 'queryNode.valueSuggestions', list);
     return this;
   }
 }

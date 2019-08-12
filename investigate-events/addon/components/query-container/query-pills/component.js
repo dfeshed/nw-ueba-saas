@@ -8,6 +8,7 @@ import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/compone
 import * as MESSAGE_TYPES from '../message-types';
 import { isEscape } from 'investigate-events/util/keys';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
+import { stripOuterSingleQuotes } from 'investigate-events/util/quote';
 
 import {
   canQueryGuided,
@@ -37,13 +38,14 @@ import {
   selectAllPillsTowardsDirection
 } from 'investigate-events/actions/guided-creators';
 import { hasMinimumCoreServicesVersionForTextSearch } from 'investigate-events/reducers/investigate/services/selectors';
-import { getRecentQueries } from 'investigate-events/actions/initialization-creators';
+import { getRecentQueries, valueSuggestions } from 'investigate-events/actions/initialization-creators';
 import { metaKeySuggestionsForQueryBuilder, languageAndAliasesForParser } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import {
   CLOSE_PAREN,
   COMPLEX_FILTER,
   OPEN_PAREN,
-  TEXT_FILTER
+  TEXT_FILTER,
+  QUERY_FILTER
 } from 'investigate-events/constants/pill';
 
 const { log } = console;// eslint-disable-line no-unused-vars
@@ -58,7 +60,8 @@ const stateToComputed = (state) => ({
   languageAndAliasesForParser: languageAndAliasesForParser(state),
   pillsData: enrichedPillsData(state),
   selectedPills: selectedPills(state),
-  canPerformTextSearch: hasMinimumCoreServicesVersionForTextSearch(state)
+  canPerformTextSearch: hasMinimumCoreServicesVersionForTextSearch(state),
+  valueSuggestions: state.investigate.queryNode.valueSuggestions || []
 });
 
 const dispatchToActions = {
@@ -78,7 +81,8 @@ const dispatchToActions = {
   removePillFocus,
   resetGuidedPill,
   selectAllPillsTowardsDirection,
-  selectGuidedPills
+  selectGuidedPills,
+  valueSuggestions
 };
 
 const isEventFiredFromQueryPill = (event) => {
@@ -196,6 +200,7 @@ const QueryPills = RsaContextMenu.extend({
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL]: (data) => this._deletePressedOnFocusedPill(data),
       [MESSAGE_TYPES.ENTER_PRESSED_ON_FOCUSED_PILL]: (pillData) => this._enterPressedOnFocusedPill(pillData),
+      [MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS]: (data) => this._fetchValueSuggestions(data),
       [MESSAGE_TYPES.PILL_ADD_CANCELLED]: (data, position) => this._pillAddCancelled(data, position),
       [MESSAGE_TYPES.PILL_CREATED]: (data, position) => this._pillCreated(data, position),
       [MESSAGE_TYPES.PILL_DELETED]: (data) => this._pillDeleted(data),
@@ -490,6 +495,10 @@ const QueryPills = RsaContextMenu.extend({
     if (this.get('isPillOpen')) {
       return;
     }
+    // Fetch value suggestions to update array in state
+    if (pillData.type === QUERY_FILTER) {
+      this._fetchValueSuggestions({ metaName: pillData.meta, filter: stripOuterSingleQuotes(pillData.value) });
+    }
     this.send('openGuidedPillForEdit', { pillData });
     this._pillEnteredForEdit();
   },
@@ -633,6 +642,13 @@ const QueryPills = RsaContextMenu.extend({
     } else if (input) {
       input.focus();
     }
+  },
+
+  /**
+   * Request value suggestions
+   */
+  _fetchValueSuggestions({ metaName, filter }) {
+    this.send('valueSuggestions', metaName, filter);
   }
 });
 

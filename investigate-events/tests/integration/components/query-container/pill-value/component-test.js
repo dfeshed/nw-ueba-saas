@@ -8,7 +8,7 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import {
   AFTER_OPTION_FREE_FORM_LABEL,
   AFTER_OPTION_TEXT_LABEL,
-  AFTER_OPTION_QUERY_LABEL,
+  POWER_SELECT_OPTIONS_QUERY_LABEL,
   AFTER_OPTION_TEXT_DISABLED_LABEL,
   AFTER_OPTION_TAB_META
 } from 'investigate-events/constants/pill';
@@ -310,7 +310,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     await clickTrigger(PILL_SELECTORS.value);
     const options = findAll(PILL_SELECTORS.powerSelectOption);
     assert.equal(options.length, 1, 'incorrect number of options');
-    assert.ok(_hasOption(options, AFTER_OPTION_QUERY_LABEL), 'incorrect option to create a query filter');
+    assert.ok(_hasOption(options, POWER_SELECT_OPTIONS_QUERY_LABEL), 'incorrect option to create a query filter');
     const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
     assert.equal(afterOptions.length, 2, 'incorrect number of options');
     assert.ok(_hasOption(afterOptions, AFTER_OPTION_FREE_FORM_LABEL), 'incorrect option to create a free-form filter');
@@ -595,5 +595,77 @@ module('Integration | Component | Pill Value', function(hooks) {
     assert.equal(advancedOptions.length, 2, 'incorrect number of Advanced Options present');
     assert.equal(advancedOptions[1].textContent.trim(), 'Text Filter is unavailable. All services must be 11.3 or greater.', 'incorrect label for Text Filter option');
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionDisabled).length, 1, 'incorrect number of disabled items');
+  });
+
+  test('no value suggestions will display just one default option', async function(assert) {
+    this.set('valueSuggestions', []);
+
+    await render(hbs`
+      {{query-container/pill-value
+        valueSuggestions=valueSuggestions
+        isActive=true
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.value);
+
+    assert.notOk(find(PILL_SELECTORS.powerSelectGroup), 'Found power-select group when it should not have');
+
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 1, 'Should just have a default option, but found more');
+  });
+
+  test('value suggestions will display default options plus suggestions', async function(assert) {
+    const suggestions = [
+      {
+        displayName: 'foo',
+        description: 'Suggestions'
+      },
+      {
+        displayName: 'bar',
+        description: 'Suggestions'
+      }
+    ];
+    this.set('valueSuggestions', suggestions);
+
+    await render(hbs`
+      {{query-container/pill-value
+        valueSuggestions=valueSuggestions
+        isActive=true
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.value);
+    await typeInSearch('boom');
+
+    const values = findAll('.value').map((v) => v.textContent.trim()).filter((t) => !!t);
+
+    assert.deepEqual(values, ['boom', 'foo', 'bar'], 'Incorrect options being displayed');
+  });
+
+  test('Description for options will only ever be for Query Filter, and not for suggestions', async function(assert) {
+    const suggestions = [
+      {
+        displayName: 'foo',
+        description: 'Suggestions'
+      },
+      {
+        displayName: 'bar',
+        description: 'Suggestions'
+      }
+    ];
+    this.set('valueSuggestions', suggestions);
+
+    await render(hbs`
+      {{query-container/pill-value
+        valueSuggestions=valueSuggestions
+        isActive=true
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.value);
+    const descriptions = findAll('.description');
+
+    assert.ok(!descriptions.includes('Suggestions'), 'Suggestions description should not show up');
+
   });
 });

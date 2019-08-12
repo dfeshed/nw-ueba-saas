@@ -24,7 +24,16 @@ export default {
     if (value === 'test') {
       return {
         code: 0,
-        data: ['foo', 'bar', 'baz', 'foobar']
+        data: [{ value: 'foo' }, { value: 'bar' }, { value: 'foobar' }]
+      };
+    } else if (value === 'test100') {
+      return {
+        code: 0,
+        data: Array.from({ length: 100 }, () => {
+          return {
+            value: faker.random.word()
+          };
+        })
       };
     }
 

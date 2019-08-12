@@ -92,7 +92,8 @@ export const createBasicPill = async function(fromTrigger, format, operator) {
 const ignoredInitialMessageTypes = [
   MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW,
   MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW,
-  MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT
+  MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT,
+  MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS
 ];
 
 export const isIgnoredInitialEvent = (event) => {

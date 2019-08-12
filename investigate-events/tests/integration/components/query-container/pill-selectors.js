@@ -87,5 +87,8 @@ export default {
   recentQueriesOptions: '.recent-queries-option.value',
   loadingSpinnerSelector: '.investigate-query-dropdown .ember-power-select-options .ember-power-select-loading-options-spinner',
   noResultsMessageSelector: '.investigate-query-dropdown .ember-power-select-option.ember-power-select-option--no-matches-message',
-  recentQueryCount: '.recent-query-count'
+  recentQueryCount: '.recent-query-count',
+
+  powerSelectGroup: '.ember-power-select-group',
+  powerSelectGroupName: '.ember-power-select-group-name'
 };

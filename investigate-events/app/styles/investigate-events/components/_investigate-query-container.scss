@@ -924,6 +924,13 @@
     font-weight: 100;
   }
   .ember-power-select-group {
+    .ember-power-select-options {
+      border-right: 1px solid text-color(primary);
+      border-left: 1px solid text-color(primary);
+      border-bottom: none;
+      background: background-color(primary, darkest);
+      height: 15rem;
+    }
     .ember-power-select-option {
       min-width: 300px;
       max-width: 600px;
@@ -949,8 +956,7 @@
       display: none;
     }
     .ember-power-select-options {
-      max-height: 132px;
-      overflow-y: scroll;
+      max-height: 30px;
     }
   }
   .ember-power-select-group-name {

@@ -41,12 +41,13 @@ const selectAllPillsTowardsDirectionSpy = sinon.spy(guidedCreators, 'selectAllPi
 const deleteSelectedGuidedPillsSpy = sinon.spy(guidedCreators, 'deleteSelectedGuidedPills');
 const recentQueriesSpy = sinon.spy(initializationCreators, 'getRecentQueries');
 const batchAddQueriesSpy = sinon.spy(guidedCreators, 'batchAddPills');
+const valueSuggestionsSpy = sinon.spy(initializationCreators, 'valueSuggestions');
 // const addFreeFormFilterSpy = sinon.spy(guidedCreators, 'addFreeFormFilterSpy');
 const spys = [
   newActionSpy, deleteActionSpy, editGuidedPillSpy, selectActionSpy,
   deselectActionSpy, openGuidedPillForEditSpy, resetGuidedPillSpy,
   selectAllPillsTowardsDirectionSpy, deleteSelectedGuidedPillsSpy,
-  recentQueriesSpy, batchAddQueriesSpy
+  recentQueriesSpy, batchAddQueriesSpy, valueSuggestionsSpy
 ];
 
 const allPillsAreClosed = (assert) => {
@@ -2766,7 +2767,7 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   test('Can select multiple parens', async function(assert) {
-    // const done = assert.async();
+
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -2831,6 +2832,61 @@ module('Integration | Component | Query Pills', function(hooks) {
     await click(triggers[1]);
     await typeIn(PILL_SELECTORS.metaInput, ')');
     assert.equal(find(PILL_SELECTORS.metaInput).value, ')', 'The new-pill-template still has a close paren in it');
+  });
+
+  test('pill-value will have options in the drop-down', async function(assert) {
+    assert.expect(1);
+    const done = assert.async();
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await selectChoose(PILL_SELECTORS.metaTrigger, 'alert');
+
+    await selectChoose(PILL_SELECTORS.operatorTrigger, 'contains');
+
+    await waitUntil(() => findAll(PILL_SELECTORS.powerSelectOption).length > 1, { timeout: 5000 }).then(() => {
+      assert.ok(findAll(PILL_SELECTORS.powerSelectOption).length === 11, 'Should have found default plus 10 value suggestions, but didnt');
+      done();
+    });
+
+  });
+
+  test('Will trigger valueSuggestions once meta is selected and when something is typed in pill-value', async function(assert) {
+
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await selectChoose(PILL_SELECTORS.metaTrigger, 'alert');
+
+    await selectChoose(PILL_SELECTORS.operatorTrigger, 'contains');
+
+    await typeIn(PILL_SELECTORS.valueSelectInput, 't');
+
+    await settled();
+
+    assert.ok(valueSuggestionsSpy.calledTwice, 'Value suggestions spy was not called twice');
+    const { firstCall, secondCall } = valueSuggestionsSpy;
+
+    assert.equal(firstCall.args[0], 'alert', 'First call to the value suggestions action creator is incorrect');
+    assert.equal(secondCall.args[0], 'alert', 'second call to the value suggestions action creator is incorrect');
+    assert.equal(secondCall.args[1], 't', 'second call to the value suggestions action creator is incorrect');
+
   });
 
 });

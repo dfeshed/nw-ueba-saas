@@ -688,9 +688,15 @@ export default handleActions({
     return handle(state, action, {
       start: (s) => s.set('valueSuggestionsCallInProgress', true),
       success: (s) => {
-        const { data } = action.payload;
+        const { payload: { data } } = action;
+        // Max cap at 100 values
+        const valuesList = data.slice(0, 100);
+        const values = valuesList.map((d) => ({
+          displayName: d.value,
+          description: 'Suggestions'
+        }));
         return s.merge({
-          valueSuggestions: data,
+          valueSuggestions: values,
           valueSuggestionsCallInProgress: false
         });
       },

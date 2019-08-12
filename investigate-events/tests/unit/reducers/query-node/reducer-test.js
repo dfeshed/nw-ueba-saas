@@ -1282,7 +1282,35 @@ test('SET_VALUE_SUGGESTIONS success saves value suggestions and marks callInProg
     valueSuggestionsCallInProgress: true
   });
 
-  const data = ['foo', 'bar', 'baz'];
+  const expectedData = ['foo', 'bar', 'baz'];
+
+  const serverResponse = expectedData.map((d) => {
+    return { value: d };
+  });
+
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.SET_VALUE_SUGGESTIONS,
+    payload: {
+      data: serverResponse
+    }
+  });
+
+  const result = reducer(initialState, successAction);
+
+  const suggestions = result.valueSuggestions.map((s) => s.displayName);
+
+  assert.deepEqual(suggestions, expectedData, 'expected value suggestions were not found');
+  assert.notOk(result.valueSuggestionCallInProgress, 'Call should not be in progess');
+});
+
+test('if SET_VALUE_SUGGESTIONS response has 100 or less, values will be saved', function(assert) {
+
+  const initialState = Immutable.from({
+    valueSuggestions: [],
+    valueSuggestionsCallInProgress: true
+  });
+
+  const data = Array.from({ length: 100 }, () => 0);
 
   const successAction = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.SET_VALUE_SUGGESTIONS,
@@ -1293,7 +1321,29 @@ test('SET_VALUE_SUGGESTIONS success saves value suggestions and marks callInProg
 
   const result = reducer(initialState, successAction);
 
-  assert.deepEqual(result.valueSuggestions, data, 'expected value suggestions were not found');
+  assert.equal(result.valueSuggestions.length, 100, 'value suggestions');
+  assert.notOk(result.valueSuggestionCallInProgress, 'Call should not be in progess');
+});
+
+test('if SET_VALUE_SUGGESTIONS response has more than 100 values, we slice it off to keep top 100', function(assert) {
+
+  const initialState = Immutable.from({
+    valueSuggestions: [],
+    valueSuggestionsCallInProgress: true
+  });
+
+  const data = Array.from({ length: 101 }, () => 0);
+
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.SET_VALUE_SUGGESTIONS,
+    payload: {
+      data
+    }
+  });
+
+  const result = reducer(initialState, successAction);
+
+  assert.equal(result.valueSuggestions.length, 100, 'value suggestions');
   assert.notOk(result.valueSuggestionCallInProgress, 'Call should not be in progess');
 });
 

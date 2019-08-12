@@ -264,13 +264,13 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
     const prefixText = 'test';
     const metaName = 'action';
 
-    const expectedSuggestionsForTest = ['foo', 'bar', 'baz', 'foobar'];
+    const expectedSuggestionsForTest = ['foo', 'bar', 'foobar'];
 
     const dispatchValueSuggestions = (action) => {
       assert.equal(action.type, ACTION_TYPES.SET_VALUE_SUGGESTIONS, 'action has the correct type');
       action.promise.then((resolve) => {
-        const responseSuggestions = resolve.data;
-        assert.deepEqual(expectedSuggestionsForTest, responseSuggestions, 'values containing text should be returned');
+        const responseSuggestions = resolve.data.map((d) => d.value);
+        assert.deepEqual(responseSuggestions, expectedSuggestionsForTest, 'values containing text should be returned');
         done();
       });
     };

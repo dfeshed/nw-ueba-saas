@@ -2,6 +2,8 @@ import Component from '@ember/component';
 import { next, scheduleOnce, debounce } from '@ember/runloop';
 import { htmlSafe } from '@ember/string';
 import computed from 'ember-computed-decorators';
+import { inject as service } from '@ember/service';
+
 import KEY_MAP, {
   isArrowLeft,
   isBackspace,
@@ -18,7 +20,7 @@ import {
   AFTER_OPTION_TEXT_LABEL,
   AFTER_OPTION_TEXT_DISABLED_LABEL,
   AFTER_OPTION_TEXT_UNAVAILABLE_LABEL,
-  AFTER_OPTION_QUERY_LABEL,
+  POWER_SELECT_OPTIONS_QUERY_LABEL,
   POWER_SELECT_INPUT
 } from 'investigate-events/constants/pill';
 import * as MESSAGE_TYPES from '../message-types';
@@ -55,16 +57,21 @@ const AFTER_OPTIONS_COMPONENT = 'query-container/power-select-after-options';
 const { Handlebars: { Utils } } = Ember;
 
 /**
-* The options used for the power-select. They are grouped to provide a way to
-* have 2 "lists". One list is the default type of pill to create, the second
-* list is the advanced options (creating free-form or text pills). The first
-* group's name is hidden via CSS, but we still need to give it a name so it
-* renders. That's why it's a space character.
-*/
-const _dropDownOptions = [AFTER_OPTION_QUERY_LABEL];
+ *
+ * @param {String} searchString
+ * Default option object `Query Filter` passed to ember-power-select
+ */
+const defaultOption = (searchString) => {
+  return {
+    displayName: searchString,
+    description: POWER_SELECT_OPTIONS_QUERY_LABEL
+  };
+};
 
 export default Component.extend({
   classNameBindings: ['isPopulated', ':pill-value'],
+
+  i18n: service(),
 
   /**
    * Are all Core Services at a revision that allows Text searching to be
@@ -115,8 +122,6 @@ export default Component.extend({
    */
   activePillTab: undefined,
 
-  _dropDownOptions: [AFTER_OPTION_QUERY_LABEL],
-
   /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
@@ -136,6 +141,22 @@ export default Component.extend({
    */
   valueString: null,
 
+  /**
+   * List of value suggestions, to be displayed in the drop-down.
+   */
+  valueSuggestions: [],
+
+  /**
+  * The options used for the power-select. They are grouped to provide a way to
+  * have 2 "lists". One list is the default type of pill to create, the second
+  * list is suggested values if available.
+  * If no suggestions are available, display default `Query Filter` option
+  */
+  @computed('_searchString', 'valueSuggestions', 'i18n')
+  _options(searchString, valueSuggestions) {
+    return [defaultOption(searchString), ...valueSuggestions];
+  },
+
   @computed('hasTextPill', 'canPerformTextSearch')
   _groomedAfterOptionsMenu(hasTextPill, canPerformTextSearch) {
     if (!canPerformTextSearch) {
@@ -154,7 +175,7 @@ export default Component.extend({
    */
   @computed('isEditing')
   optionsComponent(isEditing) {
-    return isEditing ? _dropDownOptions : AFTER_OPTIONS_COMPONENT;
+    return isEditing ? this.get('_options') : AFTER_OPTIONS_COMPONENT;
   },
 
   /**
@@ -368,10 +389,18 @@ export default Component.extend({
      * as clicking on the 'Query Pill` option
      */
     onChange(selection, powerSelectAPI/* , event */) {
-      if (selection !== null && selection === AFTER_OPTION_QUERY_LABEL) {
-        const { actions, searchText } = powerSelectAPI;
+      if (selection !== null) {
+
+        let searchText, value;
+        if (selection.description === POWER_SELECT_OPTIONS_QUERY_LABEL) {
+          // If Default option was chosen, pick out the text typed in.
+          searchText = powerSelectAPI.searchText;
+        } else if (selection.description === 'Suggestions') {
+          // Otherwise, one of the display values were picked.
+          searchText = selection.displayName;
+        }
+        const { actions } = powerSelectAPI;
         const isComplex = this.get('_isComplex');
-        let value;
         if (isComplex) {
           value = searchText.trim();
         } else {

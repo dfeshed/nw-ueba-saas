@@ -17,6 +17,7 @@ import {
   AFTER_OPTION_TAB_RECENT_QUERIES,
   PILL_META_DATA_SOURCE,
   PILL_OPERATOR_DATA_SOURCE,
+  PILL_VALUE_DATA_SOURCE,
   PILL_RECENT_QUERY_DATA_SOURCE
 } from 'investigate-events/constants/pill';
 
@@ -94,6 +95,11 @@ export default Component.extend({
    * Object with keys `language` and `aliases`
    */
   languageAndAliasesForParser: null,
+
+  /**
+   * Possible suggestions for pill-value
+   */
+  valueSuggestions: [],
 
   /**
    * An action to call when sending messages and data to the parent component.
@@ -631,6 +637,7 @@ export default Component.extend({
       });
       this.queryCounter.setMetaTabCount(1);
       this._recentQueryTextEntered(selectedMeta.metaName, PILL_META_DATA_SOURCE);
+      this._requestValueSuggestions(selectedMeta.metaName);
     } else {
       this.setProperties({
         selectedMeta: null,
@@ -1118,6 +1125,13 @@ export default Component.extend({
     this._broadcast(MESSAGE_TYPES.PILL_CLOSE_PAREN);
   },
 
+  /**
+   * Broadcast message to fetch value suggestions for text typed in.
+   */
+  _requestValueSuggestions(metaName, filter) {
+    this._broadcast(MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS, { metaName, filter });
+  },
+
   // ************************ EPS TAB FUNCTIONALITY *************************  //
 
   /**
@@ -1154,6 +1168,8 @@ export default Component.extend({
       ) {
         const metaCount = this._retrieveCountForMetaText(stringifiedPill, dataSource);
         this.queryCounter.setMetaTabCount(metaCount);
+      } else if (dataSource === PILL_VALUE_DATA_SOURCE) {
+        this._requestValueSuggestions(this.get('selectedMeta').metaName, data);
       }
     }
   },
@@ -1201,6 +1217,12 @@ export default Component.extend({
           const meta = this.get('metaOptions');
           const pillData = convertTextToPillData({ queryText: data, availableMeta: meta });
           props = determineNewComponentPropsFromPillData(pillData);
+
+          // If there is meta selected, send out value suggestions call that will
+          // be used to display options in pill-value.
+          if (props.selectedMeta !== null) {
+            this._requestValueSuggestions(props.selectedMeta.metaName, props.valueString ? props.valueString : '');
+          }
         } else {
           // If there is no data, activate pill-meta component
           props = {

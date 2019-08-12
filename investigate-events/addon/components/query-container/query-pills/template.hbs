@@ -7,6 +7,7 @@
     sendMessage=(action 'handleMessage')
     newPillPosition=index
     startTriggeredPosition=startTriggeredPosition
+    valueSuggestions=(readonly valueSuggestions)
   }}
 
   {{#if (eq pillData.type COMPLEX_FILTER)}}
@@ -47,6 +48,7 @@
       sendMessage=(action 'handleMessage')
       position=index
       isActive=pillData.isEditing
+      valueSuggestions=(readonly valueSuggestions)
     }}
   {{/if}}
 
@@ -61,5 +63,6 @@
   languageAndAliasesForParser=languageAndAliasesForParser
   position=lastIndex
   sendMessage=(action 'handleMessage')
+  valueSuggestions=(readonly valueSuggestions)
 }}
 
