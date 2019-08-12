@@ -158,12 +158,26 @@ public class AdapterTestManager {
     }
 
 
+    public void backupProductionAdapterConfigurationProperties() {
+        String command =
+                  "cp -n " + AUTHENTICATION_CONFIGURATION + " " + PROD_AUTHENTICATION_CONFIGURATION + ";"
+                + "cp -n " + ACTIVE_DIRECTORY_CONFIGURATION + " " + PROD_ACTIVE_DIRECTORY_CONFIGURATION + ";"
+                + "cp -n " + FILE_CONFIGURATION + " " + PROD_FILE_CONFIGURATION + ";"
+                + "cp -n " + REGISTRY_CONFIGURATION + " " + PROD_REGISTRY_CONFIGURATION + ";"
+                + "cp -n " + PROCESS_CONFIGURATION + " " + PROD_PROCESS_CONFIGURATION + ";"
+                + "cp -n " + TLS_CONFIGURATION + " " + PROD_TLS_CONFIGURATION;
+
+        TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
+    }
+
     public void setAdapterConfigurationPropertiesToTestMode() {
-        String command = "cp -f " + TEST_AUTHENTICATION_CONFIGURATION + " " + AUTHENTICATION_CONFIGURATION + ";"
+        backupProductionAdapterConfigurationProperties();
+
+        String command =
+                  "cp -f " + TEST_AUTHENTICATION_CONFIGURATION + " " + AUTHENTICATION_CONFIGURATION + ";"
                 + "cp -f " + TEST_ACTIVE_DIRECTORY_CONFIGURATION + " " + ACTIVE_DIRECTORY_CONFIGURATION + ";"
                 + "cp -f " + TEST_FILE_CONFIGURATION + " " + FILE_CONFIGURATION + ";"
                 + "cp -f " + TEST_REGISTRY_CONFIGURATION + " " + REGISTRY_CONFIGURATION + ";"
-                + "cp -f " + TEST_PROCESS_CONFIGURATION + " " + PROCESS_CONFIGURATION + ";"
                 + "cp -f " + TEST_PROCESS_CONFIGURATION + " " + PROCESS_CONFIGURATION + ";"
                 + "cp -f " + TEST_TLS_CONFIGURATION + " " + TLS_CONFIGURATION;
 
@@ -171,7 +185,10 @@ public class AdapterTestManager {
     }
 
     public void setAdapterConfigurationPropertiesToProductionMode() {
-        String command = "cp -f " + PROD_AUTHENTICATION_CONFIGURATION + " " + AUTHENTICATION_CONFIGURATION + ";"
+        backupProductionAdapterConfigurationProperties();
+
+        String command =
+                  "cp -f " + PROD_AUTHENTICATION_CONFIGURATION + " " + AUTHENTICATION_CONFIGURATION + ";"
                 + "cp -f " + PROD_ACTIVE_DIRECTORY_CONFIGURATION + " " + ACTIVE_DIRECTORY_CONFIGURATION + ";"
                 + "cp -f " + PROD_FILE_CONFIGURATION + " " + FILE_CONFIGURATION + ";"
                 + "cp -f " + PROD_REGISTRY_CONFIGURATION + " " + REGISTRY_CONFIGURATION + ";"
