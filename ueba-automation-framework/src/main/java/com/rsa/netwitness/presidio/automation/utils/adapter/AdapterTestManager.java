@@ -1,16 +1,22 @@
 package com.rsa.netwitness.presidio.automation.utils.adapter;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rsa.netwitness.presidio.automation.domain.config.Consts;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoPropertiesReader;
 import com.rsa.netwitness.presidio.automation.utils.common.SedUtil;
 import com.rsa.netwitness.presidio.automation.utils.common.TerminalCommands;
 import fortscale.common.general.Schema;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -250,5 +256,43 @@ public class AdapterTestManager {
         }
         System.out.println(address.getHostAddress());
         return  address.getHostAddress();
+    }
+
+
+    public void  setBuildingModelsRange(int enriched_records_days  ,int feature_aggregation_records_days , int smart_records_days )  {
+        String workflows_default_file ="/etc/netwitness/presidio/configserver/configurations/airflow/workflows-default.json" ;
+        ObjectMapper mapper = new ObjectMapper();
+        JSONParser parser = new JSONParser();
+        Object obj = null;
+        try {
+            obj = parser.parse(new FileReader(workflows_default_file));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        JSONObject workflows =  (JSONObject) obj;
+        JSONObject components =  (JSONObject) workflows.get("components");
+        JSONObject ade =  (JSONObject) components.get("ade");
+        JSONObject models =  (JSONObject) ade.get("models");
+
+        JSONObject enriched_records = (JSONObject) models.get("enriched_records");
+        JSONObject feature_aggregation_records = (JSONObject) models.get("feature_aggregation_records");
+        JSONObject smart_records = (JSONObject) models.get("smart_records");
+        enriched_records.put ("min_data_time_range_for_building_models_in_days",feature_aggregation_records_days);
+        feature_aggregation_records.put ("min_data_time_range_for_building_models_in_days",enriched_records_days);
+        smart_records.put ("min_data_time_range_for_building_models_in_days",smart_records_days);
+
+        models.put("enriched_records",enriched_records);
+        models.put("feature_aggregation_records",feature_aggregation_records);
+        models.put("smart_records",smart_records);
+        ade.put("models",models);
+        components.put("ade",ade);
+        workflows.put("components",components);
+        try {
+            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(workflows_default_file), workflows);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
