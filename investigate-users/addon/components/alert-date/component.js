@@ -1,20 +1,20 @@
+import { assign } from '@ember/polyfills';
 import computed from 'ember-computed-decorators';
-import Component from '@ember/component';
-import { inject as service } from '@ember/service';
-import moment from 'moment';
+import DateFilter from 'rsa-data-filters/components/rsa-data-filters/filters/date-filter/component';
 
-export default Component.extend({
-  dateFormat: service(),
-  timezone: service(),
+export default DateFilter.extend({
 
-  @computed('timestamp')
-  alertDateString(timestamp) {
-    const selectedDateFormat = this.get('dateFormat.selected.format');
-    const timeZoneId = this.get('timezone.selected.zoneId') || 'UTC';
-    const dateTimeFormat = selectedDateFormat ? selectedDateFormat : 'YYYY/MM/DD';
-    const dateTimeString = moment(parseInt(timestamp, 10))
-      .locale(this.get('i18n.locale') || 'en')
-      .tz(timeZoneId).format(dateTimeFormat);
-    return dateTimeString;
+  @computed('filterOptions')
+  options: {
+    get() {
+      const options = assign({}, this.get('defaults'), this.get('filterOptions'));
+      const { filterValue: { value } } = options;
+      this.set('hasCustomDate', value.compact().length === 2);
+      return options;
+    },
+
+    set(key, value) {
+      return value;
+    }
   }
 });

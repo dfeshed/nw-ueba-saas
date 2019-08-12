@@ -54,7 +54,7 @@
     <div class="label-text">
       {{t 'investigateUsers.alerts.filters.dateRange'}}
     </div>
-    {{rsa-data-filters/filters/date-filter filterOptions=dateTimeFilterOptionsForAlerts onChange=(action 'updateDateRangeFilter')}}
+    {{alert-date filterOptions=dateTimeFilterOptionsForAlerts onChange=(action 'updateDateRangeFilter')}}
   </div>
 
 </div>

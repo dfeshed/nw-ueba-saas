@@ -118,11 +118,11 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
     assert.equal(result.alertsForTimeline.length, 5);
   });
 
-  test('test update filter for alerts', (assert) => {
+  test('test update filter for alerts and reset the same', (assert) => {
 
     assert.equal(resetState.filter.feedback, null);
 
-    const result = reducer(Immutable.from({ filter: resetState.filter }), {
+    let result = reducer(Immutable.from({ filter: resetState.filter }), {
       type: ACTION_TYPES.UPDATE_FILTER_FOR_ALERTS,
       payload: { filter: { feedback: 'none', showCustomDate: true }, relativeDateFilter: {
         name: 'alertTimeRange',
@@ -140,6 +140,19 @@ module('Unit | Reducers | Alerts Reducer', (hooks) => {
       unit: 'Months',
       value: [ 1 ]
     });
+
+    result = reducer(Immutable.from({ filter: resetState.filter }), {
+      type: ACTION_TYPES.UPDATE_FILTER_FOR_ALERTS,
+      payload: { filter: null, relativeDateFilter: null }
+    });
+    assert.equal(result.filter.fromPage, resetState.filter.fromPage);
+    assert.deepEqual(result.relativeDateFilter, {
+      name: 'alertTimeRange',
+      operator: 'LESS_THAN',
+      unit: 'Months',
+      value: [ 3 ]
+    });
+
   });
 
   test('test alerts', (assert) => {

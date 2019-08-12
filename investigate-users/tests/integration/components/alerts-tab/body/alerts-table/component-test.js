@@ -1,4 +1,4 @@
-import { find, findAll, click, render } from '@ember/test-helpers';
+import { find, findAll, click, render, waitUntil } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
@@ -47,13 +47,10 @@ module('Integration | Component | alerts-tab/body/alerts-table', function(hooks)
   });
 
   test('it should render alert tab body should show alerts', async function(assert) {
-    assert.expect(2);
+    assert.expect(1);
     redux.dispatch(getAlertsForGivenTimeInterval());
     await render(hbs`{{alerts-tab/body/alerts-table}}`);
-    await click('.alertName > span');
-    assert.equal(findAll('.alerts-tab_body_body-table_body_row_alerts_alert_indicator-table').length, 1);
-    await click('.alertName > span');
-    assert.equal(findAll('.alerts-tab_body_body-table_body_row_alerts_alert_indicator-table').length, 0);
+    assert.equal(findAll('.alerts-tab_body_body-table_body_row_date_icon').length, 2);
   });
 
   test('it should render alert tab body should show indicators inside alerts', async function(assert) {
@@ -61,18 +58,20 @@ module('Integration | Component | alerts-tab/body/alerts-table', function(hooks)
     const done = assert.async();
     await render(hbs`{{alerts-tab/body/alerts-table}}`);
     click('.alerts-tab_body_body-table_body_row_date');
-    await click('.alerts-tab_body_body-table_body_row_alerts_alert');
-    later(() => {
-      assert.equal(findAll('.rsa-data-table-body-row').length, 17);
-      click('.rsa-data-table-body-row');
-      const select = waitForReduxStateChange(redux, 'user.indicatorId');
-      return select.then(() => {
-        const state = redux.getState();
-        assert.equal(state.user.userId, 'a0979b0c-7214-4a53-8114-c1552aa0952c');
-        assert.equal(state.user.alertId, '5090a7fc-1218-4b74-b05a-6b197601d18d');
-        assert.equal(state.user.indicatorId, '07ce09d8-9f43-4d8a-aad0-f955c1bb413f');
-        done();
-      });
-    }, 500);
+    return waitUntil(() => document.querySelectorAll('.alerts-tab_body_body-table_body_row_alerts').length === 1, { timeout: 30000 }).then(async() => {
+      await click('.alerts-tab_body_body-table_body_row_alerts_alert');
+      later(() => {
+        assert.equal(findAll('.rsa-data-table-body-row').length, 17);
+        click('.rsa-data-table-body-row');
+        const select = waitForReduxStateChange(redux, 'user.indicatorId');
+        return select.then(() => {
+          const state = redux.getState();
+          assert.equal(state.user.userId, 'a0979b0c-7214-4a53-8114-c1552aa0952c');
+          assert.equal(state.user.alertId, '5090a7fc-1218-4b74-b05a-6b197601d18d');
+          assert.equal(state.user.indicatorId, '07ce09d8-9f43-4d8a-aad0-f955c1bb413f');
+          done();
+        });
+      }, 500);
+    });
   });
 });

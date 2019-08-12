@@ -67,12 +67,17 @@ const tabs = handleActions({
   [ACTION_TYPES.GET_EXIST_ANOMALY_TYPES_ALERT]: (state, { payload }) => state.set('existAnomalyTypes', payload),
   [ACTION_TYPES.UPDATE_FILTER_FOR_ALERTS]: (state, { payload }) => {
     let filter = initialFilterState;
-    let newState = state;
-    if (payload) {
+    let newState = state.set('relativeDateFilter', {
+      name: 'alertTimeRange',
+      operator: 'LESS_THAN',
+      value: [ 3 ],
+      unit: 'Months'
+    });
+    if (payload.filter) {
       filter = state.getIn(['filter']).merge(payload.filter);
-      if (payload.relativeDateFilter) {
-        newState = state.set('relativeDateFilter', payload.relativeDateFilter);
-      }
+    }
+    if (payload.relativeDateFilter) {
+      newState = state.set('relativeDateFilter', payload.relativeDateFilter);
     }
     return newState.set('filter', filter);
   },

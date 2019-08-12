@@ -1,0 +1,25 @@
+<div class='alerts-tab_body_body-table_body_row_alerts_alert_indicator-table'>
+  <div class='alerts-tab_body_body-table_body_row_alerts_alert_indicators'>
+    {{#rsa-data-table 
+      lazy=true 
+      items=alert.evidences 
+      columnsConfig=columnsData 
+      onRowClick=(action "selectUser" (hash alertId=alert.id userId=alert.entityId))
+    }} 
+      {{#rsa-data-table/header as |column|}}
+        <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title={{t column.field}}>
+          {{t (concat 'investigateUsers.alerts.indicator.' column.field)}}
+        </span>
+      {{/rsa-data-table/header}}
+      {{#rsa-data-table/body as |item index column|}} 
+        {{#rsa-data-table/body-cell item=item index=index column=column}}
+          {{#if (eq column.field 'startDate')}}
+            {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
+          {{else}}
+            {{get item column.field}}
+          {{/if}}
+        {{/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  </div>
+</div>

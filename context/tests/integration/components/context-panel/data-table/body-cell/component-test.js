@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import { find, render } from '@ember/test-helpers';
+import moment from 'moment';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 module('Integration | Component | context-panel/data-table/body-cell', function(hooks) {
@@ -136,7 +137,7 @@ module('Integration | Component | context-panel/data-table/body-cell', function(
   });
 
   test('for incident lookup incident created field is rendered', async function(assert) {
-
+    const oldDate = moment().subtract('years', 3);
     const column = {
       field: 'created.$date',
       title: 'context.incident.created',
@@ -145,14 +146,13 @@ module('Integration | Component | context-panel/data-table/body-cell', function(
     };
     const item = {
       'created': {
-        '$date': '2016-02-09T04:17:06.156Z'
+        '$date': oldDate.format('YYYY/MM/DD HH:mm:ss')
       }
     };
     this.set('column', column);
     this.set('item', item);
     await render(hbs`{{context-panel/data-table/body-cell item=item index=1 column=column}}`);
-
-    assert.equal(find('.rsa-data-table-body-cell').textContent.trim(), '2016/02/09 04:17:06 (3 years ago)');
+    assert.equal(find('.rsa-data-table-body-cell').textContent.trim(), `${moment.utc(oldDate).format('YYYY/MM/DD HH:mm:ss')} (3 years ago)`);
   });
 
 });

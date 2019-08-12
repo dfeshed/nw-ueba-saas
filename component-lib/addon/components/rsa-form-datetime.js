@@ -31,7 +31,7 @@ export default Component.extend({
 
   tagName: 'label',
 
-  defaultHour: 12,
+  defaultHour: 0,
 
   defaultMinute: 0,
 

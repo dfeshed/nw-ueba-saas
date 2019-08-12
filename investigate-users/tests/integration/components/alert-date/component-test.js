@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 
@@ -10,8 +10,16 @@ module('Integration | Component | alert-date', function(hooks) {
   });
 
   test('it should render date from timestamp', async function(assert) {
-    await render(hbs`{{alert-date timestamp=1538112457605}}`);
-    assert.equal(this.element.textContent.replace(/\s/g, ''), '2018/09/28');
+    this.set('filterOptions', {
+      filterValue: {
+        name: 'alertTimeRange',
+        operator: 'LESS_THAN',
+        value: [ 3 ],
+        unit: 'Months'
+      }
+    });
+    await render(hbs`{{alert-date filterOptions=filterOptions}}`);
+    assert.equal(findAll('.date-filter').length, 1);
   });
 
 });

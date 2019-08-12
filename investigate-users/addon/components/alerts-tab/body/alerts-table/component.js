@@ -3,8 +3,6 @@ import { connect } from 'ember-redux';
 import { later } from '@ember/runloop';
 import { alertsGroupedDaily, allAlertsReceived } from 'investigate-users/reducers/alerts/selectors';
 import { getAlertsForGivenTimeInterval } from 'investigate-users/actions/alert-details';
-import { columnsDataForIndicatorTable } from 'investigate-users/utils/column-config';
-import { initiateUser } from 'investigate-users/actions/user-details';
 import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
@@ -12,15 +10,12 @@ const stateToComputed = (state) => ({
   allAlertsReceived: allAlertsReceived(state)
 });
 const dispatchToActions = {
-  getAlertsForGivenTimeInterval,
-  initiateUser
+  getAlertsForGivenTimeInterval
 };
 
 const AlertTabTableComponent = Component.extend({
   classNames: 'alerts-tab_body_body-table',
   scrolling: false,
-  alertClicked: null,
-  columnsData: columnsDataForIndicatorTable,
   _scrollHandler({ target }) {
     // This logic to avoid multiple server calls when user is scrolling.
     if (false === this.get('scrolling')) {
@@ -48,23 +43,12 @@ const AlertTabTableComponent = Component.extend({
     const scrollHandler = this._scrollHandler;
     document.querySelector('.alerts-tab_body_body-table_body').removeEventListener('scroll', scrollHandler);
   },
+
   @computed('groupedAlerts')
   groupedAlertsByDay(groupedAlerts) {
     document.querySelector('.alerts-tab_body_body-table_body').scrollTop = document.querySelector('.alerts-tab_body_body-table_body').scrollTop - 120;
     this.set('scrolling', false);
     return groupedAlerts;
-  },
-  actions: {
-    expandAlert(alertId) {
-      if (this.get('alertClicked') === alertId) {
-        this.set('alertClicked', null);
-      } else {
-        this.set('alertClicked', alertId);
-      }
-    },
-    selectUser(alertDetails, { id }) {
-      this.send('initiateUser', { ...alertDetails, indicatorId: id });
-    }
   }
 });
 

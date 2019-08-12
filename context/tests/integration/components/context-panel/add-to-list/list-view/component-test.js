@@ -73,7 +73,7 @@ module('Integration | Component | context-panel/add-to-list/list-view', function
       .setEntityType(entity)
       .build();
     await render(hbs`{{context-panel/add-to-list/list-view filterStr=filterStr}}`);
-    assert.equal(findAll('.rsa-context-tree-table__createList_tab')[0].innerText, 'ALL\nSELECTED\nUNSELECTED\n', 'Should display all tabs');
+    assert.equal(findAll('.rsa-nav-tab').length, 3);
   });
 
   test('Test should check for Nav tabs title', async function(assert) {
