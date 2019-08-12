@@ -840,18 +840,30 @@ module('Unit | Selectors | event-results', function(hooks) {
     const logState = {
       investigate: {
         queryNode: { sessionId: 1 },
+        data: {},
+        dictionaries: {},
+        eventCount: {},
+        services: {},
         eventResults
       }
     };
     const endpointState = {
       investigate: {
         queryNode: { sessionId: 2 },
+        data: {},
+        dictionaries: {},
+        eventCount: {},
+        services: {},
         eventResults
       }
     };
     const networkState = {
       investigate: {
         queryNode: { sessionId: 3 },
+        data: {},
+        dictionaries: {},
+        eventCount: {},
+        services: {},
         eventResults
       }
     };

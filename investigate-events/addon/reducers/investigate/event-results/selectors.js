@@ -159,136 +159,6 @@ export const percentageOfEventsDataReturned = createSelector(
   }
 );
 
-export const selectedIndex = createSelector(
-  [_sessionId, _resultsData], // sessionId not set on refresh
-  (sessionId, data) => {
-    let idx = -1;
-    if (sessionId && data && data.length) {
-      idx = _indexOfBy(data, 'sessionId', sessionId);
-    }
-    return idx;
-  }
-);
-
-export const eventType = createSelector(
-  selectedIndex, _resultsData,
-  (index, data) => {
-    const event = data ? data[index] : null;
-    let type = null;
-    if (event) {
-      const {
-        medium,
-        'nwe.callback_id': callBackId
-      } = event;
-      if (callBackId) {
-        type = EVENT_TYPES.ENDPOINT;
-      } else if (medium === 32) {
-        type = EVENT_TYPES.LOG;
-      } else {
-        type = EVENT_TYPES.NETWORK;
-      }
-    }
-    return type;
-  }
-);
-
-/**
- * Determines if we should show a message directing the user to scroll down to
- * see their selected event.
- * @private
- */
-export const showScrollMessage = createSelector(
-  [selectedIndex, _sessionId],
-  (selectedIndex, sessionId) => sessionId && selectedIndex < 0
-);
-
-export const allExpectedDataLoaded = createSelector(
-  [_eventResultCount, _resultsData, _status, streamLimit],
-  (eventResultCount, eventData, status, streamLimit) => {
-
-    // data still streaming, we haven't loaded all the data
-    if (status !== 'complete') {
-      return false;
-    }
-
-    const isAtTheLimit = eventResultCount === streamLimit;
-    const haveAllResults = eventResultCount >= eventData.length;
-    return !isAtTheLimit && haveAllResults;
-  }
-);
-
-export const getDownloadOptions = createSelector(
-  [_eventAnalysisPreferences, _items, _selectedEventIds, _resultsData],
-  (eventAnalysisPreferences, items, selectedEventIds, resultsData) => {
-
-    let selectedEventIdsArray;
-    if (selectedEventIds) {
-      selectedEventIdsArray = Object.values(selectedEventIds);
-    } else {
-      selectedEventIdsArray = [];
-    }
-
-    if (eventAnalysisPreferences && selectedEventIdsArray.length) {
-
-      const i18n = lookup('service:i18n');
-      const preferredDownloadOptions = [];
-      const remainingDownloadOptions = [];
-
-      let dropDownItems = items.filter((item) => !item.additionalFieldPrefix && item.type == 'dropdown');
-      const total = selectedEventIdsArray.length;
-
-      // preferredOptions
-      dropDownItems.forEach((item) => {
-
-        const [,, defaultEventType ] = item.name.split('.');
-        const { eventDownloadType } = item;
-        const fileType = eventDownloadType === EVENT_DOWNLOAD_TYPES.NETWORK ? FILE_TYPES.PCAP : eventAnalysisPreferences[defaultEventType];
-        const option = i18n.t(`investigate.events.download.options.${fileType}`);
-        const getIdsForEventType = _getIdsForEventType(eventDownloadType, selectedEventIdsArray, resultsData, selectedEventIds);
-        const num = getIdsForEventType.length;
-        preferredDownloadOptions.push({
-          name: i18n.t(`investigate.events.download.${eventDownloadType}`, { option }),
-          eventDownloadType,
-          fileType: eventAnalysisPreferences[defaultEventType],
-          sessionIds: getIdsForEventType,
-          count: `${num}/${total}`,
-          disabled: num < 1
-        });
-      });
-
-      dropDownItems = dropDownItems.filter((item) => item.eventDownloadType !== EVENT_DOWNLOAD_TYPES.NETWORK);
-
-      // remaining options
-      dropDownItems.forEach((item) => {
-        // array of downloadFormat options minus the preferred option
-        const [,, defaultEventType ] = item.name.split('.');
-        const { eventDownloadType } = item;
-        const remainingOptions = item.options.without(eventAnalysisPreferences[defaultEventType]);
-        const getIdsForEventType = _getIdsForEventType(eventDownloadType, selectedEventIdsArray, resultsData, selectedEventIds);
-        const num = getIdsForEventType.length;
-        remainingOptions.forEach((option) => {
-          const optionLabel = i18n.t(`investigate.events.download.options.${option}`);
-          remainingDownloadOptions.push({
-            name: i18n.t(`investigate.events.download.${eventDownloadType}`, { option: optionLabel }),
-            eventDownloadType,
-            fileType: option,
-            sessionIds: getIdsForEventType,
-            count: `${num}/${total}`,
-            disabled: num < 1
-          });
-        });
-      });
-
-      const downloadOptions = [
-        { groupName: i18n.t('investigate.events.download.groups.default'), options: preferredDownloadOptions },
-        { groupName: i18n.t('investigate.events.download.groups.other'), options: remainingDownloadOptions }
-      ];
-      return downloadOptions;
-    }
-    return [];
-  }
-);
-
 export const eventTableFormattingOpts = createSelector(
   [_aliases, _dateFormat, _timeFormat, _locale, _timeZone],
   (aliases, dateFormat, timeFormat, locale, timeZone) => {
@@ -323,128 +193,6 @@ export const eventTableFormattingOpts = createSelector(
     };
   }
 );
-
-export const searchMatches = createSelector(
-  [_searchTerm, _resultsData, eventTableFormattingOpts, _columnGroup, _columnGroups, _visibleColumns],
-  (searchTerm, data, opts, columnGroup, columnGroups, visibleColumns) => {
-    // return empty set unless searchTerm meets length requirement
-    const searchTermLengthRequirement = 2;
-    if (!searchTerm || searchTerm.length < searchTermLengthRequirement) {
-      return [];
-    } else {
-      searchTerm = searchTerm.toLowerCase();
-    }
-
-    const allMatches = [];
-
-    // get list of visible column keys
-    const columnGroupObj = columnGroups.find(({ id }) => id === columnGroup);
-    const { columns } = columnGroupObj;
-    const columnKeys = columns.map(({ field }) => field);
-    const visibleKeys = visibleColumns.map(({ field }) => field);
-
-    for (let dataLoopIndex = 0; dataLoopIndex < data.length; dataLoopIndex++) {
-      let prunedFields;
-      if (columnGroup.includes('SUMMARY') && columnGroupObj.ootb) {
-        // SUMMARY groups include composite fields
-        // search all content
-        prunedFields = Object.entries(data[dataLoopIndex]);
-      } else {
-        // prune list of data fields by visible columns
-        prunedFields = Object.entries(data[dataLoopIndex]).filter(([field]) => {
-          if (columnKeys.includes(field) && visibleKeys.includes(field)) {
-            return true;
-          }
-        });
-      }
-
-      // loop through data fields and compare searchTerm to values
-      for (let fieldLoopIndex = 0; fieldLoopIndex < prunedFields.length; fieldLoopIndex++) {
-        const [field, value] = prunedFields[fieldLoopIndex];
-        let toSearch = formatUtil.text(field, value, opts);
-        toSearch = (typeof toSearch === 'object' ? toSearch.string : toSearch).toLowerCase();
-
-        if (field === 'medium' && data[dataLoopIndex]['nwe.callback_id']) {
-          // handle endpoint comparison
-          const hash = opts.i18n && opts.i18n[field];
-          if (hash.endpoint.string && hash.endpoint.string.toLowerCase().includes(searchTerm)) {
-            allMatches.push(data[dataLoopIndex].sessionId);
-            break;
-          }
-        } else {
-          // handle all other comparisons
-          if (toSearch.includes(searchTerm)) {
-            allMatches.push(data[dataLoopIndex].sessionId);
-            break;
-          }
-        }
-      }
-    }
-
-    return allMatches;
-  }
-);
-
-export const searchMatchesCount = createSelector(
-  [searchMatches],
-  (matches) => {
-    return matches.length;
-  }
-);
-/**
- * Finds the actual count of events.
- * Comes in handy when search is cancelled.
- * @public
- */
-export const actualEventCount = createSelector(
-  [isCanceled, isEventResultsError, _eventResultCount, _resultsData],
-  (isCanceled, hasError, eventCount, eventsArray) => (eventsArray && (isCanceled || hasError)) ? eventsArray.length : eventCount
-);
-
-/**
- * Finds and returns the index of the first array member whose key matches a
- * given value. Will use `Array.findIndex()` if supported.
- * @param {array} arr The array to be searched
- * @param {string} key The name of the attribute whose value is to be matched
- * @param {*} value The attribute value to be matched
- * @private
- */
-
-const _indexOfBy = (arr, key, value) => {
-  let _index = -1;
-  arr = Array.isArray(arr) ? arr : [];
-  if (arr.findIndex) {
-    _index = arr.findIndex((item) => item[key] === value);
-  } else {
-    let i = 0;
-    const len = arr.length;
-    for (i; i < len; i++) {
-      if (arr[i][key] === value) {
-        _index = i;
-        break;
-      }
-    }
-  }
-  return _index;
-};
-
-/**
- * Returns sessionIds for each download type based on number of events of the type selected
- * @private
- */
-const _getIdsForEventType = (eventDownloadType, selectedEventIdsArray, resultsData, selectedEventIds) => {
-  if (eventDownloadType === EVENT_DOWNLOAD_TYPES.META) {
-    return selectedEventIdsArray;
-  }
-  const ids = [];
-  let index = 0;
-  resultsData.forEach((event) => {
-    if (selectedEventIds[index++] && (eventDownloadType === (event.medium === 32 ? EVENT_TYPES.LOG : EVENT_TYPES.NETWORK))) {
-      ids.push(event.sessionId);
-    }
-  });
-  return ids;
-};
 
 export const requireServiceSorting = createSelector([
   resultCountAtThreshold,
@@ -575,3 +323,255 @@ export const clientSortedData = createSelector(
     }
   }
 );
+
+export const selectedIndex = createSelector(
+  [_sessionId, clientSortedData], // sessionId not set on refresh
+  (sessionId, data) => {
+    let idx = -1;
+    if (sessionId && data && data.length) {
+      idx = _indexOfBy(data, 'sessionId', sessionId);
+    }
+    return idx;
+  }
+);
+
+export const eventType = createSelector(
+  selectedIndex, _resultsData,
+  (index, data) => {
+    const event = data ? data[index] : null;
+    let type = null;
+    if (event) {
+      const {
+        medium,
+        'nwe.callback_id': callBackId
+      } = event;
+      if (callBackId) {
+        type = EVENT_TYPES.ENDPOINT;
+      } else if (medium === 32) {
+        type = EVENT_TYPES.LOG;
+      } else {
+        type = EVENT_TYPES.NETWORK;
+      }
+    }
+    return type;
+  }
+);
+
+/**
+ * Determines if we should show a message directing the user to scroll down to
+ * see their selected event.
+ * @private
+ */
+export const showScrollMessage = createSelector(
+  [selectedIndex, _sessionId],
+  (selectedIndex, sessionId) => sessionId && selectedIndex < 0
+);
+
+export const allExpectedDataLoaded = createSelector(
+  [_eventResultCount, _resultsData, _status, streamLimit],
+  (eventResultCount, eventData, status, streamLimit) => {
+
+    // data still streaming, we haven't loaded all the data
+    if (status !== 'complete') {
+      return false;
+    }
+
+    const isAtTheLimit = eventResultCount === streamLimit;
+    const haveAllResults = eventResultCount >= eventData.length;
+    return !isAtTheLimit && haveAllResults;
+  }
+);
+
+export const getDownloadOptions = createSelector(
+  [_eventAnalysisPreferences, _items, _selectedEventIds, _resultsData],
+  (eventAnalysisPreferences, items, selectedEventIds, resultsData) => {
+
+    let selectedEventIdsArray;
+    if (selectedEventIds) {
+      selectedEventIdsArray = Object.values(selectedEventIds);
+    } else {
+      selectedEventIdsArray = [];
+    }
+
+    if (eventAnalysisPreferences && selectedEventIdsArray.length) {
+
+      const i18n = lookup('service:i18n');
+      const preferredDownloadOptions = [];
+      const remainingDownloadOptions = [];
+
+      let dropDownItems = items.filter((item) => !item.additionalFieldPrefix && item.type == 'dropdown');
+      const total = selectedEventIdsArray.length;
+
+      // preferredOptions
+      dropDownItems.forEach((item) => {
+
+        const [,, defaultEventType ] = item.name.split('.');
+        const { eventDownloadType } = item;
+        const fileType = eventDownloadType === EVENT_DOWNLOAD_TYPES.NETWORK ? FILE_TYPES.PCAP : eventAnalysisPreferences[defaultEventType];
+        const option = i18n.t(`investigate.events.download.options.${fileType}`);
+        const getIdsForEventType = _getIdsForEventType(eventDownloadType, selectedEventIdsArray, resultsData, selectedEventIds);
+        const num = getIdsForEventType.length;
+        preferredDownloadOptions.push({
+          name: i18n.t(`investigate.events.download.${eventDownloadType}`, { option }),
+          eventDownloadType,
+          fileType: eventAnalysisPreferences[defaultEventType],
+          sessionIds: getIdsForEventType,
+          count: `${num}/${total}`,
+          disabled: num < 1
+        });
+      });
+
+      dropDownItems = dropDownItems.filter((item) => item.eventDownloadType !== EVENT_DOWNLOAD_TYPES.NETWORK);
+
+      // remaining options
+      dropDownItems.forEach((item) => {
+        // array of downloadFormat options minus the preferred option
+        const [,, defaultEventType ] = item.name.split('.');
+        const { eventDownloadType } = item;
+        const remainingOptions = item.options.without(eventAnalysisPreferences[defaultEventType]);
+        const getIdsForEventType = _getIdsForEventType(eventDownloadType, selectedEventIdsArray, resultsData, selectedEventIds);
+        const num = getIdsForEventType.length;
+        remainingOptions.forEach((option) => {
+          const optionLabel = i18n.t(`investigate.events.download.options.${option}`);
+          remainingDownloadOptions.push({
+            name: i18n.t(`investigate.events.download.${eventDownloadType}`, { option: optionLabel }),
+            eventDownloadType,
+            fileType: option,
+            sessionIds: getIdsForEventType,
+            count: `${num}/${total}`,
+            disabled: num < 1
+          });
+        });
+      });
+
+      const downloadOptions = [
+        { groupName: i18n.t('investigate.events.download.groups.default'), options: preferredDownloadOptions },
+        { groupName: i18n.t('investigate.events.download.groups.other'), options: remainingDownloadOptions }
+      ];
+      return downloadOptions;
+    }
+    return [];
+  }
+);
+
+export const searchMatches = createSelector(
+  [_searchTerm, _resultsData, eventTableFormattingOpts, _columnGroup, _columnGroups, _visibleColumns],
+  (searchTerm, data, opts, columnGroup, columnGroups, visibleColumns) => {
+    // return empty set unless searchTerm meets length requirement
+    const searchTermLengthRequirement = 2;
+    if (!searchTerm || searchTerm.length < searchTermLengthRequirement) {
+      return [];
+    } else {
+      searchTerm = searchTerm.toLowerCase();
+    }
+
+    const allMatches = [];
+
+    // get list of visible column keys
+    const columnGroupObj = columnGroups.find(({ id }) => id === columnGroup);
+    const { columns } = columnGroupObj;
+    const columnKeys = columns.map(({ field }) => field);
+    const visibleKeys = visibleColumns.map(({ field }) => field);
+
+    for (let dataLoopIndex = 0; dataLoopIndex < data.length; dataLoopIndex++) {
+      let prunedFields;
+      if (columnGroup.includes('SUMMARY') && columnGroupObj.ootb) {
+        // SUMMARY groups include composite fields
+        // search all content
+        prunedFields = Object.entries(data[dataLoopIndex]);
+      } else {
+        // prune list of data fields by visible columns
+        prunedFields = Object.entries(data[dataLoopIndex]).filter(([field]) => {
+          if (columnKeys.includes(field) && visibleKeys.includes(field)) {
+            return true;
+          }
+        });
+      }
+
+      // loop through data fields and compare searchTerm to values
+      for (let fieldLoopIndex = 0; fieldLoopIndex < prunedFields.length; fieldLoopIndex++) {
+        const [field, value] = prunedFields[fieldLoopIndex];
+        let toSearch = formatUtil.text(field, value, opts);
+        toSearch = (typeof toSearch === 'object' ? toSearch.string : toSearch).toLowerCase();
+
+        if (field === 'medium' && data[dataLoopIndex]['nwe.callback_id']) {
+          // handle endpoint comparison
+          const hash = opts.i18n && opts.i18n[field];
+          if (hash.endpoint.string && hash.endpoint.string.toLowerCase().includes(searchTerm)) {
+            allMatches.push(data[dataLoopIndex].sessionId);
+            break;
+          }
+        } else {
+          // handle all other comparisons
+          if (toSearch.includes(searchTerm)) {
+            allMatches.push(data[dataLoopIndex].sessionId);
+            break;
+          }
+        }
+      }
+    }
+
+    return allMatches;
+  }
+);
+
+export const searchMatchesCount = createSelector(
+  [searchMatches],
+  (matches) => {
+    return matches.length;
+  }
+);
+/**
+ * Finds the actual count of events.
+ * Comes in handy when search is cancelled.
+ * @public
+ */
+export const actualEventCount = createSelector(
+  [isCanceled, isEventResultsError, _eventResultCount, _resultsData],
+  (isCanceled, hasError, eventCount, eventsArray) => (eventsArray && (isCanceled || hasError)) ? eventsArray.length : eventCount
+);
+
+/**
+ * Finds and returns the index of the first array member whose key matches a
+ * given value. Will use `Array.findIndex()` if supported.
+ * @param {array} arr The array to be searched
+ * @param {string} key The name of the attribute whose value is to be matched
+ * @param {*} value The attribute value to be matched
+ * @private
+ */
+
+const _indexOfBy = (arr, key, value) => {
+  let _index = -1;
+  arr = Array.isArray(arr) ? arr : [];
+  if (arr.findIndex) {
+    _index = arr.findIndex((item) => item[key] === value);
+  } else {
+    let i = 0;
+    const len = arr.length;
+    for (i; i < len; i++) {
+      if (arr[i][key] === value) {
+        _index = i;
+        break;
+      }
+    }
+  }
+  return _index;
+};
+
+/**
+ * Returns sessionIds for each download type based on number of events of the type selected
+ * @private
+ */
+const _getIdsForEventType = (eventDownloadType, selectedEventIdsArray, resultsData, selectedEventIds) => {
+  if (eventDownloadType === EVENT_DOWNLOAD_TYPES.META) {
+    return selectedEventIdsArray;
+  }
+  const ids = [];
+  let index = 0;
+  resultsData.forEach((event) => {
+    if (selectedEventIds[index++] && (eventDownloadType === (event.medium === 32 ? EVENT_TYPES.LOG : EVENT_TYPES.NETWORK))) {
+      ids.push(event.sessionId);
+    }
+  });
+  return ids;
+};
