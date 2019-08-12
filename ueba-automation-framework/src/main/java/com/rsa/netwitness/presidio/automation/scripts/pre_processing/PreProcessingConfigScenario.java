@@ -1,5 +1,11 @@
 package com.rsa.netwitness.presidio.automation.scripts.pre_processing;
 
-public abstract class PreProcessingConfigScenario {
-    public abstract void execute();
+import com.rsa.netwitness.presidio.automation.enums.ConfigurationScenario;
+
+public interface PreProcessingConfigScenario {
+
+    ConfigurationScenario configScenarioEnum();
+
+    void execute();
+
 }
