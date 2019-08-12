@@ -3,7 +3,7 @@ set -e
 
 NEW_RPM_VERSION=$1
 OLD_RPM_VERSION=$2
-
+SCHEDULER_STATUS=`systemctl is-active airflow-scheduler`
 echo "######################################## Running Initiate-presidio-services.sh ########################################" 
 echo "####################################### Starting UEBA Services: #######################################"
 sudo systemctl restart presidio-configserver
@@ -13,8 +13,8 @@ sudo systemctl restart presidio-ui
 sudo systemctl restart presidio-output
 
 echo "######################################## Installing Airflow in a virtualenv #######################################"
-if [ $schedulerService == 'activating' ]; then 
-	sudo systemctl stop airflow-webserver
+ if [[ ${SCHEDULER_STATUS} == 'active' ]]; then
+ 	sudo systemctl stop airflow-webserver
 	sudo systemctl stop airflow-scheduler
 fi
 
