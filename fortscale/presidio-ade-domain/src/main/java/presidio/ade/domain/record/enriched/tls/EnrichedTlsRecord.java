@@ -86,8 +86,28 @@ public class EnrichedTlsRecord extends EnrichedRecord {
     @Field(SOURCE_PORT_FIELD_NAME)
     private String srcPort;
 
-
-
+    @Override
+    public String toString() {
+        return "EnrichedTlsRecord{" +
+                "srcIp='" + srcIp + '\'' +
+                ", dstIp='" + dstIp + '\'' +
+                ", srcCountry='" + srcCountry + '\'' +
+                ", dstCountry=" + dstCountry +
+                ", sslSubject=" + sslSubject +
+                ", domain=" + domain +
+                ", dstOrg=" + dstOrg +
+                ", dstAsn=" + dstAsn +
+                ", numOfBytesSent=" + numOfBytesSent +
+                ", numOfBytesReceived=" + numOfBytesReceived +
+                ", srcNetname='" + srcNetname + '\'' +
+                ", dstNetname='" + dstNetname + '\'' +
+                ", ja3=" + ja3 +
+                ", ja3s='" + ja3s + '\'' +
+                ", direction='" + direction + '\'' +
+                ", dstPort=" + dstPort +
+                ", srcPort='" + srcPort + '\'' +
+                '}';
+    }
 
     public EnrichedTlsRecord(Instant startInstant) {
         super(startInstant);

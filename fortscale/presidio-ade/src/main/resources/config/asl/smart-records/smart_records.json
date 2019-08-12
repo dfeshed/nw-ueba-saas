@@ -73,7 +73,7 @@
       "name": "sslSubject_hourly",
       "contextToFieldsMap": {
         "sslSubject": [
-          "sslSubject"
+          "sslSubject.name"
         ]
       },
       "fixedDurationStrategy": "fixed_duration_hourly",
@@ -90,7 +90,7 @@
       "name": "ja3_hourly",
       "contextToFieldsMap": {
         "ja3": [
-          "ja3"
+          "ja3.name"
         ]
       },
       "fixedDurationStrategy": "fixed_duration_hourly",

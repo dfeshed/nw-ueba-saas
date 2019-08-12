@@ -28,4 +28,12 @@ abstract public class NewOccurrenceWrapper {
     public int hashCode() {
         return Objects.hash(name, isNewOccurrence);
     }
+
+    @Override
+    public String toString() {
+        return "NewOccurrenceWrapper{" +
+                "name='" + name + '\'' +
+                ", isNewOccurrence=" + isNewOccurrence +
+                '}';
+    }
 }
