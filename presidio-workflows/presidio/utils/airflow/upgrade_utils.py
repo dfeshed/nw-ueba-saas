@@ -2,7 +2,12 @@ import json
 import requests
 import time
 import urllib
+import logging
+import sys
 from datetime import datetime, timedelta
+
+from airflow.models import DagModel
+from airflow.utils.db import provide_session
 
 
 def run_reset_presidio_for_upgrade():
@@ -57,3 +62,29 @@ def run_reset_presidio_for_upgrade():
             raise ValueError("The triggered 'Reset Presidio' DAG run failed.")
         elif state != "running":
             raise ValueError("The triggered 'Reset Presidio' DAG run is in an unknown state (%s)." % state)
+
+
+def get_dags_ids_by_prefix(dag_id_prefix):
+    """
+    :return: list of DAG id's by prefix given that are not a sub DAG
+    :rtype: List[String]
+    """
+    dag_models = find_dag_models()
+
+    dag_models_by_prefix = [x for x in dag_models if x.dag_id.startswith(dag_id_prefix)]
+
+    dag_ids_by_prefix = map(lambda x: x.dag_id, dag_models_by_prefix)
+
+    return dag_ids_by_prefix
+
+
+@provide_session
+def find_dag_models(session=None):
+    DM = DagModel
+    qry = session.query(DM)
+    try:
+        return qry.all()
+    except Exception as e:
+        logging.error("got error while executing {} query".format(qry))
+        logging.exception(e)
+        sys.exit(1)

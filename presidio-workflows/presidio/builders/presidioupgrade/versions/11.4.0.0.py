@@ -1,45 +1,18 @@
 import os
-from airflow.models import DagModel
-from airflow.utils.db import provide_session
 from elasticsearch import Elasticsearch
-from presidio.builders.presidioupgrade.utils import run_reset_presidio_for_upgrade
-from presidio.builders.rerun_ueba_flow_dag_builder import get_dags, pause_dags, kill_dags_task_instances, \
-    cleanup_dags_from_postgres, get_airflow_log_folder
-
-
-def get_dags_by_prefix(dag_id_prefix):
-    """
-    :return: dict of DAGs that are not a sub DAG (can be found in DAG's folder) and has dag_id by prefix given
-    :rtype: dict[str,DAG]
-    """
-    dag_models = find_non_subdag_dags()
-
-    dag_models_by_prefix = [x for x in dag_models if x.dag_id.startswith(dag_id_prefix)]
-
-    return dag_models_by_prefix
-
-
-@provide_session
-def find_non_subdag_dags(session=None):
-    DM = DagModel
-
-    qry = session.query(DM)
-    qry = qry.filter(DM.is_subdag is False)
-    try:
-        return qry.all()
-    except:
-        return None
-
+from presidio.utils.airflow.upgrade_utils import run_reset_presidio_for_upgrade, get_dags_ids_by_prefix
+from presidio.builders.rerun_ueba_flow_dag_builder import get_registered_presidio_dags, pause_dags, kill_dags_task_instances, \
+    cleanup_dags_from_postgres, get_airflow_log_folders
 
 # clean old full flow- logs and postgres
-full_flow_dags = get_dags_by_prefix("full_flow")
-full_flow_dag_ids_to_clean = map(lambda x: x.dag_id, full_flow_dags)
+full_flow_dag_ids_to_clean = get_dags_ids_by_prefix("full_flow")
 cleanup_dags_from_postgres(full_flow_dag_ids_to_clean)
-airflow_log_folder = get_airflow_log_folder(full_flow_dag_ids_to_clean)
-os.system("rm -rf {}".format(airflow_log_folder))
+airflow_log_folders_list = get_airflow_log_folders(full_flow_dag_ids_to_clean)
+airflow_log_folder_str = ''.join(str(folder) + " " for folder in airflow_log_folders_list)
+os.system("rm -rf {}".format(airflow_log_folder_str))
 
 # pause and kill tasks for new dags
-dags = get_dags()
+dags = get_registered_presidio_dags()
 dag_ids = map(lambda x: x.dag_id, dags)
 pause_dags(dag_ids)
 kill_dags_task_instances(dag_ids)
