@@ -474,7 +474,7 @@ test('columns should exclude meta not included in language dictionary', function
           name: 'Summary List',
           ootb: true,
           columns: [
-            { field: 'time', title: 'Collection Time', width: 165 },
+            { field: 'time', title: 'Collection Time', width: 175 },
             { field: 'medium', title: 'Type' }
           ]
         }]
@@ -541,6 +541,7 @@ test('flattened list should include fields inside meta-summary and fields always
   const columns = getFlattenedColumnList(state);
 
   assert.ok(columns.includes('medium'), 'must always include medium');
+  assert.ok(columns.includes('session.split'), 'must always include session.split');
   assert.ok(columns.includes('nwe.callback_id'), 'must always include callback id');
   assert.ok(columns.includes('sessionid'), 'must always include sessionid');
   assert.ok(columns.includes('ip.dst'), 'fields from inside meta-summary are flattened into array');

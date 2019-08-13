@@ -40,7 +40,7 @@ test('Should update the column widths if the right columns are present', functio
   const newEndState = reducer(previous, successAction);
   assert.deepEqual(newEndState.columnGroups, EventColumnGroups);
 
-  assert.equal(newEndState.columnGroups[0].columns[0].width, 165, 'time set to right value');
+  assert.equal(newEndState.columnGroups[0].columns[0].width, 175, 'time set to right value');
   assert.equal(newEndState.columnGroups[0].columns[4].width, 2000, 'summary set to right value');
 });
 

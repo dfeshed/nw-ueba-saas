@@ -217,7 +217,7 @@ export const getFlattenedColumnList = createSelector(
       // always need sessionid, also always need nwe.callback_id
       // because it determines if a row is for endpoint. Medium
       // tells us if it is log/network
-      columns = [...columns, 'sessionid', 'nwe.callback_id', 'medium'];
+      columns = [...columns, 'sessionid', 'nwe.callback_id', 'medium', 'session.split'];
 
       // If we don't have a meta-summary column we are done
       if (!hasMetaSummaryColumn) {
