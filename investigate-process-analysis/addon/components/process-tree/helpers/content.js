@@ -103,7 +103,7 @@ export const addLinks = (svg, links, source) => {
   // Update the old links positions
   linkUpdate.transition()
     .duration(CONST.DURATION)
-    .attr('d', (d) => elbow(d, CONST.NODE_WIDTH));
+    .attr('d', (d) => elbow(d, CONST.NODE_WIDTH + CONST.LINK_SPACING));
 
   // Remove any exiting links
   link.exit().transition()
@@ -151,8 +151,10 @@ export const addNodeContent = (processNode, nodeEnter, parentContext, idCounter,
 
   appendIconEvent({ className: 'process-icon', node: nodeEnter, fontSize: '30px', text: '\ue944', dx: DISTANCE.ICON_X, dy: DISTANCE.ICON_Y, parentContext, idCounter, callback }); // file icon
   appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px', text: (d) => d.data.eventCategory && d.data.eventCategory.hasNetwork ? '\uea7b' : '', dx: DISTANCE.PROCESS_TYPE_X, dy: DISTANCE.PROCESS_TYPE_Y }); // network
-  appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px', text: (d) => d.data.eventCategory && d.data.eventCategory.hasFile ? '\uea7a' : '', dx: DISTANCE.PROCESS_TYPE_X + DISTANCE.ICON_WIDTH, dy: DISTANCE.PROCESS_TYPE_Y }); // file
-  appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px', text: (d) => d.data.eventCategory && d.data.eventCategory.hasRegistry ? '\uea79' : '', dx: DISTANCE.PROCESS_TYPE_X + (DISTANCE.ICON_WIDTH * 2), dy: DISTANCE.PROCESS_TYPE_Y }); // registry
+  appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px',
+    text: (d) => d.data.eventCategory && d.data.eventCategory.hasFile ? '\uea7a' : '', dx: (d) => _findFileIconPosition(d), dy: DISTANCE.PROCESS_TYPE_Y }); // file
+  appendIcon({ className: 'process-type', node: nodeEnter, fontSize: '15px',
+    text: (d) => d.data.eventCategory && d.data.eventCategory.hasRegistry ? '\uea79' : '', dx: (d) => _findRegistryIconPosition(d), dy: DISTANCE.PROCESS_TYPE_Y }); // registry
 
 
   appendText({
@@ -164,6 +166,35 @@ export const addNodeContent = (processNode, nodeEnter, parentContext, idCounter,
     text: (d) => d.data.childCount ? `(${d.data.childCount})` : ''
   });
   return nodeEnter;
+};
+
+const _findFileIconPosition = (d) => {
+  const { eventCategory } = d.data;
+  let dx = 0;
+  if (eventCategory) {
+    const { hasNetwork, hasFile } = eventCategory;
+    if (hasFile && hasNetwork) {
+      dx = DISTANCE.ICON_WIDTH;
+    }
+  }
+  return dx + DISTANCE.PROCESS_TYPE_X;
+};
+
+const _findRegistryIconPosition = (d) => {
+  const { eventCategory } = d.data;
+  let dx = 0;
+  if (eventCategory) {
+    const { hasNetwork, hasFile, hasRegistry } = eventCategory;
+    if (hasRegistry) {
+      if (hasNetwork) {
+        dx = DISTANCE.ICON_WIDTH;
+      }
+      if (hasFile) {
+        dx += DISTANCE.ICON_WIDTH;
+      }
+    }
+  }
+  return dx + DISTANCE.PROCESS_TYPE_X;
 };
 
 export const appendExpandCollapseIcon = (expandWrapper, collapseWrapper) => {
@@ -192,7 +223,7 @@ export const appendExpandCollapseIcon = (expandWrapper, collapseWrapper) => {
   };
   appendIcon({
     className: 'collapse-icon',
-    node: collapseWrapper, dx: (CONST.NODE_WIDTH / 2) + (CONST.COLLAPSE_ICON_SIZE / 2) + CONST.SPACING + 20,
+    node: collapseWrapper, dx: (CONST.NODE_WIDTH / 2) + (CONST.COLLAPSE_ICON_SIZE / 2) + CONST.SPACING + CONST.EXPAND_COLLAPSE_SPACING,
     fontSize: CONST.COLLAPSE_ICON_SIZE,
     text: collapseIcon
   });

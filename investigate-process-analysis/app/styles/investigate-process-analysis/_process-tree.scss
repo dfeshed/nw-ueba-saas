@@ -129,6 +129,12 @@ section {
       fill: text-color(neutral, dark);
     }
   }
+
+  circle.is-danger + .score-text {
+    &.selected {
+      fill: text-color(neutral);
+    }
+  }
 }
 
 .process-hover-content {

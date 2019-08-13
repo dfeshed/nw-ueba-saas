@@ -122,7 +122,7 @@ const TreeComponent = Component.extend({
    * @property
    * @public
    */
-  nodeSeparation: 5.75,
+  nodeSeparation: CONST.NODE_SEPARATION,
 
   /**
    * Icon to represent the collapse tree node. If you want to add the icon in D3 svg we use font-icon code. Here it's

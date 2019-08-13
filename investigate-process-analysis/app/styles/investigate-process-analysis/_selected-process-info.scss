@@ -9,7 +9,7 @@
   overflow: auto;
   .title {
     text-transform: uppercase;
-    padding: 0.5rem;
+    padding: rsa-whitespace(less) rsa-whitespace();
     color: text-color(secondary);
     font-weight: bold;
   }
