@@ -1,12 +1,12 @@
 import Ember from 'ember';
 
 const {
-  $,
   Route
 } = Ember;
 
 export default Route.extend({
   activate() {
-    $('body').addClass('admin-source-management-engine-entry');
+    const body = document.querySelector('body');
+    body.classList.contains('admin-source-management-engine-entry') || body.classList.add('admin-source-management-engine-entry');
   }
 });

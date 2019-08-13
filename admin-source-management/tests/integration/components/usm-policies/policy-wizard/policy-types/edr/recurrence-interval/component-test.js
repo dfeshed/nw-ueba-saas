@@ -3,7 +3,6 @@ import { setupRenderingTest } from 'ember-qunit';
 import { click, render, findAll, settled } from '@ember/test-helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
-import wait from 'ember-test-helpers/wait';
 import { clickTrigger } from 'ember-power-select/test-support/helpers';
 import sinon from 'sinon';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -56,14 +55,14 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/re
       .policyWizRecurrenceUnit('DAYS')
       .build();
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
-    assert.equal(this.$('.recurrence-interval input:eq(0)').val(), 'DAYS', 'expected to render DAYS as first field');
+    assert.equal(findAll('.recurrence-interval input')[0].value, 'DAYS', 'expected to render DAYS as first field');
     assert.equal(findAll('.recurrence-run-interval').length, 1, 'expected to render dropdown for run interval');
     assert.equal(findAll('input[type=radio]:checked').length, 1, 'Expected to select default radio button');
-    return wait().then(() => {
-      clickTrigger();
-      assert.ok(this.$('.ember-power-select-option:contains("1")').attr('aria-disabled') !== 'true');
-      assert.ok(this.$('.ember-power-select-option:contains("20")').attr('aria-disabled') !== 'true');
-    });
+    await clickTrigger();
+    // text value of 1
+    assert.ok(findAll('.ember-power-select-option')[0].getAttribute('aria-disabled') !== 'true');
+    // text value of 20
+    assert.ok(findAll('.ember-power-select-option')[8].getAttribute('aria-disabled') !== 'true');
   });
 
   // TODO - fix this test, the behaviour is very erratic. Even though action creator is being called, callCount is not being incremented.
@@ -80,18 +79,18 @@ module('Integration | Component | usm-policies/policy-wizard/policy-types/edr/re
   test('should display weeks recurrence field options on clicking the Weekly radio button', async function(assert) {
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
     await click('.recurrence-interval .rsa-form-radio-wrapper:nth-of-type(2) input');
-    assert.equal(this.$('input[type=radio]:eq(1):checked').length, 1, 'Expected to select Weekly radio button');
+    assert.equal(findAll('input[type=radio]')[1].checked, true, 'Expected to select Weekly radio button');
     assert.equal(findAll('.recurrence-run-interval__week-options').length, 1, 'Expected to display week options');
   });
 
   test('should select the week on clicking the available week options', async function(assert) {
     await render(hbs`{{usm-policies/policy-wizard/policy-types/edr/recurrence-interval}}`);
     await click('.recurrence-interval .rsa-form-radio-wrapper:nth-of-type(2) input');
-    assert.equal(this.$('.recurrence-run-interval__week-options').length, 1, 'Expected to display week options');
-    assert.equal(this.$('.week-button:eq(1).is-primary').length, 1, 'By default Monday is selected');
+    assert.equal(findAll('.recurrence-run-interval__week-options').length, 1, 'Expected to display week options');
+    assert.equal(findAll('.week-button')[1].classList.contains('is-primary'), true, 'By default Monday is selected');
     await click('.recurrence-interval .rsa-form-radio-wrapper:nth-of-type(1) input'); // select days
     await click('.recurrence-interval .rsa-form-radio-wrapper:nth-of-type(2) input'); // select week again
-    assert.equal(this.$('.week-button:eq(1).is-primary').length, 1, 'Default week selection is retained while switching between days and weeks');
+    assert.equal(findAll('.week-button')[1].classList.contains('is-primary'), true, 'Default week selection is retained while switching between days and weeks');
   });
 
   // TODO - fix this test, the behaviour is very erratic. Even though action creator is being called, callCount is not being incremented.
