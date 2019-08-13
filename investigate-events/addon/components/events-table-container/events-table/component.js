@@ -204,14 +204,16 @@ const EventsTableContextMenu = RsaContextMenu.extend({
     },
 
     toggleSort(field) {
-      let sortDirection;
-      if (this.get('sortField') === field && this.get('sortDirection') === SORT_ORDER.ASC) {
-        sortDirection = SORT_ORDER.DESC;
-      } else {
-        sortDirection = SORT_ORDER.ASC;
-      }
+      if (this.get('status') !== 'sorting') {
+        let sortDirection;
+        if (this.get('sortField') === field && this.get('sortDirection') === SORT_ORDER.ASC) {
+          sortDirection = SORT_ORDER.DESC;
+        } else {
+          sortDirection = SORT_ORDER.ASC;
+        }
 
-      this._toggleSort(field, sortDirection);
+        this._toggleSort(field, sortDirection);
+      }
     }
   }
 });

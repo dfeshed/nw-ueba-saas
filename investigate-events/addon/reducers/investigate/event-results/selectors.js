@@ -377,7 +377,7 @@ export const allExpectedDataLoaded = createSelector(
     }
 
     const isAtTheLimit = eventResultCount === streamLimit;
-    const haveAllResults = eventResultCount >= eventData.length;
+    const haveAllResults = eventResultCount >= (eventData && eventData.length);
     return !isAtTheLimit && haveAllResults;
   }
 );

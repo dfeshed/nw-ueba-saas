@@ -333,6 +333,8 @@ module('Integration | Component | events-table', function(hooks) {
       .eventsQuerySort('time', 'Ascending')
       .eventCount(100000)
       .language([{ format: 'TimeT', metaName: 'time', flags: -2147482605 }])
+      .eventResults()
+      .eventResultsStatus('complete')
       .build();
 
     this.set('_toggleSort', (field, dir) => {
