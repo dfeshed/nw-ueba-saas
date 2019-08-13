@@ -1,30 +1,25 @@
 package com.rsa.netwitness.presidio.automation.scripts.pre_processing;
 
-import com.rsa.netwitness.presidio.automation.enums.CONFIGURATION_SCENARIO;
+import com.rsa.netwitness.presidio.automation.enums.ConfigurationScenario;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
+import org.assertj.core.util.Lists;
 
 import java.time.Instant;
-
-import static com.rsa.netwitness.presidio.automation.enums.CONFIGURATION_SCENARIO.*;
+import java.util.List;
 
 public class PreProcessingConfigScenarioFactory {
-    private AdapterTestManager adapterTestManager;
-    private Instant startDate;
+    private List<PreProcessingConfigScenario> scenarios;
 
     public PreProcessingConfigScenarioFactory(AdapterTestManager adapterTestManager, Instant startDate) {
-        this.adapterTestManager = adapterTestManager;
-        this.startDate = startDate;
+        scenarios = Lists.newArrayList(
+                new E2eBrokerConfigScenario(adapterTestManager, startDate),
+                new CoreMongoConfigScenario(adapterTestManager, startDate)
+        );
     }
 
-    public PreProcessingConfigScenario get(CONFIGURATION_SCENARIO label) {
-        if (label.equals(E2E_BROKER)) {
-            return new E2eBrokerConfigScenario(adapterTestManager, startDate);
-        }
-
-        if (label.equals(CORE_MONGO)) {
-            return new CoreMongoConfigScenario(adapterTestManager, startDate);
-        }
-
-        throw new RuntimeException("Missing implementation for key: " + label);
+    public PreProcessingConfigScenario get(ConfigurationScenario label) {
+        return scenarios.stream()
+                .filter(scenario -> scenario.configScenarioEnum().equals(label))
+                .findFirst().orElseThrow(() -> new RuntimeException("Missing implementation for key: " + label));
     }
 }
