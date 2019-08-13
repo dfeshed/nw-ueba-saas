@@ -48,7 +48,7 @@ cd $RPMS_DIR
 for i in "${PRESIDIO_RPMS[@]}"
         do
         url=$ARTIFACTORY_LINK$i"rpm"
-        echo $(wget $url)
+        echo $(wget -q $url)
         done
 
 ########   Removing and installing RPMS
