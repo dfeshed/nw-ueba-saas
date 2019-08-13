@@ -31,6 +31,14 @@ while IFS= read -r line
 	do
 		PRESIDIO_RPMS+=($(echo "$line" | awk -v FS="(relativePath\": \"|rpm\")" '{print $2}'))
 done < build_rpms.txt
+
+if [ "${#PRESIDIO_RPMS[@]}" -lt 9 ]; then
+        echo "Some of the expected RPMs was not found in the build"
+        echo "THE existing RPMs: ${PRESIDIO_RPMS[*]}"
+        echo "Build link : $ARTIFACTORY_LINK"
+        exit 1
+fi
+
 if [ -d "$RPMS_DIR" ]; then
         rm -f $RPMS_DIR/*
 else
