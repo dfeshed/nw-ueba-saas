@@ -12,8 +12,8 @@ sudo systemctl restart presidio-ui
 sudo systemctl restart presidio-output
 
 echo "######################################## Installing Airflow in a virtualenv #######################################"
- if [[ ${SCHEDULER_STATUS} == 'active' ]]; then
- 	sudo systemctl stop airflow-webserver
+if [[ $(systemctl is-active airflow-scheduler) == 'active' ]]||[[ $(systemctl is-active airflow-webserver) == 'active' ]]; then
+	sudo systemctl stop airflow-webserver
 	sudo systemctl stop airflow-scheduler
 fi
 
