@@ -34,7 +34,7 @@ class InputPreProcessingDagFactory(AbstractDagFactory):
             schema_name = schema.get(SCHEMA_NAME_KEY)
             if schema_name not in SCHEMAS_REGISTERED:
                 SCHEMAS_REGISTERED.append(schema_name)
-            new_dag_id = self.get_dag_id(schema.get(schema_name))
+            new_dag_id = self.get_dag_id(schema_name)
             new_dag = DAG(dag_id=new_dag_id,
                           start_date=start_date,
                           schedule_interval=interval,
