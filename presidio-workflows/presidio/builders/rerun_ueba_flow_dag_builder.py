@@ -98,8 +98,8 @@ def load_dags(dag_ids, session=None):
         return qry.all()
     except Exception as e:
         logging.error("got error while executing {} query".format(qry))
-        logging.exception(e)
-        sys.exit(1)
+        raise ValueError(e)
+
 
 def pause_dag(dag_id):
     """
@@ -196,7 +196,7 @@ def get_airflow_log_folders(dag_ids):
 
 def build_clean_logs_operator(cleanup_dag, dag_ids):
     airflow_log_folders_list = get_airflow_log_folders(dag_ids)
-    airflow_log_folder_str = ''.join(str(folder) + " " for folder in airflow_log_folders_list)
+    airflow_log_folder_str = ' '.join(airflow_log_folders_list)
     clean_logs_operator = BashOperator(task_id='clean_logs',
                                        bash_command="rm -rf {}".format(
                                            airflow_log_folder_str),

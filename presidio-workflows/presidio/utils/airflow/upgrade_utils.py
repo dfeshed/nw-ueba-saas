@@ -66,16 +66,14 @@ def run_reset_presidio_for_upgrade():
 
 def get_dags_ids_by_prefix(dag_id_prefix):
     """
-    :return: list of DAG id's by prefix given that are not a sub DAG
+    :return: list of DAG id's by prefix given
     :rtype: List[String]
     """
     dag_models = find_dag_models()
 
     dag_models_by_prefix = [x for x in dag_models if x.dag_id.startswith(dag_id_prefix)]
 
-    dag_ids_by_prefix = map(lambda x: x.dag_id, dag_models_by_prefix)
-
-    return dag_ids_by_prefix
+    return map(lambda x: x.dag_id, dag_models_by_prefix)
 
 
 @provide_session
@@ -86,5 +84,4 @@ def find_dag_models(session=None):
         return qry.all()
     except Exception as e:
         logging.error("got error while executing {} query".format(qry))
-        logging.exception(e)
-        sys.exit(1)
+        raise ValueError(e)
