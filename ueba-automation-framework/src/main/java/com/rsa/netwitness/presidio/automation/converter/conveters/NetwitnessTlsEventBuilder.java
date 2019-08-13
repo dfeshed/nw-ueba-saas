@@ -2,9 +2,11 @@ package com.rsa.netwitness.presidio.automation.converter.conveters;
 
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 import fortscale.common.general.Schema;
+import presidio.data.domain.Location;
 import presidio.data.domain.event.network.NetworkEvent;
 
-import java.util.List;
+import static com.rsa.netwitness.presidio.automation.utils.common.ObjectMappingUtils.getListElementOrNull;
+import static com.rsa.netwitness.presidio.automation.utils.common.ObjectMappingUtils.getOrNull;
 
 
 class NetwitnessTlsEventBuilder extends NetwitnessEvent {
@@ -28,30 +30,27 @@ class NetwitnessTlsEventBuilder extends NetwitnessEvent {
 
         ip_src = networkEvent.getSourceIp();
         ip_dst = networkEvent.getDstIp();
-        country_dst = networkEvent.getDstLocation() != null ? networkEvent.getDstLocation().getCountry() : null;
+        country_dst = getOrNull(networkEvent.getDstLocation(), Location::getCountry);
         ssl_subject = networkEvent.getSslSubject();
         org_dst = networkEvent.getDestinationOrganization();
         asn_dst = networkEvent.getDestinationASN();
-        payload_req = String.valueOf(networkEvent.getNumOfBytesSent());
-        payload_res = String.valueOf(networkEvent.getNumOfBytesReceived());
-        netname = networkEvent.getSourceNetname() != null ? networkEvent.getSourceNetname().concat(" src") : null;
-        netname$1 = networkEvent.getDestinationNetname() != null ? networkEvent.getDestinationNetname().concat(" dst") : null;
+        payload_req = getOrNull(networkEvent.getNumOfBytesSent(), String::valueOf);
+        payload_res = getOrNull(networkEvent.getNumOfBytesReceived(), String::valueOf);
+        netname = getOrNull(networkEvent.getSourceNetname(), o -> o.concat(" src"));
+        netname$1 = getOrNull(networkEvent.getDestinationNetname(), o -> o.concat(" dst"));
         ja3 = networkEvent.getJa3();
         direction = networkEvent.getDirection().value;
         tcp_dstport = String.valueOf(networkEvent.getDestinationPort());
         ja3s = networkEvent.getJa3s();
         network = networkEvent.getDataSource();
-        country_src = networkEvent.getSrcLocation() != null ? networkEvent.getSrcLocation().getCountry() : null;
-        alias_host =  arrayLengthMatch(networkEvent.getFqdn(), 0) ? networkEvent.getFqdn().get(0) : null;
-        alias_host$1 = arrayLengthMatch(networkEvent.getFqdn(), 1) ? networkEvent.getFqdn().get(1) : null;
-        alias_host$2 = arrayLengthMatch(networkEvent.getFqdn(), 2) ? networkEvent.getFqdn().get(2) : null;
+        country_src = getOrNull(networkEvent.getSrcLocation(), Location::getCountry);
+        alias_host = getListElementOrNull(networkEvent.getFqdn(), 0);
+        alias_host$1 = getListElementOrNull(networkEvent.getFqdn(), 1);
+        alias_host$2 = getListElementOrNull(networkEvent.getFqdn(), 2);
         ssl_ca = networkEvent.getSslCa();
-        session_split = String.valueOf(networkEvent.getSessionSplit());
-        analysis_service = String.valueOf(networkEvent.getIsSelfSigned());
+        session_split = getOrNull(networkEvent.getSessionSplit(), String::valueOf);
+        analysis_service = getOrNull(networkEvent.getIsSelfSigned(), String::valueOf);
         service_name = "443";
     }
 
-    private boolean arrayLengthMatch(List list, int index) {
-        return (list != null) && list.size() >= index-1;
-    }
 }
