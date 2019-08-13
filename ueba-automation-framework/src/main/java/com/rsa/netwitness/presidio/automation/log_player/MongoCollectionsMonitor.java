@@ -21,7 +21,7 @@ public class MongoCollectionsMonitor {
 
     private List<MongoRepository> collectiontToMonitor = new LinkedList<>();
     private ScheduledExecutorService scheduler;
-    private int corePoolSize = 2;
+    private int corePoolSize = 5;
     private long DELAY_BETWEEN_TASKS = 1;
     private long TASK_FREQUENCY_MINUTES = 15;
     private long ADDITIONAL_DELAY_BEFORE_FIRST_TIME_STATUS_CHECK = 10;
@@ -91,7 +91,7 @@ public class MongoCollectionsMonitor {
 
         if (dataProcessingStillBeInProgress) {
             LOGGER.warn("Collections data processing still in progress");
-        } else{
+        } else {
             LOGGER.info("Collections data processing has finished");
         }
 
