@@ -78,7 +78,7 @@ public class AdeDataProcessingHelper {
                             + " > " + logPath);
             printLogFile(logPath);
             Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue() + "\nLog: " + logPath);
-            LOGGER.info("ProcessScoreAggr["+ schema.toUpperCase()+"] completed successfully.");
+            LOGGER.info("ProcessScoreAggr[" + schema.toUpperCase() + "] completed successfully.");
             return p4.exitValue();
         }
     }
@@ -105,7 +105,8 @@ public class AdeDataProcessingHelper {
                     "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
                             + " > " + logPath);
             printLogFile(logPath);
-            LOGGER.info("ProcessModelFeatureBuckets["+ schema.toUpperCase()+"] completed successfully.");
+            Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue() + "\nLog: " + logPath);
+            LOGGER.info("ProcessModelFeatureBuckets[" + schema.toUpperCase() + "] completed successfully.");
             return p4.exitValue();
         }
     }
@@ -133,7 +134,7 @@ public class AdeDataProcessingHelper {
 
             printLogFile(logPath);
             Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue() + "\nLog: " + logPath);
-            LOGGER.info("ProcessSmart["+ entity.toUpperCase()+"] completed successfully.");
+            LOGGER.info("ProcessSmart[" + entity.toUpperCase() + "] completed successfully.");
             return p4.exitValue();
         }
     }
@@ -160,7 +161,7 @@ public class AdeDataProcessingHelper {
 
             printLogFile(logPath);
             Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue() + "\nLog: " + logPath);
-            LOGGER.info("ProcessAccumulateSmart["+ entity.toUpperCase()+"] completed successfully.");
+            LOGGER.info("ProcessAccumulateSmart[" + entity.toUpperCase() + "] completed successfully.");
             return p4.exitValue();
         }
     }
@@ -190,7 +191,7 @@ public class AdeDataProcessingHelper {
 
             printLogFile(logPath);
             Assert.assertEquals(0, p3.exitValue(), "Shell command failed. exit value: " + p3.exitValue() + "\nLog: " + logPath);
-            LOGGER.info("ProcessModeling["+ group_name.toUpperCase()+"] completed successfully.");
+            LOGGER.info("ProcessModeling[" + group_name.toUpperCase() + "] completed successfully.");
             return p3.exitValue();
         }
     }
@@ -219,7 +220,7 @@ public class AdeDataProcessingHelper {
                             + " > " + logPath);
             printLogFile(logPath);
             Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue() + "\nLog: " + logPath);
-            LOGGER.info("ProcessAccumulateAggr["+ schema.toUpperCase()+"] completed successfully.");
+            LOGGER.info("ProcessAccumulateAggr[" + schema.toUpperCase() + "] completed successfully.");
             return p4.exitValue();
         }
     }
@@ -251,7 +252,7 @@ public class AdeDataProcessingHelper {
                             + " > " + logPath);
             printLogFile(logPath);
             Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue() + "\nLog: " + logPath);
-            LOGGER.info("ProcessFeatureAggr["+ schema.toUpperCase()+"] completed successfully.");
+            LOGGER.info("ProcessFeatureAggr[" + schema.toUpperCase() + "] completed successfully.");
             return p4.exitValue();
         }
     }

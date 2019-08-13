@@ -49,7 +49,7 @@ public class MongoTlsEventBuilder extends MongoTlsEvent {
         dateTime = networkEvent.getDateTime();
         data_source = networkEvent.getDataSource();
         mongo_source_event_time = networkEvent.getDateTime();
-        time =  String.valueOf(event.getDateTime().toEpochMilli());
+        time = String.valueOf(event.getDateTime().toEpochMilli());
         event_source_id = event.getEventId();
     }
 
@@ -57,7 +57,7 @@ public class MongoTlsEventBuilder extends MongoTlsEvent {
         if (networkEvent.getSourceNetname() == null) {
             return null;
         } else {
-           return Lists.newArrayList(networkEvent.getSourceNetname().concat(" src"),
+            return Lists.newArrayList(networkEvent.getSourceNetname().concat(" src"),
                     networkEvent.getDestinationNetname().concat(" dst"));
         }
     }
@@ -65,7 +65,7 @@ public class MongoTlsEventBuilder extends MongoTlsEvent {
 
     @Override
     public Schema mongoSchema() {
-         return Schema.TLS;
+        return Schema.TLS;
     }
 
 }
