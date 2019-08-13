@@ -11,6 +11,8 @@ import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.processor.services.alert.AlertServiceImpl;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public interface SupportingInformationGenerator {
 
@@ -26,7 +28,12 @@ public interface SupportingInformationGenerator {
             for (Indicator indicator : indicators) {
                 indicator.setAlertId(alert.getId());
                 // generate events
-                List<IndicatorEvent> events = generateEvents(adeAggregationRecord, indicator, eventsLimit, eventsPageSize, alert.getEntityType());
+                List<IndicatorEvent> events = null;
+                Optional<Map.Entry<String, String>> optionalEntry = adeAggregationRecord.getContext().entrySet().stream().findAny();
+                if (optionalEntry.isPresent()) {
+                    events = generateEvents(adeAggregationRecord, indicator, eventsLimit, eventsPageSize, optionalEntry.get().getKey(),
+                            optionalEntry.get().getValue());
+                }
                 if (CollectionUtils.isNotEmpty(events)) {
                     indicator.setEvents(events);
                     indicator.setEventsNum(events.size());
@@ -49,7 +56,7 @@ public interface SupportingInformationGenerator {
         return indicators;
     }
 
-    List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize, String entityType) throws Exception;
+    List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize, String entityType, String entityId) throws Exception;
 
     HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) throws Exception;
 

@@ -1,7 +1,6 @@
 package presidio.output.processor.services.alert.supportinginformation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.time.TimeRange;
@@ -9,7 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
-import presidio.output.domain.records.alerts.*;
+import presidio.output.domain.records.alerts.HistoricalData;
+import presidio.output.domain.records.alerts.Indicator;
+import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.repositories.EventMongoPageIterator;
 import presidio.output.domain.services.event.EventPersistencyService;
@@ -52,10 +53,9 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     }
 
     @Override
-    public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize, String entityType) throws Exception {
+    public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize, String entityType, String entityId) {
 
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
-        String entityId = adeAggregationRecord.getContext().get(entityType);
         TimeRange timeRange = new TimeRange(adeAggregationRecord.getStartInstant(), adeAggregationRecord.getEndInstant());
         List<Pair<String, Object>> features = supportingInfoUtils.buildAnomalyFeatures(indicatorConfig,indicator.getContexts());
         
@@ -82,8 +82,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     }
 
     @Override
-    public HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) throws
-            Exception {
+    public HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) {
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
 
         HistoricalDataPopulator historicalDataPopulator;
