@@ -1,11 +1,12 @@
 package com.rsa.netwitness.presidio.automation.test.rest;
 
 import com.google.gson.Gson;
-import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
-import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
+import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
 import org.assertj.core.api.Fail;
+import org.assertj.core.api.SoftAssertions;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -33,6 +34,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
             LoggerFactory.getLogger(AlertsRestQueriesTest.class.getName());
 
     private RestHelper restHelper = new RestHelper();
+    private SoftAssertions softly = new SoftAssertions();
 
     @BeforeClass
     public void preconditionCheck() {
@@ -227,10 +229,11 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
                     .filter(indicator -> ! indicator.getType().equals("STATIC_INDICATOR"))
                     .count();
 
-            assertThat(notStaticIndicatorsCount)
+            softly.assertThat(notStaticIndicatorsCount)
                    .as("Found an alert with static only indicators. alertId = " + alert.getId())
                     .isGreaterThan(0);
         }
+        softly.assertAll();
     }
 
 

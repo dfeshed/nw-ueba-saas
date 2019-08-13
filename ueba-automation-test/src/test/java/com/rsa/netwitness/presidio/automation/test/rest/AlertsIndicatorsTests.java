@@ -7,11 +7,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
+import com.rsa.netwitness.presidio.automation.mapping.indicators.IndicatorsInfo;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
-import com.rsa.netwitness.presidio.automation.mapping.indicators.IndicatorsInfo;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils;
+import org.assertj.core.api.SoftAssertions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,6 +62,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     private Map<String, String[]> featureAggregationMap = new HashMap<>();
     private Map<String, String[]> distinctFeatureAggregationMap = new HashMap<>();
     private Map<String, String[]> allIndicatorsTypeNameSamples = new HashMap<>();
+    private SoftAssertions softly = new SoftAssertions();
 
     @BeforeClass
     public void preconditionCheckAndPrepare() {
@@ -100,11 +102,12 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                     .filter(e -> e.contains(indicatorName))
                     .count();
 
-            assertThat(alerts.size())
+            softly.assertThat(alerts.size())
                     .as(url + "\nAlerts count mismatch")
                     .isEqualTo(countOfAllAlertsHaveGivenIndicatorName)
                     .isEqualTo(countOfAlertsFilteredByIndicatorHaveGivenIndicatorName);
         }
+        softly.assertAll();
     }
 
 
@@ -126,7 +129,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
                 try {
                     JSONArray indicatorsEventsList = indicatorEvents.getJSONArray("events");
-                    assertThat(indicatorsEventsList.length())
+                    softly.assertThat(indicatorsEventsList.length())
                             .as(url + "\nEmpty response body")
                             .isGreaterThan(0);
 
@@ -139,13 +142,14 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                                 "UserId = " + alert.getEntityDocumentId() + "\n" +
                                 "IndicatorId = " + singleIndicator.getId() + "\n" +
                                 "EventId = " + indicatorsEventsList.getJSONObject(i).getString("id");
-                        Assert.assertTrue(time >= alertStartDate && time <= alertEndDate, msg);
+                        softly.assertThat(time >= alertStartDate && time <= alertEndDate).overridingErrorMessage(msg).isTrue();
                     }
 
                 } catch (JSONException e) {
                     Assert.fail(e.getMessage());
                 }
             }
+            softly.assertAll();
         }
     }
 
@@ -281,16 +285,17 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
             for (int i = 0; i < events.length(); i++) {
                 String result = events.getJSONObject(i).getString("result");
                 if (success) {
-                    assertThat(result)
+                    softly.assertThat(result)
                             .as(url + "\nIndicator with name " + indicatorName + "has events with `result` other than `SUCCESS`.\nResult = " + result)
                             .isEqualTo("SUCCESS");
                 } else {
-                    assertThat(result)
+                    softly.assertThat(result)
                             .as(url + "\nIndicator with name " + indicatorName + "has events with `result` other than `FAILURE`.\nResult = " + result)
                             .isEqualTo("FAILURE");
                 }
             }
         }
+        softly.assertAll();
     }
 
     @Test(dataProvider = "allIndicatorsDataProvider")
@@ -354,12 +359,13 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                     .map(indicator -> indicator.getName())
                     .collect(toList());
 
-            assertThat(staticIndicatorNames)
+            softly.assertThat(staticIndicatorNames)
                     .as(url + "\nStatic indicator name appears twice for the same alert." +
                             "\nUserId = " + alert.getEntityDocumentId() +
                             "\nAlertId = " + alert.getId())
                     .doesNotHaveDuplicates();
         }
+        softly.assertAll();
     }
 
 
@@ -439,10 +445,11 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
                             .filter(notSingleElementLists)
                             .collect(toList());
 
-            assertThat(groupsWithMultipleIndicators)
+            softly.assertThat(groupsWithMultipleIndicators)
                     .as(url + "\nAlertId = " + alert.getId() + "\nAlert indicators with same name, anomaly_value and context:\n" + groupsWithMultipleIndicators)
                     .isEmpty();
         }
+        softly.assertAll();
     }
 
 

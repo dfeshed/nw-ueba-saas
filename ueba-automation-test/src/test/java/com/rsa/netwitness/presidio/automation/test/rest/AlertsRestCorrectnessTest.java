@@ -1,10 +1,11 @@
 package com.rsa.netwitness.presidio.automation.test.rest;
 
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
+import com.rsa.netwitness.presidio.automation.mapping.indicators.IndicatorsInfo;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
-import com.rsa.netwitness.presidio.automation.mapping.indicators.IndicatorsInfo;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils;
+import org.assertj.core.api.SoftAssertions;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
@@ -26,10 +27,11 @@ import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests {
-    private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
+    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
             LoggerFactory.getLogger(AlertsRestCorrectnessTest.class.getName());
 
     private RestHelper restHelper = new RestHelper();
+    private SoftAssertions softly = new SoftAssertions();
 
     @BeforeClass
     public void preconditionCheck() {
@@ -47,7 +49,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
                 .isNotEmpty();
 
         url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
-        alerts =  restHelper.alerts().request().getAlerts(url);
+        alerts = restHelper.alerts().request().getAlerts(url);
         assertThat(alerts)
                 .as(url + "\nEmpty response.")
                 .isNotEmpty();
@@ -55,39 +57,39 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
 
     @BeforeMethod
     public void nameBefore(Method method) {
-        LOGGER.info("Starting test:  +++" +  method.getName());
+        LOGGER.info("Starting test:  +++" + method.getName());
     }
 
     @Test
     public void alerts_count_of_default_request_should_be_correct() throws JSONException {
         ParametersUrlBuilder url = restHelper.alerts().url().withNoParameters();
-        List<AlertsStoredRecord> alerts =  restHelper.alerts().request().getAlerts(url);
+        List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         assertThat(alerts.size())
-                .as(url+ "\nThe alert count is not 10 as should be by default")
+                .as(url + "\nThe alert count is not 10 as should be by default")
                 .isEqualTo(10);
     }
 
     @Test
     public void alerts_count_of_page_size_should_be_correct() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withPageParameters(3,1);
-        List<AlertsStoredRecord> alerts =  restHelper.alerts().request().getAlerts(url);
+        ParametersUrlBuilder url = restHelper.alerts().url().withPageParameters(3, 1);
+        List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         assertThat(alerts.size())
-                .as(url+ "\nThe alert count is not 3 as expected by pageSize setting")
+                .as(url + "\nThe alert count is not 3 as expected by pageSize setting")
                 .isEqualTo(3);
     }
 
     @Test
     public void total_alerts_count_should_be_correct() throws JSONException {
         ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeParameters();
-        List<AlertsStoredRecord> alerts =  restHelper.alerts().request().getAlerts(url);
+        List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         int totalAlertsSize = alerts.size();
 
         JSONObject json = restHelper.alerts().request().getRestApiResponseAsJsonObj(url);
         int total = json.getInt("total");
 
         assertThat(totalAlertsSize)
-                .as(url+ "\nTotal alerts count mismatch")
+                .as(url + "\nTotal alerts count mismatch")
                 .isEqualTo(total);
     }
 
@@ -95,78 +97,77 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
     @Test
     public void severity_score_should_be_in_configuration_score_range() {
         ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeParameters();
-        List<AlertsStoredRecord> alerts =  restHelper.alerts().request().getAlerts(url);
+        List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         Map<String, Integer> configurationSeverityScores = OutputTestsUtils.getSeveritiesValues();
 
-        for(AlertsStoredRecord alert : alerts) {
+        for (AlertsStoredRecord alert : alerts) {
             String alertSeverity = alert.getSeverity().toLowerCase();
             long score = Long.parseLong(alert.getScore());
 
-            assertThat(score)
+            softly.assertThat(score)
                     .as("Score must be between [0, 100]")
                     .isBetween(0L, 100L);
 
-            if(score >= configurationSeverityScores.get("low") && score < configurationSeverityScores.get("medium")) {
-                assertThat(alertSeverity)
+            if (score >= configurationSeverityScores.get("low") && score < configurationSeverityScores.get("medium")) {
+                softly.assertThat(alertSeverity)
                         .as("%s severity alert score is %s. It is not between [%s, %s]",
                                 alertSeverity, score, configurationSeverityScores.get("low"), configurationSeverityScores.get("medium"))
                         .isEqualToIgnoringCase("LOW");
-            }
-            else if(score >= configurationSeverityScores.get("medium") && score < configurationSeverityScores.get("high")) {
-                assertThat(alertSeverity)
+            } else if (score >= configurationSeverityScores.get("medium") && score < configurationSeverityScores.get("high")) {
+                softly.assertThat(alertSeverity)
                         .as("%s severity alert score is %s. It is not between [%s, %s]",
                                 alertSeverity, score, configurationSeverityScores.get("medium"), configurationSeverityScores.get("high"))
                         .isEqualToIgnoringCase("MEDIUM");
-            }
-            else if(score >= configurationSeverityScores.get("high") && score < configurationSeverityScores.get("critical")) {
-                assertThat(alertSeverity)
+            } else if (score >= configurationSeverityScores.get("high") && score < configurationSeverityScores.get("critical")) {
+                softly.assertThat(alertSeverity)
                         .as("%s severity alert score is %s. It is not between [%s, %s]",
                                 alertSeverity, score, configurationSeverityScores.get("high"), configurationSeverityScores.get("critical"))
                         .isEqualToIgnoringCase("HIGH");
-            }
-            else if (score >= configurationSeverityScores.get("critical")){
-                assertThat(alertSeverity)
+            } else if (score >= configurationSeverityScores.get("critical")) {
+                softly.assertThat(alertSeverity)
                         .as("%s severity alert score is %s. It is not between [%s, %s]",
                                 alertSeverity, score, configurationSeverityScores.get("critical"), 100)
                         .isEqualToIgnoringCase("CRITICAL");
             }
         }
+        softly.assertAll();
     }
 
     @Test
     public void entity_score_contribution_should_match_alert_severity_range() {
         ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeParameters();
-        List<AlertsStoredRecord> alerts =  restHelper.alerts().request().getAlerts(url);
+        List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         Map<String, Integer> configurationScoreContributions = OutputTestsUtils.getAlertEntityScoreContributions();
 
-        for(AlertsStoredRecord alert : alerts) {
+        for (AlertsStoredRecord alert : alerts) {
             String alertSeverity = alert.getSeverity().toLowerCase();
             int actualEntityScoreContribution = Integer.valueOf(alert.getEntityScoreContribution());
-            assertThat(configurationScoreContributions)
+            softly.assertThat(configurationScoreContributions)
                     .as("EntityScoreContribution score for severity: " + alertSeverity + " is missing from output-processor configuration")
                     .containsKey(alertSeverity);
 
             int expectedEntityScoreContribution = configurationScoreContributions.get(alertSeverity);
-            assertThat(actualEntityScoreContribution)
-                    .as(url+"\nAlertId = " + alert.getId() + "\nentityScoreContribution value mismatch")
+            softly.assertThat(actualEntityScoreContribution)
+                    .as(url + "\nAlertId = " + alert.getId() + "\nentityScoreContribution value mismatch")
                     .isEqualTo(expectedEntityScoreContribution);
         }
+        softly.assertAll();
     }
 
 
     @Test
     public void no_missing_classifications_and_right_order() {
         ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
-        List<AlertsStoredRecord> alerts =  restHelper.alerts().request().getAlerts(url);
+        List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
-        for(AlertsStoredRecord alert : alerts) {
+        for (AlertsStoredRecord alert : alerts) {
             List<String> actualClassifications = Arrays.asList(alert.getClassification());
             List<AlertsStoredRecord.Indicator> indicators = alert.getIndicatorsList();
 
             //  contributions sum for each indicator
             Map<String, Double> scoreContributionSumByIndicator = indicators.stream()
                     .collect(groupingBy(AlertsStoredRecord.Indicator::getName,
-                                summingDouble(AlertsStoredRecord.Indicator::getScoreContribution)));
+                            summingDouble(AlertsStoredRecord.Indicator::getScoreContribution)));
 
             // find max of contribution sums
             Double maxScoreContribution = scoreContributionSumByIndicator.values().stream()
@@ -177,7 +178,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
             // If found indicators with contribution >= 0.3, will count only that indicators
             List<String> expectedClassificationsContributors = new ArrayList<>();
 
-            if(maxScoreContribution >= 0.3) {
+            if (maxScoreContribution >= 0.3) {
                 expectedClassificationsContributors = scoreContributionSumByIndicator.entrySet().stream()
                         .filter(indicator -> indicator.getValue() >= 0.3)
                         .map(indicator -> indicator.getKey())
@@ -189,12 +190,12 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
                         .collect(toList());
             }
 
-            assertThat(expectedClassificationsContributors)
+            softly.assertThat(expectedClassificationsContributors)
                     .as(url + "\nAlertId = " + alert.getId() + "\nEmpty list of indicators which contribute classifications")
                     .isNotNull()
                     .isNotEmpty();
 
-            assertThat(IndicatorsInfo.getIndicatorsToClassificationMap().keySet())
+            softly.assertThat(IndicatorsInfo.getIndicatorsToClassificationMap().keySet())
                     .as(url + "\nAlertId = " + alert.getId() + "\nUndefined indicators. Missing from classifications map.")
                     .containsAll(expectedClassificationsContributors);
 
@@ -208,60 +209,61 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
                     .collect(toList());
 
             // todo: duplicates in classifications?
-            assertThat(actualClassifications)
+            softly.assertThat(actualClassifications)
                     .as(url + "\nAlertId = " + alert.getId() + "\nMissing classification or wrong order.")
                     .hasSameSizeAs(expectedClassificationsOrdered)
                     .containsExactlyElementsOf(expectedClassificationsOrdered);
         }
+        softly.assertAll();
     }
 
 
     @Test
     public void response_values_are_not_null() {
         ParametersUrlBuilder url = restHelper.alerts().url().withNoParameters();
-        List<AlertsStoredRecord> alertList =  restHelper.alerts().request().getAlerts(url);
+        List<AlertsStoredRecord> alertList = restHelper.alerts().request().getAlerts(url);
         assertThat(alertList)
                 .as(url + "\nEmpty response.")
                 .isNotEmpty();
 
-        for(AlertsStoredRecord alert : alertList) {
-            if(alert.getId() == null || alert.getId().equals("null")) {
+        for (AlertsStoredRecord alert : alertList) {
+            if (alert.getId() == null || alert.getId().equals("null")) {
                 Assert.fail("alert id is 'null'");
             }
-            if(alert.getClassification().length == 0 || alert.getClassification() == null) {
+            if (alert.getClassification().length == 0 || alert.getClassification() == null) {
                 Assert.fail("alert classification is empty or null");
             }
-            if(alert.getStartDate() == null || alert.getStartDate().equals("null")) {
+            if (alert.getStartDate() == null || alert.getStartDate().equals("null")) {
                 Assert.fail("alert startDate is 'null'");
             }
-            if(alert.getEndDate() == null || alert.getEndDate().equals("null")) {
+            if (alert.getEndDate() == null || alert.getEndDate().equals("null")) {
                 Assert.fail("alert endDate is 'null'");
             }
-            if(alert.getEntityName() == null || alert.getEntityName().equals("null")) {
+            if (alert.getEntityName() == null || alert.getEntityName().equals("null")) {
                 Assert.fail("alert username is 'null'");
             }
-            if(alert.getIndicatorsNum() == null){
+            if (alert.getIndicatorsNum() == null) {
                 Assert.fail("alert indicatorNum is 'null'");
             }
-            if(alert.getIndicatorsName() == null){
+            if (alert.getIndicatorsName() == null) {
                 Assert.fail("alert indicatorsName is null.");
             }
-            if(alert.getScore() == null) {
+            if (alert.getScore() == null) {
                 Assert.fail("alert score is 'null'");
             }
-            if(alert.getFeedback() == null || alert.getFeedback().equals("null")){
+            if (alert.getFeedback() == null || alert.getFeedback().equals("null")) {
                 Assert.fail("alert feedback is 'null'");
             }
-            if(alert.getEntityScoreContribution() == null || alert.getEntityScoreContribution().equals("null")){
+            if (alert.getEntityScoreContribution() == null || alert.getEntityScoreContribution().equals("null")) {
                 Assert.fail("alert userScoreContribution is 'null'");
             }
-            if(alert.getTimeframe() == null || alert.getTimeframe().equals("null")){
+            if (alert.getTimeframe() == null || alert.getTimeframe().equals("null")) {
                 Assert.fail("alert timeframe is 'null'");
             }
-            if(alert.getSeverity() == null || alert.getSeverity().equals("null")){
+            if (alert.getSeverity() == null || alert.getSeverity().equals("null")) {
                 Assert.fail("alert severity is 'null'");
             }
-            if(alert.getEntityDocumentId() == null || alert.getEntityDocumentId().equals("null")){
+            if (alert.getEntityDocumentId() == null || alert.getEntityDocumentId().equals("null")) {
                 Assert.fail("alert userId is 'null'");
             }
 
@@ -273,12 +275,13 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
         ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
-        for(AlertsStoredRecord alert : alerts) {
-            assertThat(alert.getIndicatorsList())
+        for (AlertsStoredRecord alert : alerts) {
+            softly.assertThat(alert.getIndicatorsList())
                     .as(url + "\nindicatorsList equals 'null'")
                     .isNotNull()
                     .isNotEmpty();
         }
+        softly.assertAll();
     }
 
     @Test
@@ -286,16 +289,17 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
         ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
-        for(AlertsStoredRecord alert : alerts) {
+        for (AlertsStoredRecord alert : alerts) {
             List<AlertsStoredRecord.Indicator> indicators = alert.getIndicatorsList();
             int indicatorNum = alert.getIndicatorsNum();
             String[] indicatorsName = alert.getIndicatorsName();
 
-            assertThat(indicators.size())
+            softly.assertThat(indicators.size())
                     .as(url + "\nIndicator list size, indicators name size and indicator num are not equals")
                     .isEqualTo(indicatorsName.length)
                     .isEqualTo(indicatorNum);
         }
+        softly.assertAll();
     }
 
     @Test
@@ -303,18 +307,19 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
         ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
-        for(AlertsStoredRecord alert : alerts) {
+        for (AlertsStoredRecord alert : alerts) {
             List<String> indicatorsFromArray = alert.getIndicatorsList().stream()
                     .map(AlertsStoredRecord.Indicator::getName)
                     .collect(toList());
 
             List<String> fromIndicatorsNameField = Arrays.asList(alert.getIndicatorsName());
 
-            assertThat(fromIndicatorsNameField)
-                    .as(url+"\nAlertId="+alert.getId())
+            softly.assertThat(fromIndicatorsNameField)
+                    .as(url + "\nAlertId=" + alert.getId())
                     .hasSameSizeAs(indicatorsFromArray)
                     .containsExactlyInAnyOrderElementsOf(indicatorsFromArray);
         }
+        softly.assertAll();
     }
 
     @Test
@@ -322,15 +327,16 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
         ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
-        for(AlertsStoredRecord alert : alerts) {
+        for (AlertsStoredRecord alert : alerts) {
             List<Double> scoreContributions = alert.getIndicatorsList().stream().sequential()
                     .map(AlertsStoredRecord.Indicator::getScoreContribution)
                     .collect(toList());
 
-            assertThat(scoreContributions)
+            softly.assertThat(scoreContributions)
                     .as(url.toString() + "\nAlert: " + alert.getId())
                     .isSortedAccordingTo(reverseOrder());
         }
+        softly.assertAll();
     }
 
     @Test
@@ -344,11 +350,11 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
             long alertStart = Long.parseLong(alert.getStartDate());
             long alertEnd = Long.parseLong(alert.getEndDate());
 
-            for(AlertsStoredRecord.Indicator ind : indicators) {
+            for (AlertsStoredRecord.Indicator ind : indicators) {
                 long indicatorStartDate = Long.parseLong(ind.getStartDate());
                 long indicatorEndDate = Long.parseLong(ind.getEndDate());
 
-                assertThat(indicatorStartDate < alertStart || indicatorEndDate > alertEnd )
+                softly.assertThat(indicatorStartDate < alertStart || indicatorEndDate > alertEnd)
                         .as("Indicator time is out of the alert time range." +
                                 "\n" + url +
                                 "\nAlert " + alert.getId() +
@@ -356,6 +362,7 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
                         .isTrue();
             }
         }
+        softly.assertAll();
     }
 
     @Test
@@ -363,18 +370,19 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
         ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
-        for(AlertsStoredRecord alert : alerts) {
+        for (AlertsStoredRecord alert : alerts) {
             List<AlertsStoredRecord.Indicator> indicators = alert.getIndicatorsList();
             double indicatorsScoreSum = indicators.stream()
                     .mapToDouble(ind -> ind.getScoreContribution())
                     .sum();
 
-            assertThat(indicatorsScoreSum)
-                    .as(url + "\nAlertId =" + alert.getId()+
+            softly.assertThat(indicatorsScoreSum)
+                    .as(url + "\nAlertId =" + alert.getId() +
                             "\nsum of the contribution score of alert's indicator is not between 0.99 to 1.01")
                     .isBetween(0.98, 1.01);
 
         }
+        softly.assertAll();
     }
 
     @Test
@@ -388,9 +396,10 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
             long alertStart = Long.parseLong(alert.getStartDate());
             long alertEnd = Long.parseLong(alert.getEndDate());
 
-            assertThat(alertEnd-alertStart)
+            softly.assertThat(alertEnd - alertStart)
                     .as(url + "\nAlertId =" + alert.getId())
                     .isEqualTo(HOURS.toMillis(1));
         }
+        softly.assertAll();
     }
 }

@@ -64,35 +64,35 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
 
         try {
             total = users.getInt("total");
-         } catch (JSONException e) {
+        } catch (JSONException e) {
             System.out.println(e.getMessage());
-         }
+        }
 
-        int criticalUsersCount = (int)((criticalPercent / 100) * total);
-        if(criticalUsersCount > 5) criticalUsersCount = 5;
+        int criticalUsersCount = (int) ((criticalPercent / 100) * total);
+        if (criticalUsersCount > 5) criticalUsersCount = 5;
 
-        int highUserCount = (int)((highPercent / 100) * total);
-        if(highUserCount > 10) highUserCount = 10;
+        int highUserCount = (int) ((highPercent / 100) * total);
+        if (highUserCount > 10) highUserCount = 10;
 
-        int mediumUserCount = (int)((mediumPercent / 100) * total);
+        int mediumUserCount = (int) ((mediumPercent / 100) * total);
         int lowUserCount = total - criticalUsersCount - highUserCount - mediumUserCount;
 
         Map<String, Integer> severities = getSeverityMap();
 
         Iterator it = severities.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
+            Map.Entry pair = (Map.Entry) it.next();
 
-            if(pair.getKey().toString().toLowerCase().equals("critical")){
-                Assert.assertTrue((int)pair.getValue() <= criticalUsersCount, "there are too many critical users. critical user count = " + (int)pair.getValue());
+            if (pair.getKey().toString().toLowerCase().equals("critical")) {
+                Assert.assertTrue((int) pair.getValue() <= criticalUsersCount, "there are too many critical users. critical user count = " + (int) pair.getValue());
             }
 
-            if(pair.getKey().toString().toLowerCase().equals("high")){
-                Assert.assertTrue((int)pair.getValue() <= highUserCount, "there are too many high users. high user count = " + (int)pair.getValue());
+            if (pair.getKey().toString().toLowerCase().equals("high")) {
+                Assert.assertTrue((int) pair.getValue() <= highUserCount, "there are too many high users. high user count = " + (int) pair.getValue());
             }
 
-            if(pair.getKey().toString().toLowerCase().equals("medium")){
-                Assert.assertTrue((int)pair.getValue() <= mediumUserCount, "there are too many medium users. medium user count = " + (int)pair.getValue());
+            if (pair.getKey().toString().toLowerCase().equals("medium")) {
+                Assert.assertTrue((int) pair.getValue() <= mediumUserCount, "there are too many medium users. medium user count = " + (int) pair.getValue());
             }
         }
     }
@@ -102,20 +102,20 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
         List<EntitiesStoredRecord> users = allEntities;
 
         Map<String, Integer> severitiesCount = getSeverityMap();
-        if(severitiesCount.containsKey("CRITICAL")){
+        if (severitiesCount.containsKey("CRITICAL")) {
             int criticalCount = severitiesCount.get("CRITICAL");
-            if(criticalCount > 0){
+            if (criticalCount > 0) {
                 int curr = Integer.parseInt(users.get(criticalInd).getScore());
-                int last = Integer.parseInt(users.get(criticalInd-1).getScore());
+                int last = Integer.parseInt(users.get(criticalInd - 1).getScore());
 
                 String msg = "difference between the last high severity and the first critical severity is less than 50%.\n" +
-                        "highest high severity user is '" + users.get(criticalCount-1).getEntityName() + "'\n" +
-                        "with the score of --> " + users.get(criticalInd-1).getScore() + "\n" +
+                        "highest high severity user is '" + users.get(criticalCount - 1).getEntityName() + "'\n" +
+                        "with the score of --> " + users.get(criticalInd - 1).getScore() + "\n" +
                         "and the first critical user is '" + users.get(criticalInd).getEntityName() + "'\n" +
                         "with the score of --> " + users.get(criticalInd).getScore() + "\n" +
-                        "The score wa supposed to be greater than " + (last*1.5);
+                        "The score wa supposed to be greater than " + (last * 1.5);
 
-                Assert.assertTrue(curr > (last*1.5), msg);
+                Assert.assertTrue(curr > (last * 1.5), msg);
                 Assert.assertTrue(curr > 15, "user " + users.get(criticalInd).getEntityName() + " has a critical severity with score less than 15.");
 
             }
@@ -129,19 +129,19 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
     public void checkHighGroupSeverityByScore() {
         List<EntitiesStoredRecord> users = allEntities;
 
-        if(severityMap.containsKey("HIGH")){
-            if(severityMap.get("HIGH") > 0){
+        if (severityMap.containsKey("HIGH")) {
+            if (severityMap.get("HIGH") > 0) {
                 int curr = Integer.parseInt(users.get(highInd).getScore());
-                int last = Integer.parseInt(users.get(highInd-1).getScore());
+                int last = Integer.parseInt(users.get(highInd - 1).getScore());
 
                 String msg = "difference between the last medium severity and the first high severity is less than 30%.\n" +
-                        "highest medium severity user is '" + users.get(highInd-1).getEntityName() + "'\n" +
-                        "with the score of --> " + users.get(highInd-1).getScore() + "\n" +
+                        "highest medium severity user is '" + users.get(highInd - 1).getEntityName() + "'\n" +
+                        "with the score of --> " + users.get(highInd - 1).getScore() + "\n" +
                         "and the first high user severity is '" + users.get(highInd).getEntityName() + "'\n" +
                         "with the score of --> " + users.get(highInd).getScore() + "\n" +
-                        "The score wa supposed to be greater than " + (last*1.3);
+                        "The score wa supposed to be greater than " + (last * 1.3);
 
-                Assert.assertTrue(curr >= (last*1.3), msg);
+                Assert.assertTrue(curr >= (last * 1.3), msg);
             }
         } else {
 //           Assert.fail("HIGH Severity has not been found!");
@@ -154,19 +154,19 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
     public void checkMediumGroupSeverityByScore() {
         List<EntitiesStoredRecord> users = allEntities;
 
-        if(severityMap.containsKey("MEDIUM")){
-            if(severityMap.get("MEDIUM") > 0){
+        if (severityMap.containsKey("MEDIUM")) {
+            if (severityMap.get("MEDIUM") > 0) {
                 int curr = Integer.parseInt(users.get(mediumInd).getScore());
-                int last = Integer.parseInt(users.get(mediumInd-1).getScore());
+                int last = Integer.parseInt(users.get(mediumInd - 1).getScore());
 
                 String msg = "difference between the last low severity and the first medium severity is less than 10%.\n" +
-                        "highest low severity user is '" + users.get(mediumInd-1).getEntityName() + "'\n" +
-                        "with the score of --> " + users.get(mediumInd-1).getScore() + "\n" +
+                        "highest low severity user is '" + users.get(mediumInd - 1).getEntityName() + "'\n" +
+                        "with the score of --> " + users.get(mediumInd - 1).getScore() + "\n" +
                         "and the first medium user severity is '" + users.get(mediumInd).getEntityName() + "'\n" +
                         "with the score of --> " + users.get(mediumInd).getScore() + "\n" +
-                        "The score wa supposed to be greater than " + (last*1.1);
+                        "The score wa supposed to be greater than " + (last * 1.1);
 
-                Assert.assertTrue(curr >= (last*1.1), msg);
+                Assert.assertTrue(curr >= (last * 1.1), msg);
             }
         } else {
 //            Assert.fail("MEDIUM Severity has not been found!");
@@ -184,13 +184,13 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
             Assert.assertNotNull(severity, "severity keys are null");
 
             Iterator<String> keysItr = severity.keys();
-            while(keysItr.hasNext()) {
+            while (keysItr.hasNext()) {
                 String key = keysItr.next();
                 Object value = severity.get(key);
 
-                severities.put(key, (int)(value));
+                severities.put(key, (int) (value));
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             Assert.fail(url + "\n" + e.getMessage() + "\n" + e.getStackTrace());
         }
         return severities;
@@ -199,12 +199,12 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
     private void getSeveritiesBoundariesIndexes() {
         List<EntitiesStoredRecord> users = allEntities;
 
-        for(int i=0 ; i < users.size() ; i++) {
-            if(mediumInd == -1 && users.get(i).getSeverity().equals("MEDIUM")) {
+        for (int i = 0; i < users.size(); i++) {
+            if (mediumInd == -1 && users.get(i).getSeverity().equals("MEDIUM")) {
                 mediumInd = i;
-            } else if(highInd == -1 && users.get(i).getSeverity().equals("HIGH")) {
+            } else if (highInd == -1 && users.get(i).getSeverity().equals("HIGH")) {
                 highInd = i;
-            } else if(criticalInd == -1 && users.get(i).getSeverity().equals("CRITICAL")) {
+            } else if (criticalInd == -1 && users.get(i).getSeverity().equals("CRITICAL")) {
                 criticalInd = i;
             }
         }
