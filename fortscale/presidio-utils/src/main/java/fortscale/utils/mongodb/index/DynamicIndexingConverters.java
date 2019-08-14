@@ -1,11 +1,7 @@
 package fortscale.utils.mongodb.index;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
-import org.bson.json.JsonReader;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexDefinition;
@@ -30,10 +26,10 @@ public class DynamicIndexingConverters {
 
     public static IndexInfo convertIndexDefinitionToIndexInfo(IndexDefinition indexDefinition) {
         Assert.notNull(indexDefinition, "indexDefinition cannot be null.");
-        Document dbObject = new Document();
-        dbObject.put("key", indexDefinition.getIndexKeys());
-        dbObject.putAll(indexDefinition.getIndexOptions());
-        return IndexInfo.indexInfoOf(dbObject);
+        Document document = new Document();
+        document.put("key", indexDefinition.getIndexKeys());
+        document.putAll(indexDefinition.getIndexOptions());
+        return IndexInfo.indexInfoOf(document);
     }
 
     public static IndexInfo convertToNamelessIndexInfo(IndexInfo indexInfo) {

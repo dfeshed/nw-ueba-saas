@@ -1,12 +1,12 @@
 package fortscale.aggregation.feature.bucket;
 
-import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
+import org.bson.Document;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -123,8 +123,8 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 		Aggregation aggregation = newAggregation(aggregationOperations).withOptions(Aggregation.newAggregationOptions().
 				allowDiskUse(allowDiskUse).build());
 
-		List<DBObject> aggrResult = mongoTemplate
-				.aggregate(aggregation, collectionName, DBObject.class)
+		List<Document> aggrResult = mongoTemplate
+				.aggregate(aggregation, collectionName, Document.class)
 				.getMappedResults();
 
 		return aggrResult.stream()
