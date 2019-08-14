@@ -1,3 +1,4 @@
+<!-- template-lint triple-curlies=false -->
 {{#if (or displayEula displaySecurityBanner)}}
   <div class="login-wrapper">
     <header>
@@ -6,14 +7,14 @@
       {{#if displayEula}}
         <h3 title={{t 'login.eula.title'}} test-id="securityBannerTitle">{{t 'login.eula.title'}}</h3>
       {{else if displaySecurityBanner}}
-        <h3 title={{securityBannerTitle}} test-id="securityBannerTitle">{{securityBannerTitle}}</h3>
+        <h3 title={{securityBannerTitle}} test-id="securityBannerTitle">{{{securityBannerTitle}}}</h3>
       {{/if}}
     </header>
 
     {{#if displayEula}}
       <form class="eula" {{action "acceptEula" on="submit"}}>
         <div class="eula-content">
-          {{eulaContent}}
+          {{{eulaContent}}}
         </div>
 
         {{#rsa-form-button
@@ -28,7 +29,7 @@
     {{else if displaySecurityBanner}}
       <form class="eula" {{action "acceptSecurityBanner" on="submit"}}>
         <div class="banner-content" test-id="securityBannerText">
-          {{securityBannerText}}
+          {{{securityBannerText}}}
         </div>
 
         {{#rsa-form-button

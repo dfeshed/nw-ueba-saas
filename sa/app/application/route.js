@@ -25,6 +25,12 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
 
   ssoEnabled: false,
 
+  queryParams: {
+    next: { refreshModel: false }
+  },
+
+  next: null,
+
   title() {
     return this.get('i18n').t('appTitle');
   },
@@ -61,7 +67,10 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
     });
   },
 
-  model() {
+  model({ next }) {
+    if (next) {
+      localStorage.setItem('rsa-post-auth-redirect', next);
+    }
     this.checkSso();
     return this.getLocales();
   },

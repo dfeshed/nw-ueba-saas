@@ -84,7 +84,7 @@ module('Integration | Component | rsa-eula', function(hooks) {
 
     await render(hbs`{{rsa-eula displayEula=true}}`);
     assert.equal(findAll('.eula-content').length, 1);
-    assert.equal(find('.eula-content').innerText.trim(), '<p><img src="#" />foo</p>');
+    assert.equal(find('.eula-content').innerHTML.trim(), '<p><img src="#">foo</p>');
   });
 
   test('security header title and text will be sanitized before html is rendered', async function(assert) {
@@ -104,10 +104,10 @@ module('Integration | Component | rsa-eula', function(hooks) {
     await render(hbs`{{rsa-eula displayEula=false displaySecurityBanner=true}}`);
 
     assert.equal(findAll('[test-id=securityBannerTitle]').length, 1);
-    assert.equal(find('[test-id=securityBannerTitle]').innerText.trim(), 'Terms and Conditions <img src="a" />');
+    assert.equal(find('[test-id=securityBannerTitle]').innerHTML.trim(), 'Terms and Conditions <img src="a">');
 
     assert.equal(findAll('[test-id=securityBannerText]').length, 1);
-    assert.equal(find('[test-id=securityBannerText]').innerText.trim(), 'banner text example <img src="a" />');
+    assert.equal(find('[test-id=securityBannerText]').innerHTML.trim(), 'banner text example <img src="a">');
   });
 
   test('security header title will render login eula title when displayEula truthy and displaySecurityBanner falsy', async function(assert) {
