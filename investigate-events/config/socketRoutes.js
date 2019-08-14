@@ -116,6 +116,13 @@ const investigateConfigGen = function(env) {
         requestDestination: '/ws/investigate/column/groups/get'
       }
     },
+    'investigate-columns-create-or-update': {
+      socketUrl,
+      post: {
+        subscriptionDestination: '/user/queue/investigate/column/groups/set',
+        requestDestination: '/ws/investigate/column/groups/set'
+      }
+    },
     'query-hashes': {
       socketUrl,
       find: {

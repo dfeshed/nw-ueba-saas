@@ -1,6 +1,5 @@
 import reselect from 'reselect';
 import { lookup } from 'ember-dependency-lookup';
-import { isEmpty } from '@ember/utils';
 import { isEmptyObject } from 'component-lib/utils/jquery-replacement';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import {
@@ -9,6 +8,7 @@ import {
   LANGUAGE_KEY_SPECIAL_SINGLETON,
   LANGUAGE_KEY_SPECIAL_MASK
 } from 'investigate-events/reducers/investigate/dictionaries/utils';
+import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
 
 const { createSelector } = reselect;
 
@@ -53,9 +53,7 @@ const _isReconOpen = (state) => state.investigate.data.isReconOpen;
 const _metaPanelSize = (state) => state.investigate.meta.metaPanelSize;
 const _data = (state) => state.investigate.eventTimeline.data;
 const _status = (state) => state.investigate.eventTimeline.status;
-const _columnGroups = (state) => state.investigate.data.columnGroups;
-const _columnGroup = (state) => state.investigate.data.columnGroup;
-export const hasColumnGroups = (state) => !isEmpty(state.investigate.data.columnGroups);
+const _selectedColumnGroup = (state) => state.investigate.data.selectedColumnGroup;
 export const getDefaultPreferences = (state) => state.investigate.data.eventsPreferencesConfig.defaultPreferences.asMutable();
 
 // SELECTOR FUNCTIONS
@@ -146,7 +144,7 @@ export const shouldShowStatus = createSelector(
 );
 
 export const getCurrentPreferences = createSelector(
-  [_columnGroup],
+  [_selectedColumnGroup],
   (columnGroup) => {
     return {
       eventPreferences: { columnGroup }
@@ -155,7 +153,7 @@ export const getCurrentPreferences = createSelector(
 );
 
 export const getSelectedColumnGroup = createSelector(
-  [_columnGroup, _columnGroups],
+  [_selectedColumnGroup, columnGroups],
   (columnGroupId, allColumnGroups) => {
     if (allColumnGroups) {
       return allColumnGroups.find(({ id }) => id === columnGroupId) || allColumnGroups.find(({ id }) => id === 'SUMMARY');
@@ -242,7 +240,7 @@ export const getFlattenedColumnList = createSelector(
 );
 
 export const getColumnGroups = createSelector(
-  [_columnGroups],
+  [columnGroups],
   (columnGroups) => {
     if (columnGroups) {
       const i18n = lookup('service:i18n');

@@ -1,11 +1,8 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
-import { handle } from 'redux-pack';
 import _ from 'lodash';
-import sort from 'fast-sort';
 import { isEmpty } from '@ember/utils';
 
-import EventColumnGroups from 'investigate-events/constants/OOTBColumnGroups';
 import { SORT_ORDER } from './event-results/selectors';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
@@ -20,8 +17,7 @@ const _initialState = Immutable.from({
   eventsPreferencesConfig: CONFIG,
   globalPreferences: null,
   eventAnalysisPreferences: null,
-  columnGroups: null,
-  columnGroup: null, // null avoids rendering the events table before fetching the persisted column group from backend,
+  selectedColumnGroup: null, // null avoids rendering the events table before fetching the persisted column group from backend,
   isQueryExecutedByColumnGroup: false,
   sortField: 'time',
   sortDirection: null,
@@ -66,10 +62,10 @@ export default handleActions({
 
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload }) => {
     const eventAnalysisPreferences = _.assign({}, state.eventAnalysisPreferences, payload.eventAnalysisPreferences);
-    const columnGroup = _.get(payload, 'eventPreferences.columnGroup', state.columnGroup);
+    const columnGroup = _.get(payload, 'eventPreferences.columnGroup', state.selectedColumnGroup);
     return state.merge({
       eventAnalysisPreferences,
-      columnGroup: columnGroup || 'SUMMARY'
+      selectedColumnGroup: columnGroup || 'SUMMARY'
     });
   },
 
@@ -92,33 +88,6 @@ export default handleActions({
     });
   },
 
-  [ACTION_TYPES.COLUMNS_RETRIEVE]: (state, action) => {
-    sort(EventColumnGroups).by([{ asc: (group) => group.name.toUpperCase() }]);
-    return handle(state, action, {
-      failure: (s) => s.merge({ columnGroups: EventColumnGroups }),
-      success: (s) => {
-        const columnGroups = action.payload.data;
-        if (columnGroups) {
-          // Want to fix certain sizes to certain columns if those
-          // columns exist
-          columnGroups.forEach((cg) => {
-            // meta-summary goes by a few names
-            _.merge(_.find(cg.columns, { field: 'custom.meta-summary' }), { width: 2000 });
-            _.merge(_.find(cg.columns, { field: 'custom.metasummary' }), { width: 2000 });
-            _.merge(_.find(cg.columns, { field: 'time' }), { width: 175 });
-          });
-
-          sort(columnGroups).by([{ asc: (group) => group.name.toUpperCase() }]);
-
-          return s.merge({ columnGroups });
-        }
-
-        // if none returned, return the default set of column groups
-        return s.merge({ columnGroups: EventColumnGroups });
-      }
-    });
-  },
-
   /**
    * Updates the state with a given value for the recon panel size.
    * Typically invoked by route when its URL query params have changed.
@@ -135,7 +104,7 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SET_SELECTED_COLUMN_GROUP]: (state, { payload }) => {
-    return state.set('columnGroup', payload);
+    return state.set('selectedColumnGroup', payload);
   },
 
   [ACTION_TYPES.SET_QUERY_EXECUTED_BY_COLUMN_GROUP_FLAG]: (state, { payload }) => {

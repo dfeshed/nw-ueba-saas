@@ -29,18 +29,19 @@ module('Integration | Component | Column Groups', function(hooks) {
   });
 
   test('columnGroup manager should be visible', async function(assert) {
-    new ReduxDataHelper(setState).columnGroup('SUMMARY').columnGroups(EventColumnGroups).build();
+    new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').columnGroups(EventColumnGroups).build();
     await render(hbs`{{events-table-container/header-container/column-groups}}`);
 
     assert.ok(find(columnGroupManagerSelector), 'Column Group Manager present');
-    assert.equal(find(`${columnGroupManagerSelector} .list-caption`).textContent.trim(), 'Column Group: Summary List', 'Default Column group is Summary List.');
+    assert.equal(find(`${columnGroupManagerSelector} .list-caption`).textContent.trim(), 'Column Group: Summary List',
+      'Default column group is Summary List.');
   });
 
   test('it provides option to select column groups', async function(assert) {
 
     assert.expect(7);
 
-    new ReduxDataHelper(setState).columnGroup('SUMMARY').columnGroups(EventColumnGroups).build();
+    new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').columnGroups(EventColumnGroups).build();
     await render(hbs`{{events-table-container/header-container/column-groups}}`);
 
     assert.ok(find(`${columnGroupManagerSelector} .rsa-button-menu.collapsed`), 'Column Group Menu collapsed');
@@ -64,7 +65,7 @@ module('Integration | Component | Column Groups', function(hooks) {
 
   test('persisted column group is preselected in the drop down and highlighted in the options', async function(assert) {
 
-    new ReduxDataHelper(setState).columnGroup('MALWARE').columnGroups(EventColumnGroups).build();
+    new ReduxDataHelper(setState).selectedColumnGroup('MALWARE').columnGroups(EventColumnGroups).build();
     await render(hbs`{{events-table-container/header-container/column-groups}}`);
 
     assert.equal(find(`${columnGroupManagerSelector} .list-caption`).textContent.trim(), 'Column Group: Malware Analysis', 'Expected Malware Analysis to be selected');
@@ -80,7 +81,7 @@ module('Integration | Component | Column Groups', function(hooks) {
 
   test('clicking entire row should close column group dropdown and update the selected column group', async function(assert) {
 
-    new ReduxDataHelper(setState).columnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().build();
+    new ReduxDataHelper(setState).selectedColumnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().build();
     await render(hbs`{{events-table-container/header-container/column-groups}}`);
 
     assert.equal(find(`${columnGroupManagerSelector} .list-caption`).textContent.trim(), 'Column Group: Email Analysis');
@@ -103,7 +104,7 @@ module('Integration | Component | Column Groups', function(hooks) {
 
   test('clicking away from the column group drop down should close the drop down', async function(assert) {
 
-    new ReduxDataHelper(setState).columnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().build();
+    new ReduxDataHelper(setState).selectedColumnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().build();
     await render(hbs`<div class = 'other-div'></div>{{events-table-container/header-container/column-groups}}`);
 
     assert.ok(find(dropdownSelector), 'dropdown buttons present');
@@ -117,7 +118,7 @@ module('Integration | Component | Column Groups', function(hooks) {
 
   test('column groups can be filtered by name', async function(assert) {
 
-    new ReduxDataHelper(setState).columnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().build();
+    new ReduxDataHelper(setState).selectedColumnGroup('EMAIL').columnGroups(EventColumnGroups).eventsPreferencesConfig().build();
     await render(hbs`<div class = 'other-div'></div>{{events-table-container/header-container/column-groups}}`);
 
     await click(dropdownSelector);
@@ -144,5 +145,4 @@ module('Integration | Component | Column Groups', function(hooks) {
     assert.equal(findAll(columnGroupItem).length, 11, 'filter is reset when dropdown is closed and reopened');
 
   });
-
 });

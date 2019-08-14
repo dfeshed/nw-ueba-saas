@@ -4,6 +4,7 @@ import Immutable from 'seamless-immutable';
 import { EVENT_TYPES } from 'component-lib/constants/event-types';
 import { EVENT_DOWNLOAD_TYPES, FILE_TYPES } from 'component-lib/constants/event-download-types';
 import { resultCountAtThreshold } from 'investigate-events/reducers/investigate/event-count/selectors';
+import { columnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
 import formatUtil from 'investigate-events/components/events-table-container/row-container/format-util';
 import sort from 'fast-sort';
 import { hasMinimumCoreServicesVersionForColumnSorting } from 'investigate-events/reducers/investigate/services/selectors';
@@ -14,8 +15,7 @@ const DEFAULT_WIDTH = 100;
 
 // ACCESSOR FUNCTIONS
 const _languages = (state) => state.investigate.dictionaries.language;
-const _columnGroups = (state) => state.investigate.data.columnGroups;
-const _columnGroup = (state) => state.investigate.data.columnGroup;
+const _selectedColumnGroup = (state) => state.investigate.data.selectedColumnGroup;
 const _resultsData = (state) => state.investigate.eventResults.data;
 const _resultsDataCount = (state) => state.investigate.eventResults.data && state.investigate.eventResults.data.length;
 const _eventResultCount = (state) => state.investigate.eventCount.data;
@@ -427,7 +427,7 @@ export const allExpectedDataLoaded = createSelector(
 );
 
 export const searchMatches = createSelector(
-  [_searchTerm, _resultsData, eventTableFormattingOpts, _columnGroup, _columnGroups, _visibleColumns],
+  [_searchTerm, _resultsData, eventTableFormattingOpts, _selectedColumnGroup, columnGroups, _visibleColumns],
   (searchTerm, data, opts, columnGroup, columnGroups, visibleColumns) => {
     // return empty set unless searchTerm meets length requirement
     const searchTermLengthRequirement = 2;

@@ -6,7 +6,8 @@ import {
   percentageOfEventsDataReturned,
   areEventsStreaming
 } from 'investigate-events/reducers/investigate/event-results/selectors';
-import { hasColumnGroups } from 'investigate-events/reducers/investigate/data-selectors';
+import { hasColumnGroups } from 'investigate-events/reducers/investigate/column-group/selectors';
+
 
 const stateToComputed = (state) => ({
   areEventsStreaming: areEventsStreaming(state),

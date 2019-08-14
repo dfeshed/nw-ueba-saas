@@ -24,7 +24,7 @@ const addToIncidentSelector = '.add-to-incident-button .rsa-form-button-wrapper'
 const textSearchSelector = '.rsa-data-table-header__search-selector';
 
 const renderDefaultHeaderContainer = async(assert) => {
-  new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').hasRequiredValuesToQuery(true).columnGroups(EventColumnGroups).eventCount(55).build();
+  new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').hasRequiredValuesToQuery(true).columnGroups(EventColumnGroups).eventCount(55).build();
   await render(hbs`{{events-table-container/header-container}}`);
   assert.ok(find(headerContainerSelector), 'Header container rendered');
 };
@@ -48,7 +48,7 @@ module('Integration | Component | header-container', function(hooks) {
   });
 
   test('render the events header with data at threshold', async function(assert) {
-    new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').columnGroups(EventColumnGroups).hasRequiredValuesToQuery(true).eventCount(100000).build();
+    new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').columnGroups(EventColumnGroups).hasRequiredValuesToQuery(true).eventCount(100000).build();
     await render(hbs`{{events-table-container/header-container}}`);
     assert.equal(find(eventLabelSelector).textContent.trim().replace(/\s+/g, ''), 'oldest100,000Events(Asc)', 'rendered event header title');
     const thresholdIconSelector = `${headerContainerSelector} .at-threshold`;
@@ -59,13 +59,13 @@ module('Integration | Component | header-container', function(hooks) {
   });
 
   test('render the events header with actualCount when canceled', async function(assert) {
-    new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').isCanceled().eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').selectedEventIds([]).columnGroups(EventColumnGroups).eventResults(eventResultsData).hasRequiredValuesToQuery(true).eventCount(10).build();
+    new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').isCanceled().eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').selectedEventIds([]).columnGroups(EventColumnGroups).eventResults(eventResultsData).hasRequiredValuesToQuery(true).eventCount(10).build();
     await render(hbs`{{events-table-container/header-container}}`);
     assert.equal(find(eventLabelSelector).textContent.trim().replace(/\s+/g, ''), '1Events(Asc)', 'rendered event header title');
   });
 
   test('render the events header with eventTimeSortOrderPreferenceWhenQueried when cannot sort', async function(assert) {
-    new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').isCanceled().eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').selectedEventIds([]).columnGroups(EventColumnGroups).eventResults(eventResultsData).hasRequiredValuesToQuery(false).eventTimeSortOrderPreferenceWhenQueried().eventCount(10).build();
+    new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').reconSize('max').isCanceled().eventThreshold(100000).eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').selectedEventIds([]).columnGroups(EventColumnGroups).eventResults(eventResultsData).hasRequiredValuesToQuery(false).eventTimeSortOrderPreferenceWhenQueried().eventCount(10).build();
     await render(hbs`{{events-table-container/header-container}}`);
     assert.equal(find(eventLabelSelector).textContent.trim().replace(/\s+/g, ''), '1Events(Asc)', 'rendered event header title');
   });
@@ -83,7 +83,7 @@ module('Integration | Component | header-container', function(hooks) {
   });
 
   test('enables the search selector when loading is complete', async function(assert) {
-    new ReduxDataHelper(setState).columnGroup('SUMMARY').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').columnGroups(EventColumnGroups).eventCount(55).queryStatsIsComplete().eventResultsStatus('complete').build();
+    new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').columnGroups(EventColumnGroups).eventCount(55).queryStatsIsComplete().eventResultsStatus('complete').build();
     await render(hbs`{{events-table-container/header-container}}`);
     assert.ok(find(`${textSearchSelector}`), 'rendered event header text search');
     assert.notOk(find(`${textSearchSelector}.disabled`), 'enabled text search');
@@ -99,7 +99,7 @@ module('Integration | Component | header-container', function(hooks) {
       }]
     }];
 
-    new ReduxDataHelper(setState).columnGroup('SUMMARY').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').columnGroups(columnGroups).eventCount(55).queryStatsIsComplete().eventResultsStatus('complete').visibleColumns([{ field: 'custom.meta-summary' }]).build();
+    new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').eventTimeSortOrder().eventsPreferencesConfig().eventsQuerySort('time', 'Ascending').columnGroups(columnGroups).eventCount(55).queryStatsIsComplete().eventResultsStatus('complete').visibleColumns([{ field: 'custom.meta-summary' }]).build();
     await render(hbs`{{events-table-container/header-container}}`);
     assert.ok(find(`${textSearchSelector}.disabled`), 'disabled text search');
   });

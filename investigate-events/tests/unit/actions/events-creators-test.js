@@ -21,7 +21,7 @@ let streamLimit = 2000;
 const getState = () => {
   return new ReduxDataHelper()
     .isQueryRunning(queryIsRunning)
-    .columnGroup('SUMMARY')
+    .selectedColumnGroup('SUMMARY')
     .columnGroups()
     .endTime(1544026619)
     .eventTimeSortOrder()
@@ -254,7 +254,7 @@ module('Unit | Actions | event-creators', function(hooks) {
     const getState = () => {
       return new ReduxDataHelper()
         .isQueryRunning(queryIsRunning)
-        .columnGroup('SUMMARY')
+        .selectedColumnGroup('SUMMARY')
         .columnGroups()
         .endTime(1544026619)
         .eventTimeSortOrder()
@@ -284,7 +284,8 @@ module('Unit | Actions | event-creators', function(hooks) {
       assert.equal(actionsByType[ACTION_TYPES.QUERY_IS_RUNNING].length, 1, 'query not running just one time');
       assert.equal(actionsByType[ACTION_TYPES.INIT_EVENTS_STREAMING].length, 1, 'initialize streaming just one time');
       assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE_STATUS].length, 1, 'set status once');
-      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE_STATUS][0].payload, 'complete', 'first status call is to indicate between streams');
+      assert.equal(actionsByType[ACTION_TYPES.SET_EVENTS_PAGE_STATUS][0].payload, 'complete',
+        'first status call is to indicate between streams');
       done();
     };
 

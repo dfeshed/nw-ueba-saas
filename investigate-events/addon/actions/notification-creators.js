@@ -71,12 +71,12 @@ export const extractFiles = (eventDownloadType, fileType, sessionIds = [], isSel
   return (dispatch, getState) => {
 
     const queryNode = getActiveQueryNode(getState());
-    const { columnGroup } = getState().investigate.data;
+    const { selectedColumnGroup } = getState().investigate.data;
 
     let columnList = [];
     // All meta available will be downloaded for 'SUMMARY' columnGroup.
     // For others, visible meta (selected columns) pertaining to the columGroup will be downloaded.
-    if (columnGroup !== 'SUMMARY' && eventDownloadType === EVENT_DOWNLOAD_TYPES.META) {
+    if (selectedColumnGroup !== 'SUMMARY' && eventDownloadType === EVENT_DOWNLOAD_TYPES.META) {
       const { visibleColumns } = getState().investigate.eventResults;
       columnList = visibleColumns.filter((col) => col.field !== 'checkbox').map(({ field }) => field);
     }

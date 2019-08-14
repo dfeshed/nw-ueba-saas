@@ -2,47 +2,10 @@ import Immutable from 'seamless-immutable';
 import { test, module } from 'qunit';
 import reducer from 'investigate-events/reducers/investigate/data-reducer';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
-import { LIFECYCLE } from 'redux-pack';
-import makePackAction from '../../helpers/make-pack-action';
-import EventColumnGroups from 'investigate-events/constants/OOTBColumnGroups';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
-import _ from 'lodash';
 import CONFIG from 'investigate-events/reducers/investigate/config';
 
 module('Unit | Reducers | data-reducer');
-
-test('Should get column list from server', function(assert) {
-  const previous = Immutable.from({
-    columnGroups: null
-  });
-
-  // Need to reset width to null to simulate server call.
-  const summaryColumnGroup = _.find(EventColumnGroups, { id: 'SUMMARY' });
-  _.merge(_.find(summaryColumnGroup.columns, { field: 'custom.meta-summary' }), { width: null });
-  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.COLUMNS_RETRIEVE,
-    payload: { data: EventColumnGroups }
-  });
-  const newEndState = reducer(previous, successAction);
-  assert.deepEqual(newEndState.columnGroups, EventColumnGroups);
-});
-
-test('Should update the column widths if the right columns are present', function(assert) {
-  const previous = Immutable.from({
-    columnGroups: null
-  });
-
-  // Need to reset width to null to simulate server call.
-  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.COLUMNS_RETRIEVE,
-    payload: { data: EventColumnGroups }
-  });
-  const newEndState = reducer(previous, successAction);
-  assert.deepEqual(newEndState.columnGroups, EventColumnGroups);
-
-  assert.equal(newEndState.columnGroups[0].columns[0].width, 175, 'time set to right value');
-  assert.equal(newEndState.columnGroups[0].columns[4].width, 2000, 'summary set to right value');
-});
 
 test('Should update global preferences', function(assert) {
   const previous = Immutable.from({
@@ -117,42 +80,6 @@ test('Should update sort', function(assert) {
   assert.deepEqual(newEndState.isQueryExecutedBySort, false);
 });
 
-
-test('Should show default column list in case of failure', function(assert) {
-  const previous = Immutable.from({
-    columnGroups: null
-  });
-
-  const successAction = makePackAction(LIFECYCLE.FAILURE, {
-    type: ACTION_TYPES.COLUMNS_RETRIEVE,
-    payload: { data: EventColumnGroups }
-  });
-  const newEndState = reducer(previous, successAction);
-  assert.deepEqual(newEndState.columnGroups, EventColumnGroups);
-});
-
-test('Should sort column groups alphabetically irrespective of case', function(assert) {
-  const previous = Immutable.from({
-    columnGroups: null
-  });
-
-  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.COLUMNS_RETRIEVE,
-    payload: { data:
-      [
-        { id: 1, name: 'Beta' },
-        { id: 2, name: 'alpha' }
-      ]
-    }
-  });
-  const newEndState = reducer(previous, successAction);
-  const expectedResult = [
-    { id: 2, name: 'alpha' },
-    { id: 1, name: 'Beta' }
-  ];
-  assert.deepEqual(newEndState.columnGroups, expectedResult);
-});
-
 test('REHYDRATE', function(assert) {
   const previous = Immutable.from({
     reconSize: RECON_PANEL_SIZES.MAX
@@ -187,7 +114,7 @@ test('REHYDRATE when state is not saved in local storage yet', function(assert) 
 
 test('SET_PREFERENCES when columnGroup is present in the payload', function(assert) {
   const previous = Immutable.from({
-    columnGroup: null
+    selectedColumnGroup: null
   });
 
   const action = {
@@ -199,12 +126,12 @@ test('SET_PREFERENCES when columnGroup is present in the payload', function(asse
     }
   };
   const newEndState = reducer(previous, action);
-  assert.deepEqual(newEndState.columnGroup, 'EMAIL');
+  assert.deepEqual(newEndState.selectedColumnGroup, 'EMAIL');
 });
 
 test('SET_PREFERENCES when columnGroup is not present in the payload and no column group is set currently', function(assert) {
   const previous = Immutable.from({
-    columnGroup: null
+    selectedColumnGroup: null
   });
 
   const action = {
@@ -214,12 +141,12 @@ test('SET_PREFERENCES when columnGroup is not present in the payload and no colu
     }
   };
   const newEndState = reducer(previous, action);
-  assert.deepEqual(newEndState.columnGroup, 'SUMMARY');
+  assert.deepEqual(newEndState.selectedColumnGroup, 'SUMMARY');
 });
 
 test('SET_PREFERENCES when columnGroup is not present in the payload and current group should be preserved', function(assert) {
   const previous = Immutable.from({
-    columnGroup: 'SOME_GROUP'
+    selectedColumnGroup: 'SOME_GROUP'
   });
 
   const action = {
@@ -231,7 +158,7 @@ test('SET_PREFERENCES when columnGroup is not present in the payload and current
     }
   };
   const newEndState = reducer(previous, action);
-  assert.deepEqual(newEndState.columnGroup, 'SOME_GROUP');
+  assert.deepEqual(newEndState.selectedColumnGroup, 'SOME_GROUP');
 });
 
 test('SET_PREFERENCES when an eventAnalysis preference is updated', function(assert) {

@@ -285,7 +285,7 @@ module('Unit | Actions | interaction creators', function(hooks) {
     const getState = () => {
       return new ReduxDataHelper()
         .isQueryRunning(queryIsRunning)
-        .columnGroup('SUMMARY')
+        .selectedColumnGroup('SUMMARY')
         .eventsPreferencesConfig()
         .streamLimit(streamLimit)
         .streamBatch(streamBatch)

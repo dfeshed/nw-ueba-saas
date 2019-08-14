@@ -16,8 +16,8 @@ let redux;
 
 const isBaseInvestigateIntializationComplete = () => {
   const { investigate } = redux.getState();
-  const { dictionaries, queryNode, services, data } = investigate;
-  const columnGroupsCameback = (data.columnGroups || []).length > 5;
+  const { dictionaries, queryNode, services, columnGroup } = investigate;
+  const columnGroupsCameback = (columnGroup.columnGroups || []).length > 5;
   const preferencesCameBack = queryNode.queryTimeFormat === 'DB';
   const aliasesCameBack = Object.keys(dictionaries.aliases || {}).length === 9;
   const languagesCameBack = (dictionaries.language || []).length === 95;

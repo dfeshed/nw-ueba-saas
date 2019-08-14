@@ -250,7 +250,7 @@ module('Integration | Component | events-table', function(hooks) {
 
   test('event table is displayed with expected default column sort controls', async function(assert) {
     new ReduxDataHelper(setState)
-      .columnGroup('SUMMARY')
+      .selectedColumnGroup('SUMMARY')
       .hasRequiredValuesToQuery(true)
       .eventThreshold(100000)
       .eventsPreferencesConfig()
@@ -269,7 +269,7 @@ module('Integration | Component | events-table', function(hooks) {
 
   test('event table is displayed with expected ascending sort controls', async function(assert) {
     new ReduxDataHelper(setState)
-      .columnGroup('SUMMARY')
+      .selectedColumnGroup('SUMMARY')
       .hasRequiredValuesToQuery(true)
       .eventThreshold(100000)
       .eventsPreferencesConfig()
@@ -287,7 +287,7 @@ module('Integration | Component | events-table', function(hooks) {
 
   test('event table header has sort disabled while streaming', async function(assert) {
     new ReduxDataHelper(setState)
-      .columnGroup('SUMMARY')
+      .selectedColumnGroup('SUMMARY')
       .hasRequiredValuesToQuery(true)
       .eventThreshold(100000)
       .eventsPreferencesConfig()
@@ -305,7 +305,7 @@ module('Integration | Component | events-table', function(hooks) {
 
   test('event table is displayed with expected descending sort controls', async function(assert) {
     new ReduxDataHelper(setState)
-      .columnGroup('SUMMARY')
+      .selectedColumnGroup('SUMMARY')
       .hasRequiredValuesToQuery(true)
       .eventThreshold(100000)
       .eventsPreferencesConfig()
@@ -323,7 +323,7 @@ module('Integration | Component | events-table', function(hooks) {
   test('event table sort controls calls _toggleSort', async function(assert) {
     assert.expect(2);
     new ReduxDataHelper(setState)
-      .columnGroup('SUMMARY')
+      .selectedColumnGroup('SUMMARY')
       .hasRequiredValuesToQuery(true)
       .language()
       .eventThreshold(100000)
@@ -375,7 +375,7 @@ module('Integration | Component | events-table', function(hooks) {
 
   test('event table is displayed with expected column group\'s default header values', async function(assert) {
     new ReduxDataHelper(setState)
-      .columnGroup('SUMMARY')
+      .selectedColumnGroup('SUMMARY')
       .eventThreshold(100000)
       .language([{ metaName: 'time', format: 'TimeT' }, { metaName: 'medium', format: 'UInt8' }, { metaName: 'custom.meta-summary', format: 'Text' }])
       .eventsPreferencesConfig()

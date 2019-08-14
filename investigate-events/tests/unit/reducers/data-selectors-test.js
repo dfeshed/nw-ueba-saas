@@ -6,7 +6,6 @@ import {
   shouldShowStatus,
   getSelectedColumnGroup,
   getColumns,
-  hasColumnGroups,
   getFlattenedColumnList,
   hasMetaSummaryColumn,
   validEventSortColumns,
@@ -27,7 +26,7 @@ test('get the current preferences to save', function(assert) {
     investigate: {
       data: {
         reconSize: 'max',
-        columnGroup: 'EMAIL'
+        selectedColumnGroup: 'EMAIL'
       },
       queryNode: {
         queryTimeFormat: 'DB'
@@ -359,7 +358,9 @@ test('Should get default column group as Summary', function(assert) {
   const state = {
     investigate: {
       data: {
-        columnGroup: 'SUMMARY',
+        selectedColumnGroup: 'SUMMARY'
+      },
+      columnGroup: {
         columnGroups: EventColumnGroups
       }
     }
@@ -377,7 +378,9 @@ test('Should fall back to Summary for wrong column group', function(assert) {
         language: DEFAULT_LANGUAGES
       },
       data: {
-        columnGroup: 'XYZ',
+        selectedColumnGroup: 'XYZ'
+      },
+      columnGroup: {
         columnGroups: EventColumnGroups
       }
     }
@@ -396,7 +399,9 @@ test('Should get selected column groups', function(assert) {
         language: DEFAULT_LANGUAGES
       },
       data: {
-        columnGroup: 'WEB',
+        selectedColumnGroup: 'WEB'
+      },
+      columnGroup: {
         columnGroups: EventColumnGroups
       }
     }
@@ -423,7 +428,9 @@ test('Should get mutable columns for data table', function(assert) {
         ]
       },
       data: {
-        columnGroup: 'SUMMARY',
+        selectedColumnGroup: 'SUMMARY'
+      },
+      columnGroup: {
         columnGroups: EventColumnGroups
       }
     }
@@ -440,7 +447,9 @@ test('Should include custom.meta-summary, custom.meta-summary, and custom.theme'
         language: []
       },
       data: {
-        columnGroup: 'SUMMARY',
+        selectedColumnGroup: 'SUMMARY'
+      },
+      columnGroup: {
         columnGroups: [{
           id: 'SUMMARY',
           name: 'Summary List',
@@ -468,7 +477,9 @@ test('columns should exclude meta not included in language dictionary', function
         ]
       },
       data: {
-        columnGroup: 'SUMMARY',
+        selectedColumnGroup: 'SUMMARY'
+      },
+      columnGroup: {
         columnGroups: [{
           id: 'SUMMARY',
           name: 'Summary List',
@@ -503,7 +514,9 @@ test('columns should not include meta-details column', function(assert) {
         ]
       },
       data: {
-        columnGroup: 'SUMMARY2',
+        selectedColumnGroup: 'SUMMARY2'
+      },
+      columnGroup: {
         columnGroups: EventColumnGroups
       }
     }
@@ -533,7 +546,9 @@ test('flattened list should include fields inside meta-summary and fields always
         ]
       },
       data: {
-        columnGroup: 'SUMMARY',
+        selectedColumnGroup: 'SUMMARY'
+      },
+      columnGroup: {
         columnGroups: EventColumnGroups
       }
     }
@@ -554,7 +569,9 @@ test('flattened list of columns do not include summary fields if no meta-summary
         language: DEFAULT_LANGUAGES
       },
       data: {
-        columnGroup: 'SUMMARY2',
+        selectedColumnGroup: 'SUMMARY2'
+      },
+      columnGroup: {
         columnGroups: EventColumnGroups
       }
     }
@@ -575,7 +592,9 @@ test('flattened list of columns do not include dupe columns if exist in list and
         ]
       },
       data: {
-        columnGroup: 'SUMMARY3',
+        selectedColumnGroup: 'SUMMARY3'
+      },
+      columnGroup: {
         columnGroups: EventColumnGroups
       }
     }
@@ -597,7 +616,9 @@ test('flattened list should include fields inside metasummary and fields always 
         ]
       },
       data: {
-        columnGroup: 'SUMMARY4',
+        selectedColumnGroup: 'SUMMARY4'
+      },
+      columnGroup: {
         columnGroups: EventColumnGroups
       }
     }
@@ -608,34 +629,6 @@ test('flattened list should include fields inside metasummary and fields always 
   assert.ok(columns.includes('nwe.callback_id'), 'must always include callback id');
   assert.ok(columns.includes('sessionid'), 'must always include sessionid');
   assert.ok(columns.includes('ip.dst'), 'fields from inside meta-summary are flattened into array');
-});
-
-test('Should set hasColumnGroups', function(assert) {
-  assert.ok(
-    hasColumnGroups(
-      Immutable.from({
-        investigate: {
-          data: {
-            columnGroup: 'SUMMARY',
-            columnGroups: EventColumnGroups
-          }
-        }
-      })
-    ), 'hasColumnGroups should be true'
-  );
-
-  assert.notOk(
-    hasColumnGroups(
-      Immutable.from({
-        investigate: {
-          dictionaries: {
-            language: DEFAULT_LANGUAGES
-          },
-          data: {}
-        }
-      })
-    ), 'hasColumnGroups should be false'
-  );
 });
 
 test('hasMetaSummaryColumn should return true if it has metasummary', function(assert) {
@@ -668,7 +661,9 @@ test('hasMetaSummaryColumn should return true if it has metasummary', function(a
         ]
       },
       data: {
-        columnGroup: 'SUMMARY',
+        selectedColumnGroup: 'SUMMARY'
+      },
+      columnGroup: {
         columnGroups
       }
     }
@@ -703,7 +698,9 @@ test('hasMetaSummaryColumn should return false if it does not have metasummary',
         language: DEFAULT_LANGUAGES
       },
       data: {
-        columnGroup: 'SUMMARY',
+        selectedColumnGroup: 'SUMMARY'
+      },
+      columnGroup: {
         columnGroups
       }
     }

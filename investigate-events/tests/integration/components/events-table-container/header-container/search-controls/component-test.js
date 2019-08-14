@@ -28,7 +28,7 @@ module('Integration | Component | search-controls', function(hooks) {
   });
 
   test('renders clear-search-trigger when searchTerm', async function(assert) {
-    new ReduxDataHelper(setState).columnGroup('SUMMARY').eventsPreferencesConfig().visibleColumns().eventResults(eventResultsData).columnGroups(EventColumnGroups).searchTerm('Log').build();
+    new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').eventsPreferencesConfig().visibleColumns().eventResults(eventResultsData).columnGroups(EventColumnGroups).searchTerm('Log').build();
     await render(hbs`{{events-table-container/header-container/search-controls}}`);
     assert.equal(findAll('div.search-controls').length, 1);
     assert.equal(findAll('.clear-search-trigger').length, 1);
@@ -41,7 +41,7 @@ module('Integration | Component | search-controls', function(hooks) {
   });
 
   test('renders next and prev triggers when searchMatches', async function(assert) {
-    new ReduxDataHelper(setState).columnGroup('SUMMARY').eventsPreferencesConfig().visibleColumns().eventResults(eventResultsData).columnGroups(EventColumnGroups).searchTerm('Log').build();
+    new ReduxDataHelper(setState).selectedColumnGroup('SUMMARY').eventsPreferencesConfig().visibleColumns().eventResults(eventResultsData).columnGroups(EventColumnGroups).searchTerm('Log').build();
     await render(hbs`{{events-table-container/header-container/search-controls}}`);
     assert.equal(findAll('.next-search-trigger').length, 1);
     assert.equal(findAll('.prev-search-trigger').length, 1);

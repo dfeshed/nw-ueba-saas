@@ -143,7 +143,7 @@ const _initializePreferences = (dispatch, getState) => {
  */
 const _getColumnGroups = () => {
   return (dispatch, getState) => {
-    const { columnGroups } = getState().investigate.data;
+    const { columnGroups } = getState().investigate.columnGroup;
     if (!columnGroups) {
       dispatch({
         type: ACTION_TYPES.COLUMNS_RETRIEVE,

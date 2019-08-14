@@ -33,7 +33,7 @@ const assertForInvestigateColumnAndColumnSelector = async function(assert, heade
 
 const renderDefaultEventTable = async function() {
   new ReduxDataHelper(setState)
-    .columnGroup('SUMMARY')
+    .selectedColumnGroup('SUMMARY')
     .language([
       { format: 'Text', metaName: 'host.role' },
       { format: 'Text', metaName: 'timezone' },
@@ -196,7 +196,7 @@ module('Integration | Component | events-table-container', function(hooks) {
 
   test('it should show "no results" message only if there are zero results', async function(assert) {
     new ReduxDataHelper(setState)
-      .columnGroup('SUMMARY')
+      .selectedColumnGroup('SUMMARY')
       .columnGroups(EventColumnGroups)
       .eventsPreferencesConfig()
       .eventTimeSortOrder()
@@ -213,7 +213,7 @@ module('Integration | Component | events-table-container', function(hooks) {
 
   test('it should not show "no results" message if there are results', async function(assert) {
     new ReduxDataHelper(setState)
-      .columnGroup('SUMMARY')
+      .selectedColumnGroup('SUMMARY')
       .columnGroups(EventColumnGroups)
       .eventsPreferencesConfig()
       .eventTimeSortOrder()
@@ -272,7 +272,7 @@ module('Integration | Component | events-table-container', function(hooks) {
 
   test('if events have begun streaming, the progress bar is set to 1', async function(assert) {
     new ReduxDataHelper(setState)
-      .columnGroup('SUMMARY')
+      .selectedColumnGroup('SUMMARY')
       .columnGroups(EventColumnGroups)
       .eventsPreferencesConfig()
       .eventTimeSortOrder()
@@ -288,7 +288,7 @@ module('Integration | Component | events-table-container', function(hooks) {
 
   test('if event streaming has completed, the progress bar full', async function(assert) {
     new ReduxDataHelper(setState)
-      .columnGroup('SUMMARY')
+      .selectedColumnGroup('SUMMARY')
       .columnGroups(EventColumnGroups)
       .eventsPreferencesConfig()
       .eventTimeSortOrder()

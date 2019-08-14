@@ -363,18 +363,18 @@ export default class DataHelper {
     return this;
   }
 
-  columnGroup(columnGroup) {
-    _set(this.state, 'data.columnGroup', columnGroup);
+  selectedColumnGroup(columnGroup) {
+    _set(this.state, 'data.selectedColumnGroup', columnGroup);
     return this;
   }
 
   columnGroups(columnGroups = EventColumnGroups) {
-    _set(this.state, 'data.columnGroups', columnGroups);
+    _set(this.state, 'columnGroup.columnGroups', columnGroups);
     return this;
   }
 
   getColumns(columnGroup = EventColumnGroups[0].id, columnGroups = EventColumnGroups) {
-    this.columnGroup(columnGroup);
+    this.selectedColumnGroup(columnGroup);
     this.columnGroups(columnGroups);
     return this;
   }

@@ -108,7 +108,9 @@ module('Unit | Selectors | event-results', function(hooks) {
           aliases: 'aliases'
         },
         data: {
-          columnGroup: 'EMAIL',
+          selectedColumnGroup: 'EMAIL'
+        },
+        columnGroup: {
           columnGroups: EventColumnGroups,
           globalPreferences: {
             dateFormat: 'dateFormat',
@@ -153,6 +155,8 @@ module('Unit | Selectors | event-results', function(hooks) {
             timeZone: 'timeZone',
             locale: 'locale'
           }
+        },
+        columnGroup: {
         }
       }
     };
@@ -179,14 +183,16 @@ module('Unit | Selectors | event-results', function(hooks) {
           aliases: 'aliases'
         },
         data: {
-          columnGroup: 'EMAIL',
-          columnGroups: EventColumnGroups,
+          selectedColumnGroup: 'EMAIL',
           globalPreferences: {
             dateFormat: 'dateFormat',
             timeFormat: 'timeFormat',
             timeZone: 'timeZone',
             locale: 'locale'
           }
+        },
+        columnGroup: {
+          columnGroups: EventColumnGroups
         }
       }
     };
@@ -213,14 +219,16 @@ module('Unit | Selectors | event-results', function(hooks) {
           aliases: 'aliases'
         },
         data: {
-          columnGroup: 'EMAIL',
-          columnGroups: EventColumnGroups,
+          selectedColumnGroup: 'EMAIL',
           globalPreferences: {
             dateFormat: 'dateFormat',
             timeFormat: 'timeFormat',
             timeZone: 'timeZone',
             locale: 'locale'
           }
+        },
+        columnGroup: {
+          columnGroups: EventColumnGroups
         }
       }
     };
@@ -246,14 +254,16 @@ module('Unit | Selectors | event-results', function(hooks) {
           aliases: 'aliases'
         },
         data: {
-          columnGroup: 'EMAIL',
-          columnGroups: EventColumnGroups,
+          selectedColumnGroup: 'EMAIL',
           globalPreferences: {
             dateFormat: 'dateFormat',
             timeFormat: 'timeFormat',
             timeZone: 'timeZone',
             locale: 'locale'
           }
+        },
+        columnGroup: {
+          columnGroups: EventColumnGroups
         }
       }
     };
@@ -280,14 +290,16 @@ module('Unit | Selectors | event-results', function(hooks) {
           aliases: 'aliases'
         },
         data: {
-          columnGroup: 'EMAIL',
-          columnGroups: EventColumnGroups,
+          selectedColumnGroup: 'EMAIL',
           globalPreferences: {
             dateFormat: 'dateFormat',
             timeFormat: 'timeFormat',
             timeZone: 'timeZone',
             locale: 'locale'
           }
+        },
+        columnGroup: {
+          columnGroups: EventColumnGroups
         }
       }
     };
@@ -314,14 +326,16 @@ module('Unit | Selectors | event-results', function(hooks) {
           aliases: 'aliases'
         },
         data: {
-          columnGroup: 'EMAIL',
-          columnGroups: EventColumnGroups,
+          selectedColumnGroup: 'EMAIL',
           globalPreferences: {
             dateFormat: 'dateFormat',
             timeFormat: 'timeFormat',
             timeZone: 'timeZone',
             locale: 'locale'
           }
+        },
+        columnGroup: {
+          columnGroups: EventColumnGroups
         }
       }
     };
@@ -330,7 +344,7 @@ module('Unit | Selectors | event-results', function(hooks) {
     assert.equal(result.length, 1);
   });
 
-  test('searchMatches returns matches when columnGroup is SUMMARY', async function(assert) {
+  test('searchMatches returns matches when selectedColumnGroup is SUMMARY', async function(assert) {
     const state = {
       investigate: {
         eventResults: {
@@ -347,14 +361,16 @@ module('Unit | Selectors | event-results', function(hooks) {
           aliases: 'aliases'
         },
         data: {
-          columnGroup: 'SUMMARY',
-          columnGroups: EventColumnGroups,
+          selectedColumnGroup: 'SUMMARY',
           globalPreferences: {
             dateFormat: 'dateFormat',
             timeFormat: 'timeFormat',
             timeZone: 'timeZone',
             locale: 'locale'
           }
+        },
+        columnGroup: {
+          columnGroups: EventColumnGroups
         }
       }
     };
