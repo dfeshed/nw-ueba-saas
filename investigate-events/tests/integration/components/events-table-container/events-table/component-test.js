@@ -347,6 +347,32 @@ module('Integration | Component | events-table', function(hooks) {
     click('.rsa-data-table-header-row div > h2 .sort-indicator.active');
   });
 
+  test('event table sort controls doesnt call _toggleSort if already sorting', async function(assert) {
+    assert.expect(0);
+    new ReduxDataHelper(setState)
+      .columnGroup('SUMMARY')
+      .hasRequiredValuesToQuery(true)
+      .language()
+      .eventThreshold(100000)
+      .eventsPreferencesConfig()
+      .columnGroups(EventColumnGroups)
+      .sortableColumns()
+      .eventsQuerySort('time', 'Ascending')
+      .eventCount(100000)
+      .language([{ format: 'TimeT', metaName: 'time', flags: -2147482605 }])
+      .eventResults()
+      .eventResultsStatus('sorting')
+      .build();
+
+    this.set('_toggleSort', () => {
+      assert.ok(false);
+    });
+
+    await render(hbs`{{events-table-container/events-table _toggleSort=_toggleSort}}`);
+
+    click('.rsa-data-table-header-row div > h2 .sort-indicator.active');
+  });
+
   test('event table is displayed with expected column group\'s default header values', async function(assert) {
     new ReduxDataHelper(setState)
       .columnGroup('SUMMARY')
