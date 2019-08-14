@@ -509,7 +509,7 @@ export default [
         fileType: 'apache',
         enabled: false,
         startOfEvents: false,
-        fileEncoding: 'UTF-8',
+        fileEncoding: 'UTF-8 / ASCII',
         paths: ['/c/apache_path-hint-1/*.log', '/c/Program Files/Apache Group/Apache[2-9]/*.log', 'apache_path-hint-2'],
         sourceName: 'Meta-Source-Name',
         exclusionFilters: ['exclude-string-1', 'exclude-string-2', 'exclude-string-3']
@@ -518,7 +518,7 @@ export default [
         fileType: 'exchange',
         enabled: true,
         startOfEvents: true,
-        fileEncoding: 'UTF-8',
+        fileEncoding: 'UTF-8 / ASCII',
         paths: ['/[cd]/exchange/logs/*.log'],
         sourceName: 'Exchange aye!',
         exclusionFilters: []

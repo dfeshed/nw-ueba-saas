@@ -61,7 +61,7 @@ module('Integration | Component | group-ranking/inspector | file-policy', functi
     assert.equal(findAll('.value')[15].innerText.trim(), 'apache policyName - apache groupName', 'Origin policy & group of Log Collection are as expected');
     assert.equal(findAll('.value')[16].innerText.trim(), 'Collect new data only', 'Data Collection is Collect new data only as expected');
     assert.equal(findAll('.value')[17].innerText.trim(), 'apache policyName - apache groupName', 'Origin policy & group of Data Collection are as expected');
-    assert.equal(findAll('.value')[18].innerText.trim(), 'UTF-8', 'File Encoding is UTF-8 as expected');
+    assert.equal(findAll('.value')[18].innerText.trim(), 'UTF-8 / ASCII', 'File Encoding is UTF-8 / ASCII as expected');
     assert.equal(findAll('.value')[19].innerText.trim(), 'apache policyName - apache groupName', 'Origin policy & group of File Encoding are as expected');
     assert.equal(findAll('.value')[20].innerText.trim(), '/c/apache_path-hint-1/*.log, /c/Program Files/Apache Group/Apache[2-9]/*.log, apache_path-hint-2', 'Paths is /c/apache_path-hint-1/*.log, /c/Program Files/Apache Group/Apache[2-9]/*.log, apache_path-hint-2 as expected');
     assert.equal(findAll('.value')[21].innerText.trim(), 'apache policyName - apache groupName', 'Origin policy & group of Paths are as expected');
@@ -74,7 +74,7 @@ module('Integration | Component | group-ranking/inspector | file-policy', functi
     assert.equal(findAll('.value')[29].innerText.trim(), 'exchange policyName - exchange groupName', 'Origin policy & group of Log Collection are as expected');
     assert.equal(findAll('.value')[30].innerText.trim(), 'Collect historical and new data', 'Data Collection is Collect historical and new data as expected');
     assert.equal(findAll('.value')[31].innerText.trim(), 'exchange policyName - exchange groupName', 'Origin policy & group of Data Collection are as expected');
-    assert.equal(findAll('.value')[32].innerText.trim(), 'UTF-8', 'File Encoding is UTF-8 as expected');
+    assert.equal(findAll('.value')[32].innerText.trim(), 'UTF-8 / ASCII', 'File Encoding is UTF-8 / ASCII as expected');
     assert.equal(findAll('.value')[33].innerText.trim(), 'exchange policyName - exchange groupName', 'Origin policy & group of File Encoding are as expected');
     assert.equal(findAll('.value')[34].innerText.trim(), '/[cd]/exchange/logs/*.log', 'Paths is /[cd]/exchange/logs/*.log as expected');
     assert.equal(findAll('.value')[35].innerText.trim(), 'exchange policyName - exchange groupName', 'Origin policy & group of Paths are as expected');

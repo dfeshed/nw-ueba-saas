@@ -513,7 +513,7 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
   });
 
   test('isDefinePolicySourcesStepValid selector', function(assert) {
-    let newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'foo$', exclusionFilters: ['filter-1', 'filter-2'] } ];
+    let newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'foo$', exclusionFilters: ['filter-1', 'filter-2'] } ];
     const visited = ['policy.sources'];
     let fullState = new ReduxDataHelper()
       .policyWiz('filePolicy')
@@ -526,7 +526,7 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
     assert.deepEqual(result, resultExpected, 'isDefinePolicySourcesStepValid retunrs false since sourceName is invalid');
 
     // valid source
-    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'validsource', exclusionFilters: ['filter-1', 'filter-2'] } ];
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'validsource', exclusionFilters: ['filter-1', 'filter-2'] } ];
     fullState = new ReduxDataHelper()
       .policyWiz('filePolicy')
       .policyWizFileSources(newSource)

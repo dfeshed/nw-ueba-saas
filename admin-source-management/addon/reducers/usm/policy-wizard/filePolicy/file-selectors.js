@@ -72,7 +72,7 @@ export const selectedFileSourceDefaults = createSelector(
     if (selectedFileSource) {
       const defaults = {
         fileType: selectedFileSource.name,
-        fileEncoding: 'UTF-8',
+        fileEncoding: 'UTF-8 / ASCII',
         enabled: true,
         startOfEvents: true,
         sourceName: '',

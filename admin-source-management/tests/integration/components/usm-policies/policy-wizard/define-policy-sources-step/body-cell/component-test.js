@@ -7,26 +7,20 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { encodingOptions } from 'admin-source-management/components/usm-policies/policy-wizard/define-policy-sources-step/body-cell/settings';
 
 let setState;
 
-const sources = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1' } ];
+const sources = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1' } ];
 const column = {
   field: 'fileEncoding',
   title: 'adminUsm.policyWizard.filePolicy.fileEncoding',
   width: '15vw',
   displayType: 'fileEncoding'
 };
-const encodingOptions = [
-  'UTF-8',
-  'UTF-16',
-  'Wide Char',
-  'ASCII',
-  'Local Encoding'
-];
 const item = {
   fileType: 'apache',
-  fileEncoding: 'UTF-16',
+  fileEncoding: 'Local Encoding',
   enabled: true,
   startOfEvents: false,
   sourceName: 'apache-server-1',
@@ -55,7 +49,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     assert.equal(findAll('.child-source-container .body-cell').length, 1, 'Expected to define-policy-sources-step/body-cell element in DOM.');
   });
 
-  test('there should be 5 dropdown options available for file encoding', async function(assert) {
+  test('there should be 16 dropdown options available for file encoding', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz('filePolicy')
       .policyWizFileSourceTypes()
@@ -76,10 +70,10 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
       }}
     `);
     await clickTrigger('.file-encoding');
-    assert.equal(findAll('.ember-power-select-option').length, 5, 'Dropdown is rendered with correct number of items');
+    assert.equal(findAll('.ember-power-select-option').length, 16, 'Dropdown is rendered with correct number of items');
   });
 
-  test('select ASCII from the file encoding dropdown', async function(assert) {
+  test('select Local Encoding from the file encoding dropdown', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz('filePolicy')
       .policyWizFileSourceTypes()
@@ -99,7 +93,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
         item=item
       }}
     `);
-    assert.equal(find('.ember-power-select-selected-item').textContent.trim(), 'UTF-16');
+    assert.equal(find('.ember-power-select-selected-item').textContent.trim(), 'Local Encoding');
   });
 
   test('changing the file encoding triggers sourceUpdated method', async function(assert) {

@@ -66,7 +66,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
   });
 
   test('fileSources', function(assert) {
-    const expectedValue = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'] } ];
+    const expectedValue = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'] } ];
     const fullState = new ReduxDataHelper()
       .policyWiz('filePolicy')
       .policyWizFileSources(expectedValue)
@@ -113,7 +113,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
     const defaultsExpected = {
       'enabled': true,
       'exclusionFilters': [],
-      'fileEncoding': 'UTF-8',
+      'fileEncoding': 'UTF-8 / ASCII',
       'startOfEvents': true,
       'sourceName': '',
       'fileType': 'apache',
@@ -127,7 +127,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
   });
 
   test('sources', function(assert) {
-    const expectedValue = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
+    const expectedValue = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
     const fullState = new ReduxDataHelper()
       .policyWiz('filePolicy')
       .policyWizFileSources(expectedValue)
@@ -137,7 +137,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
   });
 
   test('sourceNameValidator selector with invalid source name', function(assert) {
-    let newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'foo$', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
+    let newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'foo$', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
     // let newFilters = [ { channel: 'System', filterType: 'INCLUDE', eventId: 'foo$' }];
     const visited = ['policy.sources'];
     let fullState = new ReduxDataHelper()
@@ -157,7 +157,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
     assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
 
     // valid value
-    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
     fullState = new ReduxDataHelper()
       .policyWiz('filePolicy')
       .policyWizFileSources(newSource)
@@ -169,7 +169,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
 
 
     // invalid ipv4 address for source name
-    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: '10:42.42.42', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: '10:42.42.42', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
     fullState = new ReduxDataHelper()
       .policyWiz('filePolicy')
       .policyWizFileSources(newSource)
@@ -187,7 +187,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
     assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
 
     // invalid ipv6 address for source name
-    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: '1200::AB00:1234::2552:7777:1313', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: '1200::AB00:1234::2552:7777:1313', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
     fullState = new ReduxDataHelper()
       .policyWiz('filePolicy')
       .policyWizFileSources(newSource)
@@ -205,7 +205,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
     assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
 
     // valid ipv6 address
-    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: '1200:0000:AB00:1234:0000:2552:7777:1313', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: '1200:0000:AB00:1234:0000:2552:7777:1313', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
     fullState = new ReduxDataHelper()
       .policyWiz('filePolicy')
       .policyWizFileSources(newSource)
@@ -218,7 +218,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
 
   test('sourceNameValidator selector with invalid directory paths', function(assert) {
     // when path is empty
-    let newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'foo', exclusionFilters: ['filter-1', 'filter-2'], paths: [] } ];
+    let newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'foo', exclusionFilters: ['filter-1', 'filter-2'], paths: [] } ];
     const visited = ['policy.sources'];
     let fullState = new ReduxDataHelper()
       .policyWiz('filePolicy')
@@ -237,7 +237,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
     assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
 
     // invalid - when one of the directory paths is empty
-    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: '10.42.42.42', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', ''] } ];
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: '10.42.42.42', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', ''] } ];
     fullState = new ReduxDataHelper()
       .policyWiz('filePolicy')
       .policyWizFileSources(newSource)
@@ -255,7 +255,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
     assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
 
     // valid value
-    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
     fullState = new ReduxDataHelper()
       .policyWiz('filePolicy')
       .policyWizFileSources(newSource)

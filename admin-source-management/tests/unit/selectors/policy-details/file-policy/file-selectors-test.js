@@ -80,7 +80,7 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
           fileType: 'apache',
           enabled: false,
           startOfEvents: false,
-          fileEncoding: 'UTF-8',
+          fileEncoding: 'UTF-8 / ASCII',
           paths: ['/c/apache_path-hint-1/*.log', '/c/Program Files/Apache Group/Apache[2-9]/*.log', 'apache_path-hint-2'],
           sourceName: 'Meta-Source-Name',
           exclusionFilters: ['exclude-string-1', 'exclude-string-2', 'exclude-string-3']
@@ -89,7 +89,7 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
           fileType: 'exchange',
           enabled: true,
           startOfEvents: true,
-          fileEncoding: 'UTF-8',
+          fileEncoding: 'UTF-8 / ASCII',
           paths: ['/[cd]/exchange/logs/*.log'],
           sourceName: 'Exchange aye!',
           exclusionFilters: ['exclude-string-1', 'exclude-string-2', 'exclude-string-3']
@@ -284,7 +284,7 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
     assert.equal(policyDetails[1].props[1].origin.policyName, 'apache policyName', 'apache startOfEvents policyName returned as expected');
     // apache source fileEncoding prop
     assert.equal(policyDetails[1].props[2].name, 'adminUsm.policyWizard.filePolicy.fileEncoding', 'apache fileEncoding prop i18n key name is as expected');
-    assert.equal(policyDetails[1].props[2].value, 'UTF-8', 'apache fileEncoding prop value is UTF-8 as expected');
+    assert.equal(policyDetails[1].props[2].value, 'UTF-8 / ASCII', 'apache fileEncoding prop value is UTF-8 / ASCII as expected');
     assert.equal(policyDetails[1].props[2].origin.groupName, 'apache groupName', 'apache fileEncoding prop groupName returned as expected');
     assert.equal(policyDetails[1].props[2].origin.policyName, 'apache policyName', 'apache fileEncoding policyName returned as expected');
     // apache source paths prop
@@ -398,7 +398,7 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
     assert.equal(policyDetails[1].props[1].origin.policyName, '', 'apache startOfEvents policyName empty as expected');
     // apache source fileEncoding prop
     assert.equal(policyDetails[1].props[2].name, 'adminUsm.policyWizard.filePolicy.fileEncoding', 'apache fileEncoding prop i18n key name is as expected');
-    assert.equal(policyDetails[1].props[2].value, 'UTF-8', 'apache fileEncoding prop value is UTF-8 as expected');
+    assert.equal(policyDetails[1].props[2].value, 'UTF-8 / ASCII', 'apache fileEncoding prop value is UTF-8 / ASCII as expected');
     assert.equal(policyDetails[1].props[2].origin.groupName, '', 'apache fileEncoding prop groupName empty as expected');
     assert.equal(policyDetails[1].props[2].origin.policyName, '', 'apache fileEncoding policyName empty as expected');
     // apache source paths prop
