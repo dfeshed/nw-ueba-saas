@@ -21,7 +21,8 @@ import {
   clientSortedData,
   requireServiceSorting,
   groupForSortAscending,
-  groupForSortDescending
+  groupForSortDescending,
+  _nestChildEvents
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -981,6 +982,28 @@ module('Unit | Selectors | event-results', function(hooks) {
   test('groupForSortDescending', async function(assert) {
     assert.equal(groupForSortDescending({ toSort: 2 }), -1);
     assert.equal(groupForSortDescending({ toSort: 'a' }), 1);
+  });
+
+  test('_nestChildEvents without data', async function(assert) {
+    assert.equal(_nestChildEvents(null), null);
+    assert.equal(_nestChildEvents(undefined), undefined);
+    assert.equal(_nestChildEvents([]).length, 0);
+  });
+
+  test('_nestChildEvents with data', async function(assert) {
+    const nested = _nestChildEvents([
+      { sessionId: 1 },
+      { sessionId: 2, 'session.split': 3 },
+      { sessionId: 3 },
+      { sessionId: 4, 'session.split': 3 },
+      { sessionId: 5, 'session.split': 3 }
+    ]);
+
+    assert.equal(nested[0].sessionId, 1);
+    assert.equal(nested[1].sessionId, 3);
+    assert.equal(nested[2].sessionId, 2);
+    assert.equal(nested[3].sessionId, 4);
+    assert.equal(nested[4].sessionId, 5);
   });
 
   test('clientSortedData when no data', async function(assert) {

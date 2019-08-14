@@ -8,6 +8,7 @@ import formatUtil from 'investigate-events/components/events-table-container/row
 import sort from 'fast-sort';
 import { hasMinimumCoreServicesVersionForColumnSorting } from 'investigate-events/reducers/investigate/services/selectors';
 const { createSelector } = reselect;
+import { isEmpty } from '@ember/utils';
 
 const DEFAULT_WIDTH = 100;
 
@@ -220,6 +221,48 @@ export const groupForSortAscending = (e) => {
   }
 };
 
+// not a selector, export for testing
+export const _nestChildEvents = (events) => {
+  if (isEmpty(events)) {
+    return events;
+  } else {
+
+    const onlyNested = events.filter((e) => {
+      return !isEmpty(e['session.split']);
+    });
+
+    if (isEmpty(onlyNested)) {
+      // no child events so exit early
+      return events;
+    } else {
+      // create copy so not to manipulate the array being iterated over
+      const eventsCopy = [...events];
+      // reverse helps with preserving sort order as events are repositioned immediately under the parent
+      onlyNested.reverse().forEach((event) => {
+        const parent = event['session.split'];
+        // get the index of the parent
+        // add one to relocate after the parent
+        const insertAtIndex = eventsCopy.findIndex((e) => {
+          return e.sessionId === parent;
+        }) + 1;
+
+        // if event was moved ahead it will change the index of the event to remove
+        // otherwise the move will have no affect on the position of the event to remove
+        let removeAtIndex = eventsCopy.findIndex((e) => {
+          return e.sessionId === event.sessionId;
+        });
+        removeAtIndex = insertAtIndex < removeAtIndex ? removeAtIndex + 1 : removeAtIndex;
+
+        // insert child event
+        eventsCopy.splice(insertAtIndex, 0, event);
+        // remove from original position
+        eventsCopy.splice(removeAtIndex, 1);
+      });
+      return eventsCopy;
+    }
+  }
+};
+
 export const clientSortedData = createSelector(
   [
     _resultsData,
@@ -241,7 +284,7 @@ export const clientSortedData = createSelector(
     if (!languages || requireServiceSorting || !data) {
       // client not responsible for sorting
       // return data as is
-      return data;
+      return _nestChildEvents(data);
     } else {
       const metaObj = languages.findBy('metaName', sortField);
       const { Address6 } = window;
@@ -318,7 +361,8 @@ export const clientSortedData = createSelector(
           });
         }
       } else {
-        return sort(cachedData)[(sortDirection === 'Ascending' ? 'asc' : 'desc')]((e) => e.toSort);
+        const sortedEvents = sort(cachedData)[(sortDirection === 'Ascending' ? 'asc' : 'desc')]((e) => e.toSort);
+        return _nestChildEvents(sortedEvents);
       }
     }
   }
@@ -336,7 +380,7 @@ export const selectedIndex = createSelector(
 );
 
 export const eventType = createSelector(
-  selectedIndex, _resultsData,
+  selectedIndex, clientSortedData,
   (index, data) => {
     const event = data ? data[index] : null;
     let type = null;
