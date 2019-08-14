@@ -41,9 +41,9 @@ module('Unit | Selectors | event-results', function(hooks) {
   };
 
   const mixEventResultsData = [
-    { sessionId: 101, medium: 1 },
-    { sessionId: 102, medium: 1 },
-    { sessionId: 103, medium: 32 }
+    { sessionId: 101, medium: 1, foo: 3 },
+    { sessionId: 102, medium: 1, foo: 1 },
+    { sessionId: 103, medium: 32, foo: 2 }
   ];
 
   const withNetworkEvents = {
@@ -54,7 +54,7 @@ module('Unit | Selectors | event-results', function(hooks) {
 
   const withMixedEvents = {
     status: 'stopped',
-    selectedEventIds: { 0: 101, 2: 103 },
+    selectedEventIds: { 0: 102, 1: 103, 2: 101 },
     data: mixEventResultsData
   };
 
@@ -488,10 +488,24 @@ module('Unit | Selectors | event-results', function(hooks) {
   test('getDownloadOptions returns appropriate counts for options when one each of log and network events are selected', async function(assert) {
     const state = {
       investigate: {
-        eventCount: {},
-        dictionaries: {},
+        eventCount: {
+          threshold: 4,
+          data: 3
+        },
+        dictionaries: {
+          language: [{
+            metaName: 'foo',
+            format: 'Int'
+          }]
+        },
         services: {},
-        data: preferenceData,
+        data: {
+          ...preferenceData,
+          sortField: 'foo',
+          sortDirection: 'Ascending',
+          globalPreferences: {
+          }
+        },
         eventResults: withMixedEvents
       }
     };
@@ -501,11 +515,11 @@ module('Unit | Selectors | event-results', function(hooks) {
 
     const defaultGroup = result[0].options;
     // preferred LOG option
-    await assertForCountsAndSessionIds(assert, defaultGroup, 0, '1/2', [103], false);
-    // preferred Network option
-    await assertForCountsAndSessionIds(assert, defaultGroup, 1, '1/2', [101], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 0, '1/3', [103], false);
+    // preferred Network option with session Ids in order of clientSorted data
+    await assertForCountsAndSessionIds(assert, defaultGroup, 1, '2/3', [102, 101], false);
     // preffered Meta option
-    await assertForCountsAndSessionIds(assert, defaultGroup, 2, '2/2', [101, 103], false);
+    await assertForCountsAndSessionIds(assert, defaultGroup, 2, '3/3', [102, 103, 101], false);
   });
 
   test('eventTimeSortOrder returns proper data', async function(assert) {
