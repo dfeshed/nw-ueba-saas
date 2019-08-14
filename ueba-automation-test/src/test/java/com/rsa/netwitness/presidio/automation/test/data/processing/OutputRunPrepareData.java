@@ -1,7 +1,6 @@
 package com.rsa.netwitness.presidio.automation.test.data.processing;
 
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
-import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
 import com.rsa.netwitness.presidio.automation.utils.common.ASCIIArtGenerator;
@@ -9,12 +8,10 @@ import com.rsa.netwitness.presidio.automation.utils.output.OutputDataProcessingH
 import org.json.JSONException;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.Assert;
 import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.function.Function;
@@ -71,24 +68,14 @@ public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
     @Test
     public void calcUserScore() {
         RestHelper restHelper = new RestHelper();
-        ParametersUrlBuilder url = restHelper.entities().url().withMaxSizeAndSortedAndExpendedParameters("DESC", "SCORE");
-        List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
+        ParametersUrlBuilder url = restHelper.alerts().url().withNoParameters();
+        List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
-        int sumScoreSeverity = 0;
-
-        for(EntitiesStoredRecord entity : entities) {
-            List<AlertsStoredRecord> alerts = entity.getAlerts();
-            if (alerts.size() > 0) {
-                for (AlertsStoredRecord alert : alerts) {
-                    sumScoreSeverity += getSeverityScore(alert.getSeverity());
-                }
-            }
-
-            Assert.assertEquals(Integer.parseInt(entity.getScore()), sumScoreSeverity, url+"\n");
-            sumScoreSeverity = 0;
-        }
+        assertThat(alerts)
+                .withFailMessage(url + "\nAlerts REST response is null or empty.")
+                .isNotNull()
+                .isNotEmpty();
     }
-
 
 
 
@@ -106,15 +93,6 @@ public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
     }
 
 
-    private int getSeverityScore(String name) {
-        HashMap<String, Integer> severityScoreMap = new HashMap<>();
-        severityScoreMap.put("CRITICAL", 20);
-        severityScoreMap.put("HIGH", 15);
-        severityScoreMap.put("MEDIUM", 10);
-        severityScoreMap.put("LOW", 1);
-
-        return severityScoreMap.get(name);
-    }
 
     private Function<Future<Integer>, Integer> toIntResult = future -> {
         try {

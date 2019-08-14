@@ -1,6 +1,7 @@
 package com.rsa.netwitness.presidio.automation.test.rest;
 
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
+import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
@@ -172,6 +173,38 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
 //            Assert.fail("MEDIUM Severity has not been found!");
             System.err.println("Medium severity not found!");
         }
+    }
+
+    @Test
+    public void calcUserScore() {
+        RestHelper restHelper = new RestHelper();
+        ParametersUrlBuilder url = restHelper.entities().url().withMaxSizeAndSortedAndExpendedParameters("DESC", "SCORE");
+        List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
+
+        int sumScoreSeverity = 0;
+
+        for(EntitiesStoredRecord entity : entities) {
+            List<AlertsStoredRecord> alerts = entity.getAlerts();
+            if (alerts.size() > 0) {
+                for (AlertsStoredRecord alert : alerts) {
+                    sumScoreSeverity += getSeverityScore(alert.getSeverity());
+                }
+            }
+
+            Assert.assertEquals(Integer.parseInt(entity.getScore()), sumScoreSeverity, url+"\n");
+            sumScoreSeverity = 0;
+        }
+    }
+
+
+    private int getSeverityScore(String name) {
+        HashMap<String, Integer> severityScoreMap = new HashMap<>();
+        severityScoreMap.put("CRITICAL", 20);
+        severityScoreMap.put("HIGH", 15);
+        severityScoreMap.put("MEDIUM", 10);
+        severityScoreMap.put("LOW", 1);
+
+        return severityScoreMap.get(name);
     }
 
     private Map<String, Integer> getSeverityMap() {
