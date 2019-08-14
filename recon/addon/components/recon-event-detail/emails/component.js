@@ -22,9 +22,7 @@ const dispatchToActions = {
 };
 
 const EmailReconComponent = Component.extend({
-  layout,
-  classNames: ['recon-email-view'],
-  classNameBindings: ['hasEmailAttachments:warning']
+  layout
 });
 
 export default connect(stateToComputed, dispatchToActions)(EmailReconComponent);
