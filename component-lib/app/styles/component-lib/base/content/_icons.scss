@@ -45,6 +45,10 @@
   &.is-largest {
     font-size: 5em;
   }
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .rsa-icon-account-circle-1-filled {
