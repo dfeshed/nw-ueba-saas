@@ -583,6 +583,46 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await click(PILL_SELECTORS.recentQueriesTab);
   });
 
+  test('it broadcasts a message when text is typed in pill-operator', async function(assert) {
+    assert.expect(2);
+    this.set('meta', meta);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', (type, data) => {
+      assert.equal(type, MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED);
+      assert.equal(data.data, 'f', 'Text typed in is not as expected');
+    });
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.operator);
+    await typeInSearch('f');
+  });
+
+  test('it does not broadcasts a message when text is typed in pill-operator in edit mode', async function(assert) {
+    assert.expect(0);
+    this.set('meta', meta);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', () => {
+      assert.notOk('This should not have been called');
+    });
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        isEditing=true
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.operator);
+    await typeInSearch('f');
+  });
+
   test('it broadcasts a message to toggle tabs when tab or shiftTab is pressed via pill operator', async function(assert) {
     assert.expect(2);
     this.set('meta', meta);

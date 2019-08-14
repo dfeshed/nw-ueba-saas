@@ -587,6 +587,45 @@ module('Integration | Component | Pill Value', function(hooks) {
     await toggleTab(PILL_SELECTORS.valueSelectInput);
   });
 
+  test('it broadcasts a message when text is typed in pill-value', async function(assert) {
+    assert.expect(2);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', (type, data) => {
+      assert.equal(type, MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED);
+      assert.equal(data.data, 'f', 'Text typed in is not as expected');
+    });
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+
+    await typeInSearch('f');
+  });
+
+  test('it broadcasts a message when text is typed in pill-value in edit mode too', async function(assert) {
+    assert.expect(2);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', (type, data) => {
+      assert.equal(type, MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED);
+      assert.equal(data.data, 'f', 'Text typed in is not as expected');
+    });
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        isActive=true
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+
+    await typeInSearch('f');
+  });
+
   test('it disables Text Filter if not supported by core services', async function(assert) {
     await render(hbs`
       {{query-container/pill-value

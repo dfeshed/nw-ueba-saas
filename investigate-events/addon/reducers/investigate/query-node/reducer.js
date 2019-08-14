@@ -692,7 +692,9 @@ export default handleActions({
         // Max cap at 100 values
         const valuesList = data.slice(0, 100);
         const values = valuesList.map((d) => ({
-          displayName: d.value,
+          // MT returns Number for certain meta.
+          // Our EPS expects all values to be String
+          displayName: `${d.value}`,
           description: 'Suggestions'
         }));
         return s.merge({

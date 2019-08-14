@@ -438,8 +438,8 @@ export default Component.extend({
       this._broadcast(MESSAGE_TYPES.VALUE_ESCAPE_KEY);
     } else if (isEnter(event)) {
       const afterOptionsMenuItem = this._afterOptionsMenu.highlightedItem;
-      const { searchText } = powerSelectAPI;
-      if (searchText === '' && !afterOptionsMenuItem) {
+      const { searchText, highlighted } = powerSelectAPI;
+      if (searchText === '' && !afterOptionsMenuItem && !highlighted) {
         // No text was entered and it's not a FF or text selection,
         // so quick exit
         return false;
@@ -546,12 +546,10 @@ export default Component.extend({
    * Broadcasts a message to parent to make an API call.
    */
   _broadcastRecentQuerySearch(searchQueryText) {
-    if (!this.get('isEditing')) {
-      this._broadcast(
-        MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED,
-        { data: searchQueryText, dataSource: this.get('source') }
-      );
-    }
+    this._broadcast(
+      MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED,
+      { data: searchQueryText, dataSource: this.get('source') }
+    );
   },
 
   _focusOnPowerSelectTrigger() {

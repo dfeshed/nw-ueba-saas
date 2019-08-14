@@ -22,6 +22,7 @@ import initializationCreators from 'investigate-events/actions/initialization-cr
 
 const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.key;
 const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.key;
+const ARROW_DOWN_KEY = KEY_MAP.arrowDown.key;
 const BACKSPACE_KEY = KEY_MAP.backspace.key;
 const CLOSE_PAREN_KEY = KEY_MAP.closeParen.key;
 const DELETE_KEY = KEY_MAP.delete.key;
@@ -2950,6 +2951,87 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.notOk(find(PILL_SELECTORS.openParen), 'open paren is present');
     assert.notOk(find(PILL_SELECTORS.closeParen), 'close paren is present');
     assert.equal(findAll(PILL_SELECTORS.meta).length, 1, '1 pill deleted so just the template remains');
+  });
+
+  test('Can create pill using mouse clicks on value suggestions', async function(assert) {
+    const done = assert.async();
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await selectChoose(PILL_SELECTORS.metaTrigger, 'alert');
+
+    await selectChoose(PILL_SELECTORS.operatorTrigger, 'contains');
+
+    await waitUntil(() => findAll(PILL_SELECTORS.powerSelectOption).length > 1, { timeout: 5000 }).then(async() => {
+      const values = findAll(PILL_SELECTORS.powerSelectOptionValue);
+      await click(values[1]);
+
+      assert.ok(newActionSpy.calledOnce, 'The addGuidedPill creator was not called once');
+      done();
+    });
+  });
+
+  test('Can create pill using arrow keys to highlight and press ENTER on value suggestions', async function(assert) {
+    const done = assert.async();
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+
+    await selectChoose(PILL_SELECTORS.metaTrigger, 'alert');
+
+    await selectChoose(PILL_SELECTORS.operatorTrigger, 'contains');
+
+    await waitUntil(() => findAll(PILL_SELECTORS.powerSelectOption).length > 1, { timeout: 5000 }).then(async() => {
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN_KEY);
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN_KEY);
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+
+      assert.ok(newActionSpy.calledOnce, 'The addGuidedPill creator was not called once');
+      done();
+    });
+  });
+
+  test('Can edit pill using value suggestions', async function(assert) {
+    const done = assert.async();
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+
+    await leaveNewPillTemplate();
+
+    const pills = findAll(PILL_SELECTORS.meta);
+    doubleClick(`#${pills[0].id}`, true); // open pill for edit
+    await settled();
+
+    await waitUntil(() => findAll(PILL_SELECTORS.powerSelectOption).length > 1, { timeout: 5000 }).then(async() => {
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN_KEY);
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN_KEY);
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+
+      assert.ok(editGuidedPillSpy.calledOnce, 'The editGuidedPillSpy creator was not called once');
+      done();
+    });
   });
 
 });

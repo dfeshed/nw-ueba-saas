@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, fillIn, find, findAll, render, triggerKeyEvent, typeIn } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, render, triggerKeyEvent, typeIn, waitUntil } from '@ember/test-helpers';
 import { clickTrigger, selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
@@ -17,6 +17,7 @@ import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/i
 let setState;
 let metaOptions = [];
 const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.key;
+const ARROW_DOWN_KEY = KEY_MAP.arrowDown.key;
 const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.key;
 const ENTER_KEY = KEY_MAP.enter.key;
 const ESCAPE_KEY = KEY_MAP.escape.key;
@@ -412,5 +413,63 @@ module('Integration | Component | New Pill Trigger', function(hooks) {
     await click(PILL_SELECTORS.newPillTrigger);
     await focus(PILL_SELECTORS.metaTrigger);
     await typeIn(PILL_SELECTORS.metaInput, ')');
+  });
+
+  test('can create new pills using value suggestions in new pill trigger', async function(assert) {
+    assert.expect(2);
+    const done = assert.async();
+    this.set('metaOptions', metaOptions);
+    const suggestions = [
+      {
+        displayName: 'fooboom',
+        description: 'Suggestions'
+      },
+      {
+        displayName: 'barboom',
+        description: 'Suggestions'
+      }
+    ];
+    this.set('valueSuggestions', suggestions);
+
+    this.set('handleMessage', (messageType, data) => {
+      if (
+        messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW ||
+        messageType === MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT ||
+        messageType === MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW
+      ) {
+        return;
+      } else if (messageType === MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS) {
+        assert.equal(data.metaName, 'alert', 'Message sent for value suggestions does not contain correct meta');
+      } else if (messageType === MESSAGE_TYPES.PILL_CREATED) {
+        assert.propEqual(data, {
+          meta: 'alert',
+          operator: 'contains',
+          value: '\'fooboom\'',
+          type: 'query'
+        }, 'Message sent for pill create contains correct pill data');
+        done();
+      }
+    });
+
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        metaOptions=metaOptions
+        valueSuggestions=valueSuggestions
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await click(PILL_SELECTORS.newPillTrigger);
+    await focus(PILL_SELECTORS.metaTrigger);
+
+    await selectChoose(PILL_SELECTORS.metaTrigger, 'alert');
+
+    await selectChoose(PILL_SELECTORS.operatorTrigger, 'contains');
+
+    await waitUntil(() => findAll(PILL_SELECTORS.powerSelectOption).length > 1, { timeout: 5000 }).then(async() => {
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN_KEY);
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN_KEY);
+      await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
+    });
   });
 });

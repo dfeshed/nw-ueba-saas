@@ -872,6 +872,46 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await click(PILL_SELECTORS.recentQueriesTab);
   });
 
+  test('it broadcasts a message when some text is typed in pill-meta', async function(assert) {
+    assert.expect(2);
+    this.set('metaOptions', metaOptions);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', (type, data) => {
+      assert.equal(type, MESSAGE_TYPES.RECENT_QUERIES_TEXT_TYPED);
+      assert.equal(data.data, 'f', 'Text typed in is not as expected');
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        metaOptions=metaOptions
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeInSearch('f');
+  });
+
+  test('it does not broadcasts a message when some text is typed in pill-meta in edit mode', async function(assert) {
+    assert.expect(0);
+    this.set('metaOptions', metaOptions);
+    this.set('activePillTab', AFTER_OPTION_TAB_META);
+    this.set('handleMessage', () => {
+      assert.notOk('message should not be dispatched');
+    });
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        isEditing=true
+        metaOptions=metaOptions
+        activePillTab=activePillTab
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeInSearch('f');
+  });
+
   test('it broadcasts a message to toggle tabs when tab or shift tab is pressed via pill meta', async function(assert) {
     assert.expect(2);
     this.set('metaOptions', metaOptions);

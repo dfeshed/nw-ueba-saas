@@ -55,6 +55,12 @@ export default Component.extend({
    */
   sendMessage: () => {},
 
+
+  /**
+   * Possible suggestions for pill-value
+   */
+  valueSuggestions: [],
+
   init() {
     this._super(...arguments);
 
@@ -99,6 +105,9 @@ export default Component.extend({
           this.set('isAddNewPill', false);
           break;
         case MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT:
+          this._broadcast(type, data);
+          break;
+        case MESSAGE_TYPES.FETCH_VALUE_SUGGESTIONS:
           this._broadcast(type, data);
           break;
         case MESSAGE_TYPES.PILL_PASTE:

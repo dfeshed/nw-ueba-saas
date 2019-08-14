@@ -1153,11 +1153,22 @@ export default Component.extend({
   },
 
   /**
+   * This function is being called each time some text is typed in any of the query-pill's components.
+   * We use this text to update - recent queries, tab counts, value suggestions.
+   *
+   * For Tabs -
    * Regardless of where entered query text is coming from, we'll need a query count.
    * If source is pill-meta or recent-query, we'd also need a meta count. Pill-operator
    * and pill-value will always maintain a meta count 1.
+   *
+   * Recent queries and Tab counts will not be updated in edit mode as we do not display any of the
+   * afterOptions. But Value suggestions should, even if pill is in edit mode.
    */
   _recentQueryTextEntered(data, dataSource) {
+    if (this.get('isEditing') && dataSource === PILL_VALUE_DATA_SOURCE) {
+      this._requestValueSuggestions(this.get('selectedMeta').metaName, data);
+      return;
+    }
     const stringifiedPill = this._getStringifiedPill(data, dataSource);
     if (stringifiedPill && stringifiedPill.length > 0) {
       this.queryCounter.setResponseFlag(true);
