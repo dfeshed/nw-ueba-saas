@@ -382,78 +382,6 @@ export const allExpectedDataLoaded = createSelector(
   }
 );
 
-export const getDownloadOptions = createSelector(
-  [_eventAnalysisPreferences, _items, _selectedEventIds, _resultsData],
-  (eventAnalysisPreferences, items, selectedEventIds, resultsData) => {
-
-    let selectedEventIdsArray;
-    if (selectedEventIds) {
-      selectedEventIdsArray = Object.values(selectedEventIds);
-    } else {
-      selectedEventIdsArray = [];
-    }
-
-    if (eventAnalysisPreferences && selectedEventIdsArray.length) {
-
-      const i18n = lookup('service:i18n');
-      const preferredDownloadOptions = [];
-      const remainingDownloadOptions = [];
-
-      let dropDownItems = items.filter((item) => !item.additionalFieldPrefix && item.type == 'dropdown');
-      const total = selectedEventIdsArray.length;
-
-      // preferredOptions
-      dropDownItems.forEach((item) => {
-
-        const [,, defaultEventType ] = item.name.split('.');
-        const { eventDownloadType } = item;
-        const fileType = eventDownloadType === EVENT_DOWNLOAD_TYPES.NETWORK ? FILE_TYPES.PCAP : eventAnalysisPreferences[defaultEventType];
-        const option = i18n.t(`investigate.events.download.options.${fileType}`);
-        const getIdsForEventType = _getIdsForEventType(eventDownloadType, selectedEventIdsArray, resultsData, selectedEventIds);
-        const num = getIdsForEventType.length;
-        preferredDownloadOptions.push({
-          name: i18n.t(`investigate.events.download.${eventDownloadType}`, { option }),
-          eventDownloadType,
-          fileType: eventAnalysisPreferences[defaultEventType],
-          sessionIds: getIdsForEventType,
-          count: `${num}/${total}`,
-          disabled: num < 1
-        });
-      });
-
-      dropDownItems = dropDownItems.filter((item) => item.eventDownloadType !== EVENT_DOWNLOAD_TYPES.NETWORK);
-
-      // remaining options
-      dropDownItems.forEach((item) => {
-        // array of downloadFormat options minus the preferred option
-        const [,, defaultEventType ] = item.name.split('.');
-        const { eventDownloadType } = item;
-        const remainingOptions = item.options.without(eventAnalysisPreferences[defaultEventType]);
-        const getIdsForEventType = _getIdsForEventType(eventDownloadType, selectedEventIdsArray, resultsData, selectedEventIds);
-        const num = getIdsForEventType.length;
-        remainingOptions.forEach((option) => {
-          const optionLabel = i18n.t(`investigate.events.download.options.${option}`);
-          remainingDownloadOptions.push({
-            name: i18n.t(`investigate.events.download.${eventDownloadType}`, { option: optionLabel }),
-            eventDownloadType,
-            fileType: option,
-            sessionIds: getIdsForEventType,
-            count: `${num}/${total}`,
-            disabled: num < 1
-          });
-        });
-      });
-
-      const downloadOptions = [
-        { groupName: i18n.t('investigate.events.download.groups.default'), options: preferredDownloadOptions },
-        { groupName: i18n.t('investigate.events.download.groups.other'), options: remainingDownloadOptions }
-      ];
-      return downloadOptions;
-    }
-    return [];
-  }
-);
-
 export const searchMatches = createSelector(
   [_searchTerm, _resultsData, eventTableFormattingOpts, _columnGroup, _columnGroups, _visibleColumns],
   (searchTerm, data, opts, columnGroup, columnGroups, visibleColumns) => {
@@ -531,6 +459,79 @@ export const actualEventCount = createSelector(
   (isCanceled, hasError, eventCount, eventsArray) => (eventsArray && (isCanceled || hasError)) ? eventsArray.length : eventCount
 );
 
+export const getDownloadOptions = createSelector(
+  [_eventAnalysisPreferences, _items, _selectedEventIds, clientSortedData],
+  (eventAnalysisPreferences, items, selectedEventIds, data) => {
+
+    let selectedEventIdsArray;
+    if (selectedEventIds) {
+      selectedEventIdsArray = Object.values(selectedEventIds);
+    } else {
+      selectedEventIdsArray = [];
+    }
+
+    if (eventAnalysisPreferences && selectedEventIdsArray.length) {
+
+      const i18n = lookup('service:i18n');
+      const preferredDownloadOptions = [];
+      const remainingDownloadOptions = [];
+
+      let dropDownItems = items.filter((item) => !item.additionalFieldPrefix && item.type == 'dropdown');
+      const total = selectedEventIdsArray.length;
+
+      // preferredOptions
+      dropDownItems.forEach((item) => {
+
+        const [,, defaultEventType ] = item.name.split('.');
+        const { eventDownloadType } = item;
+        const fileType = eventDownloadType === EVENT_DOWNLOAD_TYPES.NETWORK ? FILE_TYPES.PCAP : eventAnalysisPreferences[defaultEventType];
+        const option = i18n.t(`investigate.events.download.options.${fileType}`);
+        const getIdsForEventType = _getIdsForEventType(eventDownloadType, selectedEventIdsArray, data, selectedEventIds);
+        const num = getIdsForEventType.length;
+        preferredDownloadOptions.push({
+          name: i18n.t(`investigate.events.download.${eventDownloadType}`, { option }),
+          eventDownloadType,
+          fileType: eventAnalysisPreferences[defaultEventType],
+          sessionIds: getIdsForEventType,
+          count: `${num}/${total}`,
+          disabled: num < 1
+        });
+      });
+
+      dropDownItems = dropDownItems.filter((item) => item.eventDownloadType !== EVENT_DOWNLOAD_TYPES.NETWORK);
+
+      // remaining options
+      dropDownItems.forEach((item) => {
+        // array of downloadFormat options minus the preferred option
+        const [,, defaultEventType ] = item.name.split('.');
+        const { eventDownloadType } = item;
+        const remainingOptions = item.options.without(eventAnalysisPreferences[defaultEventType]);
+        const getIdsForEventType = _getIdsForEventType(eventDownloadType, selectedEventIdsArray, data, selectedEventIds);
+        const num = getIdsForEventType.length;
+        remainingOptions.forEach((option) => {
+          const optionLabel = i18n.t(`investigate.events.download.options.${option}`);
+          remainingDownloadOptions.push({
+            name: i18n.t(`investigate.events.download.${eventDownloadType}`, { option: optionLabel }),
+            eventDownloadType,
+            fileType: option,
+            sessionIds: getIdsForEventType,
+            count: `${num}/${total}`,
+            disabled: num < 1
+          });
+        });
+      });
+
+      const downloadOptions = [
+        { groupName: i18n.t('investigate.events.download.groups.default'), options: preferredDownloadOptions },
+        { groupName: i18n.t('investigate.events.download.groups.other'), options: remainingDownloadOptions }
+      ];
+      return downloadOptions;
+    }
+    return [];
+  }
+);
+
+
 /**
  * Finds and returns the index of the first array member whose key matches a
  * given value. Will use `Array.findIndex()` if supported.
@@ -562,13 +563,13 @@ const _indexOfBy = (arr, key, value) => {
  * Returns sessionIds for each download type based on number of events of the type selected
  * @private
  */
-const _getIdsForEventType = (eventDownloadType, selectedEventIdsArray, resultsData, selectedEventIds) => {
+const _getIdsForEventType = (eventDownloadType, selectedEventIdsArray, data, selectedEventIds) => {
   if (eventDownloadType === EVENT_DOWNLOAD_TYPES.META) {
     return selectedEventIdsArray;
   }
   const ids = [];
   let index = 0;
-  resultsData.forEach((event) => {
+  data.forEach((event) => {
     if (selectedEventIds[index++] && (eventDownloadType === (event.medium === 32 ? EVENT_TYPES.LOG : EVENT_TYPES.NETWORK))) {
       ids.push(event.sessionId);
     }

@@ -455,6 +455,9 @@ module('Unit | Selectors | event-results', function(hooks) {
   test('getDownloadOptions returns appropriate counts for options when network events are selected', async function(assert) {
     const state = {
       investigate: {
+        eventCount: {},
+        dictionaries: {},
+        services: {},
         data: preferenceData,
         eventResults: withNetworkEvents
       }
@@ -484,6 +487,9 @@ module('Unit | Selectors | event-results', function(hooks) {
   test('getDownloadOptions returns appropriate counts for options when one each of log and network events are selected', async function(assert) {
     const state = {
       investigate: {
+        eventCount: {},
+        dictionaries: {},
+        services: {},
         data: preferenceData,
         eventResults: withMixedEvents
       }
