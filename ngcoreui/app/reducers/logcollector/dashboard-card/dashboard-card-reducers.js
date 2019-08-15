@@ -12,7 +12,10 @@ const initialState = {
   itemProtocolDataStatus: 'wait',
 
   esStatsData: [],
-  esStatsDataStatus: 'wait'
+  esStatsDataStatus: 'wait',
+
+  tcpRate: '0',
+  tcpStreamId: null
 };
 
 export default reduxActions.handleActions({
@@ -71,22 +74,22 @@ export default reduxActions.handleActions({
           const property = x.name;
           switch (property) {
             case 'total_events':
-              mergedObj.numOfEvents = parseInt(x.value, 10).toLocaleString();
+              mergedObj.numOfEvents = getLocaleNumberFromString(x.value);
               break;
             case 'total_bytes':
-              mergedObj.numOfBytes = parseInt(x.value, 10).toLocaleString();
+              mergedObj.numOfBytes = getLocaleNumberFromString(x.value);
               break;
             case 'total_errors':
-              mergedObj.errorCount = parseInt(x.value, 10).toLocaleString();
+              mergedObj.errorCount = getLocaleNumberFromString(x.value);
               break;
             case 'total_events_rate':
-              mergedObj.eventRate = parseInt(x.value, 10).toLocaleString();
+              mergedObj.eventRate = getLocaleNumberFromString(x.value);
               break;
             case 'total_bytes_rate':
-              mergedObj.byteRate = parseInt(x.value, 10).toLocaleString();
+              mergedObj.byteRate = getLocaleNumberFromString(x.value);
               break;
             case 'total_errors_rate':
-              mergedObj.errorRate = parseInt(x.value, 10).toLocaleString();
+              mergedObj.errorRate = getLocaleNumberFromString(x.value);
           }
         });
 
@@ -130,10 +133,10 @@ export default reduxActions.handleActions({
           for (let i = 0; i < allNodes.length; i += protocolSize) {
             const mergedObj = {};
             mergedObj.protocol = allNodes[i].name;
-            mergedObj.numOfEvents = allNodes[i + totalEventsInd].value;
-            mergedObj.eventRate = allNodes[i + eventRateInd].value;
-            mergedObj.numOfBytes = allNodes[i + totalBytesInd].value;
-            mergedObj.errorCount = allNodes[i + errorsCountInd].value;
+            mergedObj.numOfEvents = getLocaleNumberFromString(allNodes[i + totalEventsInd].value);
+            mergedObj.eventRate = getLocaleNumberFromString(allNodes[i + eventRateInd].value);
+            mergedObj.numOfBytes = getLocaleNumberFromString(allNodes[i + totalBytesInd].value);
+            mergedObj.errorCount = getLocaleNumberFromString(allNodes[i + errorsCountInd].value);
             mergedObjDict[mergedObj.protocol] = mergedObj;
           }
         }
@@ -143,6 +146,25 @@ export default reduxActions.handleActions({
         });
       }
     })
-  )
+  ),
+
+  [ACTION_TYPES.LOG_COLLECTOR_UPDATE_TCP_VALUE]: (state, action) => {
+    const message = action.payload;
+    const tcpVal = (message != null && message.nodes != null) ? message.nodes[0].value : '0';
+    return state.merge({
+      tcpRate: tcpVal
+    });
+  },
+
+  [ACTION_TYPES.LOG_COLLECTOR_UPDATE_TCP_TID]: (state, action) => {
+    return state.merge({
+      tcpStreamId: action.payload
+    });
+  }
 
 }, Immutable.from(initialState));
+
+const getLocaleNumberFromString = (num) => {
+  return parseInt(num, 10).toLocaleString();
+};
+

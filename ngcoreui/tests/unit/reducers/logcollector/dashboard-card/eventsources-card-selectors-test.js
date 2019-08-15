@@ -2,7 +2,7 @@ import { test, module } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import * as esCardSelectors from 'ngcoreui/reducers/logcollector/dashboard-card/eventsources-card-selectors';
 import ReduxDataHelper from 'ngcoreui/tests/helpers/redux-data-helper';
-import { PROTOCOL_DATA_EXTRACTED, PROTOCOL_STATS_ROW_VALUES, PROTOCOL_STATS_VALUES_EXPECTED } from './protocol-data-stats-extracted';
+import { PROTOCOL_DATA_EXTRACTED, PROTOCOL_STATS_ROW_VALUES, PROTOCOL_STATS_ROW_VALUES_2, PROTOCOL_STATS_VALUES_EXPECTED } from './protocol-data-stats-extracted';
 
 module('Unit | Selectors | eventsources-card', (hooks) => {
   setupTest(hooks);
@@ -42,5 +42,13 @@ module('Unit | Selectors | eventsources-card', (hooks) => {
     const expectedValues = PROTOCOL_STATS_VALUES_EXPECTED;
     assert.deepEqual(esCardSelectors.addHeaderRow(protocolRowValues), expectedValues,
       'Correct calculation is done while calculating headers');
+  });
+
+  test('getEventSourcesTotalEventRate returns the correct sum', (assert) => {
+    const state = new ReduxDataHelper()
+      .esStatsData(PROTOCOL_STATS_ROW_VALUES_2)
+      .build();
+    assert.deepEqual(esCardSelectors.getEventSourcesTotalEventRate(state), '20',
+      'Correct sum should be generated');
   });
 });

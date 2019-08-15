@@ -409,7 +409,10 @@ export default Service.extend(Evented, {
    * @param {*} message
    */
   establishChannel(message) {
-    const pendingPromiseResolve = this.get('pendingChannels')[message.params.tid].resolve;
+    let pendingPromiseResolve = null;
+    if (this.get('pendingChannels')[message.params.tid] != null) {
+      pendingPromiseResolve = this.get('pendingChannels')[message.params.tid].resolve;
+    }
     delete this.get('pendingChannels')[message.params.tid];
     const route = [parseInt(message.params.pid, 10), parseInt(message.params.target, 10)];
     const channel = Channel.create({
@@ -417,7 +420,9 @@ export default Service.extend(Evented, {
       route
     });
     this.get('channels')[route.toString()] = channel;
-    pendingPromiseResolve(channel);
+    if (pendingPromiseResolve != null) {
+      pendingPromiseResolve(channel);
+    }
   },
 
   /**

@@ -218,6 +218,17 @@ export default class DataHelper {
     _set(this.state, 'logcollector.dashboardCard.esStatsData', dict);
     return this;
   }
+
+  setTcpRateValue(value) {
+    _set(this.state, 'logcollector.dashboardCard.tcpRate', value);
+    return this;
+  }
+
+  setTcpRateTid(id) {
+    _set(this.state, 'logcollector.dashboardCard.tcpStreamId', id);
+    return this;
+  }
+
   // Selector functions
 
   _connectAndFillTree() {

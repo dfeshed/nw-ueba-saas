@@ -19,7 +19,7 @@ const esStatsCard = Component.extend({
     this._super(...arguments);
     this.get('redux').dispatch(refreshProtocols());
     this.refreshIntervalId =
-      setInterval(() => this.get('redux').dispatch(refreshProtocols()), 10000);
+      setInterval(() => this.get('redux').dispatch(refreshProtocols()), 5000);
   },
 
   willDestroyElement() {

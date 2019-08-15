@@ -501,6 +501,13 @@ table {
   .rsa-data-table {
     height: 80%;
     overflow: scroll;
+
+    .rsa-data-table-body-cell {
+      text-align: right;
+    }
+    .rsa-data-table-body-cell:first-child {
+      text-align: center;
+    }
   }
 }
 
@@ -523,6 +530,10 @@ table {
   h1 {
     margin-bottom: 10px
   }
+
+  .rsa-line-series.series-2 {
+    stroke: text-color(accentOne, lighter);
+  }
 }
 
 .connected {
@@ -531,6 +542,24 @@ table {
 
 .disconnected {
   color: text-color(accentOne, dark)
+}
+
+.color-box-0 {
+  color: text-color(secondary);
+  display: inline;
+  padding-left: 10%;
+  padding-right: 15%;
+}
+
+.color-box-1 {
+  color: text-color(secondary, darker);
+  display: inline;
+  padding-right: 15%;
+}
+
+.color-box-2 {
+  color: text-color(accentOne, lighter);
+  display: inline;
 }
 
 /* Scrollbar CSS */

@@ -1,5 +1,6 @@
 import reselect from 'reselect';
 import _ from 'lodash';
+import { getNumberFromLocaleNumberString } from 'ngcoreui/reducers/logcollector/dashboard-card/dashboard-card-selectors';
 
 const _esStatsState = (state) => state.logcollector.dashboardCard;
 const { createSelector } = reselect;
@@ -13,10 +14,6 @@ export const getEsStatsData = createSelector(
   _esStatsState,
   (_esStatsState) => _.values(_esStatsState.esStatsData)
 );
-
-const getNumberFromLocaleNumberString = (number) => {
-  return parseInt(number.replace(/,/g, ''), 10);
-};
 
 export const addHeaderRow = (protocolRowValues) => {
   if (protocolRowValues.length === 0) {
@@ -53,4 +50,13 @@ export const getEventSourcesStatsData = (state) => {
     eventSourcesStatsRowValues = addHeaderRow(eventSourcesStatsRowValues);
   }
   return eventSourcesStatsRowValues;
+};
+
+export const getEventSourcesTotalEventRate = (state) => {
+  const protocolRowValues = getEsStatsData(state);
+  let eventRate = 0;
+  protocolRowValues.forEach((item) => {
+    eventRate += getNumberFromLocaleNumberString(item.eventRate);
+  });
+  return eventRate.toString();
 };

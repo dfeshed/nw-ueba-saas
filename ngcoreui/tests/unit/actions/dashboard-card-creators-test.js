@@ -21,4 +21,17 @@ module('Unit | Actions | dashboardCard creators', function(hooks) {
     assert.equal(result.type, ACTION_TYPES.LOG_COLLECTOR_FETCH_PROTOCOL_DATA, 'action has the correct type');
     assert.ok(result.promise, 'action has a fetchProtocolData promise');
   });
+
+  test('updateTcpTid method returns proper type(s), payload(s), and/or promise(s)', function(assert) {
+    const result = dashboardCardCreators.updateTcpTid('11');
+    assert.equal(result.type, ACTION_TYPES.LOG_COLLECTOR_UPDATE_TCP_TID, 'action has the correct type');
+    assert.ok(result.payload, 'action has a updateTcpTid payload');
+  });
+
+  test('updateTcpValue method returns proper type(s), payload(s), and/or promise(s)', function(assert) {
+    const result = dashboardCardCreators.updateTcpValue('23');
+    assert.equal(result.type, ACTION_TYPES.LOG_COLLECTOR_UPDATE_TCP_VALUE, 'action has the correct type');
+    assert.ok(result.payload, 'action has a updateTcpValue payload');
+  });
+
 });

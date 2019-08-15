@@ -4,6 +4,16 @@ import _ from 'lodash';
 const _protocolsState = (state) => state.logcollector.dashboardCard;
 const { createSelector } = reselect;
 
+export const getTCPRate = createSelector(
+  _protocolsState,
+  (_protocolsState) => _protocolsState.tcpRate
+);
+
+export const getTCPTid = createSelector(
+  _protocolsState,
+  (_protocolsState) => _protocolsState.tcpStreamId
+);
+
 export const areProtocolsLoading = createSelector(
   _protocolsState,
   (_protocolsState) => _protocolsState.itemKeysStatus === 'wait'
@@ -24,7 +34,7 @@ export const getProtocolData = createSelector(
   (_protocolsState) => _.values(_protocolsState.itemProtocolData)
 );
 
-const getNumberFromLocaleNumberString = (number) => {
+export const getNumberFromLocaleNumberString = (number) => {
   return parseInt(number.replace(/,/g, ''), 10);
 };
 
@@ -58,4 +68,31 @@ export const addHeaderRow = (protocolRowValues) => {
 
   protocolRowValues.unshift(headerRow);
   return protocolRowValues;
+};
+
+export const getLogCollectorData = (state) => {
+  let protocolRowValues = [];
+  if (isProtocolDataLoadingSuccess(state)) {
+    protocolRowValues = getProtocolData(state);
+    protocolRowValues = addHeaderRow(protocolRowValues);
+  }
+  return protocolRowValues;
+};
+
+export const getLogCollectorTotalEventRate = (state) => {
+  const protocolRowValues = getProtocolData(state);
+  let eventRate = 0;
+  protocolRowValues.forEach((item) => {
+    eventRate += getNumberFromLocaleNumberString(item.eventRate);
+  });
+  return eventRate.toString();
+};
+
+export const getPointsArray = (data) => {
+  return data.map((value, index) => {
+    return {
+      x: index,
+      y: getNumberFromLocaleNumberString(value)
+    };
+  });
 };
