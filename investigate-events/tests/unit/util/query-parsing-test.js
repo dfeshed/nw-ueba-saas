@@ -975,5 +975,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     const [open, close] = result;
     assert.equal(open.type, OPEN_PAREN, 'wrong type, should be open paren');
     assert.equal(close.type, CLOSE_PAREN, 'wrong type, should be close paren');
+    assert.ok(close.twinId !== undefined, 'missing twin id');
+    assert.equal(close.twinId, open.twinId, 'twin ids do not match');
   });
 });

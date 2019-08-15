@@ -20,6 +20,7 @@
   input {
     opacity: 0;
     width: 1px;
+    height: 1px;
     position: absolute;
     left: -9999px;
   }
@@ -722,15 +723,15 @@
     &.is-editing {
       flex: 1 1 100%;
     }
-    &.is-focused {
-      border-color: border-color(accentTwo);
-    }
     &.is-invalid {
       border-color: border-color(accentOne);
     }
     &.is-selected {
       background-color: background-color(secondary);
       border-color: border-color(secondary);
+    }
+    &.is-focused {
+      border-color: border-color(accentTwo);
     }
   }
 
@@ -850,18 +851,19 @@
     box-sizing: border-box;
     cursor: default;
 
-    &.is-focused {
-      border-color: border-color(accentTwo);
-    }
-
     &.is-selected {
       background-color: background-color(secondary);
       border-color: border-color(secondary);
     }
 
+    &.is-focused {
+      border-color: border-color(accentTwo);
+    }
+
     &.is-twin-focused {
       border-bottom: 1px solid border-color(accentTwo);
     }
+
   }
 
   .open-paren {

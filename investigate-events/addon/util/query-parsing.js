@@ -1,4 +1,6 @@
 import { isBlank } from '@ember/utils';
+import _ from 'lodash';
+
 import {
   mergeFilterStrings,
   removeEmptyFilters,
@@ -30,6 +32,8 @@ import {
 } from './grammar-types';
 
 const { log } = console; // eslint-disable-line
+
+const TWIN_PREFIX = 'twinPill_';
 
 /**
  * String representation of filter with spaces trimmed.
@@ -116,6 +120,14 @@ export const createFilter = (type, ...args) => {
 export const createParens = () => {
   const open = _createOpenParen();
   const close = _createCloseParen();
+
+  // match-up inserted parens, this is useful later
+  // when needing to act on a paren set in tandem,
+  // like when selecting/focusing
+  const twinId = _.uniqueId(TWIN_PREFIX);
+  open.twinId = twinId;
+  close.twinId = twinId;
+
   return [open, close];
 };
 

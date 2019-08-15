@@ -13,7 +13,6 @@ import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 const { log } = console; // eslint-disable-line no-unused-vars
 
 const ID_PREFIX = 'guidedPill_';
-const TWIN_PREFIX = 'twinPill_';
 
 const _initialState = Immutable.from({
   atLeastOneQueryIssued: false,
@@ -713,13 +712,6 @@ export default handleActions({
     // assign ids to the new parens
     open.id = _.uniqueId(ID_PREFIX);
     close.id = _.uniqueId(ID_PREFIX);
-
-    // match-up inserted parens, this is useful later
-    // when needing to act on a paren set in tandem,
-    // like when selecting/focusing
-    const twinId = _.uniqueId(TWIN_PREFIX);
-    open.twinId = twinId;
-    close.twinId = twinId;
 
     if (state.pillsData.length === 0) {
       // no other pills, insert open and close parens into pillsData
