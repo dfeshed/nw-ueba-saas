@@ -54,6 +54,43 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk(myDispatch);
   });
 
+  test('addGuidedPill action creator invalidates text that returns multiple pills from the parser', function(assert) {
+    assert.expect(5);
+    const done = assert.async();
+    const getState = () => {
+      return new ReduxDataHelper().language().invalidPillsDataPopulated().build();
+    };
+
+    const myDispatch = (action) => {
+      if (typeof action === 'function') {
+        action(validateDispatch, getState);
+      } else {
+        assert.equal(action.type, ACTION_TYPES.ADD_PILL, 'action has the correct type');
+        assert.deepEqual(action.payload.pillData, { meta: 'alias.ip', operator: '=', value: '192.168.0.1 /24' }, 'action pillData has the right value');
+        assert.equal(action.payload.position, 0, 'action position has the right value');
+      }
+    };
+
+    const validateDispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.VALIDATE_GUIDED_PILL, 'action has the correct type - validate');
+      action.promise.catch((error) => {
+        assert.equal(error.meta, 'The text you entered seems like more than one filter. (Try removing spaces).', 'Expected validaiton error');
+        done();
+      });
+    };
+
+    // this thunk will shoot out 2 actions - one to add and one to validate
+    const thunk = guidedCreators.addGuidedPill({
+      pillData: {
+        meta: 'alias.ip',
+        operator: '=',
+        value: '192.168.0.1 /24'
+      },
+      position: 0
+    });
+    thunk(myDispatch);
+  });
+
   test('batchAddPills action creator returns proper type and payload', function(assert) {
     assert.expect(9);
     const getState = () => {

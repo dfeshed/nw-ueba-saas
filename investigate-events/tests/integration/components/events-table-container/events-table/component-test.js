@@ -350,7 +350,7 @@ module('Integration | Component | events-table', function(hooks) {
   test('event table sort controls doesnt call _toggleSort if already sorting', async function(assert) {
     assert.expect(0);
     new ReduxDataHelper(setState)
-      .columnGroup('SUMMARY')
+      .selectedColumnGroup('SUMMARY')
       .hasRequiredValuesToQuery(true)
       .language()
       .eventThreshold(100000)

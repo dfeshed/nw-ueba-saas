@@ -5,6 +5,7 @@ import validateQueryFragment from './fetch/query-validation';
 import { selectPillsFromPosition } from 'investigate-events/actions/utils';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { COMPLEX_FILTER, TEXT_FILTER } from 'investigate-events/constants/pill';
+import { lookup } from 'ember-dependency-lookup';
 import RSVP from 'rsvp';
 
 const { log } = console; // eslint-disable-line no-unused-vars
@@ -55,7 +56,14 @@ const _clientSideValidation = ({ pillData, position, isFromParser = false }) => 
       // by putting through parser to do client side validation.
       const { language, aliases } = languageAndAliasesForParser(getState());
       const { meta, operator, value } = pillData;
-      pillData = transformTextToPillData(`${meta || ''} ${operator || ''} ${value || ''}`.trim(), { language, aliases });
+      const pills = transformTextToPillData(`${meta || ''} ${operator || ''} ${value || ''}`.trim(), { language, aliases, returnMany: true });
+      if (pills.length > 1) {
+        const i18n = lookup('service:i18n');
+        pillData.isInvalid = true;
+        pillData.validationError = i18n.t('queryBuilder.validationMessages.tooManyPills');
+      } else {
+        pillData = pills[0];
+      }
     }
 
     const { isInvalid } = pillData;

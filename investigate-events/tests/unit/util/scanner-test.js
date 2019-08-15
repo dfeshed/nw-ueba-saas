@@ -311,6 +311,62 @@ module('Unit | Util | Scanner', function(hooks) {
     assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '3' }, '3. INTEGER "3"');
   });
 
+  test('handles word form of and', function(assert) {
+    const source = 'medium = 1 and medium = 2';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 7);
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' });
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' });
+    assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '1' });
+    assert.deepEqual(result[3], { type: LEXEMES.AND, text: 'and' });
+    assert.deepEqual(result[4], { type: LEXEMES.META, text: 'medium' });
+    assert.deepEqual(result[5], { type: LEXEMES.OPERATOR_EQ, text: '=' });
+    assert.deepEqual(result[6], { type: LEXEMES.INTEGER, text: '2' });
+  });
+
+  test('handles word form of and in mixed case', function(assert) {
+    const source = 'medium = 1 AnD medium = 2';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 7);
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' });
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' });
+    assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '1' });
+    assert.deepEqual(result[3], { type: LEXEMES.AND, text: 'AnD' });
+    assert.deepEqual(result[4], { type: LEXEMES.META, text: 'medium' });
+    assert.deepEqual(result[5], { type: LEXEMES.OPERATOR_EQ, text: '=' });
+    assert.deepEqual(result[6], { type: LEXEMES.INTEGER, text: '2' });
+  });
+
+  test('handles word form of or', function(assert) {
+    const source = 'medium = 1 or medium = 2';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 7);
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' });
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' });
+    assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '1' });
+    assert.deepEqual(result[3], { type: LEXEMES.OR, text: 'or' });
+    assert.deepEqual(result[4], { type: LEXEMES.META, text: 'medium' });
+    assert.deepEqual(result[5], { type: LEXEMES.OPERATOR_EQ, text: '=' });
+    assert.deepEqual(result[6], { type: LEXEMES.INTEGER, text: '2' });
+  });
+
+  test('handles word form of or in mixed case', function(assert) {
+    const source = 'medium = 1 oR medium = 2';
+    const s = new Scanner(source);
+    const result = s.scanTokens();
+    assert.strictEqual(result.length, 7);
+    assert.deepEqual(result[0], { type: LEXEMES.META, text: 'medium' });
+    assert.deepEqual(result[1], { type: LEXEMES.OPERATOR_EQ, text: '=' });
+    assert.deepEqual(result[2], { type: LEXEMES.INTEGER, text: '1' });
+    assert.deepEqual(result[3], { type: LEXEMES.OR, text: 'oR' });
+    assert.deepEqual(result[4], { type: LEXEMES.META, text: 'medium' });
+    assert.deepEqual(result[5], { type: LEXEMES.OPERATOR_EQ, text: '=' });
+    assert.deepEqual(result[6], { type: LEXEMES.INTEGER, text: '2' });
+  });
+
   test('handles extra spaces between meta, operator, and value', function(assert) {
     const source = '  (   alias.ip  = 127.0.0.1   ) ';
     const s = new Scanner(source);

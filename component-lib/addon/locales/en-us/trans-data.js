@@ -245,7 +245,8 @@ export default {
       cidrIpv4OutOfRange: 'The CIDR mask must be between 0 and 32.',
       cidrIpv6OutOfRange: 'The CIDR mask must be between 0 and 128.',
       badRange: 'The second number in the range must be greater than the first.',
-      nonNumericRange: 'Ranges can only be used with numeric values.'
+      nonNumericRange: 'Ranges can only be used with numeric values.',
+      tooManyPills: 'The text you entered seems like more than one filter. (Try removing spaces).'
     }
   },
   ipConnections: {

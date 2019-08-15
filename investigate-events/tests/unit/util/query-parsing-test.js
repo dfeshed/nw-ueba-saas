@@ -48,6 +48,13 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result.complexFilterText, `(${freeFormText})`, 'complexFilterText should match');
   });
 
+  test('transformTextToPillData returns complex filter object because of OR', function(assert) {
+    const freeFormText = 'medium = 1 OR medium = 32';
+    const result = transformTextToPillData(freeFormText, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES });
+    assert.equal(result.type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result.complexFilterText, `(${freeFormText})`, 'complexFilterText should match');
+  });
+
   test('transformTextToPillData treats lack of operator as a complex query', function(assert) {
     const freeFormText = 'medium';
     const result = transformTextToPillData(freeFormText, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES });
@@ -142,6 +149,20 @@ module('Unit | Util | Query Parsing', function(hooks) {
 
   test('transformTextToPillData returns multiple pills when flag is true', function(assert) {
     const text = 'medium = 3 && b = \'google.com\'';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 2);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '3', 'value should match');
+    assert.equal(result[1].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[1].meta, 'b', 'meta should match');
+    assert.equal(result[1].operator, '=', 'operator should match');
+    assert.equal(result[1].value, '\'google.com\'', 'value should match');
+  });
+
+  test('transformTextToPillData returns multiple pills when using word form of AND operator', function(assert) {
+    const text = 'medium = 3 AND b = \'google.com\'';
     const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
     assert.strictEqual(result.length, 2);
     assert.equal(result[0].type, QUERY_FILTER, 'type should match');

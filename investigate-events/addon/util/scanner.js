@@ -232,7 +232,7 @@ class Scanner {
     // Start by advancing until the next logical stopping point for a token
     // and extracting it
     this._advanceWhileAlphaNumeric();
-    let alphaString = this.source.substring(this.start, this.current);
+    const alphaString = this.source.substring(this.start, this.current);
 
     // Next, check to see if it matches any of these data types, with the more
     // restrictive types coming first
@@ -268,8 +268,8 @@ class Scanner {
     // convert the alphaString to lower case in case the user used any capital
     // letters.
 
-    alphaString = alphaString.toLowerCase();
-    switch (alphaString) {
+    const lowercase = alphaString.toLowerCase();
+    switch (lowercase) {
       case 'exists':
         this._addToken(LEXEMES.OPERATOR_EXISTS, alphaString);
         break;
@@ -287,6 +287,12 @@ class Scanner {
         break;
       case 'length':
         this._addToken(LEXEMES.OPERATOR_LENGTH, alphaString);
+        break;
+      case 'and':
+        this._addToken(LEXEMES.AND, alphaString);
+        break;
+      case 'or':
+        this._addToken(LEXEMES.OR, alphaString);
         break;
       // If it doesn't match any reserved words, add it as a meta key
       default:
