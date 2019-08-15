@@ -41,6 +41,7 @@ class NetwitnessTlsEventBuilder extends NetwitnessEvent {
         ja3 = networkEvent.getJa3();
         direction = networkEvent.getDirection().value;
         tcp_dstport = String.valueOf(networkEvent.getDestinationPort());
+        tcp_srcport = String.valueOf(networkEvent.getSourcePort());
         ja3s = networkEvent.getJa3s();
         network = networkEvent.getDataSource();
         country_src = getOrNull(networkEvent.getSrcLocation(), Location::getCountry);
