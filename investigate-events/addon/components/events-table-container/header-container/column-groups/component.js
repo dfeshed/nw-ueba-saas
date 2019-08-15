@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
-import { createColumnGroup } from 'investigate-events/actions/column-groups';
+import { createColumnGroup } from 'investigate-events/actions/column-group';
 import { inject as service } from '@ember/service';
 
 const dispatchToActions = {

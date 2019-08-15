@@ -1,6 +1,6 @@
 import Immutable from 'seamless-immutable';
 import CONFIG from 'investigate-events/reducers/investigate/config';
-import EventColumnGroups from '../data/subscriptions/investigate-columns/data';
+import EventColumnGroups from '../data/subscriptions/column-group/findAll/data';
 
 export const DEFAULT_LANGUAGES = [
   { count: 0, format: 'Text', metaName: 'a', flags: 2, displayName: 'A', formattedName: 'a (A)' },

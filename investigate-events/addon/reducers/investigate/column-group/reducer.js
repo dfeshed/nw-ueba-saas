@@ -45,7 +45,6 @@ export default handleActions({
       }),
       success: (s) => {
         const createdColumnGroup = action.payload.data;
-
         // Want to fix certain sizes to certain columns
         // if those columns exist
         // meta-summary goes by a few names

@@ -1,4 +1,4 @@
-import { apiCreateColumnGroup } from './fetch/column-groups';
+import { apiCreateColumnGroup } from './fetch/column-group';
 import * as ACTION_TYPES from './types';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 

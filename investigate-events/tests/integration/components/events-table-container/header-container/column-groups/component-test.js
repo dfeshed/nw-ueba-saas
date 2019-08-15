@@ -5,7 +5,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
-import EventColumnGroups from '../../../../../data/subscriptions/investigate-columns/data';
+import EventColumnGroups from '../../../../../data/subscriptions/column-group/findAll/data';
 import { find, findAll, render, click } from '@ember/test-helpers';
 import { typeInSearch } from 'ember-power-select/test-support/helpers';
 

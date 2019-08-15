@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import EventColumnGroups from '../../../../data/subscriptions/investigate-columns/data';
+import EventColumnGroups from '../../../../data/subscriptions/column-group/findAll/data';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { find, findAll, render, click, triggerEvent } from '@ember/test-helpers';

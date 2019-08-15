@@ -27,7 +27,7 @@ import {
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import CONFIG from 'investigate-events/reducers/investigate/config';
-import EventColumnGroups from '../../../data/subscriptions/investigate-columns/data';
+import EventColumnGroups from '../../../data/subscriptions/column-group/findAll/data';
 
 module('Unit | Selectors | event-results', function(hooks) {
   setupTest(hooks);

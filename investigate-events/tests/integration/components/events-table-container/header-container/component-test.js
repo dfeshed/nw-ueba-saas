@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { find, render } from '@ember/test-helpers';
-import EventColumnGroups from '../../../../data/subscriptions/investigate-columns/data';
+import EventColumnGroups from '../../../../data/subscriptions/column-group/findAll/data';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 
 let setState;

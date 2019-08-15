@@ -10,7 +10,7 @@ import fetchValueSuggestions from './fetch/value-suggestions';
 import { parseBasicQueryParams } from 'investigate-events/actions/utils';
 import { isSearchTerm, parsePillDataFromUri, transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { extractSearchTermFromFilters } from 'investigate-shared/actions/api/events/utils';
-import { fetchColumnGroups } from './fetch/column-groups';
+import { fetchColumnGroups } from './fetch/column-group';
 import { fetchInvestigateData, getServiceSummary, updateGlobalPreferences, updateSort } from './data-creators';
 import { isQueryExecutedByColumnGroup } from './interaction-creators';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
