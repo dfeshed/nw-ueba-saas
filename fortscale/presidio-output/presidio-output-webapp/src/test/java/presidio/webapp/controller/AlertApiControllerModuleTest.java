@@ -22,8 +22,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import presidio.output.domain.records.PresidioRange;
 import presidio.output.domain.records.EntitySeveritiesRangeDocument;
+import presidio.output.domain.records.PresidioRange;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
@@ -104,8 +104,8 @@ public class AlertApiControllerModuleTest {
     public void getAllAlerts() throws Exception {
         //save alerts in elastic
         Date date = new Date();
-        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
-        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date, "ja3");
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alertRepository.saveAll(Arrays.asList(alert1, alert2));
 
         // init expected response
@@ -133,8 +133,8 @@ public class AlertApiControllerModuleTest {
     public void getAllAlertsWithMaxScore() throws Exception {
         //save alerts in elastic
         Date date = new Date();
-        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
-        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 91d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date, "ja3");
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 91d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alertRepository.saveAll(Arrays.asList(alert1, alert2));
 
         // init expected response
@@ -223,9 +223,9 @@ public class AlertApiControllerModuleTest {
     public void getAlerts_filterByFeedback() throws Exception {
         //save alerts in elastic
         Date date = new Date();
-        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date, "ja3");
         alert1.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
-        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alertRepository.saveAll(Arrays.asList(alert1, alert2));
 
         // init expected response
@@ -251,9 +251,9 @@ public class AlertApiControllerModuleTest {
     public void getAlerts_FilterByFeedback_multipleValues() throws Exception {
         //save alerts in elastic
         Date date = new Date();
-        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date, "ja3");
         alert1.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
-        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alertRepository.saveAll(Arrays.asList(alert1, alert2));
 
         // init expected response
@@ -285,13 +285,13 @@ public class AlertApiControllerModuleTest {
     public void getAlerts_sortByFeedback() throws Exception {
         //save alerts in elastic
         Date date = new Date();
-        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date, "ja3");
         alert1.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
-        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alert2.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
-        presidio.output.domain.records.alerts.Alert alert3 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert3 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alert3.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
-        presidio.output.domain.records.alerts.Alert alert4 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert4 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alert4.setFeedback(AlertEnums.AlertFeedback.RISK);
 
         alertRepository.saveAll(Arrays.asList(alert1, alert2, alert3, alert4));
@@ -329,17 +329,17 @@ public class AlertApiControllerModuleTest {
     public void getAlerts_feedbackAggregations() throws Exception {
         //save alerts in elastic
         Date date = new Date();
-        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date, "ja3");
         alert1.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
-        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alert2.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
-        presidio.output.domain.records.alerts.Alert alert3 = generateAlert("entityId2", "smartId3", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert3 = generateAlert("entityId2", "smartId3", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alert3.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
-        presidio.output.domain.records.alerts.Alert alert4 = generateAlert("entityId2", "smartId4", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert4 = generateAlert("entityId2", "smartId4", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alert4.setFeedback(AlertEnums.AlertFeedback.RISK);
-        presidio.output.domain.records.alerts.Alert alert5 = generateAlert("entityId2", "smartId5", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert5 = generateAlert("entityId2", "smartId5", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alert5.setFeedback(AlertEnums.AlertFeedback.RISK);
-        presidio.output.domain.records.alerts.Alert alert6 = generateAlert("entityId2", "smartId6", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert6 = generateAlert("entityId2", "smartId6", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alert6.setFeedback(AlertEnums.AlertFeedback.NONE);
         alertRepository.saveAll(Arrays.asList(alert1, alert2, alert3, alert4, alert5, alert6));
 
@@ -361,8 +361,8 @@ public class AlertApiControllerModuleTest {
     public void getAlerts_filterBySeverity() throws Exception {
         //save alerts in elastic
         Date date = new Date();
-        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
-        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date, "ja3");
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alertRepository.saveAll(Arrays.asList(alert1, alert2));
 
         // init expected response
@@ -388,7 +388,7 @@ public class AlertApiControllerModuleTest {
 
         //save alerts in elastic
         Date date = new Date();
-        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date, "ja3");
         alert1.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
         alertRepository.saveAll(Collections.singletonList(alert1));
 
@@ -406,9 +406,9 @@ public class AlertApiControllerModuleTest {
     }
 
 
-    private presidio.output.domain.records.alerts.Alert generateAlert(String entityId, String smartId, List<String> classifications1, String entityName, double score, AlertEnums.AlertSeverity severity, Date date) {
+    private presidio.output.domain.records.alerts.Alert generateAlert(String entityId, String smartId, List<String> classifications1, String entityName, double score, AlertEnums.AlertSeverity severity, Date date, String entityType) {
         return new presidio.output.domain.records.alerts.Alert(entityId, smartId, classifications1,
-                entityName,entityName, date, date, score, 0, AlertEnums.AlertTimeframe.HOURLY, severity, null, 0.0, "entityType");
+                entityName,entityName, date, date, score, 0, AlertEnums.AlertTimeframe.HOURLY, severity, null, 0.0, entityType);
     }
 
     private presidio.webapp.model.Alert convertDomainAlertToRestAlert(presidio.output.domain.records.alerts.Alert alert) {
@@ -432,7 +432,7 @@ public class AlertApiControllerModuleTest {
     @Test
     public void testGetIndicatorEvents() throws Exception {
 
-        presidio.output.domain.records.alerts.Alert alert = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, new Date());
+        presidio.output.domain.records.alerts.Alert alert = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, new Date(), "ja3");
 
         //generate indicators
         Indicator indicator = new Indicator(alert.getId());
@@ -485,7 +485,7 @@ public class AlertApiControllerModuleTest {
 
         //save alerts in elastic
         Date date = new Date();
-        presidio.output.domain.records.alerts.Alert alert = generateAlert(savedEntity.getId(), "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert = generateAlert(savedEntity.getId(), "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alertRepository.save(alert);
 
 
@@ -530,10 +530,10 @@ public class AlertApiControllerModuleTest {
 
         //save alerts in elastic
         Date date = new Date();
-        presidio.output.domain.records.alerts.Alert alert1 = generateAlert(savedEntity.getId(), "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.HIGH, date);
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert(savedEntity.getId(), "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.HIGH, date, "ja3");
         alert1.setContributionToEntityScore(15D);
 
-        presidio.output.domain.records.alerts.Alert alert2 = generateAlert(savedEntity.getId(), "smartId1", Collections.singletonList("a"), "entityName1", 5d, AlertEnums.AlertSeverity.LOW, date);
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert(savedEntity.getId(), "smartId1", Collections.singletonList("a"), "entityName1", 5d, AlertEnums.AlertSeverity.LOW, date, "ja3");
         alert2.setFeedback(AlertEnums.AlertFeedback.RISK);
         alert2.setContributionToEntityScore(5D);
         alertRepository.saveAll(Arrays.asList(alert1, alert2));
@@ -584,10 +584,10 @@ public class AlertApiControllerModuleTest {
 
         //save alerts in elastic
         Date date = new Date();
-        presidio.output.domain.records.alerts.Alert alert1 = generateAlert(savedEntity.getId(), "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.HIGH, date);
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert(savedEntity.getId(), "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.HIGH, date, "ja3");
         alert1.setContributionToEntityScore(15D);
 
-        presidio.output.domain.records.alerts.Alert alert2 = generateAlert(savedEntity.getId(), "smartId1", Collections.singletonList("a"), "entityName1", 5d, AlertEnums.AlertSeverity.LOW, date);
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert(savedEntity.getId(), "smartId1", Collections.singletonList("a"), "entityName1", 5d, AlertEnums.AlertSeverity.LOW, date, "ja3");
         alert2.setFeedback(AlertEnums.AlertFeedback.RISK);
         alert2.setContributionToEntityScore(5D);
         alertRepository.saveAll(Arrays.asList(alert1, alert2));
@@ -639,7 +639,7 @@ public class AlertApiControllerModuleTest {
 
         //save alerts in elastic
         Date date = new Date();
-        presidio.output.domain.records.alerts.Alert alert = generateAlert(savedEntity.getId(), "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert = generateAlert(savedEntity.getId(), "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alert.setFeedback(AlertEnums.AlertFeedback.RISK);
         alert.setContributionToEntityScore(10D);
         alertRepository.save(alert);
@@ -687,7 +687,7 @@ public class AlertApiControllerModuleTest {
 
         //save alerts in elastic
         Date date = new Date();
-        presidio.output.domain.records.alerts.Alert alert = generateAlert(savedEntity.getId(), "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert = generateAlert(savedEntity.getId(), "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alert.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
         alert.setContributionToEntityScore(0D);
         alertRepository.save(alert);
@@ -739,7 +739,7 @@ public class AlertApiControllerModuleTest {
 
         //save alerts in elastic
         Date date = new Date();
-        presidio.output.domain.records.alerts.Alert alert = generateAlert(savedEntity.getId(), "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert = generateAlert(savedEntity.getId(), "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "ja3");
         alert.setFeedback(AlertEnums.AlertFeedback.RISK);
         alert.setContributionToEntityScore(10D);
         alertRepository.save(alert);
@@ -769,5 +769,32 @@ public class AlertApiControllerModuleTest {
         Entity updatedEntity = entityRepository.findById(savedEntity.getId()).get();
         Assert.assertEquals(savedEntity.getScore() - alert.getContributionToEntityScore(), updatedEntity.getScore(), 0.01);
         Assert.assertEquals(EntitySeverity.LOW, updatedEntity.getSeverity());
+    }
+
+    @Test
+    public void getAlertsFilterByEntityType() throws Exception {
+        //save alerts in elastic
+        Date date = new Date();
+        String expectedEntityType = "ja3";
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("entityId1", "smartId1", Collections.singletonList("a"), "entityName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date, expectedEntityType);
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("entityId2", "smartId2", Collections.singletonList("a"), "entityName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date, "sslSubject");
+        alertRepository.saveAll(Arrays.asList(alert1, alert2));
+
+        // init expected response
+        Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
+        AlertsWrapper expectedResponse = new AlertsWrapper();
+        expectedResponse.setTotal(1);
+        List<Alert> alerts = Collections.singletonList(expectedAlert1);
+        expectedResponse.setAlerts(alerts);
+        expectedResponse.setPage(0);
+
+        // get actual response
+        MvcResult mvcResult = alertsApiMVC.perform(get(ALERTS_URI).param("entityType", expectedEntityType))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        AlertsWrapper actualResponse = objectMapper.readValue(actualResponseStr, AlertsWrapper.class);
+
+        Assert.assertEquals(expectedResponse, actualResponse);
     }
 }
