@@ -28,8 +28,8 @@ function getProperty {
 
 
 function help {
-    echo "Usage: env_properties_manager.sh -c"
-    echo "   or: env_properties_manager.sh -g log-decoder"
+    echo "Create new env.properties file: env_properties_manager.sh -c"
+    echo "Get property by name: env_properties_manager.sh -g log-decoder"
 }
 
 
