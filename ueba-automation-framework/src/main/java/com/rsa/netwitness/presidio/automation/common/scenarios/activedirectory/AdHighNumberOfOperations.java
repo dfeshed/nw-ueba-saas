@@ -335,5 +335,25 @@ public class AdHighNumberOfOperations {
 
         return events;
     }
+    /**   Future scenarios for testing active users        **/
+
+    public static List<ActiveDirectoryEvent> getFutureHighNumSensitiveGroupMembershipEvents(String testUser, int anomalyDay) throws GeneratorException {
+        return getFutureHighNumSensitiveGroupMembershipEvents(testUser, anomalyDay, LocalTime.of(10, 30), LocalTime.of(14, 30), 1);
+    }
+    public static List<ActiveDirectoryEvent> getFutureHighNumSensitiveGroupMembershipEvents(String testUser, int anomalyDay, LocalTime anomalyStartTime, LocalTime anomalyEndTime, int intervalMin) throws GeneratorException {
+        List<ActiveDirectoryEvent> events = new ArrayList<>();
+        EntityEventIDFixedPrefixGenerator eventIdGen = new EntityEventIDFixedPrefixGenerator(testUser);
+        SingleUserGenerator userGenerator = new SingleUserGenerator(testUser);
+
+        // Normal:
+        ITimeGenerator timeGenerator1 = new MinutesIncrementTimeGenerator(LocalTime.of(8, 30), LocalTime.of(16, 30), 60, 32, anomalyDay -2 );
+        events.addAll(AdOperationActions.getEventsByOperationName("SensitiveGroupMembershipOperations", eventIdGen, timeGenerator1, userGenerator));
+
+        // Anomaly:
+        ITimeGenerator timeGenerator2 = new MinutesIncrementTimeGenerator(anomalyStartTime, anomalyEndTime, intervalMin, anomalyDay-2 , anomalyDay - 10);
+        events.addAll(AdOperationActions.getEventsByOperationName("SensitiveGroupMembershipOperations", eventIdGen, timeGenerator2, userGenerator));
+
+        return events;
+    }
 
 }

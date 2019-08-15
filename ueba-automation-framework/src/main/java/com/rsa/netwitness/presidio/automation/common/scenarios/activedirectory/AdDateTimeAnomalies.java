@@ -98,14 +98,12 @@ public class AdDateTimeAnomalies {
         return events;
     }
 
-    public static List<ActiveDirectoryEvent> getMultipleNormalUsersActivity(String testUsersPrefix, int numberOfUsers) throws GeneratorException {
-        List<ActiveDirectoryEvent> events = new ArrayList<>();
-        testUsersPrefix = testUsersPrefix + "_";
-        for(int i=0 ; i < numberOfUsers ; i++) {
-            String username = testUsersPrefix + i;
-            events.addAll(getNormalTimeActivity(username));
-        }
-
+    public static List<ActiveDirectoryEvent> getMultipleNormalUsersActivity(String userName) throws GeneratorException {
+        EntityEventIDFixedPrefixGenerator eventIdGen = new EntityEventIDFixedPrefixGenerator(userName);
+        List<ActiveDirectoryEvent> events = prepareUserTimedEvents(userName, eventIdGen, TimeScenarioTemplate.getNormalTimeGenerator());
+        ITimeGenerator timeGenerator1 =
+                new MinutesIncrementTimeGenerator(LocalTime.of(9, 00), LocalTime.of(17, 45), 60, 28, -10);
+        events.addAll(prepareUserTimedEvents(userName, eventIdGen, timeGenerator1));
         return events;
     }
 

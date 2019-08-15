@@ -513,5 +513,16 @@ public class FileHighNumberOfOperations {
 
         return events;
     }
+    /**   Future scenarios for testing active users        **/
+
+    public static List<FileEvent> getFutureHighNumDeletionOperations(String testUser, int anomalyDay) throws GeneratorException {
+        return getHighNumDeletionOperations(testUser, 30, anomalyDay - 10 , anomalyDay - 13);
+    }
+    public static List<FileEvent> getFutureHighNumMoveOperationsUserAdmin(String testUser, int anomalyDay) throws GeneratorException {
+        return getHighNumMoveOperationsUserAdmin(testUser, 30, anomalyDay -4 , anomalyDay - 8);
+    }
+    public static List<FileEvent> getFutureHighNumFileOpenOperations(String testUser, int anomalyDay) throws GeneratorException {
+        return getHighNumFileOpenOperations(testUser, 30, anomalyDay - 7 , anomalyDay - 11 );
+    }
 
 }

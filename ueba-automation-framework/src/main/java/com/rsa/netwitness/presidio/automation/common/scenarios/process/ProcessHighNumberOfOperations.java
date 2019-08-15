@@ -146,5 +146,34 @@ public class ProcessHighNumberOfOperations {
 
         return events;
     }
-    
+
+    /**   Future scenarios for testing active users        **/
+
+    public static List<ProcessEvent> getFutureHighNumOfDistinctReconnaissanceTools(String testUser, int anomalyDay) throws GeneratorException {
+        /**
+         * Normal behavior:
+         *  a set of reconnaissance tools used every day with low frequency (1 event per hour)
+         * Anomaly:
+         *  many different reconnaissance tools used by the same user during few abnormal hours (60 events per hour)
+         */
+
+        Pair<String, String>[] normalTools = new Pair[] { RECON_TOOLS[20], RECON_TOOLS[21], RECON_TOOLS[22], RECON_TOOLS[23], RECON_TOOLS[24] };
+
+        List<ProcessEvent> events = new ArrayList<>();
+        EntityEventIDFixedPrefixGenerator eventIdGen = new EntityEventIDFixedPrefixGenerator(testUser);
+        SingleUserGenerator userGenerator = new SingleUserGenerator(testUser);
+
+        // Normal:
+        ITimeGenerator timeGenerator1 =
+                new MinutesIncrementTimeGenerator(LocalTime.of(8, 30), LocalTime.of(16, 30), 60, anomalyDay + 40, anomalyDay - 2 );
+        events.addAll(ProcessOperationActions.getReconnaissanceOperations(normalTools, eventIdGen, timeGenerator1, userGenerator));
+
+        //Anomaly - get all supported recon tools, some of them will be abnormal for this user:
+        ITimeGenerator timeGenerator2 =
+                new MinutesIncrementTimeGenerator(LocalTime.of(15, 00), LocalTime.of(16, 30), 1, anomalyDay-2 , anomalyDay - 6);
+        events.addAll(ProcessOperationActions.getReconnaissanceOperations(RECON_TOOLS, eventIdGen, timeGenerator2, userGenerator));
+
+        return events;
+    }
+
 }
