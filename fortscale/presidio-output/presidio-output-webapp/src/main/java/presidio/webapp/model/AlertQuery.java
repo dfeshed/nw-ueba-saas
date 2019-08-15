@@ -69,6 +69,9 @@ public class AlertQuery {
     @JsonProperty("aggregateBy")
     private List<AlertQueryAggregationFieldName> aggregateBy;
 
+    @JsonProperty("entityType")
+    private String entityType = null;
+
     /**
      * Get pageSize
      *
@@ -306,6 +309,10 @@ public class AlertQuery {
     public void setAggregateBy(List<AlertQueryAggregationFieldName> aggregateBy) {
         this.aggregateBy = aggregateBy;
     }
+
+    public String getEntityType() { return entityType; }
+
+    public void setEntityType(String entityType) { this.entityType = entityType; }
 
     @Override
     public boolean equals(java.lang.Object o) {

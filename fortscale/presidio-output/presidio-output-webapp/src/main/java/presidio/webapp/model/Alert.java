@@ -48,6 +48,17 @@ public class Alert {
     @JsonProperty("entityScoreContribution")
     private BigDecimal entityScoreContribution = null;
 
+    @JsonProperty("entityType")
+    private String entityType = null;
+
+    public String getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
+    }
+
     /**
      * Gets or Sets timeframe
      */
