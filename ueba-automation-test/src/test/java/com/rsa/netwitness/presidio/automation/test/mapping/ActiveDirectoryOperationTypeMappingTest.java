@@ -40,6 +40,7 @@ public class ActiveDirectoryOperationTypeMappingTest extends AbstractTestNGSprin
 
     private List<Integer> eventCodeExcludedFromTest = Lists.newArrayList(4755, 4737);
 
+    // Legacy operation types. not relevant for RSA
     private List<String> operationTypesExcludedFromTest = Lists.newArrayList(
             "SECURITY_ENABLED_GLOBAL_GROUP_CHANGED",
             "SECURITY_ENABLED_UNIVERSAL_GROUP_CHANGED",
