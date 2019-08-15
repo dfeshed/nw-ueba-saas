@@ -60,7 +60,7 @@
     "ember-code-snippet": "2.3.1",
     "ember-computed-decorators": "file:ember-computed-decorators",
     "ember-context-menu": "0.4.2",
-    "ember-d3": "0.4.2",
+    "ember-d3": "0.5.1",
     "ember-dependency-lookup": "2.0.0",
     "ember-engines": "0.8.2",
     "ember-exam": "1.0.0",

@@ -55,7 +55,7 @@
     "ember-engines": "0.8.2",
     "ember-exam": "1.0.0",
     "ember-sinon": "2.2.0",
-    "ember-d3": "0.4.2",
+    "ember-d3": "0.5.1",
     "ember-export-application-global": "^2.0.0",
     "ember-load-initializers": "2.0.0",
     "ember-lodash-shim": "4.0.0",
