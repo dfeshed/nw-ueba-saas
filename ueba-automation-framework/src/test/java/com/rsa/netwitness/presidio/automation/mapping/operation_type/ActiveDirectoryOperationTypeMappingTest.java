@@ -17,7 +17,7 @@ public class ActiveDirectoryOperationTypeMappingTest {
 
     @Test
     public void getOperationTypeToEventCodeMapTest() {
-        Map<String, Integer> result = ActiveDirectoryOperationTypeMapping.getInstance().getOperationTypeToEventCodeMap();
+        Map<Integer, String> result = ActiveDirectoryOperationTypeMapping.getInstance().getEventCodeMapToOperationTypeMap();
         assertThat(result).hasSizeGreaterThan(20);
     }
 }

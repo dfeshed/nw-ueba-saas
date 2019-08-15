@@ -5,8 +5,8 @@ import fortscale.common.general.Schema;
 import presidio.data.domain.Location;
 import presidio.data.domain.event.network.NetworkEvent;
 
-import static com.rsa.netwitness.presidio.automation.utils.common.ObjectMappingUtils.getListElementOrNull;
-import static com.rsa.netwitness.presidio.automation.utils.common.ObjectMappingUtils.getOrNull;
+import static com.rsa.netwitness.presidio.automation.utils.common.LambdaUtils.getListElementOrNull;
+import static com.rsa.netwitness.presidio.automation.utils.common.LambdaUtils.getOrNull;
 
 
 class NetwitnessTlsEventBuilder extends NetwitnessEvent {

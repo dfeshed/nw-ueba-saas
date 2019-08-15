@@ -55,6 +55,10 @@ public class FileEnrichStoredData  {
     private String result;
 
     @Expose
+    @Field("dataSource")
+    private String dataSource;
+
+    @Expose
     @Field("operationTypeCategories")
     private String[] operationTypeCategories;
 
@@ -152,6 +156,14 @@ public class FileEnrichStoredData  {
 
     public void setOperationTypeCategories(String[] operationTypeCategories) {
         this.operationTypeCategories = operationTypeCategories;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getDataSource() {
+        return dataSource;
     }
 
     @Override

@@ -24,7 +24,7 @@ public class ActiveDirectoryOperationTypeMapping {
     private Gson gson = new Gson();
 
     private Map<String, List<String>> operationTypeToCategoryMap;
-    private Map<String, Integer> operationTypeToEventCodeMap;
+    private Map<Integer, String> eventCodeMapToOperationTypeMap;
 
     private ActiveDirectoryOperationTypeMapping() {
         LOGGER.debug("Going to load resource: " + RESOURCE_NAME);
@@ -60,8 +60,8 @@ public class ActiveDirectoryOperationTypeMapping {
         return operationTypeToCategoryMap;
     }
 
-    public Map<String, Integer> getOperationTypeToEventCodeMap() {
-        return operationTypeToEventCodeMap;
+    public Map<Integer, String> getEventCodeMapToOperationTypeMap() {
+        return eventCodeMapToOperationTypeMap;
     }
 
 
@@ -100,9 +100,9 @@ public class ActiveDirectoryOperationTypeMapping {
 
         List<Map<String, Object>> result = gson.fromJson(cases, ArrayList.class);
 
-        operationTypeToEventCodeMap = result.parallelStream()
-                .collect(Collectors.toMap(e -> e.get("caseValue").toString(), e -> Integer.parseInt(e.get("caseKey").toString())));
-        assertThat(operationTypeToEventCodeMap).hasSizeGreaterThan(3);
+        eventCodeMapToOperationTypeMap = result.parallelStream()
+                .collect(Collectors.toMap(e -> Integer.parseInt(e.get("caseKey").toString()), e -> e.get("caseValue").toString()));
+        assertThat(eventCodeMapToOperationTypeMap).hasSizeGreaterThan(3);
     }
 
 
