@@ -310,6 +310,11 @@ public class AlertQuery {
         this.aggregateBy = aggregateBy;
     }
 
+    /**
+     * Get entityType
+     *
+     * @return the entityType of the alert
+     **/
     public String getEntityType() { return entityType; }
 
     public void setEntityType(String entityType) { this.entityType = entityType; }

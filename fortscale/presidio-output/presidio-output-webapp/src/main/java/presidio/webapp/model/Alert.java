@@ -51,14 +51,6 @@ public class Alert {
     @JsonProperty("entityType")
     private String entityType = null;
 
-    public String getEntityType() {
-        return entityType;
-    }
-
-    public void setEntityType(String entityType) {
-        this.entityType = entityType;
-    }
-
     /**
      * Gets or Sets timeframe
      */
@@ -299,6 +291,18 @@ public class Alert {
 
     public void setIndicators(List<Indicator> indicators) {
         this.indicators = indicators;
+    }
+
+    /**
+     * Get entityType
+     *
+     * @return the entityType of the alert
+     **/
+    @ApiModelProperty(value = "")
+    public String getEntityType() { return entityType; }
+
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
     }
 
 
