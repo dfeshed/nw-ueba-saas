@@ -1,7 +1,5 @@
 package fortscale.ml.model.store;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.utils.logging.Logger;
@@ -123,8 +121,8 @@ public class ModelStore implements ModelReader, StoreManagerAware {
 
         Aggregation aggregation = newAggregation(aggregationOperations).withOptions(Aggregation.newAggregationOptions().
                 allowDiskUse(allowDiskUse).build());
-        List<DBObject> aggrResult = mongoTemplate
-                .aggregate(aggregation, collectionName, DBObject.class)
+        List<Document> aggrResult = mongoTemplate
+                .aggregate(aggregation, collectionName, Document.class)
                 .getMappedResults();
 
         return aggrResult.stream()
@@ -318,9 +316,9 @@ public class ModelStore implements ModelReader, StoreManagerAware {
                 Aggregation.project(ModelDAO_FEILD_NAME).andExclude("_id")
         );
 
-        AggregationResults<DBObject> result = mongoTemplate.aggregate(agg, collectionName, DBObject.class);
+        AggregationResults<Document> result = mongoTemplate.aggregate(agg, collectionName, Document.class);
         return result.getMappedResults().stream()
-                .map(e -> mongoTemplate.getConverter().read(ModelDAO.class,(BasicDBObject) e.get(ModelDAO_FEILD_NAME)) )
+                .map(e -> mongoTemplate.getConverter().read(ModelDAO.class,(Document) e.get(ModelDAO_FEILD_NAME)) )
                 .collect(Collectors.toList());
     }
 
