@@ -255,17 +255,25 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
         return input.replaceAll(DOT_REGEX, DOT_REPLACEMENT);
     }
 
+    private Map<String, String> replaceDotsInKeys(MultiKeyFeature contextFields) {
+        return contextFields.getFeatureNameToValue().entrySet().stream().collect(Collectors.toMap(
+                e -> {
+                    String replacedFieldName;
+                    if (e.getKey().contains(CONTEXT_KEYWORD)) {
+                        replacedFieldName = CONTEXT_KEYWORD + replaceDots(e.getKey().substring(CONTEXT_KEYWORD.length()));
+                    } else {
+                        replacedFieldName = replaceDots(e.getKey());
+                    }
+                    return replacedFieldName;
+                },
+                Map.Entry::getValue));
+    }
+
     private Query buildScoredRecordsQuery(TimeRange timeRange, MultiKeyFeature contextFields, int scoreThreshold) {
         return ScoredDataReaderMongoUtils.buildScoredRecordsQuery(
                 START_INSTANT_FIELD, timeRange,
                 CONTEXT_KEYWORD, replaceDotsInKeys(contextFields),
                 ScoredFeatureAggregationRecord.SCORE_FIELD_NAME, scoreThreshold);
-    }
-
-    private Map<String, String> replaceDotsInKeys(MultiKeyFeature contextFields) {
-        return contextFields.getFeatureNameToValue().entrySet().stream().collect(Collectors.toMap(
-                e -> replaceDots(e.getKey()),
-                Map.Entry::getValue));
     }
 
     private AdeScoredRecord readScoredRecord(
@@ -277,16 +285,7 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
             Direction direction) {
 
         Query query = ScoredDataReaderMongoUtils.buildScoredRecordQuery(
-                fields.getFeatureNameToValue().entrySet().stream().collect(Collectors.toMap(
-                        e -> {
-                            String replacedFieldName;
-                            if (e.getKey().contains(CONTEXT_KEYWORD)) {
-                                replacedFieldName = CONTEXT_KEYWORD + replaceDots(e.getKey().substring(CONTEXT_KEYWORD.length()));
-                            } else {
-                                replacedFieldName = replaceDots(e.getKey());
-                            }
-                            return replacedFieldName;
-                        }, Map.Entry::getValue)), START_INSTANT_FIELD, timeRange,
+                replaceDotsInKeys(fields), START_INSTANT_FIELD, timeRange,
                 CONTEXT_KEYWORD, replaceDotsInKeys(contextFields),
                 ScoredFeatureAggregationRecord.SCORE_FIELD_NAME, scoreThreshold,
                 direction);
