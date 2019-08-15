@@ -1,11 +1,12 @@
 package com.rsa.netwitness.presidio.automation.log_player;
 
+import com.rsa.netwitness.presidio.automation.context.EnvironmentProperties;
+
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.rsa.netwitness.presidio.automation.common.helpers.RunCmdUtils.runCmd;
-import static com.rsa.netwitness.presidio.automation.log_player.PropertiesHolder.LOG_DECODER_IP;
 
 public class LogPlayerResultUtils {
 
@@ -22,7 +23,8 @@ public class LogPlayerResultUtils {
     };
 
     public static Function<String,String> logPlayerSendDirCmd = folderPath -> {
-        String logDecoderIp = PropertiesHolder.getInstance().getEnvProperties().getProperty(LOG_DECODER_IP);
+        String logDecoderIp = EnvironmentProperties.ENVIRONMENT_PROPERTIES.logDecoderIp();
+        if (logDecoderIp.isEmpty()) throw new RuntimeException("Unable to send data. log-decoder ip is missing from env.properties");
         return "NwLogPlayer -s " + logDecoderIp + " -d " + folderPath;
     };
 

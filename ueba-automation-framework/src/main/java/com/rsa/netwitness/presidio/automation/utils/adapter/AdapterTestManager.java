@@ -17,9 +17,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -27,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.rsa.netwitness.presidio.automation.common.helpers.RunCmdUtils.printLogFile;
+import static com.rsa.netwitness.presidio.automation.context.EnvironmentProperties.ENVIRONMENT_PROPERTIES;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AdapterTestManager {
@@ -219,10 +218,14 @@ public class AdapterTestManager {
     }
 
     public void runUebaServerConfigScript(Instant startTime) {
-        String node_zero_ip = getNodeZeroIP();
+        String broker = ENVIRONMENT_PROPERTIES.brokerIp();
+        String alertsForwardingFlag = ENVIRONMENT_PROPERTIES.esaAnalyticsServerIp().isEmpty() ? "-e" : "";
 
         // sh /opt/rsa/saTools/bin/ueba-server-config -u admin -p netwitness -h 10.4.61.136 -o broker -t 2018-07-18T00:00:00Z -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY'  -v
-        String command = "sudo /opt/rsa/saTools/bin/ueba-server-config -u admin -p netwitness -h " + node_zero_ip + " -o broker -t " + startTime.toString() + " -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY PROCESS REGISTRY TLS'  -v -e ";
+        String command = "sudo /opt/rsa/saTools/bin/ueba-server-config -u admin -p netwitness -h "
+                + broker + " -o broker -t " + startTime.toString()
+                + " -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY PROCESS REGISTRY TLS'  -v " + alertsForwardingFlag;
+
         Process p = TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
         assertThat(p.exitValue()).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
@@ -246,18 +249,6 @@ public class AdapterTestManager {
         Process p = TerminalCommands.runCommand(command, true, "");
         assertThat(p.exitValue()).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
-
-    public String getNodeZeroIP() {
-        InetAddress address = null;
-        try {
-            address = InetAddress.getByName("nw-node-zero");
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        System.out.println(address.getHostAddress());
-        return  address.getHostAddress();
-    }
-
 
     public void  setBuildingModelsRange(int enriched_records_days  ,int feature_aggregation_records_days , int smart_records_days )  {
         String workflows_default_file ="/etc/netwitness/presidio/configserver/configurations/airflow/workflows-default.json" ;
