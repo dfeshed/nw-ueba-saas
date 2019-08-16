@@ -5,6 +5,7 @@ import {
   VALID_IPV4_REGEX,
   VALID_IPV6_REGEX
 } from '../../util/selector-helpers';
+import { getFileSourceTypeDisplayName } from 'admin-source-management/reducers/usm/policy-details/file-policy/file-selectors';
 import {
   SOURCE_CONFIG
 } from './file-settings';
@@ -20,8 +21,13 @@ const policy = (state) => _policyWizardState(state).policy;
 const _listOfFileSourceTypes = (state) => _policyWizardState(state).listOfFileSourceTypes || [];
 
 export const fileSources = createSelector(
-  policy,
-  (policy) => policy.sources
+  policy, _listOfFileSourceTypes,
+  (policy, _listOfFileSourceTypes) => {
+    const sources = policy.sources.map((source) => {
+      return { ...source, fileTypePrettyName: getFileSourceTypeDisplayName(source.fileType, _listOfFileSourceTypes) };
+    });
+    return sources;
+  }
 );
 
 export const fileSourcesList = createSelector(

@@ -105,7 +105,7 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
 
     // apache source section
     assert.equal(policyDetails[1].header, 'adminUsm.policies.detail.sourceSettings', 'apache source section header is as expected');
-    assert.deepEqual(policyDetails[1].headerVars, { fileType: 'apache' }, 'apache source section headerVars is as expected');
+    assert.deepEqual(policyDetails[1].headerVars, { fileType: 'Apache Web Server' }, 'apache source section headerVars is as expected');
     assert.equal(policyDetails[1].props.length, 6, 'apache source section has 6 properties');
     // test the specific values for props that get translated
     assert.equal(policyDetails[1].props[0].value, 'Disabled', 'enabled property has expected value');
@@ -113,7 +113,7 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
 
     // exchange source section
     assert.equal(policyDetails[2].header, 'adminUsm.policies.detail.sourceSettings', 'exchange source section header is as expected');
-    assert.deepEqual(policyDetails[2].headerVars, { fileType: 'exchange' }, 'exchange source section headerVars is as expected');
+    assert.deepEqual(policyDetails[2].headerVars, { fileType: 'Microsoft Exchange' }, 'exchange source section headerVars is as expected');
     assert.equal(policyDetails[2].props.length, 6, 'exchange source section has 6 properties');
     // test the specific values for props that get translated
     assert.equal(policyDetails[2].props[0].value, 'Enabled', 'enabled property has expected value');
@@ -178,7 +178,7 @@ module('Unit | Selectors | Policy Details | File Policy | File Selectors', funct
 
     // apache source section
     assert.equal(policyDetails[1].header, 'adminUsm.policies.detail.sourceSettings', 'apache source section header is as expected');
-    assert.deepEqual(policyDetails[1].headerVars, { fileType: 'apache' }, 'apache source section headerVars is as expected');
+    assert.deepEqual(policyDetails[1].headerVars, { fileType: 'Apache Web Server' }, 'apache source section headerVars is as expected');
     assert.equal(policyDetails[1].props.length, 2, 'apache source section has 2 properties');
     // test the specific props that should NOT be present
     assert.equal(

@@ -66,10 +66,11 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
   });
 
   test('fileSources', function(assert) {
-    const expectedValue = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'] } ];
+    const expectedValue = [ { fileType: 'apache', fileTypePrettyName: 'Apache Web Server', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'] } ];
     const fullState = new ReduxDataHelper()
       .policyWiz('filePolicy')
       .policyWizFileSources(expectedValue)
+      .policyWizFileSourceTypes()
       .build();
     const result = fileSources(Immutable.from(fullState));
     assert.deepEqual(result, expectedValue, `should return fileSources with value ${expectedValue}`);
@@ -77,7 +78,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
 
   test('fileSourcesList selector', function(assert) {
     const nameExpected = 'accurev';
-    const prettyNameExpected = 'accurev';
+    const prettyNameExpected = 'AccuRev';
     const fullState = new ReduxDataHelper()
       .policyWiz('filePolicy')
       .policyWizFileSourceTypes()
@@ -95,7 +96,7 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
       .build();
     const fileTypeExpected = {
       'name': 'apache',
-      'prettyName': 'apache',
+      'prettyName': 'Apache Web Server',
       'paths': [
         '/c/Program Files/Apache Group/Apache[2-9]/*.log',
         '/c/Program Files/Apache Group/Apache[2-9]/logs/*.log'

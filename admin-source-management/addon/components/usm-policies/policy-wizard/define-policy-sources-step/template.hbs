@@ -41,10 +41,10 @@
         placeholder=(t 'adminUsm.policyWizard.filePolicy.fileSourceType.placeholder')
         options=fileSourcesList
         selected=selectedFileSource
+        searchField='prettyName'
         searchPlaceholder=(t 'packager.searchPlaceholder')
-        searchEnabled=false
         onchange=(action 'updatePolicyProperty' 'selectedFileSource') as |option|}}
-        {{option.name}}
+        {{option.prettyName}}
       {{/power-select}}
     </div>
     <div class="add-row">

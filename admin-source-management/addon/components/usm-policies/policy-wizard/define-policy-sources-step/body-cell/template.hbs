@@ -16,7 +16,7 @@
     <div class="file-type">
       {{#power-select
         placeholder=(t 'adminUsm.policyWizard.dropdownPlaceholder')
-        selected=item.fileType
+        selected=item.fileTypePrettyName
         searchPlaceholder=(t 'packager.searchPlaceholder')
         disabled=true
         onchange=(action 'setSelected' column.field bubbles=false) as |option|

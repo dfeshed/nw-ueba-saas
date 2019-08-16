@@ -20,6 +20,7 @@ const column = {
 };
 const item = {
   fileType: 'apache',
+  fileTypePrettyName: 'Apache Web Server',
   fileEncoding: 'Local Encoding',
   enabled: true,
   startOfEvents: false,
@@ -269,7 +270,7 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
         delete=delete
       }}
     `);
-    assert.equal(find('.ember-power-select-selected-item').textContent.trim(), 'apache', 'selected item matches apache');
+    assert.equal(find('.ember-power-select-selected-item').textContent.trim(), 'Apache Web Server', 'selected item matches apache');
     assert.equal(findAll('.file-type .ember-power-select-trigger[aria-disabled=true]').length, 1, 'File type power-select control appears in the DOM and is disabled');
   });
 });

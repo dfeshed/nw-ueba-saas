@@ -2,7 +2,7 @@ export default
 [
   {
     'name': 'accurev',
-    'prettyName': 'accurev',
+    'prettyName': 'AccuRev',
     'description': 'FileCollection specification for eventsource type "Accurev" using file handler type "accurev"',
     'sourceDefaults': {
       'filePaths': [
@@ -13,7 +13,7 @@ export default
   },
   {
     'name': 'apache',
-    'prettyName': 'apache',
+    'prettyName': 'Apache Web Server',
     'description': 'FileCollection specification for eventsource type "Apache Web Server" using file handler type "APACHE"',
     'sourceDefaults': {
       'filePaths': [
@@ -24,7 +24,7 @@ export default
   },
   {
     'name': 'exchange',
-    'prettyName': 'exchange',
+    'prettyName': 'Microsoft Exchange',
     'description': 'FileCollection specification for eventsource type "Exchange" using file handler type "EXCHANGE"',
     'sourceDefaults': {
       'filePaths': [

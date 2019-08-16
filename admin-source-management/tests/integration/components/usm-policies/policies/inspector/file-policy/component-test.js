@@ -80,8 +80,8 @@ module('Integration | Component | Policy Inspector | File Policy', function(hook
     await render(hbs`{{usm-policies/policies/inspector/file-policy}}`);
     assert.equal(findAll('.heading').length, 3, '1 file settings heading + 2 source settings headings');
     assert.equal(findAll('.heading')[0].innerText, 'Connection Settings', 'Connection Settings heading is as expected');
-    assert.equal(findAll('.heading')[1].innerText, 'Source Settings (apache)', 'apache source heading is as expected');
-    assert.equal(findAll('.heading')[2].innerText, 'Source Settings (exchange)', 'exchange source heading is as expected');
+    assert.equal(findAll('.heading')[1].innerText, 'Source Settings (Apache Web Server)', 'apache source heading is as expected');
+    assert.equal(findAll('.heading')[2].innerText, 'Source Settings (Microsoft Exchange)', 'exchange source heading is as expected');
     assert.equal(findAll('.title').length, 17, '17 property names are shown');
     assert.equal(findAll('.value').length, 17, '17 value elements are shown');
     // test the specific values for props that get translated
@@ -113,7 +113,7 @@ module('Integration | Component | Policy Inspector | File Policy', function(hook
     await render(hbs`{{usm-policies/policies/inspector/file-policy}}`);
     assert.equal(findAll('.heading').length, 2, '1 file settings heading + 1 source settings heading');
     assert.equal(findAll('.heading')[0].innerText, 'Connection Settings', 'Connection Settings heading is as expected');
-    assert.equal(findAll('.heading')[1].innerText, 'Source Settings (apache)', 'apache source heading is as expected');
+    assert.equal(findAll('.heading')[1].innerText, 'Source Settings (Apache Web Server)', 'apache source heading is as expected');
     // there would be 11 .title's/.value's if the blank properties were rendered
     assert.equal(findAll('.title').length, 7, '7 property names are shown');
     assert.equal(findAll('.value').length, 7, '7 value elements are shown');

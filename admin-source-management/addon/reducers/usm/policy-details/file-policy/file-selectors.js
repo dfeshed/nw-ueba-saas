@@ -130,7 +130,7 @@ const _getSourceSection = (source, _listOfFileSourceTypes, _focusedPolicyOrigin,
   }
   const sourceSection = {
     header: 'adminUsm.policies.detail.sourceSettings',
-    headerVars: { fileType: _getFileSourceTypeDisplayName(source.fileType, _listOfFileSourceTypes) },
+    headerVars: { fileType: getFileSourceTypeDisplayName(source.fileType, _listOfFileSourceTypes) },
     props: sourceSettings
   };
   return sourceSection;
@@ -173,7 +173,7 @@ const _getSourceSetting = (prop, source, _focusedPolicyOrigin, emptyOrigin, orig
   return sourceSettings[prop];
 };
 
-const _getFileSourceTypeDisplayName = (sourceFileType, _listOfFileSourceTypes) => {
+export const getFileSourceTypeDisplayName = (sourceFileType, _listOfFileSourceTypes) => {
   let displayName = sourceFileType;
   const fileSourceType = _listOfFileSourceTypes.filter((obj) => obj.name === sourceFileType);
   if (fileSourceType != null && fileSourceType.length === 1) {
