@@ -22,6 +22,23 @@ const conditions = [{
   value: '\'//\''
 }];
 
+const parenConditions = [
+  { type: 'open-paren' },
+  {
+    meta: 'foo',
+    operator: '=',
+    value: 'bar'
+  },
+  { type: 'close-paren' },
+  { type: 'open-paren' },
+  {
+    meta: 'foo',
+    operator: '!=',
+    value: 'bar'
+  },
+  { type: 'close-paren' }
+];
+
 const filters = [{
   meta: 'foo',
   operator: undefined,
@@ -46,6 +63,13 @@ test('encodeMetaFilterConditions correctly encodes complex filters', function(as
   const result = encodeMetaFilterConditions(complexConditions);
 
   assert.equal(result, 'foo=\'bar\'||foo=baz && bar=\'foo\'||baz=foo');
+});
+
+test('encodeMetaFilterConditions correctly encodes back-to-back parens', function(assert) {
+  assert.expect(1);
+  const result = encodeMetaFilterConditions(parenConditions);
+
+  assert.equal(result, '(foo = bar) && (foo != bar)');
 });
 
 test('encodeMetaFilterConditions returns values which exist', function(assert) {

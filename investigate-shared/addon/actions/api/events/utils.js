@@ -43,10 +43,15 @@ export const removeEmptyParens = (filters) => {
  */
 export const mergeFilterStrings = (() => {
   let _hideSeparator = false;
-  return (acc, cur, idx) => {
+  return (acc, cur, idx, src) => {
     if (cur === '(') {
       _hideSeparator = true;
-      return `${acc}${cur}`;
+      // Make sure to include an && between a close and open paren
+      if (idx > 0 && src[idx - 1] === ')') {
+        return `${acc} && ${cur}`;
+      } else {
+        return `${acc}${cur}`;
+      }
     } else if (cur === ')') {
       return `${acc}${cur}`;
     } else {
