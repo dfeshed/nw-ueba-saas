@@ -126,7 +126,7 @@ public class EntityServiceImpl implements EntityService {
 		EntityQuery entityQuery = new EntityQuery();
 		entityQuery.addAggregateByItem(EntityQuery.AggregateByEnum.ALERT_CLASSIFICATIONS);
 		try {
-			Map<String,Map<String,Long>> aggregationData = remoteEntityClientService.getConterollerApi().getEntities(entityQuery).getAggregationData();
+			Map<String,Map<String,Long>> aggregationData = Optional.ofNullable(remoteEntityClientService.getConterollerApi().getEntities(entityQuery).getAggregationData()).orElse(MapUtils.EMPTY_MAP);
 			Map<String,Integer> classificiations = aggregationConverterHelper.convertAggregation(aggregationData,EntityQuery.AggregateByEnum.ALERT_CLASSIFICATIONS.name());
 			return classificiations;
 
@@ -476,7 +476,7 @@ public class EntityServiceImpl implements EntityService {
 		entityQuery.addAggregateByItem(EntityQuery.AggregateByEnum.INDICATORS);
 
 		try {
-			Map<String, Map<String, Long>> aggregationData = remoteEntityClientService.getConterollerApi().getEntities(entityQuery).getAggregationData();
+			Map<String, Map<String, Long>> aggregationData = Optional.ofNullable(remoteEntityClientService.getConterollerApi().getEntities(entityQuery).getAggregationData()).orElse(MapUtils.EMPTY_MAP);
 			Map<String, Integer> aggregation = aggregationConverterHelper.convertAggregation(aggregationData, EntityQuery.AggregateByEnum.INDICATORS.name());
 
 			return  aggregation;
