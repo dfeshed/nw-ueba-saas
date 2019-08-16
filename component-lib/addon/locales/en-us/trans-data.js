@@ -5960,6 +5960,11 @@ effects the previewed source.',
             desc: '{{entityName}} Abnormal Dst Port for Domain Outbound',
             timeline: ''
           },
+          ja3_abnormal_dst_port_for_ja3_outbound: {
+            name: 'Ja3 Abnormal Dst Port for Domain Outbound',
+            desc: '{{entityName}} Abnormal Dst Port for Domain Outbound',
+            timeline: ''
+          },
           ssl_subject_abnormal_dst_port_for_dst_org_outbound: {
             name: 'Ssl Subject Abnormal Dst Port for Dst Org Outbound',
             desc: '{{entityName}} Abnormal Dst Port for Dst Org Outbound',

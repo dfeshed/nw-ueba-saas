@@ -44,7 +44,7 @@ export default (settings, { entityType, entityName, dataEntitiesIds }, brokerId)
   columnSeries.columns.template.tooltipText = '[#fff font-size: 15px]{name} in {categoryX}: [/][#fff font-size: 20px]{valueY}[/] [#fff]{additional}[/]';
   columnSeries.columns.template.propertyFields.fill = 'color';
   columnSeries.columns.template.propertyFields.stroke = 'color';
-  columnSeries.columns.template.width = 2;
+  columnSeries.columns.template.width = 5;
 
   const scrollbarX = new Am4charts.XYChartScrollbar();
   scrollbarX.series.push(columnSeries);

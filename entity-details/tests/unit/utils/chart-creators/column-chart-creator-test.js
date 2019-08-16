@@ -21,7 +21,7 @@ module('Unit | Utils | column-chart-creator', (hooks) => {
     document.getElementsByTagName('body')[0].appendChild(divObj);
     assert.expect(1);
     const settings = activityTimeAnomalySettings('account_management_change_anomaly');
-    const updatedSettings = chartDataAdapter(settings, chartData.data);
+    const updatedSettings = chartDataAdapter(settings, chartData.data, 'UTC', 'en');
     const entityObj = { entityType: 'User', entityName: 'Name1', dataEntitiesIds: 'File' };
     const chart = columnChartCreator(updatedSettings, entityObj, 'BrokerId');
     return waitUntil(() => document.getElementsByTagName('svg').length === 2).then(() => {

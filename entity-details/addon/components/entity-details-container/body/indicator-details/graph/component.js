@@ -29,24 +29,25 @@ const stateToComputed = (state) => ({
 const EventsGraphComponent = Component.extend({
   classNames: ['entity-details-container-body-indicator-details_graph'],
   timezone: service(),
-  timeZoneId: null,
+  i18n: service(),
 
   init() {
     this._super(...arguments);
     this.chart = null;
-    this.timeZoneId = this.get('timezone.selected.zoneId') || 'UTC';
   },
 
-  @computed('indicatorMapSettings', 'historicalData', 'timeZoneId')
-  historicalDataForGraph(indicatorMapSettings, historicalData, timeZoneId) {
+  @computed('indicatorMapSettings', 'historicalData')
+  historicalDataForGraph(indicatorMapSettings, historicalData) {
     // Init will not be called when user jumps between indicators. So need to clear container div before drawing chart.
     this.chart = null;
+    const timeZoneId = this.get('timezone.selected.zoneId') || 'UTC';
+    const locale = this.get('i18n.locale') || 'en';
     document.getElementById('chartComponentPlaceholder').innerHTML = '';
     if (!indicatorMapSettings || !historicalData) {
       return;
     }
     const chartType = indicatorMapSettings.chartSettings.type;
-    const settings = chartDataAdapter(indicatorMapSettings, historicalData, timeZoneId);
+    const settings = chartDataAdapter(indicatorMapSettings, historicalData, timeZoneId, locale);
     switch (chartType) {
       case 'pie':
         this.chart = pieChartCreator(settings, this.get('incidentDetails'), this.get('brokerId'));
