@@ -2398,8 +2398,8 @@ module('Integration | Component | Query Pills', function(hooks) {
     await fillIn(PILL_SELECTORS.recentQuerySelectInput, 'm');
     await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', SPACE_KEY);
 
-    await waitUntil(() => findAll(PILL_SELECTORS.loadingSpinnerSelector).length === 1);
-    await waitUntil(() => find(PILL_SELECTORS.loadingSpinnerSelector).getAttribute('style') === 'display: none;', { timeout: 5000 });
+    await waitUntil(() => findAll(PILL_SELECTORS.loadingSpinnerSelector).length === 1, { timeout: 10000 });
+    await waitUntil(() => find(PILL_SELECTORS.loadingSpinnerSelector).getAttribute('style') === 'display: none;', { timeout: 10000 });
 
     const state = this.owner.lookup('service:redux').getState();
     const { investigate: { queryNode: { recentQueriesUnfilteredList, recentQueriesFilteredList } } } = state;

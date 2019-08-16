@@ -25,8 +25,6 @@ const SinglePacketComponent = Component.extend(InViewportMixin, {
   index: null,
   isPacketExpanded: true,
   packet: null,
-  packetFields: null,
-  selection: null,
   tooltipData: null,
   shouldRenderBytes: false,
 
@@ -49,21 +47,6 @@ const SinglePacketComponent = Component.extend(InViewportMixin, {
    */
   @computed('packet.byteRows')
   calculatedHeight: (rows = []) => htmlSafe(`min-height: ${rows.length * 17}px`),
-
-  /**
-   * The number of bytes to display closely packed together, without a blank space.
-   * @type {number}
-   * @public
-   */
-  byteGrouping: 1,
-
-  /**
-   * Configurable callback to be invoked whenever `selection` changes.
-   * The callback will be passed `selection` as its single single argument.
-   * @type function
-   * @public
-   */
-  onselect() {},
 
   didEnterViewport() {
     if (!this.get('shouldRenderBytes')) {

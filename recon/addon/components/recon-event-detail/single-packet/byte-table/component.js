@@ -5,7 +5,6 @@ import { connect } from 'ember-redux';
 import { scaleQuantize } from 'd3-scale';
 import { event, select } from 'd3-selection';
 
-import Drag from 'recon/utils/drag';
 import {
   showPacketTooltip,
   hidePacketTooltip
@@ -16,16 +15,6 @@ import { offset } from 'component-lib/utils/jquery-replacement';
 const scale = scaleQuantize()
   .domain([0, 255])
   .range([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
-
-const stateToComputed = ({ recon: { packets } }) => ({
-  hasSignaturesHighlighted: packets.hasSignaturesHighlighted,
-  isPayloadOnly: packets.isPayloadOnly
-});
-
-const dispatchToActions = {
-  showPacketTooltip,
-  hidePacketTooltip
-};
 
 const compact = (array) => {
   const length = array == null ? 0 : array.length;
@@ -42,6 +31,16 @@ const compact = (array) => {
   return result;
 };
 
+const stateToComputed = ({ recon: { packets } }) => ({
+  hasSignaturesHighlighted: packets.hasSignaturesHighlighted,
+  isPayloadOnly: packets.isPayloadOnly
+});
+
+const dispatchToActions = {
+  showPacketTooltip,
+  hidePacketTooltip
+};
+
 const ByteTableComponent = Component.extend({
   tagName: 'section',
   classNames: 'rsa-byte-table',
@@ -50,27 +49,6 @@ const ByteTableComponent = Component.extend({
   headerCellClass: 'header',
   byteFormat: null,
   packet: null,
-  packetFields: null,
-
-  /**
-   * Indicates a range of packet bytes currently selected, if any; null otherwise.
-   * If some bytes are selected, `selection` will be an object with properties:
-   * `packet`: the packet data object which contains the selection;
-   * `bytes`: {array} the entire list of byte values for `packet`;
-   * `start` and `end`: {number} the indices of the first and last selected bytes, respectively, in `packet`.
-   * @type {object}
-   * @readonly
-   * @public
-   */
-  selection: null,
-
-  /**
-   * Configurable callback to be invoked whenever `selection` changes.
-   * The callback will be passed `selection` as its single single argument.
-   * @type function
-   * @public
-   */
-  onselect() {},
 
   didInsertElement() {
     this._scheduleAfterRenderTasks();
@@ -78,7 +56,6 @@ const ByteTableComponent = Component.extend({
 
   willDestroyElement() {
     this._cells = null;
-    this.detachDomListeners();
   },
 
   _scheduleAfterRenderTasks: observer('packet.byteRows', function() {
@@ -87,8 +64,6 @@ const ByteTableComponent = Component.extend({
 
   afterRender() {
     this.renderTable();
-    this.selectionDidChange();
-    this.attachDomListeners();
   },
 
   renderTable() {
@@ -196,16 +171,6 @@ const ByteTableComponent = Component.extend({
     return compact([cellClass, role, header, footer, known]).join(' ');
   },
 
-  attachDomListeners() {
-    this._mousedownCallback = this._clearSelection.bind(this);
-    this.element.addEventListener('mousedown', this._mousedownCallback);
-  },
-
-  detachDomListeners() {
-    this.element.removeEventListener('mousedown', this._mousedownCallback);
-    this._mousedownCallback = null;
-  },
-
   /**
    * Handles changes in `tooltipData` by highlighting/unhighlighting the targeted field's bytes.
    * @private
@@ -237,113 +202,6 @@ const ByteTableComponent = Component.extend({
       // Cache the current hover data for future reference (i.e., to unhighlight later).
       this._lastTooltipData = tooltipData;
     }
-  }),
-
-  /**
-   * Handles DOM mousedown events in this component by watching for a drag to select byte values in DOM.
-   * Tracks which bytes are selected (if any), and updates the corresponding values in `bytes[i].selected`.
-   * This is done in order to allow other byte table(s) showing these same bytes to synchronize their selection.
-   * @param {object} e The DOM mousedown event object.
-   * @private
-   */
-  mouseDown(e) {
-    const drag = this._drag = this._drag || Drag.create({
-      on: {
-        dragmove: () => {
-          this._updateSelection();
-        }
-      }
-    });
-
-    drag.mousedown(e);
-    return true; // Allow browser to perform default behavior (selection highlighting).
-  },
-
-  _updateSelection() {
-    const selection = window.getSelection && window.getSelection();
-    if (!selection || selection.isCollapsed) {
-
-      // Nothing selected by user.
-      this._clearSelection();
-
-    } else {
-
-      // Something selected by user.
-      const cells = this._cells || [];
-      let start = -1;
-      let end = -1;
-
-      // Loop through our DOM elements that display byte values.
-      // Note that we are using jQuery's `.each()` not Ember's `Array.forEach()`.
-      // For each element..
-      cells.forEach((cell, index) => {
-
-        // Check if the DOM element is within the user's selection.
-        const selected = selection.containsNode(cell, true /* true = partlyContained*/);
-
-        // Update the `isSelected` property of the corresponding item in the `bytesMeta` array.
-        // Ember.set(bytes[index], 'isSelected', selected);
-
-        // Track the start & end indices (i.e., min & max) of the selected cells.
-        if (selected) {
-          if (start === -1) {
-            start = index;
-          }
-          end = index;
-        }
-      });
-
-      // Update our `selection` attr to reflect which `bytes` are now selected, if any.
-      // The `selection` attr is useful shorthand for external observers that listen for changes in the selection.
-      // It's also used by _clearSelection to quickly find existing selections without walking all the bytes.
-      this.set('selection', (start === -1) ? null : {
-        start,
-        end,
-        packet: this.get('packet')
-      });
-    }
-  },
-
-  /**
-   * If any bytes are currently selected, unselects them.
-   * Typically called upon hearing a mousedown anywhere in the HTML doc.
-   * @private
-   */
-  _clearSelection() {
-    const selection = this.get('selection');
-    if (selection) {
-      this.set('selection', null);
-    }
-  },
-
-  /**
-   * Listens for changes in `selection`, updates the DOM highlighting, and invokes the `onselect` callback in response.
-   * @private
-   */
-  selectionDidChange: observer('selection', function() {
-    const tds = this.element.querySelector(`.${this.get('cellClass')}`);
-    const toggleSelected = function(isSelected, start, end) {
-      [].slice.apply(tds, [start, end + 1]).forEach((td) => {
-        td.setAttribute('data-is-selected', isSelected);
-      });
-    };
-
-    // Unhighlight the previous selection, if any.
-    let d = this._lastSelection;
-    if (d) {
-      toggleSelected(false, d.start, d.end);
-    }
-
-    // Highlight the current selection, if any.
-    d = this.get('selection');
-    if (d) {
-      toggleSelected(true, d.start, d.end);
-    }
-
-    // Cache the current selection for future reference (i.e., unhighlighting).
-    this._lastSelection = d;
-
-    this.get('onselect')(this.get('selection'));
   })
 });
 

@@ -25,7 +25,6 @@ const stateToComputed = ({ recon, recon: { data, packets } }) => ({
   hasPackets: hasPackets(recon),
   isPacketRenderingUnderWay: packetRenderingUnderWay(recon),
   numberOfItems: numberOfPackets(recon), // total rendered, used by pager
-  packetFields: packets.packetFields,
   packetTotal: packetTotal(recon), // total number of packets, not just this page
   renderedPackets: renderedPackets(recon),
   tooltipData: packets.packetTooltipData,
