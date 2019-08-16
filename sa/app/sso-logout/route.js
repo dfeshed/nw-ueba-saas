@@ -4,9 +4,11 @@ import { inject as service } from '@ember/service';
 export default Route.extend({
 
   session: service(),
+  model() {
+    return this.get('session').invalidate();
+  },
 
-  beforeModel() {
+  afterModel() {
     localStorage.removeItem('rsa-x-csrf-token');
-    this.get('session').invalidate();
   }
 });
