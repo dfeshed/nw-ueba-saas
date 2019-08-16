@@ -8,7 +8,7 @@ export const AFTER_OPTION_TAB_RECENT_QUERIES = 'recent queries';
 export const CLOSE_PAREN = 'close-paren';
 // TODO: Removing "!" for now as it's causing issues with "!=" being flagged as
 // complex.
-export const COMPLEX_OPERATORS = ['<=', '<', '>=', '>', '&&', '||', '(', ')', ',', '-', 'AND', 'NOT', 'OR', 'length', 'regex'];
+export const COMPLEX_OPERATORS = ['&&', '||', '(', ')', 'AND', 'NOT', 'OR'];
 export const COMPLEX_FILTER = 'complex';
 export const OPEN_PAREN = 'open-paren';
 export const OPERATORS = ['!exists', 'exists', 'contains', 'begins', 'ends', '!=', '='];

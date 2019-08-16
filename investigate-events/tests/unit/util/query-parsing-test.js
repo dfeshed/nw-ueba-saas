@@ -514,6 +514,65 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[0].validationError.string, 'The second number in the range must be greater than the first.', 'validation error should be correct');
   });
 
+  test('transformTextToPillData returns pills with comma-separated values', function(assert) {
+    const text = 'medium = 1,3,7,9';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '1,3,7,9', 'value should match');
+    assert.notOk(result[0].isInvalid, 'pill should be valid');
+  });
+
+  test('transformTextToPillData returns an invalid pill for more than one comma in a row', function(assert) {
+    const text = 'medium = 1,,3';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '1,,3', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.equal(result[0].validationError.string, 'You cannot enter more than one comma in a row.', 'validation error should be correct');
+  });
+
+  test('transformTextToPillData returns an invalid pill for comma-separated values with a mismatched type', function(assert) {
+    const text = 'medium = 1,2,\'string\'';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 1);
+    assert.equal(result[0].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[0].meta, 'medium', 'meta should match');
+    assert.equal(result[0].operator, '=', 'operator should match');
+    assert.equal(result[0].value, '1,2,\'string\'', 'value should match');
+    assert.ok(result[0].isInvalid, 'pill should be invalid');
+    assert.equal(result[0].validationError.string, 'You must enter an 8-bit Integer.', 'validation error should be correct');
+  });
+
+  test('transformTextToPillData returns a complex pill for a non-value type included in a comma-separated list of values', function(assert) {
+    const text = 'medium = 1,2,< && b exists';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 2);
+    assert.equal(result[0].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result[0].complexFilterText, 'medium = 1,2,<', 'complexFilterText should match');
+    assert.equal(result[1].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[1].meta, 'b', 'meta should match');
+    assert.equal(result[1].operator, 'exists', 'operator should match');
+    assert.notOk(result[1].isInvalid, 'pill should be valid');
+  });
+
+  test('transformTextToPillData returns a complex pill for a bonus trailing comma', function(assert) {
+    const text = 'medium = 1,2, && b exists';
+    const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
+    assert.strictEqual(result.length, 2);
+    assert.equal(result[0].type, COMPLEX_FILTER, 'type should match');
+    assert.equal(result[0].complexFilterText, 'medium = 1,2,', 'complexFilterText should match');
+    assert.equal(result[1].type, QUERY_FILTER, 'type should match');
+    assert.equal(result[1].meta, 'b', 'meta should match');
+    assert.equal(result[1].operator, 'exists', 'operator should match');
+    assert.notOk(result[1].isInvalid, 'pill should be valid');
+  });
+
   test('transformTextToPillData returns a complex pill for a range without a second number', function(assert) {
     const text = 'medium = 3-';
     const result = transformTextToPillData(text, { language: DEFAULT_LANGUAGES, aliases: DEFAULT_ALIASES, returnMany: true });
@@ -769,24 +828,6 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.ok(hasComplexText('x(x'), 'Missed detecting "("');
     assert.ok(hasComplexText(')'), 'Missed detecting ")"');
     assert.ok(hasComplexText('x)x'), 'Missed detecting ")"');
-    // IMPLIED OR
-    assert.ok(hasComplexText(','), 'Missed detecting ","');
-    assert.ok(hasComplexText('x,x'), 'Missed detecting ","');
-    // RANGE
-    assert.ok(hasComplexText('-'), 'Missed detecting "-"');
-    assert.ok(hasComplexText('x-x'), 'Missed detecting "-"');
-    // LENGTH
-    assert.ok(hasComplexText('length'), 'Missed detecting "length"');
-    assert.ok(hasComplexText('xlengthx'), 'Missed detecting "length"');
-    // REGEX
-    assert.ok(hasComplexText('regex'), 'Missed detecting "regex"');
-    assert.ok(hasComplexText('xregexx'), 'Missed detecting "regex"');
-    // <, <=, >, >=
-    assert.ok(hasComplexText('<'), 'Missed detecting "<"');
-    assert.ok(hasComplexText('<='), 'Missed detecting "<="');
-    assert.ok(hasComplexText('>'), 'Missed detecting ">"');
-    assert.ok(hasComplexText('>='), 'Missed detecting ">="');
-    assert.notOk(hasComplexText('='), 'Improperly detected "=" as complex');
   });
 
   test('convertTextToPillData parses half typed meta', function(assert) {

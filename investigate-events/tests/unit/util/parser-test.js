@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { DEFAULT_LANGUAGES, DEFAULT_ALIASES } from '../../helpers/redux-data-helper';
 import Scanner from 'investigate-events/util/scanner';
@@ -125,7 +125,7 @@ module('Unit | Util | Parser', function(hooks) {
 
   // Support for this is currently commented out in the parser until UI support is added.
   // This test can be used once those blocks are un-commented and UI support exists.
-  skip('correctly parses multiple values/ranges', function(assert) {
+  test('correctly parses multiple values/ranges', function(assert) {
     // medium = 3,5-7,9
     const tokens = [
       { type: LEXEMES.META, text: 'medium' },
@@ -412,7 +412,7 @@ module('Unit | Util | Parser', function(hooks) {
 
   // Support for this is currently commented out in the parser until UI support is added.
   // This test can be used once those blocks are un-commented and UI support exists.
-  skip('transformToString handles ranges and value separators', function(assert) {
+  test('transformToString handles ranges and value separators', function(assert) {
     const source = 'medium = 3,5-7,9';
     const s = new Scanner(source);
     const p = new Parser(s.scanTokens(), DEFAULT_LANGUAGES);

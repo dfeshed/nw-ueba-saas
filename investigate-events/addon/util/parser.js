@@ -371,6 +371,8 @@ class Parser {
     } else {
       let expectedType;
       let hasInvalidValue = false;
+      // Pull in the meta value ranges, which can be anything from a single value to multiple ranges
+      // of values separated by commas.
       const metaValueRanges = this._metaValueRanges();
       if (metaValueRanges.type && metaValueRanges.type === GRAMMAR.COMPLEX_FILTER) {
         // If this is a complex filter, something went wrong, pass it up.
@@ -378,13 +380,15 @@ class Parser {
         metaValueRanges.text = `${Parser.transformToString(meta)} ${Parser.transformToString(operator)} ${metaValueRanges.text}`;
         return metaValueRanges;
       }
+      // Pull out the actual values and any possible validation error. If error,
+      // it will get passed along when we return but set hasInvalidValue to make
+      // sure we return with the validation error.
       const { valueRanges } = metaValueRanges;
       let { validationError } = metaValueRanges;
       if (validationError) {
         hasInvalidValue = true;
       }
-      // If one of the values was invalid, set isInvalid
-      // Check to make sure all the values have the correct type
+      // Map the type of the meta (e.g. UInt8) to the Scanner's types (e.g. LEXEMES.INTEGER)
       if (metaConfig) {
         expectedType = VALUE_TYPE_MAP[metaConfig.format];
       }
@@ -400,6 +404,8 @@ class Parser {
         if (!expectedType) {
           return false;
         }
+        // This function checks many things about the value including a lot of
+        // exceptions and other special rules.
         let isInvalid = this._isValueTypeInvalid(range, expectedType, meta);
         if (typeof isInvalid !== 'boolean') {
           // isValueTypeInvalid will return a validation error if the value is
@@ -421,6 +427,8 @@ class Parser {
         validationError = i18n.t('queryBuilder.validationMessages.length');
       }
       if (hasInvalidValue) {
+        // If the hasInvalidValue flag is set, use either the validation error that was returned earlier from something
+        // else, or in its absence use the validation error for that value type.
         validationError = validationError || i18n.t(`queryBuilder.validationMessages.${metaConfig.format.toLowerCase()}`);
         const criteria = {
           type: GRAMMAR.CRITERIA,
@@ -455,18 +463,38 @@ class Parser {
       // If this is a complex filter, something went wrong, pass it up.
       return metaValueRange;
     }
-    const { range, validationError } = metaValueRange;
+    const { range } = metaValueRange;
+    let { validationError } = metaValueRange;
     valueRanges.push(range);
     while (this._nextTokenIsOfType([ LEXEMES.VALUE_SEPARATOR ])) {
-      // As long as the UI does not support shorthand, throw this error to get complex pills.
-      // Once support is included, uncomment the rest of this block.
-      throw new Error('Value shorthand is not yet supported');
-      // // Consume the range separator
-      // this._advance();
-      // // Add the new range to the array
-      // const { nextRange, nextValidationError } = this._metaValueRange();
-      // validationError = validationError || nextValidationError;
-      // valueRanges.push(nextRange);
+      // Consume the range separator
+      this._advance();
+      // Check to make sure a value is next
+      if (!this._nextTokenIsOfType(VALUE_TYPES)) {
+        // If it's another comma, set the validation error but continue
+        if (this._nextTokenIsOfType([ LEXEMES.VALUE_SEPARATOR ])) {
+          const i18n = lookup('service:i18n');
+          validationError = i18n.t('queryBuilder.validationMessages.extraComma');
+          // Push a null entry to get the extra comma when this is turned back to a string
+          valueRanges.push(null);
+          // Skip back to the beginning of the loop
+          continue;
+        } else {
+          // If it's not another comma, abort. If the token after is && or ||, include
+          // the next token in the complex pill we're about to create.
+          const valueString = valueRanges.map(Parser.transformToString).join(',');
+          if (this._peekNext() && this._peekNext().type === LEXEMES.AND || this._peekNext().type === LEXEMES.OR) {
+            const badToken = this._advance();
+            return this._createComplexString(`${valueString},${badToken.text}`);
+          } else {
+            return this._createComplexString(`${valueString},`);
+          }
+        }
+      }
+      // Add the new range to the array
+      const { range: nextRange, validationError: nextValidationError } = this._metaValueRange();
+      validationError = validationError || nextValidationError;
+      valueRanges.push(nextRange);
     }
     return {
       valueRanges,
@@ -569,6 +597,11 @@ class Parser {
   static transformToString(tree) {
     // Alias this method so it doesn't create super long expressions inside
     const ts = Parser.transformToString;
+    if (tree === null) {
+      // Sometimes, valueRanges contains a null entry in order to display more
+      // than one comma in a row. Don't trip on this, just return empty string.
+      return '';
+    }
     switch (tree.type) {
       case GRAMMAR.WHERE_CRITERIA:
         // Take each child, perform transformToString on them, then join together
