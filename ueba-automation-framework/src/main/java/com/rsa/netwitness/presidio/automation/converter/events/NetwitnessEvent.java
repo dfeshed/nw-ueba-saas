@@ -130,6 +130,7 @@ public abstract class NetwitnessEvent implements ConverterEventBase {
     protected String ja3;
     protected String direction;
     protected String tcp_dstport;
+    protected String tcp_srcport;
     protected String ja3s;
     protected String network;
     protected String service;
