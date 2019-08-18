@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.utils.common;
+package com.rsa.netwitness.presidio.automation.ssh;
 
 import java.util.regex.Matcher;
 

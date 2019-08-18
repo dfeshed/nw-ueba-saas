@@ -3,9 +3,10 @@ package com.rsa.netwitness.presidio.automation.utils.ade;
 
 import com.rsa.netwitness.presidio.automation.common.helpers.DateTimeHelperUtils;
 import com.rsa.netwitness.presidio.automation.domain.config.Consts;
+import com.rsa.netwitness.presidio.automation.ssh.SSHManager;
+import com.rsa.netwitness.presidio.automation.ssh.TerminalCommands;
 import com.rsa.netwitness.presidio.automation.utils.ade.inserter.AdeInserter;
 import com.rsa.netwitness.presidio.automation.utils.ade.inserter.AdeInserterFactory;
-import com.rsa.netwitness.presidio.automation.utils.common.TerminalCommands;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -25,7 +26,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import static com.rsa.netwitness.presidio.automation.common.helpers.RunCmdUtils.printLogFile;
+import static com.rsa.netwitness.presidio.automation.ssh.RunCmdUtils.printLogFile;
 
 /**
  * ADETestManager - stores, processes and monitors ADE component using ADE SDK
@@ -120,12 +121,12 @@ public class ADETestManager {
         // group_name :  [enriched-record-models or feature-aggregation-record-models(F) or smart-record-models ]
         String logPath = "/tmp/" + PRESIDIO_ADE_APP_MODELING + "_process_" + group_name + "_" + session_id + "_" + end.toString() + ".log";
 
-        Process p3 = TerminalCommands.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_MODELING + ".jar", true, Consts.PRESIDIO_DIR, "process",
+        SSHManager.Response p3 = TerminalCommands.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_MODELING + ".jar", true, Consts.PRESIDIO_DIR, "process",
                 "--group_name " + group_name, "--session_id " + session_id, "--end_date " + end.toString()
                         + " > " + logPath);
 
         printLogFile(logPath);
-        Assert.assertEquals(0, p3.exitValue(), "Shell command failed. exit value: " + p3.exitValue());
+        Assert.assertEquals(0, p3.exitCode, "Shell command failed. exit value: " + p3.exitCode);
     }
 
     public void processScoreAggr(Instant start, Instant end, String timeFrame, String schema) {
@@ -133,11 +134,11 @@ public class ADETestManager {
 
         // score raw events and builds P buckets
 
-        Process p4 = TerminalCommands.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_SCORE_AGGR + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
+        SSHManager.Response p4 = TerminalCommands.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_SCORE_AGGR + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
                 "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
                         + " > " + logPath);
         printLogFile(logPath);
-        Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue());
+        Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode);
     }
 
 
@@ -145,33 +146,33 @@ public class ADETestManager {
         String logPath = "/tmp/" + PRESIDIO_ADE_APP_MODEL_FEATURE_BUCkETS + "_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
         // builds the histograms (aggr_<feature>Histogram<context+dataSource>Daily)
         //--fixed_duration_strategy should be hourly 3600
-        Process p4 = TerminalCommands.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_MODEL_FEATURE_BUCkETS + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
+        SSHManager.Response p4 = TerminalCommands.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_MODEL_FEATURE_BUCkETS + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
                 "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
                         + " > " + logPath);
         printLogFile(logPath);
-        Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue());
+        Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode);
     }
 
     public void processFeatureAggr(Instant start, Instant end, String timeFrame, String schema) {
         String logPath = "/tmp/" + PRESIDIO_ADE_APP_FEATURE_AGGR + "_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
 
         // builds F features
-        Process p4 = TerminalCommands.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_FEATURE_AGGR + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
+        SSHManager.Response p4 = TerminalCommands.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_FEATURE_AGGR + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
                 "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
                         + " > " + logPath);
         printLogFile(logPath);
-        Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue());
+        Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode);
     }
 
     public void processAccumulateAggr(Instant start, Instant end, String schema) {
         String logPath= "/tmp/" + PRESIDIO_ADE_APP_ACCUMULATE_AGGR + "_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
         // builds F features
-        Process p4 = TerminalCommands.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_ACCUMULATE_AGGR + ".jar", true, Consts.PRESIDIO_DIR,
+        SSHManager.Response p4 = TerminalCommands.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_ACCUMULATE_AGGR + ".jar", true, Consts.PRESIDIO_DIR,
                 "run", "--schema " + schema.toUpperCase(),
                 "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy 86400  --feature_bucket_strategy 3600"
                         + " > " + logPath);
         printLogFile(logPath);
-        Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue());
+        Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode);
     }
 
 
@@ -188,23 +189,23 @@ public class ADETestManager {
         // builds F features
         String logPath = "/tmp/" + PRESIDIO_ADE_APP_SMART + "_process_" + entity + "_" + start.toString() + "_" + end.toString() + ".log";
 
-        Process p4 = TerminalCommands.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_SMART + ".jar", true, Consts.PRESIDIO_DIR, "process", "--smart_record_conf_name " + entity,
+        SSHManager.Response p4 = TerminalCommands.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_SMART + ".jar", true, Consts.PRESIDIO_DIR, "process", "--smart_record_conf_name " + entity,
                 "--start_date " + start.toString(), "--end_date " + end.toString()
                         + " > " + logPath);
 
         printLogFile(logPath);
-        Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue());
+        Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode);
     }
 
     public void processAccumulateSmart(Instant start, Instant end, String entity) {
         // builds F features
         String logPath = "/tmp/" + PRESIDIO_ADE_APP_ACCUMULATE_SMART + "_run_" + entity + "_" + start.toString() + "_" + end.toString() + ".log";
-        Process p4 = TerminalCommands.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_ACCUMULATE_SMART + ".jar", true, Consts.PRESIDIO_DIR, "run", "--smart_record_conf_name " + entity,
+        SSHManager.Response p4 = TerminalCommands.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_ACCUMULATE_SMART + ".jar", true, Consts.PRESIDIO_DIR, "run", "--smart_record_conf_name " + entity,
                 "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy 86400"
                         + " > " + logPath);
 
         printLogFile(logPath);
-        Assert.assertEquals(0, p4.exitValue(), "Shell command failed. exit value: " + p4.exitValue());
+        Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode);
     }
 
     private String getFixedDuration(String timeFrame) {

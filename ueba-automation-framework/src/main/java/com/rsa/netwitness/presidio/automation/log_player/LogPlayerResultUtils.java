@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.rsa.netwitness.presidio.automation.common.helpers.RunCmdUtils.runCmd;
+import static com.rsa.netwitness.presidio.automation.ssh.RunCmdUtils.runCmd;
 
 public class LogPlayerResultUtils {
 

@@ -3,7 +3,8 @@ package com.rsa.netwitness.presidio.automation.utils.input;
 //TODO: resolve? TESTS SHOULD NOT DEPEND ON product packages, except SDKs!
 
 import com.rsa.netwitness.presidio.automation.domain.config.Consts;
-import com.rsa.netwitness.presidio.automation.utils.common.TerminalCommands;
+import com.rsa.netwitness.presidio.automation.ssh.SSHManager;
+import com.rsa.netwitness.presidio.automation.ssh.TerminalCommands;
 import com.rsa.netwitness.presidio.automation.utils.input.inserter.InputInserter;
 import com.rsa.netwitness.presidio.automation.utils.input.inserter.InputInserterFactory;
 import fortscale.common.general.Schema;
@@ -62,9 +63,9 @@ public class InputTestManager {
      */
     public void process(Instant startDate, Instant endDate, String dataSourceType) {
         // process the data in the input_XXXXXX_raw_events collection
-        Process p = TerminalCommands.runCommand(PRESIDIO_INPUT_APP, true, Consts.PRESIDIO_DIR, "run" , "--schema " + dataSourceType, " &> /tmp/adapter_debug.log",
+        SSHManager.Response p = TerminalCommands.runCommand(PRESIDIO_INPUT_APP, true, Consts.PRESIDIO_DIR, "run" , "--schema " + dataSourceType, " &> /tmp/adapter_debug.log",
                 "--start_date " + startDate, "--end_date " + endDate);
-        Assert.assertEquals(0,p.exitValue(), "Shell command failed. exit value: " + p.exitValue());
+        Assert.assertEquals(0,p.exitCode, "Shell command failed. exit value: " + p.exitCode);
 
     }
 

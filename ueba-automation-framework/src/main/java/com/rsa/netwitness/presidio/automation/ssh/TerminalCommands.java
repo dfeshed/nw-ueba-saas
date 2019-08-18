@@ -1,5 +1,7 @@
-package com.rsa.netwitness.presidio.automation.utils.common;
+package com.rsa.netwitness.presidio.automation.ssh;
 
+
+import com.rsa.netwitness.presidio.automation.utils.common.FileCommands;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -27,12 +29,12 @@ public class TerminalCommands {
      *                runCommand(new ArrayList(Arrays.asList("Scoring","ORACLE","1479859195","12960000"),"scoring",true)
      */
 
-    public static Process runCommand(String command ,boolean wait, String executePath, String... args) {
+    public static SSHManager.Response runCommand(String command ,boolean wait, String executePath, String... args) {
         List<String> list = new ArrayList<>(Arrays.asList(args));
         return run(list,command , wait, executePath);
     }
 
-    public static Process run(List<String> args, String command, boolean wait, String executePath) {
+    public static SSHManager.Response run(List<String> args, String command, boolean wait, String executePath) {
         if (executePath.equals(""))
             executePath = targetPath;
         return runTerminalCommand(arrangeArgs(args,command) ,executePath ,wait );
@@ -56,50 +58,13 @@ public class TerminalCommands {
         return command+" "+line;
     }
 
-    public static Process runTerminalCommand(String command, String executePath, boolean wait) {
-        initOutPutProcessdump();
-        FileCommands.writeToFile(outPutfile,"************************** \n"+command);
-
+    public static SSHManager.Response runTerminalCommand(String command, String executePath, boolean wait) {
         System.out.println("Going to run the command: \n" + command);
         long commandRunTime;
-        try {
-            SSHManager sshManager = SSHManagerSingleton.INSTANCE.getSshManager();
-
-            if(sshManager.getSshHost().equals("localhost")) {
-                System.out.println("Execute path is: " + executePath);
-                File folder = new File(executePath);
-                String[] args = new String[]{"bash", "-c", command};
-                ProcessBuilder processBuilder = new ProcessBuilder(args);
-                processBuilder.redirectErrorStream(true);
-                processBuilder.redirectOutput(ProcessBuilder.Redirect.appendTo(outPutProcessdump));
-                commandRunTime = System.currentTimeMillis();
-                Process p = processBuilder.directory(folder).start();
-                if (wait) {
-                    p.waitFor();
-                    System.out.println(String.format("command was ran in %d milli seconds", (System.currentTimeMillis() - commandRunTime)));
-                    return p;
-                } else {
-                    return p;
-                }
-            }
-            else
-            {
-                System.out.println(String.format("running cmd on host: %s",sshManager.getSshHost()));
-                sshManager.connect();
-                if(executePath!=null)
-                {
-                    String cmd = String.format("cd %s && %s", executePath, command);
-                    Process process = sshManager.sendCommand(cmd);
-                    return process;
-                }
-                sshManager.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
-        return null;
+        SSHManager sshManager = SSHManagerSingleton.INSTANCE.getSshManager();
+        return sshManager.runCmd(command);
     }
+
     public static void initOutPutProcessdump(){
         outPutProcessdump = new File(outPutfile);
         if(!outPutProcessdump.exists()){

@@ -4,8 +4,9 @@ package com.rsa.netwitness.presidio.automation.utils.adapter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rsa.netwitness.presidio.automation.domain.config.Consts;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoPropertiesReader;
-import com.rsa.netwitness.presidio.automation.utils.common.SedUtil;
-import com.rsa.netwitness.presidio.automation.utils.common.TerminalCommands;
+import com.rsa.netwitness.presidio.automation.ssh.SSHManager;
+import com.rsa.netwitness.presidio.automation.ssh.SedUtil;
+import com.rsa.netwitness.presidio.automation.ssh.TerminalCommands;
 import fortscale.common.general.Schema;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -24,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static com.rsa.netwitness.presidio.automation.common.helpers.RunCmdUtils.printLogFile;
+import static com.rsa.netwitness.presidio.automation.ssh.RunCmdUtils.printLogFile;
 import static com.rsa.netwitness.presidio.automation.context.EnvironmentProperties.ENVIRONMENT_PROPERTIES;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -100,7 +101,7 @@ public class AdapterTestManager {
         String logPath = "/tmp/presidio-adapter_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
 
         // Runs adapter for entire events time range at once
-        Process adapterProcess = TerminalCommands.runCommand(flumeHome + PRESIDIO_ADAPTER_APP, true, Consts.PRESIDIO_DIR, "run",
+        SSHManager.Response adapterProcess = TerminalCommands.runCommand(flumeHome + PRESIDIO_ADAPTER_APP, true, Consts.PRESIDIO_DIR, "run",
                 "--fixed_duration_strategy " + getFixedDuration(timeFrame), "--start_date " + start.toString(), "--end_date " + end.toString(), "--schema " + schema,
                 " &> " + logPath);
 
@@ -226,8 +227,8 @@ public class AdapterTestManager {
                 + broker + " -o broker -t " + startTime.toString()
                 + " -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY PROCESS REGISTRY TLS'  -v " + alertsForwardingFlag;
 
-        Process p = TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
-        assertThat(p.exitValue()).as("Error exit code for command:\n" + command).isEqualTo(0);
+        SSHManager.Response p = TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
+        assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
     public void setEngineConfigurationParametersToTestingValues() {
@@ -236,8 +237,8 @@ public class AdapterTestManager {
 
         File file = new File(Objects.requireNonNull(url).getFile());
         String command = "sh " + file.getAbsolutePath();
-        Process p = TerminalCommands.runCommand(command, true, "");
-        assertThat(p.exitValue()).as("Error exit code for command:\n" + command).isEqualTo(0);
+        SSHManager.Response p = TerminalCommands.runCommand(command, true, "");
+        assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
     public void setTlsTimeFieldToEventTime() {
@@ -246,8 +247,8 @@ public class AdapterTestManager {
 
         File file = new File(Objects.requireNonNull(url).getFile());
         String command = "sh " + file.getAbsolutePath();
-        Process p = TerminalCommands.runCommand(command, true, "");
-        assertThat(p.exitValue()).as("Error exit code for command:\n" + command).isEqualTo(0);
+        SSHManager.Response p = TerminalCommands.runCommand(command, true, "");
+        assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
     public void  setBuildingModelsRange(int enriched_records_days  ,int feature_aggregation_records_days , int smart_records_days )  {

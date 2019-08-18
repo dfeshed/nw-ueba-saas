@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.common.helpers;
+package com.rsa.netwitness.presidio.automation.ssh;
 
 import org.slf4j.LoggerFactory;
 
@@ -39,10 +39,12 @@ public class RunCmdUtils {
     }
 
     public static void printLogFile(String logPath) {
-        List<String> strings = RunCmdUtils.runCmd("tail -n 50 " + logPath, true);
-        boolean noErrorFlag = Objects.requireNonNull(strings).stream().filter(e -> e.contains(" ERROR ")).collect(Collectors.toList()).isEmpty();
+        SSHManager sshManager = SSHManagerSingleton.INSTANCE.getSshManager();
+        SSHManager.Response response = sshManager.runCmd("tail -n 50 " + logPath);
 
-        if (!noErrorFlag) strings.forEach(e -> LOGGER.error(e));
-        else strings.forEach(e -> LOGGER.debug(e));
+        boolean noErrorFlag = Objects.requireNonNull(response.output).stream().filter(e -> e.contains(" ERROR ")).count() == 0;
+
+        if (!noErrorFlag) response.output.forEach(e -> LOGGER.error(e));
+        else response.output.forEach(e -> LOGGER.debug(e));
     }
 }

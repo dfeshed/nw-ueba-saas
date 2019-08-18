@@ -1,8 +1,8 @@
 package com.rsa.netwitness.presidio.automation.context;
 
 import com.rsa.netwitness.presidio.automation.utils.common.Lazy;
-import com.rsa.netwitness.presidio.automation.utils.common.SSHManager;
-import com.rsa.netwitness.presidio.automation.utils.common.SSHManagerSingleton;
+import com.rsa.netwitness.presidio.automation.ssh.SSHManager;
+import com.rsa.netwitness.presidio.automation.ssh.SSHManagerSingleton;
 import org.assertj.core.util.Lists;
 import org.slf4j.LoggerFactory;
 

@@ -1,6 +1,6 @@
 package com.rsa.netwitness.presidio.automation.scripts.pre_processing;
 
-import com.rsa.netwitness.presidio.automation.common.helpers.RunCmdUtils;
+import com.rsa.netwitness.presidio.automation.ssh.RunCmdUtils;
 import com.rsa.netwitness.presidio.automation.enums.ConfigurationScenario;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
 

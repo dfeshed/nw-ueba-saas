@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.utils.common;
+package com.rsa.netwitness.presidio.automation.ssh;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
@@ -10,7 +10,6 @@ import org.testng.collections.Lists;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
@@ -26,8 +25,6 @@ public class SSHManager {
 
     private JSch jschSSHChannel;
     private Session session;
-
-
     private String userName;
     private String password;
     private String host;
@@ -42,7 +39,7 @@ public class SSHManager {
         host =  AutomationConf.UEBA_HOST;
         knownHostsFileName = "";
         port = 22;
-        timeOut = 10000;
+        timeOut = 60000;
         jschSSHChannel = new JSch();
         jschSSHChannel.setKnownHosts(knownHostsFileName);
     }
@@ -64,42 +61,6 @@ public class SSHManager {
         return errorMessage;
     }
 
-
-    public String getSshHost(){
-        return host;
-    }
-
-    public Process sendCommand(String command) {
-        StringBuilder outputBuffer = new StringBuilder();
-
-        try {
-            ChannelExec channel = (ChannelExec) session.openChannel("exec");
-            channel.setCommand(command);
-            InputStream commandOutput = channel.getInputStream();
-            channel.connect();
-            int readByte = commandOutput.read();
-
-            while (readByte != 0xffffffff) {
-                outputBuffer.append((char) readByte);
-                readByte = commandOutput.read();
-            }
-
-            channel.disconnect();
-            System.out.println(outputBuffer.toString());
-            Process process = new RemoteProcess(channel.getOutputStream(), channel.getInputStream(),
-                    channel.getErrStream(), channel.getExitStatus());
-            return process;
-
-        } catch (IOException ioX) {
-            LOGGER.error("Unable to start process");
-            ioX.getMessage();
-            return null;
-        } catch (JSchException jschX) {
-            LOGGER.error("Unable to start process");
-            jschX.getMessage();
-            return null;
-        }
-    }
 
     public Response runCmd(String command) {
         return runCmd(command, false);
@@ -134,11 +95,10 @@ public class SSHManager {
             error.close();
             return new Response(channel.getExitStatus(), inputRepose, errorRepose);
 
-        } catch (IOException ioX) {
-            LOGGER.error("Unable to start process");
-            return null;
-        } catch (JSchException jschX) {
-            LOGGER.error("Unable to start process");
+        } catch (IOException | JSchException ioX) {
+            LOGGER.error("Unable to start process.");
+            LOGGER.error(this.toString());
+            ioX.printStackTrace();
             return null;
         } finally {
             close();
@@ -161,5 +121,19 @@ public class SSHManager {
         }
 
     }
+
+
+    @Override
+    public String toString() {
+        return "SSHManager{" +
+                "userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", host='" + host + '\'' +
+                ", port=" + port +
+                ", knownHostsFileName='" + knownHostsFileName + '\'' +
+                ", timeOut=" + timeOut +
+                '}';
+    }
+
 }
 

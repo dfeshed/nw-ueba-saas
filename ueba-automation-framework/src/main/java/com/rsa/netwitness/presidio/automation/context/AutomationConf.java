@@ -14,7 +14,7 @@ public class AutomationConf {
     public static final String UEBA_HOST = getEnvOrTryResolveNameElseDefault("UEBA_HOST", "localhost");
     public static final String UEBA_IP = tryToResolveIpElseDefault();
 
-    public static final String SSH_USERNAME = getEnvOrDefault("SSH_USERNAME", "precidio");
+    public static final String SSH_USERNAME = getEnvOrDefault("SSH_USERNAME", "presidio");
     public static final String SSH_PASSWORD = getEnvOrDefault("SSH_PASSWORD", "netwitness");
     public static final String SSH_ROOT_USERNAME = getEnvOrDefault("SSH_ROOT_USERNAME", "root");
     public static final String SSH_ROOT_PASSWORD = getEnvOrDefault("SSH_ROOT_PASSWORD", "netwitness");
