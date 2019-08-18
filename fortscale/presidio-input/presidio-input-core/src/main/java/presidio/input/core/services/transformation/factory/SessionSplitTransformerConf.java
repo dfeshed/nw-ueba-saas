@@ -2,7 +2,6 @@ package presidio.input.core.services.transformation.factory;
 
 import fortscale.common.general.Schema;
 import fortscale.utils.factory.FactoryConfig;
-import org.springframework.context.ApplicationContext;
 import presidio.sdk.api.domain.rawevents.TlsRawEvent;
 
 import java.time.Instant;
@@ -46,7 +45,7 @@ public class SessionSplitTransformerConf implements FactoryConfig {
         projectionFields.add(TlsRawEvent.DATE_TIME_FIELD_NAME);
         projectionFields.add(TlsRawEvent.SESSION_SPLIT_FIELD_NAME);
         projectionFields.add(TlsRawEvent.SSL_SUBJECT_FIELD_NAME);
-        projectionFields.add(TlsRawEvent.SSL_CA_FIELD_NAME);
+        projectionFields.add(TlsRawEvent.SSL_CAS_FIELD_NAME);
         return projectionFields;
     }
 
