@@ -70,7 +70,7 @@ public class SessionSplitTransformerFactory extends AbstractServiceAutowiringFac
                         if (treeSet == null) {
                             treeSet = new TreeSet<>();
                         }
-                        SessionSplitTransformerValue value = new SessionSplitTransformerValue(tlsRawEvent.getDateTime(), tlsRawEvent.getSessionSplit(), tlsRawEvent.getSslSubject(), tlsRawEvent.getSslCa(), tlsRawEvent.getJa3(), tlsRawEvent.getJa3s());
+                        SessionSplitTransformerValue value = new SessionSplitTransformerValue(tlsRawEvent.getDateTime(), tlsRawEvent.getSessionSplit(), tlsRawEvent.getSslSubject(), tlsRawEvent.getSslCas(), tlsRawEvent.getJa3(), tlsRawEvent.getJa3s());
                         treeSet.add(value);
                         return treeSet;
                     });

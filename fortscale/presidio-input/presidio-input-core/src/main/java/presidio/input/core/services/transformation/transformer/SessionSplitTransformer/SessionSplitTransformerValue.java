@@ -10,13 +10,13 @@ public class SessionSplitTransformerValue implements Comparable<SessionSplitTran
     private Instant dateTime;
     private int sessionSplit;
     private String sslSubject;
-    private List<String> sslCa;
+    private List<String> sslCas;
     private String ja3;
     private String ja3s;
 
-    public SessionSplitTransformerValue(Instant dateTime, int sessionSplit, String sslSubject, List<String> sslCa, String ja3, String ja3s) {
+    public SessionSplitTransformerValue(Instant dateTime, int sessionSplit, String sslSubject, List<String> sslCas, String ja3, String ja3s) {
         this.sslSubject = sslSubject;
-        this.sslCa = sslCa;
+        this.sslCas = sslCas;
         this.ja3 = ja3;
         this.ja3s = ja3s;
         this.dateTime = dateTime;
@@ -32,8 +32,8 @@ public class SessionSplitTransformerValue implements Comparable<SessionSplitTran
         return sslSubject;
     }
 
-    public List<String> getSslCa() {
-        return sslCa;
+    public List<String> getSslCas() {
+        return sslCas;
     }
 
     public String getJa3() {

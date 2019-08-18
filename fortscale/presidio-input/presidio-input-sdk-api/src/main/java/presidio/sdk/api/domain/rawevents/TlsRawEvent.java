@@ -30,7 +30,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     public static final String DESTINATION_PORT_FIELD_NAME = "dstPort";
     public static final String SOURCE_PORT_FIELD_NAME = "srcPort";
     public static final String FQDN_FIELD_NAME = "fqdn";
-    public static final String SSL_CA_FIELD_NAME = "sslCa";
+    public static final String SSL_CA_FIELD_NAME = "sslCas";
     public static final String SESSION_SPLIT_FIELD_NAME = "sessionSplit";
 
 
@@ -91,7 +91,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     private List<String> fqdn;
 
     @Field(SSL_CA_FIELD_NAME)
-    private List<String> sslCa;
+    private List<String> sslCas;
 
     @Field(SESSION_SPLIT_FIELD_NAME)
     private Integer sessionSplit;
@@ -120,7 +120,7 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.dstPort = other.dstPort;
         this.srcPort = other.srcPort;
         this.fqdn = other.fqdn;
-        this.sslCa = other.sslCa;
+        this.sslCas = other.sslCas;
         this.sessionSplit = other.sessionSplit;
     }
 
@@ -129,7 +129,7 @@ public class TlsRawEvent extends AbstractInputDocument {
                        String domain, String dstOrg,
                        String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
                        String dstNetname, String ja3, String ja3s, String direction, String dstPort, List<String> fqdn,
-                       List<String> sslCa, Integer sessionSplit) {
+                       List<String> sslCas, Integer sessionSplit) {
         super(dateTime, eventId, dataSource, additionalInfo);
         this.srcIp = srcIp;
         this.dstIp = dstIp;
@@ -149,7 +149,7 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.dstPort = dstPort;
         this.srcPort = srcPort;
         this.fqdn = fqdn;
-        this.sslCa = sslCa;
+        this.sslCas = sslCas;
         this.sessionSplit = sessionSplit;
     }
 
@@ -290,12 +290,12 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.fqdn = fqdn;
     }
 
-    public List<String> getSslCa() {
-        return sslCa;
+    public List<String> getSslCas() {
+        return sslCas;
     }
 
-    public void setSslCa(List<String> sslCa) {
-        this.sslCa = sslCa;
+    public void setSslCas(List<String> sslCas) {
+        this.sslCas = sslCas;
     }
 
     public Integer getSessionSplit() {
