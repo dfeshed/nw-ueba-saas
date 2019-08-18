@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.collections.Maps;
 
+import java.time.Instant;
 import java.util.*;
 
 public class AlertsStoredRecord {
@@ -35,14 +36,14 @@ public class AlertsStoredRecord {
     @Expose
     private List<Indicator> indicatorsList;
     @Expose
-    private String startDate;
+    private Instant startDate;
     @Expose
-    private String endDate;
+    private Instant endDate;
 
     public AlertsStoredRecord() {
     }
 
-    public AlertsStoredRecord(String id, String[] classification, String entityName, String[] indicatorsName, Integer indicatorsNum, String score, String feedback, String entityScoreContribution, String timeframe, String severity, String entityDocumentId, String startDate, String endDate) {
+    public AlertsStoredRecord(String id, String[] classification, String entityName, String[] indicatorsName, Integer indicatorsNum, String score, String feedback, String entityScoreContribution, String timeframe, String severity, String entityDocumentId, Instant startDate, Instant endDate) {
         this.id = id;
         this.classification = classification;
         this.entityName = entityName;
@@ -58,7 +59,7 @@ public class AlertsStoredRecord {
         this.endDate = endDate;
     }
 
-    public AlertsStoredRecord(String id, String[] classification, String entityName, String[] indicatorsName, Integer indicatorsNum, String score, String feedback, String entityScoreContribution, String timeframe, String severity, String entityDocumentId, JSONArray indicators, String startDate, String endDate) {
+    public AlertsStoredRecord(String id, String[] classification, String entityName, String[] indicatorsName, Integer indicatorsNum, String score, String feedback, String entityScoreContribution, String timeframe, String severity, String entityDocumentId, JSONArray indicators, Instant startDate, Instant endDate) {
         this.id = id;
         this.classification = classification;
         this.entityName = entityName;
@@ -194,19 +195,19 @@ public class AlertsStoredRecord {
         }
     }
 
-    public String getStartDate() {
+    public Instant getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(Instant startDate) {
         this.startDate = startDate;
     }
 
-    public String getEndDate() {
+    public Instant getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(Instant endDate) {
         this.endDate = endDate;
     }
 

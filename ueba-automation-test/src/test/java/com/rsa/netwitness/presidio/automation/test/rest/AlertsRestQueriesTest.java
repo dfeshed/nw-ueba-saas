@@ -61,7 +61,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
                 .isNotEmpty();
 
         List<Long> alertsStartDates = alerts.stream().sequential()
-                .map(e -> Long.parseLong(e.getStartDate()))
+                .map(e -> e.getStartDate().toEpochMilli())
                 .collect(Collectors.toList());
 
         assertThat(alertsStartDates)
@@ -79,7 +79,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
                 .isNotEmpty();
 
         List<Long> alertsEndDates = alerts.stream().sequential()
-                .map(e -> Long.parseLong(e.getStartDate()))
+                .map(e -> e.getStartDate().toEpochMilli())
                 .collect(Collectors.toList());
 
         assertThat(alertsEndDates)
