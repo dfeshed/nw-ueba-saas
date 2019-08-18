@@ -44,13 +44,14 @@ public class FileDateTimeAnomalies {
         return events;
     }
 
-    public static List<FileEvent> getMultipleNormalUsersActivity(String testUsersPrefix, int numberOfUsers) throws GeneratorException {
-        List<FileEvent> events = new ArrayList<>();
-        testUsersPrefix = testUsersPrefix + "_";
-        for(int i=0 ; i < numberOfUsers ; i++) {
-            String username = testUsersPrefix + i;
-            events.addAll(getNormalTimeActivity(username));
-        }
+    public static List<FileEvent> getMultipleNormalUsersActivity(String testUser) throws GeneratorException {
+        // create events id generator, use it in all event generators to ensure unique event id
+        EntityEventIDFixedPrefixGenerator eventIdGen = new EntityEventIDFixedPrefixGenerator(testUser);
+
+        List<FileEvent> events = prepareUserTimedEvents(testUser, eventIdGen, TimeScenarioTemplate.getNormalTimeGenerator());
+        ITimeGenerator myTimeGenerator =
+                new MinutesIncrementTimeGenerator(LocalTime.of(9, 30), LocalTime.of(16, 0), 90, 28, -10);
+        events.addAll(prepareUserTimedEvents(testUser, eventIdGen, myTimeGenerator));
 
         return events;
     }
