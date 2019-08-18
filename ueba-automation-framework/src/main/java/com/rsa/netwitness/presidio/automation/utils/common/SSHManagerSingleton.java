@@ -1,18 +1,18 @@
 package com.rsa.netwitness.presidio.automation.utils.common;
 
-import java.io.IOException;
+import com.jcraft.jsch.JSchException;
 
 /**
  * singleton wrapeer for {@link SSHManager}
  */
-public enum  SSHManagerSingleton {
+public enum SSHManagerSingleton {
     INSTANCE;
-    SSHManager sshManager;
+    private SSHManager sshManager;
 
     {
         try {
             sshManager = new SSHManager();
-        } catch (IOException e) {
+        } catch (JSchException e) {
             e.printStackTrace();
         }
     }

@@ -3,7 +3,6 @@ package com.rsa.netwitness.presidio.automation.common.validator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.rsa.netwitness.presidio.automation.domain.config.HostConf;
 import com.rsa.netwitness.presidio.automation.utils.common.FileCommands;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +19,8 @@ public class VerificationUtils<T> {
             LoggerFactory.getLogger(VerificationUtils.class.getName());
 
     Type type = new TypeToken<List<T>>() {}.getType();
+
+    public static boolean isGenerate = false;
 
     public VerificationUtils() {
     }
@@ -99,7 +100,7 @@ public class VerificationUtils<T> {
 
 
     public void verify(List<T> actualEvents, String expectedJsonFile) {
-        if (HostConf.isGenerate) {
+        if (isGenerate) {
             storeExpectedFromMongo(actualEvents, expectedJsonFile);
         }
         else {
@@ -109,7 +110,7 @@ public class VerificationUtils<T> {
 
     public void verify(T expectedObject, String expectedJsonFile, Type type) {
 
-        if (HostConf.isGenerate) {
+        if (isGenerate) {
             storeExpectedObject(expectedObject, expectedJsonFile, type);
         }
         else {
@@ -119,7 +120,7 @@ public class VerificationUtils<T> {
 
     public void verifyStr(String expectedString, String expectedJsonFile) {
 
-        if (HostConf.isGenerate) {
+        if (isGenerate) {
             storeExpectedString(expectedString, expectedJsonFile);
         }
         else {

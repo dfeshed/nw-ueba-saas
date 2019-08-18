@@ -21,80 +21,36 @@ public class SSHManager
 //    static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(SSHManager.class.getName());
 
     private JSch jschSSHChannel;
-    private String strUserName;
-    private String strConnectionIP;
-    private int intConnectionPort;
-    private String strPassword;
-    private Session sesConnection;
-    private int intTimeOut;
+    private Session session;
 
-    private void doCommonConstructorActions(String userName,
-                                            String password, String connectionIP, String knownHostsFileName)
-    {
+
+    private String userName;
+    private String password;
+    private String host;
+    private int port;
+    private String knownHostsFileName;
+    private int timeOut;
+
+
+    SSHManager() throws JSchException {
+        userName = AutomationConf.SSH_USERNAME;
+        password = AutomationConf.SSH_PASSWORD;
+        host =  AutomationConf.UEBA_HOST;
+        knownHostsFileName = "";
+        port = 22;
+        timeOut = 10000;
         jschSSHChannel = new JSch();
-
-        try
-        {
-            jschSSHChannel.setKnownHosts(knownHostsFileName);
-        }
-        catch(JSchException jschX)
-        {
-            logError(jschX.getMessage());
-        }
-
-        strUserName = userName;
-        strPassword = password;
-        strConnectionIP = connectionIP;
+        jschSSHChannel.setKnownHosts(knownHostsFileName);
     }
 
-    public SSHManager(String userName, String password,
-                      String connectionIP, String knownHostsFileName)
-    {
-        doCommonConstructorActions(userName, password,
-                connectionIP, knownHostsFileName);
-        intConnectionPort = 22;
-        intTimeOut = 60000;
-    }
-
-    public SSHManager() throws IOException {
-        Properties prop = new Properties();
-        prop.load(SSHManager.class.getClassLoader().getResourceAsStream("sshmanager.properties"));
-        String userName = prop.getProperty("ssh.userName");
-        String password = prop.getProperty("ssh.password");
-        String ip = prop.getProperty("ssh.connectionIP");
-        String knownHostsFileName = prop.getProperty("ssh.knownHostsFileName");
-        doCommonConstructorActions(userName,password,ip,knownHostsFileName);
-        intConnectionPort = 22;
-        intTimeOut = 60000;
-    }
-
-    public SSHManager(String userName, String password, String connectionIP,
-                      String knownHostsFileName, int connectionPort)
-    {
-        doCommonConstructorActions(userName, password, connectionIP,
-                knownHostsFileName);
-        intConnectionPort = connectionPort;
-        intTimeOut = 60000;
-    }
-
-    public SSHManager(String userName, String password, String connectionIP,
-                      String knownHostsFileName, int connectionPort, int timeOutMilliseconds)
-    {
-        doCommonConstructorActions(userName, password, connectionIP,
-                knownHostsFileName);
-        intConnectionPort = connectionPort;
-        intTimeOut = timeOutMilliseconds;
-    }
 
     public String connect()
     {
         String errorMessage = null;
 
-        try
-        {
-            sesConnection = jschSSHChannel.getSession(strUserName,
-                    strConnectionIP, intConnectionPort);
-            sesConnection.setPassword(strPassword);
+        try {
+            session = jschSSHChannel.getSession(userName, host, port);
+            session.setPassword(password);
             // UNCOMMENT THIS FOR TESTING PURPOSES, BUT DO NOT USE IN PRODUCTION
              sesConnection.setConfig("StrictHostKeyChecking", "no");
             sesConnection.connect(intTimeOut);
@@ -133,7 +89,7 @@ public class SSHManager
         StringBuilder outputBuffer = new StringBuilder();
 
         try {
-            ChannelExec channel = (ChannelExec) sesConnection.openChannel("exec");
+            ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             InputStream commandOutput = channel.getInputStream();
             channel.connect();
@@ -151,10 +107,12 @@ public class SSHManager
             return process;
 
         } catch (IOException ioX) {
-            logWarning(ioX.getMessage());
+            LOGGER.error("Unable to start process");
+            ioX.getMessage();
             return null;
         } catch (JSchException jschX) {
-            logWarning(jschX.getMessage());
+            LOGGER.error("Unable to start process");
+            jschX.getMessage();
             return null;
         }
     }
@@ -164,28 +122,17 @@ public class SSHManager
         sesConnection.disconnect();
     }
 
-    public String getStrUserName() {
-        return strUserName;
-    }
+    public class Response {
+        public final int exitCode;
+        public final List<String> output;
+        public final List<String> error;
 
-    public String getStrConnectionIP() {
-        return strConnectionIP;
-    }
+        private Response(int exitCode, List<String> output, List<String> error) {
+            this.exitCode = exitCode;
+            this.output = output;
+            this.error = error;
+        }
 
-    public int getIntConnectionPort() {
-        return intConnectionPort;
-    }
-
-    public String getStrPassword() {
-        return strPassword;
-    }
-
-    public Session getSesConnection() {
-        return sesConnection;
-    }
-
-    public int getIntTimeOut() {
-        return intTimeOut;
     }
 }
 

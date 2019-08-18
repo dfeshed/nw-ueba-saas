@@ -7,7 +7,6 @@ import com.rsa.netwitness.presidio.automation.converter.producers.MongoInputProd
 import com.rsa.netwitness.presidio.automation.converter.producers.NetwitnessEventsProducer;
 import com.rsa.netwitness.presidio.automation.domain.activedirectory.AdapterActiveDirectoryStoredData;
 import com.rsa.netwitness.presidio.automation.domain.authentication.AdapterAuthenticationStoredData;
-import com.rsa.netwitness.presidio.automation.domain.config.HostConf;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.file.AdapterFileStoredData;
@@ -651,7 +650,7 @@ public class AdapterFilteringTest extends AbstractTestNGSpringContextTests {
         expectedJsonAdapterActiveDirectory = EXPECTED_RESULTS_DIR + testName + ".json";
         expectedJsonAdapterAuthentication = EXPECTED_RESULTS_DIR + testName + ".json";
         expectedJsonAdapterFile = EXPECTED_RESULTS_DIR + testName + ".json";
-        HostConf.isGenerate = true;
+        VerificationUtils.isGenerate = true;
     }
 
     @Test

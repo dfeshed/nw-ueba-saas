@@ -65,7 +65,7 @@ public class TerminalCommands {
         try {
             SSHManager sshManager = SSHManagerSingleton.INSTANCE.getSshManager();
 
-            if(sshManager.getStrConnectionIP().equals("localhost")) {
+            if(sshManager.getSshHost().equals("localhost")) {
                 System.out.println("Execute path is: " + executePath);
                 File folder = new File(executePath);
                 String[] args = new String[]{"bash", "-c", command};
@@ -84,7 +84,7 @@ public class TerminalCommands {
             }
             else
             {
-                System.out.println(String.format("running cmd on host: %s",sshManager.getStrConnectionIP()));
+                System.out.println(String.format("running cmd on host: %s",sshManager.getSshHost()));
                 sshManager.connect();
                 if(executePath!=null)
                 {

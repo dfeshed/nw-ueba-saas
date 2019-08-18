@@ -3,8 +3,8 @@ package com.rsa.netwitness.presidio.automation.utils.output;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.rsa.netwitness.presidio.automation.context.AutomationConf;
 import com.rsa.netwitness.presidio.automation.domain.config.Consts;
-import com.rsa.netwitness.presidio.automation.domain.config.HostConf;
 import com.rsa.netwitness.presidio.automation.domain.output.*;
 import com.rsa.netwitness.presidio.automation.rest.client.RestAPI;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
@@ -64,7 +64,7 @@ public class OutputTestManager {
     public boolean updateAlertsDateTime(){
 
         String execPath = "/home/presidio/presidio-integration-test/presidio-integration-output-utils/src/test/resources/";
-        String com = "mongo " + HostConf.getServerHostname() + ":27017/presidio -u presidio -p P@ssw0rd " + execPath + "updateAlertsDateTime.js";
+        String com = "mongo " + AutomationConf.UEBA_HOST + ":27017/presidio -u presidio -p P@ssw0rd " + execPath + "updateAlertsDateTime.js";
         return sendProcessCommand(com, execPath, "");
     }
 
@@ -97,7 +97,7 @@ public class OutputTestManager {
     }
 
     public int getAlertCount() {
-        RestApiResponse response = RestAPI.sendGet("http://" + HostConf.getServerHostname() + ":9200/presidio-output/alert/_count");
+        RestApiResponse response = RestAPI.sendGet("http://" + AutomationConf.UEBA_HOST + ":9200/presidio-output/alert/_count");
         JSONObject json;
         try {
             json = new JSONObject(response.getResultBody());
@@ -143,7 +143,7 @@ public class OutputTestManager {
         if(!additionalURLInfo.startsWith("/")) {
             additionalURLInfo = "?" + additionalURLInfo;
         }
-        String url = "http://" + HostConf.getOutputRestIpAndPort() + "/alerts" + additionalURLInfo;
+        String url = "http://" + AutomationConf.getOutputRestIpAndPort() + "/alerts" + additionalURLInfo;
         if(printRequest) System.out.println("Sending request: " + url);
         RestApiResponse response = RestAPI.sendGet(url);
         Assert.assertEquals(200, response.getResponseCode(), "Error with response code --> response code = " + response.getResponseCode());
@@ -157,7 +157,7 @@ public class OutputTestManager {
     }
 
     public JSONObject sendGetAlertStatusURL(long startRange, long endRange) {
-        String url = "http://" + HostConf.getOutputRestIpAndPort() + "/alerts/statistics?start_range=" + startRange + "," + endRange;
+        String url = "http://" + AutomationConf.getOutputRestIpAndPort() + "/alerts/statistics?start_range=" + startRange + "," + endRange;
         System.out.println("Sending request: " + url);
         RestApiResponse response = RestAPI.sendGet(url);
         Assert.assertEquals(200, response.getResponseCode(), "Error with response code --> response code = " + response.getResponseCode());
@@ -196,7 +196,7 @@ public class OutputTestManager {
         RestApiResponse response;
 
         try {
-            String url = "http://" + HostConf.getOutputRestIpAndPort() + "/alerts" + additionalUrlFlags;
+            String url = "http://" + AutomationConf.getOutputRestIpAndPort() + "/alerts" + additionalUrlFlags;
             if (verbose) System.out.println("Sending request: " + url);
             response = RestAPI.sendGet(url);
             Assert.assertEquals(200, response.getResponseCode(), "Error with response code --> response code = " + response.getResponseCode());
@@ -275,7 +275,7 @@ public class OutputTestManager {
      */
 
     public JSONObject sendGetEntitiesURL(String additionalURLInfo, boolean printRequest) {
-        String url = "http://" + HostConf.getOutputRestIpAndPort() + "/entities/" + additionalURLInfo;
+        String url = "http://" + AutomationConf.getOutputRestIpAndPort() + "/entities/" + additionalURLInfo;
         if(printRequest) System.out.println("Sending request: " + url);
         RestApiResponse response = RestAPI.sendGet(url);
         Assert.assertEquals(200, response.getResponseCode(), "Error with response code --> response code = " + response.getResponseCode());
@@ -289,14 +289,14 @@ public class OutputTestManager {
     }
 
     public RestApiResponse sendApiRequest(String queryStr) {
-        String url = "http://" + HostConf.getOutputRestIpAndPort() + "/" + queryStr;
+        String url = "http://" + AutomationConf.getOutputRestIpAndPort() + "/" + queryStr;
         System.out.println("Sending request: " + url);
         RestApiResponse response = RestAPI.sendGet(url);
         return response;
     }
 
     public RestApiResponse sendApiPostRequest(String queryStr, String messageBody, boolean verbose) {
-        String url = "http://" + HostConf.getOutputRestIpAndPort() + "/" + queryStr;
+        String url = "http://" + AutomationConf.getOutputRestIpAndPort() + "/" + queryStr;
         if (verbose) System.out.println("Sending request: " + url);
         RestApiResponse response = RestAPI.sendPost(url, messageBody);
         return response;
@@ -323,7 +323,7 @@ public class OutputTestManager {
             }
         }
 
-        String url = "http://" + HostConf.getServerIpAddress() + HostConf.getOutputRestPort() + "/entities" + additionalUrlFlags;
+        String url = "http://" + AutomationConf.getOutputRestIpAndPort() + "/entities" + additionalUrlFlags;
         if(verbose) System.out.println("Sending get request: " + url);
 
         RestApiResponse response = null;
@@ -432,7 +432,7 @@ public class OutputTestManager {
     }
 
     public JSONObject getAggregationData(String aggregateBy, String collection, boolean printRequest) {
-        String url = "http://" + HostConf.getOutputRestIpAndPort() + "/" + collection + "?aggregateBy=" + aggregateBy;
+        String url = "http://" + AutomationConf.getOutputRestIpAndPort() + "/" + collection + "?aggregateBy=" + aggregateBy;
         if(printRequest) System.out.println("Sending request: " + url);
         RestApiResponse response = RestAPI.sendGet(url);
         Assert.assertEquals(200, response.getResponseCode(), "Error with response code --> response code = " + response.getResponseCode());
@@ -450,7 +450,7 @@ public class OutputTestManager {
     }
 
     private JSONObject getOutputProcessorDefault(){
-        String url = "http://" + HostConf.getServerHostname() + ":8888/output-processor/default";
+        String url = "http://" + AutomationConf.UEBA_HOST + ":8888/output-processor/default";
         RestApiResponse defaults = RestAPI.sendGet(url);
         Assert.assertEquals(200, defaults.getResponseCode(), "Error with response code --> response code = " + defaults.getResponseCode());
         JSONObject json = null;
@@ -465,7 +465,7 @@ public class OutputTestManager {
     }
 
     public JSONObject getuserScoreThresholdFromElasticSearch(){
-        String url = "http://" + HostConf.getServerHostname() + ":9200/presidio-output-user-severities-range/_search";
+        String url = "http://" + AutomationConf.UEBA_HOST + ":9200/presidio-output-user-severities-range/_search";
         RestApiResponse defaults = RestAPI.sendGet(url);
         JSONObject json = null;
 
@@ -499,7 +499,7 @@ public class OutputTestManager {
 
 
     private String buildIndicatorRequest(String alertId, String indicatorId, boolean expand) {
-        return "http://" + HostConf.getOutputRestIpAndPort() +
+        return "http://" + AutomationConf.getOutputRestIpAndPort() +
                 "/alerts/" + alertId +
                 "/indicators/" + indicatorId;
     }
@@ -529,14 +529,14 @@ public class OutputTestManager {
 
     public ResponseEntity<String> patchAlert(String alertId, String updateBody) {
 
-        URI uri = URI.create("http://" + HostConf.getOutputRestIpAndPort() + "/alerts/" + alertId);
+        URI uri = URI.create("http://" + AutomationConf.getOutputRestIpAndPort() + "/alerts/" + alertId);
         ResponseEntity<String> responseEntity = patch(uri, updateBody);
         return responseEntity;
     }
 
     public ResponseEntity<String> patchAlertComment(String alertId, String commentId, String updateBody) {
 
-        URI uri = URI.create("http://" + HostConf.getOutputRestIpAndPort() + "/alerts/" + alertId + "/comments/" + commentId);
+        URI uri = URI.create("http://" + AutomationConf.getOutputRestIpAndPort() + "/alerts/" + alertId + "/comments/" + commentId);
         ResponseEntity<String> responseEntity = patch(uri, updateBody);
         return responseEntity;
     }
@@ -560,7 +560,7 @@ public class OutputTestManager {
     }
 
     private String buildEntityRequest(String entityName) {
-        String requestUrlStr = "http://" + HostConf.getOutputRestIpAndPort() +
+        String requestUrlStr = "http://" + AutomationConf.getOutputRestIpAndPort() +
                 "/entities?expand=true&freeText=" + entityName +
                 "&isPrefix=false&pageNumber=0&pageSize=10&sortDirection=ASC";
         System.out.println(requestUrlStr);
@@ -568,21 +568,21 @@ public class OutputTestManager {
     }
 
     private String buildUserAlertsRequest(String userName) {
-        String requestUrlStr =  "http://" + HostConf.getOutputRestIpAndPort() +
+        String requestUrlStr =  "http://" + AutomationConf.getOutputRestIpAndPort() +
                 "/alerts?sortDirection=DESC&sortFieldNames=START_DATE&userName=" + userName;
         System.out.println(requestUrlStr);
         return requestUrlStr;
     }
 
     private String buildAlertRequest(String alertId) {
-        String requestUrlStr =  "http://" + HostConf.getOutputRestIpAndPort() +
+        String requestUrlStr =  "http://" + AutomationConf.getOutputRestIpAndPort() +
                 "/alerts/" + alertId + "?expand=true";
         System.out.println(requestUrlStr);
         return requestUrlStr;
     }
 
     private String buildIndicatorRequest(String alertId, String indicatorId) {
-        String requestUrlStr =  "http://" + HostConf.getOutputRestIpAndPort() +
+        String requestUrlStr =  "http://" + AutomationConf.getOutputRestIpAndPort() +
                 "/alerts/" + alertId +
                 "/indicators/" + indicatorId + "?expand=true";
         System.out.println(requestUrlStr);
@@ -590,7 +590,7 @@ public class OutputTestManager {
     }
 
     private String buildIndicatorEventsRequest(String alertId, String indicatorId) {
-        String requestUrlStr =  "http://" + HostConf.getOutputRestIpAndPort() +
+        String requestUrlStr =  "http://" + AutomationConf.getOutputRestIpAndPort() +
                 "/alerts/" + alertId +
                 "/indicators/" + indicatorId + "/events";
         System.out.println(requestUrlStr);

@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import static com.rsa.netwitness.presidio.automation.context.PostgresConfig.POSTGRES_PROPERTIES;
+import static com.rsa.netwitness.presidio.automation.context.PostgresConf.POSTGRES_PROPERTIES;
 
 class PostgresAirflowConnection {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(PostgresAirflowConnection.class.getName());
