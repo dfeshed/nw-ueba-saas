@@ -21,7 +21,7 @@ public class EnrichedTlsRecord extends EnrichedRecord {
     public static final String SOURCE_COUNTRY_FIELD_NAME = "srcCountry";
     public static final String DESTINATION_COUNTRY_FIELD_NAME = "dstCountry";
     public static final String SSL_SUBJECT_FIELD_NAME = "sslSubject";
-    public static final String SSL_CA_FIELD_NAME = "sslCas";
+    public static final String SSL_CAS_FIELD_NAME = "sslCas";
     public static final String DOMAIN_FIELD_NAME = "domain";
     public static final String DESTINATION_ORGANIZATION_FIELD_NAME = "dstOrg";
     public static final String DESTINATION_ASN_FIELD_NAME = "dstAsn";
@@ -51,7 +51,7 @@ public class EnrichedTlsRecord extends EnrichedRecord {
     @Field(SSL_SUBJECT_FIELD_NAME)
     private String sslSubject;
 
-    @Field(SSL_CA_FIELD_NAME)
+    @Field(SSL_CAS_FIELD_NAME)
     private List<String> sslCas;
 
     @Field(DOMAIN_FIELD_NAME)

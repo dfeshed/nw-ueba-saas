@@ -30,7 +30,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     public static final String DESTINATION_PORT_FIELD_NAME = "dstPort";
     public static final String SOURCE_PORT_FIELD_NAME = "srcPort";
     public static final String FQDN_FIELD_NAME = "fqdn";
-    public static final String SSL_CA_FIELD_NAME = "sslCas";
+    public static final String SSL_CAS_FIELD_NAME = "sslCas";
     public static final String SESSION_SPLIT_FIELD_NAME = "sessionSplit";
 
 
@@ -90,7 +90,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     @Field(FQDN_FIELD_NAME)
     private List<String> fqdn;
 
-    @Field(SSL_CA_FIELD_NAME)
+    @Field(SSL_CAS_FIELD_NAME)
     private List<String> sslCas;
 
     @Field(SESSION_SPLIT_FIELD_NAME)
