@@ -30,7 +30,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     public static final String DESTINATION_PORT_FIELD_NAME = "dstPort";
     public static final String SOURCE_PORT_FIELD_NAME = "srcPort";
     public static final String FQDN_FIELD_NAME = "fqdn";
-    public static final String SSL_CA_FIELD_NAME = "sslCa";
+    public static final String SSL_CAS_FIELD_NAME = "sslCas";
 
 
 
@@ -89,8 +89,8 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     @Field(FQDN_FIELD_NAME)
     private List<String> fqdn;
 
-    @Field(SSL_CA_FIELD_NAME)
-    private List<String> sslCa;
+    @Field(SSL_CAS_FIELD_NAME)
+    private List<String> sslCas;
 
 
 
@@ -102,7 +102,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
                             Domain domain, DestinationOrganization dstOrg,
                             DestinationAsn dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
                             String dstNetname, Ja3 ja3, String ja3s, String direction, DestinationPort dstPort,
-                            String srcPort, List<String> fqdn, List<String> sslCa) {
+                            String srcPort, List<String> fqdn, List<String> sslCas) {
         super(createdDate, eventDate, eventId, schema, dataSource, additionalInfo);
         this.srcIp = srcIp;
         this.dstIp = dstIp;
@@ -122,7 +122,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.dstPort = dstPort;
         this.srcPort = srcPort;
         this.fqdn = fqdn;
-        this.sslCa = sslCa;
+        this.sslCas = sslCas;
     }
 
 
@@ -263,12 +263,12 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.fqdn = fqdn;
     }
 
-    public List<String> getSslCa() {
-        return sslCa;
+    public List<String> getSslCas() {
+        return sslCas;
     }
 
-    public void setSslCa(List<String> sslCa) {
-        this.sslCa = sslCa;
+    public void setSslCas(List<String> sslCas) {
+        this.sslCas = sslCas;
     }
 
     public String getSrcPort() {

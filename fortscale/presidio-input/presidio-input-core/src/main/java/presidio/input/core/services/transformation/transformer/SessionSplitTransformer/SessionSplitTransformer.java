@@ -39,7 +39,7 @@ public class SessionSplitTransformer implements Transformer {
                             // handle missing events
                             if (value.getSessionSplit() == tlsTransformedEvent.getSessionSplit() - 1) {
                                 tlsTransformedEvent.setSslSubject(value.getSslSubject());
-                                tlsTransformedEvent.setSslCa(value.getSslCa());
+                                tlsTransformedEvent.setSslCas(value.getSslCas());
                                 tlsTransformedEvent.setJa3(value.getJa3());
                                 tlsTransformedEvent.setJa3s(value.getJa3s());
                                 value.setSessionSplit(tlsTransformedEvent.getSessionSplit());
