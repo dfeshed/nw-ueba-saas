@@ -2,6 +2,8 @@ package presidio.ade.domain.record.enriched.tls;
 
 import presidio.ade.domain.record.enriched.BaseEnrichedContext;
 
+import java.util.List;
+
 public class AdeEnrichedTlsContext extends BaseEnrichedContext {
 
 
@@ -10,6 +12,7 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
     private String srcCountry;
     private String dstCountry;
     private String sslSubject;
+    private List<String> sslCas;
     private String domain;
     private String dstOrg;
     private String dstAsn;
@@ -36,6 +39,7 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
         this.dstOrg = enrichedTlsRecord.getDstOrg();
         this.dstPort = enrichedTlsRecord.getDstPort();
         this.srcPort = enrichedTlsRecord.getSrcPort();
+        this.sslCas = enrichedTlsRecord.getSslCas();
         this.direction = enrichedTlsRecord.getDirection();
         this.ja3 = enrichedTlsRecord.getJa3();
         this.ja3s = enrichedTlsRecord.getJa3s();
@@ -163,5 +167,13 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
 
     public void setSrcPort(String srcPort) {
         this.srcPort = srcPort;
+    }
+
+    public List<String> getSslCas() {
+        return sslCas;
+    }
+
+    public void setSslCas(List<String> sslCas) {
+        this.sslCas = sslCas;
     }
 }
