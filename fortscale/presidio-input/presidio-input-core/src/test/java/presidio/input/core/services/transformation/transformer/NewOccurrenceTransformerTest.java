@@ -73,7 +73,7 @@ public class NewOccurrenceTransformerTest {
                 new DestinationCountry("dstCountry", false),
                 new SslSubject("ssl", false), new Domain("google.com", false),
                 new DestinationOrganization("dstOrg", false),
-                new DestinationAutonomousSystemNumber("dstAsn", false), 0L, 0L, "", "",
+                new DestinationAsn("dstAsn", false), 0L, 0L, "", "",
                 new Ja3("ja3", false), "", "",
                 new DestinationPort("dstPort", false), null, null, null);
     }

@@ -15,6 +15,13 @@ abstract public class NewOccurrenceWrapper {
         return isNewOccurrence;
     }
 
+    public NewOccurrenceWrapper(String name, boolean isNewOccurrence) {
+        this.name = name;
+        this.isNewOccurrence = isNewOccurrence;
+    }
+
+    public NewOccurrenceWrapper() {}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,11 +1,11 @@
 package presidio.sdk.api.domain.newoccurrencewrappers;
 
-public class Ja3 extends NewOccurrenceWrapper {
+public class DestinationAsn extends NewOccurrenceWrapper {
 
-    public Ja3(String name, boolean isNewOccurrence) {
+    public DestinationAsn(String name, boolean isNewOccurrence) {
         super(name, isNewOccurrence);
     }
 
     // Dummy constructor required for jackson deserialization
-    public Ja3() {}
+    public DestinationAsn() {}
 }

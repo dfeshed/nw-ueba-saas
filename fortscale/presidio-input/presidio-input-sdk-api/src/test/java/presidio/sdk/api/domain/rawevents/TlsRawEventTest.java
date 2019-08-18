@@ -66,7 +66,7 @@ public class TlsRawEventTest {
         return new TlsRawEvent(Instant.now(), "TLS", "dataSource", null, "", "", "", "",
                 new DestinationCountry("dstCountry", isNewOccurrence),
                 new SslSubject("ssl", isNewOccurrence), new Domain("google.com", isNewOccurrence),
-                new DestinationOrganization("dstOrg", isNewOccurrence), new DestinationAutonomousSystemNumber("dstAsn", isNewOccurrence), 0L, 0L, "", "",
+                new DestinationOrganization("dstOrg", isNewOccurrence), new DestinationAsn("dstAsn", isNewOccurrence), 0L, 0L, "", "",
                 new Ja3("ja3", isNewOccurrence), "", "",
                 new DestinationPort("dstPort", isNewOccurrence), null, null, null);
 

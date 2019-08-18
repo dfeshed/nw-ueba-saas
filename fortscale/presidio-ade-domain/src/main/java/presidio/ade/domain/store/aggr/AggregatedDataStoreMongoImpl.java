@@ -259,7 +259,7 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
         return contextFields.getFeatureNameToValue().entrySet().stream().collect(Collectors.toMap(
                 e -> {
                     String replacedFieldName;
-                    if (e.getKey().contains(CONTEXT_KEYWORD)) {
+                    if (e.getKey().startsWith(CONTEXT_KEYWORD)) {
                         replacedFieldName = CONTEXT_KEYWORD + replaceDots(e.getKey().substring(CONTEXT_KEYWORD.length()));
                     } else {
                         replacedFieldName = replaceDots(e.getKey());
