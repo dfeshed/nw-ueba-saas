@@ -59,8 +59,12 @@ public class ReflectionUtils {
      * @param clazz the class on which to find the field name
      * @param requestedFieldName the field path to look for
      */
-    public static String findFieldNameRecursively(Class clazz, String requestedFieldName) throws IllegalAccessException {
-        return findNestedObject(clazz, null, requestedFieldName, new StringBuilder()).fieldName;
+    public static String findFieldNameRecursively(Class clazz, String requestedFieldName) {
+        try {
+            return findNestedObject(clazz, null, requestedFieldName, new StringBuilder()).fieldName;
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(String.format("Exception while getting the field name of %s from %s.", requestedFieldName, clazz), e);
+        }
     }
 
     private static NestedObject findNestedObject(Class clazz, Object obj, String requestedFieldName, StringBuilder stringBuilder) throws IllegalAccessException {

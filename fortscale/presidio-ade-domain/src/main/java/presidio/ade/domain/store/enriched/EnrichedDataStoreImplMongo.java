@@ -15,13 +15,12 @@ import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.util.ReflectionUtils;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.enriched.AdeEventTypeToAdeEnrichedRecordClassResolver;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
+import presidio.sdk.api.utils.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -225,11 +224,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
      * @return field name
      */
     private String getFieldName(Class pojoClass, String name) {
-        try {
-            return presidio.sdk.api.utils.ReflectionUtils.findFieldNameRecursively(pojoClass, name);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(String.format("Exception while getting the field name of %s from %s.", name, pojoClass), e);
-        }
+        return ReflectionUtils.findFieldNameRecursively(pojoClass, name);
     }
 
     @Override
