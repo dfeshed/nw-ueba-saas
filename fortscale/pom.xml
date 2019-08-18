@@ -135,7 +135,9 @@
         <auto-service.version>1.0-rc3</auto-service.version>
         <spring-context-support.version>${spring.version}</spring-context-support.version>
         <spring-test.version>4.3.20.RELEASE</spring-test.version>
-        <jackson.version>2.9.8</jackson.version>
+        <jackson.core.version>2.9.9</jackson.core.version>
+        <jackson.databind.version>2.9.9.3</jackson.databind.version>
+        <jackson.bom.version>2.9.9.20190807</jackson.bom.version>
         <log4j.version>2.11.2</log4j.version>
         <jedis.version>2.9.0</jedis.version>
         <spring-data-redis.version>2.1.0.RELEASE</spring-data-redis.version>
@@ -223,8 +225,23 @@
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackson.databind.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson.bom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.core.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
