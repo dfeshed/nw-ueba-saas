@@ -5,7 +5,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.util.Objects;
 
-abstract public class NewOccurrenceWrapper {
+abstract public class EntityAttributes {
 
     protected String name;
     protected boolean isNewOccurrence;
@@ -18,12 +18,12 @@ abstract public class NewOccurrenceWrapper {
         return isNewOccurrence;
     }
 
-    public NewOccurrenceWrapper(String name, boolean isNewOccurrence) {
+    public EntityAttributes(String name, boolean isNewOccurrence) {
         this.name = name;
         this.isNewOccurrence = isNewOccurrence;
     }
 
-    public NewOccurrenceWrapper() {}
+    public EntityAttributes() {}
 
     @Override
     public boolean equals(Object o) {

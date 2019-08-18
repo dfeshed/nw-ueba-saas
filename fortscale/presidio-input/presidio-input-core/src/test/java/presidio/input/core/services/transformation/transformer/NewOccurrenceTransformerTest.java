@@ -58,12 +58,12 @@ public class NewOccurrenceTransformerTest {
     }
 
     private void assertNewOccurrenceTransformation(TlsRawEvent tlsRawEvent,
-                                                   NewOccurrenceWrapper newOccurrenceWrapper,
+                                                   EntityAttributes entityAttributes,
                                                    String transformFieldName) {
         NewOccurrenceTransformer occurrenceTransformer = generateNewOccurrenceTransformer(transformFieldName);
-        Assert.assertFalse(newOccurrenceWrapper.getIsNewOccurrence());
+        Assert.assertFalse(entityAttributes.getIsNewOccurrence());
         occurrenceTransformer.transform(createSingletonList(tlsRawEvent));
-        Assert.assertTrue(newOccurrenceWrapper.getIsNewOccurrence());
+        Assert.assertTrue(entityAttributes.getIsNewOccurrence());
     }
 
     private TlsRawEvent generateTlsRawEvent() {

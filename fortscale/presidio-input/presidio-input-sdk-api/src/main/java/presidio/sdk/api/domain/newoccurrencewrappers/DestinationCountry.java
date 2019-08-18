@@ -1,6 +1,6 @@
 package presidio.sdk.api.domain.newoccurrencewrappers;
 
-public class DestinationCountry extends NewOccurrenceWrapper {
+public class DestinationCountry extends EntityAttributes {
 
     public DestinationCountry(String name, boolean isNewOccurrence) {
         super(name, isNewOccurrence);
