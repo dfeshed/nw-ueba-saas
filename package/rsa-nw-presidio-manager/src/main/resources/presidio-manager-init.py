@@ -8,6 +8,11 @@ Therefore, this Python script:
 
 Author: Lior Govrin.
 """
+
+# Inject environment variables first.
+import os
+os.environ["OWB_ALLOW_NON_FIPS"] = "on"
+
 import requests
 import time
 
