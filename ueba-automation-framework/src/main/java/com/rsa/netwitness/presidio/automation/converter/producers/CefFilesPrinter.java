@@ -119,7 +119,7 @@ class CefFilesPrinter {
             event.mongoSchema().getName().concat("_").concat(instantToString(Instant.ofEpochMilli(GEN_START_TIME)));
 
     private Function<NetwitnessEvent, Path> eventFilePath = event ->
-            Paths.get(LOG_GEN_PATH.toAbsolutePath().toString(), eventFolderName.apply(event)).toAbsolutePath();
+            Paths.get(LOG_GEN_OUTPUT.toAbsolutePath().toString(), eventFolderName.apply(event)).toAbsolutePath();
 }
 
 

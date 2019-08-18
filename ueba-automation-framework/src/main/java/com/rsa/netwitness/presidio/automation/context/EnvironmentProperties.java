@@ -1,5 +1,6 @@
 package com.rsa.netwitness.presidio.automation.context;
 
+import com.rsa.netwitness.presidio.automation.utils.common.Lazy;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
@@ -10,16 +11,15 @@ import java.util.function.Supplier;
 public enum EnvironmentProperties {
     ENVIRONMENT_PROPERTIES;
 
-    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(EnvironmentProperties.class.getName());
+    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(EnvironmentProperties.class.getName());
 
     private static final String ENV_PROPERTIES_PATH = "/home/presidio/env.properties";
 
     private static final String LOG_DECODER = "log-decoder";
     private static final String ESA_ANALYTICS_SERVER = "esa-analytics-server";
     private static final String BROKER = "broker";
-
-    public Supplier<Properties> envProperties = lazily(() -> envProperties = value(load(ENV_PROPERTIES_PATH)));
+    private static final String PRESIDIO_AIRFLOW = "presidio-airflow";
+    private static final String MONGO_PRESIDIO = "mongo-presidio";
 
     public String logDecoderIp() {
         return property(LOG_DECODER);
@@ -33,32 +33,34 @@ public enum EnvironmentProperties {
         return property(BROKER);
     }
 
-
-    private String property(String propertyName) {
-        return envProperties.get().getOrDefault(propertyName, "").toString();
+    public String presidioAirflowIp() {
+        return property(PRESIDIO_AIRFLOW);
     }
 
-    private interface Lazy<T> extends Supplier<T> {
-        Supplier<T> init();
+    public String mongoPresidioIp() {
+        return property(MONGO_PRESIDIO);
+    }
 
-        default T get() {
-            return init().get();
+
+    private String property(String propertyName) {
+        Properties prop = envPropertiesHolder.getOrCompute(propertiesSupplier);
+        if (prop.isEmpty()) {
+            LOGGER.error("Failed to load Properties.");
+            return null;
+        } else {
+            return prop.getOrDefault(propertyName, "").toString();
         }
     }
 
-    private static <U> Supplier<U> lazily(Lazy<U> lazy) {
-        return lazy;
-    }
+    private Lazy<Properties> envPropertiesHolder = new Lazy<>();
 
-    private static <T> Supplier<T> value(T value) {
-        return () -> value;
-    }
+    private Supplier<Properties> propertiesSupplier = this::load;
 
-    private static Properties load(final String path) {
+    private Properties load() {
         Properties properties = new Properties();
         try {
             LOGGER.info("Loading env.properties");
-            properties.load(new FileInputStream(path));
+            properties.load(new FileInputStream(ENV_PROPERTIES_PATH));
         } catch (IOException e) {
             e.printStackTrace();
         }

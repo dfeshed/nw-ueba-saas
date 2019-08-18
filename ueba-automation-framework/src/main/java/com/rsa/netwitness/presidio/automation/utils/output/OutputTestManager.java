@@ -240,8 +240,8 @@ public class OutputTestManager {
                 String timeframe = tmp.get("timeframe").toString();
                 String severity = tmp.get("severity").toString();
                 String userId = tmp.get("entityDocumentId").toString();
-                String startDate = tmp.get("startDate").toString();
-                String endDate = tmp.get("endDate").toString();
+                Instant startDate = Instant.ofEpochMilli(tmp.getLong("startDate"));;
+                Instant endDate = Instant.ofEpochMilli(tmp.getLong("endDate"));;
 
                 AlertsStoredRecord alert;
                 if(additionalUrlFlags.toLowerCase().contains("expand=true")) {
@@ -416,7 +416,7 @@ public class OutputTestManager {
                                 tmpAlert.get("score").toString(), tmpAlert.get("feedback").toString(),
                                 tmpAlert.get("entityScoreContribution").toString(), tmpAlert.get("timeframe").toString(),
                                 tmpAlert.get("severity").toString(), tmpAlert.get("entityDocumentId").toString(),
-                                tmpAlert.get("startDate").toString(), tmpAlert.get("endDate").toString()));
+                                Instant.ofEpochMilli(tmpAlert.getLong("startDate")), Instant.ofEpochMilli(tmpAlert.getLong("endDate"))));
                     }
                 }
 

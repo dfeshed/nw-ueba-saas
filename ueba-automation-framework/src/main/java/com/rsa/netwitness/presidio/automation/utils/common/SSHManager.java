@@ -4,10 +4,15 @@ import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.rsa.netwitness.presidio.automation.context.AutomationConf;
+import org.slf4j.LoggerFactory;
+import org.testng.collections.Lists;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
+import java.io.InputStreamReader;
+import java.util.List;
 
 //import org.slf4j.LoggerFactory;
 
@@ -16,9 +21,8 @@ import java.util.Properties;
  * SSH remote command executor
  * inspired by: {@link <a>https://stackoverflow.com/questions/2405885/run-a-command-over-ssh-with-jsch</a>}
  */
-public class SSHManager
-{
-//    static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(SSHManager.class.getName());
+public class SSHManager {
+    static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(SSHManager.class.getName());
 
     private JSch jschSSHChannel;
     private Session session;
@@ -44,45 +48,25 @@ public class SSHManager
     }
 
 
-    public String connect()
-    {
+    String connect() {
         String errorMessage = null;
 
         try {
             session = jschSSHChannel.getSession(userName, host, port);
             session.setPassword(password);
             // UNCOMMENT THIS FOR TESTING PURPOSES, BUT DO NOT USE IN PRODUCTION
-             sesConnection.setConfig("StrictHostKeyChecking", "no");
-            sesConnection.connect(intTimeOut);
-        }
-        catch(JSchException jschX)
-        {
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.connect(timeOut);
+        } catch (JSchException jschX) {
             errorMessage = jschX.getMessage();
         }
 
         return errorMessage;
     }
 
-    private String logError(String errorMessage)
-    {
-        if(errorMessage != null)
-        {
-            System.out.println(String.format("ERROR %s:%d - %s",
-                    strConnectionIP, intConnectionPort, errorMessage));
-        }
 
-        return errorMessage;
-    }
-
-    private String logWarning(String warnMessage)
-    {
-        if(warnMessage != null)
-        {
-            System.out.println(String.format("WARNING %s:%d - %s",
-                    strConnectionIP, intConnectionPort, warnMessage));
-        }
-
-        return warnMessage;
+    public String getSshHost(){
+        return host;
     }
 
     public Process sendCommand(String command) {
@@ -117,9 +101,52 @@ public class SSHManager
         }
     }
 
-    public void close()
-    {
-        sesConnection.disconnect();
+    public Response runCmd(String command) {
+        return runCmd(command, false);
+    }
+
+    public Response runCmd(String command, boolean muteLogging) {
+
+        try {
+            connect();
+            ChannelExec channel = (ChannelExec) session.openChannel("exec");
+            channel.setCommand(command);
+            channel.connect();
+
+            BufferedReader input = new BufferedReader(new InputStreamReader(channel.getInputStream()));
+            BufferedReader error = new BufferedReader(new InputStreamReader(channel.getErrStream()));
+
+            String line = null;
+            List<String> errorRepose = Lists.newArrayList();
+            while ((line = error.readLine()) != null) {
+                if (!muteLogging) LOGGER.error(line);
+                errorRepose.add(line);
+            }
+
+            line = null;
+            List<String> inputRepose = Lists.newArrayList();
+            while ((line = input.readLine()) != null) {
+                if (!muteLogging) LOGGER.info(line);
+                inputRepose.add(line);
+            }
+
+            input.close();
+            error.close();
+            return new Response(channel.getExitStatus(), inputRepose, errorRepose);
+
+        } catch (IOException ioX) {
+            LOGGER.error("Unable to start process");
+            return null;
+        } catch (JSchException jschX) {
+            LOGGER.error("Unable to start process");
+            return null;
+        } finally {
+            close();
+        }
+    }
+
+    public void close() {
+        session.disconnect();
     }
 
     public class Response {
