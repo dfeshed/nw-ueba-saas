@@ -1,6 +1,9 @@
 package fortscale.aggregation.feature.bucket;
 
-import com.mongodb.*;
+import com.mongodb.Block;
+import com.mongodb.Function;
+import com.mongodb.MongoCommandException;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.DistinctIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -14,11 +17,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -33,30 +32,28 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.*;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
 
 public class FeatureBucketStoreMongoTest {
-	private MongoTemplate mongoTemplate;
-	private MongoDbBulkOpUtil mongoDbBulkOpUtil;
-	private FeatureBucketStoreMongoImpl store;
+    private MongoTemplate mongoTemplate;
+    private MongoDbBulkOpUtil mongoDbBulkOpUtil;
+    private FeatureBucketStoreMongoImpl store;
 
-	@Before
-	public void before() {
-		mongoTemplate = mock(MongoTemplate.class);
-		mongoDbBulkOpUtil = mock(MongoDbBulkOpUtil.class);
-		store = new FeatureBucketStoreMongoImpl(mongoTemplate, mongoDbBulkOpUtil, 50000);
-	}
+    @Before
+    public void before() {
+        mongoTemplate = mock(MongoTemplate.class);
+        mongoDbBulkOpUtil = mock(MongoDbBulkOpUtil.class);
+        store = new FeatureBucketStoreMongoImpl(mongoTemplate, mongoDbBulkOpUtil, 50000);
+    }
 
 
-	@Ignore
-	@Test
-	public void test_get_distinct_context_ids() {
-		FeatureBucketConf featureBucketConf = mock(FeatureBucketConf.class);
-		when(featureBucketConf.getName()).thenReturn("testFeatureBucketConf");
-		MongoCollection dbCollection = mock(MongoCollection.class);
-		when(mongoTemplate.getCollection(anyString())).thenReturn(dbCollection);
-		List<String> expected = getListOfContextIds();
-		DistinctIterable distinctIterable = new DistinctIterable() {
+    @Test
+    public void test_get_distinct_context_ids() {
+        FeatureBucketConf featureBucketConf = mock(FeatureBucketConf.class);
+        when(featureBucketConf.getName()).thenReturn("testFeatureBucketConf");
+        MongoCollection dbCollection = mock(MongoCollection.class);
+        when(mongoTemplate.getCollection(anyString())).thenReturn(dbCollection);
+        List<String> expected = getListOfContextIds();
+        DistinctIterable distinctIterable = new DistinctIterable() {
             @Override
             public DistinctIterable filter(Bson filter) {
                 return null;
@@ -103,92 +100,92 @@ public class FeatureBucketStoreMongoTest {
                 return target;
             }
         };
-		when(dbCollection.distinct(eq(FeatureBucket.CONTEXT_ID_FIELD),any(Document.class), eq(String.class))).thenReturn(distinctIterable);
-		Set<String> actual = store.getDistinctContextIds(featureBucketConf, new TimeRange(0, 0));
-		Assert.assertEquals(expected.stream().collect(Collectors.toSet()), actual);
-		verify(featureBucketConf, times(1)).getName();
-		verify(mongoTemplate, times(1)).getCollection(anyString());
-		verify(dbCollection, times(1)).distinct(eq(FeatureBucket.CONTEXT_ID_FIELD), any(Document.class), eq(String.class));
-		verifyNoMoreInteractions(mongoTemplate, mongoDbBulkOpUtil, featureBucketConf, dbCollection);
-	}
+        when(dbCollection.distinct(eq(FeatureBucket.CONTEXT_ID_FIELD), any(Document.class), eq(String.class))).thenReturn(distinctIterable);
+        Set<String> actual = store.getDistinctContextIds(featureBucketConf, new TimeRange(0, 0));
+        Assert.assertEquals(expected.stream().collect(Collectors.toSet()), actual);
+        verify(featureBucketConf, times(1)).getName();
+        verify(mongoTemplate, times(1)).getCollection(anyString());
+        verify(dbCollection, times(1)).distinct(eq(FeatureBucket.CONTEXT_ID_FIELD), any(Document.class), eq(String.class));
+        verifyNoMoreInteractions(mongoTemplate, mongoDbBulkOpUtil, featureBucketConf, dbCollection);
+    }
 
-	@Test
-	public void test_get_distinct_context_ids_after_catch() {
-		FeatureBucketConf featureBucketConf = mock(FeatureBucketConf.class);
-		AggregationResults aggregationResults = mock(AggregationResults.class);
-		when(featureBucketConf.getName()).thenReturn("testFeatureBucketConf");
-		MongoCollection dbCollection = mock(MongoCollection.class);
-		when(mongoTemplate.getCollection(anyString())).thenReturn(dbCollection);
+    @Test
+    public void test_get_distinct_context_ids_after_catch() {
+        FeatureBucketConf featureBucketConf = mock(FeatureBucketConf.class);
+        AggregationResults aggregationResults = mock(AggregationResults.class);
+        when(featureBucketConf.getName()).thenReturn("testFeatureBucketConf");
+        MongoCollection dbCollection = mock(MongoCollection.class);
+        when(mongoTemplate.getCollection(anyString())).thenReturn(dbCollection);
 
-		when(dbCollection.distinct(eq(FeatureBucket.CONTEXT_ID_FIELD), any(Document.class), eq(String.class))).thenThrow(new MongoCommandException(new BsonDocument(), new ServerAddress()));
+        when(dbCollection.distinct(eq(FeatureBucket.CONTEXT_ID_FIELD), any(Document.class), eq(String.class))).thenThrow(new MongoCommandException(new BsonDocument(), new ServerAddress()));
 
-		List<DBObject> expected = getListOfContextIdsAsDBObject();
-		when(mongoTemplate.aggregate(any(Aggregation.class), any(String.class), eq(DBObject.class))).thenReturn(aggregationResults);
-		when(aggregationResults.getMappedResults()).thenReturn(expected);
+        List<Document> expected = getListOfContextIdsAsDocuments();
+        when(mongoTemplate.aggregate(any(Aggregation.class), any(String.class), eq(Document.class))).thenReturn(aggregationResults);
+        when(aggregationResults.getMappedResults()).thenReturn(expected);
 
-		Set<String> actual = store.getDistinctContextIds(featureBucketConf, new TimeRange(0, 0));
+        Set<String> actual = store.getDistinctContextIds(featureBucketConf, new TimeRange(0, 0));
 
-		Assert.assertEquals(expected.stream().map(result -> (String) result.get(FeatureBucket.CONTEXT_ID_FIELD)).collect(Collectors.toSet()), actual);
-		verify(featureBucketConf, times(1)).getName();
-		verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), any(String.class), eq(DBObject.class));
-	}
+        Assert.assertEquals(expected.stream().map(result -> (String) result.get(FeatureBucket.CONTEXT_ID_FIELD)).collect(Collectors.toSet()), actual);
+        verify(featureBucketConf, times(1)).getName();
+        verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), any(String.class), eq(Document.class));
+    }
 
-	@Test
-	public void test_get_feature_buckets() {
-		String featureBucketConfName = "testFeatureBucketConf";
-		Set<String> contextIds = getSetOfContextIds();
-		List<FeatureBucket> expected = getListOfFeatureBuckets();
-		when(mongoTemplate.find(any(Query.class), eq(FeatureBucket.class), anyString())).thenReturn(expected);
-		List<FeatureBucket> actual = store.getFeatureBuckets(featureBucketConfName, contextIds, new TimeRange(0, 0));
+    @Test
+    public void test_get_feature_buckets() {
+        String featureBucketConfName = "testFeatureBucketConf";
+        Set<String> contextIds = getSetOfContextIds();
+        List<FeatureBucket> expected = getListOfFeatureBuckets();
+        when(mongoTemplate.find(any(Query.class), eq(FeatureBucket.class), anyString())).thenReturn(expected);
+        List<FeatureBucket> actual = store.getFeatureBuckets(featureBucketConfName, contextIds, new TimeRange(0, 0));
 
-		Assert.assertEquals(expected, actual);
-		verify(mongoTemplate, times(1)).find(any(Query.class), eq(FeatureBucket.class), anyString());
-		verifyNoMoreInteractions(mongoTemplate, mongoDbBulkOpUtil);
-	}
+        Assert.assertEquals(expected, actual);
+        verify(mongoTemplate, times(1)).find(any(Query.class), eq(FeatureBucket.class), anyString());
+        verifyNoMoreInteractions(mongoTemplate, mongoDbBulkOpUtil);
+    }
 
-	@Test
-	public void test_store_feature_bucket() {
-		FeatureBucketConf featureBucketConf = mock(FeatureBucketConf.class);
-		when(featureBucketConf.getName()).thenReturn("testFeatureBucketConf");
-		FeatureBucket featureBucket = new FeatureBucket();
-		store.storeFeatureBucket(featureBucketConf, featureBucket, new StoreMetadataProperties());
+    @Test
+    public void test_store_feature_bucket() {
+        FeatureBucketConf featureBucketConf = mock(FeatureBucketConf.class);
+        when(featureBucketConf.getName()).thenReturn("testFeatureBucketConf");
+        FeatureBucket featureBucket = new FeatureBucket();
+        store.storeFeatureBucket(featureBucketConf, featureBucket, new StoreMetadataProperties());
 
-		verify(featureBucketConf, times(1)).getName();
-		verify(mongoDbBulkOpUtil, times(1)).insertUnordered(anyList(),anyString());
-		verifyNoMoreInteractions(mongoTemplate, mongoDbBulkOpUtil, featureBucketConf);
-	}
+        verify(featureBucketConf, times(1)).getName();
+        verify(mongoDbBulkOpUtil, times(1)).insertUnordered(anyList(), anyString());
+        verifyNoMoreInteractions(mongoTemplate, mongoDbBulkOpUtil, featureBucketConf);
+    }
 
-	private static List<String> getListOfContextIds() {
-		List<String> contextIds = new LinkedList<>();
-		contextIds.add("contextId1");
-		contextIds.add("contextId2");
-		contextIds.add("contextId3");
-		return contextIds;
-	}
+    private static List<String> getListOfContextIds() {
+        List<String> contextIds = new LinkedList<>();
+        contextIds.add("contextId1");
+        contextIds.add("contextId2");
+        contextIds.add("contextId3");
+        return contextIds;
+    }
 
-	private static List<DBObject> getListOfContextIdsAsDBObject() {
-		List<DBObject> contextIds = new LinkedList<>();
-		for (int i=1; i<4; i++){
-			DBObject dbObject = new BasicDBObject();
-			dbObject.put(FeatureBucket.CONTEXT_ID_FIELD, "contextId" + i);
-			contextIds.add(dbObject);
-		}
-		return contextIds;
-	}
+    private static List<Document> getListOfContextIdsAsDocuments() {
+        List<Document> contextIds = new LinkedList<>();
+        for (int i = 1; i < 4; i++) {
+            Document document = new Document();
+            document.put(FeatureBucket.CONTEXT_ID_FIELD, "contextId" + i);
+            contextIds.add(document);
+        }
+        return contextIds;
+    }
 
-	private static Set<String> getSetOfContextIds() {
-		Set<String> contextIds = new HashSet<>();
-		contextIds.add("contextId1");
-		contextIds.add("contextId2");
-		contextIds.add("contextId3");
-		return contextIds;
-	}
+    private static Set<String> getSetOfContextIds() {
+        Set<String> contextIds = new HashSet<>();
+        contextIds.add("contextId1");
+        contextIds.add("contextId2");
+        contextIds.add("contextId3");
+        return contextIds;
+    }
 
-	private static List<FeatureBucket> getListOfFeatureBuckets() {
-		List<FeatureBucket> featureBuckets = new LinkedList<>();
-		featureBuckets.add(new FeatureBucket());
-		featureBuckets.add(new FeatureBucket());
-		featureBuckets.add(new FeatureBucket());
-		return featureBuckets;
-	}
+    private static List<FeatureBucket> getListOfFeatureBuckets() {
+        List<FeatureBucket> featureBuckets = new LinkedList<>();
+        featureBuckets.add(new FeatureBucket());
+        featureBuckets.add(new FeatureBucket());
+        featureBuckets.add(new FeatureBucket());
+        return featureBuckets;
+    }
 }

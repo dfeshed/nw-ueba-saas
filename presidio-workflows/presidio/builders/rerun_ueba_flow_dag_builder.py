@@ -1,4 +1,5 @@
 import logging
+import sys
 from copy import copy
 
 from airflow import configuration
@@ -40,7 +41,7 @@ class RerunUebaFlowDagBuilder(object):
         logging.debug("populating the rerun full flow dag")
         config_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
-        dags = get_dags()
+        dags = get_registered_presidio_dags()
         dag_ids_to_clean = map(lambda x: x.dag_id, dags)
 
         pause_dags_operator = build_pause_dags_operator(dag, dags)
@@ -75,6 +76,19 @@ class RerunUebaFlowDagBuilder(object):
         return dag
 
 
+def get_registered_presidio_dags():
+    """
+    :return: dict of DAGs (can be found in DAG's folder) that registered to AbstractDagFactory
+    :rtype: dict[str,DAG]
+    """
+    dags = []
+    dag_ids = AbstractDagFactory.get_registered_dag_ids()
+    if dag_ids:
+        dags = load_dags(dag_ids)
+
+    return dags
+
+
 @provide_session
 def load_dags(dag_ids, session=None):
     DM = DagModel
@@ -82,22 +96,9 @@ def load_dags(dag_ids, session=None):
     qry = qry.filter(DM.dag_id.in_(dag_ids))
     try:
         return qry.all()
-    except Exception:
+    except Exception as e:
         logging.error("got error while executing {} query".format(qry))
-        return None
-
-
-def get_dags():
-    """
-
-    :return: dict of DAGs (can be found in DAG's folder) and has dag_id by prefix given
-    :rtype: dict[str,DAG]
-    """
-    dags = []
-    dag_ids = AbstractDagFactory.get_registered_dag_ids()
-    if dag_ids:
-        dags = load_dags(dag_ids)
-    return dags
+        raise ValueError(e)
 
 
 def pause_dag(dag_id):
@@ -183,16 +184,22 @@ def build_pause_dags_operator(cleanup_dag, dag_models):
     return pause_dags_operator
 
 
-def build_clean_logs_operator(cleanup_dag, dag_ids):
+def get_airflow_log_folders(dag_ids):
     airflow_base_log_folder = str(configuration.get('core', 'BASE_LOG_FOLDER'))
 
-    airflow_log_folder = "{}/scheduler/".format(airflow_base_log_folder)
+    airflow_log_folders = ["{}/scheduler/".format(airflow_base_log_folder)]
     for dag_id in dag_ids:
-        airflow_log_folder = "{} {}/{}".format(airflow_log_folder, airflow_base_log_folder, dag_id)
+        airflow_log_folders.append("{}/{}".format(airflow_base_log_folder, dag_id))
 
+    return airflow_log_folders
+
+
+def build_clean_logs_operator(cleanup_dag, dag_ids):
+    airflow_log_folders_list = get_airflow_log_folders(dag_ids)
+    airflow_log_folder_str = ' '.join(airflow_log_folders_list)
     clean_logs_operator = BashOperator(task_id='clean_logs',
                                        bash_command="rm -rf {}".format(
-                                           airflow_log_folder),
+                                           airflow_log_folder_str),
                                        dag=cleanup_dag, retries=5)
     return clean_logs_operator
 

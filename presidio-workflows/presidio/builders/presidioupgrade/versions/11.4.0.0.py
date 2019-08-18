@@ -1,6 +1,24 @@
+import os
 from elasticsearch import Elasticsearch
+from presidio.utils.airflow.upgrade_utils import run_reset_presidio_for_upgrade, get_dags_ids_by_prefix
+from presidio.builders.rerun_ueba_flow_dag_builder import get_registered_presidio_dags, pause_dags, kill_dags_task_instances, \
+    cleanup_dags_from_postgres, get_airflow_log_folders
+
+# clean old full flow- logs and postgres
+full_flow_dag_ids_to_clean = get_dags_ids_by_prefix("full_flow")
+cleanup_dags_from_postgres(full_flow_dag_ids_to_clean)
+airflow_log_folders_list = get_airflow_log_folders(full_flow_dag_ids_to_clean)
+airflow_log_folder_str = ' '.join(airflow_log_folders_list)
+os.system("rm -rf {}".format(airflow_log_folder_str))
+
+# pause and kill tasks for new dags
+dags = get_registered_presidio_dags()
+dag_ids = map(lambda x: x.dag_id, dags)
+pause_dags(dag_ids)
+kill_dags_task_instances(dag_ids)
 
 
+# Change elastic indexes that will be compatible with 11.4.0.0:
 INDEX_USER = "presidio-output-user"
 DOC_TYPE_USER = "user"
 INDEX_ENTITY = "presidio-output-entity"
@@ -122,3 +140,5 @@ es.index(index=INDEX_ENTITY_SEVERITY_RANGE, doc_type=DOC_TYPE_ENTITY_SEVERITY_RA
 # Remove user severity range index
 es.indices.delete(index=INDEX_USER_SEVERITY_RANGE)
 
+# Run reset_presidio dag for upgrade
+run_reset_presidio_for_upgrade()
