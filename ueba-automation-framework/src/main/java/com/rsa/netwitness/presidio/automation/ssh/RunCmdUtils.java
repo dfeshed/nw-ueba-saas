@@ -39,10 +39,10 @@ public class RunCmdUtils {
     }
 
     public static void printLogFile(String logPath) {
-        SSHManager sshManager = SSHManagerSingleton.INSTANCE.getSshManager();
+        SSHManager sshManager = new SSHManager();
         SSHManager.Response response = sshManager.runCmd("tail -n 50 " + logPath);
 
-        boolean noErrorFlag = Objects.requireNonNull(response.output).stream().filter(e -> e.contains(" ERROR ")).count() == 0;
+        boolean noErrorFlag = Objects.requireNonNull(response.output).stream().noneMatch(e -> e.contains(" ERROR "));
 
         if (!noErrorFlag) response.output.forEach(e -> LOGGER.error(e));
         else response.output.forEach(e -> LOGGER.debug(e));

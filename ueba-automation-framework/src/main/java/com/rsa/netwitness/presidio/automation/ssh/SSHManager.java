@@ -33,7 +33,7 @@ public class SSHManager {
     private int timeOut;
 
 
-    SSHManager() throws JSchException {
+    SSHManager() {
         userName = AutomationConf.SSH_USERNAME;
         password = AutomationConf.SSH_PASSWORD;
         host =  AutomationConf.UEBA_HOST;
@@ -41,7 +41,6 @@ public class SSHManager {
         port = 22;
         timeOut = 60000;
         jschSSHChannel = new JSch();
-        jschSSHChannel.setKnownHosts(knownHostsFileName);
     }
 
 
@@ -49,9 +48,9 @@ public class SSHManager {
         String errorMessage = null;
 
         try {
+            jschSSHChannel.setKnownHosts(knownHostsFileName);
             session = jschSSHChannel.getSession(userName, host, port);
             session.setPassword(password);
-            // UNCOMMENT THIS FOR TESTING PURPOSES, BUT DO NOT USE IN PRODUCTION
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect(timeOut);
         } catch (JSchException jschX) {
