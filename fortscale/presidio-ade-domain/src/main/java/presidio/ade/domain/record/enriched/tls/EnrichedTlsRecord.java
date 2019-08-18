@@ -2,6 +2,7 @@ package presidio.ade.domain.record.enriched.tls;
 
 
 import fortscale.common.general.Schema;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -57,7 +58,7 @@ public class EnrichedTlsRecord extends EnrichedRecord {
     private DestinationOrganization dstOrg;
 
     @Field(DESTINATION_ASN_FIELD_NAME)
-    private DestinationAutonomousSystemNumber dstAsn;
+    private DestinationAsn dstAsn;
 
     @Field(NUM_OF_BYTES_SENT_FIELD_NAME)
     private Long numOfBytesSent;
@@ -88,25 +89,7 @@ public class EnrichedTlsRecord extends EnrichedRecord {
 
     @Override
     public String toString() {
-        return "EnrichedTlsRecord{" +
-                "srcIp='" + srcIp + '\'' +
-                ", dstIp='" + dstIp + '\'' +
-                ", srcCountry='" + srcCountry + '\'' +
-                ", dstCountry=" + dstCountry +
-                ", sslSubject=" + sslSubject +
-                ", domain=" + domain +
-                ", dstOrg=" + dstOrg +
-                ", dstAsn=" + dstAsn +
-                ", numOfBytesSent=" + numOfBytesSent +
-                ", numOfBytesReceived=" + numOfBytesReceived +
-                ", srcNetname='" + srcNetname + '\'' +
-                ", dstNetname='" + dstNetname + '\'' +
-                ", ja3=" + ja3 +
-                ", ja3s='" + ja3s + '\'' +
-                ", direction='" + direction + '\'' +
-                ", dstPort=" + dstPort +
-                ", srcPort='" + srcPort + '\'' +
-                '}';
+        return ReflectionToStringBuilder.toString(this);
     }
 
     public EnrichedTlsRecord(Instant startInstant) {
@@ -180,11 +163,11 @@ public class EnrichedTlsRecord extends EnrichedRecord {
         this.dstOrg = dstOrg;
     }
 
-    public DestinationAutonomousSystemNumber getDstAsn() {
+    public DestinationAsn getDstAsn() {
         return dstAsn;
     }
 
-    public void setDstAsn(DestinationAutonomousSystemNumber dstAsn) {
+    public void setDstAsn(DestinationAsn dstAsn) {
         this.dstAsn = dstAsn;
     }
 

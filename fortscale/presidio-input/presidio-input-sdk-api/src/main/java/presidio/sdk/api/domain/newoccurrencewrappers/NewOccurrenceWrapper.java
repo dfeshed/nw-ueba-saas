@@ -1,5 +1,8 @@
 package presidio.sdk.api.domain.newoccurrencewrappers;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import java.util.Objects;
 
 abstract public class NewOccurrenceWrapper {
@@ -24,11 +27,7 @@ abstract public class NewOccurrenceWrapper {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        NewOccurrenceWrapper newOccurrenceHolder = (NewOccurrenceWrapper) o;
-        return isNewOccurrence == newOccurrenceHolder.isNewOccurrence &&
-                Objects.equals(name, newOccurrenceHolder.name);
+        return EqualsBuilder.reflectionEquals(this, o);
     }
 
     @Override
@@ -38,9 +37,6 @@ abstract public class NewOccurrenceWrapper {
 
     @Override
     public String toString() {
-        return "NewOccurrenceWrapper{" +
-                "name='" + name + '\'' +
-                ", isNewOccurrence=" + isNewOccurrence +
-                '}';
+        return ToStringBuilder.reflectionToString(this);
     }
 }
