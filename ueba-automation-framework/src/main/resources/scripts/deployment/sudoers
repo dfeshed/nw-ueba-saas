@@ -135,7 +135,7 @@ presidio    ALL=(ALL)    SETENV:NOPASSWD: /usr/bin/rm -rf /var/cache/yum
 presidio    ALL=(ALL)    SETENV:NOPASSWD: /usr/bin/rm -rf /var/lib/netwitness/presidio/elasticsearch/init/data/indexes/presidio-output*
 presidio    ALL=(ALL)    SETENV:NOPASSWD: /usr/bin/grep
 presidio    ALL=(ALL)    SETENV:NOPASSWD: /usr/bin/bash /home/presidio/reset_ld_and_concentrator_hybrid_dbs.sh
-
+presidio    ALL=(ALL)    SETENV:NOPASSWD: /usr/bin/bash /home/presidio/env_properties_manager.sh
 
 # enable virtualenv install
 presidio    ALL=(root)    SETENV:NOPASSWD: /bin/python -m pip install --no-index --find-links=/var/lib/netwitness/presidio/pypackages/airflow/../virtualenv virtualenv==15.2.0
