@@ -61,8 +61,6 @@ public class TerminalCommands {
     public static SSHManager.Response runTerminalCommand(String command, String executePath, boolean wait) {
         String userDir = executePath.isEmpty() ? targetPath : executePath;
         String CMD = "cd ".concat(targetPath).concat(" ; ") + command;
-
-        System.out.println("Going to run the command: [" + CMD + "]");
         SSHManager sshManager = new SSHManager();
         return sshManager.runCmd(CMD, true);
     }

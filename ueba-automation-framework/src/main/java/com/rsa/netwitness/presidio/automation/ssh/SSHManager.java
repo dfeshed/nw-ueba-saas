@@ -70,6 +70,7 @@ public class SSHManager {
         try {
             connect();
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
+            System.out.println("\n>>> Run SSH command: [" + command + "]");
             channel.setCommand(command);
             channel.connect();
 

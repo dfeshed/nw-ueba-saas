@@ -40,11 +40,13 @@ public class RunCmdUtils {
 
     public static void printLogFile(String logPath) {
         SSHManager sshManager = new SSHManager();
-        SSHManager.Response response = sshManager.runCmd("tail -n 50 " + logPath);
+        SSHManager.Response response = sshManager.runCmd("tail -n 50 " + logPath, true);
 
-        boolean noErrorFlag = Objects.requireNonNull(response.output).stream().noneMatch(e -> e.contains(" ERROR "));
+        boolean errorFlag = Objects.requireNonNull(response.output)
+                .stream()
+                .anyMatch(e -> e.contains(" ERROR "));
 
-        if (!noErrorFlag) response.output.forEach(e -> LOGGER.error(e));
-        else response.output.forEach(e -> LOGGER.debug(e));
+        if (errorFlag) response.output.forEach(output -> LOGGER.error(output));
+            else response.output.forEach(output -> LOGGER.debug(output));
     }
 }
