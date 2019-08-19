@@ -2,8 +2,8 @@ package presidio.ade.domain.store.enriched;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
+import fortscale.utils.mongodb.util.MongoReflectionUtils;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
-import fortscale.utils.reflection.PresidioReflectionUtils;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import org.bson.Document;
@@ -37,19 +37,22 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
     private final long contextIdToNumOfItemsPageSize;
     private StoreManager storeManager;
+    private MongoReflectionUtils mongoReflectionUtils;
 
     public EnrichedDataStoreImplMongo(
             MongoTemplate mongoTemplate,
             EnrichedDataAdeToCollectionNameTranslator translator,
             AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver,
             MongoDbBulkOpUtil mongoDbBulkOpUtil,
-            long contextIdToNumOfItemsPageSize) {
+            long contextIdToNumOfItemsPageSize,
+            MongoReflectionUtils mongoReflectionUtils) {
 
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
         this.adeEventTypeToAdeEnrichedRecordClassResolver = adeEventTypeToAdeEnrichedRecordClassResolver;
         this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
         this.contextIdToNumOfItemsPageSize = contextIdToNumOfItemsPageSize;
+        this.mongoReflectionUtils = mongoReflectionUtils;
     }
 
     @Override
@@ -224,7 +227,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
      * @return field name
      */
     private String getFieldName(Class pojoClass, String name) {
-        return PresidioReflectionUtils.findFieldNameRecursively(pojoClass, name);
+        return mongoReflectionUtils.findFieldNameRecursively(pojoClass, name);
     }
 
     @Override

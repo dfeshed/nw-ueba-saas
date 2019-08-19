@@ -27,6 +27,11 @@ public class MongoDbBulkOpUtilConfig {
         return new MongoDbBulkOpUtil(cachedIsNewAwareAuditingHandler(), dynamicIndexingApplicationListener, mongoTemplate, mongoAsyncDatabase);
     }
 
+    @Bean
+    public MongoReflectionUtils mongoReflectionUtils() {
+        return new MongoReflectionUtils();
+    }
+
 
     public CachedIsNewAwareAuditingHandler cachedIsNewAwareAuditingHandler() {
         return new CachedIsNewAwareAuditingHandler(mappingContext, isNewStrategyFactory);

@@ -2,6 +2,7 @@ package presidio.ade.domain.pagination.enriched;
 
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
+import fortscale.utils.mongodb.util.MongoReflectionUtils;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
@@ -26,8 +27,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 
 /**
  * Created by mariad on 6/15/2017.
@@ -73,7 +74,7 @@ public class FakeMongoEnrichedRecordPaginationServiceTest {
 
         //create store
         EnrichedDataAdeToCollectionNameTranslator translator = new EnrichedDataAdeToCollectionNameTranslator();
-        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeEventTypeToAdeEnrichedRecordClassResolver, mongoDbBulkOpUtil, 1);
+        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeEventTypeToAdeEnrichedRecordClassResolver, mongoDbBulkOpUtil, 1, new MongoReflectionUtils());
 
         //create pagination service
         EnrichedRecordPaginationService paginationService =
@@ -112,7 +113,7 @@ public class FakeMongoEnrichedRecordPaginationServiceTest {
             assertExpectedResult(contextIdList, enrichedDlpFileRecordList, amountOfPages, results);
 
         }
-        assertTrue(results.size() == 0);
+        assertEquals(0, results.size());
     }
 
 
@@ -125,7 +126,6 @@ public class FakeMongoEnrichedRecordPaginationServiceTest {
 
         Set<String> group = new HashSet<>();
         group.add("a");
-        group.add("b");
         group.add("b");
         groups.add(new EnrichedRecordPaginationServiceGroup(3, 1, group));
 
@@ -146,8 +146,8 @@ public class FakeMongoEnrichedRecordPaginationServiceTest {
         for (EnrichedRecordPaginationServiceGroup group : results) {
             if (group.getContextIds().containsAll(contextIdSet)) {
                 int testEventsNum = enrichedDlpFileRecords.size();
-                assertTrue(group.getNumOfPages() == amountOfPages);
-                assertTrue(group.getNumOfEvents() == testEventsNum);
+                assertEquals(group.getNumOfPages(), amountOfPages);
+                assertEquals(group.getNumOfEvents(), testEventsNum);
                 itemToRemove = group;
                 break;
             }
@@ -157,7 +157,7 @@ public class FakeMongoEnrichedRecordPaginationServiceTest {
         if (itemToRemove != null) {
             results.remove(itemToRemove);
         } else {
-            assertFalse(true);
+            fail();
         }
     }
 

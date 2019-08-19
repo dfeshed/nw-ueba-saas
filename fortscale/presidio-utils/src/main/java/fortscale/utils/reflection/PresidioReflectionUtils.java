@@ -65,10 +65,10 @@ public class PresidioReflectionUtils {
      * @param clazz the class on which to find the field name
      * @param requestedFieldName the field path to look for
      */
-    public static String findFieldNameRecursively(Class clazz, String requestedFieldName) {
+    public String findFieldNameRecursively(Class clazz, String requestedFieldName) {
         return findNestedFields(clazz, requestedFieldName)
                 .stream()
-                .map(PresidioReflectionUtils::getCurrentFieldName)
+                .map(this::getConfiguredFieldName)
                 .collect(Collectors.joining(NESTED_OBJECT_DELIMITER));
     }
 
@@ -82,16 +82,8 @@ public class PresidioReflectionUtils {
         return fields;
     }
 
-   /* private static String getCurrentFieldName(Field field) {
+    protected String getConfiguredFieldName(Field field) {
         return field.getName();
-    }
-*/
-    private static String getCurrentFieldName(Field field) {
-        String fieldName = field.getName();
-        if (field.isAnnotationPresent(org.springframework.data.mongodb.core.mapping.Field.class)) {
-            fieldName = field.getAnnotation(org.springframework.data.mongodb.core.mapping.Field.class).value();
-        }
-        return fieldName;
     }
 
     private static Field getAccessibleField(Class clazz, String fieldName) {
