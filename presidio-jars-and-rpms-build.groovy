@@ -85,7 +85,13 @@ pipeline {
     agent {
         node {label 'el7 && java8'}
     }
-    options { timestamps () }
+    tools {
+            jdk env.JDK
+    }
+    options { 
+            timestamps ()
+            disableConcurrentBuilds()
+    }
     environment {
         // The credentials (name + password) associated with the RSA build user.
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
@@ -266,14 +272,14 @@ def checkoutBranch(String branchName) {
  * Maven Utilities *
  *******************/
 def mvnCleanInstall(boolean deploy, String pomFile, boolean updateSnapshots, boolean debug) {
-    sh "mvn clean install ${deploy ? "deploy" : ""} -f ${pomFile} ${updateSnapshots ? "-U" : ""} ${debug ? "-X" : ""}"
+    sh "mvn clean install ${deploy ? "deploy" : ""} -f ${pomFile} ${updateSnapshots ? "-U" : ""} ${debug ? "-X" : ""} ${params.MVN_PARAMS}"
 }
 
 def mvnCleanPackage(String deploy, String pomFile, String stability, String version, boolean updateSnapshots, boolean debug, boolean preStep) {
     if(preStep){
         sh "cp .pydistutils.cfg ~/.pydistutils.cfg"
     }
-    sh "mvn -B -f ${pomFile} -Dbuild.stability=${stability.charAt(0)} -Dbuild.version=${version} -Dpublish=${deploy} clean package ${updateSnapshots ?  "-U" : ""} ${debug ? "-X" : ""} "
+    sh "mvn -B -f ${pomFile} -Dbuild.stability=${stability.charAt(0)} -Dbuild.version=${version} -Dpublish=${deploy} clean package ${updateSnapshots ?  "-U" : ""} ${debug ? "-X" : ""} ${params.MVN_PARAMS}"
 }
 
 def extractVersionAndStabilityFromPom(pomFile){
