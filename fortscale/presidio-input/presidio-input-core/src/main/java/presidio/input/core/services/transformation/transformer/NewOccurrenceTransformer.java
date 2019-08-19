@@ -2,9 +2,9 @@ package presidio.input.core.services.transformation.transformer;
 
 import fortscale.common.general.Schema;
 import fortscale.domain.lastoccurrenceinstant.reader.LastOccurrenceInstantReader;
+import fortscale.utils.reflection.ReflectionUtils;
 import org.apache.commons.lang3.Validate;
 import presidio.sdk.api.domain.AbstractInputDocument;
-import presidio.sdk.api.utils.ReflectionUtils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -49,7 +49,7 @@ public class NewOccurrenceTransformer implements Transformer {
     }
 
     private void transform(AbstractInputDocument document) {
-        String entityId = (String)ReflectionUtils.getFieldValue(document, entityType);
+        String entityId = (String) ReflectionUtils.getFieldValue(document, entityType);
         Instant lastOccurrenceInstant = lastOccurrenceInstantReader.read(schema, entityType, entityId);
         Boolean isNewOccurrence;
 

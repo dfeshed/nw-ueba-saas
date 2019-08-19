@@ -1,4 +1,4 @@
-package presidio.sdk.api.domain.newoccurrencewrappers;
+package fortscale.domain.core.entityattributes;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;

@@ -1,7 +1,7 @@
 package presidio.input.core.services.transformation.transformer.SessionSplitTransformer;
 
+import fortscale.domain.core.entityattributes.DestinationPort;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import presidio.sdk.api.domain.newoccurrencewrappers.DestinationPort;
 
 public class SessionSplitTransformerKey {
     private String srcIp;

@@ -1,8 +1,8 @@
 package presidio.input.core.services.transformation.transformer;
 
 import fortscale.utils.logging.Logger;
+import fortscale.utils.reflection.ReflectionUtils;
 import presidio.sdk.api.domain.AbstractInputDocument;
-import presidio.sdk.api.utils.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

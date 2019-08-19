@@ -3,6 +3,7 @@ package presidio.ade.domain.store.enriched;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
+import fortscale.utils.reflection.ReflectionUtils;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import org.bson.Document;
@@ -19,7 +20,6 @@ import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.enriched.AdeEventTypeToAdeEnrichedRecordClassResolver;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
-import presidio.sdk.api.utils.ReflectionUtils;
 
 import java.time.Instant;
 import java.util.*;

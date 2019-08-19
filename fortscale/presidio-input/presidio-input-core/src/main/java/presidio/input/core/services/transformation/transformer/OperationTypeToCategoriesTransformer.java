@@ -1,10 +1,10 @@
 package presidio.input.core.services.transformation.transformer;
 
 import fortscale.utils.logging.Logger;
+import fortscale.utils.reflection.ReflectionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import presidio.sdk.api.domain.AbstractInputDocument;
-import presidio.sdk.api.utils.ReflectionUtils;
 
 import java.util.*;
 

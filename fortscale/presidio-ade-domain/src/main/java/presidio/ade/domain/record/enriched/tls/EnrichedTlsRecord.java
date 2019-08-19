@@ -2,13 +2,13 @@ package presidio.ade.domain.record.enriched.tls;
 
 
 import fortscale.common.general.Schema;
+import fortscale.domain.core.entityattributes.*;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.util.AdeRecordMetadata;
-import presidio.sdk.api.domain.newoccurrencewrappers.*;
 
 import java.time.Instant;
 import java.util.List;

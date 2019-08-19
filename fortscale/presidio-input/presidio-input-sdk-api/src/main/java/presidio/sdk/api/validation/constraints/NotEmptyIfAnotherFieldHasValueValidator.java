@@ -2,9 +2,9 @@ package presidio.sdk.api.validation.constraints;
 
 
 import fortscale.utils.logging.Logger;
+import fortscale.utils.reflection.ReflectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import presidio.sdk.api.utils.ReflectionUtils;
 import presidio.sdk.api.validation.NotEmptyIfAnotherFieldHasValue;
 
 import javax.validation.ConstraintValidator;

@@ -1,11 +1,11 @@
 package presidio.input.core.services.transformation.transformer;
 
 import fortscale.utils.logging.Logger;
+import fortscale.utils.reflection.ReflectionUtils;
 import org.springframework.util.CollectionUtils;
 import presidio.sdk.api.domain.AbstractInputDocument;
-import presidio.sdk.api.utils.ReflectionUtils;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
@@ -49,7 +49,7 @@ public class FolderPathByOperationTypeTransformer implements Transformer {
                                 logger.error("error setting one of {} {} field values", filePathFieldName, folderPathFieldName, e);
                             }
                         } else {
-                            this.folderPathTransformer.transform(Arrays.asList(document));
+                            this.folderPathTransformer.transform(Collections.singletonList(document));
                         }
                     }
                 }

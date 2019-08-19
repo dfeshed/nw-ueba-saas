@@ -1,7 +1,7 @@
 package presidio.ade.domain.record.enriched.tls;
 
+import fortscale.domain.core.entityattributes.*;
 import presidio.ade.domain.record.enriched.BaseEnrichedContext;
-import presidio.sdk.api.domain.newoccurrencewrappers.*;
 
 import java.util.List;
 

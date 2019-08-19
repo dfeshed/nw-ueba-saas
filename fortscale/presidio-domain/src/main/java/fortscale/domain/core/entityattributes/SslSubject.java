@@ -1,4 +1,4 @@
-package presidio.sdk.api.domain.newoccurrencewrappers;
+package fortscale.domain.core.entityattributes;
 
 public class SslSubject extends EntityAttributes {
 

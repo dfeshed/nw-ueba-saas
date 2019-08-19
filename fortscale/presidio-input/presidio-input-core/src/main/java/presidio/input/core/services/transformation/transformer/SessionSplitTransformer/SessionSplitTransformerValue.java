@@ -1,9 +1,7 @@
 package presidio.input.core.services.transformation.transformer.SessionSplitTransformer;
 
-
-
-import presidio.sdk.api.domain.newoccurrencewrappers.Ja3;
-import presidio.sdk.api.domain.newoccurrencewrappers.SslSubject;
+import fortscale.domain.core.entityattributes.Ja3;
+import fortscale.domain.core.entityattributes.SslSubject;
 
 import java.time.Instant;
 import java.util.List;

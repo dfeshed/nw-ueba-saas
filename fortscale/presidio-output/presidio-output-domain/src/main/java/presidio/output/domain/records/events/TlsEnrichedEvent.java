@@ -1,8 +1,8 @@
 package presidio.output.domain.records.events;
 
+import fortscale.domain.core.entityattributes.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import presidio.sdk.api.domain.newoccurrencewrappers.*;
 
 import java.time.Instant;
 import java.util.List;
