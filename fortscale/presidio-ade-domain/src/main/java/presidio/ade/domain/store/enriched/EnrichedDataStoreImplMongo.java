@@ -37,22 +37,19 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
     private final long contextIdToNumOfItemsPageSize;
     private StoreManager storeManager;
-    private MongoReflectionUtils mongoReflectionUtils;
 
     public EnrichedDataStoreImplMongo(
             MongoTemplate mongoTemplate,
             EnrichedDataAdeToCollectionNameTranslator translator,
             AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver,
             MongoDbBulkOpUtil mongoDbBulkOpUtil,
-            long contextIdToNumOfItemsPageSize,
-            MongoReflectionUtils mongoReflectionUtils) {
+            long contextIdToNumOfItemsPageSize) {
 
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
         this.adeEventTypeToAdeEnrichedRecordClassResolver = adeEventTypeToAdeEnrichedRecordClassResolver;
         this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
         this.contextIdToNumOfItemsPageSize = contextIdToNumOfItemsPageSize;
-        this.mongoReflectionUtils = mongoReflectionUtils;
     }
 
     @Override
@@ -227,7 +224,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
      * @return field name
      */
     private String getFieldName(Class pojoClass, String name) {
-        return mongoReflectionUtils.findFieldNameRecursively(pojoClass, name);
+        return MongoReflectionUtils.findFieldNameRecursively(pojoClass, name);
     }
 
     @Override

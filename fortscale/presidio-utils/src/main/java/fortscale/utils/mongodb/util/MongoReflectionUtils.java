@@ -26,14 +26,14 @@ public class MongoReflectionUtils {
      * @param clazz the class on which to find the field name
      * @param requestedFieldName the field path to look for
      */
-    public String findFieldNameRecursively(Class clazz, String requestedFieldName) {
+    public static String findFieldNameRecursively(Class clazz, String requestedFieldName) {
         return PresidioReflectionUtils.findNestedFields(clazz, requestedFieldName)
                 .stream()
-                .map(this::getConfiguredFieldName)
+                .map(MongoReflectionUtils::getConfiguredFieldName)
                 .collect(Collectors.joining(NESTED_OBJECT_DELIMITER));
     }
 
-    private String getConfiguredFieldName(Field field) {
+    private static String getConfiguredFieldName(Field field) {
         String fieldName = field.getName();
         if (field.isAnnotationPresent(org.springframework.data.mongodb.core.mapping.Field.class)) {
             fieldName = field.getAnnotation(org.springframework.data.mongodb.core.mapping.Field.class).value();

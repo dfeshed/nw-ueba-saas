@@ -2,7 +2,6 @@ package presidio.ade.domain.store.enriched;
 
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
-import fortscale.utils.mongodb.util.MongoReflectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +37,6 @@ public class EnrichedDataStoreConfig {
                 translator,
                 adeEventTypeToAdeEnrichedRecordClassResolver,
                 mongoDbBulkOpUtil,
-                contextIdToNumOfItemsPageSize,
-                new MongoReflectionUtils());
+                contextIdToNumOfItemsPageSize);
     }
 }
