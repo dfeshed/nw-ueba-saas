@@ -262,6 +262,7 @@ module('Integration | Component | events-table', function(hooks) {
       .build();
 
     await render(hbs`{{events-table-container/events-table}}`);
+    assert.notOk(find('h2[title=\'Collection Time\'] .js-move-handle')); // Collection time is not draggable
     assert.equal(findAll('.rsa-data-table-header-row div > h2 .sort-indicator .rsa-icon-arrow-up-7-filled').length, 2);
     assert.equal(findAll('.rsa-data-table-header-row div > h2 .sort-indicator.active .rsa-icon-arrow-up-7-filled').length, 1);
     assert.equal(findAll('.rsa-data-table-header-row div > h2 .sort-indicator:not(.active) .rsa-icon-arrow-up-7-filled').length, 1);

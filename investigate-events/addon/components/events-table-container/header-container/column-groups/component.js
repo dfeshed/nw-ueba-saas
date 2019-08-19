@@ -34,7 +34,7 @@ const ColumnGroups = Component.extend({
         field: 'time',
         title: 'Collection Time',
         position: 0,
-        width: 135
+        width: 175
       },
       {
         'field': 'service',

@@ -7,6 +7,7 @@ import computed from 'ember-computed-decorators';
 import HighlightsEntities from 'context/mixins/highlights-entities';
 import columnUtil from './column-util';
 import { select } from 'd3-selection';
+import { isEmpty } from '@ember/utils';
 
 // Default column width if none given.
 const DEFAULT_WIDTH = 100;
@@ -22,7 +23,7 @@ export default Component.extend(RowMixin, HighlightsEntities, {
 
   @computed('item')
   isChild(item) {
-    return !!item['session.split'];
+    return item && !isEmpty(item['session.split']);
   },
 
   @computed('item.sessionId', 'table.searchScrollIndex', 'table.searchMatches')

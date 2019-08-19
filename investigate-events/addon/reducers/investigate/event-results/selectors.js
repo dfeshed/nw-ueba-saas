@@ -226,8 +226,8 @@ export const _nestChildEvents = (events) => {
   if (isEmpty(events)) {
     return events;
   } else {
-
-    const onlyNested = events.filter((e) => {
+    const eventsCopy = [...events];
+    const onlyNested = eventsCopy.filter((e) => {
       return !isEmpty(e['session.split']);
     });
 
@@ -236,7 +236,6 @@ export const _nestChildEvents = (events) => {
       return events;
     } else {
       // create copy so not to manipulate the array being iterated over
-      const eventsCopy = [...events];
       // reverse helps with preserving sort order as events are repositioned immediately under the parent
       onlyNested.reverse().forEach((event) => {
         const parent = event['session.split'];
@@ -281,6 +280,7 @@ export const clientSortedData = createSelector(
     opts,
     requireServiceSorting
   ) => {
+
     if (!languages || requireServiceSorting || !data) {
       // client not responsible for sorting
       // return data as is

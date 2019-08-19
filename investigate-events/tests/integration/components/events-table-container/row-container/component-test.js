@@ -142,7 +142,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
   test('will set is-child', async function(assert) {
     this.setProperties({
       item: {
-        'session.split': true
+        'session.split': 0
       }
     });
 

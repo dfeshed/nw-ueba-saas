@@ -245,7 +245,6 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
     &.is-child {
       .rsa-data-table-body-cell {
-        background: background-color(neutral, dark);
         &:nth-child(2) {
           .content {
             padding-left: rsa-whitespace(more);

@@ -27,6 +27,10 @@ const columnsConfigNoTranslate = [
   {
     field: 'columnB',
     title: 'BAbc Column'
+  },
+  {
+    field: 'time',
+    title: 'Time'
   }
 ];
 const items2 = [
@@ -53,6 +57,10 @@ const columnsConfig = [
   {
     'field': 'path',
     'label': 'investigateHosts.files.fields.path'
+  },
+  {
+    'field': 'time',
+    'label': 'investigateHosts.files.fields.time'
   }
 ];
 
@@ -87,8 +95,9 @@ module('Integration | Component | rsa data table/header', function(hooks) {
       const elements = document.querySelectorAll('.ember-tether .rsa-data-table-column-selector-panel');
       const found = visible(elements);
       assert.equal(found.length, 1, 'Should show panel selector');
+      assert.equal(document.querySelectorAll('label.column-selection-time.disabled').length, 1, 'Should show disabled time');
       assert.equal(document.querySelectorAll('.search-text-field input').length, 1, 'Should show column filter');
-      assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 4, 'Displaying all available columns on column-selector');
+      assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'Displaying all available columns on column-selector');
     });
 
   });
@@ -118,7 +127,7 @@ module('Integration | Component | rsa data table/header', function(hooks) {
       const found = visible(elements);
       assert.equal(found.length, 1, 'Should show panel selector');
       assert.equal(document.querySelectorAll('.search-text-field input').length, 0, 'Should not show column filter');
-      assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 4, 'Displaying all available columns on column-selector');
+      assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 5, 'Displaying all available columns on column-selector');
     });
 
   });
@@ -142,7 +151,7 @@ module('Integration | Component | rsa data table/header', function(hooks) {
       assert.equal(found.length, 1, 'Should show panel selector');
       return settled().then(() => {
         this.set('searchTerm', 'xy');
-        assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 4, 'Displaying all available columns on column-selector');
+        assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 5, 'Displaying all available columns on column-selector');
       });
     });
 
@@ -161,7 +170,7 @@ module('Integration | Component | rsa data table/header', function(hooks) {
     `);
     await click('.rsa-data-table-header__column-selector');
     return settled().then(() => {
-      assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 4, 'Displaying all available columns on column-selector');
+      assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 5, 'Displaying all available columns on column-selector');
       this.set('searchTerm', 'xyz');
       return settled().then(() => {
         assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 2, 'Displaying all available columns on column-selector');
@@ -183,7 +192,7 @@ module('Integration | Component | rsa data table/header', function(hooks) {
     `);
     await click('.rsa-data-table-header__column-selector');
     return settled().then(() => {
-      assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 4, 'Displaying all available columns on column-selector');
+      assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 5, 'Displaying all available columns on column-selector');
       this.set('searchTerm', 'file');
       return settled().then(() => {
         assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 1, 'Displaying all available columns on column-selector');
@@ -204,7 +213,7 @@ module('Integration | Component | rsa data table/header', function(hooks) {
     `);
     await click('.rsa-data-table-header__column-selector');
     return settled().then(() => {
-      assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 4, 'Displaying all available columns on column-selector');
+      assert.equal(document.querySelectorAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 5, 'Displaying all available columns on column-selector');
       this.set('searchTerm', 'xyz');
       return settled().then(() => {
         assert.equal(text(document.querySelector('.rsa-data-table-column-selector-panel .no-matching-columns')).trim(), 'No matching columns', 'No matching columns message displayed');
