@@ -2,7 +2,6 @@ package presidio.ade.domain.pagination.enriched;
 
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
-import fortscale.utils.mongodb.util.MongoReflectionUtils;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
@@ -74,7 +73,7 @@ public class FakeMongoEnrichedRecordPaginationServiceTest {
 
         //create store
         EnrichedDataAdeToCollectionNameTranslator translator = new EnrichedDataAdeToCollectionNameTranslator();
-        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeEventTypeToAdeEnrichedRecordClassResolver, mongoDbBulkOpUtil, 1, new MongoReflectionUtils());
+        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeEventTypeToAdeEnrichedRecordClassResolver, mongoDbBulkOpUtil, 1);
 
         //create pagination service
         EnrichedRecordPaginationService paginationService =
