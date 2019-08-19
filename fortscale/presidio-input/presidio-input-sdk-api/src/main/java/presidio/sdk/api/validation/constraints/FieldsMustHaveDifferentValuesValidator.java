@@ -2,7 +2,7 @@ package presidio.sdk.api.validation.constraints;
 
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.reflection.ReflectionUtils;
+import fortscale.utils.reflection.PresidioReflectionUtils;
 import org.apache.commons.lang.StringUtils;
 import presidio.sdk.api.validation.FieldsMustHaveDifferentValues;
 
@@ -39,7 +39,7 @@ public class FieldsMustHaveDifferentValuesValidator implements ConstraintValidat
         List<Object> fieldsValue = new ArrayList<>();
 
         for (String fieldName : fieldNames) {
-            fieldsValue.add(ReflectionUtils.getFieldValue(value, fieldName));
+            fieldsValue.add(PresidioReflectionUtils.getFieldValue(value, fieldName));
         }
 
         List<Object> uniqueValues = fieldsValue.stream().distinct().collect(Collectors.toList());

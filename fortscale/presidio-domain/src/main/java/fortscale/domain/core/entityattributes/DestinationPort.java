@@ -1,11 +1,10 @@
 package fortscale.domain.core.entityattributes;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class DestinationPort extends EntityAttributes {
 
-    public DestinationPort(String name, boolean isNewOccurrence) {
-        super(name, isNewOccurrence);
+    public DestinationPort(@JsonProperty("name") String name) {
+        super(name);
     }
-
-    // Dummy constructor required for jackson deserialization
-    public DestinationPort() {}
 }

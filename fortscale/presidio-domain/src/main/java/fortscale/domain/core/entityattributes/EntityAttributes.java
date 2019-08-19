@@ -1,14 +1,22 @@
 package fortscale.domain.core.entityattributes;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.util.Objects;
 
-abstract public class EntityAttributes {
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+public abstract class EntityAttributes {
 
+    @JsonProperty("name")
     protected String name;
-    protected boolean isNewOccurrence;
+    @JsonProperty("isNewOccurrence")
+    private Boolean isNewOccurrence;
 
     public String getName() {
         return name;
@@ -18,12 +26,15 @@ abstract public class EntityAttributes {
         return isNewOccurrence;
     }
 
-    public EntityAttributes(String name, boolean isNewOccurrence) {
-        this.name = name;
-        this.isNewOccurrence = isNewOccurrence;
+    public void setNewOccurrence(Boolean newOccurrence) {
+        isNewOccurrence = newOccurrence;
     }
 
-    public EntityAttributes() {}
+    @JsonCreator
+    EntityAttributes(@JsonProperty("name") String name) {
+        Validate.notNull(name);
+        this.name = name;
+    }
 
     @Override
     public boolean equals(Object o) {

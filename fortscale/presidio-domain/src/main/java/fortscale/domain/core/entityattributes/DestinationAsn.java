@@ -1,11 +1,10 @@
 package fortscale.domain.core.entityattributes;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class DestinationAsn extends EntityAttributes {
 
-    public DestinationAsn(String name, boolean isNewOccurrence) {
-        super(name, isNewOccurrence);
+    public DestinationAsn(@JsonProperty("name") String name) {
+        super(name);
     }
-
-    // Dummy constructor required for jackson deserialization
-    public DestinationAsn() {}
 }

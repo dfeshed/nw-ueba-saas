@@ -1,7 +1,7 @@
 package presidio.input.core.services.transformation.transformer;
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.reflection.ReflectionUtils;
+import fortscale.utils.reflection.PresidioReflectionUtils;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.lang.reflect.Field;
@@ -35,7 +35,7 @@ public class JoinTransformer implements Transformer {
 
                 if (requiredFieldNameToValueMap.size() == inputFieldNames.size()) {
                     String outputFieldValue = inputFieldNames.stream().map(fieldName -> requiredFieldNameToValueMap.get(fieldName).toString()).collect(Collectors.joining(delimiter));
-                    ReflectionUtils.setFieldValue(document, outputFieldName, outputFieldValue);
+                    PresidioReflectionUtils.setFieldValue(document, outputFieldName, outputFieldValue);
                 }
             } catch (ReflectiveOperationException e) {
                 logger.error("error setting the {} field value", outputFieldName, e);
@@ -54,7 +54,7 @@ public class JoinTransformer implements Transformer {
         for (String requiredFieldName : inputFieldNames) {
             Field field = org.springframework.util.ReflectionUtils.findField(document.getClass(), requiredFieldName);
             if (field == null) throw new ReflectiveOperationException();
-            requiredFieldNameToValueMap.put(requiredFieldName, ReflectionUtils.getFieldValue(document, requiredFieldName));
+            requiredFieldNameToValueMap.put(requiredFieldName, PresidioReflectionUtils.getFieldValue(document, requiredFieldName));
         }
         return requiredFieldNameToValueMap;
     }

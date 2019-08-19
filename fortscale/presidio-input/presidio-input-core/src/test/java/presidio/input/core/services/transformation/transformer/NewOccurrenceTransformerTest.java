@@ -1,12 +1,12 @@
 package presidio.input.core.services.transformation.transformer;
 
 import fortscale.common.general.Schema;
+import fortscale.domain.core.entityattributes.*;
 import fortscale.domain.lastoccurrenceinstant.reader.LastOccurrenceInstantReader;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import presidio.sdk.api.domain.AbstractInputDocument;
-import presidio.sdk.api.domain.newoccurrencewrappers.*;
 import presidio.sdk.api.domain.rawevents.TlsRawEvent;
 
 import java.time.Duration;
@@ -61,7 +61,6 @@ public class NewOccurrenceTransformerTest {
                                                    EntityAttributes entityAttributes,
                                                    String transformFieldName) {
         NewOccurrenceTransformer occurrenceTransformer = generateNewOccurrenceTransformer(transformFieldName);
-        Assert.assertFalse(entityAttributes.getIsNewOccurrence());
         occurrenceTransformer.transform(createSingletonList(tlsRawEvent));
         Assert.assertTrue(entityAttributes.getIsNewOccurrence());
     }
@@ -70,12 +69,12 @@ public class NewOccurrenceTransformerTest {
         Instant firstInstant = Instant.now();
         Instant laterInstant = firstInstant.plusSeconds(10000L);
         return new TlsRawEvent(laterInstant, "TLS", "dataSource", null, "", "", "", "",
-                new DestinationCountry("dstCountry", false),
-                new SslSubject("ssl", false), new Domain("google.com", false),
-                new DestinationOrganization("dstOrg", false),
-                new DestinationAsn("dstAsn", false), 0L, 0L, "", "",
-                new Ja3("ja3", false), "", "",
-                new DestinationPort("dstPort", false), null, null, null);
+                new DestinationCountry("dstCountry"),
+                new SslSubject("ssl"), new Domain("google.com"),
+                new DestinationOrganization("dstOrg"),
+                new DestinationAsn("dstAsn"), 0L, 0L, "", "",
+                new Ja3("ja3"), "", "",
+                new DestinationPort("dstPort"), null, null, null);
     }
 
     private NewOccurrenceTransformer generateNewOccurrenceTransformer(String booleanFieldName) {

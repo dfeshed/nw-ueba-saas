@@ -1,11 +1,10 @@
 package fortscale.domain.core.entityattributes;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Ja3 extends EntityAttributes {
 
-    public Ja3(String name, boolean isNewOccurrence) {
-        super(name, isNewOccurrence);
+    public Ja3(@JsonProperty("name") String name) {
+        super(name);
     }
-
-    // Dummy constructor required for jackson deserialization
-    public Ja3() {}
 }

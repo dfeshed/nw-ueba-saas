@@ -2,9 +2,10 @@ package presidio.sdk.api.domain.rawevents;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import fortscale.domain.core.entityattributes.*;
 import org.junit.Test;
-import presidio.sdk.api.domain.newoccurrencewrappers.*;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -18,10 +19,10 @@ public class TlsRawEventTest {
 
     @Test
     public void testDeserialComplexObject() {
-        TlsRawEvent tlsRawEvent = createTlsRawEvent(true);
+        TlsRawEvent tlsRawEvent = createTlsRawEvent();
         try {
             String rawEventStr = objectMapper.writeValueAsString(tlsRawEvent);
-            TlsRawEvent rawEventDeserialized = objectMapper.readValue(rawEventStr, tlsRawEvent.getClass());
+            TlsRawEvent rawEventDeserialized = objectMapper.readValue(rawEventStr, TlsRawEvent.class);
             assertPojosAreEqual(tlsRawEvent, rawEventDeserialized);
         } catch (IOException e) {
             e.printStackTrace();
@@ -29,19 +30,14 @@ public class TlsRawEventTest {
         }
     }
 
-    @Test
-    public void testDeserialComplexObjectMissingOccurrenceField() {
-        TlsRawEvent tlsRawEvent = createTlsRawEvent(false);
-        try {
-            String missingOccurrenceStr = objectMapper
-                    .writeValueAsString(tlsRawEvent)
-                    .replace(",\"isNewOccurrence\":true", "");
-            TlsRawEvent rawEventDeserialized = objectMapper.readValue(missingOccurrenceStr, tlsRawEvent.getClass());
-            assertPojosAreEqual(tlsRawEvent, rawEventDeserialized);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
+    @Test(expected = InvalidDefinitionException.class)
+    public void testDeserialFailureOnMissingName() throws IOException {
+        TlsRawEvent tlsRawEvent = createTlsRawEvent();
+        String missingOccurrenceStr = objectMapper
+                .writeValueAsString(tlsRawEvent)
+                .replace("\"dstCountry\":{\"name\":\"dstCountry\",\"isNewOccurrence\":null}",
+                        "\"dstCountry\":{\"isNewOccurrence\":null}");
+        objectMapper.readValue(missingOccurrenceStr, tlsRawEvent.getClass());
     }
 
     private void assertPojosAreEqual(TlsRawEvent tlsRawEvent, TlsRawEvent rawEventDeserialized) {
@@ -62,13 +58,13 @@ public class TlsRawEventTest {
         return objectMapper;
     }
 
-    private TlsRawEvent createTlsRawEvent(boolean isNewOccurrence) {
+    private TlsRawEvent createTlsRawEvent() {
         return new TlsRawEvent(Instant.now(), "TLS", "dataSource", null, "", "", "", "",
-                new DestinationCountry("dstCountry", isNewOccurrence),
-                new SslSubject("ssl", isNewOccurrence), new Domain("google.com", isNewOccurrence),
-                new DestinationOrganization("dstOrg", isNewOccurrence), new DestinationAsn("dstAsn", isNewOccurrence), 0L, 0L, "", "",
-                new Ja3("ja3", isNewOccurrence), "", "",
-                new DestinationPort("dstPort", isNewOccurrence), null, null, null);
+                new DestinationCountry("dstCountry"),
+                new SslSubject("ssl"), new Domain("google.com"),
+                new DestinationOrganization("dstOrg"), new DestinationAsn("dstAsn"), 0L, 0L, "", "",
+                new Ja3("ja3"), "", "",
+                new DestinationPort("dstPort"), null, null, null);
 
     }
 }

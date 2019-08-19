@@ -3,7 +3,7 @@ package presidio.ade.domain.store.enriched;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
-import fortscale.utils.reflection.ReflectionUtils;
+import fortscale.utils.reflection.PresidioReflectionUtils;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import org.bson.Document;
@@ -224,7 +224,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
      * @return field name
      */
     private String getFieldName(Class pojoClass, String name) {
-        return ReflectionUtils.findFieldNameRecursively(pojoClass, name);
+        return PresidioReflectionUtils.findFieldNameRecursively(pojoClass, name);
     }
 
     @Override

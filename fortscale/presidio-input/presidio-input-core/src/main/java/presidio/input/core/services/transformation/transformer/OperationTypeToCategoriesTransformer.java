@@ -1,7 +1,7 @@
 package presidio.input.core.services.transformation.transformer;
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.reflection.ReflectionUtils;
+import fortscale.utils.reflection.PresidioReflectionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import presidio.sdk.api.domain.AbstractInputDocument;
@@ -29,19 +29,19 @@ public class OperationTypeToCategoriesTransformer implements Transformer {
 
         if (MapUtils.isNotEmpty(operationTypeCategoriesMapping)) {
             documents.forEach(inputDocument -> {
-                String operationType =  (String) ReflectionUtils.getFieldValue(inputDocument, inputOperationTypeFieldName);
+                String operationType =  (String) PresidioReflectionUtils.getFieldValue(inputDocument, inputOperationTypeFieldName);
 
                 List<String> operationTypeCategories = operationTypeCategoriesMapping.get(operationType);
 
                 if (CollectionUtils.isNotEmpty(operationTypeCategories)) {
                     Set<String> additionalCategories = new HashSet<>(operationTypeCategories);
 
-                    List<String> existingOperationTypeCategories = (List<String>) ReflectionUtils.getFieldValue(inputDocument, inputOperationTypeCategoriesFieldName);
+                    List<String> existingOperationTypeCategories = (List<String>) PresidioReflectionUtils.getFieldValue(inputDocument, inputOperationTypeCategoriesFieldName);
                     if (existingOperationTypeCategories != null) {
                         additionalCategories.addAll(existingOperationTypeCategories);
                     }
                     try {
-                        ReflectionUtils.setFieldValue(inputDocument, outputOperationTypeCategoriesFieldName, new ArrayList<>(additionalCategories));
+                        PresidioReflectionUtils.setFieldValue(inputDocument, outputOperationTypeCategoriesFieldName, new ArrayList<>(additionalCategories));
                     } catch (IllegalAccessException e) {
                         logger.error("error setting the {} field value", outputOperationTypeCategoriesFieldName, e);
                     }

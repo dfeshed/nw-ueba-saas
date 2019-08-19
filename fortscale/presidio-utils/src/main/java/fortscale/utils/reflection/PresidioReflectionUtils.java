@@ -1,9 +1,12 @@
 package fortscale.utils.reflection;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-public class ReflectionUtils {
+public class PresidioReflectionUtils {
 
     private static final String NESTED_OBJECT_DELIMITER = ".";
     private static final String NESTED_OBJECT_SPLIT_DELIMITER = "\\.";
@@ -37,8 +40,11 @@ public class ReflectionUtils {
      * @param fieldValue the value to set the object's field to
      */
     public static void setFieldValue(Object obj, String fieldName, Object fieldValue) throws IllegalAccessException {
-        NestedObject nestedObjectAndField = findNestedObject(obj.getClass(), obj, fieldName, new StringBuilder());
-        nestedObjectAndField.field.set(nestedObjectAndField.object, fieldValue);
+        List<Field> fields = findNestedFields(obj.getClass(), fieldName);
+        for (int i = 0; i < fields.size() - 1; i++) {
+            obj = fields.get(i).get(obj);
+        }
+        fields.get(fields.size() - 1).set(obj, fieldValue);
     }
 
     /**
@@ -60,50 +66,32 @@ public class ReflectionUtils {
      * @param requestedFieldName the field path to look for
      */
     public static String findFieldNameRecursively(Class clazz, String requestedFieldName) {
-        try {
-            return findNestedObject(clazz, null, requestedFieldName, new StringBuilder()).fieldName;
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(String.format("Exception while getting the field name of %s from %s.", requestedFieldName, clazz), e);
-        }
+        return findNestedFields(clazz, requestedFieldName)
+                .stream()
+                .map(PresidioReflectionUtils::getCurrentFieldName)
+                .collect(Collectors.joining(NESTED_OBJECT_DELIMITER));
     }
 
-    private static NestedObject findNestedObject(Class clazz, Object obj, String requestedFieldName, StringBuilder stringBuilder) throws IllegalAccessException {
-        if (requestedFieldName.contains(NESTED_OBJECT_DELIMITER)) {
-            String[] nestedObjects = requestedFieldName.split(NESTED_OBJECT_SPLIT_DELIMITER);
-            Field field = getAccessibleField(clazz, nestedObjects[0]);
-            Object nestedObject = obj;
-            if (obj != null) {
-                nestedObject = field.get(obj);
-            }
-            String fieldName = getCurrentFieldName(field);
-            stringBuilder.append(fieldName).append(NESTED_OBJECT_DELIMITER);
-            return findNestedObject(field.getType(), nestedObject,
-                    requestedFieldName.substring(requestedFieldName.indexOf(NESTED_OBJECT_DELIMITER) + 1), stringBuilder);
-        } else {
-            Field field = getAccessibleField(clazz, requestedFieldName);
-            String fieldName = stringBuilder.toString() + getCurrentFieldName(field);
-            return new NestedObject(obj, field, fieldName);
+    private static List<Field> findNestedFields(Class clazz, String requestedFieldName) {
+        ArrayList<Field> fields = new ArrayList<>();
+        for (String fieldName : requestedFieldName.split(NESTED_OBJECT_SPLIT_DELIMITER)) {
+            Field field = getAccessibleField(clazz, fieldName);
+            fields.add(field);
+            clazz = field.getType();
         }
+        return fields;
     }
 
+   /* private static String getCurrentFieldName(Field field) {
+        return field.getName();
+    }
+*/
     private static String getCurrentFieldName(Field field) {
         String fieldName = field.getName();
         if (field.isAnnotationPresent(org.springframework.data.mongodb.core.mapping.Field.class)) {
             fieldName = field.getAnnotation(org.springframework.data.mongodb.core.mapping.Field.class).value();
         }
         return fieldName;
-    }
-
-    private static class NestedObject {
-        private Object object;
-        private Field field;
-        private String fieldName;
-
-        NestedObject(Object object, Field field, String fieldName) {
-            this.object = object;
-            this.field = field;
-            this.fieldName = fieldName;
-        }
     }
 
     private static Field getAccessibleField(Class clazz, String fieldName) {

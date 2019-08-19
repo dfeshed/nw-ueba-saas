@@ -1,11 +1,10 @@
 package fortscale.domain.core.entityattributes;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SslSubject extends EntityAttributes {
 
-    public SslSubject(String name, boolean isNewOccurrence) {
-        super(name, isNewOccurrence);
+    public SslSubject(@JsonProperty("name") String name) {
+        super(name);
     }
-
-    // Dummy constructor required for jackson deserialization
-    public SslSubject() {}
 }

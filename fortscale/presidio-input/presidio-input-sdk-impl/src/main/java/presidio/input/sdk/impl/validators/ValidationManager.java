@@ -2,7 +2,7 @@ package presidio.input.sdk.impl.validators;
 
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.reflection.ReflectionUtils;
+import fortscale.utils.reflection.PresidioReflectionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import presidio.sdk.api.validation.InvalidInputDocument;
 import presidio.sdk.api.validation.ValidationResults;
@@ -41,7 +41,7 @@ public class ValidationManager {
                 validResults.add(document);
             } else {
                 try {
-                    final String eventIdValue = (String) ReflectionUtils.getFieldValue(document, EVENT_ID_FIELD_NAME);
+                    final String eventIdValue = (String) PresidioReflectionUtils.getFieldValue(document, EVENT_ID_FIELD_NAME);
                     logger.warn("Validation for event with id {} and eventId {} failed. There were {} violations.", document.getId(), eventIdValue, violations.size());
                 } catch (Exception e) {
                     logger.warn("Validation for event with id {} failed. There were {} violations.", document.getId(), violations.size());

@@ -1,7 +1,7 @@
 package presidio.input.core.services.transformation.transformer;
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.reflection.ReflectionUtils;
+import fortscale.utils.reflection.PresidioReflectionUtils;
 import org.springframework.util.CollectionUtils;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
@@ -30,7 +30,7 @@ public class FolderPathByOperationTypeTransformer implements Transformer {
     }
 
     @Override
-    /**
+    /*
      * If the events operation type is in the folderOperations list the received path is a folder path.
      * If the events operation type is not in the list - extract the folder path from the received path.
      */
@@ -38,13 +38,13 @@ public class FolderPathByOperationTypeTransformer implements Transformer {
 
         documents.forEach((AbstractInputDocument document) -> {
 
-                    String filePathValue = (String) ReflectionUtils.getFieldValue(document, inputPathFieldName);
+                    String filePathValue = (String) PresidioReflectionUtils.getFieldValue(document, inputPathFieldName);
 
                     if (isNotBlank(filePathValue)) {
                         if (isFolderOperation(document)) {
                             try {
-                                ReflectionUtils.setFieldValue(document, folderPathFieldName, filePathValue);
-                                ReflectionUtils.setFieldValue(document, filePathFieldName, null);
+                                PresidioReflectionUtils.setFieldValue(document, folderPathFieldName, filePathValue);
+                                PresidioReflectionUtils.setFieldValue(document, filePathFieldName, null);
                             } catch (IllegalAccessException e) {
                                 logger.error("error setting one of {} {} field values", filePathFieldName, folderPathFieldName, e);
                             }
@@ -59,7 +59,7 @@ public class FolderPathByOperationTypeTransformer implements Transformer {
     }
 
     private boolean isFolderOperation(AbstractInputDocument document) {
-        String operationType = (String) ReflectionUtils.getFieldValue(document, operationTypeFieldName);
+        String operationType = (String) PresidioReflectionUtils.getFieldValue(document, operationTypeFieldName);
         return CollectionUtils.contains(folderOperations.iterator(), operationType);
     }
 }

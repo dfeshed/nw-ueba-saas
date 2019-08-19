@@ -1,7 +1,7 @@
 package presidio.input.core.services.transformation.transformer;
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.reflection.ReflectionUtils;
+import fortscale.utils.reflection.PresidioReflectionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import presidio.sdk.api.domain.AbstractInputDocument;
@@ -28,7 +28,7 @@ public class OperationTypeCategoriesHierarchyTransformer implements Transformer 
         if (MapUtils.isNotEmpty(operationTypeCategoriesHierarchyMapping)) {
             documents.forEach((AbstractInputDocument inputDocument) -> {
 
-                List<String> operationTypeCategories =  (List<String>) ReflectionUtils.getFieldValue(inputDocument, inputFieldName);
+                List<String> operationTypeCategories =  (List<String>) PresidioReflectionUtils.getFieldValue(inputDocument, inputFieldName);
 
                 if (CollectionUtils.isNotEmpty(operationTypeCategories)) {
                     Set<String> additionalCategories = new HashSet<>();
@@ -37,7 +37,7 @@ public class OperationTypeCategoriesHierarchyTransformer implements Transformer 
                     if (CollectionUtils.isNotEmpty(additionalCategories)) {
                         additionalCategories.addAll(operationTypeCategories);
                         try {
-                            ReflectionUtils.setFieldValue(inputDocument, outputFieldName, new ArrayList<>(additionalCategories));
+                            PresidioReflectionUtils.setFieldValue(inputDocument, outputFieldName, new ArrayList<>(additionalCategories));
                         } catch (IllegalAccessException e) {
                             logger.error("error setting the {} field value", outputFieldName, e);
                         }

@@ -1,7 +1,7 @@
 package presidio.input.core.services.transformation.transformer;
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.reflection.ReflectionUtils;
+import fortscale.utils.reflection.PresidioReflectionUtils;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class RegexTransformer implements Transformer {
 
         documents.forEach((AbstractInputDocument document) -> {
 
-                    String filePathValue = (String) ReflectionUtils.getFieldValue(document, inputFieldName);
+                    String filePathValue = (String) PresidioReflectionUtils.getFieldValue(document, inputFieldName);
 
                     if (isNotBlank(filePathValue)) {
                         String outputFieldData = null;
@@ -37,7 +37,7 @@ public class RegexTransformer implements Transformer {
                             outputFieldData = matcher.group();
                         }
                         try {
-                            ReflectionUtils.setFieldValue(document, outputFieldName, outputFieldData);
+                            PresidioReflectionUtils.setFieldValue(document, outputFieldName, outputFieldData);
                         } catch (IllegalAccessException e) {
                             logger.error("error setting {} field value", outputFieldData, e);
                         }
