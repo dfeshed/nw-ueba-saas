@@ -2,12 +2,13 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
-import { createColumnGroup } from 'investigate-events/actions/column-group';
+import { createColumnGroup, deleteColumnGroup } from 'investigate-events/actions/column-group';
 import { inject as service } from '@ember/service';
 
 const dispatchToActions = {
   setColumnGroup,
-  createColumnGroup
+  createColumnGroup,
+  deleteColumnGroup
 };
 
 const stateToComputed = (state) => ({
@@ -42,6 +43,11 @@ const ColumnGroups = Component.extend({
         'width': 100
       }];
       this.send('createColumnGroup', { name, fields });
+    },
+    deleteOneColumnGroup(columnGroup) {
+      if (!columnGroup.ootb) {
+        this.send('deleteColumnGroup', columnGroup.id);
+      }
     }
   }
 });

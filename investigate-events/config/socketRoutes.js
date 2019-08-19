@@ -114,13 +114,14 @@ const investigateConfigGen = function(env) {
       findAll: {
         subscriptionDestination: '/user/queue/investigate/column/groups/get',
         requestDestination: '/ws/investigate/column/groups/get'
-      }
-    },
-    'investigate-columns-create-or-update': {
-      socketUrl,
+      },
       post: {
         subscriptionDestination: '/user/queue/investigate/column/groups/set',
         requestDestination: '/ws/investigate/column/groups/set'
+      },
+      delete: {
+        subscriptionDestination: '/user/queue/investigate/column/groups/delete-by-id',
+        requestDestination: '/ws/investigate/column/groups/delete-by-id'
       }
     },
     'query-hashes': {

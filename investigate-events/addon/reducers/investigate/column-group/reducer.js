@@ -11,7 +11,9 @@ const _initialState = Immutable.from({
   columnGroups: null,
   isColumnGroupsLoading: false,
   createColumnGroupErrorCode: undefined,
-  createColumnGroupErrorMessage: undefined
+  createColumnGroupErrorMessage: undefined,
+  deleteColumnGroupErrorCode: undefined,
+  deleteColumnGroupErrorMessage: undefined
 });
 
 /**
@@ -29,10 +31,40 @@ const _fixColumnWidth = (columnGroup, fieldsAndWidths) => {
 };
 
 export default handleActions({
+  [ACTION_TYPES.COLUMNS_RETRIEVE]: (state, action) => {
+    sort(EventColumnGroups).by([{ asc: (group) => group.name.toUpperCase() }]);
+    return handle(state, action, {
+      failure: (s) => s.merge({ columnGroups: EventColumnGroups }),
+      success: (s) => {
+        const columnGroups = action.payload.data;
+        if (columnGroups) {
+          // Want to fix certain sizes to certain columns
+          // if those columns exist
+          columnGroups.forEach((cg) => {
+            if (cg.columns) {
+              // meta-summary goes by a few names
+              _fixColumnWidth(cg.columns, [
+                { field: 'custom.meta-summary', width: 2000 },
+                { field: 'custom.metasummary', width: 2000 },
+                { field: 'time', width: 175 }
+              ]);
+            }
+          });
+
+          sort(columnGroups).by([{ asc: (group) => group.name.toUpperCase() }]);
+          return s.merge({ columnGroups });
+        }
+
+        // if none returned, return the default set of column groups
+        return s.set({ columnGroups: EventColumnGroups });
+      }
+    });
+  },
+
   [ACTION_TYPES.COLUMNS_CREATE]: (state, action) => {
     return handle(state, action, {
       start: (s) => {
-        return s.set({
+        return s.merge({
           isColumnGroupsLoading: true,
           createColumnGroupErrorCode: null,
           createColumnGroupErrorMessage: null
@@ -51,7 +83,7 @@ export default handleActions({
         _fixColumnWidth(createdColumnGroup.columns, [
           { field: 'custom.meta-summary', width: 2000 },
           { field: 'custom.metasummary', width: 2000 },
-          { field: 'time', width: 135 }
+          { field: 'time', width: 175 }
         ]);
 
         // add the newly created column group to state
@@ -66,32 +98,29 @@ export default handleActions({
     });
   },
 
-  [ACTION_TYPES.COLUMNS_RETRIEVE]: (state, action) => {
-    sort(EventColumnGroups).by([{ asc: (group) => group.name.toUpperCase() }]);
+  [ACTION_TYPES.COLUMNS_DELETE]: (state, action) => {
     return handle(state, action, {
-      failure: (s) => s.merge({ columnGroups: EventColumnGroups }),
+      start: (s) => {
+        return s.merge({
+          isColumnGroupsLoading: true,
+          deleteColumnGroupErrorCode: null,
+          deleteColumnGroupErrorMessage: null
+        });
+      },
+      failure: (s) => s.merge({
+        isColumnGroupsLoading: false,
+        deleteColumnGroupErrorCode: action.payload.code,
+        deleteColumnGroupErrorMessage: action.payload.meta ? action.payload.meta.message : undefined
+      }),
       success: (s) => {
-        const columnGroups = action.payload.data;
-        if (columnGroups) {
-          // Want to fix certain sizes to certain columns
-          // if those columns exist
-          columnGroups.forEach((cg) => {
-            if (cg.columns) {
-              // meta-summary goes by a few names
-              _fixColumnWidth(cg.columns, [
-                { field: 'custom.meta-summary', width: 2000 },
-                { field: 'custom.metasummary', width: 2000 },
-                { field: 'time', width: 135 }
-              ]);
-            }
-          });
+        const deletedId = action.payload.request.id;
 
-          sort(columnGroups).by([{ asc: (group) => group.name.toUpperCase() }]);
-          return s.merge({ columnGroups });
-        }
-
-        // if none returned, return the default set of column groups
-        return s.merge({ columnGroups: EventColumnGroups });
+        // remove the deleted column group from state
+        const columnGroups = s.columnGroups.filter((cg) => cg.id !== deletedId);
+        return s.merge({
+          columnGroups,
+          isColumnGroupsLoading: false
+        });
       }
     });
   }

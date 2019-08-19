@@ -3,12 +3,31 @@ import {
 } from 'investigate-shared/actions/api/events/utils';
 import { lookup } from 'ember-dependency-lookup';
 
+const MODEL_NAME = 'investigate-columns';
+
 /**
  * Fetch all of column groups.
  * @return {object} RSVP Promise
  * @public
  */
-export const fetchColumnGroups = () => findAllPromiseRequest('investigate-columns');
+export const fetchColumnGroups = () => findAllPromiseRequest(MODEL_NAME);
+
+/**
+ *
+ * @param {string} id id of col group to delete
+ */
+export const apiDeleteColumnGroup = (id) => {
+  const request = lookup('service:request');
+  const query = {
+    id
+  };
+
+  return request.promiseRequest({
+    method: 'delete',
+    modelName: MODEL_NAME,
+    query
+  });
+};
 
 /**
  *
@@ -48,7 +67,7 @@ const _createOrUpdateColumnGroup = (name, fields, id = null) => {
 
   return request.promiseRequest({
     method: 'post',
-    modelName: 'investigate-columns-create-or-update',
+    modelName: MODEL_NAME,
     query
   });
 };
