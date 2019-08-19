@@ -17,7 +17,7 @@ public enum PostgresConf {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(PostgresConf.class.getName());
 
     public String connectionURL() {
-        return "jdbc:postgresql://" + ENVIRONMENT_PROPERTIES.presidioAirflowIp() + ":" + port() + "/" + dbName();
+        return "jdbc:postgresql://" + AutomationConf.UEBA_HOST + ":" + port() + "/" + dbName();
     }
 
     public String username() {
