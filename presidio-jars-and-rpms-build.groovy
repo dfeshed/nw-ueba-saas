@@ -130,31 +130,6 @@ pipeline {
             when { expression { return env.RUN_CORE_PACKAGES == 'true' } }
             steps { buildPackages("presidio-core", "package/pom.xml", true, false, true) }
         }
-        stage('Trigger Integration Test') {
-            when { expression { return env.RUN_CORE_PACKAGES == 'true' && (env.BRANCH_NAME == "origin/master" || env.BRANCH_NAME.startsWith("origin/release/")) } }
-            steps {
-                build job: 'presidio-integration-test-ADE-master', parameters: [
-                        [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability],
-                        [$class: 'StringParameterValue', name: 'VERSION', value: global_version],
-                        [$class: 'StringParameterValue', name: 'BUILD_BRANCH', value: env.BRANCH_NAME]
-                ], wait: false
-                build job: 'presidio-integration-test-adapter-master', parameters: [
-                        [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability],
-                        [$class: 'StringParameterValue', name: 'VERSION', value: global_version],
-                        [$class: 'StringParameterValue', name: 'BUILD_BRANCH', value: env.BRANCH_NAME]
-                ], wait: false
-                build job: 'presidio-integration-test-input-master', parameters: [
-                        [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability],
-                        [$class: 'StringParameterValue', name: 'VERSION', value: global_version],
-                        [$class: 'StringParameterValue', name: 'BUILD_BRANCH', value: env.BRANCH_NAME]
-                ] , wait: false
-                build job: 'presidio-integration-test-core', parameters: [
-                        [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability],
-                        [$class: 'StringParameterValue', name: 'VERSION', value: global_version],
-                        [$class: 'StringParameterValue', name: 'INTEGRATION_TEST_BRANCH_NAME', value: env.BRANCH_NAME]
-                ] , wait: false
-            }
-        }
         stage('Presidio Flume JARs Build') {
             when { expression { return env.BUILD_PRESIDIO_FLUME == 'true' } }
             steps { buildProject("presidio-flume", "pom.xml", true, false) }
@@ -178,6 +153,25 @@ pipeline {
         stage('Presidio UI RPMs Build') {
             when { expression { return env.RUN_PRESIDIO_UI_PACKAGES == 'true' } }
             steps { buildPackages("presidio-ui", "package/pom.xml", true, false, false) }
+        }
+        stage('Trigger Integration Test') {
+            script {
+                if (env.BRANCH_NAME == "origin/master" || env.BRANCH_NAME.startsWith("origin/release/")){
+                    build job: 'presidio-integration-test-ADE-master', parameters: [
+                            [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability.split().last().toLowerCase()],
+                            [$class: 'StringParameterValue', name: 'VERSION', value: global_version]
+                    ], wait: false
+                    build job: 'presidio-integration-test-core', parameters: [
+                            [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability.split().last().toLowerCase()],
+                            [$class: 'StringParameterValue', name: 'VERSION', value: global_version]
+                    ] , wait: false
+                }
+                else {
+                    build job: 'presidio-integration-test-core', parameters: [
+                            [$class: 'StringParameterValue', name: 'SIDE_BRANCH_JOD_NUMBER', value: env.BUILD_NUMBER]
+                    ] , wait: false
+                }
+            }
         }
     }
     post {
