@@ -27,7 +27,11 @@ abstract public class EntityAttributes {
 
     @Override
     public boolean equals(Object o) {
-        return EqualsBuilder.reflectionEquals(this, o);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EntityAttributes entityAttributes = (EntityAttributes) o;
+        return new EqualsBuilder().append(isNewOccurrence, entityAttributes.isNewOccurrence)
+                                  .append(name, entityAttributes.name).isEquals();
     }
 
     @Override
