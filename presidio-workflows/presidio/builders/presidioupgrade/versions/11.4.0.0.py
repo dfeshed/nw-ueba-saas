@@ -31,6 +31,8 @@ INDEX_USER_SEVERITY_RANGE = "presidio-output-user-severities-range"
 INDEX_ENTITY_SEVERITY_RANGE = "presidio-output-entity-severities-range"
 DOC_TYPE_USER_SEVERITY_RANGE = "user-severities-range"
 DOC_TYPE_ENTITY_SEVERITY_RANGE = "entity-severities-range"
+OLD_DOC_ID_USER_SEVERITY_RANGE = 'user-severities-range-doc-id'
+NEW_DOC_ID_USER_SEVERITY_RANGE = 'userId-severities-range-doc-id'
 
 # Init Elasticsearch instance
 es = Elasticsearch()
@@ -156,12 +158,12 @@ if index_exists(INDEX_ALERT) & alert_not_process():
 # Check user severities range index is exists
 if index_exists(INDEX_USER_SEVERITY_RANGE):
     doc = es.get(index=INDEX_USER_SEVERITY_RANGE, doc_type=DOC_TYPE_USER_SEVERITY_RANGE,
-                 id='user-severities-range-doc-id')
-    doc["_source"]["id"] = 'userId-severities-range-doc-id'
+                 id=OLD_DOC_ID_USER_SEVERITY_RANGE)
+    doc["_source"]["id"] = NEW_DOC_ID_USER_SEVERITY_RANGE
     es.index(index=INDEX_ENTITY_SEVERITY_RANGE, doc_type=DOC_TYPE_ENTITY_SEVERITY_RANGE,
-             id='userId-severities-range-doc-id', body=dict(doc["_source"]))
+             id=NEW_DOC_ID_USER_SEVERITY_RANGE, body=dict(doc["_source"]))
 
-    # Remove user severities range severity range index
+    # Remove user severities range index
     es.indices.delete(index=INDEX_USER_SEVERITY_RANGE)
 
 # Run reset_presidio dag for upgrade
