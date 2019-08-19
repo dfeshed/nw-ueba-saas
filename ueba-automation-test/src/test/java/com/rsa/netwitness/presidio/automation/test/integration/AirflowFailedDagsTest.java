@@ -24,7 +24,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
+@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class AirflowFailedDagsTest extends AbstractTestNGSpringContextTests {
 

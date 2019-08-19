@@ -6,10 +6,10 @@ import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEven
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
-import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
-import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import com.rsa.netwitness.presidio.automation.ssh.SSHManager;
 import com.rsa.netwitness.presidio.automation.ssh.SSHManagerSingleton;
+import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
+import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.assertj.core.util.Lists;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +24,18 @@ import org.testng.annotations.Test;
 import java.time.Instant;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils.skipTest;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 
-@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
+@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
 
@@ -42,7 +46,7 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
 
     private Instant endTime = Instant.now();
     private Instant startTime = Instant.now().minus(20, DAYS);
-    private List<AlertsStoredRecord> alertsToForward = Lists.newArrayList();
+    private List<String> alertsToForward = Lists.newArrayList();
 
 
 
@@ -54,13 +58,29 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
         LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack="
                 + historicalDaysBack + " anomalyDay=" + anomalyDay);
 
-        if (EnvironmentProperties.ENVIRONMENT_PROPERTIES.esaAnalyticsServerIp().isEmpty()) {
+        boolean hasNoAnalyticsServer = EnvironmentProperties.ENVIRONMENT_PROPERTIES.esaAnalyticsServerIp().isEmpty();
+
+        if (hasNoAnalyticsServer) {
             skipTest("Skipping tests because environment doesn't have Analytics Server.");
         } else {
-            alertsToForward = fetchAlerts();
+            alertsToForward = alertsIndicatorsInTimeRange();
             LOGGER.info(alertsToForward.size() + " alerts fetched from sever.");
         }
     }
+
+
+    @Test
+    public void ja3_forwarded_indicators_count_equals_to_rest_result() {
+        String cmd = getForwarderCmd("ja3");
+        SSHManager.Response response = SSHManagerSingleton.INSTANCE.getSshManager().runCmd(cmd, true);
+        boolean scriptSucceeded = isScriptSucceeded(cmd, response);
+        assertThat(scriptSucceeded).isTrue();
+        int actual = actualIndicatorsCount(response);
+
+        assertThat(actual).isEqualTo(alertsToForward.size());
+    }
+
+
 
 
     @Test
@@ -83,32 +103,41 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
 
     }
 
-    @Test
-    public void ja3_forwarded_indicators_count_equals_to_rest_result() {
-        String cmd = getForwarderCmd("ja3");
-        SSHManager.Response response = SSHManagerSingleton.INSTANCE.getSshManager().runCmd(cmd, true);
-        boolean scriptSucceeded = isScriptSucceeded(cmd, response);
-        assertThat(scriptSucceeded).isTrue();
 
 
+
+
+
+    private int actualIndicatorsCount(SSHManager.Response response) {
+        /**    forwarder.Forwarder      : 2922 'INDICATOR' messages were forwarded successfully **/
+
+        String successPatternSt = "'INDICATOR' messages were forwarded successfully";
+        Predicate<String> successPattern = line -> line.contains(successPatternSt);
+        String errorMessage = "Indicator success patters is not found in cmd output.\nPattern: ".concat(successPatternSt);
+        String indicatorsSussesLine = response.output.stream()
+                .filter(successPattern)
+                .findAny()
+                .orElseGet(() -> fail(errorMessage));
+
+        Pattern pattern = Pattern.compile("Forwarder\\s+:\\s+(\\d+)\\s+" + successPatternSt);
+        Matcher matcher = pattern.matcher(indicatorsSussesLine);
+        String group = matcher.find() ? matcher.group(1) : "-1";
+        return Integer.valueOf(group);
     }
 
 
-
-
-
-
-
-    private List<AlertsStoredRecord> fetchAlerts() {
+    private List<String> alertsIndicatorsInTimeRange() {
         RestHelper restHelper = new RestHelper();
-        List<AlertsStoredRecord> allAlerts = Lists.newArrayList();
-        ParametersUrlBuilder url = restHelper.alerts().url().withNoParameters();
-        allAlerts = restHelper.alerts().request().getAlerts(url);
+        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        List<AlertsStoredRecord> allAlerts = restHelper.alerts().request().getAlerts(url);
 
-        return allAlerts.stream()
+        Stream<String> distinctIndicatorsInTimeRange = allAlerts.stream()
                 .filter(alert -> alert.getStartDate().isAfter(startTime))
                 .filter(alert -> alert.getStartDate().isBefore(endTime))
-                .collect(Collectors.toList());
+                .flatMap(alert -> alert.getIndicatorsList().stream().map(AlertsStoredRecord.Indicator::getId))
+                .distinct();
+
+        return distinctIndicatorsInTimeRange.collect(Collectors.toList());
     }
 
     private String getForwarderCmd(String entity) {
