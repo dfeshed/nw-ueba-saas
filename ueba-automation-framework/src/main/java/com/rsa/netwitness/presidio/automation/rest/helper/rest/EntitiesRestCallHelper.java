@@ -118,7 +118,7 @@ public class EntitiesRestCallHelper implements IRestCallHelper{
                                 tmpAlert.get("score").toString(), tmpAlert.get("feedback").toString(),
                                 tmpAlert.get("entityScoreContribution").toString(), tmpAlert.get("timeframe").toString(),
                                 tmpAlert.get("severity").toString(), tmpAlert.get("entityDocumentId").toString(),
-                                Instant.ofEpochMilli(tmp.getLong("startDate")), Instant.ofEpochMilli(tmp.getLong("endDate"))));
+                                Instant.ofEpochMilli(tmpAlert.getLong("startDate")), Instant.ofEpochMilli(tmpAlert.getLong("endDate"))));
                     }
                 }
 
