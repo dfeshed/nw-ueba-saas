@@ -145,23 +145,24 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   },
 
   sessionInvalidated() {
-    const isInIframe = this._isInIframe();
 
-    if (this.get('persistStateOnLogout')) {
+    if (!this.get('ssoEnabled')) { // do not change location if SSO is enabled
+
+      const isInIframe = this._isInIframe();
+
       if (isInIframe) { // IF ember app inside iframe then set the parent location
         localStorage.setItem('rsa-post-auth-redirect', window.parent.location.href);
       } else {
         localStorage.setItem('rsa-post-auth-redirect', window.location.href);
       }
-    }
 
-    if (!this.get('ssoEnabled')) { // do not change location if SSO is enabled
       // Need set the parent location if page is inserted in iframe
       if (isInIframe) {
         window.parent.location.replace('/login');
       } else {
         window.location.replace('/login');
       }
+
     }
   },
 
