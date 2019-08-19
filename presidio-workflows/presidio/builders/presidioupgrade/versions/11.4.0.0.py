@@ -120,11 +120,11 @@ def scroll_and_update_data(index, doc_type, update_function):
 
 
 def index_exists(index):
-    # Check user index is exists
-    if es.indices.exists(index=index):
-        print("Index {} not exists".format(INDEX_USER))
-        return True
-    return False
+    # Check index is exists
+    if not es.indices.exists(index=index):
+        print("Index {} not exists".format(index))
+        return False
+    return True
 
 
 def alert_not_process():
@@ -143,7 +143,7 @@ def alert_not_process():
 
 
 # Check user index is exists
-if not index_exists(INDEX_USER):
+if index_exists(INDEX_USER):
     # Scrolling users
     scroll_and_update_data(INDEX_USER, DOC_TYPE_USER, convert_users_to_entities)
 
@@ -152,19 +152,19 @@ if not index_exists(INDEX_USER):
 
 
 # Check alert index is exists
-if not index_exists(INDEX_ALERT) & alert_not_process():
+if index_exists(INDEX_ALERT) & alert_not_process():
     # Scrolling alerts
     scroll_and_update_data(INDEX_ALERT, DOC_TYPE_ALERT, update_alerts_hits)
 
-# Check user index is exists
-if not index_exists(INDEX_USER_SEVERITY_RANGE):
+# Check user severities range index is exists
+if index_exists(INDEX_USER_SEVERITY_RANGE):
     doc = es.get(index=INDEX_USER_SEVERITY_RANGE, doc_type=DOC_TYPE_USER_SEVERITY_RANGE,
                  id='user-severities-range-doc-id')
     doc["_source"]["id"] = 'userId-severities-range-doc-id'
     es.index(index=INDEX_ENTITY_SEVERITY_RANGE, doc_type=DOC_TYPE_ENTITY_SEVERITY_RANGE,
                 id='userId-severities-range-doc-id', body=dict(doc["_source"]))
 
-    # Remove user severity range index
+    # Remove user severities range severity range index
     es.indices.delete(index=INDEX_USER_SEVERITY_RANGE)
 
 # Run reset_presidio dag for upgrade
