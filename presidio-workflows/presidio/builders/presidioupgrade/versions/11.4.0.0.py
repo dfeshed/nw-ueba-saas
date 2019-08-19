@@ -121,14 +121,29 @@ def scroll_and_update_data(index, doc_type, update_function):
 
 def check_index_exists(index):
     # Check user index is exists
-    if not es.indices.exists(index=index):
+    if es.indices.exists(index=index):
         print("Index {} not exists".format(INDEX_USER))
+        return True
+    return False
+
+
+def check_alert_not_process():
+    es.indices.refresh()
+    res = es.search(index=INDEX_ALERT, doc_type=DOC_TYPE_ALERT, body={
+        "query": {
+            "exists": {
+                "field": "entityName"
+            }
+        }
+    })
+    if res['hits']['total'] > 0:
+        print("Index {} already processed".format(INDEX_ALERT))
         return False
     return True
 
 
 # Check user index is exists
-if check_index_exists(INDEX_USER):
+if not check_index_exists(INDEX_USER):
     # Scrolling users
     scroll_and_update_data(INDEX_USER, DOC_TYPE_USER, convert_users_to_entities)
 
@@ -137,12 +152,12 @@ if check_index_exists(INDEX_USER):
 
 
 # Check alert index is exists
-if check_index_exists(INDEX_ALERT):
+if not check_index_exists(INDEX_ALERT) & check_alert_not_process():
     # Scrolling alerts
     scroll_and_update_data(INDEX_ALERT, DOC_TYPE_ALERT, update_alerts_hits)
 
 # Check user index is exists
-if check_index_exists(INDEX_USER_SEVERITY_RANGE):
+if not check_index_exists(INDEX_USER_SEVERITY_RANGE):
     doc = es.get(index=INDEX_USER_SEVERITY_RANGE, doc_type=DOC_TYPE_USER_SEVERITY_RANGE,
                  id='user-severities-range-doc-id')
     doc["_source"]["id"] = 'userId-severities-range-doc-id'
