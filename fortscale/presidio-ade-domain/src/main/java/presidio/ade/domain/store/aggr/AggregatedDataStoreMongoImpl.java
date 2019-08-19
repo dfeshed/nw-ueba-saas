@@ -40,7 +40,7 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
     private static final String NULL_AGGREGATED_RECORD_PAGINATION_SERVICE = "pagination service must be set in order to read data in pages";
     private static final String DOT_REGEX = "\\.";
     private static final String DOT_REPLACEMENT = "#dot#";
-    private static final String CONTEXT_KEYWORD = "context.";
+    private static final String CONTEXT_PREFIX = "context.";
 
     private final MongoTemplate mongoTemplate;
     private final AggrDataToCollectionNameTranslator translator;
@@ -259,8 +259,8 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
         return contextFields.getFeatureNameToValue().entrySet().stream().collect(Collectors.toMap(
                 e -> {
                     String replacedFieldName;
-                    if (e.getKey().startsWith(CONTEXT_KEYWORD)) {
-                        replacedFieldName = CONTEXT_KEYWORD + replaceDots(e.getKey().substring(CONTEXT_KEYWORD.length()));
+                    if (e.getKey().startsWith(CONTEXT_PREFIX)) {
+                        replacedFieldName = CONTEXT_PREFIX + replaceDots(e.getKey().substring(CONTEXT_PREFIX.length()));
                     } else {
                         replacedFieldName = replaceDots(e.getKey());
                     }
@@ -272,7 +272,7 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
     private Query buildScoredRecordsQuery(TimeRange timeRange, MultiKeyFeature contextFields, int scoreThreshold) {
         return ScoredDataReaderMongoUtils.buildScoredRecordsQuery(
                 START_INSTANT_FIELD, timeRange,
-                CONTEXT_KEYWORD, replaceDotsInKeys(contextFields),
+                CONTEXT_PREFIX, replaceDotsInKeys(contextFields),
                 ScoredFeatureAggregationRecord.SCORE_FIELD_NAME, scoreThreshold);
     }
 
@@ -286,7 +286,7 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
 
         Query query = ScoredDataReaderMongoUtils.buildScoredRecordQuery(
                 replaceDotsInKeys(fields), START_INSTANT_FIELD, timeRange,
-                CONTEXT_KEYWORD, replaceDotsInKeys(contextFields),
+                CONTEXT_PREFIX, replaceDotsInKeys(contextFields),
                 ScoredFeatureAggregationRecord.SCORE_FIELD_NAME, scoreThreshold,
                 direction);
         String collectionName = translator.toCollectionName(buildAggregationRecordsMetadata(adeEventType));
