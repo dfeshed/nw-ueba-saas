@@ -155,21 +155,22 @@ pipeline {
             steps { buildPackages("presidio-ui", "package/pom.xml", true, false, false) }
         }
         stage('Trigger Integration Test') {
-            script {
-                if (env.BRANCH_NAME == "origin/master" || env.BRANCH_NAME.startsWith("origin/release/")){
-                    build job: 'presidio-integration-test-ADE-master', parameters: [
-                            [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability.split().last().toLowerCase()],
-                            [$class: 'StringParameterValue', name: 'VERSION', value: global_version]
-                    ], wait: false
-                    build job: 'presidio-integration-test-core', parameters: [
-                            [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability.split().last().toLowerCase()],
-                            [$class: 'StringParameterValue', name: 'VERSION', value: global_version]
-                    ] , wait: false
-                }
-                else {
-                    build job: 'presidio-integration-test-core', parameters: [
-                            [$class: 'StringParameterValue', name: 'SIDE_BRANCH_JOD_NUMBER', value: env.BUILD_NUMBER]
-                    ] , wait: false
+            steps {
+                script {
+                    if ((env.BRANCH_NAME == "origin/master" || env.BRANCH_NAME.startsWith("origin/release/")) && global_stability != "") {
+                        build job: 'presidio-integration-test-ADE-master', parameters: [
+                                [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability.split().last().toLowerCase()],
+                                [$class: 'StringParameterValue', name: 'VERSION', value: global_version]
+                        ], wait: false
+                        build job: 'presidio-integration-test-core', parameters: [
+                                [$class: 'StringParameterValue', name: 'STABILITY', value: global_stability.split().last().toLowerCase()],
+                                [$class: 'StringParameterValue', name: 'VERSION', value: global_version]
+                        ], wait: false
+                    } else {
+                        build job: 'presidio-integration-test-core', parameters: [
+                                [$class: 'StringParameterValue', name: 'SIDE_BRANCH_JOD_NUMBER', value: env.BUILD_NUMBER]
+                        ], wait: false
+                    }
                 }
             }
         }
