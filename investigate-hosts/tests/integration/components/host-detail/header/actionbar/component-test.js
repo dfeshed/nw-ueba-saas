@@ -5,11 +5,15 @@ import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
-import { click, find, findAll, render, waitUntil } from '@ember/test-helpers';
+import { click, find, findAll, render, waitUntil, settled } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import HosDetailsCreators from 'investigate-hosts/actions/data-creators/host-details';
 import { snapShot } from '../../../../../data/data';
+import sinon from 'sinon';
 
-let setState;
+let changeSnapShotSpy, setState;
+
+const spys = [];
 
 module('Integration | Component | host detail actionbar', function(hooks) {
   setupRenderingTest(hooks, {
@@ -22,7 +26,37 @@ module('Integration | Component | host detail actionbar', function(hooks) {
     setState = (state) => {
       patchReducer(this, state);
     };
+    spys.push(
+      changeSnapShotSpy = sinon.stub(HosDetailsCreators, 'changeSnapshotTime'));
   });
+
+  hooks.afterEach(function() {
+    spys.forEach((s) => {
+      s.restore();
+    });
+  });
+
+  hooks.after(function() {
+    spys.forEach((s) => {
+      s.restore();
+    });
+  });
+
+
+  test('on selecting snapshot initializes the agent details input', async function(assert) {
+    assert.expect(1);
+    new ReduxDataHelper(setState)
+      .snapShot(snapShot)
+      .scanTime('2017-08-29T10:23:49.452Z')
+      .agentId(1345)
+      .build();
+    await render(hbs`{{host-detail/header/actionbar}}`);
+    await selectChoose('.actionbar', '.ember-power-select-option', 3);
+    return settled().then(async() => {
+      assert.equal(changeSnapShotSpy.callCount, 1, 'Change snapshot creator is called');
+    });
+  });
+
 
   test('snapshot power select renders appropriate items', async function(assert) {
     new ReduxDataHelper(setState)
@@ -34,23 +68,6 @@ module('Integration | Component | host detail actionbar', function(hooks) {
     assert.equal(findAll('.ember-power-select-option').length, 4, 'dropdown  rendered with available snapShots');
   });
 
-  skip('on selecting snapshot initializes the agent details input', async function(assert) {
-    assert.expect(2);
-    const redux = this.owner.lookup('service:redux');
-    new ReduxDataHelper(setState)
-      .snapShot(snapShot)
-      .scanTime('2017-08-29T10:23:49.452Z')
-      .agentId(1345)
-      .build();
-    await render(hbs`{{host-detail/header/actionbar}}`);
-    await selectChoose('.actionbar', '.ember-power-select-option', 3);
-    await waitUntil(() => {
-      return redux.getState().endpoint.detailsInput.animation !== 'default';
-    }, { timeout: 6000 });
-    const { endpoint: { detailsInput: { animation, agentId } } } = redux.getState();
-    assert.equal(animation, 'toUp');
-    assert.equal(agentId, 1345);
-  });
 
   skip('with scan time earlier than snapshot time, snapshot transitions down', async function(assert) {
     assert.expect(2);

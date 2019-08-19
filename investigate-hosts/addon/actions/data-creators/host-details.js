@@ -45,10 +45,7 @@ const getRequiredHostInformation = () => {
 const getPolicyDetails = () => {
   return async(dispatch, getState) => {
     const state = getState();
-    const hostItem = state.endpoint.overview.hostOverview;
     const { agentId } = state.endpoint.detailsInput;
-    const request = lookup('service:request');
-    request.registerPersistentStreamOptions({ socketUrlPostfix: hostItem.serviceId, requiredSocketUrl: 'endpoint/socket' });
     dispatch(_fetchPolicyDetails(agentId));
   };
 };
@@ -85,8 +82,11 @@ const getScanSnapshots = (agentId) => {
       meta: {
         onSuccess: ({ data }) => {
           const [scanTime] = data.length ? data : [{}];
-          dispatch({ type: ACTION_TYPES.INITIALIZE_DATA, payload: { agentId, scanTime: scanTime ? scanTime.scanStartTime : null } });
-          dispatch(setSelectedMachineServerId(scanTime.serviceId));
+          const { scanStartTime, serviceId } = scanTime;
+          dispatch({ type: ACTION_TYPES.INITIALIZE_DATA, payload: { agentId, scanTime: scanTime ? scanStartTime : null } });
+          const request = lookup('service:request');
+          request.registerPersistentStreamOptions({ socketUrlPostfix: serviceId, requiredSocketUrl: 'endpoint/socket' });
+          dispatch(setSelectedMachineServerId(serviceId));
         }
       }
     });
@@ -134,11 +134,24 @@ const initializeHostDetailsPage = ({ sid, id: agentId }) => {
   };
 };
 
+const changeSnapshotTime = (option) => {
+  return async(dispatch) => {
+    const { agentId, scanTime } = option;
+    const { serviceId, scanStartTime } = scanTime;
+    const request = lookup('service:request');
+    dispatch({ type: ACTION_TYPES.INITIALIZE_DATA, payload: { agentId, scanTime: scanStartTime } });
+    request.registerPersistentStreamOptions({ socketUrlPostfix: serviceId, requiredSocketUrl: 'endpoint/socket' });
+    dispatch(setSelectedMachineServerId(serviceId));
+    await dispatch(getHostDetails());
+    dispatch(fetchDataForSelectedTab());
+  };
+};
 
 export {
   initializeHostDetailsPage,
   getScanSnapshots,
   getHostDetails,
   setDataForHostTab,
-  getMFTDetails
+  getMFTDetails,
+  changeSnapshotTime
 };

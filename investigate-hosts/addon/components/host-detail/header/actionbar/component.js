@@ -1,7 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
-import moment from 'moment';
 import {
   downloadLink,
   hostName,
@@ -10,13 +9,11 @@ import {
 
 import {
   exportFileContext,
-  setTransition,
-  initializeAgentDetails
+  setTransition
 } from 'investigate-hosts/actions/data-creators/details';
 import { toggleDetailRightPanel } from 'investigate-hosts/actions/ui-state-creators';
 import { isOnOverviewTab, isActiveTabDownloads } from 'investigate-hosts/reducers/visuals/selectors';
-
-
+import { changeSnapshotTime } from 'investigate-hosts/actions/data-creators/host-details';
 const stateToComputed = (state) => ({
   hostName: hostName(state),
   scanTime: state.endpoint.detailsInput.scanTime,
@@ -33,7 +30,7 @@ const stateToComputed = (state) => ({
 
 const dispatchToActions = {
   setTransition,
-  initializeAgentDetails,
+  changeSnapshotTime,
   exportFileContext,
   toggleDetailRightPanel
 };
@@ -52,14 +49,7 @@ const ActionBar = Component.extend({
 
   actions: {
     setSelect(option) {
-      const oldTime = this.get('scanTime');
-      this.send('initializeAgentDetails', { agentId: this.get('agentId'), scanTime: option });
-
-      if (moment(oldTime).unix() > moment(option.scanStartTime).unix()) {
-        this.send('setTransition', 'toUp');
-      } else {
-        this.send('setTransition', 'toDown');
-      }
+      this.send('changeSnapshotTime', { agentId: this.get('agentId'), scanTime: option });
     },
     openInAction() {
       const host = this.get('host');
