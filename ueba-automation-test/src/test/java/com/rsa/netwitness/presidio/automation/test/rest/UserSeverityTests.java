@@ -186,7 +186,7 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
         assertThat(entities)
                 .withFailMessage(url + "\nEntities list is empty.")
                 .isNotNull()
-                .isEmpty();
+                .isNotEmpty();
 
         int sumScoreSeverity = 0;
 
