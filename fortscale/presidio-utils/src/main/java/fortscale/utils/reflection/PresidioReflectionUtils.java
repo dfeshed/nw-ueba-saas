@@ -4,11 +4,9 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class PresidioReflectionUtils {
 
-    private static final String NESTED_OBJECT_DELIMITER = ".";
     private static final String NESTED_OBJECT_SPLIT_DELIMITER = "\\.";
 
     public static Object getFieldValue(Object obj, String requestedFieldName) {
@@ -47,32 +45,7 @@ public class PresidioReflectionUtils {
         fields.get(fields.size() - 1).set(obj, fieldValue);
     }
 
-    /**
-     * Finds the field name recursively.
-     * If an annotation exists returns the field name of the annotation, otherwise returns the original field name.
-     * Works for nested classes also and concatenates the field names with nested object delimiter.
-     * For example:
-     * findFieldNameRecursively(clazz = {
-     *     @Field("coolName")
-     *     private Object obj = {
-     *         private Object city = {
-     *             @Field("coolStreet")
-     *             private String street;
-     *         }
-     *     }
-     * }, "obj.city.street")
-     * will return "coolName.city.coolStreet"
-     * @param clazz the class on which to find the field name
-     * @param requestedFieldName the field path to look for
-     */
-    public String findFieldNameRecursively(Class clazz, String requestedFieldName) {
-        return findNestedFields(clazz, requestedFieldName)
-                .stream()
-                .map(this::getConfiguredFieldName)
-                .collect(Collectors.joining(NESTED_OBJECT_DELIMITER));
-    }
-
-    private static List<Field> findNestedFields(Class clazz, String requestedFieldName) {
+    public static List<Field> findNestedFields(Class clazz, String requestedFieldName) {
         ArrayList<Field> fields = new ArrayList<>();
         for (String fieldName : requestedFieldName.split(NESTED_OBJECT_SPLIT_DELIMITER)) {
             Field field = getAccessibleField(clazz, fieldName);
@@ -80,10 +53,6 @@ public class PresidioReflectionUtils {
             clazz = field.getType();
         }
         return fields;
-    }
-
-    protected String getConfiguredFieldName(Field field) {
-        return field.getName();
     }
 
     private static Field getAccessibleField(Class clazz, String fieldName) {

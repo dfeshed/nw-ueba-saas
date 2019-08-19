@@ -30,8 +30,6 @@ public class EnrichedDataStoreConfig {
     private AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver;
     @Autowired
     private MongoDbBulkOpUtil mongoDbBulkOpUtil;
-    @Autowired
-    private MongoReflectionUtils mongoReflectionUtils;
 
     @Bean
     public StoreManagerAwareEnrichedDataStore enrichedDataStore() {
@@ -41,6 +39,6 @@ public class EnrichedDataStoreConfig {
                 adeEventTypeToAdeEnrichedRecordClassResolver,
                 mongoDbBulkOpUtil,
                 contextIdToNumOfItemsPageSize,
-                mongoReflectionUtils);
+                new MongoReflectionUtils());
     }
 }
