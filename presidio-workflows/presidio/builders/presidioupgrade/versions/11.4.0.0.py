@@ -1,7 +1,8 @@
 import os
 from elasticsearch import Elasticsearch
 from presidio.utils.airflow.upgrade_utils import run_reset_presidio_for_upgrade, get_dags_ids_by_prefix
-from presidio.builders.rerun_ueba_flow_dag_builder import get_registered_presidio_dags, pause_dags, kill_dags_task_instances, \
+from presidio.builders.rerun_ueba_flow_dag_builder import get_registered_presidio_dags, pause_dags, \
+    kill_dags_task_instances, \
     cleanup_dags_from_postgres, get_airflow_log_folders
 
 # clean old full flow- logs and postgres
@@ -14,9 +15,8 @@ os.system("rm -rf {}".format(airflow_log_folder_str))
 # pause and kill tasks for new dags
 dags = get_registered_presidio_dags()
 dag_ids = map(lambda x: x.dag_id, dags)
-pause_dags(dag_ids)
+pause_dags(dags)
 kill_dags_task_instances(dag_ids)
-
 
 # Change elastic indexes that will be compatible with 11.4.0.0:
 INDEX_USER = "presidio-output-user"
@@ -31,9 +31,10 @@ INDEX_USER_SEVERITY_RANGE = "presidio-output-user-severities-range"
 INDEX_ENTITY_SEVERITY_RANGE = "presidio-output-entity-severities-range"
 DOC_TYPE_USER_SEVERITY_RANGE = "user-severities-range"
 DOC_TYPE_ENTITY_SEVERITY_RANGE = "entity-severities-range"
+OLD_DOC_ID_USER_SEVERITY_RANGE = 'user-severities-range-doc-id'
+NEW_DOC_ID_USER_SEVERITY_RANGE = 'userId-severities-range-doc-id'
 
-
-# # Init Elasticsearch instance
+# Init Elasticsearch instance
 es = Elasticsearch()
 
 
@@ -41,20 +42,20 @@ es = Elasticsearch()
 def convert_users_to_entities(hits):
     for item in hits:
         entity = {
-                'createdDate': item["_source"]["createdDate"],
-                'updatedDate': item["_source"]["updatedDate"],
-                'updatedBy': item["_source"]["updatedBy"],
-                'entityId': item["_source"]["userId"],
-                'entityName': item["_source"]["userName"],
-                'score': item["_source"]["score"],
-                'alertClassifications': item["_source"]["alertClassifications"],
-                'indicators': item["_source"]["indicators"],
-                'severity': item["_source"]["severity"],
-                'tags': item["_source"]["tags"],
-                'alertsCount': item["_source"]["alertsCount"],
-                'lastUpdateLogicalStartDate': item["_source"]["updatedByLogicalStartDate"],
-                'lastUpdateLogicalEndDate': item["_source"]["updatedByLogicalEndDate"],
-                'entityType': ENTITY_TYPE
+            'createdDate': item["_source"]["createdDate"],
+            'updatedDate': item["_source"]["updatedDate"],
+            'updatedBy': item["_source"]["updatedBy"],
+            'entityId': item["_source"]["userId"],
+            'entityName': item["_source"]["userName"],
+            'score': item["_source"]["score"],
+            'alertClassifications': item["_source"]["alertClassifications"],
+            'indicators': item["_source"]["indicators"],
+            'severity': item["_source"]["severity"],
+            'tags': item["_source"]["tags"],
+            'alertsCount': item["_source"]["alertsCount"],
+            'lastUpdateLogicalStartDate': item["_source"]["updatedByLogicalStartDate"],
+            'lastUpdateLogicalEndDate': item["_source"]["updatedByLogicalEndDate"],
+            'entityType': ENTITY_TYPE
         }
 
         es.index(index=INDEX_ENTITY, doc_type=DOC_TYPE_ENTITY, id=item["_id"], body=entity)
@@ -86,15 +87,10 @@ def update_alerts_hits(hits):
 
         }
 
-        es.update(index=INDEX_ALERT, doc_type=DOC_TYPE_ALERT, id=item["_id"], body=dict(alert))
+        es.index(index=INDEX_ALERT, doc_type=DOC_TYPE_ALERT, id=item["_id"], body=alert)
 
 
 def scroll_and_update_data(index, doc_type, update_function):
-    # Check index is exists
-    if not es.indices.exists(index=index):
-        print("Index {} not exists".format(index))
-        exit()
-
     # Init scroll by search
     data = es.search(
         index=index,
@@ -123,22 +119,52 @@ def scroll_and_update_data(index, doc_type, update_function):
         scroll_size = len(data['hits']['hits'])
 
 
-# Scrolling users
-scroll_and_update_data(INDEX_USER, DOC_TYPE_USER, convert_users_to_entities)
+def index_exists(index):
+    # Check index is exists
+    if not es.indices.exists(index=index):
+        print("Index {} not exists".format(index))
+        return False
+    return True
 
-# Remove user index
-es.indices.delete(index=INDEX_USER)
 
-# Scrolling alerts
-scroll_and_update_data(INDEX_ALERT, DOC_TYPE_ALERT, update_alerts_hits)
+def alert_not_process():
+    es.indices.refresh()
+    res = es.search(index=INDEX_ALERT, doc_type=DOC_TYPE_ALERT, body={
+        "query": {
+            "exists": {
+                "field": "entityName"
+            }
+        }
+    })
+    if res['hits']['total'] > 0:
+        print("Index {} already processed".format(INDEX_ALERT))
+        return False
+    return True
 
-doc = es.get(index=INDEX_USER_SEVERITY_RANGE, doc_type=DOC_TYPE_USER_SEVERITY_RANGE, id='user-severities-range-doc-id')
-doc["_source"]["id"] = 'userId-severities-range-doc-id'
-es.index(index=INDEX_ENTITY_SEVERITY_RANGE, doc_type=DOC_TYPE_ENTITY_SEVERITY_RANGE,
-                id='userId-severities-range-doc-id', body=dict(doc["_source"]))
 
-# Remove user severity range index
-es.indices.delete(index=INDEX_USER_SEVERITY_RANGE)
+# Check user index is exists
+if index_exists(INDEX_USER):
+    # Scrolling users
+    scroll_and_update_data(INDEX_USER, DOC_TYPE_USER, convert_users_to_entities)
+
+    # Remove user index
+    es.indices.delete(index=INDEX_USER)
+
+# Check alert index is exists
+if index_exists(INDEX_ALERT) & alert_not_process():
+    # Scrolling alerts
+    scroll_and_update_data(INDEX_ALERT, DOC_TYPE_ALERT, update_alerts_hits)
+
+# Check user severities range index is exists
+if index_exists(INDEX_USER_SEVERITY_RANGE):
+    doc = es.get(index=INDEX_USER_SEVERITY_RANGE, doc_type=DOC_TYPE_USER_SEVERITY_RANGE,
+                 id=OLD_DOC_ID_USER_SEVERITY_RANGE)
+    doc["_source"]["id"] = NEW_DOC_ID_USER_SEVERITY_RANGE
+    es.index(index=INDEX_ENTITY_SEVERITY_RANGE, doc_type=DOC_TYPE_ENTITY_SEVERITY_RANGE,
+             id=NEW_DOC_ID_USER_SEVERITY_RANGE, body=dict(doc["_source"]))
+
+    # Remove user severities range index
+    es.indices.delete(index=INDEX_USER_SEVERITY_RANGE)
 
 # Run reset_presidio dag for upgrade
 run_reset_presidio_for_upgrade()
