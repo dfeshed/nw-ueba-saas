@@ -340,22 +340,68 @@ public class AuthenticationHighNumberOfOperations {
         return events;
     }
 
-    public static List<AuthenticationEvent> getMultipleNormalUsersActivity(String testUsersPrefix, int numberOfUsers, int anomalyDay) throws GeneratorException {
-        List<AuthenticationEvent> events = new ArrayList<>();
-        testUsersPrefix = testUsersPrefix + "_";
-        for(int i=0 ; i < numberOfUsers ; i++) {
-            String username = testUsersPrefix + i;
-            EntityEventIDFixedPrefixGenerator eventIdGen = new EntityEventIDFixedPrefixGenerator(username);
-            SingleUserGenerator userGenerator = new SingleUserGenerator(username);
 
-            // Normal:
-            ITimeGenerator timeGenerator1 =
-                    new MinutesIncrementTimeGenerator(LocalTime.of(8, 0), LocalTime.of(17, 0), 60, anomalyDay + 5, anomalyDay + 4);
-            events.addAll(AuthenticationOperationActions.getEventsByOperationName("SuccessfulAuthenticationOperation", eventIdGen, timeGenerator1, userGenerator));
+    /**   Future scenarios for testing active users        **/
+
+    public static List<AuthenticationEvent> getMultipleNormalUsersActivity(String username) throws GeneratorException {
+        List<AuthenticationEvent> events = new ArrayList<>();
+        EntityEventIDFixedPrefixGenerator eventIdGen = new EntityEventIDFixedPrefixGenerator(username);
+        SingleUserGenerator userGenerator = new SingleUserGenerator(username);
+        ITimeGenerator timeGenerator1 =
+                new MinutesIncrementTimeGenerator(LocalTime.of(8, 0), LocalTime.of(17, 0), 60, 28, -10);
+        events.addAll(AuthenticationOperationActions.getEventsByOperationName("SuccessfulAuthenticationOperation", eventIdGen, timeGenerator1, userGenerator));
+        return events;
+    }
+
+
+    public static List<AuthenticationEvent> getFutureHighNumOfDistinctMachinesAndSameSrcDstMachines(String testUser, boolean isSrcMachine, int anomalyDay) throws GeneratorException {
+
+        List<AuthenticationEvent> events = new ArrayList<>();
+        EntityEventIDFixedPrefixGenerator eventIdGen = new EntityEventIDFixedPrefixGenerator(testUser);
+        SingleUserGenerator userGenerator = new SingleUserGenerator(testUser);
+        // Normal:
+        ITimeGenerator timeGenerator1 =
+                new MinutesIncrementTimeGenerator(LocalTime.of(8, 0), LocalTime.of(17, 0), 60, anomalyDay + 28, anomalyDay -3);
+        events.addAll(AuthenticationOperationActions.getEventsByOperationName("SuccessfulAuthenticationOperation", eventIdGen, timeGenerator1, userGenerator));
+
+        //Anomaly:
+        ITimeGenerator timeGenerator2 =
+                new MinutesIncrementTimeGenerator(LocalTime.of(10, 0), LocalTime.of(12, 30), 1, anomalyDay-4, anomalyDay - 6);
+        if (isSrcMachine) {
+            events.addAll(AuthenticationOperationActions.getEventsByOperationName("DistinctSrcDomainsAuthenticationOperation", eventIdGen, timeGenerator2, userGenerator));
+        } else {
+            events.addAll(AuthenticationOperationActions.getEventsByOperationName("DistinctDstDomainsAuthenticationOperation", eventIdGen, timeGenerator2, userGenerator));
         }
 
+        ITimeGenerator timeGenerator3 =
+                new MinutesIncrementTimeGenerator(LocalTime.of(13, 0), LocalTime.of(15, 30), 1, anomalyDay-7, anomalyDay - 10);
+        events.addAll(AuthenticationOperationActions.getSameSrcDstMachinesAuthenticationOperation(eventIdGen, timeGenerator3, userGenerator));
 
         return events;
     }
+    public static List<AuthenticationEvent> getFutureLogonAttemptstoMultipleSourceComputersTEMP(String testUser, int anomalyDay) throws GeneratorException {
+        String srcMachines[]  = new String[]{"abnormal_src_a", "abnormal_src_b", "abnormal_src_c", "abnormal_src_d", "abnormal_src_e", "abnormal_src_f", "abnormal_src_g", "abnormal_src_h", "abnormal_src_i", "abnormal_src_j", "normal_src_home", "normal_src_work"};
+        List<AuthenticationEvent> events = new ArrayList<>();
+        EntityEventIDFixedPrefixGenerator eventIdGen = new EntityEventIDFixedPrefixGenerator(testUser);
+        SingleUserGenerator userGenerator = new SingleUserGenerator(testUser);
+        SingleUserGenerator otherUserGenerator = new SingleUserGenerator(testUser + "_other");
+
+        // Normal:
+        ITimeGenerator timeGenerator1 =
+                new MinutesIncrementTimeGenerator(LocalTime.of(8, 0), LocalTime.of(17, 0), 60, anomalyDay + 28, anomalyDay-2);
+        events.addAll(AuthenticationOperationActions.getEventsByOperationName("SuccessfulAuthenticationOperation", eventIdGen, timeGenerator1, userGenerator));
+
+        ITimeGenerator timeGenerator2 =
+                new MinutesIncrementTimeGenerator(LocalTime.of(8, 0), LocalTime.of(17, 0), 60, anomalyDay -2 , anomalyDay-5 );
+        events.addAll(AuthenticationOperationActions.getNumberOfDistinctSrcMachineNameRegexClusterAuthenticationOperation(eventIdGen,timeGenerator2,otherUserGenerator, srcMachines));
+
+        //Anomaly:
+        ITimeGenerator timeGenerator3 =
+                new MinutesIncrementTimeGenerator(LocalTime.of(10, 0), LocalTime.of(13, 0), 1, anomalyDay-3 , anomalyDay - 6);
+        events.addAll(AuthenticationOperationActions.getNumberOfDistinctSrcMachineNameRegexClusterAuthenticationOperation(eventIdGen,timeGenerator3,userGenerator, srcMachines));
+
+        return events;
+    }
+
 
 }

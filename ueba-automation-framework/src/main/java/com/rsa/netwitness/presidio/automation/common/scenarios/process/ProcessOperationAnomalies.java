@@ -26,7 +26,7 @@ public class ProcessOperationAnomalies {
         SingleUserGenerator userGenerator = new SingleUserGenerator(testUser);
 
         ITimeGenerator timeGenerator =
-                new MinutesIncrementTimeGenerator(LocalTime.of(9, 0), LocalTime.of(17, 00), 240, 28, 0);
+                new MinutesIncrementTimeGenerator(LocalTime.of(9, 0), LocalTime.of(17, 00), 240, 28, -10 );
 
         ProcessEventsGenerator eventGenerator = new ProcessEventsGenerator();
         eventGenerator.setUserGenerator(userGenerator);

@@ -19,33 +19,33 @@ import org.testng.annotations.Test;
 
 import java.time.Instant;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class PreProcessingConfiguration extends AbstractTestNGSpringContextTests {
 
-    private static  ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(PreProcessingConfiguration.class.getName());
+    private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(PreProcessingConfiguration.class.getName());
 
     @Autowired
     private AdapterTestManager adapterTestManager;
 
-    private Instant startDate = Instant.now();
-
-    @Parameters({"historical_days_back", "anomaly_day","pre_processing_configuration_scenario"})
+    @Parameters({"historical_days_back", "anomaly_day", "pre_processing_configuration_scenario"})
     @BeforeClass
     public void setup(@Optional("14") int historicalDaysBack, @Optional("1") int anomalyDay,
-                      @Optional("CORE_MONGO") ConfigurationScenario preProcessingConfigurationScenario){
+                      @Optional("CORE_MONGO") ConfigurationScenario preProcessingConfigurationScenario) {
 
         LOGGER.info("\t***** " + getClass().getSimpleName() + " started with historicalDaysBack=" + historicalDaysBack + " anomalyDay=" + anomalyDay + " preProcessingConfigurationScenario=" + preProcessingConfigurationScenario);
         LOGGER.info(preProcessingConfigurationScenario + " configuration will be executed.");
+        Instant startDate = Instant.now().truncatedTo(DAYS).minus(historicalDaysBack, DAYS);
         PreProcessingConfigScenarioFactory configScenario = new PreProcessingConfigScenarioFactory(adapterTestManager, startDate);
         configScenario.get(preProcessingConfigurationScenario).execute();
     }
 
 
-
     @Test
-    public void adapterProcessTest(){
+    public void adapterProcessTest() {
         Assert.assertTrue(true);
     }
 }
