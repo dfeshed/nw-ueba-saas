@@ -44,7 +44,7 @@ export const apiCreateColumnGroup = (name, fields) => {
  * @param {string} name
  * @param {object[]} fields
  */
-export const apiUpdateColumnGroup = (id, name, fields) => {
+export const apiUpdateColumnGroup = (name, fields, id) => {
   return _createOrUpdateColumnGroup(name, fields, id);
 };
 

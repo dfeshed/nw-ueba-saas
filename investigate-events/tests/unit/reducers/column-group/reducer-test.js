@@ -187,7 +187,7 @@ test('Should set relevant properties correctly after successfully deleting colum
           field: 'time',
           title: 'Collection Time',
           position: 0,
-          width: 135
+          width: 175
         },
         {
           field: 'service',
@@ -204,7 +204,7 @@ test('Should set relevant properties correctly after successfully deleting colum
           field: 'time',
           title: 'Collection Time',
           position: 0,
-          width: 135
+          width: 175
         }]
       }
     ]
@@ -230,7 +230,36 @@ test('Should set relevant properties correctly after successfully deleting colum
 
 test('Should set relevant properties correctly after failure to delete column group', function(assert) {
   const previous = Immutable.from({
-    columnGroup: null
+    columnGroups: [
+      {
+        id: '12345',
+        name: 'TEST',
+        ootb: false,
+        columns: [{
+          field: 'time',
+          title: 'Collection Time',
+          position: 0,
+          width: 175
+        },
+        {
+          field: 'service',
+          title: 'Service Name',
+          position: 1,
+          width: 100
+        }]
+      },
+      {
+        id: '23456',
+        name: 'TEST2',
+        ootb: false,
+        columns: [{
+          field: 'time',
+          title: 'Collection Time',
+          position: 0,
+          width: 175
+        }]
+      }
+    ]
   });
 
   const failureAction = makePackAction(LIFECYCLE.FAILURE, {
@@ -245,6 +274,128 @@ test('Should set relevant properties correctly after failure to delete column gr
 
   const newEndState = reducer(previous, failureAction);
   assert.equal(newEndState.isColumnGroupsLoading, false, 'isColumnGroupsLoading shall be set false');
+  assert.deepEqual(previous.columnGroups, newEndState.columnGroups, 'columnGroups shall not change');
   assert.ok(newEndState.deleteColumnGroupErrorCode, 'deleteColumnGroupErrorCode shall be set');
   assert.ok(newEndState.deleteColumnGroupErrorMessage, 'deleteColumnGroupErrorMessage shall be set');
+});
+
+test('Should set relevant properties correctly at start of updating column group', function(assert) {
+
+  const previous = Immutable.from({
+    columnGroup: null
+  });
+
+  const startAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.COLUMNS_UPDATE,
+    payload: {
+      data: {}
+    }
+  });
+
+  const newEndState = reducer(previous, startAction);
+  assert.equal(newEndState.isColumnGroupsLoading, true, 'isColumnGroupsLoading shall be set true');
+  assert.equal(newEndState.updateColumnGroupErrorCode, null, 'updateColumnGroupErrorCode shall be null');
+  assert.equal(newEndState.updateColumnGroupErrorMessage, null, 'updateColumnGroupErrorMessage shall be null');
+});
+
+test('Should set relevant properties correctly after successfully updating column group', function(assert) {
+  const id = `TEST-${Date.now().toString().substring(6)}`;
+  const previous = Immutable.from({
+    columnGroups: [
+      {
+        id,
+        name: 'TEST',
+        ootb: false,
+        columns: [{
+          field: 'time',
+          title: 'Collection Time',
+          position: 0,
+          width: 175
+        },
+        {
+          field: 'service',
+          title: 'Service Name',
+          position: 1,
+          width: 100
+        }]
+      },
+      {
+        id: '12345',
+        name: 'TEST2',
+        ootb: false,
+        columns: [{
+          field: 'time',
+          title: 'Collection Time',
+          position: 0,
+          width: 175
+        }]
+      }
+    ]
+  });
+  const colGroupName = `UPDATED-${Date.now().toString().substring(6)}`;
+  const colGroupFields = [{
+    field: 'time',
+    title: 'Collection Time',
+    position: 0,
+    width: 175
+  },
+  {
+    field: 'service',
+    title: 'Service Name',
+    position: 1,
+    width: 100
+  }];
+
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.COLUMNS_UPDATE,
+    payload: {
+      data: {
+        id,
+        name: colGroupName,
+        columns: colGroupFields,
+        ootb: false
+      }
+    }
+  });
+
+  const newEndState = reducer(previous, successAction);
+  const found = newEndState.columnGroups.find((cg) => cg.id === id && cg.name === colGroupName);
+  assert.ok(found, 'Failed to update column group');
+  assert.equal(newEndState.isColumnGroupsLoading, false, 'isColumnGroupsLoading shall be set false');
+  assert.notOk(newEndState.updateColumnGroupErrorCode, 'updateColumnGroupErrorCode shall not be set');
+  assert.notOk(newEndState.updateColumnGroupErrorMessage, 'updateColumnGroupErrorMessage shall not be set');
+});
+
+test('Should set relevant properties correctly after failure to update column group', function(assert) {
+  const previous = Immutable.from({
+    columnGroups: [
+      {
+        id: '12345',
+        name: 'TEST',
+        ootb: false,
+        columns: [{
+          field: 'time',
+          title: 'Collection Time',
+          position: 0,
+          width: 175
+        }]
+      }
+    ]
+  });
+
+  const failureAction = makePackAction(LIFECYCLE.FAILURE, {
+    type: ACTION_TYPES.COLUMNS_UPDATE,
+    payload: {
+      meta: {
+        message: 'TEST'
+      },
+      code: 999
+    }
+  });
+
+  const newEndState = reducer(previous, failureAction);
+  assert.equal(newEndState.isColumnGroupsLoading, false, 'isColumnGroupsLoading shall be set false');
+  assert.deepEqual(previous.columnGroups, newEndState.columnGroups, 'columnGroups shall not change');
+  assert.ok(newEndState.updateColumnGroupErrorCode, 'updateColumnGroupErrorCode shall be set');
+  assert.ok(newEndState.updateColumnGroupErrorMessage, 'updateColumnGroupErrorMessage shall be set');
 });

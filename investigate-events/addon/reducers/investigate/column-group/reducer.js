@@ -13,7 +13,9 @@ const _initialState = Immutable.from({
   createColumnGroupErrorCode: undefined,
   createColumnGroupErrorMessage: undefined,
   deleteColumnGroupErrorCode: undefined,
-  deleteColumnGroupErrorMessage: undefined
+  deleteColumnGroupErrorMessage: undefined,
+  updateColumnGroupErrorCode: undefined,
+  updateColumnGroupErrorMessage: undefined
 });
 
 /**
@@ -117,6 +119,41 @@ export default handleActions({
 
         // remove the deleted column group from state
         const columnGroups = s.columnGroups.filter((cg) => cg.id !== deletedId);
+        return s.merge({
+          columnGroups,
+          isColumnGroupsLoading: false
+        });
+      }
+    });
+  },
+
+  [ACTION_TYPES.COLUMNS_UPDATE]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => {
+        return s.merge({
+          isColumnGroupsLoading: true,
+          updateColumnGroupErrorCode: null,
+          updateColumnGroupErrorMessage: null
+        });
+      },
+      failure: (s) => s.merge({
+        isColumnGroupsLoading: false,
+        updateColumnGroupErrorCode: action.payload.code,
+        updateColumnGroupErrorMessage: action.payload.meta ? action.payload.meta.message : undefined
+      }),
+      success: (s) => {
+        const updatedColumnGroup = action.payload.data;
+        // Want to fix certain sizes to certain columns
+        // if those columns exist
+        // meta-summary goes by a few names
+        _fixColumnWidth(updatedColumnGroup.columns, [
+          { field: 'custom.meta-summary', width: 2000 },
+          { field: 'custom.metasummary', width: 2000 },
+          { field: 'time', width: 175 }
+        ]);
+        // replace the updated column group by id
+        const updatedIdRemoved = [...s.columnGroups].filter((cg) => cg.id !== updatedColumnGroup.id);
+        const columnGroups = sort([...updatedIdRemoved, updatedColumnGroup]).by([{ asc: (group) => group.name.toUpperCase() }]);
         return s.merge({
           columnGroups,
           isColumnGroupsLoading: false
