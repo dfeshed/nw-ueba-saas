@@ -9,15 +9,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.stereotype.Service;
-import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.AlertQuery;
-import presidio.output.domain.records.alerts.Bucket;
-import presidio.output.domain.records.alerts.CountAggregation;
-import presidio.output.domain.records.alerts.IndicatorEvent;
-import presidio.output.domain.records.alerts.TimeAggregation;
-import presidio.output.domain.records.alerts.WeekdayAggregation;
+import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
+import presidio.webapp.model.Alert;
 import presidio.webapp.model.*;
+import presidio.webapp.model.Indicator;
+import presidio.webapp.model.IndicatorQuery;
 import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
 
 import java.math.BigDecimal;
@@ -187,6 +185,9 @@ public class RestAlertServiceImpl implements RestAlertService {
         }
         if (alertQuery.getStartTimeTo() != null) {
             alertQueryBuilder.filterByEndDate(alertQuery.getStartTimeTo().longValue());
+        }
+        if (alertQuery.getEntityType() != null) {
+            alertQueryBuilder.filterByEntityType(alertQuery.getEntityType());
         }
         if (CollectionUtils.isNotEmpty(alertQuery.getSeverity())) {
             List<String> severity = new ArrayList<>();

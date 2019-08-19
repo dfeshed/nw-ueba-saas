@@ -1291,7 +1291,7 @@ indicators:
   historicalData:
     type: hourly_aggregations
     featureName: sumOfBytesSentToDstOrgOutboundTlsHourly
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: sumOfBytesSentToDstPortScoresSumSslSubjectOutboundTlsHourly
   type: FEATURE_AGGREGATION
@@ -1309,7 +1309,7 @@ indicators:
   historicalData:
     type: hourly_aggregations
     featureName: sumOfBytesSentToDstPortOutboundTlsHourly
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: sumOfBytesSentToDomainScoresSumSslSubjectOutboundTlsHourly
   type: FEATURE_AGGREGATION
@@ -1327,7 +1327,7 @@ indicators:
   historicalData:
     type: hourly_aggregations
     featureName: sumOfBytesSentToDomainOutboundTlsHourly
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: sumOfBytesSentToSslSubjectOutboundTlsHourly
   type: FEATURE_AGGREGATION
@@ -1342,7 +1342,7 @@ indicators:
       fieldValue: OUTBOUND
   historicalData:
     type: hourly_aggregations
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: maxSumOfBytesSentBySrcIpToDstPortScoresSumSslSubjectOutboundTlsHourly
   type: FEATURE_AGGREGATION
@@ -1360,7 +1360,7 @@ indicators:
   historicalData:
     type: hourly_aggregations
     featureName: maxSumOfBytesSentBySrcIpToDstPortOutboundTlsHourly
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: maxSumOfBytesSentBySrcIpToDstOrgScoresSumSslSubjectOutboundTlsHourly
   type: FEATURE_AGGREGATION
@@ -1378,7 +1378,7 @@ indicators:
   historicalData:
     type: hourly_aggregations
     featureName: maxSumOfBytesSentBySrcIpToDstOrgOutboundTlsHourly
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: maxSumOfBytesSentBySrcIpToDomainScoresSumSslSubjectOutboundTlsHourly
   type: FEATURE_AGGREGATION
@@ -1396,7 +1396,7 @@ indicators:
   historicalData:
     type: hourly_aggregations
     featureName: maxSumOfBytesSentBySrcIpToDomainOutboundTlsHourly
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: maxSumOfBytesSentBySrcIpToSslSubjectOutboundTlsHourly
   type: FEATURE_AGGREGATION
@@ -1411,7 +1411,7 @@ indicators:
       fieldValue: OUTBOUND
   historicalData:
     type: hourly_aggregations
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: sumOfHighestSslSubjectSrcNetnameOutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
@@ -1431,7 +1431,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: sslSubjectHistogramSrcNetnameOutboundTlsDaily
     featureName: sslSubjectHistogram
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: sumOfHighestDomainSrcNetnameOutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
@@ -1452,7 +1452,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: domainHistogramSrcNetnameOutboundTlsDaily
     featureName: domainHistogram
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: sumOfHighestDstPortSrcNetnameOutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
@@ -1473,7 +1473,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramSrcNetnameOutboundTlsDaily
     featureName: dstPortHistogram
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: sumOfHighestDstOrgSrcNetnameOutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
@@ -1494,7 +1494,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstOrgHistogramSrcNetnameOutboundTlsDaily
     featureName: dstOrgHistogram
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: sumOfHighestCountryScoresSslSubjectOutboundTlsHourly
   type: SCORE_AGGREGATION
@@ -1534,7 +1534,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramSslSubjectOutboundTlsDaily
     featureName: dstPortHistogram
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: highestStartInstantScoreSslSubjectOutboundTlsHourly
   type: SCORE_AGGREGATION
@@ -1572,7 +1572,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramDomainOutboundTlsDaily
     featureName: dstPortHistogram
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: sumOfHighestDstPortDstOrgOutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
@@ -1593,7 +1593,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramDstOrgOutboundTlsDaily
     featureName: dstPortHistogram
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: highestStartInstantJa3OutboundScoresSslSubjectTlsHourly
   type: SCORE_AGGREGATION
@@ -1727,7 +1727,7 @@ indicators:
       fieldValue: OUTBOUND
   historicalData:
     type: hourly_aggregations
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: sumOfHighestSslSubjectSrcNetnameOutboundScoresJa3TlsHourly
   type: SCORE_AGGREGATION
@@ -1748,7 +1748,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: sslSubjectHistogramSrcNetnameOutboundTlsDaily
     featureName: sslSubjectHistogram
-  classification: exfiltration
+  classification: data_exfiltration
 
 
 - id: sumOfHighestDomainSrcNetnameOutboundScoresJa3TlsHourly
@@ -1770,7 +1770,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: domainHistogramSrcNetnameOutboundTlsDaily
     featureName: domainHistogram
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: sumOfHighestDstPortSrcNetnameOutboundScoresJa3TlsHourly
   type: SCORE_AGGREGATION
@@ -1791,7 +1791,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramSrcNetnameOutboundTlsDaily
     featureName: dstPortHistogram
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: sumOfHighestDstOrgSrcNetnameOutboundScoresJa3TlsHourly
   type: SCORE_AGGREGATION
@@ -1812,7 +1812,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstOrgHistogramSrcNetnameOutboundTlsDaily
     featureName: dstOrgHistogram
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: sumOfHighestCountrySslSubjectOutboundScoresJa3TlsHourly
   type: SCORE_AGGREGATION
@@ -1854,7 +1854,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramSslSubjectOutboundTlsDaily
     featureName: dstPortHistogram
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: highestStartInstantSslSubjectOutboundScoreJa3TlsHourly
   type: SCORE_AGGREGATION
@@ -1892,7 +1892,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramDomainOutboundTlsDaily
     featureName: dstPortHistogram
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: sumOfHighestDstPortDstOrgOutboundScoresJa3TlsHourly
   type: SCORE_AGGREGATION
@@ -1913,7 +1913,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstPortHistogramDstOrgOutboundTlsDaily
     featureName: dstPortHistogram
-  classification: exfiltration
+  classification: data_exfiltration
 
 - id: highestStartInstantScoreJa3OutboundTlsHourly
   type: SCORE_AGGREGATION
@@ -2053,53 +2053,53 @@ classificationPriority:
 - classificationName: data_exfiltration
   priority: 13
 
-- classificationName: mass_file_rename
+- classificationName: command_and_control
   priority: 14
 
-- classificationName: snooping_user
+- classificationName: phishing
   priority: 15
 
-- classificationName: multiple_logons_by_user
+- classificationName: mass_file_rename
   priority: 16
 
-- classificationName: user_logged_into_multiple_hosts
+- classificationName: snooping_user
   priority: 17
 
-- classificationName: admin_password_change
+- classificationName: multiple_logons_by_user
   priority: 18
 
-- classificationName: mass_permission_changes
+- classificationName: user_logged_into_multiple_hosts
   priority: 19
 
-- classificationName: abnormal_site_access
+- classificationName: admin_password_change
   priority: 20
 
-- classificationName: abnormal_ad_changes
+- classificationName: mass_permission_changes
   priority: 21
 
-- classificationName: abnormal_print_activity
+- classificationName: abnormal_site_access
   priority: 22
 
-- classificationName: sensitive_user_status_changes
+- classificationName: abnormal_ad_changes
   priority: 23
 
-- classificationName: print_from_abnormal_host
+- classificationName: abnormal_print_activity
   priority: 24
 
-- classificationName: abnormal_file_access
+- classificationName: sensitive_user_status_changes
   priority: 25
 
-- classificationName: print_to_abnormal_printer
+- classificationName: print_from_abnormal_host
   priority: 26
 
-- classificationName: non_standard_hours
+- classificationName: abnormal_file_access
   priority: 27
 
-- classificationName: suspicious_user_activity
+- classificationName: print_to_abnormal_printer
   priority: 28
 
-- classificationName: phishing
+- classificationName: non_standard_hours
   priority: 29
 
-- classificationName: exfiltration
+- classificationName: suspicious_user_activity
   priority: 30

@@ -1,7 +1,5 @@
 package presidio.ade.domain.store.scored;
 
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
 import com.mongodb.client.MongoCollection;
 import fortscale.common.feature.MultiKeyFeature;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
