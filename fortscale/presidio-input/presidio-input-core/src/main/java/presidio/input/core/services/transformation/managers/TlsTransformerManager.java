@@ -11,6 +11,7 @@ import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.TlsRawEvent;
 import presidio.sdk.api.domain.transformedevents.TlsTransformedEvent;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,16 +24,17 @@ public class TlsTransformerManager implements TransformationManager {
     private static final List<String> NEW_OCCURRENCE_FIELD_NAMES = new ArrayList<>(Arrays.asList(TlsRawEvent.DOMAIN_FIELD_NAME,
             TlsRawEvent.SSL_SUBJECT_FIELD_NAME, TlsRawEvent.JA3_FIELD_NAME, TlsRawEvent.DESTINATION_ORGANIZATION_FIELD_NAME,
             TlsRawEvent.DESTINATION_COUNTRY_FIELD_NAME, TlsRawEvent.DESTINATION_PORT_FIELD_NAME));
+    private static final Duration EXPIRATION_DELTA = Duration.ofDays(182);
     private List<Transformer> transformers = new ArrayList<>();
     private FactoryService<Transformer> transformerFactoryService;
 
 
-    public TlsTransformerManager(FactoryService<Transformer> transformerFactoryService){
+    public TlsTransformerManager(FactoryService<Transformer> transformerFactoryService) {
         this.transformerFactoryService = transformerFactoryService;
     }
 
     @Override
-    public void init(Instant endDate){
+    public void init(Instant endDate) {
         SessionSplitTransformerConf sessionSplitTransformerConf = new SessionSplitTransformerConf(Schema.TLS, endDate);
         SessionSplitTransformer sessionSplitTransformer = (SessionSplitTransformer) transformerFactoryService.getProduct(sessionSplitTransformerConf);
         transformers.add(sessionSplitTransformer);
@@ -51,7 +53,7 @@ public class TlsTransformerManager implements TransformationManager {
 
     private NewOccurrenceTransformer createNewOccurrenceTransformer(String entityType) {
         NewOccurrenceTransformerConf newOccurrenceTransformerConf = new NewOccurrenceTransformerConf(Schema.TLS, entityType + NAME_FIELD_PREFIX,
-                , entityType + NEW_OCCURRENCE_FIELD_PREFIX);
+                EXPIRATION_DELTA, entityType + NEW_OCCURRENCE_FIELD_PREFIX);
         return (NewOccurrenceTransformer) transformerFactoryService.getProduct(newOccurrenceTransformerConf);
     }
 }
