@@ -46,6 +46,8 @@ public class SessionSplitTransformer implements Transformer {
                                 logger.debug("Enrich {} tls event with missed fields.", tlsTransformedEvent.getId());
                                 break;
                             } else {
+                                //remove key of closed session
+                                splitTransformerMap.remove(key);
                                 logger.info("The {} tls event can't be enriched due to missing zero session split event.", tlsTransformedEvent.getId());
                             }
                         }
