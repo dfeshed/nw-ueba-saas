@@ -56,6 +56,7 @@ public class LastOccurrenceInstantWriterCacheImpl implements LastOccurrenceInsta
     @Override
     public void close() {
         flush(lfuCache.removeAllLfuEntries());
+        lastOccurrenceInstantWriter.close();
     }
 
     private void flush(Map<Triple<Schema, String, String>, Instant> removedLfuEntries) {

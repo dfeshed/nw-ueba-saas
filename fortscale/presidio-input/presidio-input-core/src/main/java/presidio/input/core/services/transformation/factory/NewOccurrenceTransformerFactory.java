@@ -35,7 +35,6 @@ public class NewOccurrenceTransformerFactory extends AbstractServiceAutowiringFa
                 lastOccurrenceInstantReader,
                 newOccurrenceTransformerConf.getSchema(),
                 newOccurrenceTransformerConf.getEntityType(),
-                newOccurrenceTransformerConf.getInstantFieldName(),
                 newOccurrenceTransformerConf.getExpirationDelta(),
                 newOccurrenceTransformerConf.getBooleanFieldName());
     }
