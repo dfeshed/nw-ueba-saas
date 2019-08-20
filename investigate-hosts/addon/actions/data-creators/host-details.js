@@ -84,9 +84,12 @@ const getScanSnapshots = (agentId) => {
           const [scanTime] = data.length ? data : [{}];
           const { scanStartTime, serviceId } = scanTime;
           dispatch({ type: ACTION_TYPES.INITIALIZE_DATA, payload: { agentId, scanTime: scanTime ? scanStartTime : null } });
-          const request = lookup('service:request');
-          request.registerPersistentStreamOptions({ socketUrlPostfix: serviceId, requiredSocketUrl: 'endpoint/socket' });
-          dispatch(setSelectedMachineServerId(serviceId));
+          // If scan is not done serviceId won't be there, if no serviceId then don't set
+          if (serviceId) {
+            const request = lookup('service:request');
+            request.registerPersistentStreamOptions({ socketUrlPostfix: serviceId, requiredSocketUrl: 'endpoint/socket' });
+            dispatch(setSelectedMachineServerId(serviceId));
+          }
         }
       }
     });
