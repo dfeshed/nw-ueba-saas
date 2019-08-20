@@ -1,3 +1,14 @@
+# [13.5.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v13.5.0)
+## Features
+* [ASOC-74233](https://bedfordjira.na.rsa.net/browse/ASOC-74233):&emsp;Paren Selection
+* [ASOC-78709](https://bedfordjira.na.rsa.net/browse/ASOC-78709):&emsp;Column Group Filtering
+* [ASOC-78802](https://bedfordjira.na.rsa.net/browse/ASOC-78802):&emsp;Support IPv4 Subnet
+* [ASOC-78803](https://bedfordjira.na.rsa.net/browse/ASOC-78803):&emsp;Support IPv6 Subnet
+* [ASOC-79657](https://bedfordjira.na.rsa.net/browse/ASOC-79657):&emsp;Download Sorted Events Using New API Option
+* [ASOC-80361](https://bedfordjira.na.rsa.net/browse/ASOC-80361):&emsp;Tech Debt: Secure aggregation_rules collection
+* Updated to Ember 3.12.0
+
+
 # [13.4.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v13.4.0)
 ## Features
 * [ASOC-72339](https://bedfordjira.na.rsa.net/browse/ASOC-72339):&emsp;RESPOND UI :Alert-names filter too verbose in respond page
