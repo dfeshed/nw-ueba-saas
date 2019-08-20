@@ -27,6 +27,7 @@ pipeline {
                 cleanWs()
                 buildIntegrationTestProject()
                 setBaseUrl()
+                copyScripts()
             }
         }
         stage('Reset DBs LogHybrid and UEBA') {
@@ -84,9 +85,6 @@ pipeline {
 }
 
 
-
-
-
 /******************************
  *   UEBA RPMs Installation   *
  ******************************/
@@ -124,8 +122,7 @@ def setBaseUrl(
 def uebaInstallRPMs() {
     if (params.SIDE_BRANCH_JOD_NUMBER == '') {
         sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/install_upgrade_rpms.sh $VERSION $env.OLD_UEBA_RPMS"
-    }
-    else {
+    } else {
         sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/install_side_branch_rpms.sh $params.SIDE_BRANCH_JOD_NUMBER"
     }
     sh "bash ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/Initiate-presidio-services.sh $VERSION $OLD_UEBA_RPMS"
@@ -175,4 +172,8 @@ def runSuiteXmlFile(String suiteXmlFile) {
     dir(env.REPOSITORY_NAME) {
         sh "mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS}"
     }
+}
+
+def copyScripts() {
+    sh "cp -f ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/env_properties_manager.sh /home/presidio/"
 }

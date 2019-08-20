@@ -27,6 +27,7 @@ pipeline {
             steps {
                 cleanWs()
                 buildIntegrationTestProject()
+                copyScripts()
             }
         }
         stage('Reset UEBA DBs') {
@@ -157,4 +158,8 @@ def runSuiteXmlFile(String suiteXmlFile) {
     dir(env.REPOSITORY_NAME) {
         sh "mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS}"
     }
+}
+
+def copyScripts() {
+    sh "cp -f ${env.WORKSPACE}${env.SCRIPTS_DIR}deployment/env_properties_manager.sh /home/presidio/"
 }
