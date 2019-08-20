@@ -23,7 +23,7 @@ public class TlsTransformerManager implements TransformationManager {
     private static final String NEW_OCCURRENCE_FIELD_PREFIX = ".isNewOccurrence";
     private static final List<String> NEW_OCCURRENCE_FIELD_NAMES = new ArrayList<>(Arrays.asList(TlsRawEvent.DOMAIN_FIELD_NAME,
             TlsRawEvent.SSL_SUBJECT_FIELD_NAME, TlsRawEvent.JA3_FIELD_NAME, TlsRawEvent.DESTINATION_ORGANIZATION_FIELD_NAME,
-            TlsRawEvent.DESTINATION_COUNTRY_FIELD_NAME, TlsRawEvent.DESTINATION_PORT_FIELD_NAME));
+            TlsRawEvent.DESTINATION_COUNTRY_FIELD_NAME, TlsRawEvent.DESTINATION_PORT_FIELD_NAME, TlsRawEvent.DESTINATION_ASN_FIELD_NAME));
     private static final Duration EXPIRATION_DELTA = Duration.ofDays(182);
     private List<Transformer> transformers = new ArrayList<>();
     private FactoryService<Transformer> transformerFactoryService;
