@@ -116,8 +116,8 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
         for (AlertsStoredRecord alert : allAlerts) {
             List<AlertsStoredRecord.Indicator> indicators = alert.getIndicatorsList();
 
-            long alertStartDate = Long.parseLong(alert.getStartDate()) / 1000;
-            long alertEndDate = Long.parseLong(alert.getEndDate()) / 1000;
+            long alertStartDate = alert.getStartDate().toEpochMilli() / 1000;
+            long alertEndDate = alert.getEndDate().toEpochMilli() / 1000;
 
             for (AlertsStoredRecord.Indicator singleIndicator : indicators) {
 

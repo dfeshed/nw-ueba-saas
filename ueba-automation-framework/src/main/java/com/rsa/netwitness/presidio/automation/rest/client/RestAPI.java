@@ -5,7 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.Assert;
-import com.rsa.netwitness.presidio.automation.domain.config.HostConf;
+import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -25,10 +25,10 @@ public class RestAPI {
     public static final String USERNAME = "presidio";
     public static final String PASSWORD = "P@ssw0rd";
     public static final String COLLECTOR_JSON_FILE = "/home/presidio/presidio-core/configurations/collector.json";
-//    public static final String CONFIGURATION_REQ_HTTP = "http://" + HostConf.getServerHostname() + ":8080/presidio-manager/configuration";
-    public static final String CONFIGURATION_REQ_HTTP = "http://" + HostConf.getServerIpAddress() + ":8080/presidio-manager/configuration";
-//    public static final String CONFIGURATION_REQ_HTTPS = "https://" + HostConf.getServerHostname() + "/configuration";
-    public static final String CONFIGURATION_REQ_HTTPS = "https://" + HostConf.getServerIpAddress() + "/configuration";
+//    public static final String CONFIGURATION_REQ_HTTP = "http://" + AutomationConf.UEBA_HOST + ":8080/presidio-manager/configuration";
+    public static final String CONFIGURATION_REQ_HTTP = "http://" + AutomationConf.UEBA_IP + ":8080/presidio-manager/configuration";
+//    public static final String CONFIGURATION_REQ_HTTPS = "https://" + AutomationConf.UEBA_HOST + "/configuration";
+    public static final String CONFIGURATION_REQ_HTTPS = "https://" + AutomationConf.UEBA_IP + "/configuration";
 
 
     private static String defaultAuthorizationID;
@@ -467,7 +467,7 @@ public class RestAPI {
             e.printStackTrace();
         }
 
-        RestApiResponse response = sendRestRequest("http://" + HostConf.getServerHostname() + ":8080/presidio-ca-connector-webapp/webhook/register", body.toString(), "POST");
+        RestApiResponse response = sendRestRequest("http://" + AutomationConf.UEBA_HOST + ":8080/presidio-ca-connector-webapp/webhook/register", body.toString(), "POST");
         JSONObject json;
         try {
             json = new JSONObject(response.getResultBody());
@@ -514,7 +514,7 @@ public class RestAPI {
             e.printStackTrace();
         }
 
-        RestApiResponse response = sendHttpsRestRequest("https://" + HostConf.getServerHostname() + "/connector/webhook/register", body.toString(), "POST");
+        RestApiResponse response = sendHttpsRestRequest("https://" + AutomationConf.UEBA_HOST + "/connector/webhook/register", body.toString(), "POST");
         JSONObject json;
         try {
             json = new JSONObject(response.getResultBody());
@@ -537,7 +537,7 @@ public class RestAPI {
         JSONObject system = new JSONObject();
         JSONObject dataPipeline = new JSONObject();
 
-        String hostnameWithoutDomain = HostConf.getServerHostname();
+        String hostnameWithoutDomain = AutomationConf.UEBA_HOST;
         hostnameWithoutDomain = hostnameWithoutDomain.substring(0, hostnameWithoutDomain.indexOf(".fortscale.dom"));
         try {
             system.put("username", hostnameWithoutDomain + "@fortscale.dom");
@@ -545,7 +545,7 @@ public class RestAPI {
             system.put("ldapUrl", "ldap://192.168.0.31/DC=FORTSCALE,DC=DOM?userPrincipalName?sub");
             system.put("realmName", "FORTSCALE.DOM");
             system.put("analystGroup", "CN=VPN-Users,OU=Fortscale-Users,DC=Fortscale,DC=dom");
-            system.put("krbServiceName", "HTTP/"+ HostConf.getServerHostname() + "@FORTSCALE.DOM");
+            system.put("krbServiceName", "HTTP/"+ AutomationConf.UEBA_HOST + "@FORTSCALE.DOM");
             system.put("smtpHost", "name.of-server.com:25");
 
             for(String sch : schema) {
@@ -567,7 +567,7 @@ public class RestAPI {
             e.printStackTrace();
         }
 
-        RestApiResponse response = sendRestRequest("http://" + HostConf.getServerHostname() + ":8080/presidio-manager/configuration", body.toString(), "PUT");
+        RestApiResponse response = sendRestRequest("http://" + AutomationConf.UEBA_HOST + ":8080/presidio-manager/configuration", body.toString(), "PUT");
         validationPostRequest(response);
         return response;
     }
@@ -580,7 +580,7 @@ public class RestAPI {
         JSONObject system = new JSONObject();
         JSONObject dataPipeline = new JSONObject();
 
-        String hostnameWithoutDomain = HostConf.getServerHostname();
+        String hostnameWithoutDomain = AutomationConf.UEBA_HOST;
         hostnameWithoutDomain = hostnameWithoutDomain.substring(0, hostnameWithoutDomain.indexOf(".fortscale.dom"));
         try {
             system.put("username", hostnameWithoutDomain + "@fortscale.dom");
@@ -588,7 +588,7 @@ public class RestAPI {
             system.put("ldapUrl", "ldap://192.168.0.31/DC=FORTSCALE,DC=DOM?userPrincipalName?sub");
             system.put("realmName", "FORTSCALE.DOM");
             system.put("analystGroup", "CN=VPN-Users,OU=Fortscale-Users,DC=Fortscale,DC=dom");
-            system.put("krbServiceName", "HTTP/"+ HostConf.getServerHostname() + "@FORTSCALE.DOM");
+            system.put("krbServiceName", "HTTP/"+ AutomationConf.UEBA_HOST + "@FORTSCALE.DOM");
             system.put("smtpHost", "name.of-server.com:25");
 
             for(String sch : schema) {
@@ -611,7 +611,7 @@ public class RestAPI {
         }
 
         messageBodyConfiguration = body.toString();
-        RestApiResponse response = sendHttpsRestRequest("https://" + HostConf.getServerHostname() + "/configuration", body.toString(), "PUT");
+        RestApiResponse response = sendHttpsRestRequest("https://" + AutomationConf.UEBA_HOST + "/configuration", body.toString(), "PUT");
         validationPostRequest(response);
         return response;
     }
@@ -624,7 +624,7 @@ public class RestAPI {
         JSONObject system = new JSONObject();
         JSONObject dataPipeline = new JSONObject();
 
-        String hostnameWithoutDomain = HostConf.getServerHostname();
+        String hostnameWithoutDomain = AutomationConf.UEBA_HOST;
         hostnameWithoutDomain = hostnameWithoutDomain.substring(0, hostnameWithoutDomain.indexOf(".fortscale.dom"));
         try {
             system.put("username", hostnameWithoutDomain + "@fortscale.dom");
@@ -632,7 +632,7 @@ public class RestAPI {
             system.put("ldapUrl", "ldap://192.168.0.31/DC=FORTSCALE,DC=DOM?userPrincipalName?sub");
             system.put("realmName", "FORTSCALE.DOM");
             system.put("analystGroup", "CN=VPN-Users,OU=Fortscale-Users,DC=Fortscale,DC=dom");
-            system.put("krbServiceName", "HTTP/"+ HostConf.getServerHostname() + "@FORTSCALE.DOM");
+            system.put("krbServiceName", "HTTP/"+ AutomationConf.UEBA_HOST + "@FORTSCALE.DOM");
             system.put("smtpHost", "name.of-server.com:25");
 
             for(String sch : schema) {
@@ -650,7 +650,7 @@ public class RestAPI {
             e.printStackTrace();
         }
 
-        RestApiResponse response = sendHttpsRestRequest("https://" + HostConf.getServerHostname() + "/configuration", body.toString(), "PUT");
+        RestApiResponse response = sendHttpsRestRequest("https://" + AutomationConf.UEBA_HOST + "/configuration", body.toString(), "PUT");
         validationPostRequest(response);
         return response;
     }
@@ -704,7 +704,7 @@ public class RestAPI {
             e.printStackTrace();
         }
 
-        RestApiResponse response = sendHttpsRestRequest("https://" + HostConf.getServerHostname() + "/configuration", parent.toString(), "PUT");
+        RestApiResponse response = sendHttpsRestRequest("https://" + AutomationConf.UEBA_HOST + "/configuration", parent.toString(), "PUT");
         validationPostRequest(response);
         return response;
     }
@@ -842,8 +842,8 @@ public class RestAPI {
 
     public static void setup() {
         /** for online events generation, when sending REST requests on same machine **/
-        String webhookURL = "https://" + HostConf.getServerHostname() + "/api/v1.0/webhook";
-        String heartBeatURL = "https://" + HostConf.getServerHostname() + "/api/v1.0/heartbeat";
+        String webhookURL = "https://" + AutomationConf.UEBA_HOST + "/api/v1.0/webhook";
+        String heartBeatURL = "https://" + AutomationConf.UEBA_HOST + "/api/v1.0/heartbeat";
         String authorizationID = RestAPI.getCurrentAuthorizationId();
         RestAPI.setWebhookUrl(webhookURL);
         RestAPI.setHeartbeatUrl(heartBeatURL);
@@ -857,8 +857,8 @@ public class RestAPI {
 
     public static void setup(String authorizationID) {
         /** for online events generation, when sending REST requests on any machine **/
-        String webhookURL = "https://" + HostConf.getServerHostname() + "/api/v1.0/webhook";
-        String heartBeatURL = "https://" + HostConf.getServerHostname() + "/api/v1.0/heartbeat";
+        String webhookURL = "https://" + AutomationConf.UEBA_HOST + "/api/v1.0/webhook";
+        String heartBeatURL = "https://" + AutomationConf.UEBA_HOST + "/api/v1.0/heartbeat";
         RestAPI.setWebhookUrl(webhookURL);
         RestAPI.setHeartbeatUrl(heartBeatURL);
         RestAPI.setAuthorizationID(authorizationID);

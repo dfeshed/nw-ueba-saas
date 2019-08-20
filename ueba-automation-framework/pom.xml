@@ -80,6 +80,14 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+        </dependency>
+        <dependency>
             <groupId>presidio.netwitness</groupId>
             <artifactId>presidio-netwitness-flume</artifactId>
             <version>${project.version}</version>

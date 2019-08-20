@@ -4,8 +4,9 @@ package com.rsa.netwitness.presidio.automation.utils.adapter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rsa.netwitness.presidio.automation.domain.config.Consts;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoPropertiesReader;
-import com.rsa.netwitness.presidio.automation.utils.common.SedUtil;
-import com.rsa.netwitness.presidio.automation.utils.common.TerminalCommands;
+import com.rsa.netwitness.presidio.automation.ssh.SedSshUtil;
+import com.rsa.netwitness.presidio.automation.ssh.TerminalCommandsSshUtils;
+import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
 import fortscale.common.general.Schema;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -17,16 +18,15 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static com.rsa.netwitness.presidio.automation.common.helpers.RunCmdUtils.printLogFile;
+import static com.rsa.netwitness.presidio.automation.config.EnvironmentProperties.ENVIRONMENT_PROPERTIES;
+import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogFile;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AdapterTestManager {
@@ -101,7 +101,7 @@ public class AdapterTestManager {
         String logPath = "/tmp/presidio-adapter_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
 
         // Runs adapter for entire events time range at once
-        Process adapterProcess = TerminalCommands.runCommand(flumeHome + PRESIDIO_ADAPTER_APP, true, Consts.PRESIDIO_DIR, "run",
+        SshResponse adapterProcess = TerminalCommandsSshUtils.runCommand(flumeHome + PRESIDIO_ADAPTER_APP, true, Consts.PRESIDIO_DIR, "run",
                 "--fixed_duration_strategy " + getFixedDuration(timeFrame), "--start_date " + start.toString(), "--end_date " + end.toString(), "--schema " + schema,
                 " &> " + logPath);
 
@@ -155,11 +155,11 @@ public class AdapterTestManager {
 
 
         files.forEach(file -> {
-            SedUtil.replaceTextInFile(file, Consts.PRESIDIO_DIR, "mongoSource.host=.*", "mongoSource.host=" + mongoHostName);
-            SedUtil.replaceTextInFile(file, Consts.PRESIDIO_DIR, "mongoSource.dbName=.*", "mongoSource.dbName=" + mongoDBName);
-            SedUtil.replaceTextInFile(file, Consts.PRESIDIO_DIR, "mongoSource.username=.*", "mongoSource.username=" + mongoUserName);
-            SedUtil.replaceTextInFile(file, Consts.PRESIDIO_DIR, "mongoSource.password=.*", "mongoSource.password=" + mongoPassword);
-            SedUtil.replaceTextInFile(file, Consts.PRESIDIO_DIR, "mongoSource.port=.*", "mongoSource.port=" + mongoHostPort);
+            SedSshUtil.replaceTextInFile(file, Consts.PRESIDIO_DIR, "mongoSource.host=.*", "mongoSource.host=" + mongoHostName);
+            SedSshUtil.replaceTextInFile(file, Consts.PRESIDIO_DIR, "mongoSource.dbName=.*", "mongoSource.dbName=" + mongoDBName);
+            SedSshUtil.replaceTextInFile(file, Consts.PRESIDIO_DIR, "mongoSource.username=.*", "mongoSource.username=" + mongoUserName);
+            SedSshUtil.replaceTextInFile(file, Consts.PRESIDIO_DIR, "mongoSource.password=.*", "mongoSource.password=" + mongoPassword);
+            SedSshUtil.replaceTextInFile(file, Consts.PRESIDIO_DIR, "mongoSource.port=.*", "mongoSource.port=" + mongoHostPort);
         });
     }
 
@@ -173,7 +173,7 @@ public class AdapterTestManager {
                 + "cp -n " + PROCESS_CONFIGURATION + " " + PROD_PROCESS_CONFIGURATION + ";"
                 + "cp -n " + TLS_CONFIGURATION + " " + PROD_TLS_CONFIGURATION;
 
-        TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
+        TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
     }
 
     public void setAdapterConfigurationPropertiesToTestMode() {
@@ -187,7 +187,7 @@ public class AdapterTestManager {
                 + "cp -f " + TEST_PROCESS_CONFIGURATION + " " + PROCESS_CONFIGURATION + ";"
                 + "cp -f " + TEST_TLS_CONFIGURATION + " " + TLS_CONFIGURATION;
 
-        TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
+        TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
     }
 
     public void setAdapterConfigurationPropertiesToProductionMode() {
@@ -201,30 +201,34 @@ public class AdapterTestManager {
                 + "cp -f " + PROD_PROCESS_CONFIGURATION + " " + PROCESS_CONFIGURATION + ";"
                 + "cp -f " + PROD_TLS_CONFIGURATION + " " + TLS_CONFIGURATION;
 
-        TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
+        TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
     }
 
     public void setTestMode4EndPointOnly() {
         String command = "cp -f " + TEST_REGISTRY_CONFIGURATION + " " + REGISTRY_CONFIGURATION + ";"
                 + "cp -f " + TEST_PROCESS_CONFIGURATION + " " + PROCESS_CONFIGURATION;
 
-        TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
+        TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
     }
 
     public void setProdMode4EndPointOnly() {
         String command = "cp -f " + PROD_REGISTRY_CONFIGURATION + " " + REGISTRY_CONFIGURATION + ";"
                 + "cp -f " + PROD_PROCESS_CONFIGURATION + " " + PROCESS_CONFIGURATION;
 
-        TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
+        TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
     }
 
     public void runUebaServerConfigScript(Instant startTime) {
-        String node_zero_ip = getNodeZeroIP();
+        String broker = ENVIRONMENT_PROPERTIES.brokerIp();
+        String alertsForwardingFlag = ENVIRONMENT_PROPERTIES.esaAnalyticsServerIp().isEmpty() ? "-e" : "";
 
         // sh /opt/rsa/saTools/bin/ueba-server-config -u admin -p netwitness -h 10.4.61.136 -o broker -t 2018-07-18T00:00:00Z -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY'  -v
-        String command = "sudo /opt/rsa/saTools/bin/ueba-server-config -u admin -p netwitness -h " + node_zero_ip + " -o broker -t " + startTime.toString() + " -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY PROCESS REGISTRY TLS'  -v -e ";
-        Process p = TerminalCommands.runCommand(command, true, Consts.PRESIDIO_DIR);
-        assertThat(p.exitValue()).as("Error exit code for command:\n" + command).isEqualTo(0);
+        String command = "sudo /opt/rsa/saTools/bin/ueba-server-config -u admin -p netwitness -h "
+                + broker + " -o broker -t " + startTime.toString()
+                + " -s 'AUTHENTICATION FILE ACTIVE_DIRECTORY PROCESS REGISTRY TLS'  -v " + alertsForwardingFlag;
+
+        SshResponse p = TerminalCommandsSshUtils.runCommand(command, true, Consts.PRESIDIO_DIR);
+        assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
     public void setEngineConfigurationParametersToTestingValues() {
@@ -233,8 +237,8 @@ public class AdapterTestManager {
 
         File file = new File(Objects.requireNonNull(url).getFile());
         String command = "sh " + file.getAbsolutePath();
-        Process p = TerminalCommands.runCommand(command, true, "");
-        assertThat(p.exitValue()).as("Error exit code for command:\n" + command).isEqualTo(0);
+        SshResponse p = TerminalCommandsSshUtils.runCommand(command, true, "");
+        assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
 
     public void setTlsTimeFieldToEventTime() {
@@ -243,21 +247,9 @@ public class AdapterTestManager {
 
         File file = new File(Objects.requireNonNull(url).getFile());
         String command = "sh " + file.getAbsolutePath();
-        Process p = TerminalCommands.runCommand(command, true, "");
-        assertThat(p.exitValue()).as("Error exit code for command:\n" + command).isEqualTo(0);
+        SshResponse p = TerminalCommandsSshUtils.runCommand(command, true, "");
+        assertThat(p.exitCode).as("Error exit code for command:\n" + command).isEqualTo(0);
     }
-
-    public String getNodeZeroIP() {
-        InetAddress address = null;
-        try {
-            address = InetAddress.getByName("nw-node-zero");
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        System.out.println(address.getHostAddress());
-        return  address.getHostAddress();
-    }
-
 
     public void  setBuildingModelsRange(int enriched_records_days  ,int feature_aggregation_records_days , int smart_records_days )  {
         String workflows_default_file ="/etc/netwitness/presidio/configserver/configurations/airflow/workflows-default.json" ;

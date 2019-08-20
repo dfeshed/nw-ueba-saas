@@ -347,8 +347,8 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
         for (AlertsStoredRecord alert : alerts) {
             List<AlertsStoredRecord.Indicator> indicators = alert.getIndicatorsList();
 
-            long alertStart = Long.parseLong(alert.getStartDate());
-            long alertEnd = Long.parseLong(alert.getEndDate());
+            long alertStart = alert.getStartDate().toEpochMilli();
+            long alertEnd = alert.getEndDate().toEpochMilli();
 
             for (AlertsStoredRecord.Indicator ind : indicators) {
                 long indicatorStartDate = Long.parseLong(ind.getStartDate());
@@ -393,8 +393,8 @@ public class AlertsRestCorrectnessTest extends AbstractTestNGSpringContextTests 
         for (AlertsStoredRecord alert : alerts) {
             List<AlertsStoredRecord.Indicator> indicators = alert.getIndicatorsList();
 
-            long alertStart = Long.parseLong(alert.getStartDate());
-            long alertEnd = Long.parseLong(alert.getEndDate());
+            long alertStart = alert.getStartDate().toEpochMilli();
+            long alertEnd = alert.getEndDate().toEpochMilli();
 
             softly.assertThat(alertEnd - alertStart)
                     .as(url + "\nAlertId =" + alert.getId())

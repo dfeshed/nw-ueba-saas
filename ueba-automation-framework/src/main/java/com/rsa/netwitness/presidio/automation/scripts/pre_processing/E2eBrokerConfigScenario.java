@@ -1,7 +1,7 @@
 package com.rsa.netwitness.presidio.automation.scripts.pre_processing;
 
-import com.rsa.netwitness.presidio.automation.common.helpers.RunCmdUtils;
 import com.rsa.netwitness.presidio.automation.enums.ConfigurationScenario;
+import com.rsa.netwitness.presidio.automation.ssh.client.SshExecutor;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
 
 import java.time.Instant;
@@ -29,6 +29,6 @@ class E2eBrokerConfigScenario implements PreProcessingConfigScenario {
         adapterTestManager.setEngineConfigurationParametersToTestingValues();
         adapterTestManager.setTlsTimeFieldToEventTime();
         adapterTestManager.setBuildingModelsRange(7, 2, 2);
-        RunCmdUtils.runCmd("sudo systemctl start airflow-scheduler");
+        SshExecutor.executeOnUebaHostRoot("systemctl start airflow-scheduler");
     }
 }

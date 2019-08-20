@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
 @SpringBootTest(classes = {MongoConfig.class, OutputTestManager.class})
 public class UserSeverityTests extends AbstractTestNGSpringContextTests {
@@ -180,6 +182,11 @@ public class UserSeverityTests extends AbstractTestNGSpringContextTests {
         RestHelper restHelper = new RestHelper();
         ParametersUrlBuilder url = restHelper.entities().url().withMaxSizeAndSortedAndExpendedParameters("DESC", "SCORE");
         List<EntitiesStoredRecord> entities = restHelper.entities().request().getEntities(url);
+
+        assertThat(entities)
+                .withFailMessage(url + "\nEntities list is empty.")
+                .isNotNull()
+                .isNotEmpty();
 
         int sumScoreSeverity = 0;
 

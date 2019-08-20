@@ -1,6 +1,6 @@
 package com.rsa.netwitness.presidio.automation.test.rest;
 
-import com.rsa.netwitness.presidio.automation.domain.config.HostConf;
+import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
@@ -283,7 +283,7 @@ public class RestUserTests extends AbstractTestNGSpringContextTests {
                 String msg = "alert's userId is not matched to the it's user Id.\n" +
                         "UserId = " + userId + "\n" +
                         "AlertId = " + alert.getId() + "\n" +
-                        "url --> http://" + HostConf.getServerHostname() + "/presidio-output/entities/" + userId + "?expand=true";
+                        "url --> http://" + AutomationConf.UEBA_HOST + "/presidio-output/entities/" + userId + "?expand=true";
                 Assert.assertTrue(userId.equals(alert.getEntityDocumentId()), msg);
             }
         }

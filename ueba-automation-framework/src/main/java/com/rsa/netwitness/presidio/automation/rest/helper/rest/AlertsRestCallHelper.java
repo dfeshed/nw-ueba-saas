@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,8 +73,8 @@ public class AlertsRestCallHelper implements IRestCallHelper{
                 String timeframe = tmp.get("timeframe").toString();
                 String severity = tmp.get("severity").toString();
                 String userId = tmp.get("entityDocumentId").toString();
-                String startDate = tmp.get("startDate").toString();
-                String endDate = tmp.get("endDate").toString();
+                Instant startDate = Instant.ofEpochMilli(tmp.getLong("startDate"));
+                Instant endDate = Instant.ofEpochMilli(tmp.getLong("endDate"));
 
                 AlertsStoredRecord alert;
                 if (URL.toLowerCase().contains("expand=true")) {

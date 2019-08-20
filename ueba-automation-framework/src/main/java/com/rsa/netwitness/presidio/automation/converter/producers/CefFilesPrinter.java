@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.rsa.netwitness.presidio.automation.log_player.Context.LOG_GEN_PATH;
+import static com.rsa.netwitness.presidio.automation.config.AutomationConf.LOG_GEN_OUTPUT;
 import static com.rsa.netwitness.presidio.automation.log_player.LogPlayerResultUtils.runLogPlayerAndGetRecordsCountResult;
 import static java.util.stream.Collectors.*;
 
@@ -119,7 +119,7 @@ class CefFilesPrinter {
             event.mongoSchema().getName().concat("_").concat(instantToString(Instant.ofEpochMilli(GEN_START_TIME)));
 
     private Function<NetwitnessEvent, Path> eventFilePath = event ->
-            Paths.get(LOG_GEN_PATH.toAbsolutePath().toString(), eventFolderName.apply(event)).toAbsolutePath();
+            Paths.get(LOG_GEN_OUTPUT.toAbsolutePath().toString(), eventFolderName.apply(event)).toAbsolutePath();
 }
 
 

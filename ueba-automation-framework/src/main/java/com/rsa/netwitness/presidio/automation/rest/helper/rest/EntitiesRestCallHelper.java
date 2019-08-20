@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,7 +118,7 @@ public class EntitiesRestCallHelper implements IRestCallHelper{
                                 tmpAlert.get("score").toString(), tmpAlert.get("feedback").toString(),
                                 tmpAlert.get("entityScoreContribution").toString(), tmpAlert.get("timeframe").toString(),
                                 tmpAlert.get("severity").toString(), tmpAlert.get("entityDocumentId").toString(),
-                                tmpAlert.get("startDate").toString(), tmpAlert.get("endDate").toString()));
+                                Instant.ofEpochMilli(tmpAlert.getLong("startDate")), Instant.ofEpochMilli(tmpAlert.getLong("endDate"))));
                     }
                 }
 

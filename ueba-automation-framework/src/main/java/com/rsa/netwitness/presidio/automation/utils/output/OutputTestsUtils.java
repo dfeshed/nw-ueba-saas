@@ -1,8 +1,8 @@
 package com.rsa.netwitness.presidio.automation.utils.output;
 
+import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 import com.rsa.netwitness.presidio.automation.domain.activedirectory.OutputActiveDirectoryEnrichedStoredData;
 import com.rsa.netwitness.presidio.automation.domain.authentication.OutputAuthenticationEnrichStoredData;
-import com.rsa.netwitness.presidio.automation.domain.config.HostConf;
 import com.rsa.netwitness.presidio.automation.domain.file.OutputFileEnrichStoredData;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
@@ -378,7 +378,7 @@ public class OutputTestsUtils {
 
     private static JSONObject getOutputProcessorConfiguration() {
         Map<String, Integer> severities = new HashMap<>();
-        RestApiResponse response = RestAPI.sendGet("http://" + HostConf.getServerHostname() + ":8888/output-processor.json");
+        RestApiResponse response = RestAPI.sendGet("http://" + AutomationConf.UEBA_HOST + ":8888/output-processor.json");
         Assert.assertEquals(200, response.getResponseCode());
         JSONObject body = null;
         try {
