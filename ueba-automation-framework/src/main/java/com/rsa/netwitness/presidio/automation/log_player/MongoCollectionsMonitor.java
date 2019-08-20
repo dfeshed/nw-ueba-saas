@@ -4,15 +4,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MongoCollectionsMonitor {
@@ -22,12 +22,10 @@ public class MongoCollectionsMonitor {
     private List<MongoRepository> collectiontToMonitor = new LinkedList<>();
     private ScheduledExecutorService scheduler;
     private int corePoolSize = 5;
-    private long DELAY_BETWEEN_TASKS = 1;
     private long TASK_FREQUENCY_MINUTES = 15;
     private long ADDITIONAL_DELAY_BEFORE_FIRST_TIME_STATUS_CHECK = 10;
     private long TASK_STATUS_CHECK_FREQUENCY = TASK_FREQUENCY_MINUTES;
-    private long DELAY_BEFORE_FIRST_TASK_STARTED = TASK_FREQUENCY_MINUTES + ADDITIONAL_DELAY_BEFORE_FIRST_TIME_STATUS_CHECK - 1;
-    private final TimeUnit TIME_UNITS = TimeUnit.MINUTES;
+    private long DELAY_BEFORE_FIRST_TASK_STARTED = TASK_FREQUENCY_MINUTES + ADDITIONAL_DELAY_BEFORE_FIRST_TIME_STATUS_CHECK; // 25 min
     private List<MongoProgressTask> tasks;
     private int TIME_BUCKETES_TO_CHECK = 6;
 
@@ -50,7 +48,7 @@ public class MongoCollectionsMonitor {
 
     public List<ScheduledFuture> execute() {
         return tasks.stream()
-                .map(e -> scheduler.scheduleAtFixedRate(e, DELAY_BEFORE_FIRST_TASK_STARTED, TASK_FREQUENCY_MINUTES, TIME_UNITS))
+                .map(e -> scheduler.scheduleAtFixedRate(e, DELAY_BEFORE_FIRST_TASK_STARTED, TASK_FREQUENCY_MINUTES, MINUTES))
                 .collect(Collectors.toList());
     }
 
@@ -60,42 +58,34 @@ public class MongoCollectionsMonitor {
 
 
     public boolean waitForResult() throws InterruptedException {
+        boolean dataProcessingStillInProgress = true;
 
-        boolean allCollectionsAreEmptyAfterInitiateWait = true;
-        boolean stillWaitingForTheLastDayData = true;
-        boolean dataProcessingStillBeInProgress = true;
+        MINUTES.sleep(DELAY_BEFORE_FIRST_TASK_STARTED + 1); // 26 min
+        LOGGER.info("Going to check if data processing started.");
+        boolean isDataProcessingStarted = tasks.stream()
+                .map(MongoProgressTask::isProcessingStarted)
+                .reduce(false, (agg, e) -> agg | e);
+        LOGGER.info("isDataProcessingStarted=" + isDataProcessingStarted);
 
-        TIME_UNITS.sleep(ADDITIONAL_DELAY_BEFORE_FIRST_TIME_STATUS_CHECK);
-
-        while (allCollectionsAreEmptyAfterInitiateWait && dataProcessingStillBeInProgress && stillWaitingForTheLastDayData) {
-
-            TIME_UNITS.sleep(TASK_STATUS_CHECK_FREQUENCY);
-
-            allCollectionsAreEmptyAfterInitiateWait = tasks.stream()
-                    .map(MongoProgressTask::isEventTimeHistoryQueueEmpty)
-                    .reduce(true, (agg, e) -> agg & e);
-
-            dataProcessingStillBeInProgress = tasks.stream()
-                    .map(e -> e.shouldWaitingForNewSample(TIME_BUCKETES_TO_CHECK))
-                    .reduce(false, (agg, e) -> agg | e);
-
-            stillWaitingForTheLastDayData = !tasks.stream()
-                    .map(e -> e.hasDataProcessingReachedTheFinalDay(0, ChronoUnit.DAYS))
-                    .reduce(false, (agg, e) -> agg & e);
-        }
-
-        assertThat(allCollectionsAreEmptyAfterInitiateWait)
+        assertThat(isDataProcessingStarted)
                 .overridingErrorMessage("Not a single event reached any input collection after " +
-                        DELAY_BEFORE_FIRST_TASK_STARTED + " minutes wait.\nAborting the job.\n")
-                .isFalse();
+                        DELAY_BEFORE_FIRST_TASK_STARTED + " minutes.\nAborting wait.\n")
+                .isTrue();
 
-        if (dataProcessingStillBeInProgress) {
-            LOGGER.warn("Collections data processing still in progress");
-        } else {
-            LOGGER.info("Collections data processing has finished");
+        while (dataProcessingStillInProgress) {
+            MINUTES.sleep(TASK_STATUS_CHECK_FREQUENCY);
+
+            dataProcessingStillInProgress = tasks.stream()
+                    .map(e -> e.isProcessingStillInProgress(TIME_BUCKETES_TO_CHECK))
+                    .reduce(false, (agg, e) -> agg | e);
+            LOGGER.info("dataProcessingStillInProgress=" + dataProcessingStillInProgress);
         }
 
-        return !stillWaitingForTheLastDayData;
+        boolean allCollectionsHaveFinalDaySamples = tasks.stream()
+                .map(e -> e.isFinalDaySampleExist(0, DAYS))
+                .reduce(true, (agg, e) -> agg & e);
 
+        LOGGER.info("waitForResult has finished with " + allCollectionsHaveFinalDaySamples);
+        return allCollectionsHaveFinalDaySamples;
     }
 }

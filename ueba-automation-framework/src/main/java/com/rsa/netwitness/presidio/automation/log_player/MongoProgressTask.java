@@ -45,22 +45,37 @@ public class MongoProgressTask implements Runnable {
     }
 
 
-    boolean isEventTimeHistoryQueueEmpty() {
-        boolean result = eventTimeHistory.isEmpty();
-        if (result) {
-            LOGGER.warn("[" + collectionName + "] There is no any data in the collection after initial wait.");
+    boolean isProcessingStarted() {
+        boolean isStarted = !eventTimeHistory.isEmpty();
+        if (isStarted) {
+            LOGGER.warn("[" + collectionName + "] - Collection still empty after initial wait.");
         }
-        return result;
+        return isStarted;
     }
 
 
-    boolean shouldWaitingForNewSample(int bucketsToCheck) {
-        LOGGER.info("---> [" + collectionName + "] eventTimeHistory array: " + eventTimeHistory);
+    boolean isProcessingStillInProgress(int bucketsToCheck) {
+        LOGGER.info("[" + collectionName + "] - Last samples: " + eventTimeHistory);
 
         if (eventTimeHistory.isEmpty()) return false;
+
+        // Queue size is not enough for decision
         if (eventTimeHistory.size() < bucketsToCheck) return true;
 
-        eventTimeHistory = new LinkedList<>(eventTimeHistory.subList(0, bucketsToCheck));
+        Instant pollLast = eventTimeHistory.pollLast();
+        LOGGER.debug("[" + collectionName + "] - Removed sample: " + pollLast);
+
+        boolean hasANewSample = isQueueContainsA_OneNewSample();
+
+        if (hasANewSample) {
+            LOGGER.debug("[" + collectionName + "] - New sample was detected.");
+        } else {
+            LOGGER.warn("[" + collectionName + "] - No new samples from " + eventTimeHistory.getLast() + " to " + eventTimeHistory.getFirst());
+        }
+        return hasANewSample;
+    }
+
+    private boolean isQueueContainsA_OneNewSample() {
         boolean result = false;
         Iterator<Instant> iterator = eventTimeHistory.iterator();
         Iterator<Instant> nextIterator = eventTimeHistory.iterator();
@@ -70,25 +85,20 @@ public class MongoProgressTask implements Runnable {
             boolean currentBiggerThenPrevious = iterator.next().isAfter(nextIterator.next());
             result |= currentBiggerThenPrevious;
         }
-
-        if (result) {
-            LOGGER.debug("[" + collectionName + "]: result is TRUE");
-        } else {
-            LOGGER.warn("[" + collectionName + "]: no updates for the last " + (bucketsToCheck - 1) + " checks.");
-        }
         return result;
     }
 
-    boolean hasDataProcessingReachedTheFinalDay(long amountToSubtract, ChronoUnit units) {
-        Instant stopTime = end.minus(amountToSubtract, units).truncatedTo(units);
+    boolean isFinalDaySampleExist(long timeFromJobEndTime, ChronoUnit units) {
+        Instant finalDay = end.minus(timeFromJobEndTime, units).truncatedTo(units);
         if (lastEventTime == null) return false;
 
-        boolean result = lastEventTime.isAfter(stopTime);
+        boolean result = lastEventTime.isAfter(finalDay);
 
         if (result) {
-            LOGGER.info(" *** Collection [" + collectionName + "]: processing reached the final day=" + stopTime);
+            LOGGER.info("[" + collectionName + "] - Processing reached the final day=" + finalDay);
         } else {
-            LOGGER.info("[" + collectionName + "]:" + " data processing still in progress. stopTime=" + stopTime + " lastEventTime=" + lastEventTime);
+            LOGGER.error("[" + collectionName + "] - Last sample arrived on " + lastEventTime + " which is before the finalDay=" + finalDay);
+            LOGGER.error("[" + collectionName + "] - eventTimeHistory=" + eventTimeHistory);
         }
         return result;
     }

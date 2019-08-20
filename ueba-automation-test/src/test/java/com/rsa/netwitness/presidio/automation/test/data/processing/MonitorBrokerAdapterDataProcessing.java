@@ -91,8 +91,8 @@ public class MonitorBrokerAdapterDataProcessing extends AbstractTestNGSpringCont
         LOGGER.debug(" startDate=" + startDate + " endDate=" + endDate);
         monitor.createTasks(startDate, endDate);
         monitor.execute();
-        boolean result = monitor.waitForResult();
+        boolean allCollectionsHaveSampleFromTheFinalDay = monitor.waitForResult();
         monitor.shutdown();
-        Assert.assertTrue(result, "Data processing has not reached the last day.");
+        Assert.assertTrue(allCollectionsHaveSampleFromTheFinalDay, "Data processing has not reached the last day.");
     }
 }
