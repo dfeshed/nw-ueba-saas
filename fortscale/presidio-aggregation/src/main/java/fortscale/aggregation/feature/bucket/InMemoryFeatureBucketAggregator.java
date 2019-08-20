@@ -78,7 +78,8 @@ public class InMemoryFeatureBucketAggregator {
             FeatureBucketStrategyData strategyData) {
 
         List<FeatureBucket> featureBuckets = aggregate(pageIterator, featureBucketConfName, strategyData);
-        Validate.isTrue(featureBuckets.size() == 1, "The aggregate method returned more than one feature bucket.");
+        Validate.isTrue(featureBuckets.size() == 1,
+                String.format("The aggregate method returned %d buckets instead of 1", featureBuckets.size()));
         return featureBuckets.get(0);
     }
 }

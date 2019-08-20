@@ -2,6 +2,8 @@ package presidio.ade.domain.record.enriched.tls;
 
 
 import fortscale.common.general.Schema;
+import fortscale.domain.core.entityattributes.*;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -46,22 +48,22 @@ public class EnrichedTlsRecord extends EnrichedRecord {
     private String srcCountry;
 
     @Field(DESTINATION_COUNTRY_FIELD_NAME)
-    private String dstCountry;
+    private DestinationCountry dstCountry;
 
     @Field(SSL_SUBJECT_FIELD_NAME)
-    private String sslSubject;
+    private SslSubject sslSubject;
 
     @Field(SSL_CAS_FIELD_NAME)
     private List<String> sslCas;
 
     @Field(DOMAIN_FIELD_NAME)
-    private String domain;
+    private Domain domain;
 
     @Field(DESTINATION_ORGANIZATION_FIELD_NAME)
-    private String dstOrg;
+    private DestinationOrganization dstOrg;
 
     @Field(DESTINATION_ASN_FIELD_NAME)
-    private String dstAsn;
+    private DestinationAsn dstAsn;
 
     @Field(NUM_OF_BYTES_SENT_FIELD_NAME)
     private Long numOfBytesSent;
@@ -76,7 +78,7 @@ public class EnrichedTlsRecord extends EnrichedRecord {
     private String dstNetname;
 
     @Field(JA3_FIELD_NAME)
-    private String ja3;
+    private Ja3 ja3;
 
     @Field(JA3S_FIELD_NAME)
     private String ja3s;
@@ -85,13 +87,15 @@ public class EnrichedTlsRecord extends EnrichedRecord {
     private String direction;
 
     @Field(DESTINATION_PORT_FIELD_NAME)
-    private String dstPort;
+    private DestinationPort dstPort;
 
     @Field(SOURCE_PORT_FIELD_NAME)
     private String srcPort;
 
-
-
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
+    }
 
     public EnrichedTlsRecord(Instant startInstant) {
         super(startInstant);
@@ -132,43 +136,43 @@ public class EnrichedTlsRecord extends EnrichedRecord {
         this.srcCountry = srcCountry;
     }
 
-    public String getDstCountry() {
+    public DestinationCountry getDstCountry() {
         return dstCountry;
     }
 
-    public void setDstCountry(String dstCountry) {
+    public void setDstCountry(DestinationCountry dstCountry) {
         this.dstCountry = dstCountry;
     }
 
-    public String getSslSubject() {
+    public SslSubject getSslSubject() {
         return sslSubject;
     }
 
-    public void setSslSubject(String sslSubject) {
+    public void setSslSubject(SslSubject sslSubject) {
         this.sslSubject = sslSubject;
     }
 
-    public String getDomain() {
+    public Domain getDomain() {
         return domain;
     }
 
-    public void setDomain(String domain) {
+    public void setDomain(Domain domain) {
         this.domain = domain;
     }
 
-    public String getDstOrg() {
+    public DestinationOrganization getDstOrg() {
         return dstOrg;
     }
 
-    public void setDstOrg(String dstOrg) {
+    public void setDstOrg(DestinationOrganization dstOrg) {
         this.dstOrg = dstOrg;
     }
 
-    public String getDstAsn() {
+    public DestinationAsn getDstAsn() {
         return dstAsn;
     }
 
-    public void setDstAsn(String dstAsn) {
+    public void setDstAsn(DestinationAsn dstAsn) {
         this.dstAsn = dstAsn;
     }
 
@@ -204,11 +208,11 @@ public class EnrichedTlsRecord extends EnrichedRecord {
         this.dstNetname = dstNetname;
     }
 
-    public String getJa3() {
+    public Ja3 getJa3() {
         return ja3;
     }
 
-    public void setJa3(String ja3) {
+    public void setJa3(Ja3 ja3) {
         this.ja3 = ja3;
     }
 
@@ -228,11 +232,11 @@ public class EnrichedTlsRecord extends EnrichedRecord {
         this.direction = direction;
     }
 
-    public String getDstPort() {
+    public DestinationPort getDstPort() {
         return dstPort;
     }
 
-    public void setDstPort(String dstPort) {
+    public void setDstPort(DestinationPort dstPort) {
         this.dstPort = dstPort;
     }
 

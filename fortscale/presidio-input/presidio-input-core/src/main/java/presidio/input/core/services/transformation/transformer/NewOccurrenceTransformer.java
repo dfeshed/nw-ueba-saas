@@ -2,9 +2,9 @@ package presidio.input.core.services.transformation.transformer;
 
 import fortscale.common.general.Schema;
 import fortscale.domain.lastoccurrenceinstant.reader.LastOccurrenceInstantReader;
+import fortscale.utils.reflection.PresidioReflectionUtils;
 import org.apache.commons.lang3.Validate;
 import presidio.sdk.api.domain.AbstractInputDocument;
-import presidio.sdk.api.utils.ReflectionUtils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -49,7 +49,7 @@ public class NewOccurrenceTransformer implements Transformer {
     }
 
     private void transform(AbstractInputDocument document) {
-        String entityId = (String)ReflectionUtils.getFieldValue(document, entityType);
+        String entityId = (String) PresidioReflectionUtils.getFieldValue(document, entityType);
         Instant lastOccurrenceInstant = lastOccurrenceInstantReader.read(schema, entityType, entityId);
         Boolean isNewOccurrence;
 
@@ -57,7 +57,7 @@ public class NewOccurrenceTransformer implements Transformer {
             // If the entity does not appear in the past, it is a new occurrence.
             isNewOccurrence = true;
         } else {
-            Instant logicalInstant = (Instant)ReflectionUtils.getFieldValue(document, instantFieldName);
+            Instant logicalInstant = (Instant) PresidioReflectionUtils.getFieldValue(document, instantFieldName);
             // If the entity appears in the future, it is unknown whether it is a new occurrence or not.
             if (lastOccurrenceInstant.isAfter(logicalInstant)) isNewOccurrence = null;
             // If the entity appears too long ago in the past, it is a new occurrence.
@@ -66,7 +66,7 @@ public class NewOccurrenceTransformer implements Transformer {
         }
 
         try {
-            ReflectionUtils.setFieldValue(document, booleanFieldName, isNewOccurrence);
+            PresidioReflectionUtils.setFieldValue(document, booleanFieldName, isNewOccurrence);
         } catch (Exception exception) {
             String value = isNewOccurrence == null ? "null" : isNewOccurrence.toString();
             String message = String.format("Exception while setting the value of %s to %s.", booleanFieldName, value);

@@ -3,7 +3,7 @@
     {
       "name": "sumOfBytesSentToDstOrgScoresSumSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
-        "sslSubject"
+        "sslSubject.name"
       ],
       "adeEventTypes": [
         "aggr_event.sumOfBytesSentToDstOrgSslSubjectOutboundTlsHourly"
@@ -14,7 +14,7 @@
           "name": "sumOfBytesSentScoresSum",
           "featureNamesMap": {
             "groupBy": [
-              "context.dstOrg"
+              "context.dstOrg.name"
             ],
             "maximize": [
               "score"
@@ -29,7 +29,7 @@
     {
       "name": "sumOfBytesSentToDstPortScoresSumSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
-        "sslSubject"
+        "sslSubject.name"
       ],
       "adeEventTypes": [
         "aggr_event.sumOfBytesSentToDstPortSslSubjectOutboundTlsHourly"
@@ -40,7 +40,7 @@
           "name": "sumOfBytesSentScoresSum",
           "featureNamesMap": {
             "groupBy": [
-              "context.dstPort"
+              "context.dstPort.name"
             ],
             "maximize": [
               "score"
@@ -55,7 +55,7 @@
     {
       "name": "sumOfBytesSentToDomainScoresSumSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
-        "sslSubject"
+        "sslSubject.name"
       ],
       "adeEventTypes": [
         "aggr_event.sumOfBytesSentToDomainSslSubjectOutboundTlsHourly"
@@ -66,7 +66,7 @@
           "name": "sumOfBytesSentScoresSum",
           "featureNamesMap": {
             "groupBy": [
-              "context.domain"
+              "context.domain.name"
             ],
             "maximize": [
               "score"
@@ -81,7 +81,7 @@
     {
       "name": "maxSumOfBytesSentBySrcIpToDomainScoresSumSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
-        "sslSubject"
+        "sslSubject.name"
       ],
       "adeEventTypes": [
         "aggr_event.maxSumOfBytesSentBySrcIpToDomainSslSubjectOutboundTlsHourly"
@@ -92,7 +92,7 @@
           "name": "maxSumOfBytesSentBySrcIpToDomainScoresSum",
           "featureNamesMap": {
             "groupBy": [
-              "context.domain"
+              "context.domain.name"
             ],
             "maximize": [
               "score"
@@ -107,7 +107,7 @@
     {
       "name": "maxSumOfBytesSentBySrcIpToDstOrgScoresSumSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
-        "sslSubject"
+        "sslSubject.name"
       ],
       "adeEventTypes": [
         "aggr_event.maxSumOfBytesSentBySrcIpToDstOrgSslSubjectOutboundTlsHourly"
@@ -118,7 +118,7 @@
           "name": "maxSumOfBytesSentBySrcIpToDstOrgScoresSum",
           "featureNamesMap": {
             "groupBy": [
-              "context.dstOrg"
+              "context.dstOrg.name"
             ],
             "maximize": [
               "score"
@@ -133,7 +133,7 @@
     {
       "name": "maxSumOfBytesSentBySrcIpToDstPortScoresSumSslSubjectOutboundTlsHourly",
       "contextFieldNames": [
-        "sslSubject"
+        "sslSubject.name"
       ],
       "adeEventTypes": [
         "aggr_event.maxSumOfBytesSentBySrcIpToDstPortSslSubjectOutboundTlsHourly"
@@ -144,7 +144,7 @@
           "name": "maxSumOfBytesSentBySrcIpToDstPortScoresSum",
           "featureNamesMap": {
             "groupBy": [
-              "context.dstPort"
+              "context.dstPort.name"
             ],
             "maximize": [
               "score"

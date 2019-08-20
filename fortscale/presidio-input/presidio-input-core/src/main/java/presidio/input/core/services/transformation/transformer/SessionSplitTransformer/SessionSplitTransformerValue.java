@@ -1,6 +1,7 @@
 package presidio.input.core.services.transformation.transformer.SessionSplitTransformer;
 
-
+import fortscale.domain.core.entityattributes.Ja3;
+import fortscale.domain.core.entityattributes.SslSubject;
 
 import java.time.Instant;
 import java.util.List;
@@ -9,12 +10,12 @@ public class SessionSplitTransformerValue implements Comparable<SessionSplitTran
 
     private Instant dateTime;
     private int sessionSplit;
-    private String sslSubject;
+    private SslSubject sslSubject;
     private List<String> sslCas;
-    private String ja3;
+    private Ja3 ja3;
     private String ja3s;
 
-    public SessionSplitTransformerValue(Instant dateTime, int sessionSplit, String sslSubject, List<String> sslCas, String ja3, String ja3s) {
+    public SessionSplitTransformerValue(Instant dateTime, int sessionSplit, SslSubject sslSubject, List<String> sslCas, Ja3 ja3, String ja3s) {
         this.sslSubject = sslSubject;
         this.sslCas = sslCas;
         this.ja3 = ja3;
@@ -28,7 +29,7 @@ public class SessionSplitTransformerValue implements Comparable<SessionSplitTran
         return (-1) * this.dateTime.compareTo(splitTransformerValue.getDateTime());
     }
 
-    public String getSslSubject() {
+    public SslSubject getSslSubject() {
         return sslSubject;
     }
 
@@ -36,7 +37,7 @@ public class SessionSplitTransformerValue implements Comparable<SessionSplitTran
         return sslCas;
     }
 
-    public String getJa3() {
+    public Ja3 getJa3() {
         return ja3;
     }
 

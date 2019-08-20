@@ -1,11 +1,11 @@
 package presidio.input.core.services.transformation.transformer;
 
 import fortscale.utils.logging.Logger;
+import fortscale.utils.reflection.PresidioReflectionUtils;
 import fortscale.utils.replacement.PatternReplacement;
 import fortscale.utils.replacement.PatternReplacementConf;
 import org.apache.commons.lang.StringUtils;
 import presidio.sdk.api.domain.AbstractInputDocument;
-import presidio.sdk.api.utils.ReflectionUtils;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -37,7 +37,7 @@ public class MachineNameTransformer implements Transformer {
     @Override
     public List<AbstractInputDocument> transform(List<AbstractInputDocument> documents) {
         documents.forEach(document -> {
-            Object fieldValue = ReflectionUtils.getFieldValue(document, inputFieldName);
+            Object fieldValue = PresidioReflectionUtils.getFieldValue(document, inputFieldName);
             String fieldValue1Str = (String) fieldValue;
 
             if (StringUtils.isNotEmpty(fieldValue1Str)) {
@@ -51,7 +51,7 @@ public class MachineNameTransformer implements Transformer {
                 }
 
                 try {
-                    ReflectionUtils.setFieldValue(document, outputFieldName, replacedPattern);
+                    PresidioReflectionUtils.setFieldValue(document, outputFieldName, replacedPattern);
                 } catch (IllegalAccessException e) {
                     logger.error("error setting the {} field value", outputFieldName, e);
                 }

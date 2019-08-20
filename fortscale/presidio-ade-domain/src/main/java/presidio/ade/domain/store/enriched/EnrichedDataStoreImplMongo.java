@@ -2,6 +2,7 @@ package presidio.ade.domain.store.enriched;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
+import fortscale.utils.mongodb.util.MongoReflectionUtils;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.record.StoreMetadataProperties;
@@ -15,13 +16,11 @@ import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.util.ReflectionUtils;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.enriched.AdeEventTypeToAdeEnrichedRecordClassResolver;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
-import java.lang.reflect.Field;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -225,12 +224,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
      * @return field name
      */
     private String getFieldName(Class pojoClass, String name) {
-        Field field = ReflectionUtils.findField(pojoClass, name);
-        String fieldName = field.getName();
-        if (field.isAnnotationPresent(org.springframework.data.mongodb.core.mapping.Field.class)) {
-            fieldName = field.getAnnotation(org.springframework.data.mongodb.core.mapping.Field.class).value();
-        }
-        return fieldName;
+        return MongoReflectionUtils.findFieldNameRecursively(pojoClass, name);
     }
 
     @Override

@@ -38,6 +38,9 @@ import static presidio.ade.domain.record.AdeRecord.START_INSTANT_FIELD;
 public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreManagerAware,
         ScoredDataReader<ScoredFeatureAggregationRecord> {
     private static final String NULL_AGGREGATED_RECORD_PAGINATION_SERVICE = "pagination service must be set in order to read data in pages";
+    private static final String DOT_REGEX = "\\.";
+    private static final String DOT_REPLACEMENT = "#dot#";
+    private static final String CONTEXT_PREFIX = "context.";
 
     private final MongoTemplate mongoTemplate;
     private final AggrDataToCollectionNameTranslator translator;
@@ -248,10 +251,28 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
                 Direction.DESC);
     }
 
+    private static String replaceDots(String input) {
+        return input.replaceAll(DOT_REGEX, DOT_REPLACEMENT);
+    }
+
+    private Map<String, String> replaceDotsInKeys(MultiKeyFeature contextFields) {
+        return contextFields.getFeatureNameToValue().entrySet().stream().collect(Collectors.toMap(
+                e -> {
+                    String replacedFieldName;
+                    if (e.getKey().startsWith(CONTEXT_PREFIX)) {
+                        replacedFieldName = CONTEXT_PREFIX + replaceDots(e.getKey().substring(CONTEXT_PREFIX.length()));
+                    } else {
+                        replacedFieldName = replaceDots(e.getKey());
+                    }
+                    return replacedFieldName;
+                },
+                Map.Entry::getValue));
+    }
+
     private Query buildScoredRecordsQuery(TimeRange timeRange, MultiKeyFeature contextFields, int scoreThreshold) {
         return ScoredDataReaderMongoUtils.buildScoredRecordsQuery(
                 START_INSTANT_FIELD, timeRange,
-                "context.", contextFields,
+                CONTEXT_PREFIX, replaceDotsInKeys(contextFields),
                 ScoredFeatureAggregationRecord.SCORE_FIELD_NAME, scoreThreshold);
     }
 
@@ -264,8 +285,8 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
             Direction direction) {
 
         Query query = ScoredDataReaderMongoUtils.buildScoredRecordQuery(
-                fields, START_INSTANT_FIELD, timeRange,
-                "context.", contextFields,
+                replaceDotsInKeys(fields), START_INSTANT_FIELD, timeRange,
+                CONTEXT_PREFIX, replaceDotsInKeys(contextFields),
                 ScoredFeatureAggregationRecord.SCORE_FIELD_NAME, scoreThreshold,
                 direction);
         String collectionName = translator.toCollectionName(buildAggregationRecordsMetadata(adeEventType));
