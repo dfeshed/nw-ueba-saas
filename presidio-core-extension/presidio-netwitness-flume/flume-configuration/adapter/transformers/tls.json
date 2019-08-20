@@ -75,7 +75,7 @@
       "sourceKey": "country_dst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "dstCountry"
+        "dstCountry.name"
       ]
     },
     {
@@ -84,7 +84,16 @@
       "sourceKey": "ssl_subject",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "sslSubject"
+        "sslSubject.name"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-ja3",
+      "sourceKey": "ja3",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "ja3.name"
       ]
     },
     {
@@ -101,7 +110,7 @@
       "name": "alias-host-to-top-level-domain",
       "sourceKey": "alias_host[0]",
       "isRemoveSourceKey": false,
-      "targetKey": "domain"
+      "targetKey": "domain.name"
     },
     {
       "type": "copy_value",
@@ -118,7 +127,7 @@
       "sourceKey": "org_dst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "dstOrg"
+        "dstOrg.name"
       ]
     },
     {
@@ -127,7 +136,7 @@
       "sourceKey": "asn_dst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "dstAsn"
+        "dstAsn.name"
       ]
     },
     {
@@ -186,7 +195,7 @@
       "sourceKey": "tcp_dstport",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "dstPort"
+        "dstPort.name"
       ]
     },
     {
