@@ -14,7 +14,6 @@ import com.rsa.netwitness.presidio.automation.common.scenarios.process.ProcessOp
 import com.rsa.netwitness.presidio.automation.common.scenarios.process.ProcessOperationAnomalies;
 import com.rsa.netwitness.presidio.automation.common.scenarios.registry.RegistryOperationActions;
 import com.rsa.netwitness.presidio.automation.common.scenarios.registry.RegistryOperationAnomalies;
-import org.apache.commons.lang.ArrayUtils;
 import presidio.data.domain.event.Event;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
@@ -32,7 +31,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.rsa.netwitness.presidio.automation.common.helpers.UserNamesList.*;
+import static com.rsa.netwitness.presidio.automation.common.helpers.UserNamesList.USER_NAMES;
+import static com.rsa.netwitness.presidio.automation.common.helpers.UserNamesList.USER_NAMES_DEMO;
 
 public class AlertsScenario {
     private static final int SILENT_USERS_NUM = 30; // put more to enlarge amount of users in the system
@@ -56,6 +56,7 @@ public class AlertsScenario {
 
        // IStringGenerator userNameEPGenerator = new StringCyclicValuesGenerator((String[]) ArrayUtils.addAll(USER_NAMES_DEMO, USER_NAMES_ENDPOINT));
         IStringGenerator userNameGenerator = new StringCyclicValuesGenerator(USER_NAMES);
+        IStringGenerator futureUserGenerator = new StringCyclicValuesGenerator(USER_NAMES_DEMO);
        // IStringGenerator additionalUserNameGenerator = new StringCyclicValuesGenerator(ADDITIONAL_USER_NAMES);
 
         fileEvents.addAll(FileOperationActions.alertsSanityTestEvents(historicalStartDay, anomalyDay - 1, 1));
@@ -92,9 +93,9 @@ public class AlertsScenario {
         fileEvents.addAll(FileHighNumberOfOperations.getFileUserAdmin(userNameGenerator.getNext(), anomalyDay + 4, anomalyDay + 1, anomalyDay - 1, anomalyDay));
         fileEvents.addAll(FileHighNumberOfOperations.getFileUserAdmin(userNameGenerator.getNext(), anomalyDay + 2, anomalyDay + 1, anomalyDay + 4, anomalyDay + 2));
         ///Future scenarios
-        fileEvents.addAll(FileHighNumberOfOperations.getFutureHighNumDeletionOperations(userNameGenerator.getNext(), anomalyDay));
-        fileEvents.addAll(FileHighNumberOfOperations.getFutureHighNumMoveOperationsUserAdmin(userNameGenerator.getNext(), anomalyDay));
-        fileEvents.addAll(FileHighNumberOfOperations.getFutureHighNumFileOpenOperations(userNameGenerator.getNext(), anomalyDay));
+        fileEvents.addAll(FileHighNumberOfOperations.getFutureHighNumDeletionOperations(futureUserGenerator.getNext(), anomalyDay));
+        fileEvents.addAll(FileHighNumberOfOperations.getFutureHighNumMoveOperationsUserAdmin(futureUserGenerator.getNext(), anomalyDay));
+        fileEvents.addAll(FileHighNumberOfOperations.getFutureHighNumFileOpenOperations(futureUserGenerator.getNext(), anomalyDay));
 
         adEvents.addAll(AdDateTimeAnomalies.getAbnormalFarFromNormalActivity(userNameGenerator.getNext(), anomalyDay));
         adEvents.addAll(AdHighNumberOfOperations.getHighNumSuccessfulActiveDirectoryOperations(userNameGenerator.getNext(), anomalyDay));
@@ -111,7 +112,7 @@ public class AlertsScenario {
         adEvents.addAll(AdHighNumberOfOperations.getAbnormalGroupChangesEvents(userNameGenerator.getNext(), anomalyDay));
         adEvents.addAll(AdHighNumberOfOperations.getActiveDirectoryUserAdmin(userNameGenerator.getNext(), anomalyDay));
         ///Future scenario
-        adEvents.addAll(AdHighNumberOfOperations.getFutureHighNumSensitiveGroupMembershipEvents(userNameGenerator.getNext(), anomalyDay));
+        adEvents.addAll(AdHighNumberOfOperations.getFutureHighNumSensitiveGroupMembershipEvents(futureUserGenerator.getNext(), anomalyDay));
 
         authenticationEvents.addAll(AuthenticationDateTimeAnomalies.getAnomalyOnTwoNormalIntervalsActivity(userNameGenerator.getNext(), anomalyDay));
         authenticationEvents.addAll(AuthenticationHighNumberOfOperations.getHighNumOfSuccessfulAuthentications(userNameGenerator.getNext(), anomalyDay));
