@@ -69,6 +69,28 @@ const normalizeEventUsers = (evt) => {
 };
 
 /**
+ * Convenience function to convert multiple domain hosts send as a string with comma delimeter to an array .
+ * @param {object[]} evts An array of normalized event POJOs.
+ * @returns The same events array that was given.
+ * @public
+ */
+const normalizeEventDomain = (evt) => {
+  if (!evt || !evt.domain) {
+    return;
+  }
+  const { domain } = evt;
+  // Does this filename field have multiple values comma-delimited?
+  const values = String(domain).split(',');
+  if (values && values.length > 0) {
+
+    // Replace it with an array created based on delimiter.
+    // Also cache the original value, for troubleshooting.
+    evt.domain_original = domain;
+    evt.domain = values;
+  }
+};
+
+/**
  * Convenience function for invoking `normalizeEvent*` functions above on an array of events.
  * @param {object[]} evts An array of normalized event POJOs.
  * @returns The same events array that was given.
@@ -78,6 +100,7 @@ const fixNormalizedEvents = (evts) => {
   if (evts) {
     evts.forEach(normalizeEventFiles);
     evts.forEach(normalizeEventUsers);
+    evts.forEach(normalizeEventDomain);
   }
   return evts;
 };
