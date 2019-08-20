@@ -235,11 +235,11 @@ test('is not dirty so cannot query', function(assert) {
       queryNode: {
         metaFilter: [],
         previouslySelectedTimeRanges: {},
-        // serviceId can be undefined because we select a default service
         serviceId: '1',
         startTime: '1',
-        currentQueryHash: '1-1-undefined-a-b-c-undefined-undefined',
-        pillsData: [{ meta: 'a', operator: 'b', value: 'c' }]
+        endTime: '2',
+        currentQueryHash: '1-1-2-abc',
+        pillsData: [{ type: QUERY_FILTER, meta: 'a', operator: 'b', value: 'c' }]
       },
       services: {
         serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
@@ -250,18 +250,18 @@ test('is not dirty so cannot query', function(assert) {
   assert.notOk(hasRequiredValuesToQuery(state), 'query has not been updated so cannot query');
 });
 
-test('is dirty due to pills so can query', function(assert) {
+test('is dirty due to change in query', function(assert) {
   const state = {
     investigate: {
       queryNode: {
         metaFilter: [],
         previouslySelectedTimeRanges: {},
-        // serviceId can be undefined because we select a default service
         serviceId: '1',
         startTime: '1',
+        endTime: '2',
         // note service is 2
-        currentQueryHash: '2-1-undefined-a-b-c-undefined',
-        pillsData: [{ meta: 'a', operator: 'b', value: 'c' }]
+        currentQueryHash: '2-1-2-abc',
+        pillsData: [{ type: QUERY_FILTER, meta: 'a', operator: 'b', value: 'c' }]
       },
       services: {
         serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
@@ -278,12 +278,12 @@ test('is dirty due to updated free form text', function(assert) {
       queryNode: {
         metaFilter: [],
         previouslySelectedTimeRanges: {},
-        // serviceId can be undefined because we select a default service
         serviceId: '1',
         startTime: '1',
+        endTime: '2',
         // note hash is the same as data
-        currentQueryHash: '1-1-undefined-a-b-c-undefined',
-        pillsData: [{ meta: 'a', operator: 'b', value: 'c' }],
+        currentQueryHash: '1-1-2-abc',
+        pillsData: [{ type: QUERY_FILTER, meta: 'a', operator: 'b', value: 'c' }],
         updatedFreeFormTextPill: { complexFilterText: 'boom' }
       },
       services: {
@@ -301,12 +301,12 @@ test('is not dirty even with free form updated', function(assert) {
       queryNode: {
         metaFilter: [],
         previouslySelectedTimeRanges: {},
-        // serviceId can be undefined because we select a default service
         serviceId: '1',
         startTime: '1',
+        endTime: '2',
         // note hash is the same as data
-        currentQueryHash: '1-1-undefined-a-=-b-undefined-undefined',
-        pillsData: [{ meta: 'a', operator: '=', value: 'b' }],
+        currentQueryHash: '1-1-2-a=b',
+        pillsData: [{ type: QUERY_FILTER, meta: 'a', operator: '=', value: 'b' }],
         updatedFreeFormTextPill: {
           meta: 'a', operator: '=', value: 'b'
         }

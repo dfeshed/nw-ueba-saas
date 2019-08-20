@@ -1,42 +1,51 @@
 import { module, test } from 'qunit';
 import { createQueryHash } from 'investigate-events/util/query-hash';
+import {
+  CLOSE_PAREN,
+  COMPLEX_FILTER,
+  OPEN_PAREN,
+  QUERY_FILTER,
+  TEXT_FILTER
+} from 'investigate-events/constants/pill';
 
 module('Unit | Util | query-hash');
 
-test('creates proper query hash', function(assert) {
+test('creates proper query hash for all types of filters', function(assert) {
   const pills = [
-    { meta: 'a', operator: 'b', value: 'c', complexFilterText: 'd' },
-    { meta: 'e', operator: 'f', value: 'g', complexFilterText: 'h' }
+    { type: QUERY_FILTER, meta: 'a', operator: 'b', value: 'c' },
+    { type: COMPLEX_FILTER, complexFilterText: '(d)' },
+    { type: TEXT_FILTER, searchTerm: 'e' }
   ];
   const hash = createQueryHash('service', 'sTime', 'eTime', pills);
   assert.equal(
     hash,
-    'service-sTime-eTime-a-b-c-d-undefined-e-f-g-h-undefined',
+    'service-sTime-eTime-abc-(d)-e',
     'hash is created properly'
   );
 });
 
-test('creates proper query hash for values which are null or undefined', function(assert) {
+test('creates proper query hash for values which are undefined', function(assert) {
   const pills = [
-    { meta: 'a', operator: 'b', value: null, complexFilterText: undefined },
-    { meta: 'e', operator: 'f', value: 'g', complexFilterText: 'h' }
+    { type: QUERY_FILTER, meta: 'a', operator: 'b', value: undefined }
   ];
   const hash = createQueryHash('service', 'sTime', 'eTime', pills);
   assert.equal(
     hash,
-    'service-sTime-eTime-a-b-undefined-undefined-undefined-e-f-g-h-undefined',
+    'service-sTime-eTime-ab',
     'hash is created properly'
   );
 });
 
-test('creates proper query hash for text filter', function(assert) {
+test('creates proper query hash for filters and params', function(assert) {
   const pills = [
-    { meta: 'a', operator: 'b', value: null, searchTerm: 'qwerty' }
+    { type: OPEN_PAREN },
+    { type: QUERY_FILTER, meta: 'a', operator: 'b', value: 'c' },
+    { type: CLOSE_PAREN }
   ];
   const hash = createQueryHash('service', 'sTime', 'eTime', pills);
   assert.equal(
     hash,
-    'service-sTime-eTime-a-b-undefined-undefined-qwerty',
+    'service-sTime-eTime-(-abc-)',
     'hash is created properly'
   );
 });

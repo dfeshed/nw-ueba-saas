@@ -153,7 +153,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.newPillTriggerContainer).length, 3, 'There should now be three new pill triggers.');
   });
 
-  test('Creating a pill in the middle of pills sends creates a focused pill', async function(assert) {
+  test('Creating a pill in the middle of pills creates a focused pill', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -226,27 +226,6 @@ module('Integration | Component | Query Pills', function(hooks) {
     await click(PILL_SELECTORS.queryPill);
 
     assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Should be 1 pill focused');
-  });
-
-  test('Creating a pill with the new pill trigger sends action for redux state update', async function(assert) {
-    new ReduxDataHelper(setState)
-      .language()
-      .canQueryGuided()
-      .pillsDataPopulated()
-      .build();
-
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
-    await click(PILL_SELECTORS.newPillTrigger);
-    await createBasicPill(true);
-
-    // action to store in state called
-    assert.equal(newActionSpy.callCount, 1, 'The add pill action creator was called once');
-    assert.propEqual(
-      newActionSpy.args[0][0],
-      { pillData: { meta: 'a', operator: '=', value: '\'x\'', type: 'query' }, position: 0, shouldAddFocusToNewPill: true },
-      'The action creator was called with the right arguments including the proper position'
-    );
-    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
   });
 
   test('Deleting a pill sends action for redux state update', async function(assert) {

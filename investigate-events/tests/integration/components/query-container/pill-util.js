@@ -1,4 +1,4 @@
-import { click, fillIn, findAll, focus, settled, triggerKeyEvent } from '@ember/test-helpers';
+import { click, findAll, focus, settled, triggerKeyEvent, typeIn } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
@@ -6,10 +6,9 @@ import { AFTER_OPTION_TEXT_LABEL } from 'investigate-events/constants/pill';
 import PILL_SELECTORS from './pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
 
-const ENTER_KEY = 13;
-const X_KEY = 88;
-const ESCAPE_KEY = KEY_MAP.escape.code;
-const TAB_KEY = KEY_MAP.tab.code;
+const ENTER_KEY = KEY_MAP.enter.key;
+const ESCAPE_KEY = KEY_MAP.escape.key;
+const TAB_KEY = KEY_MAP.tab.key;
 
 const ALL_META_OPTIONS = [
   // IndexedByValue
@@ -79,11 +78,8 @@ export const createBasicPill = async function(fromTrigger, format, operator) {
     await selectChoose(selectors.operatorPowerSelect, '='); // option =
   }
 
-  // Fill in the value, to properly simulate the event we need to fillIn AND
-  // triggerKeyEvent for the "x" character.
-  // await selectChoose(selectors.valuePowerSelect, 'x');
-  await fillIn(PILL_SELECTORS.valueSelectInput, 'x');
-  await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', X_KEY); // x
+  // Fill in the value
+  await typeIn(PILL_SELECTORS.valueSelectInput, 'x');
 
   // Create pill
   await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ENTER_KEY);
