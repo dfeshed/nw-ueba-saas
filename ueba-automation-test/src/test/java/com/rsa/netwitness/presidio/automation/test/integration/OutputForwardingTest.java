@@ -11,6 +11,7 @@ import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.assertj.core.util.Lists;
+import org.junit.Ignore;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -82,7 +83,7 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
 
 
 
-    @Test
+    @Ignore
     public void user_id_forwarded_indicators_count_equals_to_rest_result() {
         String cmd = getForwarderCmd("userId");
         SshResponse response = SshExecutor.executeOnUebaHost(cmd);
@@ -92,7 +93,7 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
 
     }
 
-    @Test
+    @Ignore
     public void ssl_subject_forwarded_indicators_count_equals_to_rest_result() {
         String cmd = getForwarderCmd("sslSubject");
         SshResponse response = SshExecutor.executeOnUebaHost(cmd);
