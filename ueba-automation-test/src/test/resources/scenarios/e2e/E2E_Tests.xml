@@ -24,8 +24,10 @@
         </classes>
     </test>
 
-    <test name="E2E Tests Log"  preserve-order="true">
+    <test name="E2E integration"  preserve-order="true">
         <classes>
+            <class name="com.rsa.netwitness.presidio.automation.test.integration.AirflowFailedDagsTest"/>
+            <class name="com.rsa.netwitness.presidio.automation.test.integration.AirflowPrintRetries"/>
             <!--<class name="presidio.integration.ade.test.LogsErrors_Test"/>-->
         </classes>
     </test>
