@@ -24,7 +24,7 @@ public class NewOccurrenceTransformerTest {
     @Test
     public void testHierarchySslSubjectTransformation() {
         TlsRawEvent tlsRawEvent = generateTlsRawEvent();
-        assertNewOccurrenceTransformation(tlsRawEvent ,tlsRawEvent.getSslSubject(), "sslSubject.isNewOccurrence");
+        assertNewOccurrenceTransformation(tlsRawEvent, tlsRawEvent.getSslSubject(), "sslSubject.isNewOccurrence");
     }
 
     @Test
@@ -81,8 +81,11 @@ public class NewOccurrenceTransformerTest {
         LastOccurrenceInstantReader occurrenceInstantReader = Mockito.mock(LastOccurrenceInstantReader.class);
         Mockito.when(occurrenceInstantReader.read(Mockito.any(), Mockito.any(String.class), Mockito.any(String.class)))
                 .thenReturn(Instant.now());
-        return new NewOccurrenceTransformer(occurrenceInstantReader,
-                Schema.TLS, "eventId", "dateTime", Duration.ZERO.plusSeconds(10L),
+        return new NewOccurrenceTransformer(
+                occurrenceInstantReader,
+                Schema.TLS,
+                "eventId",
+                Duration.ZERO.plusSeconds(10L),
                 booleanFieldName);
     }
 
