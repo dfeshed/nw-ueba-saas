@@ -29,8 +29,10 @@ export default DataTableBodyRow.extend({
         disabled(selection, context) {
           return context.get('disableActions').saveLocalCopy;
         }
-      },
-      {
+      }
+    ];
+    if (this.get('disableActions').isShowDeleteAction) {
+      contextConf.push({
         label: 'deleteFiles',
         order: 2,
         prefix: 'investigateHosts.downloads.buttons.',
@@ -41,8 +43,8 @@ export default DataTableBodyRow.extend({
         disabled(selection, context) {
           return context.get('disableActions').deleteFile;
         }
-      }
-    ];
+      });
+    }
 
     return contextConf.sortBy('order');
   }

@@ -3060,7 +3060,12 @@ export default {
         deletedFiles: 'Deleted Files',
         allFiles: 'All Files'
       },
-      processingMFT: 'Processing MFT'
+      processingMFT: 'Processing MFT',
+      mftViewer: {
+        fileLocation: 'Directory path: ',
+        filtersApplied: ' {{count}} filters applied',
+        no: 'No'
+      }
     },
     tabs: {
       overview: 'Details',

@@ -454,7 +454,18 @@ export default class DataHelper {
     _set(this.state, 'hostDownloads.filter.expressionList', expressionList);
     return this;
   }
-
+  mftFilterExpressionList(expressionList) {
+    _set(this.state, 'hostDownloads.mft.filter.expressionList', expressionList);
+    return this;
+  }
+  mftFilePath(path) {
+    _set(this.state, 'hostDownloads.mft.mftDirectory.fullPathName', path);
+    return this;
+  }
+  showMftFilter(value) {
+    _set(this.state, 'hostDownloads.mft.mftDirectory.showFilter', value);
+    return this;
+  }
   areFilesLoading(areFilesLoading) {
     _set(this.state, 'hostDownloads.downloads.areFilesLoading', areFilesLoading);
     return this;

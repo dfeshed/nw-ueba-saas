@@ -71,6 +71,9 @@
             }
           }
         }
+        .file-pager {
+          position: relative;
+        }
       }
       .mft-bar {
         &.mft-tree{
@@ -78,11 +81,12 @@
         }
         &.mft-list {
           width: 50vw;
+          height: 78vh
         }
 
       }
       .filter-wrapper {
-        height: calc(100vh - 219px);
+        height: calc(100vh - 315px);
         [test-id$="Si"] {
           margin-bottom: rsa-whitespace(more);
         }

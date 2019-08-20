@@ -33,7 +33,7 @@ const BodyCellComponent = BodyCell.extend({
 
   actions: {
     onFetchSubdirectories(data) {
-      const { recordNumber, ancestors, parentDirectory } = data;
+      const { recordNumber, ancestors, parentDirectory, fullPathName } = data;
 
       const parentAncestors = ancestors.asMutable();
       parentAncestors.filter((item) => item !== parentDirectory);
@@ -50,7 +50,8 @@ const BodyCellComponent = BodyCell.extend({
           selectedParentDirectory: { recordNumber: parentDirectory, ancestors: parentAncestors, close: false },
           pageSize: 65000,
           isDirectories: true,
-          inUse: true });
+          inUse: true,
+          fullPathName });
         this.send('getSubDirectories');
       });
     }

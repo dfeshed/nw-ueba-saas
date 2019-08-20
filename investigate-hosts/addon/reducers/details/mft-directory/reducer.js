@@ -28,7 +28,8 @@ const initialState = Immutable.from({
   areFilesLoading: false,
   hasMftNext: false,
   loading: 'wait',
-  showFilter: false
+  showFilter: false,
+  fullPathName: ''
 });
 
 const _addSubdirectoriesToParent = (directories, selectedParentDirectory, subDirectories, ancestors, recordNumber, subDirectoriesLevel) => {
@@ -69,14 +70,15 @@ const _handleAppendFiles = (action) => {
 
 const _toggleSelectedMftFile = (state, payload) => {
   const { selectedMftFileList } = state;
-  const { id, name, size, checksumSha256, fileType, status, serviceId, directory } = payload;
+  const { id, name: fileName, size, checksumSha256, fileType, status, serviceId, directory, fullPathName: path } = payload;
   let selectedList = [];
+
   // Previously selected file
   if (selectedMftFileList.some((file) => file.id === id)) {
     selectedList = selectedMftFileList.filter((file) => file.id !== id);
   } else if (!directory) {
     selectedList = [...selectedMftFileList,
-      { id, name, size, checksumSha256, fileType, status, serviceId, directory }];
+      { id, size, checksumSha256, fileType, status, serviceId, directory, fileName, path }];
   }
   return state.set('selectedMftFileList', selectedList);
 
@@ -138,7 +140,7 @@ const mftDirectory = reduxActions.handleActions({
 
 
   [ACTION_TYPES.SET_SELECTED_MFT_PARENT_DIRECTORY]: (state, { payload }) => {
-    const { selectedParentDirectory, pageSize, isDirectories, inUse } = payload;
+    const { selectedParentDirectory, pageSize, isDirectories, inUse, fullPathName } = payload;
     const { ancestors, recordNumber, close } = selectedParentDirectory;
     const { openDirectories } = state;
     const updatedAncestors = [...ancestors, recordNumber];
@@ -152,15 +154,16 @@ const mftDirectory = reduxActions.handleActions({
         }
       });
     }
-    return state.merge({ selectedParentDirectory, openDirectories: copyOfOpenDirectories, pageSize, isDirectories, inUse });
+    return state.merge({ selectedParentDirectory, openDirectories: copyOfOpenDirectories, pageSize, isDirectories, inUse, fullPathName });
   },
 
-  [ACTION_TYPES.SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS]: (state, { payload: { selectedDirectoryForDetails, fileSource, pageSize, isDirectories, inUse } }) => state.merge({
+  [ACTION_TYPES.SET_SELECTED_MFT_DIRECTORY_FOR_DETAILS]: (state, { payload: { selectedDirectoryForDetails, fileSource, pageSize, isDirectories, inUse, fullPathName } }) => state.merge({
     selectedDirectoryForDetails,
     fileSource,
     pageSize,
     isDirectories,
-    inUse
+    inUse,
+    fullPathName
   }),
 
   [ACTION_TYPES.SET_FETCH_DIRECTORY_DETAILS]: (state, { payload: { pageSize, isDirectories, inUse } }) => state.merge({

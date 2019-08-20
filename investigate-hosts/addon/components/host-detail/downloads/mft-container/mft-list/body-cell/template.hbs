@@ -27,7 +27,7 @@
   {{/if}}
 {{else if (or (eq column.field 'creationTime') (eq column.field 'creationTimeSi') (eq column.field 'mftChangedTime') (eq column.field 'mftChangedTimeSi') (eq column.field 'fileReadTime') (eq column.field 'fileReadTimeSi') (eq column.field 'alteredTime') (eq column.field 'alteredTimeSi'))}}
   <div>
-    {{#if (and (get item 'creationTimeStomped') (or (eq column.field 'creationTime') (eq column.field 'creationTimeSi'))) }}
+    {{#if (or (and (is-timestomped item column.field)))}}
       <span class="date-stomp">
         {{#rsa-content-tethered-panel-trigger panel='panel4'}}
           {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}

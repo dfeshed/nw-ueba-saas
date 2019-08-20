@@ -111,6 +111,7 @@ const DownloadedFileList = Component.extend({
 
     beforeContextMenuShow(menu, event) {
       const { contextSelection: item, contextItems } = menu;
+
       if (!this.get('contextItems')) {
         // Need to store this locally set it back again to menu object
         this.set('contextItems', contextItems);

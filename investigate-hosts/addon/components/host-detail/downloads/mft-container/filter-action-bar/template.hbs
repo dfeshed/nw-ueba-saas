@@ -10,8 +10,8 @@
     {{#rsa-form-button
       class='close-zone open-filter-panel'
       click=(action 'filterAction')
-      isDisabled=disableFilter
-      title=(if disableFilter (t 'investigateHosts.downloads.filterActionBar.filterPanelDisabled'))
+      isDisabled=isDisableFilter
+      title=(if isDisableFilter (t 'investigateHosts.downloads.filterActionBar.filterPanelDisabled'))
     }}
       {{rsa-icon name='filter-2' size='small'}}
       <span>{{t 'investigateFiles.filter.filter'}}</span>

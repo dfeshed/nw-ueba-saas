@@ -173,11 +173,11 @@ module('Integration | Component | mft-list', function(hooks) {
     new ReduxDataHelper(initState)
       .hostDownloads(hostDownloads)
       .selectedDirectoryForDetails(true)
-      .selectedMftFileList([])
+      .selectedMftFileList([{}])
       .areMftFilesLoading('wait')
       .mftFiles(mftData)
       .build();
-    await render(hbs`{{host-detail/downloads/mft-container/mft-list}}`);
+    await render(hbs`{{host-detail/downloads/mft-container/mft-list }}`);
     assert.equal(findAll('.rsa-loader').length, 1, 'loader rendered');
   });
 
@@ -185,15 +185,16 @@ module('Integration | Component | mft-list', function(hooks) {
     new ReduxDataHelper(initState)
       .hostDownloads(hostDownloads)
       .areMftFilesLoading('completed')
+      .selectedMftFileList([{}])
       .build();
-    await render(hbs`{{host-detail/downloads/downloads-list}}`);
+    await render(hbs`{{host-detail/downloads/mft-container/mft-list }}`);
     assert.equal(findAll('.rsa-loader').length, 0, 'loader not rendered');
   });
   test('mft-list-table check boxes enable only for Files not for Directories', async function(assert) {
     new ReduxDataHelper(initState)
       .hostDownloads(hostDownloads)
       .selectedDirectoryForDetails(true)
-      .selectedMftFileList([])
+      .selectedMftFileList([{}])
       .mftFiles(mftData)
       .build();
     await render(hbs`{{host-detail/downloads/mft-container/mft-list}}`);
@@ -203,10 +204,10 @@ module('Integration | Component | mft-list', function(hooks) {
     new ReduxDataHelper(initState)
       .hostDownloads(hostDownloads)
       .selectedDirectoryForDetails(true)
-      .selectedMftFileList([])
+      .selectedMftFileList([{}])
       .mftFiles(mftData)
       .build();
-    await render(hbs`{{host-detail/downloads/mft-container/mft-list}}`);
+    await render(hbs`{{host-detail/downloads/mft-container/mft-list }}`);
     assert.equal(findAll('.rsa-icon-file-new-1-filled').length, 1, 'one file icon displayed for file');
     assert.equal(findAll('.rsa-icon-folder-2-filled').length, 1, 'one folder icon displayed for folder');
 
@@ -215,7 +216,7 @@ module('Integration | Component | mft-list', function(hooks) {
     new ReduxDataHelper(initState)
       .hostDownloads(hostDownloads)
       .selectedDirectoryForDetails(true)
-      .selectedMftFileList([])
+      .selectedMftFileList([{}])
       .mftFiles(mftData)
       .build();
     await render(hbs`{{host-detail/downloads/mft-container/mft-list}}`);
@@ -231,7 +232,7 @@ module('Integration | Component | mft-list', function(hooks) {
       .selectedMftFileList(mftData)
       .mftFiles(mftData)
       .build();
-    await render(hbs`{{host-detail/downloads/mft-container/mft-list}}`);
+    await render(hbs`{{host-detail/downloads/mft-container/mft-list }}`);
     await click(findAll('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(1) .rsa-form-checkbox-label')[0]);
     const state = this.owner.lookup('service:redux').getState();
     const { selectedMftFileList: selected1 } = state.endpoint.hostDownloads.mft.mftDirectory;
@@ -251,7 +252,7 @@ module('Integration | Component | mft-list', function(hooks) {
           min-height: 1000px
         }
       </style>
-      {{host-detail/downloads/mft-container/mft-list}}{{context-menu}}`);
+      {{host-detail/downloads/mft-container/mft-list }}{{context-menu}}`);
     triggerEvent(findAll('.realSize')[1], 'contextmenu', e);
     return settled().then(() => {
       const selector = '.context-menu';
@@ -295,7 +296,7 @@ module('Integration | Component | mft-list', function(hooks) {
           min-height: 1000px
         }
       </style>
-      {{host-detail/downloads/mft-container/mft-list}}{{context-menu}}`);
+      {{host-detail/downloads/mft-container/mft-list }}{{context-menu}}`);
 
     patchSocket((method, modelName) => {
       assert.equal(method, 'mftGetRecords');

@@ -64,6 +64,7 @@ module('Integration | Component | mft-container', function(hooks) {
     assert.equal(findAll('.mft-bar').length, 2, 'mft-container should rendered tree nad table panels');
     assert.equal(findAll('.mft-table-list').length, 1, 'mft-table list should redered');
     assert.equal(findAll('.download-to-server').length, 1, 'download to server button should present');
+    assert.equal(findAll('.mft-file-path').length, 1, 'mft-file-path should redered');
   });
   test('Mft-container with mft-help ', async function(assert) {
 

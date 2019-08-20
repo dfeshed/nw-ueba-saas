@@ -1,10 +1,11 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { findAll, render, click, settled } from '@ember/test-helpers';
+import { findAll, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { revertPatch } from '../../../../../../helpers/patch-reducer';
+
 import Service from '@ember/service';
 import endpoint from '../../../../state/schema';
 import hostListState from '../../../../state/host.machines';
@@ -13,7 +14,7 @@ import { patchReducer } from '../../../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
 
-const transitions = [];
+let transitions = [];
 const endpointServer = {
   serviceData: [
     {
@@ -104,12 +105,14 @@ const endpointState =
 
 let initState;
 
-module('Integration | Component | mft-container/filter-action-bar', function(hooks) {
+module('Integration | Component | mft-container/mft-file-path', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-hosts')
+
   });
 
   hooks.beforeEach(function() {
+    initialize(this.owner);
     initState = (state) => {
       patchReducer(this, Immutable.from(state));
     };
@@ -122,52 +125,49 @@ module('Integration | Component | mft-container/filter-action-bar', function(hoo
         transitions.push({ name, queryParams });
       }
     }));
-    initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
   hooks.afterEach(function() {
     revertPatch();
+    transitions = [];
   });
+  test('mft-file-path has renders', async function(assert) {
+    initState(endpointState);
+    await render(hbs`{{host-detail/downloads/mft-container/mft-file-path}}`);
+    assert.equal(findAll('.mft-file-path').length, 1, 'mft-file-path rendered');
 
-  test('filter-action-bar has rendered', async function(assert) {
-    new ReduxDataHelper(initState).hostDownloads(hostDownloads).fileSource('drive').build();
-    await render(hbs`{{host-detail/downloads/mft-container/filter-action-bar}}`);
-    assert.equal(findAll('.back-to-downloads').length, 1, 'back to downloads button rendered');
-    assert.equal(findAll('.open-filter-panel').length, 1, 'open filter panel button rendered');
-    assert.equal(findAll('.open-filter-panel')[0].title.length, 0, 'filter button disabled title not added');
   });
-  test('back to downloads link to action test', async function(assert) {
+  test('mft-file-path has renders', async function(assert) {
     initState(endpointState);
-    await render(hbs`{{host-detail/downloads/mft-container/filter-action-bar}}`);
-    assert.equal(findAll('.back-to-downloads').length, 1, 'back to downloads button rendered');
-    await click('.back-to-downloads');
-    assert.deepEqual(transitions, [{
-      name: 'hosts.details.tab',
-      queryParams: {
-        subTabName: null
-      }
-    }]);
+    await render(hbs`{{host-detail/downloads/mft-container/mft-file-path}}`);
+    assert.equal(findAll('.mft-file-path').length, 1, 'mft-file-path rendered');
+
   });
-  test('Filter isOpenFilter button test', async function(assert) {
-    initState(endpointState);
-    this.set('openPanel', function() {
-      assert.ok(true, 'open panel is called');
-    });
-    await render(hbs`{{host-detail/downloads/mft-container/filter-action-bar isOpenFilter=false openFilterPanel=openPanel}}`);
-    assert.equal(findAll('.open-filter-panel').length, 1, 'filter button rendered');
-    await click('.open-filter-panel');
-    const state = this.owner.lookup('service:redux').getState();
-    const { showFilter } = state.endpoint.hostDownloads.mft.mftDirectory;
-    assert.equal(showFilter, true, 'Filter should show');
-    assert.equal(findAll('.open-filter-panel').length, 0, 'filter button hidden');
+  test('mft-file-path has display message on No filters applied', async function(assert) {
+    new ReduxDataHelper(initState)
+      .hostDownloads(hostDownloads)
+      .selectedDirectoryForDetails(true)
+      .mftFilterExpressionList([])
+      .build();
+    await render(hbs`{{host-detail/downloads/mft-container/mft-file-path}}`);
+    assert.equal(findAll('.mft-file-path').length, 1, 'mft-file-path rendered');
+    assert.equal(findAll('.filter')[0].textContent.trim().includes('No'), true, 'No filters applied');
+
   });
-  test('Filter button disabled test', async function(assert) {
-    new ReduxDataHelper(initState).hostDownloads(hostDownloads).fileSource().showMftFilter(false).build();
-    await render(hbs`{{host-detail/downloads/mft-container/filter-action-bar }}`);
-    return settled().then(() => {
-      assert.equal(findAll('.open-filter-panel')[0].title.trim().includes('directory'), true, 'filter button disabled title');
-    });
+  test('mft-file-path has display message on One filters applied', async function(assert) {
+    new ReduxDataHelper(initState)
+      .hostDownloads(hostDownloads)
+      .selectedDirectoryForDetails(true)
+      .mftFilterExpressionList([{}])
+      .mftFilePath('c:/')
+      .build();
+    await render(hbs`{{host-detail/downloads/mft-container/mft-file-path}}`);
+    assert.equal(findAll('.mft-file-path').length, 1, 'mft-file-path rendered');
+    assert.equal(findAll('.label')[0].textContent.trim().includes('Directory'), true, 'Directory label');
+    assert.equal(findAll('.path')[0].textContent.trim(), 'c:/', 'Path');
+    assert.equal(findAll('.filter')[0].textContent.trim().includes('1'), true, 'One filters applied');
+
   });
 
 });

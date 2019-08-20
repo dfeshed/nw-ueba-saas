@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 
 
-module('Integration | Component | host-detail/process/process-list', function(hooks) {
+module('Integration | Helper | is-selected', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolver('investigate-hosts')
   });

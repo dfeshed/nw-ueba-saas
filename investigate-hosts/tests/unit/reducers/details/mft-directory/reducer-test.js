@@ -27,7 +27,8 @@ const initialState = {
   areFilesLoading: false,
   hasMftNext: false,
   loading: 'wait',
-  showFilter: false
+  showFilter: false,
+  fullPathName: ''
 };
 
 module('Unit | Reducers | mft-directory', function() {
@@ -286,10 +287,11 @@ module('Unit | Reducers | mft-directory', function() {
       directory: false,
       fileType: 'file',
       id: 1,
-      name: 'test',
+      fileName: 'test',
       serviceId: 'wefew',
       size: 1234,
-      status: 'Downloaded'
+      status: 'Downloaded',
+      path: undefined
     }]);
   });
   test('The TOGGLE_SELECTED_MFT_FILE not select if Not directory', function(assert) {

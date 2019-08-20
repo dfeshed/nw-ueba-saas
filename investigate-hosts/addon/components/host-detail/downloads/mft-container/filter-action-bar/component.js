@@ -23,10 +23,9 @@ const filterActionBar = Component.extend({
   accessControl: service(),
   @alias('focusedHost')
   machineId: null,
-
   @computed('fileSource')
-  disableFilter(fileSource) {
-    return !fileSource.length;
+  isDisableFilter() {
+    return !this.fileSource;
   },
   actions: {
     filterAction() {
