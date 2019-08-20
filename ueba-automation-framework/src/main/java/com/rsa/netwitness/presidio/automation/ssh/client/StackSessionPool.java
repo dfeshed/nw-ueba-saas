@@ -9,7 +9,7 @@ import org.apache.commons.pool.impl.StackKeyedObjectPool;
  * Pool controller. This class exposes the org.apache.commons.pool.KeyedObjectPool class.
  *
  */
-public class StackSessionPool {
+class StackSessionPool {
 
     private final int MAX_SESSIONS = 10;
 
@@ -19,7 +19,7 @@ public class StackSessionPool {
         public static final StackSessionPool INSTANCE = new StackSessionPool();
     }
 
-    public static StackSessionPool getInstance() {
+    static StackSessionPool getInstance() {
         return SingletonHolder.INSTANCE;
     }
 
@@ -32,7 +32,7 @@ public class StackSessionPool {
      *
      * @return the org.apache.commons.pool.KeyedObjectPool class
      */
-    public KeyedObjectPool<ServerDetails, Session> getPool() {
+    KeyedObjectPool<ServerDetails, Session> getPool() {
         return pool;
     }
 
@@ -40,7 +40,7 @@ public class StackSessionPool {
      *
      * @return the org.apache.commons.pool.KeyedObjectPool class
      */
-    public void startPool() {
+    void startPool() {
         pool = new StackKeyedObjectPool<ServerDetails, Session>(new SessionFactory(), MAX_SESSIONS);
     }
 }

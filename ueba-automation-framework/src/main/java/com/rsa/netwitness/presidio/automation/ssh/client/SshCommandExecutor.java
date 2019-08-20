@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -23,26 +24,28 @@ import java.util.List;
  * </ol>
  **
  */
-public class JschCommandExecutor {
-    static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(JschCommandExecutor.class.getName());
+class SshCommandExecutor {
+    static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(SshCommandExecutor.class.getName());
+    private ServerDetails serverDetails;
+    private static final String defaultUserDir= "/var/netwitness/presidio/batch/";
 
-
-    ServerDetails serverDetails;
-
-    public JschCommandExecutor(ServerDetails serverDetails) {
+    SshCommandExecutor(ServerDetails serverDetails) {
         this.serverDetails = serverDetails;
     }
 
+    SshResponse execute(String command, boolean verbose, String userDir) {
+        Objects.requireNonNull(serverDetails, "serverDetails is not set.");
+        final String finalUserDir = userDir.isEmpty() ? defaultUserDir : userDir;
+        final String CMD = "cd ".concat(finalUserDir).concat(" ; ") + command;
 
-    public Response execute(String command, boolean verbose) {
         Session session = null;
         ChannelExec channel = null;
         try {
 
             session = StackSessionPool.getInstance().getPool().borrowObject(serverDetails);
             channel = (ChannelExec) session.openChannel("exec");
-            System.out.println("\n>>> Run SSH command: [" + command + "]");
-            channel.setCommand(command);
+            System.out.println("\n>>> Run SSH command: [" + CMD + "]");
+            channel.setCommand(CMD);
             channel.connect();
 
             BufferedReader input = new BufferedReader(new InputStreamReader(channel.getInputStream()));
@@ -64,12 +67,12 @@ public class JschCommandExecutor {
 
             input.close();
             error.close();
-            return new JschCommandExecutor.Response(channel.getExitStatus(), inputRepose, errorRepose);
+            return new SshResponse(channel.getExitStatus(), inputRepose, errorRepose);
 
 
         }  catch (IOException | JSchException ioX) {
             LOGGER.error("Unable to start process.");
-            LOGGER.error(this.toString());
+            LOGGER.error(serverDetails.toString());
             ioX.printStackTrace();
             return null;
         } catch (Exception e) {
@@ -89,18 +92,4 @@ public class JschCommandExecutor {
             }
         }
     }
-
-    public class Response {
-        public final int exitCode;
-        public final List<String> output;
-        public final List<String> error;
-
-        private Response(int exitCode, List<String> output, List<String> error) {
-            this.exitCode = exitCode;
-            this.output = output;
-            this.error = error;
-        }
-
-    }
-
 }

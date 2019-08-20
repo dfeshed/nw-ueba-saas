@@ -9,12 +9,7 @@ import org.apache.commons.pool.BaseKeyedPoolableObjectFactory;
  * This class is used to handle ssh Session inside the pool.
  *
  */
-public class SessionFactory extends BaseKeyedPoolableObjectFactory<ServerDetails, Session> {
-    private final String knownHostsFileName = "";
-    private final int port = 22;
-    private final int timeOut = 60000;
-
-
+class SessionFactory extends BaseKeyedPoolableObjectFactory<ServerDetails, Session> {
 
     /**
      * This creates a Session if not already present in the pool.
@@ -24,11 +19,11 @@ public class SessionFactory extends BaseKeyedPoolableObjectFactory<ServerDetails
         Session session = null;
         try {
             JSch jschSSHChannel = new JSch();
-            jschSSHChannel.setKnownHosts(knownHostsFileName);
-            session = jschSSHChannel.getSession(serverDetails.getUser(), serverDetails.getHost(), serverDetails.getPort());
-            session.setPassword(serverDetails.getPassword());
-            session.setConfig("StrictHostKeyChecking", "no");
-            session.connect(timeOut);
+            jschSSHChannel.setKnownHosts(serverDetails.knownHostsFileName);
+            session = jschSSHChannel.getSession(serverDetails.user, serverDetails.host, serverDetails.port);
+            session.setPassword(serverDetails.password);
+            session.setConfig("StrictHostKeyChecking", serverDetails.strictHostKeyChecking);
+            session.connect(serverDetails.timeOut);
 
         } catch (Exception e) {
             e.fillInStackTrace();
