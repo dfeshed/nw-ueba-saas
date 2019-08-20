@@ -23,6 +23,7 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -74,8 +75,13 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
     public void ja3_forwarded_indicators_count_equals_to_rest_result() {
         String cmd = getForwarderCmd("ja3");
         SshResponse response = SshExecutor.executeOnUebaHost(cmd);
+        String errorMessage = "Script execution failure.\n[" + cmd + "]\n"
+                + Arrays.toString(response.output.toArray());
+        
         boolean scriptSucceeded = isScriptSucceeded(cmd, response);
-        assertThat(scriptSucceeded).isTrue();
+        assertThat(scriptSucceeded)
+                .overridingErrorMessage(errorMessage)
+                .isTrue();
         int actual = actualIndicatorsCount(response);
         assertThat(actual).isEqualTo(alertsToForward.size());
     }
