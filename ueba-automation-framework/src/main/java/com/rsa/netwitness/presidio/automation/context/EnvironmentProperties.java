@@ -1,19 +1,32 @@
 package com.rsa.netwitness.presidio.automation.context;
 
+import com.rsa.netwitness.presidio.automation.ssh.client.SshExecUtils;
+import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
 import com.rsa.netwitness.presidio.automation.utils.common.Lazy;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
 import java.util.Properties;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import static com.rsa.netwitness.presidio.automation.context.AutomationConf.USER_DIR;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public enum EnvironmentProperties {
     ENVIRONMENT_PROPERTIES;
 
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(EnvironmentProperties.class.getName());
 
-    private static final String ENV_PROPERTIES_PATH = "/home/presidio/env.properties";
+    public static final Path ENV_PROPERTIES_PATH = Paths.get(USER_DIR.toAbsolutePath().toString(), "target", "environment.properties");
+    public static final String REMOTE_SCRIPT_PATH = "/home/presidio";
+
 
     private static final String LOG_DECODER = "log-decoder";
     private static final String ESA_ANALYTICS_SERVER = "esa-analytics-server";
@@ -58,12 +71,25 @@ public enum EnvironmentProperties {
 
     private Properties load() {
         Properties properties = new Properties();
+
         try {
+            if (!ENV_PROPERTIES_PATH.toFile().exists()) {
+                resolve();
+            }
             LOGGER.info("Loading env.properties");
-            properties.load(new FileInputStream(ENV_PROPERTIES_PATH));
+            properties.load(new FileInputStream(ENV_PROPERTIES_PATH.toFile()));
         } catch (IOException e) {
             e.printStackTrace();
         }
         return properties;
+    }
+
+    private void resolve() throws IOException {
+        SshResponse sshResponse = SshExecUtils.executeOnUebaHostRoot("sh env_properties_manager.sh --create",
+                true, REMOTE_SCRIPT_PATH);
+
+        assertThat(sshResponse.exitCode).isEqualTo(0);
+        List<String> output = sshResponse.output.stream().filter(e -> e.contains("=")).sorted().collect(Collectors.toList());
+        Files.write(ENV_PROPERTIES_PATH, output, StandardOpenOption.CREATE);
     }
 }
