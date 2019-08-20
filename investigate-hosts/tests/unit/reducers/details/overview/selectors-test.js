@@ -24,6 +24,7 @@ import {
   mftDownloadButtonStatusDetails,
   getRARStatus,
   hostOverviewServerId,
+  agentMigrated,
   policyAdminUsm } from 'investigate-hosts/reducers/details/overview/selectors';
 
 let setState;
@@ -821,5 +822,53 @@ module('Unit | Selectors | overview', function(hooks) {
     assert.equal(result1, true, 'Is a roaming agent');
     const result2 = getRARStatus(Immutable.from({ endpoint: { overview: { hostDetails: { agentStatus: { lastSeen: 'EndpointServer' } } } } }));
     assert.equal(result2, false, 'Is not a roaming agent');
+  });
+
+  test('agentMigrated is not broker', function(assert) {
+    const state = Immutable.from({
+      endpoint: {
+        overview: {
+          hostDetails: {
+            groupPolicy: {
+              managed: false
+            }
+          }
+        },
+        selectedHostList: [{ id: 1, version: '4.4', managed: false }]
+      },
+      endpointServer: {
+        serviceData: [{ id: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0', name: 'endpoint-server' },
+          { id: 'f9be528a-ca5b-463b-bc3f-deab7cc36bb9', name: 'endpoint-broker-server' }]
+      },
+      endpointQuery: {
+        serverId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+      }
+    });
+    const result = agentMigrated(state);
+    assert.equal(result, true);
+  });
+
+  test('agentMigrated is broker', function(assert) {
+    const state = Immutable.from({
+      endpoint: {
+        overview: {
+          hostDetails: {
+            groupPolicy: {
+              managed: true
+            }
+          }
+        },
+        selectedHostList: [{ id: 1, version: '4.4', managed: false }]
+      },
+      endpointServer: {
+        serviceData: [{ id: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0', name: 'endpoint-broker-server' },
+          { id: 'f9be528a-ca5b-463b-bc3f-deab7cc36bb9', name: 'endpoint-server' }]
+      },
+      endpointQuery: {
+        serverId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+      }
+    });
+    const result = agentMigrated(state);
+    assert.equal(result, false);
   });
 });

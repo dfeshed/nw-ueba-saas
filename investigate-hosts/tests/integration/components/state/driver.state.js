@@ -259,7 +259,7 @@ export default {
         format: 'pe',
         fileStatus: 'Neutral',
         remediationAction: 'Unblock',
-        downloadInfo: { 'status': 'Downloaded' }
+        downloadInfo: { 'status': 'Downloaded', refId: 'ewer', serviceId: 'serverId' }
       },
       imageBase: 2197893120,
       imageSize: 225280,
@@ -431,7 +431,7 @@ export default {
       },
       size: 338944,
       machineOsType: 'windows',
-      downloadInfo: { 'status': 'Downloaded' }
+      downloadInfo: { 'status': 'Downloaded', refId: 'ewer', serviceId: 'serverId' }
     }
   ],
   sortConfig: null,

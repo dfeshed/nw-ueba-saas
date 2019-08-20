@@ -2,6 +2,7 @@ import reselect from 'reselect';
 import securityConfig from './config';
 import { secondsToMinutesConverter } from 'investigate-hosts/reducers/details/selector-utils';
 import { isOSWindows, isModeAdvance, isAgentVersionAdvanced } from 'investigate-hosts/reducers/utils/mft-utils';
+import { isBrokerView } from 'investigate-shared/selectors/broker-load-more/selectors';
 import _ from 'lodash';
 
 const { createSelector } = reselect;
@@ -436,6 +437,14 @@ export const mftDownloadButtonStatusDetails = createSelector(
       isMFTEnabled = true;
     }
     return { isDisplayed: isMFTEnabled };
+  }
+);
+
+export const agentMigrated = createSelector(
+  [_hostDetails, isBrokerView],
+  ({ groupPolicy }, isBrokerView) => {
+    const { managed } = groupPolicy ? groupPolicy : { managed: false };
+    return !managed && (!isBrokerView);
   }
 );
 

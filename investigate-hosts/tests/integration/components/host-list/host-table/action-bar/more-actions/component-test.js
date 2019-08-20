@@ -113,6 +113,88 @@ module('Integration | Component | host table action bar more actions', function(
     await click(findAll('.rsa-dropdown-action-list li')[2]);
   });
 
+  test('Download mft option disabled when agent is migrated and not broker', async function(assert) {
+    const selectedData = {
+      id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+      machineIdentity: {
+        machineName: 'RemDbgDrv',
+        machineOsType: 'windows',
+        agentMode: 'advanced'
+      },
+      version: '11.4.0.0',
+      managed: true,
+      serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+    };
+    new ReduxDataHelper(setState).scanCount(selectedData).build();
+    this.set('showRiskScoreModal', () => {
+      assert.ok(true);
+    });
+    this.set('deleteAction', () => {
+      assert.ok(true, 'passed action is called');
+    });
+    this.set('isMFTEnabled', { isDisplayed: true });
+    this.set('requestMFTDownload', () => {
+      assert.ok(true);
+    });
+    this.set('selectedHostList', [selectedData]);
+    this.set('isAgentMigrated', true);
+
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
+
+    await render(hbs`{{host-list/host-table/action-bar/more-actions
+      showRiskScoreModal=showRiskScoreModal
+      deleteAction=deleteAction
+      isMFTEnabled=isMFTEnabled
+      selectedHostList=selectedHostList
+      isAgentMigrated=isAgentMigrated
+      requestMFTDownload=requestMFTDownload}}`);
+
+    await click('.host_more_actions button');
+    assert.equal(findAll('.rsa-dropdown-action-list li.downloadMFT-button .is-disabled').length, 1, 'Download MFT option is disabled.');
+  });
+
+  test('Download mft option enabled when agent is not migrated or is broker', async function(assert) {
+    const selectedData = {
+      id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+      machineIdentity: {
+        machineName: 'RemDbgDrv',
+        machineOsType: 'windows',
+        agentMode: 'advanced'
+      },
+      version: '11.4.0.0',
+      managed: true,
+      serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+    };
+    new ReduxDataHelper(setState).scanCount(selectedData).build();
+    this.set('showRiskScoreModal', () => {
+      assert.ok(true);
+    });
+    this.set('deleteAction', () => {
+      assert.ok(true, 'passed action is called');
+    });
+    this.set('isMFTEnabled', { isDisplayed: true });
+    this.set('requestMFTDownload', () => {
+      assert.ok(true);
+    });
+    this.set('selectedHostList', [selectedData]);
+    this.set('isAgentMigrated', false);
+
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
+
+    await render(hbs`{{host-list/host-table/action-bar/more-actions
+      showRiskScoreModal=showRiskScoreModal
+      deleteAction=deleteAction
+      isMFTEnabled=isMFTEnabled
+      selectedHostList=selectedHostList
+      isAgentMigrated=isAgentMigrated
+      requestMFTDownload=requestMFTDownload}}`);
+
+    await click('.host_more_actions button');
+    assert.equal(findAll('.rsa-dropdown-action-list li.downloadMFT-button .is-disabled').length, 0, 'Download MFT option is enabled.');
+  });
+
   test('download mft options not present when more than 1 item is selected', async function(assert) {
     const selectedData = [
       {

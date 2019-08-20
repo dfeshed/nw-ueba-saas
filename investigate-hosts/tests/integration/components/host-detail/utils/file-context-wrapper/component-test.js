@@ -442,7 +442,8 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     const selectedHostList = [{
       id: 1,
       version: '4.3.0.0',
-      managed: true
+      managed: true,
+      serviceId: 'dwewe'
     }];
     new ReduxDataHelper(setState)
       .drivers(drivers)

@@ -440,7 +440,7 @@ const _getSelectedFileProperties = (checksum) => {
 
 const setSelectedIndex = (index) => ({ type: ACTION_TYPES.SET_SELECTED_INDEX, payload: index });
 
-const initializerForFileDetailsAndAnalysis = (checksum, sid, tabName, fileFormat) => {
+const initializerForFileDetailsAndAnalysis = (checksum, sid, tabName, fileFormat, sourceSid) => {
   return (dispatch) => {
     const request = lookup('service:request');
     dispatch({ type: ACTION_TYPES.RESET_INPUT_DATA });
@@ -456,7 +456,9 @@ const initializerForFileDetailsAndAnalysis = (checksum, sid, tabName, fileFormat
     }));
 
     if (tabName === 'ANALYSIS') {
-      dispatch(getFileAnalysisData(checksum, fileFormat));
+      const updatedSid = sourceSid || sid;
+
+      dispatch(getFileAnalysisData(checksum, fileFormat, updatedSid));
       dispatch(setNewFileTab(tabName));
     } else {
       dispatch(setSelectedEndpointServer(sid));

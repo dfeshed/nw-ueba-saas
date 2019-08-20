@@ -77,7 +77,7 @@ const HostDownloads = Component.extend({
       const [selectedFile] = selectedFileList;
       const { serviceId, fileType } = selectedFile;
       if (fileType === 'File') {
-        this.send('saveLocalFileCopy', selectedFile, callbacks, serviceId);
+        this.send('saveLocalFileCopy', selectedFile, callbacks);
       } else {
         this.send('saveLocalMFTCopy', selectedFile, callbacks, serviceId);
       }

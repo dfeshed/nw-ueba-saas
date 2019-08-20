@@ -25,8 +25,7 @@
           {{host-scan/scan-command
       modalTitle=(t 'investigateHosts.hosts.initiateScan.modal.modalTitle' name=hostName)
       command='START_SCAN'
-      isStartScanIconDisplayed=false
-      title=actionsDisableMessage}}
+      isStartScanIconDisplayed=false}}
         </li>
       {{else if (eq moreOption.buttonId 'export-button')}}
         <li>
@@ -45,7 +44,13 @@
           {{/if}}
         </li>
       {{else if (eq moreOption.buttonId 'downloadMFT-button')}}
-        <li class="downloadMFT-button{{if moreOption.divider ' divider'}}" {{action 'requestMFTDownload'}}>{{t moreOption.name}}</li>
+        <li class="downloadMFT-button{{if moreOption.divider ' divider'}}" >
+          {{#rsa-form-button
+            defaultAction=(action 'requestMFTDownload')
+            isDisabled=isAgentMigrated}}
+            {{t moreOption.name}}
+          {{/rsa-form-button}}
+        </li>
       {{/if}}
     {{/each}}
   </ul>

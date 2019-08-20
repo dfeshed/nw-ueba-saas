@@ -149,10 +149,10 @@ const Container = Component.extend({
       const callBackOptions = this.get('callBackOptions')(this);
       // Open analyze file.
       const selectedProcessList = this.get('selectedProcessList');
-      const [{ checksumSha256, format = '' }] = selectedProcessList;
+      const [{ checksumSha256, format = '', downloadInfo: { serviceId } }] = selectedProcessList;
       const fileFormat = componentSelectionForFileType(format).format;
 
-      this.send('getFileAnalysisData', checksumSha256, fileFormat, callBackOptions);
+      this.send('getFileAnalysisData', checksumSha256, fileFormat, serviceId, callBackOptions);
     }
   }
 

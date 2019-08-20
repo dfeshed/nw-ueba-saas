@@ -39,15 +39,18 @@ export default Route.extend({
      */
     fileFormat: {
       refreshModel: false
+    },
+    sourceSid: {
+      refreshModel: true
     }
   },
 
   model(params) {
     const redux = this.get('redux');
-    const { checksum, sid, tabName, fileFormat = '' } = params;
+    const { checksum, sid, tabName, fileFormat = '', sourceSid = '' } = params;
 
     if (sid) {
-      redux.dispatch(initializerForFileDetailsAndAnalysis(checksum, sid, tabName, fileFormat));
+      redux.dispatch(initializerForFileDetailsAndAnalysis(checksum, sid, tabName, fileFormat, sourceSid));
     }
   },
 

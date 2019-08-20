@@ -125,12 +125,11 @@ const Files = Component.extend({
 
     onSaveLocalCopy() {
       const [selectedDetailFile] = this.get('selections');
-      const { serviceId } = selectedDetailFile;
       const callBackOptions = {
         onSuccess: () => success('investigateHosts.flash.fileDownloadRequestSent'),
         onFailure: (message) => failure(message, null, false)
       };
-      this.send('saveLocalFileCopy', selectedDetailFile, callBackOptions, serviceId);
+      this.send('saveLocalFileCopy', selectedDetailFile, callBackOptions);
     }
   }
 });

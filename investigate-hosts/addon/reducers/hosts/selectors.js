@@ -184,6 +184,14 @@ export const isScanStartButtonDisabled = createSelector(
     return tooManyHostsSelected || allAreEcatAgents || allAreMigratedHosts || !allAreIdle;
   }
 );
+
+export const agentMigrated = createSelector(
+  [allAreMigratedHosts, isBrokerView],
+  (allAreMigratedHosts, isBrokerView) => {
+    return allAreMigratedHosts && (!isBrokerView);
+  }
+);
+
 export const isScanStopButtonDisabled = createSelector(
   [tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts, _allAreNotIdle],
   (tooManyHostsSelected, allAreEcatAgents, allAreMigratedHosts, allAreNotIdle) => {

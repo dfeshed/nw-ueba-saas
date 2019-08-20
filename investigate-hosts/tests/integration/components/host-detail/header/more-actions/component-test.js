@@ -22,6 +22,9 @@ const data = {
     agentMode: 'advanced',
     agentVersion: '11.4.0.0',
     machineOsType: 'windows'
+  },
+  groupPolicy: {
+    managed: true
   }
 };
 
@@ -90,7 +93,46 @@ module('Integration | Component | host detail more-actions', function(hooks) {
         });
     });
 
-    await click('.host-details_dropdown-action-list li.downloadMFT-button');
+    await click('.host-details_dropdown-action-list li.downloadMFT-button button');
+  });
+
+  test('Test for download MFT button disabled', async function(assert) {
+    const state = {
+      serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0',
+      agentStatus: {
+        agentId: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+        lastSeenTime: '2019-05-09T09:22:09.713+0000',
+        scanStatus: 'completed'
+      },
+      machineIdentity: {
+        id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+        machineName: 'RemDbgDrv',
+        agentMode: 'advanced',
+        agentVersion: '11.4.0.0',
+        machineOsType: 'windows'
+      },
+      groupPolicy: {
+        managed: false
+      }
+    };
+
+    new ReduxDataHelper(setState)
+      .host(state)
+      .build();
+
+    await render(hbs `{{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+    assert.equal(findAll('.host-details_dropdown-action-list li.downloadMFT-button .is-disabled').length, 1, 'downloadMFT-button disabled');
+  });
+
+  test('Test for download MFT button enabled', async function(assert) {
+    new ReduxDataHelper(setState)
+      .host(data)
+      .build();
+
+    await render(hbs `{{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+    assert.equal(findAll('.host-details_dropdown-action-list li.downloadMFT-button .is-disabled').length, 0, 'downloadMFT-button enabled');
   });
 
   test('test for Export to JSON', async function(assert) {

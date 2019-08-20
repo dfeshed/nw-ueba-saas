@@ -80,9 +80,10 @@ export const selectedFileChecksums = createSelector(
 
 export const selectedFileList = createSelector(
   fileContextSelections,
-  (selectedFiles) => selectedFiles.map(({ checksumSha256, fileName }) => ({
+  (selectedFiles) => selectedFiles.map(({ checksumSha256, fileName, downloadInfo }) => ({
     checksumSha256,
-    fileName
+    fileName,
+    downloadInfo
   }))
 );
 
@@ -192,7 +193,7 @@ export const fileDownloadButtonStatus = createSelector(
     // if agent is not advanced and file's downloaded status is true
     const isDownloadToServerDisabled = allAreMigratedHosts || isNotAdvanced || areAllSelectedFloatingOrMemoryDll || (selectedFilesLength !== 1) || (!areAllFilesNotDownloadedToServer);
     // if agent is not advanced and selectedFilesLength is 1 and file's downloaded status is true
-    const isSaveLocalAndFileAnalysisDisabled = allAreMigratedHosts || isNotAdvanced || areAllSelectedFloatingOrMemoryDll || ((selectedFilesLength !== 1) || areAllFilesNotDownloadedToServer);
+    const isSaveLocalAndFileAnalysisDisabled = isNotAdvanced || areAllSelectedFloatingOrMemoryDll || ((selectedFilesLength !== 1) || areAllFilesNotDownloadedToServer);
     return {
       isDownloadToServerDisabled,
       isSaveLocalAndFileAnalysisDisabled

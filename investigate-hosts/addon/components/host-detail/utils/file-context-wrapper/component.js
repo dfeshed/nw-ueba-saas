@@ -126,10 +126,10 @@ const ContextWrapper = Component.extend({
       const callBackOptions = this.get('callBackOptions')(this);
       // Open analyze file.
       const fileContextSelections = this.get('fileContextSelections');
-      const [{ checksumSha256, format = '' }] = fileContextSelections;
+      const [{ checksumSha256, format = '', downloadInfo: { serviceId } }] = fileContextSelections;
       const fileFormat = componentSelectionForFileType(format).format;
 
-      this.send('getFileAnalysisData', checksumSha256, fileFormat, callBackOptions);
+      this.send('getFileAnalysisData', checksumSha256, fileFormat, serviceId, callBackOptions);
     },
 
     resetRiskScoreAction(itemsList) {

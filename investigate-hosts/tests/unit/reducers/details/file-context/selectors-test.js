@@ -308,6 +308,7 @@ module('Unit | Selectors | File Context', function() {
     assert.equal(result.length, 1, '1 file is selected');
     assert.deepEqual(result[0],
       { checksumSha256: '5469da9747d23abd3a1ccffa2bccfe6256938a416f707ed2160d3eda3867c30d',
+        downloadInfo: {},
         fileName: 'HookTest_DLL64_0c30.dll' }, 'Verify first file checksum and filename');
   });
 

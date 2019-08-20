@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 
 const stateToComputed = (state) => ({
-  sid: state.endpointQuery.serverId
+  sid: state.endpointQuery.selectedMachineServerId
 });
 /**
  * Component for displaying the Process Summary items
@@ -35,7 +35,8 @@ const SummaryItemsComponent = Component.extend({
       const items = config.map((item) => {
         const value = _.get(data, item.field) || '--';
         const checksum = _.get(data, 'fileProperties.checksumSha256') || null;
-        return { ...item, value, checksum };
+        const sourceSid = _.get(data, 'fileProperties.downloadInfo.serviceId') || null;
+        return { ...item, value, checksum, sourceSid };
       });
       return items;
     }

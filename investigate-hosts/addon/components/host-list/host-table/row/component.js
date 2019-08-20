@@ -33,6 +33,9 @@ export default DataTableBodyRow.extend({
       showDivider: true,
       action(selection, context) {
         context.requestMFTDownload();
+      },
+      disabled(selection, context) {
+        return context.get('isAgentMigrated');
       }
     }];
 

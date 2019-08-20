@@ -21,6 +21,7 @@ import {
   isInsightsAgent,
   allAreMigratedHosts,
   mftDownloadButtonStatus,
+  agentMigrated,
   actionsDisableMessage } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
@@ -997,4 +998,66 @@ test('processedHostList', function(assert) {
   });
   const result5 = processedHostList(state5);
   assert.equal(result5[0].isMFTEnabled, true);
+});
+
+test('agentMigrated is not broker', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [{
+          id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
+          machineIdentity: {
+            machineName: 'RAR113-EPS',
+            machineOsType: 'windows',
+            agentMode: 'advanced',
+            agentVersion: '11.4.0.0'
+          },
+          version: '11.4.0.0',
+          managed: true,
+          serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+        }]
+      },
+      selectedHostList: [{ id: 1, version: '4.4', managed: false }]
+    },
+    endpointServer: {
+      serviceData: [{ id: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0', name: 'endpoint-server' },
+        { id: 'f9be528a-ca5b-463b-bc3f-deab7cc36bb9', name: 'endpoint-broker-server' }]
+    },
+    endpointQuery: {
+      serverId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+    }
+  });
+  const result = agentMigrated(state);
+  assert.equal(result, true);
+});
+
+test('agentMigrated is broker', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [{
+          id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
+          machineIdentity: {
+            machineName: 'RAR113-EPS',
+            machineOsType: 'windows',
+            agentMode: 'advanced',
+            agentVersion: '11.4.0.0'
+          },
+          version: '11.4.0.0',
+          managed: true,
+          serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+        }]
+      },
+      selectedHostList: [{ id: 1, version: '4.4', managed: false }]
+    },
+    endpointServer: {
+      serviceData: [{ id: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0', name: 'endpoint-broker-server' },
+        { id: 'f9be528a-ca5b-463b-bc3f-deab7cc36bb9', name: 'endpoint-server' }]
+    },
+    endpointQuery: {
+      serverId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+    }
+  });
+  const result = agentMigrated(state);
+  assert.equal(result, false);
 });

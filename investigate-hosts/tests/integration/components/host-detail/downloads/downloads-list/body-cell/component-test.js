@@ -1,7 +1,7 @@
 import { module, test, setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import { findAll, find, render, click, waitUntil } from '@ember/test-helpers';
+import { findAll, find, render, click } from '@ember/test-helpers';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import EmberObject from '@ember/object';
 import Service from '@ember/service';
@@ -157,7 +157,7 @@ module('Integration | Component | host-detail/downloads/downloads-list/body-cell
   test('filename mft link test', async function(assert) {
     initState(endpointState);
     this.set('column', { field: 'fileName' });
-    this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile', fileType: 'Mft' });
+    this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile', fileType: 'Mft', serviceId: 'abcd' });
     this.set('serverId', 'abcd');
 
     await render(hbs`{{host-detail/downloads/downloads-list/body-cell column=column item=item serverId=serverId}}`);
@@ -166,24 +166,10 @@ module('Integration | Component | host-detail/downloads/downloads-list/body-cell
     await click('.downloaded-file-name a');
     assert.deepEqual(transitions, [{
       name: 'hosts.details.tab.mft',
-      queryParams: {}
+      queryParams: { sid: 'abcd' }
     }]);
   });
 
-  test('file file link test', async function(assert) {
-    initState(endpointState);
-    const column = EmberObject.create({ field: 'fileName' });
-    this.set('column', column);
-    this.set('item', { id: '5cda8882c8811e511649e335', fileName: 'testFile', fileType: 'File' });
-    this.set('serverId', 'abcd');
-
-    await render(hbs`{{host-detail/downloads/downloads-list/body-cell column=column item=item serverId=serverId}}`);
-    const links = findAll('.downloaded-file-name a');
-    assert.equal(links.length, 1, 'downloaded-file-name file is linked');
-    await click('.downloaded-file-name a');
-    const selector = '[a][href~="/investigate/files/file?checksum=&sid=abcd"]';
-    await waitUntil(() => document.querySelectorAll(selector).length === 0, { timeout: 8000 });
-  });
   test('file should not link if not file or mft test', async function(assert) {
     const column = EmberObject.create({ field: 'fileName' });
     this.set('column', column);

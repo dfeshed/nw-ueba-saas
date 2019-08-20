@@ -5,6 +5,7 @@ import { hostWithStatus,
   mftDownloadButtonStatusDetails,
   isJsonExportCompleted,
   isSnapshotsAvailable,
+  agentMigrated,
   hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { exportFileContext } from 'investigate-hosts/actions/data-creators/details';
 import { downloadMFT } from 'investigate-hosts/actions/data-creators/host';
@@ -18,7 +19,8 @@ const stateToComputed = (state) => ({
   isExportDisabled: !isSnapshotsAvailable(state),
   scanTime: state.endpoint.detailsInput.scanTime,
   agentId: state.endpoint.detailsInput.agentId,
-  isMFTEnabled: mftDownloadButtonStatusDetails(state)
+  isMFTEnabled: mftDownloadButtonStatusDetails(state),
+  isAgentMigrated: agentMigrated(state)
 });
 
 const dispatchToActions = {
@@ -33,31 +35,37 @@ const HostDetailsMoreActions = Component.extend({
   accessControl: service(),
 
   @computed('isMFTEnabled')
-  moreOptions() {
-    const moreActionOptions = [
-      {
-        panelId: 'panel1',
-        name: 'investigateHosts.hosts.button.resetRiskScore',
-        buttonId: 'startScan-button'
-      },
-      {
-        panelId: 'panel2',
-        name: 'investigateHosts.hosts.button.delete',
-        buttonId: 'export-button'
+  moreOptions: {
+    get() {
+      const isMFTEnabled = this.get('isMFTEnabled');
+      const moreActionOptions = [
+        {
+          panelId: 'panel1',
+          name: 'investigateHosts.hosts.button.resetRiskScore',
+          buttonId: 'startScan-button'
+        },
+        {
+          panelId: 'panel2',
+          name: 'investigateHosts.hosts.button.delete',
+          buttonId: 'export-button'
+        }
+      ];
+      const mft = [
+        {
+          panelId: 'panel3',
+          divider: true,
+          name: 'investigateShared.endpoint.fileActions.downloadMFT',
+          buttonId: 'downloadMFT-button'
+        }
+      ];
+      if (isMFTEnabled.isDisplayed && this.get('accessControl.endpointCanManageFiles')) {
+        moreActionOptions.push(...mft);
       }
-    ];
-    const mft = [
-      {
-        panelId: 'panel3',
-        divider: true,
-        name: 'investigateShared.endpoint.fileActions.downloadMFT',
-        buttonId: 'downloadMFT-button'
-      }
-    ];
-    if (this.get('isMFTEnabled').isDisplayed && this.get('accessControl.endpointCanManageFiles')) {
-      moreActionOptions.push(...mft);
+      return moreActionOptions;
+    },
+    set(value) {
+      return value;
     }
-    return moreActionOptions;
   },
 
   actions: {

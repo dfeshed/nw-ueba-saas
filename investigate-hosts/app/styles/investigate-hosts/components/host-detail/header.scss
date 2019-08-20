@@ -190,9 +190,6 @@
     &:first-child {
       padding-top: rsa-whitespace(less);
     }
-    &:last-child {
-      padding-bottom: rsa-whitespace();
-    }
     &:hover {
       background-color: background-color(secondary, darker);
     }
@@ -201,7 +198,7 @@
     margin: 0.75rem 0 0 0;
   }
   .downloadMFT-button {
-    padding: rsa-whitespace(less) rsa-whitespace();
+    padding: rsa-whitespace(less) 0;
   }
   .host-start-scan-button .scan-modal {
     height: 0px;
