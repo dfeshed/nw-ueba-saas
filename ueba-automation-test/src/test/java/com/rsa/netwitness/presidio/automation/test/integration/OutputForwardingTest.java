@@ -6,8 +6,8 @@ import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEven
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
-import com.rsa.netwitness.presidio.automation.ssh.SSHManager;
-import com.rsa.netwitness.presidio.automation.ssh.SSHManagerSingleton;
+import com.rsa.netwitness.presidio.automation.ssh.client.SshExecutor;
+import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
 import com.rsa.netwitness.presidio.automation.utils.adapter.AdapterTestManager;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.assertj.core.util.Lists;
@@ -72,11 +72,10 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
     @Test
     public void ja3_forwarded_indicators_count_equals_to_rest_result() {
         String cmd = getForwarderCmd("ja3");
-        SSHManager.Response response = SSHManagerSingleton.INSTANCE.getSshManager().runCmd(cmd, true);
+        SshResponse response = SshExecutor.executeOnUebaHost(cmd);
         boolean scriptSucceeded = isScriptSucceeded(cmd, response);
         assertThat(scriptSucceeded).isTrue();
         int actual = actualIndicatorsCount(response);
-
         assertThat(actual).isEqualTo(alertsToForward.size());
     }
 
@@ -86,7 +85,7 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
     @Test
     public void user_id_forwarded_indicators_count_equals_to_rest_result() {
         String cmd = getForwarderCmd("userId");
-        SSHManager.Response response = SSHManagerSingleton.INSTANCE.getSshManager().runCmd(cmd, true);
+        SshResponse response = SshExecutor.executeOnUebaHost(cmd);
         boolean scriptSucceeded = isScriptSucceeded(cmd, response);
         assertThat(scriptSucceeded).isTrue();
 
@@ -96,11 +95,9 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
     @Test
     public void ssl_subject_forwarded_indicators_count_equals_to_rest_result() {
         String cmd = getForwarderCmd("sslSubject");
-        SSHManager.Response response = SSHManagerSingleton.INSTANCE.getSshManager().runCmd(cmd, true);
+        SshResponse response = SshExecutor.executeOnUebaHost(cmd);
         boolean scriptSucceeded = isScriptSucceeded(cmd, response);
         assertThat(scriptSucceeded).isTrue();
-
-
     }
 
 
@@ -108,7 +105,7 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
 
 
 
-    private int actualIndicatorsCount(SSHManager.Response response) {
+    private int actualIndicatorsCount(SshResponse response) {
         /**    forwarder.Forwarder      : 2922 'INDICATOR' messages were forwarded successfully **/
 
         String successPatternSt = "'INDICATOR' messages were forwarded successfully";
@@ -150,8 +147,8 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
                 " --entity_type " + entity;
     }
 
-    private boolean isScriptSucceeded(String cmd, SSHManager.Response response) {
-        Predicate<SSHManager.Response> logContainsError = res ->
+    private boolean isScriptSucceeded(String cmd, SshResponse response) {
+        Predicate<SshResponse> logContainsError = res ->
                 res.output.stream().anyMatch(e -> e.contains(" ERROR "))
                         || !res.error.isEmpty();
 

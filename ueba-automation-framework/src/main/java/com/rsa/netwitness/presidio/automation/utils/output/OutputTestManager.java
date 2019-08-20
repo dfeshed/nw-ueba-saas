@@ -8,8 +8,8 @@ import com.rsa.netwitness.presidio.automation.domain.config.Consts;
 import com.rsa.netwitness.presidio.automation.domain.output.*;
 import com.rsa.netwitness.presidio.automation.rest.client.RestAPI;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
-import com.rsa.netwitness.presidio.automation.ssh.SSHManager;
-import com.rsa.netwitness.presidio.automation.ssh.TerminalCommands;
+import com.rsa.netwitness.presidio.automation.ssh.TerminalCommandsSshUtils;
+import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONArray;
@@ -31,7 +31,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.rsa.netwitness.presidio.automation.ssh.RunCmdUtils.printLogFile;
+import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogFile;
 
 public class OutputTestManager {
     static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
@@ -58,7 +58,7 @@ public class OutputTestManager {
     }
 
     private boolean sendProcessCommand(String command, String execPath, String... args){
-        SSHManager.Response proc = TerminalCommands.runCommand(command,true, execPath, args);
+        SshResponse proc = TerminalCommandsSshUtils.runCommand(command,true, execPath, args);
         return proc.exitCode == 0;
     }
 
@@ -75,7 +75,7 @@ public class OutputTestManager {
         // store the data in the collections for data source
         String logFile = "/tmp/presidio-output-processor_run_" + smart_record_conf_name + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
 
-        SSHManager.Response p = TerminalCommands.runCommand(
+        SshResponse p = TerminalCommandsSshUtils.runCommand(
                 Consts.PRESIDIO_OUTPUT, true, Consts.PRESIDIO_DIR, "run" , "--start_date " + startDate,
                 "--end_date " + endDate , "--smart_record_conf_name " + smart_record_conf_name + " " + " > " + logFile);
 
@@ -88,7 +88,7 @@ public class OutputTestManager {
         // store the data in the collections for data source
         String logFile = "/tmp/presidio-output_recalc_user_score_" + entity + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
 
-        SSHManager.Response p = TerminalCommands.runCommand(Consts.PRESIDIO_OUTPUT, true, Consts.PRESIDIO_DIR,
+        SshResponse p = TerminalCommandsSshUtils.runCommand(Consts.PRESIDIO_OUTPUT, true, Consts.PRESIDIO_DIR,
                 "recalculate-entity-score", "--start_date " + startDate, "--end_date " + endDate ,
                 " --fixed_duration_strategy 86400.0 " , " --smart_record_conf_name " + entity + "_hourly ",
                 " --entity_type " + entity + " > " + logFile);

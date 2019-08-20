@@ -2,7 +2,7 @@ package com.rsa.netwitness.presidio.automation.ssh;
 
 import java.util.regex.Matcher;
 
-public class SedUtil {
+public class SedSshUtil {
 
     /**
      * Replace #pattern by #replacement in #filePath file
@@ -14,7 +14,7 @@ public class SedUtil {
     public static void replaceTextInFile(String filePath, String executePath, String pattern, String replacement ){
         replacement = replacement.replaceAll("/", Matcher.quoteReplacement("\\/"));
         String hostCommand = "sed -i 's/" + pattern + "/" + replacement + "/g' " + filePath;
-        TerminalCommands.runCommand(hostCommand, true, executePath);
+        TerminalCommandsSshUtils.runCommand(hostCommand, true, executePath);
     }
 
 }

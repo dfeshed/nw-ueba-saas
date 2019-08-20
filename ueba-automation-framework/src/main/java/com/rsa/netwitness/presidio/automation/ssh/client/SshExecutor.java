@@ -1,6 +1,6 @@
 package com.rsa.netwitness.presidio.automation.ssh.client;
 
-public class SshExecUtils {
+public class SshExecutor {
     private static SshCommandExecutor uebaHostExecutor = new SshCommandExecutor(ServerDetails.getUebaServer());
     private static SshCommandExecutor uebaHostExecutorRoot = new SshCommandExecutor(ServerDetails.getUebaServerRoot());
 

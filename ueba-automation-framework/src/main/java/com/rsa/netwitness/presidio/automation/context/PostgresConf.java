@@ -1,8 +1,8 @@
 package com.rsa.netwitness.presidio.automation.context;
 
+import com.rsa.netwitness.presidio.automation.ssh.client.SshExecutor;
+import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
 import com.rsa.netwitness.presidio.automation.utils.common.Lazy;
-import com.rsa.netwitness.presidio.automation.ssh.SSHManager;
-import com.rsa.netwitness.presidio.automation.ssh.SSHManagerSingleton;
 import org.assertj.core.util.Lists;
 import org.slf4j.LoggerFactory;
 
@@ -51,9 +51,7 @@ public enum PostgresConf {
         String getPasswordCmd = "curl -s -u admin:netwitness --insecure https://localhost"
                 + "/admin/configurationview/  | grep @127.0.0.1/airflow | grep -oP 'airflow\\:\\K([\\da-z]+)' | head -n 1";
 
-        SSHManager sshManager = SSHManagerSingleton.INSTANCE.getSshManager();
-        SSHManager.Response result = sshManager.runCmd(getPasswordCmd);
-
+        SshResponse result = SshExecutor.executeOnUebaHost(getPasswordCmd);
         return result.exitCode == 0 ? result.output : Lists.emptyList();
     }
 }
