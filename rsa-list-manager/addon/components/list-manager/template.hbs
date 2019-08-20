@@ -1,19 +1,19 @@
 <hbox>
-  {{#click-outside action=(action 'collapseMenu')}}
+  {{#click-outside action=(action 'collapseManagerList')}}
 
     <div class='rsa-button-group'>
       {{#rsa-form-button
-        class="list-caption"
-        defaultAction=(action 'toggleExpand')
+        class='list-caption'
+        defaultAction=(action 'toggleExpandManagerList')
         title=titleTooltip
       }}
         {{caption}}
       {{/rsa-form-button}}
       {{#rsa-form-button
-        class="rsa-split-dropdown"
-        defaultAction=(action 'toggleExpand')
+        class='rsa-split-dropdown'
+        defaultAction=(action 'toggleExpandManagerList')
       }}
-        {{rsa-icon name="arrow-down-12"}}
+        {{rsa-icon name='arrow-down-12'}}
       {{/rsa-form-button}}
     </div>
 
@@ -21,25 +21,42 @@
 
       {{#if isExpanded}}
 
-        {{yield (hash
-          filter=(component 'list-manager/list-filter'
-            listName=listName
-            originalList=list
-            updateFilteredList=(action 'updateFilteredList')
-          )
-         )
-        }}
+        {{#if isListView}}
+          <div class='list-body'>
+            {{yield (hash
+              filter=(component 'list-manager/list-filter'
+                listName=listName
+                originalList=list
+                updateFilteredList=(action 'updateFilteredList')
+              )
+             )
+            }}
 
-        {{yield (hash
-          itemList=(component 'list-manager/item-list'
+            {{yield (hash
+              itemList=(component 'list-manager/item-list'
+                listName=listName
+                list=filteredList
+                selectedItem=selectedItem
+                itemSelection=itemSelection
+                isExpanded=isExpanded
+              )
+             )
+            }}
+          </div>
+
+          {{list-manager/list-footer
             listName=listName
-            list=filteredList
-            selectedItem=selectedItem
-            itemSelection=itemSelection
-            isExpanded=isExpanded
-          )
-         )
-        }}
+            updateView=(action 'updateView')
+            helpId=helpId
+          }}
+
+        {{else}}
+
+          {{list-manager/list-details
+            updateView=(action 'updateView')
+          }}
+
+        {{/if}}
 
       {{/if}}
 

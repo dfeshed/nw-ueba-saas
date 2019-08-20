@@ -23,6 +23,14 @@ const stateToComputed = (state) => ({
 const ColumnGroups = Component.extend({
   classNames: ['rsa-investigate-events-table__header__columnGroups'],
   eventBus: service(),
+
+  helpId() {
+    return {
+      moduleId: 'investigation',
+      topicId: 'eaColumnGroups'
+    };
+  },
+
   actions: {
     selectColumnGroup(columnGroup) {
       this.get('eventBus').trigger('rsa-content-tethered-panel-hide-tableSearchPanel');

@@ -88,16 +88,16 @@ module('Integration | Component | Column Groups', function(hooks) {
 
     assert.ok(find(dropdownSelector), 'dropdown buttons present');
     await click(dropdownSelector);
-
     assert.ok(find(`${columnGroupManagerSelector} .rsa-button-menu.expanded`), 'Column Group Menu expanded');
 
     const optionsToSelect = findAll(`${columnGroupItem} a`);
     assert.equal(optionsToSelect.length, 11);
 
     // Prefer testing with top few options as they are already scrolled into view.
-    await click(optionsToSelect[8]);
+    assert.ok(find(optionsToSelect[1]), 'Option in view to select');
+    await click(optionsToSelect[1]);
 
-    assert.equal(find(`${columnGroupManagerSelector} .list-caption`).textContent.trim(), 'Column Group: Threat Analysis', 'Column group changed');
+    assert.equal(find(`${columnGroupManagerSelector} .list-caption`).textContent.trim(), 'Column Group: Custom 2', 'Column group changed');
 
     assert.ok(find(`${columnGroupManagerSelector} .rsa-button-menu.collapsed`), 'Column Group Menu collapsed');
   });

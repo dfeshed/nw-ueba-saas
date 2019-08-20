@@ -65,6 +65,11 @@
 
       .rsa-button-group {
 
+        &:hover i {
+          color: $formButtonIconHoverColor;
+          font-weight: bolder;
+        }
+
         .rsa-form-button-wrapper {
           &.is-standard {
 
@@ -86,9 +91,6 @@
               button.rsa-form-button {
                 border-left: none;
                 color: text-color(primary, light);
-                &:hover {
-                  color: $formButtonIconHoverColor;
-                }
               }
               i {
                 font-size: .65rem;

@@ -4,6 +4,9 @@ import { render, findAll, find, click } from '@ember/test-helpers';
 import { typeInSearch } from 'ember-power-select/test-support/helpers';
 import { setupRenderingTest } from 'ember-qunit';
 
+const getTextFromDOMArray = (arr) => {
+  return arr.reduce((a, c) => a + c.textContent.trim().replace(/\s+/g, ''), '');
+};
 module('Integration | Component | list-manager', function(hooks) {
   setupRenderingTest(hooks);
 
@@ -33,6 +36,15 @@ module('Integration | Component | list-manager', function(hooks) {
     assert.equal(findAll(`${listItems}.is-selected a`).length == 1, hasSelectedItem);
 
     await click(optionToClick);
+
+  };
+
+  const assertForViewToggle = async function(assert, buttonsBefore, isListView) {
+    assert.equal(findAll('.list-body ul.rsa-item-list').length == 1, isListView);
+    assert.equal(findAll('footer.list-footer').length == 1, isListView);
+
+    const buttons = findAll('footer button');
+    assert.equal(getTextFromDOMArray(buttons), buttonsBefore);
 
   };
 
@@ -255,4 +267,38 @@ module('Integration | Component | list-manager', function(hooks) {
 
   });
 
+  test('clicking on the footer buttons toggles between list-view and details-view', async function(assert) {
+
+    this.set('name', 'My Items');
+    this.set('list', items);
+    this.set('handleSelection', () => {});
+
+    await render(hbs`{{#list-manager listName=name list=list itemSelection=handleSelection as |manager|}}
+        {{#manager.itemList as |list|}}
+          {{#list.item as |item|}}
+           {{item.name}}
+          {{/list.item}}
+        {{/manager.itemList}}
+      {{/list-manager}}`);
+
+    // expand button menu
+    await click(`${buttonGroupSelector} button`);
+    await assertForViewToggle(assert, 'NewMyItem', true);
+
+    // click on New My Item
+    await click(findAll('footer button')[0]);
+    await assertForViewToggle(assert, 'CancelSave', false);
+
+    // click on Cancel
+    await click(findAll('footer button')[0]);
+    await assertForViewToggle(assert, 'NewMyItem', true);
+
+    // click on New My Item
+    await click(findAll('footer button')[0]);
+    await assertForViewToggle(assert, 'CancelSave', false);
+
+    // click on Save
+    await click(findAll('footer button')[1]);
+    await assertForViewToggle(assert, 'NewMyItem', true);
+  });
 });

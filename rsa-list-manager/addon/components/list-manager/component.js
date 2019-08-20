@@ -15,10 +15,24 @@ const menuOffsetsStyle = (el) => {
 export default Component.extend({
   layout,
   classNames: ['list-manager'],
+
+  /*
+   * Name identifying the list used to label buttons in the manager.
+   * Name should sound plural, ending in 's'
+   */
   listName: null,
+
+  // Object to identify an item as selected in the manager's button caption
   selectedItem: null,
+
+  // the original list
   list: null,
+
+  // list rendered on filtering
   filteredList: null,
+
+  // View to be rendered through button actions (list-view, detail-view, etc)
+  viewName: null,
 
   // style for the recon-button-menu derived from the buttonGroup style
   offsetsStyle: null,
@@ -27,6 +41,7 @@ export default Component.extend({
 
   didInsertElement() {
     this.set('filteredList', this.get('list'));
+    this.set('viewName', 'list-view');
   },
 
   @computed('listName', 'selectedItem')
@@ -39,6 +54,11 @@ export default Component.extend({
     return listName;
   },
 
+  @computed('viewName')
+  isListView(viewName) {
+    return viewName === 'list-view';
+  },
+
   @computed('selectedItem')
   titleTooltip(selectedItem) {
     if (selectedItem) {
@@ -48,20 +68,24 @@ export default Component.extend({
   },
 
   actions: {
-    collapseMenu() {
+    collapseManagerList() {
       if (this.get('isExpanded')) {
         this.toggleProperty('isExpanded');
       }
     },
 
-    toggleExpand() {
+    toggleExpandManagerList() {
       this.set('offsetsStyle', menuOffsetsStyle(this.get('element')));
+      this.set('viewName', 'list-view');
       this.toggleProperty('isExpanded');
     },
 
     updateFilteredList(newList) {
       this.set('filteredList', newList);
-    }
+    },
 
+    updateView(viewName) {
+      this.set('viewName', viewName);
+    }
   }
 });

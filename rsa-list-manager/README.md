@@ -7,6 +7,7 @@ The list manager can be used in your template as follows:
   list=list
   selectedItem=selectedItem
   itemSelection=handleSelection
+  helpId=helpId
   as |manager|}}
 
   {{!--renders the filter component--}}
@@ -18,6 +19,7 @@ The list manager can be used in your template as follows:
       {{!--render the item in desired format --}}
     {{/list.item}}
   {{/manager.itemList}}
+
 {{/list-manager}}
 ```
 
@@ -25,6 +27,7 @@ The list manager can be used in your template as follows:
 * `listName`, *String ending with s(plural)*, __required__, Caption for List.
 * `list`, *Array of objects with name(required), id(required), ootb(boolean, optional) parameters*, __required__, The list to be rendered.
 * `selectedItem`, *Object*,__optional__, The option that needs to be displayed with listName for the caption and highlighed as selected in the list
+* `helpId`, *Object*,__optional__, Object with moduleId & topicId
 
 ## Actions
 * `itemSelection`, *Action*, __required__,  An action to execute when an item is selected.

@@ -1,68 +1,117 @@
 .list-manager {
   display: inline-flex;
 
-  .list-filter {
-    padding-left: rsa-whitespace(less);
-    padding-right: rsa-whitespace(less);
-    .filter-group {
-      display: inline-flex;
-      width: 100%;
-      border-bottom: 1px solid border-color(primary,light);
-      padding-bottom: rsa-whitespace(less);
-      padding-top: rsa-whitespace(less);
+  .rsa-button-menu {
+    input, li, button {
+      font-size: 11px;
+      font-weight: lighter;
+      color: text-color(primary, lightest);
+    }
+
+    i {
+      font-size: .65rem;
+    }
+
+    button.rsa-form-button {
+      border: none;
+      padding: 0;
       i {
-        font-size: .65rem;
-      }
-      .ember-power-select-search-input {
-        border: none;
-        font-size: 11px;
-      }
-      button.rsa-form-button {
-        border: none;
-        padding: 0;
         color: text-color(primary, light);
-        &:hover {
+      }
+      &:hover i{
           color: $formButtonIconHoverColor;
+      }
+    }
+
+    .list-body {
+      height: 200px;
+      background: background-color(primary, darker);
+      // Manager's filter component
+      .list-filter {
+        padding-left: rsa-whitespace(less);
+        padding-right: rsa-whitespace(less);
+        .filter-group {
+          display: inline-flex;
+          width: 100%;
+          border-bottom: 1px solid border-color(primary,light);
+          padding-bottom: rsa-whitespace(less);
+          padding-top: rsa-whitespace(less);
+          .ember-power-select-search-input {
+            border: none;
+          }
+        }
+      }
+
+      // Manager's itemList component
+      ul.rsa-item-list {
+        height: 170px;
+        overflow-y: auto;
+        li.no-results {
+          padding: rsa-whitespace(less);
+          font-size: 10px;
+          font-weight: lightest;
+          font-style: italic;
+          text-align: center;
+          color: text-color(primary, lighter);
+        }
+        li.rsa-list-item {
+          line-height: 2em;
+          &:hover {
+            background: background-color(secondary, darker);
+            outline: none;
+            cursor: pointer;
+          }
+          &.is-selected {
+            background: background-color(secondary, dark);
+          }
+          a {
+            padding: 0;
+          }
+          i {
+            padding-left: rsa-whitespace(less);
+            padding-right: rsa-whitespace(less);
+          }
         }
       }
     }
-  }
 
-  .rsa-button-menu {
-    ul {
-      max-height: 11rem;
-      overflow-y: auto;
-      padding-top: rsa-whitespace(less);
-      padding-bottom: rsa-whitespace(less);
-      li.no-results {
-        padding: rsa-whitespace(less);
-        font-size: 10px;
-        font-weight: lightest;
-        font-style: italic;
-        text-align: center;
-        color: text-color(primary, lighter);
-      }
-      li.rsa-list-item {
-        line-height: 2em;
-        font-size: 11px;
-        font-weight: lighter;
-        color: text-color(primary, lightest);
-        &:hover {
-          background: background-color(secondary, darker);
-          outline: none;
-          cursor: pointer;
-        }
-        &.is-selected {
-          background: background-color(secondary, dark);
-        }
-        a {
-          padding: 0;
-        }
+    // Manager's create item controls component
+    footer {
+      height: 30px;
+      border-top: 1px solid border-color(primary,light);
+
+       .footer-buttons {
+        margin-top: rsa-whitespace(less);
+        justify-content: space-evenly;
+        display: inline-flex;
+        width: 100%;
         i {
           padding-left: rsa-whitespace(less);
-          padding-right: rsa-whitespace(less);
+        }
+        .create-item {
+          width: 90%;
+          text-align: left;
+          i {
+            font-size: 0.7rem;
+            vertical-align: text-top;
+          }
         }
       }
+
+      &.details-footer .footer-buttons {
+        .rsa-form-button-wrapper {
+          border: thin solid border-color(primary,light);
+          &:hover {
+            border-color: $formButtonIconHoverColor;
+          }
+          width: 45%;
+          button {
+            width: 100%;
+          }
+        }
+      }
+
     }
+
   }
 }
