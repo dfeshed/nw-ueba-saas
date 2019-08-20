@@ -1,6 +1,6 @@
 package com.rsa.netwitness.presidio.automation.utils.output;
 
-import com.rsa.netwitness.presidio.automation.context.AutomationConf;
+import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 import com.rsa.netwitness.presidio.automation.domain.activedirectory.OutputActiveDirectoryEnrichedStoredData;
 import com.rsa.netwitness.presidio.automation.domain.authentication.OutputAuthenticationEnrichStoredData;
 import com.rsa.netwitness.presidio.automation.domain.file.OutputFileEnrichStoredData;

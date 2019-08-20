@@ -1,6 +1,6 @@
 package com.rsa.netwitness.presidio.automation.ssh.client;
 
-import static com.rsa.netwitness.presidio.automation.context.AutomationConf.*;
+import static com.rsa.netwitness.presidio.automation.config.AutomationConf.*;
 
 class ServerDetails {
     public String host;

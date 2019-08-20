@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.rsa.netwitness.presidio.automation.context.AutomationConf.LOG_GEN_OUTPUT;
+import static com.rsa.netwitness.presidio.automation.config.AutomationConf.LOG_GEN_OUTPUT;
 import static com.rsa.netwitness.presidio.automation.log_player.LogPlayerResultUtils.runLogPlayerAndGetRecordsCountResult;
 import static java.util.stream.Collectors.*;
 

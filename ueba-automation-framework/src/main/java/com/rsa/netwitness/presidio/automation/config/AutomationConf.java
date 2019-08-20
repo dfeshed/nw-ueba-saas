@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.context;
+package com.rsa.netwitness.presidio.automation.config;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

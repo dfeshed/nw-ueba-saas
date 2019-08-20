@@ -5,7 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.Assert;
-import com.rsa.netwitness.presidio.automation.context.AutomationConf;
+import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;

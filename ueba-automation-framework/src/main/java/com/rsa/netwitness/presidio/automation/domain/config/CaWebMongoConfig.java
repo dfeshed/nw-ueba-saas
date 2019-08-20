@@ -7,7 +7,7 @@ import com.mongodb.async.client.MongoClients;
 import com.mongodb.async.client.MongoDatabase;
 import com.mongodb.connection.ClusterSettings;
 import com.mongodb.connection.netty.NettyStreamFactoryFactory;
-import com.rsa.netwitness.presidio.automation.context.AutomationConf;
+import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 import com.rsa.netwitness.presidio.automation.utils.encription.EncryptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;

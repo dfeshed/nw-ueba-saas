@@ -1,6 +1,6 @@
 package com.rsa.netwitness.presidio.automation.test.integration;
 
-import com.rsa.netwitness.presidio.automation.context.EnvironmentProperties;
+import com.rsa.netwitness.presidio.automation.config.EnvironmentProperties;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.config.store.NetwitnessEventStoreConfig;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;

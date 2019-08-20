@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static com.rsa.netwitness.presidio.automation.context.EnvironmentProperties.ENVIRONMENT_PROPERTIES;
+import static com.rsa.netwitness.presidio.automation.config.EnvironmentProperties.ENVIRONMENT_PROPERTIES;
 import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogFile;
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.context;
+package com.rsa.netwitness.presidio.automation.config;
 
 import com.rsa.netwitness.presidio.automation.ssh.client.SshExecutor;
 import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.rsa.netwitness.presidio.automation.context.EnvironmentProperties.ENVIRONMENT_PROPERTIES;
+import static com.rsa.netwitness.presidio.automation.config.EnvironmentProperties.ENVIRONMENT_PROPERTIES;
 
 public enum PostgresConf {
     POSTGRES_PROPERTIES;

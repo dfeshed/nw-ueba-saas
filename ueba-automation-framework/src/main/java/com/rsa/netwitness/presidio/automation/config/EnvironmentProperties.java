@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.context;
+package com.rsa.netwitness.presidio.automation.config;
 
 import com.rsa.netwitness.presidio.automation.ssh.client.SshExecutor;
 import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
@@ -16,7 +16,7 @@ import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.rsa.netwitness.presidio.automation.context.AutomationConf.USER_DIR;
+import static com.rsa.netwitness.presidio.automation.config.AutomationConf.USER_DIR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public enum EnvironmentProperties {

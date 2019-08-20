@@ -3,7 +3,7 @@ package com.rsa.netwitness.presidio.automation.utils.output;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.rsa.netwitness.presidio.automation.context.AutomationConf;
+import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 import com.rsa.netwitness.presidio.automation.domain.config.Consts;
 import com.rsa.netwitness.presidio.automation.domain.output.*;
 import com.rsa.netwitness.presidio.automation.rest.client.RestAPI;

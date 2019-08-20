@@ -1,6 +1,6 @@
 package com.rsa.netwitness.presidio.automation.test.rest;
 
-import com.rsa.netwitness.presidio.automation.context.AutomationConf;
+import com.rsa.netwitness.presidio.automation.config.AutomationConf;
 import com.rsa.netwitness.presidio.automation.domain.config.MongoConfig;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;

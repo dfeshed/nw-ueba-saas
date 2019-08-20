@@ -1,6 +1,6 @@
 package com.rsa.netwitness.presidio.automation.log_player;
 
-import com.rsa.netwitness.presidio.automation.context.EnvironmentProperties;
+import com.rsa.netwitness.presidio.automation.config.EnvironmentProperties;
 import com.rsa.netwitness.presidio.automation.ssh.client.SshExecutor;
 
 import java.util.function.Function;
