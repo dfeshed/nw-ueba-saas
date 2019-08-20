@@ -2,7 +2,7 @@
 set -e
 
 PRESIDIO_HOME="/home/presidio"
-ENV_PROPERTIES_PATH="$PRESIDIO_HOME/env.properties"
+ENV_PROPERTIES_PATH="$PRESIDIO_HOME/environment.properties"
 
 function createEnvironmentPropertiesFile {
         rm -f ${ENV_PROPERTIES_PATH}
@@ -21,10 +21,10 @@ function createEnvironmentPropertiesFile {
         cat ${ENV_PROPERTIES_PATH}
 
         if [[ $( cat ${ENV_PROPERTIES_PATH} | wc -l ) -gt 0  ]] ; then
-            echo "New env.properties file is created"
+            echo "New environment.properties file is created"
             exit 0
     	else
-    	    echo "env.properties is broken"
+    	    echo "environment.properties is broken"
     	    exit 1
     	fi
 }
@@ -38,7 +38,7 @@ function getProperty {
 
 
 function help {
-    echo "Create new env.properties file: env_properties_manager.sh -c"
+    echo "Create new environment.properties file: env_properties_manager.sh -c"
     echo "Get property by name: env_properties_manager.sh -g log-decoder"
 }
 
