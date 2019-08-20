@@ -21,6 +21,15 @@ export default Component.extend({
     return `New ${listName.slice(0, -1)}`;
   },
 
+  @computed('helpId')
+  hasContextualHelp(helpId) {
+    if (helpId) {
+      const { moduleId, topicId } = helpId;
+      return !!(moduleId && topicId);
+    }
+    return false;
+  },
+
   actions: {
     handleCreateItem() {
       this.get('updateView')('create-view');

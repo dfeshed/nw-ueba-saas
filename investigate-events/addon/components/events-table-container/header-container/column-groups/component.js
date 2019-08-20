@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import computed from 'ember-computed-decorators';
 import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
 import { createColumnGroup,
@@ -24,6 +25,7 @@ const ColumnGroups = Component.extend({
   classNames: ['rsa-investigate-events-table__header__columnGroups'],
   eventBus: service(),
 
+  @computed()
   helpId() {
     return {
       moduleId: 'investigation',

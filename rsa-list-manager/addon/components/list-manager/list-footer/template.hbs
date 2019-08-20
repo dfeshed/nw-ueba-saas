@@ -3,9 +3,9 @@
     {{rsa-icon name='add-1' style='lined'}}
     {{newItemButtonTitle}}
   {{/rsa-form-button}}
-  {{#if helpId}}
+  {{#if hasContextualHelp}}
     {{#rsa-form-button class='list-help-icon' defaultAction=(action 'goToHelp')}}
-      {{rsa-icon name='help-circle' style='lined'}}
+      {{rsa-icon name='help-circle' size='small' style='lined'}}
     {{/rsa-form-button}}
   {{/if}}
 </div>
