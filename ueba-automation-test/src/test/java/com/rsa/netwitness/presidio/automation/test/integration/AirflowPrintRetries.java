@@ -17,14 +17,14 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import java.time.Instant;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.rsa.netwitness.presidio.automation.jdbc.model.AirflowTaskInstanceTable.*;
-import static com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils.skipTest;
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.reverseOrder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -56,16 +56,18 @@ public class AirflowPrintRetries extends AbstractTestNGSpringContextTests {
                 .parallelStream()
                 .filter(task -> task.tryNumber >= MIN_RETRIES_TO_DISPLAY)
                 .collect(Collectors.toList());
-
-        if (airflowTasksWithRetries.isEmpty()) {
-            skipTest("No tasks to print");
-        }
     }
 
 
     @Test
     public void print_retries() {
-        Stream<AirflowTaskInstanceTable> sorted = airflowTasksWithRetries.stream().sorted(Comparator.comparing(e -> e.executionDate, Comparator.reverseOrder()));
+        if (airflowTasksWithRetries.isEmpty()) {
+            LOGGER.info("Not found tasks with reties amount more then " + MIN_RETRIES_TO_DISPLAY);
+            assertThat(true).isTrue();
+        }
+
+        Stream<AirflowTaskInstanceTable> sorted = airflowTasksWithRetries.stream()
+                .sorted(comparing(e -> e.executionDate, reverseOrder()));
 
         LOGGER.info("***********************************************");
         LOGGER.info("****** List of tasks with retries number ******");

@@ -23,7 +23,6 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -76,8 +75,8 @@ public class OutputForwardingTest extends AbstractTestNGSpringContextTests {
         String cmd = getForwarderCmd("ja3");
         SshResponse response = SshExecutor.executeOnUebaHost(cmd);
         String errorMessage = "Script execution failure.\n[" + cmd + "]\n"
-                + Arrays.toString(response.output.toArray());
-        
+                + String.join("\n", response.output);
+
         boolean scriptSucceeded = isScriptSucceeded(cmd, response);
         assertThat(scriptSucceeded)
                 .overridingErrorMessage(errorMessage)
