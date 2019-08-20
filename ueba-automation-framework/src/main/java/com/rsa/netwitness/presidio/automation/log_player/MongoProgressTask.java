@@ -47,7 +47,7 @@ public class MongoProgressTask implements Runnable {
 
     boolean isProcessingStarted() {
         boolean isStarted = !eventTimeHistory.isEmpty();
-        if (isStarted) {
+        if (!isStarted) {
             LOGGER.warn("[" + collectionName + "] - Collection still empty after initial wait.");
         }
         return isStarted;
