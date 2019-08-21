@@ -29,7 +29,7 @@ public class MongoCollectionsMonitor {
     private long DELAY_BEFORE_FIRST_TASK_STARTED = TASK_FREQUENCY_MINUTES + ADDITIONAL_DELAY_BEFORE_FIRST_TIME_STATUS_CHECK; // 25 min
     private List<MongoProgressTask> tasks;
     private int TIME_BUCKETES_TO_CHECK = 6;
-    private TimeUnit TIME_UNITS  = MINUTES;
+    private TimeUnit TIME_UNITS = MINUTES;
 
 
     public MongoCollectionsMonitor(List<? extends MongoRepository> collectionToMonitor) {

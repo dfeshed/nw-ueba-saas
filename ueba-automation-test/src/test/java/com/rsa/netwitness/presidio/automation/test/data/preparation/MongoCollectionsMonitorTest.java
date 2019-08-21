@@ -21,6 +21,9 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 
+/*****************************************/
+/** Manual test for framework debugging **/
+/*****************************************/
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})

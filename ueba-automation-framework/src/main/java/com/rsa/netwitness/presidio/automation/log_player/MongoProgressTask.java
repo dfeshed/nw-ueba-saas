@@ -37,7 +37,7 @@ public class MongoProgressTask implements Runnable {
 
     public void run() {
         Optional<Instant> result = findByTimeAppliedOnObj(obj, start, end);
-        LOGGER.info("#### Query result for [" + collectionName + "] since" + start + " is " + result);
+        LOGGER.info("#### [" + collectionName + "] - Query result from start_time=" + start + " is " + result);
 
         if (result.isPresent() && result.get().isAfter(start)) start = result.get().minusSeconds(10);
         result.ifPresent(e -> eventTimeHistory.push(e));
