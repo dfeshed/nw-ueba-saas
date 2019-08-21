@@ -65,6 +65,7 @@
 	<ExtensionKey cefName="payload.res" metaName="payload.res"/>
 	<ExtensionKey cefName="direction" metaName="direction"/>
 	<ExtensionKey cefName="tcp.dstport" metaName="tcp.dstport"/>
+	<ExtensionKey cefName="tcp.srcport" metaName="tcp.srcport"/>
 	<ExtensionKey cefName="session.split" metaName="session.split"/>
 	<ExtensionKey cefName="netname" metaName="netname"/>
 
