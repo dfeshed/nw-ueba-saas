@@ -12,7 +12,8 @@ import {
   fileSourcesList,
   selectedFileSource,
   selectedFileSourceDefaults,
-  sourceNameValidator
+  sourceNameValidator,
+  exFilterValidator
 } from 'admin-source-management/reducers/usm/policy-wizard/filePolicy/file-selectors';
 
 const stateToComputed = (state) => ({
@@ -21,7 +22,8 @@ const stateToComputed = (state) => ({
   fileSourcesList: fileSourcesList(state),
   selectedFileSource: selectedFileSource(state),
   selectedFileSourceDefaults: selectedFileSourceDefaults(state),
-  sourceNameValidator: sourceNameValidator(state)
+  sourceNameValidator: sourceNameValidator(state),
+  exFilterValidator: exFilterValidator(state)
 });
 
 const dispatchToActions = {

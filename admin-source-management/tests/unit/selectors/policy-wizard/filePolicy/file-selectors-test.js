@@ -13,7 +13,8 @@ import {
   selectedFileSource,
   selectedFileSourceDefaults,
   sources,
-  sourceNameValidator
+  sourceNameValidator,
+  exFilterValidator
 } from 'admin-source-management/reducers/usm/policy-wizard/filePolicy/file-selectors';
 import {
   ENABLED_CONFIG,
@@ -264,6 +265,51 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
       .build();
     validExpected = { isError: false, invalidTableItem: 'invalid', errorMessage: '', invalidPath: 'invalid', dirPathEmptyMsg: '', dirPathLength: '' };
     validActual = sourceNameValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
+  });
+
+  test('exclusion Filter validator with invalid filters', function(assert) {
+    // when path is empty
+    let newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'foo', exclusionFilters: ['filter-1', '['], paths: [] } ];
+    const visited = ['policy.sources'];
+    let fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(newSource)
+      .policyWizVisited(visited)
+      .build();
+    let validExpected = {
+      isError: true,
+      showError: true,
+      errorMessage: 'adminUsm.policyWizard.filePolicy.exclusionFiltersSyntaxError'
+    };
+    let validActual = exFilterValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
+
+    // invalid - when the number of filters exceed 16
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: '10.42.42.42', exclusionFilters: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17'], paths: ['path1', 'path2'] } ];
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(newSource)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = {
+      isError: true,
+      showError: true,
+      errorMessage: 'adminUsm.policyWizard.filePolicy.exclusionFiltersLengthError'
+    };
+
+    validActual = exFilterValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
+
+    // valid value
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(newSource)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = { isError: false, showError: false, errorMessage: '' };
+    validActual = exFilterValidator(fullState);
     assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
   });
 });

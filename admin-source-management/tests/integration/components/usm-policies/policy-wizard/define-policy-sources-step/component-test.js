@@ -195,6 +195,46 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     assert.equal(document.querySelectorAll('.directory-path .input-error').length, 0, 'Error message is not showing for valid source name');
   });
 
+  test('It shows the correct error message when the exclusion filter is invalid', async function(assert) {
+    const invalidSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: true, sourceName: 'apache-server-1', exclusionFilters: ['[', 'def'], paths: ['path1', 'path2'] } ];
+    const translation = this.owner.lookup('service:i18n');
+    const expectedMessage = translation.t('adminUsm.policyWizard.filePolicy.exclusionFiltersSyntaxError');
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources(invalidSource)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
+    const isErrorClass = findAll('.exclusion-filters .is-error');
+    assert.equal(isErrorClass.length, 1, 'is-error class is rendered');
+    assert.equal(findAll('.exclusion-filter-error')[0].innerText, expectedMessage, `Correct error message is showing: ${expectedMessage}`);
+  });
+
+  test('It shows the correct error message when the number of exclusion filters are invalid', async function(assert) {
+    const invalidSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: true, sourceName: 'apache-server-1', exclusionFilters: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17'], paths: ['path1', 'path2'] } ];
+    const translation = this.owner.lookup('service:i18n');
+    const expectedMessage = translation.t('adminUsm.policyWizard.filePolicy.exclusionFiltersLengthError');
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources(invalidSource)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
+    const isErrorClass = findAll('.exclusion-filters .is-error');
+    assert.equal(isErrorClass.length, 1, 'is-error class is rendered');
+    assert.equal(findAll('.exclusion-filter-error')[0].innerText, expectedMessage, `Correct error message is showing: ${expectedMessage}`);
+  });
+
+  test('It does not show the error message when the exclusion filter is valid', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources(sources)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
+    assert.equal(findAll('.exclusion-filter-error')[0].getAttribute('value'), null, 'Error is not showing for a valid filter');
+  });
+
   test('It shows the correct error message when the directory path array does not have atleast one path', async function(assert) {
     const newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: true, sourceName: 'apache-server-1', exclusionFilters: ['abc', 'def'], paths: [] } ];
     const translation = this.owner.lookup('service:i18n');

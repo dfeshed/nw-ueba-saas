@@ -176,8 +176,14 @@
         placeholder=(t 'adminUsm.policyWizard.descPlaceholder')
         value=exclusionFilters
         maxLength=8000
+        isError=exFilterErr
         focusOut=(action 'setexclusionFilters' column.field bubbles=false)
       }}
+    </div>
+    <div class="exclusion-filter-error">
+      {{#if exFilterErr}}
+        {{t exFilterErrorMsg}}
+      {{/if}}
     </div>
   {{/if}}
 {{/rsa-data-table/body-cell}}

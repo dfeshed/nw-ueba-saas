@@ -157,6 +157,51 @@ export const sourceNameValidator = (state) => {
 };
 
 /**
+ * validates the exclusion Filters array in the sources array.
+ * exclusionFilters is an array of strings
+ * exclusionFilters: ['filter-1', 'filter-2']
+ * @public
+ */
+export const exFilterValidator = (state) => {
+  let error = false;
+  let enableMessage = false;
+  let message = '';
+  const value = sources(state);
+
+  if (value) {
+    // sources is an array of objects, loop through each obj and validate the sourceName within
+    value.every((obj) => {
+      const { exclusionFilters } = obj;
+      if (exclusionFilters && exclusionFilters.length > 16) {
+        error = true;
+        enableMessage = true;
+        message = 'adminUsm.policyWizard.filePolicy.exclusionFiltersLengthError';
+        return false;
+      }
+      if (exclusionFilters && exclusionFilters.length > 0) {
+        for (let s = 0; s < exclusionFilters.length; s++) {
+          const filter = exclusionFilters[s];
+          try {
+            new RegExp(filter);
+          } catch (e) {
+            error = true;
+            enableMessage = true;
+            message = 'adminUsm.policyWizard.filePolicy.exclusionFiltersSyntaxError';
+            return false;
+          }
+        }
+      }
+      return true;
+    });
+  }
+  return {
+    isError: error,
+    showError: enableMessage,
+    errorMessage: message
+  };
+};
+
+/**
  * Map to hold all File Policy validator functions for settings
  * @public
  */

@@ -535,6 +535,18 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
     resultExpected = true;
     result = isDefinePolicySourcesStepValid(fullState);
     assert.deepEqual(result, resultExpected, 'isDefinePolicySourcesStepValid retunrs false since sourceName is invalid');
+
+    // invalid ex filter
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'foo', exclusionFilters: ['[', 'filter-2'] } ];
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(newSource)
+      .policyWizVisited(visited)
+      .build();
+
+    resultExpected = false;
+    result = isDefinePolicySourcesStepValid(fullState);
+    assert.deepEqual(result, resultExpected, 'isDefinePolicySourcesStepValid returns false since exclusion filter is invalid');
   });
 
   test('definePolicySourcesStepShowErrors selector', function(assert) {

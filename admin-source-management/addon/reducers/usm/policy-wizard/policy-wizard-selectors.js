@@ -9,7 +9,7 @@ import { ALL_RADIO_OPTIONS as windowsLogPolicyRadioOptions } from './windowsLogP
 import { ALL_RADIO_OPTIONS as filePolicyRadioOptions } from './filePolicy/file-settings';
 import { edrPolicyValidatorFnMap } from './edrPolicy/edr-selectors';
 import { windowsLogPolicyValidatorFnMap } from './windowsLogPolicy/windowsLog-selectors';
-import { filePolicyValidatorFnMap, sourceNameValidator } from './filePolicy/file-selectors';
+import { filePolicyValidatorFnMap, sourceNameValidator, exFilterValidator } from './filePolicy/file-selectors';
 
 const { createSelector } = reselect;
 
@@ -301,9 +301,9 @@ export const isDefinePolicyStepValid = createSelector(
  * @public
  */
 export const isDefinePolicySourcesStepValid = createSelector(
-  sourceNameValidator,
-  (sourceNameValidator) => {
-    return sourceNameValidator.isError === false;
+  sourceNameValidator, exFilterValidator,
+  (sourceNameValidator, exFilterValidator) => {
+    return sourceNameValidator.isError === false && exFilterValidator.isError === false;
   }
 );
 

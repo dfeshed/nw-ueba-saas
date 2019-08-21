@@ -4963,6 +4963,8 @@ effects the previewed source.',
         invalidSourceName: 'Source Name is invalid',
         invalidDirPath: 'Path cannot be empty',
         dirPathEmpty: 'Provide at least one valid path',
+        exclusionFiltersSyntaxError: 'Syntax Error in the Regular Expression',
+        exclusionFiltersLengthError: 'Please limit the filters to 16',
         fileSourceType: {
           add: 'Add Selected File Type',
           placeholder: 'Pick a Log File Type'
