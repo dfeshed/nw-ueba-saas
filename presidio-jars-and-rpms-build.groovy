@@ -122,6 +122,7 @@ pipeline {
                 }
                 cleanWs()
                 configGlobalRsaUserNameAndEmail("${env.RSA_BUILD_CREDENTIALS_USR}")
+                sh 'rm -rf /home/sabuild/.m2/repository/fortscale/*'
             }
         }
         stage('Presidio Test Utils JARs Build') {
