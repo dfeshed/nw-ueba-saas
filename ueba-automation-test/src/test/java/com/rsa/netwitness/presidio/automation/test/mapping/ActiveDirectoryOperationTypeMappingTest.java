@@ -104,14 +104,13 @@ public class ActiveDirectoryOperationTypeMappingTest extends AbstractTestNGSprin
     @Test
     public void operation_type_categories_should_match_the_operation_type() {
 
-        Map<String, Set<List>> actualOpTypesToOpTypeCategories = actualEvents.parallelStream()
+        Map<String, Set<List<String>>> actualOpTypesToOpTypeCategories = actualEvents.parallelStream()
                 .collect(groupingBy(ActiveDirectoryEnrichStoredData::getOperationType,
                         mapping(ActiveDirectoryEnrichStoredData::getOperationTypeCategories, toSet())));
 
+        for (Map.Entry<String, Set<List<String>>> actual : actualOpTypesToOpTypeCategories.entrySet()) {
 
-        for (Map.Entry<String, Set<List>> actual : actualOpTypesToOpTypeCategories.entrySet()) {
-
-            List<Object> actualDistinctCategories = actual.getValue().stream()
+            List<String> actualDistinctCategories = actual.getValue().stream()
                     .flatMap(Collection::stream)
                     .distinct()
                     .collect(toList());
