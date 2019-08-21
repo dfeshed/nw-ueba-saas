@@ -93,7 +93,7 @@
       "sourceKey": "ssl_ca",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "sslCa"
+        "sslCas"
       ]
     },
     {
