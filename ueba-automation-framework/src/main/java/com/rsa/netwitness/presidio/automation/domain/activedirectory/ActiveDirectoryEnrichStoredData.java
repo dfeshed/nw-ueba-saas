@@ -40,7 +40,7 @@ public class ActiveDirectoryEnrichStoredData {
 
     @Expose
     @Field("operationTypeCategories")
-    private List operationTypeCategories;
+    private List<String> operationTypeCategories;
 
     @Expose
     @Field("result")
@@ -102,11 +102,11 @@ public class ActiveDirectoryEnrichStoredData {
         this.operationType = operationType;
     }
 
-    public List getOperationTypeCategories() {
+    public List<String> getOperationTypeCategories() {
         return operationTypeCategories;
     }
 
-    public void setOperationTypeCategories(List operationTypeCategories) {
+    public void setOperationTypeCategories(List<String> operationTypeCategories) {
         this.operationTypeCategories = operationTypeCategories;
     }
 
