@@ -54,7 +54,7 @@ public class AdapterTlsStoredData extends Event {
     @Expose
     private Domain domain;
     @Expose
-    private List<String> sslCa;
+    private List<String> sslCas;
     @Expose
     private String dataSource;
 
@@ -223,12 +223,12 @@ public class AdapterTlsStoredData extends Event {
         this.domain = domain;
     }
 
-    public List<String> getSslCa() {
-        return sslCa;
+    public List<String> getSslCas() {
+        return sslCas;
     }
 
-    public void setSslCa(List<String> sslCa) {
-        this.sslCa = sslCa;
+    public void setSslCas(List<String> sslCa) {
+        this.sslCas = sslCa;
     }
 
     public String getDataSource() {
@@ -268,7 +268,7 @@ public class AdapterTlsStoredData extends Event {
                 ", srcPort='" + srcPort + '\'' +
                 ", fqdn=" + fqdn +
                 ", domain=" + domain +
-                ", sslCa=" + sslCa +
+                ", sslCas=" + sslCas +
                 ", dataSource='" + dataSource + '\'' +
                 '}';
     }

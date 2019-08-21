@@ -106,6 +106,10 @@ public class OutputTlsEnrichStoredData {
     private String dataSource;
 
     @Expose
+    @Field("sslCas")
+    private List<String> sslCas;
+
+    @Expose
     @Field("additionalInfo")
     private Map additionalInfo;
 
@@ -302,6 +306,13 @@ public class OutputTlsEnrichStoredData {
         this.additionalInfo = additionalInfo;
     }
 
+    public List<String> getSslCas() {
+        return sslCas;
+    }
+
+    public void setSslCas(List<String> sslCas) {
+        this.sslCas = sslCas;
+    }
 
     @Override
     public String toString() {
@@ -329,6 +340,7 @@ public class OutputTlsEnrichStoredData {
                 ", eventDate=" + eventDate +
                 ", eventId='" + eventId + '\'' +
                 ", dataSource='" + dataSource + '\'' +
+                ", sslCas=" + sslCas +
                 ", additionalInfo=" + additionalInfo +
                 '}';
     }

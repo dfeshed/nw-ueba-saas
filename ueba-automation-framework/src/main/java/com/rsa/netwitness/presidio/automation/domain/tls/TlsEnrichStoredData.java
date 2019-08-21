@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
+import java.util.List;
 
 @Document(collection = "enriched_tls")
 public class TlsEnrichStoredData {
@@ -97,6 +98,10 @@ public class TlsEnrichStoredData {
     @Expose
     @Field("createdDate")
     private Instant createdDate;
+
+    @Expose
+    @Field("sslCas")
+    private List<String> sslCas;
 
 
     public String getId() {
@@ -275,6 +280,14 @@ public class TlsEnrichStoredData {
         this.createdDate = createdDate;
     }
 
+    public List<String> getSslCas() {
+        return sslCas;
+    }
+
+    public void setSslCas(List<String> sslCas) {
+        this.sslCas = sslCas;
+    }
+
     @Override
     public String toString() {
         return "TlsEnrichStoredData{" +
@@ -300,6 +313,7 @@ public class TlsEnrichStoredData {
                 ", eventId='" + eventId + '\'' +
                 ", dataSource='" + dataSource + '\'' +
                 ", createdDate=" + createdDate +
+                ", sslCas=" + sslCas +
                 '}';
     }
 }
