@@ -37,7 +37,7 @@ public class MongoProgressTask implements Runnable {
 
     public void run() {
         Optional<Instant> result = findByTimeAppliedOnObj(obj, start, end);
-        LOGGER.info("#### Query result for [" + collectionName + "] == " + result);
+        LOGGER.info("#### Query result for [" + collectionName + "] since" + start + " is " + result);
 
         if (result.isPresent() && result.get().isAfter(start)) start = result.get().minusSeconds(10);
         result.ifPresent(e -> eventTimeHistory.push(e));
@@ -143,7 +143,7 @@ public class MongoProgressTask implements Runnable {
             else return Optional.of(result.getDateTime());
         }
 
-        LOGGER.error("No collection name mapping found for AdapterRepository class: " + obj.getClass().getTypeName());
+        LOGGER.error("No collection name mapping found for AdapterRepository class: " + obj);
         return Optional.empty();
     }
 }

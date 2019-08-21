@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -28,10 +29,12 @@ public class MongoCollectionsMonitor {
     private long DELAY_BEFORE_FIRST_TASK_STARTED = TASK_FREQUENCY_MINUTES + ADDITIONAL_DELAY_BEFORE_FIRST_TIME_STATUS_CHECK; // 25 min
     private List<MongoProgressTask> tasks;
     private int TIME_BUCKETES_TO_CHECK = 6;
+    private TimeUnit TIME_UNITS  = MINUTES;
 
-    public MongoCollectionsMonitor(List<? extends MongoRepository> collectiontToMonitor) {
-        if (collectiontToMonitor != null && !collectiontToMonitor.isEmpty())
-            this.collectiontToMonitor.addAll(collectiontToMonitor);
+
+    public MongoCollectionsMonitor(List<? extends MongoRepository> collectionToMonitor) {
+        if (collectionToMonitor != null && !collectionToMonitor.isEmpty())
+            this.collectiontToMonitor.addAll(collectionToMonitor);
         else throw new RuntimeException("Empty collections list");
 
     }
@@ -48,7 +51,7 @@ public class MongoCollectionsMonitor {
 
     public List<ScheduledFuture> execute() {
         return tasks.stream()
-                .map(e -> scheduler.scheduleAtFixedRate(e, DELAY_BEFORE_FIRST_TASK_STARTED, TASK_FREQUENCY_MINUTES, MINUTES))
+                .map(e -> scheduler.scheduleAtFixedRate(e, DELAY_BEFORE_FIRST_TASK_STARTED, TASK_FREQUENCY_MINUTES, TIME_UNITS))
                 .collect(Collectors.toList());
     }
 
@@ -60,7 +63,7 @@ public class MongoCollectionsMonitor {
     public boolean waitForResult() throws InterruptedException {
         boolean dataProcessingStillInProgress = true;
 
-        MINUTES.sleep(DELAY_BEFORE_FIRST_TASK_STARTED + 1); // 26 min
+        TIME_UNITS.sleep(DELAY_BEFORE_FIRST_TASK_STARTED + 1); // 26 min
         LOGGER.info("Going to check if data processing started.");
         boolean isDataProcessingStarted = tasks.stream()
                 .map(MongoProgressTask::isProcessingStarted)
@@ -73,7 +76,7 @@ public class MongoCollectionsMonitor {
                 .isTrue();
 
         while (dataProcessingStillInProgress) {
-            MINUTES.sleep(TASK_STATUS_CHECK_FREQUENCY);
+            TIME_UNITS.sleep(TASK_STATUS_CHECK_FREQUENCY);
 
             dataProcessingStillInProgress = tasks.stream()
                     .map(e -> e.isProcessingStillInProgress(TIME_BUCKETES_TO_CHECK))
