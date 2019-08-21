@@ -52,6 +52,7 @@
     <div class="add-row">
       {{#rsa-form-button
         class='add-selected-file-type'
+        isDisabled=(eq fileSourcesList.length 0)
         click=(action 'addRowFilter')
       }}
         {{t 'adminUsm.policyWizard.filePolicy.fileSourceType.add'}}

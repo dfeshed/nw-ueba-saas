@@ -67,6 +67,15 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     assert.equal(findAll('.add-row').length, 1, 'add-row button is rendered when sources is empty');
   });
 
+  test('Add Selected File Type should be disabled when sources array is empty', async function(assert) {
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSources([])
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
+    assert.equal(findAll('.file-source-type').length, 1, 'file-source-type dropdown is rendered when sources are empty');
+  });
+
   test('should render the body-cell child-source-container component when sources is populated', async function(assert) {
     new ReduxDataHelper(setState)
       .policyWiz('filePolicy')

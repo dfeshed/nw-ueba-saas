@@ -419,6 +419,18 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
     let isDefinePolicyStepValidSelected = isDefinePolicyStepValid(fullState);
     assert.deepEqual(isDefinePolicyStepValidSelected, isDefinePolicyStepValidExpected, 'at least one setting should be selected');
 
+    // for a filePolicy, selected settings is not required when sources are present
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizSelectedSettings(selectedSettingsExpected)
+      .policyWizName(nameExpected)
+      .policyWizVisited(visitedExpected)
+      .build();
+
+    isDefinePolicyStepValidExpected = true;
+    isDefinePolicyStepValidSelected = isDefinePolicyStepValid(fullState);
+    assert.deepEqual(isDefinePolicyStepValidSelected, isDefinePolicyStepValidExpected, 'selected settings can be empty for a file policy');
+
     // start date selected but invalid
     selectedSettingsExpected = [
       { index: 1, id: 'scanType', label: 'adminUsm.policyWizard.edrPolicy.scanType', isEnabled: true, isGreyedOut: false, parentId: null, component: 'usm-policies/policy/schedule-config/usm-radios', defaults: [{ field: 'scanType', value: 'DISABLED' }] },

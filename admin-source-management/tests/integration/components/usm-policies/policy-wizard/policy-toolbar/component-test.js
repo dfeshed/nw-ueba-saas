@@ -226,6 +226,36 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
 
   });
 
+  test('Define Policy Step - Toolbar next button closure actions for a filePolicy', async function(assert) {
+
+    assert.expect(1);
+
+    // build state with ReduxDataHelper
+    const state = new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizPolicy(policyPayload, true)
+      .build();
+
+
+    // set the transitionToStep function
+    this.set('step', state.usm.policyWizard.steps[1]);
+    this.set('transitionToStep', () => {});
+    this.set('transitionToClose', () => {});
+
+    // render the policy-toolbar
+    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar
+      step=step
+      transitionToStep=(action transitionToStep)
+      transitionToClose=(action transitionToClose)}}`
+    );
+    //  find the next button and make sure it is enabled
+    assert.equal(findAll('.next-button:not(.is-disabled)').length, 1, 'The Next button appears in the DOM and is enabled');
+
+    const [nextBtnEl] = findAll('.next-button:not(.is-disabled) button');
+    await click(nextBtnEl);
+
+  });
+
   test('On selecting the Cancel button with no changes does closure action', async function(assert) {
     const done = assert.async(1);
     assert.expect(6);

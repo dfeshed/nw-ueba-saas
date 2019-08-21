@@ -274,8 +274,13 @@ const validatorFnMap = {
 export const isDefinePolicyStepValid = createSelector(
   _state, policy, selectedSettings,
   (_state, policy, selectedSettings) => {
-    // at least one setting required to save a policy
-    let isValid = selectedSettings.length > 0;
+    const { policyType } = policy;
+    let isValid = true;
+    // for a filePolicy selectedSettings can be empty, as sources are available in the next step
+    if (policyType !== 'filePolicy') {
+      // at least one setting required to save edr and windows policies
+      isValid = selectedSettings.length > 0;
+    }
     for (let i = 0; i < selectedSettings.length; i++) {
       const el = selectedSettings[i];
       const selectedSettingId = el.id;
