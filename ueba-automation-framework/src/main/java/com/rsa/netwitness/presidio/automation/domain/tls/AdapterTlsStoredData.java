@@ -1,6 +1,7 @@
 package com.rsa.netwitness.presidio.automation.domain.tls;
 
 import com.google.gson.annotations.Expose;
+import fortscale.domain.core.entityattributes.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import presidio.data.domain.event.Event;
@@ -23,13 +24,13 @@ public class AdapterTlsStoredData extends Event {
     @Expose
     private String srcCountry;
     @Expose
-    private String dstCountry;
+    private DestinationCountry dstCountry;
     @Expose
-    private String sslSubject;
+    private SslSubject sslSubject;
     @Expose
-    private String dstOrg;
+    private DestinationOrganization dstOrg;
     @Expose
-    private String dstAsn;
+    private DestinationAsn dstAsn;
     @Expose
     private long numOfBytesSent;
     @Expose
@@ -39,13 +40,44 @@ public class AdapterTlsStoredData extends Event {
     @Expose
     private String dstNetname;
     @Expose
-    private String ja3;
+    private Ja3 ja3;
     @Expose
     private String ja3s;
     @Expose
     private String direction;
     @Expose
-    private int dstPort;
+    private DestinationPort dstPort;
+    @Expose
+    private String srcPort;
+    @Expose
+    private List<String> fqdn;
+    @Expose
+    private Domain domain;
+    @Expose
+    private List<String> sslCa;
+    @Expose
+    private String dataSource;
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setDateTime(Instant dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
 
     public String getSrcIp() {
         return srcIp;
@@ -71,35 +103,35 @@ public class AdapterTlsStoredData extends Event {
         this.srcCountry = srcCountry;
     }
 
-    public String getDstCountry() {
+    public DestinationCountry getDstCountry() {
         return dstCountry;
     }
 
-    public void setDstCountry(String dstCountry) {
+    public void setDstCountry(DestinationCountry dstCountry) {
         this.dstCountry = dstCountry;
     }
 
-    public String getSslSubject() {
+    public SslSubject getSslSubject() {
         return sslSubject;
     }
 
-    public void setSslSubject(String sslSubject) {
+    public void setSslSubject(SslSubject sslSubject) {
         this.sslSubject = sslSubject;
     }
 
-    public String getDstOrg() {
+    public DestinationOrganization getDstOrg() {
         return dstOrg;
     }
 
-    public void setDstOrg(String dstOrg) {
+    public void setDstOrg(DestinationOrganization dstOrg) {
         this.dstOrg = dstOrg;
     }
 
-    public String getDstAsn() {
+    public DestinationAsn getDstAsn() {
         return dstAsn;
     }
 
-    public void setDstAsn(String dstAsn) {
+    public void setDstAsn(DestinationAsn dstAsn) {
         this.dstAsn = dstAsn;
     }
 
@@ -135,11 +167,11 @@ public class AdapterTlsStoredData extends Event {
         this.dstNetname = dstNetname;
     }
 
-    public String getJa3() {
+    public Ja3 getJa3() {
         return ja3;
     }
 
-    public void setJa3(String ja3) {
+    public void setJa3(Ja3 ja3) {
         this.ja3 = ja3;
     }
 
@@ -159,12 +191,20 @@ public class AdapterTlsStoredData extends Event {
         this.direction = direction;
     }
 
-    public int getDstPort() {
+    public DestinationPort getDstPort() {
         return dstPort;
     }
 
-    public void setDstPort(int dstPort) {
+    public void setDstPort(DestinationPort dstPort) {
         this.dstPort = dstPort;
+    }
+
+    public String getSrcPort() {
+        return srcPort;
+    }
+
+    public void setSrcPort(String srcPort) {
+        this.srcPort = srcPort;
     }
 
     public List<String> getFqdn() {
@@ -173,6 +213,14 @@ public class AdapterTlsStoredData extends Event {
 
     public void setFqdn(List<String> fqdn) {
         this.fqdn = fqdn;
+    }
+
+    public Domain getDomain() {
+        return domain;
+    }
+
+    public void setDomain(Domain domain) {
+        this.domain = domain;
     }
 
     public List<String> getSslCa() {
@@ -191,70 +239,10 @@ public class AdapterTlsStoredData extends Event {
         this.dataSource = dataSource;
     }
 
-    public AdditionalInfo getAdditionalInfo() {
-        return additionalInfo;
-    }
-
-    public void setAdditionalInfo(AdditionalInfo additionalInfo) {
-        this.additionalInfo = additionalInfo;
-    }
-
-    @Expose
-    private List<String> fqdn;
-    @Expose
-    private List<String> sslCa;
-    @Expose
-    private String dataSource;
-    @Expose
-    private AdditionalInfo additionalInfo;
-
-    private AdapterTlsStoredData(){
-    }
-
-    private AdapterTlsStoredData(Builder builder) {
-        this.id = builder.id;
-        this.eventId = builder.eventId;
-        this.id = builder.id;
-        this.dateTime = builder.dateTime;
-        this.eventId = builder.eventId;
-        this.srcIp = builder.srcIp;
-        this.dstIp = builder.dstIp;
-        this.srcCountry = builder.srcCountry;
-        this.dstCountry = builder.dstCountry;
-        this.sslSubject = builder.sslSubject;
-        this.dstOrg = builder.dstOrg;
-        this.dstAsn = builder.dstAsn;
-        this.numOfBytesSent = builder.numOfBytesSent;
-        this.numOfBytesReceived = builder.numOfBytesReceived;
-        this.srcNetname = builder.srcNetname;
-        this.dstNetname = builder.dstNetname;
-        this.ja3 = builder.ja3;
-        this.ja3s = builder.ja3s;
-        this.direction = builder.direction;
-        this.dstPort = builder.dstPort;
-        this.fqdn = builder.fqdn;
-        this.sslCa = builder.sslCa;
-        this.dataSource = builder.dataSource;
-        this.additionalInfo = builder.additionalInfo;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     @Override
     public Instant getDateTime() {
         return dateTime;
     }
-
-    public void setDateTime(Instant dateTime) {
-        this.dateTime = dateTime;
-    }
-
 
     @Override
     public String toString() {
@@ -265,308 +253,23 @@ public class AdapterTlsStoredData extends Event {
                 ", srcIp='" + srcIp + '\'' +
                 ", dstIp='" + dstIp + '\'' +
                 ", srcCountry='" + srcCountry + '\'' +
-                ", dstCountry='" + dstCountry + '\'' +
-                ", sslSubject='" + sslSubject + '\'' +
-                ", dstOrg='" + dstOrg + '\'' +
-                ", dstAsn='" + dstAsn + '\'' +
+                ", dstCountry=" + dstCountry +
+                ", sslSubject=" + sslSubject +
+                ", dstOrg=" + dstOrg +
+                ", dstAsn=" + dstAsn +
                 ", numOfBytesSent=" + numOfBytesSent +
                 ", numOfBytesReceived=" + numOfBytesReceived +
                 ", srcNetname='" + srcNetname + '\'' +
                 ", dstNetname='" + dstNetname + '\'' +
-                ", ja3='" + ja3 + '\'' +
+                ", ja3=" + ja3 +
                 ", ja3s='" + ja3s + '\'' +
                 ", direction='" + direction + '\'' +
                 ", dstPort=" + dstPort +
+                ", srcPort='" + srcPort + '\'' +
                 ", fqdn=" + fqdn +
+                ", domain=" + domain +
                 ", sslCa=" + sslCa +
                 ", dataSource='" + dataSource + '\'' +
-                ", additionalInfo=" + additionalInfo +
                 '}';
-    }
-
-    class AdditionalInfo {
-        @Expose
-        private String originIPv4;
-
-        @Expose
-        private String description;
-
-        @Expose
-        private String oSVersion;
-
-        @Expose
-        private String iPAddress;
-
-        @Expose
-        private String domainDN;
-
-        @Expose
-        private String fileSystemType;
-
-        @Expose
-        private String fileSystemLogonID;
-
-        @Expose
-        private String origin;
-
-        @Expose
-        private String computer;
-
-        @Expose
-        private String isUserAdmin;
-
-        @Expose
-        private String operationType;
-
-        public String getOriginIPv4() {
-            return originIPv4;
-        }
-
-        public void setOriginIPv4(String originIPv4) {
-            this.originIPv4 = originIPv4;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        public String getoSVersion() {
-            return oSVersion;
-        }
-
-        public void setoSVersion(String oSVersion) {
-            this.oSVersion = oSVersion;
-        }
-
-        public String getiPAddress() {
-            return iPAddress;
-        }
-
-        public void setiPAddress(String iPAddress) {
-            this.iPAddress = iPAddress;
-        }
-
-        public String getDomainDN() {
-            return domainDN;
-        }
-
-        public void setDomainDN(String domainDN) {
-            this.domainDN = domainDN;
-        }
-
-        public String getFileSystemType() {
-            return fileSystemType;
-        }
-
-        public void setFileSystemType(String fileSystemType) {
-            this.fileSystemType = fileSystemType;
-        }
-
-        public String getFileSystemLogonID() {
-            return fileSystemLogonID;
-        }
-
-        public void setFileSystemLogonID(String fileSystemLogonID) {
-            this.fileSystemLogonID = fileSystemLogonID;
-        }
-
-        public String getOrigin() {
-            return origin;
-        }
-
-        public void setOrigin(String origin) {
-            this.origin = origin;
-        }
-
-        public String getComputer() {
-            return computer;
-        }
-
-        public void setComputer(String computer) {
-            this.computer = computer;
-        }
-
-        public String getIsUserAdmin() {
-            return isUserAdmin;
-        }
-
-        public void setIsUserAdmin(String isUserAdmin) {
-            this.isUserAdmin = isUserAdmin;
-        }
-
-        public String getOperationType() {
-            return operationType;
-        }
-
-        public void setOperationType(String operationType) {
-            this.operationType = operationType;
-        }
-
-
-
-        @Override
-        public String toString() {
-            return "AdditionalInfo{" +
-                    "originIPv4='" + originIPv4 + '\'' +
-                    ", description='" + description + '\'' +
-                    ", oSVersion='" + oSVersion + '\'' +
-                    ", iPAddress='" + iPAddress + '\'' +
-                    ", domainDN='" + domainDN + '\'' +
-                    ", fileSystemType='" + fileSystemType + '\'' +
-                    ", fileSystemLogonID='" + fileSystemLogonID + '\'' +
-                    ", origin='" + origin + '\'' +
-                    ", computer='" + computer + '\'' +
-                    ", isUserAdmin='" + isUserAdmin + '\'' +
-                    ", operationType='" + operationType + '\'' +
-                    '}';
-        }
-    }
-
-    public static class Builder {
-
-        private String id;
-        private Instant dateTime;
-        private String eventId;
-        private String srcIp;
-        private String dstIp;
-        private String srcCountry;
-        private String dstCountry;
-        private String sslSubject;
-        private String dstOrg;
-        private String dstAsn;
-        private long numOfBytesSent;
-        private long numOfBytesReceived;
-        private String srcNetname;
-        private String dstNetname;
-        private String ja3;
-        private String ja3s;
-        private String direction;
-        private int dstPort;
-        private List<String> fqdn;
-        private List<String> sslCa;
-        private String dataSource;
-        private AdditionalInfo additionalInfo;
-
-        public Builder() {
-
-        }
-
-        public Builder id(String id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder dateTime(Instant dateTime) {
-            this.dateTime = dateTime;
-            return this;
-        }
-
-        public Builder eventId(String eventId) {
-            this.eventId = eventId;
-            return this;
-        }
-
-        public Builder srcIp(String srcIp) {
-            this.srcIp = srcIp;
-            return this;
-        }
-
-        public Builder dstIp(String dstIp) {
-            this.dstIp = dstIp;
-            return this;
-        }
-
-        public Builder srcCountry(String srcCountry) {
-            this.srcCountry = srcCountry;
-            return this;
-        }
-
-        public Builder dstCountry(String dstCountry) {
-            this.dstCountry = dstCountry;
-            return this;
-        }
-
-        public Builder sslSubject(String sslSubject) {
-            this.sslSubject = sslSubject;
-            return this;
-        }
-
-        public Builder additionalInfo(AdditionalInfo additionalInfo) {
-            this.additionalInfo = additionalInfo;
-            return this;
-        }
-
-        public Builder dstOrg(String dstOrg) {
-            this.dstOrg = dstOrg;
-            return this;
-        }
-
-        public Builder dstAsn(String dstAsn) {
-            this.dstAsn = dstAsn;
-            return this;
-        }
-
-        public Builder numOfBytesSent(long numOfBytesSent) {
-            this.numOfBytesSent = numOfBytesSent;
-            return this;
-        }
-
-        public Builder numOfBytesReceived(long numOfBytesReceived) {
-            this.numOfBytesReceived = numOfBytesReceived;
-            return this;
-        }
-
-        public Builder srcNetname(String srcNetname) {
-            this.srcNetname = srcNetname;
-            return this;
-        }
-
-        public Builder dstNetname(String dstNetname) {
-            this.dstNetname = dstNetname;
-            return this;
-        }
-
-        public Builder ja3(String ja3) {
-            this.ja3 = ja3;
-            return this;
-        }
-
-        public Builder ja3s(String ja3s) {
-            this.ja3s = ja3;
-            return this;
-        }
-
-        public Builder direction(String direction) {
-            this.direction = direction;
-            return this;
-        }
-
-        public Builder dstPort(int dstPort) {
-            this.dstPort = dstPort;
-            return this;
-        }
-
-
-        public Builder fqdn(List<String> fqdn) {
-            this.fqdn = fqdn;
-            return this;
-        }
-
-        public Builder sslCa(List<String> sslCa) {
-            this.sslCa = sslCa;
-            return this;
-        }
-
-        public Builder dataSource(String dataSource) {
-            this.dataSource = dataSource;
-            return this;
-        }
-        public AdapterTlsStoredData build() {
-            return new AdapterTlsStoredData(this);
-        }
     }
 }

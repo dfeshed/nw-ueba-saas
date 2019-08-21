@@ -1,6 +1,6 @@
 package com.rsa.netwitness.presidio.automation.domain.tls;
 
-
+import fortscale.domain.core.entityattributes.*;
 import com.google.gson.annotations.Expose;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -14,12 +14,9 @@ public class TlsEnrichStoredData {
 
     @Id
     private String id;
-    private Instant startInstant;
 
     @Indexed
-    @Expose
-    @Field("userId")
-    private String userId;
+    private Instant startInstant;
 
     @Expose
     @Field("srcIp")
@@ -35,23 +32,23 @@ public class TlsEnrichStoredData {
 
     @Expose
     @Field("dstCountry")
-    private String dstCountry;
+    private DestinationCountry dstCountry;
 
     @Expose
     @Field("sslSubject")
-    private String sslSubject;
+    private SslSubject sslSubject;
 
     @Expose
     @Field("domain")
-    private String domain;
+    private Domain domain;
 
     @Expose
     @Field("dstOrg")
-    private String dstOrg;
+    private DestinationOrganization dstOrg;
 
     @Expose
     @Field("dstAsn")
-    private String dstAsn;
+    private DestinationAsn dstAsn;
 
     @Expose
     @Field("numOfBytesSent")
@@ -71,7 +68,7 @@ public class TlsEnrichStoredData {
 
     @Expose
     @Field("ja3")
-    private String ja3;
+    private Ja3 ja3;
 
     @Expose
     @Field("ja3s")
@@ -83,7 +80,11 @@ public class TlsEnrichStoredData {
 
     @Expose
     @Field("dstPort")
-    private int dstPort;
+    private DestinationPort dstPort;
+
+    @Expose
+    @Field("srcPort")
+    private String srcPort;
 
     @Expose
     @Field("eventId")
@@ -93,24 +94,25 @@ public class TlsEnrichStoredData {
     @Field("dataSource")
     private String dataSource;
 
+    @Expose
+    @Field("createdDate")
+    private Instant createdDate;
+
+
     public String getId() {
         return id;
-    }
-
-    public Instant getStartInstant() {
-        return startInstant;
     }
 
     public void setId(String id) {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public Instant getStartInstant() {
+        return startInstant;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setStartInstant(Instant startInstant) {
+        this.startInstant = startInstant;
     }
 
     public String getSrcIp() {
@@ -137,43 +139,43 @@ public class TlsEnrichStoredData {
         this.srcCountry = srcCountry;
     }
 
-    public String getDstCountry() {
+    public DestinationCountry getDstCountry() {
         return dstCountry;
     }
 
-    public void setDstCountry(String dstCountry) {
+    public void setDstCountry(DestinationCountry dstCountry) {
         this.dstCountry = dstCountry;
     }
 
-    public String getSslSubject() {
+    public SslSubject getSslSubject() {
         return sslSubject;
     }
 
-    public void setSslSubject(String sslSubject) {
+    public void setSslSubject(SslSubject sslSubject) {
         this.sslSubject = sslSubject;
     }
 
-    public String getDomain() {
+    public Domain getDomain() {
         return domain;
     }
 
-    public void setDomain(String domain) {
+    public void setDomain(Domain domain) {
         this.domain = domain;
     }
 
-    public String getDstOrg() {
+    public DestinationOrganization getDstOrg() {
         return dstOrg;
     }
 
-    public void setDstOrg(String dstOrg) {
+    public void setDstOrg(DestinationOrganization dstOrg) {
         this.dstOrg = dstOrg;
     }
 
-    public String getDstAsn() {
+    public DestinationAsn getDstAsn() {
         return dstAsn;
     }
 
-    public void setDstAsn(String dstAsn) {
+    public void setDstAsn(DestinationAsn dstAsn) {
         this.dstAsn = dstAsn;
     }
 
@@ -209,11 +211,11 @@ public class TlsEnrichStoredData {
         this.dstNetname = dstNetname;
     }
 
-    public String getJa3() {
+    public Ja3 getJa3() {
         return ja3;
     }
 
-    public void setJa3(String ja3) {
+    public void setJa3(Ja3 ja3) {
         this.ja3 = ja3;
     }
 
@@ -233,12 +235,20 @@ public class TlsEnrichStoredData {
         this.direction = direction;
     }
 
-    public int getDstPort() {
+    public DestinationPort getDstPort() {
         return dstPort;
     }
 
-    public void setDstPort(int dstPort) {
+    public void setDstPort(DestinationPort dstPort) {
         this.dstPort = dstPort;
+    }
+
+    public String getSrcPort() {
+        return srcPort;
+    }
+
+    public void setSrcPort(String srcPort) {
+        this.srcPort = srcPort;
     }
 
     public String getEventId() {
@@ -257,9 +267,39 @@ public class TlsEnrichStoredData {
         this.dataSource = dataSource;
     }
 
-    @Override
-    public String toString() {
-        return null;
+    public Instant getCreatedDate() {
+        return createdDate;
     }
 
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    @Override
+    public String toString() {
+        return "TlsEnrichStoredData{" +
+                "id='" + id + '\'' +
+                ", startInstant=" + startInstant +
+                ", srcIp='" + srcIp + '\'' +
+                ", dstIp='" + dstIp + '\'' +
+                ", srcCountry='" + srcCountry + '\'' +
+                ", dstCountry=" + dstCountry +
+                ", sslSubject=" + sslSubject +
+                ", domain=" + domain +
+                ", dstOrg=" + dstOrg +
+                ", dstAsn=" + dstAsn +
+                ", numOfBytesSent=" + numOfBytesSent +
+                ", numOfBytesReceived=" + numOfBytesReceived +
+                ", srcNetname='" + srcNetname + '\'' +
+                ", dstNetname='" + dstNetname + '\'' +
+                ", ja3=" + ja3 +
+                ", ja3s='" + ja3s + '\'' +
+                ", direction='" + direction + '\'' +
+                ", dstPort=" + dstPort +
+                ", srcPort='" + srcPort + '\'' +
+                ", eventId='" + eventId + '\'' +
+                ", dataSource='" + dataSource + '\'' +
+                ", createdDate=" + createdDate +
+                '}';
+    }
 }
