@@ -23,7 +23,7 @@ import java.util.stream.IntStream;
 import static com.rsa.netwitness.presidio.automation.common.scenarios.tls.SessionSplitEnrichmentData.MARKER;
 import static org.assertj.core.api.Assertions.fail;
 
-@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true",})
+@TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
 public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
 
@@ -154,16 +154,16 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
     class AssertHelper {
         private SoftAssertions softly = new SoftAssertions();
 
-        void assertEnreachmentFieldsMatchExpected(List<TlsEnrichStoredData> actual, SessionSplitEnrichmentData.TestDataParameters expected) {
-            softly.assertThat(actual).extracting("sslSubject").containsOnly(expected.sslSubject);
-            softly.assertThat(actual).extracting("ja3").containsOnly(expected.ja3);
+        void assertEnrichmentFieldsMatchExpected(List<TlsEnrichStoredData> actual, SessionSplitEnrichmentData.TestDataParameters expected) {
+            softly.assertThat(actual).extracting("sslSubject.name").containsOnly(expected.sslSubject);
+            softly.assertThat(actual).extracting("ja3.name").containsOnly(expected.ja3);
             softly.assertThat(actual).extracting("ja3s").containsOnly(expected.ja3s);
             // todo: softly.assertThat(actual).extracting("sslCa").containsOnly(expected.sslCa);
         }
 
-        void assertEnreachmentFieldsAreNull(List<TlsEnrichStoredData> actual) {
-            softly.assertThat(actual).extracting("sslSubject").containsOnlyNulls();
-            softly.assertThat(actual).extracting("ja3").containsOnlyNulls();
+        void assertEnrichmentFieldsAreNull(List<TlsEnrichStoredData> actual) {
+            softly.assertThat(actual).extracting("sslSubject.name").containsOnlyNulls();
+            softly.assertThat(actual).extracting("ja3.name").containsOnlyNulls();
             softly.assertThat(actual).extracting("ja3s").containsOnlyNulls();
             // todo: softly.assertThat(actual).extracting("sslCa").containsOnlyNulls();
         }
