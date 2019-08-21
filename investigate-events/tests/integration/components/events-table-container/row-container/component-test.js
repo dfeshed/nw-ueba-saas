@@ -45,7 +45,7 @@ module('Integration | Component | Events Table Row', function(hooks) {
   }
 
   test('it renders a row of cells correctly', async function(assert) {
-    assert.expect(8 + 4 * visibleColumns.length);
+    assert.expect(8 + 5 * visibleColumns.length);
 
     this.setProperties({
       item,
@@ -83,6 +83,8 @@ module('Integration | Component | Events Table Row', function(hooks) {
       const cell = cells[i];
       const cellWidth = parseInt(cell.style.width, 10);
       const columnWidthValue = parseInt(get(visibleColumns[i], 'width'), 10);
+      assert.ok(cells[i].className.includes(`column-index-${i}`));
+
       assert.equal(cellWidth, columnWidthValue, 'Expected cell DOM width to match column model width');
 
       const dataAttr = cell.getAttribute('data-field');

@@ -182,8 +182,8 @@ export default Component.extend(RowMixin, HighlightsEntities, {
     $el.selectAll('.rsa-data-table-body-cell').remove();
 
     // For each column, build a cell DOM element.
-    (this.get('table.visibleColumns') || []).forEach((column) => {
-      this._renderCell($el, column, item);
+    (this.get('table.visibleColumns') || []).forEach((column, columnIndex) => {
+      this._renderCell($el, column, item, columnIndex);
     });
   },
 
@@ -193,7 +193,7 @@ export default Component.extend(RowMixin, HighlightsEntities, {
    * inner DOM.
    * @private
    */
-  _renderCell($row, column, item) {
+  _renderCell($row, column, item, columnIndex) {
     const field = get(column, 'field');
     const _opts = this.get('_opts');
     const isEndpoint = !!item['nwe.callback_id'];
@@ -204,6 +204,7 @@ export default Component.extend(RowMixin, HighlightsEntities, {
 
     const $cell = $row.append('div')
       .classed('rsa-data-table-body-cell', true)
+      .classed(`column-index-${columnIndex}`, true)
       .attr('data-field', field);
     columnUtil.applyCellWidth($cell, column, opts);
     columnUtil.buildCellContent($cell, field, item, opts);

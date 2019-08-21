@@ -244,11 +244,9 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     }
 
     &.is-child {
-      .rsa-data-table-body-cell {
-        &:nth-child(2) {
-          .content {
-            padding-left: rsa-whitespace(more);
-          }
+      .rsa-data-table-body-cell.column-index-1 {
+        .content {
+          padding-left: rsa-whitespace(more)!important;
         }
       }
     }
