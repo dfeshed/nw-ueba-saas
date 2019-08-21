@@ -11,5 +11,6 @@
 <mapping envisionName="network" nwName="network" flags="None" format="Text"/>
 <mapping envisionName="session.split" nwName="session.split" flags="None" format="UInt16"/>
 <mapping envisionName="tcp.dstport" nwName="tcp.dstport" flags="None" format="UInt16"/>
+<mapping envisionName="tcp.srcport" nwName="tcp.srcport" flags="None" format="UInt16"/>
 <mapping envisionName="service" nwName="service" flags="None" format="UInt32"/>
 </mappings>
