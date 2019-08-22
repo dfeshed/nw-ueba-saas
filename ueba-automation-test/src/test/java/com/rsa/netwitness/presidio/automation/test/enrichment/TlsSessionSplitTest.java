@@ -36,7 +36,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         AssertHelper assertHelper = new AssertHelper();
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.simpleEnrichmentTestDataParams;
         List<TlsEnrichStoredData> actual = tlsEnrichStoredDataRepository.findByIdContains(expected.id);
-        assertHelper.assertEnreachmentFieldsMatchExpected(actual, expected);
+        assertHelper.assertEnrichmentFieldsMatchExpected(actual, expected);
         assertHelper.assertAll();
     }
 
@@ -46,7 +46,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.maxIntervalTestDataParams;
         List<TlsEnrichStoredData> result = tlsEnrichStoredDataRepository.findByIdContains(expected.id);
         List<TlsEnrichStoredData> actual = result.subList(1, result.size());
-        assertHelper.assertEnreachmentFieldsAreNull(actual);
+        assertHelper.assertEnrichmentFieldsAreNull(actual);
         assertHelper.assertAll();
     }
 
@@ -64,8 +64,8 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         /** enrichment should be until the first missing element*/
         List<TlsEnrichStoredData> actualEnriched = result.subList(0, firstIndex + 1);
         List<TlsEnrichStoredData> actualNotEnriched = result.subList(firstIndex + 2, result.size());
-        assertHelper.assertEnreachmentFieldsMatchExpected(actualEnriched, expected);
-        assertHelper.assertEnreachmentFieldsAreNull(actualNotEnriched);
+        assertHelper.assertEnrichmentFieldsMatchExpected(actualEnriched, expected);
+        assertHelper.assertEnrichmentFieldsAreNull(actualNotEnriched);
         assertHelper.assertAll();
     }
 
@@ -82,8 +82,8 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         /** enrichment should be until the first duplicate element*/
         List<TlsEnrichStoredData> actualEnriched = result.subList(0, firstIndex + 1);
         List<TlsEnrichStoredData> actualNotEnriched = result.subList(firstIndex + 2, result.size());
-        assertHelper.assertEnreachmentFieldsMatchExpected(actualEnriched, expected);
-        assertHelper.assertEnreachmentFieldsAreNull(actualNotEnriched);
+        assertHelper.assertEnrichmentFieldsMatchExpected(actualEnriched, expected);
+        assertHelper.assertEnrichmentFieldsAreNull(actualNotEnriched);
         assertHelper.assertAll();
     }
 
@@ -92,7 +92,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         AssertHelper assertHelper = new AssertHelper();
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.missingZeroSessionTestDataParams;
         List<TlsEnrichStoredData> actual = tlsEnrichStoredDataRepository.findByIdContains(expected.id);
-        assertHelper.assertEnreachmentFieldsAreNull(actual);
+        assertHelper.assertEnrichmentFieldsAreNull(actual);
         assertHelper.assertAll();
     }
 
@@ -101,11 +101,11 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         AssertHelper assertHelper = new AssertHelper();
         SessionSplitEnrichmentData.TestDataParameters expectedSession1 = SessionSplitEnrichmentData.newSessionOpenedFirstSession;
         List<TlsEnrichStoredData> actualSession1 = tlsEnrichStoredDataRepository.findByIdContains(expectedSession1.id);
-        assertHelper.assertEnreachmentFieldsMatchExpected(actualSession1, expectedSession1);
+        assertHelper.assertEnrichmentFieldsMatchExpected(actualSession1, expectedSession1);
 
         SessionSplitEnrichmentData.TestDataParameters expectedSession2 = SessionSplitEnrichmentData.newSessionOpenedSecondSession;
         List<TlsEnrichStoredData> actualSession2 = tlsEnrichStoredDataRepository.findByIdContains(expectedSession2.id);
-        assertHelper.assertEnreachmentFieldsMatchExpected(actualSession2, expectedSession2);
+        assertHelper.assertEnrichmentFieldsMatchExpected(actualSession2, expectedSession2);
 
         assertHelper.assertAll();
     }
@@ -121,8 +121,8 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         /** enrichment should be until the first new session element*/
         List<TlsEnrichStoredData> actualEnriched = result.subList(0, firstIndex);
         List<TlsEnrichStoredData> actualNotEnriched = result.subList(firstIndex + 1, result.size());
-        assertHelper.assertEnreachmentFieldsMatchExpected(actualEnriched, expected);
-        assertHelper.assertEnreachmentFieldsAreNull(actualNotEnriched);
+        assertHelper.assertEnrichmentFieldsMatchExpected(actualEnriched, expected);
+        assertHelper.assertEnrichmentFieldsAreNull(actualNotEnriched);
         assertHelper.assertAll();
     }
 
@@ -146,7 +146,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         AssertHelper assertHelper = new AssertHelper();
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.secondEventHaveJa3AndSslSubject;
         List<TlsEnrichStoredData> actual = tlsEnrichStoredDataRepository.findByIdContains(expected.id);
-        assertHelper.assertEnreachmentFieldsMatchExpected(actual, expected);
+        assertHelper.assertEnrichmentFieldsMatchExpected(actual, expected);
         assertHelper.assertAll();
     }
 
