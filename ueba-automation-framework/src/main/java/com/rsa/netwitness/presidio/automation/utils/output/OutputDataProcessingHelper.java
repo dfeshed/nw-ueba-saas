@@ -4,12 +4,12 @@ import com.rsa.netwitness.presidio.automation.domain.config.Consts;
 import com.rsa.netwitness.presidio.automation.ssh.TerminalCommandsSshUtils;
 import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
 import org.slf4j.LoggerFactory;
-import org.testng.Assert;
 
 import java.time.Instant;
 import java.util.concurrent.Callable;
 
 import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogFile;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class OutputDataProcessingHelper {
     static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
@@ -47,10 +47,14 @@ public class OutputDataProcessingHelper {
 
             SshResponse p = TerminalCommandsSshUtils.runCommand(
                     Consts.PRESIDIO_OUTPUT, true, Consts.PRESIDIO_DIR, "run" , "--start_date " + startDate,
-                    "--end_date " + endDate , "--smart_record_conf_name " + smart_record_conf_name + " " + " > " + logFile);
+                    "--end_date " + endDate , "--smart_record_conf_name " + smart_record_conf_name,
+                    "> " + logFile);
+
+            assertThat(p.exitCode)
+                    .withFailMessage("Error exit code.\nCheck the log: " + logFile)
+                    .isEqualTo(0);
 
             printLogFile(logFile);
-            Assert.assertEquals(0, p.exitCode, "Shell command failed. exit value: " + p.exitCode + "\nLog: " + logFile);
             LOGGER.info("ProcessorRun["+ smart_record_conf_name.toUpperCase()+"] completed successfully.");
             return p.exitCode;
         }
@@ -75,11 +79,14 @@ public class OutputDataProcessingHelper {
 
             SshResponse p = TerminalCommandsSshUtils.runCommand(Consts.PRESIDIO_OUTPUT, true, Consts.PRESIDIO_DIR,
                     "recalculate-entity-score", "--start_date " + startDate, "--end_date " + endDate ,
-                    " --fixed_duration_strategy 86400.0 " , " --smart_record_conf_name " + entity + "_hourly ",
-                    " --entity_type " + entity + " > " + logFile);
+                    "--fixed_duration_strategy 86400.0 " , " --smart_record_conf_name " + entity + "_hourly ",
+                    "--entity_type " + entity, "> " + logFile);
+
+            assertThat(p.exitCode)
+                    .withFailMessage("Error exit code.\nCheck the log: " + logFile)
+                    .isEqualTo(0);
 
             printLogFile(logFile);
-            Assert.assertEquals(0, p.exitCode, "Shell command failed. exit value: " + p.exitCode + "\nLog: " + logFile);
             LOGGER.info("RecalculateUserScore["+ entity.toUpperCase()+"] completed successfully.");
             return p.exitCode;
         }

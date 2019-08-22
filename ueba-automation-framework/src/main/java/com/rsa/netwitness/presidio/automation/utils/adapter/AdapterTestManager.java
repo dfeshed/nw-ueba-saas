@@ -101,14 +101,16 @@ public class AdapterTestManager {
         String logPath = "/tmp/presidio-adapter_run_" + schema + "_" + start.toString() + "_" + end.toString() + ".log";
 
         // Runs adapter for entire events time range at once
-        SshResponse adapterProcess = TerminalCommandsSshUtils.runCommand(flumeHome + PRESIDIO_ADAPTER_APP, true, Consts.PRESIDIO_DIR, "run",
-                "--fixed_duration_strategy " + getFixedDuration(timeFrame), "--start_date " + start.toString(), "--end_date " + end.toString(), "--schema " + schema,
-                " &> " + logPath);
+        SshResponse adapterProcess = TerminalCommandsSshUtils.runCommand(flumeHome + PRESIDIO_ADAPTER_APP,
+                true, Consts.PRESIDIO_DIR, "run",
+                "--fixed_duration_strategy " + getFixedDuration(timeFrame),
+                "--start_date " + start.toString(), "--end_date " + end.toString(), "--schema " + schema,
+                "> " + logPath);
 
-        //TODO: fix issue - when working with sshmanager.properties, ssh.connectionIP different from localhost, process exit value is 1, even if adapter exits with 0.
-        //Assert.assertEquals(0, adapterProcess.exitValue(), "Shell command failed. exit value: " + adapterProcess.exitValue());
+        assertThat(adapterProcess.exitCode)
+                .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                .isEqualTo(0);
 
-        //Replace mongoSource flume properties to sdkSource flume properties
         printLogFile(logPath);
     }
 

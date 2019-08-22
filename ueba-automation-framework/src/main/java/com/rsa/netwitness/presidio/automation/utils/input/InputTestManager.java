@@ -10,7 +10,6 @@ import com.rsa.netwitness.presidio.automation.utils.input.inserter.InputInserter
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.testng.Assert;
 import presidio.data.domain.event.Event;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
@@ -18,6 +17,7 @@ import java.time.Instant;
 import java.util.List;
 
 import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogFile;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InputTestManager {
     @Autowired
@@ -67,12 +67,15 @@ public class InputTestManager {
         String logPath = "/tmp/presidio-input_run_" + dataSourceType + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
 
         // process the data in the input_XXXXXX_raw_events collection
-        SshResponse p = TerminalCommandsSshUtils.runCommand(PRESIDIO_INPUT_APP, true, Consts.PRESIDIO_DIR, "run" , "--schema " + dataSourceType,
-                " & > " + logPath, "--start_date " + startDate, "--end_date " + endDate);
+        SshResponse p = TerminalCommandsSshUtils.runCommand(PRESIDIO_INPUT_APP, true, Consts.PRESIDIO_DIR,
+                "run" , "--schema " + dataSourceType, "--start_date " + startDate, "--end_date " + endDate +
+                        "> " + logPath);
+
+        assertThat(p.exitCode)
+                .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                .isEqualTo(0);
 
         printLogFile(logPath);
-        Assert.assertEquals(0,p.exitCode, "Shell command failed. exit value: " + p.exitCode);
-
     }
 
 

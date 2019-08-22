@@ -5,12 +5,12 @@ import com.rsa.netwitness.presidio.automation.domain.config.Consts;
 import com.rsa.netwitness.presidio.automation.ssh.TerminalCommandsSshUtils;
 import com.rsa.netwitness.presidio.automation.ssh.client.SshResponse;
 import org.slf4j.LoggerFactory;
-import org.testng.Assert;
 
 import java.time.Instant;
 import java.util.concurrent.Callable;
 
 import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogFile;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class AdeDataProcessingHelper {
@@ -76,9 +76,13 @@ public class AdeDataProcessingHelper {
             // score raw events and builds P buckets
             SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_SCORE_AGGR + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
                     "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
-                            + " > " + logPath);
+                            + "> " + logPath);
+
+            assertThat(p4.exitCode)
+                    .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                    .isEqualTo(0);
+
             printLogFile(logPath);
-            Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode + "\nLog: " + logPath);
             LOGGER.info("ProcessScoreAggr[" + schema.toUpperCase() + "] completed successfully.");
             return p4.exitCode;
         }
@@ -104,9 +108,12 @@ public class AdeDataProcessingHelper {
             //--fixed_duration_strategy should be hourly 3600
             SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_MODEL_FEATURE_BUCKETS + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
                     "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
-                            + " > " + logPath);
+                            + "> " + logPath);
+            assertThat(p4.exitCode)
+                    .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                    .isEqualTo(0);
+
             printLogFile(logPath);
-            Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode + "\nLog: " + logPath);
             LOGGER.info("ProcessModelFeatureBuckets[" + schema.toUpperCase() + "] completed successfully.");
             return p4.exitCode;
         }
@@ -131,10 +138,13 @@ public class AdeDataProcessingHelper {
 
             SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_SMART + ".jar", true, Consts.PRESIDIO_DIR, "process", "--smart_record_conf_name " + entity,
                     "--start_date " + start.toString(), "--end_date " + end.toString()
-                            + " > " + logPath);
+                            + "> " + logPath);
+
+            assertThat(p4.exitCode)
+                    .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                    .isEqualTo(0);
 
             printLogFile(logPath);
-            Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode + "\nLog: " + logPath);
             LOGGER.info("ProcessSmart[" + entity.toUpperCase() + "] completed successfully.");
             return p4.exitCode;
         }
@@ -158,10 +168,13 @@ public class AdeDataProcessingHelper {
             String logPath = "/tmp/" + PRESIDIO_ADE_APP_ACCUMULATE_SMART + "_run_" + entity + "_" + start.toString() + "_" + end.toString() + ".log";
             SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_ACCUMULATE_SMART + ".jar", true, Consts.PRESIDIO_DIR, "run", "--smart_record_conf_name " + entity,
                     "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy 86400"
-                            + " > " + logPath);
+                            + "> " + logPath);
+
+            assertThat(p4.exitCode)
+                    .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                    .isEqualTo(0);
 
             printLogFile(logPath);
-            Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode + "\nLog: " + logPath);
             LOGGER.info("ProcessAccumulateSmart[" + entity.toUpperCase() + "] completed successfully.");
             return p4.exitCode;
         }
@@ -188,10 +201,13 @@ public class AdeDataProcessingHelper {
 
             SshResponse p3 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_MODELING + ".jar", true, Consts.PRESIDIO_DIR, "process",
                     "--group_name " + group_name, "--session_id " + session_id, "--end_date " + end.toString()
-                            + " > " + logPath);
+                            + "> " + logPath);
+
+            assertThat(p3.exitCode)
+                    .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                    .isEqualTo(0);
 
             printLogFile(logPath);
-            Assert.assertEquals(0, p3.exitCode, "Shell command failed. exit value: " + p3.exitCode + "\nLog: " + logPath);
             LOGGER.info("ProcessModeling[" + group_name.toUpperCase() + "] completed successfully.");
             return p3.exitCode;
         }
@@ -218,9 +234,13 @@ public class AdeDataProcessingHelper {
             SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_ACCUMULATE_AGGR + ".jar", true, Consts.PRESIDIO_DIR,
                     "run", "--schema " + schema.toUpperCase(),
                     "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy 86400  --feature_bucket_strategy 3600"
-                            + " > " + logPath);
+                            + "> " + logPath);
+
+            assertThat(p4.exitCode)
+                    .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                    .isEqualTo(0);
+
             printLogFile(logPath);
-            Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode + "\nLog: " + logPath);
             LOGGER.info("ProcessAccumulateAggr[" + schema.toUpperCase() + "] completed successfully.");
             return p4.exitCode;
         }
@@ -250,9 +270,13 @@ public class AdeDataProcessingHelper {
             // builds F features
             SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_FEATURE_AGGR + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
                     "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
-                            + " > " + logPath);
+                            + "> " + logPath);
+
+            assertThat(p4.exitCode)
+                    .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                    .isEqualTo(0);
+
             printLogFile(logPath);
-            Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode + "\nLog: " + logPath);
             LOGGER.info("ProcessFeatureAggr[" + schema.toUpperCase() + "] completed successfully.");
             return p4.exitCode;
         }
