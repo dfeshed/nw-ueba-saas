@@ -17,6 +17,8 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 import java.time.Instant;
 import java.util.List;
 
+import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogFile;
+
 public class InputTestManager {
     @Autowired
     private PresidioInputPersistencyService presidioInputPersistencyService;
@@ -62,9 +64,13 @@ public class InputTestManager {
      * @param dataSourceType - data source
      */
     public void process(Instant startDate, Instant endDate, String dataSourceType) {
+        String logPath = "/tmp/presidio-input_run_" + dataSourceType + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
+
         // process the data in the input_XXXXXX_raw_events collection
-        SshResponse p = TerminalCommandsSshUtils.runCommand(PRESIDIO_INPUT_APP, true, Consts.PRESIDIO_DIR, "run" , "--schema " + dataSourceType, " &> /tmp/adapter_debug.log",
-                "--start_date " + startDate, "--end_date " + endDate);
+        SshResponse p = TerminalCommandsSshUtils.runCommand(PRESIDIO_INPUT_APP, true, Consts.PRESIDIO_DIR, "run" , "--schema " + dataSourceType,
+                " & > " + logPath, "--start_date " + startDate, "--end_date " + endDate);
+
+        printLogFile(logPath);
         Assert.assertEquals(0,p.exitCode, "Shell command failed. exit value: " + p.exitCode);
 
     }
