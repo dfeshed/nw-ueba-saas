@@ -35,7 +35,6 @@ class NetwitnessFileEventBuilder extends NetwitnessEvent {
         setCommonFields();
         reference_id = "4663";
         obj_name = event.getFileOperation().getSourceFile().getAbsoluteFilePath(); // (only when obj.type = FILE)
-        obj_type = "File";
         category = "File System";
         accesses = accessesFieldValueByOperationType.getOrDefault(getOperationType(), "WriteData (or AddFile)");
         return this;
