@@ -1,5 +1,6 @@
 package presidio.output.domain.records.events;
 
+import fortscale.domain.core.entityattributes.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -29,7 +30,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     public static final String DESTINATION_PORT_FIELD_NAME = "dstPort";
     public static final String SOURCE_PORT_FIELD_NAME = "srcPort";
     public static final String FQDN_FIELD_NAME = "fqdn";
-    public static final String SSL_CA_FIELD_NAME = "sslCa";
+    public static final String SSL_CAS_FIELD_NAME = "sslCas";
 
 
 
@@ -44,19 +45,19 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     private String srcCountry;
 
     @Field(DESTINATION_COUNTRY_FIELD_NAME)
-    private String dstCountry;
+    private DestinationCountry dstCountry;
 
     @Field(SSL_SUBJECT_FIELD_NAME)
-    private String sslSubject;
+    private SslSubject sslSubject;
 
     @Field(DOMAIN_FIELD_NAME)
-    private String domain;
+    private Domain domain;
 
     @Field(DESTINATION_ORGANIZATION_FIELD_NAME)
-    private String dstOrg;
+    private DestinationOrganization dstOrg;
 
     @Field(DESTINATION_ASN_FIELD_NAME)
-    private String dstAsn;
+    private DestinationAsn dstAsn;
 
     @Field(NUM_OF_BYTES_SENT_FIELD_NAME)
     private Long numOfBytesSent;
@@ -71,7 +72,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     private String dstNetname;
 
     @Field(JA3_FIELD_NAME)
-    private String ja3;
+    private Ja3 ja3;
 
     @Field(JA3S_FIELD_NAME)
     private String ja3s;
@@ -80,7 +81,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     private String direction;
 
     @Field(DESTINATION_PORT_FIELD_NAME)
-    private String dstPort;
+    private DestinationPort dstPort;
 
     @Field(SOURCE_PORT_FIELD_NAME)
     private String srcPort;
@@ -88,8 +89,8 @@ public class TlsEnrichedEvent extends EnrichedEvent {
     @Field(FQDN_FIELD_NAME)
     private List<String> fqdn;
 
-    @Field(SSL_CA_FIELD_NAME)
-    private List<String> sslCa;
+    @Field(SSL_CAS_FIELD_NAME)
+    private List<String> sslCas;
 
 
 
@@ -97,11 +98,11 @@ public class TlsEnrichedEvent extends EnrichedEvent {
 
     public TlsEnrichedEvent(Instant createdDate, Instant eventDate, String eventId, String schema, String dataSource,
                             Map<String, String> additionalInfo,
-                            String srcIp, String dstIp, String srcCountry, String dstCountry, String sslSubject,
-                            String domain, String dstOrg,
-                            String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
-                            String dstNetname, String ja3, String ja3s, String direction, String dstPort,
-                            String srcPort, List<String> fqdn, List<String> sslCa) {
+                            String srcIp, String dstIp, String srcCountry, DestinationCountry dstCountry, SslSubject sslSubject,
+                            Domain domain, DestinationOrganization dstOrg,
+                            DestinationAsn dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
+                            String dstNetname, Ja3 ja3, String ja3s, String direction, DestinationPort dstPort,
+                            String srcPort, List<String> fqdn, List<String> sslCas) {
         super(createdDate, eventDate, eventId, schema, dataSource, additionalInfo);
         this.srcIp = srcIp;
         this.dstIp = dstIp;
@@ -121,7 +122,7 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.dstPort = dstPort;
         this.srcPort = srcPort;
         this.fqdn = fqdn;
-        this.sslCa = sslCa;
+        this.sslCas = sslCas;
     }
 
 
@@ -150,43 +151,43 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.srcCountry = srcCountry;
     }
 
-    public String getDstCountry() {
+    public DestinationCountry getDstCountry() {
         return dstCountry;
     }
 
-    public void setDstCountry(String dstCountry) {
+    public void setDstCountry(DestinationCountry dstCountry) {
         this.dstCountry = dstCountry;
     }
 
-    public String getSslSubject() {
+    public SslSubject getSslSubject() {
         return sslSubject;
     }
 
-    public void setSslSubject(String sslSubject) {
+    public void setSslSubject(SslSubject sslSubject) {
         this.sslSubject = sslSubject;
     }
 
-    public String getDomain() {
+    public Domain getDomain() {
         return domain;
     }
 
-    public void setDomain(String domain) {
+    public void setDomain(Domain domain) {
         this.domain = domain;
     }
 
-    public String getDstOrg() {
+    public DestinationOrganization getDstOrg() {
         return dstOrg;
     }
 
-    public void setDstOrg(String dstOrg) {
+    public void setDstOrg(DestinationOrganization dstOrg) {
         this.dstOrg = dstOrg;
     }
 
-    public String getDstAsn() {
+    public DestinationAsn getDstAsn() {
         return dstAsn;
     }
 
-    public void setDstAsn(String dstAsn) {
+    public void setDstAsn(DestinationAsn dstAsn) {
         this.dstAsn = dstAsn;
     }
 
@@ -222,11 +223,11 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.dstNetname = dstNetname;
     }
 
-    public String getJa3() {
+    public Ja3 getJa3() {
         return ja3;
     }
 
-    public void setJa3(String ja3) {
+    public void setJa3(Ja3 ja3) {
         this.ja3 = ja3;
     }
 
@@ -246,11 +247,11 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.direction = direction;
     }
 
-    public String getDstPort() {
+    public DestinationPort getDstPort() {
         return dstPort;
     }
 
-    public void setDstPort(String dstPort) {
+    public void setDstPort(DestinationPort dstPort) {
         this.dstPort = dstPort;
     }
 
@@ -262,12 +263,12 @@ public class TlsEnrichedEvent extends EnrichedEvent {
         this.fqdn = fqdn;
     }
 
-    public List<String> getSslCa() {
-        return sslCa;
+    public List<String> getSslCas() {
+        return sslCas;
     }
 
-    public void setSslCa(List<String> sslCa) {
-        this.sslCa = sslCa;
+    public void setSslCas(List<String> sslCas) {
+        this.sslCas = sslCas;
     }
 
     public String getSrcPort() {

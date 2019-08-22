@@ -1,6 +1,5 @@
 package presidio.output.processor.services.alert.indicator;
 
-import fortscale.common.general.CommonStrings;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import org.apache.commons.lang3.StringUtils;
 import presidio.ade.domain.record.AdeRecord;
@@ -47,7 +46,7 @@ public class IndicatorsGeneratorForScoreAggr implements IndicatorsGenerator {
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
 
         List<String> splitFieldNames = indicatorConfig.getSplitFields() == null? new ArrayList<>(): new ArrayList<>(indicatorConfig.getSplitFields());
-        splitFieldNames.replaceAll(field -> translateOutputToAdeName(field));
+        splitFieldNames.replaceAll(this::translateOutputToAdeName);
 
         ScoreAggregationRecordContributors scoreAggregationRecordContributors = adeManagerSdk.splitScoreAggregationRecordToContributors(adeAggregationRecord, splitFieldNames);
 
@@ -79,16 +78,12 @@ public class IndicatorsGeneratorForScoreAggr implements IndicatorsGenerator {
         indicator.setScore(scoredFeatureAggregationRecord.getScore());
         indicator.setScoreContribution(scoreAggregationRecordContributor.getContributionRatio()*smartAggregationRecord.getContribution());
         // add split fields
-        Map<String, String> adeContexts = scoreAggregationRecordContributor.getContextFieldNameToValueMap().getFeatureNameToValue();
-        Map<String, String> contexts = adeContexts.entrySet().stream()
-                .filter(entry -> entry.getValue() != null)
-                .collect(Collectors.toMap(entry -> translateAdeNameToOutput(entry.getKey()),
-                        entry -> entry.getValue()));
+        Map<String, String> contexts = getAdeContexts(scoreAggregationRecordContributor);
 
         AdeRecordReader firstRecordReader = (AdeRecordReader) recordReaderFactoryService.getRecordReader(scoreAggregationRecordContributor.getFirstScoredRecord());
 
         // add indicator context
-        contexts.put(alert.getEntityType(), firstRecordReader.getContext(alert.getEntityType()));
+        addIndicatorContext(smartAggregationRecord, contexts);
 
         // add model context
         indicatorConfig.getModelContextFields().forEach(modelContextField -> contexts.put(modelContextField, firstRecordReader.getContext(modelContextField)));
@@ -97,6 +92,13 @@ public class IndicatorsGeneratorForScoreAggr implements IndicatorsGenerator {
         indicator.setStartDate(Date.from(scoredFeatureAggregationRecord.getStartInstant()));
         indicator.setEndDate(Date.from(scoredFeatureAggregationRecord.getEndInstant()));
         return indicator;
+    }
+
+    private void addIndicatorContext(SmartAggregationRecord smartAggregationRecord, Map<String, String> contexts) {
+        smartAggregationRecord
+                .getAggregationRecord()
+                .getContext()
+                .forEach(contexts::put);
     }
 
     private Indicator buildScoreAggrIndicator(SmartAggregationRecord smartAggregationRecord, Alert alert, IndicatorConfig indicatorConfig, ScoreAggregationRecordContributors.Contributor scoreAggregationRecordContributor) {
@@ -110,15 +112,10 @@ public class IndicatorsGeneratorForScoreAggr implements IndicatorsGenerator {
         indicator.setSchema(indicatorConfig.getSchema());
         indicator.setType(AlertEnums.IndicatorTypes.valueOf(indicatorConfig.getType()));
         indicator.setScoreContribution(scoreAggregationRecordContributor.getContributionRatio()*smartAggregationRecord.getContribution());
-        Map<String, String> adeContexts = scoreAggregationRecordContributor.getContextFieldNameToValueMap().getFeatureNameToValue();
+        Map<String, String> contexts = getAdeContexts(scoreAggregationRecordContributor);
 
-        // add split fields
-        Map<String, String> contexts = adeContexts.entrySet().stream()
-                .filter(entry -> entry.getValue() != null)
-                .collect(Collectors.toMap(entry -> translateAdeNameToOutput(entry.getKey()),
-                        entry -> entry.getValue()));
         // add indicator context
-        contexts.put(alert.getEntityType(), firstRecordReader.getContext(alert.getEntityType()));
+        addIndicatorContext(smartAggregationRecord, contexts);
 
         // add model context
         indicatorConfig.getModelContextFields().forEach(modelContextField -> contexts.put(modelContextField, firstRecordReader.getContext(modelContextField)));
@@ -135,6 +132,16 @@ public class IndicatorsGeneratorForScoreAggr implements IndicatorsGenerator {
         indicator.setAnomalyValue(featureValue);
 
         return indicator;
+    }
+
+    private Map<String, String> getAdeContexts(ScoreAggregationRecordContributors.Contributor scoreAggregationRecordContributor) {
+        Map<String, String> adeContexts = scoreAggregationRecordContributor.getContextFieldNameToValueMap().getFeatureNameToValue();
+
+        // add split fields
+        return adeContexts.entrySet().stream()
+                .filter(entry -> entry.getValue() != null)
+                .collect(Collectors.toMap(entry -> translateAdeNameToOutput(entry.getKey()),
+                        Map.Entry::getValue));
     }
 
     private String translateAdeNameToOutput(String adeName) {

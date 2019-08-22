@@ -60,7 +60,7 @@
         <spring-data-hadoop.version>2.2.0.RELEASE</spring-data-hadoop.version>
         <commons.math3.version>3.1.1</commons.math3.version>
         <quartz.version>2.2.1</quartz.version>
-        <jackson.dataformat.version>2.8.9</jackson.dataformat.version>
+        <jackson-dataformat.version>2.8.9</jackson-dataformat.version>
         <test.exclude>nothingToExclude</test.exclude>
         <test.include>**/*Test.java</test.include>
         <test.int.exclude>nothingToExclude</test.int.exclude>
@@ -115,11 +115,14 @@
         <presidio-data-generators.version>2.0.0-SNAPSHOT</presidio-data-generators.version>
         <auto-service.version>1.0-rc5</auto-service.version>
         <spring-test.version>4.3.20.RELEASE</spring-test.version>
-        <jackson.version>2.9.8</jackson.version>
+        <jackson-core.version>2.9.9</jackson-core.version>
+        <jackson-databind.version>2.9.9.3</jackson-databind.version>
+        <jackson-bom.version>2.9.9.20190807</jackson-bom.version>
         <log4j.version>2.11.2</log4j.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jedis.version>2.9.0</jedis.version>
         <spring-data-redis.version>2.1.0.RELEASE</spring-data-redis.version>
+        <apache-tomcat.version>9.0.24</apache-tomcat.version>
     </properties>
 
     <dependencyManagement>
@@ -193,12 +196,27 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-csv</artifactId>
-                <version>${jackson.dataformat.version}</version>
+                <version>${jackson-dataformat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson-core.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackson-databind.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson-bom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson-core.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
@@ -454,6 +472,11 @@
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
                 <version>${jaxb-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>${apache-tomcat.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

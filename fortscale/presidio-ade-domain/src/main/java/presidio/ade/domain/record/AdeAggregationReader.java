@@ -11,8 +11,7 @@ import java.util.Map;
  *
  */
 public class AdeAggregationReader extends AdeRecordReader {
-
-	private static final String CONTEXT_FIELD = "context.";
+	private static final String CONTEXT_FIELD = "context";
 
 	/**
 	 * C'tor.
@@ -33,8 +32,19 @@ public class AdeAggregationReader extends AdeRecordReader {
 	 * @param contextFieldName context field name
 	 * @return context value
 	 */
-	public String getContext(String contextFieldName){
-		return get(CONTEXT_FIELD + contextFieldName, String.class);
+	public String getContext(String contextFieldName) {
+		return get(new String[]{CONTEXT_FIELD, contextFieldName}, String.class);
 	}
 
+	@Override
+	protected <T> T getFeature(String fieldPath, Class<T> fieldClass) {
+		String[] contextPathArray;
+		if (fieldPath.startsWith(CONTEXT_FIELD)) {
+			contextPathArray = new String[]{ CONTEXT_FIELD, fieldPath.substring(CONTEXT_FIELD.length() + 1)};
+		}
+		else {
+			contextPathArray = new String[] { fieldPath};
+		}
+		return get(contextPathArray, fieldClass);
+	}
 }

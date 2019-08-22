@@ -2,6 +2,7 @@ package fortscale.utils.transform;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static fortscale.utils.transform.TransformerUtil.*;
@@ -45,5 +46,21 @@ public class TopLevelDomainTransformerTest {
 
         assertJsonObjectKeyNotAdded(jsonObject, TARGET_KEY);
         assertWrongValueAddedToKey(jsonObject, TARGET_KEY, "salesforce.co.il");
+    }
+
+    @Test
+    public void testHierarchyCreatedForTarget() {
+        TopLevelDomainTransformer transformer =
+                new TopLevelDomainTransformer(
+                        "source-domain-to-top-level-domain",
+                        SOURCE_KEY,
+                        false,
+                        "domain.name");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(SOURCE_KEY, "www.developer.something.salesforce.com");
+        transformer.transform(jsonObject);
+        Object actualObj = jsonObject.get("domain");
+        JSONObject expectedObj = new JSONObject().put("name", "salesforce.com");
+        Assert.assertEquals(expectedObj.toString(), actualObj.toString());
     }
 }

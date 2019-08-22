@@ -1,6 +1,7 @@
 package presidio.sdk.api.domain.rawevents;
 
 
+import fortscale.domain.core.entityattributes.*;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -30,7 +31,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     public static final String DESTINATION_PORT_FIELD_NAME = "dstPort";
     public static final String SOURCE_PORT_FIELD_NAME = "srcPort";
     public static final String FQDN_FIELD_NAME = "fqdn";
-    public static final String SSL_CA_FIELD_NAME = "sslCa";
+    public static final String SSL_CAS_FIELD_NAME = "sslCas";
     public static final String SESSION_SPLIT_FIELD_NAME = "sessionSplit";
 
 
@@ -46,19 +47,19 @@ public class TlsRawEvent extends AbstractInputDocument {
     private String srcCountry;
 
     @Field(DESTINATION_COUNTRY_FIELD_NAME)
-    private String dstCountry;
+    private DestinationCountry dstCountry;
 
     @Field(SSL_SUBJECT_FIELD_NAME)
-    private String sslSubject;
+    private SslSubject sslSubject;
 
     @Field(DOMAIN_FIELD_NAME)
-    private String domain;
+    private Domain domain;
 
     @Field(DESTINATION_ORGANIZATION_FIELD_NAME)
-    private String dstOrg;
+    private DestinationOrganization dstOrg;
 
     @Field(DESTINATION_ASN_FIELD_NAME)
-    private String dstAsn;
+    private DestinationAsn dstAsn;
 
     @Field(NUM_OF_BYTES_SENT_FIELD_NAME)
     private Long numOfBytesSent;
@@ -73,7 +74,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     private String dstNetname;
 
     @Field(JA3_FIELD_NAME)
-    private String ja3;
+    private Ja3 ja3;
 
     @Field(JA3S_FIELD_NAME)
     private String ja3s;
@@ -82,7 +83,7 @@ public class TlsRawEvent extends AbstractInputDocument {
     private String direction;
 
     @Field(DESTINATION_PORT_FIELD_NAME)
-    private String dstPort;
+    private DestinationPort dstPort;
 
     @Field(SOURCE_PORT_FIELD_NAME)
     private String srcPort;
@@ -90,8 +91,8 @@ public class TlsRawEvent extends AbstractInputDocument {
     @Field(FQDN_FIELD_NAME)
     private List<String> fqdn;
 
-    @Field(SSL_CA_FIELD_NAME)
-    private List<String> sslCa;
+    @Field(SSL_CAS_FIELD_NAME)
+    private List<String> sslCas;
 
     @Field(SESSION_SPLIT_FIELD_NAME)
     private Integer sessionSplit;
@@ -120,16 +121,16 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.dstPort = other.dstPort;
         this.srcPort = other.srcPort;
         this.fqdn = other.fqdn;
-        this.sslCa = other.sslCa;
+        this.sslCas = other.sslCas;
         this.sessionSplit = other.sessionSplit;
     }
 
     public TlsRawEvent(Instant dateTime, String eventId, String dataSource, Map<String, String> additionalInfo,
-                       String srcIp, String dstIp, String srcPort, String srcCountry, String dstCountry, String sslSubject,
-                       String domain, String dstOrg,
-                       String dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
-                       String dstNetname, String ja3, String ja3s, String direction, String dstPort, List<String> fqdn,
-                       List<String> sslCa, Integer sessionSplit) {
+                       String srcIp, String dstIp, String srcPort, String srcCountry, DestinationCountry dstCountry, SslSubject sslSubject,
+                       Domain domain, DestinationOrganization dstOrg,
+                       DestinationAsn dstAsn, Long numOfBytesSent, Long numOfBytesReceived, String srcNetname,
+                       String dstNetname, Ja3 ja3, String ja3s, String direction, DestinationPort dstPort, List<String> fqdn,
+                       List<String> sslCas, Integer sessionSplit) {
         super(dateTime, eventId, dataSource, additionalInfo);
         this.srcIp = srcIp;
         this.dstIp = dstIp;
@@ -149,7 +150,7 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.dstPort = dstPort;
         this.srcPort = srcPort;
         this.fqdn = fqdn;
-        this.sslCa = sslCa;
+        this.sslCas = sslCas;
         this.sessionSplit = sessionSplit;
     }
 
@@ -178,43 +179,43 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.dstIp = dstIp;
     }
 
-    public String getDstCountry() {
+    public DestinationCountry getDstCountry() {
         return dstCountry;
     }
 
-    public void setDstCountry(String dstCountry) {
+    public void setDstCountry(DestinationCountry dstCountry) {
         this.dstCountry = dstCountry;
     }
 
-    public String getSslSubject() {
+    public SslSubject getSslSubject() {
         return sslSubject;
     }
 
-    public void setSslSubject(String sslSubject) {
+    public void setSslSubject(SslSubject sslSubject) {
         this.sslSubject = sslSubject;
     }
 
-    public String getDomain() {
+    public Domain getDomain() {
         return domain;
     }
 
-    public void setDomain(String domain) {
+    public void setDomain(Domain domain) {
         this.domain = domain;
     }
 
-    public String getDstOrg() {
+    public DestinationOrganization getDstOrg() {
         return dstOrg;
     }
 
-    public void setDstOrg(String dstOrg) {
+    public void setDstOrg(DestinationOrganization dstOrg) {
         this.dstOrg = dstOrg;
     }
 
-    public String getDstAsn() {
+    public DestinationAsn getDstAsn() {
         return dstAsn;
     }
 
-    public void setDstAsn(String dstAsn) {
+    public void setDstAsn(DestinationAsn dstAsn) {
         this.dstAsn = dstAsn;
     }
 
@@ -250,11 +251,11 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.dstNetname = dstNetname;
     }
 
-    public String getJa3() {
+    public Ja3 getJa3() {
         return ja3;
     }
 
-    public void setJa3(String ja3) {
+    public void setJa3(Ja3 ja3) {
         this.ja3 = ja3;
     }
 
@@ -274,11 +275,11 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.direction = direction;
     }
 
-    public String getDstPort() {
+    public DestinationPort getDstPort() {
         return dstPort;
     }
 
-    public void setDstPort(String dstPort) {
+    public void setDstPort(DestinationPort dstPort) {
         this.dstPort = dstPort;
     }
 
@@ -290,12 +291,12 @@ public class TlsRawEvent extends AbstractInputDocument {
         this.fqdn = fqdn;
     }
 
-    public List<String> getSslCa() {
-        return sslCa;
+    public List<String> getSslCas() {
+        return sslCas;
     }
 
-    public void setSslCa(List<String> sslCa) {
-        this.sslCa = sslCa;
+    public void setSslCas(List<String> sslCas) {
+        this.sslCas = sslCas;
     }
 
     public Integer getSessionSplit() {

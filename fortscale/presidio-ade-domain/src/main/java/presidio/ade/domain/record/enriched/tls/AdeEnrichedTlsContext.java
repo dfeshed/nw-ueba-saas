@@ -1,6 +1,9 @@
 package presidio.ade.domain.record.enriched.tls;
 
+import fortscale.domain.core.entityattributes.*;
 import presidio.ade.domain.record.enriched.BaseEnrichedContext;
+
+import java.util.List;
 
 public class AdeEnrichedTlsContext extends BaseEnrichedContext {
 
@@ -8,17 +11,18 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
     private String srcIp;
     private String dstIp;
     private String srcCountry;
-    private String dstCountry;
-    private String sslSubject;
-    private String domain;
-    private String dstOrg;
-    private String dstAsn;
+    private DestinationCountry dstCountry;
+    private SslSubject sslSubject;
+    private List<String> sslCas;
+    private Domain domain;
+    private DestinationOrganization dstOrg;
+    private DestinationAsn dstAsn;
     private String srcNetname;
     private String dstNetname;
-    private String ja3;
+    private Ja3 ja3;
     private String ja3s;
     private String direction;
-    private String dstPort;
+    private DestinationPort dstPort;
     private String srcPort;
 
 
@@ -36,6 +40,7 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
         this.dstOrg = enrichedTlsRecord.getDstOrg();
         this.dstPort = enrichedTlsRecord.getDstPort();
         this.srcPort = enrichedTlsRecord.getSrcPort();
+        this.sslCas = enrichedTlsRecord.getSslCas();
         this.direction = enrichedTlsRecord.getDirection();
         this.ja3 = enrichedTlsRecord.getJa3();
         this.ja3s = enrichedTlsRecord.getJa3s();
@@ -69,43 +74,43 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
         this.srcCountry = srcCountry;
     }
 
-    public String getDstCountry() {
+    public DestinationCountry getDstCountry() {
         return dstCountry;
     }
 
-    public void setDstCountry(String dstCountry) {
+    public void setDstCountry(DestinationCountry dstCountry) {
         this.dstCountry = dstCountry;
     }
 
-    public String getSslSubject() {
+    public SslSubject getSslSubject() {
         return sslSubject;
     }
 
-    public void setSslSubject(String sslSubject) {
+    public void setSslSubject(SslSubject sslSubject) {
         this.sslSubject = sslSubject;
     }
 
-    public String getDomain() {
+    public Domain getDomain() {
         return domain;
     }
 
-    public void setDomain(String domain) {
+    public void setDomain(Domain domain) {
         this.domain = domain;
     }
 
-    public String getDstOrg() {
+    public DestinationOrganization getDstOrg() {
         return dstOrg;
     }
 
-    public void setDstOrg(String dstOrg) {
+    public void setDstOrg(DestinationOrganization dstOrg) {
         this.dstOrg = dstOrg;
     }
 
-    public String getDstAsn() {
+    public DestinationAsn getDstAsn() {
         return dstAsn;
     }
 
-    public void setDstAsn(String dstAsn) {
+    public void setDstAsn(DestinationAsn dstAsn) {
         this.dstAsn = dstAsn;
     }
 
@@ -125,11 +130,11 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
         this.dstNetname = dstNetname;
     }
 
-    public String getJa3() {
+    public Ja3 getJa3() {
         return ja3;
     }
 
-    public void setJa3(String ja3) {
+    public void setJa3(Ja3 ja3) {
         this.ja3 = ja3;
     }
 
@@ -149,11 +154,11 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
         this.direction = direction;
     }
 
-    public String getDstPort() {
+    public DestinationPort getDstPort() {
         return dstPort;
     }
 
-    public void setDstPort(String dstPort) {
+    public void setDstPort(DestinationPort dstPort) {
         this.dstPort = dstPort;
     }
 
@@ -163,5 +168,13 @@ public class AdeEnrichedTlsContext extends BaseEnrichedContext {
 
     public void setSrcPort(String srcPort) {
         this.srcPort = srcPort;
+    }
+
+    public List<String> getSslCas() {
+        return sslCas;
+    }
+
+    public void setSslCas(List<String> sslCas) {
+        this.sslCas = sslCas;
     }
 }

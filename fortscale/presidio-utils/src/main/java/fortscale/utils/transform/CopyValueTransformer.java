@@ -60,13 +60,13 @@ public class CopyValueTransformer extends AbstractJsonObjectTransformer {
         Object sourceValue = jsonValueExtractor.getValue(jsonObject);
         if (sourceValue == null) return jsonObject;
 
+        // Currently the removal of the source key is only supported for non-hierarchical keys.
+        if (isRemoveSourceKey) jsonObject.remove(sourceKey);
         for (SetterTransformer setterTransformer : setterTransformers) {
             setterTransformer.setValue(sourceValue);
             setterTransformer.transform(jsonObject);
         }
 
-        // Currently the removal of the source key is only supported for non-hierarchical keys.
-        if (isRemoveSourceKey) jsonObject.remove(sourceKey);
         return jsonObject;
     }
 

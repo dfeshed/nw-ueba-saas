@@ -11,7 +11,6 @@ public class NewOccurrenceTransformerConf implements FactoryConfig {
 
     private final Schema schema;
     private final String entityType;
-    private final String instantFieldName;
     private final Duration expirationDelta;
     private final String booleanFieldName;
 
@@ -20,7 +19,6 @@ public class NewOccurrenceTransformerConf implements FactoryConfig {
      *
      * @param schema           The schema that the raw event belongs to.
      * @param entityType       The name of the field whose value is checked to see if it is a new occurrence.
-     * @param instantFieldName The name of the field whose value is the logical {@link Instant} of the raw event.
      * @param expirationDelta  If the last occurrence of the entity is older than this {@link Duration}
      *                         (compared to the logical {@link Instant} of the raw event),
      *                         it is considered as a new occurrence.
@@ -30,13 +28,11 @@ public class NewOccurrenceTransformerConf implements FactoryConfig {
     public NewOccurrenceTransformerConf(
             Schema schema,
             String entityType,
-            String instantFieldName,
             Duration expirationDelta,
             String booleanFieldName) {
 
         this.schema = schema;
         this.entityType = entityType;
-        this.instantFieldName = instantFieldName;
         this.expirationDelta = expirationDelta;
         this.booleanFieldName = booleanFieldName;
     }
@@ -52,10 +48,6 @@ public class NewOccurrenceTransformerConf implements FactoryConfig {
 
     public String getEntityType() {
         return entityType;
-    }
-
-    public String getInstantFieldName() {
-        return instantFieldName;
     }
 
     public Duration getExpirationDelta() {

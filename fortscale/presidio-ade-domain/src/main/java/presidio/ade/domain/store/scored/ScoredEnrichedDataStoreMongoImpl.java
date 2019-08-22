@@ -212,7 +212,7 @@ public class ScoredEnrichedDataStoreMongoImpl implements
     private Query buildScoredRecordsQuery(TimeRange timeRange, MultiKeyFeature contextFields, int scoreThreshold) {
         return ScoredDataReaderMongoUtils.buildScoredRecordsQuery(
                 START_INSTANT_FIELD, timeRange,
-                CONTEXT_FIELD_NAME + ".", contextFields,
+                CONTEXT_FIELD_NAME + ".", contextFields.getFeatureNameToValue(),
                 SCORE_FIELD_NAME, scoreThreshold);
     }
 
@@ -225,8 +225,8 @@ public class ScoredEnrichedDataStoreMongoImpl implements
             Direction direction) {
 
         Query query = ScoredDataReaderMongoUtils.buildScoredRecordQuery(
-                fields, START_INSTANT_FIELD, timeRange,
-                CONTEXT_FIELD_NAME + ".", contextFields,
+                fields.getFeatureNameToValue(), START_INSTANT_FIELD, timeRange,
+                CONTEXT_FIELD_NAME + ".", contextFields.getFeatureNameToValue(),
                 SCORE_FIELD_NAME, scoreThreshold,
                 direction);
         String collectionName = translator.toCollectionName(adeEventType);

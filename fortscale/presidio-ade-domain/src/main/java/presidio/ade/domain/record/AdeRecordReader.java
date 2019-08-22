@@ -118,11 +118,15 @@ public class AdeRecordReader extends ReflectionRecordReader {
 		Map<String, Feature> featureMap = new HashMap<>();
 
 		for (String featureName : featureNames) {
-			Object featureValue = get(featureName, Object.class);
+			Object featureValue = getFeature(featureName, Object.class);
 			Feature feature = Feature.toFeature(featureName, featureValue);
 			featureMap.put(featureName, feature);
 		}
 		return featureMap;
+	}
+
+	protected <T> T getFeature(String fieldPath, Class<T> fieldClass) {
+		return get(fieldPath, fieldClass);
 	}
 
 	/**
@@ -132,7 +136,10 @@ public class AdeRecordReader extends ReflectionRecordReader {
 	 */
 	public String getContext(String contextFieldName){
 		Object ret = get(contextFieldName, Object.class);
-		if(ret instanceof Number){
+		if (ret == null) {
+			return null;
+		}
+		if (ret instanceof Number){
 			ret = ret.toString();
 		}else if ( !(ret instanceof String)) {
 			String format = "Extracted value {} is not an instance of {}. Record = {}, field path = {}.";

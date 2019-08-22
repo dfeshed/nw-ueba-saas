@@ -1,15 +1,16 @@
 package presidio.input.core.services.transformation.transformer.SessionSplitTransformer;
 
+import fortscale.domain.core.entityattributes.DestinationPort;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class SessionSplitTransformerKey {
     private String srcIp;
     private String dstIp;
-    private String dstPort;
+    private DestinationPort dstPort;
     private String srcPort;
 
 
-    public SessionSplitTransformerKey(String srcIp, String dstIp, String dstPort, String srcPort) {
+    public SessionSplitTransformerKey(String srcIp, String dstIp, DestinationPort dstPort, String srcPort) {
         this.srcIp = srcIp;
         this.dstIp = dstIp;
         this.dstPort = dstPort;
@@ -24,7 +25,7 @@ public class SessionSplitTransformerKey {
         return dstIp;
     }
 
-    public String getDstPort() {
+    public DestinationPort getDstPort() {
         return dstPort;
     }
 

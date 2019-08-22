@@ -78,9 +78,12 @@ public class ReflectionRecordReader implements RecordReader {
 	 */
 	@Override
 	public <T> T get(String fieldPath, Class<T> fieldClass) {
-		Object value = record;
+		return get(fieldPath.split(fieldPathDelimiter), fieldClass);
+	}
 
-		for (String key : fieldPath.split(fieldPathDelimiter)) {
+	public <T> T get(String[] fieldPath, Class<T> fieldClass) {
+		Object value = record;
+		for (String key : fieldPath) {
 			try {
 				if (value instanceof Map) value = new MapGetter(transformations, (Map)value).get(key);
 				else value = new ObjectGetter(transformations, value).get(key);

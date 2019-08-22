@@ -24,8 +24,8 @@ import presidio.ade.domain.store.enriched.EnrichedDataStoreImplMongo;
 import java.time.Instant;
 import java.util.*;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -67,7 +67,7 @@ public class EnrichedRecordPaginationServiceTest {
         contextIdToNumOfItemsList.add(new ContextIdToNumOfItems("c", 1));
 
         // result for first query
-        ArrayList<String> enrichedDlpFileRecordsQuery1 = new ArrayList<String>();
+        ArrayList<String> enrichedDlpFileRecordsQuery1 = new ArrayList<>();
         enrichedDlpFileRecordsQuery1.add("a");
         enrichedDlpFileRecordsQuery1.add("a");
         enrichedDlpFileRecordsQuery1.add("a");
@@ -77,7 +77,7 @@ public class EnrichedRecordPaginationServiceTest {
         GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery1, contextIdsQuery1, 0, PAGE_SIZE, NOW);
 
         // result for second query
-        ArrayList<String> enrichedDlpFileRecordsQuery2 = new ArrayList<String>();
+        ArrayList<String> enrichedDlpFileRecordsQuery2 = new ArrayList<>();
         enrichedDlpFileRecordsQuery2.add("a");
         enrichedDlpFileRecordsQuery2.add("a");
         Set<String> contextIdsQuery2 = new HashSet<>();
@@ -85,7 +85,7 @@ public class EnrichedRecordPaginationServiceTest {
         GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery2, contextIdsQuery2, 3, PAGE_SIZE, NOW);
 
         // result for third query
-        ArrayList<String> enrichedDlpFileRecordsQuery3 = new ArrayList<String>();
+        ArrayList<String> enrichedDlpFileRecordsQuery3 = new ArrayList<>();
         enrichedDlpFileRecordsQuery3.add("c");
         enrichedDlpFileRecordsQuery3.add("b");
         enrichedDlpFileRecordsQuery3.add("b");
@@ -118,7 +118,7 @@ public class EnrichedRecordPaginationServiceTest {
         contextIdToNumOfItemsList.add(new ContextIdToNumOfItems("c", 2));
 
         // result for first query
-        ArrayList<String> enrichedDlpFileRecordsQuery1 = new ArrayList<String>();
+        ArrayList<String> enrichedDlpFileRecordsQuery1 = new ArrayList<>();
         enrichedDlpFileRecordsQuery1.add("a");
         enrichedDlpFileRecordsQuery1.add("a");
         enrichedDlpFileRecordsQuery1.add("a");
@@ -128,7 +128,7 @@ public class EnrichedRecordPaginationServiceTest {
         GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery1, contextIdsQuery1, 0, PAGE_SIZE, NOW);
 
         // result for second query
-        ArrayList<String> enrichedDlpFileRecordsQuery2 = new ArrayList<String>();
+        ArrayList<String> enrichedDlpFileRecordsQuery2 = new ArrayList<>();
         enrichedDlpFileRecordsQuery2.add("a");
         enrichedDlpFileRecordsQuery2.add("a");
         Set<String> contextIdsQuery2 = new HashSet<>();
@@ -136,7 +136,7 @@ public class EnrichedRecordPaginationServiceTest {
         GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery2, contextIdsQuery2, 3, PAGE_SIZE, NOW);
 
         // result for third query
-        ArrayList<String> enrichedDlpFileRecordsQuery3 = new ArrayList<String>();
+        ArrayList<String> enrichedDlpFileRecordsQuery3 = new ArrayList<>();
         enrichedDlpFileRecordsQuery3.add("b");
         enrichedDlpFileRecordsQuery3.add("b");
         Set<String> contextIdsQuery3 = new HashSet<>();
@@ -144,7 +144,7 @@ public class EnrichedRecordPaginationServiceTest {
         GenerateMocks.createMockForQuery(mongoTemplate, enrichedDlpFileRecordsQuery3, contextIdsQuery3, 0, PAGE_SIZE, NOW);
 
         // result for fourth query
-        ArrayList<String> enrichedDlpFileRecordsQuery4 = new ArrayList<String>();
+        ArrayList<String> enrichedDlpFileRecordsQuery4 = new ArrayList<>();
         enrichedDlpFileRecordsQuery4.add("c");
         enrichedDlpFileRecordsQuery4.add("c");
         Set<String> contextIdsQuery4 = new HashSet<>();
@@ -169,7 +169,7 @@ public class EnrichedRecordPaginationServiceTest {
         contextIdToNumOfItemsList.add(new ContextIdToNumOfItems("a", 1));
 
         // result for first query
-        ArrayList<String> enrichedDlpFileRecordsQuery1 = new ArrayList<String>();
+        ArrayList<String> enrichedDlpFileRecordsQuery1 = new ArrayList<>();
         enrichedDlpFileRecordsQuery1.add("a");
         Set<String> contextIdsQuery1 = new HashSet<>();
         contextIdsQuery1.add("a");
@@ -283,7 +283,7 @@ public class EnrichedRecordPaginationServiceTest {
         List<PageIterator<EnrichedDlpFileRecord>> pageIterators = paginationService.getPageIterators("dlpfile", timeRange);
 
         //assert number of iterators
-        assertTrue(pageIterators.size() == results.size());
+        assertEquals(pageIterators.size(), results.size());
 
         //Go over page iterators and check the results.
         checkPageIterators(pageIterators, results);
@@ -320,7 +320,7 @@ public class EnrichedRecordPaginationServiceTest {
         }
         //assert that the list is empty
         //if the list is not empty, it means that not all pages was created.
-        assertTrue(results.size() == 0);
+        assertEquals(0, results.size());
     }
 
     /**
@@ -336,8 +336,8 @@ public class EnrichedRecordPaginationServiceTest {
         for (EnrichedRecordPaginationServiceGroup group : results) {
             if (group.getContextIds().containsAll(contextIdSet)) {
                 int testEventsNum = enrichedDlpFileRecords.size();
-                assertTrue(group.getNumOfPages() == amountOfPages);
-                assertTrue(group.getNumOfEvents() == testEventsNum);
+                assertEquals(group.getNumOfPages(), amountOfPages);
+                assertEquals(group.getNumOfEvents(), testEventsNum);
                 itemToRemove = group;
                 break;
             }
@@ -347,7 +347,7 @@ public class EnrichedRecordPaginationServiceTest {
         if (itemToRemove != null) {
             results.remove(itemToRemove);
         } else {
-            assertFalse(true);
+            fail();
         }
     }
 

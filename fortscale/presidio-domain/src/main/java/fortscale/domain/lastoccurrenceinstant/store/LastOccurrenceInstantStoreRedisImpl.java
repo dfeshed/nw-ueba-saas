@@ -19,7 +19,7 @@ import static java.util.stream.Collectors.toMap;
  * @author Lior Govrin.
  */
 public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstantStore {
-    private static final String COLLECTION_NAME_PREFIX = "last_occurrence_instant";
+    private static final String COLLECTION_NAME_PREFIX = "last-occurrence-instant";
 
     private final HashOperations<String, String, Instant> hashOperations;
 
@@ -52,6 +52,6 @@ public class LastOccurrenceInstantStoreRedisImpl implements LastOccurrenceInstan
     public void close() {}
 
     private static String getCollectionName(Schema schema, String entityType) {
-        return String.format("%s_%s_%s", COLLECTION_NAME_PREFIX, schema.getName(), entityType);
+        return String.format("%s:%s:%s", COLLECTION_NAME_PREFIX, schema.getName(), entityType);
     }
 }
