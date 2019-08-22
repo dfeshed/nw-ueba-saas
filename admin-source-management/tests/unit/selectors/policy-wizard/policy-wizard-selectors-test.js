@@ -20,6 +20,7 @@ import {
   isDefinePolicyStepValid,
   isDefinePolicySourcesStepValid,
   definePolicySourcesStepShowErrors,
+  areFilePolicyStepsValid,
   isWizardValid,
   isPolicyLoading,
   isPolicyFetchError,
@@ -586,6 +587,90 @@ module('Unit | Selectors | policy-wizard/policy-wizard-selectors', function(hook
     const isWizardValidExpected = false;
     const isWizardValidSelected = isWizardValid(fullState);
     assert.deepEqual(isWizardValidSelected, isWizardValidExpected, 'at least one setting should be selected');
+  });
+
+  test('isWizardValid selector for a file policy', function(assert) {
+    const nameExpected = 'test';
+    const visitedExpected = ['policy.name'];
+    // at least one setting required
+    const selectedSettingsExpected = [];
+    let sourcesExpected = [];
+    // const sources = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1' } ];
+    let fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizSelectedSettings(selectedSettingsExpected)
+      .policyWizFileSources(sourcesExpected)
+      .policyWizName(nameExpected)
+      .policyWizVisited(visitedExpected)
+      .build();
+
+    let isWizardValidExpected = false;
+    let isWizardValidSelected = isWizardValid(fullState);
+    assert.deepEqual(isWizardValidSelected, isWizardValidExpected, 'at least one selected setting or a source should be set');
+
+    // valid scenario
+    sourcesExpected = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1' } ];
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizSelectedSettings(selectedSettingsExpected)
+      .policyWizFileSources(sourcesExpected)
+      .policyWizName(nameExpected)
+      .policyWizVisited(visitedExpected)
+      .build();
+
+    isWizardValidExpected = true;
+    isWizardValidSelected = isWizardValid(fullState);
+    assert.deepEqual(isWizardValidSelected, isWizardValidExpected, 'wizard is valid since source is set for a file policy');
+  });
+
+  test('areFilePolicyStepsValid selector for a non file policy', function(assert) {
+    const nameExpected = 'test';
+    const visitedExpected = ['policy.name'];
+    // at least one setting required
+    const selectedSettingsExpected = [];
+    const fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizSelectedSettings(selectedSettingsExpected)
+      .policyWizName(nameExpected)
+      .policyWizVisited(visitedExpected)
+      .build();
+
+    const areFilePolicyStepsValidExpected = true;
+    const areFilePolicyStepsValidSelected = areFilePolicyStepsValid(fullState);
+    assert.deepEqual(areFilePolicyStepsValidSelected, areFilePolicyStepsValidExpected, 'areFilePolicyStepsValid is always valid for a non file policy');
+  });
+
+  test('areFilePolicyStepsValid selector for a file policy', function(assert) {
+    const nameExpected = 'test';
+    const visitedExpected = ['policy.name'];
+    // at least one setting required
+    const selectedSettingsExpected = [];
+    let sourcesExpected = [];
+    let fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizSelectedSettings(selectedSettingsExpected)
+      .policyWizFileSources(sourcesExpected)
+      .policyWizName(nameExpected)
+      .policyWizVisited(visitedExpected)
+      .build();
+
+    let areFilePolicyStepsValidExpected = false;
+    let areFilePolicyStepsValidSelected = isWizardValid(fullState);
+    assert.deepEqual(areFilePolicyStepsValidSelected, areFilePolicyStepsValidExpected, 'at least one selected setting or a source should be set');
+
+    // valid scenario
+    sourcesExpected = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1' } ];
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizSelectedSettings(selectedSettingsExpected)
+      .policyWizFileSources(sourcesExpected)
+      .policyWizName(nameExpected)
+      .policyWizVisited(visitedExpected)
+      .build();
+
+    areFilePolicyStepsValidExpected = true;
+    areFilePolicyStepsValidSelected = isWizardValid(fullState);
+    assert.deepEqual(areFilePolicyStepsValidSelected, areFilePolicyStepsValidExpected, 'areFilePolicyStepsValid is valid since source is set for a file policy');
   });
 
   test('isPolicyLoading selector', function(assert) {

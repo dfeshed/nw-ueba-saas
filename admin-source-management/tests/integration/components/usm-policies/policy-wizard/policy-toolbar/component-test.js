@@ -7,6 +7,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { patchFlash } from '../../../../../helpers/patch-flash';
+import { revertPatch } from '../../../../../helpers/patch-reducer';
 import { throwSocket } from '../../../../../helpers/patch-socket';
 
 let setState;
@@ -22,6 +23,10 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     };
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
+  });
+
+  hooks.afterEach(function() {
+    revertPatch();
   });
 
   test('The component appears in the DOM', async function(assert) {
@@ -496,4 +501,34 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     await click(savePublishBtnEl);
   });
 
+
+  test('On failing to save a file policy with no global/source settings, an error flash message is shown', async function(assert) {
+    const done = assert.async();
+    assert.expect(2);
+    const newSelectedSettings = [];
+    const sources = [];
+    const state = new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizName('test name')
+      .policyWizBlockingEnabled(true)
+      .policyWizSelectedSettings(newSelectedSettings)
+      .policyWizFileSources(sources)
+      .build();
+    this.set('step', state.usm.policyWizard.steps[1]);
+    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar step=step}}`);
+    await settled();
+
+    throwSocket();
+    patchFlash((flash) => {
+      const translation = this.owner.lookup('service:i18n');
+      const codeResponse = translation.t('adminUsm.errorCodeResponse.default');
+      const expectedMessage = translation.t('adminUsm.policyWizard.actionMessages.saveNoGlobalSourceFailure', { errorType: codeResponse });
+      assert.equal(flash.type, 'error');
+      assert.equal(flash.message.string, expectedMessage);
+      done();
+    });
+
+    const [saveBtnEl] = findAll('.save-button:not(.is-disabled) button');
+    await click(saveBtnEl);
+  });
 });

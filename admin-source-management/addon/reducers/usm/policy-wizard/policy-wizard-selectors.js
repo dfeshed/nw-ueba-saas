@@ -312,9 +312,27 @@ export const isDefinePolicySourcesStepValid = createSelector(
   }
 );
 
+/**
+ * For a file policy, it checks if atleast one source/global setting is present
+ * always returns true for a non file policy
+ * @public
+ */
+export const areFilePolicyStepsValid = createSelector(
+  policy, selectedSettings,
+  (policy, selectedSettings) => {
+    const { policyType, sources } = policy;
+    let isValid = true;
+    if (policyType === 'filePolicy') {
+      isValid = selectedSettings.length > 0 || sources.length > 0;
+    }
+    return isValid;
+  }
+);
+
+
 export const isWizardValid = createSelector(
-  isIdentifyPolicyStepValid, isDefinePolicyStepValid, isDefinePolicySourcesStepValid,
-  (isIdentifyPolicyStepValid, isDefinePolicyStepValid, isDefinePolicySourcesStepValid) => {
-    return isIdentifyPolicyStepValid && isDefinePolicyStepValid && isDefinePolicySourcesStepValid;
+  isIdentifyPolicyStepValid, isDefinePolicyStepValid, isDefinePolicySourcesStepValid, areFilePolicyStepsValid,
+  (isIdentifyPolicyStepValid, isDefinePolicyStepValid, isDefinePolicySourcesStepValid, areFilePolicyStepsValid) => {
+    return isIdentifyPolicyStepValid && isDefinePolicyStepValid && isDefinePolicySourcesStepValid && areFilePolicyStepsValid;
   }
 );

@@ -15,6 +15,7 @@ import {
   definePolicyStepShowErrors,
   isDefinePolicySourcesStepValid,
   definePolicySourcesStepShowErrors,
+  areFilePolicyStepsValid,
   isWizardValid
 } from 'admin-source-management/reducers/usm/policy-wizard/policy-wizard-selectors';
 
@@ -35,6 +36,7 @@ const stateToComputed = (state) => ({
   definePolicyStepShowErrors: definePolicyStepShowErrors(state),
   isDefinePolicySourcesStepValid: isDefinePolicySourcesStepValid(state),
   definePolicySourcesStepShowErrors: definePolicySourcesStepShowErrors(state),
+  areFilePolicyStepsValid: areFilePolicyStepsValid(state),
   isWizardValid: isWizardValid(state)
 });
 
@@ -153,7 +155,10 @@ const PolicyWizardToolbar = Component.extend(Notifications, {
         this.send('savePolicy', this.get('policy'), saveCallbacks);
       } else {
         // validation issues found
-        if ((this.step.id === 'definePolicyStep') && this.isPolicySettingsEmpty) {
+        // if it is a file policy, either one of Global/Source settings must be set
+        if (!this.areFilePolicyStepsValid) {
+          this.send('failure', 'adminUsm.policyWizard.actionMessages.saveNoGlobalSourceFailure');
+        } else if ((this.step.id === 'definePolicyStep') && this.isPolicySettingsEmpty) {
           this.send('failure', 'adminUsm.policyWizard.actionMessages.saveEmptyFailure');
         } else if (this.hasPolicyChanged) {
           this.send('failure', 'adminUsm.policyWizard.actionMessages.saveValidationFailure');
@@ -185,7 +190,10 @@ const PolicyWizardToolbar = Component.extend(Notifications, {
         this.send('savePublishPolicy', this.get('policy'), saveCallbacks);
       } else {
         // validation issues found
-        if ((this.step.id === 'definePolicyStep') && this.isPolicySettingsEmpty) {
+        // if it is a file policy, either one of the Global/Source settings must be set
+        if (!this.areFilePolicyStepsValid) {
+          this.send('failure', 'adminUsm.policyWizard.actionMessages.savePublishNoGlobalSourceFailure');
+        } else if ((this.step.id === 'definePolicyStep') && this.isPolicySettingsEmpty) {
           this.send('failure', 'adminUsm.policyWizard.actionMessages.savePublishEmptyFailure');
         } else if (this.hasPolicyChanged) {
           this.send('failure', 'adminUsm.policyWizard.actionMessages.savePublishValidationFailure');
