@@ -61,7 +61,7 @@ const items = [{
   orig_ip: '8.202.108.50'
 }];
 
-const renderDifferentColumns = function(_this, width = null, addCheckbox = false) {
+const renderDifferentColumns = function(_this, width = null, addCheckbox = false, hideForMessaging = false) {
 
   const columnsConfig = [
     {
@@ -94,12 +94,13 @@ const renderDifferentColumns = function(_this, width = null, addCheckbox = false
 
   _this.set('items', items);
   _this.set('columnsConfig', columnsConfig);
+  _this.set('hideForMessaging', hideForMessaging);
   _this.render(hbs`
     {{#rsa-data-table items=items columnsConfig=columnsConfig}}
       {{#rsa-data-table/header as |column|}}
         {{column.title}}
       {{/rsa-data-table/header}}
-      {{#rsa-data-table/body showNoResultMessage=false as |item index column|}}
+      {{#rsa-data-table/body hideForMessaging=hideForMessaging showNoResultMessage=false as |item index column|}}
         {{#rsa-data-table/body-cell column=column}}
           aa
         {{/rsa-data-table/body-cell}}
@@ -123,6 +124,12 @@ moduleForComponent('rsa-data-table', 'Integration | Component | rsa data table',
   afterEach() {
     removeTetherFix();
   }
+});
+
+test('sets body height and removes rows when hideForMessaging', function(assert) {
+  renderDifferentColumns(this, null, false, true);
+  assert.ok(document.querySelector('.rsa-data-table-body-rows').getAttribute('style').includes('min-height: 0'));
+  assert.equal(document.querySelectorAll('.rsa-data-table-body-row').length, 0);
 });
 
 test('Since no of columns are less and no width is given so adjusting the cell width according to the viewport should be more than 100', function(assert) {

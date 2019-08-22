@@ -9,7 +9,8 @@ import {
   areEventsStreaming,
   isCanceled,
   isEventResultsError,
-  noEvents
+  noEvents,
+  hideEventsForReQuery
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { hadTextPill } from 'investigate-events/reducers/investigate/query-node/selectors';
 
@@ -26,7 +27,8 @@ const stateToComputed = (state) => ({
   noEvents: noEvents(state),
   totalCount: thousandFormat(state.investigate.eventCount.data),
   status: state.investigate.eventResults.status,
-  hadTextPill: hadTextPill(state)
+  hadTextPill: hadTextPill(state),
+  hideEventsForReQuery: hideEventsForReQuery(state)
 });
 
 const EventsFooter = Component.extend({
@@ -55,7 +57,6 @@ const EventsFooter = Component.extend({
       return i18n.t('investigate.empty.canceledWithPartial');
     }
   }
-
 
 });
 

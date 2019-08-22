@@ -53,7 +53,10 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SET_EVENTS_PAGE_STATUS]: (state) => {
-    return state.set('isQueryExecutedBySort', false);
+    return state.merge({
+      isQueryExecutedBySort: false,
+      isQueryExecutedByColumnGroup: false
+    });
   },
 
   [ACTION_TYPES.UPDATE_GLOBAL_PREFERENCES]: (state, { payload }) => {

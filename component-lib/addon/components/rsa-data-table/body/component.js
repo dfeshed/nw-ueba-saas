@@ -50,6 +50,14 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
   showNoResultMessage: true,
 
   /**
+   *  Can be used to hide results while delivering special case messaging
+   * @type boolean
+   * @default false
+   * @public
+   */
+  hideForMessaging: false,
+
+  /**
    * Check along-side showNoResultMessage
    * if status is passed in (recommended), _noResultMessage will not overlap with spinner
    * If not, then the usual showNoResultMessage prop is used
@@ -114,20 +122,24 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
    * @readonly
    * @private
    */
-  @computed('_rowHeight', 'items.length', 'table.groupingSize', 'table.enableGrouping', 'table.groupLabelHeight')
-  _minScrollHeight(rowHeight, itemsLength, groupSize, enableGrouping, groupLabelHeight) {
+  @computed('status', 'hideForMessaging', '_rowHeight', 'items.length', 'table.groupingSize', 'table.enableGrouping', 'table.groupLabelHeight')
+  _minScrollHeight(status, hideForMessaging, rowHeight, itemsLength, groupSize, enableGrouping, groupLabelHeight) {
     const rowsHeight = rowHeight * itemsLength;
     const groupCount = Math.floor(itemsLength / groupSize);
-    if (enableGrouping) {
-      if (itemsLength <= groupSize) {
-        return rowsHeight || 0;
-      } else if (itemsLength % groupSize === 0) {
-        return rowsHeight + ((groupCount - 1) * groupLabelHeight);
-      } else {
-        return rowsHeight + ((groupCount) * groupLabelHeight);
-      }
+    if (hideForMessaging) {
+      return 0;
     } else {
-      return rowsHeight || 0;
+      if (enableGrouping) {
+        if (itemsLength <= groupSize) {
+          return rowsHeight || 0;
+        } else if (itemsLength % groupSize === 0) {
+          return rowsHeight + ((groupCount - 1) * groupLabelHeight);
+        } else {
+          return rowsHeight + ((groupCount) * groupLabelHeight);
+        }
+      } else {
+        return rowsHeight || 0;
+      }
     }
   },
 

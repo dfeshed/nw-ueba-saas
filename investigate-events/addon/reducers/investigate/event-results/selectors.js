@@ -33,7 +33,8 @@ const _timeZone = (state) => state.investigate.data.globalPreferences && state.i
 const _locale = (state) => state.investigate.data.globalPreferences && state.investigate.data.globalPreferences.locale;
 const _searchTerm = (state) => state.investigate.eventResults.searchTerm;
 const _searchScrollIndex = (state) => state.investigate.eventResults.searchScrollIndex;
-
+const _isQueryExecutedBySort = (state) => state.investigate.data.isQueryExecutedBySort;
+const _isQueryExecutedByColumnGroup = (state) => state.investigate.data.isQueryExecutedByColumnGroup;
 const _sortField = (state) => state.investigate.data.sortField;
 const _sortDirection = (state) => state.investigate.data.sortDirection;
 
@@ -575,6 +576,12 @@ export const getDownloadOptions = createSelector(
   }
 );
 
+export const hideEventsForReQuery = createSelector(
+  [_status, _isQueryExecutedBySort, _isQueryExecutedByColumnGroup],
+  (status, isQueryExecutedBySort, isQueryExecutedByColumnGroup) => {
+    return (status !== 'streaming' && status !== 'sorting') && (isQueryExecutedBySort || isQueryExecutedByColumnGroup);
+  }
+);
 
 /**
  * Finds and returns the index of the first array member whose key matches a

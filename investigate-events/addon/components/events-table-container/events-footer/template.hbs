@@ -1,11 +1,13 @@
 {{#rsa-data-table/load-more}}
-  {{!-- still streaming, show loader --}}
-  {{#if areEventsStreaming}}
+  {{#if hideEventsForReQuery}}
+    <div class='events-table-footer-status hide-events-for-requery'>
+      {{rsa-loader size='large' label=(t 'investigate.reExecutingQuery')}}
+    </div>
+  {{else if areEventsStreaming}}
+    {{!-- still streaming, show loader --}}
     <div class='events-table-footer-status'>
       {{#if hasPartialResults}}
         {{t 'investigate.partialResults' totalCount=totalCount actualEventCount=actualEventCount}}
-      {{else if (or isQueryExecutedByColumnGroup isQueryExecutedBySort)}}
-        {{rsa-loader size='large' label=(t 'investigate.reExecutingQuery')}}
       {{else}}
         {{rsa-loader size="large" label=(t 'investigate.loading')}}
       {{/if}}

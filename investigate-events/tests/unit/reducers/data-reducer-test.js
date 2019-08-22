@@ -71,13 +71,15 @@ test('Should update sort with isQueryExecutedBySort', function(assert) {
 
 test('Should update sort', function(assert) {
   const previous = Immutable.from({
-    isQueryExecutedBySort: true
+    isQueryExecutedBySort: true,
+    isQueryExecutedByColumnGroup: true
   });
   const action = {
     type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS
   };
   const newEndState = reducer(previous, action);
   assert.deepEqual(newEndState.isQueryExecutedBySort, false);
+  assert.deepEqual(newEndState.isQueryExecutedByColumnGroup, false);
 });
 
 test('REHYDRATE', function(assert) {

@@ -22,7 +22,8 @@ import {
   requireServiceSorting,
   groupForSortAscending,
   groupForSortDescending,
-  _nestChildEvents
+  _nestChildEvents,
+  hideEventsForReQuery
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -100,6 +101,70 @@ module('Unit | Selectors | event-results', function(hooks) {
     const result = searchScrollDisplay(state);
     assert.equal(result, 1);
   });
+
+  test('hideEventsForReQuery', async function(assert) {
+    assert.equal(hideEventsForReQuery({
+      investigate: {
+        eventResults: {
+          status: 'streaming'
+        },
+        data: {
+          isQueryExecutedBySort: false,
+          isQueryExecutedByColumnGroup: false
+        }
+      }
+    }), false);
+
+    assert.equal(hideEventsForReQuery({
+      investigate: {
+        eventResults: {
+          status: 'sorting'
+        },
+        data: {
+          isQueryExecutedBySort: false,
+          isQueryExecutedByColumnGroup: false
+        }
+      }
+    }), false);
+
+    assert.equal(hideEventsForReQuery({
+      investigate: {
+        eventResults: {
+          status: 'foo'
+        },
+        data: {
+          isQueryExecutedBySort: false,
+          isQueryExecutedByColumnGroup: false
+        }
+      }
+    }), false);
+
+    assert.equal(hideEventsForReQuery({
+      investigate: {
+        eventResults: {
+          status: 'loading'
+        },
+        data: {
+          isQueryExecutedBySort: true,
+          isQueryExecutedByColumnGroup: false
+        }
+      }
+    }), true);
+
+    assert.equal(hideEventsForReQuery({
+      investigate: {
+        eventResults: {
+          status: 'loading'
+        },
+        data: {
+          isQueryExecutedBySort: false,
+          isQueryExecutedByColumnGroup: true
+        }
+      }
+    }), true);
+
+  });
+
 
   test('searchMatches returns empty array with no searchTerm', async function(assert) {
     const state = {

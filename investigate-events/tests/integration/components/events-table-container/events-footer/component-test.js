@@ -46,6 +46,26 @@ module('Integration | Component | events-footer', function(hooks) {
     );
   });
 
+  test('it renders .hide-events-for-requery when requerying because of updating sort via service', async function(assert) {
+    new ReduxDataHelper(setState)
+      .eventResultsStatus('loading')
+      .isQueryExecutedBySort()
+      .build();
+
+    await render(hbs`{{events-table-container/events-footer}}`);
+    assert.equal(findAll('.hide-events-for-requery').length, 1);
+  });
+
+  test('it renders .hide-events-for-requery when requerying because of updating column group', async function(assert) {
+    new ReduxDataHelper(setState)
+      .eventResultsStatus('loading')
+      .isQueryExecutedByColumnGroup()
+      .build();
+
+    await render(hbs`{{events-table-container/events-footer}}`);
+    assert.equal(findAll('.hide-events-for-requery').length, 1);
+  });
+
   test('it renders sorting message when there are results', async function(assert) {
     assert.expect(1);
     new ReduxDataHelper(setState)
