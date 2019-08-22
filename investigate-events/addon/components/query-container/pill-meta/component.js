@@ -538,7 +538,9 @@ export default Component.extend({
       this._broadcast(MESSAGE_TYPES.PILL_OPEN_PAREN);
       return false;
     } else if (isCloseParen(event) && _isFirstChar(event)) {
+      powerSelectAPI.actions.close();
       this._broadcast(MESSAGE_TYPES.PILL_CLOSE_PAREN);
+      return false;
     }
     return true;
   },

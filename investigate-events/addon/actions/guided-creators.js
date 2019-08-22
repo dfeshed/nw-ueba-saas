@@ -349,3 +349,10 @@ export const addParens = ({ position }) => ({
     position
   }
 });
+
+export const addIntraParens = ({ position }) => ({
+  type: ACTION_TYPES.INSERT_INTRA_PARENS,
+  payload: {
+    position
+  }
+});

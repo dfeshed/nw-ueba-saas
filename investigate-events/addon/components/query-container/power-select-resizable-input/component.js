@@ -65,10 +65,12 @@ export default Component.extend({
      * @private
      */
     handleInput(e) {
-      this.set('text', e.target.value);
-      const oninput = this.get('onInput');
-      if (oninput) {
-        oninput(e);
+      if (!this.isDestroyed && !this.isDestroying) {
+        this.set('text', e.target.value);
+        const oninput = this.get('onInput');
+        if (oninput) {
+          oninput(e);
+        }
       }
     },
 

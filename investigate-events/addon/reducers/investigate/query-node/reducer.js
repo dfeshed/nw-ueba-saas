@@ -6,7 +6,7 @@ import { isEmpty } from '@ember/utils';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { createQueryHash } from 'investigate-events/util/query-hash';
-import { createParens } from 'investigate-events/util/query-parsing';
+import { createParens, reassignTwinIds } from 'investigate-events/util/query-parsing';
 import { pillBeingEdited, focusedPill } from './selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 
@@ -727,7 +727,6 @@ export default handleActions({
         pd = [
           ...state.pillsData.slice(0, position),
           open,
-          state.pillsData[position],
           close,
           ...state.pillsData.slice(position + 1)
         ];
@@ -741,6 +740,45 @@ export default handleActions({
         ];
       }
     }
+    return state.set('pillsData', Immutable.from(pd));
+  },
+
+  [ACTION_TYPES.INSERT_INTRA_PARENS]: (state, { payload }) => {
+    let pd;
+    const pillData = state.pillsData.asMutable({ deep: true });
+    const { position } = payload;
+    const [open, close] = createParens();
+    // assign ids to the new parens
+    open.id = _.uniqueId(ID_PREFIX);
+    close.id = _.uniqueId(ID_PREFIX);
+
+    if (pillData.length === 0) {
+      // do nothing because we shouldn't be in this state
+      return;
+    } else {
+      if (pillData[position] && pillData[position].isEditing) {
+        // we are editing a pill that we now want to convert to open/close
+        // parens. Insert open and close parens into pillsData, replacing the
+        // pill that was being edited
+        pd = [
+          ...pillData.slice(0, position),
+          close,
+          open,
+          ...pillData.slice(position + 1)
+        ];
+      } else {
+        pd = [
+          // insert open and close parens into pillsData at the desired position
+          ...pillData.slice(0, position),
+          close,
+          open,
+          ...pillData.slice(position)
+        ];
+      }
+    }
+    // since we're inserting parens that breakup existing paren groups, we need
+    // to reassign the twinId property of the affected parens.
+    pd = reassignTwinIds(pd, position);
     return state.set('pillsData', Immutable.from(pd));
   }
 }, _initialState);

@@ -2792,7 +2792,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(find('.new-pill-template input').value, '', 'The new-pill-template does not have a close paren in it');
   });
 
-  test('Typing ")" when there is NOT a close paren to the right will do nothing', async function(assert) {
+  test('Typing ")" when there are an uneven number of open/close parens will insert ")("', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -2805,13 +2805,17 @@ module('Integration | Component | Query Pills', function(hooks) {
     await leaveNewPillTemplate();
 
     // NPT, (, NPT, pill, NPT, ), new pill template
-    const triggers = findAll(PILL_SELECTORS.newPillTriggerContainer);
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
     assert.equal(triggers.length, 3, 'should be three triggers');
 
     // focus on NPT to the right of the open paren and type a ")"
     await click(triggers[1]);
     await typeIn(PILL_SELECTORS.metaInput, ')');
-    assert.equal(find(PILL_SELECTORS.metaInput).value, ')', 'The new-pill-template still has a close paren in it');
+    // will now look like with the second "(" having focus
+    // NPT, (, NPT, ), NPT, (, NPT, pill, NPT, ), new pill template
+    assert.notOk(findAll('.new-pill-trigger input').length, 'the no new-pill-triggers are open for input');
+    assert.equal(findAll(PILL_SELECTORS.newPillTrigger).length, 5, 'should be 5 new-pill-triggers');
+    assert.ok(find(PILL_SELECTORS.openParenFocused), 'there should be an open paren with focus');
   });
 
   test('pill-value will have options in the drop-down', async function(assert) {

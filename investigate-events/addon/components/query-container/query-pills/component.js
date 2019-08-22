@@ -22,6 +22,7 @@ import {
 import {
   addFreeFormFilter,
   addGuidedPill,
+  addIntraParens,
   addPillFocus,
   addParens,
   addTextFilter,
@@ -67,6 +68,7 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   addFreeFormFilter,
   addGuidedPill,
+  addIntraParens,
   addPillFocus,
   addParens,
   addTextFilter,
@@ -98,6 +100,25 @@ const isEventFiredFromQueryPill = (event) => {
 };
 
 const _hasCloseParenToRight = (pd, i) => pd[i] && pd[i].type === CLOSE_PAREN;
+
+/**
+ * Counts the number of open and close parentheses to the left of `position`.
+ * @param {object[]} pd Array of filters
+ * @param {number} position Index to stop looking for parentheses
+ */
+const _hasMoreOpenThanCloseParens = (pd, position) => {
+  let i = 0;
+  let count = 0;
+  while (i < position && position < pd.length) {
+    if (pd[i].type === OPEN_PAREN) {
+      count++;
+    } else if (pd[i].type === CLOSE_PAREN) {
+      count--;
+    }
+    i++;
+  }
+  return count > 0;
+};
 
 const QueryPills = RsaContextMenu.extend({
   tagName: null,
@@ -224,7 +245,7 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.RECENT_QUERIES_SUGGESTIONS_FOR_TEXT]: (data) => this._fetchRecentQueries(data),
       [MESSAGE_TYPES.RECENT_QUERY_PILL_CREATED]: (data, position) => this._recentQueryPillCreated(data, position),
       [MESSAGE_TYPES.PILL_OPEN_PAREN]: (data, position) => this._insertParens(position),
-      [MESSAGE_TYPES.PILL_CLOSE_PAREN]: (data, position) => this._moveToRightFrom(position)
+      [MESSAGE_TYPES.PILL_CLOSE_PAREN]: (data, position) => this._moveCursorOrInsertParens(position)
     });
     this.setProperties({
       CLOSE_PAREN,
@@ -497,7 +518,11 @@ const QueryPills = RsaContextMenu.extend({
     }
     // Fetch value suggestions to update array in state
     if (pillData.type === QUERY_FILTER) {
-      this._fetchValueSuggestions({ metaName: pillData.meta, filter: stripOuterSingleQuotes(pillData.value) });
+      const filter = pillData.value ? stripOuterSingleQuotes(pillData.value) : '';
+      this._fetchValueSuggestions({
+        metaName: pillData.meta,
+        filter
+      });
     }
     this.send('openGuidedPillForEdit', { pillData });
     this._pillEnteredForEdit();
@@ -615,33 +640,46 @@ const QueryPills = RsaContextMenu.extend({
 
   _insertParens(position) {
     // inserting parens will move the current pill one position to the right
-    const newPosition = position + 1;
-    this.set('startTriggeredPosition', newPosition);
+    this._pillAddCancelled();
     this.send('addParens', { position });
+    next(this, this._openNewPillTriggerRight, position);
+  },
+
+  /**
+   * Do we have more open parens than close parens? Yes, insert )(. No, move
+   * to the right.
+   * @paren {number} position The position to move from.
+   * @private
+   */
+  _moveCursorOrInsertParens(position) {
+    const pillsData = this.get('pillsData');
+    if (_hasCloseParenToRight(pillsData, position)) {
+      this._moveToRightFrom(pillsData, position);
+    } else if (_hasMoreOpenThanCloseParens(pillsData, position)) {
+      const { isEditing } = pillsData[position];
+      this._pillAddCancelled();
+      if (isEditing) {
+        this.send('addIntraParens', { position });
+        next(this, this._openNewPillTriggerRight, position + 1);
+      } else {
+        this.send('addIntraParens', { position });
+        next(this, this._addFocusToRightPill, position + 1);
+      }
+    }
   },
 
   /**
    * Move cursor one position to the right.
    * @paren {number} position The position to move from.
    */
-  _moveToRightFrom(position) {
-    let input;
-    const pillsData = this.get('pillsData');
-    const hasCloseParenToRight = _hasCloseParenToRight(pillsData, position);
+  _moveToRightFrom(pillsData, position) {
     const trigger = document.querySelectorAll('.new-pill-trigger-container')[position];
-    if (trigger) {
-      input = trigger.querySelector('input');
-    }
-    // Look to see if there is a close paren directly to the right. If there is,
-    // move focus to the NPT to the right of the close paren
-    if (hasCloseParenToRight && input) {
-      input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
-      // Allow time for the simulated ESC key to do it's thing before moving
-      // to the new NPT
-      next(this, this._openNewPillTriggerRight, position);
-    } else if (input) {
-      input.focus();
-    }
+    const input = trigger.querySelector('input');
+    // Escape out of current pill creation. This handles any cleanup.
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    // Allow time for the simulated ESC key to do it's thing before moving
+    // to the new NPT
+    next(this, this._openNewPillTriggerRight, position);
   },
 
   /**

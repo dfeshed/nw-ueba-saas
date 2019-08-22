@@ -2,14 +2,15 @@ import { module, test, skip } from 'qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { setupTest } from 'ember-qunit';
 import {
+  convertTextToPillData,
   createFilter,
   createParens,
   hasComplexText,
   isSearchTerm,
   parsePillDataFromUri,
+  reassignTwinIds,
   transformTextToPillData,
-  uriEncodeMetaFilters,
-  convertTextToPillData
+  uriEncodeMetaFilters
 } from 'investigate-events/util/query-parsing';
 import { DEFAULT_LANGUAGES, DEFAULT_ALIASES } from '../../helpers/redux-data-helper';
 import {
@@ -1039,5 +1040,37 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(close.type, CLOSE_PAREN, 'wrong type, should be close paren');
     assert.ok(close.twinId !== undefined, 'missing twin id');
     assert.equal(close.twinId, open.twinId, 'twin ids do not match');
+  });
+
+  test('reassignTwinIds can reassign paren twinIds properly', function(assert) {
+    // ┌─┬────┬────┬────┬─┬── original parens
+    // ( ( QP ) )( ( QP ) )
+    //          └┴─────────── inserted parens
+    const filters = [
+      { type: OPEN_PAREN, twinId: 'twinPill_1' },
+      { type: OPEN_PAREN, twinId: 'twinPill_2' },
+      { type: QUERY_FILTER },
+      { type: CLOSE_PAREN, twinId: 'twinPill_2' },
+      { type: CLOSE_PAREN, twinId: 'twinPill_4' }, // insertion point
+      { type: OPEN_PAREN, twinId: 'twinPill_4' },
+      { type: OPEN_PAREN, twinId: 'twinPill_3' },
+      { type: QUERY_FILTER },
+      { type: CLOSE_PAREN, twinId: 'twinPill_3' },
+      { type: CLOSE_PAREN, twinId: 'twinPill_1' }
+    ];
+    const insertionIndex = 4;
+    const result = reassignTwinIds(filters, insertionIndex);
+    // 1 2    2 44 3    3 1  original twinIds
+    // ( ( QP ) )( ( QP ) )
+    // 1 2    2 14 3    3 4  reassigned twinIds
+    assert.ok(Array.isArray(result), 'should be an array');
+    assert.equal(result[0].twinId, 'twinPill_1', 'item at index 0 incorrect');
+    assert.equal(result[1].twinId, 'twinPill_2', 'item at index 1 incorrect');
+    assert.equal(result[3].twinId, 'twinPill_2', 'item at index 3 incorrect');
+    assert.equal(result[4].twinId, 'twinPill_1', 'item at index 4 incorrect');
+    assert.equal(result[5].twinId, 'twinPill_4', 'item at index 5 incorrect');
+    assert.equal(result[6].twinId, 'twinPill_3', 'item at index 6 incorrect');
+    assert.equal(result[8].twinId, 'twinPill_3', 'item at index 8 incorrect');
+    assert.equal(result[9].twinId, 'twinPill_4', 'item at index 9 incorrect');
   });
 });

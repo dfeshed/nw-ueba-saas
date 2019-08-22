@@ -1254,11 +1254,58 @@ test('INSERT_PARENS adds parens into an edited, existing pill', function(assert)
   };
   const result = reducer(state, action);
 
-  assert.equal(result.pillsData.length, 4, 'pillsData is the correct length');
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
   assert.equal(result.pillsData[0].type, QUERY_FILTER, 'pillsData item is in the right position');
   assert.equal(result.pillsData[1].type, OPEN_PAREN, 'pillsData item is in the right position');
-  assert.equal(result.pillsData[2].type, QUERY_FILTER, 'pillsData item is in the right position');
-  assert.equal(result.pillsData[3].type, CLOSE_PAREN, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[2].type, CLOSE_PAREN, 'pillsData item is in the right position');
+});
+
+test('INSERT_INTRA_PARENS adds parens within a paren group', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataWithParens()// ( pill )
+    .build()
+    .investigate
+    .queryNode;
+  const action = {
+    type: ACTION_TYPES.INSERT_INTRA_PARENS,
+    payload: {
+      position: 1
+    }
+  };
+  const result = reducer(state, action);// ( ) ( pill )
+  const pd = result.pillsData;
+  assert.equal(pd.length, 5, 'pillsData is the correct length');
+  assert.equal(pd[0].type, OPEN_PAREN, 'open paren, first group');
+  assert.equal(pd[1].type, CLOSE_PAREN, 'close paren, first group');
+  assert.equal(pd[2].type, OPEN_PAREN, 'open paren, second group');
+  assert.equal(pd[3].type, QUERY_FILTER, 'query filter');
+  assert.equal(pd[4].type, CLOSE_PAREN, 'close paren, second group');
+  assert.equal(pd[0].twinId, pd[1].twinId, 'first group twinIds match');
+  assert.equal(pd[2].twinId, pd[4].twinId, 'second group twinIds match');
+});
+
+test('INSERT_INTRA_PARENS adds parens when editing a pill that is within a paren group', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataWithParens()// ( pill )
+    .markEditing(['2'])// the pill is being edited
+    .build()
+    .investigate
+    .queryNode;
+  const action = {
+    type: ACTION_TYPES.INSERT_INTRA_PARENS,
+    payload: {
+      position: 1
+    }
+  };
+  const result = reducer(state, action);// ( ) ( )
+  const pd = result.pillsData;
+  assert.equal(pd.length, 4, 'pillsData is the correct length');
+  assert.equal(pd[0].type, OPEN_PAREN, 'open paren, first group');
+  assert.equal(pd[1].type, CLOSE_PAREN, 'close paren, first group');
+  assert.equal(pd[2].type, OPEN_PAREN, 'open paren, second group');
+  assert.equal(pd[3].type, CLOSE_PAREN, 'close paren, second group');
+  assert.equal(pd[0].twinId, pd[1].twinId, 'first group twinIds match');
+  assert.equal(pd[2].twinId, pd[3].twinId, 'second group twinIds match');
 });
 
 test('SET_VALUE_SUGGESTIONS init marks callInProgress as true', function(assert) {

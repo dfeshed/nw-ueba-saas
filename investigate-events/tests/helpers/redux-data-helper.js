@@ -131,7 +131,7 @@ const INVALID_PILL_DATA = [{
 const PILLS_WITH_PARENS = [{
   type: 'open-paren',
   id: '1',
-  twinId: 'twinning!'
+  twinId: 'twinPill_11'
 }, {
   id: '2',
   isEditing: false,
@@ -146,7 +146,7 @@ const PILLS_WITH_PARENS = [{
 }, {
   type: 'close-paren',
   id: '3',
-  twinId: 'twinning!'
+  twinId: 'twinPill_11'
 }];
 
 

@@ -131,6 +131,62 @@ export const createParens = () => {
   return [open, close];
 };
 
+/**
+ * Matches up the `twinId` property of parens if they get mismatched. This can
+ * happen, for example, when intra-parens ")(" have been inserted.
+ * @param {object[]} filters Array of query filters
+ * @param {number} insertionIndex Index where parens were inserted that caused
+ * a mismatch
+ */
+export const reassignTwinIds = (filters, insertionIndex) => {
+  const cache = [];
+  const insertedCloseParen = filters[insertionIndex];
+  const insertedOpenParen = filters[insertionIndex + 1];
+  let leftIndex = insertionIndex - 1;
+  let rightIndex = insertionIndex + 2;
+  // look left from insertion index to find matching open paren
+  while (leftIndex >= 0) {
+    const item = filters[leftIndex];
+    if (item.type === CLOSE_PAREN) {
+      // save twinId and advance to next filter
+      cache.push(item.twinId);
+      leftIndex--;
+    } else if (item.type === OPEN_PAREN) {
+      if (cache.includes(item.twinId)) {
+        // this is not the twin you are looking for
+        leftIndex--;
+      } else {
+        // Not in cache, assign close paren to twinId
+        insertedCloseParen.twinId = item.twinId;
+        break;
+      }
+    } else {
+      leftIndex--;
+    }
+  }
+  // looking right from insertion index to find matching close paren
+  while (rightIndex < filters.length) {
+    const item = filters[rightIndex];
+    if (item.type === OPEN_PAREN) {
+      // save twinId and advance to next filter
+      cache.push(item.twinId);
+      rightIndex++;
+    } else if (item.type === CLOSE_PAREN) {
+      if (cache.includes(item.twinId)) {
+        // this is not the twin you are looking for
+        rightIndex++;
+      } else {
+        // Not in cache, assign open paren to twinId
+        item.twinId = insertedOpenParen.twinId;
+        break;
+      }
+    } else {
+      rightIndex++;
+    }
+  }
+  return filters;
+};
+
 export const hasComplexText = (str) => {
   return COMPLEX_OPERATORS.some((d) => str.includes(d));
 };
