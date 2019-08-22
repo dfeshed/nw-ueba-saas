@@ -1,5 +1,6 @@
 package com.rsa.netwitness.presidio.automation.common.scenarios.file;
 
+import org.testng.collections.Lists;
 import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FILE_OPERATION_TYPE;
 import presidio.data.domain.event.file.FileEvent;
@@ -291,13 +292,14 @@ public class FileOperationTypeAnomalies {
         EntityEventIDFixedPrefixGenerator eventIdGen = new EntityEventIDFixedPrefixGenerator(testUser);
         SingleUserGenerator userGenerator = new SingleUserGenerator(testUser);
 
-        ITimeGenerator myTimeGenerator =
+        List<FileEvent> events = Lists.newArrayList();
+                ITimeGenerator myTimeGenerator =
                 new MinutesIncrementTimeGenerator(LocalTime.of(8, 30), LocalTime.of(9, 00), 60, anomalyDay + 28, anomalyDay + 3);
-        List<FileEvent> events = FileOperationActions.getSuccessfulLocalSharePermissionsChangedOperation(eventIdGen, myTimeGenerator, userGenerator);
+        // events.addAll(FileOperationActions.getSuccessfulLocalSharePermissionsChangedOperation(eventIdGen, myTimeGenerator, userGenerator));
 
         ITimeGenerator myTimeGenerator2 =
                 new MinutesIncrementTimeGenerator(LocalTime.of(9, 30), LocalTime.of(16, 00), 10, anomalyDay + 28, anomalyDay + 3);
-        events.addAll(FileOperationActions.getFileOperation(FILE_OPERATION_TYPE.FOLDER_OPENED, eventIdGen, myTimeGenerator2, userGenerator));
+        events.addAll(FileOperationActions.getFileOperation(FILE_OPERATION_TYPE.LOCAL_SHARE_PERMISSIONS_CHANGED, eventIdGen, myTimeGenerator2, userGenerator));
 
         //Anomaly:
         ITimeGenerator myTimeGenerator3 =
