@@ -14,6 +14,7 @@ pipeline {
         //choice(name: 'NODE_LABLE', choices: ['','','nw-hz-03-ueba','nw-hz-04-ueba','nw-hz-05-ueba','nw-hz-06-ueba','nw-hz-07-ueba'], description: '')
     }
     agent { label env.NODE_LABLE }
+    tools { jdk env.JDK }
     environment {
         FLUME_HOME = '/var/lib/netwitness/presidio/flume/'
         SCRIPTS_DIR = '/ueba-automation-projects/ueba-automation-framework/src/main/resources/scripts/'
