@@ -1,12 +1,17 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render, findAll, find, click } from '@ember/test-helpers';
+import { render, findAll, find, click, triggerKeyEvent } from '@ember/test-helpers';
 import { typeInSearch } from 'ember-power-select/test-support/helpers';
 import { setupRenderingTest } from 'ember-qunit';
 
 const getTextFromDOMArray = (arr) => {
   return arr.reduce((a, c) => a + c.textContent.trim().replace(/\s+/g, ''), '');
 };
+
+const ARROW_UP_KEY = 38;
+const ARROW_DOWN_KEY = 40;
+const ENTER_KEY = 13;
+
 module('Integration | Component | list-manager', function(hooks) {
   setupRenderingTest(hooks);
 
@@ -126,6 +131,114 @@ module('Integration | Component | list-manager', function(hooks) {
     const options = findAll(`${listItems} a`);
     assert.ok(options[0].children[0].classList.contains('rsa-icon-lock-close-1-lined'), 'ootb icon rendered');
     assert.ok(options[1].children[0].classList.contains('rsa-icon-settings-1-lined'), 'non-ootb icon rendered');
+  });
+
+  test('Use Up Arrow Key to traverse through items', async function(assert) {
+    assert.expect(2);
+    this.set('name', 'Some Column Groups');
+    this.set('list', items);
+    this.set('selectedItem', items[1]);
+    this.set('handleSelection', () => {
+      // should not be called
+      assert.ok(true, 'Action passed will be called, as new item is selected');
+    });
+
+    await render(hbs`{{#list-manager 
+      listName=name
+      list=list
+      selectedItem=selectedItem
+      itemSelection=handleSelection as |manager|}}
+        {{#manager.itemList as |list|}}
+          {{#list.item as |item|}}
+           {{item.name}}
+          {{/list.item}}
+        {{/manager.itemList}}
+      {{/list-manager}}`);
+
+    // open dropdown
+    await click(`${buttonGroupSelector} button`);
+    // Up Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
+    assert.ok(document.querySelector('li:focus').innerText.trim(), items[0].name, 'Focus shall be on previous item');
+    // Up Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
+    assert.ok(document.querySelector('li:focus').innerText.trim(), items[items.length - 1].name,
+      'Focus shall be on the last item when Up Arrow Key is pressed from the first item');
+  });
+
+  test('Use Down Arrow Key to traverse through items', async function(assert) {
+    assert.expect(2);
+    this.set('name', 'Some Column Groups');
+    this.set('list', items);
+    this.set('selectedItem', items[2]);
+    this.set('handleSelection', () => {
+      // should not be called
+      assert.ok(true, 'Action passed will be called, as new item is selected');
+    });
+
+    await render(hbs`{{#list-manager
+      listName=name
+      list=list
+      selectedItem=selectedItem
+      itemSelection=handleSelection as |manager|}}
+        {{#manager.itemList as |list|}}
+          {{#list.item as |item|}}
+           {{item.name}}
+          {{/list.item}}
+        {{/manager.itemList}}
+      {{/list-manager}}`);
+
+    // open dropdown
+    await click(`${buttonGroupSelector} button`);
+    // Down Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
+    assert.ok(document.querySelector('li:focus').innerText.trim(), items[3].name, 'Focus shall be on next item');
+    // Down Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
+    assert.ok(document.querySelector('li:focus').innerText.trim(), items[0].name,
+      'Focus shall be on the first item when Down Arrow Key is pressed from the last item');
+  });
+
+  test('Use Up and Down Arrow Keys to traverse through items and Enter Key to select item', async function(assert) {
+    assert.expect(6);
+    this.set('name', 'Some Column Groups');
+    this.set('list', items);
+    this.set('selectedItem', items[2]);
+    this.set('handleSelection', () => {
+      // assert to be called when Enter Key is pressed below
+      assert.ok(true, 'Action passed will be called as new item is selected from pressing Enter Key');
+    });
+
+    await render(hbs`{{#list-manager
+      listName=name
+      list=list
+      selectedItem=selectedItem
+      itemSelection=handleSelection as |manager|}}
+        {{#manager.itemList as |list|}}
+          {{#list.item as |item|}}
+           {{item.name}}
+          {{/list.item}}
+        {{/manager.itemList}}
+      {{/list-manager}}`);
+
+    // open dropdown
+    await click(`${buttonGroupSelector} button`);
+    assert.ok(find(`${buttonMenuSelector}.expanded`), 'The button menu should expand on click of the drop down button');
+
+    // Down Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
+    assert.ok(document.querySelector('li:focus').innerText.trim(), items[3].name, 'Focus shall be on next item');
+    // Down Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
+    assert.ok(document.querySelector('li:focus').innerText.trim(), items[0].name,
+      'Focus shall be on the first item when Down Arrow Key is pressed from the last item');
+    // Up Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
+    assert.ok(document.querySelector('li:focus').innerText.trim(), items[items.length - 1].name,
+      'Focus shall be on the last item when Up Arrow Key is pressed from the first item');
+    // Enter
+    await triggerKeyEvent(buttonMenuSelector, 'keyup', ENTER_KEY);
+    assert.ok(find(`${buttonMenuSelector}.collapsed`), 'menu is collapsed after Enter Key');
   });
 
   test('Filtering should be available via contextual API', async function(assert) {

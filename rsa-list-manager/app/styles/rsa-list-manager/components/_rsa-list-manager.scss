@@ -56,7 +56,7 @@
         }
         li.rsa-list-item {
           line-height: 2em;
-          &:hover {
+          &:hover, &:focus {
             background: background-color(secondary, darker);
             outline: none;
             cursor: pointer;
@@ -110,8 +110,6 @@
           }
         }
       }
-
     }
-
   }
 }

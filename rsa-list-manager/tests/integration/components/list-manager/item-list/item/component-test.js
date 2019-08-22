@@ -10,7 +10,7 @@ module('Integration | Component | item ', function(hooks) {
   const OOTB = 'rsa-icon-lock-close-1-lined';
 
   test('Component for item renders when no selectedItem is passed, no OOTB indicators', async function(assert) {
-    assert.expect(6);
+    assert.expect(7);
 
     const item = { id: '1', name: 'foo' };
     this.set('item', item);
@@ -26,6 +26,7 @@ module('Integration | Component | item ', function(hooks) {
     assert.notOk(find('li .ootb-indicator'), 'ootb indicator found');
     assert.notOk(find('li.is-selected'));
     assert.equal(find('li a').getAttribute('title'), 'foo', 'tooltip for item on hover shows item name');
+    assert.equal(find('li').getAttribute('tabindex'), -1, 'tabindex attribute exists');
 
     await click('li a');
     assert.ok(this.get('isExpanded') == false, 'clicking item toggles property isExpanded');

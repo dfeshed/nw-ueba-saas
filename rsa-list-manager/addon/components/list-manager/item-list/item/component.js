@@ -7,6 +7,8 @@ export default Component.extend({
   tagName: 'li',
   classNames: ['rsa-list-item'],
   classNameBindings: ['isSelected'],
+  attributeBindings: ['tabindex'],
+  tabindex: -1,
   item: null,
   selectedItem: null,
 
@@ -29,13 +31,11 @@ export default Component.extend({
   },
 
   actions: {
-
     clickAction() {
       if (!this.get('isSelected')) {
         this.get('itemSelection')(this.get('item'));
       }
       this.toggleProperty('isExpanded');
     }
-
   }
 });
