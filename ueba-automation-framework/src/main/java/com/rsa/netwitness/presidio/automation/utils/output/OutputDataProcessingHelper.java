@@ -16,7 +16,6 @@ public class OutputDataProcessingHelper {
             LoggerFactory.getLogger(OutputDataProcessingHelper.class.getName());
 
 
-
     public ProcessorRun processorRun(Instant startDate, Instant endDate, String smartRecordConfName) {
         return new ProcessorRun(startDate, endDate, smartRecordConfName);
     }
@@ -46,16 +45,16 @@ public class OutputDataProcessingHelper {
             String logFile = "/tmp/presidio-output-processor_run_" + smart_record_conf_name + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
 
             SshResponse p = TerminalCommandsSshUtils.runCommand(
-                    Consts.PRESIDIO_OUTPUT, true, Consts.PRESIDIO_DIR, "run" , "--start_date " + startDate,
-                    "--end_date " + endDate , "--smart_record_conf_name " + smart_record_conf_name,
-                    "> " + logFile);
+                    Consts.PRESIDIO_OUTPUT, true, Consts.PRESIDIO_DIR, "run", "--start_date " + startDate,
+                    "--end_date " + endDate, "--smart_record_conf_name " + smart_record_conf_name,
+                    " > " + logFile);
 
             assertThat(p.exitCode)
                     .withFailMessage("Error exit code.\nCheck the log: " + logFile)
                     .isEqualTo(0);
 
             printLogFile(logFile);
-            LOGGER.info("ProcessorRun["+ smart_record_conf_name.toUpperCase()+"] completed successfully.");
+            LOGGER.info("ProcessorRun[" + smart_record_conf_name.toUpperCase() + "] completed successfully.");
             return p.exitCode;
         }
     }
@@ -78,16 +77,16 @@ public class OutputDataProcessingHelper {
             String logFile = "/tmp/presidio-output_recalc_user_score_" + entity + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
 
             SshResponse p = TerminalCommandsSshUtils.runCommand(Consts.PRESIDIO_OUTPUT, true, Consts.PRESIDIO_DIR,
-                    "recalculate-entity-score", "--start_date " + startDate, "--end_date " + endDate ,
-                    "--fixed_duration_strategy 86400.0 " , " --smart_record_conf_name " + entity + "_hourly ",
-                    "--entity_type " + entity, "> " + logFile);
+                    "recalculate-entity-score", "--start_date " + startDate, "--end_date " + endDate,
+                    "--fixed_duration_strategy 86400.0 ", " --smart_record_conf_name " + entity + "_hourly ",
+                    "--entity_type " + entity, " > " + logFile);
 
             assertThat(p.exitCode)
                     .withFailMessage("Error exit code.\nCheck the log: " + logFile)
                     .isEqualTo(0);
 
             printLogFile(logFile);
-            LOGGER.info("RecalculateUserScore["+ entity.toUpperCase()+"] completed successfully.");
+            LOGGER.info("RecalculateUserScore[" + entity.toUpperCase() + "] completed successfully.");
             return p.exitCode;
         }
     }

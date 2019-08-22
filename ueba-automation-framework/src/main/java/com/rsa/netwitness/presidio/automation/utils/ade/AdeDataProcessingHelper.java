@@ -75,8 +75,8 @@ public class AdeDataProcessingHelper {
 
             // score raw events and builds P buckets
             SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_SCORE_AGGR + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
-                    "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
-                            + "> " + logPath);
+                    "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame),
+                    " > " + logPath);
 
             assertThat(p4.exitCode)
                     .withFailMessage("Error exit code.\nCheck the log: " + logPath)
@@ -107,8 +107,8 @@ public class AdeDataProcessingHelper {
             // builds the histograms (aggr_<feature>Histogram<context+dataSource>Daily)
             //--fixed_duration_strategy should be hourly 3600
             SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_MODEL_FEATURE_BUCKETS + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
-                    "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
-                            + "> " + logPath);
+                    "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame),
+                    " > " + logPath);
             assertThat(p4.exitCode)
                     .withFailMessage("Error exit code.\nCheck the log: " + logPath)
                     .isEqualTo(0);
@@ -137,8 +137,8 @@ public class AdeDataProcessingHelper {
             String logPath = "/tmp/" + PRESIDIO_ADE_APP_SMART + "_process_" + entity + "_" + start.toString() + "_" + end.toString() + ".log";
 
             SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_SMART + ".jar", true, Consts.PRESIDIO_DIR, "process", "--smart_record_conf_name " + entity,
-                    "--start_date " + start.toString(), "--end_date " + end.toString()
-                            + "> " + logPath);
+                    "--start_date " + start.toString(), "--end_date " + end.toString(),
+                    " > " + logPath);
 
             assertThat(p4.exitCode)
                     .withFailMessage("Error exit code.\nCheck the log: " + logPath)
@@ -167,8 +167,8 @@ public class AdeDataProcessingHelper {
             // builds F features
             String logPath = "/tmp/" + PRESIDIO_ADE_APP_ACCUMULATE_SMART + "_run_" + entity + "_" + start.toString() + "_" + end.toString() + ".log";
             SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_ACCUMULATE_SMART + ".jar", true, Consts.PRESIDIO_DIR, "run", "--smart_record_conf_name " + entity,
-                    "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy 86400"
-                            + "> " + logPath);
+                    "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy 86400",
+                    " > " + logPath);
 
             assertThat(p4.exitCode)
                     .withFailMessage("Error exit code.\nCheck the log: " + logPath)
@@ -200,8 +200,8 @@ public class AdeDataProcessingHelper {
             String logPath = "/tmp/" + PRESIDIO_ADE_APP_MODELING + "_process_" + group_name + "_" + session_id + "_" + end.toString() + ".log";
 
             SshResponse p3 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_MODELING + ".jar", true, Consts.PRESIDIO_DIR, "process",
-                    "--group_name " + group_name, "--session_id " + session_id, "--end_date " + end.toString()
-                            + "> " + logPath);
+                    "--group_name " + group_name, "--session_id " + session_id, "--end_date " + end.toString(),
+                    " > " + logPath);
 
             assertThat(p3.exitCode)
                     .withFailMessage("Error exit code.\nCheck the log: " + logPath)
@@ -233,8 +233,8 @@ public class AdeDataProcessingHelper {
             // builds F features
             SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_ACCUMULATE_AGGR + ".jar", true, Consts.PRESIDIO_DIR,
                     "run", "--schema " + schema.toUpperCase(),
-                    "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy 86400  --feature_bucket_strategy 3600"
-                            + "> " + logPath);
+                    "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy 86400  --feature_bucket_strategy 3600",
+                    " > " + logPath);
 
             assertThat(p4.exitCode)
                     .withFailMessage("Error exit code.\nCheck the log: " + logPath)
@@ -269,8 +269,8 @@ public class AdeDataProcessingHelper {
 
             // builds F features
             SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_FEATURE_AGGR + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
-                    "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
-                            + "> " + logPath);
+                    "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame),
+                    " > " + logPath);
 
             assertThat(p4.exitCode)
                     .withFailMessage("Error exit code.\nCheck the log: " + logPath)

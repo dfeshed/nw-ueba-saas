@@ -44,10 +44,11 @@ public class InputTestManager {
 
     /**
      * Prepares input for input component in MongoDB by calling inputSDK
+     *
      * @param evList
      */
     public void insert(List<? extends Event> evList) {
-        if(evList.isEmpty()){
+        if (evList.isEmpty()) {
             return;
         }
 
@@ -59,8 +60,8 @@ public class InputTestManager {
     /**
      * Calls Input jar as terminal command to process stored events
      *
-     * @param startDate     - start of time interval for store
-     * @param endDate       - start of time interval for store
+     * @param startDate      - start of time interval for store
+     * @param endDate        - start of time interval for store
      * @param dataSourceType - data source
      */
     public void process(Instant startDate, Instant endDate, String dataSourceType) {
@@ -68,8 +69,8 @@ public class InputTestManager {
 
         // process the data in the input_XXXXXX_raw_events collection
         SshResponse p = TerminalCommandsSshUtils.runCommand(PRESIDIO_INPUT_APP, true, Consts.PRESIDIO_DIR,
-                "run" , "--schema " + dataSourceType, "--start_date " + startDate, "--end_date " + endDate +
-                        "> " + logPath);
+                "run", "--schema " + dataSourceType, "--start_date " + startDate, "--end_date " + endDate,
+                "> " + logPath);
 
         assertThat(p.exitCode)
                 .withFailMessage("Error exit code.\nCheck the log: " + logPath)
@@ -77,7 +78,6 @@ public class InputTestManager {
 
         printLogFile(logPath);
     }
-
 
 
 }
