@@ -46,10 +46,10 @@ public class EventToMetadataConverterFile implements EventToMetadataConverter<Fi
         } else if (operationType.equals("FILE_MODIFIED") || operationType.equals("FOLDER_MODIFIED")) {
             metadata.put("reference_id", "4663");
             metadata.put("accesses", "AppendData (or AddSubdirectory or CreatePipeInstance)");
-        } else if (operationType.equals("FILE_WRITE_DAC_CHANGED") || operationType.equals("FOLDER_WRITE_DAC_CHANGED")) {
+        } else if (operationType.equals("FILE_WRITE_DAC_CHANGED") || operationType.equals("FOLDER_WRITE_DAC_CHANGED") || operationType.equals("FILE_WRITE_DAC_PERMISSION_CHANGED")) {
             metadata.put("reference_id", "4663");
             metadata.put("accesses", "WRITE_DAC");
-        } else if (operationType.equals("FILE_WRITE_OWNERSHIP_CHANGED") || operationType.equals("FOLDER_WRITE_OWNERSHIP_CHANGED")) {
+        } else if (operationType.equals("FILE_WRITE_OWNERSHIP_CHANGED") || operationType.equals("FOLDER_WRITE_OWNERSHIP_CHANGED") || operationType.equals("FILE_WRITE_OWNER_PERMISSION_CHANGED")) {
             metadata.put("reference_id", "4663");
             metadata.put("accesses", "WRITE_OWNER");
         } else { // All operation types from scenario that not covered in NW will be converted as following:

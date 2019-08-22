@@ -77,8 +77,10 @@ class NetwitnessFileEventBuilder extends NetwitnessEvent {
         { "FOLDER_MODIFIED", "AppendData (or AddSubdirectory or CreatePipeInstance)" },
         { "FILE_WRITE_DAC_CHANGED", "WRITE_DAC" },
         { "FOLDER_WRITE_DAC_CHANGED", "WRITE_DAC" },
+        { "FILE_WRITE_DAC_PERMISSION_CHANGED", "WRITE_DAC" },
         { "FILE_WRITE_OWNERSHIP_CHANGED", "WRITE_OWNER" },
         { "FOLDER_WRITE_OWNERSHIP_CHANGED", "WRITE_OWNER" },
+        { "FILE_WRITE_OWNER_PERMISSION_CHANGED", "WRITE_OWNER" },
         }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
 
     String getOperationType() {return  event.getFileOperation().getOperationType().getName().toUpperCase().replaceAll(" ","_");}

@@ -299,7 +299,7 @@ public class FileOperationTypeAnomalies {
 
         ITimeGenerator myTimeGenerator2 =
                 new MinutesIncrementTimeGenerator(LocalTime.of(9, 30), LocalTime.of(16, 00), 10, anomalyDay + 28, anomalyDay + 3);
-        events.addAll(FileOperationActions.getFileOperation(FILE_OPERATION_TYPE.LOCAL_SHARE_PERMISSIONS_CHANGED, eventIdGen, myTimeGenerator2, userGenerator));
+        events.addAll(FileOperationActions.getFileOperation(FILE_OPERATION_TYPE.FILE_WRITE_DAC_PERMISSION_CHANGED, eventIdGen, myTimeGenerator2, userGenerator));
 
         //Anomaly:
         ITimeGenerator myTimeGenerator3 =
