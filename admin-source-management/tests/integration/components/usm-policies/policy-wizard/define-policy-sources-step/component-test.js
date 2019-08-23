@@ -204,6 +204,21 @@ module('Integration | Component | usm-policies/policy-wizard/define-policy-sourc
     assert.equal(document.querySelectorAll('.directory-path .input-error').length, 0, 'Error message is not showing for valid source name');
   });
 
+  test('It shows the correct error message when the directory path has angle brackets', async function(assert) {
+    const invalidSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: true, sourceName: 'apache-server-1', exclusionFilters: ['[', 'def'], paths: ['<invalid>', 'path2'] } ];
+    const translation = this.owner.lookup('service:i18n');
+    const expectedMessage = translation.t('adminUsm.policyWizard.filePolicy.invalidPathAngleBrackets');
+    new ReduxDataHelper(setState)
+      .policyWiz('filePolicy')
+      .policyWizFileSourceTypes()
+      .policyWizFileSources(invalidSource)
+      .build();
+    await render(hbs`{{usm-policies/policy-wizard/define-policy-sources-step}}`);
+    const isErrorClass = findAll('.directory-path .is-error');
+    assert.equal(isErrorClass.length, 1, 'is-error class is rendered');
+    assert.equal(findAll('.directory-path .input-error')[0].innerText, expectedMessage, `Correct error message is showing: ${expectedMessage}`);
+  });
+
   test('It shows the correct error message when the exclusion filter is invalid', async function(assert) {
     const invalidSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: true, sourceName: 'apache-server-1', exclusionFilters: ['[', 'def'], paths: ['path1', 'path2'] } ];
     const translation = this.owner.lookup('service:i18n');

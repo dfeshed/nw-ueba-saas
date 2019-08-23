@@ -256,6 +256,24 @@ module('Unit | Selectors | policy-wizard/filePolicy/file-selectors', function(ho
     validActual = sourceNameValidator(fullState);
     assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
 
+    // invalid - when one of the directory paths has angle brackets
+    newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: '10.42.42.42', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', '<invalid>'] } ];
+    fullState = new ReduxDataHelper()
+      .policyWiz('filePolicy')
+      .policyWizFileSources(newSource)
+      .policyWizVisited(visited)
+      .build();
+    validExpected = {
+      isError: true,
+      invalidTableItem: 'invalid',
+      dirPathLength: '',
+      dirPathEmptyMsg: '',
+      invalidPath: '<invalid>',
+      errorMessage: 'adminUsm.policyWizard.filePolicy.invalidPathAngleBrackets'
+    };
+    validActual = sourceNameValidator(fullState);
+    assert.deepEqual(validActual, validExpected, `${newSource} value validated as expected`);
+
     // valid value
     newSource = [ { fileType: 'apache', fileEncoding: 'UTF-8 / ASCII', enabled: true, startOfEvents: false, sourceName: 'apache-server-1', exclusionFilters: ['filter-1', 'filter-2'], paths: ['path1', 'path2'] } ];
     fullState = new ReduxDataHelper()

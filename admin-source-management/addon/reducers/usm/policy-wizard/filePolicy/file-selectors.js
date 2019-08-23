@@ -141,6 +141,13 @@ export const sourceNameValidator = (state) => {
             message = 'adminUsm.policyWizard.filePolicy.invalidDirPath';
             return false;
           }
+          // Path mustn't contain any angle brackets
+          if (path.match(/(<|>)/)) {
+            error = true;
+            invalidDirPath = path;
+            message = 'adminUsm.policyWizard.filePolicy.invalidPathAngleBrackets';
+            return false;
+          }
         }
       }
       return true;
