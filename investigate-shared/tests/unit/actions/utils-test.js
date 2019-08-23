@@ -3,7 +3,9 @@ import { module, test } from 'qunit';
 import {
   createFilename,
   encodeMetaFilterConditions,
-  extractSearchTermFromFilters
+  extractSearchTermFromFilters,
+  mergeFilterStrings,
+  removeEmptyParens
 } from 'investigate-shared/actions/api/events/utils';
 
 module('Unit | Helper | utils');
@@ -158,4 +160,75 @@ test('extractSearchTermFromFilters returns an array of pills without any text fi
     { meta: 'boom' }
   ]);
   assert.equal(searchTerm, 'bar', 'Search term should be extracted from array of pills');
+});
+
+test('mergeFilterStrings returns proper string', function(assert) {
+  assert.equal(
+    ['a'].reduce(mergeFilterStrings, ''),
+    'a', 'single filter'
+  );
+  assert.equal(
+    ['(', 'a', ')'].reduce(mergeFilterStrings, ''),
+    '(a)', 'single filter within parens'
+  );
+  assert.equal(
+    ['a', 'b'].reduce(mergeFilterStrings, ''),
+    'a && b', 'two filters'
+  );
+  assert.equal(
+    ['(', 'a', 'b', ')'].reduce(mergeFilterStrings, ''),
+    '(a && b)', 'two filters within parens'
+  );
+  assert.equal(
+    ['(', 'a', ')', '(', 'b', ')'].reduce(mergeFilterStrings, ''),
+    '(a) && (b)', 'two groups'
+  );
+  assert.equal(
+    ['(', '(', 'a', ')', '(', 'b', ')', ')'].reduce(mergeFilterStrings, ''),
+    '((a) && (b))', 'two groups within parens'
+  );
+  assert.equal(
+    ['(', 'a', '(', 'b', ')', ')'].reduce(mergeFilterStrings, ''),
+    '(a && (b))', 'nested groups'
+  );
+  assert.equal(
+    ['(', '(', 'a', '(', 'b', ')', ')', '(', '(', 'c', ')', 'd', ')', ')'].reduce(mergeFilterStrings, ''),
+    '((a && (b)) && ((c) && d))', 'deeply nested groups'
+  );
+});
+
+test('removeEmptyParens properly removes empty parens', function(assert) {
+  const op = { type: 'open-paren' };
+  const cp = { type: 'close-paren' };
+  const query = { type: 'query' };
+  const complex = { type: 'complex' };
+  const text = { type: 'text' };
+
+  // Q C T
+  const allFilterTypes = [query, complex, text];
+  // ( Q C T )
+  const wrappedFilters = [op, ...allFilterTypes, cp];
+  // ( ( ( Q C T ) ) )
+  const deeplyWrappedFilters = [op, op, op, ...allFilterTypes, cp, cp, cp];
+  // ( )
+  const emptyParens = [op, cp];
+  // ( ( ) )
+  const nestedEmptyParens = [op, ...emptyParens, ...emptyParens, cp];
+  // ( Q ( ) ( ) Q )
+  const nestedEmptyParensWithFilters = [op, query, ...nestedEmptyParens, query, cp];
+  // Q ( ( ( ) ) )
+  const deeplyNestedParensWithFilter = [query, op, op, op, cp, cp, cp];
+  // ( Q Q ( C ( ) ( Q ( ( ) Q ) ( ) ) ( ) ) ) T
+  const wtfParens = [op, query, query, op, complex, ...emptyParens, op, query, op, ...emptyParens, query, cp, ...emptyParens, cp, ...emptyParens, cp, cp, text];
+
+  assert.deepEqual(removeEmptyParens(allFilterTypes), allFilterTypes, 'just filters');
+  assert.deepEqual(removeEmptyParens(wrappedFilters), wrappedFilters, 'wrapped filters');
+  assert.deepEqual(removeEmptyParens(deeplyWrappedFilters), deeplyWrappedFilters, 'deeply wrapped filters');
+  assert.deepEqual(removeEmptyParens(emptyParens), [], 'empty parens');
+  assert.deepEqual(removeEmptyParens(nestedEmptyParens), [], 'nested empty parens');
+  assert.deepEqual(removeEmptyParens(nestedEmptyParensWithFilters), [op, query, query, cp], 'nested empty parens with filters');
+  assert.deepEqual(removeEmptyParens(deeplyNestedParensWithFilter), [query], 'deeply nested parens with filter');
+  assert.deepEqual(removeEmptyParens(wtfParens), [
+    op, query, query, op, complex, op, query, op, query, cp, cp, cp, cp, text
+  ], 'insanely nested parens with filters');
 });

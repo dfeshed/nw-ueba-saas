@@ -10,7 +10,7 @@ import {
   parsePillDataFromUri,
   reassignTwinIds,
   transformTextToPillData,
-  uriEncodeMetaFilters
+  metaFiltersAsString
 } from 'investigate-events/util/query-parsing';
 import { DEFAULT_LANGUAGES, DEFAULT_ALIASES } from '../../helpers/redux-data-helper';
 import {
@@ -752,7 +752,7 @@ module('Unit | Util | Query Parsing', function(hooks) {
     assert.equal(result[1].value, '2', 'forward slash was not parsed correctly');
   });
 
-  test('uriEncodeMetaFilters can convert a pill array to a string suitable for the metaFilter query param', function(assert) {
+  test('metaFiltersAsString can convert a pill array to a string suitable for the metaFilter query param', function(assert) {
     const queryPill = transformTextToPillData('medium = 1', DEFAULT_LANGUAGES);
     const encQP = encodeURIComponent('medium = 1');
     const complexPill = transformTextToPillData('(bar)', DEFAULT_LANGUAGES);
@@ -760,16 +760,16 @@ module('Unit | Util | Query Parsing', function(hooks) {
     const textPill = transformTextToPillData(`${SEARCH_TERM_MARKER}baz${SEARCH_TERM_MARKER}`, DEFAULT_LANGUAGES);
     const unencTP = `${SEARCH_TERM_MARKER}baz${SEARCH_TERM_MARKER}`; // Text Filters are not encoded
     const empty = transformTextToPillData('', DEFAULT_LANGUAGES);
-    assert.equal(uriEncodeMetaFilters([queryPill]), encQP, 'query pill only');
-    assert.equal(uriEncodeMetaFilters([complexPill]), encCP, 'complex pill only');
-    assert.equal(uriEncodeMetaFilters([textPill]), unencTP, 'text pill only');
-    assert.equal(uriEncodeMetaFilters([queryPill, complexPill]), `${encQP} && ${encCP}`, 'query and complex pills');
-    assert.equal(uriEncodeMetaFilters([queryPill, textPill]), `${encQP} && ${unencTP}`, 'query and text pills');
-    assert.equal(uriEncodeMetaFilters([complexPill, textPill]), `${encCP} && ${unencTP}`, 'complex and text pills');
-    assert.equal(uriEncodeMetaFilters([queryPill, complexPill, textPill]), `${encQP} && ${encCP} && ${unencTP}`, 'query, complex, and text pills');
-    assert.deepEqual(uriEncodeMetaFilters([empty]), undefined, 'empty pill');
-    assert.equal(uriEncodeMetaFilters([queryPill, empty]), `${encQP}`, 'query and empty pills');
-    assert.equal(uriEncodeMetaFilters([queryPill, empty, textPill]), `${encQP} && ${unencTP}`, 'query, empty, and text pills');
+    assert.equal(metaFiltersAsString([queryPill]), encQP, 'query pill only');
+    assert.equal(metaFiltersAsString([complexPill]), encCP, 'complex pill only');
+    assert.equal(metaFiltersAsString([textPill]), unencTP, 'text pill only');
+    assert.equal(metaFiltersAsString([queryPill, complexPill]), `${encQP} && ${encCP}`, 'query and complex pills');
+    assert.equal(metaFiltersAsString([queryPill, textPill]), `${encQP} && ${unencTP}`, 'query and text pills');
+    assert.equal(metaFiltersAsString([complexPill, textPill]), `${encCP} && ${unencTP}`, 'complex and text pills');
+    assert.equal(metaFiltersAsString([queryPill, complexPill, textPill]), `${encQP} && ${encCP} && ${unencTP}`, 'query, complex, and text pills');
+    assert.deepEqual(metaFiltersAsString([empty]), undefined, 'empty pill');
+    assert.equal(metaFiltersAsString([queryPill, empty]), `${encQP}`, 'query and empty pills');
+    assert.equal(metaFiltersAsString([queryPill, empty, textPill]), `${encQP} && ${unencTP}`, 'query, empty, and text pills');
   });
 
   test('isSearchTerm is capable of determining if a string is marked as a Text pill', function(assert) {

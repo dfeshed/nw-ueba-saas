@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
-import { COMPLEX_FILTER, TEXT_FILTER } from 'investigate-events/constants/pill';
+import { TEXT_FILTER } from 'investigate-events/constants/pill';
 import {
   hasError,
   hasWarning,
@@ -15,6 +15,7 @@ import {
 } from 'investigate-events/reducers/investigate/query-stats/selectors';
 import { isCanceled, percentageOfEventsDataReturned } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { queriedService } from 'investigate-events/reducers/investigate/services/selectors';
+import { metaFiltersAsString } from 'investigate-events/util/query-parsing';
 
 const stateToComputed = (state) => ({
   startTime: state.investigate.queryNode.previousQueryParams.startTime,
@@ -49,22 +50,12 @@ const ConsolePanel = Component.extend({
 
   @computed('queryFilters')
   filters: (queryFilters) => {
-    const metaFilters = [];
-    let textFilter;
-    queryFilters.forEach((filter) => {
-      if (filter.type === TEXT_FILTER) {
-        textFilter = filter.searchTerm;
-      } else {
-        if (filter.type === COMPLEX_FILTER) {
-          metaFilters.push(filter.complexFilterText);
-        } else {
-          const { meta, operator } = filter;
-          const value = filter.value ? filter.value : '';
-          metaFilters.push(`${meta} ${operator} ${value}`.trim());
-        }
-      }
-    });
-    return { metaFilters: metaFilters.join(' && '), textFilter };
+    const sansTextFilter = queryFilters.filter((f) => f.type !== TEXT_FILTER);
+    const textFilter = queryFilters.find((f) => f.type === TEXT_FILTER);
+    return {
+      metaFilters: metaFiltersAsString(sansTextFilter, false),
+      textFilter: textFilter ? textFilter.searchTerm : undefined
+    };
   },
 
   @computed('endTime') formattedEndDate: (endTime) => endTime * 1000,

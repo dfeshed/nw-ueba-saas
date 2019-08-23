@@ -46,8 +46,12 @@ export const mergeFilterStrings = (() => {
   return (acc, cur, idx, src) => {
     if (cur === '(') {
       _hideSeparator = true;
-      // Make sure to include an && between a close and open paren
-      if (idx > 0 && src[idx - 1] === ')') {
+      // Make sure to include an && between a close and open paren and a pill
+      // and open paren, but not multiple open parens. For example:
+      // - ) && (
+      // - pill && (
+      // - ((
+      if (idx > 0 && src[idx - 1] !== '(') {
         return `${acc} && ${cur}`;
       } else {
         return `${acc}${cur}`;

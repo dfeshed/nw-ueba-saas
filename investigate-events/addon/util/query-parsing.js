@@ -352,17 +352,18 @@ const _criteriaToPill = (criteria) => {
  * Encodes a given list of metaFilters into a URI string component that can be
  * used for routing. The reverse of `parseMetaFilterUri()`.
  * @param {object[]} filters The array of meta filters.
+ * @param {boolean} shouldEncode Should each filter be URL encoded?
  * For structure, see return value of parseMetaFilterUri.
  * @returns {string}
  */
-export const uriEncodeMetaFilters = (filters = []) => {
+export const metaFiltersAsString = (filters = [], shouldEncode = true) => {
   filters = removeEmptyParens(filters);
   const filtersAsString = filters
     .map((d) => {
       const str = _asString(d);
       if (str.length > 0) {
         // URL encode all filters except for Text filter
-        return (d.type !== TEXT_FILTER) ? encodeURIComponent(str) : str;
+        return (shouldEncode && d.type !== TEXT_FILTER) ? encodeURIComponent(str) : str;
       } else {
         return undefined;
       }

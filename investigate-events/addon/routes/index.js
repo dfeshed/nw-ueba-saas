@@ -9,7 +9,7 @@ import {
   setReconOpen,
   setReconPanelSize
 } from 'investigate-events/actions/interaction-creators';
-import { isSearchTerm, uriEncodeMetaFilters } from 'investigate-events/util/query-parsing';
+import { isSearchTerm, metaFiltersAsString } from 'investigate-events/util/query-parsing';
 import { serializeQueryParams } from 'investigate-shared/utils/pivot-util';
 import {
   META_PANEL_SIZES,
@@ -191,7 +191,7 @@ export default Route.extend({
       const qp = {
         eid: undefined,
         et: endTime,
-        mf: uriEncodeMetaFilters(pillsData),
+        mf: metaFiltersAsString(pillsData),
         mps: metaPanelSize,
         rs: reconSize,
         sid: serviceId,
@@ -207,7 +207,7 @@ export default Route.extend({
       if (externalLink) {
         const selectedPills = pillsData.filter((pill) => pill.isSelected);
         if (selectedPills.length > 0) { // if no selected pills in state, exit
-          const pillString = uriEncodeMetaFilters(selectedPills);
+          const pillString = metaFiltersAsString(selectedPills);
           qp.mf = encodeURIComponent(pillString);
           delete qp.eid; // delete unnecessary param, do not want recon to open
           const query = serializeQueryParams(qp);
