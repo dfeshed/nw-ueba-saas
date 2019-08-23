@@ -582,18 +582,20 @@ export default Component.extend({
       });
     } else if (isArrowDown(event)) {
       const lastItem = results[results.length - 1];
-      if (event.ctrlKey || event.metaKey || highlighted === lastItem ||
-        (lastValidItem && highlighted === lastValidItem && !lastItemIsValid)) {
-        // CTRL/META was pressed or at bottom of meta list
-        // or at the last valid enabled option
-        // Jump to advanced options
-        powerSelectAPI.actions.highlight(null);
-        this._afterOptionsMenu.highlightNextIndex();
-        return false;
-      } else if (this._afterOptionsMenu.highlightedIndex !== -1) {
-        // In after options, move to next item
-        this._afterOptionsMenu.highlightNextIndex();
-        return false;
+      if (!this.get('isEditing')) {
+        if (event.ctrlKey || event.metaKey || highlighted === lastItem ||
+          (lastValidItem && highlighted === lastValidItem && !lastItemIsValid)) {
+          // CTRL/META was pressed or at bottom of meta list
+          // or at the last valid enabled option
+          // Jump to advanced options
+          powerSelectAPI.actions.highlight(null);
+          this._afterOptionsMenu.highlightNextIndex();
+          return false;
+        } else if (this._afterOptionsMenu.highlightedIndex !== -1) {
+          // In after options, move to next item
+          this._afterOptionsMenu.highlightNextIndex();
+          return false;
+        }
       }
     } else if (isArrowUp(event)) {
       if (this._afterOptionsMenu.highlightedIndex > 0) {

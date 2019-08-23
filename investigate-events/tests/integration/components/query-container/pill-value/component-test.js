@@ -511,6 +511,22 @@ module('Integration | Component | Pill Value', function(hooks) {
     assert.equal(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent.trim(), AFTER_OPTION_TEXT_LABEL, 'second Advanced Option was not highlighted');
   });
 
+  test('it should not highlight advanced options in edit mode', async function(assert) {
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        isEditing=true
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.value);
+    await typeInSearch('boom');
+
+    await triggerKeyEvent(PILL_SELECTORS.valueSelectInput, 'keydown', ARROW_DOWN);
+
+    assert.notOk(find(PILL_SELECTORS.powerSelectAfterOptionHighlight), 'No Advanced Options should be highlighted');
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOptionHighlight).length, 1, 'only one option should be highlighted');
+  });
+
   test('it broadcasts a message to toggle tabs via pill value', async function(assert) {
     assert.expect(1);
     this.set('activePillTab', AFTER_OPTION_TAB_META);

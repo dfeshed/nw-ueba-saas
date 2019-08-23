@@ -802,6 +802,26 @@ module('Integration | Component | Pill Meta', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'advanced option did not retain highlighting');
   });
 
+  test('Highlight will NOT move from Advanced Options in edit mode', async function(assert) {
+    this.set('metaOptions', metaOptions);
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        isEditing=true
+        isFirstPill=false
+        metaOptions=metaOptions
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    // Reduce options to those that have an "x"
+    await typeInSearch('alert');
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_DOWN);
+    // Should still be in meta options
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOptionHighlight).length, 1, 'advanced option did not retain highlighting');
+    // And not highlight advanced options
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 0, 'No advanced option should be available');
+  });
+
   test('it broadcasts a message to create a text pill', async function(assert) {
     const done = assert.async();
     this.set('metaOptions', metaOptions);

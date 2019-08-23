@@ -514,6 +514,26 @@ module('Integration | Component | Pill Operator', function(hooks) {
     assert.ok(find(PILL_SELECTORS.powerSelectOption), 'meta option should be highlighted');
   });
 
+  test('Highlight will not move to advanced options if in edit mode', async function(assert) {
+    this.set('meta', meta);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        isEditing=true
+        meta=meta
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.operator);
+    // Reduce options to those that start with "e"
+    await typeInSearch('e');
+
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_DOWN);
+    // Should be in Advanced Options now
+    assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 0, 'No advanced options should be highlighted');
+    // Should be back in operator options list
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOptionHighlight).length, 1, 'no Advanced Options should be highlighted');
+  });
+
   test('it broadcasts a message to create a text pill', async function(assert) {
     const done = assert.async();
     this.set('meta', meta);
