@@ -16,7 +16,7 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 import java.time.Instant;
 import java.util.List;
 
-import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogFile;
+import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogIfError;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class InputTestManager {
@@ -72,11 +72,10 @@ public class InputTestManager {
                 "run", "--schema " + dataSourceType, "--start_date " + startDate, "--end_date " + endDate,
                 "> " + logPath);
 
+        printLogIfError(logPath);
         assertThat(p.exitCode)
-                .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                .withFailMessage("Error exit code. Log: " + logPath)
                 .isEqualTo(0);
-
-        printLogFile(logPath);
     }
 
 

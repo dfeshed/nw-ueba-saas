@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Instant;
 import java.util.concurrent.Callable;
 
-import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogFile;
+import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogIfError;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -78,11 +78,11 @@ public class AdeDataProcessingHelper {
                     "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame),
                     " > " + logPath);
 
+            printLogIfError(logPath);
             assertThat(p4.exitCode)
                     .withFailMessage("Error exit code.\nCheck the log: " + logPath)
                     .isEqualTo(0);
 
-            printLogFile(logPath);
             LOGGER.info("ProcessScoreAggr[" + schema.toUpperCase() + "] completed successfully.");
             return p4.exitCode;
         }
@@ -109,11 +109,12 @@ public class AdeDataProcessingHelper {
             SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_MODEL_FEATURE_BUCKETS + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
                     "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame),
                     " > " + logPath);
+
+            printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                    .withFailMessage("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
-            printLogFile(logPath);
             LOGGER.info("ProcessModelFeatureBuckets[" + schema.toUpperCase() + "] completed successfully.");
             return p4.exitCode;
         }
@@ -140,11 +141,11 @@ public class AdeDataProcessingHelper {
                     "--start_date " + start.toString(), "--end_date " + end.toString(),
                     " > " + logPath);
 
+            printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                    .withFailMessage("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
-            printLogFile(logPath);
             LOGGER.info("ProcessSmart[" + entity.toUpperCase() + "] completed successfully.");
             return p4.exitCode;
         }
@@ -170,11 +171,11 @@ public class AdeDataProcessingHelper {
                     "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy 86400",
                     " > " + logPath);
 
+            printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                    .withFailMessage("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
-            printLogFile(logPath);
             LOGGER.info("ProcessAccumulateSmart[" + entity.toUpperCase() + "] completed successfully.");
             return p4.exitCode;
         }
@@ -203,11 +204,11 @@ public class AdeDataProcessingHelper {
                     "--group_name " + group_name, "--session_id " + session_id, "--end_date " + end.toString(),
                     " > " + logPath);
 
+            printLogIfError(logPath);
             assertThat(p3.exitCode)
-                    .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                    .withFailMessage("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
-            printLogFile(logPath);
             LOGGER.info("ProcessModeling[" + group_name.toUpperCase() + "] completed successfully.");
             return p3.exitCode;
         }
@@ -236,11 +237,11 @@ public class AdeDataProcessingHelper {
                     "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy 86400  --feature_bucket_strategy 3600",
                     " > " + logPath);
 
+            printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                    .withFailMessage("Error exit code.Log: " + logPath)
                     .isEqualTo(0);
 
-            printLogFile(logPath);
             LOGGER.info("ProcessAccumulateAggr[" + schema.toUpperCase() + "] completed successfully.");
             return p4.exitCode;
         }
@@ -272,11 +273,11 @@ public class AdeDataProcessingHelper {
                     "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame),
                     " > " + logPath);
 
+            printLogIfError(logPath);
             assertThat(p4.exitCode)
-                    .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                    .withFailMessage("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
-            printLogFile(logPath);
             LOGGER.info("ProcessFeatureAggr[" + schema.toUpperCase() + "] completed successfully.");
             return p4.exitCode;
         }

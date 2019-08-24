@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.rsa.netwitness.presidio.automation.config.EnvironmentProperties.ENVIRONMENT_PROPERTIES;
-import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogFile;
+import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogIfError;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AdapterTestManager {
@@ -107,11 +107,10 @@ public class AdapterTestManager {
                 "--start_date " + start.toString(), "--end_date " + end.toString(), "--schema " + schema,
                 "> " + logPath);
 
+        printLogIfError(logPath);
         assertThat(adapterProcess.exitCode)
-                .withFailMessage("Error exit code.\nCheck the log: " + logPath)
+                .withFailMessage("Error exit code. Log: " + logPath)
                 .isEqualTo(0);
-
-        printLogFile(logPath);
     }
 
     public void processEventsInIntervals(Instant startDate, Instant endDate, ChronoUnit interval, String schema) {

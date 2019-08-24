@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Instant;
 import java.util.concurrent.Callable;
 
-import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogFile;
+import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogIfError;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OutputDataProcessingHelper {
@@ -42,18 +42,18 @@ public class OutputDataProcessingHelper {
             LOGGER.info("ProcessorRun started for " + smart_record_conf_name.toUpperCase());
 
             // store the data in the collections for data source
-            String logFile = "/tmp/presidio-output-processor_run_" + smart_record_conf_name + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
+            String logPath = "/tmp/presidio-output-processor_run_" + smart_record_conf_name + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
 
             SshResponse p = TerminalCommandsSshUtils.runCommand(
                     Consts.PRESIDIO_OUTPUT, true, Consts.PRESIDIO_DIR, "run", "--start_date " + startDate,
                     "--end_date " + endDate, "--smart_record_conf_name " + smart_record_conf_name,
-                    " > " + logFile);
+                    " > " + logPath);
 
+            printLogIfError(logPath);
             assertThat(p.exitCode)
-                    .withFailMessage("Error exit code.\nCheck the log: " + logFile)
+                    .withFailMessage("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
-            printLogFile(logFile);
             LOGGER.info("ProcessorRun[" + smart_record_conf_name.toUpperCase() + "] completed successfully.");
             return p.exitCode;
         }
@@ -74,18 +74,19 @@ public class OutputDataProcessingHelper {
         @Override
         public Integer call() {
             LOGGER.info("RecalculateUserScore started for " + entity.toUpperCase());
-            String logFile = "/tmp/presidio-output_recalc_user_score_" + entity + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
+            String logPath = "/tmp/presidio-output_recalc_user_score_" + entity + "_" + startDate.toString() + "_" + endDate.toString() + ".log";
 
             SshResponse p = TerminalCommandsSshUtils.runCommand(Consts.PRESIDIO_OUTPUT, true, Consts.PRESIDIO_DIR,
                     "recalculate-entity-score", "--start_date " + startDate, "--end_date " + endDate,
                     "--fixed_duration_strategy 86400.0 ", " --smart_record_conf_name " + entity + "_hourly ",
-                    "--entity_type " + entity, " > " + logFile);
+                    "--entity_type " + entity, " > " + logPath);
 
+
+            printLogIfError(logPath);
             assertThat(p.exitCode)
-                    .withFailMessage("Error exit code.\nCheck the log: " + logFile)
+                    .withFailMessage("Error exit code. Log: " + logPath)
                     .isEqualTo(0);
 
-            printLogFile(logFile);
             LOGGER.info("RecalculateUserScore[" + entity.toUpperCase() + "] completed successfully.");
             return p.exitCode;
         }

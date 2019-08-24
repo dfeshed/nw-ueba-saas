@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.testng.Assert;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
@@ -26,7 +25,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogFile;
+import static com.rsa.netwitness.presidio.automation.ssh.LogSshUtils.printLogIfError;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * ADETestManager - stores, processes and monitors ADE component using ADE SDK
@@ -125,8 +125,10 @@ public class ADETestManager {
                 "--group_name " + group_name, "--session_id " + session_id, "--end_date " + end.toString()
                         + " > " + logPath);
 
-        printLogFile(logPath);
-        Assert.assertEquals(0, p3.exitCode, "Shell command failed. exit value: " + p3.exitCode);
+        printLogIfError(logPath);
+        assertThat(p3.exitCode)
+                .withFailMessage("Error exit code. Log: " + logPath)
+                .isEqualTo(0);
     }
 
     public void processScoreAggr(Instant start, Instant end, String timeFrame, String schema) {
@@ -137,8 +139,11 @@ public class ADETestManager {
         SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_SCORE_AGGR + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
                 "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
                         + " > " + logPath);
-        printLogFile(logPath);
-        Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode);
+
+        printLogIfError(logPath);
+        assertThat(p4.exitCode)
+                .withFailMessage("Error exit code. Log: " + logPath)
+                .isEqualTo(0);
     }
 
 
@@ -149,8 +154,11 @@ public class ADETestManager {
         SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_MODEL_FEATURE_BUCkETS + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
                 "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
                         + " > " + logPath);
-        printLogFile(logPath);
-        Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode);
+
+        printLogIfError(logPath);
+        assertThat(p4.exitCode)
+                .withFailMessage("Error exit code. Log: " + logPath)
+                .isEqualTo(0);
     }
 
     public void processFeatureAggr(Instant start, Instant end, String timeFrame, String schema) {
@@ -160,8 +168,11 @@ public class ADETestManager {
         SshResponse p4 = TerminalCommandsSshUtils.runCommand(JAVA_CMD + PRESIDIO_ADE_APP_FEATURE_AGGR + ".jar", true, Consts.PRESIDIO_DIR, "run", "--schema " + schema.toUpperCase(),
                 "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy " + getFixedDuration(timeFrame)
                         + " > " + logPath);
-        printLogFile(logPath);
-        Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode);
+
+        printLogIfError(logPath);
+        assertThat(p4.exitCode)
+                .withFailMessage("Error exit code. Log: " + logPath)
+                .isEqualTo(0);
     }
 
     public void processAccumulateAggr(Instant start, Instant end, String schema) {
@@ -171,8 +182,11 @@ public class ADETestManager {
                 "run", "--schema " + schema.toUpperCase(),
                 "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy 86400  --feature_bucket_strategy 3600"
                         + " > " + logPath);
-        printLogFile(logPath);
-        Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode);
+
+        printLogIfError(logPath);
+        assertThat(p4.exitCode)
+                .withFailMessage("Error exit code. Log: " + logPath)
+                .isEqualTo(0);
     }
 
 
@@ -193,8 +207,10 @@ public class ADETestManager {
                 "--start_date " + start.toString(), "--end_date " + end.toString()
                         + " > " + logPath);
 
-        printLogFile(logPath);
-        Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode);
+        printLogIfError(logPath);
+        assertThat(p4.exitCode)
+                .withFailMessage("Error exit code. Log: " + logPath)
+                .isEqualTo(0);
     }
 
     public void processAccumulateSmart(Instant start, Instant end, String entity) {
@@ -204,8 +220,10 @@ public class ADETestManager {
                 "--start_date " + start.toString(), "--end_date " + end.toString(), "--fixed_duration_strategy 86400"
                         + " > " + logPath);
 
-        printLogFile(logPath);
-        Assert.assertEquals(0, p4.exitCode, "Shell command failed. exit value: " + p4.exitCode);
+        printLogIfError(logPath);
+        assertThat(p4.exitCode)
+                .withFailMessage("Error exit code. Log: " + logPath)
+                .isEqualTo(0);
     }
 
     private String getFixedDuration(String timeFrame) {
