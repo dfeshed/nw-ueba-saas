@@ -1,5 +1,6 @@
 package com.rsa.netwitness.presidio.automation.converter.conveters.active_directory;
 
+import com.rsa.netwitness.presidio.automation.converter.events.CefHeader;
 import com.rsa.netwitness.presidio.automation.converter.events.WindowsEvent;
 import fortscale.common.general.Schema;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
@@ -9,13 +10,19 @@ class NetwitnessActiveDirectoryEventBuilder extends WindowsEvent {
 
     private final ActiveDirectoryEvent event;
 
+    private static final String cefVendor = "Microsoft";
+    private static final String cefProduct = "Windows Snare";
+    private static final String cefEventDesc = "Active directory event test";
+    private static String getCefEventType(String operationResult) {
+        return operationResult.equalsIgnoreCase("SUCCESS")?"SUCCESS":"FAILURE";
+    }
+
     NetwitnessActiveDirectoryEventBuilder(ActiveDirectoryEvent event) {
-        event_time = eventTimeFormatter.format(event.getDateTime());
-        schema = Schema.ACTIVE_DIRECTORY;
-        eventTimeEpoch = event.getEventTime();
+        super(event.getDateTime(), Schema.ACTIVE_DIRECTORY,
+                new CefHeader(cefVendor, cefProduct,
+                        getCefEventType(event.getOperation().getOperationResult()), cefEventDesc));
+
         this.event = event;
-        cefVendor = "Microsoft";
-        cefProduct = "Windows Snare";
     }
 
     NetwitnessActiveDirectoryEventBuilder getByRefId(String refId) {
@@ -30,8 +37,6 @@ class NetwitnessActiveDirectoryEventBuilder extends WindowsEvent {
         event_source_id = event.getEventId();
         user_dst = event.getUser().getUserId();
         device_type = "winevent_snare";
-        cefEventDesc = "Active directory event test";
-        cefEventType = event.getOperation().getOperationResult().equalsIgnoreCase("SUCCESS")?"SUCCESS":"FAILURE";
     }
 
     private void mapObjectId(String referenceId) {

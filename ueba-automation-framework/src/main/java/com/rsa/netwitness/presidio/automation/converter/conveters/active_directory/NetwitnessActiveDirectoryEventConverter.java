@@ -6,9 +6,7 @@ import com.rsa.netwitness.presidio.automation.mapping.operation_type.ActiveDirec
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.common.StringCyclicValuesGenerator;
 
-import java.util.Map;
-
-import static com.rsa.netwitness.presidio.automation.converter.conveters.mongo.EventToMetadataConverterActiveDirectory.chooseReferenceId;
+import java.util.Optional;
 
 
 public class NetwitnessActiveDirectoryEventConverter implements INetwitnessEventConverter<ActiveDirectoryEvent> {
@@ -21,18 +19,14 @@ public class NetwitnessActiveDirectoryEventConverter implements INetwitnessEvent
 
 
     @Override
-    public NetwitnessEvent toNetwitnessEvent(ActiveDirectoryEvent event) {
+    public NetwitnessEvent convert(ActiveDirectoryEvent event) {
         NetwitnessActiveDirectoryEventBuilder builder = new NetwitnessActiveDirectoryEventBuilder(event);
 
-        Map<Integer, String> eventCodeMapToOperationTypeMap =
-                ActiveDirectoryOperationTypeMapping.getInstance().getEventCodeMapToOperationTypeMap();
+        Optional<Integer> eventCode = ActiveDirectoryOperationTypeMapping.getInstance()
+                .getEventCode(event.getOperation().getOperationType().getName());
 
-        String refId = chooseReferenceId(event, counter.getNext());
-
-
-        return builder.getByRefId(refId);
+        int refId = eventCode.orElse(Integer.valueOf(counter.getNext()));
+        return builder.getByRefId(String.valueOf(refId));
     }
-
-
 
 }

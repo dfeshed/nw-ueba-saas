@@ -4,5 +4,5 @@ import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 
 public interface INetwitnessEventConverter<T> {
 
-    NetwitnessEvent toNetwitnessEvent(T event);
+    NetwitnessEvent convert(T event);
 }
