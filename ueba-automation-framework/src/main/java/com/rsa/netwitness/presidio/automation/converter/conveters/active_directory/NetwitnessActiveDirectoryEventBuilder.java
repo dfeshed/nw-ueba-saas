@@ -1,11 +1,11 @@
-package com.rsa.netwitness.presidio.automation.converter.conveters;
+package com.rsa.netwitness.presidio.automation.converter.conveters.active_directory;
 
-import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
+import com.rsa.netwitness.presidio.automation.converter.events.WindowsEvent;
 import fortscale.common.general.Schema;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 
 
-class NetwitnessActiveDirectoryEventBuilder extends NetwitnessEvent {
+class NetwitnessActiveDirectoryEventBuilder extends WindowsEvent {
 
     private final ActiveDirectoryEvent event;
 

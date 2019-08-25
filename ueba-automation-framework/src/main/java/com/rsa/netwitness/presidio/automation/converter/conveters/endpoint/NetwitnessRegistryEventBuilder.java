@@ -1,7 +1,7 @@
-package com.rsa.netwitness.presidio.automation.converter.conveters;
+package com.rsa.netwitness.presidio.automation.converter.conveters.endpoint;
 
 import com.rsa.netwitness.presidio.automation.common.helpers.NamesConversionUtils;
-import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
+import com.rsa.netwitness.presidio.automation.converter.events.EndpointEvent;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import fortscale.common.general.Schema;
 import presidio.data.domain.event.registry.RegistryEvent;
@@ -9,7 +9,7 @@ import presidio.data.domain.event.registry.RegistryEvent;
 import java.util.List;
 
 
-class NetwitnessRegistryEventBuilder extends NetwitnessEvent {
+class NetwitnessRegistryEventBuilder extends EndpointEvent {
     private final RegistryEvent event;
 
     NetwitnessRegistryEventBuilder(RegistryEvent event) {

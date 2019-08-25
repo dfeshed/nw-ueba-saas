@@ -1,6 +1,6 @@
-package com.rsa.netwitness.presidio.automation.converter.conveters;
+package com.rsa.netwitness.presidio.automation.converter.conveters.network;
 
-import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
+import com.rsa.netwitness.presidio.automation.converter.events.TlsEvent;
 import fortscale.common.general.Schema;
 import presidio.data.domain.Location;
 import presidio.data.domain.event.network.NetworkEvent;
@@ -9,7 +9,7 @@ import static com.rsa.netwitness.presidio.automation.utils.common.LambdaUtils.ge
 import static com.rsa.netwitness.presidio.automation.utils.common.LambdaUtils.getOrNull;
 
 
-class NetwitnessTlsEventBuilder extends NetwitnessEvent {
+class NetwitnessTlsEventBuilder extends TlsEvent {
 
     private final NetworkEvent event;
 

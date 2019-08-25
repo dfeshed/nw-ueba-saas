@@ -1,14 +1,14 @@
-package com.rsa.netwitness.presidio.automation.converter.conveters;
+package com.rsa.netwitness.presidio.automation.converter.conveters.endpoint;
 
-import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
+import com.rsa.netwitness.presidio.automation.common.helpers.NamesConversionUtils;
+import com.rsa.netwitness.presidio.automation.converter.events.EndpointEvent;
 import fortscale.common.general.Schema;
 import presidio.data.domain.event.process.ProcessEvent;
-import com.rsa.netwitness.presidio.automation.common.helpers.NamesConversionUtils;
 
 import java.util.List;
 
 
-class NetwitnessProcessEventBuilder extends NetwitnessEvent {
+class NetwitnessProcessEventBuilder extends EndpointEvent {
     private final ProcessEvent event;
 
     NetwitnessProcessEventBuilder(ProcessEvent event) {

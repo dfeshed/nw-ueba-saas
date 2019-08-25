@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.converter.conveters;
+package com.rsa.netwitness.presidio.automation.converter.conveters.file;
 
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 import presidio.data.domain.event.file.FileEvent;

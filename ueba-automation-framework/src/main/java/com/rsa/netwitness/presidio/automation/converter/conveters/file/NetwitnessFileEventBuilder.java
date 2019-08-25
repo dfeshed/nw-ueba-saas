@@ -1,6 +1,6 @@
-package com.rsa.netwitness.presidio.automation.converter.conveters;
+package com.rsa.netwitness.presidio.automation.converter.conveters.file;
 
-import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
+import com.rsa.netwitness.presidio.automation.converter.events.WindowsEvent;
 import fortscale.common.general.Schema;
 import presidio.data.domain.event.file.FileEvent;
 
@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-class NetwitnessFileEventBuilder extends NetwitnessEvent {
+class NetwitnessFileEventBuilder extends WindowsEvent {
     private final FileEvent event;
 
     NetwitnessFileEventBuilder(FileEvent event) {

@@ -1,11 +1,12 @@
-package com.rsa.netwitness.presidio.automation.converter.conveters;
+package com.rsa.netwitness.presidio.automation.converter.conveters.authentication;
 
+import com.rsa.netwitness.presidio.automation.converter.conveters.INetwitnessEventConverter;
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.common.StringCyclicValuesGenerator;
 
 
-class NetwitnessAuthenticationEventConverter {
+class NetwitnessAuthenticationEventConverter implements INetwitnessEventConverter<AuthenticationEvent> {
 
     private static final String[] successReferenceIds = new String[]{"4769", "4624", "4648", "rhlinux"};
     private static final String[] failureReferenceIds = new String[]{"4769", "4625", "4648", "rhlinux"};
@@ -14,20 +15,22 @@ class NetwitnessAuthenticationEventConverter {
     private static StringCyclicValuesGenerator failuresCounter = new StringCyclicValuesGenerator(failureReferenceIds);
 
 
-    NetwitnessEvent getNext(AuthenticationEvent event) {
+    @Override
+    public NetwitnessEvent toNetwitnessEvent(AuthenticationEvent event) {
 
-        NetwitnessAuthenticationEventBuilder builder = new NetwitnessAuthenticationEventBuilder(event);
+        NetwitnessWindowsAuthenticationEventBuilder builderWin = new NetwitnessWindowsAuthenticationEventBuilder(event);
+        NetwitnessLinuxAuthenticationEventBuilder builderLin = new NetwitnessLinuxAuthenticationEventBuilder(event);
         if (event.getResult() == null || event.getResult().isEmpty()) throw new RuntimeException("ReferenceId is missing from event");
 
         String currentId = event.getResult().equalsIgnoreCase("success") ?
             successCounter.getNext() : failuresCounter.getNext();
 
         switch (currentId) {
-            case "4769": return builder.getWin_4769();
-            case "4624": return builder.getWin_4624();
-            case "4625": return builder.getWin_4625();
-            case "4648": return builder.getWin_4648();
-            case "rhlinux": return builder.getRhlinux();
+            case "4769": return builderWin.getWin_4769();
+            case "4624": return builderWin.getWin_4624();
+            case "4625": return builderWin.getWin_4625();
+            case "4648": return builderWin.getWin_4648();
+            case "rhlinux": return builderLin.getRhlinux();
             default: throw new RuntimeException("ReferenceId not defined. Found: " + currentId);
         }
     }
