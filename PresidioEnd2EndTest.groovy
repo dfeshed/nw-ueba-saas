@@ -24,7 +24,8 @@ pipeline {
     stages {
         stage('Project Clone') {
             steps {
-                println("Running on node- " + env.NODE)
+                script { currentBuild.displayName="#${BUILD_NUMBER} ${NODE_NAME}" }
+                script { currentBuild.description = "${BRANCH}" }
                 cleanWs()
                 buildIntegrationTestProject()
                 setBaseUrl()
@@ -170,6 +171,7 @@ def runEnd2EndTestAutomation() {
 
 def runSuiteXmlFile(String suiteXmlFile) {
     println(env.REPOSITORY_NAME)
+    sh "echo JAVA_HOME=${env.JAVA_HOME}"
     dir(env.REPOSITORY_NAME) {
         sh "mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS}"
     }

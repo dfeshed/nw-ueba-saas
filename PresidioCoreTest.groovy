@@ -26,6 +26,8 @@ pipeline {
     stages {
         stage('presidio-integration-test Project Clone') {
             steps {
+                script { currentBuild.displayName="#${BUILD_NUMBER} ${NODE_NAME}" }
+                script { currentBuild.description = "${BRANCH}" }
                 cleanWs()
                 buildIntegrationTestProject()
                 copyScripts()
@@ -156,6 +158,7 @@ def mvnCleanInstall() {
 
 def runSuiteXmlFile(String suiteXmlFile) {
     println(env.REPOSITORY_NAME)
+    sh "echo JAVA_HOME=${env.JAVA_HOME}"
     dir(env.REPOSITORY_NAME) {
         sh "mvn test -B --projects ueba-automation-test --also-make -DsuiteXmlFile=${suiteXmlFile} ${params.MVN_TEST_OPTIONS}"
     }
