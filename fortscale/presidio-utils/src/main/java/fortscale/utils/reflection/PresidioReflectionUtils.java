@@ -1,17 +1,30 @@
 package fortscale.utils.reflection;
 
+import org.apache.commons.lang3.Validate;
+import org.springframework.util.ReflectionUtils;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class PresidioReflectionUtils {
-
     private static final String NESTED_OBJECT_SPLIT_DELIMITER = "\\.";
 
-    public static Object getFieldValue(Object obj, String requestedFieldName) {
-        Field field = getAccessibleField(obj.getClass(), requestedFieldName);
-        return org.springframework.util.ReflectionUtils.getField(field, obj);
+    public static Object getFieldValue(Object object, String fieldName) {
+        if (object == null) throw new NullPointerException("object cannot be null.");
+        if (fieldName == null) throw new NullPointerException("fieldName cannot be null.");
+        List<Field> fields = findNestedFields(object.getClass(), fieldName);
+
+        try {
+            for (int i = 0; i < fields.size() - 1; ++i) {
+                object = fields.get(i).get(object);
+                if (object == null) return null;
+            }
+
+            return fields.get(fields.size() - 1).get(object);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -27,10 +40,10 @@ public class PresidioReflectionUtils {
      * }, fieldName = "cat.toy", fieldValue = "rabbit")
      * becomes
      * {
-     *    "name": "Aaron",
+     *     "name": "Aaron",
      *     "cat": {
-     *       "toy": "rabbit"
-*           }
+     *         "toy": "rabbit"
+     *     }
      * }
      *
      * @param obj the given object
@@ -56,8 +69,9 @@ public class PresidioReflectionUtils {
     }
 
     private static Field getAccessibleField(Class clazz, String fieldName) {
-        Field field = org.springframework.util.ReflectionUtils.findField(clazz, fieldName);
-        Objects.requireNonNull(field).setAccessible(true);
+        Field field = ReflectionUtils.findField(clazz, fieldName);
+        Validate.notNull(field, "Class %s does not contain a field named %s.", clazz.getName(), fieldName);
+        field.setAccessible(true);
         return field;
     }
 }
