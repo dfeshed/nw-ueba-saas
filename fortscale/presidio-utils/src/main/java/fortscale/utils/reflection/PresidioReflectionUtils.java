@@ -11,8 +11,8 @@ public class PresidioReflectionUtils {
     private static final String NESTED_OBJECT_SPLIT_DELIMITER = "\\.";
 
     public static Object getFieldValue(Object object, String fieldName) {
-        if (object == null) throw new NullPointerException("object cannot be null.");
-        if (fieldName == null) throw new NullPointerException("fieldName cannot be null.");
+        Validate.notNull(object, "object cannot be null.");
+        Validate.notNull(fieldName, "fieldName cannot be null.");
         List<Field> fields = findNestedFields(object.getClass(), fieldName);
 
         try {
