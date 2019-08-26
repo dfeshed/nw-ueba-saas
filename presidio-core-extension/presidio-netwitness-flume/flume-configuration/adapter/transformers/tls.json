@@ -14,6 +14,50 @@
       "filterIn": true
     },
     {
+      "type": "filter",
+      "name": "tcp-srcPort-not-null-filter",
+      "predicate": {
+        "type": "key_exist",
+        "name": "tcp-srcPort-not-null",
+        "key": "tcp_srcPort",
+        "testNull": true
+      },
+      "filterIn": true
+    },
+    {
+      "type": "filter",
+      "name": "tcp-dstport-not-null-filter",
+      "predicate": {
+        "type": "key_exist",
+        "name": "tcp-dstport-not-null",
+        "key": "tcp_dstport",
+        "testNull": true
+      },
+      "filterIn": true
+    },
+    {
+      "type": "filter",
+      "name": "ip-src-not-null-filter",
+      "predicate": {
+        "type": "key_exist",
+        "name": "ip-src-not-null",
+        "key": "ip_src",
+        "testNull": true
+      },
+      "filterIn": true
+    },
+    {
+      "type": "filter",
+      "name": "ip-dst-not-null-filter",
+      "predicate": {
+        "type": "key_exist",
+        "name": "ip_dst-not-null",
+        "key": "ip_dst",
+        "testNull": true
+      },
+      "filterIn": true
+    },
+    {
       "type": "epoch",
       "name": "date-time-millis-to-nano-representation",
       "sourceKey": "time",
