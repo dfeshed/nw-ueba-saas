@@ -46,6 +46,7 @@ public class NewOccurrenceTransformer implements Transformer {
 
     private void transform(AbstractInputDocument document) {
         String entityId = (String)PresidioReflectionUtils.getFieldValue(document, entityType);
+        if (entityId == null) return;
         Instant lastOccurrenceInstant = lastOccurrenceInstantReader.read(schema, entityType, entityId);
         Boolean isNewOccurrence;
 
