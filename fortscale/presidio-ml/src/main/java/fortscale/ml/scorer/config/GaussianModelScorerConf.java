@@ -21,7 +21,8 @@ public class GaussianModelScorerConf extends ModelScorerConf{
 								   @JsonProperty("additional-models") List<ModelInfo> additionalModelInfos,
 								   @JsonProperty("global-influence") Integer globalInfluence) {
         super(name, modelInfo, additionalModelInfos);
-        Assert.isTrue(additionalModelInfos.size() == 1, "one additional model info should be provided");
+        Assert.isTrue(additionalModelInfos == null || additionalModelInfos.size() <= 1,
+                "additional model info should not contain more than 1 model.");
         SMARTValuesModelScorerAlgorithm.assertGlobalInfluence(globalInfluence);
         this.globalInfluence = globalInfluence;
     }

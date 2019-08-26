@@ -1,8 +1,6 @@
 package presidio.ade.processes.shell.scoring.aggregation.config.services;
 
-import fortscale.ml.model.metrics.CategoryRarityModelRetrieverMetricsContainerConfig;
-import fortscale.ml.model.metrics.MaxContinuousModelRetrieverMetricsContainerConfig;
-import fortscale.ml.model.metrics.TimeModelRetrieverMetricsContainerConfig;
+import fortscale.ml.model.metrics.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -14,7 +12,8 @@ import org.springframework.context.annotation.Import;
         // common application confs
         MaxContinuousModelRetrieverMetricsContainerConfig.class,
         CategoryRarityModelRetrieverMetricsContainerConfig.class,
-        TimeModelRetrieverMetricsContainerConfig.class
+        TimeModelRetrieverMetricsContainerConfig.class,
+        AccumulatedAggregatedFeatureValueGlobalRetrieverMetricsContainerConfig.class,
 })
 public class RetrieverMetricsContainerConfig {
 

@@ -15,6 +15,7 @@ import java.util.List;
 		@JsonSubTypes.Type(value = ContextHistogramRetrieverConf.class, name = ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER),
 		@JsonSubTypes.Type(value = CategoricalFeatureValueRetrieverConf.class, name = CategoricalFeatureValueRetrieverConf.FACTORY_NAME),
 		@JsonSubTypes.Type(value = AccumulatedAggregatedFeatureValueRetrieverConf.class, name = AccumulatedAggregatedFeatureValueRetrieverConf.ACCUMULATED_AGGREGATED_FEATURE_VALUE_RETRIEVER),
+		@JsonSubTypes.Type(value = AccumulatedAggregatedFeatureValueGlobalRetrieverConf.class, name = AccumulatedAggregatedFeatureValueGlobalRetrieverConf.ACCUMULATED_AGGREGATED_FEATURE_VALUE_GLOBAL_RETRIEVER),
 		@JsonSubTypes.Type(value = ModelRetrieverConf.class, name = ModelRetrieverConf.MODEL_RETRIEVER),
 		@JsonSubTypes.Type(value = AccumulatedSmartDataRetrieverConf.class, name = AccumulatedSmartDataRetrieverConf.ACCUMULATED_SMART_DATA_RETRIEVER_FACTORY_NAME),
 		@JsonSubTypes.Type(value = AccumulatedSmartValueRetrieverConf.class, name = AccumulatedSmartValueRetrieverConf.ACCUMULATED_SMART_VALUE_RETRIEVER_FACTORY_NAME),

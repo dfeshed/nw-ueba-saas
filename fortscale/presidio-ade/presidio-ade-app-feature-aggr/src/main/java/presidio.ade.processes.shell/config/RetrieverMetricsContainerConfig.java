@@ -12,7 +12,8 @@ import org.springframework.context.annotation.Import;
         // common application confs
         MaxContinuousModelRetrieverMetricsContainerConfig.class,
         CategoryRarityModelRetrieverMetricsContainerConfig.class,
-        TimeModelRetrieverMetricsContainerConfig.class
+        TimeModelRetrieverMetricsContainerConfig.class,
+        AccumulatedAggregatedFeatureValueGlobalRetrieverMetricsContainerConfig.class,
 })
 public class RetrieverMetricsContainerConfig {
 

@@ -43,9 +43,13 @@ public class GaussianModelScorer extends AbstractModelTerminalScorer {
                     ".calculateScore expects to get a model of type " + ContinuousDataModel.class.getSimpleName());
         }
 
-        if (additionalModels.size() != 1 || !(additionalModels.get(0) instanceof GaussianPriorModel)) {
-            throw new IllegalArgumentException(this.getClass().getSimpleName() +
-                    ".calculateScore expects to get one additional model of type " + GaussianPriorModel.class.getSimpleName());
+        GaussianPriorModel gaussianPriorModel = null;
+        if(additionalModels.size() > 0) {
+            if (additionalModels.size() > 1 || !(additionalModels.get(0) instanceof GaussianPriorModel)) {
+                throw new IllegalArgumentException(this.getClass().getSimpleName() +
+                        ".calculateScore expects to get one additional model of type " + GaussianPriorModel.class.getSimpleName());
+            }
+            gaussianPriorModel = (GaussianPriorModel) additionalModels.get(0);
         }
 
         if (!(feature.getValue() instanceof FeatureNumericValue)) {
@@ -54,6 +58,6 @@ public class GaussianModelScorer extends AbstractModelTerminalScorer {
         }
 
         double value = ((FeatureNumericValue)feature.getValue()).getValue().doubleValue();
-        return algorithm.calculateScore(value, (IContinuousDataModel)model, (GaussianPriorModel)additionalModels.get(0));
+        return algorithm.calculateScore(value, (IContinuousDataModel)model, gaussianPriorModel);
     }
 }

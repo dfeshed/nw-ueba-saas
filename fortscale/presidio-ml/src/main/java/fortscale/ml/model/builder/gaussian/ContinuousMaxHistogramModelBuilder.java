@@ -66,7 +66,7 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
         Collection<Double> maxValues = maxValuesResult.getMaxValues().values();
         ContinuousDataModel continuousDataModelOfMaxValues = (ContinuousDataModel) build(maxValues, numOfMaxValuesSamples);
         maxContinuousModelBuilderMetricsContainer.updateMetric(numOfPartitions, continuousDataModel, continuousDataModelOfMaxValues);
-        return new ContinuousMaxDataModel(continuousDataModel, continuousDataModelOfMaxValues,numOfPartitions);
+        return new ContinuousMaxDataModel(continuousDataModel, continuousDataModelOfMaxValues, numOfPartitions);
     }
 
     /***

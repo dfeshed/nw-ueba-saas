@@ -1695,6 +1695,21 @@ indicators:
     featureName: dstPortHistogram
   classification: phishing
 
+- id: numberOfDistinctSrcIpForNewSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_src_ip_for_new_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - ja3.name
+  anomalyDescriptior:
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+  historicalData:
+    type: hourly_aggregations
+  classification: phishing
+
 #***************************************
 #*                ja3                  *
 #***************************************
