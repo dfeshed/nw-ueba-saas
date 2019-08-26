@@ -524,7 +524,7 @@
         },
         {
           "type": "boolean",
-          "fieldName": "isNewOccurrence",
+          "fieldName": "sslSubject.isNewOccurrence",
           "expectedValue": true
         }
       ],
