@@ -3,10 +3,7 @@ package fortscale.utils.reflection;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class PresidioReflectionUtils {
 
@@ -58,9 +55,12 @@ public class PresidioReflectionUtils {
         return fields;
     }
 
-    public static <T> Set<Class<? extends T>> getSubTypes(String packagePath, Class<T> parentClass) {
-        Reflections reflections = new Reflections(packagePath);
-        return reflections.<T>getSubTypesOf(parentClass);
+    public static <T> Set<Class<? extends T>> getSubTypes(String[] packagePaths, Class<T> parentClass) {
+        Set<Class<? extends T>> allSubTypes = new HashSet<>();
+        for (String packagePath: packagePaths) {
+            allSubTypes.addAll(new Reflections(packagePath).getSubTypesOf(parentClass));
+        }
+        return allSubTypes;
     }
 
     private static Field getAccessibleField(Class clazz, String fieldName) {

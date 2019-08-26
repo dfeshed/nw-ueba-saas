@@ -14,6 +14,6 @@ public class PresidioReflectionUtilsTest {
         Set<Class> expectedSubTypes = new HashSet<>();
         expectedSubTypes.add(TestObject.class);
         Assert.assertEquals(expectedSubTypes, PresidioReflectionUtils.getSubTypes(
-                "fortscale.utils.reflection", AbstractJsonObjectTransformer.class));
+                new String[] {"fortscale.utils.reflection"}, AbstractJsonObjectTransformer.class));
     }
 }
