@@ -3,7 +3,7 @@
 <suite name="E2E Data Injection">
     <parameter name="historical_days_back" value="14" />
     <parameter name="anomaly_day" value="1" />
-    <parameter name="generator_format" value="CEF_DAILY" />
+    <parameter name="generator_format" value="CEF_DAILY_BROKER" />
 
     <test name="E2E Data Injection">
         <classes>
