@@ -31,9 +31,4 @@ public abstract class NetwitnessEvent {
     }
 
     public abstract Map<String, Object> getEvent();
-
-    public Map<String, Object> toMongoEntity() {
-        return null;
-    }
-
 }
