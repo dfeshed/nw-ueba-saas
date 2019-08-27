@@ -549,6 +549,7 @@
       ],
       "adeEventTypes": [
         "tls"
+      ],
       "strategyName": "fixed_duration_hourly",
       "predicates": [
         {
