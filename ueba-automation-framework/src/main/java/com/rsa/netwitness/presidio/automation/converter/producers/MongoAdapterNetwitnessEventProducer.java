@@ -14,12 +14,12 @@ import java.util.function.Function;
 
 import static java.util.stream.Collectors.*;
 
-class MongoAdapterProducer implements EventsProducer {
+class MongoAdapterNetwitnessEventProducer implements EventsProducer<List<NetwitnessEvent>> {
 
     private NetwitnessEventStore netwitnessEventStore;
     private EventFormatter<Map<String, Object>> formatter;
 
-    MongoAdapterProducer(EventFormatter<Map<String, Object>> formatter, NetwitnessEventStore netwitnessEventStore){
+    MongoAdapterNetwitnessEventProducer(EventFormatter<Map<String, Object>> formatter, NetwitnessEventStore netwitnessEventStore){
         this.netwitnessEventStore = Objects.requireNonNull(netwitnessEventStore);
         this.formatter = Objects.requireNonNull(formatter);
     }

@@ -7,7 +7,7 @@ import fortscale.common.general.Schema;
 import java.util.List;
 import java.util.Map;
 
-class DailyCefFileProducer extends CefFilesPrinter implements EventsProducer {
+class DailyCefFileProducer extends CefFilesPrinter implements EventsProducer<List<NetwitnessEvent>> {
 
     DailyCefFileProducer(EventFormatter<String> formatter) {
         super(formatter);
