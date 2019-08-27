@@ -612,6 +612,77 @@
           }
         }
       ]
+    },
+    {
+      "name": "srcIpHistogramNewDstOrgOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstOrg.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstOrg.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "distinctSrcIpHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "srcIpHistogramNewDstOrgSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstOrg.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstOrg.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "distinctSrcIpHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
     }
   ]
 }
