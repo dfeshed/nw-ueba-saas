@@ -21,6 +21,7 @@ public class MongoAdapterFormatter implements EventFormatter<Map<String, Object>
 
         event.put("mongo_source_event_time", converted.mongo_source_event_time);
         event.put("insert_time", Instant.now());
+        event.put("time", converted.timeMillis);
         return event;
     }
 

@@ -16,7 +16,7 @@ public abstract class NetwitnessEvent {
 
     public final Instant eventTimeEpoch;
     public final Instant mongo_source_event_time;
-    public final String mongoEventTime;
+    public final String timeMillis;
     public final String brokerEventTime;
     public final Schema schema;
     public CefHeader cefHeader;
@@ -25,7 +25,7 @@ public abstract class NetwitnessEvent {
     public NetwitnessEvent(Instant eventTimeEpoch, Schema schema) {
         this.eventTimeEpoch = requireNonNull(eventTimeEpoch);
         this.mongo_source_event_time = requireNonNull(eventTimeEpoch);
-        this.mongoEventTime = String.valueOf(eventTimeEpoch.toEpochMilli());
+        this.timeMillis = String.valueOf(eventTimeEpoch.toEpochMilli());
         this.brokerEventTime = BROKER_EVENT_TIME_FORMATTER.format(eventTimeEpoch);
         this.schema = requireNonNull(schema);
     }
