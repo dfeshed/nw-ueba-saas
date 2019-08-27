@@ -12,6 +12,7 @@ const { log } = console; // eslint-disable-line
  */
 const Filter = EmberObject.extend({
   id: undefined,
+  isEditing: false,
   isFocused: false,
   isSelected: false,
   type: undefined
@@ -20,8 +21,7 @@ const Filter = EmberObject.extend({
 /**
  * Filters that can be modified and validated
  */
-const InteractiveFilter = Filter.extend({
-  isEditing: false,
+const ValidatableFilter = Filter.extend({
   isInvalid: false,
   isValidationInProgress: false,
   validationError: undefined
@@ -31,7 +31,7 @@ const InteractiveFilter = Filter.extend({
  * Query filter class.
  * @extends Filter
  */
-const QueryFilter = InteractiveFilter.extend({
+const QueryFilter = ValidatableFilter.extend({
   componentName: 'query-container/query-pill',
   meta: undefined,
   operator: undefined,
@@ -46,7 +46,7 @@ const QueryFilter = InteractiveFilter.extend({
  * Query filter class.
  * @extends Filter
  */
-const ComplexFilter = InteractiveFilter.extend({
+const ComplexFilter = ValidatableFilter.extend({
   complexFilterText: undefined,
   componentName: 'query-container/complex-pill',
 
@@ -58,7 +58,7 @@ const ComplexFilter = InteractiveFilter.extend({
 /**
  * Text filter class.
  */
-const TextFilter = InteractiveFilter.extend({
+const TextFilter = Filter.extend({
   componentName: 'query-container/text-pill',
   searchTerm: undefined,
 
@@ -70,5 +70,6 @@ const TextFilter = InteractiveFilter.extend({
 export {
   ComplexFilter,
   QueryFilter,
-  TextFilter
+  TextFilter,
+  ValidatableFilter
 };

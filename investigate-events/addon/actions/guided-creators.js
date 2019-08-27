@@ -4,6 +4,7 @@ import { languageAndAliasesForParser } from 'investigate-events/reducers/investi
 import validateQueryFragment from './fetch/query-validation';
 import { selectPillsFromPosition } from 'investigate-events/actions/utils';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
+import { ValidatableFilter } from 'investigate-events/util/filter-types';
 import { COMPLEX_FILTER, TEXT_FILTER } from 'investigate-events/constants/pill';
 import { lookup } from 'ember-dependency-lookup';
 import RSVP from 'rsvp';
@@ -138,8 +139,14 @@ export const batchAddPills = ({ pillsData, initialPosition }) => {
       }
     });
     pillsData.forEach((pillData, i) => {
-      if (pillData.type !== 'text') {
-        dispatch(_clientSideValidation({ pillData, position: initialPosition + i, isFromParser: true }));
+      // Any pill that extends from the `ValidatableFilter` class will need to
+      // be validated. Excludes pill types like text, open/close paren, etc.
+      if (pillData instanceof ValidatableFilter) {
+        dispatch(_clientSideValidation({
+          pillData,
+          position: initialPosition + i,
+          isFromParser: true
+        }));
       }
     });
   };
