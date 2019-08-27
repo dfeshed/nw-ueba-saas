@@ -2447,7 +2447,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     assert.equal(find(PILL_SELECTORS.metaCount).textContent, '(1)', 'Meta tab count is incorrect');
     setTimeout(() => {
-      assert.equal(find(PILL_SELECTORS.recentQueryCount).textContent, '(4)', 'recent query tab count is incorrect');
+      assert.equal(find(PILL_SELECTORS.recentQueryCount).textContent, '(3)', 'recent query tab count is incorrect');
       done();
     }, 10000);
   });
@@ -2471,9 +2471,9 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await clickTrigger(PILL_SELECTORS.meta);
 
-    await selectChoose(PILL_SELECTORS.meta, 'alert');
+    await selectChoose(PILL_SELECTORS.meta, 'sessionid');
 
-    await typeIn(PILL_SELECTORS.operatorSelectInput, 'contai');
+    await typeIn(PILL_SELECTORS.operatorSelectInput, '=');
 
     await settled();
 
@@ -2541,7 +2541,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await toggleTab(PILL_SELECTORS.metaSelectInput);
 
-    await typeIn(PILL_SELECTORS.recentQuerySelectInput, 'alert contains foo');
+    await typeIn(PILL_SELECTORS.recentQuerySelectInput, 'medium = 32 ||');
 
     await settled();
 
@@ -2574,7 +2574,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await toggleTab(PILL_SELECTORS.metaSelectInput);
 
-    await typeIn(PILL_SELECTORS.recentQuerySelectInput, 'alert contains foo');
+    await typeIn(PILL_SELECTORS.recentQuerySelectInput, 'sessionid = 1');
 
     await settled();
 

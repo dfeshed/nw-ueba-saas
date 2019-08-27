@@ -252,7 +252,7 @@ module('Integration | Component | Recent Query', function(hooks) {
     await fillIn(PILL_SELECTORS.recentQuerySelectInput, 'ip');
     // Arrow down two places
     await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', ARROW_DOWN);
-    await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', ARROW_DOWN);
+    // await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', ARROW_DOWN);
     // Should be in Advanced Options now
     assert.equal(findAll(PILL_SELECTORS.powerSelectAfterOptionHighlight).length, 1, 'only one option should be highlighted');
     assert.equal(trim(find(PILL_SELECTORS.powerSelectAfterOptionHighlight).textContent), AFTER_OPTION_FREE_FORM_LABEL, 'first Advanced Option was not highlighted');

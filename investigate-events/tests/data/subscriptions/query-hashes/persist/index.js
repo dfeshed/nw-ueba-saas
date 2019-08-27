@@ -1,4 +1,5 @@
 import { hashCache } from '..';
+import { recentQueries } from '../../recent-queries';
 
 const CHARS = '0123456789qwertyuiopasdfghjklzxcvbnm';
 
@@ -38,6 +39,7 @@ const _getPredicate = (predicateRequests) => {
       hashCache.push(predicate);
       console.log(`PERSIST::_getPredicate(): predicate not in hashCache, created ${predicate.id} and pushed to hashCache`, hashCache);// eslint-disable-line
       hashObjects.push(predicate);
+      recentQueries.push(predicate.query);
     }
   });
   // Only return the request for the full query, which is in response to a

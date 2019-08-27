@@ -140,21 +140,11 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
     const getState = () => {
       return new ReduxDataHelper().hasRequiredValuesToQuery().build();
     };
-    const recentQueries = [
-      'medium = 32',
-      'medium = 32 || medium = 1',
-      'sessionid = 1 && sessionid = 80',
-      'action = \'get\' || action = \'put\'',
-      '(ip.dst = 10.2.54.11 && ip.src = 1.1.1.1 || ip.dst = 10.2.54.1 && ip.src = 1.1.3.3) && medium = 32',
-      'service = 80 || service = 90',
-      'foo = bar && bar = foo'
-    ];
-
     const dispatchRecentQueries = (action) => {
       assert.equal(action.type, ACTION_TYPES.SET_RECENT_QUERIES, 'action has the correct type');
       action.promise.then((resolve) => {
         const responseQueryArray = resolve.data.map((ob) => ob.query);
-        assert.deepEqual(recentQueries, responseQueryArray, 'Queries containing text should be returned');
+        assert.equal(responseQueryArray.length, 10, 'Correct number of queries returned');
         done();
       });
     };
@@ -175,12 +165,6 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
         .recentQueriesFilteredList()
         .build();
     };
-    const recentQueries = [
-      'medium = 32',
-      'medium = 32 || medium = 1',
-      '(ip.dst = 10.2.54.11 && ip.src = 1.1.1.1 || ip.dst = 10.2.54.1 && ip.src = 1.1.3.3) && medium = 32',
-      '(ip.dst = 10.2.54.11 && ip.src = 1.1.1.1 && medium = 32'
-    ];
     const query = 'med';
 
     const dispatchRecentQueries = (action) => {
@@ -188,9 +172,9 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
       action.promise.then((resolve) => {
 
         const responseQueryArray = resolve.data.map((ob) => ob.query);
-        assert.deepEqual(recentQueries, responseQueryArray, 'Queries containing text should be returned');
+        assert.equal(responseQueryArray.length, 3, 'Correct number of queries returned');
         action.meta.onSuccess(resolve);
-        assert.equal(queryCounter.recentQueryTabCount, 5, 'Recent query not being set correctly in the service');
+        assert.equal(queryCounter.recentQueryTabCount, 3, 'Recent query not being set correctly in the service');
         done();
       });
     };
@@ -249,7 +233,7 @@ module('Unit | Actions | Initialization-Creators', function(hooks) {
     const thunk = initializationCreators.getRecentQueries(query);
     thunk(dispatchRecentQueries, getState);
 
-    assert.equal(queryCounter.recentQueryTabCount, 5, 'Recent query count was not set correctly');
+    assert.equal(queryCounter.recentQueryTabCount, 3, 'Recent query count was not set correctly');
   });
 
   test('valueSuggestions will fetch suggested objects', async function(assert) {

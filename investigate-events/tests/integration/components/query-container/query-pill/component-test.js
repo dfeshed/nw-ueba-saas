@@ -2619,7 +2619,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     await selectChoose(PILL_SELECTORS.metaTrigger, 'medium');
     await toggleTab(PILL_SELECTORS.operatorSelectInput);
 
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 4, 'Did not find some recent queries?');
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 3, 'Did not find some recent queries?');
     await fillIn(PILL_SELECTORS.recentQuerySelectInput, 'medium = 1');
 
     assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 1, 'Did not find some recent queries?');
