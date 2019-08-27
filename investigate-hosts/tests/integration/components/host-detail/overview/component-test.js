@@ -174,7 +174,7 @@ module('Integration | Component | host-detail/overview', function(hooks) {
     setState({ activePropertyPanelTab: 'POLICIES' });
 
     const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('hasPolicyReadPermission', false);
+    accessControl.set('roles', []);
 
     await render(hbs`{{host-detail/overview domIsReady=true }}`);
 

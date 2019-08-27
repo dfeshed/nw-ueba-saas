@@ -540,12 +540,12 @@ module('Integration | Component | file list', function(hooks) {
       .setSelectedFileList([])
       .build();
     this.set('showResetScoreModal', true);
-    this.set('isMaxResetRiskScoreLimit', true);
+    this.set('selectedFiles', new Array(101));
     await render(hbs`
       <div id='modalDestination'></div>
       {{file-list
         showResetScoreModal=showResetScoreModal
-        isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
+        selectedFiles=selectedFiles
       }}
     `);
     assert.equal(findAll('#modalDestination .modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
@@ -560,12 +560,12 @@ module('Integration | Component | file list', function(hooks) {
       .setSelectedFileList([])
       .build();
     this.set('showResetScoreModal', true);
-    this.set('isMaxResetRiskScoreLimit', true);
+    this.set('selectedFiles', new Array(101));
     await render(hbs`
       <div id='modalDestination'></div>
       {{file-list
         showResetScoreModal=showResetScoreModal
-        isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
+        selectedFiles=selectedFiles
       }}
     `);
     assert.equal(findAll('#modalDestination .modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');
@@ -804,12 +804,12 @@ module('Integration | Component | file list', function(hooks) {
       .setSelectedFileList([])
       .build();
     this.set('showResetScoreModal', true);
-    this.set('isMaxResetRiskScoreLimit', false);
+    this.set('selectedFiles', new Array(10));
     await render(hbs`
       <div id='modalDestination'></div>
       {{file-list
         showResetScoreModal=showResetScoreModal
-        isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
+        selectedFiles=selectedFiles
       }}
     `);
     assert.equal(findAll('#modalDestination .modal-content.reset-risk-score').length, 1, 'reset risk score confirmation dialog is opened');

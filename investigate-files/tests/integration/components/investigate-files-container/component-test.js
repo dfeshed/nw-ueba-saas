@@ -224,8 +224,6 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
 
   test('Context menu rendered and click download to server', async function(assert) {
     assert.expect(2);
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     const { files: { schema: { schema } } } = dummyFiles;
     const endpointQuery = {
       serverId: 'serverId'
@@ -262,8 +260,6 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
 
   test('Context menu rendered and click saveLocalFileCopy', async function(assert) {
     assert.expect(2);
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     const { files: { schema: { schema }, fileList: { files } } } = dummyFiles;
     const endpointQuery = {
       serverId: 'serverId'
@@ -300,8 +296,6 @@ module('Integration | Component | Investigate-files-container', function(hooks) 
   test('Context menu rendered and click analyzeFile', async function(assert) {
     assert.expect(1);
     const windowOpen = window.open;
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     const { files: { schema: { schema }, fileList: { files } } } = dummyFiles;
     const endpointQuery = {
       serverId: 'serverId'

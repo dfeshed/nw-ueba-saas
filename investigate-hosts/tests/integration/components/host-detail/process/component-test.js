@@ -269,7 +269,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
 
   test('fileDownloadStatusButton when false, will show not download file options in more actions', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', false);
+    accessControl.set('roles', []);
     new ReduxDataHelper(setState)
       .serviceId('123456')
       .timeRange({ value: 7, unit: 'days' })
