@@ -65,15 +65,13 @@ public abstract class DataPreparationBase extends AbstractTestNGSpringContextTes
                 (schema, count) -> LOGGER.info(schema.toString().concat(" -> ").concat(String.valueOf(count))));
     }
 
-
-    private EventsProducer getProducer() {
+    private EventsProducer<List<NetwitnessEvent>> getProducer() {
         return new EventsProducerFactory(netwitnessEventStore).get(generatorFormat);
     }
 
     private EventConverter<Event> getConverter() {
         return new EventConverterFactory().get();
     }
-
 
 
     private void setParams(int historicalDaysBack, int anomalyDay, GeneratorFormat generatorFormat){

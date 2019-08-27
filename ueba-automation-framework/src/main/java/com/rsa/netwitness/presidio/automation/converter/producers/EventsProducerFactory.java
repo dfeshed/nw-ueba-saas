@@ -1,18 +1,20 @@
 package com.rsa.netwitness.presidio.automation.converter.producers;
 
+import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
 import com.rsa.netwitness.presidio.automation.converter.formatters.BrokerCefFormatter;
 import com.rsa.netwitness.presidio.automation.converter.formatters.MongoAdapterFormatter;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
 import com.rsa.netwitness.presidio.automation.enums.GeneratorFormat;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.rsa.netwitness.presidio.automation.enums.GeneratorFormat.*;
 
 public class EventsProducerFactory {
 
-    private Map<GeneratorFormat, EventsProducer> producers = new HashMap<>();
+    private Map<GeneratorFormat, EventsProducer<List<NetwitnessEvent>>> producers = new HashMap<>();
 
     public EventsProducerFactory(NetwitnessEventStore netwitnessEventStore) {
 
@@ -24,7 +26,7 @@ public class EventsProducerFactory {
     }
 
 
-    public EventsProducer get(GeneratorFormat generatorFormat) {
+    public EventsProducer<List<NetwitnessEvent>> get(GeneratorFormat generatorFormat) {
         if (producers.containsKey(generatorFormat))
             return producers.get(generatorFormat);
         else throw new RuntimeException("Missing generator for: " + generatorFormat);
