@@ -1,36 +1,40 @@
 package com.rsa.netwitness.presidio.automation.converter.producers;
 
+import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
+import com.rsa.netwitness.presidio.automation.converter.formatters.EventFormatter;
 import com.rsa.netwitness.presidio.automation.domain.store.NetwitnessEventStore;
-import com.rsa.netwitness.presidio.automation.converter.events.ConverterEventBase;
 import fortscale.common.general.Schema;
 import presidio.nw.flume.domain.test.NetwitnessStoredData;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.*;
 
-public class MongoInputProducerImpl implements NetwitnessEventsProducer {
+class MongoAdapterProducer implements EventsProducer {
 
-    public NetwitnessEventStore netwitnessEventStore;
+    private NetwitnessEventStore netwitnessEventStore;
+    private EventFormatter<Map<String, Object>> formatter;
 
-    public MongoInputProducerImpl(NetwitnessEventStore netwitnessEventStore){
-        this.netwitnessEventStore = netwitnessEventStore;
+    MongoAdapterProducer(EventFormatter<Map<String, Object>> formatter, NetwitnessEventStore netwitnessEventStore){
+        this.netwitnessEventStore = Objects.requireNonNull(netwitnessEventStore);
+        this.formatter = Objects.requireNonNull(formatter);
     }
 
     @Override
-    public Map<Schema, Long> send(List<ConverterEventBase> eventsList) {
+    public Map<Schema, Long> send(List<NetwitnessEvent> eventsList) {
 
-        Map<Schema, List<ConverterEventBase>> eventsPerSchema = eventsList.stream()
-                .collect(groupingBy(ConverterEventBase::mongoSchema));
+        Map<Schema, List<NetwitnessEvent>> eventsPerSchema = eventsList.stream()
+                .collect(groupingBy(e -> e.schema));
 
         Set<Schema> schemas = eventsPerSchema.keySet();
 
         Function<Schema, List<NetwitnessStoredData>> getAsNetwitnessStoredData = schema ->
                 eventsPerSchema.get(schema).stream()
-                        .map(ConverterEventBase::getAsMongoKeyValue)
+                        .map(event -> formatter.format(event))
                         .map(NetwitnessStoredData::new)
                         .collect(toList());
 

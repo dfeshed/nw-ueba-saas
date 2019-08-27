@@ -1,29 +1,31 @@
 package com.rsa.netwitness.presidio.automation.converter.conveters.authentication;
 
-import com.rsa.netwitness.presidio.automation.converter.conveters.INetwitnessEventConverter;
+import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverter;
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
+import org.assertj.core.util.Lists;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
-import presidio.data.generators.common.StringCyclicValuesGenerator;
+import presidio.data.generators.common.random.RandomListElementGenerator;
+
+import java.util.List;
 
 
-class NetwitnessAuthenticationEventConverter implements INetwitnessEventConverter<AuthenticationEvent> {
+public class NetwitnessAuthenticationEventConverter implements EventConverter<AuthenticationEvent> {
 
-    private static final String[] successReferenceIds = new String[]{"4769", "4624", "4648", "rhlinux"};
-    private static final String[] failureReferenceIds = new String[]{"4769", "4625", "4648", "rhlinux"};
-
-    private static StringCyclicValuesGenerator successCounter = new StringCyclicValuesGenerator(successReferenceIds);
-    private static StringCyclicValuesGenerator failuresCounter = new StringCyclicValuesGenerator(failureReferenceIds);
-
+    private static final List<String> successReferenceIds = Lists.newArrayList("4769", "4624", "4648", "rhlinux");
+    private static final List<String> failureReferenceIds = Lists.newArrayList("4769", "4625", "4648", "rhlinux");
 
     @Override
-    public NetwitnessEvent toNetwitnessEvent(AuthenticationEvent event) {
+    public NetwitnessEvent convert(AuthenticationEvent event) {
+        RandomListElementGenerator<String> successReferenceIdsGen = new RandomListElementGenerator<>(successReferenceIds);
+        RandomListElementGenerator<String> failureReferenceIdsGen = new RandomListElementGenerator<>(failureReferenceIds);
 
         NetwitnessWindowsAuthenticationEventBuilder builderWin = new NetwitnessWindowsAuthenticationEventBuilder(event);
         NetwitnessLinuxAuthenticationEventBuilder builderLin = new NetwitnessLinuxAuthenticationEventBuilder(event);
+
         if (event.getResult() == null || event.getResult().isEmpty()) throw new RuntimeException("ReferenceId is missing from event");
 
         String currentId = event.getResult().equalsIgnoreCase("success") ?
-            successCounter.getNext() : failuresCounter.getNext();
+                successReferenceIdsGen.getNext() : failureReferenceIdsGen.getNext();
 
         switch (currentId) {
             case "4769": return builderWin.getWin_4769();

@@ -1,10 +1,19 @@
 package com.rsa.netwitness.presidio.automation.converter.events;
 
+import fortscale.common.general.Schema;
+
+import java.lang.reflect.Field;
+import java.time.Instant;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-public class EndpointEvent extends NetwitnessEvent {
+public abstract class EndpointEvent extends NetwitnessEvent {
 
-    protected String event_time;
+    protected EndpointEvent(Instant eventTimeEpoch, Schema schema) {
+        super(eventTimeEpoch, schema);
+    }
+
     protected String event_source_id;
     protected String device_type;
     protected String category;
@@ -32,5 +41,28 @@ public class EndpointEvent extends NetwitnessEvent {
     protected String owner;
     protected List<String> dir_path_src;
     protected List<String> dir_path_dst;
+    protected String checksum$dash$id;
+    protected String process$dash$vid$dash$src;
+    protected String os$dash$type;
+    protected String agent$dash$id;
 
+
+    @Override
+    public Map<String, Object> getEvent() {
+        Field[] classFields = EndpointEvent.class.getDeclaredFields();
+        Map<String, Object> eventMap = new LinkedHashMap<>();
+
+        for (Field classField : classFields) {
+            eventMap.computeIfAbsent(classField.getName().replaceAll("\\$dash\\$", "-"), e -> {
+                try {
+                    return classField.get(this);
+                } catch (IllegalAccessException ex) {
+                    System.err.println("Field name: " + classField.getName());
+                    ex.printStackTrace();
+                    return eventMap;
+                }
+            });
+        }
+        return eventMap;
+    }
 }

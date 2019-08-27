@@ -1,23 +1,30 @@
 package com.rsa.netwitness.presidio.automation.converter.conveters.file;
 
+import com.rsa.netwitness.presidio.automation.converter.conveters.EventConverter;
 import com.rsa.netwitness.presidio.automation.converter.events.NetwitnessEvent;
+import org.assertj.core.util.Lists;
 import presidio.data.domain.event.file.FileEvent;
-import presidio.data.generators.common.StringCyclicValuesGenerator;
+import presidio.data.generators.common.random.RandomListElementGenerator;
+
+import java.util.List;
 
 
-class NetwitnessFileEventConverter {
+public class NetwitnessFileEventConverter implements EventConverter<FileEvent> {
 
-    private static StringCyclicValuesGenerator counter = new StringCyclicValuesGenerator(new String[]{"4663", "5145"});
+    private static final List<String> refIds = Lists.newArrayList("4663", "5145");
 
-    public NetwitnessEvent getNext(FileEvent event) {
+    @Override
+    public NetwitnessEvent convert(FileEvent event) {
+        RandomListElementGenerator<String> referenceIdsGen = new RandomListElementGenerator<>(refIds);
 
         NetwitnessFileEventBuilder builder = new NetwitnessFileEventBuilder(event);
 
         switch (builder.getOperationType()) {
             case "FILE_OPENED":
             case "FOLDER_OPENED":
-                if ("5145".equals(counter.getNext())) return builder.getWin_5145();
-                else return builder.getWin_4663(); // default
+                if ("5145".equals(referenceIdsGen.getNext())) {
+                    return builder.getWin_5145();
+                }
 
             case "FILE_DELETED":
             case "FOLDER_DELETED":

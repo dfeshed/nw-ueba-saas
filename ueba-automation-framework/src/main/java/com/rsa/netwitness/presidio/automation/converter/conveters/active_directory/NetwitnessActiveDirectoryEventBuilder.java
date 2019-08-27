@@ -10,22 +10,14 @@ class NetwitnessActiveDirectoryEventBuilder extends WindowsEvent {
 
     private final ActiveDirectoryEvent event;
 
-    private static final String cefVendor = "Microsoft";
-    private static final String cefProduct = "Windows Snare";
-    private static final String cefEventDesc = "Active directory event test";
-    private static String getCefEventType(String operationResult) {
-        return operationResult.equalsIgnoreCase("SUCCESS")?"SUCCESS":"FAILURE";
-    }
 
     NetwitnessActiveDirectoryEventBuilder(ActiveDirectoryEvent event) {
-        super(event.getDateTime(), Schema.ACTIVE_DIRECTORY,
-                new CefHeader(cefVendor, cefProduct,
-                        getCefEventType(event.getOperation().getOperationResult()), cefEventDesc));
-
+        super(event.getDateTime(), Schema.ACTIVE_DIRECTORY);
         this.event = event;
     }
 
     NetwitnessActiveDirectoryEventBuilder getByRefId(String refId) {
+        cefHeader = getCefHeader();
         setCommonFields();
         mapObjectId(refId);
         mapSecondaryObjectId(refId);
@@ -33,10 +25,11 @@ class NetwitnessActiveDirectoryEventBuilder extends WindowsEvent {
         return this;
     }
 
-    private void setCommonFields(){
+    private void setCommonFields() {
         event_source_id = event.getEventId();
         user_dst = event.getUser().getUserId();
         device_type = "winevent_snare";
+        event_type = event.getOperation().getOperationResult().equalsIgnoreCase("SUCCESS") ? "SUCCESS" : "FAILURE";
     }
 
     private void mapObjectId(String referenceId) {
@@ -96,5 +89,17 @@ class NetwitnessActiveDirectoryEventBuilder extends WindowsEvent {
                 accesses = objectId2;
                 break;
         }
+    }
+
+
+    private CefHeader getCefHeader() {
+        String cefVendor = "Microsoft";
+        String cefProduct = "Windows Snare";
+        String cefEventDesc = "Active directory event test";
+
+        String cefEventType = event.getOperation().getOperationResult()
+                .equalsIgnoreCase("SUCCESS") ? "SUCCESS" : "FAILURE";
+
+        return new CefHeader(cefVendor, cefProduct, cefEventType, cefEventDesc);
     }
 }
