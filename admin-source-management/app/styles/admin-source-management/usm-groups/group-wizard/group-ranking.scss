@@ -56,21 +56,85 @@
     .rsa-content-tethered-panel {
       display: none;
     }
-    .group-ranking-table, .preview-settings {
+    .preview-settings {
       max-height: calc(100vh - #{$wizardStepMaxHeight} - 65px);
       min-height: calc(100vh - #{$wizardStepMaxHeight} - 65px);
+      display: block;
       overflow: auto;
       background-color: background-color(primary, darkest);
     }
+    .table-head {
+      z-index: 3;
+      thead {
+        display: inline-block;
+        width: 100%;
+        tr {
+          display: flex;
+          width: 100%;
+        }
+        th {
+          display: inline-block;
+          width: 100%;
+          border-width: 1px;
+          border-style: solid;
+          border-color: border-color(primary, dark);
+          background-color: background-color(primary, darker);
+        }
+      }
+    }
+    .group-rank-cell p, .group-preview-cell p, .n-sources-cell p {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+
     .group-ranking-table {
-      scroll-behavior: smooth;
-      width: 100%;
+      background-color: background-color(primary, darkest);
       z-index: 1;
-      th {
-        border-width: 1px;
-        border-style: solid;
-        border-color: border-color(primary, dark);
-        background-color: background-color(primary, darker);
+      display: inline-block;
+      width: 100%;
+      max-height: calc(100vh - #{$wizardStepMaxHeight} - 105px);
+      min-height: calc(100vh - #{$wizardStepMaxHeight} - 105px);
+      overflow: auto;
+      scroll-behavior: smooth;
+      background-color: background-color(primary, darkest);
+      table {
+        width: 100%;
+        min-width: 400px;
+        tbody {
+          tr {
+            display: flex;
+            width: 100%;
+            border-bottom: 1px solid border-color(primary, dark);
+            cursor: pointer;
+            &:hover {
+              background-color: rgba(180, 180, 180, 0.08);
+            }
+            &.is-selected {
+              background-color: background-color(secondary, dark);
+            }
+            &.sortable-item.is-dragging {
+              transition-duration: 0s;
+              background: background-color(secondary, darker);
+              z-index: 10;
+            }
+            &.sortable-item.is-dropping {
+              transition-duration: .1s;
+              background: background-color(secondary, light);
+              z-index: 10;
+            }
+          }
+          td {
+            display: inline-block;
+            width: 100%;
+            .group-name-cell, .policy-cell {
+              padding-left: rsa-whitespace();
+            }
+          }
+          hbox.group-name-cell, hbox.policy-cell {
+            word-break: break-word;
+          }
+        }
       }
     }
     .preview-settings {   
@@ -102,32 +166,6 @@
     }
     table {
       width: 100%;
-      tbody {
-        tr {
-          border-bottom: 1px solid border-color(primary, dark);
-          cursor: pointer;
-          &:hover {
-            background-color: rgba(180, 180, 180, 0.08);
-          }
-          &.is-selected {
-            background-color: background-color(secondary, dark);
-          }
-          &.sortable-item.is-dragging {
-            transition-duration: 0s;
-            background: background-color(secondary, darker);
-            z-index: 10;
-          }
-          &.sortable-item.is-dropping {
-            transition-duration: .1s;
-            background: background-color(secondary, light);
-            z-index: 10;
-          }
-        }
-        td.group-name-cell, td.policy-cell {
-          min-width: 200px;
-          word-break: break-word;
-        }
-      }
       th, td {
         .handle {
           display: inline-block;
@@ -147,10 +185,13 @@
         }
       }
       th {
-        padding: rsa-whitespace();
-        padding-left: rsa-whitespace(less);
         text-align: left;
         @include rsa-font(header);
+        hbox hbox {
+          padding: rsa-whitespace();
+          padding-left: rsa-whitespace(less);
+          border-left: 1px solid border-color(primary, dark);
+        }
       }
       td {
         padding: rsa-whitespace(less);
@@ -197,12 +238,12 @@
     border-color: border-color(primary, lighter);
     padding: 10px;
     background-color: background-color(primary, darker);
-    left: -75px;
+    left: -120px;
     width: 150px;
     z-index: 9999;
     svg {
       position: absolute;
-      left: 75px;
+      left: 120px;
       top: -7px;
       width: 14px;
       height: 7px;

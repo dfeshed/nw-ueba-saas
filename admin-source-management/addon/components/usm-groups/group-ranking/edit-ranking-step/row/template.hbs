@@ -1,40 +1,48 @@
-<td class="reorder-item-cell">
-  <centered>
-    <span class="handle"></span>
-  </centered>
-</td>
-<td class="group-rank-cell" align='center'>
-  {{add index 1}}
-</td>
-<td class="group-preview-cell" align='center'>
-  <div class="float-toggle simulate-{{item.isChecked}}" {{action 'previewRankingWithFetch' index item.isChecked on='click'}}>
-    <div class="float-ball"></div>
-  </div>
-</td>
-<td class="group-name-cell">
-  {{item.name}}
-</td>
-<td class="policy-cell">
-  {{#each-in item.assignedPolicies as |policy details|}}
-    {{#if (eq policy selectedSourceType)}}
-      {{ details.name }}
-    {{/if}}
-  {{/each-in}}
-</td>
-<td class="n-sources-cell">
-  <div class="table-cell-text" {{action 'hideTip' index on='mouseLeave'}}>
-    {{#if srcCountTooltip}}
-      <div class="src-count-text src-count" {{action 'showTip' index on='mouseEnter'}}>{{srcCount}}</div>
-      <div class="tip">
-        <svg>
-          <polygon class="poly-line-1" points="0,7 7,0 14,7"/>
-          <polygon class="poly-line-2" points="2,7 7,2 12,7"/>
-        </svg>
-        <p class="src-count-tip">{{srcCountTooltip}}</p>
-      </div>
-    {{else}}
-      <div class="src-count">{{srcCount}}</div>
-      <div class="tip"></div>
-    {{/if}}
-  </div>
+<td {{action 'previewRankingWithFetch' index item.isChecked on='click'}}>
+  <hbox fit class="col-md-12 col-xs-12 col-sm-12">
+    <hbox class="col-md-1 col-xs-1 col-sm-1 reorder-item-cell">
+      <centered>
+        <span class="handle"></span>
+      </centered>
+    </hbox>
+    <hbox class="col-md-1 col-xs-1 col-sm-1 group-rank-cell" {{action 'previewRankingWithFetch' index item.isChecked on='click'}}>
+      <p>{{add index 1}}</p>
+    </hbox>
+    <hbox class="col-md-2 col-xs-2 col-sm-2 group-preview-cell" {{action 'previewRankingWithFetch' index item.isChecked on='click'}}>
+      <p>
+        <div class="float-toggle simulate-{{item.isChecked}}">
+          <div class="float-ball"></div>
+        </div>
+      </p>
+    </hbox>
+    <hbox class="col-md-3 col-xs-3 col-sm-3 group-name-cell" {{action 'previewRankingWithFetch' index item.isChecked on='click'}}>
+      {{item.name}}
+    </hbox>
+    <hbox class="col-md-3 col-xs-3 col-sm-3 policy-cell" {{action 'previewRankingWithFetch' index item.isChecked on='click'}}>
+      {{#each-in item.assignedPolicies as |policy details|}}
+        {{#if (eq policy selectedSourceType)}}
+          {{ details.name }}
+        {{/if}}
+      {{/each-in}}
+    </hbox>
+    <hbox class="col-md-2 col-xs-2 col-sm-2 n-sources-cell" {{action 'previewRankingWithFetch' index item.isChecked on='click'}}>
+      <p>
+        <div class="table-cell-text" {{action 'hideTip' index on='mouseLeave'}}>
+          {{#if srcCountTooltip}}
+            <div class="src-count-text src-count" {{action 'showTip' index on='mouseEnter'}}>{{srcCount}}</div>
+            <div class="tip">
+              <svg>
+                <polygon class="poly-line-1" points="0,7 7,0 14,7"/>
+                <polygon class="poly-line-2" points="2,7 7,2 12,7"/>
+              </svg>
+              <p class="src-count-tip">{{srcCountTooltip}}</p>
+            </div>
+          {{else}}
+            <div class="src-count">{{srcCount}}</div>
+            <div class="tip"></div>
+          {{/if}}
+        </div>
+      </p>
+    </hbox>
+  </hbox>
 </td>

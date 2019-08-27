@@ -175,26 +175,26 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step/row
     assert.equal(findAll('.group-ranking-table-body tr').length, 5, '5 groups are showing');
 
     let expectedSrcCountTip = translation.t('adminUsm.groups.list.sourceCountPublishedNewGroupTooltip');
-    assert.equal(document.querySelector('.edit-ranking-step table').rows[1].cells[5].querySelector('.src-count').innerText.trim(), 'Updating', '-1 source count as expected');
+    assert.equal(document.querySelectorAll('.src-count')[0].innerText.trim(), 'Updating', '-1 source count as expected');
     await triggerEvent(document.querySelectorAll('.src-count-text')[0], 'mouseEnter');
     assert.equal(document.querySelectorAll('.src-count-tip')[0].innerText.trim(), expectedSrcCountTip.string, '-1 source count tooltip as expected');
 
     expectedSrcCountTip = translation.t('adminUsm.groups.list.sourceCountUnpublishedEditedGroupTooltip');
-    assert.equal(document.querySelector('.edit-ranking-step table').rows[2].cells[5].querySelector('.src-count').innerText.trim(), 30, 'unpublished edit source count as expected');
+    assert.equal(document.querySelectorAll('.src-count')[1].innerText.trim(), 30, 'unpublished edit source count as expected');
     await triggerEvent(document.querySelectorAll('.src-count-text')[1], 'mouseEnter');
     assert.equal(document.querySelectorAll('.src-count-tip')[1].innerText.trim(), expectedSrcCountTip.string, 'unpublished edit count tooltip as expected');
 
     expectedSrcCountTip = translation.t('adminUsm.groups.list.sourceCountPublishedNoEndpointTooltip');
-    assert.equal(document.querySelector('.edit-ranking-step table').rows[3].cells[5].querySelector('.src-count').innerText.trim(), 'N/A', '-2 source count as expected');
+    assert.equal(document.querySelectorAll('.src-count')[2].innerText.trim(), 'N/A', '-2 source count as expected');
     await triggerEvent(document.querySelectorAll('.src-count-text')[2], 'mouseEnter');
     assert.equal(document.querySelectorAll('.src-count-tip')[2].innerText.trim(), expectedSrcCountTip.string, '-2 source count tooltip as expected');
 
     expectedSrcCountTip = translation.t('adminUsm.groups.list.sourceCountUnpublishedNewGroupTooltip');
-    assert.equal(document.querySelector('.edit-ranking-step table').rows[4].cells[5].querySelector('.src-count').innerText.trim(), 'N/A', '-3 source count as expected');
+    assert.equal(document.querySelectorAll('.src-count')[3].innerText.trim(), 'N/A', '-3 source count as expected');
     await triggerEvent(document.querySelectorAll('.src-count-text')[3], 'mouseEnter');
     assert.equal(document.querySelectorAll('.src-count-tip')[3].innerText.trim(), expectedSrcCountTip.string, '-3 source count tooltip as expected');
 
-    assert.equal(document.querySelector('.edit-ranking-step table').rows[5].cells[5].querySelector('.src-count').innerText.trim(), 10, 'published and synced source count as expected');
+    assert.equal(document.querySelectorAll('.src-count')[4].innerText.trim(), 10, 'published and synced source count as expected');
     assert.equal(document.querySelectorAll('.src-count-text').length, 4, 'no tooltip rendered for normal count');
   });
   test('Show edrPolicy policy applied', async function(assert) {

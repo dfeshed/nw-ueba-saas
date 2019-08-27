@@ -31,7 +31,7 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
   test('Show group list', async function(assert) {
     new ReduxDataHelper(setState).groupRankingWithData().build();
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
-    assert.equal(findAll('.edit-ranking-step .group-rank-cell').length, 14, 'All 14 groups are showing');
+    assert.equal(findAll('.edit-ranking-step .group-rank-cell').length, 15, 'All 15 groups are showing');
   });
 
   test('Show a selected group in the group ranking list', async function(assert) {
