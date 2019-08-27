@@ -428,23 +428,25 @@ export const policiesUnavailableMessage = createSelector(
   (tab, policiesPropertyData) => tab === 'POLICIES' && _.isEmpty(policiesPropertyData) ? 'Policy unavailable' : null
 );
 
-export const mftDownloadButtonStatusDetails = createSelector(
-  [_hostDetails],
-  ({ machineIdentity = {} }) => {
-    const { machineOsType, agentMode, agentVersion } = machineIdentity;
-    let isMFTEnabled = false;
-    if (isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion)) {
-      isMFTEnabled = true;
-    }
-    return { isDisplayed: isMFTEnabled };
-  }
-);
-
 export const agentMigrated = createSelector(
   [_hostDetails, isBrokerView],
   ({ groupPolicy }, isBrokerView) => {
     const { managed } = groupPolicy ? groupPolicy : { managed: false };
     return !managed && (!isBrokerView);
+  }
+);
+
+export const mftDownloadButtonStatusDetails = createSelector(
+  [_hostDetails, agentMigrated],
+  ({ machineIdentity = {}, groupPolicy = {} }, agentMigrated) => {
+    // Temp key editExclusionList, needs to check if machine has been isolated and exclusion list can be edited.
+    const { editExclusionList = false } = groupPolicy ? groupPolicy : { editExclusionList: false };
+    const { machineOsType, agentMode, agentVersion } = machineIdentity;
+    let isMFTEnabled = false;
+    if (isOSWindows(machineOsType) && isModeAdvance(agentMode) && isAgentVersionAdvanced(agentVersion)) {
+      isMFTEnabled = true;
+    }
+    return { isDisplayed: isMFTEnabled, agentMigrated, editExclusionList };
   }
 );
 

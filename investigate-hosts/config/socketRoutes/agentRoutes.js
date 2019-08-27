@@ -40,6 +40,10 @@ module.exports = function(environment) {
       resetHostRiskScore: {
         subscriptionDestination: '/user/queue/endpoint/machine/remove',
         requestDestination: '/ws/endpoint/machine/remove'
+      },
+      isolateHost: {
+        subscriptionDestination: '/user/queue/endpoint/command/start-isolation',
+        requestDestination: '/ws/endpoint/command/start-isolation'
       }
     }
   };

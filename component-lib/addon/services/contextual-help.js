@@ -30,6 +30,7 @@ export default Service.extend({
   invHostsLibraries: 'Librarieshosts',
   invHostsAnomalies: 'Anomalieshosts',
   invHostsSysInfo: 'SysInfohosts',
+  invHostsDownloads: 'Downloadshosts',
 
   respondModule: 'respond',
   respAlrtListVw: 'respAlrtListVw',

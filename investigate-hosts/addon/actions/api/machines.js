@@ -286,6 +286,27 @@ const getMFTSubfolders = (pageNumber, pageSize, key, descending, expressionList)
 };
 
 
+/**
+ * Executes a websocket call to isolate selected hosts
+ *
+ * @method isolateHostRequest
+ * @param data {Object} of agentId, exclusion list and comment
+ * @param serverId {String} post to a specific server
+ * @public
+ * @returns {Promise}
+ */
+
+const isolateHostRequest = (data, serverId) => {
+  const request = lookup('service:request');
+  const streamOptions = serverId ? { socketUrlPostfix: serverId, requiredSocketUrl: 'endpoint/socket' } : null;
+  return request.promiseRequest({
+    method: 'isolateHost',
+    modelName: 'agent',
+    query: { data },
+    streamOptions
+  });
+};
+
 export default {
   getAllServices,
   getAllFilters,
@@ -300,5 +321,6 @@ export default {
   pollAgentStatus,
   getContext,
   downloadMFT,
-  getMFTSubfolders
+  getMFTSubfolders,
+  isolateHostRequest
 };

@@ -19,6 +19,7 @@ const stateToComputed = (state) => ({
   isExportDisabled: !isSnapshotsAvailable(state),
   scanTime: state.endpoint.detailsInput.scanTime,
   agentId: state.endpoint.detailsInput.agentId,
+  serverId: state.endpointQuery.selectedMachineServerId,
   isMFTEnabled: mftDownloadButtonStatusDetails(state),
   isAgentMigrated: agentMigrated(state)
 });
@@ -34,10 +35,32 @@ const HostDetailsMoreActions = Component.extend({
 
   accessControl: service(),
 
+  showIsolationModal: false,
+
   @computed('isMFTEnabled')
   moreOptions: {
     get() {
+      let subNavItem = {};
       const isMFTEnabled = this.get('isMFTEnabled');
+
+      if (isMFTEnabled.editExclusionList) {
+        subNavItem = {
+          panelId: 'panel5',
+          modalName: 'release',
+          name: 'investigateHosts.networkIsolation.menu.releaseFromIsolation',
+          buttonId: 'release-isolation-button',
+          isDisabled: false
+        };
+      } else {
+        subNavItem = {
+          panelId: 'panel5',
+          modalName: 'isolate',
+          name: 'investigateHosts.networkIsolation.menu.isolate',
+          buttonId: 'isolation-button',
+          isDisabled: false
+        };
+      }
+
       const moreActionOptions = [
         {
           panelId: 'panel1',
@@ -50,16 +73,33 @@ const HostDetailsMoreActions = Component.extend({
           buttonId: 'export-button'
         }
       ];
-      const mft = [
+      const mftAndIsolation = [
         {
           panelId: 'panel3',
+          divider: true,
+          name: 'investigateHosts.networkIsolation.menu.networkIsolation',
+          buttonId: 'isolation-button',
+          subItems: [
+            subNavItem,
+            {
+              panelId: 'panel6',
+              modalName: 'edit',
+              name: 'investigateHosts.networkIsolation.menu.edit',
+              buttonId: 'isolation-button',
+              isDisabled: !isMFTEnabled.editExclusionList
+            }
+          ]
+        },
+        {
+          panelId: 'panel4',
           divider: true,
           name: 'investigateShared.endpoint.fileActions.downloadMFT',
           buttonId: 'downloadMFT-button'
         }
       ];
+
       if (isMFTEnabled.isDisplayed && this.get('accessControl.endpointCanManageFiles')) {
-        moreActionOptions.push(...mft);
+        moreActionOptions.push(...mftAndIsolation);
       }
       return moreActionOptions;
     },
@@ -80,6 +120,15 @@ const HostDetailsMoreActions = Component.extend({
         onFailure: (message) => failure(message, null, false)
       };
       this.send('downloadMFT', this.get('agentId'), this.get('hostDetails').serviceId, callBackOptions);
+    },
+
+    showIsolationModal(item) {
+      this.set('showIsolationModal', true);
+      this.set('selectedModal', item);
+    },
+
+    hideIsolationModal() {
+      this.set('showIsolationModal', false);
     }
   }
 });

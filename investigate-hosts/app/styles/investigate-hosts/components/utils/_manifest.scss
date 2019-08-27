@@ -1,0 +1,19 @@
+.machine-isolation{
+  sup {
+    color: red;
+  }
+  .comment-box-label {
+    margin: rsa-whitespace() 0;
+  }
+  .isolation-modal-content{
+    padding: rsa-whitespace(more) rsa-whitespace();
+    .isolate-description-text {
+      margin-bottom: rsa-whitespace();
+    }
+    .exclusion-list-wrapper {
+      .comment-box-label {
+        margin: rsa-whitespace() rsa-whitespace() rsa-whitespace(more) 1.5rem;
+      }
+    }
+  }
+}

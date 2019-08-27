@@ -1,0 +1,14 @@
+{{#rsa-application-modal
+  style='standard file-status-modal machine-isolation'
+  eventId='machine-isolation'
+  label=(t modalConfig.title)
+  autoOpen=true
+  onClose=closeConfirmModal}}
+
+  {{component
+    modalConfig.componentPath
+    closeConfirmModal=closeConfirmModal
+    agentId=agentId
+    serverId=serverId}}
+
+{{/rsa-application-modal}}

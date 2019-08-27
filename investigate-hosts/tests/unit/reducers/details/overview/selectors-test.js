@@ -766,7 +766,7 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: true });
+    assert.deepEqual(result, { isDisplayed: true, editExclusionList: false, agentMigrated: true });
   });
 
   test('mftDownloadButtonStatusDetails when agentVersion is wrong', function(assert) {
@@ -783,7 +783,7 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: false });
+    assert.deepEqual(result, { isDisplayed: false, editExclusionList: false, agentMigrated: true });
   });
 
   test('mftDownloadButtonStatusDetails when machineOsType is wrong', function(assert) {
@@ -800,7 +800,7 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: false });
+    assert.deepEqual(result, { isDisplayed: false, editExclusionList: false, agentMigrated: true });
   });
 
   test('mftDownloadButtonStatusDetails when agentMode is wrong', function(assert) {
@@ -817,7 +817,7 @@ module('Unit | Selectors | overview', function(hooks) {
         }
       }
     }));
-    assert.deepEqual(result, { isDisplayed: false });
+    assert.deepEqual(result, { isDisplayed: false, editExclusionList: false, agentMigrated: true });
   });
 
   test('getRARStatus', function(assert) {

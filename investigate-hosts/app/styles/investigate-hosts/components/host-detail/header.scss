@@ -195,13 +195,26 @@
     }
   }
   .divider {
-    margin: 0.75rem 0 0 0;
+    margin: 0;
   }
-  .downloadMFT-button {
-    padding: rsa-whitespace(less) 0;
+  .downloadMFT-button button, .isolate-button button{
+    padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
+  }
+  .export-button{
+    padding-bottom: 0.75rem;
   }
   .host-start-scan-button .scan-modal {
     height: 0px;
+  }
+}
+
+.machine-isolation-selector {
+  .rsa-dropdown-action-list li {
+    padding: 0px;
+  }
+  .rsa-form-button-wrapper button {
+    padding: rsa-whitespace();
+    border: none;
   }
 }
 

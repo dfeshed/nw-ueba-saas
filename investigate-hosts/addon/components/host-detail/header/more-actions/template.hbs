@@ -28,7 +28,7 @@
       isStartScanIconDisplayed=false}}
         </li>
       {{else if (eq moreOption.buttonId 'export-button')}}
-        <li>
+        <li class="export-button">
           {{#if isJsonExportCompleted}}
             <span title='{{t 'investigateHosts.hosts.button.exportTooltip'}}'>
               {{#rsa-form-button
@@ -43,6 +43,41 @@
             {{/rsa-form-button}}
           {{/if}}
         </li>
+      {{else if moreOption.subItems}}
+        <li class="isolate-button{{if moreOption.divider ' divider'}}">
+          {{#rsa-content-tethered-panel-trigger
+            panel=moreOption.panelId
+            displayDelay=200
+            hideDelay=100
+            isDisabled=isAgentMigrated
+          }}
+            {{#rsa-form-button
+              isDisabled=isAgentMigrated}}
+              {{t moreOption.name}}
+              {{rsa-icon name='arrow-right-12'}}
+            {{/rsa-form-button}}
+          {{/rsa-content-tethered-panel-trigger}}
+
+          {{#rsa-content-tethered-panel
+            panelClass="machine-isolation-selector"
+            displayCloseButton=false
+            isPopover=true
+            panelId=moreOption.panelId
+            position='right-bottom'
+          }}
+            <ul class="rsa-dropdown-action-list">
+              {{#each moreOption.subItems as |subItem|}}
+                <li>
+                  {{#rsa-form-button
+                    defaultAction=(action 'showIsolationModal' subItem.modalName)
+                    isDisabled=subItem.isDisabled}}
+                    {{t subItem.name}}
+                  {{/rsa-form-button}}
+                </li>
+              {{/each}}
+            </ul>
+          {{/rsa-content-tethered-panel}}
+        </li>
       {{else if (eq moreOption.buttonId 'downloadMFT-button')}}
         <li class="downloadMFT-button{{if moreOption.divider ' divider'}}" >
           {{#rsa-form-button
@@ -55,3 +90,11 @@
     {{/each}}
   </ul>
 {{/rsa-content-tethered-panel}}
+
+{{#if showIsolationModal}}
+  {{utils/machine-isolation-modal
+    closeConfirmModal=(action 'hideIsolationModal')
+    agentId=agentId
+    serverId=serverId
+    selectedModal=selectedModal}}
+{{/if}}

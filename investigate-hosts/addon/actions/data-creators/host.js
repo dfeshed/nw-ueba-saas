@@ -361,6 +361,16 @@ const downloadMFT = (agentId, serverId, callbacks = callbacksDefault) => {
     });
 };
 
+const isolateHostRequest = (data, serverId, callbacks = callbacksDefault) => {
+  Machines.isolateHostRequest(data, serverId)
+    .then(() => {
+      callbacks.onSuccess();
+    }).catch(({ meta: message }) => {
+      if (message) {
+        callbacks.onFailure(message.message);
+      }
+    });
+};
 
 export {
   getAllServices,
@@ -382,5 +392,6 @@ export {
   bootstrapInvestigateHosts,
   changeEndpointServerSelection,
   downloadMFT,
-  saveColumnConfig
+  saveColumnConfig,
+  isolateHostRequest
 };

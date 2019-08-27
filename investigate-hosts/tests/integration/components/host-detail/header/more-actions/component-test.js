@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { patchSocket } from '../../../../../helpers/patch-socket';
-import { click, find, findAll, render } from '@ember/test-helpers';
+import { click, find, findAll, render, settled, triggerEvent } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState;
@@ -48,12 +48,13 @@ module('Integration | Component | host detail more-actions', function(hooks) {
       .build();
     await render(hbs `{{host-detail/header/more-actions}}`);
     await click('.host_more_actions .host-details-more-actions');
-    assert.equal(findAll('.host-details_dropdown-action-list li').length, 3, 'Number of actions present is 3 as MFT permission added');
+    assert.equal(findAll('.host-details_dropdown-action-list li').length, 4, 'Number of actions present is 3 as MFT permission added');
 
     assert.ok(find('.host-start-scan-button'), 'scan-command renders giving the start scan button');
     assert.equal(findAll('.rsa-icon-check-shield-lined').length, 0, 'Start scan icon not present');
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(2)').textContent.trim(), 'Export Host details', 'Export Host details button renders');
-    assert.equal(find('.host-details_dropdown-action-list li:nth-child(3)').textContent.trim(), 'Download MFT', 'Download MFT button renders');
+    assert.equal(find('.host-details_dropdown-action-list li:nth-child(3)').textContent.trim(), 'Network Isolation', 'Network Isolation button renders');
+    assert.equal(find('.host-details_dropdown-action-list li:nth-child(4)').textContent.trim(), 'Download MFT', 'Download MFT button renders');
   });
   test('test for More Actions with no manage permission', async function(assert) {
     new ReduxDataHelper(setState)
@@ -202,5 +203,54 @@ module('Integration | Component | host detail more-actions', function(hooks) {
     await click('.host_more_actions .host-details-more-actions');
 
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(2) .rsa-form-button-wrapper').textContent.trim(), 'Export Host details', 'In initial state and when previous export is completed, button is active');
+  });
+
+  test('test for network isolation options', async function(assert) {
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+      .host(data)
+      .hostOverview(data)
+      .isJsonExportCompleted(true)
+      .isSnapshotsAvailable(true)
+      .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
+      .build();
+    await render(hbs `
+      <div id='modalDestination'></div>
+      {{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 0, 'No Network isolation related options rendered');
+
+    await triggerEvent(find('.host-details_dropdown-action-list li.isolate-button button'), 'mouseover');
+
+    return settled().then(() => {
+      assert.equal(findAll('.rsa-dropdown-action-list li').length, 2, '2 Network isolation related options rendered');
+    });
+  });
+
+  test('test for machine isolation modal', async function(assert) {
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+      .host(data)
+      .hostOverview(data)
+      .isJsonExportCompleted(true)
+      .isSnapshotsAvailable(true)
+      .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
+      .build();
+
+    await render(hbs `
+      <div id='modalDestination'></div>
+      {{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+
+    await triggerEvent(find('.host-details_dropdown-action-list li.isolate-button button'), 'mouseover');
+
+    assert.equal(findAll('.machine-isolation').length, 0, 'isolation modal not loaded');
+    await click(find('.machine-isolation-selector li button'));
+
+    return settled().then(() => {
+      assert.equal(findAll('#modalDestination .machine-isolation').length, 1, 'isolation modal loaded');
+    });
+
   });
 });
