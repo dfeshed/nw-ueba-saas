@@ -130,7 +130,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
   });
 
   // Skipping after update to Chrome 76, failing 80% of the time
-  skip('Selecting and deselecting a filter reflects the selection/deselection in the UI', async function(assert) {
+  test('Selecting and deselecting a filter reflects the selection/deselection in the UI', async function(assert) {
     await render(hbs`{{rsa-alerts}}`);
     setState();
     await waitForReduxStateChange(redux, 'respond.alerts.items');
@@ -140,6 +140,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     assert.equal(find(`${selectors.alertTypeFilters} .rsa-form-checkbox-label:first-of-type`).classList.contains('checked'), true, 'The filter is selected');
     await click(`${selectors.alertTypeFilters} .rsa-form-checkbox-label:first-of-type`);
     assert.equal(find(`${selectors.alertTypeFilters} .rsa-form-checkbox-label:first-of-type`).classList.contains('checked'), false, 'The filter is not selected');
+    await waitForReduxStateChange(redux, 'respond.dictionaries.alertNames');
   });
 
   skip('The reset filters button returns the filters to the original state', async function(assert) {
