@@ -4,7 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { click, fillIn, find, findAll, render, triggerKeyEvent, blur, settled } from '@ember/test-helpers';
-import { selectChoose } from 'ember-power-select/test-support/helpers';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 
 import { patchReducer } from '../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
@@ -158,5 +158,53 @@ module('Integration | Component | query-container', function(hooks) {
     await fillIn(PILL_SELECTORS.freeFormInput, 'medium = foo');
     // press ENTER to submit query
     await triggerKeyEvent(PILL_SELECTORS.freeFormInput, 'keydown', ENTER_KEY);
+  });
+
+  test('Clicking on search should clear up all trailing text from meta', async function(assert) {
+    assert.expect(1);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .build();
+
+    this.set('executeQuery', () => {});
+
+    await render(hbs`
+      {{query-container
+        executeQuery=(action executeQuery)
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await fillIn(PILL_SELECTORS.metaSelectInput, 'act');
+    await click(SELECTORS.queryButton);
+    assert.equal(find(PILL_SELECTORS.metaSelectInput).textContent, '', 'Should be no trailing text present');
+  });
+
+  test('Clicking on search should clear up all trailing text from operator', async function(assert) {
+
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    this.set('executeQuery', () => {});
+
+    await render(hbs`
+      {{query-container
+        executeQuery=(action executeQuery)
+      }}
+    `);
+
+    await clickTrigger(PILL_SELECTORS.meta);
+    await selectChoose(PILL_SELECTORS.metaTrigger, 'alert');
+
+    await fillIn(PILL_SELECTORS.operatorSelectInput, 'contai');
+    await click(SELECTORS.queryButton);
+    assert.equal(find(PILL_SELECTORS.metaSelectInput).textContent.trim(), '', 'Should be no trailing text present');
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
   });
 });

@@ -41,6 +41,11 @@ export default Component.extend({
   languageAndAliasesForParser: null,
 
   /**
+   * Placeholder text
+   */
+  pillPlaceholder: undefined,
+
+  /**
    * Whether or not we have a text pill across all pills,
    * passed along to rendered components, not used
    * @type {Object}

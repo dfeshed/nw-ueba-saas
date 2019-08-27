@@ -9,6 +9,7 @@ import * as MESSAGE_TYPES from '../message-types';
 import { isEscape } from 'investigate-events/util/keys';
 import { transformTextToPillData } from 'investigate-events/util/query-parsing';
 import { stripOuterSingleQuotes } from 'investigate-events/util/quote';
+import { isSubmitClicked } from '../query-pill/query-pill-util';
 
 import {
   canQueryGuided,
@@ -159,6 +160,12 @@ const QueryPills = RsaContextMenu.extend({
   // Is a pill trigger open for add?
   isPillTriggerOpenForAdd: false,
 
+  /**
+   * Clean up input trailing text current pill's meta, operator and value.
+   * @type {Object}
+   */
+  cleanupInputFields: undefined,
+
   contextMenu({ target }) {
     const currentClass = target.classList.contains('is-selected');
     const parentClass = target.parentElement.classList.contains('is-selected');
@@ -173,6 +180,9 @@ const QueryPills = RsaContextMenu.extend({
       }
     } // do not call super so that the browser right-click event is preserved
   },
+
+  @computed('pillsData', 'i18n')
+  pillPlaceholder: (pillsData, i18n) => pillsData.length > 0 ? '' : i18n.t('queryBuilder.placeholder'),
 
   @computed('pillsData')
   lastIndex: (pillsData) => pillsData.length,
@@ -339,6 +349,7 @@ const QueryPills = RsaContextMenu.extend({
       isPillTriggerOpenForAdd: true
     });
     this._pillEntered();
+    next(this, () => this._cleanupTrailingText(true));
   },
 
   _pillAddCancelled() {
@@ -598,6 +609,9 @@ const QueryPills = RsaContextMenu.extend({
     if (!isEventFiredFromQueryPill(e)) {
       this.send('removePillFocus');
     }
+    if (isSubmitClicked(e.target)) {
+      this._cleanupTrailingText();
+    }
   },
 
   // Right clicking anywhere on the window should remove
@@ -629,6 +643,12 @@ const QueryPills = RsaContextMenu.extend({
       position,
       shouldAddFocusToNewPill
     });
+  },
+
+  _cleanupTrailingText(fromPillTrigger = false) {
+    this.set('cleanupInputFields', { fromPillTrigger });
+    // reset the field
+    next(this, () => this.set('cleanupInputFields', undefined));
   },
 
   _recentQueryPillCreated(data, position) {

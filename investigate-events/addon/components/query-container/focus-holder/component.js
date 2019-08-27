@@ -24,6 +24,9 @@ export default Component.extend({
     const evtobj = window.event ? event : e;
     if (isBackspace(evtobj) || isDelete(evtobj)) {
       this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED);
+      // Firefox by default redirects to the previous page.
+      // This is to prevent from going back.
+      e.preventDefault();
     } else if (isEnter(evtobj)) {
       this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_ENTER_PRESSED);
     } else if (isArrowRight(evtobj) && evtobj.shiftKey) {

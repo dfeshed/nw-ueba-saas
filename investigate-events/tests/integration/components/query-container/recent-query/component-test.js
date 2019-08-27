@@ -440,4 +440,23 @@ module('Integration | Component | Recent Query', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.recentQuerySelectInput, 'keydown', ARROW_DOWN);
   });
 
+  test('it cleans up trailing text if instructions are passed to it', async function(assert) {
+    assert.expect(2);
+
+    this.set('shouldCleanInputFields', false);
+    await render(hbs`
+      {{query-container/recent-query
+        isActive=true
+        shouldCleanInputFields=shouldCleanInputFields
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.recentQuery);
+    await typeInSearch('foobar');
+    assert.equal(find(PILL_SELECTORS.recentQuerySelectInput).value, 'foobar', 'Should see the input text');
+    this.set('shouldCleanInputFields', true);
+
+    assert.equal(find(PILL_SELECTORS.recentQuerySelectInput).value, '', 'Input should have cleared');
+
+  });
+
 });

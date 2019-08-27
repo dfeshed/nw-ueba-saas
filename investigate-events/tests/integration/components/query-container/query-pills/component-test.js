@@ -3017,4 +3017,42 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
+  test('it shows a placeholder if it is the first pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .build();
+
+    await render(hbs`
+      {{query-container/query-pills isActive=true}}
+    `);
+
+
+    const placeholder = find(PILL_SELECTORS.metaSelectInput).getAttribute('placeholder');
+    assert.ok(placeholder.length > 0, 'appears to be missing a placeholder');
+  });
+
+  test('it does not show a placeholder if there is a pill present', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+    const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+
+    // Click the first pill trigger
+    await click(triggers[0]);
+
+    const placeholder = find(PILL_SELECTORS.metaSelectInput).getAttribute('placeholder');
+    assert.ok(placeholder.length === 0, 'Should not see a placeholder');
+  });
 });

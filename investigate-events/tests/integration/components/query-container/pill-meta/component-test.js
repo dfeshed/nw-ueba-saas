@@ -502,32 +502,6 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ENTER_KEY);
   });
 
-  test('it shows a placeholder if it is the first pill', async function(assert) {
-    this.set('metaOptions', metaOptions);
-    await render(hbs`
-      {{query-container/pill-meta
-        isActive=true
-        isFirstPill=true
-        metaOptions=metaOptions
-      }}
-    `);
-    const placeholder = find(PILL_SELECTORS.metaSelectInput).getAttribute('placeholder');
-    assert.ok(placeholder.length > 0, 'appears to be missing a placeholder');
-  });
-
-  test('it does not show a placeholder if it is not the first pill', async function(assert) {
-    this.set('metaOptions', metaOptions);
-    await render(hbs`
-      {{query-container/pill-meta
-        isActive=true
-        isFirstPill=false
-        metaOptions=metaOptions
-      }}
-    `);
-    const placeholder = find(PILL_SELECTORS.metaSelectInput).getAttribute('placeholder');
-    assert.ok(placeholder.length === 0, 'appears to be missing a placeholder');
-  });
-
   test('it selects Free-Form Filter via CTRL + ↓', async function(assert) {
     this.set('metaOptions', metaOptions);
     await render(hbs`
@@ -1103,5 +1077,25 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await clickTrigger(PILL_SELECTORS.meta);
     await typeIn(PILL_SELECTORS.metaInput, 'foo)');
     assert.equal(find(PILL_SELECTORS.metaInput).value, 'foo)', 'There should be text in the EPS input');
+  });
+
+  test('it cleans up trailing text if instructions are passed to it', async function(assert) {
+    assert.expect(2);
+    this.set('metaOptions', metaOptions);
+    this.set('shouldCleanInputFields', false);
+    await render(hbs`
+      {{query-container/pill-meta
+        isActive=true
+        metaOptions=metaOptions
+        shouldCleanInputFields=shouldCleanInputFields
+      }}
+    `);
+    await clickTrigger(PILL_SELECTORS.meta);
+    await typeIn(PILL_SELECTORS.metaInput, 'foo');
+    assert.equal(find(PILL_SELECTORS.metaInput).value, 'foo', 'Should see the input text');
+    this.set('shouldCleanInputFields', true);
+
+    assert.equal(find(PILL_SELECTORS.metaInput).value, '', 'Input should have cleared');
+
   });
 });

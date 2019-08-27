@@ -63,12 +63,9 @@ const RecentQueryComponent = Component.extend({
   isActive: false,
 
   /**
-   * If this is the first empty pill?
-   * Display a placeholder message if it is.
-   * @type {boolean}
-   * @public
+   * Clean up input trailing text
    */
-  isFirstPill: false,
+  shouldCleanInputFields: false,
 
   /**
    * Does the entire pills list have a text pill already?
@@ -92,6 +89,11 @@ const RecentQueryComponent = Component.extend({
    * @public
    */
   prepopulatedRecentQueryText: undefined,
+
+  /**
+   * Placeholder text
+   */
+  pillPlaceholder: null,
 
   /**
    * Will contain the name of the component
@@ -133,12 +135,6 @@ const RecentQueryComponent = Component.extend({
   @computed('isEditing')
   optionsComponent(isEditing) {
     return isEditing ? undefined : AFTER_OPTIONS_COMPONENT;
-  },
-
-  @computed('isFirstPill', 'i18n.locale')
-  placeholder(isFirstPill) {
-    const i18n = this.get('i18n');
-    return isFirstPill ? i18n.t('queryBuilder.placeholder') : '';
   },
 
   @computed('hasTextPill')
@@ -243,6 +239,13 @@ const RecentQueryComponent = Component.extend({
       if (powerSelectAPI) {
         powerSelectAPI.actions.close();
       }
+    }
+  },
+
+  didUpdateAttrs() {
+    this._super(...arguments);
+    if (this.get('shouldCleanInputFields')) {
+      this._cleanupInputField();
     }
   },
 

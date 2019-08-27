@@ -484,6 +484,8 @@ export default Component.extend({
     } else if (isArrowDown(event)) {
       const { highlighted, results } = powerSelectAPI;
       const lastItem = results[results.length - 1];
+
+      // Do not allow after options to be highlighted while editing
       if (!this.get('isEditing')) {
         if (event.ctrlKey || event.metaKey || highlighted === lastItem) {
           // CTRL/META was pressed or at bottom of meta list

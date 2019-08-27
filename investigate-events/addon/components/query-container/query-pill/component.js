@@ -8,7 +8,7 @@ import _ from 'lodash';
 import * as MESSAGE_TYPES from '../message-types';
 import quote from 'investigate-events/util/quote';
 import { createFilter, convertTextToPillData } from 'investigate-events/util/query-parsing';
-import { determineNewComponentPropsFromPillData, resultsCount } from './query-pill-util';
+import { determineNewComponentPropsFromPillData, resultsCount, isSubmitClicked } from './query-pill-util';
 import {
   COMPLEX_FILTER,
   QUERY_FILTER,
@@ -55,6 +55,18 @@ export default Component.extend({
   canPerformTextSearch: true,
 
   /**
+   * Clean up input trailing text from meta, operator and value.
+   * @type {Object}
+   */
+  cleanupInputFields: undefined,
+
+  /**
+   * Inform it's children that trailing text needs to be cleared out.
+   * @type {boolean}
+   */
+  shouldCleanInputFields: false,
+
+  /**
    * The position of this pill relative to other pills.
    * Used when messaging up to parent.
    * @type {Number}
@@ -95,6 +107,11 @@ export default Component.extend({
    * Object with keys `language` and `aliases`
    */
   languageAndAliasesForParser: null,
+
+  /**
+   * Placeholder text for query bar
+   */
+  pillPlaceholder: null,
 
   /**
    * Possible suggestions for pill-value
@@ -341,6 +358,27 @@ export default Component.extend({
     }
   },
 
+  didUpdateAttrs() {
+    this._super(...arguments);
+
+    const cleanupProperty = this.get('cleanupInputFields');
+    // Cleanup all trailing text
+    if (typeof cleanupProperty === 'undefined') {
+      this.set('shouldCleanInputFields', false);
+    } else {
+      // This can be triggered via hitting search button or if a NPT is opened.
+      // If NPT is opened up, do not mess with QP props, just clean up any trailing text.
+      // The reason behind this is that a NPT can only be opened up if no meta/op/value
+      // has been selected, which just leaves us to cleanup trailin text.
+      // And if search is clicked, reset pill props.
+      const { fromPillTrigger } = cleanupProperty;
+      if (!fromPillTrigger) {
+        this._reset();
+      }
+      this.set('shouldCleanInputFields', true);
+    }
+  },
+
   keyUp() {
     // Stop propogation of event so that things like the events
     // data table don't react to arrow keys being pressed.
@@ -530,9 +568,7 @@ export default Component.extend({
     const el = focusEvent.relatedTarget;
     if (el) {
       const clickedOnContent = el.textContent.trim();
-      const queryEvents = this.get('i18n').t('queryBuilder.queryEvents').string;
-      isSubmit = clickedOnContent === queryEvents;
-      // if tabs are clicked on, do nothing here.
+      isSubmit = isSubmitClicked(focusEvent.relatedTarget);
       if (
         clickedOnContent.toLowerCase() === AFTER_OPTION_TAB_META ||
         clickedOnContent.toLowerCase() === AFTER_OPTION_TAB_RECENT_QUERIES
@@ -544,11 +580,16 @@ export default Component.extend({
       // Treat this like an ESC was keyed
       this._cancelPillCreation();
     } else if (isSubmit && !isExistingPill && !(this._isPillDataEmpty())) {
-      // If it's not an existing pill, create new pill
-      this._createPill(valueString);
-      // Exit out of pill creation so that the post-pill-creation dropdown is
-      // removed
-      this._cancelPillCreation();
+      const { selectedMeta, selectedOperator } = this.getProperties('selectedMeta', 'selectedOperator');
+
+      // If meta, operator and value are already in place
+      if (!!selectedMeta && !!selectedOperator && valueString) {
+        this._createPill(valueString);
+      } else {
+        // Exit out of pill creation so that the post-pill-creation dropdown is
+        // removed
+        this._cancelPillCreation();
+      }
     }
   },
 

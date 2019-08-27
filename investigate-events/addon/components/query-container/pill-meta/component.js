@@ -77,6 +77,11 @@ export default Component.extend({
   canPerformTextSearch: true,
 
   /**
+   * Clean up input trailing text
+   */
+  shouldCleanInputFields: false,
+
+  /**
    * Does the entire pills list have a text pill already?
    * @type {boolean}
    * @public
@@ -152,6 +157,11 @@ export default Component.extend({
   prepopulatedMetaText: undefined,
 
   /**
+   * Placeholder text
+   */
+  pillPlaceholder: null,
+
+  /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public
@@ -191,12 +201,6 @@ export default Component.extend({
 
   @computed('isActive', 'metaOptions')
   isActiveWithOptions: (isActive, metaOptions) => isActive && metaOptions.length > 0,
-
-  @computed('isFirstPill', 'i18n.locale')
-  placeholder(isFirstPill) {
-    const i18n = this.get('i18n');
-    return isFirstPill ? i18n.t('queryBuilder.placeholder') : '';
-  },
 
   /**
    * We take away the ability to create FF in edit mode.
@@ -247,6 +251,9 @@ export default Component.extend({
         // API, which automatically sets the text in this component.
         scheduleOnce('afterRender', this, '_focusOnPowerSelectTrigger');
       }
+    }
+    if (this.get('shouldCleanInputFields')) {
+      this._cleanupInputField();
     }
   },
 
@@ -582,6 +589,8 @@ export default Component.extend({
       });
     } else if (isArrowDown(event)) {
       const lastItem = results[results.length - 1];
+
+      // Do not allow after options to be highlighted while editing
       if (!this.get('isEditing')) {
         if (event.ctrlKey || event.metaKey || highlighted === lastItem ||
           (lastValidItem && highlighted === lastValidItem && !lastItemIsValid)) {
@@ -682,8 +691,7 @@ export default Component.extend({
    */
   _cleanupInputField() {
     const el = this.element.querySelector(POWER_SELECT_INPUT);
-    const { value } = el;
-    if (value) {
+    if (el && el.value) {
       el.value = '';
     }
   },

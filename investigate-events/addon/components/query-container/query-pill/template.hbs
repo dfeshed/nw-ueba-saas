@@ -9,6 +9,7 @@
 
 {{query-container/pill-meta
   canPerformTextSearch=canPerformTextSearch
+  shouldCleanInputFields=shouldCleanInputFields
   hasTextPill=hasTextPill
   isActive=(readonly isMetaActive)
   isAutoFocused=(readonly isMetaAutoFocused)
@@ -18,6 +19,7 @@
   activePillTab=(readonly activePillTab)
   metaOptions=metaOptions
   prepopulatedMetaText=(readonly prepopulatedMetaText)
+  pillPlaceholder=pillPlaceholder
   selection=(readonly selectedMeta)
   sendMessage=(action 'handleMessage')
 }}
@@ -63,9 +65,10 @@
 {{#if (not isExistingPill)}}
   {{query-container/recent-query
     isActive=(readonly isRecentQueriesTabActive)
-    isFirstPill=(eq position 0)
+    shouldCleanInputFields=shouldCleanInputFields
     hasTextPill=hasTextPill
     prepopulatedRecentQueryText=(readonly prepopulatedRecentQueryText)
+    pillPlaceholder=pillPlaceholder
     sendMessage=(action 'handleMessage')
   }}
 {{/if}}

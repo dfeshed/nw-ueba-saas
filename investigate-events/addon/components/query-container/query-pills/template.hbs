@@ -6,6 +6,7 @@
     languageAndAliasesForParser=languageAndAliasesForParser
     sendMessage=(action 'handleMessage')
     newPillPosition=index
+    pillPlaceholder=pillPlaceholder
     startTriggeredPosition=startTriggeredPosition
     valueSuggestions=(readonly valueSuggestions)
   }}
@@ -47,6 +48,7 @@
       pillData=(readonly pillData)
       sendMessage=(action 'handleMessage')
       position=index
+      pillPlaceholder=pillPlaceholder
       isActive=pillData.isEditing
       valueSuggestions=(readonly valueSuggestions)
     }}
@@ -57,11 +59,13 @@
 {{query-container/query-pill
   canPerformTextSearch=canPerformTextSearch
   classNames='new-pill-template'
+  cleanupInputFields=cleanupInputFields
   hasTextPill=hasTextPill
   isMetaAutoFocused=takeFocus
   metaOptions=metaOptions
   languageAndAliasesForParser=languageAndAliasesForParser
   position=lastIndex
+  pillPlaceholder=pillPlaceholder
   sendMessage=(action 'handleMessage')
   valueSuggestions=(readonly valueSuggestions)
 }}

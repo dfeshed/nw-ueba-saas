@@ -145,3 +145,13 @@ export const resultsCount = (metaOptions, input) => {
   }, 0);
   return count;
 };
+
+
+// We need them here because the button has multiple
+// clickable points
+export const isSubmitClicked = (target) => {
+  return target.classList.contains('execute-query-button') ||
+    target.classList.contains('execute-query-spyglass') ||
+    target.classList.contains('query-button-wrapper') ||
+    (target.parentElement && isSubmitClicked(target.parentElement));
+};
