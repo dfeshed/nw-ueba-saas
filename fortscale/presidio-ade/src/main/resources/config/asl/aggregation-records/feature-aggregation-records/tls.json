@@ -254,6 +254,36 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_distinct_multi_key_values_counter_func"
       }
+    },
+    {
+      "name": "numberOfDistinctSrcIpForNewDomainOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "srcIpHistogramNewDomainOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctSrcIpHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcIpForNewDomainSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "srcIpHistogramNewDomainSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctSrcIpHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
     }
   ]
 }

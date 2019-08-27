@@ -155,6 +155,32 @@
           }
         }
       ]
+    },
+    {
+      "name": "numberOfDistinctSrcIpToNewDomainScoresSumSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "aggr_event.numberOfDistinctSrcIpForNewDomainSslSubjectOutboundTlsHourly"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "numberOfDistinctSrcIpToNewDomainScoresSum",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.domain.name"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
     }
   ]
 }

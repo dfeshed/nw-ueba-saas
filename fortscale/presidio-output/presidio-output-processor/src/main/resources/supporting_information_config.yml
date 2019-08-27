@@ -1701,13 +1701,34 @@ indicators:
   schema: TLS
   adeEventType: tls
   modelContextFields:
-    - ja3.name
+    - sslSubject.name
   anomalyDescriptior:
     anomalyFilters:
       - fieldName: direction
         fieldValue: OUTBOUND
+      - fieldName: sslSubject.isNewOccurrence
+        fieldValue: true
   historicalData:
     type: hourly_aggregations
+  classification: phishing
+
+- id: numberOfDistinctSrcIpToNewDomainScoresSumSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_src_ip_to_new_domain_for_new_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - domain.name
+    - sslSubject.name
+  anomalyDescriptior:
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+      - fieldName: domain.isNewOccurrence
+        fieldValue: true
+  historicalData:
+    type: hourly_aggregations
+    featureName: numberOfDistinctSrcIpForNewDomainSslSubjectOutboundTlsHourly
   classification: phishing
 
 #***************************************
