@@ -25,7 +25,7 @@ pipeline {
         stage('Project Clone') {
             steps {
                 script { currentBuild.displayName="#${BUILD_NUMBER} ${NODE_NAME}" }
-                script { currentBuild.description = "${BRANCH}" }
+                script { currentBuild.description = "${env.INTEGRATION_TEST_BRANCH_NAME}" }
                 cleanWs()
                 buildIntegrationTestProject()
                 setBaseUrl()
