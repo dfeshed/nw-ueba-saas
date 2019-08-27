@@ -40,11 +40,6 @@ module('Integration | Component | header-container', function(hooks) {
       patchReducer(this, state);
     };
     initialize(this.owner);
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('hasInvestigateContentExportAccess', true);
-    // both respondCanManageIncidents && investigateCanManageIncidents need to be true to enable incident management
-    accessControl.set('respondCanManageIncidents', true);
-    accessControl.set('investigateCanManageIncidents', true);
   });
 
   test('render the events header with data at threshold', async function(assert) {
@@ -144,8 +139,8 @@ module('Integration | Component | header-container', function(hooks) {
 
   test('Create Incident/Add to Incident buttons should not be displayed, if user does not have manage incident permissions on respond and investigate both', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('respondCanManageIncidents', false);
-    accessControl.set('investigateCanManageIncidents', false);
+    const origRoles = [...accessControl.roles];
+    accessControl.set('roles', []);
 
     new ReduxDataHelper(setState)
       .withSelectedEventIds()
@@ -157,12 +152,14 @@ module('Integration | Component | header-container', function(hooks) {
 
     assert.notOk(find(createIncidentSelector), 'Create Incident button is not displayed');
     assert.notOk(find(addToIncidentSelector), 'Add to Incident button is not displayed');
+    // reset roles
+    accessControl.set('roles', origRoles);
   });
 
   test('Create Incident/Add to Incident buttons should not be displayed, if user does not have manage incident permissions only on investigate or respond', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('respondCanManageIncidents', true);
-    accessControl.set('investigateCanManageIncidents', false);
+    const origRoles = [...accessControl.roles];
+    accessControl.set('roles', ['respond-server.incident.manage']);
     new ReduxDataHelper(setState)
       .withSelectedEventIds()
       .build();
@@ -173,6 +170,8 @@ module('Integration | Component | header-container', function(hooks) {
 
     assert.notOk(find(createIncidentSelector), 'Create Incident button is not displayed');
     assert.notOk(find(addToIncidentSelector), 'Add to Incident button is not displayed');
+    // reset roles
+    accessControl.set('roles', origRoles);
   });
 
 });

@@ -40,8 +40,6 @@ module('Integration | Component | Download Dropdown', function(hooks) {
   hooks.beforeEach(function() {
 
     this.owner.inject('component', 'flashMessages', 'service:flashMessages', 'i18n', 'service:i18n');
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('hasInvestigateContentExportAccess', true);
     setState = (state) => {
       patchReducer(this, state);
     };
@@ -67,13 +65,16 @@ module('Integration | Component | Download Dropdown', function(hooks) {
 
   test('download dropdown should be hidden if missing permissions', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('hasInvestigateContentExportAccess', false);
+    const origRoles = [...accessControl.roles];
+    accessControl.set('roles', []);
     new ReduxDataHelper(setState)
       .eventResults(eventResultsData)
       .selectedEventIds({ 0: 101 })
       .build();
     await render(hbs`{{events-table-container/header-container/download-dropdown}}`);
     assert.notOk(find(downloadPowerSelect), 'Download option not present');
+    // reset roles
+    accessControl.set('roles', origRoles);
   });
 
   test('download dropdown should be disabled & read Download if nothing is checked', async function(assert) {

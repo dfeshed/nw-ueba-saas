@@ -158,8 +158,6 @@ module('Integration | Component | events-table-container', function(hooks) {
       patchReducer(this, state);
     };
     initialize(this.owner);
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('hasInvestigateContentExportAccess', true);
   });
 
   test('it renders default table', async function(assert) {
