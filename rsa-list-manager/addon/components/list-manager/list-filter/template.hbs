@@ -6,6 +6,7 @@
     autocomplete="off"
     class="ember-power-select-search-input"
     oninput={{action "handleInput"}}
+    onfocus={{action "handleFocus"}}
     placeholder={{filterPlaceholder}}
     type="text"
     value={{filterText}}>

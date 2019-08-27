@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render, findAll, find, click, triggerKeyEvent } from '@ember/test-helpers';
+import { render, findAll, find, click, triggerKeyEvent, triggerEvent } from '@ember/test-helpers';
 import { typeInSearch } from 'ember-power-select/test-support/helpers';
 import { setupRenderingTest } from 'ember-qunit';
 
@@ -134,7 +134,7 @@ module('Integration | Component | list-manager', function(hooks) {
   });
 
   test('Use Up Arrow Key to traverse through items', async function(assert) {
-    assert.expect(2);
+    assert.expect(6);
     this.set('name', 'Some Column Groups');
     this.set('list', items);
     this.set('selectedItem', items[1]);
@@ -147,6 +147,7 @@ module('Integration | Component | list-manager', function(hooks) {
       listName=name
       list=list
       selectedItem=selectedItem
+      highlightedIndex=highlightedIndex
       itemSelection=handleSelection as |manager|}}
         {{#manager.itemList as |list|}}
           {{#list.item as |item|}}
@@ -157,17 +158,28 @@ module('Integration | Component | list-manager', function(hooks) {
 
     // open dropdown
     await click(`${buttonGroupSelector} button`);
+
     // Up Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
-    assert.ok(document.querySelector('li:focus').innerText.trim(), items[0].name, 'Focus shall be on previous item');
+    assert.equal(document.querySelector('li:focus').innerText.trim(), items[3].name,
+      'Focus shall be on the last item');
+    assert.equal(this.get('highlightedIndex'), 3, 'highlightedIndex shall be set correctly');
+
     // Up Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
-    assert.ok(document.querySelector('li:focus').innerText.trim(), items[items.length - 1].name,
-      'Focus shall be on the last item when Up Arrow Key is pressed from the first item');
+    assert.equal(document.querySelector('li:focus').innerText.trim(), items[2].name,
+      'Focus shall be on the previous item');
+    assert.equal(this.get('highlightedIndex'), 2, 'highlightedIndex shall be set correctly');
+
+    // Up Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
+    assert.equal(document.querySelector('li:focus').innerText.trim(), items[0].name,
+      'Focus shall be on the item before the selected item, skipping the selected item');
+    assert.equal(this.get('highlightedIndex'), 0, 'highlightedIndex shall be set correctly');
   });
 
   test('Use Down Arrow Key to traverse through items', async function(assert) {
-    assert.expect(2);
+    assert.expect(6);
     this.set('name', 'Some Column Groups');
     this.set('list', items);
     this.set('selectedItem', items[2]);
@@ -179,6 +191,7 @@ module('Integration | Component | list-manager', function(hooks) {
     await render(hbs`{{#list-manager
       listName=name
       list=list
+      highlightedIndex=highlightedIndex
       selectedItem=selectedItem
       itemSelection=handleSelection as |manager|}}
         {{#manager.itemList as |list|}}
@@ -190,17 +203,28 @@ module('Integration | Component | list-manager', function(hooks) {
 
     // open dropdown
     await click(`${buttonGroupSelector} button`);
+
     // Down Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
-    assert.ok(document.querySelector('li:focus').innerText.trim(), items[3].name, 'Focus shall be on next item');
+    assert.equal(document.querySelector('li:focus').innerText.trim(), items[0].name,
+      'Focus shall be on the first item');
+    assert.equal(this.get('highlightedIndex'), 0, 'highlightedIndex shall be set correctly');
+
     // Down Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
-    assert.ok(document.querySelector('li:focus').innerText.trim(), items[0].name,
-      'Focus shall be on the first item when Down Arrow Key is pressed from the last item');
+    assert.equal(document.querySelector('li:focus').innerText.trim(), items[1].name,
+      'Focus shall be on the next item');
+    assert.equal(this.get('highlightedIndex'), 1, 'highlightedIndex shall be set correctly');
+
+    // Down Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
+    assert.equal(document.querySelector('li:focus').innerText.trim(), items[3].name,
+      'Focus shall be on the item after the selected item, skipping the selected item');
+    assert.equal(this.get('highlightedIndex'), 3, 'highlightedIndex shall be set correctly');
   });
 
   test('Use Up and Down Arrow Keys to traverse through items and Enter Key to select item', async function(assert) {
-    assert.expect(6);
+    assert.expect(11);
     this.set('name', 'Some Column Groups');
     this.set('list', items);
     this.set('selectedItem', items[2]);
@@ -212,6 +236,7 @@ module('Integration | Component | list-manager', function(hooks) {
     await render(hbs`{{#list-manager
       listName=name
       list=list
+      highlightedIndex=highlightedIndex
       selectedItem=selectedItem
       itemSelection=handleSelection as |manager|}}
         {{#manager.itemList as |list|}}
@@ -227,22 +252,229 @@ module('Integration | Component | list-manager', function(hooks) {
 
     // Down Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
-    assert.ok(document.querySelector('li:focus').innerText.trim(), items[3].name, 'Focus shall be on next item');
+    assert.equal(document.querySelector('li:focus').innerText.trim(), items[0].name, 'Focus shall be on the first item');
+    assert.equal(this.get('highlightedIndex'), 0, 'highlightedIndex shall be set correctly');
+
     // Down Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
-    assert.ok(document.querySelector('li:focus').innerText.trim(), items[0].name,
-      'Focus shall be on the first item when Down Arrow Key is pressed from the last item');
+    assert.equal(document.querySelector('li:focus').innerText.trim(), items[1].name,
+      'Focus shall be on the next item');
+    assert.equal(this.get('highlightedIndex'), 1, 'highlightedIndex shall be set correctly');
+
+    // Down Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
+    assert.equal(document.querySelector('li:focus').innerText.trim(), items[3].name,
+      'Focus shall be on the item after the selected item, skipping the selected item');
+    assert.equal(this.get('highlightedIndex'), 3, 'highlightedIndex shall be set correctly');
+
     // Up Arrow
     await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
-    assert.ok(document.querySelector('li:focus').innerText.trim(), items[items.length - 1].name,
-      'Focus shall be on the last item when Up Arrow Key is pressed from the first item');
+    assert.equal(document.querySelector('li:focus').innerText.trim(), items[1].name,
+      'Focus shall be on the previous item, skipping the selected item');
+    assert.equal(this.get('highlightedIndex'), 1, 'highlightedIndex shall be set correctly');
+
     // Enter
     await triggerKeyEvent(buttonMenuSelector, 'keyup', ENTER_KEY);
     assert.ok(find(`${buttonMenuSelector}.collapsed`), 'menu is collapsed after Enter Key');
   });
 
-  test('Filtering should be available via contextual API', async function(assert) {
+  test('Use Mouse and Up and Down Arrow Keys to highlight item', async function(assert) {
+    this.set('name', 'Some Column Groups');
+    this.set('list', items);
+    this.set('selectedItem', items[2]);
+    this.set('handleSelection', () => {
+    });
 
+    await render(hbs`{{#list-manager
+      listName=name
+      list=list
+      highlightedIndex=highlightedIndex
+      selectedItem=selectedItem
+      itemSelection=handleSelection as |manager|}}
+        {{#manager.itemList as |list|}}
+          {{#list.item as |item|}}
+           {{item.name}}
+          {{/list.item}}
+        {{/manager.itemList}}
+      {{/list-manager}}`);
+
+    // open dropdown
+    await click(`${buttonGroupSelector} button`);
+    assert.ok(find(`${buttonMenuSelector}.expanded`), 'The button menu should expand on click of the drop down button');
+
+    // Down Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
+    assert.equal(document.querySelector('li:focus').innerText.trim(), items[0].name, 'Focus shall be on the first item');
+    assert.equal(this.get('highlightedIndex'), 0, 'highlightedIndex shall be set correctly');
+
+    // Mouseover on the second item from top
+    // trigger 'mousemove' event first to set onMouse property
+    await triggerEvent(document, 'mousemove');
+    await triggerEvent('li:nth-of-type(2)', 'mouseover');
+    assert.equal(document.querySelector('li:focus').innerText.trim(), items[1].name,
+      'Focus shall be on the item with mouseover');
+    assert.equal(this.get('highlightedIndex'), 1, 'highlightedIndex shall be set correctly');
+
+    // Up Arrow while on the second item from top - to highlight the first item
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
+    assert.equal(document.querySelector('li:focus').innerText.trim(), items[0].name, 'Focus shall be on the previous item');
+    assert.equal(this.get('highlightedIndex'), 0, 'highlightedIndex shall be set correctly');
+  });
+
+  test('Use Mouse and Up and Down Arrow Keys to navigate from bottom to top with scrolling', async function(assert) {
+    // longer list so scroll bar would be present
+    const moreItems = [
+      { id: 1, name: 'eba' },
+      { id: 11, name: 'foo' },
+      { id: 2, name: 'bar' },
+      { id: 22, name: 'Baz' },
+      { id: 3, name: 'eba2' },
+      { id: 33, name: 'foo2' },
+      { id: 4, name: 'bar2' },
+      { id: 44, name: 'Baz2' },
+      { id: 5, name: 'eba3' },
+      { id: 55, name: 'foo3' },
+      { id: 6, name: 'bar3' },
+      { id: 66, name: 'Baz3' },
+      { id: 7, name: 'eba4' },
+      { id: 77, name: 'foo4' },
+      { id: 8, name: 'bar4' },
+      { id: 88, name: 'Baz4' }
+    ];
+    this.set('name', 'Some Column Groups');
+    this.set('list', moreItems);
+    this.set('selectedItem', moreItems[2]);
+    this.set('handleSelection', () => {
+      // assert to be called when Enter Key is pressed below
+      assert.ok(true, 'Action passed will be called as new item is selected from pressing Enter Key');
+    });
+
+    await render(hbs`{{#list-manager
+      listName=name
+      list=list
+      highlightedIndex=highlightedIndex
+      selectedItem=selectedItem
+      itemSelection=handleSelection as |manager|}}
+        {{#manager.itemList as |list|}}
+          {{#list.item as |item|}}
+           {{item.name}}
+          {{/list.item}}
+        {{/manager.itemList}}
+      {{/list-manager}}`);
+
+    // open dropdown
+    await click(`${buttonGroupSelector} button`);
+    assert.ok(find(`${buttonMenuSelector}.expanded`), 'The button menu should expand on click of the drop down button');
+
+    // Down Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
+    assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[0].name, 'Focus shall be on the first item');
+    assert.equal(this.get('highlightedIndex'), 0, 'highlightedIndex shall be set correctly');
+
+    // Mouseover on an item near bottom
+    // trigger 'mousemove' event first to set onMouse property
+    await triggerEvent(document, 'mousemove');
+    await triggerEvent('li:nth-of-type(15)', 'mouseover');
+    assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[14].name,
+      'Focus shall be on the item with mouseover');
+    assert.equal(this.get('highlightedIndex'), 14, 'highlightedIndex shall be set correctly');
+
+    // Down Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
+    assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[15].name, 'Focus shall be on the next item');
+    assert.equal(this.get('highlightedIndex'), 15, 'highlightedIndex shall be set correctly');
+
+    // Down Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
+    assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[0].name, 'Focus shall be on the first item');
+    assert.equal(this.get('highlightedIndex'), 0, 'highlightedIndex shall be set correctly');
+
+    // Down Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_DOWN_KEY);
+    assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[1].name, 'Focus shall be on the next item');
+    assert.equal(this.get('highlightedIndex'), 1, 'highlightedIndex shall be set correctly');
+  });
+
+  test('Use Mouse and Up and Down Arrow Keys to navigate from top to bottom with scrolling', async function(assert) {
+    // longer list so scroll bar would be present
+    const moreItems = [
+      { id: 1, name: 'eba' },
+      { id: 11, name: 'foo' },
+      { id: 2, name: 'bar' },
+      { id: 22, name: 'Baz' },
+      { id: 3, name: 'eba2' },
+      { id: 33, name: 'foo2' },
+      { id: 4, name: 'bar2' },
+      { id: 44, name: 'Baz2' },
+      { id: 5, name: 'eba3' },
+      { id: 55, name: 'foo3' },
+      { id: 6, name: 'bar3' },
+      { id: 66, name: 'Baz3' },
+      { id: 7, name: 'eba4' },
+      { id: 77, name: 'foo4' },
+      { id: 8, name: 'bar4' },
+      { id: 88, name: 'Baz4' }
+    ];
+    this.set('name', 'Some Column Groups');
+    this.set('list', moreItems);
+    this.set('selectedItem', moreItems[2]);
+    this.set('handleSelection', () => {
+      // assert to be called when Enter Key is pressed below
+      assert.ok(true, 'Action passed will be called as new item is selected from pressing Enter Key');
+    });
+
+    await render(hbs`{{#list-manager
+      listName=name
+      list=list
+      highlightedIndex=highlightedIndex
+      selectedItem=selectedItem
+      itemSelection=handleSelection as |manager|}}
+        {{#manager.itemList as |list|}}
+          {{#list.item as |item|}}
+           {{item.name}}
+          {{/list.item}}
+        {{/manager.itemList}}
+      {{/list-manager}}`);
+
+    // open dropdown
+    await click(`${buttonGroupSelector} button`);
+    assert.ok(find(`${buttonMenuSelector}.expanded`), 'The button menu should expand on click of the drop down button');
+
+    // Up Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
+    assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[15].name, 'Focus shall be on the last item');
+    assert.equal(this.get('highlightedIndex'), 15, 'highlightedIndex shall be set correctly');
+
+    // Mouseover on an item near top
+    // trigger 'mousemove' event first to set onMouse property
+    await triggerEvent(document, 'mousemove');
+    await triggerEvent('li:nth-of-type(3)', 'mouseover');
+    assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[2].name,
+      'Focus shall be on the item with mouseover');
+    assert.equal(this.get('highlightedIndex'), 2, 'highlightedIndex shall be set correctly');
+
+    // Up Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
+    assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[1].name, 'Focus shall be on the previous item');
+    assert.equal(this.get('highlightedIndex'), 1, 'highlightedIndex shall be set correctly');
+
+    // Up Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
+    assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[0].name, 'Focus shall be on the first item');
+    assert.equal(this.get('highlightedIndex'), 0, 'highlightedIndex shall be set correctly');
+
+    // Up Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
+    assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[15].name, 'Focus shall be on the last item');
+    assert.equal(this.get('highlightedIndex'), 15, 'highlightedIndex shall be set correctly');
+
+    // Up Arrow
+    await triggerKeyEvent('.rsa-button-menu', 'keyup', ARROW_UP_KEY);
+    assert.equal(document.querySelector('li:focus').innerText.trim(), moreItems[14].name, 'Focus shall be on the previous item');
+    assert.equal(this.get('highlightedIndex'), 14, 'highlightedIndex shall be set correctly');
+  });
+
+  test('Filtering should be available via contextual API', async function(assert) {
     this.set('name', 'My Items');
     this.set('list', items);
     this.set('handleSelection', () => {});
@@ -277,12 +509,17 @@ module('Integration | Component | list-manager', function(hooks) {
 
 
   test('filtering should not be retained when dropdown is closed', async function(assert) {
-
     this.set('name', 'My Items');
     this.set('list', items);
     this.set('handleSelection', () => {});
+    this.set('resetHighlightedIndex', () => {
+      this.set('highlightedIndex', -1);
+    });
 
-    await render(hbs`{{#list-manager listName=name list=list itemSelection=handleSelection as |manager|}}
+    await render(hbs`{{#list-manager 
+      listName=name 
+      highlightedIndex=highlightedIndex
+      list=list itemSelection=handleSelection as |manager|}}
         {{manager.filter}}
         {{#manager.itemList as |list|}}
           {{#list.item as |item|}}
@@ -307,11 +544,11 @@ module('Integration | Component | list-manager', function(hooks) {
     await click(`${buttonGroupSelector} button`);
 
     assert.equal(findAll(listItems).length, 4, 'Filter reset');
+    assert.equal(this.get('highlightedIndex'), -1, 'highlightedIndex shall be reset');
 
   });
 
   test('displays no results message when everything is filtered out', async function(assert) {
-
     this.set('name', 'My Items');
     this.set('list', items);
     this.set('handleSelection', () => {});

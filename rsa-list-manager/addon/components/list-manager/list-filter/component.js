@@ -10,6 +10,7 @@ export default Component.extend({
   filterAction: null,
   updateFilteredList: null,
   filterText: '',
+  resetHighlightedIndex: () => {},
 
   didInsertElement() {
     this.initializeElement();
@@ -18,6 +19,7 @@ export default Component.extend({
   initializeElement() {
     this.set('filterText', '');
     this.get('updateFilteredList')(this.get('originalList'));
+    this.get('resetHighlightedIndex')();
   },
 
   filterList(value) {
@@ -33,6 +35,7 @@ export default Component.extend({
       }
     }
     this.get('updateFilteredList')(filteredList);
+    this.get('resetHighlightedIndex')();
   },
 
   @computed('listName')
@@ -41,11 +44,14 @@ export default Component.extend({
   },
 
   actions: {
-
     handleInput(e) {
       const { value } = e.target;
       this.set('filterText', value);
       this.filterList(value);
+    },
+
+    handleFocus() {
+      this.get('resetHighlightedIndex')();
     },
 
     resetFilter() {

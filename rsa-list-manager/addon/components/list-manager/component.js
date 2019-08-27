@@ -31,6 +31,9 @@ export default Component.extend({
   // list rendered on filtering
   filteredList: null,
 
+  // highlightedIndex in list
+  highlightedIndex: -1,
+
   // View to be rendered through button actions (list-view, detail-view, etc)
   viewName: null,
 
@@ -78,10 +81,15 @@ export default Component.extend({
       this.set('offsetsStyle', menuOffsetsStyle(this.get('element')));
       this.set('viewName', 'list-view');
       this.toggleProperty('isExpanded');
+      this.set('highlightedIndex', -1);
     },
 
     updateFilteredList(newList) {
       this.set('filteredList', newList);
+    },
+
+    resetHighlightedIndex() {
+      this.set('highlightedIndex', -1);
     },
 
     updateView(viewName) {

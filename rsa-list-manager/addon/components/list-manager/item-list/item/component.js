@@ -6,11 +6,12 @@ export default Component.extend({
   layout,
   tagName: 'li',
   classNames: ['rsa-list-item'],
-  classNameBindings: ['isSelected'],
+  classNameBindings: ['isSelected', 'isHighlighted'],
   attributeBindings: ['tabindex'],
   tabindex: -1,
   item: null,
   selectedItem: null,
+  highlightedId: null,
 
   // Action that should be triggered when an item is clicked
   itemSelection: () => {},
@@ -20,6 +21,11 @@ export default Component.extend({
   @computed('selectedItem', 'item')
   isSelected(selectedItem, item) {
     return selectedItem && item ? selectedItem.id == item.id : false;
+  },
+
+  @computed('highlightedId', 'item')
+  isHighlighted(highlightedId, item) {
+    return item && highlightedId ? highlightedId === item.id : false;
   },
 
   @computed('item')

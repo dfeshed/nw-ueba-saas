@@ -76,4 +76,36 @@ module('Integration | Component | item ', function(hooks) {
     await click('li a');
     assert.ok(this.get('isExpanded') == false, 'clicking item toggles property isExpanded');
   });
+
+  test('Component for item renders correctly when item should be highlighted', async function(assert) {
+    const item = { id: 'someid', name: 'foo' };
+
+    this.set('item', item);
+    this.set('itemSelection', () => {
+    });
+    this.set('hasOOTBIndicators', true);
+    this.set('isExpanded', true);
+    this.set('highlightedId', 'someid');
+
+    await render(hbs`{{list-manager/item-list/item isExpanded=isExpanded item=item selectedItem=selectedItem 
+      highlightedId=highlightedId itemSelection=itemSelection hasOOTBIndicators=hasOOTBIndicators}}`);
+
+    assert.ok(find('li.is-highlighted'), 'the item shall have is-highlighted class');
+  });
+
+  test('Component for item renders correctly when item should not be highlighted', async function(assert) {
+    const item = { id: 'someid', name: 'foo' };
+
+    this.set('item', item);
+    this.set('itemSelection', () => {
+    });
+    this.set('hasOOTBIndicators', true);
+    this.set('isExpanded', true);
+    this.set('highlightedId', 'not-someid');
+
+    await render(hbs`{{list-manager/item-list/item isExpanded=isExpanded item=item selectedItem=selectedItem 
+      highlightedId=highlightedId itemSelection=itemSelection hasOOTBIndicators=hasOOTBIndicators}}`);
+
+    assert.notOk(find('li.is-highlighted'), 'the item shall not have is-highlighted class');
+  });
 });

@@ -19,7 +19,7 @@ module('Integration | Component | item list', function(hooks) {
     assert.notOk(find('ul.rsa-item-list li .ootb-indicator'), 'ootb indicator not found');
   });
 
-  test('The list renders with ootb indicators when property present in atleast one list item', async function(assert) {
+  test('The list renders with ootb indicators when property present in at least one list item', async function(assert) {
     this.set('list', [ { id: '1', name: 'foo', ootb: false }, { id: '2', name: 'bar' }]);
     this.set('itemSelection', () => {});
 

@@ -56,10 +56,25 @@
         }
         li.rsa-list-item {
           line-height: 2em;
-          &:hover, &:focus {
+          &.is-highlighted {
             background: background-color(secondary, darker);
             outline: none;
             cursor: pointer;
+          }
+          &:not(.is-highlighted) {
+            // to override li a:hover style from component-lib
+            // /component-lib/app/styles/component-lib/base/form/_rsa-button-menu.scss
+            a:hover {
+              color: text-color(primary, lightest);
+              background: none;
+              outline: none;
+              cursor: pointer;
+            }
+          }
+          &:hover {
+            // prevent hover highlight
+            background: none;
+            outline: none;
           }
           &.is-selected {
             background: background-color(secondary, dark);
