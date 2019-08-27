@@ -129,6 +129,15 @@ const fetchRemediation = (thumbprints) => {
   });
 };
 
+const sendProcessDumpRequest = (selectedProcess) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'downloadProcessDump',
+    modelName: 'agent',
+    query: { data: selectedProcess }
+  });
+};
+
 const sendFileDownloadToServerRequest = (selectedFileDetails) => {
   const request = lookup('service:request');
   return request.promiseRequest({
@@ -174,6 +183,7 @@ export default {
   getFileSearchResults,
   policyDetails,
   fetchRemediation,
+  sendProcessDumpRequest,
   sendFileDownloadToServerRequest,
   deleteSelectedFiles,
   saveLocalMFTCopy

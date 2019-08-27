@@ -216,8 +216,6 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
       done();
     });
 
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     const hostDetails = {
       machineIdentity: {
         agentMode: 'Advanced'
@@ -397,8 +395,6 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
 
   test('Context menu rendered', async function(assert) {
 
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     const hostDetails = {
       machineIdentity: {
         agentMode: 'Advanced'
@@ -428,8 +424,6 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
   });
 
   test('Save a Local copy sets download link', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     const hostDetails = {
       machineIdentity: {
         agentMode: 'Advanced'
@@ -480,8 +474,6 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
 
   test('areAllFilesNotDownloadedToServer flag set to false as the file is not already downloaded', async function(assert) {
 
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     const hostDetails = {
       machineIdentity: {
         agentMode: 'Advanced'
@@ -549,8 +541,6 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
 
   test('areAllFilesNotDownloadedToServer flag set to false as the file does not have downloadInfo', async function(assert) {
 
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     const hostDetails = {
       machineIdentity: {
         agentMode: 'Advanced'
@@ -618,8 +608,6 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
 
   test('areAllFilesNotDownloadedToServer flag to true as file is already downloaded', async function(assert) {
 
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     const hostDetails = {
       machineIdentity: {
         agentMode: 'Advanced'

@@ -28,6 +28,7 @@ import {
   setFileContextFileStatus,
   getFileContextFileStatus,
   retrieveRemediationStatus,
+  downloadProcessDump,
   downloadFilesToServer
 } from 'investigate-hosts/actions/data-creators/file-context';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
@@ -73,6 +74,7 @@ const dispatchToActions = {
   setFileContextFileStatus,
   getFileContextFileStatus,
   retrieveRemediationStatus,
+  downloadProcessDump,
   downloadFilesToServer,
   getFileAnalysisData,
   setHostDetailPropertyTab,
@@ -128,8 +130,11 @@ const Container = Component.extend({
       }
     },
 
-    resetRiskScoreAction() {
-      // Placeholder for the next PR.
+    onDownloadProcessDump() {
+      const selectedProcessList = this.get('selectedProcessList');
+      const callBackOptions = this.get('callBackOptions')(this);
+      const agentId = this.get('agentId');
+      this.send('downloadProcessDump', agentId, selectedProcessList, callBackOptions);
     },
 
     onDownloadFilesToServer() {

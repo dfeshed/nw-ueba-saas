@@ -46,8 +46,6 @@ module('Integration | Component | host detail more-actions', function(hooks) {
       .host(data)
       .isJsonExportCompleted(true)
       .build();
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('roles', ['endpoint-server.agent.manage']);
     await render(hbs `{{host-detail/header/more-actions}}`);
     await click('.host_more_actions .host-details-more-actions');
     assert.equal(findAll('.host-details_dropdown-action-list li').length, 3, 'Number of actions present is 3 as MFT permission added');
@@ -78,8 +76,6 @@ module('Integration | Component | host detail more-actions', function(hooks) {
       .isSnapshotsAvailable(true)
       .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
       .build();
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('roles', ['endpoint-server.agent.manage']);
     await render(hbs `{{host-detail/header/more-actions}}`);
     await click('.host_more_actions .host-details-more-actions');
     patchSocket((method, model, query) => {

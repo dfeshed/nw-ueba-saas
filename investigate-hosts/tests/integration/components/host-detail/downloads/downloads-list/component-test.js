@@ -76,8 +76,6 @@ module('Integration | Component | downloads-list', function(hooks) {
   });
   test('On right clicking the row it renders the context menu with no delete option', async function(assert) {
     initState({ endpoint: { hostDownloads } });
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     await render(hbs`
       <style>
         box, section {

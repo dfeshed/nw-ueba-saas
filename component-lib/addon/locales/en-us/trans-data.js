@@ -2837,6 +2837,7 @@ export default {
       filePath: 'File Path',
       backToProcesses: 'Processes',
       processDetails: 'Process Details',
+      downloadProcessDump: 'Download Process Dump to Server',
       analyzeProcess: 'Analyze Process',
       analyzeProcessDisabledTooltip: 'Select a single file to analyze.',
       machineCount: 'Active On',

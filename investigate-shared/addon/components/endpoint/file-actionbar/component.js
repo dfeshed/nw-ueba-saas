@@ -130,6 +130,10 @@ export default Component.extend({
       }
     },
 
+    onDownloadProcessDump() {
+      this.get('downloadProcessDump')();
+    },
+
     onResetAction() {
       this.set('showResetScoreModal', true);
     },

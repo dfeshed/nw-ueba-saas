@@ -12,10 +12,9 @@ import {
   schema,
   savedProcessColumns
 } from 'investigate-hosts/reducers/details/process/selectors';
-import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { inject as service } from '@ember/service';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
-import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
+import { failure } from 'investigate-shared/utils/flash-messages';
 import { serviceList, isInsightsAgent } from 'investigate-hosts/reducers/hosts/selectors';
 import { machineOsType, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { fileStatus, isRemediationAllowed } from 'investigate-hosts/reducers/details/file-context/selectors';
@@ -35,8 +34,7 @@ import {
 import {
   getFileContextFileStatus,
   setFileContextFileStatus,
-  retrieveRemediationStatus,
-  downloadFilesToServer
+  retrieveRemediationStatus
 } from 'investigate-hosts/actions/data-creators/file-context';
 
 
@@ -51,8 +49,6 @@ const dispatchToActions = {
   getFileContextFileStatus,
   setFileContextFileStatus,
   retrieveRemediationStatus,
-  resetRiskScore,
-  downloadFilesToServer,
   saveColumnConfig
 };
 
@@ -290,24 +286,6 @@ const TreeComponent = Component.extend({
     showRiskScoreModal(fileList) {
       this.set('selectedFiles', fileList);
       this.set('showResetScoreModal', true);
-    },
-
-    resetRiskScoreAction() {
-      const limitedFiles = this.get('selectedFiles').slice(0, 100);
-      const callBackOptions = {
-        onSuccess: (response) => {
-          const { data } = response;
-          if (data === limitedFiles.length) {
-            success('investigateFiles.riskScore.success');
-          } else {
-            warning('investigateFiles.riskScore.warning');
-          }
-        },
-        onFailure: () => failure('investigateFiles.riskScore.error')
-      };
-      this.set('showResetScoreModal', false);
-      this.send('resetRiskScore', limitedFiles, 'FILE', callBackOptions);
-      this.set('selectedFiles', null);
     },
 
     onResetScoreModalClose() {

@@ -49,7 +49,7 @@ export default DataTableBodyRow.extend({
       {
         label: 'googleLookup',
         prefix: 'investigateShared.endpoint.fileActions.',
-        order: 3,
+        order: 5,
         subActions: [
           { label: 'fileName',
             prefix: 'investigateShared.endpoint.fileActions.',
@@ -80,7 +80,7 @@ export default DataTableBodyRow.extend({
       {
         label: 'virusTotalLookup',
         prefix: 'investigateShared.endpoint.fileActions.',
-        order: 4,
+        order: 6,
         subActions: [
           { label: 'md5',
             prefix: 'investigateShared.endpoint.fileActions.',
@@ -108,7 +108,7 @@ export default DataTableBodyRow.extend({
       contextConf.push(
         {
           label: 'viewCertificate',
-          order: 5,
+          order: 7,
           tooltip(selection, context) {
             return context.get('selections').length > 1 ? '1' : '2';
           },
@@ -128,7 +128,7 @@ export default DataTableBodyRow.extend({
       const fileDownloadButtons = [
         {
           label: 'downloadToServer',
-          order: 7,
+          order: 8,
           prefix: 'investigateShared.endpoint.fileActions.',
           showDivider: true,
           disabled(selection, context) {
@@ -140,7 +140,7 @@ export default DataTableBodyRow.extend({
         },
         {
           label: 'saveLocalCopy',
-          order: 8,
+          order: 9,
           prefix: 'investigateShared.endpoint.fileActions.',
           disabled(selection, context) {
             return context.get('fileDownloadButtonStatus').isSaveLocalAndFileAnalysisDisabled;
@@ -151,7 +151,7 @@ export default DataTableBodyRow.extend({
         },
         {
           label: 'analyzeFile',
-          order: 9,
+          order: 10,
           prefix: 'investigateShared.endpoint.fileActions.',
           disabled(selection, context) {
             return context.get('fileDownloadButtonStatus').isSaveLocalAndFileAnalysisDisabled;
@@ -178,11 +178,24 @@ export default DataTableBodyRow.extend({
       });
     }
 
+    if (this.get('showDownloadProcessDump')) {
+      contextConf.push({
+        label: 'downloadProcessDump',
+        prefix: 'investigateHosts.process.',
+        disabled(selection, context) {
+          return context.get('osType') === 'linux' || context.get('osType') === 'mac' || context.get('selections').length > 1;
+        },
+        action(selection, context) {
+          context.downloadProcessDump();
+        },
+        order: 4
+      });
+    }
 
     if (this.get('showPivotToInvestigate') !== false) {
       const pivot = {
         label: 'pivotToInvestigate',
-        order: 2,
+        order: 3,
         prefix: 'investigateShared.endpoint.fileActions.',
         subActions: [
           {
@@ -231,7 +244,7 @@ export default DataTableBodyRow.extend({
     if (this.get('showResetRiskScore')) {
       contextConf.push({
         label: 'resetRiskScore',
-        order: 10,
+        order: 11,
         prefix: 'investigateShared.endpoint.fileActions.',
         showDivider: true,
         action(selection, context) {

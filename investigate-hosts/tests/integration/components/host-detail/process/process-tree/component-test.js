@@ -567,26 +567,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     assert.equal(document.querySelectorAll('#modalDestination .file-status-modal').length, 1);
   });
 
-  test('it opens reset risk score modal', async function(assert) {
-    new ReduxDataHelper(setState)
-      .agentId(1)
-      .scanTime(123456789)
-      .isTreeView(true)
-      .processTree(processData.processTree)
-      .searchResultProcessList([])
-      .selectedTab(null).build();
-    await render(hbs`
-      <div id='modalDestination'></div>
-      <style>
-        box, section {
-          min-height: 1000px
-        }
-      </style>
-      {{host-detail/process/process-tree showResetScoreModal=true}}
-    `);
-    assert.equal(document.querySelectorAll('#modalDestination .reset-risk-score').length, 1);
-  });
-
   test('It renders the context menu', async function(assert) {
     this.set('closePropertyPanel', () => {});
     new ReduxDataHelper(setState)
@@ -611,13 +591,11 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 5, 'Context menu not rendered');
+      assert.equal(items.length, 6, 'Context menu not rendered');
     });
   });
 
-  test('It renders the context menu', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
+  test('It renders the context menu with manage files permission', async function(assert) {
     new ReduxDataHelper(setState)
       .processList(modifiedList)
       .processTree(modifiedTree)
@@ -649,13 +627,11 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(async() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 8, 'Context menu rendered');
+      assert.equal(items.length, 9, 'Context menu rendered');
     });
   });
 
   test('Edit file status modal is opened on clicking the menu button', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     this.set('closePropertyPanel', function() {
       assert.ok('close property panel is called.');
     });
@@ -692,8 +668,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
 
   test('Analyze file and save local copy disabled if file not downloaded', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     this.set('closePropertyPanel', function() {
       assert.ok('close property panel is called.');
     });
@@ -739,8 +713,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   });
 
   test('Analyze file and save local copy enabled if files are downloaded', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     this.set('closePropertyPanel', function() {
       assert.ok('close property panel is called.');
     });
@@ -798,8 +770,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   });
 
   test('Right clicking on the row deselect the already selected rows', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     this.set('closePropertyPanel', function() {
       assert.ok('close property panel is called.');
     });
@@ -893,8 +863,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
   test('Download to server action is getting called', async function(assert) {
     assert.expect(1);
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     this.set('closePropertyPanel', function() {
       assert.ok('close property panel is called.');
     });
@@ -951,8 +919,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
 
   test('Analyze action is getting called', async function(assert) {
     assert.expect(1);
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     this.set('closePropertyPanel', function() { });
     new ReduxDataHelper(setState)
       .processList(processData.processList)
@@ -1003,7 +969,62 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
     return settled().then(async() => {
       const selector = '.context-menu';
       const menuItems = findAll(`${selector} > .context-menu__item`);
-      await click(`#${menuItems[7].id}`); // Edit file status
+      await click(`#${menuItems[8].id}`); // Analyze File
+    });
+
+  });
+
+  test('Request Process dump action is getting called', async function(assert) {
+    assert.expect(1);
+    this.set('closePropertyPanel', function() { });
+    new ReduxDataHelper(setState)
+      .processList(processData.processList)
+      .processTree([
+        {
+          pid: 29332,
+          name: 'rsyslogd',
+          checksumSha256: '2a523ef7464b3f549645480ea0d12f328a9239a1d34dddf622925171c1a06351',
+          parentPid: 1,
+          fileProperties: {
+            downloadInfo: {
+              status: 'Downloaded'
+            }
+          },
+          childProcesses: [
+            {
+              pid: 29680,
+              name: 'rsa_audit_onramp',
+              checksumSha256: '4a63263a98b8a67951938289733ab701bc9a10cee2623536f64a04af0a77e525',
+              parentPid: 29332
+            }
+          ]
+        }
+      ])
+      .machineOSType('windows')
+      .selectedTab(null)
+      .sortField('name')
+      .isDescOrder(true)
+      .isTreeView(true)
+      .searchResultProcessList([])
+      .build();
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: true, isSaveLocalAndFileAnalysisDisabled: false });
+    this.set('downloadProcessDump', function() {
+      assert.ok('downloadProcessDump Called');
+    });
+
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 2000px
+        }
+      </style>
+      {{host-detail/process/process-tree downloadProcessDump=(action downloadProcessDump) closePropertyPanel=closePropertyPanel fileDownloadButtonStatus=fileDownloadButtonStatus}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[0], 'contextmenu', e);
+    return settled().then(async() => {
+      const selector = '.context-menu';
+      const menuItems = findAll(`${selector} > .context-menu__item`);
+      await click(`#${menuItems[3].id}`); // Download Process Dump
     });
 
   });
@@ -1094,8 +1115,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   test('it calls the analyze process', async function(assert) {
     assert.expect(5);
     const actionSpy = sinon.spy(window, 'open');
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     this.set('closePropertyPanel', function() { });
     new ReduxDataHelper(setState)
       .processList(processData.processList)
@@ -1151,8 +1170,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   });
 
   test('Right clicking already selected row, will keep row highlighted', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     this.set('closePropertyPanel', function() { });
     new ReduxDataHelper(setState)
       .processList(processData.processList)
@@ -1217,8 +1234,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   });
 
   test('Right clicking non-highlighted row, will remove highlight from that row', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     this.set('closePropertyPanel', function() { });
     new ReduxDataHelper(setState)
       .processList(processData.processList)
@@ -1279,8 +1294,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   });
 
   test('selecting an already check-boxed row, opens the right panel', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     this.set('closePropertyPanel', function() { });
     new ReduxDataHelper(setState)
       .processList(processData.processList)
@@ -1348,8 +1361,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   });
 
   test('clicking on a non check-boxed row, will remove checkbox selection from other rows', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     this.set('closePropertyPanel', function() { });
     this.set('openPropertyPanel', function() {
       assert.ok('open property panel is called.');
@@ -1488,8 +1499,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
   });
 
   test('launchArguments, is hidden in the table by default', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     this.set('closePropertyPanel', function() { });
     new ReduxDataHelper(setState)
       .processList(processData.processList)
@@ -1543,8 +1552,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
         agentMode: 'insights'
       }
     };
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     this.set('closePropertyPanel', function() { });
     new ReduxDataHelper(setState)
       .processList(processData.processList)
@@ -1599,8 +1606,6 @@ module('Integration | Component | host-detail/process/process-tree', function(ho
         agentMode: 'insights'
       }
     };
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     this.set('closePropertyPanel', function() { });
     new ReduxDataHelper(setState)
       .processList(processData.processList)

@@ -36,7 +36,6 @@
         {{endpoint/file-actionbar
           onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums selectedProcessList)
           getSavedFileStatus = (action 'getFileContextFileStatus' tabName)
-          resetRiskScore = (action 'resetRiskScoreAction')
           serviceList=serviceList
           hostName=hostName
           metaName='checksumSha256'
@@ -52,6 +51,7 @@
           fileDownloadButtonStatus=fileDownloadButtonStatus
           isFloatingOrMemoryDll=isFloatingOrMemoryDll
           downloadFiles=(action 'onDownloadFilesToServer')
+          downloadProcessDump=(action 'onDownloadProcessDump')
           saveLocalCopy=(action 'onSaveLocalCopy')
           analyzeFile=(action 'onAnalyzeFile')
           downloadDisabledTooltip=(t 'investigateShared.endpoint.fileActions.tooltips.files.downloadToServer')
@@ -63,6 +63,7 @@
         closePropertyPanel=(action layout.close 'right')
         fileDownloadButtonStatus=fileDownloadButtonStatus
         downloadFiles=(action 'onDownloadFilesToServer')
+        downloadProcessDump=(action 'onDownloadProcessDump')
         saveLocalCopy=(action 'onSaveLocalCopy')
         analyzeFile=(action 'onAnalyzeFile')}}
     </box>

@@ -124,8 +124,6 @@ module('Integration | Component | host-detail/overview', function(hooks) {
   });
 
   test('renders host details properties when tab is host_details and then click policy tab', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('hasPolicyReadPermission', true);
     setState({ activePropertyPanelTab: 'HOST_DETAILS' });
 
     await render(hbs`{{host-detail/overview domIsReady=true}}`);
@@ -140,8 +138,6 @@ module('Integration | Component | host-detail/overview', function(hooks) {
   });
 
   test('renders policies properties when tab is policies', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('hasPolicyReadPermission', true);
     setState({ activePropertyPanelTab: 'POLICIES' });
 
     await render(hbs`{{host-detail/overview domIsReady=true }}`);
@@ -169,8 +165,6 @@ module('Integration | Component | host-detail/overview', function(hooks) {
 
   test('renders policy unavailable message', async function(assert) {
     setState({ activePropertyPanelTab: 'POLICIES' });
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('hasPolicyReadPermission', true);
 
     await render(hbs`{{host-detail/overview domIsReady=true }}`);
     assert.equal(find('.host-properties-box .host-property-panel .message').textContent.trim(), 'Policy unavailable');

@@ -293,8 +293,6 @@ module('Integration | Component | host-list/host-table', function(hooks) {
 
   test('Download MFT option rendered when criteria is met', async function(assert) {
 
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('roles', ['endpoint-server.agent.manage']);
 
     new ReduxDataHelper(initState)
       .columns(endpoint.schema)

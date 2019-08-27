@@ -1,10 +1,11 @@
-import { HostDetails } from '../api';
+import { HostDetails, Process } from '../api';
 import * as ACTION_TYPES from '../types';
 import { handleError } from '../creator-utils';
 import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
 import { checksumsWithoutRestricted } from 'investigate-shared/utils/file-status-util';
 import { resetRiskContext, getHostFileScoreContext, getRespondServerStatus } from 'investigate-shared/actions/data-creators/risk-creators';
 import { focusedRowChecksum } from 'investigate-hosts/reducers/details/file-context/selectors';
+import { getProcessData } from 'investigate-hosts/reducers/details/process/selectors';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -105,8 +106,8 @@ const retrieveRemediationStatus = (belongsTo, selections) => {
   };
 };
 
-const _getListOfFilesToDownload = (slectedFiles, agentId) => {
-  const files = slectedFiles.map(({ checksumSha256, path, fileName }) => ({
+const _getListOfFilesToDownload = (selectedFiles, agentId) => {
+  const files = selectedFiles.map(({ checksumSha256, path, fileName }) => ({
     hash: checksumSha256,
     fileName,
     path
@@ -115,6 +116,44 @@ const _getListOfFilesToDownload = (slectedFiles, agentId) => {
   return {
     agentId,
     files
+  };
+};
+
+const _getListOfProcessToDownload = (selectedFile, agentId, process) => {
+  return {
+    agentId,
+    processId: process.pid,
+    eprocess: process.eprocess,
+    processCreateUtcTime: process.createUtcTime,
+    hash: selectedFile.checksumSha256,
+    fileName: selectedFile.fileName,
+    path: selectedFile.path
+  };
+};
+
+const downloadProcessDump = (agentId, selectedFiles, callbacks) => {
+  return async(dispatch, getState) => {
+    const [selectedFile] = selectedFiles;
+    const { agentId, scanTime } = getState().endpoint.detailsInput;
+    dispatch({
+      type: ACTION_TYPES.GET_PROCESS,
+      promise: Process.getProcess({ agentId, scanTime, pid: selectedFile.pid }),
+      meta: {
+        onSuccess: () => {
+          const processDetails = getProcessData(getState());
+          HostDetails.sendProcessDumpRequest(_getListOfProcessToDownload(selectedFile, agentId, processDetails.process))
+            .then(() => {
+              callbacks.onSuccess();
+            }).catch(({ meta: message }) => {
+              if (message) {
+                callbacks.onFailure(message.message);
+              }
+            });
+        },
+        onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS, response)
+      }
+    });
+
   };
 };
 
@@ -148,6 +187,7 @@ export {
   setFileContextSort,
   retrieveRemediationStatus,
   resetSelection,
+  downloadProcessDump,
   downloadFilesToServer,
   fetchMachineCount,
   setRowSelection,

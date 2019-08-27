@@ -17,7 +17,7 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     this.set('itemList', []);
     await render(hbs`{{endpoint/file-actionbar itemList=itemList}}`);
     assert.equal(findAll('.file-actionbar').length, 1, 'file-actionbar component has rendered.');
-    assert.equal(findAll('.file-actionbar .rsa-form-button').length, 4, 'five buttons have been rendered.');
+    assert.equal(findAll('.file-actionbar .rsa-form-button').length, 5, 'six buttons have been rendered.');
   });
 
   test('presence of priority buttons', async function(assert) {

@@ -25,6 +25,14 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/endpoint/machine/status',
         requestDestination: '/ws/endpoint/machine/status'
       },
+      downloadProcessDump: {
+        subscriptionDestination: '/user/queue/endpoint/command/request-process-dump',
+        requestDestination: '/ws/endpoint/command/request-process-dump'
+      },
+      downloadSystemDump: {
+        subscriptionDestination: '/user/queue/endpoint/command/request-system-dump',
+        requestDestination: '/ws/endpoint/command/request-system-dump'
+      },
       downloadFileToServer: {
         subscriptionDestination: '/user/queue/endpoint/command/download-file',
         requestDestination: '/ws/endpoint/command/download-file'

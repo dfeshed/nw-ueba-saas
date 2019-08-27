@@ -298,8 +298,6 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
 
 
   test('fileDownloadStatusButton when true, will show download file options in more actions', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     new ReduxDataHelper(setState)
       .serviceId('123456')
       .timeRange({ value: 7, unit: 'days' })
@@ -328,8 +326,6 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
   });
 
   test('DownlodFilesToServer method being called when, Download to Server is clicked', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     new ReduxDataHelper(setState)
       .serviceId('123456')
       .timeRange({ value: 7, unit: 'days' })
@@ -363,8 +359,6 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
   });
 
   test('The getFileAnalysisData action called, when getFileAnalysisData is clicked from more actions', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     new ReduxDataHelper(setState)
       .serviceId('123456')
       .timeRange({ value: 7, unit: 'days' })
@@ -403,8 +397,6 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
         agentMode: 'insights'
       }
     };
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     new ReduxDataHelper(setState)
       .serviceId('123456')
       .setFocusedHost(focusedHost)
