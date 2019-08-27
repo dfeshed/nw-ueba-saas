@@ -50,9 +50,9 @@ const HostDownloads = Component.extend({
     const isErrorFiles = selectedFileList.some((item) => {
       return item.status === 'Processing' || item.status === 'Error';
     });
-    const isShowDeleteAction = this.get('accessControl.endpointCanManageFiles');
+    const hasManageAccess = this.get('accessControl.endpointCanManageFiles');
     return {
-      isShowDeleteAction,
+      hasManageAccess,
       deleteFile: !selectedFileList.length,
       saveLocalCopy: selectedFileList.length !== 1 || !!isErrorFiles
     };

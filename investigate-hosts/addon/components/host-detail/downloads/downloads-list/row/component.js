@@ -17,21 +17,8 @@ export default DataTableBodyRow.extend({
 
   @computed('item')
   contextItems() {
-    const contextConf = [
-      {
-        label: 'saveLocalCopy',
-        order: 1,
-        prefix: 'investigateHosts.downloads.buttons.',
-        showDivider: true,
-        action(selection, context) {
-          context.saveLocalCopy();
-        },
-        disabled(selection, context) {
-          return context.get('disableActions').saveLocalCopy;
-        }
-      }
-    ];
-    if (this.get('disableActions').isShowDeleteAction) {
+    const contextConf = [];
+    if (this.get('disableActions').hasManageAccess) {
       contextConf.push({
         label: 'deleteFiles',
         order: 2,
@@ -42,6 +29,18 @@ export default DataTableBodyRow.extend({
         },
         disabled(selection, context) {
           return context.get('disableActions').deleteFile;
+        }
+      },
+      {
+        label: 'saveLocalCopy',
+        order: 1,
+        prefix: 'investigateHosts.downloads.buttons.',
+        showDivider: true,
+        action(selection, context) {
+          context.saveLocalCopy();
+        },
+        disabled(selection, context) {
+          return context.get('disableActions').saveLocalCopy;
         }
       });
     }

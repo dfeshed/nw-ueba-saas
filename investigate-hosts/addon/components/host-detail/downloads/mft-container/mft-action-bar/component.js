@@ -6,6 +6,7 @@ import computed, { alias } from 'ember-computed-decorators';
 import { success } from 'investigate-shared/utils/flash-messages';
 
 import { downloadFilesToServer } from 'investigate-hosts/actions/data-creators/file-context';
+import { allAreMigratedHosts } from 'investigate-hosts/reducers/hosts/selectors';
 
 const callBackOptions = (context) => ({
   onSuccess: () => success('investigateHosts.flash.mftFileDownloadRequestSent'),
@@ -17,7 +18,8 @@ const stateToComputed = (state) => ({
   serverId: state.endpointQuery.serverId,
   selections: state.endpoint.hostDownloads.mft.mftDirectory.selectedMftFileList,
   agentId: state.endpoint.detailsInput.agentId,
-  isShowActions: state.endpoint.hostDownloads.mft.mftDirectory.selectedDirectoryForDetails
+  selectedDirectory: state.endpoint.hostDownloads.mft.mftDirectory.selectedDirectoryForDetails,
+  isHostMigrated: allAreMigratedHosts(state)
 });
 
 const dispatchToActions = {
@@ -37,9 +39,14 @@ const mftActionBar = Component.extend({
   @alias('focusedHost')
   machineId: null,
 
-  @computed('selections')
-  isDownloadToServerDisabled(selections) {
-    return !selections.length;
+  @computed('selections', 'isHostMigrated')
+  isDownloadToServerDisabled(selections, isHostMigrated) {
+    return !selections.length && !isHostMigrated;
+  },
+  @computed('selectedDirectory')
+  isShowActions(selectedDirectory) {
+    const canManage = this.get('accessControl.endpointCanManageFiles');
+    return selectedDirectory && canManage;
   },
   actions: {
     onDownloadFilesToServer() {

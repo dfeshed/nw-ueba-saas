@@ -245,15 +245,15 @@ module('Unit | Reducers | mft-directory', function() {
 
   test('The SELECT_ALL_DOWNLOADED_MFT_FILES will selects all files and folders', function(assert) {
     const previous = Immutable.from({
-      files: { 1: { id: 1, checksumSha256: 1, name: 'test1', serviceId: 'wefew', size: 1234, directory: false, status: 'completed' },
-        2: { id: 2, checksumSha256: 1, name: 'test', serviceId: 'wefew', size: 2345, directory: true, status: 'completed' }
+      files: { 1: { id: 1, checksumSha256: 1, name: 'test1', serviceId: 'wefew', size: 1234, directory: false, status: 'completed', fullPathName: '/fake/path' },
+        2: { id: 2, checksumSha256: 1, name: 'test', serviceId: 'wefew', size: 2345, directory: true, status: 'completed', fullPathName: '/fake/path' }
       },
       selectedMftFileList: []
     });
     const result = reducer(previous, { type: ACTION_TYPES.SELECT_ALL_DOWNLOADED_MFT_FILES });
 
-    assert.deepEqual(result.selectedMftFileList, [{ id: 1, checksumSha256: 1, name: 'test1', serviceId: 'wefew', size: 1234, directory: false, status: 'completed' },
-      { id: 2, checksumSha256: 1, name: 'test', serviceId: 'wefew', size: 2345, directory: true, status: 'completed' } ]);
+    assert.deepEqual(result.selectedMftFileList, [{ id: 1, checksumSha256: 1, name: 'test1', serviceId: 'wefew', size: 1234, directory: false, status: 'completed', fileName: 'test1', path: '/fake/path' },
+      { id: 2, checksumSha256: 1, name: 'test', serviceId: 'wefew', size: 2345, directory: true, status: 'completed', fileName: 'test', path: '/fake/path' } ]);
   });
   test('The DESELECT_ALL_DOWNLOADED_MFT_FILES will remove selects mft', function(assert) {
     const previous = Immutable.from({

@@ -17,8 +17,9 @@ export default DataTableBodyRow.extend({
 
   @computed('item')
   contextItems() {
-    const contextConf = [
-      {
+    const contextConf = [];
+    if (this.get('disableActions').hasManageAccess) {
+      contextConf.push({
         label: 'downloadFileToServer',
         order: 1,
         prefix: 'investigateHosts.downloads.mftActionBar.',
@@ -29,9 +30,8 @@ export default DataTableBodyRow.extend({
         disabled(selection, context) {
           return context.get('disableActions').downloadFileToServer;
         }
-      }
-    ];
-
+      });
+    }
     return contextConf.sortBy('order');
   }
 

@@ -252,12 +252,37 @@ module('Integration | Component | mft-list', function(hooks) {
           min-height: 1000px
         }
       </style>
-      {{host-detail/downloads/mft-container/mft-list }}{{context-menu}}`);
+      {{host-detail/downloads/mft-container/mft-list}}{{context-menu}}`);
     triggerEvent(findAll('.realSize')[1], 'contextmenu', e);
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
       assert.equal(items.length, 1, 'Context menu rendered with 1 items');
+      assert.equal(findAll('.is-row-checked').length, 1, 'Row is selected');
+    });
+  });
+  test('On no manage permissions mft row on right clicking the row it renders the context menu', async function(assert) {
+    new ReduxDataHelper(initState)
+      .hostDownloads(hostDownloads)
+      .selectedDirectoryForDetails(true)
+      .selectedMftFileList(mftData)
+      .mftFiles(mftData)
+      .build();
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', []);
+    await render(hbs`
+      <div id="modalDestination"></div>
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-detail/downloads/mft-container/mft-list}}{{context-menu}}`);
+    triggerEvent(findAll('.realSize')[1], 'contextmenu', e);
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 0, 'Context menu rendered with 1 items');
       assert.equal(findAll('.is-row-checked').length, 1, 'Row is selected');
     });
   });

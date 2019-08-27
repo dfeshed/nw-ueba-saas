@@ -163,7 +163,8 @@ const mftDirectory = reduxActions.handleActions({
     pageSize,
     isDirectories,
     inUse,
-    fullPathName
+    fullPathName,
+    selectedMftFileList: []
   }),
 
   [ACTION_TYPES.SET_FETCH_DIRECTORY_DETAILS]: (state, { payload: { pageSize, isDirectories, inUse } }) => state.merge({
@@ -173,8 +174,8 @@ const mftDirectory = reduxActions.handleActions({
   }),
 
   [ACTION_TYPES.SELECT_ALL_DOWNLOADED_MFT_FILES]: (state) => {
-    const selectedList = Object.values(state.files).map(({ id, name, size, checksumSha256, status, serviceId, directory }) => ({
-      id, name, size, checksumSha256, status, serviceId, directory
+    const selectedList = Object.values(state.files).map(({ id, name, size, checksumSha256, status, serviceId, directory, fullPathName: path, name: fileName }) => ({
+      id, name, size, checksumSha256, status, serviceId, directory, path, fileName
     }));
     return state.set('selectedMftFileList', selectedList);
   },

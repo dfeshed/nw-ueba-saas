@@ -14,6 +14,7 @@ import {
 import { isAlreadySelected } from 'investigate-hosts/util/util';
 import computed from 'ember-computed-decorators';
 import { success } from 'investigate-shared/utils/flash-messages';
+import { inject as service } from '@ember/service';
 
 import {
   downloadFilesToServer
@@ -68,6 +69,8 @@ const DownloadedFileList = Component.extend({
 
   contextItems: null,
 
+  accessControl: service(),
+
   callBackOptions,
 
   currentSort: {
@@ -77,7 +80,8 @@ const DownloadedFileList = Component.extend({
 
   @computed('selections')
   disableActions(selections) {
-    return { downloadFileToServer: selections.length !== 1 };
+    const hasManageAccess = this.get('accessControl.endpointCanManageFiles');
+    return { downloadFileToServer: selections.length !== 1, hasManageAccess };
   },
   actions: {
 

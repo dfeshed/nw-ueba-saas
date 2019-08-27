@@ -87,7 +87,25 @@ module('Integration | Component | downloads-list', function(hooks) {
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 1, 'Context menu rendered with 1 items');
+      assert.equal(items.length, 0, 'Context menu rendered with 0 items');
+    });
+  });
+  test('With access permissions on right clicking the row it renders the context menu with two items', async function(assert) {
+    initState({ endpoint: { hostDownloads } });
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', []);
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+      {{host-detail/downloads}}{{context-menu}}`);
+    triggerEvent(findAll('.fileName')[1], 'contextmenu', e);
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 0, 'Context menu rendered with 0 items');
     });
   });
 

@@ -166,4 +166,14 @@ module('Integration | Component | mft-container/mft-action-bar', function(hooks)
 
   });
 
+  test('mft-action-bar has render download to server if showActions false if no accessRoles', async function(assert) {
+    new ReduxDataHelper(initState).hostDownloads(hostDownloads).selectedDirectoryForDetails(true).build();
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', []);
+    await render(hbs`{{host-detail/downloads/mft-container/mft-action-bar}}`);
+    assert.equal(findAll('.mft-action-bar').length, 1, 'mft-action-bar rendered');
+    assert.equal(findAll('.download-to-server').length, 0, 'download to server button not rendered');
+
+  });
+
 });
