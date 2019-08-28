@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.test.mapping;
+package com.rsa.netwitness.presidio.automation.test.enrichment;
 
 
 import com.google.common.collect.ImmutableMap;
@@ -37,41 +37,39 @@ public class FileOperationTypeMappingTest extends AbstractTestNGSpringContextTes
     private FileEnrichStoredDataRepository enrichRepo;
     private SoftAssertions softly = new SoftAssertions();
 
-    private Map<String, List<String>> operationTypeToCategoriesFile =
-            OperationTypeToCategories.getInstance().getForFile();
+    private Map<Integer, List<String>> expectedEventCodeToOperationTypes =
+        ImmutableMap.of(
+                4663, Lists.newArrayList("FILE_CREATED", "FILE_OPENED", "FILE_MODIFIED",
+                        "FILE_WRITE_DAC_PERMISSION_CHANGED", "FILE_WRITE_OWNER_PERMISSION_CHANGED"),
+                4660, Lists.newArrayList("FILE_DELETED"),
+                4670, Lists.newArrayList("FILE_PERMISSION_CHANGED"),
+                5145, Lists.newArrayList("FILE_OPENED"));
 
 
-    private List<String> operationTypesToBeTested = Lists.newArrayList(
-            //"LOCAL_SHARE_REMOVED"
-            "FILE_CREATED",
-            "FILE_OPENED",
-            "FILE_PERMISSION_CHANGED",
-            "FILE_DELETED");
-
+    private List<String> expectedOperationTypes = expectedEventCodeToOperationTypes.values()
+            .stream().flatMap(Collection::stream).distinct().collect(toList());
     private Map<String, List<String>> expectedOperationTypeToCategoriesMap;
-    private Map<Integer, List<String>> expectedEventCodeToOperationTypeMap;
     private List<FileEnrichStoredData> actualEvents;
 
 
     @Parameters({"historical_days_back"})
     @BeforeClass
     public void init(@Optional("30") int historicalDaysBack) {
-        expectedOperationTypeToCategoriesMap = getFromConfigurationFileAndFilterIrrelevant(operationTypesToBeTested);
-        expectedEventCodeToOperationTypeMap = getExpectedEventCodeToOperationTypeMap();
+        expectedOperationTypeToCategoriesMap = getFromConfigurationFileAndFilterIrrelevant(expectedOperationTypes);
         actualEvents = getFromMongoEnrichedTable(historicalDaysBack);
     }
 
     @Test
     public void file_enrich_should_contain_all_expected_operation_types() {
-        List<String> actualOperationTypes = actualEvents.parallelStream().map(e -> e.getOperationType()).distinct().collect(toList());
-        List<String> expectedOperationTypes = Lists.newArrayList(expectedOperationTypeToCategoriesMap.keySet());
-        assertThat(actualOperationTypes).containsAll(expectedOperationTypes);
+        List<String> actualOperationTypes = actualEvents.parallelStream()
+                .map(FileEnrichStoredData::getOperationType).distinct().collect(toList());
+        assertThat(actualOperationTypes).containsExactlyInAnyOrderElementsOf(expectedOperationTypes);
     }
 
     @Test
     public void expected_event_codes_should_exactly_match_the_file_enrich() {
-        List<String> actualEventCodes = actualEvents.parallelStream().map(e -> e.getDataSource()).distinct().collect(toList());
-        List<String> expectedEventCodes = expectedEventCodeToOperationTypeMap.keySet().stream().distinct().map(String::valueOf).collect(toList());
+        List<String> actualEventCodes = actualEvents.parallelStream().map(FileEnrichStoredData::getDataSource).distinct().collect(toList());
+        List<String> expectedEventCodes = expectedEventCodeToOperationTypes.keySet().stream().distinct().map(String::valueOf).collect(toList());
         assertThat(actualEventCodes).containsExactlyInAnyOrderElementsOf(expectedEventCodes);
     }
 
@@ -85,7 +83,7 @@ public class FileOperationTypeMappingTest extends AbstractTestNGSpringContextTes
 
         for (Map.Entry<String, Set<String>> actualEvCodeToOpTypes : actualEvCodeToOpTypesResult.entrySet()) {
 
-            List<String> expectedOpType = expectedEventCodeToOperationTypeMap
+            List<String> expectedOpType = expectedEventCodeToOperationTypes
                     .getOrDefault(Integer.valueOf(actualEvCodeToOpTypes.getKey()),
                             Lists.newArrayList("Operation type mapping is missing for id = " + actualEvCodeToOpTypes.getKey()));
 
@@ -124,15 +122,6 @@ public class FileOperationTypeMappingTest extends AbstractTestNGSpringContextTes
         }
 
         softly.assertAll();
-    }
-
-
-    private Map<Integer, List<String>> getExpectedEventCodeToOperationTypeMap() {
-        return ImmutableMap.of(
-                4663, Lists.newArrayList("FILE_CREATED", "FILE_OPENED"),
-                4660, Lists.newArrayList("FILE_DELETED"),
-                4670, Lists.newArrayList("FILE_PERMISSION_CHANGED"),
-                5145, Lists.newArrayList("FILE_OPENED"));
     }
 
     private Map<String, List<String>> getFromConfigurationFileAndFilterIrrelevant(List<String> operationTypesExcludedFromTest) {

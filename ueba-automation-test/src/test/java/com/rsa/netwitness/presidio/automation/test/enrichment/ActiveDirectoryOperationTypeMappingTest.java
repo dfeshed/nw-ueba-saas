@@ -1,4 +1,4 @@
-package com.rsa.netwitness.presidio.automation.test.mapping;
+package com.rsa.netwitness.presidio.automation.test.enrichment;
 
 
 import com.rsa.netwitness.presidio.automation.domain.activedirectory.ActiveDirectoryEnrichStoredData;
