@@ -30,9 +30,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
-public class ActiveDirectoryOperationTypeMappingTest extends AbstractTestNGSpringContextTests {
+public class ActiveDirectoryOperationTypeAndEventCodeTest extends AbstractTestNGSpringContextTests {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(ActiveDirectoryOperationTypeMappingTest.class.getName());
+            LoggerFactory.getLogger(ActiveDirectoryOperationTypeAndEventCodeTest.class.getName());
 
     @Autowired
     private ActiveDirectoryEnrichStoredDataRepository enrichRepo;

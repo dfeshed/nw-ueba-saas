@@ -29,9 +29,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 @SpringBootTest(classes = {MongoConfig.class, AdapterTestManagerConfig.class, NetwitnessEventStoreConfig.class})
-public class FileOperationTypeMappingTest extends AbstractTestNGSpringContextTests {
+public class FileOperationTypeAndEventCodeTest extends AbstractTestNGSpringContextTests {
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
-            LoggerFactory.getLogger(FileOperationTypeMappingTest.class.getName());
+            LoggerFactory.getLogger(FileOperationTypeAndEventCodeTest.class.getName());
 
     @Autowired
     private FileEnrichStoredDataRepository enrichRepo;
