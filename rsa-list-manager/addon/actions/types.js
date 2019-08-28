@@ -1,0 +1,1 @@
+export const SOME_ACTION_1 = 'LIST_MANAGER::SOME_ACTION_1';

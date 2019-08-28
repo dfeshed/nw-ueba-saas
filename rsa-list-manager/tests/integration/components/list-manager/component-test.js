@@ -3,6 +3,9 @@ import hbs from 'htmlbars-inline-precompile';
 import { render, findAll, find, click, triggerKeyEvent, triggerEvent } from '@ember/test-helpers';
 import { typeInSearch } from 'ember-power-select/test-support/helpers';
 import { setupRenderingTest } from 'ember-qunit';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { patchReducer } from '../../../helpers/vnext-patch';
+import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
 const getTextFromDOMArray = (arr) => {
   return arr.reduce((a, c) => a + c.textContent.trim().replace(/\s+/g, ''), '');
@@ -12,8 +15,17 @@ const ARROW_UP_KEY = 38;
 const ARROW_DOWN_KEY = 40;
 const ENTER_KEY = 13;
 
+let setState;
+
 module('Integration | Component | list-manager', function(hooks) {
   setupRenderingTest(hooks);
+
+  hooks.beforeEach(function() {
+    setState = (state) => {
+      patchReducer(this, state);
+    };
+    initialize(this.owner);
+  });
 
   const listManagerSelector = '.list-manager';
   const buttonGroupSelector = `${listManagerSelector} .rsa-button-group`;
@@ -54,6 +66,7 @@ module('Integration | Component | list-manager', function(hooks) {
 
   test('The list-manager component renders to the DOM with selected item in the caption', async function(assert) {
     assert.expect(9);
+    new ReduxDataHelper(setState).foo('test').build();
 
     this.set('name', 'My Items');
     this.set('list', items);
@@ -72,7 +85,6 @@ module('Integration | Component | list-manager', function(hooks) {
 
     const newOption = `${listItems}:not(.is-selected) a`;
     assertForListManager(assert, 'My Item: foo', 'foo', 4, true, newOption);
-
   });
 
   test('Select action on item does nothing if same item is selected, but collapses dropdown', async function(assert) {

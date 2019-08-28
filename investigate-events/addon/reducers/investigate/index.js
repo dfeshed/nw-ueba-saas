@@ -11,6 +11,8 @@ import notifications from './notifications/reducer';
 import queryNode from './query-node/reducer';
 import queryStats from './query-stats/reducer';
 import services from './services/reducer';
+import listManager from 'rsa-list-manager/reducers/list-manager/reducer';
+import { reducerPredicate, createFilteredReducer } from 'component-lib/utils/reducer-wrapper';
 
 export default combineReducers({
   data,
@@ -24,5 +26,8 @@ export default combineReducers({
   notifications,
   queryNode,
   queryStats,
+  listManagers: combineReducers({
+    columnGroups: createFilteredReducer(listManager, reducerPredicate('COLUMN_GROUPS'))
+  }),
   services
 });

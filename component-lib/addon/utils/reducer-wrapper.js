@@ -1,3 +1,9 @@
+export const reducerPredicate = (type) => {
+  return (action) => {
+    return action.meta && action.meta.belongsTo === type;
+  };
+};
+
 /**
  * Helper function to create the reducer instance.
  * @param reducerFunction

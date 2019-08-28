@@ -2,6 +2,14 @@ import Component from '@ember/component';
 import layout from './template';
 import { htmlSafe } from '@ember/string';
 import computed from 'ember-computed-decorators';
+import { connect } from 'ember-redux';
+
+const stateToComputed = () => ({
+  foo: 'bar'
+});
+
+const dispatchToActions = {
+};
 
 const menuOffsetsStyle = (el) => {
   if (el) {
@@ -12,7 +20,7 @@ const menuOffsetsStyle = (el) => {
   }
 };
 
-export default Component.extend({
+const ListManager = Component.extend({
   layout,
   classNames: ['list-manager'],
 
@@ -118,3 +126,5 @@ export default Component.extend({
 
   }
 });
+
+export default connect(stateToComputed, dispatchToActions)(ListManager);
