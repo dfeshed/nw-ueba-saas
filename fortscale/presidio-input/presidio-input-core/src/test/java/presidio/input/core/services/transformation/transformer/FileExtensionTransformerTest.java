@@ -10,17 +10,15 @@ import presidio.sdk.api.domain.rawevents.PrintRawEvent;
 import presidio.sdk.api.domain.transformedevents.PrintTransformedEvent;
 
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
-public class FileExtensionTransformerTest {
+public class FileExtensionTransformerTest extends TransformerJsonTest {
     private PrintRawEvent createPrintRawEvent(String filePath) {
         return new PrintRawEvent(Instant.now(), "eventId", "dataSource",
                 "userId", "operationType", null, EventResult.SUCCESS,
                 "userName", "userDisplayName", null, "resultCode",
                 "srcMachineId", "srcMachineName", "printerId", "printerName",
-                filePath, false, 10l, 10l);
+                filePath, false, 10L, 10L);
     }
 
     @Test
@@ -30,9 +28,9 @@ public class FileExtensionTransformerTest {
 
         FileExtensionTransformer fileExtensionTransformer = new FileExtensionTransformer(PrintRawEvent.SRC_FILE_PATH_FIELD_NAME, PrintTransformedEvent.SRC_FILE_EXTENSION_FIELD_NAME);
 
-        List<AbstractInputDocument> transformed = fileExtensionTransformer.transform(Arrays.asList(new PrintTransformedEvent(printRawEvent)));
+        AbstractInputDocument transformed = fileExtensionTransformer.transform(new PrintTransformedEvent(printRawEvent));
 
-        Assert.assertEquals(".txt", ((PrintTransformedEvent) transformed.get(0)).getSrcFileExtension());
+        Assert.assertEquals(".txt", ((PrintTransformedEvent) transformed).getSrcFileExtension());
     }
 
     @Test
@@ -42,9 +40,9 @@ public class FileExtensionTransformerTest {
 
         FileExtensionTransformer fileExtensionTransformer = new FileExtensionTransformer(PrintRawEvent.SRC_FILE_PATH_FIELD_NAME, PrintTransformedEvent.SRC_FILE_EXTENSION_FIELD_NAME);
 
-        List<AbstractInputDocument> transformed = fileExtensionTransformer.transform(Arrays.asList(new PrintTransformedEvent(printRawEvent)));
+        AbstractInputDocument transformed = fileExtensionTransformer.transform(new PrintTransformedEvent(printRawEvent));
 
-        Assert.assertEquals(".txt", ((PrintTransformedEvent) transformed.get(0)).getSrcFileExtension());
+        Assert.assertEquals(".txt", ((PrintTransformedEvent) transformed).getSrcFileExtension());
     }
 
     @Test
@@ -53,9 +51,9 @@ public class FileExtensionTransformerTest {
 
         FileExtensionTransformer fileExtensionTransformer = new FileExtensionTransformer(PrintRawEvent.SRC_FILE_PATH_FIELD_NAME, PrintTransformedEvent.SRC_FILE_EXTENSION_FIELD_NAME);
 
-        List<AbstractInputDocument> transformed = fileExtensionTransformer.transform(Arrays.asList(new PrintTransformedEvent(printRawEvent)));
+        AbstractInputDocument transformed = fileExtensionTransformer.transform(new PrintTransformedEvent(printRawEvent));
 
-        Assert.assertNull(((PrintTransformedEvent) transformed.get(0)).getSrcFileExtension());
+        Assert.assertNull(((PrintTransformedEvent) transformed).getSrcFileExtension());
     }
 
     @Test
@@ -64,8 +62,18 @@ public class FileExtensionTransformerTest {
 
         FileExtensionTransformer fileExtensionTransformer = new FileExtensionTransformer(PrintRawEvent.SRC_FILE_PATH_FIELD_NAME, PrintTransformedEvent.SRC_FILE_EXTENSION_FIELD_NAME);
 
-        List<AbstractInputDocument> transformed = fileExtensionTransformer.transform(Arrays.asList(new PrintTransformedEvent(printRawEvent)));
+        AbstractInputDocument transformed = fileExtensionTransformer.transform(new PrintTransformedEvent(printRawEvent));
 
-        Assert.assertNull(((PrintTransformedEvent) transformed.get(0)).getSrcFileExtension());
+        Assert.assertNull(((PrintTransformedEvent) transformed).getSrcFileExtension());
+    }
+
+    @Override
+    String getResourceFilePath() {
+        return "FileExtensionTransformer.json";
+    }
+
+    @Override
+    Class getTransformerClass() {
+        return FileExtensionTransformer.class;
     }
 }
