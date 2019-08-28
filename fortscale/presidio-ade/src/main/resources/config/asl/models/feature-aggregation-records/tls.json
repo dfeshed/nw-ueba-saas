@@ -346,12 +346,12 @@
       }
     },
     {
-      "name": "numberOfDistinctSrcIp.newDomainOutbound.tls.hourly",
+      "name": "numberOfDistinctSrcIp.newDomainSslSubjectOutbound.tls.hourly",
       "retriever": {
         "type": "accumulated_aggregated_feature_value_global_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfDistinctSrcIpForNewDomainOutboundTlsHourly"
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcIpForNewDomainSslSubjectOutboundTlsHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder",
@@ -362,12 +362,12 @@
       }
     },
     {
-      "name": "numberOfDistinctSrcIp.newDstOrgOutbound.tls.hourly",
+      "name": "numberOfDistinctSrcIp.newDstOrgSslSubjectOutbound.tls.hourly",
       "retriever": {
         "type": "accumulated_aggregated_feature_value_global_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfDistinctSrcIpForNewDstOrgOutboundTlsHourly"
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcIpForNewDstOrgSslSubjectOutboundTlsHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder",
@@ -378,12 +378,12 @@
       }
     },
     {
-      "name": "numberOfDistinctSrcIp.newDstPortOutbound.tls.hourly",
+      "name": "numberOfDistinctSrcIp.newDstPortSslSubjectOutbound.tls.hourly",
       "retriever": {
         "type": "accumulated_aggregated_feature_value_global_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfDistinctSrcIpForNewDstPortOutboundTlsHourly"
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcIpForNewDstPortSslSubjectOutboundTlsHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder",

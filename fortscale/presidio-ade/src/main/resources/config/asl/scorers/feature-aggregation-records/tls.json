@@ -452,7 +452,7 @@
               "type": "gaussian-model-scorer",
               "name": "numberOfDistinctSrcIp.newDomainSslSubjectOutbound.tls.hourly.base_scorer",
               "model": {
-                "name": "numberOfDistinctSrcIp.newDomainOutbound.tls.hourly"
+                "name": "numberOfDistinctSrcIp.newDomainSslSubjectOutbound.tls.hourly"
               },
               "global-influence": 0,
               "number-of-partitions-to-influence-enough": 10,

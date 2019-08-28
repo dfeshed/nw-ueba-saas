@@ -256,21 +256,6 @@
       }
     },
     {
-      "name": "numberOfDistinctSrcIpForNewDomainOutboundTlsHourly",
-      "type": "F",
-      "bucketConfName": "srcIpHistogramNewDomainOutboundTlsHourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "aggregatedFeatureNamesMap": {
-        "groupBy": [
-          "distinctSrcIpHistogram"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_multi_key_values_counter_func"
-      }
-    },
-    {
       "name": "numberOfDistinctSrcIpForNewDomainSslSubjectOutboundTlsHourly",
       "type": "F",
       "bucketConfName": "srcIpHistogramNewDomainSslSubjectOutboundTlsHourly",
@@ -286,39 +271,9 @@
       }
     },
     {
-      "name": "numberOfDistinctSrcIpForNewDstOrgOutboundTlsHourly",
-      "type": "F",
-      "bucketConfName": "srcIpHistogramNewDstOrgOutboundTlsHourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "aggregatedFeatureNamesMap": {
-        "groupBy": [
-          "distinctSrcIpHistogram"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_multi_key_values_counter_func"
-      }
-    },
-    {
       "name": "numberOfDistinctSrcIpForNewDstOrgSslSubjectOutboundTlsHourly",
       "type": "F",
       "bucketConfName": "srcIpHistogramNewDstOrgSslSubjectOutboundTlsHourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "aggregatedFeatureNamesMap": {
-        "groupBy": [
-          "distinctSrcIpHistogram"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_multi_key_values_counter_func"
-      }
-    },
-    {
-      "name": "numberOfDistinctSrcIpForNewDstPortOutboundTlsHourly",
-      "type": "F",
-      "bucketConfName": "srcIpHistogramNewDstPortOutboundTlsHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
