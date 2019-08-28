@@ -1,11 +1,9 @@
-import $ from 'jquery';
 import Ember from 'ember';
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin';
 import csrfToken from 'component-lib/mixins/csrf-token';
 import Route from '@ember/routing/route';
 import * as ACTION_TYPES from 'sa/actions/types';
 import { get, computed } from '@ember/object';
-import { Promise } from 'rsvp';
 import { inject as service } from '@ember/service';
 import fetch from 'component-lib/utils/fetch';
 import { windowProxy } from 'component-lib/utils/window-proxy';
@@ -108,25 +106,23 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
       return;
     }
 
-    return new Promise((resolve) => {
-      const csrfKey = this.get('csrfLocalstorageKey');
-      $.ajax({
-        type: 'POST',
-        url: '/oauth/logout',
-        timeout: 15000,
+    const csrfKey = this.get('csrfLocalstorageKey');
+    if (csrfKey) {
+      const formData = new FormData();
+      formData.append('access_token', this.get('session.persistedAccessToken'));
+      formData.append('reason', reason);
+      fetch('/oauth/logout', {
+        credentials: 'same-origin',
+        method: 'POST',
         headers: {
           'X-CSRF-TOKEN': localStorage.getItem(csrfKey)
         },
-        data: {
-          access_token: this.get('session.persistedAccessToken'),
-          reason
-        }
-      }).always(() => {
+        body: formData
+      }).finally(() => {
         localStorage.removeItem(csrfKey);
         this.get('session').invalidate();
-        resolve();
       });
-    });
+    }
   },
 
   /**

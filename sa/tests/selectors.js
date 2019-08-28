@@ -1,7 +1,7 @@
-import Ember$ from 'jquery';
 import BaseSelectors from 'component-lib/selectors/defaults';
 
-export default Ember$.extend({}, BaseSelectors, {
+export default {
+  ...BaseSelectors,
   'nav': {
     'monitorLink': '.js-test-nav-monitor-link',
     'respondLink': '.js-test-nav-respond-link',
@@ -423,4 +423,4 @@ export default Ember$.extend({}, BaseSelectors, {
       }
     }
   }
-});
+};

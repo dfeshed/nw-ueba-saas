@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
@@ -25,7 +24,10 @@ module('Unit | Controller | application', function(hooks) {
   });
 
   test('will NOT alter the body class when theme is undefined (string)', async function(assert) {
-    $('body').addClass('our-application');
+    const body = document.querySelector('body');
+    if (!body.classList.contains('our-application')) {
+      body.classList.add('our-application');
+    }
 
     let updatesRun = 0;
     const redux = this.owner.lookup('service:redux');
@@ -38,9 +40,9 @@ module('Unit | Controller | application', function(hooks) {
 
     redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_THEME, theme: 'undefined' });
 
-    assert.ok($('body').hasClass('dark-theme'));
-    assert.ok($('body').hasClass('our-application'));
-    assert.notOk($('body').hasClass('undefined-theme'));
+    assert.ok(body.classList.contains('dark-theme'));
+    assert.ok(body.classList.contains('our-application'));
+    assert.notOk(body.classList.contains('undefined-theme'));
 
     // While IE11 is supported this _updateBodyClass call is important
     // because without it we never fetch the dark.css file explicitly
@@ -48,7 +50,10 @@ module('Unit | Controller | application', function(hooks) {
   });
 
   test('will NOT alter the body class when theme is undefined (type)', async function(assert) {
-    $('body').addClass('our-application');
+    const body = document.querySelector('body');
+    if (!body.classList.contains('our-application')) {
+      body.classList.add('our-application');
+    }
 
     let updatesRun = 0;
     const redux = this.owner.lookup('service:redux');
@@ -61,9 +66,9 @@ module('Unit | Controller | application', function(hooks) {
 
     redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_THEME, theme: undefined });
 
-    assert.ok($('body').hasClass('dark-theme'));
-    assert.ok($('body').hasClass('our-application'));
-    assert.notOk($('body').hasClass('undefined-theme'));
+    assert.ok(body.classList.contains('dark-theme'));
+    assert.ok(body.classList.contains('our-application'));
+    assert.notOk(body.classList.contains('undefined-theme'));
 
     // While IE11 is supported this _updateBodyClass call is important
     // because without it we never fetch the dark.css file explicitly
@@ -71,7 +76,10 @@ module('Unit | Controller | application', function(hooks) {
   });
 
   test('will alter the body class when theme is truly different', async function(assert) {
-    $('body').addClass('our-application');
+    const body = document.querySelector('body');
+    if (!body.classList.contains('our-application')) {
+      body.classList.add('our-application');
+    }
 
     let updatesRun = 0;
     const redux = this.owner.lookup('service:redux');
@@ -83,21 +91,21 @@ module('Unit | Controller | application', function(hooks) {
     };
 
     redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_THEME, theme: 'LIGHT' });
-    assert.ok($('body').hasClass('light-theme'));
-    assert.ok($('body').hasClass('our-application'));
-    assert.notOk($('body').hasClass('dark-theme'));
+    assert.ok(body.classList.contains('light-theme'));
+    assert.ok(body.classList.contains('our-application'));
+    assert.notOk(body.classList.contains('dark-theme'));
     assert.equal(updatesRun, 1);
 
     redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_THEME, theme: 'DARK' });
-    assert.ok($('body').hasClass('dark-theme'));
-    assert.ok($('body').hasClass('our-application'));
-    assert.notOk($('body').hasClass('light-theme'));
+    assert.ok(body.classList.contains('dark-theme'));
+    assert.ok(body.classList.contains('our-application'));
+    assert.notOk(body.classList.contains('light-theme'));
     assert.equal(updatesRun, 2);
 
     redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_THEME, theme: 'DARK' });
-    assert.ok($('body').hasClass('dark-theme'));
-    assert.ok($('body').hasClass('our-application'));
-    assert.notOk($('body').hasClass('light-theme'));
+    assert.ok(body.classList.contains('dark-theme'));
+    assert.ok(body.classList.contains('our-application'));
+    assert.notOk(body.classList.contains('light-theme'));
     assert.equal(updatesRun, 2);
     controller._updateBodyClass = original;
   });
