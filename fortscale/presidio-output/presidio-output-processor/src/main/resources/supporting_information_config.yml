@@ -1769,6 +1769,23 @@ indicators:
     featureName: numberOfDistinctSrcIpForNewDstPortSslSubjectOutboundTlsHourly
   classification: phishing
 
+- id: maxSumOfBytesSentBySrcIpToNewSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_by_src_ip_to_new_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - sslSubject.name
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+    - fieldName: sslSubject.isNewOccurrence
+      fieldValue: true
+  historicalData:
+    type: hourly_aggregations
+  classification: data_exfiltration
+
 #***************************************
 #*                ja3                  *
 #***************************************
