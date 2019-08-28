@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -37,11 +37,11 @@ public class TlsRawEvent extends AbstractInputDocument {
 
 
 
-    @NotEmpty
+    @NotNull
     @Field(SOURCE_IP_FIELD_NAME)
     private String srcIp;
 
-    @NotEmpty
+    @NotNull
     @Field(DESTINATION_IP_FIELD_NAME)
     private String dstIp;
 
@@ -84,11 +84,11 @@ public class TlsRawEvent extends AbstractInputDocument {
     @Field(DIRECTION_FIELD_NAME)
     private String direction;
 
-    @NotEmpty
+    @NotNull
     @Field(DESTINATION_PORT_FIELD_NAME)
     private DestinationPort dstPort;
 
-    @NotEmpty
+    @NotNull
     @Field(SOURCE_PORT_FIELD_NAME)
     private String srcPort;
 
