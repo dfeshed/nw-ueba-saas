@@ -207,6 +207,32 @@
           }
         }
       ]
+    },
+    {
+      "name": "numberOfDistinctSrcIpToNewDstPortScoresSumSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "aggr_event.numberOfDistinctSrcIpForNewDstPortSslSubjectOutboundTlsHourly"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "numberOfDistinctSrcIpToNewDstPortScoresSum",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstPort.name"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
     }
   ]
 }

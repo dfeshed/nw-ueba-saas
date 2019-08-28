@@ -504,6 +504,41 @@
           ]
         }
       ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctSrcIpForNewDstPortSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctSrcIp.newDstPortSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfDistinctSrcIp.newDstPortSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctSrcIp.newDstPortSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctSrcIp.newDstPortOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
     }
   ]
 }

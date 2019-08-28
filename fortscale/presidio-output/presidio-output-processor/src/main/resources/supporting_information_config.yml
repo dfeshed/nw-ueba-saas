@@ -1750,6 +1750,25 @@ indicators:
     featureName: numberOfDistinctSrcIpForNewDstOrgSslSubjectOutboundTlsHourly
   classification: phishing
 
+- id: numberOfDistinctSrcIpToNewDstPortScoresSumSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_src_ip_to_new_dst_port_for_new_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - dstPort.name
+    - sslSubject.name
+  anomalyDescriptior:
+    anomalyFilters:
+      - fieldName: direction
+        fieldValue: OUTBOUND
+      - fieldName: dstPort.isNewOccurrence
+        fieldValue: true
+  historicalData:
+    type: hourly_aggregations
+    featureName: numberOfDistinctSrcIpForNewDstPortSslSubjectOutboundTlsHourly
+  classification: phishing
+
 #***************************************
 #*                ja3                  *
 #***************************************
