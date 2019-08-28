@@ -1,0 +1,6 @@
+{
+  "type": "join-transformer",
+  "inputFieldNames": ["bla", "blu", "bli"],
+  "outputFieldName": "glue",
+  "delimiter": "."
+}

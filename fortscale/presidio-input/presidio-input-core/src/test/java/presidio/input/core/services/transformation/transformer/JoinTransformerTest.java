@@ -1,7 +1,6 @@
 package presidio.input.core.services.transformation.transformer;
 
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,10 +11,9 @@ import presidio.sdk.api.domain.transformedevents.ProcessTransformedEvent;
 
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
-public class JoinTransformerTest {
+public class JoinTransformerTest extends TransformerJsonTest {
 
     @Test
     public void testTransformation() {
@@ -31,9 +29,9 @@ public class JoinTransformerTest {
 
 
         JoinTransformer joinTransformer = new JoinTransformer(Arrays.asList(ProcessRawEvent.SRC_PROCESS_DIRECTORY_FIELD_NAME, ProcessRawEvent.SRC_PROCESS_FILE_NAME_FIELD_NAME),ProcessTransformedEvent.SRC_PROCESS_FILE_PATH_FIELD_NAME,"\\");
-        List<AbstractInputDocument> transformed =  joinTransformer.transform(Collections.singletonList(new ProcessTransformedEvent(processRawEvent)));
+        AbstractInputDocument transformed =  joinTransformer.transform(new ProcessTransformedEvent(processRawEvent));
 
-        Assert.assertEquals("C:\\Windows\\System32\\lsass.exe", ((ProcessTransformedEvent) transformed.get(0)).getSrcProcessFilePath());
+        Assert.assertEquals("C:\\Windows\\System32\\lsass.exe", ((ProcessTransformedEvent) transformed).getSrcProcessFilePath());
     }
 
     @Test
@@ -49,9 +47,9 @@ public class JoinTransformerTest {
 
 
         JoinTransformer joinTransformer = new JoinTransformer(Arrays.asList(ProcessRawEvent.SRC_PROCESS_DIRECTORY_FIELD_NAME, ProcessRawEvent.SRC_PROCESS_DIRECTORY_FIELD_NAME),ProcessTransformedEvent.SRC_PROCESS_FILE_PATH_FIELD_NAME,"\\");
-        List<AbstractInputDocument> transformed =  joinTransformer.transform(Collections.singletonList(new ProcessTransformedEvent(processRawEvent)));
+        AbstractInputDocument transformed =  joinTransformer.transform(new ProcessTransformedEvent(processRawEvent));
 
-        Assert.assertNull(((ProcessTransformedEvent) transformed.get(0)).getSrcProcessFilePath());
+        Assert.assertNull(((ProcessTransformedEvent) transformed).getSrcProcessFilePath());
     }
 
     @Test
@@ -67,8 +65,18 @@ public class JoinTransformerTest {
 
 
         JoinTransformer joinTransformer = new JoinTransformer(Arrays.asList(ProcessRawEvent.SRC_PROCESS_DIRECTORY_FIELD_NAME, ProcessRawEvent.SRC_PROCESS_DIRECTORY_FIELD_NAME),ProcessTransformedEvent.SRC_PROCESS_FILE_PATH_FIELD_NAME,"\\");
-        List<AbstractInputDocument> transformed =  joinTransformer.transform(Collections.singletonList(new ProcessTransformedEvent(processRawEvent)));
+        AbstractInputDocument transformed =  joinTransformer.transform(new ProcessTransformedEvent(processRawEvent));
 
-        Assert.assertNull(((ProcessTransformedEvent) transformed.get(0)).getSrcProcessFilePath());
+        Assert.assertNull(((ProcessTransformedEvent) transformed).getSrcProcessFilePath());
+    }
+
+    @Override
+    String getResourceFilePath() {
+        return "JoinTransformer.json";
+    }
+
+    @Override
+    Class getTransformerClass() {
+        return JoinTransformer.class;
     }
 }
