@@ -1,0 +1,17 @@
+<div class='footer-buttons'>
+  {{#rsa-form-button defaultAction=detailsDone}}
+    Close
+  {{/rsa-form-button}}
+  {{#if item}}
+    {{!-- temporarily disabling Select from details readonly TODO part 2/2--}}
+    {{#rsa-form-button isDisabled=true defaultAction=detailsDone}}
+      Select {{itemType}}
+    {{/rsa-form-button}}
+  {{else}}
+    {{!-- temporarily disabling save from create new item TODO add/edit--}}
+    {{#rsa-form-button isDisabled=true defaultAction=detailsDone}}
+      Save {{itemType}}
+    {{/rsa-form-button}}
+  {{/if}}
+</div>
+

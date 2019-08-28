@@ -9,10 +9,11 @@ module('Integration | Component | item ', function(hooks) {
   const nonOOTB = 'rsa-icon-settings-1-lined';
   const OOTB = 'rsa-icon-lock-close-1-lined';
 
+  const item = { id: '1', name: 'foo' };
+
   test('Component for item renders when no selectedItem is passed, no OOTB indicators', async function(assert) {
     assert.expect(7);
 
-    const item = { id: '1', name: 'foo' };
     this.set('item', item);
     this.set('itemSelection', (itemClicked) => {
       assert.deepEqual(itemClicked, item, 'Clicking an Item causes its selection');
@@ -34,8 +35,6 @@ module('Integration | Component | item ', function(hooks) {
 
   test('Component for item renders when selectedItem is clicked', async function(assert) {
     assert.expect(3);
-
-    const item = { id: '1', name: 'foo' };
 
     this.set('item', item);
     this.set('selectedItem', item);
@@ -87,7 +86,7 @@ module('Integration | Component | item ', function(hooks) {
     this.set('isExpanded', true);
     this.set('highlightedId', 'someid');
 
-    await render(hbs`{{list-manager/item-list/item isExpanded=isExpanded item=item selectedItem=selectedItem 
+    await render(hbs`{{list-manager/item-list/item isExpanded=isExpanded item=item selectedItem=selectedItem
       highlightedId=highlightedId itemSelection=itemSelection hasOOTBIndicators=hasOOTBIndicators}}`);
 
     assert.ok(find('li.is-highlighted'), 'the item shall have is-highlighted class');
@@ -103,9 +102,10 @@ module('Integration | Component | item ', function(hooks) {
     this.set('isExpanded', true);
     this.set('highlightedId', 'not-someid');
 
-    await render(hbs`{{list-manager/item-list/item isExpanded=isExpanded item=item selectedItem=selectedItem 
+    await render(hbs`{{list-manager/item-list/item isExpanded=isExpanded item=item selectedItem=selectedItem
       highlightedId=highlightedId itemSelection=itemSelection hasOOTBIndicators=hasOOTBIndicators}}`);
 
     assert.notOk(find('li.is-highlighted'), 'the item shall not have is-highlighted class');
   });
+
 });

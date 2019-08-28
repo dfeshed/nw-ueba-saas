@@ -3,7 +3,11 @@ import layout from './template';
 
 export default Component.extend({
   layout,
-  classNames: ['list-details'],
-  updateView: null
+
+  classNames: ['item-details'],
+
+  editItem: null,
+
+  item: null
 
 });

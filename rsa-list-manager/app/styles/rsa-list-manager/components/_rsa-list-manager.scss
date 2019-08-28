@@ -2,29 +2,37 @@
   display: inline-flex;
 
   .rsa-button-menu {
-    input, li, button {
-      font-size: 11px;
+    .rsa-form-button-wrapper:not(.is-icon-only) {
+      :hover i{
+          color: $formButtonIconHoverColor;
+      }
+    }
+
+    button {
+      padding: 0;
+    }
+
+    input, li, button, .details-header {
+      font-size: 12px;
       font-weight: lighter;
       color: text-color(primary, lightest);
     }
 
     i {
-      font-size: .65rem;
+      vertical-align: text-top;
+      color: text-color(primary, light);
+      font-size: 14px;
     }
 
-    button.rsa-form-button {
-      border: none;
-      padding: 0;
-      i {
-        color: text-color(primary, light);
-      }
-      &:hover i{
-          color: $formButtonIconHoverColor;
+    .list-body, .list-footer {
+      button.rsa-form-button {
+        border: none;
+        padding: 0;
       }
     }
 
     .list-body {
-      height: 200px;
+      height: 242px;
       background: background-color(primary, darker);
       // Manager's filter component
       .list-filter {
@@ -44,7 +52,7 @@
 
       // Manager's itemList component
       ul.rsa-item-list {
-        height: 170px;
+        height: 210px;
         overflow-y: auto;
         li.no-results {
           padding: rsa-whitespace(less);
@@ -55,13 +63,28 @@
           color: text-color(primary, lighter);
         }
         li.rsa-list-item {
-          line-height: 2em;
+          line-height: 2.1em;
+          display:inline-flex;
+          width: 100%;
+          .edit-icon {
+            visibility: hidden;
+            i {
+              margin-left: 0.5rem;
+            }
+          }
           &.is-highlighted {
+            &:hover .edit-icon {
+              visibility: visible;
+            }
+
             background: background-color(secondary, darker);
             outline: none;
             cursor: pointer;
           }
           &:not(.is-highlighted) {
+            &:hover .edit-icon {
+              visibility: hidden;
+            }
             // to override li a:hover style from component-lib
             // /component-lib/app/styles/component-lib/base/form/_rsa-button-menu.scss
             a:hover {
@@ -71,32 +94,49 @@
               cursor: pointer;
             }
           }
-          &:hover {
-            // prevent hover highlight
-            background: none;
-            outline: none;
-          }
           &.is-selected {
             background: background-color(secondary, dark);
+            a:hover {
+              background: background-color(secondary, dark);
+            }
           }
           a {
+            display: inline-flex;
+            width: 100%;
             padding: 0;
-          }
-          i {
-            padding-left: rsa-whitespace(less);
-            padding-right: rsa-whitespace(less);
+            .ootb-icon-wrapper {
+              padding-left: rsa-whitespace(less);
+              padding-right: rsa-whitespace(less);
+              i {
+                vertical-align: text-top;
+              }
+            }
           }
         }
       }
     }
 
+    .item-details {
+      min-width: 300px;
+    }
+
+    .details-header {
+      justify-content: flex-start;
+      width: 93%;
+      display: inline-flex;
+      padding: .8rem;
+      .item-name {
+        width: 100%; // may change to incorporate other buttons in header
+        padding-bottom: 0.6rem;
+        border-bottom: 1px solid border-color(primary,light);
+      }
+    }
     // Manager's create item controls component
     footer {
-      height: 30px;
       border-top: 1px solid border-color(primary,light);
 
-       .footer-buttons {
-        margin-top: rsa-whitespace(less);
+      .footer-buttons {
+        margin-top: .6rem;
         justify-content: space-evenly;
         display: inline-flex;
         width: 100%;
@@ -107,21 +147,31 @@
           width: 90%;
           text-align: left;
           i {
-            font-size: 0.7rem;
-            vertical-align: text-top;
+            margin-left: auto;
+            margin-right: 0.3em;
           }
         }
       }
 
-      &.details-footer .footer-buttons {
-        .rsa-form-button-wrapper {
-          border: thin solid border-color(primary,light);
-          &:hover {
-            border-color: $formButtonIconHoverColor;
-          }
-          width: 45%;
-          button {
-            width: 100%;
+      &.list-footer {
+        height: 35px;
+      }
+
+      &.details-footer {
+        height: 42px;
+        .footer-buttons {
+          .rsa-form-button-wrapper {
+            width: 46%;
+            button {
+              padding: 5px;
+              width: 100%;
+              &:not(:disabled) {
+                border: thin solid border-color(primary,light);
+                &:hover {
+                  border-color: $formButtonIconHoverColor;
+                }
+              }
+            }
           }
         }
       }

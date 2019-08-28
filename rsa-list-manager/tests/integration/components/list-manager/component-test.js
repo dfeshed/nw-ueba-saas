@@ -47,7 +47,6 @@ module('Integration | Component | list-manager', function(hooks) {
   const assertForViewToggle = async function(assert, buttonsBefore, isListView) {
     assert.equal(findAll('.list-body ul.rsa-item-list').length == 1, isListView);
     assert.equal(findAll('footer.list-footer').length == 1, isListView);
-
     const buttons = findAll('footer button');
     assert.equal(getTextFromDOMArray(buttons), buttonsBefore);
 
@@ -128,9 +127,9 @@ module('Integration | Component | list-manager', function(hooks) {
     await click(`${buttonGroupSelector} button`);
     assert.ok(find('.ootb-indicator'), 'column for ootb indicators rendered');
 
-    const options = findAll(`${listItems} a`);
-    assert.ok(options[0].children[0].classList.contains('rsa-icon-lock-close-1-lined'), 'ootb icon rendered');
-    assert.ok(options[1].children[0].classList.contains('rsa-icon-settings-1-lined'), 'non-ootb icon rendered');
+    const options = findAll(`${listItems} a .ootb-icon-wrapper i`);
+    assert.ok(options[0].classList.contains('rsa-icon-lock-close-1-lined'), 'ootb icon rendered');
+    assert.ok(options[1].classList.contains('rsa-icon-settings-1-lined'), 'non-ootb icon rendered');
   });
 
   test('Use Up Arrow Key to traverse through items', async function(assert) {
@@ -143,7 +142,7 @@ module('Integration | Component | list-manager', function(hooks) {
       assert.ok(true, 'Action passed will be called, as new item is selected');
     });
 
-    await render(hbs`{{#list-manager 
+    await render(hbs`{{#list-manager
       listName=name
       list=list
       selectedItem=selectedItem
@@ -516,8 +515,8 @@ module('Integration | Component | list-manager', function(hooks) {
       this.set('highlightedIndex', -1);
     });
 
-    await render(hbs`{{#list-manager 
-      listName=name 
+    await render(hbs`{{#list-manager
+      listName=name
       highlightedIndex=highlightedIndex
       list=list itemSelection=handleSelection as |manager|}}
         {{manager.filter}}
@@ -637,18 +636,37 @@ module('Integration | Component | list-manager', function(hooks) {
 
     // click on New My Item
     await click(findAll('footer button')[0]);
-    await assertForViewToggle(assert, 'CancelSave', false);
+    await assertForViewToggle(assert, 'CloseSaveMyItem', false);
 
-    // click on Cancel
+    // click on close
     await click(findAll('footer button')[0]);
     await assertForViewToggle(assert, 'NewMyItem', true);
 
-    // click on New My Item
-    await click(findAll('footer button')[0]);
-    await assertForViewToggle(assert, 'CancelSave', false);
+  });
 
-    // click on Save
-    await click(findAll('footer button')[1]);
+  test('clicking on info icon on an item navigates to item details', async function(assert) {
+
+    this.set('name', 'My Items');
+    this.set('list', items);
+    this.set('handleSelection', () => {});
+
+    await render(hbs`{{#list-manager listName=name list=list itemSelection=handleSelection as |manager|}}
+        {{#manager.itemList as |list|}}
+          {{#list.item as |item|}}
+           {{item.name}}
+          {{/list.item}}
+        {{/manager.itemList}}
+      {{/list-manager}}`);
+
+    // expand button menu
+    await click(`${buttonGroupSelector} button`);
     await assertForViewToggle(assert, 'NewMyItem', true);
+
+    const itemDetailsButtons = findAll('.edit-icon button');
+
+    await click(itemDetailsButtons[0]);
+    await assertForViewToggle(assert, 'CloseSelectMyItem', false);
+
+    assert.equal(find('.item-name').textContent.trim(), items[0].name);
   });
 });

@@ -1,6 +1,14 @@
 <a {{action 'clickAction'}} title="{{item.name}}">
   {{#if hasOOTBIndicators}}
-    {{rsa-icon style='lined' size='small' class='ootb-indicator' name=iconName}}
+    {{#rsa-form-button class='ootb-icon-wrapper' isIconOnly=true}}
+      {{rsa-icon style='lined' class='ootb-indicator' name=iconName}}
+    {{/rsa-form-button}}
   {{/if}}
   {{yield item}}
 </a>
+{{! TODO render on hover readonly part 2--}}
+{{#rsa-form-button class='edit-icon' defaultAction=(action 'editDetails')}}
+  {{! pencil-write-2 for non-ootb TODO edit}}
+  {{rsa-icon style='lined' name='information-circle'}}
+{{/rsa-form-button}}
+

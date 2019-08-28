@@ -7,18 +7,16 @@ export default Component.extend({
   tagName: 'footer',
   layout,
   classNames: ['list-footer'],
-  listName: null,
-  updateView: null,
+  itemType: null,
+  createItem: null,
   contextualHelp: service(),
 
   // object with parameters topicId & moduleId for contextual help
   helpId: null,
 
-  @computed('listName')
-  newItemButtonTitle(listName) {
-    // For a listName e.g My Items (string ending with s(plural)),
-    // the button title dispalyed will be New My Item
-    return `New ${listName.slice(0, -1)}`;
+  @computed('itemType')
+  newItemButtonTitle(itemType) {
+    return `New ${itemType}`;
   },
 
   @computed('helpId')
@@ -32,7 +30,7 @@ export default Component.extend({
 
   actions: {
     handleCreateItem() {
-      this.get('updateView')('create-view');
+      this.get('createItem')();
     },
 
     goToHelp() {

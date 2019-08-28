@@ -37,6 +37,9 @@ export default Component.extend({
   // View to be rendered through button actions (list-view, detail-view, etc)
   viewName: null,
 
+  // item rendered for details
+  itemForEdit: null,
+
   // style for the recon-button-menu derived from the buttonGroup style
   offsetsStyle: null,
 
@@ -47,12 +50,20 @@ export default Component.extend({
     this.set('viewName', 'list-view');
   },
 
+  /*
+   * For a listName eg Column Groups, item type will be Column Group
+   */
+  @computed('listName')
+  itemType(listName) {
+    return listName.slice(0, -1);
+  },
+
   @computed('listName', 'selectedItem')
   caption(listName, selectedItem) {
     // If there is a selected item for a listName e.g My Items (string ending with s(plural)),
     // the caption dispalyed will be My Item: selectedItemName
     if (selectedItem) {
-      return `${listName.slice(0, -1)}: ${selectedItem.name}`;
+      return `${this.get('itemType')}: ${selectedItem.name}`;
     }
     return listName;
   },
@@ -68,6 +79,10 @@ export default Component.extend({
       return selectedItem.name;
     }
     return null;
+  },
+
+  _updateView(viewName) {
+    this.set('viewName', viewName);
   },
 
   actions: {
@@ -92,8 +107,14 @@ export default Component.extend({
       this.set('highlightedIndex', -1);
     },
 
-    updateView(viewName) {
-      this.set('viewName', viewName);
+    editItem(item) {
+      this.set('itemForEdit', item);
+      this._updateView('edit-view');
+    },
+
+    detailsDone() {
+      this._updateView('list-view');
     }
+
   }
 });

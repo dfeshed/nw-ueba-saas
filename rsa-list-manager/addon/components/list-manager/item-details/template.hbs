@@ -1,0 +1,19 @@
+<div class='list-body'>
+  {{#if item}}
+    <div class='details-header'>
+      <div class='item-name'>
+        {{item.name}}
+      </div>
+      {{!-- delete component here --}}
+    </div>
+    {{! other details of list to follow --}}
+  {{else}}
+    <div class='new-item'>
+    </div>
+  {{/if}}
+</div>
+{{list-manager/item-details/details-footer
+  item=item
+  itemType=itemType
+  detailsDone=detailsDone
+}}

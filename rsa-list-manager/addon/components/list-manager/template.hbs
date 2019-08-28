@@ -41,21 +41,24 @@
                 itemSelection=itemSelection
                 isExpanded=isExpanded
                 highlightedIndex=highlightedIndex
+                editItem=(action 'editItem')
               )
              )
             }}
           </div>
 
           {{list-manager/list-footer
-            listName=listName
-            updateView=(action 'updateView')
+            itemType=itemType
+            createItem=(action 'editItem')
             helpId=helpId
           }}
 
         {{else}}
 
-          {{list-manager/list-details
-            updateView=(action 'updateView')
+          {{list-manager/item-details
+            itemType=itemType
+            detailsDone=(action 'detailsDone')
+            item=itemForEdit
           }}
 
         {{/if}}
