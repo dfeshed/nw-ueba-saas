@@ -105,6 +105,10 @@ const hostsConfigGen = function(env) {
       downloadMFT: {
         subscriptionDestination: '/user/queue/endpoint/command/download-mft',
         requestDestination: '/ws/endpoint/command/download-mft'
+      },
+      downloadSystemDump: {
+        subscriptionDestination: '/user/queue/endpoint/command/request-system-dump',
+        requestDestination: '/ws/endpoint/command/request-system-dump'
       }
     },
     'context-service': {

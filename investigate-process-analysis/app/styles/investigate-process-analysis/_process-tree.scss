@@ -202,7 +202,14 @@ section {
 
 .panel-content {
   .process-hover-item {
-    .copy-icon .rsa-icon {
+    .copy-icon
+    {
+      i {
+        cursor: pointer;
+      }
+      .rsa-icon {
+      }
+      cursor: pointer;
       padding-right: 10px;
     }
   }

@@ -262,6 +262,22 @@ const downloadMFT = (data) => {
   });
 };
 
+const downloadSystemDump = (data) => {
+  const request = lookup('service:request');
+  const streamSelector = lookup('service:stream-selector');
+
+  const modelName = 'endpoint';
+  const method = 'downloadSystemDump';
+  const { serverId: socketUrlPostfix } = data;
+  return request.promiseRequest({
+    method,
+    modelName,
+    query: { data },
+    streamOptions: streamSelector.streamOptionSelector({ modelName, method, customOptions: { socketUrlPostfix } })
+  });
+};
+
+
 /**
  * Executes a websocket fetch call for all subfolders and returns a Promise.
  * @returns Promise that will resolve with the server response.
@@ -322,5 +338,6 @@ export default {
   getContext,
   downloadMFT,
   getMFTSubfolders,
-  isolateHostRequest
+  isolateHostRequest,
+  downloadSystemDump
 };

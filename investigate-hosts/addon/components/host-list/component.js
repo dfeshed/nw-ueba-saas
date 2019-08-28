@@ -8,7 +8,7 @@ import { isScanStartButtonDisabled, warningMessages, extractAgentIds, mftDownloa
 import { resetRiskScore } from 'investigate-shared/actions/data-creators/risk-creators';
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
 import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
-import { deleteHosts, downloadMFT } from 'investigate-hosts/actions/data-creators/host';
+import { deleteHosts, downloadMFT, downloadSystemDump } from 'investigate-hosts/actions/data-creators/host';
 import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
@@ -26,7 +26,8 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   deleteHosts,
   resetRiskScore,
-  downloadMFT
+  downloadMFT,
+  downloadSystemDump
 };
 
 
@@ -137,6 +138,16 @@ const Container = Component.extend({
       const hosts = this.get('selections');
       const [host] = hosts.length && hosts.length === 1 ? hosts : [{}];
       this.send('downloadMFT', this.get('agentIds')[0], host.serviceId, callBackOptions);
+    },
+
+    requestSystemDumpDownload() {
+      const callBackOptions = {
+        onSuccess: () => success('investigateHosts.hosts.downloadSystemDump.success'),
+        onFailure: (message) => failure(message, null, false)
+      };
+      const hosts = this.get('selections');
+      const [host] = hosts.length && hosts.length === 1 ? hosts : [{}];
+      this.send('downloadSystemDump', this.get('agentIds')[0], host.serviceId, callBackOptions);
     }
   }
 });

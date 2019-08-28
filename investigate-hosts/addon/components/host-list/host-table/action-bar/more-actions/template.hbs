@@ -38,7 +38,8 @@
               {{t moreOption.name}}
             {{/rsa-form-button}}
           </li>
-
+        {{else if (eq moreOption.buttonId 'downloadSystemDump-button')}}
+          <li class='download-system-dump' {{action requestSystemDumpDownload}}>{{t moreOption.name}}</li>
         {{/if}}
       {{/each}}
     </ul>

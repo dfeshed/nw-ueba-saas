@@ -3290,6 +3290,10 @@ export default {
         success: 'MFT is set for download. Check the "Downloads" column for status.',
         tooltip: 'MFT can be downloaded only for Windows OS and only a single host can be selected at a time.'
       },
+      downloadSystemDump: {
+        success: 'Files are set for download. Click the hostname and go to Downloads tab for status.',
+        tooltip: 'System Dump can be downloaded only for Windows OS and only a single host can be selected at a time.'
+      },
       selected: 'selected ({{count}})',
       insightAgentTooltip: 'For insights agent mode, Risk Score feature is not supported. Please upgrade to advanced agent mode.',
       list: {
@@ -4071,6 +4075,7 @@ export default {
         viewCertificate: 'View Certificates',
         analyzeUser: 'Analyze User',
         downloadMFT: 'Download MFT',
+        downloadSystemDump: 'Download System Dump',
         tooltips: {
           downloadToServer: '',
           saveLocalCopy: 'Download the file to server to save a local copy.',

@@ -12,6 +12,13 @@ export default Component.extend({
 
   @computed('isMFTEnabled', 'selectedHostList', 'accessControl')
   moreOptions() {
+    const systemMemoryDump = [
+      {
+        panelId: 'panel4',
+        name: 'investigateShared.endpoint.fileActions.downloadSystemDump',
+        buttonId: 'downloadSystemDump-button'
+      }
+    ];
     const moreActionOptions = [
       {
         panelId: 'panel1',
@@ -33,7 +40,7 @@ export default Component.extend({
       }
     ];
     if (this.get('isMFTEnabled').isDisplayed && (this.get('selectedHostList').length === 1) && this.get('accessControl.endpointCanManageFiles')) {
-      moreActionOptions.push(...mft);
+      moreActionOptions.push(...mft, ...systemMemoryDump);
     }
     return moreActionOptions;
   }

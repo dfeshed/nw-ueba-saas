@@ -371,6 +371,15 @@ const isolateHostRequest = (data, serverId, callbacks = callbacksDefault) => {
       }
     });
 };
+const downloadSystemDump = (agentId, serverId, callbacks = callbacksDefault) => {
+  Machines.downloadSystemDump(agentId)
+    .then(() => {
+      callbacks.onSuccess();
+    }).catch(({ meta: message }) => {
+      callbacks.onFailure(message.message);
+    });
+};
+
 
 export {
   getAllServices,
@@ -393,5 +402,6 @@ export {
   changeEndpointServerSelection,
   downloadMFT,
   saveColumnConfig,
-  isolateHostRequest
+  isolateHostRequest,
+  downloadSystemDump
 };

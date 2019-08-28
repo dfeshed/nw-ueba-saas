@@ -10,6 +10,31 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 
 let setState;
 
+const selectedData = [
+  {
+    id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
+    machineIdentity: {
+      machineName: 'RAR113-EPS',
+      machineOsType: 'linux',
+      agentMode: 'advanced'
+    },
+    version: '11.4.0.0',
+    managed: true,
+    serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+  },
+  {
+    id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+    machineIdentity: {
+      machineName: 'RemDbgDrv',
+      machineOsType: 'windows',
+      agentMode: 'advanced'
+    },
+    version: '11.4.0.0',
+    managed: true,
+    serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
+  }
+];
+
 module('Integration | Component | host table action bar more actions', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-hosts')
@@ -96,6 +121,9 @@ module('Integration | Component | host table action bar more actions', function(
     this.set('requestMFTDownload', () => {
       assert.ok(true);
     });
+    this.set('requestSystemDumpDownload', () => {
+      assert.ok(true);
+    });
     this.set('selectedHostList', [selectedData]);
 
     await render(hbs`{{host-list/host-table/action-bar/more-actions
@@ -103,10 +131,11 @@ module('Integration | Component | host table action bar more actions', function(
       deleteAction=deleteAction
       isMFTEnabled=isMFTEnabled
       selectedHostList=selectedHostList
-      requestMFTDownload=requestMFTDownload}}`);
+      requestMFTDownload=requestMFTDownload
+      requestSystemDumpDownload=requestSystemDumpDownload}}`);
 
     await click('.host_more_actions button');
-    assert.equal(findAll('.rsa-dropdown-action-list li').length, 3, '3 list options should render as MFT is enabled.');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 4, '4 list options should render as MFT is enabled.');
     assert.equal(findAll('.rsa-dropdown-action-list li')[2].textContent.trim(), 'Download MFT', 'Download MFT option is rendered.');
     await click(findAll('.rsa-dropdown-action-list li')[2]);
   });
@@ -124,6 +153,9 @@ module('Integration | Component | host table action bar more actions', function(
       serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
     };
     new ReduxDataHelper(setState).scanCount(selectedData).build();
+    this.set('requestSystemDumpDownload', () => {
+      assert.ok(true);
+    });
     this.set('showRiskScoreModal', () => {
       assert.ok(true);
     });
@@ -144,7 +176,8 @@ module('Integration | Component | host table action bar more actions', function(
       isMFTEnabled=isMFTEnabled
       selectedHostList=selectedHostList
       isAgentMigrated=isAgentMigrated
-      requestMFTDownload=requestMFTDownload}}`);
+      requestMFTDownload=requestMFTDownload
+      requestSystemDumpDownload=requestSystemDumpDownload}}`);
 
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li.downloadMFT-button .is-disabled').length, 1, 'Download MFT option is disabled.');
@@ -166,6 +199,9 @@ module('Integration | Component | host table action bar more actions', function(
     this.set('showRiskScoreModal', () => {
       assert.ok(true);
     });
+    this.set('requestSystemDumpDownload', () => {
+      assert.ok(true);
+    });
     this.set('deleteAction', () => {
       assert.ok(true, 'passed action is called');
     });
@@ -183,37 +219,14 @@ module('Integration | Component | host table action bar more actions', function(
       isMFTEnabled=isMFTEnabled
       selectedHostList=selectedHostList
       isAgentMigrated=isAgentMigrated
-      requestMFTDownload=requestMFTDownload}}`);
+      requestMFTDownload=requestMFTDownload
+      requestSystemDumpDownload=requestSystemDumpDownload}}`);
 
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li.downloadMFT-button .is-disabled').length, 0, 'Download MFT option is enabled.');
   });
 
   test('download mft options not present when more than 1 item is selected', async function(assert) {
-    const selectedData = [
-      {
-        id: '0E54BF10-5A88-4F81-89DC-9BA17794BBAE',
-        machineIdentity: {
-          machineName: 'RAR113-EPS',
-          machineOsType: 'linux',
-          agentMode: 'advanced'
-        },
-        version: '11.4.0.0',
-        managed: true,
-        serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
-      },
-      {
-        id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
-        machineIdentity: {
-          machineName: 'RemDbgDrv',
-          machineOsType: 'windows',
-          agentMode: 'advanced'
-        },
-        version: '11.4.0.0',
-        managed: true,
-        serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0'
-      }
-    ];
     new ReduxDataHelper(setState).scanCount(...selectedData).build();
     this.set('showRiskScoreModal', () => {
       assert.ok(true);
@@ -250,6 +263,137 @@ module('Integration | Component | host table action bar more actions', function(
     await click('.host_more_actions button');
     assert.equal(findAll('.rsa-dropdown-action-list li').length, 0, 'no list options should render.');
   });
+
+  test('More menu contains the option to download system dump', async function(assert) {
+    this.set('selectedHostList', [selectedData]);
+    this.set('showRiskScoreModal', () => {
+      assert.ok(true);
+    });
+    this.set('deleteAction', () => {
+      assert.ok(true);
+    });
+    this.set('requestSystemDumpDownload', () => {
+      assert.ok(true);
+    });
+    this.set('isMFTEnabled', { isDisplayed: true });
+    this.set('noHostsSelected', false);
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
+
+    await render(hbs`{{host-list/host-table/action-bar/more-actions 
+                      showRiskScoreModal=showRiskScoreModal 
+                      isMFTEnabled=isMFTEnabled 
+                      deleteAction=deleteAction 
+                      selectedHostList=selectedHostList
+                      noHostsSelected=noHostsSelected
+                      requestSystemDumpDownload=requestSystemDumpDownload}}`);
+    await click('.host_more_actions button');
+    assert.equal(findAll('.rsa-dropdown-action-list li').length, 4, '4 options should render.');
+    assert.equal(findAll('.download-system-dump').length, 1, 'Download System dump option is rendered.');
+  });
+
+  test('Hide the download memory dump button, when there is no right permission', async function(assert) {
+    this.set('showRiskScoreModal', () => {
+      assert.ok(true);
+    });
+    this.set('deleteAction', () => {
+      assert.ok(true);
+    });
+    this.set('requestMFTDownload', () => {
+      assert.ok(true);
+    });
+    this.set('requestSystemDumpDownload', () => {
+      assert.ok(true);
+    });
+    this.set('selectedHostList', [selectedData]);
+    this.set('isMFTEnabled', { isDisplayed: false });
+    this.set('noHostsSelected', false);
+    await render(hbs`{{host-list/host-table/action-bar/more-actions 
+                      showRiskScoreModal=showRiskScoreModal 
+                      isMFTEnabled=isMFTEnabled 
+                      deleteAction=deleteAction 
+                      selectedHostList=selectedHostList
+                      noHostsSelected=noHostsSelected
+                      requestMFTDownload=requestMFTDownload
+                      requestSystemDumpDownload=requestSystemDumpDownload}}`);
+    await click('.host_more_actions button');
+    assert.equal(findAll('.download-system-dump').length, 0, 'Download System dump option is hidden.');
+  });
+
+  test('Hide the download memory dump option, for multiple files selected', async function(assert) {
+    this.set('selectedHostList', selectedData);
+    this.set('showRiskScoreModal', () => {
+      assert.ok(true);
+    });
+    this.set('deleteAction', () => {
+      assert.ok(true);
+    });
+    this.set('isMFTEnabled', { isDisplayed: true });
+    this.set('noHostsSelected', false);
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
+
+    await render(hbs`{{host-list/host-table/action-bar/more-actions 
+                      showRiskScoreModal=showRiskScoreModal 
+                      isMFTEnabled=isMFTEnabled 
+                      deleteAction=deleteAction 
+                      selectedHostList=selectedHostList
+                      noHostsSelected=noHostsSelected}}`);
+    await click('.host_more_actions button');
+    assert.equal(findAll('.download-system-dump').length, 0, 'Download System dump option is hidden.');
+  });
+
+  test('Hide the download memory dump option, when isMFTEnabled is false', async function(assert) {
+    this.set('selectedHostList', selectedData);
+    this.set('showRiskScoreModal', () => {
+      assert.ok(true);
+    });
+    this.set('deleteAction', () => {
+      assert.ok(true);
+    });
+    this.set('isMFTEnabled', { isDisplayed: false });
+    this.set('noHostsSelected', false);
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
+
+    await render(hbs`{{host-list/host-table/action-bar/more-actions 
+                      showRiskScoreModal=showRiskScoreModal 
+                      isMFTEnabled=isMFTEnabled 
+                      deleteAction=deleteAction 
+                      selectedHostList=selectedHostList
+                      noHostsSelected=noHostsSelected}}`);
+    await click('.host_more_actions button');
+    assert.equal(findAll('.download-system-dump').length, 0, 'Download System dump option is hidden.');
+  });
+
+  test('Request for download system dump is sent, on selecting Download System Dump option', async function(assert) {
+    assert.expect(1);
+    this.set('selectedHostList', [selectedData]);
+    this.set('showRiskScoreModal', () => {
+      assert.ok(true);
+    });
+    this.set('deleteAction', () => {
+      assert.ok(true);
+    });
+    this.set('requestSystemDumpDownload', () => {
+      assert.ok(true);
+    });
+    this.set('isMFTEnabled', { isDisplayed: true });
+    this.set('noHostsSelected', false);
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
+
+    await render(hbs`{{host-list/host-table/action-bar/more-actions 
+                      showRiskScoreModal=showRiskScoreModal 
+                      isMFTEnabled=isMFTEnabled 
+                      deleteAction=deleteAction 
+                      selectedHostList=selectedHostList
+                      noHostsSelected=noHostsSelected
+                      requestSystemDumpDownload=requestSystemDumpDownload}}`);
+    await click('.host_more_actions button');
+    await click('.download-system-dump');
+  });
+
 });
 
 
