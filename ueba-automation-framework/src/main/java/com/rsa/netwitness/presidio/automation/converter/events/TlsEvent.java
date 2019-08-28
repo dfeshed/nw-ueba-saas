@@ -33,9 +33,12 @@ public abstract class TlsEvent extends NetwitnessEvent {
     protected int session_split;
     protected Boolean analysis_service;
     protected String service_name;
+    protected String time;
+
 
     protected TlsEvent(Instant eventTimeEpoch, Schema schema) {
         super(eventTimeEpoch, schema);
+        time = timeMillis;
     }
 
     @Override

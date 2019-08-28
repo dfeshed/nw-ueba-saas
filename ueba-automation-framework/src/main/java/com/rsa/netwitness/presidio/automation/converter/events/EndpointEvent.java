@@ -10,14 +10,9 @@ import java.util.Map;
 
 public abstract class EndpointEvent extends NetwitnessEvent {
 
-    protected EndpointEvent(Instant eventTimeEpoch, Schema schema) {
-        super(eventTimeEpoch, schema);
-    }
-
     protected String event_source_id;
     protected String device_type;
     protected String category;
-
     protected String user_src;
     protected List<String> action;
     protected List<String> alias_host;
@@ -46,6 +41,9 @@ public abstract class EndpointEvent extends NetwitnessEvent {
     protected String os$dash$type;
     protected String agent$dash$id;
 
+    protected EndpointEvent(Instant eventTimeEpoch, Schema schema) {
+        super(eventTimeEpoch, schema);
+    }
 
     @Override
     public Map<String, Object> getEvent() {

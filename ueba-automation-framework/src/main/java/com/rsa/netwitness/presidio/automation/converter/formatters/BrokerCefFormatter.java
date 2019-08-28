@@ -29,7 +29,6 @@ public class BrokerCefFormatter implements EventFormatter<String> {
 
         Map<String, Object> mapToFormat = Maps.newLinkedHashMap();
         mapToFormat.put("event.time", converted.brokerEventTime);
-        mapToFormat.put("time", converted.timeMillis);
         mapToFormat.putAll(filtered);
 
         mapToFormat.entrySet().forEach(e -> eventBuilder.append(fieldToCefValue(e)));
