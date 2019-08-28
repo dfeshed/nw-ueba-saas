@@ -32,7 +32,32 @@ public class PresidioReflectionUtils {
         return leaf.isHierarchyBroken() ? defaultValue : leaf.getValue();
     }
 
-    // The exception should not be thrown because the accessibility flag of the Field object is set to true.
+    /**
+     * Sets the given object's field to the given value. This method works for nested objects also. If one would like to
+     * change a nested object's field, the nested object delimiter should be found between objects in the field name.
+     * The exception should not be thrown because the accessibility flag of the Field object is set to true.
+     *
+     * For example:
+     * ============
+     * setFieldValue(object = {
+     *     "name": "Aaron",
+     *     "cat": {
+     *         "toy": "mouse"
+     *     }
+     * }, fieldName = "cat.toy", fieldValue = "rabbit")
+     * Becomes:
+     * ========
+     * {
+     *     "name": "Aaron",
+     *     "cat": {
+     *         "toy": "rabbit"
+     *     }
+     * }
+     *
+     * @param object     the given object
+     * @param fieldName  the field name belonging to the object which should be set to the given value
+     * @param fieldValue the value to set the object's field to
+     */
     public static void setFieldValue(Object object, String fieldName, Object fieldValue) throws IllegalAccessException {
         Leaf leaf = getLeaf(object, fieldName);
         leaf.assertHierarchyNotBroken();
