@@ -18,8 +18,8 @@
       "name": "tcp-srcPort-not-null-filter",
       "predicate": {
         "type": "key_exist",
-        "name": "tcp-srcPort-not-null",
-        "key": "tcp_srcPort",
+        "name": "tcp-srcport-not-null",
+        "key": "tcp_srcport",
         "testNull": true
       },
       "filterIn": true
