@@ -1,0 +1,9 @@
+{
+  "type": "machine-name-transformer",
+  "inputFieldName": "bla",
+  "outputFieldName": "blue",
+  "pattern": "regex",
+  "replacement": "replaced",
+  "preReplacementCondition": "if then",
+  "postReplacementCondition": "else"
+}

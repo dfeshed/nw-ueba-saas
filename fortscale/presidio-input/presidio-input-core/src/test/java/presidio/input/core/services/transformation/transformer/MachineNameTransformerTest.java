@@ -10,13 +10,11 @@ import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;
 
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by barak_schuster on 11/9/17.
  */
-public class MachineNameTransformerTest {
+public class MachineNameTransformerTest extends TransformerJsonTest {
 
     @Test
     public void testTransformAuthenticationEventResolvedSrcMachineName() {
@@ -35,9 +33,9 @@ public class MachineNameTransformerTest {
                 "srcMachineId", "dwef043.fortscale.com", "dstMachineId",
                 "dstMachineName", "dstMachineDomain", "resultCode", "site",
                 "country", "city");
-        List<AbstractInputDocument> transformedEvents = MachineNameTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authRawEvent)));
+        AbstractInputDocument transformedEvents = MachineNameTransformer.transform(new AuthenticationTransformedEvent(authRawEvent));
 
-        Assert.assertEquals("dwef.fortscale.com", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
+        Assert.assertEquals("dwef.fortscale.com", ((AuthenticationTransformedEvent) transformedEvents).getSrcMachineCluster());
     }
 
     @Test
@@ -57,9 +55,9 @@ public class MachineNameTransformerTest {
                 "srcMachineId", "10.20.3.40", "dstMachineId",
                 "dstMachineName", "dstMachineDomain", "resultCode", "site",
                 "country", "city");
-        List<AbstractInputDocument> transformedEvents = machineNameTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authRawEvent)));
+        AbstractInputDocument transformedEvents = machineNameTransformer.transform(new AuthenticationTransformedEvent(authRawEvent));
 
-        Assert.assertEquals(StringUtils.EMPTY, ((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
+        Assert.assertEquals(StringUtils.EMPTY, ((AuthenticationTransformedEvent) transformedEvents).getSrcMachineCluster());
     }
 
     @Test
@@ -79,8 +77,18 @@ public class MachineNameTransformerTest {
                 "srcMachineId", null, "dstMachineId",
                 "dstMachineName", "dstMachineDomain", "resultCode", "site",
                 "country", "city");
-        List<AbstractInputDocument> transformedEvents = machineNameTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authRawEvent)));
+        AbstractInputDocument transformedEvents = machineNameTransformer.transform(new AuthenticationTransformedEvent(authRawEvent));
 
-        Assert.assertNull(((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
+        Assert.assertNull(((AuthenticationTransformedEvent) transformedEvents).getSrcMachineCluster());
+    }
+
+    @Override
+    String getResourceFilePath() {
+        return "MachineNameTransformer.json";
+    }
+
+    @Override
+    Class getTransformerClass() {
+        return MachineNameTransformer.class;
     }
 }
