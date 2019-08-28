@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-abstract class TransformerJsonTest {
+public abstract class TransformerJsonTest {
 
     private static final String TRANSFORMERS_PACKAGE_LOCATION = "presidio.input.core.services.transformation.transformer";
     private ClassLoader classLoader = getClass().getClassLoader();

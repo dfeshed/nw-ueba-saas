@@ -1,0 +1,5 @@
+{
+  "type": "file-to-folder-path-transformer",
+  "inputFieldName": "bla",
+  "outputFieldName": "blue"
+}
