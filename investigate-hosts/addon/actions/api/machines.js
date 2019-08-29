@@ -262,13 +262,12 @@ const downloadMFT = (data) => {
   });
 };
 
-const downloadSystemDump = (data) => {
+const downloadSystemDump = (data, socketUrlPostfix) => {
   const request = lookup('service:request');
   const streamSelector = lookup('service:stream-selector');
 
   const modelName = 'endpoint';
   const method = 'downloadSystemDump';
-  const { serverId: socketUrlPostfix } = data;
   return request.promiseRequest({
     method,
     modelName,

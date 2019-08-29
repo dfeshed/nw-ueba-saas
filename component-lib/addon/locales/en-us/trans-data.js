@@ -3292,7 +3292,10 @@ export default {
       },
       downloadSystemDump: {
         success: 'Files are set for download. Click the hostname and go to Downloads tab for status.',
-        tooltip: 'System Dump can be downloaded only for Windows OS and only a single host can be selected at a time.'
+        tooltip: 'System Dump can be downloaded only for Windows OS and only a single host can be selected at a time.',
+        details: {
+          success: 'Files are set for download. Go to the Downloads tab for status.'
+        }
       },
       selected: 'selected ({{count}})',
       insightAgentTooltip: 'For insights agent mode, Risk Score feature is not supported. Please upgrade to advanced agent mode.',

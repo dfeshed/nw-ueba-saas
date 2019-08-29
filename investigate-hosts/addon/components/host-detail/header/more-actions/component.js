@@ -8,7 +8,7 @@ import { hostWithStatus,
   agentMigrated,
   hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 import { exportFileContext } from 'investigate-hosts/actions/data-creators/details';
-import { downloadMFT } from 'investigate-hosts/actions/data-creators/host';
+import { downloadMFT, downloadSystemDump } from 'investigate-hosts/actions/data-creators/host';
 import { success, failure } from 'investigate-shared/utils/flash-messages';
 import { inject as service } from '@ember/service';
 
@@ -26,7 +26,8 @@ const stateToComputed = (state) => ({
 
 const dispatchToActions = {
   exportFileContext,
-  downloadMFT
+  downloadMFT,
+  downloadSystemDump
 };
 
 const HostDetailsMoreActions = Component.extend({
@@ -45,7 +46,6 @@ const HostDetailsMoreActions = Component.extend({
 
       if (isMFTEnabled.editExclusionList) {
         subNavItem = {
-          panelId: 'panel5',
           modalName: 'release',
           name: 'investigateHosts.networkIsolation.menu.releaseFromIsolation',
           buttonId: 'release-isolation-button',
@@ -53,7 +53,6 @@ const HostDetailsMoreActions = Component.extend({
         };
       } else {
         subNavItem = {
-          panelId: 'panel5',
           modalName: 'isolate',
           name: 'investigateHosts.networkIsolation.menu.isolate',
           buttonId: 'isolation-button',
@@ -82,7 +81,6 @@ const HostDetailsMoreActions = Component.extend({
           subItems: [
             subNavItem,
             {
-              panelId: 'panel6',
               modalName: 'edit',
               name: 'investigateHosts.networkIsolation.menu.edit',
               buttonId: 'isolation-button',
@@ -98,8 +96,16 @@ const HostDetailsMoreActions = Component.extend({
         }
       ];
 
+      const systemMemoryDump = [
+        {
+          panelId: 'panel5',
+          name: 'investigateShared.endpoint.fileActions.downloadSystemDump',
+          buttonId: 'downloadSystemDump-button'
+        }
+      ];
+
       if (isMFTEnabled.isDisplayed && this.get('accessControl.endpointCanManageFiles')) {
-        moreActionOptions.push(...mftAndIsolation);
+        moreActionOptions.push(...mftAndIsolation, ...systemMemoryDump);
       }
       return moreActionOptions;
     },
@@ -120,6 +126,14 @@ const HostDetailsMoreActions = Component.extend({
         onFailure: (message) => failure(message, null, false)
       };
       this.send('downloadMFT', this.get('agentId'), this.get('hostDetails').serviceId, callBackOptions);
+    },
+
+    requestSystemDumpDownload() {
+      const callBackOptions = {
+        onSuccess: () => success('investigateHosts.hosts.downloadSystemDump.details.success'),
+        onFailure: (message) => failure(message, null, false)
+      };
+      this.send('downloadSystemDump', this.get('agentId'), this.get('hostDetails').serviceId, callBackOptions);
     },
 
     showIsolationModal(item) {

@@ -86,6 +86,14 @@
             {{t moreOption.name}}
           {{/rsa-form-button}}
         </li>
+      {{else if (eq moreOption.buttonId 'downloadSystemDump-button')}}
+        <li class="download-sys-dump-button">
+          {{#rsa-form-button
+            defaultAction=(action 'requestSystemDumpDownload')
+            isDisabled=isAgentMigrated}}
+            {{t moreOption.name}}
+          {{/rsa-form-button}}
+        </li>
       {{/if}}
     {{/each}}
   </ul>

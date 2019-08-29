@@ -372,7 +372,7 @@ const isolateHostRequest = (data, serverId, callbacks = callbacksDefault) => {
     });
 };
 const downloadSystemDump = (agentId, serverId, callbacks = callbacksDefault) => {
-  Machines.downloadSystemDump(agentId)
+  Machines.downloadSystemDump(agentId, serverId)
     .then(() => {
       callbacks.onSuccess();
     }).catch(({ meta: message }) => {

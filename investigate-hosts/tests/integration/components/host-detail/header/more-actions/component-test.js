@@ -48,13 +48,14 @@ module('Integration | Component | host detail more-actions', function(hooks) {
       .build();
     await render(hbs `{{host-detail/header/more-actions}}`);
     await click('.host_more_actions .host-details-more-actions');
-    assert.equal(findAll('.host-details_dropdown-action-list li').length, 4, 'Number of actions present is 3 as MFT permission added');
+    assert.equal(findAll('.host-details_dropdown-action-list li').length, 5, 'Number of actions present is 5 as MFT and system dump permission added');
 
     assert.ok(find('.host-start-scan-button'), 'scan-command renders giving the start scan button');
     assert.equal(findAll('.rsa-icon-check-shield-lined').length, 0, 'Start scan icon not present');
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(2)').textContent.trim(), 'Export Host details', 'Export Host details button renders');
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(3)').textContent.trim(), 'Network Isolation', 'Network Isolation button renders');
     assert.equal(find('.host-details_dropdown-action-list li:nth-child(4)').textContent.trim(), 'Download MFT', 'Download MFT button renders');
+    assert.equal(find('.host-details_dropdown-action-list li:nth-child(5)').textContent.trim(), 'Download System Dump', 'Download system dump button renders');
   });
   test('test for More Actions with no manage permission', async function(assert) {
     new ReduxDataHelper(setState)
@@ -89,9 +90,69 @@ module('Integration | Component | host detail more-actions', function(hooks) {
           }
         });
     });
-
     await click('.host-details_dropdown-action-list li.downloadMFT-button button');
   });
+
+
+  test('test for, request system dump download', async function(assert) {
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+      .host(data)
+      .hostOverview(data)
+      .isJsonExportCompleted(true)
+      .isSnapshotsAvailable(true)
+      .agentId('A0351965-30D0-2201-F29B-FDD7FD32EB21')
+      .build();
+    await render(hbs `{{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+    patchSocket((method, model, query) => {
+      assert.equal(method, 'downloadSystemDump');
+      assert.deepEqual(query, {
+        'data': 'A0351965-30D0-2201-F29B-FDD7FD32EB21'
+      });
+    });
+    await click('.host-details_dropdown-action-list li.download-sys-dump-button button');
+  });
+
+  test('Test for download system dumo button disabled', async function(assert) {
+    const state = {
+      serviceId: 'e9be528a-ca5b-463b-bc3f-deab7cc36bb0',
+      agentStatus: {
+        agentId: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+        lastSeenTime: '2019-05-09T09:22:09.713+0000',
+        scanStatus: 'completed'
+      },
+      machineIdentity: {
+        id: 'A0351965-30D0-2201-F29B-FDD7FD32EB21',
+        machineName: 'RemDbgDrv',
+        agentMode: 'advanced',
+        agentVersion: '11.4.0.0',
+        machineOsType: 'windows'
+      },
+      groupPolicy: {
+        managed: false
+      }
+    };
+
+    new ReduxDataHelper(setState)
+      .host(state)
+      .build();
+
+    await render(hbs `{{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+    assert.equal(findAll('.host-details_dropdown-action-list li.download-sys-dump-button .is-disabled').length, 1, 'downloadMFT-button disabled');
+  });
+
+  test('Test for download system dump button enabled', async function(assert) {
+    new ReduxDataHelper(setState)
+      .host(data)
+      .build();
+
+    await render(hbs `{{host-detail/header/more-actions}}`);
+    await click('.host_more_actions .host-details-more-actions');
+    assert.equal(findAll('.host-details_dropdown-action-list li.download-sys-dump-button .is-disabled').length, 0, 'downloadMFT-button enabled');
+  });
+
 
   test('Test for download MFT button disabled', async function(assert) {
     const state = {
