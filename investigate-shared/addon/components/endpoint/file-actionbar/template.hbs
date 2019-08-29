@@ -16,16 +16,20 @@
 
 {{endpoint/pivot-to-event-analysis label='file' iconSize=pivotIconSize selections=itemList isIconOnly=showOnlyIcons pivotToInvestigate=(action 'pivotToInvestigate')}}
 
-{{#rsa-form-button
-  isIconOnly=showOnlyIcons
-  title=(t 'investigateHosts.process.downloadProcessDump')
-  click=(action 'onDownloadProcessDump')
-  isDisabled=fileDownloadButtonStatus.isDownloadToServerDisabled}}
-  {{rsa-icon name='download-2'}}
-  {{#unless showOnlyIcons}}
-    {{t 'investigateHosts.process.downloadProcessDump'}}
-  {{/unless}}
-{{/rsa-form-button}}
+{{#if showDownloadProcessDump}}
+  {{#rsa-form-button
+    class='download-process-dump'
+    isIconOnly=showOnlyIcons
+    title=(t 'investigateHosts.process.downloadProcessDump')
+    click=(action 'onDownloadProcessDump')
+    isDisabled=fileDownloadButtonStatus.isDownloadToServerDisabled}}
+    {{rsa-icon name='download-2'}}
+    {{#unless showOnlyIcons}}
+      {{t 'investigateHosts.process.downloadProcessDump'}}
+    {{/unless}}
+  {{/rsa-form-button}}
+{{/if}}
+
 
 {{#rsa-content-tethered-panel-trigger
   panel=(if isEditStatusButtonDisabled 'file-status-more-actions disabled' 'file-status-more-actions')

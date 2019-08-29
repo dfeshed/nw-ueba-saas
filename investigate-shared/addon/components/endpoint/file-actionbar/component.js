@@ -53,6 +53,8 @@ export default Component.extend({
 
   selectedFileCount: null,
 
+  showResetRiskScore: false,
+
   @computed('itemList')
   isEditStatusButtonDisabled(itemList) {
     if (!itemList) {

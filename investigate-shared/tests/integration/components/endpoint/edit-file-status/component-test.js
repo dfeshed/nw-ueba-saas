@@ -3,8 +3,6 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import Service from '@ember/service';
-import { computed } from '@ember/object';
 import { patchFlash } from '../../../../helpers/patch-flash';
 
 module('Integration | Component | endpoint/edit-file-status', function(hooks) {
@@ -13,11 +11,8 @@ module('Integration | Component | endpoint/edit-file-status', function(hooks) {
   hooks.beforeEach(function() {
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
-    this.owner.register('service:accessControl', Service.extend({
-      endpointCanManageFiles: computed(function() {
-        return true;
-      })
-    }));
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', ['endpoint-server.agent.manage']);
   });
 
   test('Renders the edit file-status button', async function(assert) {
@@ -42,8 +37,6 @@ module('Integration | Component | endpoint/edit-file-status', function(hooks) {
   });
 
   test('it should call the external function when single selection', async function(assert) {
-    const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', true);
     assert.expect(2);
     this.set('itemList', new Array(1));
     this.set('getSavedFileStatus', function(selections) {
@@ -88,7 +81,7 @@ module('Integration | Component | endpoint/edit-file-status', function(hooks) {
   test('when there is no endpoint manage permission, error occurs', async function(assert) {
     // assert.expect(0);
     const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFiles', false);
+    accessControl.set('roles', []);
     this.set('itemList', new Array(1));
     this.set('getSavedFileStatus', function(selections) {
       assert.equal(selections.length, 1);

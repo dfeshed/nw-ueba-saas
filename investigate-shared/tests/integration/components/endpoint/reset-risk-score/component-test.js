@@ -51,13 +51,13 @@ module('Integration | Component | endpoint/reset-risk-score', function(hooks) {
   test('it renders reset risk score button and info message is present', async function(assert) {
     this.set('buttonType', 'button');
     this.set('showResetScoreModal', true);
-    this.set('isMaxResetRiskScoreLimit', true);
+    this.set('selectedList', new Array(101));
     await render(hbs`
       <div id='modalDestination'></div>
       {{endpoint/reset-risk-score
         buttonType=buttonType
         showResetScoreModal=showResetScoreModal
-        isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
+        selectedList=selectedList
       }}
     `);
     await click('.reset-score-button');

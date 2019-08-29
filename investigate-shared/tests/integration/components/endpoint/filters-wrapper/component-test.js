@@ -66,7 +66,7 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
     const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFilter', true);
+    accessControl.set('roles', ['endpoint-server.filter.manage']);
   });
 
   test('It renders the rsa-data-filters', async function(assert) {
@@ -346,7 +346,7 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     this.set('filterState', { filter: {}, expressionList: [] });
     this.set('filterTypes', FILTER_TYPE);
     const accessControl = this.owner.lookup('service:accessControl');
-    accessControl.set('endpointCanManageFilter', false);
+    accessControl.set('roles', []);
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
       const expectedMsg = translation.t('dataFilters.accessError');

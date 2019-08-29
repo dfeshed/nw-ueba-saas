@@ -23,6 +23,7 @@ import {
   setFileContextFileStatus,
   getFileContextFileStatus,
   retrieveRemediationStatus,
+  downloadProcessDump,
   downloadFilesToServer,
   setRowSelection
 } from 'investigate-hosts/actions/data-creators/file-context';
@@ -30,8 +31,8 @@ import {
 import { getFileAnalysisData, saveLocalFileCopy } from 'investigate-shared/actions/data-creators/file-analysis-creators';
 
 import { serviceId, timeRange } from 'investigate-shared/selectors/investigate/selectors';
-import { success, failure, warning } from 'investigate-shared/utils/flash-messages';
-import { resetRiskScore, getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
+import { success } from 'investigate-shared/utils/flash-messages';
+import { getUpdatedRiskScoreContext } from 'investigate-shared/actions/data-creators/risk-creators';
 import { riskState } from 'investigate-hosts/reducers/visuals/selectors';
 import { componentSelectionForFileType } from 'investigate-shared/utils/file-analysis-view-util';
 
@@ -66,9 +67,9 @@ const dispatchToActions = {
   setFileContextFileStatus,
   getFileContextFileStatus,
   retrieveRemediationStatus,
+  downloadProcessDump,
   downloadFilesToServer,
   getFileAnalysisData,
-  resetRiskScore,
   setHostDetailPropertyTab,
   getUpdatedRiskScoreContext,
   saveLocalFileCopy,
@@ -103,12 +104,27 @@ const ContextWrapper = Component.extend({
     });
   },
 
+  @computed('tabName')
+  showDownloadProcessDump(tabName) {
+    const tabsWithDownloadProcessDump = ['LIBRARY', 'IMAGEHOOK', 'THREAD'];
+    return tabsWithDownloadProcessDump.some((tab) => {
+      return tab === tabName;
+    });
+  },
+
   actions: {
 
     onPropertyPanelClose(side) {
       if (side === 'right') {
         this.send('setRowSelection', this.get('tabName'), null, null);
       }
+    },
+
+    onDownloadProcessDump() {
+      const fileContextSelections = this.get('fileContextSelections');
+      const callBackOptions = this.get('callBackOptions')(this);
+      const agentId = this.get('agentId');
+      this.send('downloadProcessDump', agentId, fileContextSelections, callBackOptions);
     },
 
     onDownloadFilesToServer() {
@@ -130,21 +146,6 @@ const ContextWrapper = Component.extend({
       const fileFormat = componentSelectionForFileType(format).format;
 
       this.send('getFileAnalysisData', checksumSha256, fileFormat, serviceId, callBackOptions);
-    },
-
-    resetRiskScoreAction(itemsList) {
-      const callBackOptions = {
-        onSuccess: (response) => {
-          const { data } = response;
-          if (data === itemsList.length) {
-            success('investigateFiles.riskScore.success');
-          } else {
-            warning('investigateFiles.riskScore.warning');
-          }
-        },
-        onFailure: () => failure('investigateFiles.riskScore.error')
-      };
-      this.send('resetRiskScore', itemsList, 'FILE', callBackOptions);
     }
   }
 

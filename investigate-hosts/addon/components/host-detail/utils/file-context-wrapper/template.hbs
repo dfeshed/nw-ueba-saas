@@ -5,9 +5,8 @@
         onSaveFileStatus = (action 'setFileContextFileStatus' tabName selectedFileChecksums fileContextSelections)
         getSavedFileStatus = (action 'getFileContextFileStatus' tabName)
         retrieveRemediationStatus=(action 'retrieveRemediationStatus' tabName)
-        resetRiskScore = (action 'resetRiskScoreAction')
         metaName='checksumSha256'
-        showResetRiskScore=false
+        showDownloadProcessDump=showDownloadProcessDump
         hostName=hostName
         isRemediationAllowed=isRemediationAllowed
         itemList=fileContextSelections
@@ -17,6 +16,7 @@
         timeRange=timeRange
         isFloatingOrMemoryDll=isFloatingOrMemoryDll
         fileDownloadButtonStatus=fileDownloadButtonStatus
+        downloadProcessDump=(action 'onDownloadProcessDump')
         downloadFiles=(action 'onDownloadFilesToServer')
         saveLocalCopy=(action 'onSaveLocalCopy')
         analyzeFile=(action 'onAnalyzeFile')
@@ -29,8 +29,10 @@
         tabName=tabName
         columnsConfig=columnsConfig
         fileDownloadButtonStatus=fileDownloadButtonStatus
+        showDownloadProcessDump=showDownloadProcessDump
         openPropertyPanel=(action layout.open 'right')
         closePropertyPanel=(action layout.close 'right')
+        downloadProcessDump=(action 'onDownloadProcessDump')
         downloadFiles=(action 'onDownloadFilesToServer')
         saveLocalCopy=(action 'onSaveLocalCopy')
         analyzeFile=(action 'onAnalyzeFile')}}

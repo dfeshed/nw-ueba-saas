@@ -183,6 +183,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     assert.equal(findAll('.process-list-actions .pivot-to-process-analysis .rsa-form-button').length, 1, 'Analyze Process button is present');
     assert.equal(findAll('.file-status-button .rsa-form-button').length, 1, 'Edit File Status button is present.');
     assert.equal(findAll('.pivot-to-event-analysis').length, 1, 'Analyze Events button is present.');
+    assert.equal(findAll('.download-process-dump').length, 1, 'Download Process Dump to Server is present');
   });
 
   test('renders the process analysis item on click on Analyze process', async function(assert) {
@@ -267,7 +268,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
     });
   });
 
-  test('fileDownloadStatusButton when false, will show not download file options in more actions', async function(assert) {
+  test('when required permission is not present, will not show download file options in more actions', async function(assert) {
     const accessControl = this.owner.lookup('service:accessControl');
     accessControl.set('roles', []);
     new ReduxDataHelper(setState)
@@ -290,6 +291,7 @@ module('Integration | Component | endpoint host detail/process', function(hooks)
       .searchResultProcessList([])
       .build();
     await render(hbs`{{host-detail/process}}`);
+    assert.equal(findAll('.download-process-dump.is-disabled').length, 1, 'Download Process Dump to Server is disabled');
     await click('.more-action-button .rsa-form-button');
     return settled().then(() => {
       assert.equal(document.querySelectorAll('.file-action-selector-panel .rsa-dropdown-action-list li').length, 2, 'File download options are not present in more actions.');

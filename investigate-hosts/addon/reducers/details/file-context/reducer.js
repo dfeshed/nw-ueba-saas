@@ -25,7 +25,7 @@ const LOADING_STATUS = 'loading';
 
 const _toggleSelection = (state, payload) => {
   const { fileContextSelections } = state;
-  const { id, fileName, fileProperties, machineOsType, path, machineName } = payload;
+  const { id, fileName, fileProperties, machineOsType, path, machineName, pid } = payload;
   const { signature, size, checksumSha256, checksumSha1, checksumMd5, format, pe, downloadInfo = {} } = fileProperties;
   const features = pe ? pe.features : [];
   let selectedList = [];
@@ -33,7 +33,7 @@ const _toggleSelection = (state, payload) => {
   if (fileContextSelections.some((file) => file.id === id)) {
     selectedList = fileContextSelections.filter((file) => file.id !== id);
   } else {
-    selectedList = [...fileContextSelections, { machineName, id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size, machineOsType, path, downloadInfo, features, format }];
+    selectedList = [...fileContextSelections, { machineName, id, fileName, checksumSha1, checksumSha256, checksumMd5, signature, size, machineOsType, path, downloadInfo, features, format, pid }];
   }
   return state.merge({ 'fileContextSelections': selectedList, 'fileStatus': {}, isRemediationAllowed: true });
 

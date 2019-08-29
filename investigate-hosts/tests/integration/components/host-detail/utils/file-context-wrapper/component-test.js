@@ -185,6 +185,7 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     await click(findAll('.rsa-nav-tab')[1]);
     assert.equal(findAll('.rsa-nav-tab.is-active')[0].textContent.trim(), 'Local Risk Details', 'Risk details tab is selected');
     assert.equal(findAll('.risk-properties').length, 1, 'Risk properties is rendered');
+    assert.equal(findAll('.download-process-dump').length, 0, 'Download process Dmup to Server is not available in Driver tab');
   });
 
   test('property panel not rendered', async function(assert) {
@@ -192,7 +193,6 @@ module('Integration | Component | host-detail/utils/file-context-wrapper', funct
     assert.equal(findAll('.rsa-data-table').length, 1, 'Table is rendered');
     assert.equal(findAll('.host-property-panel').length, 0, 'No property panel');
     assert.equal(findAll('.file-actionbar').length, 1, 'action bar rendered');
-
   });
 
   test('Download to server websocket called', async function(assert) {

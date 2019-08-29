@@ -13,11 +13,19 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
-  test('it renders', async function(assert) {
+  test('renders default action buttons', async function(assert) {
     this.set('itemList', []);
     await render(hbs`{{endpoint/file-actionbar itemList=itemList}}`);
     assert.equal(findAll('.file-actionbar').length, 1, 'file-actionbar component has rendered.');
-    assert.equal(findAll('.file-actionbar .rsa-form-button').length, 5, 'six buttons have been rendered.');
+    assert.equal(findAll('.file-actionbar .rsa-form-button').length, 4, 'four buttons have been rendered.');
+  });
+
+  test('renders buttons when showDownloadProcessDump is true', async function(assert) {
+    this.set('itemList', []);
+    this.set('showDownloadProcessDump', true);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList showDownloadProcessDump=showDownloadProcessDump}}`);
+    assert.equal(findAll('.file-actionbar').length, 1, 'file-actionbar component has rendered.');
+    assert.equal(findAll('.file-actionbar .rsa-form-button').length, 5, '5 buttons have been rendered.');
   });
 
   test('presence of priority buttons', async function(assert) {
@@ -36,11 +44,43 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
 
   test('Buttons enabling/disabling for multiple files selection', async function(assert) {
     this.set('itemList', [{ machineOSType: 'windows' }, { machineOSType: 'windows' }]);
-    await render(hbs`{{endpoint/file-actionbar itemList=itemList}}`);
+    this.set('showDownloadProcessDump', true);
+    await render(hbs`{{endpoint/file-actionbar itemList=itemList showDownloadProcessDump=showDownloadProcessDump}}`);
     assert.equal(findAll('.file-actionbar .file-status-button')[0].classList.contains('is-disabled'), false, 'Edit file status Button is enabled when multiple files are selected.');
     assert.equal(findAll('.file-actionbar .event-analysis')[0].classList.contains('is-disabled'), true, 'Pivot-to-investigate Button is disabled when multiple files are selected.');
+    assert.equal(findAll('.file-actionbar .download-process-dump')[0].classList.contains('is-disabled'), false, 'Download process dump to server is disabled when multiple files are selected.');
     assert.equal(findAll('.file-actionbar .event-analysis')[0].title, 'Select a single file to analyze.', 'Pivot-to-investigate Button is disabled tooltip should be Select a single file to analyze.');
 
+  });
+
+  test('Click on Download Process Dump to Server calls the passed action', async function(assert) {
+    assert.expect(1);
+    this.set('itemList', [
+      { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+    ]);
+
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.endpointCanManageFiles', true);
+    this.set('showDownloadProcessDump', true);
+    this.set('downloadProcessDump', function() {
+      assert.ok('External function called on click of button');
+    });
+
+    this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
+    await render(hbs`
+      <div id='modalDestination'></div>
+      {{endpoint/file-actionbar
+        itemList=itemList
+        showIcons=false
+        selectedFileCount=2
+        accessControl=accessControl
+        downloadProcessDump=downloadProcessDump
+        showDownloadProcessDump=showDownloadProcessDump
+        fileDownloadButtonStatus=fileDownloadButtonStatus
+      }}
+    `);
+    await click('.file-actionbar .download-process-dump');
   });
 
   test('More action external lookup for google', async function(assert) {
@@ -378,13 +418,13 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     // const done = assert.async();
     this.set('itemList', [
       { machineOSType: 'windows', fileName: 'abc', checksumSha256: 'abc1', checksumSha1: 'abc2', checksumMd5: 'abcmd5' },
-      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' }
+      { machineOSType: 'windows', fileName: 'xyz', checksumSha256: 'xyz1', checksumSha1: 'xyz2', checksumMd5: 'xyzmd5' },
+      ...new Array(100)
     ]);
 
     this.set('accessControl', EmberObject.create({}));
     this.set('accessControl.endpointCanManageFiles', true);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
-    this.set('isMaxResetRiskScoreLimit', true);
     await render(hbs`
       <div id='modalDestination'></div>
       {{endpoint/file-actionbar
@@ -394,7 +434,6 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
         showResetRiskScore=true
         accessControl=accessControl
         fileDownloadButtonStatus=fileDownloadButtonStatus
-        isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
       }}
     `);
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
@@ -413,7 +452,6 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     this.set('accessControl', EmberObject.create({}));
     this.set('accessControl.endpointCanManageFiles', true);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
-    this.set('isMaxResetRiskScoreLimit', false);
     await render(hbs`
       <div id='modalDestination'></div>
       {{endpoint/file-actionbar
@@ -423,7 +461,6 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
         selectedFileCount=2
         accessControl=accessControl
         fileDownloadButtonStatus=fileDownloadButtonStatus
-        isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
       }}
     `);
     assert.equal(findAll('.more-action-button')[0].classList.contains('is-disabled'), false, 'More action button should enable.');
@@ -441,7 +478,6 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     this.set('accessControl', EmberObject.create({}));
     this.set('accessControl.endpointCanManageFiles', true);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
-    this.set('isMaxResetRiskScoreLimit', false);
     this.set('isDisplayTabLabel', true);
     this.set('tabLabel', 'test label');
     await render(hbs`{{endpoint/file-actionbar
@@ -450,7 +486,6 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
       selectedFileCount=2
       accessControl=accessControl
       fileDownloadButtonStatus=fileDownloadButtonStatus
-      isMaxResetRiskScoreLimit=isMaxResetRiskScoreLimit
       isDisplayTabLabel=isDisplayTabLabel
       tabLabel=tabLabel
     }}`);
@@ -466,7 +501,6 @@ module('Integration | Component | endpoint/file-actionbar', function(hooks) {
     this.set('accessControl', EmberObject.create({}));
     this.set('accessControl.endpointCanManageFiles', true);
     this.set('fileDownloadButtonStatus', { isDownloadToServerDisabled: false, isSaveLocalAndFileAnalysisDisabled: true });
-    this.set('isMaxResetRiskScoreLimit', true);
     await render(hbs`{{endpoint/file-actionbar
       itemList=itemList
       showIcons=false

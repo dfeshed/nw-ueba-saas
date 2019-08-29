@@ -113,7 +113,8 @@ module('Unit | Reducers | File Context', function() {
   test('TOGGLE_FILE_CONTEXT_ROW_SELECTION should toggle the selected driver', function(assert) {
     const previous = Immutable.from({
       selectedRowId: '123',
-      fileContextSelections: []
+      fileContextSelections: [],
+      pid: 1
     });
     const driver = {
       id: 0,
@@ -127,11 +128,13 @@ module('Unit | Reducers | File Context', function() {
         signature: {
           thumbprint: 1
         }
-      }
+      },
+      pid: 4200
     };
     let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_FILE_CONTEXT_ROW_SELECTION, payload: driver, meta: { belongsTo: 'DRIVER' } });
     assert.equal(result.fileContextSelections.length, 1);
     assert.equal(result.fileContextSelections[0].id, 0);
+    assert.equal(result.fileContextSelections[0].pid, 4200);
     const next = Immutable.from({
       selectedRowId: '123',
       fileContextSelections: [driver]
