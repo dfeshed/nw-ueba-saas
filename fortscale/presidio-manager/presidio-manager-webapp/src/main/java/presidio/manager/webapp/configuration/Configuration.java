@@ -34,6 +34,10 @@ public class Configuration extends SecureConfiguration {
         this.dataPulling = dataPulling;
     }
 
+    public SecureConfiguration toSecureConfiguration() {
+        return new SecureConfiguration(getDataPipeline(), getOutputForwarding(), getUiIntegration());
+    }
+
     @Override
     public Properties toProperties() {
         Properties properties = new Properties();
