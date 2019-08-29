@@ -165,7 +165,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
             softly.assertThat(actual).extracting("sslSubject").as("sslSubject").containsOnlyNulls();
             softly.assertThat(actual).extracting("ja3").as("ja3").containsOnlyNulls();
             softly.assertThat(actual).extracting("ja3s").as("Ja3s").containsOnlyNulls();
-            softly.assertThat(actual).extracting("sslCas").as("SslCas").containsOnlyNulls();
+            softly.assertThat(actual.stream().flatMap(e -> e.getSslCas().stream())).as("SslCas").containsOnlyNulls();
         }
 
         void assertAll() {
