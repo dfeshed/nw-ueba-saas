@@ -1884,6 +1884,23 @@ indicators:
     featureName: sumOfBytesSentToNewDomainSslSubjectOutboundTlsHourly
   classification: data_exfiltration
 
+- id: sumOfBytesSentToNewDstOrgScoresSumSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_to_new_dst_org_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - dstOrg.name
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+  splitFields:
+    - dstOrg.name
+  historicalData:
+    type: hourly_aggregations
+    featureName: sumOfBytesSentToNewDstOrgSslSubjectOutboundTlsHourly
+  classification: data_exfiltration
 
 #***************************************
 #*                ja3                  *
