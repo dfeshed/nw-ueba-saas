@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.annotation.Generated;
+import java.util.Properties;
 
 @Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2019-04-15T00:00:00.000Z")
 public class Configuration extends SecureConfiguration {
@@ -31,6 +32,14 @@ public class Configuration extends SecureConfiguration {
 
     public void setDataPulling(DataPullingConfiguration dataPulling) {
         this.dataPulling = dataPulling;
+    }
+
+    @Override
+    public Properties toProperties() {
+        Properties properties = new Properties();
+        properties.putAll(super.toProperties());
+        dataPulling.toProperties().forEach((key, value) -> properties.put("dataPulling." + key, value));
+        return properties;
     }
 
     @Override
