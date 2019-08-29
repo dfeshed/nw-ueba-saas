@@ -8,7 +8,6 @@ import com.rsa.netwitness.presidio.automation.domain.repository.TlsEnrichStoredD
 import com.rsa.netwitness.presidio.automation.domain.tls.TlsEnrichStoredData;
 import com.rsa.netwitness.presidio.automation.utils.adapter.config.AdapterTestManagerConfig;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -69,7 +68,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         assertHelper.assertAll();
     }
 
-    @Ignore("ASOC-81706")
+    @Test
     public void duplicated_sessions_in_the_middle() {
         AssertHelper assertHelper = new AssertHelper();
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.duplicatedSessionsInTheMiddleTestDataParams;
@@ -110,7 +109,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         assertHelper.assertAll();
     }
 
-    @Ignore("ASOC-81706")
+    @Test
     public void multiple_sessions_with_missing_zero_session() {
         AssertHelper assertHelper = new AssertHelper();
         SessionSplitEnrichmentData.TestDataParameters expected = SessionSplitEnrichmentData.newSessionOpenedAndZeroEventIsMissing;
@@ -136,6 +135,7 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         softly.assertThat(actual).extracting("sslSubject").containsOnlyNulls();
         softly.assertThat(actual).extracting("ja3").containsOnlyNulls();
         softly.assertThat(actual).extracting("ja3s").containsOnly(expected.ja3s);
+        softly.assertThat(actual).flatExtracting("sslCas").as("SslCas").containsOnly(expected.sslCa);
 
         softly.assertAll();
     }
@@ -155,17 +155,17 @@ public class TlsSessionSplitTest extends AbstractTestNGSpringContextTests {
         private SoftAssertions softly = new SoftAssertions();
 
         void assertEnrichmentFieldsMatchExpected(List<TlsEnrichStoredData> actual, SessionSplitEnrichmentData.TestDataParameters expected) {
-            softly.assertThat(actual).extracting("sslSubject.name").containsOnly(expected.sslSubject);
-            softly.assertThat(actual).extracting("ja3.name").containsOnly(expected.ja3);
-            softly.assertThat(actual).extracting("ja3s").containsOnly(expected.ja3s);
-            // todo: softly.assertThat(actual).extracting("sslCa").containsOnly(expected.sslCa);
+            softly.assertThat(actual.stream().map(e -> e.getSslSubject().getName())).as("SslSubject").containsOnly(expected.sslSubject);
+            softly.assertThat(actual.stream().map(e -> e.getJa3().getName())).as("Ja3").containsOnly(expected.ja3);
+            softly.assertThat(actual).extracting("ja3s").as("Ja3s").containsOnly(expected.ja3s);
+            softly.assertThat(actual).flatExtracting("sslCas").as("SslCas").containsOnly(expected.sslCa);
         }
 
         void assertEnrichmentFieldsAreNull(List<TlsEnrichStoredData> actual) {
-            softly.assertThat(actual).extracting("sslSubject.name").containsOnlyNulls();
-            softly.assertThat(actual).extracting("ja3.name").containsOnlyNulls();
-            softly.assertThat(actual).extracting("ja3s").containsOnlyNulls();
-            // todo: softly.assertThat(actual).extracting("sslCa").containsOnlyNulls();
+            softly.assertThat(actual).extracting("sslSubject").as("sslSubject").containsOnlyNulls();
+            softly.assertThat(actual).extracting("ja3").as("ja3").containsOnlyNulls();
+            softly.assertThat(actual).extracting("ja3s").as("Ja3s").containsOnlyNulls();
+            softly.assertThat(actual).extracting("sslCas").as("SslCas").containsOnlyNulls();
         }
 
         void assertAll() {
