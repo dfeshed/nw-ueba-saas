@@ -1,0 +1,9 @@
+{
+  "type": "pattern-replacement-transformer",
+  "inputFieldName": "inputFieldName",
+  "outputFieldName": "outputFieldName",
+  "pattern": "pattern",
+  "replacement": "repl",
+  "preReplacementCondition": "bla",
+  "postReplacementCondition": "blue"
+}

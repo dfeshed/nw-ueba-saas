@@ -11,14 +11,12 @@ import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;
 
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by Efrat Noam on 11/8/17.
  */
 @RunWith(SpringRunner.class)
-public class PatternReplacementTransformerTest {
+public class PatternReplacementTransformerTest extends TransformerJsonTest {
 
     @Test
     public void testTransformAuthenticationEventResolvedSrcMachineName() {
@@ -32,9 +30,9 @@ public class PatternReplacementTransformerTest {
                         AuthenticationTransformerManager.CLUSTER_POST_REPLACEMENT_CONDITION);
 
         AuthenticationRawEvent authRawEvent = createAuthenticationEvent(Instant.now(), "dwef043.fortscale.com");
-        List<AbstractInputDocument> transformedEvents = patternReplacementTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authRawEvent)));
+        AbstractInputDocument transformedEvents = patternReplacementTransformer.transform(new AuthenticationTransformedEvent(authRawEvent));
 
-        Assert.assertEquals("dwef.fortscale.com", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
+        Assert.assertEquals("dwef.fortscale.com", ((AuthenticationTransformedEvent) transformedEvents).getSrcMachineCluster());
     }
 
     private AuthenticationRawEvent createAuthenticationEvent(Instant eventDate, String srcMachineName) {
@@ -54,5 +52,15 @@ public class PatternReplacementTransformerTest {
                 "dstMachineName",
                 "dstMachineDomain",
                 "resultCode", "site", "country", "city");
+    }
+
+    @Override
+    String getResourceFilePath() {
+        return "PatternReplacementTransformer.json";
+    }
+
+    @Override
+    Class getTransformerClass() {
+        return PatternReplacementTransformer.class;
     }
 }
