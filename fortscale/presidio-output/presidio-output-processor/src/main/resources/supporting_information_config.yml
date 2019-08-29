@@ -1805,6 +1805,25 @@ indicators:
     featureName: maxSumOfBytesSentBySrcIpToNewDomainSslSubjectOutboundTlsHourly
   classification: data_exfiltration
 
+- id: maxSumOfBytesSentBySrcIpToNewDstOrgScoresSumSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_by_src_ip_to_new_dst_org_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - dstOrg.name
+    - sslSubject.name
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+  splitFields:
+    - dstOrg.name
+  historicalData:
+    type: hourly_aggregations
+    featureName: maxSumOfBytesSentBySrcIpToNewDstOrgSslSubjectOutboundTlsHourly
+  classification: data_exfiltration
+
 #***************************************
 #*                ja3                  *
 #***************************************

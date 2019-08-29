@@ -259,6 +259,32 @@
           }
         }
       ]
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToNewDstOrgScoresSumSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "aggr_event.maxSumOfBytesSentBySrcIpToNewDstOrgSslSubjectOutboundTlsHourly"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "maxSumOfBytesSentBySrcIpToNewDstOrgScoresSum",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstOrg.name"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
     }
   ]
 }
