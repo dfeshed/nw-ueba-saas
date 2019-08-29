@@ -16,7 +16,7 @@ class ParametersUrlBuilder extends PresidioUrl {
 
     // pageSize=10000&pageNumber=0&expand=true
     // sortDirection=DESC&sortFieldNames=START_DATE&pageSize=200&pageNumber=0
-    public static class Builder {
+    static class Builder {
 
         private StringBuilder URL = new StringBuilder();
 

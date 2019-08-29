@@ -2,7 +2,7 @@ package com.rsa.netwitness.presidio.automation.test.data.processing;
 
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
-import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
 import com.rsa.netwitness.presidio.automation.utils.common.ASCIIArtGenerator;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputDataProcessingHelper;
 import org.json.JSONException;
@@ -68,7 +68,7 @@ public class OutputRunPrepareData extends AbstractTestNGSpringContextTests {
     @Test
     public void calcUserScore() {
         RestHelper restHelper = new RestHelper();
-        ParametersUrlBuilder url = restHelper.alerts().url().withNoParameters();
+        PresidioUrl url = restHelper.alerts().url().withNoParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         assertThat(alerts)

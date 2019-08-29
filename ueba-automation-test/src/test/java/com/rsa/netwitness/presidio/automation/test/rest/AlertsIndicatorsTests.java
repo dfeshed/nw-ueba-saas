@@ -10,7 +10,7 @@ import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.mapping.indicators.IndicatorsInfo;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
-import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestsUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.json.JSONArray;
@@ -66,7 +66,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
     @BeforeClass
     public void preconditionCheckAndPrepare() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         allAlerts = restHelper.alerts().request().getAlerts(url);
         assertThat(allAlerts)
                 .as(url + "\nAlerts list is empty or unable to getOperationTypeToCategoryMap response from the output.")
@@ -78,7 +78,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void all_mandatory_indicators_from_static_list_are_present() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         assertThat(allActualIndicatorNames)
                 .as(url + "\nIndicators are missing in alerts")
                 .doesNotHaveDuplicates()
@@ -88,7 +88,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     @Test
     public void alerts_count_result_filtered_by_indicator_name_is_correct() {
         for (String indicatorName : indicatorsDistinctNames) {
-            ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndIndicatorNameParameters(indicatorName);
+            PresidioUrl url = restHelper.alerts().url().withMaxSizeAndIndicatorNameParameters(indicatorName);
             List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
             // alertIds from getAllAlerts REST call.
@@ -121,7 +121,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
             for (AlertsStoredRecord.Indicator singleIndicator : indicators) {
 
-                ParametersUrlBuilder url = restHelper.alerts().withId(alert.getId())
+                PresidioUrl url = restHelper.alerts().withId(alert.getId())
                         .indicators().withId(singleIndicator.getId())
                         .events().url().withMaxSizeParameters();
 
@@ -159,12 +159,12 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
             List<AlertsStoredRecord.Indicator> indicators = alert.getIndicatorsList();
 
             for (AlertsStoredRecord.Indicator singleIndicator : indicators) {
-                ParametersUrlBuilder indicatorUrl = restHelper.alerts().withId(alert.getId())
+                PresidioUrl indicatorUrl = restHelper.alerts().withId(alert.getId())
                         .indicators().withId(singleIndicator.getId())
                         .url()
                         .withMaxSizeParameters();
 
-                ParametersUrlBuilder indicatorEventsUrl = restHelper.alerts().withId(alert.getId())
+                PresidioUrl indicatorEventsUrl = restHelper.alerts().withId(alert.getId())
                         .indicators().withId(singleIndicator.getId())
                         .events()
                         .url()
@@ -202,7 +202,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     public void anomaly_true_indicator_count_should_be_correct_in_historical_data(String indicator) {
         String alertId = allIndicatorsTypeNameSamples.get(indicator)[0];
         String indicatorId = allIndicatorsTypeNameSamples.get(indicator)[1];
-        ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
+        PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
 
         try {
             IndicatorResult actualIndicator = getIndicatorWithHisoricalData(alertId, indicatorId);
@@ -229,7 +229,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     public void feature_aggregation_anomaly_value_should_match_historical_data_and_events_num(String indicator) {
         String alertId = featureAggregationMap.get(indicator)[0];
         String indicatorId = featureAggregationMap.get(indicator)[1];
-        ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
+        PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
 
         IndicatorResult actualIndicator = getIndicatorWithHisoricalData(alertId, indicatorId);
         List<HistoricalDataBucket> anomalyBuckets = getAnomalyHistoricalDataBuckets(actualIndicator);
@@ -279,7 +279,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
             String alertId = allIndicatorsTypeNameSamples.get(indicatorName)[0];
             String indicatorId = allIndicatorsTypeNameSamples.get(indicatorName)[1];
             JSONArray events = getEvents(alertId, indicatorId);
-            ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId)
+            PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId)
                     .events().url().withMaxSizeParameters();
 
             for (int i = 0; i < events.length(); i++) {
@@ -302,7 +302,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     public void indicator_schema_name_should_match_static_map(String indicatorName) {
         String alertId = allIndicatorsTypeNameSamples.get(indicatorName)[0];
         String indicatorId = allIndicatorsTypeNameSamples.get(indicatorName)[1];
-        ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
+        PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
         IndicatorResult indicator = getIndicator(alertId, indicatorId);
         String expectedSchema = IndicatorsInfo.getSchemaNameByIndicator(indicatorName).toUpperCase();
         assertThat(indicator.schema)
@@ -315,7 +315,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     public void event_count_of_static_indicator_should_match_indicator_events_response(String indicator) {
         String alertId = staticIndicatorMap.get(indicator)[0];
         String indicatorId = staticIndicatorMap.get(indicator)[1];
-        ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
+        PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
         JSONObject indicatorData = restHelper.alerts().request().getRestApiResponseAsJsonObj(url);
 
         try {
@@ -350,7 +350,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void static_indicator_name_should_appear_only_once_in_alert() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         for (AlertsStoredRecord alert : alerts) {
             List<AlertsStoredRecord.Indicator> indicators = alert.getIndicatorsList();
@@ -401,7 +401,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void score_aggregation_indicator_is_unique_by_alertId_name_anomalyValue_and_context() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         for (AlertsStoredRecord alert : alerts) {
             List<AlertsStoredRecord.Indicator> indicators = alert.getIndicatorsList();
@@ -480,7 +480,7 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     }
 
     private JSONArray getEvents(String alertId, String indicatorId) {
-        ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId)
+        PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId)
                 .events().url().withMaxSizeParameters();
 
         JSONObject indicatorsEvents = restHelper.alerts().request().getRestApiResponseAsJsonObj(url);
@@ -489,14 +489,14 @@ public class AlertsIndicatorsTests extends AbstractTestNGSpringContextTests {
     }
 
     private IndicatorResult getIndicator(String alertId, String indicatorId) {
-        ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
+        PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withNoParameters();
         RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
         assertThat(response).as(url + "\nnull response").isNotNull();
         return new IndicatorResult(new Gson().fromJson(response.getResultBody(), JsonElement.class));
     }
 
     private IndicatorResult getIndicatorWithHisoricalData(String alertId, String indicatorId) {
-        ParametersUrlBuilder url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
+        PresidioUrl url = restHelper.alerts().withId(alertId).indicators().withId(indicatorId).url().withExpandedParameter();
         RestApiResponse response = restHelper.alerts().request().getRestApiResponse(url);
         assertThat(response).as(url + "\nnull response").isNotNull();
         return new IndicatorResult(new Gson().fromJson(response.getResultBody(), JsonElement.class));

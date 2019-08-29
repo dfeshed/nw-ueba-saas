@@ -5,7 +5,7 @@ import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord
 import com.rsa.netwitness.presidio.automation.domain.repository.*;
 import com.rsa.netwitness.presidio.automation.mongo.SmartHourlyEntitiesHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
-import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
 import com.rsa.netwitness.presidio.automation.utils.output.OutputTestManager;
 import org.assertj.core.api.SoftAssertions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +60,7 @@ public class E2EMongoRestValidation extends AbstractTestNGSpringContextTests {
 
     private RestHelper restHelper = new RestHelper();
     private SmartHourlyEntitiesHelper entitiesHelper;
-    private ParametersUrlBuilder allEntitiesUrl = restHelper.entities().url().withMaxSizeParameters();
+    private PresidioUrl allEntitiesUrl = restHelper.entities().url().withMaxSizeParameters();
     private List<EntitiesStoredRecord> restEntities;
 
     @Parameters({"outputProcessingStartDaysBack", "outputProcessingEndDaysBack", "historical_days_back"})

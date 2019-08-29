@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
 import com.rsa.netwitness.presidio.automation.rest.helper.RestHelper;
-import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
 import org.assertj.core.api.Fail;
 import org.assertj.core.api.SoftAssertions;
 import org.json.JSONObject;
@@ -38,7 +38,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
 
     @BeforeClass
     public void preconditionCheck() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withNoParameters();
+        PresidioUrl url = restHelper.alerts().url().withNoParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         assertThat(alerts)
                 .as(url + "\nAlerts list is empty or unable to getOperationTypeToCategoryMap response from the output.")
@@ -54,7 +54,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void sort_by_start_date_desc_result_is_correct() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndSortedParameters("DESC", "START_DATE");
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndSortedParameters("DESC", "START_DATE");
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         assertThat(alerts)
                 .as(url + "\nEmpty response.")
@@ -72,7 +72,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void sort_by_end_date_asc_result_is_correct() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndSortedParameters("ASC", "END_DATE");
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndSortedParameters("ASC", "END_DATE");
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         assertThat(alerts)
                 .as(url + "\nEmpty response.")
@@ -99,7 +99,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
             maxScore = getValuesForMinMaxScoreTest(distinctScoresSorted).get("maxScore");
         }
 
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndSortedAscAndMinMaxScoreParameters(minScore, maxScore);
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndSortedAscAndMinMaxScoreParameters(minScore, maxScore);
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         assertThat(parseInt(alerts.get(0).getScore()))
@@ -122,7 +122,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
             minScore = getValuesForMinMaxScoreTest(distinctScoresSorted).get("minScore");
         }
 
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndSortedAscAndMinScoreParameters(minScore);
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndSortedAscAndMinScoreParameters(minScore);
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         assertThat(parseInt(alerts.get(0).getScore()))
@@ -141,7 +141,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
             maxScore = getValuesForMinMaxScoreTest(distinctScoresSorted).get("maxScore");
         }
 
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndSortedAscAndMaxScoreParameters(maxScore);
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndSortedAscAndMaxScoreParameters(maxScore);
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         assertThat(parseInt(alerts.get(alerts.size()-1).getScore()))
@@ -151,7 +151,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void filter_by_entity_name_result_is_correct() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         long distinctEntitySize = alerts.stream()
                 .map(AlertsStoredRecord::getEntityName)
@@ -180,7 +180,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void filter_by_missing_entity_returns_null() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withEntityNamesParameters("abcdefgNotExist");
+        PresidioUrl url = restHelper.alerts().url().withEntityNamesParameters("abcdefgNotExist");
         RestApiResponse restApiResponse = restHelper.alerts().request().getRestApiResponse(url);
         assertThat(restApiResponse)
                 .as(url + "should return null instead of an empty list")
@@ -189,7 +189,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void filter_by_severity_result_is_correct() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
         long distinctSeveritySize = alerts.stream()
                 .map(AlertsStoredRecord::getSeverity)
@@ -219,7 +219,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void static_only_indicators_alert_does_not_exist() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndExpendedParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         for(AlertsStoredRecord alert : alerts) {
@@ -239,7 +239,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void aggregate_by_severity_result_is_correct() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         Map<String, Long> countBySeverity = alerts.stream()
@@ -273,7 +273,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void aggregate_by_feedback_result_is_correct() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeParameters();
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeParameters();
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         Map<String, Long> countBySeverity = alerts.stream()
@@ -309,7 +309,7 @@ public class AlertsRestQueriesTest extends AbstractTestNGSpringContextTests {
 
 
     private List<Integer> getAlertsDistinctSortedScores() {
-        ParametersUrlBuilder url = restHelper.alerts().url().withMaxSizeAndSortedParameters("ASC", "SCORE");
+        PresidioUrl url = restHelper.alerts().url().withMaxSizeAndSortedParameters("ASC", "SCORE");
         List<AlertsStoredRecord> alerts = restHelper.alerts().request().getAlerts(url);
 
         assertThat(alerts)
