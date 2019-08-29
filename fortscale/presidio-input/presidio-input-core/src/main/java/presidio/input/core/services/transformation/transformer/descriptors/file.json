@@ -1,0 +1,29 @@
+[
+  {
+    "type": "folder-path-by-operation-type-transformer",
+    "inputPathFieldName": "srcFilePath",
+    "filePathFieldName": "srcFilePath",
+    "folderPathFieldName": "srcFolderPath",
+    "operationTypeFieldName": "operationType"
+  },
+  {
+    "type": "folder-path-by-operation-type-transformer",
+    "inputPathFieldName": "dstFilePath",
+    "filePathFieldName": "dstFilePath",
+    "folderPathFieldName": "dstFolderPath",
+    "operationTypeFieldName": "operationType"
+  },
+  {
+    "type": "operation-type-categories-transformer",
+    "schema": "file",
+    "inputOperationTypeFieldName": "operationType",
+    "inputOperationTypeCategoriesFieldName": "operationTypeCategories",
+    "outputOperationTypeCategoriesFieldName": "operationTypeCategories"
+  },
+  {
+    "type": "operation-type-categories-hierarchy-transformer",
+    "schema": "file",
+    "inputFieldName": "operationTypeCategories",
+    "outputFieldName": "operationTypeCategories"
+  }
+]
