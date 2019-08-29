@@ -1,5 +1,6 @@
 package com.rsa.netwitness.presidio.automation.rest.helper.builders.url;
 
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlHelper;
 import com.rsa.netwitness.presidio.automation.rest.helper.rest.AlertsRestCallHelper;
 
 public class AlertsUrlBuilder extends UrlBase {
@@ -14,5 +15,9 @@ public class AlertsUrlBuilder extends UrlBase {
 
     public AlertsRestCallHelper request() {
         return new AlertsRestCallHelper();
+    }
+
+    public ParametersUrlHelper url() {
+        return new ParametersUrlHelper(URL);
     }
 }

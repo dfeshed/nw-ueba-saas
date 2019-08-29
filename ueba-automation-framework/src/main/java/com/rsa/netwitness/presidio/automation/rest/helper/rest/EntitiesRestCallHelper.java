@@ -4,7 +4,7 @@ import com.rsa.netwitness.presidio.automation.domain.output.AlertsStoredRecord;
 import com.rsa.netwitness.presidio.automation.domain.output.EntitiesStoredRecord;
 import com.rsa.netwitness.presidio.automation.rest.client.RestAPI;
 import com.rsa.netwitness.presidio.automation.rest.client.RestApiResponse;
-import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.ParametersUrlBuilder;
+import com.rsa.netwitness.presidio.automation.rest.helper.builders.params.PresidioUrl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +20,7 @@ public class EntitiesRestCallHelper implements IRestCallHelper{
     private static ch.qos.logback.classic.Logger LOGGER = (ch.qos.logback.classic.Logger)
             LoggerFactory.getLogger(EntitiesRestCallHelper.class.getName());
 
-    public List<EntitiesStoredRecord> getEntities(ParametersUrlBuilder parametersUrlBuilder) {
+    public List<EntitiesStoredRecord> getEntities(PresidioUrl parametersUrlBuilder) {
 
         String URL = parametersUrlBuilder.toString();
 

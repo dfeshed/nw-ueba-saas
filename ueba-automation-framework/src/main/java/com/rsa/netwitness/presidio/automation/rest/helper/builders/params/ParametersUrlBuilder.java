@@ -7,12 +7,10 @@ import java.io.UnsupportedEncodingException;
 import static java.net.URLEncoder.encode;
 
 
-public class ParametersUrlBuilder {
-
-    private final String URL;
+class ParametersUrlBuilder extends PresidioUrl {
 
     private ParametersUrlBuilder(String url) {
-        URL = url;
+        super(url);
     }
 
 
@@ -103,10 +101,4 @@ public class ParametersUrlBuilder {
             return new ParametersUrlBuilder(URL.toString().substring(0, URL.length()-1));
         }
     }
-
-    @Override
-    public String toString() {
-        return URL;
-    }
-
 }
