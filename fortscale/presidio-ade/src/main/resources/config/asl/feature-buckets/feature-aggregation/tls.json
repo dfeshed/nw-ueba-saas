@@ -765,6 +765,45 @@
           }
         }
       ]
+    },
+    {
+      "name": "numOfBytesSentBySrcIpSummationNewDstPortSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstPort.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstPort.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentBySrcIpSummation",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ],
+            "incrementBy": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
     }
   ]
 }
