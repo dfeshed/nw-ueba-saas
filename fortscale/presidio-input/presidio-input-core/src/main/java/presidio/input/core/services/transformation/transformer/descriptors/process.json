@@ -1,0 +1,14 @@
+[
+  {
+    "type": "join-transformer",
+    "inputFieldNames": ["srcProcessDirectory", "srcProcessFileName"],
+    "outputFieldName": "srcProcessFilePath",
+    "delimiter": "\\"
+  },
+  {
+    "type": "join-transformer",
+    "inputFieldNames": ["dstProcessDirectory", "dstProcessFileName"],
+    "outputFieldName": "dstProcessFilePath",
+    "delimiter": "\\"
+  }
+]
