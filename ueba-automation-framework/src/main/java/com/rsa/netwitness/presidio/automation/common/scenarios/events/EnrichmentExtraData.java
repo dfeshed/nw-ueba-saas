@@ -24,8 +24,8 @@ public class EnrichmentExtraData {
         SingleUserGenerator userGenerator = new SingleUserGenerator(user);
 
         ITimeGenerator myTimeGenerator =
-                new MinutesIncrementTimeGenerator(LocalTime.of(8, 30), LocalTime.of(16, 30),
-                        60, 5, 2);
+                new MinutesIncrementTimeGenerator(LocalTime.of(8, 30), LocalTime.of(9, 0),
+                        60, 2, 2);
 
         List<FileEvent> events = FileOperationActions.getFileOperation(FILE_OPERATION_TYPE.FILE_MODIFIED, eventIdGen, myTimeGenerator, userGenerator);
         events.addAll(FileOperationActions.getFileOperation(FILE_OPERATION_TYPE.FILE_WRITE_OWNER_PERMISSION_CHANGED, eventIdGen, myTimeGenerator, userGenerator));

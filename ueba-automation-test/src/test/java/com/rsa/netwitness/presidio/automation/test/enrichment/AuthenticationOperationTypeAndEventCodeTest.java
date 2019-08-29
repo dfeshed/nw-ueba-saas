@@ -40,8 +40,6 @@ public class AuthenticationOperationTypeAndEventCodeTest extends AbstractTestNGS
     private SoftAssertions softly = new SoftAssertions();
 
     private Map<String, ArrayList<String>> expectedEventCodeToOperationTypes = Stream.of(
-            // todo: ask about:
-            // newHashMap("4776", newArrayList("CREDENTIAL_VALIDATION")),
             newHashMap("rsaacesrv", newArrayList("MFA")),
             newHashMap("4648", newArrayList("EXPLICIT_CREDENTIALS_LOGON")),
             newHashMap("4769", newArrayList("CREDENTIAL_VALIDATION")),
