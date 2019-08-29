@@ -88,7 +88,7 @@
         </li>
       {{else if (eq fileAction.name 'resetRiskScore')}}
         <hr class="divider actionSeperator">
-        <li class="{{if isEditStatusButtonDisabled 'disabled'}}" {{action 'onResetAction'}}>{{fileAction.title}}</li>
+        <li test-id="{{fileAction.name}}" class="{{if isEditStatusButtonDisabled 'disabled'}}" {{action 'onResetAction'}}>{{fileAction.title}}</li>
       {{else}}
         {{#if (eq fileAction.name 'downloadToServer')}}
           <hr class="divider actionSeperator">
