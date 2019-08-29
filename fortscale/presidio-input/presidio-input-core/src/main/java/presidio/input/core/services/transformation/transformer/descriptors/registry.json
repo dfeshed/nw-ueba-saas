@@ -1,0 +1,8 @@
+[
+  {
+    "type": "join-transformer",
+    "inputFieldNames": ["processDirectory", "processFileName"],
+    "outputFieldName": "processFilePath",
+    "delimiter": "\\"
+  }
+]
