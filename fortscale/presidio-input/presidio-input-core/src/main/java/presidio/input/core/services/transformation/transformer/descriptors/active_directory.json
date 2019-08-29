@@ -1,0 +1,15 @@
+[
+  {
+    "type": "operation-type-categories-transformer",
+    "schema": "active_directory",
+    "inputOperationTypeFieldName": "operationType",
+    "inputOperationTypeCategoriesFieldName": "operationTypeCategories",
+    "outputOperationTypeCategoriesFieldName": "operationTypeCategories"
+  },
+  {
+    "type": "operation-type-categories-hierarchy-transformer",
+    "schema": "active_directory",
+    "inputFieldName": "operationTypeCategories",
+    "outputFieldName": "operationTypeCategories"
+  }
+]

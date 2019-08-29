@@ -1,0 +1,51 @@
+[
+  {
+    "type": "machine-name-transformer",
+    "inputFieldName": "srcMachineName",
+    "outputFieldName": "srcMachineCluster",
+    "pattern": "[0-9]",
+    "replacement": "",
+    "preReplacementCondition": null,
+    "postReplacementCondition": "(.*[a-zA-Z]){5}.*"
+  },
+  {
+    "type": "machine-name-transformer",
+    "inputFieldName": "dstMachineName",
+    "outputFieldName": "dstMachineCluster",
+    "pattern": "[0-9]",
+    "replacement": "",
+    "preReplacementCondition": null,
+    "postReplacementCondition": "(.*[a-zA-Z]){5}.*"
+  },
+  {
+    "type": "pattern-replacement-transformer",
+    "inputFieldName": "srcMachineId",
+    "outputFieldName": "srcMachineId",
+    "pattern": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
+    "replacement": "",
+    "preReplacementCondition": null,
+    "postReplacementCondition": null
+  },
+  {
+    "type": "pattern-replacement-transformer",
+    "inputFieldName": "dstMachineId",
+    "outputFieldName": "dstMachineId",
+    "pattern": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
+    "replacement": "",
+    "preReplacementCondition": null,
+    "postReplacementCondition": null
+  },
+  {
+    "type": "operation-type-categories-transformer",
+    "schema": "authentication",
+    "inputOperationTypeFieldName": "operationType",
+    "inputOperationTypeCategoriesFieldName": "operationTypeCategories",
+    "outputOperationTypeCategoriesFieldName": "operationTypeCategories"
+  },
+  {
+    "type": "operation-type-categories-hierarchy-transformer",
+    "schema": "active_directory",
+    "inputFieldName": "operationTypeCategories",
+    "outputFieldName": "operationTypeCategories"
+  }
+]
