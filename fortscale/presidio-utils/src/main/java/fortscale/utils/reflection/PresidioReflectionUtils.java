@@ -1,13 +1,13 @@
 package fortscale.utils.reflection;
 
-import javax.validation.constraints.NotNull;
-import org.apache.commons.lang3.Validate;
-import org.springframework.util.ReflectionUtils;
-
 import org.reflections.Reflections;
 
+import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -90,9 +90,6 @@ public class PresidioReflectionUtils {
         return allSubTypes;
     }
 
-    private static Field getAccessibleField(Class clazz, String fieldName) {
-        Field field = ReflectionUtils.findField(clazz, fieldName);
-        Validate.notNull(field, "Class %s does not contain a field named %s.", clazz.getName(), fieldName);
     private static @NotNull Leaf getLeaf(Object value, @NotNull String fieldName) {
         notNull(fieldName, NULL_FIELD_NAME_EXCEPTION_MESSAGE);
         Object parent = null;
