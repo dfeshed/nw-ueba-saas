@@ -179,6 +179,21 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_multi_key_values_max_sum_func"
       }
+    },
+    {
+      "name": "sumOfBytesSentToNewDomainScoresSumSslSubjectOutboundTlsHourly",
+      "type": "P",
+      "bucketConfName": "sumOfBytesSentToNewDomainScoresSumSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "sumOfBytesSentScoresSum"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
     }
   ]
 }

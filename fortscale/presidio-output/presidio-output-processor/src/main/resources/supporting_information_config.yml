@@ -1798,6 +1798,8 @@ indicators:
     anomalyFilters:
     - fieldName: direction
       fieldValue: OUTBOUND
+    - fieldName: domain.isNewOccurrence
+      fieldValue: true
   splitFields:
     - domain.name
   historicalData:
@@ -1817,6 +1819,8 @@ indicators:
     anomalyFilters:
     - fieldName: direction
       fieldValue: OUTBOUND
+    - fieldName: dstOrg.isNewOccurrence
+      fieldValue: true
   splitFields:
     - dstOrg.name
   historicalData:
@@ -1836,6 +1840,8 @@ indicators:
     anomalyFilters:
     - fieldName: direction
       fieldValue: OUTBOUND
+    - fieldName: dstPort.isNewOccurrence
+      fieldValue: true
   splitFields:
     - dstPort.name
   historicalData:
@@ -1854,9 +1860,30 @@ indicators:
     anomalyFilters:
     - fieldName: direction
       fieldValue: OUTBOUND
+    - fieldName: sslSubject.isNewOccurrence
+      fieldValue: true
   historicalData:
     type: hourly_aggregations
   classification: data_exfiltration
+
+- id: sumOfBytesSentToNewDomainScoresSumSslSubjectOutboundTlsHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_bytes_sent_to_new_domain_ssl_subject_outbound
+  schema: TLS
+  adeEventType: tls
+  modelContextFields:
+    - domain.name
+  anomalyDescriptior:
+    anomalyFilters:
+    - fieldName: direction
+      fieldValue: OUTBOUND
+  splitFields:
+    - domain.name
+  historicalData:
+    type: hourly_aggregations
+    featureName: sumOfBytesSentToNewDomainSslSubjectOutboundTlsHourly
+  classification: data_exfiltration
+
 
 #***************************************
 #*                ja3                  *

@@ -374,6 +374,21 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
       }
+    },
+    {
+      "name": "sumOfBytesSentToNewDomainSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationToNewDomainSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
     }
   ]
 }
