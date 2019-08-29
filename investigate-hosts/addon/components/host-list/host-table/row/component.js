@@ -39,10 +39,22 @@ export default DataTableBodyRow.extend({
       }
     }];
 
+    const systemDump = [{
+      label: 'downloadSystemDump',
+      order: 6,
+      prefix: 'investigateShared.endpoint.fileActions.',
+      action(selection, context) {
+        context.requestSystemDumpDownload();
+      },
+      disabled(selection, context) {
+        return context.get('isAgentMigrated');
+      }
+    }];
+
     const contextConf = [
       {
         label: 'resetRiskScore',
-        order: 6,
+        order: 7,
         prefix: 'investigateShared.endpoint.fileActions.',
         showDivider: true,
         action(selection, context) {
@@ -127,7 +139,7 @@ export default DataTableBodyRow.extend({
       }
     ];
     if (this.get('item').isMFTEnabled && this.get('accessControl.endpointCanManageFiles')) {
-      contextConf.push(...mft);
+      contextConf.push(...mft, ...systemDump);
     }
     return contextConf.sortBy('order');
   }

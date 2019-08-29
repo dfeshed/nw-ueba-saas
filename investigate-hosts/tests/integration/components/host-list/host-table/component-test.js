@@ -312,7 +312,7 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 6, 'Context menu rendered with 6 items with Download MFT option');
+      assert.equal(items.length, 7, 'Context menu rendered with 7 items with Download MFT option');
     });
   });
   test('Download MFT option not rendered when permissions are not there', async function(assert) {
@@ -337,7 +337,7 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     return settled().then(() => {
       const selector = '.context-menu';
       const items = findAll(`${selector} > .context-menu__item`);
-      assert.equal(items.length, 5, 'Context menu rendered with 6 items with Download MFT option');
+      assert.equal(items.length, 5, 'Context menu rendered with 5 items with Download MFT option');
     });
   });
 
@@ -494,6 +494,78 @@ module('Integration | Component | host-list/host-table', function(hooks) {
     return settled().then(() => {
       assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[0].textContent.trim(), 'Hostname');
       assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[1].textContent.trim(), 'Risk Score');
+    });
+  });
+
+
+  test('Download System dump option not rendered when criteria is not met', async function(assert) {
+
+    new ReduxDataHelper(initState)
+      .columns(endpoint.schema)
+      .hostList(hostList)
+      .hostSortField('machineIdentity.machineName')
+      .selectedHostList([])
+      .build();
+    await render(hbs`
+    <style>
+      box, section {
+        min-height: 1000px
+      }
+    </style>
+    {{host-list/host-table}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[2], 'contextmenu', e);
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 5, 'Context menu rendered with 5 items without System dump option');
+    });
+  });
+
+  test('Download System dump option rendered when criteria is met', async function(assert) {
+    new ReduxDataHelper(initState)
+      .columns(endpoint.schema)
+      .hostList(hostList)
+      .hostSortField('machineIdentity.machineName')
+      .selectedHostList([])
+      .build();
+    await render(hbs`
+    <style>
+      box, section {
+        min-height: 1000px
+      }
+    </style>
+    {{host-list/host-table}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[1], 'contextmenu', e);
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 7, 'Context menu rendered with 7 items with Download System dump option');
+    });
+  });
+  test('Download System dump option not rendered when permissions are not there', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    accessControl.set('roles', []);
+    new ReduxDataHelper(initState)
+      .columns(endpoint.schema)
+      .hostList(hostList)
+      .hostSortField('machineIdentity.machineName')
+      .selectedHostList([])
+      .build();
+    await render(hbs`
+    <style>
+      box, section {
+        min-height: 1000px
+      }
+    </style>
+    {{host-list/host-table}}{{context-menu}}`);
+
+    triggerEvent(findAll('.score')[1], 'contextmenu', e);
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 5, 'Context menu rendered with 5 items with Download System dump option');
     });
   });
 });
