@@ -473,11 +473,14 @@ export default Component.extend({
   },
 
   _reset() {
-    this.setProperties({
-      ...RESET_PROPS,
-      activePillTab: AFTER_OPTION_TAB_META
-    });
-    this._resetTabCounts();
+    // If NPT, no need to reset the properties
+    if (!this.isDestroyed && !this.isDestroying) {
+      this.setProperties({
+        ...RESET_PROPS,
+        activePillTab: AFTER_OPTION_TAB_META
+      });
+      this._resetTabCounts();
+    }
   },
 
   _resetAfterPaste() {

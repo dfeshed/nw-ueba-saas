@@ -102,8 +102,8 @@ export default Component.extend({
           this.get('sendMessage')(MESSAGE_TYPES.PILL_TRIGGER_EXIT_FOCUS_TO_RIGHT, this.get('newPillPosition'));
           break;
         case MESSAGE_TYPES.CREATE_FREE_FORM_PILL:
-          this._broadcast(type, data);
           this.set('isAddNewPill', false);
+          this._broadcast(type, data);
           break;
         case MESSAGE_TYPES.CREATE_TEXT_PILL:
           this._broadcast(type, data);

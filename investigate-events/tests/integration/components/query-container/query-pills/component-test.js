@@ -174,6 +174,27 @@ module('Integration | Component | Query Pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
   });
 
+  test('Creating a FF pill in the middle of pills creates a focused pill', async function(assert) {
+    assert.expect(1);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await click(PILL_SELECTORS.newPillTrigger);
+    await selectChoose(PILL_SELECTORS.meta, 'alert');
+    await selectChoose(PILL_SELECTORS.operator, '=');
+    await typeIn(PILL_SELECTORS.valueSelectInput, 's');
+
+    const afterOptions = findAll(PILL_SELECTORS.powerSelectAfterOption);
+    const freeFormFilter = afterOptions.find((d) => d.textContent.includes('Free-Form Filter'));
+    await click(freeFormFilter);
+    await settled();
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
+  });
+
   test('Creating a focused pill and clicking outside the query-pills component should remove focus', async function(assert) {
     assert.expect(2);
     new ReduxDataHelper(setState)
