@@ -41,10 +41,10 @@ public class TlsTransformerManager implements TransformationManager {
         // Session split transformer.
         transformers.add(transformerFactoryService.getProduct(new SessionSplitTransformerConf(Schema.TLS, intervalEndDate)));
 
-        if (intervalEndDate.isAfter(workflowStartDate.plus(transformationWaitingDuration))) {
-            // New occurrence transformers.
-            NEW_OCCURRENCE_FIELD_NAMES.forEach(fieldName -> transformers.add(createNewOccurrenceTransformer(fieldName)));
-        }
+//        if (intervalEndDate.isAfter(workflowStartDate.plus(transformationWaitingDuration))) {
+//            // New occurrence transformers.
+//            NEW_OCCURRENCE_FIELD_NAMES.forEach(fieldName -> transformers.add(createNewOccurrenceTransformer(fieldName)));
+//        }
     }
 
     @Override
