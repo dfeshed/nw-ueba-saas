@@ -10,6 +10,7 @@ import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.fetchers.HistoricalDataFetcher;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulator implements Histor
     }
 
     @Override
-    public HistoricalData createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public List<HistoricalData> createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
 
         List<Bucket<String, Double>> buckets = new ArrayList<>();
 
@@ -54,7 +55,7 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulator implements Histor
         }
 
         TimeAggregation aggregation = new TimeAggregation(buckets);
-        return new HistoricalData(aggregation);
+        return Arrays.asList(new HistoricalData(aggregation));
     }
 
 

@@ -82,7 +82,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     }
 
     @Override
-    public HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) {
+    public List<HistoricalData> generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) {
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
 
         HistoricalDataPopulator historicalDataPopulator;
@@ -109,9 +109,12 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
         String featureName = indicatorConfig.getHistoricalData().getFeatureName() == null? adeAggregationRecord.getFeatureName():indicatorConfig.getHistoricalData().getFeatureName() ;
         String anomalyValue = indicator.getAnomalyValue();
 
-        HistoricalData historicalData = historicalDataPopulator.createHistoricalData(timeRange, modelContexts, schema, featureName, anomalyValue, indicatorConfig.getHistoricalData());
-        historicalData.setIndicatorId(indicator.getId());
-        historicalData.setSchema(indicator.getSchema());
+        List<HistoricalData> historicalData = historicalDataPopulator.createHistoricalData(timeRange, modelContexts, schema, featureName, anomalyValue, indicatorConfig.getHistoricalData());
+        for (HistoricalData hd : historicalData) {
+            hd.setIndicatorId(indicator.getId());
+            hd.setSchema(indicator.getSchema());
+        }
+
         return historicalData;
     }
 

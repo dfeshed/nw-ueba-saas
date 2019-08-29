@@ -110,7 +110,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
 
     @Override
-    public HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) {
+    public List<HistoricalData> generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) {
 
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
         HistoricalDataPopulator historicalDataPopulator = historicalDataPopulatorFactory.createHistoricalDataPopulation(indicatorConfig.getHistoricalData().getType());
@@ -129,13 +129,17 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
                                             field -> indicator.getContexts().get(field),
                                             (oldValue, newValue) -> oldValue,
                                             LinkedHashMap::new));
-        HistoricalData historicalData = historicalDataPopulator.createHistoricalData(timeRange, modelContexts, schema, featureName, anomalyValue, indicatorConfig.getHistoricalData());
-        historicalData.setIndicatorId(indicator.getId());
-        historicalData.setSchema(indicator.getSchema());
+        List<HistoricalData> historicalData = historicalDataPopulator.createHistoricalData(timeRange, modelContexts, schema, featureName, anomalyValue, indicatorConfig.getHistoricalData());
+        for (HistoricalData hd : historicalData) {
+            hd.setIndicatorId(indicator.getId());
+            hd.setSchema(indicator.getSchema());
+        }
 
         if (indicatorConfig.getTransformer() != null) {
             SupportingInformationTransformer transformer = transformerFactory.getTransformer(indicatorConfig.getTransformer());
-            transformer.transformHistoricalData(historicalData);
+            for (HistoricalData hd : historicalData) {
+                transformer.transformHistoricalData(hd);
+            }
         }
 
         return historicalData;

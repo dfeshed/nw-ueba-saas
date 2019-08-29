@@ -8,6 +8,7 @@ import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.fetchers.HistoricalDataFetcher;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,7 +23,7 @@ public class HistoricalDataCountByValuePopulator implements HistoricalDataPopula
     }
 
     @Override
-    public HistoricalData createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema,
+    public List<HistoricalData> createHistoricalData(TimeRange timeRange, Map<String, String> contexts, Schema schema,
                                                String featureName, String anomalyValue,
                                                HistoricalDataConfig historicalDataConfig) {
 
@@ -50,7 +51,7 @@ public class HistoricalDataCountByValuePopulator implements HistoricalDataPopula
                 .collect(Collectors.toList());
 
         CountAggregation countAggregation = new CountAggregation(buckets);
-        return new HistoricalData(countAggregation);
+        return Arrays.asList(new HistoricalData(countAggregation));
     }
 
     @Override

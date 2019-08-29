@@ -42,7 +42,7 @@ public interface SupportingInformationGenerator {
                 }
 
                 // generate historical data
-                HistoricalData historicalData = generateHistoricalData(adeAggregationRecord, indicator);
+                List<HistoricalData> historicalData = generateHistoricalData(adeAggregationRecord, indicator);
                 if (historicalData == null) {
                     logger.warn("failed to generate historical data to indicator ID {}, feature {}", adeAggregationRecord.getId(), adeAggregationRecord.getFeatureName());
                 }
@@ -58,7 +58,7 @@ public interface SupportingInformationGenerator {
 
     List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize, String entityType, String entityId) throws Exception;
 
-    HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) throws Exception;
+    List<HistoricalData> generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) throws Exception;
 
     String getType();
 

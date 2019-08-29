@@ -51,8 +51,8 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         String anomalyValue = String.valueOf(2370.0);
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now().minus(2, ChronoUnit.DAYS));
         Map<String, String> contexts = Collections.singletonMap(CommonStrings.CONTEXT_USERID, contextValue);
-        HistoricalData historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig);
-        Assert.assertTrue(CollectionUtils.isEmpty(historicalData.getAggregation().getBuckets()));
+        List<HistoricalData> historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig);
+        Assert.assertTrue(CollectionUtils.isEmpty(historicalData.get(0).getAggregation().getBuckets()));
     }
 
     @Test
@@ -80,11 +80,11 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         String anomalyValue = String.valueOf(2370);
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now().minus(2, ChronoUnit.DAYS));
         Map<String, String> contexts = Collections.singletonMap(CommonStrings.CONTEXT_USERID, contextValue);
-        HistoricalData historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig);
-        Assert.assertTrue(CollectionUtils.isNotEmpty(historicalData.getAggregation().getBuckets()));
-        Assert.assertEquals(9, historicalData.getAggregation().getBuckets().size());
+        List<HistoricalData> historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, contexts, Schema.PRINT, featureName, anomalyValue, historicalDataConfig);
+        Assert.assertTrue(CollectionUtils.isNotEmpty(historicalData.get(0).getAggregation().getBuckets()));
+        Assert.assertEquals(9, historicalData.get(0).getAggregation().getBuckets().size());
 
-        for (Object object : historicalData.getAggregation().getBuckets()) {
+        for (Object object : historicalData.get(0).getAggregation().getBuckets()) {
             Bucket bucket = (Bucket)object;
             if (anomalyValue.equals(bucket.getValue().toString())) Assert.assertTrue(bucket.isAnomaly());
         }

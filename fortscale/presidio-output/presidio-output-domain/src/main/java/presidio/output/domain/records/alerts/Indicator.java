@@ -49,7 +49,7 @@ public class Indicator extends AbstractElasticDocument {
     private String alertId;
 
     @JsonProperty(HISTORICAL_DATA)
-    private HistoricalData historicalData;
+    private List<HistoricalData> historicalData;
 
     @JsonProperty(START_DATE)
     private Date startDate;
@@ -156,7 +156,7 @@ public class Indicator extends AbstractElasticDocument {
         this.schema = schema;
     }
 
-    public HistoricalData getHistoricalData() {
+    public List<HistoricalData> getHistoricalData() {
         return historicalData;
     }
 
@@ -164,7 +164,7 @@ public class Indicator extends AbstractElasticDocument {
         return events;
     }
 
-    public void setHistoricalData(HistoricalData historicalData) {
+    public void setHistoricalData(List<HistoricalData> historicalData) {
         this.historicalData = historicalData;
     }
 

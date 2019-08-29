@@ -12,10 +12,7 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class HistoricalDataCountByWeekdayPopulator implements HistoricalDataPopulator {
 
@@ -28,7 +25,7 @@ public class HistoricalDataCountByWeekdayPopulator implements HistoricalDataPopu
     }
 
     @Override
-    public HistoricalData createHistoricalData(TimeRange timeRange,Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
+    public List<HistoricalData> createHistoricalData(TimeRange timeRange,Map<String, String> contexts, Schema schema, String featureName, String anomalyValue, HistoricalDataConfig historicalDataConfig) {
 
         // map of day of week -> <hour -> count>
         Map<Integer, Map<Integer, Double>> weekdayMap = new HashMap<Integer, Map<Integer, Double>>();
@@ -88,7 +85,7 @@ public class HistoricalDataCountByWeekdayPopulator implements HistoricalDataPopu
         }
 
         WeekdayAggregation aggregation = new WeekdayAggregation(buckets);
-        return new HistoricalData(aggregation);
+        return Arrays.asList(new HistoricalData(aggregation));
     }
 
 
