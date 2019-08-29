@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonTypeName("machine-name-transformer")
-public class MachineNameTransformer implements InputDocumentTransformer {
+public class MachineNameTransformer extends AbstractInputDocumentTransformer {
 
     private static final Logger logger = Logger.getLogger(MachineNameTransformer.class);
 

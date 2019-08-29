@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public abstract class OperationTypeMappingTransformer implements ApplicationContextAware, InputDocumentTransformer {
+public abstract class OperationTypeMappingTransformer extends AbstractInputDocumentTransformer implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
     private static final Logger logger = Logger.getLogger(OperationTypeMappingTransformer.class);

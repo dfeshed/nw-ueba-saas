@@ -11,7 +11,7 @@ import presidio.sdk.api.domain.AbstractInputDocument;
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonTypeName("file-extension-transformer")
-public class FileExtensionTransformer implements InputDocumentTransformer {
+public class FileExtensionTransformer extends AbstractInputDocumentTransformer {
     private final RegexTransformer regexTransformer;
     private static final String EXTENSION_REGEX = "\\.[0-9a-z]+$";
 

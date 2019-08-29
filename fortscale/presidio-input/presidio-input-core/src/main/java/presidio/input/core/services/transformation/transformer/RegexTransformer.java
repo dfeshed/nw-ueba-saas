@@ -18,7 +18,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 @JsonTypeName("regex-transformer")
-public class RegexTransformer implements InputDocumentTransformer {
+public class RegexTransformer extends AbstractInputDocumentTransformer {
     private static final Logger logger = Logger.getLogger(RegexTransformer.class);
 
     private final String inputFieldName;
