@@ -1,0 +1,48 @@
+[
+  {
+    "type": "machine-name-transformer",
+    "inputFieldName": "srcMachineName",
+    "outputFieldName": "srcMachineCluster",
+    "pattern": "[0-9]",
+    "replacement": "",
+    "preReplacementCondition": null,
+    "postReplacementCondition": "(.*[a-zA-Z]){5}.*"
+  },
+  {
+    "type": "machine-name-transformer",
+    "inputFieldName": "printerName",
+    "outputFieldName": "printerCluster",
+    "pattern": "[0-9]",
+    "replacement": "",
+    "preReplacementCondition": null,
+    "postReplacementCondition": "(.*[a-zA-Z]){5}.*"
+  },
+  {
+    "type": "file-to-folder-path-transformer",
+    "inputFieldName": "srcFilePath",
+    "outputFieldName": "srcFolderPath"
+  },
+  {
+    "type": "file-extension-transformer",
+    "inputFieldName": "srcFilePath",
+    "outputFieldName": "srcFileExtension"
+  },
+  {
+    "type": "pattern-replacement-transformer",
+    "inputFieldName": "srcMachineId",
+    "outputFieldName": "srcMachineId",
+    "pattern": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
+    "replacement": "",
+    "preReplacementCondition": null,
+    "postReplacementCondition": null
+  },
+  {
+    "type": "pattern-replacement-transformer",
+    "inputFieldName": "printerId",
+    "outputFieldName": "printerId",
+    "pattern": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
+    "replacement": "",
+    "preReplacementCondition": null,
+    "postReplacementCondition": null
+  }
+]
