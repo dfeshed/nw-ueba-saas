@@ -365,86 +365,93 @@ public class RestAlertServiceImpl implements RestAlertService {
         return restEvent;
     }
 
-    private presidio.webapp.model.HistoricalData createRestHistorical(presidio.output.domain.records.alerts.HistoricalData historicalData) {
+    private List<presidio.webapp.model.HistoricalData> createRestHistorical(List<presidio.output.domain.records.alerts.HistoricalData> historicalData) {
 
-        presidio.webapp.model.HistoricalData restHistoricalData = null;
-
-        if (historicalData.getAggregation() instanceof CountAggregation) {
-
-            CountAggregation aggr = (CountAggregation) historicalData.getAggregation();
-            List<Bucket<String, Double>> buckets = aggr.getBuckets();
-            restHistoricalData = new HistoricalDataCountAggregation();
-            CountBuckets restBuckets = new CountBuckets();
-            for (Bucket<String, Double> bucket : buckets) {
-                CountBucket restBucket = new CountBucket();
-                restBucket.setKey(bucket.getKey());
-                restBucket.setValue(bucket.getValue().intValue());
-                restBucket.setAnomaly(bucket.isAnomaly());
-                restBuckets.add(restBucket);
-            }
-            ((HistoricalDataCountAggregation) restHistoricalData).setType(HistoricalDataCountAggregation.TypeEnum.CountAggregation);
-            ((HistoricalDataCountAggregation) restHistoricalData).setBuckets(restBuckets);
-
-        }
-
-        if (historicalData.getAggregation() instanceof TimeAggregation) {
-
-            TimeAggregation aggr = (TimeAggregation) historicalData.getAggregation();
-            List<Bucket<String, Double>> buckets = aggr.getBuckets();
+        List<presidio.webapp.model.HistoricalData> restHistoricalDataList = new ArrayList<>();
 
 
-            restHistoricalData = new HistoricalDataTimeAggregation();
-            TimeBuckets restBuckets = new TimeBuckets();
+        for (presidio.output.domain.records.alerts.HistoricalData hd : historicalData) {
+            presidio.webapp.model.HistoricalData restHistoricalData = null;
+            if (hd.getAggregation() instanceof CountAggregation) {
 
-            for (Bucket<String, Double> bucket : buckets) {
-
-                TimeBucket restBucket = new TimeBucket();
-                BigDecimal time = BigDecimal.valueOf(Long.parseLong(bucket.getKey()));
-                restBucket.setKey(time);
-                restBucket.setValue(bucket.getValue());
-                restBucket.setAnomaly(bucket.isAnomaly());
-                restBuckets.add(restBucket);
-            }
-            ((HistoricalDataTimeAggregation) restHistoricalData).setType(HistoricalDataTimeAggregation.TypeEnum.TimeAggregation);
-            ((HistoricalDataTimeAggregation) restHistoricalData).setBuckets(restBuckets);
-
-        }
-
-
-        if (historicalData.getAggregation() instanceof WeekdayAggregation) {
-
-            WeekdayAggregation aggr = (WeekdayAggregation) historicalData.getAggregation();
-
-            restHistoricalData = new HistoricalDataWeekdayAggregation();
-
-            List<Bucket<String, List<Bucket<String, Integer>>>> dailyBuckets = aggr.getBuckets();
-            DailyBuckets restDailyBuckets = new DailyBuckets();
-
-            // for each day of week
-            for (Bucket<String, List<Bucket<String, Integer>>> dailyBucket : dailyBuckets) {
-
-                DailyBucket restDailyBucket = new DailyBucket();
-                restDailyBucket.setKey(dailyBucket.getKey());
-                List<Bucket<String, Integer>> hourlyBuckets = dailyBucket.getValue();
-
-                // add hour of day
-                HourlyBuckets restHourlyBuckets = new HourlyBuckets();
-                for (Bucket<String, Integer> hourlyBucket : hourlyBuckets) {
-                    HourlyBucket restHourlyBucket = new HourlyBucket();
-                    restHourlyBucket.setKey(hourlyBucket.getKey());
-                    restHourlyBucket.setValue(hourlyBucket.getValue());
-                    restHourlyBucket.setAnomaly(hourlyBucket.isAnomaly());
-                    restHourlyBuckets.add(restHourlyBucket);
+                CountAggregation aggr = (CountAggregation) hd.getAggregation();
+                List<Bucket<String, Double>> buckets = aggr.getBuckets();
+                restHistoricalData = new HistoricalDataCountAggregation();
+                CountBuckets restBuckets = new CountBuckets();
+                for (Bucket<String, Double> bucket : buckets) {
+                    CountBucket restBucket = new CountBucket();
+                    restBucket.setKey(bucket.getKey());
+                    restBucket.setValue(bucket.getValue().intValue());
+                    restBucket.setAnomaly(bucket.isAnomaly());
+                    restBuckets.add(restBucket);
                 }
-
-                restDailyBucket.setValue(restHourlyBuckets);
-                restDailyBuckets.add(restDailyBucket);
+                ((HistoricalDataCountAggregation) restHistoricalData).setType(HistoricalDataCountAggregation.TypeEnum.CountAggregation);
+                ((HistoricalDataCountAggregation) restHistoricalData).setBuckets(restBuckets);
 
             }
-            ((HistoricalDataWeekdayAggregation) restHistoricalData).setType(HistoricalDataWeekdayAggregation.TypeEnum.WeekdayAggregation);
-            ((HistoricalDataWeekdayAggregation) restHistoricalData).setBuckets(restDailyBuckets);
 
+            if (hd.getAggregation() instanceof TimeAggregation) {
+
+                TimeAggregation aggr = (TimeAggregation) hd.getAggregation();
+                List<Bucket<String, Double>> buckets = aggr.getBuckets();
+
+
+                restHistoricalData = new HistoricalDataTimeAggregation();
+                TimeBuckets restBuckets = new TimeBuckets();
+
+                for (Bucket<String, Double> bucket : buckets) {
+
+                    TimeBucket restBucket = new TimeBucket();
+                    BigDecimal time = BigDecimal.valueOf(Long.parseLong(bucket.getKey()));
+                    restBucket.setKey(time);
+                    restBucket.setValue(bucket.getValue());
+                    restBucket.setAnomaly(bucket.isAnomaly());
+                    restBuckets.add(restBucket);
+                }
+                ((HistoricalDataTimeAggregation) restHistoricalData).setType(HistoricalDataTimeAggregation.TypeEnum.TimeAggregation);
+                ((HistoricalDataTimeAggregation) restHistoricalData).setBuckets(restBuckets);
+
+            }
+
+
+            if (hd.getAggregation() instanceof WeekdayAggregation) {
+
+                WeekdayAggregation aggr = (WeekdayAggregation) hd.getAggregation();
+
+                restHistoricalData = new HistoricalDataWeekdayAggregation();
+
+                List<Bucket<String, List<Bucket<String, Integer>>>> dailyBuckets = aggr.getBuckets();
+                DailyBuckets restDailyBuckets = new DailyBuckets();
+
+                // for each day of week
+                for (Bucket<String, List<Bucket<String, Integer>>> dailyBucket : dailyBuckets) {
+
+                    DailyBucket restDailyBucket = new DailyBucket();
+                    restDailyBucket.setKey(dailyBucket.getKey());
+                    List<Bucket<String, Integer>> hourlyBuckets = dailyBucket.getValue();
+
+                    // add hour of day
+                    HourlyBuckets restHourlyBuckets = new HourlyBuckets();
+                    for (Bucket<String, Integer> hourlyBucket : hourlyBuckets) {
+                        HourlyBucket restHourlyBucket = new HourlyBucket();
+                        restHourlyBucket.setKey(hourlyBucket.getKey());
+                        restHourlyBucket.setValue(hourlyBucket.getValue());
+                        restHourlyBucket.setAnomaly(hourlyBucket.isAnomaly());
+                        restHourlyBuckets.add(restHourlyBucket);
+                    }
+
+                    restDailyBucket.setValue(restHourlyBuckets);
+                    restDailyBuckets.add(restDailyBucket);
+
+                }
+                ((HistoricalDataWeekdayAggregation) restHistoricalData).setType(HistoricalDataWeekdayAggregation.TypeEnum.WeekdayAggregation);
+                ((HistoricalDataWeekdayAggregation) restHistoricalData).setBuckets(restDailyBuckets);
+
+            }
+            restHistoricalDataList.add(restHistoricalData);
         }
-        return restHistoricalData;
+
+
+        return restHistoricalDataList;
     }
 }
