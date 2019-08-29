@@ -1,11 +1,14 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import computed from 'ember-computed-decorators';
 import {
   groupRanking,
   isLoadingGroupRanking,
   selectedGroupRanking,
   selectedSourceType,
-  groupRankingPrevListStatus
+  groupRankingPrevListStatus,
+  hasGroupRankingChanged,
+  groupRankingSelectedIndex
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 import {
@@ -14,7 +17,8 @@ import {
   previewRanking,
   previewRankingWithFetch,
   fetchRankingView,
-  setTopRanking
+  setTopRanking,
+  resetRanking
 } from 'admin-source-management/actions/creators/group-wizard-creators';
 
 const stateToComputed = (state) => ({
@@ -22,7 +26,9 @@ const stateToComputed = (state) => ({
   isLoadingGroupRanking: isLoadingGroupRanking(state),
   selectedGroupRanking: selectedGroupRanking(state),
   selectedSourceType: selectedSourceType(state),
-  groupRankingPrevListStatus: groupRankingPrevListStatus(state)
+  groupRankingPrevListStatus: groupRankingPrevListStatus(state),
+  hasGroupRankingChanged: hasGroupRankingChanged(state),
+  groupRankingSelectedIndex: groupRankingSelectedIndex(state)
 });
 
 const dispatchToActions = {
@@ -31,7 +37,8 @@ const dispatchToActions = {
   previewRanking,
   fetchRankingView,
   previewRankingWithFetch,
-  setTopRanking
+  setTopRanking,
+  resetRanking
 };
 
 const EditRankingStep = Component.extend({
@@ -39,6 +46,10 @@ const EditRankingStep = Component.extend({
   classNames: 'edit-ranking-step',
   prevDraggVal: 0,
   scrollPos: 0,
+  @computed('selectedGroupRanking', 'groupRankingSelectedIndex')
+  hasSelectedGroup(selectedGroupRanking, groupRankingSelectedIndex) {
+    return selectedGroupRanking !== null && groupRankingSelectedIndex !== 0;
+  },
   actions: {
     handleScroll(evt) {
       if (evt.buttons) { // mouse down and moving while dragging
@@ -53,6 +64,10 @@ const EditRankingStep = Component.extend({
         }
         this.set('prevDraggVal', draggVal);
       }
+    },
+    handlePreviewRankingWithFetch(index, isChecked, evt) {
+      evt.stopImmediatePropagation();
+      this.send('previewRankingWithFetch', index, isChecked);
     },
     handleSelectGroupRanking(evt) {
       evt.currentTarget.focus();

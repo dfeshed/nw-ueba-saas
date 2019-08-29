@@ -57,9 +57,6 @@ module('Integration | Component | usm-groups/group-ranking/group-toolbar', funct
     await render(hbs`{{usm-groups/group-ranking/group-toolbar step=step}}`);
     assert.equal(findAll('.prev-button').length, 1, 'The Previous button appears in the DOM');
     assert.equal(findAll('.next-button').length, 0, 'The Next button does NOT appear in the DOM');
-
-    assert.equal(findAll('.reset-ranking-button.is-disabled').length, 1, 'The reset-ranking-button button appears in the DOM and is disabled');
-    assert.equal(findAll('.top-ranking-button.is-disabled').length, 1, 'The top-ranking-button button appears in the DOM and is disabled');
     assert.equal(findAll('.publish-button.is-disabled').length, 1, 'The publish-button button appears in the DOM and is disabled');
     assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
   });
@@ -72,8 +69,6 @@ module('Integration | Component | usm-groups/group-ranking/group-toolbar', funct
       .build();
     this.set('step', state.usm.groupWizard.rankingSteps[1]);
     await render(hbs`{{usm-groups/group-ranking/group-toolbar step=step}}`);
-    assert.equal(findAll('.reset-ranking-button:not(.is-disabled)').length, 1, 'The reset-ranking-button button appears in the DOM and is enabled');
-    assert.equal(findAll('.top-ranking-button.is-disabled').length, 1, 'The top-ranking-button button appears in the DOM and is disabled');
     assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The publish-button button appears in the DOM and is enabled');
   });
 
@@ -91,8 +86,6 @@ module('Integration | Component | usm-groups/group-ranking/group-toolbar', funct
     });
     await render(hbs`{{usm-groups/group-ranking/group-toolbar step=step transitionToClose=(action transitionToClose)}}`);
     await settled();
-    assert.equal(findAll('.reset-ranking-button:not(.is-disabled)').length, 1, 'The reset-ranking-button button appears in the DOM and is enabled');
-    assert.equal(findAll('.top-ranking-button.is-disabled').length, 1, 'The top-ranking-button button appears in the DOM and is disabled');
     assert.equal(findAll('.publish-button:not(.is-disabled)').length, 1, 'The publish-button button appears in the DOM and is enabled');
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');

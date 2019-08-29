@@ -21,22 +21,6 @@
 {{else}}
 
   {{#rsa-form-button
-    class='reset-ranking-button'
-    defaultAction=(action 'resetRanking')
-    isDisabled=(not hasGroupRankingChanged)
-  }}
-    {{t 'adminUsm.groupWizard.resetRanking'}}
-  {{/rsa-form-button}}
-
-  {{#rsa-form-button
-    class='top-ranking-button'
-    defaultAction=(action 'setTopRanking' true)
-    isDisabled=(not hasSelectedGroup)
-  }}
-    {{t 'adminUsm.groupWizard.setTopRanking'}}
-  {{/rsa-form-button}}
-
-  {{#rsa-form-button
     class='publish-button'
     style='primary'
     defaultAction=(action 'handleSaveRanking')

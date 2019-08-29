@@ -1,31 +1,31 @@
-<td {{action 'previewRankingWithFetch' index item.isChecked on='click'}}>
+<td>
   <hbox fit class="col-md-12 col-xs-12 col-sm-12">
     <hbox class="col-md-1 col-xs-1 col-sm-1 reorder-item-cell">
       <centered>
         <span class="handle"></span>
       </centered>
     </hbox>
-    <hbox class="col-md-1 col-xs-1 col-sm-1 group-rank-cell" {{action 'previewRankingWithFetch' index item.isChecked on='click'}}>
+    <hbox class="col-md-1 col-xs-1 col-sm-1 group-rank-cell">
       <p>{{add index 1}}</p>
     </hbox>
-    <hbox class="col-md-2 col-xs-2 col-sm-2 group-preview-cell" {{action 'previewRankingWithFetch' index item.isChecked on='click'}}>
+    <hbox class="col-md-2 col-xs-2 col-sm-2 group-preview-cell">
       <p>
         <div class="float-toggle simulate-{{item.isChecked}}">
           <div class="float-ball"></div>
         </div>
       </p>
     </hbox>
-    <hbox class="col-md-3 col-xs-3 col-sm-3 group-name-cell" {{action 'previewRankingWithFetch' index item.isChecked on='click'}}>
+    <hbox class="col-md-3 col-xs-3 col-sm-3 group-name-cell">
       {{item.name}}
     </hbox>
-    <hbox class="col-md-3 col-xs-3 col-sm-3 policy-cell" {{action 'previewRankingWithFetch' index item.isChecked on='click'}}>
+    <hbox class="col-md-3 col-xs-3 col-sm-3 policy-cell">
       {{#each-in item.assignedPolicies as |policy details|}}
         {{#if (eq policy selectedSourceType)}}
           {{ details.name }}
         {{/if}}
       {{/each-in}}
     </hbox>
-    <hbox class="col-md-2 col-xs-2 col-sm-2 n-sources-cell" {{action 'previewRankingWithFetch' index item.isChecked on='click'}}>
+    <hbox class="col-md-2 col-xs-2 col-sm-2 n-sources-cell">
       <p>
         <div class="table-cell-text" {{action 'hideTip' index on='mouseLeave'}}>
           {{#if srcCountTooltip}}

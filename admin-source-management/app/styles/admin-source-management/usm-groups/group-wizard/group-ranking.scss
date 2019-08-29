@@ -87,17 +87,18 @@
       margin-right: auto;
       text-align: center;
     }
-
-    .group-ranking-table {
+    .left-table-panel {
       background-color: background-color(primary, darkest);
       z-index: 1;
+    }
+    .group-ranking-table {
+      padding-top: rsa-whitespace();
       display: inline-block;
       width: 100%;
       max-height: calc(100vh - #{$wizardStepMaxHeight} - 105px);
       min-height: calc(100vh - #{$wizardStepMaxHeight} - 105px);
       overflow: auto;
       scroll-behavior: smooth;
-      background-color: background-color(primary, darkest);
       table {
         width: 100%;
         min-width: 400px;
@@ -191,6 +192,7 @@
           padding: rsa-whitespace();
           padding-left: rsa-whitespace(less);
           border-left: 1px solid border-color(primary, dark);
+          padding-bottom: rsa-whitespace(less);
         }
       }
       td {
@@ -257,6 +259,10 @@
   }
   .tip.show {
     display: block;
+  }
+  .reset-ranking-button, .top-ranking-button {
+    margin-bottom: rsa-whitespace();
+    margin-right: rsa-whitespace();
   }
 }
 /*

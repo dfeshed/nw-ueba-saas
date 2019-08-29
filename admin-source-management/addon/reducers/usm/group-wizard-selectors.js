@@ -43,7 +43,8 @@ export const hasGroupRankingChanged = createSelector(
   _groupRankingOrig, groupRanking,
   (_groupRankingOrig, groupRanking) => {
     const groupRankingCleaned = groupRanking.map((rank) => _.omit(rank, 'isChecked'));
-    return !_.isEqual(_groupRankingOrig, groupRankingCleaned);
+    const groupRankingOrigCleaned = _groupRankingOrig ? _groupRankingOrig.map((rank) => _.omit(rank, 'isChecked')) : [];
+    return !_.isEqual(groupRankingOrigCleaned, groupRankingCleaned);
   }
 );
 

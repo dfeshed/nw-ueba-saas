@@ -35,7 +35,22 @@
       </hbox>
     </hbox>
     <hbox fit class="col-md-12 col-xs-12 col-sm-12">
-      <hbox class="col-md-7 col-xs-7 col-sm-7">
+      <hbox class="col-md-7 col-xs-7 col-sm-7 left-table-panel">
+        {{#rsa-form-button
+          class='reset-ranking-button'
+          defaultAction=(action 'resetRanking')
+          isDisabled=(not hasGroupRankingChanged)
+        }}
+          {{t 'adminUsm.groupWizard.resetRanking'}}
+        {{/rsa-form-button}}
+
+        {{#rsa-form-button
+          class='top-ranking-button'
+          defaultAction=(action 'setTopRanking' true)
+          isDisabled=(not hasSelectedGroup)
+        }}
+          {{t 'adminUsm.groupWizard.setTopRanking'}}
+        {{/rsa-form-button}}
         <table class="table-head">
           <thead>
             <tr>
@@ -74,6 +89,7 @@
                   selectedItemId=selectedGroupRanking
                   tabindex=(if index -1 0)
                   selectedSourceType=selectedSourceType
+                  click=(action 'handlePreviewRankingWithFetch' index item.isChecked)
                   mouseUp=(action 'handleSelectGroupRanking')
                   keyDown=(action 'handleKeyBoard' index)
                   focusIn=(action 'selectGroupRanking' item.name)

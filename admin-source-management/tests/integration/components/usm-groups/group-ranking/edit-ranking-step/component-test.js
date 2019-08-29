@@ -25,6 +25,8 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
   test('The component appears in the DOM', async function(assert) {
     new ReduxDataHelper(setState).build();
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    assert.equal(findAll('.reset-ranking-button.is-disabled').length, 1, 'The reset-ranking-button button appears in the DOM and is disabled');
+    assert.equal(findAll('.top-ranking-button.is-disabled').length, 1, 'The top-ranking-button button appears in the DOM and is disabled');
     assert.equal(findAll('.edit-ranking-step').length, 1, 'The component appears in the DOM');
   });
 
@@ -34,7 +36,7 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
     assert.equal(findAll('.edit-ranking-step .group-rank-cell').length, 15, 'All 15 groups are showing');
   });
 
-  test('Show a selected group in the group ranking list', async function(assert) {
+  test('Show a top selected group in the group ranking list', async function(assert) {
     new ReduxDataHelper(setState)
       .groupWiz()
       .groupRankingWithData()
@@ -42,6 +44,18 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
       .build();
     await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
     assert.equal(findAll('.edit-ranking-step tr.is-selected').length, 1, 'A group in the group renking list is selected');
+    assert.equal(findAll('.top-ranking-button.is-disabled').length, 1, 'The top-ranking-button button is disabled due to Zebra 001 is top group');
+  });
+
+  test('Show a none top selected group in the group ranking list', async function(assert) {
+    new ReduxDataHelper(setState)
+      .groupWiz()
+      .groupRankingWithData()
+      .selectGroupRanking('Awesome! 012')
+      .build();
+    await render(hbs`{{usm-groups/group-ranking/edit-ranking-step}}`);
+    assert.equal(findAll('.edit-ranking-step tr.is-selected').length, 1, 'A group in the group renking list is selected');
+    assert.equal(findAll('.top-ranking-button.is-disabled').length, 0, 'The top-ranking-button button is enabled due to Awesome! 012 is second from top group');
   });
 
   test('Show the wait spinner for group ranking list loading', async function(assert) {
@@ -115,6 +129,7 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
     await triggerEvent(document.querySelectorAll('.group-ranking-table-body tr')[0], 'keydown', { keyCode: 40 });
     const state = this.owner.lookup('service:redux').getState();
     assert.deepEqual(state.usm.groupWizard.selectedGroupRanking, 'gTwo', 'second group is selected');
+    assert.equal(findAll('.top-ranking-button.is-disabled').length, 0, 'The top-ranking-button button is enabled due to gTwo is second from top group');
   });
 
   test('keypress arrowUp test', async function(assert) {
@@ -124,6 +139,7 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
     await triggerEvent(document.querySelectorAll('.group-ranking-table-body tr')[1], 'keydown', { keyCode: 38 });
     const state = this.owner.lookup('service:redux').getState();
     assert.deepEqual(state.usm.groupWizard.selectedGroupRanking, 'gOne', 'first group is selected');
+    assert.equal(findAll('.top-ranking-button.is-disabled').length, 1, 'The top-ranking-button button is disabled due to gOne top group');
   });
 
   test('keypress arrowDown + shiftKey test', async function(assert) {
@@ -134,6 +150,7 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
     await triggerEvent(document.querySelectorAll('.group-ranking-table-body tr')[0], 'keydown', { keyCode: 40, shiftKey: true });
     const state = this.owner.lookup('service:redux').getState();
     assert.deepEqual(state.usm.groupWizard.groupRanking, expectedResult, 'first group was moved down to second ranking');
+
   });
 
   test('keypress arrowUp + shiftKey test', async function(assert) {
@@ -157,6 +174,7 @@ module('Integration | Component | usm-groups/group-ranking/edit-ranking-step', f
     await triggerEvent(document.querySelectorAll('.group-ranking-table-body tr')[0], 'keydown', { keyCode: 40, shiftKey: true, altKey: true });
     const state = this.owner.lookup('service:redux').getState();
     assert.deepEqual(state.usm.groupWizard.groupRanking, expectedResult, 'first group was moved down to bottom ranking');
+    assert.equal(findAll('.reset-ranking-button.is-disabled').length, 0, 'The reset-ranking-button is enabled due to ranking change');
   });
 
   test('keypress arrowUp + shiftKey + altKey test', async function(assert) {
